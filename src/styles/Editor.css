@@ -1,0 +1,15 @@
+/* .editor-btn-row{
+    display: flex;
+} */
+
+.editor-page{
+    border: 1px solid #ccc;
+    padding: 20px 20px 20px 20px;
+    width: 60vw;
+    min-height: 40rem;
+    height: auto;
+    text-align: left;
+}
+.editor-btn-row button{
+    width: auto;
+}

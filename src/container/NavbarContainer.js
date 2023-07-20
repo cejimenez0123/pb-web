@@ -79,6 +79,9 @@ const renderif=()=>{
                         <a href="/discovery">Discovery</a>
                     </li>
                     <li>
+                        <a href="/page/new">Editor</a>
+                    </li>
+                    <li>
                         <a href={'/login'}>Log In</a>
                     </li>
             </ul>

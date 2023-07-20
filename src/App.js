@@ -8,6 +8,7 @@ import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
+import EditorContainer from './container/EditorContainer'
 import { logIn } from './actions/UserActions';
 function App(props) {
   return (
@@ -33,16 +34,20 @@ function App(props) {
         </a>
       </header> */}
       <Routes>
+      <Route path="/page/new" element={<EditorContainer/>}/>
       <Route path="/discovery" element={<DiscoveryContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>}/>
       <Route path="/login" element={<LogInContainer logIn={props.logIn}/>}/>
-      <Route exact path="/" element={<DashboardContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>} />
+
+      <Route exact path="/" element={
+      <DashboardContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
+      } />
         
      </Routes>
     </div>
   );
 }
 
-
+  // 
 function mapDispatchToProps(dispatch){
   return{ 
     // signUp:(user)=>dispatch(signUp(user)),
