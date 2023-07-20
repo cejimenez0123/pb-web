@@ -3,12 +3,37 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import { combineReducers, configureStore} from '@reduxjs/toolkit';
+import { Provider } from 'react-redux'
+import {pageSlice} from './reducers/PageReducer';
+import userSlice from './reducers/UserReducer';
+import { BrowserRouter } from 'react-router-dom';
+import thunk from "redux-thunk"
+import logger from "redux-logger"
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const reducer = combineReducers({
+  pages: pageSlice.reducer,
+  users: userSlice.reducer
+})
+const store = configureStore({reducer:reducer,
+
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(
+
+    { serializableCheck: false
+    }
+  ).concat(logger)
+
+})
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <Provider store={store} >
+    <React.StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </React.StrictMode>
+  </Provider>
+
 );
 
 // If you want to start measuring performance in your app, pass a function

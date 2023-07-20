@@ -1,0 +1,43 @@
+.dashboard-item {
+  /* Default width */
+    width: 50vw;
+   
+    /* Set a height for demonstration purposes */
+  }
+.dashboard-item button {
+  color:white;
+  background-color: black;
+  height: 100%;
+  padding: 10px 20px;
+  border: none;
+ 
+}
+
+.dashboard-item .btn-row{
+  width: 50vw;
+  max-height:120px;
+  padding-right: 10%;
+  margin:auto auto;
+  background-color: black;
+}
+
+.dashboard-item img{ 
+    width: 50%;    
+    /* object-fit: cover; */
+    margin: 0 auto;
+  } 
+.dashboard-item .text{
+  width: 50%;   
+  /* object-fit: cover; */
+  padding-bottom: 1em;
+  margin: 0 auto;
+
+}
+
+  @media (min-width: 768px) {
+    /* On screens with a width of 768px or more (desktop), set the width to 50% */
+    .dashboard-item {
+      width: 100%;
+    }
+  }
+  
