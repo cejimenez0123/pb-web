@@ -1,4 +1,4 @@
-import { getPublicPages } from "../actions/PageActions"
+import { getPublicPages ,setHtmlContent} from "../actions/PageActions"
 import Page from "../domain/models/page"
 import { createReducer ,createSlice} from "@reduxjs/toolkit"
 //  function PageReducer(
@@ -45,7 +45,7 @@ import { createReducer ,createSlice} from "@reduxjs/toolkit"
 //                 return state
 //         }
 //     } 
-const initialState = {pagesInView:[Page],loading:false}
+const initialState = {pagesInView:[Page],loading:false,editorHtmlContent:""}
 // const PageReducer = createReducer(initialState, (builder) => {
 //         builder.addCase(getPublicPages, (state, action) => {
 //             console.log(`ab ${action.payload}`)
@@ -69,6 +69,8 @@ const pageSlice = createSlice({
         state.pagesInView = list
       }).addCase(getPublicPages.rejected, (state) => {
         state.loading = false
+      }).addCase(setHtmlContent,(state,{payload})=>{
+        state.editorHtmlContent = payload.html
       })
     },
   })

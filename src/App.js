@@ -9,6 +9,7 @@ import LogInContainer from './container/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/EditorContainer'
+import MyProfileContainer from './container/MyProfileContainer';
 import { logIn } from './actions/UserActions';
 function App(props) {
   return (
@@ -16,8 +17,8 @@ function App(props) {
       <header>
     
        </header>
-       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"/>
-       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"/>
+       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossOrigin="anonymous"/>
+       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossOrigin="anonymous"/>
        <NavbarContainer/>
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -34,10 +35,11 @@ function App(props) {
         </a>
       </header> */}
       <Routes>
+      
       <Route path="/page/new" element={<EditorContainer/>}/>
       <Route path="/discovery" element={<DiscoveryContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>}/>
       <Route path="/login" element={<LogInContainer logIn={props.logIn}/>}/>
-
+      <Route path="/profile/home" element={<MyProfileContainer/>}/>
       <Route exact path="/" element={
       <DashboardContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
       } />
@@ -82,7 +84,7 @@ function mapDispatchToProps(dispatch){
   }
 }
 function mapStateToProps(state){
-console.log(`mapStateToProps${typeof state.pages.pagesInView}`)
+
   return{
     // users: state.users.users,
     // loggedIn: state.users.loggedIn,

@@ -23,7 +23,7 @@ export default class Profile {
         homeLibraryId,
         userId,
         privacy,
-        created
+        created= Timestamp.now()
     ){
         this.id = id
         this.username = username

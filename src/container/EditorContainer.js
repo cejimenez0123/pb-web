@@ -1,6 +1,8 @@
 import RichEditor from "../components/RichEditor"
 import "../styles/Editor.css"
-export default function EditorContainer(props){
+import {connect} from "react-redux"
+import { setHtmlContent } from "../actions/PageActions"
+function EditorContainer(props){
         
     // const pagesInView = useSelector((state)=>state.pages.pagesInView)
     //     // let [loading,setLoading] = useState(false)
@@ -19,8 +21,10 @@ export default function EditorContainer(props){
 
         return(
           <div>
-            <RichEditor/>
+            <RichEditor htmlContent={props.htmlContent} setHtmlContent={props.setHtmlContent}/>
           </div>
         )
         
 }
+
+export default EditorContainer

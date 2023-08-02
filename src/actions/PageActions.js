@@ -60,6 +60,17 @@ const getPublicPages = createAsyncThunk(
       
     }
   )
+const setHtmlContent = createAction(
+  'pages/setHtmlContent',(html)=>{
+      return {
+        payload:{
+          html
+        }
+      }
+  }
+)
+
+
 //   const getPublicPage = createAsyncThunk('PAGES_IN_VIEW',async (thunkApi) => {
 //   // function prepare() {
 //     let pageList = []
@@ -94,4 +105,4 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
     }}
   })
   const pagesInView = (pages)=>{return{ type: "PAGES_IN_VIEW",pages}}
-  export {getPublicPages,pagesLoading}
+  export {getPublicPages,pagesLoading,setHtmlContent}

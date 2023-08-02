@@ -41,57 +41,69 @@ function NavbarContainer(){
     // }
 const renderif=()=>{
 //       console.log("xxxx",this.props.loggedIn)
- 
-     if (loggedIn){
+        if (loggedIn){
             return(
-              <nav id="sidebar">
-       
-            <div className="sidebar-header">
-                <h3>Pb</h3>
-            </div>
-
-
-            <ul className="list-unstyled components">
-                <li className="active">
-                    <a href="/">Home</a>
-                </li>
-                <li><a href={`/user/${this.props.currentUser.id}`}>Profile</a></li>
-                <li><a href={`/private/collection`}>Private Collection</a>
-                
-                    </li> 
-                <li><a href={'/library/1'}>Public Library</a></li>
-                <li><a onClick={()=>this.handleLogOut()}href="/">Log Out</a></li>
-            </ul>
+                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <a className="navbar-brand" href="#">Pb</a>
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span className="navbar-toggler-icon"></span>
+                </button>
+              
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul className="navbar-nav mr-auto">
+                    <li className="nav-item active">
+                      <a className="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li className="nav-item">
+                      <a className="nav-link" href="/discovery">Discovery</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="/home/profile">Profile</a>
+                    </li>
+                    <li className="nav-item dropdown">
+                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Create
+                      </a>
+                      <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a className="dropdown-item" href="#">Page</a>
+                        <a className="dropdown-item" href="#">Book</a>
+                        <a className="dropdown-item" href="#">Library</a>
+                        </div>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link">Log Out</a>
+                    </li>
+                </ul>
+                </div>
         </nav>
-
-)
+        )
         }else{
             return(
-            <nav id="sidebar">
-                <div className="sidebar-header">
-                    <span><a href="/">Pb</a></span>
+                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                    <a className="navbar-brand" href="#">Pb</a>
+                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav mr-auto">
+                        <li className="nav-item active">
+                            <a className="nav-link" href="/">Home <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/discovery">Discovery</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/login">Log In</a>
+                        </li>
+                    </ul>
                 </div>
-                <ul className="list-unstyled components">
-                    <li className="">
-                       <a href="/">Home</a>
-                    </li>
-                    <li className="">
-                        <a href="/discovery">Discovery</a>
-                    </li>
-                    <li>
-                        <a href="/page/new">Editor</a>
-                    </li>
-                    <li>
-                        <a href={'/login'}>Log In</a>
-                    </li>
-            </ul>
         </nav>
-            )}}
-  
+            )
+        }}
+    return renderif()
 
-     return renderif()
-     
-     }   
+}   
 function mapState(state){
 
   return{
@@ -108,3 +120,5 @@ function mapDispatch(dispatch){
 }
 }
 export default connect(mapState,mapDispatch)(NavbarContainer)
+
+

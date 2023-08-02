@@ -1,18 +1,33 @@
-import React,{useState,createRef} from "react"
+import { doc } from "firebase/firestore";
+import React,{useState,createRef,useEffect, useLayoutEffect} from "react"
+import { useDispatch,useSelector } from "react-redux";
+import { setHtmlContent } from "../actions/PageActions";
 
 
-
-export default function RichEditor() {
+export default function RichEditor(props) {
     const [isReady, setIsReady] = useState(false);
     const editorRef = createRef()
-    const [htmlContent, setHtmlContent] = useState('');
+    const dispatch = useDispatch()
+    let htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
+    // const [htmlContent, setHtmlContent] = useState('');
+    useEffect(()=>{
+    //    const content = window.localStorage.getItem('htmlContent');
+    //     if(content!=null && content.length!=0){
+    //         console.log(`3232${content}`)
+    //         setHtmlContent(content)
+    //         const div = document.getElementsByClassName("editor-page")
+    //         div.innerHTML = htmlContent
+    //     }
+            
+
+    })
    const Type = {
-        BOLD:"BOLD",
-        ITALIC:"ITALIC", 
+        BOLD:"bold",
+        ITALIC:"italic", 
         SUBSCRIPT:"SUBSCRIPT", 
         SUPERSCRIPT:"SUPERSCRIPT",
         STRIKETHROUGH:"STRIKETROUGH", 
-        UNDERLINE:"UNDERLINE", 
+        UNDERLINE:"underline", 
         H1:"H1", 
         H2:"H2",
         H3:"H3", 
@@ -24,18 +39,24 @@ export default function RichEditor() {
         JUSTIFYCENTER:"JUSTIFYCENTER", 
         JUSTIFYFULL:"JUSTIFYFULL", 
         JUSTIFYLEFT:"JUSTIFYLEFT", 
-        JUSTIFYRIGHT:"JUSTIFYRIGTHT"
+        JUSTIFYRIGHT:"JUSTIFYRIGTHT",
+        RIGHT:"right",
+        CENTER:"center",
+        LEFT:"left"
     }
     const editableDiv = document.getElementsByClassName('editor-page')
     const onTextChaneListener=(event)=>{
         event.preventDefault();
-    const content = event.target.innerHTML 
-
+    const content = event.target.innerHTML
+    // window.localStorage.setItem('htmlContent',htmlContent) 
+dispatch(setHtmlContent(content))
 console.log(htmlContent)
 
 
     }
-   
+    const setBlockquote=()=> {
+        document.execCommand("formatBlock", false, "blockquote");
+      }
     // function performAction(command) {
     //     document.execCommand(command, false, null);
     //     editableDiv.focus();
@@ -47,6 +68,12 @@ console.log(htmlContent)
         }
         // console.log("setUnderline")
         // document.execCommand("underline", false, null);
+    }
+    const setStyle=(style)=>{
+        const selection = document.getSelection();
+        if (selection.rangeCount > 0) {
+          document.execCommand(style, false, null);
+        }
     }
     const setFontSize = (fontSize) => {
         const selection = window.getSelection();
@@ -67,6 +94,33 @@ console.log(htmlContent)
           // Create a new div to wrap the aligned content
           const containerDiv = document.createElement("div");
           containerDiv.style.textAlign = "left";
+      
+          // Move the contents of the range to the container div
+          containerDiv.appendChild(range.extractContents());
+      
+          // Insert the container div with the aligned content
+          range.insertNode(containerDiv);
+      
+          // Create a new paragraph after the container div
+          const newParagraph = document.createElement("p");
+          newParagraph.textContent = ""; // Add any initial text you want
+          containerDiv.parentNode.insertBefore(newParagraph, containerDiv.nextSibling);
+      
+          // Set the selection to the new paragraph
+          const newRange = document.createRange();
+          newRange.setStart(newParagraph, 0);
+          newRange.setEnd(newParagraph, 0);
+          selection.removeAllRanges();
+          selection.addRange(newRange);}
+    };
+    const changeAlignment = (justify) => {
+        const selection = document.getSelection();
+        if (selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          
+          // Create a new div to wrap the aligned content
+          const containerDiv = document.createElement("div");
+          containerDiv.style.textAlign = justify;
       
           // Move the contents of the range to the container div
           containerDiv.appendChild(range.extractContents());
@@ -130,19 +184,22 @@ console.log(htmlContent)
     <div>
         <div className="editor-btn-row row flex-nowrap overflow-auto">
             <button onClick={setUnderline}>Underline</button>
+            <button onClick={()=>setStyle(Type.BOLD)}>Bold</button>
+            <button onClick={()=>setStyle(Type.ITALIC)}>Italic</button>
             <button onClick={()=>setFontSize(40)}>H1</button>
             <button onClick={()=>setFontSize(32)}>H2</button>
             <button onClick={()=>setFontSize(24)}>H3</button>
             <button onClick={()=>setFontSize(16)}>H4</button>
             <button onClick={changeAlignmentLeft}>Align Left</button>
             <button onClick={changeAlignmentRight}>Align Right</button>
-            <button>Align Center</button>
+            <button onClick={()=>changeAlignment(Type.CENTER)}>Align Center</button>
+            <button onClick={setBlockquote}>""</button>
         </div>
         <div 
         className="editor-page"
         ref={editorRef}
         contentEditable={true}
-        onChange={(e)=>onTextChaneListener(e)}
+        onInput={(e)=>onTextChaneListener(e)}
        >
         
 

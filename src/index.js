@@ -10,6 +10,7 @@ import userSlice from './reducers/UserReducer';
 import { BrowserRouter } from 'react-router-dom';
 import thunk from "redux-thunk"
 import logger from "redux-logger"
+import history from './history';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const reducer = combineReducers({
@@ -26,13 +27,13 @@ const store = configureStore({reducer:reducer,
 
 })
 root.render(
+  <BrowserRouter history={history}>
   <Provider store={store} >
     <React.StrictMode>
-      <BrowserRouter>
         <App />
-      </BrowserRouter>
-    </React.StrictMode>
-  </Provider>
+    </React.StrictMode>  
+    </Provider>
+   </BrowserRouter>
 
 );
 

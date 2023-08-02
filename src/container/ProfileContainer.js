@@ -1,14 +1,12 @@
-import React from 'react';
 
 
-
-function MyProfileContainer(props){
+function ProfileContainer(props){
 
 
 
     return(
         <div>
-            MyProfileContainer.
+            Profile
             {/* <div className="profileBackground">
                 <div className="profileContainer">
                 <div className="profile">
@@ -97,4 +95,4 @@ function MyProfileContainer(props){
                 
             )
 }
-export default MyProfileContainer
+export default ProfileContainer

@@ -2,6 +2,7 @@
   text-align: center;
   height: 100%;
   display: flex;
+  flex-direction: column;
 }
 
 .App-logo {
@@ -9,8 +10,10 @@
   pointer-events: none;
 }
 .sign-card{
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
+  justify-content: center;
+  place-items: center;
   width: 20vw;
 
 }

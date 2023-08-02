@@ -21,7 +21,7 @@ export default class Page {
         profileId,
         privacy,
         type,
-        created
+        created=Timestamp.now()
     ){
         this.id = id
         this.title = title
