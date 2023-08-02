@@ -27,12 +27,15 @@ const store = configureStore({reducer:reducer,
 
 })
 root.render(
-  <BrowserRouter history={history}>
+  <BrowserRouter>
   <Provider store={store} >
     <React.StrictMode>
+      
         <App />
-    </React.StrictMode>  
-    </Provider>
+
+    </React.StrictMode>
+    
+  </Provider>
    </BrowserRouter>
 
 );

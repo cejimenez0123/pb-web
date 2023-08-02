@@ -3,7 +3,7 @@ import React ,{useState,useEffect,useLayoutEffect} from 'react'
 import "../App.css"
 import { logIn,signUp} from '../actions/UserActions';
 import { connect,useDispatch} from 'react-redux';
-import history from '../history';
+import {useNavigate} from 'react-router-dom'
 
 function LogInContainer(props) {
     const dispatch = useDispatch()
@@ -15,13 +15,14 @@ function LogInContainer(props) {
     const [privacy, setPrivacy] = useState(false)
     const [liEmail, setLiEmail] = useState('');
     const [liPassword, setLiPassword] = useState('');
+    const navigate = useNavigate()
     const handleNewUser = (event) => {
         event.preventDefault();
         console.log(`username ${suEmail} password ${suPassword}`)
         const params ={email:suEmail,password:suPassword,username:suUsername,profilePicture:profilePicture,selfStatement:selfStatement,privacy:privacy}
         dispatch(signUp(params)).then((result) => {
-        
-            history.push("/profile/home")
+   
+            navigate("/profile/home")
         }).catch((err) => {
             
         });;
@@ -32,7 +33,7 @@ function LogInContainer(props) {
     const handleLogIn = (event)=>{
         event.preventDefault()
         dispatch(logIn(liEmail,liPassword)).then((result) => {
-            history.push("/profile/home")
+           navigate("/profile/home")
         }).catch((err) => {
             
         });

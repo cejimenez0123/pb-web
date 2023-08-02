@@ -11,6 +11,7 @@ import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/EditorContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import { logIn } from './actions/UserActions';
+import history from './history';
 function App(props) {
   return (
     <div className="App">
@@ -34,7 +35,7 @@ function App(props) {
           Learn React
         </a>
       </header> */}
-      <Routes>
+      <Routes history={history} >
       
       <Route path="/page/new" element={<EditorContainer/>}/>
       <Route path="/discovery" element={<DiscoveryContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>}/>
