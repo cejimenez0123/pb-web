@@ -9,9 +9,10 @@ export default function ProfileCard(props){
         
         return (<div>
    <div className="flex">
-           {/* <div className="profilePic">
+           <div className="profilePic">
                 <img inline="true" style={{objectFit:"contain"}} src={props.currentProfile.profilePicture} alt=""  height="auto"/>
-            </div> */}
+                <div>{props.currentProfile.profilePicture}</div>
+            </div>
             <div className="flex flex-direction-column profileCardNames">
 
                 <h4>@{props.currentProfile.username}</h4>

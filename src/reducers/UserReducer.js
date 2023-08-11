@@ -18,7 +18,7 @@ const userSlice = createSlice({
     .addCase(logIn.fulfilled, (state, { payload }) => {
         state.loading = false
         state.loggedIn = true
-        console.log(payload.profile)
+      
         state.currentProfile = payload.profile
     }).addCase(logIn.rejected, (state,{payload}) => {
         state.error = payload.error
@@ -34,7 +34,9 @@ const userSlice = createSlice({
     }).addCase(signUp.rejected,(state,{payload})=>{   
         state.error = payload.error
     }).addCase(getCurrentProfile.rejected,(state,{payload})=>{   
-        state.error = payload.error
+        state.loading = false
+        state.loggedIn = false
+        // state.error = payload.error
     }).addCase(getCurrentProfile.pending,(state)=>{
         state.loading = true
     }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {

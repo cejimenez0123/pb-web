@@ -21,8 +21,10 @@ function LogInContainer(props) {
        
         const params ={email:suEmail,password:suPassword,username:suUsername,profilePicture:profilePicture,selfStatement:selfStatement,privacy:privacy}
         dispatch(signUp(params)).then((result) => {
-            console.log(result)
-            navigate("/profile/home")
+         
+            if (result.payload.profile!=null){
+                navigate("/profile/home")
+             }
         }).catch((err) => {
             
         });;
@@ -34,7 +36,8 @@ function LogInContainer(props) {
         event.preventDefault()
         const params ={email:liEmail,password:liPassword}
         dispatch(logIn(params)).then((result) => {
-          if(props.loggedIn) {
+            // console.log(`result ${JSON.stringify(result)}`)
+            if (result.payload.profile!=null){
            navigate("/profile/home")
         }
         }).catch((err) => {

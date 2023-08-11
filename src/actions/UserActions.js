@@ -21,7 +21,7 @@ const logIn = createAsyncThunk(
    
        
         const pack =  snapshot.docs[0].data() 
-        console.log(pack)
+   
         const id = pack["id"]
         const username = pack["username"]
         const profilePicture = pack["profilePicture"]??""
@@ -30,8 +30,8 @@ const logIn = createAsyncThunk(
         const userId = pack["userId"]
         const privacy = pack["private"]
         const created = pack["created"]
-        const profile = new Profile(id,username,"profilePicture",selfStatement,homeLibraryId,userId,privacy,created)
-        console.log(profile)
+        const profile = new Profile(id,username,profilePicture,selfStatement,homeLibraryId,userId,privacy,created)
+       
         if(pack!=null){    
         return {
           
@@ -42,9 +42,9 @@ const logIn = createAsyncThunk(
             }
         }catch(error) {
             return {
-                payload: {
-                    error
-                }
+            
+                    error: error?? new Error("Error: Performing Login")
+                
             }
         }}
 )
@@ -64,7 +64,7 @@ const signUp = createAsyncThunk(
       
       
         const libId = doc(collection(db,"library")).id
-        console.log(`pId ${pId} uId ${uId} libId ${libId}`)
+    
         new Library(libId,"Saved")
         const timestamp = Timestamp.now()
          setDoc(doc(db,"library",libId),{
@@ -109,7 +109,7 @@ const signUp = createAsyncThunk(
     } catch (error){
 
         return {
-            error: error
+            error: new Error("Error: performing sign up")
         }
     }
     }
@@ -134,8 +134,8 @@ async (params,thunkApi) => {
         const userId = pack["userId"]
         const privacy = pack["private"]
         const created = pack["created"]
-        const profile = new Profile(id,username,"profilePicture",selfStatement,homeLibraryId,userId,privacy,created)
-        console.log("Touch")
+        const profile = new Profile(id,username,profilePicture,selfStatement,homeLibraryId,userId,privacy,created)
+
         if(pack!=null){    
         return {
         
@@ -146,9 +146,9 @@ async (params,thunkApi) => {
             }
         }catch(error) {
             return {
-                payload: {
-                    error
-                }
+               
+             error: new Error(`Error: Getting current profile`)
+                
             }
         }}
 )
