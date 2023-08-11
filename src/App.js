@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
-import { connect} from "react-redux"
-import { BrowserRouter,HashRouter, Route, Routes, Redirect,withRouter} from 'react-router-dom';
+import { connect,useSelector} from "react-redux"
+import { BrowserRouter,HashRouter, Route, Routes, Redirect,withRouter,Navigate} from 'react-router-dom';
 import { getPublicPages } from './actions/PageActions';
 import PageReducer from './reducers/PageReducer';
 import DashboardContainer from './container/DashboardContainer';
@@ -10,9 +10,17 @@ import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/EditorContainer'
 import MyProfileContainer from './container/MyProfileContainer';
-import { logIn } from './actions/UserActions';
+import { logIn,getCurrentProfile } from './actions/UserActions';
 import history from './history';
+import PrivateRoute from './PrivateRoute';
+import { useEffect } from 'react';
 function App(props) {
+  useEffect(()=>{
+    if(props.loggedIn==false){
+    props.getCurrentProfile()
+  
+  }
+  })
   return (
     <div className="App">
       <header>
@@ -36,16 +44,21 @@ function App(props) {
         </a>
       </header> */}
       <Routes history={history} >
-      
-      <Route path="/page/new" element={<EditorContainer/>}/>
-      <Route path="/discovery" element={<DiscoveryContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>}/>
-      <Route path="/login" element={<LogInContainer logIn={props.logIn}/>}/>
-      <Route path="/profile/home" element={<MyProfileContainer/>}/>
       <Route exact path="/" element={
       <DashboardContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
       } />
-        
-     </Routes>
+      <Route path="/page/new" element={<EditorContainer/>}/>
+      <Route path="/discovery" element={<DiscoveryContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>}/>
+      <Route path="/login" element={<LogInContainer logIn={props.logIn} loggedIn={props.loggedIn}/>}/>
+      <Route
+      path="/profile/home"
+      element={
+        <PrivateRoute loggedIn={props.loggedIn}>
+          <MyProfileContainer currentProfile={props.currentProfile} loggedIn={props.loggedIn}/>
+        </PrivateRoute>
+      }
+    />
+    </Routes>
     </div>
   );
 }
@@ -54,7 +67,8 @@ function App(props) {
 function mapDispatchToProps(dispatch){
   return{ 
     // signUp:(user)=>dispatch(signUp(user)),
-    logIn:(email,password)=>dispatch(logIn(email,password)),
+    // logIn:(email,password)=>dispatch(logIn(email,password)),
+    getCurrentProfile:()=>dispatch(getCurrentProfile()),
     // getUsers: ()=>dispatch(getUsers()),
     // savePage: (data)=>dispatch(savePage(data)),
     // getAllPages: ()=>dispatch(getAllPages()),
@@ -85,11 +99,12 @@ function mapDispatchToProps(dispatch){
   }
 }
 function mapStateToProps(state){
-
+  console.log(state.users.currentProfile);
   return{
     // users: state.users.users,
-    // loggedIn: state.users.loggedIn,
+    loggedIn: state.users.loggedIn,
     // currentUser: state.users.currentUser,
+    currentProfile: state.users.currentProfile,
     // currentPage: state.pages.currentPage,
     // bookInView: state.books.bookInView,
     // booksOfUserr: state.books.booksOfUser,

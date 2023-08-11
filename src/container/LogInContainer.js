@@ -18,10 +18,10 @@ function LogInContainer(props) {
     const navigate = useNavigate()
     const handleNewUser = (event) => {
         event.preventDefault();
-        console.log(`username ${suEmail} password ${suPassword}`)
+       
         const params ={email:suEmail,password:suPassword,username:suUsername,profilePicture:profilePicture,selfStatement:selfStatement,privacy:privacy}
         dispatch(signUp(params)).then((result) => {
-   
+            console.log(result)
             navigate("/profile/home")
         }).catch((err) => {
             
@@ -32,8 +32,11 @@ function LogInContainer(props) {
 
     const handleLogIn = (event)=>{
         event.preventDefault()
-        dispatch(logIn(liEmail,liPassword)).then((result) => {
+        const params ={email:liEmail,password:liPassword}
+        dispatch(logIn(params)).then((result) => {
+          if(props.loggedIn) {
            navigate("/profile/home")
+        }
         }).catch((err) => {
             
         });

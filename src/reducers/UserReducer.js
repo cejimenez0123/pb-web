@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { logIn ,signUp} from "../actions/UserActions"
+import { logIn ,signUp,getCurrentProfile} from "../actions/UserActions"
 import Profile from "../domain/models/profile"
 const initialState = {
     loggedIn: false,
@@ -27,13 +27,20 @@ const userSlice = createSlice({
 
         state.loading = true
     }).addCase(signUp.fulfilled,(state,{payload})=>{
-        console.log('Payload:', {payload}); 
+   
         state.currentProfile = payload.profile
         state.loggedIn = true
         state.loading = false
     }).addCase(signUp.rejected,(state,{payload})=>{   
         state.error = payload.error
-    })
+    }).addCase(getCurrentProfile.rejected,(state,{payload})=>{   
+        state.error = payload.error
+    }).addCase(getCurrentProfile.pending,(state)=>{
+        state.loading = true
+    }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
+        state.loading = false
+        state.loggedIn = true
+        state.currentProfile = payload.profile})
 }})
 
 export default userSlice

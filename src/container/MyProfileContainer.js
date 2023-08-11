@@ -1,19 +1,23 @@
-import React from 'react';
-
-
-
+import React, { useEffect } from 'react';
+import { useDispatch,useSelector } from "react-redux";
+import ProfileCard from '../components/ProfileCard';
+import { useFetcher } from 'react-router-dom';
+import { getCurrentProfile } from '../actions/UserActions';
 function MyProfileContainer(props){
 
-
-
+    useEffect(()=>{
+       
+        
+    })
+   
     return(
         <div>
-            MyProfileContainer.
+        
             {/* <div className="profileBackground">
                 <div className="profileContainer">
                 <div className="profile">
                     <div classname="" > */}
-                                {/* {this.profileCard()} */}
+                               <ProfileCard currentProfile={props.currentProfile}/>
                             
 {/*                                 
                                 <section>
@@ -98,3 +102,4 @@ function MyProfileContainer(props){
             )
 }
 export default MyProfileContainer
+
