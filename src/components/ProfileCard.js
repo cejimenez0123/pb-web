@@ -4,13 +4,13 @@ export default function ProfileCard(props){
    
   
    
-    console.log(`ProfileCard ${props.currentProfile}`)
+
     if(props.currentProfile!=null){
         
         return (<div>
    <div className="flex">
-           <div className="profilePic">
-                <img inline="true" style={{objectFit:"contain"}} src={props.currentProfile.profilePicture} alt=""  height="auto"/>
+           <div className="profile-pic-container">
+                <img className="profile-pic" inline="true" src={props.currentProfile.profilePicture} alt=""  height="auto"/>
                 <div>{props.currentProfile.profilePicture}</div>
             </div>
             <div className="flex flex-direction-column profileCardNames">

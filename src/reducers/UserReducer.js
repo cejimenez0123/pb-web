@@ -40,9 +40,16 @@ const userSlice = createSlice({
     }).addCase(getCurrentProfile.pending,(state)=>{
         state.loading = true
     }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
+   
         state.loading = false
         state.loggedIn = true
-        state.currentProfile = payload.profile})
+        console.log(`payload ${JSON.stringify(payload)}`)
+       state.currentProfile = payload.profile
+    }).addCase("users/loggedIn",(state, { payload }) => {
+
+        state.loggedIn = payload.loggedIn
+    })
 }})
+
 
 export default userSlice

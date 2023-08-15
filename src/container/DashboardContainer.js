@@ -15,22 +15,28 @@ import "../App.css"
 // import LogInForm from "../components/user/LogInForm"
 // import {BottomScrollListener }from 'react-bottom-scroll-listener';
 import Page from '../domain/models/page'
+import { getCurrentProfile } from '../actions/UserActions'
 import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 function DashboardContainer(props){
-        
-    const pagesInView = useSelector((state)=>state.pages.pagesInView)
+    const dispatch = useDispatch()
+    const [pagesInView,setPagesInView]= useState([Page])
+    // const pagesInView = useSelector((state)=>state.pages.pagesInView)
         // let [loading,setLoading] = useState(false)
-        let [pages,setPages] = useState([])
-        useLayoutEffect(()=>{
+        // let [pages,setPages] = useState([])
+        // useLayoutEffect(()=>{
                 
-                // setPages(pagesInView)
-        },[pagesInView])
+        //         // setPages(pagesInView)
+        // },[pagesInView])
         useEffect(()=>{        
-            props.getPublicPages()
-        },[pagesInView])
+        const p = props.getPublicPages()
+          
+
+      
+            return ()=>p
+        },[])
         
-//     console.log(`dashboard ${pagesInView[0].title}`)
+
 //   const display = ()=>{
 //    return pagesInView.map((page)=>{<h2>{page.title}</h2>})}
 

@@ -1,7 +1,7 @@
 
 import { initializeApp } from "firebase/app";
 import firebase from "firebase/compat/app";
-import { getAuth, signInAnonymously } from "firebase/auth"
+import { getAuth, signInAnonymously,setPersistence,browserSessionPersistence } from "firebase/auth"
 import "firebase/compat/firestore"
 import { getFirestore,Firestore,initializeFirestore} from "firebase/firestore";
 // import { firebaseConfig } from '../fire';
@@ -27,7 +27,17 @@ signInAnonymously(auth)
     const errorMessage = error.message;
    console.error(errorMessage, errorCode)
   });
+  setPersistence(auth, browserSessionPersistence)
+  .then(() => {
+    signInAnonymously(auth)
 
+.then(() =>{})
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+   console.error(errorMessage, errorCode)
+  });
+  })
 const db =getFirestore(app)
 
 

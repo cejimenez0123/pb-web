@@ -37,9 +37,10 @@ function LogInContainer(props) {
         const params ={email:liEmail,password:liPassword}
         dispatch(logIn(params)).then((result) => {
             // console.log(`result ${JSON.stringify(result)}`)
-            if (result.payload.profile!=null){
+            // if (result.payload.profile!=null){
+        if(result.error==null){
            navigate("/profile/home")
-        }
+           }
         }).catch((err) => {
             
         });

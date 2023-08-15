@@ -1,25 +1,24 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { auth,db } from  "../core/di"
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword,setPersistence, browserSessionPersistence } from "firebase/auth"
 import {where,query,collection,getDocs,setDoc,getDoc,doc,orderBy,limit,Firestore , QuerySnapshot, DocumentData, DocumentSnapshot, Timestamp} from "firebase/firestore"
 import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
+
 // import {auth} from "../core/di"
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
         try {
+         
+
+
             let email = params["email"]
             let password = params["password"]
      const userCred =  await signInWithEmailAndPassword(auth,email,password)  
-    const uId= userCred.user.uid
- //  const snapshot = await getDocs(query(collection(db, "profile"), where("userId", "==", user.uid),orderBy("created", "desc"), limit(1)))
-   //const snapshot = await getDocs( query(collection(db, "profile"), where("userId", "==", uId), orderBy("created", "desc"), limit(1)))
-   //const snapshot = await getDocs(query(collection(db, "profile"), where("userId", "==", uId), orderBy("created", "desc"), limit(1)));
+    const uId=userCred.user.uid
     const snapshot = await getDocs(query(collection(db, "profile"), where("userId", "==",uId)))    
    // Check if the snapshot contains any documents
-   
-       
         const pack =  snapshot.docs[0].data() 
    
         const id = pack["id"]
@@ -117,13 +116,13 @@ const signUp = createAsyncThunk(
 
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
-
-    const uId = auth.currentUser.uid
+    console.log(`user2 ${JSON.stringify(params)}`)
+    const uId = params["userId"]
     try {
-    const snapshot = await getDocs(query(collection(db, "profile"), where("userId", "==",uId)))    
-   // Check if the snapshot contains any documents
+
+    const snapshot = await getDocs(query(collection(db, "profile"), where("userId", "==",uId)))
    
-       
+   // Check if the snapshot contains any documents
         const pack =  snapshot.docs[0].data() 
         
         const id = pack["id"]
@@ -135,21 +134,16 @@ async (params,thunkApi) => {
         const privacy = pack["private"]
         const created = pack["created"]
         const profile = new Profile(id,username,profilePicture,selfStatement,homeLibraryId,userId,privacy,created)
-
-        if(pack!=null){    
+        console.log(`user2 ${JSON.stringify(profile)}`)
         return {
-        
-                profile
-                
-            }}else{
-                throw new Error("Profile not found for the logged-in user.");
-            }
+            profile
+        }          
         }catch(error) {
             return {
                
-             error: new Error(`Error: Getting current profile`)
+             error: new Error(` Getting current profile ${error.message}`)
                 
             }
-        }}
-)
+        }});
+
 export {logIn,signUp,getCurrentProfile}

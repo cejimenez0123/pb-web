@@ -1,47 +1,30 @@
-import React from 'react'
-import {connect, useSelector} from 'react-redux'
+import React ,{useEffect, useState } from 'react'
+import {connect, useSelector,useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
+import useAuth from '../core/useAuth'
 // import { useStore } from 'react-redux'
 // import "../node_modules/jquery/dist/jquery.min.js";
 // import "../node_modules/bootstrap/dist/js/bootstrap.min.js"
 // import {Navbar,Nav,NavDropdown,Form,FormControl,Button,ListGroup,OverlayTrigger,Popover} from 'react-bootstrap'
 // import {SET_CURRENT_USER} from "../actions/UserActions"
 // import SearchBar from "../components/SearchBar"
-function NavbarContainer(){
+function NavbarContainer({authState,profile}){
+    const dispatch = useDispatch()
+    const [signedIn,setSignedIn] = useState(false)
+    const [user,setUser]= useState(null)
     let loggedIn = useSelector((state)=>{return state.users.loggedIn;});
-//    constructor(){
-//      super()
-//      this.state={filtered: []}
-//    }
-//    componentDidMount(){
-    //  this.props.getCurrentUser()
-   
-// filterFunction(e){
-//      let input = e.target.value
-//   let filtered = this.props.users.filter(x=>{
-   
-//   let  user = x.attributes
-//   return  user.name.includes(input) || user.username.includes(input)
-
-//   })
-
-//  let list = filtered.map((x,i)=>{
-
-//   return(
-//   <ListGroup.Item>  <a key={i}> {x.attributes.name}</a></ListGroup.Item>)
-
-//  })
-//  this.setState({filtered: list}) 
-//     }
     
+
     
-    // handleLogOut(){
-    //     this.props.endSession()
-    // }
-const renderif=()=>{
+        
+
+   
+    
+   
+    const renderif=()=>{
 //       console.log("xxxx",this.props.loggedIn)
-        if (loggedIn){
+        if (!!profile){
             return(
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <a className="navbar-brand" href="#">Pb</a>
@@ -55,13 +38,13 @@ const renderif=()=>{
                       <a className="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li className="nav-item">
-                      <a className="nav-link" href="/discovery">Discovery</a>
+                        <a className="nav-link" href="/profile/home">Profile</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="/home/profile">Profile</a>
+                      <a className="nav-link" href="/discovery">Discovery</a>
                     </li>
                     <li className="nav-item dropdown">
-                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="false">
                         Create
                       </a>
                       <div className="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -72,6 +55,9 @@ const renderif=()=>{
                     </li>
                     <li className="nav-item">
                         <a className="nav-link">Log Out</a>
+                    </li>
+                    <li>
+                    
                     </li>
                 </ul>
                 </div>

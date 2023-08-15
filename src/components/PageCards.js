@@ -156,7 +156,7 @@ dispatch(likePage({pageId: props.page.id,score:-1}))
   const handleModalClose=(e)=>{
    let div = document.querySelector(`#modal-${props.page.id}`)
      if(e.target === e.currentTarget){
-       console.log("!")
+      
        e.target.style.display="none"
 
      }

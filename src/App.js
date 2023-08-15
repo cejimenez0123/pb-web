@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
-import { connect,useSelector} from "react-redux"
+
+import { connect,useSelector,useDispatch} from "react-redux"
 import { BrowserRouter,HashRouter, Route, Routes, Redirect,withRouter,Navigate} from 'react-router-dom';
 import { getPublicPages } from './actions/PageActions';
 import PageReducer from './reducers/PageReducer';
@@ -9,56 +10,77 @@ import LogInContainer from './container/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/EditorContainer'
+import PageViewContainer from './container/PageViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import { logIn,getCurrentProfile } from './actions/UserActions';
 import history from './history';
 import PrivateRoute from './PrivateRoute';
-import { useEffect } from 'react';
+import { useEffect,useState} from 'react';
+import useAuth from './core/useAuth';
+class CONTAINERS{
+    static EDITOR_CONTAINER = "editor-container"
+}
+
 function App(props) {
+  const dispatch = useDispatch()
+    const [signedIn,setSignedIn] = useState(false)
+    const [user,setUser]= useState(null)
+
+    
+    let auth = useAuth()
+    const [authState,setAuthState]=useState(auth)
   useEffect(()=>{
-    if(props.loggedIn==false){
-    props.getCurrentProfile()
+    setAuthState(auth)
+    if(!!authState.user && !props.currentProfile){
+      const params = {
+       userId: authState.user.uid
+      }
+      console.log(`App ${JSON.stringify(params)}`)
+      const subscriber = props.getCurrentProfile(params)
+      return ()=> subscriber
+    }
   
-  }
-  })
+  },[])
   return (
     <div className="App">
       <header>
     
-       </header>
-       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossOrigin="anonymous"/>
-       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossOrigin="anonymous"/>
-       <NavbarContainer/>
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
+      </header>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossOrigin="anonymous"/>
+        <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
+        <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossOrigin="anonymous"/>
+       <NavbarContainer loggedIn={!!authState.users} authState={authState} profile={props.currentProfile}/>
+ 
       <Routes history={history} >
       <Route exact path="/" element={
-      <DashboardContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
+      <DashboardContainer auth={auth} getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
       } />
-      <Route path="/page/new" element={<EditorContainer/>}/>
+      {/* <Route path="/page/new" element={<EditorContainer/>}/> */}
       <Route path="/discovery" element={<DiscoveryContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>}/>
-      <Route path="/login" element={<LogInContainer logIn={props.logIn} loggedIn={props.loggedIn}/>}/>
+      <Route path="/login" element={
+      <LogInContainer logIn={props.logIn} loggedIn={auth.isSignedIn}/>
+      // : <Navigate to="/profile/home" />
+}/>
       <Route
       path="/profile/home"
       element={
-        <PrivateRoute loggedIn={props.loggedIn}>
-          <MyProfileContainer currentProfile={props.currentProfile} loggedIn={props.loggedIn}/>
-        </PrivateRoute>
+        <PrivateRoute loggedIn={!!props.currentProfile}>
+          <MyProfileContainer currentProfile={props.currentProfile} pagesInView={props.pagesInView} authState={authState}/>
+       </PrivateRoute>
       }
     />
+    <Route path="/page/:id" element={
+          <PageViewContainer page={props.pageInView}/>}
+    />  
+    <Route
+      path="/page/new"
+      element={
+       
+            <EditorContainer htmlContent={props.htmlContent} currentProfile={props.currentProfile} auth={authState}/>
+      }/>
     </Routes>
+    
     </div>
   );
 }
@@ -68,7 +90,7 @@ function mapDispatchToProps(dispatch){
   return{ 
     // signUp:(user)=>dispatch(signUp(user)),
     // logIn:(email,password)=>dispatch(logIn(email,password)),
-    getCurrentProfile:()=>dispatch(getCurrentProfile()),
+    getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
     // getUsers: ()=>dispatch(getUsers()),
     // savePage: (data)=>dispatch(savePage(data)),
     // getAllPages: ()=>dispatch(getAllPages()),
@@ -99,12 +121,13 @@ function mapDispatchToProps(dispatch){
   }
 }
 function mapStateToProps(state){
-  console.log(state.users.currentProfile);
+
   return{
     // users: state.users.users,
     loggedIn: state.users.loggedIn,
     // currentUser: state.users.currentUser,
     currentProfile: state.users.currentProfile,
+    pageInView: state.pages.pageInView,
     // currentPage: state.pages.currentPage,
     // bookInView: state.books.bookInView,
     // booksOfUserr: state.books.booksOfUser,

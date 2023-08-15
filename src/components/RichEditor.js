@@ -8,7 +8,6 @@ export default function RichEditor(props) {
     const [isReady, setIsReady] = useState(false);
     const editorRef = createRef()
     const dispatch = useDispatch()
-    let htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
     // const [htmlContent, setHtmlContent] = useState('');
     useEffect(()=>{
     //    const content = window.localStorage.getItem('htmlContent');
@@ -49,8 +48,8 @@ export default function RichEditor(props) {
         event.preventDefault();
     const content = event.target.innerHTML
     // window.localStorage.setItem('htmlContent',htmlContent) 
-dispatch(setHtmlContent(content))
-console.log(htmlContent)
+    console.log(`content ${content}`)
+            dispatch(setHtmlContent(content))
 
 
     }

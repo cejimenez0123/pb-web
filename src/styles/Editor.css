@@ -13,3 +13,22 @@
 .editor-btn-row button{
     width: auto;
 }
+#editor {
+    margin:auto;
+    max-width: 70%;
+    flex:8
+}
+#EditorContainer .left-side-bar{
+    flex: 3;
+}
+#EditorContainer .right-side-bar{
+    flex: 3;
+    
+}
+#EditorContainer .right-side-bar form{
+    display: flex;
+    flex-direction: column;
+}
+#EditorContainer .btn-primary{
+    background-color: rgb(15, 18, 15) !important;
+}

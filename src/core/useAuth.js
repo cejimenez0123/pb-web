@@ -1,0 +1,22 @@
+import { auth} from "./di"
+import { useEffect } from "react"
+import { useState } from "react"
+import { onAuthStateChanged } from "firebase/auth"
+export default function useAuth(shareAuthState) {
+    const [authState, setAuthState] = useState({
+      isSignedIn: false,
+      pending: true,
+      user: null,
+    })
+  
+    useEffect(() => {
+      const unregisterAuthObserver = auth.onAuthStateChanged(user =>
+       
+        setAuthState({ user, pending: false, isSignedIn: !!user })
+      )
+      return () => unregisterAuthObserver()
+    }, [])
+
+
+    return {...authState }
+  }

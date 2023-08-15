@@ -2,23 +2,52 @@ import React, { useEffect } from 'react';
 import { useDispatch,useSelector } from "react-redux";
 import ProfileCard from '../components/ProfileCard';
 import { useFetcher } from 'react-router-dom';
-import { getCurrentProfile } from '../actions/UserActions';
-function MyProfileContainer(props){
-
+import PageList from '../components/PageList';
+import "../styles/MyProfile.css"
+function MyProfileContainer({pagesInView,currentProfile,authState}){
+   let loading =  useSelector((state)=>state.users.loading)
+//    let currentProfile = useSelector((state)=>state.users.currentProfile)
+   const dispatch = useDispatch()
     useEffect(()=>{
-       
         
+        // if(!!authState.user && !authState.user.isAnonymous&& !currentProfile ){
+        //     const params = {userId: authState.user.id}
+        //     dispatch(getCurrentProfile(params))
+        // }
     })
-   
+
+
+if( !!currentProfile){
+    const pageList=()=>{
+        return (<PageList pages={pagesInView}
+             profileId={ currentProfile.id} 
+             groupBy={9}/>)
+            
+            }
     return(
-        <div>
+        <div className='container'>
         
             {/* <div className="profileBackground">
                 <div className="profileContainer">
                 <div className="profile">
                     <div classname="" > */}
-                               <ProfileCard currentProfile={props.currentProfile}/>
-                            
+        <div  className='container-row'>
+            <div className=''>
+                <div classNAme="left-side-bar">
+                    <ul className='list-unstyled'>
+                                    <li className='btn btn-primary mb-3'><a href="/page/new">Create Page</a></li>
+                                    <li className='btn btn-primary mb-3'>Create Book</li>
+                                    <li className='btn btn-primary mb-3'>Create Library</li>
+                    </ul>
+                </div>
+            </div>
+                        <div className='main-bar'>
+                        {pageList()}
+                        </div>
+                        <div className="right-side-bar">
+                            <ProfileCard currentProfile={currentProfile}/>
+                        </div>  
+        </div>
 {/*                                 
                                 <section>
          */}
@@ -98,8 +127,10 @@ function MyProfileContainer(props){
             </div>
             </div> */}
         </div>
-                
-            )
-}
+    )}else{
+        return(<div>
+Loading...
+        </div>)
+    }}
 export default MyProfileContainer
 

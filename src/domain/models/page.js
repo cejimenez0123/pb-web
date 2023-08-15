@@ -11,6 +11,7 @@ export default class Page {
     title
     data
     profileId
+    approvalScore
     privacy
     type
     created
@@ -19,6 +20,7 @@ export default class Page {
         title,
         data,
         profileId,
+        approvalScore=0,
         privacy,
         type,
         created=Timestamp.now()
@@ -27,6 +29,7 @@ export default class Page {
         this.title = title
         this.data = data
         this.profileId = profileId
+        this.approvalScore = approvalScore
         this.privacy = privacy
         this.type = type
         this.created = created
