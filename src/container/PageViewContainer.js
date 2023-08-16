@@ -1,10 +1,28 @@
 import { PageType } from "../core/constants";
-
-
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPage} from "../actions/PageActions"
+import { useEffect } from "react";
 export default function PageViewContainer({page}){
+    const pathParams = useParams()
+    const dispatch = useDispatch()
+    const loading = useSelector(state=>state.pages.loading)
     let pageDataElement = (<div>
-        
+
     </div>)
+    const getPage=()=>{
+        const id =  pathParams["id"]
+        console.log(`PageViewContainer ${JSON.stringify(pathParams)}`)
+        dispatch(fetchPage(pathParams))
+    }
+    useEffect(()=>{
+     
+            getPage()
+        
+    },[])
+
+    if(!loading && page!=null){
+
     switch(page.type){
         case PageType.text:
             pageDataElement = <div className='text' dangerouslySetInnerHTML={{__html:page.data}}></div>
@@ -21,8 +39,13 @@ export default function PageViewContainer({page}){
     }
 
     return(<div>
+            PageViewContainer
 
 
-
-    </div>)
+    </div>)}else{
+        
+        return(<div>
+            Loading...
+        </div>)
+    }
 }

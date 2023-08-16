@@ -1,5 +1,5 @@
 
-import { getPublicPages ,setHtmlContent,getProfilePages,savePage} from "../actions/PageActions"
+import { getPublicPages ,setHtmlContent,getProfilePages,savePage,setPageInView,fetchPage} from "../actions/PageActions"
 import Page from "../domain/models/page"
 import { createReducer ,createSlice} from "@reduxjs/toolkit"
 
@@ -48,6 +48,16 @@ const pageSlice = createSlice({
         state.loading =false
         state.editingPage = payload.page
 
+      }).addCase(setPageInView,(state,{payload})=>{
+        console.log(`Pagereducer ${JSON.stringify(payload)}`)
+        state.pageInView = payload.page
+      }).addCase(fetchPage.pending,(state)=>{
+        state.loading = true
+      }).addCase(fetchPage.rejected,(state,{payload})=>{
+        state.error = payload.error
+      }).addCase(fetchPage.fulfilled,(state,{payload})=>{
+        state.loading = false
+        state.pageInView = payload.page
       })
     },
   })

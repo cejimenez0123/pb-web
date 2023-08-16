@@ -30,9 +30,22 @@
   background-color: grey!important;
   border-color: darkgray !important;
 }
+.MuiMenu-listbox{
+    background-color: whitesmoke;
+}
+.button-row{
+    display: flex;
+    flex-direction: row;
+}
 .page-list-item .text{
     border: 1px solid gray;
     width: 8vh;
     height: 11vh;
 
+}
+.nav-item i{
+    color:green;
+}
+.dropdown .dropdown-menu{
+    z-index: 2;
 }

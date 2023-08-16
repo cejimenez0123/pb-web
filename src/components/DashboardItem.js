@@ -1,55 +1,23 @@
 import React from 'react'
 import "../Dashboard.css"
+import { setPageInView } from '../actions/PageActions'
 // import {getPagesComments} from "../../actions/PageActions"
 import { PageType } from '../core/constants'
 import {connect ,useDispatch} from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 // import {useBottomScrollListener} from "react-bottom-scroll-listener"
   let size= {width: window.innerWidth,height: window.innerHeight}
 
 function DashboardItem({page}) {
-  
-//   componentDidMount(){
-// if(this.props.pages && this.props.pages.length>0){
-//     debugger
-//       this.props.getLikesOfPages(this.props.pages)
-//       }
-// if(this.props.currentUser){
-//       this.props.getLikesOfUser()}
-//   }
-
-//  renderPages(){
-        
-    
-//       // console.log('resized to: ', window.innerWidth, 'x', window.innerHeight)
-//         if(this.props.pages && this.props.pages.length>0){
-         
-//             return ( this.props.pages.map((page,key)=>{
-//                 let comments = []
-
-//                  if(page.attributes){
-//                     page = page.attributes}
-//                 return (
-//                       <h3>{page.title}</h3> 
-//                     )
-//                         })
-//                     )
-//                 }else{
-
-//                 return(<div className="noPages"> 
-//                     <h3>0 pages</h3>
-//                 </div>)
-//             }
-//     }
-            
-
-    
-    
-//    render(){     
-//     return(<div className="pages">
-
-//     {this.renderPages()}
-//     </div>)
-//    }
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+const hanldeClickComment=()=>{
+    const params = {
+        page: page
+    }
+    dispatch(setPageInView(params))
+    navigate(`/page/${page.id}`)
+}
 let pageDataElement = (<div></div>)
 switch(page.type){
     case PageType.text:
@@ -82,7 +50,8 @@ switch(page.type){
                 <button>
                     Nah
                 </button>
-                <button>
+                <button onClick={hanldeClickComment}>
+                
                     Comments
                 </button>
                 <button>

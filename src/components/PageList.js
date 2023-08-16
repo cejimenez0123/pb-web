@@ -29,7 +29,7 @@ export default function PageList({pages,profileId,groupBy}) {
        
     }
     console.log(`pages ${JSON.stringify(pages)}`)
-    return(<div>
+    return(<div className="page-list">
        <InfiniteScroll
       dataLength={pages}
       next={fetchData}

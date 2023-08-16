@@ -95,9 +95,13 @@ const getProfilePages= createAsyncThunk(
               const data = pack["data"]
               const profileId = pack["profileId"]
               const privacy = pack["privacy"]
+              const approvalScore = pack["approvalScore"]
               const type = pack["type"]
               const created = pack["created"]
-              const page = new Page(id, title, data, profileId, privacy, type, created)
+          
+        
+              const page =  new Page(id,title,data,profileId,approvalScore,privacy,type,created)
+         //new Page(id, title, data, profileId, privacy, type, created)
             
             pageList = [...pageList, page]
           })
@@ -139,6 +143,48 @@ console.log(`params ${JSON.stringify(params)}`)
 
 
 })
+const fetchPage = createAsyncThunk("pages/fetchPage", async function(params,thunkApi){
+  const id = params["id"]
+
+ 
+
+  try {
+  const docSnap = await getDoc(doc(db, "page", id))
+  const pack = docSnap.data()
+  const pId = pack["id"]
+  const title =pack["title"]
+  const data = pack["data"]
+  const profileId = pack["profileId"]
+  const privacy = pack["privacy"]
+  const approvalScore = pack["approvalScore"]
+  const type = pack["type"]
+  const created = pack["created"]
+
+  const page = new Page(id=pId,title,data,profileId,approvalScore,privacy,type,created)
+  return {
+    page
+  }
+  }catch(e){
+    return {
+      error: e
+    }
+
+  }
+
+
+})
+const setPageInView = createAction("pages/setPageInView", function prepare(page) {
+  return {
+   
+      page
+    
+  }
+})
+// (createAction('UPDATE_PARTICULAR_VALUE', {
+//   id: props.id,
+//   value: props.amount,
+//   reason: props.reason
+// }));
 
 //   const getPublicPage = createAsyncThunk('PAGES_IN_VIEW',async (thunkApi) => {
 //   // function prepare() {
@@ -167,6 +213,7 @@ console.log(`params ${JSON.stringify(params)}`)
 //     pageList}
 // }
 //   })
+
 const pagesLoading = createAction("PAGES_LOADING", function prepare(){
     return {
         payload: {
@@ -174,4 +221,4 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
     }}
   })
   const pagesInView = (pages)=>{return{ type: "PAGES_IN_VIEW",pages}}
-  export {getPublicPages,pagesLoading,setHtmlContent,getProfilePages,savePage}
+  export {getPublicPages,pagesLoading,setHtmlContent,getProfilePages,savePage,setPageInView,fetchPage}
