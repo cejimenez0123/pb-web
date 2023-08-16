@@ -1,0 +1,44 @@
+/* .App {
+    font-family: sans-serif;
+    text-align: center;
+  } */
+  
+.book-banner .book-banner-item {
+    max-width: 150px;
+    height: 5rem;
+    padding: 0 15px;
+    object-fit: cover;
+  }
+  
+ .book-banner  img:last-of-type {
+    padding-left: 0;
+  }
+  
+ .book-banner  .inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 5rem;
+  }
+  
+.book-banner   .wrapper {
+    position: absolute;
+    display: flex;
+  }
+  
+.book-banner   section {
+    display: flex;
+    animation: swipe var(--speed) linear infinite backwards;
+  }
+  
+  @keyframes swipe {
+    0% {
+      transform: translate(0);
+    }
+  
+    100% {
+      transform: translate(-100%);
+    }
+  }
+  
+  /* https://codesandbox.io/s/infinite-horizontal-auto-scroll-y82f8?file=/src/styles.css:0-520 */

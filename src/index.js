@@ -7,6 +7,7 @@ import { combineReducers, configureStore} from '@reduxjs/toolkit';
 import { Provider } from 'react-redux'
 import {pageSlice} from './reducers/PageReducer';
 import userSlice from './reducers/UserReducer';
+import bookSlice from './reducers/BookReducer';
 import { BrowserRouter } from 'react-router-dom';
 import thunk from "redux-thunk"
 import logger from "redux-logger"
@@ -15,7 +16,8 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const reducer = combineReducers({
   pages: pageSlice.reducer,
-  users: userSlice.reducer
+  users: userSlice.reducer,
+  books: bookSlice.reducer
 })
 const store = configureStore({reducer:reducer,
 

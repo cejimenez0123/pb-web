@@ -144,21 +144,21 @@ console.log(`params ${JSON.stringify(params)}`)
 
 })
 const fetchPage = createAsyncThunk("pages/fetchPage", async function(params,thunkApi){
-  const id = params["id"]
+  let id = params["id"]
 
  
 
   try {
   const docSnap = await getDoc(doc(db, "page", id))
   const pack = docSnap.data()
-  const pId = pack["id"]
-  const title =pack["title"]
-  const data = pack["data"]
-  const profileId = pack["profileId"]
-  const privacy = pack["privacy"]
-  const approvalScore = pack["approvalScore"]
-  const type = pack["type"]
-  const created = pack["created"]
+  let pId = pack["id"]
+  let title =pack["title"]
+  let data = pack["data"]
+  let profileId = pack["profileId"]
+  let privacy = pack["privacy"]
+  let approvalScore = pack["approvalScore"]
+  let type = pack["type"]
+  let created = pack["created"]
 
   const page = new Page(id=pId,title,data,profileId,approvalScore,privacy,type,created)
   return {

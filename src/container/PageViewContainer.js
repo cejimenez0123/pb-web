@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPage} from "../actions/PageActions"
 import { useEffect } from "react";
+import DashboardItem from "../components/DashboardItem";
+import "../styles/PageView.css"
 export default function PageViewContainer({page}){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -40,6 +42,7 @@ export default function PageViewContainer({page}){
 
     return(<div>
             PageViewContainer
+            <DashboardItem page={page}/>
 
 
     </div>)}else{

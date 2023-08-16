@@ -11,16 +11,18 @@ import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/EditorContainer'
 import PageViewContainer from './container/PageViewContainer'
+import BookViewContainer from './container/BookViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import { logIn,getCurrentProfile } from './actions/UserActions';
+import { getPublicBooks } from './actions/BookActions';
 import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { useEffect,useState} from 'react';
 import useAuth from './core/useAuth';
 
-class CONTAINERS{
-    static EDITOR_CONTAINER = "editor-container"
-}
+// class CONTAINERS{
+//     static EDITOR_CONTAINER = "editor-container"
+// }
 
 function App(props) {
   const dispatch = useDispatch()
@@ -59,7 +61,8 @@ function App(props) {
       <DashboardContainer auth={auth} getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
       } />
       {/* <Route path="/page/new" element={<EditorContainer/>}/> */}
-      <Route path="/discovery" element={<DiscoveryContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>}/>
+      <Route path="/discovery" element={
+      <DiscoveryContainer getPublicPages={props.getPublicPages} getPublicBooks={props.getPublicBooks} pagesInView={props.pagesInView}/>}/>
       <Route path="/login" element={
       <LogInContainer logIn={props.logIn} loggedIn={auth.isSignedIn}/>
       // : <Navigate to="/profile/home" />
@@ -74,7 +77,10 @@ function App(props) {
     />
     <Route path="/page/:id" element={
           <PageViewContainer page={props.pageInView}/>}
-    />  
+    /> 
+    <Route path="/book/:id" element={
+      <BookViewContainer book={props.bookInView}/>
+    }/>
     <Route
       path="/page/new"
       element={
@@ -93,6 +99,7 @@ function mapDispatchToProps(dispatch){
     // signUp:(user)=>dispatch(signUp(user)),
     // logIn:(email,password)=>dispatch(logIn(email,password)),
     getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
+    getPublicBooks:()=>dispatch(getPublicBooks()),
     // getUsers: ()=>dispatch(getUsers()),
     // savePage: (data)=>dispatch(savePage(data)),
     // getAllPages: ()=>dispatch(getAllPages()),
@@ -127,6 +134,7 @@ function mapStateToProps(state){
   return{
     // users: state.users.users,
     loggedIn: state.users.loggedIn,
+    bookInView: state.users.bookInView,
     // currentUser: state.users.currentUser,
     currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,
