@@ -11,14 +11,14 @@ export default class Library {
     writingIsOpen
     created
     constructor(
-        id,
-        name,
+        id:string,
+        name:string,
+        profileId:string,
+        purpose:string,
         pageIds=[String],
         bookIds=[String],
-        writingIsOpen=false,
-        privacy=false,
-        profileId,
-        purpose,
+        writingIsOpen:boolean=false,
+        privacy:boolean=false,
         created=Timestamp.now()
     ){
         this.id = id
@@ -30,5 +30,8 @@ export default class Library {
         this.privacy = privacy
         this.purpose = purpose
         this.created = created
+    }
+    static className(){
+        return "library"
     }
     }

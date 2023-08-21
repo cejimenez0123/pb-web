@@ -1,5 +1,11 @@
 
-import { getPublicPages ,setHtmlContent,getProfilePages,savePage,setPageInView,fetchPage} from "../actions/PageActions"
+import {  getPublicPages ,
+          setHtmlContent,
+          getProfilePages,
+          createPage,
+          setPageInView,
+          fetchPage,
+          fetchArrayOfPages} from "../actions/PageActions"
 import Page from "../domain/models/page"
 import { createReducer ,createSlice} from "@reduxjs/toolkit"
 
@@ -36,15 +42,15 @@ const pageSlice = createSlice({
           state.loading = false
           state.error = payload.error
         }
-      ).addCase(savePage.rejected,(state,{payload})=>{
+      ).addCase(createPage.rejected,(state,{payload})=>{
         state.error = payload.error
         state.loading = false
 
-      }).addCase(savePage.pending,(state)=>{
+      }).addCase(createPage.pending,(state)=>{
 
         state.loading = true
 
-      }).addCase(savePage.fulfilled,(state,{payload})=>{
+      }).addCase(createPage.fulfilled,(state,{payload})=>{
         state.loading =false
         state.editingPage = payload.page
 
@@ -58,6 +64,15 @@ const pageSlice = createSlice({
       }).addCase(fetchPage.fulfilled,(state,{payload})=>{
         state.loading = false
         state.pageInView = payload.page
+      }).addCase(fetchArrayOfPages.fulfilled,(state,{payload})=>{
+        console.log(`payload: ${JSON.stringify(payload)}`)
+          state.pagesInView = payload.pageList
+          state.loading = false
+      }).addCase(fetchArrayOfPages.rejected,(state,{payload})=>{
+          state.error = payload.error
+          state.loading = false
+      }).addCase(fetchArrayOfPages.pending,(state)=>{
+          state.loading = true
       })
     },
   })

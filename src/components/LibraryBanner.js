@@ -1,8 +1,7 @@
-import { useNavigate } from "react-router-dom";
-const BookBanner = ({ books, speed = 40000 }) => {
+const LibraryBanner = ({ libraries, speed = 40000 }) => {
 
     return (
-    <div className="book-banner">
+    <div className="library-banner">
       <div className="inner">
         <div className="wrapper">
           <section style={{ "--speed": `${speed}ms` }}>
@@ -55,19 +54,10 @@ const BookBanner = ({ books, speed = 40000 }) => {
     );
   };
 
-  function BookBannerItem({book}){
-    const navigate = useNavigate()
-    const handleOnClick = ()=>{
-        const params = {
-            book: book
-        }
-        navigate(`/book/${book.id}`)
-        
-    }
-    return(<div onClick={handleOnClick} className="book-banner-item">
+  function LibraryBannerItem({lib}){
+
+    return(<div className="book-banner-item">
             <h6> {book.title}</h6>
 
     </div>)
   }
-  
-export default BookBanner

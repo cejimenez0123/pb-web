@@ -1,0 +1,18 @@
+.container{
+    display: flex;
+    flex-direction: row;
+}
+.left-side-bar {
+    flex:3;
+    display: flex;
+    flex-direction: column;
+
+}
+.right-side-bar {
+
+    flex:3;
+}
+.main-bar{
+    width:60vw ;
+    background-color: aquamarine;
+}

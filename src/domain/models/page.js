@@ -34,4 +34,7 @@ export default class Page {
         this.type = type
         this.created = created
     }
+    static className(){
+        "page"
     }
+}

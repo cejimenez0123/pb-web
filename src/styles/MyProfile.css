@@ -49,3 +49,24 @@
 .dropdown .dropdown-menu{
     z-index: 2;
 }
+.btn-row{
+    display: flex;
+    flex-direction: row;
+}
+.page-list-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.content {
+    overflow: hidden;
+  }
+  
+  .visible {
+    max-height: 1000px; /* Adjust as needed */
+  }
+  
+  .hidden {
+    max-height: 0;
+  }

@@ -2,7 +2,7 @@ import RichEditor from "../components/RichEditor"
 import "../styles/Editor.css"
 import "../App.css"
 import {connect,useDispatch, useSelector} from "react-redux"
-import { setHtmlContent,savePage } from "../actions/PageActions"
+import { setHtmlContent,createPage } from "../actions/PageActions"
 import { useEffect, useState } from "react"
 
 
@@ -23,7 +23,7 @@ function EditorContainer({currentProfile}){
             approvalScore:0,
             type: 'html/text'
           }
-          dispatch(savePage(params))
+          dispatch(createPage(params))
         }
       
         const onTitleChange = (e)=>{

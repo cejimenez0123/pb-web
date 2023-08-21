@@ -3,6 +3,7 @@ import {connect, useSelector,useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
 import useAuth from '../core/useAuth'
+import { useNavigate } from 'react-router-dom'
 // import { useStore } from 'react-redux'
 // import "../node_modules/jquery/dist/jquery.min.js";
 // import "../node_modules/bootstrap/dist/js/bootstrap.min.js"
@@ -12,10 +13,11 @@ import useAuth from '../core/useAuth'
 function NavbarContainer({authState,profile}){
     const dispatch = useDispatch()
     const [signedIn,setSignedIn] = useState(false)
+    const navigate = useNavigate()
     const [user,setUser]= useState(null)
     let loggedIn = useSelector((state)=>{return state.users.loggedIn;});
     
-
+    let currentProfile= useSelector((state)=>{return state.users.currentProfile;});
     
         
 
@@ -24,7 +26,7 @@ function NavbarContainer({authState,profile}){
    
     const renderif=()=>{
 //       console.log("xxxx",this.props.loggedIn)
-        if (!!profile){
+        if (!!currentProfile){
             return(
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <a className="navbar-brand" href="#">Pb</a>
@@ -35,13 +37,19 @@ function NavbarContainer({authState,profile}){
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                   <ul className="navbar-nav mr-auto">
                     <li className="nav-item active">
-                      <a className="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                      <a className="nav-link" onClick={()=>{
+                                        navigate("/")
+                                    }}>Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="/profile/home">Profile</a>
+                        <a className="nav-link" onClick={()=>{
+                            navigate("/profile/home")
+                        }}>Profile</a>
                     </li>
                     <li className="nav-item">
-                      <a className="nav-link" href="/discovery">Discovery</a>
+                      <a className="nav-link" onClick={()=>{
+                            navigate("/discovery")
+                        }}>Discovery</a>
                     </li>
                     <li className="nav-item dropdown">
                       <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="false">

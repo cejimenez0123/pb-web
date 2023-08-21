@@ -1,14 +1,15 @@
 
-import Page from "../domain/models/page"
+import Book from "../domain/models/book"
 import { createReducer ,createSlice} from "@reduxjs/toolkit"
-import { getPublicBooks,fetchBook } from "../actions/BookActions"
+import { getPublicBooks,fetchBook,getProfileBooks} from "../actions/BookActions"
 
 
-const initialState = {booksInView:[Page],
-  
+const initialState = {
+    booksInView:[Book],
     loading:false,
     error:"",
-    bookInView: null}
+    bookInView: null
+}
 const bookSlice = createSlice({
 name: 'books',
 initialState,
@@ -35,6 +36,15 @@ builder
 }).addCase(fetchBook.fulfilled,(state,{payload})=>{
     state.loading = false
     state.bookInView = payload.book
+}).addCase(getProfileBooks.pending,(state)=>{
+    state.loading = true
+}).addCase(getProfileBooks.fulfilled,(state,{payload})=>{
+    state.loading = false
+    state.bookInView = payload.bookList
+
+}).addCase(getProfileBooks.rejected,(state,{payload})=>{
+    state.loading = false
+    state.error = payload.error
 })
 }
 

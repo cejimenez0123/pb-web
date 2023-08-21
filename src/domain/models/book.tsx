@@ -31,4 +31,7 @@ export default class Book {
         this.privacy = privacy
         this.created = created
     }
+    static className(){
+        return "book"
+    }
     }

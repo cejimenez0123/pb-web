@@ -19,6 +19,7 @@ const hanldeClickComment=()=>{
     navigate(`/page/${page.id}`)
 }
 let pageDataElement = (<div></div>)
+console.log(`something ${page}`)
 switch(page.type){
     case PageType.text:
         pageDataElement = <div className='dashboard-data text' dangerouslySetInnerHTML={{__html:page.data}}></div>

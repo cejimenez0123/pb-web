@@ -20,14 +20,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 function DashboardContainer(props){
     const dispatch = useDispatch()
-    const [pagesInView,setPagesInView]= useState([Page])
-    // const pagesInView = useSelector((state)=>state.pages.pagesInView)
-        // let [loading,setLoading] = useState(false)
-        // let [pages,setPages] = useState([])
-        // useLayoutEffect(()=>{
+    // const [pagesInView,setPagesInView]= useState([Page])
+    const pagesInView = useSelector((state)=>state.pages.pagesInView)
+        let [loading,setLoading] = useState(false)
+        let [pages,setPages] = useState([])
+        useLayoutEffect(()=>{
                 
-        //         // setPages(pagesInView)
-        // },[pagesInView])
+                // setPages(pagesInView)
+        },[pagesInView])
         useEffect(()=>{        
         const p = props.getPublicPages()
           

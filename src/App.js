@@ -13,12 +13,14 @@ import EditorContainer from './container/EditorContainer'
 import PageViewContainer from './container/PageViewContainer'
 import BookViewContainer from './container/BookViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
+import CreateBookContainer from './container/CreateBookContainer';
 import { logIn,getCurrentProfile } from './actions/UserActions';
 import { getPublicBooks } from './actions/BookActions';
 import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { useEffect,useState} from 'react';
 import useAuth from './core/useAuth';
+import LoggedRoute from './LoggedRoute';
 
 // class CONTAINERS{
 //     static EDITOR_CONTAINER = "editor-container"
@@ -63,15 +65,21 @@ function App(props) {
       {/* <Route path="/page/new" element={<EditorContainer/>}/> */}
       <Route path="/discovery" element={
       <DiscoveryContainer getPublicPages={props.getPublicPages} getPublicBooks={props.getPublicBooks} pagesInView={props.pagesInView}/>}/>
-      <Route path="/login" element={
-      <LogInContainer logIn={props.logIn} loggedIn={auth.isSignedIn}/>
-      // : <Navigate to="/profile/home" />
-}/>
+      <Route path="/login" 
+      // element={
+        
+      element={ <LoggedRoute profile={!props.currentProfile}><LogInContainer logIn={props.logIn} loggedIn={auth.isSignedIn}/></LoggedRoute>}
+     />
+
+        
       <Route
       path="/profile/home"
       element={
         <PrivateRoute loggedIn={!!props.currentProfile}>
-          <MyProfileContainer currentProfile={props.currentProfile} pagesInView={props.pagesInView} authState={authState}/>
+          <MyProfileContainer currentProfile={props.currentProfile} 
+                              pagesInView={props.pagesInView} 
+                              authState={authState}
+                              booksInView={props.booksInView}/>
        </PrivateRoute>
       }
     />
@@ -79,13 +87,17 @@ function App(props) {
           <PageViewContainer page={props.pageInView}/>}
     /> 
     <Route path="/book/:id" element={
-      <BookViewContainer book={props.bookInView}/>
+      <BookViewContainer book={props.bookInView} pages={props.pagesInView}/>
     }/>
     <Route
       path="/page/new"
       element={
        
             <EditorContainer htmlContent={props.htmlContent} currentProfile={props.currentProfile} auth={authState}/>
+      }/>
+      <Route path="/book/new" element={
+
+<CreateBookContainer pagesInView={props.pagesInView}/>
       }/>
     </Routes>
     
@@ -134,7 +146,8 @@ function mapStateToProps(state){
   return{
     // users: state.users.users,
     loggedIn: state.users.loggedIn,
-    bookInView: state.users.bookInView,
+    bookInView: state.books.bookInView,
+    booksInView: state.books.booksInView,
     // currentUser: state.users.currentUser,
     currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,

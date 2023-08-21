@@ -10,12 +10,13 @@ export default function useAuth(shareAuthState) {
     })
   
     useEffect(() => {
-      const unregisterAuthObserver = auth.onAuthStateChanged(user =>
-       
-        setAuthState({ user, pending: false, isSignedIn: !!user })
-      )
-      return () => unregisterAuthObserver()
-    }, [])
+        onAuthStateChanged(auth,(user)=>{
+           
+     
+                setAuthState({ user, pending: false, isSignedIn: !!user }) 
+            
+        })
+}, [])
 
 
     return {...authState }
