@@ -219,6 +219,13 @@ const setPageInView = createAction("pages/setPageInView", function prepare(page)
     
   }
 })
+const setPagesToBeAdded = createAction("pages/setPagesToBeAdded", function prepare(pageList) {
+  return {
+   
+      pageList
+    
+  }
+})
 // (createAction('UPDATE_PARTICULAR_VALUE', {
 //   id: props.id,
 //   value: props.amount,
@@ -266,4 +273,6 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
           createPage,
           setPageInView,
           fetchPage,
-          fetchArrayOfPages} 
+          fetchArrayOfPages,
+          setPagesToBeAdded
+        } 

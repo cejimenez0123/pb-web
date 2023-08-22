@@ -13,14 +13,17 @@ import Book from '../domain/models/book'
 import Page from '../domain/models/page'
 import Library from '../domain/models/library'
 import { current } from '@reduxjs/toolkit';
+import ListItem from '../components/ListItem';
+
+
 
 function MyProfileContainer({pagesInView,booksInView,currentProfile,authState}){
     const navigate = useNavigate()
-   let loading =  useSelector((state)=>state.users.loading)
+  
    const [page,setPage] = useState(1)
    const [hasMorePages,setHasMorePages]=useState(false)
    const [hasMoreBooks,setHasMoreBooks]=useState(false)
-  
+    const [listType,setListType]=useState("page")
     const [pending,setPending] = useState(false)
    const dispatch = useDispatch()
    const [isContentVisible, setIsContentVisible] = useState(true)
@@ -65,11 +68,11 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,authState}){
             });}
     }
 
-if( !!currentProfile){
+
     const pageList=()=>{
         return (<div className="page-list">
         <InfiniteScroll
-       dataLength={pagesInView}
+       dataLength={pagesInView.length}
        next={fetchPageData}
        hasMore={hasMorePages} // Replace with a condition based on your data source
        loader={<p>Loading...</p>}
@@ -85,12 +88,97 @@ if( !!currentProfile){
     const bookList = ()=>{
 
         return (<div className='book-list'>
+            {<InfiniteScroll 
+                dataLength={booksInView.length}
+                next={fetchBookData}
+                hasMore={hasMoreBooks}
+                loader={<div>
+                    Loading...
+                </div>}
+                endMessage={
+                    <p>No more data to load.</p>
+                }
+                >
+                    {booksInView.map((book)=>{
 
+                        return (<div>
+                            <h6> {book.title}</h6>
+                            <ListItem title={book.title} id={book.id} type={Book.className()}/>
+                        </div>)
+                    })}
+                </InfiniteScroll>}
         </div>)
     }
+    let contentList = (<div>
+        {bookList()}    </div>)
+    const setContentList = () =>{
+       
+        switch(listType){
+            case "page":{
+               
+           return (<div className="page-list">
+           <InfiniteScroll
+          dataLength={pagesInView.length}
+          next={fetchPageData}
+          hasMore={hasMorePages} // Replace with a condition based on your data source
+          loader={<p>Loading...</p>}
+          endMessage={<p>No more data to load.</p>}
+        >
+            {pagesInView.map(page =>{
+                    return(<PageListItem page={page}/>)
+            })}
+        </InfiniteScroll>
+        </div> )
+            }
+            case "book":{
+               
+               return (<div className='book-list'>
+               {<InfiniteScroll 
+                   dataLength={booksInView.length}
+                   next={fetchBookData}
+                   hasMore={hasMoreBooks}
+                   loader={<div>
+                       Loading...
+                   </div>}
+                   endMessage={
+                       <p>No more data to load.</p>
+                   }
+                   >
+                       {booksInView.map((book)=>{
+   
+                           return (<div>
+                               {/* <h6> {book.title}</h6> */}
+                               <ListItem title={book.title} id={book.id} type={Book.className()}/>
+                           </div>)
+                       })}
+                   </InfiniteScroll>}
+           </div>)
+            }
+    
+            default:{
+                return(<div>
+               {pageList()}
+            </div>)}
+            
+        }
+    }
+    
     const handleContentClick=(className)=>{
         setIsContentVisible(!isContentVisible)
-    }     
+        setIsContentVisible(true)
+       
+    
+       
+    } 
+   
+
+    // useEffect(()=>{
+    //     setContentList()
+   
+       
+    // },[listType])
+    if( !!currentProfile){ 
+    
     return(
         <div className='container'>
         <div  className='container-row'>
@@ -104,20 +192,39 @@ if( !!currentProfile){
                                     onClick={()=>{
                                         navigate("/book/new")
                                     }} className='btn btn-primary mb-3' >Create Book</li>
-                                    <li className='btn btn-primary mb-3'>Create Library</li>
+                                    <li 
+                                    onClick={()=>{
+                                        navigate("/library/new")
+                                    }}
+                                    className='btn btn-primary mb-3'>Create Library</li>
                     </ul>
                 </div>
             </div>
                         <div className='main-bar'>
                             <div>
                                 <div className="btn-row">
-                                    <button onClick={()=>handleContentClick(Page.className)}>
+                                    <button onClick={()=>{
+                                        handleContentClick(Page.className())
+                                        setListType(Page.className)
+                                            setContentList()
+                                      
+                                        }}>
                                         Page
                                     </button>
-                                    <button onClick={()=>handleContentClick(Book.className)}>
+                                    <button onClick={()=>{
+                                        handleContentClick(Book.className())
+                                        setListType(Book.className)
+                                        setContentList();
+                                        
+                                    
+                                        }}>
                                         Book
                                     </button>
-                                    <button onClick={()=>handleContentClick(Library.className)}>
+                                    <button onClick={()=>{
+                                            handleContentClick(Library.className())
+                                        setListType(Library.className);
+                                    
+                                        }}>
                                         Library
                                     </button>
                                 </div>
@@ -128,7 +235,9 @@ if( !!currentProfile){
           maxHeight: isContentVisible ? "80vh" : "0",
           transition: "max-height 0.3s ease-in-out"
         }}
-      > {pageList()}
+      > {
+        setContentList()
+        }
        
       </div>   
                        

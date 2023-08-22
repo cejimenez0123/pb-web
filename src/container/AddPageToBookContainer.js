@@ -1,13 +1,13 @@
-import { useParams } from "react-router-dom"
-import { useDispatch,useSelector } from "react-redux"
-import { useState,useEffect } from "react"
+
 import { fetchBook } from "../actions/BookActions"
-import Page from "../domain/models/page"
+import { useDispatch,useSelector } from "react-redux"
+import { useParams } from "react-router-dom"
+import { useEffect ,useState} from "react"
 import { fetchArrayOfPages } from "../actions/PageActions"
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { SortableList } from '@thaddeusjiang/react-sortable-list';
-import '@thaddeusjiang/react-sortable-list/dist/index.css';
-function EditBookContainer({book,pages}){
+import InfiniteScroll from "react-infinite-scroll-component"
+import DashboardItem from "../components/DashboardItem"
+import "../styles/BookView.css"
+function AddPageToBookContainer({books,pageIdList}){
     const pathParams = useParams()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -15,12 +15,9 @@ function EditBookContainer({book,pages}){
     const pageLoading = useSelector(state=>state.pages.loading)
     const [hasMore,setHasMore]=useState(false)
     const [page,setPage] = useState(1)
-    const [listItems, setListItems] = useState([
-    ]);
     const getBook=()=>{
       
       const bookId =pathParams["id"]
-      console.log(bookId)
       const parameters = {
         id: bookId,
       }
@@ -33,26 +30,14 @@ function EditBookContainer({book,pages}){
         });
               
     }
-    // const handleDragEnd = (result) => {
-    //     if (!result.destination) return;
-    
-    //     const reorderedItems = Array.from(pageArray);
-    //     const [movedItem] = reorderedItems.splice(result.source.index, 1);
-    //     reorderedItems.splice(result.destination.index, 0, movedItem);
-    
-    //     setPageArray(reorderedItems);
-    //   };
     const getPages = (pageIdList)=>{
         const params = {pageIdList:pageIdList}
     
         dispatch(fetchArrayOfPages(params)).then((result) => {
-            console.log(JSON.stringify(result));
             if(!result.error){
-                // result.payload.pageList
-                setListItems(pages)
-               
+                setHasMore(true)
             }else{
-            
+                setHasMore(false)
             }
         }).catch((err) => {
             setHasMore(false)
@@ -73,47 +58,53 @@ function EditBookContainer({book,pages}){
 
     },[book])
     
-
-const sortableList = ()=>{
-    if(pages.length>0){
-        return(  <SortableList
-            items={listItems}
-            setItems={setListItems}
-            itemRender={({item}) => (
-               
-              <div className="w-1/2 h-10 m-8 bg-blue-400 text-center">
-                <h1>{item.title}</h1>
-              </div>
-            )}/>)
-    }else{
-        return(<div>
-            Loading...
-        </div>)
+    const pageList =()=>{
+        if(pageLoading==false && !!book){
+            if(pages.length !=0){
+                return(
+                    <div>
+                       <InfiniteScroll 
+                            dataLength={pages.length}
+                            next={()=>getPages(book.pageIdList)}
+                            hasMore={pages.length < book.pageIdList.length} // Replace with a condition based on your data source
+                            loader={<p>Loading...</p>}
+                            endMessage={<p>No more data to load.</p>}
+                            scrollableTarget="scrollableDiv"
+     >
+         {pages.map(page =>{
+                 return(<DashboardItem page={page}/>)
+         })}
+     </InfiniteScroll>
+                    </div>
+                )
+            }else{
+                return(
+                <h1>0</h1>
+            )}
+        }else{
+            return (<div>
+                Loading...
+            </div>)
+        }
     }
-}
-
-
+    if(!!currentProfile && currentProfile.id == book.profileId)
+    <a onClick={(e)=>goToEditBook(e)}>Edit</a>
     if(!bookLoading && book!=null){
         
     
 
     return(<div className="container">
-         
+          
         <div className="left-side-bar">
             <h5> {book.title}</h5>
             <h6> {book.purpose}</h6>
-        
+            <button type="button" className="follow-btn" onClick={()=>{
+
+            }}>Follow</button>
             
         </div>
         <div className="main-bar">
-        <div>
-        <div>
-
-      
-            {sortableList()}
-    </div>
-
-    </div>
+            {pageList()}
         </div>
         <div className="right-side-bar">
         </div>
@@ -124,7 +115,4 @@ const sortableList = ()=>{
             Loading...
         </div>)
 }}
-
-
-
-export default EditBookContainer
+export default BookViewContainer

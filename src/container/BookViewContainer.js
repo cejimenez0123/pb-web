@@ -95,6 +95,9 @@ function BookViewContainer({book,pages}){
         <div className="left-side-bar">
             <h5> {book.title}</h5>
             <h6> {book.purpose}</h6>
+            <button type="button" className="follow-btn" onClick={()=>{
+
+            }}>Follow</button>
         </div>
         <div className="main-bar">
             {pageList()}

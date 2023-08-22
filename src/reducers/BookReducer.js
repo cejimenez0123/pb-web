@@ -34,13 +34,15 @@ builder
     state.error = payload.error
 
 }).addCase(fetchBook.fulfilled,(state,{payload})=>{
+  
     state.loading = false
     state.bookInView = payload.book
 }).addCase(getProfileBooks.pending,(state)=>{
     state.loading = true
 }).addCase(getProfileBooks.fulfilled,(state,{payload})=>{
+
     state.loading = false
-    state.bookInView = payload.bookList
+    state.booksInView = payload.bookList
 
 }).addCase(getProfileBooks.rejected,(state,{payload})=>{
     state.loading = false

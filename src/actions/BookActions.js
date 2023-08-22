@@ -78,7 +78,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
   const getProfileBooks= createAsyncThunk(
     'books/getProfileBooks',
     async (params,thunkApi) => {
-      let pageList = []
+    
       const profileId = params["profileId"]
       const userId = params["userId"]
       const page = params["page"]
@@ -110,15 +110,15 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
             
           
                 const book =  new Book( 
-                    id= id,
-                    purpose=purpose,
-                    profileId= profileId,
-                    title=title,
-                    pageIdList= pageIdList,
-                    privacy= privacy,
-                    writingIsOpen= writingIsOpen,
-                    updatedAt= created,
-                    created= created,
+                    id,
+                    purpose,
+                    title,
+                    profileId,
+                    pageIdList,
+                    privacy,
+                    writingIsOpen,
+                    updatedAt,
+                    created,
                 )
            
               bookList = [...bookList, book]
@@ -127,12 +127,13 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
             return {
                 bookList
             }
-  
-  
-    }catch(err){
-     const error = err??new Error("Error: Get Profile Pages")
-      return {error }
-    }}
+        }catch(err){
+    
+      return {
+            error: new Error(`Error: GET PROFILE BOOKS: ${err.message}`)
+            }
+        }
+    }
   )
   const createBook = createAsyncThunk("books/createBook", async function(params,thunkApi){
  
@@ -186,4 +187,44 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     }})
 
 
+//     const fetchArrayOfBooks = createAsyncThunk("books/fetchArrayOfBook",async (params,thunkApi)=>{
+//         try{
+//         const ref = collection(db,"book")
+//         const pageIdList = params["pageIdList"]
+//         const snapshot =await getDocs(query(ref, where('id', 'in', pageIdList)))
+   
+//     //    let pageList = []
+//         snapshot.docs.forEach(doc => {
+//               const pack = doc.data();
+//               const { id } = doc;
+//               const title =pack["title"]
+//               const data = pack["purpose"]
+//               const profileId = pack["profileId"]
+//               const pageIdList = pack["pageIdList"]
+//               const writingIsOpen = pack["writingIsOpen"]
+//               const privacy = pack["privacy"]
+//               const updatedAt = pack["updatedAt"]
+//               const created = pack["created"]
+          
+        
+//     //         //   const page = new 
+//     //      //new Page(id, title, data, profileId, privacy, type, created)
+            
+//     //         pageList = [...pageList, page]
+//           })
+        
+//     //   console.log(`pageList ${JSON.stringify(pageList)}`)
+//     //   return {
+      
+//     //   pageList
+//     //   }
+      
+      
+//       }catch(err){
+     
+//       return {error: new Error(`Error: fetch array of books ${err.message}`) }
+//       }
+// }
+      
+//       )
   export {getPublicBooks,fetchBook,getProfileBooks,createBook}

@@ -21,6 +21,7 @@ import PrivateRoute from './PrivateRoute';
 import { useEffect,useState} from 'react';
 import useAuth from './core/useAuth';
 import LoggedRoute from './LoggedRoute';
+import EditBookContainer from './container/EditBookContainer';
 
 // class CONTAINERS{
 //     static EDITOR_CONTAINER = "editor-container"
@@ -92,14 +93,20 @@ function App(props) {
     <Route
       path="/page/new"
       element={
-       
+        <PrivateRoute loggedIn={!!props.currentProfile}>
             <EditorContainer htmlContent={props.htmlContent} currentProfile={props.currentProfile} auth={authState}/>
+        </PrivateRoute>
       }/>
       <Route path="/book/new" element={
-
-<CreateBookContainer pagesInView={props.pagesInView}/>
+        <PrivateRoute loggedIn={!!props.currentProfile}>
+          <CreateBookContainer pagesInView={props.pagesInView}/>
+        </PrivateRoute>
+      }/>
+      <Route path="/book/:id/edit" element={
+        <EditBookContainer book={props.bookInView} pages={props.pagesInView}/>
       }/>
     </Routes>
+
     
     </div>
   );

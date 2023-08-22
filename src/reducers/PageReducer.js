@@ -5,7 +5,9 @@ import {  getPublicPages ,
           createPage,
           setPageInView,
           fetchPage,
-          fetchArrayOfPages} from "../actions/PageActions"
+          fetchArrayOfPages,
+          setPagesToBeAdded
+        } from "../actions/PageActions"
 import Page from "../domain/models/page"
 import { createReducer ,createSlice} from "@reduxjs/toolkit"
 
@@ -14,7 +16,9 @@ const initialState = {pagesInView:[Page],
                       loading:false,
                       editorHtmlContent:"",
                       error:"",
-                      pageInView: null}
+                      pageInView: null,
+                      pagesToBeAdded: [Page]
+                    }
 const pageSlice = createSlice({
     name: 'pages',
     initialState,
@@ -73,6 +77,9 @@ const pageSlice = createSlice({
           state.loading = false
       }).addCase(fetchArrayOfPages.pending,(state)=>{
           state.loading = true
+      }).addCase(setPagesToBeAdded,(state,{payload})=>{
+
+        state.pagesToBeAdded = payload.pageList
       })
     },
   })
