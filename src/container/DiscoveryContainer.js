@@ -28,7 +28,7 @@ function DiscoveryContainer(props){
                 <div className="homeContainer">
                 <div style={{display:"flex",flexDirection:"column",}}>
                 <BookBanner books={booksInView}/>
-                {pagesInView.map((page)=>{return(<DashboardItem page={page}/>)})}
+                {/* {pagesInView.map((page)=>{return(<DashboardItem page={page}/>)})} */}
                 </div>
                 </div>
             </div>

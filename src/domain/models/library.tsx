@@ -3,8 +3,8 @@ import { Timestamp } from "firebase/firestore"
 export default class Library {
     id
     name
-    pageIds
-    bookIds
+    pageIdList
+    bookIdList
     profileId
     purpose
     privacy
@@ -15,16 +15,16 @@ export default class Library {
         name:string,
         profileId:string,
         purpose:string,
-        pageIds=[String],
-        bookIds=[String],
+        pageIdList=[String],
+        bookIdList=[String],
         writingIsOpen:boolean=false,
         privacy:boolean=false,
         created=Timestamp.now()
     ){
         this.id = id
         this.name=name
-        this.pageIds = pageIds
-        this.bookIds = bookIds
+        this.pageIdList = pageIdList
+        this.bookIdList = bookIdList
         this.writingIsOpen = writingIsOpen
         this.profileId = profileId
         this.privacy = privacy

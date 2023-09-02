@@ -10,7 +10,7 @@ import { Dropdown } from '@mui/base/Dropdown';
 import { MenuButton } from '@mui/base/MenuButton'
 import { Menu } from '@mui/base/Menu';
 import {useNavigate} from 'react-router-dom'
-function ListItem(props) {
+function ListItem({type,id,title}) {
     const [showPreview,setShowPreview] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -18,34 +18,20 @@ function ListItem(props) {
         setShowPreview(!showPreview)
     }
     const handleOnClick = ()=>{
-        // switch (props.type) {
-        //    case Book.className():{
-                navigate(`/${props.type}/${props.id}`)
+        
+                navigate(`/${type}/${id}`)
             }
-            // case Library.className():{
-            //     navigate(`/library/${props.id}`)
-            // }
-            // default : {
 
-            
-      
-
-  
     const handleEditClick=()=>{
         console.log(`props type${props.type}`)
-        navigate(`/${props.type}/${props.id}/edit`)
-             
-         }
-    
-
-    
-
+        navigate(`/${props.type}/${props.id}/edit`)       
+        }
             return(<div className='list-item'>
                 
                 <div className='title'>
                 <a onClick={handleOnClick}> 
                     <div>
-                        <h2>{props.title}</h2>
+                        {title}
                     </div>
                 </a>
                 </div> 
@@ -89,19 +75,5 @@ function ListItem(props) {
     
         
 }
-    
-    // const mapState=(state)=>{
-    //     return{
-    //         // currentUser: state.users.currentUser,
-    //         // comments: state.pages.pageCommentsInView,
-    //         // userLikes: state.users.userLikes
-    //     }
-    // }
-    // const mapDispatch=(dispatch)=>{
-    //     return{
-    // //         getPagesComments: (arr)=>dispatch(getPagesComments(arr)),
-    // //         pageComments: (comments)=>dispatch({type: "PAGE_COMMENTS",comments}),
-    // //      getLikesOfUser: ()=>dispatch(getLikesOfUser())
-    //     }
-    // }
+
     export default ListItem

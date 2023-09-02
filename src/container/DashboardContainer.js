@@ -37,9 +37,6 @@ function DashboardContainer(props){
         },[])
         
 
-//   const display = ()=>{
-//    return pagesInView.map((page)=>{<h2>{page.title}</h2>})}
-
         return(
             <div className="" >
                 <div className="homeContainer">

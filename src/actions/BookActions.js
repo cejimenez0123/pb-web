@@ -87,14 +87,12 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
   
     try {
     
+        console.log(`params: ${JSON.stringify(params)}`)
        
-        
-       console.log(`params: ${JSON.stringify(params)}`)
-       
-    const snapshot = await getDocs(
-                  query(collection(db, "book"),  where("profileId", "==", profileId)));
-          let bookList = []
-          snapshot.docs.forEach(doc => {
+        const snapshot = await getDocs(
+                query(collection(db, "book"),  where("profileId", "==", profileId)));
+        let bookList = []
+        snapshot.docs.forEach(doc => {
             
                 const pack = doc.data();
                 const { id } = doc;
@@ -176,8 +174,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     updatedAt,
     created,
 )
-                        console.log(`boks ${JSON.stringify(book)}`)
-  
+
     return { book }
     }catch(error){
   

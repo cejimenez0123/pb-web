@@ -90,19 +90,5 @@ function PageListItem({page}) {
     
     }
     
-    
-    // const mapState=(state)=>{
-    //     return{
-    //         // currentUser: state.users.currentUser,
-    //         // comments: state.pages.pageCommentsInView,
-    //         // userLikes: state.users.userLikes
-    //     }
-    // }
-    // const mapDispatch=(dispatch)=>{
-    //     return{
-    // //         getPagesComments: (arr)=>dispatch(getPagesComments(arr)),
-    // //         pageComments: (comments)=>dispatch({type: "PAGE_COMMENTS",comments}),
-    // //      getLikesOfUser: ()=>dispatch(getLikesOfUser())
-    //     }
-    // }
+  
     export default (PageListItem)

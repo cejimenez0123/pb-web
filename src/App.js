@@ -14,14 +14,17 @@ import PageViewContainer from './container/PageViewContainer'
 import BookViewContainer from './container/BookViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import CreateBookContainer from './container/CreateBookContainer';
+import CreateLibraryContainer from './container/CreateLibraryContainer';
 import { logIn,getCurrentProfile } from './actions/UserActions';
 import { getPublicBooks } from './actions/BookActions';
 import history from './history';
 import PrivateRoute from './PrivateRoute';
+
 import { useEffect,useState} from 'react';
 import useAuth from './core/useAuth';
 import LoggedRoute from './LoggedRoute';
 import EditBookContainer from './container/EditBookContainer';
+import LibraryViewContainer from './container/LibraryViewContainer';
 
 // class CONTAINERS{
 //     static EDITOR_CONTAINER = "editor-container"
@@ -57,13 +60,13 @@ function App(props) {
         <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
         <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossOrigin="anonymous"/>
-       <NavbarContainer loggedIn={!!authState.users} authState={authState} profile={props.currentProfile}/>
+      <NavbarContainer loggedIn={!!authState.users} authState={authState} profile={props.currentProfile}/>
  
-      <Routes history={history} >
+        <Routes history={history} >
       <Route exact path="/" element={
       <DashboardContainer auth={auth} getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
       } />
-      {/* <Route path="/page/new" element={<EditorContainer/>}/> */}
+      
       <Route path="/discovery" element={
       <DiscoveryContainer getPublicPages={props.getPublicPages} getPublicBooks={props.getPublicBooks} pagesInView={props.pagesInView}/>}/>
       <Route path="/login" 
@@ -80,7 +83,8 @@ function App(props) {
           <MyProfileContainer currentProfile={props.currentProfile} 
                               pagesInView={props.pagesInView} 
                               authState={authState}
-                              booksInView={props.booksInView}/>
+                              booksInView={props.booksInView}
+                              librariesInView={props.librariesInView}/>
        </PrivateRoute>
       }
     />
@@ -104,6 +108,14 @@ function App(props) {
       }/>
       <Route path="/book/:id/edit" element={
         <EditBookContainer book={props.bookInView} pages={props.pagesInView}/>
+      }/>
+      <Route path="/library/new" element={
+
+        <CreateLibraryContainer/>
+      }/>
+      <Route path="/library/:id" element={
+        <LibraryViewContainer
+        />
       }/>
     </Routes>
 
@@ -168,7 +180,7 @@ function mapStateToProps(state){
     // booksInView: state.books.booksInView,
     pagesInView: state.pages.pagesInView,
     // libraryInView: state.libraries.libraryInView,
-    // librariesInView: state.libraries.librariesInView,
+    librariesInView: state.libraries.librariesInView,
     // libraryFollowers: state.libraries.libraryFollowers,
     // followedBooks: state.books.followedBooksOfUser,
     // followedLibraries: state.libraries.followedLibraries

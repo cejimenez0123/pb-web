@@ -1,0 +1,46 @@
+.list-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 30rem;
+}
+.list-item div:first-child{
+    display: flex;
+  
+    flex-direction: row;
+    justify-content: space-between;
+    width: 50%;
+    height: 2em;
+    
+}
+.list-item-title{
+  color: black
+}
+.list {
+    width: 800px;
+}
+.pages-to-be-added .item {
+    width: 10rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#form div:nth-child(1) {
+    /* Your styles for the second div here */
+    display: flex;
+    flex-direction: row;
+  }
+
+  #form div:nth-child(2) {
+    /* Your styles for the second div here */
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    
+  }
+  #form div:nth-child(2) label{
+    padding: 10px 15px;
+  }
+  #form div:nth-child(2) textarea{
+    border: 1px solid black;
+  }

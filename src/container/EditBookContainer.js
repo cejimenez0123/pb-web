@@ -27,7 +27,9 @@ function EditBookContainer({book,pages}){
         // const id =  pathParams["id"]
         // console.log(`PageViewContainer ${JSON.stringify(pathParams)}`)
         dispatch(fetchBook(parameters)).then((result) => {
-           
+            const {payload} = result
+           dispatch(fetchArrayOfPages(payload.book.pageIdList))
+
         }).catch((err) => {
             
         });
@@ -75,7 +77,7 @@ function EditBookContainer({book,pages}){
     
 
 const sortableList = ()=>{
-    if(pages.length>0){
+    if(!!listItems && listItems.length>0){
         return(  <SortableList
             items={listItems}
             setItems={setListItems}

@@ -1,15 +1,17 @@
 
 import { fetchBook } from "../actions/BookActions"
 import { useDispatch,useSelector } from "react-redux"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useEffect ,useState} from "react"
 import { fetchArrayOfPages } from "../actions/PageActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/BookView.css"
 function BookViewContainer({book,pages}){
+    const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookLoading = useSelector(state=>state.books.loading)
     const pageLoading = useSelector(state=>state.pages.loading)
     const [hasMore,setHasMore]=useState(false)
@@ -28,6 +30,10 @@ function BookViewContainer({book,pages}){
             
         });
               
+    }
+    const goToEditBook =(e)=>{
+
+        
     }
     const getPages = (pageIdList)=>{
         const params = {pageIdList:pageIdList}
@@ -62,7 +68,7 @@ function BookViewContainer({book,pages}){
             if(pages.length !=0){
                 return(
                     <div>
-                       <InfiniteScroll 
+                     <InfiniteScroll 
                             dataLength={pages.length}
                             next={()=>getPages(book.pageIdList)}
                             hasMore={pages.length < book.pageIdList.length} // Replace with a condition based on your data source
@@ -86,6 +92,8 @@ function BookViewContainer({book,pages}){
             </div>)
         }
     }
+    if(!!currentProfile && currentProfile.id == book.profileId)
+    <a ket={book.id}onClick={(e)=>goToEditBook(e)}>Edit</a>
     if(!bookLoading && book!=null){
         
     
@@ -98,6 +106,7 @@ function BookViewContainer({book,pages}){
             <button type="button" className="follow-btn" onClick={()=>{
 
             }}>Follow</button>
+            
         </div>
         <div className="main-bar">
             {pageList()}

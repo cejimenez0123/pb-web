@@ -1,36 +1,74 @@
 import { useNavigate } from "react-router-dom"
-import {useState,useEffect} from "reeact"
+import {useState,useEffect} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { getProfileBooks } from "../actions/BookActions"
+import { getProfilePages } from "../actions/PageActions"
 import { createLibrary } from "../actions/LibraryActions"
+import InfiniteScroll from "react-infinite-scroll-component"
+import "../styles/CreateLibrary.css"
 
 export default function CreateLibraryContainer(props){
 
     const navigate = useNavigate()
-    const [bookTitle,setBookTitle]=useState("")
+    const [libTitle,setLibTitle]=useState("")
     const [purpose,setPurpose] = useState("")
     const currentProfile = useSelector(state=>{return state.users.currentProfile})
-    const [bookIsPrivate,setBookIsPrivate]= useState(false)
-    const [bookIsOpen,setBookIsOpen]= useState(false)
+    const booksInView = useSelector(state=>state.books.booksInView)
+    const pagesInView = useSelector(state => state.pages.pagesInView)
+    const [libIsPrivate,setLibIsPrivate]= useState(false)
+    const [writingIsOpen,setWritingIsOpen]= useState(false)
     const [pagesToBeAdded,setPagesToBeAdded]=useState([])
-    const [booksToBeAdded, setBooksToBeAdded]=useState({})
+    const [booksToBeAdded, setBooksToBeAdded]=useState([])
+    const [listItems,setListItems]=useState([])
     const dispatch = useDispatch()
     
-    // const handleBookTitleChange = (e)=>{
-    //     setBookTitle(e.target.value)
-    // }
+    const handleLibTitleChange = (e)=>{
+        setLibTitle(e.target.value)
+    }
     const fetchProfilePages=()=>{
         if(!!currentProfile){
             const params = {profileId:currentProfile.id}
-            dispatch(getProfilePages(params))
-    }
-    }
+            dispatch(getProfilePages(params)).then(result=>{
+                const {payload} = result
+                setListItems(prevState=>{
+                    const list = payload.pageList.map(page=>{
+                        return {type: "page",item: page}
+                })
+                    const differences = list.filter(item=> {return !listItems.includes(item)})
+
+                    if(differences.length>0){
+
+                        
+                        return [...prevState,...differences]
+                     }else{
+                         return [...prevState]
+                     }})
+                    
+                
+                })}}
+    
+ 
     const fetchProfileBooks=()=>{
-        if(!!currentProfile){
+        if(currentProfile){
             const params = {profileId:currentProfile.id}
-            dispatch(getProfileBooks(params))
-            }
-    }
+            dispatch(getProfileBooks(params)).then(result =>{
+                const {payload}= result
+            
+            setListItems(prevState=>{
+            const list = payload.bookList.map(book=>{
+                    return {type: "book",item: book}
+            })
+            const differences = list.filter((item)=>{return !listItems.includes(item)})
+            if(differences.length>0){
+               
+               
+               
+               return [...prevState,...differences]
+            }else{
+                return [...prevState]
+            }})
+            })
+    }}
     const getBookmarkLibraryPages=()=>{
 
     }
@@ -40,8 +78,17 @@ export default function CreateLibraryContainer(props){
     const fetchPages=()=>{
         fetchProfilePages()
     }
-    const onClickAdd=(page)=>{
-        setPagesToBeAdded(prevState=>[...prevState,page])
+    const onClickAdd=(item)=>{
+        switch(item.type){
+            case 'book':{
+                setBooksToBeAdded(prevState=>[...prevState,item.item])
+            }
+            case 'page':{
+                setPagesToBeAdded(prevState=>[...prevState,item.item]) //
+            }
+            default: {}
+        }
+        
     }
     const onClickRemove=(page)=>{
         const pages = [...pagesToBeAdded]
@@ -50,62 +97,76 @@ export default function CreateLibraryContainer(props){
 
     }
     const handleOnSubmit=(e)=>{
-     
-        console.log("TOUCH")
-        const pageIdList = pagesToBeAdded.map(page=>{
-            return page.id
-        })
+        const pageIdList = pagesToBeAdded.map(p=>p.id)
+        const bookIdList = booksToBeAdded.map(b=>b.id)
+        e.preventDefault()
         const params = {
-            title: bookTitle,
+            name: libTitle,
             purpose: purpose,
             profileId: currentProfile.id,
-            pageIdList: pagesToBeAdded,
-            bookIdList: booksToBeAdded,
-
-            writingIsOpen: bookIsOpen,
-            privacy: bookIsPrivate
+            pageIdList: pageIdList,
+            bookIdList: bookIdList,
+            writingIsOpen: writingIsOpen,
+            privacy:libIsPrivate
         }
-        dispatch(createLibrary(params))
-                
-
-        
+        console.log(`parsubmit ${JSON.stringify(params)}`)
+        dispatch(createLibrary(params)).then((result) => {
+            const {payload} = result
+            console.log(`romus ${JSON.stringify(payload)}`)
+            navigate(`/library/${payload.library.id}`)
+        }).catch((err) => {
+            
+        });
+    
     }
     useEffect(()=>{
         fetchPages()
+        fetchBooks()
     },[])
     const pageList = ()=>{
-        return(<div>
-            <InfiniteScroll  dataLength={pagesInView.length} 
+        if(!!listItems && listItems.length > 0){
+        return(<div class="list">
+            <InfiniteScroll  dataLength={listItems.length} 
    next={fetchPages}
    hasMore={false} // Replace with a condition based on your data source
    loader={<p>Loading...</p>}
    endMessage={<p>No more data to load.</p>}
 >
-     {pagesInView.map(page =>{
-             return(<div>
+     {listItems.map((hash) =>{
+        console.log(`Hash ${JSON.stringify(hash)}`);
+             return(<div className="list-item" key={hash.item.id}>
                 <div>
-                    <h2>
-                {page.title}
+                    {hash.type}
+                <h2 className="list-item-title">
+                {hash.item.title}
+            
                 </h2>
                 </div>
-                <button onClick={()=>onClickAdd(page)}>
+                <div>
+              
+                <button onClick={()=>onClickAdd(hash)}>
                     Add
                 </button>
-             </div>)
-
-
-     })}
+                </div>
+            </div>)
+        })}
             </InfiniteScroll>
-        </div>)
+        </div>)}else{
+            return (<div>
+                Loading...
+            </div>)
+        }
     }
  
     const pagesToBeAddedList =()=>{
-        return(<div>
+        return(<div className="pages-to-be-added">
             {pagesToBeAdded.map(page =>{
 
                 return (
-                    <div>
+                    <div className="item">
+                        <div>
                         <h6>{page.title}</h6>
+                        </div>
                         <div>
                             <button onClick={()=>onClickRemove(page) }>Remove</button>
                         </div>
@@ -126,30 +187,35 @@ return(<div>
         </div>
         <div className="right-side-bar">
             <div>
-            <form onSubmit={(e) => handleOnSubmit(e)} >
-            <label>
-                Book Title:
-                <input type="text" name="title" className="text-input" placeholder="Book Name" onChange={(e)=>handleBookTitleChange(e)}/>
-            </label>
+            <form id="form" onSubmit={(e) => handleOnSubmit(e)} >
+            <div>
+                <label>
+                Library Name:
+                    <input type="text" name="name" className="text-input" placeholder="Library Name" onChange={(e)=>handleLibTitleChange(e)}/>
+                </label>
+            </div>
+            <div> 
             <label>Private:
                 <input type="checkbox"  onChange={
                 (e)=>{
-                    setBookIsPrivate(e.target.checked)
-                }} name="privacy" checked={bookIsPrivate} className="checkbox"/>
+                    setLibIsPrivate(e.target.checked)
+                }} name="privacy" checked={libIsPrivate} className="checkbox"/>
             </label>
             <label>Writing is Open:
                 <input type="checkbox" name="writingIsOpen" onChange={
                 (e)=>{
-                    setBookIsOpen(e.target.checked)
-                }}checked={bookIsOpen} className="checkbox"/></label>
+                    setWritingIsOpen(e.target.checked)
+                }}checked={writingIsOpen} className="checkbox"/></label>
             <label>Purpose:
                 <textarea onChange={(e)=>{
                     setPurpose(e.target.value);
                 }}id="purpose" name="purpose" rows="5" cols="33"/> 
             </label>
+           
             <button type="submit" className="btn btn-primary">
     Save
         </button>
+        </div>
             </form>
             </div>
         </div>

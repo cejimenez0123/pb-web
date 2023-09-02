@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { getCurrentProfile } from '../actions/UserActions';
 import { getProfilePages } from '../actions/PageActions';
 import { getProfileBooks } from '../actions/BookActions';
+import { getProfileLibraries } from '../actions/LibraryActions';
 import PageListItem from '../components/PageLIstItem';
 import "../styles/MyProfile.css"
 import Book from '../domain/models/book'
@@ -14,39 +15,30 @@ import Page from '../domain/models/page'
 import Library from '../domain/models/library'
 import { current } from '@reduxjs/toolkit';
 import ListItem from '../components/ListItem';
+import { List } from '@mui/material';
 
 
 
-function MyProfileContainer({pagesInView,booksInView,currentProfile,authState}){
+function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView,authState}){
     const navigate = useNavigate()
-  
-   const [page,setPage] = useState(1)
-   const [hasMorePages,setHasMorePages]=useState(false)
-   const [hasMoreBooks,setHasMoreBooks]=useState(false)
+    const [page,setPage] = useState(1)
+    const [hasMorePages,setHasMorePages]=useState(false)
+    const [hasMoreBooks,setHasMoreBooks]=useState(false)
+    const [hasMoreLibraries,setHasMoreLibraries]=useState(false)
     const [listType,setListType]=useState("page")
     const [pending,setPending] = useState(false)
-   const dispatch = useDispatch()
-   const [isContentVisible, setIsContentVisible] = useState(true)
-    // useEffect(()=>{
-        
-    //     if(!authState.user){
-    //         if(!!authState.user && authState.user.isAnonymous){
-    //         const params = {userId: authState.user.id}
-    //         dispatch(getCurrentProfile(params))}else{
-    //             navigate("/login")
-    //         }
-    //     }else{
+    const dispatch = useDispatch()
+    const [isContentVisible, setIsContentVisible] = useState(true)
 
-    //     }
-    // })
     useEffect(()=>{
         if(!!currentProfile){
             fetchPageData()
             fetchBookData()
+            fetchLibraryData()
         }
     },[currentProfile])
     const fetchPageData = () =>{
-        if(!!currentProfile){
+        if(currentProfile){
             const params = {profileId:currentProfile.id,page,groupBy:9}
              dispatch(getProfilePages(params)).then((result) => {
                 setHasMorePages(true)
@@ -57,7 +49,8 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,authState}){
             });}
     }
     const fetchBookData=()=>{
-        if(!!currentProfile){
+        if(currentProfile){
+
             const params = {profileId:currentProfile.id,page,groupBy:9}
              dispatch(getProfileBooks(params)).then((result) => {
                 setHasMoreBooks(true)
@@ -66,6 +59,16 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,authState}){
             }).catch((err) => {
                 setHasMoreBooks(false)
             });}
+    }
+    const fetchLibraryData=()=>{
+            if(currentProfile){
+                const params = {profileId:currentProfile.id,page,groupBy:9}
+                dispatch(getProfileLibraries(params)).then(()=>{
+                    setHasMoreLibraries(true)
+                }).catch((err)=>{
+                    setHasMoreLibraries(false)
+                })
+            }
     }
 
 
@@ -88,7 +91,7 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,authState}){
     const bookList = ()=>{
 
         return (<div className='book-list'>
-            {<InfiniteScroll 
+            {/* <InfiniteScroll 
                 dataLength={booksInView.length}
                 next={fetchBookData}
                 hasMore={hasMoreBooks}
@@ -106,7 +109,25 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,authState}){
                             <ListItem title={book.title} id={book.id} type={Book.className()}/>
                         </div>)
                     })}
-                </InfiniteScroll>}
+                </InfiniteScroll> */}
+        </div>)
+    }
+    const libList =()=>{
+        return(<div className="library-list">
+            {/* {<InfiniteScroll
+            dataLength={librariesInView.length}
+next={fetchLibraryData}
+hasMore={hasMoreLibraries}
+loader={<p>Loading...</p>}
+endMessage={<p>No more data to load.</p>}
+        >
+            {librariesInView.map((library)=>{
+
+                return (<div key={library.id}>
+                    <ListItem key={library.id} title={library.name} type={Library.className()} id={library.id}/>
+                </div>)
+            })}
+        </InfiniteScroll>} */}
         </div>)
     }
     let contentList = (<div>
@@ -146,14 +167,32 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,authState}){
                    >
                        {booksInView.map((book)=>{
    
-                           return (<div>
-                               {/* <h6> {book.title}</h6> */}
-                               <ListItem title={book.title} id={book.id} type={Book.className()}/>
-                           </div>)
+                        return (<div key={book.id}>
+                            <ListItem  title={book.title} id={book.id} type={Book.className()}/>
+                                </div>)
                        })}
                    </InfiniteScroll>}
            </div>)
             }
+            case "library":{
+                return(<div>
+                    <InfiniteScroll
+                    dataLength={librariesInView.length}
+                    next={fetchLibraryData}
+                    hasMore={hasMoreLibraries}
+                    loader={<p>Loading...</p>}
+                    endMessage={<p>No more data to load.</p>}
+                >
+                    {librariesInView.map((library)=>{
+        
+                        return (<div key={library.id}>
+                            <ListItem key={library.id} title={library.name} type={Library.className()} id={library.id}/>
+                        </div>)
+                    })}
+                    </InfiniteScroll>
+                </div>)
+            }
+
     
             default:{
                 return(<div>

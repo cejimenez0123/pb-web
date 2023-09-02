@@ -46,7 +46,7 @@ export default function CreateBookContainer({pagesInView}){
         const handleOnSubmit=(e)=>{
          
         e.preventDefault()
-            console.log("TOUCH")
+            
             const pageIdList = pagesToBeAdded.map(page=>{
                 return page.id
             })

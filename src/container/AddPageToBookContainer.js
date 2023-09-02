@@ -1,5 +1,5 @@
 
-import { fetchBook } from "../actions/BookActions"
+import { getProfileBooks } from "../actions/BookActions"
 import { useDispatch,useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import { useEffect ,useState} from "react"
@@ -15,33 +15,22 @@ function AddPageToBookContainer({books,pageIdList}){
     const pageLoading = useSelector(state=>state.pages.loading)
     const [hasMore,setHasMore]=useState(false)
     const [page,setPage] = useState(1)
-    const getBook=()=>{
-      
-      const bookId =pathParams["id"]
-      const parameters = {
-        id: bookId,
-      }
-        // const id =  pathParams["id"]
-        // console.log(`PageViewContainer ${JSON.stringify(pathParams)}`)
-        dispatch(fetchBook(parameters)).then((result) => {
-           
-        }).catch((err) => {
-            
-        });
-              
-    }
+    const getBooks =()=>{
+       if(!!currentProfile){
+        dispatch(getProfileBooks(currentProfile.id))
+    }}
     const getPages = (pageIdList)=>{
         const params = {pageIdList:pageIdList}
     
-        dispatch(fetchArrayOfPages(params)).then((result) => {
-            if(!result.error){
-                setHasMore(true)
-            }else{
-                setHasMore(false)
-            }
-        }).catch((err) => {
-            setHasMore(false)
-        });
+        // dispatch(fetchArrayOfPages(params)).then((result) => {
+        //     if(!result.error){
+        //         setHasMore(true)
+        //     }else{
+        //         setHasMore(false)
+        //     }
+        // }).catch((err) => {
+        //     setHasMore(false)
+        // });
 
     }
     useEffect(()=>{
@@ -64,15 +53,17 @@ function AddPageToBookContainer({books,pageIdList}){
                 return(
                     <div>
                        <InfiniteScroll 
-                            dataLength={pages.length}
-                            next={()=>getPages(book.pageIdList)}
-                            hasMore={pages.length < book.pageIdList.length} // Replace with a condition based on your data source
+                            dataLength={books.length}
+                            next={()=>getBooks()}
+                            hasMore={hasMore} // Replace with a condition based on your data source
                             loader={<p>Loading...</p>}
                             endMessage={<p>No more data to load.</p>}
                             scrollableTarget="scrollableDiv"
      >
-         {pages.map(page =>{
-                 return(<DashboardItem page={page}/>)
+         {books.map(book=>{
+                 return(<div>
+                    {book.title}
+                 </div>)
          })}
      </InfiniteScroll>
                     </div>
@@ -104,7 +95,7 @@ function AddPageToBookContainer({books,pageIdList}){
             
         </div>
         <div className="main-bar">
-            {pageList()}
+            {bookList()}
         </div>
         <div className="right-side-bar">
         </div>

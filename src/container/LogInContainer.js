@@ -98,15 +98,4 @@ function LogInCard(props){
 }
 
 
-// function mapDispatchToProps(dispatch){
-//     return{ 
-//       signUp:(email,password,username,profilePicture,selfStatement,privacy)=>dispatch(signUp((email,password,username,profilePicture,selfStatement,privacy))),
-//       logIn:(email,password)=>dispatch(logIn(email,password)),
-//     }
-//   }
-//     function mapStateToProps(state){
-//         return{
-
-//         }
-//     }
   export default LogInContainer
