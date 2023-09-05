@@ -130,7 +130,14 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
   try{
 
   
-  const snapshot = await setDoc(doc(db,"page", id), {id,title,data,profileId,approvalScore,privacy,type,created:created})
+  const snapshot = await setDoc(doc(db,"page", id), { id,
+                                                      title,
+                                                      data,
+                                                      profileId,
+                                                      approvalScore,
+                                                      privacy,
+                                                      type,
+                                                      created:created})
   console.log(`savePage ${JSON.stringify(snapshot)}`)
   const page = new Page(id,title,data,profileId,approvalScore,privacy,type,created)
   console.log(`savePage ${JSON.stringify(page)}`)

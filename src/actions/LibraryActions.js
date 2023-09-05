@@ -111,9 +111,7 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
       let libraryList = []
       const profileId = params["profileId"]
       const userId = params["userId"]
-      const page = params["page"]
-      const groupBy = params["groupBy"]??9
-      const quotient = page * groupBy
+   
   
     try {
      

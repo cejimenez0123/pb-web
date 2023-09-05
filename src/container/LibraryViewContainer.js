@@ -3,17 +3,29 @@ import { useEffect,useState} from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { useSelector,useDispatch } from "react-redux"
 import { fetchArrayOfPages } from "../actions/PageActions"
+import { useParams } from "react-router-dom"
+import { fetchLibrary } from "../actions/LibraryActions"
+import DashboardItem from "../components/DashboardItem"
 
 
 
 function LibraryViewContainer(props){
+    const pathParams = useParams()
     const dispatch = useDispatch()
     const libraryInView = useSelector(state=>state.libraries.libraryInView)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const booksInView = useSelector(state=>state.books.booksInView)
     const [hasMorePages,setHasMorePages] = useState(false)
     useEffect(()=>{
-      getPages()
+        if(libraryInView==null){
+            const id =  pathParams["id"]
+            const params = {id: id}
+            dispatch(fetchLibrary(params)).then(()=>{
+                setHasMorePages(true);
+                getPages()
+            })
+        }
+      
     },[libraryInView])
     const libraryInfo=()=>{
         if(libraryInView!=null){
@@ -33,6 +45,7 @@ function LibraryViewContainer(props){
 
             const pageIdList = libraryInView.pageIdList
             const params = {pageIdList: pageIdList}
+
             dispatch(fetchArrayOfPages(params)).then((result) => {
                 if(pagesInView.length<libraryInView.page.length){
                     setHasMorePages(true)
@@ -48,7 +61,7 @@ function LibraryViewContainer(props){
 
     }
     const pageList = ()=>{
-        if(pagesInView!=null && pagesInView.length>0){
+        if(pagesInView!=null){
             return(<div className="">
 
                 <InfiniteScroll
@@ -62,7 +75,7 @@ function LibraryViewContainer(props){
                 {
             pagesInView.map((page)=>{
                 return(<div key={page.id}>
-                    {page.title}
+                    <DashboardItem page={page}/>
                 </div>)
             })
         }

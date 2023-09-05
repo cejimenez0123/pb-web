@@ -17,8 +17,9 @@ export default function CreateLibraryContainer(props){
     const pagesInView = useSelector(state => state.pages.pagesInView)
     const [libIsPrivate,setLibIsPrivate]= useState(false)
     const [writingIsOpen,setWritingIsOpen]= useState(false)
-    const [pagesToBeAdded,setPagesToBeAdded]=useState([])
-    const [booksToBeAdded, setBooksToBeAdded]=useState([])
+    // const [pagesToBeAdded,setPagesToBeAdded]=useState([])
+    // const [booksToBeAdded, setBooksToBeAdded]=useState([])
+    const [contentToBeAdded,setContentsToBeAdded]= useState([])
     const [listItems,setListItems]=useState([])
     const dispatch = useDispatch()
     
@@ -78,34 +79,36 @@ export default function CreateLibraryContainer(props){
     const fetchPages=()=>{
         fetchProfilePages()
     }
-    const onClickAdd=(item)=>{
-        switch(item.type){
-            case 'book':{
-                setBooksToBeAdded(prevState=>[...prevState,item.item])
-            }
-            case 'page':{
-                setPagesToBeAdded(prevState=>[...prevState,item.item]) //
-            }
-            default: {}
-        }
-        
+    const onClickAdd=(hash)=>{
+        console.log(`onClickAdd ${JSON.stringify(hash)}`)
+        setContentsToBeAdded(prevState=>[...prevState,hash])
     }
-    const onClickRemove=(page)=>{
-        const pages = [...pagesToBeAdded]
-        const newPages = pages.filter(p=>p.id!=page.id)
-        setPagesToBeAdded(newPages)
+        
+    
+    const onClickRemove=(hash)=>{
+        const toBeAdded = [...contentToBeAdded]
+        const newContent = toBeAdded.filter(aHash=>{
+           return aHash.item.id != hash.item.id
+        })
+        setContentsToBeAdded(newContent)
 
     }
     const handleOnSubmit=(e)=>{
-        const pageIdList = pagesToBeAdded.map(p=>p.id)
-        const bookIdList = booksToBeAdded.map(b=>b.id)
+        // const pageIdList = pagesToBeAdded.map(p=>p.id)
+        const filterPages = contentToBeAdded.filter(hash => hash.type == "page").map(
+            hash=> hash.item.id
+        )
+        const filterBooks = contentToBeAdded.filter(hash => hash.type == "book").map(
+            hash=> hash.item.id
+        )
+        // const bookIdList = booksToBeAdded.map(b=>b.id)
         e.preventDefault()
         const params = {
             name: libTitle,
             purpose: purpose,
             profileId: currentProfile.id,
-            pageIdList: pageIdList,
-            bookIdList: bookIdList,
+            pageIdList: filterPages,
+            bookIdList: filterBooks,
             writingIsOpen: writingIsOpen,
             privacy:libIsPrivate
         }
@@ -133,7 +136,7 @@ export default function CreateLibraryContainer(props){
    endMessage={<p>No more data to load.</p>}
 >
      {listItems.map((hash) =>{
-        console.log(`Hash ${JSON.stringify(hash)}`);
+
              return(<div className="list-item" key={hash.item.id}>
                 <div>
                     {hash.type}
@@ -157,29 +160,32 @@ export default function CreateLibraryContainer(props){
             </div>)
         }
     }
- 
-    const pagesToBeAddedList =()=>{
-        return(<div className="pages-to-be-added">
-            {pagesToBeAdded.map(page =>{
 
-                return (
-                    <div className="item">
-                        <div>
-                        <h6>{page.title}</h6>
-                        </div>
-                        <div>
-                            <button onClick={()=>onClickRemove(page) }>Remove</button>
-                        </div>
-                    </div>
-                )
-            })}
-        </div>)
-    }
+    const contentToBeAddedList = ()=>{
+       console.log(`CONTENT ATO ${JSON.stringify(contentToBeAdded)}`)
+       return (<div className="content-to-be-added">
+        {contentToBeAdded.map(hash=>{
+               return (<div key={hash.item.id} className="item">
+               <div>
+               <div>
+                  {hash.type}
+               </div>
+               <h6><div>{hash.item.title}</div></h6>
+               </div>
+               <div>
+                   <button onClick={()=>onClickRemove(hash) }>Remove</button>
+               </div>
+              </div>
+              )  
+        })}
+        </div>)}
+        
+    
 return(<div>
     <div className="container">
         <div className="left-side-bar">
             <div className="add-page-list">
-            {pagesToBeAddedList()}
+                {contentToBeAddedList()}
             </div>
         </div>
         <div className="main-side-bar">
