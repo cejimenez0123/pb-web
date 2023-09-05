@@ -26,10 +26,11 @@ const logIn = createAsyncThunk(
         const profilePicture = pack["profilePicture"]??""
         const selfStatement = pack["selfStatement"]
         const homeLibraryId = pack["homeLibraryId"]
+        const bookmarkLibraryId = pack["bookmarkLibraryId"]
         const userId = pack["userId"]
         const privacy = pack["private"]
         const created = pack["created"]
-        const profile = new Profile(id,username,profilePicture,selfStatement,homeLibraryId,userId,privacy,created)
+        const profile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
        
         if(pack!=null){    
         return {
@@ -87,19 +88,20 @@ const signUp = createAsyncThunk(
 //     //   console.log(`selfStatement ${selfStatement}`)
     //   let privacy = params["privacy"]
 //     //   console.log(`privacy ${privacy}`)
-      const profile = new Profile(pId,username,"profilePicture",selfStatement,libId,uId,privacy)
+      const profile = new Profile(pId,username,"profilePicture",selfStatement,libId,libId,uId,privacy)
 //       console.log(`something ${profile==null}`)
 
-    //   setDoc(doc(db,"profile", pId),{
-    //     id:pId,
-    //     username,
-    //   profilePicture: "profilePicture",
-    //     selfStatement:"selfStatement",
-    //     homeLibraryId:libId,
-    //     userId:uId,
-    //     privacy:false,
-    //     created:timestamp
-    //   })
+      setDoc(doc(db,"profile", pId),{
+        id:pId,
+        username,
+      profilePicture: "profilePicture",
+        selfStatement:"selfStatement",
+        bookmarkLibraryId:libId,
+        homeLibraryId:libId,
+        userId:uId,
+        privacy:false,
+        created:timestamp
+      })
       return {
       
             profile
@@ -130,10 +132,11 @@ async (params,thunkApi) => {
         const profilePicture = pack["profilePicture"]??""
         const selfStatement = pack["selfStatement"]
         const homeLibraryId = pack["homeLibraryId"]
+        const bookmarkLibraryId = pack["bookmarkLibraryId"]
         const userId = pack["userId"]
         const privacy = pack["private"]
         const created = pack["created"]
-        const profile = new Profile(id,username,profilePicture,selfStatement,homeLibraryId,userId,privacy,created)
+        const profile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
         console.log(`user2 ${JSON.stringify(profile)}`)
         return {
             profile
