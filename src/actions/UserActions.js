@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword,setPersisten
 import {where,query,collection,getDocs,setDoc,getDoc,doc,orderBy,limit,Firestore , QuerySnapshot, DocumentData, DocumentSnapshot, updateDoc ,Timestamp} from "firebase/firestore"
 import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
+import { use } from "react";
 
 // import {auth} from "../core/di"
 const logIn = createAsyncThunk(
@@ -184,5 +185,47 @@ const updateProfile = createAsyncThunk("users/updateProfile",
             }
         }
         )
+const fetchAllProfiles = createAsyncThunk("users/fetchAllProfiles",async (state,{params})=>{
+    try {
+    let  ref = collection(db,"profile")
+    let snapshot = await getDocs(ref)
+    let profileList = []
+    snapshot.docs.forEach(doc => {
+        const { id } = doc
+        const pack = doc.data()
+        const username = pack["username"]
+        const profilePicture = pack["profilePicture"]
+        const selfStatement = pack["selfStatment"]
+        const bookmarkLibraryId = pack["bookmarkLibraryId"]
+        const homeLibraryId = pack["homeLibraryId"]
+        const userId = pack["userId"]
+        const privacy= pack["privacy"]
+        const created = pack["created"]
+       let prof = new Profile(id,
+                    username,
+                    profilePicture, 
+                    selfStatement, 
+                    bookmarkLibraryId,
+                    homeLibraryId,
+                    userId,
+                    privacy,
+                    created)
+        profileList.push(prof)
+     })
 
-export {logIn,signUp,getCurrentProfile,updateProfile}
+    
+    return {profileList}
+    
+    }catch(err) {
+        return {
+            error: new Error("Error: FETCH ALL PROFILES" + err.message)
+        }
+    }
+})
+
+
+export {logIn,
+        signUp,
+        getCurrentProfile,
+        updateProfile,
+        fetchAllProfiles}

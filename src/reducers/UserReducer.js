@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { logIn ,signUp,getCurrentProfile} from "../actions/UserActions"
+import { logIn ,signUp,getCurrentProfile,fetchAllProfiles} from "../actions/UserActions"
 import Profile from "../domain/models/profile"
 const initialState = {
     loggedIn: false,
     currentProfile: null,
     loading:false,
+    profilesInView: [Profile],
     error:""
 }
 const userSlice = createSlice({
@@ -48,6 +49,10 @@ const userSlice = createSlice({
     }).addCase("users/loggedIn",(state, { payload }) => {
 
         state.loggedIn = payload.loggedIn
+    }).addCase(fetchAllProfiles.fulfilled,(state,{ payload })=>{
+        state.profilesInView = payload.profileList
+    }).addCase(fetchAllProfiles.rejected,(state,{payload})=>{
+        state.error = payload.error
     })
 }})
 

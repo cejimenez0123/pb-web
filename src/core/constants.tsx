@@ -1,3 +1,4 @@
+
 // const  PageType ={
 //     text: "html/text",
 //     picture: "image",
@@ -12,4 +13,12 @@ enum PageType {
 
 }
 
-export {PageType}
+enum RoleType {
+    reader = "reader",
+    writer = "writer",
+    commenter = "commenter",
+    editor = "editor"
+}
+
+
+export {PageType,RoleType}

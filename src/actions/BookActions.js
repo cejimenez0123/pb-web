@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import Book from "../domain/models/book"
+import BookRole from "../domain/models/bookrole"
 import {where,query,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot} from "firebase/firestore"
 import { db } from "../core/di"
 
@@ -271,6 +272,73 @@ const fetchArrayOfBooksAppened = createAsyncThunk("books/fetchArrayOfBooksAppend
     return {error }
   }
 }
-
 )
-  export {getPublicBooks,fetchBook,fetchArrayOfBooks,getProfileBooks,createBook,fetchArrayOfBooksAppened}
+
+const createRolesForBook = createAsyncThunk("books/createRoleForBook",async (params,thunkApi)=>{
+    
+   try {
+    const {id,roles } = params
+    const ref =doc(db,"book",id,"book_role")
+    let createdRoles = []
+    roles.forEach(roleItem =>{
+      const bookRoleId = ref.id
+      const { profileId,role } = roleItem
+      const timestamp = Timestamp.now()
+    setDoc(
+        doc(db,"book", id,BookRole.className(),bookRoleId),{
+                          id: bookRoleId,
+                          profileId: profileId,
+                          role: role,
+                          created: timestamp
+                            
+                        })
+        let bookRole = new BookRole(bookRoleId,profileId,role,timestamp)
+        createdRoles.push(bookRole)
+                      })
+        return {
+          roleList: createdRoles
+        }
+    }catch(e){
+      const error = e??new Error("Error: CREATE BOOK ROLES")
+      return {error }
+    }                
+})
+
+const fetchBookRoles = createAsyncThunk("books/fetchBookRoles",async (params,thunkApi)=>{
+  const bookId = params["bookId"]
+  
+  try {
+    const ref = doc(db,"book",bookId,"book_role")
+    const snapshot = await getDocs(ref) 
+    let roleList = []
+    snapshot.docs.forEach(doc => {
+        const {id }= doc
+        const pack = doc.data()
+        const profileId = pack["profileId"]
+        const bookId = pack["bookId"]
+        const role = pack["role"]
+        const created = pack["created"]
+        let bookRole = new BookRole(id,profileId,bookId,role,created)
+        roleList.push(bookRole)
+    })
+
+
+    return {
+      roleList: roleList
+    }
+  }catch(err){
+    return {
+      error: new Error("Error: FETCH BOOK ROLES"+err.message)
+    }
+  }
+
+})
+
+  export {  getPublicBooks,
+            fetchBook,
+            fetchArrayOfBooks,
+            getProfileBooks,
+            createBook,
+            fetchArrayOfBooksAppened,
+            createRolesForBook,
+            fetchBookRoles}
