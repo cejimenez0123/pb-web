@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom"
 import { fetchLibrary } from "../actions/LibraryActions"
 import DashboardItem from "../components/DashboardItem"
 
-
+import { clearPagesInView } from "../actions/PageActions"
 
 function LibraryViewContainer(props){
     const pathParams = useParams()
@@ -20,13 +20,17 @@ function LibraryViewContainer(props){
         if(libraryInView==null){
             const id =  pathParams["id"]
             const params = {id: id}
+            dispatch(clearPagesInView())
             dispatch(fetchLibrary(params)).then(()=>{
-                setHasMorePages(true);
                 getPages()
             })
+        }else{
+            dispatch(clearPagesInView())
+            getPages()
+            
         }
       
-    },[libraryInView])
+    },[])
     const libraryInfo=()=>{
         if(libraryInView!=null){
             const lib = libraryInView

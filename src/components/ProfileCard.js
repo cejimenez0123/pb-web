@@ -1,9 +1,8 @@
 import React from "react"
-
+import { useNavigate } from "react-router-dom"
 export default function ProfileCard(props){
-   
   
-   
+   let navigate = useNavigate()
 
     if(props.currentProfile!=null){
         
@@ -18,6 +17,11 @@ export default function ProfileCard(props){
                 <h4>@{props.currentProfile.username}</h4>
             </div>
         </div>
+        <a onClick={()=>{
+            navigate("/profile/edit")
+        }}>
+            Settings
+        </a>
     <div className="profile-buttons">
 
 {/* <button type="button" class=" mountain button" onClick={()=>this.setState({showStartBook: "block"})}>Start Book</button>

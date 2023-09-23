@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { auth,db } from  "../core/di"
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword,setPersistence, browserSessionPersistence } from "firebase/auth"
-import {where,query,collection,getDocs,setDoc,getDoc,doc,orderBy,limit,Firestore , QuerySnapshot, DocumentData, DocumentSnapshot, Timestamp} from "firebase/firestore"
+import {where,query,collection,getDocs,setDoc,getDoc,doc,orderBy,limit,Firestore , QuerySnapshot, DocumentData, DocumentSnapshot, updateDoc ,Timestamp} from "firebase/firestore"
 import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
 
@@ -149,4 +149,40 @@ async (params,thunkApi) => {
             }
         }});
 
-export {logIn,signUp,getCurrentProfile}
+const updateProfile = createAsyncThunk("users/updateProfile",
+                    async (params,thunkApi)=>{
+                       
+                        const profile = params["profile"]
+                        const newUsername = params["username"]
+                        const newBookmarkLibraryId = params["bookmarkLibraryId"]
+                        const profileRef = doc(db, "profile", profile.id);
+
+// Set the "capital" field of the city 'DC'
+      await updateDoc(profileRef, {
+            username: newUsername,
+            bookmarkLibraryId: newBookmarkLibraryId
+        });
+       const snapshot = await getDoc(profileRef)
+        const pack = snapshot.data()  
+        const id = pack["id"]
+        const username = pack["username"]
+        const profilePicture = pack["profilePicture"]??""
+        const selfStatement = pack["selfStatement"]
+        const homeLibraryId = pack["homeLibraryId"]
+        const bookmarkLibraryId = pack["bookmarkLibraryId"]
+        const userId = pack["userId"]
+        const privacy = pack["private"]
+        const created = pack["created"]
+        const updatedProfile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
+        
+        if(updatedProfile){
+            return {
+                profile: updatedProfile
+            }
+        }else{
+            throw new Error("Updating profile error")
+            }
+        }
+        )
+
+export {logIn,signUp,getCurrentProfile,updateProfile}

@@ -7,6 +7,7 @@ import { fetchArrayOfPages } from "../actions/PageActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/BookView.css"
+import { clearPagesInView } from "../actions/PageActions"
 function BookViewContainer({book,pages}){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -22,14 +23,14 @@ function BookViewContainer({book,pages}){
       const parameters = {
         id: bookId,
       }
-        // const id =  pathParams["id"]
-        // console.log(`PageViewContainer ${JSON.stringify(pathParams)}`)
+       if(book==null){
+        dispatch(clearPagesInView())
         dispatch(fetchBook(parameters)).then((result) => {
            
         }).catch((err) => {
             
         });
-              
+    }
     }
     const goToEditBook =(e)=>{
 
@@ -92,7 +93,7 @@ function BookViewContainer({book,pages}){
             </div>)
         }
     }
-    if(!!currentProfile && currentProfile.id == book.profileId)
+    if(!!currentProfile && !!book && currentProfile.id == book.profileId)
     <a ket={book.id}onClick={(e)=>goToEditBook(e)}>Edit</a>
     if(!bookLoading && book!=null){
         

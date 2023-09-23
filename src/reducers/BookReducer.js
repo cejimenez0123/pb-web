@@ -1,7 +1,12 @@
 
 import Book from "../domain/models/book"
 import { createReducer ,createSlice} from "@reduxjs/toolkit"
-import { getPublicBooks,fetchBook,getProfileBooks} from "../actions/BookActions"
+import { getPublicBooks,
+        fetchBook,
+        getProfileBooks,
+        fetchArrayOfBooksAppened,
+        fetchArrayOfBooks
+        } from "../actions/BookActions"
 
 
 const initialState = {
@@ -47,8 +52,13 @@ builder
 }).addCase(getProfileBooks.rejected,(state,{payload})=>{
     state.loading = false
     state.error = payload.error
-})
-}
+}).addCase(fetchArrayOfBooks.fulfilled,(state,{payload})=>{
+    state.booksInView = payload.bookList
+    state.loading = false
+}).addCase(fetchArrayOfBooksAppened.fulfilled,(state,{payload})=>{
+    state.booksInView = [...state.bookInView,...payload.bookList]
+    state.loading = false
+})}
 
 })
 export default bookSlice

@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore"
+import { Story } from "./page"
 
 export default class Library {
     id
@@ -34,4 +35,13 @@ export default class Library {
     static className(){
         return "library"
     }
+    itemHashInLibrary(hash:HashItem):Boolean{
+        let p = this.pageIdList.find(id=>id == hash.item.id)
+        let b = this.bookIdList.find(id=>id == hash.item.id)
+        return !!p && !!b
+    }
+    }
+    type HashItem = {
+        type:string,
+        item:Story
     }

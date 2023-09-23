@@ -1,8 +1,7 @@
 
 import { Timestamp } from "firebase/firestore";
-export default class Book {
-    id
-    title
+import {Story} from "./page"
+export default class Book extends Story{
     purpose
     profileId
     pageIdList
@@ -21,7 +20,8 @@ export default class Book {
         updatedAt: Timestamp,
         created=Timestamp.now()
     ){
-        this.id = id
+
+        super(id,title)
         this.purpose = purpose
         this.title = title
         this.pageIdList = pageIdList

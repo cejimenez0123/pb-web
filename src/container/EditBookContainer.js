@@ -13,6 +13,9 @@ function EditBookContainer({book,pages}){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookLoading = useSelector(state=>state.books.loading)
     const pageLoading = useSelector(state=>state.pages.loading)
+    const [bookTitle,setBookTitle] = useState("")
+    const [bookIsPrivate,setBookPrivacy]= useState(false)
+    const [writingIsOpen,setWritingIsOpen]= useState(false)
     const [hasMore,setHasMore]=useState(false)
     const [page,setPage] = useState(1)
     const [listItems, setListItems] = useState([
@@ -28,22 +31,17 @@ function EditBookContainer({book,pages}){
         // console.log(`PageViewContainer ${JSON.stringify(pathParams)}`)
         dispatch(fetchBook(parameters)).then((result) => {
             const {payload} = result
-           dispatch(fetchArrayOfPages(payload.book.pageIdList))
+            const {book} = payload
+            setBookTitle(book.title)
+            setBookPrivacy(book.privacy)
+            setWritingIsOpen(book.writingIsOpen)
+           dispatch(fetchArrayOfPages(book.pageIdList))
 
         }).catch((err) => {
             
         });
               
     }
-    // const handleDragEnd = (result) => {
-    //     if (!result.destination) return;
-    
-    //     const reorderedItems = Array.from(pageArray);
-    //     const [movedItem] = reorderedItems.splice(result.source.index, 1);
-    //     reorderedItems.splice(result.destination.index, 0, movedItem);
-    
-    //     setPageArray(reorderedItems);
-    //   };
     const getPages = (pageIdList)=>{
         const params = {pageIdList:pageIdList}
     
@@ -61,6 +59,7 @@ function EditBookContainer({book,pages}){
         });
 
     }
+    
     useEffect(()=>{
      
             getBook()
@@ -93,7 +92,9 @@ const sortableList = ()=>{
         </div>)
     }
 }
-
+    const handleTitleChange = (e)=>{
+        setBookTitle(e.target.value)
+    }
 
     if(!bookLoading && book!=null){
         
@@ -118,6 +119,17 @@ const sortableList = ()=>{
     </div>
         </div>
         <div className="right-side-bar">
+            <form>
+                <input onChange={(e)=>handleTitleChange(e)} type="text" className="form-control" value={bookTitle}/>
+                <input onChange={()=>{
+                    setBookPrivacy(!bookIsPrivate)
+                }}type="checkbox" name="privacy" value={bookIsPrivate}/>
+                <input onChange={()=>{
+                    setWritingIsOpen(!writingIsOpen)
+                }
+                }type="checkbox" name="writingIsOpen" value={writingIsOpen}/>
+                <button type="submit">Save</button>
+            </form>
         </div>
 
     </div>)}else{

@@ -214,7 +214,7 @@ pageList
 
 
 }catch(err){
-const error = err??new Error("Error: Get Profile Pages")
+const error = err??new Error("Error: Fetch Array of Pages")
 return {error }
 }}
 
@@ -233,7 +233,7 @@ const setPagesToBeAdded = createAction("pages/setPagesToBeAdded", function prepa
     
   }
 })
-// (createAction('UPDATE_PARTICULAR_VALUE', {
+const clearPagesInView = createAction("pages/clearPagesInView")// (createAction('UPDATE_PARTICULAR_VALUE', {
 //   id: props.id,
 //   value: props.amount,
 //   reason: props.reason
@@ -267,6 +267,44 @@ const setPagesToBeAdded = createAction("pages/setPagesToBeAdded", function prepa
 // }
 //   })
 
+const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend",async (params,thunkApi)=>{
+  try{
+  const ref = collection(db,"page")
+  const pageIdList = params["pageIdList"]
+  if(0>=pageIdList.length){
+    return {
+      pageList: []
+    }
+  }else{
+  const snapshot =await getDocs(query(ref, where('id', 'in', pageIdList)))
+
+ let pageList = []
+  snapshot.docs.forEach(doc => {
+        const pack = doc.data();
+        const { id } = doc;
+        const title =pack["title"]
+        const data = pack["data"]
+        const profileId = pack["profileId"]
+        const privacy = pack["privacy"]
+        const approvalScore = pack["approvalScore"]
+        const type = pack["type"]
+        const created = pack["created"]
+    
+  
+        const page =  new Page(id,title,data,profileId,approvalScore,privacy,type,created)
+      pageList = [...pageList, page]
+    })
+    return {
+      pageList
+    }
+  }
+
+    }catch(err){
+    const error = err??new Error("Error: Fetch Array of Pages")
+    return {error }
+    }}
+
+)
 const pagesLoading = createAction("PAGES_LOADING", function prepare(){
     return {
         payload: {
@@ -281,5 +319,7 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
           setPageInView,
           fetchPage,
           fetchArrayOfPages,
-          setPagesToBeAdded
+          setPagesToBeAdded,
+          fetchArrayOfPagesAppened,
+          clearPagesInView
         } 

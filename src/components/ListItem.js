@@ -17,14 +17,61 @@ function ListItem({type,id,title}) {
     const onToggle = ()=>{
         setShowPreview(!showPreview)
     }
+
     const handleOnClick = ()=>{
         
                 navigate(`/${type}/${id}`)
             }
+    
+    const dropDown=()=>{
+       
+        if(type!="library"){
+        return(<div>
+            <Dropdown>
 
+
+            <MenuButton>
+                Add
+           </MenuButton>
+           <Menu>
+           <MenuItem>
+               Book
+           </MenuItem>
+           <MenuItem>
+           Library
+           </MenuItem>
+           </Menu>
+           </Dropdown>
+            
+               <Dropdown>
+           <MenuButton>
+              Edit
+           </MenuButton>
+           <Menu>
+           <MenuItem onClick={handleEditClick}>
+               Edit
+           </MenuItem>
+           <MenuItem>
+           Delete
+           </MenuItem>
+           </Menu>
+           </Dropdown>
+           </div>)}else{
+            return (<div>
+                <button onClick={()=>{
+                    navigate(`/${type}/${id}/edit`)}
+                } type="button">
+                    Update
+                </button>
+                <button type="button">
+                    Delete
+                </button>
+            </div>)
+           }
+    }
     const handleEditClick=()=>{
-        console.log(`props type${props.type}`)
-        navigate(`/${props.type}/${props.id}/edit`)       
+       
+        navigate(`/${type}/${id}/edit`)       
         }
             return(<div className='list-item'>
                 
@@ -36,36 +83,9 @@ function ListItem({type,id,title}) {
                 </a>
                 </div> 
                 <div className="button-row">
-                
-<Dropdown>
-
-
-                 <MenuButton>
-                     Add
-                </MenuButton>
-                <Menu>
-                <MenuItem>
-                    Book
-                </MenuItem>
-                <MenuItem>
-                Library
-                </MenuItem>
-                </Menu>
-                </Dropdown>
-                 
-                    <Dropdown>
-                <MenuButton>
-                   Edit
-                </MenuButton>
-                <Menu>
-                <MenuItem onClick={handleEditClick}>
-                    Edit
-                </MenuItem>
-                <MenuItem>
-                Delete
-                </MenuItem>
-                </Menu>
-                </Dropdown>
+         
+               
+            {dropDown()}
 
                 <div >
             

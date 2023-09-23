@@ -11,6 +11,7 @@ export default class Profile {
     username
     profilePicture
     selfStatement
+    bookmarkLibraryId
     homeLibraryId
     userId
     privacy
@@ -20,6 +21,7 @@ export default class Profile {
         username,
         profilePicture,
         selfStatement,
+        bookmarkLibraryId,
         homeLibraryId,
         userId,
         privacy,
@@ -29,6 +31,7 @@ export default class Profile {
         this.username = username
         this.profilePicture = profilePicture
         this.selfStatement = selfStatement
+        this.bookmarkLibraryId = bookmarkLibraryId
         this.profileId = homeLibraryId
         this.userId = userId
         this.privacy = privacy

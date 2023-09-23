@@ -15,7 +15,10 @@ import BookViewContainer from './container/BookViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import CreateBookContainer from './container/CreateBookContainer';
 import CreateLibraryContainer from './container/CreateLibraryContainer';
+import SettingsContainer from './container/SettingsContainer';
+import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import { logIn,getCurrentProfile } from './actions/UserActions';
+import { fetchBookmarkLibrary } from './actions/LibraryActions';
 import { getPublicBooks } from './actions/BookActions';
 import history from './history';
 import PrivateRoute from './PrivateRoute';
@@ -44,12 +47,21 @@ function App(props) {
       const params = {
        userId: authState.user.uid
       }
-      console.log(`App ${JSON.stringify(params)}`)
       const subscriber = props.getCurrentProfile(params)
+
       return ()=> subscriber
     }
   
   },[])
+  useEffect(()=>{
+    if(props.currentProfile!=null){
+      const params = {
+        id: props.currentProfile.bookmarkLibraryId
+      }
+      props.fetchBookmarkLibrary(params)
+    }
+  
+  },[props.currentProfile])
   return (
     <div className="App">
       <header>
@@ -117,6 +129,12 @@ function App(props) {
         <LibraryViewContainer
         />
       }/>
+      <Route path="/profile/edit" element={
+        <SettingsContainer />
+      }/>
+      <Route path="/library/:id/edit" element={
+        <UpdateLibraryContainer/>}/>
+      
     </Routes>
 
     
@@ -131,6 +149,7 @@ function mapDispatchToProps(dispatch){
     // logIn:(email,password)=>dispatch(logIn(email,password)),
     getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
     getPublicBooks:()=>dispatch(getPublicBooks()),
+    fetchBookmarkLibrary:(params)=>dispatch(fetchBookmarkLibrary(params)),
     // getUsers: ()=>dispatch(getUsers()),
     // savePage: (data)=>dispatch(savePage(data)),
     // getAllPages: ()=>dispatch(getAllPages()),

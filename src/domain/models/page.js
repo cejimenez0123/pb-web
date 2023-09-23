@@ -1,14 +1,17 @@
 import { Timestamp } from "firebase/firestore";
+import { ST } from "next/dist/shared/lib/utils";
 
-// interface Story {
-//     id:string,
-//     data:string,
-//     created:Timestamp
-
-// }
-export default class Page {
+class Story {
     id
     title
+
+    constructor(id,title){
+        this.id = id
+        this.title = title
+       
+    }
+}
+ class Page extends Story{
     data
     profileId
     approvalScore
@@ -25,9 +28,9 @@ export default class Page {
         type,
         created=Timestamp.now()
     ){
-        this.id = id
-        this.title = title
+        super(id,title,data)
         this.data = data
+        this.title = title
         this.profileId = profileId
         this.approvalScore = approvalScore
         this.privacy = privacy
@@ -38,3 +41,6 @@ export default class Page {
         "page"
     }
 }
+
+export {Story}
+export default Page

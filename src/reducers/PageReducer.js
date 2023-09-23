@@ -6,7 +6,9 @@ import {  getPublicPages ,
           setPageInView,
           fetchPage,
           fetchArrayOfPages,
-          setPagesToBeAdded
+          setPagesToBeAdded,
+          fetchArrayOfPagesAppened,
+          clearPagesInView
         } from "../actions/PageActions"
 import Page from "../domain/models/page"
 import { createReducer ,createSlice} from "@reduxjs/toolkit"
@@ -69,7 +71,6 @@ const pageSlice = createSlice({
         state.loading = false
         state.pageInView = payload.page
       }).addCase(fetchArrayOfPages.fulfilled,(state,{payload})=>{
-        console.log(`payload: ${JSON.stringify(payload)}`)
           state.pagesInView = payload.pageList
           state.loading = false
       }).addCase(fetchArrayOfPages.rejected,(state,{payload})=>{
@@ -80,7 +81,16 @@ const pageSlice = createSlice({
       }).addCase(setPagesToBeAdded,(state,{payload})=>{
 
         state.pagesToBeAdded = payload.pageList
-      })
+      }).addCase(fetchArrayOfPagesAppened.fulfilled,(state,{payload})=>{
+        console.log(`pageload ${JSON.stringify(payload.pageList)}`)
+        state.pagesInView = [...state.pagesInView,...payload.pageList]
+        state.loading = false
+      }).addCase(fetchArrayOfPagesAppened.rejected,(state,{payload})=>{
+      state.error = payload.error
+      state.loading = false
+    }).addCase(clearPagesInView.type,(state)=>{
+      state.pagesInView = []
+    })
     },
   })
     

@@ -61,6 +61,7 @@ function NavbarContainer({authState,profile}){
                         <a className="dropdown-item" href="#">Library</a>
                         </div>
                     </li>
+                   
                     <li className="nav-item">
                         <a className="nav-link">Log Out</a>
                     </li>

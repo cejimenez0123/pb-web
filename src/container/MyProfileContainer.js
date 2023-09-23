@@ -186,7 +186,7 @@ endMessage={<p>No more data to load.</p>}
                     {librariesInView.map((library)=>{
         
                         return (<div key={library.id}>
-                            <ListItem key={library.id} title={library.name} type={Library.className()} id={library.id}/>
+                            <ListItem key={library.id} title={library.name} type={"library"} id={library.id}/>
                         </div>)
                     })}
                     </InfiniteScroll>
