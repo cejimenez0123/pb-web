@@ -1,8 +1,11 @@
+
+
+
 .list-item {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 30rem;
+    width: 30em;
 }
 .list-item div:first-child{
     display: flex;
@@ -13,17 +16,21 @@
     height: 2em;
     
 }
-.list-item-title{
-  color: black
+.list-item-title {
+  color: black;
 }
 .list {
-    width: 800px;
+    width: 30em;
 }
 .pages-to-be-added .item {
     width: 10rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+.content-to-be-added-list{
+  width: 20em;
+  border: 1px solid black;
 }
 #form div:nth-child(1) {
     /* Your styles for the second div here */

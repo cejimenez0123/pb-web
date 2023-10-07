@@ -1,48 +1,32 @@
 
 import { useState ,useEffect} from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
-import { getProfilePages,fetchArrayOfPages } from "../actions/PageActions"
+import { getProfilePages,fetchArrayOfPages,saveRolesForPage } from "../actions/PageActions"
+import { getProfileBooks, updateBook } from "../actions/BookActions"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import Page from "../domain/models/page"
 import { UseSelector, useSelector } from "react-redux/es/hooks/useSelector"
 import { getCurrentProfile } from "../actions/UserActions"
-import { createBook } from "../actions/BookActions"
+import { createBook,saveRolesForBook } from "../actions/BookActions"
 import PageListItem from "../components/PageLIstItem"
-export default function CreateBookContainer({pagesInView}){
+export default function CreateBookContainer({pagesInView,booksInView}){
         const navigate = useNavigate()
         const [bookTitle,setBookTitle]=useState("")
         const [purpose,setPurpose] = useState("")
         const currentProfile = useSelector(state=>{return state.users.currentProfile})
         const [bookIsPrivate,setBookIsPrivate]= useState(false)
         const [bookIsOpen,setBookIsOpen]= useState(false)
-        const [pagesToBeAdded,setPagesToBeAdded]=useState([])
+        const pagesToBeAdded = useSelector(state=>{return state.pages.pagesToBeAdded})
+        // const [pagesToBeAdded,setPagesToBeAdded]=useState([])
         const dispatch = useDispatch()
         
         const handleBookTitleChange = (e)=>{
             setBookTitle(e.target.value)
         }
-        const fetchProfilePages=()=>{
-            if(!!currentProfile){
-                const params = {profileId:currentProfile.id}
-                dispatch(getProfilePages(params))
-        }
-        }
-        const getBookmarkLibraryPages=()=>{
+   
+    
 
-        }
-        const fetchPages=()=>{
-            fetchProfilePages()
-        }
-        const onClickAdd=(page)=>{
-            setPagesToBeAdded(prevState=>[...prevState,page])
-        }
-        const onClickRemove=(page)=>{
-            const pages = [...pagesToBeAdded]
-            const newPages = pages.filter(p=>p.id!=page.id)
-            setPagesToBeAdded(newPages)
-
-        }
         const handleOnSubmit=(e)=>{
          
         e.preventDefault()
@@ -60,57 +44,92 @@ export default function CreateBookContainer({pagesInView}){
             }
         
             dispatch(createBook(params)).then(result=>{
-                console.log(`CreateBookParmas ${JSON.stringify(result)}`)
+                
                 const {payload} = result
-                if(result.error==null){
+                if(result !=null && result.error==null){
                     navigate(`/book/${payload.book.id}`)
                     
                 }
             })
         }
-        useEffect(()=>{
-            fetchPages()
-        },[])
-        const pageList = ()=>{
-            return(<div>
-                <InfiniteScroll  dataLength={pagesInView.length} 
-       next={fetchPages}
-       hasMore={false} // Replace with a condition based on your data source
-       loader={<p>Loading...</p>}
-       endMessage={<p>No more data to load.</p>}
-    >
-         {pagesInView.map(page =>{
-                 return(<div>
-                    <div>
-                        <h2>
-                    {page.title}
-                    </h2>
-                    </div>
-                    <button onClick={()=>onClickAdd(page)}>
-                        Add
-                    </button>
-                 </div>)
-
-
-         })}
-                </InfiniteScroll>
-            </div>)
+    
+    const fetchBooks = ()=>{
+        dispatch(getProfileBooks())
+    }
+    const addUpdateBook=(book)=>{
+        
+    pagesToBeAdded.forEach(async page=>{
+        let readers = [...page.readers,...book.readers]
+        let commenters = [...page.commenters,...book.commenters]
+        let pageIdList = book.pageIdList
+        const roleParams = {
+            page,
+          readers,
+          commenters,
+          editors:book.editors,
+          writers:book.writers
         }
-     
+        dispatch(saveRolesForPage(roleParams))
+        
+        pageIdList.push(page.id)
+        const params ={
+            book,
+            title:book.title,
+            purpose:book.purpose,
+            pageIdList,
+            privacy:book.
+            privacy,
+            writingIsOpen:book.writingIsOpen
+        } 
+        dispatch(updateBook(params))
+        .then(result => {
+            if(result.error==null){
+                navigate(`/book/${book.id}`)
+            }
+        }).catch(error =>{
+
+        })
+    })
+    }
+    const bookList = ()=>{
+            let i = 0
+                return(<div>
+                    <InfiniteScroll  dataLength={booksInView.length} 
+           next={fetchBooks}
+           hasMore={false} // Replace with a condition based on your data source
+           loader={<p>Loading...</p>}
+           endMessage={<p>No more data to load.</p>}
+        >
+             {booksInView.map(book=>{
+                i+=1
+                return (<div key={`${book.id}_${i}`} onClick={()=>addUpdateBook(book) }>
+                    {book.title}
+                </div>)
+             })}
+    
+    
+             
+                    </InfiniteScroll>
+                </div>)
+            }
+
         const pagesToBeAddedList =()=>{
+            if(pagesToBeAdded!=null && pagesToBeAdded.length>0){
             return(<div>
                 {pagesToBeAdded.map(page =>{
 
                     return (
-                        <div>
+                        <div key={page.id}>
                             <h6>{page.title}</h6>
-                            <div>
-                                <button onClick={()=>onClickRemove(page) }>Remove</button>
-                            </div>
+                        
                         </div>
                     )
                 })}
-            </div>)
+            </div>)}else{
+                return(<div>
+                    Loading...
+                    </div>)
+            }
         }
     return(<div>
         <div className="container">
@@ -120,7 +139,7 @@ export default function CreateBookContainer({pagesInView}){
                 </div>
             </div>
             <div className="main-side-bar">
-                {pageList()}
+                {bookList()}
             </div>
             <div className="right-side-bar">
                 <div>

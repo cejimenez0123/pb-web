@@ -1,43 +1,17 @@
 import {db,app,auth} from "../core/di"
-import {where,query,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot} from "firebase/firestore"
+import {where,query,updateDoc,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot} from "firebase/firestore"
 import Page from "../domain/models/page"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import { useDispatch } from "react-redux"
-// const getPublicPages= ()=>{
-//     return (dispatch)=>{
-//     let pageList = []
-//       // db.collection("page").where("privacy","==",false).get()
-//   getDocs(query(collection(db, "page"), where("privacy", "==", false))).then(
-// //   db.collection("page").where("privacy","==",false).get().then(
-//     snapshot=>{
-        
-//         snapshot.docs.forEach(doc => {
-//             const pack = doc.data();
-//             const { id } = doc;
-//             const title =pack["title"]
-//             const data = pack["data"]
-//             const profileId = pack["profileId"]
-//             const privacy = pack["privacy"]
-//             const type = pack["type"]
-//             const created = pack["created"]
-//             // const { title, data, profileId, privacy, type, created } = ;
-//             const page = new Page(id, title, data, profileId, privacy, type, created)
-//             console.log(`pagelist: ${page["profileId"]}`)
-//             pageList = [...pageList, page]
-//             dispatch(pagesInView(pageList))
-//         })})
-   
 
-//   }
-//   }
 
 const getPublicPages = createAsyncThunk(
     'pages/getPublicPages',
     async (thunkApi) => {
         let pageList = []
-        // db.collection("page").where("privacy","==",false).get()
+
     const snapshot = await getDocs(query(collection(db, "page"), where("privacy", "==", false)))
-    //   snapshot=>{
+
           
           snapshot.docs.forEach(doc => {
                 const pack = doc.data();
@@ -45,13 +19,42 @@ const getPublicPages = createAsyncThunk(
                 const title =pack["title"]
                 const data = pack["data"]
                 const profileId = pack["profileId"]
+                const approvalScore = pack["approvalScore"]
                 const privacy = pack["privacy"]
                 const type = pack["type"]
                 const created = pack["created"]
-                const page = new Page(id, title, data, profileId, privacy, type, created)
+                let commenters = pack["commenters"]
+                let editors = pack["editors"]
+                let readers = pack["readers"]
+                let writers = pack["writers"]
+              if(!editors){
+                editors = []
+              }
+              if(!commenters){
+                commenters = []
+              }
+              if(!readers){
+                  readers=[]
+              }
+              if(!writers){
+                writers=[]
+              }
+          
+                const page = new Page(  id,
+                                        title,
+                                        data,
+                                        profileId,
+                                        approvalScore,
+                                        privacy,
+                                        type,
+                                        readers,
+                                        writers,
+                                        editors,
+                                        commenters,
+                                        created)
               pageList = [...pageList, page]
-             })
-        // })
+            })
+
         console.log(`PAGES ${pageList[0].title}`)
     return {
   
@@ -70,6 +73,46 @@ const setHtmlContent = createAction(
       }
   }
 )
+const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>{
+      
+  try{
+    const { page,
+      title,
+      data,
+      privacy,
+    
+    } = params
+
+      let ref = doc(db,"page",page.id)
+      await updateDoc(ref,{
+        title,
+        data,
+        profileId:page.profileId,
+        privacy,
+        approvalScore: page.approvalScore,
+        type: page.type,
+      })
+      let newPage= new Page(page.id,
+                          title,
+                          data,
+                          page.profileId,
+                          page.approvalScore,
+                          page.privacy,
+                          page.type,
+                          page.readers,
+                          page.writers,
+                          page.editors,
+                          page.commenters,
+                          page.created)
+    
+      return {
+        page: newPage
+      }
+    }catch(e){
+    return {error: new Error("Error: UDATE PAGE-" + e.message)}
+  }
+})
+
 const getProfilePages= createAsyncThunk(
   'pages/getProfilePages',
   async (params,thunkApi) => {
@@ -81,11 +124,7 @@ const getProfilePages= createAsyncThunk(
     const quotient = page * groupBy
 
   try {
-   
-     
-      
-     
-     
+
   const snapshot = await getDocs(
                 query(collection(db, "page"),  where("profileId", "==", profileId)));
         pageList = []
@@ -99,15 +138,39 @@ const getProfilePages= createAsyncThunk(
               const approvalScore = pack["approvalScore"]
               const type = pack["type"]
               const created = pack["created"]
-          
+              let commenters = pack["commenters"]
+              let editors = pack["editors"]
+              let readers = pack["readers"]
+              let writers = pack["writers"]
+            if(!editors){
+              editors = []
+            }
+            if(!commenters){
+              commenters = []
+            }
+            if(!readers){
+                readers=[]
+            }
+            if(!writers){
+              writers=[]
+            }
         
-              const page =  new Page(id,title,data,profileId,approvalScore,privacy,type,created)
-         //new Page(id, title, data, profileId, privacy, type, created)
-            
+              const page =  new Page( id,
+                                      title,
+                                      data,
+                                      profileId,
+                                      approvalScore,
+                                      privacy,
+                                      type,
+                                      readers,
+                                      writers,
+                                      editors,
+                                      commenters,
+                                      created)
+     
             pageList = [...pageList, page]
           })
-          console.log(`params ${JSON.stringify(pageList)}`)
-
+        
   return {
 
       pageList
@@ -123,8 +186,16 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
   const ref = collection(db,"page")
   const id = doc(ref).id
 
-  const {profileId,data,privacy,approvalScore,type,title}=params
-  console.log(`data ${profileId}`)
+  const { profileId,
+          data,
+          privacy,
+          approvalScore,
+          type,
+          title,
+          readers,
+          writers,
+          commenters,
+          editors,}=params
  const created = Timestamp.now()
 //  const page = 
   try{
@@ -137,6 +208,10 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
                                                       approvalScore,
                                                       privacy,
                                                       type,
+                                                      readers,
+                                                      writers,
+                                                      commenters,
+                                                      editors,
                                                       created:created})
   console.log(`savePage ${JSON.stringify(snapshot)}`)
   const page = new Page(id,title,data,profileId,approvalScore,privacy,type,created)
@@ -163,12 +238,38 @@ const fetchPage = createAsyncThunk("pages/fetchPage", async function(params,thun
   let title =pack["title"]
   let data = pack["data"]
   let profileId = pack["profileId"]
+  let commenters = pack["commenters"]
+  let editors = pack["editors"]
+  let readers = pack["readers"]
+  let writers = pack["writers"]
   let privacy = pack["privacy"]
   let approvalScore = pack["approvalScore"]
   let type = pack["type"]
   let created = pack["created"]
-
-  const page = new Page(id=pId,title,data,profileId,approvalScore,privacy,type,created)
+  if(!commenters){
+    commenters = []
+  }
+  if(!writers){
+    writers = []
+  }
+  if(!editors){
+    editors = []
+  }
+  if(!readers){
+    readers = []
+  }
+  const page = new Page(id=pId,
+                        title,
+                        data,
+                        profileId,
+                        approvalScore,
+                        privacy,
+                        type,
+                        readers,
+                        writers,
+                        editors,
+                        commenters,
+                        created)
   return {
     page
   }
@@ -180,6 +281,85 @@ const fetchPage = createAsyncThunk("pages/fetchPage", async function(params,thun
   }
 
 
+})
+const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async function(params,thunkApi){
+  let id = params["id"]
+
+ 
+
+  try {
+  const docSnap = await getDoc(doc(db, "page", id))
+  const pack = docSnap.data()
+  let pId = pack["id"]
+  let title =pack["title"]
+  let data = pack["data"]
+  let profileId = pack["profileId"]
+  let commenters = pack["commenters"]
+  let editors = pack["editors"]
+  let readers = pack["readers"]
+  let writers = pack["writers"]
+  let privacy = pack["privacy"]
+  let approvalScore = pack["approvalScore"]
+  let type = pack["type"]
+  let created = pack["created"]
+  if(!commenters){
+    commenters = []
+  }
+  if(!writers){
+    writers = []
+  }
+  if(!editors){
+    editors = []
+  }
+  if(!readers){
+    readers = []
+  }
+  const page = new Page(id=pId,
+                        title,
+                        data,
+                        profileId,
+                        approvalScore,
+                        privacy,
+                        type,
+                        readers,
+                        writers,
+                        editors,
+                        commenters,
+                        created)
+  return {
+    page
+  }
+  }catch(e){
+    return {
+      error: e
+    }
+
+  }
+
+
+})
+const saveRolesForPage = createAsyncThunk("pages/saveRolesForPages",async (params,thunkApi)=>{
+    
+  try {
+   const {page,
+         readers,
+         commenters,
+         editors,
+         writers} = params
+  
+     let ref = collection(db,'page',page.id)
+     await updateDoc(ref,{ editors: editors,
+       commenters:commenters,
+       writers: writers,
+       readers: readers,
+     })
+     return {page: Page(...Page,commenters,writers,editors,readers)}
+
+
+   }catch(e){
+     const error = e??new Error("Error: SAVE PAGE ROLES")
+     return {error }
+   }                
 })
 const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (params,thunkApi)=>{
   try{
@@ -195,14 +375,29 @@ const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (para
         const data = pack["data"]
         const profileId = pack["profileId"]
         const privacy = pack["privacy"]
+ 
         const approvalScore = pack["approvalScore"]
         const type = pack["type"]
         const created = pack["created"]
-    
+        let commenters = pack["commenters"]
+        let editors = pack["editors"]
+        let readers = pack["readers"]
+        let writers = pack["writers"]
+      if(!editors){
+        editors = []
+      }
+      if(!commenters){
+        commenters = []
+      }
+      if(!readers){
+          readers=[]
+      }
+      if(!writers){
+        writers=[]
+      }
   
-        const page =  new Page(id,title,data,profileId,approvalScore,privacy,type,created)
-   //new Page(id, title, data, profileId, privacy, type, created)
-      
+        const page =  new Page(id,title,data,profileId,approvalScore,privacy,type,readers,writers,editors,commenters,created)
+  
       pageList = [...pageList, page]
     })
   
@@ -226,46 +421,16 @@ const setPageInView = createAction("pages/setPageInView", function prepare(page)
     
   }
 })
-const setPagesToBeAdded = createAction("pages/setPagesToBeAdded", function prepare(pageList) {
+
+const setPagesToBeAdded = createAction("pages/setPagesToBeAdded",(params)=>{
+  let {pageList} = params
+console.log(`GASSX ${JSON.stringify(pageList)}`)
   return {
-   
-      pageList
-    
+    payload: pageList
   }
 })
-const clearPagesInView = createAction("pages/clearPagesInView")// (createAction('UPDATE_PARTICULAR_VALUE', {
-//   id: props.id,
-//   value: props.amount,
-//   reason: props.reason
-// }));
 
-//   const getPublicPage = createAsyncThunk('PAGES_IN_VIEW',async (thunkApi) => {
-//   // function prepare() {
-//     let pageList = []
-//     // db.collection("page").where("privacy","==",false).get()
-// const snapshot = await getDocs(query(collection(db, "page"), where("privacy", "==", false)))
-// //   snapshot=>{
-      
-//       snapshot.docs.forEach(doc => {
-//             const pack = doc.data();
-//             const { id } = doc;
-//             const title =pack["title"]
-//             const data = pack["data"]
-//             const profileId = pack["profileId"]
-//             const privacy = pack["privacy"]
-//             const type = pack["type"]
-//             const created = pack["created"]
-//             const page = new Page(id, title, data, profileId, privacy, type, created)
-       
-//           pageList = [...pageList, page]
-//          })
-//     // })
-//     console.log(`PAGES ${pageList[0].title}`)
-// return {
-//   payload: {
-//     pageList}
-// }
-//   })
+const clearPagesInView = createAction("pages/clearPagesInView")
 
 const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend",async (params,thunkApi)=>{
   try{
@@ -289,9 +454,35 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
         const approvalScore = pack["approvalScore"]
         const type = pack["type"]
         const created = pack["created"]
-    
+        let commenters = pack["commenters"]
+        let editors = pack["editors"]
+        let readers = pack["readers"]
+        let writers = pack["writers"]
+      if(!editors){
+        editors = []
+      }
+      if(!commenters){
+        commenters = []
+      }
+      if(!readers){
+          readers=[]
+      }
+      if(!writers){
+        writers=[]
+      }
   
-        const page =  new Page(id,title,data,profileId,approvalScore,privacy,type,created)
+        const page =  new Page( id,
+                                title,
+                                data,
+                                profileId,
+                                approvalScore,
+                                privacy,
+                                type,
+                                readers,
+                                writers,
+                                editors,
+                                commenters,
+                                created)
       pageList = [...pageList, page]
     })
     return {
@@ -302,8 +493,8 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
     }catch(err){
     const error = err??new Error("Error: Fetch Array of Pages")
     return {error }
-    }}
-
+    }
+  }
 )
 const pagesLoading = createAction("PAGES_LOADING", function prepare(){
     return {
@@ -321,5 +512,8 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
           fetchArrayOfPages,
           setPagesToBeAdded,
           fetchArrayOfPagesAppened,
-          clearPagesInView
+          clearPagesInView,
+          saveRolesForPage,
+          updatePage,
+          fetchEditingPage
         } 

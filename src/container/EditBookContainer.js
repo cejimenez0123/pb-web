@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom"
 import { useDispatch,useSelector } from "react-redux"
 import { useState,useEffect } from "react"
-import { fetchBook,fetchBookRoles } from "../actions/BookActions"
+import { fetchBook,fetchBookRoles,saveRolesForBook,updateBook } from "../actions/BookActions"
+import "../styles/EditBook.css"
 import { fetchAllProfiles } from "../actions/UserActions"
 import Page from "../domain/models/page"
 import { fetchArrayOfPages } from "../actions/PageActions"
@@ -15,6 +16,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import BookRole from "../domain/models/bookrole"
 import { RoleType } from "../core/constants"
 import Profile from "../domain/models/profile"
+
 function EditBookContainer({book,pages}){
     
     const pathParams = useParams()
@@ -28,6 +30,7 @@ function EditBookContainer({book,pages}){
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const [bookTitle,setBookTitle] = useState("")
     const [bookIsPrivate,setBookPrivacy]= useState(false)
+    const [bookPurpose,savePage] = useState("")
     const [writingIsOpen,setWritingIsOpen]= useState(false)
     const [hasMore,setHasMore]=useState(false)
     const [profileHasMore,setProfileHasMore]= useState(false)
@@ -37,7 +40,7 @@ function EditBookContainer({book,pages}){
     const getBook=()=>{
       
       const bookId =pathParams["id"]
-      console.log(bookId)
+   
       const parameters = {
         id: bookId,
       }
@@ -55,23 +58,50 @@ function EditBookContainer({book,pages}){
         });
               
     }
+    useEffect(()=>{
+        if(book){
+            getPages(book.pageIdList)
+        }
+      
+    },[book])
+    const saveRoles=()=>{
+        if(book!=null){
+            const readers = bookRoles.filter(role => role.role == RoleType.reader)
+            const commenters = bookRoles.filter(role => role.role == RoleType.commenter)
+            const editors = bookRoles.filter(role => role.role == RoleType.editor)
+            const writers = bookRoles.filter(role => role.role == RoleType.writer)
+        const params = {
+            bookId: book.id,
+            readers,
+            commenters,
+            editors,
+            writers}
+    
+
+        dispatch(saveRolesForBook(params))
+        }}
+    
     const fetchProfile=()=>{
         dispatch(fetchAllProfiles()).then((result) => {
             const {payload} = result
-            setProfileList(payload.profileList)
+            const {profileList } = payload
+            const list = profileList.filter(profile=>{
+                const br  = newBookRoles.find(br=>
+                    br.profileId == profile.id)
+                return !br
+            })
+            setProfileList(list)
         })
     }
     const getPages = (pageIdList)=>{
         const params = {pageIdList:pageIdList}
     
         dispatch(fetchArrayOfPages(params)).then((result) => {
-            console.log(JSON.stringify(result));
             if(!result.error){
-                // result.payload.pageList
-                setListItems(pages)
-               
-            }else{
-            
+                const {payload } = result
+                const {pageList} = payload
+                setListItems(pageList)
+              
             }
         }).catch((err) => {
             setHasMore(false)
@@ -86,7 +116,7 @@ function EditBookContainer({book,pages}){
     },[])
     useEffect(()=>{
 
-        if(!!book){
+        if(book){
             setHasMore(true)
             getPages(book.pageIdList)
         }
@@ -95,15 +125,17 @@ function EditBookContainer({book,pages}){
 const bookRolesView =  ()=>{
     if(newBookRoles!=null && newBookRoles.length > 0){
 
-        return (<div className="role-box">
+        return (<div>
             {       
                     newBookRoles.map((role)=>{
                         let username = ""
+                        let id = ""
                         let profile = profilesInView.find(prof=>prof.id==role.profileId)
                         if(profile){
                             username=profile.username
+                            id = profile.id
                         }
-                        return(<div>
+                        return(<div key={id}>
                             <div>
                                 {username}
                             </div>
@@ -134,26 +166,28 @@ const bookRolesView =  ()=>{
                 }
         </div>)
     }else{
-        return(<div className="role-box">
+        return(<div >
 
         </div>)
     }
 }
 const handleChosingProfileRole =(profile,role)=>{
     const br = new BookRole( null,
-        profile.id,
+        profile.userId,
         book.id,
         role
         )
    
     if(role.length > 0){
-    let profiles = profileList.filter(prof=>{
-        return profile.id == prof.id
-    })
-    setNewBookRoles(prevState=>{
-        return [...prevState, br]
-    })
-    setProfileList(profiles)
+    
+        let profiles = profileList.filter(prof=>{
+            return profile.id != prof.id
+        })
+        setNewBookRoles(prevState=>{
+            return [...prevState,br]
+        })
+        setProfileList(profiles)
+        
     }else{
        let roles = newBookRoles.filter(bookRole=>bookRole.profile == profile.id)
        setNewBookRoles(roles) 
@@ -167,10 +201,10 @@ const roleList = ()=>{
     if(profileList!=null && profileList.length > 0){
         return ( 
         <div>
-            <div>
+            <div className="book-roles">
                 {bookRolesView()}
             </div>
-        
+            <div className="profile-list">
         <InfiniteScroll
         dataLength={profileList.length}
         next={fetchProfile}
@@ -181,7 +215,7 @@ const roleList = ()=>{
         >
             {profileList.map(profile=>{
 
-                return(<div>
+                return(<div key={profile.id}>
                     {profile.username}
                     <Dropdown>
                         <MenuButton>
@@ -205,6 +239,7 @@ const roleList = ()=>{
                 </div>)
             })}
         </InfiniteScroll>
+        </div>
         </div>)
     }else{
         return (<div>
@@ -212,27 +247,56 @@ const roleList = ()=>{
         </div>)
     }
 }
+const handleRemove = (page)=>{
+    let list  =listItems.filter((item)=>{return item.id != page.id})
+    setListItems(list)
+    setHasMore(false)
+}
 const sortableList = ()=>{
-    if(!!listItems && listItems.length>0){
+    if(listItems.length == 0){
+        return (<div>
+            Empty
+        </div>)
+   
+    }else  if(!!listItems){
         return(  <SortableList
             items={listItems}
             setItems={setListItems}
-            itemRender={({item}) => (
-               
-              <div className="w-1/2 h-10 m-8 bg-blue-400 text-center">
-                <h1>{item.title}</h1>
-              </div>
-            )}/>)
+            itemRender={(item)=>{
+               return sortItem(item)}}>
+            
+            </SortableList>)
     }else{
         return(<div>
             Loading...
         </div>)
     }
 }
+
+    const sortItem = (item)=>{
+        return((
+            <div className="sort-item">
+            <h1>{item.item.title} </h1>
+            <button type="button" onDoubleClick={()=>handleRemove(item.item)
+            }>Remove</button>
+        </div>))
+    }
     const handleTitleChange = (e)=>{
         setBookTitle(e.target.value)
     }
-
+    const handleSave = (e)=>{
+        e.preventDefault()
+        if(book!=null){
+            saveRoles()
+            const pageIdList = listItems.map(page=>  page.id)
+            const params = {book:book,
+                            title: bookTitle,
+                            pageIdList:pageIdList,
+                            privacy: bookIsPrivate,
+                            writingIsOpen: writingIsOpen}
+            dispatch(updateBook(params))
+        }
+    }
     if(!bookLoading && book!=null){
         
     
@@ -256,7 +320,7 @@ const sortableList = ()=>{
     </div>
         </div>
         <div className="right-side-bar">
-            <form>
+            <form onSubmit={(e)=>handleSave(e)}>
                 <input onChange={(e)=>handleTitleChange(e)} type="text" className="form-control" value={bookTitle}/>
                 <input onChange={()=>{
                     setBookPrivacy(!bookIsPrivate)
@@ -280,7 +344,8 @@ const sortableList = ()=>{
         return(<div>
             Loading...
         </div>)
-}}
+    }
+}
 
 
 

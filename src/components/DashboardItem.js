@@ -22,16 +22,16 @@ let pageDataElement = (<div></div>)
 console.log(`something ${page}`)
 switch(page.type){
     case PageType.text:
-        pageDataElement = <div className='dashboard-data text' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
-        pageDataElement = <img className='dashboard-data' src={page.data} alt={page.title}/>
+        pageDataElement = <img className='dashboard-content' src={page.data} alt={page.title}/>
     break;
     case PageType.video:
         pageDataElement = <video src={page.data}/>
     break;
     default:
-        pageDataElement = <div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>
+        pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
     break;
 }
         return(<div className='dashboard-item'>
@@ -39,9 +39,9 @@ switch(page.type){
                 
             </style>
             <div className='dashboard-header'>
-                <h2>{page.title}</h2>
+
             </div>
-            <div >
+            <div className='' >
                 {pageDataElement}
             </div>
             <div className='btn-row'>

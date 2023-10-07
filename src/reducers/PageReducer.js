@@ -8,18 +8,19 @@ import {  getPublicPages ,
           fetchArrayOfPages,
           setPagesToBeAdded,
           fetchArrayOfPagesAppened,
-          clearPagesInView
+          clearPagesInView,
+          fetchEditingPage
         } from "../actions/PageActions"
 import Page from "../domain/models/page"
 import { createReducer ,createSlice} from "@reduxjs/toolkit"
 
-const initialState = {pagesInView:[Page],
+const initialState = {pagesInView:[],
                       editingPage:null,
                       loading:false,
                       editorHtmlContent:"",
                       error:"",
                       pageInView: null,
-                      pagesToBeAdded: [Page]
+                      pagesToBeAdded: []
                     }
 const pageSlice = createSlice({
     name: 'pages',
@@ -61,7 +62,7 @@ const pageSlice = createSlice({
         state.editingPage = payload.page
 
       }).addCase(setPageInView,(state,{payload})=>{
-        console.log(`Pagereducer ${JSON.stringify(payload)}`)
+     
         state.pageInView = payload.page
       }).addCase(fetchPage.pending,(state)=>{
         state.loading = true
@@ -78,11 +79,10 @@ const pageSlice = createSlice({
           state.loading = false
       }).addCase(fetchArrayOfPages.pending,(state)=>{
           state.loading = true
-      }).addCase(setPagesToBeAdded,(state,{payload})=>{
-
-        state.pagesToBeAdded = payload.pageList
+      }).addCase(setPagesToBeAdded.type,(state,{payload})=>{
+        state.pagesToBeAdded = payload
       }).addCase(fetchArrayOfPagesAppened.fulfilled,(state,{payload})=>{
-        console.log(`pageload ${JSON.stringify(payload.pageList)}`)
+        console.log(`pageload ${JSON.stringify(payload)}`)
         state.pagesInView = [...state.pagesInView,...payload.pageList]
         state.loading = false
       }).addCase(fetchArrayOfPagesAppened.rejected,(state,{payload})=>{
@@ -90,6 +90,8 @@ const pageSlice = createSlice({
       state.loading = false
     }).addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []
+    }).addCase(fetchEditingPage.fulfilled,(state,{payload})=>{
+      state.editingPage = payload.page
     })
     },
   })

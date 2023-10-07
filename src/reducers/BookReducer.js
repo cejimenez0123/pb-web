@@ -5,15 +5,22 @@ import { getPublicBooks,
         fetchBook,
         getProfileBooks,
         fetchArrayOfBooksAppened,
-        fetchArrayOfBooks
+        fetchArrayOfBooks,
+        fetchBookRoles,
+        saveRolesForBook,
+        updateBook,
+        setBooksToBeAdded
         } from "../actions/BookActions"
+import BookRole from "../domain/models/bookrole"
 
 
 const initialState = {
-    booksInView:[Book],
+    booksInView:[],
     loading:false,
     error:"",
-    bookInView: null
+    bookInView: null,
+    booksToBeAdded: [Book],
+    bookRoles: [BookRole]
 }
 const bookSlice = createSlice({
 name: 'books',
@@ -58,7 +65,28 @@ builder
 }).addCase(fetchArrayOfBooksAppened.fulfilled,(state,{payload})=>{
     state.booksInView = [...state.bookInView,...payload.bookList]
     state.loading = false
-})}
+}).addCase(saveRolesForBook.rejected,(state,{payload})=>{
+    state.error = payload.error
+}).addCase(saveRolesForBook.fulfilled,(state,{payload})=>{
+    state.bookRoles = payload.roleList
+
+}).addCase(fetchBookRoles.rejected,(state,{payload})=>{
+    state.error = payload.error
+}).addCase(fetchBookRoles.fulfilled,(state,{payload})=>{
+    state.bookRoles = payload.roleList
+}).addCase(updateBook.fulfilled,(state,{payload})=>{
+    state.bookInView = payload.book
+    state.loading = false
+}).addCase(updateBook.pending,(state)=>{
+    state.loading = true
+
+}).addCase(updateBook.rejected,(state,{payload})=>{
+    state.error = payload.error
+    state.loading =false
+}).addCase(setBooksToBeAdded.type,(state,{payload})=>{
+    state.booksToBeAdded = payload
+  })
+}
 
 })
 export default bookSlice

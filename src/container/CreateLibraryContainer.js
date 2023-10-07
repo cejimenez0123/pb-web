@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom"
 import {useState,useEffect} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { getProfileBooks } from "../actions/BookActions"
-import { getProfilePages } from "../actions/PageActions"
-import { createLibrary } from "../actions/LibraryActions"
+import { getProfilePages,fetchArrayOfPages} from "../actions/PageActions"
+import { createLibrary,getProfileLibraries,updateLibrary,updateLibraryContent } from "../actions/LibraryActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import "../styles/CreateLibrary.css"
 
@@ -13,8 +13,11 @@ export default function CreateLibraryContainer(props){
     const [libTitle,setLibTitle]=useState("")
     const [purpose,setPurpose] = useState("")
     const currentProfile = useSelector(state=>{return state.users.currentProfile})
-    const booksInView = useSelector(state=>state.books.booksInView)
-    const pagesInView = useSelector(state => state.pages.pagesInView)
+    // const booksInView = useSelector(state=>state.books.booksInView)
+    // const pagesInView = useSelector(state => state.pages.pagesInView)
+    const librariesInView = useSelector(state => state.libraries.librariesInView)
+    const booksToBeAdded = useSelector(state => state.books.booksToBeAdded)
+    const pagesToBeAdded = useSelector(state => state.pages.pagesToBeAdded)
     const [libIsPrivate,setLibIsPrivate]= useState(false)
     const [writingIsOpen,setWritingIsOpen]= useState(false)
     // const [pagesToBeAdded,setPagesToBeAdded]=useState([])
@@ -77,11 +80,42 @@ export default function CreateLibraryContainer(props){
         fetchProfileBooks()
     }
     const fetchPages=()=>{
-        fetchProfilePages()
+    
+        // fetchProfilePages()
     }
-    const onClickAdd=(hash)=>{
-        console.log(`onClickAdd ${JSON.stringify(hash)}`)
-        setContentsToBeAdded(prevState=>[...prevState,hash])
+    
+    const onClickAdd=(hash)=>{  
+        pagesToBeAdded.map((page)=>{
+            
+        let commenters = [...page.commenters,...hash.commenters]
+        let readers = [...page.readers, ...hash.readers]
+        page.readers = readers
+        page.commenters = commenters
+        return page
+    })
+        
+        let pIdList = pagesToBeAdded.map(page=>{ return page.id; });
+        let bIdList = booksToBeAdded.map(book=>{ return book.id; });
+        let pageIdList = [...hash.pageIdList]
+        if(pIdList!=null && pIdList.length > 0){
+            pageIdList = [...hash.pageIdList,...pIdList]
+        }
+        let bookIdList = [...hash.bookIdList]
+        
+        if(bIdList!=null &&bIdList.length>0){
+            bookIdList = [...bookIdList,...bIdList]
+        }
+        let params = {
+            library:hash,
+            pageIdList:pageIdList,
+            bookIdList:bookIdList
+              }
+        dispatch(updateLibraryContent(params)).then(result=>{
+            if(result.error==null){
+                navigate(`/library/${hash.id}`)
+            }
+        })
+       
     }
         
     
@@ -112,36 +146,78 @@ export default function CreateLibraryContainer(props){
             writingIsOpen: writingIsOpen,
             privacy:libIsPrivate
         }
-        console.log(`parsubmit ${JSON.stringify(params)}`)
+        
         dispatch(createLibrary(params)).then((result) => {
             const {payload} = result
-            console.log(`romus ${JSON.stringify(payload)}`)
+          
             navigate(`/library/${payload.library.id}`)
         }).catch((err) => {
             
         });
     
     }
+    const fetchLibraries = ()=>{
+        if(currentProfile){
+            const params = {profileId:currentProfile.id}
+            dispatch(getProfileLibraries(params))
+        }
+    }
     useEffect(()=>{
-        fetchPages()
-        fetchBooks()
+        fetchLibraries()
+        // fetchPages()
+        // fetchBooks()
     },[])
-    const pageList = ()=>{
-        if(!!listItems && listItems.length > 0){
+//     const pageList = ()=>{
+//         if(!!listItems && listItems.length > 0){
+//         return(<div class="list">
+//             <InfiniteScroll  dataLength={listItems.length} 
+//    next={fetchPages}
+//    hasMore={false} // Replace with a condition based on your data source
+//    loader={<p>Loading...</p>}
+//    endMessage={<p>No more data to load.</p>}
+// >
+//      {listItems.map((hash) =>{
+
+//              return(<div className="list-item" key={hash.item.id}>
+//                 <div>
+//                     {hash.type}
+//                 <h2 className="list-item-title">
+//                 {hash.item.title}
+            
+//                 </h2>
+//                 </div>
+//                 <div>
+              
+//                 <button onClick={()=>onClickAdd(hash)}>
+//                     Add
+//                 </button>
+//                 </div>
+//             </div>)
+//         })}
+//             </InfiniteScroll>
+//         </div>)}else{
+//             return (<div>
+//                 Loading...
+//             </div>)
+//         }
+//     }
+
+        const libraryList = ()=>{
+        if(!!librariesInView && librariesInView.length > 0){
         return(<div class="list">
-            <InfiniteScroll  dataLength={listItems.length} 
-   next={fetchPages}
+            <InfiniteScroll  dataLength={librariesInView.length} 
+   next={fetchLibraries}
    hasMore={false} // Replace with a condition based on your data source
    loader={<p>Loading...</p>}
    endMessage={<p>No more data to load.</p>}
 >
-     {listItems.map((hash) =>{
+     {librariesInView.map((hash) =>{
 
-             return(<div className="list-item" key={hash.item.id}>
+             return(<div className="list-item" key={hash.id}>
                 <div>
-                    {hash.type}
+                    
                 <h2 className="list-item-title">
-                {hash.item.title}
+                {hash.name}
             
                 </h2>
                 </div>
@@ -160,25 +236,57 @@ export default function CreateLibraryContainer(props){
             </div>)
         }
     }
-
     const contentToBeAddedList = ()=>{
-       console.log(`CONTENT ATO ${JSON.stringify(contentToBeAdded)}`)
-       return (<div className="content-to-be-added">
-        {contentToBeAdded.map(hash=>{
-               return (<div key={hash.item.id} className="item">
-               <div>
-               <div>
-                  {hash.type}
-               </div>
-               <h6><div>{hash.item.title}</div></h6>
-               </div>
-               <div>
-                   <button onClick={()=>onClickRemove(hash) }>Remove</button>
-               </div>
-              </div>
-              )  
+
+        return (<div className="content-to-be-added-list">
+            {addedItems("Book",booksToBeAdded)}
+            {addedItems("Page",pagesToBeAdded)}
+        </div>)
+    }
+    const addedItems = (label,items)=>{
+        if(items!=null && items.length>0){
+        return(<div>
+           <div>
+           <h5> {label}</h5>
+           </div>
+     {items.map((hash) =>{
+
+             return(<div className="list-item" key={hash.id}>
+                <div>
+                    
+                <h6 className="list-item-title">
+                {hash.title}
+            
+                </h6>
+                </div>
+                <div>
+    
+                </div>
+            </div>)
         })}
-        </div>)}
+
+        </div>)}else{
+            return(<div></div>)
+        }
+    }
+    // const contentToBeAddedList = ()=>{
+    //    console.log(`CONTENT ATO ${JSON.stringify(contentToBeAdded)}`)
+    //    return (<div className="content-to-be-added">
+    //     {contentToBeAdded.map(hash=>{
+    //            return (<div key={hash.item.id} className="item">
+    //            <div>
+    //            <div>
+    //               {hash.type}
+    //            </div>
+    //            <h6><div>{hash.item.title}</div></h6>
+    //            </div>
+    //            <div>
+    //                <button onClick={()=>onClickRemove(hash) }>Remove</button>
+    //            </div>
+    //           </div>
+    //           )  
+    //     })}
+    //     </div>)}
         
     
 return(<div>
@@ -189,7 +297,8 @@ return(<div>
             </div>
         </div>
         <div className="main-side-bar">
-            {pageList()}
+            {/* {pageList()} */}
+            {libraryList()}
         </div>
         <div className="right-side-bar">
             <div>

@@ -43,6 +43,22 @@
     height: 11vh;
 
 }
+.list-item a {
+    display: flex;
+    flex-direction: row;
+    padding: 0px 50px;
+   
+
+}
+.content{
+    height: 100rem;
+}
+.list-item {
+    display: flex;
+    flex-direction: row;
+    padding-top: 1em;
+    
+}
 .nav-item i{
     color:green;
 }

@@ -1,0 +1,30 @@
+/* .library-item {
+
+}
+.library-item .item-row{
+    display: flex;
+    flex-direction: row;
+} */
+#container {
+    display: flex;
+}
+.library-item {
+    margin-top: 20px;
+    padding-top: 20px;
+    box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.5); 
+    border: 1px solid gray;
+}
+
+.library-item {
+    width: 50vw;
+  }
+.library-item .item-row{
+      display: flex;
+      flex-direction: row;
+      border-bottom: 1px solid black;
+      
+  }
+  .library-item .item-row #title{
+    padding-left: 2em
+}
+/*  */

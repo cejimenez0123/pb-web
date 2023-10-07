@@ -1,8 +1,9 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { createAsyncThunk,createAction } from "@reduxjs/toolkit"
 import Library from "../domain/models/library"
-import { arrayRemove,arrayUnion,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
-
+import { deleteDoc,arrayRemove,arrayUnion,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
+import LibraryRole from "../domain/models/libraryrole"
 import { db } from "../core/di"
+import { read } from "@popperjs/core"
 
 //make a bookmark library for joe
 
@@ -31,6 +32,10 @@ const {
               library.bookIdList,
               writingIsOpen,
               privacy,
+              library.readers,
+              library.writers,
+              library.editors,
+              library.commenters,
               library.created)
     return { library:libraryItem }
     }catch(error){
@@ -54,40 +59,23 @@ const {
 
   
       const ref =doc(db, "library", library.id)
-      const diffBooks = library.bookIdList.filter(id => !bookIdList.includes(id));
-      console.log(`FARKAB ${JSON.stringify(diffBooks)}`)
-      // if(diffBooks.length>0){
-          await updateDoc(ref, {
+    await updateDoc(ref, {
             bookIdList: bookIdList
           });
-      //     await updateDoc(ref,{
-      //       bookIdList: arrayUnion(bookIdList)
-      //     })
-      // }else{
-      //   await updateDoc(ref,{
-      //     bookIdList: arrayUnion(bookIdList)
-      //   })
-      // }
-      const diffPages = library.pageIdList.filter(id => !pageIdList.includes(id));
-      console.log(`FARKA ${JSON.stringify(diffPages)}`)
-      // if(diffPages.length>0){
-        await updateDoc(ref, {
+   await updateDoc(ref, {
           pageIdList: pageIdList
         });
-      //   await updateDoc(ref,{
-      //     pageIdIdList: arrayUnion(pageIdList)
-      //   })
-      // }else{
-      //   await updateDoc(ref,{
-      //     pageIdIdList: arrayUnion(pageIdList)
-      //   })
-      // }
+
       const newLibrary =new Library(library.id,
                   library.name,library.profileId,
                   library.purpose,pageIdList,
                   bookIdList,
                   library.writingIsOpen,
                   library.privacy,
+                  library.readers,
+                  library.writers,
+                  library.editors,
+                  library.commentsers,
                   library.created)
         return { library: newLibrary }
         }catch(error){
@@ -112,13 +100,39 @@ const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (
     let pageIds = pack["pageIdList"]
     let bookIds= pack["bookIdList"]
     let profileId = pack["profileId"]
+    let commenters = pack["commenters"]
+    let writers = pack["writers"]
+    let editors = pack["editors"]
+    let readers = pack["readers"]
     let purpose = pack["purpose"]
     let privacy = pack["privacy"]
     let writingIsOpen = pack["writingIsOpen"]
     let created = pack["created"]
-
-  const library = new Library(lId,libName,profileId,purpose,pageIds,bookIds,writingIsOpen,privacy,created)
-//   const page = new Page(id=pId,title,data,profileId,approvalScore,privacy,type,created)
+    if(!commenters){
+      commenters = []
+    }
+    if(!writers){
+      writers = []
+    }
+    if(!editors){
+      editors = []
+    }
+    if(!readers){
+      readers = []
+    }
+  const library = new Library(lId,
+                              libName,
+                              profileId,
+                              purpose,
+                              pageIds,
+                              bookIds,
+                              readers,
+                              writers,
+                              editors,
+                              commenters,
+                              writingIsOpen,
+                              privacy,
+                              created)
   return {
     library
   }
@@ -141,13 +155,17 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
         profileId,
         purpose,
         privacy,
-        writingIsOpen
+        writingIsOpen,
+        writers,
+        editors,
+        commenters,
+        readers,
         }=params
 
    const created = Timestamp.now()
-  //  const page = 
+
     try{
-     
+      
     
     const snapshot = await setDoc(doc(db,"library", id), {
         id,
@@ -157,14 +175,30 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
         pageIdList,
         bookIdList,
         privacy,
-        writingIsOpen,created:created})
+        writingIsOpen,
+        readers,
+        writers,
+        editors,
+        commenters,
+        created:created})
   
 
-    const library =new Library(id,name,profileId,purpose,pageIdList,bookIdList,writingIsOpen,privacy,created)
+    const library =new Library( id,
+                                name,
+                                profileId,
+                                purpose,
+                                pageIdList,
+                                bookIdList,
+                                writingIsOpen,
+                                privacy,
+                                readers,
+                                writers,
+                                editors,
+                                commenters,
+                                created)
 
     return { library }
-    }catch(error){
-     
+      }catch(error){
       return {
         error: new Error(`Error: Create Library: ${error.message}`)
       }
@@ -179,13 +213,9 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
       let libraryList = []
       const profileId = params["profileId"]
       const userId = params["userId"]
-   
-  
+
     try {
-     
-       
-        
-       
+
        
     const snapshot = await getDocs(
                   query(collection(db, "library"),  where("profileId", "==", profileId)));
@@ -202,9 +232,37 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
                 const purpose = pack["purpose"]
                 const writingIsOpen = pack["writingIsOpen"]
                 const created = pack["created"]
+                let commenters = pack["commenters"]
+                let editors = pack["editors"]
+                let readers = pack["readers"]
+                let writers = pack["writers"]
+                if(!editors){
+                  editors = []
+                }
+                if(!commenters){
+                  commenters = []
+                }
+                if(!readers){
+                  readers=[]
+                }
+                if(!writers){
+                  writers=[]
+                }
             
           
-              const lib = new Library( id,name,profileId,purpose,pageIds,bookIds,writingIsOpen,privacy,created)
+              const lib = new Library(  id,
+                                        name,
+                                        profileId,
+                                        purpose,
+                                        pageIds,
+                                        bookIds,
+                                        writingIsOpen,
+                                        privacy,
+                                        readers,
+                                        writers,
+                                        editors,
+                                        commenters,
+                                        created)
               libList = [...libList,lib]
             })
     return {
@@ -218,7 +276,11 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
       return {error }
     }}
   )
-
+  const setLibraryInView = createAction("libraries/setLibraryInView", function prepare(library) {
+    return {
+       payload: library
+    }
+  })
   const fetchBookmarkLibrary= createAsyncThunk(
     'libraries/fetchBookmarkLibrary',
     async (params,thunkApi) => {
@@ -235,10 +297,37 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
         let privacy = pack["privacy"]
         let writingIsOpen = pack["writingIsOpen"]
         let created = pack["created"]
+        let commenters = pack["commenters"]
+        let editors = pack["editors"]
+        let readers = pack["readers"]
+        let writers = pack["writers"]
+        if(!editors){
+          editors = []
+        }
+        if(!commenters){
+          commenters = []
+        }
+        if(!readers){
+          readers=[]
+        }
+        if(!writers){
+          writers=[]
+        }
     
-      const library = new Library(lId,libName,profileId,purpose,pageIds,bookIds,writingIsOpen,privacy,created)
-    //   const page = new Page(id=pId,title,data,profileId,approvalScore,privacy,type,created)
-      return {
+      const library = new Library(lId,
+                                  libName,
+                                  profileId,
+                                  purpose,
+                                  pageIds,
+                                  bookIds,
+                                  writingIsOpen,
+                                  privacy,
+                                  readers,
+                                  writers,
+                                  editors,
+                                  commenters,
+                                  created)
+    return {
         library
       }
       }catch(e){
@@ -249,5 +338,41 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
       }
     }
   )
+  const saveRolesForLibrary = createAsyncThunk("libraries/saveRolesForLibrary",async (params,thunkApi)=>{
+    
+    try {
+      const {library,
+            readers,
+            commenters,
+            editors,
+            writers} = params
+     
+ 
+        let ref = collection(db,'library',library.id)
+       await updateDoc(ref,{ editors: editors,
+          commenters:commenters,
+          writers: writers,
+          readers: readers,
+        })
+        const lib = Library(...library,commenters,editors,writers,readers)
+        console.log(`FORTET ${JSON.stringify(lib)}`)
+        return {
+          library:lib
+        }
+     
+     }catch(e){
+       const error = e??new Error("Error: SAVE LIBRARY ROLES")
+       return {error }
+     }                
+ })
 
-export {fetchLibrary,updateLibrary,updateLibraryContent,createLibrary,getProfileLibraries,fetchBookmarkLibrary}
+
+export {  fetchLibrary,
+          updateLibrary,
+          updateLibraryContent,
+          createLibrary,
+          getProfileLibraries,
+          fetchBookmarkLibrary,
+          setLibraryInView,
+          saveRolesForLibrary,
+          }

@@ -35,14 +35,21 @@ function DashboardContainer(props){
       
             return ()=>p
         },[])
-        
+        const contentList =()=>{
+            if(pagesInView!=null && pagesInView.length>0){
+                return(<div>
+                {pagesInView.map((page)=>{
+                    return(<DashboardItem page={page}/>)})}
+                </div>)
+            }
+        }
 
         return(
             <div className="" >
                 <div className="homeContainer">
                 <div style={{display:"flex",flexDirection:"column",}}>
-                {pagesInView.map((page)=>{return(<DashboardItem page={page}/>)})}
-                </div>
+                 </div>
+                    {contentList()}
                 </div>
             </div>
         )

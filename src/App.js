@@ -113,9 +113,16 @@ function App(props) {
             <EditorContainer htmlContent={props.htmlContent} currentProfile={props.currentProfile} auth={authState}/>
         </PrivateRoute>
       }/>
+       <Route
+      path="/page/:id/edit"
+      element={
+        <PrivateRoute loggedIn={!!props.currentProfile}>
+            <EditorContainer htmlContent={props.htmlContent} currentProfile={props.currentProfile} auth={authState}/>
+        </PrivateRoute>
+      }/>
       <Route path="/book/new" element={
         <PrivateRoute loggedIn={!!props.currentProfile}>
-          <CreateBookContainer pagesInView={props.pagesInView}/>
+          <CreateBookContainer pagesInView={props.pagesInView} booksInView={props.booksInView}/>
         </PrivateRoute>
       }/>
       <Route path="/book/:id/edit" element={

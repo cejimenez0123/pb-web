@@ -73,70 +73,36 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInV
 
 
     const pageList=()=>{
-        return (<div className="page-list">
-        <InfiniteScroll
-       dataLength={pagesInView.length}
-       next={fetchPageData}
-       hasMore={hasMorePages} // Replace with a condition based on your data source
-       loader={<p>Loading...</p>}
-       endMessage={<p>No more data to load.</p>}
-     >
-         {pagesInView.map(page =>{
-                 return(<PageListItem page={page}/>)
-         })}
-     </InfiniteScroll>
-     </div> )
+        const empty = (<div>
+            Empty
+        </div>)
+        if(pagesInView!=null ){    
+            return (<div className="page-list">
+            <InfiniteScroll
+           dataLength={pagesInView.length}
+           next={fetchPageData}
+           hasMore={hasMorePages} // Replace with a condition based on your data source
+           loader={<p>Loading...</p>}
+           endMessage={<p>No more data to load.</p>}
+         >
+             {pagesInView.map(page =>{
+                     return(<PageListItem key={page.id} page={page}/>)
+             })}
+         </InfiniteScroll>
+         </div> )
+             }else{
+                 return empty
+             }}
             
-            }
-    const bookList = ()=>{
+        
 
-        return (<div className='book-list'>
-            {/* <InfiniteScroll 
-                dataLength={booksInView.length}
-                next={fetchBookData}
-                hasMore={hasMoreBooks}
-                loader={<div>
-                    Loading...
-                </div>}
-                endMessage={
-                    <p>No more data to load.</p>
-                }
-                >
-                    {booksInView.map((book)=>{
-
-                        return (<div>
-                            <h6> {book.title}</h6>
-                            <ListItem title={book.title} id={book.id} type={Book.className()}/>
-                        </div>)
-                    })}
-                </InfiniteScroll> */}
+    const contentList = () =>{
+        const empty = (<div>
+            Empty
         </div>)
-    }
-    const libList =()=>{
-        return(<div className="library-list">
-            {/* {<InfiniteScroll
-            dataLength={librariesInView.length}
-next={fetchLibraryData}
-hasMore={hasMoreLibraries}
-loader={<p>Loading...</p>}
-endMessage={<p>No more data to load.</p>}
-        >
-            {librariesInView.map((library)=>{
-
-                return (<div key={library.id}>
-                    <ListItem key={library.id} title={library.name} type={Library.className()} id={library.id}/>
-                </div>)
-            })}
-        </InfiniteScroll>} */}
-        </div>)
-    }
-    let contentList = (<div>
-        {bookList()}    </div>)
-    const setContentList = () =>{
-       
         switch(listType){
             case "page":{
-               
+           if(pagesInView!=null ){    
            return (<div className="page-list">
            <InfiniteScroll
           dataLength={pagesInView.length}
@@ -146,13 +112,15 @@ endMessage={<p>No more data to load.</p>}
           endMessage={<p>No more data to load.</p>}
         >
             {pagesInView.map(page =>{
-                    return(<PageListItem page={page}/>)
+                    return(<PageListItem key={page.id} page={page}/>)
             })}
         </InfiniteScroll>
         </div> )
-            }
+            }else{
+                return empty
+            }}
             case "book":{
-               
+             if(booksInView!=null && booksInView.length>0){  
                return (<div className='book-list'>
                {<InfiniteScroll 
                    dataLength={booksInView.length}
@@ -168,13 +136,16 @@ endMessage={<p>No more data to load.</p>}
                        {booksInView.map((book)=>{
    
                         return (<div key={book.id}>
-                            <ListItem  title={book.title} id={book.id} type={Book.className()}/>
+                            <ListItem  title={book.title} id={book.id} type={Book.className()} item={book}/>
                                 </div>)
                        })}
                    </InfiniteScroll>}
            </div>)
-            }
+            }else{
+                return empty
+            }}
             case "library":{
+            if(librariesInView!=null && librariesInView.length>0){
                 return(<div>
                     <InfiniteScroll
                     dataLength={librariesInView.length}
@@ -186,11 +157,13 @@ endMessage={<p>No more data to load.</p>}
                     {librariesInView.map((library)=>{
         
                         return (<div key={library.id}>
-                            <ListItem key={library.id} title={library.name} type={"library"} id={library.id}/>
+                            <ListItem key={library.id} title={library.name} type={"library"} id={library.id} item={library}/>
                         </div>)
                     })}
                     </InfiniteScroll>
-                </div>)
+                </div>)}else{
+                    return empty
+                }
             }
 
     
@@ -211,12 +184,7 @@ endMessage={<p>No more data to load.</p>}
     } 
    
 
-    // useEffect(()=>{
-    //     setContentList()
-   
-       
-    // },[listType])
-    if( !!currentProfile){ 
+    if( currentProfile){ 
     
     return(
         <div className='container'>
@@ -245,7 +213,7 @@ endMessage={<p>No more data to load.</p>}
                                     <button onClick={()=>{
                                         handleContentClick(Page.className())
                                         setListType(Page.className)
-                                            setContentList()
+                                            contentList()
                                       
                                         }}>
                                         Page
@@ -253,7 +221,7 @@ endMessage={<p>No more data to load.</p>}
                                     <button onClick={()=>{
                                         handleContentClick(Book.className())
                                         setListType(Book.className)
-                                        setContentList();
+                                        contentList();
                                         
                                     
                                         }}>
@@ -275,7 +243,7 @@ endMessage={<p>No more data to load.</p>}
           transition: "max-height 0.3s ease-in-out"
         }}
       > {
-        setContentList()
+        contentList()
         }
        
       </div>   
@@ -285,84 +253,7 @@ endMessage={<p>No more data to load.</p>}
                             <ProfileCard currentProfile={currentProfile}/>
                         </div>  
         </div>
-{/*                                 
-                                <section>
-         */}
-                        {/* <div onClick={(e)=>this.handleModalClose(e)} style={{width: "100%",display: this.state.showStartLibraries}} class="modal">
-                            <div   class="modalContent">
-                              <span  class="close">&times;</span>
-                               
-                                <form  className="startForm" onSubmit={(e)=>this.startLib(e)}>
-                                    <h4>Name of Library:</h4>
-                                    <br/>
-                                    <input type="text" name="name" placeholder="untitled"/>
-                                    <br/>
-                                    <label> Intro to Library: </label>
-                                    <br/>
-                                    <textarea/>
-                                    <h4> Privacy:</h4>
-                                    <select name="privacy">
-                                        <option value="private">Private</option>
-                                        <option value="public">Public</option>
-                                    </select>
-                                    <br/>
-                                        <input type="submit" value="Create"/>
-                                </form> 
-                            </div>
-                        </div> */}
-                                    
-                                        {/* <div onClick={(e)=>this.handleModalClose(e)} style={{display: this.state.showStartBook}} class="modal">
-                            <div   class="modalContent">
-                              <span  class="close">&times;</span>
-                              <div  className="modalIndex">
-                             
-                                <form onSubmit={(e)=>this.startBook(e)}>
-                                 <div className="startForm">
-                                    <label htmlFor="name">Name of Book:  </label>
-                                    <br/>
-                                    <input type="text"  className="form-control" name="name" placeholder="untitled"/>
-                                    <br/>
-                                    <label> Introduction to Book</label>
-                                    <br/>
-                                    <textarea className=" form-control" placeholder="What's the why" rows="3"/>
-                                    <br/>
-                                    <label> Privacy:</label>
-                                    <select className="form-control" name="privacy">
-                                        <option value="private">Private</option>
-                                        <option value="public">Public</option>
-                                    </select>
-                                    <br/>
-                                        <input type="submit" value="Create"/>
-                                        </div>
-                                </form>
-                                
-                            </div>
-                        </div>
-                    </div> */}
-                    {/* "start-btn btn btn-secondary btn-dark btn-sm */}
-                       
-                                {/* </section>
-                                
-                          
-                    </div>
-                    <Modal button={<h3>Books</h3>} className={"book-index"} content={<BookIndex books={this.props.followedBooks}/>}/>
-                  
-                          <Modal button={ <h3 >Libraries</h3> } className={"lib-index"} content={<LibraryIndex libraries={this.props.libraries} bookLibraries={this.props.bookLibraries}/>
-                      }/>
-                    </div>
-                     
-                      <div >
-                      <div className="pageMain">
-                   <BottomScrollListener onBottom={()=>this.handleOnBottom()}>
-                <Pages pages={this.props.pagesInView} />
-         </BottomScrollListener>
-                </div>
-                </div>
-                <a href={`/user/${this.props.currentUser.id}/settings`} >
-                                    <img src="https://img.icons8.com/ios/50/000000/settings.png"/>
-                                </a>
-            </div>
-            </div> */}
+
         </div>
     )}else{
         return(<div>

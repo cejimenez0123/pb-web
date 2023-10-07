@@ -1,28 +1,19 @@
-
 import { Timestamp } from "firebase/firestore"
-
-
-export default class BookRole {
+export default class Role {
     id
-    userId
-    bookId
+    profileId
     role
     created
     constructor(
         id:string | undefined,
-        userId:string,
-        bookId:string,
+        profileId:string,
         role:string,
         created:Timestamp=Timestamp.now()
     ){
         this.id = id
-        this.userId = userId
-        this.bookId = bookId
+        this.profileId = profileId 
         this.role = role
         this.created = created
     }
-    static className(){
-        return "book_role"
-    }
-    
-    }
+
+}

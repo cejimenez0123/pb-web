@@ -5,12 +5,14 @@ import { setPageInView } from "../actions/PageActions";
 import { PageType } from "../core/constants";
 import Book from "../domain/models/book";
 import Library from "../domain/models/library";
+import { setBooksToBeAdded } from "../actions/BookActions";
 import { MenuItem } from '@mui/base/MenuItem';
 import { Dropdown } from '@mui/base/Dropdown';
 import { MenuButton } from '@mui/base/MenuButton'
 import { Menu } from '@mui/base/Menu';
 import {useNavigate} from 'react-router-dom'
-function ListItem({type,id,title}) {
+import { Button } from "@mui/material";
+function ListItem({type,id,title,item}) {
     const [showPreview,setShowPreview] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -22,41 +24,41 @@ function ListItem({type,id,title}) {
         
                 navigate(`/${type}/${id}`)
             }
-    
+    const handleEditClick=()=>{
+       
+                navigate(`/${type}/${id}/edit`)       
+                }
     const dropDown=()=>{
        
-        if(type!="library"){
-        return(<div>
-            <Dropdown>
-
-
-            <MenuButton>
-                Add
-           </MenuButton>
-           <Menu>
-           <MenuItem>
-               Book
-           </MenuItem>
-           <MenuItem>
-           Library
-           </MenuItem>
-           </Menu>
-           </Dropdown>
+        if(type=="book"){
+        return(<div className="list-item">
             
-               <Dropdown>
-           <MenuButton>
-              Edit
-           </MenuButton>
-           <Menu>
-           <MenuItem onClick={handleEditClick}>
-               Edit
-           </MenuItem>
-           <MenuItem>
-           Delete
-           </MenuItem>
-           </Menu>
-           </Dropdown>
-           </div>)}else{
+
+          
+            <Dropdown>
+                <MenuButton>
+                    ...
+                </MenuButton>
+                <Menu>
+                <MenuItem onClick={()=>{
+                    let params = { bookList: [item]}
+                    dispatch(setBooksToBeAdded(params))
+                    navigate(`/library/new`)
+                    }
+                    }> 
+                    Add to Library
+                </MenuItem>
+                <MenuItem onClick={handleEditClick}>
+                    Edit
+                </MenuItem>
+                <MenuItem>
+                    Delete
+                </MenuItem>
+                </Menu>
+            </Dropdown>
+            </div>
+           )
+        }else{
             return (<div>
                 <button onClick={()=>{
                     navigate(`/${type}/${id}/edit`)}
@@ -69,10 +71,7 @@ function ListItem({type,id,title}) {
             </div>)
            }
     }
-    const handleEditClick=()=>{
-       
-        navigate(`/${type}/${id}/edit`)       
-        }
+
             return(<div className='list-item'>
                 
                 <div className='title'>

@@ -1,7 +1,7 @@
 import { Timestamp } from "firebase/firestore"
 import { Story } from "./page"
-
-export default class Library {
+import Collection from "./collection"
+export default class Library extends Collection {
     id
     name
     pageIdList
@@ -20,8 +20,13 @@ export default class Library {
         bookIdList=[String],
         writingIsOpen:boolean=false,
         privacy:boolean=false,
+        readers:string[]=[],
+        writers:string[]=[],
+        editors:string[]=[],
+        commenters:string[]=[],
         created=Timestamp.now()
     ){
+        super(id,profileId,readers,writers,commenters,editors)
         this.id = id
         this.name=name
         this.pageIdList = pageIdList

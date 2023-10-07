@@ -7,19 +7,17 @@ import { setHtmlContent } from "../actions/PageActions";
 export default function RichEditor(props) {
     const [isReady, setIsReady] = useState(false);
     const editorRef = createRef()
+    const editingPage = useSelector(state=>state.pages.editingPage)
+    const ehtmlContent = useSelector(state=>state.pages.editorHtmlContent)
     const dispatch = useDispatch()
     // const [htmlContent, setHtmlContent] = useState('');
     useEffect(()=>{
-    //    const content = window.localStorage.getItem('htmlContent');
-    //     if(content!=null && content.length!=0){
-    //         console.log(`3232${content}`)
-    //         setHtmlContent(content)
-    //         const div = document.getElementsByClassName("editor-page")
-    //         div.innerHTML = htmlContent
-    //     }
-            
+     
+        
+        document.getElementById("editor-page").innerHTML = ehtmlContent
+          
 
-    })
+    },[editingPage])
    const Type = {
         BOLD:"bold",
         ITALIC:"italic", 
@@ -48,7 +46,6 @@ export default function RichEditor(props) {
         event.preventDefault();
     const content = event.target.innerHTML
     // window.localStorage.setItem('htmlContent',htmlContent) 
-    console.log(`content ${content}`)
             dispatch(setHtmlContent(content))
 
 
@@ -195,12 +192,11 @@ export default function RichEditor(props) {
             <button onClick={setBlockquote}>""</button>
         </div>
         <div 
-        className="editor-page"
+        id="editor-page"
         ref={editorRef}
         contentEditable={true}
         onInput={(e)=>onTextChaneListener(e)}
        >
-        
 
         </div>
     </div>)

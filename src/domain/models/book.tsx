@@ -1,6 +1,8 @@
 
 import { Timestamp } from "firebase/firestore";
 import {Story} from "./page"
+import Collection from "./collection";
+
 export default class Book extends Story{
     purpose
     profileId
@@ -18,10 +20,14 @@ export default class Book extends Story{
         privacy: boolean,
         writingIsOpen: boolean,
         updatedAt: Timestamp,
+        writers:string[]= new Array<string>(),
+        readers:string[],
+        commenters:string[],
+        editors:string[],
         created=Timestamp.now()
     ){
 
-        super(id,title)
+        super(id,title,readers,writers,editors,commenters)
         this.purpose = purpose
         this.title = title
         this.pageIdList = pageIdList

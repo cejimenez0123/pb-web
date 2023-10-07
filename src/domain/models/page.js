@@ -4,11 +4,18 @@ import { ST } from "next/dist/shared/lib/utils";
 class Story {
     id
     title
-
-    constructor(id,title){
+    readers
+    writers
+    editors
+    commenters
+    constructor(id,title,readers,writers,editors,commenters){
         this.id = id
         this.title = title
-       
+        this.readers = readers
+        this.writers = writers
+        this.editors = editors
+        this.commenters = commenters
+
     }
 }
  class Page extends Story{
@@ -26,9 +33,13 @@ class Story {
         approvalScore=0,
         privacy,
         type,
+        readers=[],
+        writers=[],
+        editors=[],
+        commenters=[],
         created=Timestamp.now()
     ){
-        super(id,title,data)
+        super(id,title,readers,writers,editors,commenters)
         this.data = data
         this.title = title
         this.profileId = profileId

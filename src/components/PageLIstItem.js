@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setPageInView } from "../actions/PageActions";
+import { setPageInView,setPagesToBeAdded } from "../actions/PageActions";
 import { PageType } from "../core/constants";
 import { MenuItem } from '@mui/base/MenuItem';
 import { Dropdown } from '@mui/base/Dropdown';
@@ -10,6 +10,7 @@ import {useNavigate} from 'react-router-dom'
 function PageListItem({page}) {
     const [showPreview,setShowPreview] = useState(false)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const onToggle = ()=>{
         setShowPreview(!showPreview)
     }
@@ -19,6 +20,15 @@ function PageListItem({page}) {
         }
 
         
+    }
+    const handleAddClick = (type)=>{
+        if(page){
+        let params = {
+            pageList: [page]
+        }
+        dispatch(setPagesToBeAdded(params))
+        navigate(`/${type}/new`)
+    }
     }
     let pageDataElement = (<div></div>)
     if(page!=null){
@@ -46,39 +56,37 @@ function PageListItem({page}) {
                 </a>
                 </div> 
                 <div className="button-row">
-                
-<Dropdown>
-
-
-                 <MenuButton>
-                     Add
-                </MenuButton>
-                <Menu>
-                <MenuItem>
-                    Book
-                </MenuItem>
-                <MenuItem>
-                Library
-                </MenuItem>
-                </Menu>
+                <Dropdown>
+                    <MenuButton>
+                        Add
+                    </MenuButton>
+                    <Menu>
+                    <MenuItem onClick={()=>handleAddClick("book")}>
+                        Book
+                    </MenuItem>
+                    <MenuItem onClick={()=>handleAddClick("library")}>
+                        Library
+                    </MenuItem>
+                    </Menu>
                 </Dropdown>
-                 
-                    <Dropdown>
-                <MenuButton>
-                   Edit
-                </MenuButton>
+                <Dropdown>
+                    <MenuButton>
+                        Edit
+                    </MenuButton>
                 <Menu>
-                <MenuItem>
+                <MenuItem onClick={()=>{
+                    navigate(`/page/${page.id}/edit`)
+                }}>
                     Edit
                 </MenuItem>
                 <MenuItem>
-                Delete
+                    Delete
                 </MenuItem>
                 </Menu>
                 </Dropdown>
 
                 <div >
-                    {/* {pageDataElement} */}
+                   
                 </div>
             </div>
             </div>)}else{

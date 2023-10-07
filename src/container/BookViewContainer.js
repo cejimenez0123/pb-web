@@ -41,8 +41,7 @@ function BookViewContainer({book,pages}){
     
         dispatch(fetchArrayOfPages(params)).then((result) => {
             if(!result.error){
-                setHasMore(true)
-            }else{
+          
                 setHasMore(false)
             }
         }).catch((err) => {
@@ -72,7 +71,7 @@ function BookViewContainer({book,pages}){
                      <InfiniteScroll 
                             dataLength={pages.length}
                             next={()=>getPages(book.pageIdList)}
-                            hasMore={pages.length < book.pageIdList.length} // Replace with a condition based on your data source
+                            hasMore={hasMore} // Replace with a condition based on your data source
                             loader={<p>Loading...</p>}
                             endMessage={<p>No more data to load.</p>}
                             scrollableTarget="scrollableDiv"
