@@ -1,11 +1,76 @@
+.container{
+    display: flex;
+    flex-direction: row;
+}
+.left-side-bar {
+    flex:2;
+    display: flex;
+    flex-direction: column;
 
+}
+.right-side-bar {
+
+    flex:4;
+}
+.main-bar{
+    flex: 8;
+    padding: 1rem 2rem;
+  
+}
 .book-roles{
     padding-bottom: 10%;
     border: 2px solid gray;
 }
-.profile-list{
+#purpose{
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1em;
+}
+#purpose label{
+    text-align: start;
+    padding-left: 1em;
+    padding-bottom: 0.5em;
+}
+#purpose textarea{
+    border: 1px gray solid;
+}
+.roles form {
+    display: flex;
+    flex-direction: column;
+}
+.role-list{
     border: 2px solid gray;
+}
+
+.role-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.role-item div{
+    padding: 0.5em 1em;
+}
+.roles{
+    padding-top:2rem;
+}
+.book-roles{
+    padding: 2em 0em;
+    margin-bottom: 1em;
+    margin-top: 2em;
 }
 .sort-item h1{
     color: black;
 }
+
+.sort-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1em 1em;
+    border-bottom: 1px solid gray;
+}
+#sort-list{
+    padding: 4rem;
+    background-color: aliceblue;
+}
+

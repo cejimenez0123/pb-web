@@ -1,6 +1,7 @@
 import {db,app,auth} from "../core/di"
-import {where,query,updateDoc,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot} from "firebase/firestore"
+import {where,query,updateDoc,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, arrayUnion} from "firebase/firestore"
 import Page from "../domain/models/page"
+import PageComment from "../domain/models/page_comment"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import { useDispatch } from "react-redux"
 
@@ -342,24 +343,45 @@ const saveRolesForPage = createAsyncThunk("pages/saveRolesForPages",async (param
     
   try {
    const {page,
-         readers,
-         commenters,
-         editors,
-         writers} = params
+          readers,
+          commenters,
+          editors,
+          writers} = params
   
      let ref = collection(db,'page',page.id)
      await updateDoc(ref,{ editors: editors,
-       commenters:commenters,
-       writers: writers,
-       readers: readers,
+        commenters:commenters,
+        writers: writers,
+        readers: readers,
      })
-     return {page: Page(...Page,commenters,writers,editors,readers)}
 
 
    }catch(e){
      const error = e??new Error("Error: SAVE PAGE ROLES")
      return {error }
    }                
+})
+const appendSaveRolesForPage = createAsyncThunk("pages/appendSaveRolesForPages",async (params,thunkApi)=>{
+  try {
+    const { pageIdList,
+            readers,
+            commenters,
+            } = pageIdList
+        pageIdList.forEach(id=>{
+            let ref =collection(db,'page',id)
+            updateDoc(ref,{
+              readers: arrayUnion(readers),
+              commenters: arrayUnion(commenters),
+            })
+
+        }
+
+        )
+  }catch(e){
+    return {
+      error: new Error(`Error: SAVE PAGE ROLES ${e.message}`)
+    }
+  }
 })
 const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (params,thunkApi)=>{
   try{
@@ -496,6 +518,75 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
     }
   }
 )
+const createComment = createAsyncThunk("pages/createComment", async function(params,thunkApi){
+
+   const {profileId,
+          text,
+          pageId,
+          parentCommentId,
+          
+        
+       }=params
+  const commentRef = collection(db,'page',pageId,PageComment.comment)
+  const id = doc(commentRef).id
+
+ 
+ const created = Timestamp.now()
+//  const page = 
+  try{
+
+    setDoc(doc(db,"page", pageId,PageComment.className,id), { id,
+      profileId: profileId,
+      text: text,
+      pageId:pageId,
+      parentCommentId:parentCommentId,
+      approvalScore:0.0,
+      created:created})
+      const comment =new PageComment(id,text,pageId,profileId,parentCommentId,0.0)
+  
+  return { comment }
+  }catch(error){
+   
+    return {
+      error: new Error(`Error: Create Comment ${error.message}`)
+    }
+  }
+
+
+})
+const fetchCommentsOfPage = createAsyncThunk("pages/fetchCommentsOfPages",async (params,thunkApi)=>{
+  try{
+    const {page} = params
+  const ref = collection(db,"page",page.id,PageComment.className)
+
+  const snapshot =await getDocs(ref)
+
+  let commentList = []
+  snapshot.docs.forEach(doc => {
+        const pack = doc.data();
+        const { id,
+      profileId,
+      text,
+      pageId,
+      parentCommentId,
+      approvalScore,
+      created}=pack
+     const comment = new PageComment(id,text,pageId,profileId,parentCommentId,approvalScore,created)
+      
+      commentList = [...commentList, comment]
+    })
+return {
+
+  commentList: commentList,
+}
+
+
+}catch(err){
+const error = err??new Error("Error: Fetch Comments"+err.message)
+return {error }
+}}
+
+)
 const pagesLoading = createAction("PAGES_LOADING", function prepare(){
     return {
         payload: {
@@ -515,5 +606,6 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
           clearPagesInView,
           saveRolesForPage,
           updatePage,
-          fetchEditingPage
+          fetchEditingPage,
+          appendSaveRolesForPage
         } 

@@ -2,21 +2,50 @@
 
 
 .main-bar{
-    flex: 6
+    min-width: 40rem;
+ 
+    margin: auto 4rem;
+    justify-content: center;
+    
+    
+    
+}
+.main-bar .list-item{
+    margin: auto;
+}
+
+.container-row{
+    padding-top: 2em;
+    
 }
 .left-side-bar{
-    flex: 2;
+    /* flex: 2; */
     display: flex;
     flex-direction: column;
 }
-
+.left-side-bar ul{
+    /* flex: 2; */
+    display: flex;
+    flex-direction: column;
+}
 .right-side-bar{
-    flex: 2
+    background-color: aqua;
+    width: 20rem;
+    padding-left: 1em;
+    padding-top: 1em;
+   
+ 
+}
+.profile-pic-container{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin: auto;
+    background-color: blueviolet;
 }
 .profile-pic{
-    width:100px;
+    width:10em;
     height: auto;
-    border: 2px solid
 }
 .btn-primary{
     background-color: gainsboro!important;
@@ -43,12 +72,23 @@
     height: 11vh;
 
 }
+
+.content-list .btn-row{
+    background-color: burlywood;
+    margin: auto;
+    padding: 5px 50px;
+}
 .list-item a {
     display: flex;
     flex-direction: row;
     padding: 0px 50px;
    
 
+}
+
+.list-item button {
+    padding: 0em 1em;
+    margin: 0px .5em;
 }
 .content{
     height: 100rem;
@@ -57,7 +97,20 @@
     display: flex;
     flex-direction: row;
     padding-top: 1em;
+    padding-bottom:1em;
+    background-color: aliceblue;
+    border-bottom: 1px solid gray;
     
+}
+.content-list{
+    background-color: red;
+    height: auto;
+    min-height: 40rem;
+}
+.content-list .content{
+    background-color: aqua;
+    height: 35em;
+    margin: 1em;
 }
 .nav-item i{
     color:green;

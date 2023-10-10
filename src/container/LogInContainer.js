@@ -1,10 +1,28 @@
-import { Button } from 'bootstrap'
 import React ,{useState,useEffect,useLayoutEffect} from 'react'
 import "../App.css"
 import { logIn,signUp} from '../actions/UserActions';
 import { connect,useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
-
+import { TextField ,Checkbox, FormControlLabel,Button} from "@mui/material"
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { styled } from '@mui/material/styles';
+import { TextareaAutosize } from '@mui/base/TextareaAutosize'
+import { uploadProfilePicture } from '../actions/UserActions';
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
+const style = theme =>({
+    textField: {
+        width:"100%"}
+})
 function LogInContainer(props) {
     const dispatch = useDispatch()
     const [suUsername, setSuUsername] = useState('');
@@ -19,7 +37,13 @@ function LogInContainer(props) {
     const handleNewUser = (event) => {
         event.preventDefault();
        
-        const params ={email:suEmail,password:suPassword,username:suUsername,profilePicture:profilePicture,selfStatement:selfStatement,privacy:privacy}
+        const params ={email:suEmail,
+                        password:suPassword,
+                        username:suUsername,
+                        profilePicture:profilePicture,
+                        selfStatement:selfStatement,
+                        privacy:privacy}
+                      
         dispatch(signUp(params)).then((result) => {
          
             if (result.payload.profile!=null){
@@ -28,16 +52,26 @@ function LogInContainer(props) {
         }).catch((err) => {
             
         });;
-        // Perform form submission logic here, e.g., sending data to the server
-        
+ 
     };
+    const handleProfilePicture =(e)=>{
+        const files = Array.from(e.target.files)
+        const params = { file: files[0]
+        }
+        dispatch(uploadProfilePicture(params)).then((result) => {
+            const { payload } = result
+            if(payload!=null){
+            const {url}= payload
+            console.log(`docuuns ${url}`)
+            setProfilePicture(url)
+            }
+        })
+    }
 
     const handleLogIn = (event)=>{
         event.preventDefault()
         const params ={email:liEmail,password:liPassword}
         dispatch(logIn(params)).then((result) => {
-            // console.log(`result ${JSON.stringify(result)}`)
-            // if (result.payload.profile!=null){
         if(result.error==null){
            navigate("/profile/home")
            }
@@ -53,7 +87,9 @@ function LogInContainer(props) {
                         setUsername={setSuUsername}
                         setEmail={setSuEmail} 
                         setPassword={setSuPassword}
-                        setProfilePicture={setProfilePicture}
+                        setSelfStatement={setSelfStatement}
+                        profilePicture={profilePicture}
+                        setProfilePicture={handleProfilePicture}
                         setPrivacy={setPrivacy}
                         handleSubmit={handleNewUser}/>
             <LogInCard  password={liPassword} 
@@ -65,34 +101,142 @@ function LogInContainer(props) {
     )
 }
 
-
+const inputStyle = {
+    width: '20em'
+}
 function SignInCard(props) {
-
+    let img = (<div></div>)
+    if(props.profilePicture){
+        img = (<img src={props.profilePicture} alt=""/>)
+    }
     return (<div className='sign-card'>
-                <form onSubmit={props.handleSubmit} >
-                    <input  type="text"
-                            name='username' 
-                            placeholder='Usernmae'
+        <div id="sign-in">
+        <h1> Sign Up</h1>
+                <form 
+                onSubmit={
+                    props.handleSubmit
+                   }
+                     >
+                     <div > 
+                    <div className="username">
+                    <TextField
+                            label='Username'
                             value={props.username}
-                            onChange={(e) => props.setUsername(e.target.value)}/>
-                    <input
-                        type="email" placeholder='E mail' value={props.email} onChange={(e) => props.setEmail(e.target.value)}
+                            onChange={(e) =>
+                            { 
+                                props.setUsername(e.target.value)
+                            }}
+                            
+                            InputProps={{
+                                style: {
+                                    width: inputStyle.width,
+                                }
+                            }}
+                            />
+                    </div>
+                    <div className="email">
+                    <TextField 
+                        label="E-mail" 
+                        value={props.email} 
+                        onChange={(e) =>{
+                           props.setEmail(e.target.value)
+                        }}
+                         
+                        InputProps={{
+                            style: {
+                                width: inputStyle.width,
+                            }
+                        }}
                     />
-                    <label>Private:<input name="privacy" onInput={(e)=>props.setPrivacy(e.target.value)}type="checkbox"/></label>
-                    <textarea name="selfStatement"/>
-                    <input type='text' value={props.password} name='password'placeholder='Password' onChange={(e) => props.setPassword(e.target.value)}/>
-            <input type="file" name ='profile_picture' onInput={(e)=>props.setProfilePicture(e.target.value)}/>
-            <button type="submit">Sign Up</button>
+                    </div>
+                    </div>
+                    <div className='privacy'>
+                    <FormControlLabel
+                        label="Private"
+                        control={
+                            <Checkbox 
+                                onChange={
+                                    (e)=>{
+                                       props.setPrivacy(e.target.value)
+                                    }
+                                   }
+                                    />}
+                    />
+                    </div>
+                    <div id="self-statement"> 
+                        <h6>Self Statement</h6>
+                        <TextareaAutosize 
+                        name="selfStatement" onChange={(e)=>props.setSelfStatement(e.target.value)}minRows={3}
+                        style={
+                            {
+                                        width: inputStyle.width,
+                                }
+                        }
+                      
+                        />
+                    </div>
+                    <TextField value={props.password}
+                                label="Password"
+                                onChange={(e) => 
+                                props.setPassword(e.target.value)}
+                                InputProps={{
+                                    style: {
+                                        width: inputStyle.width,
+                                }
+                            }}/>
+                    <div className='file'>
+                                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                   
+                    Upload Picture
+                    <VisuallyHiddenInput type="file"  name ='profile_picture'
+                        onInput={(e)=>
+                        props.setProfilePicture(e)}/>
+
+                    </Button>
+                    {img}
+                    </div>
+            <div className='button'>
+
+         
+            <Button variant="contained" type="submit">Sign Up</Button>
+            </div>
         </form>
+        </div>
     </div>)
 }
 
 function LogInCard(props){
     return(<div className='sign-card'>
-        <form onSubmit={props.handleSubmit} >
-            <input type="text" value={props.email} name='email'placeholder='email' onChange={(e) => props.setEmail(e.target.value)}/>
-            <input type='text' value={props.password} name='password'placeholder='Password'onChange={(e) => props.setPassword(e.target.value)}/>
-            <button type="submit">Log In</button>
+        <h1> Log In</h1>
+        <form  id="login"
+           onSubmit={props.handleSubmit}
+            >
+                <div className="email">
+            <TextField
+                label="E-mail"
+                value={props.email} 
+                name='email'placeholder='email' 
+                onChange={(e) => props.setEmail(e.target.value)}
+                InputProps={{
+                    style: {
+                        width: inputStyle.width,
+                }}}
+                
+                />
+                </div>
+                <div className="password">
+            <TextField label="Password"
+            value={props.password} 
+            name='password'placeholder='Password'
+            onChange={(e) => props.setPassword(e.target.value)}
+            InputProps={{
+                style: {
+                    width: inputStyle.width,
+            }}}
+            
+            />
+            </div>
+            <Button variant="contained" type="submit">Log In</Button>
         </form>
     </div>)
 }

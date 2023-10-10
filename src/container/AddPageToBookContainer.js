@@ -6,7 +6,7 @@ import { useEffect ,useState} from "react"
 import { fetchArrayOfPages } from "../actions/PageActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import DashboardItem from "../components/DashboardItem"
-import "../styles/BookView.css"
+
 function AddPageToBookContainer({books,pageIdList}){
     const pathParams = useParams()
     const dispatch = useDispatch()

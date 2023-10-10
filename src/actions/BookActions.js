@@ -1,7 +1,7 @@
 import { createAsyncThunk ,createAction} from "@reduxjs/toolkit"
 import Book from "../domain/models/book"
 import BookRole from "../domain/models/bookrole"
-import {where,query,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc,deleteDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, updateDoc} from "firebase/firestore"
+import {where,query,arrayUnion,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc,deleteDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, updateDoc} from "firebase/firestore"
 import { db } from "../core/di"
 
 const getPublicBooks = createAsyncThunk(
@@ -473,6 +473,28 @@ const fetchBookRoles = createAsyncThunk("books/fetchBookRoles",async (params,thu
   }
 
 })
+const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",async (params,thunkApi)=>{
+  try {
+    const { bookIdList,
+            readers,
+            commenters,
+            } = bookIdList
+        bookIdList.forEach(id=>{
+            let ref =collection(db,'book',id)
+            updateDoc(ref,{
+              readers: arrayUnion(readers),
+              commenters: arrayUnion(commenters),
+            })
+
+        }
+
+        )
+  }catch(e){
+    return {
+      error: new Error(`Error: SAVE BOOK ROLES ${e.message}`)
+    }
+  }
+})
 const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
   let {bookList} = params
   return {
@@ -492,4 +514,5 @@ const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
             saveRolesForBook,
             fetchBookRoles,
             updateBook,
-            setBooksToBeAdded}
+            setBooksToBeAdded,
+            appendSaveRolesFoBook}

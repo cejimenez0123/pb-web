@@ -1,11 +1,10 @@
 import { useParams } from "react-router-dom"
 import { useDispatch,useSelector } from "react-redux"
 import { useState,useEffect } from "react"
-import { fetchBook,fetchBookRoles,saveRolesForBook,updateBook } from "../actions/BookActions"
+import { fetchBook,saveRolesForBook,updateBook } from "../actions/BookActions"
 import "../styles/EditBook.css"
 import { fetchAllProfiles } from "../actions/UserActions"
-import Page from "../domain/models/page"
-import { fetchArrayOfPages } from "../actions/PageActions"
+import {  fetchArrayOfPages } from "../actions/PageActions"
 import { MenuItem } from '@mui/base/MenuItem';
 import { Dropdown } from '@mui/base/Dropdown';
 import { MenuButton } from '@mui/base/MenuButton'
@@ -16,6 +15,8 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import BookRole from "../domain/models/bookrole"
 import { RoleType } from "../core/constants"
 import Profile from "../domain/models/profile"
+import { TextareaAutosize } from '@mui/base/TextareaAutosize'
+import { TextField ,Checkbox, FormControlLabel,Button} from "@mui/material"
 
 function EditBookContainer({book,pages}){
     
@@ -30,7 +31,7 @@ function EditBookContainer({book,pages}){
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const [bookTitle,setBookTitle] = useState("")
     const [bookIsPrivate,setBookPrivacy]= useState(false)
-    const [bookPurpose,savePage] = useState("")
+    const [bookPurpose,setBookPurpose] = useState("")
     const [writingIsOpen,setWritingIsOpen]= useState(false)
     const [hasMore,setHasMore]=useState(false)
     const [profileHasMore,setProfileHasMore]= useState(false)
@@ -71,7 +72,7 @@ function EditBookContainer({book,pages}){
             const editors = bookRoles.filter(role => role.role == RoleType.editor)
             const writers = bookRoles.filter(role => role.role == RoleType.writer)
         const params = {
-            bookId: book.id,
+            book: book,
             readers,
             commenters,
             editors,
@@ -79,6 +80,8 @@ function EditBookContainer({book,pages}){
     
 
         dispatch(saveRolesForBook(params))
+        
+       
         }}
     
     const fetchProfile=()=>{
@@ -204,7 +207,7 @@ const roleList = ()=>{
             <div className="book-roles">
                 {bookRolesView()}
             </div>
-            <div className="profile-list">
+            <div className="role-list">
         <InfiniteScroll
         dataLength={profileList.length}
         next={fetchProfile}
@@ -215,8 +218,12 @@ const roleList = ()=>{
         >
             {profileList.map(profile=>{
 
-                return(<div key={profile.id}>
-                    {profile.username}
+                return(<div className="role-item" key={profile.id}>
+                    
+                    <div>
+                        {profile.username}
+                    </div>
+                    <div>
                     <Dropdown>
                         <MenuButton>
                             Role
@@ -235,7 +242,8 @@ const roleList = ()=>{
                                 Reader
                             </MenuItem>
                         </Menu>
-                    </Dropdown>
+                    </Dropdown> 
+                    </div>
                 </div>)
             })}
         </InfiniteScroll>
@@ -259,13 +267,18 @@ const sortableList = ()=>{
         </div>)
    
     }else  if(!!listItems){
-        return(  <SortableList
+
+        return( <div id="sort-list">
+
+         <SortableList
+        
             items={listItems}
             setItems={setListItems}
             itemRender={(item)=>{
                return sortItem(item)}}>
             
-            </SortableList>)
+            </SortableList>
+            </div>)
     }else{
         return(<div>
             Loading...
@@ -277,8 +290,8 @@ const sortableList = ()=>{
         return((
             <div className="sort-item">
             <h1>{item.item.title} </h1>
-            <button type="button" onDoubleClick={()=>handleRemove(item.item)
-            }>Remove</button>
+            <Button  onDoubleClick={()=>handleRemove(item.item)
+            }>Remove</Button>
         </div>))
     }
     const handleTitleChange = (e)=>{
@@ -299,43 +312,62 @@ const sortableList = ()=>{
     }
     if(!bookLoading && book!=null){
         
-    
+        const form = ()=>{
+            return( <form onSubmit={(e)=>handleSave(e)}>
+                <TextField
+                    onChange={(e)=>handleTitleChange(e)}
+                    id="standard-required"
+                    label="Title"
+                    defaultValue={bookTitle}
+                />
+                <FormControlLabel 
+                control={<Checkbox checked={bookIsPrivate} onChange={()=>{
+                    setBookPrivacy(!bookIsPrivate)
+                }}/>} label="Private" 
+                   value={bookIsPrivate}/>
+                     <FormControlLabel 
+                        control={<Checkbox 
+                                    checked={writingIsOpen}
+                                    onChange={()=>{
+                                        setWritingIsOpen(!writingIsOpen) 
+                                    }}/>} 
+                                    label="Writing is Open to Others"
+                                />
+                   <div id="purpose">
+                    <label>Purpose</label>         
+                    <TextareaAutosize value={bookPurpose}
+                                                minRows={3} 
+                                                onChange={(e)=>{
+                                                   
+                                            }} 
+                                                
+                                        />
+                         </div> 
+                
+                    <Button  variant="contained"type="submit">Save</Button>
+                </form>)
+        }
 
     return(<div className="container">
-         
-        <div className="left-side-bar">
-            <h5> {book.title}</h5>
-            <h6> {book.purpose}</h6>
-        
-            
-        </div>
-        <div className="main-bar">
-        <div>
-        <div>
+            <div className="left-side-bar">
+               
+            </div>
+            <div className="main-bar">
+           
+            <div>
 
       
             {sortableList()}
     </div>
 
-    </div>
+ 
         </div>
         <div className="right-side-bar">
-            <form onSubmit={(e)=>handleSave(e)}>
-                <input onChange={(e)=>handleTitleChange(e)} type="text" className="form-control" value={bookTitle}/>
-                <input onChange={()=>{
-                    setBookPrivacy(!bookIsPrivate)
-                }}type="checkbox" name="privacy" value={bookIsPrivate}/>
-                <input onChange={()=>{
-                    setWritingIsOpen(!writingIsOpen)
-                }
-                }type="checkbox" name="writingIsOpen" value={writingIsOpen}/>
-                <button type="submit">Save</button>
-            </form>
             <div className="roles">
-                <div>
-                    {roleList()}
-                </div>
-
+                {form()}
+            <div>
+                {roleList()}
+            </div>
             </div>
         </div>
 

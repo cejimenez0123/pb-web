@@ -6,9 +6,10 @@ import { getProfileBooks, updateBook } from "../actions/BookActions"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import Page from "../domain/models/page"
-import { UseSelector, useSelector } from "react-redux/es/hooks/useSelector"
+import {  useSelector } from "react-redux/es/hooks/useSelector"
 import { getCurrentProfile } from "../actions/UserActions"
-import { createBook,saveRolesForBook } from "../actions/BookActions"
+import { createBook} from "../actions/BookActions"
+import { appendSaveRolesForPage } from "../actions/PageActions"
 import PageListItem from "../components/PageLIstItem"
 export default function CreateBookContainer({pagesInView,booksInView}){
         const navigate = useNavigate()
@@ -62,16 +63,16 @@ export default function CreateBookContainer({pagesInView,booksInView}){
         let readers = [...page.readers,...book.readers]
         let commenters = [...page.commenters,...book.commenters]
         let pageIdList = book.pageIdList
-        const roleParams = {
-            page,
-          readers,
-          commenters,
-          editors:book.editors,
-          writers:book.writers
-        }
-        dispatch(saveRolesForPage(roleParams))
-        
         pageIdList.push(page.id)
+        const roleParams = {
+            pageIdList,
+            readers,
+            commenters,
+         
+        }
+        dispatch(appendSaveRolesForPage(roleParams))
+        
+       
         const params ={
             book,
             title:book.title,

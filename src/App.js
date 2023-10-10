@@ -1,10 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
 
-import { connect,useSelector,useDispatch} from "react-redux"
-import { BrowserRouter,HashRouter, Route, Routes, Redirect,withRouter,Navigate} from 'react-router-dom';
+import { connect,useDispatch} from "react-redux"
+import {Route, Routes,} from 'react-router-dom';
 import { getPublicPages } from './actions/PageActions';
-import PageReducer from './reducers/PageReducer';
 import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
@@ -17,7 +16,7 @@ import CreateBookContainer from './container/CreateBookContainer';
 import CreateLibraryContainer from './container/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
-import { logIn,getCurrentProfile } from './actions/UserActions';
+import { getCurrentProfile } from './actions/UserActions';
 import { fetchBookmarkLibrary } from './actions/LibraryActions';
 import { getPublicBooks } from './actions/BookActions';
 import history from './history';

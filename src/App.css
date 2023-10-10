@@ -3,6 +3,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-image: linear-gradient(blue,white);
 }
 
 
@@ -11,18 +12,64 @@
   pointer-events: none;
 }
 .sign-card{
-  /* display: flex;
-  flex-direction: column; */
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  place-items: center;
-  width: 20vw;
+  width: 25em;
+  border: 1px solid black;
+    background-color: whitesmoke;
+ 
 
+}
+#sign-in{
+  padding-top: 4em;
+}
+.sign-card .username {
+  padding-top: 1em ;
+ 
+
+
+}
+.navbar-brand{
+  padding-left: 1em;
+}
+#login .email{
+  padding-bottom: 1em;
+}
+#login form{
+  background-color: #61dafb;
+}
+#login .password{
+  padding-bottom: 2em;
+}
+
+
+.sign-card .email{
+  padding-top: 1em;
 }
 #LogInContainer{
   display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
-.sign-card input{
-  margin: 20px 20px 20px 20px;
+#LogInContainer {
+  padding: 2rem 0rem;
+}
+#sigin div:nth-child(1) {
+  /* Your styles for the second div here */
+  background-color: #61dafb;
+  width: 100%;
+ padding: 1em;
+}
+.sign-card textarea{
+  border: 1px solid black;
+  padding: 1em 0em;
+}
+.sign-card .button{
+  padding: 0em 0em 2em 0em;
+}
+.sign-card .file{
+  padding: 1em;
 }
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -41,9 +88,11 @@
   color: white;
 }
 
+
 .App-link {
   color: #61dafb;
 }
+
 .container-row{
   display: flex;
   flex-direction: row;

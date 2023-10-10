@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom"
 import {useState,useEffect} from "react"
 import { useDispatch,useSelector } from "react-redux"
-import { getProfileBooks } from "../actions/BookActions"
-import { getProfilePages,fetchArrayOfPages} from "../actions/PageActions"
-import { createLibrary,getProfileLibraries,updateLibrary,updateLibraryContent } from "../actions/LibraryActions"
+import { appendSaveRolesFoBook,  } from "../actions/BookActions"
+
+import {  appendSaveRolesForPage} from "../actions/PageActions"
+import { createLibrary,getProfileLibraries,updateLibraryContent } from "../actions/LibraryActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import "../styles/CreateLibrary.css"
 
@@ -20,8 +21,6 @@ export default function CreateLibraryContainer(props){
     const pagesToBeAdded = useSelector(state => state.pages.pagesToBeAdded)
     const [libIsPrivate,setLibIsPrivate]= useState(false)
     const [writingIsOpen,setWritingIsOpen]= useState(false)
-    // const [pagesToBeAdded,setPagesToBeAdded]=useState([])
-    // const [booksToBeAdded, setBooksToBeAdded]=useState([])
     const [contentToBeAdded,setContentsToBeAdded]= useState([])
     const [listItems,setListItems]=useState([])
     const dispatch = useDispatch()
@@ -29,70 +28,63 @@ export default function CreateLibraryContainer(props){
     const handleLibTitleChange = (e)=>{
         setLibTitle(e.target.value)
     }
-    const fetchProfilePages=()=>{
-        if(!!currentProfile){
-            const params = {profileId:currentProfile.id}
-            dispatch(getProfilePages(params)).then(result=>{
-                const {payload} = result
-                setListItems(prevState=>{
-                    const list = payload.pageList.map(page=>{
-                        return {type: "page",item: page}
-                })
-                    const differences = list.filter(item=> {return !listItems.includes(item)})
+    // const fetchProfilePages=()=>{
+    //     if(!!currentProfile){
+    //         const params = {profileId:currentProfile.id}
+    //         dispatch(getProfilePages(params)).then(result=>{
+    //             const {payload} = result
+    //             setListItems(prevState=>{
+    //                 const list = payload.pageList.map(page=>{
+    //                     return {type: "page",item: page}
+    //             })
+    //                 const differences = list.filter(item=> {return !listItems.includes(item)})
 
-                    if(differences.length>0){
+    //                 if(differences.length>0){
 
                         
-                        return [...prevState,...differences]
-                     }else{
-                         return [...prevState]
-                     }})
+    //                     return [...prevState,...differences]
+    //                  }else{
+    //                      return [...prevState]
+    //                  }})
                     
                 
-                })}}
+    //             })}}
     
  
-    const fetchProfileBooks=()=>{
-        if(currentProfile){
-            const params = {profileId:currentProfile.id}
-            dispatch(getProfileBooks(params)).then(result =>{
-                const {payload}= result
+    // const fetchProfileBooks=()=>{
+    //     if(currentProfile){
+    //         const params = {profileId:currentProfile.id}
+    //         dispatch(getProfileBooks(params)).then(result =>{
+    //             const {payload}= result
             
-            setListItems(prevState=>{
-            const list = payload.bookList.map(book=>{
-                    return {type: "book",item: book}
-            })
-            const differences = list.filter((item)=>{return !listItems.includes(item)})
-            if(differences.length>0){
+    //         setListItems(prevState=>{
+    //         const list = payload.bookList.map(book=>{
+    //                 return {type: "book",item: book}
+    //         })
+    //         const differences = list.filter((item)=>{return !listItems.includes(item)})
+    //         if(differences.length>0){
                
                
                
-               return [...prevState,...differences]
-            }else{
-                return [...prevState]
-            }})
-            })
-    }}
-    const getBookmarkLibraryPages=()=>{
-
-    }
-    const fetchBooks=()=>{
-        fetchProfileBooks()
-    }
-    const fetchPages=()=>{
-    
-        // fetchProfilePages()
-    }
+    //            return [...prevState,...differences]
+    //         }else{
+    //             return [...prevState]
+    //         }})
+    //         })
+    // }}
+  
+   
+  
     
     const onClickAdd=(hash)=>{  
-        pagesToBeAdded.map((page)=>{
+    //     pagesToBeAdded.map((page)=>{
             
-        let commenters = [...page.commenters,...hash.commenters]
-        let readers = [...page.readers, ...hash.readers]
-        page.readers = readers
-        page.commenters = commenters
-        return page
-    })
+    //     let commenters = [...page.commenters,...hash.commenters]
+    //     let readers = [...page.readers, ...hash.readers]
+    //     page.readers = readers
+    //     page.commenters = commenters
+    //     return page
+    // })
         
         let pIdList = pagesToBeAdded.map(page=>{ return page.id; });
         let bIdList = booksToBeAdded.map(book=>{ return book.id; });
@@ -110,6 +102,19 @@ export default function CreateLibraryContainer(props){
             pageIdList:pageIdList,
             bookIdList:bookIdList
               }
+        const bookRoleParams = {
+            bookIdList,
+            readers: hash.readers,
+            commenters: hash.commenters
+        }
+
+        const pageRoleParams = {
+            pageIdList,
+            reader: hash.readers,
+            commenters: hash.commenters
+        }
+        dispatch(appendSaveRolesFoBook(bookRoleParams))
+        dispatch(appendSaveRolesForPage(pageRoleParams))
         dispatch(updateLibraryContent(params)).then(result=>{
             if(result.error==null){
                 navigate(`/library/${hash.id}`)
@@ -119,14 +124,14 @@ export default function CreateLibraryContainer(props){
     }
         
     
-    const onClickRemove=(hash)=>{
-        const toBeAdded = [...contentToBeAdded]
-        const newContent = toBeAdded.filter(aHash=>{
-           return aHash.item.id != hash.item.id
-        })
-        setContentsToBeAdded(newContent)
+    // const onClickRemove=(hash)=>{
+    //     const toBeAdded = [...contentToBeAdded]
+    //     const newContent = toBeAdded.filter(aHash=>{
+    //        return aHash.item.id != hash.item.id
+    //     })
+    //     setContentsToBeAdded(newContent)
 
-    }
+    // }
     const handleOnSubmit=(e)=>{
         // const pageIdList = pagesToBeAdded.map(p=>p.id)
         const filterPages = contentToBeAdded.filter(hash => hash.type == "page").map(
@@ -269,24 +274,7 @@ export default function CreateLibraryContainer(props){
             return(<div></div>)
         }
     }
-    // const contentToBeAddedList = ()=>{
-    //    console.log(`CONTENT ATO ${JSON.stringify(contentToBeAdded)}`)
-    //    return (<div className="content-to-be-added">
-    //     {contentToBeAdded.map(hash=>{
-    //            return (<div key={hash.item.id} className="item">
-    //            <div>
-    //            <div>
-    //               {hash.type}
-    //            </div>
-    //            <h6><div>{hash.item.title}</div></h6>
-    //            </div>
-    //            <div>
-    //                <button onClick={()=>onClickRemove(hash) }>Remove</button>
-    //            </div>
-    //           </div>
-    //           )  
-    //     })}
-    //     </div>)}
+   
         
     
 return(<div>
@@ -297,7 +285,7 @@ return(<div>
             </div>
         </div>
         <div className="main-side-bar">
-            {/* {pageList()} */}
+          
             {libraryList()}
         </div>
         <div className="right-side-bar">

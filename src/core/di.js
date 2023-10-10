@@ -4,6 +4,7 @@ import firebase from "firebase/compat/app";
 import { getAuth, signInAnonymously,setPersistence,browserSessionPersistence } from "firebase/auth"
 import "firebase/compat/firestore"
 import { getFirestore,Firestore,initializeFirestore} from "firebase/firestore";
+import { getStorage } from "firebase/storage"
 // import { firebaseConfig } from '../fire';
 
 const firebaseConfig = {
@@ -18,7 +19,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
-
+const storage = getStorage(app)
 signInAnonymously(auth)
 
 .then(() =>{})
@@ -41,4 +42,4 @@ signInAnonymously(auth)
 const db =getFirestore(app)
 
 
-  export {db,app,auth}
+  export {db,app,auth,storage}

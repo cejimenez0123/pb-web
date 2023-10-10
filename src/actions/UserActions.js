@@ -4,8 +4,8 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword,setPersisten
 import {where,query,collection,getDocs,setDoc,getDoc,doc,orderBy,limit,Firestore , QuerySnapshot, DocumentData, DocumentSnapshot, updateDoc ,Timestamp} from "firebase/firestore"
 import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
-import { use } from "react";
-
+import {  ref, uploadBytes,uploadBytesResumable,getDownloadURL  } from "firebase/storage";
+import { storage } from "../core/di";
 // import {auth} from "../core/di"
 const logIn = createAsyncThunk(
     'users/logIn',
@@ -68,39 +68,40 @@ const signUp = createAsyncThunk(
     
         new Library(libId,"Saved")
         const timestamp = Timestamp.now()
-         setDoc(doc(db,"library",libId),{
+        await setDoc(doc(db,"library",libId),{
                 id:libId,
                 name:"Saved",
                 profileId:pId,
+                purpose:"Anything you find interesting can be saved here, for future use",
+                pageIdList:[],
+                bookIdList:[],
+                writingIsOpen:false,
+                privacy:true,
+                editors:[],
+                writers:[],
+                commmenters:[],
+                readers:[],
                 created: timestamp
         })
         
-        setDoc(doc(db, "user", uId), {
+       await setDoc(doc(db, "user", uId), {
             id:uId,
             defaultProfileId: pId,
             email: email,
             created: timestamp
         });
-        const { username,selfStatement,privacy} = params
-//  // email:suEmail,password:suPassword,username:suUsername,profilePicture:profilePicture,selfStatement:selfStatement,privacy:privacy
-        // let username = params["username"] 
-//         // console.log(`username: ${username}`)
-        // let selfStatement = params["selfStatement"]
-//     //   console.log(`selfStatement ${selfStatement}`)
-    //   let privacy = params["privacy"]
-//     //   console.log(`privacy ${privacy}`)
-      const profile = new Profile(pId,username,"profilePicture",selfStatement,libId,libId,uId,privacy)
-//       console.log(`something ${profile==null}`)
+        const { username,profilePicture,selfStatement,privacy} = params
 
-      setDoc(doc(db,"profile", pId),{
+      const profile = new Profile(pId,username,profilePicture,selfStatement,libId,libId,uId,privacy)
+      await setDoc(doc(db,"profile", pId),{
         id:pId,
         username,
-      profilePicture: "profilePicture",
-        selfStatement:"selfStatement",
+      profilePicture: profilePicture,
+        selfStatement:selfStatement,
         bookmarkLibraryId:libId,
         homeLibraryId:libId,
         userId:uId,
-        privacy:false,
+        privacy:privacy,
         created:timestamp
       })
       return {
@@ -187,8 +188,8 @@ const updateProfile = createAsyncThunk("users/updateProfile",
         )
 const fetchAllProfiles = createAsyncThunk("users/fetchAllProfiles",async (state,{params})=>{
     try {
-    let  ref = collection(db,"profile")
-    let snapshot = await getDocs(ref)
+    let  profileRef = collection(db,"profile")
+    let snapshot = await getDocs(profileRef)
     let profileList = []
     snapshot.docs.forEach(doc => {
         const { id } = doc
@@ -222,10 +223,27 @@ const fetchAllProfiles = createAsyncThunk("users/fetchAllProfiles",async (state,
         }
     }
 })
+const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async (params,thunkApi)=>{
+    try {
+    const {file }= params
+    const fileName = `profile/profilePicture-${file.name}.jpg`
+    const storageRef = ref(storage, fileName);
+    const blob = new Blob([file])
+    const upload = await uploadBytes(storageRef, blob)
+    console.log(`Uploading profile picture ${JSON.stringify(upload)}`)
+    const url = await getDownloadURL(storageRef)
+        return{ 
+            url: url
+        }
+    }catch(err){
+        return{ error: new Error("Error: UPLOAD Profile Picture" + err.message) }
+    }
 
+})
 
 export {logIn,
         signUp,
         getCurrentProfile,
         updateProfile,
-        fetchAllProfiles}
+        fetchAllProfiles,
+        uploadProfilePicture}

@@ -6,12 +6,12 @@ import { PageType } from "../core/constants";
 import Book from "../domain/models/book";
 import Library from "../domain/models/library";
 import { setBooksToBeAdded } from "../actions/BookActions";
-import { MenuItem } from '@mui/base/MenuItem';
-import { Dropdown } from '@mui/base/Dropdown';
-import { MenuButton } from '@mui/base/MenuButton'
-import { Menu } from '@mui/base/Menu';
-import {useNavigate} from 'react-router-dom'
-import { Button } from "@mui/material";
+import Dropdown from '@mui/joy/Dropdown';
+import IconButton from '@mui/joy/IconButton';
+import Menu from '@mui/joy/Menu';
+import MenuButton from '@mui/joy/MenuButton';
+import MenuItem from '@mui/joy/MenuItem';
+import MoreVert from '@mui/icons-material/MoreVert'
 function ListItem({type,id,title,item}) {
     const [showPreview,setShowPreview] = useState(false)
     const navigate = useNavigate()
@@ -36,8 +36,8 @@ function ListItem({type,id,title,item}) {
 
           
             <Dropdown>
-                <MenuButton>
-                    ...
+                {/* <MenuButton >
+                   Update
                 </MenuButton>
                 <Menu>
                 <MenuItem onClick={()=>{
@@ -54,20 +54,62 @@ function ListItem({type,id,title,item}) {
                 <MenuItem>
                     Delete
                 </MenuItem>
-                </Menu>
-            </Dropdown>
+                </Menu> */}
+                <MenuButton
+    slots={{ root: IconButton }}
+    slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+  >
+    <MoreVert />
+  </MenuButton>
+  <Menu>
+  <MenuItem onClick={()=>{
+                    let params = { bookList: [item]}
+                    dispatch(setBooksToBeAdded(params))
+                    navigate(`/library/new`)
+                    }
+                    }> 
+                    Add to Library
+                </MenuItem>
+                <MenuItem onClick={handleEditClick}>
+                    Edit
+                </MenuItem>
+                <MenuItem>
+                    Delete
+                </MenuItem>
+    
+  </Menu>
+</Dropdown>
+
+            
             </div>
            )
         }else{
             return (<div>
-                <button onClick={()=>{
+                <Dropdown>
+  <MenuButton
+    slots={{ root: IconButton }}
+    slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+  >
+    <MoreVert />
+  </MenuButton>
+  <Menu>
+    <MenuItem onClick={()=>{
                     navigate(`/${type}/${id}/edit`)}
                 } type="button">
-                    Update
-                </button>
-                <button type="button">
+                    Edit</MenuItem>
+    <MenuItem type="button">
+                    Delete</MenuItem>
+    
+  </Menu>
+</Dropdown>
+                {/* <Button onClick={()=>{
+                    navigate(`/${type}/${id}/edit`)}
+                } type="button">
+                    Edit
+                </Button>
+                <Button type="button">
                     Delete
-                </button>
+                </Button> */}
             </div>)
            }
     }
