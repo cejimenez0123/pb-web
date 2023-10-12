@@ -12,6 +12,7 @@ import Book from '../domain/models/book'
 import Page from '../domain/models/page'
 import Library from '../domain/models/library'
 import ListItem from '../components/ListItem';
+import { Button } from "@mui/material";
 
 export default function ContentList({currentProfile,pagesInView,booksInView,librariesInView}){
     const [page,setPage] = useState(1)  
@@ -53,8 +54,8 @@ export default function ContentList({currentProfile,pagesInView,booksInView,libr
     const fetchPageData = () =>{
         if(currentProfile){
             const params = {profileId:currentProfile.id,page,groupBy:9}
-            setHasMoreBooks(true)
-             dispatch(getProfilePages(params)).then((result) => {
+                setHasMoreBooks(true)
+                dispatch(getProfilePages(params)).then((result) => {
                 setHasMorePages(false)
                 const newPage = page+1 
                 setPage(newPage)
@@ -174,15 +175,15 @@ export default function ContentList({currentProfile,pagesInView,booksInView,libr
     } 
     return(<div className="content-list">
                 <div className="btn-row">
-                                    <button onClick={()=>{
+                                    <Button className="btn" onClick={()=>{
                                         handleContentClick(Page.className())
                                         setListType(Page.className)
                                             contentList()
                                       
                                         }}>
                                         Page
-                                    </button>
-                                    <button onClick={()=>{
+                                    </Button>
+                                    <Button className="btn" onClick={()=>{
                                         handleContentClick(Book.className())
                                         setListType(Book.className)
                                         contentList();
@@ -190,14 +191,14 @@ export default function ContentList({currentProfile,pagesInView,booksInView,libr
                                     
                                         }}>
                                         Book
-                                    </button>
-                                    <button onClick={()=>{
+                                    </Button>
+                                    <Button className="btn" onClick={()=>{
                                             handleContentClick(Library.className())
                                         setListType(Library.className);
                                     
                                         }}>
                                         Library
-                                    </button>
+                                    </Button>
                 </div>
                          
                             <div

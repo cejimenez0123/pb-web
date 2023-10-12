@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "../Dashboard.css"
 import { setPageInView } from '../actions/PageActions'
 // import {getPagesComments} from "../../actions/PageActions"
@@ -11,21 +11,22 @@ import { useNavigate } from 'react-router-dom'
 function DashboardItem({page}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-const hanldeClickComment=()=>{
+const hanldeClickComment=(pageItem)=>{
+    console.log(`fsdwsa ${
+    JSON.stringify(pageItem)}`)
     const params = {
-        page: page
+        page: pageItem
     }
     dispatch(setPageInView(params))
-    navigate(`/page/${page.id}`)
+    navigate(`/page/${pageItem.id}`)
 }
 let pageDataElement = (<div></div>)
-console.log(`something ${page}`)
 switch(page.type){
     case PageType.text:
-        pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
-        pageDataElement = <img className='dashboard-content' src={page.data} alt={page.title}/>
+        pageDataElement = <img className='' src={page.data} alt={page.title}/>
     break;
     case PageType.video:
         pageDataElement = <video src={page.data}/>
@@ -35,15 +36,13 @@ switch(page.type){
     break;
 }
         return(<div className='dashboard-item'>
-            <style>
-                
-            </style>
+        
             <div className='dashboard-header'>
 
             </div>
-            <div className='' >
+           
                 {pageDataElement}
-            </div>
+            
             <div className='btn-row'>
                 <button>
                     Yea
@@ -51,7 +50,7 @@ switch(page.type){
                 <button>
                     Nah
                 </button>
-                <button onClick={hanldeClickComment}>
+                <button onClick={()=>hanldeClickComment(page)}>
                 
                     Comments
                 </button>

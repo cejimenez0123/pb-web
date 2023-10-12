@@ -6,10 +6,11 @@ import { getPublicBooks,
         getProfileBooks,
         fetchArrayOfBooksAppened,
         fetchArrayOfBooks,
-        fetchBookRoles,
+
         saveRolesForBook,
         updateBook,
-        setBooksToBeAdded
+        setBooksToBeAdded,
+        setBookInView
         } from "../actions/BookActions"
 import BookRole from "../domain/models/bookrole"
 
@@ -70,10 +71,6 @@ builder
 }).addCase(saveRolesForBook.fulfilled,(state,{payload})=>{
     state.bookRoles = payload.roleList
 
-}).addCase(fetchBookRoles.rejected,(state,{payload})=>{
-    state.error = payload.error
-}).addCase(fetchBookRoles.fulfilled,(state,{payload})=>{
-    state.bookRoles = payload.roleList
 }).addCase(updateBook.fulfilled,(state,{payload})=>{
     state.bookInView = payload.book
     state.loading = false

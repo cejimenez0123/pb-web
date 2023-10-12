@@ -10,6 +10,7 @@ import { RoleType } from "../core/constants";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchAllProfiles } from "../actions/UserActions";
 import { useDispatch } from "react-redux";
+import { Timestamp } from "firebase/firestore";
 export default function RoleList({getRoles,library}) {
     const dispatch = useDispatch()
     const [newRoles, setNewRoles ]= useState([])
@@ -23,7 +24,7 @@ export default function RoleList({getRoles,library}) {
             const {profileList } = payload
             const list = profileList.filter(profile=>{
                 const roleFound  = newRoles.find(role=>
-                    role.profileId == profile.id)
+                    role.profile.id == profile.id)
                 return !roleFound
             })
             setProfileList(list)
@@ -36,14 +37,29 @@ export default function RoleList({getRoles,library}) {
     useEffect(()=>{
         fetchProfiles()
     },[])
+    const setRoleList = ()=>{
+        if(library){        
+          let profiles = library.readers.map(id=>profilesInView.find(profile=>profile.id == id)
+            )  
+
+           let roleList = profiles.map(prof=>{return new LibraryRole(`${library.id}_${prof.id}`,prof,library.id,RoleType.reader)})           
+        setNewRoles(prevState=>{
+            return [...prevState,...roleList]
+        })
+    }
+    }
+    useEffect(()=>{
+        setOldRoles()
+        setRoleList()
+    },library)
     const handleChosingProfileRole =(profile,role)=>{
         const br = new LibraryRole( `${library.id}_${profile.userId}`,
-            profile.userId,
+            profile,
             library.id,
             role
             )
 
-   
+        
         if(role.length > 0){
         
             let profiles = profileList.filter(prof=>{
@@ -55,12 +71,39 @@ export default function RoleList({getRoles,library}) {
             setProfileList(profiles)
             
         }else{
-           let roles = newRoles.filter(role=>role.profile == profile.id)
+           let roles = newRoles.filter(role=>role.profile.id == profile.id)
            setNewRoles(roles) 
            setProfileList(prevState=>{
                 return [...prevState, profile]
             })
-        }}
+        }
+    }
+    const setOldRoles = ()=>{
+        if(library){
+            let writers =library.writers.map(wUId=> {
+               let profile = profilesInView.find(profile=>profile.userId == wUId)
+               let role =new LibraryRole("",profile,library.id,RoleType.writer)
+               return role
+            })
+           let editors = library.editors.map(wUId=> {
+               let profile = profilesInView.find(profile=>profile.userId == wUId)
+               let role =new LibraryRole("",profile,library.id,RoleType.editor)
+               return role
+            })
+            let readers = library.readers.map(wUId=> {
+                let profile = profilesInView.find(profile=>profile.userId == wUId)
+                let role =new LibraryRole("",profile,library.id,RoleType.reader)
+                return role
+             })
+            let commenters = library.commenters.map(wUId=> {
+                let profile = profilesInView.find(profile=>profile.userId == wUId)
+                let role =new LibraryRole("",profile,library.id,RoleType.commenter)
+                return role
+             })
+            let roleList = [...writers,...editors,...readers,...commenters]
+            setNewRoles(roleList)
+        }   
+    }
     
     
     const bookRolesView =  ()=>{
@@ -72,14 +115,15 @@ export default function RoleList({getRoles,library}) {
                             let username = ""
                             let id = ""
                             let profile = profilesInView.find(prof=>prof.id==role.profileId)
-                            if(profile){
-                                username=profile.username
-                                id = profile.id
-                            }
-                            return(<div key={id}>
+                            // if(profile){
+                            //     username=profile.username
+                            //     id = profile.id
+                            // }
+                            return(<div class="role-item" key={id}>
                                 <div>
-                                    {username}
+                                    {role.profile.username}
                                 </div>
+                                <div>
                                 <Dropdown>
                                     <MenuButton>
                                     {role.role}
@@ -102,6 +146,7 @@ export default function RoleList({getRoles,library}) {
                                         </MenuItem>
                                     </Menu>
                                 </Dropdown>
+                                </div>
                                 </div>)
                         })
                     }
@@ -113,10 +158,15 @@ export default function RoleList({getRoles,library}) {
         }
     }
         return ( 
-        <div>
-            <div className="book-roles">
+        <div className="role-list">
+           
+           <label>Contributors   </label>
+            <div className="item-roles">
+           
                 {bookRolesView()}
+                
             </div>
+           
             <div className="profile-list">
         <InfiniteScroll
         dataLength={profileList.length}
@@ -128,7 +178,7 @@ export default function RoleList({getRoles,library}) {
         >
             {profileList.map(profile=>{
 
-                return(<div key={profile.id}>
+                return(<div className="role-item" key={profile.id}>
                     {profile.username}
                     <Dropdown>
                         <MenuButton>

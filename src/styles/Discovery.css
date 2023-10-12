@@ -1,7 +1,4 @@
-/* .App {
-    font-family: sans-serif;
-    text-align: center;
-  } */
+
   
 .book-banner .book-banner-item {
     max-width: 150px;
@@ -9,11 +6,50 @@
     padding: 0 30px;
     object-fit: cover;
   }
-  
+
  .book-banner  img:last-of-type {
     padding-left: 0;
   }
-  
+  .discover-pair{
+    width: 50rem;
+    height: auto;
+    display: flex;
+    justify-content: space-around;
+    /* height: 10rem;
+    margin-top: 1em;
+    background-color: aliceblue; */
+  }
+  .discover-pair a{
+    width:100%;
+    background-color: red;
+  }
+  .content-item{
+    width: 50rem;
+    margin: 0 auto;
+    margin-top: 1em;
+    border: 1px solid gray;
+}
+
+.item-row{
+  justify-content: space-between;
+  padding:0 1em;
+}
+#discover .content{
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+.content-item .item-row{
+    background-color: white;
+      display: flex;
+      flex-direction: row;
+      height: auto;
+      padding-top:1em;
+      border-bottom: 1px solid black;
+      
+}
+ 
  .book-banner  .inner {
     position: relative;
     width: 100%;
@@ -25,7 +61,9 @@
     position: absolute;
     display: flex;
   }
-  
+  .book-banner{
+    margin-top: 3em;
+  }
 .book-banner   section {
     display: flex;
     animation: swipe var(--speed) linear infinite backwards;

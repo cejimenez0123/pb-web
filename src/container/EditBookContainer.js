@@ -176,7 +176,7 @@ const bookRolesView =  ()=>{
 }
 const handleChosingProfileRole =(profile,role)=>{
     const br = new BookRole( null,
-        profile.userId,
+        profile,
         book.id,
         role
         )
@@ -192,7 +192,7 @@ const handleChosingProfileRole =(profile,role)=>{
         setProfileList(profiles)
         
     }else{
-       let roles = newBookRoles.filter(bookRole=>bookRole.profile == profile.id)
+       let roles = newBookRoles.filter(bookRole=>bookRole.profile.id == profile.id)
        setNewBookRoles(roles) 
        setProfileList(prevState=>{
             return [...prevState, profile]
@@ -204,7 +204,7 @@ const roleList = ()=>{
     if(profileList!=null && profileList.length > 0){
         return ( 
         <div>
-            <div className="book-roles">
+            <div className="item-roles">
                 {bookRolesView()}
             </div>
             <div className="role-list">

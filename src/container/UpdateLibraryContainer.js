@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import {fetchArrayOfBooksAppened, fetchArrayOfBooks,getProfileBooks } from "../actions/BookActions"
-import {fetchArrayOfPagesAppened, fetchArrayOfPages,getProfilePages,clearPagesInView} from "../actions/PageActions"
-import { fetchBookmarkLibrary, fetchLibrary,updateLibraryContent } from "../actions/LibraryActions"
+import {fetchArrayOfBooksAppened, fetchArrayOfBooks, saveRolesForBook} from "../actions/BookActions"
+import {fetchArrayOfPagesAppened, fetchArrayOfPages,clearPagesInView} from "../actions/PageActions"
+import { fetchBookmarkLibrary, fetchLibrary,saveRolesForLibrary,updateLibraryContent } from "../actions/LibraryActions"
 import { useDispatch } from "react-redux"
 import { updateLibrary } from "../actions/LibraryActions"
 import { useParams } from "react-router-dom"
@@ -12,7 +12,9 @@ import ListItem from "../components/ListItem"
 import { useNavigate } from "react-router-dom"
 import RoleList from "../components/RoleList"
 import useAuth from "../core/useAuth"
-
+import "../styles/UpdateLibrary.css"
+import {Checkbox , Button, FormGroup, TextField,FormControlLabel } from "@mui/material"
+import { RoleType } from "../core/constants"
 function UpdateLibraryContainer(props) { 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -32,11 +34,11 @@ function UpdateLibraryContainer(props) {
     const [itemsInLibrary,setItemsInLibrary] = useState([])
     const [roleList,setRoleList]=useState([])
     const [contentItems,setContentItems]=useState([])
+    const { id } = pathParams
     useEffect(()=>{
         
             if(currentProfile){
             
-          
             }else{
                 if(!!authState.user && !props.currentProfile){
                     const params = {
@@ -50,90 +52,48 @@ function UpdateLibraryContainer(props) {
     ,[])
     const start =()=>{
         dispatch(fetchLibrary(pathParams)).then((result)=>{
-            if(libraryInView){
-                setLibraryName(libraryInView.name)
-                setWritingIsOpen(libraryInView.writingIsOpen)
-                setPrivacy(libraryInView.privacy)
-                setPurpose(libraryInView.purpose)
-            }
+            setLibrary()
             dispatch(clearPagesInView())
             fetchData()
           
         })
     }
+    const setLibrary=()=>{
+        if(libraryInView ){
+            setLibraryName(libraryInView.name)
+            setWritingIsOpen(libraryInView.writingIsOpen)
+            setPrivacy(libraryInView.privacy)
+            setPurpose(libraryInView.purpose)
+
+        }
+    }
+  
     useEffect(()=>{
-        fetchBooks()
-    },[libraryInView])
-    useEffect(()=>{
-        
+        if(libraryInView!=null && libraryInView.id==id){
+            fetchBooks()
             fetchPages()
-            
- 
+        }else{
+            start()
+        }
     },[libraryInView])
-    // const pageItemsWithin=(content)=>{
+    useEffect(()=>{     
+       setLibrary()
+    },[libraryInView])
 
-    //     if(initial<1 && libraryInView!=null){
-    //     const itemsWithin= content.filter(hash=>{
-        
-    //         let found = libraryInView.pageIdList.find(id=>id == hash.item.id)
-    //         return !!found
-    //     })
-        
-    //     const itemsWithinList = [...itemsInLibrary,...itemsWithin]
-    //     let list = [...itemsInLibrary,...itemsWithinList]
-    //     let uniqList = []
-    //         list.forEach(hash=>{
-    //            let i = uniqList.find(item=>item.item.id == hash.item.id)
-    //             if(!i){
-    //                 uniqList.push(hash)
-    //             }
-    //         })
-    //         setItemsInLibrary(uniqList)
-    //     }
-    //     setInitial(1)
-    // }
     useEffect(()=>{
-        // setItemsWithin()
+
     },[contentItems])
-    // const setItemsWithin=()=>{
-    //         if(libraryInView!=null){
-    //         const itemsWithin= contentItems.filter(hash=>{
-    //             let found = libraryInView.bookIdList.find(id=>id == hash.item.id)
-    //             return !!found
-    //         })
-    //         const pageItemsWithin= contentItems.filter(hash=>{
-    //             let found = libraryInView.pageIdList.find(id=>id == hash.item.id)
-    //             return !!found
-    //         })
-           
-    //         const itemsWithinList = [...itemsWithin,...pageItemsWithin,...itemsInLibrary]
-    //         let uniqList = []
-    //         itemsWithinList.forEach(hash=>{
-    //            let i = uniqList.find(item=>item.item.id == hash.item.id)
 
-    //             if(!i){
-
-    //                 uniqList.push(hash)
-            
-    //             }
-    //         })
-            
-    //             setItemsInLibrary(uniqList)
-    //             setInitial(2)
-    //         }}
     const fetchBooks =()=>{
         if(libraryInView){
             let params = {bookIdList: libraryInView.bookIdList}
             dispatch(fetchArrayOfBooks(params)).then(result=>{
 
-       
-            const content  = booksInView.map(book=>{return {type:"book",item:book}})
-            let newItems = content.filter(hash=>{ 
-                let itemFound = contentItems.find(({item})=>{
-                    return item.id == hash.item.id
-                }) 
-                return !itemFound
-            })
+                if(result.error == null){
+                    const {payload } = result
+                    if(payload.error == null){
+                        const {bookList} = payload
+                        const newItems  = bookList.map(book=>{return {type:"book",item:book}})
          
                 if(newItems.length > 0){
             
@@ -145,43 +105,35 @@ function UpdateLibraryContainer(props) {
                             }) 
                             return !itemFound
                         })
-                        let newState = [...prevState]
-                        newThings.forEach(hash=>{
-                           let inside= itemsInLibrary.find((hashItem)=>{
-                                return hashItem.item.id == hash.item.id
-                            })
+                        let newState = [...prevState,...newThings]
+                      
+                    
                             
-                            if(inside){
-                                newState.push(hash)
-                            }else{
-                                newState.unshift(hash)
-                            }
-                        })
-                            
-
+                        setItemsInLibrary(newState)
                         return newState;
                     })
-                    setHasMore(true)
+                    
+                    setHasMore(false)
                     
                 }else{
                     setHasMore(false)
                 }
-            })
+            }
+                    }})
+            }
               
             }
-    }
+    
     const fetchPages=()=>{
         if(libraryInView){
             const paramsA = {pageIdList:libraryInView.pageIdList}
-            dispatch(fetchArrayOfPages(paramsA)).then(result=>{
-            const content = pagesInView.map(page=>{return {type:"page",item:page}})
-
-        let newItems = content.filter(hash=>{ 
-                let itemFound = contentItems.find(({item})=>{
-                    return item.id == hash.item.id
-                }) 
-                return !itemFound
-            })
+            dispatch(fetchArrayOfPages(paramsA)).then(result=>{   
+        if(result.error == null){
+            const {payload } = result
+        
+            if(payload.error == null){
+            const {pageList} = payload
+            const newItems = pageList.map(page=>{return {type:"page",item:page}})
             
             if(newItems.length > 0){
             
@@ -193,16 +145,18 @@ function UpdateLibraryContainer(props) {
                         }) 
                         return !itemFound
                     })
-                    return [...prevState,...newThings];
+                    let items = [...prevState,...newThings]
+                    setItemsInLibrary(items)
+                    return items;
                 })
-                setHasMore(true)
+                setHasMore(false)
         
             }else{
 
                 setHasMore(false)
-            }})
-        }
-    }
+            }
+
+    }}})}}
 
     const fetchData = () =>{
         if(currentProfile){
@@ -212,46 +166,29 @@ function UpdateLibraryContainer(props) {
             groupBy: 9
         }
         fetchPages()
-
-        
-        // dispatch(getProfilePages(params)).then((result) => {
-        //     dispatch(getProfileBooks(params)).then((result)=>{
-        //         fetchPages()
-        //     })
-            
-    
-        
-    // })
-//         if(!bookmarkLibrary){
-//             const parm = { id: currentProfile.bookmarkLibraryId}
-//             dispatch(fetchBookmarkLibrary(parm)).then((result)=>{
-//                const {payload } = result 
-//                if(payload.library){
-
-               
-//              }})
-//         }else{
-//  }
-//         }
     }}
     const libraryInfo=()=>{
-        return (<div>
-            <form>
-                <input type="text"  value={libraryName} 
+        return (<div className="library-update">
+            <FormGroup>
+            
+                <TextField type="text"  value={libraryName} 
                                     onChange={(e)=>{
                                         setLibraryName(e.target.value)
                                     }
 
                 }/>
-                <input type="checkbox" value={privacy} onChange={(e)=>{
+                    <FormControlLabel control={<Checkbox checked={privacy} onChange={(e)=>{
 
-                    setPrivacy(!privacy)
-                }}/>
-                <input type="checkbox" value={writingIsOpen} onChange={(e)=>{
+            setPrivacy(!privacy)}} />} label="Private" />
+        
+                 <FormControlLabel control={<Checkbox  onChange={(e)=>{
                     setWritingIsOpen(!writingIsOpen)
-                }}/>
-                <button type="submit" onClick={(e)=>updateLibraryDetails(e)}>Update</button>
-            </form>
+                }} checked={writingIsOpen} />} label="Writing is Open" />
+               
+                <Button style={{ backgroundColor: "rgb(24, 69, 24)",
+    color:"white"}}type="submit" variant="outlined" onClick={(e)=>updateLibraryDetails(e)}>Update</Button>
+            </FormGroup>
+          
         </div>)
     }
     const updateLibraryDetails = (e) => {
@@ -288,13 +225,24 @@ function UpdateLibraryContainer(props) {
             navigate(`/library/${id}`)
             }
         })
-        
+
+        const writers = roleList.filter(role=>role.role==RoleType.writer).map(role=>role.profile.userId)
+        const editors = roleList.filter(role=>role.role==RoleType.editor).map(role=>role.profile.userId)
+        const commenters = roleList.filter(role=>role.role==RoleType.commenter).map(role=>role.profile.userId)
+        const readers = roleList.filter(role=>role.role==RoleType.reader).map(role=>role.profile.userId)
+        const roleParams = {library:libraryInView,
+            readers,
+            commenters,
+            editors,
+            writers}
+        dispatch(saveRolesForLibrary(roleParams))
 
 
     }
     const contentList = ()=>{
-        return (<div>
-            {/* <InfiniteScroll
+        if(contentItems!=null){
+        return (<div >
+            <InfiniteScroll
       dataLength={contentItems.length}
       next={fetchData}
       hasMore={hasMore} // Replace with a condition based on your data source
@@ -306,12 +254,14 @@ function UpdateLibraryContainer(props) {
                 return ha.item.id == hash.item.id
             })
                 
-                return(<div key={hash.item.id}>
-                    <div></div>
-                    <h5>{hash.type}</h5>
-                    <h5>{hash.item.title}</h5>
-                    <input type="checkbox" checked={!!item} onChange={()=>{
-                            if(itemsInLibrary.includes(hash)){
+                return(<div className="list-item "key={hash.item.id}>
+                    <div className="item-info">
+                        <h5>{hash.type}</h5>
+                        <h5>{hash.item.title}</h5>
+                    </div>
+                    <input type="checkbox" checked={item} onChange={()=>{
+                        
+                            if(item){
                                 let newList = itemsInLibrary.filter(  item => item.item.id !== hash.item.id)
                                 setItemsInLibrary(newList)
                             }else{
@@ -320,8 +270,12 @@ function UpdateLibraryContainer(props) {
                     }}/>
                 </div>)
         })}
-    </InfiniteScroll> */}
-        </div>)
+    </InfiniteScroll>
+        </div>)}else{
+            return(<div>
+                    So Empty
+            </div>)
+        }
     }
   
     return (<div className="container">
@@ -329,20 +283,23 @@ function UpdateLibraryContainer(props) {
 
         </div>
         <div className="main-bar">
-            
-        <ul><h1>New things for Library</h1></ul>
+        <div className="content-list">
             {contentList()}
+            </div>
         </div>
         <div className="right-side-var">
-            <div>
+            <div className="info">
+                <div>
             {libraryInfo()}
             </div>
             <div>
                 <RoleList library={libraryInView} getRoles={(roleList) => {
+                
                 setRoleList(roleList)
                 }}/>
+                  
             </div>
-          
+          </div>
         </div>
 
     </div>)

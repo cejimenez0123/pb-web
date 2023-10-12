@@ -24,6 +24,7 @@ const getPublicPages = createAsyncThunk(
                 const privacy = pack["privacy"]
                 const type = pack["type"]
                 const created = pack["created"]
+                let commentable = pack["commentable"]
                 let commenters = pack["commenters"]
                 let editors = pack["editors"]
                 let readers = pack["readers"]
@@ -40,6 +41,9 @@ const getPublicPages = createAsyncThunk(
               if(!writers){
                 writers=[]
               }
+              if(commentable==null){
+                commentable=true
+              }
           
                 const page = new Page(  id,
                                         title,
@@ -47,6 +51,7 @@ const getPublicPages = createAsyncThunk(
                                         profileId,
                                         approvalScore,
                                         privacy,
+                                        commentable,
                                         type,
                                         readers,
                                         writers,
@@ -80,6 +85,7 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
     const { page,
       title,
       data,
+      commentable,
       privacy,
     
     } = params
@@ -98,7 +104,8 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
                           data,
                           page.profileId,
                           page.approvalScore,
-                          page.privacy,
+                          privacy,
+                          commentable,
                           page.type,
                           page.readers,
                           page.writers,
@@ -139,6 +146,7 @@ const getProfilePages= createAsyncThunk(
               const approvalScore = pack["approvalScore"]
               const type = pack["type"]
               const created = pack["created"]
+              let commentable = pack["commentable"]
               let commenters = pack["commenters"]
               let editors = pack["editors"]
               let readers = pack["readers"]
@@ -154,6 +162,9 @@ const getProfilePages= createAsyncThunk(
             }
             if(!writers){
               writers=[]
+            }
+            if(commentable==null){
+              commentable=true
             }
         
               const page =  new Page( id,
@@ -194,6 +205,7 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
           type,
           title,
           readers,
+          commentable,
           writers,
           commenters,
           editors,}=params
@@ -208,6 +220,7 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
                                                       profileId,
                                                       approvalScore,
                                                       privacy,
+                                                      commentable,
                                                       type,
                                                       readers,
                                                       writers,
@@ -215,7 +228,15 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
                                                       editors,
                                                       created:created})
   console.log(`savePage ${JSON.stringify(snapshot)}`)
-  const page = new Page(id,title,data,profileId,approvalScore,privacy,type,created)
+  const page = new Page(  id,
+                          title,
+                          data,
+                          profileId,
+                          approvalScore,
+                          privacy,
+                          commentable,
+                          type,
+                          created)
   console.log(`savePage ${JSON.stringify(page)}`)
   return { page }
   }catch(error){
@@ -247,6 +268,7 @@ const fetchPage = createAsyncThunk("pages/fetchPage", async function(params,thun
   let approvalScore = pack["approvalScore"]
   let type = pack["type"]
   let created = pack["created"]
+  let commentable = pack["commentable"]
   if(!commenters){
     commenters = []
   }
@@ -259,12 +281,16 @@ const fetchPage = createAsyncThunk("pages/fetchPage", async function(params,thun
   if(!readers){
     readers = []
   }
+  if(commentable==null){
+    commentable=true
+  }
   const page = new Page(id=pId,
                         title,
                         data,
                         profileId,
                         approvalScore,
                         privacy,
+                        commentable,
                         type,
                         readers,
                         writers,
@@ -303,6 +329,7 @@ const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async functi
   let approvalScore = pack["approvalScore"]
   let type = pack["type"]
   let created = pack["created"]
+  let commentable = pack["commentable"]
   if(!commenters){
     commenters = []
   }
@@ -315,12 +342,16 @@ const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async functi
   if(!readers){
     readers = []
   }
+  if(commentable==null){
+    commentable=true
+  }
   const page = new Page(id=pId,
                         title,
                         data,
                         profileId,
                         approvalScore,
                         privacy,
+                        commentable,
                         type,
                         readers,
                         writers,
@@ -405,6 +436,7 @@ const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (para
         let editors = pack["editors"]
         let readers = pack["readers"]
         let writers = pack["writers"]
+        let commentable = pack["commentable"]
       if(!editors){
         editors = []
       }
@@ -417,8 +449,23 @@ const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (para
       if(!writers){
         writers=[]
       }
+      if(commentable==null){
+        commentable=true
+      }
   
-        const page =  new Page(id,title,data,profileId,approvalScore,privacy,type,readers,writers,editors,commenters,created)
+        const page =  new Page( id,
+                                title,
+                                data,
+                                profileId,
+                                approvalScore,
+                                privacy,
+                                commentable,
+                                type,
+                                readers,
+                                writers,
+                                editors,
+                                commenters,
+                                created)
   
       pageList = [...pageList, page]
     })
@@ -436,12 +483,14 @@ return {error }
 }}
 
 )
-const setPageInView = createAction("pages/setPageInView", function prepare(page) {
-  return {
-   
-      page
+const setPageInView = createAction("pages/setPageInView", (params)=> {
+
+  const {page} = params
+  console.log(`erererere ${JSON.stringify(page)}`)
+  return  {payload:
+    page}
     
-  }
+  
 })
 
 const setPagesToBeAdded = createAction("pages/setPagesToBeAdded",(params)=>{
@@ -480,6 +529,7 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
         let editors = pack["editors"]
         let readers = pack["readers"]
         let writers = pack["writers"]
+        let commentable = pack["commentable"]
       if(!editors){
         editors = []
       }
@@ -492,13 +542,16 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
       if(!writers){
         writers=[]
       }
-  
+      if(commentable==null){
+        commentable=true
+      }
         const page =  new Page( id,
                                 title,
                                 data,
                                 profileId,
                                 approvalScore,
                                 privacy,
+                                commentable,
                                 type,
                                 readers,
                                 writers,
@@ -577,7 +630,7 @@ const fetchCommentsOfPage = createAsyncThunk("pages/fetchCommentsOfPages",async 
     })
 return {
 
-  commentList: commentList,
+  comments: commentList,
 }
 
 
@@ -607,5 +660,7 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
           saveRolesForPage,
           updatePage,
           fetchEditingPage,
-          appendSaveRolesForPage
+          appendSaveRolesForPage,
+          createComment,
+          fetchCommentsOfPage
         } 

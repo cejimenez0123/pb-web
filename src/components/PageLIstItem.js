@@ -2,11 +2,15 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setPageInView,setPagesToBeAdded } from "../actions/PageActions";
 import { PageType } from "../core/constants";
-import { MenuItem } from '@mui/base/MenuItem';
-import { Dropdown } from '@mui/base/Dropdown';
-import { MenuButton } from '@mui/base/MenuButton'
-import { Menu } from '@mui/base/Menu';
 import {useNavigate} from 'react-router-dom'
+import { Button } from "@mui/material";
+import Dropdown from '@mui/joy/Dropdown';
+import IconButton from '@mui/joy/IconButton';
+import Menu from '@mui/joy/Menu';
+import MenuButton from '@mui/joy/MenuButton';
+import MenuItem from '@mui/joy/MenuItem';
+import Add from '@mui/icons-material/Add'
+import MoreVert from '@mui/icons-material/MoreVert'
 function PageListItem({page}) {
     const [showPreview,setShowPreview] = useState(false)
     const dispatch = useDispatch()
@@ -18,7 +22,8 @@ function PageListItem({page}) {
         const params = {
             page: page
         }
-
+        setPageInView(params)
+        navigate(`/page/${page.id}`)
         
     }
     const handleAddClick = (type)=>{
@@ -46,35 +51,39 @@ function PageListItem({page}) {
             pageDataElement = <div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>
         break;
     }
-            return(<div className='page-list-item'>
-                <style>
-                    
-                </style>
-                <div className='title'>
+            return(<div className='list-item'>
+                <div>
                 <a onClick={handleOnClick}> 
-                    <h2>{page.title}</h2>
+                    <h6>{page.title}</h6>
                 </a>
                 </div> 
                 <div className="button-row">
                 <Dropdown>
-                    <MenuButton>
-                        Add
+                    <MenuButton
+                        slots={{ root: IconButton }}
+                        slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+                        >
+                    <Add />
                     </MenuButton>
-                    <Menu>
-                    <MenuItem onClick={()=>handleAddClick("book")}>
+                <Menu>
+  <MenuItem onClick={()=>handleAddClick("book")}>
                         Book
                     </MenuItem>
                     <MenuItem onClick={()=>handleAddClick("library")}>
                         Library
                     </MenuItem>
-                    </Menu>
+    
+  </Menu>
                 </Dropdown>
                 <Dropdown>
-                    <MenuButton>
-                        Edit
-                    </MenuButton>
-                <Menu>
-                <MenuItem onClick={()=>{
+                <MenuButton
+    slots={{ root: IconButton }}
+    slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+  >
+    <MoreVert />
+  </MenuButton>
+  <Menu>
+  <MenuItem onClick={()=>{
                     navigate(`/page/${page.id}/edit`)
                 }}>
                     Edit
@@ -82,7 +91,7 @@ function PageListItem({page}) {
                 <MenuItem>
                     Delete
                 </MenuItem>
-                </Menu>
+            </Menu>
                 </Dropdown>
 
                 <div >
@@ -90,7 +99,7 @@ function PageListItem({page}) {
                 </div>
             </div>
             </div>)}else{
-                return(<div>
+                return(<div className="list-item">
 
                     Loading...
                 </div>)

@@ -32,6 +32,7 @@ class Story {
         profileId,
         approvalScore=0,
         privacy,
+        commentable,
         type,
         readers=[],
         writers=[],
@@ -44,6 +45,7 @@ class Story {
         this.title = title
         this.profileId = profileId
         this.approvalScore = approvalScore
+        this.commentable = commentable
         this.privacy = privacy
         this.type = type
         this.created = created

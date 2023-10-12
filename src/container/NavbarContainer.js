@@ -58,9 +58,15 @@ function NavbarContainer({authState,profile}){
                         Create
                       </a>
                       <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a className="dropdown-item" href="#">Page</a>
-                        <a className="dropdown-item" href="#">Book</a>
-                        <a className="dropdown-item" href="#">Library</a>
+                        <a className="dropdown-item" onClick={()=>{
+                            navigate("/page")}
+                        }>Page</a>
+                        <a onClickclassName="dropdown-item" href={()=>{
+                            navigate("/book")
+                        }}>Book</a>
+                        <a className="dropdown-item" href={()=>{
+                            navigate("/library")
+                        }}>Library</a>
                         </div>
                     </li>
                    

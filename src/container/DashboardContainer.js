@@ -18,6 +18,7 @@ import Page from '../domain/models/page'
 import { getCurrentProfile } from '../actions/UserActions'
 import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
+import InfiniteScroll from 'react-infinite-scroll-component'
 function DashboardContainer(props){
     const dispatch = useDispatch()
     // const [pagesInView,setPagesInView]= useState([Page])
@@ -37,20 +38,26 @@ function DashboardContainer(props){
         },[])
         const contentList =()=>{
             if(pagesInView!=null && pagesInView.length>0){
-                return(<div>
-                {pagesInView.map((page)=>{
+                return(<div className='content'>
+                    <InfiniteScroll
+                        dataLength={pagesInView.length}
+                    >
+                        {pagesInView.map((page)=>{
                     return(<DashboardItem page={page}/>)})}
+                    </InfiniteScroll>
+               
                 </div>)
             }
         }
 
         return(
             <div className="" >
-                <div className="homeContainer">
+               
                 <div style={{display:"flex",flexDirection:"column",}}>
+                {contentList()}
                  </div>
-                    {contentList()}
-                </div>
+                   
+               
             </div>
         )
         

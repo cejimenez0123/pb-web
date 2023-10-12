@@ -19,11 +19,12 @@ export default class Book extends Story{
         pageIdList:[string],
         privacy: boolean,
         writingIsOpen: boolean,
-        updatedAt: Timestamp,
+        
         writers:string[]= new Array<string>(),
         readers:string[],
         commenters:string[],
         editors:string[],
+        updatedAt: Timestamp = Timestamp.now(),
         created=Timestamp.now()
     ){
 

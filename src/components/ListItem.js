@@ -2,9 +2,12 @@ import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setPageInView } from "../actions/PageActions";
+import {setBookInView} from "../actions/BookActions"
+import {setLibraryInView} from "../actions/LibraryActions"
 import { PageType } from "../core/constants";
 import Book from "../domain/models/book";
 import Library from "../domain/models/library";
+import { useNavigate } from "react-router-dom";
 import { setBooksToBeAdded } from "../actions/BookActions";
 import Dropdown from '@mui/joy/Dropdown';
 import IconButton from '@mui/joy/IconButton';
@@ -23,38 +26,41 @@ function ListItem({type,id,title,item}) {
     const handleOnClick = ()=>{
         
                 navigate(`/${type}/${id}`)
+                switch(type){
+                    case 'book':{
+                        setBookInView(item)
+                    }
+                    case 'library': {
+                        setLibraryInView(item)
+                    }
+                    default:{
+                        
+                    }
+                }
             }
     const handleEditClick=()=>{
        
-                navigate(`/${type}/${id}/edit`)       
+                navigate(`/${type}/${id}/edit`) 
+                switch(type){
+                    case 'book':{
+                        setBookInView(item)
+                    }
+                    case 'library': {
+                        setLibraryInView(item)
+                    }
+                    default:{
+
+                    }
+                }     
                 }
     const dropDown=()=>{
        
         if(type=="book"){
-        return(<div className="list-item">
+        return(<div >
             
 
           
             <Dropdown>
-                {/* <MenuButton >
-                   Update
-                </MenuButton>
-                <Menu>
-                <MenuItem onClick={()=>{
-                    let params = { bookList: [item]}
-                    dispatch(setBooksToBeAdded(params))
-                    navigate(`/library/new`)
-                    }
-                    }> 
-                    Add to Library
-                </MenuItem>
-                <MenuItem onClick={handleEditClick}>
-                    Edit
-                </MenuItem>
-                <MenuItem>
-                    Delete
-                </MenuItem>
-                </Menu> */}
                 <MenuButton
     slots={{ root: IconButton }}
     slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
@@ -102,14 +108,6 @@ function ListItem({type,id,title,item}) {
     
   </Menu>
 </Dropdown>
-                {/* <Button onClick={()=>{
-                    navigate(`/${type}/${id}/edit`)}
-                } type="button">
-                    Edit
-                </Button>
-                <Button type="button">
-                    Delete
-                </Button> */}
             </div>)
            }
     }

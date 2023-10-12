@@ -9,7 +9,8 @@ import {  getPublicPages ,
           setPagesToBeAdded,
           fetchArrayOfPagesAppened,
           clearPagesInView,
-          fetchEditingPage
+          fetchEditingPage,
+          fetchCommentsOfPage
         } from "../actions/PageActions"
 import Page from "../domain/models/page"
 import { createReducer ,createSlice} from "@reduxjs/toolkit"
@@ -20,7 +21,8 @@ const initialState = {pagesInView:[],
                       editorHtmlContent:"",
                       error:"",
                       pageInView: null,
-                      pagesToBeAdded: []
+                      pagesToBeAdded: [],
+                      commentsInView:[]
                     }
 const pageSlice = createSlice({
     name: 'pages',
@@ -92,8 +94,15 @@ const pageSlice = createSlice({
       state.pagesInView = []
     }).addCase(fetchEditingPage.fulfilled,(state,{payload})=>{
       state.editingPage = payload.page
-    })
-    },
+    }).addCase(fetchCommentsOfPage.pending,(state,{payload})=>{
+      state.loading = true
+    }).addCase(fetchCommentsOfPage.rejected,(state,{payload})=>{
+        state.error = payload.error
+        state.loading =false
+    }).addCase(fetchCommentsOfPage.fulfilled,(state,{payload})=>{
+        state.commentsInView = payload.comments
+        state.loading =false
+    })}
   })
     
 export {pageSlice}

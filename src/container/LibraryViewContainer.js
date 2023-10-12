@@ -12,11 +12,13 @@ import { clearPagesInView } from "../actions/PageActions"
 import BookRole from "../domain/models/bookrole"
 import { fetchArrayOfBooks } from "../actions/BookActions"
 import { useNavigate } from "react-router-dom"
-
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Button } from "@mui/material"
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const libraryInView = useSelector(state=>state.libraries.libraryInView)
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
@@ -52,9 +54,24 @@ function LibraryViewContainer(props){
     const libraryInfo=()=>{
         if(libraryInView!=null){
             const lib = libraryInView
-                return(<div>
-                        {lib.name}
-                </div>)}else{
+                let button = (<div></div>)
+                if(currentProfile!= null && currentProfile.id == libraryInView.profileId){
+                    button = (<Button onClick={()=>{
+                        navigate(`/library/${libraryInView.id}/edit`)
+                    }}>
+                    <SettingsIcon style={{color:"black"}}/>
+                </Button>)
+                }
+                return  (<div className="info">
+                            <h2 className="namee">{lib.name}</h2>
+                            <p className="purpose"> {lib.purpose}</p>
+                            <div className="button-row reverse">
+                                {button}
+                            </div>
+                        </div>
+                        )
+                        
+                    }else{
 
                     return(<div>
                             Loading...
@@ -220,7 +237,7 @@ function LibraryViewContainer(props){
                                 </div>)
                             }
                             
-                                return(<div className="library-item " key={story.id}>
+                                return(<div className="content-item " key={story.id}>
                                     <div className="item-row">
                                         <h6 id="title">
                                         {title}
@@ -243,7 +260,7 @@ function LibraryViewContainer(props){
                     }          
                 return(
                 
-                <div  className="library-item"  key={story.id}>
+                <div  className="content-item"  key={story.id}>
                     <div className="item-row">
                         <h6 id="title"> {story.title}</h6>
                         {profileDiv}

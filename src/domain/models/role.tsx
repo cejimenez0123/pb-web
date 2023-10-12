@@ -1,17 +1,18 @@
 import { Timestamp } from "firebase/firestore"
+import Profile from "./profile"
 export default class Role {
     id
-    profileId
+    profile
     role
     created
     constructor(
         id:string | undefined,
-        profileId:string,
+        profile:Profile,
         role:string,
         created:Timestamp=Timestamp.now()
     ){
         this.id = id
-        this.profileId = profileId 
+        this.profile = profile
         this.role = role
         this.created = created
     }

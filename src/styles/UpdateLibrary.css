@@ -1,0 +1,19 @@
+.item-info{
+    flex-direction: row;
+    display: flex;
+}
+.list-item{
+    padding: 1.5em 2em 1.5em 2em !important;
+
+}
+.library-update form{
+    display:flex;
+    flex-direction: column;
+}
+.library-update input[type="text"]{
+    background-color: aliceblue;
+}
+.library-update{
+    margin-bottom: 1em;
+}
+

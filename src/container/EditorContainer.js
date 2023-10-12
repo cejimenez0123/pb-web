@@ -6,12 +6,14 @@ import { setHtmlContent,createPage, updatePage,editingPage, fetchEditingPage } f
 import { useEffect, useState } from "react"
 import history from "../history"
 import { useParams } from "react-router-dom"
+import { Button } from "@mui/material"
 
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
         const [title,setTitle] = useState("")
         const [privacy,setPrivacy] = useState(false)
+        const [commentable,setCommentable] = useState(true)
         const editingPage = useSelector(state=>state.pages.editingPage)
        const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         useEffect(()=>{
@@ -40,6 +42,7 @@ function EditorContainer({currentProfile}){
             title: title,
             privacy: privacy,
             approvalScore:0,
+            commentable: commentable,
             readers:[],
             commenters:[],
             editors:[],
@@ -75,6 +78,7 @@ function EditorContainer({currentProfile}){
         const onPrivacyChange = (e)=>{
           setPrivacy(e.target.value)
         }
+        
         const richEditor = ()=>{
         if(!!currentProfile){
           let content = null
@@ -95,15 +99,21 @@ function EditorContainer({currentProfile}){
                 </div>
               <div className="right-side-bar">
                 <form onSubmit={(e)=>onSavePress(e)}>
-                  <button onSubmit={(e)=>onSavePress(e)} className="btn btn-primary">
+                  <Button onSubmit={(e)=>onSavePress(e)} className="btn btn-primary">
                     Save
-                    </button>
+                    </Button>
                   <label>
                     Title:
                     <input onChange={(e)=>onTitleChange(e)} value={title} type="text" name="name" />
                     </label>
                   <label>Private
                     <input onChange={(e)=>onPrivacyChange(e)} type="checkbox" checked={privacy} name="private"/>
+           
+                  </label>
+                  <label>{commentable?"Commenting is on":"Commenting is off"}
+                    <input onChange={(e)=>{
+                      setCommentable(e.target.checked);
+                    }} type="checkbox" checked={commentable} name="commentable"/>
            
                   </label>
    

@@ -17,9 +17,15 @@
     padding: 1rem 2rem;
   
 }
-.book-roles{
-    padding-bottom: 10%;
-    border: 2px solid gray;
+
+.item-roles{
+  
+    
+    margin: auto;
+    height: 18em;
+    border-bottom: 2px solid gray;
+    border-top: 2px solid gray;
+    overflow: scroll;;
 }
 #purpose{
     display: flex;
@@ -38,26 +44,13 @@
     display: flex;
     flex-direction: column;
 }
-.role-list{
-    border: 2px solid gray;
-}
 
-.role-item{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-.role-item div{
-    padding: 0.5em 1em;
-}
+
+
 .roles{
     padding-top:2rem;
 }
-.book-roles{
-    padding: 2em 0em;
-    margin-bottom: 1em;
-    margin-top: 2em;
-}
+
 .sort-item h1{
     color: black;
 }

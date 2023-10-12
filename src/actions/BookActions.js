@@ -25,6 +25,7 @@ const getPublicBooks = createAsyncThunk(
                 const privacy = pack["privacy"]
                 const writingIsOpen = pack["writingIsOpen"]
                 const created = pack["created"]
+               
                 let commenters = pack["commenters"]
                 let editors = pack["editors"]
                 let readers = pack["readers"]
@@ -48,11 +49,11 @@ const getPublicBooks = createAsyncThunk(
                                         pageIdList,
                                         privacy,
                                         writingIsOpen,
-                                        updatedAt,
                                         editors,
                                         commenters,
                                         readers,
                                         writers,
+                                        updatedAt,
                                         created)
               bookList = [...bookList,book]
             })
@@ -183,11 +184,11 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
                     pageIdList,
                     privacy,
                     writingIsOpen,
-                    updatedAt,
                     writers,
                     readers,
                     commenters,
                     editors,
+                    updatedAt,
                     created,
                 )
            
@@ -444,35 +445,35 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
     return {error: new Error("Error: UDATE BOOK -" + e.message)}
   }
 })
-const fetchBookRoles = createAsyncThunk("books/fetchBookRoles",async (params,thunkApi)=>{
-  const bookId = params["bookId"]
+// const fetchBookRoles = createAsyncThunk("books/fetchBookRoles",async (params,thunkApi)=>{
+//   const bookId = params["bookId"]
   
-  try {
-    const ref = doc(db,"book",bookId,"book_role")
-    const snapshot = await getDocs(ref) 
-    let roleList = []
-    snapshot.docs.forEach(doc => {
-        const {id }= doc
-        const pack = doc.data()
-        const profileId = pack["profileId"]
-        const bookId = pack["bookId"]
-        const role = pack["role"]
-        const created = pack["created"]
-        let bookRole = new BookRole(id,profileId,bookId,role,created)
-        roleList.push(bookRole)
-    })
+//   try {
+//     const ref = doc(db,"book",bookId,"book_role")
+//     const snapshot = await getDocs(ref) 
+//     let roleList = []
+//     snapshot.docs.forEach(doc => {
+//         const {id }= doc
+//         const pack = doc.data()
+//         const profileId = pack["profileId"]
+//         const bookId = pack["bookId"]
+//         const role = pack["role"]
+//         const created = pack["created"]
+//         let bookRole = new BookRole(id,profileId,bookId,role,created)
+//         roleList.push(bookRole)
+//     })
 
 
-    return {
-      roleList: roleList
-    }
-  }catch(err){
-    return {
-      error: new Error("Error: FETCH BOOK ROLES"+err.message)
-    }
-  }
+//     return {
+//       roleList: roleList
+//     }
+//   }catch(err){
+//     return {
+//       error: new Error("Error: FETCH BOOK ROLES"+err.message)
+//     }
+//   }
 
-})
+// })
 const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",async (params,thunkApi)=>{
   try {
     const { bookIdList,
@@ -495,6 +496,15 @@ const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",as
     }
   }
 })
+const setBookInView = createAction("books/setBookInView", (params)=> {
+
+  const {book} = params
+  
+  return  {payload:
+    book}
+    
+  
+})
 const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
   let {bookList} = params
   return {
@@ -512,7 +522,8 @@ const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
             createBook,
             fetchArrayOfBooksAppened,
             saveRolesForBook,
-            fetchBookRoles,
+            setBookInView,
+            // fetchBookRoles,
             updateBook,
             setBooksToBeAdded,
             appendSaveRolesFoBook}

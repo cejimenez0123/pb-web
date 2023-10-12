@@ -7,7 +7,7 @@
     justify-content: space-between;
     width: 30em;
 }
-.list-item div:first-child{
+/* .list-item div:first-child{
     display: flex;
   
     flex-direction: row;
@@ -15,10 +15,10 @@
     width: 50%;
     height: 2em;
     
-}
-.list-item-title {
+} */
+/* .list-item-title {
   color: black;
-}
+} */
 .list {
     width: 30em;
 }

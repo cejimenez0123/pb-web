@@ -19,18 +19,16 @@ import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import { getCurrentProfile } from './actions/UserActions';
 import { fetchBookmarkLibrary } from './actions/LibraryActions';
 import { getPublicBooks } from './actions/BookActions';
+import { getPublicLibraries } from './actions/LibraryActions';
+import {fetchAllProfiles} from './actions/UserActions'
 import history from './history';
 import PrivateRoute from './PrivateRoute';
-
 import { useEffect,useState} from 'react';
 import useAuth from './core/useAuth';
 import LoggedRoute from './LoggedRoute';
 import EditBookContainer from './container/EditBookContainer';
 import LibraryViewContainer from './container/LibraryViewContainer';
 
-// class CONTAINERS{
-//     static EDITOR_CONTAINER = "editor-container"
-// }
 
 function App(props) {
   const dispatch = useDispatch()
@@ -79,7 +77,12 @@ function App(props) {
       } />
       
       <Route path="/discovery" element={
-      <DiscoveryContainer getPublicPages={props.getPublicPages} getPublicBooks={props.getPublicBooks} pagesInView={props.pagesInView}/>}/>
+      <DiscoveryContainer 
+        getPublicLibraries={props.getPublicLibraries}
+        getPublicPages={props.getPublicPages} 
+        getPublicBooks={props.getPublicBooks} 
+        pagesInView={props.pagesInView}
+        fetchAllProfiles={props.fetchAllProfiles}/>}/>
       <Route path="/login" 
       // element={
         
@@ -103,20 +106,28 @@ function App(props) {
           <PageViewContainer page={props.pageInView}/>}
     /> 
     <Route path="/book/:id" element={
-      <BookViewContainer book={props.bookInView} pages={props.pagesInView}/>
+      <BookViewContainer 
+        book={props.bookInView} 
+        pages={props.pagesInView}/>
     }/>
     <Route
       path="/page/new"
       element={
         <PrivateRoute loggedIn={!!props.currentProfile}>
-            <EditorContainer htmlContent={props.htmlContent} currentProfile={props.currentProfile} auth={authState}/>
+            <EditorContainer 
+              htmlContent={props.htmlContent}
+              currentProfile={props.currentProfile} 
+              auth={authState}/>
         </PrivateRoute>
       }/>
        <Route
       path="/page/:id/edit"
       element={
         <PrivateRoute loggedIn={!!props.currentProfile}>
-            <EditorContainer htmlContent={props.htmlContent} currentProfile={props.currentProfile} auth={authState}/>
+            <EditorContainer 
+              htmlContent={props.htmlContent} 
+              currentProfile={props.currentProfile} 
+              auth={authState}/>
         </PrivateRoute>
       }/>
       <Route path="/book/new" element={
@@ -125,21 +136,28 @@ function App(props) {
         </PrivateRoute>
       }/>
       <Route path="/book/:id/edit" element={
+        <PrivateRoute loggedIn={!!props.currentProfile}>
         <EditBookContainer book={props.bookInView} pages={props.pagesInView}/>
+        </PrivateRoute>
       }/>
       <Route path="/library/new" element={
-
+        <PrivateRoute loggedIn={!!props.currentProfile}>
         <CreateLibraryContainer/>
+        </PrivateRoute>
       }/>
       <Route path="/library/:id" element={
         <LibraryViewContainer
         />
       }/>
       <Route path="/profile/edit" element={
+        <PrivateRoute loggedIn={!!props.currentProfile}>
         <SettingsContainer />
+        </PrivateRoute>
       }/>
       <Route path="/library/:id/edit" element={
-        <UpdateLibraryContainer/>}/>
+         <PrivateRoute loggedIn={!!props.currentProfile}>
+        <UpdateLibraryContainer/>
+        </PrivateRoute>}/>
       
     </Routes>
 
@@ -151,58 +169,24 @@ function App(props) {
   // 
 function mapDispatchToProps(dispatch){
   return{ 
-    // signUp:(user)=>dispatch(signUp(user)),
-    // logIn:(email,password)=>dispatch(logIn(email,password)),
     getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
     getPublicBooks:()=>dispatch(getPublicBooks()),
     fetchBookmarkLibrary:(params)=>dispatch(fetchBookmarkLibrary(params)),
-    // getUsers: ()=>dispatch(getUsers()),
-    // savePage: (data)=>dispatch(savePage(data)),
-    // getAllPages: ()=>dispatch(getAllPages()),
-    // getInbox: ()=>dispatch(getInbox()),
-    // setCurrentUser:()=>dispatch(SET_CURRENT_USER()),
-    // getAllBooks:()=>dispatch(getAllBooks()),
-    // getBook:(id)=>dispatch(getBook(id)),
-    // getUser:(id)=>dispatch(getUser(id)),
-    // getBooksOfUser:(id)=>dispatch(getBooksOfUser(id)),
-    // getLibrary:(id)=>dispatch(getLibrary(id)),
-    // endSession: ()=>dispatch(END_CURRENT_USER()),
-    // getBooksOfLib:(id)=>dispatch(getBooksOfLibrary(id)),
-    // getDrafts:(id)=>dispatch(getDraftsOfBook(id)),
-    // updateUser: (user)=>dispatch(updateUser(user)),
-    // getBookLibraries:()=>dispatch(getBookLibraries()),
-    // getFollowersOfLibrary: (id)=>dispatch(getFollowersOfLibrary(id)),
-    // followLibrary: (id)=>dispatch(followLibrary(id)),
-    // deleteFollowLibrary: (id)=> dispatch(deleteFollowLibrary(id)),
-    // updateLibrary: (hash)=>dispatch(updateLibrary(hash)),
-    // deleteBookLibrary:(hash)=>dispatch(deleteBookLibrary(hash)),
-    // getFollowedBooksOfUser: (id)=>dispatch(getFollowedBooksOfUser(id)),
-    // getUserBookAccess: ()=>dispatch(getUserBookAccess()),
-    // getLibraryPages:(id)=>dispatch(getLibraryPages(id)),
+    getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicPages:()=>dispatch(getPublicPages()),
-    // getAllLibraries:()=>dispatch(getAllLibraries()),
-    // recommendPages:(id,page_num)=>dispatch(recommendPages(id,page_num)),
-    // getFollowedLibrariesOfUser:(id)=>dispatch(getFollowedLibrariesOfUser(id))
-  }
+    fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
+}
 }
 function mapStateToProps(state){
 
   return{
-    // users: state.users.users,
+
     loggedIn: state.users.loggedIn,
     bookInView: state.books.bookInView,
     booksInView: state.books.booksInView,
     // currentUser: state.users.currentUser,
     currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,
-    // currentPage: state.pages.currentPage,
-    // bookInView: state.books.bookInView,
-    // booksOfUserr: state.books.booksOfUser,
-    // pages: state.pages.pages,
-    // inbox: state.pages.inbox,
-    // books: state.books.books,
-    // userInView: state.users.userInView,
-    // booksInView: state.books.booksInView,
     pagesInView: state.pages.pagesInView,
     // libraryInView: state.libraries.libraryInView,
     librariesInView: state.libraries.librariesInView,

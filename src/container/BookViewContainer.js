@@ -109,7 +109,9 @@ function BookViewContainer({book,pages}){
             
         </div>
         <div className="main-bar">
+           <div className="content">
             {pageList()}
+            </div>
         </div>
         <div className="right-side-bar">
         </div>
