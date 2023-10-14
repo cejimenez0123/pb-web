@@ -580,7 +580,7 @@ const createComment = createAsyncThunk("pages/createComment", async function(par
           
         
        }=params
-  const commentRef = collection(db,'page',pageId,PageComment.comment)
+  const commentRef = collection(db,'page',pageId,"comment")
   const id = doc(commentRef).id
 
  
@@ -588,7 +588,7 @@ const createComment = createAsyncThunk("pages/createComment", async function(par
 //  const page = 
   try{
 
-    setDoc(doc(db,"page", pageId,PageComment.className,id), { id,
+    setDoc(doc(db,"page", pageId,"comment",id), { id,
       profileId: profileId,
       text: text,
       pageId:pageId,

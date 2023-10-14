@@ -6,7 +6,7 @@ import { setHtmlContent,createPage, updatePage,editingPage, fetchEditingPage } f
 import { useEffect, useState } from "react"
 import history from "../history"
 import { useParams } from "react-router-dom"
-import { Button } from "@mui/material"
+import { Button,FormControlLabel,Checkbox, TextField, FormGroup } from "@mui/material"
 
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
@@ -92,32 +92,40 @@ function EditorContainer({currentProfile}){
         return(
           <div id="EditorContainer" className="container-row">
             <div className="left-side-bar">
-              </div>
-                <div id="editor">
+            <div id="editor">
                 
-                  {richEditor()}
-                </div>
+                {richEditor()}
+              </div>
+              </div>
+             
               <div className="right-side-bar">
-                <form onSubmit={(e)=>onSavePress(e)}>
+                
+                <FormGroup className="form"onSubmit={(e)=>onSavePress(e)}>
+                 
+                  {/* <label> */}
+                 <TextField onChange={(e)=>onTitleChange(e)} value={title} label="Title"/>
+                 
+                    {/* Title:
+                    <input onChange={(e)=>onTitleChange(e)} value={title} type="text" name="name" />
+                    </label> */}
+                  <FormControlLabel 
+                control={<Checkbox checked={privacy} onChange={()=>{}}/>} label="Private" />
+                 
+                 <FormControlLabel 
+                control={<Checkbox checked={commentable} onChange={(e)=>{
+                  setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
+                 
+                  {/* <label>{}
+                    
+                    <input ;
+                    }} type="checkbox" checked={commentable} name="commentable"/>
+            */}
+                  {/* </label> */}
                   <Button onSubmit={(e)=>onSavePress(e)} className="btn btn-primary">
                     Save
                     </Button>
-                  <label>
-                    Title:
-                    <input onChange={(e)=>onTitleChange(e)} value={title} type="text" name="name" />
-                    </label>
-                  <label>Private
-                    <input onChange={(e)=>onPrivacyChange(e)} type="checkbox" checked={privacy} name="private"/>
-           
-                  </label>
-                  <label>{commentable?"Commenting is on":"Commenting is off"}
-                    <input onChange={(e)=>{
-                      setCommentable(e.target.checked);
-                    }} type="checkbox" checked={commentable} name="commentable"/>
-           
-                  </label>
-   
-        </form>
+                    </FormGroup>
+                    
               </div>
           </div>
         )

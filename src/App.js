@@ -15,6 +15,7 @@ import MyProfileContainer from './container/MyProfileContainer';
 import CreateBookContainer from './container/CreateBookContainer';
 import CreateLibraryContainer from './container/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
+import ProfileContainer from './container/ProfileContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import { getCurrentProfile } from './actions/UserActions';
 import { fetchBookmarkLibrary } from './actions/LibraryActions';
@@ -64,7 +65,7 @@ function App(props) {
       <header>
     
       </header>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossOrigin="anonymous"/>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossOrigin="anonymous"/>
         <script src="https://kit.fontawesome.com/08dbe310f1.js" crossorigin="anonymous"></script>
         <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
         <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
@@ -102,6 +103,8 @@ function App(props) {
        </PrivateRoute>
       }
     />
+    <Route path="/profile/:id" element={
+    <ProfileContainer profile={props.profileInView}/>}/>
     <Route path="/page/:id" element={
           <PageViewContainer page={props.pageInView}/>}
     /> 
@@ -180,7 +183,7 @@ function mapDispatchToProps(dispatch){
 function mapStateToProps(state){
 
   return{
-
+    profile: state.users.profileInView,
     loggedIn: state.users.loggedIn,
     bookInView: state.books.bookInView,
     booksInView: state.books.booksInView,

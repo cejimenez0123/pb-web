@@ -1,12 +1,51 @@
-
+import ContentList from "../components/ContentList"
+import { useParams } from "react-router-dom"
+import { useEffect } from "react"
+import { useDispatch,useSelector } from "react-redux"
+import { fetchProfile } from "../actions/UserActions"
+import ProfileCard from "../components/ProfileCard"
 
 function ProfileContainer(props){
+    const profile = useSelector(state=>state.users.profileInView)
+    const dispatch = useDispatch()
+    const pathParams = useParams()
+    useEffect(()=>{
+        const { id} = pathParams
+        console.log(`fdfds${id}`)
+        if(profile==null || (profile != null && profile.id != id)){
 
+            dispatch(fetchProfile(pathParams))
+        }else{
 
+        }
+    },[profile])
+    // const profileCard = ()=>{
+    //     if(profile!=null){
+    //         return (
+               
+    //             }else{
+    //                 return (<div></div>)
+    //             }
+    // }
+    let profileCardDiv = (<div>
 
+    </div>)
+    if(profile!=null){
+      profileCardDiv =  ( <div className="info">
+        <h1>{profile.username}</h1>
+        </div>)
+    }
     return(
         <div>
-            Profile
+            <div className="left-side-bar">
+               {profileCardDiv}
+            </div>
+            <div className="main-side-bar">
+                <ContentList curreentProfile/>
+            </div>
+            <div className="right-side-bar">
+
+            </div>
             {/* <div className="profileBackground">
                 <div className="profileContainer">
                 <div className="profile">

@@ -1,11 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { logIn ,signUp,getCurrentProfile,fetchAllProfiles} from "../actions/UserActions"
+import {    logIn ,
+            signUp,
+            getCurrentProfile,
+            fetchAllProfiles,
+            fetchProfile,
+            setProfileInView   } from "../actions/UserActions"
 import Profile from "../domain/models/profile"
 const initialState = {
     loggedIn: false,
     currentProfile: null,
     loading:false,
-    profilesInView: [Profile],
+    profileInView:null,
+    profilesInView: [],
     error:""
 }
 const userSlice = createSlice({
@@ -53,7 +59,19 @@ const userSlice = createSlice({
         state.profilesInView = payload.profileList
     }).addCase(fetchAllProfiles.rejected,(state,{payload})=>{
         state.error = payload.error
-    })
+    }).addCase(fetchProfile.pending,(state)=>{
+        state.loading=true
+    }).addCase(fetchProfile.fulfilled,(state,{ payload })=>{
+        console.log(`fdsad ${JSON.stringify(payload)}`)
+        state.profileInView = payload.profile
+        state.loading = false
+    }).addCase(fetchProfile.rejected,(state,{ payload })=>{
+        state.error = payload.error
+        state.loading = false
+    }).addCase(setProfileInView,(state,{payload})=>{
+     
+        state.profileInView = payload.profile
+      })
 }})
 
 

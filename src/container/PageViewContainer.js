@@ -12,6 +12,7 @@ import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import { Button } from "@mui/material";
 import { createComment,fetchCommentsOfPage } from "../actions/PageActions";
 import CommentItem from "../components/CommentItem";
+import PageViewItem from "../components/PageViewItem";
 export default function PageViewContainer({page}){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -121,89 +122,3 @@ return(<div className="container">
         </div>)
     }
 }
-function PageViewItem({page,currentProfile}) {
-        const dispatch = useDispatch()
-        const navigate = useNavigate()
-        
-        const [commenting,setCommenting]=useState(false)
-        const [commentInput,setComment] = useState("")
- 
-    const saveComment=()=>{
-        if(currentProfile && page && commentInput.length >0){
-        const params =  {profileId: currentProfile.id,
-              text:commentInput,
-              pageId:page.id,
-              parentCommentId:null,
-        }
-        dispatch(createComment(params))
-    }
-            
-           
-    }
-    const commentBox = (show)=>{
-        if (show){
-            return(<div className="comment-input">
-                <TextareaAutosize
-
-                value={commentInput}
-                minRows={3} 
-                cols={85}
-                onChange={(e)=>{
-                   setComment(e.target.value)
-            }} />
-                <div className="button-row">
-                    <Button onClick={saveComment}>
-                        Reply
-                    </Button>
-                </div>
-            </div>)
-        }
-    }
-    let pageDataElement = (<div></div>)
-    switch(page.type){
-        case PageType.text:
-            pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
-        break;
-        case PageType.picture:
-            pageDataElement = <img className='dashboard-content' src={page.data} alt={page.title}/>
-        break;
-        case PageType.video:
-            pageDataElement = <video src={page.data}/>
-        break;
-        default:
-            pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
-        break;
-    }
-            return(<div className='dashboard-item'>
-            
-                <div className='dashboard-header'>
-                    {page.title}
-                </div>
-               
-                    {pageDataElement}
-            
-                <div className='btn-row'>
-                    <button>
-                        Yea
-                    </button>
-                    <button>
-                        Nah
-                    </button>
-                    <button onClick={()=>{setCommenting(!commenting)}}>
-                    
-                        Comment
-                    </button>
-                    <button>
-                        Info
-                    </button>
-                    <button>
-                        Share
-                    </button>
-                </div>
-                <div>
-                    {commentBox(commenting)}   
-                </div>
-                
-            </div>)
-    
-    }

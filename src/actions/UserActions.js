@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
 import { auth,db } from  "../core/di"
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword,setPersistence, browserSessionPersistence } from "firebase/auth"
 import {where,query,collection,getDocs,setDoc,getDoc,doc,orderBy,limit,Firestore , QuerySnapshot, DocumentData, DocumentSnapshot, updateDoc ,Timestamp} from "firebase/firestore"
@@ -120,7 +120,7 @@ const signUp = createAsyncThunk(
 
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
-    console.log(`user2 ${JSON.stringify(params)}`)
+    
     const uId = params["userId"]
     try {
 
@@ -136,7 +136,7 @@ async (params,thunkApi) => {
         const homeLibraryId = pack["homeLibraryId"]
         const bookmarkLibraryId = pack["bookmarkLibraryId"]
         const userId = pack["userId"]
-        const privacy = pack["private"]
+        const privacy = pack["privacy"]
         const created = pack["created"]
         const profile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
         console.log(`user2 ${JSON.stringify(profile)}`)
@@ -240,10 +240,53 @@ const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async
     }
 
 })
+const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
+    let pId= params["id"]
+  
+   
+ 
+    try {
+    const docSnap = await getDoc(doc(db, "profile", pId))
+    const pack = docSnap.data()
+    let {id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created}=pack
+        if(privacy){
+            privacy=false
+        }
+   const profile = new Profile( id,
+                                username,
+                                profilePicture,
+                                selfStatement,
+                                bookmarkLibraryId,
+                                homeLibraryId,
+                                userId,
+                                privacy,
+                                created)
+    return {
+      profile
+    }
+    }catch(e){
+      return {
+        error: new Error("ERROR:FETCH PROFILEE:"+e.message)
+      }
+  
+    }
+  
+  
+  })
+  const setProfileInView = createAction("users/setProfileInView", (params)=> {
 
+    const {profile} = params
+   
+    return  {payload:
+      profile}
+      
+    
+  })
 export {logIn,
         signUp,
         getCurrentProfile,
         updateProfile,
         fetchAllProfiles,
-        uploadProfilePicture}
+        uploadProfilePicture,
+        fetchProfile,
+        setProfileInView}

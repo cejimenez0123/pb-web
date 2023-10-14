@@ -3,7 +3,7 @@ import "../Dashboard.css"
 import { setPageInView } from '../actions/PageActions'
 // import {getPagesComments} from "../../actions/PageActions"
 import { PageType } from '../core/constants'
-import {connect ,useDispatch} from 'react-redux'
+import {connect ,useDispatch, useSelector} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 // import {useBottomScrollListener} from "react-bottom-scroll-listener"
   let size= {width: window.innerWidth,height: window.innerHeight}
@@ -11,6 +11,9 @@ import { useNavigate } from 'react-router-dom'
 function DashboardItem({page}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const profile = useSelector(state=>state.users.profilesInView).find(prof=>{
+       return prof.id == page.profileId
+    })
 const hanldeClickComment=(pageItem)=>{
     console.log(`fsdwsa ${
     JSON.stringify(pageItem)}`)
@@ -35,10 +38,23 @@ switch(page.type){
         pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
     break;
 }
+    let profileDiv = (<div>
+
+    </div>)
+    if(profile){
+        profileDiv = (<p onClick={()=>{
+            navigate(`/profile/${profile.id}`)
+        }}>
+            {profile.username}
+        </p>)
+    }
         return(<div className='dashboard-item'>
         
             <div className='dashboard-header'>
-
+                <p onClick={()=>{
+                    navigate(`/page/${page.id}`)
+                }}>{page.title}</p>
+                {profileDiv}
             </div>
            
                 {pageDataElement}
@@ -47,9 +63,9 @@ switch(page.type){
                 <button>
                     Yea
                 </button>
-                <button>
+                {/* <button>
                     Nah
-                </button>
+                </button> */}
                 <button onClick={()=>hanldeClickComment(page)}>
                 
                     Comments

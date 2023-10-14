@@ -165,20 +165,9 @@ export default function RichEditor(props) {
       
     };
 
-    // const html=(contents)=> {
-    //     if (!contents) {
-    //         contents = "";
-    //     }
-    //     try {
-    //         this.exec(`javascript:RE.setHtml('${encodeURIComponent(contents)}');`);
-    //     } catch (e) {
-    //         // No handling
-    //     }
-    //     setHtmlContent(contents)
-    // }
     return(
     <div>
-        <div className="editor-btn-row row flex-nowrap overflow-auto">
+        <div className="editor-btn-row">
             <button onClick={setUnderline}>Underline</button>
             <button onClick={()=>setStyle(Type.BOLD)}>Bold</button>
             <button onClick={()=>setStyle(Type.ITALIC)}>Italic</button>
