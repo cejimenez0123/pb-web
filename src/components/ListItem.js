@@ -1,22 +1,23 @@
 import React from "react";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setPageInView } from "../actions/PageActions";
 import {setBookInView} from "../actions/BookActions"
 import {setLibraryInView} from "../actions/LibraryActions"
-import { PageType } from "../core/constants";
-import Book from "../domain/models/book";
-import Library from "../domain/models/library";
 import { useNavigate } from "react-router-dom";
 import { setBooksToBeAdded } from "../actions/BookActions";
 import Dropdown from '@mui/joy/Dropdown';
 import IconButton from '@mui/joy/IconButton';
 import Menu from '@mui/joy/Menu';
+import useAuth from "../core/useAuth";
 import MenuButton from '@mui/joy/MenuButton';
 import MenuItem from '@mui/joy/MenuItem';
 import MoreVert from '@mui/icons-material/MoreVert'
+import { Add } from "@mui/icons-material";
+import { Button } from "@mui/material";
 function ListItem({type,id,title,item}) {
     const [showPreview,setShowPreview] = useState(false)
+    const currentProfile = useSelector(state => state.users.currentProfile)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const onToggle = ()=>{
@@ -54,42 +55,53 @@ function ListItem({type,id,title,item}) {
                 }     
                 }
     const dropDown=()=>{
-       
-        if(type=="book"){
-        return(<div >
+       switch(type){
+        case "book":{
+            if(currentProfile!=null && item.profileId==currentProfile.id){
+                return(<div >
+                    
+        
+                  
+                    <Dropdown>
+                        <MenuButton
+            slots={{ root: IconButton }}
+            slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+          >
+            <MoreVert />
+          </MenuButton>
+          <Menu>
+          <MenuItem onClick={()=>{
+                            let params = { bookList: [item]}
+                            dispatch(setBooksToBeAdded(params))
+                            navigate(`/library/new`)
+                            }
+                            }> 
+                            Add to Library
+                        </MenuItem>
+                        <MenuItem onClick={handleEditClick}>
+                            Edit
+                        </MenuItem>
+                        <MenuItem>
+                            Delete
+                        </MenuItem>
             
-
-          
-            <Dropdown>
-                <MenuButton
-    slots={{ root: IconButton }}
-    slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
-  >
-    <MoreVert />
-  </MenuButton>
-  <Menu>
-  <MenuItem onClick={()=>{
-                    let params = { bookList: [item]}
-                    dispatch(setBooksToBeAdded(params))
-                    navigate(`/library/new`)
-                    }
-                    }> 
-                    Add to Library
-                </MenuItem>
-                <MenuItem onClick={handleEditClick}>
-                    Edit
-                </MenuItem>
-                <MenuItem>
-                    Delete
-                </MenuItem>
-    
-  </Menu>
-</Dropdown>
-
-            
-            </div>
-           )
-        }else{
+          </Menu>
+        </Dropdown>
+        
+                    
+                    </div>
+                   )}else{
+                       return( <Dropdown>
+                                <MenuButton> <MoreVert/></MenuButton>
+                                <Menu>
+                                    <MenuItem onClick={()=>{}}>Add To Library</MenuItem>
+                                    <MenuItem onClick={()=>{}}>Follow</MenuItem>
+                                </Menu>
+                        </Dropdown> )
+                   }
+        }
+        case "library":{
+            if(currentProfile!=null && item.profileId==currentProfile.id){
             return (<div>
                 <Dropdown>
   <MenuButton
@@ -108,8 +120,22 @@ function ListItem({type,id,title,item}) {
     
   </Menu>
 </Dropdown>
-            </div>)
-           }
+            </div>)}else{
+                return(<Dropdown>
+                    <MenuButton>
+                        <MoreVert/>
+                    </MenuButton>
+                    <Menu>
+                        <MenuItem onClick={()=>{}}>Follow</MenuItem>
+                    </Menu>
+                </Dropdown>)
+            }
+        }
+        default:{
+
+        }
+       }
+      
     }
 
             return(<div className='list-item'>

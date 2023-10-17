@@ -238,13 +238,10 @@ function LibraryViewContainer(props){
                             }
                             
                                 return(<div className="content-item " key={story.id}>
-                                    <div className="item-row">
-                                        <h6 id="title">
-                                        {title}
-                                        </h6>
-                                        {profileDiv}
-                                </div>
-                                <DashboardItem page={page}/>
+                                    {/* <div className="item-row">
+                                     
+                                </div> */}
+                                <DashboardItem book={story} page={page}/>
                             </div>)}
             }else{
                const profile = profilesInView.find(profile => profile.id == story.profileId)

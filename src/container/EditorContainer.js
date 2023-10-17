@@ -101,13 +101,8 @@ function EditorContainer({currentProfile}){
               <div className="right-side-bar">
                 
                 <FormGroup className="form"onSubmit={(e)=>onSavePress(e)}>
-                 
-                  {/* <label> */}
                  <TextField onChange={(e)=>onTitleChange(e)} value={title} label="Title"/>
                  
-                    {/* Title:
-                    <input onChange={(e)=>onTitleChange(e)} value={title} type="text" name="name" />
-                    </label> */}
                   <FormControlLabel 
                 control={<Checkbox checked={privacy} onChange={()=>{}}/>} label="Private" />
                  
@@ -115,12 +110,7 @@ function EditorContainer({currentProfile}){
                 control={<Checkbox checked={commentable} onChange={(e)=>{
                   setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
                  
-                  {/* <label>{}
-                    
-                    <input ;
-                    }} type="checkbox" checked={commentable} name="commentable"/>
-            */}
-                  {/* </label> */}
+            
                   <Button onSubmit={(e)=>onSavePress(e)} className="btn btn-primary">
                     Save
                     </Button>

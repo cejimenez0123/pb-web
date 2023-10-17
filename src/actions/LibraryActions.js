@@ -1,8 +1,8 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit"
 import Library from "../domain/models/library"
-import { deleteDoc,arrayRemove,arrayUnion,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
+import { deleteDoc,and,or,arrayRemove,arrayUnion,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
 import LibraryRole from "../domain/models/libraryrole"
-import { db } from "../core/di"
+import { db,auth } from "../core/di"
 import { read } from "@popperjs/core"
 
 //make a bookmark library for joe
@@ -211,14 +211,26 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
     'libraries/getProfileLibraries',
     async (params,thunkApi) => {
       let libraryList = []
-      const profileId = params["profileId"]
-      const userId = params["userId"]
-
+      const profile = params["profile"]
+      const ref = collection(db, "library")
+      let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
+      if(auth.currentUser.uid == profile.userId){
+        queryReq = query(ref, where("profileId", "==", profile.id))
+       }else if(auth.currentUser.uid != profile.userId){
+      queryReq = query(ref,
+                     and(where("profileId", "==", profile.id),
+                     or(where('commenters', 'array-contains', profile.userId),
+                        where('readers','array-contains', profile.userId),
+                        where('editors', 'array-contains', profile.userId),
+                        where('writers', 'array-contains', profile.userId),
+                        where("privacy","==",false))))
+     }else{
+        queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
+     }
     try {
 
        
-    const snapshot = await getDocs(
-                  query(collection(db, "library"),  where("profileId", "==", profileId)));
+    const snapshot = await getDocs(queryReq);
          let libList = []
           snapshot.docs.forEach(doc => {
           
@@ -371,7 +383,7 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
                       commenters,
                       library.created,
                      )
-        console.log(`FORTET ${JSON.stringify(lib)}`)
+        
         return {
           library:lib
         }

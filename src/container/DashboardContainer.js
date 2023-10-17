@@ -1,20 +1,5 @@
 import React ,{useState,useEffect,useLayoutEffect}from 'react'
-// import {Link} from 'react-router-dom'
-// import BookContainer from "./BookContainer"
-// import Navbar from './NavbarContainer'
-// import Pages from "../components/page/pages"
-// import NavbarContainer from './NavbarContainer'
-// import { useStore } from 'react-redux'
-// import Modal from "../components/modal"
-// import ReactDOM,{ render } from 'react-dom'
-// import SearchCardIndex from '../components/user/SearchCardIndex'
-// import { auth} from "../core/di"
 import "../App.css"
-// import { getPublicPages } from '../actions/PageActions'
-// import SignUpForm from "../components/user/SignUpForm"
-// import LogInForm from "../components/user/LogInForm"
-// import {BottomScrollListener }from 'react-bottom-scroll-listener';
-import Page from '../domain/models/page'
 import { getCurrentProfile } from '../actions/UserActions'
 import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
@@ -42,15 +27,14 @@ function DashboardContainer(props){
                         {pagesInView.map((page)=>{
                     return(<DashboardItem page={page}/>)})}
                     </InfiniteScroll>
-               
                 </div>)
             }
         }
 
         return(
-            <div className="" >
+            <div className="container" >
                
-                <div style={{display:"flex",flexDirection:"column",}}>
+                <div >
                 {contentList()}
                  </div>
                    

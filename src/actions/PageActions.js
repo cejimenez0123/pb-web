@@ -1,5 +1,5 @@
 import {db,app,auth} from "../core/di"
-import {where,query,updateDoc,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, arrayUnion} from "firebase/firestore"
+import {where,query,and,updateDoc,or,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, arrayUnion} from "firebase/firestore"
 import Page from "../domain/models/page"
 import PageComment from "../domain/models/page_comment"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
@@ -125,16 +125,27 @@ const getProfilePages= createAsyncThunk(
   'pages/getProfilePages',
   async (params,thunkApi) => {
     let pageList = []
-    const profileId = params["profileId"]
-    const userId = params["userId"]
-    const page = params["page"]
-    const groupBy = params["groupBy"]??9
-    const quotient = page * groupBy
-
+    const profile=params["profile"]
+   
+    const ref = collection(db, "page")
+    let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
+    if(auth.currentUser.uid == profile.userId){
+      queryReq = query(ref, where("profileId", "==", profile.id))
+     }else if(auth.currentUser.uid != profile.userId){
+    queryReq = query(ref,
+                   and(where("profileId", "==", profile.id),
+                   or(where('commenters', 'array-contains', profile.userId),
+                      where('readers','array-contains', profile.userId),
+                      where('editors', 'array-contains', profile.userId),
+                      where('writers', 'array-contains', profile.userId),
+                      where("privacy","==",false))))
+   }else{
+      queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
+   }
   try {
 
-  const snapshot = await getDocs(
-                query(collection(db, "page"),  where("profileId", "==", profileId)));
+  const snapshot = await getDocs(queryReq
+                );
         pageList = []
         snapshot.docs.forEach(doc => {
               const pack = doc.data();
@@ -573,22 +584,19 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
 )
 const createComment = createAsyncThunk("pages/createComment", async function(params,thunkApi){
 
-   const {profileId,
-          text,
-          pageId,
-          parentCommentId,
-          
-        
-       }=params
-  const commentRef = collection(db,'page',pageId,"comment")
-  const id = doc(commentRef).id
-
  
- const created = Timestamp.now()
 //  const page = 
   try{
-
-    setDoc(doc(db,"page", pageId,"comment",id), { id,
+    const {profileId,
+      text,
+      pageId,
+      parentCommentId,
+      }=params
+    const commentRef = collection(db,'page',pageId,"comment")
+    const id = doc(commentRef).id
+    const created = Timestamp.now()
+      await setDoc(doc(db,"page", pageId,"comment",id), { 
+      id:id,
       profileId: profileId,
       text: text,
       pageId:pageId,

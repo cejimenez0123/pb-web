@@ -1,8 +1,8 @@
 import { createAsyncThunk ,createAction} from "@reduxjs/toolkit"
 import Book from "../domain/models/book"
 import BookRole from "../domain/models/bookrole"
-import {where,query,arrayUnion,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc,deleteDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, updateDoc} from "firebase/firestore"
-import { db } from "../core/di"
+import {where,query,and,or,arrayUnion,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc,deleteDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, updateDoc} from "firebase/firestore"
+import { db,auth} from "../core/di"
 
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
@@ -112,11 +112,11 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
                           pageIdList,
                           privacy,
                           writingIsOpen,
-                          updatedAt,
                           writers,
                           readers,
                           commenters,
                           editors,
+                          updatedAt,
                           created)    
     return {
       book
@@ -134,17 +134,27 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     'books/getProfileBooks',
     async (params,thunkApi) => {
     
-      const profileId = params["profileId"]
-      const userId = params["userId"]
-      const page = params["page"]
-      const groupBy = params["groupBy"]??9
-      const quotient = page * groupBy
-  
+      const profile = params["profile"]
+      const ref = collection(db, "book")
+      let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
+      if(auth.currentUser.uid == profile.userId){
+        queryReq = query(ref, where("profileId", "==", profile.id))
+       }else if(auth.currentUser.uid != profile.userId){
+      queryReq = query(ref,
+                     and(where("profileId", "==", profile.id),
+                     or(where('commenters', 'array-contains', profile.userId),
+                        where('readers','array-contains', profile.userId),
+                        where('editors', 'array-contains', profile.userId),
+                        where('writers', 'array-contains', profile.userId),
+                        where("privacy","==",false))))
+     }else{
+        queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
+     }
     try {
     
         
         const snapshot = await getDocs(
-                query(collection(db, "book"),  where("profileId", "==", profileId)));
+                queryReq);
         let bookList = []
         snapshot.docs.forEach(doc => {
             
@@ -409,13 +419,26 @@ const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params
           editors,
           writers} = params
    
-      let ref = collection(db,'book',book.id)
+      let ref = doc(db,'book',book.id)
       await updateDoc(ref,{ editors: editors,
         commenters:commenters,
         writers: writers,
         readers: readers,
       })
-      return {book: Book(...book,commenters,writers,editors,readers)}
+      return {book: new Book( book.id,
+                          book.purpose,
+                          book.title,
+                          book.profileId,
+                          book.pageIdList,
+                          book.privacy,
+                          book.writingIsOpen,
+                          writers,
+                          readers,
+                          commenters,
+                          editors,
+                          book.updatedAt,
+                          book.created
+)}
 
  
     }catch(e){

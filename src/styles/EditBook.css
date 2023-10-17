@@ -1,21 +1,32 @@
+
+
+.sort-item h1{
+    color: black;
+}
+
+.right-bar{
+    padding: 4em;
+    
+
+}
 .container{
+    justify-content: space-evenly;
+}
+.sort-item{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    background-color: white;
+    padding: 1em 1em;
+    border-bottom: 1px solid gray;
 }
-.left-side-bar {
-    flex:2;
-    display: flex;
-    flex-direction: column;
 
-}
-.right-side-bar {
-
-    flex:4;
-}
-.main-bar{
-    flex: 8;
-    padding: 1rem 2rem;
-  
+#sort-list{
+   margin-top: 4em;
+    padding: 2em;
+    background-color: aliceblue;
+    width: 40rem;
+    border-radius: 25px;
 }
 
 .item-roles{
@@ -25,7 +36,7 @@
     height: 18em;
     border-bottom: 2px solid gray;
     border-top: 2px solid gray;
-    overflow: scroll;;
+    overflow: scroll;
 }
 #purpose{
     display: flex;
@@ -40,30 +51,22 @@
 #purpose textarea{
     border: 1px gray solid;
 }
-.roles form {
-    display: flex;
-    flex-direction: column;
+
+
+.role-list{
+    overflow: scroll;
+    height: 20rem;
 }
-
-
-
+.edit{
+    background-color: aliceblue;
+    padding: 2em;
+    border-radius: 25px;
+    width: 30rem;
+}
 .roles{
     padding-top:2rem;
+   
 }
 
-.sort-item h1{
-    color: black;
-}
 
-.sort-item{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 1em 1em;
-    border-bottom: 1px solid gray;
-}
-#sort-list{
-    padding: 4rem;
-    background-color: aliceblue;
-}
 

@@ -13,6 +13,8 @@ import { BrowserRouter } from 'react-router-dom';
 import thunk from "redux-thunk"
 import logger from "redux-logger"
 import history from './history';
+import theme from './theme';
+// import { ThemeProvider } from '@mui/material/styles';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const reducer = combineReducers({
@@ -33,13 +35,15 @@ const store = configureStore({reducer:reducer,
 root.render(
   <BrowserRouter>
   <Provider store={store} >
-    <React.StrictMode>
-      
-        <App />
 
+    <React.StrictMode>
+    {/* <ThemeProvider theme={theme}> */}
+        <App />
+        {/* </ThemeProvider> */}
     </React.StrictMode>
-    
+
   </Provider>
+  
    </BrowserRouter>
 
 );

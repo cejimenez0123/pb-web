@@ -2,10 +2,7 @@
     flex-direction: row;
     display: flex;
 }
-.list-item{
-    padding: 1.5em 2em 1.5em 2em !important;
 
-}
 .library-update form{
     display:flex;
     flex-direction: column;

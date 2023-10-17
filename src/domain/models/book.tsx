@@ -38,7 +38,5 @@ export default class Book extends Story{
         this.privacy = privacy
         this.created = created
     }
-    static className(){
-        return "book"
-    }
+    static className = "book"
     }

@@ -47,9 +47,14 @@ const pageSlice = createSlice({
     
         state.pagesInView = payload.pageList
       }).addCase(
-        getProfilePages.rejected,(state,{payload})=>{
-          state.loading = false
+        getProfilePages.rejected,(state,{payload,error})=>{
+          if(error!=null){
+            state.error = error.name
+          }else{
           state.error = payload.error
+          }
+          state.loading = false
+       
         }
       ).addCase(createPage.rejected,(state,{payload})=>{
         state.error = payload.error

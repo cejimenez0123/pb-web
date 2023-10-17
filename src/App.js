@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-
+import theme from "./theme.js"
 import { connect,useDispatch} from "react-redux"
 import {Route, Routes,} from 'react-router-dom';
 import { getPublicPages } from './actions/PageActions';
@@ -29,6 +29,7 @@ import useAuth from './core/useAuth';
 import LoggedRoute from './LoggedRoute';
 import EditBookContainer from './container/EditBookContainer';
 import LibraryViewContainer from './container/LibraryViewContainer';
+import { ThemeProvider } from '@mui/material/styles';
 
 
 function App(props) {
@@ -62,9 +63,11 @@ function App(props) {
   },[props.currentProfile])
   return (
     <div className="App">
+       
       <header>
     
       </header>
+  
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossOrigin="anonymous"/>
         <script src="https://kit.fontawesome.com/08dbe310f1.js" crossorigin="anonymous"></script>
         <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>

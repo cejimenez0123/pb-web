@@ -5,12 +5,9 @@ import { fetchPage} from "../actions/PageActions"
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchAllProfiles } from "../actions/UserActions";
-import DashboardItem from "../components/DashboardItem";
 import "../styles/PageView.css"
 import InfiniteScroll from "react-infinite-scroll-component";
-import { TextareaAutosize } from '@mui/base/TextareaAutosize'
-import { Button } from "@mui/material";
-import { createComment,fetchCommentsOfPage } from "../actions/PageActions";
+import { fetchCommentsOfPage } from "../actions/PageActions";
 import CommentItem from "../components/CommentItem";
 import PageViewItem from "../components/PageViewItem";
 export default function PageViewContainer({page}){
@@ -108,7 +105,7 @@ export default function PageViewContainer({page}){
 return(<div className="container">
                 <div id="page">
                     <div className="content">
-                        <PageViewItem page={page} currentProfile={currentProfile}/>
+                        <PageViewItem page={page} currentProfile={currentProfile} getComments={fetchComments}/>
                     
                     <div className="comments">
                         {commentList()}

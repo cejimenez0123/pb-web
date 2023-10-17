@@ -5,7 +5,10 @@ import { createComment } from "../actions/PageActions"
 import { TextareaAutosize,Button } from "@mui/material"
 import { PageType } from "../core/constants"
 import { setProfileInView } from "../actions/UserActions"
-export default function PageViewItem({page,currentProfile}) {
+import {ThemeProvider} from "@mui/material/styles";
+import theme from "../theme"
+export default function PageViewItem({page,currentProfile,getComments}) {
+    // const theme = useTheme()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const profilesInView = useSelector(state=>state.users.profilesInView)
@@ -17,9 +20,16 @@ const saveComment=()=>{
     const params =  {profileId: currentProfile.id,
           text:commentInput,
           pageId:page.id,
-          parentCommentId:null,
+          parentCommentId:"",
     }
-    dispatch(createComment(params))
+    dispatch(createComment(params)).then(result=>{
+        if(result.error==null){
+            const {payload} = result
+            if(payload != null && payload.error==null){
+                getComments()
+            }
+        }
+    })
 }
         
        
@@ -36,7 +46,7 @@ const commentBox = (show)=>{
                setComment(e.target.value)
         }} />
             <div className="button-row">
-                <Button onClick={saveComment}>
+                <Button disabled={!currentProfile} onClick={saveComment}>
                     Reply
                 </Button>
             </div>
@@ -68,7 +78,8 @@ let profile = (<div></div>)
                 navigate(`/profile/${prof.id}`)
             }}><p>{prof.username}</p></a>)
         }
-        return(<div className='dashboard-item'>
+        return(
+        <div className='dashboard-item'>
         
             <div className='dashboard-header'>
                 <p>{page.title}</p>
@@ -78,27 +89,36 @@ let profile = (<div></div>)
                 {pageDataElement}
         
             <div className='btn-row'>
-                <button>
+                <Button 
+                    // style={{color:theme.palette.info.contrastText,
+                    //         backgroundColor:currentProfile?theme.palette.info.main:theme.palette.info.disabled}}
+                    disabled={!currentProfile} 
+                >
                     Yea
-                </button>
+                </Button>
                 {/* <button>
                     Nah
                 </button> */}
-                <button onClick={()=>{setCommenting(!commenting)}}>
+                <Button 
+                    style={{color:"white",
+                            backgroundColor:!currentProfile?"rgb(44,44,44)":"black"}} 
+                    disabled={!currentProfile} 
+                    onClick={()=>{setCommenting(!commenting)}}>
                 
                     Comment
-                </button>
-                <button>
+                </Button>
+                <Button>
                     Info
-                </button>
-                <button>
+                </Button>
+                <Button>
                     Share
-                </button>
+                </Button>
             </div>
             <div>
                 {commentBox(commenting)}   
             </div>
             
-        </div>)
+        </div>
+        )
 
 }

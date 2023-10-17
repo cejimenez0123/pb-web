@@ -11,8 +11,12 @@ import MenuButton from '@mui/joy/MenuButton';
 import MenuItem from '@mui/joy/MenuItem';
 import Add from '@mui/icons-material/Add'
 import MoreVert from '@mui/icons-material/MoreVert'
+import { useSelector } from "react-redux";
+import { useTheme } from "@mui/material/styles";
 function PageListItem({page}) {
+    const theme = useTheme()
     const [showPreview,setShowPreview] = useState(false)
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const onToggle = ()=>{
@@ -51,17 +55,24 @@ function PageListItem({page}) {
             pageDataElement = <div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>
         break;
     }
-            return(<div className='list-item'>
-                <div>
-                <a onClick={handleOnClick}> 
-                    <h6>{page.title}</h6>
-                </a>
-                </div> 
-                <div className="button-row">
-                <Dropdown>
+   let buttonDiv= (<div>
+    <Dropdown>
+        <MenuButton>
+            <MoreVert />
+        </MenuButton>
+        <Menu>
+            <MenuItem>Follow</MenuItem>
+            <MenuItem onClick={()=>handleAddClick("book")}>Book</MenuItem>
+            <MenuItem onClick={()=>handleAddClick("library")}>Library</MenuItem>
+        </Menu>
+    </Dropdown>
+   </div>)
+    if(currentProfile!=null && page.profileId==currentProfile.id){
+        buttonDiv = (
+            <div >
+<Dropdown>
                     <MenuButton
-                        slots={{ root: IconButton }}
-                        slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+                    
                         >
                     <Add />
                     </MenuButton>
@@ -77,8 +88,8 @@ function PageListItem({page}) {
                 </Dropdown>
                 <Dropdown>
                 <MenuButton
-    slots={{ root: IconButton }}
-    slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+    
+  
   >
     <MoreVert />
   </MenuButton>
@@ -93,11 +104,22 @@ function PageListItem({page}) {
                 </MenuItem>
             </Menu>
                 </Dropdown>
-
-                <div >
-                   
                 </div>
-            </div>
+        )
+    }
+            return(<div className='list-item'>
+                <div>
+                <a onClick={handleOnClick}> 
+                    <h6>{page.title}</h6>
+                </a>
+                </div> 
+                <div className="button-row">
+                
+
+                {buttonDiv}
+                   
+            
+                </div>
             </div>)}else{
                 return(<div className="list-item">
 

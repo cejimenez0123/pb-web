@@ -10,9 +10,6 @@
     
     
 }
-.main-bar .list-item{
-    margin: auto;
-}
 
 .container-row{
     padding-top: 2em;
@@ -67,33 +64,9 @@
     flex-direction: row;
 }
 
-.content-list .btn-row{
-    display: flex;
-    flex-direction: row;
-    margin: auto;
-    padding: 5px 50px;
-}
-.list-item a {
-    display: flex;
-    flex-direction: row;
-    padding: 0px 50px;
-   
 
-}
 
-.list-item button {
-    margin: 0px .5em;
-}
 
-.list-item {
-    display: flex;
-    flex-direction: row;
-    padding-top: 1em;
-    padding-bottom:1em;
-    background-color: white;
-    border-bottom: 1px solid gray;
-    
-}
 
 
 .nav-item i{

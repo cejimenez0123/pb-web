@@ -97,13 +97,17 @@ function DiscoveryContainer(props){
                 
             switch(hash.type){
                 case 'page':{
-                    let username = profilesInView.find(profile=>profile.id == hash.item.profileId).username
-                    
+                    // let profile = profilesInView.find(profile=>profile.id == hash.item.profileId).username
+                    // let username =(<div></div>)
+                    // if(profile){
+                    //     username = (<h6>{profile.username}</h6>)
+                    // }
                     return (
                         <div className='content-item'>
-                        <div className='item-row '>
-                           <h6>{hash.item.title}</h6> <h6>{username}</h6>
-                        </div>
+                        {/* <div className='item-row '>
+                           <h6>{hash.item.title}</h6>
+                           {username} 
+                        </div> */}
                         <DashboardItem page={hash.item}/>
                         </div>
                     )
@@ -135,25 +139,25 @@ function DiscoveryContainer(props){
                                     }}
                             >{hash.item.title}</a>
                         </div>)
-                        let profileDiv = (<div>
+                        // let profileDiv = (<div>
                                 
-                        </div>)
-                        if(profile){
-                            profileDiv=(<div>
-                                <h6>
-                                {profile.username}
-                                </h6>
-                            </div>)
-                        }
+                        // </div>)
+                        // if(profile){
+                        //     profileDiv=(<div>
+                        //         <h6>
+                        //         {profile.username}
+                        //         </h6>
+                        //     </div>)
+                        // }
                         
                             return(<div className="content-item" key={hash.item.id}>
-                                <div className="item-row">
+                                {/* <div className="item-row">
                                     <h6 id="title">
                                     {title}
                                     </h6>
                                     {profileDiv}
-                            </div>
-                            <DashboardItem page={page}/>
+                            </div> */}
+                            <DashboardItem book={hash.item} page={page}/>
                         </div>)
                    
                 }}

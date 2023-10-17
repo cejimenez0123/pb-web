@@ -77,7 +77,7 @@ function BookViewContainer({book,pages}){
                             scrollableTarget="scrollableDiv"
      >
          {pages.map(page =>{
-                 return(<DashboardItem page={page}/>)
+                 return(<DashboardItem book={book}page={page}/>)
          })}
      </InfiniteScroll>
                     </div>

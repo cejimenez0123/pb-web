@@ -28,63 +28,11 @@ export default function CreateLibraryContainer(props){
     const handleLibTitleChange = (e)=>{
         setLibTitle(e.target.value)
     }
-    // const fetchProfilePages=()=>{
-    //     if(!!currentProfile){
-    //         const params = {profileId:currentProfile.id}
-    //         dispatch(getProfilePages(params)).then(result=>{
-    //             const {payload} = result
-    //             setListItems(prevState=>{
-    //                 const list = payload.pageList.map(page=>{
-    //                     return {type: "page",item: page}
-    //             })
-    //                 const differences = list.filter(item=> {return !listItems.includes(item)})
-
-    //                 if(differences.length>0){
-
-                        
-    //                     return [...prevState,...differences]
-    //                  }else{
-    //                      return [...prevState]
-    //                  }})
-                    
-                
-    //             })}}
-    
- 
-    // const fetchProfileBooks=()=>{
-    //     if(currentProfile){
-    //         const params = {profileId:currentProfile.id}
-    //         dispatch(getProfileBooks(params)).then(result =>{
-    //             const {payload}= result
-            
-    //         setListItems(prevState=>{
-    //         const list = payload.bookList.map(book=>{
-    //                 return {type: "book",item: book}
-    //         })
-    //         const differences = list.filter((item)=>{return !listItems.includes(item)})
-    //         if(differences.length>0){
-               
-               
-               
-    //            return [...prevState,...differences]
-    //         }else{
-    //             return [...prevState]
-    //         }})
-    //         })
-    // }}
   
    
   
     
     const onClickAdd=(hash)=>{  
-    //     pagesToBeAdded.map((page)=>{
-            
-    //     let commenters = [...page.commenters,...hash.commenters]
-    //     let readers = [...page.readers, ...hash.readers]
-    //     page.readers = readers
-    //     page.commenters = commenters
-    //     return page
-    // })
         
         let pIdList = pagesToBeAdded.map(page=>{ return page.id; });
         let bIdList = booksToBeAdded.map(book=>{ return book.id; });
@@ -163,7 +111,7 @@ export default function CreateLibraryContainer(props){
     }
     const fetchLibraries = ()=>{
         if(currentProfile){
-            const params = {profileId:currentProfile.id}
+            const params = {profile:currentProfile}
             dispatch(getProfileLibraries(params))
         }
     }

@@ -5,12 +5,16 @@ import { setPageInView } from '../actions/PageActions'
 import { PageType } from '../core/constants'
 import {connect ,useDispatch, useSelector} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { Button } from '@mui/material'
+import theme from '../theme'
 // import {useBottomScrollListener} from "react-bottom-scroll-listener"
   let size= {width: window.innerWidth,height: window.innerHeight}
 
-function DashboardItem({page}) {
+function DashboardItem({page,book}) {
+    // const theme = useTheme()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const profile = useSelector(state=>state.users.profilesInView).find(prof=>{
        return prof.id == page.profileId
     })
@@ -47,35 +51,52 @@ switch(page.type){
         }}>
             {profile.username}
         </p>)
+
+    }
+    let bookTitleDiv =  (<div></div>)
+    if(book){
+        bookTitleDiv = (<p>{book.title} {">"}</p>)
     }
         return(<div className='dashboard-item'>
         
             <div className='dashboard-header'>
+                <div>
+                {bookTitleDiv}
                 <p onClick={()=>{
                     navigate(`/page/${page.id}`)
                 }}>{page.title}</p>
+                </div>
                 {profileDiv}
             </div>
            
                 {pageDataElement}
             
             <div className='btn-row'>
-                <button>
+                <Button disabled={!currentProfile} 
+                     style={{color: theme.palette.info.contrastText,
+                        backgroundColor: currentProfile? theme.palette.info.main:theme.palette.info.disabled}}
+                  
+               
+                >
                     Yea
-                </button>
+                </Button>
                 {/* <button>
                     Nah
                 </button> */}
-                <button onClick={()=>hanldeClickComment(page)}>
+                <Button disabled={!currentProfile}
+                        style={{color: theme.palette.info.contrastText,
+                            backgroundColor: currentProfile? theme.palette.info.main:theme.palette.info.disabled}}
+                        onClick={()=>hanldeClickComment(page)}
+                        >
                 
                     Comments
-                </button>
-                <button>
+                </Button>
+                <Button>
                     Info
-                </button>
-                <button>
+                </Button>
+                <Button>
                     Share
-                </button>
+                </Button>
             </div>
         </div>)
 

@@ -1,12 +1,13 @@
 .App {
   text-align: center;
-  height: 100vh;
   display: flex;
   flex-direction: column;
-  background-image: radial-gradient(rgb(161, 166, 162),white);
+  
 }
 
-
+html, body {
+  background-image: radial-gradient(rgb(161, 166, 162),white);
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -44,21 +45,7 @@
 .role-item div{
 
 }
-.content-list{
-  height: auto;
-  min-height: 40rem;
-  /* margin-top:2em; */
-  border-radius: 25px;
-  margin: 2em auto;
-  padding: 3em 2em 3em 2em;
-  background-color: aliceblue;
-  width: fit-content;
-  
-}
-.content{
-  margin:2em auto;
-  width: fit-content;
-}
+
 #sign-in{
   padding-top: 2em;
 }
@@ -111,6 +98,65 @@
 .sign-card .file{
   padding: 1em;
 }
+.list-item{
+  padding: 1.5em 2em 1.5em 2em !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 35em;
+
+  background-color: white;
+ border-bottom: 2px solid gainsboro;
+}
+.content-list{
+
+  border-radius: 25px;
+  margin: auto;
+  padding: 2em 1em;
+  width: fit-content;
+  background-color: aliceblue;
+  height: max-content
+  
+}
+.content-list .inner{
+
+  background-color: gainsboro;
+  border-radius: 25px;
+  flex-direction: column;
+  height:max-content;
+  width: fit-content;
+
+  margin: 1em;
+}
+.content-list .content{
+  
+  
+  height:auto;
+  padding: 1em;
+  
+}
+.content-list .inner .btn-row{
+  width: 100%;
+  justify-content: start;
+  background-color: rgb(194, 211, 227);
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  padding-top: 1em;
+  border-top-right-radius: 25px;
+  border-top-left-radius: 25px;
+
+}
+
+.list-item button{
+  margin-right: 1em;
+}
+.list-item a {
+  display: flex;
+  flex-direction: row;
+  padding: 0px 1px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

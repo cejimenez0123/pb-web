@@ -16,8 +16,9 @@ import BookRole from "../domain/models/bookrole"
 import { RoleType } from "../core/constants"
 import Profile from "../domain/models/profile"
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
-import { TextField ,Checkbox, FormControlLabel,Button} from "@mui/material"
-
+import { TextField ,Checkbox, FormControlLabel,Button, FormGroup} from "@mui/material"
+import RoleList from "../components/RoleList"
+import theme from "../theme"
 function EditBookContainer({book,pages}){
     
     const pathParams = useParams()
@@ -51,6 +52,7 @@ function EditBookContainer({book,pages}){
             setBookTitle(book.title)
             setBookPrivacy(book.privacy)
             setWritingIsOpen(book.writingIsOpen)
+            setBookPurpose(book.purpose)
             fetchProfile()
             dispatch(fetchArrayOfPages(book.pageIdList))
 
@@ -65,24 +67,13 @@ function EditBookContainer({book,pages}){
         }
       
     },[book])
-    const saveRoles=()=>{
-        if(book!=null){
-            const readers = bookRoles.filter(role => role.role == RoleType.reader)
-            const commenters = bookRoles.filter(role => role.role == RoleType.commenter)
-            const editors = bookRoles.filter(role => role.role == RoleType.editor)
-            const writers = bookRoles.filter(role => role.role == RoleType.writer)
-        const params = {
-            book: book,
-            readers,
-            commenters,
-            editors,
-            writers}
-    
-
-        dispatch(saveRolesForBook(params))
+    // const saveRoles=()=>{
+    //     if(book!=null){
+    //         console.log(`newBookRoles ${JSON.stringify(newBookRoles)}`)
+           
         
        
-        }}
+    //     }}
     
     const fetchProfile=()=>{
         dispatch(fetchAllProfiles()).then((result) => {
@@ -200,6 +191,7 @@ const handleChosingProfileRole =(profile,role)=>{
     }
 
 }
+
 const roleList = ()=>{
     if(profileList!=null && profileList.length > 0){
         return ( 
@@ -300,25 +292,39 @@ const sortableList = ()=>{
     const handleSave = (e)=>{
         e.preventDefault()
         if(book!=null){
-            saveRoles()
+            // saveRoles()
             const pageIdList = listItems.map(page=>  page.id)
             const params = {book:book,
                             title: bookTitle,
                             pageIdList:pageIdList,
+                            purpose: bookPurpose,
                             privacy: bookIsPrivate,
                             writingIsOpen: writingIsOpen}
             dispatch(updateBook(params))
+            const readers = newBookRoles.filter(role => role.role == RoleType.reader).map(role=>role.profile.userId)
+            const commenters = newBookRoles.filter(role => role.role == RoleType.commenter).map(role=>role.profile.userId)
+            const editors = newBookRoles.filter(role => role.role == RoleType.editor).map(role=>role.profile.userId)
+            const writers = newBookRoles.filter(role => role.role == RoleType.writer).map(role=>role.profile.userId)
+        const rolesParams = {
+            book: book,
+            readers,
+            commenters,
+            editors,
+            writers}
+    
+
+        dispatch(saveRolesForBook(rolesParams))
         }
     }
     if(!bookLoading && book!=null){
         
         const form = ()=>{
-            return( <form onSubmit={(e)=>handleSave(e)}>
+            return( <FormGroup style={{padding:"0 2em",margin:"auto"}} >
                 <TextField
                     onChange={(e)=>handleTitleChange(e)}
                     id="standard-required"
                     label="Title"
-                    defaultValue={bookTitle}
+                    value={bookTitle}
                 />
                 <FormControlLabel 
                 control={<Checkbox checked={bookIsPrivate} onChange={()=>{
@@ -338,36 +344,36 @@ const sortableList = ()=>{
                     <TextareaAutosize value={bookPurpose}
                                                 minRows={3} 
                                                 onChange={(e)=>{
-                                                   
-                                            }} 
+                                                setBookPurpose(e.target.value)   
+                                            }}  
                                                 
                                         />
                          </div> 
                 
-                    <Button  variant="contained"type="submit">Save</Button>
-                </form>)
+                    <Button onClick={handleSave} style={{backgroundColor:theme.palette.secondary.main}}variant="contained"type="submit">Save</Button>
+                </FormGroup>)
         }
 
     return(<div className="container">
-            <div className="left-side-bar">
-               
+            
+            <div className="left-bar">
+            {sortableList()}
             </div>
-            <div className="main-bar">
-           
-            <div>
 
       
-            {sortableList()}
-    </div>
-
- 
-        </div>
-        <div className="right-side-bar">
-            <div className="roles">
-                {form()}
-            <div>
-                {roleList()}
-            </div>
+            
+    
+            <div className="right-bar">
+                <div className="edit">
+                <div >
+                    {form()}
+                <div className="roles">
+                    <RoleList book={book} type={"book"} getRoles={roles=>{
+setNewBookRoles(roles)
+                    }} />
+                    {/* {roleList()} */}
+                </div>
+                </div>
             </div>
         </div>
 

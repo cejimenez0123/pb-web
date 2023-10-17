@@ -6,7 +6,6 @@ import { getPublicBooks,
         getProfileBooks,
         fetchArrayOfBooksAppened,
         fetchArrayOfBooks,
-
         saveRolesForBook,
         updateBook,
         setBooksToBeAdded,

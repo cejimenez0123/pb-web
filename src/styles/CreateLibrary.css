@@ -1,24 +1,6 @@
 
 
 
-.list-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 30em;
-}
-/* .list-item div:first-child{
-    display: flex;
-  
-    flex-direction: row;
-    justify-content: space-between;
-    width: 50%;
-    height: 2em;
-    
-} */
-/* .list-item-title {
-  color: black;
-} */
 .list {
     width: 30em;
 }

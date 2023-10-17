@@ -1,11 +1,9 @@
 
 import { useState ,useEffect} from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
-import { getProfilePages,fetchArrayOfPages,saveRolesForPage } from "../actions/PageActions"
 import { getProfileBooks, updateBook } from "../actions/BookActions"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import Page from "../domain/models/page"
 import {  useSelector } from "react-redux/es/hooks/useSelector"
 import { getCurrentProfile } from "../actions/UserActions"
 import { createBook} from "../actions/BookActions"
@@ -15,8 +13,8 @@ export default function CreateBookContainer({pagesInView,booksInView}){
         const navigate = useNavigate()
         const [bookTitle,setBookTitle]=useState("")
         const [purpose,setPurpose] = useState("")
-        const currentProfile = useSelector(state=>{return state.users.currentProfile})
-        const [bookIsPrivate,setBookIsPrivate]= useState(false)
+        const currentProfile = useSelector(state=>state.users.currentProfile)
+       const [bookIsPrivate,setBookIsPrivate]= useState(false)
         const [bookIsOpen,setBookIsOpen]= useState(false)
         const pagesToBeAdded = useSelector(state=>{return state.pages.pagesToBeAdded})
         // const [pagesToBeAdded,setPagesToBeAdded]=useState([])
@@ -55,7 +53,8 @@ export default function CreateBookContainer({pagesInView,booksInView}){
         }
     
     const fetchBooks = ()=>{
-        dispatch(getProfileBooks())
+        const params = {profile: currentProfile}
+        dispatch(getProfileBooks(params))
     }
     const addUpdateBook=(book)=>{
         

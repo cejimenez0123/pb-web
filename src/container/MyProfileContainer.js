@@ -4,39 +4,14 @@ import ProfileCard from '../components/ProfileCard';
 import { useNavigate} from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useState } from 'react';
-import { getCurrentProfile } from '../actions/UserActions';
-import { getProfilePages } from '../actions/PageActions';
-import { getProfileBooks } from '../actions/BookActions';
-import { getProfileLibraries } from '../actions/LibraryActions';
-import PageListItem from '../components/PageLIstItem';
 import "../styles/MyProfile.css"
-import Book from '../domain/models/book'
-import Page from '../domain/models/page'
-import Library from '../domain/models/library'
-import { current } from '@reduxjs/toolkit';
-import ListItem from '../components/ListItem';
-import { List } from '@mui/material';
 import ContentList from '../components/ContentList';
 
 
-export default function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView,authState}){
+function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView,authState}){
     const navigate = useNavigate()
     
     const [pending,setPending] = useState(false)
-   
-
-
-   
-
-
-
-        
-
-    
-    
-   
-   
-
     if( currentProfile){ 
     
     return(
@@ -75,3 +50,4 @@ Loading...
         </div>)
     }}
 
+export default MyProfileContainer

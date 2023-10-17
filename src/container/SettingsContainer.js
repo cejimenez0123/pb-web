@@ -72,7 +72,7 @@ function SettingsContainer(props) {
     }   
     const getLibrariesOfProfile = ()=>{
         if(currentProfile!=null){
-        const params = {profileId: currentProfile.id}
+        const params = {profile: currentProfile}
         dispatch(getProfileLibraries(params)).then((result) => {
 
           const lib =  librariesOfProfile.find((lib)=>{return lib.id == newBookmarkLibId})
