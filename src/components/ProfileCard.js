@@ -1,5 +1,7 @@
 import React from "react"
+import { Settings } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
+import { Button } from "@mui/material"
 export default function ProfileCard(props){
   
    let navigate = useNavigate()
@@ -14,23 +16,17 @@ export default function ProfileCard(props){
 
                 <h4>@{props.currentProfile.username}</h4>
             </div>
-        </div>
-        
-    <div className="profile-buttons">
-    <a onClick={()=>{
+            <div className="profile-buttons">
+    <Button onClick={()=>{
             navigate("/profile/edit")
         }}>
-            Settings
-        </a>
-{/* <button type="button" class=" mountain button" onClick={()=>this.setState({showStartBook: "block"})}>Start Book</button>
+            <Settings/>
+        </Button>
+
+        </div> 
+        </div>
         
-//                 <button type="button" class=" blueJean button" onClick={()=>this.handleStartLib()}>Start Library</button>
-     
-//           {/* <FollowersBtn/>
-                     
-//                         <FollowingBtn followedUsers={this.props.followedUsers}/> 
-//                          */}
-        </div>  
+ 
         </div>
     </div>)
 

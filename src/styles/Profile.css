@@ -1,7 +1,9 @@
 .container{
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
 }
+
 /* .content{
     width: 50rem;
 } */

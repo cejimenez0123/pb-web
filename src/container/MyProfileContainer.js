@@ -8,6 +8,7 @@ import "../styles/MyProfile.css"
 import ContentList from '../components/ContentList';
 import { Button } from '@mui/material';
 import theme from "../theme"
+
 function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView,authState}){
     const navigate = useNavigate()
     

@@ -18,6 +18,10 @@
 
     text-align: start;
 }
+.library-item{
+    display: flex;
+    flex-direction: row;
+}
 /* .settings{
     background-color: red;
 } */

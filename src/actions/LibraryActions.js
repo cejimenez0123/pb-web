@@ -210,15 +210,14 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
   const getProfileLibraries= createAsyncThunk(
     'libraries/getProfileLibraries',
     async (params,thunkApi) => {
-      let libraryList = []
       const profile = params["profile"]
       const ref = collection(db, "library")
       let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
       if(auth.currentUser.uid == profile.userId){
         queryReq = query(ref, where("profileId", "==", profile.id))
        }else if(auth.currentUser.uid != profile.userId){
-      queryReq = query(ref,
-                     and(where("profileId", "==", profile.id),
+      queryReq = query(ref,and(
+                     where("profileId", "==", profile.id),
                      or(where('commenters', 'array-contains', profile.userId),
                         where('readers','array-contains', profile.userId),
                         where('editors', 'array-contains', profile.userId),
