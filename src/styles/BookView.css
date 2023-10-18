@@ -2,15 +2,8 @@
     display: flex;
     flex-direction: row;
 }
-.left-side-bar {
-    flex:3;
-    display: flex;
-    flex-direction: column;
-
-}
-.right-side-bar {
-
-    flex:3;
+.left-bar .info {
+    margin-top: 4em;
 }
 .main-bar{
     width:60rem ;

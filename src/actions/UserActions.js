@@ -6,6 +6,8 @@ import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
 import {  ref, uploadBytes,uploadBytesResumable,getDownloadURL  } from "firebase/storage";
 import { storage } from "../core/di";
+import FollowBook from "../domain/models/follow_book"
+import FollowLibrary from "../domain/models/follow_library"
 // import {auth} from "../core/di"
 const logIn = createAsyncThunk(
     'users/logIn',
@@ -157,12 +159,16 @@ const updateProfile = createAsyncThunk("users/updateProfile",
                         const profile = params["profile"]
                         const newUsername = params["username"]
                         const newBookmarkLibraryId = params["bookmarkLibraryId"]
+                        const newHomeLibraryId = params["homeLibraryId"]
                         const profileRef = doc(db, "profile", profile.id);
-
+                        const newSelfStatement = params["selfStatement"]
+                        const newPrivacy = params["privacy"]
 // Set the "capital" field of the city 'DC'
       await updateDoc(profileRef, {
             username: newUsername,
-            bookmarkLibraryId: newBookmarkLibraryId
+            bookmarkLibraryId: newBookmarkLibraryId,
+            selfStatement: newSelfStatement,
+            privacy: newPrivacy,
         });
        const snapshot = await getDoc(profileRef)
         const pack = snapshot.data()  
@@ -282,6 +288,114 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
       
     
   })
+  const createFollowBook = createAsyncThunk("users/createFollowBook", async function(params,thunkApi){
+
+        try{
+        const {
+            profile,
+            book
+            }=params
+            
+        const id =  `${profile.id}_${book.id}`
+        const created = Timestamp.now()
+        await setDoc(doc(db,"profile",profile.id,"follow_book",id), { 
+            id:id,
+            bookId: book.id,
+            profile: profile.id,
+            created: created
+        })
+        const fb = new FollowBook(id,profile.id,book.id,created);
+        return {
+                followBook:fb 
+            }
+      }catch(error){
+        return {
+            error: new Error(`Error: Follow Book ${error.message}`)
+        }
+      }
+    
+    
+    })
+    const createFollowLibrary = createAsyncThunk("users/createFollowLibrary", async function(params,thunkApi){
+          try{
+            const {
+                profile,
+                library
+                }=params
+           
+            const id =  `${profile.id}_${library.id}`
+            const created = Timestamp.now()
+              await setDoc(doc(db,"profile",profile.id,FollowLibrary.className,id), { 
+              id:id,
+              bookId: library.id,
+              profile: profile.id,
+              created: created
+              })
+            const lb = new FollowLibrary(id,profile.id,library.id,created);
+          return { followLibrary:lb}
+          }catch(error){
+           
+            return {
+              error: new Error(`Error: Follow Book ${error.message}`)
+            }
+          }
+        
+        
+        })
+const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForProfile",async (params,thunkApi)=>{
+            try{
+              const {profile} = params
+            const ref = collection(db,"profile",profile.id,FollowBook.className)
+          
+            const snapshot =await getDocs(ref)
+          
+            let followList = []
+            snapshot.docs.forEach(doc => {
+                  const pack = doc.data();
+                  const { id,
+                profileId,
+                bookId,
+                created
+               }=pack
+               const fb = new FollowBook(id,bookId,profileId,created)
+                
+                followList = [...followList, fb]
+              })
+          return {
+          
+            followList: followList,
+          }}catch(err) {
+                return {
+                    error: new Error(`Error: Fetch Follow books: ${err.message}`)
+                }
+          }})
+const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryForProfile",async (params,thunkApi)=>{
+            try{
+              const {profile} = params
+            const ref = collection(db,"profile",profile.id,FollowLibrary.className)
+          
+            const snapshot =await getDocs(ref)
+          
+            let followList = []
+            snapshot.docs.forEach(doc => {
+                  const pack = doc.data();
+                  const { id,
+                profileId,
+                bookId,
+                created
+               }=pack
+               const fb = new FollowBook(id,bookId,profileId,created)
+                
+                followList = [...followList, fb]
+              })
+          return {
+          
+            followList: followList,
+          }}catch(err) {
+                return {
+                    error: new Error(`Error: Fetch Follow books: ${err.message}`)
+                }
+          }})
 export {logIn,
         signUp,
         getCurrentProfile,
@@ -289,4 +403,9 @@ export {logIn,
         fetchAllProfiles,
         uploadProfilePicture,
         fetchProfile,
-        setProfileInView}
+        setProfileInView,
+        createFollowBook,
+        createFollowLibrary,
+        fetchFollowBooksForProfile,
+        fetchFollowLibraryForProfile
+    }

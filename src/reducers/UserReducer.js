@@ -4,12 +4,18 @@ import {    logIn ,
             getCurrentProfile,
             fetchAllProfiles,
             fetchProfile,
-            setProfileInView   } from "../actions/UserActions"
+            setProfileInView,
+            fetchFollowBooksForProfile,
+            fetchFollowLibraryForProfile,
+            createFollowBook,
+            createFollowLibrary  } from "../actions/UserActions"
 import Profile from "../domain/models/profile"
 const initialState = {
     loggedIn: false,
     currentProfile: null,
     loading:false,
+    followedBooks: [],
+    followedLibraries:[],
     profileInView:null,
     profilesInView: [],
     error:""
@@ -71,6 +77,22 @@ const userSlice = createSlice({
     }).addCase(setProfileInView,(state,{payload})=>{
      
         state.profileInView = payload.profile
+      }).addCase(fetchFollowBooksForProfile.rejected,(state,{payload})=>{
+        state.error = payload.error
+      }).addCase(fetchFollowBooksForProfile.fulfilled,(state,{payload})=>{
+        state.followedBooks = payload.followList
+      }).addCase(fetchFollowLibraryForProfile.rejected,(state,{payload})=>{
+        state.error = payload.error
+      }).addCase(fetchFollowLibraryForProfile.fulfilled,(state,{payload})=>{
+        state.followedLibraries = payload.followList
+      }).addCase(createFollowBook.rejected,(state,{payload})=>{
+        state.error = payload.error
+      }).addCase(createFollowBook.fulfilled,(state,{payload})=>{
+        state.followedBooks = [...state.followedBooks,payload.followBook]
+      }).addCase(createFollowLibrary.fulfilled,(state,{payload})=>{
+        state.followedLibraries = [...state.followedLibraries,payload.followLibrary]
+      }).addCase(createFollowLibrary.rejected,(state,{payload})=>{
+        state.followedLibraries = [...state.followedLibraries,payload.followLibrary]
       })
 }})
 

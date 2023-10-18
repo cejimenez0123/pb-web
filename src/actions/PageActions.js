@@ -1,5 +1,5 @@
 import {db,app,auth} from "../core/di"
-import {where,query,and,updateDoc,or,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, arrayUnion} from "firebase/firestore"
+import {where,deleteDoc,query,and,updateDoc,or,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, arrayUnion} from "firebase/firestore"
 import Page from "../domain/models/page"
 import PageComment from "../domain/models/page_comment"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
@@ -654,6 +654,14 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
             loading: true
     }}
   })
+const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>{
+    try{
+      const {page}=params
+    await deleteDoc(doc(db, "page", page.id));
+    }catch(e){
+      return {error: new Error("Error: Delete Page"+e.message)};
+    }
+  })
   export {getPublicPages,
           pagesLoading,
           setHtmlContent,
@@ -670,5 +678,6 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
           fetchEditingPage,
           appendSaveRolesForPage,
           createComment,
-          fetchCommentsOfPage
+          fetchCommentsOfPage,
+          deletePage
         } 

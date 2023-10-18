@@ -1,10 +1,13 @@
 
 #container {
     display: flex;
-    margin-top:1em;
+    justify-content: space-evenly;
+}
+.left-bar .content-list{
+    margin-top: 3em;
 }
 .info{
-    margin-top: 3em;
+    /* margin-top: 3em; */
     margin-right: 3em;
     margin-left: 2em;
     min-height: 15em;
@@ -20,4 +23,7 @@
     background-color: rgb(217, 217, 217);
     margin: 1em 1em;
    
+}
+.right-bar{
+    
 }

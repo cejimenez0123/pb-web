@@ -4,7 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import { useSelector,useDispatch } from "react-redux"
 import { fetchArrayOfPages, fetchArrayOfPagesAppened } from "../actions/PageActions"
 import { useParams } from "react-router-dom"
-import { fetchAllProfiles } from "../actions/UserActions"
+import { createFollowLibrary, fetchAllProfiles } from "../actions/UserActions"
 import { fetchLibrary } from "../actions/LibraryActions"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/Library.css"
@@ -14,22 +14,22 @@ import { fetchArrayOfBooks } from "../actions/BookActions"
 import { useNavigate } from "react-router-dom"
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Button } from "@mui/material"
+import theme from "../theme"
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const libraryInView = useSelector(state=>state.libraries.libraryInView)
-    const profilesInView = useSelector(state=>state.users.profilesInView)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
-    const booksInView = useSelector(state=>state.books.booksInView)
+    const followedLibraries = useSelector(state=>state.users.followedLibraries)
     const [itemsInView,setItemsInView] = useState([])
-    const [hasMorePages,setHasMorePages] = useState(false)
+    const [hasMore,setHasMore] = useState(false)
     const [error,setError]= useState(false)
     const [errorMessage,setErrorMessage] = useState("Error")
     useEffect(()=>{
         dispatch(fetchAllProfiles())
-        if(libraryInView==null){
+        if(libraryInView==null || (libraryInView!=null && libraryInView.id != pathParams["id"])){
             const id =  pathParams["id"]
             const params = {id: id}
             dispatch(clearPagesInView())
@@ -38,7 +38,7 @@ function LibraryViewContainer(props){
                 
             })
         }else{
-            console.log(`csdfffsx ${JSON.stringify(libraryInView)}`)
+        
             dispatch(clearPagesInView())
             getPages()
             
@@ -47,9 +47,10 @@ function LibraryViewContainer(props){
       
     },[])
     useEffect(()=>{
-        if(libraryInView!=null){
+    
             getPages()
-        }
+            getBooks()
+    
     },[libraryInView])
     const libraryInfo=()=>{
         if(libraryInView!=null){
@@ -62,11 +63,29 @@ function LibraryViewContainer(props){
                     <SettingsIcon style={{color:"black"}}/>
                 </Button>)
                 }
+                let followDiv = (<Button style={{backgroundColor:theme.palette.secondary.main,
+                    color:theme.palette.secondary.contrastText}}
+                    variant="outlined"
+                    onClick={onClickFollow}
+                    >Follow
+                    </Button>)
+                const follow = followedLibraries.find(fl=>fl.id == `${currentProfile.id}_${libraryInView.id}`)
+                if(follow){
+                    followDiv = (<Button style={{backgroundColor:theme.palette.secondary.light,
+                        color:theme.palette.secondary.contrastText}}
+                        variant="outlined"
+                        onClick={onClickFollow}
+                        >Following
+                        </Button>)
+                }
                 return  (<div className="info">
-                            <h2 className="namee">{lib.name}</h2>
+                            <div className="inner">
+                            <h2 className="name">{lib.name}</h2>
                             <p className="purpose"> {lib.purpose}</p>
                             <div className="button-row reverse">
-                                {button}
+                                {button} 
+                                {followDiv}
+                            </div>
                             </div>
                         </div>
                         )
@@ -78,12 +97,22 @@ function LibraryViewContainer(props){
                         </div>)
                 }
     }
+    const onClickFollow = ()=>{
+    if(currentProfile){
+        const params = {library: libraryInView,
+                        porfile: currentProfile}
+        dispatch(createFollowLibrary(params))
+    }else{
+        window.alert("You'll need to login first")
+    }
+    }
     const getPages = () =>{
+        setHasMore(true)
         if(libraryInView!=null){
 
             const pageIdList = libraryInView.pageIdList
             const params = {pageIdList: pageIdList}
-
+        if(pageIdList.length>0){
             dispatch(fetchArrayOfPages(params)).then((result) => {
 
                 if(result.error ==null ){
@@ -91,13 +120,13 @@ function LibraryViewContainer(props){
                     let newState = []
                     const {payload } = result
                     const {pageList } = payload
-                    console.log(`dwwdw${JSON.stringify(payload)}`)
+                
                     if(payload.error==null){
-                        setError(false)
-                    setItemsInView(prevState=>{
                        
+                        setError(false)
+                        setItemsInView(prevState=>{
                         pageList.forEach((page) => {
-                            console.log(`Pds ${JSON.stringify(prevState)}`)
+                        
                             const item = prevState.find(item=> item.id == page.id)
                             if(item==null){
                                 newState.push(page)
@@ -107,27 +136,26 @@ function LibraryViewContainer(props){
                         return [...prevState,...newState]
 
                     })
-                    setHasMorePages(false)
                 }else{
-                        setErrorMessage("B")
+                        setErrorMessage(`${payload.error.message}`)
                         setError(true)
                     }
                 }else{
-                    setErrorMessage("A")
+                    setErrorMessage(result.error.message)
                     setError(true)
                 }
             
-                getBooks()
+               setHasMore(false)
             }).catch((err) => {
                 
             });
         }else{
-            console.error("Library null")
-        }
+            setErrorMessage('Library is empty')
+        }}
     }
     const getBooks=()=>{
             if(libraryInView && libraryInView.bookIdList.length > 0){
-                
+                setHasMore(true)
                 let params = {bookIdList: libraryInView.bookIdList};
 
                 dispatch(fetchArrayOfBooks(params)).then(result=>{
@@ -135,7 +163,6 @@ function LibraryViewContainer(props){
                     if(result.error ==null){
                         const { payload } = result
                         const {bookList} = payload
-                        console.log(`dssffs ${JSON.stringify(payload)}`)
                         if(payload.error == null){
                             setError(false)
                         setItemsInView((prevState)=>{
@@ -181,19 +208,25 @@ function LibraryViewContainer(props){
                         }
 
                     }
+                    setHasMore(false)
                 })
+                
+            }else{
+                if(itemsInView.length == 0){
+                    setErrorMessage('Library is empty')
+                }
             }
     }
     
     const contentList = ()=>{
         if(!error){
-        if(itemsInView!=null && itemsInView.length>0 ){
+        if(itemsInView!=null ){
             return(<div className="content-list">
 
-                <InfiniteScroll
+                <InfiniteScroll 
                 dataLength={itemsInView.length}
                 next={getPages}
-                hasMore={hasMorePages} // Replace with a condition based on your data source
+                hasMore={hasMore} // Replace with a condition based on your data source
                 loader={<p>Loading...</p>}
                 endMessage={<p>No more data to load.</p>}
                 scrollableTarget="scrollableDiv"
@@ -206,80 +239,39 @@ function LibraryViewContainer(props){
                              if(pagesInView){
                                 page = pagesInView.find(page=> page.id == id)
                             }
-                            let profile = null
-                            if(profilesInView){
-                                profile = profilesInView.find(profile => profile.id == story.profileId)
-                            }
+                           
                             
                             if(page){
-                           let title = (
-                                <div>
-                                    <a onClick={
-                                        ()=>{
-                                            navigate(`/book/${story.id}`)
-                                            }
-                                        }>
-                                {story.title} 
-                                </a>{` > `} <a
-                                        onClick={()=>{
-                                            navigate(`/page/${page.id}`)
-                                        }}
-                                >{page.title}</a>
-                            </div>)
-                            let profileDiv = (<div>
-                                    
-                            </div>)
-                            if(profile){
-                                profileDiv=(<div>
-                                    <h6>
-                                    {profile.username}
-                                    </h6>
-                                </div>)
-                            }
                             
-                                return(<div className="content-item " key={story.id}>
-                                    {/* <div className="item-row">
-                                     
-                                </div> */}
-                                <DashboardItem book={story} page={page}/>
+                                return(<div key={story.id}>
+                                
+                                <DashboardItem  library={libraryInView}
+                                                book={story} 
+                                                page={page}/>
                             </div>)}
-            }else{
-               const profile = profilesInView.find(profile => profile.id == story.profileId)
-                let profileDiv = (<div>
-                                    
-                    </div>)
-                    if(profile){
-                        profileDiv=(<div id="username">
-                            <h6>
-                            {profile.username}
-                            </h6>
-                        </div>)
-                    }          
-                return(
+                            }else{
+                                return(
                 
-                <div  className="content-item"  key={story.id}>
-                    <div className="item-row">
-                        <h6 id="title"> {story.title}</h6>
-                        {profileDiv}
-
-                    </div>
-                    
-                    <DashboardItem page={story}/>
+                                <div key={story.id}>
+            
+                                        <DashboardItem library={libraryInView} page={story}/>
                     
                 </div>)
             }})
         }
-                </InfiniteScroll>
+                </InfiniteScroll> 
             </div>
             )}else{
 
-                return(<div>
+                return(<div className="content-list">
                     Content Loading...
                 </div>)
 
             }}else{
-                return(<div>
-                    {errorMessage}
+                return(<div className="content-list">
+                    <div className="error">
+                    <h2 >{errorMessage}</h2>
+                    </div>
                 </div>)
             }
         
@@ -287,16 +279,14 @@ function LibraryViewContainer(props){
         }
     
     return (<div id="container">
-        <div className="left-side-bar">
-           
+        <div className="left-bar">
+                    {contentList()}
+             
         </div>
-        <div className="main-side-bar">
-                {contentList()}
-        </div>
-        <div className="right-side-bar">
-        <div>
+        <div className="right-bar">
+      
                 {libraryInfo()}
-            </div>
+           
         </div>
     </div>)
 

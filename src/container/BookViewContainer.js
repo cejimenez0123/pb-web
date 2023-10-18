@@ -8,28 +8,45 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/BookView.css"
 import { clearPagesInView } from "../actions/PageActions"
+import {Button} from "@mui/material"
+import theme from "../theme"
+import { fetchProfile ,createFollowBook} from "../actions/UserActions"
+import { Settings } from "@mui/icons-material"
 function BookViewContainer({book,pages}){
     const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
+    const profile= useSelector(state=>state.users.profileInView)
     const bookLoading = useSelector(state=>state.books.loading)
     const pageLoading = useSelector(state=>state.pages.loading)
     const [hasMore,setHasMore]=useState(false)
     const [page,setPage] = useState(1)
+    const followedBooks = useSelector(state=>state.users.followedBooks)
     const getBook=()=>{
       
       const bookId =pathParams["id"]
       const parameters = {
         id: bookId,
       }
-       if(book==null){
+       if(book==null || (book!=null && book.id!=bookId)){
         dispatch(clearPagesInView())
         dispatch(fetchBook(parameters)).then((result) => {
-           
+            const {payload} = result
+            if(payload.error!=null){
+                const profileParams = {
+                    id: payload.book.profileId
+                }
+                dispatch(fetchProfile(profileParams))
+            }
         }).catch((err) => {
             
         });
+    }else{
+        const profileParams = {
+            id: book.profileId,
+        }
+        dispatch(fetchProfile(profileParams));
     }
     }
     const goToEditBook =(e)=>{
@@ -92,34 +109,62 @@ function BookViewContainer({book,pages}){
             </div>)
         }
     }
-    if(!!currentProfile && !!book && currentProfile.id == book.profileId)
-    <a ket={book.id}onClick={(e)=>goToEditBook(e)}>Edit</a>
-    if(!bookLoading && book!=null){
-        
+    const followBookClick = ()=>{
+        if(currentProfile){
+        const params = {
+            book: book,
+            profile:currentProfile
+        }
+        dispatch(createFollowBook(params))
+        }else{
+            window.alert("Log in first")
+        }
+    }
+    let editDiv = (<div>
+
+    </div>)
+    let followDiv = (<Button variant="outlined" style={{backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}className="follow-btn"
+    onClick={
+       followBookClick
+   }>Follow</Button>)
+    if(currentProfile && book && currentProfile.id == book.profileId){
+   editDiv = (<Button
+   key={book.id}onClick={(e)=>goToEditBook(e)}>Edit<Settings/></Button>)
+   let fb = followedBooks.find(fb=>fb.id==`${currentProfile.id}_${book.id}`)
+    if(fb){
+       followDiv= (<Button variant="outlined" style={{backgroundColor:theme.palette.secondary.light,color:theme.palette.secondary.dark}
+       } onClick={()=>{}}>Following</Button>)
+    }    
+
+}
+    if( book!=null){ 
     
+  
 
     return(<div className="container">
           
-        <div className="left-side-bar">
+        <div className="left-bar">
+            <div className="info">
             <h5> {book.title}</h5>
-            <h6> {book.purpose}</h6>
-            <button type="button" className="follow-btn" onClick={()=>{
-
-            }}>Follow</button>
             
+            <h6> {book.purpose}</h6>
+            {followDiv}
+            
+            </div>
         </div>
-        <div className="main-bar">
+        <div className="right-bar">
            <div className="content">
             {pageList()}
             </div>
         </div>
-        <div className="right-side-bar">
-        </div>
+        
 
     </div>)}else{
-        
-        return(<div>
-            Loading...
-        </div>)
-}}
+        <div className="container">
+
+            <h1>Book is loading</h1>
+
+        </div>
+    }
+}
 export default BookViewContainer

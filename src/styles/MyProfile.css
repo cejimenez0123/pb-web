@@ -13,6 +13,8 @@
 
 .container-row{
     padding-top: 2em;
+    justify-content: space-around;
+    width: 100%;
     
 }
 .left-side-bar{
@@ -32,16 +34,31 @@
    
  
 }
+.create-buttons{
+
+    display: flex;
+    flex-direction: column;
+}
+
+.create-buttons button{
+    margin-top: 1em;
+    height: 5em;
+}
 .profile-pic-container{
     display: flex;
     flex-direction: column;
-    width: fit-content;
+    width:15em;
     margin: auto;
-    background-color: blueviolet;
+    padding: 2em;
+
+    border-radius: 25px;
+    background-color: aliceblue;
 }
 .profile-pic{
-    width:10em;
+    max-width:10em;
+    max-height: 10em;
     height: auto;
+    
     border: 2px solid blueviolet;
 }
 .btn-primary{

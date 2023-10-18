@@ -5,18 +5,21 @@ import useAuth from "../core/useAuth";
 import { getProfileLibraries } from "../actions/LibraryActions";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
-
-
+import { Button,TextField,FormGroup,TextareaAutosize,Checkbox,FormControlLabel } from "@mui/material";
+import "../styles/Setting.css"
+import theme from "../theme"
 function SettingsContainer(props) {  
     const navigate = useNavigate()
-    const [openModal, setOpenModal]= useState(false)
+    const [openModal, setOpenModal]= useState([false,"bookmark"])
     const librariesOfProfile = useSelector(state=>state.libraries.librariesInView)
     let currentProfile = useSelector(state=>state.users.currentProfile)
     let auth = useAuth()
     const [newUsername,setNewUsername] = useState("")
     const [newBookmarkLibId,setNewBookmarkLibId] = useState("")
     const [newHomeLibraryId,setNewHomeLibraryId] = useState("")
-    
+    const [nameHomeLibrary,setHomeLibraryName]=useState("")
+    const [selfStatement,setSelfStatement] = useState("")
+    const [isPrivate,setPrivacy] = useState(false)
     const [shownBookmarkLibrary, setShownBookmarkLibrary] = useState("")
     const [authState,setAuthState]=useState(auth)
     const dispatch = useDispatch()
@@ -33,6 +36,8 @@ function SettingsContainer(props) {
                     setNewBookmarkLibId(currentProfile.bookmarkLibraryId)
 
                 }
+                
+                setPrivacy(currentProfile.privacy)
                 getLibrariesOfProfile()
                 setPending(false)
               
@@ -60,11 +65,13 @@ function SettingsContainer(props) {
         const params = {
             profile: currentProfile,
             username: newUsername,
-            bookmarkLibraryId: newBookmarkLibId
+            bookmarkLibraryId: newBookmarkLibId,
+            selfStatement: selfStatement,
+            privacy: isPrivate
             
         }
         dispatch(updateProfile(params)).then((result) => {
-            console.log(`UPdate Profile ${JSON.stringify(result)}`)
+            
         }).catch((err) => {
             
         });
@@ -85,11 +92,16 @@ function SettingsContainer(props) {
     const onSelectBookmarkLibrary=(library)=>{
         setNewBookmarkLibId(library.id)
         setShownBookmarkLibrary(library.name)
-        setOpenModal(false)
+        setOpenModal([false,"bookmark"])
+    }
+    const onSelectHomeLibrary=(library)=>{
+        setNewHomeLibraryId(library.id)
+        setHomeLibraryName(library.name)
+        setOpenModal([false,"home"])
     }
     const libraryList = ()=>{
         return (
-            <div>
+            <div className="library-list">
 
           <InfiniteScroll
           dataLength={librariesOfProfile.length}
@@ -102,9 +114,18 @@ function SettingsContainer(props) {
           >
           {librariesOfProfile.map(library=>{
 
-            return (<div key={library.id}>
+            return (<div className="library-item" key={library.id}>
                     <h5>{library.name}</h5>
-                    <button type="button" onClick={()=>onSelectBookmarkLibrary(library)}>Select</button>
+                    <button type="button" onClick={()=>{
+                        switch(openModal[1]){
+                            case "home":{
+                                onSelectHomeLibrary(library)
+                            }
+                            case "bookmark":{
+                                onSelectBookmarkLibrary(library)
+                            }
+                        }
+                    }}>Select</button>
                </div>)
                 })}
           </InfiniteScroll>
@@ -114,33 +135,46 @@ function SettingsContainer(props) {
     }
     if(!pending){
             return(<div className="container">
-                    <form>
-                        <label className="">
-                            Username:
-                            <input value={newUsername} placeholder="username" type="text" className=""/>
-                        </label>
-                        <label id="self-statement" className="">
-                            Self Statement:
-                            <textarea placeholder="Self Statement"/>
-                        </label>
-                        <label id="bookmark-library" className="">
-                            Bookmark Library:
-                            <input type="text" value={shownBookmarkLibrary}onClick={
+                    <div className="settings">
+                        <FormGroup className="form">
+                            <TextField  style={{backgroundColor:theme.palette.secondary.contrastText}}
+                                        className={"input text"}
+                                        value={newUsername}
+                                         label="Username"/>
+                            <label className="self-statement" id="self-statement" >
+                                <h6>Self Statement:</h6>
+                                <TextareaAutosize 
+                                    onChange={(e)=>{setSelfStatement(e.target.value)}}
+                                    minRows={3}
+                                    cols={30}
+                                    style={{padding:"1em"}}
+                                    placeholder="Self Statement"/>
+                            </label>
+                            <TextField 
+                            style={{backgroundColor:theme.palette.secondary.contrastText}}
+                                       
+                                className={"input text"} label="Bookmark Library" type="text" value={shownBookmarkLibrary} onClick={
                                 ()=>{
-                                    setOpenModal(!openModal)
+                                    setOpenModal([!openModal,"bookmark"])
                                 }
-                            }className=""/>
-                        </label>
-                        <label id="bookmark-library" className="">
-                            Home Library:
-                            <input type="text" onClick={
+                            }/>
+                            
+                            <TextField 
+                            className={"input text"}
+                                style={{backgroundColor:theme.palette.secondary.contrastText}}
+                                       
+                                label="Home Library" type="text" onClick={
                                 ()=>{
-                                    setOpenModal(!openModal)
+                                    setOpenModal([!openModal,"home"])
                                 }
-                            }className=""/>
-                        </label>
-                        <Modal isOpen={openModal} onClose={()=>{
-                                setOpenModal(false)}
+                            }/>
+                           <FormControlLabel 
+                control={<Checkbox checked={isPrivate} onChange={()=>{
+                    setPrivacy(!isPrivate)
+                }}/>} label="Private" 
+                />
+                        <Modal isOpen={openModal[0]} onClose={()=>{
+                                setOpenModal([false,"bookmark"])}
                         }
                         title={"Your Libraries"}
                         
@@ -149,10 +183,16 @@ function SettingsContainer(props) {
                             {libraryList()}
                             </div>
                         </Modal>
-                        <button onClick={(e)=>handleOnSubmit(e)}type="submit" className="">
+                        <Button style={{backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}
+                                variant="outlined" 
+                                onClick={(e)=>handleOnSubmit(e)}>
                             Update
-                        </button>
-                    </form>
+                        </Button>
+                        </FormGroup>
+                        <Button className="delete"
+                            style={{backgroundColor: theme.palette.error.main,color:theme.palette.error.contrastText}}
+                        > Delete</Button>
+                        </div>
             </div>)
     }else{
         return(<div>

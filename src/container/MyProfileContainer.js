@@ -6,8 +6,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useState } from 'react';
 import "../styles/MyProfile.css"
 import ContentList from '../components/ContentList';
-
-
+import { Button } from '@mui/material';
+import theme from "../theme"
 function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView,authState}){
     const navigate = useNavigate()
     
@@ -19,20 +19,31 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInV
         <div  className='container-row'>
           
             <div className="left-side-bar">
-                    <ul className='list-unstyled'>
-                                    <li onClick={()=>{
+                        <div className='create-buttons'>
+                                    <Button onClick={()=>{
                                         navigate("/page/new")
-                                    }}className='btn btn-primary mb-3'>Create Page</li>
-                                   <li
+                                    }}
+                                    style={{backgroundColor: theme.palette.secondary.main,
+                                        color:theme.palette.secondary.contrastText}}
+                                    variant="outlined"
+                                    >Create Page</Button>
+                                   <Button
+                                   style={{backgroundColor: theme.palette.secondary.main,
+                                    color:theme.palette.secondary.contrastText}}
                                     onClick={()=>{
                                         navigate("/book/new")
-                                    }} className='btn btn-primary mb-3' >Create Book</li>
-                                    <li 
+                                    }} 
+                                    variant="outlined"
+                                    >Create Book</Button>
+                                    <Button
                                     onClick={()=>{
                                         navigate("/library/new")
                                     }}
-                                    className='btn btn-primary mb-3'>Create Library</li>
-                    </ul>
+                                    style={{backgroundColor: theme.palette.secondary.main,
+                                        color:theme.palette.secondary.contrastText}}
+                                    variant="outlined"
+                                   >Create Library</Button>
+                    </div>
             </div>
           
             <div className='main-bar'>

@@ -103,17 +103,33 @@ html, body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 35em;
+  width: 45em;
 
   background-color: white;
  border-bottom: 2px solid gainsboro;
 }
+.content-list .error {
+  background-color: rgb(219, 219, 219);
+  border-radius: 25px;
+  height: 20em;
+  padding-top:8em;
+  
+}
+.content-list .error h2{
+ 
+  width: fit-content;
+  margin: auto;
+
+}
+
 .content-list{
 
   border-radius: 25px;
   margin: auto;
   padding: 2em 1em;
-  width: fit-content;
+  min-height: 20em;
+  width: 50em;
+  /* width: fit-content; */
   background-color: aliceblue;
   height: max-content
   
@@ -122,15 +138,13 @@ html, body {
 
   background-color: gainsboro;
   border-radius: 25px;
-  flex-direction: column;
+
   height:max-content;
-  width: fit-content;
 
   margin: 1em;
 }
 .content-list .content{
-  
-  
+ 
   height:auto;
   padding: 1em;
   
@@ -154,7 +168,9 @@ html, body {
 .list-item a {
   display: flex;
   flex-direction: row;
-  padding: 0px 1px;
+  padding: 0px 2px 0px 2px;
+  margin-top: 1em;
+  
 }
 
 @media (prefers-reduced-motion: no-preference) {

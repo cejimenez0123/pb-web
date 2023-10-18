@@ -455,6 +455,15 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
     
   }
 )
+const deleteLibrary = createAsyncThunk("libraries/deleteLibrary", async (params,thunkApi)=>{
+  
+  try{
+    const {library }=params
+  await deleteDoc(doc(db, "library", library.id));
+  }catch(e){
+    return {error: new Error("Error: Delete Library"+e.message)};
+  }
+})
 
 export {  fetchLibrary,
           updateLibrary,
@@ -464,5 +473,6 @@ export {  fetchLibrary,
           fetchBookmarkLibrary,
           setLibraryInView,
           saveRolesForLibrary,
-          getPublicLibraries
+          getPublicLibraries,
+          deleteLibrary
           }

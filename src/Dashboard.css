@@ -48,8 +48,9 @@
   flex-direction: row;
   justify-content: space-between;
 }
-.dashboard-header p {
-  margin: auto 0;
+.dashboard-header .titles {
+  display: flex;
+  flex-direction: row;
 }
 .dashboard-content{
   padding:  2em;

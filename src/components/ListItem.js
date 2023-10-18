@@ -2,8 +2,9 @@ import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPageInView } from "../actions/PageActions";
-import {setBookInView} from "../actions/BookActions"
-import {setLibraryInView} from "../actions/LibraryActions"
+import {deleteBook, setBookInView} from "../actions/BookActions"
+
+import {setLibraryInView,deleteLibrary} from "../actions/LibraryActions"
 import { useNavigate } from "react-router-dom";
 import { setBooksToBeAdded } from "../actions/BookActions";
 import Dropdown from '@mui/joy/Dropdown';
@@ -54,6 +55,18 @@ function ListItem({type,id,title,item}) {
                     }
                 }     
                 }
+    const handleDelete = ()=>{
+        switch(type){
+            case 'book':{
+                const params = { book:item}
+                dispatch(deleteBook(params))
+            }
+            case 'library':{
+                const params = { library:item}
+                dispatch(deleteLibrary(params))
+            }
+        }
+    }
     const dropDown=()=>{
        switch(type){
         case "book":{

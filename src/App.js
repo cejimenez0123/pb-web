@@ -21,7 +21,9 @@ import { getCurrentProfile } from './actions/UserActions';
 import { fetchBookmarkLibrary } from './actions/LibraryActions';
 import { getPublicBooks } from './actions/BookActions';
 import { getPublicLibraries } from './actions/LibraryActions';
-import {fetchAllProfiles} from './actions/UserActions'
+import {  fetchAllProfiles,
+          fetchFollowBooksForProfile,
+          fetchFollowLibraryForProfile} from './actions/UserActions'
 import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { useEffect,useState} from 'react';
@@ -29,7 +31,7 @@ import useAuth from './core/useAuth';
 import LoggedRoute from './LoggedRoute';
 import EditBookContainer from './container/EditBookContainer';
 import LibraryViewContainer from './container/LibraryViewContainer';
-import { ThemeProvider } from '@mui/material/styles';
+
 
 
 function App(props) {
@@ -57,7 +59,12 @@ function App(props) {
       const params = {
         id: props.currentProfile.bookmarkLibraryId
       }
+      const profileParams = {
+        profile: props.currentProfile
+      }
       props.fetchBookmarkLibrary(params)
+      props.fetchFollowBooksForProfile(profileParams)
+      props.fetchFollowLibraryForProfile(profileParams)
     }
   
   },[props.currentProfile])
@@ -181,6 +188,8 @@ function mapDispatchToProps(dispatch){
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicPages:()=>dispatch(getPublicPages()),
     fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
+    fetchFollowBooksForProfile:(params)=>dispatch(fetchFollowBooksForProfile(params)) ,
+    fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params))
 }
 }
 function mapStateToProps(state){
@@ -196,6 +205,7 @@ function mapStateToProps(state){
     pagesInView: state.pages.pagesInView,
     // libraryInView: state.libraries.libraryInView,
     librariesInView: state.libraries.librariesInView,
+    
     // libraryFollowers: state.libraries.libraryFollowers,
     // followedBooks: state.books.followedBooksOfUser,
     // followedLibraries: state.libraries.followedLibraries

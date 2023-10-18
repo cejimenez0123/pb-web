@@ -468,6 +468,14 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
     return {error: new Error("Error: UDATE BOOK -" + e.message)}
   }
 })
+const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>{
+  try{
+    const {book}=params
+  await deleteDoc(doc(db, "book", book.id));
+  }catch(e){
+    return {error: new Error("Error: Delete Book"+e.message)};
+  }
+})
 // const fetchBookRoles = createAsyncThunk("books/fetchBookRoles",async (params,thunkApi)=>{
 //   const bookId = params["bookId"]
   
@@ -546,6 +554,7 @@ const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
             fetchArrayOfBooksAppened,
             saveRolesForBook,
             setBookInView,
+            deleteBook,
             // fetchBookRoles,
             updateBook,
             setBooksToBeAdded,

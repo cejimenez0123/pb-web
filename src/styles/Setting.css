@@ -1,0 +1,31 @@
+.form{
+    margin-top: 4em;
+    background-color: aliceblue;
+    padding: 4em 2em;
+    border-radius: 25px;
+}
+.self-statement{
+    display: flex;
+    flex-direction: column;
+    margin-top: 2em;
+
+    
+}
+.self-statement textarea{
+    border-radius: 10px;
+}
+.self-statement h6{
+
+    text-align: start;
+}
+/* .settings{
+    background-color: red;
+} */
+.input.text{
+    margin-top: 2em;
+}
+
+.delete{
+    margin-top: 4em;
+    width: 82%;
+}

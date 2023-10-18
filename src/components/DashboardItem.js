@@ -55,12 +55,16 @@ switch(page.type){
     }
     let bookTitleDiv =  (<div></div>)
     if(book){
-        bookTitleDiv = (<p>{book.title} {">"}</p>)
+        bookTitleDiv = (<a onClick={
+            ()=>{
+                navigate(`/book/${book.id}`)
+            }
+        }><p>{book.title} {">"}</p></a>)
     }
-        return(<div className='dashboard-item'>
+        return(<div className='dashboard-item content-item'>
         
             <div className='dashboard-header'>
-                <div>
+                <div className='titles'>
                 {bookTitleDiv}
                 <p onClick={()=>{
                     navigate(`/page/${page.id}`)

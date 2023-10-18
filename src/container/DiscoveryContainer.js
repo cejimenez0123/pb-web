@@ -77,15 +77,23 @@ function DiscoveryContainer(props){
                         switch(aItem.type){
                            case "book":{
                             
-                                return(<a onClick={()=>{
+                                return(<div className='pair-item'>
+                                    <div className='pair-inner'>
+                                    <a onClick={()=>{
                                     navigate(`/book/${aItem.item.id}`)
-                                }}><h2>{aItem.item.title}</h2></a>)
+                                }}><h3>{aItem.item.title}</h3></a>
+                                <p>{aItem.item.purpose}</p>
+                                </div>
+                                </div>)
                             }
                             case "library":{
-                                return(
-                                <a onClick={()=>{
+                                return(<div className='pair-item'>
+                                    <div className='pair-inner'>                                <a onClick={()=>{
                                     navigate(`/library/${aItem.item.id}`)
-                                }}><h2>{aItem.item.name}</h2></a>)
+                                }}><h3>{aItem.item.name}</h3></a>
+                                <p>{aItem.item.purpose}</p>
+                                </div>
+                                </div>)
                             }
                             default:{
                                 return(<h2>Nothing</h2>)
@@ -97,19 +105,12 @@ function DiscoveryContainer(props){
                 
             switch(hash.type){
                 case 'page':{
-                    // let profile = profilesInView.find(profile=>profile.id == hash.item.profileId).username
-                    // let username =(<div></div>)
-                    // if(profile){
-                    //     username = (<h6>{profile.username}</h6>)
-                    // }
+                
                     return (
-                        <div className='content-item'>
-                        {/* <div className='item-row '>
-                           <h6>{hash.item.title}</h6>
-                           {username} 
-                        </div> */}
+                      
+                       
                         <DashboardItem page={hash.item}/>
-                        </div>
+                       
                     )
                 }
                 case 'book':{
@@ -125,40 +126,10 @@ function DiscoveryContainer(props){
                         }
                         
                         if(page){
-                       let title = (
-                            <div>
-                                <a onClick={
-                                    ()=>{
-                                        navigate(`/book/${hash.item.id}`)
-                                        }
-                                    }>
-                            {hash.item.title} 
-                            </a>{` > `} <a
-                                    onClick={()=>{
-                                        navigate(`/page/${page.id}`)
-                                    }}
-                            >{hash.item.title}</a>
-                        </div>)
-                        // let profileDiv = (<div>
-                                
-                        // </div>)
-                        // if(profile){
-                        //     profileDiv=(<div>
-                        //         <h6>
-                        //         {profile.username}
-                        //         </h6>
-                        //     </div>)
-                        // }
                         
-                            return(<div className="content-item" key={hash.item.id}>
-                                {/* <div className="item-row">
-                                    <h6 id="title">
-                                    {title}
-                                    </h6>
-                                    {profileDiv}
-                            </div> */}
+                            return(
                             <DashboardItem book={hash.item} page={page}/>
-                        </div>)
+                        )
                    
                 }}
                 case 'library':{
@@ -173,9 +144,11 @@ function DiscoveryContainer(props){
           
         }}}
         return(
-            <div id="discover" className="" >
-        
-                <div className="content">
+            <div id="discover"  >
+                <div className='content-list'>
+              <div className='content'>
+
+           
                 <InfiniteScroll
            dataLength={contentItems.length}
            next={fetchContentItems}
@@ -187,8 +160,8 @@ function DiscoveryContainer(props){
          })}
         
          </InfiniteScroll>
-                </div>
-               
+         </div>
+         </div>
             </div>
         )
 

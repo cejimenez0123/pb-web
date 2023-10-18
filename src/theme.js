@@ -7,6 +7,7 @@ let theme = createTheme({
           },
           secondary: {
             main: blue[900],
+            light: blue[200]
           },
           info:{
             main: "rgb(1,1,1,0",
