@@ -8,6 +8,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { styled } from '@mui/material/styles';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import { uploadProfilePicture } from '../actions/UserActions';
+import {InputAdornment,IconButton} from "@mui/material"
+import { VisibilityOff,Visibility } from '@mui/icons-material';
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -105,6 +107,10 @@ const inputStyle = {
     width: '20em'
 }
 function SignInCard(props) {
+    const [showPassword, setShowPassword] = useState(false);
+    const handleTogglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+      };
     let img = (<div></div>)
     if(props.profilePicture){
         img = (<img src={props.profilePicture} alt=""/>)
@@ -176,14 +182,28 @@ function SignInCard(props) {
                         />
                     </div>
                     <TextField value={props.password}
+                 
                                 label="Password"
                                 onChange={(e) => 
                                 props.setPassword(e.target.value)}
-                                InputProps={{
-                                    style: {
-                                        width: inputStyle.width,
-                                }
-                            }}/>
+                            //     InputProps={{
+                            //         style: {
+                            //             width: inputStyle.width,
+                            //     }
+                            // }}
+                            type={showPassword ? "text" : "password"} 
+                            InputProps={{
+                                style: {
+                                    width: inputStyle.width,
+                                },
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={handleTogglePasswordVisibility}>
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                        ),
+                      }}/>
                     <div className='file'>
                                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                    
@@ -206,6 +226,10 @@ function SignInCard(props) {
 }
 
 function LogInCard(props){
+    const [showPassword, setShowPassword] = useState(false);
+    const handleTogglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+      };
     return(<div className='sign-card'>
         <h1> Log In</h1>
         <form  id="login"
@@ -215,7 +239,7 @@ function LogInCard(props){
             <TextField
                 label="E-mail"
                 value={props.email} 
-                name='email'placeholder='email' 
+                name='E-mail'placeholder='E-mail' 
                 onChange={(e) => props.setEmail(e.target.value)}
                 InputProps={{
                     style: {
@@ -229,10 +253,19 @@ function LogInCard(props){
             value={props.password} 
             name='password'placeholder='Password'
             onChange={(e) => props.setPassword(e.target.value)}
+            type={showPassword ? "text" : "password"} 
             InputProps={{
                 style: {
                     width: inputStyle.width,
-            }}}
+                },
+            endAdornment: (
+                <InputAdornment position="end">
+                    <IconButton onClick={handleTogglePasswordVisibility}>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                </InputAdornment>
+        ),
+      }}
             
             />
             </div>

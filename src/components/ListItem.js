@@ -16,6 +16,7 @@ import MenuItem from '@mui/joy/MenuItem';
 import MoreVert from '@mui/icons-material/MoreVert'
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/material";
+import { createFollowBook } from "../actions/UserActions";
 function ListItem({type,id,title,item}) {
     const [showPreview,setShowPreview] = useState(false)
     const currentProfile = useSelector(state => state.users.currentProfile)
@@ -94,7 +95,11 @@ function ListItem({type,id,title,item}) {
                         <MenuItem onClick={handleEditClick}>
                             Edit
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem onClick={()=>{
+                                if(window.confirm("Are you sure you want to delete this")){
+                                    handleDelete()
+                                }
+                        }}>
                             Delete
                         </MenuItem>
             
@@ -107,8 +112,20 @@ function ListItem({type,id,title,item}) {
                        return( <Dropdown>
                                 <MenuButton> <MoreVert/></MenuButton>
                                 <Menu>
-                                    <MenuItem onClick={()=>{}}>Add To Library</MenuItem>
-                                    <MenuItem onClick={()=>{}}>Follow</MenuItem>
+                                    <MenuItem onClick={()=>{
+                                         let params = { bookList: [item]}
+                                        dispatch(setBooksToBeAdded(params))
+                                        navigate(`/library/new`)
+                                    }}>Add To Library</MenuItem>
+                                    <MenuItem onClick={()=>{
+                                        const params = {
+                                            book: item,
+                                            profile: currentProfile
+                                        }
+                                        dispatch(createFollowBook(params))
+
+
+                                    }}>Follow</MenuItem>
                                 </Menu>
                         </Dropdown> )
                    }
@@ -128,7 +145,13 @@ function ListItem({type,id,title,item}) {
                     navigate(`/${type}/${id}/edit`)}
                 } type="button">
                     Edit</MenuItem>
-    <MenuItem type="button">
+    <MenuItem onClick={()=>{
+                if(window.confirm("Are you sure you want to delete this")){
+                    handleDelete()
+                }else{
+
+                }
+    }}type="button">
                     Delete</MenuItem>
     
   </Menu>
@@ -139,7 +162,9 @@ function ListItem({type,id,title,item}) {
                         <MoreVert/>
                     </MenuButton>
                     <Menu>
-                        <MenuItem onClick={()=>{}}>Follow</MenuItem>
+                        <MenuItem onClick={()=>{
+
+                        }}>Follow</MenuItem>
                     </Menu>
                 </Dropdown>)
             }

@@ -3,113 +3,341 @@ import {connect, useSelector,useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
 import {signOutAction} from "../actions/UserActions"
-import useAuth from '../core/useAuth'
 import { useNavigate } from 'react-router-dom'
-// import { useStore } from 'react-redux'
-// import "../node_modules/jquery/dist/jquery.min.js";
-// import "../node_modules/bootstrap/dist/js/bootstrap.min.js"
-// import {Navbar,Nav,NavDropdown,Form,FormControl,Button,ListGroup,OverlayTrigger,Popover} from 'react-bootstrap'
-// import {SET_CURRENT_USER} from "../actions/UserActions"
-// import SearchBar from "../components/SearchBar"
-function NavbarContainer({authState,profile}){
+import AppBar from '@mui/material/AppBar'
+import {    
+            Container,
+            Toolbar,
+            Typography,
+            Box,
+            IconButton,
+            Menu,
+            MenuItem,
+            Button,
+            Tooltip,
+            Avatar,
+        } from '@mui/material'
+import Collapse from '@mui/material/Collapse';
+import List from '@mui/material/List';
+import { MenuButton } from '@mui/joy'
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import MenuIcon from '@mui/icons-material/Menu';
+import theme from '../theme'
+
+
+function NavbarContainer(props){
     const dispatch = useDispatch()
-    const [signedIn,setSignedIn] = useState(false)
     const navigate = useNavigate()
-    const [user,setUser]= useState(null)
-    let loggedIn = useSelector((state)=>{return state.users.loggedIn;});
+    const currentProfile= useSelector((state)=>{return state.users.currentProfile;});
+    const PageName = {
+        home: "Home",
+        create: "Create",
+        discovery:"Discovery",
+        login:"Log In"
+    }
+    const SettingName = {
+        profile: "Profile",
+        account: "Account",
+        logout: "Log Out"
+    }
+    const pages = [PageName.home, PageName.create,PageName.discovery, PageName.login];
+    const settings = [SettingName.profile,SettingName.account,SettingName.logout];
+    const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [open,setOpen]= useState(false)
+    const [anchorElUser, setAnchorElUser] = React.useState(null);
     
-    let currentProfile= useSelector((state)=>{return state.users.currentProfile;});
-    
-        
-
-   
-    
-   
-    const renderif=()=>{
-//       console.log("xxxx",this.props.loggedIn)
-        if (!!currentProfile){
-            return(
-                <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <a className="navbar-brand" onClick={()=>{
-                                        navigate("/")
-                                    }}>Pb</a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span className="navbar-toggler-icon"></span>
-                </button>
-              
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul className="navbar-nav mr-auto">
-                    <li className="nav-item active">
-                      <a className="nav-link" onClick={()=>{
-                                        navigate("/")
-                                    }}>Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" onClick={()=>{
-                            navigate("/profile/home")
-                        }}>Profile</a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" onClick={()=>{
-                            navigate("/discovery")
-                        }}>Discovery</a>
-                    </li>
-                    <li className="nav-item dropdown">
-                      <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="false">
-                        Create
-                      </a>
-                      <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a className="dropdown-item" onClick={()=>{
-                            navigate("/page/new")}
-                        }>Page</a>
-                        <a onClickclassName="dropdown-item" href={()=>{
-                            navigate("/book/new")
-                        }}>Book</a>
-                        <a className="dropdown-item" href={()=>{
-                            navigate("/library/new")
-                        }}>Library</a>
-                        </div>
-                    </li>
+    const handleOpenNavMenu = (event) => {
+      setAnchorElNav(event.currentTarget);
+    };
+    const handleOpenUserMenu = (event) => {
+      setAnchorElUser(event.currentTarget);
+    };
+  
+    const handleCloseNavMenu = (page) => {
+       
+                        if(page==PageName.login){
                    
-                    <li onClick={()=>{
-                            dispatch(signOutAction())
-                        }} className="nav-item">
-                        <a className="nav-link">Log Out</a>
-                    </li>
-                    <li>
-                    
-                    </li>
-                </ul>
-                </div>
-        </nav>
-        )
-        }else{
-            return(
-                <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                    <a className="navbar-brand" href="#">Pb</a>
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav mr-auto">
-                        <li className="nav-item active">
-                            <a className="nav-link" href="/">Home <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="/discovery">Discovery</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="/login">Log In</a>
-                        </li>
-                    </ul>
-                </div>
-        </nav>
-            )
-        }}
-    return renderif()
+                            navigate("/login")
+                            
+                        }else if(page==PageName.home){
+                        
+                            navigate("/")
+                        }else if(page==PageName.discovery){
+                        
+                            navigate("/discovery")
+                        };
+                      
+                    ;
+                setAnchorElNav(null);
+    };
+  
+    const handleCloseUserMenu = () => {
+      setAnchorElUser(null);
+    };
+    const handleOpenClick = ()=>{
+        setOpen(!open)
+    }
+    const [anchorEl, setAnchorEl] = useState(null);
 
-}   
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+  
+    return (
+        <AppBar position="static"
+                style={{backgroundColor:theme.palette.primary.main}}>
+            <Container maxWidth="xl">
+                <Toolbar disableGutters>
+                    <Typography
+                        onClick={()=>{
+                            navigate("/")
+                        }}
+                        variant="h6"
+                        noWrap
+                        component="a"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'none', md: 'flex' },
+                            fontFamily: 'helvetica',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                Pb
+                    </Typography>
+  
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpenNavMenu}
+                            color="inherit"
+                        >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: 'block', md: 'none' },
+                }}
+              >
+                {pages.map((page) => {
+                        if(page==PageName.create){
+
+                            if(currentProfile){
+                            return(
+                            
+                          <div>
+                               {/* <ListItemButton onClick={handleClick}> */}
+                               <MenuItem key={page} onClick={handleOpenClick}>
+                    <Typography textAlign="center">{page}</Typography>
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                  </MenuItem>
+
+                             
+                             <Collapse in={open} timeout="auto" unmountOnExit>
+                             <List>
+                          
+                           <ListItemButton onClick={()=>{ navigate("/page/new")}}sx={{ pl: 4 }}>
+                           <ListItemText primary="Page" />
+                         </ListItemButton>
+                         <ListItemButton onClick={()=>{ navigate("/book/new")}} sx={{ pl: 4 }}>
+                         
+                           <ListItemText primary="Book" />
+                         </ListItemButton>
+                         <ListItemButton onClick={()=>{ navigate("/library/new")}} sx={{ pl: 4 }}>
+                           <ListItemText primary="Library" />
+                         </ListItemButton>
+               
+                             </List>
+                             </Collapse>
+                             </div>)}else{
+                                return(<div>
+
+                                </div>)
+                             }
+                                }else{
+                        if(currentProfile && page==PageName.login){
+                            return
+                        }else{
+                   return( 
+                  <MenuItem onClick={()=>         
+                        handleCloseNavMenu(page)
+                  } key={page} >
+                    <Typography onClick={()=>         
+                        handleCloseNavMenu(page)
+                  }  textAlign="center">{page}</Typography>
+                  </MenuItem>)
+                  }
+}})}
+              </Menu>
+            </Box>
+            
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              href="#app-bar-with-responsive-menu"
+              sx={{
+                mr: 2,
+                display: { xs: 'flex', md: 'none' },
+                flexGrow: 1,
+                fontFamily: 'helvetica',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              Pb
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              {pages.map((page) => {
+
+                if(page=='Create'){
+                    if(currentProfile){
+             return(
+           <div>
+                <Button 
+                  id="demo-customized-button"
+                  aria-controls={anchorEl ? 'demo-customized-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={anchorEl ? 'true' : undefined}
+                sx={{ my: 2, color: 'white', display: 'block' }} onClick={handleClick}>
+                Create
+                {anchorEl ? <ExpandLess /> : <ExpandMore />}
+              
+              </Button >
+              <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: 'bottom', // Position the menu below the button
+                    horizontal: 'left',  // Position the menu to the left of the button
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+              
+              
+              MenuListProps={{
+          'aria-labelledby': 'demo-customized-button',
+        }}
+
+            >    
+          <MenuItem onClick={()=>{
+                            navigate("/page/new")
+                            }}> 
+                            Page
+                        </MenuItem>
+                        <MenuItem onClick={()=>{
+                            navigate("/book/new")
+                        }}>
+                            Book
+                        </MenuItem>
+                        <MenuItem onClick={()=>{
+                            navigate("/library/new")
+                        }}>
+                            Library
+                        </MenuItem>
+            
+          </Menu>
+              </div>)}else{
+                return
+              }
+                 }else{
+                    if(currentProfile && page==PageName.login){
+                        return 
+                    }else{
+                return (
+                <Button
+                  key={page}
+                  onClick={()=>
+                    handleCloseNavMenu(page)
+                }
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page}
+                </Button>
+                 )}}}
+              )}
+            </Box>
+            {currentProfile?
+            <Box style={{display: currentProfile ? "":"none"}} sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt={`${currentProfile.username}`} src={currentProfile.profilePicture} />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                    
+                  <MenuItem key={setting} onClick={()=>{
+                    switch(setting){
+                        case SettingName.profile:{
+                            navigate("/profile/home")
+                        }
+                        case SettingName.logout:{
+                            dispatch(signOutAction())
+                        }
+                        case SettingName.account:{
+                            navigate("/profile/edit")
+                        }
+                    }
+
+                  }}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>:<div></div>}
+          </Toolbar>
+        </Container>
+      </AppBar>
+    );
+  }
+//   export default ResponsiveAppBar;  
 function mapState(state){
 
   return{
