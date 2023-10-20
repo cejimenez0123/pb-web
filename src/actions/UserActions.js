@@ -1,41 +1,45 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
 import { auth,db } from  "../core/di"
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword,setPersistence, browserSessionPersistence } from "firebase/auth"
-import {where,query,collection,getDocs,setDoc,getDoc,doc,orderBy,limit,Firestore , QuerySnapshot, DocumentData, DocumentSnapshot, updateDoc ,Timestamp} from "firebase/firestore"
+import { signInWithEmailAndPassword,signOut, createUserWithEmailAndPassword,setPersistence, browserLocalPersistence } from "firebase/auth"
+import {where,query,deleteDoc,collection,getDocs,setDoc,getDoc,doc,orderBy,limit,Firestore , QuerySnapshot, DocumentData, DocumentSnapshot, updateDoc ,Timestamp} from "firebase/firestore"
 import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
 import {  ref, uploadBytes,uploadBytesResumable,getDownloadURL  } from "firebase/storage";
 import { storage } from "../core/di";
 import FollowBook from "../domain/models/follow_book"
 import FollowLibrary from "../domain/models/follow_library"
+import FollowProfile from "../domain/models/follow_profile"
 // import {auth} from "../core/di"
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
+        let email = params["email"]
+        let password = params["password"]
         try {
+            const userCred = await setPersistence(auth,browserLocalPersistence)
+            .then(() => {
+                return signInWithEmailAndPassword(auth,email,password)
+            })
+            
+            const uId=userCred.user.uid
+            const snapshot = await getDocs(
+                query(collection(db, "profile"),
+                where("userId", "==",uId)))    
+                const pack =  snapshot.docs[0].data() 
+
+             if(pack!=null){  
+           
+                const id = pack["id"]
+                const username = pack["username"]
+                const profilePicture = pack["profilePicture"]??""
+                const selfStatement = pack["selfStatement"]
+                const homeLibraryId = pack["homeLibraryId"]
+                const bookmarkLibraryId = pack["bookmarkLibraryId"]
+                const userId = pack["userId"]
+                const privacy = pack["private"]
+                const created = pack["created"]
+                const profile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
          
-
-
-            let email = params["email"]
-            let password = params["password"]
-     const userCred =  await signInWithEmailAndPassword(auth,email,password)  
-    const uId=userCred.user.uid
-    const snapshot = await getDocs(query(collection(db, "profile"), where("userId", "==",uId)))    
-   // Check if the snapshot contains any documents
-        const pack =  snapshot.docs[0].data() 
-   
-        const id = pack["id"]
-        const username = pack["username"]
-        const profilePicture = pack["profilePicture"]??""
-        const selfStatement = pack["selfStatement"]
-        const homeLibraryId = pack["homeLibraryId"]
-        const bookmarkLibraryId = pack["bookmarkLibraryId"]
-        const userId = pack["userId"]
-        const privacy = pack["private"]
-        const created = pack["created"]
-        const profile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
-       
-        if(pack!=null){    
         return {
           
                 profile
@@ -51,7 +55,13 @@ const logIn = createAsyncThunk(
             }
         }}
 )
+const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
 
+   await signOut(auth)
+   return {
+        profile:null
+   }
+})
 
 const signUp = createAsyncThunk(
     'users/signUp',
@@ -316,36 +326,35 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
     
     
     })
-    const createFollowLibrary = createAsyncThunk("users/createFollowLibrary", async function(params,thunkApi){
-          try{
-            const {
-                profile,
-                library
-                }=params
-           
-            const id =  `${profile.id}_${library.id}`
-            const created = Timestamp.now()
-              await setDoc(doc(db,"profile",profile.id,FollowLibrary.className,id), { 
-              id:id,
-              bookId: library.id,
-              profile: profile.id,
-              created: created
-              })
+const createFollowLibrary = createAsyncThunk("users/createFollowLibrary", async function(params,thunkApi){
+    try{
+        const {
+            profile,
+            library
+        }=params
+        const id = `${profile.id}_${library.id}`
+        const created = Timestamp.now()
+            await setDoc(doc(db,"profile",profile.id,"follow_library",id), { 
+                id:id,
+                libraryId: library.id,
+                profile: profile.id,
+                created: created
+            })
             const lb = new FollowLibrary(id,profile.id,library.id,created);
-          return { followLibrary:lb}
-          }catch(error){
+        return { 
+            followLibrary:lb
+        }
+    }catch(error){
            
-            return {
-              error: new Error(`Error: Follow Book ${error.message}`)
-            }
-          }
-        
-        
-        })
+        return {
+            error: new Error(`Error: Follow Book ${error.message}`)
+        }
+    }
+})
 const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForProfile",async (params,thunkApi)=>{
             try{
               const {profile} = params
-            const ref = collection(db,"profile",profile.id,FollowBook.className)
+            const ref = collection(db,"profile",profile.id,"follow_book")
           
             const snapshot =await getDocs(ref)
           
@@ -372,7 +381,7 @@ const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForPro
 const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryForProfile",async (params,thunkApi)=>{
             try{
               const {profile} = params
-            const ref = collection(db,"profile",profile.id,FollowLibrary.className)
+            const ref = collection(db,"profile",profile.id,"follow_library")
           
             const snapshot =await getDocs(ref)
           
@@ -381,12 +390,12 @@ const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryFo
                   const pack = doc.data();
                   const { id,
                 profileId,
-                bookId,
+                libraryId,
                 created
                }=pack
-               const fb = new FollowBook(id,bookId,profileId,created)
+               const fl = new FollowLibrary(id,libraryId,profileId,created)
                 
-                followList = [...followList, fb]
+                followList = [...followList, fl]
               })
           return {
           
@@ -396,6 +405,102 @@ const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryFo
                     error: new Error(`Error: Fetch Follow books: ${err.message}`)
                 }
           }})
+const deleteFollowBook= createAsyncThunk("users/deleteFollowBook", async (params,thunkApi)=>{
+            try{
+              const {followBook,book,profile}=params
+              if(followBook){
+                await deleteDoc(doc(db, "profile", followBook.profileId,"follow_book",followBook.id));
+              }else{
+                await deleteDoc(doc(db, "profile", profile.id,"follow_book",`${profile.id}_${book.id}`));
+            
+              }
+       
+            }catch(e){
+              return {error: new Error("Error: Delete Follow Book"+e.message)};
+            }
+          })
+const deleteFollowLibrary= createAsyncThunk("users/deleteFollowLibrary", async (params,thunkApi)=>{
+            try{
+              const {followLibrary,library,profile}=params
+              if(followLibrary){
+                await deleteDoc(doc(db, "profile", followLibrary.profileId,"follow_book",followLibrary.id));
+              }else{
+                await deleteDoc(doc(db, "profile", profile.id,"follow_book",`${profile.id}_${library.id}`));
+            
+              }
+              return {
+                followLibrary: followLibrary
+              }
+            }catch(e){
+              return {error: new Error("Error: Delete Follow Library"+e.message)};
+            }
+          })
+const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (params,thunkApi)=>{
+            try{
+              const {followProfile,follower,following}=params
+              if(followProfile){
+                await deleteDoc(doc(db, "profile", followProfile.followerId,"follow_profile",followProfile.id));
+              }else{
+                await deleteDoc(doc(db, "profile", follower.id,"follow_profile",`${follower.id}_${following.id}`));
+            
+              }
+       
+            }catch(e){
+              return {error: new Error("Error: Delete Follow Book"+e.message)};
+            }
+})
+const createFollowProfile = createAsyncThunk("users/createFollowProfile", async function(params,thunkApi){
+            try{
+                const {
+                    follower,
+                    following
+                }=params
+                const id = `${follower.id}_${following.id}`
+                const created = Timestamp.now()
+                    await setDoc(doc(db,"profile",follower.id,"follow_profile",id), { 
+                        id:id,
+                        followerId: follower.id,
+                        followingId: following.id,
+                        created: created
+                    })
+                    const lb = new FollowProfile(id,follower.id,following.id,created);
+                return { 
+                    followProfile:lb
+                }
+            }catch(error){
+                   
+                return {
+                    error: new Error(`Error: Follow Profile ${error.message}`)
+                }
+            }
+})
+const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfilesForProfile",async (params,thunkApi)=>{
+                    try{
+                      const {profile} = params
+                    const ref = collection(db,"profile",profile.id,"follow_profile")
+                  
+                    const snapshot =await getDocs(ref)
+                  
+                    let followList = []
+                    snapshot.docs.forEach(doc => {
+                          const pack = doc.data();
+                          const { id,
+                        followerId,
+                        followingId ,
+                        created
+                       }=pack
+                const fb = new FollowProfile(id,followerId,followingId,created) 
+                followList = [...followList, fb]
+            })
+        return {
+                    followList: followList,
+        }
+    }catch(err) {
+        return {
+            error: new Error(`Error: Fetch Follow Profile: ${err.message}`)
+        }
+    }
+})
 export {logIn,
         signUp,
         getCurrentProfile,
@@ -407,5 +512,11 @@ export {logIn,
         createFollowBook,
         createFollowLibrary,
         fetchFollowBooksForProfile,
-        fetchFollowLibraryForProfile
+        fetchFollowLibraryForProfile,
+        deleteFollowBook,
+        deleteFollowLibrary,
+        deleteFollowProfile,
+        createFollowProfile,
+        fetchFollowProfilesForProfile,
+        signOut
     }

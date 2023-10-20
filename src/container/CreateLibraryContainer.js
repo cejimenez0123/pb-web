@@ -97,7 +97,12 @@ export default function CreateLibraryContainer(props){
             pageIdList: filterPages,
             bookIdList: filterBooks,
             writingIsOpen: writingIsOpen,
-            privacy:libIsPrivate
+            privacy:libIsPrivate,
+            commenters:[],
+            readers:[],
+            editors:[],
+            writers:[]
+
         }
         
         dispatch(createLibrary(params)).then((result) => {

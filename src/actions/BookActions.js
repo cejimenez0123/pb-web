@@ -263,11 +263,11 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     pageIdList,
     privacy,
     writingIsOpen,
-    updatedAt,
     writers,
     readers,
     commenters,
     editors,
+    updatedAt,
     created,
 )
 
@@ -327,11 +327,11 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
           pageIdList,
           privacy,
           writingIsOpen,
-          updatedAt,
           writers,
           readers,
           commenters,
           editors,
+          updatedAt,
           created,
       )
     
@@ -390,11 +390,11 @@ if(!writers){
       pageIdList,
       privacy,
       writingIsOpen,
-      updatedAt,
       editors,
       commenters,
       readers,
       editors,
+      updatedAt,
       created,
   )
 
@@ -460,7 +460,19 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
         purpose: purpose,
         updatedAt: updatedAt
       })
-      let newBook = new Book(book.id,purpose,title,book.profileId,pageIdList,privacy,writingIsOpen,updatedAt,book.created)
+      let newBook = new Book( book.id,
+                              purpose,
+                              title,
+                              book.profileId,
+                              pageIdList,
+                              privacy,
+                              writingIsOpen,
+                              book.writers,
+                              book.reader,
+                              book.commenters,
+                              book.editors,
+                              updatedAt,
+                              book.created)
       return {
         book: newBook
       }
@@ -476,35 +488,7 @@ const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>
     return {error: new Error("Error: Delete Book"+e.message)};
   }
 })
-// const fetchBookRoles = createAsyncThunk("books/fetchBookRoles",async (params,thunkApi)=>{
-//   const bookId = params["bookId"]
-  
-//   try {
-//     const ref = doc(db,"book",bookId,"book_role")
-//     const snapshot = await getDocs(ref) 
-//     let roleList = []
-//     snapshot.docs.forEach(doc => {
-//         const {id }= doc
-//         const pack = doc.data()
-//         const profileId = pack["profileId"]
-//         const bookId = pack["bookId"]
-//         const role = pack["role"]
-//         const created = pack["created"]
-//         let bookRole = new BookRole(id,profileId,bookId,role,created)
-//         roleList.push(bookRole)
-//     })
 
-
-//     return {
-//       roleList: roleList
-//     }
-//   }catch(err){
-//     return {
-//       error: new Error("Error: FETCH BOOK ROLES"+err.message)
-//     }
-//   }
-
-// })
 const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",async (params,thunkApi)=>{
   try {
     const { bookIdList,
@@ -542,9 +526,6 @@ const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
     payload: bookList
   }
 })
-// val setBookInView = createAction("book/setBookInView", (state,params)=>{
-
-// })
 
   export {  getPublicBooks,
             fetchBook,
@@ -555,7 +536,6 @@ const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
             saveRolesForBook,
             setBookInView,
             deleteBook,
-            // fetchBookRoles,
             updateBook,
             setBooksToBeAdded,
             appendSaveRolesFoBook}

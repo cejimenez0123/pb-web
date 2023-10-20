@@ -7,14 +7,17 @@ import {    logIn ,
             setProfileInView,
             fetchFollowBooksForProfile,
             fetchFollowLibraryForProfile,
+            fetchFollowProfilesForProfile,
             createFollowBook,
-            createFollowLibrary  } from "../actions/UserActions"
+            createFollowLibrary,
+            createFollowProfile } from "../actions/UserActions"
 import Profile from "../domain/models/profile"
 const initialState = {
     loggedIn: false,
     currentProfile: null,
     loading:false,
     followedBooks: [],
+    followedProfiles:[],
     followedLibraries:[],
     profileInView:null,
     profilesInView: [],
@@ -75,25 +78,32 @@ const userSlice = createSlice({
         state.error = payload.error
         state.loading = false
     }).addCase(setProfileInView,(state,{payload})=>{
-     
         state.profileInView = payload.profile
-      }).addCase(fetchFollowBooksForProfile.rejected,(state,{payload})=>{
+    }).addCase(fetchFollowBooksForProfile.rejected,(state,{payload})=>{
         state.error = payload.error
-      }).addCase(fetchFollowBooksForProfile.fulfilled,(state,{payload})=>{
+    }).addCase(fetchFollowBooksForProfile.fulfilled,(state,{payload})=>{
         state.followedBooks = payload.followList
-      }).addCase(fetchFollowLibraryForProfile.rejected,(state,{payload})=>{
+    }).addCase(fetchFollowLibraryForProfile.rejected,(state,{payload})=>{
         state.error = payload.error
-      }).addCase(fetchFollowLibraryForProfile.fulfilled,(state,{payload})=>{
+    }).addCase(fetchFollowLibraryForProfile.fulfilled,(state,{payload})=>{
         state.followedLibraries = payload.followList
-      }).addCase(createFollowBook.rejected,(state,{payload})=>{
+    }).addCase(createFollowBook.rejected,(state,{payload})=>{
         state.error = payload.error
-      }).addCase(createFollowBook.fulfilled,(state,{payload})=>{
+    }).addCase(createFollowBook.fulfilled,(state,{payload})=>{
         state.followedBooks = [...state.followedBooks,payload.followBook]
-      }).addCase(createFollowLibrary.fulfilled,(state,{payload})=>{
+    }).addCase(createFollowLibrary.fulfilled,(state,{payload})=>{
         state.followedLibraries = [...state.followedLibraries,payload.followLibrary]
-      }).addCase(createFollowLibrary.rejected,(state,{payload})=>{
+    }).addCase(createFollowLibrary.rejected,(state,{payload})=>{
         state.followedLibraries = [...state.followedLibraries,payload.followLibrary]
-      })
+    }).addCase(fetchFollowProfilesForProfile.rejected,(state,{payload})=>{
+        state.error = payload.error
+    }).addCase(fetchFollowProfilesForProfile.fulfilled,(state,{payload})=>{
+        state.followedProfiles = payload.followList
+    }).addCase(createFollowProfile.rejected,(state,{payload})=>{
+        state.error = payload.error
+    }).addCase(createFollowProfile.fulfilled,(state,{payload})=>{
+        state.followedProfiles = [...state.followedProfiles,payload.followProfile]
+    })
 }})
 
 

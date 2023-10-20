@@ -23,7 +23,8 @@ import { getPublicBooks } from './actions/BookActions';
 import { getPublicLibraries } from './actions/LibraryActions';
 import {  fetchAllProfiles,
           fetchFollowBooksForProfile,
-          fetchFollowLibraryForProfile} from './actions/UserActions'
+          fetchFollowLibraryForProfile,
+          fetchFollowProfilesForProfile} from './actions/UserActions'
 import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { useEffect,useState} from 'react';
@@ -43,8 +44,9 @@ function App(props) {
     let auth = useAuth()
     const [authState,setAuthState]=useState(auth)
   useEffect(()=>{
+    
     setAuthState(auth)
-    if(!!authState.user && !props.currentProfile){
+    if(authState.user && !props.currentProfile){
       const params = {
        userId: authState.user.uid
       }
@@ -53,7 +55,7 @@ function App(props) {
       return ()=> subscriber
     }
   
-  },[])
+  },[auth])
   useEffect(()=>{
     if(props.currentProfile!=null){
       const params = {
@@ -65,6 +67,7 @@ function App(props) {
       props.fetchBookmarkLibrary(params)
       props.fetchFollowBooksForProfile(profileParams)
       props.fetchFollowLibraryForProfile(profileParams)
+      props.fetchFollowProfilesForProfile(profileParams)
     }
   
   },[props.currentProfile])
@@ -189,8 +192,9 @@ function mapDispatchToProps(dispatch){
     getPublicPages:()=>dispatch(getPublicPages()),
     fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
     fetchFollowBooksForProfile:(params)=>dispatch(fetchFollowBooksForProfile(params)) ,
-    fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params))
-}
+    fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params)),
+    fetchFollowProfilesForProfile:(params)=>dispatch(fetchFollowProfilesForProfile(params))
+  }
 }
 function mapStateToProps(state){
 

@@ -39,7 +39,11 @@ export default function CreateBookContainer({pagesInView,booksInView}){
                 profileId: currentProfile.id,
                 pageIdList: pageIdList,
                 writingIsOpen: bookIsOpen,
-                privacy: bookIsPrivate
+                privacy: bookIsPrivate,
+                commenters:[],
+                editors:[],
+                readers:[],
+                writers:[]
             }
         
             dispatch(createBook(params)).then(result=>{

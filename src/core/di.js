@@ -1,7 +1,7 @@
 
 import { initializeApp } from "firebase/app";
 import firebase from "firebase/compat/app";
-import { getAuth, signInAnonymously,setPersistence,browserSessionPersistence } from "firebase/auth"
+import { getAuth, signInAnonymously,setPersistence,browserSessionPersistence, browserLocalPersistence } from "firebase/auth"
 import "firebase/compat/firestore"
 import { getFirestore,Firestore,initializeFirestore} from "firebase/firestore";
 import { getStorage } from "firebase/storage"
@@ -19,26 +19,20 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
+setPersistence(auth,browserLocalPersistence)
+.then(() => {
+  signInAnonymously(auth)
+
+.then(() =>{})
+.catch((error) => {
+  const errorCode = error.code;
+  const errorMessage = error.message;
+ console.error(errorMessage, errorCode)
+});
+})
 const storage = getStorage(app)
-signInAnonymously(auth)
 
-.then(() =>{})
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-   console.error(errorMessage, errorCode)
-  });
-  setPersistence(auth, browserSessionPersistence)
-  .then(() => {
-    signInAnonymously(auth)
 
-.then(() =>{})
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-   console.error(errorMessage, errorCode)
-  });
-  })
 const db =getFirestore(app)
 
 

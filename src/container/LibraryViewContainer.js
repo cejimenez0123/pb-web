@@ -47,7 +47,6 @@ function LibraryViewContainer(props){
       
     },[])
     useEffect(()=>{
-    
             getPages()
             getBooks()
     
@@ -63,13 +62,19 @@ function LibraryViewContainer(props){
                     <SettingsIcon style={{color:"black"}}/>
                 </Button>)
                 }
+                let follow = null
+                if(currentProfile && libraryInView && followedLibraries && followedLibraries.length>0){
+                   follow = followedLibraries.find(fl=>
+                        fl!=null && fl.id == `${currentProfile.id}_${libraryInView.id}`
+                    )
+                }
                 let followDiv = (<Button style={{backgroundColor:theme.palette.secondary.main,
                     color:theme.palette.secondary.contrastText}}
                     variant="outlined"
                     onClick={onClickFollow}
                     >Follow
                     </Button>)
-                const follow = followedLibraries.find(fl=>fl.id == `${currentProfile.id}_${libraryInView.id}`)
+               
                 if(follow){
                     followDiv = (<Button style={{backgroundColor:theme.palette.secondary.light,
                         color:theme.palette.secondary.contrastText}}
@@ -98,9 +103,9 @@ function LibraryViewContainer(props){
                 }
     }
     const onClickFollow = ()=>{
-    if(currentProfile){
+    if(currentProfile && libraryInView){
         const params = {library: libraryInView,
-                        porfile: currentProfile}
+                        profile: currentProfile}
         dispatch(createFollowLibrary(params))
     }else{
         window.alert("You'll need to login first")
@@ -122,7 +127,7 @@ function LibraryViewContainer(props){
                     const {pageList } = payload
                 
                     if(payload.error==null){
-                       
+                      if(pageList.length>0){ 
                         setError(false)
                         setItemsInView(prevState=>{
                         pageList.forEach((page) => {
@@ -136,6 +141,10 @@ function LibraryViewContainer(props){
                         return [...prevState,...newState]
 
                     })
+                }else{
+                    setErrorMessage("Library is empty")
+                    setErrorMessage(true)
+                }
                 }else{
                         setErrorMessage(`${payload.error.message}`)
                         setError(true)
@@ -214,6 +223,7 @@ function LibraryViewContainer(props){
             }else{
                 if(itemsInView.length == 0){
                     setErrorMessage('Library is empty')
+                    setError(true)
                 }
             }
     }
