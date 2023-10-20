@@ -4,7 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import { useSelector,useDispatch } from "react-redux"
 import { fetchArrayOfPages, fetchArrayOfPagesAppened } from "../actions/PageActions"
 import { useParams } from "react-router-dom"
-import { createFollowLibrary, fetchAllProfiles } from "../actions/UserActions"
+import { createFollowLibrary, deleteFollowLibrary, fetchAllProfiles } from "../actions/UserActions"
 import { fetchLibrary } from "../actions/LibraryActions"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/Library.css"
@@ -103,10 +103,22 @@ function LibraryViewContainer(props){
                 }
     }
     const onClickFollow = ()=>{
-    if(currentProfile && libraryInView){
-        const params = {library: libraryInView,
+        if(currentProfile && libraryInView){
+            let follow = followedLibraries.find(fl=>fl.id==`${currentProfile.id}_${libraryInView.id}`)
+            if(follow){
+                const params = {
+                    followLibrary: follow,
+                    profile: currentProfile,
+                    library: libraryInView
+                }
+                dispatch(deleteFollowLibrary(params))
+            }else{
+                const params = {
+                        library: libraryInView,
                         profile: currentProfile}
-        dispatch(createFollowLibrary(params))
+                dispatch(createFollowLibrary(params))
+    }
+
     }else{
         window.alert("You'll need to login first")
     }

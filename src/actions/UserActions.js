@@ -177,6 +177,7 @@ const updateProfile = createAsyncThunk("users/updateProfile",
       await updateDoc(profileRef, {
             username: newUsername,
             bookmarkLibraryId: newBookmarkLibraryId,
+            homeLibraryId: newHomeLibraryId,
             selfStatement: newSelfStatement,
             privacy: newPrivacy,
         });
@@ -423,9 +424,9 @@ const deleteFollowLibrary= createAsyncThunk("users/deleteFollowLibrary", async (
             try{
               const {followLibrary,library,profile}=params
               if(followLibrary){
-                await deleteDoc(doc(db, "profile", followLibrary.profileId,"follow_book",followLibrary.id));
+                await deleteDoc(doc(db, "profile", followLibrary.profileId,"follow_library",followLibrary.id));
               }else{
-                await deleteDoc(doc(db, "profile", profile.id,"follow_book",`${profile.id}_${library.id}`));
+                await deleteDoc(doc(db, "profile", profile.id,"follow_library",`${profile.id}_${library.id}`));
             
               }
               return {
@@ -468,7 +469,6 @@ const createFollowProfile = createAsyncThunk("users/createFollowProfile", async 
                     followProfile:lb
                 }
             }catch(error){
-                   
                 return {
                     error: new Error(`Error: Follow Profile ${error.message}`)
                 }
@@ -476,29 +476,27 @@ const createFollowProfile = createAsyncThunk("users/createFollowProfile", async 
 })
 const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfilesForProfile",async (params,thunkApi)=>{
                     try{
-                      const {profile} = params
-                    const ref = collection(db,"profile",profile.id,"follow_profile")
-                  
-                    const snapshot =await getDocs(ref)
-                  
-                    let followList = []
+                        const {profile} = params
+                        const ref = collection(db,"profile",profile.id,"follow_profile")
+                        const snapshot =await getDocs(ref)
+                        let followList = []
                     snapshot.docs.forEach(doc => {
-                          const pack = doc.data();
-                          const { id,
-                        followerId,
-                        followingId ,
-                        created
-                       }=pack
-                const fb = new FollowProfile(id,followerId,followingId,created) 
-                followList = [...followList, fb]
-            })
-        return {
-                    followList: followList,
-        }
-    }catch(err) {
-        return {
-            error: new Error(`Error: Fetch Follow Profile: ${err.message}`)
-        }
+                            const pack = doc.data();
+                            const { id,
+                                    followerId,
+                                    followingId ,
+                                    created
+                                }=pack
+                    const fb = new FollowProfile(id,followerId,followingId,created) 
+                    followList = [...followList, fb]
+                    })
+            return {
+                followList: followList,
+            }
+        }catch(err) {
+            return {
+                error: new Error(`Error: Fetch Follow Profile: ${err.message}`)
+            }
     }
 })
 export {logIn,
@@ -518,5 +516,5 @@ export {logIn,
         deleteFollowProfile,
         createFollowProfile,
         fetchFollowProfilesForProfile,
-        signOut
+        signOutAction
     }

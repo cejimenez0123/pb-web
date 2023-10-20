@@ -10,6 +10,7 @@ export default class Library extends Collection {
     purpose
     privacy
     writingIsOpen
+    updatedAt
     created
     constructor(
         id:string,
@@ -24,6 +25,7 @@ export default class Library extends Collection {
         writers:string[]=[],
         editors:string[]=[],
         commenters:string[]=[],
+        updatedAt:Timestamp,
         created=Timestamp.now()
     ){
         super(id,profileId,readers,writers,commenters,editors)
@@ -35,6 +37,7 @@ export default class Library extends Collection {
         this.profileId = profileId
         this.privacy = privacy
         this.purpose = purpose
+        this.updatedAt = updatedAt
         this.created = created
     }
     static className(){

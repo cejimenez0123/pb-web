@@ -21,6 +21,9 @@
 .library-item{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    padding: 1em 2em;
+    border-bottom: 1px solid gray;
 }
 /* .settings{
     background-color: red;

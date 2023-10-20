@@ -45,7 +45,7 @@ function App(props) {
     const [authState,setAuthState]=useState(auth)
   useEffect(()=>{
     
-    setAuthState(auth)
+    
     if(authState.user && !props.currentProfile){
       const params = {
        userId: authState.user.uid
@@ -55,7 +55,7 @@ function App(props) {
       return ()=> subscriber
     }
   
-  },[auth])
+  },[authState])
   useEffect(()=>{
     if(props.currentProfile!=null){
       const params = {

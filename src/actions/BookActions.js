@@ -364,6 +364,7 @@ const fetchArrayOfBooksAppened = createAsyncThunk("books/fetchArrayOfBooksAppend
   const privacy = pack["privacy"]
   const writingIsOpen = pack["writingIsOpen"]
   const created = pack["created"]
+  
   let commenters = pack["commenters"]
   let editors = pack["editors"]
   let readers = pack["readers"]

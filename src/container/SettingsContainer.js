@@ -66,6 +66,7 @@ function SettingsContainer(props) {
             profile: currentProfile,
             username: newUsername,
             bookmarkLibraryId: newBookmarkLibId,
+            homeLibraryId: newHomeLibraryId,
             selfStatement: selfStatement,
             privacy: isPrivate
             
@@ -116,7 +117,7 @@ function SettingsContainer(props) {
 
             return (<div className="library-item" key={library.id}>
                     <h5>{library.name}</h5>
-                    <button type="button" onClick={()=>{
+                    <Button type="button" onClick={()=>{
                         switch(openModal[1]){
                             case "home":{
                                 onSelectHomeLibrary(library)
@@ -125,7 +126,7 @@ function SettingsContainer(props) {
                                 onSelectBookmarkLibrary(library)
                             }
                         }
-                    }}>Select</button>
+                    }}>Select</Button>
                </div>)
                 })}
           </InfiniteScroll>
@@ -150,44 +151,56 @@ function SettingsContainer(props) {
                                     style={{padding:"1em"}}
                                     placeholder="Self Statement"/>
                             </label>
+                            <div style={{width:"100%"}}onClick={() => setOpenModal([!openModal[0],"bookmark"])}>
                             <TextField 
-                            style={{backgroundColor:theme.palette.secondary.contrastText}}
-                                       
-                                className={"input text"} label="Bookmark Library" type="text" value={shownBookmarkLibrary} onClick={
-                                ()=>{
-                                    setOpenModal([!openModal,"bookmark"])
-                                }
-                            }/>
-                            
-                            <TextField 
-                            className={"input text"}
-                                style={{backgroundColor:theme.palette.secondary.contrastText}}
-                                       
-                                label="Home Library" type="text" onClick={
-                                ()=>{
-                                    setOpenModal([!openModal,"home"])
-                                }
-                            }/>
-                           <FormControlLabel 
-                control={<Checkbox checked={isPrivate} onChange={()=>{
-                    setPrivacy(!isPrivate)
-                }}/>} label="Private" 
-                />
-                        <Modal isOpen={openModal[0]} onClose={()=>{
-                                setOpenModal([false,"bookmark"])}
-                        }
-                        title={"Your Libraries"}
-                        
-                        >
-                            <div>
-                            {libraryList()}
+                                style={{backgroundColor:theme.palette.secondary.contrastText,width:"100%"}}       
+                                className={"input text"}
+                                label="Bookmark Library" 
+                                type="text" value={shownBookmarkLibrary}
+                                InputProps={{
+                                    readOnly: true, // Make the TextField read-only
+                                }}
+                            />
                             </div>
-                        </Modal>
-                        <Button style={{backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}
+                            <div style={{width:"100%"}}onClick={() => setOpenModal([!openModal[0],"home"])}>
+                                <TextField 
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                    className={"input text"}
+                                    style={{backgroundColor:theme.palette.secondary.contrastText,width:"100%"}}
+                                    label="Home Library" 
+                                    type="text" />
+                            </div>
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        checked={isPrivate}
+                                        onChange={()=>{
+                                            setPrivacy(!isPrivate)
+                                        }}
+                                    />}
+                                label="Private" 
+                            />
+                            <Modal 
+                                isOpen={openModal[0]} 
+                                onClose={()=>{
+                                    setOpenModal([false,"bookmark"])}
+                                }
+                                title={"Your Libraries"}
+                            >
+                                <div>
+                                    {libraryList()}
+                                </div>
+                            </Modal>
+                            <Button 
+                                style={{backgroundColor:theme.palette.secondary.main,
+                                        color:theme.palette.secondary.contrastText}}
                                 variant="outlined" 
-                                onClick={(e)=>handleOnSubmit(e)}>
-                            Update
-                        </Button>
+                                onClick={(e)=>handleOnSubmit(e)}
+                            >
+                                Update
+                            </Button>
                         </FormGroup>
                         <Button className="delete"
                             style={{backgroundColor: theme.palette.error.main,color:theme.palette.error.contrastText}}

@@ -463,7 +463,122 @@ const deleteLibrary = createAsyncThunk("libraries/deleteLibrary", async (params,
     return {error: new Error("Error: Delete Library"+e.message)};
   }
 })
+const fetchArrayOfLibraries = createAsyncThunk("libraries/fetchArrayOfLibraries",async (params,thunkApi)=>{
+  try{
+  const ref = collection(db,"library")
+  const libraryIdList = params["libraryIdList"]
+  const snapshot =await getDocs(query(ref, where('id', 'in', libraryIdList)))
+  // const snapshot = await getDocs(queryReq);
+  let libList = []
+   snapshot.docs.forEach(doc => {
+   
+         const pack = doc.data();
+         const { id } = doc;
+         const name =pack["name"]
+         const pageIds = pack["pageIdList"]
+         const bookIds = pack["bookIdList"]
+         const profileId = pack["profileId"]
+         const privacy = pack["privacy"]
+         const purpose = pack["purpose"]
+         const writingIsOpen = pack["writingIsOpen"]
+         const created = pack["created"]
+         let commenters = pack["commenters"]
+         let editors = pack["editors"]
+         let readers = pack["readers"]
+         let writers = pack["writers"]
+         if(!editors){
+           editors = []
+         }
+         if(!commenters){
+           commenters = []
+         }
+         if(!readers){
+           readers=[]
+         }
+         if(!writers){
+           writers=[]
+         }
+     
+   
+       const lib = new Library(  id,
+                                 name,
+                                 profileId,
+                                 purpose,
+                                 pageIds,
+                                 bookIds,
+                                 writingIsOpen,
+                                 privacy,
+                                 readers,
+                                 writers,
+                                 editors,
+                                 commenters,
+                                 created)
+       libList = [...libList,lib]
+     })
+return {
 
+ libraryList: libList
+}}catch(err){
+  return {
+    error: new Error(`Error: Fetch Array Of Libraries: ${err.message}`)
+  }
+}})
+const fetchArrayOfLibrariesAppend = createAsyncThunk("libraries/fetchArrayOfLibrariesAppend",async (params,thunkApi)=>{
+  try{
+  const ref = collection(db,"library")
+  const libraryIdList = params["libraryIdList"]
+  const snapshot =await getDocs(query(ref, where('id', 'in', libraryIdList)))
+  // const snapshot = await getDocs(queryReq);
+  let libList = []
+  snapshot.docs.forEach(doc => {
+        const pack = doc.data();
+        const { id } = doc;
+        const name =pack["name"]
+        const pageIds = pack["pageIdList"]
+        const bookIds = pack["bookIdList"]
+        const profileId = pack["profileId"]
+        const privacy = pack["privacy"]
+        const purpose = pack["purpose"]
+        const writingIsOpen = pack["writingIsOpen"]
+        const created = pack["created"]
+        let commenters = pack["commenters"]
+        let editors = pack["editors"]
+        let readers = pack["readers"]
+        let writers = pack["writers"]
+        if(!editors){
+          editors = []
+        }
+        if(!commenters){
+          commenters = []
+        }
+        if(!readers){
+          readers=[]
+        }
+        if(!writers){
+          writers=[]
+        }
+        const lib = new Library(  id,
+                                  name,
+                                  profileId,
+                                  purpose,
+                                  pageIds,
+                                  bookIds,
+                                  writingIsOpen,
+                                  privacy,
+                                  readers,
+                                  writers,
+                                  editors,
+                                  commenters,
+                                  created)
+       libList = [...libList,lib]
+     })
+    return {
+      libraryList: libList
+    }
+  }catch(err){
+    return
+  }
+})
 export {  fetchLibrary,
           updateLibrary,
           updateLibraryContent,
@@ -473,5 +588,7 @@ export {  fetchLibrary,
           setLibraryInView,
           saveRolesForLibrary,
           getPublicLibraries,
-          deleteLibrary
+          deleteLibrary,
+          fetchArrayOfLibraries,
+          fetchArrayOfLibrariesAppend
           }

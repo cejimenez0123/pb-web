@@ -10,7 +10,9 @@ import {    logIn ,
             fetchFollowProfilesForProfile,
             createFollowBook,
             createFollowLibrary,
-            createFollowProfile } from "../actions/UserActions"
+            createFollowProfile,
+            signOutAction
+        } from "../actions/UserActions"
 import Profile from "../domain/models/profile"
 const initialState = {
     loggedIn: false,
@@ -103,6 +105,11 @@ const userSlice = createSlice({
         state.error = payload.error
     }).addCase(createFollowProfile.fulfilled,(state,{payload})=>{
         state.followedProfiles = [...state.followedProfiles,payload.followProfile]
+    }).addCase(signOutAction.fulfilled,(state,{payload})=>{
+        state.currentProfile = null
+        state.loggedIn = false
+    }).addCase(signOutAction.rejected,(state,{payload})=>{
+        state.error = payload.error
     })
 }})
 

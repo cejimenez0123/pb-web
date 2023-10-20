@@ -2,6 +2,7 @@ import React ,{useEffect, useState } from 'react'
 import {connect, useSelector,useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
+import {signOutAction} from "../actions/UserActions"
 import useAuth from '../core/useAuth'
 import { useNavigate } from 'react-router-dom'
 // import { useStore } from 'react-redux'
@@ -59,18 +60,20 @@ function NavbarContainer({authState,profile}){
                       </a>
                       <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a className="dropdown-item" onClick={()=>{
-                            navigate("/page")}
+                            navigate("/page/new")}
                         }>Page</a>
                         <a onClickclassName="dropdown-item" href={()=>{
-                            navigate("/book")
+                            navigate("/book/new")
                         }}>Book</a>
                         <a className="dropdown-item" href={()=>{
-                            navigate("/library")
+                            navigate("/library/new")
                         }}>Library</a>
                         </div>
                     </li>
                    
-                    <li className="nav-item">
+                    <li onClick={()=>{
+                            dispatch(signOutAction())
+                        }} className="nav-item">
                         <a className="nav-link">Log Out</a>
                     </li>
                     <li>

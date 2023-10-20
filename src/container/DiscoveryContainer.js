@@ -22,15 +22,15 @@ function DiscoveryContainer(props){
         
             const perChunk = 2 // items per chunk    
             const bArray = bList
-            const bresult = bArray.reduce((resultArray, item, index) => { 
-            const chunkIndex = Math.floor(index/perChunk)
-            if(!resultArray[chunkIndex]) {
-                resultArray[chunkIndex] = [] // start a new chunk
-            }
-                resultArray[chunkIndex].push(item)
+            // const bresult = bArray.reduce((resultArray, item, index) => { 
+            // const chunkIndex = Math.floor(index/perChunk)
+            // if(!resultArray[chunkIndex]) {
+            //     resultArray[chunkIndex] = [] // start a new chunk
+            // }
+            //     resultArray[chunkIndex].push(item)
 
-                return resultArray
-            }, [])
+            //     return resultArray
+            // }, [])
             let lList = librariesInView.map((library)=>{return {type:"library",item:library}})
             // items per chunk    
             const lArray = lList
@@ -43,10 +43,35 @@ function DiscoveryContainer(props){
 
                 return resultArray
             }, [])
-            let list =[...pList,...bList,...lresult,...bresult]
-            let content=shuffle(list)
-            console.log("THIS X"+content.length)
-            setContentItems(content)
+            let list =[...pList,...bList,...lresult]
+            
+            let sorted = list.sort((a, b) =>{
+                if(Array.isArray(a) || Array.isArray(b)){
+                    if(Array.isArray(a) && !Array.isArray(b)){
+                        return b.created - a[0].created
+
+                    }else if(!Array.isArray(a) && Array.isArray(b)){
+                        return b[0].created - a.created
+                    }else{
+                        return a[0].created - b[0].created
+                    }
+
+
+                }else{
+                if(a.item.updatedAt!=null && b.item.updatedAt!=null){
+                    return b.item.updatedAt - a.item.updatedAt
+                }else if(a.item.updatedAt!=null && b.item.created!=null){
+                    return b.item.created - a.item.updatedAt
+                }else if(a.item.created!=null && b.item.updatedAt!=null){
+                    return b.item.updatedAt - a.item.created
+                }else{
+                    return b.item.created - a.item.created 
+                }
+            }
+            } );
+            // let content=shuffle(list)
+            setContentItems(sorted)
+            setHasMore(false)
         
         },[pagesInView,booksInView, librariesInView])
         useLayoutEffect(()=>{
@@ -66,6 +91,7 @@ function DiscoveryContainer(props){
             props.fetchAllProfiles()
         },[])
         const fetchContentItems = ()=>{
+            setHasMore(true)
             props.getPublicBooks()
             props.getPublicPages()
             props.getPublicLibraries()
@@ -131,11 +157,12 @@ function DiscoveryContainer(props){
                             <DashboardItem book={hash.item} page={page}/>
                         )
                    
-                }}
+                }
+                }
                 case 'library':{
-                    return(<div>
+                    // return(<div>
 
-                    </div>)
+                    // </div>)
                 }
                     default:{
                         return (<div>

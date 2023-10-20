@@ -5,7 +5,9 @@ import {    getProfileLibraries,
             fetchBookmarkLibrary,
             updateLibrary,
             setLibraryInView,
-            getPublicLibraries} from "../actions/LibraryActions"
+            getPublicLibraries,
+            fetchArrayOfLibraries,
+            fetchArrayOfLibrariesAppend} from "../actions/LibraryActions"
 import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
     librariesInView:[Library],
@@ -28,7 +30,7 @@ builder
     })
     .addCase(getProfileLibraries.pending,(state,)=>{
         return {...state,
-                pending: true}
+                loading: true}
     }).addCase(fetchLibrary.pending,(state)=>{
         return {...state,loading: true}
     }).addCase(fetchLibrary.rejected,(state,{payload})=>{
@@ -70,6 +72,15 @@ builder
     }).addCase(getPublicLibraries.rejected,(state,{payload})=>{
         state.loading = false
         state.error = payload.error
+    }).addCase(fetchArrayOfLibraries.rejected,(state,{payload})=>{
+        state.error = payload.error
+        state.loading = false
+    }).addCase(fetchArrayOfLibraries.fulfilled,(state,{payload})=>{
+        state.librariesInView = payload.libraryList
+    }).addCase(fetchArrayOfLibrariesAppend.rejected,(state,{payload})=>{
+        state.error = payload.error
+    }).addCase(fetchArrayOfLibrariesAppend.fulfilled,(state,{payload})=>{
+        state.librariesInView = [...state.librariesInView,...payload.libraryList]
     })
 }})
 export default libSlice
