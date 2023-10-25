@@ -1,0 +1,288 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+   function isSignedIn() {
+        return request.auth != null;
+  }
+	// function isOwner(rsc){
+	// //is Content profileId/profile userId equal to current user.id
+	// return request.auth.uid == getProfile(rsc.data.profileId).data.userId
+	// }
+ 	function getProfile(profileId){
+  	return get(/databases/$(database)/documents/profile/$(profileId))
+  			
+  }
+  function getLibrary(libraryId){
+  		return get(/databases/$(database)/documents/library/$(libraryId))
+	}
+  function isCurrentUser(userId){
+  
+  			return request.auth.uid==userId
+  }
+	function getPage(pageId){
+		return get(/databases/$(database)/documents/page/$(pageId))
+  }
+
+ 
+
+  function getBook(bookId){
+    			return get(/databases/$(database)/documents/book/$(bookId))
+  			}
+   function isValidNewContent(){
+   			return resource==null && isSignedIn()
+   }
+   function isCurrentProfileCurrentUser(profileId){
+   			return request.auth.uid == get(/databases/$(database)/documents/profile/$(profileId)).data.userId
+   }
+
+   
+  	match /user/{userId}{
+      function newUser(){
+        	return resource==null
+      }
+        allow create: if newUser()
+        allow write:if isSignedIn() && request.auth.uid==userId
+        allow update: if isCurrentUser(userId)
+        allow read: if isCurrentUser(userId)
+    }
+          
+match /profile/{profileId}{
+  	
+    			function isOwner(rsc){
+      
+      			return isSignedIn() &&(rsc.data.userId==request.auth.uid)   
+    			}
+    
+    			function isValidNewProfile() {
+        		return (isSignedIn()&& resource == null) 
+        	}
+       
+       
+     		allow read: if true;
+        allow update: if isOwner(resource);
+        allow create: if isValidNewProfile();
+    		allow delete: if isOwner(resource);
+         match /follow_book/{followBookId}{
+         	function canDo(rsc){
+          
+         	return getProfile(rsc.data.profileId).data.userId == request.auth.uid     
+         	}
+          function canCreateIf(){
+         return request.auth!=null && resource == null 
+          }
+         		allow read :if true;
+            allow create:if  request.auth!=null;
+            allow delete: if canDo(resource);
+           
+      
+        
+         }
+        	 
+          match /follow_library/{followLibraryId}{
+         	function canDo(rsc){
+          
+         	return getProfile(rsc.data.profileId).data.userId == request.auth.uid
+         	}
+          function canCreateIf(){
+         return request.auth.uid!=null && resource == null 
+          }
+         		allow read :if true;
+            allow create:if  request.auth!=null;
+            allow delete: if canDo(resource);
+        
+         }
+         match /follow_profile/{followProfileId}{
+        		function canDoForFollowProfile(rsc){
+    
+         			return  getProfile(rsc.data.followerProfileId).data.userId == request.auth.uid
+         		}
+          	function canCreateIf(){
+        			return request.auth.uid!=null && resource == null 
+          	}
+            allow read: if true;
+            allow create:if request.auth.uid!=null;
+            allow delete:if canDoForFollowProfile(resource);
+         }
+        
+}
+      
+match /page/{pageId}{
+  //    function getProfile(profileId){
+  // 	return get(/databases/$(database)/documents/profile/$(profileId))
+  // }
+  
+
+      function isPublic(pageId){
+      
+  				return getPage(pageId).data.privacy == false
+ 	 		}
+      function isValidNewPage(){
+          return resource == null
+      }
+      function isOwnerOfPage(pageId){
+      
+      	return getProfile(getPage(pageId).data.profileId).data.userId == request.auth.uid
+      }
+    	// function canReadIf(pageId){
+    	// return request.auth.uid in getPage(pageId).readers || request.auth.uid in getPage(pageId).commenters
+    	// }
+    	// function canUpdateIf(pageId){
+    	// return request.auth.uid in getPage(pageId).writers || request.auth.uid in getPage(pageId).editors
+    	// }
+   
+			function doRead(pageId){
+      	return isPublic(pageId)
+      }
+        
+        //PAGE
+      	allow read:if  resource.data.privacy == false || getProfile(resource.data.profileId).data.userId == request.auth.uid ||  request.auth.uid in getPage(pageId).readers || request.auth.uid in resource.data.commenters || request.auth.uid in getPage(pageId).writers || request.auth.uid in getPage(pageId).editors
+				allow list: if true
+        allow create: if isValidNewPage() && request.auth != null
+			 	allow update: if request.auth.uid in resource.data.writers || request.auth.uid in resource.data.editors || getProfile(resource.data.profileId).data.userId == request.auth.uid
+    
+			 	allow delete: if isOwnerOfPage(resource.data.id)
+  	
+        match /comment/{commentId}{
+        		
+        
+        function isPublic(rsc){
+        return getPage(rsc.data.pageId).privacy == false
+        }
+        function isOwner(rsc){
+        	return getProfile(rsc.data.profileId).userId == request.auth.uid
+        }
+
+        function canReadIf(rsc){
+        	return isPublic(rsc)||isOwner(rsc)
+        }
+          
+        		allow read: if true
+            allow create: if request.auth != null && get(/databases/$(database)/documents/page/$(request.path[4])).data.commentable == true
+           // getPage(request.path[4]).data.commentable == true
+	}      
+}
+  
+  	
+match /book/{bookId}{
+  		// function getProfile(profileId){
+  		// 		return get(/databases/$(database)/documents/profile/$(profileId))
+  		// }
+    			
+  			function isPublic(bookId){
+        
+  					return getBook(bookId).data.privacy == false
+ 	 			}
+        // function canReadIf(rsc){
+        // 	return isPublic(rsc) || getProfile(rsc.data.profileId).data.userId == request.auth.uid || ableToRead(rsc)
+        // }
+        // function ableToRead(rsc){
+        // 	return (request.auth.uid in rsc.data.readers || request.auth.uid in rsc.data.writers || request.auth.uid in rsc.data.editors || request.auth.uid in rsc.data.commenters)
+        // }
+  
+        function isOwnerOfBook(bookId){
+        	return getProfile(getBook(bookId).data.profileId).userId == request.auth.uid
+        }
+       	function canReadIf(bookId){
+        	return request.auth.uid in getBook(bookId).data.readers || request.auth.uid in getBook(bookId).data.commenters
+        }
+        function canUpdateIf(bookId){
+         	return request.auth.uid in getBook(bookId).data.editors || request.auth.uid in getBook(bookId).data.writers
+        
+        }
+
+
+
+        function canDeleteIf(rsc){
+        	return isOwnerOfBook(rsc)
+        }
+        allow read:if resource.data.privacy == false || getProfile(resource.data.profileId).data.userId == request.auth.uid|| request.auth.uid in resource.data.readers || request.auth.uid in resource.data.commenters || request.auth.uid in resource.data.writers || request.auth.uid in resource.data.editors
+        allow list: if true
+        allow create: if isValidNewContent() && isSignedIn();
+        allow update: if getProfile(resource.data.profileId).data.userId == request.auth.uid ||  request.auth.uid in resource.data.editors||request.auth.uid in resource.data.writers || resource.data.writingIsOpen == true
+        allow delete: if canDeleteIf(resource);
+
+    	
+} 
+        
+  	match /library/{libraryId}{
+       function getProfile(profileId){
+  				return get(/databases/$(database)/documents/profile/$(profileId))
+  		}
+  				// function isLibraryPublic(rsc){
+  				// 	return rsc.data.privacy == false
+  				// }
+    
+        // 	function ableToRead(rsc){
+        // 	return request.auth.uid in rsc.data.readers || request.auth.uid in rsc.data.writers || request.auth.uid in rsc.data.editors || request.auth.uid in rsc.data.commenters
+        // }
+        // function isOwner(rsc){
+        // return getProfile(rsc.data.profileId).data.userId == request.auth.uid
+        // }
+        // function allowReadIf(rsc){
+        // 	return isLibraryPublic(rsc)|| ableToRead(rsc)
+        // }
+  			allow read: if true
+        allow create: if request.auth != null;
+	 			allow update: if getProfile(resource.data.profileId).data.userId == request.auth.uid || request.auth.uid in resource.data.writers || request.auth.uid in resource.data.editors;
+    		allow delete: if getProfile(resource.data.profileId).data.userId == request.auth.uid
+    
+
+      
+      
+  }
+	match /notification/{notifcationId}{
+	function getProfile(profileId){
+	return get(/databases/$(database)/documents/profile/$(profileId))
+	}
+	function canReadIf(rsc){
+	return getProfile(rsc.data.forProfileId).data.userId == request.auth.uid
+	}
+  
+	allow create: if request.auth != null && resource==null
+	allow read : if canReadIf(resource)
+	allow delete: if canReadIf(resource)
+          
+	}
+
+  match /user_approval/{user_approvalId}{
+			function getProfile(profileId){
+					return get(/databases/$(database)/documents/profile/$(profileId))
+			}
+      
+  		function canDeleteIf(rsc){
+      		return getProfile(rsc.data.profileId).data.userId == request.auth.uid
+      }
+  		
+      allow read: if true
+      allow delete: if isSignedIn() && canDeleteIf(resource)
+      allow update: if isSignedIn() && canDeleteIf(resource)
+      allow create: if isSignedIn() && isCurrentProfileCurrentUser(request.resource.data.profileId)
+  }
+  
+  match /profiles/{profileId}{
+      allow read: if true
+      allow delete: if resource.data.userId == request.auth.uid
+      allow update: if resource.data.userId == request.auth.uid
+      allow create: if true
+      
+      
+      	match /follow_book/{followBookId}{
+        	allow read: if true
+        	allow create: if request.auth!=null
+          allow delete: if getProfile(resource.data.profileId).data.userId == request.auth.uid
+        }
+        match /follow_library/{followLibraryId}{
+        	allow read: if true
+        	allow create: if request.auth!=null
+          allow delete: if getProfile(resource.data.profileId).data.userId == request.auth.uid
+        }
+  }
+  
+  match /stories/{storyId}{
+      allow read: if true
+      allow delete: if true
+      allow update: if true
+      allow create: if true
+  }
+}
+}
