@@ -127,7 +127,7 @@ function BookViewContainer({book,pages}){
     onClick={
        followBookClick
    }>Follow</Button>)
-    if(currentProfile && book && currentProfile.id == book.profileId){
+    if(followedBooks && currentProfile && book && currentProfile.id == book.profileId){
    editDiv = (<Button
    key={book.id}onClick={(e)=>goToEditBook(e)}>Edit<Settings/></Button>)
    let fb = followedBooks.find(fb=>fb.id==`${currentProfile.id}_${book.id}`)

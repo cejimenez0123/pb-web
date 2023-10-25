@@ -13,7 +13,6 @@ import {    logIn ,
             createFollowProfile,
             signOutAction
         } from "../actions/UserActions"
-import Profile from "../domain/models/profile"
 const initialState = {
     loggedIn: false,
     currentProfile: null,
@@ -61,7 +60,6 @@ const userSlice = createSlice({
    
         state.loading = false
         state.loggedIn = true
-        console.log(`payload ${JSON.stringify(payload)}`)
        state.currentProfile = payload.profile
     }).addCase("users/loggedIn",(state, { payload }) => {
 
@@ -73,7 +71,7 @@ const userSlice = createSlice({
     }).addCase(fetchProfile.pending,(state)=>{
         state.loading=true
     }).addCase(fetchProfile.fulfilled,(state,{ payload })=>{
-        console.log(`fdsad ${JSON.stringify(payload)}`)
+       
         state.profileInView = payload.profile
         state.loading = false
     }).addCase(fetchProfile.rejected,(state,{ payload })=>{

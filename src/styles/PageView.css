@@ -157,7 +157,7 @@ button:active {
     .comment .btn-row{
         display: flex;
         flex-direction: row;
-        /* margin: auto 0; */
+        margin: auto 0;
         justify-content: space-between;
     }
     .btn-row .comment-author{

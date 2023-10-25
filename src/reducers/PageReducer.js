@@ -89,7 +89,6 @@ const pageSlice = createSlice({
       }).addCase(setPagesToBeAdded.type,(state,{payload})=>{
         state.pagesToBeAdded = payload
       }).addCase(fetchArrayOfPagesAppened.fulfilled,(state,{payload})=>{
-        console.log(`pageload ${JSON.stringify(payload)}`)
         state.pagesInView = [...state.pagesInView,...payload.pageList]
         state.loading = false
       }).addCase(fetchArrayOfPagesAppened.rejected,(state,{payload})=>{

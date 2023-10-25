@@ -67,13 +67,7 @@ function EditBookContainer({book,pages}){
         }
       
     },[book])
-    // const saveRoles=()=>{
-    //     if(book!=null){
-    //         console.log(`newBookRoles ${JSON.stringify(newBookRoles)}`)
-           
-        
-       
-    //     }}
+
     
     const fetchProfile=()=>{
         dispatch(fetchAllProfiles()).then((result) => {

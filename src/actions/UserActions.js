@@ -16,8 +16,8 @@ const logIn = createAsyncThunk(
         let email = params["email"]
         let password = params["password"]
         try {
-            const userCred = await setPersistence(auth,browserLocalPersistence)
-            .then(() => {
+           
+        const userCred = await setPersistence(auth,browserLocalPersistence).then(() => {
                 return signInWithEmailAndPassword(auth,email,password)
             })
             
@@ -27,8 +27,7 @@ const logIn = createAsyncThunk(
                 where("userId", "==",uId)))    
                 const pack =  snapshot.docs[0].data() 
 
-             if(pack!=null){  
-           
+            if(pack!=null){  
                 const id = pack["id"]
                 const username = pack["username"]
                 const profilePicture = pack["profilePicture"]??""
@@ -36,15 +35,21 @@ const logIn = createAsyncThunk(
                 const homeLibraryId = pack["homeLibraryId"]
                 const bookmarkLibraryId = pack["bookmarkLibraryId"]
                 const userId = pack["userId"]
-                const privacy = pack["private"]
+                const privacy = pack["privacy"]
                 const created = pack["created"]
-                const profile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
-         
+                const profile = new Profile(id,
+                                            username,
+                                            profilePicture,
+                                            selfStatement,
+                                            bookmarkLibraryId,
+                                            homeLibraryId,
+                                            userId,
+                                            privacy,
+                                            created)
         return {
-          
                 profile
-                
-            }}else{
+              }
+            }else{
                 throw new Error("Profile not found for the logged-in user.");
             }
         }catch(error) {
@@ -71,13 +76,16 @@ const signUp = createAsyncThunk(
     let email = params["email"]
     let password = params["password"]
     try {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password)
-        const pId = doc(collection(db,"profile")).id
+      const userCred = await setPersistence(auth,browserLocalPersistence).then(()=>{
+        return createUserWithEmailAndPassword(auth, email, password)
+      
+      })
+          const pId = doc(collection(db,"profile")).id
         const uId = userCred.user.uid
       
       
         const libId = doc(collection(db,"library")).id
-    
+        
         new Library(libId,"Saved")
         const timestamp = Timestamp.now()
         await setDoc(doc(db,"library",libId),{
@@ -151,7 +159,7 @@ async (params,thunkApi) => {
         const privacy = pack["privacy"]
         const created = pack["created"]
         const profile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
-        console.log(`user2 ${JSON.stringify(profile)}`)
+        
         return {
             profile
         }          
@@ -247,7 +255,7 @@ const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async
     const storageRef = ref(storage, fileName);
     const blob = new Blob([file])
     const upload = await uploadBytes(storageRef, blob)
-    console.log(`Uploading profile picture ${JSON.stringify(upload)}`)
+  
     const url = await getDownloadURL(storageRef)
         return{ 
             url: url

@@ -15,7 +15,7 @@ import {
             MenuItem,
             Button,
             Tooltip,
-            Avatar,
+            Avatar,Popover
         } from '@mui/material'
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
@@ -26,7 +26,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
 import theme from '../theme'
 
-
+import MediaQuery from 'react-responsive'
 function NavbarContainer(props){
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -45,7 +45,10 @@ function NavbarContainer(props){
     const pages = [PageName.home, PageName.create,PageName.discovery, PageName.login];
     const settings = [SettingName.profile,SettingName.account,SettingName.logout];
     const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [anchorElCreateA,setAnchorElCreateA] = React.useState(null);
+    const [anchorElCreateB,setAnchorElCreateB] = React.useState(null);
     const [open,setOpen]= useState(false)
+    const [subOpen,setSubOpen]= useState(false)
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     
     const handleOpenNavMenu = (event) => {
@@ -54,6 +57,27 @@ function NavbarContainer(props){
     const handleOpenUserMenu = (event) => {
       setAnchorElUser(event.currentTarget);
     };
+//
+const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const [submenuAnchorEl, setSubmenuAnchorEl] = React.useState(null);
+
+  const handleSubmenuOpen = (event) => {
+    setSubmenuAnchorEl(event.currentTarget);
+  };
+
+  const handleSubmenuClose = () => {
+    setSubmenuAnchorEl(null);
+  };
+//
   
     const handleCloseNavMenu = (page) => {
        
@@ -79,15 +103,15 @@ function NavbarContainer(props){
     const handleOpenClick = ()=>{
         setOpen(!open)
     }
-    const [anchorEl, setAnchorEl] = useState(null);
+    // const [anchorEl, setAnchorEl] = useState(null);
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+    // const handleClick = (event) => {
+    //     setAnchorEl(event.currentTarget);
+    // };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    // const handleClose = () => {
+    //     setAnchorEl(null);
+    // };
   
     return (
         <AppBar position="static"
@@ -160,14 +184,26 @@ function NavbarContainer(props){
                              <Collapse in={open} timeout="auto" unmountOnExit>
                              <List>
                           
-                           <ListItemButton onClick={()=>{ navigate("/page/new")}}sx={{ pl: 4 }}>
-                           <ListItemText primary="Page" />
+                           <ListItemButton key="page" 
+                           onClick={(e)=>setAnchorElCreateB(e.target)}sx={{ pl: 4 }}>
+                           {/* <ListItemText primary="Page" /> */}
+                         Page {anchorElCreateB ? <ExpandLess /> : <ExpandMore />}
                          </ListItemButton>
-                         <ListItemButton onClick={()=>{ navigate("/book/new")}} sx={{ pl: 4 }}>
+                         <Collapse in={anchorElCreateB} timeout="auto" unmountOnExit>
+                            <List>
+                                <ListItemButton onClick={()=>{ navigate("/page/new")}}>
+                                    <ListItemText primary="Text"/>
+                                </ListItemButton>
+                                <ListItemButton>
+                                    <ListItemText primary="Picture"/>
+                                </ListItemButton>
+                            </List>
+                            </Collapse>
+                         <ListItemButton key="book" onClick={()=>{ navigate("/book/new")}} sx={{ pl: 4 }}>
                          
                            <ListItemText primary="Book" />
                          </ListItemButton>
-                         <ListItemButton onClick={()=>{ navigate("/library/new")}} sx={{ pl: 4 }}>
+                         <ListItemButton key="library" onClick={()=>{ navigate("/library/new")}} sx={{ pl: 4 }}>
                            <ListItemText primary="Library" />
                          </ListItemButton>
                
@@ -220,40 +256,89 @@ function NavbarContainer(props){
                     if(currentProfile){
              return(
            <div>
+            <MediaQuery minWidth={"800px"}>
+
                 <Button 
-                  id="demo-customized-button"
-                  aria-controls={anchorEl ? 'demo-customized-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={anchorEl ? 'true' : undefined}
-                sx={{ my: 2, color: 'white', display: 'block' }} onClick={handleClick}>
+                    id="demo-customized-button"
+                    aria-controls={anchorEl ? 'demo-customized-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={anchorEl ? 'true' : undefined}
+                    sx={{ my: 2, color: 'white', display: 'block' }} 
+                    onClick={handleClick}>
                 Create
                 {anchorEl ? <ExpandLess /> : <ExpandMore />}
-              
-              </Button >
-              <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                  anchorOrigin={{
-                    vertical: 'bottom', // Position the menu below the button
-                    horizontal: 'left',  // Position the menu to the left of the button
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-              
-              
-              MenuListProps={{
-          'aria-labelledby': 'demo-customized-button',
+                </Button >
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom', // Position the menu below the button
+                        horizontal: 'left',  // Position the menu to the left of the button
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    MenuListProps={{
+                  'aria-labelledby': 'demo-customized-button',
         }}
 
             >    
-          <MenuItem onClick={()=>{
-                            navigate("/page/new")
-                            }}> 
-                            Page
+            
+            <MenuItem key="page" onBlurCapture={()=>setAnchorElCreateA(null)} onClick={(e)=>{
+                if(!anchorElCreateA){
+                setAnchorElCreateA(e.target)}else{
+                    setAnchorElCreateA(false)
+                }
+            }}>
+                     
+                         Page{anchorElCreateA ? <ExpandLess /> : <ExpandMore />}
+                         </MenuItem>
+                         <Collapse in={anchorElCreateA} timeout="auto" unmountOnExit>
+                            <List>
+                                <ListItemButton onClick={()=>{ navigate("/page/new")}}>
+                                    <ListItemText primary="Text"/>
+                                </ListItemButton>
+                                <ListItemButton>
+                                    <ListItemText primary="Picture"/>
+                                </ListItemButton>
+                            </List>
+                            </Collapse>
+         {/* <MenuItem  onClick={(e)=>{
+            setAnchorElCreate(e.target)
+                            // navigate("/page/new")
+                            }}
+                            aria-controls={anchorElCreate ? 'create-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={anchorElCreate ? 'true' : undefined}
+                            > 
+                            Page X{anchorElCreate ? <ExpandLess /> : <ExpandMore />}
                         </MenuItem>
+                        <Menu
+                        anchorOrigin={{
+                            vertical: 'bottom', // Position the menu below the button
+                            horizontal: 'left',  // Position the menu to the left of the button
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
+                        MenuListProps={{
+                            'aria-labelledby': 'create-menu',
+                          }}
+                        anchorEl={anchorElCreate}
+                        open={Boolean(anchorElCreate)}
+                        aria-haspopup="true"
+                        aria-expanded={anchorEl ? 'true' : undefined}
+                        onClose={()=>setAnchorElCreate(null)}>
+                            <MenuItem onClick={()=>{}}>
+                                Text
+                            </MenuItem>
+                            <MenuItem onClick={()=>{}}>
+                                Picture
+                            </MenuItem>
+                        </Menu>*/}
                         <MenuItem onClick={()=>{
                             navigate("/book/new")
                         }}>
@@ -266,6 +351,7 @@ function NavbarContainer(props){
                         </MenuItem>
             
           </Menu>
+          </MediaQuery>
               </div>)}else{
                 return
               }
@@ -331,22 +417,6 @@ function NavbarContainer(props){
       </AppBar>
     );
   }
-//   export default ResponsiveAppBar;  
-function mapState(state){
 
-  return{
-//     users: state.users.users,
-//   loggedIn: state.users.loggedIn,
-//   currentUser: state.users.currentUser,
-//   books: state.books.books,
-//   libraries: state.libraries.libraries
-}
-}
-function mapDispatch(dispatch){
-  return{
-    // getCurrentUser: ()=>dispatch(SET_CURRENT_USER())
-}
-}
-export default connect(mapState,mapDispatch)(NavbarContainer)
-
+export default NavbarContainer
 

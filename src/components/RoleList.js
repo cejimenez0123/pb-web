@@ -96,7 +96,7 @@ export default function RoleList({getRoles,library,book,type}) {
             role
             )
             if(role.length > 0){
-                console.log(profileList.length)
+               
                 let profiles = profileList.filter(prof=>{
                     return profile.id != prof.id
                 })
@@ -105,7 +105,7 @@ export default function RoleList({getRoles,library,book,type}) {
                     return [...prevState,br]
                 })
                 setProfileList(profiles)
-                console.log(profileList.length)
+               
             }else{
                let roles = newRoles.filter(role=>role.profile.id == profile.id)
                setNewRoles(roles) 

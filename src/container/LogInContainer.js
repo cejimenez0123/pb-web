@@ -69,7 +69,7 @@ function LogInContainer(props) {
             const { payload } = result
             if(payload!=null){
             const {url}= payload
-            console.log(`docuuns ${url}`)
+            
             setProfilePicture(url)
             }
         })

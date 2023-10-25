@@ -61,7 +61,7 @@ const getPublicPages = createAsyncThunk(
               pageList = [...pageList, page]
             })
 
-        console.log(`PAGES ${pageList[0].title}`)
+       
     return {
   
         pageList}
@@ -238,7 +238,7 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
                                                       commenters,
                                                       editors,
                                                       created:created})
-  console.log(`savePage ${JSON.stringify(snapshot)}`)
+
   const page = new Page(  id,
                           title,
                           data,
@@ -248,10 +248,10 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
                           commentable,
                           type,
                           created)
-  console.log(`savePage ${JSON.stringify(page)}`)
+
   return { page }
   }catch(error){
-    console.log(`savePage ${JSON.stringify(error)}`)
+    
     return {
       error: new Error(`Error: SavePage ${error.message}`)
     }
@@ -481,7 +481,7 @@ const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (para
       pageList = [...pageList, page]
     })
   
-console.log(`pageList ${JSON.stringify(pageList)}`)
+
 return {
 
 pageList
@@ -497,7 +497,6 @@ return {error }
 const setPageInView = createAction("pages/setPageInView", (params)=> {
 
   const {page} = params
-  console.log(`erererere ${JSON.stringify(page)}`)
   return  {payload:
     page}
     
@@ -506,7 +505,7 @@ const setPageInView = createAction("pages/setPageInView", (params)=> {
 
 const setPagesToBeAdded = createAction("pages/setPagesToBeAdded",(params)=>{
   let {pageList} = params
-console.log(`GASSX ${JSON.stringify(pageList)}`)
+
   return {
     payload: pageList
   }
