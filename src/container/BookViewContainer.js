@@ -84,7 +84,7 @@ function BookViewContainer({book,pages}){
         if(pageLoading==false && !!book){
             if(pages.length !=0){
                 return(
-                    <div>
+                    <div className="content">
                      <InfiniteScroll 
                             dataLength={pages.length}
                             next={()=>getPages(book.pageIdList)}
@@ -141,19 +141,20 @@ function BookViewContainer({book,pages}){
     
   
 
-    return(<div className="container">
+    return(<div className="evenly container view">
           
         <div className="left-bar">
-            <div className="info">
+            <div className="info view">
             <h5> {book.title}</h5>
-            
+            <div className="purpose">
             <h6> {book.purpose}</h6>
+            </div>
             {followDiv}
             
             </div>
         </div>
         <div className="right-bar">
-           <div className="content">
+           <div className="content-list dashboard">
             {pageList()}
             </div>
         </div>

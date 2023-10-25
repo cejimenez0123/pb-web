@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import theme from "./theme.js"
 import { connect,useDispatch} from "react-redux"
-import {Route, Routes,} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import { getPublicPages } from './actions/PageActions';
 import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/LogInContainer';

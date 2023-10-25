@@ -1,12 +1,14 @@
-@media (min-width: 768px) {
+@media (min-width:800px) {
   /* On screens with a width of 768px or more (desktop), set the width to 50% */
 .dashboard-item {
+
     width: 50rem;
     background-color: white;
     border: 1px solid rgb(210, 210, 210);
     margin-bottom: 1em;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+   
     
   }
 .dashboard-item button {
@@ -15,6 +17,7 @@
   padding: 10px 20px;
   height: 100%;
   border: none;
+
  
 }
 
@@ -39,6 +42,64 @@
   width: 50em; 
   
   
+
+}
+.dashboard-item .dashboard-header{
+  border-bottom: 1px solid grey;
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.dashboard-header .titles {
+  display: flex;
+  flex-direction: row;
+}
+.dashboard-content{
+  padding:  2em;
+}
+
+}
+@media (max-width: 800px) {
+  /* On screens with a width of 768px or more (desktop), set the width to 50% */
+.dashboard-item {
+    
+    width: 100%;
+    background-color: white;
+    border: 1px solid rgb(210, 210, 210);
+    margin-bottom: 1em;
+
+   
+    
+  }
+.dashboard-item button {
+  color:white;
+  background-color: black;
+  padding: 10px 20px;
+  height: 100%;
+  border: none;
+
+ 
+}
+
+
+.dashboard-item .btn-row{
+ 
+  height:3em;
+  width: 100%;
+  justify-content: center;
+  background-color: black;
+ 
+}
+
+.dashboard-item img{ 
+    width: 100vw;    
+    height:auto;
+    /* object-fit: cover; */
+    margin: 0 auto;
+  } 
+.dashboard-item .text{
+  width: 100vw; 
 
 }
 .dashboard-item .dashboard-header{

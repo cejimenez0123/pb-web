@@ -499,6 +499,16 @@ const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfiles
             }
     }
 })
+
+let clickMe = createAsyncThunk("Sf",async (params,thunkApi)=>{
+  
+  let snapshot = await getDocs(collection(db,"book"))
+  snapshot.docs.forEach(doc=>{
+    updateDoc(doc.ref,{commenters:[],editors:[],writers:[],readers:[]})
+  })
+
+
+})
 export {logIn,
         signUp,
         getCurrentProfile,
@@ -516,5 +526,6 @@ export {logIn,
         deleteFollowProfile,
         createFollowProfile,
         fetchFollowProfilesForProfile,
-        signOutAction
+        signOutAction,
+        clickMe
     }

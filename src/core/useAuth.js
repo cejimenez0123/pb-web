@@ -10,12 +10,13 @@ export default function useAuth(shareAuthState) {
     })
   
     useEffect(() => {
+        if(auth!=null){
         onAuthStateChanged(auth,(user)=>{
            
      
                 setAuthState({ user, pending: false, isSignedIn: !!user }) 
             
-        })
+        })}
 }, [])
 
 

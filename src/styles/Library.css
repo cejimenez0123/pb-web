@@ -1,20 +1,30 @@
 
-#container {
-    display: flex;
-    justify-content: space-evenly;
-}
+
 .left-bar .content-list{
     margin-top: 3em;
 }
-.info{
-    /* margin-top: 3em; */
-    margin-right: 3em;
-    margin-left: 2em;
+.content-list.view{
+    
+        left: 25em;
+        border-radius: 25px;
+        padding: 2em 1em;
+        min-height: 20em;
+        width: 45em;
+        background-color: aliceblue;
+        height: max-content
+        
+      
+}
+@media (max-width: 726px) {
+.info.view{
+   
+    /* margin-right: 3em;
+    margin-left: 2em; */
     min-height: 15em;
-    min-width: 22em;
+    min-width:100%;
     background-color: rgb(206, 222, 214);
     border: 1px solid rgb(155, 173, 161);
-    border-radius: 25px;
+    /* border-radius: 25px; */
     padding: 2em 1em;
 }
 .info .purpose {
@@ -24,6 +34,20 @@
     margin: 1em 1em;
    
 }
-.right-bar{
+}
+.two-panel{
+    display: grid;
+    grid-template-columns: 60em 10em;
+    width: 100%;
+}
+.left-bar{
+    display: flex;
+    flex-direction: column; 
+  
+}
+.flex-end-right{
+    justify-content: flex-end; /* Align items to the bottom (right in a column) */
+    align-items: flex-end; 
+    
     
 }

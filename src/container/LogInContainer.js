@@ -3,13 +3,18 @@ import "../App.css"
 import { logIn,signUp} from '../actions/UserActions';
 import { connect,useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
-import { TextField ,Checkbox, FormControlLabel,Button} from "@mui/material"
+import { TextField ,Checkbox, FormControlLabel,Button, FormGroup, Typography} from "@mui/material"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { styled } from '@mui/material/styles';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import { uploadProfilePicture } from '../actions/UserActions';
 import {InputAdornment,IconButton} from "@mui/material"
 import { VisibilityOff,Visibility } from '@mui/icons-material';
+import {sendPasswordResetEmail } from "firebase/auth";
+import theme from '../theme';
+// import Modal from '../components/Modal';
+import { Modal } from '@mui/joy';
+import { auth } from '../core/di';
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -118,10 +123,8 @@ function SignInCard(props) {
     return (<div className='sign-card'>
         <div id="sign-in">
         <h1> Sign Up</h1>
-                <form 
-                onSubmit={
-                    props.handleSubmit
-                   }
+                <FormGroup 
+                
                      >
                      <div > 
                     <div className="username">
@@ -136,6 +139,7 @@ function SignInCard(props) {
                             InputProps={{
                                 style: {
                                     width: inputStyle.width,
+                                    backgroundColor: theme.palette.primary.contrastText
                                 }
                             }}
                             />
@@ -147,12 +151,13 @@ function SignInCard(props) {
                         onChange={(e) =>{
                            props.setEmail(e.target.value)
                         }}
-                         
                         InputProps={{
                             style: {
                                 width: inputStyle.width,
+                                backgroundColor: theme.palette.primary.contrastText
                             }
-                        }}
+                            }
+                        }
                     />
                     </div>
                     </div>
@@ -176,6 +181,7 @@ function SignInCard(props) {
                         style={
                             {
                                         width: inputStyle.width,
+                                        backgroundColor:theme.palette.primary.contrastText
                                 }
                         }
                       
@@ -186,15 +192,13 @@ function SignInCard(props) {
                                 label="Password"
                                 onChange={(e) => 
                                 props.setPassword(e.target.value)}
-                            //     InputProps={{
-                            //         style: {
-                            //             width: inputStyle.width,
-                            //     }
-                            // }}
+                          
                             type={showPassword ? "text" : "password"} 
                             InputProps={{
                                 style: {
+                                   
                                     width: inputStyle.width,
+                                    backgroundColor:theme.palette.primary.contrastText
                                 },
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -203,9 +207,14 @@ function SignInCard(props) {
                                     </IconButton>
                                 </InputAdornment>
                         ),
-                      }}/>
+                      }}
+                      style={{ margin: "auto",}}/>
                     <div className='file'>
-                                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                                <Button 
+                                style={{
+                                backgroundColor:theme.palette.secondary.main}}
+                                
+                                component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                    
                     Upload Picture
                     <VisuallyHiddenInput type="file"  name ='profile_picture'
@@ -218,22 +227,32 @@ function SignInCard(props) {
             <div className='button'>
 
          
-            <Button variant="contained" type="submit">Sign Up</Button>
+            <Button 
+                    onClick={
+                        props.handleSubmit
+                       }
+                    variant="contained" 
+                    style={{width:"20em",
+                            backgroundColor:theme.palette.secondary.main
+        }}type="submit">Sign Up</Button>
             </div>
-        </form>
+        </FormGroup>
         </div>
     </div>)
 }
 
 function LogInCard(props){
     const [showPassword, setShowPassword] = useState(false);
+    const [forgotEmail, setForgotEmail] = useState("")
+    const [open,setOpen] = useState(false);
     const handleTogglePasswordVisibility = () => {
         setShowPassword(!showPassword);
       };
+
     return(<div className='sign-card'>
         <h1> Log In</h1>
-        <form  id="login"
-           onSubmit={props.handleSubmit}
+        <FormGroup  id="login"
+        
             >
                 <div className="email">
             <TextField
@@ -248,7 +267,7 @@ function LogInCard(props){
                 
                 />
                 </div>
-                <div className="password">
+                <div className="password-div">
             <TextField label="Password"
             value={props.password} 
             name='password'placeholder='Password'
@@ -268,9 +287,75 @@ function LogInCard(props){
       }}
             
             />
+            <div onClick={()=>{
+                setOpen(true)
+            }}className='forgot'>
+               <a>Forgot Passowrd?</a>
             </div>
-            <Button variant="contained" type="submit">Log In</Button>
-        </form>
+            </div>
+         
+            <Button 
+               onClick={props.handleSubmit}
+                style={{width:"20em",
+                backgroundColor:theme.palette.secondary.main}}
+                variant="contained" type="submit">Log In</Button>
+        </FormGroup>
+        <Modal
+       
+        open={open}
+        onClose={()=>{setOpen(false)}}
+        aria-labelledby="modal-modal-title"
+        // aria-describedby="modal-modal-description"
+                // isOpen={open}
+                // onClose={()=>setOpen(false)}
+                >
+                   
+
+                    <FormGroup id="modal-modal-description" 
+                     style={{width: "40em",
+                            margin:"auto",
+                            marginTop:"4em",
+                            borderRadius:"25px",
+                            padding:"6em",
+                            backgroundColor:theme.palette.secondary.light}}  
+                     //</Modal>sx={{ mt: 2 }}
+                     >
+                         <Typography 
+                    id="modal-modal-title" variant="h6" component="h2"
+                    >
+      Forgot Passowrd
+    </Typography>
+
+                        <TextField 
+                            label="E-mail" 
+                            value={forgotEmail} 
+                            style={{marginTop:"4em",
+                                    marginBottom:"3em",
+                                    backgroundColor:theme.palette.secondary.contrastText}}
+                            onChange={(e)=>setForgotEmail(e.target.value)}
+                        />
+                        <Button 
+                            style={{backgroundColor:theme.palette.secondary.main,
+                                    color:theme.palette.secondary.contrastText}}
+                            variant='outlined'
+                            onClick={()=>{
+                                if(forgotEmail.length > 0){
+                                sendPasswordResetEmail(auth, forgotEmail)
+                                .then(() => {
+                                  window.alert("Email Sent!")
+                                })
+                                .catch((error) => {
+                                  const errorCode = error.code;
+                                  const errorMessage = error.message;
+                                  // ..
+                                });}else{
+                                    window.alert("Please write an email")
+                                }
+                            }}>
+                            Send
+                        </Button>
+                    </FormGroup>
+                </Modal>
     </div>)
 }
 

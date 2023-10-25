@@ -19,8 +19,8 @@ function DashboardItem({page,book}) {
        return prof.id == page.profileId
     })
 const hanldeClickComment=(pageItem)=>{
-    console.log(`fsdwsa ${
-    JSON.stringify(pageItem)}`)
+    
+   
     const params = {
         page: pageItem
     }
@@ -87,9 +87,9 @@ switch(page.type){
                 {/* <button>
                     Nah
                 </button> */}
-                <Button disabled={!currentProfile}
+                <Button 
                         style={{color: theme.palette.info.contrastText,
-                            backgroundColor: currentProfile? theme.palette.info.main:theme.palette.info.disabled}}
+                            backgroundColor: theme.palette.info.main}}
                         onClick={()=>hanldeClickComment(page)}
                         >
                 
@@ -106,19 +106,4 @@ switch(page.type){
 
 }
 
-
-const mapState=(state)=>{
-    return{
-        // currentUser: state.users.currentUser,
-        // comments: state.pages.pageCommentsInView,
-        // userLikes: state.users.userLikes
-    }
-}
-const mapDispatch=(dispatch)=>{
-    return{
-//         getPagesComments: (arr)=>dispatch(getPagesComments(arr)),
-//         pageComments: (comments)=>dispatch({type: "PAGE_COMMENTS",comments}),
-//      getLikesOfUser: ()=>dispatch(getLikesOfUser())
-    }
-}
-export default connect(mapState,mapDispatch)(DashboardItem)
+export default DashboardItem

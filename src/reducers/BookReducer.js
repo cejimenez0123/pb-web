@@ -19,8 +19,8 @@ const initialState = {
     loading:false,
     error:"",
     bookInView: null,
-    booksToBeAdded: [Book],
-    bookRoles: [BookRole]
+    booksToBeAdded: [],
+    bookRoles: []
 }
 const bookSlice = createSlice({
 name: 'books',

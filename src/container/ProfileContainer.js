@@ -71,7 +71,7 @@ function ProfileContainer(props){
     }
     }
     if(profile!=null){
-      profileCardDiv =  ( <div className="info">
+      profileCardDiv =  ( <div className="info view">
         <h1>{profile.username}</h1>
         <img src={profile.profilePicture} alt="proflile-picture"/>
         <div>

@@ -37,6 +37,7 @@ export default function ContentList({currentProfile,pagesInView}){
         </div>)
         if(pagesInView!=null ){    
             return (
+                <div className="content">
             <InfiniteScroll
            dataLength={pagesInView.length}
            next={fetchPageData}
@@ -48,6 +49,7 @@ export default function ContentList({currentProfile,pagesInView}){
                      return(<PageListItem key={page.id} page={page}/>)
              })}
          </InfiniteScroll>
+         </div>
         )
              }else{
                  return empty
@@ -99,6 +101,7 @@ export default function ContentList({currentProfile,pagesInView}){
             case "page":{
            if(pagesInView!=null ){    
            return (
+            <div className="content">
            <InfiniteScroll
            
         
@@ -112,13 +115,15 @@ export default function ContentList({currentProfile,pagesInView}){
                     return(<PageListItem key={page.id} page={page}/>)
             })}
         </InfiniteScroll>
+        </div>
          )
             }else{
                 return empty
             }}
             case "book":{
              if(booksInView!=null && booksInView.length>0){  
-               return  (<InfiniteScroll 
+               return  (<div className="content">
+                <InfiniteScroll 
           
                    dataLength={booksInView.length}
                    next={fetchBookData}
@@ -139,7 +144,8 @@ export default function ContentList({currentProfile,pagesInView}){
                                         type={Book.className} item={book}/>
                                 </div>)
                        })}
-                   </InfiniteScroll>)
+                   </InfiniteScroll>
+                   </div>)
            
             }else{
                 return empty
@@ -147,6 +153,7 @@ export default function ContentList({currentProfile,pagesInView}){
             case "library":{
             if(librariesInView!=null && librariesInView.length>0){
                 return(
+                    <div className="content">
                     <InfiniteScroll
               
                     dataLength={librariesInView.length}
@@ -167,6 +174,7 @@ export default function ContentList({currentProfile,pagesInView}){
                         </div>)
                     })}
                     </InfiniteScroll>
+                    </div>
                 )}else{
                     return empty
                 }
@@ -187,7 +195,7 @@ export default function ContentList({currentProfile,pagesInView}){
     
        
     } 
-    return(<div className="content-list">
+    return(<div className="column">
                 <div className="inner">
                 <div className="btn-row">
                                     <Button className="btn" onClick={()=>{
@@ -217,7 +225,7 @@ export default function ContentList({currentProfile,pagesInView}){
                 </div>
                          
                             <div
-        className={`content ${isContentVisible ? "visible" : "hidden"}`}
+        className={`content-list my  ${isContentVisible ? "visible" : "hidden"}`}
         style={{
           maxHeight: isContentVisible ? "" : "0",
           transition: "max-height 0.3s ease-in-out"

@@ -5,7 +5,7 @@ import { getCurrentProfile } from '../actions/UserActions'
 import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { fetchAllProfiles } from '../actions/UserActions'
+import { fetchAllProfiles,clickMe } from '../actions/UserActions'
 import { fetchArrayOfBooks, fetchArrayOfBooksAppened } from '../actions/BookActions'
 import { fetchArrayOfPagesAppened } from '../actions/PageActions'
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
@@ -212,49 +212,63 @@ function DashboardContainer(props){
         }
         const contentList =()=>{
             if(itemsInView!=null && itemsInView.length>0){
-                return(<div className='content-list'>
+                return(<div className='content-list dashboard'>
                     <InfiniteScroll
                         dataLength={itemsInView.length}
-                        
-           next={fetchData}
-           hasMore={hasMore} // Replace with a condition based on your data source
-           loader={<p>Loading...</p>}
-           endMessage={<p>No more data to load.</p>}
+                        next={fetchData}
+                        hasMore={hasMore} 
+                        loader={<p>Loading...</p>}
+                        endMessage={<p>No more data to load.</p>}
                     >
                         {itemsInView.map((item)=>{
                             switch(item.type){
                                 case "page":{
-                                      return(<DashboardItem page={item.page} book={item.book}/>)
+                                    return(<DashboardItem page={item.page} book={item.book}/>)
                                 }
                                 case "book":{
+                                    let id = item.book.pageIdList[0]
+                                    if(item.book.pageIdList.length>1){
 
-                                        let id = item.book.pageIdList[0]
-                                        if(item.book.pageIdList.length>1){
-
-                                        }
+                                    
                                     let page = pagesInView.find(page=>page.id == id)
                                     if(page){
                                         return(<DashboardItem page={page} book={item.book}/>)
                                     }else{
-                                        return(<div>
-                                            Loading...
-                                        </div>)
-                                    }
+                                        if(item.book){
+                                            return
+                                        }else{
+                                            return
+                                        }
+                                        
+                                    }}
                             }
                         }})}
                     </InfiniteScroll>
                 </div>)
             }else if(itemsInView!=null && itemsInView.length==0){
-                return(<div className='content-list'>
-
+                return(<div className='content-list dashboard'>
+                    <div className="content">
+                        <div className='no-more-data'>
+                        <h3>0 Data</h3>
+                        </div>
+                    </div>
+                </div>)
+            }else{
+                return(<div className='content-list dashboard'>
+                    <div className="content">
+                        <div className='no-more-data'>
+                            <h3>Check your contection</h3>
+                            </div>
+                    </div>
                 </div>)
             }
         }
 
         return(
-            <div className="container" >
+            <div id="dashboard" >
                
-                <div >
+                <div>
+             
                 {contentList()}
                  </div>
                    

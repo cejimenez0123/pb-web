@@ -3,14 +3,12 @@
 .sort-item h1{
     color: black;
 }
-
+@media (min-width: 726px) {
 .right-bar{
     padding: 4em;
     
 
 }
-.container{
-    justify-content: space-evenly;
 }
 .sort-item{
     display: flex;

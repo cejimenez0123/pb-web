@@ -1,9 +1,41 @@
+
+@media (min-width: 800px) {
 .container{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-top:3em;
 }
+.center{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        width: 100%;
 
-/* .content{
-    width: 50rem;
-} */
+}
+#LogInContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 2rem 0rem;
+  }
+}
+@media (max-width: 800px) {
+    .container{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .container.reverse{
+        flex-direction: column-reverse;
+    }
+    #LogInContainer{
+        display: flex;
+        flex-direction: column;
+        
+        
+      }
+
+
+}

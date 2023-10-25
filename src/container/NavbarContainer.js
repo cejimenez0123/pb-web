@@ -19,9 +19,7 @@ import {
         } from '@mui/material'
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
-import { MenuButton } from '@mui/joy'
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -93,7 +91,7 @@ function NavbarContainer(props){
   
     return (
         <AppBar position="static"
-                style={{backgroundColor:theme.palette.primary.main}}>
+                style={{backgroundColor:theme.palette.primary.dark}}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Typography
@@ -313,19 +311,15 @@ function NavbarContainer(props){
               >
                 {settings.map((setting) => (
                     
-                  <MenuItem key={setting} onClick={()=>{
-                    switch(setting){
-                        case SettingName.profile:{
-                            navigate("/profile/home")
-                        }
-                        case SettingName.logout:{
-                            dispatch(signOutAction())
-                        }
-                        case SettingName.account:{
-                            navigate("/profile/edit")
-                        }
-                    }
-
+                  <MenuItem key={setting} 
+                            onClick={()=>{
+                                if(setting== SettingName.profile){
+                                    navigate("/profile/home")
+                                }else if(setting== SettingName.logout){
+                                    dispatch(signOutAction())
+                                }else if(setting== SettingName.account){
+                                    navigate("/profile/edit")
+                                }
                   }}>
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>

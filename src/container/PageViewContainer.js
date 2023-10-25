@@ -26,7 +26,7 @@ export default function PageViewContainer({page}){
 
     const getPage=()=>{
         const id =  pathParams["id"]
-        console.log(`PageViewContainer ${JSON.stringify(pathParams)}`)
+     
         dispatch(fetchPage(pathParams)).then(result=>{
             if(result.error==null){
                 fetchComments()
@@ -46,17 +46,20 @@ export default function PageViewContainer({page}){
         fetchComments()
     },[page])
     const fetchComments=()=>{
-        if(page){
-            const params = {page}
-            dispatch(fetchCommentsOfPage(params)).then(result=>{
-                const {payload}=result
-                const {comments} = payload
-                let list = comments.filter(comment=>comment.parentCommentId.length == 0 || comment.parentCommentId == null)
-                setComments(list)
+        if(page && commentsInView){
+            // const params = {page}
+            // dispatch(fetchCommentsOfPage(params)).then(result=>{
+            //     const {payload}=result
+            //     const {comments} = payload
+                // let list = commentsInView.filter(comment=>comment.parentCommentId.length == 0 || comment.parentCommentId == null)
+                setComments(commentsInView)
                 setHasMoreComments(false)
-            })
+            }
         }
-    }
+    
+    useEffect(()=>{
+        fetchComments()
+    },[commentsInView])
 
     if(!loading && page!=null){
 
@@ -73,7 +76,7 @@ export default function PageViewContainer({page}){
         default:
             pageDataElement = <div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>
         break;
-    }
+    }}
     const commentList = ()=>{
     if(comments.length>0){
         return(<div className="comment-thread">
@@ -85,6 +88,7 @@ export default function PageViewContainer({page}){
                 endMessage={<p>No more data to load.</p>}
                             >
                             {comments.map(comment=>{
+                                if(comment.parentCommentId==""||comment.parentCommentId==null){
                                 let profile = (<div></div>)
                                 let p = profilesInView.find(profile=>profile.id == comment.profileId)
                                 if(p){
@@ -92,30 +96,30 @@ export default function PageViewContainer({page}){
                                         {p.username}
                                     </div>)
                                 }
-                                return (<CommentItem comment={comment}/>)
-                            })}
+                                return (<CommentItem page={page} comment={comment}/>)
+                            
+                
+                            }else{
+                                return
+                            }})}
                         </InfiniteScroll>
         </div>)
     }else{
         return(<div className="empty">
             <h1> 0 Comments</h1>
         </div>)
-    }
-}
-return(<div className="container">
+    }}
+
+    return(<div className="center">
                 <div id="page">
-                    <div className="content">
-                        <PageViewItem page={page} currentProfile={currentProfile} getComments={fetchComments}/>
                     
-                    <div className="comments">
+                        <PageViewItem page={page} currentProfile={currentProfile} />
+                    
+                    
                         {commentList()}
-                    </div>
-                </div>
+                   
             </div>
-        </div>)}else{
-        
-        return(<div>
-            Loading...
         </div>)
-    }
+    
+    
 }

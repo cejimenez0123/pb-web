@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom"
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Button } from "@mui/material"
 import theme from "../theme"
+import "../App.css"
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -83,7 +84,7 @@ function LibraryViewContainer(props){
                         >Following
                         </Button>)
                 }
-                return  (<div className="info">
+                return  (<div className="info view">
                             <div className="inner">
                             <h2 className="name">{lib.name}</h2>
                             <p className="purpose"> {lib.purpose}</p>
@@ -243,8 +244,8 @@ function LibraryViewContainer(props){
     const contentList = ()=>{
         if(!error){
         if(itemsInView!=null ){
-            return(<div className="content-list">
-
+            return(<div className="content-list view">
+                <div className="content">
                 <InfiniteScroll 
                 dataLength={itemsInView.length}
                 next={getPages}
@@ -282,11 +283,16 @@ function LibraryViewContainer(props){
             }})
         }
                 </InfiniteScroll> 
+                </div>
             </div>
             )}else{
 
                 return(<div className="content-list">
+                    <div className="content">
+
+                   
                     Content Loading...
+                    </div>
                 </div>)
 
             }}else{
@@ -300,8 +306,10 @@ function LibraryViewContainer(props){
         
         }
     
-    return (<div id="container">
-        <div className="left-bar">
+    return (
+    <div>
+    <div className="two-panel">
+        <div className="left-bar flex-end-right">
                     {contentList()}
              
         </div>
@@ -309,6 +317,7 @@ function LibraryViewContainer(props){
       
                 {libraryInfo()}
            
+        </div>
         </div>
     </div>)
 

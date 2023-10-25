@@ -2,12 +2,13 @@ import { useNavigate } from "react-router-dom"
 import {useState,useEffect} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { appendSaveRolesFoBook,  } from "../actions/BookActions"
-
+import theme from "../theme"
 import {  appendSaveRolesForPage} from "../actions/PageActions"
 import { createLibrary,getProfileLibraries,updateLibraryContent } from "../actions/LibraryActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import "../styles/CreateLibrary.css"
-
+import { FormGroup, Button,FormControlLabel,TextField, TextareaAutosize,Checkbox } from "@mui/material"
+import { Add } from "@mui/icons-material"
 export default function CreateLibraryContainer(props){
 
     const navigate = useNavigate()
@@ -70,25 +71,16 @@ export default function CreateLibraryContainer(props){
         })
        
     }
-        
     
-    // const onClickRemove=(hash)=>{
-    //     const toBeAdded = [...contentToBeAdded]
-    //     const newContent = toBeAdded.filter(aHash=>{
-    //        return aHash.item.id != hash.item.id
-    //     })
-    //     setContentsToBeAdded(newContent)
-
-    // }
     const handleOnSubmit=(e)=>{
-        // const pageIdList = pagesToBeAdded.map(p=>p.id)
+        
         const filterPages = contentToBeAdded.filter(hash => hash.type == "page").map(
             hash=> hash.item.id
         )
         const filterBooks = contentToBeAdded.filter(hash => hash.type == "book").map(
             hash=> hash.item.id
         )
-        // const bookIdList = booksToBeAdded.map(b=>b.id)
+    
         e.preventDefault()
         const params = {
             name: libTitle,
@@ -122,52 +114,20 @@ export default function CreateLibraryContainer(props){
     }
     useEffect(()=>{
         fetchLibraries()
-        // fetchPages()
-        // fetchBooks()
+      
     },[])
-//     const pageList = ()=>{
-//         if(!!listItems && listItems.length > 0){
-//         return(<div class="list">
-//             <InfiniteScroll  dataLength={listItems.length} 
-//    next={fetchPages}
-//    hasMore={false} // Replace with a condition based on your data source
-//    loader={<p>Loading...</p>}
-//    endMessage={<p>No more data to load.</p>}
-// >
-//      {listItems.map((hash) =>{
 
-//              return(<div className="list-item" key={hash.item.id}>
-//                 <div>
-//                     {hash.type}
-//                 <h2 className="list-item-title">
-//                 {hash.item.title}
-            
-//                 </h2>
-//                 </div>
-//                 <div>
-              
-//                 <button onClick={()=>onClickAdd(hash)}>
-//                     Add
-//                 </button>
-//                 </div>
-//             </div>)
-//         })}
-//             </InfiniteScroll>
-//         </div>)}else{
-//             return (<div>
-//                 Loading...
-//             </div>)
-//         }
-//     }
 
         const libraryList = ()=>{
         if(!!librariesInView && librariesInView.length > 0){
-        return(<div class="list">
+        return(<div class="content">
             <InfiniteScroll  dataLength={librariesInView.length} 
    next={fetchLibraries}
    hasMore={false} // Replace with a condition based on your data source
    loader={<p>Loading...</p>}
-   endMessage={<p>No more data to load.</p>}
+   endMessage={<div className="empty">
+    <p>No more data to load.</p>
+    </div>}
 >
      {librariesInView.map((hash) =>{
 
@@ -181,9 +141,9 @@ export default function CreateLibraryContainer(props){
                 </div>
                 <div>
               
-                <button onClick={()=>onClickAdd(hash)}>
-                    Add
-                </button>
+                <Button onClick={()=>onClickAdd(hash)}>
+                    <Add />
+                </Button>
                 </div>
             </div>)
         })}
@@ -196,14 +156,19 @@ export default function CreateLibraryContainer(props){
     }
     const contentToBeAddedList = ()=>{
 
-        return (<div className="content-to-be-added-list">
+        return (<div >
+            <div>
+                <h4>Things that'll be added</h4>
+            </div>
+            <div className="content-to-be-added-list">
             {addedItems("Book",booksToBeAdded)}
             {addedItems("Page",pagesToBeAdded)}
+            </div>
         </div>)
     }
     const addedItems = (label,items)=>{
         if(items!=null && items.length>0){
-        return(<div>
+        return(<div className="info to-be-added">
            <div>
            <h5> {label}</h5>
            </div>
@@ -224,56 +189,69 @@ export default function CreateLibraryContainer(props){
         })}
 
         </div>)}else{
-            return(<div></div>)
+            return(<div>
+                0 items to add
+            </div>)
         }
     }
    
         
     
-return(<div>
+return(<div id="Create-Library">
     <div className="container">
         <div className="left-side-bar">
-            <div className="add-page-list">
+            
                 {contentToBeAddedList()}
-            </div>
+        
         </div>
         <div className="main-side-bar">
-          
+          <div className="content-list create">
             {libraryList()}
+            </div>
         </div>
         <div className="right-side-bar">
-            <div>
-            <form id="form" onSubmit={(e) => handleOnSubmit(e)} >
-            <div>
-                <label>
-                Library Name:
-                    <input type="text" name="name" className="text-input" placeholder="Library Name" onChange={(e)=>handleLibTitleChange(e)}/>
-                </label>
-            </div>
-            <div> 
-            <label>Private:
-                <input type="checkbox"  onChange={
-                (e)=>{
-                    setLibIsPrivate(e.target.checked)
-                }} name="privacy" checked={libIsPrivate} className="checkbox"/>
-            </label>
-            <label>Writing is Open:
-                <input type="checkbox" name="writingIsOpen" onChange={
-                (e)=>{
-                    setWritingIsOpen(e.target.checked)
-                }}checked={writingIsOpen} className="checkbox"/></label>
-            <label>Purpose:
-                <textarea onChange={(e)=>{
+        
+            <FormGroup style={{
+
+            }}className="create-form"  >
+                
+                <TextField  type="text"
+                            label="Library Name" 
+                            placeholder="Library Name" 
+                            className="text-input" 
+                            onChange={(e)=>handleLibTitleChange(e)}/>
+                <FormControlLabel 
+
+                    control={<Checkbox 
+                                onChange={
+                                    (e)=>{
+                        setLibIsPrivate(e.target.checked)
+                        }
+                    } 
+                    name="privacy" 
+                    checked={libIsPrivate} 
+                    className="checkbox"/> 
+                }   label={`${libIsPrivate? "Private":"Public"}`}/>
+            <FormControlLabel 
+                control={<Checkbox onChange={
+                    (e)=>{
+                        setWritingIsOpen(e.target.checked)
+                    }}checked={writingIsOpen} 
+                   /> 
+                } label={`Writing is ${writingIsOpen? "open":"close"}`}/>
+            <label>Purpose:</label>
+                <TextareaAutosize
+                 onChange={(e)=>{
                     setPurpose(e.target.value);
                 }}id="purpose" name="purpose" rows="5" cols="33"/> 
-            </label>
+            
            
-            <button type="submit" className="btn btn-primary">
+            <Button variant="outlined" style={{marginTop:"2em",backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}type="submit" onClick={(e) => handleOnSubmit(e)}>
     Save
-        </button>
-        </div>
-            </form>
-            </div>
+        </Button>
+      
+            </FormGroup>
+        
         </div>
     </div>
 </div>)

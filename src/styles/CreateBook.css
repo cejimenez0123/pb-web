@@ -1,14 +1,26 @@
-.container{
-    display: flex;
-    flex-direction: row;
+
+
+.create .container{
+    margin-top: 2em;
+    display: grid;
+    grid-template-columns: 20% 40% 40%;
 }
 
-.left-side-bar{
-    flex:3
+
+.content-list.create{
+    width: 35em !important;
+    padding: 1em;
+    background-color: aliceblue;
+    border-radius: 25px;
 }
-.main-side-bar{
-    flex: 8
-}
-.right-side-bar{
-    flex: 3;
+.info.create{
+    margin-right: 3em;
+    margin-left: 2em;
+    min-height: 15em;
+    min-width: 22em;
+    max-width: 30em;
+    background-color: rgb(206, 222, 214);
+    border: 1px solid rgb(155, 173, 161);
+    border-radius: 25px;
+    padding: 2em 1em;
 }

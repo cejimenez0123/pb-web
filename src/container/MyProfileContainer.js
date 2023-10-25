@@ -6,9 +6,10 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useState } from 'react';
 import "../styles/MyProfile.css"
 import ContentList from '../components/ContentList';
-import { Button } from '@mui/material';
+import { Button,} from '@mui/material';
+import {Dropdown,MenuButton,Menu,MenuItem} from '@mui/joy'
 import theme from "../theme"
-
+import MediaQuery from 'react-responsive';
 function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView,authState}){
     const navigate = useNavigate()
     
@@ -16,18 +17,37 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInV
     if( currentProfile){ 
     
     return(
-        <div className='container'>
-        <div  className='container-row'>
-          
+        <div className='container reverse'>
+        {/* <div  className='container-row'> */}
+          <MediaQuery minWidth={"800px"}>
             <div className="left-side-bar">
                         <div className='create-buttons'>
-                                    <Button onClick={()=>{
+                                    
+                                       <Dropdown>
+                        <MenuButton
+                         style={{backgroundColor: theme.palette.secondary.main,
+                            color:theme.palette.secondary.contrastText}}
+                        variant="outlined"
+           >
+                                        Create Page
+                     
+          </MenuButton>
+          <Menu>
+          <MenuItem onClick={()=>{
                                         navigate("/page/new")
-                                    }}
-                                    style={{backgroundColor: theme.palette.secondary.main,
-                                        color:theme.palette.secondary.contrastText}}
-                                    variant="outlined"
-                                    >Create Page</Button>
+                                    }}>
+                            Text
+                        </MenuItem>
+          <MenuItem onClick={()=>{
+          }
+                            }> 
+                            Picture
+                        </MenuItem>
+                       
+                        
+            
+          </Menu>
+        </Dropdown>
                                    <Button
                                    style={{backgroundColor: theme.palette.secondary.main,
                                     color:theme.palette.secondary.contrastText}}
@@ -46,7 +66,7 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInV
                                    >Create Library</Button>
                     </div>
             </div>
-          
+            </MediaQuery>
             <div className='main-bar'>
                     <ContentList currentProfile={currentProfile} pagesInView={pagesInView} booksInView={booksInView} librariesInView={librariesInView}/>
             </div>
@@ -54,7 +74,7 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInV
             <div className="right-side-bar">
                     <ProfileCard currentProfile={currentProfile}/>
             </div>  
-    </div>
+    {/* </div> */}
     </div>
     )}else{
         return(<div>

@@ -9,6 +9,9 @@ import { getCurrentProfile } from "../actions/UserActions"
 import { createBook} from "../actions/BookActions"
 import { appendSaveRolesForPage } from "../actions/PageActions"
 import PageListItem from "../components/PageLIstItem"
+import { FormGroup, TextField,FormControlLabel,Checkbox, Button,TextareaAutosize} from "@mui/material"
+import theme from "../theme"
+import "../styles/CreateBook.css"
 export default function CreateBookContainer({pagesInView,booksInView}){
         const navigate = useNavigate()
         const [bookTitle,setBookTitle]=useState("")
@@ -97,7 +100,7 @@ export default function CreateBookContainer({pagesInView,booksInView}){
     }
     const bookList = ()=>{
             let i = 0
-                return(<div>
+                return(<div className="content" >
                     <InfiniteScroll  dataLength={booksInView.length} 
            next={fetchBooks}
            hasMore={false} // Replace with a condition based on your data source
@@ -106,7 +109,7 @@ export default function CreateBookContainer({pagesInView,booksInView}){
         >
              {booksInView.map(book=>{
                 i+=1
-                return (<div key={`${book.id}_${i}`} onClick={()=>addUpdateBook(book) }>
+                return (<div className="list-item" key={`${book.id}_${i}`} onClick={()=>addUpdateBook(book) }>
                     {book.title}
                 </div>)
              })}
@@ -118,8 +121,13 @@ export default function CreateBookContainer({pagesInView,booksInView}){
             }
 
         const pagesToBeAddedList =()=>{
-            if(pagesToBeAdded!=null && pagesToBeAdded.length>0){
+            if(pagesToBeAdded!=null){
+        
+                if(pagesToBeAdded.length>0){
             return(<div>
+                <div>
+                <h4>To Be Added:</h4>
+                </div>
                 {pagesToBeAdded.map(page =>{
 
                     return (
@@ -131,48 +139,77 @@ export default function CreateBookContainer({pagesInView,booksInView}){
                 })}
             </div>)}else{
                 return(<div>
+                    <div>
+                    <h4>To Be Added:</h4>
+                    </div>
+                    <h6>0 Pages To Be Added</h6>
+                </div>)
+            }}else{
+                return(<div>
+                    <div>
+                        <h4>To Be Added:</h4>
+                    </div>
                     Loading...
                     </div>)
             }
         }
-    return(<div>
+        const inputStyle = {
+            width: "90%",
+            marginLeft:"1em"
+        }
+    return(<div className="create">
         <div className="container">
             <div className="left-side-bar">
-                <div className="add-page-list">
+
+                <div className="info to-be-added">
+                    
                 {pagesToBeAddedList()}
                 </div>
             </div>
             <div className="main-side-bar">
+               <div className="content-list create">
                 {bookList()}
+                </div>
             </div>
             <div className="right-side-bar">
-                <div>
-                <form onSubmit={(e) => handleOnSubmit(e)} >
-                <label>
-                    Book Title:
-                    <input type="text" name="title" className="text-input" placeholder="Book Name" onChange={(e)=>handleBookTitleChange(e)}/>
-                </label>
-                <label>Private:
-                    <input type="checkbox"  onChange={
-                    (e)=>{
-                        setBookIsPrivate(e.target.checked)
-                    }} name="privacy" checked={bookIsPrivate} className="checkbox"/>
-                </label>
-                <label>Writing is Open:
-                    <input type="checkbox" name="writingIsOpen" onChange={
-                    (e)=>{
-                        setBookIsOpen(e.target.checked)
-                    }}checked={bookIsOpen} className="checkbox"/></label>
-                <label>Purpose:
-                    <textarea onChange={(e)=>{
-                        setPurpose(e.target.value);
-                    }}id="purpose" name="purpose" rows="5" cols="33"/> 
-                </label>
-                <button type="submit" className="btn btn-primary">
+               
+                <FormGroup  className="create-form"  >
+                
+                    <TextField 
+                    style={inputStyle}
+                    label="Book Title"
+                    placeholder="Title" 
+                    onChange={(e)=>handleBookTitleChange(e)}/>
+                  <FormControlLabel  style={inputStyle}
+                control={<Checkbox checked={bookIsPrivate} onChange={(e)=>{
+                    setBookIsPrivate(e.target.checked)
+                }}/>} label={bookIsPrivate?"Private":"Public"}
+                   value={bookIsPrivate}/>   
+               
+                <FormControlLabel style={inputStyle}
+                control={<Checkbox checked={bookIsOpen} onChange={(e)=>{
+                   setBookIsOpen(e.target.checked)
+                }}/>} label={`Writing is ${bookIsOpen? "open":"close"}`}
+                 />  
+                 <div  style={inputStyle} className="purpose">
+                <label>Purpose</label></div> 
+                <TextareaAutosize
+                   
+            value={purpose}
+            minRows={3} 
+            cols={38}
+            onChange={(e)=>{
+                setPurpose(e.target.value);
+        }} />
+                <Button variant="outlined" 
+                        style={{ width:inputStyle.width,marginLeft:inputStyle.marginLeft,   marginTop:"2em",backgroundColor:theme.palette.secondary.main,
+                                    color:theme.palette.secondary.contrastText}}
+                        onClick={(e) => handleOnSubmit(e)}>
         Save
-            </button>
-                </form>
-                </div>
+            </Button>
+           
+                </FormGroup>
+            
             </div>
         </div>
     </div>)

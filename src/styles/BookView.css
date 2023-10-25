@@ -1,15 +1,6 @@
-.container{
-    display: flex;
-    flex-direction: row;
-}
-.left-bar .info {
-    margin-top: 4em;
-}
-.main-bar{
-    width:60rem ;
-  
-  
-}
+
+
+
 
 .page-list{
     margin:auto;

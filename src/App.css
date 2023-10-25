@@ -6,21 +6,34 @@
 }
 
 html, body {
-  background-image: radial-gradient(rgb(161, 166, 162),white);
+  background-image: radial-gradient(#487e4c,white);
 }
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
+@media (min-width: 800px) {
 .sign-card{
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 25em;
-  border: 1px solid black;
+  border-radius: 25px;
+  border: 1px solid aliceblue;
     background-color: whitesmoke;
  
 
+}
+.sign-card #login{
+  padding-top: 3em;
+  padding-bottom: 3em;
+  align-items: center;
+}
+.sign-card #sign-in{
+
+  width: 90%;
+  margin: auto;
+  
 }
 .profile-list{
   border-bottom: 2px solid grey;
@@ -64,9 +77,32 @@ html, body {
 #login form{
   background-color: #61dafb;
 }
-#login .password{
-  padding-bottom: 2em;
+.create-form{
+  background-color: rgb(244, 244, 244);
+  padding: 3em 2em 3em 2em;
+  border-radius: 25px;
+  max-width: 25em;
+  margin: auto;
 }
+
+.create-form .purpose{
+  text-align: start;
+  font-weight: 700;
+
+}
+/* .password-div{
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+  
+} */
+#login .forgot{
+  text-align: start;
+}
+#login button[type="submit"]{
+  margin-top: 2em;
+}
+
 
 .button-row.reverse{
   flex-direction: row-reverse !important;
@@ -74,14 +110,7 @@ html, body {
 .sign-card .email{
   padding-top: 1em;
 }
-#LogInContainer{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-}
-#LogInContainer {
-  padding: 2rem 0rem;
-}
+
 #sigin div:nth-child(1) {
   /* Your styles for the second div here */
   background-color: #61dafb;
@@ -98,16 +127,126 @@ html, body {
 .sign-card .file{
   padding: 1em;
 }
-.list-item{
-  padding: 1.5em 2em 1.5em 2em !important;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 45em;
-
-  background-color: white;
- border-bottom: 2px solid gainsboro;
 }
+@media (max-width: 800px) {
+  .sign-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 1em;
+    padding-bottom: 3em;
+    padding-top: 1em;
+    border: 1px solid aliceblue;
+    background-color: whitesmoke;
+   
+  
+  }
+  .sign-card #login{
+   
+    align-items: center;
+  }
+  .sign-card #sign-in{
+  
+    width: 90%;
+    margin: auto;
+    
+  }
+  .profile-list{
+    border-bottom: 2px solid grey;
+    padding-bottom: 1em;
+    overflow: scroll;
+    height: 14em;
+    background-color: gray;
+  }
+  .role-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid gray;
+    background-color: rgb(244, 244, 244);
+    padding: 0.5em;
+  }
+  .role-item button{
+    min-width: 8em;
+    padding: 0.2em 1em;
+    border-radius: 25px;
+  }
+  .role-item div{
+  
+  }
+  
+  #sign-in{
+    padding-top: 2em;
+  }
+  .sign-card .username {
+    padding-top: 1em ;
+   
+  
+  
+  }
+  .navbar-brand{
+    padding-left: 1em;
+  }
+  #login .email{
+    padding-bottom: 1em;
+  }
+  #login form{
+    background-color: #61dafb;
+  }
+  .create-form{
+    background-color: rgb(244, 244, 244);
+    padding: 3em 2em 3em 2em;
+    border-radius: 25px;
+    max-width: 25em;
+    margin: auto;
+  }
+  
+  .create-form .purpose{
+    text-align: start;
+    font-weight: 700;
+  
+  }
+  /* .password-div{
+    background-color: red;
+    display: flex;
+    flex-direction: column;
+    
+  } */
+  #login .forgot{
+    text-align: start;
+  }
+  #login button[type="submit"]{
+    margin-top: 2em;
+  }
+  
+  
+  .button-row.reverse{
+    flex-direction: row-reverse !important;
+  }
+  .sign-card .email{
+    padding-top: 1em;
+  }
+  
+  #sigin div:nth-child(1) {
+    /* Your styles for the second div here */
+    background-color: #61dafb;
+    width: 100%;
+   padding: 1em;
+  }
+  .sign-card textarea{
+    border: 1px solid black;
+    padding: 1em 0em;
+  }
+  .sign-card .button{
+    padding: 0em 0em 2em 0em;
+  }
+  .sign-card .file{
+    padding: 1em;
+  }
+  }
+  
+
 .content-list .error {
   background-color: rgb(219, 219, 219);
   border-radius: 25px;
@@ -121,39 +260,63 @@ html, body {
   margin: auto;
 
 }
-
-.content-list{
-
+.row{
+  display: flex;
+  flex-direction: row;
+}
+.evenly{
+  justify-content: space-evenly;
+}
+.center{
+  justify-content: center;
+}
+.around{
+  justify-content: space-around;
+}
+.between{
+  justify-content: space-between;
+}
+#dashboard .container{
+  margin-top: 2em;
+}
+.no-more-data{
+  height:10em;
+  padding-top: 5em;
+}
+@media (min-width: 726px) {
+.content-list.dashboard{
+  min-width: 30em;
   border-radius: 25px;
   margin: auto;
   padding: 2em 1em;
   min-height: 20em;
-  width: 50em;
-  /* width: fit-content; */
+  width: 45em;
   background-color: aliceblue;
-  height: max-content
   
 }
 .content-list .inner{
 
   background-color: gainsboro;
   border-radius: 25px;
-
-  height:max-content;
-
+ 
   margin: 1em;
 }
 .content-list .content{
- 
-  height:auto;
-  padding: 1em;
+  min-width: 30em;
+  background-color: rgb(197, 197, 197);
+  min-height: 30em;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  margin-bottom: 1em;
+  
   
 }
-.content-list .inner .btn-row{
-  width: 100%;
+.inner .btn-row{
+  width: 45em;
   justify-content: start;
   background-color: rgb(194, 211, 227);
   display: flex;
+  margin: auto;
   flex-direction: row;
   align-items: start;
   padding-top: 1em;
@@ -161,7 +324,57 @@ html, body {
   border-top-left-radius: 25px;
 
 }
-
+}
+@media (max-width: 726px) {
+  .content-list.dashboard{
+  
+    margin: auto;
+    padding: 2em 1em;
+    min-height: 20em;
+    width: 100%;
+    background-color: aliceblue;
+    
+  }
+  .content-list .inner{
+  
+    background-color: gainsboro;
+    border-radius: 25px;
+   
+    margin: 1em;
+  }
+  .content-list .content{
+    min-width: 100%;
+    background-color: rgb(197, 197, 197);
+    min-height: 30em;
+    /* border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px; */
+    margin-bottom: 1em;
+    
+    
+  }
+  .inner .btn-row{
+    width: 100%;
+    justify-content: start;
+    background-color: rgb(194, 211, 227);
+    display: flex;
+    margin: auto;
+    flex-direction: row;
+    align-items: start;
+    padding-top: 1em;
+    /* border-top-right-radius: 25px;
+    border-top-left-radius: 25px; */
+  
+  }
+}
+@media (min-width: 800px) {
+.list-item{
+  padding: 1.5em 2em 1.5em 2em !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: white;
+  border-bottom: 2px solid gainsboro;
+}
 .list-item button{
   margin-right: 1em;
 }
@@ -172,7 +385,27 @@ html, body {
   margin-top: 1em;
   
 }
-
+}
+@media (max-width: 800px) {
+  .list-item{
+    padding: 1.5em 2em 1.5em 2em !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: white;
+    border-bottom: 2px solid gainsboro;
+  }
+  .list-item button{
+    margin-right: 1em;
+  }
+  .list-item a {
+    display: flex;
+    flex-direction: row;
+    padding: 0px 2px 0px 2px;
+    margin-top: 1em;
+    
+  }
+  }
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

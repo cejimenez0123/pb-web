@@ -172,7 +172,7 @@ function DiscoveryContainer(props){
         }}}
         return(
             <div id="discover"  >
-                <div className='content-list'>
+                <div className='content-list dashboard'>
               <div className='content'>
 
            
@@ -181,7 +181,8 @@ function DiscoveryContainer(props){
            next={fetchContentItems}
            hasMore={hasMore} // Replace with a condition based on your data source
            loader={<p>Loading...</p>}
-           endMessage={<p>No more data to load.</p>}
+           endMessage={<div className='no-more-data'>
+           <h6 >No more data to load.</h6>  </div>}
          >  {contentItems.map(content=>{
                 return dashboardItem(content)
          })}

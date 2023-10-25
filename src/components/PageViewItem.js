@@ -7,7 +7,9 @@ import { PageType } from "../core/constants"
 import { setProfileInView } from "../actions/UserActions"
 import {ThemeProvider} from "@mui/material/styles";
 import theme from "../theme"
-export default function PageViewItem({page,currentProfile,getComments}) {
+import { fetchCommentsOfPage } from "../actions/PageActions"
+import CommentInput from "./CommentInput"
+export default function PageViewItem({page,currentProfile}) {
     // const theme = useTheme()
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -26,7 +28,8 @@ const saveComment=()=>{
         if(result.error==null){
             const {payload} = result
             if(payload != null && payload.error==null){
-                getComments()
+                const params = {page}
+                dispatch(fetchCommentsOfPage(params))
             }
         }
     })
@@ -34,26 +37,37 @@ const saveComment=()=>{
         
        
 }
+
 const commentBox = (show)=>{
     if (show){
-        return(<div className="comment-input">
-            <TextareaAutosize
+        return(<CommentInput page={page} />)
+        // return(<div className="comment-input" 
+        // style={{
+        //     backgroundColor:"white",
+        //     paddingTop:"1em",
+        //     width: "50em",
+        //     margin:"auto",
+            
+            
+        // }}>
+        //     <TextareaAutosize
 
-            value={commentInput}
-            minRows={3} 
-            cols={85}
-            onChange={(e)=>{
-               setComment(e.target.value)
-        }} />
-            <div className="button-row">
-                <Button disabled={!currentProfile} onClick={saveComment}>
-                    Reply
-                </Button>
-            </div>
-        </div>)
+        //     value={commentInput}
+        //     minRows={3} 
+        //     cols={85}
+        //     onChange={(e)=>{
+        //        setComment(e.target.value)
+        // }} />
+        //     <div className="button-row">
+        //         <Button onClick={saveComment}>
+        //             Save
+        //         </Button>
+        //     </div>
+        // </div>)
     }
 }
 let pageDataElement = (<div></div>)
+if(page){
 switch(page.type){
     case PageType.text:
         pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
@@ -114,11 +128,15 @@ let profile = (<div></div>)
                     Share
                 </Button>
             </div>
-            <div>
+            
                 {commentBox(commenting)}   
-            </div>
+            
             
         </div>
         )
-
+            }else{
+                <div>
+                    Loading..
+                </div>
+            }
 }
