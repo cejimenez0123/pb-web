@@ -309,7 +309,7 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
             
         const id =  `${profile.id}_${book.id}`
         const created = Timestamp.now()
-        await setDoc(doc(db,"profile",profile.id,"follow_book",id), { 
+        await setDoc(doc(db,"follow_book",id), { 
             id:id,
             bookId: book.id,
             profile: profile.id,
@@ -335,7 +335,7 @@ const createFollowLibrary = createAsyncThunk("users/createFollowLibrary", async 
         }=params
         const id = `${profile.id}_${library.id}`
         const created = Timestamp.now()
-            await setDoc(doc(db,"profile",profile.id,"follow_library",id), { 
+            await setDoc(doc(db,"follow_library",id), { 
                 id:id,
                 libraryId: library.id,
                 profile: profile.id,
@@ -355,9 +355,9 @@ const createFollowLibrary = createAsyncThunk("users/createFollowLibrary", async 
 const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForProfile",async (params,thunkApi)=>{
             try{
               const {profile} = params
-            const ref = collection(db,"profile",profile.id,"follow_book")
+            const ref = collection(db,"follow_book")
           
-            const snapshot =await getDocs(ref)
+            const snapshot =await getDocs(ref,where("profileId","==",profile.id))
           
             let followList = []
             snapshot.docs.forEach(doc => {
@@ -382,9 +382,9 @@ const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForPro
 const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryForProfile",async (params,thunkApi)=>{
             try{
               const {profile} = params
-            const ref = collection(db,"profile",profile.id,"follow_library")
+            const ref = collection(db,"follow_library")
           
-            const snapshot =await getDocs(ref)
+            const snapshot =await getDocs(ref,where("profileId","==",profile.id))
           
             let followList = []
             snapshot.docs.forEach(doc => {
@@ -410,9 +410,9 @@ const deleteFollowBook= createAsyncThunk("users/deleteFollowBook", async (params
             try{
               const {followBook,book,profile}=params
               if(followBook){
-                await deleteDoc(doc(db, "profile", followBook.profileId,"follow_book",followBook.id));
+                await deleteDoc(doc(db,"follow_book",followBook.id));
               }else{
-                await deleteDoc(doc(db, "profile", profile.id,"follow_book",`${profile.id}_${book.id}`));
+                await deleteDoc(doc(db,"follow_book",`${profile.id}_${book.id}`));
             
               }
        
@@ -424,9 +424,9 @@ const deleteFollowLibrary= createAsyncThunk("users/deleteFollowLibrary", async (
             try{
               const {followLibrary,library,profile}=params
               if(followLibrary){
-                await deleteDoc(doc(db, "profile", followLibrary.profileId,"follow_library",followLibrary.id));
+                await deleteDoc(doc(db, "follow_library",followLibrary.id));
               }else{
-                await deleteDoc(doc(db, "profile", profile.id,"follow_library",`${profile.id}_${library.id}`));
+                await deleteDoc(doc(db, "follow_library",`${profile.id}_${library.id}`));
             
               }
               return {
@@ -440,9 +440,9 @@ const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (
             try{
               const {followProfile,follower,following}=params
               if(followProfile){
-                await deleteDoc(doc(db, "profile", followProfile.followerId,"follow_profile",followProfile.id));
+                await deleteDoc(doc(db,"follow_profile",followProfile.id));
               }else{
-                await deleteDoc(doc(db, "profile", follower.id,"follow_profile",`${follower.id}_${following.id}`));
+                await deleteDoc(doc(db,"follow_profile",`${follower.id}_${following.id}`));
             
               }
        
@@ -458,7 +458,7 @@ const createFollowProfile = createAsyncThunk("users/createFollowProfile", async 
                 }=params
                 const id = `${follower.id}_${following.id}`
                 const created = Timestamp.now()
-                    await setDoc(doc(db,"profile",follower.id,"follow_profile",id), { 
+                    await setDoc(doc(db,"follow_profile",id), { 
                         id:id,
                         followerId: follower.id,
                         followingId: following.id,
@@ -477,7 +477,7 @@ const createFollowProfile = createAsyncThunk("users/createFollowProfile", async 
 const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfilesForProfile",async (params,thunkApi)=>{
                     try{
                         const {profile} = params
-                        const ref = collection(db,"profile",profile.id,"follow_profile")
+                        const ref = collection(db,"follow_profile")
                         const snapshot =await getDocs(ref)
                         let followList = []
                     snapshot.docs.forEach(doc => {
