@@ -31,7 +31,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
 setPersistence(auth,browserLocalPersistence)
 .then(() => {
-  signInAnonymously(auth)
+  return signInAnonymously(auth)
 
 .then(() =>{})
 .catch((error) => {

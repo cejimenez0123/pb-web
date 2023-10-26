@@ -10,7 +10,7 @@
         padding: 2em 1em;
         min-height: 20em;
         width: 45em;
-        background-color: aliceblue;
+        background-color: var(--tertiary);
         height: max-content
         
       
@@ -35,6 +35,25 @@
    
 }
 }
+@media (min-width: 726px) {
+    .info.view{
+       
+        margin-right: 1em;
+    
+        min-height: 15em;
+        min-width:25em;
+        background-color: rgb(206, 222, 214);
+        border: 1px solid rgb(155, 173, 161);
+        border-radius: 25px;
+        padding: 2em 1em;
+    }
+    .info .purpose {
+        min-height: 5em;
+       
+        background-color: rgb(217, 217, 217);
+        margin: 1em 1em;
+       
+    }}
 .two-panel{
     display: grid;
     grid-template-columns: 60em 10em;

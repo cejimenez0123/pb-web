@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setPageInView,setPagesToBeAdded } from "../actions/PageActions";
+import { deletePage, setPageInView,setPagesToBeAdded } from "../actions/PageActions";
 import { PageType } from "../core/constants";
 import {useNavigate} from 'react-router-dom'
 import { Button } from "@mui/material";
@@ -99,7 +99,12 @@ function PageListItem({page}) {
                 }}>
                     Edit
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={()=>{
+                    const params = {
+                        page
+                    }
+                    dispatch(deletePage(params))}
+                }>
                     Delete
                 </MenuItem>
             </Menu>

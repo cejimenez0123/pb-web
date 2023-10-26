@@ -23,7 +23,7 @@
   .discover-pair .pair-item{
     width: 40%;
     border-radius: 25px;
-    background-color: aliceblue;
+    background-color: var(--tertiary);
     border: 1px solid white;
   }
 

@@ -9,6 +9,8 @@ import { fetchAllProfiles,clickMe } from '../actions/UserActions'
 import { fetchArrayOfBooks, fetchArrayOfBooksAppened } from '../actions/BookActions'
 import { fetchArrayOfPagesAppened } from '../actions/PageActions'
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
+import { current } from '@reduxjs/toolkit'
+
 function DashboardContainer(props){
     const dispatch = useDispatch()
     const currentProfile = useSelector((state)=>state.users.currentProfile)
@@ -42,7 +44,7 @@ function DashboardContainer(props){
                     setHasMore(false)
                 })
             }else{
-                if(followedBooks.length>0){
+                if(followedBooks && followedBooks.length>0){
                     setHasMore(true)
                     let bookIdList = followedBooks.map(fb=>fb.bookId)
                     const params = {
@@ -74,7 +76,7 @@ function DashboardContainer(props){
                         setHasMore(false)
                     })
                 }
-                if(followedLibraries.length>0){
+                if(followedLibraries && followedLibraries.length>0){
                     let libraryIdList = followedBooks.map(fb=>fb.libraryId)
                     let list = libraryIdList.filter(id=>id)
                     if(list.length>0){
@@ -245,7 +247,18 @@ function DashboardContainer(props){
                         }})}
                     </InfiniteScroll>
                 </div>)
-            }else if(itemsInView!=null && itemsInView.length==0){
+            }  else if(itemsInView!=null && itemsInView.length==0 && currentProfile){
+                return(
+                    <div className='content-list dashboard'>
+                    <div className="content">
+                        <div className='no-more-data'>
+                        <h3>Follow Some Books and Libraries</h3>
+                        </div>
+                    </div>
+                </div>
+                )
+            }
+            else if(itemsInView!=null && itemsInView.length==0){
                 return(<div className='content-list dashboard'>
                     <div className="content">
                         <div className='no-more-data'>
@@ -263,12 +276,47 @@ function DashboardContainer(props){
                 </div>)
             }
         }
+        let intro = (<div></div>)
+            if(!currentProfile){
+                intro =(
+                    <div className='intro'>
+
+                <p><strong>Welcome to Plumbum</strong>, this is a place for creatives.
+                Plumbum is made for writers to help recreate the writers' workshop online.
+                Writers' workshop are a place to receive feedback on your work from people 
+                with the same goal as you of getting better at their craft.</p>
+                <p>
+                It's a creative sanctuary. A place to receive feedback, control privacy,
+                and build community.</p>
+
+               <p> 📝 Tired of oversharing your work?
+                Plumbum allows you to control the visibility of your writing,
+                whether you want it to be a private diary or a public masterpiece.
+                </p>
+                <p>💬 Need constructive feedback to refine your craft?
+                    Join a community of fellow writers eager to share their insights and support your journey.
+                </p>
+                <p>🌟 Create or join groups that resonate with your writing style,
+                    genre, or interests, connect with like-minded individuals who 
+                    appreciate your unique voice.
+                </p>
+                <p>
+                📚 Whether you're a seasoned novelist or just beginning your literary adventure.
+                Plumbum is great place to begin work and find support to complete work.
+                </p>
+                <p>
+                Ready to start your writing journey? 
+                Sign up today, start a page and write anything.
+                It's the place for your story on Plumbum.</p>
+                </div>)
+            }
+        
 
         return(
             <div id="dashboard" >
                
-                <div>
-             
+                <div >
+                {intro}
                 {contentList()}
                  </div>
                    

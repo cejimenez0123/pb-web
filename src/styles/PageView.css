@@ -1,15 +1,15 @@
-@media (min-width: 768px) {
+@media (min-width: 800px) {
 #page{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    background-color: aliceblue;
+    background-color: var(--tertiary);
     margin: auto;
     margin-top: 3em;
     padding: 2em 1em;
 }
 #page .comments {
-    background-color: aliceblue;
+    background-color: var(--tertiary);
     height: auto;
     min-height: 20em;
 }
@@ -65,7 +65,7 @@ button:active {
     max-width: 100%;
     margin: auto;
     padding-bottom: 1em;
-    background-color: aliceblue;
+    background-color: var(--tertiary);
     border: 1px solid transparent; /* Removes margin collapse */
 }
 .m-0 {
@@ -133,18 +133,18 @@ button:active {
     margin-left: 20px;
 }
 }
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     #page{
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        background-color: aliceblue;
+        background-color: var(--tertiary);
         /* margin: auto; */
         margin-top: 3em;
         width: 100vw;
     }
     #page .comments {
-        background-color: aliceblue;
+        background-color: var(--tertiary);
         height: auto;
         min-height: 20em;
     }
@@ -200,7 +200,7 @@ button:active {
         max-width: 100%;
         margin: auto;
         padding-bottom: 1em;
-        background-color: aliceblue;
+        background-color: var(--tertiary);
         border: 1px solid transparent; /* Removes margin collapse */
     }
     .m-0 {

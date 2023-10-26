@@ -104,8 +104,8 @@ let profile = (<div></div>)
         
             <div className='btn-row'>
                 <Button 
-                    // style={{color:theme.palette.info.contrastText,
-                    //         backgroundColor:currentProfile?theme.palette.info.main:theme.palette.info.disabled}}
+                    style={{color:theme.palette.info.contrastText,
+                            backgroundColor:currentProfile?theme.palette.info.main:theme.palette.info.disabled}}
                     disabled={!currentProfile} 
                 >
                     Yea
@@ -115,7 +115,7 @@ let profile = (<div></div>)
                 </button> */}
                 <Button 
                     style={{color:"white",
-                            backgroundColor:!currentProfile?"rgb(44,44,44)":"black"}} 
+                    backgroundColor:currentProfile?theme.palette.info.main:theme.palette.info.disabled}} 
                     disabled={!currentProfile} 
                     onClick={()=>{setCommenting(!commenting)}}>
                 

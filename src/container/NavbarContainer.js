@@ -48,53 +48,33 @@ function NavbarContainer(props){
     const [anchorElCreateA,setAnchorElCreateA] = React.useState(null);
     const [anchorElCreateB,setAnchorElCreateB] = React.useState(null);
     const [open,setOpen]= useState(false)
-    const [subOpen,setSubOpen]= useState(false)
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     
     const handleOpenNavMenu = (event) => {
-      setAnchorElNav(event.currentTarget);
+        setAnchorElNav(event.currentTarget);
     };
     const handleOpenUserMenu = (event) => {
-      setAnchorElUser(event.currentTarget);
+        setAnchorElUser(event.currentTarget);
     };
 //
-const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const [submenuAnchorEl, setSubmenuAnchorEl] = React.useState(null);
-
-  const handleSubmenuOpen = (event) => {
-    setSubmenuAnchorEl(event.currentTarget);
-  };
-
-  const handleSubmenuClose = () => {
-    setSubmenuAnchorEl(null);
-  };
-//
-  
     const handleCloseNavMenu = (page) => {
-       
-                        if(page==PageName.login){
-                   
-                            navigate("/login")
-                            
-                        }else if(page==PageName.home){
-                        
-                            navigate("/")
-                        }else if(page==PageName.discovery){
-                        
-                            navigate("/discovery")
-                        };
-                      
-                    ;
-                setAnchorElNav(null);
+        if(page==PageName.login){
+            navigate("/login")                    
+        }else if(page==PageName.home){
+            navigate("/")
+        }else if(page==PageName.discovery){
+            navigate("/discovery")
+        };
+        setAnchorElNav(null);
     };
   
     const handleCloseUserMenu = () => {
@@ -103,16 +83,7 @@ const [anchorEl, setAnchorEl] = React.useState(null);
     const handleOpenClick = ()=>{
         setOpen(!open)
     }
-    // const [anchorEl, setAnchorEl] = useState(null);
-
-    // const handleClick = (event) => {
-    //     setAnchorEl(event.currentTarget);
-    // };
-
-    // const handleClose = () => {
-    //     setAnchorEl(null);
-    // };
-  
+ 
     return (
         <AppBar position="static"
                 style={{backgroundColor:theme.palette.primary.dark}}>
@@ -174,7 +145,7 @@ const [anchorEl, setAnchorEl] = React.useState(null);
                             return(
                             
                           <div>
-                               {/* <ListItemButton onClick={handleClick}> */}
+                               
                                <MenuItem key={page} onClick={handleOpenClick}>
                     <Typography textAlign="center">{page}</Typography>
                     {open ? <ExpandLess /> : <ExpandMore />}
@@ -186,7 +157,7 @@ const [anchorEl, setAnchorEl] = React.useState(null);
                           
                            <ListItemButton key="page" 
                            onClick={(e)=>setAnchorElCreateB(e.target)}sx={{ pl: 4 }}>
-                           {/* <ListItemText primary="Page" /> */}
+                          
                          Page {anchorElCreateB ? <ExpandLess /> : <ExpandMore />}
                          </ListItemButton>
                          <Collapse in={anchorElCreateB} timeout="auto" unmountOnExit>
@@ -194,7 +165,7 @@ const [anchorEl, setAnchorEl] = React.useState(null);
                                 <ListItemButton onClick={()=>{ navigate("/page/new")}}>
                                     <ListItemText primary="Text"/>
                                 </ListItemButton>
-                                <ListItemButton>
+                                <ListItemButton onClick={()=>{navigate("/page/new/image")}}>
                                     <ListItemText primary="Picture"/>
                                 </ListItemButton>
                             </List>
@@ -305,40 +276,6 @@ const [anchorEl, setAnchorEl] = React.useState(null);
                                 </ListItemButton>
                             </List>
                             </Collapse>
-         {/* <MenuItem  onClick={(e)=>{
-            setAnchorElCreate(e.target)
-                            // navigate("/page/new")
-                            }}
-                            aria-controls={anchorElCreate ? 'create-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={anchorElCreate ? 'true' : undefined}
-                            > 
-                            Page X{anchorElCreate ? <ExpandLess /> : <ExpandMore />}
-                        </MenuItem>
-                        <Menu
-                        anchorOrigin={{
-                            vertical: 'bottom', // Position the menu below the button
-                            horizontal: 'left',  // Position the menu to the left of the button
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'left',
-                        }}
-                        MenuListProps={{
-                            'aria-labelledby': 'create-menu',
-                          }}
-                        anchorEl={anchorElCreate}
-                        open={Boolean(anchorElCreate)}
-                        aria-haspopup="true"
-                        aria-expanded={anchorEl ? 'true' : undefined}
-                        onClose={()=>setAnchorElCreate(null)}>
-                            <MenuItem onClick={()=>{}}>
-                                Text
-                            </MenuItem>
-                            <MenuItem onClick={()=>{}}>
-                                Picture
-                            </MenuItem>
-                        </Menu>*/}
                         <MenuItem onClick={()=>{
                             navigate("/book/new")
                         }}>
@@ -349,10 +286,9 @@ const [anchorEl, setAnchorEl] = React.useState(null);
                         }}>
                             Library
                         </MenuItem>
-            
-          </Menu>
-          </MediaQuery>
-              </div>)}else{
+            </Menu>
+        </MediaQuery>
+    </div>)}else{
                 return
               }
                  }else{

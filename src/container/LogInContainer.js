@@ -15,17 +15,18 @@ import theme from '../theme';
 // import Modal from '../components/Modal';
 import { Modal } from '@mui/joy';
 import { auth } from '../core/di';
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-  });
+import VisuallyHiddenInput from '../components/VisualHiddenInput';
+// const VisuallyHiddenInput = styled('input')({
+//     clip: 'rect(0 0 0 0)',
+//     clipPath: 'inset(50%)',
+//     height: 1,
+//     overflow: 'hidden',
+//     position: 'absolute',
+//     bottom: 0,
+//     left: 0,
+//     whiteSpace: 'nowrap',
+//     width: 1,
+//   });
 const style = theme =>({
     textField: {
         width:"100%"}

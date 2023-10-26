@@ -16,7 +16,12 @@ export default function useAuth(shareAuthState) {
      
                 setAuthState({ user, pending: false, isSignedIn: !!user }) 
             
-        })}
+        })}else{
+          setAuthState({ isSignedIn: false,
+            pending: true,
+            user: null,
+          })
+        }
 }, [])
 
 

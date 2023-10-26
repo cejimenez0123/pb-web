@@ -10,10 +10,10 @@ import {  getPublicPages ,
           fetchArrayOfPagesAppened,
           clearPagesInView,
           fetchEditingPage,
+          deletePage,
           fetchCommentsOfPage
         } from "../actions/PageActions"
-import Page from "../domain/models/page"
-import { createReducer ,createSlice} from "@reduxjs/toolkit"
+import { createSlice} from "@reduxjs/toolkit"
 
 const initialState = {pagesInView:[],
                       editingPage:null,
@@ -56,7 +56,10 @@ const pageSlice = createSlice({
           state.loading = false
        
         }
-      ).addCase(createPage.rejected,(state,{payload})=>{
+      ).addCase(deletePage.fulfilled,(state,{payload})=>{
+        let filtered = state.pagesInView.filter(page => page.id != payload.page.id)
+        state.pagesInView = filtered
+      }).addCase(createPage.rejected,(state,{payload})=>{
         state.error = payload.error
         state.loading = false
 

@@ -8,7 +8,7 @@
     flex-direction: column;
 }
 .library-update input[type="text"]{
-    background-color: aliceblue;
+    background-color:var(--tertiary);
 }
 .library-update{
     margin-bottom: 1em;

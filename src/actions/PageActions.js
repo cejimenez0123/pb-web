@@ -221,7 +221,6 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
           commenters,
           editors,}=params
  const created = Timestamp.now()
-//  const page = 
   try{
 
   
@@ -247,6 +246,10 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
                           privacy,
                           commentable,
                           type,
+                          readers,
+                          writers,
+                          editors,
+                          commenters,
                           created)
 
   return { page }
@@ -657,6 +660,10 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
     try{
       const {page}=params
     await deleteDoc(doc(db, "page", page.id));
+
+    return {
+      page:page
+    }
     }catch(e){
       return {error: new Error("Error: Delete Page"+e.message)};
     }

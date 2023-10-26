@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material/styles";
-import { green, blue,purple } from '@mui/material/colors'
+import { green, blue } from '@mui/material/colors'
 let theme = createTheme({
     palette:{
         primary: {

@@ -1,15 +1,27 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
 import { auth,db } from  "../core/di"
-import { signInWithEmailAndPassword,signOut, createUserWithEmailAndPassword,setPersistence, browserLocalPersistence } from "firebase/auth"
-import {where,query,deleteDoc,collection,getDocs,setDoc,getDoc,doc,orderBy,limit,Firestore , QuerySnapshot, DocumentData, DocumentSnapshot, updateDoc ,Timestamp} from "firebase/firestore"
+import {  signInWithEmailAndPassword,
+          signOut,
+          createUserWithEmailAndPassword,
+          setPersistence,
+          browserLocalPersistence } from "firebase/auth"
+import {  where,
+          query,
+          deleteDoc,
+          collection,
+          getDocs,
+          setDoc,
+          getDoc,
+          doc,
+          updateDoc,
+          Timestamp} from "firebase/firestore"
 import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
-import {  ref, uploadBytes,uploadBytesResumable,getDownloadURL  } from "firebase/storage";
+import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
 import { storage } from "../core/di";
 import FollowBook from "../domain/models/follow_book"
 import FollowLibrary from "../domain/models/follow_library"
 import FollowProfile from "../domain/models/follow_profile"
-// import {auth} from "../core/di"
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -265,6 +277,23 @@ const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async
     }
 
 })
+const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunkApi)=>{
+  try {
+  const {file }= params
+  const fileName = `image/picture-${file.name}.jpg`
+  const storageRef = ref(storage, fileName);
+  const blob = new Blob([file])
+  const upload = await uploadBytes(storageRef, blob)
+
+  const url = await getDownloadURL(storageRef)
+      return{ 
+          url: url
+      }
+  }catch(err){
+      return{ error: new Error("Error: UPLOAD Picture" + err.message) }
+  }
+
+})
 const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
     let pId= params["id"]
   
@@ -320,10 +349,10 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
         await setDoc(doc(db,"follow_book",id), { 
             id:id,
             bookId: book.id,
-            profile: profile.id,
+            profileId: profile.id,
             created: created
         })
-        const fb = new FollowBook(id,profile.id,book.id,created);
+        const fb = new FollowBook(id,book.id,profile.id,created);
         return {
                 followBook:fb 
             }
@@ -346,7 +375,7 @@ const createFollowLibrary = createAsyncThunk("users/createFollowLibrary", async 
             await setDoc(doc(db,"follow_library",id), { 
                 id:id,
                 libraryId: library.id,
-                profile: profile.id,
+                profileId: profile.id,
                 created: created
             })
             const lb = new FollowLibrary(id,profile.id,library.id,created);
@@ -535,5 +564,6 @@ export {logIn,
         createFollowProfile,
         fetchFollowProfilesForProfile,
         signOutAction,
-        clickMe
+        clickMe,
+        uploadPicture
     }

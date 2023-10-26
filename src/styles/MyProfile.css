@@ -18,7 +18,7 @@
     /* padding: 2em 1em; */
     min-height: 20em;
     width: 100%;
-    background-color: aliceblue;
+    background-color: var(--tertiary);
     height: max-content
     
   }
@@ -40,6 +40,8 @@
    
  
 }
+
+}
 .create-buttons{
 
     display: flex;
@@ -50,8 +52,6 @@
     margin-top: 1em;
     height: 5em;
 }
-}
-
 @media (min-width: 800px) {
 .profile-pic-container{
     display: flex;
@@ -61,7 +61,7 @@
     padding: 2em;
 
     border-radius: 25px;
-    background-color: aliceblue;
+    background-color: var(--tertiary);
 }
 .profile-pic{
     max-width:10em;
@@ -82,7 +82,7 @@
     padding-left: 2em;
 
    
-    background-color: aliceblue;
+    background-color:var(--tertiary);
 }
 .profile-pic{
     max-width:10em;

@@ -1,5 +1,5 @@
 
-@media (min-width: 800px) {
+@media (min-width: 840px) {
 .container{
     display: flex;
     flex-direction: row;
@@ -21,7 +21,7 @@
     padding: 2rem 0rem;
   }
 }
-@media (max-width: 800px) {
+@media (max-width: 840px) {
     .container{
         display: flex;
         flex-direction: column;

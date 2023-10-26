@@ -10,8 +10,9 @@ import "../styles/BookView.css"
 import { clearPagesInView } from "../actions/PageActions"
 import {Button} from "@mui/material"
 import theme from "../theme"
-import { fetchProfile ,createFollowBook} from "../actions/UserActions"
+import { fetchProfile ,createFollowBook,deleteFollowBook,fetchFollowBooksForProfile} from "../actions/UserActions"
 import { Settings } from "@mui/icons-material"
+import debounce from "../core/debounce"
 function BookViewContainer({book,pages}){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -69,7 +70,7 @@ function BookViewContainer({book,pages}){
     useEffect(()=>{
      
             getBook()
-        
+            fetchFollows()
     },[])
     useEffect(()=>{
 
@@ -79,7 +80,17 @@ function BookViewContainer({book,pages}){
         }
 
     },[book])
-    
+    useEffect(()=>{
+        fetchFollows()
+    },[currentProfile])
+    const fetchFollows=()=>{
+        if(currentProfile){
+            const params = {
+                profile: currentProfile
+            }
+            dispatch(fetchFollowBooksForProfile(params))
+        }
+    }
     const pageList =()=>{
         if(pageLoading==false && !!book){
             if(pages.length !=0){
@@ -115,25 +126,49 @@ function BookViewContainer({book,pages}){
             book: book,
             profile:currentProfile
         }
-        dispatch(createFollowBook(params))
+        dispatch(createFollowBook(params)).then(()=>{
+            
+        })
         }else{
             window.alert("Log in first")
+        }
+    }
+    const deleteFollowBookClick = ()=>{ 
+       
+        if(currentProfile && book){
+            let fb = followedBooks.find(fb=>fb.id==`${currentProfile.id}_${book.id}`)
+            const params = {
+                followBook: fb,
+                book: book,
+                profile: currentProfile
+            }
+            dispatch(deleteFollowBook(params)).then(()=>{
+                fetchFollows()
+            })
         }
     }
     let editDiv = (<div>
 
     </div>)
-    let followDiv = (<Button variant="outlined" style={{backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}className="follow-btn"
+    let followDiv = (<Button    variant="outlined" 
+                                style={{backgroundColor:theme.palette.secondary.main,
+                                        color:theme.palette.secondary.contrastText}}
+                                className="follow-btn"
     onClick={
-       followBookClick
+       ()=>debounce(followBookClick(),10)
    }>Follow</Button>)
-    if(followedBooks && currentProfile && book && currentProfile.id == book.profileId){
-   editDiv = (<Button
-   key={book.id}onClick={(e)=>goToEditBook(e)}>Edit<Settings/></Button>)
-   let fb = followedBooks.find(fb=>fb.id==`${currentProfile.id}_${book.id}`)
+    if(followedBooks && currentProfile && book ){
+    editDiv = (<Button
+    key={book.id}onClick={(e)=>goToEditBook(e)}>Edit<Settings/></Button>)
+    let fb = followedBooks.find(fb=>fb.id==`${currentProfile.id}_${book.id}`)
     if(fb){
-       followDiv= (<Button variant="outlined" style={{backgroundColor:theme.palette.secondary.light,color:theme.palette.secondary.dark}
-       } onClick={()=>{}}>Following</Button>)
+        followDiv= (
+            <Button variant="outlined" 
+                    style={{backgroundColor:theme.palette.secondary.light,
+                            color:theme.palette.secondary.dark}
+                    } 
+                    lassName="follow-btn"
+                    onClick={()=> debounce(deleteFollowBookClick(),10)}>Following</Button>)
     }    
 
 }

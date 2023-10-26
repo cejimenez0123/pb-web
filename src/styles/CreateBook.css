@@ -10,7 +10,7 @@
 .content-list.create{
     width: 35em !important;
     padding: 1em;
-    background-color: aliceblue;
+    background-color: var(--tertiary) ;
     border-radius: 25px;
 }
 .info.create{

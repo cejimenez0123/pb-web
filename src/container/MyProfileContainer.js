@@ -1,69 +1,77 @@
-import React, { useEffect } from 'react';
-import { useDispatch,useSelector } from "react-redux";
+import React from 'react';
 import ProfileCard from '../components/ProfileCard';
 import { useNavigate} from 'react-router-dom';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { useState } from 'react';
 import "../styles/MyProfile.css"
 import ContentList from '../components/ContentList';
-import { Button,} from '@mui/material';
+import { Button, FormGroup,} from '@mui/material';
 import {Dropdown,MenuButton,Menu,MenuItem} from '@mui/joy'
+import { ExpandLess,ExpandMore } from '@mui/icons-material';
+import Collapse from '@mui/material/Collapse';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 import theme from "../theme"
 import MediaQuery from 'react-responsive';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import {IconButton} from "@mui/material"
+import VisuallyHiddenInput from '../components/VisualHiddenInput';
+import { Close } from '@mui/icons-material';
 function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView,authState}){
     const navigate = useNavigate()
-    
-    const [pending,setPending] = useState(false)
+    const [anchorElCreate,setAnchorElCreate]= useState(null)
+    const [open,setOpen]=useState(false)
     if( currentProfile){ 
-    
-    return(
-        <div className='container reverse'>
-        {/* <div  className='container-row'> */}
-          <MediaQuery minWidth={"800px"}>
-            <div className="left-side-bar">
-                        <div className='create-buttons'>
-                                    
-                                       <Dropdown>
-                        <MenuButton
-                         style={{backgroundColor: theme.palette.secondary.main,
-                            color:theme.palette.secondary.contrastText}}
+        return(
+            <div className='container reverse'>
+                <MediaQuery minWidth={"800px"}>
+                <div className="left-side-bar">
+                    <div className='create-buttons'>
+                        <Button key="page" 
+                        onBlurCapture={()=>setAnchorElCreate(null)}
+                        onClick={(e)=>{
+                            if(!anchorElCreate){
+                                setAnchorElCreate(e.target)}else{
+                                setAnchorElCreate(false)
+                            }
+                        }}
+                        style={{
+                            backgroundColor: theme.palette.secondary.main,
+                            color:theme.palette.secondary.contrastText
+                            }}
                         variant="outlined"
-           >
-                                        Create Page
-                     
-          </MenuButton>
-          <Menu>
-          <MenuItem onClick={()=>{
-                                        navigate("/page/new")
-                                    }}>
-                            Text
-                        </MenuItem>
-          <MenuItem onClick={()=>{
-          }
-                            }> 
-                            Picture
-                        </MenuItem>
-                       
-                        
-            
-          </Menu>
-        </Dropdown>
-                                   <Button
-                                   style={{backgroundColor: theme.palette.secondary.main,
+                        >
+                            Create Page{anchorElCreate ? <ExpandLess /> : <ExpandMore />}
+                        </Button>
+                        <Collapse  in={anchorElCreate} 
+                                    timeout="auto"
+                                    unmountOnExit>
+                            <List>
+                                <ListItemButton onClick={()=>{ navigate("/page/new")}}>
+                                    <ListItemText primary="Text"/>
+                                </ListItemButton>
+                                <ListItemButton onClick={()=>navigate("/page/new/image")} >
+                                    <ListItemText  primary="Picture"/>
+                                </ListItemButton>
+                            </List>
+                        </Collapse>     
+                        <Button
+                            style={{backgroundColor: theme.palette.secondary.main,
                                     color:theme.palette.secondary.contrastText}}
-                                    onClick={()=>{
+                            onClick={()=>{
                                         navigate("/book/new")
                                     }} 
-                                    variant="outlined"
-                                    >Create Book</Button>
-                                    <Button
-                                    onClick={()=>{
-                                        navigate("/library/new")
-                                    }}
-                                    style={{backgroundColor: theme.palette.secondary.main,
+                            variant="outlined"
+                        >Create Book
+                        </Button>
+                        <Button
+                            onClick={()=>{
+                                    navigate("/library/new")
+                                }}
+                            style={{    backgroundColor: theme.palette.secondary.main,
                                         color:theme.palette.secondary.contrastText}}
-                                    variant="outlined"
-                                   >Create Library</Button>
+                            variant="outlined"
+                        >Create Library</Button>
                     </div>
             </div>
             </MediaQuery>
@@ -74,7 +82,7 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInV
             <div className="right-side-bar">
                     <ProfileCard currentProfile={currentProfile}/>
             </div>  
-    {/* </div> */}
+   
     </div>
     )}else{
         return(<div>

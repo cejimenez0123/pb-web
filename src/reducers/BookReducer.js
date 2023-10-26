@@ -1,6 +1,4 @@
-
-import Book from "../domain/models/book"
-import { createReducer ,createSlice} from "@reduxjs/toolkit"
+import { createSlice} from "@reduxjs/toolkit"
 import { getPublicBooks,
         fetchBook,
         getProfileBooks,
@@ -11,7 +9,6 @@ import { getPublicBooks,
         setBooksToBeAdded,
         setBookInView
         } from "../actions/BookActions"
-import BookRole from "../domain/models/bookrole"
 
 
 const initialState = {

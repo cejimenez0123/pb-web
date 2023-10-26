@@ -16,6 +16,7 @@ import CreateBookContainer from './container/CreateBookContainer';
 import CreateLibraryContainer from './container/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/ProfileContainer';
+import PicturePageContainer from './container/PicturePageContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import { getCurrentProfile } from './actions/UserActions';
 import { fetchBookmarkLibrary } from './actions/LibraryActions';
@@ -36,26 +37,17 @@ import LibraryViewContainer from './container/LibraryViewContainer';
 
 
 function App(props) {
-  const dispatch = useDispatch()
-    const [signedIn,setSignedIn] = useState(false)
-    const [user,setUser]= useState(null)
-
-    
     let auth = useAuth()
     const [authState,setAuthState]=useState(auth)
-  useEffect(()=>{
-    
-    
-    if(authState.user && !props.currentProfile){
-      const params = {
-       userId: authState.user.uid
-      }
-      const subscriber = props.getCurrentProfile(params)
-
-      return ()=> subscriber
+    useEffect(()=>{
+      if(authState.user && !props.currentProfile){
+        const params = {
+          userId: authState.user.uid
+        }
+        const subscriber = props.getCurrentProfile(params)
     }
   
-  },[authState])
+    },[authState])
   useEffect(()=>{
     if(props.currentProfile!=null){
       const params = {
@@ -91,16 +83,22 @@ function App(props) {
       } />
       
       <Route path="/discovery" element={
-      <DiscoveryContainer 
-        getPublicLibraries={props.getPublicLibraries}
-        getPublicPages={props.getPublicPages} 
-        getPublicBooks={props.getPublicBooks} 
-        pagesInView={props.pagesInView}
-        fetchAllProfiles={props.fetchAllProfiles}/>}/>
-      <Route path="/login" 
-      // element={
-        
-      element={ <LoggedRoute profile={!props.currentProfile}><LogInContainer logIn={props.logIn} loggedIn={auth.isSignedIn}/></LoggedRoute>}
+        <DiscoveryContainer 
+          getPublicLibraries={props.getPublicLibraries}
+          getPublicPages={props.getPublicPages} 
+          getPublicBooks={props.getPublicBooks} 
+          pagesInView={props.pagesInView}
+          fetchAllProfiles={props.fetchAllProfiles}/>}
+      />
+      <Route path="/login"  
+        element={ 
+          <LoggedRoute 
+            profile={!props.currentProfile}
+          >
+            <LogInContainer logIn={props.logIn}
+                            loggedIn={auth.isSignedIn}
+            />
+          </LoggedRoute>}
      />
 
         
@@ -126,6 +124,13 @@ function App(props) {
         book={props.bookInView} 
         pages={props.pagesInView}/>
     }/>
+    <Route path="/page/new/image"  
+        element={ 
+          <PrivateRoute loggedIn={props.currentProfile}>
+            <PicturePageContainer />
+
+         </PrivateRoute>
+        }/>
     <Route
       path="/page/new"
       element={

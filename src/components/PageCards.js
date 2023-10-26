@@ -1,25 +1,12 @@
 import React, {useState,useRef} from 'react'
 import JoditEditor from 'jodit-react'
 import {useStore,useDispatch } from 'react-redux'
-// import Modal from "../modal"
-// import Editor from "./editor"
-// import DraftPage from "./DraftPage"
 import {connect} from "react-redux"
-// import {getPageComments} from "../../actions/PageActions"
 import {likePage} from "../../actions/LikeActions"
 import PageCommentInput from "./PageCommentInput"
 import PageCommentIndex from "./PageCommentIndex"
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
-import 'froala-editor/js/plugins/image.min.js'
-import FroalaEditor from 'react-froala-wysiwyg';
-import Popover from '@material-ui/core/popover'
-import Typography from '@material-ui/core/typography'
 import { makeStyles } from '@material-ui/core/styles';
-
-// Import all Froala Editor plugins;
-// import useWindowSize from "../useWindowSize"
-//.jodit-toolbar__box
+import debounce from '../core/debounce'
 const useStyles = makeStyles((theme) => ({
   popover: {
     pointerEvents: 'none',
@@ -33,7 +20,6 @@ function PageCard(props){
   const dispatch = useDispatch()
   const store = useStore()
   const [show, setShow] = useState("none")
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handlePopoverOpen = (event) => {
@@ -52,16 +38,7 @@ function PageCard(props){
   const editor = useRef(null)
   //
    
-      function debounce(fn, ms) {
-  let timer
-  return _ => {
-    clearTimeout(timer)
-    timer = setTimeout(_ => {
-      timer = null
-      fn.apply(this, arguments)
-    }, ms)
-  };
-}
+      
 
 
   let [dimensions, setDimensions] = useState({ 

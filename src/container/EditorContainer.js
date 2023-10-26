@@ -1,18 +1,27 @@
 import RichEditor from "../components/RichEditor"
 import "../styles/Editor.css"
 import "../App.css"
-import {connect,useDispatch, useSelector} from "react-redux"
-import { setHtmlContent,createPage, updatePage,editingPage, fetchEditingPage } from "../actions/PageActions"
-import { useEffect, useState } from "react"
+import {useDispatch, useSelector} from "react-redux"
+import { setHtmlContent,createPage, updatePage, fetchEditingPage,deletePage } from "../actions/PageActions"
+import React,{ useEffect, useState } from "react"
 import history from "../history"
 import { useParams } from "react-router-dom"
 import { Button,FormControlLabel,Checkbox, TextField, FormGroup } from "@mui/material"
-
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { PageType } from "../core/constants"
+import { useNavigate } from "react-router-dom"
+import theme from "../theme"
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
         const [title,setTitle] = useState("")
+        const navigate = useNavigate()
         const [privacy,setPrivacy] = useState(false)
+        const [pageType,setPageType] = useState(PageType.text)
         const [commentable,setCommentable] = useState(true)
         const editingPage = useSelector(state=>state.pages.editingPage)
        const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
@@ -27,6 +36,7 @@ function EditorContainer({currentProfile}){
                       const {page} = payload
                       setTitle(page.title)
                       setPrivacy(page.privacy)
+                      setPageType(page.type)
                       dispatch(setHtmlContent(page.data))
                     }
                   }
@@ -70,7 +80,25 @@ function EditorContainer({currentProfile}){
       
       
       }
-      
+      const [open, setOpen] = useState(false);
+
+      const handleClickOpen = () => {
+        setOpen(true);
+      };
+    
+      const handleClose = () => {
+        setOpen(false);
+      };
+      const handleDelete =()=>{
+          handleClose()
+          if(editingPage){
+          const params = {page:editingPage}
+          dispatch(deletePage(params)).then(()=>{
+            navigate("/profile/home")
+          })
+        }
+      }
+    
         const onTitleChange = (e)=>{
 
           setTitle(e.target.value)
@@ -78,23 +106,49 @@ function EditorContainer({currentProfile}){
         const onPrivacyChange = (e)=>{
           setPrivacy(e.target.value)
         }
-        
-        const richEditor = ()=>{
+        let contentDiv = (<div>Loading</div>)
+      
         if(!!currentProfile){
           let content = null
           if(editingPage){
             content = editingPage.data
+            
+            
+              if(editingPage.type==PageType.text){
+                  contentDiv = (<RichEditor initialContent={content}/>)
+                }else if(editingPage.type==PageType.picture){
+                
+                  contentDiv = (<div className="image">
+                    <img src={editingPage.data} alt={editingPage.data}/>
+                    </div>)
+                }else{
+                  contentDiv = (<RichEditor initialContent={content}/>)
+                }
+              }
+            
+          }else{
+            contentDiv = (<RichEditor initialContent={""}/>)
           }
-          return(<RichEditor initialContent={content}/>)
-        }else{
-          return(<div>Loading</div>)
-        }}
+        
+      let deleteDiv = (<div>
+        </div>) 
+      if(editingPage){ 
+       deleteDiv =(<Button variant="outlined"
+       onClick={()=>setOpen(true)}
+        style={{
+          marginTop: "4em",
+          width: "10em",
+          color: theme.palette.error.contrastText,
+          backgroundColor:theme.palette.error.dark}}>
+          Delete
+      </Button>)
+      }
         return(
-          <div id="EditorContainer" className="container-row">
-            <div className="left-side-bar">
+          <div id="EditorContainer">
+            <div >
             <div id="editor">
                 
-                {richEditor()}
+                {contentDiv}
               </div>
               </div>
              
@@ -104,18 +158,44 @@ function EditorContainer({currentProfile}){
                  <TextField onChange={(e)=>onTitleChange(e)} value={title} label="Title"/>
                  
                   <FormControlLabel 
-                control={<Checkbox checked={privacy} onChange={()=>{}}/>} label="Private" />
+                control={<Checkbox checked={privacy} onChange={(e)=>setPrivacy(e.target.checked)}/>} label="Private" />
                  
                  <FormControlLabel 
                 control={<Checkbox checked={commentable} onChange={(e)=>{
                   setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
                  
             
-                  <Button onSubmit={(e)=>onSavePress(e)} className="btn btn-primary">
+                  <Button onClick={handleClickOpen} className="btn btn-primary">
                     Save
                     </Button>
+
+                    {deleteDiv}
                     </FormGroup>
-                    
+                    <div>
+      
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Deleting?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this page?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={()=>handleDelete()} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+
               </div>
           </div>
         )

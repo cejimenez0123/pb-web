@@ -14,7 +14,7 @@
 }
 .content-to-be-added-list{
   width: 20em;
-  background-color: aliceblue;
+  background-color: var(--tertiary);
 }
 #form div:nth-child(1) {
     /* Your styles for the second div here */
