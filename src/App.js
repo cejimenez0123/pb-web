@@ -1,6 +1,4 @@
-import logo from './logo.svg';
 import './App.css';
-import theme from "./theme.js"
 import { connect,useDispatch} from "react-redux"
 import {Route, Routes} from 'react-router-dom';
 import { getPublicPages } from './actions/PageActions';
@@ -28,26 +26,27 @@ import {  fetchAllProfiles,
           fetchFollowProfilesForProfile} from './actions/UserActions'
 import history from './history';
 import PrivateRoute from './PrivateRoute';
-import { useEffect,useState} from 'react';
-import useAuth from './core/useAuth';
+import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
 import EditBookContainer from './container/EditBookContainer';
 import LibraryViewContainer from './container/LibraryViewContainer';
-
-
+import {auth} from "./core/di"
 
 function App(props) {
-    let auth = useAuth()
-    const [authState,setAuthState]=useState(auth)
     useEffect(()=>{
-      if(authState.user && !props.currentProfile){
-        const params = {
-          userId: authState.user.uid
-        }
-        const subscriber = props.getCurrentProfile(params)
-    }
+      fetchCurrentProfile()
   
-    },[authState])
+    },[auth.currentUser])
+  
+  const fetchCurrentProfile = ()=>{
+    if(auth.currentUser != null && !auth.currentUser.isAnonymous){
+      const params = {
+        userId: auth.currentUser.uid
+      }
+      const subscriber = props.getCurrentProfile(params)
+  }
+  }
+ 
   useEffect(()=>{
     if(props.currentProfile!=null){
       const params = {
@@ -63,6 +62,8 @@ function App(props) {
     }
   
   },[props.currentProfile])
+
+   
   return (
     <div className="App">
        
@@ -75,8 +76,8 @@ function App(props) {
         <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
         <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossOrigin="anonymous"/>
-      <NavbarContainer loggedIn={!!authState.users} authState={authState} profile={props.currentProfile}/>
- 
+      <NavbarContainer loggedIn={props.currentProfile} profile={props.currentProfile}/>
+
         <Routes history={history} >
       <Route exact path="/" element={
       <DashboardContainer auth={auth} getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
@@ -108,7 +109,7 @@ function App(props) {
         <PrivateRoute loggedIn={!!props.currentProfile}>
           <MyProfileContainer currentProfile={props.currentProfile} 
                               pagesInView={props.pagesInView} 
-                              authState={authState}
+                    
                               booksInView={props.booksInView}
                               librariesInView={props.librariesInView}/>
        </PrivateRoute>
@@ -116,15 +117,13 @@ function App(props) {
     />
     <Route path="/profile/:id" element={
     <ProfileContainer profile={props.profileInView}/>}/>
-    <Route path="/page/:id" element={
-          <PageViewContainer page={props.pageInView}/>}
-    /> 
+    
     <Route path="/book/:id" element={
       <BookViewContainer 
         book={props.bookInView} 
         pages={props.pagesInView}/>
     }/>
-    <Route path="/page/new/image"  
+    <Route  path="/page/image"  
         element={ 
           <PrivateRoute loggedIn={props.currentProfile}>
             <PicturePageContainer />
@@ -132,15 +131,18 @@ function App(props) {
          </PrivateRoute>
         }/>
     <Route
-      path="/page/new"
+      exact path="/page/new"
       element={
         <PrivateRoute loggedIn={!!props.currentProfile}>
             <EditorContainer 
               htmlContent={props.htmlContent}
               currentProfile={props.currentProfile} 
-              auth={authState}/>
+              />
         </PrivateRoute>
       }/>
+      <Route path="/page/:id" element={
+          <PageViewContainer page={props.pageInView}/>}
+    /> 
        <Route
       path="/page/:id/edit"
       element={
@@ -148,7 +150,7 @@ function App(props) {
             <EditorContainer 
               htmlContent={props.htmlContent} 
               currentProfile={props.currentProfile} 
-              auth={authState}/>
+              />
         </PrivateRoute>
       }/>
       <Route path="/book/new" element={
@@ -208,6 +210,7 @@ function mapStateToProps(state){
     loggedIn: state.users.loggedIn,
     bookInView: state.books.bookInView,
     booksInView: state.books.booksInView,
+    currentProfile: state.users.currentProfile,
     // currentUser: state.users.currentUser,
     currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,

@@ -14,15 +14,11 @@ import { fetchProfile ,createFollowBook,deleteFollowBook,fetchFollowBooksForProf
 import { Settings } from "@mui/icons-material"
 import debounce from "../core/debounce"
 function BookViewContainer({book,pages}){
-    const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const profile= useSelector(state=>state.users.profileInView)
-    const bookLoading = useSelector(state=>state.books.loading)
     const pageLoading = useSelector(state=>state.pages.loading)
     const [hasMore,setHasMore]=useState(false)
-    const [page,setPage] = useState(1)
     const followedBooks = useSelector(state=>state.users.followedBooks)
     const getBook=()=>{
       
@@ -105,7 +101,7 @@ function BookViewContainer({book,pages}){
                             scrollableTarget="scrollableDiv"
      >
          {pages.map(page =>{
-                 return(<DashboardItem book={book}page={page}/>)
+                 return(<DashboardItem  key={page.id} book={book}page={page}/>)
          })}
      </InfiniteScroll>
                     </div>
@@ -136,7 +132,8 @@ function BookViewContainer({book,pages}){
     const deleteFollowBookClick = ()=>{ 
        
         if(currentProfile && book){
-            let fb = followedBooks.find(fb=>fb.id==`${currentProfile.id}_${book.id}`)
+            let fb = followedBooks.find(fb=>
+                fb!=null && fb.id==`${currentProfile.id}_${book.id}`)
             const params = {
                 followBook: fb,
                 book: book,
@@ -160,7 +157,8 @@ function BookViewContainer({book,pages}){
     if(followedBooks && currentProfile && book ){
     editDiv = (<Button
     key={book.id}onClick={(e)=>goToEditBook(e)}>Edit<Settings/></Button>)
-    let fb = followedBooks.find(fb=>fb.id==`${currentProfile.id}_${book.id}`)
+    let fb = followedBooks.find(fb=>{
+       return fb!=null && fb.profileId ==currentProfile.id && fb.bookId == book.id})
     if(fb){
         followDiv= (
             <Button variant="outlined" 

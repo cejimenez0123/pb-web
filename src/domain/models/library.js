@@ -1,5 +1,4 @@
 import { Timestamp } from "firebase/firestore"
-import { Story } from "./page"
 import Collection from "./collection"
 export default class Library extends Collection {
     id
@@ -13,19 +12,19 @@ export default class Library extends Collection {
     updatedAt
     created
     constructor(
-        id:string,
-        name:string,
-        profileId:string,
-        purpose:string,
-        pageIdList=[String],
-        bookIdList=[String],
-        writingIsOpen:boolean=false,
-        privacy:boolean=false,
-        readers:string[]=[],
-        writers:string[]=[],
-        editors:string[]=[],
-        commenters:string[]=[],
-        updatedAt:Timestamp,
+        id,
+        name,
+        profileId,
+        purpose,
+        pageIdList=[],
+        bookIdList=[],
+        writingIsOpen=false,
+        privacy=false,
+        readers=[],
+        writers=[],
+        editors=[],
+        commenters=[],
+        updatedAt=Timestamp.now(),
         created=Timestamp.now()
     ){
         super(id,profileId,readers,writers,commenters,editors)
@@ -43,13 +42,13 @@ export default class Library extends Collection {
     static className(){
         return "library"
     }
-    itemHashInLibrary(hash:HashItem):Boolean{
+    itemHashInLibrary(hash){
         let p = this.pageIdList.find(id=>id == hash.item.id)
         let b = this.bookIdList.find(id=>id == hash.item.id)
         return !!p && !!b
     }
-    }
-    type HashItem = {
-        type:string,
-        item:Story
-    }
+}
+    // typeof HashItem = {
+    //     type:string,
+    //     item:Story
+    // }

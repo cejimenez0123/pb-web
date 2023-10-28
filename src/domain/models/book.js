@@ -12,19 +12,18 @@ export default class Book extends Story{
     writingIsOpen
     created
     constructor(
-        id: string,
-        purpose:string,
-        title:string,
-        profileId: string,
-        pageIdList:[string],
-        privacy: boolean,
-        writingIsOpen: boolean,
-        
-        writers:string[]= new Array<string>(),
-        readers:string[],
-        commenters:string[],
-        editors:string[],
-        updatedAt: Timestamp = Timestamp.now(),
+        id,
+        purpose,
+        title,
+        profileId,
+        pageIdList,
+        privacy,
+        writingIsOpen,
+        writers= [],
+        readers=[],
+        commenters=[],
+        editors=[],
+        updatedAt=Timestamp.now(),
         created=Timestamp.now()
     ){
 

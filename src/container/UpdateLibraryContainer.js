@@ -13,13 +13,13 @@ import { useNavigate } from "react-router-dom"
 import RoleList from "../components/RoleList"
 import useAuth from "../core/useAuth"
 import "../styles/UpdateLibrary.css"
+import {auth} from "../core/di"
 import {Checkbox , Button, FormGroup, TextField,FormControlLabel } from "@mui/material"
 import { RoleType } from "../core/constants"
 function UpdateLibraryContainer(props) { 
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const pathParams = useParams()
-    const authState = useAuth()
     const libraryInView = useSelector(state=>state.libraries.libraryInView)
     const [libraryName, setLibraryName]= useState("")
     const [writingIsOpen,setWritingIsOpen]=useState(false)
@@ -40,16 +40,16 @@ function UpdateLibraryContainer(props) {
             if(currentProfile){
             
             }else{
-                if(!!authState.user && !props.currentProfile){
+                if(auth.currentUser){
                     const params = {
-                     userId: authState.user.uid
+                     userId: auth.currentUser.uid
                     }
                     dispatch(getCurrentProfile(params))
                 }
             }
     }
 
-    ,[])
+    ,[auth.currentUser])
     const start =()=>{
         dispatch(fetchLibrary(pathParams)).then((result)=>{
             setLibrary()

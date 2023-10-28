@@ -4,7 +4,8 @@ import {  signInWithEmailAndPassword,
           signOut,
           createUserWithEmailAndPassword,
           setPersistence,
-          browserLocalPersistence } from "firebase/auth"
+          browserLocalPersistence,
+        browserSessionPersistence } from "firebase/auth"
 import {  where,
           query,
           deleteDoc,
@@ -15,6 +16,7 @@ import {  where,
           doc,
           updateDoc,
           Timestamp} from "firebase/firestore"
+          
 import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
 import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
@@ -279,7 +281,9 @@ const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async
 })
 const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunkApi)=>{
   try {
-  const {file }= params
+  const {file,
+        name,
+         profile}= params
   const fileName = `image/picture-${file.name}.jpg`
   const storageRef = ref(storage, fileName);
   const blob = new Blob([file])
@@ -294,6 +298,7 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
   }
 
 })
+
 const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
     let pId= params["id"]
   

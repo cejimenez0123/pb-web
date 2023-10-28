@@ -82,11 +82,15 @@ const userSlice = createSlice({
     }).addCase(fetchFollowBooksForProfile.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(fetchFollowBooksForProfile.fulfilled,(state,{payload})=>{
+        if(Array.isArray(state.followList)){
         state.followedBooks = payload.followList
+        }
     }).addCase(fetchFollowLibraryForProfile.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(fetchFollowLibraryForProfile.fulfilled,(state,{payload})=>{
-        state.followedLibraries = payload.followList
+        if(Array.isArray(payload.followList)){
+            state.followedLibraries = payload.followList
+        }
     }).addCase(createFollowBook.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(createFollowBook.fulfilled,(state,{payload})=>{
@@ -94,11 +98,14 @@ const userSlice = createSlice({
     }).addCase(createFollowLibrary.fulfilled,(state,{payload})=>{
         state.followedLibraries = [...state.followedLibraries,payload.followLibrary]
     }).addCase(createFollowLibrary.rejected,(state,{payload})=>{
-        state.followedLibraries = [...state.followedLibraries,payload.followLibrary]
+        
+        state.error = payload.error
     }).addCase(fetchFollowProfilesForProfile.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(fetchFollowProfilesForProfile.fulfilled,(state,{payload})=>{
+        if(Array.isArray(payload.followList)){
         state.followedProfiles = payload.followList
+        }
     }).addCase(createFollowProfile.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(createFollowProfile.fulfilled,(state,{payload})=>{

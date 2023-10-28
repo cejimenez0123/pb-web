@@ -7,7 +7,12 @@ import {  appendSaveRolesForPage} from "../actions/PageActions"
 import { createLibrary,getProfileLibraries,updateLibraryContent } from "../actions/LibraryActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import "../styles/CreateLibrary.css"
-import { FormGroup, Button,FormControlLabel,TextField, TextareaAutosize,Checkbox } from "@mui/material"
+import {    FormGroup,
+            Button,
+            FormControlLabel,
+            TextField, 
+            TextareaAutosize,
+            Checkbox } from "@mui/material"
 import { Add } from "@mui/icons-material"
 export default function CreateLibraryContainer(props){
 
@@ -15,24 +20,17 @@ export default function CreateLibraryContainer(props){
     const [libTitle,setLibTitle]=useState("")
     const [purpose,setPurpose] = useState("")
     const currentProfile = useSelector(state=>{return state.users.currentProfile})
-    // const booksInView = useSelector(state=>state.books.booksInView)
-    // const pagesInView = useSelector(state => state.pages.pagesInView)
     const librariesInView = useSelector(state => state.libraries.librariesInView)
     const booksToBeAdded = useSelector(state => state.books.booksToBeAdded)
     const pagesToBeAdded = useSelector(state => state.pages.pagesToBeAdded)
     const [libIsPrivate,setLibIsPrivate]= useState(false)
     const [writingIsOpen,setWritingIsOpen]= useState(false)
     const [contentToBeAdded,setContentsToBeAdded]= useState([])
-    const [listItems,setListItems]=useState([])
     const dispatch = useDispatch()
     
     const handleLibTitleChange = (e)=>{
         setLibTitle(e.target.value)
     }
-  
-   
-  
-    
     const onClickAdd=(hash)=>{  
         
         let pIdList = pagesToBeAdded.map(page=>{ return page.id; });
@@ -50,7 +48,7 @@ export default function CreateLibraryContainer(props){
             library:hash,
             pageIdList:pageIdList,
             bookIdList:bookIdList
-              }
+        }
         const bookRoleParams = {
             bookIdList,
             readers: hash.readers,
@@ -68,8 +66,7 @@ export default function CreateLibraryContainer(props){
             if(result.error==null){
                 navigate(`/library/${hash.id}`)
             }
-        })
-       
+        })  
     }
     
     const handleOnSubmit=(e)=>{
@@ -114,21 +111,20 @@ export default function CreateLibraryContainer(props){
     }
     useEffect(()=>{
         fetchLibraries()
-      
     },[])
 
 
         const libraryList = ()=>{
         if(!!librariesInView && librariesInView.length > 0){
         return(<div class="content">
-            <InfiniteScroll  dataLength={librariesInView.length} 
-   next={fetchLibraries}
-   hasMore={false} // Replace with a condition based on your data source
-   loader={<p>Loading...</p>}
-   endMessage={<div className="empty">
-    <p>No more data to load.</p>
-    </div>}
->
+            <InfiniteScroll dataLength={librariesInView.length} 
+                            next={fetchLibraries}
+                            hasMore={false} 
+                            loader={<p>Loading...</p>}
+                            endMessage={<div className="empty">
+                                    <p>No more data to load.</p>
+                                    </div>}
+            >
      {librariesInView.map((hash) =>{
 
              return(<div className="list-item" key={hash.id}>

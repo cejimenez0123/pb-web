@@ -5,32 +5,29 @@ import { connect,useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import { TextField ,Checkbox, FormControlLabel,Button, FormGroup, Typography} from "@mui/material"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import {InputAdornment,IconButton} from "@mui/material"
+import { VisibilityOff,Visibility } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import { uploadProfilePicture } from '../actions/UserActions';
-import {InputAdornment,IconButton} from "@mui/material"
-import { VisibilityOff,Visibility } from '@mui/icons-material';
+
 import {sendPasswordResetEmail } from "firebase/auth";
 import theme from '../theme';
 // import Modal from '../components/Modal';
 import { Modal } from '@mui/joy';
 import { auth } from '../core/di';
-import VisuallyHiddenInput from '../components/VisualHiddenInput';
-// const VisuallyHiddenInput = styled('input')({
-//     clip: 'rect(0 0 0 0)',
-//     clipPath: 'inset(50%)',
-//     height: 1,
-//     overflow: 'hidden',
-//     position: 'absolute',
-//     bottom: 0,
-//     left: 0,
-//     whiteSpace: 'nowrap',
-//     width: 1,
-//   });
-const style = theme =>({
-    textField: {
-        width:"100%"}
-})
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
+
 function LogInContainer(props) {
     const dispatch = useDispatch()
     const [suUsername, setSuUsername] = useState('');
@@ -150,7 +147,7 @@ function SignInCard(props) {
                         label="E-mail" 
                         value={props.email} 
                         onChange={(e) =>{
-                           props.setEmail(e.target.value)
+                           props.setEmail(e.target.value.trim())
                         }}
                         InputProps={{
                             style: {
@@ -192,7 +189,7 @@ function SignInCard(props) {
                  
                                 label="Password"
                                 onChange={(e) => 
-                                props.setPassword(e.target.value)}
+                                props.setPassword(e.target.value.trim())}
                           
                             type={showPassword ? "text" : "password"} 
                             InputProps={{
@@ -272,7 +269,7 @@ function LogInCard(props){
             <TextField label="Password"
             value={props.password} 
             name='password'placeholder='Password'
-            onChange={(e) => props.setPassword(e.target.value)}
+            onChange={(e) => props.setPassword(e.target.value.trim())}
             type={showPassword ? "text" : "password"} 
             InputProps={{
                 style: {

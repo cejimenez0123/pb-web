@@ -307,7 +307,7 @@ html, body {
   padding: 2em 1em;
   min-height: 20em;
   width: 45em;
-  background-color: #E7F7DC;
+  background-color: var(--tertiary);
   
 }
 .intro{
@@ -357,7 +357,7 @@ html, body {
     padding: 2em 1em;
     min-height: 20em;
     width: 100%;
-    background-color: #E7F7DC;
+    background-color: var(--tertiary);
     
   }
   .intro{

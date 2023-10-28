@@ -1,29 +1,23 @@
-import React ,{useState,useEffect,useLayoutEffect}from 'react'
+import React ,{useState,useEffect}from 'react'
 import "../App.css"
 import { getPublicPages } from '../actions/PageActions'
-import { getCurrentProfile } from '../actions/UserActions'
 import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { fetchAllProfiles,clickMe } from '../actions/UserActions'
 import { fetchArrayOfBooks, fetchArrayOfBooksAppened } from '../actions/BookActions'
 import { fetchArrayOfPagesAppened } from '../actions/PageActions'
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
-import { current } from '@reduxjs/toolkit'
+import ErrorBoundary from '../ErrorBoundary'
 
 function DashboardContainer(props){
     const dispatch = useDispatch()
     const currentProfile = useSelector((state)=>state.users.currentProfile)
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
-    const booksInView = useSelector((state)=>state.books.booksInView)
-    const librariesInView = useSelector((state)=>state.libraries.librariesInView)
     const followedBooks = useSelector((state)=>state.users.followedBooks)
     const followedLibraries = useSelector((state)=>state.users.followedLibraries)
-    const followedProfiles = useSelector((state)=>state.users.followedProfiles)
     const [itemsInView,setItemsInView] = useState([])
     const [hasMore,setHasMore] = useState(false)
-    let [pages,setPages] = useState([])
-     
+    const [hasError,setHasError] = useState(false)
         useEffect(()=>{ 
            fetchData()
         },[])
@@ -37,7 +31,11 @@ function DashboardContainer(props){
                             const {pageList }= payload
                             let items = pageList.map(page=>{return {type:"page",page: page}})
                             setItemsInView(items)
+                        }else{
+                            setHasError(true)
                         }
+                        }else{
+                            setHasMore(true)
                         }
                         setHasMore(false)
                 }).catch(error=>{
@@ -71,7 +69,11 @@ function DashboardContainer(props){
                                 })
                                 getBookListContent(bookList)
 
+                            }else{
+                                setHasError(true)
                             }
+                        }else{
+                            setHasError(true)
                         }
                         setHasMore(false)
                     })
@@ -114,6 +116,8 @@ function DashboardContainer(props){
                                             })
                                                 getBookListContent(bookList)
                                                 fixSetItems()
+                                            }else{
+
                                             }
                                         }
                                     })
@@ -131,7 +135,7 @@ function DashboardContainer(props){
             bookList.forEach(book=>{
                 let pageIdList = []
                 book.pageIdList.forEach(id=>{
-                    // let aFound = pageIdList.find(pId=>pId.id == id)
+                
                     let bFound = itemsInView.find(item=>{
                                     return item.page != null && item.page.id == id
                                 })
@@ -172,6 +176,8 @@ function DashboardContainer(props){
                             return [...prevState,...items]
                         })
                         
+                    }else{
+                        setHasError(true)
                     }
                 }
                 
@@ -237,9 +243,9 @@ function DashboardContainer(props){
                                         return(<DashboardItem page={page} book={item.book}/>)
                                     }else{
                                         if(item.book){
-                                            return
+                                            return(<div></div>)
                                         }else{
-                                            return
+                                            return(<div></div>)
                                         }
                                         
                                     }}
@@ -313,6 +319,9 @@ function DashboardContainer(props){
         
 
         return(
+            <ErrorBoundary hasError={hasError} fallback={<div>
+                Error 
+            </div>}>
             <div id="dashboard" >
                
                 <div >
@@ -322,6 +331,7 @@ function DashboardContainer(props){
                    
                
             </div>
+            </ErrorBoundary>
         )
         
 }

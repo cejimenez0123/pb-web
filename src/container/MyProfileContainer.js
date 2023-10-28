@@ -1,11 +1,9 @@
-import React from 'react';
+import React,{ useState }  from 'react';
 import ProfileCard from '../components/ProfileCard';
 import { useNavigate} from 'react-router-dom';
-import { useState } from 'react';
 import "../styles/MyProfile.css"
 import ContentList from '../components/ContentList';
-import { Button, FormGroup,} from '@mui/material';
-import {Dropdown,MenuButton,Menu,MenuItem} from '@mui/joy'
+import { Button} from '@mui/material';
 import { ExpandLess,ExpandMore } from '@mui/icons-material';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
@@ -13,14 +11,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import theme from "../theme"
 import MediaQuery from 'react-responsive';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import {IconButton} from "@mui/material"
-import VisuallyHiddenInput from '../components/VisualHiddenInput';
-import { Close } from '@mui/icons-material';
 function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView,authState}){
     const navigate = useNavigate()
     const [anchorElCreate,setAnchorElCreate]= useState(null)
-    const [open,setOpen]=useState(false)
     if( currentProfile){ 
         return(
             <div className='container reverse'>
@@ -50,7 +43,7 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInV
                                 <ListItemButton onClick={()=>{ navigate("/page/new")}}>
                                     <ListItemText primary="Text"/>
                                 </ListItemButton>
-                                <ListItemButton onClick={()=>navigate("/page/new/image")} >
+                                <ListItemButton onClick={()=>{navigate("/page/image")}} >
                                     <ListItemText  primary="Picture"/>
                                 </ListItemButton>
                             </List>

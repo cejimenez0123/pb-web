@@ -21,7 +21,6 @@ function EditorContainer({currentProfile}){
         const [title,setTitle] = useState("")
         const navigate = useNavigate()
         const [privacy,setPrivacy] = useState(false)
-        const [pageType,setPageType] = useState(PageType.text)
         const [commentable,setCommentable] = useState(true)
         const editingPage = useSelector(state=>state.pages.editingPage)
        const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
@@ -36,7 +35,6 @@ function EditorContainer({currentProfile}){
                       const {page} = payload
                       setTitle(page.title)
                       setPrivacy(page.privacy)
-                      setPageType(page.type)
                       dispatch(setHtmlContent(page.data))
                     }
                   }
@@ -103,31 +101,23 @@ function EditorContainer({currentProfile}){
 
           setTitle(e.target.value)
         }
-        const onPrivacyChange = (e)=>{
-          setPrivacy(e.target.value)
-        }
-        let contentDiv = (<div>Loading</div>)
+  
+        let contentDiv = (<RichEditor initialContent={""}/>)
       
-        if(!!currentProfile){
-          let content = null
+        if(currentProfile){
           if(editingPage){
-            content = editingPage.data
-            
-            
               if(editingPage.type==PageType.text){
-                  contentDiv = (<RichEditor initialContent={content}/>)
-                }else if(editingPage.type==PageType.picture){
+                  contentDiv = (<RichEditor initialContent={htmlContent}/>)
+              }else if(editingPage.type==PageType.picture){
                 
                   contentDiv = (<div className="image">
                     <img src={editingPage.data} alt={editingPage.data}/>
                     </div>)
                 }else{
-                  contentDiv = (<RichEditor initialContent={content}/>)
-                }
+                  contentDiv = (<RichEditor initialContent={htmlContent}/>)
               }
+          }
             
-          }else{
-            contentDiv = (<RichEditor initialContent={""}/>)
           }
         
       let deleteDiv = (<div>
