@@ -1,12 +1,9 @@
-import Page from '../domain/models/page'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector} from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 import { useState,useLayoutEffect,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import BookBanner from "../components/BookBanner"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
-import { Dashboard } from '@mui/icons-material'
 function DiscoveryContainer(props){
     const navigate = useNavigate()
     const booksInView = useSelector(state=>state.books.booksInView)   

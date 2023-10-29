@@ -5,7 +5,10 @@
   
 }
 :root{
-  --tertiary: #E7F7DC
+  --tertiary: #E7F7DC;
+  --dark:#183306;
+  --medium:#375E1D;
+  --secondary: #67914A;
 }
 html, body {
   background-image: radial-gradient(#487e4c,white);
@@ -14,7 +17,7 @@ html, body {
   height: 40vmin;
   pointer-events: none;
 }
-@media (min-width: 800px) {
+@media (min-width: 1000px) {
 .sign-card{
   display: flex;
   flex-direction: column;
@@ -130,7 +133,7 @@ html, body {
   padding: 1em;
 }
 }
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
   .sign-card{
     display: flex;
     flex-direction: column;
@@ -199,9 +202,8 @@ html, body {
   .create-form{
     background-color: rgb(244, 244, 244);
     padding: 3em 2em 3em 2em;
-    border-radius: 25px;
-    max-width: 25em;
-    margin: auto;
+   
+    width: 100vw;
   }
   
   .create-form .purpose{
@@ -286,7 +288,7 @@ html, body {
   height:10em;
   padding-top: 5em;
 }
-@media (min-width: 726px) {
+@media (min-width: 1000px) {
   #dashboard {
     margin-top: 3em;
   }
@@ -350,7 +352,7 @@ html, body {
 
 }
 }
-@media (max-width: 726px) {
+@media (max-width: 1000px) {
   .content-list.dashboard{
   
     margin: auto;
@@ -399,7 +401,14 @@ html, body {
   
   }
 }
-@media (min-width: 800px) {
+.list-item .title{ 
+
+ 
+  
+  
+}
+
+@media (min-width: 1000px) {
 .list-item{
   padding: 1.5em 2em 1.5em 2em !important;
   display: flex;
@@ -419,9 +428,27 @@ html, body {
   
 }
 }
-@media (max-width: 800px) {
+.list-item .title h6 {
+  white-space: nowrap;
+  text-align: left;
+}
+  
+.list-item .title {
+  max-width: 15em;
+  min-width: 10em; 
+  overflow:scroll;
+}
+/* @keyframes scroll {
+  0% {
+    transform: translateX(100%); 
+  }
+  100% {
+    transform: translateX(-100%); 
+  }
+} */
+@media (max-width: 1000px) {
   .list-item{
-    padding: 1.5em 2em 1.5em 2em !important;
+    padding: 1.5em 1em 1.5em 2em ;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -429,14 +456,23 @@ html, body {
     border-bottom: 2px solid gainsboro;
   }
   .list-item button{
-    margin-right: 1em;
+    margin-right: .5em;
   }
   .list-item a {
     display: flex;
     flex-direction: row;
-    padding: 0px 2px 0px 2px;
+    padding: 0px 2px 0px 1px;
     margin-top: 1em;
+    color: black;
+    text-decoration: none;
+    height: 2em;
+   
     
+  }
+
+  .list-item .button-row{
+    display: flex;
+    flex-direction: row;
   }
   }
 @media (prefers-reduced-motion: no-preference) {

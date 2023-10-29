@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import "../Dashboard.css"
-import { setPageInView } from '../actions/PageActions'
+import { setPageInView, setPagesToBeAdded } from '../actions/PageActions'
 // import {getPagesComments} from "../../actions/PageActions"
 import { PageType } from '../core/constants'
-import {connect ,useDispatch, useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
+import { Dropdown,Menu ,MenuItem} from '@mui/joy'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
 import theme from '../theme'
+
 // import {useBottomScrollListener} from "react-bottom-scroll-listener"
   let size= {width: window.innerWidth,height: window.innerHeight}
 
@@ -18,6 +20,7 @@ function DashboardItem({page,book}) {
     const profile = useSelector(state=>state.users.profilesInView).find(prof=>{
        return prof.id == page.profileId
     })
+    const [anchorEl,setAnchorEl]= useState(null)
 const hanldeClickComment=(pageItem)=>{
     
    
@@ -98,9 +101,46 @@ switch(page.type){
                 <Button>
                     Info
                 </Button>
-                <Button>
+                {/* <Button >
                     Share
-                </Button>
+                </Button> */}
+                <Dropdown>
+                        <Button onClick={(e)=>{
+                            setAnchorEl(e.currentTarget)
+                        }}
+          
+          >
+        Share
+          </Button>
+          <Menu anchorEl={anchorEl}
+          open={Boolean(anchorEl)}>
+          <MenuItem disabled={!currentProfile} onClick={()=>{
+            const params = {pageList:[page]}
+            dispatchEvent(setPagesToBeAdded(params))
+            navigate("/book/new")
+            }}> 
+                            Add to Book
+            </MenuItem>
+            <MenuItem disabled={!currentProfile} onClick={()=>{
+                 const params = {pageList:[page]}
+                 dispatchEvent(setPagesToBeAdded(params))
+                 navigate("/book/new")
+            }}>
+                Add to Library
+                        </MenuItem>
+                        <MenuItem onClick={()=>{
+                            navigator.clipboard.writeText(`plumbum.app/page/${page.id}`)
+                            .then(() => {
+                                // Successfully copied to clipboard
+                                alert('Text copied to clipboard');
+                              })
+                        }}
+                    >
+                          Copy Share Link
+                        </MenuItem>
+            
+          </Menu>
+        </Dropdown>
             </div>
         </div>)
 

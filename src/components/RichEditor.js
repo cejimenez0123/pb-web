@@ -2,15 +2,20 @@ import { doc } from "firebase/firestore";
 import React,{useState,createRef,useEffect, useLayoutEffect} from "react"
 import { useDispatch,useSelector } from "react-redux";
 import { setHtmlContent } from "../actions/PageActions";
-
-
+import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import FormatItalicIcon from '@mui/icons-material/FormatItalic';
+import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft';
+import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
+import AlignHorizontalCenterIcon from '@mui/icons-material/AlignHorizontalCenter';
+import { IconButton ,Button} from "@mui/material";
+import theme from "../theme";
 export default function RichEditor(props) {
     const [isReady, setIsReady] = useState(false);
     const editorRef = createRef()
     const editingPage = useSelector(state=>state.pages.editingPage)
     const ehtmlContent = useSelector(state=>state.pages.editorHtmlContent)
     const dispatch = useDispatch()
-    // const [htmlContent, setHtmlContent] = useState('');
     useEffect(()=>{
      
         
@@ -164,21 +169,33 @@ export default function RichEditor(props) {
           selection.addRange(newRange);}
       
     };
-
+    const inputStyle = {
+        color: theme.palette.primary.contrastText,
+        paddingTop: "1em"
+    }
     return(
     <div>
         <div className="editor-btn-row">
-            <button onClick={setUnderline}>Underline</button>
-            <button onClick={()=>setStyle(Type.BOLD)}>Bold</button>
-            <button onClick={()=>setStyle(Type.ITALIC)}>Italic</button>
-            <button onClick={()=>setFontSize(40)}>H1</button>
-            <button onClick={()=>setFontSize(32)}>H2</button>
-            <button onClick={()=>setFontSize(24)}>H3</button>
-            <button onClick={()=>setFontSize(16)}>H4</button>
-            <button onClick={changeAlignmentLeft}>Align Left</button>
-            <button onClick={changeAlignmentRight}>Align Right</button>
-            <button onClick={()=>changeAlignment(Type.CENTER)}>Align Center</button>
-            <button onClick={setBlockquote}>""</button>
+            <Button style={inputStyle}
+                    onClick={setUnderline}>
+                        <FormatUnderlinedIcon/>
+            </Button>
+            <Button style={inputStyle}
+                    onClick={()=>setStyle(Type.BOLD)}>
+                        <FormatBoldIcon/>
+            </Button>
+            <Button style={inputStyle} 
+                    onClick={()=>setStyle(Type.ITALIC)}>
+                    <FormatItalicIcon/>
+            </Button>
+            <Button style={inputStyle} onClick={()=>setFontSize(40)}>H1</Button>
+            <Button style={inputStyle} onClick={()=>setFontSize(32)}>H2</Button>
+            <Button style={inputStyle} onClick={()=>setFontSize(24)}>H3</Button>
+            <Button style={inputStyle} onClick={()=>setFontSize(16)}>H4</Button>
+            <Button style={inputStyle} onClick={changeAlignmentLeft}><AlignHorizontalLeftIcon/></Button>
+            <Button style={inputStyle} onClick={changeAlignmentRight}><AlignHorizontalRightIcon/></Button>
+            <Button style={inputStyle} onClick={()=>changeAlignment(Type.CENTER)}><AlignHorizontalCenterIcon/></Button>
+            <Button style={inputStyle} onClick={setBlockquote}>""</Button>
         </div>
         <div 
         id="editor-page"

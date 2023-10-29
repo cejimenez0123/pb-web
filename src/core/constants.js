@@ -12,5 +12,9 @@ const RoleType = {
     editor :"editor"
 }
 
+function canAddToItem(item,profile){
+    
+   return item.writingIsOpen==true || item.editors.includes(profile.userId)|| item.writers.includes(profile.userId)
+}
 
-export {PageType,RoleType}
+export {PageType,RoleType,canAddToItem}

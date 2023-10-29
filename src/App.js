@@ -16,6 +16,7 @@ import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/ProfileContainer';
 import PicturePageContainer from './container/PicturePageContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
+import AddPageToBookContainer from './container/AddPageToBookContainer';
 import { getCurrentProfile } from './actions/UserActions';
 import { fetchBookmarkLibrary } from './actions/LibraryActions';
 import { getPublicBooks } from './actions/BookActions';
@@ -181,6 +182,11 @@ function App(props) {
          <PrivateRoute loggedIn={!!props.currentProfile}>
         <UpdateLibraryContainer/>
         </PrivateRoute>}/>
+      <Route path="/book/:id/add" element={
+        <PrivateRoute loggedIn={!!props.currentProfile}>
+          <AddPageToBookContainer/>
+        </PrivateRoute>
+      }/>
       
     </Routes>
 

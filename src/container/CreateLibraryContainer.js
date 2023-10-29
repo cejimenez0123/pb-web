@@ -14,23 +14,19 @@ import {    FormGroup,
             TextareaAutosize,
             Checkbox } from "@mui/material"
 import { Add } from "@mui/icons-material"
+import MediaQuery from "react-responsive"
 export default function CreateLibraryContainer(props){
-
-    const navigate = useNavigate()
-    const [libTitle,setLibTitle]=useState("")
-    const [purpose,setPurpose] = useState("")
-    const currentProfile = useSelector(state=>{return state.users.currentProfile})
-    const librariesInView = useSelector(state => state.libraries.librariesInView)
     const booksToBeAdded = useSelector(state => state.books.booksToBeAdded)
     const pagesToBeAdded = useSelector(state => state.pages.pagesToBeAdded)
-    const [libIsPrivate,setLibIsPrivate]= useState(false)
-    const [writingIsOpen,setWritingIsOpen]= useState(false)
-    const [contentToBeAdded,setContentsToBeAdded]= useState([])
+    
+    const navigate = useNavigate()
+    
+    const currentProfile = useSelector(state=>{return state.users.currentProfile})
+    const librariesInView = useSelector(state => state.libraries.librariesInView)
+   
     const dispatch = useDispatch()
     
-    const handleLibTitleChange = (e)=>{
-        setLibTitle(e.target.value)
-    }
+    
     const onClickAdd=(hash)=>{  
         
         let pIdList = pagesToBeAdded.map(page=>{ return page.id; });
@@ -69,40 +65,7 @@ export default function CreateLibraryContainer(props){
         })  
     }
     
-    const handleOnSubmit=(e)=>{
-        
-        const filterPages = contentToBeAdded.filter(hash => hash.type == "page").map(
-            hash=> hash.item.id
-        )
-        const filterBooks = contentToBeAdded.filter(hash => hash.type == "book").map(
-            hash=> hash.item.id
-        )
     
-        e.preventDefault()
-        const params = {
-            name: libTitle,
-            purpose: purpose,
-            profileId: currentProfile.id,
-            pageIdList: filterPages,
-            bookIdList: filterBooks,
-            writingIsOpen: writingIsOpen,
-            privacy:libIsPrivate,
-            commenters:[],
-            readers:[],
-            editors:[],
-            writers:[]
-
-        }
-        
-        dispatch(createLibrary(params)).then((result) => {
-            const {payload} = result
-          
-            navigate(`/library/${payload.library.id}`)
-        }).catch((err) => {
-            
-        });
-    
-    }
     const fetchLibraries = ()=>{
         if(currentProfile){
             const params = {profile:currentProfile}
@@ -196,58 +159,114 @@ export default function CreateLibraryContainer(props){
 return(<div id="Create-Library">
     <div className="container">
         <div className="left-side-bar">
-            
+                <MediaQuery maxWidth={"1000px"}>
+                    <LibraryCreateForm/>
+                </MediaQuery>
                 {contentToBeAddedList()}
         
         </div>
         <div className="main-side-bar">
-          <div className="content-list create">
+          <div className="content-list" >
             {libraryList()}
             </div>
         </div>
         <div className="right-side-bar">
-        
-            <FormGroup style={{
-
-            }}className="create-form"  >
-                
-                <TextField  type="text"
-                            label="Library Name" 
-                            placeholder="Library Name" 
-                            className="text-input" 
-                            onChange={(e)=>handleLibTitleChange(e)}/>
-                <FormControlLabel 
-
-                    control={<Checkbox 
-                                onChange={
-                                    (e)=>{
-                        setLibIsPrivate(e.target.checked)
-                        }
-                    } 
-                    name="privacy" 
-                    checked={libIsPrivate} 
-                    className="checkbox"/> 
-                }   label={`${libIsPrivate? "Private":"Public"}`}/>
-            <FormControlLabel 
-                control={<Checkbox onChange={
-                    (e)=>{
-                        setWritingIsOpen(e.target.checked)
-                    }}checked={writingIsOpen} 
-                   /> 
-                } label={`Writing is ${writingIsOpen? "open":"close"}`}/>
-            <label>Purpose:</label>
-                <TextareaAutosize
-                 onChange={(e)=>{
-                    setPurpose(e.target.value);
-                }}id="purpose" name="purpose" rows="5" cols="33"/> 
-            
+            <MediaQuery minWidth={"1000px"}>
+                <LibraryCreateForm/>
+            </MediaQuery>
            
-            <Button variant="outlined" style={{marginTop:"2em",backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}type="submit" onClick={(e) => handleOnSubmit(e)}>
-    Save
-        </Button>
-            </FormGroup>
         
         </div>
     </div>
 </div>)
+}
+function LibraryCreateForm(props){
+    const booksToBeAdded = useSelector(state => state.books.booksToBeAdded)
+    const pagesToBeAdded = useSelector(state => state.pages.pagesToBeAdded)
+    const currentProfile = useSelector(state => state.users.currentProfile)
+    const [libTitle,setLibTitle]=useState("")
+    const [purpose,setPurpose] = useState("")
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [libIsPrivate,setLibIsPrivate]= useState(false)
+    const [writingIsOpen,setWritingIsOpen]= useState(false)
+    const [contentToBeAdded,setContentsToBeAdded]= useState([])
+    const handleOnSubmit=(e)=>{
+        const bookIdList = booksToBeAdded.map(book=>book.id)
+        const pageIdList = pagesToBeAdded.map(page=>page.id)
+        // const filterPages = contentToBeAdded.filter(hash => hash.type == "page").map(
+        //     hash=> hash.item.id
+        // )
+        // const filterBooks = contentToBeAdded.filter(hash => hash.type == "book").map(
+        //     hash=> hash.item.id
+        // )
+    
+        e.preventDefault()
+        const params = {
+            name: libTitle,
+            purpose: purpose,
+            profileId: currentProfile.id,
+            pageIdList: pageIdList,
+            bookIdList: bookIdList,
+            writingIsOpen: writingIsOpen,
+            privacy:libIsPrivate,
+            commenters:[],
+            readers:[],
+            editors:[],
+            writers:[]
+
+        }
+        
+        dispatch(createLibrary(params)).then((result) => {
+            const {payload} = result
+          
+            navigate(`/library/${payload.library.id}`)
+        }).catch((err) => {
+            
+        });
+    
+    }
+    const handleLibTitleChange = (e)=>{
+        setLibTitle(e.target.value)
+    }
+    return( <FormGroup style={{
+
+    }}className="create-form"  >
+        
+        <TextField  type="text"
+                    label="Library Name" 
+                    placeholder="Library Name" 
+                    className="text-input" 
+                    value={libTitle}
+                    onChange={(e)=>handleLibTitleChange(e)}/>
+        <FormControlLabel 
+
+            control={<Checkbox 
+                        onChange={
+                            (e)=>{
+                setLibIsPrivate(e.target.checked)
+                }
+            } 
+            name="privacy" 
+            checked={libIsPrivate} 
+            className="checkbox"/> 
+        }   label={`${libIsPrivate? "Private":"Public"}`}/>
+    <FormControlLabel 
+        control={<Checkbox onChange={
+            (e)=>{
+                setWritingIsOpen(e.target.checked)
+            }}checked={writingIsOpen} 
+           /> 
+        } label={`Writing is ${writingIsOpen? "open":"close"}`}/>
+    <label>Purpose:</label>
+        <TextareaAutosize
+         onChange={(e)=>{
+            setPurpose(e.target.value);
+        }}id="purpose" name="purpose" rows="5" cols="33"/> 
+    
+   
+    <Button variant="outlined" style={{marginTop:"2em",backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}type="submit" onClick={(e) => handleOnSubmit(e)}>
+Save
+</Button>
+    </FormGroup>)
 }

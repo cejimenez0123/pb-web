@@ -6,7 +6,7 @@ import {signOutAction} from "../actions/UserActions"
 import { useNavigate } from 'react-router-dom'
 import history from '../history'
 import AppBar from '@mui/material/AppBar'
-import {    ListItem,
+import { 
             Container,
             Toolbar,
             Typography,
@@ -18,7 +18,6 @@ import {    ListItem,
             Tooltip,
             Avatar
         } from '@mui/material'
-import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -57,8 +56,7 @@ function NavbarContainer(props){
    
     const [anchorEl, setAnchorEl] = useState(null);
     
-    const [anchorElCreateLarge,setAnchorElCreateLarge] = useState(null);
-   
+  
    
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -74,7 +72,6 @@ function NavbarContainer(props){
     }
     const settings = [SettingName.profile,SettingName.account,SettingName.logout]; 
     const [anchorElNav, setAnchorElNav] = useState(null);
-    const [anchorElCreateB,setAnchorElCreateB] = useState(null);
     const [open,setOpen]= useState(false)
     const [anchorElUser, setAnchorElUser] = useState(null);
     
@@ -90,11 +87,6 @@ function NavbarContainer(props){
     const handleOpenClick = ()=>{
         setOpen(!open)
     }
-    const navigatePageImage=()=>{
-      window.alert("FS")
-      // navigate("/page/image")
-    }
- 
     return (
         <AppBar position="static"
                 style={{backgroundColor:theme.palette.primary.dark}}>
@@ -132,6 +124,9 @@ function NavbarContainer(props){
                 <MenuIcon />
               </IconButton>
               <Menu
+                onBlur={()=>{
+                  setAnchorElNav(null)
+                }}
                 id="menu-appbar"
                 anchorEl={anchorElNav}
                 anchorOrigin={{
@@ -160,55 +155,64 @@ function NavbarContainer(props){
                             
                           <div key={page}>
                                
-                               {/* <MenuItem onClick={handleOpenClick}>
-                    <Typography textAlign="center">{page} </Typography>
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                  </MenuItem>
-                  <Collapse in={open} timeout="auto" unmountOnExit> */}
+                            
                     <List>
-                      <ListItemButton key="page" 
-                        onClick={(e)=>navigate("/page/new")}sx={{ pl: 4 }}
+                      <MenuItem onClick={()=>{
+                        setAnchorElNav(null)
+                        navigate("/")
+                      }} sx={{ pl: 4 }}>
+                              Home
+                      </MenuItem>
+                      <MenuItem 
+                        onClick={()=>{
+                          setAnchorElNav(null)
+                          navigate("/discovery")
+                        }}
+                        sx={{ pl: 4 }}>
+                              Discovery
+                      </MenuItem>
+                      <MenuItem key="page" 
+                        onClick={(e)=>{
+                          setAnchorElNav(null)
+                          navigate("/page/new")}}sx={{ pl: 4 }}
                         >
                           Page <CreateIcon/>
-                    {/* Page {anchorElCreateB ? <ExpandLess /> : <ExpandMore />} */}
-                        </ListItemButton>
-                        <ListItemButton key={`image`} 
-                        onClick={(e)=>navigate("/page/image")}sx={{ pl: 4 }}
+                   </MenuItem>
+                        <MenuItem key={`image`} 
+                        onClick={(e)=>{
+                          setAnchorElNav(null)
+                          navigate("/page/image")}}sx={{ pl: 4 }}
                         >
                           Page <ImageIcon/>
-                    {/* Page {anchorElCreateB ? <ExpandLess /> : <ExpandMore />} */}
-                        </ListItemButton>
-                         {/* <Collapse in={anchorElCreateB} timeout="auto" unmountOnExit>
-                            <List>
-                                <ListItemButton key="text" onClick={()=>{ navigate("/page/new")}}>
-                                    <ListItemText primary="Text"/>
-                                </ListItemButton>
-                                <ListItemButton key="picture" onClick={()=>{
-                                  window.alert("B")
-                                  navigate("/page/image")}}>
-                                    <ListItemText primary="Picture"/>
-                                </ListItemButton>
-                            </List>
-                            </Collapse> */}
-                         <MenuItem key="book" onClick={()=>{ navigate("/book/new")}} sx={{ pl: 4 }}>
-                         
-                           <ListItemText primary="Book" />
-                         </MenuItem>
-                         <MenuItem key="library" onClick={()=>{ navigate("/library/new")}} sx={{ pl: 4 }}>
+                    </MenuItem>
+
+                        <MenuItem  key="book" 
+                                    onClick={()=>{ 
+                                      setAnchorElNav(null)
+                                      navigate("/book/new")
+                                      }} 
+                                    sx={{ pl: 4 }}>
+                            <ListItemText primary="Book" />
+                        </MenuItem>
+                         <MenuItem key="library" onClick={()=>{ 
+                          
+                          setAnchorElNav(null)
+                          navigate("/library/new")}} sx={{ pl: 4 }}>
                            <ListItemText primary="Library" />
                          </MenuItem>
                
                              </List>
-                             {/* </Collapse> */}
+                          
                              </div>)}else{
                                 return(<div key={page}>
 
                                 </div>)
                              }
                                 }else{
-                        if(currentProfile && page==PageName.login){
-                            return
-                        }else{
+                      
+                       if(page ==PageName.create){
+                        return
+                       }else{
                    return( 
                   <MenuItem onClick={()=>         
                         handleCloseNavMenu(page)
@@ -216,8 +220,8 @@ function NavbarContainer(props){
                     <Typography onClick={()=>         
                         handleCloseNavMenu(page)
                   }  textAlign="center">{page}</Typography>
-                  </MenuItem>)
-                  }}
+                  </MenuItem>)}
+                  }
             })
           }
               </Menu>
@@ -258,11 +262,12 @@ function NavbarContainer(props){
                 aria-expanded={anchorEl ? 'true' : undefined}
                 sx={{ my: 2, color: 'white', display: 'block' }} 
                 onClick={(e)=>debounce(handleClick(e),5)}>
-                        Create {anchorEl ? <ExpandLess /> : <ExpandMore />}
+                        Create  {anchorEl ? <ExpandLess /> : <ExpandMore />}
                       </Button >
                      <Menu
                 anchorEl={anchorEl}
                 open={anchorEl}
+          
                 onClose={handleClose}
                 anchorOrigin={{
                     vertical: 'bottom', // Position the menu below the button
@@ -275,38 +280,27 @@ function NavbarContainer(props){
                 MenuListProps={{
               'aria-labelledby': 'demo-customized-button',
                     }}>    
-             {/* 
-             <ListItemButton key="page" onBlurCapture={()=>setAnchorElCreateLarge(null)} onClick={(e)=>{
-            if(!anchorElCreateLarge){
-            setAnchorElCreateLarge(e.target)}else{
-                setAnchorElCreateLarge(false)
-            }
-            }}>*/}
-                
-                   {/*    Page{anchorElCreateLarge ? <ExpandLess /> : <ExpandMore />}
-                     </ListItemButton>
-                     <Collapse in={anchorElCreateLarge} timeout="auto" unmountOnExit>*/}
-                        {/* <List>
-                        <ListItemButton onClick={()=>{navigate("/page/new")}}>
-                          <ListItemText primary="Text"/>
-                      </ListItemButton>
-                        <ListItemButton onClick={navigatePageImage} >
-                                <ListItemText primary="Picture"/>
-                        </ListItemButton>    
-                      </List> */}
-                    <MenuItem onClick={()=>navigate("/page/new")}>
+                  
+                    <MenuItem 
+                      onClick={()=>{
+                        handleClose()
+                        navigate("/page/new")
+                        }}>
                       Page <CreateIcon/>
                     </MenuItem>
-                    <MenuItem onClick={()=>navigate("/page/image")}>
+                    <MenuItem onClick={()=>{
+                      handleClose()
+                      navigate("/page/image")}}>
                       Page <ImageIcon/>
                     </MenuItem>
-                     {/*     </Collapse>*/}
                     <MenuItem onClick={()=>{
+                        handleClose()
                         navigate("/book/new")
                     }}>
                         Book
                     </MenuItem>
                     <MenuItem onClick={()=>{
+                        handleClose()
                         navigate("/library/new")
                     }}>
                         Library

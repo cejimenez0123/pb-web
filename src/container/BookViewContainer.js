@@ -1,5 +1,5 @@
 
-import { fetchBook } from "../actions/BookActions"
+import { fetchBook, setBookInView } from "../actions/BookActions"
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect ,useState} from "react"
@@ -8,12 +8,13 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/BookView.css"
 import { clearPagesInView } from "../actions/PageActions"
-import {Button} from "@mui/material"
+import {Button, IconButton} from "@mui/material"
 import theme from "../theme"
 import { fetchProfile ,createFollowBook,deleteFollowBook,fetchFollowBooksForProfile} from "../actions/UserActions"
-import { Settings } from "@mui/icons-material"
+import { Add, Settings } from "@mui/icons-material"
 import debounce from "../core/debounce"
 function BookViewContainer({book,pages}){
+    const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -171,7 +172,19 @@ function BookViewContainer({book,pages}){
 
 }
     if( book!=null){ 
-    
+    let addBtn = (<div>
+
+    </div>)
+    if(book.writingIsOpen==true){
+       addBtn= (<IconButton onClick={()=>{
+        setBookInView({book})
+        navigate(`/book/${book.id}/add`)
+
+       }}>
+            <Add/>
+        </IconButton>)
+   
+    }
   
 
     return(<div className="evenly container view">
@@ -183,7 +196,7 @@ function BookViewContainer({book,pages}){
             <h6> {book.purpose}</h6>
             </div>
             {followDiv}
-            
+            {addBtn}
             </div>
         </div>
         <div className="right-bar">

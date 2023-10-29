@@ -70,28 +70,22 @@ function PageListItem({page}) {
     if(currentProfile!=null && page.profileId==currentProfile.id){
         buttonDiv = (
             <div >
-<Dropdown>
-                    <MenuButton
-                    
-                        >
-                    <Add />
+                <Dropdown>
+                    <MenuButton>
+                        <Add />
                     </MenuButton>
-                <Menu>
-  <MenuItem onClick={()=>handleAddClick("book")}>
-                        Book
-                    </MenuItem>
-                    <MenuItem onClick={()=>handleAddClick("library")}>
-                        Library
-                    </MenuItem>
-    
-  </Menu>
+                    <Menu>
+                        <MenuItem onClick={()=>handleAddClick("book")}>
+                            Book
+                        </MenuItem>
+                        <MenuItem onClick={()=>handleAddClick("library")}>
+                            Library
+                        </MenuItem>
+                    </Menu>
                 </Dropdown>
                 <Dropdown>
-                <MenuButton
-    
-  
-  >
-    <MoreVert />
+                    <MenuButton>
+                    <MoreVert />
   </MenuButton>
   <Menu>
   <MenuItem onClick={()=>{
@@ -114,7 +108,7 @@ function PageListItem({page}) {
     }
             return(<div className='list-item'>
                 <div>
-                <a onClick={handleOnClick}> 
+                <a className="title" onClick={handleOnClick}> 
                     <h6>{page.title}</h6>
                 </a>
                 </div> 

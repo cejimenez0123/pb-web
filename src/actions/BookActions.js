@@ -489,6 +489,20 @@ const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>
     return {error: new Error("Error: Delete Book"+e.message)};
   }
 })
+const updateBookContent = createAsyncThunk("books/updateBookContent", async (params,thunkApi)=>{
+  try {
+    const {book,pageIdList} = params
+    let ref = doc(db,'book',book.id)
+    await updateDoc(ref,{ pageIdList:pageIdList
+    })
+    book.pageIdList = pageIdList
+    return {
+      book:book
+    }
+  }catch(e){
+    return {error: new Error("Error: Update Book Content"+e.message)};
+  }
+})
 
 const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",async (params,thunkApi)=>{
   try {
@@ -539,4 +553,5 @@ const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
             deleteBook,
             updateBook,
             setBooksToBeAdded,
-            appendSaveRolesFoBook}
+            appendSaveRolesFoBook,
+            updateBookContent}

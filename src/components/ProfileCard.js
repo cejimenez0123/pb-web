@@ -15,7 +15,9 @@ export default function ProfileCard(props){
             <div className="flex flex-direction-column profileCardNames">
 
                 <h4>@{props.currentProfile.username}</h4>
+             
             </div>
+            <h6>{props.currentProfile.selfStatement}</h6>
             <div className="profile-buttons">
     <Button onClick={()=>{
             navigate("/profile/edit")
