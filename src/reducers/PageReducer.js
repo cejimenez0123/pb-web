@@ -11,7 +11,8 @@ import {  getPublicPages ,
           clearPagesInView,
           fetchEditingPage,
           deletePage,
-          fetchCommentsOfPage
+          fetchCommentsOfPage,
+          deleteComment
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
 
@@ -109,7 +110,12 @@ const pageSlice = createSlice({
     }).addCase(fetchCommentsOfPage.fulfilled,(state,{payload})=>{
         state.commentsInView = payload.comments
         state.loading =false
-    })}
+    }).addCase(deleteComment.rejected,(state,{payload})=>{
+      state.error = payload.error
+    }).addCase(deleteComment.fulfilled,(state,{payload})=>{
+       let comments= state.commentsInView.filter(com=>com.id != payload.comment)
+      state.commentsInView = comments
+      })}
   })
     
 export {pageSlice}

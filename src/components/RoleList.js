@@ -34,7 +34,7 @@ export default function RoleList({getRoles,library,book,type}) {
    
     useEffect(()=>{
         getRoles(newRoles)
-    },[newRoles]) 
+    },[]) 
     useEffect(()=>{
         fetchProfiles()
     },[])
@@ -62,7 +62,7 @@ export default function RoleList({getRoles,library,book,type}) {
     useEffect(()=>{
         setOldRoles()
         setRoleList()
-    },library)
+    },[])
     const handleChosingProfileRole =(profile,role)=>{
 
         if(library){

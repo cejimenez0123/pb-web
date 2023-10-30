@@ -14,7 +14,7 @@ export default function CommentItem({page,comment}){
     useEffect(()=>{
         let list = commentsInView.filter(com=>com.parentCommentId == comment.id)
         setComments(list)
-    },[comment])
+    },[])
     
     if(profile){
         profileDiv=(<div className="comment-author">

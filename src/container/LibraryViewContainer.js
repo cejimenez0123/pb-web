@@ -2,20 +2,24 @@
 import { useEffect,useState} from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { useSelector,useDispatch } from "react-redux"
-import { fetchArrayOfPages, fetchArrayOfPagesAppened } from "../actions/PageActions"
-import { useParams } from "react-router-dom"
-import { createFollowLibrary, deleteFollowLibrary, fetchAllProfiles } from "../actions/UserActions"
+import {    fetchArrayOfPages, 
+            fetchArrayOfPagesAppened,
+            clearPagesInView  } from "../actions/PageActions"
+import { useParams, useNavigate  } from "react-router-dom"
+import {updateHomeCollection,
+        createFollowLibrary,
+        deleteFollowLibrary,
+        fetchAllProfiles, 
+        fetchFollowLibraryForProfile} from "../actions/UserActions"
 import { fetchLibrary } from "../actions/LibraryActions"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/Library.css"
-import { clearPagesInView } from "../actions/PageActions"
-import BookRole from "../domain/models/bookrole"
 import { fetchArrayOfBooks } from "../actions/BookActions"
-import { useNavigate } from "react-router-dom"
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Button } from "@mui/material"
 import theme from "../theme"
 import "../App.css"
+import { current } from "@reduxjs/toolkit"
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -28,6 +32,7 @@ function LibraryViewContainer(props){
     const [hasMore,setHasMore] = useState(false)
     const [error,setError]= useState(false)
     const [errorMessage,setErrorMessage] = useState("Error")
+    const homeCollection = useSelector(state=>state.users.homeCollection)
     useEffect(()=>{
         dispatch(fetchAllProfiles())
         if(libraryInView==null || (libraryInView!=null && libraryInView.id != pathParams["id"])){
@@ -45,13 +50,18 @@ function LibraryViewContainer(props){
             
             
         }
-      
+        if(currentProfile){
+            const params = {
+                profile: currentProfile
+            }
+            dispatch(fetchFollowLibraryForProfile(params))
+        }
     },[])
     useEffect(()=>{
             getPages()
             getBooks()
     
-    },[libraryInView])
+    },[])
     const libraryInfo=()=>{
         if(libraryInView!=null){
             const lib = libraryInView
@@ -117,7 +127,21 @@ function LibraryViewContainer(props){
                 const params = {
                         library: libraryInView,
                         profile: currentProfile}
-                dispatch(createFollowLibrary(params))
+                dispatch(createFollowLibrary(params)).then(()=>{
+                
+                        let books = [...homeCollection.books]
+                        let libraries = [...homeCollection.libraries,libraryInView.id]
+                        let pages = [...homeCollection.pages]
+                        let profiles = [...homeCollection.profiles]
+                        const homeParams ={
+                            profile: currentProfile,
+                            books: books,
+                            pages: pages,
+                            libraries:libraries,
+                            profiles:profiles
+                        }
+                        dispatch(updateHomeCollection(homeParams))
+               })
     }
 
     }else{
@@ -244,7 +268,7 @@ function LibraryViewContainer(props){
     const contentList = ()=>{
         if(!error){
         if(itemsInView!=null ){
-            return(<div className="content-list view">
+            return(<div className="content-list">
                 <div className="content">
                 <InfiniteScroll 
                 dataLength={itemsInView.length}
@@ -309,10 +333,11 @@ function LibraryViewContainer(props){
     return (
     <div>
     <div className="two-panel">
-        <div className="left-bar flex-end-right">
-                    {contentList()}
-             
+        <div className="left-bar">
+        {contentList()}
         </div>
+                    
+             
         <div className="right-bar">
       
                 {libraryInfo()}

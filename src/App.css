@@ -18,6 +18,10 @@ html, body {
   pointer-events: none;
 }
 @media (min-width: 1000px) {
+  .content-list{
+    width: 45em;
+    margin: auto;
+  }
 .sign-card{
   display: flex;
   flex-direction: column;
@@ -60,9 +64,7 @@ html, body {
   padding: 0.2em 1em;
   border-radius: 25px;
 }
-.role-item div{
 
-}
 
 #sign-in{
   padding-top: 2em;
@@ -91,7 +93,7 @@ html, body {
 }
 
 .create-form .purpose{
-  text-align: start;
+  text-align: flex-start;
   font-weight: 700;
 
 }
@@ -102,7 +104,7 @@ html, body {
   
 } */
 #login .forgot{
-  text-align: start;
+  text-align: flex-start;
 }
 #login button[type="submit"]{
   margin-top: 2em;
@@ -177,9 +179,7 @@ html, body {
     padding: 0.2em 1em;
     border-radius: 25px;
   }
-  .role-item div{
   
-  }
   
   #sign-in{
     padding-top: 2em;
@@ -207,7 +207,7 @@ html, body {
   }
   
   .create-form .purpose{
-    text-align: start;
+    text-align: flex-start;
     font-weight: 700;
   
   }
@@ -218,7 +218,7 @@ html, body {
     
   } */
   #login .forgot{
-    text-align: start;
+    text-align: flex-start;
   }
   #login button[type="submit"]{
     margin-top: 2em;
@@ -318,7 +318,7 @@ html, body {
   margin:auto;
   margin-bottom: 2em;
   padding: 2em 3em;
-  text-align:start;
+  text-align:flex-start;
   background-color: rgb(230, 231, 226);
 }
 .content-list .inner{
@@ -340,12 +340,12 @@ html, body {
 }
 .inner .btn-row{
   width: 45em;
-  justify-content: start;
+  justify-content: flex-start;
   background-color: rgb(194, 211, 227);
   display: flex;
   margin: auto;
   flex-direction: row;
-  align-items: start;
+  align-items: flex-start;
   padding-top: 1em;
   border-top-right-radius: 25px;
   border-top-left-radius: 25px;
@@ -367,7 +367,7 @@ html, body {
     width:100vw;
     margin:auto;
     padding: 2em 3em;
-    text-align:start;
+    text-align:flex-start;
     background-color: rgb(230, 231, 226);
   }
   .content-list .inner{
@@ -381,31 +381,24 @@ html, body {
     min-width: 100%;
     background-color: rgb(230, 231, 226);
     min-height: 30em;
-    /* border-bottom-left-radius: 25px;
-    border-bottom-right-radius: 25px; */
+
     margin-bottom: 1em;
     
     
   }
   .inner .btn-row{
     width: 100%;
-    justify-content: start;
+    justify-content: flex-start;
     background-color: rgb(194, 211, 227);
     display: flex;
     margin: auto;
     flex-direction: row;
-    align-items: start;
+    align-items: flex-start;
     padding-top: 1em;
     /* border-top-right-radius: 25px;
     border-top-left-radius: 25px; */
   
   }
-}
-.list-item .title{ 
-
- 
-  
-  
 }
 
 @media (min-width: 1000px) {
@@ -413,6 +406,7 @@ html, body {
   padding: 1.5em 2em 1.5em 2em !important;
   display: flex;
   flex-direction: row;
+  min-width: 40em;
   justify-content: space-between;
   background-color: white;
   border-bottom: 2px solid gainsboro;
@@ -425,7 +419,8 @@ html, body {
   flex-direction: row;
   padding: 0px 2px 0px 2px;
   margin-top: 1em;
-  
+  text-decoration: none;
+  color:black
 }
 }
 .list-item .title h6 {
@@ -434,7 +429,7 @@ html, body {
 }
   
 .list-item .title {
-  max-width: 15em;
+  max-width: 25em;
   min-width: 10em; 
   overflow:scroll;
 }

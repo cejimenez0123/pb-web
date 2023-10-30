@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { getCurrentProfile,updateProfile} from "../actions/UserActions";
+import { getCurrentProfile,updateProfile,deleteUserAccounts} from "../actions/UserActions";
 import useAuth from "../core/useAuth";
 import { getProfileLibraries } from "../actions/LibraryActions";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
-import { Button,TextField,FormGroup,TextareaAutosize,Checkbox,FormControlLabel } from "@mui/material";
+import {    Button,
+            TextField,
+            FormGroup,
+            TextareaAutosize,
+            Checkbox,
+            FormControlLabel,
+            Dialog,
+            DialogActions,DialogContent,DialogContentText,DialogTitle } from "@mui/material";
+
 import "../styles/Setting.css"
 import theme from "../theme"
 // import Modal from "../components/Modal";
@@ -27,7 +35,20 @@ function SettingsContainer(props) {
     const dispatch = useDispatch()
     const [hasMore,setHasMore]=useState(true)
     let [pending,setPending] = useState(false)
-    
+    const [deleteDialog,setDeleteDialog] = useState(false);
+
+  const handleClickOpen = () => {
+    setDeleteDialog(true);
+  };
+  const handleAgree = () => {
+    dispatch(deleteUserAccounts()).then(()=>{
+        navigate("/")
+    })
+
+  }
+  const handleClose = () => {
+    setDeleteDialog(false);
+  };
     useEffect(()=>{
             if(currentProfile!=null){
                 setPending(true)
@@ -202,8 +223,32 @@ function SettingsContainer(props) {
                             </Button>
                         </FormGroup>
                         <Button className="delete"
-                            style={{backgroundColor: theme.palette.error.main,color:theme.palette.error.contrastText}}
+                                onClick={handleClickOpen}
+                                style={{marginTop: "3em",marginBottom: "4em",
+                                        backgroundColor: theme.palette.error.main,
+                                        color:theme.palette.error.contrastText}}
                         > Delete</Button>
+                        <Dialog
+        open={deleteDialog}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Are you sure you want to delete your account?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Deleting your account can't be reversed
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleAgree} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
                         </div>
             </div>)
     }else{

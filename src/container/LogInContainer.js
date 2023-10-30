@@ -10,10 +10,8 @@ import { VisibilityOff,Visibility } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import { uploadProfilePicture } from '../actions/UserActions';
-
 import {sendPasswordResetEmail } from "firebase/auth";
 import theme from '../theme';
-// import Modal from '../components/Modal';
 import { Modal } from '@mui/joy';
 import { auth } from '../core/di';
 const VisuallyHiddenInput = styled('input')({

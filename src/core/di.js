@@ -1,9 +1,8 @@
 
 import { initializeApp } from "firebase/app";
-import firebase from "firebase/compat/app";
-import { getAuth, signInAnonymously,setPersistence,browserSessionPersistence, browserLocalPersistence } from "firebase/auth"
+import { getAuth, browserLocalPersistence } from "firebase/auth"
 import "firebase/compat/firestore"
-import { getFirestore,Firestore,initializeFirestore} from "firebase/firestore";
+import { getFirestore} from "firebase/firestore";
 import { getStorage } from "firebase/storage"
 // import { firebaseConfig } from '../fire';
 
@@ -28,7 +27,7 @@ const config = { apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   measurementId: process.env.REACT_APP_MEASUREMENT_ID}
 const firebaseConfig = config
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app)
+const auth = getAuth(app,{setPersistence: browserLocalPersistence})
 // setPersistence(auth,browserLocalPersistence)
 // .then(() => {
 //   signInAnonymously(auth)

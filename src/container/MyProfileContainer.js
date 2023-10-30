@@ -6,33 +6,22 @@ import ContentList from '../components/ContentList';
 import { ExpandLess,ExpandMore } from '@mui/icons-material';
 import theme from "../theme"
 import CreateIcon from '@mui/icons-material/Create';
-import MediaQuery from 'react-responsive'
 import ImageIcon from '@mui/icons-material/Image';
 import debounce from "../core/debounce"
-import {    ListItem,
-    Container,
-    Toolbar,
-    Typography,
-    Box,
-    IconButton,
+import {  
     Menu,
     MenuItem,
     Button,
-    Tooltip,
-    Avatar
+    
 } from '@mui/material'
 function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView,authState}){
    
     if( currentProfile){ 
         return(
             <div className='container reverse'>
-                
-                
-        
             <div className='main-bar'>
                     <ContentList currentProfile={currentProfile} pagesInView={pagesInView} booksInView={booksInView} librariesInView={librariesInView}/>
-            </div>
-                    
+            </div>         
             <div className="right-side-bar">
                     <ProfileCard currentProfile={currentProfile}/>
                 
@@ -102,52 +91,6 @@ function CreateButtons (props){
                         Library
                     </MenuItem>
             </Menu>
-    {/* <Button key="page" 
-    onBlurCapture={()=>setAnchorElCreate(null)}
-    onClick={(e)=>{
-        if(!anchorElCreate){
-            setAnchorElCreate(e.target)}else{
-            setAnchorElCreate(false)
-        }
-    }}
-    style={{
-        backgroundColor: theme.palette.secondary.main,
-        color:theme.palette.secondary.contrastText
-        }}
-    variant="outlined"
-    >
-        Create Page{anchorElCreate ? <ExpandLess /> : <ExpandMore />}
-    </Button>
-    <Collapse  in={anchorElCreate} 
-                timeout="auto"
-                unmountOnExit>
-        <List>
-            <ListItemButton onClick={()=>{ navigate("/page/new")}}>
-                <ListItemText primary="Text"/>
-            </ListItemButton>
-            <ListItemButton onClick={()=>{navigate("/page/image")}} >
-                <ListItemText  primary="Picture"/>
-            </ListItemButton>
-        </List>
-    </Collapse>     
-    <Button
-        style={{backgroundColor: theme.palette.secondary.main,
-                color:theme.palette.secondary.contrastText}}
-        onClick={()=>{
-                    navigate("/book/new")
-                }} 
-        variant="outlined"
-    >Create Book
-    </Button>
-    <Button
-        onClick={()=>{
-                navigate("/library/new")
-            }}
-        style={{    backgroundColor: theme.palette.secondary.main,
-                    color:theme.palette.secondary.contrastText}}
-        variant="outlined"
-    >Create Library</Button> */}
-</div>
-)
+        </div>)
 }
 export default MyProfileContainer

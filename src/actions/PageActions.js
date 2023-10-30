@@ -1,9 +1,9 @@
-import {db,app,auth} from "../core/di"
-import {where,deleteDoc,query,and,updateDoc,or,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, arrayUnion} from "firebase/firestore"
+import {db,auth} from "../core/di"
+import {where,deleteDoc,query,and,updateDoc,or,collection,getDocs,getDoc,doc,setDoc, Timestamp, arrayUnion} from "firebase/firestore"
 import Page from "../domain/models/page"
 import PageComment from "../domain/models/page_comment"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
-import { useDispatch } from "react-redux"
+import Contributors from "../domain/models/contributor"
 
 
 const getPublicPages = createAsyncThunk(
@@ -44,7 +44,8 @@ const getPublicPages = createAsyncThunk(
               if(commentable==null){
                 commentable=true
               }
-          
+              const contributors= new Contributors(commenters,
+                readers,writers,editors)
                 const page = new Page(  id,
                                         title,
                                         data,
@@ -53,10 +54,7 @@ const getPublicPages = createAsyncThunk(
                                         privacy,
                                         commentable,
                                         type,
-                                        readers,
-                                        writers,
-                                        editors,
-                                        commenters,
+                                        contributors, 
                                         created)
               pageList = [...pageList, page]
             })
@@ -99,6 +97,8 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
         approvalScore: page.approvalScore,
         type: page.type,
       })
+      const contributors= new Contributors(page.commenters,
+        page.readers,page.writers,page.editors)
       let newPage= new Page(page.id,
                           title,
                           data,
@@ -107,10 +107,7 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
                           privacy,
                           commentable,
                           page.type,
-                          page.readers,
-                          page.writers,
-                          page.editors,
-                          page.commenters,
+                          contributors,
                           page.created)
     
       return {
@@ -177,7 +174,8 @@ const getProfilePages= createAsyncThunk(
             if(commentable==null){
               commentable=true
             }
-        
+            const contributors= new Contributors(commenters,
+              readers,writers,editors)
               const page =  new Page( id,
                                       title,
                                       data,
@@ -185,10 +183,7 @@ const getProfilePages= createAsyncThunk(
                                       approvalScore,
                                       privacy,
                                       type,
-                                      readers,
-                                      writers,
-                                      editors,
-                                      commenters,
+                                      contributors,
                                       created)
      
             pageList = [...pageList, page]
@@ -224,7 +219,7 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
   try{
 
   
-  const snapshot = await setDoc(doc(db,"page", id), { id,
+  await setDoc(doc(db,"page", id), { id,
                                                       title,
                                                       data,
                                                       profileId,
@@ -237,7 +232,8 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
                                                       commenters,
                                                       editors,
                                                       created:created})
-
+     const contributors= new Contributors(commenters,
+          readers,writers,editors)
   const page = new Page(  id,
                           title,
                           data,
@@ -246,10 +242,7 @@ const createPage = createAsyncThunk("pages/createPage", async function(params,th
                           privacy,
                           commentable,
                           type,
-                          readers,
-                          writers,
-                          editors,
-                          commenters,
+                          contributors,
                           created)
 
   return { page }
@@ -297,8 +290,9 @@ const fetchPage = createAsyncThunk("pages/fetchPage", async function(params,thun
   }
   if(commentable==null){
     commentable=true
-  }
-  const page = new Page(id=pId,
+  } const contributors= new Contributors(commenters,
+    readers,writers,editors)
+  const page = new Page(pId,
                         title,
                         data,
                         profileId,
@@ -306,10 +300,7 @@ const fetchPage = createAsyncThunk("pages/fetchPage", async function(params,thun
                         privacy,
                         commentable,
                         type,
-                        readers,
-                        writers,
-                        editors,
-                        commenters,
+                        contributors,
                         created)
   return {
     page
@@ -358,8 +349,9 @@ const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async functi
   }
   if(commentable==null){
     commentable=true
-  }
-  const page = new Page(id=pId,
+  } const contributors= new Contributors(commenters,
+    readers,writers,editors)
+  const page = new Page(pId,
                         title,
                         data,
                         profileId,
@@ -367,10 +359,7 @@ const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async functi
                         privacy,
                         commentable,
                         type,
-                        readers,
-                        writers,
-                        editors,
-                        commenters,
+                        contributors,
                         created)
   return {
     page
@@ -410,13 +399,12 @@ const appendSaveRolesForPage = createAsyncThunk("pages/appendSaveRolesForPages",
   try {
     const { pageIdList,
             readers,
-            commenters,
+           
             } = pageIdList
         pageIdList.forEach(id=>{
             let ref =collection(db,'page',id)
             updateDoc(ref,{
               readers: arrayUnion(readers),
-              commenters: arrayUnion(commenters),
             })
 
         }
@@ -466,7 +454,8 @@ const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (para
       if(commentable==null){
         commentable=true
       }
-  
+      const contributors= new Contributors(commenters,
+        readers,writers,editors)
         const page =  new Page( id,
                                 title,
                                 data,
@@ -475,10 +464,7 @@ const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (para
                                 privacy,
                                 commentable,
                                 type,
-                                readers,
-                                writers,
-                                editors,
-                                commenters,
+                                contributors,
                                 created)
   
       pageList = [...pageList, page]
@@ -558,6 +544,8 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
       if(commentable==null){
         commentable=true
       }
+      const contributors= new Contributors(commenters,
+        readers,writers,editors)
         const page =  new Page( id,
                                 title,
                                 data,
@@ -566,10 +554,7 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
                                 privacy,
                                 commentable,
                                 type,
-                                readers,
-                                writers,
-                                editors,
-                                commenters,
+                                contributors,
                                 created)
       pageList = [...pageList, page]
     })
@@ -650,6 +635,18 @@ return {error }
 }}
 
 )
+const deleteComment = createAsyncThunk("pagees/deleteComment",async (params,thunkApi)=>{
+  const { comment}= params
+
+  try{
+  await deleteDoc(doc(db, "page", comment.pageId,"comment",comment.id));
+  return {
+    comment
+  }
+  }catch(e){
+    return{ error: new Error("Error Deleteing comment"+e.message)}
+  }
+})
 const pagesLoading = createAction("PAGES_LOADING", function prepare(){
     return {
         payload: {
@@ -685,5 +682,6 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           appendSaveRolesForPage,
           createComment,
           fetchCommentsOfPage,
-          deletePage
+          deletePage,
+          deleteComment
         } 

@@ -28,14 +28,14 @@ export default function PageViewContainer({page}){
         const id =  pathParams["id"]
      
         dispatch(fetchPage(pathParams)).then(result=>{
-            if(result.error==null){
+            if(result.error!=null){
                 fetchComments()
             }})
     
     }
     useEffect(()=>{
-        dispatch(fetchAllProfiles())
-        if(page==null){
+        const {id}= pathParams
+        if(page==null || page.id!=id){
             getPage()
         }else{
             setHasMoreComments(true)
@@ -44,22 +44,24 @@ export default function PageViewContainer({page}){
     },[])
     useEffect(()=>{
         fetchComments()
-    },[page])
-    const fetchComments=()=>{
-        if(page && commentsInView){
-            // const params = {page}
-            // dispatch(fetchCommentsOfPage(params)).then(result=>{
-            //     const {payload}=result
-            //     const {comments} = payload
-                // let list = commentsInView.filter(comment=>comment.parentCommentId.length == 0 || comment.parentCommentId == null)
-                setComments(commentsInView)
-                setHasMoreComments(false)
+    },[])
+    const fetchComments = ()=>{
+        if(page!=null){
+            const params = {
+                page
             }
+            dispatch(fetchCommentsOfPage(params)).then(result=>{
+                if(result.error==null){
+                    setComments(commentsInView)
+                    setHasMoreComments(false)
+                }
+            })
         }
+    }
     
     useEffect(()=>{
         fetchComments()
-    },[commentsInView])
+    },[])
 
     if(!loading && page!=null){
 

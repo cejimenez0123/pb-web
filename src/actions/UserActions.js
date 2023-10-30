@@ -3,9 +3,8 @@ import { auth,db } from  "../core/di"
 import {  signInWithEmailAndPassword,
           signOut,
           createUserWithEmailAndPassword,
-          setPersistence,
-          browserLocalPersistence,
-        browserSessionPersistence } from "firebase/auth"
+      
+       } from "firebase/auth"
 import {  where,
           query,
           deleteDoc,
@@ -24,6 +23,7 @@ import { storage } from "../core/di";
 import FollowBook from "../domain/models/follow_book"
 import FollowLibrary from "../domain/models/follow_library"
 import FollowProfile from "../domain/models/follow_profile"
+import Collection from "../domain/models/collection";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -31,9 +31,8 @@ const logIn = createAsyncThunk(
         let password = params["password"]
         try {
            
-        const userCred = await setPersistence(auth,browserLocalPersistence).then(() => {
-                return signInWithEmailAndPassword(auth,email,password)
-            })
+        const userCred = await signInWithEmailAndPassword(auth,email,password)
+
             
             const uId=userCred.user.uid
             const snapshot = await getDocs(
@@ -90,10 +89,8 @@ const signUp = createAsyncThunk(
     let email = params["email"]
     let password = params["password"]
     try {
-      const userCred = await setPersistence(auth,browserLocalPersistence).then(()=>{
-        return createUserWithEmailAndPassword(auth, email, password)
-      
-      })
+      const userCred = await  createUserWithEmailAndPassword(auth, email, password)
+  
           const pId = doc(collection(db,"profile")).id
         const uId = userCred.user.uid
       
@@ -102,6 +99,7 @@ const signUp = createAsyncThunk(
         
         new Library(libId,"Saved")
         const timestamp = Timestamp.now()
+        
         await setDoc(doc(db,"library",libId),{
                 id:libId,
                 name:"Saved",
@@ -138,6 +136,11 @@ const signUp = createAsyncThunk(
         privacy:privacy,
         created:timestamp
       })
+      await setDoc(doc(db,"profile",pId,"collection","home"),
+            { books:[],
+              libraries:[],
+              pages:[],
+              profiles:[]})
       return {
       
             profile
@@ -151,7 +154,41 @@ const signUp = createAsyncThunk(
     }
     }
 )
+const createCollection = createAsyncThunk("ds",async (params,thunkApi)=>{
+  const {profile} = params
+ 
+  await setDoc(doc(db,"profile",profile.Id,"collection","home"),
+  { books:[],
+    libraries:[],
+    pages:[],
+    profiles:[]})
+})
+const updateHomeCollection = createAsyncThunk("users/updatecollection",async (params,thunkApi)=>{
+  const {profile,books,libraries,pages,profiles} = params
+ 
+  await updateDoc(doc(db,"profile",profile.id,"collection","home"),
+  { books:books,
+    libraries:libraries,
+    pages:pages,
+    profiles:profiles})
+})
+const fetchHomeCollection = createAsyncThunk("users/fetchHomeCollection", async(params,thunkApi)=>{
+  try{
 
+
+  const {profile}= params
+  const snapshot = await getDoc(doc(db,"profile",profile.id,"collection","home"))
+  const pack = snapshot.data()
+  const {pages,books,libraries,profiles} = pack
+  const collection = new Collection(pages,books,libraries,profiles)
+  return {
+    collection:collection,
+  }
+}catch(e) {
+
+return {error: new Error(`Fetch home Error: ${e.message}`)}
+}
+})
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
     
@@ -268,7 +305,7 @@ const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async
     const fileName = `profile/profilePicture-${file.name}.jpg`
     const storageRef = ref(storage, fileName);
     const blob = new Blob([file])
-    const upload = await uploadBytes(storageRef, blob)
+    await uploadBytes(storageRef, blob)
   
     const url = await getDownloadURL(storageRef)
         return{ 
@@ -282,15 +319,15 @@ const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async
 const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunkApi)=>{
   try {
   const {file,
-        name,
-         profile}= params
+        }= params
   const fileName = `image/picture-${file.name}.jpg`
   const storageRef = ref(storage, fileName);
   const blob = new Blob([file])
-  const upload = await uploadBytes(storageRef, blob)
+  await uploadBytes(storageRef, blob)
 
   const url = await getDownloadURL(storageRef)
       return{ 
+          ref:fileName,
           url: url
       }
   }catch(err){
@@ -363,7 +400,7 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
             }
       }catch(error){
         return {
-            error: new Error(`Error: Follow Book ${error.message}`)
+            error: new Error(`Error:Create Follow Book ${error.message}`)
         }
       }
     
@@ -419,8 +456,8 @@ const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForPro
           }}catch(err) {
                 return {
                     error: new Error(`Error: Fetch Follow books: ${err.message}`)
-                }
-          }})
+  }
+}})
 const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryForProfile",async (params,thunkApi)=>{
             try{
               const {profile} = params
@@ -520,7 +557,7 @@ const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfiles
                     try{
                         const {profile} = params
                         const ref = collection(db,"follow_profile")
-                        const snapshot =await getDocs(ref)
+                        const snapshot =await getDocs(ref,where("followerId","==",profile.id))
                         let followList = []
                     snapshot.docs.forEach(doc => {
                             const pack = doc.data();
@@ -541,16 +578,69 @@ const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfiles
             }
     }
 })
+const deleteUserAccounts = createAsyncThunk("users/deleteUserAccounts",async (params,thunkApi)=>{
+
+  try{
+    const uId =auth.currentUser.uid
+   let snapshot = await getDocs(
+      query(collection(db, "profile"),
+      where("userId", "==",uId)))    
+      const pack =  snapshot.docs[0].data() 
+      let id = pack["id"]
+      deleteDoc(doc(db,"profile",id))
+      auth.currentUser.delete()
+    return {
+      code: 200
+    }
+  }catch(err) {
+
+return {error: new Error("Error: Deleting useer account"+err.message)
+  }
+}})
 
 let clickMe = createAsyncThunk("Sf",async (params,thunkApi)=>{
   
-  let snapshot = await getDocs(collection(db,"book"))
-  snapshot.docs.forEach(doc=>{
-    updateDoc(doc.ref,{commenters:[],editors:[],writers:[],readers:[]})
-  })
+  let snapshot = await getDocs(collection(db,"profile"))
+
+  // snapshot.docs.forEach(doc=>{
+  //   const pack = doc.data()
+  //   const profileId = pack["id"]
+  //   const fbRef = collection(db,"follow_book")
+  //   const fpRef = collection(db,"follow_profile")
+  //   const flRef = collection(db,"follow_library")
+  //   const docRef = doc(db,"profile",profileId,"collection","home")
+  //    getDocs(fbRef,where("profileId","==",profileId)).then(fbs=>{
+  //     getDocs(fpRef,where("followingId","==",profileId)).then(fps=>{
+  //       getDocs(flRef,where("profileId","==",profileId)).then(fls=>{
+  //         const followBookIds=fbs.docs.map(fb=>{ return fb.data()["profileId"]
+  //       })
+  //       const followProfileIds = fps.docs.map(fp=>{return fp.data()["followingId"]
+  //          })
+  //       const followedLibraries = fls.docs.map(fl=>{
+  //           return fl.data()["profileId"]
+  //          })
+    
+  //         setDoc(docRef,{
+  //           books: followBookIds,
+  //           profiles: followProfileIds,
+  //           libraries: followedLibraries,
+  //           pages:[]
+  //       })
 
 
+  //       })
+
+  //     })
+
+  //   })
+
+   
+  
+  // })
 })
+
+
+
 export {logIn,
         signUp,
         getCurrentProfile,
@@ -570,5 +660,8 @@ export {logIn,
         fetchFollowProfilesForProfile,
         signOutAction,
         clickMe,
-        uploadPicture
+        uploadPicture,
+        deleteUserAccounts,
+        fetchHomeCollection,
+        updateHomeCollection
     }

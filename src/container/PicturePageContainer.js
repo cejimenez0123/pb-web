@@ -3,7 +3,6 @@
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { FormGroup, Button,FormControlLabel,TextField, Checkbox } from "@mui/material"
 import VisuallyHiddenInput from '../components/VisualHiddenInput';
-import { Close } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import theme from "../theme"
 import { useState } from 'react';

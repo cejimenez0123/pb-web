@@ -21,6 +21,18 @@ function DashboardItem({page,book}) {
        return prof.id == page.profileId
     })
     const [anchorEl,setAnchorEl]= useState(null)
+    const anchorRef = React.useRef(null);
+    const handleToggle = (e) => {
+     setAnchorEl(prevState=>{
+        if(prevState==null){
+            return e.currentTarget
+        }else{
+            return null
+        }
+     })
+      };
+ 
+
 const hanldeClickComment=(pageItem)=>{
     
    
@@ -98,32 +110,36 @@ switch(page.type){
                 
                     Comments
                 </Button>
-                <Button>
+                {/* <Button>
                     Info
-                </Button>
-                {/* <Button >
-                    Share
                 </Button> */}
+                
                 <Dropdown>
                         <Button onClick={(e)=>{
-                            setAnchorEl(e.currentTarget)
+                            handleToggle(e)
                         }}
+                        aria-controls={anchorEl ? 'menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={anchorEl ? 'true' : undefined}
           
           >
         Share
           </Button>
-          <Menu anchorEl={anchorEl}
+          <Menu 
+              id="menu"
+          anchorEl={anchorEl}
+          onClose={()=>setAnchorEl(null)}
           open={Boolean(anchorEl)}>
           <MenuItem disabled={!currentProfile} onClick={()=>{
             const params = {pageList:[page]}
-            dispatchEvent(setPagesToBeAdded(params))
+            dispatch(setPagesToBeAdded(params))
             navigate("/book/new")
             }}> 
                             Add to Book
             </MenuItem>
             <MenuItem disabled={!currentProfile} onClick={()=>{
                  const params = {pageList:[page]}
-                 dispatchEvent(setPagesToBeAdded(params))
+                 dispatch(setPagesToBeAdded(params))
                  navigate("/book/new")
             }}>
                 Add to Library

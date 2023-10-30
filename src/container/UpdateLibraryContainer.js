@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
-import {fetchArrayOfBooksAppened, fetchArrayOfBooks, saveRolesForBook} from "../actions/BookActions"
-import {fetchArrayOfPagesAppened, fetchArrayOfPages,clearPagesInView} from "../actions/PageActions"
-import { fetchBookmarkLibrary, fetchLibrary,saveRolesForLibrary,updateLibraryContent } from "../actions/LibraryActions"
-import { useDispatch } from "react-redux"
-import { updateLibrary } from "../actions/LibraryActions"
-import { useParams } from "react-router-dom"
+import { useSelector,useDispatch } from "react-redux"
+import {fetchArrayOfBooks} from "../actions/BookActions"
+import { fetchArrayOfPages,clearPagesInView} from "../actions/PageActions"
+import {    updateLibrary,
+            fetchLibrary,
+            saveRolesForLibrary,
+            updateLibraryContent } from "../actions/LibraryActions"
+import { useParams,useNavigate } from "react-router-dom"
 import { getCurrentProfile } from "../actions/UserActions"
 import InfiniteScroll from "react-infinite-scroll-component"
-import ListItem from "../components/ListItem"
-import { useNavigate } from "react-router-dom"
 import RoleList from "../components/RoleList"
-import useAuth from "../core/useAuth"
 import "../styles/UpdateLibrary.css"
-import {auth} from "../core/di"
 import {Checkbox , Button, FormGroup, TextField,FormControlLabel } from "@mui/material"
 import { RoleType } from "../core/constants"
-function UpdateLibraryContainer(props) { 
+import useAuth from "../core/useAuth"
+function UpdateLibraryContainer(props) {
+    const authHook = useAuth() 
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const pathParams = useParams()
@@ -26,7 +25,6 @@ function UpdateLibraryContainer(props) {
     const [privacy,setPrivacy]=useState(false)
     const [purpose,setPurpose]=useState("")
     const [hasMore,setHasMore]=useState(true)
-    const [initial,setInitial]=useState(0)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
@@ -40,16 +38,16 @@ function UpdateLibraryContainer(props) {
             if(currentProfile){
             
             }else{
-                if(auth.currentUser){
+                if(authHook.user){
                     const params = {
-                     userId: auth.currentUser.uid
+                     userId: authHook.user.uid
                     }
                     dispatch(getCurrentProfile(params))
                 }
             }
     }
 
-    ,[auth.currentUser])
+    ,[])
     const start =()=>{
         dispatch(fetchLibrary(pathParams)).then((result)=>{
             setLibrary()
@@ -75,14 +73,11 @@ function UpdateLibraryContainer(props) {
         }else{
             start()
         }
-    },[libraryInView])
+    },[])
     useEffect(()=>{     
        setLibrary()
-    },[libraryInView])
+    },[])
 
-    useEffect(()=>{
-
-    },[contentItems])
 
     const fetchBooks =()=>{
         if(libraryInView){

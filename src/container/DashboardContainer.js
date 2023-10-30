@@ -1,13 +1,14 @@
 import React ,{useState,useEffect}from 'react'
 import "../App.css"
-import { getPublicPages } from '../actions/PageActions'
+import { getPublicPages,fetchArrayOfPagesAppened  } from '../actions/PageActions'
 import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { fetchArrayOfBooks, fetchArrayOfBooksAppened } from '../actions/BookActions'
-import { fetchArrayOfPagesAppened } from '../actions/PageActions'
+import {  fetchArrayOfBooksAppened } from '../actions/BookActions'
+import { fetchFollowBooksForProfile, fetchHomeCollection } from '../actions/UserActions'
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
 import ErrorBoundary from '../ErrorBoundary'
+import { clickMe } from '../actions/UserActions'
 
 function DashboardContainer(props){
     const dispatch = useDispatch()
@@ -15,75 +16,89 @@ function DashboardContainer(props){
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
     const followedBooks = useSelector((state)=>state.users.followedBooks)
     const followedLibraries = useSelector((state)=>state.users.followedLibraries)
+    const homeCollection = useSelector((state)=>state.users.homeCollection)
+    const booksInView = useSelector((state)=>state.books.booksInView)
+    const librariesInView = useSelector((state)=>state.users.librariesInView)
     const [itemsInView,setItemsInView] = useState([])
     const [hasMore,setHasMore] = useState(false)
     const [hasError,setHasError] = useState(false)
-        useEffect(()=>{ 
-           fetchData()
-        },[])
-        const fetchData =()=>{
-            if(!currentProfile){
-                setHasMore(true)
-                dispatch(getPublicPages()).then(result=>{
-                    if(result.error == null){
-                        const {payload }= result
-                        if(payload.error == null){
-                            const {pageList }= payload
-                            let items = pageList.map(page=>{return {type:"page",page: page}})
-                            setItemsInView(items)
-                        }else{
-                            setHasError(true)
-                        }
-                        }else{
-                            setHasMore(true)
-                        }
-                        setHasMore(false)
-                }).catch(error=>{
-                    setHasMore(false)
-                })
-            }else{
-                if(followedBooks && followedBooks.length>0){
-                    setHasMore(true)
-                    let bookIdList = followedBooks.map(fb=>fb.bookId)
-                    const params = {
-                        bookIdList
-                    }
-                    dispatch(fetchArrayOfBooks(params)).then(result=>{
-                        if(result.error==null){
-                            const {payload} = result
-                            if(payload.error==null){
-                                const {bookList } = payload
-                                let bookItems = bookList.map(book=>{return {type:"book",book:book}})
-                                setItemsInView(prevState=>{
-                                    let newItems = bookItems.filter(bookItem=>{
-                                    let found = prevState.find(item=>{
-                                        return item.type == "book" && item.book.id == bookItem.book.id
-                                    })
-                                        if(found){
-                                            return false
-                                        }else{
-                                            return true
-                                        }
-                                    })
-                                    return[...prevState,...newItems]
-                                })
-                                getBookListContent(bookList)
+    const [initialState,setInitialState] = useState(true)
+    useEffect(()=>{
+        const params = {
+            profile:currentProfile
+        }
+        dispatch(fetchHomeCollection(params))
+    },[])
+    // useEffect(()=>{
 
-                            }else{
-                                setHasError(true)
+    //     if((currentProfile && followedBooks==null) || (followedBooks.length==0 && initialState && currentProfile)){
+    //         const params = {
+    //             profile: currentProfile
+    //         }
+    //         dispatch(fetchFollowBooksForProfile(params)).then(result=>{
+    //             if(result.error == null){
+    //                 const {payload }=result
+    //                 if(payload.error == null){
+    //                     fetchData()
+    //                 }
+    //             }
+    //         })
+    //     }else{
+    //         fetchData()
+    //     }
+        
+    // },[currentProfile])
+   
+    useEffect(()=>{fetchData()},[homeCollection])
+    const fetchPublicContent =()=>{
+        setHasMore(true)
+        dispatch(getPublicPages()).then(result=>{
+            if(result.error == null){
+                const {payload }= result
+                if(payload.error == null){
+                    const {pageList }= payload
+                    let items = pageList.map(page=>{return {type:"page",page: page}})
+                    setItemsInView(prevState=>[...prevState,...items])
+                }else{
+                    setHasError(true)
+                }
+                }else{
+                    setHasMore(true)
+                }
+                setHasMore(false)
+        }).catch(error=>{
+            setHasMore(false)
+        })
+    }
+    const fetchData =()=>{
+            if(!currentProfile){
+              fetchPublicContent()
+            }else{
+            
+            if(homeCollection && homeCollection.books){
+                    setHasMore(true)
+                    // let bookIdList = followedBooks.map(fb=>fb.bookId)
+                    const params = {
+                        bookIdList:homeCollection.books
+                    }
+                    if(homeCollection.books.length>0){
+                        dispatch(fetchArrayOfBooksAppened(params)).then(result=>{
+                            if(result.error==null){
+                            const {payload} = result
+                        
+                            if(payload.error==null){
+                                const {bookList}=payload
+                                getBookListContent(bookList)
                             }
                         }else{
                             setHasError(true)
-                        }
-                        setHasMore(false)
-                    })
-                }
-                if(followedLibraries && followedLibraries.length>0){
-                    let libraryIdList = followedBooks.map(fb=>fb.libraryId)
-                    let list = libraryIdList.filter(id=>id)
-                    if(list.length>0){
+                        }})
+                }}
+                if(homeCollection && homeCollection.libraries){
+                    
+                    if(homeCollection.libraries.length>0){
                     const params = {
-                        libraryIdList: list
+                        libraryIdList: homeCollection.libraries
                     }
                     setHasMore(true)
                     dispatch(fetchArrayOfLibraries(params)).then(result=>{
@@ -95,42 +110,23 @@ function DashboardContainer(props){
 
                                     const params = { bookIdList:library.bookIdList}
                                     dispatch(fetchArrayOfBooksAppened(params)).then(result=>{
-                                        if(result.error==null){
-                                            const {payload} = result
-                                            if(payload.error==null){
-                                                const {bookList } = payload
-                                                let bookItems = bookList.map(book=>{return {type:"book",book:book}})
-                                                setItemsInView(prevState=>{
-                                                    let newItems = bookItems.filter(bookItem=>{
-                                                    let found = prevState.find(item=>{
-                                                        return item.type == "book" && item.book.id == bookItem.book.id
-                                                    })
-                                                if(found){
-                                                    return false
-                                                }else{
-                                                    return true
-                                                }
+                                      
                                             })
 
-                                                return[...prevState,...newItems]
-                                            })
-                                                getBookListContent(bookList)
-                                                fixSetItems()
-                                            }else{
+                                        
+                                    
+                                    })}}
 
-                                            }
-                                        }
-                                    })
-
-                                })
-                            }
-                        }
-                        setHasMore(false)
+                                
+                                    setHasMore(false)
                     })
+                    
                 }} 
-            }        
+                
+                    
         }
-        const getBookListContent = (bookList)=>{
+    }
+    const getBookListContent = (bookList)=>{
            
             bookList.forEach(book=>{
                 let pageIdList = []
@@ -155,26 +151,9 @@ function DashboardContainer(props){
                             return { type: 'page', page, book}
                         })
                         setItemsInView(prevState=>{
-                            // let list = [...prevState,...items]
-                        
-                            // const newState = list.sort((a, b) =>{
-            
-                
-                            //     if(b.page!=null && a.page!=null){
-                           
-                            //         return b.page.created - a.page.created
-                            //     }else if(a.book!=null && a.book!=null){ 
-                            //         return b.book.updatedAt - a.book.updatedAt
-                            //     }else if(a.page == null && b.book ==null){ 
-                            //           return  b.page.created-a.book.updatedAt 
-                            //     }else if(a.book==null && b.page==null){
-                            //         return b.book.updatedAt - a.page.created
-                            //     }else{
-                            //         return -1
-                            //     }
-                            // } );
                             return [...prevState,...items]
                         })
+                        fixSetItems()
                         
                     }else{
                         setHasError(true)
@@ -190,26 +169,22 @@ function DashboardContainer(props){
                 prevState.forEach(item=>{
                     let found = list.find(aItem=>{
                     if(aItem.page!=null && item.page!=null){
-                      return aItem.page.id == item.page.id
+                        return aItem.page.id == item.page.id
                     }else if(aItem.book!=null && item.book != null){
                         return aItem.book.id == item.book.id
                     }})
                     if(!found){
                         list.push(item)
                     }
-
                 })
                 const newState = list.sort((a, b) =>{
-            
-                
                     if(b.page!=null && a.page!=null){
-               
                         return b.page.created - a.page.created
-                    }else if(a.book!=null && a.book!=null){ 
-                        return b.book.updatedAt - a.book.updatedAt
-                    }else if(a.page == null && b.book ==null){ 
+                    }else if(a.page!=null && b.book!=null){ 
+                        return b.book.updatedAt - a.page.created
+                    }else if(a.book!= null && b.page !=null){ 
                           return  b.page.created-a.book.updatedAt 
-                    }else if(a.book==null && b.page==null){
+                    }else if(a.book!=null && b.book!=null){
                         return b.book.updatedAt - a.page.created
                     }else{
                         return -1
@@ -228,10 +203,11 @@ function DashboardContainer(props){
                         loader={<p>Loading...</p>}
                         endMessage={<p>No more data to load.</p>}
                     >
-                        {itemsInView.map((item)=>{
+                        {itemsInView.map((item,i)=>{
                             switch(item.type){
                                 case "page":{
-                                    return(<DashboardItem page={item.page} book={item.book}/>)
+                                    return(<DashboardItem key={`${item.page.id}_`
+                                +i}page={item.page} book={item.book}/>)
                                 }
                                 case "book":{
                                     let id = item.book.pageIdList[0]
@@ -240,13 +216,11 @@ function DashboardContainer(props){
                                     
                                     let page = pagesInView.find(page=>page.id == id)
                                     if(page){
-                                        return(<DashboardItem page={page} book={item.book}/>)
+                                        return(<DashboardItem key={`${item.page.id}_`+i}page={page} book={item.book}/>)
                                     }else{
-                                        if(item.book){
+                                    
                                             return(<div></div>)
-                                        }else{
-                                            return(<div></div>)
-                                        }
+                                        
                                         
                                     }}
                             }

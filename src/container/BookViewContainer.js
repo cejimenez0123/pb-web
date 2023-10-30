@@ -10,9 +10,10 @@ import "../styles/BookView.css"
 import { clearPagesInView } from "../actions/PageActions"
 import {Button, IconButton} from "@mui/material"
 import theme from "../theme"
-import { fetchProfile ,createFollowBook,deleteFollowBook,fetchFollowBooksForProfile} from "../actions/UserActions"
+import { fetchProfile ,createFollowBook,deleteFollowBook,fetchFollowBooksForProfile, updateHomeCollection} from "../actions/UserActions"
 import { Add, Settings } from "@mui/icons-material"
 import debounce from "../core/debounce"
+import { canAddToItem } from "../core/constants"
 function BookViewContainer({book,pages}){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -21,6 +22,7 @@ function BookViewContainer({book,pages}){
     const pageLoading = useSelector(state=>state.pages.loading)
     const [hasMore,setHasMore]=useState(false)
     const followedBooks = useSelector(state=>state.users.followedBooks)
+    const homeCollection = useSelector(state=>state.users.homeCollection)
     const getBook=()=>{
       
       const bookId =pathParams["id"]
@@ -47,10 +49,6 @@ function BookViewContainer({book,pages}){
         dispatch(fetchProfile(profileParams));
     }
     }
-    const goToEditBook =(e)=>{
-
-        
-    }
     const getPages = (pageIdList)=>{
         const params = {pageIdList:pageIdList}
     
@@ -71,21 +69,22 @@ function BookViewContainer({book,pages}){
     },[])
     useEffect(()=>{
 
-        if(!!book){
+        if(book){
             setHasMore(true)
             getPages(book.pageIdList)
+            fetchFollows()
         }
 
     },[book])
-    useEffect(()=>{
-        fetchFollows()
-    },[currentProfile])
+   
     const fetchFollows=()=>{
         if(currentProfile){
             const params = {
                 profile: currentProfile
+
             }
             dispatch(fetchFollowBooksForProfile(params))
+            
         }
     }
     const pageList =()=>{
@@ -124,7 +123,18 @@ function BookViewContainer({book,pages}){
             profile:currentProfile
         }
         dispatch(createFollowBook(params)).then(()=>{
-            
+            let books = [...homeCollection.books,book.id]
+            let libraries = [...homeCollection.libraries]
+            let pages = [...homeCollection.pages]
+            let profiles = [...homeCollection.profiles]
+            const homeParams ={
+                profile: currentProfile,
+                books: books,
+                pages: pages,
+                libraries:libraries,
+                profiles:profiles
+            }
+            dispatch(updateHomeCollection(homeParams))
         })
         }else{
             window.alert("Log in first")
@@ -157,7 +167,9 @@ function BookViewContainer({book,pages}){
    }>Follow</Button>)
     if(followedBooks && currentProfile && book ){
     editDiv = (<Button
-    key={book.id}onClick={(e)=>goToEditBook(e)}>Edit<Settings/></Button>)
+    key={book.id}onClick={(e)=>{
+        navigate(`/book/${book.id}/edit`)
+    }}>Edit<Settings/></Button>)
     let fb = followedBooks.find(fb=>{
        return fb!=null && fb.profileId ==currentProfile.id && fb.bookId == book.id})
     if(fb){
@@ -175,7 +187,7 @@ function BookViewContainer({book,pages}){
     let addBtn = (<div>
 
     </div>)
-    if(book.writingIsOpen==true){
+    if(currentProfile!=null && canAddToItem(book,currentProfile)){
        addBtn= (<IconButton onClick={()=>{
         setBookInView({book})
         navigate(`/book/${book.id}/add`)

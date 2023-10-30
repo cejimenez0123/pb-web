@@ -2,18 +2,21 @@ import ContentList from "../components/ContentList"
 import { useParams } from "react-router-dom"
 import { useEffect } from "react"
 import { useDispatch,useSelector } from "react-redux"
-import { createFollowProfile,deleteFollowProfile, fetchProfile } from "../actions/UserActions"
-import ProfileCard from "../components/ProfileCard"
+import {    createFollowProfile,
+            deleteFollowProfile, 
+            fetchProfile,
+            updateHomeCollection } from "../actions/UserActions"
+// import ProfileCard from "../components/ProfileCard"
 import { getProfilePages } from "../actions/PageActions"
 import theme from "../theme"
 import "../styles/Profile.css"
 import { Button } from "@mui/material"
-import { current } from "@reduxjs/toolkit"
 function ProfileContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const profile = useSelector(state=>state.users.profileInView)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const followedProfiles = useSelector(state=>state.users.followedProfiles)
+    const homeCollection = useSelector(state=>state.users.homeCollection)
     const dispatch = useDispatch()
     const pathParams = useParams()
     useEffect(()=>{
@@ -22,16 +25,14 @@ function ProfileContainer(props){
         if(profile==null || (profile != null && profile.id != id)){
 
             dispatch(fetchProfile(pathParams))
-        }else{
-
         }
-    },[profile])
+    },[])
     useEffect(()=>{
         if(profile){
             const params = { profile}
             dispatch(getProfilePages(params))
         }
-    },[profile])
+    },[])
     let profileCardDiv = (<div>
 
     </div>)
@@ -51,7 +52,21 @@ function ProfileContainer(props){
                     follower: currentProfile,
                     following: profile
                 }
-                dispatch(createFollowProfile(params))
+                dispatch(createFollowProfile(params)).then(()=>{
+                   
+                        let books = [...homeCollection.books]
+                        let libraries = [...homeCollection.libraries]
+                        let pages = [...homeCollection.pages]
+                        let profiles = [...homeCollection.profiles,profile.id]
+                        const homeParams ={
+                            profile: currentProfile,
+                            books: books,
+                            pages: pages,
+                            libraries:libraries,
+                            profiles:profiles
+                        }
+                        dispatch(updateHomeCollection(homeParams))
+                })
                 }
             }
         }else{

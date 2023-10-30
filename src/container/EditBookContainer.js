@@ -66,7 +66,7 @@ function EditBookContainer({book,pages}){
             getPages(book.pageIdList)
         }
       
-    },[book])
+    },[])
 
     
     const fetchProfile=()=>{
@@ -109,7 +109,7 @@ function EditBookContainer({book,pages}){
             getPages(book.pageIdList)
         }
 
-    },[book])
+    },[])
 const bookRolesView =  ()=>{
     if(newBookRoles!=null && newBookRoles.length > 0){
 

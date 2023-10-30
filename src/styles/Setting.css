@@ -16,7 +16,7 @@
 }
 .self-statement h6{
 
-    text-align: start;
+    text-align: flex-start;
 }
 .library-item{
     display: flex;

@@ -4,6 +4,7 @@ import { useState,useLayoutEffect,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
+import ErrorBoundary from '../ErrorBoundary'
 function DiscoveryContainer(props){
     const navigate = useNavigate()
     const booksInView = useSelector(state=>state.books.booksInView)   
@@ -168,6 +169,7 @@ function DiscoveryContainer(props){
           
         }}}
         return(
+            <ErrorBoundary>
             <div id="discover"  >
                 <div className='content-list dashboard'>
               <div className='content'>
@@ -188,6 +190,7 @@ function DiscoveryContainer(props){
          </div>
          </div>
             </div>
+            </ErrorBoundary>
         )
 
 }

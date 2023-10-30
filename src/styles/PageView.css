@@ -225,11 +225,12 @@ button:active {
         text-align: left;
     }
     .comment{
-        /* padding:2em; */
+        padding-top: "1em";
+        padding-bottom: "1em";
         border-bottom: 1px solid grey;
         background-color: white;
         position: relative;
-        /* top: 1em; */
+      
     }
     .comment-heading {
         display: flex;

@@ -60,7 +60,7 @@ builder
     state.booksInView = payload.bookList
     state.loading = false
 }).addCase(fetchArrayOfBooksAppened.fulfilled,(state,{payload})=>{
-    state.booksInView = [...state.bookInView,...payload.bookList]
+    state.booksInView = [...state.booksInView,...payload.bookList]
     state.loading = false
 }).addCase(saveRolesForBook.rejected,(state,{payload})=>{
     state.error = payload.error
@@ -78,6 +78,8 @@ builder
     state.loading =false
 }).addCase(setBooksToBeAdded.type,(state,{payload})=>{
     state.booksToBeAdded = payload
+  }).addCase(setBookInView.type,(state,{payload})=>{
+    state.bookInView = payload.book
   })
 }
 

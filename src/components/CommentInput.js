@@ -38,15 +38,15 @@ export default function CommentInput({page,parentComment,parentProfile}){
     if(parentProfile){
         commentAuthorDiv=(<h6>{parentProfile.usernmae}</h6>)
     }
-    return(<div style={{display: show?"":"none"}} onBlur={()=>setShow(false)}className="comment-input">
+    return(<div style={{display: show?"":"none"}}className="comment-input">
     <div className="comment-input-header">
         {commentAuthorDiv}
     </div>
     <TextareaAutosize
-
+    style={{width: "100%"}}
     value={commentInput}
     minRows={3} 
-    cols={85}
+    
     onChange={(e)=>{
        setComment(e.target.value)
 }} />

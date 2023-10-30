@@ -11,11 +11,14 @@ import {    logIn ,
             createFollowBook,
             createFollowLibrary,
             createFollowProfile,
-            signOutAction
+            signOutAction,
+            fetchHomeCollection,
+            updateHomeCollection
         } from "../actions/UserActions"
 const initialState = {
     loggedIn: false,
     currentProfile: null,
+    homeCollection: null,
     loading:false,
     followedBooks: [],
     followedProfiles:[],
@@ -82,7 +85,7 @@ const userSlice = createSlice({
     }).addCase(fetchFollowBooksForProfile.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(fetchFollowBooksForProfile.fulfilled,(state,{payload})=>{
-        if(Array.isArray(state.followList)){
+        if(Array.isArray(payload.followList)){
         state.followedBooks = payload.followList
         }
     }).addCase(fetchFollowLibraryForProfile.rejected,(state,{payload})=>{
@@ -114,6 +117,14 @@ const userSlice = createSlice({
         state.currentProfile = null
         state.loggedIn = false
     }).addCase(signOutAction.rejected,(state,{payload})=>{
+        state.error = payload.error
+    }).addCase(fetchHomeCollection.fulfilled,(state,{payload})=>{
+        state.homeCollection = payload.collection
+    }).addCase(fetchHomeCollection.rejected,(state,{payload})=>{
+        state.error = payload.error
+    }).addCase(updateHomeCollection.fulfilled,(state,{payload})=>{
+        state.homeCollection = payload.collection
+    }).addCase(updateHomeCollection.rejected,(state,{payload})=>{
         state.error = payload.error
     })
 }})

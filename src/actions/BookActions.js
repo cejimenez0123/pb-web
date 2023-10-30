@@ -3,6 +3,7 @@ import Book from "../domain/models/book"
 import BookRole from "../domain/models/bookrole"
 import {where,query,and,or,arrayUnion,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc,deleteDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, updateDoc} from "firebase/firestore"
 import { db,auth} from "../core/di"
+import Contributors from "../domain/models/contributor"
 
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
@@ -105,6 +106,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     if(!readers){
       readers = []
     }
+    const contributors = new Contributors(commenters,readers,writers,editors)
     const book = new Book(bId,
                           purpose,
                           title,
@@ -112,10 +114,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
                           pageIdList,
                           privacy,
                           writingIsOpen,
-                          writers,
-                          readers,
-                          commenters,
-                          editors,
+                          contributors,
                           updatedAt,
                           created)    
     return {
@@ -185,7 +184,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
                 writers=[]
               }
             
-          
+              const contributors= new Contributors(commenters,readers,writers,editors)
                 const book =  new Book( 
                     id,
                     purpose,
@@ -194,10 +193,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
                     pageIdList,
                     privacy,
                     writingIsOpen,
-                    writers,
-                    readers,
-                    commenters,
-                    editors,
+                    contributors,
                     updatedAt,
                     created,
                 )
@@ -254,7 +250,8 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
                             updatedAt: created,
                             created: created
                         })
-
+                        const contributors= new Contributors(commenters,readers,writers,editors)
+            
    const book = new Book(
     id,
     purpose,
@@ -263,10 +260,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     pageIdList,
     privacy,
     writingIsOpen,
-    writers,
-    readers,
-    commenters,
-    editors,
+    contributors,
     updatedAt,
     created,
 )
@@ -318,7 +312,8 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
       if(!privacy){
         privacy = false
       }
-    
+      const contributors= new Contributors(commenters,readers,writers,editors)
+            
       const book =  new Book( 
           id,
           purpose,
@@ -327,10 +322,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
           pageIdList,
           privacy,
           writingIsOpen,
-          writers,
-          readers,
-          commenters,
-          editors,
+          contributors,
           updatedAt,
           created,
       )
@@ -381,7 +373,8 @@ if(!readers){
 if(!writers){
   writers=[]
 }
-
+const contributors= new Contributors(commenters,readers,writers,editors)
+            
 
   const book =  new Book( 
       id,
@@ -391,10 +384,7 @@ if(!writers){
       pageIdList,
       privacy,
       writingIsOpen,
-      editors,
-      commenters,
-      readers,
-      editors,
+      contributors,
       updatedAt,
       created,
   )
@@ -426,6 +416,8 @@ const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params
         writers: writers,
         readers: readers,
       })
+      const contributors= new Contributors(commenters,readers,writers,editors)
+            
       return {book: new Book( book.id,
                           book.purpose,
                           book.title,
@@ -433,10 +425,7 @@ const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params
                           book.pageIdList,
                           book.privacy,
                           book.writingIsOpen,
-                          writers,
-                          readers,
-                          commenters,
-                          editors,
+                          contributors,
                           book.updatedAt,
                           book.created
 )}
@@ -461,6 +450,8 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
         purpose: purpose,
         updatedAt: updatedAt
       })
+      const contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
+            
       let newBook = new Book( book.id,
                               purpose,
                               title,
@@ -468,10 +459,7 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
                               pageIdList,
                               privacy,
                               writingIsOpen,
-                              book.writers,
-                              book.reader,
-                              book.commenters,
-                              book.editors,
+                              contributors,
                               updatedAt,
                               book.created)
       return {

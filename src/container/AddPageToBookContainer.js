@@ -18,11 +18,11 @@ function AddPageToBookContainer({books}){
     const pageLoading = useSelector(state=>state.pages.loading)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const bookInView = useSelector(state=>state.books.bookInView)
-    const [pageIdList,setPageIdList] = useState()
+    const [pageIdList,setPageIdList] = useState([])
     const [hasMore,setHasMore]=useState(false)
     const [page,setPage] = useState(1)
     const getBook =()=>{
-       if(!!currentProfile){
+       if(currentProfile){
             const id = pathParams["id"]
             if(bookInView.id != id || bookInView==null){
                 fetchBook({id})
@@ -45,19 +45,23 @@ function AddPageToBookContainer({books}){
             book: bookInView,
             pageIdList: pageIdList
         }
-        dispatch(updateBookContent(params))}else{
+        dispatch(updateBookContent(params)).then(result=>{
+            if(result.error==null){
+                const {payload} = result
+                if(payload.error==null){
+                    alert("Success!")
+                }
+            }
+        })}else{
             alert("Unable")
         }
-    },[pageIdList])
+    },[])
     useEffect(()=>{
      
             getBook()
-        
+            getPages()
     },[])
-    useEffect(()=>{
-        setHasMore(true)
-        getPages()
-    },[bookInView])
+  
 
     
     const pageList =()=>{
@@ -76,7 +80,7 @@ function AddPageToBookContainer({books}){
            
             
             return(
-                <PageItem page={page} setPageIdList={setPageIdList(prevState=>[...prevState,page.id])}/>
+                <PageItem page={page} setPageIdList={()=>setPageIdList(prevState=>[...prevState,page.id])}/>
             )
          })}
      </InfiniteScroll>
@@ -93,18 +97,20 @@ function AddPageToBookContainer({books}){
         }
     }
 
-    if(!bookLoading && bookInView!=null){
+
         
     
 
     return(<div className="container">
           
         <div className="left-side-bar">
+            <div className="info create">
+        
             <h5> {bookInView.title}</h5>
-            <h6> {bookInView.purpose}</h6>
-            <button type="button" className="follow-btn" onClick={()=>{
-
-            }}>Follow</button>
+            <div className="purpose">
+            <h6 > {bookInView.purpose}</h6>
+            </div>     
+            </div>
             
         </div>
         <div className="main-bar">
@@ -113,21 +119,17 @@ function AddPageToBookContainer({books}){
         <div className="right-side-bar">
         </div>
 
-    </div>)}else{
-        
-        return(<div>
-            Loading...
-        </div>)
-}}
+    </div>)
+}
 function PageItem({page,setPageIdList}){
     const [show,setShow]=useState(false)
     let pageDataElement = (<div></div>)
     switch(page.type){
         case PageType.text:
-            pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}></div>
+            pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         break;
         case PageType.picture:
-            pageDataElement = <img className='' src={page.data} alt={page.title}/>
+            pageDataElement = <img className='dashborad-content' src={page.data} alt={page.title}/>
         break;
         case PageType.video:
             pageDataElement = <video src={page.data}/>
@@ -140,7 +142,10 @@ function PageItem({page,setPageIdList}){
 
           
         <div className="list-item">
-            <h5>{page.title}</h5> <IconButton onClick={()=>{
+            <a className="title"><h6 onClick={()=>{setShow(!show)}}>{page.title}</h6>
+            </a>
+            
+             <IconButton onClick={()=>{
                 setPageIdList()
             }
 

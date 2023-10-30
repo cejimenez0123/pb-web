@@ -1,11 +1,11 @@
-import React ,{ useState } from 'react'
+import React ,{ useLayoutEffect,useEffect, useState } from 'react'
 import { useSelector,useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
 import {signOutAction} from "../actions/UserActions"
 import { useNavigate } from 'react-router-dom'
-import history from '../history'
 import AppBar from '@mui/material/AppBar'
+import debounce from '../core/debounce'
 import { 
             Container,
             Toolbar,
@@ -16,7 +16,8 @@ import {
             MenuItem,
             Button,
             Tooltip,
-            Avatar
+            Avatar,
+        
         } from '@mui/material'
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -25,25 +26,32 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
 import theme from '../theme'
-import debounce from "../core/debounce"
 import CreateIcon from '@mui/icons-material/Create';
-import MediaQuery from 'react-responsive'
 import ImageIcon from '@mui/icons-material/Image';
+import { create } from '@mui/material/styles/createTransitions'
 
 const PageName = {
   home: "Home",
-
-create: "Create",
+  create: "Create",
   discovery:"Discovery",
   login:"Log In"
 }
-const pages = [PageName.home,
-
-   PageName.create,
-   PageName.discovery, PageName.login]
+const pages = [ PageName.home,
+                PageName.create,
+                PageName.discovery, 
+                PageName.login]
 function NavbarContainer(props){
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [anchorElNavCreate,setAnchorElNavCreate] = useState(null);
+    const [anchorElUser, setAnchorElUser] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const createRef = React.useRef()
+    
+  //   useEffect(()=>{
+      
+  // },[createRef])
     const handleCloseNavMenu = (page) => {
       if(page===PageName.login){
           navigate("/login")                    
@@ -52,14 +60,17 @@ function NavbarContainer(props){
       }else if(page===PageName.discovery){
           navigate("/discovery")
       }
-    }
-   
-    const [anchorEl, setAnchorEl] = useState(null);
-    
-  
-   
+      setAnchorElNav(null)
+    }  
+
+    const [openCreate,setOpenCreate] = useState(false)
     const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+      // setAnchorEl(createRef?.current)
+      setOpenCreate(!openCreate)
+      if(anchorEl) {
+        setAnchorEl(null)
+      }else{
+        setAnchorEl(event.currentTarget);}
     };
     const handleClose = () => {
         setAnchorEl(null);
@@ -70,23 +81,31 @@ function NavbarContainer(props){
         account: "Account",
         logout: "Log Out"
     }
-    const settings = [SettingName.profile,SettingName.account,SettingName.logout]; 
-    const [anchorElNav, setAnchorElNav] = useState(null);
-    const [open,setOpen]= useState(false)
-    const [anchorElUser, setAnchorElUser] = useState(null);
-    
+    const settings = [SettingName.profile,
+                      SettingName.account,
+                      SettingName.logout]; 
+   
+    const handleOpenElNavCreate = (event) => {
+      if(anchorElNavCreate){
+        setAnchorElNavCreate(null)
+      }else{
+      setAnchorElNavCreate(event.currentTarget);}
+  };
     const handleOpenNavMenu = (event) => {
+      
+      
         setAnchorElNav(event.currentTarget);
+      
     };
+  
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
     const handleCloseUserMenu = () => {
       setAnchorElUser(null);
     };
-    const handleOpenClick = ()=>{
-        setOpen(!open)
-    }
+  
+
     return (
         <AppBar position="static"
                 style={{backgroundColor:theme.palette.primary.dark}}>
@@ -118,15 +137,13 @@ function NavbarContainer(props){
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
+                            onClick={(e)=>handleOpenNavMenu(e)}
                             color="inherit"
                         >
                 <MenuIcon />
               </IconButton>
               <Menu
-                onBlur={()=>{
-                  setAnchorElNav(null)
-                }}
+              
                 id="menu-appbar"
                 anchorEl={anchorElNav}
                 anchorOrigin={{
@@ -145,83 +162,68 @@ function NavbarContainer(props){
                 }}
               >
                 {pages.map((page) => {
-
-
-          if(currentProfile){
-                        if(page==PageName.create){
+                        if( page==PageName.create){
 
                             
-                            return(
+                            return currentProfile?(
                             
-                          <div key={page}>
-                               
-                            
-                    <List>
-                      <MenuItem onClick={()=>{
-                        setAnchorElNav(null)
-                        navigate("/")
-                      }} sx={{ pl: 4 }}>
-                              Home
-                      </MenuItem>
-                      <MenuItem 
-                        onClick={()=>{
-                          setAnchorElNav(null)
-                          navigate("/discovery")
-                        }}
-                        sx={{ pl: 4 }}>
-                              Discovery
-                      </MenuItem>
-                      <MenuItem key="page" 
+                          <div key={page}>  
+                           <MenuItem onClick={(e)=>         
+                        handleOpenElNavCreate(e)
+                  } key={page} >
+                    <Typography textAlign="center">{page}
+                    {anchorElNavCreate?<ExpandMore/>: <ExpandLess/>}</Typography>
+                  </MenuItem>
+                   
+                    <List style={{display:anchorElNavCreate?"":"none"}}>
+                      <ListItemButton key="page" 
                         onClick={(e)=>{
-                          setAnchorElNav(null)
+                          
                           navigate("/page/new")}}sx={{ pl: 4 }}
                         >
                           Page <CreateIcon/>
-                   </MenuItem>
-                        <MenuItem key={`image`} 
+                   </ListItemButton>
+                        <ListItemButton key={`image`} 
                         onClick={(e)=>{
-                          setAnchorElNav(null)
+                          handleClose()
                           navigate("/page/image")}}sx={{ pl: 4 }}
                         >
                           Page <ImageIcon/>
-                    </MenuItem>
+                    </ListItemButton>
 
-                        <MenuItem  key="book" 
+                        <ListItemButton  key="book" 
                                     onClick={()=>{ 
-                                      setAnchorElNav(null)
+                                      handleClose()
                                       navigate("/book/new")
                                       }} 
                                     sx={{ pl: 4 }}>
                             <ListItemText primary="Book" />
-                        </MenuItem>
-                         <MenuItem key="library" onClick={()=>{ 
+                        </ListItemButton>
+                         <ListItemButton key="library" onClick={()=>{ 
                           
-                          setAnchorElNav(null)
+                          handleClose()
                           navigate("/library/new")}} sx={{ pl: 4 }}>
                            <ListItemText primary="Library" />
-                         </MenuItem>
+                         </ListItemButton>
                
                              </List>
-                          
-                             </div>)}else{
-                                return(<div key={page}>
+                            
+                             </div>):(<div></div>)
+                        }else if(PageName.login){
+                  return currentProfile?(<div></div>):
+                (<MenuItem onClick={()=>handleCloseNavMenu(page) } 
+                            key={page} >
+                        <Typography textAlign="center">{page}</Typography>
+                      </MenuItem>)
 
-                                </div>)
-                             }
-                                }else{
-                      
-                       if(page ==PageName.create){
-                        return
-                       }else{
+                    }else{
                    return( 
                   <MenuItem onClick={()=>         
                         handleCloseNavMenu(page)
                   } key={page} >
-                    <Typography onClick={()=>         
-                        handleCloseNavMenu(page)
-                  }  textAlign="center">{page}</Typography>
-                  </MenuItem>)}
-                  }
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>)
+                                          }
             })
           }
               </Menu>
@@ -246,41 +248,40 @@ function NavbarContainer(props){
               Pb
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              {
-              pages.map((page) => {
-               
-               // return (<CreateNavItem close={()=>{setAnchorElNav(null)}}key={page} page={page}/>)
-               if(page==PageName.create){
-                if(currentProfile){
-                  return(
-                    <div key={page}>
-                      <MediaQuery minWidth={"800px"}>
-                        <Button 
-                id="demo-customized-button"
-                aria-controls={anchorEl ? 'demo-customized-menu' : undefined}
+              {pages.map((page) => {
+                if( page==PageName.create){
+                
+                  return currentProfile?(<div>
+                    <Button 
+                      key={page}
+                      ref={createRef}
+            
+                aria-controls="simple-menu"
                 aria-haspopup="true"
-                aria-expanded={anchorEl ? 'true' : undefined}
+               
                 sx={{ my: 2, color: 'white', display: 'block' }} 
-                onClick={(e)=>debounce(handleClick(e),5)}>
-                        Create  {anchorEl ? <ExpandLess /> : <ExpandMore />}
+                onClick={(e)=>{
+                
+                  debounce(handleClick(e),5)
+                }}>
+                        Create {openCreate ? <ExpandLess /> : <ExpandMore />}
                       </Button >
-                     <Menu
-                anchorEl={anchorEl}
-                open={anchorEl}
-          
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'bottom', // Position the menu below the button
-                    horizontal: 'left',  // Position the menu to the left of the button
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                MenuListProps={{
-              'aria-labelledby': 'demo-customized-button',
-                    }}>    
-                  
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                  >
                     <MenuItem 
                       onClick={()=>{
                         handleClose()
@@ -305,30 +306,24 @@ function NavbarContainer(props){
                     }}>
                         Library
                     </MenuItem>
-            </Menu>
-            </MediaQuery>
-            </div>
-            )
-          }else{
-            return
-            }
-             }else{
-                if(currentProfile && page!=PageName.login){
+                  </Menu></div>)
                   
-                  return (
-                  <Button
-              key={page}
-              onClick={()=>
-                handleCloseNavMenu(page)
-            }
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              {page}
-            </Button>
-             )}
-             
-          }}
-              )}
+           
+                  :(<div></div>) 
+                }else if(currentProfile && page==PageName.login){
+                  return(<div></div>)
+                
+                }else{     
+              return(<Button
+    key={page}
+    onClick={()=>handleCloseNavMenu(page)}
+    sx={{ my: 2, color: 'white', display: 'block' }}
+  >
+    {page}
+  </Button>)}
+                })
+            
+              }
             </Box>
             {currentProfile?
             <Box style={{display: currentProfile ? "":"none"}} sx={{ flexGrow: 0 }}>

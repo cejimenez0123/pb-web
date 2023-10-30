@@ -37,35 +37,38 @@ export default function CreateBookContainer({pagesInView,booksInView}){
         
     pagesToBeAdded.forEach(async page=>{
         let readers = [...page.readers,...book.readers]
-        let commenters = [...page.commenters,...book.commenters]
-        let pageIdList = book.pageIdList
+        let list = pagesToBeAdded.map(page=>page.id)
+        let pageIdList = [...book.pageIdList,...list]
         pageIdList.push(page.id)
         const roleParams = {
             pageIdList,
             readers,
-            commenters,
+    
          
         }
         dispatch(appendSaveRolesForPage(roleParams))
         
-       
-        const params ={
-            book,
-            title:book.title,
-            purpose:book.purpose,
-            pageIdList,
-            privacy:book.
-            privacy,
-            writingIsOpen:book.writingIsOpen
-        } 
-        dispatch(updateBook(params))
-        .then(result => {
-            if(result.error==null){
-                navigate(`/book/${book.id}`)
-            }
-        }).catch(error =>{
+  
+        
+    })
+    let list = pagesToBeAdded.map(page=>page.id)
+    let pageIdList = [...book.pageIdList,...list]
+    const params ={
+        book,
+        title:book.title,
+        purpose:book.purpose,
+        pageIdList,
+        privacy:book.
+        privacy,
+        writingIsOpen:book.writingIsOpen
+    } 
+    dispatch(updateBook(params))
+    .then(result => {
+        if(result.error==null){
+            navigate(`/book/${book.id}`)
+        }
+    }).catch(error =>{
 
-        })
     })
     }
     const bookList = ()=>{

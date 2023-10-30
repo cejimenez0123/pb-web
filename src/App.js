@@ -1,5 +1,5 @@
 import './App.css';
-import { connect,useDispatch} from "react-redux"
+import { connect} from "react-redux"
 import {Route, Routes} from 'react-router-dom';
 import { getPublicPages } from './actions/PageActions';
 import DashboardContainer from './container/DashboardContainer';
@@ -17,38 +17,32 @@ import ProfileContainer from './container/ProfileContainer';
 import PicturePageContainer from './container/PicturePageContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/AddPageToBookContainer';
-import { getCurrentProfile } from './actions/UserActions';
-import { fetchBookmarkLibrary } from './actions/LibraryActions';
-import { getPublicBooks } from './actions/BookActions';
-import { getPublicLibraries } from './actions/LibraryActions';
-import {  fetchAllProfiles,
+import {  fetchBookmarkLibrary,
+          getPublicLibraries } from './actions/LibraryActions';
+import {  getPublicBooks } from './actions/BookActions';
+import {  getCurrentProfile,
+          fetchAllProfiles,
           fetchFollowBooksForProfile,
           fetchFollowLibraryForProfile,
-          fetchFollowProfilesForProfile} from './actions/UserActions'
+          fetchFollowProfilesForProfile,
+          fetchHomeCollection} from './actions/UserActions'
 import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
 import EditBookContainer from './container/EditBookContainer';
 import LibraryViewContainer from './container/LibraryViewContainer';
-import {auth} from "./core/di"
+import useAuth from './core/useAuth';
 
 function App(props) {
-    useEffect(()=>{
-      fetchCurrentProfile()
-  
-    },[auth.currentUser])
-  
-  const fetchCurrentProfile = ()=>{
-    if(auth.currentUser != null && !auth.currentUser.isAnonymous){
-      const params = {
-        userId: auth.currentUser.uid
-      }
-      const subscriber = props.getCurrentProfile(params)
-  }
-  }
- 
+  useAuth()
   useEffect(()=>{
+      fetchData()
+  },[])
+  useEffect(()=>{
+    props.fetchAllProfiles()
+  },[])
+  const fetchData = ()=>{
     if(props.currentProfile!=null){
       const params = {
         id: props.currentProfile.bookmarkLibraryId
@@ -56,14 +50,13 @@ function App(props) {
       const profileParams = {
         profile: props.currentProfile
       }
+      props.fetchHomeCollection(profileParams)
       props.fetchBookmarkLibrary(params)
       props.fetchFollowBooksForProfile(profileParams)
       props.fetchFollowLibraryForProfile(profileParams)
       props.fetchFollowProfilesForProfile(profileParams)
     }
-  
-  },[props.currentProfile])
-
+  }
    
   return (
     <div className="App">
@@ -81,7 +74,7 @@ function App(props) {
 
         <Routes history={history} >
       <Route exact path="/" element={
-      <DashboardContainer auth={auth} getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
+      <DashboardContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
       } />
       
       <Route path="/discovery" element={
@@ -98,7 +91,6 @@ function App(props) {
             profile={!props.currentProfile}
           >
             <LogInContainer logIn={props.logIn}
-                            loggedIn={auth.isSignedIn}
             />
           </LoggedRoute>}
      />
@@ -206,7 +198,8 @@ function mapDispatchToProps(dispatch){
     fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
     fetchFollowBooksForProfile:(params)=>dispatch(fetchFollowBooksForProfile(params)) ,
     fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params)),
-    fetchFollowProfilesForProfile:(params)=>dispatch(fetchFollowProfilesForProfile(params))
+    fetchFollowProfilesForProfile:(params)=>dispatch(fetchFollowProfilesForProfile(params)),
+    fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params))
   }
 }
 function mapStateToProps(state){
@@ -218,7 +211,6 @@ function mapStateToProps(state){
     booksInView: state.books.booksInView,
     currentProfile: state.users.currentProfile,
     // currentUser: state.users.currentUser,
-    currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,
     pagesInView: state.pages.pagesInView,
     // libraryInView: state.libraries.libraryInView,

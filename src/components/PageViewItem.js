@@ -1,16 +1,17 @@
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import {useState} from "react"
+import React,{useState} from "react"
 import { createComment } from "../actions/PageActions"
-import { TextareaAutosize,Button } from "@mui/material"
+import {Button } from "@mui/material"
 import { PageType } from "../core/constants"
 import { setProfileInView } from "../actions/UserActions"
-import {ThemeProvider} from "@mui/material/styles";
+import { Dropdown,Menu ,MenuItem} from '@mui/joy'
 import theme from "../theme"
 import { fetchCommentsOfPage } from "../actions/PageActions"
+import { setPagesToBeAdded } from "../actions/PageActions"
 import CommentInput from "./CommentInput"
 export default function PageViewItem({page,currentProfile}) {
-    // const theme = useTheme()
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const profilesInView = useSelector(state=>state.users.profilesInView)
@@ -67,6 +68,17 @@ const commentBox = (show)=>{
     }
 }
 let pageDataElement = (<div></div>)
+const [anchorEl,setAnchorEl]= useState(null)
+
+const handleToggle = (e) => {
+ setAnchorEl(prevState=>{
+    if(prevState==null){
+        return e.currentTarget
+    }else{
+        return null
+    }
+ })
+  };
 if(page){
 switch(page.type){
     case PageType.text:
@@ -121,12 +133,52 @@ let profile = (<div></div>)
                 
                     Comment
                 </Button>
-                <Button>
+                {/* <Button>
                     Info
-                </Button>
-                <Button>
-                    Share
-                </Button>
+                </Button> */}
+                <Dropdown>
+                        <Button onClick={(e)=>{
+                            handleToggle(e)
+                        }}
+                        aria-controls={anchorEl ? 'menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={anchorEl ? 'true' : undefined}
+          
+          >
+        Share
+          </Button>
+          <Menu 
+              id="menu"
+          anchorEl={anchorEl}
+          onClose={()=>setAnchorEl(null)}
+          open={Boolean(anchorEl)}>
+          <MenuItem disabled={!currentProfile} onClick={()=>{
+            const params = {pageList:[page]}
+            dispatch(setPagesToBeAdded(params))
+            navigate("/book/new")
+            }}> 
+                            Add to Book
+            </MenuItem>
+            <MenuItem disabled={!currentProfile} onClick={()=>{
+                 const params = {pageList:[page]}
+                 dispatch(setPagesToBeAdded(params))
+                 navigate("/book/new")
+            }}>
+                Add to Library
+                        </MenuItem>
+                        <MenuItem onClick={()=>{
+                            navigator.clipboard.writeText(`plumbum.app/page/${page.id}`)
+                            .then(() => {
+                                // Successfully copied to clipboard
+                                alert('Text copied to clipboard');
+                              })
+                        }}
+                    >
+                          Copy Share Link
+                        </MenuItem>
+            
+          </Menu>
+        </Dropdown>
             </div>
             
                 {commentBox(commenting)}   

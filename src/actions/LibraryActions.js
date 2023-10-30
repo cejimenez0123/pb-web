@@ -4,6 +4,7 @@ import { deleteDoc,and,or,arrayRemove,arrayUnion,getDoc,collection,setDoc,doc ,T
 import LibraryRole from "../domain/models/libraryrole"
 import { db,auth } from "../core/di"
 import { read } from "@popperjs/core"
+import Contributors from "../domain/models/contributor"
 
 //make a bookmark library for joe
 
@@ -26,16 +27,16 @@ const {
     name:name,
     purpose:purpose,
   })
+  const contributors= new Contributors(library.commenters,
+              library.readers,library.writers,library.editors)
+            
   const libraryItem =new Library(library.id,
               name,library.profileId,
               purpose,library.pageIdList,
               library.bookIdList,
               writingIsOpen,
               privacy,
-              library.readers,
-              library.writers,
-              library.editors,
-              library.commenters,
+              contributors,
               library.created)
     return { library:libraryItem }
     }catch(error){
@@ -65,17 +66,15 @@ const {
    await updateDoc(ref, {
           pageIdList: pageIdList
         });
-
+        const contributors= new Contributors(library.commenters,
+          library.readers,library.writers,library.editors)
       const newLibrary =new Library(library.id,
                   library.name,library.profileId,
                   library.purpose,pageIdList,
                   bookIdList,
                   library.writingIsOpen,
                   library.privacy,
-                  library.readers,
-                  library.writers,
-                  library.editors,
-                  library.commentsers,
+                  contributors,
                   library.created)
         return { library: newLibrary }
         }catch(error){
@@ -120,6 +119,8 @@ const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (
     if(!readers){
       readers = []
     }
+    const contributors= new Contributors(commenters,
+    readers,writers,editors)
   const library = new Library(id,
                               libName,
                               profileId,
@@ -128,10 +129,7 @@ const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (
                             bookIds,
                             writingIsOpen,
                             privacy,
-                            readers,
-                            writers,
-                            editors,
-                            commenters,
+                            contributors,
                             created)
   return {
     library
@@ -182,7 +180,8 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
         commenters,
         created:created})
   
-
+        const contributors= new Contributors(commenters,
+          readers,writers,editors)
     const library =new Library( id,
                                 name,
                                 profileId,
@@ -191,10 +190,7 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
                                 bookIdList,
                                 writingIsOpen,
                                 privacy,
-                                readers,
-                                writers,
-                                editors,
-                                commenters,
+                                contributors,
                                 created)
 
     return { library }
@@ -260,7 +256,8 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
                   writers=[]
                 }
             
-          
+                const contributors= new Contributors(commenters,
+                  readers,writers,editors)
               const lib = new Library(  id,
                                         name,
                                         profileId,
@@ -269,10 +266,7 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
                                         bookIds,
                                         writingIsOpen,
                                         privacy,
-                                        readers,
-                                        writers,
-                                        editors,
-                                        commenters,
+                                        contributors,
                                         created)
               libList = [...libList,lib]
             })
@@ -325,7 +319,8 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
         if(!writers){
           writers=[]
         }
-    
+        const contributors= new Contributors(commenters,
+          readers,writers,editors)
       const library = new Library(lId,
                                   libName,
                                   profileId,
@@ -334,10 +329,7 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
                                   bookIds,
                                   writingIsOpen,
                                   privacy,
-                                  readers,
-                                  writers,
-                                  editors,
-                                  commenters,
+                                 contributors,
                                   created)
                                   
     return {
@@ -428,6 +420,8 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
             if(!writers){
               writers=[]
             }
+            const contributors= new Contributors(commenters,
+              readers,writers,editors)
             const library = new Library(id,
                                         name,
                                         profileId,
@@ -436,10 +430,7 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
                                         bookIdList,
                                         writingIsOpen,
                                         privacy,
-                                        readers,
-                                        writers,
-                                        editors,
-                                        commenters,
+                                        contributors,
                                         created)
                                         
             libraryList = [...libraryList, library]
@@ -499,7 +490,8 @@ const fetchArrayOfLibraries = createAsyncThunk("libraries/fetchArrayOfLibraries"
            writers=[]
          }
      
-   
+         const contributors= new Contributors(commenters,
+          readers,writers,editors)
        const lib = new Library(  id,
                                  name,
                                  profileId,
@@ -508,10 +500,7 @@ const fetchArrayOfLibraries = createAsyncThunk("libraries/fetchArrayOfLibraries"
                                  bookIds,
                                  writingIsOpen,
                                  privacy,
-                                 readers,
-                                 writers,
-                                 editors,
-                                 commenters,
+                                 contributors,
                                  created)
        libList = [...libList,lib]
      })
@@ -557,6 +546,8 @@ const fetchArrayOfLibrariesAppend = createAsyncThunk("libraries/fetchArrayOfLibr
         if(!writers){
           writers=[]
         }
+        const contributors= new Contributors(commenters,
+          readers,writers,editors)
         const lib = new Library(  id,
                                   name,
                                   profileId,
@@ -565,10 +556,7 @@ const fetchArrayOfLibrariesAppend = createAsyncThunk("libraries/fetchArrayOfLibr
                                   bookIds,
                                   writingIsOpen,
                                   privacy,
-                                  readers,
-                                  writers,
-                                  editors,
-                                  commenters,
+                                  contributors,
                                   created)
        libList = [...libList,lib]
      })

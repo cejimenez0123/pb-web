@@ -1,11 +1,14 @@
 import { Timestamp } from "firebase/firestore"
-import Collection from "./collection"
-export default class Library extends Collection {
+import Craft from "./craft"
+import Contributors from "./contributor"
+
+export default class Library extends Craft {
     id
     name
     pageIdList
     bookIdList
     profileId
+    contributors
     purpose
     privacy
     writingIsOpen
@@ -20,14 +23,16 @@ export default class Library extends Collection {
         bookIdList=[],
         writingIsOpen=false,
         privacy=false,
-        readers=[],
-        writers=[],
-        editors=[],
-        commenters=[],
+        contributors= new Contributors(),
         updatedAt=Timestamp.now(),
         created=Timestamp.now()
     ){
-        super(id,profileId,readers,writers,commenters,editors)
+        super(  id,
+                profileId,
+                contributors.readers,
+                contributors.writers,
+                contributors.commenters,
+                contributors.editors)
         this.id = id
         this.name=name
         this.pageIdList = pageIdList

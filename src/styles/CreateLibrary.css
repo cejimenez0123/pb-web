@@ -1,7 +1,4 @@
 
-#Create-Library .container{
-  margin-top: 3em;
-}
 
 .list {
     width: 30em;
@@ -22,16 +19,16 @@
     flex-direction: row;
   }
 
-  #form div:nth-child(2) {
+#form div:nth-child(2) {
     /* Your styles for the second div here */
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     
-  }
-  #form div:nth-child(2) label{
-    padding: 10px 15px;
-  }
-  #form div:nth-child(2) textarea{
+}
+#form div:nth-child(2) label{
+  padding: 10px 15px;
+}
+#form div:nth-child(2) textarea{
     border: 1px solid black;
-  }
+}

@@ -156,7 +156,7 @@ export default function CreateLibraryContainer(props){
    
         
     
-return(<div id="Create-Library">
+return(<div >
     <div className="container">
         <div className="left-side-bar">
                 <MediaQuery maxWidth={"1000px"}>

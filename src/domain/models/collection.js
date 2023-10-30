@@ -1,23 +1,17 @@
-export default class Collection{
-    id
-    profileId
-    readers
-    writers
-    editors
-    commenters
-    constructor(id,
-        profileId,
-        readers,
-        writers,
-        commenters,
-        editors
-    ){
-        this.id = id
-        this.profileId = profileId
-        this.readers = readers 
-        this.writers = writers
-        this.commenters = commenters
-        this.editors = editors
-    }
+
+
+class Collection{
     
+    pages
+    books
+    libraries
+    profiles
+    
+    constructor(pages=[],books=[],libraries=[],profiles=[]){
+        this.books =books
+        this.pages =pages
+        this.libraries = libraries
+        this.profiles = profiles
     }
+}
+export default Collection

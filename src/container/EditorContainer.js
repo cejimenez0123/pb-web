@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux"
 import { setHtmlContent,createPage, updatePage, fetchEditingPage,deletePage } from "../actions/PageActions"
 import React,{ useEffect, useState } from "react"
 import history from "../history"
-import { useParams } from "react-router-dom"
+import { useParams,useNavigate } from "react-router-dom"
 import { Button,FormControlLabel,Checkbox, TextField, FormGroup } from "@mui/material"
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -13,7 +13,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../core/constants"
-import { useNavigate } from "react-router-dom"
+
 import theme from "../theme"
 function EditorContainer({currentProfile}){
         const pathParams = useParams()

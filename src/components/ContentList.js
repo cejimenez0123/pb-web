@@ -30,7 +30,7 @@ export default function ContentList({currentProfile,pagesInView}){
             fetchBookData()
             fetchLibraryData()
         }
-    },[currentProfile])
+    },[])
     const pageList=()=>{
         const empty = (<div className="empty">
             Empty
@@ -97,8 +97,7 @@ export default function ContentList({currentProfile,pagesInView}){
             Empty
             </h1>
         </div>)
-        switch(listType){
-            case "page":{
+        if(listType=="page"){
            if(pagesInView!=null ){    
            return (
             <div className="content">
@@ -120,7 +119,7 @@ export default function ContentList({currentProfile,pagesInView}){
             }else{
                 return empty
             }}
-            case "book":{
+            else if(listType=="book"){
              if(booksInView!=null && booksInView.length>0){  
                return  (<div className="content">
                 <InfiniteScroll 
@@ -149,8 +148,8 @@ export default function ContentList({currentProfile,pagesInView}){
            
             }else{
                 return empty
-            }}
-            case "library":{
+            }}else if(listType=="library"){
+         
             if(librariesInView!=null && librariesInView.length>0){
                 return(
                     <div className="content">
@@ -178,19 +177,20 @@ export default function ContentList({currentProfile,pagesInView}){
                 )}else{
                     return empty
                 }
-            }
-
-    
-            default:{
+            
+            }else{
+          
                 return(<div>
                {pageList()}
-            </div>)}
+            </div>)
             
         }
     }
-    const handleContentClick=(className)=>{
+    const handleContentClick=(name)=>{
+        setListType(name)
         setIsContentVisible(!isContentVisible)
         setIsContentVisible(true)
+       
        
     
        
@@ -199,25 +199,24 @@ export default function ContentList({currentProfile,pagesInView}){
                 <div className="inner">
                 <div className="btn-row">
                                     <Button className="btn" onClick={()=>{
-                                        handleContentClick(Page.className())
-                                        setListType(Page.className)
-                                            contentList()
+                                        handleContentClick("page")
+                                        
+                                    
                                       
                                         }}>
                                         Page
                                     </Button>
                                     <Button className="btn" onClick={()=>{
-                                        handleContentClick(Book.className)
-                                        setListType(Book.className)
-                                        contentList();
+                                        handleContentClick("book")
+                                     
                                         
                                     
                                         }}>
                                         Book
                                     </Button>
                                     <Button className="btn" onClick={()=>{
-                                            handleContentClick(Library.className())
-                                        setListType(Library.className);
+                                            handleContentClick("library")
+                                       
                                     
                                         }}>
                                         Library

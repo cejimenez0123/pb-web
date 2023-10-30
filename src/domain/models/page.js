@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import Contributors from "./contributor";
 
 class Story {
     id
@@ -33,13 +34,10 @@ class Story {
         privacy,
         commentable,
         type,
-        readers=[],
-        writers=[],
-        editors=[],
-        commenters=[],
+        contributors=new Contributors(),
         created=Timestamp.now()
     ){
-        super(id,title,readers,writers,editors,commenters)
+        super(id,title,contributors.readers,contributors.writers,contributors.editors,contributors.commenters)
         this.data = data
         this.title = title
         this.profileId = profileId
