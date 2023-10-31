@@ -458,9 +458,26 @@ const fetchArrayOfLibraries = createAsyncThunk("libraries/fetchArrayOfLibraries"
   try{
   const ref = collection(db,"library")
   const libraryIdList = params["libraryIdList"]
-  const snapshot =await getDocs(query(ref, where('id', 'in', libraryIdList)))
+if(libraryIdList.lenght == 0){
+  return {
+    libraryList:[]
+  }
+}else{
   // const snapshot = await getDocs(queryReq);
+  let queryReq =query(ref,
+    and(where("id", "in", libraryIdList),where("privacy","==",false)))
+  if(auth.currentUser){
+  queryReq = query(ref,
+    and(where("id", "in", libraryIdList),
+                 or(where("privacy","==",false),
+                    where('commenters', 'array-contains', auth.currentUser.uid),
+                    where('readers','array-contains', auth.currentUser.uid),
+                    where('editors', 'array-contains', auth.currentUser.uid),
+                    where('writers', 'array-contains',auth.currentUser.uid),
+                    where("privacy","==",false))))
+ }
   let libList = []
+  const snapshot =await getDocs(queryReq)
    snapshot.docs.forEach(doc => {
    
          const pack = doc.data();
@@ -507,7 +524,7 @@ const fetchArrayOfLibraries = createAsyncThunk("libraries/fetchArrayOfLibraries"
 return {
 
  libraryList: libList
-}}catch(err){
+}}}catch(err){
   return {
     error: new Error(`Error: Fetch Array Of Libraries: ${err.message}`)
   }
@@ -518,6 +535,7 @@ const fetchArrayOfLibrariesAppend = createAsyncThunk("libraries/fetchArrayOfLibr
   const libraryIdList = params["libraryIdList"]
   const snapshot =await getDocs(query(ref, where('id', 'in', libraryIdList)))
   // const snapshot = await getDocs(queryReq);
+  
   let libList = []
   snapshot.docs.forEach(doc => {
         const pack = doc.data();

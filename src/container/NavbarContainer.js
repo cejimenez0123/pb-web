@@ -359,6 +359,7 @@ function NavbarContainer(props){
                                 }else if(setting== SettingName.account){
                                     navigate("/profile/edit")
                                 }
+                                handleCloseUserMenu()
                   }}>
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>

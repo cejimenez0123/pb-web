@@ -164,6 +164,7 @@ const createCollection = createAsyncThunk("ds",async (params,thunkApi)=>{
     profiles:[]})
 })
 const updateHomeCollection = createAsyncThunk("users/updatecollection",async (params,thunkApi)=>{
+  try{
   const {profile,books,libraries,pages,profiles} = params
  
   await updateDoc(doc(db,"profile",profile.id,"collection","home"),
@@ -171,7 +172,19 @@ const updateHomeCollection = createAsyncThunk("users/updatecollection",async (pa
     libraries:libraries,
     pages:pages,
     profiles:profiles})
-})
+    let collection =new Collection(pages,books,libraries,profiles)
+    return {
+      collection:collection
+    }
+  }catch(e){
+    return {
+      error: new Error(`Update Home Collection Error: ${e.message}`)
+    }
+  }
+  }
+
+
+)
 const fetchHomeCollection = createAsyncThunk("users/fetchHomeCollection", async(params,thunkApi)=>{
   try{
 
@@ -182,7 +195,7 @@ const fetchHomeCollection = createAsyncThunk("users/fetchHomeCollection", async(
   const {pages,books,libraries,profiles} = pack
   const collection = new Collection(pages,books,libraries,profiles)
   return {
-    collection:collection,
+    collection:collection
   }
 }catch(e) {
 
@@ -272,21 +285,24 @@ const fetchAllProfiles = createAsyncThunk("users/fetchAllProfiles",async (state,
         const pack = doc.data()
         const username = pack["username"]
         const profilePicture = pack["profilePicture"]
-        const selfStatement = pack["selfStatment"]
+        let selfStatement = pack["selfStatment"]
         const bookmarkLibraryId = pack["bookmarkLibraryId"]
         const homeLibraryId = pack["homeLibraryId"]
         const userId = pack["userId"]
         const privacy= pack["privacy"]
         const created = pack["created"]
+        if(selfStatement==null){
+          selfStatement = ""
+        }
        let prof = new Profile(id,
-                    username,
-                    profilePicture, 
-                    selfStatement, 
-                    bookmarkLibraryId,
-                    homeLibraryId,
-                    userId,
-                    privacy,
-                    created)
+                              username,
+                              profilePicture,
+                              selfStatement,
+                              bookmarkLibraryId,
+                              homeLibraryId,
+                              userId,
+                              privacy,
+                              created)
         profileList.push(prof)
      })
 
@@ -427,7 +443,7 @@ const createFollowLibrary = createAsyncThunk("users/createFollowLibrary", async 
     }catch(error){
            
         return {
-            error: new Error(`Error: Follow Book ${error.message}`)
+            error: new Error(`Error: Create Follow Library ${error.message}`)
         }
     }
 })
@@ -442,11 +458,11 @@ const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForPro
             snapshot.docs.forEach(doc => {
                   const pack = doc.data();
                   const { id,
-                profileId,
-                bookId,
-                created
-               }=pack
-               const fb = new FollowBook(id,bookId,profileId,created)
+                          profileId,
+                          bookId,
+                          created
+                        }=pack
+                const fb = new FollowBook(id,bookId,profileId,created)
                 
                 followList = [...followList, fb]
               })
@@ -455,7 +471,7 @@ const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForPro
             followList: followList,
           }}catch(err) {
                 return {
-                    error: new Error(`Error: Fetch Follow books: ${err.message}`)
+                    error: new Error(`Error: Fetch Follow Books: ${err.message}`)
   }
 }})
 const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryForProfile",async (params,thunkApi)=>{
@@ -473,7 +489,7 @@ const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryFo
                 libraryId,
                 created
                }=pack
-               const fl = new FollowLibrary(id,libraryId,profileId,created)
+               const fl = new FollowLibrary(id,profileId,libraryId,created)
                 
                 followList = [...followList, fl]
               })
@@ -494,7 +510,9 @@ const deleteFollowBook= createAsyncThunk("users/deleteFollowBook", async (params
                 await deleteDoc(doc(db,"follow_book",`${profile.id}_${book.id}`));
             
               }
-       
+              return {
+                followBook
+              }
             }catch(e){
               return {error: new Error("Error: Delete Follow Book"+e.message)};
             }
@@ -524,7 +542,9 @@ const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (
                 await deleteDoc(doc(db,"follow_profile",`${follower.id}_${following.id}`));
             
               }
-       
+              return {
+                followProfile
+              }
             }catch(e){
               return {error: new Error("Error: Delete Follow Book"+e.message)};
             }

@@ -1,4 +1,4 @@
-export default class Collection{
+export default class Craft{
     id
     profileId
     readers

@@ -23,6 +23,7 @@ function BookViewContainer({book,pages}){
     const [hasMore,setHasMore]=useState(false)
     const followedBooks = useSelector(state=>state.users.followedBooks)
     const homeCollection = useSelector(state=>state.users.homeCollection)
+    const [following,setFollowing]=useState(null)
     const getBook=()=>{
       
       const bookId =pathParams["id"]
@@ -83,13 +84,22 @@ function BookViewContainer({book,pages}){
                 profile: currentProfile
 
             }
-            dispatch(fetchFollowBooksForProfile(params))
+            dispatch(fetchFollowBooksForProfile(params)).then(result=>{
+                if(result.error==null){
+                    const {payload}= result 
+                    if(payload.error==null){
+                         let fb=    payload.followList.find(fb=>fb!=null && fb.bookId == book.id && fb.profileId==currentProfile.id)
+                        setFollowing(fb)
+                    }
+                }
+
+            })
             
         }
     }
     const pageList =()=>{
         if(pageLoading==false && !!book){
-            if(pages.length !=0){
+            if(pages && pages.length !=0){
                 return(
                     <div className="content">
                      <InfiniteScroll 
@@ -122,8 +132,17 @@ function BookViewContainer({book,pages}){
             book: book,
             profile:currentProfile
         }
-        dispatch(createFollowBook(params)).then(()=>{
-            let books = [...homeCollection.books,book.id]
+        dispatch(createFollowBook(params)).then(result=>{
+            if(result.error==null){
+                const {payload}= result
+                if(payload.error==null){
+
+             
+            let books = [...homeCollection.books]
+            let id = homeCollection.books.find(id=>book.id)
+            if(!id){
+               books=[...homeCollection.books,book.id]
+            }
             let libraries = [...homeCollection.libraries]
             let pages = [...homeCollection.pages]
             let profiles = [...homeCollection.profiles]
@@ -135,7 +154,8 @@ function BookViewContainer({book,pages}){
                 profiles:profiles
             }
             dispatch(updateHomeCollection(homeParams))
-        })
+        }
+    } })
         }else{
             window.alert("Log in first")
         }
@@ -158,31 +178,32 @@ function BookViewContainer({book,pages}){
     let editDiv = (<div>
 
     </div>)
-    let followDiv = (<Button    variant="outlined" 
-                                style={{backgroundColor:theme.palette.secondary.main,
-                                        color:theme.palette.secondary.contrastText}}
-                                className="follow-btn"
-    onClick={
-       ()=>debounce(followBookClick(),10)
-   }>Follow</Button>)
-    if(followedBooks && currentProfile && book ){
-    editDiv = (<Button
-    key={book.id}onClick={(e)=>{
-        navigate(`/book/${book.id}/edit`)
-    }}>Edit<Settings/></Button>)
-    let fb = followedBooks.find(fb=>{
-       return fb!=null && fb.profileId ==currentProfile.id && fb.bookId == book.id})
-    if(fb){
-        followDiv= (
+    const followDiv = ()=>{
+        return following?(
             <Button variant="outlined" 
                     style={{backgroundColor:theme.palette.secondary.light,
                             color:theme.palette.secondary.dark}
                     } 
                     lassName="follow-btn"
                     onClick={()=> debounce(deleteFollowBookClick(),10)}>Following</Button>)
-    }    
+    :(<Button    variant="outlined" 
+                                style={{backgroundColor:theme.palette.secondary.main,
+                                        color:theme.palette.secondary.contrastText}}
+                                className="follow-btn"
+    onClick={
+       ()=>debounce(followBookClick(),10)
+   }>Follow</Button>)}
 
-}
+    if(followedBooks && currentProfile && book ){
+        editDiv = (<Button
+                        key={book.id}
+                        onClick={(e)=>{
+                            navigate(`/book/${book.id}/edit`)
+                    }}>Edit<Settings/></Button>)
+    }
+           
+
+
     if( book!=null){ 
     let addBtn = (<div>
 
@@ -207,8 +228,9 @@ function BookViewContainer({book,pages}){
             <div className="purpose">
             <h6> {book.purpose}</h6>
             </div>
-            {followDiv}
+            {followDiv()}
             {addBtn}
+            {editDiv}
             </div>
         </div>
         <div className="right-bar">

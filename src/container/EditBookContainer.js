@@ -53,8 +53,12 @@ function EditBookContainer({book,pages}){
             setBookPrivacy(book.privacy)
             setWritingIsOpen(book.writingIsOpen)
             setBookPurpose(book.purpose)
+            if(book.pageIdList.length>0){
+                dispatch(fetchArrayOfPages(book.pageIdList))
+            }
+         
             fetchProfile()
-            dispatch(fetchArrayOfPages(book.pageIdList))
+      
 
         }).catch((err) => {
             
@@ -286,7 +290,7 @@ const sortableList = ()=>{
     const handleSave = (e)=>{
         e.preventDefault()
         if(book!=null){
-            // saveRoles()
+            
             const pageIdList = listItems.map(page=>  page.id)
             const params = {book:book,
                             title: bookTitle,
@@ -299,7 +303,9 @@ const sortableList = ()=>{
             const commenters = newBookRoles.filter(role => role.role == RoleType.commenter).map(role=>role.profile.userId)
             const editors = newBookRoles.filter(role => role.role == RoleType.editor).map(role=>role.profile.userId)
             const writers = newBookRoles.filter(role => role.role == RoleType.writer).map(role=>role.profile.userId)
-        const rolesParams = {
+            
+       
+            const rolesParams = {
             book: book,
             readers,
             commenters,
@@ -363,9 +369,8 @@ const sortableList = ()=>{
                     {form()}
                 <div className="roles">
                     <RoleList book={book} type={"book"} getRoles={roles=>{
-setNewBookRoles(roles)
+                        setNewBookRoles(roles)
                     }} />
-                    {/* {roleList()} */}
                 </div>
                 </div>
             </div>

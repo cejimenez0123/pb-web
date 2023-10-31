@@ -13,7 +13,10 @@ import {    logIn ,
             createFollowProfile,
             signOutAction,
             fetchHomeCollection,
-            updateHomeCollection
+            updateHomeCollection,
+            deleteFollowLibrary,
+            deleteFollowProfile,
+            deleteFollowBook
         } from "../actions/UserActions"
 const initialState = {
     loggedIn: false,
@@ -123,9 +126,19 @@ const userSlice = createSlice({
     }).addCase(fetchHomeCollection.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(updateHomeCollection.fulfilled,(state,{payload})=>{
+
         state.homeCollection = payload.collection
     }).addCase(updateHomeCollection.rejected,(state,{payload})=>{
         state.error = payload.error
+    }).addCase(deleteFollowBook.fulfilled,(state,{payload})=>{
+       const list = state.followedBooks.filter(fb=>fb!=null && fb.id != payload.followBook.id)
+        state.followedBooks = list
+    }).addCase(deleteFollowLibrary.fulfilled,(state,{payload})=>{
+        const list = state.followedLibraries.filter(fl=>fl!=null &&fl.id != payload.followLibrary.id)
+        state.followedBooks = list
+    }).addCase(deleteFollowProfile.fulfilled,(state,{payload})=>{
+        const list = state.followedProfiles.filter(fp=> fp!=null && fp.id != payload.followLibrary.id)
+        state.followedBooks = list
     })
 }})
 

@@ -79,7 +79,8 @@ function DashboardContainer(props){
                     setHasMore(true)
                     // let bookIdList = followedBooks.map(fb=>fb.bookId)
                     const params = {
-                        bookIdList:homeCollection.books
+                        bookIdList:homeCollection.books,
+                        profile: currentProfile
                     }
                     if(homeCollection.books.length>0){
                         dispatch(fetchArrayOfBooksAppened(params)).then(result=>{
@@ -108,7 +109,8 @@ function DashboardContainer(props){
                                 const {libraryList} = payload
                                 libraryList.forEach(library=>{
 
-                                    const params = { bookIdList:library.bookIdList}
+                                    const params = { bookIdList:library.bookIdList,
+                                    profile: currentProfile}
                                     dispatch(fetchArrayOfBooksAppened(params)).then(result=>{
                                       
                                             })

@@ -42,21 +42,21 @@ const hanldeClickComment=(pageItem)=>{
     dispatch(setPageInView(params))
     navigate(`/page/${pageItem.id}`)
 }
-let pageDataElement = (<div></div>)
-switch(page.type){
-    case PageType.text:
-        pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}></div>
-    break;
-    case PageType.picture:
+    let pageDataElement = (<div></div>)
+    if(page.type==PageType.text){
+
+
+        pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
+    }else if(page.type==PageType.picture){
+
         pageDataElement = <img className='' src={page.data} alt={page.title}/>
-    break;
-    case PageType.video:
-        pageDataElement = <video src={page.data}/>
-    break;
-    default:
+    }else if(page.type==PageType.video){
+        pageDataElement = <iframe src={page.data}/>
+    }else{
+    
         pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
-    break;
-}
+    }
+
     let profileDiv = (<div>
 
     </div>)
@@ -76,7 +76,7 @@ switch(page.type){
             }
         }><p>{book.title} {">"}</p></a>)
     }
-        return(<div className='dashboard-item content-item'>
+        return(<div className='content-item'>
         
             <div className='dashboard-header'>
                 <div className='titles'>

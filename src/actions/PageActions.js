@@ -420,9 +420,27 @@ const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (para
   try{
   const ref = collection(db,"page")
   const pageIdList = params["pageIdList"]
-  const snapshot =await getDocs(query(ref, where('id', 'in', pageIdList)))
+  if(pageIdList.length==0){
+    return {
+      pageList:[]
+    }
+  }else{
 
+  
+  let queryReq =query(ref,
+    and(where("id", "in", pageIdList),where("privacy","==",false)))
+  if(auth.currentUser){
+  queryReq = query(ref,
+    and(where("id", "in", pageIdList),
+                 or(where("privacy","==",false),
+                    where('commenters', 'array-contains', auth.currentUser.uid),
+                    where('readers','array-contains', auth.currentUser.uid),
+                    where('editors', 'array-contains', auth.currentUser.uid),
+                    where('writers', 'array-contains',auth.currentUser.uid),
+                    where("privacy","==",false))))
+ }
  let pageList = []
+ const snapshot =await getDocs(queryReq)
   snapshot.docs.forEach(doc => {
         const pack = doc.data();
         const { id } = doc;
@@ -476,7 +494,7 @@ return {
 pageList
 }
 
-
+  }
 }catch(err){
 const error = err??new Error("Error: Fetch Array of Pages")
 return {error }
@@ -506,11 +524,24 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
   try{
   const ref = collection(db,"page")
   const pageIdList = params["pageIdList"]
-  if(0>=pageIdList.length){
+  
+  if(0==pageIdList.length){
     return {
       pageList: []
     }
   }else{
+    let queryReq =query(ref,
+      and(where("id", "in", pageIdList),where("privacy","==",false)))
+    if(auth.currentUser){
+    queryReq = query(ref,
+      and(where("id", "in", pageIdList),
+                   or(where("privacy","==",false),
+                      where('commenters', 'array-contains', auth.currentUser.uid),
+                      where('readers','array-contains', auth.currentUser.uid),
+                      where('editors', 'array-contains', auth.currentUser.uid),
+                      where('writers', 'array-contains',auth.currentUser.uid),
+                      where("privacy","==",false))))
+   }
   const snapshot =await getDocs(query(ref, where('id', 'in', pageIdList)))
 
  let pageList = []

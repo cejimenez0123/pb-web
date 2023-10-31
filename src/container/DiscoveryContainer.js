@@ -20,15 +20,7 @@ function DiscoveryContainer(props){
         
             const perChunk = 2 // items per chunk    
             const bArray = bList
-            // const bresult = bArray.reduce((resultArray, item, index) => { 
-            // const chunkIndex = Math.floor(index/perChunk)
-            // if(!resultArray[chunkIndex]) {
-            //     resultArray[chunkIndex] = [] // start a new chunk
-            // }
-            //     resultArray[chunkIndex].push(item)
 
-            //     return resultArray
-            // }, [])
             let lList = librariesInView.map((library)=>{return {type:"library",item:library}})
             // items per chunk    
             const lArray = lList
@@ -71,10 +63,8 @@ function DiscoveryContainer(props){
             setContentItems(sorted)
             setHasMore(false)
         
-        },[pagesInView,booksInView, librariesInView])
-        useLayoutEffect(()=>{
-        
-        },[pagesInView])
+        },[hasMore])
+
         
         useEffect(()=>{
             props.getPublicLibraries()

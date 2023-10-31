@@ -278,8 +278,23 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
       try{
       const ref = collection(db,"book")
       const bookIdList = params["bookIdList"]
-      const snapshot =await getDocs(query(ref, where('id', 'in', bookIdList)))
-    
+      
+    if(bookIdList.length == 0){
+      return {bookList:[]}
+    }else{
+      let queryReq =query(ref,
+        and(where("id", "in", bookIdList),where("privacy","==",false)))
+      if(auth.currentUser){
+      queryReq = query(ref,
+        and(where("id", "in", bookIdList),
+                     or(where("privacy","==",false),
+                        where('commenters', 'array-contains', auth.currentUser.uid),
+                        where('readers','array-contains', auth.currentUser.uid),
+                        where('editors', 'array-contains', auth.currentUser.uid),
+                        where('writers', 'array-contains',auth.currentUser.uid),
+                        where("privacy","==",false))))
+     }
+     const snapshot =await getDocs(queryReq)
       let bookList = []
       snapshot.docs.forEach(doc => {
                 
@@ -331,18 +346,30 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
       })
         return {
           bookList
-        }
+        }}
       }catch(err){
         const error = err??new Error("Error: Fetch Array of Books")
         return {error }
       }
 })
 const fetchArrayOfBooksAppened = createAsyncThunk("books/fetchArrayOfBooksAppend",async (params,thunkApi)=>{
-  try{
+
   const ref = collection(db,"book")
   const bookIdList = params["bookIdList"]
-  const snapshot =await getDocs(query(ref, where('id', 'in', bookIdList)))
-
+  const {profile}= params
+  let queryReq = query(ref, where('id', 'in', bookIdList),where("privacy","==",false))
+  
+  if(auth.currentUser){
+  queryReq = query(ref,
+      and(where("id", "in", bookIdList),
+      or(where("privacy","==",false),
+      or(where('commenters', 'array-contains', profile.userId),
+         where('readers','array-contains', profile.userId),
+         where('editors', 'array-contains', profile.userId),
+         where('writers', 'array-contains', profile.userId),
+         where("privacy","==",false)))))
+  }
+  const snapshot =await getDocs(queryReq)
   let bookList = []
   snapshot.docs.forEach(doc => {
             
@@ -394,10 +421,7 @@ const contributors= new Contributors(commenters,readers,writers,editors)
     return {
       bookList
     }
-  }catch(err){
-    const error = err??new Error("Error: Fetch Array of Books")
-    return {error }
-  }
+  
 }
 )
 

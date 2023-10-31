@@ -1,11 +1,11 @@
 import ContentList from "../components/ContentList"
 import { useParams } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect ,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import {    createFollowProfile,
             deleteFollowProfile, 
             fetchProfile,
-            updateHomeCollection } from "../actions/UserActions"
+            updateHomeCollection,fetchFollowProfilesForProfile } from "../actions/UserActions"
 // import ProfileCard from "../components/ProfileCard"
 import { getProfilePages } from "../actions/PageActions"
 import theme from "../theme"
@@ -19,28 +19,59 @@ function ProfileContainer(props){
     const homeCollection = useSelector(state=>state.users.homeCollection)
     const dispatch = useDispatch()
     const pathParams = useParams()
+    const [following,setFollowing]=useState(null)
+    const fetchPages =()=>{
+        if(profile){
+        const params = { profile}
+        dispatch(getProfilePages(params))}
+       }
     useEffect(()=>{
         const { id} = pathParams
        
         if(profile==null || (profile != null && profile.id != id)){
 
-            dispatch(fetchProfile(pathParams))
+            dispatch(fetchProfile(pathParams)).then(result=>{
+                if(result.error==null){
+                    const {payload} = result
+                    if(payload.error==null){
+                        fetchPages()
+                        fetchProfileFollows()
+                    }
+                }
+            })
+        }else{
+            fetchPages()
+            fetchProfileFollows()
         }
     },[])
-    useEffect(()=>{
-        if(profile){
-            const params = { profile}
-            dispatch(getProfilePages(params))
+   
+    const fetchProfileFollows =()=>{
+        if(currentProfile){
+            const params = {
+                profile: currentProfile
+            }
+            dispatch(fetchFollowProfilesForProfile(params)).then(result=>{
+                if(result.error==null){
+                    const {payload}= result
+                    if(payload.error==null){
+                        const {followList}= payload
+                       let foundFollow = followList.find(follow=>follow.followerId==currentProfile.id && follow.followingId == profile.id)
+                        setFollowing(foundFollow)
+                    }
+                }
+            })
+
         }
-    },[])
+    }
     let profileCardDiv = (<div>
 
     </div>)
     const onClickFollow = () => {
         if(currentProfile){
-            if(followedProfiles){
-              let follow =  followedProfiles.find(fp=>fp.id==`${currentProfile.id}_${profile.id}`)
-                if(follow){
+            if(followedProfiles && profile){
+              let follow =  followedProfiles.find(fp=>fp!=null && fp.followerId==currentProfile.id && fp.followingId == profile.id)
+                
+              if(follow){
                     const params =  {
                         followProfile:follow,
                         follower:currentProfile,
@@ -57,7 +88,12 @@ function ProfileContainer(props){
                         let books = [...homeCollection.books]
                         let libraries = [...homeCollection.libraries]
                         let pages = [...homeCollection.pages]
-                        let profiles = [...homeCollection.profiles,profile.id]
+                        let profiles = [...homeCollection.profiles]
+                        
+                        let id = homeCollection.profiles.find(id=>id==profile.id)
+                        if(!id){
+                           profiles = [...homeCollection.profiles,profile.id]
+                        }
                         const homeParams ={
                             profile: currentProfile,
                             books: books,
@@ -74,17 +110,17 @@ function ProfileContainer(props){
         }
     }
 
-    let followDiv = (
+    let followDiv=()=>{
+
+       return following?
+       (<Button style={{backgroundColor:theme.palette.secondary.light}}
+                onClick={onClickFollow}variant="outlined">
+                    Following</Button>):(
          <Button  style={{backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}  variant="outlined"
                     onClick={onClickFollow}
-        >Follow</Button>
-    )
-    if(currentProfile && profile && followedProfiles){
-    const follow = followedProfiles.find(fp=>fp.id == `${currentProfile.id}_${profile.id}`)
-    if(follow){
-        followDiv=(<Button style={{backgroundColor:theme.palette.secondary.light}} onClick={onClickFollow}variant="outlined">Following</Button>)
+        >Follow</Button>)
     }
-    }
+   
     if(profile!=null){
       profileCardDiv =  ( <div className="info view">
         <h1>{profile.username}</h1>
@@ -93,7 +129,7 @@ function ProfileContainer(props){
             <p>{profile.selfStatement}</p>
         </div>
         <div>
-           {followDiv}
+           {followDiv()}
         </div>
         </div>)
     }

@@ -19,7 +19,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { Button } from "@mui/material"
 import theme from "../theme"
 import "../App.css"
-import { current } from "@reduxjs/toolkit"
+import checkResult from "../core/checkResult"
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -28,11 +28,13 @@ function LibraryViewContainer(props){
     const libraryInView = useSelector(state=>state.libraries.libraryInView)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const followedLibraries = useSelector(state=>state.users.followedLibraries)
+    const [following,setFollowing]= useState(null)
     const [itemsInView,setItemsInView] = useState([])
     const [hasMore,setHasMore] = useState(false)
     const [error,setError]= useState(false)
     const [errorMessage,setErrorMessage] = useState("Error")
     const homeCollection = useSelector(state=>state.users.homeCollection)
+    
     useEffect(()=>{
         dispatch(fetchAllProfiles())
         if(libraryInView==null || (libraryInView!=null && libraryInView.id != pathParams["id"])){
@@ -40,23 +42,39 @@ function LibraryViewContainer(props){
             const params = {id: id}
             dispatch(clearPagesInView())
             dispatch(fetchLibrary(params)).then(result=>{
-                getPages()
+                if(result.error==null){
+                    const {payload} = result
+                    if(payload.error==null){
+                        getPages()
+                        isFollowing()
+                        
+                    }
+                }
+               
                 
             })
         }else{
-        
             dispatch(clearPagesInView())
             getPages()
-            
-            
+            isFollowing()
+    
         }
-        if(currentProfile){
+    },[])
+    const isFollowing = () =>{
+        if(currentProfile && libraryInView){
             const params = {
                 profile: currentProfile
             }
-            dispatch(fetchFollowLibraryForProfile(params))
-        }
-    },[])
+        
+        dispatch(fetchFollowLibraryForProfile(params)).then(result=>{
+            checkResult(result,payload=>{
+                const {followList } = payload
+
+                let found = followList.find(fl=>fl.libraryId==libraryInView.id && fl.profileId == currentProfile.id)
+                setFollowing(found)
+            })
+        })
+    }}
     useEffect(()=>{
             getPages()
             getBooks()
@@ -73,34 +91,14 @@ function LibraryViewContainer(props){
                     <SettingsIcon style={{color:"black"}}/>
                 </Button>)
                 }
-                let follow = null
-                if(currentProfile && libraryInView && followedLibraries && followedLibraries.length>0){
-                   follow = followedLibraries.find(fl=>
-                        fl!=null && fl.id == `${currentProfile.id}_${libraryInView.id}`
-                    )
-                }
-                let followDiv = (<Button style={{backgroundColor:theme.palette.secondary.main,
-                    color:theme.palette.secondary.contrastText}}
-                    variant="outlined"
-                    onClick={onClickFollow}
-                    >Follow
-                    </Button>)
                
-                if(follow){
-                    followDiv = (<Button style={{backgroundColor:theme.palette.secondary.light,
-                        color:theme.palette.secondary.contrastText}}
-                        variant="outlined"
-                        onClick={onClickFollow}
-                        >Following
-                        </Button>)
-                }
                 return  (<div className="info view">
                             <div className="inner">
                             <h2 className="name">{lib.name}</h2>
                             <p className="purpose"> {lib.purpose}</p>
                             <div className="button-row reverse">
                                 {button} 
-                                {followDiv}
+                                {followDiv()}
                             </div>
                             </div>
                         </div>
@@ -115,22 +113,38 @@ function LibraryViewContainer(props){
     }
     const onClickFollow = ()=>{
         if(currentProfile && libraryInView){
-            let follow = followedLibraries.find(fl=>fl.id==`${currentProfile.id}_${libraryInView.id}`)
+            let follow = followedLibraries.find(fl=>fl!=null && fl.libraryId == libraryInView.id && fl.profileId == currentProfile.id)
             if(follow){
                 const params = {
                     followLibrary: follow,
                     profile: currentProfile,
                     library: libraryInView
                 }
-                dispatch(deleteFollowLibrary(params))
+                dispatch(deleteFollowLibrary(params)).then((result)=>{
+                    if(result.error==null){
+                        const {payload}= result
+                        if(payload.error==null){
+                            setFollowing(null)
+                        }
+                    }
+
+                })
             }else{
                 const params = {
                         library: libraryInView,
                         profile: currentProfile}
-                dispatch(createFollowLibrary(params)).then(()=>{
-                
-                        let books = [...homeCollection.books]
-                        let libraries = [...homeCollection.libraries,libraryInView.id]
+                dispatch(createFollowLibrary(params)).then((result)=>{
+                    if(result.error==null){
+                        const {payload }= result
+                        if(payload.error==null){
+                            setFollowing(payload.followLibrary)
+                    
+                    let libraries = [...homeCollection.libraries]
+                      let id = homeCollection.libraries.find(id=>libraryInView.id==id)
+                      if(!id){
+                        libraries= [...homeCollection.libraries,libraryInView.id]
+                      }
+                      let books = [...homeCollection.books]
                         let pages = [...homeCollection.pages]
                         let profiles = [...homeCollection.profiles]
                         const homeParams ={
@@ -141,13 +155,32 @@ function LibraryViewContainer(props){
                             profiles:profiles
                         }
                         dispatch(updateHomeCollection(homeParams))
-               })
+             }else{
+                window.alert("Follow error: Try logging in again")
+             }}})
     }
 
     }else{
         window.alert("You'll need to login first")
     }
     }
+    const followDiv = ()=>{
+
+        return following? 
+    (<Button style={{backgroundColor:theme.palette.secondary.light,
+                color:theme.palette.secondary.contrastText}}
+                variant="outlined"
+                onClick={onClickFollow}
+                >Following
+                </Button>)  : (<Button style={{backgroundColor:theme.palette.secondary.main,
+                color:theme.palette.secondary.contrastText}}
+                variant="outlined"
+                onClick={onClickFollow}
+                >Follow
+                </Button>)
+    }
+    
+ 
     const getPages = () =>{
         setHasMore(true)
         if(libraryInView!=null){
@@ -328,7 +361,7 @@ function LibraryViewContainer(props){
             }
         
         
-        }
+    }
     
     return (
     <div>
@@ -348,5 +381,7 @@ function LibraryViewContainer(props){
 
 
 }
+
+
 
 export default LibraryViewContainer

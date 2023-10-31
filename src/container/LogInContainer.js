@@ -1,19 +1,25 @@
-import React ,{useState,useEffect,useLayoutEffect} from 'react'
+import React ,{useState} from 'react'
 import "../App.css"
-import { logIn,signUp} from '../actions/UserActions';
-import { connect,useDispatch} from 'react-redux';
+import { logIn,signUp,uploadProfilePicture} from '../actions/UserActions';
+import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
-import { TextField ,Checkbox, FormControlLabel,Button, FormGroup, Typography} from "@mui/material"
+import {InputAdornment,
+        IconButton, 
+        TextField ,
+        Checkbox, 
+        FormControlLabel,
+        Button, 
+        FormGroup, 
+        Typography} from "@mui/material"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import {InputAdornment,IconButton} from "@mui/material"
 import { VisibilityOff,Visibility } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
-import { uploadProfilePicture } from '../actions/UserActions';
 import {sendPasswordResetEmail } from "firebase/auth";
 import theme from '../theme';
 import { Modal } from '@mui/joy';
 import { auth } from '../core/di';
+import checkResult from '../core/checkResult';
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -32,14 +38,16 @@ function LogInContainer(props) {
     const [suEmail, setSuEmail] = useState('');
     const [suPassword, setSuPassword] = useState('');
     const [selfStatement,setSelfStatement] = useState('')
-    const [profilePicture, setProfilePicture] = useState(null)
+    const [profilePicture, setProfilePicture] = useState('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png')
     const [privacy, setPrivacy] = useState(false)
     const [liEmail, setLiEmail] = useState('');
     const [liPassword, setLiPassword] = useState('');
+    const [signUpError, setSignUpError] = useState(false)
+    const [logInError,setLogInError] = useState(false)
     const navigate = useNavigate()
     const handleNewUser = (event) => {
         event.preventDefault();
-       
+       if(suEmail.length>0 && suPassword.length > 6 && suUsername.length>2){
         const params ={email:suEmail,
                         password:suPassword,
                         username:suUsername,
@@ -48,43 +56,60 @@ function LogInContainer(props) {
                         privacy:privacy}
                       
         dispatch(signUp(params)).then((result) => {
-         
-            if (result.payload.profile!=null){
+            checkResult(result,payload=>{
+                const {profile} = payload
                 navigate("/profile/home")
-             }
+            },()=>{
+                setSignUpError(true)
+            })
+
         }).catch((err) => {
             
         });;
- 
+    }else{
+        setSignUpError(true)
+    }
     };
     const handleProfilePicture =(e)=>{
         const files = Array.from(e.target.files)
         const params = { file: files[0]
         }
         dispatch(uploadProfilePicture(params)).then((result) => {
-            const { payload } = result
-            if(payload!=null){
-            const {url}= payload
-            
-            setProfilePicture(url)
-            }
+            checkResult(result,(payload)=>{
+                const {url}= payload
+                setProfilePicture(url)
+            },()=>{
+                setSignUpError(true)
+            })
+    
         })
     }
 
     const handleLogIn = (event)=>{
         event.preventDefault()
+        if(liEmail.length>3 && liPassword.length>6){
+
+      
         const params ={email:liEmail,password:liPassword}
         dispatch(logIn(params)).then((result) => {
-        if(result.error==null){
-           navigate("/profile/home")
-           }
+        checkResult(result,payload=>{
+            navigate("/profile/home")
+        },()=>{
+            setLogInError(true)
+        })
+          
         }).catch((err) => {
             
         });
+    }else{
+        setLogInError(true)
+    }
     }
     return (
         <div id="LogInContainer">
-            <SignInCard username={suUsername}
+            <SignInCard setError={setSignUpError}
+                        error={signUpError}
+                        username={suUsername}
                         password={suPassword}
                         email={suEmail}
                         setUsername={setSuUsername}
@@ -95,7 +120,9 @@ function LogInContainer(props) {
                         setProfilePicture={handleProfilePicture}
                         setPrivacy={setPrivacy}
                         handleSubmit={handleNewUser}/>
-            <LogInCard  password={liPassword} 
+            <LogInCard  setError={setLogInError}
+                        error={logInError}
+                        password={liPassword} 
                         email={liEmail}
                         handleSubmit={handleLogIn}
                         setEmail={setLiEmail}
@@ -125,11 +152,12 @@ function SignInCard(props) {
                      <div > 
                     <div className="username">
                     <TextField
+                            error={props.error}
                             label='Username'
                             value={props.username}
                             onChange={(e) =>
-                            { 
-                                props.setUsername(e.target.value)
+                            {   props.setError(false)
+                                props.setUsername(e.target.value.trim())
                             }}
                             
                             InputProps={{
@@ -142,9 +170,11 @@ function SignInCard(props) {
                     </div>
                     <div className="email">
                     <TextField 
+                        error={props.error}
                         label="E-mail" 
                         value={props.email} 
                         onChange={(e) =>{
+                            props.setError(false)
                            props.setEmail(e.target.value.trim())
                         }}
                         InputProps={{
@@ -164,6 +194,7 @@ function SignInCard(props) {
                             <Checkbox 
                                 onChange={
                                     (e)=>{
+                                        props.setError(false)
                                        props.setPrivacy(e.target.value)
                                     }
                                    }
@@ -173,7 +204,9 @@ function SignInCard(props) {
                     <div id="self-statement"> 
                         <h6>Self Statement</h6>
                         <TextareaAutosize 
-                        name="selfStatement" onChange={(e)=>props.setSelfStatement(e.target.value)}minRows={3}
+                        name="selfStatement" onChange={(e)=>{
+                            props.setError(false)
+                            props.setSelfStatement(e.target.value)}}minRows={3}
                         style={
                             {
                                         width: inputStyle.width,
@@ -183,11 +216,13 @@ function SignInCard(props) {
                       
                         />
                     </div>
-                    <TextField value={props.password}
-                 
+                    <TextField 
+                                error={props.error}
+                                value={props.password}
                                 label="Password"
-                                onChange={(e) => 
-                                props.setPassword(e.target.value.trim())}
+                                onChange={(e) => {
+                                props.setError(false)
+                                props.setPassword(e.target.value.trim())}}
                           
                             type={showPassword ? "text" : "password"} 
                             InputProps={{
@@ -252,6 +287,7 @@ function LogInCard(props){
             >
                 <div className="email">
             <TextField
+                error={props.error}
                 label="E-mail"
                 value={props.email} 
                 name='E-mail'placeholder='E-mail' 
@@ -265,6 +301,7 @@ function LogInCard(props){
                 </div>
                 <div className="password-div">
             <TextField label="Password"
+            error={props.error}
             value={props.password} 
             name='password'placeholder='Password'
             onChange={(e) => props.setPassword(e.target.value.trim())}
@@ -301,9 +338,6 @@ function LogInCard(props){
         open={open}
         onClose={()=>{setOpen(false)}}
         aria-labelledby="modal-modal-title"
-        // aria-describedby="modal-modal-description"
-                // isOpen={open}
-                // onClose={()=>setOpen(false)}
                 >
                    
 
