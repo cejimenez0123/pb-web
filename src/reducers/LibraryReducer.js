@@ -7,7 +7,8 @@ import {    getProfileLibraries,
             setLibraryInView,
             getPublicLibraries,
             fetchArrayOfLibraries,
-            fetchArrayOfLibrariesAppend} from "../actions/LibraryActions"
+            fetchArrayOfLibrariesAppend,
+            clearLibrariesInView} from "../actions/LibraryActions"
 import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
     librariesInView:[Library],
@@ -81,6 +82,8 @@ builder
         state.error = payload.error
     }).addCase(fetchArrayOfLibrariesAppend.fulfilled,(state,{payload})=>{
         state.librariesInView = [...state.librariesInView,...payload.libraryList]
+    }).addCase(clearLibrariesInView.type,(state)=>{
+        state.librariesInView = []
     })
 }})
 export default libSlice

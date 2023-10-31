@@ -1,23 +1,26 @@
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import React,{useState} from "react"
-import { createComment } from "../actions/PageActions"
+import { updateLibraryContent } from "../actions/LibraryActions"
 import {Button } from "@mui/material"
 import { PageType } from "../core/constants"
 import { setProfileInView } from "../actions/UserActions"
 import { Dropdown,Menu ,MenuItem} from '@mui/joy'
 import theme from "../theme"
-import { fetchCommentsOfPage } from "../actions/PageActions"
-import { setPagesToBeAdded } from "../actions/PageActions"
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { fetchCommentsOfPage , setPagesToBeAdded,createComment} from "../actions/PageActions"
 import CommentInput from "./CommentInput"
+import checkResult from "../core/checkResult"
 export default function PageViewItem({page,currentProfile}) {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [bookmarked,setBookmarked]= useState(false)
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const [commenting,setCommenting]=useState(false)
     const [commentInput,setComment] = useState("")
-
+    const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
 const saveComment=()=>{
     if(currentProfile && page && commentInput.length >0){
     const params =  {profileId: currentProfile.id,
@@ -42,29 +45,6 @@ const saveComment=()=>{
 const commentBox = (show)=>{
     if (show){
         return(<CommentInput page={page} />)
-        // return(<div className="comment-input" 
-        // style={{
-        //     backgroundColor:"white",
-        //     paddingTop:"1em",
-        //     width: "50em",
-        //     margin:"auto",
-            
-            
-        // }}>
-        //     <TextareaAutosize
-
-        //     value={commentInput}
-        //     minRows={3} 
-        //     cols={85}
-        //     onChange={(e)=>{
-        //        setComment(e.target.value)
-        // }} />
-        //     <div className="button-row">
-        //         <Button onClick={saveComment}>
-        //             Save
-        //         </Button>
-        //     </div>
-        // </div>)
     }
 }
 let pageDataElement = (<div></div>)
@@ -79,6 +59,37 @@ const handleToggle = (e) => {
     }
  })
   };
+  const onBookmarkPage = ()=>{
+    if(bookmarked && page){
+    let pageIdList = bookmarkLibrary.pageIdList.filter(id=>id!=page.id)
+    const params = {
+        library:bookmarkLibrary,
+        pageIdList:pageIdList,
+        bookIdList: bookmarkLibrary.bookIdList
+          }
+          dispatch(updateLibraryContent(params))
+          setBookmarked(false)
+    }else{
+        if(bookmarkLibrary && currentProfile && page){
+            const pageIdList = [...bookmarkLibrary.pageIdList,page.id]
+            const params = {
+                library:bookmarkLibrary,
+                pageIdList:pageIdList,
+                bookIdList: bookmarkLibrary.bookIdList
+                  }
+            dispatch(updateLibraryContent(params)).then(result=>{
+                checkResult(result,(payload)=>{
+                const {library} = payload
+                     let found =library.pageIdList.find(id=>id==page.id)
+                    setBookmarked(Boolean(found))
+                    },()=>{
+
+                })
+            })
+        }
+    }
+    
+}
 if(page){
 switch(page.type){
     case PageType.text:
@@ -105,10 +116,13 @@ let profile = (<div></div>)
             }}><p>{prof.username}</p></a>)
         }
         return(
-        <div className='dashboard-item'>
+        <div className='content-item'>
         
             <div className='dashboard-header'>
+                <div className="titles">
                 <p>{page.title}</p>
+                </div>
+               
                 {profile}
             </div>
            
@@ -176,7 +190,9 @@ let profile = (<div></div>)
                     >
                           Copy Share Link
                         </MenuItem>
-            
+                        <MenuItem onClick={onBookmarkPage}disabled={!currentProfile}> 
+            {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
+            </MenuItem>
           </Menu>
         </Dropdown>
             </div>

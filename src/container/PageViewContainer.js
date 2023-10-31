@@ -2,9 +2,7 @@ import { PageType } from "../core/constants";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPage} from "../actions/PageActions"
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchAllProfiles } from "../actions/UserActions";
 import "../styles/PageView.css"
 import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchCommentsOfPage } from "../actions/PageActions";
@@ -111,12 +109,18 @@ export default function PageViewContainer({page}){
             <h1> 0 Comments</h1>
         </div>)
     }}
-
+    const pageDiv = ()=>{
+        if(page){
+            return(<PageViewItem page={page} currentProfile={currentProfile} />)
+        }else{
+            return(<div className="empty"><h6>This page doesn't exist</h6></div>)
+        }
+    }
     return(<div className="center">
                 <div id="page">
                     
-                        <PageViewItem page={page} currentProfile={currentProfile} />
-                    
+                        
+                        {pageDiv()}
                     
                         {commentList()}
                    

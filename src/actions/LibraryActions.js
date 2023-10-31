@@ -142,6 +142,7 @@ const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (
   }
 })
 
+
 const createLibrary = createAsyncThunk("library/createLibrary", async function(params,thunkApi){
     const ref = collection(db,"library")
     const id = doc(ref).id
@@ -214,10 +215,10 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
        }else if(auth.currentUser.uid != profile.userId){
       queryReq = query(ref,and(
                      where("profileId", "==", profile.id),
-                     or(where('commenters', 'array-contains', profile.userId),
-                        where('readers','array-contains', profile.userId),
-                        where('editors', 'array-contains', profile.userId),
-                        where('writers', 'array-contains', profile.userId),
+                     or(where('commenters', 'array-contains', auth.currentUser.uid),
+                        where('readers','array-contains', auth.currentUser.uid),
+                        where('editors', 'array-contains', auth.currentUser.uid),
+                        where('writers', 'array-contains', auth.currentUser.uid),
                         where("privacy","==",false))))
      }else{
         queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
@@ -458,12 +459,11 @@ const fetchArrayOfLibraries = createAsyncThunk("libraries/fetchArrayOfLibraries"
   try{
   const ref = collection(db,"library")
   const libraryIdList = params["libraryIdList"]
-if(libraryIdList.lenght == 0){
+if(libraryIdList.length == 0){
   return {
     libraryList:[]
   }
 }else{
-  // const snapshot = await getDocs(queryReq);
   let queryReq =query(ref,
     and(where("id", "in", libraryIdList),where("privacy","==",false)))
   if(auth.currentUser){
@@ -585,6 +585,7 @@ const fetchArrayOfLibrariesAppend = createAsyncThunk("libraries/fetchArrayOfLibr
     return
   }
 })
+const clearLibrariesInView = createAction("libraries/clearLibrariesInView")
 export {  fetchLibrary,
           updateLibrary,
           updateLibraryContent,
@@ -596,5 +597,6 @@ export {  fetchLibrary,
           getPublicLibraries,
           deleteLibrary,
           fetchArrayOfLibraries,
-          fetchArrayOfLibrariesAppend
+          fetchArrayOfLibrariesAppend,
+          clearLibrariesInView
           }

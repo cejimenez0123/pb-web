@@ -187,7 +187,6 @@ function App(props) {
   );
 }
 
-  // 
 function mapDispatchToProps(dispatch){
   return{ 
     getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
@@ -210,15 +209,9 @@ function mapStateToProps(state){
     bookInView: state.books.bookInView,
     booksInView: state.books.booksInView,
     currentProfile: state.users.currentProfile,
-    // currentUser: state.users.currentUser,
     pageInView: state.pages.pageInView,
     pagesInView: state.pages.pagesInView,
-    // libraryInView: state.libraries.libraryInView,
     librariesInView: state.libraries.librariesInView,
-    
-    // libraryFollowers: state.libraries.libraryFollowers,
-    // followedBooks: state.books.followedBooksOfUser,
-    // followedLibraries: state.libraries.followedLibraries
     
   }
 }

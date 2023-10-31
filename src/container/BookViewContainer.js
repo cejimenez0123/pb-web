@@ -10,10 +10,14 @@ import "../styles/BookView.css"
 import { clearPagesInView } from "../actions/PageActions"
 import {Button, IconButton} from "@mui/material"
 import theme from "../theme"
+import { updateLibraryContent } from "../actions/LibraryActions"
 import { fetchProfile ,createFollowBook,deleteFollowBook,fetchFollowBooksForProfile, updateHomeCollection} from "../actions/UserActions"
 import { Add, Settings } from "@mui/icons-material"
 import debounce from "../core/debounce"
 import { canAddToItem } from "../core/constants"
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import checkResult from "../core/checkResult"
 function BookViewContainer({book,pages}){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -23,7 +27,46 @@ function BookViewContainer({book,pages}){
     const [hasMore,setHasMore]=useState(false)
     const followedBooks = useSelector(state=>state.users.followedBooks)
     const homeCollection = useSelector(state=>state.users.homeCollection)
+    const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const [following,setFollowing]=useState(null)
+    const [bookmarked,setBookmarked]=useState(false)
+    useEffect(()=>{
+        if(bookmarkLibrary && book){
+           let found = bookmarkLibrary.bookIdList.find(id=>id==book.id)
+           setBookmarked(Boolean(found))
+        }
+    })
+    const onBookmarkPage = ()=>{
+        if(bookmarked && book){
+        let bookIdList = bookmarkLibrary.bookIdList.filter(id=>id!=book.id)
+        const params = {
+            library:bookmarkLibrary,
+            pageIdList:bookmarkLibrary.pageIdList,
+            bookIdList:bookIdList
+              }
+              dispatch(updateLibraryContent(params))
+              setBookmarked(false)
+        }else{
+            if(bookmarkLibrary && currentProfile &&book){
+                const bookIdList = [...bookmarkLibrary.bookIdList,book.id]
+                const params = {
+                    library:bookmarkLibrary,
+                    pageIdList:bookmarkLibrary.pageIdList,
+                    bookIdList:bookIdList
+                      }
+                dispatch(updateLibraryContent(params)).then(result=>{
+                    checkResult(result,(payload)=>{
+                    const {library} = payload
+                         let found =library.bookIdList.find(id=>id==book.id)
+                        setBookmarked(Boolean(found))
+                        },()=>{
+    
+                    })
+                })
+            }
+        }
+        
+    }
     const getBook=()=>{
       
       const bookId =pathParams["id"]
@@ -194,12 +237,12 @@ function BookViewContainer({book,pages}){
        ()=>debounce(followBookClick(),10)
    }>Follow</Button>)}
 
-    if(followedBooks && currentProfile && book ){
+    if(followedBooks && currentProfile && book && book.profileId == currentProfile.id){
         editDiv = (<Button
                         key={book.id}
                         onClick={(e)=>{
                             navigate(`/book/${book.id}/edit`)
-                    }}>Edit<Settings/></Button>)
+                    }}><Settings/></Button>)
     }
            
 
@@ -227,10 +270,20 @@ function BookViewContainer({book,pages}){
             <h5> {book.title}</h5>
             <div className="purpose">
             <h6> {book.purpose}</h6>
+           
             </div>
             {followDiv()}
+            <div>
+
+            <div className="button-row">
+
+
             {addBtn}
             {editDiv}
+            {bookmarked?<IconButton onClick={onBookmarkPage}><BookmarkIcon/></IconButton>:
+            <IconButton disabled={!currentProfile}onClick={onBookmarkPage}><BookmarkBorderIcon/></IconButton>}
+                   </div>
+                   </div>
             </div>
         </div>
         <div className="right-bar">

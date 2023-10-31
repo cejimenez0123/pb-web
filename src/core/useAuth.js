@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useSelector ,useDispatch } from "react-redux"
 import { onAuthStateChanged } from "firebase/auth"
 import { getCurrentProfile,fetchHomeCollection} from "../actions/UserActions"
+import { fetchBookmarkLibrary } from "../actions/LibraryActions"
 
 export default function useAuth(shareAuthState) {
     const [authState, setAuthState] = useState({
@@ -27,6 +28,10 @@ export default function useAuth(shareAuthState) {
                       const params = {
                         profile
                       }
+                      const bookmarkId ={
+                        id: profile.bookmarkLibraryId
+                      }
+                      dispatch(fetchBookmarkLibrary(bookmarkId))
                       dispatch(fetchHomeCollection(params))
                     }
                   }

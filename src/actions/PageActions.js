@@ -131,10 +131,10 @@ const getProfilePages= createAsyncThunk(
      }else if(auth.currentUser.uid != profile.userId){
     queryReq = query(ref,
                    and(where("profileId", "==", profile.id),
-                   or(where('commenters', 'array-contains', profile.userId),
-                      where('readers','array-contains', profile.userId),
-                      where('editors', 'array-contains', profile.userId),
-                      where('writers', 'array-contains', profile.userId),
+                   or(where('commenters', 'array-contains', auth.currentUser.uid),
+                      where('readers','array-contains', auth.currentUser.uid),
+                      where('editors', 'array-contains', auth.currentUser.uid),
+                      where('writers', 'array-contains', auth.currentUser.uid),
                       where("privacy","==",false))))
    }else{
       queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
@@ -542,7 +542,7 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
                       where('writers', 'array-contains',auth.currentUser.uid),
                       where("privacy","==",false))))
    }
-  const snapshot =await getDocs(query(ref, where('id', 'in', pageIdList)))
+  const snapshot =await getDocs(queryReq)
 
  let pageList = []
   snapshot.docs.forEach(doc => {

@@ -15,13 +15,13 @@ function DiscoveryContainer(props){
     let [pages,setPages] = useState([])
     let [hasMore,setHasMore]=useState(false)
         useEffect(()=>{
-            let pList = pagesInView.map((page)=>{return {type:"page",item:page}})
-            let bList = booksInView.map((book)=>{return {type:"book",item:book}})
+            let pList = pagesInView.map((page)=>{return {type:"page",page:page}})
+            let bList = booksInView.map((book)=>{return {type:"book",book:book}})
         
             const perChunk = 2 // items per chunk    
             const bArray = bList
 
-            let lList = librariesInView.map((library)=>{return {type:"library",item:library}})
+            let lList = librariesInView.map((library)=>{return {type:"library",library:library}})
             // items per chunk    
             const lArray = lList
             const lresult = lArray.reduce((resultArray, item, index) => { 
@@ -48,18 +48,23 @@ function DiscoveryContainer(props){
 
 
                 }else{
-                if(a.item.updatedAt!=null && b.item.updatedAt!=null){
-                    return b.item.updatedAt - a.item.updatedAt
-                }else if(a.item.updatedAt!=null && b.item.created!=null){
-                    return b.item.created - a.item.updatedAt
-                }else if(a.item.created!=null && b.item.updatedAt!=null){
-                    return b.item.updatedAt - a.item.created
+                if(a.book!=null && b.book!=null){
+                    return b.book.updatedAt - a.book.updatedAt
+                }else if(a.book!=null && b.page!=null){
+                    return b.page.created - a.book.updatedAt
+                }else if(a.page!=null && b.book!=null){
+                    return b.book.updatedAt - a.page.created
+                }else if(
+                    a.page!=null && a.page!=null
+                ){
+                    return b.page.created - a.page.created 
                 }else{
-                    return b.item.created - a.item.created 
+                   
                 }
             }
             } );
             // let content=shuffle(list)
+
             setContentItems(sorted)
             setHasMore(false)
         
@@ -94,18 +99,18 @@ function DiscoveryContainer(props){
                                 return(<div className='pair-item'>
                                     <div className='pair-inner'>
                                     <a onClick={()=>{
-                                    navigate(`/book/${aItem.item.id}`)
-                                }}><h3>{aItem.item.title}</h3></a>
-                                <p>{aItem.item.purpose}</p>
+                                    navigate(`/book/${aItem.book.id}`)
+                                }}><h3>{aItem.book.title}</h3></a>
+                                <p>{aItem.book.purpose}</p>
                                 </div>
                                 </div>)
                             }
                             case "library":{
                                 return(<div className='pair-item'>
                                     <div className='pair-inner'>                                <a onClick={()=>{
-                                    navigate(`/library/${aItem.item.id}`)
-                                }}><h3>{aItem.item.name}</h3></a>
-                                <p>{aItem.item.purpose}</p>
+                                    navigate(`/library/${aItem.library.id}`)
+                                }}><h3>{aItem.library.name}</h3></a>
+                                <p>{aItem.library.purpose}</p>
                                 </div>
                                 </div>)
                             }
@@ -123,28 +128,42 @@ function DiscoveryContainer(props){
                     return (
                       
                        
-                        <DashboardItem page={hash.item}/>
+                        <DashboardItem page={hash.page}/>
                        
                     )
                 }
                 case 'book':{
-            
-                        let id =  hash.item.pageIdList[0]
-                        let page  = null
+                    if(hash.book!=null){
+
+                        let i = 0
+                        let pageId =  hash.book.pageIdList[i]
+                        let foundHash = null
+                        let page = null
+                      
+                        while(hash.book.pageIdList.length>i-1 && Boolean(foundHash)){
+                            foundHash =  contentItems.find(item=>item.page!=null && item.page.id == pageId)
+                            
+                            if(!foundHash){
+                                pageId =  hash.book.pageIdList[i]
+                                foundHash=false
+                            }else{
+                                i+=1
+                            }
+                        }
                          if(pagesInView){
-                            page = pagesInView.find(page=> page.id == id)
+                            page = pagesInView.find(page=> page.id == pageId)
                         }
-                        let profile = null
-                        if(profilesInView){
-                            profile = profilesInView.find(profile => profile.id == hash.item.profileId)
-                        }
-                        
-                        if(page){
+                       
+                        if(page && !foundHash){
                         
                             return(
-                            <DashboardItem book={hash.item} page={page}/>
+                            <DashboardItem book={hash.book} page={page}/>
                         )
                    
+                }else{
+                    return(<div></div>)
+                }}else{
+                    return(<div></div>)
                 }
                 }
                 case 'library':{

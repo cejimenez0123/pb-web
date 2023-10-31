@@ -141,10 +141,10 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
        }else if(auth.currentUser.uid != profile.userId){
       queryReq = query(ref,
                      and(where("profileId", "==", profile.id),
-                     or(where('commenters', 'array-contains', profile.userId),
-                        where('readers','array-contains', profile.userId),
-                        where('editors', 'array-contains', profile.userId),
-                        where('writers', 'array-contains', profile.userId),
+                     or(where('commenters', 'array-contains', auth.currentUser.uid),
+                        where('readers','array-contains', auth.currentUser.uid),
+                        where('editors', 'array-contains', auth.currentUser.uid),
+                        where('writers', 'array-contains', auth.currentUser.uid),
                         where("privacy","==",false))))
      }else{
         queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
@@ -363,10 +363,10 @@ const fetchArrayOfBooksAppened = createAsyncThunk("books/fetchArrayOfBooksAppend
   queryReq = query(ref,
       and(where("id", "in", bookIdList),
       or(where("privacy","==",false),
-      or(where('commenters', 'array-contains', profile.userId),
-         where('readers','array-contains', profile.userId),
-         where('editors', 'array-contains', profile.userId),
-         where('writers', 'array-contains', profile.userId),
+      or(where('commenters', 'array-contains', auth.currentUser.uid),
+         where('readers','array-contains', auth.currentUser.uid),
+         where('editors', 'array-contains', auth.currentUser.uid),
+         where('writers', 'array-contains', auth.currentUser.uid),
          where("privacy","==",false)))))
   }
   const snapshot =await getDocs(queryReq)

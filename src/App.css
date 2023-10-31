@@ -17,6 +17,10 @@ html, body {
   height: 40vmin;
   pointer-events: none;
 }
+.button-row{
+  display: flex;
+  flex-direction: row;
+}
 @media (min-width: 1000px) {
   .content-list{
     width: 45em;

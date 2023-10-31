@@ -216,16 +216,15 @@ function NavbarContainer(props){
                         <Typography textAlign="center">{page}</Typography>
                       </MenuItem>)
 
-                    }else{
-                   return( 
-                  <MenuItem onClick={()=>         
-                        handleCloseNavMenu(page)
-                  } key={page} >
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>)
-                                          }
+                    }
             })
           }
+          <MenuItem onClick={()=>{handleCloseNavMenu(PageName.home)}}>
+            {PageName.home}
+          </MenuItem>
+          <MenuItem onClick={()=>{handleCloseNavMenu(PageName.discovery)}}>
+            {PageName.discovery}
+          </MenuItem>
               </Menu>
             </Box>
             
@@ -264,7 +263,7 @@ function NavbarContainer(props){
                 
                   debounce(handleClick(e),5)
                 }}>
-                        Create {openCreate ? <ExpandLess /> : <ExpandMore />}
+                        Create {Boolean(anchorEl) ? <ExpandLess /> : <ExpandMore />}
                       </Button >
                   <Menu
                     sx={{ mt: '45px' }}

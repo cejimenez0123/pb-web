@@ -12,7 +12,7 @@
         
       
 }
-@media (max-width: 726px) {
+@media (max-width: 800px) {
 .info.view{
    
     /* margin-right: 3em;
@@ -31,14 +31,23 @@
     margin: 1em 1em;
    
 }
+.two-panel{
+    display: flex;
+    flex-direction: column-reverse;
 }
-@media (min-width: 726px) {
+}
+@media (min-width: 800px) {
+    .two-panel{
+        display: grid;
+        grid-template-columns: 70% 30%;
+        margin-top: 3em;
+    }
     .info.view{
        
         margin-right: 1em;
     
         min-height: 15em;
-        min-width:25em;
+        min-width:15em;
         background-color: rgb(206, 222, 214);
         border: 1px solid rgb(155, 173, 161);
         border-radius: 25px;
@@ -51,17 +60,9 @@
         margin: 1em 1em;
        
     }}
-.two-panel{
-    display: grid;
-    grid-template-columns: 70% 30%;
-    margin-top: 3em;
-}
 
-.left-bar{
-    display: flex;
-    flex-direction: column; 
-  
-}
+
+
 .flex-end-right{
     justify-content: flex-end; /* Align items to the bottom (right in a column) */
     align-items: flex-end; 

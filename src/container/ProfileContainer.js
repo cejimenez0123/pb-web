@@ -11,6 +11,7 @@ import { getProfilePages } from "../actions/PageActions"
 import theme from "../theme"
 import "../styles/Profile.css"
 import { Button } from "@mui/material"
+import checkResult from "../core/checkResult"
 function ProfileContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const profile = useSelector(state=>state.users.profileInView)
@@ -43,25 +44,24 @@ function ProfileContainer(props){
             fetchPages()
             fetchProfileFollows()
         }
-    },[])
+    },[profile])
    
     const fetchProfileFollows =()=>{
-        if(currentProfile){
+        if(currentProfile && profile){
             const params = {
                 profile: currentProfile
             }
             dispatch(fetchFollowProfilesForProfile(params)).then(result=>{
-                if(result.error==null){
-                    const {payload}= result
-                    if(payload.error==null){
+                checkResult(result,payload=>{
+
+
                         const {followList}= payload
                        let foundFollow = followList.find(follow=>follow.followerId==currentProfile.id && follow.followingId == profile.id)
                         setFollowing(foundFollow)
-                    }
-                }
-            })
+                    },()=>{
 
-        }
+                    })  })
+                }
     }
     let profileCardDiv = (<div>
 
@@ -90,7 +90,7 @@ function ProfileContainer(props){
                         let pages = [...homeCollection.pages]
                         let profiles = [...homeCollection.profiles]
                         
-                        let id = homeCollection.profiles.find(id=>id==profile.id)
+                        let id = homeCollection.profiles.find(id=>profile!=null && id==profile.id)
                         if(!id){
                            profiles = [...homeCollection.profiles,profile.id]
                         }

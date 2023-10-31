@@ -1,25 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../Dashboard.css"
 import { setPageInView, setPagesToBeAdded } from '../actions/PageActions'
-// import {getPagesComments} from "../../actions/PageActions"
 import { PageType } from '../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
 import { Dropdown,Menu ,MenuItem} from '@mui/joy'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import theme from '../theme'
-
+import { updateLibraryContent } from '../actions/LibraryActions'
+import checkResult from '../core/checkResult'
 // import {useBottomScrollListener} from "react-bottom-scroll-listener"
   let size= {width: window.innerWidth,height: window.innerHeight}
 
 function DashboardItem({page,book}) {
-    // const theme = useTheme()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
+    const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const profile = useSelector(state=>state.users.profilesInView).find(prof=>{
        return prof.id == page.profileId
     })
+    const [bookmarked,setBookmarked]=useState(null)
     const [anchorEl,setAnchorEl]= useState(null)
     const anchorRef = React.useRef(null);
     const handleToggle = (e) => {
@@ -31,7 +34,14 @@ function DashboardItem({page,book}) {
         }
      })
       };
- 
+useEffect(()=>{
+
+    if(bookmarkLibrary){
+        let found = bookmarkLibrary.pageIdList.find(id=>id==page.id)
+        setBookmarked(Boolean(found))
+    }
+   
+},[page])
 
 const hanldeClickComment=(pageItem)=>{
     
@@ -68,6 +78,37 @@ const hanldeClickComment=(pageItem)=>{
         </p>)
 
     }
+    const onBookmarkPage = ()=>{
+        if(bookmarked && page){
+        let pageIdList = bookmarkLibrary.pageIdList.filter(id=>id!=page.id)
+        const params = {
+            library:bookmarkLibrary,
+            pageIdList:pageIdList,
+            bookIdList: bookmarkLibrary.bookIdList
+              }
+              dispatch(updateLibraryContent(params))
+              setBookmarked(false)
+        }else{
+            if(bookmarkLibrary && currentProfile && page){
+                const pageIdList = [...bookmarkLibrary.pageIdList,page.id]
+                const params = {
+                    library:bookmarkLibrary,
+                    pageIdList:pageIdList,
+                    bookIdList: bookmarkLibrary.bookIdList
+                      }
+                dispatch(updateLibraryContent(params)).then(result=>{
+                    checkResult(result,(payload)=>{
+                    const {library} = payload
+                         let found =library.pageIdList.find(id=>id==page.id)
+                        setBookmarked(Boolean(found))
+                        },()=>{
+
+                    })
+                })
+            }
+        }
+        
+    }
     let bookTitleDiv =  (<div></div>)
     if(book){
         bookTitleDiv = (<a onClick={
@@ -99,9 +140,6 @@ const hanldeClickComment=(pageItem)=>{
                 >
                     Yea
                 </Button>
-                {/* <button>
-                    Nah
-                </button> */}
                 <Button 
                         style={{color: theme.palette.info.contrastText,
                             backgroundColor: theme.palette.info.main}}
@@ -110,9 +148,6 @@ const hanldeClickComment=(pageItem)=>{
                 
                     Comments
                 </Button>
-                {/* <Button>
-                    Info
-                </Button> */}
                 
                 <Dropdown>
                         <Button onClick={(e)=>{
@@ -121,15 +156,16 @@ const hanldeClickComment=(pageItem)=>{
                         aria-controls={anchorEl ? 'menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={anchorEl ? 'true' : undefined}
-          
           >
         Share
           </Button>
           <Menu 
               id="menu"
+              
           anchorEl={anchorEl}
           onClose={()=>setAnchorEl(null)}
-          open={Boolean(anchorEl)}>
+          open={Boolean(anchorEl)}
+          unmountOnExit>
           <MenuItem disabled={!currentProfile} onClick={()=>{
             const params = {pageList:[page]}
             dispatch(setPagesToBeAdded(params))
@@ -154,7 +190,9 @@ const hanldeClickComment=(pageItem)=>{
                     >
                           Copy Share Link
                         </MenuItem>
-            
+            <MenuItem onClick={onBookmarkPage}disabled={!currentProfile}> 
+            {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
+            </MenuItem>
           </Menu>
         </Dropdown>
             </div>

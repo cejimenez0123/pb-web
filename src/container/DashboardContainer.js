@@ -9,6 +9,7 @@ import { fetchFollowBooksForProfile, fetchHomeCollection } from '../actions/User
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
 import ErrorBoundary from '../ErrorBoundary'
 import { clickMe } from '../actions/UserActions'
+import checkResult from '../core/checkResult'
 
 function DashboardContainer(props){
     const dispatch = useDispatch()
@@ -112,7 +113,12 @@ function DashboardContainer(props){
                                     const params = { bookIdList:library.bookIdList,
                                     profile: currentProfile}
                                     dispatch(fetchArrayOfBooksAppened(params)).then(result=>{
-                                      
+                                      checkResult(result,payload=>{
+                                            const {bookList}=payload
+                                            getBookListContent(bookList)
+                                      },err=>{
+
+                                      })
                                             })
 
                                         

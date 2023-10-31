@@ -45,13 +45,13 @@ export default function RoleList({getRoles,library,book,type}) {
            
                 let profiles = book.readers.map(id=>profilesInView.find(profile=>profile.id == id)
                   )  
-                  console.log(`rolelist`+JSON.stringify(book))
+              
                  let roleList = profiles.map(prof=>{return new BookRole(`${book.id}_${prof.id}`,prof,book.id,RoleType.reader)})           
                 
                  setNewRoles(prevState=>{
                   return [...prevState,...roleList]
               }) 
-              console.log(`new ROLES`+JSON.stringify(newRoles))
+           
         }
         if(library && profilesInView.length >0){        
           let profiles = library.readers.map(id=>profilesInView.find(profile=>profile.id == id)
