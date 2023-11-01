@@ -101,7 +101,7 @@ export default function PageViewContainer({page}){
         break;
     }}
     const commentList = ()=>{
-    if(comments.length>0){
+    if(comments && comments.length>0){
         return(<div className="comment-thread">
                 <InfiniteScroll
                                 dataLength={comments.length}

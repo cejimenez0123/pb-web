@@ -14,7 +14,8 @@ import {  getPublicPages ,
           fetchCommentsOfPage,
           deleteComment,
           clearEditingPage,
-          appendComment
+          appendComment,
+          updateComment
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
 
@@ -105,7 +106,9 @@ const pageSlice = createSlice({
     }).addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []
     }).addCase(fetchEditingPage.fulfilled,(state,{payload})=>{
+      if(payload.page){
       state.editingPage = payload.page
+      }
     }).addCase(fetchCommentsOfPage.pending,(state,{payload})=>{
       state.loading = true
     }).addCase(fetchCommentsOfPage.rejected,(state,{payload})=>{
@@ -131,6 +134,17 @@ const pageSlice = createSlice({
           state.commentsInView = [payload.comment]
         }
         
+      }).addCase(updateComment.rejected,(state,{payload})=>{
+        state.error = payload.error
+      }).addCase(updateComment.fulfilled,(state,{payload})=>{
+       let newList = state.commentsInView.map(comment=>{
+          if(comment.id == payload.comment.id){
+            return payload.comment
+          }else{
+            return comment
+          }
+        })
+        state.commentsInView = newList
       })}
   })
     

@@ -24,7 +24,7 @@
     display: flex;
     flex-direction: row;
     margin: auto 0;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 .btn-row .comment-author{
     position: relative;
@@ -102,6 +102,7 @@ button:active {
     align-items: center;
     height: 50px;
     font-size: 14px;
+    justify-content: space-between;
 }
 .comment-voting {
     width: 20px;
@@ -159,7 +160,7 @@ button:active {
         display: flex;
         flex-direction: row;
         margin: auto 0;
-        justify-content: space-between;
+        justify-content: flex-end;
     }
     .btn-row .comment-author{
         position: relative;
@@ -238,6 +239,7 @@ button:active {
         align-items: center;
         height: 50px;
         font-size: 14px;
+        justify-content: space-between;
     }
     .comment-voting {
         width: 20px;

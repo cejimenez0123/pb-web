@@ -712,6 +712,24 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
       return {error: new Error("Error: Delete Page"+e.message)};
     }
   })
+  const updateComment = createAsyncThunk(`pages/updateComment`, async (params,thunkApi)=>{
+    const {comment,newText}=params
+    let ref = doc(db, "page", comment.pageId,"comment",comment.id)
+    await updateDoc(ref,{
+      text:newText
+    })
+    const newComment = new PageComment(comment.id,
+                    newText,
+                    comment.pageId,
+                    comment.profileId,
+                    comment.parentCommentId,
+                    comment.approvalScore,
+                    comment.created)
+
+      return {
+        comment:newComment
+      }
+  })
   export {getPublicPages,
           pagesLoading,
           setHtmlContent,
@@ -732,5 +750,6 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           deletePage,
           deleteComment,
           clearEditingPage,
-          appendComment
+          appendComment,
+          updateComment
         } 

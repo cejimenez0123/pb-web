@@ -1,12 +1,12 @@
 
 import { TextareaAutosize } from "@mui/material"
 import { useSelector,useDispatch} from "react-redux"
-import { appendComment, createComment,fetchCommentsOfPage } from "../actions/PageActions"
-import { useState } from "react"
+import { appendComment, createComment,fetchCommentsOfPage, updateComment } from "../actions/PageActions"
+import { useEffect, useState } from "react"
 import {Button} from "@mui/material"
 import checkResult from "../core/checkResult"
 
-export default function CommentInput({page,parentComment,parentProfile}){
+export default function CommentInput({editing,page,parentComment,parentProfile}){
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [commentInput,setComment] = useState("")
@@ -35,10 +35,24 @@ export default function CommentInput({page,parentComment,parentProfile}){
     
         })
     }}
+    useEffect(()=>{
+        if(editing){
+            setComment(parentComment.text)
+        }
+    },[editing])
     let commentAuthorDiv =(<div></div>)
     if(parentProfile){
         commentAuthorDiv=(<h6>{parentProfile.usernmae}</h6>)
     }
+    const clickUpdateComment = ()=>{
+        const params = {
+            comment: parentComment,
+            newText: commentInput
+        }
+        dispatch(updateComment(params))
+    }
+    const input = ()=>{
+        
     return(<div style={{display: show?"":"none"}}className="comment-input">
     <div className="comment-input-header">
         {commentAuthorDiv}
@@ -52,9 +66,10 @@ export default function CommentInput({page,parentComment,parentProfile}){
        setComment(e.target.value)
 }} />
     <div className="button-row">
-        <Button disabled={!currentProfile} onClick={saveComment}>
+       {editing? <Button onClick={clickUpdateComment}>Update</Button>:<Button disabled={!currentProfile} onClick={saveComment}>
             Reply
-        </Button>
+        </Button>}
     </div>
-</div>)
+</div>)}
+    return input()
 }
