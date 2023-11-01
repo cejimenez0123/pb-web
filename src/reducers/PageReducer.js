@@ -112,7 +112,12 @@ const pageSlice = createSlice({
         state.error = payload.error
         state.loading =false
     }).addCase(fetchCommentsOfPage.fulfilled,(state,{payload})=>{
+      if(Array.isArray(payload.comments)){
         state.commentsInView = payload.comments
+      }else{
+        state.error = payload.error
+      }
+     
         state.loading =false
     }).addCase(deleteComment.rejected,(state,{payload})=>{
       state.error = payload.error
@@ -120,7 +125,12 @@ const pageSlice = createSlice({
        let comments= state.commentsInView.filter(com=>com.id != payload.comment)
       state.commentsInView = comments
       }).addCase(appendComment,(state,{payload})=>{
-        state.commentsInView = [...state.commentsInView,payload.comment]
+        if(Array.isArray(state.commentsInView)){
+          state.commentsInView = [...state.commentsInView,payload.comment]
+        }else{
+          state.commentsInView = [payload.comment]
+        }
+        
       })}
   })
     

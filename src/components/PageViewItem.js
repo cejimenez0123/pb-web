@@ -96,7 +96,7 @@ switch(page.type){
         pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
-        pageDataElement = <img className='dashboard-content' src={page.data} alt={page.title}/>
+        pageDataElement = <img  src={page.data} alt={page.title}/>
     break;
     case PageType.video:
         pageDataElement = <video src={page.data}/>

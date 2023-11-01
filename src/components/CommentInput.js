@@ -24,6 +24,8 @@ export default function CommentInput({page,parentComment,parentProfile}){
         }
         dispatch(createComment(params)).then(result=>{
             checkResult(result,payload=>{
+                setComment("")
+                setShow(false)
                 const comment = payload
                 const params = {comment}
                 dispatch(appendComment(params))

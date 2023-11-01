@@ -36,6 +36,7 @@ export default function PageViewContainer({page}){
         })
     
     }
+
     useEffect(()=>{
         const {id}= pathParams
         if(page==null || page.id!=id){
@@ -57,7 +58,7 @@ export default function PageViewContainer({page}){
     const fetchComments = (pageItem)=>{
         if(pageItem!=null){
             const params = {
-                pageItem
+                page:pageItem
             }
             dispatch(fetchCommentsOfPage(params)).then(result=>{
                 checkResult(result,payload=>{
@@ -72,6 +73,14 @@ export default function PageViewContainer({page}){
             })
         }
     }
+    useEffect(()=>{
+        if(commentsInView[0]!=null && page != null && commentsInView[0].pageId==page.id){
+            setComments(commentsInView)
+            setHasMoreComments(false)
+        }else{
+            fetchComments()
+        }
+    },[commentsInView])
     
   
 

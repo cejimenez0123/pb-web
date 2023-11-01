@@ -129,6 +129,7 @@
 .dashboard-header .titles {
   display: flex;
   flex-direction: row;
+  width: 50%;
 }
 
 }
