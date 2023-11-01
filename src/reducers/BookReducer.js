@@ -8,7 +8,8 @@ import { getPublicBooks,
         updateBook,
         setBooksToBeAdded,
         setBookInView,
-        clearBooksInView
+        clearBooksInView,
+        deleteBook
         } from "../actions/BookActions"
 
 
@@ -83,6 +84,11 @@ builder
     state.booksToBeAdded = payload
   }).addCase(setBookInView.type,(state,{payload})=>{
     state.bookInView = payload.book
+  }).addCase(deleteBook.fulfilled,(state,{payload})=>{
+   let list = state.booksInView.filter(book=>book.id != payload.book.id)
+   state.booksInView = list
+  }).addCase(deleteBook.rejected,(state,{payload})=>{
+    state.error = payload.error
   })
 }
 

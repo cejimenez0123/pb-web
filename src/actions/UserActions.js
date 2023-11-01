@@ -462,7 +462,7 @@ const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForPro
                           bookId,
                           created
                         }=pack
-                const fb = new FollowBook(id,bookId,profileId,created)
+                const fb = new FollowBook(id,bookId,profileId,profile,created)
                 
                 followList = [...followList, fb]
               })

@@ -59,6 +59,10 @@ function EditBookContainer({book,pages}){
         });
     }else{
         getPages(book.pageIdList)
+        setBookTitle(book.title)
+        setBookPrivacy(book.privacy)
+        setWritingIsOpen(book.writingIsOpen)
+        setBookPurpose(book.purpose)
     }   
     }
     useEffect(()=>{
@@ -186,61 +190,7 @@ const handleChosingProfileRole =(profile,role)=>{
 
 }
 
-const roleList = ()=>{
-    if(profileList!=null && profileList.length > 0){
-        return ( 
-        <div>
-            <div className="item-roles">
-                {bookRolesView()}
-            </div>
-            <div className="role-list">
-        <InfiniteScroll
-        dataLength={profileList.length}
-        next={fetchProfile}
-        hasMore={profileHasMore} // Replace with a condition based on your data source
-        loader={<p>Loading...</p>}
-        endMessage={<p>No more data to load.</p>}
-        scrollableTarget="scrollableDiv"
-        >
-            {profileList.map(profile=>{
 
-                return(<div className="role-item" key={profile.id}>
-                    
-                    <div>
-                        {profile.username}
-                    </div>
-                    <div>
-                    <Dropdown>
-                        <MenuButton>
-                            Role
-                        </MenuButton>
-                        <Menu>
-                            <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.editor)}>
-                                Editor
-                            </MenuItem>
-                            <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.writer)}>
-                                Writer
-                            </MenuItem>
-                            <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.commenter)}>
-                                Commenter
-                            </MenuItem>
-                            <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.reader)}>
-                                Reader
-                            </MenuItem>
-                        </Menu>
-                    </Dropdown> 
-                    </div>
-                </div>)
-            })}
-        </InfiniteScroll>
-        </div>
-        </div>)
-    }else{
-        return (<div>
-            Loading...
-        </div>)
-    }
-}
 const handleRemove = (page)=>{
     let list  =listItems.filter((item)=>{return item.id != page.id})
     setListItems(list)
@@ -321,43 +271,41 @@ const sortableList = ()=>{
         })
         }
     }
+    const form = ()=>{
+        return( <FormGroup style={{padding:"0 2em",margin:"auto"}} >
+            <TextField
+                onChange={(e)=>handleTitleChange(e)}
+                id="standard-required"
+                label="Title"
+                value={bookTitle}
+            />
+            <FormControlLabel 
+            control={<Checkbox checked={bookIsPrivate} onChange={()=>{
+                setBookPrivacy(!bookIsPrivate)
+            }}/>} label="Private" 
+               value={bookIsPrivate}/>
+                 <FormControlLabel 
+                    control={<Checkbox 
+                                checked={writingIsOpen}
+                                onChange={()=>{
+                                    setWritingIsOpen(!writingIsOpen) 
+                                }}/>} 
+                                label="Writing is Open to Others"
+                            />
+               <div id="purpose">
+                <label>Purpose</label>         
+                <TextareaAutosize value={bookPurpose}
+                                            minRows={3} 
+                                            onChange={(e)=>{
+                                            setBookPurpose(e.target.value)   
+                                        }}  
+                                            
+                                    />
+                     </div> 
+            
+                <Button onClick={handleSave} style={{backgroundColor:theme.palette.secondary.main}}variant="contained"type="submit">Save</Button>
+            </FormGroup>)}
     if(!bookLoading && book!=null){
-        
-        const form = ()=>{
-            return( <FormGroup style={{padding:"0 2em",margin:"auto"}} >
-                <TextField
-                    onChange={(e)=>handleTitleChange(e)}
-                    id="standard-required"
-                    label="Title"
-                    value={bookTitle}
-                />
-                <FormControlLabel 
-                control={<Checkbox checked={bookIsPrivate} onChange={()=>{
-                    setBookPrivacy(!bookIsPrivate)
-                }}/>} label="Private" 
-                   value={bookIsPrivate}/>
-                     <FormControlLabel 
-                        control={<Checkbox 
-                                    checked={writingIsOpen}
-                                    onChange={()=>{
-                                        setWritingIsOpen(!writingIsOpen) 
-                                    }}/>} 
-                                    label="Writing is Open to Others"
-                                />
-                   <div id="purpose">
-                    <label>Purpose</label>         
-                    <TextareaAutosize value={bookPurpose}
-                                                minRows={3} 
-                                                onChange={(e)=>{
-                                                setBookPurpose(e.target.value)   
-                                            }}  
-                                                
-                                        />
-                         </div> 
-                
-                    <Button onClick={handleSave} style={{backgroundColor:theme.palette.secondary.main}}variant="contained"type="submit">Save</Button>
-                </FormGroup>)
-        }
 
     return(<div id="EditBook" className="container">
             

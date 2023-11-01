@@ -498,6 +498,9 @@ const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>
   try{
     const {book}=params
   await deleteDoc(doc(db, "book", book.id));
+    return {
+      book:book
+    }
   }catch(e){
     return {error: new Error("Error: Delete Book"+e.message)};
   }

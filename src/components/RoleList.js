@@ -42,27 +42,47 @@ export default function RoleList({getRoles,library,book,type}) {
     },[])
     const setRoleList = ()=>{
         if(book && profilesInView.length>0){
-           
-                let profiles = book.readers.map(id=>profilesInView.find(profile=>profile.id == id)
-                  )  
-              
-                 let roleList = profiles.map(prof=>{return new BookRole(`${book.id}_${prof.id}`,prof,book.id,RoleType.reader)})           
-                
-                 setNewRoles(prevState=>{
-                  return [...prevState,...roleList]
-              }) 
-           
-        }
-        if(library && profilesInView.length >0){        
-          let profiles = library.readers.map(id=>profilesInView.find(profile=>profile.id == id)
-            )  
+                let readers = book.readers.map(id=>{
+                    let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
+                    if(profile){
+                    return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.reader)
+         } })
+                let commenters =book.commenters.map(id=>{
+                    let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
+                    if(profile){
 
-           let roleList = profiles.map(prof=>{return new LibraryRole(`${library.id}_${prof.id}`,prof,library.id,RoleType.reader)})           
-        setNewRoles(prevState=>{
-            return [...prevState,...roleList]
-        })
+                    
+                    return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.commenter)
+        }})
+                let editors = book.editors.map(id=>{
+                    let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
+                    if(profile){
+                        return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.editor)
+                    }
+                   
+                })
+                let writers =book.writers.map(id=>{
+                    let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
+                    if(profile!=null){
+                        return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.writer)
+                    }
+                })
+                
+                setNewRoles([...editors,...writers,...readers,...commenters])
+        }
+    //     if(library && profilesInView.length >0){        
+    //       let profiles = library.readers.map(id=>profilesInView.find(profile=>profile.id == id)
+    //         )  
+
+    //        let roleList = profiles.map(prof=>{return new LibraryRole(`${library.id}_${prof.id}`,prof,library.id,RoleType.reader)})           
+    //     setNewRoles(prevState=>{
+    //         return [...prevState,...roleList]
+    //     })
+    // }
     }
-    }
+    useEffect(()=>{
+        setRoleList()
+    },[book,library])
     const handleChosingProfileRole =(profile,role)=>{
 
         if(library){
@@ -146,26 +166,35 @@ export default function RoleList({getRoles,library,book,type}) {
         } 
         
         if(book){
-            let writers =book.writers.map(wUId=> {
+            let commenters = []
+            let writers = []
+            let editors = []
+            let readers = []
+            if(book.writers.length>0){
+             writers =book.writers.map(wUId=> {
                 let profile = profilesInView.find(profile=>profile.userId == wUId)
                 let role =new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.writer)
                 return role
-             })
-            let editors = book.editors.map(wUId=> {
+             })}
+             if(book.editors.length>0)
+             editors = book.editors.map(wUId=> {
                 let profile = profilesInView.find(profile=>profile.userId == wUId)
                 let role =new BookRole("",profile,book.id,RoleType.editor)
                 return role
              })
-             let readers = book.readers.map(wUId=> {
+             if(book.readers.length>0){
+              readers = book.readers.map(wUId=> {
                  let profile = profilesInView.find(profile=>profile.userId == wUId)
                  let role =new BookRole("",profile,book.id,RoleType.reader)
                  return role
-              })
-             let commenters = book.commenters.map(wUId=> {
+              })}
+            if(book.commenters.length > 0) {
+              commenters = book.commenters.map(wUId=> {
                  let profile = profilesInView.find(profile=>profile.userId == wUId)
                  let role =new BookRole("",profile,book.id,RoleType.commenter)
                  return role
               })
+            }
              let roleList = [...writers,...editors,...readers,...commenters]
              setNewRoles(roleList)
         }
@@ -180,11 +209,8 @@ export default function RoleList({getRoles,library,book,type}) {
                         newRoles.map((role)=>{
                             let username = ""
                             let id = ""
-                            let profile = profilesInView.find(prof=>prof.id==role.profileId)
-                            // if(profile){
-                            //     username=profile.username
-                            //     id = profile.id
-                            // }
+                            
+                            if(role){
                             return(<div class="role-item" key={role.profile.id}>
                                 <div>
                                     {role.profile.username}
@@ -195,25 +221,27 @@ export default function RoleList({getRoles,library,book,type}) {
                                     {role.role}
                                     </MenuButton>
                                     <Menu>
-                                        <MenuItem onClick={()=>handleChosingProfileRole(profile,"")}>
+                                        <MenuItem onClick={()=>handleChosingProfileRole(role.profile,"")}>
                                             Delete
                                         </MenuItem>
-                                        <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.editor)}>
+                                        <MenuItem onClick={()=>handleChosingProfileRole(role.profile,RoleType.editor)}>
                                             Editor
                                         </MenuItem>
-                                        <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.writer)}>
+                                        <MenuItem onClick={()=>handleChosingProfileRole(role.profile,RoleType.writer)}>
                                             Writer
                                         </MenuItem>
-                                        <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.commenter)}>
+                                        <MenuItem onClick={()=>handleChosingProfileRole(role.profile,RoleType.commenter)}>
                                             Commenter
                                         </MenuItem>
-                                        <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.reader)}>
+                                        <MenuItem onClick={()=>handleChosingProfileRole(role.profile,RoleType.reader)}>
                                             Reader
                                         </MenuItem>
                                     </Menu>
                                 </Dropdown>
                                 </div>
-                                </div>)
+                                </div>)}else{
+                                    return null;
+                                }
                         })
                     }
             </div>)

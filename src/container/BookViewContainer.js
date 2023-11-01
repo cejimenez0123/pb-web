@@ -35,7 +35,7 @@ function BookViewContainer({book,pages}){
            let found = bookmarkLibrary.bookIdList.find(id=>id==book.id)
            setBookmarked(Boolean(found))
         }
-    })
+    },[book,bookmarkLibrary])
     const onBookmarkPage = ()=>{
         if(bookmarked && book){
         let bookIdList = bookmarkLibrary.bookIdList.filter(id=>id!=book.id)
@@ -76,13 +76,15 @@ function BookViewContainer({book,pages}){
        if(book==null || (book!=null && book.id!=bookId)){
         dispatch(clearPagesInView())
         dispatch(fetchBook(parameters)).then((result) => {
-            const {payload} = result
-            if(payload.error!=null){
+            checkResult(result,(payload)=>{
                 const profileParams = {
                     id: payload.book.profileId
                 }
                 dispatch(fetchProfile(profileParams))
-            }
+            },()=>{
+
+            })
+                
         }).catch((err) => {
             
         });
@@ -107,39 +109,41 @@ function BookViewContainer({book,pages}){
 
     }
     useEffect(()=>{
-     
-            getBook()
-            fetchFollows()
-    },[])
-    useEffect(()=>{
 
         if(book){
             setHasMore(true)
             getPages(book.pageIdList)
             fetchFollows()
+        }else{
+            getBook()
+            fetchFollows()
         }
 
     },[book])
+    useEffect(()=>{
+        fetchFollows()
+    },[currentProfile])
    
     const fetchFollows=()=>{
-        if(currentProfile){
+        if(currentProfile && book){
             const params = {
                 profile: currentProfile
 
             }
             dispatch(fetchFollowBooksForProfile(params)).then(result=>{
-                if(result.error==null){
-                    const {payload}= result 
-                    if(payload.error==null){
-                         let fb=    payload.followList.find(fb=>fb!=null && fb.bookId == book.id && fb.profileId==currentProfile.id)
-                        setFollowing(fb)
-                    }
-                }
+                checkResult(result,payload=>{
+                    const {followList}=payload
+                    let fb= followList.find(fb=>fb!=null && fb.bookId == book.id && fb.profileId==currentProfile.id)
+                    setFollowing(fb)
+                },()=>{
+
+                })
 
             })
             
         }
     }
+   
     const pageList =()=>{
         if(pageLoading==false && !!book){
             if(pages && pages.length !=0){
@@ -176,11 +180,7 @@ function BookViewContainer({book,pages}){
             profile:currentProfile
         }
         dispatch(createFollowBook(params)).then(result=>{
-            if(result.error==null){
-                const {payload}= result
-                if(payload.error==null){
-
-             
+           checkResult(result,payload=>{ 
             let books = [...homeCollection.books]
             let id = homeCollection.books.find(id=>book.id)
             if(!id){
@@ -197,12 +197,11 @@ function BookViewContainer({book,pages}){
                 profiles:profiles
             }
             dispatch(updateHomeCollection(homeParams))
-        }
-    } })
-        }else{
+        },()=>{
             window.alert("Log in first")
-        }
-    }
+        })})
+    }}
+
     const deleteFollowBookClick = ()=>{ 
        
         if(currentProfile && book){
