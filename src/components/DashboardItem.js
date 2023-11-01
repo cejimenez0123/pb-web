@@ -58,7 +58,7 @@ const contentStyle={
 const pageDataElement=()=>{
     if(page){
     if(page.type==PageType.text){
-        return( <div  className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>)   }else if(page.type==PageType.picture){
+        return( <div  className=' text' dangerouslySetInnerHTML={{__html:page.data}}></div>)   }else if(page.type==PageType.picture){
     }
     if(page.type==PageType.picture){
         return(<img className='' src={page.data} alt={page.title}/>)
