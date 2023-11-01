@@ -72,6 +72,8 @@ function LibraryViewContainer(props){
 
                 let found = followList.find(fl=>fl.libraryId==libraryInView.id && fl.profileId == currentProfile.id)
                 setFollowing(found)
+            },()=>{
+
             })
         })
     }}
@@ -369,8 +371,6 @@ function LibraryViewContainer(props){
         <div className="left-bar">
         {contentList()}
         </div>
-                    
-             
         <div className="right-bar">
       
                 {libraryInfo()}

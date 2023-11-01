@@ -5,10 +5,10 @@ function checkResult(result,fn,err){
             fn(payload)
             
         }else{
-           err()
+           err(payload.error)
         }
     }else{
-      err()
+      err(result.error)
     }
 }
 export default checkResult

@@ -37,8 +37,8 @@ const PageName = {
   login:"Log In"
 }
 const pages = [ PageName.home,
-                PageName.create,
-                PageName.discovery, 
+                PageName.discovery,
+                PageName.create, 
                 PageName.login]
 function NavbarContainer(props){
     const dispatch = useDispatch()
@@ -162,7 +162,14 @@ function NavbarContainer(props){
                 }}
               >
                 {pages.map((page) => {
-                        if( page==PageName.create){
+                        
+                        if(page==PageName.home || page==PageName.discovery){
+                            return( (<MenuItem onClick={()=>handleCloseNavMenu(page) } 
+                            key={page} >
+                        <Typography textAlign="center">{page}</Typography>
+                      </MenuItem>)
+)
+                        }else if( page==PageName.create){
 
                             
                             return currentProfile?(
@@ -219,12 +226,6 @@ function NavbarContainer(props){
                     }
             })
           }
-          <MenuItem onClick={()=>{handleCloseNavMenu(PageName.home)}}>
-            {PageName.home}
-          </MenuItem>
-          <MenuItem onClick={()=>{handleCloseNavMenu(PageName.discovery)}}>
-            {PageName.discovery}
-          </MenuItem>
               </Menu>
             </Box>
             

@@ -2,7 +2,7 @@ import RichEditor from "../components/RichEditor"
 import "../styles/Editor.css"
 import "../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import { setHtmlContent,createPage, updatePage, fetchEditingPage,deletePage } from "../actions/PageActions"
+import { setHtmlContent,createPage, updatePage, fetchEditingPage,deletePage, clearEditingPage } from "../actions/PageActions"
 import React,{ useEffect, useState } from "react"
 import history from "../history"
 import { useParams,useNavigate } from "react-router-dom"
@@ -15,6 +15,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../core/constants"
 
 import theme from "../theme"
+import checkResult from "../core/checkResult"
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
@@ -26,6 +27,7 @@ function EditorContainer({currentProfile}){
        const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         useEffect(()=>{
             const {id }= pathParams
+        
             if(id){
                 const parm = {id}
                 dispatch(fetchEditingPage(parm)).then(result=>{
@@ -39,6 +41,9 @@ function EditorContainer({currentProfile}){
                     }
                   }
                 })
+            }else{
+              dispatch(clearEditingPage())
+              dispatch(setHtmlContent(""))
             }
         },[])
         const onSavePress = (e)=>{
@@ -62,6 +67,7 @@ function EditorContainer({currentProfile}){
                 const {payload } = result
                 if(payload.error==null){
                   const {page} = payload
+                  window.alert("Saved")
                   history.replace(`/page/${page.id}/edit`)
                 }
               }
@@ -73,7 +79,13 @@ function EditorContainer({currentProfile}){
             privacy
           
           }
-          dispatch(updatePage(params))
+          dispatch(updatePage(params)).then(result=>{
+            checkResult(result,(payload)=>{
+              window.alert("Saved")
+            },()=>{
+              
+            })
+          })
         }
       
       
@@ -124,7 +136,7 @@ function EditorContainer({currentProfile}){
         </div>) 
       if(editingPage){ 
        deleteDiv =(<Button variant="outlined"
-       onClick={()=>setOpen(true)}
+       onClick={handleClickOpen}
         style={{
           marginTop: "4em",
           width: "10em",
@@ -144,18 +156,18 @@ function EditorContainer({currentProfile}){
              
               <div className="right-side-bar">
                 
-                <FormGroup className="form"onSubmit={(e)=>onSavePress(e)}>
+                <FormGroup className="form" >
                  <TextField onChange={(e)=>onTitleChange(e)} value={title} label="Title"/>
                  
                   <FormControlLabel 
-                control={<Checkbox checked={privacy} onChange={(e)=>setPrivacy(e.target.checked)}/>} label="Private" />
+                control={<Checkbox checked={privacy} onChange={(e)=>setPrivacy(e.target.checked)}/>} label={privacy?"Private":"Public"} />
                  
                  <FormControlLabel 
                 control={<Checkbox checked={commentable} onChange={(e)=>{
                   setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
                  
             
-                  <Button onClick={handleClickOpen} className="btn btn-primary">
+                  <Button onClick={(e)=>onSavePress(e)} className="btn btn-primary">
                     Save
                     </Button>
 

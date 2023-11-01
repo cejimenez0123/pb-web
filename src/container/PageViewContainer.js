@@ -8,6 +8,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchCommentsOfPage } from "../actions/PageActions";
 import CommentItem from "../components/CommentItem";
 import PageViewItem from "../components/PageViewItem";
+import checkResult from "../core/checkResult";
 export default function PageViewContainer({page}){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -26,9 +27,13 @@ export default function PageViewContainer({page}){
         const id =  pathParams["id"]
      
         dispatch(fetchPage(pathParams)).then(result=>{
-            if(result.error!=null){
-                fetchComments()
-            }})
+            checkResult(result,payload=>{
+                const {page}= payload
+                fetchComments(page)
+            },err=>{
+
+            })
+        })
     
     }
     useEffect(()=>{
@@ -37,29 +42,38 @@ export default function PageViewContainer({page}){
             getPage()
         }else{
             setHasMoreComments(true)
-            fetchComments()
+            if(page){
+                fetchComments(page)
+            }
+            
         }
     },[])
     useEffect(()=>{
-        fetchComments()
+        if(page){
+            fetchComments(page)
+        }
+       
     },[])
-    const fetchComments = ()=>{
-        if(page!=null){
+    const fetchComments = (pageItem)=>{
+        if(pageItem!=null){
             const params = {
-                page
+                pageItem
             }
             dispatch(fetchCommentsOfPage(params)).then(result=>{
-                if(result.error==null){
-                    setComments(commentsInView)
+                checkResult(result,payload=>{
+                    const {comments} = payload
+                    setComments(comments)
                     setHasMoreComments(false)
-                }
+                },()=>{
+
+                })
+                   
+            
             })
         }
     }
     
-    useEffect(()=>{
-        fetchComments()
-    },[])
+  
 
     if(!loading && page!=null){
 

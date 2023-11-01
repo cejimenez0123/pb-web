@@ -19,6 +19,7 @@ import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import { TextField ,Checkbox, FormControlLabel,Button, FormGroup} from "@mui/material"
 import RoleList from "../components/RoleList"
 import theme from "../theme"
+import checkResult from "../core/checkResult"
 function EditBookContainer({book,pages}){
     
     const pathParams = useParams()
@@ -298,7 +299,12 @@ const sortableList = ()=>{
                             purpose: bookPurpose,
                             privacy: bookIsPrivate,
                             writingIsOpen: writingIsOpen}
-            dispatch(updateBook(params))
+            dispatch(updateBook(params)).then(result=>{
+                checkResult(result,payload=>{
+                    window.alert("Book Info Updated")
+                })
+               
+            })
             const readers = newBookRoles.filter(role => role.role == RoleType.reader).map(role=>role.profile.userId)
             const commenters = newBookRoles.filter(role => role.role == RoleType.commenter).map(role=>role.profile.userId)
             const editors = newBookRoles.filter(role => role.role == RoleType.editor).map(role=>role.profile.userId)
@@ -313,7 +319,11 @@ const sortableList = ()=>{
             writers}
     
 
-        dispatch(saveRolesForBook(rolesParams))
+        dispatch(saveRolesForBook(rolesParams)).then(result=>{
+            checkResult(result,payload=>{
+                window.alert("Roles saved successfully")
+            })
+        })
         }
     }
     if(!bookLoading && book!=null){

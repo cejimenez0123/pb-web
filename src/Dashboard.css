@@ -27,7 +27,7 @@
   border-bottom-right-radius: 10px;
   height:3em;
   width: 100%;
-  justify-content: center;
+  text-align: center;
   background-color: black;
  
 }
@@ -64,6 +64,7 @@
   background-color: white;
   word-wrap: break-word;
   width: 100%;
+  padding:2em;
 
 }
 .content-item .titles p{
@@ -89,10 +90,10 @@
 
 
 .content-item .btn-row{
- 
+  text-align: center;
   height:3em;
   width: 100%;
-  justify-content: center;
+ 
   background-color: black;
  
 }

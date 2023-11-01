@@ -509,6 +509,14 @@ const setPageInView = createAction("pages/setPageInView", (params)=> {
     
   
 })
+const clearEditingPage = createAction("pages/clearEditingPage", (params)=> {
+
+
+  return  {payload:
+    null}
+    
+  
+})
 
 const setPagesToBeAdded = createAction("pages/setPagesToBeAdded",(params)=>{
   let {pageList} = params
@@ -633,6 +641,14 @@ const createComment = createAsyncThunk("pages/createComment", async function(par
 
 
 })
+const appendComment = createAction("pages/appendComment", (params)=> {
+
+  const {comment} = params
+  return  {payload:
+    comment}
+    
+  
+})
 const fetchCommentsOfPage = createAsyncThunk("pages/fetchCommentsOfPages",async (params,thunkApi)=>{
   try{
     const {page} = params
@@ -714,5 +730,7 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           createComment,
           fetchCommentsOfPage,
           deletePage,
-          deleteComment
+          deleteComment,
+          clearEditingPage,
+          appendComment
         } 

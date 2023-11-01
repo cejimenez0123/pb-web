@@ -9,8 +9,6 @@ import { getProfileLibraries } from '../actions/LibraryActions';
 import PageListItem from './PageListItem';
 import "../styles/MyProfile.css"
 import Book from '../domain/models/book'
-import Page from '../domain/models/page'
-import Library from '../domain/models/library'
 import ListItem from '../components/ListItem';
 import { Button } from "@mui/material";
 

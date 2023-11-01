@@ -114,14 +114,14 @@ export default function RichEditor(props) {
           selection.removeAllRanges();
           selection.addRange(newRange);}
     };
-    const changeAlignment = (justify) => {
+    const changeAlignmentCenter = () => {
         const selection = document.getSelection();
         if (selection.rangeCount > 0) {
           const range = selection.getRangeAt(0);
           
           // Create a new div to wrap the aligned content
           const containerDiv = document.createElement("div");
-          containerDiv.style.textAlign = justify;
+          containerDiv.style.textAlign = "center";
       
           // Move the contents of the range to the container div
           containerDiv.appendChild(range.extractContents());
@@ -141,6 +141,33 @@ export default function RichEditor(props) {
           selection.removeAllRanges();
           selection.addRange(newRange);}
     };
+    // const changeAlignment = (justify) => {
+    //     const selection = document.getSelection();
+    //     if (selection.rangeCount > 0) {
+    //       const range = selection.getRangeAt(0);
+          
+    //       // Create a new div to wrap the aligned content
+    //       const containerDiv = document.createElement("div");
+    //       containerDiv.style.textAlign = justify;
+      
+    //       // Move the contents of the range to the container div
+    //       containerDiv.appendChild(range.extractContents());
+      
+    //       // Insert the container div with the aligned content
+    //       range.insertNode(containerDiv);
+      
+    //       // Create a new paragraph after the container div
+    //       const newParagraph = document.createElement("p");
+    //       newParagraph.textContent = ""; // Add any initial text you want
+    //       containerDiv.parentNode.insertBefore(newParagraph, containerDiv.nextSibling);
+      
+    //       // Set the selection to the new paragraph
+    //       const newRange = document.createRange();
+    //       newRange.setStart(newParagraph, 0);
+    //       newRange.setEnd(newParagraph, 0);
+    //       selection.removeAllRanges();
+    //       selection.addRange(newRange);}
+    // };
     const changeAlignmentRight = () => {
         const selection = document.getSelection();
         if (selection.rangeCount > 0) {
@@ -194,7 +221,7 @@ export default function RichEditor(props) {
             <Button style={inputStyle} onClick={()=>setFontSize(16)}>H4</Button>
             <Button style={inputStyle} onClick={changeAlignmentLeft}><AlignHorizontalLeftIcon/></Button>
             <Button style={inputStyle} onClick={changeAlignmentRight}><AlignHorizontalRightIcon/></Button>
-            <Button style={inputStyle} onClick={()=>changeAlignment(Type.CENTER)}><AlignHorizontalCenterIcon/></Button>
+            <Button style={inputStyle} onClick={changeAlignmentCenter}><AlignHorizontalCenterIcon/></Button>
             <Button style={inputStyle} onClick={setBlockquote}>""</Button>
         </div>
         <div 

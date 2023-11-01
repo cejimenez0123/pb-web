@@ -212,6 +212,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
         }
     }
   )
+  const clearBooksInView = createAction("books/clearBooksInView")
   const createBook = createAsyncThunk("books/createBook", async function(params,thunkApi){
  
   //  const page = 
@@ -562,7 +563,7 @@ const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
             fetchArrayOfBooksAppened,
             saveRolesForBook,
             setBookInView,
-            deleteBook,
+            deleteBook,clearBooksInView,
             updateBook,
             setBooksToBeAdded,
             appendSaveRolesFoBook,

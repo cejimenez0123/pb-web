@@ -51,21 +51,29 @@ const hanldeClickComment=(pageItem)=>{
     }
     dispatch(setPageInView(params))
     navigate(`/page/${pageItem.id}`)
+}   
+const contentStyle={
+    backgroundColor:"white"
 }
-    let pageDataElement = (<div></div>)
+const pageDataElement=()=>{
+    if(page){
     if(page.type==PageType.text){
-
-
-        pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
-    }else if(page.type==PageType.picture){
-
-        pageDataElement = <img className='' src={page.data} alt={page.title}/>
-    }else if(page.type==PageType.video){
-        pageDataElement = <iframe src={page.data}/>
-    }else{
-    
-        pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
+        return( <div  className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>)   }else if(page.type==PageType.picture){
     }
+    if(page.type==PageType.picture){
+        return(<img className='' src={page.data} alt={page.title}/>)
+    }else if(page.type==PageType.video){
+        return(<iframe src={page.data}/>)
+    }else{
+        return(<div className='empty'>
+        Loading...
+</div>)
+    }}else{
+        return(<div className='empty'>
+                Loading...
+        </div>)
+    }
+}
 
     let profileDiv = (<div>
 
@@ -129,7 +137,7 @@ const hanldeClickComment=(pageItem)=>{
                 {profileDiv}
             </div>
            
-                {pageDataElement}
+                {pageDataElement()}
             
             <div className='btn-row'>
                 <Button disabled={!currentProfile} 

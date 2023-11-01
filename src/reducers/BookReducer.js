@@ -7,7 +7,8 @@ import { getPublicBooks,
         saveRolesForBook,
         updateBook,
         setBooksToBeAdded,
-        setBookInView
+        setBookInView,
+        clearBooksInView
         } from "../actions/BookActions"
 
 
@@ -62,6 +63,8 @@ builder
 }).addCase(fetchArrayOfBooksAppened.fulfilled,(state,{payload})=>{
     state.booksInView = [...state.booksInView,...payload.bookList]
     state.loading = false
+}).addCase(clearBooksInView,(state)=>{
+    state.booksInView = []
 }).addCase(saveRolesForBook.rejected,(state,{payload})=>{
     state.error = payload.error
 }).addCase(saveRolesForBook.fulfilled,(state,{payload})=>{

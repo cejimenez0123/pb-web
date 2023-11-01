@@ -15,7 +15,7 @@
     min-height: 20em;
 }
 #page .empty {
-               
+               text-align: center;
               padding-top: 5em;       
               padding-bottom: 5em;   
               background-image: radial-gradient(rgb(227, 227, 227),white);        
@@ -150,7 +150,7 @@ button:active {
         min-height: 20em;
     }
     #page .empty {
-                   
+                    text-align: center;   
                   padding-top: 5em;       
                   padding-bottom: 5em;   
                   background-image: radial-gradient(rgb(227, 227, 227),white);        

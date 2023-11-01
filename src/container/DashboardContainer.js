@@ -296,6 +296,8 @@ function DashboardContainer(props){
                 Ready to start your writing journey? 
                 Sign up today, start a page and write anything.
                 It's the place for your story on Plumbum.</p>
+
+                <p>Any request for more feautres, problems, encoragement, send to plumbumapp@gmail.com</p>
                 </div>)
             }
         

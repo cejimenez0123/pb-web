@@ -1,9 +1,10 @@
 
 import { TextareaAutosize } from "@mui/material"
 import { useSelector,useDispatch} from "react-redux"
-import { createComment,fetchCommentsOfPage } from "../actions/PageActions"
+import { appendComment, createComment,fetchCommentsOfPage } from "../actions/PageActions"
 import { useState } from "react"
 import {Button} from "@mui/material"
+import checkResult from "../core/checkResult"
 
 export default function CommentInput({page,parentComment,parentProfile}){
     const dispatch = useDispatch()
@@ -22,16 +23,14 @@ export default function CommentInput({page,parentComment,parentProfile}){
               parentCommentId:id,
         }
         dispatch(createComment(params)).then(result=>{
-            if(result.error==null){
-                const {payload} = result
-                if(payload != null && payload.error==null){
-                    const params = {page}
-                    setComment("")
-                    setShow(false)
-                    dispatch(fetchCommentsOfPage(params))
-
-                }
-            }
+            checkResult(result,payload=>{
+                const comment = payload
+                const params = {comment}
+                dispatch(appendComment(params))
+            },(err)=>{
+                window.alert(err)
+            })
+    
         })
     }}
     let commentAuthorDiv =(<div></div>)
@@ -43,9 +42,9 @@ export default function CommentInput({page,parentComment,parentProfile}){
         {commentAuthorDiv}
     </div>
     <TextareaAutosize
-    style={{width: "100%"}}
+    style={{width: "100%",padding:"1em"}}
     value={commentInput}
-    minRows={3} 
+    minRows={2} 
     
     onChange={(e)=>{
        setComment(e.target.value)

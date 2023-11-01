@@ -1,14 +1,19 @@
-import { useSelector} from 'react-redux'
+import { useSelector,useDispatch} from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 import { useState,useLayoutEffect,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
+import { clearPagesInView, getPublicPages } from '../actions/PageActions'
+import { clearBooksInView, getPublicBooks } from '../actions/BookActions'
+import { getPublicLibraries } from '../actions/LibraryActions'
 function DiscoveryContainer(props){
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const booksInView = useSelector(state=>state.books.booksInView)   
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const librariesInView = useSelector(state=>state.libraries.librariesInView) 
     const [contentItems,setContentItems]=useState([])
@@ -16,11 +21,14 @@ function DiscoveryContainer(props){
     let [hasMore,setHasMore]=useState(false)
         useEffect(()=>{
             let pList = pagesInView.map((page)=>{return {type:"page",page:page}})
-            let bList = booksInView.map((book)=>{return {type:"book",book:book}})
+            let bList = booksInView.map((book)=>{
+                let page = pagesInView.find(page=>book.pageIdList.length > 0 && book.pageIdList[0]==page.id)
+                
+                return {type:"book",book:book,page:page}
+            })
         
             const perChunk = 2 // items per chunk    
-            const bArray = bList
-
+            
             let lList = librariesInView.map((library)=>{return {type:"library",library:library}})
             // items per chunk    
             const lArray = lList
@@ -60,34 +68,30 @@ function DiscoveryContainer(props){
                     return b.page.created - a.page.created 
                 }else{
                    
-                }
+                } 
             }
             } );
-            // let content=shuffle(list)
+            
 
             setContentItems(sorted)
-            setHasMore(false)
-        
         },[hasMore])
-
-        
+    
         useEffect(()=>{
-            props.getPublicLibraries()
-        },[])
-        useEffect(()=>{        
-            props.getPublicPages()
-        },[])
-        useEffect(()=>{
-            props.getPublicBooks()
-        },[])
-        useEffect(()=>{
-            props.fetchAllProfiles()
+           fetchContentItems()
         },[])
         const fetchContentItems = ()=>{
-            setHasMore(true)
-            props.getPublicBooks()
-            props.getPublicPages()
-            props.getPublicLibraries()
+            setHasMore(true) 
+            dispatch(getPublicPages()).then(result=>{
+                dispatch(getPublicBooks()).then(result=>{
+                    setHasMore(false)
+                    dispatch(getPublicLibraries()).then(result=>{
+
+                    })
+                })
+            })
+           
+          
+        
         }
         const dashboardItem=(hash)=>{
             if(Array.isArray(hash)){
@@ -124,7 +128,7 @@ function DiscoveryContainer(props){
                 
             switch(hash.type){
                 case 'page':{
-                
+                    
                     return (
                       
                        
@@ -134,35 +138,69 @@ function DiscoveryContainer(props){
                 }
                 case 'book':{
                     if(hash.book!=null){
-
-                        let i = 0
-                        let pageId =  hash.book.pageIdList[i]
-                        let foundHash = null
-                        let page = null
-                      
-                        while(hash.book.pageIdList.length>i-1 && Boolean(foundHash)){
-                            foundHash =  contentItems.find(item=>item.page!=null && item.page.id == pageId)
-                            
-                            if(!foundHash){
-                                pageId =  hash.book.pageIdList[i]
-                                foundHash=false
+                        let i = 1
+                
+                        if(hash.page!=null){
+                            let foundItem =  contentItems.find(item=>item.page!=null && item.page.id == hash.page.id)
+                            if(!Boolean(foundItem)){
+                                return(<DashboardItem book={hash.book} page={hash.page}/>)
                             }else{
-                                i+=1
+
+                                return(<div></div>)
                             }
+                            
+                            // else{
+                            //   let pageId = hash.book.pageIdList[i]
+                            //   while(hash.book.pageIdList.length>i){
+                            //     if(pageId){
+                            //         let found = contentItems.find(item=>item.page!=null && item.page.id == pageId)
+                            //         if(found){
+                            //             i+=1
+                            //             pageId = hash.book.pageIdList[i]
+                            //             continue
+                            //         }else{
+                            //           break
+                            //         }
+                            //     }}
+                            //    let page = pagesInView.find(page=>page.id == pageId)
+                            //     if(page){
+                            //         return(<DashboardItem book={hash.book} page={page}/>)
+                            //     }else{
+                            //         return(<div></div>)
+                            //     }
+                            // }
                         }
-                         if(pagesInView){
-                            page = pagesInView.find(page=> page.id == pageId)
-                        }
+                        // let i = 0
+                        // let pageId =  hash.book.pageIdList[i]
+                        // let foundHash = null
+                        // let page = null
+                        // let foundPage = null
+                        // while(hash.book.pageIdList.length>i+1){
+                        //     foundHash =  contentItems.find(item=>item.page!=null && item.page.id == pageId)
+                            
+                        //     if(!foundHash){
+                        //         pageId =  hash.book.pageIdList[i]
+                        //         foundPage = contentItems.find(item=>item.page!=null && item.page.id == pageId)
+                        //        if(!foundPage && pagesInView){
+                        //         page = pagesInView.find(page=> page.id == pageId)
+                        //         break
+                        //        }
+                               
+                        //     }else{
+                        //         i+=1
+                        //     }
+                        // }
                        
-                        if(page && !foundHash){
+                        if(hash.page){
                         
                             return(
-                            <DashboardItem book={hash.book} page={page}/>
+                            <DashboardItem book={hash.book} page={hash.page}/>
                         )
                    
-                }else{
+                        }else{
                     return(<div></div>)
-                }}else{
+                        }
+                    }else{
                     return(<div></div>)
                 }
                 }
