@@ -55,12 +55,23 @@
     overflow: scroll;
     height: 20rem;
 }
+@media (min-width: 900px) {
+    
 .edit{
     background-color: var(--tertiary);
     padding: 2em;
     border-radius: 25px;
     width: 30rem;
 }
+}
+@media (max-width: 900px) {
+    
+    .edit{
+        background-color: var(--tertiary);
+        /* padding: 2em; */
+        width: 100vw;
+    }
+    }
 .roles{
     padding-top:2rem;
    

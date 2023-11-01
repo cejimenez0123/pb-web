@@ -1,11 +1,11 @@
 import React ,{useState,useEffect}from 'react'
 import "../App.css"
-import { getPublicPages,fetchArrayOfPagesAppened  } from '../actions/PageActions'
+import { getPublicPages,fetchArrayOfPagesAppened, fetchAppendPagesOfProfile  } from '../actions/PageActions'
 import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import {  fetchArrayOfBooksAppened } from '../actions/BookActions'
-import { fetchFollowBooksForProfile, fetchHomeCollection } from '../actions/UserActions'
+import { fetchHomeCollection } from '../actions/UserActions'
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
 import ErrorBoundary from '../ErrorBoundary'
 import { clickMe } from '../actions/UserActions'
@@ -30,25 +30,6 @@ function DashboardContainer(props){
         }
         dispatch(fetchHomeCollection(params))
     },[])
-    // useEffect(()=>{
-
-    //     if((currentProfile && followedBooks==null) || (followedBooks.length==0 && initialState && currentProfile)){
-    //         const params = {
-    //             profile: currentProfile
-    //         }
-    //         dispatch(fetchFollowBooksForProfile(params)).then(result=>{
-    //             if(result.error == null){
-    //                 const {payload }=result
-    //                 if(payload.error == null){
-    //                     fetchData()
-    //                 }
-    //             }
-    //         })
-    //     }else{
-    //         fetchData()
-    //     }
-        
-    // },[currentProfile])
    
     useEffect(()=>{fetchData()},[homeCollection])
     const fetchPublicContent =()=>{
@@ -71,12 +52,45 @@ function DashboardContainer(props){
             setHasMore(false)
         })
     }
+    const getLibraries=()=>{
+        if(currentProfile){
+        const params = {
+            libraryIdList: homeCollection.libraries
+        }
+        setHasMore(true)
+        dispatch(fetchArrayOfLibraries(params)).then(result=>{
+            if(result.error==null){
+                const {payload} = result
+                if(payload.error==null){
+                    const {libraryList} = payload
+                    libraryList.forEach(library=>{
+
+                        const params = { bookIdList:library.bookIdList,
+                        profile: currentProfile}
+                        dispatch(fetchArrayOfBooksAppened(params)).then(result=>{
+                          checkResult(result,payload=>{
+                                const {bookList}=payload
+                                getBookListContent(bookList)
+                          },err=>{
+
+                          })
+                                })
+
+                            
+                        
+                        })}}
+
+                    
+                        setHasMore(false)
+        })
+        
+    }}
+
     const fetchData =()=>{
             if(!currentProfile){
               fetchPublicContent()
             }else{
-            
-            if(homeCollection && homeCollection.books){
+                if(homeCollection && homeCollection.books){
                     setHasMore(true)
                     // let bookIdList = followedBooks.map(fb=>fb.bookId)
                     const params = {
@@ -99,41 +113,31 @@ function DashboardContainer(props){
                 if(homeCollection && homeCollection.libraries){
                     
                     if(homeCollection.libraries.length>0){
-                    const params = {
-                        libraryIdList: homeCollection.libraries
-                    }
-                    setHasMore(true)
-                    dispatch(fetchArrayOfLibraries(params)).then(result=>{
-                        if(result.error==null){
-                            const {payload} = result
-                            if(payload.error==null){
-                                const {libraryList} = payload
-                                libraryList.forEach(library=>{
+                        getLibraries()
+                    }}
+                if(homeCollection && homeCollection.profiles){
+                    homeCollection.profiles.forEach(id=>
+                        {
+                            const params ={
+                                id
+                            }
+                            dispatch(fetchAppendPagesOfProfile(params)).then(result=>
+                                checkResult(result,(payload)=>{
+                                        const {pageList} = payload
+                                        let list = pageList.map(page=>{return {type:"page",page}})
+                                        setItemsInView(prevState=>[...list,...prevState])
+                                },error=>{
 
-                                    const params = { bookIdList:library.bookIdList,
-                                    profile: currentProfile}
-                                    dispatch(fetchArrayOfBooksAppened(params)).then(result=>{
-                                      checkResult(result,payload=>{
-                                            const {bookList}=payload
-                                            getBookListContent(bookList)
-                                      },err=>{
-
-                                      })
-                                            })
-
-                                        
-                                    
-                                    })}}
-
-                                
-                                    setHasMore(false)
-                    })
-                    
-                }} 
+                                }))
+                        }
+                        
+                        )
+                
                 
                     
         }
-    }
+    }}
+  
     const getBookListContent = (bookList)=>{
            
             bookList.forEach(book=>{

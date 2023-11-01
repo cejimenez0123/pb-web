@@ -546,7 +546,7 @@ const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (
                 followProfile
               }
             }catch(e){
-              return {error: new Error("Error: Delete Follow Book"+e.message)};
+              return {error: new Error("Error: Delete Follow Profile"+e.message)};
             }
 })
 const createFollowProfile = createAsyncThunk("users/createFollowProfile", async function(params,thunkApi){

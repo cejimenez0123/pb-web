@@ -32,13 +32,11 @@ function ProfileContainer(props){
         if(profile==null || (profile != null && profile.id != id)){
 
             dispatch(fetchProfile(pathParams)).then(result=>{
-                if(result.error==null){
-                    const {payload} = result
-                    if(payload.error==null){
-                        fetchPages()
-                        fetchProfileFollows()
-                    }
-                }
+                checkResult(result,payload=>{
+                    fetchPages()
+                    fetchProfileFollows()
+                },()=>{
+                })
             })
         }else{
             fetchPages()
@@ -56,44 +54,49 @@ function ProfileContainer(props){
 
 
                         const {followList}= payload
-                       let foundFollow = followList.find(follow=>follow.followerId==currentProfile.id && follow.followingId == profile.id)
+                       let foundFollow = followList.find(follow=>follow!=null && follow.followerId==currentProfile.id && follow.followingId == profile.id)
                         setFollowing(foundFollow)
                     },()=>{
 
                     })  })
-                }
+        }
     }
     let profileCardDiv = (<div>
 
     </div>)
     const onClickFollow = () => {
         if(currentProfile){
-            if(followedProfiles && profile){
-              let follow =  followedProfiles.find(fp=>fp!=null && fp.followerId==currentProfile.id && fp.followingId == profile.id)
-                
-              if(follow){
+            if(following){      
+              
                     const params =  {
-                        followProfile:follow,
+                        followProfile:following,
                         follower:currentProfile,
                         following:profile
                     }
-                    dispatch(deleteFollowProfile(params))
+                    dispatch(deleteFollowProfile(params)).then(result=>{
+                        checkResult(result,()=>{
+                            setFollowing(null)
+                        },()=>{})
+                    })
                 }else{
                 const params = {
                     follower: currentProfile,
                     following: profile
                 }
-                dispatch(createFollowProfile(params)).then(()=>{
-                   
+                dispatch(createFollowProfile(params)).then(result=>{
+                 checkResult(result,payload=>{
+                    const {followProfile}= payload;
+                        setFollowing(followProfile)
+            
                         let books = [...homeCollection.books]
                         let libraries = [...homeCollection.libraries]
                         let pages = [...homeCollection.pages]
                         let profiles = [...homeCollection.profiles]
                         
-                        let id = homeCollection.profiles.find(id=>profile!=null && id==profile.id)
+                        let id = homeCollection.profiles.find(id=>id==followProfile.followingId)
                         if(!id){
-                           profiles = [...homeCollection.profiles,profile.id]
-                        }
+                           profiles = [...homeCollection.profiles,followProfile.followingId]
+                        
                         const homeParams ={
                             profile: currentProfile,
                             books: books,
@@ -101,9 +104,12 @@ function ProfileContainer(props){
                             libraries:libraries,
                             profiles:profiles
                         }
-                        dispatch(updateHomeCollection(homeParams))
+                        dispatch(updateHomeCollection(homeParams))}
+                    },()=>{
+
+                    }) 
                 })
-                }
+            
             }
         }else{
             window.alert("Please login first!")

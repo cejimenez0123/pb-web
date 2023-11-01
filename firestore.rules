@@ -92,10 +92,9 @@ match /follow_library/{followLibraryId}{
 }
 //
 match /follow_profile/{followProfileId}{ 
-	allow read:if true;
-  allow create:if request.auth!=null;
-  allow delete:if get(/databases/$(database)/documents/profile/$(resource.data.profileId)).data.userId == request.auth.uid;     
-}
+		allow read:if true;
+        allow create:if request.auth!=null;
+        allow delete:if get(/databases/$(database)/documents/profile/$(resource.data.followerId)).data.userId == request.auth.uid;    }
 //      
 match /page/{pageId}{
   
@@ -129,8 +128,9 @@ match /page/{pageId}{
   	
         match /comment/{commentId}{
         	allow read: if true
-          allow create: if request.auth != null &&get(/databases/$(database)/documents/page/$(request.path[4])).data.commentable == true || request.auth.uid in get(/databases/$(database)/documents/page/$(request.path[4])).data.commenters|| request.auth.uid in get(/databases/$(database)/documents/page/$(request.path[4])).data.writers || request.auth.uid in get(/databases/$(database)/documents/page/$(request.path[4])).data.editors
-          allow delete: if request.auth != null && getProfile(resource.data.profileId).data.userId == request.auth.uid
+            allow update: if request.auth!=null && getProfile(resource.data.profileId).data.userId == request.auth.uid
+            allow create: if request.auth != null &&get(/databases/$(database)/documents/page/$(request.path[4])).data.commentable == true || request.auth.uid in get(/databases/$(database)/documents/page/$(request.path[4])).data.commenters|| request.auth.uid in get(/databases/$(database)/documents/page/$(request.path[4])).data.writers || request.auth.uid in get(/databases/$(database)/documents/page/$(request.path[4])).data.editors
+            allow delete: if request.auth != null && getProfile(resource.data.profileId).data.userId == request.auth.uid
 	}      
 }
   

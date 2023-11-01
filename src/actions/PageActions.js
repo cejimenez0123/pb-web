@@ -416,6 +416,78 @@ const appendSaveRolesForPage = createAsyncThunk("pages/appendSaveRolesForPages",
     }
   }
 })
+const fetchAppendPagesOfProfile = createAsyncThunk("pages/fetchAppendPagesOfProfile", async(params,thunkApi)=>{
+  const {id} = params
+if(id){
+   
+  const ref = collection(db, "page")
+  let queryReq = query(ref,and(where("profileId","==",id),where("privacy","==",false)))
+  if(auth.currentUser.emailVerified){
+  queryReq = query(ref,
+                 and(where("profileId", "==", id),
+                 or(where('commenters', 'array-contains', auth.currentUser.uid),
+                    where('readers','array-contains', auth.currentUser.uid),
+                    where('editors', 'array-contains', auth.currentUser.uid),
+                    where('writers', 'array-contains', auth.currentUser.uid),
+                    where("privacy","==",false))))
+ }else{
+    queryReq = query(ref,and(where("profileId","==",id),where("privacy","==",false)))
+ }
+let pageList = []
+const snapshot = await getDocs(queryReq
+              );
+   
+      snapshot.docs.forEach(doc => {
+            const pack = doc.data();
+            const { id } = doc;
+            const title =pack["title"]
+            const data = pack["data"]
+            const profileId = pack["profileId"]
+            const privacy = pack["privacy"]
+            const approvalScore = pack["approvalScore"]
+            const type = pack["type"]
+            const created = pack["created"]
+            let commentable = pack["commentable"]
+            let commenters = pack["commenters"]
+            let editors = pack["editors"]
+            let readers = pack["readers"]
+            let writers = pack["writers"]
+          if(!editors){
+            editors = []
+          }
+          if(!commenters){
+            commenters = []
+          }
+          if(!readers){
+              readers=[]
+          }
+          if(!writers){
+            writers=[]
+          }
+          if(commentable==null){
+            commentable=true
+          }
+          const contributors= new Contributors(commenters,
+            readers,writers,editors)
+            const page =  new Page( id,
+                                    title,
+                                    data,
+                                    profileId,
+                                    approvalScore,
+                                    privacy,
+                                    commentable,
+                                    type,contributors,created)
+   
+          pageList = [...pageList, page]
+        })
+      
+return {
+
+    pageList
+}}else{
+  return {pageList:[]}
+}
+})
 const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (params,thunkApi)=>{
   try{
   const ref = collection(db,"page")
@@ -751,5 +823,6 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           deleteComment,
           clearEditingPage,
           appendComment,
-          updateComment
+          updateComment,
+          fetchAppendPagesOfProfile
         } 

@@ -20,24 +20,18 @@ import { TextField ,Checkbox, FormControlLabel,Button, FormGroup} from "@mui/mat
 import RoleList from "../components/RoleList"
 import theme from "../theme"
 import checkResult from "../core/checkResult"
-function EditBookContainer({book,pages}){
-    
+function EditBookContainer({book,pages}){   
     const pathParams = useParams()
     const dispatch = useDispatch()
-    const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookLoading = useSelector(state=>state.books.loading)
-    const pageLoading = useSelector(state=>state.pages.loading)
     const [newBookRoles, setNewBookRoles ]= useState([BookRole])
-    const bookRoles = useSelector(state=>state.books.bookRoles)
     const [profileList,setProfileList] = useState([Profile])
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const [bookTitle,setBookTitle] = useState("")
     const [bookIsPrivate,setBookPrivacy]= useState(false)
     const [bookPurpose,setBookPurpose] = useState("")
     const [writingIsOpen,setWritingIsOpen]= useState(false)
-    const [hasMore,setHasMore]=useState(false)
     const [profileHasMore,setProfileHasMore]= useState(false)
-    const [page,setPage] = useState(1)
     const [listItems, setListItems] = useState([
     ]);
     const getBook=()=>{
@@ -47,16 +41,15 @@ function EditBookContainer({book,pages}){
       const parameters = {
         id: bookId,
       }
+    if(book==null || book.id != bookId){
      dispatch(fetchBook(parameters)).then((result) => {
             const {payload} = result
-            const {book} = payload
-            setBookTitle(book.title)
-            setBookPrivacy(book.privacy)
-            setWritingIsOpen(book.writingIsOpen)
-            setBookPurpose(book.purpose)
-            if(book.pageIdList.length>0){
-                dispatch(fetchArrayOfPages(book.pageIdList))
-            }
+            const {gotBook} = payload
+            setBookTitle(gotBook.title)
+            setBookPrivacy(gotBook.privacy)
+            setWritingIsOpen(gotBook.writingIsOpen)
+            setBookPurpose(gotBook.purpose)
+            getPages(gotBook.pageIdList)
          
             fetchProfile()
       
@@ -64,14 +57,14 @@ function EditBookContainer({book,pages}){
         }).catch((err) => {
             
         });
-              
+    }else{
+        getPages(book.pageIdList)
+    }   
     }
     useEffect(()=>{
-        if(book){
-            getPages(book.pageIdList)
-        }
-      
-    },[])
+        getBook()
+    },[book])
+  
 
     
     const fetchProfile=()=>{
@@ -90,14 +83,16 @@ function EditBookContainer({book,pages}){
         const params = {pageIdList:pageIdList}
     
         dispatch(fetchArrayOfPages(params)).then((result) => {
-            if(!result.error){
-                const {payload } = result
+            checkResult(result,payload=>{
+
+        
                 const {pageList} = payload
                 setListItems(pageList)
-              
-            }
-        }).catch((err) => {
-            setHasMore(false)
+            },()=>{
+
+            })
+            }).catch((err) => {
+          
         });
 
     }
@@ -110,7 +105,7 @@ function EditBookContainer({book,pages}){
     useEffect(()=>{
 
         if(book){
-            setHasMore(true)
+           
             getPages(book.pageIdList)
         }
 
@@ -249,7 +244,7 @@ const roleList = ()=>{
 const handleRemove = (page)=>{
     let list  =listItems.filter((item)=>{return item.id != page.id})
     setListItems(list)
-    setHasMore(false)
+    
 }
 const sortableList = ()=>{
     if(listItems.length == 0){

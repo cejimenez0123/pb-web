@@ -15,7 +15,8 @@ import {  getPublicPages ,
           deleteComment,
           clearEditingPage,
           appendComment,
-          updateComment
+          updateComment,
+          fetchAppendPagesOfProfile
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
 
@@ -145,6 +146,10 @@ const pageSlice = createSlice({
           }
         })
         state.commentsInView = newList
+      }).addCase(fetchAppendPagesOfProfile.fulfilled,(state,{payload})=>{
+        state.pagesInView = [...state.pagesInView,...payload.pageList]
+      }).addCase(fetchAppendPagesOfProfile.rejected,(state,{payload})=>{
+        state.error = payload.error
       })}
   })
     

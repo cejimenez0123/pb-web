@@ -20,12 +20,19 @@ function DiscoveryContainer(props){
     let [pages,setPages] = useState([])
     let [hasMore,setHasMore]=useState(false)
         useEffect(()=>{
-            let pList = pagesInView.map((page)=>{return {type:"page",page:page}})
-            let bList = booksInView.map((book)=>{
-                let page = pagesInView.find(page=>book.pageIdList.length > 0 && book.pageIdList[0]==page.id)
-                
-                return {type:"book",book:book,page:page}
-            })
+            let pList =[]
+            let bList = []
+            if(pagesInView){
+               pList = pagesInView.map((page)=>{return {type:"page",page:page}})
+            }
+            if(booksInView){
+                bList = booksInView.map((book)=>{
+                    let page = pagesInView.find(page=>book.pageIdList.length > 0 && book.pageIdList[0]==page.id)
+                    
+                    return {type:"book",book:book,page:page}
+                })
+            } 
+       
         
             const perChunk = 2 // items per chunk    
             
@@ -149,48 +156,8 @@ function DiscoveryContainer(props){
                                 return(<div></div>)
                             }
                             
-                            // else{
-                            //   let pageId = hash.book.pageIdList[i]
-                            //   while(hash.book.pageIdList.length>i){
-                            //     if(pageId){
-                            //         let found = contentItems.find(item=>item.page!=null && item.page.id == pageId)
-                            //         if(found){
-                            //             i+=1
-                            //             pageId = hash.book.pageIdList[i]
-                            //             continue
-                            //         }else{
-                            //           break
-                            //         }
-                            //     }}
-                            //    let page = pagesInView.find(page=>page.id == pageId)
-                            //     if(page){
-                            //         return(<DashboardItem book={hash.book} page={page}/>)
-                            //     }else{
-                            //         return(<div></div>)
-                            //     }
-                            // }
                         }
-                        // let i = 0
-                        // let pageId =  hash.book.pageIdList[i]
-                        // let foundHash = null
-                        // let page = null
-                        // let foundPage = null
-                        // while(hash.book.pageIdList.length>i+1){
-                        //     foundHash =  contentItems.find(item=>item.page!=null && item.page.id == pageId)
-                            
-                        //     if(!foundHash){
-                        //         pageId =  hash.book.pageIdList[i]
-                        //         foundPage = contentItems.find(item=>item.page!=null && item.page.id == pageId)
-                        //        if(!foundPage && pagesInView){
-                        //         page = pagesInView.find(page=> page.id == pageId)
-                        //         break
-                        //        }
-                               
-                        //     }else{
-                        //         i+=1
-                        //     }
-                        // }
-                       
+                     
                         if(hash.page){
                         
                             return(
