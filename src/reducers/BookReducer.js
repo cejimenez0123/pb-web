@@ -69,7 +69,7 @@ builder
 }).addCase(saveRolesForBook.rejected,(state,{payload})=>{
     state.error = payload.error
 }).addCase(saveRolesForBook.fulfilled,(state,{payload})=>{
-    state.bookRoles = payload.roleList
+    state.bookInView = payload.book
 
 }).addCase(updateBook.fulfilled,(state,{payload})=>{
     state.bookInView = payload.book

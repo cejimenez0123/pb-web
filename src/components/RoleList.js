@@ -120,10 +120,9 @@ export default function RoleList({getRoles,library,book,type}) {
                 let profiles = profileList.filter(prof=>{
                     return profile.id != prof.id
                 })
-                
-                setNewRoles(prevState=>{
-                    return [...prevState,br]
-                })
+                let list = newRoles.filter(role=>role.profile.id!=profile.id)
+                let newList = [...list,br]
+                setNewRoles(newList)
                 setProfileList(profiles)
                
             }else{

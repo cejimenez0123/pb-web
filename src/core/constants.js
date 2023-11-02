@@ -13,8 +13,9 @@ const RoleType = {
 }
 
 function canAddToItem(item,profile){
-    
-   return item.writingIsOpen==true || item.editors.includes(profile.userId)|| item.writers.includes(profile.userId)
+    let editor = item.editors.find(id => id==profile.userId)
+    let writer = item.writers.find(id=>id==profile.userId)
+   return item.writingIsOpen || Boolean(editor)||Boolean(writer)
 }
 
 export {PageType,RoleType,canAddToItem}

@@ -61,7 +61,7 @@ const pageDataElement=()=>{
         return( <div  className='text' dangerouslySetInnerHTML={{__html:page.data}}></div>)   }else if(page.type==PageType.picture){
     }
     if(page.type==PageType.picture){
-        return(<img className='image' src={page.data} alt={page.title}/>)
+        return(<img  src={page.data} alt={page.title}/>)
     }else if(page.type==PageType.video){
         return(<iframe src={page.data}/>)
     }else{

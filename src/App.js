@@ -17,6 +17,7 @@ import ProfileContainer from './container/ProfileContainer';
 import PicturePageContainer from './container/PicturePageContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/AddPageToBookContainer';
+import { useState } from 'react';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
 import {  getPublicBooks } from './actions/BookActions';
@@ -39,6 +40,7 @@ function App(props) {
   useEffect(()=>{
       fetchData()
   },[])
+
   useEffect(()=>{
     props.fetchAllProfiles()
   },[])
@@ -112,6 +114,9 @@ function App(props) {
     <ProfileContainer profile={props.profileInView}/>}/>
     
     <Route path="/book/:id" element={
+
+
+
       <BookViewContainer 
         book={props.bookInView} 
         pages={props.pagesInView}/>
@@ -212,7 +217,7 @@ function mapStateToProps(state){
     pageInView: state.pages.pageInView,
     pagesInView: state.pages.pagesInView,
     librariesInView: state.libraries.librariesInView,
-    
+    bookLoading: state.books.loading
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)

@@ -11,14 +11,16 @@ import { clearPagesInView } from "../actions/PageActions"
 import {Button, IconButton} from "@mui/material"
 import theme from "../theme"
 import { updateLibraryContent } from "../actions/LibraryActions"
-import { fetchProfile ,createFollowBook,deleteFollowBook,fetchFollowBooksForProfile, updateHomeCollection} from "../actions/UserActions"
+import { fetchProfile ,createFollowBook,deleteFollowBook,fetchFollowBooksForProfile, updateHomeCollection, getCurrentProfile} from "../actions/UserActions"
 import { Add, Settings } from "@mui/icons-material"
 import debounce from "../core/debounce"
 import { canAddToItem } from "../core/constants"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import checkResult from "../core/checkResult"
+import useAuth from "../core/useAuth"
 function BookViewContainer({book,pages}){
+    const authState = useAuth()
     const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -30,6 +32,14 @@ function BookViewContainer({book,pages}){
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const [following,setFollowing]=useState(null)
     const [bookmarked,setBookmarked]=useState(false)
+    useEffect(()=>{
+        if(authState.user){
+            const params = {
+                userId: authState.user.uid,
+            }
+            dispatch(getCurrentProfile(params))
+        }
+    },[authState])
     useEffect(()=>{
         if(bookmarkLibrary && book){
            let found = bookmarkLibrary.bookIdList.find(id=>id==book.id)
@@ -246,21 +256,25 @@ function BookViewContainer({book,pages}){
            
 
 
-    if( book!=null){ 
-    let addBtn = (<div>
-
-    </div>)
-    if(currentProfile!=null && canAddToItem(book,currentProfile)){
-       addBtn= (<IconButton onClick={()=>{
+    
+   const addBtn =()=>{
+    
+    if(currentProfile&&book){
+        let owner = book.profileId == currentProfile.id
+        let writer =book.writers.find(id=>currentProfile.userId==id)
+        let editor = book.editors.find(id=>currentProfile.userId==id)
+       if(Boolean(owner)||Boolean(writer)||Boolean(editor)){
+        return (<IconButton onClick={()=>{
         setBookInView({book})
         navigate(`/book/${book.id}/add`)
 
        }}>
             <Add/>
         </IconButton>)
-   
-    }
-  
+    }}
+    return(<div></div>)
+}
+  if(book){
 
     return(<div className="evenly container view">
           
@@ -275,9 +289,7 @@ function BookViewContainer({book,pages}){
             <div>
 
             <div className="button-row">
-
-
-            {addBtn}
+            {addBtn()}
             {editDiv}
             {bookmarked?<IconButton onClick={onBookmarkPage}><BookmarkIcon/></IconButton>:
             <IconButton disabled={!currentProfile}onClick={onBookmarkPage}><BookmarkBorderIcon/></IconButton>}

@@ -21,26 +21,10 @@ export default function PageViewItem({page,currentProfile}) {
     const [commenting,setCommenting]=useState(false)
     const [commentInput,setComment] = useState("")
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
-const saveComment=()=>{
-    if(currentProfile && page && commentInput.length >0){
-    const params =  {profileId: currentProfile.id,
-          text:commentInput,
-          pageId:page.id,
-          parentCommentId:"",
-    }
-    dispatch(createComment(params)).then(result=>{
-        if(result.error==null){
-            const {payload} = result
-            if(payload != null && payload.error==null){
-                const params = {page}
-                dispatch(fetchCommentsOfPage(params))
-            }
-        }
-    })
-}
+
         
        
-}
+
 
 const commentBox = (show)=>{
     if (show){
