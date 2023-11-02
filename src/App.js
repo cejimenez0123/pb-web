@@ -36,11 +36,11 @@ import LibraryViewContainer from './container/LibraryViewContainer';
 import useAuth from './core/useAuth';
 
 function App(props) {
-  useAuth()
+  
   useEffect(()=>{
       fetchData()
   },[])
-
+ 
   useEffect(()=>{
     props.fetchAllProfiles()
   },[])
@@ -203,7 +203,8 @@ function mapDispatchToProps(dispatch){
     fetchFollowBooksForProfile:(params)=>dispatch(fetchFollowBooksForProfile(params)) ,
     fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params)),
     fetchFollowProfilesForProfile:(params)=>dispatch(fetchFollowProfilesForProfile(params)),
-    fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params))
+    fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),
+    getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
   }
 }
 function mapStateToProps(state){

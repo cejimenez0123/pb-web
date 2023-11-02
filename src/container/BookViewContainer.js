@@ -32,14 +32,7 @@ function BookViewContainer({book,pages}){
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const [following,setFollowing]=useState(null)
     const [bookmarked,setBookmarked]=useState(false)
-    useEffect(()=>{
-        if(authState.user){
-            const params = {
-                userId: authState.user.uid,
-            }
-            dispatch(getCurrentProfile(params))
-        }
-    },[authState])
+    
     useEffect(()=>{
         if(bookmarkLibrary && book){
            let found = bookmarkLibrary.bookIdList.find(id=>id==book.id)
@@ -151,6 +144,13 @@ function BookViewContainer({book,pages}){
 
             })
             
+        }else{
+            if(authState.user && !Boolean(currentProfile) || (currentProfile && currentProfile.userId == authState.user.uid)){
+                const params = {
+                    userId: authState.user.uid,
+                }
+                dispatch(getCurrentProfile(params))
+            }
         }
     }
    

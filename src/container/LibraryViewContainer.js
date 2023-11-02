@@ -11,7 +11,7 @@ import {updateHomeCollection,
         deleteFollowLibrary,
         fetchAllProfiles, 
         fetchFollowLibraryForProfile} from "../actions/UserActions"
-import { fetchLibrary } from "../actions/LibraryActions"
+import { fetchLibrary, setLibraryInView } from "../actions/LibraryActions"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/Library.css"
 import { fetchArrayOfBooks } from "../actions/BookActions"
@@ -20,6 +20,8 @@ import { Button } from "@mui/material"
 import theme from "../theme"
 import "../App.css"
 import checkResult from "../core/checkResult"
+import Add from "@mui/icons-material/Add"
+import { IconButton } from "@mui/joy"
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -112,6 +114,23 @@ function LibraryViewContainer(props){
                             Loading...
                         </div>)
                 }
+    }
+    const addBtn =()=>{
+    
+        if(currentProfile&&libraryInView){
+            let owner = libraryInView.profileId == currentProfile.id
+            let writer =libraryInView.writers.find(id=>currentProfile.userId==id)
+            let editor = libraryInView.editors.find(id=>currentProfile.userId==id)
+           if(Boolean(owner)||Boolean(writer)||Boolean(editor)){
+            return (<IconButton onClick={()=>{
+            setLibraryInView({library:libraryInView})
+            navigate(`/library/${libraryInView.id}/add`)
+    
+           }}>
+                <Add/>
+            </IconButton>)
+        }}
+        return(<div></div>)
     }
     const onClickFollow = ()=>{
         if(currentProfile && libraryInView){
