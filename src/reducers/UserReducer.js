@@ -16,10 +16,12 @@ import {    logIn ,
             updateHomeCollection,
             deleteFollowLibrary,
             deleteFollowProfile,
-            deleteFollowBook
+            deleteFollowBook,
+            setSignedInTrue,
+            setSignedInFalse,
         } from "../actions/UserActions"
 const initialState = {
-    loggedIn: false,
+    signedIn: true,
     currentProfile: null,
     homeCollection: null,
     loading:false,
@@ -40,7 +42,7 @@ const userSlice = createSlice({
     })
     .addCase(logIn.fulfilled, (state, { payload }) => {
         state.loading = false
-        state.loggedIn = true
+        state.signedIn = true
       
         state.currentProfile = payload.profile
     }).addCase(logIn.rejected, (state,{payload}) => {
@@ -52,28 +54,25 @@ const userSlice = createSlice({
     }).addCase(signUp.fulfilled,(state,{payload})=>{
    
         state.currentProfile = payload.profile
-        state.loggedIn = true
+        state.signedIn= true
         state.loading = false
     }).addCase(signUp.rejected,(state,{payload})=>{   
         state.error = payload.error
     }).addCase(getCurrentProfile.rejected,(state,{payload})=>{   
         state.loading = false
-        state.loggedIn = false
+        state.signedIn = false
         // state.error = payload.error
     }).addCase(getCurrentProfile.pending,(state)=>{
         state.loading = true
     }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
-   
-        state.loading = false
-        state.loggedIn = true
        state.currentProfile = payload.profile
-    }).addCase("users/loggedIn",(state, { payload }) => {
-
-        state.loggedIn = payload.loggedIn
+       state.loading = false
     }).addCase(fetchAllProfiles.fulfilled,(state,{ payload })=>{
         state.profilesInView = payload.profileList
+        state.loading=false
     }).addCase(fetchAllProfiles.rejected,(state,{payload})=>{
         state.error = payload.error
+        state.loading = false
     }).addCase(fetchProfile.pending,(state)=>{
         state.loading=true
     }).addCase(fetchProfile.fulfilled,(state,{ payload })=>{
@@ -123,7 +122,7 @@ const userSlice = createSlice({
         state.followedProfiles = []
         state.homeCollection = null
         state.loading = false
-        state.loggedIn = false
+        state.signedIn = false
     }).addCase(signOutAction.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(fetchHomeCollection.fulfilled,(state,{payload})=>{
@@ -143,6 +142,10 @@ const userSlice = createSlice({
     }).addCase(deleteFollowProfile.fulfilled,(state,{payload})=>{
         const list = state.followedProfiles.filter(fp=> fp!=null &&payload.followLibrary && fp.id != payload.followLibrary.id)
         state.followedBooks = list
+    }).addCase(setSignedInTrue.type,(state,{payload})=>{
+        state.signedIn = true
+    }).addCase(setSignedInFalse.type,(state,{payload})=>{
+        state.signedIn=false
     })
 }})
 

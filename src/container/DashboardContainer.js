@@ -152,7 +152,7 @@ function DashboardContainer(props){
                     }
                 })
             
-            const params = {pageIdList: pageIdList}
+            const params = {pageIdList: pageIdList,profile:currentProfile}
             if(pageIdList.length>0){
             dispatch(fetchArrayOfPagesAppened(params)).then(result=>{
                 if(result.error==null){

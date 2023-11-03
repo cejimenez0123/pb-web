@@ -182,6 +182,7 @@ const getProfilePages= createAsyncThunk(
                                       profileId,
                                       approvalScore,
                                       privacy,
+                                      commentable,
                                       type,
                                       contributors,
                                       created)
@@ -357,10 +358,8 @@ const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async functi
                         profileId,
                         approvalScore,
                         privacy,
-                        commentable,
-                        type,
-                        contributors,
-                        created)
+                        commentable,type,
+                        contributors,created)
   return {
     page
   }
@@ -373,25 +372,60 @@ const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async functi
 
 
 })
-const saveRolesForPage = createAsyncThunk("pages/saveRolesForPages",async (params,thunkApi)=>{
+// const saveRolesForPage = createAsyncThunk("pages/saveRolesForPages",async (params,thunkApi)=>{
+    
+//   try {
+//    const {page,
+//           readers,
+//           commenters,
+//           editors,
+//           writers} = params
+  
+//      let ref = collection(db,'page',page.id)
+//      await updateDoc(ref,{ editors: editors,
+//         commenters:commenters,
+//         writers: writers,
+//         readers: readers,
+//      })
+
+
+//    }catch(e){
+//      const error = e??new Error("Error: SAVE PAGE ROLES")
+//      return {error }
+//    }                
+// })
+const saveRolesForPage = createAsyncThunk("books/saveRolesForPage",async (params,thunkApi)=>{
     
   try {
    const {page,
-          readers,
-          commenters,
-          editors,
-          writers} = params
+         readers,
+         commenters,
+         editors,
+         writers} = params
   
-     let ref = collection(db,'page',page.id)
+     let ref = doc(db,'page',page.id)
      await updateDoc(ref,{ editors: editors,
-        commenters:commenters,
-        writers: writers,
-        readers: readers,
+       commenters:commenters,
+       writers: writers,
+       readers: readers,
      })
+     const contributors= new Contributors(commenters,readers,writers,editors)
+           
+     return {page: new Page( page.id,
+                         page.purpose,
+                         page.title,
+                         page.profileId,
+                         page.pageIdList,
+                         page.privacy,
+                         page.writingIsOpen,
+                         contributors,
+                         page.updatedAt,
+                         page.created
+)}
 
 
    }catch(e){
-     const error = e??new Error("Error: SAVE PAGE ROLES")
+     const error = e??new Error("Error: CREATE PAGE ROLES")
      return {error }
    }                
 })
@@ -400,19 +434,20 @@ const appendSaveRolesForPage = createAsyncThunk("pages/appendSaveRolesForPages",
     const { pageIdList,
             readers,
            
-            } = pageIdList
+            } = params
         pageIdList.forEach(id=>{
-            let ref =collection(db,'page',id)
+            let ref =doc(db,'page',id)
             updateDoc(ref,{
-              readers: arrayUnion(readers),
+              readers: arrayUnion(...readers),
             })
 
         }
 
         )
+        return{readers: readers}
   }catch(e){
     return {
-      error: new Error(`Error: SAVE PAGE ROLES ${e.message}`)
+      error: new Error(`Error:APPEND SAVE PAGE ROLES ${e.message}`)
     }
   }
 })
@@ -492,35 +527,34 @@ const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (para
   try{
   const ref = collection(db,"page")
   const pageIdList = params["pageIdList"]
-  if(pageIdList.length==0){
+  const profile = params["profile"]
+  if(pageIdList.length<1){
     return {
       pageList:[]
     }
   }else{
-
+    let pageList = []
+    let queryReq = query(ref,and(where("id","in",pageIdList),where("privacy","==",false)));
   
-  let queryReq =query(ref,
-    and(where("id", "in", pageIdList),where("privacy","==",false)))
-  if(auth.currentUser){
-  queryReq = query(ref,
-    and(where("id", "in", pageIdList),
-                 or(where("privacy","==",false),
-                    where('commenters', 'array-contains', auth.currentUser.uid),
-                    where('readers','array-contains', auth.currentUser.uid),
-                    where('editors', 'array-contains', auth.currentUser.uid),
-                    where('writers', 'array-contains',auth.currentUser.uid),
-                    where("privacy","==",false))))
- }
- let pageList = []
+    if(profile){
+     
+      queryReq = query(ref,
+          where("id", "in", pageIdList),
+       )
+       }
  const snapshot =await getDocs(queryReq)
   snapshot.docs.forEach(doc => {
         const pack = doc.data();
+      //  let {readers,commenters,editors,writers,privacy}=pack
+       
+    
         const { id } = doc;
+        let belongs = pageIdList.find(pId=>pId==id)
+        if(Boolean(belongs)){
         const title =pack["title"]
         const data = pack["data"]
         const profileId = pack["profileId"]
-        const privacy = pack["privacy"]
- 
+        const privacy=pack["privacy"]
         const approvalScore = pack["approvalScore"]
         const type = pack["type"]
         const created = pack["created"]
@@ -558,7 +592,7 @@ const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (para
                                 created)
   
       pageList = [...pageList, page]
-    })
+  }})
   
 
 return {

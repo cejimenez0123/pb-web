@@ -28,6 +28,7 @@ export default function useAuth(shareAuthState) {
                       const params = {
                         profile
                       }
+                     
                       const bookmarkId ={
                         id: profile.bookmarkLibraryId
                       }
@@ -40,7 +41,7 @@ export default function useAuth(shareAuthState) {
                 setAuthState({ user, pending: false, isSignedIn: Boolean(user) }) 
             
       } })
-},[])
+},[currentProfile])
 
 
     return {...authState }

@@ -1,7 +1,7 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit"
 import Library from "../domain/models/library"
 import { deleteDoc,and,or,arrayRemove,arrayUnion,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
-import LibraryRole from "../domain/models/libraryrole"
+import LibraryRole from "../domain/models/library_role"
 import { db,auth } from "../core/di"
 import { read } from "@popperjs/core"
 import Contributors from "../domain/models/contributor"
@@ -283,6 +283,12 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
     }}
   )
   const setLibraryInView = createAction("libraries/setLibraryInView", (params)=> {
+    const {library } = params
+    return {
+       payload: library
+    }
+  })
+  const setBookmarkLibrary = createAction("libraries/setBookmarkLibrary", (params)=> {
     const {library } = params
     return {
        payload: library
@@ -598,5 +604,6 @@ export {  fetchLibrary,
           deleteLibrary,
           fetchArrayOfLibraries,
           fetchArrayOfLibrariesAppend,
-          clearLibrariesInView
+          clearLibrariesInView,
+          setBookmarkLibrary
           }

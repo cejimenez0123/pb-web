@@ -1,8 +1,8 @@
 
-import { fetchBook } from "../actions/BookActions"
-import { getProfilePages } from "../actions/PageActions"
+import { fetchBook, setBookInView } from "../actions/BookActions"
+import { appendSaveRolesForPage, getProfilePages } from "../actions/PageActions"
 import { useDispatch,useSelector } from "react-redux"
-import { useParams } from "react-router-dom"
+import { useParams,useNavigate } from "react-router-dom"
 import { useEffect ,useState} from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { Add } from "@mui/icons-material"
@@ -10,7 +10,10 @@ import { IconButton } from "@mui/material"
 import { updateBookContent } from "../actions/BookActions"
 import { canAddToItem } from "../core/constants"
 import { PageType } from "../core/constants"
+import checkResult from "../core/checkResult"
+import VisibilityIcon from '@mui/icons-material/Visibility';
 function AddPageToBookContainer({books}){
+    const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -39,23 +42,41 @@ function AddPageToBookContainer({books}){
     
         }
       }
+      
     useEffect(()=>{
-        if(canAddToItem(bookInView,currentProfile)){
+        let owner = bookInView.profileId == currentProfile.id
+        let editor = bookInView.editors.find(id => id==currentProfile.userId)
+        let writer = bookInView.writers.find(id=>id==currentProfile.userId)
+       if(owner || bookInView.writingIsOpen || Boolean(editor)||Boolean(writer)){
+        
         const params = {
             book: bookInView,
             pageIdList: pageIdList
         }
         dispatch(updateBookContent(params)).then(result=>{
-            if(result.error==null){
-                const {payload} = result
-                if(payload.error==null){
-                    alert("Success!")
+            checkResult(result,payload=>{
+                const {book} = payload
+                let readers = [...book.readers,...book.writers,...book.editors,...book.commenters]
+                const params = {
+                    pageIdList,
+                    readers
                 }
-            }
-        })}else{
-            alert("Unable")
-        }
-    },[])
+                dispatch(appendSaveRolesForPage(params)).then(result=>{
+                    checkResult(result,payload=>{
+                        window.alert("Success!")
+                    },()=>{
+
+                    })
+                })
+                
+            },()=>{
+
+            })
+                
+            
+
+        })}
+    },[pageIdList])
     useEffect(()=>{
      
             getBook()
@@ -66,7 +87,7 @@ function AddPageToBookContainer({books}){
     
     const pageList =()=>{
         if(pageLoading==false && !!bookInView){
-            if(pagesInView.length !=0){
+            if(pagesInView && pagesInView.length !=0){
                 return(
                     <div>
                        <InfiniteScroll 
@@ -76,11 +97,11 @@ function AddPageToBookContainer({books}){
                             loader={<p>Loading...</p>}
                             endMessage={<p>No more data to load.</p>}
                             scrollableTarget="scrollableDiv">
-         {pagesInView.map(page=>{
+         {pagesInView.map((page)=>{
            
             
             return(
-                <PageItem page={page} setPageIdList={()=>setPageIdList(prevState=>[...prevState,page.id])}/>
+                <PageItem key={page.key}page={page} setPageIdList={()=>setPageIdList(prevState=>[...prevState,page.id])}/>
             )
          })}
      </InfiniteScroll>
@@ -100,7 +121,7 @@ function AddPageToBookContainer({books}){
 
         
     
-
+    if(bookInView){
     return(<div className="container">
           
         <div className="left-side-bar">
@@ -109,7 +130,10 @@ function AddPageToBookContainer({books}){
             <h5> {bookInView.title}</h5>
             <div className="purpose">
             <h6 > {bookInView.purpose}</h6>
-            </div>     
+            </div>  
+            <IconButton onClick={()=>{
+                navigate(`/book/${bookInView.id}`)}}>
+                <VisibilityIcon/></IconButton>   
             </div>
             
         </div>
@@ -119,7 +143,12 @@ function AddPageToBookContainer({books}){
         <div className="right-side-bar">
         </div>
 
-    </div>)
+    </div>)}else{
+
+        return(<div>
+            Loading
+        </div>)
+    }
 }
 function PageItem({page,setPageIdList}){
     const [show,setShow]=useState(false)

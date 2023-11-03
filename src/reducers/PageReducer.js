@@ -16,7 +16,8 @@ import {  getPublicPages ,
           clearEditingPage,
           appendComment,
           updateComment,
-          fetchAppendPagesOfProfile
+          fetchAppendPagesOfProfile,
+          saveRolesForPage
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
 
@@ -81,6 +82,11 @@ const pageSlice = createSlice({
       }).addCase(setPageInView,(state,{payload})=>{
      
         state.pageInView = payload.page
+      }).addCase(saveRolesForPage.fulfilled,(state,{payload})=>{
+        if(payload.page){
+        state.editingPage = payload.page
+      }}).addCase(saveRolesForPage.rejected,(state,{payload})=>{
+        state.error = payload.error
       }).addCase(fetchPage.pending,(state)=>{
         state.loading = true
       }).addCase(fetchPage.rejected,(state,{payload})=>{

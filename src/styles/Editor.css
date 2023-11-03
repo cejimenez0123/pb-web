@@ -6,7 +6,7 @@
 #editor-page{
     border: 1px solid #ccc;
     padding: 20px 20px 20px 20px;
-    width: 50em;
+    width: 100%;
     min-height: 20rem;
     margin: auto;
     height: auto;
@@ -26,13 +26,14 @@
     display: flex;
     flex-direction: row;
     overflow: scroll;
-    width: 50em;
+    width: 100%;
     margin-bottom: 2px;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
     
 }
 #editor {
+    max-width: 45em;
     margin:auto;
     margin-top: 4em;
     width: fit-content;

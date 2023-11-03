@@ -1,17 +1,12 @@
 import { useParams } from "react-router-dom"
 import { useDispatch,useSelector } from "react-redux"
-import { useState,useEffect } from "react"
+import { useState,useEffect,Component } from "react"
 import { fetchBook,saveRolesForBook,updateBook } from "../actions/BookActions"
 import "../styles/EditBook.css"
 import { fetchAllProfiles } from "../actions/UserActions"
 import {  fetchArrayOfPages } from "../actions/PageActions"
-import { MenuItem } from '@mui/base/MenuItem';
-import { Dropdown } from '@mui/base/Dropdown';
-import { MenuButton } from '@mui/base/MenuButton'
-import { Menu } from '@mui/base/Menu';
 import { SortableList } from '@thaddeusjiang/react-sortable-list';
 import '@thaddeusjiang/react-sortable-list/dist/index.css';
-import InfiniteScroll from "react-infinite-scroll-component"
 import BookRole from "../domain/models/bookrole"
 import { RoleType } from "../core/constants"
 import Profile from "../domain/models/profile"
@@ -20,6 +15,7 @@ import { TextField ,Checkbox, FormControlLabel,Button, FormGroup} from "@mui/mat
 import RoleList from "../components/RoleList"
 import theme from "../theme"
 import checkResult from "../core/checkResult"
+import { current } from "@reduxjs/toolkit"
 function EditBookContainer({book,pages}){   
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -31,6 +27,7 @@ function EditBookContainer({book,pages}){
     const [bookIsPrivate,setBookPrivacy]= useState(false)
     const [bookPurpose,setBookPurpose] = useState("")
     const [writingIsOpen,setWritingIsOpen]= useState(false)
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const [profileHasMore,setProfileHasMore]= useState(false)
     const [listItems, setListItems] = useState([
     ]);
@@ -41,7 +38,8 @@ function EditBookContainer({book,pages}){
       const parameters = {
         id: bookId,
       }
-    if(book==null || book.id != bookId){
+    // if(book==null || book.id != bookId){
+       if(book==null || book.id != bookId){ 
      dispatch(fetchBook(parameters)).then((result) => {
             const {payload} = result
             const {gotBook} = payload
@@ -57,13 +55,13 @@ function EditBookContainer({book,pages}){
         }).catch((err) => {
             
         });
-    }else{
-        getPages(book.pageIdList)
-        setBookTitle(book.title)
-        setBookPrivacy(book.privacy)
-        setWritingIsOpen(book.writingIsOpen)
-        setBookPurpose(book.purpose)
-    }   
+       }else if(book!=null && book.id == bookId) {
+            setBookTitle(book.title)
+            setBookPrivacy(book.privacy)
+            setWritingIsOpen(book.writingIsOpen)
+            setBookPurpose(book.purpose)
+            getPages(book.pageIdList)
+       }
     }
     useEffect(()=>{
         getBook()
@@ -84,21 +82,31 @@ function EditBookContainer({book,pages}){
         })
     }
     const getPages = (pageIdList)=>{
-        const params = {pageIdList:pageIdList}
-    
+        const params = {pageIdList:pageIdList,profile:currentProfile}
+      if(pageIdList.length > 0){
         dispatch(fetchArrayOfPages(params)).then((result) => {
             checkResult(result,payload=>{
 
         
                 const {pageList} = payload
-                setListItems(pageList)
+                setListItems([])
+                if(book.pageIdList.length>0){
+                book.pageIdList.forEach(id=>
+                    {
+                        let page = pageList.find(p=>p.id==id)
+                        const item = {id:id, item:page}
+                        setListItems(prevState=>[...prevState,item])
+                    })
+                }
             },()=>{
 
             })
             }).catch((err) => {
           
         });
-
+    }else{
+        setListItems([])
+    }
     }
     
     useEffect(()=>{
@@ -106,94 +114,14 @@ function EditBookContainer({book,pages}){
             getBook()
         
     },[])
-    useEffect(()=>{
 
-        if(book){
-           
-            getPages(book.pageIdList)
-        }
 
-    },[])
-const bookRolesView =  ()=>{
-    if(newBookRoles!=null && newBookRoles.length > 0){
-
-        return (<div>
-            {       
-                    newBookRoles.map((role)=>{
-                        let username = ""
-                        let id = ""
-                        let profile = profilesInView.find(prof=>prof.id==role.profileId)
-                        if(profile){
-                            username=profile.username
-                            id = profile.id
-                        }
-                        return(<div key={id}>
-                            <div>
-                                {username}
-                            </div>
-                            <Dropdown>
-                                <MenuButton>
-                                {role.role}
-                                </MenuButton>
-                                <Menu>
-                                    <MenuItem onClick={()=>handleChosingProfileRole(profile,"")}>
-                                        Delete
-                                    </MenuItem>
-                                    <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.editor)}>
-                                        Editor
-                                    </MenuItem>
-                                    <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.writer)}>
-                                        Writer
-                                    </MenuItem>
-                                    <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.commenter)}>
-                                        Commenter
-                                    </MenuItem>
-                                    <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.reader)}>
-                                        Reader
-                                    </MenuItem>
-                                </Menu>
-                            </Dropdown>
-                            </div>)
-                    })
-                }
-        </div>)
-    }else{
-        return(<div >
-
-        </div>)
-    }
-}
-const handleChosingProfileRole =(profile,role)=>{
-    const br = new BookRole( null,
-        profile,
-        book.id,
-        role
-        )
-   
-    if(role.length > 0){
+const handleRemove = (hash)=>{
+  
+    let list  =listItems.filter((item)=>{return item.item && hash.item && item.item.id != hash.item.id})
     
-        let profiles = profileList.filter(prof=>{
-            return profile.id != prof.id
-        })
-        setNewBookRoles(prevState=>{
-            return [...prevState,br]
-        })
-        setProfileList(profiles)
-        
-    }else{
-       let roles = newBookRoles.filter(bookRole=>bookRole.profile.id == profile.id)
-       setNewBookRoles(roles) 
-       setProfileList(prevState=>{
-            return [...prevState, profile]
-        })
-    }
-
-}
-
-
-const handleRemove = (page)=>{
-    let list  =listItems.filter((item)=>{return item.id != page.id})
     setListItems(list)
+    console.log(`ldsisn ${JSON.stringify(list)}`)
     
 }
 const sortableList = ()=>{
@@ -202,16 +130,17 @@ const sortableList = ()=>{
             Empty
         </div>)
    
-    }else  if(!!listItems){
-
+    }else if(listItems){
+        let index = 0
         return( <div id="sort-list">
-
+            Double Click to Remove
          <SortableList
         
             items={listItems}
             setItems={setListItems}
             itemRender={(item)=>{
-               return sortItem(item)}}>
+                index+=1
+               return sortItem(item,index)}}>
             
             </SortableList>
             </div>)
@@ -222,13 +151,20 @@ const sortableList = ()=>{
     }
 }
 
-    const sortItem = (item)=>{
-        return((
-            <div className="sort-item">
+    const sortItem = (item,index)=>{
+        if(item.item){
+        return(
+            <div key={`${item.id}_${index}`}className="sort-item">
             <h1>{item.item.title} </h1>
-            <Button  onDoubleClick={()=>handleRemove(item.item)
+            <Button  onDoubleClick={()=>handleRemove(item)
             }>Remove</Button>
-        </div>))
+        </div>)
+        
+    }else{
+            <div key={`${item.id}_${index}`} className="sort-item">  
+            Page Delete<Button  onDoubleClick={()=>handleRemove(item)
+            }>Remove</Button></div>
+        }
     }
     const handleTitleChange = (e)=>{
         setBookTitle(e.target.value)
@@ -236,8 +172,12 @@ const sortableList = ()=>{
     const handleSave = (e)=>{
         e.preventDefault()
         if(book!=null){
-            
-            const pageIdList = listItems.map(page=>  page.id)
+            let pageIdList = []
+            if(listItems.length>0){
+              pageIdList  = listItems.map(page=>  page.id)
+            }
+           
+
             const params = {book:book,
                             title: bookTitle,
                             pageIdList:pageIdList,
@@ -247,6 +187,7 @@ const sortableList = ()=>{
             dispatch(updateBook(params)).then(result=>{
                 checkResult(result,payload=>{
                     window.alert("Book Info Updated")
+                    getPages(pageIdList)
                 })
                
             })
@@ -274,6 +215,7 @@ const sortableList = ()=>{
     const form = ()=>{
         return( <FormGroup style={{padding:"0 2em",margin:"auto"}} >
             <TextField
+                style={{backgroundColor:theme.palette.primary.contrastText}}
                 onChange={(e)=>handleTitleChange(e)}
                 id="standard-required"
                 label="Title"
@@ -310,7 +252,7 @@ const sortableList = ()=>{
     return(<div id="EditBook" className="container">
             
             <div className="left-bar">
-            {sortableList()}
+                {sortableList()}
             </div>
 
       
@@ -321,7 +263,7 @@ const sortableList = ()=>{
                 <div >
                     {form()}
                 <div className="roles">
-                    <RoleList book={book} type={"book"} getRoles={roles=>{
+                    <RoleList item={book} book={book} type={"book"} getRoles={roles=>{
                         setNewBookRoles(roles)
                     }} />
                 </div>
@@ -336,6 +278,7 @@ const sortableList = ()=>{
         </div>)
     }
 }
+
 
 
 

@@ -26,7 +26,9 @@ import {  getCurrentProfile,
           fetchFollowBooksForProfile,
           fetchFollowLibraryForProfile,
           fetchFollowProfilesForProfile,
-          fetchHomeCollection} from './actions/UserActions'
+          fetchHomeCollection,
+          setSignedInTrue,
+         setSignedInFalse} from './actions/UserActions'
 import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { useEffect} from 'react';
@@ -36,11 +38,25 @@ import LibraryViewContainer from './container/LibraryViewContainer';
 import useAuth from './core/useAuth';
 
 function App(props) {
-  
+  const authState = useAuth()
   useEffect(()=>{
       fetchData()
-  },[])
- 
+      
+  },[props.currentProfile])
+  useEffect(()=>{
+    // if(props.signedIn){
+      if((authState.user && !authState.user.isAnonymous && !props.currentProfile) ||(props.currentProfile && authState.user && props.currentProfile.userId != authState.user.uid)){
+      const params = {
+          userId: authState.user.uid,
+      }
+      props.getCurrentProfile(params).then(()=>{
+        
+      })
+    }else{
+  
+    }
+
+  },[authState.user])
   useEffect(()=>{
     props.fetchAllProfiles()
   },[])
@@ -205,13 +221,15 @@ function mapDispatchToProps(dispatch){
     fetchFollowProfilesForProfile:(params)=>dispatch(fetchFollowProfilesForProfile(params)),
     fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),
     getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
+    setSignedInTrue:()=>dispatch(setSignedInTrue()),
+    setSignedInFalse:()=>dispatch(setSignedInFalse()),
   }
 }
 function mapStateToProps(state){
 
   return{
     profile: state.users.profileInView,
-    loggedIn: state.users.loggedIn,
+    signedIn: state.users.signedIn,
     bookInView: state.books.bookInView,
     booksInView: state.books.booksInView,
     currentProfile: state.users.currentProfile,
@@ -219,6 +237,7 @@ function mapStateToProps(state){
     pagesInView: state.pages.pagesInView,
     librariesInView: state.libraries.librariesInView,
     bookLoading: state.books.loading
+
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)

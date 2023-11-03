@@ -1,6 +1,5 @@
 import { createAsyncThunk ,createAction} from "@reduxjs/toolkit"
 import Book from "../domain/models/book"
-import BookRole from "../domain/models/bookrole"
 import {where,query,and,or,arrayUnion,collection,getDocs,startAt,endAt,getDoc,doc,Firestore ,setDoc,deleteDoc, QuerySnapshot,limit, DocumentData, Timestamp,DocumentSnapshot, updateDoc} from "firebase/firestore"
 import { db,auth} from "../core/di"
 import Contributors from "../domain/models/contributor"
@@ -443,17 +442,7 @@ const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params
       })
       const contributors= new Contributors(commenters,readers,writers,editors)
             
-      return {book: new Book( book.id,
-                          book.purpose,
-                          book.title,
-                          book.profileId,
-                          book.pageIdList,
-                          book.privacy,
-                          book.writingIsOpen,
-                          contributors,
-                          book.updatedAt,
-                          book.created
-)}
+   
 
  
     }catch(e){

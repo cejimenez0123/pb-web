@@ -11,6 +11,7 @@ import theme from "../theme"
 import "../styles/CreateBook.css"
 import { Add } from "@mui/icons-material"
 import MediaQuery from "react-responsive"
+import checkResult from "../core/checkResult"
 const inputStyle = {
     width: "90%",
     marginLeft:"1em"
@@ -35,22 +36,24 @@ export default function CreateBookContainer({pagesInView,booksInView}){
     }
     const addUpdateBook=(book)=>{
         
-    pagesToBeAdded.forEach(async page=>{
-        let readers = [...page.readers,...book.readers]
+    pagesToBeAdded.forEach(page=>{
+        let readers = [...book.commenters,...book.writers,...book.editors,...book.readers]
         let list = pagesToBeAdded.map(page=>page.id)
         let pageIdList = [...book.pageIdList,...list]
         pageIdList.push(page.id)
         const roleParams = {
             pageIdList,
             readers,
-    
-         
         }
-        dispatch(appendSaveRolesForPage(roleParams))
-        
-  
-        
+        dispatch(appendSaveRolesForPage(roleParams)).then(result=>{
+            checkResult(result,payload=>{
+                window.alert("Book contributors added to page readers")
+            },(err)=>{
+                window.alert("Error others may not be able to read page. Check roles")
+            })
+        })   
     })
+    
     let list = pagesToBeAdded.map(page=>page.id)
     let pageIdList = [...book.pageIdList,...list]
     const params ={
@@ -64,9 +67,9 @@ export default function CreateBookContainer({pagesInView,booksInView}){
     } 
     dispatch(updateBook(params))
     .then(result => {
-        if(result.error==null){
+        checkResult(result,payload=>{
             navigate(`/book/${book.id}`)
-        }
+        },()=>{})
     }).catch(error =>{
 
     })

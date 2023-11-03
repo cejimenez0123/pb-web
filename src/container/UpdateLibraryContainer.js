@@ -121,7 +121,7 @@ function UpdateLibraryContainer(props) {
     
     const fetchPages=()=>{
         if(libraryInView){
-            const paramsA = {pageIdList:libraryInView.pageIdList}
+            const paramsA = {pageIdList:libraryInView.pageIdList,profile:currentProfile}
             dispatch(fetchArrayOfPages(paramsA)).then(result=>{   
         if(result.error == null){
             const {payload } = result

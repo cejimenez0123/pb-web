@@ -105,18 +105,13 @@ match /page/{pageId}{
 		
         
         //PAGE
-      	allow read:if  resource.data.privacy == false 
-        						|| getProfile(resource.data.profileId).data.userId == request.auth.uid 
-                    || request.auth.uid in resource.data.readers 
-                    || request.auth.uid in resource.data.commenters 
-                    || request.auth.uid in resource.data.writers 
-                    || request.auth.uid in resource.data.editors
-        allow list: if resource.data.privacy == false 
-        						|| getProfile(resource.data.profileId).data.userId == request.auth.uid 
-                    || request.auth.uid in resource.data.readers 
-                    || request.auth.uid in resource.data.commenters 
-                    || request.auth.uid in resource.data.writers 
-                    || request.auth.uid in resource.data.editors
+      	allow read:if (resource.data.privacy == false || (getProfile(resource.data.profileId).data.userId == request.auth.uid) || (request.auth.uid in resource.data.readers) || (request.auth.uid in resource.data.commenters) || (request.auth.uid in resource.data.writers) || (request.auth.uid in resource.data.editors))
+        // allow list: if (resource.data.privacy == false 
+        // 						|| getProfile(resource.data.profileId).data.userId == request.auth.uid 
+        //             || request.auth.uid in resource.data.readers 
+        //             || request.auth.uid in resource.data.commenters 
+        //             || request.auth.uid in resource.data.writers 
+        //             || request.auth.uid in resource.data.editors)
         allow write:if getProfile(resource.data.profileId).data.userId == request.auth.uid 
         								|| (request.auth!=null && request.resource.data.readers.length> resource.data.readers.length )
                         ||(request.auth.uid in resource.data.readers || request.auth.uid in resource.data.editors );

@@ -4,13 +4,14 @@ import { useState,useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getProfilePages } from '../actions/PageActions';
-import { getProfileBooks } from '../actions/BookActions';
-import { getProfileLibraries } from '../actions/LibraryActions';
+import { fetchArrayOfBooksAppened, getProfileBooks } from '../actions/BookActions';
+import { fetchBookmarkLibrary, getProfileLibraries } from '../actions/LibraryActions';
 import PageListItem from './PageListItem';
 import "../styles/MyProfile.css"
 import Book from '../domain/models/book'
 import ListItem from '../components/ListItem';
 import { Button } from "@mui/material";
+import checkResult from "../core/checkResult";
 
 export default function ContentList({currentProfile,pagesInView}){
     const [page,setPage] = useState(1)  
@@ -24,6 +25,16 @@ export default function ContentList({currentProfile,pagesInView}){
     const dispatch = useDispatch()
     useEffect(()=>{
         if(currentProfile){
+            const params = {id: currentProfile.bookmarkLibraryId}
+            dispatch(fetchBookmarkLibrary(params)).then(result=>{
+                checkResult(result,payload=>{
+                    const {library} = payload
+                    const params = {bookIdList:library.bookIdList}
+                    dispatch(fetchArrayOfBooksAppened(params))
+                },()=>{
+
+                })
+            })
             fetchPageData()
             fetchBookData()
             fetchLibraryData()

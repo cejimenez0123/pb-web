@@ -207,7 +207,7 @@ function LibraryViewContainer(props){
         if(libraryInView!=null){
 
             const pageIdList = libraryInView.pageIdList
-            const params = {pageIdList: pageIdList}
+            const params = {pageIdList: pageIdList,profile:currentProfile}
         if(pageIdList.length>0){
             dispatch(fetchArrayOfPages(params)).then((result) => {
 

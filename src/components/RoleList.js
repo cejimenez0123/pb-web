@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react"
 import { useSelector } from "react-redux"
 import BookRole from "../domain/models/bookrole"
-import LibraryRole from "../domain/models/libraryrole"
+import LibraryRole from "../domain/models/library_role"
 import { MenuItem } from '@mui/base/MenuItem';
 import { Dropdown } from '@mui/base/Dropdown';
 import { MenuButton } from '@mui/base/MenuButton'
@@ -12,7 +12,9 @@ import { fetchAllProfiles } from "../actions/UserActions";
 import { useDispatch } from "react-redux";
 import { Timestamp } from "firebase/firestore";
 import Role from "../domain/models/role";
-export default function RoleList({getRoles,library,book,type}) {
+import Contributors from "../domain/models/contributor";
+import PageRole from "../domain/models/page_role";
+export default function RoleList({getRoles,library,book,item,type}) {
     const dispatch = useDispatch()
     const [newRoles, setNewRoles ]= useState([])
     const libraryRoles = useSelector(state=>state.libraries.libraryRoles)
@@ -40,35 +42,82 @@ export default function RoleList({getRoles,library,book,type}) {
     useEffect(()=>{
         fetchProfiles()
     },[])
+    const createContributors=(item,type)=>{
+       let readers = item.readers.map(id=>{
+        let profile = profilesInView.find(profile=>profile&& id && profile.userId == id)
+        if(type=="book"){
+            return new BookRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.reader)
+        }else if(type=="library"){
+            return new LibraryRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.reader)
+        }else if(type=="page"){
+            return new PageRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.reader)
+        }
+    })
+    let commenters = item.commenters.map(id=>{
+        let profile = profilesInView.find(profile=>profile&& id && profile.userId == id)
+        if(type=="book"){
+            return new BookRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.commenter)
+        }else if(type=="library"){
+            return new LibraryRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.commenter)
+        }else if(type=="page"){
+            return new PageRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.commenter)
+        }
+    })
+    let editors = item.editors.map(id=>{
+        let profile = profilesInView.find(profile=>profile&& id && profile.userId == id)
+        if(type=="book"){
+            return new BookRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.editor)
+        }else if(type=="library"){
+            return new LibraryRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.editor)
+        }else if(type=="page"){
+            return new PageRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.editor)
+        }
+    })
+    
+    let writers = item.writers.map(id=>{
+        let profile = profilesInView.find(profile=>profile&& id && profile.userId == id)
+        if(type=="book"){
+            return new BookRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.writer)
+        }else if(type=="library"){
+            return new LibraryRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.writer)
+        }else if(type=="page"){
+            return new PageRole(`${item.id}_${profile.userId}`,profile,item.id,RoleType.writer)
+        }
+    })
+        return new Contributors(commenters,readers,writers,editors)
+    }
     const setRoleList = ()=>{
-        if(book && profilesInView.length>0){
-                let readers = book.readers.map(id=>{
-                    let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
-                    if(profile){
-                    return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.reader)
-         } })
-                let commenters =book.commenters.map(id=>{
-                    let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
-                    if(profile){
+        if(item && profilesInView.length>0){
+                const contributors = createContributors(item,type)
+        //         let readers = item.readers.map(id=>{
+        //             let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
+        //             if(profile){
+        //                 if(type=="book"){
+        //             return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.reader)
+        //                 }
+        //  } })
+        //         let commenters =book.commenters.map(id=>{
+        //             let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
+        //             if(profile){
 
                     
-                    return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.commenter)
-        }})
-                let editors = book.editors.map(id=>{
-                    let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
-                    if(profile){
-                        return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.editor)
-                    }
+        //             return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.commenter)
+        // }})
+                // let editors = book.editors.map(id=>{
+                //     let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
+                //     if(profile){
+                //         return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.editor)
+                //     }
                    
-                })
-                let writers =book.writers.map(id=>{
-                    let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
-                    if(profile!=null){
-                        return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.writer)
-                    }
-                })
+                // })
+                // let writers =book.writers.map(id=>{
+                //     let profile = profilesInView.find(profile=>profile!=null && profile.id==id)
+                //     if(profile!=null){
+                //         return new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.writer)
+                //     }
+                // })
                 
-                setNewRoles([...editors,...writers,...readers,...commenters])
+                setNewRoles([...contributors.editors,...contributors.writers,...contributors.readers,...contributors.commenters])
         }
     //     if(library && profilesInView.length >0){        
     //       let profiles = library.readers.map(id=>profilesInView.find(profile=>profile.id == id)
@@ -82,122 +131,151 @@ export default function RoleList({getRoles,library,book,type}) {
     }
     useEffect(()=>{
         setRoleList()
-    },[book,library])
+    },[item])
+    const createRole=(type,item,profile,role)=>{
+        switch(type){
+            case "page":return new PageRole(`${item.id}_${profile.userId}`,profile,item.id,role);
+            case "book":return new BookRole(`${item.id}_${profile.userId}`,profile,item.id,role);
+            case "library":return new LibraryRole(`${item.id}_${profile.userId}`,profile,item,role);
+            default:{
+                return new Role(`${item.id}_${profile.userId}`,profile,role)
+            }
+        }
+    }
     const handleChosingProfileRole =(profile,role)=>{
-
-        if(library){
-            const br = new LibraryRole( `${library.id}_${profile.userId}`,
-            profile,
-            library.id,
-            role
-            )
-            if(role.length > 0){
+        const newRole = createRole(type,item,profile,role)
+        if(item){
+                        if(role.length > 0){
                
                 let profiles = profileList.filter(prof=>{
                     return profile.id != prof.id
                 })
                 setNewRoles(prevState=>{
-                    return [...prevState,br]
+                    return [...prevState,newRole]
                 })
                 setProfileList(profiles)
+            }else{
+               let roles = newRoles.filter(role=>role.profile.id == profile.id)
+               setNewRoles(roles) 
+               setProfileList(prevState=>{
+                    return [...prevState, profile]
+                })
+            }
+        }
+        // if(library){
+        //     const br = new LibraryRole( `${library.id}_${profile.userId}`,
+        //     profile,
+        //     library.id,
+        //     role
+        //     )
+        //     if(role.length > 0){
+               
+        //         let profiles = profileList.filter(prof=>{
+        //             return profile.id != prof.id
+        //         })
+        //         setNewRoles(prevState=>{
+        //             return [...prevState,br]
+        //         })
+        //         setProfileList(profiles)
                 
-            }else{
-               let roles = newRoles.filter(role=>role.profile.id == profile.id)
-               setNewRoles(roles) 
-               setProfileList(prevState=>{
-                    return [...prevState, profile]
-                })
-            }
-        }
-        if(book){
-            const br = new BookRole( `${book.id}_${profile.userId}`,
-            profile,
-            book.id,
-            role
-            )
-            if(role.length > 0){
+        //     }else{
+        //        let roles = newRoles.filter(role=>role.profile.id == profile.id)
+        //        setNewRoles(roles) 
+        //        setProfileList(prevState=>{
+        //             return [...prevState, profile]
+        //         })
+        //     }
+        // }
+        // if(book){
+        //     const br = new BookRole( `${book.id}_${profile.userId}`,
+        //     profile,
+        //     book.id,
+        //     role
+        //     )
+        //     if(role.length > 0){
                
-                let profiles = profileList.filter(prof=>{
-                    return profile.id != prof.id
-                })
-                let list = newRoles.filter(role=>role.profile.id!=profile.id)
-                let newList = [...list,br]
-                setNewRoles(newList)
-                setProfileList(profiles)
+        //         let profiles = profileList.filter(prof=>{
+        //             return profile.id != prof.id
+        //         })
+        //         let list = newRoles.filter(role=>role.profile.id!=profile.id)
+        //         let newList = [...list,br]
+        //         setNewRoles(newList)
+        //         setProfileList(profiles)
                
-            }else{
-               let roles = newRoles.filter(role=>role.profile.id == profile.id)
-               setNewRoles(roles) 
-               setProfileList(prevState=>{
-                    return [...prevState, profile]
-                })
-            }
-        }
+        //     }else{
+        //        let roles = newRoles.filter(role=>role.profile.id == profile.id)
+        //        setNewRoles(roles) 
+        //        setProfileList(prevState=>{
+        //             return [...prevState, profile]
+        //         })
+        //     }
+        // }
      
 
         
        
     }
     const setOldRoles = ()=>{
-        if(library){
-            let writers =library.writers.map(wUId=> {
-               let profile = profilesInView.find(profile=>profile.userId == wUId)
-               let role =new LibraryRole("",profile,library.id,RoleType.writer)
-               return role
-            })
-           let editors = library.editors.map(wUId=> {
-               let profile = profilesInView.find(profile=>profile.userId == wUId)
-               let role =new LibraryRole("",profile,library.id,RoleType.editor)
-               return role
-            })
-            let readers = library.readers.map(wUId=> {
-                let profile = profilesInView.find(profile=>profile.userId == wUId)
-                let role =new LibraryRole("",profile,library.id,RoleType.reader)
-                return role
-             })
-            let commenters = library.commenters.map(wUId=> {
-                let profile = profilesInView.find(profile=>profile.userId == wUId)
-                let role =new LibraryRole("",profile,library.id,RoleType.commenter)
-                return role
-             })
-            let roleList = [...writers,...editors,...readers,...commenters]
-            setNewRoles(roleList)
-        } 
+          const contributors= createContributors(item,type)
+        // if(library){
+        //     let writers =library.writers.map(wUId=> {
+        //        let profile = profilesInView.find(profile=>profile.userId == wUId)
+        //        let role =new LibraryRole("",profile,library.id,RoleType.writer)
+        //        return role
+        //     })
+        //    let editors = library.editors.map(wUId=> {
+        //        let profile = profilesInView.find(profile=>profile.userId == wUId)
+        //        let role =new LibraryRole("",profile,library.id,RoleType.editor)
+        //        return role
+        //     })
+        //     let readers = library.readers.map(wUId=> {
+        //         let profile = profilesInView.find(profile=>profile.userId == wUId)
+        //         let role =new LibraryRole("",profile,library.id,RoleType.reader)
+        //         return role
+        //      })
+        //     let commenters = library.commenters.map(wUId=> {
+        //         let profile = profilesInView.find(profile=>profile.userId == wUId)
+        //         let role =new LibraryRole("",profile,library.id,RoleType.commenter)
+        //         return role
+        //      })
+        //     let roleList = [...writers,...editors,...readers,...commenters]
+        //     setNewRoles(roleList)
+        // } 
         
-        if(book){
-            let commenters = []
-            let writers = []
-            let editors = []
-            let readers = []
-            if(book.writers.length>0){
-             writers =book.writers.map(wUId=> {
-                let profile = profilesInView.find(profile=>profile.userId == wUId)
-                let role =new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.writer)
-                return role
-             })}
-             if(book.editors.length>0)
-             editors = book.editors.map(wUId=> {
-                let profile = profilesInView.find(profile=>profile.userId == wUId)
-                let role =new BookRole("",profile,book.id,RoleType.editor)
-                return role
-             })
-             if(book.readers.length>0){
-              readers = book.readers.map(wUId=> {
-                 let profile = profilesInView.find(profile=>profile.userId == wUId)
-                 let role =new BookRole("",profile,book.id,RoleType.reader)
-                 return role
-              })}
-            if(book.commenters.length > 0) {
-              commenters = book.commenters.map(wUId=> {
-                 let profile = profilesInView.find(profile=>profile.userId == wUId)
-                 let role =new BookRole("",profile,book.id,RoleType.commenter)
-                 return role
-              })
-            }
-             let roleList = [...writers,...editors,...readers,...commenters]
+        // if(book){
+        //     let commenters = []
+        //     let writers = []
+        //     let editors = []
+        //     let readers = []
+        //     if(book.writers.length>0){
+        //      writers =book.writers.map(wUId=> {
+        //         let profile = profilesInView.find(profile=>profile.userId == wUId)
+        //         let role =new BookRole(`${book.id}_${profile.userId}`,profile,book.id,RoleType.writer)
+        //         return role
+        //      })}
+        //      if(book.editors.length>0)
+        //      editors = book.editors.map(wUId=> {
+        //         let profile = profilesInView.find(profile=>profile.userId == wUId)
+        //         let role =new BookRole("",profile,book.id,RoleType.editor)
+        //         return role
+        //      })
+        //      if(book.readers.length>0){
+        //       readers = book.readers.map(wUId=> {
+        //          let profile = profilesInView.find(profile=>profile.userId == wUId)
+        //          let role =new BookRole("",profile,book.id,RoleType.reader)
+        //          return role
+        //       })}
+        //     if(book.commenters.length > 0) {
+        //       commenters = book.commenters.map(wUId=> {
+        //          let profile = profilesInView.find(profile=>profile.userId == wUId)
+        //          let role =new BookRole("",profile,book.id,RoleType.commenter)
+        //          return role
+        //       })
+        //     }
+             let roleList = [...contributors.writers,...contributors.editors,...contributors.readers,...contributors.commenters]
              setNewRoles(roleList)
         }
-    }
+    
     
     
     const bookRolesView =  ()=>{

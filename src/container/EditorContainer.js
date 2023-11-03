@@ -16,6 +16,7 @@ import { PageType } from "../core/constants"
 
 import theme from "../theme"
 import checkResult from "../core/checkResult"
+import RoleList from "../components/RoleList"
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
@@ -83,7 +84,7 @@ function EditorContainer({currentProfile}){
             checkResult(result,(payload)=>{
               window.alert("Saved")
             },()=>{
-              
+
             })
           })
         }
@@ -173,6 +174,12 @@ function EditorContainer({currentProfile}){
 
                     {deleteDiv}
                     </FormGroup>
+                    {editingPage?<RoleList
+                                item={editingPage} 
+                                type={"page"} 
+                                getRoles={roles=>{
+                      console.log(`roles ${JSON.stringify(roles)}`)
+                    }} />:(<div></div>)}
                     <div>
       
       <Dialog

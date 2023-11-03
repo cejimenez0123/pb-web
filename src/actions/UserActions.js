@@ -202,6 +202,14 @@ const fetchHomeCollection = createAsyncThunk("users/fetchHomeCollection", async(
 return {error: new Error(`Fetch home Error: ${e.message}`)}
 }
 })
+const setSignedInTrue = createAction("users/setSignedInTrue", async(params)=>{
+ return
+}
+)
+const setSignedInFalse = createAction("users/setSignedInFalse", async(params)=>{
+  return
+ }
+ )
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
     
@@ -683,5 +691,7 @@ export {logIn,
         uploadPicture,
         deleteUserAccounts,
         fetchHomeCollection,
-        updateHomeCollection
+        updateHomeCollection,
+        setSignedInTrue,
+        setSignedInFalse
     }
