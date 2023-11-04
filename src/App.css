@@ -344,7 +344,7 @@ html, body {
   
 }
 .inner .btn-row{
-  width: 45em;
+  width: 35em;
   justify-content: flex-start;
   background-color: rgb(194, 211, 227);
   display: flex;
@@ -420,7 +420,8 @@ html, body {
   padding: 1.5em 2em 1.5em 2em !important;
   display: flex;
   flex-direction: row;
-  min-width: 40em;
+  width: 35em;
+  margin: auto;
   justify-content: space-between;
   background-color: white;
   border-bottom: 2px solid gainsboro;

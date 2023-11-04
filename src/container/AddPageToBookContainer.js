@@ -12,6 +12,8 @@ import { canAddToItem } from "../core/constants"
 import { PageType } from "../core/constants"
 import checkResult from "../core/checkResult"
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import CreateIcon from '@mui/icons-material/Create';
+import ImageIcon from '@mui/icons-material/Image';
 function AddPageToBookContainer({books}){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -28,9 +30,15 @@ function AddPageToBookContainer({books}){
        if(currentProfile){
             const id = pathParams["id"]
             if(bookInView.id != id || bookInView==null){
-                fetchBook({id})
+                dispatch(fetchBook({id})).then(result=>{
+                    checkResult(result,payload=>{
+                        const {book}=payload
+                        setPageIdList(book.pageIdList)
+                    })
+                })
             }
     }}
+
     const getPages =()=>{
         if(currentProfile){
             const params = {
@@ -43,47 +51,50 @@ function AddPageToBookContainer({books}){
         }
       }
       
-    useEffect(()=>{
-        let owner = bookInView.profileId == currentProfile.id
-        let editor = bookInView.editors.find(id => id==currentProfile.userId)
-        let writer = bookInView.writers.find(id=>id==currentProfile.userId)
-       if(owner || bookInView.writingIsOpen || Boolean(editor)||Boolean(writer)){
-        
-        const params = {
-            book: bookInView,
-            pageIdList: pageIdList
-        }
-        dispatch(updateBookContent(params)).then(result=>{
-            checkResult(result,payload=>{
-                const {book} = payload
-                let readers = [...book.readers,...book.writers,...book.editors,...book.commenters]
-                const params = {
-                    pageIdList,
-                    readers
-                }
-                dispatch(appendSaveRolesForPage(params)).then(result=>{
-                    checkResult(result,payload=>{
-                        window.alert("Success!")
-                    },()=>{
-
-                    })
-                })
-                
-            },()=>{
-
-            })
-                
-            
-
-        })}
-    },[pageIdList])
+    
     useEffect(()=>{
      
             getBook()
             getPages()
     },[])
   
-
+    const saveBook =(page)=>{
+        let list = [...pageIdList,page.id]
+        let owner = bookInView.profileId == currentProfile.id
+        let editor = bookInView.editors.find(id => id==currentProfile.userId)
+        let writer = bookInView.writers.find(id=>id==currentProfile.userId)
+     
+        if(owner || bookInView.writingIsOpen || Boolean(editor)||Boolean(writer)){
+        
+            const params = {
+                book: bookInView,
+                pageIdList: list
+            }
+            dispatch(updateBookContent(params)).then(result=>{
+                checkResult(result,payload=>{
+                    const {book} = payload
+                    let readers = [...book.readers,...book.writers,...book.editors,...book.commenters]
+                    const params = {
+                        pageIdList:list,
+                        readers
+                    }
+                    setPageIdList(list)
+                    dispatch(appendSaveRolesForPage(params)).then(result=>{
+                        checkResult(result,payload=>{
+                            window.alert("Success!")
+                        },()=>{
+                            
+                        })
+                    })
+                    
+                },()=>{
+    
+                })
+                    
+                
+    
+            })}
+    }
     
     const pageList =()=>{
         if(pageLoading==false && !!bookInView){
@@ -101,7 +112,9 @@ function AddPageToBookContainer({books}){
            
             
             return(
-                <PageItem key={page.key}page={page} setPageIdList={()=>setPageIdList(prevState=>[...prevState,page.id])}/>
+                <PageItem key={page.key}page={page} setPageIdList={()=>{
+                    saveBook(page)
+                }}/>
             )
          })}
      </InfiniteScroll>
@@ -131,9 +144,17 @@ function AddPageToBookContainer({books}){
             <div className="purpose">
             <h6 > {bookInView.purpose}</h6>
             </div>  
+            <div>
             <IconButton onClick={()=>{
                 navigate(`/book/${bookInView.id}`)}}>
-                <VisibilityIcon/></IconButton>   
+                <VisibilityIcon/></IconButton> 
+            <IconButton onClick={()=>{navigate(`/page/new`)}}>
+                <CreateIcon/>
+                </IconButton>  
+                <IconButton onClick={()=>{navigate(`/page/image`)}}>
+                    <ImageIcon/>
+                </IconButton>
+                </div>
             </div>
             
         </div>

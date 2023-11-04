@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom"
 import { useDispatch,useSelector } from "react-redux"
-import { useState,useEffect,Component } from "react"
+import { useState,useEffect} from "react"
 import { fetchBook,saveRolesForBook,updateBook } from "../actions/BookActions"
 import "../styles/EditBook.css"
 import { fetchAllProfiles } from "../actions/UserActions"
-import {  fetchArrayOfPages } from "../actions/PageActions"
+import {  fetchPage } from "../actions/PageActions"
 import { SortableList } from '@thaddeusjiang/react-sortable-list';
 import '@thaddeusjiang/react-sortable-list/dist/index.css';
 import BookRole from "../domain/models/bookrole"
@@ -15,20 +15,16 @@ import { TextField ,Checkbox, FormControlLabel,Button, FormGroup} from "@mui/mat
 import RoleList from "../components/RoleList"
 import theme from "../theme"
 import checkResult from "../core/checkResult"
-import { current } from "@reduxjs/toolkit"
 function EditBookContainer({book,pages}){   
     const pathParams = useParams()
     const dispatch = useDispatch()
     const bookLoading = useSelector(state=>state.books.loading)
     const [newBookRoles, setNewBookRoles ]= useState([BookRole])
-    const [profileList,setProfileList] = useState([Profile])
-    const profilesInView = useSelector(state=>state.users.profilesInView)
     const [bookTitle,setBookTitle] = useState("")
     const [bookIsPrivate,setBookPrivacy]= useState(false)
     const [bookPurpose,setBookPurpose] = useState("")
     const [writingIsOpen,setWritingIsOpen]= useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [profileHasMore,setProfileHasMore]= useState(false)
     const [listItems, setListItems] = useState([
     ]);
     const getBook=()=>{
@@ -38,7 +34,6 @@ function EditBookContainer({book,pages}){
       const parameters = {
         id: bookId,
       }
-    // if(book==null || book.id != bookId){
        if(book==null || book.id != bookId){ 
      dispatch(fetchBook(parameters)).then((result) => {
             const {payload} = result
@@ -49,7 +44,7 @@ function EditBookContainer({book,pages}){
             setBookPurpose(gotBook.purpose)
             getPages(gotBook.pageIdList)
          
-            fetchProfile()
+            
       
 
         }).catch((err) => {
@@ -69,41 +64,30 @@ function EditBookContainer({book,pages}){
   
 
     
-    const fetchProfile=()=>{
-        dispatch(fetchAllProfiles()).then((result) => {
-            const {payload} = result
-            const {profileList } = payload
-            const list = profileList.filter(profile=>{
-                const br  = newBookRoles.find(br=>
-                    br.profileId == profile.id)
-                return !br
-            })
-            setProfileList(list)
-        })
-    }
+   
     const getPages = (pageIdList)=>{
+        setListItems([])
         const params = {pageIdList:pageIdList,profile:currentProfile}
       if(pageIdList.length > 0){
-        dispatch(fetchArrayOfPages(params)).then((result) => {
-            checkResult(result,payload=>{
+        pageIdList.forEach(pageId=>{
+            const params = { id:pageId}
+            dispatch(fetchPage(params)).then((result)=>{
+                checkResult(result,payload=>{
+                        const {page}=payload
+                        const item = {id:page.id, item:page}
+                        if(item){
+                            setListItems(prevState=>[...prevState,item])
+                        }else{
+                            const item = {id:pageId,item: {title:"Error Fetching Page"}}
+                            setListItems(prevState=>[...prevState,item])
+                        }
+                       
+                },()=>{
 
-        
-                const {pageList} = payload
-                setListItems([])
-                if(book.pageIdList.length>0){
-                book.pageIdList.forEach(id=>
-                    {
-                        let page = pageList.find(p=>p.id==id)
-                        const item = {id:id, item:page}
-                        setListItems(prevState=>[...prevState,item])
-                    })
-                }
-            },()=>{
-
+                })
             })
-            }).catch((err) => {
-          
-        });
+
+        })
     }else{
         setListItems([])
     }
@@ -121,7 +105,6 @@ const handleRemove = (hash)=>{
     let list  =listItems.filter((item)=>{return item.item && hash.item && item.item.id != hash.item.id})
     
     setListItems(list)
-    console.log(`ldsisn ${JSON.stringify(list)}`)
     
 }
 const sortableList = ()=>{
@@ -140,8 +123,10 @@ const sortableList = ()=>{
             setItems={setListItems}
             itemRender={(item)=>{
                 index+=1
-               return sortItem(item,index)}}>
-            
+               return (<div key={`${item.id}_${index}`}>
+            {sortItem(item,index)}
+               </div>)
+            }}   >         
             </SortableList>
             </div>)
     }else{
@@ -151,18 +136,20 @@ const sortableList = ()=>{
     }
 }
 
-    const sortItem = (item,index)=>{
-        if(item.item){
+    const sortItem = (hash,index)=>{
+        if(hash.item){
+            const {item} = hash
+            
         return(
             <div key={`${item.id}_${index}`}className="sort-item">
-            <h1>{item.item.title} </h1>
-            <Button  onDoubleClick={()=>handleRemove(item)
+            <div>{item.item.title}</div>
+            <Button  onDoubleClick={()=>handleRemove(hash)
             }>Remove</Button>
         </div>)
         
     }else{
-            <div key={`${item.id}_${index}`} className="sort-item">  
-            Page Delete<Button  onDoubleClick={()=>handleRemove(item)
+            <div key={`${hash.id}_${index}`} className="sort-item">  
+            <h1>Page Deleted</h1><Button  onDoubleClick={()=>handleRemove(hash)
             }>Remove</Button></div>
         }
     }
@@ -188,6 +175,8 @@ const sortableList = ()=>{
                 checkResult(result,payload=>{
                     window.alert("Book Info Updated")
                     getPages(pageIdList)
+                },(err)=>{
+                    window.alert(`${err.message}`)
                 })
                
             })
@@ -208,6 +197,8 @@ const sortableList = ()=>{
         dispatch(saveRolesForBook(rolesParams)).then(result=>{
             checkResult(result,payload=>{
                 window.alert("Roles saved successfully")
+            },(err)=>{
+                window.alert(`${err.message}`)
             })
         })
         }
@@ -224,7 +215,7 @@ const sortableList = ()=>{
             <FormControlLabel 
             control={<Checkbox checked={bookIsPrivate} onChange={()=>{
                 setBookPrivacy(!bookIsPrivate)
-            }}/>} label="Private" 
+            }}/>} label={bookIsPrivate?"Private":"Public"} 
                value={bookIsPrivate}/>
                  <FormControlLabel 
                     control={<Checkbox 

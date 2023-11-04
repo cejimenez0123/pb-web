@@ -190,7 +190,6 @@ function LibraryCreateForm(props){
     const navigate = useNavigate()
     const [libIsPrivate,setLibIsPrivate]= useState(false)
     const [writingIsOpen,setWritingIsOpen]= useState(false)
-    const [contentToBeAdded,setContentsToBeAdded]= useState([])
     const handleOnSubmit=(e)=>{
         const bookIdList = booksToBeAdded.map(book=>book.id)
         const pageIdList = pagesToBeAdded.map(page=>page.id)

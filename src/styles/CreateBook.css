@@ -22,15 +22,23 @@
     margin-top: 2em;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-around;
 
     
 }
+.create-list{
+    padding: 1em;
+    background-color: gainsboro;
+    width: fit-content;
+    margin: auto;
+    
+}
+.create .container .main-bar{max-width: 40em;}
 .info.create{
     margin-right: 3em;
     margin-left: 2em;
     min-height: 15em;
-    min-width: 22em;
+    min-width: 15em;
     max-width: 30em;
     background-color: rgb(206, 222, 214);
     border: 1px solid rgb(155, 173, 161);

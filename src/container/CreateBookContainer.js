@@ -10,6 +10,7 @@ import { FormGroup, TextField,FormControlLabel,Checkbox, Button,TextareaAutosize
 import theme from "../theme"
 import "../styles/CreateBook.css"
 import { Add } from "@mui/icons-material"
+
 import MediaQuery from "react-responsive"
 import checkResult from "../core/checkResult"
 const inputStyle = {
@@ -76,7 +77,7 @@ export default function CreateBookContainer({pagesInView,booksInView}){
     }
     const bookList = ()=>{
             let i = 0
-                return(<div className="content" >
+                return(<div className="create-list" >
                     <InfiniteScroll  dataLength={booksInView.length} 
            next={fetchBooks}
            hasMore={false} // Replace with a condition based on your data source

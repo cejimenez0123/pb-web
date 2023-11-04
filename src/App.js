@@ -17,7 +17,6 @@ import ProfileContainer from './container/ProfileContainer';
 import PicturePageContainer from './container/PicturePageContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/AddPageToBookContainer';
-import { useState } from 'react';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
 import {  getPublicBooks } from './actions/BookActions';
@@ -44,7 +43,6 @@ function App(props) {
       
   },[props.currentProfile])
   useEffect(()=>{
-    // if(props.signedIn){
       if((authState.user && !authState.user.isAnonymous && !props.currentProfile) ||(props.currentProfile && authState.user && props.currentProfile.userId != authState.user.uid)){
       const params = {
           userId: authState.user.uid,
@@ -57,9 +55,7 @@ function App(props) {
     }
 
   },[authState.user])
-  useEffect(()=>{
-    props.fetchAllProfiles()
-  },[])
+
   const fetchData = ()=>{
     if(props.currentProfile!=null){
       const params = {
@@ -68,6 +64,7 @@ function App(props) {
       const profileParams = {
         profile: props.currentProfile
       }
+      props.fetchAllProfiles()
       props.fetchHomeCollection(profileParams)
       props.fetchBookmarkLibrary(params)
       props.fetchFollowBooksForProfile(profileParams)
@@ -226,7 +223,6 @@ function mapDispatchToProps(dispatch){
   }
 }
 function mapStateToProps(state){
-
   return{
     profile: state.users.profileInView,
     signedIn: state.users.signedIn,

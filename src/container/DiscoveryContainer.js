@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
-import { clearPagesInView, getPublicPages } from '../actions/PageActions'
+import { clearPagesInView, fetchPage, getPublicPages } from '../actions/PageActions'
 import { clearBooksInView, getPublicBooks } from '../actions/BookActions'
 import { getPublicLibraries } from '../actions/LibraryActions'
+import checkResult from '../core/checkResult'
 function DiscoveryContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -26,10 +27,20 @@ function DiscoveryContainer(props){
                pList = pagesInView.map((page)=>{return {type:"page",page:page}})
             }
             if(booksInView){
-                bList = booksInView.map((book)=>{
-                    let page = pagesInView.find(page=>book.pageIdList.length > 0 && book.pageIdList[0]==page.id)
+                bList = []
+                booksInView.forEach(book=>{
+                    book.pageIdList.forEach(id=>{
+                        const params = {id}
                     
-                    return {type:"book",book:book,page:page}
+                        dispatch(fetchPage(params)).then((result)=>{
+                            checkResult(result,payload=>{
+                                const { page}= payload
+                                let item = { type:"book",book,page}
+                                bList.push(item)
+                            },(err)=>{
+                                
+                            })
+                        })})
                 })
             } 
        

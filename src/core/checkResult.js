@@ -1,14 +1,24 @@
 function checkResult(result,fn,err){
-    if(result.error==null){
+    if(result && result.error==null){
         const {payload} = result
-        if(payload.error==null){
+        if(payload && payload.error==null){
             fn(payload)
             
         }else{
-           err(payload.error)
+            if(payload!=null){
+                err(payload.error)
+            }else{
+               fn({})
+            }
+        
         }
     }else{
-      err(result.error)
+        if(result!=null){
+            err(result.error)
+        }else{
+            err(new Error("Check result error"))
+        }
+    
     }
 }
 export default checkResult

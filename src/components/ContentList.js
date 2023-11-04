@@ -109,7 +109,7 @@ export default function ContentList({currentProfile,pagesInView}){
         if(listType=="page"){
            if(pagesInView!=null ){    
            return (
-            <div className="content">
+            <div className="">
            <InfiniteScroll
            
         
@@ -130,7 +130,7 @@ export default function ContentList({currentProfile,pagesInView}){
             }}
             else if(listType=="book"){
              if(booksInView!=null && booksInView.length>0){  
-               return  (<div className="content">
+               return  (<div className="">
                 <InfiniteScroll 
           
                    dataLength={booksInView.length}
@@ -161,7 +161,7 @@ export default function ContentList({currentProfile,pagesInView}){
          
             if(librariesInView!=null && librariesInView.length>0){
                 return(
-                    <div className="content">
+                    <div >
                     <InfiniteScroll
               
                     dataLength={librariesInView.length}
@@ -209,9 +209,6 @@ export default function ContentList({currentProfile,pagesInView}){
                 <div className="btn-row">
                                     <Button className="btn" onClick={()=>{
                                         handleContentClick("page")
-                                        
-                                    
-                                      
                                         }}>
                                         Page
                                     </Button>
@@ -225,8 +222,7 @@ export default function ContentList({currentProfile,pagesInView}){
                                     </Button>
                                     <Button className="btn" onClick={()=>{
                                             handleContentClick("library")
-                                       
-                                    
+
                                         }}>
                                         Library
                                     </Button>

@@ -38,12 +38,12 @@ function UpdateLibraryContainer(props) {
             if(currentProfile){
             
             }else{
-                if(authHook.user){
-                    const params = {
-                     userId: authHook.user.uid
-                    }
-                    dispatch(getCurrentProfile(params))
-                }
+                // if(authHook.user){
+                //     const params = {
+                //      userId: authHook.user.uid
+                //     }
+                //     dispatch(getCurrentProfile(params))
+                // }
             }
     }
 

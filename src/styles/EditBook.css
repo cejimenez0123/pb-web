@@ -1,8 +1,5 @@
 
 
-.sort-item h1{
-    color: black;
-}
 @media (min-width: 900px) {
 #EditBook .right-bar{
     padding: 4em;
@@ -15,6 +12,7 @@
     flex-direction: row;
     justify-content: space-between;
     background-color: white;
+    color:black;
     padding: 1em 1em;
     border-bottom: 1px solid gray;
 }
