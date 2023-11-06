@@ -442,8 +442,19 @@ const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params
       })
       const contributors= new Contributors(commenters,readers,writers,editors)
             
-   
-
+     const newBook =new Book( book.id,
+                book.purpose,
+                book.title,
+                book.profileId,
+                book.pageIdList,
+                book.privacy,
+                book.writingIsOpen,
+                contributors,
+                book.updatedAt,
+                book.created)
+      return{
+        book:newBook
+      }
  
     }catch(e){
       const error = e??new Error("Error: CREATE BOOK ROLES")

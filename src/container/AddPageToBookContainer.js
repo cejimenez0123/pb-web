@@ -15,7 +15,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import debounce from "../core/debounce"
-function AddPageToBookContainer({books}){
+import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
+import { Button } from "@mui/joy"
+function AddPageToBookContainer(){
     const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -24,9 +26,12 @@ function AddPageToBookContainer({books}){
     const pageLoading = useSelector(state=>state.pages.loading)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const bookInView = useSelector(state=>state.books.bookInView)
+    const [pages,setPages]=useState([])
     const [pageIdList,setPageIdList] = useState([])
     const [hasMore,setHasMore]=useState(false)
     const [page,setPage] = useState(1)
+    const [sortAlpha,setSortAlpha] = useState(false)
+    const [sortTime,setSortTime] = useState(false)
     const getBook =()=>{
        if(currentProfile){
             const id = pathParams["id"]
@@ -46,7 +51,12 @@ function AddPageToBookContainer({books}){
                 profile: currentProfile
             }
             dispatch(getProfilePages(params)).then(result=>{
-                setHasMore(false)
+               checkResult(result,payload=>{
+                    const {pageList}=payload
+                    setPages(pageList)
+               },err=>{
+
+               })
             })
     
         }
@@ -98,20 +108,91 @@ function AddPageToBookContainer({books}){
     
             })}
     }
+    const setSortOrderTime=()=>{
+        
+        if(sortTime){
+
+        if(pages){
+
+        let newPages = [...pages].sort((a,b)=>{
+            return b.created - a.created
+        })
+        setPages(newPages);
+    }
+  
+        }else{
+            if(pages){
+            let newPages = [...pages].sort((a,b)=>{
+                return a.created - b.created
+            })
     
+            setPages(newPages);
+        }
+        }
+    }
+    
+    const setSortOrderAlpha=()=>{
+
+        if(sortAlpha){
+        let newPages = [...pages].sort((a,b)=>{
+            if (a.title < b.title) {
+                return -1;
+              }
+              if (a.name > b.name) {
+                return 1;
+              }
+              return 0;
+        })
+        setPages(newPages);
+ 
+        }else{
+            let newPages = [...pages].sort((a,b)=>{
+                if (b.title < a.title) {
+                    return -1;
+                  }
+                  if (b.title > a.title) {
+                    return 1;
+                  }
+                  return 0;
+            })
+            setPages(newPages);
+        
+        }
+    }
     const pageList =()=>{
         if(pageLoading==false && !!bookInView){
             if(pagesInView && pagesInView.length !=0){
                 return(
                     <div>
+                        <div>
+                            <div>
+
+                            </div>
+                            <div>
+                                <IconButton>
+                                    <SortByAlphaIcon/>
+                                </IconButton>
+                                {sortTime?<Button onClick={()=>{
+                                setSortTime(false)
+                                setSortOrderTime()
+                            }}>
+                                    New to Old
+                            </Button>:
+                            <Button onClick={()=>{
+                                setSortTime(true)
+                                setSortOrderTime()
+                            }}
+                            >Old to New</Button>}
+                            </div>
+                        </div>
                        <InfiniteScroll 
-                            dataLength={pagesInView.length}
+                            dataLength={pages.length}
                             next={getPages}
                             hasMore={hasMore} // Replace with a condition based on your data source
                             loader={<p>Loading...</p>}
                             endMessage={<p>No more data to load.</p>}
                             scrollableTarget="scrollableDiv">
-         {pagesInView.map((page)=>{
+         {pages.map((page)=>{
            
             
             return(

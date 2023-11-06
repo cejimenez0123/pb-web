@@ -2,7 +2,7 @@ import RichEditor from "../components/RichEditor"
 import "../styles/Editor.css"
 import "../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import { setHtmlContent,createPage, updatePage, fetchEditingPage,deletePage, clearEditingPage, setPagesToBeAdded } from "../actions/PageActions"
+import { setHtmlContent,createPage, updatePage,saveRolesForPage, fetchEditingPage,deletePage, clearEditingPage, setPagesToBeAdded } from "../actions/PageActions"
 import React,{ useEffect, useState } from "react"
 import history from "../history"
 import { useParams,useNavigate } from "react-router-dom"
@@ -19,6 +19,7 @@ import checkResult from "../core/checkResult"
 import RoleList from "../components/RoleList"
 import { Add } from "@mui/icons-material"
 import { Dropdown } from "react-bootstrap"
+import { RoleType } from "../core/constants"
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
@@ -26,6 +27,7 @@ function EditorContainer({currentProfile}){
         const navigate = useNavigate()
         const [privacy,setPrivacy] = useState(false)
         const [commentable,setCommentable] = useState(true)
+        const [newRoles,setNewRoles]=useState([])
         const editingPage = useSelector(state=>state.pages.editingPage)
        const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         useEffect(()=>{
@@ -85,6 +87,20 @@ function EditorContainer({currentProfile}){
           dispatch(updatePage(params)).then(result=>{
             checkResult(result,(payload)=>{
               window.alert("Saved")
+              const readers = newRoles.filter(role => role.role == RoleType.reader).map(role=>role.profile.userId)
+              const commenters = newRoles.filter(role => role.role == RoleType.commenter).map(role=>role.profile.userId)
+              const editors = newRoles.filter(role => role.role == RoleType.editor).map(role=>role.profile.userId)
+              const writers = newRoles.filter(role => role.role == RoleType.writer).map(role=>role.profile.userId)
+             let params ={page:editingPage,
+                readers,
+                commenters,
+                editors,
+                writers}
+              dispatch(saveRolesForPage(params)).then(result=>checkResult(result,payload=>{
+
+              },err=>{
+
+              }))
             },()=>{
 
             })
@@ -219,8 +235,10 @@ function EditorContainer({currentProfile}){
                                 item={editingPage} 
                                 type={"page"} 
                                 getRoles={roles=>{
-                      console.log(`roles ${JSON.stringify(roles)}`)
-                    }} />:(<div></div>)}
+                                  setNewRoles(roles)
+                                      }
+                                    } />
+                                :(<div></div>)}
                     <div>
       
       <Dialog

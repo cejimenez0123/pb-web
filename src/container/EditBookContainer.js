@@ -69,8 +69,9 @@ function EditBookContainer({book,pages}){
     const getPages = (pageIdList)=>{
   
         const params = {pageIdList:pageIdList,profile:currentProfile}
-        setListItems([])
+      
       if(pageIdList.length > 0){
+        setListItems([])
         pageIdList.forEach((pageId,i)=>{
             const params = { id:pageId}
             dispatch(fetchPage(params)).then((result)=>{
@@ -85,7 +86,7 @@ function EditBookContainer({book,pages}){
                             setListItems(list)
                         }else{
                             let uId =`${page.id}_${uuidv4()}`
-                            const item = {id:uId,item: {title:"Error Fetching Page"}}
+                            const item = {uId:uId,item: {title:"Error Fetching Page"}}
                             setListItems(prevState=>[...prevState,item])
                         }
                        
@@ -93,6 +94,8 @@ function EditBookContainer({book,pages}){
 
                 })
             })})
+        }else if(pageIdList.length<1){
+            setListItems([])
         }
     }
     
@@ -107,6 +110,7 @@ const handleRemove = (hash)=>{
     let list =listItems
    let newList = list.filter(item=>{return hash.item.uId !== item.uId})
     setListItems(newList)
+    console.log(`newList${JSON.stringify(newList)}`)
     
 }
 const sortableList = ()=>{
@@ -139,20 +143,20 @@ const sortableList = ()=>{
     }
 }
 
-    const sortItem = (hash,index)=>{
-        console.log(index)
+    const sortItem = (hash)=>{
+     
         if(hash.item){
             const {item} = hash
             
         return(
-            <div key={`${item.id}_${index}`}className="sort-item">
+            <div key={`${item.uId}`}className="sort-item">
             <div>{item.item.title}</div>
-            <Button  onDoubleClick={()=>handleRemove(hash,index)
+            <Button  onDoubleClick={()=>handleRemove(hash)
             }>Remove</Button>
         </div>)
         
     }else{
-            <div key={`${hash.id}_${index}`} className="sort-item">  
+            <div key={`${hash.uId}`} className="sort-item">  
             <h1>Page Deleted</h1><Button  onDoubleClick={()=>handleRemove(hash)
             }>Remove</Button></div>
         }
@@ -165,7 +169,7 @@ const sortableList = ()=>{
         if(book!=null){
             let pageIdList = []
             if(listItems.length>0){
-              pageIdList  = listItems.map(page=>  page.id)
+              pageIdList  = listItems.map(hash=>hash.item.id)
             }
            
 
