@@ -57,7 +57,7 @@ export default function ContentList({currentProfile,pagesInView}){
            next={fetchPageData}
            hasMore={hasMorePages} // Replace with a condition based on your data source
            loader={<p>Loading...</p>}
-           endMessage={<p>No more data to load.</p>}
+           endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
          >
              {pagesInView.map(page =>{
                      return(<PageListItem key={page.id} page={page}/>)
@@ -140,7 +140,7 @@ export default function ContentList({currentProfile,pagesInView}){
           next={fetchPageData}
           hasMore={hasMorePages} // Replace with a condition based on your data source
           loader={<p>Loading...</p>}
-          endMessage={<p>No more data to load.</p>}
+          endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
         >
             {pages.map(page =>{
                     return(<PageListItem key={page.id} page={page}/>)
@@ -162,8 +162,9 @@ export default function ContentList({currentProfile,pagesInView}){
                    loader={<div>
                        Loading...
                    </div>}
-                   endMessage={
+                   endMessage={<div className="no-more-data">
                        <p>No more data to load.</p>
+                       </div>
                    }
                    >
                        {books.map((book)=>{
@@ -191,7 +192,7 @@ export default function ContentList({currentProfile,pagesInView}){
                     next={fetchLibraryData}
                     hasMore={hasMoreLibraries}
                     loader={<p>Loading...</p>}
-                    endMessage={<p>No more data to load.</p>}
+                    endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
                 >
                     {libraries.map((library)=>{
         

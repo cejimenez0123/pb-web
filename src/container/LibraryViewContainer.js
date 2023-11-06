@@ -8,7 +8,8 @@ import { useParams, useNavigate  } from "react-router-dom"
 import {updateHomeCollection,
         createFollowLibrary,
         deleteFollowLibrary,
-        fetchFollowLibraryForProfile} from "../actions/UserActions"
+        fetchFollowLibraryForProfile,
+    fetchProfile} from "../actions/UserActions"
 import { fetchLibrary, setLibraryInView } from "../actions/LibraryActions"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/Library.css"
@@ -43,14 +44,14 @@ function LibraryViewContainer(props){
             dispatch(fetchLibrary(params)).then(result=>{
                 checkResult(result,payload=>{
                     const {library } = payload
-                    getPages(library)
+                    checkLibraryPermission(library)
                     isFollowing()
                 },err=>{
 
                 }) 
             })
         }else{
-            getPages(libraryInView)
+            checkLibraryPermission(libraryInView)
             isFollowing()
         }
         
@@ -73,6 +74,41 @@ function LibraryViewContainer(props){
         })
         }
     }
+    const checkLibraryPermission= (libraryItem)=>{
+       
+        if( libraryItem.privacy){
+            if(currentProfile){
+                let founa = libraryItem.readers.find(id=>currentProfile && id==currentProfile.userId)
+                let founb=  libraryItem.commenters.find(id=> currentProfile && id==currentProfile.userId)
+                let founc =  libraryItem.writers.find(id=>currentProfile && id==currentProfile.userId)
+                let found =  libraryItem.editors.find(id=>currentProfile && id==currentProfile.userId)
+                let owner = currentProfile &&  libraryItem.profileId == currentProfile.id        
+                 
+                if(founa || founb || founc || found||owner) {
+
+                    getPages(libraryItem)
+                    const profileParams = {
+                        id:  libraryItem.profileId
+                    }
+                    dispatch(fetchProfile(profileParams))
+                    setError(false)
+                }else{
+                    setError(true)
+                }
+            }else{
+                setError(true)
+            }
+                
+            }else{
+                setError(false)
+                getPages(libraryItem)
+                const profileParams = {
+                        id:  libraryItem.profileId
+                    }
+                dispatch(fetchProfile(profileParams)) 
+            }
+    }
+   
     const libraryInfo=()=>{
         if(libraryInView!=null){
             const lib = libraryInView
@@ -263,8 +299,13 @@ function LibraryViewContainer(props){
     
     const contentList = ()=>{
         if(!error){
-        if(itemsInView!=null&& libraryInView && (libraryInView.pageIdList.length>0||libraryInView.bookIdList.length)){
-            
+            const empty = (<div className="empty">
+            <h1>
+            Empty
+            </h1>
+        </div>)
+        if(itemsInView!=null&& libraryInView){
+            if(libraryInView.bookIdList.length>0 || libraryInView.pageIdList.length>0){
             return(<div className="content-list">
                 <div className="content">
                 <InfiniteScroll 
@@ -295,15 +336,8 @@ function LibraryViewContainer(props){
                 </div>
             </div>
             )}else{
-
-                return(<div className="content-list">
-                    <div className="content">
-
-                   
-                    Content Loading...
-                    </div>
-                </div>)
-
+                return empty
+            }
             }}else{
                 return(<div className="content-list">
                     <div className="error">

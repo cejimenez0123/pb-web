@@ -115,6 +115,8 @@ function BookViewContainer({book}){
                     }
                     dispatch(fetchProfile(profileParams))
                     setError(false)
+                }else{
+                    setError(true)
                 }  }else{
                     setError(true)
                 }     

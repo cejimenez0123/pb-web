@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector,useDispatch } from "react-redux"
-import {fetchArrayOfBooks} from "../actions/BookActions"
+import {fetchArrayOfBooks, fetchBook} from "../actions/BookActions"
 import { fetchArrayOfPages,clearPagesInView} from "../actions/PageActions"
 import {    updateLibrary,
             fetchLibrary,
@@ -14,6 +14,8 @@ import "../styles/UpdateLibrary.css"
 import {Checkbox , Button, FormGroup, TextField,FormControlLabel } from "@mui/material"
 import { RoleType } from "../core/constants"
 import useAuth from "../core/useAuth"
+import checkResult from "../core/checkResult"
+import uuidv4 from "../core/uuidv4"
 function UpdateLibraryContainer(props) {
     const authHook = useAuth() 
     const navigate = useNavigate()
@@ -32,6 +34,7 @@ function UpdateLibraryContainer(props) {
     const [itemsInLibrary,setItemsInLibrary] = useState([])
     const [roleList,setRoleList]=useState([])
     const [contentItems,setContentItems]=useState([])
+    const [listItems,setListItems]=useState([])
     const { id } = pathParams
     useEffect(()=>{
         
@@ -68,6 +71,8 @@ function UpdateLibraryContainer(props) {
   
     useEffect(()=>{
         if(libraryInView!=null && libraryInView.id==id){
+            setContentItems([])
+            setListItems([])
             fetchBooks()
             fetchPages()
         }else{
@@ -81,77 +86,49 @@ function UpdateLibraryContainer(props) {
 
     const fetchBooks =()=>{
         if(libraryInView){
-            let params = {bookIdList: libraryInView.bookIdList}
-            dispatch(fetchArrayOfBooks(params)).then(result=>{
-
-                if(result.error == null){
-                    const {payload } = result
-                    if(payload.error == null){
-                        const {bookList} = payload
-                        const newItems  = bookList.map(book=>{return {type:"book",item:book}})
-         
-                if(newItems.length > 0){
             
-                
-                    setContentItems(prevState=>{
-                        let newThings = newItems.filter(hash=>{ 
-                            let itemFound = prevState.find(({item})=>{
-                                return item.id == hash.item.id
-                            }) 
-                            return !itemFound
-                        })
-                        let newState = [...prevState,...newThings]
-                      
-                    
-                            
-                        setItemsInLibrary(newState)
-                        return newState;
-                    })
-                    
+            libraryInView.bookIdList.forEach(bId=>{
+                const params ={
+                    id: bId
+                }
+                setHasMore(true)
+                dispatch(fetchBook(params)).then(result=>checkResult(result,payload=>{
+                        const {book}=payload;
+                        let uId = `${book.id}_${uuidv4()}`
+                        const item = {uId:uId,book:book }
+                        setListItems(prevState=>[...prevState,item])
+                        setHasMore(false)
+                },err=>{
                     setHasMore(false)
-                    
-                }else{
+                }))
+            })}else{
                     setHasMore(false)
                 }
             }
-                    }})
-            }
-              
-            }
-    
-    const fetchPages=()=>{
-        if(libraryInView){
-            const paramsA = {pageIdList:libraryInView.pageIdList,profile:currentProfile}
-            dispatch(fetchArrayOfPages(paramsA)).then(result=>{   
-        if(result.error == null){
-            const {payload } = result
         
-            if(payload.error == null){
-            const {pageList} = payload
-            const newItems = pageList.map(page=>{return {type:"page",item:page}})
-            
-            if(newItems.length > 0){
+            const handleRemove = (item)=>{
+                let list =listItems
+               let newList = list.filter(i=>{return item.uId !== i.uId})
+                setListItems(newList)
             
                 
-                setContentItems(prevState=>{
-                    let newThings = newItems.filter(hash=>{ 
-                        let itemFound = prevState.find(({item})=>{
-                            return item.id == hash.item.id
-                        }) 
-                        return !itemFound
-                    })
-                    let items = [...prevState,...newThings]
-                    setItemsInLibrary(items)
-                    return items;
-                })
-                setHasMore(false)
-        
-            }else{
-
-                setHasMore(false)
             }
+    const fetchPages=()=>{
+        if(libraryInView){
+            // const paramsA = {pageIdList:libraryInView.pageIdList,profile:currentProfile}
+            libraryInView.pageIdList.forEach(pId=>{
+                dispatch(fetchPages({id:pId})).then(result=>checkResult(result,payload=>{
+                    const {page}= payload
+                    let item = {uId:`${page.id}_${uuidv4()}`,page:page}
+                    setListItems(prevState=>[...prevState,item])
+                },err=>{
 
-    }}})}}
+                }))
+            })
+        }
+                
+
+}
 
     const fetchData = () =>{
         if(currentProfile){
@@ -234,6 +211,32 @@ function UpdateLibraryContainer(props) {
 
 
     }
+    const listItem = (hash)=>{
+     
+        if(hash.page){
+            const {page} = hash
+            
+        return(
+            <div key={`${hash.uId}`}className="sort-item">
+            <div>{page.title}</div>
+            <Button  onDoubleClick={()=>handleRemove(hash)
+            }>Remove</Button>
+        </div>)
+        
+    }else if(hash.book){
+        const {book} = hash
+        return(
+            <div key={`${hash.uId}`}className="sort-item">
+            <div>{book.title}</div>
+            <Button  onDoubleClick={()=>handleRemove(hash)
+            }>Remove</Button>
+        </div>)
+    }else{
+            <div key={`${hash.uId}`} className="sort-item">  
+            <h1>Page Deleted</h1><Button  onDoubleClick={()=>handleRemove(hash)
+            }>Remove</Button></div>
+        }
+    }
     const contentList = ()=>{
         if(contentItems!=null){
         return (<div >
@@ -244,26 +247,28 @@ function UpdateLibraryContainer(props) {
       loader={<p>Loading...</p>}
       endMessage={<p>No more data to load.</p>}
     >
-        {contentItems.map(hash =>{
-           let item = itemsInLibrary.find(ha=>{
-                return ha.item.id == hash.item.id
-            })
+        {listItems.map(item =>{
+            return listItem(item)
+        //    let item = itemsInLibrary.find(ha=>{
+        //         return ha.item.id == hash.item.id
+        //     })
                 
-                return(<div className="list-item "key={hash.item.id}>
-                    <div className="item-info">
-                        <h5>{hash.type}</h5>
-                        <h5>{hash.item.title}</h5>
-                    </div>
-                    <input type="checkbox" checked={item} onChange={()=>{
+        //         return(<div className="list-item "key={hash.item.id}>
+        //             <div className="item-info">
+        //                 <h5>{hash.type}</h5>
+        //                 <h5>{hash.item.title}</h5>
+        //             </div>
+        //             <input type="checkbox" checked={item} onChange={()=>{
                         
-                            if(item){
-                                let newList = itemsInLibrary.filter(  item => item.item.id !== hash.item.id)
-                                setItemsInLibrary(newList)
-                            }else{
-                                setItemsInLibrary(prevState=>[...prevState,hash])
-                            }
-                    }}/>
-                </div>)
+        //                     if(item){
+        //                         let newList = itemsInLibrary.filter(  item => item.item.id !== hash.item.id)
+        //                         setItemsInLibrary(newList)
+        //                     }else{
+        //                         setItemsInLibrary(prevState=>[...prevState,hash])
+        //                     }
+                    
+        //             }}/>
+        //         </div>)
         })}
     </InfiniteScroll>
         </div>)}else{
@@ -288,7 +293,7 @@ function UpdateLibraryContainer(props) {
             {libraryInfo()}
             </div>
             <div>
-                <RoleList library={libraryInView} getRoles={(roleList) => {
+                <RoleList item={libraryInView} getRoles={(roleList) => {
                 
                 setRoleList(roleList)
                 }}/>

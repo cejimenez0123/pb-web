@@ -14,7 +14,7 @@ import { Timestamp } from "firebase/firestore";
 import Role from "../domain/models/role";
 import Contributors from "../domain/models/contributor";
 import PageRole from "../domain/models/page_role";
-export default function RoleList({getRoles,library,book,item,type}) {
+export default function RoleList({getRoles,item,type}) {
     const dispatch = useDispatch()
     const [newRoles, setNewRoles ]= useState([])
     const libraryRoles = useSelector(state=>state.libraries.libraryRoles)

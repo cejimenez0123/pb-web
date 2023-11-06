@@ -63,8 +63,6 @@ function LogInContainer(props) {
                 setSignUpError(true)
             })
 
-        }).catch((err) => {
-            
         });;
     }else{
         setSignUpError(true)
@@ -78,7 +76,8 @@ function LogInContainer(props) {
             checkResult(result,(payload)=>{
                 const {url}= payload
                 setProfilePicture(url)
-            },()=>{
+            },(err)=>{
+                window.alert(err.message)
                 setSignUpError(true)
             })
     

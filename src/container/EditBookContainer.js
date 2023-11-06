@@ -110,7 +110,7 @@ const handleRemove = (hash)=>{
     let list =listItems
    let newList = list.filter(item=>{return hash.item.uId !== item.uId})
     setListItems(newList)
-    console.log(`newList${JSON.stringify(newList)}`)
+
     
 }
 const sortableList = ()=>{
@@ -128,8 +128,6 @@ const sortableList = ()=>{
             items={listItems}
             setItems={setListItems}
             itemRender={(item)=>{
-           //fix
-
                return (<div key={`${item.uId}`}>
             {sortItem(item)}
                </div>)
@@ -204,6 +202,7 @@ const sortableList = ()=>{
 
         dispatch(saveRolesForBook(rolesParams)).then(result=>{
             checkResult(result,payload=>{
+
                 window.alert("Roles saved successfully")
             },(err)=>{
                 window.alert(`${err.message}`)
