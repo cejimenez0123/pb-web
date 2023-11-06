@@ -87,7 +87,7 @@ export default function RoleList({getRoles,library,book,item,type}) {
         return new Contributors(commenters,readers,writers,editors)
     }
     const setRoleList = ()=>{
-        if(item && profilesInView.length>0){
+        if(item){
                 const contributors = createContributors(item,type)
 
                 
@@ -142,9 +142,7 @@ export default function RoleList({getRoles,library,book,item,type}) {
             return (<div>
                 {       
                         newRoles.map((role)=>{
-                            let username = ""
-                            let id = ""
-                            
+         
                             if(role){
                             return(<div class="role-item" key={role.profile.id}>
                                 <div>

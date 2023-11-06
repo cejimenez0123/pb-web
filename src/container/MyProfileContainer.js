@@ -1,4 +1,4 @@
-import React,{ useEffect, useState }  from 'react';
+import React,{ useState }  from 'react';
 import ProfileCard from '../components/ProfileCard';
 import { useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
@@ -14,6 +14,7 @@ import {
     Button,
     
 } from '@mui/material'
+
 
 function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView}){
 

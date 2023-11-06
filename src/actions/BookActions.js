@@ -457,7 +457,7 @@ const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params
       }
  
     }catch(e){
-      const error = e??new Error("Error: CREATE BOOK ROLES")
+      const error = e??new Error("Error: SAVE BOOK ROLES")
       return {error }
     }                
 })

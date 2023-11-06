@@ -17,7 +17,7 @@ import { MenuButton,Menu } from "@mui/joy"
 import theme from "../theme"
 import checkResult from "../core/checkResult"
 import RoleList from "../components/RoleList"
-import { Add } from "@mui/icons-material"
+import { Add, Visibility } from "@mui/icons-material"
 import { Dropdown } from "react-bootstrap"
 import { RoleType } from "../core/constants"
 function EditorContainer({currentProfile}){
@@ -33,8 +33,8 @@ function EditorContainer({currentProfile}){
         useEffect(()=>{
             const {id }= pathParams
         
-            if(id){
-                const parm = {id}
+            if(id && editingPage==null){
+                const parm = {id:id}
                 dispatch(fetchEditingPage(parm)).then(result=>{
                   const {payload }= result
                   if(payload!=null){
@@ -46,8 +46,12 @@ function EditorContainer({currentProfile}){
                     }
                   }
                 })
+            }else if(editingPage!=null && editingPage.id == id){
+              setTitle(editingPage.title)
+              setPrivacy(editingPage.privacy)
+              dispatch(setHtmlContent(editingPage.data))
             }else{
-              dispatch(clearEditingPage())
+              
               dispatch(setHtmlContent(""))
             }
         },[])
@@ -227,9 +231,11 @@ function EditorContainer({currentProfile}){
                     Save
                     </Button>
                     <div className="button-row">
-                   {addBtn()} {deleteDiv}
+                   {addBtn()}
+                  {editingPage?<IconButton onClick={()=>{navigate(`/page/${editingPage.id}`)}}><Visibility/></IconButton>:(<div></div>)}
+                 
                     </div>
-                    
+                    {deleteDiv}
                     </FormGroup>
                     {editingPage?<RoleList
                                 item={editingPage} 

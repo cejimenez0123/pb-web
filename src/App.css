@@ -357,7 +357,7 @@ html, body {
 }
 .btn-row .sort{
   display: flex;
-  padding-bottom: 1em;
+  
 }
 }
 @media (max-width: 767px){

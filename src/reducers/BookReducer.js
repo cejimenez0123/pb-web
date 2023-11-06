@@ -70,7 +70,7 @@ builder
     state.error = payload.error
 }).addCase(saveRolesForBook.fulfilled,(state,{payload})=>{
  
-
+    state.bookInView = payload.book
 }).addCase(updateBook.fulfilled,(state,{payload})=>{
     state.bookInView = payload.book
     state.loading = false

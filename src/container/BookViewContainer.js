@@ -96,7 +96,7 @@ function BookViewContainer({book}){
         if(book){
             checkBookPermission(book)
         }
-    },[currentProfile])
+    },[currentProfile,book])
     const checkBookPermission= (bookItem)=>{
        
         if( bookItem.privacy){
@@ -128,15 +128,13 @@ function BookViewContainer({book}){
             }
     }
     const getPages=(bookItem)=>{
-        
+        setPages([])
      
         if(bookItem.pageIdList && pages.length==bookItem.pageIdList.length){
             setHasMore(false)
         }else if(bookItem.pageIdList &&bookItem.pageIdList.length==0){
-            setHasMore(false)
-            setPages([])
+            setHasMore(false)   
         }else if(bookItem.pageIdList){
-            setPages([])
             setHasMore(true)
             for(let i=0;i<bookItem.pageIdList.length;i++){
                 const pId = bookItem.pageIdList[i]

@@ -38,7 +38,7 @@ function DiscoveryContainer(props){
                                 let item = { type:"book",book,page}
                                 bList.push(item)
                             },(err)=>{
-                                
+
                             })
                         })})
                 })
@@ -99,6 +99,7 @@ function DiscoveryContainer(props){
         },[])
         const fetchContentItems = ()=>{
             setHasMore(true) 
+            setContentItems([])
             dispatch(getPublicPages()).then(result=>{
                 dispatch(getPublicBooks()).then(result=>{
                     setHasMore(false)

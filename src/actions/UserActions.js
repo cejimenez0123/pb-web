@@ -628,11 +628,11 @@ return {error: new Error("Error: Deleting useer account"+err.message)
 
 let clickMe = createAsyncThunk("Sf",async (params,thunkApi)=>{
   let records = []
-const snapshot = await getDocs(query(collection(db,"library"), where("privacy", "==", false)))
+const snapshot = await getDocs(query(collection(db,"profile"), where("privacy", "==", false)))
 snapshot.docs.forEach(doc =>{
  let pack= doc.data()
- const {id,name} =pack
-  let item = {objectID:id,id,name,type:"library"}
+ const {id,username} =pack
+  let item = {objectID:id,id,username,type:"library"}
  records.push(item)
 })
 
