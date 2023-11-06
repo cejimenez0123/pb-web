@@ -2,11 +2,16 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, browserLocalPersistence } from "firebase/auth"
 import "firebase/compat/firestore"
-import { getFirestore} from "firebase/firestore";
+import {  getFirestore} from "firebase/firestore";
 import { getStorage } from "firebase/storage"
+import algoliasearch from "algoliasearch";
+
 // import { firebaseConfig } from '../fire';
 
+const client = algoliasearch("C1NZHMZ4PV", "d566696a4ab509a6a282a4ae748e8ec5");
 
+// Create a new index. An index stores the data that you want to make searchable in Algolia.
+const index = client.initIndex("plumbum");
 // const testConfig = {
 //   apiKey: `${process.env.TEST_FIREBASE_API_KEY}`,
 //   authDomain:`${process.env.TEST_AUTH_DOMAIN}`,
@@ -44,5 +49,4 @@ const storage = getStorage(app)
 
 const db =getFirestore(app)
 
-
-  export {db,app,auth,storage}
+  export {db,app,auth,storage,index}

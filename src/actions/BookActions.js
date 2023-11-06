@@ -498,12 +498,24 @@ const updateBookContent = createAsyncThunk("books/updateBookContent", async (par
   try {
     const {book,pageIdList} = params
     let ref = doc(db,'book',book.id)
-    await updateDoc(ref,{ pageIdList:pageIdList
-    })
-    book.pageIdList = pageIdList
+    pageIdList.forEach(pageId => {
+     updateDoc(ref,{ pageIdList:arrayUnion(pageId)
+    })})
+   let contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
+    let newBook = new Book(book.id,
+                        book.purpose,
+                        book.title,
+                        book.profileId,
+                        pageIdList,
+                        book.privacy,
+                        book.writingIsOpen,
+                        contributors,
+                        book.updatedAt,
+                        book.created
+                        )
     return {
-      book:book
-    }
+      book:newBook
+    } 
   }catch(e){
     return {error: new Error("Error: Update Book Content"+e.message)};
   }

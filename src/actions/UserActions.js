@@ -1,5 +1,5 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
-import { auth,db } from  "../core/di"
+import { auth,db,index } from  "../core/di"
 import {  signInWithEmailAndPassword,
           signOut,
           createUserWithEmailAndPassword,
@@ -627,47 +627,32 @@ return {error: new Error("Error: Deleting useer account"+err.message)
 }})
 
 let clickMe = createAsyncThunk("Sf",async (params,thunkApi)=>{
-  
-  let snapshot = await getDocs(collection(db,"profile"))
-
-  // snapshot.docs.forEach(doc=>{
-  //   const pack = doc.data()
-  //   const profileId = pack["id"]
-  //   const fbRef = collection(db,"follow_book")
-  //   const fpRef = collection(db,"follow_profile")
-  //   const flRef = collection(db,"follow_library")
-  //   const docRef = doc(db,"profile",profileId,"collection","home")
-  //    getDocs(fbRef,where("profileId","==",profileId)).then(fbs=>{
-  //     getDocs(fpRef,where("followingId","==",profileId)).then(fps=>{
-  //       getDocs(flRef,where("profileId","==",profileId)).then(fls=>{
-  //         const followBookIds=fbs.docs.map(fb=>{ return fb.data()["profileId"]
-  //       })
-  //       const followProfileIds = fps.docs.map(fp=>{return fp.data()["followingId"]
-  //          })
-  //       const followedLibraries = fls.docs.map(fl=>{
-  //           return fl.data()["profileId"]
-  //          })
-    
-  //         setDoc(docRef,{
-  //           books: followBookIds,
-  //           profiles: followProfileIds,
-  //           libraries: followedLibraries,
-  //           pages:[]
-  //       })
-
-
-  //       })
-
-  //     })
-
-  //   })
-
-   
-  
-  // })
+  let records = []
+const snapshot = await getDocs(query(collection(db,"library"), where("privacy", "==", false)))
+snapshot.docs.forEach(doc =>{
+ let pack= doc.data()
+ const {id,name} =pack
+  let item = {objectID:id,id,name,type:"library"}
+ records.push(item)
 })
 
+  let chunked = chunkArray(records,16)
 
+chunked.forEach(chunk=>{
+  console.log(JSON.stringify(chunk))
+  index.saveObjects(records,{autoGenerateObjectIDIfNotExist:true}).wait()
+ } )
+
+
+})
+
+function chunkArray(array, chunkSize) {
+  const chunkedArray = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunkedArray.push(array.slice(i, i + chunkSize));
+  }
+  return chunkedArray;
+}
 
 export {logIn,
         signUp,

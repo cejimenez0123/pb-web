@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom"
+import { useParams ,useNavigate} from "react-router-dom"
 import { useDispatch,useSelector } from "react-redux"
 import { useState,useEffect} from "react"
-import { fetchBook,saveRolesForBook,updateBook } from "../actions/BookActions"
+import { fetchBook,saveRolesForBook,setBookInView,updateBook } from "../actions/BookActions"
 import "../styles/EditBook.css"
 import { fetchAllProfiles } from "../actions/UserActions"
 import {  fetchPage } from "../actions/PageActions"
@@ -11,13 +11,16 @@ import BookRole from "../domain/models/bookrole"
 import { RoleType } from "../core/constants"
 import Profile from "../domain/models/profile"
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
-import { TextField ,Checkbox, FormControlLabel,Button, FormGroup} from "@mui/material"
+import { TextField ,Checkbox, FormControlLabel,Button, FormGroup, IconButton} from "@mui/material"
 import RoleList from "../components/RoleList"
 import theme from "../theme"
 import checkResult from "../core/checkResult"
+import { Add, Visibility } from "@mui/icons-material"
+import uuidv4 from "../core/uuidv4"
 function EditBookContainer({book,pages}){   
     const pathParams = useParams()
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const bookLoading = useSelector(state=>state.books.loading)
     const [newBookRoles, setNewBookRoles ]= useState([BookRole])
     const [bookTitle,setBookTitle] = useState("")
@@ -37,7 +40,7 @@ function EditBookContainer({book,pages}){
        if(book==null || book.id != bookId){ 
      dispatch(fetchBook(parameters)).then((result) => {
             const {payload} = result
-            const {gotBook} = payload
+            const gotBook = payload["book"]
             setBookTitle(gotBook.title)
             setBookPrivacy(gotBook.privacy)
             setWritingIsOpen(gotBook.writingIsOpen)
@@ -47,9 +50,7 @@ function EditBookContainer({book,pages}){
             
       
 
-        }).catch((err) => {
-            
-        });
+        })
        }else if(book!=null && book.id == bookId) {
             setBookTitle(book.title)
             setBookPrivacy(book.privacy)
@@ -66,31 +67,33 @@ function EditBookContainer({book,pages}){
     
    
     const getPages = (pageIdList)=>{
-        setListItems([])
+  
         const params = {pageIdList:pageIdList,profile:currentProfile}
+        setListItems([])
       if(pageIdList.length > 0){
-        pageIdList.forEach(pageId=>{
+        pageIdList.forEach((pageId,i)=>{
             const params = { id:pageId}
             dispatch(fetchPage(params)).then((result)=>{
                 checkResult(result,payload=>{
                         const {page}=payload
-                        const item = {id:page.id, item:page}
+                            let uId =`${page.id}_${uuidv4()}`
+                        const item = {uId:uId, item:page}
                         if(item){
-                            setListItems(prevState=>[...prevState,item])
+                        let list =listItems
+                        list[i]=item
+                    
+                            setListItems(list)
                         }else{
-                            const item = {id:pageId,item: {title:"Error Fetching Page"}}
+                            let uId =`${page.id}_${uuidv4()}`
+                            const item = {id:uId,item: {title:"Error Fetching Page"}}
                             setListItems(prevState=>[...prevState,item])
                         }
                        
                 },()=>{
 
                 })
-            })
-
-        })
-    }else{
-        setListItems([])
-    }
+            })})
+        }
     }
     
     useEffect(()=>{
@@ -101,10 +104,9 @@ function EditBookContainer({book,pages}){
 
 
 const handleRemove = (hash)=>{
-  
-    let list  =listItems.filter((item)=>{return item.item && hash.item && item.item.id != hash.item.id})
-    
-    setListItems(list)
+    let list =listItems
+   let newList = list.filter(item=>{return hash.item.uId !== item.uId})
+    setListItems(newList)
     
 }
 const sortableList = ()=>{
@@ -114,7 +116,7 @@ const sortableList = ()=>{
         </div>)
    
     }else if(listItems){
-        let index = 0
+    
         return( <div id="sort-list">
             Double Click to Remove
          <SortableList
@@ -122,9 +124,10 @@ const sortableList = ()=>{
             items={listItems}
             setItems={setListItems}
             itemRender={(item)=>{
-                index+=1
-               return (<div key={`${item.id}_${index}`}>
-            {sortItem(item,index)}
+           //fix
+
+               return (<div key={`${item.uId}`}>
+            {sortItem(item)}
                </div>)
             }}   >         
             </SortableList>
@@ -137,13 +140,14 @@ const sortableList = ()=>{
 }
 
     const sortItem = (hash,index)=>{
+        console.log(index)
         if(hash.item){
             const {item} = hash
             
         return(
             <div key={`${item.id}_${index}`}className="sort-item">
             <div>{item.item.title}</div>
-            <Button  onDoubleClick={()=>handleRemove(hash)
+            <Button  onDoubleClick={()=>handleRemove(hash,index)
             }>Remove</Button>
         </div>)
         
@@ -237,6 +241,21 @@ const sortableList = ()=>{
                      </div> 
             
                 <Button onClick={handleSave} style={{backgroundColor:theme.palette.secondary.main}}variant="contained"type="submit">Save</Button>
+            <div>
+                <IconButton onClick={()=>{
+                    const params = {book}
+                    dispatch(setBookInView(params))
+                    navigate(`/book/${book.id}`)
+                }}>
+                    <Visibility/>
+                </IconButton>
+                <IconButton onClick={()=>{
+                    navigate(`/book/${book.id}/add`)
+                }}>
+                    <Add/>
+                </IconButton>
+            </div>
+            
             </FormGroup>)}
     if(!bookLoading && book!=null){
 

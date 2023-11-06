@@ -10,18 +10,23 @@ import PageListItem from './PageListItem';
 import "../styles/MyProfile.css"
 import Book from '../domain/models/book'
 import ListItem from '../components/ListItem';
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import checkResult from "../core/checkResult";
-
+import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 export default function ContentList({currentProfile,pagesInView}){
     const [page,setPage] = useState(1)  
     const [listType,setListType]=useState("page")
     const [isContentVisible, setIsContentVisible] = useState(true)
     const [hasMorePages,setHasMorePages]=useState(false)
     const [hasMoreBooks,setHasMoreBooks]=useState(false)
+    const [pages,setPages] = useState([])
+    const [books,setBooks] = useState([])
+    const [libraries,setLibraries]=useState([])
     const booksInView = useSelector(state=>state.books.booksInView)
     const librariesInView = useSelector(state=>state.libraries.librariesInView)
     const [hasMoreLibraries,setHasMoreLibraries]=useState(false)
+    const [sortTime,setSortTime]=useState(true)
+    const [sortAlpha,setSortAlpha]=useState(false)
     const dispatch = useDispatch()
     useEffect(()=>{
         if(currentProfile){
@@ -67,11 +72,16 @@ export default function ContentList({currentProfile,pagesInView}){
     const fetchPageData = () =>{
         if(currentProfile){
             const params = {profile:currentProfile,page,groupBy:9}
-                setHasMoreBooks(true)
+                setHasMorePages(true)
                 dispatch(getProfilePages(params)).then((result) => {
-                setHasMorePages(false)
-                const newPage = page+1 
-                setPage(newPage)
+                    checkResult(result,payload=>{
+                        const {pageList}=payload
+                        setPages(pageList)
+                        setHasMorePages(false)
+                    },err=>{
+                        setHasMorePages(false)
+                    })
+        
             }).catch((err) => {
                 setHasMorePages(false)
             });}
@@ -81,8 +91,14 @@ export default function ContentList({currentProfile,pagesInView}){
             setHasMoreBooks(true)
             const params = {profile:currentProfile,page,groupBy:9}
              dispatch(getProfileBooks(params)).then((result) => {
-                setHasMoreBooks(false)
                 
+                checkResult(result,payload=>{
+                    const {bookList}=payload
+                    setBooks(bookList)
+                    setHasMoreBooks(false)
+                },err=>{
+                    setHasMoreBooks(false)
+                })
             
             }).catch((err) => {
                 setHasMoreBooks(false)
@@ -90,10 +106,17 @@ export default function ContentList({currentProfile,pagesInView}){
     }
     const fetchLibraryData=()=>{
             if(currentProfile){
-                setHasMoreBooks(true)
+                setHasMoreLibraries(true)
                 const params = {profile:currentProfile,page,groupBy:9}
-                dispatch(getProfileLibraries(params)).then(()=>{
-                    setHasMoreLibraries(false)
+                dispatch(getProfileLibraries(params)).then(result=>{
+                    checkResult(result,payload=>{
+                        const {libList}=payload
+                        setLibraries(libList)
+                        setHasMoreLibraries(false)
+                    },err=>{
+
+                    })
+              
                 }).catch((err)=>{
                     setHasMoreLibraries(false)
                 })
@@ -107,7 +130,7 @@ export default function ContentList({currentProfile,pagesInView}){
             </h1>
         </div>)
         if(listType=="page"){
-           if(pagesInView!=null ){    
+           if(pages!=null  && pages.length>0){    
            return (
             <div className="">
            <InfiniteScroll
@@ -119,7 +142,7 @@ export default function ContentList({currentProfile,pagesInView}){
           loader={<p>Loading...</p>}
           endMessage={<p>No more data to load.</p>}
         >
-            {pagesInView.map(page =>{
+            {pages.map(page =>{
                     return(<PageListItem key={page.id} page={page}/>)
             })}
         </InfiniteScroll>
@@ -129,11 +152,11 @@ export default function ContentList({currentProfile,pagesInView}){
                 return empty
             }}
             else if(listType=="book"){
-             if(booksInView!=null && booksInView.length>0){  
+             if(books!=null && books.length>0){  
                return  (<div className="">
                 <InfiniteScroll 
           
-                   dataLength={booksInView.length}
+                   dataLength={books.length}
                    next={fetchBookData}
                    hasMore={hasMoreBooks}
                    loader={<div>
@@ -143,7 +166,7 @@ export default function ContentList({currentProfile,pagesInView}){
                        <p>No more data to load.</p>
                    }
                    >
-                       {booksInView.map((book)=>{
+                       {books.map((book)=>{
    
                         return (<div key={book.id}>
                             <ListItem   ownerProfileId={book.profileId}
@@ -159,18 +182,18 @@ export default function ContentList({currentProfile,pagesInView}){
                 return empty
             }}else if(listType=="library"){
          
-            if(librariesInView!=null && librariesInView.length>0){
+            if(libraries!=null && libraries.length>0){
                 return(
                     <div >
                     <InfiniteScroll
               
-                    dataLength={librariesInView.length}
+                    dataLength={libraries.length}
                     next={fetchLibraryData}
                     hasMore={hasMoreLibraries}
                     loader={<p>Loading...</p>}
                     endMessage={<p>No more data to load.</p>}
                 >
-                    {librariesInView.map((library)=>{
+                    {libraries.map((library)=>{
         
                         return (<div key={library.id}>
                             <ListItem   ownerProfileId={library.profileId}
@@ -195,18 +218,129 @@ export default function ContentList({currentProfile,pagesInView}){
             
         }
     }
+    const setSortOrderTime=()=>{
+        
+        if(sortTime){
+
+        if(pages){
+
+        let newPages = [...pages].sort((a,b)=>{
+            return b.created - a.created
+        })
+        setPages(newPages);
+    }
+    if(books){
+        let newBooks = [...books].sort((a,b)=>{
+            return b.updatedAt - a.updatedAt
+        })
+        setBooks(newBooks)
+    }
+    if(libraries){
+        let newLibraries = [...libraries].sort((a,b)=>
+        {
+            return b.updatedAt - a.updatedAt
+        }
+            )
+            setLibraries(newLibraries)
+    }
+        }else{
+            if(pages){
+            let newPages = [...pages].sort((a,b)=>{
+                return a.created - b.created
+            })
+    
+            setPages(newPages);
+        }
+        if(books){
+            let newBooks = [...books].sort((a,b)=>{
+                return a.updatedAt - b.updatedAt
+            })
+            setBooks(newBooks)}
+            if(libraries){
+            let newLibraries = [...libraries].sort((a,b)=>
+            {
+                return a.updatedAt - b.updatedAt
+            }
+                )
+            setLibraries(newLibraries)
+        }
+        }
+    }
+    const setSortOrderAlpha=()=>{
+
+        if(sortAlpha){
+        let newPages = [...pages].sort((a,b)=>{
+            if (a.title < b.title) {
+                return -1;
+              }
+              if (a.name > b.name) {
+                return 1;
+              }
+              return 0;
+        })
+        setPages(newPages);
+        let newBooks = [...books].sort((a,b)=>{
+            if (a.title < b.title) {
+                return -1;
+              }
+              if (a.name > b.name) {
+                return 1;
+              }
+              return 0;
+        })
+        setBooks(newBooks);
+        let newLibraries = [...libraries].sort((a,b)=>{
+            if (a.name < b.name) {
+                return -1;
+              }
+              if (a.name > b.name) {
+                return 1;
+              }
+              return 0;
+        })
+        setLibraries(newLibraries);
+        }else{
+            let newPages = [...pages].sort((a,b)=>{
+                if (b.title < a.title) {
+                    return -1;
+                  }
+                  if (b.title > a.title) {
+                    return 1;
+                  }
+                  return 0;
+            })
+            setPages(newPages);
+            let newBooks = [...books].sort((a,b)=>{
+                if (b.title < a.title) {
+                    return -1;
+                  }
+                  if (b.title > a.title) {
+                    return 1;
+                  }
+                  return 0;
+            })
+            setBooks(newBooks);
+            let newLibraries = [...libraries].sort((a,b)=>{
+                if (b.name < a.name) {
+                    return -1;
+                  }
+                  if (b.name > a.name) {
+                    return 1;
+                  }
+                  return 0;
+            })
+            setLibraries(newLibraries)
+        }
+    }
     const handleContentClick=(name)=>{
         setListType(name)
         setIsContentVisible(!isContentVisible)
         setIsContentVisible(true)
-       
-       
-    
-       
     } 
     return(<div className="column">
                 <div className="inner">
                 <div className="btn-row">
+                    <div>
                                     <Button className="btn" onClick={()=>{
                                         handleContentClick("page")
                                         }}>
@@ -226,6 +360,25 @@ export default function ContentList({currentProfile,pagesInView}){
                                         }}>
                                         Library
                                     </Button>
+                    </div>
+                    <div className="sort">
+                        {sortTime?<Button onClick={()=>{
+                                setSortTime(false)
+                                setSortOrderTime()
+                            }}>
+                                    New to Old
+                            </Button>:
+                            <Button onClick={()=>{
+                                setSortTime(true)
+                                setSortOrderTime()
+                            }}
+                            >Old to New</Button>}
+                        <Button onClick={()=>{
+                            setSortAlpha(!sortAlpha)
+                            setSortOrderAlpha()}}>
+                            <SortByAlphaIcon/>
+                        </Button>
+                    </div>
                 </div>
                          
                             <div

@@ -130,15 +130,16 @@ function BookViewContainer({book}){
     const getPages=(bookItem)=>{
         
      
-        if(pages.length==bookItem.pageIdList.length){
+        if(bookItem.pageIdList && pages.length==bookItem.pageIdList.length){
             setHasMore(false)
-        }else if(bookItem.pageIdList.length==0){
+        }else if(bookItem.pageIdList &&bookItem.pageIdList.length==0){
             setHasMore(false)
             setPages([])
-        }else{
+        }else if(bookItem.pageIdList){
             setPages([])
             setHasMore(true)
-            bookItem.pageIdList.forEach((pId,i)=>{
+            for(let i=0;i<bookItem.pageIdList.length;i++){
+                const pId = bookItem.pageIdList[i]
                         const params = {id:pId}
                     dispatch(fetchPage(params)).then(result=>{
                         checkResult(result,payload=>{
@@ -151,8 +152,11 @@ function BookViewContainer({book}){
                             setPages(prevState=>[...prevState,{id:pId}])
                             setHasMore(false)
                         })
-                    })})
+                    })}
     
+    }else{
+        setPages([])
+        setHasMore(false)
     }}
     useEffect(()=>{
      getBook()

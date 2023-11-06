@@ -14,6 +14,7 @@ import checkResult from "../core/checkResult"
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
+import debounce from "../core/debounce"
 function AddPageToBookContainer({books}){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -59,7 +60,8 @@ function AddPageToBookContainer({books}){
     },[])
   
     const saveBook =(page)=>{
-        let list = [...pageIdList,page.id]
+        let idList = pageIdList
+         idList.push(page.id)
         let owner = bookInView.profileId == currentProfile.id
         let editor = bookInView.editors.find(id => id==currentProfile.userId)
         let writer = bookInView.writers.find(id=>id==currentProfile.userId)
@@ -68,20 +70,21 @@ function AddPageToBookContainer({books}){
         
             const params = {
                 book: bookInView,
-                pageIdList: list
+                pageIdList: idList
             }
             dispatch(updateBookContent(params)).then(result=>{
                 checkResult(result,payload=>{
                     const {book} = payload
                     let readers = [...book.readers,...book.writers,...book.editors,...book.commenters]
                     const params = {
-                        pageIdList:list,
+                        pageIdList:idList,
                         readers
                     }
-                    setPageIdList(list)
+                    alert("Updated Book Content")
+                    setPageIdList(idList)
                     dispatch(appendSaveRolesForPage(params)).then(result=>{
                         checkResult(result,payload=>{
-                            window.alert("Success!")
+                            window.alert("Updated Roles for Pages")
                         },()=>{
                             
                         })
@@ -113,7 +116,7 @@ function AddPageToBookContainer({books}){
             
             return(
                 <PageItem key={page.key}page={page} setPageIdList={()=>{
-                    saveBook(page)
+                    debounce(saveBook(page),5)
                 }}/>
             )
          })}

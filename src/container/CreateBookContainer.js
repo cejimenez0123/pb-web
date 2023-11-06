@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { getProfileBooks, updateBook,createBook } from "../actions/BookActions"
 import { useDispatch } from "react-redux"
@@ -17,9 +17,9 @@ const inputStyle = {
     width: "90%",
     marginLeft:"1em"
 }
-export default function CreateBookContainer({pagesInView,booksInView}){
+export default function CreateBookContainer({pagesInView}){
         const navigate = useNavigate()
-     
+        const [books,setBooks]=useState([])
         const currentProfile = useSelector(state=>state.users.currentProfile)
        
         const pagesToBeAdded = useSelector(state=>{return state.pages.pagesToBeAdded})
@@ -29,11 +29,22 @@ export default function CreateBookContainer({pagesInView,booksInView}){
    
     
 
-      
+    useEffect(
+        ()=>{
+            fetchBooks()
+        },[]
+    )
     
     const fetchBooks = ()=>{
+        if(currentProfile){
         const params = {profile: currentProfile}
-        dispatch(getProfileBooks(params))
+        dispatch(getProfileBooks(params)).then(result=>
+            checkResult(result,(payload)=>{
+                const {bookList}=payload
+                setBooks(bookList)
+            },err=>{
+
+            }))}
     }
     const addUpdateBook=(book)=>{
         
@@ -78,13 +89,13 @@ export default function CreateBookContainer({pagesInView,booksInView}){
     const bookList = ()=>{
             let i = 0
                 return(<div className="create-list" >
-                    <InfiniteScroll  dataLength={booksInView.length} 
+                    <InfiniteScroll  dataLength={books.length} 
            next={fetchBooks}
            hasMore={false} // Replace with a condition based on your data source
            loader={<p>Loading...</p>}
            endMessage={<p>No more data to load.</p>}
         >
-             {booksInView.map(book=>{
+             {books.map(book=>{
                 i+=1
                 return (<div className="list-item" key={`${book.id}_${i}`}>
                     {book.title}

@@ -10,6 +10,7 @@ import { fetchArrayOfLibraries } from '../actions/LibraryActions'
 import ErrorBoundary from '../ErrorBoundary'
 import { clickMe } from '../actions/UserActions'
 import checkResult from '../core/checkResult'
+import { Button } from '@mui/material'
 
 function DashboardContainer(props){
     const dispatch = useDispatch()
@@ -302,6 +303,9 @@ function DashboardContainer(props){
                 It's the place for your story on Plumbum.</p>
 
                 <p>Any request for more feautres, problems, encoragement, send to plumbumapp@gmail.com</p>
+                <Button onClick={()=>{
+                    dispatch(clickMe())
+                }}>Click ME!</Button>
                 </div>)
             }
         

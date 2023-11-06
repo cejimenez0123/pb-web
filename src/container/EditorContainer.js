@@ -2,21 +2,23 @@ import RichEditor from "../components/RichEditor"
 import "../styles/Editor.css"
 import "../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import { setHtmlContent,createPage, updatePage, fetchEditingPage,deletePage, clearEditingPage } from "../actions/PageActions"
+import { setHtmlContent,createPage, updatePage, fetchEditingPage,deletePage, clearEditingPage, setPagesToBeAdded } from "../actions/PageActions"
 import React,{ useEffect, useState } from "react"
 import history from "../history"
 import { useParams,useNavigate } from "react-router-dom"
-import { Button,FormControlLabel,Checkbox, TextField, FormGroup } from "@mui/material"
+import { Button,FormControlLabel,Checkbox, TextField, FormGroup, MenuItem,IconButton} from "@mui/material"
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../core/constants"
-
+import { MenuButton,Menu } from "@mui/joy"
 import theme from "../theme"
 import checkResult from "../core/checkResult"
 import RoleList from "../components/RoleList"
+import { Add } from "@mui/icons-material"
+import { Dropdown } from "react-bootstrap"
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
@@ -132,7 +134,43 @@ function EditorContainer({currentProfile}){
           }
             
           }
-        
+      const [anchorEl,setAnchorEl]=useState(null)
+      const addBtn = ()=>{
+        return editingPage?
+                <Dropdown>
+                  <IconButton
+                    onClick={(e)=>setAnchorEl(e.currentTarget)}
+                    slots={{ root: IconButton }}
+                    slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}>
+                <Add/>
+                  </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                >
+              <MenuItem onClick={()=>{
+                dispatch(setPagesToBeAdded({pageList:[editingPage]}))
+                navigate("/book/new")
+              
+              }}>
+                Add to Book
+                </MenuItem>
+              <MenuItem onClick={()=>{
+                dispatch(setPagesToBeAdded({pageList:[editingPage]}))
+                navigate(`/library/new`)
+              }
+              }> 
+              Add to Library
+          </MenuItem>
+      
+       
+  
+
+</Menu>
+</Dropdown> 
+            :<div></div>
+          }
+      
       let deleteDiv = (<div>
         </div>) 
       if(editingPage){ 
@@ -146,6 +184,7 @@ function EditorContainer({currentProfile}){
           Delete
       </Button>)
       }
+
         return(
           <div id="EditorContainer">
             <div >
@@ -171,8 +210,10 @@ function EditorContainer({currentProfile}){
                   <Button onClick={(e)=>onSavePress(e)} className="btn btn-primary">
                     Save
                     </Button>
-
-                    {deleteDiv}
+                    <div className="button-row">
+                   {addBtn()} {deleteDiv}
+                    </div>
+                    
                     </FormGroup>
                     {editingPage?<RoleList
                                 item={editingPage} 
