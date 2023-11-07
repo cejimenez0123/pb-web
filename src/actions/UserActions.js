@@ -639,7 +639,7 @@ snapshot.docs.forEach(doc =>{
   let chunked = chunkArray(records,16)
 
 chunked.forEach(chunk=>{
-  console.log(JSON.stringify(chunk))
+
   index.saveObjects(records,{autoGenerateObjectIDIfNotExist:true}).wait()
  } )
 

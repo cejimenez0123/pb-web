@@ -8,40 +8,65 @@ import { MenuButton } from '@mui/base/MenuButton'
 import { Menu } from '@mui/base/Menu';
 import { RoleType } from "../core/constants";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { fetchAllProfiles } from "../actions/UserActions";
+import { fetchAllProfiles, fetchProfile } from "../actions/UserActions";
 import { useDispatch } from "react-redux";
 import { Timestamp } from "firebase/firestore";
 import Role from "../domain/models/role";
 import Contributors from "../domain/models/contributor";
 import PageRole from "../domain/models/page_role";
+import checkResult from "../core/checkResult"
 export default function RoleList({getRoles,item,type}) {
     const dispatch = useDispatch()
     const [newRoles, setNewRoles ]= useState([])
     const libraryRoles = useSelector(state=>state.libraries.libraryRoles)
     const profilesInView = useSelector(state=>state.users.profilesInView)
+    const editingPage = useSelector(state=>state.pages.editingPage)
     const [profileHasMore,setProfileHasMore]= useState(false)
     const [profileList,setProfileList] = useState([])
+    const setProfiles=()=>{
+        const list = profilesInView.filter(profile=>{
+            const roleFound  = newRoles.find(role=>
+                role.profile.id == profile.id)
+            return !roleFound
+           
+        })
+        setProfileList(list)
+    }
+    useEffect(()=>{
+        setProfiles()
+    },[newRoles])
     const fetchProfiles=()=>{
-        dispatch(fetchAllProfiles()).then((result) => {
-            const {payload} = result
-            const {profileList } = payload
-            const list = profileList.filter(profile=>{
-                const roleFound  = newRoles.find(role=>
-                    role.profile.id == profile.id)
-                return !roleFound
-            })
+     if(profilesInView!=null && profilesInView.length>0){
+            setProfiles()
             setRoleList()
             setOldRoles()
-            setProfileList(list)
+           
+       }else{
+        dispatch(fetchAllProfiles()).then((result) => {
+            
+            checkResult(result,payload=>{
+                setProfiles()
+                setRoleList()
+                setOldRoles()
+                
+              
+            },err=>{
+
+            })
+          
+            
+           
         })
+       }
     }
-   
-    useEffect(()=>{
-        getRoles(newRoles)
-    },[newRoles]) 
+    
     useEffect(()=>{
         fetchProfiles()
     },[])
+    useEffect(()=>{
+        getRoles(newRoles)
+    },[newRoles]) 
+
     const createContributors=(item,type)=>{
        let readers = item.readers.map(id=>{
         let profile = profilesInView.find(profile=>profile&& id && profile.userId == id)
@@ -108,25 +133,39 @@ export default function RoleList({getRoles,item,type}) {
         }
     }
     const handleChosingProfileRole =(profile,role)=>{
-        const newRole = createRole(type,item,profile,role)
-        if(item){
-                        if(role.length > 0){
-               
+                const newRole = createRole(type,item,profile,role)
+             
+    
+            if(role.length > 0){
+                
                 let profiles = profileList.filter(prof=>{
                     return profile.id != prof.id
                 })
+            
+                let foundInRole = newRoles.find(role=>role.id===newRole.id)
+                if(foundInRole){
+                    let list = newRoles
+                let updatedRoles =list.map(role=>{
+                    if(role.id == newRole.id){
+                        return newRole
+                    }else{
+                        return role
+                    }
+                })
+                setNewRoles(updatedRoles)
+                }else{
                 setNewRoles(prevState=>{
                     return [...prevState,newRole]
-                })
+                })}
                 setProfileList(profiles)
             }else{
-               let roles = newRoles.filter(role=>role.profile.id == profile.id)
+               let roles = newRoles.filter(role=>role.profile.id != profile.id)
                setNewRoles(roles) 
                setProfileList(prevState=>{
                     return [...prevState, profile]
                 })
             }
-        }
+        
     }
     const setOldRoles = ()=>{
             const contributors= createContributors(item,type)

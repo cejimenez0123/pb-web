@@ -28,36 +28,39 @@ function EditorContainer({currentProfile}){
         const [privacy,setPrivacy] = useState(false)
         const [commentable,setCommentable] = useState(true)
         const [newRoles,setNewRoles]=useState([])
+        const [ePage,setEPage]=useState(null)
         const editingPage = useSelector(state=>state.pages.editingPage)
        const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         useEffect(()=>{
             const {id }= pathParams
         
-            if(id && editingPage==null){
+            if(id && ePage==null){
                 const parm = {id:id}
                 dispatch(fetchEditingPage(parm)).then(result=>{
                   const {payload }= result
                   if(payload!=null){
                     if(payload.error==null){
                       const {page} = payload
+                      setEPage(page)
                       setTitle(page.title)
                       setPrivacy(page.privacy)
+                      setCommentable(page.commentable)
                       dispatch(setHtmlContent(page.data))
                     }
                   }
                 })
-            }else if(editingPage!=null && editingPage.id == id){
-              setTitle(editingPage.title)
-              setPrivacy(editingPage.privacy)
-              dispatch(setHtmlContent(editingPage.data))
-            }else{
-              
+            }else if(ePage!=null && ePage.id==id){
+              setTitle(ePage.title)
+              setPrivacy(ePage.privacy)
+              setCommentable(ePage.commentable)
+              dispatch(setHtmlContent(ePage.data))
+            }else{ 
               dispatch(setHtmlContent(""))
             }
-        },[])
+        },[editingPage])
         const onSavePress = (e)=>{
           e.preventDefault();
-          if(!editingPage){
+          if(!ePage){
           const params ={
             profileId: currentProfile.id,
             data: htmlContent,
@@ -76,6 +79,7 @@ function EditorContainer({currentProfile}){
                 const {payload } = result
                 if(payload.error==null){
                   const {page} = payload
+                  setEPage(page)
                   window.alert("Saved")
                   history.replace(`/page/${page.id}/edit`)
                 }
@@ -85,7 +89,8 @@ function EditorContainer({currentProfile}){
           const params = { page: editingPage,
             title: title,
             data: htmlContent,
-            privacy
+            privacy:privacy,
+            commentable:commentable,
           
           }
           dispatch(updatePage(params)).then(result=>{
@@ -102,11 +107,15 @@ function EditorContainer({currentProfile}){
                 writers}
               dispatch(saveRolesForPage(params)).then(result=>checkResult(result,payload=>{
 
+                  const {page}=payload
+                  setEPage(page)
+                  window.alert("Successfully updated Roles")
+
               },err=>{
-
+                  window.alert("Error updating roles")
               }))
-            },()=>{
-
+            },(err)=>{
+                window.alert("Error updating pages")
             })
           })
         }
@@ -124,29 +133,26 @@ function EditorContainer({currentProfile}){
       };
       const handleDelete =()=>{
           handleClose()
-          if(editingPage){
-          const params = {page:editingPage}
+          if(ePage){
+          const params = {page:ePage}
           dispatch(deletePage(params)).then(()=>{
             navigate("/profile/home")
           })
         }
       }
     
-        const onTitleChange = (e)=>{
-
-          setTitle(e.target.value)
-        }
+    
   
         let contentDiv = (<RichEditor initialContent={""}/>)
       
         if(currentProfile){
-          if(editingPage){
-              if(editingPage.type==PageType.text){
+          if(ePage){
+              if(ePage.type==PageType.text){
                   contentDiv = (<RichEditor initialContent={htmlContent}/>)
-              }else if(editingPage.type==PageType.picture){
+              }else if(ePage.type==PageType.picture){
                 
                   contentDiv = (<div className="image">
-                    <img src={editingPage.data} alt={editingPage.data}/>
+                    <img src={ePage.data} alt={ePage.data}/>
                     </div>)
                 }else{
                   contentDiv = (<RichEditor initialContent={htmlContent}/>)
@@ -169,14 +175,14 @@ function EditorContainer({currentProfile}){
                 open={Boolean(anchorEl)}
                 >
               <MenuItem onClick={()=>{
-                dispatch(setPagesToBeAdded({pageList:[editingPage]}))
+                dispatch(setPagesToBeAdded({pageList:[ePage]}))
                 navigate("/book/new")
               
               }}>
                 Add to Book
                 </MenuItem>
               <MenuItem onClick={()=>{
-                dispatch(setPagesToBeAdded({pageList:[editingPage]}))
+                dispatch(setPagesToBeAdded({pageList:[ePage]}))
                 navigate(`/library/new`)
               }
               }> 
@@ -217,7 +223,7 @@ function EditorContainer({currentProfile}){
               <div className="right-side-bar">
                 
                 <FormGroup className="form" >
-                 <TextField onChange={(e)=>onTitleChange(e)} value={title} label="Title"/>
+                 <TextField onChange={(e)=>setTitle(e.target.value.trimEnd())} value={title} label="Title"/>
                  
                   <FormControlLabel 
                 control={<Checkbox checked={privacy} onChange={(e)=>setPrivacy(e.target.checked)}/>} label={privacy?"Private":"Public"} />
@@ -237,8 +243,8 @@ function EditorContainer({currentProfile}){
                     </div>
                     {deleteDiv}
                     </FormGroup>
-                    {editingPage?<RoleList
-                                item={editingPage} 
+                    {ePage?<RoleList
+                                item={ePage} 
                                 type={"page"} 
                                 getRoles={roles=>{
                                   setNewRoles(roles)

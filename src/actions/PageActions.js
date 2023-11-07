@@ -92,10 +92,8 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
       await updateDoc(ref,{
         title,
         data,
-        profileId:page.profileId,
         privacy,
         approvalScore: page.approvalScore,
-        type: page.type,
       })
       const contributors= new Contributors(page.commenters,
         page.readers,page.writers,page.editors)
@@ -358,8 +356,10 @@ const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async functi
                         profileId,
                         approvalScore,
                         privacy,
-                        commentable,type,
-                        contributors,created)
+                        commentable,
+                        type,
+                        contributors,
+                        created)
   return {
     page
   }
@@ -418,12 +418,12 @@ const saveRolesForPage = createAsyncThunk("books/saveRolesForPage",async (params
                          page.pageIdList,
                          page.privacy,
                          page.writingIsOpen,
+                         page.type,
                          contributors,
-                         page.updatedAt,
                          page.created
 )}
 
-      
+
    }catch(e){
      const error = e??new Error("Error: CREATE PAGE ROLES")
      return {error }

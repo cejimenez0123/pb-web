@@ -293,7 +293,7 @@ function UpdateLibraryContainer(props) {
             {libraryInfo()}
             </div>
             <div>
-                <RoleList item={libraryInView} getRoles={(roleList) => {
+                <RoleList item={libraryInView} type="library" getRoles={(roleList) => {
                 
                 setRoleList(roleList)
                 }}/>
