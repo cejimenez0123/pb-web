@@ -4,7 +4,7 @@ import { useDispatch,useSelector } from "react-redux"
 import { appendSaveRolesFoBook,  } from "../actions/BookActions"
 import theme from "../theme"
 import {  appendSaveRolesForPage} from "../actions/PageActions"
-import { createLibrary,getProfileLibraries,updateLibraryContent } from "../actions/LibraryActions"
+import { appendLibraryContent, createLibrary,getProfileLibraries,updateLibraryContent } from "../actions/LibraryActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import "../styles/CreateLibrary.css"
 import {    FormGroup,
@@ -29,36 +29,29 @@ export default function CreateLibraryContainer(props){
     
     const onClickAdd=(hash)=>{  
         
-        let pIdList = pagesToBeAdded.map(page=>{ return page.id; });
-        let bIdList = booksToBeAdded.map(book=>{ return book.id; });
-        let pageIdList = [...hash.pageIdList]
-        if(pIdList!=null && pIdList.length > 0){
-            pageIdList = [...hash.pageIdList,...pIdList]
-        }
-        let bookIdList = [...hash.bookIdList]
+        const pIdList = pagesToBeAdded.map(page=>{ return page.id; });
+        const bIdList = booksToBeAdded.map(book=>{ return book.id; });
+       
         
-        if(bIdList!=null &&bIdList.length>0){
-            bookIdList = [...bookIdList,...bIdList]
-        }
         let params = {
             library:hash,
-            pageIdList:pageIdList,
-            bookIdList:bookIdList
+            pageIdList:pIdList,
+            bookIdList:bIdList
         }
         const bookRoleParams = {
-            bookIdList,
+            bookIdList:bIdList,
             readers: hash.readers,
             commenters: hash.commenters
         }
 
         const pageRoleParams = {
-            pageIdList,
+            pageIdList:pIdList,
             reader: hash.readers,
             commenters: hash.commenters
         }
         dispatch(appendSaveRolesFoBook(bookRoleParams))
         dispatch(appendSaveRolesForPage(pageRoleParams))
-        dispatch(updateLibraryContent(params)).then(result=>{
+        dispatch(appendLibraryContent(params)).then(result=>{
             if(result.error==null){
                 navigate(`/library/${hash.id}`)
             }
@@ -101,7 +94,7 @@ export default function CreateLibraryContainer(props){
                 <div>
               
                 <Button onClick={()=>onClickAdd(hash)}>
-                    <Add />
+                    <Add/>
                 </Button>
                 </div>
             </div>)
@@ -193,12 +186,7 @@ function LibraryCreateForm(props){
     const handleOnSubmit=(e)=>{
         const bookIdList = booksToBeAdded.map(book=>book.id)
         const pageIdList = pagesToBeAdded.map(page=>page.id)
-        // const filterPages = contentToBeAdded.filter(hash => hash.type == "page").map(
-        //     hash=> hash.item.id
-        // )
-        // const filterBooks = contentToBeAdded.filter(hash => hash.type == "book").map(
-        //     hash=> hash.item.id
-        // )
+      
     
         e.preventDefault()
         const params = {

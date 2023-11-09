@@ -27,6 +27,9 @@ html, body {
     width: 45em;
     margin: auto;
   }
+  .content .no-more-data{
+    width: 45em;
+  }
 .sign-card{
   display: flex;
   flex-direction: column;

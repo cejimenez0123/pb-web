@@ -303,9 +303,7 @@ function DashboardContainer(props){
                 It's the place for your story on Plumbum.</p>
 
                 <p>Any request for more feautres, problems, encoragement, send to plumbumapp@gmail.com</p>
-                {/* <Button onClick={()=>{
-                    dispatch(clickMe())
-                }}>Click ME!</Button> */}
+             
                 </div>)
             }
         

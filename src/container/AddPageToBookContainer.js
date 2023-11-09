@@ -138,7 +138,7 @@ function AddPageToBookContainer(){
             if (a.title < b.title) {
                 return -1;
               }
-              if (a.name > b.name) {
+              if (a.title > b.title) {
                 return 1;
               }
               return 0;
@@ -169,7 +169,11 @@ function AddPageToBookContainer(){
 
                             </div>
                             <div>
-                                <IconButton>
+                                <IconButton onClick={()=>{
+                                    setSortAlpha(!sortAlpha)
+                                    setSortOrderAlpha()
+                                    
+                                }}>
                                     <SortByAlphaIcon/>
                                 </IconButton>
                                 {sortTime?<Button onClick={()=>{

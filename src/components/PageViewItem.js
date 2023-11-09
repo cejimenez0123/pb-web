@@ -160,7 +160,7 @@ let profile = (<div></div>)
             <MenuItem disabled={!currentProfile} onClick={()=>{
                  const params = {pageList:[page]}
                  dispatch(setPagesToBeAdded(params))
-                 navigate("/book/new")
+                 navigate("/library/new")
             }}>
                 Add to Library
                         </MenuItem>

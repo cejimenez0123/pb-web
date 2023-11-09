@@ -86,12 +86,22 @@ function EditorContainer({currentProfile}){
               }
           })
         }else{
-          const params = { page: editingPage,
+        
+         let params = { page: editingPage,
             title: title,
             data: htmlContent,
             privacy:privacy,
             commentable:commentable,
           
+          }
+          if(editingPage.type === PageType.picture){
+            params = { page: editingPage,
+              title: title,
+              data: editingPage.data,
+              privacy:privacy,
+              commentable:commentable,
+            
+            }
           }
           dispatch(updatePage(params)).then(result=>{
             checkResult(result,(payload)=>{

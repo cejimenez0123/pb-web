@@ -1,23 +1,32 @@
 import { useEffect, useState } from "react"
 import { useSelector,useDispatch } from "react-redux"
-import {fetchArrayOfBooks, fetchBook} from "../actions/BookActions"
-import { fetchArrayOfPages,clearPagesInView} from "../actions/PageActions"
+import { fetchBook} from "../actions/BookActions"
+import { clearPagesInView,fetchPage} from "../actions/PageActions"
 import {    updateLibrary,
             fetchLibrary,
             saveRolesForLibrary,
-            updateLibraryContent } from "../actions/LibraryActions"
+            updateLibraryContent, 
+            deleteLibrary,
+        } from "../actions/LibraryActions"
 import { useParams,useNavigate } from "react-router-dom"
-import { getCurrentProfile } from "../actions/UserActions"
+
 import InfiniteScroll from "react-infinite-scroll-component"
 import RoleList from "../components/RoleList"
 import "../styles/UpdateLibrary.css"
-import {Checkbox , Button, FormGroup, TextField,FormControlLabel } from "@mui/material"
+import {Checkbox , Button, FormGroup, TextField,FormControlLabel,IconButton } from "@mui/material"
 import { RoleType } from "../core/constants"
 import useAuth from "../core/useAuth"
 import checkResult from "../core/checkResult"
 import uuidv4 from "../core/uuidv4"
+import { Textarea } from "@mui/joy"
+import theme from "../theme"
+import { Add, Visibility } from "@mui/icons-material"
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 function UpdateLibraryContainer(props) {
-    const authHook = useAuth() 
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const pathParams = useParams()
@@ -27,35 +36,27 @@ function UpdateLibraryContainer(props) {
     const [privacy,setPrivacy]=useState(false)
     const [purpose,setPurpose]=useState("")
     const [hasMore,setHasMore]=useState(true)
+    const [open,setOpen]=useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const booksInView = useSelector(state=>state.books.booksInView)
-    const [itemsInLibrary,setItemsInLibrary] = useState([])
     const [roleList,setRoleList]=useState([])
-    const [contentItems,setContentItems]=useState([])
     const [listItems,setListItems]=useState([])
     const { id } = pathParams
+ 
     useEffect(()=>{
-        
-            if(currentProfile){
-            
-            }else{
-                // if(authHook.user){
-                //     const params = {
-                //      userId: authHook.user.uid
-                //     }
-                //     dispatch(getCurrentProfile(params))
-                // }
-            }
-    }
-
-    ,[])
+        if(libraryInView && libraryInView.id === id){
+            setLibrary()
+            fetchData()
+        }else {
+            start()
+        }
+    },[])
     const start =()=>{
         dispatch(fetchLibrary(pathParams)).then((result)=>{
             setLibrary()
             dispatch(clearPagesInView())
-            fetchData()
+            
           
         })
     }
@@ -68,25 +69,11 @@ function UpdateLibraryContainer(props) {
 
         }
     }
-  
-    useEffect(()=>{
-        if(libraryInView!=null && libraryInView.id==id){
-            setContentItems([])
-            setListItems([])
-            fetchBooks()
-            fetchPages()
-        }else{
-            start()
-        }
-    },[])
-    useEffect(()=>{     
-       setLibrary()
-    },[])
+   
 
 
     const fetchBooks =()=>{
-        if(libraryInView){
-            
+        if(libraryInView && libraryInView.bookIdList.length>0){
             libraryInView.bookIdList.forEach(bId=>{
                 const params ={
                     id: bId
@@ -94,10 +81,12 @@ function UpdateLibraryContainer(props) {
                 setHasMore(true)
                 dispatch(fetchBook(params)).then(result=>checkResult(result,payload=>{
                         const {book}=payload;
+                        if(book){
                         let uId = `${book.id}_${uuidv4()}`
                         const item = {uId:uId,book:book }
                         setListItems(prevState=>[...prevState,item])
                         setHasMore(false)
+                        }
                 },err=>{
                     setHasMore(false)
                 }))
@@ -106,25 +95,30 @@ function UpdateLibraryContainer(props) {
                 }
             }
         
-            const handleRemove = (item)=>{
-                let list =listItems
-               let newList = list.filter(i=>{return item.uId !== i.uId})
-                setListItems(newList)
+    const handleRemove = (item)=>{
+        let list =listItems
+        let newList = list.filter(i=>{return item.uId !== i.uId})
+        setListItems(newList)
             
                 
-            }
+    }
     const fetchPages=()=>{
-        if(libraryInView){
-            // const paramsA = {pageIdList:libraryInView.pageIdList,profile:currentProfile}
+        if(libraryInView && libraryInView.pageIdList.length>0){
+            setHasMore(true)
             libraryInView.pageIdList.forEach(pId=>{
-                dispatch(fetchPages({id:pId})).then(result=>checkResult(result,payload=>{
+                dispatch(fetchPage({id:pId})).then(result=>checkResult(result,payload=>{
                     const {page}= payload
+                    if(page){
                     let item = {uId:`${page.id}_${uuidv4()}`,page:page}
                     setListItems(prevState=>[...prevState,item])
+                    setHasMore(false)
+                    }
                 },err=>{
-
+                    setHasMore(false)
                 }))
             })
+        }else{
+            setHasMore(false)
         }
                 
 
@@ -132,18 +126,19 @@ function UpdateLibraryContainer(props) {
 
     const fetchData = () =>{
         if(currentProfile){
-        const params = { 
-            profileId: currentProfile.id,
-            page: 1,
-            groupBy: 9
+            setListItems([])
+            fetchPages()
+            fetchBooks()
         }
-        fetchPages()
-    }}
+    }
     const libraryInfo=()=>{
-        return (<div className="library-update">
-            <FormGroup>
+        return (<div className="info create">
+            <FormGroup style={{padding:"1em"}}>
             
-                <TextField type="text"  value={libraryName} 
+                <TextField style={{backgroundColor:theme.palette.primary.contrastText}}type="text" 
+                label="Name"
+                placeholder="Library Name"
+                value={libraryName} 
                                     onChange={(e)=>{
                                         setLibraryName(e.target.value)
                                     }
@@ -151,17 +146,33 @@ function UpdateLibraryContainer(props) {
                 }/>
                     <FormControlLabel control={<Checkbox checked={privacy} onChange={(e)=>{
 
-            setPrivacy(!privacy)}} />} label="Private" />
+            setPrivacy(!privacy)}} />} label={privacy?"Private":"Public"} />
         
                  <FormControlLabel control={<Checkbox  onChange={(e)=>{
                     setWritingIsOpen(!writingIsOpen)
-                }} checked={writingIsOpen} />} label="Writing is Open" />
-               
-                <Button style={{ backgroundColor: "rgb(24, 69, 24)",
-    color:"white"}}type="submit" variant="outlined" onClick={(e)=>updateLibraryDetails(e)}>Update</Button>
+                }} checked={writingIsOpen} />} label={writingIsOpen?"Writing is Open":"Writing is Closed"} />
+               <div>
+                <h6>Purpose</h6>
+               <Textarea value={purpose} onChange={(e)=>setPurpose(e.target.value)}/>
+               </div>
+                <Button style={{ marginTop:"2em",backgroundColor: theme.palette.primary.main,
+    color:theme.palette.error.contrastText}}type="submit" variant="outlined" onClick={(e)=>updateLibraryDetails(e)}>Update</Button>
             </FormGroup>
-          
+            <div>
+                <div>
+                    {libraryInView?<IconButton onClick={()=>navigate(`/library/${libraryInView.id}`)}><Visibility/></IconButton>:<div></div>}
+                    {libraryInView?<IconButton onClick={()=>navigate(`/library/${libraryInView.id}/add`)}><Add/></IconButton>:<div></div>}
+                </div>
+                <Button onClick={()=>setOpen(true)}style={{ width:"100%",margin:"auto",marginTop:"4em",backgroundColor: theme.palette.error.main,
+    color:theme.palette.error.contrastText}}>Delete</Button>
+            </div>
         </div>)
+    }
+    const handleDelete = () => {
+        const params = {library:libraryInView}
+        dispatch(deleteLibrary(params)).then(result=>{
+            navigate(`/profile/home`)
+        })
     }
     const updateLibraryDetails = (e) => {
         e.preventDefault();
@@ -174,17 +185,18 @@ function UpdateLibraryContainer(props) {
             writingIsOpen: writingIsOpen 
         }
         dispatch(updateLibrary(params)).then(result=>{
-            const {payload} = result
-            if(payload.error!=null){
-                let error  = window.confirm(`${payload.error.message}`)
-                window.alert(error)
-            }else{
-                let updateed = window.confirm(`Updated`)
-                window.alert(updateed)
-            }
+            checkResult(result,payload=>{
+                let updated = window.confirm(`Updated`)
+                window.alert(updated)
+            },err=>{
+                window.alert(`Error`+err.message)
+
+            })
         })
-        const pageIdList  = itemsInLibrary.filter(item => item.type==="page").map(item => item.item.id)
-        const bookIdList  = itemsInLibrary.filter(item => item.type==="book").map(item => item.item.id)
+        const pIdList  = listItems.filter(item => item.page!==null).map(item => item && item.page && item.page.id)
+        const bIdList  = listItems.filter(item => item.book!==null).map(item => item && item.book && item.book.id)
+        const pageIdList = pIdList.filter(id=>id!=null)
+        const bookIdList = bIdList.filter(id=>id!=null)
         const contentParams = {
             library: libraryInView,
             pageIdList: pageIdList,
@@ -192,10 +204,11 @@ function UpdateLibraryContainer(props) {
         }
 
         dispatch(updateLibraryContent(contentParams)).then((result) =>{
-            let {id }= pathParams
-            if(result.error==null){
-            navigate(`/library/${id}`)
-            }
+            checkResult(result,payload=>{
+                    window.alert("Success Library Content")
+            },err=>{
+                window.alert("Error" +err.message);
+            })
         })
 
         const writers = roleList.filter(role=>role.role==RoleType.writer).map(role=>role.profile.userId)
@@ -207,7 +220,13 @@ function UpdateLibraryContainer(props) {
             commenters,
             editors,
             writers}
-        dispatch(saveRolesForLibrary(roleParams))
+        dispatch(saveRolesForLibrary(roleParams)).then(result=>{
+            checkResult(result,payload=>{
+                window.alert("Roles Saved Successfully")
+            },err=>{
+                window.alert("Error saving roles")
+            })
+        })
 
 
     }
@@ -217,8 +236,8 @@ function UpdateLibraryContainer(props) {
             const {page} = hash
             
         return(
-            <div key={`${hash.uId}`}className="sort-item">
-            <div>{page.title}</div>
+            <div key={`${hash.uId}`}className="list-item">
+            <div>Page:{page.title}</div>
             <Button  onDoubleClick={()=>handleRemove(hash)
             }>Remove</Button>
         </div>)
@@ -226,49 +245,29 @@ function UpdateLibraryContainer(props) {
     }else if(hash.book){
         const {book} = hash
         return(
-            <div key={`${hash.uId}`}className="sort-item">
-            <div>{book.title}</div>
+            <div key={`${hash.uId}`}className="list-item">
+            <div>Book:{book.title}</div>
             <Button  onDoubleClick={()=>handleRemove(hash)
             }>Remove</Button>
         </div>)
     }else{
-            <div key={`${hash.uId}`} className="sort-item">  
+            <div key={`${hash.uId}`} className="list-item">  
             <h1>Page Deleted</h1><Button  onDoubleClick={()=>handleRemove(hash)
             }>Remove</Button></div>
         }
     }
     const contentList = ()=>{
-        if(contentItems!=null){
+        if(libraryInView && (libraryInView.bookIdList.length>0 || libraryInView.pageIdList.length>0)){
         return (<div >
             <InfiniteScroll
-      dataLength={contentItems.length}
+      dataLength={listItems.length}
       next={fetchData}
-      hasMore={hasMore} // Replace with a condition based on your data source
+      hasMore={listItems.length<(libraryInView.bookIdList.length+libraryInView.pageIdList.length)} // Replace with a condition based on your data source
       loader={<p>Loading...</p>}
-      endMessage={<p>No more data to load.</p>}
+      endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
     >
         {listItems.map(item =>{
             return listItem(item)
-        //    let item = itemsInLibrary.find(ha=>{
-        //         return ha.item.id == hash.item.id
-        //     })
-                
-        //         return(<div className="list-item "key={hash.item.id}>
-        //             <div className="item-info">
-        //                 <h5>{hash.type}</h5>
-        //                 <h5>{hash.item.title}</h5>
-        //             </div>
-        //             <input type="checkbox" checked={item} onChange={()=>{
-                        
-        //                     if(item){
-        //                         let newList = itemsInLibrary.filter(  item => item.item.id !== hash.item.id)
-        //                         setItemsInLibrary(newList)
-        //                     }else{
-        //                         setItemsInLibrary(prevState=>[...prevState,hash])
-        //                     }
-                    
-        //             }}/>
-        //         </div>)
         })}
     </InfiniteScroll>
         </div>)}else{
@@ -293,18 +292,36 @@ function UpdateLibraryContainer(props) {
             {libraryInfo()}
             </div>
             <div>
-                <RoleList item={libraryInView} type="library" getRoles={(roleList) => {
+               {libraryInView? <RoleList item={libraryInView} type="library" getRoles={(roleList) => {
                 
                 setRoleList(roleList)
-                }}/>
+                }}/>:<div></div>}
                   
             </div>
           </div>
         </div>
-
+        <Dialog
+        open={open}
+        onClose={()=>setOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Deleting?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this page?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>setOpen(false)}>Disagree</Button>
+          <Button onClick={()=>handleDelete()} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>)
 }
-function onlyUnique(value, index, array) {
-    return array.indexOf(value) === index;
-  }
+
 export default UpdateLibraryContainer

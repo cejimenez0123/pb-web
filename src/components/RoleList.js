@@ -18,7 +18,6 @@ import checkResult from "../core/checkResult"
 export default function RoleList({getRoles,item,type}) {
     const dispatch = useDispatch()
     const [newRoles, setNewRoles ]= useState([])
-    const libraryRoles = useSelector(state=>state.libraries.libraryRoles)
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const editingPage = useSelector(state=>state.pages.editingPage)
     const [profileHasMore,setProfileHasMore]= useState(false)
@@ -62,7 +61,7 @@ export default function RoleList({getRoles,item,type}) {
     
     useEffect(()=>{
         fetchProfiles()
-    },[])
+    },[item])
     useEffect(()=>{
         getRoles(newRoles)
     },[newRoles]) 

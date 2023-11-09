@@ -411,16 +411,16 @@ const saveRolesForPage = createAsyncThunk("books/saveRolesForPage",async (params
      })
      const contributors= new Contributors(commenters,readers,writers,editors)
            
-     return {page: new Page( page.id,
-                         page.purpose,
-                         page.title,
-                         page.profileId,
-                         page.pageIdList,
-                         page.privacy,
-                         page.writingIsOpen,
-                         page.type,
-                         contributors,
-                         page.created
+     return {page: new Page(  page.id,
+                              page.title,
+                              page.data,
+                              page.profileId,
+                              page.approvalScore,
+                              page.privacy,
+                              page.commentable,
+                              page.type,
+                              contributors,
+                              page.created
 )}
 
 

@@ -11,6 +11,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import theme from '../theme'
 import { updateLibraryContent } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
+import Paths from '../core/paths'
 // import {useBottomScrollListener} from "react-bottom-scroll-listener"
   let size= {width: window.innerWidth,height: window.innerHeight}
 
@@ -184,7 +185,7 @@ const pageDataElement=()=>{
             <MenuItem disabled={!currentProfile} onClick={()=>{
                  const params = {pageList:[page]}
                  dispatch(setPagesToBeAdded(params))
-                 navigate("/book/new")
+                 navigate("/library/new")
             }}>
                 Add to Library
                         </MenuItem>
@@ -198,9 +199,14 @@ const pageDataElement=()=>{
                     >
                           Copy Share Link
                         </MenuItem>
+                        {(currentProfile.id == page.profileId )?
+            <MenuItem onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</MenuItem>:<div></div>}
+                
             <MenuItem onClick={onBookmarkPage}disabled={!currentProfile}> 
             {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
             </MenuItem>
+           
+            
           </Menu>
         </Dropdown>
             </div>

@@ -17,6 +17,7 @@ import ProfileContainer from './container/ProfileContainer';
 import PicturePageContainer from './container/PicturePageContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/AddPageToBookContainer';
+import AddItemsToLibraryContainer from './container/AddItemsToLibraryContainer';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
 import {  getPublicBooks } from './actions/BookActions';
@@ -35,7 +36,7 @@ import LoggedRoute from './LoggedRoute';
 import EditBookContainer from './container/EditBookContainer';
 import LibraryViewContainer from './container/LibraryViewContainer';
 import useAuth from './core/useAuth';
-
+import Paths from './core/paths';
 function App(props) {
   const authState = useAuth()
   useEffect(()=>{
@@ -88,7 +89,7 @@ function App(props) {
       <NavbarContainer loggedIn={props.currentProfile} profile={props.currentProfile}/>
 
         <Routes history={history} >
-      <Route exact path="/" element={
+      <Route exact path={Paths.home()} element={
       <DashboardContainer getPublicPages={props.getPublicPages} pagesInView={props.pagesInView}/>
       } />
       
@@ -112,7 +113,7 @@ function App(props) {
 
         
       <Route
-      path="/profile/home"
+      path={Paths.myProfile()}
       element={
         <PrivateRoute loggedIn={!!props.currentProfile}>
           <MyProfileContainer currentProfile={props.currentProfile} 
@@ -195,6 +196,11 @@ function App(props) {
       <Route path="/book/:id/add" element={
         <PrivateRoute loggedIn={!!props.currentProfile}>
           <AddPageToBookContainer/>
+        </PrivateRoute>
+      }/>
+      <Route path="/library/:id/add" element={
+        <PrivateRoute loggedIn={!!props.currentProfile}>
+          <AddItemsToLibraryContainer/>
         </PrivateRoute>
       }/>
       

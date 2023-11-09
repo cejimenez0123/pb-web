@@ -9,7 +9,9 @@ import {    getProfileLibraries,
             fetchArrayOfLibraries,
             fetchArrayOfLibrariesAppend,
             clearLibrariesInView,
-            setBookmarkLibrary} from "../actions/LibraryActions"
+            setBookmarkLibrary,
+            saveRolesForLibrary,
+            updateLibraryContent} from "../actions/LibraryActions"
 import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
     librariesInView:[Library],
@@ -86,8 +88,20 @@ builder
         state.librariesInView = [...state.librariesInView,...payload.libraryList]
     }).addCase(clearLibrariesInView.type,(state)=>{
         state.librariesInView = []
+    }).addCase(updateLibraryContent.fulfilled,(state,{payload})=>{
+        if(payload.library){
+            state.libraryInView = payload.library
+        }
+    }).addCase(updateLibraryContent.rejected,(state,{payload})=>{
+        state.error = payload.error
     }).addCase(setBookmarkLibrary.type,(state,{payload})=>{
         state.bookmarkLibrary = payload.library
+    }).addCase(saveRolesForLibrary.fulfilled,(state,{payload})=>{
+        if(payload.library){
+        state.libraryInView = payload.library
+        }
+    }).addCase(saveRolesForLibrary.rejected,(state,{payload})=>{
+        state.error = payload.error
     })
 }})
 export default libSlice
