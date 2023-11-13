@@ -21,6 +21,25 @@ import "../App.css"
 import checkResult from "../core/checkResult"
 import Add from "@mui/icons-material/Add"
 import { IconButton } from "@mui/joy"
+// const useStyles = makeStyles({
+//     pokemonCardsArea: {
+//       paddingTop: "30px",
+//       paddingLeft: "15%",
+//       paddingRight: "15%",
+//       width: "100%"
+//     },
+//     pokemonImage: {
+//       height: "160px",
+//       width: "160px"
+//     },
+//     progress: {
+//       position: "fixed",
+//       top: "50%",
+//       left: "50%",
+//       marginTop: "-100px",
+//       marginLeft: "-100px"
+//     }
+//   });
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -56,6 +75,9 @@ function LibraryViewContainer(props){
         }
         
     },[])
+    useEffect(()=>{
+        isFollowing()
+    },[libraryInView])
     const isFollowing = () =>{
         if(currentProfile && libraryInView){
             const params = {
@@ -147,7 +169,7 @@ function LibraryViewContainer(props){
             let owner = libraryInView.profileId == currentProfile.id
             let writer =libraryInView.writers.find(id=>currentProfile.userId==id)
             let editor = libraryInView.editors.find(id=>currentProfile.userId==id)
-           if(Boolean(owner)||Boolean(writer)||Boolean(editor)){
+           if(Boolean(owner)||Boolean(writer)||Boolean(editor)||libraryInView.writingIsOpen){
             return (<IconButton onClick={()=>{
             setLibraryInView({library:libraryInView})
             navigate(`/library/${libraryInView.id}/add`)

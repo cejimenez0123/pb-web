@@ -30,7 +30,7 @@ function AddItemsToLibraryContainer(){
     const [sortAlpha,setSortAlpha] = useState(false)
     const [sortTime,setSortTime] = useState(false)
     const getBooks =()=>{
-        if(currentProfile && libraryInView){
+        if(currentProfile){
             setHasMore(true)
             const params = {profile: currentProfile}
             dispatch(getProfileBooks(params)).then(result => checkResult(result,payload=>{
@@ -62,24 +62,20 @@ function AddItemsToLibraryContainer(){
     
     const getLibrary=()=>{
         const {id}=pathParams
-        if(libraryInView!=null && libraryInView.id!=id){
-            const params={id}
-            dispatch(fetchLibrary(params)).then(result=>checkResult(result,payload=>{
-                const{library}=payload
-                fetchData()
-            },err=>{}))
-        }else if(libraryInView==null){
-            const params={id}
-            dispatch(fetchLibrary(params)).then(result=>checkResult(result,payload=>{
-                const{library}=payload
-                fetchData()
-            },err=>{}))
-        }else if(libraryInView && libraryInView.id==id){
-            fetchData()
+        if(libraryInView==null || libraryInView.id != id){
+            dispatch(fetchLibrary(pathParams)).then(result=>checkResult(
+                result,payload=>{
+                },err=>{
+
+                }
+            ))
         }
     }
     useEffect(()=>{
         getLibrary()
+    },[])
+    useEffect(()=>{
+        fetchData()
     },[])
     const fetchData=()=>{
         setListItems([])

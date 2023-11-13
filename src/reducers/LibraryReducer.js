@@ -11,7 +11,8 @@ import {    getProfileLibraries,
             clearLibrariesInView,
             setBookmarkLibrary,
             saveRolesForLibrary,
-            updateLibraryContent} from "../actions/LibraryActions"
+            updateLibraryContent,
+            deleteLibrary} from "../actions/LibraryActions"
 import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
     librariesInView:[Library],
@@ -102,6 +103,10 @@ builder
         }
     }).addCase(saveRolesForLibrary.rejected,(state,{payload})=>{
         state.error = payload.error
+    }).addCase(deleteLibrary.rejected,(state,{payload})=>{
+        state.error = payload.error
+    }).addCase(deleteLibrary.fulfilled,(state,{payload})=>{
+        state.libraryInView = null
     })
 }})
 export default libSlice

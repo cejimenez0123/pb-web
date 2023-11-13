@@ -12,6 +12,7 @@ const Paths ={
     addPagesToBook:(id)=>{return `/book/${id}/add`},
     addItemsToLibrary:(id)=>{return `/library/${id}/add`},
     home:()=>{return `/`},
+    about:()=>{return `/about`},
     profile:{route:()=>{return `/profile/:id`},
             createRoute:(id)=>{return `/profile/${id}`}},
     myProfile:()=>{return `/profile/home`}

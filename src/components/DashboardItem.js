@@ -3,15 +3,19 @@ import "../Dashboard.css"
 import { setPageInView, setPagesToBeAdded } from '../actions/PageActions'
 import { PageType } from '../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
-import { Dropdown,Menu ,MenuItem} from '@mui/joy'
+import { Dropdown,Menu ,MenuItem,} from '@mui/joy'
 import { useNavigate } from 'react-router-dom'
-import { Button } from '@mui/material'
+import { Button, IconButton } from '@mui/material'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import theme from '../theme'
 import { updateLibraryContent } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
 import Paths from '../core/paths'
+
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import { Visibility } from '@mui/icons-material'
 // import {useBottomScrollListener} from "react-bottom-scroll-listener"
   let size= {width: window.innerWidth,height: window.innerHeight}
 
@@ -20,12 +24,14 @@ function DashboardItem({page,book}) {
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
+    const [expanded,setExpanded]=useState(false)
     const profile = useSelector(state=>state.users.profilesInView).find(prof=>{
-       return prof.id == page.profileId
+       return prof!=null&& prof.id == page.profileId
     })
+    const [contentItemEl,setContentItemEl] = useState(null)
+    const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState(null)
     const [anchorEl,setAnchorEl]= useState(null)
-    const anchorRef = React.useRef(null);
     const handleToggle = (e) => {
      setAnchorEl(prevState=>{
         if(prevState==null){
@@ -35,9 +41,15 @@ function DashboardItem({page,book}) {
         }
      })
       };
+
+useEffect(()=>{
+    if(contentItemEl){
+        setOverflowActive(contentItemEl.offsetHeight < contentItemEl.scrollHeight)
+    }
+},[])
 useEffect(()=>{
 
-    if(bookmarkLibrary){
+    if(bookmarkLibrary && page){
         let found = bookmarkLibrary.pageIdList.find(id=>id==page.id)
         setBookmarked(Boolean(found))
     }
@@ -46,20 +58,28 @@ useEffect(()=>{
 
 const hanldeClickComment=(pageItem)=>{
     
-   
+  if(pageItem){ 
     const params = {
         page: pageItem
     }
     dispatch(setPageInView(params))
     navigate(`/page/${pageItem.id}`)
+}
 }   
 const contentStyle={
     backgroundColor:"white"
 }
+// let shrunkStyle={maxHeight:"30em",overflow:"hidden",textOverflow: "ellipsis",}
 const pageDataElement=()=>{
     if(page){
+        
     if(page.type==PageType.text){
-        return( <div  className='text' dangerouslySetInnerHTML={{__html:page.data}}></div>)   }else if(page.type==PageType.picture){
+
+        return( <div>
+            <div ref={
+            (el)=>setContentItemEl(el)
+        } className='text' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        </div>)   }else if(page.type==PageType.picture){
     }
     if(page.type==PageType.picture){
         return(<img  src={page.data} alt={page.title}/>)
@@ -75,7 +95,22 @@ const pageDataElement=()=>{
         </div>)
     }
 }
-
+const expandedBtn =()=>{
+    if(overflowActive && !expanded){
+    
+    return <Button onClick={()=>setExpanded(true)}>See More</Button>
+    }
+    else if(expanded){
+return <Button onClick={()=>{
+    setExpanded(false)
+}}>See Less</Button>
+        }else if(overflowActive){
+            return <Button onClick={()=>setExpanded(true)}>See More</Button>
+        }
+   else{
+    return <div></div>
+   }
+}
     let profileDiv = (<div>
 
     </div>)
@@ -126,6 +161,7 @@ const pageDataElement=()=>{
             }
         }><p>{book.title} {">"}</p></a>)
     }
+    if(page){
         return(<div className='content-item'>
         
             <div className='dashboard-header'>
@@ -141,6 +177,7 @@ const pageDataElement=()=>{
                 {pageDataElement()}
             
             <div className='btn-row'>
+                
                 <Button disabled={!currentProfile} 
                      style={{color: theme.palette.info.contrastText,
                         backgroundColor: currentProfile? theme.palette.info.main:theme.palette.info.disabled}}
@@ -168,6 +205,7 @@ const pageDataElement=()=>{
           >
         Share
           </Button>
+        
           <Menu 
               id="menu"
               
@@ -199,7 +237,7 @@ const pageDataElement=()=>{
                     >
                           Copy Share Link
                         </MenuItem>
-                        {(currentProfile.id == page.profileId )?
+                        {(currentProfile && currentProfile.id == page.profileId )?
             <MenuItem onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</MenuItem>:<div></div>}
                 
             <MenuItem onClick={onBookmarkPage}disabled={!currentProfile}> 
@@ -209,8 +247,15 @@ const pageDataElement=()=>{
             
           </Menu>
         </Dropdown>
-            </div>
+       {/* {expandedBtn()} */}
+        
+  </div>
+  </div>
+     )}else{
+        return(<div>
+            Loading...
         </div>)
+     }
 
 }
 

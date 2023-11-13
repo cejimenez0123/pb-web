@@ -37,6 +37,7 @@ import EditBookContainer from './container/EditBookContainer';
 import LibraryViewContainer from './container/LibraryViewContainer';
 import useAuth from './core/useAuth';
 import Paths from './core/paths';
+import AboutContainer from './container/AboutContainer';
 function App(props) {
   const authState = useAuth()
   useEffect(()=>{
@@ -110,7 +111,9 @@ function App(props) {
             />
           </LoggedRoute>}
      />
-
+      <Route path={Paths.about()} element={
+   <AboutContainer/>
+      }/>
         
       <Route
       path={Paths.myProfile()}

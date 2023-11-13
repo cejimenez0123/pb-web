@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useSelector,useDispatch } from "react-redux"
-import { fetchBook} from "../actions/BookActions"
-import { clearPagesInView,fetchPage} from "../actions/PageActions"
+import { fetchBook,fetchArrayOfBooks} from "../actions/BookActions"
+import {fetchArrayOfPages, fetchPage} from "../actions/PageActions"
 import {    updateLibrary,
             fetchLibrary,
             saveRolesForLibrary,
@@ -9,23 +9,22 @@ import {    updateLibrary,
             deleteLibrary,
         } from "../actions/LibraryActions"
 import { useParams,useNavigate } from "react-router-dom"
-
 import InfiniteScroll from "react-infinite-scroll-component"
 import RoleList from "../components/RoleList"
 import "../styles/UpdateLibrary.css"
 import {Checkbox , Button, FormGroup, TextField,FormControlLabel,IconButton } from "@mui/material"
 import { RoleType } from "../core/constants"
-import useAuth from "../core/useAuth"
 import checkResult from "../core/checkResult"
 import uuidv4 from "../core/uuidv4"
 import { Textarea } from "@mui/joy"
 import theme from "../theme"
-import { Add, Visibility } from "@mui/icons-material"
+import { Add,Visibility } from "@mui/icons-material"
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Paths from "../core/paths"
 function UpdateLibraryContainer(props) {
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -35,101 +34,123 @@ function UpdateLibraryContainer(props) {
     const [writingIsOpen,setWritingIsOpen]=useState(false)
     const [privacy,setPrivacy]=useState(false)
     const [purpose,setPurpose]=useState("")
-    const [hasMore,setHasMore]=useState(true)
+    const [hasMore,setHasMore]=useState(false)
     const [open,setOpen]=useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const pagesInView = useSelector(state=>state.pages.pagesInView)
-    const booksInView = useSelector(state=>state.books.booksInView)
     const [roleList,setRoleList]=useState([])
     const [listItems,setListItems]=useState([])
     const { id } = pathParams
  
     useEffect(()=>{
-        if(libraryInView && libraryInView.id === id){
-            setLibrary()
-            fetchData()
-        }else {
-            start()
-        }
+        if(libraryInView==null || (libraryInView && libraryInView.id !==id)){
+            start() 
+        }else{
+            setLibrary(libraryInView)
+        } 
     },[])
     const start =()=>{
-        dispatch(fetchLibrary(pathParams)).then((result)=>{
-            setLibrary()
-            dispatch(clearPagesInView())
-            
-          
-        })
-    }
-    const setLibrary=()=>{
-        if(libraryInView ){
-            setLibraryName(libraryInView.name)
-            setWritingIsOpen(libraryInView.writingIsOpen)
-            setPrivacy(libraryInView.privacy)
-            setPurpose(libraryInView.purpose)
+        dispatch(fetchLibrary(pathParams)).then(result=>checkResult(result,payload=>{
+            const {library }=payload
+            setLibrary(library)   
+        },err=>{
 
+        })
+        )
+    }
+ 
+    const setLibrary=(library)=>{
+        if(library){
+            setLibraryName(library.name)
+            setWritingIsOpen(library.writingIsOpen)
+            setPrivacy(library.privacy)
+            setPurpose(library.purpose)
         }
     }
-   
+    useEffect(()=>{
+        if(libraryInView && libraryInView.id==id){
+            fetchData(libraryInView)
+        }else{
+            dispatch(fetchLibrary(pathParams)).then(result=>checkResult(result,
+                payload=>{
+                    const {library}=payload
+                    fetchData(library)
+                },err=>{
+                    
+                }))
+        }},[])
 
-
-    const fetchBooks =()=>{
-        if(libraryInView && libraryInView.bookIdList.length>0){
-            libraryInView.bookIdList.forEach(bId=>{
+    const fetchBooks =(libraryItem)=>{
+        // dispatch(fetchArrayOfBooks({bookIdList:libraryItem.bookIdList})).then(result=>checkResult(result,payload=>{
+        //     const {bookList}=payload
+        //     console.log(listItems.length)
+        //     console.log(bookList.length)
+        //     setListItems(prevState=>{return[...prevState,...bookList]})
+        //     setHasMore(false)
+        //     console.log(listItems.length)
+        // },err=>{}))
+            libraryItem.bookIdList.forEach((bId,i)=>{
                 const params ={
                     id: bId
                 }
-                setHasMore(true)
+               
                 dispatch(fetchBook(params)).then(result=>checkResult(result,payload=>{
                         const {book}=payload;
-                        if(book){
+                     
                         let uId = `${book.id}_${uuidv4()}`
-                        const item = {uId:uId,book:book }
+                        const item = {uId:uId,index:i,book:book}
+                        let found = listItems.find(hash=>{return (hash.index === item.index) && (hash.book==item.book)}) 
+                        if(!Boolean(found)){
                         setListItems(prevState=>[...prevState,item])
-                        setHasMore(false)
                         }
+                        setHasMore(false)
+                        
                 },err=>{
                     setHasMore(false)
                 }))
-            })}else{
-                    setHasMore(false)
-                }
-            }
+               
+            })
+            
+        }
+        
         
     const handleRemove = (item)=>{
         let list =listItems
         let newList = list.filter(i=>{return item.uId !== i.uId})
-        setListItems(newList)
-            
-                
+        setListItems(newList)    
     }
-    const fetchPages=()=>{
-        if(libraryInView && libraryInView.pageIdList.length>0){
-            setHasMore(true)
-            libraryInView.pageIdList.forEach(pId=>{
+    const fetchPages=(libraryItem)=>{
+
+//         dispatch(fetchArrayOfPages({pageIdList:libraryItem.pageIdList})).then(result=>checkResult(result,payload=>{
+// const {pageList}=payload
+//             setListItems(prevState=>{return[...prevState,...pageList]})
+//             setHasMore(false)
+//         },err=>{
+
+//         }))
+        libraryItem.pageIdList.forEach((pId,i)=>{
                 dispatch(fetchPage({id:pId})).then(result=>checkResult(result,payload=>{
                     const {page}= payload
-                    if(page){
-                    let item = {uId:`${page.id}_${uuidv4()}`,page:page}
-                    setListItems(prevState=>[...prevState,item])
-                    setHasMore(false)
-                    }
+            
+
+                        const item = {uId:`${page.id}_${uuidv4()}`,index:i,page:page}
+                        let found = listItems.find(hash=>{return (hash.index === item.index) && (hash.page===item.page)}) 
+                    if(!Boolean(found)){
+                        setListItems(prevState=>[...prevState,item])
+                   }
+                        setHasMore(false)
                 },err=>{
                     setHasMore(false)
-                }))
-            })
-        }else{
-            setHasMore(false)
-        }
-                
+                }
+            ))
+        })
+     
+    }
 
-}
-
-    const fetchData = () =>{
-        if(currentProfile){
-            setListItems([])
-            fetchPages()
-            fetchBooks()
-        }
+    const fetchData = (libraryItem) =>{
+        setListItems([])
+        fetchPages(libraryItem)
+        fetchBooks(libraryItem)
+        
     }
     const libraryInfo=()=>{
         return (<div className="info create">
@@ -170,9 +191,11 @@ function UpdateLibraryContainer(props) {
     }
     const handleDelete = () => {
         const params = {library:libraryInView}
-        dispatch(deleteLibrary(params)).then(result=>{
-            navigate(`/profile/home`)
-        })
+        dispatch(deleteLibrary(params)).then(result=>checkResult(result,payload=>{
+            navigate(Paths.myProfile())
+        },err=>{
+
+        }))
     }
     const updateLibraryDetails = (e) => {
         e.preventDefault();
@@ -186,47 +209,53 @@ function UpdateLibraryContainer(props) {
         }
         dispatch(updateLibrary(params)).then(result=>{
             checkResult(result,payload=>{
-                let updated = window.confirm(`Updated`)
-                window.alert(updated)
+                const {library}=payload
+                window.alert(`Updated Library Details`)
+                const pIdList  = listItems.filter(item => item.page!==null).map(item => item && item.page && item.page.id)
+                const bIdList  = listItems.filter(item => item.book!==null).map(item => item && item.book && item.book.id)
+                const pageIdList = pIdList.filter(id=>id!=null)
+                const bookIdList = bIdList.filter(id=>id!=null)
+                const contentParams = {
+                    library: library,
+                    pageIdList: pageIdList,
+                    bookIdList: bookIdList
+                }
+                
+                dispatch(updateLibraryContent(contentParams)).then((result) =>{
+                    checkResult(result,payload=>{
+                            window.alert("Success Library Content")
+                            const {library}=payload
+                            const writers = roleList.filter(role=>role.role==RoleType.writer).map(role=>role.profile.userId)
+                            const editors = roleList.filter(role=>role.role==RoleType.editor).map(role=>role.profile.userId)
+                            const commenters = roleList.filter(role=>role.role==RoleType.commenter).map(role=>role.profile.userId)
+                            const readers = roleList.filter(role=>role.role==RoleType.reader).map(role=>role.profile.userId)
+                            const roleParams = {library:library,
+                                readers,
+                                commenters,
+                                editors,
+                                writers}
+                            dispatch(saveRolesForLibrary(roleParams)).then(result=>{
+                                checkResult(result,payload=>{
+                                    window.alert("Roles Saved Successfully")
+                                },err=>{
+                                    window.alert("Error saving roles")
+                                })
+                            })
+
+
+                    },err=>{
+                        window.alert("Error" +err.message);
+                    })
+                })
+              
             },err=>{
-                window.alert(`Error`+err.message)
+                window.alert(`Error:`+err.message)
 
             })
         })
-        const pIdList  = listItems.filter(item => item.page!==null).map(item => item && item.page && item.page.id)
-        const bIdList  = listItems.filter(item => item.book!==null).map(item => item && item.book && item.book.id)
-        const pageIdList = pIdList.filter(id=>id!=null)
-        const bookIdList = bIdList.filter(id=>id!=null)
-        const contentParams = {
-            library: libraryInView,
-            pageIdList: pageIdList,
-            bookIdList: bookIdList
-        }
+       
 
-        dispatch(updateLibraryContent(contentParams)).then((result) =>{
-            checkResult(result,payload=>{
-                    window.alert("Success Library Content")
-            },err=>{
-                window.alert("Error" +err.message);
-            })
-        })
-
-        const writers = roleList.filter(role=>role.role==RoleType.writer).map(role=>role.profile.userId)
-        const editors = roleList.filter(role=>role.role==RoleType.editor).map(role=>role.profile.userId)
-        const commenters = roleList.filter(role=>role.role==RoleType.commenter).map(role=>role.profile.userId)
-        const readers = roleList.filter(role=>role.role==RoleType.reader).map(role=>role.profile.userId)
-        const roleParams = {library:libraryInView,
-            readers,
-            commenters,
-            editors,
-            writers}
-        dispatch(saveRolesForLibrary(roleParams)).then(result=>{
-            checkResult(result,payload=>{
-                window.alert("Roles Saved Successfully")
-            },err=>{
-                window.alert("Error saving roles")
-            })
-        })
+        
 
 
     }
@@ -261,8 +290,8 @@ function UpdateLibraryContainer(props) {
         return (<div >
             <InfiniteScroll
       dataLength={listItems.length}
-      next={fetchData}
-      hasMore={listItems.length<(libraryInView.bookIdList.length+libraryInView.pageIdList.length)} // Replace with a condition based on your data source
+      next={()=>fetchData(libraryInView)}
+      hasMore={hasMore} 
       loader={<p>Loading...</p>}
       endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
     >

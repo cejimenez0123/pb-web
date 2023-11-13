@@ -1,0 +1,69 @@
+#about {
+    color:white;
+}
+#welcome{
+    color:white;
+    font-size: 4em;
+    text-align: center;
+}
+#about .container{
+    display: grid;
+    grid-template-columns: 30% 60%;
+}
+#about section{
+    background-color: var(--background-light);
+    margin-top: 2em;
+}
+section ul{
+    padding: 2em;
+    font-size: large;
+}
+section #ready{
+    font-size: 2em;
+    text-align: center;
+    padding-bottom: 2em;
+}
+#about section.box{
+    background-color: var(--background-light);
+
+    /* margin: 1em 3em; */
+    font-size: large;
+    display: flex;
+    flex-direction: row;
+}
+
+.box .details{
+    margin: 1em 2em 2em 2em
+}
+.request p{
+    font-size: large;
+}
+#about .welcome{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    display: flex;
+    flex-direction: row;
+}
+#welcome{
+    padding: 1em 2em;
+}
+#about{
+    margin: 2em 4em;
+}
+
+img[alt="bookshelves"]{
+    object-fit: cover;
+    height: 30em;
+    width: 70em;
+}
+#bookshelf{
+    height: 30em;
+    width: 70%;
+    overflow: hidden;
+}
+#image-container1 #book1{
+    object-fit: cover;
+}
+#image-container1 {
+    height: 15em;
+    overflow: hidden;
+}

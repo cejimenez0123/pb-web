@@ -2,8 +2,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { useState,useEffect } from "react"
 import { Button, IconButton, MenuItem } from "@mui/material"
 import CommentInput from "../components/CommentInput"
-import { MoreHoriz, MoreVert } from "@mui/icons-material"
-import { Dropdown, Menu, MenuButton } from "@mui/joy"
+import { MoreHoriz} from "@mui/icons-material"
+import { Dropdown, Menu } from "@mui/joy"
 import { deleteComment } from "../actions/PageActions"
 export default function CommentItem({page,comment}){
     let profileDiv = (<div></div>)

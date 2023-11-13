@@ -8,12 +8,17 @@
   --dark:#183306;
   --medium:#375E1D;
   --secondary: #67914A;
+  --background-light:#6463633c;
   --large-list-item-width: 35em;
   --small-list-item-width:10em;
+
 }
 html, body {
-  background-image: radial-gradient(#487e4c,white);
+  background-color: #2b2b2b!important;
 }
+/* html, body {
+  background-image: radial-gradient(#487e4c,white);
+} */
 .App-logo {
   height: 40vmin;
   pointer-events: none;

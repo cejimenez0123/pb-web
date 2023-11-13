@@ -527,6 +527,7 @@ const deleteLibrary = createAsyncThunk("libraries/deleteLibrary", async (params,
   try{
     const {library }=params
   await deleteDoc(doc(db, "library", library.id));
+    return {library}
   }catch(e){
     return {error: new Error("Error: Delete Library"+e.message)};
   }

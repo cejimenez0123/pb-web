@@ -836,6 +836,186 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
         comment:newComment
       }
   })
+  const fetchPagesWhereProfileWriter = createAction("books/fetchBooksWhereProfileEditor",(params,thunkApi)=>{
+    try{
+    const ref = collection(db,"page")
+    let snapshot = query(ref,
+         where('writers', 'array-contains', auth.currentUser.uid),
+    )
+    let pageList = []
+      snapshot.docs.forEach(doc => {
+                const pack = doc.data();
+                const { id } = doc;
+                const title =pack["title"]
+                const data = pack["data"]
+                const profileId = pack["profileId"]
+                const approvalScore = pack["approvalScore"]
+                const privacy = pack["privacy"]
+                const type = pack["type"]
+                const created = pack["created"]
+                let commentable = pack["commentable"]
+                let commenters = pack["commenters"]
+                let editors = pack["editors"]
+                let readers = pack["readers"]
+                let writers = pack["writers"]
+              if(!editors){
+                editors = []
+              }
+              if(!commenters){
+                commenters = []
+              }
+              if(!readers){
+                  readers=[]
+              }
+              if(!writers){
+                writers=[]
+              }
+              if(commentable==null){
+                commentable=true
+              }
+              const contributors= new Contributors(commenters,
+                readers,writers,editors)
+                const page = new Page(  id,
+                                        title,
+                                        data,
+                                        profileId,
+                                        approvalScore,
+                                        privacy,
+                                        commentable,
+                                        type,
+                                        contributors, 
+                                        created)
+              pageList = [...pageList, page]
+            })
+    return {
+      pageList: pageList,
+    }
+  }catch(e){
+    return {
+      error: e
+    }
+  }
+  })
+  const fetchPagesWhereProfileEditor = createAsyncThunk("books/fetchBooksWhereProfileEditor",(params,thunkApi)=>{
+    try{
+    const ref = collection(db,"page")
+    let snapshot = query(ref,
+         where('editors', 'array-contains', auth.currentUser.uid),
+    )
+    let pageList = []
+      snapshot.docs.forEach(doc => {
+                const pack = doc.data();
+                const { id } = doc;
+                const title =pack["title"]
+                const data = pack["data"]
+                const profileId = pack["profileId"]
+                const approvalScore = pack["approvalScore"]
+                const privacy = pack["privacy"]
+                const type = pack["type"]
+                const created = pack["created"]
+                let commentable = pack["commentable"]
+                let commenters = pack["commenters"]
+                let editors = pack["editors"]
+                let readers = pack["readers"]
+                let writers = pack["writers"]
+              if(!editors){
+                editors = []
+              }
+              if(!commenters){
+                commenters = []
+              }
+              if(!readers){
+                  readers=[]
+              }
+              if(!writers){
+                writers=[]
+              }
+              if(commentable==null){
+                commentable=true
+              }
+              const contributors= new Contributors(commenters,
+                readers,writers,editors)
+                const page = new Page(  id,
+                                        title,
+                                        data,
+                                        profileId,
+                                        approvalScore,
+                                        privacy,
+                                        commentable,
+                                        type,
+                                        contributors, 
+                                        created)
+              pageList = [...pageList, page]
+            })
+    return {
+      pageList: pageList,
+    }
+  }catch(e){
+    return {
+      error: e
+    }
+  }
+  })
+  const fetchPagesWhereProfileCommenters= createAsyncThunk("books/fetchBooksWhereProfileEditor",(params,thunkApi)=>{
+    try{
+    const ref = collection(db,"page")
+    let snapshot = query(ref,
+         where('commenters', 'array-contains', auth.currentUser.uid),
+    )
+    let pageList = []
+      snapshot.docs.forEach(doc => {
+                const pack = doc.data();
+                const { id } = doc;
+                const title =pack["title"]
+                const data = pack["data"]
+                const profileId = pack["profileId"]
+                const approvalScore = pack["approvalScore"]
+                const privacy = pack["privacy"]
+                const type = pack["type"]
+                const created = pack["created"]
+                let commentable = pack["commentable"]
+                let commenters = pack["commenters"]
+                let editors = pack["editors"]
+                let readers = pack["readers"]
+                let writers = pack["writers"]
+              if(!editors){
+                editors = []
+              }
+              if(!commenters){
+                commenters = []
+              }
+              if(!readers){
+                  readers=[]
+              }
+              if(!writers){
+                writers=[]
+              }
+              if(commentable==null){
+                commentable=true
+              }
+              const contributors= new Contributors(commenters,
+                readers,writers,editors)
+                const page = new Page(  id,
+                                        title,
+                                        data,
+                                        profileId,
+                                        approvalScore,
+                                        privacy,
+                                        commentable,
+                                        type,
+                                        contributors, 
+                                        created)
+              pageList = [...pageList, page]
+            })
+    return {
+      pageList: pageList,
+    }
+  }catch(e){
+    return {
+      error: e
+    }
+  }
+  })
   export {getPublicPages,
           pagesLoading,
           setHtmlContent,
@@ -858,5 +1038,8 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           clearEditingPage,
           appendComment,
           updateComment,
-          fetchAppendPagesOfProfile
+          fetchAppendPagesOfProfile,
+          fetchPagesWhereProfileCommenters,
+          fetchPagesWhereProfileEditor,
+          fetchPagesWhereProfileWriter
         } 

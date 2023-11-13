@@ -1,16 +1,17 @@
 import React ,{useState,useEffect}from 'react'
 import "../App.css"
-import { getPublicPages,fetchArrayOfPagesAppened, fetchAppendPagesOfProfile  } from '../actions/PageActions'
+import { getPublicPages,fetchArrayOfPagesAppened, fetchAppendPagesOfProfile, fetchPagesWhereProfileCommenters  } from '../actions/PageActions'
 import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import {  fetchArrayOfBooksAppened } from '../actions/BookActions'
+import {  fetchArrayOfBooksAppened, fetchBooksWhereProfileEditor, fetchBooksWhereProfileWriter } from '../actions/BookActions'
 import { fetchHomeCollection } from '../actions/UserActions'
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
 import ErrorBoundary from '../ErrorBoundary'
 import { clickMe } from '../actions/UserActions'
 import checkResult from '../core/checkResult'
 import { Button } from '@mui/material'
+import { current } from '@reduxjs/toolkit'
 
 function DashboardContainer(props){
     const dispatch = useDispatch()
@@ -24,34 +25,36 @@ function DashboardContainer(props){
     const [itemsInView,setItemsInView] = useState([])
     const [hasMore,setHasMore] = useState(false)
     const [hasError,setHasError] = useState(false)
-    const [initialState,setInitialState] = useState(true)
     useEffect(()=>{
+        if(currentProfile){
         const params = {
             profile:currentProfile
         }
         dispatch(fetchHomeCollection(params))
+    }
     },[])
    
-    useEffect(()=>{fetchData()},[homeCollection])
+    useEffect(()=>{
+        
+        fetchData()}
+    
+    
+    ,[])
     const fetchPublicContent =()=>{
         setHasMore(true)
+        setItemsInView([])
         dispatch(getPublicPages()).then(result=>{
-            if(result.error == null){
-                const {payload }= result
-                if(payload.error == null){
-                    const {pageList }= payload
+            checkResult(result,payload=>{
+                setHasError(false)
+                const {pageList }= payload
                     let items = pageList.map(page=>{return {type:"page",page: page}})
-                    setItemsInView(prevState=>[...prevState,...items])
-                }else{
-                    setHasError(true)
-                }
-                }else{
-                    setHasMore(true)
-                }
-                setHasMore(false)
-        }).catch(error=>{
-            setHasMore(false)
-        })
+                    items = items.filter(item=>{return item.page!==null})
+                    setItemsInView(items)
+                    
+                },err=>{
+                    setHasError(Boolean(err))
+                })})
+    
     }
     const getLibraries=()=>{
         if(currentProfile){
@@ -93,7 +96,6 @@ function DashboardContainer(props){
             }else{
                 if(homeCollection && homeCollection.books){
                     setHasMore(true)
-                    // let bookIdList = followedBooks.map(fb=>fb.bookId)
                     const params = {
                         bookIdList:homeCollection.books,
                         profile: currentProfile
@@ -122,22 +124,47 @@ function DashboardContainer(props){
                             const params ={
                                 id
                             }
-                            dispatch(fetchAppendPagesOfProfile(params)).then(result=>
-                                checkResult(result,(payload)=>{
+                        dispatch(fetchAppendPagesOfProfile(params)).then(result=>
+                            checkResult(result,(payload)=>{
                                         const {pageList} = payload
                                         let list = pageList.map(page=>{return {type:"page",page}})
-                                        setItemsInView(prevState=>[...list,...prevState])
-                                },error=>{
+                                        list.forEach(page=>{
+                                        if(!itemsInView.includes(page)){
+                                            setItemsInView(prevState=>[page,...prevState])
+                                        }
+                                        })
+                                      
+                        },error=>{
 
-                                }))
-                        }
-                        
-                        )
-                
-                
-                    
+                        }))
+                    }
+                ) 
+            }
+            dispatch(fetchBooksWhereProfileEditor()).then((result)=>checkResult(result,payload=>{
+                const {bookList}=payload
+                getBookListContent(bookList)
+            },err=>{
+
+            }))
+            dispatch(fetchBooksWhereProfileWriter()).then(result=>checkResult(result,payload=>{
+                const {bookList}=payload
+                getBookListContent(bookList)
+            },err=>{}))
+            dispatch(fetchPagesWhereProfileCommenters()).then(result=>checkResult(result,payload=>{
+                const {pageList}=payload
+                let items = pageList.map(page=>{return {type:"page",page: page}})
+                items.forEach(item=>{
+                   if(!itemsInView.includes(item)){
+                    setItemsInView(prevState=>[...prevState,item])
+                   }
+                })
+            },err=>{
+
+            })
+
+            )
         }
-    }}
+    }
   
     const getBookListContent = (bookList)=>{
            
@@ -163,9 +190,13 @@ function DashboardContainer(props){
                         const items = pageList.map(page=>{
                             return { type: 'page', page, book}
                         })
-                        setItemsInView(prevState=>{
-                            return [...prevState,...items]
+                        items.forEach(item=>{
+                            if(!itemsInView.includes(item)){
+                            setItemsInView(prevState=>{
+                                return [...prevState,item]
+                            })}
                         })
+                        
                         fixSetItems()
                         
                     }else{
@@ -274,7 +305,8 @@ function DashboardContainer(props){
                 intro =(
                     <div className='intro'>
 
-                <p><strong>Welcome to Plumbum</strong>, this is a place for creatives.
+                <h1><strong>Welcome to Plumbum</strong></h1>
+                <p> this is a place for creatives.
                 Plumbum is made for writers to help recreate the writers' workshop online.
                 Writers' workshop are a place to receive feedback on your work from people 
                 with the same goal as you of getting better at their craft.</p>
