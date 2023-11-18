@@ -1,6 +1,4 @@
-/* .editor-btn-row{
-    display: flex;
-} */
+
 @media (min-width: 1000px) {
     #EditorContainer #post-button-row{
         margin-bottom: 5em;

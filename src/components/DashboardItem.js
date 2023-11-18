@@ -169,7 +169,7 @@ return <Button onClick={()=>{
                 {bookTitleDiv}
                 <p onClick={()=>{
                     navigate(`/page/${page.id}`)
-                }}>{page.title}</p>
+                }}>{` `+page.title}</p>
                 </div>
                 {profileDiv}
             </div>

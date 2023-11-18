@@ -126,13 +126,14 @@
   padding: 1em;
   display: flex;
   flex-direction: row;
+  width: 100%;
   justify-content: space-between;
   
 }
 .dashboard-header .titles {
   display: flex;
   flex-direction: row;
-  width: 50%;
+  max-width: 50%;
 }
 
 }
