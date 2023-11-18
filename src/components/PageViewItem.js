@@ -12,8 +12,9 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { fetchCommentsOfPage , setPagesToBeAdded,createComment} from "../actions/PageActions"
 import CommentInput from "./CommentInput"
 import checkResult from "../core/checkResult"
-export default function PageViewItem({page,currentProfile}) {
-
+import Paths from "../core/paths"
+export default function PageViewItem({page}) {
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [bookmarked,setBookmarked]= useState(false)
@@ -120,9 +121,6 @@ let profile = (<div></div>)
                 >
                     Yea
                 </Button>
-                {/* <button>
-                    Nah
-                </button> */}
                 <Button 
                     style={{color:"white",
                     backgroundColor:currentProfile?theme.palette.info.main:theme.palette.info.disabled}} 
@@ -131,9 +129,6 @@ let profile = (<div></div>)
                 
                     Comment
                 </Button>
-                {/* <Button>
-                    Info
-                </Button> */}
                 <Dropdown>
                         <Button onClick={(e)=>{
                             handleToggle(e)
@@ -174,6 +169,11 @@ let profile = (<div></div>)
                     >
                           Copy Share Link
                         </MenuItem>
+                        {currentProfile && page && currentProfile.id===page.profileId?
+                        <MenuItem onClick={()=>{
+                            navigate(Paths.editPage.createRoute(page.id))
+                        }}>
+                        Edit</MenuItem>:<div></div>}
                         <MenuItem onClick={onBookmarkPage}disabled={!currentProfile}> 
             {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
             </MenuItem>

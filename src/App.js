@@ -45,6 +45,10 @@ function App(props) {
       
   },[props.currentProfile])
   useEffect(()=>{
+    props.fetchAllProfiles()
+  },[]
+  )
+  useEffect(()=>{
       if((authState.user && !authState.user.isAnonymous && !props.currentProfile) ||(props.currentProfile && authState.user && props.currentProfile.userId != authState.user.uid)){
       const params = {
           userId: authState.user.uid,
@@ -66,13 +70,14 @@ function App(props) {
       const profileParams = {
         profile: props.currentProfile
       }
-      props.fetchAllProfiles()
+      
       props.fetchHomeCollection(profileParams)
       props.fetchBookmarkLibrary(params)
       props.fetchFollowBooksForProfile(profileParams)
       props.fetchFollowLibraryForProfile(profileParams)
       props.fetchFollowProfilesForProfile(profileParams)
     }
+ 
   }
    
   return (

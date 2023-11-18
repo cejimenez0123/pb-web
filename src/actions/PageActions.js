@@ -4,6 +4,7 @@ import Page from "../domain/models/page"
 import PageComment from "../domain/models/page_comment"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import Contributors from "../domain/models/contributor"
+import { read } from "@popperjs/core"
 
 
 const getPublicPages = createAsyncThunk(
@@ -121,23 +122,198 @@ const getProfilePages= createAsyncThunk(
   async (params,thunkApi) => {
     let pageList = []
     const profile=params["profile"]
-   
+
     const ref = collection(db, "page")
-    let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
+    let queryReq = query(ref,where("profileId","==",profile.id),where("privacy","==",false))
     if(auth.currentUser.uid == profile.userId){
       queryReq = query(ref, where("profileId", "==", profile.id))
-     }else if(auth.currentUser.uid != profile.userId){
-    queryReq = query(ref,
-                   and(where("profileId", "==", profile.id),
-                   or(where('commenters', 'array-contains', auth.currentUser.uid),
-                      where('readers','array-contains', auth.currentUser.uid),
-                      where('editors', 'array-contains', auth.currentUser.uid),
-                      where('writers', 'array-contains', auth.currentUser.uid),
-                      where("privacy","==",false))))
-   }else{
-      queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
-   }
-  try {
+    }else if(auth.currentUser && auth.currentUser.uid != profile.userId){
+      let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))        
+      let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
+      let queryEditor = query(ref,where("profileId","==", profile.id),where("editors", "array-contains",auth.currentUser.uid))
+      let queryReaders = query(ref,where("profileId","==", profile.id),where("readers", "array-contains", auth.currentUser.uid))
+    try {
+      let snapshot = await getDocs(queryCommenter)
+      snapshot.docs.forEach(doc=>{
+        const pack = doc.data();
+              const { id } = doc;
+              const title =pack["title"]
+              const data = pack["data"]
+              const profileId = pack["profileId"]
+              const privacy = pack["privacy"]
+              const approvalScore = pack["approvalScore"]
+              const type = pack["type"]
+              const created = pack["created"]
+              let commentable = pack["commentable"]
+              let commenters = pack["commenters"]
+              let editors = pack["editors"]
+              let readers = pack["readers"]
+              let writers = pack["writers"]
+    const contributors= new Contributors(commenters,
+      readers,writers,editors)
+      const page =  new Page( id,
+                              title,
+                              data,
+                              profileId,
+                              approvalScore,
+                              privacy,
+                              commentable,
+                              type,
+                              contributors,
+                              created)
+
+        pageList = [...pageList, page]
+        })
+      }catch(e){
+        console.error(`Page Query Where Commenter Error: ${e.message}`)
+
+      }  
+      try {
+        let snapshot = await getDocs(queryReq)
+        snapshot.docs.forEach(doc=>{
+          const pack = doc.data();
+                const { id } = doc;
+                const title =pack["title"]
+                const data = pack["data"]
+                const profileId = pack["profileId"]
+                const privacy = pack["privacy"]
+                const approvalScore = pack["approvalScore"]
+                const type = pack["type"]
+                const created = pack["created"]
+                let commentable = pack["commentable"]
+                let commenters = pack["commenters"]
+                let editors = pack["editors"]
+                let readers = pack["readers"]
+                let writers = pack["writers"]
+      const contributors= new Contributors(commenters,
+        readers,writers,editors)
+        const page =  new Page( id,
+                                title,
+                                data,
+                                profileId,
+                                approvalScore,
+                                privacy,
+                                commentable,
+                                type,
+                                contributors,
+                                created)
+  
+          pageList = [...pageList, page]
+          })
+        }catch(e){
+          console.error(`Page Query Where Req Error: ${e.message}`)
+  
+        }  
+      try{
+        let readerSnap = await getDocs(queryReaders)
+        readerSnap.docs.forEach(doc=>{
+          const pack = doc.data();
+          const { id } = doc;
+          const title =pack["title"]
+          const data = pack["data"]
+          const profileId = pack["profileId"]
+          const privacy = pack["privacy"]
+          const approvalScore = pack["approvalScore"]
+          const type = pack["type"]
+          const created = pack["created"]
+          let commentable = pack["commentable"]
+          let commenters = pack["commenters"]
+          let editors = pack["editors"]
+          let readers = pack["readers"]
+          let writers = pack["writers"]
+          const contributors= new Contributors( commenters,
+                                                readers,
+                                                writers,
+                                                editors)
+          const page =  new Page( id,
+                        title,
+                        data,
+                        profileId,
+                        approvalScore,
+                        privacy,
+                        commentable,
+                        type,
+                        contributors,
+                        created)
+            pageList = [...pageList, page]
+            })
+      }catch(e){
+        console.error(`Page Query Where Reader Error: ${e.message}`)
+      }
+      try{
+        let editorSnap = await getDocs(queryEditor)
+        editorSnap.docs.forEach(doc=>{
+          const pack = doc.data();
+                const { id } = doc;
+                const title =pack["title"]
+                const data = pack["data"]
+                const profileId = pack["profileId"]
+                const privacy = pack["privacy"]
+                const approvalScore = pack["approvalScore"]
+                const type = pack["type"]
+                const created = pack["created"]
+                let commentable = pack["commentable"]
+                let commenters = pack["commenters"]
+                let editors = pack["editors"]
+                let readers = pack["readers"]
+                let writers = pack["writers"]
+          const contributors = new Contributors( commenters,
+                                                readers,
+                                                writers,
+                                                editors)
+          const page =  new Page( id,
+                                title,
+                                data,
+                                profileId,
+                                approvalScore,
+                                privacy,
+                                commentable,
+                                type,
+                                contributors,
+                                created)
+          pageList = [...pageList, page]
+          })
+        }catch(e){
+          console.error(`Page Query Where Editor Error: ${e.message}`)
+      }
+      try{
+      let writerSnap = await getDocs(queryWriter)
+      writerSnap.docs.forEach(doc=>{
+        const pack = doc.data();
+                const { id } = doc;
+                const title =pack["title"]
+                const data = pack["data"]
+                const profileId = pack["profileId"]
+                const privacy = pack["privacy"]
+                const approvalScore = pack["approvalScore"]
+                const type = pack["type"]
+                const created = pack["created"]
+                let commentable = pack["commentable"]
+                let commenters = pack["commenters"]
+                let editors = pack["editors"]
+                let readers = pack["readers"]
+                let writers = pack["writers"]
+      const contributors= new Contributors(commenters,
+        readers,writers,editors)
+        const page =  new Page( id,
+                                title,
+                                data,
+                                profileId,
+                                approvalScore,
+                                privacy,
+                                commentable,
+                                type,
+                                contributors,
+                                created)
+  
+      pageList = [...pageList, page]
+        })
+      }catch (e) {
+        console.error(`Page Query Where Writer Error: ${e.message}`)
+      }
+      return {pageList}
+  }
+
 
   const snapshot = await getDocs(queryReq
                 );
@@ -172,7 +348,7 @@ const getProfilePages= createAsyncThunk(
             if(commentable==null){
               commentable=true
             }
-            const contributors= new Contributors(commenters,
+              const contributors= new Contributors(commenters,
               readers,writers,editors)
               const page =  new Page( id,
                                       title,
@@ -192,12 +368,7 @@ const getProfilePages= createAsyncThunk(
 
       pageList
   }
-
-
-  }catch(err){
-   const error = err??new Error("Error: Get Profile Pages")
-    return {error }
-  }}
+}
 )
 const createPage = createAsyncThunk("pages/createPage", async function(params,thunkApi){
   const ref = collection(db,"page")

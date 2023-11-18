@@ -4,8 +4,8 @@ import { useState,useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getProfilePages } from '../actions/PageActions';
-import { fetchArrayOfBooksAppened, getProfileBooks } from '../actions/BookActions';
-import { fetchBookmarkLibrary, getProfileLibraries } from '../actions/LibraryActions';
+import { getProfileBooks } from '../actions/BookActions';
+import { getProfileLibraries } from '../actions/LibraryActions';
 import PageListItem from './PageListItem';
 import "../styles/MyProfile.css"
 import Book from '../domain/models/book'
@@ -13,6 +13,7 @@ import ListItem from '../components/ListItem';
 import { Button, IconButton } from "@mui/material";
 import checkResult from "../core/checkResult";
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
+import theme from "../theme";
 export default function ContentList({currentProfile,pagesInView}){
     const [page,setPage] = useState(1)  
     const [listType,setListType]=useState("page")
@@ -22,29 +23,15 @@ export default function ContentList({currentProfile,pagesInView}){
     const [pages,setPages] = useState([])
     const [books,setBooks] = useState([])
     const [libraries,setLibraries]=useState([])
-    const booksInView = useSelector(state=>state.books.booksInView)
-    const librariesInView = useSelector(state=>state.libraries.librariesInView)
     const [hasMoreLibraries,setHasMoreLibraries]=useState(false)
-    const [sortTime,setSortTime]=useState(true)
+    const [sortTime,setSortTime]=useState(false)
     const [sortAlpha,setSortAlpha]=useState(false)
     const dispatch = useDispatch()
     useEffect(()=>{
-        if(currentProfile){
-            const params = {id: currentProfile.bookmarkLibraryId}
-            dispatch(fetchBookmarkLibrary(params)).then(result=>{
-                checkResult(result,payload=>{
-                    const {library} = payload
-                    const params = {bookIdList:library.bookIdList}
-                    dispatch(fetchArrayOfBooksAppened(params))
-                },()=>{
-
-                })
-            })
-            fetchPageData()
-            fetchBookData()
-            fetchLibraryData()
-        }
-    },[])
+        fetchPageData()
+        fetchBookData()
+        fetchLibraryData()
+    },[currentProfile])
     const pageList=()=>{
         const empty = (<div className="empty">
             Empty
@@ -59,7 +46,7 @@ export default function ContentList({currentProfile,pagesInView}){
            loader={<p>Loading...</p>}
            endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
          >
-             {pagesInView.map(page =>{
+             {pages.map(page =>{
                      return(<PageListItem key={page.id} page={page}/>)
              })}
          </InfiniteScroll>
@@ -70,7 +57,6 @@ export default function ContentList({currentProfile,pagesInView}){
              }}
             
     const fetchPageData = () =>{
-        if(currentProfile){
             const params = {profile:currentProfile,page,groupBy:9}
                 setHasMorePages(true)
                 dispatch(getProfilePages(params)).then((result) => {
@@ -84,14 +70,12 @@ export default function ContentList({currentProfile,pagesInView}){
         
             }).catch((err) => {
                 setHasMorePages(false)
-            });}
+            });
     }
     const fetchBookData=()=>{
-        if(currentProfile){
             setHasMoreBooks(true)
             const params = {profile:currentProfile,page,groupBy:9}
              dispatch(getProfileBooks(params)).then((result) => {
-                
                 checkResult(result,payload=>{
                     const {bookList}=payload
                     setBooks(bookList)
@@ -102,10 +86,11 @@ export default function ContentList({currentProfile,pagesInView}){
             
             }).catch((err) => {
                 setHasMoreBooks(false)
-            });}
+            });
     }
+    
     const fetchLibraryData=()=>{
-            if(currentProfile){
+        
                 setHasMoreLibraries(true)
                 const params = {profile:currentProfile,page,groupBy:9}
                 dispatch(getProfileLibraries(params)).then(result=>{
@@ -114,13 +99,13 @@ export default function ContentList({currentProfile,pagesInView}){
                         setLibraries(libList)
                         setHasMoreLibraries(false)
                     },err=>{
-
+                        setHasMoreLibraries(false)
                     })
               
                 }).catch((err)=>{
                     setHasMoreLibraries(false)
                 })
-            }
+            
     }
     const contentList = () =>{
         
@@ -222,49 +207,31 @@ export default function ContentList({currentProfile,pagesInView}){
     const setSortOrderTime=()=>{
         
         if(sortTime){
-
-        if(pages){
-
-        let newPages = [...pages].sort((a,b)=>{
-            return b.created - a.created
-        })
-        setPages(newPages);
-    }
-    if(books){
-        let newBooks = [...books].sort((a,b)=>{
-            return b.updatedAt - a.updatedAt
-        })
-        setBooks(newBooks)
-    }
-    if(libraries){
-        let newLibraries = [...libraries].sort((a,b)=>
-        {
-            return b.updatedAt - a.updatedAt
-        }
-            )
+            let newPages = [...pages].sort((a,b)=>{
+                return b.created - a.created
+            })
+            setPages(newPages);
+            let newBooks = [...books].sort((a,b)=>{
+                return b.updatedAt - a.updatedAt
+            })
+            setBooks(newBooks)
+            let newLibraries = [...libraries].sort((a,b)=>{
+                return b.updatedAt - a.updatedAt
+            })
             setLibraries(newLibraries)
-    }
         }else{
-            if(pages){
             let newPages = [...pages].sort((a,b)=>{
                 return a.created - b.created
             })
-    
             setPages(newPages);
-        }
-        if(books){
             let newBooks = [...books].sort((a,b)=>{
                 return a.updatedAt - b.updatedAt
             })
-            setBooks(newBooks)}
-            if(libraries){
-            let newLibraries = [...libraries].sort((a,b)=>
-            {
+            setBooks(newBooks)
+            let newLibraries = [...libraries].sort((a,b)=>{
                 return a.updatedAt - b.updatedAt
-            }
-                )
+            })
             setLibraries(newLibraries)
-        }
         }
     }
     const setSortOrderAlpha=()=>{
@@ -338,24 +305,23 @@ export default function ContentList({currentProfile,pagesInView}){
         setIsContentVisible(!isContentVisible)
         setIsContentVisible(true)
     } 
+    const btnStyle ={fontSize: "1em",paddingTop:"1em",color:theme.palette.primary.contrastText,height:"100%"}
     return(<div className="column">
                 <div className="inner">
                 <div className="btn-row">
                     <div>
-                                    <Button className="btn" onClick={()=>{
-                                        handleContentClick("page")
-                                        }}>
+                                    <Button style={btnStyle}
+                                            onClick={()=>{
+                                                handleContentClick("page")
+                                            }}>
                                         Page
                                     </Button>
-                                    <Button className="btn" onClick={()=>{
-                                        handleContentClick("book")
-                                     
-                                        
-                                    
+                                    <Button style={btnStyle} onClick={()=>{
+                                            handleContentClick("book")
                                         }}>
                                         Book
                                     </Button>
-                                    <Button className="btn" onClick={()=>{
+                                    <Button style={btnStyle}onClick={()=>{
                                             handleContentClick("library")
 
                                         }}>
@@ -363,18 +329,19 @@ export default function ContentList({currentProfile,pagesInView}){
                                     </Button>
                     </div>
                     <div className="sort">
-                        {sortTime?<Button onClick={()=>{
+                        {sortTime?<Button style={btnStyle} onClick={()=>{
                                 setSortTime(false)
                                 setSortOrderTime()
                             }}>
                                     New to Old
                             </Button>:
-                            <Button onClick={()=>{
+                            <Button style={btnStyle}
+                                    onClick={()=>{
                                 setSortTime(true)
                                 setSortOrderTime()
                             }}
                             >Old to New</Button>}
-                        <Button onClick={()=>{
+                        <Button style={btnStyle}onClick={()=>{
                             setSortAlpha(!sortAlpha)
                             setSortOrderAlpha()}}>
                             <SortByAlphaIcon/>

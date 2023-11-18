@@ -207,7 +207,7 @@ function LibraryViewContainer(props){
                         const {payload }= result
                         if(payload.error==null){
                             setFollowing(payload.followLibrary)
-                    
+                    if(homeCollection){
                     let libraries = [...homeCollection.libraries]
                       let id = homeCollection.libraries.find(id=>libraryInView.id==id)
                       if(!id){
@@ -224,6 +224,7 @@ function LibraryViewContainer(props){
                             profiles:profiles
                         }
                         dispatch(updateHomeCollection(homeParams))
+                    }
              }else{
                 window.alert("Follow error: Try logging in again")
              }}})
@@ -336,10 +337,10 @@ function LibraryViewContainer(props){
                 <div className="content">
                 <InfiniteScroll 
                 dataLength={itemsInView.length}
-                next={()=>fetchData(libraryInView)}
+                next={()=>checkLibraryPermission(libraryInView)}
                 hasMore={itemsInView.length<[...libraryInView.bookIdList,...libraryInView.pageIdList].length} // Replace with a condition based on your data source
                 loader={<p>Loading...</p>}
-                endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
+                endMessage={<div  className="no-more-data"><p>No more data to load.</p></div>}
                 scrollableTarget="scrollableDiv"
                 >
                     <div>

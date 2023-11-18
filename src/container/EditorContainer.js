@@ -20,6 +20,9 @@ import RoleList from "../components/RoleList"
 import { Add, Visibility } from "@mui/icons-material"
 import { Dropdown } from "react-bootstrap"
 import { RoleType } from "../core/constants"
+import Paths from "../core/paths"
+import MediaQuery from "react-responsive"
+import { border } from "@mui/system"
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
@@ -43,48 +46,52 @@ function EditorContainer({currentProfile}){
                       const {page} = payload
                       setEPage(page)
                       setTitle(page.title)
-                      setPrivacy(page.privacy)
+                      setPrivacy(!page.privacy)
                       setCommentable(page.commentable)
                       dispatch(setHtmlContent(page.data))
                     }
                   }
                 })
             }else if(ePage!=null && ePage.id==id){
-              setTitle(ePage.title)
-              setPrivacy(ePage.privacy)
-              setCommentable(ePage.commentable)
-              dispatch(setHtmlContent(ePage.data))
+             setPageInfo(ePage)
             }else{ 
               dispatch(setHtmlContent(""))
             }
         },[editingPage])
-        const onSavePress = (e)=>{
-          e.preventDefault();
-          if(!ePage){
-          const params ={
-            profileId: currentProfile.id,
-            data: htmlContent,
-            title: title,
-            privacy: privacy,
-            approvalScore:0,
-            commentable: commentable,
-            readers:[],
-            commenters:[],
-            editors:[],
-            writers:[],
-            type: 'html/text'
+
+    const setPageInfo =(page)=>{
+      setTitle(page.title)
+      setPrivacy(page.privacy)
+      setCommentable(page.commentable)
+      dispatch(setHtmlContent(page.data))
+    }
+    const saveNewPage=()=>{ const params ={
+      profileId: currentProfile.id,
+      data: htmlContent,
+      title: title,
+      privacy: privacy,
+      approvalScore:0,
+      commentable: commentable,
+      readers:[],
+      commenters:[],
+      editors:[],
+      writers:[],
+      type: 'html/text'
+    }
+    dispatch(createPage(params)).then((result)=>{
+        if(result.error==null){
+          const {payload } = result
+          if(payload.error==null){
+            const {page} = payload
+            setEPage(page)
+            window.alert("Saved")
           }
-          dispatch(createPage(params)).then((result)=>{
-              if(result.error==null){
-                const {payload } = result
-                if(payload.error==null){
-                  const {page} = payload
-                  setEPage(page)
-                  window.alert("Saved")
-                  history.replace(`/page/${page.id}/edit`)
-                }
-              }
-          })
+        }
+    })}
+        const onSavePress = (onEnd)=>{
+          if(!ePage){
+            saveNewPage()
+            onEnd()
         }else{
         
          let params = { page: editingPage,
@@ -105,12 +112,13 @@ function EditorContainer({currentProfile}){
           }
           dispatch(updatePage(params)).then(result=>{
             checkResult(result,(payload)=>{
-              window.alert("Saved")
+              const {page}=payload
+              setPageInfo(page)
               const readers = newRoles.filter(role => role.role == RoleType.reader).map(role=>role.profile.userId)
               const commenters = newRoles.filter(role => role.role == RoleType.commenter).map(role=>role.profile.userId)
               const editors = newRoles.filter(role => role.role == RoleType.editor).map(role=>role.profile.userId)
               const writers = newRoles.filter(role => role.role == RoleType.writer).map(role=>role.profile.userId)
-             let params ={page:editingPage,
+             let params ={page:page,
                 readers,
                 commenters,
                 editors,
@@ -227,7 +235,24 @@ function EditorContainer({currentProfile}){
             <div id="editor">
                 
                 {contentDiv}
+                
               </div>
+              <MediaQuery maxWidth={"1000px"}>
+              <div id="post-button-row">
+                  <Button
+                  onClick={()=>onSavePress(()=>{
+                    navigate(Paths.page(ePage.id))
+                  })}
+                  style={{backgroundColor:theme.palette.secondary.main,
+                          color:theme.palette.primary.contrastText,
+                          width: "20em",
+                          padding:"2em",
+                          marginRight:'2em'
+                        }
+                }
+                  >Post</Button>
+                </div>
+                </MediaQuery>
               </div>
              
               <div className="right-side-bar">
@@ -236,14 +261,19 @@ function EditorContainer({currentProfile}){
                  <TextField onChange={(e)=>setTitle(e.target.value.trimEnd())} value={title} label="Title"/>
                  
                   <FormControlLabel 
-                control={<Checkbox checked={privacy} onChange={(e)=>setPrivacy(e.target.checked)}/>} label={privacy?"Private":"Public"} />
+                control={<Checkbox style={{color:theme.palette.primary.contrastText}} checked={!privacy} onChange={(e)=>setPrivacy(!e.target.checked)}/>} label={!privacy?"Public":"Draft"} />
                  
                  <FormControlLabel 
-                control={<Checkbox checked={commentable} onChange={(e)=>{
+                control={<Checkbox style={{color:theme.palette.primary.contrastText}}checked={commentable} onChange={(e)=>{
                   setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
                  
             
-                  <Button onClick={(e)=>onSavePress(e)} className="btn btn-primary">
+                  <Button style={{backgroundColor:theme.palette.secondary.main,
+                                  color:theme.palette.secondary.contrastText}}
+                          onClick={(e)=>onSavePress(()=>{
+                 
+            history.replace(`/page/${ePage.id}/edit`)
+                  })} className="">
                     Save
                     </Button>
                     <div className="button-row">
@@ -262,6 +292,22 @@ function EditorContainer({currentProfile}){
                                     } />
                                 :(<div></div>)}
                     <div>
+                    <MediaQuery minWidth={"1000px"}>
+              <div id="post-button-row">
+                  <Button
+                  onClick={()=>onSavePress(()=>{
+                    navigate(Paths.page(ePage.id))
+                  })}
+                  style={{backgroundColor:theme.palette.secondary.main,
+                          color:theme.palette.primary.contrastText,
+                          width: "20em",
+                          padding:"2em",
+                          marginRight:'2em'
+                        }
+                }
+                  >Post</Button>
+                </div>
+                </MediaQuery>
       
       <Dialog
         open={open}

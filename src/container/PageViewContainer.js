@@ -108,7 +108,7 @@ export default function PageViewContainer({page}){
                 next={fetchComments}
                 hasMore={hasMoreComments} // Replace with a condition based on your data source
                 loader={<p>Loading...</p>}
-                endMessage={<p>No more data to load.</p>}
+                endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
                             >
                             {comments.map(comment=>{
                                 if(comment.parentCommentId==""||comment.parentCommentId==null){

@@ -273,72 +273,100 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
   const getProfileLibraries= createAsyncThunk(
     'libraries/getProfileLibraries',
     async (params,thunkApi) => {
+      let libList =[]
+      try {
       const profile = params["profile"]
       const ref = collection(db, "library")
-      let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
-      if(auth.currentUser.uid == profile.userId){
-        queryReq = query(ref, where("profileId", "==", profile.id))
-       }else if(auth.currentUser.uid != profile.userId){
-      queryReq = query(ref,and(
-                     where("profileId", "==", profile.id),
-                     or(where('commenters', 'array-contains', auth.currentUser.uid),
-                        where('readers','array-contains', auth.currentUser.uid),
-                        where('editors', 'array-contains', auth.currentUser.uid),
-                        where('writers', 'array-contains', auth.currentUser.uid),
-                        where("privacy","==",false))))
-     }else{
-        queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
-     }
-    try {
-
+      let queryReq = query(ref,where("profileId","==",profile.id),where("privacy","==",false))
+      if(auth.currentUser){
        
+        let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))   
+        let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
+        let queryEditor = query(ref,where("profileId", "==",profile.id),where("editors", "array-contains",auth.currentUser.uid))
+        let queryReaders = query(ref,where("profileI","==", profile.id),where("readers", "array-contains", auth.currentUser.uid))
+        if(auth.currentUser.uid == profile.userId){
+          let queryForUser = query(ref, where("profileId", "==", profile.id))
+          let snapshot = await getDocs(queryForUser)
+          snapshot.forEach(doc=>{
+            let lib=  unpackLibraryDoc(doc)
+            if(!libList.includes(lib)){
+              libList = [...libList,lib]
+            }
+            })
+            queryCommenter = query(ref,where("commenters", "array-contains", auth.currentUser.uid))   
+            queryWriter = query(ref, where("writers", "array-contains", auth.currentUser.uid))
+            queryEditor = query(ref,where("editors", "array-contains",auth.currentUser.uid))
+            queryReaders = query(ref,where("readers", "array-contains", auth.currentUser.uid))
+        }  
+      try{
+          let snapshot = await getDocs(queryReq)
+          snapshot.forEach(doc=>{
+            let lib = unpackLibraryDoc(doc)
+            if(!libList.find(l=>l.id ===lib.id)){
+              libList = [...libList,lib]
+            }
+       
+            })
+          }catch(e){
+            console.error(`Library Query Where Req Error: ${e.message}`)
+          }  
+      try{
+        let snapshot = await getDocs(queryCommenter)
+        snapshot.forEach(doc=>{
+         const lib = unpackLibraryDoc(doc)
+         if(!libList.find(l=>l.id ===lib.id)){
+          libList = [...libList,lib]
+        }
+          })
+        }catch(e){
+          console.error(`Library Query Where Commenter Error: ${e.message}`)
+        }          
+        try{
+          let readerSnap = await getDocs(queryReaders)
+          readerSnap.forEach(doc=>{
+            let lib = unpackLibraryDoc(doc)
+            if(!libList.find(l=>l.id ===lib.id)){
+              libList = [...libList,lib]
+            }
+          })
+        }catch(e){
+          console.error(`Library Query Where Readers Error: ${e.message}`)
+        }
+        try{
+          let editorSnap = await getDocs(queryEditor)
+          editorSnap.forEach(doc=>{
+            let lib = unpackLibraryDoc(doc)
+            if(!libList.find(l=>l.id ===lib.id)){
+              libList = [...libList,lib]
+            }
+          })
+        }catch(e){
+          console.error(`Library Query Where Editor Error: ${e.message}`)
+        }
+        try{
+          let writerSnap = await getDocs(queryWriter)
+          writerSnap.forEach(doc=>{
+            const lib = unpackLibraryDoc(doc)
+            if(!libList.find(l=>l.id ===lib.id)){
+              libList = [...libList,lib]
+            }
+            })
+            return {
+              libList
+            }
+          }catch (e) {
+            console.error(e)
+          }
+        }else{
     const snapshot = await getDocs(queryReq);
-         let libList = []
           snapshot.docs.forEach(doc => {
           
-                const pack = doc.data();
-                const { id } = doc;
-                const name =pack["name"]
-                const pageIds = pack["pageIdList"]
-                const bookIds = pack["bookIdList"]
-                const profileId = pack["profileId"]
-                const privacy = pack["privacy"]
-                const purpose = pack["purpose"]
-                const writingIsOpen = pack["writingIsOpen"]
-                const created = pack["created"]
-                const updatedAt = pack["updatdedAt"]
-                let commenters = pack["commenters"]
-                let editors = pack["editors"]
-                let readers = pack["readers"]
-                let writers = pack["writers"]
-                if(!editors){
-                  editors = []
-                }
-                if(!commenters){
-                  commenters = []
-                }
-                if(!readers){
-                  readers=[]
-                }
-                if(!writers){
-                  writers=[]
-                }
-            
-                const contributors= new Contributors(commenters,
-                  readers,writers,editors)
-              const lib = new Library(  id,
-                                        name,
-                                        profileId,
-                                        purpose,
-                                        pageIds,
-                                        bookIds,
-                                        writingIsOpen,
-                                        privacy,
-                                        contributors,
-                                        updatedAt,
-                                        created)
-              libList = [...libList,lib]
+              const lib = unpackLibraryDoc(doc)
+              if(!libList.find(l=>l.id ===lib.id)){
+                libList = [...libList,lib]
+              }
             })
+          }
     return {
   
         libList
@@ -667,6 +695,50 @@ const fetchArrayOfLibrariesAppend = createAsyncThunk("libraries/fetchArrayOfLibr
   }
 })
 const clearLibrariesInView = createAction("libraries/clearLibrariesInView")
+function unpackLibraryDoc(doc){
+  const pack = doc.data();
+  const { id } = doc;
+  const name =pack["name"]
+  const pageIds = pack["pageIdList"]
+  const bookIds = pack["bookIdList"]
+  const profileId = pack["profileId"]
+  const privacy = pack["privacy"]
+  const purpose = pack["purpose"]
+  const writingIsOpen = pack["writingIsOpen"]
+  const created = pack["created"]
+  const updatedAt = pack["updatdedAt"]
+  let commenters = pack["commenters"]
+  let editors = pack["editors"]
+  let readers = pack["readers"]
+  let writers = pack["writers"]
+  if(!editors){
+    editors = []
+  }
+  if(!commenters){
+    commenters = []
+  }
+  if(!readers){
+    readers=[]
+  }
+  if(!writers){
+    writers=[]
+  }
+
+  const contributors= new Contributors(commenters,
+    readers,writers,editors)
+const lib = new Library(  id,
+                          name,
+                          profileId,
+                          purpose,
+                          pageIds,
+                          bookIds,
+                          writingIsOpen,
+                          privacy,
+                          contributors,
+                          updatedAt,
+                          created)
+    return lib
+}
 export {  fetchLibrary,
           updateLibrary,
           updateLibraryContent,

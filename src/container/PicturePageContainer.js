@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { PageType } from '../core/constants';
 import { createPage,setPageInView } from '../actions/PageActions';
 import { useNavigate } from 'react-router-dom';
+import { checkmarkStyle, saveButtonStyle } from '../styles/styles';
 function PicturePageContainer(props){
     const dispatch = useDispatch()
     const [imageUrl,setImageUrl]= useState("")
@@ -59,23 +60,23 @@ function PicturePageContainer(props){
         
         <FormGroup className='form'>
             <TextField  
-                    style={{backgroundColor:"white"}}
+                    style={{backgroundColor:"white",borderRadius:"8px"}}
                     label="Page Title"
                     placeholder="Title" 
                     onChange={(e)=>setPageTitle(e.target.value)}/>
             <FormControlLabel  
-                control={<Checkbox checked={pageIsPrivate} onChange={(e)=>{
-                    setPageIsPrivate(e.target.checked)
-                }}/>} label={pageIsPrivate?"Private":"Public"}
+                control={<Checkbox style={checkmarkStyle} checked={!pageIsPrivate} onChange={(e)=>{
+                    setPageIsPrivate(!e.target.checked)
+                }}/>} label={!pageIsPrivate?"Public":"Draft"}
                    value={pageIsPrivate}/>  
                    <FormControlLabel 
-                control={<Checkbox checked={commentable} onChange={(e)=>{
+                control={<Checkbox style={checkmarkStyle}checked={commentable} onChange={(e)=>{
                     setCommentable(e.target.checked)
                 }}/>} label={commentable?"Commenting is Open":"Commenting is Closed"}
                    value={pageIsPrivate}/>    
                         <Button 
                       
-                            style={{backgroundColor:theme.palette.primary.main,margin: "2em"}}
+                            style={{backgroundColor:saveButtonStyle.backgroundColor,margin: "2em"}}
                         
                     
                         component="label" variant="contained" startIcon={<CloudUploadIcon  />}>
@@ -105,7 +106,7 @@ function PicturePageContainer(props){
                 variant='outlined'
                 style={{padding: "1em",
                         marginTop: "2em",
-                        color:theme.palette.primary.contrastText,backgroundColor: theme.palette.primary.main}}
+                        color:saveButtonStyle.color,backgroundColor: saveButtonStyle.backgroundColor}}
                 onClick={()=>{
                     handleSavePage()}}>Save</Button>
             </FormGroup>

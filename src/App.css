@@ -7,8 +7,11 @@
   --tertiary: #E7F7DC;
   --dark:#183306;
   --medium:#375E1D;
+  --light:#6C965C;
   --secondary: #67914A;
   --background-light:#6463633c;
+  --background-tertiary-light:#C6D4BC;
+  --background-secondary:rgba(141, 141, 141, 0.533);
   --large-list-item-width: 35em;
   --small-list-item-width:10em;
 
@@ -33,7 +36,7 @@ html, body {
     margin: auto;
   }
   .content .no-more-data{
-    width: 45em;
+    width: 100%;
   }
 .sign-card{
   display: flex;
@@ -316,7 +319,7 @@ html, body {
     padding: 3em;
     text-align: center;
     width: var(--large-list-item-width);
-    background-color: var(--tertiary);
+    background-color: var(--background-secondary);
     border-bottom-left-radius: 25px;
     border-bottom-right-radius: 25px;
     margin:auto;
@@ -341,7 +344,7 @@ html, body {
   padding: 2em 1em;
   min-height: 20em;
   width: 45em;
-  background-color: var(--tertiary);
+  background-color: var(--background-light);
   
 }
 .intro{
@@ -373,11 +376,10 @@ html, body {
 .inner .btn-row{
   width: 35em;
   justify-content: space-between;
-  background-color: rgb(194, 211, 227);
+  background-color: var(--medium);
   display: flex;
   margin: auto;
   flex-direction: row;
-  padding-top: 1em;
   border-top-right-radius: 25px;
   border-top-left-radius: 25px;
 
@@ -396,8 +398,18 @@ html, body {
 }
 @media (max-width: 1000px) {
   .content-list{
-    width: 40em;
+  
     margin: auto;
+  }
+  .no-more-data{
+    min-height:5em;
+    padding: 3em;
+    text-align: center;
+    width: 100%;
+    background-color: var(--background-secondary);
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    margin:auto;
   }
   .content-list.dashboard{
   
@@ -405,7 +417,7 @@ html, body {
     padding: 2em 1em;
     min-height: 20em;
     width: 100%;
-    background-color: var(--tertiary);
+    background-color: var(--background-light);
     
   }
   .intro{
@@ -421,10 +433,8 @@ html, body {
     background-color: rgb(230, 231, 226);
     border-radius: 25px;
    
-    margin: 1em;
   }
   .content-list .content{
-    min-width: 100%;
     background-color: rgb(230, 231, 226);
     min-height: 30em;
 
@@ -435,12 +445,12 @@ html, body {
   .inner .btn-row{
     width: 100%;
     justify-content: space-between;
-    background-color: rgb(194, 211, 227);
+    background-color: var(--medium);
     display: flex;
     margin: auto;
     flex-direction: row;
     align-items: flex-start;
-    padding-top: 1em;
+    
   
   
   }
@@ -472,39 +482,34 @@ html, body {
   text-decoration: none;
   color:black
 }
-.list-item .title {
+/* .list-item .title {
   max-width: 20em;
   overflow:scroll;
+} */
 }
-}
-.list-item .title h6 {
+/* .list-item .title h6 {
   white-space: nowrap;
   text-align: left;
-}
+} */
   
 
 @media(max-width:767px) {
   .list-item{
-    width: 100vw;
+    width: 100%;
     margin: auto;
     justify-content: space-between;
   }
   .list-item .title {
     max-width: 15em;
-    overflow:scroll;
+    height: auto;
   }
 }
-@media (min-width:768px) and (max-width:1000px){
-  .list-item .title {
-    max-width: 15em;
-    overflow:scroll;
-  }
-}
+
 @media (max-width: 1000px) {
   .list-item{
     padding: 1.5em 1em 1.5em 2em ;
     display: flex;
-    width: 30em;
+    width: 100%;
     flex-direction: row;
     justify-content: space-between;
     background-color: white;

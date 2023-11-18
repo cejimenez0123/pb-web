@@ -197,8 +197,13 @@ export default function RichEditor(props) {
       
     };
     const inputStyle = {
+        backgroundColor:theme.palette.primary.main,
         color: theme.palette.primary.contrastText,
-        paddingTop: "1em"
+        width:"8.333%",
+        paddingTop: "1em",
+        borderRadius: "1px",
+        marginRight:"1px"
+        
     }
     return(
     <div>

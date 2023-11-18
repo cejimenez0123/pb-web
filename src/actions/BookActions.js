@@ -105,18 +105,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     const privacy = pack["privacy"]
     const writingIsOpen = pack["writingIsOpen"]
     const created = pack["created"]
-    if(!commenters){
-      commenters = []
-    }
-    if(!writers){
-      writers = []
-    }
-    if(!editors){
-      editors = []
-    }
-    if(!readers){
-      readers = []
-    }
+
     const contributors = new Contributors(commenters,readers,writers,editors)
     const book = new Book(bId,
                           purpose,
@@ -143,29 +132,83 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
   const getProfileBooks= createAsyncThunk(
     'books/getProfileBooks',
     async (params,thunkApi) => {
-    
-      const profile = params["profile"]
-      const ref = collection(db, "book")
-      let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
-      if(auth.currentUser.uid == profile.userId){
-        queryReq = query(ref, where("profileId", "==", profile.id))
-       }else if(auth.currentUser.uid != profile.userId){
-      queryReq = query(ref,
-                     and(where("profileId", "==", profile.id),
-                     or(where('commenters', 'array-contains', auth.currentUser.uid),
-                        where('readers','array-contains', auth.currentUser.uid),
-                        where('editors', 'array-contains', auth.currentUser.uid),
-                        where('writers', 'array-contains', auth.currentUser.uid),
-                        where("privacy","==",false))))
-     }else{
-        queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
-     }
-    try {
+      try {
+        const profile = params["profile"]
+        const ref = collection(db, "book")
+        let bookList = []
+        let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
+        if(auth.currentUser){
+          let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))   
+          let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
+          let queryEditor = query(ref,where("profileId", "==",profile.id),where("editors", "array-contains",auth.currentUser.uid))
+          let queryReaders = query(ref,where("profileI","==", profile.id),where("readers", "array-contains", auth.currentUser.uid))
+         
+          if(auth.currentUser.uid == profile.userId){
+            let queryForUser = query(ref, where("profileId", "==", profile.id))
+            let snapshot = await getDocs(queryForUser)
+            snapshot.forEach(doc=>{
+              let book=  unpackBookDoc(doc)
+              if(!bookList.find(b=>b.id == book.id)){
+                bookList = [...bookList,book]
+              }
+              })
+              queryCommenter = query(ref,where("commenters", "array-contains", auth.currentUser.uid))   
+              queryWriter = query(ref, where("writers", "array-contains", auth.currentUser.uid))
+              queryEditor = query(ref,where("editors", "array-contains",auth.currentUser.uid))
+              queryReaders = query(ref,where("readers", "array-contains", auth.currentUser.uid))
+          
+          }
+          try{
+            let snapshot = await getDocs(queryCommenter)
+            snapshot.docs.forEach(doc=>{
+            const book = unpackBookDoc(doc)
+            if(!bookList.find(b=>b.id == book.id)){
+              bookList = [...bookList,book]
+            }
+            })
+          }catch(e){
+            console.error(e.message)
+          }
+          try{
+            let readerSnap = await getDocs(queryReaders)
+            readerSnap.docs.forEach(doc=>{
+              const book = unpackBookDoc(doc)
+              if(!bookList.find(b=>b.id == book.id)){
+                bookList = [...bookList,book]
+              }
+            })
+          }catch(e){
+            console.error(e.message)
+          }
+          try{
+            let editorSnap = await getDocs(queryEditor)
+            editorSnap.docs.forEach(doc=>{
+             const book = unpackBookDoc(doc)
+            bookList = [...bookList, book]
+          })
+          }catch(e){
+            console.error(e.message)
+          }
+          try{
+            let writerSnap = await getDocs(queryWriter)
+            writerSnap.docs.forEach(doc=>{
+              let book = unpackBookDoc(doc)
+              if(!bookList.find(b=>b.id == book.id)){
+                bookList = [...bookList,book]
+              }
+            })
+          }catch(e){
+            console.error(e.message)
+          }
+            return {
+              bookList
+            }
+}
     
         
         const snapshot = await getDocs(
                 queryReq);
-        let bookList = []
+       
         snapshot.docs.forEach(doc => {
             
                 const pack = doc.data();
@@ -225,8 +268,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
   )
   const clearBooksInView = createAction("books/clearBooksInView")
   const createBook = createAsyncThunk("books/createBook", async function(params,thunkApi){
- 
-  //  const page = 
+
     try{
         const ref = collection(db,"book")
         const id = doc(ref).id
@@ -703,6 +745,39 @@ const fetchBooksWhereProfileWriter = createAsyncThunk("books/fetchBooksWhereProf
   }
 }
 })
+
+function unpackBookDoc(doc){
+  const pack = doc.data();
+  const { id } = doc;
+  const title =pack["title"]
+  const purpose = pack["purpose"]
+  const profileId = pack["profileId"]
+  const pageIdList = pack["pageIdList"]
+  const updatedAt = pack["updatedAt"]
+  const privacy = pack["privacy"]
+  const writingIsOpen = pack["writingIsOpen"]
+  const created = pack["created"]
+  let commenters = pack["commenters"]
+  let editors = pack["editors"]
+  let readers = pack["readers"]
+  let writers = pack["writers"]
+  const contributors= new Contributors( commenters,
+                                        readers,
+                                        writers,
+                                        editors)
+  const book =  new Book( id,
+                          purpose,
+                          title,
+                          profileId,
+                          pageIdList,
+                          privacy,
+                          writingIsOpen,
+                          contributors,
+                          updatedAt,
+                          created
+                        )
+                        return book
+}
   export {  getPublicBooks,
             fetchBook,
             fetchArrayOfBooks,

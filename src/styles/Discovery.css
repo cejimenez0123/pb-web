@@ -33,12 +33,23 @@
    height: 100%;
     padding: 2em 1em 4em 1em ;
   }
+@media (min-width: 800px) {
 
   .content-item{
     width: 100%;
     margin: 0 auto;
     margin-top: 1em;
-    border: 1px solid gray;
+ 
+}
+}
+@media (max-width: 800px) {
+
+  .content-item{
+    width: 100vw;
+    margin: 0 auto;
+    margin-top: 1em;
+ 
+}
 }
 
 .item-row{

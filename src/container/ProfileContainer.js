@@ -12,6 +12,8 @@ import theme from "../theme"
 import "../styles/Profile.css"
 import { Button } from "@mui/material"
 import checkResult from "../core/checkResult"
+import { getProfileBooks } from "../actions/BookActions"
+import { getProfileLibraries } from "../actions/LibraryActions"
 function ProfileContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const profile = useSelector(state=>state.users.profileInView)
@@ -21,11 +23,16 @@ function ProfileContainer(props){
     const dispatch = useDispatch()
     const pathParams = useParams()
     const [following,setFollowing]=useState(null)
-    const fetchPages =()=>{
+    const fetchData =()=>{
         if(profile){
         const params = { profile}
-        dispatch(getProfilePages(params))}
-       }
+        dispatch(getProfilePages(params))
+        dispatch(getProfileBooks(params))
+        dispatch(getProfileLibraries(params))
+       }}
+    useEffect(()=>{
+        fetchData()
+    },[])
     useEffect(()=>{
         const { id} = pathParams
        
@@ -33,16 +40,15 @@ function ProfileContainer(props){
 
             dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
-                    fetchPages()
                     fetchProfileFollows()
                 },()=>{
                 })
             })
         }else{
-            fetchPages()
+
             fetchProfileFollows()
         }
-    },[profile])
+    },[])
    
     const fetchProfileFollows =()=>{
         if(currentProfile && profile){

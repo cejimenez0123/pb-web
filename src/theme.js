@@ -9,7 +9,7 @@ let theme = createTheme({
             contrastText: "rgb(244,244,244)"
           },
           secondary: {
-            main: blue[900],
+            main: "#1B2F5E",
             light: blue[200]
           },
           info:{
