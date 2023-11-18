@@ -8,7 +8,7 @@ import algoliasearch from "algoliasearch";
 
 // import { firebaseConfig } from '../fire';
 
-const client = algoliasearch("C1NZHMZ4PV", "d566696a4ab509a6a282a4ae748e8ec5");
+const client = algoliasearch(process.env.AGOLIA_APP_ID,process.env.AGOLIA_API_KEY);
 
 // Create a new index. An index stores the data that you want to make searchable in Algolia.
 const index = client.initIndex("plumbum");
