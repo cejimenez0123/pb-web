@@ -107,7 +107,6 @@
 .content-item img{ 
     width: 100%;    
     height:auto;
-    /* object-fit: cover; */
     margin: 0 auto;
   } 
 .content-item .text{

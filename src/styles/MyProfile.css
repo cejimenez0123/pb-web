@@ -56,11 +56,11 @@
     background-color: var(--tertiary);
 }
 .profile-pic{
-    max-width:10em;
-    max-height: 10em;
+    max-width:6em;
+ 
     height: auto;
     
-    border: 2px solid blueviolet;
+   
 }
 }
 
@@ -77,11 +77,10 @@
     background-color:var(--tertiary);
 }
 .profile-pic{
-    max-width:10em;
+    max-width:6em;
     max-height: 10em;
-    height: auto;
     
-    border: 2px solid blueviolet;
+
 }
 }
 

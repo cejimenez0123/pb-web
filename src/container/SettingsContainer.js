@@ -18,6 +18,7 @@ import "../styles/Setting.css"
 import theme from "../theme"
 // import Modal from "../components/Modal";
 import { Modal } from "@mui/joy";
+import checkResult from "../core/checkResult";
 function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
@@ -91,11 +92,16 @@ function SettingsContainer(props) {
             privacy: isPrivate
             
         }
-        dispatch(updateProfile(params)).then((result) => {
+        dispatch(updateProfile(params)).then((result) =>checkResult(result,
+            payload=>{
+                window.alert("Updated")
+            },err=>{
+                window.alert(err.message)
+            }
+
+        ))
             
-        }).catch((err) => {
-            
-        });
+    
     }
     }   
     const getLibrariesOfProfile = ()=>{

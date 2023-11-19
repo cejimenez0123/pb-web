@@ -786,6 +786,14 @@ const setPageInView = createAction("pages/setPageInView", (params)=> {
     
   
 })
+const setEditingPage = createAction("pages/setEditingPage", (params)=> {
+
+  const {page} = params
+  return  {payload:
+    page}
+    
+  
+})
 const clearEditingPage = createAction("pages/clearEditingPage", (params)=> {
 
 
@@ -1212,5 +1220,6 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           fetchAppendPagesOfProfile,
           fetchPagesWhereProfileCommenters,
           fetchPagesWhereProfileEditor,
-          fetchPagesWhereProfileWriter
+          fetchPagesWhereProfileWriter,
+          setEditingPage
         } 

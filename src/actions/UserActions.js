@@ -245,7 +245,7 @@ async (params,thunkApi) => {
 
 const updateProfile = createAsyncThunk("users/updateProfile",
                     async (params,thunkApi)=>{
-                       
+        try{               
                         const profile = params["profile"]
                         const newUsername = params["username"]
                         const newBookmarkLibraryId = params["bookmarkLibraryId"]
@@ -253,7 +253,7 @@ const updateProfile = createAsyncThunk("users/updateProfile",
                         const profileRef = doc(db, "profile", profile.id);
                         const newSelfStatement = params["selfStatement"]
                         const newPrivacy = params["privacy"]
-// Set the "capital" field of the city 'DC'
+
       await updateDoc(profileRef, {
             username: newUsername,
             bookmarkLibraryId: newBookmarkLibraryId,
@@ -274,15 +274,14 @@ const updateProfile = createAsyncThunk("users/updateProfile",
         const created = pack["created"]
         const updatedProfile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
         
-        if(updatedProfile){
+      
             return {
                 profile: updatedProfile
             }
-        }else{
-            throw new Error("Updating profile error")
-            }
-        }
-        )
+          }catch(e){
+            return {error: new Error(`Update Profile failed: ${e.message}`)}
+          }
+})
 const fetchAllProfiles = createAsyncThunk("users/fetchAllProfiles",async (state,{params})=>{
     try {
     let  profileRef = collection(db,"profile")

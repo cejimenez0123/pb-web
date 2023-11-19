@@ -348,6 +348,9 @@ function DashboardContainer(props){
                
                 <div >
                 {intro}
+                <div style={{padding:"2em",textAlign:"center"}}>
+                <h1 >HOME</h1>
+                </div>
                 {contentList()}
                  </div>
                    

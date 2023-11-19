@@ -228,7 +228,7 @@ return <Button onClick={()=>{
                 Add to Library
                         </MenuItem>
                         <MenuItem onClick={()=>{
-                            navigator.clipboard.writeText(`plumbum.app/page/${page.id}`)
+                            navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
                             .then(() => {
                                 // Successfully copied to clipboard
                                 alert('Text copied to clipboard');

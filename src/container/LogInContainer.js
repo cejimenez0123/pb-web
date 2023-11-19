@@ -20,6 +20,7 @@ import theme from '../theme';
 import { Modal } from '@mui/joy';
 import { auth } from '../core/di';
 import checkResult from '../core/checkResult';
+import { margin } from '@mui/system';
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -131,7 +132,23 @@ function LogInContainer(props) {
 }
 
 const inputStyle = {
-    width: '20em'
+    width: '95%',
+    backgroundColor:theme.palette.primary.contrastText,
+    marginTop:"1em",
+    marginBottom:"1em",
+    marginLeft:"1em"
+}
+const outerInputStyle={width:inputStyle.width,
+    marginTop:inputStyle.marginTop,
+    marginLeft:inputStyle.marginLeft}
+const innerInputStyle={backgroundColor: inputStyle.backgroundColor}
+const btnStyle ={
+    width: '95%',
+    padding: '1em',
+    marginTop:"1em",
+    marginBottom:"1em",
+    marginLeft:"1em",
+    backgroundColor:theme.palette.secondary.main
 }
 function SignInCard(props) {
     const [showPassword, setShowPassword] = useState(false);
@@ -143,31 +160,20 @@ function SignInCard(props) {
         img = (<img src={props.profilePicture} alt=""/>)
     }
     return (<div className='sign-card'>
+
         <div id="sign-in">
-        <h1> Sign Up</h1>
-                <FormGroup 
-                
-                     >
-                     <div > 
-                    <div className="username">
+        <h1 style={{marginLeft:"0.4em"}}> Sign Up</h1>
+                <FormGroup >
                     <TextField
-                            error={props.error}
-                            label='Username'
-                            value={props.username}
-                            onChange={(e) =>
-                            {   props.setError(false)
-                                props.setUsername(e.target.value.trim())
-                            }}
-                            
-                            InputProps={{
-                                style: {
-                                    width: inputStyle.width,
-                                    backgroundColor: theme.palette.primary.contrastText
-                                }
-                            }}
-                            />
-                    </div>
-                    <div className="email">
+                        error={props.error}
+                        label='Username'
+                        value={props.username}
+                        onChange={(e) =>{   
+                            props.setError(false)
+                            props.setUsername(e.target.value.trim().trimStart())
+                        }}
+                        style={outerInputStyle}
+                    />
                     <TextField 
                         error={props.error}
                         label="E-mail" 
@@ -176,19 +182,15 @@ function SignInCard(props) {
                             props.setError(false)
                            props.setEmail(e.target.value.trim())
                         }}
+                        style={outerInputStyle}
                         InputProps={{
-                            style: {
-                                width: inputStyle.width,
-                                backgroundColor: theme.palette.primary.contrastText
-                            }
+                            style: innerInputStyle
                             }
                         }
                     />
-                    </div>
-                    </div>
-                    <div className='privacy'>
                     <FormControlLabel
                         label="Private"
+                        style={{marginLeft:inputStyle.marginLeft}}
                         control={
                             <Checkbox 
                                 onChange={
@@ -199,22 +201,24 @@ function SignInCard(props) {
                                    }
                                     />}
                     />
-                    </div>
-                    <div id="self-statement"> 
+                    
+                    <div style={{marginLeft:inputStyle.marginLeft}}id="self-statement"> 
                         <h6>Self Statement</h6>
                         <TextareaAutosize 
-                        name="selfStatement" onChange={(e)=>{
+                            name="selfStatement" 
+                            onChange={(e)=>{
                             props.setError(false)
-                            props.setSelfStatement(e.target.value)}}minRows={3}
-                        style={
-                            {
-                                        width: inputStyle.width,
-                                        backgroundColor:theme.palette.primary.contrastText
-                                }
+                            props.setSelfStatement(e.target.value)}}
+                            minRows={3}
+                            style={
+                            {   marginBottom:"2em",
+                                width: "99%",
+                                backgroundColor:theme.palette.primary.contrastText
+                            }
                         }
                       
                         />
-                    </div>
+                 </div>
                     <TextField 
                                 error={props.error}
                                 value={props.password}
@@ -223,13 +227,10 @@ function SignInCard(props) {
                                 props.setError(false)
                                 props.setPassword(e.target.value.trim())}}
                           
-                            type={showPassword ? "text" : "password"} 
+                            type={showPassword ? "text" : "password"}
+                            style={outerInputStyle} 
                             InputProps={{
-                                style: {
-                                   
-                                    width: inputStyle.width,
-                                    backgroundColor:theme.palette.primary.contrastText
-                                },
+                                style:innerInputStyle,
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton onClick={handleTogglePasswordVisibility}>
@@ -238,11 +239,10 @@ function SignInCard(props) {
                                 </InputAdornment>
                         ),
                       }}
-                      style={{ margin: "auto",}}/>
+                      />
                     <div className='file'>
                                 <Button 
-                                style={{
-                                backgroundColor:theme.palette.secondary.main}}
+                                style={btnStyle}
                                 
                                 component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                    
@@ -254,18 +254,15 @@ function SignInCard(props) {
                     </Button>
                     {img}
                     </div>
-            <div className='button'>
-
-         
+           
             <Button 
                     onClick={
                         props.handleSubmit
                        }
                     variant="contained" 
-                    style={{width:"20em",
-                            backgroundColor:theme.palette.secondary.main
-        }}type="submit">Sign Up</Button>
-            </div>
+                    style={btnStyle}
+                    type="submit">Sign Up</Button>
+     
         </FormGroup>
         </div>
     </div>)
@@ -280,35 +277,29 @@ function LogInCard(props){
       };
 
     return(<div className='sign-card'>
-        <h1> Log In</h1>
-        <FormGroup  id="login"
+        <div  >
+        <h1 style={{marginLeft:"0.4em",marginTop:"1em"}}> Log In</h1>
+        <FormGroup >
         
-            >
-                <div className="email">
             <TextField
                 error={props.error}
                 label="E-mail"
                 value={props.email} 
-                name='E-mail'placeholder='E-mail' 
+                name='E-mail'
+                placeholder='E-mail' 
                 onChange={(e) => props.setEmail(e.target.value)}
-                InputProps={{
-                    style: {
-                        width: inputStyle.width,
-                }}}
+                style={outerInputStyle}
+            />
                 
-                />
-                </div>
-                <div className="password-div">
             <TextField label="Password"
             error={props.error}
             value={props.password} 
             name='password'placeholder='Password'
             onChange={(e) => props.setPassword(e.target.value.trim())}
             type={showPassword ? "text" : "password"} 
+            style={outerInputStyle}
             InputProps={{
-                style: {
-                    width: inputStyle.width,
-                },
+                style:innerInputStyle,
             endAdornment: (
                 <InputAdornment position="end">
                     <IconButton onClick={handleTogglePasswordVisibility}>
@@ -319,17 +310,16 @@ function LogInCard(props){
       }}
             
             />
-            <div onClick={()=>{
-                setOpen(true)
-            }}className='forgot'>
-               <a>Forgot Passowrd?</a>
+            <div 
+                style={{color:theme.palette.primary.dark,marginLeft:"1em"}}
+                onClick={()=>{
+                    setOpen(true)
+                }}>
+                <a>Forgot Password?</a>
             </div>
-            </div>
-         
             <Button 
                onClick={props.handleSubmit}
-                style={{width:"20em",
-                backgroundColor:theme.palette.secondary.main}}
+                style={btnStyle}
                 variant="contained" type="submit">Log In</Button>
         </FormGroup>
         <Modal
@@ -342,11 +332,12 @@ function LogInCard(props){
 
                     <FormGroup id="modal-modal-description" 
                      style={{width: "40em",
-                            margin:"auto",
+                            marginLeft: inputStyle.marginLeft,
                             marginTop:"4em",
                             borderRadius:"25px",
                             padding:"6em",
-                            backgroundColor:theme.palette.secondary.light}}  
+                            backgroundColor:theme.palette.secondary.light,
+                            }}  
                      //</Modal>sx={{ mt: 2 }}
                      >
                          <Typography 
@@ -385,6 +376,7 @@ function LogInCard(props){
                         </Button>
                     </FormGroup>
                 </Modal>
+                </div>
     </div>)
 }
 

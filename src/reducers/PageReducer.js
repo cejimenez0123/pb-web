@@ -18,7 +18,8 @@ import {  getPublicPages ,
           updateComment,
           fetchAppendPagesOfProfile,
           saveRolesForPage,
-          updatePage
+          updatePage,
+          setEditingPage
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
 
@@ -83,6 +84,8 @@ const pageSlice = createSlice({
       }).addCase(setPageInView,(state,{payload})=>{
      
         state.pageInView = payload.page
+      }).addCase(setEditingPage.type,(state,{payload})=>{
+        state.editingPage = payload
       }).addCase(saveRolesForPage.fulfilled,(state,{payload})=>{
         if(payload.page){
         state.editingPage = payload.page

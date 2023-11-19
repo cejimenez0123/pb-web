@@ -2,7 +2,7 @@ import RichEditor from "../components/RichEditor"
 import "../styles/Editor.css"
 import "../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import { setHtmlContent,createPage, updatePage,saveRolesForPage, fetchEditingPage,deletePage, clearEditingPage, setPagesToBeAdded } from "../actions/PageActions"
+import { setHtmlContent,createPage, updatePage,saveRolesForPage, fetchEditingPage,deletePage, clearEditingPage, setPagesToBeAdded, setEditingPage } from "../actions/PageActions"
 import React,{ useEffect, useState } from "react"
 import history from "../history"
 import { useParams,useNavigate } from "react-router-dom"
@@ -23,6 +23,7 @@ import { RoleType } from "../core/constants"
 import Paths from "../core/paths"
 import MediaQuery from "react-responsive"
 import { border } from "@mui/system"
+import { checkmarkStyle } from "../styles/styles"
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
@@ -39,19 +40,13 @@ function EditorContainer({currentProfile}){
         
             if(id && ePage==null){
                 const parm = {id:id}
-                dispatch(fetchEditingPage(parm)).then(result=>{
-                  const {payload }= result
-                  if(payload!=null){
-                    if(payload.error==null){
-                      const {page} = payload
-                      setEPage(page)
-                      setTitle(page.title)
-                      setPrivacy(!page.privacy)
-                      setCommentable(page.commentable)
-                      dispatch(setHtmlContent(page.data))
-                    }
-                  }
-                })
+                dispatch(fetchEditingPage(parm)).then(result=>checkResult(result,payload=>{
+                  const {page} = payload
+                  setPageInfo(page)
+                },err=>{
+
+                }))
+              
             }else if(ePage!=null && ePage.id==id){
              setPageInfo(ePage)
             }else{ 
@@ -60,6 +55,8 @@ function EditorContainer({currentProfile}){
         },[editingPage])
 
     const setPageInfo =(page)=>{
+      setEPage(page)
+      dispatch(setEditingPage({page}))
       setTitle(page.title)
       setPrivacy(page.privacy)
       setCommentable(page.commentable)
@@ -79,30 +76,29 @@ function EditorContainer({currentProfile}){
       type: 'html/text'
     }
     dispatch(createPage(params)).then((result)=>{
-        if(result.error==null){
-          const {payload } = result
-          if(payload.error==null){
+        checkResult(result,payload=>{
             const {page} = payload
-            setEPage(page)
-            window.alert("Saved")
+            setPageInfo(page)
+          },err=>{
+            console.error(err.message)
           }
-        }
-    })}
+        )})
+  }
         const onSavePress = (onEnd)=>{
           if(!ePage){
             saveNewPage()
             onEnd()
         }else{
         
-         let params = { page: editingPage,
+         let params = { page: ePage,
             title: title,
             data: htmlContent,
             privacy:privacy,
             commentable:commentable,
           
           }
-          if(editingPage.type === PageType.picture){
-            params = { page: editingPage,
+          if(ePage.type === PageType.picture){
+            params = { page: ePage,
               title: title,
               data: editingPage.data,
               privacy:privacy,
@@ -126,8 +122,9 @@ function EditorContainer({currentProfile}){
               dispatch(saveRolesForPage(params)).then(result=>checkResult(result,payload=>{
 
                   const {page}=payload
-                  setEPage(page)
-                  window.alert("Successfully updated Roles")
+                  setPageInfo(page)
+                  onEnd()
+                  // window.alert("Successfully updated Roles")
 
               },err=>{
                   window.alert("Error updating roles")
@@ -241,6 +238,7 @@ function EditorContainer({currentProfile}){
               <div id="post-button-row">
                   <Button
                   onClick={()=>onSavePress(()=>{
+                    setPrivacy(false)
                     navigate(Paths.page(ePage.id))
                   })}
                   style={{backgroundColor:theme.palette.secondary.main,
@@ -258,13 +256,13 @@ function EditorContainer({currentProfile}){
               <div className="right-side-bar">
                 
                 <FormGroup className="form" >
-                 <TextField onChange={(e)=>setTitle(e.target.value.trimEnd())} value={title} label="Title"/>
+                 <TextField onChange={(e)=>setTitle(e.target.value.trimEnd().trimStart())} value={title} label="Title"/>
                  
                   <FormControlLabel 
-                control={<Checkbox style={{color:theme.palette.primary.contrastText}} checked={!privacy} onChange={(e)=>setPrivacy(!e.target.checked)}/>} label={!privacy?"Public":"Draft"} />
+                control={<Checkbox style={checkmarkStyle} checked={!privacy} onChange={(e)=>setPrivacy(!e.target.checked)}/>} label={!privacy?"Public":"Draft"} />
                  
                  <FormControlLabel 
-                control={<Checkbox style={{color:theme.palette.primary.contrastText}}checked={commentable} onChange={(e)=>{
+                control={<Checkbox style={checkmarkStyle}checked={commentable} onChange={(e)=>{
                   setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
                  
             

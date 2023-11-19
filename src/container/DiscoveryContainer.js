@@ -197,8 +197,11 @@ function DiscoveryContainer(props){
         return(
             <ErrorBoundary>
             <div id="discover"  >
+            <div style={{paddingTop:"3em",textAlign:"center"}}>
+                <h1 >Discovery</h1>
+                </div>
                 <div className='content-list dashboard'>
-              <div className='content'>
+              <div >
 
            
                 <InfiniteScroll
