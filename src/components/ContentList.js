@@ -38,7 +38,7 @@ export default function ContentList({currentProfile,pagesInView}){
         </div>)
         if(pagesInView!=null ){    
             return (
-                <div className="content">
+                <div className="content-list">
             <InfiniteScroll
            dataLength={pagesInView.length}
            next={fetchPageData}
@@ -117,7 +117,7 @@ export default function ContentList({currentProfile,pagesInView}){
         if(listType=="page"){
            if(pages!=null  && pages.length>0){    
            return (
-            <div className="">
+            <div className="content-list">
            <InfiniteScroll
            
         
@@ -138,7 +138,7 @@ export default function ContentList({currentProfile,pagesInView}){
             }}
             else if(listType=="book"){
              if(books!=null && books.length>0){  
-               return  (<div className="">
+               return  (<div className="content-list">
                 <InfiniteScroll 
           
                    dataLength={books.length}
@@ -306,7 +306,7 @@ export default function ContentList({currentProfile,pagesInView}){
         setIsContentVisible(true)
     } 
     const btnStyle ={fontSize: "1em",paddingTop:"1em",color:theme.palette.primary.contrastText,height:"100%"}
-    return(<div className="column">
+    return(<div >
                 <div className="inner">
                 <div className="btn-row">
                     <div>
@@ -350,7 +350,7 @@ export default function ContentList({currentProfile,pagesInView}){
                 </div>
                          
                             <div
-        className={`content-list my  ${isContentVisible ? "visible" : "hidden"}`}
+        className={`${isContentVisible ? "visible" : "hidden"}`}
         style={{
           maxHeight: isContentVisible ? "" : "0",
           transition: "max-height 0.3s ease-in-out"

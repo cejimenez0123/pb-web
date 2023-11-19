@@ -1,36 +1,32 @@
 import React from "react"
 import { Settings } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
-import { Button } from "@mui/material"
+import { IconButton } from "@mui/material"
+import theme from "../theme"
 export default function ProfileCard(props){
   
-   let navigate = useNavigate()
+
 
     if(props.currentProfile!=null){
         
-        return (<div className="profile-card">
-   <div className="flex-direction-column">
-        <div className="profile-pic-container">
-            <img className="profile-pic" inline="true" src={props.currentProfile.profilePicture} alt=""  height="auto"/>
-            <div className="flex flex-direction-column profileCardNames">
-
-                <h4>@{props.currentProfile.username}</h4>
-             
-            </div>
-            <h6>{props.currentProfile.selfStatement}</h6>
-            <div className="profile-buttons">
-    <Button onClick={()=>{
-            navigate("/profile/edit")
-        }}>
-            <Settings/>
-        </Button>
-
-        </div> 
-        </div>
+        return (
+   <div className="">
+        <div  className="profile-container">
+          <div >
+            
+                <img className="profile-pic" inline="true" src={props.currentProfile.profilePicture} />
+                <h4 >{props.currentProfile.username}</h4>
         
- 
+           </div> 
+        
+            <div>
+                <h6>{props.currentProfile.selfStatement}</h6>
+            </div>
+           </div>
+           
         </div>
-    </div>)
+    
+  )
 
     }else{
         return (

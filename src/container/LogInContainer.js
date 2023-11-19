@@ -58,7 +58,6 @@ function LogInContainer(props) {
                       
         dispatch(signUp(params)).then((result) => {
             checkResult(result,payload=>{
-                const {profile} = payload
                 navigate("/profile/home")
             },()=>{
                 setSignUpError(true)
@@ -157,7 +156,7 @@ function SignInCard(props) {
       };
     let img = (<div></div>)
     if(props.profilePicture){
-        img = (<img src={props.profilePicture} alt=""/>)
+        img = (<img style={{margin:"auto",width:"50%"}}src={props.profilePicture} alt=""/>)
     }
     return (<div className='sign-card'>
 
@@ -338,7 +337,7 @@ function LogInCard(props){
                             padding:"6em",
                             backgroundColor:theme.palette.secondary.light,
                             }}  
-                     //</Modal>sx={{ mt: 2 }}
+                    
                      >
                          <Typography 
                     id="modal-modal-title" variant="h6" component="h2"

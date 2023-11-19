@@ -1,6 +1,6 @@
 
 
-@media (max-width: 100px) {
+@media (max-width: 1000px) {
     .create .container{
         display: flex;
         flex-direction: column-reverse;

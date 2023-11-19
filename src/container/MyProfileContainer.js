@@ -22,7 +22,7 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInV
     if( currentProfile){ 
         return(
             <div className='container reverse'>
-            <div className='main-bar'>
+            <div className=''>
                     <ContentList currentProfile={currentProfile} pagesInView={pagesInView} booksInView={booksInView} librariesInView={librariesInView}/>
             </div>         
             <div className="right-side-bar">
@@ -52,6 +52,7 @@ function CreateButtons (props){
                 id="demo-customized-button"
                 style={{backgroundColor:theme.palette.primary.main,
                 color:theme.palette.primary.contrastText,
+                boxShadow:"0 5px 18px rgba(0, 0, 0, 0.6)",
                 padding:"1em 2em"}}
                 aria-controls={anchorEl ? 'demo-customized-menu' : undefined}
                 aria-haspopup="true"

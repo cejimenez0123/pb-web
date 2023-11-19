@@ -109,22 +109,21 @@ function EditorContainer({currentProfile}){
           dispatch(updatePage(params)).then(result=>{
             checkResult(result,(payload)=>{
               const {page}=payload
-              setPageInfo(page)
               const readers = newRoles.filter(role => role.role == RoleType.reader).map(role=>role.profile.userId)
               const commenters = newRoles.filter(role => role.role == RoleType.commenter).map(role=>role.profile.userId)
               const editors = newRoles.filter(role => role.role == RoleType.editor).map(role=>role.profile.userId)
               const writers = newRoles.filter(role => role.role == RoleType.writer).map(role=>role.profile.userId)
-             let params ={page:page,
+              let params ={page:page,
                 readers,
                 commenters,
                 editors,
                 writers}
-              dispatch(saveRolesForPage(params)).then(result=>checkResult(result,payload=>{
-
+              dispatch(saveRolesForPage(params))
+              .then(result=>checkResult(result,payload=>{
                   const {page}=payload
                   setPageInfo(page)
                   onEnd()
-                  // window.alert("Successfully updated Roles")
+                  window.alert("Saved")
 
               },err=>{
                   window.alert("Error updating roles")

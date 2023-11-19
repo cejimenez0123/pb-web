@@ -134,11 +134,16 @@ function ProfileContainer(props){
     }
    
     if(profile!=null){
-      profileCardDiv =  ( <div className="info view">
-        <h1>{profile.username}</h1>
-        <img src={profile.profilePicture} alt="proflile-picture"/>
+      profileCardDiv =  ( <div className="profile-card">
+       <div className="flex">
         <div>
+            <img src={profile.profilePicture} alt="proflile-picture"/>
+            <h5>{profile.username}</h5>
+        </div>
+        <div className="statement">
             <p>{profile.selfStatement}</p>
+        </div>
+        
         </div>
         <div>
            {followDiv()}

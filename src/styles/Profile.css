@@ -1,5 +1,5 @@
 
-@media (min-width: 840px) {
+@media (min-width: 1000px) {
 .container{
     display: flex;
     flex-direction: row;
@@ -21,11 +21,11 @@
     padding: 2rem 0rem;
   }
 }
-@media (max-width: 840px) {
+@media (max-width: 1000px) {
     .container{
         display: flex;
         flex-direction: column;
-        width: 100%;
+     
     }
     .container.reverse{
         flex-direction: column-reverse;
@@ -38,4 +38,40 @@
       }
 
 
+}
+@media (max-width: 800px) {
+    .profile-card{
+
+        min-height: 15em;
+        min-width:100%;
+        background-color: rgb(206, 222, 214);
+        border: 1px solid rgb(155, 173, 161);
+        /* border-radius: 25px; */
+        padding: 2em 1em;
+    }
+    .profile-card img{
+        max-width: 12em;
+     
+    }
+}
+@media (min-width: 800px) {
+    .profile-card img{
+        max-width: 12em;
+     
+    }
+    .profile-card .statement{
+        margin-left: 1em;
+        padding: 0.5em;
+        min-width: 16em
+    }
+    .profile-card{
+
+        min-height: 15em;
+        max-width: 30em;
+        background-color: rgb(206, 222, 214);
+        border: 1px solid rgb(155, 173, 161);
+        border-radius: 25px;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.6);
+        padding: 2em 1em;
+    }
 }
