@@ -14,7 +14,7 @@ import { Button, IconButton } from "@mui/material";
 import checkResult from "../core/checkResult";
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import theme from "../theme";
-export default function ContentList({currentProfile,pagesInView}){
+export default function ContentList({profile,pagesInView}){
     const [page,setPage] = useState(1)  
     const [listType,setListType]=useState("page")
     const [isContentVisible, setIsContentVisible] = useState(true)
@@ -31,7 +31,7 @@ export default function ContentList({currentProfile,pagesInView}){
         fetchPageData()
         fetchBookData()
         fetchLibraryData()
-    },[currentProfile])
+    },[profile])
     const pageList=()=>{
         const empty = (<div className="empty">
             Empty
@@ -40,12 +40,16 @@ export default function ContentList({currentProfile,pagesInView}){
             return (
                 <div className="content-list">
             <InfiniteScroll
-           dataLength={pagesInView.length}
-           next={fetchPageData}
-           hasMore={hasMorePages} // Replace with a condition based on your data source
-           loader={<p>Loading...</p>}
-           endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
-         >
+                dataLength={pagesInView.length}
+                next={fetchPageData}
+                hasMore={hasMorePages} // Replace with a condition based on your data source
+                loader={<p>Loading...</p>}
+                endMessage={
+                    <div className="no-more-data">
+                        <p>No more data to load.</p>
+                    </div>
+                }
+            >
              {pages.map(page =>{
                      return(<PageListItem key={page.id} page={page}/>)
              })}
@@ -57,24 +61,21 @@ export default function ContentList({currentProfile,pagesInView}){
              }}
             
     const fetchPageData = () =>{
-            const params = {profile:currentProfile,page,groupBy:9}
-                setHasMorePages(true)
-                dispatch(getProfilePages(params)).then((result) => {
-                    checkResult(result,payload=>{
-                        const {pageList}=payload
-                        setPages(pageList)
-                        setHasMorePages(false)
-                    },err=>{
-                        setHasMorePages(false)
-                    })
-        
-            }).catch((err) => {
+            const params = {profile:profile,page,groupBy:9}
+            setHasMorePages(true)
+            dispatch(getProfilePages(params)).then((result) => {
+                checkResult(result,payload=>{
+                const {pageList}=payload
+                setPages(pageList)
                 setHasMorePages(false)
-            });
+            },err=>{
+                setHasMorePages(false)
+            })
+        })
     }
     const fetchBookData=()=>{
             setHasMoreBooks(true)
-            const params = {profile:currentProfile,page,groupBy:9}
+            const params = {profile:profile,page,groupBy:9}
              dispatch(getProfileBooks(params)).then((result) => {
                 checkResult(result,payload=>{
                     const {bookList}=payload
@@ -92,7 +93,7 @@ export default function ContentList({currentProfile,pagesInView}){
     const fetchLibraryData=()=>{
         
                 setHasMoreLibraries(true)
-                const params = {profile:currentProfile,page,groupBy:9}
+                const params = {profile:profile,page,groupBy:9}
                 dispatch(getProfileLibraries(params)).then(result=>{
                     checkResult(result,payload=>{
                         const {libList}=payload

@@ -154,7 +154,7 @@ function ProfileContainer(props){
                {profileCardDiv}
             </div>
             <div className="right-bar">
-                <ContentList currentProfile={profile}
+                <ContentList profile={profile}
                              pagesInView={pagesInView}/>
             </div>
           

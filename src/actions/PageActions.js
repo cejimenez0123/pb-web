@@ -125,9 +125,10 @@ const getProfilePages= createAsyncThunk(
 
     const ref = collection(db, "page")
     let queryReq = query(ref,where("profileId","==",profile.id),where("privacy","==",false))
-    if(auth.currentUser.uid == profile.userId){
+  
+    if(auth.currentUser && (auth.currentUser.uid == profile.userId)){
       queryReq = query(ref, where("profileId", "==", profile.id))
-    }else if(auth.currentUser && auth.currentUser.uid != profile.userId){
+    }else if(auth.currentUser && (auth.currentUser.uid != profile.userId)){
       let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))        
       let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
       let queryEditor = query(ref,where("profileId","==", profile.id),where("editors", "array-contains",auth.currentUser.uid))
@@ -135,34 +136,8 @@ const getProfilePages= createAsyncThunk(
     try {
       let snapshot = await getDocs(queryCommenter)
       snapshot.docs.forEach(doc=>{
-        const pack = doc.data();
-              const { id } = doc;
-              const title =pack["title"]
-              const data = pack["data"]
-              const profileId = pack["profileId"]
-              const privacy = pack["privacy"]
-              const approvalScore = pack["approvalScore"]
-              const type = pack["type"]
-              const created = pack["created"]
-              let commentable = pack["commentable"]
-              let commenters = pack["commenters"]
-              let editors = pack["editors"]
-              let readers = pack["readers"]
-              let writers = pack["writers"]
-    const contributors= new Contributors(commenters,
-      readers,writers,editors)
-      const page =  new Page( id,
-                              title,
-                              data,
-                              profileId,
-                              approvalScore,
-                              privacy,
-                              commentable,
-                              type,
-                              contributors,
-                              created)
-
-        pageList = [...pageList, page]
+          const page = unpackPageDoc(doc)
+          pageList = [...pageList, page]
         })
       }catch(e){
         console.error(`Page Query Where Commenter Error: ${e.message}`)
@@ -171,34 +146,8 @@ const getProfilePages= createAsyncThunk(
       try {
         let snapshot = await getDocs(queryReq)
         snapshot.docs.forEach(doc=>{
-          const pack = doc.data();
-                const { id } = doc;
-                const title =pack["title"]
-                const data = pack["data"]
-                const profileId = pack["profileId"]
-                const privacy = pack["privacy"]
-                const approvalScore = pack["approvalScore"]
-                const type = pack["type"]
-                const created = pack["created"]
-                let commentable = pack["commentable"]
-                let commenters = pack["commenters"]
-                let editors = pack["editors"]
-                let readers = pack["readers"]
-                let writers = pack["writers"]
-      const contributors= new Contributors(commenters,
-        readers,writers,editors)
-        const page =  new Page( id,
-                                title,
-                                data,
-                                profileId,
-                                approvalScore,
-                                privacy,
-                                commentable,
-                                type,
-                                contributors,
-                                created)
-  
-          pageList = [...pageList, page]
+            const page = unpackPageDoc(doc)
+            pageList = [...pageList, page]
           })
         }catch(e){
           console.error(`Page Query Where Req Error: ${e.message}`)
@@ -207,34 +156,7 @@ const getProfilePages= createAsyncThunk(
       try{
         let readerSnap = await getDocs(queryReaders)
         readerSnap.docs.forEach(doc=>{
-          const pack = doc.data();
-          const { id } = doc;
-          const title =pack["title"]
-          const data = pack["data"]
-          const profileId = pack["profileId"]
-          const privacy = pack["privacy"]
-          const approvalScore = pack["approvalScore"]
-          const type = pack["type"]
-          const created = pack["created"]
-          let commentable = pack["commentable"]
-          let commenters = pack["commenters"]
-          let editors = pack["editors"]
-          let readers = pack["readers"]
-          let writers = pack["writers"]
-          const contributors= new Contributors( commenters,
-                                                readers,
-                                                writers,
-                                                editors)
-          const page =  new Page( id,
-                        title,
-                        data,
-                        profileId,
-                        approvalScore,
-                        privacy,
-                        commentable,
-                        type,
-                        contributors,
-                        created)
+          const page = unpackPageDoc(doc)
             pageList = [...pageList, page]
             })
       }catch(e){
@@ -243,34 +165,7 @@ const getProfilePages= createAsyncThunk(
       try{
         let editorSnap = await getDocs(queryEditor)
         editorSnap.docs.forEach(doc=>{
-          const pack = doc.data();
-                const { id } = doc;
-                const title =pack["title"]
-                const data = pack["data"]
-                const profileId = pack["profileId"]
-                const privacy = pack["privacy"]
-                const approvalScore = pack["approvalScore"]
-                const type = pack["type"]
-                const created = pack["created"]
-                let commentable = pack["commentable"]
-                let commenters = pack["commenters"]
-                let editors = pack["editors"]
-                let readers = pack["readers"]
-                let writers = pack["writers"]
-          const contributors = new Contributors( commenters,
-                                                readers,
-                                                writers,
-                                                editors)
-          const page =  new Page( id,
-                                title,
-                                data,
-                                profileId,
-                                approvalScore,
-                                privacy,
-                                commentable,
-                                type,
-                                contributors,
-                                created)
+          const page = unpackPageDoc(doc)
           pageList = [...pageList, page]
           })
         }catch(e){
@@ -279,91 +174,26 @@ const getProfilePages= createAsyncThunk(
       try{
       let writerSnap = await getDocs(queryWriter)
       writerSnap.docs.forEach(doc=>{
-        const pack = doc.data();
-                const { id } = doc;
-                const title =pack["title"]
-                const data = pack["data"]
-                const profileId = pack["profileId"]
-                const privacy = pack["privacy"]
-                const approvalScore = pack["approvalScore"]
-                const type = pack["type"]
-                const created = pack["created"]
-                let commentable = pack["commentable"]
-                let commenters = pack["commenters"]
-                let editors = pack["editors"]
-                let readers = pack["readers"]
-                let writers = pack["writers"]
-      const contributors= new Contributors(commenters,
-        readers,writers,editors)
-        const page =  new Page( id,
-                                title,
-                                data,
-                                profileId,
-                                approvalScore,
-                                privacy,
-                                commentable,
-                                type,
-                                contributors,
-                                created)
-  
-      pageList = [...pageList, page]
+          const page = unpackPageDoc(doc)
+          pageList = [...pageList, page]
         })
       }catch (e) {
         console.error(`Page Query Where Writer Error: ${e.message}`)
       }
       return {pageList}
   }
-
-
+  try{
   const snapshot = await getDocs(queryReq
                 );
         pageList = []
         snapshot.docs.forEach(doc => {
-              const pack = doc.data();
-              const { id } = doc;
-              const title =pack["title"]
-              const data = pack["data"]
-              const profileId = pack["profileId"]
-              const privacy = pack["privacy"]
-              const approvalScore = pack["approvalScore"]
-              const type = pack["type"]
-              const created = pack["created"]
-              let commentable = pack["commentable"]
-              let commenters = pack["commenters"]
-              let editors = pack["editors"]
-              let readers = pack["readers"]
-              let writers = pack["writers"]
-            if(!editors){
-              editors = []
-            }
-            if(!commenters){
-              commenters = []
-            }
-            if(!readers){
-                readers=[]
-            }
-            if(!writers){
-              writers=[]
-            }
-            if(commentable==null){
-              commentable=true
-            }
-              const contributors= new Contributors(commenters,
-              readers,writers,editors)
-              const page =  new Page( id,
-                                      title,
-                                      data,
-                                      profileId,
-                                      approvalScore,
-                                      privacy,
-                                      commentable,
-                                      type,
-                                      contributors,
-                                      created)
+             const page = unpackPageDoc(doc)
      
             pageList = [...pageList, page]
           })
-        
+  }catch (e) {
+    console.error(`Page Query Where Error: ${e.message}`)
+  }
   return {
 
       pageList
@@ -1195,6 +1025,35 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
     }
   }
   })
+  const unpackPageDoc = (doc)=>{
+    const pack = doc.data();
+              const { id } = doc;
+              const title =pack["title"]
+              const data = pack["data"]
+              const profileId = pack["profileId"]
+              const privacy = pack["privacy"]
+              const approvalScore = pack["approvalScore"]
+              const type = pack["type"]
+              const created = pack["created"]
+              let commentable = pack["commentable"]
+              let commenters = pack["commenters"]
+              let editors = pack["editors"]
+              let readers = pack["readers"]
+              let writers = pack["writers"]
+    const contributors= new Contributors(commenters,
+      readers,writers,editors)
+      const page =  new Page( id,
+                              title,
+                              data,
+                              profileId,
+                              approvalScore,
+                              privacy,
+                              commentable,
+                              type,
+                              contributors,
+                              created)
+                              return page
+  }
   export {getPublicPages,
           pagesLoading,
           setHtmlContent,

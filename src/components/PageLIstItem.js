@@ -39,6 +39,7 @@ function PageListItem({page}) {
         navigate(`/${type}/new`)
     }
     }
+    
     let pageDataElement = (<div></div>)
     if(page!=null){
     switch(page.type){
@@ -63,7 +64,6 @@ function PageListItem({page}) {
             <MoreVert style={iconStyle}/>
         </MenuButton>
         <Menu>
-            <MenuItem>Follow</MenuItem>
             <MenuItem onClick={()=>handleAddClick("book")}>Book</MenuItem>
             <MenuItem onClick={()=>handleAddClick("library")}>Library</MenuItem>
         </Menu>
