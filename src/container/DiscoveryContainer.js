@@ -15,102 +15,159 @@ function DiscoveryContainer(props){
     const booksInView = useSelector(state=>state.books.booksInView)   
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const profilesInView = useSelector(state=>state.users.profilesInView)
     const librariesInView = useSelector(state=>state.libraries.librariesInView) 
+    const [content,setContent]=useState([])
     const [contentItems,setContentItems]=useState([])
-    let [pages,setPages] = useState([])
     let [hasMore,setHasMore]=useState(false)
-        useEffect(()=>{
-            let pList =[]
-            let bList = []
-            if(pagesInView){
-               pList = pagesInView.map((page)=>{return {type:"page",page:page}})
-            }
-            if(booksInView){
-                bList = []
-                booksInView.forEach(book=>{
-                    book.pageIdList.forEach(id=>{
-                        const params = {id}
-                    
-                        dispatch(fetchPage(params)).then((result)=>{
-                            checkResult(result,payload=>{
-                                const { page}= payload
-                                let item = { type:"book",book,page}
-                                bList.push(item)
-                            },(err)=>{
-
-                            })
-                        })})
-                })
-            } 
+    useEffect(()=>{
        
+        setContentItems([])
+        fetchContentItems()
+    },[])
+    useEffect(()=>{sortContent()},[pagesInView])
+    const sortContent = ()=>{
         
-            const perChunk = 2 // items per chunk    
-            
-            let lList = librariesInView.map((library)=>{return {type:"library",library:library}})
-            // items per chunk    
-            const lArray = lList
-            const lresult = lArray.reduce((resultArray, item, index) => { 
-            const chunkIndex = Math.floor(index/perChunk)
-            if(!resultArray[chunkIndex]) {
-                resultArray[chunkIndex] = [] // start a new chunk
-            }
-                resultArray[chunkIndex].push(item)
+        let pList =[]
+        let bList = []
+        if(pagesInView){
+            pList = pagesInView.map((page)=>{return {type:"page",page:page}})
+        }
+        if(booksInView){
+            bList = []
+            booksInView.forEach(book=>{
+                book.pageIdList.forEach(id=>{
+                    const params = {id}
+                
+                    dispatch(fetchPage(params)).then((result)=>{
+                        checkResult(result,payload=>{
+                            const { page}= payload
+                            let item = { type:"book",book,page}
+                            bList.push(item)
+                        },(err)=>{
 
-                return resultArray
-            }, [])
-            let list =[...pList,...bList,...lresult]
-            
-            let sorted = list.sort((a, b) =>{
-                if(Array.isArray(a) || Array.isArray(b)){
-                    if(Array.isArray(a) && !Array.isArray(b)){
-                        return b.created - a[0].created
-
-                    }else if(!Array.isArray(a) && Array.isArray(b)){
-                        return b[0].created - a.created
-                    }else{
-                        return b[0].created - a[0].created
-                    }
-
-
-                }else{
-                if(a.book!=null && b.book!=null){
-                    return b.book.updatedAt - a.book.updatedAt
-                }else if(a.book!=null && b.page!=null){
-                    return b.page.created - a.book.updatedAt
-                }else if(a.page!=null && b.book!=null){
-                    return b.book.updatedAt - a.page.created
-                }else if(
-                    a.page!=null && a.page!=null
-                ){
-                    return b.page.created - a.page.created 
-                }else{
-                   
-                } 
-            }
-            } );
-            
-
-            setContentItems(sorted)
-        },[hasMore])
-    
-        useEffect(()=>{
-           fetchContentItems()
-        },[])
-        const fetchContentItems = ()=>{
-            setHasMore(true) 
-            setContentItems([])
-            dispatch(getPublicPages()).then(result=>{
-                dispatch(getPublicBooks()).then(result=>{
-                    setHasMore(false)
-                    dispatch(getPublicLibraries()).then(result=>{
-
-                    })
-                })
+                        })
+                    })})
             })
-           
-          
+        } 
+   
+    
+        const perChunk = 2 // items per chunk    
         
+        let lList = librariesInView.map((library)=>{return {type:"library",library:library}})
+        // items per chunk    
+        const lArray = lList
+        const lresult = lArray.reduce((resultArray, item, index) => { 
+        const chunkIndex = Math.floor(index/perChunk)
+        if(!resultArray[chunkIndex]) {
+            resultArray[chunkIndex] = [] // start a new chunk
+        }
+            resultArray[chunkIndex].push(item)
+
+            return resultArray
+        }, [])
+        let list = [...pList,...bList,...lresult]
+        
+        let sorted = list.sort((a, b) =>{
+            if(a && b && (Array.isArray(a) || Array.isArray(b))){
+                if(a && b && (Array.isArray(a) && !Array.isArray(b))){
+                    
+                    let aUpdatedAt = a[0].library.updatedAt
+                    if(a[1] ){
+                        aUpdatedAt = a[0].library.updatedAt>a[1].library.updatedAt?a[0].library.updatedAt:a[1].library.updatedAt
+                   }
+                   if(b.book){
+                    return   b.book.updatedAt - aUpdatedAt  
+                   }else{
+                    return   aUpdatedAt  -  b.page.created
+                   }
+
+                }else if(a && b &&(!Array.isArray(a) && Array.isArray(b))){
+                    let bUpdatedAt = b[0].library.updatedAt
+                    if(b[1]){
+                        bUpdatedAt = b[0].library.updatedAt<b[1].updatedAt?b[0].library.updatedAt:b[1].library.updatedAt
+                    }
+                    if(a.book){
+                        return      a.book.updatedAt-bUpdatedAt
+                       }else{
+                        return      a.page.created-bUpdatedAt 
+                       }
+                   
+                }else if(a && b &&(Array.isArray(a) && Array.isArray(b))){
+                    let aUpdatedAt = a[0].library.updatedAt
+                    if(a[1] ){
+                     aUpdatedAt = a[0].library.updatedAt>a[1].library.updatedAt?a[1].library.updatedAt:a[0].library.updatedAt
+                }
+                let bUpdatedAt = b[0].library.updatedAt
+                if(b[1]){
+                    bUpdatedAt = b[0].library.updatedAt>b[1].updatedAt?b[1].library.updatedAt:b[0].library.updatedAt
+                }
+                    return  bUpdatedAt - aUpdatedAt
+                }
+
+
+            }else{
+            if(a && b &&(a.book!=null && b.book!=null)){
+                return b.book.updatedAt - a.book.updatedAt
+            }else if(a && b &&(a.book!=null && b.page!=null)){
+                return b.page.created - a.book.updatedAt
+            }else if(a.page!=null && b.book!=null){
+                return b.book.updatedAt - a.page.created
+            }else if(
+                a.page!=null && a.page!=null
+            ){
+                return b.page.created - a.page.created 
+            }else{
+               
+            } 
+        }
+        });
+        setContentItems(sorted)
+    }  
+    const fetchContentItems = ()=>{
+            setHasMore(true) 
+            dispatch(getPublicPages()).then(result=>checkResult(
+                result,payload=>{
+                    
+                    const {pageList} = payload
+                    dispatch(getPublicBooks()).then(result=>checkResult(result,
+                        payload=>{
+                            const {bookList}=payload
+                            let bList = []
+                            bookList.forEach(book=>{
+                                book.pageIdList.forEach(id=>{
+                                    const params = {id}
+                                
+                                    dispatch(fetchPage(params)).then((result)=>{
+                                        checkResult(result,payload=>{
+                                            const { page}= payload
+                                            let item = { type:"book",book,page}
+                                            bList.push(item)
+                                        },(err)=>{
+                
+                                        })
+                                    })})
+                                   
+                                })
+                                setContent(prevState=>{return [...prevState,...bList]})
+                               
+                            setHasMore(false)
+                            dispatch(getPublicLibraries()).then(result=>checkResult(result,payload=>{
+                                const {libraryList}=payload
+                               
+                            
+                            },err=>{
+
+                            }))
+                        },err=>{
+
+                        })
+                    )   
+                })
+                ,err=>{
+                    setHasMore(false)
+                }
+            )
+            sortContent()
         }
         const dashboardItem=(hash)=>{
             if(Array.isArray(hash)){
@@ -210,15 +267,14 @@ function DiscoveryContainer(props){
            hasMore={hasMore} // Replace with a condition based on your data source
            loader={<p>Loading...</p>}
            endMessage={<div className='no-more-data'>
-           <h6 >No more data to load.</h6>  </div>}
-         >  {contentItems.map(content=>{
-                return dashboardItem(content)
-         })}
-        
-         </InfiniteScroll>
-         </div>
-         </div>
-            </div>
+           <h6 >No more data to load.</h6>  </div>}>
+                {contentItems.map(content=>{
+                    return dashboardItem(content)
+                })}
+                            </InfiniteScroll>
+                        </div>
+                    </div>
+                </div>
             </ErrorBoundary>
         )
 

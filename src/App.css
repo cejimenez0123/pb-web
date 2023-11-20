@@ -11,6 +11,7 @@
   --light:#6C965C;
   --secondary: #67914A;
   --background-light:#6463633c;
+  --background-secondary-light:#cecece;
   --background-tertiary-light:#C6D4BC;
   --background-secondary:rgba(141, 141, 141, 0.533);
   --large-list-item-width: 35em;
@@ -30,11 +31,13 @@ html, body {
 .button-row{
   display: flex;
   flex-direction: row;
+ 
 }
-@media (min-width: 1000px) {
+@media (min-width: 900px) {
   .content-list{
+   
     width: var(--large-list-item-width);
-    
+    margin: auto;
   }
   .content .no-more-data{
     width: 100%;
@@ -77,9 +80,12 @@ html, body {
   border-radius: 25px;
 }
 
-
+#log-in{
+  padding-right: 1em;
+}
 #sign-in{
   padding-top: 2em;
+  padding-right: 1em;
 }
 
 .navbar-brand{
@@ -162,10 +168,14 @@ html, body {
     padding: 0.2em 1em;
     border-radius: 25px;
   }
-  
+  #log-in{
+
+        padding-right: 1em;
+  }
   
   #sign-in{
     padding-top: 2em;
+    padding-right: 1em;
   }
   
   .navbar-brand{
@@ -215,6 +225,8 @@ html, body {
   background-color: rgb(219, 219, 219);
   border-radius: 25px;
   height: 20em;
+  margin: auto;
+  color:white;
   padding-top:8em;
   
 }
@@ -285,7 +297,8 @@ html, body {
   margin: auto;
   min-height: 20em;
   width: 45em;
-  background-color: var(--background-light);
+  /* padding: 1em; */
+  /* background-color: var(--background-light); */
   
 }
 .intro{
@@ -348,14 +361,15 @@ html, body {
     border-bottom-right-radius: 25px;
     margin:auto;
   }
-  .content-list.dashboard{
+  /* .content-list.dashboard{
   
     margin: auto;
     min-height: 20em;
+    padding: 1em;
     width: 100%;
     background-color: var(--background-light);
     
-  }
+  } */
   .intro{
   
     width:100vw;
@@ -401,13 +415,19 @@ html, body {
   flex-direction: row;
   width: 35em;
   margin: auto;
+  height: fit-content;
   justify-content: space-between;
-  background-color: white;
+  background-color: var(--background-tertiary-light);
   border-bottom: 2px solid gainsboro;
 }
-.list-item button{
+.list-item .button-row{
+  display: flex;
+  flex-direction: row;
   margin-right: 1em;
 }
+/* .list-item button{
+  margin-right: 1em;
+} */
 .list-item a {
   display: flex;
   flex-direction: row;
@@ -420,23 +440,27 @@ html, body {
  
 }
 }
-/* .list-item .title h6 {
-  white-space: nowrap;
-  text-align: left;
-} */
+
   
+@media screen and (max-width:500px) {
+  .list-item .title {
+    max-width: 15em;
+    margin-bottom: 1em;
+    transform: translateY(-0.5em);
+  }
+}
 
 
-
-@media (max-width: 1000px) {
+@media screen and (min-width:500px) and (max-width:1000px) {
   .list-item{
-    /* padding: 1.5em 0 1.5em 2em ; */
+   
     padding: 1.5em 0 1.5em 1.5em;
     display: flex;
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
-    background-color: white;
+    height: fit-content;
+    background-color: var(--background-tertiary-light);
     border-bottom: 2px solid gainsboro;
   }
   .list-item .title {
@@ -444,9 +468,9 @@ html, body {
     margin-bottom: 1em;
     transform: translateY(-0.5em);
   }
-  .list-item button{
+  /* .list-item button{
     margin-right: .5em;
-  }
+  } */
   .list-item a {
     display: flex;
     flex-direction: row;
@@ -463,7 +487,7 @@ html, body {
     flex-direction: row;
     margin-right: 1em;
   }
-  }
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

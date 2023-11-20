@@ -283,14 +283,14 @@ function BookViewContainer({book}){
                             color:theme.palette.secondary.dark}
                     } 
                     lassName="follow-btn"
-                    onClick={()=> debounce(deleteFollowBookClick(),10)}>Following</Button>)
+                    onClick={()=> debounce(deleteFollowBookClick(),10)}>Reader</Button>)
     :(<Button    variant="outlined" 
                                 style={{backgroundColor:theme.palette.secondary.main,
                                         color:theme.palette.secondary.contrastText}}
                                 className="follow-btn"
     onClick={
        ()=>debounce(followBookClick(),10)
-   }>Follow</Button>)}
+   }>Read</Button>)}
 
     if(followedBooks && currentProfile && book && book.profileId == currentProfile.id){
         editDiv = (<Button

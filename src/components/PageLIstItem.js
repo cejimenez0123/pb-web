@@ -12,9 +12,9 @@ import MenuItem from '@mui/joy/MenuItem';
 import Add from '@mui/icons-material/Add'
 import MoreVert from '@mui/icons-material/MoreVert'
 import { useSelector } from "react-redux";
-import { useTheme } from "@mui/material/styles";
+import theme from "../theme";
 function PageListItem({page}) {
-    const theme = useTheme()
+    
     const [showPreview,setShowPreview] = useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
@@ -55,10 +55,12 @@ function PageListItem({page}) {
             pageDataElement = <div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>
         break;
     }
+    const menuBtnStyle ={border:"none",marginLeft:"1em"}
+    const iconStyle = {fontSize:"2rem",color:theme.palette.primary.main}
    let buttonDiv= (<div>
     <Dropdown>
-        <MenuButton>
-            <MoreVert />
+        <MenuButton style={menuBtnStyle}>
+            <MoreVert style={iconStyle}/>
         </MenuButton>
         <Menu>
             <MenuItem>Follow</MenuItem>
@@ -71,8 +73,8 @@ function PageListItem({page}) {
         buttonDiv = (
             <div >
                 <Dropdown>
-                    <MenuButton>
-                        <Add />
+                    <MenuButton style={menuBtnStyle}>
+                        <Add style={iconStyle}/>
                     </MenuButton>
                     <Menu>
                         <MenuItem onClick={()=>handleAddClick("book")}>
@@ -84,8 +86,8 @@ function PageListItem({page}) {
                     </Menu>
                 </Dropdown>
                 <Dropdown>
-                    <MenuButton>
-                    <MoreVert />
+                    <MenuButton  style={menuBtnStyle}>
+                    <MoreVert style={iconStyle}/>
   </MenuButton>
   <Menu>
   <MenuItem onClick={()=>{

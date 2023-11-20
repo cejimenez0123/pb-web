@@ -77,7 +77,8 @@ function UpdateLibraryContainer(props) {
                 },err=>{
                     
                 }))
-        }},[])
+        }},
+    [])
 
     const fetchBooks =(libraryItem)=>{
         // dispatch(fetchArrayOfBooks({bookIdList:libraryItem.bookIdList})).then(result=>checkResult(result,payload=>{
@@ -340,7 +341,7 @@ function UpdateLibraryContainer(props) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this page?
+            Are you sure you want to delete this library?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

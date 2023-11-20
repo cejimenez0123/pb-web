@@ -29,6 +29,7 @@
   width: 100%;
   text-align: center;
   background-color: black;
+
  
 }
 .content-item .dashboard-header{
@@ -38,6 +39,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
   
 }
 

@@ -249,7 +249,6 @@ const updateProfile = createAsyncThunk("users/updateProfile",
                         const profile = params["profile"]
                         const newUsername = params["username"]
                         const newBookmarkLibraryId = params["bookmarkLibraryId"]
-                        const newHomeLibraryId = params["homeLibraryId"]
                         const profileRef = doc(db, "profile", profile.id);
                         const newSelfStatement = params["selfStatement"]
                         const newPrivacy = params["privacy"]
@@ -257,7 +256,6 @@ const updateProfile = createAsyncThunk("users/updateProfile",
       await updateDoc(profileRef, {
             username: newUsername,
             bookmarkLibraryId: newBookmarkLibraryId,
-            homeLibraryId: newHomeLibraryId,
             selfStatement: newSelfStatement,
             privacy: newPrivacy,
         });

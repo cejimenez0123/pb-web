@@ -40,18 +40,16 @@ function ProfileContainer(props){
 
             dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
-                    fetchProfileFollows()
+                    
                 },()=>{
                 })
             })
-        }else{
-
-            fetchProfileFollows()
         }
+        fetchProfileFollows()
     },[])
    
     const fetchProfileFollows =()=>{
-        if(currentProfile && profile){
+        if(currentProfile && profile && followedProfiles.length<=0){
             const params = {
                 profile: currentProfile
             }
@@ -65,6 +63,9 @@ function ProfileContainer(props){
                     },()=>{
 
                     })  })
+        }else if(currentProfile && profile){
+            let foundFollow = followedProfiles.find(follow=>follow!=null && follow.followerId==currentProfile.id && follow.followingId == profile.id)
+                        setFollowing(foundFollow)
         }
     }
     let profileCardDiv = (<div>
@@ -127,26 +128,23 @@ function ProfileContainer(props){
        return following?
        (<Button style={{backgroundColor:theme.palette.secondary.light}}
                 onClick={onClickFollow}variant="outlined">
-                    Following</Button>):(
+                    Reader</Button>):(
          <Button  style={{backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}  variant="outlined"
                     onClick={onClickFollow}
-        >Follow</Button>)
+        >Read</Button>)
     }
    
     if(profile!=null){
       profileCardDiv =  ( <div className="profile-card">
-       <div className="flex">
-        <div>
+        <div className="profile-info">
             <img src={profile.profilePicture} alt="proflile-picture"/>
             <h5>{profile.username}</h5>
+            <div>
+                {followDiv()}
+            </div>
         </div>
         <div className="statement">
             <p>{profile.selfStatement}</p>
-        </div>
-        
-        </div>
-        <div>
-           {followDiv()}
         </div>
         </div>)
     }

@@ -1,4 +1,4 @@
-
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
 @media (min-width: 1000px) {
 .container{
     display: flex;
@@ -39,39 +39,76 @@
 
 
 }
-@media (max-width: 800px) {
-    .profile-card{
 
+@media (max-width: 800px) {
+    .profile-card > .profile-info{
+        background-color: var(--light);
+        padding: 1em 1em 1em 2em;
+        width: fit-content;
+    }
+    .profile-card{
+        display:grid;
+        grid-template-columns:30% 60%;
         min-height: 15em;
         min-width:100%;
         background-color: rgb(206, 222, 214);
-        border: 1px solid rgb(155, 173, 161);
-        /* border-radius: 25px; */
-        padding: 2em 1em;
+     
+
+        
+    }
+    .profile-card img[alt="proflile-picture"]{
+    border-top-right-radius: 25px;
+    border-top-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border: 3px solid white;
+}
+    .profile-card > .statement{
+        margin-left: 2em;
+        padding-left: 3em;
+        padding-top: 2em;
+        padding-bottom: 2em;
+        padding-right: 1em;
+        font-family: Roboto, sans-serif;
     }
     .profile-card img{
-        max-width: 12em;
+        max-width: 8em;
      
     }
 }
+
+
 @media (min-width: 800px) {
-    .profile-card img{
-        max-width: 12em;
-     
+    .profile-card img[alt="proflile-picture"]{
+        max-width: 10em;
+        min-width: 8em;
+        border-top-right-radius: 25px;
+        border-top-left-radius: 25px;
+        border-bottom-right-radius: 25px;
+        border: 3px solid white;
     }
-    .profile-card .statement{
-        margin-left: 1em;
-        padding: 0.5em;
-        min-width: 16em
+    .profile-card > .profile-info{
+        background-color: var(--light);
+        padding: 1em;
+        width: fit-content;
+        border-top-left-radius: 25px;
+        border-bottom-left-radius: 25px;
+    }
+    .profile-card > .statement{
+        margin-left: 4em;
+        padding-left: 1em;
+        padding-right: 1em;
+        padding-top: 2em;
+        padding-bottom: 2em;
+        font-family: Roboto, sans-serif;
     }
     .profile-card{
-
+        display:grid;
+        grid-template-columns:30% 60%;
         min-height: 15em;
         max-width: 30em;
         background-color: rgb(206, 222, 214);
-        border: 1px solid rgb(155, 173, 161);
         border-radius: 25px;
         box-shadow: 0 5px 18px rgba(0, 0, 0, 0.6);
-        padding: 2em 1em;
+   
     }
 }

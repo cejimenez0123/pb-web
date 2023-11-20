@@ -9,7 +9,7 @@ import { Dropdown,Menu ,MenuItem} from '@mui/joy'
 import theme from "../theme"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { fetchCommentsOfPage , setPagesToBeAdded,createComment} from "../actions/PageActions"
+import { fetchCommentsOfPage , setPagesToBeAdded,createComment, setPageInView, setEditingPage} from "../actions/PageActions"
 import CommentInput from "./CommentInput"
 import checkResult from "../core/checkResult"
 import Paths from "../core/paths"
@@ -171,6 +171,7 @@ let profile = (<div></div>)
                         </MenuItem>
                         {currentProfile && page && currentProfile.id===page.profileId?
                         <MenuItem onClick={()=>{
+                            dispatch(setEditingPage({page}))
                             navigate(Paths.editPage.createRoute(page.id))
                         }}>
                         Edit</MenuItem>:<div></div>}

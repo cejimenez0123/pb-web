@@ -160,7 +160,7 @@ function SignInCard(props) {
     }
     return (<div className='sign-card'>
 
-        <div id="sign-in">
+        <div id="sign-in" >
         <h1 style={{marginLeft:"0.4em"}}> Sign Up</h1>
                 <FormGroup >
                     <TextField
@@ -169,7 +169,11 @@ function SignInCard(props) {
                         value={props.username}
                         onChange={(e) =>{   
                             props.setError(false)
-                            props.setUsername(e.target.value.trim().trimStart())
+                            let value=e.target.value.trim().trimStart()
+                            if(value.length >=20){
+                                props.setUsername(value)
+                            }
+                         
                         }}
                         style={outerInputStyle}
                     />
@@ -207,7 +211,9 @@ function SignInCard(props) {
                             name="selfStatement" 
                             onChange={(e)=>{
                             props.setError(false)
-                            props.setSelfStatement(e.target.value)}}
+                            let value = e.target.value
+                            if(value.length <= 200){
+                            props.setSelfStatement(value)}}}
                             minRows={3}
                             style={
                             {   marginBottom:"2em",
@@ -276,8 +282,8 @@ function LogInCard(props){
       };
 
     return(<div className='sign-card'>
-        <div  >
-        <h1 style={{marginLeft:"0.4em",marginTop:"1em"}}> Log In</h1>
+        <div  id="log-in">
+        <h1 style={{marginLeft:"0.4em",marginTop:"1em",marginRight:"0.4em"}}> Log In</h1>
         <FormGroup >
         
             <TextField
@@ -286,7 +292,7 @@ function LogInCard(props){
                 value={props.email} 
                 name='E-mail'
                 placeholder='E-mail' 
-                onChange={(e) => props.setEmail(e.target.value)}
+                onChange={(e) => props.setEmail(e.target.value.trimEnd())}
                 style={outerInputStyle}
             />
                 
@@ -351,7 +357,7 @@ function LogInCard(props){
                             style={{marginTop:"4em",
                                     marginBottom:"3em",
                                     backgroundColor:theme.palette.secondary.contrastText}}
-                            onChange={(e)=>setForgotEmail(e.target.value)}
+                            onChange={(e)=>setForgotEmail(e.target.value.trimEnd())}
                         />
                         <Button 
                             style={{backgroundColor:theme.palette.secondary.main,

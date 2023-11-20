@@ -52,7 +52,7 @@ function EditorContainer({currentProfile}){
             }else{ 
               dispatch(setHtmlContent(""))
             }
-        },[editingPage])
+        },[])
 
     const setPageInfo =(page)=>{
       setEPage(page)
@@ -121,6 +121,7 @@ function EditorContainer({currentProfile}){
               dispatch(saveRolesForPage(params))
               .then(result=>checkResult(result,payload=>{
                   const {page}=payload
+                  dispatch(setEditingPage({page}))
                   setPageInfo(page)
                   onEnd()
                   window.alert("Saved")

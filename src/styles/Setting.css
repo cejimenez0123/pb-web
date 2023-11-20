@@ -15,8 +15,17 @@
         background-color: var(--light);
         padding: 4em 2em;
     }
+    .SettingForm{
+        width: 90%;
+        margin-left: 2em;
     }
-
+    }
+    @media (min-width:1000px){   
+.SettingForm{
+    width: 30em;
+    margin-left: 2em;
+}
+}
 .self-statement{
     display: flex;
     flex-direction: column;
@@ -41,6 +50,24 @@
 /* .settings{
     background-color: red;
 } */
+.collection {
+    background-color: #c8e6c9;
+    max-height: 20em;
+    overflow: scroll;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    padding: 1em;
+    border-radius: 25px;
+    /* box-shadow: 0 5px 18px rgba(0, 0, 0, 0.6); */
+}
+.home-item{
+    background-color: rgb(244, 244, 244);
+    width: fit-content;
+    padding: 0.5em 1em;
+    margin: 0.5em;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.6);
+}
 .input.text{
     margin-top: 2em;
 }

@@ -15,8 +15,9 @@ import MenuButton from '@mui/joy/MenuButton';
 import MenuItem from '@mui/joy/MenuItem';
 import MoreVert from '@mui/icons-material/MoreVert'
 import { Add } from "@mui/icons-material";
-import { Button } from "@mui/material";
 import { createFollowBook } from "../actions/UserActions";
+import theme from "../theme";
+
 function ListItem({type,id,title,item}) {
     const [showPreview,setShowPreview] = useState(false)
     const currentProfile = useSelector(state => state.users.currentProfile)
@@ -68,6 +69,8 @@ function ListItem({type,id,title,item}) {
             }
         }
     }
+    const iconStyle = {color:theme.palette.primary.main,fontSize:"2rem"}
+    const menuBtnStyle= {border:"none",marginLeft:"1em"}
     const dropDown=()=>{
        switch(type){
         case "book":{
@@ -78,10 +81,11 @@ function ListItem({type,id,title,item}) {
                   
                     <Dropdown>
                         <MenuButton
-            slots={{ root: IconButton }}
-            slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+                       style={menuBtnStyle}
+            // slots={{ root: IconButton }}
+            //slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
           >
-            <MoreVert />
+            <MoreVert style={iconStyle}/>
           </MenuButton>
           <Menu>
           <MenuItem onClick={()=>{
@@ -110,7 +114,10 @@ function ListItem({type,id,title,item}) {
                     </div>
                    )}else{
                        return( <Dropdown>
-                                <MenuButton> <MoreVert/></MenuButton>
+                                <MenuButton style={menuBtnStyle}> 
+                                <MoreVert
+                                    style={iconStyle}
+                                /></MenuButton>
                                 <Menu>
                                     <MenuItem onClick={()=>{
                                          let params = { bookList: [item]}
@@ -134,11 +141,11 @@ function ListItem({type,id,title,item}) {
             if(currentProfile!=null && item.profileId==currentProfile.id){
             return (<div>
                 <Dropdown>
-  <MenuButton
-    slots={{ root: IconButton }}
-    slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
+  <MenuButton style={menuBtnStyle}
+ //   slots={{ root: IconButton }}
+   // slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}
   >
-    <MoreVert />
+    <MoreVert style={iconStyle}/>
   </MenuButton>
   <Menu>
     <MenuItem onClick={()=>{
@@ -158,8 +165,8 @@ function ListItem({type,id,title,item}) {
 </Dropdown>
             </div>)}else{
                 return(<Dropdown>
-                    <MenuButton>
-                        <MoreVert/>
+                    <MenuButton style={menuBtnStyle}>
+                        <MoreVert style={iconStyle}/>
                     </MenuButton>
                     <Menu>
                         <MenuItem onClick={()=>{
@@ -177,12 +184,12 @@ function ListItem({type,id,title,item}) {
     }
 
             return(<div className='list-item'>
-                
+               
                 <div className='title'>
                 <a onClick={handleOnClick}> 
-                    <div>
-                        {title}
-                    </div>
+                
+                <h6>  {title}</h6>
+                    
                 </a>
                 </div> 
                 <div className="button-row">

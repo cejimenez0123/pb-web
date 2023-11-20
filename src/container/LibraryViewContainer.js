@@ -118,6 +118,7 @@ function LibraryViewContainer(props){
                 }
             }else{
                 setError(true)
+                setErrorMessage("Not for your view")
             }
                 
             }else{
@@ -241,12 +242,12 @@ function LibraryViewContainer(props){
                 color:theme.palette.secondary.contrastText}}
                 variant="outlined"
                 onClick={onClickFollow}
-                >Following
+                >Reader
                 </Button>)  : (<Button style={{backgroundColor:theme.palette.secondary.main,
                 color:theme.palette.secondary.contrastText}}
                 variant="outlined"
                 onClick={onClickFollow}
-                >Follow
+                >Read
                 </Button>)
     }
     
@@ -257,6 +258,7 @@ function LibraryViewContainer(props){
             libraryItem.pageIdList.forEach(pageId=>{
                 dispatch(fetchPage({id:pageId})).then(result=>{
                     checkResult(result,payload=>{
+                        setError(false)
                             const {page}=payload
                             if(page){
                                 const story ={page:page}
@@ -266,11 +268,13 @@ function LibraryViewContainer(props){
                             }
                             setHasMore(false)
                     },(err)=>{
+                       
                         setHasMore(false)
                     })
                 })
             })
         }else{
+            setError(true)
             setErrorMessage('Library is Null')
         }
     }
@@ -311,7 +315,7 @@ function LibraryViewContainer(props){
                                 setHasMore(false)
                             }
                         },err=>{
-                            setError(true)
+                            
                             setErrorMessage("Error "+err.message)
                         })
                     })
@@ -334,7 +338,7 @@ function LibraryViewContainer(props){
     
             if(itemsInView.length>0 &&(libraryInView &&(libraryInView.bookIdList.length>0 || libraryInView.pageIdList.length>0))){
             return(<div className="content-list">
-                <div className="content">
+                <div className="">
                 <InfiniteScroll 
                 dataLength={itemsInView.length}
                 next={()=>checkLibraryPermission(libraryInView)}
@@ -365,7 +369,7 @@ function LibraryViewContainer(props){
                 return empty
             }
         }else{
-            return(<div><h5>{errorMessage}</h5></div>)
+            return(<div className="error"><h6>{errorMessage}</h6></div>)
         }
         
         
