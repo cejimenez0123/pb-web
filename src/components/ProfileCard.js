@@ -2,25 +2,26 @@ import React from "react"
 import { Settings } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
 import { IconButton } from "@mui/material"
+import {useSelector} from 'react-redux'
 import theme from "../theme"
 export default function ProfileCard(props){
-  
+    const currentProfile = useSelector(state=>state.users.currentProfile)
 
 
-    if(props.currentProfile!=null){
+    if(currentProfile){
         
         return (
    <div className="">
         <div  className="profile-container">
           <div >
             
-                <img className="profile-pic" inline="true" src={props.currentProfile.profilePicture} />
-                <strong><h4 >{props.currentProfile.username}</h4></strong>
+                <img className="profile-pic" inline="true" src={currentProfile.profilePicture} />
+             <h4 className="username">{currentProfile.username}</h4>
         
            </div> 
         
-            <div>
-                <h6>{props.currentProfile.selfStatement}</h6>
+            <div className="statement">
+                <h6>{currentProfile.selfStatement}</h6>
             </div>
            </div>
            

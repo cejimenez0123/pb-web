@@ -12,9 +12,10 @@
     
     .form{
         margin-top: 4em;
-        background-color: var(--light);
+        background-color: var(--tertiary);
         padding: 4em 2em;
     }
+    
     .SettingForm{
         width: 90%;
         margin-left: 2em;

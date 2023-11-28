@@ -181,9 +181,7 @@ function EditorContainer({currentProfile}){
                 <Dropdown>
                   <IconButton
                     onClick={(e)=>setAnchorEl(e.currentTarget)}
-                    slots={{ root: IconButton }}
-                    slotProps={{ root: { variant: 'outlined', color: 'neutral' } }}>
-                <Add/>
+                  >  <Add/>
                   </IconButton>
               <Menu
                 anchorEl={anchorEl}

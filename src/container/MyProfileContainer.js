@@ -22,10 +22,10 @@ function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInV
     if( currentProfile){ 
         return(
             <div className='container reverse'>
-            <div className=''>
+            <div className='left-bar'>
                     <ContentList profile={currentProfile} pagesInView={pagesInView} booksInView={booksInView} librariesInView={librariesInView}/>
             </div>         
-            <div className="right-side-bar">
+            <div className="right-bar">
                     <ProfileCard profile={currentProfile}/>
                 
                     <CreateButtons />

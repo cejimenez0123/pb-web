@@ -1,23 +1,24 @@
 import { useParams ,useNavigate} from "react-router-dom"
 import { useDispatch,useSelector } from "react-redux"
-import { useState,useEffect} from "react"
+import { Component,useState,useEffect} from "react"
 import { fetchBook,saveRolesForBook,setBookInView,updateBook } from "../actions/BookActions"
 import "../styles/EditBook.css"
-import { fetchAllProfiles } from "../actions/UserActions"
+
 import {  fetchPage } from "../actions/PageActions"
-import { SortableList } from '@thaddeusjiang/react-sortable-list';
-import '@thaddeusjiang/react-sortable-list/dist/index.css';
 import BookRole from "../domain/models/bookrole"
 import { RoleType } from "../core/constants"
-import Profile from "../domain/models/profile"
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import { TextField ,Checkbox, FormControlLabel,Button, FormGroup, IconButton} from "@mui/material"
 import RoleList from "../components/RoleList"
 import theme from "../theme"
 import checkResult from "../core/checkResult"
-import { Add, Visibility } from "@mui/icons-material"
+import { Add,Visibility,Remove,DragIndicator } from "@mui/icons-material"
 import uuidv4 from "../core/uuidv4"
-function EditBookContainer({book,pages}){   
+import ErrorBoundary from "../ErrorBoundary"
+import SortableComponent from "../components/SortableList"
+
+  
+function EditBookContainer({book}){   
     const pathParams = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -28,48 +29,39 @@ function EditBookContainer({book,pages}){
     const [bookPurpose,setBookPurpose] = useState("")
     const [writingIsOpen,setWritingIsOpen]= useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [listItems, setListItems] = useState([
-    ]);
+    const [listItems, setListItems] = useState([]);
+    const [newListItems, setNewListItems]= useState([]);
     const getBook=()=>{
-      
-      const bookId =pathParams["id"]
-   
-      const parameters = {
+        const bookId =pathParams["id"]
+        const parameters = {
         id: bookId,
-      }
-       if(book==null || book.id != bookId){ 
-     dispatch(fetchBook(parameters)).then((result) => {
+    }
+    if(book==null || book.id !== bookId){ 
+        dispatch(fetchBook(parameters)).then((result) => {
             const {payload} = result
             const gotBook = payload["book"]
-            setBookTitle(gotBook.title)
-            setBookPrivacy(gotBook.privacy)
-            setWritingIsOpen(gotBook.writingIsOpen)
-            setBookPurpose(gotBook.purpose)
+            setBookInfo(gotBook)
             getPages(gotBook.pageIdList)
-         
-            
-      
-
         })
-       }else if(book!=null && book.id == bookId) {
-            setBookTitle(book.title)
-            setBookPrivacy(book.privacy)
-            setWritingIsOpen(book.writingIsOpen)
-            setBookPurpose(book.purpose)
+    }else if(book!=null && book == bookId) {
+            setBookInfo(book)
             getPages(book.pageIdList)
        }
     }
+    const setBookInfo = (info)=>{
+        setBookTitle(info.title)
+        setBookPrivacy(info.privacy)
+        setWritingIsOpen(info.writingIsOpen)
+        setBookPurpose(info.purpose)
+    }
     useEffect(()=>{
         getBook()
-    },[book])
+    },[])
   
 
     
    
     const getPages = (pageIdList)=>{
-  
-        const params = {pageIdList:pageIdList,profile:currentProfile}
-      
       if(pageIdList.length > 0){
         setListItems([])
         pageIdList.forEach((pageId,i)=>{
@@ -77,17 +69,21 @@ function EditBookContainer({book,pages}){
             dispatch(fetchPage(params)).then((result)=>{
                 checkResult(result,payload=>{
                         const {page}=payload
-                            let uId =`${page.id}_${uuidv4()}`
+                        let uId =`${page.id}_${uuidv4()}`
                         const item = {uId:uId, item:page}
                         if(item){
-                        let list =listItems
-                        list[i]=item
-                    
+                            let list =listItems
+                            list[i]=item
                             setListItems(list)
+                        
                         }else{
                             let uId =`${page.id}_${uuidv4()}`
                             const item = {uId:uId,item: {title:"Error Fetching Page"}}
-                            setListItems(prevState=>[...prevState,item])
+                            let list =listItems
+                            list[i]=item
+                    
+                            setListItems(list)
+
                         }
                        
                 },()=>{
@@ -98,79 +94,56 @@ function EditBookContainer({book,pages}){
             setListItems([])
         }
     }
-    
+
     useEffect(()=>{
-     
-            getBook()
-        
+        getBook()
     },[])
 
 
-const handleRemove = (hash)=>{
-    let list =listItems
-   let newList = list.filter(item=>{return hash.item.uId !== item.uId})
-    setListItems(newList)
 
-    
-}
+
+
 const sortableList = ()=>{
-    if(listItems.length == 0){
-        return (<div>
+    if(listItems && listItems.length == 0){
+        return (<div className="empty">
             Empty
         </div>)
    
     }else if(listItems){
-    
-        return( <div id="sort-list">
-            Double Click to Remove
-         <SortableList
-        
-            items={listItems}
-            setItems={setListItems}
-            itemRender={(item)=>{
-               return (<div key={`${item.uId}`}>
-            {sortItem(item)}
-               </div>)
-            }}   >         
-            </SortableList>
-            </div>)
+         return(
+           <div>
+       
+             <div id="sort-list">
+                 <ErrorBoundary>
+                  
+           <SortableComponent   
+                items={listItems} 
+                getItems={items=>{
+                            console.log(items.map(hash=>hash.item.title))
+                            setNewListItems(items)
+                        }}/>
+     
+     </ErrorBoundary>
+   </div>
+   </div>
+        )
     }else{
         return(<div>
             Loading...
         </div>)
     }
 }
-
-    const sortItem = (hash)=>{
-     
-        if(hash.item){
-            const {item} = hash
-            
-        return(
-            <div key={`${item.uId}`}className="sort-item">
-            <div>{item.item.title}</div>
-            <Button  onDoubleClick={()=>handleRemove(hash)
-            }>Remove</Button>
-        </div>)
-        
-    }else{
-            <div key={`${hash.uId}`} className="sort-item">  
-            <h1>Page Deleted</h1><Button  onDoubleClick={()=>handleRemove(hash)
-            }>Remove</Button></div>
-        }
-    }
     const handleTitleChange = (e)=>{
         setBookTitle(e.target.value)
     }
     const handleSave = (e)=>{
         e.preventDefault()
         if(book!=null){
-            let pageIdList = []
-            if(listItems.length>0){
-              pageIdList  = listItems.map(hash=>hash.item.id)
-            }
-           
-
+      
+          
+            const pageIdList  = newListItems.map(hash=>hash.item.id)
+            console.log(newListItems.map(hash=>hash.item.title))
+        
             const params = {book:book,
                             title: bookTitle,
                             pageIdList:pageIdList,
@@ -179,12 +152,11 @@ const sortableList = ()=>{
                             writingIsOpen: writingIsOpen}
             dispatch(updateBook(params)).then(result=>{
                 checkResult(result,payload=>{
-                    window.alert("Book Info Updated")
                     getPages(pageIdList)
+                    window.alert("Book Info Updated")
                 },(err)=>{
                     window.alert(`${err.message}`)
                 })
-               
             })
             const readers = newBookRoles.filter(role => role.role == RoleType.reader).map(role=>role.profile.userId)
             const commenters = newBookRoles.filter(role => role.role == RoleType.commenter).map(role=>role.profile.userId)
@@ -211,7 +183,7 @@ const sortableList = ()=>{
         }
     }
     const form = ()=>{
-        return( <FormGroup style={{padding:"0 2em",margin:"auto"}} >
+        return( <FormGroup style={{padding:"2em 1em"}} >
             <TextField
                 style={{backgroundColor:theme.palette.primary.contrastText}}
                 onChange={(e)=>handleTitleChange(e)}
@@ -260,7 +232,7 @@ const sortableList = ()=>{
             </div>
             
             </FormGroup>)}
-    if(!bookLoading && book!=null){
+    if(book!=null){
 
     return(<div id="EditBook" className="container">
             
@@ -291,8 +263,5 @@ const sortableList = ()=>{
         </div>)
     }
 }
-
-
-
 
 export default EditBookContainer

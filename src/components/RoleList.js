@@ -231,8 +231,9 @@ export default function RoleList({getRoles,item,type}) {
                 {bookRolesView()}
                 
             </div>
-           
+            <label>Users  </label> 
             <div className="profile-list">
+        
         <InfiniteScroll
         dataLength={profileList.length}
         next={fetchProfiles}

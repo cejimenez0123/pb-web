@@ -1,6 +1,14 @@
 
 
-
+.profile-container .username{
+    margin-top: 5px;
+    font-weight: bold;
+    font-family: Roboto,sans-serif;
+}
+.profile-container .statement{
+  
+    font-family: Roboto,sans-serif;
+}
 
 @media (max-width: 800px) {
 .main-bar{
@@ -45,6 +53,9 @@
     height: 5em;
 }
 @media (min-width: 800px) {
+.container.reverse .left-bar{
+    margin-right: 1em;
+}
 .profile-container{
 
     min-width:20em;

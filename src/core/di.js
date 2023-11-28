@@ -33,17 +33,7 @@ const config = { apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
 const firebaseConfig = config
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app,{setPersistence: browserLocalPersistence})
-// setPersistence(auth,browserLocalPersistence)
-// .then(() => {
-//   signInAnonymously(auth)
 
-// .then(() =>{})
-// .catch((error) => {
-//   const errorCode = error.code;
-//   const errorMessage = error.message;
-//  console.error(errorMessage, errorCode)
-// });
-// })
 const storage = getStorage(app)
 
 

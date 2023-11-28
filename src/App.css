@@ -3,6 +3,8 @@
   flex-direction: column;
   
 }
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
+
 :root{
   --tertiary: #E7F7DC;
   --dark:#183306;
@@ -64,7 +66,7 @@ html, body {
   padding-bottom: 1em;
   overflow: scroll;
   height: 14em;
-  background-color: gray;
+  background-color: var(--background-secondary);
 }
 .role-item{
   display: flex;
@@ -153,7 +155,7 @@ html, body {
     padding-bottom: 1em;
     overflow: scroll;
     height: 14em;
-    background-color: gray;
+    background-color: var(--background-secondary);
   }
   .role-item{
     display: flex;
@@ -437,18 +439,11 @@ html, body {
 }
 .list-item .title {
   max-width: 20em;
- 
+  word-break: break-all;
+  height: auto;
 }
 }
 
-  
-@media screen and (max-width:500px) {
-  .list-item .title {
-    max-width: 15em;
-    margin-bottom: 1em;
-    transform: translateY(-0.5em);
-  }
-}
 
 
 @media screen and (min-width:500px) and (max-width:1000px) {
@@ -459,18 +454,16 @@ html, body {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
-    height: fit-content;
     background-color: var(--background-tertiary-light);
     border-bottom: 2px solid gainsboro;
   }
   .list-item .title {
-    max-width: 20em;
+    max-width: 18em;
     margin-bottom: 1em;
     transform: translateY(-0.5em);
+    word-break: break-all;
+    height: auto;
   }
-  /* .list-item button{
-    margin-right: .5em;
-  } */
   .list-item a {
     display: flex;
     flex-direction: row;
@@ -514,6 +507,79 @@ html, body {
   display: flex;
   flex-direction: row;
 }
+@media screen and (max-width:500px) {
+  .list-item{
+   
+    padding: 1.5em 0 1.5em 1.5em;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--background-tertiary-light);
+    border-bottom: 2px solid gainsboro;
+  }
+  .list-item .title {
+    max-width: 12em;
+    margin-bottom: 1em;
+    transform: translateY(-0.5em);
+    word-break: break-all;
+    height: auto;
+  }
+
+  .list-item a {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1em;
+    color: black;
+    text-decoration: none;
+    height: 2em;
+   
+    
+  }
+
+  .list-item .button-row{
+    min-width: 10em;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-right: 1em;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+
+.App-link {
+  color: #61dafb;
+}
+
+.container-row{
+  display: flex;
+  flex-direction: row;
+}
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
