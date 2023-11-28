@@ -16,7 +16,7 @@ function DiscoveryContainer(props){
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const librariesInView = useSelector(state=>state.libraries.librariesInView) 
-    const [content,setContent]=useState([])
+
     const [contentItems,setContentItems]=useState([])
     let [hasMore,setHasMore]=useState(false)
     useEffect(()=>{
@@ -148,8 +148,7 @@ function DiscoveryContainer(props){
                                     })})
                                    
                                 })
-                                setContent(prevState=>{return [...prevState,...bList]})
-                               
+                                
                             setHasMore(false)
                             dispatch(getPublicLibraries()).then(result=>checkResult(result,payload=>{
                                 const {libraryList}=payload

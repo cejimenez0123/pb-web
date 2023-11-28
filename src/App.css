@@ -96,18 +96,15 @@ html, body {
 
 
 .create-form{
-  background-color: rgb(244, 244, 244);
+  background-color: var(--tertiary);
   padding: 3em 2em 3em 2em;
   border-radius: 25px;
-  max-width: 25em;
+  max-width: 30em;
+  min-width: 25em;
   margin: auto;
 }
 
-.create-form .purpose{
-  text-align: flex-start;
-  font-weight: 700;
 
-}
 
 #login .forgot{
   text-align: flex-start;
@@ -185,17 +182,13 @@ html, body {
   }
  
   .create-form{
-    background-color: rgb(244, 244, 244);
+    background-color:var(--tertiary);
     padding: 3em 2em 3em 2em;
    
     width: 100vw;
   }
   
-  .create-form .purpose{
-    text-align: flex-start;
-    font-weight: 700;
-  
-  }
+ 
   #login .forgot{
     text-align: flex-start;
   }

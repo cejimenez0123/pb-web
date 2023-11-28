@@ -7,14 +7,13 @@ import {  appendSaveRolesForPage} from "../actions/PageActions"
 import { appendLibraryContent, createLibrary,getProfileLibraries,updateLibraryContent } from "../actions/LibraryActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import "../styles/CreateLibrary.css"
-import {    FormGroup,
+import {  
             Button,
-            FormControlLabel,
-            TextField, 
-            TextareaAutosize,
-            Checkbox } from "@mui/material"
+          } from "@mui/material"
 import { Add } from "@mui/icons-material"
 import MediaQuery from "react-responsive"
+import LibraryCreateForm from "../components/LibraryCreateForm"
+import uuidv4 from "../core/uuidv4"
 export default function CreateLibraryContainer(props){
     const booksToBeAdded = useSelector(state => state.books.booksToBeAdded)
     const pagesToBeAdded = useSelector(state => state.pages.pagesToBeAdded)
@@ -72,12 +71,12 @@ export default function CreateLibraryContainer(props){
 
         const libraryList = ()=>{
         if(!!librariesInView && librariesInView.length > 0){
-        return(<div class="content">
+        return(<div >
             <InfiniteScroll dataLength={librariesInView.length} 
                             next={fetchLibraries}
                             hasMore={false} 
                             loader={<p>Loading...</p>}
-                            endMessage={<div className="empty">
+                            endMessage={<div className="no-more-data">
                                     <p>No more data to load.</p>
                                     </div>}
             >
@@ -86,10 +85,10 @@ export default function CreateLibraryContainer(props){
              return(<div className="list-item" key={hash.id}>
                 <div>
                     
-                <h2 className="list-item-title">
+                <h3 >
                 {hash.name}
             
-                </h2>
+                </h3>
                 </div>
                 <div>
               
@@ -107,63 +106,70 @@ export default function CreateLibraryContainer(props){
         }
     }
     const contentToBeAddedList = ()=>{
-
-        return (<div >
-            <div>
+        let bookTitles= booksToBeAdded.map(book=>book.title)
+        let pageTitles = pagesToBeAdded.map(page=>page.title)
+        let list = [...bookTitles,...pageTitles]
+        return (<div className="content-to-be-added-list" >
+            <div >
                 <h4>Things that'll be added</h4>
             </div>
-            <div className="content-to-be-added-list">
-            {addedItems("Book",booksToBeAdded)}
-            {addedItems("Page",pagesToBeAdded)}
+            <div >
+                {booksToBeAdded.length!==0 && pagesToBeAdded.length!==0?
+        list.map(title=>{
+           return(<h6 key={`${title}_${uuidv4()}`}>{title}</h6>)
+        })
+                    
+         
+            :<h6>0 items being added</h6>
+            }
             </div>
         </div>)
     }
-    const addedItems = (label,items)=>{
-        if(items!=null && items.length>0){
-        return(<div className="info to-be-added">
-           <div>
-           <h5> {label}</h5>
-           </div>
-     {items.map((hash) =>{
+    // const addedItems = (label,items)=>{
+    //     if(items!=null && items.length>0){
+    //     return(<div className="info to-be-added">
+    //        <div>
+    //        <h5> {label}</h5>
+    //        </div>
+    //  {items.map((hash) =>{
 
-             return(<div className="list-item" key={hash.id}>
-                <div>
+    //          return(<div key={hash.id}>
+    //             <div>
                     
-                <h6 className="list-item-title">
-                {hash.title}
-            
-                </h6>
-                </div>
-                <div>
+    //             <h6>
+    //                 {hash.title}
+    //             </h6>
+    //             </div>
+    //             <div>
     
-                </div>
-            </div>)
-        })}
+    //             </div>
+    //         </div>)
+    //     })}
 
-        </div>)}else{
-            return(<div>
-                0 items to add
-            </div>)
-        }
-    }
+    //     </div>)}else{
+    //         return(<div>
+    //             0 items to add
+    //         </div>)
+    //     }
+    // }
    
         
     
-return(<div >
+return(<div id="CreateLibrary">
     <div className="container">
-        <div className="left-side-bar">
+        <div className="left-bar">
                 <MediaQuery maxWidth={"1000px"}>
                     <LibraryCreateForm/>
                 </MediaQuery>
                 {contentToBeAddedList()}
         
         </div>
-        <div className="main-side-bar">
-          <div className="content-list" >
+        <div className="main-bar">
+          {/* <div className="content-list" > */}
             {libraryList()}
-            </div>
+            {/* </div> */}
         </div>
-        <div className="right-side-bar">
+        <div className="right-bar">
             <MediaQuery minWidth={"1000px"}>
                 <LibraryCreateForm/>
             </MediaQuery>
@@ -172,88 +178,4 @@ return(<div >
         </div>
     </div>
 </div>)
-}
-function LibraryCreateForm(props){
-    const booksToBeAdded = useSelector(state => state.books.booksToBeAdded)
-    const pagesToBeAdded = useSelector(state => state.pages.pagesToBeAdded)
-    const currentProfile = useSelector(state => state.users.currentProfile)
-    const [libTitle,setLibTitle]=useState("")
-    const [purpose,setPurpose] = useState("")
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const [libIsPrivate,setLibIsPrivate]= useState(false)
-    const [writingIsOpen,setWritingIsOpen]= useState(false)
-    const handleOnSubmit=(e)=>{
-        const bookIdList = booksToBeAdded.map(book=>book.id)
-        const pageIdList = pagesToBeAdded.map(page=>page.id)
-      
-    
-        e.preventDefault()
-        const params = {
-            name: libTitle,
-            purpose: purpose,
-            profileId: currentProfile.id,
-            pageIdList: pageIdList,
-            bookIdList: bookIdList,
-            writingIsOpen: writingIsOpen,
-            privacy:libIsPrivate,
-            commenters:[],
-            readers:[],
-            editors:[],
-            writers:[]
-
-        }
-        
-        dispatch(createLibrary(params)).then((result) => {
-            const {payload} = result
-          
-            navigate(`/library/${payload.library.id}`)
-        }).catch((err) => {
-            
-        });
-    
-    }
-    const handleLibTitleChange = (e)=>{
-        setLibTitle(e.target.value)
-    }
-    return( <FormGroup style={{
-
-    }}className="create-form"  >
-        
-        <TextField  type="text"
-                    label="Library Name" 
-                    placeholder="Library Name" 
-                    className="text-input" 
-                    value={libTitle}
-                    onChange={(e)=>handleLibTitleChange(e)}/>
-        <FormControlLabel 
-
-            control={<Checkbox 
-                        onChange={
-                            (e)=>{
-                setLibIsPrivate(e.target.checked)
-                }
-            } 
-            name="privacy" 
-            checked={libIsPrivate} 
-            className="checkbox"/> 
-        }   label={`${libIsPrivate? "Private":"Public"}`}/>
-    <FormControlLabel 
-        control={<Checkbox onChange={
-            (e)=>{
-                setWritingIsOpen(e.target.checked)
-            }}checked={writingIsOpen} 
-           /> 
-        } label={`Writing is ${writingIsOpen? "open":"close"}`}/>
-    <label>Purpose:</label>
-        <TextareaAutosize
-         onChange={(e)=>{
-            setPurpose(e.target.value);
-        }}id="purpose" name="purpose" rows="5" cols="33"/> 
-    
-   
-    <Button variant="outlined" style={{marginTop:"2em",backgroundColor:theme.palette.secondary.main,color:theme.palette.secondary.contrastText}}type="submit" onClick={(e) => handleOnSubmit(e)}>
-Save
-</Button>
-    </FormGroup>)
 }

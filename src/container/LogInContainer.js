@@ -156,7 +156,8 @@ function SignInCard(props) {
       };
     let img = (<div></div>)
     if(props.profilePicture){
-        img = (<img style={{margin:"auto",width:"50%"}}src={props.profilePicture} alt=""/>)
+        img = (<img style={{marginLeft:"1em",width:"50%"}}
+                src={props.profilePicture} alt=""/>)
     }
     return (<div className='sign-card'>
 
@@ -169,8 +170,8 @@ function SignInCard(props) {
                         value={props.username}
                         onChange={(e) =>{   
                             props.setError(false)
-                            let value=e.target.value.trim().trimStart()
-                            if(value.length >=20){
+                            let value=e.target.value.trim()
+                            if(value.length <=30){
                                 props.setUsername(value)
                             }
                          
@@ -212,12 +213,13 @@ function SignInCard(props) {
                             onChange={(e)=>{
                             props.setError(false)
                             let value = e.target.value
-                            if(value.length <= 200){
+                            if(value.length <= 240){
                             props.setSelfStatement(value)}}}
                             minRows={3}
                             style={
                             {   marginBottom:"2em",
                                 width: "99%",
+                                padding:"1em",
                                 backgroundColor:theme.palette.primary.contrastText
                             }
                         }

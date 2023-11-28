@@ -71,7 +71,7 @@
     border-bottom-left-radius: 25px;
     border-top-left-radius: 25px;
     background: var(--light);
-    width: 10em;
+    padding-right: 9em;
     padding-left: 2em;
     padding-top: 2em;
     padding-bottom: 2em;

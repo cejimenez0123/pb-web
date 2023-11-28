@@ -9,13 +9,12 @@ import { appendSaveRolesForPage } from "../actions/PageActions"
 import { FormGroup, TextField,FormControlLabel,Checkbox, Button,TextareaAutosize, IconButton} from "@mui/material"
 import theme from "../theme"
 import "../styles/CreateBook.css"
+import "../styles/CreateLibrary.css"
 import { Add } from "@mui/icons-material"
-
 import MediaQuery from "react-responsive"
 import checkResult from "../core/checkResult"
 const inputStyle = {
-    width: "90%",
-    marginLeft:"1em"
+    width: "100%",
 }
 export default function CreateBookContainer({pagesInView}){
         const navigate = useNavigate()
@@ -88,12 +87,12 @@ export default function CreateBookContainer({pagesInView}){
     }
     const bookList = ()=>{
             let i = 0
-                return(<div className="create-list" >
+                return(<div >
                     <InfiniteScroll  dataLength={books.length} 
            next={fetchBooks}
            hasMore={false} // Replace with a condition based on your data source
            loader={<p>Loading...</p>}
-           endMessage={<p>No more data to load.</p>}
+           endMessage={<p className="no-more-data">No more data to load.</p>}
         >
              {books.map(book=>{
                 i+=1
@@ -115,12 +114,12 @@ export default function CreateBookContainer({pagesInView}){
         const pagesToBeAddedList =()=>{
             if(pagesToBeAdded!=null){
         
-                if(pagesToBeAdded.length>0){
-            return(<div>
+             
+            return(<div className="content-to-be-added-list">
                 <div>
-                <h4>To Be Added:</h4>
+                <h4>Pages to be Added</h4>
                 </div>
-                {pagesToBeAdded.map(page =>{
+                {pagesToBeAdded.length>0?pagesToBeAdded.map(page =>{
 
                     return (
                         <div key={page.id}>
@@ -128,27 +127,14 @@ export default function CreateBookContainer({pagesInView}){
                         
                         </div>
                     )
-                })}
-            </div>)}else{
-                return(<div>
-                    <div>
-                    <h4>To Be Added:</h4>
-                    </div>
-                    <h6>0 Pages To Be Added</h6>
-                </div>)
-            }}else{
-                return(<div>
-                    <div>
-                        <h4>To Be Added:</h4>
-                    </div>
-                    Loading...
-                    </div>)
-            }
+                }):<h6>0 items being added</h6>}
+            </div>)}
+            
         }
       
-    return(<div className="create">
+    return(<div >
         <div className="container">
-            <div className="left-side-bar">
+            <div className="left-bar">
 
               
                 <MediaQuery maxWidth={"1000px"}>
@@ -164,7 +150,7 @@ export default function CreateBookContainer({pagesInView}){
                 {bookList()}
                 </div>
             </div>
-            <div className="right-side-bar">
+            <div className="right-bar">
                
                <MediaQuery minWidth={"1000px"}>
                 <CreateForm/>
@@ -238,15 +224,18 @@ control={<Checkbox checked={bookIsOpen} onChange={(e)=>{
  <div  style={inputStyle} className="purpose">
 <label>Purpose</label></div> 
 <TextareaAutosize
+style={{width: '100%',padding:"1em"}}
    
 value={purpose}
 minRows={3} 
-cols={38}
 onChange={(e)=>{
 setPurpose(e.target.value);
 }} />
 <Button variant="outlined" 
-        style={{ width:inputStyle.width,marginLeft:inputStyle.marginLeft,   marginTop:"2em",backgroundColor:theme.palette.secondary.main,
+        style={{ width:inputStyle.width,
+            marginLeft:inputStyle.marginLeft, 
+            padding:"1em" ,
+             marginTop:"2em",backgroundColor:theme.palette.secondary.main,
                     color:theme.palette.secondary.contrastText}}
         onClick={(e) => handleOnSubmit(e)}>
 Save
