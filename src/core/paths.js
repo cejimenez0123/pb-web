@@ -1,6 +1,8 @@
 
 const Paths ={
-    library: (id)=>{return `/library/${id}`;},
+    library: {
+        route: ()=>`/library/:id`,
+        createRoute:(id)=>{return `/library/${id}`;}},
     page:(id)=>{return `/page/${id}`;},
     book: {
         route: ()=>{return `/book/:id`;},

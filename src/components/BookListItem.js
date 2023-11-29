@@ -9,8 +9,8 @@ function BookListItem({book}){
     return (<div onClick={()=>{
         navigate(Paths.book.createRoute(book.id))
     }} className="book-list-item">
-        <h6>{book.title}</h6>
-       <p>{book.purpose}</p> 
+        <h6 className="title">{book.title}</h6>
+       <p className="purpose">{book.purpose}</p> 
     </div>)
 }
 export default BookListItem

@@ -5,12 +5,13 @@ import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
-import { fetchPage, getPublicPages } from '../actions/PageActions'
+import {getPublicPages } from '../actions/PageActions'
 import { getPublicBooks } from '../actions/BookActions'
 import { getPublicLibraries } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
-import Page from '../domain/models/page'
+import MediaQuery from "react-responsive"
 import BookListItem from '../components/BookListItem'
+import Paths from '../core/paths'
 function DiscoveryContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -144,7 +145,9 @@ const librariesInView = [...useSelector(state=>state.libraries.librariesInView)]
             hasMore={hasMoreLibraries}
             style={{display:"flex",flexDirections:"row"}}>
                 {librariesInView.map(library=>{
-                    return(<div className='item'> 
+                    return(<div onClick={()=>{
+                        navigate(Paths.library.createRoute(library.id))
+                    }} className='item'> 
                     <div className='purpose'> <p>{library.purpose}</p></div>
                     <div className='name'><h5> {library.name}</h5></div>
                       
@@ -156,8 +159,11 @@ const librariesInView = [...useSelector(state=>state.libraries.librariesInView)]
     }
     const bookList = ()=>{
         if(booksInView!=null){
-            return(<div id="book-list">
+            return(
+        <div id="book-list">
+            <MediaQuery minWidth={"768px"}>
                 <InfiniteScroll
+            
             dataLength={booksInView.length}
             next={fetchContentItems}
             hasMore={false}
@@ -166,7 +172,21 @@ const librariesInView = [...useSelector(state=>state.libraries.librariesInView)]
                     return(<BookListItem book={book}/>)
                 })}
 
-            </InfiniteScroll></div>)
+            </InfiniteScroll>
+            </MediaQuery>
+            <MediaQuery maxWidth={"768px"}>
+                <InfiniteScroll
+            style={{display:"flex",flexDirection:"row"}}
+            dataLength={booksInView.length}
+            next={fetchContentItems}
+            hasMore={false}
+            >
+                {booksInView.map(book=>{
+                    return(<BookListItem book={book}/>)
+                })}
+
+            </InfiniteScroll>
+            </MediaQuery></div>)
         }
     }
     const pageList = ()=>{
