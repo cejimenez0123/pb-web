@@ -26,50 +26,10 @@ const getPublicBooks = createAsyncThunk(
 
           snapshot.docs.forEach(doc => {
 
-                const pack = doc.data();
-                
-                const id = pack["id"]
-                const title =pack["title"]
-                const purpose = pack["purpose"]
-                const profileId = pack["profileId"]
-                const pageIdList = pack["pageIdList"]
-                const updatedAt = pack["updatedAt"]
-                const privacy = pack["privacy"]
-                const writingIsOpen = pack["writingIsOpen"]
-                const created = pack["created"]
-               
-                let commenters = pack["commenters"]
-                let editors = pack["editors"]
-                let readers = pack["readers"]
-                let writers = pack["writers"]
-              if(!editors){
-                editors = []
-              }
-              if(!commenters){
-                commenters = []
-              }
-              if(!readers){
-                  readers=[]
-              }
-              if(!writers){
-                writers=[]
-              }
-                const book = new Book(  id,
-                                        purpose,
-                                        title,
-                                        profileId,
-                                        pageIdList,
-                                        privacy,
-                                        writingIsOpen,
-                                        editors,
-                                        commenters,
-                                        readers,
-                                        writers,
-                                        updatedAt,
-                                        created)
+              const book = unpackBookDoc(doc)
               bookList = [...bookList,book]
             })
-        // })
+    
     return {
   
         bookList

@@ -2,7 +2,10 @@
 const Paths ={
     library: (id)=>{return `/library/${id}`;},
     page:(id)=>{return `/page/${id}`;},
-    book: (id)=>{return `/book/${id}`},
+    book: {
+        route: ()=>{return `/book/:id`;},
+        createRoute:(id)=>{return `/book/${id}`
+    } },
     editor:(id)=>{return `/page/new`},
     login:()=>{return `/login`},
     editPage:{route:()=>{return `/page/:id/edit`},

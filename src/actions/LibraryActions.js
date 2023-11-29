@@ -1,9 +1,7 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit"
 import Library from "../domain/models/library"
-import { deleteDoc,and,or,arrayRemove,arrayUnion,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
-import LibraryRole from "../domain/models/library_role"
+import { deleteDoc,and,or,orderBy,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
 import { db,auth } from "../core/di"
-import { read } from "@popperjs/core"
 import Contributors from "../domain/models/contributor"
 
 //make a bookmark library for joe
@@ -492,56 +490,14 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
   'libraries/getPublicLibraries',
   async (thunkApi) => {
       let libraryList = []
+     const ref = collection(db, "library")
+  
+  const snapshot = await getDocs(query(ref, where("privacy", "==", false)))
 
-  const snapshot = await getDocs(query(collection(db, "library"), where("privacy", "==", false)))
-
-        
         snapshot.docs.forEach(doc => {
-              const pack = doc.data();
-              const { id } = doc;
-              const name =pack["name"]
-              const purpose = pack["purpose"]
-              const profileId = pack["profileId"]
-              const pageIdList = pack["pageIdList"]
-              const bookIdList = pack["bookIdList"]
-              const writingIsOpen = pack["writingIsOpen"]
-              const privacy = pack["privacy"]
-              const created = pack["created"]
-              const updatdedAt = pack["updatdedAt"] 
-              let commenters = pack["commenters"]
-              let editors = pack["editors"]
-              let readers = pack["readers"]
-              let writers = pack["writers"]
-            if(!editors){
-              editors = []
-            }
-            if(!commenters){
-              commenters = []
-            }
-            if(!readers){
-                readers=[]
-            }
-            if(!writers){
-              writers=[]
-            }
-            const contributors= new Contributors(commenters,
-              readers,writers,editors)
-            const library = new Library(id,
-                                        name,
-                                        profileId,
-                                        purpose,
-                                        pageIdList,
-                                        bookIdList,
-                                        writingIsOpen,
-                                        privacy,
-                                        contributors,
-                                        updatdedAt,
-                                        created)
-                                        
+              const library = unpackLibraryDoc(doc)                      
             libraryList = [...libraryList, library]
           })
-
-   
   return {
 
       libraryList

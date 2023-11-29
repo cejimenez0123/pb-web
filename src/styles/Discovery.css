@@ -40,6 +40,68 @@
   box-shadow: 0 5px 18px rgba(0, 0, 0, 0.6);
 
 }
+#library-forums{
+  overflow: scroll;
+}
+#library-forums label{
+  color:white;
+  padding-left: 2em;
+}
+#library-forums .item{
+  
+  background-color: var(--tertiary);
+  margin: 1em;
+  min-width: 25em;
+  min-height: 15em;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+#library-forums .item .purpose{
+  padding:1em 1em
+}
+#library-forums .item .name{
+  background-image: linear-gradient(0.25turn,var(--light), transparent);
+  padding-top:1em;
+  padding-left: 2em;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  /* display: inline-block;
+  align-self: flex-end; */
+}
+#forums-list{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 1em;
+}
+#forums-list label{
+  padding-left: 2em;
+  color:white;
+}
+#forums-list #page-list .content-item{
+  max-width: 50em;
+  font-size: large;
+}
+#forums-list #page-list{
+  margin: 1em 1em;
+}
+#forums-list #book-list{
+  margin: 1em 1em;
+}
+#forums-list #book-list .book-list-item{
+  color: white;
+  padding: 1em;
+  margin: 1em;
+  max-width: 30em;
+  max-height: 10em;
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+
 
 .item-row{
   justify-content: space-between;

@@ -1,128 +1,191 @@
 import { useSelector,useDispatch} from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
-import { useState,useLayoutEffect,useEffect } from 'react'
+import { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
-import { clearPagesInView, fetchPage, getPublicPages } from '../actions/PageActions'
-import { clearBooksInView, getPublicBooks } from '../actions/BookActions'
+import { fetchPage, getPublicPages } from '../actions/PageActions'
+import { getPublicBooks } from '../actions/BookActions'
 import { getPublicLibraries } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
+import Page from '../domain/models/page'
+import BookListItem from '../components/BookListItem'
 function DiscoveryContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const booksInView = useSelector(state=>state.books.booksInView)   
+    const booksInView = [...useSelector(state=>state.books.booksInView)].sort(
+        (a,b)=>{
+            console.log(JSON.stringify(a));
+            return b.created- a.created
+        }   
+    )  
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const librariesInView = useSelector(state=>state.libraries.librariesInView) 
-
+    const [hasMoreLibraries,setHasMoreLibraries] =useState(false)
+    // const [librariesInView,setLibraryInView]=useState([])
+const librariesInView = [...useSelector(state=>state.libraries.librariesInView)]
+.sort((a,b)=>{
+   
+    return b.created- a.created
+})
     const [contentItems,setContentItems]=useState([])
     let [hasMore,setHasMore]=useState(false)
     useEffect(()=>{
        
         setContentItems([])
         fetchContentItems()
+        fetchLibraries()
     },[])
-    useEffect(()=>{sortContent()},[pagesInView])
+    // useEffect(()=>{sortContent()},[pagesInView])
     const sortContent = ()=>{
         
-        let pList =[]
-        let bList = []
-        if(pagesInView){
-            pList = pagesInView.map((page)=>{return {type:"page",page:page}})
-        }
-        if(booksInView){
-            bList = []
-            booksInView.forEach(book=>{
-                book.pageIdList.forEach(id=>{
-                    const params = {id}
+        // let pList =[]
+        // let bList = []
+        // if(pagesInView){
+        //     pList = pagesInView.map((page)=>{return {type:"page",page:page}})
+        // }
+        // if(booksInView){
+        //     bList = []
+        //     booksInView.forEach(book=>{
+        //         book.pageIdList.forEach(id=>{
+        //             const params = {id}
                 
-                    dispatch(fetchPage(params)).then((result)=>{
-                        checkResult(result,payload=>{
-                            const { page}= payload
-                            let item = { type:"book",book,page}
-                            bList.push(item)
-                        },(err)=>{
+        //             dispatch(fetchPage(params)).then((result)=>{
+        //                 checkResult(result,payload=>{
+        //                     const { page}= payload
+        //                     let item = { type:"book",book,page}
+        //                     bList.push(item)
+        //                 },(err)=>{
 
-                        })
-                    })})
-            })
-        } 
+        //                 })
+        //             })})
+        //     })
+        // } 
    
     
-        const perChunk = 2 // items per chunk    
+        // const perChunk = 2 // items per chunk    
         
-        let lList = librariesInView.map((library)=>{return {type:"library",library:library}})
-        // items per chunk    
-        const lArray = lList
-        const lresult = lArray.reduce((resultArray, item, index) => { 
-        const chunkIndex = Math.floor(index/perChunk)
-        if(!resultArray[chunkIndex]) {
-            resultArray[chunkIndex] = [] // start a new chunk
-        }
-            resultArray[chunkIndex].push(item)
+        // let lList = librariesInView.map((library)=>{return {type:"library",library:library}})
+        // // items per chunk    
+        // const lArray = lList
+        // const lresult = lArray.reduce((resultArray, item, index) => { 
+        // const chunkIndex = Math.floor(index/perChunk)
+        // if(!resultArray[chunkIndex]) {
+        //     resultArray[chunkIndex] = [] // start a new chunk
+        // }
+        //     resultArray[chunkIndex].push(item)
 
-            return resultArray
-        }, [])
-        let list = [...pList,...bList,...lresult]
+        //     return resultArray
+        // }, [])
+        // let list = [...pList,...bList,...lresult]
         
-        let sorted = list.sort((a, b) =>{
-            if(a && b && (Array.isArray(a) || Array.isArray(b))){
-                if(a && b && (Array.isArray(a) && !Array.isArray(b))){
+        // let sorted = list.sort((a, b) =>{
+        //     if(a && b && (Array.isArray(a) || Array.isArray(b))){
+        //         if(a && b && (Array.isArray(a) && !Array.isArray(b))){
                     
-                    let aUpdatedAt = a[0].library.updatedAt
-                    if(a[1] ){
-                        aUpdatedAt = a[0].library.updatedAt>a[1].library.updatedAt?a[0].library.updatedAt:a[1].library.updatedAt
-                   }
-                   if(b.book){
-                    return   b.book.updatedAt - aUpdatedAt  
-                   }else{
-                    return   aUpdatedAt  -  b.page.created
-                   }
+        //             let aUpdatedAt = a[0].library.updatedAt
+        //             if(a[1] ){
+        //                 aUpdatedAt = a[0].library.updatedAt>a[1].library.updatedAt?a[0].library.updatedAt:a[1].library.updatedAt
+        //            }
+        //            if(b.book){
+        //             return   b.book.updatedAt - aUpdatedAt  
+        //            }else{
+        //             return   aUpdatedAt  -  b.page.created
+        //            }
 
-                }else if(a && b &&(!Array.isArray(a) && Array.isArray(b))){
-                    let bUpdatedAt = b[0].library.updatedAt
-                    if(b[1]){
-                        bUpdatedAt = b[0].library.updatedAt<b[1].updatedAt?b[0].library.updatedAt:b[1].library.updatedAt
-                    }
-                    if(a.book){
-                        return      a.book.updatedAt-bUpdatedAt
-                       }else{
-                        return      a.page.created-bUpdatedAt 
-                       }
+        //         }else if(a && b &&(!Array.isArray(a) && Array.isArray(b))){
+        //             let bUpdatedAt = b[0].library.updatedAt
+        //             if(b[1]){
+        //                 bUpdatedAt = b[0].library.updatedAt<b[1].updatedAt?b[0].library.updatedAt:b[1].library.updatedAt
+        //             }
+        //             if(a.book){
+        //                 return      a.book.updatedAt-bUpdatedAt
+        //                }else{
+        //                 return      a.page.created-bUpdatedAt 
+        //                }
                    
-                }else if(a && b &&(Array.isArray(a) && Array.isArray(b))){
-                    let aUpdatedAt = a[0].library.updatedAt
-                    if(a[1] ){
-                     aUpdatedAt = a[0].library.updatedAt>a[1].library.updatedAt?a[1].library.updatedAt:a[0].library.updatedAt
-                }
-                let bUpdatedAt = b[0].library.updatedAt
-                if(b[1]){
-                    bUpdatedAt = b[0].library.updatedAt>b[1].updatedAt?b[1].library.updatedAt:b[0].library.updatedAt
-                }
-                    return  bUpdatedAt - aUpdatedAt
-                }
+        //         }else if(a && b &&(Array.isArray(a) && Array.isArray(b))){
+        //             let aUpdatedAt = a[0].library.updatedAt
+        //             if(a[1] ){
+        //              aUpdatedAt = a[0].library.updatedAt>a[1].library.updatedAt?a[1].library.updatedAt:a[0].library.updatedAt
+        //         }
+        //         let bUpdatedAt = b[0].library.updatedAt
+        //         if(b[1]){
+        //             bUpdatedAt = b[0].library.updatedAt>b[1].updatedAt?b[1].library.updatedAt:b[0].library.updatedAt
+        //         }
+        //             return  bUpdatedAt - aUpdatedAt
+        //         }
 
 
-            }else{
-            if(a && b &&(a.book!=null && b.book!=null)){
-                return b.book.updatedAt - a.book.updatedAt
-            }else if(a && b &&(a.book!=null && b.page!=null)){
-                return b.page.created - a.book.updatedAt
-            }else if(a.page!=null && b.book!=null){
-                return b.book.updatedAt - a.page.created
-            }else if(
-                a.page!=null && a.page!=null
-            ){
-                return b.page.created - a.page.created 
-            }else{
+        //     }else{
+        //     if(a && b &&(a.book!=null && b.book!=null)){
+        //         return b.book.updatedAt - a.book.updatedAt
+        //     }else if(a && b &&(a.book!=null && b.page!=null)){
+        //         return b.page.created - a.book.updatedAt
+        //     }else if(a.page!=null && b.book!=null){
+        //         return b.book.updatedAt - a.page.created
+        //     }else if(
+        //         a.page!=null && a.page!=null
+        //     ){
+        //         return b.page.created - a.page.created 
+        //     }else{
                
-            } 
-        }
-        });
-        setContentItems(sorted)
+        //     } 
+        // }
+        // });
+        // setContentItems(sorted)
     }  
+    const libraryForums = ()=>{
+        if(librariesInView!=null){
+            return (<InfiniteScroll
+            dataLength={librariesInView.length}
+            next={fetchLibraries}
+            hasMore={hasMoreLibraries}
+            style={{display:"flex",flexDirections:"row"}}>
+                {librariesInView.map(library=>{
+                    return(<div className='item'> 
+                    <div className='purpose'> <p>{library.purpose}</p></div>
+                    <div className='name'><h5> {library.name}</h5></div>
+                      
+                        
+                    </div>)
+                })}
+            </InfiniteScroll>)
+        }
+    }
+    const bookList = ()=>{
+        if(booksInView!=null){
+            return(<div id="book-list">
+                <InfiniteScroll
+            dataLength={booksInView.length}
+            next={fetchContentItems}
+            hasMore={false}
+            >
+                {booksInView.map(book=>{
+                    return(<BookListItem book={book}/>)
+                })}
+
+            </InfiniteScroll></div>)
+        }
+    }
+    const pageList = ()=>{
+        if(pagesInView!=null){
+            return(<div id="page-list">
+               <InfiniteScroll
+            dataLength={pagesInView.length}
+            next={fetchContentItems}
+            hasMore={false}
+            >
+                {pagesInView.map(page=>{
+                    return(<div >
+                        <DashboardItem key={page.id} page={page}/>
+                    </div>)
+                })}
+
+            </InfiniteScroll> </div>)
+        }
+    }
     const fetchContentItems = ()=>{
             setHasMore(true) 
             dispatch(getPublicPages()).then(result=>checkResult(
@@ -131,42 +194,28 @@ function DiscoveryContainer(props){
                     const {pageList} = payload
                     dispatch(getPublicBooks()).then(result=>checkResult(result,
                         payload=>{
-                            const {bookList}=payload
-                            let bList = []
-                            bookList.forEach(book=>{
-                                book.pageIdList.forEach(id=>{
-                                    const params = {id}
-                                
-                                    dispatch(fetchPage(params)).then((result)=>{
-                                        checkResult(result,payload=>{
-                                            const { page}= payload
-                                            let item = { type:"book",book,page}
-                                            bList.push(item)
-                                        },(err)=>{
-                
-                                        })
-                                    })})
-                                   
-                                })
-                                
-                            setHasMore(false)
-                            dispatch(getPublicLibraries()).then(result=>checkResult(result,payload=>{
-                                const {libraryList}=payload
-                               
-                            
-                            },err=>{
-
-                            }))
+                        
+                     
+                          
                         },err=>{
 
                         })
                     )   
                 })
-                ,err=>{
-                    setHasMore(false)
-                }
+             
             )
             sortContent()
+        }
+        const fetchLibraries = ()=>{
+            setHasMoreLibraries(true)
+            dispatch(getPublicLibraries()).then(result=>checkResult(result,payload=>{
+                const {libraryList}=payload
+              
+            
+                setHasMoreLibraries(false)
+            },err=>{
+
+            }))
         }
         const dashboardItem=(hash)=>{
             if(Array.isArray(hash)){
@@ -256,11 +305,27 @@ function DiscoveryContainer(props){
             <div style={{paddingTop:"3em",textAlign:"center"}}>
                 <h1 >Discovery</h1>
                 </div>
-                <div className='content-list dashboard'>
+                {/* <div className='content-list dashboard'> */}
               <div >
-
-           
-                <InfiniteScroll
+                <div id="library-forums">
+                <label ><h4>Libraries</h4></label>
+                {libraryForums()}
+                    </div>
+                <div id='forums-list'>
+                    <div>
+                        <label>
+                           <h4> Pages</h4>
+                        </label>
+                    
+                    {pageList()}
+                    </div>
+                    <div>
+                        <label><h4>Books</h4></label>
+                 
+                    {bookList()}
+                    </div>
+                    </div>
+                {/* <InfiniteScroll
            dataLength={contentItems.length}
            next={fetchContentItems}
            hasMore={hasMore} // Replace with a condition based on your data source
@@ -270,10 +335,10 @@ function DiscoveryContainer(props){
                 {contentItems.map(content=>{
                     return dashboardItem(content)
                 })}
-                            </InfiniteScroll>
+                            </InfiniteScroll> */}
                         </div>
                     </div>
-                </div>
+                {/* </div> */}
             </ErrorBoundary>
         )
 
