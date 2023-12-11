@@ -48,17 +48,18 @@
     
         min-height: 15em;
         min-width:15em;
-        background-color: rgb(206, 222, 214);
-        border: 1px solid rgb(155, 173, 161);
+        /* background-color: #a3b18a58; */
+        /* background-color: rgb(206, 222, 214); */
+        box-shadow: var(--some-box-shadow);
+        /* border: 1px solid rgb(155, 173, 161); */
         border-radius: 25px;
         padding: 2em 1em;
     }
     .info .purpose {
         min-height: 5em;
-       
-        background-color: rgb(217, 217, 217);
+        padding: .5em;
+        /* background-color: rgb(217, 217, 217); */
         margin: 1em 1em;
-       
     }}
 
 

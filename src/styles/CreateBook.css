@@ -22,18 +22,13 @@
     margin-top: 2em;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;
 
     
 }
-.create-list{
-    padding: 1em;
-    background-color: gainsboro;
-    width: fit-content;
-    margin: auto;
-    
+.create .container .main-bar{
+    padding: 0em 1em;
 }
-.create .container .main-bar{max-width: 40em;}
 .info.create{
     margin-right: 3em;
     margin-left: 2em;
@@ -44,13 +39,7 @@
     border: 1px solid rgb(155, 173, 161);
     border-radius: 25px;
     padding: 2em 1em;
+    box-shadow: var(--some-box-shadow);
 }
-}
-
-.content-list.create{
-    width: 35em !important;
-    padding: 1em;
-    background-color: var(--tertiary) ;
-    border-radius: 25px;
 }
 

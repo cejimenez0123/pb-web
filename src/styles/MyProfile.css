@@ -14,7 +14,7 @@
 .main-bar{
 
  
-
+ 
     justify-content: center;
     
     
@@ -53,8 +53,22 @@
     height: 5em;
 }
 @media (min-width: 800px) {
+    .container{
+        min-height: 100vh;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
 .container.reverse .left-bar{
-    margin-right: 1em;
+    margin-right: auto;
+    width: fit-content;
+   
+
+}
+.container.reverse .right-bar{
+    margin-right: auto;
+    width: fit-content;
+
 }
 .profile-container{
 

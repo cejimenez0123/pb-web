@@ -88,7 +88,7 @@ export default function CreateBookContainer({pagesInView}){
     const bookList = ()=>{
             let i = 0
                 return(<div >
-                    <InfiniteScroll  dataLength={books.length} 
+                    <InfiniteScroll className="create-book-list" dataLength={books.length} 
            next={fetchBooks}
            hasMore={false} // Replace with a condition based on your data source
            loader={<p>Loading...</p>}
@@ -96,7 +96,7 @@ export default function CreateBookContainer({pagesInView}){
         >
              {books.map(book=>{
                 i+=1
-                return (<div className="list-item" key={`${book.id}_${i}`}>
+                return (<div className="list-item rounded" key={`${book.id}_${i}`}>
                     {book.title}
                     <IconButton onClick={()=>addUpdateBook(book)}>
                     <Add/>
@@ -132,7 +132,7 @@ export default function CreateBookContainer({pagesInView}){
             
         }
       
-    return(<div >
+    return(<div className="create" >
         <div className="container">
             <div className="left-bar">
 
@@ -140,15 +140,15 @@ export default function CreateBookContainer({pagesInView}){
                 <MediaQuery maxWidth={"1000px"}>
                     <CreateForm/>
                     </MediaQuery> 
-                    <div className="info to-be-added">
+                    <div className="to-be-added">
                 
                 {pagesToBeAddedList()}
                 </div>
             </div>
             <div className="main-bar">
-              <div className="content-list">
+          
                 {bookList()}
-                </div>
+            
             </div>
             <div className="right-bar">
                

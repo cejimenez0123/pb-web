@@ -1,6 +1,8 @@
 import "../styles/About.css"
-import bookshelf from "../images/bookshelf.PNG"
+// import bookshelf from "../images/bookshelf.PNG"
+import rickyBookshelf from "../images/ricky-bookshelf.jpg"
 import book1 from "../images/book1.png"
+import groupJpg from "../images/write-brooke-group.jpg"
 import MediaQuery from "react-responsive"
 import { Button } from "@mui/material"
 import theme from "../theme"
@@ -15,7 +17,7 @@ export default function AboutContainer(props){
 <h1 id="welcome"><strong>Welcome to Plumbum</strong></h1>
 </div>
 <div id="bookshelf">
-<img  src={bookshelf}alt="bookshelves" />
+<img  src={rickyBookshelf}alt="bookshelves" />
 </div>
 </div>
 <MediaQuery maxWidth={"1000px"}>
@@ -32,10 +34,10 @@ with the same goal as you of getting better at their craft.</p>
 <div>
     <section className="box">
         <div id="image-container1">
-<img src={book1} id="book1" alt="books"/>
+<img src={groupJpg} id="book1" alt="books"/>
 </div>
 <MediaQuery minWidth={"1000px"}>
-<div className="details">
+<div className="for details">
 
 <h1>For Creatives</h1>
 <p > 
@@ -45,9 +47,9 @@ with the same goal as you of getting better at their craft.</p>
 </div>
 </MediaQuery>
 </section>
-<section >
+<section className="details">
 <ul>
-<p className="details">
+<p >
 🔒It's a creative sanctuary. A place to receive feedback, control privacy,
 and build community.</p>
 
@@ -76,7 +78,13 @@ Plumbum is great place to begin work and find support to complete work.
 Ready to start your writing journey? 
 Sign up today, start a page and write anything.
 It's the place for your story on Plumbum.</p>
-<Button onClick={()=>{navigate(Paths.login())}}  style={{border:`1px #5CCA61 solid`,padding:"0.5em 1em",color:"#5CCA61",fontSize:"2em"}}>Sign Up</Button>
+<Button onClick={()=>{navigate(Paths.login())}}  
+    style={{
+            padding:"0.5em 1em",
+            backgroundColor:theme.palette.primary.dark,
+            boxShadow:theme.attributes.boxShadow,
+
+color:"#5CCA61",fontSize:"2em"}}>Sign Up</Button>
 </div>
 </section>
 <div className="request">

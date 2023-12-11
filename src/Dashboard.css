@@ -1,10 +1,14 @@
 .dashboard-item {
   background-color: white;
 }
-
+.content-item{
+  box-shadow: var(--some-box-shadow);
+}
 @media (min-width:800px) {
   /* On screens with a width of 768px or more (desktop), set the width to 50% */
-
+  .content-item{
+    margin-bottom: 2em;
+  }
 .content-item button {
   color:white;
   background-color: black;
@@ -17,7 +21,7 @@
 
 .content-item .text{
  
-  background-color: white;
+  background-color: #F6F6F3;
   padding: 2em;
 
 }
@@ -33,7 +37,7 @@
  
 }
 .content-item .dashboard-header{
-  background-color: white;
+  background-color: #F6F6F3;
   border-bottom: 1px solid grey;
   padding: 1em;
   display: flex;
@@ -114,7 +118,7 @@
   } 
 .content-item .text{
  
-  background-color:   white;
+  background-color: var(--slightly-yellow);
   padding: 2em;
 
 }
@@ -123,7 +127,7 @@
   text-align: left;
 }
 .content-item .dashboard-header{
-  background-color: white;
+  background-color: var(--slightly-yellow);
   border-bottom: 1px solid grey;
   padding: 1em;
   display: flex;

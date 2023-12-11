@@ -3,7 +3,8 @@ const Paths ={
     library: {
         route: ()=>`/library/:id`,
         createRoute:(id)=>{return `/library/${id}`;}},
-    page:(id)=>{return `/page/${id}`;},
+    page:{ route: ()=>`/page/:id`,createRoute:(id)=>{return `/page/${id}`
+    }},
     book: {
         route: ()=>{return `/book/:id`;},
         createRoute:(id)=>{return `/book/${id}`

@@ -36,7 +36,7 @@ function BookViewContainer({book}){
     const [following,setFollowing]=useState(null)
     const [bookmarked,setBookmarked]=useState(false)
     const [error,setError]=useState(false)
-    const pagesInView = useSelector(state=>state.pages.pagesInView)
+
     
     const onBookmarkPage = ()=>{
         if(bookmarked && book){
@@ -96,7 +96,7 @@ function BookViewContainer({book}){
         if(book){
             checkBookPermission(book)
         }
-    },[currentProfile,book])
+    },[])
     const checkBookPermission= (bookItem)=>{
        
         if( bookItem.privacy){
@@ -201,7 +201,8 @@ function BookViewContainer({book}){
                             next={()=>getPages(book)}
                             hasMore={hasMore} // Replace with a condition based on your data source
                             loader={<p>Loading...</p>}
-                            endMessage={<p>No more data to load.</p>}
+                            endMessage={<div className="no-more-data">
+                             <p>No more data to load.</p>   </div>}
                             scrollableTarget="scrollableDiv"
      >
          {pages.map(page =>{

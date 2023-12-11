@@ -2,7 +2,7 @@ import RichEditor from "../components/RichEditor"
 import "../styles/Editor.css"
 import "../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import { setHtmlContent,createPage, updatePage,saveRolesForPage, fetchEditingPage,deletePage, clearEditingPage, setPagesToBeAdded, setEditingPage } from "../actions/PageActions"
+import { setHtmlContent,createPage, updatePage,saveRolesForPage, fetchEditingPage,deletePage, clearEditingPage, setPagesToBeAdded, setEditingPage, setPageInView } from "../actions/PageActions"
 import React,{ useEffect, useState } from "react"
 import history from "../history"
 import { useParams,useNavigate } from "react-router-dom"
@@ -62,7 +62,7 @@ function EditorContainer({currentProfile}){
       setCommentable(page.commentable)
       dispatch(setHtmlContent(page.data))
     }
-    const saveNewPage=()=>{ const params ={
+    const saveNewPage=(onEnd)=>{ const params ={
       profileId: currentProfile.id,
       data: htmlContent,
       title: title,
@@ -78,7 +78,11 @@ function EditorContainer({currentProfile}){
     dispatch(createPage(params)).then((result)=>{
         checkResult(result,payload=>{
             const {page} = payload
+          
             setPageInfo(page)
+            if(onEnd){
+              onEnd(page)
+            }
           },err=>{
             console.error(err.message)
           }
@@ -86,8 +90,8 @@ function EditorContainer({currentProfile}){
   }
         const onSavePress = (onEnd)=>{
           if(!ePage){
-            saveNewPage()
-            onEnd()
+            saveNewPage(onEnd)
+           
         }else{
         
          let params = { page: ePage,
@@ -123,8 +127,10 @@ function EditorContainer({currentProfile}){
                   const {page}=payload
                   dispatch(setEditingPage({page}))
                   setPageInfo(page)
-                  onEnd()
                   window.alert("Saved")
+                  if(onEnd){
+                  onEnd(page)}
+                
 
               },err=>{
                   window.alert("Error updating roles")
@@ -236,8 +242,19 @@ function EditorContainer({currentProfile}){
               <div id="post-button-row">
                   <Button
                   onClick={()=>onSavePress(()=>{
+                  if(ePage==null){
                     setPrivacy(false)
-                    navigate(Paths.page(ePage.id))
+                    saveNewPage((page)=>{
+                      dispatch(setPageInView({page:ePage}))
+                      navigate(Paths.page.createRoute(page.id))
+                    })
+                  }else{
+                    setPrivacy(false)
+                    onSavePress(()=>{
+                      dispatch(setPageInView({page:ePage}))
+                      navigate(Paths.page.createRoute(ePage.id))
+                    })
+                    }
                   })}
                   style={{backgroundColor:theme.palette.secondary.main,
                           color:theme.palette.primary.contrastText,
@@ -291,9 +308,18 @@ function EditorContainer({currentProfile}){
                     <MediaQuery minWidth={"1000px"}>
               <div id="post-button-row">
                   <Button
-                  onClick={()=>onSavePress(()=>{
-                    navigate(Paths.page(ePage.id))
-                  })}
+                  onClick={()=>
+                  { if(ePage==null){
+                    saveNewPage((page)=>{
+                      dispatch(setPageInView({page}))
+                      navigate(Paths.page.createRoute(page.id))
+                    })
+                  }else{
+                    onSavePress((page)=>{
+                      dispatch(setPageInView({page}))
+                      navigate(Paths.page.createRoute(page.id))
+                    })
+                  }}}
                   style={{backgroundColor:theme.palette.secondary.main,
                           color:theme.palette.primary.contrastText,
                           width: "20em",
