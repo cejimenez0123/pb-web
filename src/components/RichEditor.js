@@ -1,5 +1,4 @@
-import { doc } from "firebase/firestore";
-import React,{useState,createRef,useEffect, useLayoutEffect} from "react"
+import React,{useState,createRef,useEffect} from "react"
 import { useDispatch,useSelector } from "react-redux";
 import { setHtmlContent } from "../actions/PageActions";
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
@@ -8,20 +7,16 @@ import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft';
 import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
 import AlignHorizontalCenterIcon from '@mui/icons-material/AlignHorizontalCenter';
-import { IconButton ,Button} from "@mui/material";
+import { Button} from "@mui/material";
 import theme from "../theme";
+
 export default function RichEditor(props) {
-    const [isReady, setIsReady] = useState(false);
     const editorRef = createRef()
     const editingPage = useSelector(state=>state.pages.editingPage)
     const ehtmlContent = useSelector(state=>state.pages.editorHtmlContent)
     const dispatch = useDispatch()
     useEffect(()=>{
-     
-        
-        document.getElementById("editor-page").innerHTML = ehtmlContent
-          
-
+        document.getElementById("editor-page").innerHTML = ehtmlContent       
     },[editingPage])
    const Type = {
         BOLD:"bold",
@@ -114,6 +109,43 @@ export default function RichEditor(props) {
           selection.removeAllRanges();
           selection.addRange(newRange);}
     };
+    const handlePaste = (e) => {
+        const clipboardItems = e.clipboardData.items;
+    
+        // Filter only image items
+        const items = [].slice.call(clipboardItems).filter(function (item) {
+            return /^image\//.test(item.type);
+        });
+    
+        // If no image items found, exit
+        if (items.length === 0) {
+            return;
+        }
+    
+        // Get the first image item
+        const item = items[0];
+        const blob = item.getAsFile();
+    
+        // Get the image element
+        const imageEle = document.getElementById('preview');
+    
+        // Set the src attribute and maintain aspect ratio
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            imageEle.src = e.target.result;
+        };
+    
+        reader.readAsDataURL(blob);
+    
+        // Create a File object
+        let file = new File([blob], "file name", { type: "image/jpeg", lastModified: new Date().getTime() }, 'utf-8');
+    
+        // Update the input file element
+        let container = new DataTransfer();
+        container.items.add(file);
+        document.querySelector('#file_input').files = container.files;
+    };
+    
     const changeAlignmentCenter = () => {
         const selection = document.getSelection();
         if (selection.rangeCount > 0) {
@@ -207,6 +239,7 @@ export default function RichEditor(props) {
     }
     return(
     <div>
+        
         <div className="editor-btn-row">
             <Button style={inputStyle}
                     onClick={setUnderline}>
@@ -234,6 +267,9 @@ export default function RichEditor(props) {
         ref={editorRef}
         contentEditable={true}
         onInput={(e)=>onTextChaneListener(e)}
+        onPaste={(e)=>{
+handlePaste(e)
+        }}
        >
 
         </div>

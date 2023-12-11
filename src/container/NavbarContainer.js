@@ -30,6 +30,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import { create } from '@mui/material/styles/createTransitions'
 import Paths from '../core/paths'
+import { setEditingPage } from '../actions/PageActions'
 
 const PageName = {
   home: "Home",
@@ -191,13 +192,14 @@ function NavbarContainer(props){
                     <List style={{display:anchorElNavCreate?"":"none"}}>
                       <ListItemButton key="page" 
                         onClick={(e)=>{
-                          
+                          dispatch(setEditingPage({page:null}))
                           navigate("/page/new")}}sx={{ pl: 4 }}
                         >
                           Page <CreateIcon/>
                    </ListItemButton>
                         <ListItemButton key={`image`} 
                         onClick={(e)=>{
+                          dispatch(setEditingPage({page:null}))
                           handleClose()
                           navigate("/page/image")}}sx={{ pl: 4 }}
                         >

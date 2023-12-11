@@ -188,7 +188,7 @@ function ListItem({type,id,title,item}) {
                 <div className='title'>
                 <a onClick={handleOnClick}> 
                 
-                <h6>  {title}</h6>
+               {title.length>0? <h6>  {title}</h6>:<h6>Untitled</h6>}
                     
                 </a>
                 </div> 

@@ -9,10 +9,11 @@ import { Dropdown,Menu ,MenuItem} from '@mui/joy'
 import theme from "../theme"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { fetchCommentsOfPage , setPagesToBeAdded,createComment, setPageInView, setEditingPage} from "../actions/PageActions"
+import {setPagesToBeAdded, setEditingPage} from "../actions/PageActions"
 import CommentInput from "./CommentInput"
 import checkResult from "../core/checkResult"
 import Paths from "../core/paths"
+import "../styles/PageView.css"
 export default function PageViewItem({page}) {
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
@@ -20,18 +21,12 @@ export default function PageViewItem({page}) {
     const [bookmarked,setBookmarked]= useState(false)
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const [commenting,setCommenting]=useState(false)
-    const [commentInput,setComment] = useState("")
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
-
-        
-       
-
-
-const commentBox = (show)=>{
-    if (show){
-        return(<CommentInput page={page} />)
+    const commentBox = (show)=>{
+        if (show){
+            return(<CommentInput page={page} />)
+        }
     }
-}
 let pageDataElement = (<div></div>)
 const [anchorEl,setAnchorEl]= useState(null)
 
@@ -81,7 +76,7 @@ switch(page.type){
         pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
-        pageDataElement = <img  src={page.data} alt={page.title}/>
+        pageDataElement = <img className="dashboard-content image" src={page.data} alt={page.title}/>
     break;
     case PageType.video:
         pageDataElement = <video src={page.data}/>
@@ -105,7 +100,7 @@ let profile = (<div></div>)
         
             <div className='dashboard-header'>
                 <div className="titles">
-                <p>{page.title}</p>
+                {page.title.length>0?<p>{page.title}</p>:<p>Untitled</p>}
                 </div>
                
                 {profile}

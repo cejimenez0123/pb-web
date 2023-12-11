@@ -111,7 +111,7 @@ function PageListItem({page}) {
             return(<div className='list-item'>
                 <div>
                 <a className="title" onClick={handleOnClick}> 
-                    <h6>{page.title}</h6>
+                   {page.title.length>0? <h6>{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                 <div className="button-row">
