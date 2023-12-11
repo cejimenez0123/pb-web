@@ -14,9 +14,10 @@ import { Button, IconButton } from "@mui/material";
 import checkResult from "../core/checkResult";
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import theme from "../theme";
-export default function ContentList({profile,pagesInView}){
+export default function ContentList({profile}){
     const [page,setPage] = useState(1)  
     const [listType,setListType]=useState("page")
+    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const [isContentVisible, setIsContentVisible] = useState(true)
     const [hasMorePages,setHasMorePages]=useState(false)
     const [hasMoreBooks,setHasMoreBooks]=useState(false)
@@ -32,15 +33,16 @@ export default function ContentList({profile,pagesInView}){
         fetchBookData()
         fetchLibraryData()
     },[profile])
+
     const pageList=()=>{
         const empty = (<div className="empty">
             Empty
         </div>)
-        if(pagesInView!=null ){    
+        if(pages!=null ){    
             return (
                 <div className="content-list">
             <InfiniteScroll
-                dataLength={pagesInView.length}
+                dataLength={pages.length}
                 next={fetchPageData}
                 hasMore={hasMorePages} // Replace with a condition based on your data source
                 loader={<p>Loading...</p>}
@@ -51,7 +53,10 @@ export default function ContentList({profile,pagesInView}){
                 }
             >
              {pages.map(page =>{
-                     return(<PageListItem key={page.id} page={page}/>)
+                     return(<PageListItem key={page.id} page={page} onDelete={()=>{
+                      let filtered= pages.filter(p=>{return p!==page})
+                      setPages(filtered);
+                     }}/>)
              })}
          </InfiniteScroll>
          </div>
@@ -59,7 +64,7 @@ export default function ContentList({profile,pagesInView}){
              }else{
                  return empty
              }}
-            
+    useEffect(()=>{},[pagesInView])     
     const fetchPageData = () =>{
             const params = {profile:profile,page,groupBy:9}
             setHasMorePages(true)
@@ -117,23 +122,26 @@ export default function ContentList({profile,pagesInView}){
         </div>)
         if(listType=="page"){
            if(pages!=null  && pages.length>0){    
-           return (
-            <div className="content-list">
-           <InfiniteScroll
+           return pageList()
+        //    (
+        //     <div className="content-list">
+        //    <InfiniteScroll
            
         
-          dataLength={pagesInView.length}
-          next={fetchPageData}
-          hasMore={hasMorePages} // Replace with a condition based on your data source
-          loader={<p>Loading...</p>}
-          endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
-        >
-            {pages.map(page =>{
-                    return(<PageListItem key={page.id} page={page}/>)
-            })}
-        </InfiniteScroll>
-        </div>
-         )
+        //   dataLength={pages.length}
+        //   next={fetchPageData}
+        //   hasMore={hasMorePages} // Replace with a condition based on your data source
+        //   loader={<p>Loading...</p>}
+        //   endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
+        // >
+        //     {pages.map(page =>{
+        //             return(<PageListItem key={page.id} page={page} onDelete={
+        //                 pages.
+        //             }/>)
+        //     })}
+        // </InfiniteScroll>
+        // </div>
+        //  )
             }else{
                 return empty
             }}

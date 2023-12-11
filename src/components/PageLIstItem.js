@@ -13,7 +13,8 @@ import Add from '@mui/icons-material/Add'
 import MoreVert from '@mui/icons-material/MoreVert'
 import { useSelector } from "react-redux";
 import theme from "../theme";
-function PageListItem({page}) {
+import checkResult from "../core/checkResult";
+function PageListItem({page,onDelete}) {
     
     const [showPreview,setShowPreview] = useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -99,7 +100,11 @@ function PageListItem({page}) {
                     const params = {
                         page
                     }
-                    dispatch(deletePage(params))}
+                    dispatch(deletePage(params)).then(result=>checkResult(result,payload=>{
+                     onDelete()       
+                    },err=>{
+
+                    }))}
                 }>
                     Delete
                 </MenuItem>

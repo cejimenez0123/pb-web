@@ -16,14 +16,14 @@ import {
 } from '@mui/material'
 
 
-function MyProfileContainer({pagesInView,booksInView,currentProfile,librariesInView}){
+function MyProfileContainer({booksInView,currentProfile,librariesInView}){
 
 
     if( currentProfile){ 
         return(
             <div className='container reverse'>
             <div className='left-bar'>
-                    <ContentList profile={currentProfile} pagesInView={pagesInView} booksInView={booksInView} librariesInView={librariesInView}/>
+                    <ContentList profile={currentProfile}  booksInView={booksInView} librariesInView={librariesInView}/>
             </div>         
             <div className="right-bar">
                     <ProfileCard profile={currentProfile}/>
