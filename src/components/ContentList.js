@@ -10,10 +10,11 @@ import PageListItem from './PageListItem';
 import "../styles/MyProfile.css"
 import Book from '../domain/models/book'
 import ListItem from '../components/ListItem';
-import { Button, IconButton } from "@mui/material";
+import { Button} from "@mui/material";
 import checkResult from "../core/checkResult";
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
-import theme from "../theme";
+import debounce from "../core/debounce";
+import { btnStyle } from "../styles/styles";
 export default function ContentList({profile}){
     const [page,setPage] = useState(1)  
     const [listType,setListType]=useState("page")
@@ -123,25 +124,6 @@ export default function ContentList({profile}){
         if(listType=="page"){
            if(pages!=null  && pages.length>0){    
            return pageList()
-        //    (
-        //     <div className="content-list">
-        //    <InfiniteScroll
-           
-        
-        //   dataLength={pages.length}
-        //   next={fetchPageData}
-        //   hasMore={hasMorePages} // Replace with a condition based on your data source
-        //   loader={<p>Loading...</p>}
-        //   endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
-        // >
-        //     {pages.map(page =>{
-        //             return(<PageListItem key={page.id} page={page} onDelete={
-        //                 pages.
-        //             }/>)
-        //     })}
-        // </InfiniteScroll>
-        // </div>
-        //  )
             }else{
                 return empty
             }}
@@ -243,14 +225,14 @@ export default function ContentList({profile}){
             setLibraries(newLibraries)
         }
     }
-    const setSortOrderAlpha=()=>{
-
-        if(sortAlpha){
+    const setSortOrderAlpha=(sort)=>{
+        setSortAlpha(sort)
+        if(sort){
         let newPages = [...pages].sort((a,b)=>{
             if (a.title < b.title) {
                 return -1;
               }
-              if (a.name > b.name) {
+              if (a.title > b.title) {
                 return 1;
               }
               return 0;
@@ -260,7 +242,7 @@ export default function ContentList({profile}){
             if (a.title < b.title) {
                 return -1;
               }
-              if (a.name > b.name) {
+              if (a.title > b.title) {
                 return 1;
               }
               return 0;
@@ -308,13 +290,14 @@ export default function ContentList({profile}){
             })
             setLibraries(newLibraries)
         }
+         
     }
     const handleContentClick=(name)=>{
         setListType(name)
         setIsContentVisible(!isContentVisible)
         setIsContentVisible(true)
     } 
-    const btnStyle ={fontSize: "1em",paddingTop:"1em",color:theme.palette.primary.contrastText,height:"100%"}
+
     return(<div >
                 <div className="inner">
                 <div className="btn-row">
@@ -350,9 +333,10 @@ export default function ContentList({profile}){
                                 setSortOrderTime()
                             }}
                             >Old to New</Button>}
-                        <Button style={btnStyle}onClick={()=>{
-                            setSortAlpha(!sortAlpha)
-                            setSortOrderAlpha()}}>
+                        <Button style={btnStyle}
+                        onClick={()=>{
+                            
+                        setSortOrderAlpha(!sortAlpha)}}>
                             <SortByAlphaIcon/>
                         </Button>
                     </div>

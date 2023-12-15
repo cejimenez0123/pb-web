@@ -1,17 +1,15 @@
-
-
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { FormGroup, Button,FormControlLabel,TextField, Checkbox } from "@mui/material"
-import VisuallyHiddenInput from '../components/VisualHiddenInput';
+import VisuallyHiddenInput from '../../components/VisualHiddenInput';
 import { useSelector } from 'react-redux';
-import theme from "../theme"
+import theme from "../../theme"
 import { useState } from 'react';
-import { uploadPicture } from '../actions/UserActions';
+import { uploadPicture } from '../../actions/UserActions';
 import { useDispatch } from 'react-redux';
-import { PageType } from '../core/constants';
-import { createPage,setPageInView } from '../actions/PageActions';
+import { PageType } from '../../core/constants';
+import { createPage,setPageInView } from '../../actions/PageActions';
 import { useNavigate } from 'react-router-dom';
-import { checkmarkStyle, saveButtonStyle } from '../styles/styles';
+import { checkmarkStyle, saveButtonStyle } from '../../styles/styles';
 function PicturePageContainer(props){
     const dispatch = useDispatch()
     const [imageUrl,setImageUrl]= useState("")
@@ -55,10 +53,10 @@ function PicturePageContainer(props){
             })
         }
     }
-    return(<div className='upload-picture'>
+    return(<div className='screen upload-picture'>
  
         
-        <FormGroup className='form'>
+        <FormGroup style={{backgroundColor:theme.palette.primary.light}}className='form'>
             <TextField  
                     style={{backgroundColor:"white",borderRadius:"8px"}}
                     label="Page Title"

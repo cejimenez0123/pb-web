@@ -1,14 +1,14 @@
-import { PageType } from "../core/constants";
+import { PageType } from "../../core/constants";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPage} from "../actions/PageActions"
+import { fetchPage} from "../../actions/PageActions"
 import { useEffect, useState } from "react";
-import "../styles/PageView.css"
+import "../../styles/PageView.css"
 import InfiniteScroll from "react-infinite-scroll-component";
-import { fetchCommentsOfPage } from "../actions/PageActions";
-import CommentItem from "../components/CommentItem";
-import PageViewItem from "../components/PageViewItem";
-import checkResult from "../core/checkResult";
+import { fetchCommentsOfPage } from "../../actions/PageActions";
+import CommentItem from "../../components/CommentItem";
+import PageViewItem from "../../components/PageViewItem";
+import checkResult from "../../core/checkResult";
 export default function PageViewContainer({page}){
     const pathParams = useParams()
     const dispatch = useDispatch()

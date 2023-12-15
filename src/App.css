@@ -1,6 +1,7 @@
-.App {
+.body {
   display: flex;
   flex-direction: column;
+  background-size: cover;
   background-color: rgb(234, 234, 234);
   height: 100%;
   /* background-color: #CFCFCF; */
@@ -30,9 +31,7 @@
   0 16px 16px hsl(0deg 0% 0% / 0.075);
 
 }
-html, body {
 
-}
 /* html, body {
   background-image: radial-gradient(#487e4c,white);
 } */
@@ -292,19 +291,32 @@ html, body {
     margin: auto;
   
   }
+  .upload-picture img{
+    display: block;
+    max-width:90%;
+    height: auto;
+    margin: auto;
+    margin-top: 2em;
+  }
+@media (min-width: 900px){
+  
   .upload-picture .form{
-    width: 40em;
+    max-width: 40em;
+    min-width: 35em;
     padding: 4em;
     margin-top: 3em;
+    margin-bottom: 3em;
+   
   }
+
+}
 .content-list.dashboard{
   min-width: var(--large-list-item-width);
   border-radius: 25px;
   margin: auto;
   min-height: 20em;
   width: 45em;
-  /* padding: 1em; */
-  /* background-color: var(--background-light); */
+
   
 }
 .intro{
@@ -316,13 +328,7 @@ html, body {
   text-align:flex-start;
   background-color: rgb(230, 231, 226);
 }
-.content-list .inner{
 
-  background-color: gainsboro;
-  border-radius: 25px;
- 
-  
-}
 .content-list .content{
   min-width: var(--large-list-item-width);
   background-color: rgb(230, 231, 226);
@@ -333,6 +339,7 @@ html, body {
   
   
 }
+
 .inner .btn-row{
   width: 35em;
   justify-content: space-between;
@@ -355,8 +362,9 @@ html, body {
     width: 100%;
     
   }
-
-  
+  .buttons{
+    margin-right: 1em;
+  }
   .no-more-data{
     min-height:5em;
     padding: 3em;
@@ -384,12 +392,7 @@ html, body {
     text-align:flex-start;
     background-color: rgb(230, 231, 226);
   }
-  .content-list .inner{
-  
-    background-color: rgb(230, 231, 226);
-    border-radius: 25px;
-   
-  }
+
   .content-list .content{
     background-color: rgb(230, 231, 226);
     min-height: 30em;
@@ -525,7 +528,7 @@ html, body {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
-    background-color: var(--background-tertiary-light);
+    background-color: var(--slightly-yellow);
     border-bottom: 2px solid gainsboro;
   }
   .list-item .title {
@@ -598,3 +601,15 @@ html, body {
     transform: rotate(360deg);
   }
 }
+
+@media (min-width: 1000px) {
+
+  .screen{
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      margin-top: 2em;
+      padding-left: 2em;
+      padding-right: 2em;
+  }}

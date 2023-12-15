@@ -7,13 +7,16 @@ import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft';
 import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
 import AlignHorizontalCenterIcon from '@mui/icons-material/AlignHorizontalCenter';
-import { Button} from "@mui/material";
+import {Menu,MenuItem, Button,Typography} from "@mui/material";
 import theme from "../theme";
-
+const fonts = ["Arial","Courier New","Georgia"]
 export default function RichEditor(props) {
     const editorRef = createRef()
     const editingPage = useSelector(state=>state.pages.editingPage)
     const ehtmlContent = useSelector(state=>state.pages.editorHtmlContent)
+    const [fontName,setFontName]=useState("Arial")
+    const [anchorAlign,setAnchorAlign]=useState(null)
+    const [anchorFont,setAnchorFont]=useState(null)
     const dispatch = useDispatch()
     useEffect(()=>{
         document.getElementById("editor-page").innerHTML = ehtmlContent       
@@ -65,10 +68,17 @@ export default function RichEditor(props) {
         // console.log("setUnderline")
         // document.execCommand("underline", false, null);
     }
+    const setFont = (name) => {
+        const selection = document.getSelection();
+        if (selection.rangeCount > 0) {
+          document.execCommand("fontName", false, name);
+        }
+        setFontName(name)
+      };
     const setStyle=(style)=>{
         const selection = document.getSelection();
         if (selection.rangeCount > 0) {
-          document.execCommand(style, false, null);
+          document.execCommand(style);
         }
     }
     const setFontSize = (fontSize) => {
@@ -173,33 +183,7 @@ export default function RichEditor(props) {
           selection.removeAllRanges();
           selection.addRange(newRange);}
     };
-    // const changeAlignment = (justify) => {
-    //     const selection = document.getSelection();
-    //     if (selection.rangeCount > 0) {
-    //       const range = selection.getRangeAt(0);
-          
-    //       // Create a new div to wrap the aligned content
-    //       const containerDiv = document.createElement("div");
-    //       containerDiv.style.textAlign = justify;
-      
-    //       // Move the contents of the range to the container div
-    //       containerDiv.appendChild(range.extractContents());
-      
-    //       // Insert the container div with the aligned content
-    //       range.insertNode(containerDiv);
-      
-    //       // Create a new paragraph after the container div
-    //       const newParagraph = document.createElement("p");
-    //       newParagraph.textContent = ""; // Add any initial text you want
-    //       containerDiv.parentNode.insertBefore(newParagraph, containerDiv.nextSibling);
-      
-    //       // Set the selection to the new paragraph
-    //       const newRange = document.createRange();
-    //       newRange.setStart(newParagraph, 0);
-    //       newRange.setEnd(newParagraph, 0);
-    //       selection.removeAllRanges();
-    //       selection.addRange(newRange);}
-    // };
+   
     const changeAlignmentRight = () => {
         const selection = document.getSelection();
         if (selection.rangeCount > 0) {
@@ -228,13 +212,46 @@ export default function RichEditor(props) {
           selection.addRange(newRange);}
       
     };
+    const handleSelectionChange = () => {
+        const selection = window.getSelection();
+    
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const font = window.getComputedStyle(range.commonAncestorContainer.parentNode).font;
+            let split = font.split(" ")
+            let name = split.slice(3).join(' ')
+            if(fonts.includes(name)){
+                setFontName(name)
+            } 
+           
+        }
+    };
+    useEffect(() => {
+        document.addEventListener('selectionchange', handleSelectionChange);
+    
+        return () => {
+          document.removeEventListener('selectionchange', handleSelectionChange);
+        };
+      }, []);
+    const fontMenu = ()=>{
+        console.log(fonts)
+        return( <div>
+                {fonts.map(font =>{
+                    return<MenuItem onClick={()=>setFont(font)}>
+                 <Typography fontFamily={font}>{font}</Typography> 
+                </MenuItem>
+                })}
+            
+                </div>)
+    }
     const inputStyle = {
         backgroundColor:theme.palette.primary.main,
         color: theme.palette.primary.contrastText,
-        width:"8.333%",
-        paddingTop: "1em",
         borderRadius: "1px",
-        marginRight:"1px"
+    
+        // paddingTop: "1em",
+        // 
+        // marginRight:"1px"
         
     }
     return(
@@ -257,19 +274,76 @@ export default function RichEditor(props) {
             <Button style={inputStyle} onClick={()=>setFontSize(32)}>H2</Button>
             <Button style={inputStyle} onClick={()=>setFontSize(24)}>H3</Button>
             <Button style={inputStyle} onClick={()=>setFontSize(16)}>H4</Button>
-            <Button style={inputStyle} onClick={changeAlignmentLeft}><AlignHorizontalLeftIcon/></Button>
-            <Button style={inputStyle} onClick={changeAlignmentRight}><AlignHorizontalRightIcon/></Button>
-            <Button style={inputStyle} onClick={changeAlignmentCenter}><AlignHorizontalCenterIcon/></Button>
-            <Button style={inputStyle} onClick={setBlockquote}>""</Button>
+            <Button
+        style={{    backgroundColor:inputStyle.backgroundColor,
+                    color:inputStyle.color,
+                    borderRadius:inputStyle.borderRadius,
+                    overflow:"hidden",
+                    whiteSpace:"nowrap",
+                    maxWidth:"10%"}}
+        aria-controls={Boolean(anchorFont) ? 'demo-positioned-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={Boolean(anchorFont) ? 'true' : undefined}
+        onClick={(e)=>setAnchorFont(e.currentTarget)}
+      >
+        <Typography fontSize={".7em"} >{fontName}</Typography>
+      </Button>
+      <Menu
+        // id="demo-positioned-menu"
+        // aria-labelledby="demo-positioned-button"
+        anchorEl={anchorFont}
+        open={Boolean(anchorFont)}
+        onClose={()=>setAnchorFont(null)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        {fontMenu()}
+        {/* <MenuItem  onClick={changeAlignmentLeft}><AlignHorizontalLeftIcon/></MenuItem>
+        <MenuItem  onClick={changeAlignmentRight}><AlignHorizontalRightIcon/></MenuItem>
+        <MenuItem   onClick={changeAlignmentCenter}><AlignHorizontalCenterIcon/></MenuItem> */}
+      </Menu>
+            <Button
+        style={inputStyle}
+        aria-controls={Boolean(anchorAlign) ? 'demo-positioned-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={Boolean(anchorAlign) ? 'true' : undefined}
+        onClick={(e)=>setAnchorAlign(e.currentTarget)}
+      >
+        <AlignHorizontalLeftIcon/>
+      </Button>
+      <Menu
+        // id="demo-positioned-menu"
+        // aria-labelledby="demo-positioned-button"
+        anchorEl={anchorAlign}
+        open={Boolean(anchorAlign)}
+        onClose={()=>setAnchorAlign(null)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <MenuItem  onClick={changeAlignmentLeft}><AlignHorizontalLeftIcon/></MenuItem>
+        <MenuItem  onClick={changeAlignmentRight}><AlignHorizontalRightIcon/></MenuItem>
+        <MenuItem   onClick={changeAlignmentCenter}><AlignHorizontalCenterIcon/></MenuItem>
+        </Menu>
+        <Button style={inputStyle} onClick={setBlockquote}>" "</Button>
         </div>
         <div 
         id="editor-page"
         ref={editorRef}
         contentEditable={true}
         onInput={(e)=>onTextChaneListener(e)}
-        onPaste={(e)=>{
-handlePaste(e)
-        }}
+        onPaste={(e)=>{handlePaste(e)}}
        >
 
         </div>

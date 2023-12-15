@@ -6,15 +6,14 @@ import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
-import EditorContainer from './container/EditorContainer'
-import PageViewContainer from './container/PageViewContainer'
+import EditorContainer from './container/page/EditorContainer'
+import PageViewContainer from './container/page/PageViewContainer'
 import BookViewContainer from './container/BookViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import CreateBookContainer from './container/CreateBookContainer';
 import CreateLibraryContainer from './container/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/ProfileContainer';
-import PicturePageContainer from './container/PicturePageContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/AddPageToBookContainer';
 import AddItemsToLibraryContainer from './container/AddItemsToLibraryContainer';
@@ -145,13 +144,29 @@ function App(props) {
     }/>
     <Route  path="/page/image"  
         element={ 
-          <PrivateRoute loggedIn={props.currentProfile}>
-            <PicturePageContainer />
+        //   <PrivateRoute loggedIn={props.currentProfile}>
+        //     <PicturePageContainer />
 
-         </PrivateRoute>
+        //  </PrivateRoute>
+          <PrivateRoute loggedIn={!!props.currentProfile}>
+          <EditorContainer 
+            htmlContent={props.htmlContent}
+            currentProfile={props.currentProfile} 
+            />
+      </PrivateRoute>
         }/>
     <Route
-      exact path="/page/new"
+      exact path="/page/text"
+      element={
+        <PrivateRoute loggedIn={!!props.currentProfile}>
+            <EditorContainer 
+              htmlContent={props.htmlContent}
+              currentProfile={props.currentProfile} 
+              />
+        </PrivateRoute>
+      }/>
+       <Route
+      exact path="/page/link"
       element={
         <PrivateRoute loggedIn={!!props.currentProfile}>
             <EditorContainer 

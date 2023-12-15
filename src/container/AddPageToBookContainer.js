@@ -17,6 +17,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import debounce from "../core/debounce"
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import { Button } from "@mui/joy"
+import theme from "../theme"
 function AddPageToBookContainer(){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -162,9 +163,13 @@ function AddPageToBookContainer(){
     const pageList =()=>{
         if(pageLoading==false && !!bookInView){
             if(pagesInView && pagesInView.length !=0){
+                const btnStyle = {backgroundColor:"transparent"}
                 return(
                     <div>
-                        <div>
+                          <div className="inner">
+
+                           
+                    <div className="btn-row">
                             <div>
 
                             </div>
@@ -174,19 +179,20 @@ function AddPageToBookContainer(){
                                     setSortOrderAlpha()
                                     
                                 }}>
-                                    <SortByAlphaIcon/>
+                                    <SortByAlphaIcon style={{color:theme.palette.primary.contrastText}}/>
                                 </IconButton>
-                                {sortTime?<Button onClick={()=>{
+                                {sortTime?<Button style={btnStyle} onClick={()=>{
                                 setSortTime(false)
                                 setSortOrderTime()
                             }}>
                                     New to Old
                             </Button>:
-                            <Button onClick={()=>{
+                            <Button style={btnStyle} onClick={()=>{
                                 setSortTime(true)
                                 setSortOrderTime()
                             }}
                             >Old to New</Button>}
+                            </div>
                             </div>
                         </div>
                        <InfiniteScroll 

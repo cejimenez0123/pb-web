@@ -25,6 +25,7 @@ class Story {
     privacy
     type
     created
+    ref
     constructor(
         id,
         title,
@@ -35,7 +36,8 @@ class Story {
         commentable,
         type,
         contributors=new Contributors(),
-        created=Timestamp.now()
+        created=Timestamp.now(),
+        ref
     ){
         super(id,title,contributors.readers,contributors.writers,contributors.editors,contributors.commenters)
         this.data = data
@@ -46,6 +48,7 @@ class Story {
         this.privacy = privacy
         this.type = type
         this.created = created
+        this.ref = ref
     }
     static className(){
         "page"

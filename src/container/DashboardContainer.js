@@ -17,11 +17,7 @@ function DashboardContainer(props){
     const dispatch = useDispatch()
     const currentProfile = useSelector((state)=>state.users.currentProfile)
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
-    const followedBooks = useSelector((state)=>state.users.followedBooks)
-    const followedLibraries = useSelector((state)=>state.users.followedLibraries)
     const homeCollection = useSelector((state)=>state.users.homeCollection)
-    const booksInView = useSelector((state)=>state.books.booksInView)
-    const librariesInView = useSelector((state)=>state.users.librariesInView)
     const [itemsInView,setItemsInView] = useState([])
     const [hasMore,setHasMore] = useState(false)
     const [hasError,setHasError] = useState(false)
@@ -300,45 +296,6 @@ function DashboardContainer(props){
                 </div>)
             }
         }
-        let intro = (<div></div>)
-            if(!currentProfile){
-            //     intro =(
-            //         <div className='intro'>
-
-            //     <h1><strong>Welcome to Plumbum</strong></h1>
-            //     <p> this is a place for creatives.
-            //     Plumbum is made for writers to help recreate the writers' workshop online.
-            //     Writers' workshop are a place to receive feedback on your work from people 
-            //     with the same goal as you of getting better at their craft.</p>
-            //     <p>
-            //     It's a creative sanctuary. A place to receive feedback, control privacy,
-            //     and build community.</p>
-
-            //    <p> 📝 Tired of oversharing your work?
-            //     Plumbum allows you to control the visibility of your writing,
-            //     whether you want it to be a private diary or a public masterpiece.
-            //     </p>
-            //     <p>💬 Need constructive feedback to refine your craft?
-            //         Join a community of fellow writers eager to share their insights and support your journey.
-            //     </p>
-            //     <p>🌟 Create or join groups that resonate with your writing style,
-            //         genre, or interests, connect with like-minded individuals who 
-            //         appreciate your unique voice.
-            //     </p>
-            //     <p>
-            //     📚 Whether you're a seasoned novelist or just beginning your literary adventure.
-            //     Plumbum is great place to begin work and find support to complete work.
-            //     </p>
-            //     <p>
-            //     Ready to start your writing journey? 
-            //     Sign up today, start a page and write anything.
-            //     It's the place for your story on Plumbum.</p>
-
-            //     <p>Any request for more feautres, problems, encoragement, send to plumbumapp@gmail.com</p>
-             
-            //     </div>)
-            }
-        
 
         return(
             <ErrorBoundary hasError={hasError} fallback={<div>
@@ -347,7 +304,7 @@ function DashboardContainer(props){
             <div id="dashboard" >
                
                 <div >
-                {intro}
+                
                 <div style={{padding:"2em",textAlign:"center"}}>
                 <h1 >HOME</h1>
                 </div>

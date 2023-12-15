@@ -12,28 +12,23 @@
     border: 1px solid #ccc;
     padding: 20px 20px 20px 20px;
     width: 100%;
+    max-width: 40.2em;
     min-height: 20rem;
     margin: auto;
     height: auto;
     text-align: left;
     background-color: white;
 }
-
-.editor-btn-row button{
-    padding: 1em 2em;
-    width: 8.33%;
-    background-color: var(--secondary);
-    color:white;
-}
 .editor-btn-row{
     display: flex;
-    flex-direction: row;
-    overflow: scroll;
-    width: 100%;
-    margin-bottom: 2px;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    
+    flex-wrap: wrap;
+    gap: 1px; 
+    margin: auto;
+   
+}
+.editor-btn-row > button{
+    width: fit-content;
+    padding-bottom: 2px;
 }
 #editor {
     max-width: 45em;
@@ -44,12 +39,15 @@
     padding: 2em;
     background-color: var(--tertiary);
     border-radius: 25px;
+    box-shadow: var(--some-box-shadow);
 
 }
 #EditorContainer{
     flex-direction: row;
     display: flex;
     justify-content: space-evenly;
+    height: 100%;
+    padding-bottom: 3em;
 }
 
 #EditorContainer .left-side-bar{
@@ -60,6 +58,7 @@
     width: 23em;
     padding: 4em 2em;
     border-radius: 25px;
+    box-shadow: var(--some-box-shadow);
 }
 
 #EditorContainer .form input[type="text"]{

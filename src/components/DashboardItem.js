@@ -12,11 +12,7 @@ import theme from '../theme'
 import { updateLibraryContent } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
 import Paths from '../core/paths'
-
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import { Visibility } from '@mui/icons-material'
-// import {useBottomScrollListener} from "react-bottom-scroll-listener"
+import { ReactTinyLink } from 'react-tiny-link'
   let size= {width: window.innerWidth,height: window.innerHeight}
 
 function DashboardItem({page,book}) {
@@ -66,25 +62,35 @@ const hanldeClickComment=(pageItem)=>{
     navigate(`/page/${pageItem.id}`)
 }
 }   
-const contentStyle={
-    backgroundColor:"white"
-}
-// let shrunkStyle={maxHeight:"30em",overflow:"hidden",textOverflow: "ellipsis",}
-const pageDataElement=()=>{
-    if(page){
+    const pageDataElement=()=>{
+        if(page){
         
     if(page.type==PageType.text){
 
         return( <div>
             <div ref={
             (el)=>setContentItemEl(el)
-        } className='text' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        } className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>)   }else if(page.type==PageType.picture){
     }
     if(page.type==PageType.picture){
         return(<img className='dashboard-content image' src={page.data} alt={page.title}/>)
     }else if(page.type==PageType.video){
         return(<iframe src={page.data}/>)
+    }else if(page.type == PageType.link){
+        return(<ReactTinyLink 
+            style={{maxWidth:"100%",marginTop:"2em"}}
+            requestHeaders={{
+                "Access-Control-Allow-Origin": "*",
+            //     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+            }}
+           
+            cardSize="large"
+            showGraphic={true}
+            maxLine={2}
+            minLine={2}
+            url={page.data}
+            />)
     }else{
         return(<div className='empty'>
         Loading...

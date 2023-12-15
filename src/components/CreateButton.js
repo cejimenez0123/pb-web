@@ -38,7 +38,7 @@ function CreateButtons (props){
               'aria-labelledby': 'demo-customized-button',
                     }}>    
              
-                    <MenuItem onClick={()=>navigate("/page/new")}>
+                    <MenuItem onClick={()=>navigate("/page/text")}>
                       Page <CreateIcon/>
                     </MenuItem>
                     <MenuItem onClick={()=>navigate("/page/image")}>

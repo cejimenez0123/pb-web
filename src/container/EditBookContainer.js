@@ -22,13 +22,11 @@ function EditBookContainer({book}){
     const pathParams = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const bookLoading = useSelector(state=>state.books.loading)
     const [newBookRoles, setNewBookRoles ]= useState([BookRole])
     const [bookTitle,setBookTitle] = useState("")
     const [bookIsPrivate,setBookPrivacy]= useState(false)
     const [bookPurpose,setBookPurpose] = useState("")
     const [writingIsOpen,setWritingIsOpen]= useState(false)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
     const [listItems, setListItems] = useState([]);
     const [newListItems, setNewListItems]= useState([]);
     const getBook=()=>{
@@ -36,17 +34,14 @@ function EditBookContainer({book}){
         const parameters = {
         id: bookId,
     }
-    if(book==null || book.id !== bookId){ 
+  
         dispatch(fetchBook(parameters)).then((result) => {
             const {payload} = result
             const gotBook = payload["book"]
             setBookInfo(gotBook)
             getPages(gotBook.pageIdList)
         })
-    }else if(book!=null && book == bookId) {
-            setBookInfo(book)
-            getPages(book.pageIdList)
-       }
+  
     }
     const setBookInfo = (info)=>{
         setBookTitle(info.title)
@@ -94,32 +89,19 @@ function EditBookContainer({book}){
             setListItems([])
         }
     }
-
-    useEffect(()=>{
-        getBook()
-    },[])
-
-
-
-
-
-const sortableList = ()=>{
-    if(listItems && listItems.length == 0){
-        return (<div className="empty">
-            Empty
-        </div>)
-   
-    }else if(listItems){
-         return(
-           <div>
-       
-             <div id="sort-list">
-                 <ErrorBoundary>
-                  
-           <SortableComponent   
+    const sortableList = ()=>{
+        if(listItems && listItems.length == 0){
+            return (<div className="empty">
+                    Empty
+                </div>)
+        }else if(listItems && listItems.length>0){
+            return(
+                <div>
+                    <div id="sort-list">
+                    <ErrorBoundary>
+                    <SortableComponent   
                 items={listItems} 
                 getItems={items=>{
-                            console.log(items.map(hash=>hash.item.title))
                             setNewListItems(items)
                         }}/>
      
@@ -142,7 +124,6 @@ const sortableList = ()=>{
       
           
             const pageIdList  = newListItems.map(hash=>hash.item.id)
-            console.log(newListItems.map(hash=>hash.item.title))
         
             const params = {book:book,
                             title: bookTitle,
@@ -152,7 +133,7 @@ const sortableList = ()=>{
                             writingIsOpen: writingIsOpen}
             dispatch(updateBook(params)).then(result=>{
                 checkResult(result,payload=>{
-                    getPages(pageIdList)
+                    getBook()
                     window.alert("Book Info Updated")
                 },(err)=>{
                     window.alert(`${err.message}`)

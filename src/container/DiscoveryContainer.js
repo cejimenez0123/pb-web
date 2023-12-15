@@ -17,7 +17,7 @@ function DiscoveryContainer(props){
     const dispatch = useDispatch()
     const booksInView = [...useSelector(state=>state.books.booksInView)].sort(
         (a,b)=>{
-            console.log(JSON.stringify(a));
+        
             return b.created- a.created
         }   
     )  
@@ -39,104 +39,7 @@ const librariesInView = [...useSelector(state=>state.libraries.librariesInView)]
         fetchLibraries()
     },[])
     // useEffect(()=>{sortContent()},[pagesInView])
-    const sortContent = ()=>{
-        
-        // let pList =[]
-        // let bList = []
-        // if(pagesInView){
-        //     pList = pagesInView.map((page)=>{return {type:"page",page:page}})
-        // }
-        // if(booksInView){
-        //     bList = []
-        //     booksInView.forEach(book=>{
-        //         book.pageIdList.forEach(id=>{
-        //             const params = {id}
-                
-        //             dispatch(fetchPage(params)).then((result)=>{
-        //                 checkResult(result,payload=>{
-        //                     const { page}= payload
-        //                     let item = { type:"book",book,page}
-        //                     bList.push(item)
-        //                 },(err)=>{
 
-        //                 })
-        //             })})
-        //     })
-        // } 
-   
-    
-        // const perChunk = 2 // items per chunk    
-        
-        // let lList = librariesInView.map((library)=>{return {type:"library",library:library}})
-        // // items per chunk    
-        // const lArray = lList
-        // const lresult = lArray.reduce((resultArray, item, index) => { 
-        // const chunkIndex = Math.floor(index/perChunk)
-        // if(!resultArray[chunkIndex]) {
-        //     resultArray[chunkIndex] = [] // start a new chunk
-        // }
-        //     resultArray[chunkIndex].push(item)
-
-        //     return resultArray
-        // }, [])
-        // let list = [...pList,...bList,...lresult]
-        
-        // let sorted = list.sort((a, b) =>{
-        //     if(a && b && (Array.isArray(a) || Array.isArray(b))){
-        //         if(a && b && (Array.isArray(a) && !Array.isArray(b))){
-                    
-        //             let aUpdatedAt = a[0].library.updatedAt
-        //             if(a[1] ){
-        //                 aUpdatedAt = a[0].library.updatedAt>a[1].library.updatedAt?a[0].library.updatedAt:a[1].library.updatedAt
-        //            }
-        //            if(b.book){
-        //             return   b.book.updatedAt - aUpdatedAt  
-        //            }else{
-        //             return   aUpdatedAt  -  b.page.created
-        //            }
-
-        //         }else if(a && b &&(!Array.isArray(a) && Array.isArray(b))){
-        //             let bUpdatedAt = b[0].library.updatedAt
-        //             if(b[1]){
-        //                 bUpdatedAt = b[0].library.updatedAt<b[1].updatedAt?b[0].library.updatedAt:b[1].library.updatedAt
-        //             }
-        //             if(a.book){
-        //                 return      a.book.updatedAt-bUpdatedAt
-        //                }else{
-        //                 return      a.page.created-bUpdatedAt 
-        //                }
-                   
-        //         }else if(a && b &&(Array.isArray(a) && Array.isArray(b))){
-        //             let aUpdatedAt = a[0].library.updatedAt
-        //             if(a[1] ){
-        //              aUpdatedAt = a[0].library.updatedAt>a[1].library.updatedAt?a[1].library.updatedAt:a[0].library.updatedAt
-        //         }
-        //         let bUpdatedAt = b[0].library.updatedAt
-        //         if(b[1]){
-        //             bUpdatedAt = b[0].library.updatedAt>b[1].updatedAt?b[1].library.updatedAt:b[0].library.updatedAt
-        //         }
-        //             return  bUpdatedAt - aUpdatedAt
-        //         }
-
-
-        //     }else{
-        //     if(a && b &&(a.book!=null && b.book!=null)){
-        //         return b.book.updatedAt - a.book.updatedAt
-        //     }else if(a && b &&(a.book!=null && b.page!=null)){
-        //         return b.page.created - a.book.updatedAt
-        //     }else if(a.page!=null && b.book!=null){
-        //         return b.book.updatedAt - a.page.created
-        //     }else if(
-        //         a.page!=null && a.page!=null
-        //     ){
-        //         return b.page.created - a.page.created 
-        //     }else{
-               
-        //     } 
-        // }
-        // });
-        // setContentItems(sorted)
-    }  
     const libraryForums = ()=>{
         if(librariesInView!=null){
             return (<InfiniteScroll
@@ -212,19 +115,19 @@ const librariesInView = [...useSelector(state=>state.libraries.librariesInView)]
                 result,payload=>{
                     
                     const {pageList} = payload
-                    dispatch(getPublicBooks()).then(result=>checkResult(result,
-                        payload=>{
-                        
-                     
-                          
-                        },err=>{
-
-                        })
-                    )   
+               
                 })
              
             )
-            sortContent()
+            dispatch(getPublicBooks()).then(result=>checkResult(result,
+                payload=>{
+                
+             
+                  
+                },err=>{
+
+                })
+            )   
         }
         const fetchLibraries = ()=>{
             setHasMoreLibraries(true)

@@ -8,20 +8,26 @@ import theme from "../theme"
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import debounce from "../core/debounce"
+import { setEditingPage } from '../actions/PageActions';
+import {useDispatch} from "react-redux"
+import LinkIcon from '@mui/icons-material/Link';
 import {  
     Menu,
     MenuItem,
     Button,
+    List,
+    ListItemButton,
+    Typography
     
 } from '@mui/material'
-
+import { btnStyle } from '../styles/styles';
 
 function MyProfileContainer({booksInView,currentProfile,librariesInView}){
 
-
+   
     if( currentProfile){ 
         return(
-            <div className='container reverse'>
+            <div className='two-panel'>
             <div className='left-bar'>
                     <ContentList profile={currentProfile}  booksInView={booksInView} librariesInView={librariesInView}/>
             </div>         
@@ -41,7 +47,9 @@ Loading...
 
     
 function CreateButtons (props){
+    const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [anchorCreate,setAnchorCreate]=useState(null)
     const [anchorEl,setAnchorEl]= useState(null)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -79,13 +87,63 @@ function CreateButtons (props){
                 MenuListProps={{
               'aria-labelledby': 'demo-customized-button',
                     }}>    
-             
-                    <MenuItem onClick={()=>navigate("/page/new")}>
+                     <MenuItem onClick={(e)=>{
+
+                     
+                    if(anchorCreate){
+                        setAnchorCreate(null)
+                    }else{
+                        setAnchorCreate(e.currentTarget)
+                    }    
+                }
+                } key={"page"} >
+                  
+                    Page {anchorCreate?<ExpandMore/>:<ExpandLess/>}
+                  </MenuItem>
+                   
+                  
+                      {/* <ListItemButton key="page" 
+                        onClick={(e)=>{
+                            setAnchorCreate(e.currentTarget)
+                         }}sx={{ pl: 4 }}
+                        >
+                         Page {anchorCreate?<ExpandMore/>:<ExpandLess/>} */}
+                        {/* </ListItemButton> */}
+                          <List style={{display:Boolean(anchorCreate)?"":"none"}}>
+                            <ListItemButton key="page" 
+                              onClick={(e)=>{
+                                dispatch(setEditingPage({page:null}))
+                                setAnchorCreate(null)
+                                navigate("/page/text")}}
+                                sx={{ pl: 4 }}
+                            >
+                              <CreateIcon/>
+                            </ListItemButton>
+                            <ListItemButton key={`image`} 
+                              onClick={(e)=>{
+                              dispatch(setEditingPage({page:null}))
+                              setAnchorCreate(null)
+                              navigate("/page/image")}}
+                              sx={{ pl: 4}}
+                            >
+                              <ImageIcon/>
+                            </ListItemButton>
+                            <ListItemButton     
+                    sx={{ pl: 4 }} 
+                    onClick={()=>{
+                      dispatch(setEditingPage({page:null}))
+                      handleClose()
+                      navigate("/page/link")}}>
+                     <LinkIcon/>
+                    </ListItemButton>
+                          </List>
+                     
+                    {/* <MenuItem onClick={()=>navigate("/page/text")}>
                       Page <CreateIcon/>
                     </MenuItem>
                     <MenuItem onClick={()=>navigate("/page/image")}>
                       Page <ImageIcon/>
-                    </MenuItem>
+                    </MenuItem> */}
                     <MenuItem onClick={()=>{
                         navigate("/book/new")
                     }}>

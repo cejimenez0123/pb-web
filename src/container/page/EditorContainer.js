@@ -1,29 +1,45 @@
-import RichEditor from "../components/RichEditor"
-import "../styles/Editor.css"
-import "../App.css"
+import RichEditor from "../../components/RichEditor"
+import "../../styles/Editor.css"
+import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import { setHtmlContent,createPage, updatePage,saveRolesForPage, fetchEditingPage,deletePage, clearEditingPage, setPagesToBeAdded, setEditingPage, setPageInView } from "../actions/PageActions"
+import {  setHtmlContent,
+          createPage, 
+          updatePage,
+          saveRolesForPage, 
+          fetchEditingPage,
+          deletePage, 
+          setPagesToBeAdded, 
+          setEditingPage, 
+          setPageInView } from "../../actions/PageActions"
 import React,{ useEffect, useState } from "react"
-import history from "../history"
-import { useParams,useNavigate } from "react-router-dom"
-import { Button,FormControlLabel,Checkbox, TextField, FormGroup, MenuItem,IconButton} from "@mui/material"
+import history from "../../history"
+import {  useParams,
+          useNavigate } from "react-router-dom"
+import {  Button,
+          FormControlLabel,
+          Checkbox, 
+          TextField, 
+          FormGroup, 
+          MenuItem,
+          IconButton} from "@mui/material"
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { PageType } from "../core/constants"
-import { MenuButton,Menu } from "@mui/joy"
-import theme from "../theme"
-import checkResult from "../core/checkResult"
-import RoleList from "../components/RoleList"
+import { PageType } from "../../core/constants"
+import {Menu } from "@mui/joy"
+import theme from "../../theme"
+import checkResult from "../../core/checkResult"
+import RoleList from "../../components/RoleList"
 import { Add, Visibility } from "@mui/icons-material"
 import { Dropdown } from "react-bootstrap"
-import { RoleType } from "../core/constants"
-import Paths from "../core/paths"
+import { RoleType } from "../../core/constants"
+import Paths from "../../core/paths"
 import MediaQuery from "react-responsive"
-import { border } from "@mui/system"
-import { checkmarkStyle } from "../styles/styles"
+import PicturePageForm from "../../components/PicturePageForm"
+import { checkmarkStyle } from '../../styles/styles'
+import {ReactTinyLink} from 'react-tiny-link'
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
@@ -62,18 +78,30 @@ function EditorContainer({currentProfile}){
       setCommentable(page.commentable)
       dispatch(setHtmlContent(page.data))
     }
-    const saveNewPage=(onEnd)=>{ const params ={
-      profileId: currentProfile.id,
-      data: htmlContent,
-      title: title,
-      privacy: privacy,
-      approvalScore:0,
-      commentable: commentable,
-      readers:[],
-      commenters:[],
-      editors:[],
-      writers:[],
-      type: 'html/text'
+    const saveNewPage=(onEnd)=>{ 
+      let href = window.location.href.split("/")
+      let type = href[href.length-1]
+      if(type=="link"){
+        type = PageType.link
+      }else if(type=="text"){
+        type = PageType.text
+      }else if(type=="image"){
+        type = PageType.image
+      }else{
+        type = PageType.text
+      }
+        const params ={
+          profileId: currentProfile.id,
+          data: htmlContent,
+          title: title,
+          privacy: privacy,
+          approvalScore:0,
+          commentable: commentable,
+          readers:[],
+          commenters:[],
+          editors:[],
+          writers:[],
+          type: type
     }
     dispatch(createPage(params)).then((result)=>{
         checkResult(result,payload=>{
@@ -117,11 +145,13 @@ function EditorContainer({currentProfile}){
               const commenters = newRoles.filter(role => role.role == RoleType.commenter).map(role=>role.profile.userId)
               const editors = newRoles.filter(role => role.role == RoleType.editor).map(role=>role.profile.userId)
               const writers = newRoles.filter(role => role.role == RoleType.writer).map(role=>role.profile.userId)
-              let params ={page:page,
+              let params ={
+                page:page,
                 readers,
                 commenters,
                 editors,
-                writers}
+                writers
+              }
               dispatch(saveRolesForPage(params))
               .then(result=>checkResult(result,payload=>{
                   const {page}=payload
@@ -164,23 +194,41 @@ function EditorContainer({currentProfile}){
     
     
   
-        let contentDiv = (<RichEditor initialContent={""}/>)
-      
+        
+    
+      const contentDiv = ()=>{
         if(currentProfile){
           if(ePage){
               if(ePage.type==PageType.text){
-                  contentDiv = (<RichEditor initialContent={htmlContent}/>)
+                  return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)
               }else if(ePage.type==PageType.picture){
                 
-                  contentDiv = (<div className="image">
+                  return (<div className="image">
                     <img src={ePage.data} alt={ePage.data}/>
                     </div>)
-                }else{
-                  contentDiv = (<RichEditor initialContent={htmlContent}/>)
-              }
+              }else if(ePage.type == PageType.link){
+
+                  return(<div className="link">
+                      <ReactTinyLink />
+                  </div>)
+              }else{
+                  return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)}
+            }else{
+
+              
+            let href = window.location.href.split("/")
+            let last = href[href.length-1]
+            if(last.toUpperCase()=="image".toUpperCase()||last.toUpperCase()=="link".toUpperCase()){
+              return (<PicturePageForm getUrl={url=>{
+                dispatch(setHtmlContent(url))
+              }}/>)
+            }else{
+              return(<div id="editor"><RichEditor initialContent={""}/></div>)
+            }
           }
             
           }
+        }
       const [anchorEl,setAnchorEl]=useState(null)
       const addBtn = ()=>{
         return editingPage?
@@ -233,44 +281,17 @@ function EditorContainer({currentProfile}){
         return(
           <div id="EditorContainer">
             <div >
-            <div id="editor">
+            <div >
                 
-                {contentDiv}
+                {contentDiv()}
                 
               </div>
-              <MediaQuery maxWidth={"1000px"}>
-              <div id="post-button-row">
-                  <Button
-                  onClick={()=>onSavePress(()=>{
-                  if(ePage==null){
-                    setPrivacy(false)
-                    saveNewPage((page)=>{
-                      dispatch(setPageInView({page:ePage}))
-                      navigate(Paths.page.createRoute(page.id))
-                    })
-                  }else{
-                    setPrivacy(false)
-                    onSavePress(()=>{
-                      dispatch(setPageInView({page:ePage}))
-                      navigate(Paths.page.createRoute(ePage.id))
-                    })
-                    }
-                  })}
-                  style={{backgroundColor:theme.palette.secondary.main,
-                          color:theme.palette.primary.contrastText,
-                          width: "20em",
-                          padding:"2em",
-                          marginRight:'2em'
-                        }
-                }
-                  >Post</Button>
-                </div>
-                </MediaQuery>
+           
               </div>
              
               <div className="right-side-bar">
                 
-                <FormGroup className="form" >
+                <FormGroup style={{marginBottom:"3em"}}className="form" >
                  <TextField onChange={(e)=>setTitle(e.target.value.trimEnd().trimStart())} value={title} label="Title"/>
                  
                   <FormControlLabel 
@@ -294,6 +315,35 @@ function EditorContainer({currentProfile}){
                   {editingPage?<IconButton onClick={()=>{navigate(`/page/${editingPage.id}`)}}><Visibility/></IconButton>:(<div></div>)}
                  
                     </div>
+                    
+              <div id="post-button-row">
+                  <Button
+                  onClick={()=>onSavePress(()=>{
+                  if(ePage==null){
+                    setPrivacy(false)
+                    saveNewPage((page)=>{
+                      dispatch(setPageInView({page:ePage}))
+                      navigate(Paths.page.createRoute(page.id))
+                    })
+                  }else{
+                    setPrivacy(false)
+                    onSavePress(()=>{
+                      dispatch(setPageInView({page:ePage}))
+                      navigate(Paths.page.createRoute(ePage.id))
+                    })
+                    }
+                  })}
+                  style={{backgroundColor:theme.palette.secondary.main,
+                          color:theme.palette.primary.contrastText,
+                          width: "100%",
+                          marginTop: "2em",
+                          padding:"2em",
+                          
+                        }
+                }
+                  >Post</Button>
+                </div>
+           
                     {deleteDiv}
                     </FormGroup>
                     {ePage?<RoleList
@@ -305,32 +355,6 @@ function EditorContainer({currentProfile}){
                                     } />
                                 :(<div></div>)}
                     <div>
-                    <MediaQuery minWidth={"1000px"}>
-              <div id="post-button-row">
-                  <Button
-                  onClick={()=>
-                  { if(ePage==null){
-                    saveNewPage((page)=>{
-                      dispatch(setPageInView({page}))
-                      navigate(Paths.page.createRoute(page.id))
-                    })
-                  }else{
-                    onSavePress((page)=>{
-                      dispatch(setPageInView({page}))
-                      navigate(Paths.page.createRoute(page.id))
-                    })
-                  }}}
-                  style={{backgroundColor:theme.palette.secondary.main,
-                          color:theme.palette.primary.contrastText,
-                          width: "20em",
-                          padding:"2em",
-                          marginRight:'2em'
-                        }
-                }
-                  >Post</Button>
-                </div>
-                </MediaQuery>
-      
       <Dialog
         open={open}
         onClose={handleClose}
@@ -353,7 +377,6 @@ function EditorContainer({currentProfile}){
         </DialogActions>
       </Dialog>
     </div>
-
               </div>
           </div>
         )

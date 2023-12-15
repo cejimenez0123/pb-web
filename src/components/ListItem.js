@@ -1,24 +1,20 @@
 import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPageInView } from "../actions/PageActions";
 import {deleteBook, setBookInView} from "../actions/BookActions"
-
 import {setLibraryInView,deleteLibrary} from "../actions/LibraryActions"
 import { useNavigate } from "react-router-dom";
 import { setBooksToBeAdded } from "../actions/BookActions";
 import Dropdown from '@mui/joy/Dropdown';
-import IconButton from '@mui/joy/IconButton';
 import Menu from '@mui/joy/Menu';
-import useAuth from "../core/useAuth";
 import MenuButton from '@mui/joy/MenuButton';
 import MenuItem from '@mui/joy/MenuItem';
 import MoreVert from '@mui/icons-material/MoreVert'
-import { Add } from "@mui/icons-material";
 import { createFollowBook } from "../actions/UserActions";
 import theme from "../theme";
+import checkResult from "../core/checkResult";
 
-function ListItem({type,id,title,item}) {
+function ListItem({type,id,title,item,onDelete}) {
     const [showPreview,setShowPreview] = useState(false)
     const currentProfile = useSelector(state => state.users.currentProfile)
     const navigate = useNavigate()
@@ -61,11 +57,22 @@ function ListItem({type,id,title,item}) {
         switch(type){
             case 'book':{
                 const params = { book:item}
-                dispatch(deleteBook(params))
+                dispatch(deleteBook(params)).then(result=>{
+                    checkResult(result,payload=>{
+                        onDelete()
+                    },err=>{
+
+                    })
+                })
             }
             case 'library':{
                 const params = { library:item}
-                dispatch(deleteLibrary(params))
+                dispatch(deleteLibrary(params)).then(result=>checkResult(result,
+                    payload=>{
+                        onDelete()
+                    },err=>{
+
+                    }))
             }
         }
     }

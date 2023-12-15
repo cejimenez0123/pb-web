@@ -7,6 +7,7 @@ import { fetchPage } from "../actions/PageActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/BookView.css"
+import "../App.css"
 import {Button, IconButton} from "@mui/material"
 import theme from "../theme"
 import { setBookmarkLibrary,
@@ -22,6 +23,7 @@ import debounce from "../core/debounce"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import checkResult from "../core/checkResult"
+import { iconStyle } from "../styles/styles"
 function BookViewContainer({book}){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -80,23 +82,22 @@ function BookViewContainer({book}){
         const bookId =pathParams["id"]
         if(book && book.id == bookId){
             fetchFollows()
-            checkBookPermission(book)
         }else{
             const params = {id:bookId}
             dispatch(fetchBook(params)).then(result=>{
                 checkResult(result,payload=>{
                     const {book}=payload
                     fetchFollows()
-                    checkBookPermission(book)
                 },(er)=>{})
             })
         }
     }
+
     useEffect(()=>{
         if(book){
             checkBookPermission(book)
         }
-    },[])
+    },[book,currentProfile])
     const checkBookPermission= (bookItem)=>{
        
         if( bookItem.privacy){
@@ -159,8 +160,7 @@ function BookViewContainer({book}){
         setHasMore(false)
     }}
     useEffect(()=>{
-     getBook()
-
+        getBook()
     },[])
     useEffect(()=>{
         if(bookmarkLibrary && book){
@@ -274,9 +274,18 @@ function BookViewContainer({book}){
             })
         }
     }
-    let editDiv = (<div>
-
-    </div>)
+    let editDiv =() => {if(followedBooks && currentProfile && book && book.profileId == currentProfile.id){
+        return(<Button
+        style={iconStyle}
+                        key={book.id}
+                        onClick={(e)=>{
+                            setBookInView({book})
+                            navigate(`/book/${book.id}/edit`)
+                    }}><Settings/></Button>)
+                }else{
+                    return(<div></div>)
+                }
+    }
     const followDiv = ()=>{
         return following?(
             <Button variant="outlined" 
@@ -293,13 +302,7 @@ function BookViewContainer({book}){
        ()=>debounce(followBookClick(),10)
    }>Read</Button>)}
 
-    if(followedBooks && currentProfile && book && book.profileId == currentProfile.id){
-        editDiv = (<Button
-                        key={book.id}
-                        onClick={(e)=>{
-                            navigate(`/book/${book.id}/edit`)
-                    }}><Settings/></Button>)
-    }
+   
            
 
 
@@ -311,7 +314,9 @@ function BookViewContainer({book}){
         let writer =book.writers.find(id=>currentProfile.userId==id)
         let editor = book.editors.find(id=>currentProfile.userId==id)
        if(Boolean(owner)||Boolean(writer)||Boolean(editor)){
-        return (<IconButton onClick={()=>{
+        return (<IconButton 
+            style={iconStyle}
+            onClick={()=>{
         setBookInView({book})
         navigate(`/book/${book.id}/add`)
 
@@ -321,28 +326,33 @@ function BookViewContainer({book}){
     }}
     return(<div></div>)
 }
+
+const bookInfo = ()=>{
+    return(<div  className="info view">
+            <div className="">
+                <h4 className="" > {book.title}</h4>
+                    <div className="">
+                        <h6> {book.purpose}</h6>
+                    </div>
+            </div>
+            <div className="button-row">
+            {followDiv()}
+            {addBtn()}
+            {editDiv()}
+            {bookmarked?<IconButton style={iconStyle} onClick={onBookmarkPage}><BookmarkIcon/></IconButton>:
+            <IconButton style={iconStyle} disabled={!currentProfile}onClick={onBookmarkPage}><BookmarkBorderIcon/></IconButton>}  
+            </div>
+    </div>)
+}
   if(book && !error){
 
-    return(<div className="evenly container view">
+    return(<div className="screen">
           
         <div className="left-bar">
-            <div className="info view">
-            <h5> {book.title}</h5>
-            <div className="purpose">
-            <h6> {book.purpose}</h6>
            
-            </div>
-            {followDiv()}
-            <div>
+            {bookInfo()}
+            
 
-            <div className="button-row">
-            {addBtn()}
-            {editDiv}
-            {bookmarked?<IconButton onClick={onBookmarkPage}><BookmarkIcon/></IconButton>:
-            <IconButton disabled={!currentProfile}onClick={onBookmarkPage}><BookmarkBorderIcon/></IconButton>}
-                   </div>
-                   </div>
-            </div>
         </div>
         <div className="right-bar">
            <div className="content-list dashboard">

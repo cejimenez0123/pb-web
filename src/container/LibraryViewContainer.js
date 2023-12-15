@@ -10,6 +10,7 @@ import {updateHomeCollection,
         deleteFollowLibrary,
         fetchFollowLibraryForProfile,
     fetchProfile} from "../actions/UserActions"
+    import BookListItem from "../components/BookListItem"
 import { fetchLibrary, setLibraryInView } from "../actions/LibraryActions"
 import DashboardItem from "../components/DashboardItem"
 import "../styles/Library.css"
@@ -21,25 +22,8 @@ import "../App.css"
 import checkResult from "../core/checkResult"
 import Add from "@mui/icons-material/Add"
 import { IconButton } from "@mui/joy"
-// const useStyles = makeStyles({
-//     pokemonCardsArea: {
-//       paddingTop: "30px",
-//       paddingLeft: "15%",
-//       paddingRight: "15%",
-//       width: "100%"
-//     },
-//     pokemonImage: {
-//       height: "160px",
-//       width: "160px"
-//     },
-//     progress: {
-//       position: "fixed",
-//       top: "50%",
-//       left: "50%",
-//       marginTop: "-100px",
-//       marginLeft: "-100px"
-//     }
-//   });
+import uuidv4 from "../core/uuidv4"
+import { iconStyle } from "../styles/styles"
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -48,6 +32,8 @@ function LibraryViewContainer(props){
     const libraryInView = useSelector(state=>state.libraries.libraryInView)
     const followedLibraries = useSelector(state=>state.users.followedLibraries)
     const [following,setFollowing]= useState(null)
+    const [books,setBooks]=useState([])
+    const [pages,setPages]=useState([])
     const [itemsInView,setItemsInView] = useState([])
     const [hasMore,setHasMore] = useState(false)
     const [error,setError]= useState(false)
@@ -57,24 +43,23 @@ function LibraryViewContainer(props){
     useEffect(()=>{
       
         const id =  pathParams["id"]
-        if(libraryInView==null || (libraryInView!=null && libraryInView.id !== id)){
-           
-            const params = {id: id}
-            dispatch(fetchLibrary(params)).then(result=>{
+        
+            dispatch(fetchLibrary(pathParams)).then(result=>{
                 checkResult(result,payload=>{
                     const {library } = payload
-                    checkLibraryPermission(library)
                     isFollowing()
                 },err=>{
 
                 }) 
             })
-        }else{
-            checkLibraryPermission(libraryInView)
-            isFollowing()
-        }
+    
         
     },[])
+    useEffect(()=>{
+        if(Boolean(libraryInView)){
+                checkLibraryPermission(libraryInView)
+        }   
+    },[libraryInView,currentProfile])
     useEffect(()=>{
         isFollowing()
     },[libraryInView])
@@ -97,7 +82,7 @@ function LibraryViewContainer(props){
         }
     }
     const checkLibraryPermission= (libraryItem)=>{
-        if( libraryItem.privacy){
+        if(libraryItem.privacy){
             if(currentProfile){
                 let founa = libraryItem.readers.find(id=>currentProfile && id==currentProfile.userId)
                 let founb=  libraryItem.commenters.find(id=> currentProfile && id==currentProfile.userId)
@@ -107,14 +92,15 @@ function LibraryViewContainer(props){
                  
                 if(founa || founb || founc || found||owner) {
                     setError(false)
-                    fetchData(libraryItem)
+                 
                     const profileParams = {
                         id:  libraryItem.profileId
                     }
                     dispatch(fetchProfile(profileParams))
-                  
+                    fetchData(libraryItem)
                 }else{
                     setError(true)
+                    setErrorMessage("Not for your view")
                 }
             }else{
                 setError(true)
@@ -123,11 +109,12 @@ function LibraryViewContainer(props){
                 
             }else{
                 setError(false)
-                fetchData(libraryItem)
+               
                 const profileParams = {
                         id:  libraryItem.profileId
                     }
                 dispatch(fetchProfile(profileParams)) 
+                fetchData(libraryItem)
             }
     }
    
@@ -139,7 +126,7 @@ function LibraryViewContainer(props){
                     button = (<Button onClick={()=>{
                         navigate(`/library/${libraryInView.id}/edit`)
                     }}>
-                    <SettingsIcon style={{color:"black"}}/>
+                    <SettingsIcon style={iconStyle}/>
                 </Button>)
                 }
                
@@ -171,12 +158,12 @@ function LibraryViewContainer(props){
             let writer =libraryInView.writers.find(id=>currentProfile.userId==id)
             let editor = libraryInView.editors.find(id=>currentProfile.userId==id)
            if(Boolean(owner)||Boolean(writer)||Boolean(editor)||libraryInView.writingIsOpen){
-            return (<IconButton onClick={()=>{
+            return (<IconButton  onClick={()=>{
             setLibraryInView({library:libraryInView})
             navigate(`/library/${libraryInView.id}/add`)
     
            }}>
-                <Add/>
+                <Add style={iconStyle}/>
             </IconButton>)
         }}
         return(<div></div>)
@@ -252,7 +239,8 @@ function LibraryViewContainer(props){
     }
     
  
-    const getPages = (libraryItem) =>{
+    const getPages = (libraryItem,then) =>{
+        setPages([])
         if(libraryItem){
             setHasMore(true)
             libraryItem.pageIdList.forEach(pageId=>{
@@ -263,7 +251,8 @@ function LibraryViewContainer(props){
                             if(page){
                                 const story ={page:page}
                                 if(!itemsInView.includes(story)){
-                                setItemsInView(prevState=>[...prevState,story])
+                                // setItemsInView(prevState=>[...prevState,story])
+                                setPages(prevState=>[...prevState,story])
                                 }
                             }
                             setHasMore(false)
@@ -273,19 +262,34 @@ function LibraryViewContainer(props){
                     })
                 })
             })
+            
         }else{
             setError(true)
             setErrorMessage('Library is Null')
         }
     }
     const fetchData = (libraryItem) =>{
-        setItemsInView([])
         getPages(libraryItem)
         getBooks(libraryItem)
+
     }
+    useEffect(()=>{   
+        let items = []
+        books.forEach(book=>{
+            let found = items.find(item=>item.book && item.book.id == book.book.id)
+            if(!Boolean(found)){
+                items.push(book)
+            }})
+        pages.forEach(page=>{
+            let found = items.find(item=>item.book && item.book.id == page.page.id)
+            if(!Boolean(found)){
+                items.push(page)
+            }})
+        setItemsInView(items)}
+    ,[pages,books])
     const getBooks=(libraryItem)=>{
+        setBooks([])
             if(libraryItem){
-                if(libraryItem.bookIdList.length>0){
                 setHasMore(true)
                 libraryItem.bookIdList.forEach(bookId=>{
                     dispatch(fetchBook({id:bookId})).then(result=>{
@@ -297,9 +301,9 @@ function LibraryViewContainer(props){
                                         checkResult(result,payload=>{
                                             const {page}=payload
                                             const story = {book:book,page:page}
-                                            let found = itemsInView.includes(story)
+                                            let found = itemsInView.find(item=>(item && item.book) && item.book.id===story.book.id)
                                             if(!Boolean(found)){
-                                            setItemsInView(prevState=>[...prevState,story])
+                                                setItemsInView(prevState=>[...prevState,story])
                                             }
                                             setHasMore(false)
                                             setError(false)
@@ -311,17 +315,23 @@ function LibraryViewContainer(props){
                                 })
                             }else{
                                 const story = {book:book}
-                                setItemsInView(prevState=>[...prevState, story])
+                               
+                   
+                                setBooks(prevState=>[...prevState,story])
+                               
                                 setHasMore(false)
-                            }
+                      
+                                }
+                              
+                          
                         },err=>{
                             
                             setErrorMessage("Error "+err.message)
                         })
                     })
-                })
+                
                 setError(false)
-            }
+                })
         }else{
             setError(true)
             setErrorMessage("Library null")
@@ -336,13 +346,14 @@ function LibraryViewContainer(props){
             </h1>
         </div>)
     
-            if(itemsInView.length>0 &&(libraryInView &&(libraryInView.bookIdList.length>0 || libraryInView.pageIdList.length>0))){
+            if(itemsInView.length>0){
+               
             return(<div className="content-list">
                 <div className="">
                 <InfiniteScroll 
                 dataLength={itemsInView.length}
                 next={()=>checkLibraryPermission(libraryInView)}
-                hasMore={itemsInView.length<[...libraryInView.bookIdList,...libraryInView.pageIdList].length} // Replace with a condition based on your data source
+                hasMore={hasMore} 
                 loader={<p>Loading...</p>}
                 endMessage={<div  className="no-more-data"><p>No more data to load.</p></div>}
                 scrollableTarget="scrollableDiv"
@@ -353,12 +364,15 @@ function LibraryViewContainer(props){
                         
                             if(story.page){
                             
-                                return(<div key={story.page.id}>
+                                return(<div key={story.page.id+"_"+uuidv4()}>
                                 
                                 <DashboardItem book={story.book} library={libraryInView}
                                                 page={story.page}/>
-                            </div>)}else{
-                                return(<div>{JSON.stringify(story.book)}</div>)
+                            </div>)}else if(story.book){
+                                return(<div key={story.book.id+"_"+uuidv4()}>
+                                    
+                                    <BookListItem book={story.book}/>
+                                    </div>)
                             }
                     })}
                 </div>
@@ -382,8 +396,8 @@ function LibraryViewContainer(props){
         {contentList()}
         </div>
         <div className="right-bar">
-      
-                {libraryInfo()}
+
+        {libraryInfo()}
            
         </div>
         </div>

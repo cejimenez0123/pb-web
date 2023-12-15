@@ -13,12 +13,12 @@ import { IconButton } from "@mui/material"
 import { PageType } from "../core/constants"
 import checkResult from "../core/checkResult"
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import CreateIcon from '@mui/icons-material/Create';
-import ImageIcon from '@mui/icons-material/Image';
+import { btnStyle } from "../styles/styles"
 import debounce from "../core/debounce"
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import { Button } from "@mui/joy"
-import { appendLibraryContent, fetchLibrary, updateLibraryContent } from "../actions/LibraryActions"
+import theme from "../theme"
+import { appendLibraryContent, fetchLibrary } from "../actions/LibraryActions"
 function AddItemsToLibraryContainer(){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -160,11 +160,11 @@ function AddItemsToLibraryContainer(){
     const addItemItemToIdList =(story)=>{
             if(story.type=="page"){
                 const list = [...libraryInView.pageIdList,story.item.id]
-                console.log(JSON.stringify(list))
+            
                 saveLibrary(libraryInView.bookIdList,list)
             }else if(story.type=="book"){
                 const list = [...libraryInView.bookIdList,story.item.id]
-                console.log(JSON.stringify(list))
+            
                 saveLibrary(list,libraryInView.pageIdList)
             }
 
@@ -172,31 +172,38 @@ function AddItemsToLibraryContainer(){
     const pageList =()=>{
         if(libraryInView!=null){
             if(listItems.length>0){
+                const btnStyle = {backgroundColor:"#50874F"}
                 return(
                     <div>
                         <div>
-                            <div>
+                            <div className="inner">
 
-                            </div>
-                            <div>
-                                <IconButton onClick={()=>{
+                           
+                            <div className="btn-row" >
+                                <div></div>
+                                <div>
+                                <IconButton  onClick={()=>{
                                     setSortAlpha(!sortAlpha)
                                     setSortOrderAlpha()
                                 }}>
-                                    <SortByAlphaIcon/>
+                                    
+                                    <SortByAlphaIcon style={{color:theme.palette.primary.contrastText}}/>
                                 </IconButton>
-                                {sortTime?<Button onClick={()=>{
+                                
+                                {sortTime?<Button style={btnStyle} onClick={()=>{
                                 setSortTime(false)
                                 setSortOrderTime()
                             }}>
                                     New to Old
                             </Button>:
-                            <Button onClick={()=>{
+                            <Button style={btnStyle} onClick={()=>{
                                 setSortTime(true)
                                 setSortOrderTime()
                             }}
                             >Old to New</Button>}
                             </div>
+                            </div>
+                        </div>
                         </div>
                        <InfiniteScroll 
                             dataLength={listItems.length}
@@ -217,11 +224,13 @@ function AddItemsToLibraryContainer(){
                         <a className="title">
                             <h6>{capitalizedWord}:{story.item.title}</h6>
                         </a>
+                        <div className="button-row">
                         <IconButton onClick={()=>{
                             debounce(addItemItemToIdList(story),5)
                             }}>
                             <Add/>
                     </IconButton>
+                    </div>
         </div> 
         </div>
             
@@ -247,12 +256,12 @@ function AddItemsToLibraryContainer(){
         
     
     if(libraryInView){
-    return(<div className="container">
+    return(<div className="screen">
           
-        <div className="left-side-bar">
+        <div className="left-bar">
             <div className="info create">
         
-            <h5> {libraryInView.title}</h5>
+            {libraryInView.name.length>0?<h5> {libraryInView.name}</h5>:<h5>Untitled</h5>}
             <div className="purpose">
             <h6 > {libraryInView.purpose}</h6>
             </div>  
@@ -265,11 +274,10 @@ function AddItemsToLibraryContainer(){
             </div>
             
         </div>
-        <div className="main-bar">
+        <div className="right bar">
             {pageList()}
         </div>
-        <div className="right-side-bar">
-        </div>
+       
 
     </div>)}else{
 
@@ -277,41 +285,5 @@ function AddItemsToLibraryContainer(){
             Loading
         </div>)
     }
-}
-function PageItem({page,setPageIdList}){
-    const [show,setShow]=useState(false)
-    let pageDataElement = (<div></div>)
-    switch(page.type){
-        case PageType.text:
-            pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
-        break;
-        case PageType.picture:
-            pageDataElement = <img className='dashborad-content' src={page.data} alt={page.title}/>
-        break;
-        case PageType.video:
-            pageDataElement = <video src={page.data}/>
-        break;
-        default:
-            pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
-        break;
-    }
-    return(<div>
-
-          
-        <div className="list-item">
-            <a className="title"><h6 onClick={()=>{setShow(!show)}}>{page.title}</h6>
-            </a>
-            
-             <IconButton onClick={()=>{
-                setPageIdList()
-            }
-
-            }><Add/></IconButton>
-            
-        </div>
-        <div style={{display: show? "":"none"}}>
-            {pageDataElement}
-        </div>
-        </div>)
 }
 export default AddItemsToLibraryContainer

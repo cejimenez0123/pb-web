@@ -34,18 +34,23 @@
 .two-panel{
     display: flex;
     flex-direction: column-reverse;
+    height: 100%;
 }
+
 }
 @media (min-width: 800px) {
     .two-panel{
         display: grid;
-        grid-template-columns: 70% 30%;
+        grid-template-columns: 60% 40%;
         margin-top: 3em;
+        height: 100vw;
+        
+        padding-bottom: 2em;
     }
     .info.view{
        
         margin-right: 1em;
-    
+        
         min-height: 15em;
         min-width:15em;
         /* background-color: #a3b18a58; */
