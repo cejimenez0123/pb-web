@@ -5,14 +5,14 @@ import { PageType } from '../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
 import { Dropdown,Menu ,MenuItem,} from '@mui/joy'
 import { useNavigate } from 'react-router-dom'
-import { Button, IconButton } from '@mui/material'
+import { Button } from '@mui/material'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import theme from '../theme'
 import { updateLibraryContent } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
 import Paths from '../core/paths'
-import { ReactTinyLink } from 'react-tiny-link'
+import LinkPreview from './LinkPreview'
   let size= {width: window.innerWidth,height: window.innerHeight}
 
 function DashboardItem({page,book}) {
@@ -65,32 +65,21 @@ const hanldeClickComment=(pageItem)=>{
     const pageDataElement=()=>{
         if(page){
         
-    if(page.type==PageType.text){
+    if(page.type===PageType.text){
 
         return( <div>
             <div ref={
             (el)=>setContentItemEl(el)
         } className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
-        </div>)   }else if(page.type==PageType.picture){
-    }
-    if(page.type==PageType.picture){
+        </div>)   
+    }else if(page.type===PageType.picture){
         return(<img className='dashboard-content image' src={page.data} alt={page.title}/>)
-    }else if(page.type==PageType.video){
-        return(<iframe src={page.data}/>)
-    }else if(page.type == PageType.link){
-        return(<ReactTinyLink 
-            style={{maxWidth:"100%",marginTop:"2em"}}
-            requestHeaders={{
-                "Access-Control-Allow-Origin": "*",
-            //     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-            }}
-           
-            cardSize="large"
-            showGraphic={true}
-            maxLine={2}
-            minLine={2}
-            url={page.data}
-            />)
+    }else if(page.type === PageType.link){
+        return(<div className='dashboard-content link'>
+            <LinkPreview
+        url={page.data}
+            />
+            </div>)
     }else{
         return(<div className='empty'>
         Loading...

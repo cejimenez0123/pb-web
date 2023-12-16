@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react';
+import Enviroment from '../core/Enviroment';
 
-function LinkPreview({ url }) {
+function LinkPreview({ url,size }) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
+        const headers = {
+          "Access-Control-Allow-Origin": "*",
+        };
+        
+        const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
+          headers: headers
+        }
+        )
+        ;
         const data = await response.text();
 
         const isYouTubeVideo = isYouTubeURL(url);
@@ -81,12 +90,13 @@ function LinkPreview({ url }) {
       </div>
     );
   }
-
+ 
   return (
-    <div onClick={handleClick} style={{ cursor: 'pointer' }}>
-      <h3>{previewData.title}</h3>
+    <div className="link-preview" onClick={handleClick} style={{ cursor: 'pointer' }}>
+      
+      {previewData.image && <img src={previewData.image} style={{width:"100%"}} alt="Link Preview" />}
       <p>{previewData.description}</p>
-      {previewData.image && <img src={previewData.image} alt="Link Preview" />}
+      <h4 className='title'>{previewData.title}</h4>
     </div>
   );
 }

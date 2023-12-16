@@ -39,7 +39,7 @@ import Paths from "../../core/paths"
 import MediaQuery from "react-responsive"
 import PicturePageForm from "../../components/PicturePageForm"
 import { checkmarkStyle } from '../../styles/styles'
-import {ReactTinyLink} from 'react-tiny-link'
+import LinkPreview from "../../components/LinkPreview"
 function EditorContainer({currentProfile}){
         const pathParams = useParams()
         const dispatch = useDispatch()
@@ -159,7 +159,8 @@ function EditorContainer({currentProfile}){
                   setPageInfo(page)
                   window.alert("Saved")
                   if(onEnd){
-                  onEnd(page)}
+                  onEnd(page)
+                }
                 
 
               },err=>{
@@ -199,17 +200,18 @@ function EditorContainer({currentProfile}){
       const contentDiv = ()=>{
         if(currentProfile){
           if(ePage){
-              if(ePage.type==PageType.text){
+              if(ePage.type===PageType.text){
                   return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)
-              }else if(ePage.type==PageType.picture){
+              }else if(ePage.type===PageType.picture){
                 
                   return (<div className="image">
                     <img src={ePage.data} alt={ePage.data}/>
                     </div>)
-              }else if(ePage.type == PageType.link){
-
-                  return(<div className="link">
-                      <ReactTinyLink />
+              }else if(ePage.type === PageType.link){
+                  return(<div id="editor" className="link">
+                      <LinkPreview
+                        url={ePage.data}
+                      />
                   </div>)
               }else{
                   return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)}
@@ -304,7 +306,7 @@ function EditorContainer({currentProfile}){
             
                   <Button style={{backgroundColor:theme.palette.secondary.main,
                                   color:theme.palette.secondary.contrastText}}
-                          onClick={(e)=>onSavePress(()=>{
+                          onClick={(e)=>onSavePress((page)=>{
                  
             history.replace(`/page/${ePage.id}/edit`)
                   })} className="">
@@ -322,14 +324,14 @@ function EditorContainer({currentProfile}){
                   if(ePage==null){
                     setPrivacy(false)
                     saveNewPage((page)=>{
-                      dispatch(setPageInView({page:ePage}))
+                      dispatch(setPageInView({page:page}))
                       navigate(Paths.page.createRoute(page.id))
                     })
                   }else{
                     setPrivacy(false)
-                    onSavePress(()=>{
-                      dispatch(setPageInView({page:ePage}))
-                      navigate(Paths.page.createRoute(ePage.id))
+                    onSavePress((page)=>{
+                      dispatch(setPageInView({page:page}))
+                      navigate(Paths.page.createRoute(page.id))
                     })
                     }
                   })}

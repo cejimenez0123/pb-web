@@ -14,6 +14,7 @@ import CommentInput from "./CommentInput"
 import checkResult from "../core/checkResult"
 import Paths from "../core/paths"
 import "../styles/PageView.css"
+import LinkPreview from "./LinkPreview"
 export default function PageViewItem({page}) {
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
@@ -81,6 +82,9 @@ switch(page.type){
     case PageType.video:
         pageDataElement = <video src={page.data}/>
     break;
+    case PageType.link:
+        pageDataElement = <div className=" "><LinkPreview url={page.data}/></div>
+        break;
     default:
         pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
     break;

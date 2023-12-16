@@ -2,8 +2,7 @@ const PageType  = {
     text: "html/text",
     picture:"image",
     video:"video",
-    link:"link",
-
+    link:"link"
 }
 
 const RoleType = {

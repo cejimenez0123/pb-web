@@ -1,20 +1,24 @@
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import { FormGroup, Button,TextField } from "@mui/material"
+import {    FormGroup,
+            Button,
+            TextField } from "@mui/material"
 import VisuallyHiddenInput from '../components/VisualHiddenInput';
 import theme from "../theme"
-import { useEffect, useState } from 'react';
+import {    useEffect, 
+            useState } from 'react';
 import { uploadPicture } from '../actions/UserActions';
 import { useDispatch } from 'react-redux';
 import {  saveButtonStyle } from '../styles/styles';
 import checkResult from '../core/checkResult';
 import isValidUrl from '../core/isValidUrl';
 import debounce from '../core/debounce';
-import { ReactTinyLink } from 'react-tiny-link'
+import ErrorBoundary from '../ErrorBoundary';
+import LinkPreview from './LinkPreview';
+
+
 function PicturePageForm({getUrl}){
     const dispatch = useDispatch()
     const [url,setUrl]= useState("")
-    const [error,setError] = useState(false)
-
     useEffect(()=>{
         getUrl(url)
     },[])
@@ -22,34 +26,22 @@ function PicturePageForm({getUrl}){
             setUrl(text) 
             getUrl(text)
     }
-   
-    
-    const imgDiv =(path)=>{
-        if(path.length>0){
+    const ImgDiv =()=>{
+        if(url.length>0){
             let href = window.location.href.split("/")
             const last = href[href.length-1]
             if(last.toUpperCase()=="link".toUpperCase()){
-                if(isValidUrl(path)){
-                    return(<ReactTinyLink
-                        style={{maxWidth:"100%",marginTop:"2em"}}
-                        requestHeaders={{
-                            "Access-Control-Allow-Origin": "*",
-                        //     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-                        }}
-                       
-                        cardSize="large"
-                        showGraphic={true}
-                        maxLine={2}
-                        minLine={2}
-                        url={path}
-                    />)
+                if(isValidUrl(url)){    
+                    return(
+                    <ErrorBoundary>
+                        <LinkPreview url={url} />
+                    </ErrorBoundary>)
             }
-           
             }else{
-                return(<img src={path} alt={""} />)
+                return(<img src={url} alt={""} />)
         }
         }else{
-            return(<img src={path} alt={""} />)
+            return(<img src={url} alt={""} />)
         }
     }
     const uploadBtn =()=>{
@@ -73,7 +65,7 @@ onInput={(e)=>{
     dispatch(uploadPicture(params)).then((result) => 
         checkResult(result,payload=>{
             const href = payload["url"]
-            console.log(`dss`+href)
+           
             handleChange(href)
     },err=>{
 
@@ -84,11 +76,10 @@ onInput={(e)=>{
 </Button>
 </div>
 )
-}else{
-    return(<div></div>)
-}
-        
+    }else{
+        return(<div></div>)
     }
+}
     
    
     
@@ -97,16 +88,14 @@ onInput={(e)=>{
         
         <FormGroup style={{backgroundColor:theme.palette.primary.light}}className='form'>
             <TextField  
-                   
+                    value={url}
                     style={{backgroundColor:"white",borderRadius:"8px",maxWidth:"100%"}}
                     label="URL"
                     placeholder="URL" 
-                    onChange={(e)=>debounce(handleChange(e.target.value),10)}/>
-          
-                       
-
+                    onChange={(e)=>debounce(handleChange(e.target.value),20)}
+                />
             {uploadBtn()}
-            {imgDiv(url)}
+            {ImgDiv(url)}
             
             </FormGroup>
     
