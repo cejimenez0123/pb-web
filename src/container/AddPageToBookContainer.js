@@ -6,31 +6,32 @@ import { useParams,useNavigate } from "react-router-dom"
 import { useEffect ,useState} from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { Add } from "@mui/icons-material"
-import { IconButton } from "@mui/material"
+import { IconButton,Menu,MenuItem } from "@mui/material"
 import { updateBookContent } from "../actions/BookActions"
-import { canAddToItem } from "../core/constants"
-import { PageType } from "../core/constants"
 import checkResult from "../core/checkResult"
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import debounce from "../core/debounce"
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import { Button } from "@mui/joy"
-import theme from "../theme"
+import LinkIcon from '@mui/icons-material/Link';
+import theme from '../theme'
+import CreateIcon from '@mui/icons-material/Create';
+import Paths from "../core/paths"
+import PageItem from "../components/PageItem"
 function AddPageToBookContainer(){
     const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const bookLoading = useSelector(state=>state.books.loading)
+
     const pageLoading = useSelector(state=>state.pages.loading)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const bookInView = useSelector(state=>state.books.bookInView)
     const [pages,setPages]=useState([])
     const [pageIdList,setPageIdList] = useState([])
     const [hasMore,setHasMore]=useState(false)
-    const [page,setPage] = useState(1)
+    const [anchorEl,setAnchorEl]=useState(null)
     const [sortAlpha,setSortAlpha] = useState(false)
     const [sortTime,setSortTime] = useState(false)
     const getBook =()=>{
@@ -242,9 +243,22 @@ function AddPageToBookContainer(){
             <IconButton onClick={()=>{
                 navigate(`/book/${bookInView.id}`)}}>
                 <VisibilityIcon/></IconButton> 
-            <IconButton onClick={()=>{navigate(`/page/new`)}}>
-                <CreateIcon/>
-                </IconButton>  
+                <IconButton onClick={(e)=>setAnchorEl(e.currentTarget)}>
+                <Add/>
+                </IconButton > 
+                <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={()=>setAnchorEl(null)}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={()=>navigate(Paths.editor.text())}><CreateIcon/></MenuItem>
+        <MenuItem  onClick={()=>navigate(Paths.editor.image())}><ImageIcon/></MenuItem>
+        <MenuItem  onClick={()=>navigate(Paths.editor.link())}><LinkIcon/></MenuItem>
+      </Menu> 
                 <IconButton onClick={()=>{navigate(`/page/image`)}}>
                     <ImageIcon/>
                 </IconButton>
@@ -265,40 +279,5 @@ function AddPageToBookContainer(){
         </div>)
     }
 }
-function PageItem({page,setPageIdList}){
-    const [show,setShow]=useState(false)
-    let pageDataElement = (<div></div>)
-    switch(page.type){
-        case PageType.text:
-            pageDataElement = <div className='dashboard-content text' dangerouslySetInnerHTML={{__html:page.data}}></div>
-        break;
-        case PageType.picture:
-            pageDataElement = <img className='dashborad-content' src={page.data} alt={page.title}/>
-        break;
-        case PageType.video:
-            pageDataElement = <video src={page.data}/>
-        break;
-        default:
-            pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
-        break;
-    }
-    return(<div>
 
-          
-        <div className="list-item">
-            <a className="title"><h6 onClick={()=>{setShow(!show)}}>{page.title}</h6>
-            </a>
-            
-             <IconButton onClick={()=>{
-                setPageIdList()
-            }
-
-            }><Add/></IconButton>
-            
-        </div>
-        <div style={{display: show? "":"none"}}>
-            {pageDataElement}
-        </div>
-        </div>)
-}
 export default AddPageToBookContainer

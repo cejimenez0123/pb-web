@@ -1,21 +1,21 @@
 import { useParams ,useNavigate} from "react-router-dom"
 import { useDispatch,useSelector } from "react-redux"
-import { Component,useState,useEffect} from "react"
-import { fetchBook,saveRolesForBook,setBookInView,updateBook } from "../actions/BookActions"
-import "../styles/EditBook.css"
+import { useState,useEffect} from "react"
+import { fetchBook,saveRolesForBook,setBookInView,updateBook } from "../../actions/BookActions"
+import "../../styles/EditBook.css"
 
-import {  fetchPage } from "../actions/PageActions"
-import BookRole from "../domain/models/bookrole"
-import { RoleType } from "../core/constants"
+import {  fetchPage } from "../../actions/PageActions"
+import BookRole from "../../domain/models/bookrole"
+import { RoleType } from "../../core/constants"
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import { TextField ,Checkbox, FormControlLabel,Button, FormGroup, IconButton} from "@mui/material"
-import RoleList from "../components/RoleList"
-import theme from "../theme"
-import checkResult from "../core/checkResult"
+import RoleList from "../../components/RoleList"
+import theme from "../../theme"
+import checkResult from "../../core/checkResult"
 import { Add,Visibility,Remove,DragIndicator } from "@mui/icons-material"
-import uuidv4 from "../core/uuidv4"
-import ErrorBoundary from "../ErrorBoundary"
-import SortableComponent from "../components/SortableList"
+import uuidv4 from "../../core/uuidv4"
+import ErrorBoundary from "../../ErrorBoundary"
+import SortableComponent from "../../components/SortableList"
 
   
 function EditBookContainer({book}){   

@@ -8,9 +8,9 @@ import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/page/EditorContainer'
 import PageViewContainer from './container/page/PageViewContainer'
-import BookViewContainer from './container/BookViewContainer'
+import BookViewContainer from './container/book/BookViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
-import CreateBookContainer from './container/CreateBookContainer';
+import CreateBookContainer from './container/book/CreateBookContainer';
 import CreateLibraryContainer from './container/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/ProfileContainer';
@@ -32,7 +32,7 @@ import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
-import EditBookContainer from './container/EditBookContainer';
+import EditBookContainer from './container/book/EditBookContainer';
 import LibraryViewContainer from './container/LibraryViewContainer';
 import useAuth from './core/useAuth';
 import Paths from './core/paths';
@@ -144,10 +144,6 @@ function App(props) {
     }/>
     <Route  path="/page/image"  
         element={ 
-        //   <PrivateRoute loggedIn={props.currentProfile}>
-        //     <PicturePageContainer />
-
-        //  </PrivateRoute>
           <PrivateRoute loggedIn={!!props.currentProfile}>
           <EditorContainer 
             htmlContent={props.htmlContent}

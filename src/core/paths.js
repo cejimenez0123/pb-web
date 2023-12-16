@@ -9,7 +9,11 @@ const Paths ={
         route: ()=>{return `/book/:id`;},
         createRoute:(id)=>{return `/book/${id}`
     } },
-    editor:()=>{return `/page/text`},
+    editor:{
+        text:()=>{return `/page/text`},
+        link:()=>{ return `/page/link`},
+        image:()=>{return `/page/image`}   
+    },
     login:()=>{return `/login`},
     editPage:{route:()=>{return `/page/:id/edit`},
         createRoute:(id)=>{return `/page/${id}/edit`}},

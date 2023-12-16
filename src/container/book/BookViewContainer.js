@@ -1,29 +1,29 @@
 
-import { fetchBook, setBookInView } from "../actions/BookActions"
+import { fetchBook, setBookInView } from "../../actions/BookActions"
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect ,useState} from "react"
-import { fetchPage } from "../actions/PageActions"
+import { fetchPage } from "../../actions/PageActions"
 import InfiniteScroll from "react-infinite-scroll-component"
-import DashboardItem from "../components/DashboardItem"
-import "../styles/BookView.css"
-import "../App.css"
+import DashboardItem from "../../components/DashboardItem"
+import "../../styles/BookView.css"
+import "../../App.css"
 import {Button, IconButton} from "@mui/material"
-import theme from "../theme"
+import theme from "../../theme"
 import { setBookmarkLibrary,
-        updateLibraryContent } from "../actions/LibraryActions"
+        updateLibraryContent } from "../../actions/LibraryActions"
 import {    fetchProfile ,
             createFollowBook,
             deleteFollowBook,
             fetchFollowBooksForProfile, 
             updateHomeCollection, 
-            } from "../actions/UserActions"
+            } from "../../actions/UserActions"
 import { Add, Settings } from "@mui/icons-material"
-import debounce from "../core/debounce"
+import debounce from "../../core/debounce"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import checkResult from "../core/checkResult"
-import { iconStyle } from "../styles/styles"
+import checkResult from "../../core/checkResult"
+import { iconStyle } from "../../styles/styles"
 function BookViewContainer({book}){
     const navigate = useNavigate()
     const pathParams = useParams()
