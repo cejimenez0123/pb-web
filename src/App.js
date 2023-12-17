@@ -11,12 +11,12 @@ import PageViewContainer from './container/page/PageViewContainer'
 import BookViewContainer from './container/book/BookViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import CreateBookContainer from './container/book/CreateBookContainer';
-import CreateLibraryContainer from './container/CreateLibraryContainer';
+import CreateLibraryContainer from './container/library/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/ProfileContainer';
 import UpdateLibraryContainer from './container/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/AddPageToBookContainer';
-import AddItemsToLibraryContainer from './container/AddItemsToLibraryContainer';
+import AddItemsToLibraryContainer from './container/library/AddItemsToLibraryContainer';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
 import {  getPublicBooks } from './actions/BookActions';
@@ -33,7 +33,7 @@ import PrivateRoute from './PrivateRoute';
 import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
 import EditBookContainer from './container/book/EditBookContainer';
-import LibraryViewContainer from './container/LibraryViewContainer';
+import LibraryViewContainer from './container/library/LibraryViewContainer';
 import useAuth from './core/useAuth';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';

@@ -2,23 +2,23 @@
 
 
 
-import {  getProfileBooks} from "../actions/BookActions"
-import { getProfilePages } from "../actions/PageActions"
+import {  getProfileBooks} from "../../actions/BookActions"
+import { getProfilePages } from "../../actions/PageActions"
 import { useDispatch,useSelector } from "react-redux"
 import { useParams,useNavigate } from "react-router-dom"
 import { useEffect ,useState} from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { Add } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
-import { PageType } from "../core/constants"
-import checkResult from "../core/checkResult"
+import { PageType } from "../../core/constants"
+import checkResult from "../../core/checkResult"
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { btnStyle } from "../styles/styles"
-import debounce from "../core/debounce"
+import { btnStyle } from "../../styles/styles"
+import debounce from "../../core/debounce"
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import { Button } from "@mui/joy"
-import theme from "../theme"
-import { appendLibraryContent, fetchLibrary } from "../actions/LibraryActions"
+import theme from "../../theme"
+import { appendLibraryContent, fetchLibrary } from "../../actions/LibraryActions"
 function AddItemsToLibraryContainer(){
     const navigate = useNavigate()
     const pathParams = useParams()

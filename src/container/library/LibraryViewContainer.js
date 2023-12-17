@@ -3,27 +3,27 @@ import { useEffect,useState} from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { useSelector,useDispatch } from "react-redux"
 import {  
-            fetchPage} from "../actions/PageActions"
+            fetchPage} from "../../actions/PageActions"
 import { useParams, useNavigate  } from "react-router-dom"
 import {updateHomeCollection,
         createFollowLibrary,
         deleteFollowLibrary,
         fetchFollowLibraryForProfile,
-    fetchProfile} from "../actions/UserActions"
-    import BookListItem from "../components/BookListItem"
-import { fetchLibrary, setLibraryInView } from "../actions/LibraryActions"
-import DashboardItem from "../components/DashboardItem"
-import "../styles/Library.css"
-import { fetchBook } from "../actions/BookActions"
+    fetchProfile} from "../../actions/UserActions"
+    import BookListItem from "../../components/BookListItem"
+import { fetchLibrary, setLibraryInView } from "../../actions/LibraryActions"
+import DashboardItem from "../../components/DashboardItem"
+import "../../styles/Library.css"
+import { fetchBook } from "../../actions/BookActions"
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Button } from "@mui/material"
-import theme from "../theme"
-import "../App.css"
-import checkResult from "../core/checkResult"
+import theme from "../../theme"
+import "../../App.css"
+import checkResult from "../../core/checkResult"
 import Add from "@mui/icons-material/Add"
 import { IconButton } from "@mui/joy"
-import uuidv4 from "../core/uuidv4"
-import { iconStyle } from "../styles/styles"
+import uuidv4 from "../../core/uuidv4"
+import { iconStyle } from "../../styles/styles"
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()

@@ -1,19 +1,20 @@
 import { useNavigate } from "react-router-dom"
 import {useState,useEffect} from "react"
 import { useDispatch,useSelector } from "react-redux"
-import { appendSaveRolesFoBook,  } from "../actions/BookActions"
-import theme from "../theme"
-import {  appendSaveRolesForPage} from "../actions/PageActions"
-import { appendLibraryContent, createLibrary,getProfileLibraries,updateLibraryContent } from "../actions/LibraryActions"
+import { appendSaveRolesFoBook,  } from "../../actions/BookActions"
+import theme from "../../theme"
+import {  appendSaveRolesForPage} from "../../actions/PageActions"
+import { appendLibraryContent, createLibrary,getProfileLibraries,updateLibraryContent } from "../../actions/LibraryActions"
 import InfiniteScroll from "react-infinite-scroll-component"
-import "../styles/CreateLibrary.css"
+import "../../styles/CreateLibrary.css"
 import {  
             Button,
           } from "@mui/material"
 import { Add } from "@mui/icons-material"
 import MediaQuery from "react-responsive"
-import LibraryCreateForm from "../components/LibraryCreateForm"
-import uuidv4 from "../core/uuidv4"
+import LibraryCreateForm from "../../components/LibraryCreateForm"
+import uuidv4 from "../../core/uuidv4"
+import { iconStyle } from "../../styles/styles"
 export default function CreateLibraryContainer(props){
     const booksToBeAdded = useSelector(state => state.books.booksToBeAdded)
     const pagesToBeAdded = useSelector(state => state.pages.pagesToBeAdded)
@@ -85,15 +86,15 @@ export default function CreateLibraryContainer(props){
              return(<div className="list-item" key={hash.id}>
                 <div>
                     
-                <h3 >
+                <h6 >
                 {hash.name}
             
-                </h3>
+                </h6>
                 </div>
-                <div>
+                <div className="button-row">
               
                 <Button onClick={()=>onClickAdd(hash)}>
-                    <Add/>
+                    <Add style={iconStyle}/>
                 </Button>
                 </div>
             </div>)
@@ -156,12 +157,12 @@ export default function CreateLibraryContainer(props){
         
     
 return(<div id="CreateLibrary">
-    <div className="container">
+    <div className="screen">
         <div className="left-bar">
                 <MediaQuery maxWidth={"1000px"}>
                     <LibraryCreateForm/>
                 </MediaQuery>
-                {contentToBeAddedList()}
+                {/* {contentToBeAddedList()} */}
         
         </div>
         <div className="main-bar">

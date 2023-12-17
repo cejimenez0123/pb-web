@@ -8,6 +8,7 @@ import { FormGroup, TextField,FormControlLabel,Checkbox, Button,TextareaAutosize
 import theme from "../theme"
 import "../styles/CreateBook.css"
 import "../styles/CreateLibrary.css"
+import { textareaStyle } from "../styles/styles"
 const inputStyle = {
     width: "100%",
 }
@@ -73,7 +74,7 @@ control={<Checkbox checked={bookIsOpen} onChange={(e)=>{
  <div  style={inputStyle} className="purpose">
 <label>Purpose</label></div> 
 <TextareaAutosize
-style={{width: '100%',padding:"1em"}}
+style={{width: '100%',padding:"1em",borderRadius: textareaStyle.borderRadius}}
    
 value={purpose}
 minRows={3} 

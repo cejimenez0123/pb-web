@@ -13,6 +13,7 @@ import { Add } from "@mui/icons-material"
 import MediaQuery from "react-responsive"
 import checkResult from "../../core/checkResult"
 import CreateForm from "../../components/CreateForm"
+import { iconStyle } from "../../styles/styles"
 
 export default function CreateBookContainer({pagesInView}){
         const navigate = useNavigate()
@@ -82,6 +83,34 @@ export default function CreateBookContainer({pagesInView}){
 
     })
     }
+    // const setSortOrderAlpha=()=>{
+
+    //     if(sortAlpha){
+    //     let newPages = [...pages].sort((a,b)=>{
+    //         if (a.title < b.title) {
+    //             return -1;
+    //           }
+    //           if (a.title > b.title) {
+    //             return 1;
+    //           }
+    //           return 0;
+    //     })
+    //     // setPages(newPages);
+ 
+    //     }else{
+    //         let newPages = [...pages].sort((a,b)=>{
+    //             if (b.title < a.title) {
+    //                 return -1;
+    //               }
+    //               if (b.title > a.title) {
+    //                 return 1;
+    //               }
+    //               return 0;
+    //         })
+    //         // setPages(newPages);
+        
+    //     }
+    // }
     const bookList = ()=>{
             let i = 0
                 return(<div >
@@ -94,11 +123,12 @@ export default function CreateBookContainer({pagesInView}){
              {books.map(book=>{
                 i+=1
                 return (<div className="list-item rounded" key={`${book.id}_${i}`}>
-                    {book.title}
+                    <h6>{book.title}</h6>
+                    <div className="button-row">
                     <IconButton onClick={()=>addUpdateBook(book)}>
-                    <Add/>
+                    <Add style={iconStyle}/>
                     </IconButton>
-                 
+                    </div>
                 </div>)
              })}
     
@@ -158,85 +188,3 @@ export default function CreateBookContainer({pagesInView}){
     </div>)
 }
 
-
-// function CreateForm (props){
-//     const [bookTitle,setBookTitle]=useState("")
-//     const [purpose,setPurpose] = useState("")
-//     const dispatch = useDispatch()
-//     const navigate = useNavigate()
-//     const [bookIsPrivate,setBookIsPrivate]= useState(false)
-//     const currentProfile = useSelector(state=>state.users.currentProfile)
-//     const [bookIsOpen,setBookIsOpen]= useState(false)
-//     const pagesToBeAdded = useSelector(state=>{return state.pages.pagesToBeAdded})     
-//     const handleBookTitleChange = (e)=>{
-//         setBookTitle(e.target.value)
-//     }
-//     const handleOnSubmit=(e)=>{
-         
-//         e.preventDefault()
-            
-//             const pageIdList = pagesToBeAdded.map(page=>{
-//                 return page.id
-//             })
-//             const params = {
-//                 title: bookTitle,
-//                 purpose: purpose,
-//                 profileId: currentProfile.id,
-//                 pageIdList: pageIdList,
-//                 writingIsOpen: bookIsOpen,
-//                 privacy: bookIsPrivate,
-//                 commenters:[],
-//                 editors:[],
-//                 readers:[],
-//                 writers:[]
-//             }
-        
-//             dispatch(createBook(params)).then(result=>{
-                
-//                 const {payload} = result
-//                 if(result !=null && result.error==null){
-//                     navigate(`/book/${payload.book.id}`)
-                    
-//                 }
-//             })
-//         }
-//     return(<FormGroup  className="create-form"  >
-                
-//     <TextField 
-//     style={inputStyle}
-//     label="Book Title"
-//     placeholder="Title" 
-//     onChange={(e)=>handleBookTitleChange(e)}/>
-//   <FormControlLabel  style={inputStyle}
-// control={<Checkbox checked={bookIsPrivate} onChange={(e)=>{
-//     setBookIsPrivate(e.target.checked)
-// }}/>} label={bookIsPrivate?"Private":"Public"}
-//    value={bookIsPrivate}/>   
-
-// <FormControlLabel style={inputStyle}
-// control={<Checkbox checked={bookIsOpen} onChange={(e)=>{
-//    setBookIsOpen(e.target.checked)
-// }}/>} label={`Writing is ${bookIsOpen? "open":"close"}`}
-//  />  
-//  <div  style={inputStyle} className="purpose">
-// <label>Purpose</label></div> 
-// <TextareaAutosize
-// style={{width: '100%',padding:"1em"}}
-   
-// value={purpose}
-// minRows={3} 
-// onChange={(e)=>{
-// setPurpose(e.target.value);
-// }} />
-// <Button variant="outlined" 
-//         style={{ width:inputStyle.width,
-//             marginLeft:inputStyle.marginLeft, 
-//             padding:"1em" ,
-//              marginTop:"2em",backgroundColor:theme.palette.secondary.main,
-//                     color:theme.palette.secondary.contrastText}}
-//         onClick={(e) => handleOnSubmit(e)}>
-// Save
-// </Button>
-
-// </FormGroup>)
-// }
