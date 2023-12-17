@@ -491,7 +491,7 @@
   .list-item .button-row{
     display: flex;
     flex-direction: row;
-    margin-right: 1em;
+    margin-right: 2em;
   }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -556,7 +556,7 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    margin-right: 1em;
+    margin-right: 2em;
   }
 }
 @media (prefers-reduced-motion: no-preference) {

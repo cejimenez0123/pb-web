@@ -150,11 +150,18 @@ return <Button onClick={()=>{
     }
     let bookTitleDiv =  (<div></div>)
     if(book){
+        
+        let title = ""
+        if(book.title.length>30){
+        title = book.title.slice(0,30)+"..."
+        }else{
+            title = book.title
+        }
         bookTitleDiv = (<a onClick={
             ()=>{
                 navigate(`/book/${book.id}`)
             }
-        }><p>{book.title} {">"}</p></a>)
+        }><p>{title} {">"}</p></a>)
     }
     if(page){
         return(<div className='content-item'>
@@ -165,7 +172,7 @@ return <Button onClick={()=>{
                 <p onClick={()=>{
                     navigate(`/page/${page.id}`)
 
-                }}>{` `+page.title}</p>
+                }} > {` `+page.title}</p>
                 </div>
                 {profileDiv}
             </div>

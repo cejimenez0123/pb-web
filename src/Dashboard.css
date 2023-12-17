@@ -132,7 +132,7 @@
 .content-item .dashboard-header{
   background-color: var(--slightly-yellow);
   border-bottom: 1px solid grey;
-  padding: 1em;
+  padding: .5em;
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -142,7 +142,12 @@
 .dashboard-header .titles {
   display: flex;
   flex-direction: row;
-  max-width: 50%;
+  /* max-width: 50%; */
+  overflow: hidden;
+  padding-left: .5em;
+  padding-right: .5em;
+  max-width: 80%;
+
 }
 
 }
