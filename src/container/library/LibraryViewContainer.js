@@ -24,6 +24,7 @@ import Add from "@mui/icons-material/Add"
 import { IconButton } from "@mui/joy"
 import uuidv4 from "../../core/uuidv4"
 import { iconStyle } from "../../styles/styles"
+import {Helmet} from "react-helmet"
 function LibraryViewContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -391,6 +392,13 @@ function LibraryViewContainer(props){
     
     return (
     <div>
+    <Helmet>
+        <title>{libraryInView.title}</title>
+        <meta
+      name="description"
+      content={libraryInView.purpose}
+    />
+        </Helmet>
     <div className="two-panel">
         <div className="left-bar">
         {contentList()}

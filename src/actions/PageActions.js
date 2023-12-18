@@ -5,6 +5,7 @@ import PageComment from "../domain/models/page_comment"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import Contributors from "../domain/models/contributor"
 import { read } from "@popperjs/core"
+import UserApproval from "../domain/models/user_approval"
 
 
 const getPublicPages = createAsyncThunk(
@@ -905,7 +906,7 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
     }
   }
   })
-  const fetchPagesWhereProfileEditor = createAsyncThunk("books/fetchBooksWhereProfileEditor",(params,thunkApi)=>{
+  const fetchPagesWhereProfileEditor = createAsyncThunk("pages/fetchBooksWhereProfileEditor",(params,thunkApi)=>{
     try{
     const ref = collection(db,"page")
     let snapshot = query(ref,
@@ -965,7 +966,7 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
     }
   }
   })
-  const fetchPagesWhereProfileCommenters= createAsyncThunk("books/fetchBooksWhereProfileEditor",(params,thunkApi)=>{
+  const fetchPagesWhereProfileCommenters= createAsyncThunk("pages/fetchPagesWhereProfileEditor",(params,thunkApi)=>{
     try{
     const ref = collection(db,"page")
     let snapshot = query(ref,
@@ -1025,6 +1026,39 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
     }
   }
   })
+ 
+  const createPageApproval = createAsyncThunk("users/createPageApproval",async (params,thunkApi)=>{
+   try{
+    const {pageId,profileId,score}=params
+    const id = `${profileId}_${pageId}`
+    await setDoc(doc(db,UserApproval.className,id), { 
+      id,
+      pageId,
+      profileId,
+      score 
+    })
+    let userApproval = new UserApproval(id,pageId,profileId,score)
+    return {
+      userApproval
+    }
+  }catch(e){
+    return {error: e}
+  }
+  })
+  const deletePageApproval = createAsyncThunk("users/deletePageApproval",async (params,thunkApi)=>{
+    const {userApproval}=params
+   
+   await deleteDoc(doc(db,UserApproval.className,userApproval.id))
+    try{
+      return {
+        userApproval
+      }
+    }catch(e){
+      return {
+        error: e
+      }
+    }
+  })
   const unpackPageDoc = (doc)=>{
     const pack = doc.data();
               const { id } = doc;
@@ -1054,6 +1088,7 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
                               created)
                               return page
   }
+
   export {getPublicPages,
           pagesLoading,
           setHtmlContent,
@@ -1080,5 +1115,8 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           fetchPagesWhereProfileCommenters,
           fetchPagesWhereProfileEditor,
           fetchPagesWhereProfileWriter,
-          setEditingPage
+          setEditingPage,
+          createPageApproval,
+          deletePageApproval
         } 
+        

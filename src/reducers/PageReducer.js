@@ -166,7 +166,8 @@ const pageSlice = createSlice({
         }
       }).addCase(updatePage.rejected,(state,{payload})=>{
        state.error = payload.error
-      })}
+      })
+    }
   })
     
 export {pageSlice}

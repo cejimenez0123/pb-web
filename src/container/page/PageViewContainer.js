@@ -9,6 +9,7 @@ import { fetchCommentsOfPage } from "../../actions/PageActions";
 import CommentItem from "../../components/CommentItem";
 import PageViewItem from "../../components/PageViewItem";
 import checkResult from "../../core/checkResult";
+import {Helmet} from "react-helmet"
 export default function PageViewContainer({page}){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -139,7 +140,18 @@ export default function PageViewContainer({page}){
             return(<div className="empty"><h6>This page doesn't exist</h6></div>)
         }
     }
+    let description = page.data
+    if(page.data.length>200){
+        description = page.data.slice(0,200)
+    }
     return(<div className="center">
+        <Helmet>
+        <title>{page.title}</title>
+        <meta
+      name="description"
+      content={description}
+    />
+        </Helmet>
                 <div id="page">
                     
                         

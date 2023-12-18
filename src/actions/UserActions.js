@@ -15,7 +15,7 @@ import {  where,
           doc,
           updateDoc,
           Timestamp} from "firebase/firestore"
-          
+import UserApproval from "../domain/models/user_approval";
 import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
 import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
@@ -650,7 +650,25 @@ function chunkArray(array, chunkSize) {
   }
   return chunkedArray;
 }
-
+const getPageApprovals = createAsyncThunk("users/getPageApprovals",async (params,thunkApi)=>{
+  const {profile}=params
+  const snapshot = await getDocs(query(collection(db, UserApproval.className), where("profileId", "==", profile.id)))
+  let userApprovals = []
+  snapshot.docs.forEach(doc => {
+    let userApproval = unpackUserApprovalDoc(doc)
+    userApproval.push(userApproval)
+  })
+  return {
+    userApprovals
+  }
+})
+const unpackUserApprovalDoc = (doc)=>{
+  const pack = doc.data();
+            const { id } = doc;
+            const {score,pageId,profileId}=pack
+        let userApproval = new UserApproval(id,pageId,profileId,score)
+      return userApproval
+}
 export {logIn,
         signUp,
         getCurrentProfile,
@@ -675,5 +693,6 @@ export {logIn,
         fetchHomeCollection,
         updateHomeCollection,
         setSignedInTrue,
-        setSignedInFalse
+        setSignedInFalse,
+        getPageApprovals
     }

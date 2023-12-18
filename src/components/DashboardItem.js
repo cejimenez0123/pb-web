@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "../Dashboard.css"
-import { setPageInView, setPagesToBeAdded } from '../actions/PageActions'
+import { deletePageApproval, setPageInView, setPagesToBeAdded } from '../actions/PageActions'
+import { createPageApproval } from '../actions/PageActions'
 import { PageType } from '../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
 import { Dropdown,Menu ,MenuItem,} from '@mui/joy'
@@ -18,6 +19,8 @@ import LinkPreview from './LinkPreview'
 function DashboardItem({page,book}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const userApprovals = useSelector(state=>state.users.userApprovals)
+    const [approved,setApproved]=useState(null)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const [expanded,setExpanded]=useState(false)
@@ -37,7 +40,12 @@ function DashboardItem({page,book}) {
         }
      })
       };
-
+useEffect(()=>{
+    
+    let ua = userApprovals.find(approval=>approval.pageId === page.id && approval.profileId === currentProfile.id)
+    setApproved(ua)
+   
+},[userApprovals])
 useEffect(()=>{
     if(contentItemEl){
         setOverflowActive(contentItemEl.offsetHeight < contentItemEl.scrollHeight)
@@ -90,6 +98,16 @@ const hanldeClickComment=(pageItem)=>{
         </div>)
     }
 }
+const handleApprovalClick = ()=>{
+    if(Boolean(approved)){
+        dispatch(deletePageApproval({userApproval:approved}))
+    }else{
+        const params = {pageId: page.id,
+                        profileId: currentProfile.id,
+                        score:2}
+        dispatch(createPageApproval(params))
+    }
+}
 const expandedBtn =()=>{
     if(overflowActive && !expanded){
     
@@ -106,6 +124,7 @@ return <Button onClick={()=>{
     return <div></div>
    }
 }
+
     let profileDiv = (<div>
 
     </div>)
@@ -164,6 +183,14 @@ return <Button onClick={()=>{
         }><p>{title} {">"}</p></a>)
     }
     if(page){
+        let yeaColor = theme.palette.info.disabled
+        if(currentProfile){
+            if(Boolean(approved)){
+                yeaColor = theme.palette.primary.light
+            }else{
+                yeaColor = theme.palette.info.main
+            }
+        }
         return(<div className='content-item'>
         
             <div className='dashboard-header'>
@@ -182,8 +209,9 @@ return <Button onClick={()=>{
             <div className='btn-row'>
                 
                 <Button disabled={!currentProfile} 
+                onClick={handleApprovalClick}
                      style={{color: theme.palette.info.contrastText,
-                        backgroundColor: currentProfile? theme.palette.info.main:theme.palette.info.disabled}}
+                        backgroundColor: yeaColor}}
                   
                
                 >

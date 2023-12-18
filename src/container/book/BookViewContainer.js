@@ -24,6 +24,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import checkResult from "../../core/checkResult"
 import { iconStyle } from "../../styles/styles"
+import {Helmet} from "react-helmet"
 function BookViewContainer({book}){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -347,7 +348,13 @@ const bookInfo = ()=>{
   if(book && !error){
 
     return(<div className="screen">
-          
+           <Helmet>
+        <title>{book.title}</title>
+        <meta
+      name="description"
+      content={book.purpose}
+    />
+        </Helmet>
         <div className="left-bar">
            
             {bookInfo()}

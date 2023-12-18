@@ -208,11 +208,12 @@ match /book/{bookId}{
       		return getProfile(rsc.data.profileId).data.userId == request.auth.uid
       }
   		
-      allow read: if true
+      allow read: if request.auth.uid == getProfile(resource.data.profileId).userId
       allow delete: if isSignedIn() && canDeleteIf(resource)
       allow update: if isSignedIn() && canDeleteIf(resource)
-      allow create: if isSignedIn() && isCurrentProfileCurrentUser(request.resource.data.profileId)
-  } 
+      allow create: if isSignedIn()
+      
+      }
   match /stories/{storyId}{
       allow read: if true
       allow delete: if true

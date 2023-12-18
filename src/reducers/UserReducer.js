@@ -19,12 +19,16 @@ import {    logIn ,
             deleteFollowBook,
             setSignedInTrue,
             setSignedInFalse,
+            getPageApprovals,
         } from "../actions/UserActions"
+import { create } from "lodash"
+import { createPageApproval, deletePageApproval } from "../actions/PageActions"
 const initialState = {
     signedIn: true,
     currentProfile: null,
     homeCollection: null,
     loading:false,
+    userApprovals:[],
     followedBooks: [],
     followedProfiles:[],
     followedLibraries:[],
@@ -146,6 +150,13 @@ const userSlice = createSlice({
         state.signedIn = true
     }).addCase(setSignedInFalse.type,(state,{payload})=>{
         state.signedIn=false
+    }).addCase(getPageApprovals.fulfilled,(state,{payload})=>{
+        state.userApprovals = payload.userApprovals
+    }).addCase(createPageApproval.fulfilled,(state,{payload})=>{
+        state.userApprovals = [...state.userApprovals,payload.userApproval]
+    }).addCase(deletePageApproval.fulfilled,(state,{payload})=>{
+        const list = state.userApprovals.filter(ua=> ua!=null &&payload.userApproval && ua.id != payload.userApproval.id)
+        state.userApprovals = list
     })
 }})
 

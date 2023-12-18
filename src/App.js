@@ -27,7 +27,8 @@ import {  getCurrentProfile,
           fetchFollowProfilesForProfile,
           fetchHomeCollection,
           setSignedInTrue,
-         setSignedInFalse} from './actions/UserActions'
+         setSignedInFalse,
+        getPageApprovals} from './actions/UserActions'
 import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { useEffect} from 'react';
@@ -37,6 +38,7 @@ import LibraryViewContainer from './container/library/LibraryViewContainer';
 import useAuth from './core/useAuth';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
+import {Helmet} from "react-helmet";
 function App(props) {
   const authState = useAuth()
   useEffect(()=>{
@@ -72,6 +74,7 @@ function App(props) {
       
       props.fetchHomeCollection(profileParams)
       props.fetchBookmarkLibrary(params)
+      props.getPageApprovals(profileParams)
       props.fetchFollowBooksForProfile(profileParams)
       props.fetchFollowLibraryForProfile(profileParams)
       props.fetchFollowProfilesForProfile(profileParams)
@@ -81,10 +84,14 @@ function App(props) {
    
   return (
     <div className="App">
-       
-      <header>
+       <Helmet>
+                <meta charSet="utf-8" />
+                <title>Plumbum</title>
+                <meta name="description" content="The place for writers to connect" />
+        </Helmet>
+      {/* <header>
     
-      </header>
+      </header> */}
   
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossOrigin="anonymous"/>
         <script src="https://kit.fontawesome.com/08dbe310f1.js" crossorigin="anonymous"></script>
@@ -245,6 +252,7 @@ function mapDispatchToProps(dispatch){
     getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
     setSignedInTrue:()=>dispatch(setSignedInTrue()),
     setSignedInFalse:()=>dispatch(setSignedInFalse()),
+    getPageApprovals:(params)=>dispatch(getPageApprovals(params)),
   }
 }
 function mapStateToProps(state){

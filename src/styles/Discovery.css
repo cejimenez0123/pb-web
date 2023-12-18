@@ -266,9 +266,7 @@
     max-width: 50em;
     font-size: large;
   }
-  #forums-list #page-list{
-    /* margin: 1em 1em; */
-  }
+
   #forums-list #book-list{
     margin: 1em 1em;
     max-width: 100vw;
