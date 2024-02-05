@@ -1,0 +1,22 @@
+.item-info{
+    flex-direction: row;
+    display: flex;
+}
+
+.library-update form{
+    display:flex;
+    flex-direction: column;
+}
+.library-update input[type="text"]{
+    background-color:var(--tertiary);
+}
+.library-update{
+    margin-bottom: 1em;
+}
+@media (max-width: 900px){
+    .screen.reverse{
+        display: flex;
+      flex-direction: column-reverse ;
+    }
+  }
+

@@ -1,0 +1,130 @@
+
+@media (min-width: 1000px) {
+    #EditorContainer #post-button-row{
+        margin-bottom: 5em;
+        margin-top: 3em;
+  
+        display: flex;
+        justify-content: flex-end;
+   
+    }
+
+.rich-editor{
+    width: 45em;
+
+}
+.editor-btn-row{
+    display: flexbox;
+    flex-wrap: wrap;
+    width: 40em;
+    background-color: var(--background-tertiary-light);
+    
+}
+
+#editor {
+    max-width: 45em;
+    margin-top: 4em;
+}
+
+/* #editor {
+    max-width: 45em;
+    margin:auto;
+    margin-top: 4em;
+    margin-bottom: 2em;
+    width: fit-content;
+    padding: 2em;
+    background-color: var(--tertiary);
+    border-radius: 25px;
+    box-shadow: var(--some-box-shadow);
+
+} */
+#EditorContainer{
+    flex-direction: row;
+    display: flex;
+    justify-content: space-evenly;
+    height: 100%;
+    padding-bottom: 3em;
+}
+
+#EditorContainer .left-side-bar{
+    padding: 0 4em;
+}
+#EditorContainer .right-side-bar .form{
+    background-color:  var(--background-tertiary-light);
+    width: 23em;
+    padding: 4em 2em;
+    border-radius: 25px;
+    box-shadow: var(--some-box-shadow);
+}
+
+#EditorContainer .form input[type="text"]{
+   background-color: white;
+}
+#EditorContainer .btn-primary{
+    background-color: rgb(15, 18, 15) !important;
+}
+}
+@media (max-width: 1000px) {
+    #EditorContainer{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    #EditorContainer #post-button-row{
+        margin-bottom: 5em;
+        width: 100%;
+  
+        display: flex;
+        justify-content: flex-end;
+   
+    }
+
+
+    .editor-btn-row{
+        display: flex;
+        flex-direction: row;
+        overflow: scroll;
+        width: 100%;
+        margin-bottom: 2px;
+
+        
+    }
+    #editor {
+        margin:auto;
+        background-color: var(--tertiary);
+        width: 100vw;
+        margin-bottom: 2em;
+    
+    }
+    #editor .image{
+        width:fit-content ;
+        
+        margin: auto;
+    }
+    #editor .image img{
+        width: 90vw;
+    }
+    
+    #EditorContainer .right-side-bar .form{
+        background-color: var(--background-tertiary-light);
+        width: 100%;
+        padding: 4em 2em;
+        margin: auto;
+    }
+    
+    #EditorContainer .form input[type="text"]{
+       background-color: white;
+    }
+    #EditorContainer .btn-primary{
+        background-color: rgb(15, 18, 15) !important;
+    }
+    }
+    @media (max-width: 600px) {
+        #editor {
+            margin:auto;
+            background-color: var(--tertiary);
+            width: 100vw;
+            max-width: 600px;
+            margin-bottom: 2em;
+        
+        }
+    }

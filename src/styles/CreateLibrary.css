@@ -1,0 +1,65 @@
+
+@media (min-width: 800px) {
+#CreateLibrary .container .main-bar{
+  margin: 0 1em
+}
+/* .list {
+    width: 30em;
+} */
+
+.content-to-be-added-list{
+  width: 20em;
+  background-color: var(--tertiary);
+  padding:1em;
+  border-radius: 20px;
+
+}
+#form div:nth-child(1) {
+    /* Your styles for the second div here */
+    display: flex;
+    flex-direction: row;
+  }
+
+#form div:nth-child(2) {
+    /* Your styles for the second div here */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    
+}
+#form div:nth-child(2) label{
+  padding: 10px 15px;
+}
+#form div:nth-child(2) textarea{
+    border: 1px solid black;
+}
+}
+
+@media (max-width: 800px) {
+
+
+  .content-to-be-added-list{
+    width: 100vw;
+    background-color: var(--tertiary);
+    padding:1em;
+  
+  }
+  #form div:nth-child(1) {
+      display: flex;
+      flex-direction: row;
+    }
+  
+  #form div:nth-child(2) {
+    
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      
+  }
+  #form div:nth-child(2) label{
+    padding: 10px 15px;
+  }
+  #form div:nth-child(2) textarea{
+      border: 1px solid black;
+  }
+  }

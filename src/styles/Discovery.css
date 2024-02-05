@@ -1,0 +1,313 @@
+
+.book-list-item{  color: #02120A;
+  padding: 1em;
+  margin: 1em;
+  margin-bottom: 2em;
+  max-width: 100%;
+  max-height: 10em;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: var(--some-box-shadow);
+  background-image: linear-gradient(0.25turn,#F6F6F3,transparent);}
+@media (min-width: 768px){
+.book-banner .book-banner-item {
+    max-width: 150px;
+    height: 5rem;
+    padding: 0 30px;
+    object-fit: cover;
+  }
+
+ .book-banner  img:last-of-type {
+    padding-left: 0;
+  }
+  .discover-pair{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: auto;
+    margin-top: 1em;
+
+  }
+  .discover-pair .pair-item{
+    width: 40%;
+    border-radius: 25px;
+    background-color: var(--tertiary);
+    border: 1px solid white;
+  }
+
+  .discover-pair .pair-inner{
+    border-radius: 25px;
+    background-color: gainsboro;
+    height: 100%;
+    padding: 2em 1em 4em 1em ;
+  }
+
+.content-item{
+  width: 100%;
+  margin-top: 1em;
+  box-shadow: var(--some-box-shadow);
+  margin-bottom: 1em;
+  border-radius: 25px;
+}
+#library-forums{
+  overflow: scroll;
+}
+#library-forums label{
+
+  padding-left: 2em;
+}
+#library-forums .item{
+  background-color: var(--slightly-yellow);
+  margin-left: 1em;
+  margin-right: 1em;
+  margin-bottom: 2em;
+  min-width: 25em;
+  min-height: 15em;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--some-box-shadow);
+
+}
+#library-forums .item .purpose{
+  padding:1em 1em
+}
+#library-forums .item .name{
+  background-image: linear-gradient(0.25turn,var(--light), transparent);
+  padding-top:1em;
+  padding-left: 2em;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+}
+#forums-list{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 1em;
+}
+#forums-list label{
+  padding-left: 2em;
+  color:#02120A;
+}
+#forums-list #page-list .content-item{
+  max-width: 50em;
+  font-size: large;
+  margin-bottom: 1em;
+}
+#forums-list #page-list{
+  margin: 1em 1em;
+}
+#forums-list #book-list{
+  margin: 1em 1em;
+  height: 100%;
+
+}
+#forums-list #book-list .book-list-item{
+  color: #02120A;
+  padding: 1em;
+  margin: 1em;
+  margin-bottom: 2em;
+  max-width: 30em;
+  max-height: 10em;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: var(--some-box-shadow);
+  background-image: linear-gradient(0.25turn,#F6F6F3,transparent);
+}
+
+
+
+.item-row{
+  justify-content: space-between;
+  padding:0 1em;
+}
+#discover .content{
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+#discover .content-list{
+  margin-top: 4em;
+}
+.content-item .item-row{
+      background-color: white;
+      display: flex;
+      flex-direction: row;
+      height: auto;
+      padding-top:1em;
+      border-bottom: 1px solid black;
+      
+}
+ 
+ .book-banner  .inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 5rem;
+  }
+  
+.book-banner   .wrapper {
+    position: absolute;
+    display: flex;
+  }
+  .book-banner{
+    margin-top: 3em;
+  }
+.book-banner   section {
+    display: flex;
+    animation: swipe var(--speed) linear infinite backwards;
+  }
+  
+  @keyframes swipe {
+    0% {
+      transform: translate(0);
+    }
+  
+    100% {
+      transform: translate(-100%);
+    }
+  }
+}
+
+@media (max-width: 768px){
+  .book-banner .book-banner-item {
+      max-width: 150px;
+      height: 5rem;
+      padding: 0 30px;
+      object-fit: cover;
+    }
+  
+   .book-banner  img:last-of-type {
+      padding-left: 0;
+    }
+    .discover-pair{
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      margin: auto;
+      margin-top: 1em;
+  
+    }
+    .discover-pair .pair-item{
+      width: 40%;
+      border-radius: 25px;
+      background-color: var(--tertiary);
+      border: 1px solid white;
+    }
+  
+    .discover-pair .pair-inner{
+      border-radius: 25px;
+      background-color: gainsboro;
+      height: 100%;
+      padding: 2em 1em 4em 1em ;
+    }
+  
+  .content-item{
+    width: 100%;
+    margin-top: 1em;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.6);
+    margin-bottom: 2em;
+  }
+  #library-forums{
+    overflow: scroll;
+    max-width: 100vw;
+  
+  }
+  #library-forums label{
+    color:var(--text-color);
+    padding-left: 2em;
+  }
+  #library-forums .item{
+    background-color: var(--slightly-yellow);
+    margin: 1em;
+    min-width: 25em;
+    min-height: 15em;
+    border-radius: 25px;
+    display: flex;
+    margin-bottom: 2em;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--some-box-shadow);
+  
+  }
+  #library-forums .item .purpose{
+    padding:1em 1em
+  }
+  #library-forums .item .name{
+    background-image: linear-gradient(0.25turn,var(--light), transparent);
+    padding-top:1em;
+    padding-left: 2em;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    
+  }
+  #forums-list{
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-around;
+    margin-top: 1em;
+  }
+  #forums-list label{
+    padding-left: 2em;
+   
+  }
+  #forums-list #page-list .content-item{
+    max-width: 50em;
+    font-size: large;
+  }
+
+  #forums-list #book-list{
+    margin: 1em 1em;
+    max-width: 100vw;
+    height: fit-content;
+    overflow: hidden;
+  }
+  #forums-list #book-list .book-list-item{
+    color: #02120A;
+    padding: 1em;
+    margin: 1em;
+    min-width: 17em;
+    box-shadow: var(--some-box-shadow);
+    margin-bottom: 1.5em;
+    border-radius: 24px;
+  }
+  .book-list-item .title{
+    padding-left: .5em;
+  }
+  .book-list-item .purpose{
+    text-overflow: ellipsis;
+    padding-left: .5em;
+    padding-right: .5em;
+    max-height: 6.2em;
+    overflow: hidden;
+  }
+  .item-row{
+    justify-content: space-between;
+    padding:0 1em;
+  }
+  #discover .content{
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+  #discover .content-list{
+    margin-top: 4em;
+  }
+  .content-item .item-row{
+        background-color: white;
+        display: flex;
+        flex-direction: row;
+        height: auto;
+        padding-top:1em;
+        border-bottom: 1px solid black;
+        
+  }
+
+
+  }
+  /* https://codesandbox.io/s/infinite-horizontal-auto-scroll-y82f8?file=/src/styles.css:0-520 */

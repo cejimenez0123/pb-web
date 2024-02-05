@@ -1,0 +1,9 @@
+.search-return{
+    border-bottom: 1px solid var(--slightly-yellow);
+}
+.search-return .text{
+    padding: 0.7em 1em 0.5em 1em;
+}
+.search-dialog{
+    padding: 0.5em 1em;
+}
