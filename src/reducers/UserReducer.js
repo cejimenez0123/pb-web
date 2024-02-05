@@ -21,6 +21,7 @@ import {    logIn ,
             setSignedInFalse,
             getPageApprovals,
             searchDialogToggle,
+            searchMultipleIndexes
         } from "../actions/UserActions"
 import { create } from "lodash"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"
@@ -35,6 +36,7 @@ const initialState = {
     followedLibraries:[],
     profileInView:null,
     profilesInView: [],
+    searchResults:[],
     searchDialogOpen:false,
     error:""
 }
@@ -164,7 +166,11 @@ const userSlice = createSlice({
         const list = state.userApprovals.filter(ua=> ua!=null &&payload.userApproval && ua.id != payload.userApproval.id)
         state.userApprovals = list
     }).addCase(searchDialogToggle.type,(state,{payload})=>{
-        state.searchDialogOpen = !state.searchDialogOpen
+        state.searchDialogOpen = payload
+    }).addCase(searchMultipleIndexes.fulfilled,(state,{payload})=>{
+        state.searchResults = payload.searchResults
+    }).addCase(searchMultipleIndexes.rejected,(state,{payload})=>{
+        state.error =payload.error
     })
 }})
 

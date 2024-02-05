@@ -49,7 +49,7 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
       privacy,
     
     } = params
-
+      
       let ref = doc(db,"page",page.id)
       await updateDoc(ref,{
         title,
@@ -57,6 +57,7 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
         privacy,
         approvalScore: page.approvalScore,
       })
+      client.initIndex("page").partialUpdateObject({objectID: page.id,title:title},{createIfNotExists:true}).wait()
       const contributors= new Contributors(page.commenters,
         page.readers,page.writers,page.editors)
       let newPage= new Page(page.id,
@@ -539,7 +540,7 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
     try{
       const {page}=params
     await deleteDoc(doc(db, "page", page.id));
-
+    client.initIndex("page").deleteObject(page.id).wait()
     return {
       page:page
     }

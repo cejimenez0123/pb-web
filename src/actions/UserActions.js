@@ -135,7 +135,9 @@ const signUp = createAsyncThunk(
               libraries:[],
               pages:[],
               profiles:[]})
-      client.initIndex("profile").saveObject({objectID:pId,username:username}).wait()
+      client.initIndex("profile").saveObject({ objectID:pId,
+                                              username:username,
+                                              type:"profile"}).wait()
       return {
       
             profile
@@ -149,6 +151,29 @@ const signUp = createAsyncThunk(
     }
     }
 )
+const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
+  async (params,thunkApi)=>{
+    	  const {query} = params
+        const queries = [{
+          indexName: 'profile',
+          query: query,
+        }, {
+          indexName: 'page',
+  query: query,
+
+}, {
+  indexName: 'book',
+  query: query,
+  
+}, {
+  indexName: 'library',
+  query: query,
+  
+}];
+  let {results}= await client.multipleQueries(queries)
+  return {results}
+})
+
 const createCollection = createAsyncThunk("ds",async (params,thunkApi)=>{
   const {profile} = params
  
@@ -252,7 +277,8 @@ const updateProfile = createAsyncThunk("users/updateProfile",
             selfStatement: newSelfStatement,
             privacy: newPrivacy,
         });
-       const snapshot = await getDoc(profileRef)
+        client.initIndex("profile").partialUpdateObject({objectID: profile.id,username},{createIfNotExists:true})
+        const snapshot = await getDoc(profileRef)
         const pack = snapshot.data()  
         const id = pack["id"]
         const username = pack["username"]
@@ -606,6 +632,7 @@ const deleteUserAccounts = createAsyncThunk("users/deleteUserAccounts",async (pa
       const pack =  snapshot.docs[0].data() 
       let id = pack["id"]
       deleteDoc(doc(db,"profile",id))
+      client.initIndex("profile").deleteObject(id).wait()
       auth.currentUser.delete()
     return {
       code: 200
@@ -616,42 +643,8 @@ return {error: new Error("Error: Deleting useer account"+err.message)
   }
 }})
 
-let clickMe = createAsyncThunk("Sf",async (params,thunkApi)=>{
-//   let records = []
-//   try{
-//      let snapshot = await getDocs(collection(db,"page"))
-//      snapshot.docs.forEach(async docProf=>{
-//      const pack = docProf.data()
-//   const {
-//   id,
-//     title,
-//     data,
-//     profileId,
-//     approvalScore=0,
-//     privacy,
-//     commentable,
-//   }= pack
-//         let snap = await getDoc(doc(db,"profile",profileId))
-//         let {userId }= snap.data()
-     
-//         let ref = doc(db,"page",id)
-//         await updateDoc(ref,{
-//          userId:userId
-//         })
-        
-//         })
-//     }catch(e){
-//       console.error(e.message)
-//     }
-})
 
-// function chunkArray(array, chunkSize) {
-//   const chunkedArray = [];
-//   for (let i = 0; i < array.length; i += chunkSize) {
-//     chunkedArray.push(array.slice(i, i + chunkSize));
-//   }
-//   return chunkedArray;
-// }
+
 const getPageApprovals = createAsyncThunk("users/getPageApprovals",async (params,thunkApi)=>{
   try{
   const {profile}=params
@@ -670,8 +663,9 @@ const getPageApprovals = createAsyncThunk("users/getPageApprovals",async (params
   }
 }
 })
-const  searchDialogToggle = createAction("users/searchDialogToggle",(thunkApi)=>{
-  return {}
+const  searchDialogToggle = createAction("users/searchDialogToggle",(params,thunkApi)=>{
+  const {open} = params
+  return {payload: open}
 })
 const unpackUserApprovalDoc = (doc)=>{
   const pack = doc.data();
@@ -680,6 +674,10 @@ const unpackUserApprovalDoc = (doc)=>{
         let userApproval = new UserApproval(id,pageId,profileId,score)
       return userApproval
 }
+let clickMe = createAsyncThunk("Sf",async (params,thunkApi)=>{
+
+})
+
 export {logIn,
         signUp,
         getCurrentProfile,
@@ -706,5 +704,6 @@ export {logIn,
         setSignedInTrue,
         setSignedInFalse,
         getPageApprovals,
-        searchDialogToggle
+        searchDialogToggle,
+        searchMultipleIndexes
     }

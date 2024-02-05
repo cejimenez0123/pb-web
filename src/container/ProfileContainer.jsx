@@ -34,19 +34,14 @@ function ProfileContainer(props){
         fetchData()
     },[])
     useEffect(()=>{
-        const { id} = pathParams
-       
-        if(profile==null || (profile != null && profile.id != id)){
-
-            dispatch(fetchProfile(pathParams)).then(result=>{
+        dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
-                    
+                    fetchProfileFollows()
                 },()=>{
                 })
-            })
-        }
-        fetchProfileFollows()
-    },[])
+        })
+
+    },[profile])
    
     const fetchProfileFollows =()=>{
         if(currentProfile && profile && followedProfiles.length<=0){

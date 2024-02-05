@@ -199,7 +199,8 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
                         })
           const contributors= new Contributors(commenters,readers,writers,editors)
           if(!privacy){
-            client.initIndex("book").saveObject({objectID:id,titlee:title}).wait()
+            client.initIndex("book").saveObject(
+              {objectID:id,titlee:title,type:"book"}).wait()
           }            
    const book = new Book(
     id,
@@ -366,6 +367,7 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
         purpose: purpose,
         updatedAt: updatedAt
       })
+      client.initIndex("book").partialUpdateObject({objectID:book.id,title},{createIfNotExists:true}).wait()
       const contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
             
       let newBook = new Book( book.id,
@@ -388,12 +390,13 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
 const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>{
   try{
     const {book}=params
-  await deleteDoc(doc(db, "book", book.id));
+    await deleteDoc(doc(db, "book", book.id));
+    client.initIndex("book").deleteObject(book.id).wait()
     return {
       book:book
     }
   }catch(e){
-    return {error: new Error("Error: Delete Book"+e.message)};
+    return {error: new Error("Error: DELETE BOOK"+e.message)};
   }
 })
 const updateBookContent = createAsyncThunk("books/updateBookContent", async (params,thunkApi)=>{
@@ -517,10 +520,10 @@ function unpackBookDoc(doc){
   let editors = pack["editors"]
   let readers = pack["readers"]
   let writers = pack["writers"]
-  if(!Boolean(editors)){
+  if(!editors){
     editors = []
   }
-  if(!Boolean(commenters)){
+  if(!commenters){
     commenters = []
   }
   if(!Boolean(writers)){

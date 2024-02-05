@@ -20,12 +20,13 @@ export default function ContentList({profile}){
     const [listType,setListType]=useState("page")
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const [isContentVisible, setIsContentVisible] = useState(true)
-    const [hasMorePages,setHasMorePages]=useState(false)
-    const [hasMoreBooks,setHasMoreBooks]=useState(false)
+    const [hasMorePages,setHasMorePages]=useState(true)
+    const [hasMoreBooks,setHasMoreBooks]=useState(true)
+    const [hasMoreLibraries,setHasMoreLibraries]=useState(true)
     const [pages,setPages] = useState([])
     const [books,setBooks] = useState([])
     const [libraries,setLibraries]=useState([])
-    const [hasMoreLibraries,setHasMoreLibraries]=useState(false)
+   
     const [sortTime,setSortTime]=useState(false)
     const [sortAlpha,setSortAlpha]=useState(false)
     const dispatch = useDispatch()
@@ -68,7 +69,7 @@ export default function ContentList({profile}){
     useEffect(()=>{},[pagesInView])     
     const fetchPageData = () =>{
             const params = {profile:profile,page,groupBy:9}
-            setHasMorePages(true)
+            
             dispatch(getProfilePages(params)).then((result) => {
                 checkResult(result,payload=>{
                 const {pageList}=payload
@@ -80,7 +81,7 @@ export default function ContentList({profile}){
         })
     }
     const fetchBookData=()=>{
-            setHasMoreBooks(true)
+       
             const params = {profile:profile,page,groupBy:9}
              dispatch(getProfileBooks(params)).then((result) => {
                 checkResult(result,payload=>{
@@ -98,7 +99,7 @@ export default function ContentList({profile}){
     
     const fetchLibraryData=()=>{
         
-                setHasMoreLibraries(true)
+          
                 const params = {profile:profile,page,groupBy:9}
                 dispatch(getProfileLibraries(params)).then(result=>{
                     checkResult(result,payload=>{

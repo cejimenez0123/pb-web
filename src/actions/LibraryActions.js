@@ -4,31 +4,30 @@ import { deleteDoc,and,or,orderBy,getDoc,collection,setDoc,doc ,Timestamp,getDoc
 import { db,auth,client } from "../core/di"
 import Contributors from "../domain/models/contributor"
 
-//make a bookmark library for joe
 
 const updateLibrary = createAsyncThunk("libraries/updateLibrary", async function(params,thunkApi){
-//     
-
-
-try{
-const {
-  library,
-  name,
-  purpose,
-  privacy,
-  writingIsOpen
-  }=params
-  const ref =doc(db, "library", library.id)
-  await updateDoc(ref, {
-    privacy:privacy,
-    writingIsOpen:writingIsOpen,
-    name:name,
-    purpose:purpose,
-  })
-  const contributors= new Contributors(library.commenters,
-              library.readers,library.writers,library.editors)
-            
-  const libraryItem =new Library(library.id,
+  try{
+    const {
+      library,
+      name,
+      purpose,
+      privacy,
+      writingIsOpen
+    }=params
+    const ref =doc(db, "library", library.id)
+    await updateDoc(ref, {
+      privacy:privacy,
+      writingIsOpen:writingIsOpen,
+      name:name,
+      purpose:purpose,
+    })
+    client.initIndex("library")
+    .partialUpdateObject({objectID:library.id,name},{createIfNotExists:true}).wait()
+    const contributors= new Contributors( library.commenters,
+                                          library.readers,
+                                          library.writers,
+                                          library.editors)
+    const libraryItem =new Library(library.id,
               name,library.profileId,
               purpose,library.pageIdList,
               library.bookIdList,
@@ -514,6 +513,7 @@ const deleteLibrary = createAsyncThunk("libraries/deleteLibrary", async (params,
   try{
     const {library }=params
   await deleteDoc(doc(db, "library", library.id));
+  client.initIndex("library").deleteObject(library.id).wait()
     return {library}
   }catch(e){
     return {error: new Error("Error: Delete Library"+e.message)};

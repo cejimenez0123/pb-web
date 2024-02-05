@@ -62,7 +62,7 @@ function NavbarContainer(props){
     const createRef = React.useRef()
     const pageRef = React.useRef()
     const openDialogAction = ()=>{
-      dispatch(searchDialogToggle())
+      dispatch(searchDialogToggle({open:true}))
     }
     const handleCloseNavMenu = (page) => {
       if(page===PageName.login){
