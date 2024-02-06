@@ -30,52 +30,50 @@
 
 This project is part of finding a solution for my needs of having a resource manager for my writing and inpiration. Inspired by the enviroment of writers' workshops. The app uses pages,books, and libraries, as a metaphor of instances of work, projects, and community for projects. 
 
-It uses React, Redux, Material UI, and Firebase/Firestore.
+It uses React and Material UI for UI, Redux Toolkit for added state mangagement, ajdnAlgolia for search. Also, Firebase and it's Firestore,Auth, and Hosting libraries.
 
 
 
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
 
-* [![React][React.js]][React-url]
-* [![Redux][Redux.js]][Redux-url]
+* [React.js](https://react.dev/)
+* [Redux Toolkit](https://redux-toolkit.js.org/)
+* [Algolia](https://www.algolia.com/doc/)
+* [Firebase/Firestore](https://firebase.google.com/docs/firestore)
+* [MaterialUI](https://mui.com/)
+
 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+I used VSCode as my IDE. You will need your own IDE.
+
+* [VSCode](https://code.visualstudio.com/)
 
 ### Installation
 
 
 
-1. Get your API Key at [https://example.com](https://example.com)
+1. Get your API Keys at for [Firebase](https://firebase.google.com/) to open a new project. As well, [Algolia](https://www.algolia.com/)
+
 2. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/cejimenez0123/pb-web.git
    ```
 3. Install NPM packages
    ```sh
     npm install
    ```
 4. Enter your API in `.env`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
     ```js
     VITE_FIREBASE_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxx"
     VITE_AUTH_DOMAIN="xxxxxxxxxxxxxx.firebaseapp.com"
@@ -122,8 +120,9 @@ See the [open issues](https://github.com/othneildrew/Best-README-Template/issues
 ## Contact
 
 Christian Jimenez 
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+instagram:[@plumbumapp](https://www.instagram.com/plumbumapp)
+@Plumbum 2023
+Project Link: [https://https://github.com/cejimenez0123/pb-web](https://github.com/cejimenez0123/pb-web.git)
 
 
 
@@ -131,7 +130,7 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[Redux.js]:https://redux-toolkit.js.org/img/redux.svg
+<!-- [Redux.js]:https://redux-toolkit.js.org/img/redux.svg -->
 [React-url]: https://reactjs.org/
-[Redux-url]: https://redux-toolkit.js.org/
+<!-- [Redux-url]: https://redux-toolkit.js.org/ -->
 

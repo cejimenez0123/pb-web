@@ -17,6 +17,7 @@ import ProfileContainer from './container/ProfileContainer';
 import UpdateLibraryContainer from './container/library/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/book/AddPageToBookContainer';
 import AddItemsToLibraryContainer from './container/library/AddItemsToLibraryContainer';
+import SearchDialog from './components/SearchDialog';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
 import {  getPublicBooks } from './actions/BookActions';
@@ -86,10 +87,7 @@ function App(props) {
                 <title>Plumbum</title>
                 <meta name="description" content="The place for writers to connect" />
         </Helmet>
-      {/* <header>
     
-      </header> */}
-  {/*  REACT QUILL*/}
 
   <link
   rel="stylesheet"
@@ -106,7 +104,6 @@ function App(props) {
 <script src="https://unpkg.com/react-quill@1.3.3/dist/react-quill.js"></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 <script type="text/babel" src="/my-scripts.js"></script>
-  {/*  */}
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossOrigin="anonymous"/>
         <script src="https://kit.fontawesome.com/08dbe310f1.js" crossorigin="anonymous"></script>
         <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
@@ -115,6 +112,7 @@ function App(props) {
       <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/>
+        <SearchDialog  />
         <Routes history={history} >
           <Route exact  path={Paths.home()} 
                         element={
@@ -154,14 +152,14 @@ function App(props) {
         <PrivateRoute loggedIn={!!props.currentProfile}>
           <MyProfileContainer currentProfile={props.currentProfile} 
                               pagesInView={props.pagesInView} 
-                    
                               booksInView={props.booksInView}
                               librariesInView={props.librariesInView}/>
        </PrivateRoute>
       }
     />
     <Route path="/profile/:id" element={
-    <ProfileContainer profile={props.profileInView}/>}/>
+      <ProfileContainer profile={props.profileInView}/>
+      }/>
     
     <Route  path="/book/:id" 
             element={
@@ -169,7 +167,8 @@ function App(props) {
         book={props.bookInView} 
         pages={props.pagesInView}/>
     }/>
-    <Route  path="/page/image"  
+    <Route  
+        path="/page/image"  
         element={ 
           <PrivateRoute loggedIn={!!props.currentProfile}>
           <EditorContainer 

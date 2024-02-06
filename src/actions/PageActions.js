@@ -57,7 +57,9 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
         privacy,
         approvalScore: page.approvalScore,
       })
-      client.initIndex("page").partialUpdateObject({objectID: page.id,title:title},{createIfNotExists:true}).wait()
+      if(!privacy){
+        client.initIndex("page").partialUpdateObject({objectID: page.id,title:title},{createIfNotExists:true}).wait()
+      }
       const contributors= new Contributors(page.commenters,
         page.readers,page.writers,page.editors)
       let newPage= new Page(page.id,

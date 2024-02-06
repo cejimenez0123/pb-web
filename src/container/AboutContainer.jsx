@@ -8,7 +8,6 @@ import theme from "../theme"
 import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
-import { clickMe } from "../actions/UserActions"
 export default function AboutContainer(props){
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -16,7 +15,7 @@ export default function AboutContainer(props){
         return(<div>
             <div className="box">
 
-<h1>For Creatives</h1>
+<h1 className="poppins">For Creatives</h1>
 <p > 
 Plumbum is for writers to help recreate the writers' workshop online.
 Writers' workshop are a place to receive feedback on your work from people 
@@ -44,7 +43,7 @@ color:"#5CCA61",fontSize:"2em"}}>Sign Up</Button>
 }
 const detailsOfWorkshop=()=>{
     return (<div>
-        <h3>What is a Writers' Workshop?</h3>
+        <h3 className="poppins">What is a Writers' Workshop?</h3>
         <ul>
 <p >
 🔒It's a creative sanctuary. A place to receive feedback, control privacy,
@@ -77,14 +76,18 @@ Plumbum is great place to begin work and find support to complete work.
         </div>)
     }
     return(<div id="about">
+        
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300;400;700&display=swap" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,300&family=Roboto:wght@500&display=swap" rel="stylesheet"/>
 <div>
     <div  className="welcome">
     
     <div id="title">
         <h1><strong>Welcome to Plumbum</strong></h1>
     </div>
-        <MediaQuery minWidth={"950px"}>
+        <MediaQuery minWidth={"1000px"}>
 <div id="bookshelf">
 <img  src={rickyBookshelf}alt="bookshelves" />
 

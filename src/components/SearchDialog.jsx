@@ -7,7 +7,7 @@ import debounce from "../core/debounce";
 import { searchDialogToggle, searchMultipleIndexes } from "../actions/UserActions";
 import checkResult from "../core/checkResult";
 import { useNavigate } from "react-router-dom";
-export default function SearchDialog({open}){
+export default function SearchDialog(props){
     const navigate = useNavigate()
     const searchDialogOpen = useSelector(state=>state.users.searchDialogOpen)
     const searchResults = useSelector(state=>state.users.searchResults)
@@ -38,7 +38,6 @@ export default function SearchDialog({open}){
                         })
                     
                     })
-                    console.log("SDSS"+JSON.stringify(items.flat()))
                     setSearchContent(items.flat())
                     ;
             },err=>{
@@ -62,9 +61,12 @@ export default function SearchDialog({open}){
       <ClearIcon onClick={closeDialog}/>
     </div>
     <TextField  value={searchQuery}
+                style={{width:"98%",margin:"auto"}}
                 onChange={(e)=>debounce(setSearchQuery(e.currentTarget.value),10)}
                 placeholder='Search...'/>
+                
     <InfiniteScroll
+        className="scroll"
      dataLength={searchContent.length}
      next={()=>{}}
      hasMore={false}

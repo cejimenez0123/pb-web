@@ -33,7 +33,6 @@ function MyProfileContainer({booksInView,currentProfile,librariesInView}){
             </div>         
             <div className="right-bar">
                     <ProfileCard profile={currentProfile}/>
-                
                     <CreateButtons />
                 
             </div>  
@@ -100,15 +99,6 @@ function CreateButtons (props){
                   
                     Page {anchorCreate?<ExpandMore/>:<ExpandLess/>}
                   </MenuItem>
-                   
-                  
-                      {/* <ListItemButton key="page" 
-                        onClick={(e)=>{
-                            setAnchorCreate(e.currentTarget)
-                         }}sx={{ pl: 4 }}
-                        >
-                         Page {anchorCreate?<ExpandMore/>:<ExpandLess/>} */}
-                        {/* </ListItemButton> */}
                           <List style={{display:Boolean(anchorCreate)?"":"none"}}>
                             <ListItemButton key="page" 
                               onClick={(e)=>{
@@ -137,13 +127,6 @@ function CreateButtons (props){
                      <LinkIcon/>
                     </ListItemButton>
                           </List>
-                     
-                    {/* <MenuItem onClick={()=>navigate("/page/text")}>
-                      Page <CreateIcon/>
-                    </MenuItem>
-                    <MenuItem onClick={()=>navigate("/page/image")}>
-                      Page <ImageIcon/>
-                    </MenuItem> */}
                     <MenuItem onClick={()=>{
                         navigate("/book/new")
                     }}>

@@ -1,5 +1,3 @@
-
-
 import { useState,useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -13,8 +11,8 @@ import ListItem from './ListItem';
 import { Button} from "@mui/material";
 import checkResult from "../core/checkResult";
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
-import debounce from "../core/debounce";
 import { btnStyle } from "../styles/styles";
+
 export default function ContentList({profile}){
     const [page,setPage] = useState(1)  
     const [listType,setListType]=useState("page")
@@ -42,8 +40,9 @@ export default function ContentList({profile}){
         </div>)
         if(pages!=null ){    
             return (
-                <div className="content-list">
+                <div >
             <InfiniteScroll
+                className="scroll"
                 dataLength={pages.length}
                 next={fetchPageData}
                 hasMore={hasMorePages} // Replace with a condition based on your data source
@@ -130,9 +129,9 @@ export default function ContentList({profile}){
             }}
             else if(listType=="book"){
              if(books!=null && books.length>0){  
-               return  (<div className="content-list">
+               return  (<div >
                 <InfiniteScroll 
-          
+                    className="scroll"
                    dataLength={books.length}
                    next={fetchBookData}
                    hasMore={hasMoreBooks}
@@ -164,13 +163,13 @@ export default function ContentList({profile}){
                 return(
                     <div >
                     <InfiniteScroll
-              
-                    dataLength={libraries.length}
-                    next={fetchLibraryData}
-                    hasMore={hasMoreLibraries}
-                    loader={<p>Loading...</p>}
-                    endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
-                >
+                        className="scroll"
+                        dataLength={libraries.length}
+                        next={fetchLibraryData}
+                        hasMore={hasMoreLibraries}
+                        loader={<p>Loading...</p>}
+                        endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
+                    >
                     {libraries.map((library)=>{
         
                         return (<div key={library.id}>
@@ -299,7 +298,7 @@ export default function ContentList({profile}){
         setIsContentVisible(true)
     } 
 
-    return(<div >
+    return(<div className="content-list" >
                 <div className="inner">
                 <div className="btn-row">
                     <div>

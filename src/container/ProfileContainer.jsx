@@ -144,21 +144,15 @@ function ProfileContainer(props){
         </div>)
     }
     return(
-        <div className="container">
+        <div className="two-panel">
             <div className="left-bar">
-               {profileCardDiv}
+                {profileCardDiv}
             </div>
             <div className="right-bar">
                 <ContentList profile={profile}
-                             pagesInView={pagesInView}/>
+                            />
             </div>
-          
-            
-                                    
-                                      
-         
-        </div>
-                
+        </div> 
             )
 }
 export default ProfileContainer

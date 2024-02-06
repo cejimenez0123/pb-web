@@ -19,11 +19,6 @@ export default function CreateBookContainer({pagesInView}){
         const currentProfile = useSelector(state=>state.users.currentProfile)
         const pagesToBeAdded = useSelector(state=>{return state.pages.pagesToBeAdded})
         const dispatch = useDispatch()
-        
-       
-   
-    
-
     useEffect(
         ()=>{
             fetchBooks()
@@ -112,7 +107,7 @@ export default function CreateBookContainer({pagesInView}){
     const bookList = ()=>{
             let i = 0
                 return(<div >
-                    <InfiniteScroll dataLength={books.length} 
+                    <InfiniteScroll style={{maxHeight:"90vh"}}className="create-list" dataLength={books.length} 
            next={fetchBooks}
            hasMore={false} // Replace with a condition based on your data source
            loader={<p>Loading...</p>}
@@ -140,43 +135,16 @@ export default function CreateBookContainer({pagesInView}){
                     </InfiniteScroll>
                 </div>)
             }
-
-        const pagesToBeAddedList =()=>{
-            if(pagesToBeAdded!=null){
-        
-             
-            return(<div className="content-to-be-added-list">
-                <div>
-                <h4>Pages to be Added</h4>
-                </div>
-                {pagesToBeAdded.length>0?pagesToBeAdded.map(page =>{
-
-                    return (
-                        <div key={page.id}>
-                            <h6>{page.title}</h6>
-                        
-                        </div>
-                    )
-                }):<h6>0 items being added</h6>}
-            </div>)}
-            
-        }
       
-    return(<div className="create" >
+    return(
         <div className="two-panel">
-         
-            <div className="left-bar">
-          
-                {bookList()}
-            
+            <div className="left-bar">         
+                {bookList()}    
             </div>
             <div className="right-bar">
-       
                 <CreateForm/>
-          
-            
             </div>
         </div>
-    </div>)
+    )
 }
 

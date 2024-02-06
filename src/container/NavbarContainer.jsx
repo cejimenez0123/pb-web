@@ -137,8 +137,8 @@ function NavbarContainer(props){
       <div>
         <AppBar position="static"
                 style={{backgroundColor:theme.palette.primary.dark}}>
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
+            <Container >
+                <Toolbar disableGutters={true}>
                     <Typography
                         onClick={()=>{
                             navigate("/")
@@ -476,8 +476,8 @@ function NavbarContainer(props){
       
 
       </AppBar>
-      <SearchDialog open={openDialog} />
       
+    
       </div>
     );
 }
