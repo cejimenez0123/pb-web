@@ -61,7 +61,7 @@ export default function SearchDialog(props){
       <ClearIcon onClick={closeDialog}/>
     </div>
     <TextField  value={searchQuery}
-                style={{width:"98%",margin:"auto"}}
+                style={{width:"94%",margin:"auto"}}
                 onChange={(e)=>debounce(setSearchQuery(e.currentTarget.value),10)}
                 placeholder='Search...'/>
                 
@@ -94,5 +94,7 @@ export default function SearchDialog(props){
             }
         })}
     </InfiniteScroll>
+    <div style={{height:"100%"}}>
+    </div>
   </Dialog>
   }

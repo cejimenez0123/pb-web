@@ -273,8 +273,7 @@ function NavbarContainer(props){
                       </MenuItem>)
 
                     }else if(page==PageName.search){
-                      return currentProfile?(<div></div>):
-                    (<MenuItem onClick={()=>openDialogAction()} 
+                      return (<MenuItem onClick={()=>openDialogAction()} 
                                 key={page} >
                             <Typography textAlign="center">{page}</Typography>
                           </MenuItem>)
@@ -404,11 +403,6 @@ function NavbarContainer(props){
                   // 
            
                   :(<div></div>) 
-
-
-                }else if(currentProfile && page==PageName.login){
-                  return(<div></div>)
-                
                 }else if(page ==PageName.search){
                   return(<Button
                     key={page}
@@ -417,6 +411,8 @@ function NavbarContainer(props){
                   >
                     {page}
                   </Button>)
+                }else if(currentProfile && page==PageName.login){
+                  return(<div></div>)
                 }else{     
               return(<Button
     key={page}

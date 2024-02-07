@@ -53,10 +53,10 @@
 }
 #library-forums{
   overflow: scroll;
+  text-align: left;
 }
-#library-forums label{
-
-  padding-left: 2em;
+#library-forums .label{
+  margin-left: 1em;
 }
 #library-forums .item{
   background-color: var(--slightly-yellow);
@@ -65,7 +65,7 @@
   margin-bottom: 2em;
   min-width: 25em;
   min-height: 15em;
-  border-radius: 25px;
+  border-radius:8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -78,18 +78,19 @@
 #library-forums .item .name{
   background-image: linear-gradient(0.25turn,var(--light), transparent);
   padding-top:1em;
-  padding-left: 2em;
-  border-bottom-left-radius: 25px;
-  border-bottom-right-radius: 25px;
+  padding-left:1em;
+  padding-bottom: 0.4em;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 #forums-list{
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  text-align: left;
   margin-top: 1em;
 }
-#forums-list label{
-  padding-left: 2em;
+#forums-list .label{
+  padding-left: 1em;
   color:#02120A;
 }
 #forums-list #page-list .content-item{
@@ -242,8 +243,8 @@
     background-image: linear-gradient(0.25turn,var(--light), transparent);
     padding-top:1em;
     padding-left: 2em;
-    border-bottom-left-radius: 25px;
-    border-bottom-right-radius: 25px;
+    border-bottom-left-radius:8px;
+    border-bottom-right-radius: 8px;
     
   }
   #forums-list{

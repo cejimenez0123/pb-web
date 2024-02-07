@@ -151,22 +151,21 @@ const navigateToLibrary = (library)=>{
         return(
             <ErrorBoundary>
             <div id="discover"  >
-            <div style={{paddingTop:"3em",textAlign:"center"}}>
+            <div style={{paddingTop:"3em"}}>
                 <h1 >Discovery</h1>
                 </div>
               <div >
                 <div id="library-forums">
-                <label><h4>Libraries</h4></label>
+                <h3 className='label'>Libraries</h3>
                 {libraryForums()}
                     </div>
                 <div id='forums-list'>
                     <div>
-                        <label><h4> Pages</h4></label>
+                        <h3 className='label'>Pages</h3>
                     {pageList()}
                     </div>
                     <div>
-                       <label><h4>Books</h4></label>
-                 
+                       <h3 className='label'>Books</h3>
                     {bookList()}
                     </div>
                     </div>

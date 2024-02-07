@@ -290,8 +290,8 @@
     text-align: center;
     width: var(--large-list-item-width);
     background-color: var(--background-secondary);
-    border-bottom-left-radius: 25px;
-    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
     margin:auto;
   }
   #dashboard {
@@ -382,8 +382,8 @@
     text-align: center;
     width: 100%;
     background-color: var(--background-secondary);
-    border-bottom-left-radius: 25px;
-    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
     margin:auto;
   }
 
