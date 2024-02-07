@@ -26,8 +26,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
+<h4>Plumbum</h4>
+<br/>
 This project is part of finding a solution for my needs of having a resource manager for my writing and inpiration. Inspired by the enviroment of writers' workshops. The app uses pages,books, and libraries, as a metaphor of instances of work, projects, and community for projects. 
 
 It uses React and Material UI for UI, Redux Toolkit for added state mangagement, ajdnAlgolia for search. Also, Firebase and it's Firestore,Auth, and Hosting libraries.
