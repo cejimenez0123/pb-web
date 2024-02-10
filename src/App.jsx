@@ -113,7 +113,7 @@ function App(props) {
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/>
         <SearchDialog  />
-        <div className='container'>
+        <div className='screen'>
         <Routes history={history} >
           <Route exact  path={Paths.home()} 
                         element={

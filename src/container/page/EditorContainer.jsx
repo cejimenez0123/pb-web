@@ -208,14 +208,14 @@ function EditorContainer({currentProfile}){
                   return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)
               }else if(ePage.type===PageType.picture){
                 
-                  return (<div className="image">
+                  return (<div  className="image">
 
                     <img src={htmlContent} alt={ePage.data}/>
                     </div>)
               }else if(ePage.type === PageType.link){
-                  return(<div  className="link">
+                  return(
                       <PicturePageForm />
-                  </div>)
+                  )
               }else{
                   return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)}
             }else{
@@ -266,7 +266,7 @@ function EditorContainer({currentProfile}){
 </Dropdown> 
             :<div></div>
           }
-const createForm = ()=>(<FormGroup  style={{marginBottom:"3em"}}
+const createForm = ()=>(<FormGroup  style={{marginBottom:"2em"}}
       className="create-form" >
 <TextField 
 onChange={(e)=>setTitle(e.target.value)}  
@@ -336,10 +336,13 @@ style={{backgroundColor:theme.palette.secondary.main,
    
         return(
           <div className="two-panel"> 
-              <div >   
+              <div className="left-bar" >   
                 {contentDiv()}
+                <div style={{height:"100%"}}>
+
+                </div>
               </div>
-              <div >
+              <div className="right-bar">
                {createForm()} 
                
                     {ePage?<RoleList

@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
-import loadingAnimation from "../images/loading-animation.json"
-import Lottie from "lottie-react";
+import "../App.css"
 function LinkPreview({ url,size }) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -93,13 +92,12 @@ function LinkPreview({ url,size }) {
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
       <div  className="link-preview" 
-            // onClick={handleClick} 
             style={{ cursor: 'pointer' }}>
         <Spotify width={"100%"} link={url}/>
       </div>)
   }
   if (loading) {
-    return <Skeleton width={"100%"}/>
+    return <Skeleton height={"10em"}width={"100%"}/>
     // return <p>Loading...</p>;
   }
 
@@ -111,23 +109,21 @@ function LinkPreview({ url,size }) {
 
   if (previewData.videoId) {
     return (
-      <div onClick={handleClick} style={{ cursor: 'pointer' }}>
-        <img style={{width:"100%"}}src={previewData.videoThumbnail} alt="Video Thumbnail" />
-      </div>
+      // <div >
+        <img onClick={handleClick} style={{ cursor: 'pointer' }} className="thumbnail"src={previewData.videoThumbnail} alt="Video Thumbnail" />
+      //</div>
     );
   }
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image && <img src={previewData.image}  alt="Link Preview" />}
+      {previewData.image && <img className="thumbnail"src={previewData.image}  alt="Link Preview" />}
     </div>)
     }else{
       
-       return (<div >
-      
-         <Spotify width={"100%"}  link={url}/>
-        
-      </div>)
+       return (
+        <Spotify width={"100%"}  link={url}/>
+      )
     }
   }
   const previewTitle=()=>{

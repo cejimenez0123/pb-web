@@ -13,6 +13,7 @@ import checkResult from '../core/checkResult';
 import isValidUrl from '../core/isValidUrl';
 import debounce from '../core/debounce';
 import ErrorBoundary from '../ErrorBoundary';
+import "../App.css"
 import LinkPreview from './LinkPreview';
 import { setHtmlContent } from '../actions/PageActions';
 
@@ -42,19 +43,19 @@ function PicturePageForm(){
     }
     const checkContentTypeDiv = (type)=>{
         if(type.toUpperCase()=="link".toUpperCase()){  
-           if(isValidUrl(htmlContent)){
-                        
-               return(
-                   <LinkPreview url={htmlContent} />
-               )
-               }
-              else{
-             return (<div><p>URL is not valid</p></div>)
-              }
-    }else{
-        return(<img src={htmlContent} alt={""} />
-        )
-    }}
+           if(isValidUrl(htmlContent)){        
+                return(
+                    <LinkPreview url={htmlContent} />
+                )
+            }else{
+                return (<div><p>URL is not valid</p></div>)
+            }
+        }else{
+            return(
+                <img src={htmlContent} alt={""} />
+            )
+        }
+    }
     const uploadBtn =()=>{
         let href = window.location.href.split("/")
         const last = href[href.length-1]
@@ -97,19 +98,20 @@ onInput={(e)=>{
     return(<div className='upload-picture'>
  
         
-        <FormGroup style={{backgroundColor:theme.palette.primary.light}}className='form'>
+        {/* <FormGroup > */}
             <TextField  
                     value={htmlContent}
-                    style={{backgroundColor:"white",borderRadius:"8px",maxWidth:"100%"}}
+                    className='url'
                     label="URL"
                     placeholder="URL" 
                     onChange={(e)=>debounce(handleChange(e.target.value),20)}
                 />
             {uploadBtn()}
+        
             {contentDiv()}
+           
+            {/* </FormGroup> */}
             
-            </FormGroup>
-    
     
 </div>)
 }
