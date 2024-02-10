@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
+import { Skeleton } from '@mui/material';
 import loadingAnimation from "../images/loading-animation.json"
 import Lottie from "lottie-react";
 function LinkPreview({ url,size }) {
@@ -58,10 +59,7 @@ function LinkPreview({ url,size }) {
 
           }
           }
-          // console.log("description"+description)
-          // console.log("image"+JSON.stringify(image))
-          // console.log(`title`+title)
-         
+        
           setPreviewData({
               title,
               description,
@@ -101,7 +99,7 @@ function LinkPreview({ url,size }) {
       </div>)
   }
   if (loading) {
-    return <Lottie animationData={loadingAnimation} loop={true}/>
+    return <Skeleton width={"100%"}/>
     // return <p>Loading...</p>;
   }
 
@@ -114,7 +112,7 @@ function LinkPreview({ url,size }) {
   if (previewData.videoId) {
     return (
       <div onClick={handleClick} style={{ cursor: 'pointer' }}>
-        <img src={previewData.videoThumbnail} alt="Video Thumbnail" />
+        <img style={{width:"100%"}}src={previewData.videoThumbnail} alt="Video Thumbnail" />
       </div>
     );
   }

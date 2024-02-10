@@ -113,6 +113,7 @@ function App(props) {
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/>
         <SearchDialog  />
+        <div className='container'>
         <Routes history={history} >
           <Route exact  path={Paths.home()} 
                         element={
@@ -136,7 +137,8 @@ function App(props) {
           <Route  path="/login"  
                   element={ 
           <LoggedRoute 
-            profile={!props.currentProfile}
+        
+            loggedOut={!props.currentProfile}
           >
             <LogInContainer logIn={props.logIn}
             />
@@ -180,7 +182,7 @@ function App(props) {
     <Route
       exact path="/page/text"
       element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute  loading={props.userLoading} loggedIn={!!props.currentProfile}>
             <EditorContainer 
               htmlContent={props.htmlContent}
               currentProfile={props.currentProfile} 
@@ -190,7 +192,7 @@ function App(props) {
        <Route
       exact path="/page/link"
       element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
             <EditorContainer 
               htmlContent={props.htmlContent}
               currentProfile={props.currentProfile} 
@@ -203,7 +205,7 @@ function App(props) {
        <Route
       path="/page/:id/edit"
       element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
             <EditorContainer 
               htmlContent={props.htmlContent} 
               currentProfile={props.currentProfile} 
@@ -211,17 +213,17 @@ function App(props) {
         </PrivateRoute>
       }/>
       <Route path="/book/new" element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute  loading={props.userLoading} loggedIn={!!props.currentProfile}>
           <CreateBookContainer pagesInView={props.pagesInView} booksInView={props.booksInView}/>
         </PrivateRoute>
       }/>
       <Route path="/book/:id/edit" element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
         <EditBookContainer book={props.bookInView} pages={props.pagesInView}/>
         </PrivateRoute>
       }/>
       <Route path="/library/new" element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
         <CreateLibraryContainer/>
         </PrivateRoute>
       }/>
@@ -230,28 +232,28 @@ function App(props) {
         />
       }/>
       <Route path="/profile/edit" element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
         <SettingsContainer />
         </PrivateRoute>
       }/>
       <Route path="/library/:id/edit" element={
-         <PrivateRoute loggedIn={!!props.currentProfile}>
+         <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
         <UpdateLibraryContainer/>
         </PrivateRoute>}/>
       <Route path="/book/:id/add" element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
           <AddPageToBookContainer/>
         </PrivateRoute>
       }/>
       <Route path="/library/:id/add" element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
           <AddItemsToLibraryContainer/>
         </PrivateRoute>
       }/>
       
     </Routes>
 
-    
+    </div>
     </div>
   );
 }
@@ -283,8 +285,8 @@ function mapStateToProps(state){
     pageInView: state.pages.pageInView,
     pagesInView: state.pages.pagesInView,
     librariesInView: state.libraries.librariesInView,
-    bookLoading: state.books.loading
-
+    bookLoading: state.books.loading,
+    userLoading: state.users.loading
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)

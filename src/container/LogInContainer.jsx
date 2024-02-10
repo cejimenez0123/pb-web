@@ -1,7 +1,7 @@
-import React ,{useState} from 'react'
+import React ,{useState,useEffect} from 'react'
 import "../App.css"
 import { logIn,signUp,uploadProfilePicture} from '../actions/UserActions';
-import {useDispatch} from 'react-redux';
+import {useDispatch,useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import {InputAdornment,
         IconButton, 
@@ -10,6 +10,7 @@ import {InputAdornment,
         FormControlLabel,
         Button, 
         FormGroup, 
+        Dialog,
         Typography} from "@mui/material"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { VisibilityOff,Visibility } from '@mui/icons-material';
@@ -17,10 +18,10 @@ import { styled } from '@mui/material/styles';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import {sendPasswordResetEmail } from "firebase/auth";
 import theme from '../theme';
-import { Modal } from '@mui/joy';
+import { Clear } from '@mui/icons-material';
 import { auth } from '../core/di';
 import checkResult from '../core/checkResult';
-import { margin } from '@mui/system';
+import PageSkeleton from '../components/PageSkeleton';
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -35,6 +36,7 @@ const VisuallyHiddenInput = styled('input')({
 
 function LogInContainer(props) {
     const dispatch = useDispatch()
+    const [loading,setLoading]=useState(true)
     const [suUsername, setSuUsername] = useState('');
     const [suEmail, setSuEmail] = useState('');
     const [suPassword, setSuPassword] = useState('');
@@ -58,6 +60,7 @@ function LogInContainer(props) {
                       
         dispatch(signUp(params)).then((result) => {
             checkResult(result,payload=>{
+                localStorage.setItem("loggedIn",true)
                 navigate("/profile/home")
             },()=>{
                 setSignUpError(true)
@@ -68,6 +71,7 @@ function LogInContainer(props) {
         setSignUpError(true)
     }
     };
+
     const handleProfilePicture =(e)=>{
         const files = Array.from(e.target.files)
         const params = { file: files[0]
@@ -92,6 +96,7 @@ function LogInContainer(props) {
         const params ={email:liEmail,password:liPassword}
         dispatch(logIn(params)).then((result) => {
         checkResult(result,payload=>{
+            
             navigate("/profile/home")
         },()=>{
             setLogInError(true)
@@ -104,13 +109,19 @@ function LogInContainer(props) {
         setLogInError(true)
     }
     }
+    // if(loading){
+    //     return <div id="dashboard" ><PageSkeleton/></div>
+    // }else{
     return (
         <div id="LogInContainer">
+            <div className='two-panel'>
+            <div className='left-bar'>
             <SignInCard setError={setSignUpError}
                         error={signUpError}
                         username={suUsername}
                         password={suPassword}
                         email={suEmail}
+                        selfStatement={selfStatement}
                         setUsername={setSuUsername}
                         setEmail={setSuEmail} 
                         setPassword={setSuPassword}
@@ -119,6 +130,8 @@ function LogInContainer(props) {
                         setProfilePicture={handleProfilePicture}
                         setPrivacy={setPrivacy}
                         handleSubmit={handleNewUser}/>
+            </div>
+            <div className='right-bar'>
             <LogInCard  setError={setLogInError}
                         error={logInError}
                         password={liPassword} 
@@ -126,8 +139,11 @@ function LogInContainer(props) {
                         handleSubmit={handleLogIn}
                         setEmail={setLiEmail}
                         setPassword={(str)=>setLiPassword(str)}/>
+            </div>
+        </div>
         </div>
     )
+    // }
 }
 
 const inputStyle = {
@@ -210,6 +226,7 @@ function SignInCard(props) {
                         <h6>Self Statement</h6>
                         <TextareaAutosize 
                             name="selfStatement" 
+                            value={props.selfStatement} 
                             onChange={(e)=>{
                             props.setError(false)
                             let value = e.target.value
@@ -220,7 +237,8 @@ function SignInCard(props) {
                             {   marginBottom:"2em",
                                 width: "99%",
                                 padding:"1em",
-                                backgroundColor:theme.palette.primary.contrastText
+                                backgroundColor:theme.palette.primary.contrastText,
+                                color:theme.palette.primary.dark
                             }
                         }
                       
@@ -329,35 +347,40 @@ function LogInCard(props){
                 style={btnStyle}
                 variant="contained" type="submit">Log In</Button>
         </FormGroup>
-        <Modal
+        <Dialog
        
         open={open}
         onClose={()=>{setOpen(false)}}
-        aria-labelledby="modal-modal-title"
+      
                 >
-                   
+                <div>
+                    <Clear onClick={
+                        ()=>setOpen(false)
+                    }/>    
+                </div>  
 
-                    <FormGroup id="modal-modal-description" 
-                     style={{width: "40em",
+                    <FormGroup
+                     style={{
+                       
                             marginLeft: inputStyle.marginLeft,
-                            marginTop:"4em",
-                            borderRadius:"25px",
-                            padding:"6em",
-                            backgroundColor:theme.palette.secondary.light,
+                            margin:"4em auto 0em auto ",
+                            padding:"2em",
+                            minWidth: "20em"
                             }}  
                     
                      >
                          <Typography 
                     id="modal-modal-title" variant="h6" component="h2"
                     >
-      Forgot Passowrd
+      Forgot Password
     </Typography>
 
                         <TextField 
                             label="E-mail" 
                             value={forgotEmail} 
                             style={{marginTop:"4em",
-                                    marginBottom:"3em",
+                            width:"90%",
+                                    marginBottom:"2em",
                                     backgroundColor:theme.palette.secondary.contrastText}}
                             onChange={(e)=>setForgotEmail(e.target.value)}
                         />
@@ -374,6 +397,10 @@ function LogInCard(props){
                                 .catch((error) => {
                                   const errorCode = error.code;
                                   const errorMessage = error.message;
+                                  if(error.message.includes("(auth/user-not-found)")){
+                                    window.alert("User not found")
+                                  }
+                            
                                   // ..
                                 });}else{
                                     window.alert("Please write an email")
@@ -382,7 +409,7 @@ function LogInCard(props){
                             Send
                         </Button>
                     </FormGroup>
-                </Modal>
+                </Dialog>
                 </div>
     </div>)
 }

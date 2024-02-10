@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "page",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "privacy",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "created",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

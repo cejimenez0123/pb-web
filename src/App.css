@@ -65,6 +65,23 @@
   .content .no-more-data{
     width: 100%;
   }
+  .page-skeleton{
+    margin: auto;
+    width: fit-content;
+   
+  }
+  .page-skeleton .header{
+    width: var(--large-list-item-width);
+    height: 4em;
+  }
+  .page-skeleton .body{
+    width: var(--large-list-item-width);
+    height: 20em;
+  }
+  .page-skeleton .footer{
+    width: var(--large-list-item-width);
+    height: 4em;
+  }
 .sign-card{
   display: flex;
   flex-direction: column;
@@ -72,7 +89,7 @@
   width: 25em;
   border-radius: 25px;
   border: 1px solid aliceblue;
-  margin: 0em auto em auto;
+  margin: 0em auto 1em auto;
   background-color: whitesmoke;
   
  
@@ -420,7 +437,11 @@
 
   }
 }
-
+@media (max-width: 900px) {
+  .link-preview img{
+    width: 5em;
+  }
+}
 @media (min-width: 900px) {
 .list-item{
   color:var(--text-color);

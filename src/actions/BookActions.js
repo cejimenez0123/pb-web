@@ -368,7 +368,7 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
         updatedAt: updatedAt
       })
       if(!privacy){
-      client.initIndex("book").partialUpdateObject({objectID:book.id,title},{createIfNotExists:true}).wait()
+        client.initIndex("book").partialUpdateObject({objectID:book.id,title},{createIfNotExists:true}).wait()
       }
       const contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
             

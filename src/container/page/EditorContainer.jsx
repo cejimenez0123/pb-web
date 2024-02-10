@@ -213,7 +213,7 @@ function EditorContainer({currentProfile}){
                     <img src={htmlContent} alt={ePage.data}/>
                     </div>)
               }else if(ePage.type === PageType.link){
-                  return(<div id="editor" className="link">
+                  return(<div  className="link">
                       <PicturePageForm />
                   </div>)
               }else{
@@ -266,7 +266,60 @@ function EditorContainer({currentProfile}){
 </Dropdown> 
             :<div></div>
           }
-      
+const createForm = ()=>(<FormGroup  style={{marginBottom:"3em"}}
+      className="create-form" >
+<TextField 
+onChange={(e)=>setTitle(e.target.value)}  
+value={title} 
+label="Title"/>
+<FormControlLabel 
+control={<Checkbox 
+style={checkmarkStyle}
+checked={!privacy} 
+onChange={(e)=>setPrivacy(!e.target.checked)}
+/>} label={!privacy?"Public":"Draft"} />
+
+<FormControlLabel 
+control={<Checkbox style={checkmarkStyle}checked={commentable} onChange={(e)=>{
+setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
+
+
+<Button style={{backgroundColor:theme.palette.secondary.main,
+            color:theme.palette.secondary.contrastText}}
+    onClick={(e)=>onSavePress((page)=>{
+
+history.replace(`/page/${ePage.id}/edit`)
+})} className="">
+Save
+</Button>
+<div className="button-row">
+{addBtn()}
+{editingPage?<IconButton onClick={()=>{
+dispatch(setPageInView({page:editingPage}))
+navigate(Paths.page.createRoute(editingPage.id))
+}}><Visibility/></IconButton>:(<div></div>)}
+
+</div>
+
+<div id="post-button-row">
+<Button
+onClick={()=>debounce(onSavePress((page)=>{
+setPrivacy(false)
+dispatch(setPageInView({page:page}))
+navigate(Paths.page.createRoute(page.id))
+}),10)}
+style={{backgroundColor:theme.palette.secondary.main,
+    color:theme.palette.primary.contrastText,
+    width: "100%",
+    marginTop: "2em",
+    padding:"2em",
+    
+  }
+}
+>Post</Button>
+</div>
+{deleteDiv}
+</FormGroup>)
       let deleteDiv = (<div>
         </div>) 
       if(editingPage){ 
@@ -282,69 +335,13 @@ function EditorContainer({currentProfile}){
       }
    
         return(
-          <div className="edit-container">
-           
-              <div >
-                
+          <div className="two-panel"> 
+              <div >   
                 {contentDiv()}
-                
               </div>
               <div >
-                
-                <FormGroup  style={{marginBottom:"3em"}}
-                            className="create-form" >
-                  <TextField 
-                    onChange={(e)=>setTitle(e.target.value)}  
-                    value={title} 
-                    label="Title"/>
-                  <FormControlLabel 
-                control={<Checkbox 
-                style={checkmarkStyle}
-                checked={!privacy} 
-                onChange={(e)=>setPrivacy(!e.target.checked)}
-                />} label={!privacy?"Public":"Draft"} />
-                 
-                 <FormControlLabel 
-                control={<Checkbox style={checkmarkStyle}checked={commentable} onChange={(e)=>{
-                  setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
-                 
-            
-                  <Button style={{backgroundColor:theme.palette.secondary.main,
-                                  color:theme.palette.secondary.contrastText}}
-                          onClick={(e)=>onSavePress((page)=>{
-                 
-            history.replace(`/page/${ePage.id}/edit`)
-                  })} className="">
-                    Save
-                    </Button>
-                    <div className="button-row">
-                  {addBtn()}
-                  {editingPage?<IconButton onClick={()=>{
-                    dispatch(setPageInView({page:editingPage}))
-                    navigate(Paths.page.createRoute(editingPage.id))
-                    }}><Visibility/></IconButton>:(<div></div>)}
-                 
-                    </div>
-                    
-              <div id="post-button-row">
-                  <Button
-                  onClick={()=>debounce(onSavePress((page)=>{
-                    setPrivacy(false)
-                    dispatch(setPageInView({page:page}))
-                    navigate(Paths.page.createRoute(page.id))
-                  }),10)}
-                  style={{backgroundColor:theme.palette.secondary.main,
-                          color:theme.palette.primary.contrastText,
-                          width: "100%",
-                          marginTop: "2em",
-                          padding:"2em",
-                          
-                        }
-                }
-                  >Post</Button>
-                </div>
-                    {deleteDiv}
-                    </FormGroup>
+               {createForm()} 
+               
                     {ePage?<RoleList
                                 item={ePage} 
                                 type={"page"} 

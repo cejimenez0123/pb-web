@@ -51,7 +51,7 @@ const userSlice = createSlice({
     .addCase(logIn.fulfilled, (state, { payload }) => {
         state.loading = false
         state.signedIn = true
-      
+        localStorage.setItem("loggedIn",true)
         state.currentProfile = payload.profile
     }).addCase(logIn.rejected, (state,{payload}) => {
         state.error = payload.error
@@ -60,7 +60,7 @@ const userSlice = createSlice({
 
         state.loading = true
     }).addCase(signUp.fulfilled,(state,{payload})=>{
-   
+        localStorage.setItem("loggedIn",true)
         state.currentProfile = payload.profile
         state.signedIn= true
         state.loading = false
@@ -74,6 +74,7 @@ const userSlice = createSlice({
         state.loading = true
     }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
        state.currentProfile = payload.profile
+       localStorage.setItem("loggedIn",true)
        state.loading = false
     }).addCase(fetchAllProfiles.fulfilled,(state,{ payload })=>{
         state.profilesInView = payload.profileList
