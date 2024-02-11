@@ -21,12 +21,13 @@ import {    logIn ,
             setSignedInFalse,
             getPageApprovals,
             searchDialogToggle,
-            searchMultipleIndexes
+            searchMultipleIndexes,
+            fetchArrayOfProfiles
         } from "../actions/UserActions"
 import { create } from "lodash"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"
 const initialState = {
-    signedIn: true,
+    signedIn: false,
     currentProfile: null,
     homeCollection: null,
     loading:false,
@@ -150,7 +151,7 @@ const userSlice = createSlice({
         const list = state.followedLibraries.filter(fl=>fl!=null &&fl.id != payload.followLibrary.id)
         state.followedBooks = list
     }).addCase(deleteFollowProfile.fulfilled,(state,{payload})=>{
-        const list = state.followedProfiles.filter(fp=> fp!=null &&payload.followLibrary && fp.id != payload.followLibrary.id)
+        const list = state.followedProfiles.filter(fp=> fp!=null &&payload.followProfile && fp.id != payload.followLibrary.id)
         state.followedBooks = list
     }).addCase(setSignedInTrue.type,(state,{payload})=>{
         state.signedIn = true
@@ -173,6 +174,8 @@ const userSlice = createSlice({
         state.searchResults = payload.searchResults
     }).addCase(searchMultipleIndexes.rejected,(state,{payload})=>{
         state.error =payload.error
+    }).addCase(fetchArrayOfProfiles.fulfilled,(state,{payload})=>{
+        state.profilesInView = payload.profileList
     })
 }})
 

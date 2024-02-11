@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { getCurrentProfile,updateProfile,deleteUserAccounts, fetchHomeCollection, updateHomeCollection} from "../actions/UserActions";
+import { uploadProfilePicture,updateProfile,deleteUserAccounts, fetchHomeCollection, updateHomeCollection, fetchArrayOfProfiles} from "../actions/UserActions";
+import { btnStyle } from "../styles/styles";
 import useAuth from "../core/useAuth";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
@@ -11,18 +12,36 @@ import {    Button,
             Checkbox,
             FormControlLabel,
             Dialog,
-            DialogActions,DialogContent,DialogContentText,DialogTitle, IconButton } from "@mui/material";
+            DialogActions,
+            DialogContent,
+            styled,
+            DialogContentText,
+            DialogTitle,
+            IconButton} from "@mui/material";
 
 import "../styles/Setting.css"
 import theme from "../theme"
-import { fetchPage } from "../actions/PageActions";
-import { fetchBook } from "../actions/BookActions";
-import { fetchLibrary } from "../actions/LibraryActions";
+import { fetchArrayOfPages, fetchPage } from "../actions/PageActions";
+import { fetchArrayOfBooks, fetchBook } from "../actions/BookActions";
+import { fetchArrayOfLibraries, fetchLibrary } from "../actions/LibraryActions";
 import { fetchProfile } from "../actions/UserActions";
 import checkResult from "../core/checkResult";
 import { checkmarkStyle } from "../styles/styles";
 import Paths from "../core/paths";
 import { Clear } from "@mui/icons-material";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import uuidv4 from "../core/uuidv4";
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
 function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
@@ -31,8 +50,8 @@ function SettingsContainer(props) {
     const [newUsername,setNewUsername] = useState("")
     const homeCollection = useSelector(state=>state.users.homeCollection)
     const [selfStatement,setSelfStatement] = useState("")
+    const [profilePic,setProfilePic]=useState("")
     const [isPrivate,setPrivacy] = useState(false)
-    const [authState,setAuthState]=useState(auth)
     const [homeItems,setHomeItems] = useState([])
     const [hasMoreHome,setHasMoreHome]=useState(false)
     const dispatch = useDispatch()
@@ -42,45 +61,68 @@ function SettingsContainer(props) {
     const [homeBooks,setHomeBooks]=useState([])
     const [homeLibraries,setHomeLibraries]=useState([])
     const [homeProfiles,setHomeProfiles]=useState([])
-    const fetchCollectionInfo =(collection)=>{
+    useEffect(()=>{
+    // if(localStorage.getItem("loggedIn")==true){
+        setUserInfo() 
+    // }
+   
+    },[])
+    const setUserInfo = () => {
+        
+        if(currentProfile){
+
+        
+        setProfile(currentProfile)
+        }else{
+            navigate(
+            Paths.login()
+            )
+        }
+    }
+    
+    const fetchCollectionInfo =()=>{
         setHomeItems([])
        
-       if(collection){
-            homePages.forEach(id=>{
-                dispatch(fetchPage({id})).then(result=>checkResult(result,payload=>{
-                    const {page}=payload
-                    let item = { type:"page",page,id:page.id}
-                    setHomeItems(prevState=>{return [...prevState,item]})
-                },err=>{
-                }))
-            })
-            homeBooks.forEach(id=>{
-                dispatch(fetchBook({id})).then(result=>checkResult(result,payload=>{
-                    const {book}=payload
-              
-                    let item = {type:"book",book,id:book.id}
-                    setHomeItems(prevState=>{return [...prevState,item]})
+       if(homeCollection){
+            const pageParams = {pageIdList:homeCollection.pages}
+            dispatch(fetchArrayOfPages(pageParams)).then(result=>checkResult(
+                result,payload=>{
+                    const {pageList}=payload
+                    const list = pageList.filter(page=>page).map(page=>{return{ type:"page",page,id:page.id}})
+                    setHomeItems(prevState=>[...prevState,...list])
                 },err=>{
 
-                }))
-            })
-            homeLibraries.forEach(id=>{
-                dispatch(fetchLibrary({id})).then(result=>checkResult(result,payload=>{
-                    let {library} = payload
-                    let item = {type:"library",library,id:library.id}
-                    setHomeItems(prevState=>{return [...prevState,item]})},err=>{
-
-                    }))
-                })
-            homeProfiles.forEach(id=>{
-                dispatch(fetchProfile({id})).then(result=>checkResult(result,payload=>{
-                    const {profile} =  payload
-                    const item = {type:"profile",profile,id:profile.id}
-                    setHomeItems(prevState=>{return [...prevState,item]})
+                }
+            ))
+            const bookParams = {bookIdList:homeCollection.books}
+            dispatch(fetchArrayOfBooks(bookParams)).then(result=>checkResult(result,
+                payload=>{
+                    const {bookList}=payload
+                    const list = bookList.filter(book=>book).map(book=>{return{type:"book",book,id:book.id}})
+                    setHomeItems(prevState=>[...prevState,...list])
                 },err=>{
 
                 }))
-            })
+            const libraryParams = {libraryIdList:homeCollection.libraries}
+            dispatch(fetchArrayOfLibraries(libraryParams)).then(result=>
+                checkResult(result,payload=>{
+                    const {libraryList}=payload
+                    const list = libraryList.filter(library=>library).map((library)=>{return {type:"library",library,id:library.id}})
+                    setHomeItems(prevState=>[...prevState,...list])
+                },err=>{
+
+                }))
+      
+            const profileParams = {profileIdList:homeCollection.profiles}
+            dispatch(fetchArrayOfProfiles(profileParams)).then(result=>
+                checkResult(result,payload=>{
+                    const {profileList} = payload
+                    
+                    const list = profileList.filter(profile=>profile).map(profile=>{return{ type:"profile",profile,id:profile.id}})
+                    setHomeItems(prevState=>[...prevState,...list])
+                },err=>{
+
+                }))
         }
     }
     
@@ -98,17 +140,17 @@ function SettingsContainer(props) {
                 }))
         }
     }
-    const setHomeCollection = (collection)=>{
+    const setHomeCollection = ()=>{
         setHomePages([])
         setHomeBooks([])
         setHomeLibraries([])
         setHomeProfiles([])
-        if(collection){
-            if(collection.pages){setHomePages(homeCollection.pages)}
-            if(collection.books){ setHomeBooks(homeCollection.books)}
-            if(collection.libraries){setHomeLibraries(homeCollection.libraries)}
-            if(collection.profiles){setHomeProfiles(homeCollection.profiles)}
-            fetchCollectionInfo(collection)
+        if(homeCollection){
+            if(homeCollection.pages){setHomePages(homeCollection.pages)}
+            if(homeCollection.books){ setHomeBooks(homeCollection.books)}
+            if(homeCollection.libraries){setHomeLibraries(homeCollection.libraries)}
+            if(homeCollection.profiles){setHomeProfiles(homeCollection.profiles)}
+            fetchCollectionInfo(homeCollection)
         }
         
     }
@@ -124,37 +166,16 @@ function SettingsContainer(props) {
     const handleClose = () => {
         setDeleteDialog(false);
     };
-    useEffect(()=>{
-            setUserInfo() 
-    },[])
+
    
-    const setUserInfo = () => {
-       
-        if(currentProfile){
-            setProfile(currentProfile)
-
-        }else{
-            const params = {
-                            userId: authState.user.uid
-                        }
-            dispatch(getCurrentProfile(params)).then(result=>checkResult(result,payload=>{
-                    const {profile} = payload
-                    setProfile(profile)
-            },err=>{
-                navigate(
-                Paths.login()
-                )
-            }))
-        }  
-
-    }
+    
     const setProfile = (profile)=>{
         setPending(true)
         if(newUsername.length<=0){
             setNewUsername(profile.username)
         }
    
-  
+        setProfilePic(profile.profilePicture)
         setSelfStatement(profile.selfStatement)
         setPrivacy(profile.privacy)
         setPending(false)
@@ -166,6 +187,7 @@ function SettingsContainer(props) {
         const params = {
             profile: currentProfile,
             username: newUsername,
+            profilePicture: profilePic,
             selfStatement: selfStatement,
             privacy: isPrivate
             
@@ -191,7 +213,28 @@ function SettingsContainer(props) {
             },err=>{
                 
             }))
-    }   
+    } 
+    const DeleteDialog = ()=> <Dialog
+    open={deleteDialog}
+    onClose={handleClose}
+    aria-labelledby="alert-dialog-title"
+    aria-describedby="alert-dialog-description"
+  >
+    <DialogTitle id="alert-dialog-title">
+      {"Are you sure you want to delete your account?"}
+    </DialogTitle>
+    <DialogContent>
+      <DialogContentText id="alert-dialog-description">
+        Deleting your account can't be reversed
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={handleClose}>Disagree</Button>
+      <Button onClick={handleAgree} autoFocus>
+        Agree
+      </Button>
+    </DialogActions>
+  </Dialog>  
     const deleteHomeItem  = (item)=>{
         switch(item.type){
             case "page":{
@@ -235,7 +278,8 @@ function SettingsContainer(props) {
             }
             case "book":{
                 return (<div className="home-item">{item.book.title}
-                <IconButton onClick={()=>deleteHomeItem(item)}><Clear/></IconButton></div>)
+                <IconButton onClick={()=>deleteHomeItem(item)}>
+                    <Clear/></IconButton></div>)
             }
             case "library":{
                 return (<div className="home-item">{item.library.name}
@@ -250,6 +294,21 @@ function SettingsContainer(props) {
             }
         }
     }
+    const handleProfilePicture =(e)=>{
+        const files = Array.from(e.target.files)
+        const params = { file: files[0]
+        }
+        dispatch(uploadProfilePicture(params)).then((result) => {
+            checkResult(result,(payload)=>{
+                const {url}= payload
+                setProfilePic(url)
+            },(err)=>{
+                window.alert(err.message)
+                setSignUpError(true)
+            })
+    
+        })
+    }
     const collectionList = ()=>{
         return (
             <div className="collection">
@@ -262,7 +321,7 @@ function SettingsContainer(props) {
                     scrollableTarget="scrollableDiv"
           >
             {homeItems.map((item)=>{
-            return <div key={item.id}>{homeItem(item)}</div>
+            return <div key={item.id+`_${uuidv4()}`}>{homeItem(item)}</div>
             })}
           </InfiniteScroll>
            
@@ -271,7 +330,7 @@ function SettingsContainer(props) {
     }
     const textfieldStyle = {backgroundColor:theme.palette.primary.extraLight,borderRadius:"8px",width:"100%" }
     if(!pending){
-            return(<div style={{backgroundColor:theme.palette.primary.light,marginBottom:"2em"}}className="SettingsContainer">
+            return(<div style={{marginBottom:"2em"}}className="SettingsContainer">
                     <div  className="SettingForm">
                         <FormGroup>
                             <TextField  style={textfieldStyle} 
@@ -280,12 +339,26 @@ function SettingsContainer(props) {
                                         onChange={(e)=>setNewUsername(e.target.value)
                                         }
                                          label="Username"/>
+                                          <div className='file'>
+                                <Button 
+                                style={btnStyle}
+                                
+                                component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                   
+                    Upload Picture
+                    <VisuallyHiddenInput type="file"  name ='profile_picture'
+                        onInput={(e)=>handleProfilePicture(e)}/>
+
+                    </Button>
+                    </div>
+                            <img className="profile-pic" src={profilePic}/>
                             <label className="self-statement" id="self-statement" >
                                 <h6>Self Statement:</h6>
                                 <TextareaAutosize 
                                     style={{
                                         padding:"1em",
                                         borderRadius:textfieldStyle.borderRadius,
+                                        color:theme.palette.primary.dark,
                                         backgroundColor:textfieldStyle.backgroundColor}}
                                     onChange={(e)=>{setSelfStatement(e.target.value)}}
                                     minRows={3}
@@ -332,27 +405,8 @@ function SettingsContainer(props) {
                                         backgroundColor: theme.palette.error.main,
                                         color:theme.palette.error.contrastText}}
                         > Delete</Button>
-                        <Dialog
-        open={deleteDialog}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Are you sure you want to delete your account?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Deleting your account can't be reversed
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleAgree} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
+                        <DeleteDialog/>
+        
                         </div>
             </div>)
     }else{

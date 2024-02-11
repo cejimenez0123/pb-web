@@ -1,5 +1,5 @@
 
-@media (min-width:1000px)  {
+@media (min-width:900px)  {
     
 .form{
     margin-top: 4em;
@@ -7,9 +7,17 @@
     padding: 4em 2em;
     border-radius: 25px;
 }
+.SettingForm .profile-pic{
+    max-width: 10em;
+    margin: 2em auto;
 }
-@media (max-width:1000px)  {
-    
+
+}
+@media (max-width:900px)  {
+    .SettingForm  .profile-pic{
+        margin: 2em auto;
+        max-width: 10em;
+    }
     .form{
         margin-top: 4em;
         background-color: var(--light);

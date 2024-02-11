@@ -8,9 +8,8 @@ import { MenuButton } from '@mui/base/MenuButton'
 import { Menu } from '@mui/base/Menu';
 import { RoleType } from "../core/constants";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { fetchAllProfiles, fetchProfile } from "../actions/UserActions";
+import { fetchAllProfiles } from "../actions/UserActions";
 import { useDispatch } from "react-redux";
-import { Timestamp } from "firebase/firestore";
 import Role from "../domain/models/role";
 import Contributors from "../domain/models/contributor";
 import PageRole from "../domain/models/page_role";
@@ -61,7 +60,7 @@ export default function RoleList({getRoles,item,type}) {
     
     useEffect(()=>{
         fetchProfiles()
-    },[item])
+    },[])
     useEffect(()=>{
         getRoles(newRoles)
     },[newRoles]) 

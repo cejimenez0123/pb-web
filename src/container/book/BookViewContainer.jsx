@@ -93,12 +93,23 @@ function BookViewContainer({book}){
             })
     }
     
+    useEffect(()=>{
+        if(currentProfile){
+            dispatch(fetchFollowBooksForProfile({profile: currentProfile})).then(
+                result=>checkResult(result,payload=>{
 
+                },err=>{
+
+                })
+            )
+        }
+       
+    },[])
     useEffect(()=>{
         if(book){
             checkBookPermission(book)
         }
-    },[book,currentProfile])
+    },[])
     const checkBookPermission= (bookItem)=>{
        
         if( bookItem.privacy){
@@ -363,13 +374,13 @@ const bookInfo = ()=>{
 }
   if(book && !error){
 
-    return(<div className="screen">
+    return(<div style={{flexDirection:"column"}} className="two-panel">
            <Helmet>
         <title>{book.title}</title>
         <meta
       name="description"
-      content={book.purpose}
-    />
+      content={book.purpose}/>
+      
         </Helmet>
         <div className="left-bar">
            

@@ -16,8 +16,7 @@ import Paths from "../core/paths"
 import "../styles/PageView.css"
 import LinkPreview from "./LinkPreview"
 import PropTypes from 'prop-types'
-import Lottie from "lottie-react";
-import loadingAnimation from "../images/loading-animation.json"
+import PageSkeleton from "./PageSkeleton"
 export default function PageViewItem({page}) {
     PageViewItem.propTypes={
         page: PropTypes.object.isRequired
@@ -189,7 +188,7 @@ let profile = (<div></div>)
         )
             }else{
                 <div>
-                    <Lottie animationData={loadingAnimation}/>
+                    <PageSkeleton/>
                 </div>
             }
 }

@@ -1,6 +1,5 @@
 import "../styles/About.css"
 import rickyBookshelf from "../images/ricky-bookshelf.jpg"
-import book1 from "../images/book1.png"
 import groupJpg from "../images/write-brooke-group.jpg"
 import MediaQuery from "react-responsive"
 import { Button } from "@mui/material"

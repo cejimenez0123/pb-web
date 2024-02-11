@@ -93,7 +93,7 @@ const getProfilePages= createAsyncThunk(
   
     if(auth.currentUser && (auth.currentUser.uid == profile.userId)){
       queryReq = query(ref, where("profileId", "==", profile.id))
-    }else if(auth.currentUser && (auth.currentUser.uid != profile.userId)){
+    }else if(auth.currentUser && (auth.currentUser.uid !== profile.userId)){
       let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))        
       let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
       let queryEditor = query(ref,where("profileId","==", profile.id),where("editors", "array-contains",auth.currentUser.uid))
@@ -105,7 +105,7 @@ const getProfilePages= createAsyncThunk(
           pageList = [...pageList, page]
         })
       }catch(e){
-        console.error(`Page Query Where Commenter Error: ${e.message}`)
+        console.error(e)
 
       }  
       try {

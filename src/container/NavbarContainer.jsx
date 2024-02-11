@@ -32,6 +32,7 @@ import Paths from '../core/paths'
 import { setEditingPage } from '../actions/PageActions'
 import { searchDialogToggle } from '../actions/UserActions'
 import SearchDialog from '../components/SearchDialog'
+import checkResult from '../core/checkResult'
 const PageName = {
   home: "Home",
   about:"About",

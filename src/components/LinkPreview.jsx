@@ -97,8 +97,7 @@ function LinkPreview({ url,size }) {
       </div>)
   }
   if (loading) {
-    return <Skeleton height={"10em"}width={"100%"}/>
-    // return <p>Loading...</p>;
+    return <Skeleton height={"20em"}width={"100%"}/>
   }
 
   if (!previewData) {

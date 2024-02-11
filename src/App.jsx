@@ -20,6 +20,7 @@ import AddItemsToLibraryContainer from './container/library/AddItemsToLibraryCon
 import SearchDialog from './components/SearchDialog';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
+import checkResult from './core/checkResult';
 import {  getPublicBooks } from './actions/BookActions';
 import {  getCurrentProfile,
           fetchAllProfiles,
@@ -43,23 +44,21 @@ import {Helmet} from "react-helmet";
 function App(props) {
   const authState = useAuth()
   
-  useEffect(()=>{
-      fetchData()
-      
-  },[props.currentProfile])
+
   useEffect(()=>{
     props.fetchAllProfiles()
   },[]
   )
   useEffect(()=>{
-      if((authState.user && !authState.user.isAnonymous && !props.currentProfile) ||(props.currentProfile && authState.user && props.currentProfile.userId != authState.user.uid)){
-      const params = {
-          userId: authState.user.uid,
-      }
-      props.getCurrentProfile(params)
-    }
-
-  },[authState.user])
+    if(authState.user !== null && !authState.user.isAnonymous)  
+      props.getCurrentProfile().then(result=>{
+        checkResult(result,payload=>{
+          fetchData()
+  
+      },err=>{
+        
+      })
+  })},[])
 
   const fetchData = ()=>{
     if(props.currentProfile!=null){
@@ -232,7 +231,8 @@ function App(props) {
         />
       }/>
       <Route path="/profile/edit" element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
+        
+        <PrivateRoute loggedIn={props.currentProfile}>
         <SettingsContainer />
         </PrivateRoute>
       }/>

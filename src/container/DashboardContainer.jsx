@@ -5,9 +5,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import {  fetchArrayOfBooksAppened, fetchBooksWhereProfileEditor, fetchBooksWhereProfileWriter } from '../actions/BookActions'
-import { clickMe, fetchHomeCollection } from '../actions/UserActions'
+import { clickMe, fetchHomeCollection, getCurrentProfile } from '../actions/UserActions'
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
-import {Button} from "@mui/joy"
 import checkResult from '../core/checkResult'
 
 
@@ -21,19 +20,34 @@ function DashboardContainer(props){
     const [hasError,setHasError] = useState(false)
     useEffect(()=>{
         if(currentProfile){
-        const params = {
-            profile:currentProfile
-        }
+            const params = {
+                profile:currentProfile
+            }
+        fetchData()
         dispatch(fetchHomeCollection(params))
+        }else if(currentProfile==null){
+        //     dispatch(getCurrentProfile()).then(result=>{
+        //     checkResult(result,payload=>{
+        //         const {profile}=payload
+        //         const params = {
+        //             profile:profile
+                    
+        //         }
+            
+        //         dispatch(fetchHomeCollection(params)).then(result=>{
+        //             checkResult(result,payload=>{
+        //                 fetchData()
+        //             },err=>{
+
+        //             })
+        //         })
+        //     },err=>{})
+        // })
+    }else{
+        fetchData()
     }
     },[])
    
-    useEffect(()=>{
-        
-        fetchData()}
-    
-    
-    ,[])
     const fetchPublicContent =()=>{
         setHasMore(true)
         setItemsInView([])
@@ -90,8 +104,9 @@ function DashboardContainer(props){
             if(!currentProfile){
               fetchPublicContent()
             }else{
+                setHasMore(true)
                 if(homeCollection && homeCollection.books){
-                    setHasMore(true)
+                   
                     const params = {
                         bookIdList:homeCollection.books,
                         profile: currentProfile
@@ -99,6 +114,7 @@ function DashboardContainer(props){
                     if(homeCollection.books.length>0){
                         dispatch(fetchArrayOfBooksAppened(params)).then(result=>
                             checkResult(result,payload=>{
+                                setHasMore(false)
                                 const {bookList}=payload
                                 getBookListContent(bookList)
                             },err=>{
@@ -120,6 +136,7 @@ function DashboardContainer(props){
                             }
                         dispatch(fetchAppendPagesOfProfile(params)).then(result=>
                             checkResult(result,(payload)=>{
+                                setHasMore(false)
                                         const {pageList} = payload
                                         let list = pageList.map(page=>{return {type:"page",page}})
                                         list.forEach(page=>{
@@ -136,6 +153,7 @@ function DashboardContainer(props){
             }
             dispatch(fetchBooksWhereProfileEditor()).then((result)=>checkResult(result,payload=>{
                 const {bookList}=payload
+
                 getBookListContent(bookList)
             },err=>{
 

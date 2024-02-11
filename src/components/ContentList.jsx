@@ -24,14 +24,17 @@ export default function ContentList({profile}){
     const [pages,setPages] = useState([])
     const [books,setBooks] = useState([])
     const [libraries,setLibraries]=useState([])
-   
     const [sortTime,setSortTime]=useState(false)
     const [sortAlpha,setSortAlpha]=useState(false)
     const dispatch = useDispatch()
     useEffect(()=>{
+       
+       if(profile){
+  
         fetchPageData()
         fetchBookData()
         fetchLibraryData()
+       }
     },[profile])
 
     const pageList=()=>{

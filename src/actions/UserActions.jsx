@@ -22,6 +22,7 @@ import FollowBook from "../domain/models/follow_book"
 import FollowLibrary from "../domain/models/follow_library"
 import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
+import uuidv4 from "../core/uuidv4";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -268,30 +269,24 @@ const updateProfile = createAsyncThunk("users/updateProfile",
         try{               
                         const profile = params["profile"]
                         const newUsername = params["username"]
+                        const profilePicture = params["profilePicture"]
                       const profileRef = doc(db, "profile", profile.id);
                         const newSelfStatement = params["selfStatement"]
                         const newPrivacy = params["privacy"]
 
       await updateDoc(profileRef, {
             username: newUsername,
+            profilePicture,
             selfStatement: newSelfStatement,
             privacy: newPrivacy,
         });
-        client.initIndex("profile").partialUpdateObject({objectID: profile.id,username},{createIfNotExists:true})
+        client.initIndex("profile")
+        .partialUpdateObject({objectID: profile.id,username:newUsername},
+          {createIfNotExists:true})
         const snapshot = await getDoc(profileRef)
-        const pack = snapshot.data()  
-        const id = pack["id"]
-        const username = pack["username"]
-        const profilePicture = pack["profilePicture"]??""
-        const selfStatement = pack["selfStatement"]
-        const homeLibraryId = pack["homeLibraryId"]
-        const bookmarkLibraryId = pack["bookmarkLibraryId"]
-        const userId = pack["userId"]
-        const privacy = pack["private"]
-        const created = pack["created"]
-        const updatedProfile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
-        
       
+        const updatedProfile = unpackProfileDoc(snapshot)
+
             return {
                 profile: updatedProfile
             }
@@ -305,29 +300,9 @@ const fetchAllProfiles = createAsyncThunk("users/fetchAllProfiles",async (state,
     let snapshot = await getDocs(profileRef)
     let profileList = []
     snapshot.docs.forEach(doc => {
-        const { id } = doc
-        const pack = doc.data()
-        const username = pack["username"]
-        const profilePicture = pack["profilePicture"]
-        let selfStatement = pack["selfStatment"]
-        const bookmarkLibraryId = pack["bookmarkLibraryId"]
-        const homeLibraryId = pack["homeLibraryId"]
-        const userId = pack["userId"]
-        const privacy= pack["privacy"]
-        const created = pack["created"]
-        if(selfStatement==null){
-          selfStatement = ""
-        }
-       let prof = new Profile(id,
-                              username,
-                              profilePicture,
-                              selfStatement,
-                              bookmarkLibraryId,
-                              homeLibraryId,
-                              userId,
-                              privacy,
-                              created)
-        profileList.push(prof)
+      const prof = unpackProfileDoc(doc)
+      profileList.push(prof)
+
      })
 
     
@@ -342,7 +317,7 @@ const fetchAllProfiles = createAsyncThunk("users/fetchAllProfiles",async (state,
 const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async (params,thunkApi)=>{
     try {
     const {file }= params
-    const fileName = `profile/profilePicture-${file.name}.jpg`
+    const fileName = `profile/${file.name}-${uuidv4()}.jpg`
     const storageRef = ref(storage, fileName);
     const blob = new Blob([file])
     await uploadBytes(storageRef, blob)
@@ -663,10 +638,52 @@ const getPageApprovals = createAsyncThunk("users/getPageApprovals",async (params
   }
 }
 })
+const fetchArrayOfProfiles = createAsyncThunk("pages/fetchArrayOfProfiles",async (params,thunkApi)=>{
+  try{ 
+    const profileIdList = params["profileIdList"]
+    const profilePromises = profileIdList.map((profileId) => {
+      const profileRef = doc(db, "profile", profileId);
+      return getDoc(profileRef);
+    });
+    let snapshots = await Promise.all(profilePromises)
+    let profileList = snapshots.map(snapshot => unpackProfileDoc(snapshot))
+  
+    return {profileList:profileList}
+  }catch(err){
+    const error = err??new Error("Error: Fetch Array of Profiles")
+    return {error }
+    }
+  }
+)
 const  searchDialogToggle = createAction("users/searchDialogToggle",(params,thunkApi)=>{
   const {open} = params
   return {payload: open}
 })
+const unpackProfileDoc = (doc)=>{
+  const pack =  doc.data() 
+
+  if(pack!=null){  
+      const id = pack["id"]
+      const username = pack["username"]??""
+      const profilePicture = pack["profilePicture"]??""
+      const selfStatement = pack["selfStatement"]
+      const homeLibraryId = pack["homeLibraryId"]
+      const bookmarkLibraryId = pack["bookmarkLibraryId"]
+      const userId = pack["userId"]
+      const privacy = pack["privacy"]
+      const created = pack["created"]
+      const profile = new Profile(id,
+                                  username,
+                                  profilePicture,
+                                  selfStatement,
+                                  bookmarkLibraryId,
+                                  homeLibraryId,
+                                  userId,
+                                  privacy,
+                                  created)
+    return profile
+}}
+
 const unpackUserApprovalDoc = (doc)=>{
   const pack = doc.data();
             const { id } = doc;
@@ -705,5 +722,6 @@ export {logIn,
         setSignedInFalse,
         getPageApprovals,
         searchDialogToggle,
-        searchMultipleIndexes
+        searchMultipleIndexes,
+        fetchArrayOfProfiles
     }

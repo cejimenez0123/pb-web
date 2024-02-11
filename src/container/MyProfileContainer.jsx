@@ -1,15 +1,16 @@
-import React,{ useState }  from 'react';
+import React,{ useEffect, useState }  from 'react';
 import ProfileCard from '../components/ProfileCard';
 import { useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
 import ContentList from '../components/ContentList';
 import { ExpandLess,ExpandMore } from '@mui/icons-material';
 import theme from "../theme"
+import {Skeleton} from "@mui/material"
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import debounce from "../core/debounce"
 import { setEditingPage } from '../actions/PageActions';
-import {useDispatch} from "react-redux"
+import {useDispatch,useSelector} from "react-redux"
 import LinkIcon from '@mui/icons-material/Link';
 import {  
     Menu,
@@ -21,28 +22,45 @@ import {
     
 } from '@mui/material'
 import { btnStyle } from '../styles/styles';
+import PageSkeleton from '../components/PageSkeleton';
+function MyProfileContainer(props){
+    const currentProfile = useSelector(state=>state.users.currentProfile)
+    const loading = useSelector(state=>state.users.loading)
+    const dispatch = useDispatch()
 
-function MyProfileContainer({booksInView,currentProfile,librariesInView}){
-
-   
-    if( currentProfile){ 
-        return(
+    const render = ()=>{
+        if(currentProfile){ 
+            return(
             <div className='two-panel'>
-            <div className='left-bar'>
-                    <ContentList profile={currentProfile}  booksInView={booksInView} librariesInView={librariesInView}/>
-            </div>         
-            <div className="right-bar">
-                    <ProfileCard profile={currentProfile}/>
-                    <CreateButtons />
-                
-            </div>  
-   
-    </div>
-    )}else{
-        return(<div>
-Loading...
-        </div>)
-    }}
+                <div className='left-bar'>
+                        <ContentList profile={currentProfile}/>
+                </div>         
+                <div className="right-bar">
+                        <ProfileCard profile={currentProfile}/>
+                        <CreateButtons />
+                </div>  
+            </div>
+        )
+        }else{
+            return(<div>
+                <div className='two-panel'>
+                <div className='left-bar'>
+                       <PageSkeleton/>
+                </div>         
+                <div className="right-bar">
+                        <Skeleton style={{height:"10em",width:"10em"}} variant='rectangular'/>
+                        <br/>
+                        <Skeleton width={"50%"}variant='rectangular'/>
+                    
+                </div>  
+       
+        </div>
+    
+            </div>)
+        }
+    }
+    return render()
+    }
 
     
 function CreateButtons (props){

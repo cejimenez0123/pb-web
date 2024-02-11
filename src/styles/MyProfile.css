@@ -78,7 +78,7 @@
     padding-top: 2em;
     padding-bottom: 2em;
 }
-.profile-pic{
+.profile-container .profile-pic{
     max-width:6em;
  
     height: auto;
@@ -103,7 +103,7 @@
     box-shadow: 0 5px 18px rgba(0, 0, 0, 0.6);
     background-color:var(--tertiary);
 }
-.profile-pic{
+.profile-container  .profile-pic{
     max-width:6em;
     max-height: 10em;
     

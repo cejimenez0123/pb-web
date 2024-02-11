@@ -521,76 +521,88 @@ const deleteLibrary = createAsyncThunk("libraries/deleteLibrary", async (params,
 })
 const fetchArrayOfLibraries = createAsyncThunk("libraries/fetchArrayOfLibraries",async (params,thunkApi)=>{
   try{
-  const ref = collection(db,"library")
-  const libraryIdList = params["libraryIdList"]
-if(libraryIdList.length == 0){
-  return {
-    libraryList:[]
-  }
-}else{
-  let queryReq =query(ref,
-    and(where("id", "in", libraryIdList),where("privacy","==",false)))
-  if(auth.currentUser){
-  queryReq = query(ref,
-    and(where("id", "in", libraryIdList),
-                 or(where("privacy","==",false),
-                    where('commenters', 'array-contains', auth.currentUser.uid),
-                    where('readers','array-contains', auth.currentUser.uid),
-                    where('editors', 'array-contains', auth.currentUser.uid),
-                    where('writers', 'array-contains',auth.currentUser.uid),
-                    where("privacy","==",false))))
- }
-  let libList = []
-  const snapshot =await getDocs(queryReq)
-   snapshot.docs.forEach(doc => {
+    const libraryIdList = params["libraryIdList"]
+    const profile = params["profile"]
+  const libPromises =libraryIdList.map((libId) => {
+    const pageRef = doc(db, "library", libId);
+    return getDoc(pageRef);
+  });
+  // Use Promise.all to resolve all promises concurrently
+  let snapshots = await Promise.all(libPromises)
+  let libList = snapshots.map(snapshot => unpackPageDoc(snapshot))
+// unpackLibraryDoc(snapshot)
+return {libraryList:libList}
+//   const ref = collection(db,"library")
+//   // const libraryIdList = params["libraryIdList"]
+// if(libraryIdList.length == 0){
+//   return {
+//     libraryList:[]
+//   }
+// }else{
+//   let queryReq =query(ref,
+//     and(where("id", "in", libraryIdList),where("privacy","==",false)))
+//   if(auth.currentUser){
+//   queryReq = query(ref,
+//     and(where("id", "in", libraryIdList),
+//                  or(where("privacy","==",false),
+//                     where('commenters', 'array-contains', auth.currentUser.uid),
+//                     where('readers','array-contains', auth.currentUser.uid),
+//                     where('editors', 'array-contains', auth.currentUser.uid),
+//                     where('writers', 'array-contains',auth.currentUser.uid),
+//                     where("privacy","==",false))))
+//  }
+//   let libList = []
+//   const snapshot =await getDocs(queryReq)
+//    snapshot.docs.forEach(doc => {
    
-         const pack = doc.data();
-         const { id } = doc;
-         const name =pack["name"]
-         const pageIds = pack["pageIdList"]
-         const bookIds = pack["bookIdList"]
-         const profileId = pack["profileId"]
-         const privacy = pack["privacy"]
-         const purpose = pack["purpose"]
-         const writingIsOpen = pack["writingIsOpen"]
-         const created = pack["created"]
-         const updatedAt = pack["updatedAt"]
-         let commenters = pack["commenters"]
-         let editors = pack["editors"]
-         let readers = pack["readers"]
-         let writers = pack["writers"]
-         if(!editors){
-           editors = []
-         }
-         if(!commenters){
-           commenters = []
-         }
-         if(!readers){
-           readers=[]
-         }
-         if(!writers){
-           writers=[]
-         }
+//          const pack = doc.data();
+//          const { id } = doc;
+//          const name =pack["name"]
+//          const pageIds = pack["pageIdList"]
+//          const bookIds = pack["bookIdList"]
+//          const profileId = pack["profileId"]
+//          const privacy = pack["privacy"]
+//          const purpose = pack["purpose"]
+//          const writingIsOpen = pack["writingIsOpen"]
+//          const created = pack["created"]
+//          const updatedAt = pack["updatedAt"]
+//          let commenters = pack["commenters"]
+//          let editors = pack["editors"]
+//          let readers = pack["readers"]
+//          let writers = pack["writers"]
+//          if(!editors){
+//            editors = []
+//          }
+//          if(!commenters){
+//            commenters = []
+//          }
+//          if(!readers){
+//            readers=[]
+//          }
+//          if(!writers){
+//            writers=[]
+//          }
      
-         const contributors= new Contributors(commenters,
-          readers,writers,editors)
-       const lib = new Library(  id,
-                                 name,
-                                 profileId,
-                                 purpose,
-                                 pageIds,
-                                 bookIds,
-                                 writingIsOpen,
-                                 privacy,
-                                 contributors,
-                                 updatedAt,
-                                 created)
-       libList = [...libList,lib]
-     })
-return {
+//          const contributors= new Contributors(commenters,
+//           readers,writers,editors)
+//        const lib = new Library(  id,
+//                                  name,
+//                                  profileId,
+//                                  purpose,
+//                                  pageIds,
+//                                  bookIds,
+//                                  writingIsOpen,
+//                                  privacy,
+//                                  contributors,
+//                                  updatedAt,
+//                                  created)
+//        libList = [...libList,lib]
+//      })
+// return {
 
- libraryList: libList
-}}}catch(err){
+//  libraryList: libList
+// }}
+}catch(err){
   return {
     error: new Error(`Error: Fetch Array Of Libraries: ${err.message}`)
   }

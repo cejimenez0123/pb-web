@@ -1,47 +1,33 @@
 import ContentList from "../components/ContentList"
 import { useParams } from "react-router-dom"
-import { useEffect ,useState} from "react"
+import { useEffect ,useLayoutEffect,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import {    createFollowProfile,
             deleteFollowProfile, 
             fetchProfile,
             updateHomeCollection,fetchFollowProfilesForProfile } from "../actions/UserActions"
 // import ProfileCard from "../components/ProfileCard"
-import { getProfilePages } from "../actions/PageActions"
 import theme from "../theme"
 import "../styles/Profile.css"
-import { Button } from "@mui/material"
+import { Button,Skeleton } from "@mui/material"
 import checkResult from "../core/checkResult"
-import { getProfileBooks } from "../actions/BookActions"
-import { getProfileLibraries } from "../actions/LibraryActions"
 function ProfileContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const profile = useSelector(state=>state.users.profileInView)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
+    const profile = useSelector(state=>state.users.profileInView)
     const followedProfiles = useSelector(state=>state.users.followedProfiles)
     const homeCollection = useSelector(state=>state.users.homeCollection)
     const dispatch = useDispatch()
     const pathParams = useParams()
     const [following,setFollowing]=useState(null)
-    const fetchData =()=>{
-        if(profile){
-        const params = { profile}
-        dispatch(getProfilePages(params))
-        dispatch(getProfileBooks(params))
-        dispatch(getProfileLibraries(params))
-       }}
-    useEffect(()=>{
-        fetchData()
-    },[])
-    useEffect(()=>{
+    useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
                     fetchProfileFollows()
                 },()=>{
                 })
         })
-
-    },[profile])
+    },[])
    
     const fetchProfileFollows =()=>{
         if(currentProfile && profile && followedProfiles.length<=0){
@@ -63,9 +49,6 @@ function ProfileContainer(props){
                         setFollowing(foundFollow)
         }
     }
-    let profileCardDiv = (<div>
-
-    </div>)
     const onClickFollow = () => {
         if(currentProfile){
             if(following){      
@@ -128,9 +111,9 @@ function ProfileContainer(props){
                     onClick={onClickFollow}
         >Read</Button>)
     }
-   
+   const ProfileCard =()=>{
     if(profile!=null){
-      profileCardDiv =  ( <div className="profile-card">
+      return(<div className="profile-card">
         <div className="profile-info">
             <img src={profile.profilePicture} alt="proflile-picture"/>
             <h5 className="username">{profile.username}</h5>
@@ -142,11 +125,14 @@ function ProfileContainer(props){
             <p>{profile.selfStatement}</p>
         </div>
         </div>)
+    }else{
+       return <Skeleton variant="rectangular" className="profile-card"/>
     }
+}
     return(
         <div className="two-panel">
             <div className="left-bar">
-                {profileCardDiv}
+                <ProfileCard/>
             </div>
             <div className="right-bar">
                 <ContentList profile={profile}

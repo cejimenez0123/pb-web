@@ -34,7 +34,7 @@ export default function SearchDialog(props){
                         let index = element.index
                        return element.hits.map(hit=>{
                            let searchItem = {type:index}
-                           console.log(JSON.stringify(hit))
+                           
                              Object.keys(hit).forEach(key=>{
                                 searchItem[key] = hit[key]
                              })

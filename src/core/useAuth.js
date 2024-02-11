@@ -4,6 +4,7 @@ import { useSelector ,useDispatch } from "react-redux"
 import { onAuthStateChanged } from "firebase/auth"
 import { getCurrentProfile,fetchHomeCollection} from "../actions/UserActions"
 import { fetchBookmarkLibrary } from "../actions/LibraryActions"
+import checkResult from "./checkResult"
 
 export default function useAuth(shareAuthState) {
     const [authState, setAuthState] = useState({
@@ -11,6 +12,7 @@ export default function useAuth(shareAuthState) {
       pending: true,
       user: null,
     })
+    const signedIn = useSelector(state=>state.users.signedIn)
     const currentProfile = useSelector(state=>state.users.currentProfile)
   const dispatch = useDispatch()
     useEffect(() => {
@@ -19,29 +21,27 @@ export default function useAuth(shareAuthState) {
             
           if (user) {
             if (user.emailVerified && (!currentProfile || currentProfile.userId != user.uid)) {
-                localStorage.setItem('user', JSON.stringify(user));
+  
                 dispatch(getCurrentProfile({userId: user.uid})).then(result=>{
-                  if(result.error==null){
-                    const {payload} = result
-                    if(payload.error==null){
-                      const {profile} = payload
-                      const params = {
-                        profile
-                      }
-                     
-                      const bookmarkId ={
-                        id: profile.bookmarkLibraryId
-                      }
-                      dispatch(fetchBookmarkLibrary(bookmarkId))
-                      dispatch(fetchHomeCollection(params))
-                    }
-                  }
+                  checkResult(result,payload=>{
+                    const {profile} = payload
+                                    const params = {
+                                      profile
+                                    }
+                                    const bookmarkId ={
+                                                        id: profile.bookmarkLibraryId
+                                                      }
+                                                      dispatch(fetchBookmarkLibrary(bookmarkId))
+                                                      dispatch(fetchHomeCollection(params))
+                  },err=>{
+
+                  })
                 })
-            } 
-                setAuthState({ user, pending: false, isSignedIn: Boolean(user) }) 
             
+            }
+            setAuthState({ user, pending: false, isSignedIn: Boolean(user) }) 
       } })
-},[currentProfile])
+      },[])
 
 
     return {...authState }
