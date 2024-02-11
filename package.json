@@ -8,8 +8,9 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
-    },
+  },
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
     "firebase-tools": "^13.1.0",
     "history": "^5.3.0",
     "lodash": "^4.17.21",

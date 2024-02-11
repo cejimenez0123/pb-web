@@ -49,6 +49,9 @@
   flex-direction: row;
  
 }
+.thumbnail{
+  width: 100%;
+}
 @media (min-width: 850px) {
   .content-list{
    
@@ -313,12 +316,12 @@
 }
 @media (min-width: 900px){
   .upload-picture{
-    margin:auto;
-          background-color: var(--tertiary);
-          width: 100%;
-          border-radius: 8px;
-          max-width: 600px;
-          margin-bottom: 2em;
+      margin:auto;
+      background-color: var(--tertiary);
+      width: 100%;
+      border-radius: 8px;
+      max-width: 600px;
+      margin-bottom: 2em;
 
   }
   .upload-picture .url{
@@ -339,10 +342,12 @@
   @media (max-width: 900px){
     .upload-picture{
       margin:auto;
-            background-color: var(--tertiary);
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 2em;
+      background-color: var(--tertiary);
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 2em;
+      padding-bottom: 2em;
+      padding-top: 2em;
     }
   .upload-picture .body{
     margin-top: 1em;
@@ -634,16 +639,18 @@
     transform: rotate(360deg);
   }
 }
-
+.link-preview p{
+  margin-left: 1em;
+  margin-right: .5em;
+  text-align: left ;
+}
+.link-preview .title{
+  margin-left: .5em;
+  margin-right: .5em;
+  text-align: left;
+}
 @media (min-width: 900px) {
-  .link-preview p{
-    margin-left: 1em;
-    margin-right: .5em;
-  }
-  .link-preview .title{
-    margin-left: .5em;
-    margin-right: .5em;
-  }
+
 
 
   .screen{

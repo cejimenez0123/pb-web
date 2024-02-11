@@ -132,6 +132,7 @@ const userSlice = createSlice({
         state.homeCollection = null
         state.loading = false
         state.signedIn = false
+        localStorage.setItem('loggedIn', false)
     }).addCase(signOutAction.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(fetchHomeCollection.fulfilled,(state,{payload})=>{

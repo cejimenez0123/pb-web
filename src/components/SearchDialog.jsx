@@ -4,9 +4,13 @@ import {Dialog,TextField,useMediaQuery} from "@mui/material"
 import ClearIcon from '@mui/icons-material/Clear';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import debounce from "../core/debounce";
+import { makeStyles } from '@material-ui/core/styles'
 import { searchDialogToggle, searchMultipleIndexes } from "../actions/UserActions";
 import checkResult from "../core/checkResult";
 import { useNavigate } from "react-router-dom";
+import AlgoliaIcon from "../images/algolia.svg"
+// import SvgIcon from '@mui/material/SvgIcon';
+
 export default function SearchDialog(props){
     const navigate = useNavigate()
     const searchDialogOpen = useSelector(state=>state.users.searchDialogOpen)
@@ -16,6 +20,7 @@ export default function SearchDialog(props){
     const [searchContent,setSearchContent] = useState([]);
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const mediaQuery = useMediaQuery('(max-width:850px)')
+ 
     useEffect(()=>{
       setSearchContent(pagesInView)
      
@@ -60,11 +65,16 @@ export default function SearchDialog(props){
     <div className='header'>
       <ClearIcon onClick={closeDialog}/>
     </div>
+    <div style={{width:"94%",margin:"auto",display:"flex",flexDirection:"row"}}>
     <TextField  value={searchQuery}
-                style={{width:"94%",margin:"auto"}}
+                style={{flex:"auto"}}
                 onChange={(e)=>debounce(setSearchQuery(e.currentTarget.value),10)}
-                placeholder='Search...'/>
-                
+                placeholder='Search...'
+               
+              
+                />
+            <img style={{height:"2em"}}src={AlgoliaIcon}/>
+       </div>         
     <InfiniteScroll
         className="scroll"
      dataLength={searchContent.length}

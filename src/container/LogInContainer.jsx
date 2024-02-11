@@ -156,6 +156,7 @@ const inputStyle = {
 const outerInputStyle={width:inputStyle.width,
     marginTop:inputStyle.marginTop,
     marginLeft:inputStyle.marginLeft}
+
 const innerInputStyle={backgroundColor: inputStyle.backgroundColor}
 const btnStyle ={
     width: '95%',
@@ -216,9 +217,9 @@ function SignInCard(props) {
                                 onChange={
                                     (e)=>{
                                         props.setError(false)
-                                       props.setPrivacy(e.target.value)
+                                        props.setPrivacy(e.target.value)
                                     }
-                                   }
+                                }
                                     />}
                     />
                     

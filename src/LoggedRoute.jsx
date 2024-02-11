@@ -9,9 +9,10 @@ const LoggedRoute = ({ loggedOut, children }) => {
     if (loggedOut && localStorage.getItem('loggedIn') === null) {
         // console.log('This is the initial load');
     } else {
-        // if(localStorage.getItem('loggedIn') === true){
+        if(localStorage.getItem('loggedIn') === true){
+          
            navigateBack()
-        // }
+        }
     }
   }, []);
   const navigateBack = ()=>{
