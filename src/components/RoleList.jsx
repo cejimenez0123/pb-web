@@ -11,6 +11,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchAllProfiles } from "../actions/UserActions";
 import { useDispatch } from "react-redux";
 import Role from "../domain/models/role";
+import theme from "../theme";
 import Contributors from "../domain/models/contributor";
 import PageRole from "../domain/models/page_role";
 import checkResult from "../core/checkResult"
@@ -190,7 +191,7 @@ export default function RoleList({getRoles,item,type}) {
                                     <MenuButton>
                                     {role.role}
                                     </MenuButton>
-                                    <Menu>
+                                    <Menu style={{backgroundColor:theme.palette.primary.contrastText}}>
                                         <MenuItem onClick={()=>handleChosingProfileRole(role.profile,"")}>
                                             Delete
                                         </MenuItem>
@@ -249,7 +250,7 @@ export default function RoleList({getRoles,item,type}) {
                         <MenuButton>
                             Role
                         </MenuButton>
-                        <Menu>
+                        <Menu style={{backgroundColor:theme.palette.primary.contrastText}}>
                             <MenuItem onClick={()=>handleChosingProfileRole(profile,RoleType.editor)}>
                                 Editor
                             </MenuItem>

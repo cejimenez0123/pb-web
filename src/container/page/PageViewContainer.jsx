@@ -2,7 +2,7 @@ import { PageType } from "../../core/constants";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPage} from "../../actions/PageActions"
-import { useEffect, useState } from "react";
+import { useEffect, useState ,useLayoutEffect} from "react";
 import "../../styles/PageView.css"
 import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchCommentsOfPage } from "../../actions/PageActions";
@@ -11,6 +11,8 @@ import PageViewItem from "../../components/PageViewItem";
 import checkResult from "../../core/checkResult";
 import {Helmet} from "react-helmet"
 import PropTypes from "prop-types"
+import LinkPreview from "../../components/LinkPreview";
+import PageSkeleton from "../../components/PageSkeleton";
 export default function PageViewContainer({page}){
     PageViewContainer.propTypes = {
         page: PropTypes.object.isRequired
@@ -19,17 +21,15 @@ export default function PageViewContainer({page}){
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const commentsInView = useSelector(state => state.pages.commentsInView)
-    const profilesInView = useSelector(state => state.users.profilesInView)
     const [hasMoreComments,setHasMoreComments]=useState(false)
     const loading = useSelector(state=>state.pages.loading)
-
+    const lookingWrong = <div><h1>Looking in all the wrong places</h1></div>
     const [comments,setComments]= useState([])
     let pageDataElement = (<div>
 
     </div>)
 
     const getPage=()=>{
-        const id =  pathParams["id"]
      
         dispatch(fetchPage(pathParams)).then(result=>{
             checkResult(result,payload=>{
@@ -42,23 +42,8 @@ export default function PageViewContainer({page}){
     
     }
 
-    useEffect(()=>{
-        const {id}= pathParams
-        if(page==null || page.id!=id){
-            getPage()
-        }else{
-            setHasMoreComments(true)
-            if(page){
-                fetchComments(page)
-            }
-            
-        }
-    },[])
-    useEffect(()=>{
-        if(page){
-            fetchComments(page)
-        }
-       
+    useLayoutEffect(()=>{
+        getPage()
     },[])
     useEffect(()=>{
         setComments(commentsInView)
@@ -98,6 +83,8 @@ export default function PageViewContainer({page}){
         case PageType.text:
             pageDataElement = <div className='text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         break;
+        case PageType.link: pageDataElement = <div><LinkPreview url={page.data}/></div>
+        break;
         case PageType.picture:
             pageDataElement = <img className='dashboard-data' src={page.data} alt={page.title}/>
         break;
@@ -107,7 +94,13 @@ export default function PageViewContainer({page}){
         default:
             pageDataElement = <div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>
         break;
-    }}
+    }}else{
+        if(loading){
+        return <PageSkeleton/>
+        }else{
+            return lookingWrong
+        }
+    }
     const commentList = ()=>{
     if(comments && comments.length>0){
         return(<div className="comment-thread">
@@ -162,15 +155,39 @@ export default function PageViewContainer({page}){
            </div>) 
         }
     }
-    return(<div className="center">
+    const present = (<div className="center">
         
-                    {title()}
-                <div id="page">
-                    {pageDiv()}
-                    {commentList()}
-                   
-            </div>
-        </div>)
+    {title()}
+<div id="page">
+    {pageDiv()}
+    {commentList()}
     
+   
+</div>
+</div>)
+
+    const checkPermission=()=>{
+        if(page && !page.privacy){
+        return present
+    }else{
+        if(page && currentProfile){
+            if(page.writers.includes(currentProfile.userId)
+            ||page.editors.includes(currentProfile.userId)
+            ||page.commenters.includes(currentProfile.userId)
+            ||page.readers.includes(currentProfile.userId)){
+            
+                return present
+            }else{
+                return lookingWrong
+            }
+        }else{
+            return lookingWrong
+        }
+
+    }
+
+}
+
+    return checkPermission()    
     
 }

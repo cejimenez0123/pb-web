@@ -93,78 +93,109 @@ const getProfilePages= createAsyncThunk(
   
     if(auth.currentUser && (auth.currentUser.uid == profile.userId)){
       queryReq = query(ref, where("profileId", "==", profile.id))
+   
     }else if(auth.currentUser && (auth.currentUser.uid !== profile.userId)){
-      let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))        
-      let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
-      let queryEditor = query(ref,where("profileId","==", profile.id),where("editors", "array-contains",auth.currentUser.uid))
-      let queryReaders = query(ref,where("profileId","==", profile.id),where("readers", "array-contains", auth.currentUser.uid))
-    try {
-      let snapshot = await getDocs(queryCommenter)
-      snapshot.docs.forEach(doc=>{
-          const page = unpackPageDoc(doc)
-          pageList = [...pageList, page]
-        })
-      }catch(e){
-        console.error(e)
+     try{
+      console.log(auth.currentUser.uid)
+      const queryWriter = query(
+    ref,
+        where('profileId', '==', profile.id),
+        where('writers', 'array-contains', auth.currentUser.uid)
+      );
+      const queryEditor = query(
+        ref,
+            where('profileId', '==', profile.id),
+            where('editors', 'array-contains', auth.currentUser.uid)
+          );
+      const queryCommenter = query(
+            ref,
+                where('profileId', '==', profile.id),
+                where('commenters', 'array-contains', auth.currentUser.uid)
+              );
+      const queryReader = query(
+                ref,
+                    where('profileId', '==', profile.id),
+                    where('readers', 'array-contains', auth.currentUser.uid)
+                  );
+    let queries= [queryWriter,queryEditor,queryCommenter,queryReader,queryReq]
+    //   // queryReq = query(ref, where("profileId", "==", profile.id))
+    let promises = queries.map(query=>{
+      return getDocs(query)
+    })
+    let snapshots = await Promise.all(promises)
+    console.log(snapshots)
+    const docs = snapshots.map(snapshot=>snapshot.docs).flat()
+    pageList = docs.map(doc=>unpackPageDoc(doc))
 
-      }  
-      try {
-        let snapshot = await getDocs(queryReq)
-        snapshot.docs.forEach(doc=>{
-            const page = unpackPageDoc(doc)
-            pageList = [...pageList, page]
-          })
-        }catch(e){
-          console.error(`Page Query Where Req Error: ${e.message}`)
-  
-        }  
-      try{
-        let readerSnap = await getDocs(queryReaders)
-        readerSnap.docs.forEach(doc=>{
-          const page = unpackPageDoc(doc)
-            pageList = [...pageList, page]
-            })
-      }catch(e){
-        console.error(`Page Query Where Reader Error: ${e.message}`)
-      }
-      try{
-        let editorSnap = await getDocs(queryEditor)
-        editorSnap.docs.forEach(doc=>{
-          const page = unpackPageDoc(doc)
-          pageList = [...pageList, page]
-          })
-        }catch(e){
-          console.error(`Page Query Where Editor Error: ${e.message}`)
-      }
-      try{
-      let writerSnap = await getDocs(queryWriter)
-      writerSnap.docs.forEach(doc=>{
-          const page = unpackPageDoc(doc)
-          pageList = [...pageList, page]
-        })
-      }catch (e) {
-        console.error(`Page Query Where Writer Error: ${e.message}`)
-      }
-      return {pageList}
-  }
-  try{
-  const snapshot = await getDocs(queryReq
-                );
-        pageList = []
-        snapshot.docs.forEach(doc => {
-             const page = unpackPageDoc(doc)
-     
-            pageList = [...pageList, page]
-          })
-  }catch (e) {
-    console.error(`Page Query Where Error: ${e.message}`)
-  }
+
   return {
 
       pageList
   }
+}catch(e){
+  console.error(`Page Query Where Error: ${e.message}`)
+  return {error:`Page Query Where Error: ${e.message}`}
 }
-)
+}})
+      // let readerSnap = await getDocs(queryReaders)
+      //   readerSnap.docs.forEach(doc=>{
+      //     const page = unpackPageDoc(doc)
+      //       pageList = [...pageList, page]
+      //       })
+      //     let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))        
+  //     let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
+  //     let queryEditor = query(ref,where("profileId","==", profile.id),where("editors", "array-contains",auth.currentUser.uid))
+  //     let queryReaders = query(ref,where("profileId","==", profile.id),where("readers", "array-contains", auth.currentUser.uid))
+  //   try {
+  //     let snapshot = await getDocs(queryCommenter)
+  //     snapshot.docs.forEach(doc=>{
+  //         const page = unpackPageDoc(doc)
+  //         pageList = [...pageList, page]
+  //       })
+  //     }catch(e){
+  //       console.error(e)
+
+  //     }  
+  //     try {
+  //       let snapshot = await getDocs(queryReq)
+  //       snapshot.docs.forEach(doc=>{
+  //           const page = unpackPageDoc(doc)
+  //           pageList = [...pageList, page]
+  //         })
+  //       }catch(e){
+  //         console.error(`Page Query Where Req Error: ${e.message}`)
+  
+  //       }  
+  //     try{
+  //       let readerSnap = await getDocs(queryReaders)
+  //       readerSnap.docs.forEach(doc=>{
+  //         const page = unpackPageDoc(doc)
+  //           pageList = [...pageList, page]
+  //           })
+  //     }catch(e){
+  //       console.error(`Page Query Where Reader Error: ${e.message}`)
+  //     }
+  //     try{
+  //       let editorSnap = await getDocs(queryEditor)
+  //       editorSnap.docs.forEach(doc=>{
+  //         const page = unpackPageDoc(doc)
+  //         pageList = [...pageList, page]
+  //         })
+  //       }catch(e){
+  //         console.error(`Page Query Where Editor Error: ${e.message}`)
+  //     }
+  //     try{
+  //     let writerSnap = await getDocs(queryWriter)
+  //     writerSnap.docs.forEach(doc=>{
+  //         const page = unpackPageDoc(doc)
+  //         pageList = [...pageList, page]
+  //       })
+  //     }catch (e) {
+  //       console.error(`Page Query Where Writer Error: ${e.message}`)
+  //     }
+  //     return {pageList}
+  // }
+  // try{
 const createPage = createAsyncThunk("pages/createPage", async function(params,thunkApi){
   const ref = collection(db,"page")
   const id = doc(ref).id

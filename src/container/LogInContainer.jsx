@@ -21,7 +21,6 @@ import theme from '../theme';
 import { Clear } from '@mui/icons-material';
 import { auth } from '../core/di';
 import checkResult from '../core/checkResult';
-import PageSkeleton from '../components/PageSkeleton';
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
