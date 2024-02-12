@@ -73,83 +73,44 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
         let bookList = []
         let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
         if(auth.currentUser){
-          let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))   
-          let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
-          let queryEditor = query(ref,where("profileId", "==",profile.id),where("editors", "array-contains",auth.currentUser.uid))
-          let queryReaders = query(ref,where("profileI","==", profile.id),where("readers", "array-contains", auth.currentUser.uid))
-         
           if(auth.currentUser.uid == profile.userId){
-            let queryForUser = query(ref, where("profileId", "==", profile.id))
-            let snapshot = await getDocs(queryForUser)
-            snapshot.forEach(doc=>{
-              let book=  unpackBookDoc(doc)
-              if(!bookList.find(b=>b.id == book.id)){
-                bookList = [...bookList,book]
-              }
+            queryReq=  query(ref,where("profileId","==",profile.id))
+            let snapshots = await getDocs(queryReq)
+            bookList = snapshots.docs.map(doc=>unpackBookDoc(doc))
+          }else{
+            const queryWriter = query(
+              ref,
+                  where('profileId', '==', profile.id),
+                  where('writers', 'array-contains', auth.currentUser.uid)
+                );
+                const queryEditor = query(
+                  ref,
+                      where('profileId', '==', profile.id),
+                      where('editors', 'array-contains', auth.currentUser.uid)
+                    );
+                const queryCommenter = query(
+                      ref,
+                          where('profileId', '==', profile.id),
+                          where('commenters', 'array-contains', auth.currentUser.uid)
+                        );
+                const queryReader = query(
+                          ref,
+                              where('profileId', '==', profile.id),
+                              where('readers', 'array-contains', auth.currentUser.uid)
+                            );
+              let queries= [queryWriter,queryEditor,queryCommenter,queryReader,queryReq]
+              let promises = queries.map(query=>{
+                return getDocs(query)
               })
-              queryCommenter = query(ref,where("commenters", "array-contains", auth.currentUser.uid))   
-              queryWriter = query(ref, where("writers", "array-contains", auth.currentUser.uid))
-              queryEditor = query(ref,where("editors", "array-contains",auth.currentUser.uid))
-              queryReaders = query(ref,where("readers", "array-contains", auth.currentUser.uid))
+              let snapshots = await Promise.all(promises)
+              const docs = snapshots.map(snapshot=>snapshot.docs).flat()
+              bookList = docs.map(doc=>unpackBookDoc(doc))
           
-          }
-          try{
-            let snapshot = await getDocs(queryCommenter)
-            snapshot.docs.forEach(doc=>{
-            const book = unpackBookDoc(doc)
-            if(!bookList.find(b=>b.id == book.id)){
-              bookList = [...bookList,book]
-            }
-            })
-          }catch(e){
-            console.error(e.message)
-          }
-          try{
-            let readerSnap = await getDocs(queryReaders)
-            readerSnap.docs.forEach(doc=>{
-              const book = unpackBookDoc(doc)
-              if(!bookList.find(b=>b.id == book.id)){
-                bookList = [...bookList,book]
-              }
-            })
-          }catch(e){
-            console.error(e.message)
-          }
-          try{
-            let editorSnap = await getDocs(queryEditor)
-            editorSnap.docs.forEach(doc=>{
-             const book = unpackBookDoc(doc)
-            bookList = [...bookList, book]
-          })
-          }catch(e){
-            console.error(e.message)
-          }
-          try{
-            let writerSnap = await getDocs(queryWriter)
-            writerSnap.docs.forEach(doc=>{
-              let book = unpackBookDoc(doc)
-              if(!bookList.find(b=>b.id == book.id)){
-                bookList = [...bookList,book]
-              }
-            })
-          }catch(e){
-            console.error(e.message)
-          }
-            return {
-              bookList
-            }
-}
-    
-        
-        const snapshot = await getDocs(
-                queryReq);
-       
-        snapshot.docs.forEach(doc => {
-            
-              const book = unpackBookDoc(doc) 
-              bookList = [...bookList, book]
-            })
-         
+        }
+      }else{
+        let snapshots = await getDocs(queryReq)
+        bookList = snapshots.docs.map(doc=>unpackBookDoc(doc))
+        }
             return {
                 bookList
             }

@@ -278,101 +278,52 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
       const profile = params["profile"]
       const ref = collection(db, "library")
       let queryReq = query(ref,where("profileId","==",profile.id),where("privacy","==",false))
-      if(auth.currentUser){
-       
-        let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))   
-        let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
-        let queryEditor = query(ref,where("profileId", "==",profile.id),where("editors", "array-contains",auth.currentUser.uid))
-        let queryReaders = query(ref,where("profileI","==", profile.id),where("readers", "array-contains", auth.currentUser.uid))
-        if(auth.currentUser.uid == profile.userId){
-          let queryForUser = query(ref, where("profileId", "==", profile.id))
-          let snapshot = await getDocs(queryForUser)
-          snapshot.forEach(doc=>{
-            let lib=  unpackLibraryDoc(doc)
-            if(!libList.includes(lib)){
-              libList = [...libList,lib]
-            }
-            })
-            queryCommenter = query(ref,where("commenters", "array-contains", auth.currentUser.uid))   
-            queryWriter = query(ref, where("writers", "array-contains", auth.currentUser.uid))
-            queryEditor = query(ref,where("editors", "array-contains",auth.currentUser.uid))
-            queryReaders = query(ref,where("readers", "array-contains", auth.currentUser.uid))
-        }  
-      try{
-          let snapshot = await getDocs(queryReq)
-          snapshot.forEach(doc=>{
-            let lib = unpackLibraryDoc(doc)
-            if(!libList.find(l=>l.id ===lib.id)){
-              libList = [...libList,lib]
-            }
-       
-            })
-          }catch(e){
-            console.error(`Library Query Where Req Error: ${e.message}`)
-          }  
-      try{
-        let snapshot = await getDocs(queryCommenter)
-        snapshot.forEach(doc=>{
-         const lib = unpackLibraryDoc(doc)
-         if(!libList.find(l=>l.id ===lib.id)){
-          libList = [...libList,lib]
-        }
-          })
-        }catch(e){
-          console.error(`Library Query Where Commenter Error: ${e.message}`)
-        }          
-        try{
-          let readerSnap = await getDocs(queryReaders)
-          readerSnap.forEach(doc=>{
-            let lib = unpackLibraryDoc(doc)
-            if(!libList.find(l=>l.id ===lib.id)){
-              libList = [...libList,lib]
-            }
-          })
-        }catch(e){
-          console.error(`Library Query Where Readers Error: ${e.message}`)
-        }
-        try{
-          let editorSnap = await getDocs(queryEditor)
-          editorSnap.forEach(doc=>{
-            let lib = unpackLibraryDoc(doc)
-            if(!libList.find(l=>l.id ===lib.id)){
-              libList = [...libList,lib]
-            }
-          })
-        }catch(e){
-          console.error(`Library Query Where Editor Error: ${e.message}`)
-        }
-        try{
-          let writerSnap = await getDocs(queryWriter)
-          writerSnap.forEach(doc=>{
-            const lib = unpackLibraryDoc(doc)
-            if(!libList.find(l=>l.id ===lib.id)){
-              libList = [...libList,lib]
-            }
-            })
-            return {
-              libList
-            }
-          }catch (e) {
-            console.error(e)
-          }
+     if(auth.currentUser){
+        if(auth.currentUser.uid === profile.userId){
+
+          queryReq=  query(ref,where("profileId","==",profile.id))
+          let snapshots = await getDocs(queryReq)
+          libList = snapshots.docs.map(doc=>unpackLibraryDoc(doc))
         }else{
-    const snapshot = await getDocs(queryReq);
-          snapshot.docs.forEach(doc => {
-          
-              const lib = unpackLibraryDoc(doc)
-              if(!libList.find(l=>l.id ===lib.id)){
-                libList = [...libList,lib]
-              }
+          const queryWriter = query(
+            ref,
+                where('profileId', '==', profile.id),
+                where('writers', 'array-contains', auth.currentUser.uid)
+              );
+              const queryEditor = query(
+                ref,
+                    where('profileId', '==', profile.id),
+                    where('editors', 'array-contains', auth.currentUser.uid)
+                  );
+              const queryCommenter = query(
+                    ref,
+                        where('profileId', '==', profile.id),
+                        where('commenters', 'array-contains', auth.currentUser.uid)
+                      );
+              const queryReader = query(
+                        ref,
+                            where('profileId', '==', profile.id),
+                            where('readers', 'array-contains', auth.currentUser.uid)
+                          );
+            let queries= [queryWriter,queryEditor,queryCommenter,queryReader,queryReq]
+            //   // queryReq = query(ref, where("profileId", "==", profile.id))
+            let promises = queries.map(query=>{
+              return getDocs(query)
             })
-          }
+            let snapshots = await Promise.all(promises)
+            const docs = snapshots.map(snapshot=>snapshot.docs).flat()
+            libList = docs.map(doc=>unpackLibraryDoc(doc))
+        }
+
+     }else{
+      let snapshots = await getDocs(queryReq)
+      libList = snapshots.docs.map(doc=>unpackLibraryDoc(doc))
+     }
     return {
   
         libList
     }
-  
-  
+
     }catch(err){
      const error = err??new Error("Error: Get Profile Library")
       return {error }

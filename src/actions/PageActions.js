@@ -123,7 +123,6 @@ const getProfilePages= createAsyncThunk(
       return getDocs(query)
     })
     let snapshots = await Promise.all(promises)
-    console.log(snapshots)
     const docs = snapshots.map(snapshot=>snapshot.docs).flat()
     pageList = docs.map(doc=>unpackPageDoc(doc))
 
