@@ -87,15 +87,15 @@ const getProfilePages= createAsyncThunk(
   async (params,thunkApi) => {
     let pageList = []
     const profile=params["profile"]
-
+    try{
     const ref = collection(db, "page")
     let queryReq = query(ref,where("profileId","==",profile.id),where("privacy","==",false))
-  
+    let queries= [queryReq]
     if(auth.currentUser && (auth.currentUser.uid == profile.userId)){
       queryReq = query(ref, where("profileId", "==", profile.id))
-   
+      queries = [queryReq]
     }else if(auth.currentUser && (auth.currentUser.uid !== profile.userId)){
-     try{
+    
       console.log(auth.currentUser.uid)
       const queryWriter = query(
     ref,
@@ -117,25 +117,27 @@ const getProfilePages= createAsyncThunk(
                     where('profileId', '==', profile.id),
                     where('readers', 'array-contains', auth.currentUser.uid)
                   );
-    let queries= [queryWriter,queryEditor,queryCommenter,queryReader,queryReq]
+   queries = [...queries,queryWriter,queryEditor,queryCommenter,queryReader]
     //   // queryReq = query(ref, where("profileId", "==", profile.id))
-    let promises = queries.map(query=>{
-      return getDocs(query)
-    })
-    let snapshots = await Promise.all(promises)
-    const docs = snapshots.map(snapshot=>snapshot.docs).flat()
-    pageList = docs.map(doc=>unpackPageDoc(doc))
+   
+      }
 
-
+  let promises = queries.map(query=>{
+    return getDocs(query)
+  })
+  let snapshots = await Promise.all(promises)
+  const docs = snapshots.map(snapshot=>snapshot.docs).flat()
+  pageList = docs.map(doc=>unpackPageDoc(doc))
   return {
 
       pageList
+    }
   }
-}catch(e){
-  console.error(`Page Query Where Error: ${e.message}`)
+catch(e){
+
   return {error:`Page Query Where Error: ${e.message}`}
 }
-}})
+})
       // let readerSnap = await getDocs(queryReaders)
       //   readerSnap.docs.forEach(doc=>{
       //     const page = unpackPageDoc(doc)

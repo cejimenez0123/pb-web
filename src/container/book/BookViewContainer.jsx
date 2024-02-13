@@ -2,12 +2,13 @@
 import { fetchBook, setBookInView } from "../../actions/BookActions"
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
-import { useEffect ,useState} from "react"
-import { fetchPage } from "../../actions/PageActions"
+import { useEffect ,useLayoutEffect,useState} from "react"
+import { fetchArrayOfPages, fetchPage } from "../../actions/PageActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import DashboardItem from "../../components/DashboardItem"
 import "../../styles/BookView.css"
 import "../../App.css"
+import PageSkeleton from "../../components/PageSkeleton"
 import {Button, IconButton} from "@mui/material"
 import theme from "../../theme"
 import { setBookmarkLibrary,
@@ -26,13 +27,13 @@ import checkResult from "../../core/checkResult"
 import { iconStyle } from "../../styles/styles"
 import {Helmet} from "react-helmet"
 import Page from "../../domain/models/page"
-import { PageType } from "../../core/constants"
 import Contributors from "../../domain/models/contributor"
-function BookViewContainer({book}){
+import { PageType } from "../../core/constants"
+function BookViewContainer(props){
     const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
-    const bookLoading = useSelector(state=>state.books.loading)
+    const book = useSelector(state=>state.books.bookInView)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [pages,setPages]=useState([])
     const [hasMore,setHasMore]=useState(false)
@@ -41,9 +42,7 @@ function BookViewContainer({book}){
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const [following,setFollowing]=useState(null)
     const [bookmarked,setBookmarked]=useState(false)
-    const [error,setError]=useState(false)
 
-    
     const onBookmarkPage = ()=>{
         if(bookmarked && book){
         let bookIdList = bookmarkLibrary.bookIdList.filter(id=>id!=book.id)
@@ -82,14 +81,42 @@ function BookViewContainer({book}){
         }
         
     }
+    const bookScreen = ()=>{
+        if(book){
+        return(<div style={{flexDirection:"column"}} className="two-panel">
+        <Helmet>
+     <title>{book.title}</title>
+     <meta
+    name="description"
+    content={book.purpose}/>
+    
+     </Helmet>
+     <div className="left-bar">
+         {bookInfo()}
+     </div>
+     <div className="right-bar">
+        <div className="content-list dashboard">
+         {pageList()}
+         </div>
+     </div>
+    </div>)
+    }else{
+    return <PageSkeleton/>
+}
+    }
     const getBook=()=>{ 
-        const bookId =pathParams["id"]
-        const params = {id:bookId}
-        dispatch(fetchBook(params)).then(result=>{
+        dispatch(fetchBook(pathParams)).then(result=>{
                 checkResult(result,payload=>{
                     const {book}=payload
+                    getPages(book)
+                    const profileParams = {
+                        id:  book.profileId
+                    }
+                    dispatch(fetchProfile(profileParams))
                     fetchFollows()
-                },(er)=>{})
+                },(er)=>{
+
+                })
             })
     }
     
@@ -105,73 +132,27 @@ function BookViewContainer({book}){
         }
        
     },[])
-    useEffect(()=>{
-        if(book){
-            checkBookPermission(book)
-        }
-    },[])
-    const checkBookPermission= (bookItem)=>{
-       
-        if( bookItem.privacy){
-            if(currentProfile){
-                let founa = bookItem.readers.find(id=>currentProfile && id==currentProfile.userId)
-                let founb=  bookItem.commenters.find(id=> currentProfile && id==currentProfile.userId)
-                let founc =  bookItem.writers.find(id=>currentProfile && id==currentProfile.userId)
-                let found =  bookItem.editors.find(id=>currentProfile && id==currentProfile.userId)
-                let owner = currentProfile &&  bookItem.profileId == currentProfile.id        
-                 
-                if(founa || founb || founc || found||owner) {
 
-                    getPages(bookItem)
-                    const profileParams = {
-                        id:  bookItem.profileId
-                    }
-                    dispatch(fetchProfile(profileParams))
-                    setError(false)
-                }else{
-                    setError(true)
-                }  }else{
-                    setError(true)
-                }     
-            }else{
-                setError(false)
-                getPages(bookItem)
-                const profileParams = {
-                        id:  bookItem.profileId
-                    }
-                dispatch(fetchProfile(profileParams)) 
-            }
-    }
+ 
     const getPages=(bookItem)=>{
-        setPages([])
-     
-        if(bookItem.pageIdList && pages.length==bookItem.pageIdList.length){
-            setHasMore(false)
-        }else if(bookItem.pageIdList &&bookItem.pageIdList.length==0){
-            setHasMore(false)   
-        }else if(bookItem.pageIdList){
-            setHasMore(true)
-            for(let i=0;i<bookItem.pageIdList.length;i++){
-                const pId = bookItem.pageIdList[i]
-                        const params = {id:pId}
-                    dispatch(fetchPage(params)).then(result=>{
-                        checkResult(result,payload=>{
-                                const {page} = payload
-                                let newPages = pages
-                                newPages[i]=page
-                                setPages(newPages)
-                                setHasMore(false)
-                        },err=>{
-                            setPages(prevState=>[...prevState,new Page(pId,"Deleted","Deleted","Delted",0,false,false,PageType.text,new Contributors([],[],[],[]))])
-                            setHasMore(false)
-                        })
-                    })}
-    
-    }else{
-        setPages([])
-        setHasMore(false)
-    }}
-    useEffect(()=>{
+    for(let i=0;i<bookItem.pageIdList.length;i++){
+        const pId = bookItem.pageIdList[i]
+                const params = {id:pId}
+            dispatch(fetchPage(params)).then(result=>{
+                checkResult(result,payload=>{
+                        const {page} = payload
+                        let newPages = pages
+                        newPages[i]=page
+                        setPages(newPages)
+                        setHasMore(false)
+                },err=>{
+                    setPages(prevState=>[...prevState,new Page(pId,"Deleted","Deleted","Delted",0,false,false,PageType.text,new Contributors([],[],[],[]))])
+                    setHasMore(false)
+                })
+            })}
+    }
+
+    useLayoutEffect(()=>{
         getBook()
     },[])
     useEffect(()=>{
@@ -246,6 +227,8 @@ function BookViewContainer({book}){
         }
         dispatch(createFollowBook(params)).then(result=>{
            checkResult(result,payload=>{ 
+            const {followBook} = payload
+            setFollowing(followBook)
             let books = [...homeCollection.books]
             let id = homeCollection.books.find(id=>book.id)
             if(!id){
@@ -262,10 +245,13 @@ function BookViewContainer({book}){
                 profiles:profiles
             }
             dispatch(updateHomeCollection(homeParams))
-        },()=>{
-            window.alert("Log in first")
+        },err=>{
+           
         })})
-    }}
+    }else{
+        window.alert("Log in first")
+    }
+}
 
     const deleteFollowBookClick = ()=>{ 
        
@@ -286,6 +272,10 @@ function BookViewContainer({book}){
             })
         }
     }
+    const lookingWrong =(<div className="evenly container view">
+          
+    <h2>Looking in the wrong place</h2>
+</div> )
     let editDiv =() => {if(followedBooks && currentProfile && book && book.profileId == currentProfile.id){
         return(<Button
         style={iconStyle}
@@ -372,47 +362,84 @@ const bookInfo = ()=>{
             </div>
     </div>)
 }
-  if(book && !error){
+const checkBookPermission= ()=>{
+    if(book){
+        if(book.privacy){
+                if(currentProfile){
+                    if(book.profileId==currentProfile.id
+                    ||book.commenters.includes(currentProfile.userId)||
+                    book.readers.includes(currentProfile.userId)||
+                    book.editors.includes(currentProfile.userId)||
+                    book.writers.includes(currentProfile.userId)) {
+                   console.log("A")
+                    return bookScreen()
+                
+                }else{
+                    console.log("B")
+                    return lookingWrong 
+                }
+             }else{
+                console.log("C")
+                return lookingWrong 
+             } 
+        }else{
+            console.log("D")
+            return bookScreen()
+        }
+    }
+    console.log("E")
+    return <PageSkeleton/>
+}
+     
+return checkBookPermission()
+// if(bookLoading && !book){
+//     return <PageSkeleton />
+// }else{  
+//     if(book && !error){
 
-    return(<div style={{flexDirection:"column"}} className="two-panel">
-           <Helmet>
-        <title>{book.title}</title>
-        <meta
-      name="description"
-      content={book.purpose}/>
+//     return(<div style={{flexDirection:"column"}} className="two-panel">
+//            <Helmet>
+//         <title>{book.title}</title>
+//         <meta
+//       name="description"
+//       content={book.purpose}/>
       
-        </Helmet>
-        <div className="left-bar">
+//         </Helmet>
+//         <div className="left-bar">
            
-            {bookInfo()}
+//             {bookInfo()}
             
 
-        </div>
-        <div className="right-bar">
-           <div className="content-list dashboard">
-            {pageList()}
-            </div>
-        </div>
+//         </div>
+//         <div className="right-bar">
+//            <div className="content-list dashboard">
+//             {pageList()}
+//             </div>
+//         </div>
         
 
-    </div>)}else if(error){
-        return(
-            <div className="evenly container view">
-          
-            <h2>This book isn't for your eyes.</h2>
-             
-     
-            
+//     </div>)}else{
+//         return lookingWrong
     
-        </div> 
-        )  
-    
-    }else{
-        <div className="container">
-
-            <h1>Book is loading</h1>
-
-        </div>
-    }
+//     }
+//     }
 }
 export default BookViewContainer
+
+// (<div style={{flexDirection:"column"}} className="two-panel">
+// <Helmet>
+// <title>{book.title}</title>
+// <meta
+// name="description"
+// content={book.purpose}/>
+
+// </Helmet>
+// <div className="left-bar">
+//  {bookInfo()}
+// </div>
+// <div className="right-bar">
+// <div className="content-list dashboard">
+//  {pageList()}
+//  </div>
+// </div>
+// </div>)

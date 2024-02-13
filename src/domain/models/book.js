@@ -24,8 +24,7 @@ export default class Book extends Story{
         created=Timestamp.now()
     ){
 
-        super(  id,
-                title,
+        super(id,title,profileId,"",
                 contributors.readers,
                 contributors.writers,
                 contributors.editors,

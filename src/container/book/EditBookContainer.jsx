@@ -3,7 +3,6 @@ import { useDispatch,useSelector } from "react-redux"
 import { useState,useEffect} from "react"
 import { fetchBook,saveRolesForBook,setBookInView,updateBook } from "../../actions/BookActions"
 import "../../styles/EditBook.css"
-
 import {  fetchPage } from "../../actions/PageActions"
 import BookRole from "../../domain/models/bookrole"
 import { RoleType } from "../../core/constants"
@@ -12,7 +11,7 @@ import { TextField ,Checkbox, FormControlLabel,Button, FormGroup, IconButton} fr
 import RoleList from "../../components/RoleList"
 import theme from "../../theme"
 import checkResult from "../../core/checkResult"
-import { Add,Visibility,Remove,DragIndicator } from "@mui/icons-material"
+import { Add,Visibility} from "@mui/icons-material"
 import uuidv4 from "../../core/uuidv4"
 import ErrorBoundary from "../../ErrorBoundary"
 import SortableComponent from "../../components/SortableList"
@@ -30,21 +29,14 @@ function EditBookContainer({book}){
     const [listItems, setListItems] = useState([]);
     const [newListItems, setNewListItems]= useState([]);
     const getBook=()=>{
-        const bookId =pathParams["id"]
-        const parameters = {
-        id: bookId,
-    }
-  
-        dispatch(fetchBook(parameters)).then((result) => {checkResult(result,payload=>{
+        dispatch(fetchBook(pathParams)).then((result) =>
+         {checkResult(result,payload=>{
             const gotBook = payload["book"]
             setBookInfo(gotBook)
-            getPages(gotBook.pageIdList)
+            getPages(gotBook)
         },err=>{
-
         })
-            
         })
-  
     }
     const setBookInfo = (info)=>{
         setBookTitle(info.title)
@@ -59,39 +51,34 @@ function EditBookContainer({book}){
 
     
    
-    const getPages = (pageIdList)=>{
-      if(pageIdList.length > 0){
-        setListItems([])
-        pageIdList.forEach((pageId,i)=>{
-            const pageParam = { id:pageId}
-            dispatch(fetchPage(pageParam)).then((result)=>{
-                checkResult(result,payload=>{
-                        const {page}=payload
-                        let uId =`${page.id}_${uuidv4()}`
-                        const item = {uId:uId, item:page}
-                        if(item){
+    const getPages = (bookItem)=>{
+        for(let i=0;i<bookItem.pageIdList.length;i++){
+            const pId = bookItem.pageIdList[i]
+                    const params = {id:pId}
+                dispatch(fetchPage(params)).then(result=>{
+                    checkResult(result,payload=>{
+                            const {page} = payload
+                            // let newPages = pages
+                            // newPages[i]=page
+                            // setPages(newPages)
+                            // setHasMore(false)
                             let list =listItems
+                            let uId =`${page.id}_${uuidv4()}`
+                        const item = {uId:uId, item:page}
                             list[i]=item
                             setListItems(list)
                         
-                        }else{
-                            let uId =`${page.id}_${uuidv4()}`
-                            const item = {uId:uId,item: {title:"Error Fetching Page"}}
-                            let list =listItems
-                            list[i]=item
-                    
-                            setListItems(list)
-
-                        }
-                       
-                },()=>{
-
-                })
-            })})
-        }else if(pageIdList.length<1){
-            setListItems([])
-        }
+                    },err=>{
+                        let uId =`${pId}_${uuidv4()}`
+                        const item = {uId:uId,item: {title:"Error Fetching Page"}}
+                        let list =listItems
+                        list[i]=item
+                        setListItems(list)
+                                        
+                    })
+                })}
     }
+    
     const sortableList = ()=>{
         if(listItems && listItems.length == 0){
             return (<div className="empty">
@@ -191,6 +178,10 @@ function EditBookContainer({book}){
                <div id="purpose">
                 <label>Purpose</label>         
                 <TextareaAutosize value={bookPurpose}
+                style={{backgroundColor:theme.palette.primary.contrastText,
+                color:"black",
+                padding:"0.3em",
+            borderRadius:"8px"}}
                                             minRows={3} 
                                             onChange={(e)=>{
                                             setBookPurpose(e.target.value)   

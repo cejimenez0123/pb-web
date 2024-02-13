@@ -278,47 +278,43 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
       const profile = params["profile"]
       const ref = collection(db, "library")
       let queryReq = query(ref,where("profileId","==",profile.id),where("privacy","==",false))
-     if(auth.currentUser){
+      let queries = [queryReq]
+        if(auth.currentUser){
         if(auth.currentUser.uid === profile.userId){
 
           queryReq=  query(ref,where("profileId","==",profile.id))
-          let snapshots = await getDocs(queryReq)
-          libList = snapshots.docs.map(doc=>unpackLibraryDoc(doc))
+          queries = [queryReq]
         }else{
           const queryWriter = query(
             ref,
                 where('profileId', '==', profile.id),
                 where('writers', 'array-contains', auth.currentUser.uid)
               );
-              const queryEditor = query(
+          const queryEditor = query(
                 ref,
                     where('profileId', '==', profile.id),
                     where('editors', 'array-contains', auth.currentUser.uid)
                   );
-              const queryCommenter = query(
+          const queryCommenter = query(
                     ref,
                         where('profileId', '==', profile.id),
                         where('commenters', 'array-contains', auth.currentUser.uid)
                       );
-              const queryReader = query(
-                        ref,
-                            where('profileId', '==', profile.id),
-                            where('readers', 'array-contains', auth.currentUser.uid)
-                          );
-            let queries= [queryWriter,queryEditor,queryCommenter,queryReader,queryReq]
-            //   // queryReq = query(ref, where("profileId", "==", profile.id))
-            let promises = queries.map(query=>{
-              return getDocs(query)
-            })
-            let snapshots = await Promise.all(promises)
-            const docs = snapshots.map(snapshot=>snapshot.docs).flat()
-            libList = docs.map(doc=>unpackLibraryDoc(doc))
+          const queryReader = query(
+                    ref,
+                        where('profileId', '==', profile.id),
+                        where('readers', 'array-contains', auth.currentUser.uid)
+                      );
+            queries= [...queries,queryWriter,queryEditor,queryCommenter,queryReader]
         }
 
-     }else{
-      let snapshots = await getDocs(queryReq)
-      libList = snapshots.docs.map(doc=>unpackLibraryDoc(doc))
      }
+     let promises = queries.map(query=>{
+      return getDocs(query)
+    })
+    let snapshots = await Promise.all(promises)
+    const docs = snapshots.map(snapshot=>snapshot.docs).flat()
+    libList = docs.map(doc=>unpackLibraryDoc(doc))
     return {
   
         libList

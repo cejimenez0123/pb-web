@@ -45,12 +45,9 @@ const getPublicBooks = createAsyncThunk(
 
 const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thunkApi){
     let id = params["id"]
-  
-   
-  
     try {
-    const docSnap = await getDoc(doc(db, "book", id))
-    const book = unpackBookDoc(docSnap)
+      const docSnap = await getDoc(doc(db, "book", id))
+      const book = unpackBookDoc(docSnap)
     
     return {
       book
@@ -72,11 +69,12 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
         const ref = collection(db, "book")
         let bookList = []
         let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
+        let queries = [queryReq]
         if(auth.currentUser){
           if(auth.currentUser.uid == profile.userId){
             queryReq=  query(ref,where("profileId","==",profile.id))
-            let snapshots = await getDocs(queryReq)
-            bookList = snapshots.docs.map(doc=>unpackBookDoc(doc))
+            queries = [queryReq]
+
           }else{
             const queryWriter = query(
               ref,
@@ -98,23 +96,25 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
                               where('profileId', '==', profile.id),
                               where('readers', 'array-contains', auth.currentUser.uid)
                             );
-              let queries= [queryWriter,queryEditor,queryCommenter,queryReader,queryReq]
-              let promises = queries.map(query=>{
-                return getDocs(query)
-              })
-              let snapshots = await Promise.all(promises)
-              const docs = snapshots.map(snapshot=>snapshot.docs).flat()
-              bookList = docs.map(doc=>unpackBookDoc(doc))
-          
+              queries= [ ...queries,
+                            queryWriter,
+                            queryEditor,
+                            queryCommenter,
+                            queryReader]
+              
         }
-      }else{
-        let snapshots = await getDocs(queryReq)
-        bookList = snapshots.docs.map(doc=>unpackBookDoc(doc))
-        }
+      }
+        let promises = queries.map(query=>{
+          return getDocs(query)
+        })
+        let snapshots = await Promise.all(promises)
+        const docs = snapshots.map(snapshot=>snapshot.docs).flat()
+        bookList = docs.map(doc=>unpackBookDoc(doc))
+    
             return {
                 bookList
             }
-        }catch(err){
+          }catch(err){
     
       return {
             error: new Error(`Error: GET PROFILE BOOKS: ${err.message}`)
@@ -489,10 +489,10 @@ function unpackBookDoc(doc){
   if(!commenters){
     commenters = []
   }
-  if(!Boolean(writers)){
+  if(!writers){
     writers= []
   }
-  if(!Boolean(readers)){
+  if(!readers){
     readers=[]
   }
   const contributors= new Contributors( commenters,
@@ -510,7 +510,7 @@ function unpackBookDoc(doc){
                           updatedAt,
                           created
                         )
-                        return book
+    return book
 }
   export {  getPublicBooks,
             fetchBook,
