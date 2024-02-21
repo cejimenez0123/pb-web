@@ -234,10 +234,10 @@ const setSignedInFalse = createAction("users/setSignedInFalse", async(params)=>{
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
     
-    const uId = params["userId"]
+    
     try {
-
-    const snapshot = await getDocs(query(collection(db, "profile"), where("userId", "==",uId)))
+if(auth.currentUser){
+    const snapshot = await getDocs(query(collection(db, "profile"), where("userId", "==",auth.currentUser.uid)))
    
    // Check if the snapshot contains any documents
         const pack =  snapshot.docs[0].data() 
@@ -255,7 +255,10 @@ async (params,thunkApi) => {
         
         return {
             profile
-        }          
+        } 
+      }else{
+          throw new Error("No Authenticated User")
+        }         
         }catch(error) {
             return {
                

@@ -19,34 +19,48 @@ function DashboardContainer(props){
     const [hasMore,setHasMore] = useState(false)
     const [hasError,setHasError] = useState(false)
     useEffect(()=>{
+        // if(currentProfile){
+        //     const params = {
+        //         profile:currentProfile
+        //     }
+        // fetchData()
+        
+        // }else if(currentProfile==null){
+           dispatch(getCurrentProfile()).then(result=>{
+            checkResult(result,payload=>{
+                const {profile}=payload
+                const params = {
+                            profile:profile
+                        }
+                dispatch(fetchHomeCollection(params))
+                fetchData()
+                },err=>{
+                    fetchData()
+                console.log(err)
+            })})
+        // }else{
+        //     fetchData()
+        // }
+    
+    }
+  
+   
+,[])
+    useEffect(()=>{
         if(currentProfile){
             const params = {
                 profile:currentProfile
+                
             }
-        fetchData()
-        dispatch(fetchHomeCollection(params))
-        }else if(currentProfile==null){
-        //     dispatch(getCurrentProfile()).then(result=>{
-        //     checkResult(result,payload=>{
-        //         const {profile}=payload
-        //         const params = {
-        //             profile:profile
-                    
-        //         }
-            
-        //         dispatch(fetchHomeCollection(params)).then(result=>{
-        //             checkResult(result,payload=>{
-        //                 fetchData()
-        //             },err=>{
+   
+        dispatch(fetchHomeCollection(params)).then(result=>{
+            checkResult(result,payload=>{
+                fetchData()
+            },err=>{
 
-        //             })
-        //         })
-        //     },err=>{})
-        // })
-    }else{
-        fetchData()
-    }
-    },[])
+            })
+        })
+        }},[])
    
     const fetchPublicContent =()=>{
         setHasMore(true)
@@ -60,7 +74,7 @@ function DashboardContainer(props){
                     setItemsInView(items)
                     setHasError(false)
                 },err=>{
-                    
+                    console.log(err)
                 })})
     
     }
@@ -101,11 +115,9 @@ function DashboardContainer(props){
     }}
 
     const fetchData =()=>{
-            if(!currentProfile){
-              fetchPublicContent()
-            }else{
+            if(currentProfile && homeCollection){
                 setHasMore(true)
-                if(homeCollection && homeCollection.books){
+                if(homeCollection.books){
                    
                     const params = {
                         bookIdList:homeCollection.books,
@@ -123,12 +135,12 @@ function DashboardContainer(props){
                             
         
                 }
-                if(homeCollection && homeCollection.libraries){
+                if(homeCollection.libraries){
                     
                     if(homeCollection.libraries.length>0){
                         getLibraries()
                     }}
-                if(homeCollection && homeCollection.profiles){
+                if(homeCollection.profiles){
                     homeCollection.profiles.forEach(id=>
                         {
                             const params ={
@@ -176,7 +188,11 @@ function DashboardContainer(props){
 
             )
         }
-    }}
+    }else{
+        fetchPublicContent()
+    }
+
+}
     
   
     const getBookListContent = (bookList)=>{

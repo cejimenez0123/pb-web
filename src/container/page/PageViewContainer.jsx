@@ -167,11 +167,10 @@ export default function PageViewContainer({page}){
 </div>)
 
     const checkPermission=()=>{
-        if(page && !page.privacy){
-        return present
-    }else{
-        if(page && currentProfile){
-            if(page.writers.includes(currentProfile.userId)
+        if(page){
+          if(page.privacy){
+            if(currentProfile!==null){
+                if(currentProfile.id == page.profileId || page.writers.includes(currentProfile.userId)
             ||page.editors.includes(currentProfile.userId)
             ||page.commenters.includes(currentProfile.userId)
             ||page.readers.includes(currentProfile.userId)){
@@ -183,10 +182,13 @@ export default function PageViewContainer({page}){
         }else{
             return lookingWrong
         }
-
+    }else{
+            return present
+        }
+        
     }
-
-}
+        return <PageSkeleton/>
+    }
 
     return checkPermission()    
     

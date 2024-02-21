@@ -1,5 +1,5 @@
 
-import { useEffect,useState} from "react"
+import { useEffect,useState,useLayoutEffect} from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { useSelector,useDispatch } from "react-redux"
 import {  
@@ -41,7 +41,7 @@ function LibraryViewContainer(props){
     const [errorMessage,setErrorMessage] = useState("Error")
     const homeCollection = useSelector(state=>state.users.homeCollection)
 
-    useEffect(()=>{
+    useLayoutEffect(()=>{
         dispatch(fetchLibrary(pathParams)).then(result=>{
                 checkResult(result,payload=>{
                     const {library } = payload
@@ -73,13 +73,12 @@ function LibraryViewContainer(props){
     const checkLibraryPermission= (libraryItem)=>{
         if(libraryItem.privacy){
             if(currentProfile){
-                let founa = libraryItem.readers.find(id=>currentProfile && id==currentProfile.userId)
-                let founb=  libraryItem.commenters.find(id=> currentProfile && id==currentProfile.userId)
-                let founc =  libraryItem.writers.find(id=>currentProfile && id==currentProfile.userId)
-                let found =  libraryItem.editors.find(id=>currentProfile && id==currentProfile.userId)
-                let owner = currentProfile &&  libraryItem.profileId == currentProfile.id        
-                 
-                if(founa || founb || founc || found||owner) {
+
+                if(currentProfile.id == libraryItem.profileId 
+                    || libraryItem.readers.includes(currentProfile.userId)
+                    || libraryItem.commenters.includes(currentProfile.userId)
+                    || libraryItem.writers.includes(currentProfile.userId)
+                    || libraryItem.editors.includes(currentProfile.userId)){
                     setError(false)
                     fetchData(libraryItem)
                 }else{
