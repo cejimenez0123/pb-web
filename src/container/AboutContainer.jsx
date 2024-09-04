@@ -7,6 +7,8 @@ import theme from "../theme"
 import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
+import { db } from "../core/di"
+import { trySomething } from "../actions/BookActions"
 export default function AboutContainer(props){
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -85,6 +87,9 @@ Plumbum is great place to begin work and find support to complete work.
     
     <div id="title">
         <h1><strong>Welcome to Plumbum</strong></h1>
+        {/* <button onClick={()=>{
+        
+        }}className="btn">Try</button> */}
     </div>
         <MediaQuery minWidth={"1000px"}>
 <div id="bookshelf">

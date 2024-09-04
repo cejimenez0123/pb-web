@@ -3,6 +3,8 @@ import Library from "../domain/models/library"
 import { deleteDoc,and,or,orderBy,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
 import { db,auth,client } from "../core/di"
 import Contributors from "../domain/models/contributor"
+import axios from "axios"
+import Enviroment from "../core/Enviroment"
 
 
 const updateLibrary = createAsyncThunk("libraries/updateLibrary", async function(params,thunkApi){
@@ -439,17 +441,19 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
   'libraries/getPublicLibraries',
   async (thunkApi) => {
       let libraryList = []
-     const ref = collection(db, "library")
+      const res = await axios(Enviroment.url+"/collection/library")
+      
+  //    const ref = collection(db, "library")
   
-  const snapshot = await getDocs(query(ref, where("privacy", "==", false)))
+  // const snapshot = await getDocs(query(ref, where("privacy", "==", false)))
 
-        snapshot.docs.forEach(doc => {
-              const library = unpackLibraryDoc(doc)                      
-            libraryList = [...libraryList, library]
-          })
+  //       snapshot.docs.forEach(doc => {
+  //             const library = unpackLibraryDoc(doc)                      
+  //           libraryList = [...libraryList, library]
+  //         })
   return {
 
-      libraryList
+      libraryList: res.data.libraries
     }
   
     
@@ -671,5 +675,6 @@ export {  fetchLibrary,
           fetchArrayOfLibrariesAppend,
           clearLibrariesInView,
           setBookmarkLibrary,
+          unpackLibraryDoc,
           appendLibraryContent
           }

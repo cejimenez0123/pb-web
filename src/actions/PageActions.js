@@ -5,22 +5,40 @@ import PageComment from "../domain/models/page_comment"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import Contributors from "../domain/models/contributor"
 import UserApproval from "../domain/models/user_approval"
+import axios from "axios"
+import Enviroment from "../core/Enviroment"
 
+const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
 
+  try{
+    let res = await axios.get(Enviroment.url+"/story/")
+    console.log(res.data)
+
+return {
+    stories:res.data.stories
+  }
+
+    }catch(err){
+      return {error: err}
+    }
+  
+})
 const getPublicPages = createAsyncThunk(
     'pages/getPublicPages',
     async (thunkApi) => {
         let pageList = []
       try{
-        let ref = collection(db, "page")
-        const request = query(ref, where("privacy", "==", false), orderBy("created", "desc"))
-        const snapshot = await getDocs(request)
-        snapshot.docs.forEach(doc => {
-                const page = unpackPageDoc(doc)  
-                pageList = [...pageList, page]
-            })
+        let res = await axios.get(Enviroment.url+"/story/")
+        console.log(res.data)
+        // let ref = collection(db, "page")
+        // const request = query(ref, where("privacy", "==", false), orderBy("created", "desc"))
+        // const snapshot = await getDocs(request)
+        // snapshot.docs.forEach(doc => {
+        //         const page = unpackPageDoc(doc)  
+        //         pageList = [...pageList, page]
+        //     })
     return {
-        pageList
+        pageList:res.data.stories
       }
     
         }catch(err){
@@ -836,6 +854,7 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           setEditingPage,
           createPageApproval,
           deletePageApproval,
-          unpackPageDoc
+          unpackPageDoc,
+          getPublicStories
         } 
         

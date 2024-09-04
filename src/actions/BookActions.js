@@ -1,5 +1,8 @@
 import { createAsyncThunk ,createAction} from "@reduxjs/toolkit"
 import Book from "../domain/models/book"
+import { unpackPageDoc } from "./PageActions"
+import {unpackLibraryDoc} from "./LibraryActions"
+import { unpackProfileDoc } from "./UserActions"
 import {  where,
           query,
           and,
@@ -15,6 +18,7 @@ import {  where,
           updateDoc} from "firebase/firestore"
 import { db,auth,client} from "../core/di"
 import Contributors from "../domain/models/contributor"
+import axios from "axios"
 
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
@@ -42,7 +46,20 @@ const getPublicBooks = createAsyncThunk(
       
     }
 )
+async function trySomething(){
+  try{
+  let snapshot = await getDocs(collection(db,"page"))
 
+ let prosmises = snapshot.docs.map(docu=>{
+         let doc = unpackPageDoc(docu)
+       return  axios.post("http://localhost:3000/auth",{data:doc})
+  })
+  console.log(Promise.all(prosmises))
+
+  }catch(e){
+    console.log(e)
+  }
+}
 const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thunkApi){
     let id = params["id"]
     try {
@@ -518,6 +535,7 @@ function unpackBookDoc(doc){
             fetchArrayOfBooksAppened,
             saveRolesForBook,
             setBookInView,
+            trySomething,
             deleteBook,clearBooksInView,
             updateBook,
             setBooksToBeAdded,

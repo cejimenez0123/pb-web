@@ -19,7 +19,8 @@ import {  getPublicPages ,
           fetchAppendPagesOfProfile,
           saveRolesForPage,
           updatePage,
-          setEditingPage
+          setEditingPage,
+          getPublicStories
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
 
@@ -37,16 +38,29 @@ const pageSlice = createSlice({
     initialState,
     extraReducers(builder) {
         builder
-        .addCase(getPublicPages.pending,(state) => {
-        state.loading = true
+        .addCase(getPublicStories.pending,(state)=>{
+          state.loading = true
+        }).addCase(getPublicStories.fulfilled,(state,{payload})=>{
+          state.loading = false
+          state.pagesInView = payload.stories
+        }   
+        )
+      //   .addCase(getPublicPages.pending,(state) => {
+      //   state.loading = true
+      // })
+      .addCase(getPublicStories.rejected,(state,{payload})=>{
+        state.loading = false
+        state.error = payload.error
       })
       .addCase(getPublicPages.fulfilled, (state, { payload }) => {
         state.loading = false
         const list=  payload.pageList
         state.pagesInView = list
-      }).addCase(getPublicPages.rejected, (state) => {
-        state.loading = false
-      }).addCase(setHtmlContent,(state,{payload})=>{
+      })
+     // .addCase(getPublicPages.rejected, (state) => {
+      //   state.loading = false
+      // })
+      .addCase(setHtmlContent,(state,{payload})=>{
         state.editorHtmlContent = payload.html
       }).addCase(getProfilePages.pending,(state)=>{
         state.loading = true
