@@ -430,7 +430,7 @@ function NavbarContainer(props){
             <Box style={{display: currentProfile ? "":"none"}} sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={`${currentProfile.username}`} src={currentProfile.profilePicture} />
+                  <Avatar alt={`${currentProfile.username}`} src={currentProfile.profilePic} />
                 </IconButton>
               </Tooltip>
               <Menu

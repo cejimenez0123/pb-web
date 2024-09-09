@@ -1,8 +1,8 @@
 
-import {  getPublicPages ,
+import { 
           setHtmlContent,
           getProfilePages,
-          createPage,
+    
           setPageInView,
           fetchPage,
           fetchArrayOfPages,
@@ -20,7 +20,8 @@ import {  getPublicPages ,
           saveRolesForPage,
           updatePage,
           setEditingPage,
-          getPublicStories
+          getPublicStories,
+          createStory
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
 
@@ -45,21 +46,11 @@ const pageSlice = createSlice({
           state.pagesInView = payload.stories
         }   
         )
-      //   .addCase(getPublicPages.pending,(state) => {
-      //   state.loading = true
-      // })
       .addCase(getPublicStories.rejected,(state,{payload})=>{
         state.loading = false
         state.error = payload.error
       })
-      .addCase(getPublicPages.fulfilled, (state, { payload }) => {
-        state.loading = false
-        const list=  payload.pageList
-        state.pagesInView = list
-      })
-     // .addCase(getPublicPages.rejected, (state) => {
-      //   state.loading = false
-      // })
+   
       .addCase(setHtmlContent,(state,{payload})=>{
         state.editorHtmlContent = payload.html
       }).addCase(getProfilePages.pending,(state)=>{
@@ -81,19 +72,21 @@ const pageSlice = createSlice({
       ).addCase(deletePage.fulfilled,(state,{payload})=>{
         let filtered = state.pagesInView.filter(page => page.id !== payload.page.id)
         state.pagesInView = filtered
-      }).addCase(createPage.rejected,(state,{payload})=>{
+      })
+      .addCase(createStory.rejected,(state,{payload})=>{
+        state.loading=false
         state.error = payload.error
-        state.loading = false
-
-      }).addCase(createPage.pending,(state)=>{
-
+      })
+      .addCase(createStory.pending,(state)=>{
         state.loading = true
+      })
+      .addCase(createStory.fulfilled,(state,{payload})=>{
+        let {story}=payload
+        state.loading = false
+        state.pageInView = story
+      })
 
-      }).addCase(createPage.fulfilled,(state,{payload})=>{
-        state.loading =false
-        state.editingPage = payload.page
-
-      }).addCase(clearEditingPage,(state)=>{
+      .addCase(clearEditingPage,(state)=>{
         state.editingPage =null
       }).addCase(setPageInView,(state,{payload})=>{
      

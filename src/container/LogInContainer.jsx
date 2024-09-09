@@ -171,9 +171,9 @@ function SignInCard(props) {
         setShowPassword(!showPassword);
       };
     let img = (<div></div>)
-    if(props.profilePicture){
+    if(props.profilePic){
         img = (<img style={{marginLeft:"1em",width:"50%"}}
-                src={props.profilePicture} alt=""/>)
+                src={props.profilePic} alt=""/>)
     }
     return (<div className='sign-card'>
 

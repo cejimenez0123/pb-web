@@ -173,7 +173,7 @@ function SettingsContainer(props) {
             setNewUsername(profile.username)
         }
    
-        setProfilePic(profile.profilePicture)
+        setProfilePic(profile.profilePic)
         setSelfStatement(profile.selfStatement)
         setPrivacy(profile.privacy)
         setPending(false)

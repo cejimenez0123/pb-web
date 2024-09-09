@@ -1,6 +1,8 @@
 import React ,{useState,useEffect}from 'react'
 import "../App.css"
-import { getPublicPages,fetchArrayOfPagesAppened, fetchAppendPagesOfProfile, fetchPagesWhereProfileCommenters  } from '../actions/PageActions'
+import {  fetchAppendPagesOfProfile,
+    fetchPagesWhereProfileCommenters, 
+    getPublicStories  } from '../actions/PageActions'
 import { useSelector, useDispatch } from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -65,7 +67,7 @@ function DashboardContainer(props){
     const fetchPublicContent =()=>{
         setHasMore(true)
         setItemsInView([])
-        dispatch(getPublicPages()).then(result=>{
+        dispatch(getPublicStories()).then(result=>{
             checkResult(result,payload=>{
                 setHasError(false)
                 const {pageList }= payload

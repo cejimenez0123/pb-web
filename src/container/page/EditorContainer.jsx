@@ -4,13 +4,14 @@ import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
 import debounce from "../../core/debounce"
 import {  setHtmlContent,
-          createPage, 
+        
           updatePage,
           saveRolesForPage, 
           fetchEditingPage,
           deletePage, 
           setPagesToBeAdded, 
-          setEditingPage, 
+          setEditingPage,
+          createStory ,
           setPageInView } from "../../actions/PageActions"
 import React,{ useEffect, useState } from "react"
 import history from "../../history"
@@ -107,7 +108,7 @@ function EditorContainer({currentProfile}){
           writers:[],
           type: type
     }
-    dispatch(createPage(params)).then((result)=>{
+    dispatch(createStory(params)).then((result)=>{
         checkResult(result,payload=>{
             const {page} = payload
           

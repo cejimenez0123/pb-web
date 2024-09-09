@@ -115,7 +115,7 @@ function ProfileContainer(props){
     if(profile!=null){
       return(<div className="profile-card">
         <div className="profile-info">
-            <img src={profile.profilePicture} alt="proflile-picture"/>
+            <img src={profile.profilePic} alt="proflile-picture"/>
             <h5 className="username">{profile.username}</h5>
             <div>
                 {followDiv()}

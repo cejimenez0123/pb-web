@@ -7,15 +7,16 @@ import Contributors from "../domain/models/contributor"
 import UserApproval from "../domain/models/user_approval"
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
+import storyRepo from "../data/storyRepo"
 
 const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
-
+  
   try{
-    let res = await axios.get(Enviroment.url+"/story/")
-    console.log(res.data)
+    const data = await storyRepo.getPublicStories()
+    
 
 return {
-    stories:res.data.stories
+    stories:data.stories
   }
 
     }catch(err){
@@ -23,30 +24,6 @@ return {
     }
   
 })
-const getPublicPages = createAsyncThunk(
-    'pages/getPublicPages',
-    async (thunkApi) => {
-        let pageList = []
-      try{
-        let res = await axios.get(Enviroment.url+"/story/")
-        console.log(res.data)
-        // let ref = collection(db, "page")
-        // const request = query(ref, where("privacy", "==", false), orderBy("created", "desc"))
-        // const snapshot = await getDocs(request)
-        // snapshot.docs.forEach(doc => {
-        //         const page = unpackPageDoc(doc)  
-        //         pageList = [...pageList, page]
-        //     })
-    return {
-        pageList:res.data.stories
-      }
-    
-        }catch(err){
-          return {error: err}
-        }
-    }
-
-  )
 
 const setHtmlContent = createAction(
   'pages/setHtmlContent',(html)=>{
@@ -57,6 +34,14 @@ const setHtmlContent = createAction(
       }
   }
 )
+const updateStory = createAsyncThunk("pages/updateStory",async (params,thunkApi)=>{
+      try{
+        let data = storyRepo.updateStory( params)
+        return { story:data.story}
+      }catch(e){
+        return {error: e}
+      }
+})
 const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>{
       
   try{
@@ -66,8 +51,8 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
       commentable,
       privacy,
     
-    } = params
-      
+    } =params
+     
       let ref = doc(db,"page",page.id)
       await updateDoc(ref,{
         title,
@@ -156,123 +141,16 @@ catch(e){
   return {error:`Page Query Where Error: ${e.message}`}
 }
 })
-      // let readerSnap = await getDocs(queryReaders)
-      //   readerSnap.docs.forEach(doc=>{
-      //     const page = unpackPageDoc(doc)
-      //       pageList = [...pageList, page]
-      //       })
-      //     let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))        
-  //     let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
-  //     let queryEditor = query(ref,where("profileId","==", profile.id),where("editors", "array-contains",auth.currentUser.uid))
-  //     let queryReaders = query(ref,where("profileId","==", profile.id),where("readers", "array-contains", auth.currentUser.uid))
-  //   try {
-  //     let snapshot = await getDocs(queryCommenter)
-  //     snapshot.docs.forEach(doc=>{
-  //         const page = unpackPageDoc(doc)
-  //         pageList = [...pageList, page]
-  //       })
-  //     }catch(e){
-  //       console.error(e)
-
-  //     }  
-  //     try {
-  //       let snapshot = await getDocs(queryReq)
-  //       snapshot.docs.forEach(doc=>{
-  //           const page = unpackPageDoc(doc)
-  //           pageList = [...pageList, page]
-  //         })
-  //       }catch(e){
-  //         console.error(`Page Query Where Req Error: ${e.message}`)
-  
-  //       }  
-  //     try{
-  //       let readerSnap = await getDocs(queryReaders)
-  //       readerSnap.docs.forEach(doc=>{
-  //         const page = unpackPageDoc(doc)
-  //           pageList = [...pageList, page]
-  //           })
-  //     }catch(e){
-  //       console.error(`Page Query Where Reader Error: ${e.message}`)
-  //     }
-  //     try{
-  //       let editorSnap = await getDocs(queryEditor)
-  //       editorSnap.docs.forEach(doc=>{
-  //         const page = unpackPageDoc(doc)
-  //         pageList = [...pageList, page]
-  //         })
-  //       }catch(e){
-  //         console.error(`Page Query Where Editor Error: ${e.message}`)
-  //     }
-  //     try{
-  //     let writerSnap = await getDocs(queryWriter)
-  //     writerSnap.docs.forEach(doc=>{
-  //         const page = unpackPageDoc(doc)
-  //         pageList = [...pageList, page]
-  //       })
-  //     }catch (e) {
-  //       console.error(`Page Query Where Writer Error: ${e.message}`)
-  //     }
-  //     return {pageList}
-  // }
-  // try{
-const createPage = createAsyncThunk("pages/createPage", async function(params,thunkApi){
-  const ref = collection(db,"page")
-  const id = doc(ref).id
-
-  const { profileId,
-          data,
-          privacy,
-          approvalScore,
-          type,
-          title,
-          readers,
-          commentable,
-          writers,
-          commenters,
-          editors,}=params
- const created = Timestamp.now()
+const createStory = createAsyncThunk("pages/createStory", async function(params,thunkApi){
   try{
+   let data = await storyRepo.postStory(params)
 
-  await setDoc(doc(db,"page", id), { id,
-                                                      title,
-                                                      data,
-                                                      profileId,
-                                                      approvalScore,
-                                                      privacy,
-                                                      commentable,
-                                                      type,
-                                                      readers,
-                                                      writers,
-                                                      commenters,
-                                                      editors,
-                                                      created:created})
-     const contributors= new Contributors(commenters,
-          readers,writers,editors)
-          if(!privacy){
-            client.initIndex("page").saveObject({objectID:id,title:title}).wait()
-            }
-  const page = new Page(  id,
-                          title,
-                          data,
-                          profileId,
-                          auth.currentUser.uid,
-                          approvalScore,
-                          privacy,
-                          commentable,
-                          type,
-                          contributors,
-                          created)
-
-  return { page }
-  }catch(error){
-    
-    return {
-      error: new Error(`Error: SavePage ${error.message}`)
-    }
+    return {story:data.story}
+  }catch(e){
+    return{error:e}
   }
-
-
 })
+
 const fetchPage=createAsyncThunk("pages/fetchPage", async function(params,thunkApi){
   let id = params["id"]
 
@@ -825,11 +703,11 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
                               return page
   }
 
-  export {getPublicPages,
+  export {
           pagesLoading,
           setHtmlContent,
           getProfilePages,
-          createPage,
+          
           setPageInView,
           fetchPage,
           fetchArrayOfPages,
@@ -855,6 +733,7 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           createPageApproval,
           deletePageApproval,
           unpackPageDoc,
-          getPublicStories
+          getPublicStories,
+          createStory
         } 
         

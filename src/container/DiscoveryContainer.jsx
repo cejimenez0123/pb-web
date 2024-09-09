@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
-import {getPublicPages,getPublicStories } from '../actions/PageActions'
+import {getPublicStories } from '../actions/PageActions'
 import { getPublicBooks } from '../actions/BookActions'
 import { getPublicLibraries, setLibraryInView } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'

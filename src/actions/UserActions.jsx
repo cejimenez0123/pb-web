@@ -23,6 +23,7 @@ import FollowLibrary from "../domain/models/follow_library"
 import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
 import uuidv4 from "../core/uuidv4";
+import profileRepo from "../data/profileRepo";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -32,38 +33,12 @@ const logIn = createAsyncThunk(
            
         const userCred = await signInWithEmailAndPassword(auth,email,password)
 
-            
-            const uId=userCred.user.uid
-            const snapshot = await getDocs(
-                query(collection(db, "profile"),
-                where("userId", "==",uId)))    
-                const pack =  snapshot.docs[0].data() 
-
-            if(pack!=null){  
-                const id = pack["id"]
-                const username = pack["username"]
-                const profilePicture = pack["profilePicture"]??""
-                const selfStatement = pack["selfStatement"]
-                const homeLibraryId = pack["homeLibraryId"]
-                const bookmarkLibraryId = pack["bookmarkLibraryId"]
-                const userId = pack["userId"]
-                const privacy = pack["privacy"]
-                const created = pack["created"]
-                const profile = new Profile(id,
-                                            username,
-                                            profilePicture,
-                                            selfStatement,
-                                            bookmarkLibraryId,
-                                            homeLibraryId,
-                                            userId,
-                                            privacy,
-                                            created)
+            let data = profileRepo.getUsersProfiles({id:userCred.user.uid})
+     
         return {
-                profile
+                profile: data.profiles[0]
               }
-            }else{
-                throw new Error("Profile not found for the logged-in user.");
-            }
+           
         }catch(error) {
             return {
             
@@ -175,15 +150,7 @@ const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
   return {results}
 })
 
-const createCollection = createAsyncThunk("ds",async (params,thunkApi)=>{
-  const {profile} = params
- 
-  await setDoc(doc(db,"profile",profile.Id,"collection","home"),
-  { books:[],
-    libraries:[],
-    pages:[],
-    profiles:[]})
-})
+
 const updateHomeCollection = createAsyncThunk("users/updatecollection",async (params,thunkApi)=>{
   try{
   const {profile,books,libraries,pages,profiles} = params
@@ -233,30 +200,13 @@ const setSignedInFalse = createAction("users/setSignedInFalse", async(params)=>{
  )
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
-    
-    
-    try {
-if(auth.currentUser){
-    const snapshot = await getDocs(query(collection(db, "profile"), where("userId", "==",auth.currentUser.uid)))
-   
-   // Check if the snapshot contains any documents
-        const pack =  snapshot.docs[0].data() 
-        
-        const id = pack["id"]
-        const username = pack["username"]
-        const profilePicture = pack["profilePicture"]??""
-        const selfStatement = pack["selfStatement"]
-        const homeLibraryId = pack["homeLibraryId"]
-        const bookmarkLibraryId = pack["bookmarkLibraryId"]
-        const userId = pack["userId"]
-        const privacy = pack["privacy"]
-        const created = pack["created"]
-        const profile = new Profile(id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created)
-        
-        return {
-            profile
-        } 
-      }else{
+      try {
+        if(auth.currentUser){
+            let data = await profileRepo.getUsersProfiles({id:auth.currentUser.uid})
+            return {
+            profile: data.profiles[0]
+           } 
+          }else{
           throw new Error("No Authenticated User")
         }         
         }catch(error) {
@@ -276,22 +226,11 @@ const updateProfile = createAsyncThunk("users/updateProfile",
                       const profileRef = doc(db, "profile", profile.id);
                         const newSelfStatement = params["selfStatement"]
                         const newPrivacy = params["privacy"]
+        const res =  await profileRepo.updateProfile(params)
 
-      await updateDoc(profileRef, {
-            username: newUsername,
-            profilePicture,
-            selfStatement: newSelfStatement,
-            privacy: newPrivacy,
-        });
-        client.initIndex("profile")
-        .partialUpdateObject({objectID: profile.id,username:newUsername},
-          {createIfNotExists:true})
-        const snapshot = await getDoc(profileRef)
-      
-        const updatedProfile = unpackProfileDoc(snapshot)
 
             return {
-                profile: updatedProfile
+                profile: res.profile
             }
           }catch(e){
             return {error: new Error(`Update Profile failed: ${e.message}`)}

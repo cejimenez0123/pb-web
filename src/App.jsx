@@ -1,7 +1,7 @@
 import './App.css';
 import { connect} from "react-redux"
 import {Route, Routes} from 'react-router-dom';
-import { getPublicPages } from './actions/PageActions';
+import {  getPublicStories } from './actions/PageActions';
 import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
@@ -117,7 +117,7 @@ function App(props) {
           <Route exact  path={Paths.home()} 
                         element={
                           <DashboardContainer 
-                            getPublicPages={props.getPublicPages} 
+                            getPublicStories={props.getPublicStories} 
                             pagesInView={props.pagesInView}
                           />
                         }
@@ -126,7 +126,7 @@ function App(props) {
                   element={
                     <DiscoveryContainer 
                       getPublicLibraries={props.getPublicLibraries}
-                      getPublicPages={props.getPublicPages} 
+                      getPublicStories={props.getPublicStories} 
                       getPublicBooks={props.getPublicBooks} 
                       pagesInView={props.pagesInView}
                       fetchAllProfiles={props.fetchAllProfiles}
@@ -264,7 +264,7 @@ function mapDispatchToProps(dispatch){
     getPublicBooks:()=>dispatch(getPublicBooks()),
     fetchBookmarkLibrary:(params)=>dispatch(fetchBookmarkLibrary(params)),
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
-    getPublicPages:()=>dispatch(getPublicPages()),
+    getPublicStories:()=>dispatch(getPublicStories()),
     fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
     fetchFollowBooksForProfile:(params)=>dispatch(fetchFollowBooksForProfile(params)) ,
     fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params)),
