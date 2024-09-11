@@ -1,4 +1,4 @@
 const Enviroment = {
-    proxyUrl:"https://arcane-hollows-82816-b654a65f49d8.herokuapp.com/"
+    proxyUrl:import.meta.env.VITE_PROXY_URL
 }
 export default Enviroment

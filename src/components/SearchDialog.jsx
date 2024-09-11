@@ -4,7 +4,7 @@ import {Dialog,TextField,useMediaQuery} from "@mui/material"
 import ClearIcon from '@mui/icons-material/Clear';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import debounce from "../core/debounce";
-import { makeStyles } from '@material-ui/core/styles'
+
 import { searchDialogToggle, searchMultipleIndexes } from "../actions/UserActions";
 import checkResult from "../core/checkResult";
 import { useNavigate } from "react-router-dom";
