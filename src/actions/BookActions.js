@@ -19,6 +19,7 @@ import {  where,
 import { db,auth,client} from "../core/di"
 import Contributors from "../domain/models/contributor"
 import axios from "axios"
+import collectionRepo from "../data/collectionRepo"
 
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
@@ -61,13 +62,10 @@ async function trySomething(){
   }
 }
 const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thunkApi){
-    let id = params["id"]
-    try {
-      const docSnap = await getDoc(doc(db, "book", id))
-      const book = unpackBookDoc(docSnap)
-    
+    try{
+      const data = await collectionRepo.fetchCollection(params)
     return {
-      book
+      book:data.book
     }
     }catch(e){
       return {
@@ -81,53 +79,10 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     async (params,thunkApi) => {
       try {
         const profile = params["profile"]
-        const ref = collection(db, "book")
-        let bookList = []
-        let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
-        let queries = [queryReq]
-        if(auth.currentUser){
-          if(auth.currentUser.uid == profile.userId){
-            queryReq=  query(ref,where("profileId","==",profile.id))
-            queries = [queryReq]
+        const data = await collectionRepo.getProfileBooks({profile})
 
-          }else{
-            const queryWriter = query(
-              ref,
-                  where('profileId', '==', profile.id),
-                  where('writers', 'array-contains', auth.currentUser.uid)
-                );
-                const queryEditor = query(
-                  ref,
-                      where('profileId', '==', profile.id),
-                      where('editors', 'array-contains', auth.currentUser.uid)
-                    );
-                const queryCommenter = query(
-                      ref,
-                          where('profileId', '==', profile.id),
-                          where('commenters', 'array-contains', auth.currentUser.uid)
-                        );
-                const queryReader = query(
-                          ref,
-                              where('profileId', '==', profile.id),
-                              where('readers', 'array-contains', auth.currentUser.uid)
-                            );
-              queries= [ ...queries,
-                            queryWriter,
-                            queryEditor,
-                            queryCommenter,
-                            queryReader]
-              
-        }
-      }
-        let promises = queries.map(query=>{
-          return getDocs(query)
-        })
-        let snapshots = await Promise.all(promises)
-        const docs = snapshots.map(snapshot=>snapshot.docs).flat()
-        bookList = docs.map(doc=>unpackBookDoc(doc))
-    
             return {
-                bookList
+                bookList:data.collections
             }
           }catch(err){
     

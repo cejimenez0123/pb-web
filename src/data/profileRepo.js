@@ -23,6 +23,14 @@ class ProfileRepo {
         })
         return res.data
     }
+    async getBookmarkCollection({id}){
+        let res = await axios.get(Enviroment.url+"/profile/"+id+"/collection")
+        return res.data
+    }
+    async createBookmark({profile,collection}){
+        let res = await axios.post(Enviroment.url+"/profile/"+profile.id+"/collection/"+collection.id)
+        return res.data
+    }
 }
 
 export default new ProfileRepo()
