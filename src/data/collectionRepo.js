@@ -12,14 +12,14 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(Enviroment.url+"/collection/library")
         return res.data
     }
-    async createCollection(data){
+    async createCollection({name,
+        profileId,
+        purpose,
+        privacy,
+        writingIsOpen,
+        }){
        
-            let {name,
-            profileId,
-            purpose,
-            privacy,
-            writingIsOpen,
-            }=data
+          
         let res = await axios.post(Enviroment.url+"/collection",{
             title:name,
             purpose,
@@ -29,9 +29,16 @@ import Enviroment from "../core/Enviroment";
         })
         return res.data
     }
-    async updateCollection(data){
-        const {id }= data
-        let res = await axios.put(Enviroment.url+"/collection/"+id)
+    async updateCollection({id,title,
+    purpose,
+    isPrivate,
+    isOpenCollaboration}){
+        let res = await axios.put(Enviroment.url+"/collection/"+id,{
+            title,
+            purpose,
+            isPrivate,
+            isOpenCollaboration
+        })
         return res.data
     }
     async addStoryToCollection(data){
@@ -39,13 +46,13 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.post(Enviroment.url+"/collection/"+collection.id+"/story/"+story.id)
         return res.data
     }
-    async addCollectionToCollection(data){
-        let {parentCollection,childCollection}=data
+    async addCollectionToCollection({parentCollection,childCollection}){
+     
         let res = await axios.post(Enviroment.url+"/collection/"+parentCollection.id+"/collection/"+childCollection.id)
         return res.data
     }
-    async deleteCollection(data){
-        let {id}=data
+    async deleteCollection({id}){
+      
         let res = await axios.delete(Enviroment.url+"/collection/"+id)
         return res.data
     }

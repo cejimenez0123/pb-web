@@ -13,6 +13,10 @@ class StoryRepo{
         return res.data
 
     }
+    async getProfileStories({profileId}){
+        let res = await axios.get(Enviroment.url+"/story/profile/"+profileId)
+        return res.data
+    }
     async postStory(params){
         const { 
             profileId,
@@ -22,14 +26,9 @@ class StoryRepo{
             type,
             title,
             commentable}=params
-        const res = await axios.post(this.url+"/story/"+id,{
-                profileId: profileId,
-                type:type,
-                data: data,
-                isPrivate:privacy,
-                approvalScore:approvalScore,
-                title:title,
-                commentable:commentable
+        const res = await axios.post(this.url+"/story",{
+            title,data,isPrivate:privacy,authorId:profileId,commentable:commentable,
+            type
              })
         return res.data
     }
@@ -52,8 +51,8 @@ class StoryRepo{
          })
          return res.data
     }
-    async deleteStory(data){
-        const {id} = data
+    async deleteStory({id}){
+    
         let res = await axios.delete(this.url+"/story/"+id)
         return res.data
     }

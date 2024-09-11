@@ -105,19 +105,20 @@ function BookViewContainer(props){
 }
     }
     const getBook=()=>{ 
-        dispatch(fetchBook(pathParams)).then(result=>{
-                checkResult(result,payload=>{
-                    const {book}=payload
-                    getPages(book)
-                    const profileParams = {
-                        id:  book.profileId
-                    }
-                    dispatch(fetchProfile(profileParams))
-                    fetchFollows()
-                },(er)=>{
+        dispatch(fetchBook(pathParams))
+        // .then(result=>{
+                // checkResult(result,payload=>{
+                //     const {book}=payload
+                //     getPages(book)
+                //     const profileParams = {
+                //         id:  book.profileId
+                //     }
+                //     dispatch(fetchProfile(profileParams))
+                //     fetchFollows()
+            //     },(er)=>{
 
-                })
-            })
+            //     })
+            // })
     }
     
     useEffect(()=>{
@@ -186,7 +187,7 @@ function BookViewContainer(props){
    
     const pageList =()=>{
         if(book){
-            if(book.pageIdList.length>0){
+            if( book.storyIdList.length>0){
                 return(
                     <div className="content">
                      <InfiniteScroll 

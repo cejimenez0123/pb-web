@@ -1,8 +1,6 @@
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
 
-
-
 class ProfileRepo {
 
     async getUsersProfiles(params){
@@ -23,7 +21,7 @@ class ProfileRepo {
         })
         return res.data
     }
-    async getBookmarkCollection({id}){
+    async getProfileBookmarkCollection({profileId}){
         let res = await axios.get(Enviroment.url+"/profile/"+id+"/collection")
         return res.data
     }

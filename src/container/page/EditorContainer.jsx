@@ -96,18 +96,13 @@ function EditorContainer({currentProfile}){
         type = PageType.text
       }
         const params ={
-          profileId: currentProfile.id,
-          data: htmlContent,
-          title: title,
-          privacy: privacy,
-          approvalScore:0,
-          commentable: commentable,
-          readers:[],
-          commenters:[],
-          editors:[],
-          writers:[],
-          type: type
-    }
+            profileId:currentProfile.id,
+            data:htmlContent,
+            privacy:privacy,
+            type:type,
+            title:title,
+            commentable:commentable}
+       
     dispatch(createStory(params)).then((result)=>{
         checkResult(result,payload=>{
             const {page} = payload

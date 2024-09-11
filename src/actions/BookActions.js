@@ -64,8 +64,9 @@ async function trySomething(){
 const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thunkApi){
     try{
       const data = await collectionRepo.fetchCollection(params)
+    console.log(data)
     return {
-      book:data.book
+      book:data.collection
     }
     }catch(e){
       return {
@@ -96,8 +97,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
   const createBook = createAsyncThunk("books/createBook", async function(params,thunkApi){
 
     try{
-        const ref = collection(db,"book")
-        const id = doc(ref).id
+       
         const {
             title,
             purpose,
@@ -110,43 +110,16 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
             readers,
             writers,
           }=params
-            const created = Timestamp.now()
-            const updatedAt = created
-            await setDoc(doc(db,"book", id), 
-                        { 
-                            id:id,
-                            title:title,
-                            purpose:purpose,
-                            profileId:profileId,
-                            pageIdList:pageIdList,
-                            privacy:privacy,
-                            writingIsOpen:writingIsOpen,
-                            commenters,
-                            editors,
-                            readers,
-                            writers,
-                            updatedAt: created,
-                            created: created
-                        })
-          const contributors= new Contributors(commenters,readers,writers,editors)
-          if(!privacy){
-            client.initIndex("book").saveObject(
-              {objectID:id,titlee:title,type:"book"}).wait()
-          }            
-   const book = new Book(
-    id,
-    purpose,
-    title,
-    profileId,
-    pageIdList,
-    privacy,
-    writingIsOpen,
-    contributors,
-    updatedAt,
-    created,
-)
+          const data = await collectionRepo.createCollection({name:title,
+            profileId:profileId, purpose:purpose,privacy:privacy,writingIsOpen:writingIsOpen
+          })
+if(!privacy){
+            client.initIndex("collection").saveObject(
+              {objectID:data.id,title:params.title,type:"collection"}).wait()
+          }      
 
-    return { book }
+
+    return { book:data.book }
     }catch(error){
   
       return {
@@ -288,33 +261,12 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
       
   try{
     const { book,title,purpose,pageIdList,privacy,writingIsOpen } = params
-    let updatedAt =Timestamp.now()
-      let ref = doc(db,"book",book.id)
-      await updateDoc(ref,{
-        title:title,
-        pageIdList:pageIdList,
-        privacy: privacy,
-        writingIsOpen: writingIsOpen,
-        purpose: purpose,
-        updatedAt: updatedAt
-      })
-      if(!privacy){
-        client.initIndex("book").partialUpdateObject({objectID:book.id,title},{createIfNotExists:true}).wait()
-      }
-      const contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
-            
-      let newBook = new Book( book.id,
-                              purpose,
-                              title,
-                              book.profileId,
-                              pageIdList,
-                              privacy,
-                              writingIsOpen,
-                              contributors,
-                              updatedAt,
-                              book.created)
+    const data = await collectionRepo.updateCollection({id:book.id,title:title,purpose:purpose,
+      isOpenCollaboration:writingIsOpen,isPrivate:privacy
+    })
+     
       return {
-        book: newBook
+        book: data.collection
       }
     }catch(e){
     return {error: new Error("Error: UDATE BOOK -" + e.message)}
@@ -323,10 +275,10 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
 const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>{
   try{
     const {book}=params
-    await deleteDoc(doc(db, "book", book.id));
+    let data = await collectionRepo.deleteCollection({id:book.id})
     client.initIndex("book").deleteObject(book.id).wait()
     return {
-      book:book
+      book:data
     }
   }catch(e){
     return {error: new Error("Error: DELETE BOOK"+e.message)};

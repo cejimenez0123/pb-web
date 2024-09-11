@@ -1,12 +1,13 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit"
 import Library from "../domain/models/library"
-import { deleteDoc,and,or,orderBy,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
+import { getDoc,collection,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
 import { db,auth,client } from "../core/di"
 import Contributors from "../domain/models/contributor"
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
 import collectionRepo from "../data/collectionRepo"
 import profileRepo from "../data/profileRepo"
+
 
 const updateLibrary = createAsyncThunk("libraries/updateLibrary", async function(params,thunkApi){
   try{
@@ -17,29 +18,14 @@ const updateLibrary = createAsyncThunk("libraries/updateLibrary", async function
       privacy,
       writingIsOpen
     }=params
-    const ref =doc(db, "library", library.id)
-    await updateDoc(ref, {
-      privacy:privacy,
-      writingIsOpen:writingIsOpen,
-      name:name,
-      purpose:purpose,
-    })
-    client.initIndex("library")
-    .partialUpdateObject({objectID:library.id,name},{createIfNotExists:true}).wait()
-    const contributors= new Contributors( library.commenters,
-                                          library.readers,
-                                          library.writers,
-                                          library.editors)
-    const libraryItem =new Library(library.id,
-              name,library.profileId,
-              purpose,library.pageIdList,
-              library.bookIdList,
-              writingIsOpen,
-              privacy,
-              contributors,
-              library.updatdedAt,
-              library.created)
-    return { library:libraryItem }
+
+    let data = await collectionRepo.updateCollection({id:library.id,
+        title:name,
+        purpose:purpose,
+        isPrivate:privacy,
+        isOpenCollaboration:writingIsOpen})
+
+    return { library:data.collection }
     }catch(error){
 
       return {
@@ -167,6 +153,10 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
 
     try{
         let data = await collectionRepo.createCollection(params)
+        if(!privacy){
+          client.initIndex("collection").saveObject(
+            {objectID:data.id,title:params.title,type:"collection"}).wait()
+        }   
         return {library: data.collection}
 
       }catch(error){
@@ -212,10 +202,10 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
 
 
       try {
-        collectionRepo.
+        let data = await profileRepo.getProfileBookmarkCollection({profileId:id})
                                   
     return {
-        library
+        library:data.collections[0]
       }
       }catch(e){
         return {
@@ -291,9 +281,9 @@ const deleteLibrary = createAsyncThunk("libraries/deleteLibrary", async (params,
   
   try{
     const {library }=params
-  await deleteDoc(doc(db, "library", library.id));
+  const data = await collectionRepo.deleteCollection({id:library.id})
   client.initIndex("library").deleteObject(library.id).wait()
-    return {library}
+    return {library:data}
   }catch(e){
     return {error: new Error("Error: Delete Library"+e.message)};
   }

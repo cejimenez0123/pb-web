@@ -88,61 +88,18 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
 const getProfilePages= createAsyncThunk(
   'pages/getProfilePages',
   async (params,thunkApi) => {
-    let pageList = []
-    const profile=params["profile"]
     try{
-    const ref = collection(db, "page")
-    let queryReq = query(ref,where("profileId","==",profile.id),where("privacy","==",false))
-    let queries= [queryReq]
-    if(auth.currentUser && (auth.currentUser.uid == profile.userId)){
-      queryReq = query(ref, where("profileId", "==", profile.id))
-      queries = [queryReq]
-    }else if(auth.currentUser && (auth.currentUser.uid !== profile.userId)){
-    
-      console.log(auth.currentUser.uid)
-      const queryWriter = query(
-    ref,
-        where('profileId', '==', profile.id),
-        where('writers', 'array-contains', auth.currentUser.uid)
-      );
-      const queryEditor = query(
-        ref,
-            where('profileId', '==', profile.id),
-            where('editors', 'array-contains', auth.currentUser.uid)
-          );
-      const queryCommenter = query(
-            ref,
-                where('profileId', '==', profile.id),
-                where('commenters', 'array-contains', auth.currentUser.uid)
-              );
-      const queryReader = query(
-                ref,
-                    where('profileId', '==', profile.id),
-                    where('readers', 'array-contains', auth.currentUser.uid)
-                  );
-   queries = [...queries,queryWriter,queryEditor,queryCommenter,queryReader]
-    //   // queryReq = query(ref, where("profileId", "==", profile.id))
-   
-      }
+    let data = await storyRepo.getProfileStories({profileId:params["profile"].id})
 
-  let promises = queries.map(query=>{
-    return getDocs(query)
-  })
-  let snapshots = await Promise.all(promises)
-  const docs = snapshots.map(snapshot=>snapshot.docs).flat()
-  pageList = docs.map(doc=>unpackPageDoc(doc))
   return {
-
-      pageList
-    }
-  }
-catch(e){
+    pageList:data.stories}
+  }catch(e){
 
   return {error:`Page Query Where Error: ${e.message}`}
-}
-})
+}})
 const createStory = createAsyncThunk("pages/createStory", async function(params,thunkApi){
   try{
+    console.log(params)
    let data = await storyRepo.postStory(params)
 
     return {story:data.story}
@@ -469,10 +426,10 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
 const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>{
     try{
       const {page}=params
-    await deleteDoc(doc(db, "page", page.id));
+    let data = await storyRepo.deleteStory({id:page.id})
     client.initIndex("page").deleteObject(page.id).wait()
     return {
-      page:page
+      page:data
     }
     }catch(e){
       return {error: new Error("Error: Delete Page"+e.message)};
