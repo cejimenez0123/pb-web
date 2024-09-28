@@ -14,6 +14,7 @@ import MoreVert from '@mui/icons-material/MoreVert'
 import { useSelector } from "react-redux";
 import theme from "../theme";
 import checkResult from "../core/checkResult";
+import ga from "../core/ga4"
 function PageListItem({page,onDelete}) {
     
     const [showPreview,setShowPreview] = useState(false)

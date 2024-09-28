@@ -31,12 +31,12 @@ const logIn = createAsyncThunk(
         let password = params["password"]
         try {
            
-        const userCred = await signInWithEmailAndPassword(auth,email,password)
-
-            let data = profileRepo.getUsersProfiles({id:userCred.user.uid})
-     
-        return {
-                profile: data.profiles[0]
+          const userCred = await signInWithEmailAndPassword(auth,email,password)
+          const profilesRes = await profileRepo.getUsersProfiles({id:userCred.user.uid})
+          let res = await profileRepo.startSession({uId:userCred.user.uid,email:email})
+          localStorage.setItem("token",res.token)
+          return {
+                profile: profilesRes.profiles[0]
               }
            
         }catch(error) {
@@ -59,58 +59,59 @@ const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
     
-        
-    let email = params["email"]
-    let password = params["password"]
+      const{uId,email,password,username,profilePicture,selfStatement,privacy}=parmas
+
     try {
+      
         const userCred = await  createUserWithEmailAndPassword(auth, email, password)
-        const pId = doc(collection(db,"profile")).id
-        const uId = userCred.user.uid
-        const libId = doc(collection(db,"library")).id
-        new Library(libId,"Saved")
-        const timestamp = Timestamp.now()
-        await setDoc(doc(db,"library",libId),{
-                id:libId,
-                name:"Saved",
-                profileId:pId,
-                purpose:"Anything you find interesting can be saved here, for future use",
-                pageIdList:[],
-                bookIdList:[],
-                writingIsOpen:false,
-                privacy:true,
-                editors:[],
-                writers:[],
-                commmenters:[],
-                readers:[],
-                created: timestamp
-        })
+        await profileRepo.register({uId:userCred.user.uid,email,password,username,profilePicture,selfStatement,privacy})
+         //   const pId = doc(collection(db,"profile")).id
+      //   const uId = userCred.user.uid
+      //   const libId = doc(collection(db,"library")).id
+      //   new Library(libId,"Saved")
+      //   const timestamp = Timestamp.now()
+      //   await setDoc(doc(db,"library",libId),{
+      //           id:libId,
+      //           name:"Saved",
+      //           profileId:pId,
+      //           purpose:"Anything you find interesting can be saved here, for future use",
+      //           pageIdList:[],
+      //           bookIdList:[],
+      //           writingIsOpen:false,
+      //           privacy:true,
+      //           editors:[],
+      //           writers:[],
+      //           commmenters:[],
+      //           readers:[],
+      //           created: timestamp
+      //   })
         
-       await setDoc(doc(db, "user", uId), {
-            id:uId,
-            defaultProfileId: pId,
-            email: email,
-            created: timestamp
-        });
-        const { username,profilePicture,selfStatement,privacy} = params
+      //  await setDoc(doc(db, "user", uId), {
+      //       id:uId,
+      //       defaultProfileId: pId,
+      //       email: email,
+      //       created: timestamp
+      //   });
+      
 
-      const profile = new Profile(pId,username,profilePicture,selfStatement,libId,libId,uId,privacy)
-      await setDoc(doc(db,"profile", pId),{
-        id:pId,
-        username,
-      profilePicture: profilePicture,
-        selfStatement:selfStatement,
-        bookmarkLibraryId:libId,
-        homeLibraryId:libId,
-        userId:uId,
-        privacy:privacy,
-        created:timestamp
-      })
+      // const profile = new Profile(pId,username,profilePicture,selfStatement,libId,libId,uId,privacy)
+      // await setDoc(doc(db,"profile", pId),{
+      //   id:pId,
+      //   username,
+      // profilePicture: profilePicture,
+      //   selfStatement:selfStatement,
+      //   bookmarkLibraryId:libId,
+      //   homeLibraryId:libId,
+      //   userId:uId,
+      //   privacy:privacy,
+      //   created:timestamp
+      // })
 
-      await setDoc(doc(db,"profile",pId,"collection","home"),
-            { books:[],
-              libraries:[],
-              pages:[],
-              profiles:[]})
+      // await setDoc(doc(db,"profile",pId,"collection","home"),
+      //       { books:[],
+      //         libraries:[],
+      //         pages:[],
+      //         profiles:[]})
       client.initIndex("profile").saveObject({ objectID:pId,
                                               username:username,
                                               type:"profile"}).wait()
@@ -129,25 +130,25 @@ const signUp = createAsyncThunk(
 )
 const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
   async (params,thunkApi)=>{
-    	  const {query} = params
-        const queries = [{
-          indexName: 'profile',
-          query: query,
-        }, {
-          indexName: 'page',
-  query: query,
+//     	  const {query} = params
+//         const queries = [{
+//           indexName: 'profile',
+//           query: query,
+//         }, {
+//           indexName: 'page',
+//   query: query,
 
-}, {
-  indexName: 'book',
-  query: query,
+// }, {
+//   indexName: 'book',
+//   query: query,
   
-}, {
-  indexName: 'library',
-  query: query,
+// }, {
+//   indexName: 'library',
+//   query: query,
   
-}];
-  let {results}= await client.multipleQueries(queries)
-  return {results}
+// }];
+//   let {results}= await client.multipleQueries(queries)
+  return {results:[]}
 })
 
 

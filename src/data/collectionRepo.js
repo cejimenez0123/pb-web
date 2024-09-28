@@ -41,9 +41,11 @@ import Enviroment from "../core/Enviroment";
         })
         return res.data
     }
-    async addStoryToCollection(data){
-        const {collection,story}=data
-        let res = await axios.post(Enviroment.url+"/collection/"+collection.id+"/story/"+story.id)
+    async addStoriesToCollection({collection,storyIdList}){
+   
+        let res = await axios.post(Enviroment.url+"/collection/"+collection.id+"/story/",{
+            storyIdList:storyIdList
+        })
         return res.data
     }
     async addCollectionToCollection({parentCollection,childCollection}){

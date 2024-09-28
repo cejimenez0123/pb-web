@@ -1,7 +1,7 @@
-import React ,{useState,useEffect} from 'react'
+import React ,{useState} from 'react'
 import "../App.css"
 import { logIn,signUp,uploadProfilePicture} from '../actions/UserActions';
-import {useDispatch,useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import {InputAdornment,
         IconButton, 
@@ -21,6 +21,7 @@ import theme from '../theme';
 import { Clear } from '@mui/icons-material';
 import { auth } from '../core/di';
 import checkResult from '../core/checkResult';
+import ReactGA from "react-ga4"
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -47,6 +48,8 @@ function LogInContainer(props) {
     const [signUpError, setSignUpError] = useState(false)
     const [logInError,setLogInError] = useState(false)
     const navigate = useNavigate()
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+
     const handleNewUser = (event) => {
         event.preventDefault();
        if(suEmail.length>0 && suPassword.length > 6 && suUsername.length>2){
@@ -90,27 +93,13 @@ function LogInContainer(props) {
     const handleLogIn = (event)=>{
         event.preventDefault()
         if(liEmail.length>3 && liPassword.length>6){
-
-      
-        const params ={email:liEmail,password:liPassword}
-        dispatch(logIn(params)).then((result) => {
-        checkResult(result,payload=>{
-            
-            navigate("/profile/home")
-        },()=>{
+            const params ={email:liEmail,password:liPassword}
+            dispatch(logIn(params))
+        }else{
             setLogInError(true)
-        })
-          
-        }).catch((err) => {
-            
-        });
-    }else{
-        setLogInError(true)
+        }
     }
-    }
-    // if(loading){
-    //     return <div id="dashboard" ><PageSkeleton/></div>
-    // }else{
+  
     return (
         <div id="LogInContainer">
             <div className='two-panel'>
@@ -135,14 +124,13 @@ function LogInContainer(props) {
                         error={logInError}
                         password={liPassword} 
                         email={liEmail}
-                        handleSubmit={handleLogIn}
+                        handleSubmit={(e)=>handleLogIn(e)}
                         setEmail={setLiEmail}
                         setPassword={(str)=>setLiPassword(str)}/>
             </div>
         </div>
         </div>
     )
-    // }
 }
 
 const inputStyle = {
@@ -415,4 +403,4 @@ function LogInCard(props){
 }
 
 
-  export default LogInContainer
+export default LogInContainer

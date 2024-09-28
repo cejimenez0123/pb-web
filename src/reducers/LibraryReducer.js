@@ -82,7 +82,7 @@ builder
         state.loading = false
     }).addCase(getPublicLibraries.rejected,(state,{payload})=>{
         state.loading = false
-        state.error = payload.error
+        state.error = payload
     }).addCase(fetchArrayOfLibraries.rejected,(state,{payload})=>{
         state.error = payload.error
         state.loading = false

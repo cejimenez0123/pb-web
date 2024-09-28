@@ -14,6 +14,7 @@ import { updateLibraryContent } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
 import Paths from '../core/paths'
 import LinkPreview from './LinkPreview'
+import ReactGA from "react-ga4"
   let size= {width: window.innerWidth,height: window.innerHeight}
 
 function DashboardItem({page,book}) {
@@ -32,6 +33,12 @@ function DashboardItem({page,book}) {
     const [bookmarked,setBookmarked]=useState(null)
     const [anchorEl,setAnchorEl]= useState(null)
     const handleToggle = (e) => {
+        ReactGA.event({
+            category: 'Share',
+            action: 'Clicked Share',
+            label: "SHARE",  // Pass the product name
+            value: page.id
+          });
      setAnchorEl(prevState=>{
         if(prevState==null){
             return e.currentTarget
@@ -64,6 +71,14 @@ useEffect(()=>{
 const hanldeClickComment=(pageItem)=>{
     
   if(pageItem){ 
+   
+      ReactGA.event({
+        category: "Story",
+        action: "View Comments",
+        label: "Comments", 
+        value: page.id,
+        nonInteraction: false 
+      });
     const params = {
         page: pageItem
     }
@@ -84,7 +99,7 @@ const hanldeClickComment=(pageItem)=>{
     }else if(page.type===PageType.picture){
         return(<img className='dashboard-content image' src={page.data} alt={page.title}/>)
     }else if(page.type === PageType.link){
-        return(<div className=''>
+        return(<div className='dashboard-content'>
             <LinkPreview
         url={page.data}
             />
@@ -98,6 +113,20 @@ const hanldeClickComment=(pageItem)=>{
                 Loading...
         </div>)
     }
+}
+const copyLink = ()=>{
+    navigator.clipboard.writeText(window.location.href)
+    .then(() => {
+        // Successfully copied to clipboard
+        alert('Text copied to clipboard');
+      })
+    ReactGA.event({
+        category: "Share",
+        action: "Copy URL",
+        label: "Copy Share Link", 
+        value: page.id,
+        nonInteraction: false 
+})
 }
 const handleApprovalClick = ()=>{
     if(Boolean(approved)){
@@ -209,7 +238,7 @@ return <Button onClick={()=>{
             
             <div className='btn-row'>
                 
-                <Button disabled={!currentProfile} 
+                <button className="btn" disabled={!currentProfile} 
                 onClick={handleApprovalClick}
                      style={{color: theme.palette.info.contrastText,
                         backgroundColor: yeaColor}}
@@ -217,15 +246,16 @@ return <Button onClick={()=>{
                
                 >
                     Yea
-                </Button>
-                <Button 
+                </button>
+                <button 
+                 className='btn'
                         style={{color: theme.palette.info.contrastText,
                             backgroundColor: theme.palette.info.main}}
                         onClick={()=>hanldeClickComment(page)}
                         >
                 
                     Comments
-                </Button>
+                </button>
                 
                 <Dropdown>
                         <Button onClick={(e)=>{
@@ -260,11 +290,7 @@ return <Button onClick={()=>{
                 Add to Library
                         </MenuItem>
                         <MenuItem onClick={()=>{
-                            navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
-                            .then(() => {
-                                // Successfully copied to clipboard
-                                alert('Text copied to clipboard');
-                              })
+                           copyLink()
                         }}
                     >
                           Copy Share Link

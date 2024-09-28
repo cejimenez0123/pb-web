@@ -28,11 +28,11 @@ export default function useAuth(shareAuthState) {
                                     const params = {
                                       profile
                                     }
-                                    const bookmarkId ={
-                                                        id: profile.bookmarkLibraryId
-                                                      }
-                                                      dispatch(fetchBookmarkLibrary(bookmarkId))
-                                                      dispatch(fetchHomeCollection(params))
+                                    // const bookmarkId ={
+                                    //                     id: profile.bookmarkLibraryId
+                                    //                   }
+                                                      // dispatch(fetchBookmarkLibrary(bookmarkId))
+                                                      // dispatch(fetchHomeCollection(params))
                   },err=>{
 
                   })

@@ -10,9 +10,11 @@ import {  fetchArrayOfBooksAppened, fetchBooksWhereProfileEditor, fetchBooksWher
 import { clickMe, fetchHomeCollection, getCurrentProfile } from '../actions/UserActions'
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
-
+import ReactGA from "react-ga4"
 
 function DashboardContainer(props){
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+
     const dispatch = useDispatch()
     const currentProfile = useSelector((state)=>state.users.currentProfile)
     const pagesInView = useSelector((state)=>state.pages.pagesInView)

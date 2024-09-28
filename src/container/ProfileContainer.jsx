@@ -1,6 +1,6 @@
 import ContentList from "../components/ContentList"
 import { useParams } from "react-router-dom"
-import { useEffect ,useLayoutEffect,useState} from "react"
+import { useLayoutEffect,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import {    createFollowProfile,
             deleteFollowProfile, 
@@ -11,7 +11,10 @@ import theme from "../theme"
 import "../styles/Profile.css"
 import { Button,Skeleton } from "@mui/material"
 import checkResult from "../core/checkResult"
+import ReactGA from 'react-ga4'
 function ProfileContainer(props){
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const profile = useSelector(state=>state.users.profileInView)

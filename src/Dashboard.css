@@ -1,19 +1,18 @@
-.dashboard-item {
-  background-color: white;
-}
+
 .content-item{
   box-shadow: var(--some-box-shadow);
+  background-color: white;
+}
+.content-item button {
+  color:white;
+  background-color: black;
 }
 @media (min-width:800px) {
 
 .content-item button {
-  color:white;
-  background-color: black;
   padding: 10px 20px;
   height: 100%;
   border: none;
-
- 
 }
 
 .content-item .text{
@@ -61,6 +60,7 @@
 .dashboard-header .titles {
   display: flex;
   flex-direction: row;
+  color:black;
 }
 
 .content-item img{ 

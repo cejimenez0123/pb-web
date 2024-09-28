@@ -173,7 +173,7 @@ const userSlice = createSlice({
     }).addCase(searchMultipleIndexes.fulfilled,(state,{payload})=>{
         state.searchResults = payload.searchResults
     }).addCase(searchMultipleIndexes.rejected,(state,{payload})=>{
-        state.error =payload.error
+        state.error =payload
     }).addCase(fetchArrayOfProfiles.fulfilled,(state,{payload})=>{
         state.profilesInView = payload.profileList
     })

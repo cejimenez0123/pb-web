@@ -41,6 +41,8 @@ import useAuth from './core/useAuth';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
 import {Helmet} from "react-helmet";
+import useScrollTracking from './core/useScrollTracking';
+
 function App(props) {
   const authState = useAuth()
   
@@ -80,7 +82,10 @@ function App(props) {
   }
    
   return (
-    <div className="App">
+    <div >
+      <div className='background-blur'>
+      <div/>
+      <div className='App'>
        <Helmet>
                 <meta charSet="utf-8" />
                 <title>Plumbum</title>
@@ -252,7 +257,8 @@ function App(props) {
       }/>
       
     </Routes>
-
+    </div>
+    </div>
     </div>
     </div>
   );

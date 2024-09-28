@@ -6,12 +6,12 @@ import { Button } from "@mui/material"
 import theme from "../theme"
 import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
-import {useDispatch} from 'react-redux'
-import { db } from "../core/di"
-import { trySomething } from "../actions/BookActions"
+import ReactGA from "react-ga4";
+import useScrollTracking from "../core/useScrollTracking"
 export default function AboutContainer(props){
-    const dispatch = useDispatch()
     const navigate = useNavigate()
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+
     const forCreatives = ()=>{
         return(<div>
             <div className="box">
@@ -71,6 +71,7 @@ Plumbum is great place to begin work and find support to complete work.
 </ul>
     </div>)
 }
+useScrollTracking(); 
     const groupImage = ()=>{
         return(<div id="image-container1">
 <img src={groupJpg} id="group" alt="books"/>
@@ -87,9 +88,7 @@ Plumbum is great place to begin work and find support to complete work.
     
     <div id="title">
         <h1><strong>Welcome to Plumbum</strong></h1>
-        {/* <button onClick={()=>{
-        
-        }}className="btn">Try</button> */}
+   
     </div>
         <MediaQuery minWidth={"1000px"}>
 <div id="bookshelf">

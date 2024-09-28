@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
-import { getProfileBooks, updateBook,createBook } from "../../actions/BookActions"
+import { getProfileBooks, updateBook,createBook, updateBookContent } from "../../actions/BookActions"
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { appendSaveRolesForPage } from "../../actions/PageActions"
@@ -37,73 +37,14 @@ export default function CreateBookContainer({pagesInView}){
             }))}
     }
     const addUpdateBook=(book)=>{
-        
-    pagesToBeAdded.forEach(page=>{
-        let readers = [...book.commenters,...book.writers,...book.editors,...book.readers]
         let list = pagesToBeAdded.map(page=>page.id)
-        let pageIdList = [...book.pageIdList,...list]
-        pageIdList.push(page.id)
-        const roleParams = {
-            pageIdList,
-            readers,
-        }
-        dispatch(appendSaveRolesForPage(roleParams)).then(result=>{
-            checkResult(result,payload=>{
-                window.alert("Book contributors added to page readers")
-            },(err)=>{
-                window.alert("Error others may not be able to read page. Check roles")
-            })
-        })   
-    })
-    
-    let list = pagesToBeAdded.map(page=>page.id)
-    let pageIdList = [...book.pageIdList,...list]
-    const params ={
-        book,
-        title:book.title,
-        purpose:book.purpose,
-        pageIdList,
-        privacy:book.
-        privacy,
-        writingIsOpen:book.writingIsOpen
-    } 
-    dispatch(updateBook(params))
-    .then(result => {
-        checkResult(result,payload=>{
-            navigate(`/book/${book.id}`)
-        },()=>{})
-    }).catch(error =>{
 
-    })
-    }
-    // const setSortOrderAlpha=()=>{
-
-    //     if(sortAlpha){
-    //     let newPages = [...pages].sort((a,b)=>{
-    //         if (a.title < b.title) {
-    //             return -1;
-    //           }
-    //           if (a.title > b.title) {
-    //             return 1;
-    //           }
-    //           return 0;
-    //     })
-    //     // setPages(newPages);
- 
-    //     }else{
-    //         let newPages = [...pages].sort((a,b)=>{
-    //             if (b.title < a.title) {
-    //                 return -1;
-    //               }
-    //               if (b.title > a.title) {
-    //                 return 1;
-    //               }
-    //               return 0;
-    //         })
-    //         // setPages(newPages);
         
-    //     }
-    // }
+        dispatch(updateBookContent({book,pageIdList:list})).then(result=>
+            checkResult(result,payload=>{
+                    navigate(`/book/${book.id}`)
+                },()=>{}))
+    }
     const bookList = ()=>{
             let i = 0
                 return(<div >
@@ -114,13 +55,8 @@ export default function CreateBookContainer({pagesInView}){
            endMessage={<p className="no-more-data">No more data to load.</p>}
         >
              {books.map(book=>{
-                i+=1
-                
-                let found = book.pageIdList.find(xid=>{
-                  let add =  pagesToBeAdded.find(page=>page.id==xid)
-                  return add
-                })
-                return (<div className={`list-item rounded ${found? "add":""}`} key={`${book.id}_${i}`}>
+            
+                return (<div className={`list-item rounded ${false? "add":""}`} key={`${book.id}_${i}`}>
                     <h6>{book.title}</h6>
                     <div className="button-row">
                     <IconButton onClick={()=>addUpdateBook(book)}>
@@ -147,4 +83,3 @@ export default function CreateBookContainer({pagesInView}){
         </div>
     )
 }
-

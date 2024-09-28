@@ -1,9 +1,42 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
 
 .App{
+  position: relative;
+  z-index:2;
+  color: white;
+  text-align: center;
+
+}
+.screen{
+    overflow: scroll;
+    margin-top: 2em;
+    height: 100vh;
+    overflow: scroll;
+    padding-bottom: 2em;
+}
+.background-blur{
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100vw;
-  height: 90%;
+  height: 100%;
+  background-image: url('./assets/background.png');
+  background-size: cover;
+  background-position: center;
+  /* filter: blur(20px);  */
+  z-index: 1;
+
+}
+#root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: scroll;
+  z-index: 0;
+
 }
 
 
@@ -265,6 +298,9 @@
   margin: auto;
 
 }
+#dashboard{
+  overflow-y: scroll;
+}
 .row{
   display: flex;
   flex-direction: row;
@@ -282,11 +318,7 @@
 .between{
   justify-content: space-between;
 }
-.screen{
-  margin-top: 2em;
-  height: 100%;
-  padding-bottom: 2em;
-}
+
 
 @media (min-width: 1000px) {
 
@@ -311,6 +343,7 @@
   }
   #dashboard {
     margin-top: 3em;
+   
   }
   
 }
@@ -639,15 +672,21 @@
     transform: rotate(360deg);
   }
 }
+.link-preview{
+  background-color: white;
+}
 .link-preview p{
   margin-left: 1em;
   margin-right: .5em;
   text-align: left ;
+  color: black;
 }
 .link-preview .title{
   margin-left: .5em;
   margin-right: .5em;
   text-align: left;
+  color: black
+  ;
 }
 @media (min-width: 900px) {
 

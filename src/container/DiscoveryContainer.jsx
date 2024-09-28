@@ -13,7 +13,10 @@ import MediaQuery from "react-responsive"
 import BookListItem from '../components/BookListItem'
 import Paths from '../core/paths'
 import uuidv4 from '../core/uuidv4'
+import ReactGA from "react-ga4"
 function DiscoveryContainer(props){
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const booksInView = [...useSelector(state=>state.books.booksInView)].sort(
