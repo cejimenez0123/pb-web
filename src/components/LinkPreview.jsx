@@ -16,10 +16,10 @@ function LinkPreview({ url,size }) {
           "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
         };
-        
+        console.log(`${Enviroment.proxyUrl}${url}`)
         const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
           headers: headers,
-          
+
         }
         )
         ;
