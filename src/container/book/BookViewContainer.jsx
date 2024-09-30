@@ -29,6 +29,7 @@ import {Helmet} from "react-helmet"
 import Page from "../../domain/models/page"
 import Contributors from "../../domain/models/contributor"
 import { PageType } from "../../core/constants"
+import ReactGA from "react-ga4"
 function BookViewContainer(props){
     const navigate = useNavigate()
     const pathParams = useParams()
@@ -221,11 +222,19 @@ function BookViewContainer(props){
         }
     }
     const followBookClick = ()=>{
+        ReactGA.event({
+            category: "Book",
+            action: "Follow Book",
+            label: "Read", 
+            value: book.id,
+            nonInteraction: false
+          });
         if(currentProfile){
         const params = {
             book: book,
             profile:currentProfile
         }
+    
         dispatch(createFollowBook(params)).then(result=>{
            checkResult(result,payload=>{ 
             const {followBook} = payload
@@ -255,8 +264,15 @@ function BookViewContainer(props){
 }
 
     const deleteFollowBookClick = ()=>{ 
-       
+        ReactGA.event({
+            category: "Book",
+            action: "Delete Follow Book",
+            label: "Reader", 
+            value: book.id,
+            nonInteraction: false
+          });
         if(currentProfile && book){
+
             let fb = followedBooks.find(fb=>
                 fb!=null && fb.id==`${currentProfile.id}_${book.id}`)
             const params = {
@@ -291,19 +307,18 @@ function BookViewContainer(props){
     }
     const followDiv = ()=>{
         return following?(
-            <Button variant="outlined" 
+            <button 
                     style={{backgroundColor:theme.palette.secondary.light,
                             color:theme.palette.secondary.dark}
                     } 
-                    lassName="follow-btn"
-                    onClick={()=> debounce(deleteFollowBookClick(),10)}>Reader</Button>)
-    :(<Button    variant="outlined" 
-                                style={{backgroundColor:theme.palette.secondary.main,
-                                        color:theme.palette.secondary.contrastText}}
-                                className="follow-btn"
+                    class="bg-greenOne text-white hover:text-greenThree font-bold py-2 px-4 rounded-full"
+                    onClick={()=> debounce(deleteFollowBookClick(),10)}>Reader</button>)
+    :( 
+                        
+            <button class="bg-greenTwo hover:bg-greenOne hover:text-greenThree font-bold py-2 px-4 rounded-full"
     onClick={
        ()=>debounce(followBookClick(),10)
-   }>Read</Button>)}
+   }>Join</button>)}
 
    function canAddContent(){
     if(currentProfile){
@@ -347,14 +362,14 @@ function BookViewContainer(props){
 }
 
 const bookInfo = ()=>{
-    return(<div  className="info view">
+    return(<div  className="shadow-sm bg-dark px-4 pt-4">
             <div className="">
-                <h4 className="" > {book.title}</h4>
-                    <div className="">
+                <h4 className=" text-left text-2xl" > {book.title}</h4>
+                    <div className="text-left pt-2">
                         <h6> {book.purpose}</h6>
                     </div>
             </div>
-            <div className="button-row">
+            <div className="button-row py-4">
             {followDiv()}
             {addBtn()}
             {editDiv()}

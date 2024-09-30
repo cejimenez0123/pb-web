@@ -1,5 +1,5 @@
 import { createSlice} from "@reduxjs/toolkit"
-import { getPublicBooks,
+import { 
         fetchBook,
         getProfileBooks,
         fetchArrayOfBooksAppened,
@@ -12,7 +12,10 @@ import { getPublicBooks,
         deleteBook,
     
         } from "../actions/BookActions"
-
+        import { getPublicBooks,
+                saveRoleToCollection
+        
+            } from "../actions/CollectionActions"
 
 const initialState = {
     booksInView:[],
@@ -20,7 +23,8 @@ const initialState = {
     error:"",
     bookInView: null,
     booksToBeAdded: [],
-    bookRoles: []
+    bookRoles: [],
+    role:null
 }
 const bookSlice = createSlice({
 name: 'books',
@@ -38,6 +42,11 @@ builder
     state.loading = false
     state.booksInView = payload.bookList
 
+}).addCase(saveRoleToCollection.rejected,(state,{payload})=>{
+    state.loading = false
+    state.error = "Error Saving Role"
+}).addCase(saveRoleToCollection.fulfilled,(state,{payload})=>{
+    state.role = payload.role
 }).addCase(fetchBook.pending,(state)=>{
     state.loading = true
 

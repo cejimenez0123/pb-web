@@ -5,11 +5,11 @@ import Enviroment from "../core/Enviroment";
 
  class CollectionRepo{
     async getPublicBooks(){
-        let res = await axios.get(Enviroment.url+"/collection/book")
+        let res = await axios.get(Enviroment.url+"/collection/public/book")
         return res.data
     }
     async getPublicLibraries(){
-        let res = await axios.get(Enviroment.url+"/collection/library")
+        let res = await axios.get(Enviroment.url+"/collection/public/library")
         return res.data
     }
     async createCollection({name,

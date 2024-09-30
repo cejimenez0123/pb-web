@@ -6,7 +6,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
 import {getPublicStories } from '../actions/PageActions'
-import { getPublicBooks } from '../actions/BookActions'
+import { getPublicBooks } from '../actions/CollectionActions'
 import { getPublicLibraries, setLibraryInView } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
 import MediaQuery from "react-responsive"
@@ -19,19 +19,27 @@ function DiscoveryContainer(props){
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const booksInView = [...useSelector(state=>state.books.booksInView)].sort(
-        (a,b)=>{
-        
-            return b.created- a.created
-        }   
-    )  
+    let booksInView = []
+    let bookCol = useSelector(state=>state.books.booksInView)
+    if(bookCol){
+  booksInView =[...bookCol].sort(
+            (a,b)=>{
+            
+                return new Date(b.created)- new Date(a.created)
+            }   
+        )  
+    }
+   
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
     const [hasMoreLibraries,setHasMoreLibraries] =useState(false)
-    const librariesInView = [...useSelector(state=>state.libraries.librariesInView)]
-.sort((a,b)=>{
+    const libCollection = useSelector(state=>state.libraries.librariesInView)
+    let librariesInView = []
+        if(libCollection && libCollection.length>0){
+            librariesInView =libCollection.sort((a,b)=>{
    
-    return b.created- a.created
-})
+                return b.created- a.created
+            })
+        }
    
     useEffect(()=>{
         fetchContentItems()
@@ -168,7 +176,7 @@ const navigateToLibrary = (library)=>{
                     {pageList()}
                     </div>
                     <div>
-                       <h3 className='label'>Books</h3>
+                       <h3 className='label text-2xl'>Books</h3>
                     {bookList()}
                     </div>
                     </div>

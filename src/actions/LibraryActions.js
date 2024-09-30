@@ -258,17 +258,9 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
  const getPublicLibraries = createAsyncThunk(
   'libraries/getPublicLibraries',
   async (thunkApi) => {
-      let libraryList = []
-      const res = await axios(Enviroment.url+"/collection/library")
+     
+      const res = await axios(Enviroment.url+"/collection/public/library")
       
-  //    const ref = collection(db, "library")
-  
-  // const snapshot = await getDocs(query(ref, where("privacy", "==", false)))
-
-  //       snapshot.docs.forEach(doc => {
-  //             const library = unpackLibraryDoc(doc)                      
-  //           libraryList = [...libraryList, library]
-  //         })
   return {
 
       libraryList: res.data.libraries
