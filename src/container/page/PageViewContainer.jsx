@@ -13,6 +13,7 @@ import {Helmet} from "react-helmet"
 import PropTypes from "prop-types"
 import LinkPreview from "../../components/LinkPreview";
 import PageSkeleton from "../../components/PageSkeleton";
+import { getStory } from "../../actions/StoryActions";
 export default function PageViewContainer({page}){
     PageViewContainer.propTypes = {
         page: PropTypes.object.isRequired
@@ -31,7 +32,7 @@ export default function PageViewContainer({page}){
 
     const getPage=()=>{
      
-        dispatch(fetchPage(pathParams)).then(result=>{
+        dispatch(getStory(pathParams)).then(result=>{
             checkResult(result,payload=>{
                 const {page}= payload
                 fetchComments(page)

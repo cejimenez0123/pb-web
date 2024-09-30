@@ -4,7 +4,7 @@ import { deletePageApproval, setPageInView, setPagesToBeAdded } from '../actions
 import { createPageApproval } from '../actions/PageActions'
 import { PageType } from '../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
-import { Dropdown,Menu ,MenuItem,} from '@mui/joy'
+import { IconButton} from '@mui/joy'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
@@ -14,8 +14,7 @@ import { updateLibraryContent } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
 import Paths from '../core/paths'
 import LinkPreview from './LinkPreview'
-import ReactGA from "react-ga4"
-  let size= {width: window.innerWidth,height: window.innerHeight}
+import ReactGA from 'react-ga4'
 
 function DashboardItem({page,book}) {
     const dispatch = useDispatch()
@@ -33,12 +32,6 @@ function DashboardItem({page,book}) {
     const [bookmarked,setBookmarked]=useState(null)
     const [anchorEl,setAnchorEl]= useState(null)
     const handleToggle = (e) => {
-        ReactGA.event({
-            category: 'Share',
-            action: 'Clicked Share',
-            label: "SHARE",  // Pass the product name
-            value: page.id
-          });
      setAnchorEl(prevState=>{
         if(prevState==null){
             return e.currentTarget
@@ -71,14 +64,6 @@ useEffect(()=>{
 const hanldeClickComment=(pageItem)=>{
     
   if(pageItem){ 
-   
-      ReactGA.event({
-        category: "Story",
-        action: "View Comments",
-        label: "Comments", 
-        value: page.id,
-        nonInteraction: false 
-      });
     const params = {
         page: pageItem
     }
@@ -92,14 +77,20 @@ const hanldeClickComment=(pageItem)=>{
     if(page.type===PageType.text){
 
         return( <div>
+            <div 
+    
+           className='bg-white'
+            >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className='dashboard-content text ql-editor' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        } className=' content bg-dark p-4 text-white'
+        dangerouslySetInnerHTML={{__html:page.data}}></div>
+        </div>
         </div>)   
     }else if(page.type===PageType.picture){
         return(<img className='dashboard-content image' src={page.data} alt={page.title}/>)
     }else if(page.type === PageType.link){
-        return(<div className='dashboard-content'>
+        return(<div className=''>
             <LinkPreview
         url={page.data}
             />
@@ -113,20 +104,6 @@ const hanldeClickComment=(pageItem)=>{
                 Loading...
         </div>)
     }
-}
-const copyLink = ()=>{
-    navigator.clipboard.writeText(window.location.href)
-    .then(() => {
-        // Successfully copied to clipboard
-        alert('Text copied to clipboard');
-      })
-    ReactGA.event({
-        category: "Share",
-        action: "Copy URL",
-        label: "Copy Share Link", 
-        value: page.id,
-        nonInteraction: false 
-})
 }
 const handleApprovalClick = ()=>{
     if(Boolean(approved)){
@@ -159,7 +136,7 @@ return <Button onClick={()=>{
 
     </div>)
     if(profile){
-        profileDiv = (<p onClick={()=>{
+        profileDiv = (<p className="text-white" onClick={()=>{
             navigate(`/profile/${profile.id}`)
         }}>
             {profile.username}
@@ -212,6 +189,30 @@ return <Button onClick={()=>{
             }
         }><p>{title} {">"}</p></a>)
     }
+    const addToLibrary=()=>{
+        ReactGA.event({
+            category: "Story",
+            action: "Add Story To Library",
+            label: "Add to Library", 
+            value: page.id,
+            nonInteraction: false
+          });
+        const params = {pageList:[page]}
+        dispatch(setPagesToBeAdded(params))
+        navigate("/library/new")
+    }
+    const addToBook=()=>{
+        ReactGA.event({
+            category: "Story",
+            action: "Add Story To Book",
+            label: "Add to book", 
+            value: page.id,
+            nonInteraction: false
+          });
+        const params = {pageList:[page]}
+        dispatch(setPagesToBeAdded(params))
+        navigate("/book/new")
+    }
     if(page){
         let yeaColor = theme.palette.info.disabled
         if(currentProfile){
@@ -221,12 +222,12 @@ return <Button onClick={()=>{
                 yeaColor = theme.palette.info.main
             }
         }
-        return(<div className='content-item'>
+        return(<div className=' lg:w-128 rounded-lg mb-4 overflow-hidden'>
         
-            <div className='dashboard-header'>
+            <div className='dashboard-header bg-dark text-white py-2'>
                 <div className='titles'>
                 {bookTitleDiv}
-                <p onClick={()=>{
+                <p className="text-white" onClick={()=>{
                     navigate(`/page/${page.id}`)
 
                 }} > {` `+page.title}</p>
@@ -236,76 +237,63 @@ return <Button onClick={()=>{
            
                 {pageDataElement()}
             
-            <div className='btn-row'>
+            <div className='bg-dark'>
                 
-                <button className="btn" disabled={!currentProfile} 
+                <button disabled={!currentProfile} 
                 onClick={handleApprovalClick}
-                     style={{color: theme.palette.info.contrastText,
-                        backgroundColor: yeaColor}}
-                  
+                   
+                 className={`btn bg-dark text-white border-dark ${!currentProfile?"bg-dark":"bg-slate-800"}`}
                
                 >
                     Yea
                 </button>
-                <button 
-                 className='btn'
-                        style={{color: theme.palette.info.contrastText,
-                            backgroundColor: theme.palette.info.main}}
+                <button
+                    className='btn bg-dark text-white'
                         onClick={()=>hanldeClickComment(page)}
                         >
                 
                     Comments
                 </button>
-                
-                <Dropdown>
-                        <Button onClick={(e)=>{
-                            handleToggle(e)
-                        }}
-                        aria-controls={anchorEl ? 'menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={anchorEl ? 'true' : undefined}
-          >
-        Share
-          </Button>
-        
-          <Menu 
-              id="menu"
-              
-          anchorEl={anchorEl}
-          onClose={()=>setAnchorEl(null)}
-          open={Boolean(anchorEl)}
-          unmountOnExit>
-          <MenuItem disabled={!currentProfile} onClick={()=>{
-            const params = {pageList:[page]}
-            dispatch(setPagesToBeAdded(params))
-            navigate("/book/new")
-            }}> 
+                <div className="dropdown dropdown-top">
+  <div tabIndex={0} role="button" className="btn pt-2 mt-1 text-white "> Share</div>
+  <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+  <li><a disabled={!currentProfile} 
+  className='text-dark'
+  
+  onClick={()=>addToBook()}> 
                             Add to Book
-            </MenuItem>
-            <MenuItem disabled={!currentProfile} onClick={()=>{
+            </a></li>
+            <li><a disabled={!currentProfile} 
+            onClick={()=>{
                  const params = {pageList:[page]}
                  dispatch(setPagesToBeAdded(params))
                  navigate("/library/new")
-            }}>
+            }}
+            className='text-dark'
+            >
                 Add to Library
-                        </MenuItem>
-                        <MenuItem onClick={()=>{
-                           copyLink()
+                        </a></li>
+                       <li> <a
+                        className='text-dark'
+                       onClick={()=>{
+                            navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
+                            .then(() => {
+                                // Successfully copied to clipboard
+                                alert('Text copied to clipboard');
+                              })
                         }}
                     >
                           Copy Share Link
-                        </MenuItem>
-                        {(currentProfile && currentProfile.id == page.profileId )?
-            <MenuItem onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</MenuItem>:<div></div>}
-                
-            <MenuItem onClick={onBookmarkPage}disabled={!currentProfile}> 
+                        </a></li>
+                       <li> {(currentProfile && currentProfile.id == page.profileId )?
+            <a onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</a>:<div></div>}
+            </li>
+           <li> <IconButton onClick={onBookmarkPage}
+           disabled={!currentProfile}> 
             {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
-            </MenuItem>
-           
-            
-          </Menu>
-        </Dropdown>
-       {/* {expandedBtn()} */}
+            </IconButton></li>
+  </ul>
+</div>
         
   </div>
   </div>

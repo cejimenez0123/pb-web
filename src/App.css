@@ -85,6 +85,9 @@
 .thumbnail{
   width: 100%;
 }
+.content *{
+  color:white
+}
 @media (min-width: 850px) {
   .content-list{
    
@@ -691,7 +694,7 @@
 @media (min-width: 900px) {
 
 
-
+/* 
   .screen{
       min-height: 100vh;
       display: flex;
@@ -700,7 +703,8 @@
       margin-top: 2em;
       padding-left: 2em;
       padding-right: 2em;
-  }}
+  } */
+}
   @media (max-width: 900px) {
    
    

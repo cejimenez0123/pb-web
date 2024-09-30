@@ -23,8 +23,8 @@ function BookListItem({book}){
     return (
         <div 
         onClick={()=>navigateToBook()} 
-        className="card bg-dark  overflow-clip text-white mx-2 ">
-        <div className="card-body h-36 hover:h-full   w-48 ">
+        className="card bg-dark  lg:my-8 lg:max-w-96 overflow-clip text-white mx-2 ">
+        <div className="card-body h-36 hover:h-full   max-w-96 ">
 <div className=" py-0.5 px-1 w-full h-full">
         <h6 className=" text-left font-extrabold">{book.title}</h6>
       <p className="text-left text-ellipsis">{book.purpose}</p> 

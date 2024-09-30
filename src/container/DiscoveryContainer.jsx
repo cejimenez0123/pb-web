@@ -74,10 +74,12 @@ const navigateToLibrary = (library)=>{
     const bookList = ()=>{
         if(booksInView!=null){
             return(
-        <div id="book-list">
+        <div 
+        //id="book-list"
+        >
             <MediaQuery minWidth={"768px"}>
                 <InfiniteScroll
-            
+            className='mt-1'
             dataLength={booksInView.length}
             next={fetchContentItems}
             hasMore={false}
@@ -112,7 +114,9 @@ const navigateToLibrary = (library)=>{
     }
     const pageList = ()=>{
         if(pagesInView!=null){
-            return(<div id="page-list">
+            return(<div 
+            //id="grid page-list "
+            >
                <InfiniteScroll
             dataLength={pagesInView.length}
             next={fetchContentItems}
@@ -167,21 +171,21 @@ const navigateToLibrary = (library)=>{
                 </div>
               <div >
                 <div id="library-forums">
-                <h3 className='label'>Libraries</h3>
+                <h3 className='text-white font-extrabold text-2xl'>Libraries</h3>
                 {libraryForums()}
                     </div>
-                <div id='forums-list'>
-                    <div>
-                        <h3 className='label'>Pages</h3>
+                <div className='flex flex-col-reverse lg:flex-row'>
+                    <div className='lg:mx-4'>
+                        <h3 className='text-white font-extrabold text-2xl text-left my-4 pl-2 lg:mb-4'>Pages</h3>
                     {pageList()}
                     </div>
-                    <div>
-                       <h3 className='label text-2xl'>Books</h3>
+                    <div className='lg:mx-4'>
+                       <h3 className='text-white text-left font-extrabold pl-2 pt-2 mt-1 text-2xl'>Books</h3>
                     {bookList()}
                     </div>
-                    </div>
+                    </div > 
            
-                        </div>
+                    </div>
                     </div>
              
             </ErrorBoundary>

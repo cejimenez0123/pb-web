@@ -5,8 +5,8 @@ import { updateLibraryContent } from "../actions/LibraryActions"
 import {Button } from "@mui/material"
 import { PageType } from "../core/constants"
 import { setProfileInView } from "../actions/UserActions"
-import { Dropdown,Menu ,MenuItem} from '@mui/joy'
-import theme from "../theme"
+import ReactGA from 'react-ga4'
+import {IconButton} from "@mui/joy"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import {setPagesToBeAdded, setEditingPage} from "../actions/PageActions"
@@ -79,7 +79,7 @@ const handleToggle = (e) => {
 if(page){
 switch(page.type){
     case PageType.text:
-        pageDataElement = <div className='dashboard-content text ql-editor' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        pageDataElement = <div className='content' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
         pageDataElement = <img className="dashboard-content image" src={page.data} alt={page.title}/>
@@ -96,6 +96,20 @@ const navigateToProfile = ()=>{
 setProfileInView(params)
 navigate(`/profile/${prof.id}`)
 }
+const copyShareLink=()=>{
+    ReactGA.event({
+        category: "Page View",
+        action: "Copy Share Link",
+        label: page.title, 
+        value: page.id,
+        nonInteraction: false
+      });
+    navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
+                            .then(() => {
+                                // Successfully copied to clipboard
+                                alert('Text copied to clipboard');
+                              })
+}
 let profile = (<div></div>)
         let prof= profilesInView.find(profile=>profile.id == page.profileId)
         if(prof){
@@ -107,81 +121,65 @@ let profile = (<div></div>)
         return(
         <div className='content-item'>
         
-            <div className='dashboard-header'>
-                <div className="titles">
+            <div className='dashboard-header bg-dark text-white'>
+                <div className="titles ">
                 {page.title.length>0?<p>{page.title}</p>:<p>Untitled</p>}
                 </div>
                 {profile}
             </div>
-            <div>
+            <div className="bg-dark pt-2">
                 {pageDataElement}
                 </div>
             <div className='btn-row'>
-                <Button 
-                    style={{color:theme.palette.info.contrastText,
-                            backgroundColor:currentProfile?theme.palette.info.main:theme.palette.info.disabled}}
-                    disabled={!currentProfile} 
+                <button 
+                   disabled={!currentProfile} 
                 >
                     Yea
-                </Button>
-                <Button 
-                    style={{color:"white",
-                    backgroundColor:currentProfile?theme.palette.info.main:theme.palette.info.disabled}} 
-                    disabled={!currentProfile} 
+                </button>
+                <button
+                   disabled={!currentProfile} 
                     onClick={()=>{setCommenting(!commenting)}}>
                 
                     Comment
-                </Button>
-                <Dropdown>
-                        <Button onClick={(e)=>{
-                            handleToggle(e)
-                        }}
-                        aria-controls={anchorEl ? 'menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={anchorEl ? 'true' : undefined}>
-                            Share
-                        </Button>
-          <Menu 
-            id="menu"
-            anchorEl={anchorEl}
-            onClose={()=>setAnchorEl(null)}
-            open={Boolean(anchorEl)}>
-          <MenuItem disabled={!currentProfile} onClick={()=>{
-            const params = {pageList:[page]}
-            dispatch(setPagesToBeAdded(params))
-            navigate("/book/new")
-            }}> 
+                </button>
+                <div className="dropdown  dropdown-top">
+        <div tabIndex={0} role="button" className="btn pt-2 mt-1 text-white "> Share</div>
+        <ul tabIndex={0} className="dropdown-content bg-dark text-white menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+        <li>
+            <a disabled={!currentProfile} 
+  className='text-white'
+  
+  onClick={()=>addToBook()}> 
                             Add to Book
-            </MenuItem>
-            <MenuItem disabled={!currentProfile} onClick={()=>{
+            </a></li>
+            <li><a disabled={!currentProfile} 
+            onClick={()=>{
                  const params = {pageList:[page]}
                  dispatch(setPagesToBeAdded(params))
                  navigate("/library/new")
-            }}>
+            }}
+            className='text-white'
+            >
                 Add to Library
-                        </MenuItem>
-                        <MenuItem onClick={()=>{
-                            navigator.clipboard.writeText(`plumbum.app/page/${page.id}`)
-                            .then(() => {
-                                // Successfully copied to clipboard
-                                alert('Text copied to clipboard');
-                              })
-                        }}
+                        </a></li>
+                       <li> <a
+                        className='text-white'
+                       onClick={()=>copyShareLink()}
                     >
                           Copy Share Link
-                        </MenuItem>
-                        {currentProfile && page && currentProfile.id===page.profileId?
-                        <MenuItem onClick={()=>{
-                            dispatch(setEditingPage({page}))
-                            navigate(Paths.editPage.createRoute(page.id))
-                        }}>
-                        Edit</MenuItem>:<div></div>}
-                        <MenuItem onClick={onBookmarkPage}disabled={!currentProfile}> 
+                        </a></li>
+                       <li> {(currentProfile && currentProfile.id == page.profileId )?
+            <a onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</a>:<div></div>}
+            </li>
+           <li> <IconButton onClick={onBookmarkPage}
+           className="bg-dark"
+           disabled={!currentProfile}> 
             {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
-            </MenuItem>
-          </Menu>
-        </Dropdown>
+            </IconButton></li>
+            </ul>
+      </div>
             </div>
+            
             
                 {commentBox(commenting)}   
         </div>

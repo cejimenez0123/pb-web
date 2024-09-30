@@ -24,13 +24,14 @@ import debounce from "../../core/debounce"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import checkResult from "../../core/checkResult"
-import { iconStyle } from "../../styles/styles"
+
 import {Helmet} from "react-helmet"
 import Page from "../../domain/models/page"
 import Contributors from "../../domain/models/contributor"
 import { PageType } from "../../core/constants"
 import ReactGA from "react-ga4"
 function BookViewContainer(props){
+    const iconStyle ={ color: theme.palette.primary.dark, fontSize:`2em`,height:"4rem"}
     const navigate = useNavigate()
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -84,7 +85,7 @@ function BookViewContainer(props){
     }
     const bookScreen = ()=>{
         if(book){
-        return(<div style={{flexDirection:"column"}} className="two-panel">
+        return(<div  className="flex flex-col lg:flex-row">
         <Helmet>
      <title>{book.title}</title>
      <meta
@@ -92,13 +93,16 @@ function BookViewContainer(props){
     content={book.purpose}/>
     
      </Helmet>
-     <div className="left-bar">
+
+
+     <div className="flex-4 lg:mr-16">
          {bookInfo()}
      </div>
-     <div className="right-bar">
-        <div className="content-list dashboard">
+    
+     <div className="flex-16 mx-auto bg-red-100">
+       
          {pageList()}
-         </div>
+      
      </div>
     </div>)
     }else{
@@ -190,14 +194,18 @@ function BookViewContainer(props){
         if(book){
             if( book.storyIdList.length>0){
                 return(
-                    <div className="content">
+                    <div className="">
                      <InfiniteScroll 
                             dataLength={pages.length}
                             next={()=>getPages(book)}
                             hasMore={hasMore} // Replace with a condition based on your data source
-                            loader={<p>Loading...</p>}
-                            endMessage={<div className="no-more-data">
-                             <p>No more data to load.</p>   </div>}
+                            loader={<p className="w-full bg-slate-400">Loading...</p>}
+                            endMessage={
+                            <div className=" w-screen mt-16 md:rounded-lg bg-greenOne">
+                                <p className=" mx-auto pt-24 px-4 font-bold opacity-100 md:w-128 h-96 text-dark text-3xl">
+                                    No more data to load.
+                                </p>   
+                             </div>}
                             scrollableTarget="scrollableDiv"
      >
          {pages.map(page =>{
@@ -205,7 +213,7 @@ function BookViewContainer(props){
                 if(page){
                     return(<DashboardItem  key={page.id} book={book}page={page}/>)
                 }else{
-                    return(<div className="Empty"> Page has been deleted</div>)
+                    return(<div className="rounded-lg Empty"> Page has been deleted</div>)
                 }
             })}
      </InfiniteScroll>
@@ -294,13 +302,13 @@ function BookViewContainer(props){
     <h2>Looking in the wrong place</h2>
 </div> )
     let editDiv =() => {if(followedBooks && currentProfile && book && book.profileId == currentProfile.id){
-        return(<Button
-        style={iconStyle}
+        return(<button className="bg-greenTwo"
+    
                         key={book.id}
                         onClick={(e)=>{
                             setBookInView({book})
                             navigate(`/book/${book.id}/edit`)
-                    }}><Settings/></Button>)
+                    }}><Settings/></button>)
                 }else{
                     return(<div></div>)
                 }
@@ -311,11 +319,11 @@ function BookViewContainer(props){
                     style={{backgroundColor:theme.palette.secondary.light,
                             color:theme.palette.secondary.dark}
                     } 
-                    class="bg-greenOne text-white hover:text-greenThree font-bold py-2 px-4 rounded-full"
+                    class="bg-greenOne text-white hover:text-greenThree font-bold py-2 px-4  max-h-24 rounded-full"
                     onClick={()=> debounce(deleteFollowBookClick(),10)}>Reader</button>)
     :( 
                         
-            <button class="bg-greenTwo hover:bg-greenOne hover:text-greenThree font-bold py-2 px-4 rounded-full"
+            <button class="bg-greenTwo hover:bg-greenOne hover:text-greenThree font-bold py-2 max-h-24 px-4 rounded-full"
     onClick={
        ()=>debounce(followBookClick(),10)
    }>Join</button>)}
@@ -349,7 +357,7 @@ function BookViewContainer(props){
         
        if(canAddContent()){
         return (<IconButton 
-            style={iconStyle}
+            
             onClick={()=>{
         setBookInView({book})
         navigate(`/book/${book.id}/add`)
@@ -362,7 +370,7 @@ function BookViewContainer(props){
 }
 
 const bookInfo = ()=>{
-    return(<div  className="shadow-sm bg-dark px-4 pt-4">
+    return(<div  className=" flex-4 shadow-sm md:mt-16 md:rounded-lg  md:max-w-96 md:w-96 bg-dark px-4 pt-4">
             <div className="">
                 <h4 className=" text-left text-2xl" > {book.title}</h4>
                     <div className="text-left pt-2">
@@ -373,8 +381,8 @@ const bookInfo = ()=>{
             {followDiv()}
             {addBtn()}
             {editDiv()}
-            {bookmarked?<IconButton style={iconStyle} onClick={onBookmarkPage}><BookmarkIcon/></IconButton>:
-            <IconButton style={iconStyle} disabled={!currentProfile}onClick={onBookmarkPage}><BookmarkBorderIcon/></IconButton>}  
+            {bookmarked?<IconButton  onClick={onBookmarkPage}><BookmarkIcon fontSize="large"/></IconButton>:
+            <IconButton  className="p-0 mx-4"disabled={!currentProfile}  onClick={onBookmarkPage}><BookmarkBorderIcon fontSize="large" className="text-greenTwo" /></IconButton>}  
             </div>
     </div>)
 }
