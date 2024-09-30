@@ -16,7 +16,7 @@ import Paths from '../core/paths'
 import LinkPreview from './LinkPreview'
 import ReactGA from 'react-ga4'
 
-function DashboardItem({page,book}) {
+function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const userApprovals = useSelector(state=>state.users.userApprovals)
@@ -40,6 +40,10 @@ function DashboardItem({page,book}) {
         }
      })
       };
+      useEffect(()=>{
+
+
+      },[page])
 useEffect(()=>{
     if(userApprovals!=null){
     let ua = userApprovals.find(approval=>approval.pageId === page.id && approval.profileId === currentProfile.id)
@@ -222,7 +226,7 @@ return <Button onClick={()=>{
                 yeaColor = theme.palette.info.main
             }
         }
-        return(<div className=' lg:w-128 rounded-lg mb-4 overflow-hidden'>
+        return(<div className={` ${isGrid?"lg:w-48":"lg:w-128"} rounded-lg mb-4 overflow-hidden`}>
         
             <div className='dashboard-header bg-dark text-white py-2'>
                 <div className='titles'>

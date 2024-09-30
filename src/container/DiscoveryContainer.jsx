@@ -4,6 +4,7 @@ import { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
+import Grid from "@mui/material/Grid"
 import ErrorBoundary from '../ErrorBoundary'
 import {getPublicStories } from '../actions/PageActions'
 import { getPublicBooks } from '../actions/CollectionActions'
@@ -14,9 +15,10 @@ import BookListItem from '../components/BookListItem'
 import Paths from '../core/paths'
 import uuidv4 from '../core/uuidv4'
 import ReactGA from "react-ga4"
+import grid from "../images/grid.svg"
 function DiscoveryContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-
+    const isGrid = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     let booksInView = []
@@ -54,8 +56,9 @@ const navigateToLibrary = (library)=>{
             return (<InfiniteScroll
             dataLength={librariesInView.length}
             next={fetchLibraries}
+            style={{display:"flex",flexDirections:"row"}}
             hasMore={hasMoreLibraries}
-            style={{display:"flex",flexDirections:"row"}}>
+            >
                 {librariesInView.map(library=>{
                     const id = `${library.id}_${uuidv4()}`
                     return(<div key={id} 
@@ -120,14 +123,26 @@ const navigateToLibrary = (library)=>{
                <InfiniteScroll
             dataLength={pagesInView.length}
             next={fetchContentItems}
+            scrollThreshold={1}
             hasMore={false}
+            style={isGrid?{overflow:"unset"}:{display:"flex",flexDirections:"row"}}
             >
-                {pagesInView.map(page=>{
+
+               <div className={isGrid?'grid grid-cols-2 gap-4':""}>
+              {pagesInView.map(page=>{
+                    const id = `${page.id}_${uuidv4()}`
+                    return(<div id={id}>
+                        <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
+                    </div>)
+                })}
+                </div>
+            
+                {/* {pagesInView.map(page=>{
                     const id = `${page.id}_${uuidv4()}`
                     return(<div id={id}>
                         <DashboardItem key={page.id} page={page}/>
                     </div>)
-                })}
+                })} */}
 
             </InfiniteScroll> </div>)
         }
@@ -176,7 +191,10 @@ const navigateToLibrary = (library)=>{
                     </div>
                 <div className='flex flex-col-reverse lg:flex-row'>
                     <div className='lg:mx-4'>
-                        <h3 className='text-white font-extrabold text-2xl text-left my-4 pl-2 lg:mb-4'>Pages</h3>
+                        <div className='flex flex-row'>
+                        <h3 className='text-white  font-extrabold text-2xl text-left my-4 pl-2 lg:mb-4'>Pages</h3>
+                        <button className='bg-transparent'><img src={grid}/></button>
+                        </div>
                     {pageList()}
                     </div>
                     <div className='lg:mx-4'>
