@@ -59,7 +59,11 @@ const isProfileMember = createAsyncThunk("collection/isProfileMember",async (
     params,thunkApi
 )=>{
 
-      let res =  await axios(Enviroment.url+"/collection/"+params["id"]+"/profile/"+params["profileId"])
+      let res =  await axios(Enviroment.url+"/collection/"+params["id"]+"/profile/"+params["profileId"],
+        { headers:{
+            'Access-Control-Allow-Origin': "*"
+        }}
+      )
 
       return {
         data: res.data

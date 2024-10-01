@@ -101,10 +101,10 @@ function LogInContainer(props) {
     }
   
     return (
-        <div id="LogInContainer">
-            <div className='two-panel'>
-            <div className='left-bar'>
-            <SignInCard setError={setSignUpError}
+        <div id="">
+            {/* <div className='two-panel'>
+            <div className='left-bar'> */}
+            {/* <SignInCard setError={setSignUpError}
                         error={signUpError}
                         username={suUsername}
                         password={suPassword}
@@ -118,8 +118,8 @@ function LogInContainer(props) {
                         setProfilePicture={handleProfilePicture}
                         setPrivacy={setPrivacy}
                         handleSubmit={handleNewUser}/>
-            </div>
-            <div className='right-bar'>
+            </div> */}
+            {/* <div className='right-bar'> */}
             <LogInCard  setError={setLogInError}
                         error={logInError}
                         password={liPassword} 
@@ -127,8 +127,8 @@ function LogInContainer(props) {
                         handleSubmit={(e)=>handleLogIn(e)}
                         setEmail={setLiEmail}
                         setPassword={(str)=>setLiPassword(str)}/>
-            </div>
-        </div>
+            {/* </div> */}
+        {/* </div> */}
         </div>
     )
 }
@@ -289,24 +289,38 @@ function LogInCard(props){
         setShowPassword(!showPassword);
       };
 
-    return(<div className='sign-card'>
+    return(<div className='max-w-96 bg-dark rounded-lg mx-auto p-4'>
         <div  id="log-in">
         <h1 style={{marginLeft:"0.4em",marginTop:"1em",marginRight:"0.4em"}}> Log In</h1>
         <FormGroup >
-        
-            <TextField
+        <label className="input bg-dark border border-slate-100 flex items-center gap-2">
+  Email
+  <input type="text" className="grow " 
+         value={props.email} 
+         onChange={(e) => props.setEmail(e.target.value)}
+        placeholder='example@x.com' />
+</label>
+            {/* <TextField
                 error={props.error}
                 label="E-mail"
                 value={props.email} 
+             
                 name='E-mail'
                 placeholder='E-mail' 
                 onChange={(e) => props.setEmail(e.target.value)}
                 style={outerInputStyle}
-            />
-                
-            <TextField label="Password"
+            /> */}
+            <label className="input mt-4 bg-dark border border-slate-100 flex items-center gap-2">
+  Password
+  <input type="text" className="grow " 
+         value={props.password}
+         
+         onChange={(e) => props.setPassword(e.target.value.trim())}
+        placeholder='*****' />
+</label>      
+            {/* <TextField label="Password"
             error={props.error}
-            value={props.password} 
+             
             name='password'placeholder='Password'
             onChange={(e) => props.setPassword(e.target.value.trim())}
             type={showPassword ? "text" : "password"} 
@@ -318,11 +332,11 @@ function LogInCard(props){
                     <IconButton onClick={handleTogglePasswordVisibility}>
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
-                </InputAdornment>
-        ),
+                </InputAdornment> */}
+        {/* ),
       }}
             
-            />
+            /> */}
             <div 
                 style={{color:theme.palette.primary.dark,marginLeft:"1em"}}
                 onClick={()=>{

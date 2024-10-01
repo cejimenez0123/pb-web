@@ -15,10 +15,15 @@ import checkResult from '../core/checkResult'
 import Paths from '../core/paths'
 import LinkPreview from './LinkPreview'
 import ReactGA from 'react-ga4'
-
+import {useMediaQuery} from 'react-responsive'
+import MediaQuery from 'react-responsive'
+import bookmarkadd from "../images/bookmarkadd.svg"
 function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const isNotPhone = useMediaQuery({
+        query: '(min-width: 768px)'
+      })
     const userApprovals = useSelector(state=>state.users.userApprovals)
     const [approved,setApproved]=useState(null)
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -80,21 +85,22 @@ const hanldeClickComment=(pageItem)=>{
         
     if(page.type===PageType.text){
 
-        return( <div>
+        return( <div className=''>
             <div 
     
-           className='bg-white'
+           className={`bg-white ${isGrid?"h-48 overflow-clip":""}`}
             >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className=' content bg-dark p-4 text-white'
+        } className=' content bg-dark lg:p-4 '
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
         </div>)   
     }else if(page.type===PageType.picture){
         return(<img className='dashboard-content image' src={page.data} alt={page.title}/>)
     }else if(page.type === PageType.link){
-        return(<div className=''>
+        return(<div 
+            className={`bg-white ${isGrid?"h-48 overflow-clip":""}`}>
             <LinkPreview
         url={page.data}
             />
@@ -205,6 +211,79 @@ return <Button onClick={()=>{
         dispatch(setPagesToBeAdded(params))
         navigate("/library/new")
     }
+    const buttonRow = ( )=>{
+        return isGrid?<div className='bg-dark border-t border-green-100 '>
+        <button className='bg-transparent'><img src={bookmarkadd}/></button>
+    
+    </div>:
+        <div className='bg-dark border-t border-green-100 '><div>
+         <button disabled={!currentProfile} 
+         onClick={handleApprovalClick}
+            
+          className={`btn btn-primary bg-dark border-dark text-white `}
+        
+         >
+             Yea
+         </button>
+         <button
+             className='btn btn-primary bg-dark border-dark text-white'
+             onClick={()=>hanldeClickComment(page)}
+                 >
+         
+             Comments
+         </button>
+         <div className="dropdown dropdown-top">
+<button tabIndex={0} role="button" 
+className=" btn             
+         pt-2 
+         btn-primary
+         bg-dark
+         border-dark
+         text-white ">
+Share</button>
+<ul tabIndex={0} className="dropdown-content menu bg-dark rounded-box z-[1] w-52 p-2 shadow">
+<li><a disabled={!currentProfile} 
+className='text-white'
+
+onClick={()=>addToBook()}> 
+                     Add to Book
+     </a></li>
+     <li><a disabled={!currentProfile} 
+     onClick={()=>{
+          const params = {pageList:[page]}
+          dispatch(setPagesToBeAdded(params))
+          navigate("/library/new")
+     }}
+     className='text-white'
+     >
+         Add to Library
+                 </a></li>
+                <li> <a
+                 className='text-white'
+                onClick={()=>{
+                     navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
+                     .then(() => {
+                         // Successfully copied to clipboard
+                         alert('Text copied to clipboard');
+                       })
+                 }}
+             >
+                   Copy Share Link
+                 </a></li>
+                <li> {(currentProfile && currentProfile.id == page.profileId )?
+     <a onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</a>:<div></div>}
+     </li>
+    <li> <IconButton onClick={onBookmarkPage}
+    disabled={!currentProfile}> 
+     {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
+     </IconButton></li>
+</ul>
+</div>
+</div>
+</div>
+
+                
+    }
     const addToBook=()=>{
         ReactGA.event({
             category: "Story",
@@ -218,17 +297,13 @@ return <Button onClick={()=>{
         navigate("/book/new")
     }
     if(page){
-        let yeaColor = theme.palette.info.disabled
+    
         if(currentProfile){
-            if(Boolean(approved)){
-                yeaColor = theme.palette.primary.light
-            }else{
-                yeaColor = theme.palette.info.main
-            }
+           
         }
-        return(<div className={` ${isGrid?"lg:w-48":"lg:w-128"} rounded-lg mb-4 overflow-hidden`}>
+        return(<div className={`  ${isGrid?"  lg:w-48 ":"lg:w-128"} rounded-lg mb-4 overflow-hidden`}>
         
-            <div className='dashboard-header bg-dark text-white py-2'>
+            <div className=' bg-dark border-b border-green-100 text-white py-2'>
                 <div className='titles'>
                 {bookTitleDiv}
                 <p className="text-white" onClick={()=>{
@@ -238,68 +313,8 @@ return <Button onClick={()=>{
                 </div>
                 {profileDiv}
             </div>
-           
                 {pageDataElement()}
-            
-            <div className='bg-dark'>
-                
-                <button disabled={!currentProfile} 
-                onClick={handleApprovalClick}
-                   
-                 className={`btn bg-dark text-white border-dark ${!currentProfile?"bg-dark":"bg-slate-800"}`}
-               
-                >
-                    Yea
-                </button>
-                <button
-                    className='btn bg-dark text-white'
-                        onClick={()=>hanldeClickComment(page)}
-                        >
-                
-                    Comments
-                </button>
-                <div className="dropdown dropdown-top">
-  <div tabIndex={0} role="button" className="btn pt-2 mt-1 text-white "> Share</div>
-  <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-  <li><a disabled={!currentProfile} 
-  className='text-dark'
-  
-  onClick={()=>addToBook()}> 
-                            Add to Book
-            </a></li>
-            <li><a disabled={!currentProfile} 
-            onClick={()=>{
-                 const params = {pageList:[page]}
-                 dispatch(setPagesToBeAdded(params))
-                 navigate("/library/new")
-            }}
-            className='text-dark'
-            >
-                Add to Library
-                        </a></li>
-                       <li> <a
-                        className='text-dark'
-                       onClick={()=>{
-                            navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
-                            .then(() => {
-                                // Successfully copied to clipboard
-                                alert('Text copied to clipboard');
-                              })
-                        }}
-                    >
-                          Copy Share Link
-                        </a></li>
-                       <li> {(currentProfile && currentProfile.id == page.profileId )?
-            <a onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</a>:<div></div>}
-            </li>
-           <li> <IconButton onClick={onBookmarkPage}
-           disabled={!currentProfile}> 
-            {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
-            </IconButton></li>
-  </ul>
-</div>
-        
-  </div>
+                {buttonRow()}
   </div>
      )}else{
         return(<div>

@@ -1,24 +1,34 @@
 import { useSelector,useDispatch} from 'react-redux'
 import DashboardItem from '../components/DashboardItem'
-import { useState,useEffect } from 'react'
+import { useState,useEffect ,useContext} from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
-import Grid from "@mui/material/Grid"
 import ErrorBoundary from '../ErrorBoundary'
 import {getPublicStories } from '../actions/PageActions'
 import { getPublicBooks } from '../actions/CollectionActions'
 import { getPublicLibraries, setLibraryInView } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
-import MediaQuery from "react-responsive"
+import MediaQuery, { useMediaQuery } from "react-responsive"
 import BookListItem from '../components/BookListItem'
 import Paths from '../core/paths'
 import uuidv4 from '../core/uuidv4'
 import ReactGA from "react-ga4"
 import grid from "../images/grid.svg"
+import stream from "../images/stream.svg"
 function DiscoveryContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-    const isGrid = useState(false)
+    const [isGrid,setIsGrid] = useState(false)
+    const isNotPhone = useMediaQuery({
+        query: '(min-width: 768px)'
+      })
+    useEffect(
+        ()=>{
+            if(!isNotPhone){
+                setIsGrid(false)
+            }
+        },[isNotPhone]
+    )
     const navigate = useNavigate()
     const dispatch = useDispatch()
     let booksInView = []
@@ -128,7 +138,7 @@ const navigateToLibrary = (library)=>{
             style={isGrid?{overflow:"unset"}:{display:"flex",flexDirections:"row"}}
             >
 
-               <div className={isGrid?'grid grid-cols-2 gap-4':""}>
+               <div className={isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':""}>
               {pagesInView.map(page=>{
                     const id = `${page.id}_${uuidv4()}`
                     return(<div id={id}>
@@ -136,14 +146,6 @@ const navigateToLibrary = (library)=>{
                     </div>)
                 })}
                 </div>
-            
-                {/* {pagesInView.map(page=>{
-                    const id = `${page.id}_${uuidv4()}`
-                    return(<div id={id}>
-                        <DashboardItem key={page.id} page={page}/>
-                    </div>)
-                })} */}
-
             </InfiniteScroll> </div>)
         }
     }
@@ -177,29 +179,71 @@ const navigateToLibrary = (library)=>{
 
             }))
         }
-       
+        const onClickForGrid =(bool)=>{
+
+
+            setIsGrid(bool)
+            if(bool){
+                ReactGA.event({
+                    category: "Discovery",
+                    action: "Click for Grid View",
+                    label: "GRID ICON", 
+                    nonInteraction: false
+                  });
+            }else{
+                ReactGA.event({
+                    category: "Discovery",
+                    action: "Click for Stream",
+                    label: "STREAM ICON", 
+                    nonInteraction: false
+                  });
+            }
+        }
         return(
             <ErrorBoundary>
-            <div id="discover"  >
+            <div 
+            //id="discover" 
+            className=' mx-auto ' >
             <div style={{paddingTop:"3em"}}>
                 <h1 >Discovery</h1>
                 </div>
-              <div >
+              <div className='' >
                 <div id="library-forums">
-                <h3 className='text-white font-extrabold text-2xl'>Libraries</h3>
+                <h3 className='text-white lg:ml-32 lg:pl-1 font-extrabold text-2xl'>Libraries</h3>
                 {libraryForums()}
                     </div>
-                <div className='flex flex-col-reverse lg:flex-row'>
-                    <div className='lg:mx-4'>
+                <div className='flex  flex-col-reverse lg:flex-row'>
+                    <div className=' lg:w-128 lg:ml-32 lg:mr-16 lg:ml-16 '>
+
                         <div className='flex flex-row'>
-                        <h3 className='text-white  font-extrabold text-2xl text-left my-4 pl-2 lg:mb-4'>Pages</h3>
-                        <button className='bg-transparent'><img src={grid}/></button>
+                        <h3 className=' text-white  
+                                        font-extrabold 
+                                        text-2xl 
+                                        text-left 
+                                        my-4 pl-2 l
+                                        g:mb-4'>Pages</h3>
+                        {isNotPhone?<div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
+                                className=' bg-transparent 
+                                            ml-2 mr-0 px-1 py-0'>
+                                <img src={grid}/>
+                        </button>
+                        <button onClick={()=>onClickForGrid(false)}
+                                className='bg-transparent px-1 py-0'>
+                                    <img src={stream}/>
+                        </button></div>:null}
                         </div>
                     {pageList()}
                     </div>
-                    <div className='lg:mx-4'>
-                       <h3 className='text-white text-left font-extrabold pl-2 pt-2 mt-1 text-2xl'>Books</h3>
+                    <div className=' lg:flex-1  lg:mx-4'>
+                       <div className='w-24 flex-auto mx-auto '>
+                        <h3 className=' text-white 
+                                        text-left 
+                                        font-extrabold 
+                                        pl-2 pt-2 mt-1 text-2xl'>Books</h3>
+                                        <div className=''>
                     {bookList()}
+                    </div>
+                    </div>
                     </div>
                     </div > 
            

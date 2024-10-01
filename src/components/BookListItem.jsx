@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom"
 import Paths from "../core/paths"
 import PropTypes from "prop-types"
 import ReactGA from "react-ga4"
+import MediaQuery from "react-responsive"
 function BookListItem({book}){
     const navigate = useNavigate()
     const [page,setPage]=useState(null)
@@ -23,22 +24,18 @@ function BookListItem({book}){
     return (
         <div 
         onClick={()=>navigateToBook()} 
-        className="card bg-dark  lg:my-8 lg:max-w-96 overflow-clip text-white mx-2 ">
-        <div className="card-body h-36 hover:h-full   max-w-96 ">
+        className="card bg-dark w-fit lg:my-8 lg:max-w-96 overflow-clip text-white mx-2 ">
+        <div className="card-body h-24  lg:h-36 min-w-36 hover:h-full   max-w-96 ">
 <div className=" py-0.5 px-1 w-full h-full">
         <h6 className=" text-left font-extrabold">{book.title}</h6>
+        <MediaQuery minWidth={"768px"}>
       <p className="text-left text-ellipsis">{book.purpose}</p> 
+      </MediaQuery>
         </div>
       </div>
     
     </div>
-    
-    // <div 
-    //    onClick={()=>navigateToBook()} 
-    //     className="bg-white text-black h-24 w-24 rounded-md mx-4 px-2 py-2">
-    //     <h6 className="title">{book.title}</h6>
-    //    <p className="purpose">{book.purpose}</p> 
-    // </div>
+  
     )
     
 }

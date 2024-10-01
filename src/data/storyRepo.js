@@ -5,17 +5,20 @@ import Enviroment from "../core/Enviroment";
 
 
 class StoryRepo{
-
+    headers= {
+        'Access-Control-Allow-Origin': "*"
+    }
     url = Enviroment.url
     token = localStorage.getItem("token")
     async getPublicStories(){
-        let res = await  axios.get(this.url+"/story")
+        let res = await  axios.get(this.url+"/story",{headers:{'Access-Control-Allow-Origin': "*",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}})
         return res.data
 
     }
     async getProfileStories({profileId}){
         let res = await axios.get(Enviroment.url+"/story/profile/"+profileId+"/protected",{headers:{
-            Authorization: "Bearer "+this.token
+            Authorization: "Bearer "+this.token,'Access-Control-Allow-Origin':"*"
         }})
         return res.data
     }

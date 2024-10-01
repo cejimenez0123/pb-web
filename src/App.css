@@ -7,6 +7,7 @@
   text-align: center;
 
 }
+
 .screen{
     overflow: scroll;
     margin-top: 2em;
@@ -86,7 +87,7 @@
   width: 100%;
 }
 .content *{
-  color:white
+  color:white !important;
 }
 @media (min-width: 850px) {
   .content-list{

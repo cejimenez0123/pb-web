@@ -24,6 +24,7 @@ import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
 import uuidv4 from "../core/uuidv4";
 import profileRepo from "../data/profileRepo";
+import axios from "axios";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -343,7 +344,7 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
             profile,
             book
             }=params
-            
+                      axios()
         const id =  `${profile.id}_${book.id}`
         const created = Timestamp.now()
         await setDoc(doc(db,"follow_book",id), { 
