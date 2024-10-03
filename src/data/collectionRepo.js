@@ -4,12 +4,15 @@ import Enviroment from "../core/Enviroment";
 
 
  class CollectionRepo{
+    headers= {
+        'Access-Control-Allow-Origin': "*"
+    }
     async getPublicBooks(){
-        let res = await axios.get(Enviroment.url+"/collection/public/book")
+        let res = await axios.get(Enviroment.url+"/collection/public/book",{headers})
         return res.data
     }
     async getPublicLibraries(){
-        let res = await axios.get(Enviroment.url+"/collection/public/library")
+        let res = await axios.get(Enviroment.url+"/collection/public/library",{headers})
         return res.data
     }
     async createCollection({name,

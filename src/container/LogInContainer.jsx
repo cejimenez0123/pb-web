@@ -310,7 +310,7 @@ function LogInCard(props){
                 onChange={(e) => props.setEmail(e.target.value)}
                 style={outerInputStyle}
             /> */}
-            <label className="input mt-4 bg-dark border border-slate-100 flex items-center gap-2">
+            <label className="input mt-4c bg-dark border border-slate-100 flex items-center gap-2">
   Password
   <input type="text" className="grow " 
          value={props.password}
