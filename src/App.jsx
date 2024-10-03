@@ -17,6 +17,7 @@ import ProfileContainer from './container/ProfileContainer';
 import UpdateLibraryContainer from './container/library/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/book/AddPageToBookContainer';
 import AddItemsToLibraryContainer from './container/library/AddItemsToLibraryContainer';
+import PrivacyNoticeContrainer from "./container/PrivacyNoticeContainer"
 import SearchDialog from './components/SearchDialog';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
@@ -133,6 +134,9 @@ function App(props) {
                     />
                   }
             />
+          <Route path={"/privacy"}
+                  element={<PrivacyNoticeContrainer/>}
+                  />
           <Route  path="/login"  
                   element={ 
           <LoggedRoute 
