@@ -14,9 +14,9 @@ function ApplyContainer(props){
         setFullName(text)
     }
     return(<>
-        <div className="bg-red"> 
+        <div className=""> 
             <div>
-                <form className="form-data flex flex-col lg:rounded bg-green-100 py-4 px-12 lg:max-w-[28rem] text-left mx-auto lg:mt-24">
+                <form className="form-data shadow-sm flex flex-col lg:rounded bg-green-100 py-4 px-12 lg:max-w-[28rem] text-left mx-auto lg:mt-24">
                 <label className="input mt-4 mb-8 lg:py-8 bg-dark border border-green-100  flex items-center gap-2">
   Full Name
   <input type="text" className="grow pl-4 w-full" 
@@ -41,7 +41,7 @@ function ApplyContainer(props){
 
 ">How did you find out?</label>
 <input className="bg-dark text-green-100 input"></input>
-<button className="btn btn-active btn-lg ">
+<button className="btn-active hover:bg-green-400 font-bold border border-none shadow-sm mt-4 bg-green-700  btn-lg ">
                     Apply
                 </button>
                 </form>
