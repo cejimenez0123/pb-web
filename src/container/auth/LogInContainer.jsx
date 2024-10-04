@@ -1,6 +1,6 @@
 import React ,{useState} from 'react'
-import "../App.css"
-import { logIn,signUp,uploadProfilePicture} from '../actions/UserActions';
+import "../../App.css"
+import { logIn,signUp,uploadProfilePicture} from '../../actions/UserActions';
 import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import {InputAdornment,
@@ -17,10 +17,10 @@ import { VisibilityOff,Visibility } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize'
 import {sendPasswordResetEmail } from "firebase/auth";
-import theme from '../theme';
+import theme from '../../theme';
 import { Clear } from '@mui/icons-material';
-import { auth } from '../core/di';
-import checkResult from '../core/checkResult';
+import { auth } from '../../core/di';
+import checkResult from '../../core/checkResult';
 import ReactGA from "react-ga4"
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -282,73 +282,59 @@ function SignInCard(props) {
 }
 
 function LogInCard(props){
+    const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("")
     const [open,setOpen] = useState(false);
     const handleTogglePasswordVisibility = () => {
         setShowPassword(!showPassword);
       };
-
-    return(<div className='max-w-96 bg-dark rounded-lg mx-auto p-4'>
+    const handleFirstTimeClick=()=>{
+        navigate("/apply")
+    }
+    return(<div className='max-w-96 bg-dark rounded-lg form-control  border-dark border mx-auto p-4'>
         <div  id="log-in">
-        <h1 style={{marginLeft:"0.4em",marginTop:"1em",marginRight:"0.4em"}}> Log In</h1>
-        <FormGroup >
-        <label className="input bg-dark border border-slate-100 flex items-center gap-2">
+        <h1 className='text-green-100 pb-4'> Log In</h1>
+        <div >
+            <div className='pb-4'>
+        <label className="input text-green-100 bg-dark border border-slate-100 flex items-center gap-2">
   Email
-  <input type="text" className="grow " 
+  <input type="text" className="grow  text-green-100" 
          value={props.email} 
          onChange={(e) => props.setEmail(e.target.value)}
         placeholder='example@x.com' />
 </label>
-            {/* <TextField
-                error={props.error}
-                label="E-mail"
-                value={props.email} 
-             
-                name='E-mail'
-                placeholder='E-mail' 
-                onChange={(e) => props.setEmail(e.target.value)}
-                style={outerInputStyle}
-            /> */}
-            <label className="input mt-4c bg-dark border border-slate-100 flex items-center gap-2">
+</div>
+<div className='pb-4'>
+            <label className="input text-green-100 mt-4c bg-dark border border-slate-100 flex items-center gap-2">
   Password
-  <input type="text" className="grow " 
+  <input type="text" className="grow text-green-100 " 
          value={props.password}
          
          onChange={(e) => props.setPassword(e.target.value.trim())}
         placeholder='*****' />
 </label>      
-            {/* <TextField label="Password"
-            error={props.error}
-             
-            name='password'placeholder='Password'
-            onChange={(e) => props.setPassword(e.target.value.trim())}
-            type={showPassword ? "text" : "password"} 
-            style={outerInputStyle}
-            InputProps={{
-                style:innerInputStyle,
-            endAdornment: (
-                <InputAdornment position="end">
-                    <IconButton onClick={handleTogglePasswordVisibility}>
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                </InputAdornment> */}
-        {/* ),
-      }}
-            
-            /> */}
+    </div>
             <div 
-                style={{color:theme.palette.primary.dark,marginLeft:"1em"}}
+                className='text-green-100 hover:text-green-400'
                 onClick={()=>{
                     setOpen(true)
                 }}>
                 <a>Forgot Password?</a>
             </div>
-            <Button 
+            <button
+            className='bg-green-600  border-none hover:bg-green-400 text-white font-bold py-2 px-4 mt-4 btn-lg rounded '
                onClick={props.handleSubmit}
-                style={btnStyle}
-                variant="contained" type="submit">Log In</Button>
-        </FormGroup>
+                
+                variant="contained" >Submit</button>
+                
+        </div>
+        <div className='mt-4 p-4'>
+        <a  onClick={handleFirstTimeClick}className='text-green-100 hover:text-green-400  '>Click here if this your first time?</a>
+        </div>
+        <div>
+        
+        </div>
         <Dialog
        
         open={open}

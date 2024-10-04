@@ -3,7 +3,7 @@ import { connect} from "react-redux"
 import {Route, Routes} from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions';
 import DashboardContainer from './container/DashboardContainer';
-import LogInContainer from './container/LogInContainer';
+import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/page/EditorContainer'
@@ -16,6 +16,7 @@ import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/ProfileContainer';
 import UpdateLibraryContainer from './container/library/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/book/AddPageToBookContainer';
+import ApplyContainer from './container/auth/ApplyContainer';
 import AddItemsToLibraryContainer from './container/library/AddItemsToLibraryContainer';
 import SearchDialog from './components/SearchDialog';
 import {  fetchBookmarkLibrary,
@@ -151,7 +152,8 @@ function App(props) {
       <Route path={Paths.about()} element={
    <AboutContainer/>
       }/>
-        
+        <Route path={Paths.apply()}
+        element={<ApplyContainer/>}/>
       <Route
       path={Paths.myProfile()}
       element={

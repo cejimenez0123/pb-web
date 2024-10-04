@@ -5,6 +5,7 @@ const Paths ={
         createRoute:(id)=>{return `/library/${id}`;}},
     page:{ route: ()=>`/page/:id`,createRoute:(id)=>{return `/page/${id}`
     }},
+    apply:()=>{return "/apply"},
     book: {
         route: ()=>{return `/book/:id`;},
         createRoute:(id)=>{return `/book/${id}`
