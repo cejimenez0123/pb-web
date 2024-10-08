@@ -22,6 +22,7 @@ import { Clear } from '@mui/icons-material';
 import { auth } from '../../core/di';
 import checkResult from '../../core/checkResult';
 import ReactGA from "react-ga4"
+import Paths from '../../core/paths';
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -50,29 +51,29 @@ function LogInContainer(props) {
     const navigate = useNavigate()
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
 
-    const handleNewUser = (event) => {
-        event.preventDefault();
-       if(suEmail.length>0 && suPassword.length > 6 && suUsername.length>2){
-        const params ={email:suEmail,
-                        password:suPassword,
-                        username:suUsername,
-                        profilePicture:profilePicture,
-                        selfStatement:selfStatement,
-                        privacy:privacy}
+    // const handleNewUser = (event) => {
+    //     event.preventDefault();
+    //    if(suEmail.length>0 && suPassword.length > 6 && suUsername.length>2){
+    //     const params ={email:suEmail,
+    //                     password:suPassword,
+    //                     username:suUsername,
+    //                     profilePicture:profilePicture,
+    //                     selfStatement:selfStatement,
+    //                     privacy:privacy}
                       
-        dispatch(signUp(params)).then((result) => {
-            checkResult(result,payload=>{
-                localStorage.setItem("loggedIn",true)
-                navigate("/profile/home")
-            },()=>{
-                setSignUpError(true)
-            })
+    //     dispatch(signUp(params)).then((result) => {
+    //         checkResult(result,payload=>{
+    //             localStorage.setItem("loggedIn",true)
+    //             navigate("/profile/home")
+    //         },()=>{
+    //             setSignUpError(true)
+    //         })
 
-        });;
-    }else{
-        setSignUpError(true)
-    }
-    };
+    //     });;
+    // }else{
+    //     setSignUpError(true)
+    // }
+    // };
 
     const handleProfilePicture =(e)=>{
         const files = Array.from(e.target.files)
@@ -95,6 +96,7 @@ function LogInContainer(props) {
         if(liEmail.length>3 && liPassword.length>6){
             const params ={email:liEmail,password:liPassword}
             dispatch(logIn(params))
+            navigate(Paths.myProfile())
         }else{
             setLogInError(true)
         }
@@ -102,24 +104,7 @@ function LogInContainer(props) {
   
     return (
         <div id="">
-            {/* <div className='two-panel'>
-            <div className='left-bar'> */}
-            {/* <SignInCard setError={setSignUpError}
-                        error={signUpError}
-                        username={suUsername}
-                        password={suPassword}
-                        email={suEmail}
-                        selfStatement={selfStatement}
-                        setUsername={setSuUsername}
-                        setEmail={setSuEmail} 
-                        setPassword={setSuPassword}
-                        setSelfStatement={setSelfStatement}
-                        profilePicture={profilePicture}
-                        setProfilePicture={handleProfilePicture}
-                        setPrivacy={setPrivacy}
-                        handleSubmit={handleNewUser}/>
-            </div> */}
-            {/* <div className='right-bar'> */}
+         
             <LogInCard  setError={setLogInError}
                         error={logInError}
                         password={liPassword} 
@@ -127,8 +112,7 @@ function LogInContainer(props) {
                         handleSubmit={(e)=>handleLogIn(e)}
                         setEmail={setLiEmail}
                         setPassword={(str)=>setLiPassword(str)}/>
-            {/* </div> */}
-        {/* </div> */}
+         
         </div>
     )
 }
@@ -292,12 +276,13 @@ function LogInCard(props){
     const handleFirstTimeClick=()=>{
         navigate("/apply")
     }
-    return(<div className='max-w-96 bg-dark rounded-lg form-control  border-dark border mx-auto p-4'>
+    
+    return(<div className='md:max-w-96 bg-dark lg:mt-36 sm:mt-12 rounded-lg form-control  border-dark border mx-auto p-4'>
         <div  id="log-in">
-        <h1 className='text-green-100 pb-4'> Log In</h1>
+        <h1 className='text-green-100 poppins pb-4'> Log In</h1>
         <div >
-            <div className='pb-4'>
-        <label className="input text-green-100 bg-dark border border-slate-100 flex items-center gap-2">
+            <div className='pb-4 '>
+        <label className="input poppins text-green-100 bg-dark border border-slate-100 flex items-center gap-2">
   Email
   <input type="text" className="grow  text-green-100" 
          value={props.email} 
@@ -306,9 +291,9 @@ function LogInCard(props){
 </label>
 </div>
 <div className='pb-4'>
-            <label className="input text-green-100 mt-4c bg-dark border border-slate-100 flex items-center gap-2">
+            <label className="input poppins text-green-100 mt-4c bg-dark border border-slate-100 flex items-center gap-2">
   Password
-  <input type="text" className="grow text-green-100 " 
+  <input type="password" className="grow text-green-100 " 
          value={props.password}
          
          onChange={(e) => props.setPassword(e.target.value.trim())}
@@ -316,21 +301,21 @@ function LogInCard(props){
 </label>      
     </div>
             <div 
-                className='text-green-100 hover:text-green-400'
+                className='text-green-100 poppins hover:text-green-400'
                 onClick={()=>{
                     setOpen(true)
                 }}>
                 <a>Forgot Password?</a>
             </div>
             <button
-            className='bg-green-600  border-none hover:bg-green-400 text-white font-bold py-2 px-4 mt-4 btn-lg rounded '
+            className='bg-green-600 poppins border-none hover:bg-green-400 text-white font-bold py-2 px-4 mt-4 btn-lg rounded '
                onClick={props.handleSubmit}
                 
                 variant="contained" >Submit</button>
                 
         </div>
         <div className='mt-4 p-4'>
-        <a  onClick={handleFirstTimeClick}className='text-green-100 hover:text-green-400  '>Click here if this your first time?</a>
+        <a  onClick={handleFirstTimeClick}className='text-green-100 poppins hover:text-green-400  '>Click here if this your first time?</a>
         </div>
         <div>
         

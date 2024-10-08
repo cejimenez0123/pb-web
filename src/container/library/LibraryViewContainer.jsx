@@ -13,7 +13,7 @@ import {updateHomeCollection,
     } from "../../actions/UserActions"
     import BookListItem from "../../components/BookListItem"
 import { fetchLibrary, setLibraryInView } from "../../actions/LibraryActions"
-import DashboardItem from "../../components/DashboardItem"
+import DashboardItem from "../../components/page/DashboardItem"
 import "../../styles/Library.css"
 import { fetchBook } from "../../actions/BookActions"
 import SettingsIcon from '@mui/icons-material/Settings';

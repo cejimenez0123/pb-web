@@ -24,7 +24,9 @@ import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
 import uuidv4 from "../core/uuidv4";
 import profileRepo from "../data/profileRepo";
+import authRepo from "../data/authRepo";
 import axios from "axios";
+
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -33,9 +35,11 @@ const logIn = createAsyncThunk(
         try {
            
           const userCred = await signInWithEmailAndPassword(auth,email,password)
-          const profilesRes = await profileRepo.getUsersProfiles({id:userCred.user.uid})
-          let res = await profileRepo.startSession({uId:userCred.user.uid,email:email})
-          localStorage.setItem("token",res.token)
+          await authRepo.startSession({uId:userCred.user.uid,email:email})
+         
+          const profilesRes = await profileRepo.getMyProfiles({id:userCred.user.uid})
+
+        
           return {
                 profile: profilesRes.profiles[0]
               }
@@ -204,7 +208,7 @@ const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
       try {
         if(auth.currentUser){
-            let data = await profileRepo.getUsersProfiles({id:auth.currentUser.uid})
+            let data = await profileRepo.getMyProfiles({id:auth.currentUser.uid})
             return {
             profile: data.profiles[0]
            } 

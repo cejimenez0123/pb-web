@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import "../Dashboard.css"
-import { deletePageApproval, setPageInView, setPagesToBeAdded } from '../actions/PageActions'
-import { createPageApproval } from '../actions/PageActions'
-import { PageType } from '../core/constants'
+import "../../Dashboard.css"
+import { deletePageApproval, setPageInView, setPagesToBeAdded } from '../../actions/PageActions'
+import { createPageApproval } from '../../actions/PageActions'
+import { PageType } from '../../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
 import { IconButton} from '@mui/joy'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import theme from '../theme'
-import { updateLibraryContent } from '../actions/LibraryActions'
-import checkResult from '../core/checkResult'
-import Paths from '../core/paths'
-import LinkPreview from './LinkPreview'
+import theme from '../../theme'
+import { updateLibraryContent } from '../../actions/LibraryActions'
+import checkResult from '../../core/checkResult'
+import Paths from '../../core/paths'
+import LinkPreview from '../LinkPreview'
 import ReactGA from 'react-ga4'
 import {useMediaQuery} from 'react-responsive'
 import MediaQuery from 'react-responsive'
-import bookmarkadd from "../images/bookmarkadd.svg"
+import bookmarkadd from "../../images/bookmarkadd.svg"
 function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -212,15 +212,15 @@ return <Button onClick={()=>{
         navigate("/library/new")
     }
     const buttonRow = ( )=>{
-        return isGrid?<div className='bg-dark border-t border-green-100 '>
-        <button className='bg-transparent'><img src={bookmarkadd}/></button>
+        return isGrid?<div className='bg-dark border-t text-right border-green-100 '>
+        <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className='bg-dark border-t border-green-100 '><div>
+        <div className='bg-dark border-t  border-green-100 '><div>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
-          className={`btn btn-primary bg-dark border-dark text-white `}
+          className={`btn btn-primary w-fit bg-dark border-dark text-white `}
         
          >
              Yea
@@ -304,7 +304,7 @@ onClick={()=>addToBook()}>
         return(<div className={`  ${isGrid?"  lg:w-48 ":"lg:w-128"} rounded-lg mb-4 overflow-hidden`}>
         
             <div className=' bg-dark border-b border-green-100 text-white py-2'>
-                <div className='titles'>
+                <div className='ml-4'>
                 {bookTitleDiv}
                 <p className="text-white" onClick={()=>{
                     navigate(`/page/${page.id}`)

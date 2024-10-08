@@ -4,7 +4,7 @@ import {  fetchAppendPagesOfProfile,
     fetchPagesWhereProfileCommenters, 
     getPublicStories  } from '../actions/PageActions'
 import { useSelector, useDispatch } from 'react-redux'
-import DashboardItem from '../components/DashboardItem'
+import DashboardItem from '../components/page/DashboardItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import {  fetchArrayOfBooksAppened, fetchBooksWhereProfileEditor, fetchBooksWhereProfileWriter } from '../actions/BookActions'
 import { clickMe, fetchHomeCollection, getCurrentProfile } from '../actions/UserActions'

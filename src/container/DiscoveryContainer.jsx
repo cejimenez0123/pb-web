@@ -1,5 +1,5 @@
 import { useSelector,useDispatch} from 'react-redux'
-import DashboardItem from '../components/DashboardItem'
+import DashboardItem from '../components/page/DashboardItem'
 import { useState,useEffect ,useContext} from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -17,7 +17,12 @@ import ReactGA from "react-ga4"
 import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
 function DiscoveryContainer(props){
-    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+    
+    useEffect(()=>{
+        ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+    },[])
+
+
     const [isGrid,setIsGrid] = useState(false)
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
@@ -87,12 +92,10 @@ const navigateToLibrary = (library)=>{
     const bookList = ()=>{
         if(booksInView!=null){
             return(
-        <div 
-        //id="book-list"
-        >
-            <MediaQuery minWidth={"768px"}>
+        
+    
                 <InfiniteScroll
-            className='mt-1'
+            className={`mt-1   ${isNotPhone?"flex-col":"flex-row"} flex`}
             dataLength={booksInView.length}
             next={fetchContentItems}
             hasMore={false}
@@ -104,25 +107,9 @@ const navigateToLibrary = (library)=>{
                             <BookListItem book={book}/>
                         </div>)
                 })}
+</InfiniteScroll>
+   )
 
-            </InfiniteScroll>
-            </MediaQuery>
-            <MediaQuery maxWidth={"768px"}>
-                <InfiniteScroll
-            style={{display:"flex",flexDirection:"row"}}
-            dataLength={booksInView.length}
-            next={fetchContentItems}
-            hasMore={false}
-            >
-                {booksInView.map(book=>{
-                    const id = `${book.id}_${uuidv4()}`
-                    return(<div key={id}>
-                       <BookListItem book={book}/>
-                       </div>)
-                })}
-
-            </InfiniteScroll>
-            </MediaQuery></div>)
         }
     }
     const pageList = ()=>{
@@ -207,11 +194,11 @@ const navigateToLibrary = (library)=>{
             <div style={{paddingTop:"3em"}}>
                 <h1 >Discovery</h1>
                 </div>
-              <div className='' >
-                <div id="library-forums">
-                <h3 className='text-white lg:ml-32 lg:pl-1 font-extrabold text-2xl'>Libraries</h3>
+              <div className=' text-left' >
+               
+                <h3 className='text-white sm:ml-36 ml-8 sm:pl-4 font-extrabold text-2xl'>Libraries</h3>
                 {libraryForums()}
-                    </div>
+                    
                 <div className='flex  flex-col-reverse lg:flex-row'>
                     <div className=' lg:w-128 lg:ml-32 lg:mr-16 lg:ml-16 '>
 
@@ -220,8 +207,9 @@ const navigateToLibrary = (library)=>{
                                         font-extrabold 
                                         text-2xl 
                                         text-left 
+                                        mx-4
                                         my-4 pl-2 l
-                                        g:mb-4'>Pages</h3>
+                                        lg:mb-4'>Pages</h3>
                         {isNotPhone?<div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
                                             ml-2 mr-0 px-1 py-0'>
@@ -235,11 +223,11 @@ const navigateToLibrary = (library)=>{
                     {pageList()}
                     </div>
                     <div className=' lg:flex-1  lg:mx-4'>
-                       <div className='w-24 flex-auto mx-auto '>
+                       <div className='w-24  mx-auto '>
                         <h3 className=' text-white 
                                         text-left 
                                         font-extrabold 
-                                        pl-2 pt-2 mt-1 text-2xl'>Books</h3>
+                                        pl-2 pt-2 mt-1 mx-4 text-2xl'>Books</h3>
                                         <div className=''>
                     {bookList()}
                     </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { deletePage, setPageInView,setPagesToBeAdded } from "../actions/PageActions";
-import { PageType } from "../core/constants";
+import { deletePage, setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
+import { PageType } from "../../core/constants";
 import {useNavigate} from 'react-router-dom'
 import { Button } from "@mui/material";
 import Dropdown from '@mui/joy/Dropdown';
@@ -12,10 +12,10 @@ import MenuItem from '@mui/joy/MenuItem';
 import Add from '@mui/icons-material/Add'
 import MoreVert from '@mui/icons-material/MoreVert'
 import { useSelector } from "react-redux";
-import theme from "../theme";
-import checkResult from "../core/checkResult";
-import ga from "../core/ga4"
-function PageListItem({page,onDelete}) {
+import theme from "../../theme";
+import checkResult from "../../core/checkResult";
+import ga from "../../core/ga4"
+function PageIndexItem({page,onDelete}) {
     
     const [showPreview,setShowPreview] = useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -114,9 +114,9 @@ function PageListItem({page,onDelete}) {
                 </div>
         )
     }
-            return(<div className='list-item'>
+            return(<div className='bg-dark rounded-lg mb-1 sm:mx-6'>
                 <div>
-                <a className="title" onClick={handleOnClick}> 
+                <a className="text-green-100 " onClick={handleOnClick}> 
                    {page.title.length>0? <h6>{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
@@ -137,4 +137,4 @@ function PageListItem({page,onDelete}) {
     }
     
   
-    export default (PageListItem)
+    export default PageIndexItem

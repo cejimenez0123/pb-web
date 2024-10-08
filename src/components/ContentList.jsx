@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { getProfilePages } from '../actions/PageActions';
 import { getProfileBooks } from '../actions/BookActions';
 import { getProfileLibraries } from '../actions/LibraryActions';
-import PageListItem from './PageListItem';
+import PageListItem from './page/PageIndexItem';
 import "../styles/MyProfile.css"
 import Book from '../domain/models/book'
 import ListItem from './ListItem';

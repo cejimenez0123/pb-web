@@ -2,7 +2,6 @@ import React,{ useEffect, useState }  from 'react';
 import ProfileCard from '../components/ProfileCard';
 import { useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
-import ContentList from '../components/ContentList';
 import { ExpandLess,ExpandMore } from '@mui/icons-material';
 import theme from "../theme"
 import {Skeleton} from "@mui/material"
@@ -12,55 +11,82 @@ import debounce from "../core/debounce"
 import { setEditingPage } from '../actions/PageActions';
 import {useDispatch,useSelector} from "react-redux"
 import LinkIcon from '@mui/icons-material/Link';
+import notifications from "../images/icons/notifications.svg"
+import settings from "../images/icons/settings.svg"
 import {  
     Menu,
     MenuItem,
     Button,
     List,
     ListItemButton,
-    Typography
-    
 } from '@mui/material'
-import { btnStyle } from '../styles/styles';
-import PageSkeleton from '../components/PageSkeleton';
+import { getCurrentProfile } from '../actions/UserActions';
+import PageIndexList from '../components/page/PageIndexList';
 function MyProfileContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const loading = useSelector(state=>state.users.loading)
+    const [media,setMedia]=useState()
+    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const dispatch = useDispatch()
-
-    const render = ()=>{
-        if(currentProfile){ 
+    useEffect(()=>{
+        if(!currentProfile){
+            dispatch(getCurrentProfile()).then(res=>console.log("Resd",res))
+        }
+    
+    },[])
+    
             return(
-            <div className='two-panel'>
-                <div className='left-bar'>
-                        <ContentList profile={currentProfile}/>
-                </div>         
-                <div className="right-bar">
-                        <ProfileCard profile={currentProfile}/>
-                        <CreateButtons />
-                </div>  
+            <div className=''>
+                    <div className='bg-dark w-full lg:h-72 m-4 pb-4 rounded-lg'>
+                    <div className='text-right mt-2'>
+                        <button className='bg-dark'>
+                            <img src={settings}/>
+                        </button>
+                        <button className='bg-dark'>
+                            <img 
+                            src={notifications}/>
+                        </button>
+                        </div>
+                        <div>
+                            <div className='flex-row flex w-48'>
+                        <img className={"w-36 h-36 ml-6 rounded-lg"}src={currentProfile.profilePic}/>
+                        <div className=' ml-4 mt-1 text-left'>
+                            <h5 className='text-xl font-bold'>{currentProfile.username}</h5>
+                            <p>{currentProfile.selfStatement}</p>
+                           <div className='mt-4 pt-2'>
+                            <button className='bg-green-600 text-white  text-xl text-bold'>
+                                Write a Story
+                            </button>
+                            <button className='bg-green-600 md:ml-4 text-white text-xl  text-bold'>
+                                Create Collection
+                            </button>
+                            </div> 
+                        </div>
+                        </div>
+                        <div className='text-left mt-6'>
+                        <button className='bg-dark font-bold text-green-100'>
+                                Page
+                            </button>
+                            <button className='bg-dark font-bold text-green-100'>
+                                Books
+                            </button>
+                            <button className='bg-dark font-bold text-green-100'>
+                                Library
+                            </button>
+                            
+                        </div>
+                        </div>
+                      
+                      
+                      
+                    </div>
+                <PageIndexList/>
+                   
             </div>
         )
-        }else{
-            return(<div>
-                <div className='two-panel'>
-                <div className='left-bar'>
-                       <PageSkeleton/>
-                </div>         
-                <div className="right-bar">
-                        <Skeleton style={{height:"10em",width:"10em"}} variant='rectangular'/>
-                        <br/>
-                        <Skeleton width={"50%"}variant='rectangular'/>
-                    
-                </div>  
-       
-        </div>
-    
-            </div>)
-        }
+     
+        
     }
-    return render()
-    }
+
 
     
 function CreateButtons (props){

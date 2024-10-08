@@ -50,9 +50,9 @@ const userSlice = createSlice({
         state.loading = true
     })
     .addCase(logIn.fulfilled, (state, { payload }) => {
+       
         state.loading = false
         state.signedIn = true
-        localStorage.setItem("loggedIn",true)
         state.currentProfile = payload.profile
     }).addCase(logIn.rejected, (state,{payload}) => {
         state.error = payload.error

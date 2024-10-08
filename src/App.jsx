@@ -157,7 +157,7 @@ function App(props) {
       <Route
       path={Paths.myProfile()}
       element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute >
           <MyProfileContainer currentProfile={props.currentProfile} 
                               pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
