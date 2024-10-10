@@ -11,7 +11,7 @@ const PrivateRoute = ({loggedIn, children }) => {
    if(currentProfile){
     return children
    }else{
-    navigate(Paths.login())
+   return <Navigate to={Paths.login()}/>
    }
     
   };

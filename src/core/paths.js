@@ -10,6 +10,7 @@ const Paths ={
         route: ()=>{return `/book/:id`;},
         createRoute:(id)=>{return `/book/${id}`
     } },
+
     editor:{
         text:()=>{return `/page/text`},
         link:()=>{ return `/page/link`},
@@ -23,7 +24,12 @@ const Paths ={
     createLibrary:()=>{return `/library/new`},
     addPagesToBook:(id)=>{return `/book/${id}/add`},
     addItemsToLibrary:(id)=>{return `/library/${id}/add`},
-
+    addStoryToCollection:{
+        route:"/story/:id/collection",
+        createRoute:(id)=>{
+            return `/story/${id}/collection`
+        }
+    },
     home:()=>{return `/`},
     about:()=>{return `/about`},
     profile:{route:()=>{return `/profile/:id`},

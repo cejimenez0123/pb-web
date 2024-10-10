@@ -296,6 +296,7 @@ function DashboardContainer(props){
                             }
                         }})}
                     </InfiniteScroll>
+                
                 </div>)
             }  else if(itemsInView!=null && itemsInView.length==0 && currentProfile){
                 return(

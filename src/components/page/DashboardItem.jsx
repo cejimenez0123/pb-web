@@ -22,7 +22,7 @@ function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const isNotPhone = useMediaQuery({
-        query: '(min-width: 768px)'
+        query: '(min-width: 500px)'
       })
     const userApprovals = useSelector(state=>state.users.userApprovals)
     const [approved,setApproved]=useState(null)
@@ -92,7 +92,7 @@ const hanldeClickComment=(pageItem)=>{
             >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className=' content bg-dark lg:p-4 '
+        } className=' content bg-dark p-4 '
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
         </div>)   
@@ -216,17 +216,17 @@ return <Button onClick={()=>{
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className='bg-dark border-t  border-green-100 '><div>
+        <div className='bg-dark border-t  text-center border-green-100 '><div>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
-          className={`btn btn-primary w-fit bg-dark border-dark text-white `}
+          className={`btn btn-primary w-fit px-4 bg-dark border-dark text-white `}
         
          >
              Yea
          </button>
          <button
-             className='btn btn-primary bg-dark border-dark text-white'
+             className='btn btn-primary px-4 bg-dark border-dark text-white'
              onClick={()=>hanldeClickComment(page)}
                  >
          
@@ -236,6 +236,7 @@ return <Button onClick={()=>{
 <button tabIndex={0} role="button" 
 className=" btn             
          pt-2 
+         px-4 
          btn-primary
          bg-dark
          border-dark
@@ -298,12 +299,10 @@ onClick={()=>addToBook()}>
     }
     if(page){
     
-        if(currentProfile){
-           
-        }
-        return(<div className={`  ${isGrid?"  lg:w-48 ":"lg:w-128"} rounded-lg mb-4 overflow-hidden`}>
+        return(
+        <div className={` ${isNotPhone?"rounded-lg":""}   mb-4 overflow-hidden`}>
         
-            <div className=' bg-dark border-b border-green-100 text-white py-2'>
+            <div className=' bg-dark border-b border-green-100 pl-2 text-white   pb-2 pt-4'>
                 <div className='ml-4'>
                 {bookTitleDiv}
                 <p className="text-white" onClick={()=>{

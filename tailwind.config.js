@@ -12,7 +12,7 @@ export default {
 
   theme: {
     width: {
-      '128': '46rem',
+      '128': '48rem',
     },
     
     borderWidth: {

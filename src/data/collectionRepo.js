@@ -7,12 +7,25 @@ import Enviroment from "../core/Enviroment";
     headers= {
         'Access-Control-Allow-Origin': "*"
     }
+    url = Enviroment.url+"/collection"
     async getPublicBooks(){
-        let res = await axios.get(Enviroment.url+"/collection/public/book",{headers})
+        let res = await axios.get(this.url+"/public/book",{headers})
         return res.data
     }
     async getPublicLibraries(){
-        let res = await axios.get(Enviroment.url+"/collection/public/library",{headers})
+        let res = await axios.get(this.url+"/public/library",{headers})
+        return res.data
+    }
+    async getMyCollections({id}){
+        let res = await axios.get(this.url+"/profile/"+id+"/private",{
+            headers:{
+                Authorization:"Bearer "+localStorage.getItem("token")
+            }
+        })
+        return res.data
+    }
+    async getPublicProfilesCollections({id}){
+        let res = await axios.get(this.url+`/id${id}/public`)
         return res.data
     }
     async createCollection({name,
@@ -29,7 +42,9 @@ import Enviroment from "../core/Enviroment";
             isPrivate:privacy,
             profileId:profileId,
             isOpenCollaboration:writingIsOpen
-        })
+        },{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})
         return res.data
     }
     async updateCollection({id,title,
@@ -41,7 +56,9 @@ import Enviroment from "../core/Enviroment";
             purpose,
             isPrivate,
             isOpenCollaboration
-        })
+        },{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})
         return res.data
     }
     async addStoriesToCollection({collection,storyIdList}){
@@ -53,27 +70,27 @@ import Enviroment from "../core/Enviroment";
     }
     async addCollectionToCollection({parentCollection,childCollection}){
      
-        let res = await axios.post(Enviroment.url+"/collection/"+parentCollection.id+"/collection/"+childCollection.id)
+        let res = await axios.post(this.url+"/"+parentCollection.id+"/collection/"+childCollection.id)
         return res.data
     }
     async deleteCollection({id}){
       
-        let res = await axios.delete(Enviroment.url+"/collection/"+id)
+        let res = await axios.delete(this.url+"/"+id)
         return res.data
     }
     async getProfileLibraries({profile}){
     
-        let res = await axios.get(Enviroment.url+"/collection/profile/"+profile.id+"/library")
+        let res = await axios.get(Enviroment.url+"/profile/"+profile.id+"/library")
         return res.data
     }
   
     async fetchCollection({id}){
-        const res = await axios.get(Enviroment.url+"/collection/"+id)
+        const res = await axios.get(this.url+"/"+id)
         return res.data
     }
     async getProfileBooks({profile}){
      
-        let res = await axios.get(Enviroment.url+"/collection/profile/"+profile.id+"/book")
+        let res = await axios.get(this.url+"/profile/"+profile.id+"/book")
         return res.data
     }
 }

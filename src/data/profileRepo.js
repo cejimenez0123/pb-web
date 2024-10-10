@@ -14,6 +14,9 @@ class ProfileRepo {
         )
         return res.data
     }
+    async getCurrentProfile(auth){
+        axios.get(Enviroment.url+"/profile")
+    }
     async register({uId,email,password,username,profilePicture,selfStatement,privacy}){
        const res = await axios.post(Enviroment.url+"/auth/register",{uId,email,password,username,
         profilePicture,selfStatement,privacy

@@ -1,23 +1,4 @@
 import { createAsyncThunk ,createAction} from "@reduxjs/toolkit"
-import Book from "../domain/models/book"
-import { unpackPageDoc } from "./PageActions"
-import {unpackLibraryDoc} from "./LibraryActions"
-import { unpackProfileDoc } from "./UserActions"
-import {  where,
-          query,
-          and,
-          or,
-          arrayUnion,
-          collection,
-          getDocs,
-          getDoc,
-          doc,
-          setDoc,
-          deleteDoc, 
-          Timestamp,
-          updateDoc} from "firebase/firestore"
-import { db,auth,client} from "../core/di"
-import Contributors from "../domain/models/contributor"
 import axios from "axios"
 import collectionRepo from "../data/collectionRepo"
 import Enviroment from "../core/Enviroment"
@@ -69,10 +50,31 @@ const isProfileMember = createAsyncThunk("collection/isProfileMember",async (
         data: res.data
       }
 })
+const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
+    params,thunkApi
+)=>{
+
+     let res = await collectionRepo.getMyCollections({id:params["profile"].id})
+      return {
+        collections: res.collections
+      }
+})
+const getPublicProfileCollections = createAsyncThunk("collection/getMyCollections",async (
+    params,thunkApi
+)=>{
+
+     let res = await collectionRepo.getPublicProfilesCollections({id:params["profile"].id})
+
+      return {
+        data: res.data
+      }
+})
 
 
 export {
     getPublicBooks,
     saveRoleToCollection,
-    isProfileMember
+    isProfileMember,
+    getMyCollections,
+    getPublicProfileCollections
 }

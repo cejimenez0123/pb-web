@@ -201,7 +201,7 @@ function EditorContainer({currentProfile}){
         if(currentProfile){
           if(ePage){
               if(ePage.type===PageType.text){
-                  return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)
+                  return (<div id=""><RichEditor  initialContent={htmlContent}/></div>)
               }else if(ePage.type===PageType.picture){
                 
                   return (<div  className="image">
@@ -213,7 +213,7 @@ function EditorContainer({currentProfile}){
                       <PicturePageForm />
                   )
               }else{
-                  return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)}
+                  return (<div id=""><RichEditor initialContent={htmlContent}/></div>)}
             }else{
 
               
@@ -222,7 +222,7 @@ function EditorContainer({currentProfile}){
             if(last.toUpperCase()=="image".toUpperCase()||last.toUpperCase()=="link".toUpperCase()){
               return (<PicturePageForm />)
             }else{
-              return(<div id="editor"><RichEditor initialContent={""}/></div>)
+              return(<div id=""><RichEditor initialContent={""}/></div>)
             }
           }
             
@@ -262,84 +262,83 @@ function EditorContainer({currentProfile}){
 </Dropdown> 
             :<div></div>
           }
-const createForm = ()=>(<FormGroup  style={{marginBottom:"2em"}}
-      className="create-form" >
-<TextField 
-onChange={(e)=>setTitle(e.target.value)}  
-value={title} 
-label="Title"/>
-<FormControlLabel 
-control={<Checkbox 
-style={checkmarkStyle}
-checked={!privacy} 
-onChange={(e)=>setPrivacy(!e.target.checked)}
-/>} label={!privacy?"Public":"Draft"} />
+// const createForm = ()=>(<FormGroup  style={{marginBottom:"2em"}}
+//       className="create-form" >
+// <TextField 
+// onChange={(e)=>setTitle(e.target.value)}  
+// value={title} 
+// label="Title"/>
+// <FormControlLabel 
+// control={<Checkbox 
+// style={checkmarkStyle}
+// checked={!privacy} 
+// onChange={(e)=>setPrivacy(!e.target.checked)}
+// />} label={!privacy?"Public":"Draft"} />
 
-<FormControlLabel 
-control={<Checkbox style={checkmarkStyle}checked={commentable} onChange={(e)=>{
-setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
+// <FormControlLabel 
+// control={<Checkbox style={checkmarkStyle}checked={commentable} onChange={(e)=>{
+// setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
 
 
-<Button style={{backgroundColor:theme.palette.secondary.main,
-            color:theme.palette.secondary.contrastText}}
-    onClick={(e)=>onSavePress((page)=>{
+// <Button style={{backgroundColor:theme.palette.secondary.main,
+//             color:theme.palette.secondary.contrastText}}
+//     onClick={(e)=>onSavePress((page)=>{
 
-history.replace(`/page/${ePage.id}/edit`)
-})} className="">
-Save
-</Button>
-<div className="button-row">
-{addBtn()}
-{editingPage?<IconButton onClick={()=>{
-dispatch(setPageInView({page:editingPage}))
-navigate(Paths.page.createRoute(editingPage.id))
-}}><Visibility/></IconButton>:(<div></div>)}
+// history.replace(`/page/${ePage.id}/edit`)
+// })} className="">
+// Save
+// </Button>
+// <div className="button-row">
+// {addBtn()}
+// {editingPage?<IconButton onClick={()=>{
+// dispatch(setPageInView({page:editingPage}))
+// navigate(Paths.page.createRoute(editingPage.id))
+// }}><Visibility/></IconButton>:(<div></div>)}
 
-</div>
+// </div>
 
-<div id="post-button-row">
-<Button
-onClick={()=>debounce(onSavePress((page)=>{
-setPrivacy(false)
-dispatch(setPageInView({page:page}))
-navigate(Paths.page.createRoute(page.id))
-}),10)}
-style={{backgroundColor:theme.palette.secondary.main,
-    color:theme.palette.primary.contrastText,
-    width: "100%",
-    marginTop: "2em",
-    padding:"2em",
+// <div id="post-button-row">
+// <Button
+// onClick={()=>debounce(onSavePress((page)=>{
+// setPrivacy(false)
+// dispatch(setPageInView({page:page}))
+// navigate(Paths.page.createRoute(page.id))
+// }),10)}
+// style={{backgroundColor:theme.palette.secondary.main,
+//     color:theme.palette.primary.contrastText,
+//     width: "100%",
+//     marginTop: "2em",
+//     padding:"2em",
     
-  }
-}
->Post</Button>
-</div>
-{deleteDiv}
-</FormGroup>)
-      let deleteDiv = (<div>
-        </div>) 
-      if(editingPage){ 
-       deleteDiv =(<Button variant="outlined"
-       onClick={handleClickOpen}
-        style={{
-          marginTop: "4em",
-          width: "10em",
-          color: theme.palette.error.contrastText,
-          backgroundColor:theme.palette.error.dark}}>
-          Delete
-      </Button>)
-      }
+//   }
+// }
+// >Post</Button>
+// </div>
+// {deleteDiv}
+// </FormGroup>)
+//       let deleteDiv = (<div>
+//         </div>) 
+//       if(editingPage){ 
+//        deleteDiv =(<Button variant="outlined"
+//        onClick={handleClickOpen}
+//         style={{
+//           marginTop: "4em",
+//           width: "10em",
+//           color: theme.palette.error.contrastText,
+//           backgroundColor:theme.palette.error.dark}}>
+//           Delete
+//       </Button>)
+//       }
    
         return(
-          <div className="two-panel"> 
-              <div className="left-bar" >   
+          <div > 
+               
                 {contentDiv()}
-                <div style={{height:"100%"}}>
+              
 
-                </div>
-              </div>
-              <div className="right-bar">
-               {createForm()} 
+             
+           
+           
                
                     {ePage?<RoleList
                                 item={ePage} 
@@ -373,7 +372,7 @@ style={{backgroundColor:theme.palette.secondary.main,
       </Dialog>
     </div>
       </div>
-    </div>
+ 
   )     
 }
 

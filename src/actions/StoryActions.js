@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Enviroment from "../core/Enviroment";
-
+import storyRepo from "../data/storyRepo";
 
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
     
@@ -14,5 +14,18 @@ const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
         story: res.data.story
     }
 })
+const getMyStories= createAsyncThunk(
+    'pages/getMyStories',
+    async (params,thunkApi) => {
+      try{
+      let data = await storyRepo.getMyStories({profileId:params["profile"].id})
+  
+    return {
+      pageList:data.stories
+    }
+    }catch(e){
+  
+    return {error:`Page Query Where Error: ${e.message}`}
+  }})
 
-export {getStory}
+export {getStory,getMyStories}

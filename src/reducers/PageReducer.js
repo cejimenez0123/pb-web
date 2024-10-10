@@ -24,7 +24,7 @@ import {
           createStory
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
-import { getStory } from "../actions/StoryActions"
+import { getMyStories, getStory } from "../actions/StoryActions"
 
 const initialState = {pagesInView:[],
                       editingPage:null,
@@ -47,6 +47,14 @@ const pageSlice = createSlice({
           state.error ="  Failed to Fetch story"
         }).addCase(getStory.fulfilled,(state,{payload})=>{
           state.pageInView = payload.story
+        }).addCase(getMyStories.fulfilled,(state,{payload})=>{
+          state.pagesInView = payload.pageList
+          state.loading=false
+        }).addCase(getMyStories.pending,(state)=>{
+          state.loading=true
+        }).addCase(getMyStories.rejected,(state,{payload})=>{
+          state.error= payload.error
+          state.loading = false
         }).addCase(getPublicStories.fulfilled,(state,{payload})=>{
           state.loading = false
           state.pagesInView = payload.stories

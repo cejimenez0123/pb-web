@@ -1,22 +1,18 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { deletePage, setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
+import { setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
 import { PageType } from "../../core/constants";
 import {useNavigate} from 'react-router-dom'
-import { Button } from "@mui/material";
-import Dropdown from '@mui/joy/Dropdown';
-import IconButton from '@mui/joy/IconButton';
-import Menu from '@mui/joy/Menu';
-import MenuButton from '@mui/joy/MenuButton';
-import MenuItem from '@mui/joy/MenuItem';
-import Add from '@mui/icons-material/Add'
-import MoreVert from '@mui/icons-material/MoreVert'
+import addBox from "../../images/icons/add_box.svg"
+import edit from "../../images/icons/edit.svg"
 import { useSelector } from "react-redux";
-import theme from "../../theme";
-import checkResult from "../../core/checkResult";
-import ga from "../../core/ga4"
+import { useMediaQuery } from "react-responsive";
+import Paths from "../../core/paths";
+import ReactGA from "react-ga4"
 function PageIndexItem({page,onDelete}) {
-    
+    const isPhone =  useMediaQuery({
+        query: '(max-width: 600px)'
+      })
     const [showPreview,setShowPreview] = useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
@@ -41,7 +37,27 @@ function PageIndexItem({page,onDelete}) {
         navigate(`/${type}/new`)
     }
     }
-    
+    const handleNavigate=(path)=>{
+        if(path.includes("collection")){
+            ReactGA.event({
+                category: "Story",
+                action: "Add Story To Collection",
+                label: "Edit Icon", 
+                value: page.id,
+                nonInteraction: false
+              });
+        }else{
+            ReactGA.event({
+                category: "Story",
+                action: "Navigate to Edit",
+                label: "Edit Icon", 
+                value: page.id,
+                nonInteraction: false
+              });
+        }
+        navigate(path)
+
+    }
     let pageDataElement = (<div></div>)
     if(page!=null){
     switch(page.type){
@@ -58,73 +74,39 @@ function PageIndexItem({page,onDelete}) {
             pageDataElement = <div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>
         break;
     }
-    const menuBtnStyle ={border:"none",marginLeft:"1em"}
-    const iconStyle = {fontSize:"2rem",color:theme.palette.primary.main}
+    
    let buttonDiv= (<div>
-    <Dropdown>
-        <MenuButton style={menuBtnStyle}>
-            <MoreVert style={iconStyle}/>
-        </MenuButton>
-        <Menu>
-            <MenuItem onClick={()=>handleAddClick("book")}>Book</MenuItem>
-            <MenuItem onClick={()=>handleAddClick("library")}>Library</MenuItem>
-        </Menu>
-    </Dropdown>
-   </div>)
-    if(currentProfile!=null && page.profileId==currentProfile.id){
-        buttonDiv = (
-            <div >
-                <Dropdown>
-                    <MenuButton style={menuBtnStyle}>
-                        <Add style={iconStyle}/>
-                    </MenuButton>
-                    <Menu>
-                        <MenuItem onClick={()=>handleAddClick("book")}>
-                            Book
-                        </MenuItem>
-                        <MenuItem onClick={()=>handleAddClick("library")}>
-                            Library
-                        </MenuItem>
-                    </Menu>
-                </Dropdown>
-                <Dropdown>
-                    <MenuButton  style={menuBtnStyle}>
-                    <MoreVert style={iconStyle}/>
-  </MenuButton>
-  <Menu>
-  <MenuItem onClick={()=>{
-                    navigate(`/page/${page.id}/edit`)
-                }}>
-                    Edit
-                </MenuItem>
-                <MenuItem onClick={()=>{
-                    const params = {
-                        page
-                    }
-                    dispatch(deletePage(params)).then(result=>checkResult(result,payload=>{
-                     onDelete()       
-                    },err=>{
+    <div className="dropdown dropdown-left">
+  <div tabIndex={0} role="button" className="btn my-auto"><img className={"w-8 h-8"}src={addBox}/></div>
+  <ul tabIndex={0} className="dropdown-content menu bg-dark rounded-box z-[1] w-72 p-2 shadow">
+    <li><a onClick={()=>handleAddClick("book")}>Add to Collection</a></li>
+    <li><a >Share</a></li>
+  </ul>
+</div>
 
-                    }))}
-                }>
-                    Delete
-                </MenuItem>
-            </Menu>
-                </Dropdown>
-                </div>
-        )
+   </div>)
+    if(currentProfile!=null && page.authorId==currentProfile.id){
+        buttonDiv = (<div className="dropdown dropdown-left">
+        <div tabIndex={0} role="button" className="btn m-1"><img src={edit}/></div>
+        <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+          <li onClick={()=>handleNavigate(Paths.editPage.createRoute(page.id))}><a >Edit</a></li>
+          <li onClick={()=>handleNavigate(Paths.addStoryToCollection.createRoute(page.id))}><a>Add to Collection</a></li>
+        </ul>
+      </div>)
+  
     }
-            return(<div className='bg-dark rounded-lg mb-1 sm:mx-6'>
-                <div>
-                <a className="text-green-100 " onClick={handleOnClick}> 
-                   {page.title.length>0? <h6>{page.title}</h6>:<h6>Unititled</h6>}
+            return(<div className={`bg-dark ${isPhone?"":"rounded-lg"} border border-white flex w-full flex-row justify-between  mb-1  `}>
+                <div className="text-left my-auto ml-4 py-4   ">
+               
+                <a className="text-white " onClick={handleOnClick}> 
+                   {page.title.length>0? <h6 className="text-xl my-auto">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
-                <div className="button-row">
-                
-
+                <div className=" my-auto w-fit">
                 {buttonDiv}
-                   
+
+              
+             
             
                 </div>
             </div>)}else{

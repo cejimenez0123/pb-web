@@ -129,3 +129,36 @@
         
         }
     }
+    /* Change the stroke color of Quill icons */
+.ql-stroke {
+    stroke: #ffffff !important; /* Change this to your preferred color */
+  }
+  
+  /* Change the fill color of Quill icons */
+  .ql-fill {
+    fill: #ffffff !important; /* Change this to your preferred color */
+  }
+  
+  /* Change the color of icons in hover/focus state */
+  .ql-toolbar .ql-active .ql-stroke,
+  .ql-toolbar .ql-active .ql-fill {
+    stroke: white !important; /* Color when an icon is active */
+    fill: white !important;
+  }
+  
+  /* Customize icons in hover state */
+  .ql-toolbar .ql-stroke:hover {
+    stroke: #00FF00 !important; /* Change color on hover */
+  }
+  .ql-font{
+    color:white !important;
+    stroke:white !important;
+    fill: white !important;
+  }
+  .ql-picker{
+    color:white !important
+  }
+  .ql-toolbar .ql-fill:hover {
+    fill: white !important; /* Change color on hover */
+  }
+  

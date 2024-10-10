@@ -25,7 +25,7 @@ function DiscoveryContainer(props){
 
     const [isGrid,setIsGrid] = useState(false)
     const isNotPhone = useMediaQuery({
-        query: '(min-width: 768px)'
+        query: '(min-width: 999px)'
       })
     useEffect(
         ()=>{
@@ -69,6 +69,7 @@ const navigateToLibrary = (library)=>{
     const libraryForums = ()=>{
         if(librariesInView!=null){
             return (<InfiniteScroll
+            className='min-h-24'
             dataLength={librariesInView.length}
             next={fetchLibraries}
             style={{display:"flex",flexDirections:"row"}}
@@ -115,7 +116,7 @@ const navigateToLibrary = (library)=>{
     const pageList = ()=>{
         if(pagesInView!=null){
             return(<div 
-            //id="grid page-list "
+            
             >
                <InfiniteScroll
             dataLength={pagesInView.length}
@@ -125,7 +126,7 @@ const navigateToLibrary = (library)=>{
             style={isGrid?{overflow:"unset"}:{display:"flex",flexDirections:"row"}}
             >
 
-               <div className={isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':""}>
+               <div className={isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"sm:px-2"}>
               {pagesInView.map(page=>{
                     const id = `${page.id}_${uuidv4()}`
                     return(<div id={id}>
@@ -190,13 +191,11 @@ const navigateToLibrary = (library)=>{
             <ErrorBoundary>
             <div 
             //id="discover" 
-            className=' mx-auto ' >
-            <div style={{paddingTop:"3em"}}>
-                <h1 >Discovery</h1>
-                </div>
-              <div className=' text-left' >
+            className=' mx-auto mt-4' >
+
+              <div className=' text-left ' >
                
-                <h3 className='text-white sm:ml-36 ml-8 sm:pl-4 font-extrabold text-2xl'>Libraries</h3>
+                <h3 className={`text-white ${isNotPhone?'ml-36  pl-4 ':'pl-4 ml-4'} font-extrabold text-2xl`}>Libraries</h3>
                 {libraryForums()}
                     
                 <div className='flex  flex-col-reverse lg:flex-row'>

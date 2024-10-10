@@ -14,6 +14,7 @@ import PropTypes from "prop-types"
 import LinkPreview from "../../components/LinkPreview";
 import PageSkeleton from "../../components/PageSkeleton";
 import { getStory } from "../../actions/StoryActions";
+import ReactGA from "react-ga4"
 export default function PageViewContainer({page}){
     PageViewContainer.propTypes = {
         page: PropTypes.object.isRequired

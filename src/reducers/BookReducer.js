@@ -12,13 +12,14 @@ import {
         deleteBook,
     
         } from "../actions/BookActions"
-        import { getPublicBooks,
+        import { getMyCollections, getPublicBooks,
                 saveRoleToCollection
         
             } from "../actions/CollectionActions"
 
 const initialState = {
     booksInView:[],
+    collections:[],
     loading:false,
     error:"",
     bookInView: null,
@@ -45,6 +46,11 @@ builder
 }).addCase(saveRoleToCollection.rejected,(state,{payload})=>{
     state.loading = false
     state.error = "Error Saving Role"
+}).addCase(getMyCollections.fulfilled,(state,{payload})=>{
+    state.collections = payload.collections
+    state.loading =false
+}).addCase(getMyCollections.pending,).addCase(getMyCollections.rejected,(state,{payload})=>{
+    state.loading = true
 }).addCase(saveRoleToCollection.fulfilled,(state,{payload})=>{
     state.role = payload.role
 }).addCase(fetchBook.pending,(state)=>{

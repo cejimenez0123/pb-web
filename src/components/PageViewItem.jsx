@@ -17,6 +17,7 @@ import "../styles/PageView.css"
 import LinkPreview from "./LinkPreview"
 import PropTypes from 'prop-types'
 import PageSkeleton from "./PageSkeleton"
+
 export default function PageViewItem({page}) {
     PageViewItem.propTypes={
         page: PropTypes.object.isRequired
@@ -91,7 +92,14 @@ switch(page.type){
         pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
     break;
 }
-const navigateToProfile = ()=>{    
+const navigateToProfile = ()=>{ 
+    ReactGA.event({
+        category: "Profile",
+        action: "Navigate to from Page View to Profile",
+        label: prof.username, 
+        value: prof.id,
+        nonInteraction: false
+      });   
     const params = { profile: prof}
 setProfileInView(params)
 navigate(`/profile/${prof.id}`)
@@ -115,13 +123,13 @@ let profile = (<div></div>)
         if(prof){
             profile=(
             <div>
-                <p onClick={navigateToProfile}>{prof.username}</p>
+                <p className="text-white" onClick={navigateToProfile}>{prof.username}</p>
             </div>)
         }
         return(
-        <div className='content-item'>
         
-            <div className='dashboard-header bg-dark text-white'>
+        <div className="">
+            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2 bg-dark text-white'>
                 <div className="titles ">
                 {page.title.length>0?<p>{page.title}</p>:<p>Untitled</p>}
                 </div>
@@ -130,13 +138,15 @@ let profile = (<div></div>)
             <div className="bg-dark pt-2">
                 {pageDataElement}
                 </div>
-            <div className='btn-row'>
+            <div className='bg-dark border-t'>
                 <button 
+                className="bg-dark"
                    disabled={!currentProfile} 
                 >
                     Yea
                 </button>
                 <button
+                className="bg-dark"
                    disabled={!currentProfile} 
                     onClick={()=>{setCommenting(!commenting)}}>
                 
@@ -149,7 +159,7 @@ let profile = (<div></div>)
             <a disabled={!currentProfile} 
   className='text-white'
   
-  onClick={()=>addToBook()}> 
+  onClick={()=>{}}> 
                             Add to Book
             </a></li>
             <li><a disabled={!currentProfile} 
