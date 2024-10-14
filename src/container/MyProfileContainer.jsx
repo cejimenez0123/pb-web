@@ -1,36 +1,26 @@
 import React,{ useEffect, useState }  from 'react';
 import { useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
-import { ExpandLess,ExpandMore, LiveHelp } from '@mui/icons-material';
-import theme from "../theme"
-import CreateIcon from '@mui/icons-material/Create';
-import ImageIcon from '@mui/icons-material/Image';
-import debounce from "../core/debounce"
-import { setEditingPage } from '../actions/PageActions';
 import {useDispatch,useSelector} from "react-redux"
-import { getMyStories } from '../actions/StoryActions';
+import { createStory, getMyStories } from '../actions/StoryActions';
 import { getMyCollections } from '../actions/CollectionActions';
-import LinkIcon from '@mui/icons-material/Link';
 import notifications from "../images/icons/notifications.svg"
 import settings from "../images/icons/settings.svg"
-import {  
-    Menu,
-    MenuItem,
-    Button,
-    List,
-    ListItemButton,
-} from '@mui/material'
 import { getCurrentProfile } from '../actions/UserActions';
 import PageIndexList from '../components/page/PageIndexList';
 import MediaQuery from 'react-responsive';
 import CollectionIndexList from '../components/collection/CollectionIndexList';
+import Paths from '../core/paths';
+import ReactGA from "react-ga4"
+import storyRepo from '../data/storyRepo';
+import checkResult from '../core/checkResult';
 const MediaType = {
     stories:"stories",
     books:"books",
     libraries:"libraries"
 }
 function MyProfileContainer(props){
-  
+    const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [books,setBooks]=useState([])
     const [libraries,setLibraries]=useState([])
@@ -39,7 +29,35 @@ function MyProfileContainer(props){
         />
     )
     const collections = useSelector(state=>state.books.collections)
+    const ClickWriteAStory = ()=>{
+        ReactGA.event({
+            category: "Page",
+            action: "Navigate To Editor",
+            label: "Write a Story", 
+            value: currentProfile.id,
+            nonInteraction: false
+          });
+          
+          dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
+          title:"Untitled",commentable:true
+        })).then(res=>checkResult(res,data=>{
+            navigate(Paths.editPage.createRoute(data.story.id))
+        },e=>{
 
+        }))
+            
+      
+        
+    }
+    const ClickCreateAColleciton = ()=>{
+        ReactGA.event({
+            category: "Colleciton",
+            action: "Navigate to Create Collection",
+            label: "Create A Colleciton", 
+            value: currentProfile.id,
+            nonInteraction: false
+          });
+    }
     const dispatch = useDispatch()
 
     useEffect(()=>{
@@ -86,11 +104,11 @@ function MyProfileContainer(props){
                             <p>{currentProfile.selfStatement}</p>
                             <div className='mt-4 pt-2'>
                             <MediaQuery minWidth={'800px'}>
-                            <button className='bg-green-600 text-white  text-xl text-bold'>
+                            <button onClick={ClickWriteAStory} className='bg-green-600 text-white  text-xl text-bold'>
                                 Write a Story
                             </button>
                            
-                            <button className='bg-green-600 md:ml-4 text-white text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-green-600 md:ml-4 text-white text-xl  text-bold'>
                                 Create Collection
                             </button>
                             </MediaQuery>
@@ -112,10 +130,10 @@ function MyProfileContainer(props){
                         <div className='text-left mt-6'>
                         <MediaQuery maxWidth={'800px'}>
                             <div className='ml-4'>
-                            <button className='bg-green-600 text-white  text-xl text-bold'>
+                            <button onClick={ClickWriteAStory} className='bg-green-600 text-white  text-xl text-bold'>
                                 Write a Story
                             </button>
-                            <button className='bg-green-600 ml-4 text-white text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-green-600 ml-4 text-white text-xl  text-bold'>
                                 Create Collection
                             </button>
                             </div>
@@ -124,7 +142,7 @@ function MyProfileContainer(props){
                             </div>
                             </div>
                             <div role="tablist" className="tabs bg-[#5656569a] w-128  shadow-md rounded-lg  mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  className="tab shadow-sm text-white text-xl" aria-label="Pages" />
+  <input type="radio" name="my_tabs_2" role="tab"  className="tab shadow-sm bg-dark text-white text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content w-128 bg-dark border-base-300  rounded-box p-6">
   <PageIndexList/>
   </div>
@@ -133,14 +151,14 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-white shadow-sm text-xl"
+    className="tab text-white bg-dark shadow-sm text-xl"
     aria-label="Books"
     defaultChecked />
   <div role="tabpanel" className="tab-content  max-w-128 bg-dark border-base-300 rounded-box p-6">
   <CollectionIndexList cols={books}/>
   </div>
 
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-white shadow-sm text-xl" aria-label="Libraries" />
+  <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-dark border-white shadow-sm text-xl" aria-label="Libraries" />
   <div role="tabpanel" className="tab-content  bg-dark border-base-300 rounded-box p-6">
     <CollectionIndexList cols={libraries}/>
   </div>

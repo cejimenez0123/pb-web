@@ -2,13 +2,12 @@ import axios from "axios"
 import Enviroment from "../core/Enviroment"
 
 class ProfileRepo {
-  
+    url = Enviroment.url+"/profile"
     async getMyProfiles(params){
         const {id}=params
         console.log(localStorage.getItem("token"))
-        let res = await axios.get(Enviroment.url+"/profile/user/"
+        let res = await axios.get(this.url+"/user/"
             +id+"/private",{ headers:{
-                'Access-Control-Allow-Origin': "*",
                 Authorization:"Bearer "+localStorage.getItem("token")
             }}
         )

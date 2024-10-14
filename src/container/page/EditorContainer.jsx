@@ -229,111 +229,31 @@ function EditorContainer({currentProfile}){
           }
         }
       const [anchorEl,setAnchorEl]=useState(null)
-      const addBtn = ()=>{
-        return editingPage?
-                <Dropdown>
-                  <IconButton
-                    onClick={(e)=>setAnchorEl(e.currentTarget)}
-                  >  <Add/>
-                  </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                >
-              <MenuItem onClick={()=>{
-                dispatch(setPagesToBeAdded({pageList:[ePage]}))
-                navigate("/book/new")
-              
-              }}>
-                Add to Book
-                </MenuItem>
-              <MenuItem onClick={()=>{
-                dispatch(setPagesToBeAdded({pageList:[ePage]}))
-                navigate(`/library/new`)
-              }
-              }> 
-              Add to Library
-          </MenuItem>
-      
-       
-  
-
-</Menu>
-</Dropdown> 
-            :<div></div>
-          }
-// const createForm = ()=>(<FormGroup  style={{marginBottom:"2em"}}
-//       className="create-form" >
-// <TextField 
-// onChange={(e)=>setTitle(e.target.value)}  
-// value={title} 
-// label="Title"/>
-// <FormControlLabel 
-// control={<Checkbox 
-// style={checkmarkStyle}
-// checked={!privacy} 
-// onChange={(e)=>setPrivacy(!e.target.checked)}
-// />} label={!privacy?"Public":"Draft"} />
-
-// <FormControlLabel 
-// control={<Checkbox style={checkmarkStyle}checked={commentable} onChange={(e)=>{
-// setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
 
 
-// <Button style={{backgroundColor:theme.palette.secondary.main,
-//             color:theme.palette.secondary.contrastText}}
-//     onClick={(e)=>onSavePress((page)=>{
 
-// history.replace(`/page/${ePage.id}/edit`)
-// })} className="">
-// Save
-// </Button>
-// <div className="button-row">
-// {addBtn()}
-// {editingPage?<IconButton onClick={()=>{
-// dispatch(setPageInView({page:editingPage}))
-// navigate(Paths.page.createRoute(editingPage.id))
-// }}><Visibility/></IconButton>:(<div></div>)}
+        const handleClickAddToCollection=()=>{
 
-// </div>
-
-// <div id="post-button-row">
-// <Button
-// onClick={()=>debounce(onSavePress((page)=>{
-// setPrivacy(false)
-// dispatch(setPageInView({page:page}))
-// navigate(Paths.page.createRoute(page.id))
-// }),10)}
-// style={{backgroundColor:theme.palette.secondary.main,
-//     color:theme.palette.primary.contrastText,
-//     width: "100%",
-//     marginTop: "2em",
-//     padding:"2em",
-    
-//   }
-// }
-// >Post</Button>
-// </div>
-// {deleteDiv}
-// </FormGroup>)
-//       let deleteDiv = (<div>
-//         </div>) 
-//       if(editingPage){ 
-//        deleteDiv =(<Button variant="outlined"
-//        onClick={handleClickOpen}
-//         style={{
-//           marginTop: "4em",
-//           width: "10em",
-//           color: theme.palette.error.contrastText,
-//           backgroundColor:theme.palette.error.dark}}>
-//           Delete
-//       </Button>)
-//       }
-   
+        }
+        const handlePostPublicly=()=>{
+          
+        }
         return(
           <div > 
-               
+                <div className="sm:w-[60rem] rounded-lg md:m-4 mx-auto">
+                  <div className="bg-dark  flex flex-row  text-left">
+                    <div style={{borderRight:"1px solid white" }}
+                    className=" flex flex-row ">
+                    <input type="text " className="input py-2 text-3xl mt-2 bg-dark text-white font-bold" placeholder="Untitled"/>
+                    <p className=" mx-2 mt-2 text-slate-400">Draft</p>
+                    </div>
+                    <div className="justify-between w-full">
+                      <button className="btn mx-4 my-2 text-white border border-white">Add to Collection</button>
+                      <button className="btn  text-white border border-white">Post Public</button>
+                    </div>
+                  </div>
                 {contentDiv()}
+                </div>
               
 
              

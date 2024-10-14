@@ -21,10 +21,10 @@ import {
           updatePage,
           setEditingPage,
           getPublicStories,
-          createStory
+       
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
-import { getMyStories, getStory } from "../actions/StoryActions"
+import { getMyStories, getStory,createStory} from "../actions/StoryActions"
 
 const initialState = {pagesInView:[],
                       editingPage:null,
@@ -98,6 +98,7 @@ const pageSlice = createSlice({
         let {story}=payload
         state.loading = false
         state.pageInView = story
+        state.editorHtmlContent = story.data
       })
 
       .addCase(clearEditingPage,(state)=>{

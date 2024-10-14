@@ -51,45 +51,23 @@ function LogInContainer(props) {
     const navigate = useNavigate()
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
 
-    // const handleNewUser = (event) => {
-    //     event.preventDefault();
-    //    if(suEmail.length>0 && suPassword.length > 6 && suUsername.length>2){
-    //     const params ={email:suEmail,
-    //                     password:suPassword,
-    //                     username:suUsername,
-    //                     profilePicture:profilePicture,
-    //                     selfStatement:selfStatement,
-    //                     privacy:privacy}
-                      
-    //     dispatch(signUp(params)).then((result) => {
-    //         checkResult(result,payload=>{
-    //             localStorage.setItem("loggedIn",true)
-    //             navigate("/profile/home")
-    //         },()=>{
+
+
+    // const handleProfilePicture =(e)=>{
+    //     const files = Array.from(e.target.files)
+    //     const params = { file: files[0]
+    //     }
+    //     dispatch(uploadProfilePicture(params)).then((result) => {
+    //         checkResult(result,(payload)=>{
+    //             const {url}= payload
+    //             setProfilePicture(url)
+    //         },(err)=>{
+    //             window.alert(err.message)
     //             setSignUpError(true)
     //         })
-
-    //     });;
-    // }else{
-    //     setSignUpError(true)
-    // }
-    // };
-
-    const handleProfilePicture =(e)=>{
-        const files = Array.from(e.target.files)
-        const params = { file: files[0]
-        }
-        dispatch(uploadProfilePicture(params)).then((result) => {
-            checkResult(result,(payload)=>{
-                const {url}= payload
-                setProfilePicture(url)
-            },(err)=>{
-                window.alert(err.message)
-                setSignUpError(true)
-            })
     
-        })
-    }
+    //     })
+    // }
 
     const handleLogIn = (event)=>{
         event.preventDefault()
@@ -124,146 +102,8 @@ const inputStyle = {
     marginBottom:"1em",
     marginLeft:"1em"
 }
-const outerInputStyle={width:inputStyle.width,
-    marginTop:inputStyle.marginTop,
-    marginLeft:inputStyle.marginLeft}
 
-const innerInputStyle={backgroundColor: inputStyle.backgroundColor}
-const btnStyle ={
-    width: '95%',
-    padding: '1em',
-    marginTop:"1em",
-    marginBottom:"1em",
-    marginLeft:"1em",
-    backgroundColor:theme.palette.secondary.main
-}
-function SignInCard(props) {
-    const [showPassword, setShowPassword] = useState(false);
-    const handleTogglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-      };
-    let img = (<div></div>)
-    if(props.profilePic){
-        img = (<img style={{marginLeft:"1em",width:"50%"}}
-                src={props.profilePic} alt=""/>)
-    }
-    return (<div className='sign-card'>
 
-        <div id="sign-in" >
-        <h1 style={{marginLeft:"0.4em"}}> Sign Up</h1>
-                <FormGroup >
-                    <TextField
-                        error={props.error}
-                        label='Username'
-                        value={props.username}
-                        onChange={(e) =>{   
-                            props.setError(false)
-                            let value=e.target.value.trim()
-                            if(value.length <=30){
-                                props.setUsername(value)
-                            }
-                         
-                        }}
-                        style={outerInputStyle}
-                    />
-                    <TextField 
-                        error={props.error}
-                        label="E-mail" 
-                        value={props.email} 
-                        onChange={(e) =>{
-                            props.setError(false)
-                           props.setEmail(e.target.value.trim())
-                        }}
-                        style={outerInputStyle}
-                        InputProps={{
-                            style: innerInputStyle
-                            }
-                        }
-                    />
-                    <FormControlLabel
-                        label="Private"
-                        style={{marginLeft:inputStyle.marginLeft}}
-                        control={
-                            <Checkbox 
-                                onChange={
-                                    (e)=>{
-                                        props.setError(false)
-                                        props.setPrivacy(e.target.value)
-                                    }
-                                }
-                                    />}
-                    />
-                    
-                    <div style={{marginLeft:inputStyle.marginLeft}}id="self-statement"> 
-                        <h6>Self Statement</h6>
-                        <TextareaAutosize 
-                            name="selfStatement" 
-                            value={props.selfStatement} 
-                            onChange={(e)=>{
-                            props.setError(false)
-                            let value = e.target.value
-                            if(value.length <= 240){
-                            props.setSelfStatement(value)}}}
-                            minRows={3}
-                            style={
-                            {   marginBottom:"2em",
-                                width: "99%",
-                                padding:"1em",
-                                backgroundColor:theme.palette.primary.contrastText,
-                                color:theme.palette.primary.dark
-                            }
-                        }
-                      
-                        />
-                 </div>
-                    <TextField 
-                                error={props.error}
-                                value={props.password}
-                                label="Password"
-                                onChange={(e) => {
-                                props.setError(false)
-                                props.setPassword(e.target.value.trim())}}
-                          
-                            type={showPassword ? "text" : "password"}
-                            style={outerInputStyle} 
-                            InputProps={{
-                                style:innerInputStyle,
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={handleTogglePasswordVisibility}>
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                        ),
-                      }}
-                      />
-                    <div className='file'>
-                                <Button 
-                                style={btnStyle}
-                                
-                                component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-                   
-                    Upload Picture
-                    <VisuallyHiddenInput type="file"  name ='profile_picture'
-                        onInput={(e)=>
-                        props.setProfilePicture(e)}/>
-
-                    </Button>
-                    {img}
-                    </div>
-           
-            <Button 
-                    onClick={
-                        props.handleSubmit
-                       }
-                    variant="contained" 
-                    style={btnStyle}
-                    type="submit">Sign Up</Button>
-     
-        </FormGroup>
-        </div>
-    </div>)
-}
 
 function LogInCard(props){
     const navigate = useNavigate()
@@ -277,14 +117,14 @@ function LogInCard(props){
         navigate("/apply")
     }
     
-    return(<div className='md:max-w-96 bg-dark lg:mt-36 sm:mt-12 rounded-lg form-control  border-dark border mx-auto p-4'>
+    return(<div className='md:max-w-[42rem] bg-dark lg:mt-36 sm:mt-12 rounded-lg form-control  border-dark border mx-auto p-4'>
         <div  id="log-in">
         <h1 className='text-green-100 poppins pb-4'> Log In</h1>
         <div >
             <div className='pb-4 '>
         <label className="input poppins text-green-100 bg-dark border border-slate-100 flex items-center gap-2">
   Email
-  <input type="text" className="grow  text-green-100" 
+  <input type="text" className="grow  overflow-hidden text-green-100" 
          value={props.email} 
          onChange={(e) => props.setEmail(e.target.value)}
         placeholder='example@x.com' />

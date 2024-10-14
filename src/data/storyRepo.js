@@ -35,15 +35,15 @@ class StoryRepo{
         let res = await axios.get(this.url+"/profile"+profileId)
         return res.data
     }
-    async postStory(params){
-        const { 
-            profileId,
-            data,
-            privacy,
-            approvalScore,
-            type,
-            title,
-            commentable}=params
+    async postStory({ 
+        profileId,
+        data,
+        privacy,
+        approvalScore,
+        type,
+        title,
+        commentable}){
+     
         const res = await axios.post(this.url,{
             title,data,isPrivate:privacy,authorId:profileId,commentable:commentable,
             type

@@ -27,5 +27,17 @@ const getMyStories= createAsyncThunk(
   
     return {error:`Page Query Where Error: ${e.message}`}
   }})
+const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)=>{
+  try{
 
-export {getStory,getMyStories}
+      let data = await storyRepo.postStory(params)
+      return {
+        story:data.story
+      }
+  }catch(e){
+    return {
+      error: "Create Story"+e
+    }
+  }
+})
+export {getStory,getMyStories,createStory}
