@@ -9,10 +9,10 @@ import {  setHtmlContent,
           saveRolesForPage, 
           fetchEditingPage,
           deletePage, 
-          setPagesToBeAdded, 
           setEditingPage,
-          createStory ,
+          
           setPageInView } from "../../actions/PageActions"
+import {createStory} from "../../actions/StoryActions"
 import React,{ useEffect, useState } from "react"
 import history from "../../history"
 import {  useParams,
@@ -240,8 +240,8 @@ function EditorContainer({currentProfile}){
         }
         return(
           <div > 
-                <div className="sm:w-[60rem] rounded-lg md:m-4 mx-auto">
-                  <div className="bg-dark  flex flex-row  text-left">
+                <div className="sm:w-[80vw] rounded-lg sm:my-4 mx-auto ">
+                  <div className="bg-dark sm:rounded-t-lg border border-white  flex flex-row  text-left">
                     <div style={{borderRight:"1px solid white" }}
                     className=" flex flex-row ">
                     <input type="text " className="input py-2 text-3xl mt-2 bg-dark text-white font-bold" placeholder="Untitled"/>

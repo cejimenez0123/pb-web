@@ -30,7 +30,7 @@ const initialState = {
     signedIn: false,
     currentProfile: null,
     homeCollection: null,
-    loading:false,
+    loading:true,
     userApprovals:[],
     followedBooks: [],
     followedProfiles:[],
@@ -70,12 +70,11 @@ const userSlice = createSlice({
     }).addCase(getCurrentProfile.rejected,(state,{payload})=>{   
         state.loading = false
         state.signedIn = false
-        // state.error = payload.error
+        state.error = payload.error
     }).addCase(getCurrentProfile.pending,(state)=>{
         state.loading = true
     }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
        state.currentProfile = payload.profile
-       localStorage.setItem("loggedIn",true)
        state.loading = false
     }).addCase(fetchAllProfiles.fulfilled,(state,{ payload })=>{
         state.profilesInView = payload.profileList

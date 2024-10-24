@@ -1,7 +1,7 @@
-import React ,{useState} from 'react'
+import React ,{useEffect, useState} from 'react'
 import "../../App.css"
 import { logIn,signUp,uploadProfilePicture} from '../../actions/UserActions';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import {InputAdornment,
         IconButton, 
@@ -23,20 +23,13 @@ import { auth } from '../../core/di';
 import checkResult from '../../core/checkResult';
 import ReactGA from "react-ga4"
 import Paths from '../../core/paths';
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-  });
+import { useLocation } from 'react-router-dom';
 
 function LogInContainer(props) {
+    const location = useLocation()
     const dispatch = useDispatch()
+  
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const [loading,setLoading]=useState(true)
     const [suUsername, setSuUsername] = useState('');
     const [suEmail, setSuEmail] = useState('');
@@ -53,22 +46,6 @@ function LogInContainer(props) {
 
 
 
-    // const handleProfilePicture =(e)=>{
-    //     const files = Array.from(e.target.files)
-    //     const params = { file: files[0]
-    //     }
-    //     dispatch(uploadProfilePicture(params)).then((result) => {
-    //         checkResult(result,(payload)=>{
-    //             const {url}= payload
-    //             setProfilePicture(url)
-    //         },(err)=>{
-    //             window.alert(err.message)
-    //             setSignUpError(true)
-    //         })
-    
-    //     })
-    // }
-
     const handleLogIn = (event)=>{
         event.preventDefault()
         if(liEmail.length>3 && liPassword.length>6){
@@ -79,6 +56,11 @@ function LogInContainer(props) {
             setLogInError(true)
         }
     }
+    useEffect(()=>{
+        if(currentProfile){
+            navigate(-1)
+        }
+    },[location,currentProfile])
   
     return (
         <div id="">

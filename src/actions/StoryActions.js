@@ -40,4 +40,16 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
     }
   }
 })
-export {getStory,getMyStories,createStory}
+const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=>{
+  try{
+  let data = await storyRepo.updateStory(params)
+  return {
+    story: data.story
+  }
+}catch(e){
+  return{
+    error: "Update Story"+e
+  }
+}
+})
+export {getStory,getMyStories,createStory,updateStory}

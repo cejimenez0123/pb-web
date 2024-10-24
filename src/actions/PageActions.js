@@ -97,16 +97,7 @@ const getProfilePages= createAsyncThunk(
 
   return {error:`Page Query Where Error: ${e.message}`}
 }})
-const createStory = createAsyncThunk("pages/createStory", async function(params,thunkApi){
-  try{
-    console.log(params)
-   let data = await storyRepo.postStory(params)
 
-    return {story:data.story}
-  }catch(e){
-    return{error:e}
-  }
-})
 
 const fetchPage=createAsyncThunk("pages/fetchPage", async function(params,thunkApi){
   let id = params["id"]
@@ -132,8 +123,9 @@ const fetchPage=createAsyncThunk("pages/fetchPage", async function(params,thunkA
 const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async function(params,thunkApi){
   let id = params["id"]
   try {
-    const docSnap = await getDoc(doc(db, "page", id))
-    const page = unpackPageDoc(docSnap)
+    storyRepo.get
+    // const docSnap = await getDoc(doc(db, "page", id))
+    // const page = unpackPageDoc(docSnap)
     return {
       page
     }
@@ -691,6 +683,6 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           deletePageApproval,
           unpackPageDoc,
           getPublicStories,
-          createStory
+         
         } 
         

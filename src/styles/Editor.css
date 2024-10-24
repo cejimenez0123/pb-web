@@ -128,8 +128,16 @@
             margin-bottom: 2em;
         
         }
+        .ql-editor{
+            
+        }
     }
-
+    @media (min-width: 600px){
+        .ql-editor{min-height: 60vh;
+        border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;}
+    } 
+    
     /* Change the stroke color of Quill icons */
 .ql-stroke {
     stroke: #ffffff !important; /* Change this to your preferred color */

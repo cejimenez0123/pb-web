@@ -1,5 +1,6 @@
 import './App.css';
 import { connect} from "react-redux"
+import { useState } from 'react';
 import {Route, Routes} from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions';
 import DashboardContainer from './container/DashboardContainer';
@@ -34,7 +35,7 @@ import {  getCurrentProfile,
           getPageApprovals} from './actions/UserActions'
 import history from './history';
 import PrivateRoute from './PrivateRoute';
-import { useEffect} from 'react';
+import { createContext, useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
 import EditBookContainer from './container/book/EditBookContainer';
 import LibraryViewContainer from './container/library/LibraryViewContainer';
@@ -42,12 +43,11 @@ import useAuth from './core/useAuth';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
 import {Helmet} from "react-helmet";
-import useScrollTracking from './core/useScrollTracking';
-
+import  Context from "./context"
 function App(props) {
   const authState = useAuth()
-  
 
+  const [formerPage, setFormerPage] = useState(null);
   useEffect(()=>{
     props.fetchAllProfiles()
   },[]
@@ -84,6 +84,7 @@ function App(props) {
    
   return (
     <div >
+      <Context.Provider value={[formerPage,setFormerPage]}>
       <div className='background-blur'>
       <div/>
       <div className='App'>
@@ -141,13 +142,10 @@ function App(props) {
             />
           <Route  path="/login"  
                   element={ 
-          <LoggedRoute 
         
-            loggedOut={!props.currentProfile}
-          >
             <LogInContainer logIn={props.logIn}
             />
-          </LoggedRoute>}
+       }
      />
       <Route path={Paths.about()} element={
    <AboutContainer/>
@@ -263,6 +261,7 @@ function App(props) {
     </div>
     </div>
     </div>
+    </Context.Provider>
     </div>
   );
 }

@@ -23,8 +23,17 @@ class StoryRepo{
         }})
         return res.data
     }
+    async getStoryProtected({id}){
+        let res = await axios.get(this.url+"/story/"+id+"/protected")
+        return res.data
+    }
+    async getStoryPublic({id}){
+        let res = await axios.get(this.url+"/story/"+id+"/public"
+        )
+        return res.data
+    }
     async getMyStories({profileId}){
-        let res = await axios.get(this.url+"/profile/"+profileId+"/private",{
+        let res = await axios.get(this.url+"/"+profileId+"/private",{
             headers:{
                 Authorization:"Bearer "+this.token
             }

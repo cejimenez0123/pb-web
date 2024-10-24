@@ -96,6 +96,7 @@ const pageSlice = createSlice({
       })
       .addCase(createStory.fulfilled,(state,{payload})=>{
         let {story}=payload
+  
         state.loading = false
         state.pageInView = story
         state.editorHtmlContent = story.data
