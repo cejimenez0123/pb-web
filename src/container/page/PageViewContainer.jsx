@@ -1,13 +1,12 @@
 import { PageType } from "../../core/constants";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPage} from "../../actions/PageActions"
 import { useEffect, useState ,useLayoutEffect} from "react";
 import "../../styles/PageView.css"
 import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchCommentsOfPage } from "../../actions/PageActions";
 import CommentItem from "../../components/CommentItem";
-import PageViewItem from "../../components/PageViewItem";
+import PageViewItem from "../../components/page/PageViewItem";
 import checkResult from "../../core/checkResult";
 import {Helmet} from "react-helmet"
 import PropTypes from "prop-types"
@@ -15,10 +14,12 @@ import LinkPreview from "../../components/LinkPreview";
 import PageSkeleton from "../../components/PageSkeleton";
 import { getStory } from "../../actions/StoryActions";
 import ReactGA from "react-ga4"
+
 export default function PageViewContainer({page}){
     PageViewContainer.propTypes = {
         page: PropTypes.object.isRequired
     }
+ 
     const pathParams = useParams()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -50,6 +51,7 @@ export default function PageViewContainer({page}){
     useEffect(()=>{
         setComments(commentsInView)
     },[commentsInView])
+   
     const fetchComments = (pageItem)=>{
         if(pageItem!=null){
             const params = {

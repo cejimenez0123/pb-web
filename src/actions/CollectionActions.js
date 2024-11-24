@@ -50,13 +50,30 @@ const isProfileMember = createAsyncThunk("collection/isProfileMember",async (
         data: res.data
       }
 })
+const createColection = createAsyncThunk("collection/createCollection",async (params,thunkApi)=>{
+
+    try{
+        let data = await collectionRepo.createCollection(params)
+        if(!data.collection.isPrivate){
+          client.initIndex("collection").saveObject(
+            {objectID:data.id,title:params.title,type:"collection"}).wait()
+        }   
+        return {collection: data.collection}
+
+      }catch(error){
+      return {
+        error: new Error(`Error: Create Library: ${error.message}`)
+      }
+    }
+})
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
     params,thunkApi
 )=>{
 
-     let res = await collectionRepo.getMyCollections({id:params["profile"].id})
+     let data = await collectionRepo.getMyCollections()
+     console.log(data)
       return {
-        collections: res.collections
+        collections: data.collections
       }
 })
 const getPublicProfileCollections = createAsyncThunk("collection/getMyCollections",async (
@@ -76,5 +93,6 @@ export {
     saveRoleToCollection,
     isProfileMember,
     getMyCollections,
+    createColection,
     getPublicProfileCollections
 }

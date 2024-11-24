@@ -3,20 +3,15 @@ import "../../App.css"
 import { logIn,signUp,uploadProfilePicture} from '../../actions/UserActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
-import {InputAdornment,
-        IconButton, 
+import {
         TextField ,
-        Checkbox, 
-        FormControlLabel,
+ 
         Button, 
         FormGroup, 
         Dialog,
         Typography} from "@mui/material"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import { VisibilityOff,Visibility } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-import { TextareaAutosize } from '@mui/base/TextareaAutosize'
-import {sendPasswordResetEmail } from "firebase/auth";
+
 import theme from '../../theme';
 import { Clear } from '@mui/icons-material';
 import { auth } from '../../core/di';

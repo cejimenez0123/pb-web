@@ -24,7 +24,7 @@ import {
        
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
-import { getMyStories, getStory,createStory} from "../actions/StoryActions"
+import { getMyStories, getStory,createStory, updateStory} from "../actions/StoryActions"
 
 const initialState = {pagesInView:[],
                       editingPage:null,
@@ -39,7 +39,15 @@ const pageSlice = createSlice({
     name: 'pages',
     initialState,
     extraReducers(builder) {
-        builder
+        builder.addCase(updateStory.rejected,(state,{payload})=>{
+            state.loading = false
+            state.error = payload.message
+        }).addCase(updateStory.fulfilled,(state,{payload})=>{
+          state.pageInView = payload.story
+          state.loading = false
+        }).addCase(updateStory.pending,(state)=>{
+          state.loading=true
+        })
         .addCase(getPublicStories.pending,(state)=>{
           state.loading = true
         }).addCase(getStory.rejected,(state)=>{

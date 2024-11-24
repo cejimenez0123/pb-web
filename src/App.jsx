@@ -44,6 +44,7 @@ import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
 import {Helmet} from "react-helmet";
 import  Context from "./context"
+import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';
 function App(props) {
   const authState = useAuth()
 
@@ -85,7 +86,7 @@ function App(props) {
   return (
     <div >
       <Context.Provider value={[formerPage,setFormerPage]}>
-      <div className='background-blur'>
+      <div className='background-blur bg-gradient-to-br from-emerald-800 to-emerald-600'>
       <div/>
       <div className='App'>
        <Helmet>
@@ -147,6 +148,8 @@ function App(props) {
             />
        }
      />
+     <Route path={Paths.addStoryToCollection.route}
+     element={<AddStoryToCollectionContainer/>}/>
       <Route path={Paths.about()} element={
    <AboutContainer/>
       }/>

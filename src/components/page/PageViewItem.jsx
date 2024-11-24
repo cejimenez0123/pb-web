@@ -1,22 +1,22 @@
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import React,{useState} from "react"
-import { updateLibraryContent } from "../actions/LibraryActions"
+import { updateLibraryContent } from "../../actions/LibraryActions"
 import {Button } from "@mui/material"
-import { PageType } from "../core/constants"
-import { setProfileInView } from "../actions/UserActions"
+import { PageType } from "../../core/constants"
+import { setProfileInView } from "../../actions/UserActions"
 import ReactGA from 'react-ga4'
 import {IconButton} from "@mui/joy"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import {setPagesToBeAdded, setEditingPage} from "../actions/PageActions"
-import CommentInput from "./CommentInput"
-import checkResult from "../core/checkResult"
-import Paths from "../core/paths"
-import "../styles/PageView.css"
-import LinkPreview from "./LinkPreview"
+import {setPagesToBeAdded, setEditingPage} from "../../actions/PageActions"
+import CommentInput from "../CommentInput"
+import checkResult from "../../core/checkResult"
+import Paths from "../../core/paths"
+import "../../styles/PageView.css"
+import LinkPreview from "../LinkPreview"
 import PropTypes from 'prop-types'
-import PageSkeleton from "./PageSkeleton"
+import PageSkeleton from "../PageSkeleton"
 
 export default function PageViewItem({page}) {
     PageViewItem.propTypes={
@@ -34,11 +34,11 @@ export default function PageViewItem({page}) {
             return(<CommentInput page={page} />)
         }
     }
-let pageDataElement = (<div></div>)
-const [anchorEl,setAnchorEl]= useState(null)
+    let pageDataElement = (<div ></div>)
+    const [anchorEl,setAnchorEl]= useState(null)
 
-const handleToggle = (e) => {
- setAnchorEl(prevState=>{
+    const handleToggle = (e) => {
+    setAnchorEl(prevState=>{
     if(prevState==null){
         return e.currentTarget
     }else{
@@ -135,7 +135,7 @@ let profile = (<div></div>)
                 </div>
                 {profile}
             </div>
-            <div className="bg-dark pt-2">
+            <div className="bg-dark pt-2 h-48">
                 {pageDataElement}
                 </div>
             <div className='bg-dark border-t'>
@@ -172,6 +172,14 @@ let profile = (<div></div>)
             >
                 Add to Library
                         </a></li>
+             {currentProfile.id == page.authorId? <li> <a
+                        className='text-white'
+                       onClick={()=> 
+                        navigate(Paths.editPage.createRoute(page.id))
+                       }
+                    >
+                         Edit
+                        </a></li>:null}           
                        <li> <a
                         className='text-white'
                        onClick={()=>copyShareLink()}

@@ -32,7 +32,9 @@ import Paths from '../core/paths'
 import { setEditingPage } from '../actions/PageActions'
 import { searchDialogToggle } from '../actions/UserActions'
 import SearchDialog from '../components/SearchDialog'
+import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
+import ReactGA from 'react-ga4'
 const PageName = {
   home: "Home",
   about:"About",
@@ -133,11 +135,30 @@ function NavbarContainer(props){
         setAnchorElPage(e.currentTarget);
       }
     }
-  
+    const ClickWriteAStory = ()=>{
+      ReactGA.event({
+          category: "Page",
+          action: "Navigate To Editor",
+          label: "Write a Story", 
+          value: currentProfile.id,
+          nonInteraction: false
+        });
+        
+        dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
+        title:"Untitled",commentable:true
+      })).then(res=>checkResult(res,data=>{
+          navigate(Paths.editPage.createRoute(data.story.id))
+      },e=>{
+
+      }))
+          
+    
+      
+  }
     return (
       <div>
         <AppBar position="static"
-                style={{backgroundColor:theme.palette.primary.dark}}>
+               className='bg-transparent'>
             <Container >
                 <Toolbar disableGutters={true}>
                     <Typography
@@ -222,8 +243,9 @@ function NavbarContainer(props){
                           <List style={{display:anchorElPageSmall?"":"none"}}>
                             <ListItemButton key="page" 
                               onClick={(e)=>{
-                                dispatch(setEditingPage({page:null}))
-                                navigate("/page/text")}}
+                                ClickWriteAStory()
+                              }
+                              }
                                 sx={{ pl: 6 }}
                             >
                               <CreateIcon/>
@@ -364,7 +386,7 @@ function NavbarContainer(props){
                       sx={{ pl: 4}}
                       onClick={()=>{
                         handleClose()
-                        navigate("/page/text")
+                        ClickWriteAStory()
                         }}>
                       <CreateIcon/>
                     </ListItemButton>

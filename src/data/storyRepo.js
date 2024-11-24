@@ -24,16 +24,20 @@ class StoryRepo{
         return res.data
     }
     async getStoryProtected({id}){
-        let res = await axios.get(this.url+"/story/"+id+"/protected")
+        let res = await axios.get(this.url+"/"+id+"/protected",{
+            headers:{
+                Authorization:"Bearer "+this.token
+            }
+        })
+        console.log(res)
         return res.data
     }
     async getStoryPublic({id}){
-        let res = await axios.get(this.url+"/story/"+id+"/public"
-        )
+        let res = await axios.get(this.url+"/"+id+"/public")
         return res.data
     }
-    async getMyStories({profileId}){
-        let res = await axios.get(this.url+"/"+profileId+"/private",{
+    async getMyStories(props){
+        let res = await axios.get(this.url+"/profile/private",{
             headers:{
                 Authorization:"Bearer "+this.token
             }
@@ -69,6 +73,7 @@ class StoryRepo{
             approvalScore,
             title,
             commentable,
+            type
            }=params
        const res = await axios.put(this.url+"/"+page.id,{
             data: data,
@@ -76,11 +81,11 @@ class StoryRepo{
             approvalScore:approvalScore,
             title:title,
             commentable:commentable,
-            approvalScore: page.approvalScore
+            type
          },{headers:{
             Authorization: "Bearer "+this.token
         }})
-
+console.log("res",res)
        
          return res.data
     }

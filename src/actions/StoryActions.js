@@ -5,14 +5,15 @@ import storyRepo from "../data/storyRepo";
 
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
     
-    let res = await axios(Enviroment.url+"/story/"+params.id,{
-        headers:{
-            'Access-Control-Allow-Origin': "*"
-        }
-    })
-    return {
-        story: res.data.story
+    let token = localStorage.getItem("token")
+    if(token!=false){
+     let data = await storyRepo.getStoryProtected({id:params.id})
+     return {story:data.story}
+    }else{
+      let data = await storyRepo.getStoryPublic({id:params.id})
+      return {story:data.story}
     }
+
 })
 const getMyStories= createAsyncThunk(
     'pages/getMyStories',

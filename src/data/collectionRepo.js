@@ -16,12 +16,13 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(this.url+"/public/library",{headers})
         return res.data
     }
-    async getMyCollections({id}){
-        let res = await axios.get(this.url+"/profile/"+id+"/private",{
+    async getMyCollections(){
+        let res = await axios.get(this.url+"/profile/private",{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem("token")
             }
         })
+        console.log("res",res)
         return res.data
     }
     async getPublicProfilesCollections({id}){
