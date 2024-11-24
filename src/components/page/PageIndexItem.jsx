@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
+import { setHtmlContent, setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
 import { PageType } from "../../core/constants";
 import {useNavigate} from 'react-router-dom'
 import addBox from "../../images/icons/add_box.svg"
@@ -24,7 +24,8 @@ function PageIndexItem({page,onDelete}) {
         const params = {
             page: page
         }
-        setPageInView(params)
+        dispatch(setHtmlContent(page.data))
+        dispatch(setPageInView(params))
         navigate(`/page/${page.id}`)
         
     }

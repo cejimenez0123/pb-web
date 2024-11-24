@@ -12,7 +12,6 @@ import MediaQuery from 'react-responsive';
 import CollectionIndexList from '../components/collection/CollectionIndexList';
 import Paths from '../core/paths';
 import ReactGA from "react-ga4"
-import storyRepo from '../data/storyRepo';
 import checkResult from '../core/checkResult';
 const MediaType = {
     stories:"stories",
@@ -92,7 +91,7 @@ function MyProfileContainer(props){
     
             return(
             <div className=''>
-                    <div className='bg-dark w-full shadow-md m-4 pb-4 rounded-lg'>
+                    <div className='border border-white w-full border-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
                   
                         <div>
                             <div className='flex-row flex w-full w-[100%] pr-0 pt-4'>
@@ -114,11 +113,11 @@ function MyProfileContainer(props){
                             </MediaQuery>
                             </div> 
                             </div>
-                            <div className='w-full text-right'>
-                            <button className='bg-dark'>
+                            <div className='w-full text-right flex flex-row h-12'>
+                            <button className='border border-white  bg-transparent'>
                             <img src={settings}/>
                         </button>
-                        <button className='bg-dark'>
+                        <button className='border border-white bg-transparent'>
                             <img 
                             src={notifications}/>
                         </button>
@@ -141,9 +140,9 @@ function MyProfileContainer(props){
                             </div> 
                             </div>
                             </div>
-                            <div role="tablist" className="tabs bg-[#5656569a] w-128  shadow-md rounded-lg  mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  className="tab shadow-sm bg-dark text-white text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content w-128 bg-dark border-base-300  rounded-box p-6">
+                            <div role="tablist" className="tabs mt-8 sm:w-128  shadow-md rounded-lg  sm:mx-6 tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  className="tab shadow-sm border-white border bg-transparent text-white text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content sm:w-128 bg-dark border-base-300  rounded-box p-6">
   <PageIndexList/>
   </div>
 
@@ -151,14 +150,14 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-white bg-dark shadow-sm text-xl"
+    className="tab text-white bg-transparent border border-white shadow-sm text-xl"
     aria-label="Books"
     defaultChecked />
-  <div role="tabpanel" className="tab-content  max-w-128 bg-dark border-base-300 rounded-box p-6">
+  <div role="tabpanel" className="tab-content bg-transparent border border-white sm:max-w-128  border-base-300 rounded-box p-6">
   <CollectionIndexList cols={books}/>
   </div>
 
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-dark border-white shadow-sm text-xl" aria-label="Libraries" />
+  <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-transparent border border-white   shadow-sm text-xl" aria-label="Libraries" />
   <div role="tabpanel" className="tab-content  bg-dark border-base-300 rounded-box p-6">
     <CollectionIndexList cols={libraries}/>
   </div>
