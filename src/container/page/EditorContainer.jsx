@@ -3,10 +3,8 @@ import "../../styles/Editor.css"
 import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
 import {  setHtmlContent,
-        
-          updatePage,
-          saveRolesForPage, 
-          fetchEditingPage,
+      
+       
           deletePage, 
           setEditingPage,
           setPageInView} from "../../actions/PageActions"
@@ -39,30 +37,21 @@ function EditorContainer({currentProfile}){
         const pageInView = useSelector(state=>state.pages.pageInView)
         const pathParams = useParams()
         const dispatch = useDispatch()
-        const [title,setTitle] = useState(pageInView.title)
+        
+        const [title,setTitle] = useState(pageInView?pageInView.title:"")
         const navigate = useNavigate()
         const [isSaved,setIsSaved]=useState(true)
-        const [privacy,setPrivacy] = useState(pageInView.isPrivate)
-        const [commentable,setCommentable] = useState(pageInView.commentable)
-        const [ePage,setEPage]=useState(null)
+  
+        const [privacy,setPrivacy] = useState(pageInView?pageInView.isPrivate:true)
+
+        const [commentable,setCommentable] = useState(pageInView?pageInView.commentable:true)
+
         const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         const {id }= pathParams
       
-        useEffect(()=>{
-   
-                const parm = {id:id}
-                dispatch(fetchEditingPage(parm)).then(result=>checkResult(result,payload=>{
-                  const {page} = payload
-                  setPageInfo(page)
-                },err=>{
-
-                }))
-              
-          
-        },[])
+  
         
     const setPageInfo =(page)=>{
-      setEPage(page)
       dispatch(setEditingPage({page}))
       setTitle(page.title)
       setPrivacy(page.privacy)
@@ -93,8 +82,8 @@ function EditorContainer({currentProfile}){
       };
       const handleDelete =()=>{
           handleClose()
-          if(ePage){
-          const params = {page:ePage}
+          if(pageInView){
+          const params = {page:pageInView}
           dispatch(deletePage(params)).then(()=>{
             navigate("/profile/home")
           })
@@ -107,16 +96,16 @@ function EditorContainer({currentProfile}){
     
       const contentDiv = ()=>{
         if(currentProfile){
-          if(ePage){
-              if(ePage.type===PageType.text){
+          if(pageInView){
+              if(pageInView.type===PageType.text){
                   return (<div id=""><RichEditor  initialContent={htmlContent}/></div>)
-              }else if(ePage.type===PageType.picture){
+              }else if(pageInView.type===PageType.picture){
                 
                   return (<div  className="image">
 
-                    <img src={htmlContent} alt={ePage.data}/>
+                    <img src={htmlContent} alt={pageInView.data}/>
                     </div>)
-              }else if(ePage.type === PageType.link){
+              }else if(pageInView.type === PageType.link){
                   return(
                       <PicturePageForm />
                   )
@@ -141,7 +130,7 @@ function EditorContainer({currentProfile}){
 
 
         const handleClickAddToCollection=()=>{
-          dispatch(setPageInView({page:ePage}))
+        
           navigate(Paths.addStoryToCollection.createRoute(id))
         }
         const handlePostPublicly=()=>{
@@ -173,15 +162,15 @@ function EditorContainer({currentProfile}){
              
            
            
-               
-                    {ePage?<RoleList
-                                item={ePage} 
+{/*                
+                    {pageInView?<RoleList
+                                item={pageInView} 
                                 type={"page"} 
                                 getRoles={roles=>{
                                   setNewRoles(roles)
                                       }
                                     } />
-                                :(<div></div>)}
+                                :(<div></div>)} */}
                     <div>
       <Dialog
         open={open}
