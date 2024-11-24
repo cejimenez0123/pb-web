@@ -59,7 +59,13 @@ export default function AddStoryToCollectionContainer(props){
               <Dialog className={
                 "bg-emerald-400"
               }
-              
+              PaperProps={{
+                style: {
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                },
+              }}
+            
               open={openDialog}
               onClose={()=>setOpenDialog(false)}>
                 <CreateCollectinForm/>

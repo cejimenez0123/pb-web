@@ -184,6 +184,9 @@ return <Button onClick={()=>{
         }
         
     }
+    const ClickAddStoryToCollection=()=>{
+        navigate(Paths.addStoryToCollection.createRoute(page.id))
+    }
     let bookTitleDiv =  (<div></div>)
     if(book){
         
@@ -199,18 +202,18 @@ return <Button onClick={()=>{
             }
         }><p>{title} {">"}</p></a>)
     }
-    const addToLibrary=()=>{
-        ReactGA.event({
-            category: "Story",
-            action: "Add Story To Library",
-            label: "Add to Library", 
-            value: page.id,
-            nonInteraction: false
-          });
-        const params = {pageList:[page]}
-        dispatch(setPagesToBeAdded(params))
-        navigate("/library/new")
-    }
+    // const addToLibrary=()=>{
+    //     ReactGA.event({
+    //         category: "Story",
+    //         action: "Add Story To Library",
+    //         label: "Add to Library", 
+    //         value: page.id,
+    //         nonInteraction: false
+    //       });
+    //     const params = {pageList:[page]}
+    //     dispatch(setPagesToBeAdded(params))
+    //     navigate("/library/new")
+    // }
     const buttonRow = ( )=>{
         return isGrid?<div className='bg-dark border-t text-right border-green-100 '>
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
@@ -246,10 +249,10 @@ Share</button>
 <li><a disabled={!currentProfile} 
 className='text-white'
 
-onClick={()=>addToBook()}> 
-                     Add to Book
+onClick={()=>ClickAddStoryToCollection()}> 
+                     Add to Collection
      </a></li>
-     <li><a disabled={!currentProfile} 
+     {/* <li><a disabled={!currentProfile} 
      onClick={()=>{
           const params = {pageList:[page]}
           dispatch(setPagesToBeAdded(params))
@@ -258,7 +261,7 @@ onClick={()=>addToBook()}>
      className='text-white'
      >
          Add to Library
-                 </a></li>
+                 </a></li> */}
                 <li> <a
                  className='text-white'
                 onClick={()=>{
