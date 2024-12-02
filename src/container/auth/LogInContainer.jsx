@@ -94,23 +94,23 @@ function LogInCard(props){
         navigate("/apply")
     }
     
-    return(<div className='md:max-w-[42rem] bg-dark lg:mt-36 sm:mt-12 rounded-lg form-control  border-dark border mx-auto p-4'>
+    return(<div className='md:max-w-[42rem] border mb-16 bg-transparent border-4 border-white lg:mt-36 sm:mt-12 rounded-lg form-control  border-dark border mx-auto p-4'>
         <div  id="log-in">
         <h1 className='text-green-100 poppins pb-4'> Log In</h1>
         <div >
             <div className='pb-4 '>
-        <label className="input poppins text-green-100 bg-dark border border-slate-100 flex items-center gap-2">
+        <label className="input poppins text-white border bg-transparent border-white flex items-center gap-2">
   Email
-  <input type="text" className="grow  overflow-hidden text-green-100" 
+  <input type="text" className="grow  overflow-hidden text-white" 
          value={props.email} 
          onChange={(e) => props.setEmail(e.target.value)}
         placeholder='example@x.com' />
 </label>
 </div>
 <div className='pb-4'>
-            <label className="input poppins text-green-100 mt-4c bg-dark border border-slate-100 flex items-center gap-2">
+            <label className="input poppins text-white border bg-transparent border-white  mt-4 flex items-center gap-2">
   Password
-  <input type="password" className="grow text-green-100 " 
+  <input type="password" className="grow text-white " 
          value={props.password}
          
          onChange={(e) => props.setPassword(e.target.value.trim())}

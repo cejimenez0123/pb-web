@@ -103,11 +103,11 @@ function MyProfileContainer(props){
                             <p>{currentProfile.selfStatement}</p>
                             <div className='mt-4 pt-2'>
                             <MediaQuery minWidth={'800px'}>
-                            <button onClick={ClickWriteAStory} className='bg-green-600 text-white  text-xl text-bold'>
+                            <button onClick={ClickWriteAStory} className='bg-green-600 text-white  sm:text-xl text-bold'>
                                 Write a Story
                             </button>
                            
-                            <button onClick={ClickCreateAColleciton} className='bg-green-600 md:ml-4 text-white text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-green-600 md:ml-4 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
                             </MediaQuery>
@@ -126,13 +126,13 @@ function MyProfileContainer(props){
                        
                         </div>
                         </div>
-                        <div className='text-left mt-6'>
+                        <div className='text-left mt-2'>
                         <MediaQuery maxWidth={'800px'}>
-                            <div className='ml-4'>
-                            <button onClick={ClickWriteAStory} className='bg-green-600 text-white  text-xl text-bold'>
+                            <div className='ml-4 flex  flex-col '>
+                            <button onClick={ClickWriteAStory} className='bg-green-600 max-w-48 text-white mt-2 sm:text-xl text-bold'>
                                 Write a Story
                             </button>
-                            <button onClick={ClickCreateAColleciton} className='bg-green-600 ml-4 text-white text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-green-600 max-w-48 sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
                             </div>
@@ -140,9 +140,9 @@ function MyProfileContainer(props){
                             </div> 
                             </div>
                             </div>
-                            <div role="tablist" className="tabs mt-8 sm:w-128  shadow-md rounded-lg  sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  className="tab shadow-sm border-white border bg-transparent text-white text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content sm:w-128 bg-dark border-base-300  rounded-box p-6">
+                            <div role="tablist" className="tabs mt-8 shadow-md rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content w-[100%] sm:max-w-[42rem]  p-6">
   <PageIndexList/>
   </div>
 
@@ -150,15 +150,15 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-white bg-transparent border border-white shadow-sm text-xl"
+    className="tab text-white bg-transparent  border-white border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
     aria-label="Books"
-    defaultChecked />
-  <div role="tabpanel" className="tab-content bg-transparent border border-white sm:max-w-128  border-base-300 rounded-box p-6">
+    />
+  <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box p-6">
   <CollectionIndexList cols={books}/>
   </div>
 
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-transparent border border-white   shadow-sm text-xl" aria-label="Libraries" />
-  <div role="tabpanel" className="tab-content  bg-dark border-base-300 rounded-box p-6">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-transparent border-white border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
+  <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box p-6">
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>

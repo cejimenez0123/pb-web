@@ -79,7 +79,7 @@ function PageIndexItem({page,onDelete}) {
    let buttonDiv= (<div>
     <div className="dropdown dropdown-left">
   <div tabIndex={0} role="button" className="btn my-auto"><img className={"w-8 h-8"}src={addBox}/></div>
-  <ul tabIndex={0} className="dropdown-content menu bg-dark rounded-box z-[1] w-72 p-2 shadow">
+  <ul tabIndex={0} className="dropdown-content menu  rounded-box z-[1] w-72 p-2 shadow">
     <li><a onClick={()=>handleAddClick("book")}>Add to Collection</a></li>
     <li><a >Share</a></li>
   </ul>
@@ -96,11 +96,11 @@ function PageIndexItem({page,onDelete}) {
       </div>)
   
     }
-            return(<div className={`bg-dark ${isPhone?"":"rounded-lg"} border border-white flex w-full flex-row justify-between  mb-1  `}>
+            return(<div className={`   border-white border-b-2 flex w-full flex-row justify-between  mb-1  `}>
                 <div className="text-left my-auto ml-4 py-4   ">
                
                 <a className="text-white " onClick={handleOnClick}> 
-                   {page.title.length>0? <h6 className="text-xl my-auto">{page.title}</h6>:<h6>Unititled</h6>}
+                   {page.title.length>0? <h6 className="text-xl font-bold my-auto">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                 <div className=" my-auto w-fit">

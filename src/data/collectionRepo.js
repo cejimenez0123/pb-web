@@ -8,6 +8,7 @@ import Enviroment from "../core/Enviroment";
         'Access-Control-Allow-Origin': "*"
     }
     url = Enviroment.url+"/collection"
+    token = "token"
     async getPublicBooks(){
         let res = await axios.get(this.url+"/public/book",{headers})
         return res.data
@@ -17,12 +18,14 @@ import Enviroment from "../core/Enviroment";
         return res.data
     }
     async getMyCollections(){
+
         let res = await axios.get(this.url+"/profile/private",{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem("token")
+                Authorization:"Bearer "+localStorage.getItem(this.token),
+                'Access-Control-Allow-Origin': "*"
             }
         })
-        console.log("res",res)
+    
         return res.data
     }
     async getPublicProfilesCollections({id}){
