@@ -85,11 +85,10 @@ function App(props) {
   }
    
   return (
-    <div >
       <Context.Provider value={[formerPage,setFormerPage]}>
-      <div className='background-blur bg-gradient-to-br from-emerald-800 to-emerald-600'>
+      <div className='App background-blur bg-gradient-to-br from-emerald-800 to-emerald-600'>
       <div/>
-      <div className='App'>
+      <div >
        <Helmet>
                 <meta charSet="utf-8" />
                 <title>Plumbum</title>
@@ -268,7 +267,6 @@ function App(props) {
     </div>
     </div>
     </Context.Provider>
-    </div>
   );
 }
 

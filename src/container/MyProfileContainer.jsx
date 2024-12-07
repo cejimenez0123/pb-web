@@ -23,15 +23,16 @@ const MediaType = {
 function MyProfileContainer(props){
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [books,setBooks]=useState([])
-    const [libraries,setLibraries]=useState([])
+    const collections = useSelector(state=>state.books.collections)
+    const [books,setBooks]=useState(collections)
+    const [libraries,setLibraries]=useState(collections.filter(col=>col.collectionIdList>0))
     const [openDialog,setOpenDialog]=useState(false)
     const [media,setMedia]=useState(MediaType.stories)
     const [list,setList]=useState(<PageIndexList
         />
     )
     const dispatch = useDispatch()
-    const collections = useSelector(state=>state.books.collections)
+
     const ClickWriteAStory = ()=>{
         ReactGA.event({
             category: "Page",
@@ -69,9 +70,8 @@ function MyProfileContainer(props){
             dispatch(getCurrentProfile()).then(res=>console.log("Resd",res))
         }else{
             dispatch(getMyStories({profile:currentProfile}))
-            dispatch(getMyCollections({profile:currentProfile})).then(res=>{
-       
-            })
+            dispatch(getMyCollections({profile:currentProfile}))
+
         }
     },[])
     useEffect(()=>{
