@@ -21,22 +21,25 @@ export default function CollectionContainer(props){
         currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
      //   currentProfile?dispatch(getSubCollections(params)):dispatch(getSubCollections(params))
     },[currentProfile])
-   
+    const collectioinIs = ()=>{
+        if(colInView.collectionIdList.length>0){
+            return "Community"
+        }else{
+            return "Anthology"
+        }
+    }
     const getSubCollections = ()=>{
     currentProfile?dispatch(getSubCollections(params)):dispatch(getSubCollections(params))
     }
     const collectionInfo=()=>{return(<div className="h-fit pb-8 w-48 border border-white  mx-8 mt-8 rounded rounded-lg mb-8 text-left">
     <h6 className="m-8 text-2xl">{colInView.title}</h6>
-        <p className=" ml-8 bg-emerald-500 max-w-96 rounded-lg p-4">{colInView.purpose}</p>
-        <div className="ml-8">
-   <button>Follow</button>
-   <div className="dropdown dropdown-bottom">
-  <div tabIndex={0} role="button" className="btn m-1"><img className="w-8 h-8"src={add}/></div>
-  <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow">
-    <li onClick={()=>{navigate(Paths.addStoryToCollection.createRoute(colInView.id))}}><a>Page</a></li>
-    <li><a>Collection</a></li>
-  </ul>
-</div>
+        <p className=" ml-8 bg-emerald-800 max-w-96 rounded-lg p-4">{colInView.purpose}</p>
+        <div className="ml-8 mt-8 flex flex-row">
+   <button className="bg-emerald-600">Follow</button>
+   <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
+   }className="w-8 h-8 mx-4 my-auto"src={add}/>
+
+
 
    {/* <button className="bg-transparent"><img className="w-8 h-8"src={add}/></button> */}
    </div></div>)}

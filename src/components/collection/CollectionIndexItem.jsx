@@ -31,7 +31,7 @@ export default function CollectionIndexItem({collection}){
             )
         }
     return(<div>
-        <div className={`bg-dark ${isPhone?"":"rounded-lg"} flex w-full flex-row justify-between border border-white mb-1  `}>
+        <div className={` ${isPhone?"":"rounded-lg"} flex w-full flex-row justify-between border border-white mb-1  `}>
                 <div className="text-left my-auto ml-4 py-4   ">
                 <a className="text-white " > 
                    {collection.title.length>0? <h6 className="text-xl my-auto">{collection.title}</h6>:<h6>Unititled</h6>}

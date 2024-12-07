@@ -46,6 +46,7 @@ import {Helmet} from "react-helmet";
 import  Context from "./context"
 import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';
 import CollectionContainer from './container/collection/CollectionContainer';
+import AddToCollectionContainer from './container/collection/AddToCollection';
 function App(props) {
   const authState = useAuth()
 
@@ -150,6 +151,8 @@ function App(props) {
      />
      <Route path={Paths.collection.route()}
      element={<CollectionContainer/>}/>
+     <Route path={Paths.addToCollection.route}
+     element={<AddToCollectionContainer/>}/>
      <Route path={Paths.addStoryToCollection.route}
      element={<AddStoryToCollectionContainer/>}/>
       <Route path={Paths.about()} element={
