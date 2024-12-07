@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import { fetchCollection, fetchCollectionProtected } from "../../actions/CollectionActions"
-
+import add from "../../images/icons/add_box.svg"
 import PageList from "../../components/page/PageDashboardList"
 import { getCollectionStoriesProtected, getCollectionStoriesPublic } from "../../actions/StoryActions"
 import MediaQuery from "react-responsive"
@@ -24,9 +24,13 @@ export default function CollectionContainer(props){
     currentProfile?dispatch(getSubCollections(params)):dispatch(getSubCollections(params))
     }
     return(<>
-        {colInView?<div className="h-48 w-48 text-left">
+        {colInView?<div className="h-fit pb-8 w-48 border border-white  mx-8 mt-8 rounded rounded-lg mb-8 text-left">
             <h6 className="m-8 text-2xl">{colInView.title}</h6>
-        <p className=" ml-8">{colInView.purpose}</p></div>:null}
+        <p className=" ml-8 bg-emerald-500 max-w-96 rounded-lg p-4">{colInView.purpose}</p>
+        <div className="ml-8">
+           <button>Follow</button>
+           <button className="bg-transparent"><img className="w-8 h-8"src={add}/></button>
+           </div></div>:null}
         <div className="text-left ml-8">
             <h6 className="text-xl font-bold mb-8">Pages</h6>
         <PageList/>

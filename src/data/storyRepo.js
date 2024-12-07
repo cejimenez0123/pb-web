@@ -10,7 +10,7 @@ class StoryRepo{
     }
     url= Enviroment.url+"/story"
     
-    token = localStorage.getItem("token")
+    token = "token"
     async getPublicStories(){
         let res = await  axios.get(this.url,{headers:{'Access-Control-Allow-Origin': "*",
         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}})
@@ -19,17 +19,17 @@ class StoryRepo{
     }
     async getProfileStories({profileId}){
         let res = await axios.get(this.url+"/profile/"+profileId+"/public",{headers:{
-            Authorization: "Bearer "+this.token,'Access-Control-Allow-Origin':"*"
+            Authorization: "Bearer "+localStorage.getItem(this.token),'Access-Control-Allow-Origin':"*"
         }})
         return res.data
     }
     async getStoryProtected({id}){
         let res = await axios.get(this.url+"/"+id+"/protected",{
             headers:{
-                Authorization:"Bearer "+this.token
+                Authorization:"Bearer "+localStorage.getItem(this.token)
             }
         })
-        console.log(res)
+       
         return res.data
     }
     async getStoryPublic({id}){
@@ -39,7 +39,8 @@ class StoryRepo{
     async getMyStories(props){
         let res = await axios.get(this.url+"/profile/private",{
             headers:{
-                Authorization:"Bearer "+this.token
+                Authorization:"Bearer "+localStorage.getItem(this.token)
+                
             }
         })
         return res.data
@@ -61,7 +62,7 @@ class StoryRepo{
             title,data,isPrivate:privacy,authorId:profileId,commentable:commentable,
             type
     },{headers:{
-        Authorization: "Bearer "+this.token
+        Authorization: "Bearer "+localStorage.getItem(this.token)
     }})
         return res.data
     }
@@ -83,7 +84,7 @@ class StoryRepo{
             commentable:commentable,
             type
          },{headers:{
-            Authorization: "Bearer "+this.token
+            Authorization: "Bearer "+localStorage.getItem(this.token)
         }})
 console.log("res",res)
        
@@ -93,14 +94,14 @@ console.log("res",res)
     
         let res = await axios.delete(this.url+"/"+id,
         {headers:{
-            Authorization: "Bearer "+this.token
+            Authorization: "Bearer "+localStorage.getItem(this.token)
     }})
         return res.data
     }
     async getCollectionStoriesProtected({id}){
         let res = await axios.get(this.url+"/collection/"+id+"/protected",{
             headers:{
-                Authorization: "Bearer "+this.token
+                Authorization: "Bearer "+localStorage.getItem(this.token)
     }})
     return res.data
     }

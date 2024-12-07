@@ -11,7 +11,7 @@ import Enviroment from "../core/Enviroment";
     token = "token"
     async getPublicBooks(){
         let res = await axios.get(this.url+"/public/book",{headers})
-        return res.dxfata
+        return res.data
     }
     async getPublicLibraries(){
         let res = await axios.get(this.url+"/public/library",{headers})
