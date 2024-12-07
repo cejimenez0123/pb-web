@@ -12,7 +12,7 @@ import {
         deleteBook,
     
         } from "../actions/BookActions"
-        import { getMyCollections, getPublicBooks,
+        import { createCollection, fetchCollection, fetchCollectionProtected, getMyCollections, getPublicBooks,
                 saveRoleToCollection
         
             } from "../actions/CollectionActions"
@@ -20,6 +20,7 @@ import {
 const initialState = {
     booksInView:[],
     collections:[],
+    collectionInView:[],
     loading:false,
     error:"",
     bookInView: null,
@@ -32,6 +33,11 @@ name: 'books',
 initialState,
 extraReducers(builder) {
 builder
+.addCase(createCollection.pending,(state)=>{
+    state.loading = true
+}).addCase(createCollection.fulfilled,(state,{payload})=>{
+    state.collectionInView = payload.collection
+})
 .addCase(getPublicBooks.pending, (state,{payload})=>{
     state.loading = true
 })
@@ -53,6 +59,15 @@ builder
     state.loading = true
 }).addCase(saveRoleToCollection.fulfilled,(state,{payload})=>{
     state.role = payload.role
+}).addCase(fetchCollection.pending,(state)=>{
+    state.loading=true
+}).addCase(fetchCollection.fulfilled,(state,{payload})=>{
+    state.collectionInView=payload.collection
+    state.loading = false
+}).addCase(fetchCollectionProtected.pending,(state)=>{
+    state.loading=false
+}).addCase(fetchCollectionProtected.fulfilled,(state,{payload})=>{
+    state.collectionInView = payload.collection
 }).addCase(fetchBook.pending,(state)=>{
     state.loading = true
 

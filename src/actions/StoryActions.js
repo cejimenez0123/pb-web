@@ -53,4 +53,32 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
   }
 }
 })
-export {getStory,getMyStories,createStory,updateStory}
+const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesPublic",async (params,thunkApi)=>{
+  try{
+
+     let data = await storyRepo.getCollectionStoriesPublic(params)
+     console
+     return {
+      list:data.list
+     }
+  }catch(e){
+    return {error:e}
+  }
+})
+const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStoriesProtected",async (params,thunkApi)=>{
+  try{
+
+    let data = await storyRepo.getCollectionStoriesProtected(params)
+    console.log("rercs",data)
+    return {
+     list:data.list
+    }
+  }catch(e){
+    return {
+      error:e
+    }
+  }
+})
+export {getStory,getMyStories,createStory,updateStory,
+  getCollectionStoriesProtected,getCollectionStoriesPublic
+}

@@ -2,6 +2,7 @@ import { createAsyncThunk ,createAction} from "@reduxjs/toolkit"
 import axios from "axios"
 import collectionRepo from "../data/collectionRepo"
 import Enviroment from "../core/Enviroment"
+import storyRepo from "../data/storyRepo"
 
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
@@ -50,13 +51,22 @@ const isProfileMember = createAsyncThunk("collection/isProfileMember",async (
         data: res.data
       }
 })
-const createColection = createAsyncThunk("collection/createCollection",async (params,thunkApi)=>{
-
+const createCollection = createAsyncThunk("collection/createCollection",async (params,thunkApi)=>{
+    let {
+        title,
+        purpose,
+        isPrivate,
+        profileId,
+        isOpenCollaboration
+    }=params
     try{
         let data = await collectionRepo.createCollection(params)
-        if(!data.collection.isPrivate){
+        console.log(data.collection)
+
+        if(!data.collection){
+        const {collection}=data
           client.initIndex("collection").saveObject(
-            {objectID:data.id,title:params.title,type:"collection"}).wait()
+            {objectID:collection.id,title:collection.title,type:"collection"}).wait()
         }   
         return {collection: data.collection}
 
@@ -64,6 +74,30 @@ const createColection = createAsyncThunk("collection/createCollection",async (pa
       return {
         error: new Error(`Error: Create Library: ${error.message}`)
       }
+    }
+})
+const fetchCollection = createAsyncThunk("collection/getCollectionPublic",async(params,thunkApi)=>{
+   let data = await collectionRepo.fetchCollection(params)
+   return {
+    collection:data.collection
+   }
+})
+const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProtected",async(params,thunkApi)=>{
+    let data = await collectionRepo.fetchCollectionProtected(params)
+    return {
+     collection:data.collection
+    }
+ })
+const getSubCollectionsProtected = createAsyncThunk("collection/getSubCollectionsProtected",async(params,thunkApi)=>{
+    let data = await collectionRepo.fetchSubCollectionsProtected(params)
+    return {
+        list:data.list
+    }
+})
+const getSubCollectionsPublic = createAsyncThunk("collection/getSubCollectionsPublic",async(params,thunkApi)=>{
+    let data = await collectionRepo.fetchSubCollectionsProtected(params)
+    return {
+        list:data.list
     }
 })
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
@@ -87,12 +121,29 @@ const getPublicProfileCollections = createAsyncThunk("collection/getMyCollection
       }
 })
 
-
+const getProtectCollectionStories = createAsyncThunk("collection/getProtectCollectionStories",async(
+    params,thunkApi
+)=>{
+    let data = await storyRepo.getCollectionStoriesProtected(params)
+    console.log(data)
+    return {list:data.list}
+})
+const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectionStories",
+    async (params,thunkApi)=>{
+        let data = await storyRepo.getCollectionStoriesPublic(params)
+        console.log(data)
+        return {list:data.list}
+    }
+)
 export {
     getPublicBooks,
     saveRoleToCollection,
     isProfileMember,
     getMyCollections,
-    createColection,
-    getPublicProfileCollections
+    createCollection,
+    getPublicProfileCollections,
+    getProtectCollectionStories,
+    getPublicCollectionStories,
+    fetchCollection,
+    fetchCollectionProtected
 }

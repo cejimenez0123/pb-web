@@ -68,7 +68,9 @@ export default function AddStoryToCollectionContainer(props){
             
               open={openDialog}
               onClose={()=>setOpenDialog(false)}>
-                <CreateCollectinForm/>
+                <CreateCollectinForm onClose={()=>{
+                  setOpenDialog(false)
+                }}/>
               </Dialog>
 
 

@@ -11,7 +11,7 @@ import Enviroment from "../core/Enviroment";
     token = "token"
     async getPublicBooks(){
         let res = await axios.get(this.url+"/public/book",{headers})
-        return res.data
+        return res.dxfata
     }
     async getPublicLibraries(){
         let res = await axios.get(this.url+"/public/library",{headers})
@@ -32,23 +32,25 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(this.url+`/id${id}/public`)
         return res.data
     }
-    async createCollection({name,
-        profileId,
+    async createCollection({
+        title,
         purpose,
-        privacy,
-        writingIsOpen,
-        }){
+        isPrivate,
+        profileId,
+        isOpenCollaboration
+    }){
        
           
         let res = await axios.post(Enviroment.url+"/collection",{
-            title:name,
+            title:title,
             purpose,
-            isPrivate:privacy,
+            isPrivate:isPrivate,
             profileId:profileId,
-            isOpenCollaboration:writingIsOpen
+            isOpenCollaboration:isOpenCollaboration
         },{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")
         }})
+        console.log(res)
         return res.data
     }
     async updateCollection({id,title,
@@ -92,10 +94,25 @@ import Enviroment from "../core/Enviroment";
         const res = await axios.get(this.url+"/"+id)
         return res.data
     }
+    async fetchCollectionProtected({id}){
+        const res = await axios.get(this.url+"/"+id,{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})
+        return res.data
+    }
     async getProfileBooks({profile}){
      
         let res = await axios.get(this.url+"/profile/"+profile.id+"/book")
         return res.data
     }
+    async fetchSubCollectionsProtected({id}){
+        const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})
+    }
+    async fetchSubCollectionsPublic({id}){
+        const res = await axios.get(this.url+"/"+id+"/collection/public",{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})}
 }
 export default new CollectionRepo()

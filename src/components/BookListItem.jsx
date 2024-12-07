@@ -12,7 +12,7 @@ function BookListItem({book}){
     }
     const navigateToBook = ()=>{
         
-        navigate(Paths.book.createRoute(book.id))
+        navigate(Paths.collection.createRoute(book.id))
         ReactGA.event({
             category: "Book",
             action: "Navigate to Book",
@@ -24,7 +24,7 @@ function BookListItem({book}){
     return (
         <div 
         onClick={()=>navigateToBook()} 
-        className="card bg-dark w-fit lg:my-8 lg:max-w-96 overflow-clip text-white mx-2 ">
+        className="card bg-transparent border-white border-2  lg:my-8 lg:max-w-96 overflow-clip text-white mx-2 ">
         <div className="card-body h-24  lg:h-36 min-w-36 hover:h-full   max-w-96 ">
 <div className=" py-0.5 px-1 w-full h-full">
         <h6 className=" text-left font-extrabold">{book.title}</h6>

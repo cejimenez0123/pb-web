@@ -97,5 +97,17 @@ console.log("res",res)
     }})
         return res.data
     }
+    async getCollectionStoriesProtected({id}){
+        let res = await axios.get(this.url+"/collection/"+id+"/protected",{
+            headers:{
+                Authorization: "Bearer "+this.token
+    }})
+    return res.data
+    }
+    async getCollectionStoriesPublic({id}){
+        let res = await axios.get(this.url+"/collection/"+id+"/public")
+
+        return res.data
+    }
 }
 export default new StoryRepo()

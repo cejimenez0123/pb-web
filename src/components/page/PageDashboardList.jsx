@@ -16,6 +16,7 @@ const PageList = ({isGrid,fetchContentItems})=>{
         next={fetchContentItems}
         scrollThreshold={1}
         hasMore={false}
+        className="w-[42rem]"
         style={isGrid?{overflow:"unset"}:{display:"flex",flexDirections:"row"}}
         >
 

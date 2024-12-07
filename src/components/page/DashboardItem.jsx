@@ -88,11 +88,11 @@ const hanldeClickComment=(pageItem)=>{
         return( <div className=''>
             <div 
     
-           className={`bg-white ${isGrid?"h-48 overflow-clip":""}`}
+           className={` ${isGrid?"h-48 overflow-clip":""}`}
             >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className=' content bg-dark p-4 '
+        } className=' content text-white bg-transparent p-4 '
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
         </div>)   
@@ -215,21 +215,23 @@ return <Button onClick={()=>{
     //     navigate("/library/new")
     // }
     const buttonRow = ( )=>{
-        return isGrid?<div className='bg-dark border-t text-right border-green-100 '>
+        return isGrid?<div className='border-t text-right border-green-100 '>
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className='bg-dark border-t  text-center border-green-100 '><div>
+        <div className='border-t  text-center border-green-100 '><div>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
-          className={`btn btn-primary w-fit px-4 bg-dark border-dark text-white `}
+          className={`rounded-none w-fit 
+           border-x-1 border-y-0 px-4 bg-transparent border-white  text-white `}
         
          >
              Yea
          </button>
          <button
-             className='btn btn-primary px-4 bg-dark border-dark text-white'
+             className=' px-4 rounded-none
+             border-x-2 border-y-0  bg-transparent border-white text-white'
              onClick={()=>hanldeClickComment(page)}
                  >
          
@@ -237,12 +239,14 @@ return <Button onClick={()=>{
          </button>
          <div className="dropdown dropdown-top">
 <button tabIndex={0} role="button" 
-className=" btn             
+className="             
          pt-2 
+         rounded-none
          px-4 
+         border-x-2 border-y-0
          btn-primary
-         bg-dark
-         border-dark
+         bg-transparent border-white
+         border-b-none
          text-white ">
 Share</button>
 <ul tabIndex={0} className="dropdown-content menu bg-dark rounded-box z-[1] w-52 p-2 shadow">
@@ -303,10 +307,10 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={` ${isNotPhone?"rounded-lg":""}   mb-4 overflow-hidden`}>
+        <div className={`rounded-lg   mb-4 overflow-hidden`}>
         
-            <div className=' bg-dark border-b border-green-100 pl-2 text-white   pb-2 pt-4'>
-                <div className='ml-4'>
+            <div className=' border-white border border-b border-2   pl-2 text-white   pb-2 pt-4'>
+                <div className=' flex flex-row ml-4'>
                 {bookTitleDiv}
                 <p className="text-white" onClick={()=>{
                     navigate(`/page/${page.id}`)

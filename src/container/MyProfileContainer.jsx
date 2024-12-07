@@ -12,6 +12,8 @@ import MediaQuery from 'react-responsive';
 import CollectionIndexList from '../components/collection/CollectionIndexList';
 import Paths from '../core/paths';
 import ReactGA from "react-ga4"
+import {Dialog} from "@mui/material"
+import CreateCollectinForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
 const MediaType = {
     stories:"stories",
@@ -23,10 +25,12 @@ function MyProfileContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [books,setBooks]=useState([])
     const [libraries,setLibraries]=useState([])
+    const [openDialog,setOpenDialog]=useState(false)
     const [media,setMedia]=useState(MediaType.stories)
     const [list,setList]=useState(<PageIndexList
         />
     )
+    const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)
     const ClickWriteAStory = ()=>{
         ReactGA.event({
@@ -56,8 +60,9 @@ function MyProfileContainer(props){
             value: currentProfile.id,
             nonInteraction: false
           });
+          setOpenDialog(true)
     }
-    const dispatch = useDispatch()
+   
 
     useEffect(()=>{
         if(!currentProfile){
@@ -91,18 +96,19 @@ function MyProfileContainer(props){
     
             return(
             <div className=''>
-                    <div className='border border-white w-full border-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
+                    <div className=' w-full border-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
                   
                         <div>
-                            <div className='flex-row flex w-full w-[100%] pr-0 pt-4'>
-                        <img className={"w-36 h-36 ml-6 rounded-lg"}src={currentProfile.profilePic}/>
+                            <div className='sm:flex-row flex-col flex  pr-0 pt-4'>
+                        <img className={"max-w-36 max-h-36 ml-6 rounded-lg"}src={currentProfile.profilePic}/>
                      
-                            <div className='flex flex-row ml-4 mt-1  w-[100%] justify-between'>
-                            <div className='text-left'>
+                            <div className='flex sm:flex-row ml-4 mt-1  w-[100%] justify-between'>
+                            <div className='text-left '>
                             <h5 className='text-xl font-bold'>{currentProfile.username}</h5>
                             <p>{currentProfile.selfStatement}</p>
-                            <div className='mt-4 pt-2'>
-                            <MediaQuery minWidth={'800px'}>
+                           
+                            <MediaQuery minWidth={'600px'}>
+                            <div className='mt-4 pt-2 flex flex-row'>
                             <button onClick={ClickWriteAStory} className='bg-green-600 text-white  sm:text-xl text-bold'>
                                 Write a Story
                             </button>
@@ -110,24 +116,26 @@ function MyProfileContainer(props){
                             <button onClick={ClickCreateAColleciton} className='bg-green-600 md:ml-4 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
-                            </MediaQuery>
                             </div> 
+                            </MediaQuery>
+                           
                             </div>
-                            <div className='w-full text-right flex flex-row h-12'>
-                            <button className='border border-white  bg-transparent'>
+                            <MediaQuery minWidth={'800px'}>
+                            <div className='w-full text-right flex sm:mr-8 flex-row h-12'>
+                            <button className=' sm:mr-4 bg-transparent'>
                             <img src={settings}/>
                         </button>
-                        <button className='border border-white bg-transparent'>
+                        <button className=' bg-transparent'>
                             <img 
                             src={notifications}/>
                         </button>
                             </div>
-                        
+                            </MediaQuery>
                        
                         </div>
                         </div>
                         <div className='text-left mt-2'>
-                        <MediaQuery maxWidth={'800px'}>
+                        <MediaQuery maxWidth={'600px'}>
                             <div className='ml-4 flex  flex-col '>
                             <button onClick={ClickWriteAStory} className='bg-green-600 max-w-48 text-white mt-2 sm:text-xl text-bold'>
                                 Write a Story
@@ -142,7 +150,7 @@ function MyProfileContainer(props){
                             </div>
                             <div role="tablist" className="tabs mt-8 shadow-md rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content w-[100%] sm:max-w-[42rem]  p-6">
+  <div role="tabpanel" className="tab-content w-[100%] sm:max-w-[42rem] p-6">
   <PageIndexList/>
   </div>
 
@@ -162,6 +170,26 @@ function MyProfileContainer(props){
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>
+<Dialog className={
+                "bg-emerald-400 w-[100%] overscroll-none"
+              }
+              PaperProps={{
+                style: {
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                 overflow:"hidden",
+                 height:"100%",
+                 width:"60%",
+                
+                },
+              }}
+            
+              open={openDialog}
+              onClose={()=>setOpenDialog(false)}>
+                <CreateCollectinForm onClose={()=>{
+                    setOpenDialog(false)
+                }}/>
+              </Dialog>
 </div>
              
 

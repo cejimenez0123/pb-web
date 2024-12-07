@@ -25,6 +25,7 @@ import {
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
 import { getMyStories, getStory,createStory, updateStory} from "../actions/StoryActions"
+import { getProtectCollectionStories, getPublicCollectionStories } from "../actions/CollectionActions"
 
 const initialState = {pagesInView:[],
                       editingPage:null,
@@ -39,7 +40,17 @@ const pageSlice = createSlice({
     name: 'pages',
     initialState,
     extraReducers(builder) {
-        builder.addCase(updateStory.rejected,(state,{payload})=>{
+        builder.addCase(getPublicCollectionStories.pending,(state)=>{
+          state.loading=true
+        }).addCase(getPublicCollectionStories.fulfilled,(state,payload)=>{
+          state.loading=false
+          state.pagesInView = payload.list
+        }).addCase(getProtectCollectionStories.pending,(state)=>{
+          state.loading=true
+        }).addCase(getProtectCollectionStories.fulfilled,async(state,payload)=>{
+          state.loading= false
+          state.pagesInView = payload.list
+        }).addCase(updateStory.rejected,(state,{payload})=>{
             state.loading = false
             state.error = payload.message
         }).addCase(updateStory.fulfilled,(state,{payload})=>{
