@@ -94,9 +94,12 @@ const navigateToLibrary = (library)=>{
         if(booksInView!=null){
             return(
         
-    
+    <div> <h3 className=' text-white 
+    text-left 
+    font-extrabold 
+    pl-2 pt-2 mt-1 mx-4 text-2xl'>Books</h3>
                 <InfiniteScroll
-            className={`mt-1   ${isNotPhone?"flex-col":"flex-row"} flex`}
+            className={`mt-1   flex-row"} flex`}
             dataLength={booksInView.length}
             next={fetchContentItems}
             hasMore={false}
@@ -109,7 +112,7 @@ const navigateToLibrary = (library)=>{
                         </div>)
                 })}
 </InfiniteScroll>
-   )
+</div>)
 
         }
     }
@@ -197,7 +200,7 @@ const navigateToLibrary = (library)=>{
                
                 <h3 className={`text-white ${isNotPhone?'ml-36  pl-4 ':'pl-4 ml-4'} font-extrabold text-2xl`}>Libraries</h3>
                 {libraryForums()}
-                    
+                {bookList()} 
                 <div className='flex  flex-col-reverse lg:flex-row'>
                     <div className=' lg:w-128 lg:ml-32 lg:mr-16 lg:ml-16 '>
 
@@ -223,12 +226,9 @@ const navigateToLibrary = (library)=>{
                     </div>
                     <div className=' lg:flex-1  lg:mx-4'>
                        <div className='w-24  mx-auto '>
-                        <h3 className=' text-white 
-                                        text-left 
-                                        font-extrabold 
-                                        pl-2 pt-2 mt-1 mx-4 text-2xl'>Books</h3>
+                       
                                         <div className=''>
-                    {bookList()}
+                   
                     </div>
                     </div>
                     </div>

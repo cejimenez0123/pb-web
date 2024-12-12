@@ -19,6 +19,12 @@ export default function AddToCollectionContainer(props){
             dispatch(fetchCollection(pathParams))
         }
     },[])
+    const submit = ()=>{
+
+
+
+        
+    }
     useEffect(()=>{
         dispatch(getMyCollections({profile}))
         dispatch(getMyStories({profile}))

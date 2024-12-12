@@ -88,6 +88,23 @@
   overflow: scroll;
   width: 70%;
 }}
+.page-text p{
+  font-size: 1em !important;
+
+}
+
+.page-text span{
+  font-size: 1rem !important;
+  
+}
+.page-text h6{
+  font-size: 30px;
+  line-height: .8;
+}
+.page-text h5{
+  font-size: 40px;
+  line-height: .8;
+}
 @media (max-width: 800px) {
   /* On screens with a width of 768px or more (desktop), set the width to 50% */
 

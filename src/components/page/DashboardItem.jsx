@@ -85,7 +85,7 @@ const hanldeClickComment=(pageItem)=>{
         
     if(page.type===PageType.text){
 
-        return( <div className=''>
+        return( <div className='page-text'>
             <div 
     
            className={` ${isGrid?"h-48 overflow-clip":""}`}
@@ -307,7 +307,7 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={`rounded-lg   mb-4 overflow-hidden`}>
+        <div className={`rounded-lg bg-green-600 mb-4 overflow-hidden`}>
         
             <div className=' border-white border border-b border-2   pl-2 text-white   pb-2 pt-4'>
                 <div className=' flex flex-row ml-4'>

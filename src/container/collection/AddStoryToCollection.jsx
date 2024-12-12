@@ -23,6 +23,7 @@ export default function AddStoryToCollectionContainer(props){
             setHasMoreCol(false)
         })
     },[])
+  
     
     if(page && page.id == pathParams.id){
         return(<div >
