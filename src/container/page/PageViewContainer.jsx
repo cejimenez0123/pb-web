@@ -107,6 +107,7 @@ export default function PageViewContainer({page}){
     }
     const commentList = ()=>{
     if(comments && comments.length>0){
+   
         return(<div className="comment-thread">
                 <InfiniteScroll
                                 dataLength={comments.length}
@@ -126,8 +127,8 @@ export default function PageViewContainer({page}){
                         </InfiniteScroll>
         </div>)
     }else{
-        return(<div className="empty">
-            <h1> 0 Comments</h1>
+        return(<div className="bg-emerald-700 min-h-24 rounded-b-lg py-4">
+            <h2 className="text-4xl"> No comments yet</h2>
         </div>)
     }}
     const pageDiv = ()=>{

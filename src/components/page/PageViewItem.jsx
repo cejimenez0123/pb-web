@@ -22,6 +22,7 @@ export default function PageViewItem({page}) {
     PageViewItem.propTypes={
         page: PropTypes.object.isRequired
     }
+    const [pending,isPending]=useState(true)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -78,7 +79,7 @@ export default function PageViewItem({page}) {
     
 }
 if(page){
-switch(page.type){
+    switch(page.type){
     case PageType.text:
         pageDataElement = <div className='content' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
@@ -90,7 +91,7 @@ switch(page.type){
         break;
     default:
         pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
-    break;
+    
 }
 const navigateToProfile = ()=>{ 
     ReactGA.event({

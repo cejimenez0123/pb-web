@@ -43,7 +43,7 @@ export default function RichEditor(props){
     return( <div>
      
       <ReactQuill 
-      className="bg-green-600 rich-editor sm:w-[46rem] rounded-lg  text-white stroke-white"
+      className="bg-green-600 rich-editor rounded-b-lg sm:w-[46rem] rounded-lg  text-white stroke-white"
       modules={modules}
       formats={formats} value={ehtmlContent} onChange={(content)=>{
           dispatch(setHtmlContent(content))

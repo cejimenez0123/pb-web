@@ -186,6 +186,7 @@ function App(props) {
         path="/page/image"  
         element={ 
           <PrivateRoute loggedIn={!!props.currentProfile}>
+            
           <EditorContainer 
             htmlContent={props.htmlContent}
             currentProfile={props.currentProfile} 

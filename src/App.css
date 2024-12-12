@@ -313,10 +313,7 @@
   justify-content: space-between;
 }
 
-.ql-picker{
-  stroke:white;
-  color: white;
-}
+
 @media (min-width: 1000px) {
 
 .empty{

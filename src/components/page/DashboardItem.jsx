@@ -255,16 +255,6 @@ className='text-white'
 onClick={()=>ClickAddStoryToCollection()}> 
                      Add to Collection
      </a></li>
-     {/* <li><a disabled={!currentProfile} 
-     onClick={()=>{
-          const params = {pageList:[page]}
-          dispatch(setPagesToBeAdded(params))
-          navigate("/library/new")
-     }}
-     className='text-white'
-     >
-         Add to Library
-                 </a></li> */}
                 <li> <a
                  className='text-white'
                 onClick={()=>{

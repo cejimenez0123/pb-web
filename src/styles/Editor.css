@@ -151,16 +151,19 @@
   
   /* Customize icons in hover state */
   .ql-toolbar .ql-stroke:hover {
-    stroke: #00FF00 !important; /* Change color on hover */
+    stroke: #039703 !important; /* Change color on hover */
   }
   .ql-font{
     color:white !important;
     stroke:white !important;
     fill: white !important;
   }
-  .ql-picker{
-    color:white !important
+  .ql-picker-label{
+    color:white
   }
+ .ql-picker-options *{
+    stroke: #039703 !important; 
+ }
   .ql-toolbar .ql-fill:hover {
     fill: white !important; /* Change color on hover */
   }
