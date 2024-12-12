@@ -15,6 +15,11 @@ const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
     }
 
 })
+const deleteStory = createAsyncThunk("pages/deleteStory",async (params,thunkApi)=>{
+
+   let data = storyRepo.deleteStory(params)
+    return data
+})
 const getMyStories= createAsyncThunk(
     'pages/getMyStories',
     async (params,thunkApi) => {
@@ -79,6 +84,6 @@ const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStori
     }
   }
 })
-export {getStory,getMyStories,createStory,updateStory,
+export {deleteStory,getStory,getMyStories,createStory,updateStory,
   getCollectionStoriesProtected,getCollectionStoriesPublic
 }

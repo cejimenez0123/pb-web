@@ -1,4 +1,4 @@
-import RichEditor from "../../components/RichEditor"
+import RichEditor from "../../components/page/RichEditor"
 import "../../styles/Editor.css"
 import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
@@ -20,13 +20,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../../core/constants"
-import {Menu } from "@mui/joy"
-import theme from "../../theme"
-import checkResult from "../../core/checkResult"
-import RoleList from "../../components/RoleList"
-import { Add, Visibility } from "@mui/icons-material"
-import { Dropdown } from "react-bootstrap"
-import { RoleType } from "../../core/constants"
 import Paths from "../../core/paths"
 import PicturePageForm from "../../components/PicturePageForm"
 import { checkmarkStyle } from '../../styles/styles'
@@ -92,8 +85,27 @@ function EditorContainer({currentProfile}){
     
     
   
-        
+     
+  useEffect(() => {
+    // Check if the form is dirty
+ 
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
     
+  }, [isSaved]);   
+  const handleBeforeUnload = (e) => {
+    e.preventDefault();
+    e.returnValue = ''; // This is required for Chrome
+
+    if(htmlContent.length<0 && title.length<0){
+      let result = confirm("Story Will Be deleted")
+      if(result){
+        dispatch(deletePage(pathParams))
+      }
+    }
+  };
       const contentDiv = ()=>{
         if(currentProfile){
           if(pageInView){
@@ -140,19 +152,19 @@ function EditorContainer({currentProfile}){
           setTitle(e.target.value)
         }
         return(
-          <div > 
-                <div className="sm:w-[80vw] rounded-lg sm:my-4 mx-auto ">
-                  <div className="bg-dark sm:rounded-t-lg border border-white  flex flex-row  text-left">
+          <div className="sm:max-w-[45rem] mx-auto"> 
+                <div className=" rounded-lg sm:my-4 mx-auto ">
+                  <div className="bg-green-600 sm:rounded-t-lg border border-white  flex flex-row  text-left">
                     <div style={{borderRight:"1px solid white" }}
                     className=" flex flex-row ">
-                    <input type="text " className="input py-2 text-3xl mt-2 bg-dark text-white font-bold" onChange={handleTitle}placeholder="Untitled"/>
-                    {isSaved?<p className=" mx-2 mt-2 text-slate-400">Saved</p>:
-                    <p className=" mx-2 mt-2 text-slate-400">Draft</p>}
+                    <input type="text " className="input py-2 text-3xl mt-2 bg-green-600 text-white font-bold" onChange={handleTitle}placeholder="Untitled"/>
+                    {isSaved?<p className=" mx-2 mt-2 text-white">Saved</p>:
+                    <p className=" mx-2 mt-2 text-white">Draft</p>}
                     </div>
-                    <div className="justify-between w-full">
-                      <button className="btn mx-4 my-2 text-white border border-white"
+                    <div className="justify-between p-1 w-full">
+                      <button className=" mb-1 bg-emerald-800 text-white "
                       onClick={handleClickAddToCollection}>Add to Collection</button>
-                      <button className="btn  text-white border border-white">Post Public</button>
+                      <button className=" text-white bg-emerald-800 ">Post Public</button>
                     </div>
                   </div>
                 {contentDiv()}

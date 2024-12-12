@@ -1,14 +1,11 @@
-import React,{useState,createRef,useEffect, createElement} from "react"
+import React from "react"
 import { useDispatch,useSelector } from "react-redux";
-import 'react-quill/dist/quill.snow.css';
-import { setHtmlContent } from "../actions/PageActions";
-import 'react-quill/dist/quill.snow.css';
-import theme from "../theme";
+import { setHtmlContent } from "../../actions/PageActions";
 import ReactQuill from "react-quill";
+import "../../styles/Editor.css"
 const fonts = ["Arial","Courier New","Georgia"]
 export default function RichEditor(props){
-    // const editorRef = createRef(null)
-    // const editingPage = useSelector(state=>state.pages.editingPage)
+    
     const ehtmlContent = useSelector(state=>state.pages.editorHtmlContent)
   
     const dispatch = useDispatch()
@@ -46,7 +43,7 @@ export default function RichEditor(props){
     return( <div>
      
       <ReactQuill 
-      className="bg-dark rounded-lg mx-auto  text-white stroke-white"
+      className="bg-green-600 rich-editor sm:w-[46rem] rounded-lg  text-white stroke-white"
       modules={modules}
       formats={formats} value={ehtmlContent} onChange={(content)=>{
           dispatch(setHtmlContent(content))

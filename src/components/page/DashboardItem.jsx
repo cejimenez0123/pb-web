@@ -215,7 +215,7 @@ return <Button onClick={()=>{
     //     navigate("/library/new")
     // }
     const buttonRow = ( )=>{
-        return isGrid?<div className='border-t text-right border-green-100 '>
+        return isGrid?<div className='text-right  '>
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
@@ -224,18 +224,18 @@ return <Button onClick={()=>{
          onClick={handleApprovalClick}
             
           className={`rounded-none w-fit 
-           border-x-1 border-y-0 px-4 bg-transparent border-white  text-white `}
+           border-x-1 text-xl border-y-0 px-4 bg-transparent  text-white `}
         
          >
              Yea
          </button>
          <button
              className=' px-4 rounded-none
-             border-x-2 border-y-0  bg-transparent border-white text-white'
+             border-x-2 border-y-0 text-xl bg-green-600 border-white text-white'
              onClick={()=>hanldeClickComment(page)}
                  >
          
-             Comments
+           Review
          </button>
          <div className="dropdown dropdown-top">
 <button tabIndex={0} role="button" 
@@ -243,13 +243,12 @@ className="
          pt-2 
          rounded-none
          px-4 
-         border-x-2 border-y-0
+         text-xl
          btn-primary
-         bg-transparent border-white
-         border-b-none
+         bg-transparent 
          text-white ">
 Share</button>
-<ul tabIndex={0} className="dropdown-content menu bg-dark rounded-box z-[1] w-52 p-2 shadow">
+<ul tabIndex={0} className="dropdown-content menu bg-green-600 rounded-box z-[1] w-52 p-2 shadow">
 <li><a disabled={!currentProfile} 
 className='text-white'
 

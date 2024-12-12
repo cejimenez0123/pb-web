@@ -46,16 +46,6 @@
     padding-bottom: 3em;
 }
 
-#EditorContainer .left-side-bar{
-    padding: 0 4em;
-}
-#EditorContainer .right-side-bar .form{
-    background-color:  var(--background-tertiary-light);
-    width: 23em;
-    padding: 4em 2em;
-    border-radius: 25px;
-    box-shadow: var(--some-box-shadow);
-}
 
 #EditorContainer .form input[type="text"]{
    background-color: white;
@@ -63,6 +53,10 @@
 #EditorContainer .btn-primary{
     background-color: rgb(15, 18, 15) !important;
 }
+}
+.ql-picker-options span::before{
+    color:#00FF00;
+
 }
 @media (max-width: 900px) {
     #EditorContainer{

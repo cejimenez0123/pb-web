@@ -24,7 +24,7 @@ import {
        
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
-import { getMyStories, getStory,createStory, updateStory} from "../actions/StoryActions"
+import { getMyStories, getStory,createStory, updateStory, deleteStory} from "../actions/StoryActions"
 import { getProtectCollectionStories, getPublicCollectionStories } from "../actions/CollectionActions"
 
 const initialState = {pagesInView:[],
@@ -150,13 +150,11 @@ const pageSlice = createSlice({
           state.loading = true
       }).addCase(setPagesToBeAdded.type,(state,{payload})=>{
         state.pagesToBeAdded = payload
-      }).addCase(fetchArrayOfPagesAppened.fulfilled,(state,{payload})=>{
-        state.pagesInView = [...state.pagesInView,...payload.pageList]
-        state.loading = false
-      }).addCase(fetchArrayOfPagesAppened.rejected,(state,{payload})=>{
-      state.error = payload.error
-      state.loading = false
-    }).addCase(clearPagesInView.type,(state)=>{
+      }).addCase(deleteStory.rejected,(state,{payload})=>{
+        state.error = payload.error
+      }).addCase(deleteStory.fulfilled,(state,{payload})=>{
+        state.pageInView = null
+      }).addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []
     }).addCase(fetchEditingPage.fulfilled,(state,{payload})=>{
       if(payload.page){

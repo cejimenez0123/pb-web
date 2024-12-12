@@ -129,35 +129,35 @@ let profile = (<div></div>)
         return(
         
         <div className="">
-            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2 bg-dark text-white'>
+            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2 bg-green-600 text-white'>
                 <div className="titles ">
                 {page.title.length>0?<p>{page.title}</p>:<p>Untitled</p>}
                 </div>
                 {profile}
             </div>
-            <div className="bg-dark pt-2 h-48">
+            <div className="bg-green-600  pt-2 h-48">
                 {pageDataElement}
                 </div>
-            <div className='bg-dark border-t'>
+            <div className='bg-green-600  border-t'>
                 <button 
-                className="bg-dark"
+                className="bg-green-600 "
                    disabled={!currentProfile} 
                 >
                     Yea
                 </button>
                 <button
-                className="bg-dark"
+                className="bg-green-600 px-4 mx-4 rounded-none border-white border-l-1 border-r-1 border-t-0 border-b-0 "
                    disabled={!currentProfile} 
                     onClick={()=>{setCommenting(!commenting)}}>
                 
-                    Comment
+                    Discuss
                 </button>
                 <div className="dropdown  dropdown-top">
         <div tabIndex={0} role="button" className="btn pt-2 mt-1 text-white "> Share</div>
-        <ul tabIndex={0} className="dropdown-content bg-dark text-white menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+        <ul tabIndex={0} className="dropdown-content bg-white text-green-600 menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
         <li>
             <a disabled={!currentProfile} 
-  className='text-white'
+  className=' text-green-600 '
   
   onClick={()=>{}}> 
                             Add to Book
@@ -168,12 +168,12 @@ let profile = (<div></div>)
                  dispatch(setPagesToBeAdded(params))
                  navigate("/library/new")
             }}
-            className='text-white'
+            className=' text-green-600 '
             >
                 Add to Library
                         </a></li>
              {currentProfile.id == page.authorId? <li> <a
-                        className='text-white'
+                        className=' text-green-600 '
                        onClick={()=> 
                         navigate(Paths.editPage.createRoute(page.id))
                        }
@@ -181,7 +181,7 @@ let profile = (<div></div>)
                          Edit
                         </a></li>:null}           
                        <li> <a
-                        className='text-white'
+                        className=' text-green-600 '
                        onClick={()=>copyShareLink()}
                     >
                           Copy Share Link
@@ -190,7 +190,7 @@ let profile = (<div></div>)
             <a onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</a>:<div></div>}
             </li>
            <li> <IconButton onClick={onBookmarkPage}
-           className="bg-dark"
+           className=" text-green-600 "
            disabled={!currentProfile}> 
             {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
             </IconButton></li>
