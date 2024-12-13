@@ -68,9 +68,6 @@ function EditorContainer({currentProfile}){
     },[htmlContent,title])
       const [open, setOpen] = useState(false);
 
-      const handleClickOpen = () => {
-        setOpen(true);
-      };
     
       const handleClose = () => {
         setOpen(false);

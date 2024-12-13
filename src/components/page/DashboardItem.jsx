@@ -92,7 +92,7 @@ const hanldeClickComment=(pageItem)=>{
             >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className=' content text-white bg-transparent p-4 '
+        } className=' content text-slate-800 bg-transparent p-4 '
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
         </div>)   
@@ -219,19 +219,19 @@ return <Button onClick={()=>{
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className='border-t  text-center border-green-100 '><div>
+        <div className='border-t bg-green-600 text-center border-green-100 '><div>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
           className={`rounded-none w-fit 
-           border-x-1 text-xl border-y-0 px-4 bg-transparent  text-white `}
+           border-x-1 text-xl border-y-0 px-4 bg-transparent  text-slate-800 `}
         
          >
              Yea
          </button>
          <button
              className=' px-4 rounded-none
-             border-x-2 border-y-0 text-xl bg-green-600 border-white text-white'
+             border-x-2 border-y-0 text-xl bg-green-600 border-white text-slate-800'
              onClick={()=>hanldeClickComment(page)}
                  >
          
@@ -246,7 +246,7 @@ className="
          text-xl
          btn-primary
          bg-transparent 
-         text-white ">
+         text-slate-800 ">
 Share</button>
 <ul tabIndex={0} className="dropdown-content menu bg-green-600 rounded-box z-[1] w-52 p-2 shadow">
 <li><a disabled={!currentProfile} 
@@ -268,7 +268,9 @@ onClick={()=>ClickAddStoryToCollection()}>
                    Copy Share Link
                  </a></li>
                 <li> {(currentProfile && currentProfile.id == page.profileId )?
-     <a onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</a>:<div></div>}
+     <a onClick={()=>{
+        dispatch(setPageInView({page}))
+        navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
      </li>
     <li> <IconButton onClick={onBookmarkPage}
     disabled={!currentProfile}> 
@@ -296,13 +298,14 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={`rounded-lg bg-green-600 mb-4 overflow-hidden`}>
+        <div className={`rounded-lg bg-green-400 mb-4 overflow-hidden`}>
         
-            <div className=' border-white border border-b border-2   pl-2 text-white   pb-2 pt-4'>
-                <div className=' flex flex-row ml-4'>
+            <div className=' border-white border border-b border-2 bg-green-600  pl-2 text-white   pb-2 pt-4'>
+                <div className=' flex flex-row  ml-4'>
                 {bookTitleDiv}
-                <p className="text-white" onClick={()=>{
-                    navigate(`/page/${page.id}`)
+                <p className="text-slate-800 " onClick={()=>{
+                    dispatch(setPageInView({page}))
+                    navigate(Paths.page.createRoute(page.id))
 
                 }} > {` `+page.title}</p>
                 </div>

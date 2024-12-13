@@ -43,13 +43,34 @@
   border-top-left-radius: 8px;
   
 }
-.content span{font-size: 1.3rem;}
+.page-text span{font-size: 1.3rem !important;}
 .dashboard-item img{ 
     width: 50em;    
     height:auto;
     margin: 0 auto;
   } 
-
+  /* body {
+    background: black;
+  } */
+  
+  .shine {
+    /* height: 50px;
+    margin:5px; */
+    background: 
+      linear-gradient(90deg,#0000 33%,rgba(255,255,255,0.3) 50%,#0000 66%)
+      rebeccapurple;
+    background-size:300% 100%;
+    animation: shine 2s infinite;
+  }
+  
+  @keyframes shine {
+    0% {
+      background-position: right;    
+    }
+    /*100% {
+      background-position: left; it's the default value, no need to define it
+    }*/
+  }
  .dashboard-header{
   border-bottom: 1px solid grey;
   padding: 1em;

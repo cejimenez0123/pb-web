@@ -9,7 +9,7 @@ import ReactGA from 'react-ga4'
 import {IconButton} from "@mui/joy"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import {setPagesToBeAdded, setEditingPage} from "../../actions/PageActions"
+import {setPagesToBeAdded, setEditingPage, setPageInView} from "../../actions/PageActions"
 import CommentInput from "../CommentInput"
 import checkResult from "../../core/checkResult"
 import Paths from "../../core/paths"
@@ -81,7 +81,7 @@ export default function PageViewItem({page}) {
 if(page){
     switch(page.type){
     case PageType.text:
-        pageDataElement = <div className='content' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        pageDataElement = <div className='w-max' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
         pageDataElement = <img className="dashboard-content image" src={page.data} alt={page.title}/>
@@ -136,7 +136,7 @@ let profile = (<div></div>)
                 </div>
                 {profile}
             </div>
-            <div className="bg-green-600  pt-2 h-48">
+            <div className="bg-green-600  pt-4 px-4">
                 {pageDataElement}
                 </div>
             <div className='bg-green-600  border-t'>
@@ -173,11 +173,12 @@ let profile = (<div></div>)
             >
                 Add to Library
                         </a></li>
-             {currentProfile.id == page.authorId? <li> <a
+             {currentProfile && currentProfile.id == page.authorId? <li> <a
                         className=' text-green-600 '
-                       onClick={()=> 
+                       onClick={()=> {
+                        dispatch(setPageInView({page}))
                         navigate(Paths.editPage.createRoute(page.id))
-                       }
+                       }}
                     >
                          Edit
                         </a></li>:null}           
@@ -188,7 +189,9 @@ let profile = (<div></div>)
                           Copy Share Link
                         </a></li>
                        <li> {(currentProfile && currentProfile.id == page.profileId )?
-            <a onClick={()=>navigate(Paths.editPage.createRoute(page.id))}>Edit</a>:<div></div>}
+            <a onClick={()=>{
+                dispatch(setPageInView({page}))
+                navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
             </li>
            <li> <IconButton onClick={onBookmarkPage}
            className=" text-green-600 "

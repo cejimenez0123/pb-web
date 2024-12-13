@@ -55,7 +55,9 @@ function PageIndexItem({page,onDelete}) {
                 value: page.id,
                 nonInteraction: false
               });
+            dispatch(setPageInView({page}))
         }
+
         navigate(path)
 
     }
@@ -90,7 +92,9 @@ function PageIndexItem({page,onDelete}) {
         buttonDiv = (<div className="dropdown dropdown-left">
         <div tabIndex={0} role="button" className="btn m-1"><img src={edit}/></div>
         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-          <li className="text-green-600 " onClick={()=>handleNavigate(Paths.editPage.createRoute(page.id))}><a >Edit</a></li>
+          <li className="text-green-600 " onClick={()=>{
+            dispatch(setPageInView({page}))
+            handleNavigate(Paths.editPage.createRoute(page.id))}}><a >Edit</a></li>
           <li className="text-green-600 " onClick={()=>handleNavigate(Paths.addStoryToCollection.createRoute(page.id))}><a>Add to Collection</a></li>
         </ul>
       </div>)

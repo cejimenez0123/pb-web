@@ -29,7 +29,7 @@ import theme from '../theme'
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import Paths from '../core/paths'
-import { setEditingPage } from '../actions/PageActions'
+import { setEditingPage, setPageInView } from '../actions/PageActions'
 import { searchDialogToggle } from '../actions/UserActions'
 import SearchDialog from '../components/SearchDialog'
 import { createStory } from '../actions/StoryActions'
@@ -147,6 +147,7 @@ function NavbarContainer(props){
         dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
         title:"Untitled",commentable:true
       })).then(res=>checkResult(res,data=>{
+          dispatch(setPageInView({page:data.story}))
           navigate(Paths.editPage.createRoute(data.story.id))
       },e=>{
 

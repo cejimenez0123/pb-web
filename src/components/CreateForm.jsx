@@ -9,6 +9,7 @@ import "../styles/CreateBook.css"
 import "../styles/CreateLibrary.css"
 import { textareaStyle } from "../styles/styles"
 import Paths from "../core/paths"
+import { setPageInView } from "../actions/PageActions"
 const inputStyle = {
     width: "100%",
 }
@@ -93,6 +94,7 @@ Save
 </Button>
 <List>
     {pagesToBeAdded.map(page =><ListItem key={page.id} onClick={()=>{
+        dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
     }}>{page.title}</ListItem>)}
 </List>

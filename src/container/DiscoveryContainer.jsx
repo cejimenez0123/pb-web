@@ -94,10 +94,11 @@ const navigateToLibrary = (library)=>{
         if(booksInView!=null){
             return(
         
-    <div> <h3 className=' text-white 
+    <div className='ml-12'> <h3 className=' text-white 
     text-left 
     font-extrabold 
-    pl-2 pt-2 mt-1 mx-4 text-2xl'>Books</h3>
+    mb-4
+    pl-4 pt-2 mt-1 mx-4 text-2xl'>Collections</h3>
                 <InfiniteScroll
             className={`mt-1   flex-row"} flex`}
             dataLength={booksInView.length}
@@ -194,11 +195,11 @@ const navigateToLibrary = (library)=>{
             <ErrorBoundary>
             <div 
             //id="discover" 
-            className=' mx-auto mt-4' >
+            className=' mx-auto ml-24 mt-4' >
 
               <div className=' text-left ' >
                
-                <h3 className={`text-white ${isNotPhone?'ml-36  pl-4 ':'pl-4 ml-4'} font-extrabold text-2xl`}>Libraries</h3>
+                <h3 className={`text-white ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} font-extrabold text-2xl`}>Communities</h3>
                 {libraryForums()}
                 {bookList()} 
                 <div className='flex  flex-col-reverse lg:flex-row'>

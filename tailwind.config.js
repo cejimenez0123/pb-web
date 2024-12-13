@@ -36,7 +36,16 @@ export default {
         error: "#ef4444",
         ghost:"#e4e4e7"
       },
-    extend: {},
+    extend: { keyframes: {
+      shine: {
+        '0%': { transform: 'translateX(-100%)' },
+        '100%': { transform: 'translateX(100%)' },
+      },
+    },
+    animation: {
+      shine: 'shine 1s ease-in-out',
+    },
+  },
   },
   plugins: [
     daisyui,

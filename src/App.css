@@ -667,13 +667,30 @@
   }
 }
 .link-preview{
-  background-color: white;
+  background-color: rgb(74 222 128);
+}
+.shine:hover {
+ 
+  background: 
+    linear-gradient(90deg,#0000 33%,rgba(255,255,255,0.3) 50%,#0000 66%)
+    #16a34a;
+  background-size:300% 100%;
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: right;    
+  }
+  /*100% {
+    background-position: left; it's the default value, no need to define it
+  }*/
 }
 .link-preview p{
-  margin-left: 1em;
-  margin-right: .5em;
+  padding-left: 1em;
+  padding: .5em;
   text-align: left ;
-  color: black;
+  background-color: rgb(74 222 128);
 }
 .link-preview .title{
   margin-left: .5em;
