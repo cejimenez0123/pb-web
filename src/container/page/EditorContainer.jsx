@@ -143,7 +143,7 @@ function EditorContainer({currentProfile}){
                     <div style={{borderRight:"1px solid white" }}
                     className="  flex flex-col-reverse">
                       <div className="flex-row flex">
-                    <input type="text " className=" p-2 bg-green-600 h-fit text-xl w-[78%] sm:w-[30em] text-white font-bold" value={title} onChange={handleTitle}placeholder="Untitled"/>
+                    <input type="text " className=" p-2 bg-green-600 h-fit text-xl w-[21.5rem] sm:w-[30em] text-white font-bold" value={title} onChange={handleTitle}placeholder="Untitled"/>
                     {isSaved?<h6 className=" mx-2 mt-1 text-white ">Saved</h6>:
                     <h6 className=" mx-2 mt-1 text-white">Draft</h6>}</div>
                     </div>

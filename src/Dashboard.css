@@ -43,7 +43,7 @@
   border-top-left-radius: 8px;
   
 }
-
+.content span{font-size: 1.3rem;}
 .dashboard-item img{ 
     width: 50em;    
     height:auto;
