@@ -103,6 +103,7 @@ console.log("res",res)
             headers:{
                 Authorization: "Bearer "+localStorage.getItem(this.token)
     }})
+    console.log("Rescm",res)
     return res.data
     }
     async getCollectionStoriesPublic({id}){

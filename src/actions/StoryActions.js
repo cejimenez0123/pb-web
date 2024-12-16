@@ -74,7 +74,7 @@ const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStori
   try{
 
     let data = await storyRepo.getCollectionStoriesProtected(params)
-    console.log("rercs",data)
+ 
     return {
      list:data.list
     }

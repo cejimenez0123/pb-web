@@ -24,7 +24,7 @@ import {
        
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
-import { getMyStories, getStory,createStory, updateStory, deleteStory} from "../actions/StoryActions"
+import { getMyStories, getStory,createStory, updateStory, deleteStory, getCollectionStoriesProtected} from "../actions/StoryActions"
 import { getProtectCollectionStories, getPublicCollectionStories } from "../actions/CollectionActions"
 
 const initialState = {pagesInView:[],
@@ -42,14 +42,17 @@ const pageSlice = createSlice({
     extraReducers(builder) {
         builder.addCase(getPublicCollectionStories.pending,(state)=>{
           state.loading=true
-        }).addCase(getPublicCollectionStories.fulfilled,(state,payload)=>{
+        }).addCase(getPublicCollectionStories.fulfilled,(state,{payload})=>{
           state.loading=false
           state.pagesInView = payload.list
-        }).addCase(getProtectCollectionStories.pending,(state)=>{
+        }).addCase(getCollectionStoriesProtected.fulfilled,(state,{payload})=>{
+          const {list}=payload
+         
+          state.loading = false
+          state.pagesInView =  list.map(joint=>joint.story)
+        }).addCase(getCollectionStoriesProtected.pending,(state)=>{
           state.loading=true
-        }).addCase(getProtectCollectionStories.fulfilled,async(state,payload)=>{
-          state.loading= false
-          state.pagesInView = payload.list
+        
         }).addCase(updateStory.rejected,(state,{payload})=>{
             state.loading = false
             state.error = payload.message

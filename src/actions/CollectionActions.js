@@ -150,7 +150,6 @@ const getProtectCollectionStories = createAsyncThunk("collection/getProtectColle
     params,thunkApi
 )=>{
     let data = await storyRepo.getCollectionStoriesProtected(params)
-    console.log(data)
     return {list:data.list}
 })
 const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectionStories",

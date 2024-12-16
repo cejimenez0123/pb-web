@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect ,useLayoutEffect} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { fetchCollection, fetchCollectionProtected } from "../../actions/CollectionActions"
@@ -14,12 +14,14 @@ export default function CollectionContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const colInView = useSelector(state=>state.books.collectionInView)
     const params = useParams()
-    useEffect(()=>{
+    useLayoutEffect(()=>{
        
         currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
-        currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
-     //   currentProfile?dispatch(getSubCollections(params)):dispatch(getSubCollections(params))
+       
     },[currentProfile])
+    useLayoutEffect(()=>{
+        currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
+    },[colInView])
     const collectioinIs = ()=>{
         if(colInView.collectionIdList.length>0){
             return "Community"
