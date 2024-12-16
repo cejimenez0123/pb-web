@@ -81,13 +81,13 @@ export default function PageViewItem({page}) {
 if(page){
     switch(page.type){
     case PageType.text:
-        pageDataElement = <div className='w-max' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        pageDataElement = <div className='w-max  pt-4 px-4' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
         pageDataElement = <img className="dashboard-content image" src={page.data} alt={page.title}/>
     break;
     case PageType.link:
-        pageDataElement = <div className="dashboard-content" ><LinkPreview url={page.data}/></div>
+        pageDataElement = <div className="" ><LinkPreview url={page.data}/></div>
         break;
     default:
         pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
@@ -136,7 +136,7 @@ let profile = (<div></div>)
                 </div>
                 {profile}
             </div>
-            <div className="bg-green-600  pt-4 px-4">
+            <div className="bg-green-600 ">
                 {pageDataElement}
                 </div>
             <div className='bg-green-600  border-t'>

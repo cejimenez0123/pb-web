@@ -20,7 +20,7 @@ const PageList = ({isGrid,fetchContentItems})=>{
         style={isGrid?{overflow:"unset"}:{display:"flex",flexDirections:"row"}}
         >
 
-           <div className={isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':""}>
+           <div className={"max-w-[100vw] "+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"")}>
           {pagesInView.map(page=>{
                 const id = `${page.id}_${uuidv4()}`
                 return(<div id={id}>

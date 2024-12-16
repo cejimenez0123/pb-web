@@ -152,7 +152,7 @@ function MyProfileContainer(props){
                             </div>
                             <div role="tablist" className="tabs mt-8 shadow-md rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content w-[100%] sm:max-w-[42rem] p-6">
+  <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  sm:max-w-[42rem] md:p-6">
   <PageIndexList/>
   </div>
 
@@ -163,12 +163,12 @@ function MyProfileContainer(props){
     className="tab text-white bg-transparent  border-white border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
     aria-label="Books"
     />
-  <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box p-6">
+  <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box pt-1">
   <CollectionIndexList cols={books}/>
   </div>
 
   <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-transparent border-white border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
-  <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box p-6">
+  <div role="tabpanel" className="tab-content pt-1 bg-transparent sm:max-w-[42rem]   rounded-box p-6">
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>

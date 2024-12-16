@@ -4,9 +4,10 @@ import Paths from "../core/paths"
 import PropTypes from "prop-types"
 import ReactGA from "react-ga4"
 import MediaQuery from "react-responsive"
-import { setPageInView } from "../actions/PageActions"
+import { clearPagesInView, setPageInView } from "../actions/PageActions"
 import { setBookInView } from "../actions/BookActions"
 import { useDispatch } from "react-redux"
+import { setCollectionInView} from "../actions/CollectionActions"
 function BookListItem({book}){
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -15,7 +16,9 @@ function BookListItem({book}){
         book: PropTypes.object.isRequired
     }
     const navigateToBook = ()=>{
-        dispatch(setBookInView({book}))
+       
+        dispatch(setCollectionInView({collection:book}))
+        dispatch(clearPagesInView())
         navigate(Paths.collection.createRoute(book.id))
         ReactGA.event({
             category: "Book",
@@ -28,7 +31,7 @@ function BookListItem({book}){
     return (
 
 
-<div  onClick={navigateToBook}className="max-w-48 shine hover:animation-pulse text-slate-900 min-w-56 h-48 mx-8 bg-green-400 rounded overflow-hidden shadow-lg">
+<div  onClick={navigateToBook}className="max-w-48 col-item text-slate-900 min-w-56 h-48 mx-8 bg-green-400 rounded overflow-hidden shadow-lg">
  <div className="px-6 py-4">
     <div className="font-bold text-xl mb-2">{book.title}</div>
     <MediaQuery minWidth={"768px"}>

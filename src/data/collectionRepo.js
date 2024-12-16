@@ -67,11 +67,27 @@ import Enviroment from "../core/Enviroment";
         }})
         return res.data
     }
-    async addStoriesToCollection({collection,storyIdList}){
+    // async addStoriesToCollection({collection,storyIdList}){
    
-        let res = await axios.post(Enviroment.url+"/collection/"+collection.id+"/story/",{
-            storyIdList:storyIdList
-        })
+    //     let res = await axios.post(Enviroment.url+"/collection/"+collection.id+"/story/",{
+    //         storyIdList:storyIdList
+    //     })
+    //     return res.data
+    // }
+    async addCollectionListToCollection({id,list}){
+        let res = await axios.post(this.url+"/"+id+"/collection",{
+            list:list
+        },{headers:{
+            Authorization:"Bearer "+localStorage.getItem(this.token)
+        }})
+        return res.data
+    }
+    async addStoryListToCollection({id,list}){
+        let res = await axios.post(this.url+"/"+id+"/story",{
+            list:list
+        },{headers:{
+            Authorization:"Bearer "+localStorage.getItem(this.token)
+        }})
         return res.data
     }
     async addCollectionToCollection({parentCollection,childCollection}){
@@ -79,6 +95,7 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.post(this.url+"/"+parentCollection.id+"/collection/"+childCollection.id)
         return res.data
     }
+
     async deleteCollection({id}){
       
         let res = await axios.delete(this.url+"/"+id)

@@ -9,7 +9,7 @@ import checkResult from "../core/checkResult"
 export default function CommentInput({editing,page,parentComment,parentProfile}){
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [commentInput,setComment] = useState("")
+    const [commentInput,setComment] = useState("Remember the sandwich method.\n Compliment.Critique.Compliment")
     const [show,setShow]=useState(true)
     const saveComment=()=>{
         if(currentProfile && page && commentInput.length >0){
@@ -53,22 +53,24 @@ export default function CommentInput({editing,page,parentComment,parentProfile})
     }
     const input = ()=>{
         
-    return(<div style={{display: show?"":"none"}}className="comment-input">
-    <div className="comment-input-header">
+    return(<div style={{display: show?"":"none"}}className="p-2 bg-green-600">
+    <div className="text-slate-800">
         {commentAuthorDiv}
     </div>
-    <TextareaAutosize
-    style={{width: "100%",padding:"1em"}}
-    value={commentInput}
-    minRows={2} 
-    
-    onChange={(e)=>{
-       setComment(e.target.value)
-}} />
+<textarea
+  
+  className="textarea w-[96svw] bg-green-400 text-slate-800 sm:w-96 mx-auto textarea-bordered "
+  
+  value={commentInput}
+
+  
+  onChange={(e)=>{
+     setComment(e.target.value)
+}}></textarea>
     <div className="button-row">
-       {editing? <Button onClick={clickUpdateComment}>Update</Button>:<Button disabled={!currentProfile} onClick={saveComment}>
-            Reply
-        </Button>}
+       {editing? <button className="bg-green-400 text-slate-800"onClick={clickUpdateComment}>Update</button>:<button className="bg-green-200 text-slate-800" disabled={!currentProfile} onClick={saveComment}>
+            Disabled
+        </button>}
     </div>
 </div>)}
     return input()

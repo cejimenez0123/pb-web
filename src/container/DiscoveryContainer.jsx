@@ -94,7 +94,7 @@ const navigateToLibrary = (library)=>{
         if(booksInView!=null){
             return(
         
-    <div className='ml-12'> <h3 className=' text-white 
+    <div className='md:ml-12'> <h3 className=' text-white 
     text-left 
     font-extrabold 
     mb-4

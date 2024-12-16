@@ -1,7 +1,7 @@
 import { useState } from "react"
 import close from "../../images/icons/close.svg"
 import { useDispatch, useSelector } from "react-redux"
-import { createCollection } from "../../actions/CollectionActions"
+import { createCollection, setCollectionInView } from "../../actions/CollectionActions"
 import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import { clearPagesInView } from "../../actions/PageActions"
@@ -26,6 +26,7 @@ export default function CreateCollectinForm(props){
     
         dispatch(createCollection(params)).then(res=>{
             dispatch(clearPagesInView())
+            dispatch(setCollectionInView({collection:res.payload.collection}))
             navigate(Paths.collection.createRoute(res.payload.collection.id))
             
         })

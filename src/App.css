@@ -669,13 +669,28 @@
 .link-preview{
   background-color: rgb(74 222 128);
 }
-.shine:hover {
+.col-item{
+  background-color: #4ade80;
+}
+.col-item:hover {
  
   background: 
     linear-gradient(90deg,#0000 33%,rgba(255,255,255,0.3) 50%,#0000 66%)
     #16a34a;
   background-size:300% 100%;
   animation: shine 2s infinite;
+}
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#0C9;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
 }
 
 @keyframes shine {

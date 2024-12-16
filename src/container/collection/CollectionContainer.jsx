@@ -5,8 +5,7 @@ import { fetchCollection, fetchCollectionProtected } from "../../actions/Collect
 import add from "../../images/icons/add_box.svg"
 import PageList from "../../components/page/PageDashboardList"
 import { getCollectionStoriesProtected, getCollectionStoriesPublic } from "../../actions/StoryActions"
-import MediaQuery from "react-responsive"
-import CollectionIndexList from "../../components/collection/CollectionIndexList"
+import edit from "../../images/icons/edit.svg"
 import Paths from "../../core/paths"
 
 export default function CollectionContainer(props){
@@ -31,25 +30,32 @@ export default function CollectionContainer(props){
     const getSubCollections = ()=>{
     currentProfile?dispatch(getSubCollections(params)):dispatch(getSubCollections(params))
     }
-    const collectionInfo=()=>{return(<div className="h-fit pb-8 w-48 border border-white  mx-8 mt-8 rounded rounded-lg mb-8 text-left">
-    <h6 className="m-8 text-2xl">{colInView.title}</h6>
-        <p className=" ml-8 bg-emerald-800 max-w-96 rounded-lg p-4">{colInView.purpose}</p>
-        <div className="ml-8 mt-8 flex flex-row">
-   <button className="bg-emerald-600">Follow</button>
-   <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
-   }className="w-8 h-8 mx-4 my-auto"src={add}/>
+    const collectionInfo=()=>{return(<div className="h-fit max-w-[100vw] sm:pb-8 sm:w-48 sm:border sm:border-white  mx-2 mt-4 md:mx-8 md:mt-8 rounded rounded-lg mb-8 text-left">
+    <h3 className="m-8  text-3xl">{colInView.title}</h3>
+        <h3 className=" md:ml-8 text-xl bg-emerald-600 max-w-[100vw] md:max-w-96 rounded-lg p-4">{colInView.purpose}</h3>
+        <div className="md:ml-8 mt-8 flex flex-row">
+   <button className="bg-green-700 text-xl">Follow</button>
+   {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
+   <div
+    className="flex-row flex"
+   >
+    <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
+   }className="w-8 h-8 mx-8 my-auto"src={add}/>
+   {colInView.profileId==currentProfile.id?<img 
+   onClick={()=>navigate(Paths.editCollection.createRoute(colInView.id))}
+   className="w-8 h-8 mx-4 my-auto"src={edit}/>:null}</div>:null}
 
 
 
-   {/* <button className="bg-transparent"><img className="w-8 h-8"src={add}/></button> */}
+   
    </div></div>)}
 
 
 
     return(<>
         {colInView?collectionInfo():null}
-        <div className="text-left ml-8">
-            <h6 className="text-xl font-bold mb-8">Pages</h6>
+        <div className="text-left max-w-[100vw] md:ml-8">
+            <h6 className="text-xl font-bold pl-4 mb-2">Pages</h6>
         <PageList/>
       
             </div>

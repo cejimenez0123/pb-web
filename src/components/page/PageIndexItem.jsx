@@ -80,8 +80,8 @@ function PageIndexItem({page,onDelete}) {
     
    let buttonDiv= (<div>
     <div className="dropdown dropdown-left">
-  <div tabIndex={0} role="button" className="btn my-auto"><img className={"w-8 h-8"}src={addBox}/></div>
-  <ul tabIndex={0} className="dropdown-content menu  rounded-box z-[1] w-72 p-2 shadow">
+  <div tabIndex={0} role="button" className=" my-auto"><img className={"min-w-8 min-h-8"}src={addBox}/></div>
+  <ul tabIndex={0} className="dropdown-content menu  rounded-box z-[1] md:w-72 p-2 shadow">
     <li className="text-green-600 "><a onClick={()=>handleAddClick("book")}>Add to Collection</a></li>
     <li className="text-green-600 "><a >Share</a></li>
   </ul>
@@ -90,7 +90,7 @@ function PageIndexItem({page,onDelete}) {
    </div>)
     if(currentProfile!=null && page.authorId==currentProfile.id){
         buttonDiv = (<div className="dropdown dropdown-left">
-        <div tabIndex={0} role="button" className="btn m-1"><img src={edit}/></div>
+        <div tabIndex={0} role="button" className="mx-4"><img classname="w-12 h-12" src={edit}/></div>
         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
           <li className="text-green-600 " onClick={()=>{
             dispatch(setPageInView({page}))
@@ -100,11 +100,11 @@ function PageIndexItem({page,onDelete}) {
       </div>)
   
     }
-            return(<div className={`   border-white border-b-2 flex w-full flex-row justify-between  mb-1  `}>
-                <div className="text-left my-auto ml-4 py-4   ">
+            return(<div className={`   border-white rounded-lg border flex flex-row justify-between  mb-1  `}>
+                <div className="text-left max-w-[100vw] h-fit  my-auto md:ml-4 py-8   ">
                
                 <a className="text-white " onClick={handleOnClick}> 
-                   {page.title.length>0? <h6 className="text-xl font-bold my-auto">{page.title}</h6>:<h6>Unititled</h6>}
+                   {page.title.length>0? <h6 className="text-xl ml-2 my-auto">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                 <div className=" my-auto w-fit">

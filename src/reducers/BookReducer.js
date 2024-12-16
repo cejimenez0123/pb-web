@@ -1,5 +1,6 @@
 import { createSlice} from "@reduxjs/toolkit"
 import { 
+        
         fetchBook,
         getProfileBooks,
         fetchArrayOfBooksAppened,
@@ -14,7 +15,8 @@ import {
         } from "../actions/BookActions"
         import { createCollection, fetchCollection, fetchCollectionProtected, getMyCollections, getPublicBooks,
                 saveRoleToCollection
-        
+        ,addCollectionListToCollection,
+        addStoryListToCollection
             } from "../actions/CollectionActions"
 
 const initialState = {
@@ -33,7 +35,27 @@ name: 'books',
 initialState,
 extraReducers(builder) {
 builder
-.addCase(createCollection.pending,(state)=>{
+.addCase(addCollectionListToCollection.pending,(state,{payload})=>{
+    state.loading = true
+})
+.addCase(addStoryListToCollection.pending,(state,{payload})=>{
+   
+    state.loading =true
+})
+.addCase(addCollectionListToCollection.fulfilled,(state,{payload})=>{
+    state.collectionInView = payload.collection
+    state.loading = false})
+    .addCase(addCollectionListToCollection.rejected,(state,{payload})=>{
+   
+         
+    state.error = payload.error
+    state.loading = false
+}).addCase(addStoryListToCollection.rejected,(state,{payload})=>{
+    state.error = payload.error
+    state.loading = false
+}).addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
+    state.collectionInView =payload.collection
+}).addCase(createCollection.pending,(state)=>{
     state.loading = true
 }).addCase(createCollection.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
@@ -79,22 +101,6 @@ builder
   
     state.loading = false
     state.bookInView = payload.book
-}).addCase(getProfileBooks.pending,(state)=>{
-    state.loading = true
-}).addCase(getProfileBooks.fulfilled,(state,{payload})=>{
-
-    state.loading = false
-    state.booksInView = payload.bookList
-
-}).addCase(getProfileBooks.rejected,(state,{payload})=>{
-    state.loading = false
-    state.error = payload.error
-}).addCase(fetchArrayOfBooks.fulfilled,(state,{payload})=>{
-    state.booksInView = payload.bookList
-    state.loading = false
-}).addCase(fetchArrayOfBooksAppened.fulfilled,(state,{payload})=>{
-    state.booksInView = [...state.booksInView,...payload.bookList]
-    state.loading = false
 }).addCase(clearBooksInView,(state)=>{
     state.booksInView = []
 }).addCase(saveRolesForBook.rejected,(state,{payload})=>{

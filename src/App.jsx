@@ -47,6 +47,7 @@ import  Context from "./context"
 import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';
 import CollectionContainer from './container/collection/CollectionContainer';
 import AddToCollectionContainer from './container/collection/AddToCollection';
+import EditCollectionContainer from './container/collection/EditCollectionContainer.jsx';
 function App(props) {
   const authState = useAuth()
 
@@ -88,9 +89,9 @@ function App(props) {
   return (
       <Context.Provider value={[formerPage,setFormerPage]}>
         {/* from-emerald-800 to-emerald-600 */}
-      <div className='App background-blur bg-gradient-to-br from-green-800 to-green-200'>
+      <div  className='App background-blur bg-gradient-to-br from-green-800 to-green-200'>
       <div/>
-      <div >
+      <div style={{position:"relative"}} >
        <Helmet>
                 <meta charSet="utf-8" />
                 <title>Plumbum</title>
@@ -153,9 +154,12 @@ function App(props) {
      <Route path={Paths.collection.route()}
      element={<CollectionContainer/>}/>
      <Route path={Paths.addToCollection.route}
-     element={<AddToCollectionContainer/>}/>
+     element={        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><AddToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.addStoryToCollection.route}
-     element={<AddStoryToCollectionContainer/>}/>
+     element={<PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><AddStoryToCollectionContainer/></PrivateRoute>}/>
+     <Route path={Paths.editCollection.route()}
+      element={<PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><EditCollectionContainer/></PrivateRoute>}/>
+     
       <Route path={Paths.about()} element={
    <AboutContainer/>
       }/>

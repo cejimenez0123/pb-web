@@ -51,6 +51,31 @@ const isProfileMember = createAsyncThunk("collection/isProfileMember",async (
         data: res.data
       }
 })
+const setCollectionInView = createAction("books/setCollectionInView", (params)=> {
+
+    const {collection} = params
+    
+    return  {payload:
+      collection}
+      
+    
+  })
+const addCollectionListToCollection = createAsyncThunk("books/addCollectionListToCollection",async(
+    {id,list},thunkApi
+)=>{
+  
+
+    let data = await collectionRepo.addCollectionListToCollection({id,list})
+    return {collection:data.collection}
+})
+const addStoryListToCollection = createAsyncThunk("books/addStoryListToCollection",async(
+    {id,list},thunkApi
+)=>{
+
+
+    let data = await collectionRepo.addStoryListToCollection({id,list})
+    return {collection:data.collection}
+})
 const createCollection = createAsyncThunk("collection/createCollection",async (params,thunkApi)=>{
     let {
         title,
@@ -145,5 +170,8 @@ export {
     getProtectCollectionStories,
     getPublicCollectionStories,
     fetchCollection,
-    fetchCollectionProtected
+    fetchCollectionProtected,
+    setCollectionInView,
+    addCollectionListToCollection,
+    addStoryListToCollection
 }
