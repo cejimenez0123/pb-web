@@ -1,27 +1,35 @@
 import { useEffect ,useLayoutEffect} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
-import { fetchCollection, fetchCollectionProtected } from "../../actions/CollectionActions"
+import { fetchCollection, fetchCollectionProtected, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_box.svg"
-import PageList from "../../components/page/PageDashboardList"
+import PageList from "../../components/page/PageList"
 import { getCollectionStoriesProtected, getCollectionStoriesPublic } from "../../actions/StoryActions"
 import edit from "../../images/icons/edit.svg"
 import Paths from "../../core/paths"
+import InfiniteScroll from "react-infinite-scroll-component"
+import BookListItem from "../../components/BookListItem"
 
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const colInView = useSelector(state=>state.books.collectionInView)
+    const collections = useSelector(state=>state.books.collections)
     const params = useParams()
     useLayoutEffect(()=>{
        
         currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
        
     },[currentProfile])
+    const getSubCollections = ()=>{
+        currentProfile?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
+        }
     useLayoutEffect(()=>{
         currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
+      getSubCollections()
     },[colInView])
+  
     const collectioinIs = ()=>{
         if(colInView.childCollections.length>0){
             return "Community"
@@ -29,9 +37,7 @@ export default function CollectionContainer(props){
             return "Anthology"
         }
     }
-    const getSubCollections = ()=>{
-    currentProfile?dispatch(getSubCollections(params)):dispatch(getSubCollections(params))
-    }
+   
     const collectionInfo=()=>{
         
         
@@ -62,10 +68,25 @@ export default function CollectionContainer(props){
 
     return(<>
         {colInView?collectionInfo():null}
-        <div className="text-left max-w-[100vw] md:ml-8">
-            <h6 className="text-xl font-bold pl-4 mb-2">Pages</h6>
+        <div className="text-left  max-w-[100vw]   mx-auto ">
+            <h3 className="text-2xl font-bold text-center">Anthologies</h3>
+            <div>
+                <InfiniteScroll
+                dataLength={collections.length}
+                className="flex flex-row py-8"
+                next={()=>{}}
+                hasMore={false} // Replace with a condition based on your data source
+                loader={<p>Loading...</p>}
+                >
+                    {collections.map(col=>{
+                       return <BookListItem book={col}/>
+                    })}
+                </InfiniteScroll>
+            </div>
+            <h6 className="text-2xl mb-8 w-fit text-center font-bold pl-4">Pages</h6>
+        <div className=" ">
         <PageList/>
-      
+        </div>
             </div>
 
     </>)

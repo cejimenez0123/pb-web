@@ -87,7 +87,8 @@ export default function AddToCollectionContainer(props){
     const storyList = ()=>{
         if(pagesInView){
         return(<div className="max-w-96 max-h-96 overflow-scroll sm:mx-12 text-left mb-2">
-            <h6 className=" text-2xl ml-2 font-bold">Add Stories to Collection</h6><InfiniteScroll
+            <h6 className=" text-2xl ml-2 font-bold">Add Stories to Collection</h6>
+            <InfiniteScroll
         dataLength={pagesInView.length}>
             {pagesInView.map(story=>{
                 return(<div className="text-left mx-1 flex flex-row justify-between border
@@ -108,7 +109,8 @@ export default function AddToCollectionContainer(props){
         }}
     const colList = ()=>{
         return(<div  className="max-w-96   sm:h-auto sm:min-h-full   sm:mx-12">
-            <h6 className="text-2xl font-bold text-lef ml-2 mb-2">Add New Collections</h6><InfiniteScroll
+            <h6 className="text-2xl font-bold text-lef ml-2 mb-2">Add New Collections</h6>
+            <InfiniteScroll
             className="overflow-scroll mx-1"
         dataLength={collectionsList.length}>
             {collectionsList.map(col=>{

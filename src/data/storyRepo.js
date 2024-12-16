@@ -103,8 +103,17 @@ console.log("res",res)
             headers:{
                 Authorization: "Bearer "+localStorage.getItem(this.token)
     }})
-    console.log("Rescm",res)
+   
     return res.data
+    }
+    async fetchCommentsOfPage({pageId}){
+        let res = await axios.get(this.url+"/"+pageId+"/comment",
+            {headers:{
+                Authorization:"Bearer "+localStorage.getItem(this.token)
+            }}
+        )
+        console.log(res)
+        return res.data
     }
     async getCollectionStoriesPublic({id}){
         let res = await axios.get(this.url+"/collection/"+id+"/public")

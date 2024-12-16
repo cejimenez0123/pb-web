@@ -3,9 +3,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState ,useLayoutEffect} from "react";
 import "../../styles/PageView.css"
-import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchCommentsOfPage } from "../../actions/PageActions";
-import CommentItem from "../../components/CommentItem";
 import PageViewItem from "../../components/page/PageViewItem";
 import checkResult from "../../core/checkResult";
 import {Helmet} from "react-helmet"
@@ -14,6 +12,8 @@ import LinkPreview from "../../components/LinkPreview";
 import PageSkeleton from "../../components/PageSkeleton";
 import { getStory } from "../../actions/StoryActions";
 import ReactGA from "react-ga4"
+import CommentThread from "../../components/comment/CommentThread";
+import { comment } from "postcss";
 
 export default function PageViewContainer({page}){
     PageViewContainer.propTypes = {
@@ -23,62 +23,19 @@ export default function PageViewContainer({page}){
     const pathParams = useParams()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const commentsInView = useSelector(state => state.pages.commentsInView)
-    const [hasMoreComments,setHasMoreComments]=useState(false)
     const loading = useSelector(state=>state.pages.loading)
     const lookingWrong = <div><h1>Looking in all the wrong places</h1></div>
-    const [comments,setComments]= useState([])
-    let pageDataElement = (<div>
-
-    </div>)
-
-    const getPage=()=>{
-     
-        dispatch(getStory(pathParams)).then(result=>{
-            checkResult(result,payload=>{
-                const {page}= payload
-                fetchComments(page)
-            },err=>{
-
-            })
-        })
-    
-    }
-
+    const comments = useSelector(state=>state.comments.comments)
+    const [rootComments,setRootComments]=useState([])
     useLayoutEffect(()=>{
-        getPage()
-    },[])
-    useEffect(()=>{
-        setComments(commentsInView)
-    },[commentsInView])
-   
-    const fetchComments = (pageItem)=>{
-        if(pageItem!=null){
-            const params = {
-                page:pageItem
-            }
-            dispatch(fetchCommentsOfPage(params)).then(result=>{
-                checkResult(result,payload=>{
-                    const {comments} = payload
-                    setComments(comments)
-                    setHasMoreComments(false)
-                },()=>{
+        dispatch(getStory(pathParams))
+        dispatch(fetchCommentsOfPage(pathParams))
+    },[currentProfile])
+    useLayoutEffect(()=>{
+        setRootComments(comments.filter(com=>com.parentId==null))
+     },[comments])
+   let pageDataElement =(<div></div>)
 
-                })
-                   
-            
-            })
-        }
-    }
-    useEffect(()=>{
-        if(commentsInView[0]!=null && page != null && commentsInView[0].pageId==page.id){
-            setComments(commentsInView)
-            setHasMoreComments(false)
-        }else{
-            fetchComments()
-        }
-    },[commentsInView])
-    
   
 
     if(!loading && page!=null){
@@ -105,32 +62,37 @@ export default function PageViewContainer({page}){
             return lookingWrong
         }
     }
-    const commentList = ()=>{
-    if(comments && comments.length>0){
+  
+        const commentList = ()=>{
+            
+        
+        return <CommentThread comments={rootComments}/>
+    // if(commentsInView && commentsInView.length>0){
    
-        return(<div className="comment-thread">
-                <InfiniteScroll
-                                dataLength={comments.length}
-                next={fetchComments}
-                hasMore={hasMoreComments} // Replace with a condition based on your data source
-                loader={<p>Loading...</p>}
-                endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
-                            >
-                            {comments.map(comment=>{
-                                if(comment.parentCommentId==""||comment.parentCommentId==null){
-                                return (<CommentItem page={page} comment={comment}/>)
+    //     return(<div className="comment-thread">
+    //             <InfiniteScroll
+    //                             dataLength={commentsInView.length}
+    //             next={fetchComments}
+    //             hasMore={hasMoreComments} // Replace with a condition based on your data source
+    //             loader={<p>Loading...</p>}
+    //             endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
+    //                         >
+    //                         {commentsInView.map(comment=>{
+    //                             if(comment.parentCommentId==""||comment.parentCommentId==null){
+    //                             return (<CommentItem page={page} comment={comment}/>)
                             
                 
-                            }else{
-                                return
-                            }})}
-                        </InfiniteScroll>
-        </div>)
-    }else{
-        return(<div className="bg-emerald-700 min-h-24 rounded-b-lg py-4">
-            <h2 className="text-4xl"> No comments yet</h2>
-        </div>)
-    }}
+    //                         }else{
+    //                             return
+    //                         }})}
+    //                     </InfiniteScroll>
+    //     </div>)
+    // }else{
+    //     return(<div className="bg-emerald-700 min-h-24 rounded-b-lg py-4">
+    //         <h2 className="text-4xl"> No comments yet</h2>
+    //     </div>)
+    // }
+}
     const pageDiv = ()=>{
         if(page){
             return(<PageViewItem page={page} currentProfile={currentProfile} />)

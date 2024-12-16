@@ -10,7 +10,7 @@ import {IconButton} from "@mui/joy"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import {setPagesToBeAdded, setEditingPage, setPageInView} from "../../actions/PageActions"
-import CommentInput from "../CommentInput"
+import CommentInput from "../comment/CommentInput"
 import checkResult from "../../core/checkResult"
 import Paths from "../../core/paths"
 import "../../styles/PageView.css"
@@ -30,8 +30,8 @@ export default function PageViewItem({page}) {
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const [commenting,setCommenting]=useState(false)
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
-    const commentBox = (show)=>{
-        if (show){
+    const commentBox = ()=>{
+        if (commenting){
             return(<CommentInput page={page} />)
         }
     }
@@ -129,14 +129,14 @@ let profile = (<div></div>)
         }
         return(
         
-        <div className="">
-            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2 bg-green-600 text-white'>
+        <div className="text-slate-800">
+            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2 bg-green-600 '>
                 <div className="titles ">
                 {page.title.length>0?<p>{page.title}</p>:<p>Untitled</p>}
                 </div>
                 {profile}
             </div>
-            <div className="bg-green-600 ">
+            <div className="bg-green-400 ">
                 {pageDataElement}
                 </div>
             <div className='bg-green-600  border-t'>
@@ -154,25 +154,16 @@ let profile = (<div></div>)
                     Discuss
                 </button>
                 <div className="dropdown  dropdown-top">
-        <div tabIndex={0} role="button" className="btn pt-2 mt-1 text-white "> Share</div>
+        <div tabIndex={0} role="button" className="btn pt-2 mt-1 "> Share</div>
         <ul tabIndex={0} className="dropdown-content bg-white text-green-600 menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
         <li>
             <a disabled={!currentProfile} 
   className=' text-green-600 '
   
   onClick={()=>{}}> 
-                            Add to Book
-            </a></li>
-            <li><a disabled={!currentProfile} 
-            onClick={()=>{
-                 const params = {pageList:[page]}
-                 dispatch(setPagesToBeAdded(params))
-                 navigate("/library/new")
-            }}
-            className=' text-green-600 '
-            >
-                Add to Library
-                        </a></li>
+                            Add to Collection
+         
+           </a></li>
              {currentProfile && currentProfile.id == page.authorId? <li> <a
                         className=' text-green-600 '
                        onClick={()=> {
@@ -203,7 +194,7 @@ let profile = (<div></div>)
             </div>
             
             
-                {commentBox(commenting)}   
+                {commentBox()}   
         </div>
         )
             }else{

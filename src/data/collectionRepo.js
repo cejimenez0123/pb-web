@@ -127,10 +127,14 @@ import Enviroment from "../core/Enviroment";
         const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")
         }})
+        console.log(res)
+        return res.data
     }
     async fetchSubCollectionsPublic({id}){
         const res = await axios.get(this.url+"/"+id+"/collection/public",{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")
-        }})}
+        }})
+        return res.data
+    }
 }
 export default new CollectionRepo()

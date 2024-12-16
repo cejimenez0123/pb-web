@@ -38,7 +38,7 @@ export default function CollectionIndexItem({collection}){
                 <div className={` rounded-lg border-white  border flex flex-row justify-between mb-1   `}>
              
                 <div className="text-left my-auto md:ml-4 py-8  ">
-                <a className="text-white " > 
+                <a onClick={()=>navigate(Paths.collection.createRoute(collection.id))}className="text-white " > 
                    {collection.title.length>0? <h6 className="text-xl ml-2 my-auto">{collection.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 

@@ -8,6 +8,7 @@ import UserApproval from "../domain/models/user_approval"
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
 import storyRepo from "../data/storyRepo"
+import commentRepo from "../data/commentRepo"
 
 const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
   
@@ -323,25 +324,30 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
     }
   }
 )
-const createComment = createAsyncThunk("pages/createComment", async function(params,thunkApi){
+const createComment = createAsyncThunk("pages/createComment", async function({
+  profile,
+  text,
+  storyId,
+  parentCommentId,
+  },thunkApi){
   try{
-    const {profileId,
-      text,
-      pageId,
-      parentCommentId,
-      }=params
-    const commentRef = collection(db,"page_comment")
-    const id = doc(commentRef).id
-    const created = Timestamp.now()
-      await setDoc(doc(db,"page_comment",id), { 
-      id:id,
-      profileId: profileId,
-      text: text,
-      pageId:pageId,
-      parentCommentId:parentCommentId,
-      approvalScore:0.0,
-      created:created})
-      const comment =new PageComment(id,text,pageId,profileId,parentCommentId,0.0)
+
+
+ let data = await commentRepo.create({profile:profile,storyId:storyId,text,parentId:parentCommentId})
+return {comment:data.comment}
+
+    // const commentRef = collection(db,"page_comment")
+    // const id = doc(commentRef).id
+    // const created = Timestamp.now()
+    //   await setDoc(doc(db,"page_comment",id), { 
+    //   id:id,
+    //   profileId: profileId,
+    //   text: text,
+    //   pageId:pageId,
+    //   parentCommentId:parentCommentId,
+    //   approvalScore:0.0,
+    //   created:created})
+    //   const comment =new PageComment(id,text,pageId,profileId,parentCommentId,0.0)
   
   return { comment }
   }catch(error){
@@ -361,33 +367,13 @@ const appendComment = createAction("pages/appendComment", (params)=> {
     
   
 })
-const fetchCommentsOfPage = createAsyncThunk("pages/fetchCommentsOfPages",async (params,thunkApi)=>{
+const fetchCommentsOfPage = createAsyncThunk("comments/fetchCommentsOfPages",async (params,thunkApi)=>{
   try{
-    const {page} = params
-  // const ref = collection(db,"page",page.id,PageComment.className)
-  const ref = collection(db,"page_comment")
-  let request = query(ref,
-       where('pageId',"==",page.id),
-  )
-  const snapshot =await getDocs(request)
-
-  let commentList = []
-  snapshot.docs.forEach(doc => {
-        const pack = doc.data();
-        const { id,
-      profileId,
-      text,
-      pageId,
-      parentCommentId,
-      approvalScore,
-      created}=pack
-     const comment = new PageComment(id,text,pageId,profileId,parentCommentId,approvalScore,created)
-      
-      commentList = [...commentList, comment]
-    })
+    let data = await storyRepo.fetchCommentsOfPage({pageId:params.id})
+    console.log(data)
 return {
 
-  comments: commentList,
+  comments: data.comments
 }
 
 
@@ -429,17 +415,20 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
   })
   const updateComment = createAsyncThunk(`pages/updateComment`, async (params,thunkApi)=>{
     const {comment,newText}=params
-    let ref = doc(db,"page_comment",comment.id)
-    await updateDoc(ref,{
-      text:newText
-    })
-    const newComment = new PageComment(comment.id,
-                    newText,
-                    comment.pageId,
-                    comment.profileId,
-                    comment.parentCommentId,
-                    comment.approvalScore,
-                    comment.created)
+
+
+
+    // let ref = doc(db,"page_comment",comment.id)
+    // await updateDoc(ref,{
+    //   text:newText
+    // })
+    // const newComment = new PageComment(comment.id,
+    //                 newText,
+    //                 comment.pageId,
+    //                 comment.profileId,
+    //                 comment.parentCommentId,
+    //                 comment.approvalScore,
+    //                 comment.created)
 
       return {
         comment:newComment

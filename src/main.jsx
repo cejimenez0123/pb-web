@@ -10,13 +10,15 @@ import bookSlice from './reducers/BookReducer';
 import libSlice from './reducers/LibraryReducer';
 import { BrowserRouter } from 'react-router-dom';
 import logger from "redux-logger"
+import commentSlice from './reducers/CommentReducer';
 
 
 const reducer = combineReducers({
   pages: pageSlice.reducer,
   users: userSlice.reducer,
   books: bookSlice.reducer,
-  libraries: libSlice.reducer
+  libraries: libSlice.reducer,
+  comments: commentSlice.reducer
 })
 const store = configureStore({reducer:reducer,
 

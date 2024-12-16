@@ -7,8 +7,9 @@ class CommentRepo{
         'Access-Control-Allow-Origin': "*"
     }
     token = "token"
-    async create({profile,text}){
-       let res = await axios.post(Enviroment.url+"/comment",{profile,text},{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
+    async create({profile,storyId,text,parentId}){
+       let res = await axios.post(Enviroment.url+"/comment",{profileId:profile.id,storyId,text,parentId},
+       {headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
        return res.data
     }
     async delete({id}){
@@ -19,6 +20,7 @@ class CommentRepo{
     let res = await axios.post(Enviroment.url+"/comment/"+id,{profile,text},{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
     return res.data
    }
+
     }
 
 export default new CommentRepo()

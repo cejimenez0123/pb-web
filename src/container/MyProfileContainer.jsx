@@ -168,7 +168,7 @@ function MyProfileContainer(props){
   </div>
 
   <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-transparent border-white border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
-  <div role="tabpanel" className="tab-content pt-1 bg-transparent sm:max-w-[42rem]   rounded-box p-6">
+  <div role="tabpanel" className="tab-content pt-1 bg-transparent sm:max-w-[42rem]   rounded-box ">
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>

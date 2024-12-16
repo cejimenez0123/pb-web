@@ -16,7 +16,6 @@ import Paths from '../../core/paths'
 import LinkPreview from '../LinkPreview'
 import ReactGA from 'react-ga4'
 import {useMediaQuery} from 'react-responsive'
-import MediaQuery from 'react-responsive'
 import bookmarkadd from "../../images/bookmarkadd.svg"
 function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
@@ -35,20 +34,7 @@ function DashboardItem({page,book,isGrid}) {
     const [contentItemEl,setContentItemEl] = useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState(null)
-    const [anchorEl,setAnchorEl]= useState(null)
-    const handleToggle = (e) => {
-     setAnchorEl(prevState=>{
-        if(prevState==null){
-            return e.currentTarget
-        }else{
-            return null
-        }
-     })
-      };
-      useEffect(()=>{
 
-
-      },[page])
 useEffect(()=>{
     if(userApprovals!=null){
     let ua = userApprovals.find(approval=>approval.pageId === page.id && approval.profileId === currentProfile.id)
@@ -88,11 +74,11 @@ const hanldeClickComment=(pageItem)=>{
         return( <div className='page-text'>
             <div 
     
-           className={` ${isGrid?"h-48 overflow-clip":""}`}
+           className={` ${isGrid?"h-48 overflow-clip ":""}`}
             >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className=' content text-slate-800 bg-transparent p-4 '
+        } className='p-4 '
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
         </div>)   
@@ -146,7 +132,7 @@ return <Button onClick={()=>{
 
     </div>)
     if(profile){
-        profileDiv = (<p className="text-white" onClick={()=>{
+        profileDiv = (<p className="text-slate-800" onClick={()=>{
             navigate(`/profile/${profile.id}`)
         }}>
             {profile.username}
@@ -202,18 +188,6 @@ return <Button onClick={()=>{
             }
         }><p>{title} {">"}</p></a>)
     }
-    // const addToLibrary=()=>{
-    //     ReactGA.event({
-    //         category: "Story",
-    //         action: "Add Story To Library",
-    //         label: "Add to Library", 
-    //         value: page.id,
-    //         nonInteraction: false
-    //       });
-    //     const params = {pageList:[page]}
-    //     dispatch(setPagesToBeAdded(params))
-    //     navigate("/library/new")
-    // }
     const buttonRow = ( )=>{
         return isGrid?<div className='text-right  '>
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
@@ -250,13 +224,13 @@ className="
 Share</button>
 <ul tabIndex={0} className="dropdown-content menu bg-green-600 rounded-box z-[1] w-52 p-2 shadow">
 <li><a disabled={!currentProfile} 
-className='text-white'
+className='text-slate-800'
 
 onClick={()=>ClickAddStoryToCollection()}> 
                      Add to Collection
      </a></li>
                 <li> <a
-                 className='text-white'
+                 className='text-slate-800'
                 onClick={()=>{
                      navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
                      .then(() => {
@@ -298,9 +272,9 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={`rounded-lg bg-green-400 mb-4 overflow-hidden`}>
+        <div className={`rounded-lg bg-green-400  shadow-sm justify-self-center sm:w-[40rem] md:w-[50rem] overflow-hidden`}>
         
-            <div className=' border-white border border-b border-2 bg-green-600  pl-2 text-white   pb-2 pt-4'>
+            <div className=' border-white border border-b border-2 bg-green-600  pl-2 text-slate-800   pb-2 pt-4'>
                 <div className=' flex flex-row  ml-4'>
                 {bookTitleDiv}
                 <p className="text-slate-800 " onClick={()=>{
@@ -315,7 +289,7 @@ onClick={()=>ClickAddStoryToCollection()}>
                 {buttonRow()}
   </div>
      )}else{
-        return(<div>
+        return(<div className='min-h-24'>
             Loading...
         </div>)
      }

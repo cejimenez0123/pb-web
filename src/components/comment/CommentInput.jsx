@@ -1,27 +1,27 @@
 
-import { TextareaAutosize } from "@mui/material"
 import { useSelector,useDispatch} from "react-redux"
-import { appendComment, createComment,fetchCommentsOfPage, updateComment } from "../actions/PageActions"
+import { appendComment, createComment,updateComment } from "../../actions/PageActions"
 import { useEffect, useState } from "react"
-import {Button} from "@mui/material"
-import checkResult from "../core/checkResult"
+import checkResult from "../../core/checkResult"
 
-export default function CommentInput({editing,page,parentComment,parentProfile}){
+export default function CommentInput({page,defaultComment,parentComment,parentProfile}){
     const dispatch = useDispatch()
+    const pageInView = useSelector(state=>state.pages.pageInView)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [commentInput,setComment] = useState("Remember the sandwich method.\n Compliment.Critique.Compliment")
     const [show,setShow]=useState(true)
     const saveComment=()=>{
-        if(currentProfile && page && commentInput.length >0){
+        if(currentProfile && pageInView && commentInput.length >7){
             let id = ""
             if(parentComment){
                 id = parentComment.id
             }
-        const params =  {profileId: currentProfile.id,
+        const params =  {profile: currentProfile,
               text:commentInput,
-              pageId:page.id,
+              storyId:pageInView.id,
               parentCommentId:id,
         }
+    
         dispatch(createComment(params)).then(result=>{
             checkResult(result,payload=>{
                 setComment("")
@@ -35,32 +35,23 @@ export default function CommentInput({editing,page,parentComment,parentProfile})
     
         })
     }}
-    useEffect(()=>{
-        if(editing){
-            setComment(parentComment.text)
-        }
-    },[editing])
-    let commentAuthorDiv =(<div></div>)
-    if(parentProfile){
-        commentAuthorDiv=(<h6>{parentProfile.usernmae}</h6>)
-    }
-    const clickUpdateComment = ()=>{
-        const params = {
-            comment: parentComment,
-            newText: commentInput
-        }
-        dispatch(updateComment(params))
-    }
+
+const clickUpdateComment = ()=>{
+    const params =  {profile: currentProfile,
+        text:commentInput,
+        storyId:page.id,
+        parentCommentId:id,
+  }
+    dispatch(updateComment(params))
+}
     const input = ()=>{
         
     return(<div style={{display: show?"":"none"}}className="p-2 bg-green-600">
-    <div className="text-slate-800">
-        {commentAuthorDiv}
-    </div>
 <textarea
   
-  className="textarea w-[96svw] bg-green-400 text-slate-800 sm:w-96 mx-auto textarea-bordered "
+  className="textarea w-[96svw] bg-green-400 md:max-w-[50em] sm:max-w[40em] max-w-[100vw] text-slate-800 sm:w-96 mx-auto textarea-bordered "
   
+
   value={commentInput}
 
   
@@ -68,7 +59,17 @@ export default function CommentInput({editing,page,parentComment,parentProfile})
      setComment(e.target.value)
 }}></textarea>
     <div className="button-row">
-       {editing? <button className="bg-green-400 text-slate-800"onClick={clickUpdateComment}>Update</button>:<button className="bg-green-200 text-slate-800" disabled={!currentProfile} onClick={saveComment}>
+       {currentProfile? 
+        defaultComment?
+            <button 
+            className="bg-green-800 text-white hover:bg-emerald-500"
+       onClick={clickUpdateComment}>Update</button>
+       :
+       
+       <button  
+       onClick={saveComment}   className="bg-green-800 text-white hover:bg-emerald-500"> {parentComment?"Reply":"Save Comment"}</button>:
+       <button className="bg-green-200 text-slate-800" 
+       disabled={!currentProfile} onClick={saveComment}>
             Disabled
         </button>}
     </div>

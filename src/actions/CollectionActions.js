@@ -117,14 +117,17 @@ const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProte
  })
 const getSubCollectionsProtected = createAsyncThunk("collection/getSubCollectionsProtected",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchSubCollectionsProtected(params)
+    console.log("Colcd",data)
+    const list = data.collections.map(col=>col.childCollection)
     return {
-        list:data.list
+        list:list
     }
 })
 const getSubCollectionsPublic = createAsyncThunk("collection/getSubCollectionsPublic",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchSubCollectionsProtected(params)
+    const list = data.collections.map(col=>col.childCollection)
     return {
-        list:data.list
+        list:list
     }
 })
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
@@ -174,5 +177,7 @@ export {
     fetchCollectionProtected,
     setCollectionInView,
     addCollectionListToCollection,
-    addStoryListToCollection
+    addStoryListToCollection,
+    getSubCollectionsProtected,
+    getSubCollectionsPublic
 }

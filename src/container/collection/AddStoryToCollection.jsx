@@ -40,7 +40,8 @@ export default function AddStoryToCollectionContainer(props){
                 </div>
                 <div className="border mt-16 text-left border-white p-8 mx-8 rounded-lg">
                     <h6 className="text-xl font-bold pb-8 font-bold">Your Collections</h6>
-                    {collections.length>0?<InfiniteScroll
+                    {collections.length>0?
+                    <InfiniteScroll
                 className="scroll"
                 dataLength={collections.length}
                 hasMore={hasMoreCol} // Replace with a condition based on your data source

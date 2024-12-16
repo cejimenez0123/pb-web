@@ -2,9 +2,6 @@ import { createSlice} from "@reduxjs/toolkit"
 import { 
         
         fetchBook,
-        getProfileBooks,
-        fetchArrayOfBooksAppened,
-        fetchArrayOfBooks,
         saveRolesForBook,
         updateBook,
         setBooksToBeAdded,
@@ -16,7 +13,9 @@ import {
         import { createCollection, fetchCollection, fetchCollectionProtected, getMyCollections, getPublicBooks,
                 saveRoleToCollection
         ,addCollectionListToCollection,
-        addStoryListToCollection
+        addStoryListToCollection,
+        getSubCollectionsProtected,
+        getSubCollectionsPublic
             } from "../actions/CollectionActions"
 
 const initialState = {
@@ -35,7 +34,11 @@ name: 'books',
 initialState,
 extraReducers(builder) {
 builder
-.addCase(addCollectionListToCollection.pending,(state,{payload})=>{
+.addCase(getSubCollectionsProtected.fulfilled,(state,{payload})=>{
+    state.collections = payload.list
+}).addCase(getSubCollectionsPublic.fulfilled,(state,{payload})=>{
+    state.collections = payload.list
+}).addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
 })
 .addCase(addStoryListToCollection.pending,(state,{payload})=>{
