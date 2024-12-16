@@ -1,4 +1,4 @@
-import React,{ useEffect, useState }  from 'react';
+import React,{ useEffect,useLayoutEffect, useState }  from 'react';
 import { useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
 import {useDispatch,useSelector} from "react-redux"
@@ -67,7 +67,7 @@ function MyProfileContainer(props){
     }
    
 
-    useEffect(()=>{
+    useLayoutEffect(()=>{
         if(!currentProfile){
             dispatch(getCurrentProfile()).then(res=>console.log("Resd",res))
         }else{
@@ -76,14 +76,14 @@ function MyProfileContainer(props){
 
         }
     },[])
-    useEffect(()=>{
+    useLayoutEffect(()=>{
         if(collections && collections.length>0){
             let libs=collections.filter(col=>{
-                return col && col.collectionIdList && col.collectionIdList.length>0
+                return col && col.childCollections && col.childCollections.length>0
             })
             setLibraries(libs)
             let boos = collections.filter(col=>{
-                return col && col.collectionIdList && col.collectionIdList.length==0
+                return col && col.childCollections && col.childCollections.length==0
             })
             setBooks(boos)
         }

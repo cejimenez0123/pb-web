@@ -13,6 +13,7 @@ export default function AddToCollectionContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const pending = useSelector(state=>state.books.loading)
     const profile = useSelector(state=>state.users.currentProfile)
     const colInView = useSelector(state=>state.books.collectionInView)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
@@ -25,10 +26,10 @@ export default function AddToCollectionContainer(props){
     const [newStories,setNewStories]=useState([])
     
     const[newCollection,setNewCollections]=useState([])
-    useEffect(()=>{
-        if(colInView.id!=pathParams.id){
+    useLayoutEffect(()=>{
+     
             dispatch(fetchCollection(pathParams))
-        }
+        
     },[])
     const save = ( )=>{
         let storyIdList = newStories.map(stor=>stor.id)
@@ -36,7 +37,7 @@ export default function AddToCollectionContainer(props){
         let completeCol = false
         let completeStory = false
         console.log(colInView)
-      dispatch(addCollectionListToCollection({id:colInView.id,list:collectionIdList})).then(
+     if(collectionIdList.length>0) dispatch(addCollectionListToCollection({id:colInView.id,list:collectionIdList})).then(
         ()=>{
             completeCol=true
             if(completeCol&&completeStory){
@@ -45,7 +46,7 @@ export default function AddToCollectionContainer(props){
             }
         }
     )
-    dispatch(addStoryListToCollection({id:colInView.id,list:storyIdList})).then(res=>{
+   if (storyIdList.length>0) dispatch(addStoryListToCollection({id:colInView.id,list:storyIdList})).then(res=>{
         completeStory=true
         if(completeCol&&completeStory){
             dispatch(clearPagesInView())
@@ -91,8 +92,8 @@ export default function AddToCollectionContainer(props){
             {pagesInView.map(story=>{
                 return(<div className="text-left mx-1 flex flex-row justify-between border
                 border-white rounded-lg p-4  my-2">
-                    <h2 className="text-xl my-auto max-w-[75%] overflow-hidden">{story.title}</h2>
-                    {colInView.storyIdList && colInView.storyIdList.includes(story.id)||newStories.includes(story)?
+                    <h2 className="text-xl my-auto max-w-[75%] overflow-hidden">{story?story.title:null}</h2>
+                    {colInView&& colInView.storyIdList && colInView.storyIdList.includes(story.id)||newStories.includes(story)?
                     <h1 onClick={()=>removeNewStory(story)}className="">
 <p className="text-2xl  h-8 rounded-full  "><img src={checked}/></p>
 </h1>:
@@ -113,8 +114,8 @@ export default function AddToCollectionContainer(props){
             {collectionsList.map(col=>{
                 return(<div className="text-left flex sm:min-w-96 flex-row justify-between border
                 border-white rounded-lg p-4  my-2">
-                    <h2 className="text-xl my-auto">{col.title}</h2>
-                    {colInView.collectionIdList && colInView.collectionIdList.includes(col.id)||newCollection.includes(col)?
+                    <h2 className="text-xl my-auto">{col?col.title:null}</h2>
+                    {colInView&& colInView.childCollections.includes(col.id)||newCollection.includes(col)?
                     <button
                     onClick={()=>removeNewCollection(col)}
                     className="btn text-white btn-circle">
@@ -127,11 +128,17 @@ export default function AddToCollectionContainer(props){
             })}
             </InfiniteScroll></div>)
     }
+    if(pending){
+        return(<div>
+            Loading
+            </div>)
+    }
+ 
     return(<div className=''>
         <div className="static">
 <div className="border border-white rounded-lg m-4 sm:m-8 p-8 text-left">
-            <h2 className="text-2xl mb-2">{colInView.title}</h2>
-            <p className="sm:my-4 md:mx-2 p-2 min-h-24 max-w-[1/2] sm:p-4 bg-emerald-800 rounded-lg max-w-96">{colInView.purpose}</p>
+            <h2 className="text-2xl mb-2">{colInView?colInView.title:null}</h2>
+            <p className="sm:my-4 md:mx-2 p-2 min-h-24 max-w-[1/2] sm:p-4 bg-emerald-800 rounded-lg max-w-96">{colInView?colInView.purpose:null}</p>
         
         <div className="flex flex-row justify-center">
         <button onClick={save}className="bg-green-600 ml-4 mt-4 px-4 text-xl">Save</button>

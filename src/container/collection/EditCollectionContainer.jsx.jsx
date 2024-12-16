@@ -9,6 +9,7 @@ export default function EditCollectionContainer(props){
     const colInView = useSelector(state=>state.books.collectionInView)
     const params = useParams()
     const [title,setTitle]=useState(colInView.title)
+    const [purpose,setPurpose]=useState(colInView.purpose)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     useEffect(()=>{
@@ -28,7 +29,7 @@ export default function EditCollectionContainer(props){
     setTitle(e.target.value)
 }}
     type="text" className="mx-4 bg-transparent text-white px-2 py-4 w-full mb-4 text-2xl" value={title}></input>
-        <h3 className=" md:ml-8 text-xl bg-emerald-600 md:w-92 md:max-w-96 rounded-lg p-4">{colInView.purpose}</h3>
+        <textarea className=" md:ml-8 textarea text-xl bg-emerald-600 md:w-92 md:max-w-96 rounded-lg p-4">{purpose}</textarea>
         <div className="md:ml-8 mt-8 flex flex-row">
 
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?

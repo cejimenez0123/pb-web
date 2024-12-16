@@ -23,7 +23,7 @@ export default function CollectionContainer(props){
         currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
     },[colInView])
     const collectioinIs = ()=>{
-        if(colInView.collectionIdList.length>0){
+        if(colInView.childCollections.length>0){
             return "Community"
         }else{
             return "Anthology"
@@ -32,7 +32,13 @@ export default function CollectionContainer(props){
     const getSubCollections = ()=>{
     currentProfile?dispatch(getSubCollections(params)):dispatch(getSubCollections(params))
     }
-    const collectionInfo=()=>{return(<div className="h-fit max-w-[100vw] sm:pb-8 sm:w-48 sm:border sm:border-white  mx-2 mt-4 md:mx-8 md:mt-8 rounded rounded-lg mb-8 text-left">
+    const collectionInfo=()=>{
+        
+        
+        if(!colInView){
+            return(<div>Loading</div>)
+        }
+        return(<div className="h-fit max-w-[100vw] sm:pb-8 sm:w-48 sm:border sm:border-white  mx-2 mt-4 md:mx-8 md:mt-8 rounded rounded-lg mb-8 text-left">
     <h3 className="m-8  text-3xl">{colInView.title}</h3>
         <h3 className=" md:ml-8 text-xl bg-emerald-600 max-w-[100vw] md:max-w-96 rounded-lg p-4">{colInView.purpose}</h3>
         <div className="md:ml-8 mt-8 flex flex-row">

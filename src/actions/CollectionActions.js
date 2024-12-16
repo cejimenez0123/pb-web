@@ -66,6 +66,8 @@ const addCollectionListToCollection = createAsyncThunk("books/addCollectionListT
   
 
     let data = await collectionRepo.addCollectionListToCollection({id,list})
+
+    console.log("DDfa",data)
     return {collection:data.collection}
 })
 const addStoryListToCollection = createAsyncThunk("books/addStoryListToCollection",async(
