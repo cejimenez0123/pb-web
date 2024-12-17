@@ -17,12 +17,12 @@ import {  where,
 import UserApproval from "../domain/models/user_approval";
 import Profile from "../domain/models/profile";
 import Library from "../domain/models/library";
-import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
+import {  ref, uploadBytes,getDownloadURL ,deleteObject } from "firebase/storage";
 import FollowBook from "../domain/models/follow_book"
 import FollowLibrary from "../domain/models/follow_library"
 import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
-import uuidv4 from "../core/uuidv4";
+
 import profileRepo from "../data/profileRepo";
 import authRepo from "../data/authRepo";
 import axios from "axios";
@@ -52,6 +52,9 @@ const logIn = createAsyncThunk(
             }
         }}
 )
+const completeSignUp = createAsyncThunk("user/registerComplete",async (params,thunkApi)=>{
+  profileRepo.signUp()
+})
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
 
    await signOut(auth)
@@ -155,7 +158,17 @@ const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
 //   let {results}= await client.multipleQueries(queries)
   return {results:[]}
 })
-
+const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunkApi)=>{
+  try {
+    const {fileName}=params
+    const imageRef = ref(storage, fileName); // Create a reference to the file
+    await deleteObject(imageRef); // Delete the file
+    console.log('File deleted successfully!');
+    return{message:"Success delete"}
+  } catch (error) {
+    console.error('Error deleting file:', error);
+  }
+})
 
 const updateHomeCollection = createAsyncThunk("users/updatecollection",async (params,thunkApi)=>{
   try{
@@ -262,23 +275,16 @@ const fetchAllProfiles = createAsyncThunk("users/fetchAllProfiles",async (state,
         }
     }
 })
-const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async (params,thunkApi)=>{
-    try {
-    const {file }= params
-    const fileName = `profile/${file.name}-${uuidv4()}.jpg`
-    const storageRef = ref(storage, fileName);
-    const blob = new Blob([file])
-    await uploadBytes(storageRef, blob)
-  
-    const url = await getDownloadURL(storageRef)
-        return{ 
-            url: url
-        }
-    }catch(err){
-        return{ error: new Error("Error: UPLOAD Profile Picture" + err.message) }
+const getProfilePicture = createAsyncThunk("users/fetchProfilePicture",async (params,thunkApi)=>{
+    const {fileName}=params
+    const storageRef = ref(storage, fileName)
+    let url = await getDownloadURL(storageRef)
+    return {
+      url
     }
-
 })
+
+
 const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunkApi)=>{
   try {
   const {file,
@@ -648,7 +654,7 @@ export {logIn,
         getCurrentProfile,
         updateProfile,
         fetchAllProfiles,
-        uploadProfilePicture,
+
         fetchProfile,
         setProfileInView,
         createFollowBook,
@@ -657,6 +663,7 @@ export {logIn,
         fetchFollowLibraryForProfile,
         deleteFollowBook,
         deleteFollowLibrary,
+        deletePicture,
         deleteFollowProfile,
         createFollowProfile,
         fetchFollowProfilesForProfile,

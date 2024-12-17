@@ -1,17 +1,23 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState,useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { uploadProfilePicture,createProfile } from "../../actions/ProfileActions";
+import checkResult from "../../core/checkResult";
+import Paths from "../../core/paths";
 
 
 export default function SignUpContainer(props){
     const location = useLocation();
     const [token, setToken] = useState('');
     const [password,setPassword]=useState("")
+    const navigate = useNavigate()
     const [username,setUsername]=useState("")
     const [confirmPassword,setConfirmPassword]=useState("")
     const [selectedImage, setSelectedImage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
-  const handleFileChange = (e) => {
+    const [selfStatement,setSelfStatement]=useState("")
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isPrivate,setIsPrivate]=useState(false)
+    const handleFileChange = (e) => {
     const file = e.target.files[0];
 
     if (file) {
@@ -35,30 +41,34 @@ export default function SignUpContainer(props){
         }
       }, [location.search]);
     const completeSignUp=()=>{
-        {id,token,password,username,profilePicture,selfStatement,privacy
-       
-    if (file) {
-      // Check file type
-      if (!file.type.startsWith('image/')) {
-            const params = { file: file
-            }
-        }
-    
-    }}
-        URL.createObjectURL(file)
+
+        dispatch(uploadProfilePicture({file:selectedImage})).then(res=>checkResult(res,payload=>{
+                const{fileName}=payload
+                const params = {token,password,username,profilePicture:fileName,selfStatement,privacy:isPrivate}
+                dispatch(createProfile(params))
+                .then(res=>checkResult(res,payload=>{
+                   const {profile}=payload
+                    localStorage.setItem("token",payload.token)
+                   if(profile) navigate(Paths.myProfile())
+                },err=>{
+                    alert("profile"+JSON.stringify(err))
+                }))
+        },err=>{
+            alert("profilepicture"+JSON.stringify(err))
+        }))
     }
     return(
-                <div  id="log-in">
-        <h1 className='text-green-100 poppins pb-4'>Complete Sign Up</h1>
+                <div  className="">
+        <h2 className='text-green-100 poppins text-4xl pt-4 pb-4'>Complete Sign Up</h2>
         <div className="max-w-96 mx-auto">
         <div className='pb-4'>
             <label className="input poppins text-white border bg-transparent border-white  mt-4 flex items-center gap-2">
   Username
-  <input type="password" className="grow text-white " 
+  <input className="grow text-white " 
          value={username}
          
          onChange={(e) => setUsername(e.target.value.trim())}
-        placeholder='*****' />
+         />
 </label>
 <div className='pb-4'>
             <label className="input poppins text-white border bg-transparent border-white  mt-4 flex items-center gap-2">
@@ -76,14 +86,18 @@ export default function SignUpContainer(props){
          
          onChange={(e) => setConfirmPassword(e.target.value.trim())}
         placeholder='*****' />
-</label>      
+</label>  
+<label className="w-full mt-4 flex flex-row justify-content-between  text-left">
+    <span>Is Private?</span><input value={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}
+    type="checkbox" className="toggle my-auto toggle-success"  /></label>
     </div>
+    <div className=" flex flex-col">
     <input
-    className="file-input"
+    className="file-input mx-auto max-w-48"
         type="file"
         accept="image/*"
         onChange={handleFileChange}
-        style={{ marginBottom: '20px' }}
+       
       />
 
     {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
@@ -97,15 +111,20 @@ export default function SignUpContainer(props){
             style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }}
           />
         </div>
+        
       )}
-      
-            <button
+      <label className="text-left mb-2">Self Statement </label> 
+      <textarea 
+      placeholder="What are you about?"
+      className="textarea bg-transparent border border-white text-xl" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>
+         <button
             disabled={confirmPassword!==password}
-            className='bg-green-600 poppins border-none hover:bg-green-400 text-white font-bold py-2 px-4 mt-4 btn-lg rounded '
+            className='bg-green-900 poppins border-none hover:bg-green-400 text-white font-bold py-2 px-4 mt-4 btn-lg rounded '
                onClick={completeSignUp}
                 
                 variant="contained" >Submit</button>
             </div>
-            </div>     
+            </div>  
+            </div>   
         </div>)
 }

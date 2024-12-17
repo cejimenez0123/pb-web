@@ -1,6 +1,7 @@
 import React ,{useEffect, useState} from 'react'
 import "../../App.css"
-import { logIn,signUp,uploadProfilePicture} from '../../actions/UserActions';
+import { logIn} from '../../actions/UserActions';
+
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import {

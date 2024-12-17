@@ -15,10 +15,7 @@ import CreateBookContainer from './container/book/CreateBookContainer';
 import CreateLibraryContainer from './container/library/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/ProfileContainer';
-import UpdateLibraryContainer from './container/library/UpdateLibraryContainer';
-import AddPageToBookContainer from './container/book/AddPageToBookContainer';
 import ApplyContainer from './container/auth/ApplyContainer';
-import AddItemsToLibraryContainer from './container/library/AddItemsToLibraryContainer';
 import SearchDialog from './components/SearchDialog';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
@@ -154,7 +151,7 @@ function App(props) {
      <Route path={Paths.collection.route()}
      element={<CollectionContainer/>}/>
      <Route path={'/signup'}
-     element={<SignUpContainer/>}/>
+     element={<LoggedRoute><SignUpContainer/></LoggedRoute>}/>
      <Route path={Paths.addToCollection.route}
      element={        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><AddToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.addStoryToCollection.route}
@@ -254,20 +251,20 @@ function App(props) {
         <SettingsContainer />
         </PrivateRoute>
       }/>
-      <Route path="/library/:id/edit" element={
+      {/* <Route path="/library/:id/edit" element={
          <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
         <UpdateLibraryContainer/>
-        </PrivateRoute>}/>
-      <Route path="/book/:id/add" element={
+        </PrivateRoute>}/> */}
+      {/* <Route path="/book/:id/add" element={
         <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
           <AddPageToBookContainer/>
         </PrivateRoute>
-      }/>
-      <Route path="/library/:id/add" element={
+      }/> */}
+      {/* <Route path="/library/:id/add" element={
         <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
           <AddItemsToLibraryContainer/>
         </PrivateRoute>
-      }/>
+      }/> */}
       
     </Routes>
     </div>

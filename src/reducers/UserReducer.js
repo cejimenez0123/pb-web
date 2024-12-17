@@ -22,9 +22,9 @@ import {    logIn ,
             getPageApprovals,
             searchDialogToggle,
             searchMultipleIndexes,
-            fetchArrayOfProfiles
+            fetchArrayOfProfiles,
         } from "../actions/UserActions"
-import { create } from "lodash"
+import { createProfile } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"
 const initialState = {
     signedIn: false,
@@ -48,8 +48,17 @@ const userSlice = createSlice({
         builder
         .addCase(logIn.pending,(state) => {
         state.loading = true
+    }).addCase(createProfile.rejected, (state, { payload })=>{
+       state.loading=false
+     console.log(payload)
+    }).addCase(createProfile.pending, (state)=>{
+        state.loading=true
     })
-    .addCase(logIn.fulfilled, (state, { payload }) => {
+    .addCase(createProfile.fulfilled, (state, { payload })=>{
+        state.loading=false    
+        console.log(payload)
+        state.currentProfile = payload.profile
+    }).addCase(logIn.fulfilled, (state, { payload }) => {
        
         state.loading = false
         state.signedIn = true

@@ -20,12 +20,14 @@ class ProfileRepo {
         return new Error("Outdated Token")
     }
     }
-    async create({id,token,uId,password,username,profilePicture,selfStatement,privacy}){
-       let res = await axios.post(Enviroment.url+"/profile/",{password,username,profilePicture,selfStatement,privacy},{
+    async create({token,password,username,profilePicture,selfStatement,privacy}){
+        let res = await axios.post(Enviroment.url+"/profile/",
+        {password,username,profilePicture,selfStatement,privacy},{
             headers:{
                 Authorization:"Bearer "+token
             }
         })
+        console.log(res)
         return res.data
     }
     async getCurrentProfile(auth){
