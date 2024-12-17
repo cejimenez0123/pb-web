@@ -30,26 +30,24 @@ import axios from "axios";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
-        let email = params["email"]
-        let password = params["password"]
-        try {
-           
-          const userCred = await signInWithEmailAndPassword(auth,email,password)
-          await authRepo.startSession({uId:userCred.user.uid,email:email})
-         
-          const profilesRes = await profileRepo.getMyProfiles({id:userCred.user.uid})
-
-        
-          return {
-                profile: profilesRes.profiles[0]
-              }
-           
-        }catch(error) {
-            return {
-            
-                    error: error?? new Error("Error: Performing Login")
-                
+        const {email,password}=params
+        try{
+        const authData = await authRepo.startSession({uId:null,email:email,password})
+        const profileRes = await profileRepo.getMyProfiles({token:authData.token})
+        return{
+          profile: profileRes.profiles[0]
+        }
+      }catch(error){
+      try{
+            const userCred = await signInWithEmailAndPassword(auth,email,password)
+            const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
+            const profileRes = await profileRepo.getMyProfiles({token:authData.token})
+            return{
+              profile: profileRes.profiles[0]
             }
+          }catch(error){
+            throw error
+          }
         }}
 )
 const completeSignUp = createAsyncThunk("user/registerComplete",async (params,thunkApi)=>{
@@ -220,14 +218,13 @@ const setSignedInFalse = createAction("users/setSignedInFalse", async(params)=>{
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
       try {
-        if(auth.currentUser){
-            let data = await profileRepo.getMyProfiles({id:auth.currentUser.uid})
+      
+          console.log("token,",localStorage.getItem("token"))
+            let data = await profileRepo.getMyProfiles({token:localStorage.getItem("token")})
             return {
             profile: data.profiles[0]
            } 
-          }else{
-          throw new Error("No Authenticated User")
-        }         
+              
         }catch(error) {
             return {
                

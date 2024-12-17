@@ -16,6 +16,8 @@ import {Dialog} from "@mui/material"
 import CreateCollectinForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
 import { setPageInView } from '../actions/PageActions';
+import UseCaseDownloadPicture from '../domain/usecases/getDownloadUrl';
+import getDownloadPicture from '../domain/usecases/getDownloadUrl';
 const MediaType = {
     stories:"stories",
     books:"books",
@@ -30,9 +32,22 @@ function MyProfileContainer(props){
     const [openDialog,setOpenDialog]=useState(false)
     const [media,setMedia]=useState(MediaType.stories)
     const [openRefferal,setOpenRefferal]=useState(false)
+    const [pictureUrl,setPictureUrl]=useState("")
     const [list,setList]=useState(<PageIndexList
         />
     )
+    useLayoutEffect( ()=>{
+        if(!currentProfile.profilePic.includes("http")){
+            getDownloadPicture(currentProfile.profilePic).then(url=>{
+                setPictureUrl(url)
+            })
+        }else{
+            setPictureUrl(currentProfile.profilePic)
+        }
+        
+        
+    },[])
+   
     const dispatch = useDispatch()
 
     const ClickWriteAStory = ()=>{
@@ -98,7 +113,7 @@ function MyProfileContainer(props){
                   
                         <div>
                             <div className='sm:flex-row flex-col flex  pr-0 pt-4'>
-                        <img className={"max-w-36 max-h-36 ml-6 rounded-lg"}src={currentProfile.profilePic}/>
+                        <img className={"max-w-36 max-h-36 ml-6 rounded-lg"}src={pictureUrl}/>
                      
                             <div className='flex sm:flex-row ml-4 mt-1  w-[100%] justify-between'>
                             <div className='text-left '>

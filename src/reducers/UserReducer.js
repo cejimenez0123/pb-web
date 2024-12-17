@@ -59,7 +59,7 @@ const userSlice = createSlice({
         console.log(payload)
         state.currentProfile = payload.profile
     }).addCase(logIn.fulfilled, (state, { payload }) => {
-       
+       console.log(JSON.stringify(payload))
         state.loading = false
         state.signedIn = true
         state.currentProfile = payload.profile

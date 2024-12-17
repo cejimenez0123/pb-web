@@ -9,9 +9,9 @@ import {  ref, uploadBytes,getDownloadURL,deleteObject   } from "firebase/storag
 const createProfile= createAsyncThunk("users/createProfile",async (params,thunkApi)=>{
 
     const data = await profileRepo.create(params)
-    console.log(data)
+
     if(data.token){
-        console.log(data.token)
+        console.log("FDdfdf",data.token)
        localStorage.setItem("token",data.token)
     }
     return data

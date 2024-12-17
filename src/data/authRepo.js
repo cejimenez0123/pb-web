@@ -13,8 +13,9 @@ class AuthnRepo{
     async login(form){
 
     }
-    async startSession({uId,email}){
-        const res = await axios.post(Enviroment.url+"/auth/session",{uId,email})
+    async startSession({uId,email,password}){
+
+        const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password})
         localStorage.setItem("token",res.data.token)
         return res.data
     }

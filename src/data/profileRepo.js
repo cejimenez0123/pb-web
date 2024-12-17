@@ -4,13 +4,12 @@ import Enviroment from "../core/Enviroment"
 class ProfileRepo {
     url = Enviroment.url+"/profile"
     token="token"
-    async getMyProfiles(params){
+    async getMyProfiles({token}){
         try{
-        const {id}=params
-        console.log(localStorage.getItem(this.token))
-        let res = await axios.get(this.url+"/user/"
-            +id+"/private",{ headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
+       
+       
+        let res = await axios.get(this.url+"/user/protected",{ headers:{
+                Authorization:"Bearer "+token
             }}
         )
 

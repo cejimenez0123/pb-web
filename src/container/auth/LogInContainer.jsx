@@ -11,31 +11,22 @@ import {
         FormGroup, 
         Dialog,
         Typography} from "@mui/material"
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 import theme from '../../theme';
 import { Clear } from '@mui/icons-material';
 import { auth } from '../../core/di';
-import checkResult from '../../core/checkResult';
 import ReactGA from "react-ga4"
 import Paths from '../../core/paths';
 import { useLocation } from 'react-router-dom';
+import checkResult from '../../core/checkResult';
 
 function LogInContainer(props) {
     const location = useLocation()
     const dispatch = useDispatch()
   
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [loading,setLoading]=useState(true)
-    const [suUsername, setSuUsername] = useState('');
-    const [suEmail, setSuEmail] = useState('');
-    const [suPassword, setSuPassword] = useState('');
-    const [selfStatement,setSelfStatement] = useState('')
-    const [profilePicture, setProfilePicture] = useState('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png')
-    const [privacy, setPrivacy] = useState(false)
     const [liEmail, setLiEmail] = useState('');
     const [liPassword, setLiPassword] = useState('');
-    const [signUpError, setSignUpError] = useState(false)
     const [logInError,setLogInError] = useState(false)
     const navigate = useNavigate()
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
@@ -46,8 +37,14 @@ function LogInContainer(props) {
         event.preventDefault()
         if(liEmail.length>3 && liPassword.length>6){
             const params ={email:liEmail,password:liPassword}
-            dispatch(logIn(params))
-            navigate(Paths.myProfile())
+            dispatch(logIn(params)).then(res=>{
+                checkResult(res,payload=>{
+                    navigate(Paths.myProfile())
+                },err=>{
+                    alert(err)
+                })
+            })
+           
         }else{
             setLogInError(true)
         }
