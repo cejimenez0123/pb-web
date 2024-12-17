@@ -47,6 +47,7 @@ import AddStoryToCollectionContainer from './container/collection/AddStoryToColl
 import CollectionContainer from './container/collection/CollectionContainer';
 import AddToCollectionContainer from './container/collection/AddToCollection';
 import EditCollectionContainer from './container/collection/EditCollectionContainer.jsx';
+import SignUpContainer from './container/auth/SignUpContainer.jsx';
 function App(props) {
   const authState = useAuth()
 
@@ -152,6 +153,8 @@ function App(props) {
      />
      <Route path={Paths.collection.route()}
      element={<CollectionContainer/>}/>
+     <Route path={'/signup'}
+     element={<SignUpContainer/>}/>
      <Route path={Paths.addToCollection.route}
      element={        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><AddToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.addStoryToCollection.route}

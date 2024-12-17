@@ -44,7 +44,7 @@ function ApplyContainer(props){
         authRepo.apply(form).then(data=>{
             console.log(data)
             alert(data.message)
-        })
+        }).catch(e=>alert("error:"+e.message))
         
     }
     return(<>
