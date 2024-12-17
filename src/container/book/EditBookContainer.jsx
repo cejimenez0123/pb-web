@@ -79,32 +79,32 @@ function EditBookContainer({book}){
                 })}
     }
     
-    const sortableList = ()=>{
-        if(listItems && listItems.length == 0){
-            return (<div className="empty">
-                    Empty
-                </div>)
-        }else if(listItems && listItems.length>0){
-            return(
-                <div>
-                    <div id="sort-list">
-                    <ErrorBoundary>
-                    <SortableComponent   
-                items={listItems} 
-                getItems={items=>{
-                            setNewListItems(items)
-                        }}/>
+//     const sortableList = ()=>{
+//         if(listItems && listItems.length == 0){
+//             return (<div className="empty">
+//                     Empty
+//                 </div>)
+//         }else if(listItems && listItems.length>0){
+//             return(
+//                 <div>
+//                     <div id="sort-list">
+//                     <ErrorBoundary>
+//                     <SortableComponent   
+//                 items={listItems} 
+//                 getItems={items=>{
+//                             setNewListItems(items)
+//                         }}/>
      
-     </ErrorBoundary>
-   </div>
-   </div>
-        )
-    }else{
-        return(<div>
-            Loading...
-        </div>)
-    }
-}
+//      </ErrorBoundary>
+//    </div>
+//    </div>
+//         )
+//     }else{
+//         return(<div>
+//             Loading...
+//         </div>)
+//     }
+// }
     const handleTitleChange = (e)=>{
         setBookTitle(e.target.value)
     }
@@ -212,7 +212,7 @@ function EditBookContainer({book}){
     return(<div id="EditBook" className="container">
             
             <div className="left-bar">
-                {sortableList()}
+                {/* {sortableList()} */}
             </div>
 
       
