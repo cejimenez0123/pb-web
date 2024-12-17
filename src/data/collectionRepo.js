@@ -123,6 +123,13 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(this.url+"/profile/"+profile.id+"/book")
         return res.data
     }
+    async deleteCollectionToCollection({id}){
+        await axios.delete(this.url+"/"+id+"/collection/",
+            {headers:{
+                Authorization: "Bearer "+localStorage.getItem("token")
+            }}
+        )
+    }
     async fetchSubCollectionsProtected({id}){
         const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")

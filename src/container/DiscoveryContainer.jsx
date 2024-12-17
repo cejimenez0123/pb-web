@@ -120,7 +120,7 @@ const navigateToLibrary = (library)=>{
     const pageList = ()=>{
         if(pagesInView!=null){
             return(<div 
-            
+            className='w-fit mx-auto'
             >
                <InfiniteScroll
             dataLength={pagesInView.length}
@@ -130,10 +130,10 @@ const navigateToLibrary = (library)=>{
             style={isGrid?{overflow:"unset"}:{display:"flex",flexDirections:"row"}}
             >
 
-               <div className={isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"sm:px-2"}>
+               <div className={"w-full "+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"sm:px-2")}>
               {pagesInView.map(page=>{
                     const id = `${page.id}_${uuidv4()}`
-                    return(<div id={id}>
+                    return(<div className="my-2"id={id}>
                         <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
                     </div>)
                 })}
@@ -202,8 +202,8 @@ const navigateToLibrary = (library)=>{
                 <h3 className={`text-white ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} font-extrabold text-2xl`}>Communities</h3>
                 {libraryForums()}
                 {bookList()} 
-                <div className='flex  flex-col-reverse lg:flex-row'>
-                    <div className=' lg:w-128 lg:ml-32 lg:mr-16 lg:ml-16 '>
+                <div className='flex  flex-col '>
+                    <div className=' lg:w-128 lg:ml-32 mx-auto'>
 
                         <div className='flex flex-row'>
                         <h3 className=' text-white  
@@ -223,6 +223,7 @@ const navigateToLibrary = (library)=>{
                                     <img src={stream}/>
                         </button></div>:null}
                         </div>
+
                     {pageList()}
                     </div>
                     <div className=' lg:flex-1  lg:mx-4'>

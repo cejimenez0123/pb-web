@@ -29,6 +29,7 @@ function MyProfileContainer(props){
     const [libraries,setLibraries]=useState(collections.filter(col=>col.collectionIdList>0))
     const [openDialog,setOpenDialog]=useState(false)
     const [media,setMedia]=useState(MediaType.stories)
+    const [openRefferal,setOpenRefferal]=useState(false)
     const [list,setList]=useState(<PageIndexList
         />
     )
@@ -90,11 +91,6 @@ function MyProfileContainer(props){
     },[collections])
 
    
-    const handleChange=(med)=>{
-        
-        setMedia(med)
-       
-    }
     
             return(
             <div className=''>
@@ -118,6 +114,7 @@ function MyProfileContainer(props){
                             <button onClick={ClickCreateAColleciton} className='bg-green-600 md:ml-4 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
+                            <a>Refer Someone?</a>
                             </div> 
                             </MediaQuery>
                            
@@ -145,6 +142,7 @@ function MyProfileContainer(props){
                             <button onClick={ClickCreateAColleciton} className='bg-green-600 max-w-48 sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
+                            <a className='my-4 text-purple-800'>Refer Someone?</a>
                             </div>
                             </MediaQuery>
                             </div> 
@@ -187,6 +185,26 @@ function MyProfileContainer(props){
               }}
             
               open={openDialog}
+              onClose={()=>setOpenDialog(false)}>
+                <CreateCollectinForm onClose={()=>{
+                    setOpenDialog(false)
+                }}/>
+              </Dialog>
+              <Dialog className={
+                "bg-emerald-400 w-[100%] overscroll-none"
+              }
+              PaperProps={{
+                style: {
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                 overflow:"hidden",
+                 height:"100%",
+                 width:"60%",
+                
+                },
+              }}
+            
+              open={openRefferal}
               onClose={()=>setOpenDialog(false)}>
                 <CreateCollectinForm onClose={()=>{
                     setOpenDialog(false)

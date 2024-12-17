@@ -26,7 +26,7 @@ export default function CollectionIndexItem({collection}){
         <div tabIndex={0} role="button" className=" mx-4"><img className="w-6 h-6 my-auto" src={edit}/></div>
         <ul tabIndex={0} className="dropdown-content menu bg-white text-slate-800 rounded-box z-[1] w-52 p-2 shadow">
             <li onClick={()=>navigate(Paths.editCollection.createRoute(collection.id))}><a>Edit</a></li>
-            <li onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))}><a>Add to Collection</a></li>
+            <li onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))}><a>Add to {collection.title}</a></li>
             <li><a>Share</a></li>
         </ul>
       

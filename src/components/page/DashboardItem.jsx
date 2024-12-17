@@ -197,7 +197,7 @@ return <Button onClick={()=>{
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
-          className={`rounded-none w-fit 
+          className={`rounded-none
            border-x-1 text-xl border-y-0 px-4 bg-transparent  text-slate-800 `}
         
          >
@@ -227,7 +227,7 @@ Share</button>
 className='text-slate-800'
 
 onClick={()=>ClickAddStoryToCollection()}> 
-                     Add to Collection
+                     Add to a Collection
      </a></li>
                 <li> <a
                  className='text-slate-800'
@@ -272,7 +272,7 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={`rounded-lg bg-green-400  shadow-sm justify-self-center sm:w-[40rem] md:w-[50rem] overflow-hidden`}>
+        <div className={`rounded-lg bg-green-400 w-[100vw] md:w-[34em] shadow-sm justify-self-center  overflow-hidden`}>
         
             <div className=' border-white border border-b border-2 bg-green-600  pl-2 text-slate-800   pb-2 pt-4'>
                 <div className=' flex flex-row  ml-4'>

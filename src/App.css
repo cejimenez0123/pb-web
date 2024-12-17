@@ -17,8 +17,12 @@
   height: 100%
 
 }
+.page-text p,div,span{
+  font-size: 1.4rem !important;
+}
+
 .ql-size-small{
-  font-size: 1.3rem !important;
+  font-size: 1.4rem !important;
 }
 .ql-size-normal,p{
   font-size: 1.5rem !important;

@@ -7,11 +7,10 @@ import {
           fetchPage,
           fetchArrayOfPages,
           setPagesToBeAdded,
-          fetchArrayOfPagesAppened,
           clearPagesInView,
           fetchEditingPage,
           deletePage,
-          fetchCommentsOfPage,
+         
           deleteComment,
           clearEditingPage,
           appendComment,
@@ -163,18 +162,6 @@ const pageSlice = createSlice({
       if(payload.page){
       state.editingPage = payload.page
       }
-    }).addCase(fetchCommentsOfPage.pending,(state,{payload})=>{
-      state.loading = true
-    }).addCase(fetchCommentsOfPage.rejected,(state,{payload})=>{
-        state.error = payload.error
-        state.loading =false
-    }).addCase(fetchCommentsOfPage.fulfilled,(state,{payload})=>{
-      if(Array.isArray(payload.comments)){
-        state.commentsInView = payload.comments
-      }else{
-        state.error = payload.error
-      }
-        state.loading =false
     }).addCase(deleteComment.rejected,(state,{payload})=>{
       state.error = payload.error
     }).addCase(deleteComment.fulfilled,(state,{payload})=>{

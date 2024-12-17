@@ -37,7 +37,6 @@ import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { createContext, useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
-import EditBookContainer from './container/book/EditBookContainer';
 import LibraryViewContainer from './container/library/LibraryViewContainer';
 import useAuth from './core/useAuth';
 import Paths from './core/paths';
@@ -236,11 +235,7 @@ function App(props) {
           <CreateBookContainer pagesInView={props.pagesInView} booksInView={props.booksInView}/>
         </PrivateRoute>
       }/>
-      <Route path="/book/:id/edit" element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
-        <EditBookContainer book={props.bookInView} pages={props.pagesInView}/>
-        </PrivateRoute>
-      }/>
+    
       <Route path="/library/new" element={
         <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
         <CreateLibraryContainer/>
