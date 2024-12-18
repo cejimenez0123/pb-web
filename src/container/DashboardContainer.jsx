@@ -119,82 +119,82 @@ function DashboardContainer(props){
     }}
 
     const fetchData =()=>{
-            if(currentProfile && homeCollection){
-                setHasMore(true)
-                if(homeCollection.books){
+            // if(currentProfile && homeCollection){
+            //     setHasMore(true)
+            //     if(homeCollection.books){
                    
-                    const params = {
-                        bookIdList:homeCollection.books,
-                        profile: currentProfile
-                    }
-                    if(homeCollection.books.length>0){
-                        dispatch(fetchArrayOfBooksAppened(params)).then(result=>
-                            checkResult(result,payload=>{
-                                setHasMore(false)
-                                const {bookList}=payload
-                                getBookListContent(bookList)
-                            },err=>{
+            //         const params = {
+            //             bookIdList:homeCollection.books,
+            //             profile: currentProfile
+            //         }
+            //         if(homeCollection.books.length>0){
+            //             dispatch(fetchArrayOfBooksAppened(params)).then(result=>
+            //                 checkResult(result,payload=>{
+            //                     setHasMore(false)
+            //                     const {bookList}=payload
+            //                     getBookListContent(bookList)
+            //                 },err=>{
 
-                            }))
+            //                 }))
                             
         
-                }
-                if(homeCollection.libraries){
+            //     }
+            //     if(homeCollection.libraries){
                     
-                    if(homeCollection.libraries.length>0){
-                        getLibraries()
-                    }}
-                if(homeCollection.profiles){
-                    homeCollection.profiles.forEach(id=>
-                        {
-                            const params ={
-                                id
-                            }
-                        dispatch(fetchAppendPagesOfProfile(params)).then(result=>
-                            checkResult(result,(payload)=>{
-                                setHasMore(false)
-                                        const {pageList} = payload
-                                        let list = pageList.map(page=>{return {type:"page",page}})
-                                        list.forEach(page=>{
-                                        if(!itemsInView.includes(page)){
-                                            setItemsInView(prevState=>[page,...prevState])
-                                        }
-                                        })
+            //         if(homeCollection.libraries.length>0){
+            //             getLibraries()
+            //         }}
+            //     if(homeCollection.profiles){
+            //         homeCollection.profiles.forEach(id=>
+            //             {
+            //                 const params ={
+            //                     id
+            //                 }
+            //             dispatch(fetchAppendPagesOfProfile(params)).then(result=>
+            //                 checkResult(result,(payload)=>{
+            //                     setHasMore(false)
+            //                             const {pageList} = payload
+            //                             let list = pageList.map(page=>{return {type:"page",page}})
+            //                             list.forEach(page=>{
+            //                             if(!itemsInView.includes(page)){
+            //                                 setItemsInView(prevState=>[page,...prevState])
+            //                             }
+            //                             })
                                       
-                        },error=>{
+            //             },error=>{
 
-                        }))
-                    }
-                ) 
-            }
-            dispatch(fetchBooksWhereProfileEditor()).then((result)=>checkResult(result,payload=>{
-                const {bookList}=payload
+            //             }))
+            //         }
+            //     ) 
+    //         }
+    //         dispatch(fetchBooksWhereProfileEditor()).then((result)=>checkResult(result,payload=>{
+    //             const {bookList}=payload
 
-                getBookListContent(bookList)
-            },err=>{
+    //             getBookListContent(bookList)
+    //         },err=>{
 
-            }))
-            dispatch(fetchBooksWhereProfileWriter()).then(result=>checkResult(result,payload=>{
-                const {bookList}=payload
-                getBookListContent(bookList)
-            },err=>{}))
-            dispatch(fetchPagesWhereProfileCommenters()).then(result=>checkResult(result,payload=>{
-                const {pageList}=payload
-                let items = pageList.map(page=>{return {type:"page",page: page}})
-                items.forEach(item=>{
-                   if(!itemsInView.includes(item)){
-                    setItemsInView(prevState=>[...prevState,item])
-                   }
-                })
-            },err=>{
+    //         }))
+    //         dispatch(fetchBooksWhereProfileWriter()).then(result=>checkResult(result,payload=>{
+    //             const {bookList}=payload
+    //             getBookListContent(bookList)
+    //         },err=>{}))
+    //         dispatch(fetchPagesWhereProfileCommenters()).then(result=>checkResult(result,payload=>{
+    //             const {pageList}=payload
+    //             let items = pageList.map(page=>{return {type:"page",page: page}})
+    //             items.forEach(item=>{
+    //                if(!itemsInView.includes(item)){
+    //                 setItemsInView(prevState=>[...prevState,item])
+    //                }
+    //             })
+    //         },err=>{
 
-            })
+    //         })
 
-            )
-        }
-    }else{
-        fetchPublicContent()
-    }
+    //         )
+    //     }
+    // }else{
+    //     fetchPublicContent()
+    // }
 
 }
     

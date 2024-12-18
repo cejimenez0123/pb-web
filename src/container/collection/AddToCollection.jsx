@@ -39,19 +39,22 @@ export default function AddToCollectionContainer(props){
         console.log(colInView)
      if(collectionIdList.length>0) dispatch(addCollectionListToCollection({id:colInView.id,list:collectionIdList})).then(
         ()=>{
-            completeCol=true
-            if(completeCol&&completeStory){
+      
+                dispatch(clearPagesInView())
+                setNewCollections([])
+                setNewStories([])
                 dispatch(clearPagesInView())
                 navigate(Paths.collection.createRoute(colInView.id))
-            }
+            
         }
     )
    if (storyIdList.length>0) dispatch(addStoryListToCollection({id:colInView.id,list:storyIdList})).then(res=>{
-        completeStory=true
-        if(completeCol&&completeStory){
+       
             dispatch(clearPagesInView())
+            setNewCollections([])
+            setNewStories([])
             navigate(Paths.collection.createRoute(colInView.id))
-        }
+        
     })
       
     }
@@ -94,7 +97,7 @@ export default function AddToCollectionContainer(props){
                 return(<div className="text-left mx-1 flex flex-row justify-between border
                 border-white rounded-lg p-4  my-2">
                     <h2 className="text-xl my-auto max-w-[75%] overflow-hidden">{story?story.title:null}</h2>
-                    {colInView&& colInView.storyIdList && colInView.storyIdList.includes(story.id)||newStories.includes(story)?
+                    {colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
                     <h1 onClick={()=>removeNewStory(story)}className="">
 <p className="text-2xl  h-8 rounded-full  "><img src={checked}/></p>
 </h1>:
@@ -117,7 +120,7 @@ export default function AddToCollectionContainer(props){
                 return(<div className="text-left flex sm:min-w-96 flex-row justify-between border
                 border-white rounded-lg p-4  my-2">
                     <h2 className="text-xl my-auto">{col?col.title:null}</h2>
-                    {colInView&& colInView.childCollections.includes(col.id)||newCollection.includes(col)?
+                    {colInView&& colInView.collecitonIdList && colInView.collectionIdList.find(colJoint=>colJoint.collecitonId==col.id)||newCollection.includes(col)?
                     <button
                     onClick={()=>removeNewCollection(col)}
                     className="btn text-white btn-circle">

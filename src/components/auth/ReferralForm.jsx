@@ -12,7 +12,7 @@ export default function ReferralForm({onClose}){
                 alert(data.message)
             }
         })}
-    return(   <div>
+    return(   <div className="">
 
           <label className="text-white mt-3">
             Name

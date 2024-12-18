@@ -47,7 +47,9 @@ class ProfileRepo {
     async updateProfile(params){
         let res = await axios.put(Enviroment.url+"/profile/"+params.profile.id,{
             ...params
-        })
+        },{headers:{
+            Authorization:"Bearer "+localStorage.getItem(this.token)
+        }})
         return res.data
     }
     async getProfileBookmarkCollection({profileId}){

@@ -15,9 +15,10 @@ export default function SignUpContainer(props){
     const [confirmPassword,setConfirmPassword]=useState("")
     const [selectedImage, setSelectedImage] = useState(null);
     const [selfStatement,setSelfStatement]=useState("")
+    const [file,setFile]=useState(null)
     const [errorMessage, setErrorMessage] = useState('');
     const [isPrivate,setIsPrivate]=useState(false)
-    const handleFileChange = (e) => {
+    const handleFileInput = (e) => {
     const file = e.target.files[0];
 
     if (file) {
@@ -25,9 +26,10 @@ export default function SignUpContainer(props){
       if (!file.type.startsWith('image/')) {
         setErrorMessage('Please upload a valid image file.');
         setSelectedImage(null);
+    
         return;
       }
-
+      setFile(file)
       setErrorMessage('');
       setSelectedImage(URL.createObjectURL(file));
     }
@@ -42,7 +44,7 @@ export default function SignUpContainer(props){
       }, [location.search]);
     const completeSignUp=()=>{
 
-        dispatch(uploadProfilePicture({file:selectedImage})).then(res=>checkResult(res,payload=>{
+        dispatch(uploadProfilePicture({file:file})).then(res=>checkResult(res,payload=>{
                 const{fileName}=payload
                 const params = {token,password,username,profilePicture:fileName,selfStatement,privacy:isPrivate}
                 dispatch(createProfile(params))
@@ -96,7 +98,7 @@ export default function SignUpContainer(props){
     className="file-input mx-auto max-w-48"
         type="file"
         accept="image/*"
-        onChange={handleFileChange}
+        onInput={handleFileInput}
        
       />
 

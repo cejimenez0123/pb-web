@@ -1,15 +1,12 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { updateProfile,deleteUserAccounts, fetchHomeCollection, updateHomeCollection, fetchArrayOfProfiles} from "../actions/UserActions";
+import { updateProfile,deleteUserAccounts, fetchHomeCollection, updateHomeCollection, deletePicture} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
-import { btnStyle } from "../styles/styles";
-import useAuth from "../core/useAuth";
+import getDownloadPicture from "../domain/usecases/getDownloadPicture";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
 import {    Button,
-            TextField,
-            FormGroup,
-            TextareaAutosize,
+            
             Checkbox,
             FormControlLabel,
             Dialog,
@@ -28,44 +25,44 @@ import checkResult from "../core/checkResult";
 import { checkmarkStyle } from "../styles/styles";
 import Paths from "../core/paths";
 import { Clear } from "@mui/icons-material";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+
 import uuidv4 from "../core/uuidv4";
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-  });
+
 function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
-    let auth = useAuth()
+    const [errorMessage, setErrorMessage] = useState('');
     const currentProfile=useSelector(state=>state.users.currentProfile)
-    const [newUsername,setNewUsername] = useState("")
+    const [newUsername,setNewUsername] = useState(currentProfile.username)
     const homeCollection = useSelector(state=>state.users.homeCollection)
-    const [selfStatement,setSelfStatement] = useState("")
-    const [profilePic,setProfilePic]=useState("")
+    const [selfStatement,setSelfStatement] = useState(currentProfile.selfStatement)
     const [isPrivate,setPrivacy] = useState(false)
     const [homeItems,setHomeItems] = useState([])
     const [hasMoreHome,setHasMoreHome]=useState(false)
     const dispatch = useDispatch()
+    const [file,setFile]=useState(null)
+    const [selectedImage,setSelectedImage]=useState()
+    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     let [pending,setPending] = useState(false)
     const [deleteDialog,setDeleteDialog] = useState(false);
     const [homePages,setHomePages] = useState([])
     const [homeBooks,setHomeBooks]=useState([])
     const [homeLibraries,setHomeLibraries]=useState([])
     const [homeProfiles,setHomeProfiles]=useState([])
-    useEffect(()=>{
-    // if(localStorage.getItem("loggedIn")==true){
-        setUserInfo() 
-    // }
    
+    useLayoutEffect( ()=>{
+        if(!currentProfile.profilePic.includes("http")){
+            getDownloadPicture(currentProfile.profilePic).then(url=>{
+               
+                setPictureUrl(url)
+            })
+        }else{
+            setPictureUrl(currentProfile.profilePic)
+        }
+        
+        
     },[])
+   
     const setUserInfo = () => {
         
         if(currentProfile){
@@ -80,79 +77,9 @@ function SettingsContainer(props) {
     }
     
     const fetchCollectionInfo =()=>{
-        setHomeItems([])
        
-       if(homeCollection){
-            const pageParams = {pageIdList:homeCollection.pages}
-            dispatch(fetchArrayOfPages(pageParams)).then(result=>checkResult(
-                result,payload=>{
-                    const {pageList}=payload
-                    const list = pageList.filter(page=>page).map(page=>{return{ type:"page",page,id:page.id}})
-                    setHomeItems(prevState=>[...prevState,...list])
-                },err=>{
-
-                }
-            ))
-            const bookParams = {bookIdList:homeCollection.books}
-            dispatch(fetchArrayOfBooks(bookParams)).then(result=>checkResult(result,
-                payload=>{
-                    const {bookList}=payload
-                    const list = bookList.filter(book=>book).map(book=>{return{type:"book",book,id:book.id}})
-                    setHomeItems(prevState=>[...prevState,...list])
-                },err=>{
-
-                }))
-            const libraryParams = {libraryIdList:homeCollection.libraries}
-            dispatch(fetchArrayOfLibraries(libraryParams)).then(result=>
-                checkResult(result,payload=>{
-                    const {libraryList}=payload
-                    const list = libraryList.filter(library=>library).map((library)=>{return {type:"library",library,id:library.id}})
-                    setHomeItems(prevState=>[...prevState,...list])
-                },err=>{
-
-                }))
-      
-            const profileParams = {profileIdList:homeCollection.profiles}
-            dispatch(fetchArrayOfProfiles(profileParams)).then(result=>
-                checkResult(result,payload=>{
-                    const {profileList} = payload
-                    
-                    const list = profileList.filter(profile=>profile).map(profile=>{return{ type:"profile",profile,id:profile.id}})
-                    setHomeItems(prevState=>[...prevState,...list])
-                },err=>{
-
-                }))
-        }
     }
-    
-    const fetchCollection = (profile)=>{
-        if(homeCollection){
-            setHomeCollection(homeCollection)
 
-        }else{
-            dispatch(fetchHomeCollection({profile:profile})).then(result=>
-                checkResult(result,payload=>{
-                    const {collection} = payload;
-                    setHomeCollection(collection);
-                },err=>{
-
-                }))
-        }
-    }
-    const setHomeCollection = ()=>{
-        setHomePages([])
-        setHomeBooks([])
-        setHomeLibraries([])
-        setHomeProfiles([])
-        if(homeCollection){
-            if(homeCollection.pages){setHomePages(homeCollection.pages)}
-            if(homeCollection.books){ setHomeBooks(homeCollection.books)}
-            if(homeCollection.libraries){setHomeLibraries(homeCollection.libraries)}
-            if(homeCollection.profiles){setHomeProfiles(homeCollection.profiles)}
-            fetchCollectionInfo(homeCollection)
-        }
-        
-    }
   
     const handleClickOpen = () => {
         setDeleteDialog(true);
@@ -174,31 +101,64 @@ function SettingsContainer(props) {
             setNewUsername(profile.username)
         }
    
-        setProfilePic(profile.profilePic)
+        setSelectedImage(profile.profilePic)
         setSelfStatement(profile.selfStatement)
         setPrivacy(profile.privacy)
         setPending(false)
-        fetchCollection(profile)
+        // fetchCollection(profile)
     }
     const handleOnSubmit =(e)=>{
         e.preventDefault();
         if(currentProfile!=null){
-        const params = {
-            profile: currentProfile,
-            username: newUsername,
-            profilePicture: profilePic,
-            selfStatement: selfStatement,
-            privacy: isPrivate
-            
+                   const fileParams = { file: file
         }
-        dispatch(updateProfile(params)).then((result) =>checkResult(result,
-            payload=>{
-                window.alert("Updated")
-            },err=>{
-                window.alert(err.message)
-            }
 
-        ))
+       if(file){
+
+        dispatch(deletePicture({fileName:currentProfile.profilePic}))
+        dispatch(uploadProfilePicture(fileParams)).then((result) => {
+            checkResult(result,(payload)=>{
+     
+                const params = {
+                    profile: currentProfile,
+                    username: newUsername,
+                    profilePicture: payload.fileName,
+                    selfStatement: selfStatement,
+                    privacy: isPrivate
+                    
+                }
+                dispatch(updateProfile(params)).then((result) =>checkResult(result,
+                    payload=>{
+                        window.alert("Updated")
+                    },err=>{
+                        window.alert(err.message)
+                    }
+        
+                ))
+            },(err)=>{
+                window.alert(err.message)
+                setSignUpError(true)
+            })
+    
+        })}else{
+            const params = {
+                profile: currentProfile,
+                username: newUsername,
+                profilePicture: currentProfile.fileName,
+                selfStatement: selfStatement,
+                privacy: isPrivate
+                
+            }
+            dispatch(updateProfile(params)).then((result) =>checkResult(result,
+                payload=>{
+                    window.alert("Updated")
+                },err=>{
+                    window.alert(err.message)
+                }
+    
+            ))
+        }
+       
             
     
     }   
@@ -294,19 +254,34 @@ function SettingsContainer(props) {
         }
     }
     const handleProfilePicture =(e)=>{
-        const files = Array.from(e.target.files)
-        const params = { file: files[0]
+        
+        const file = e.target.files[0];
+
+        if (file) {
+          // Check file type
+          if (!file.type.startsWith('image/')) {
+            setErrorMessage('Please upload a valid image file.');
+           
+            return;
+          }
+          setFile(file)
+          setErrorMessage('');
+          setPictureUrl(URL.createObjectURL(file))
+          
         }
-        dispatch(uploadProfilePicture(params)).then((result) => {
-            checkResult(result,(payload)=>{
-                const {url}= payload
-                setProfilePic(url)
-            },(err)=>{
-                window.alert(err.message)
-                setSignUpError(true)
-            })
+        // const files = Array.from(e.target.files)
+        // const params = { file: files[0]
+        // }
+        // dispatch(uploadProfilePicture(params)).then((result) => {
+        //     checkResult(result,(payload)=>{
+        //         const {url}= payload
+        //         setProfilePic(url)
+        //     },(err)=>{
+        //         window.alert(err.message)
+        //         setSignUpError(true)
+        //     })
     
-        })
+        // })
     }
     const collectionList = ()=>{
         return (
@@ -329,81 +304,69 @@ function SettingsContainer(props) {
     }
     const textfieldStyle = {backgroundColor:theme.palette.primary.extraLight,borderRadius:"8px",width:"100%" }
     if(!pending){
-            return(<div style={{marginBottom:"2em"}}className="SettingsContainer">
-                    <div  className="SettingForm">
-                        <FormGroup>
-                            <TextField  style={textfieldStyle} 
-                                        className={"input text"}
+            return(<div >
+                    <div  className="my-4 max-w-96 mx-auto p-3">
+                      <label className="text-left">Username:
+                            <input type="text"  style={textfieldStyle} 
+                                        className={"input text-white bg-transparent border border-white "}
                                         value={newUsername}
                                         onChange={(e)=>setNewUsername(e.target.value)
                                         }
-                                         label="Username"/>
+                                         label="Username"/></label>
                                           <div className='file'>
-                                <Button 
-                                style={btnStyle}
-                                
-                                component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                    
-                    Upload Picture
-                    <VisuallyHiddenInput type="file"  name ='profile_picture'
-                        onInput={(e)=>handleProfilePicture(e)}/>
-
-                    </Button>
+                        <input
+    className="file-input my-8 mx-auto max-w-48"
+        type="file"
+        accept="image/*"
+        onInput={(e)=>handleProfilePicture(e)}/>
+             
+        <div style={{ marginTop: '20px' }}>
+          
+          <img
+          className="mx-auto"
+            src={pictureUrl}
+            alt="Selected"
+            style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }}
+          />
+        </div>
+        
+      
+    
                     </div>
-                            <img className="profile-pic" src={profilePic}/>
-                            <label className="self-statement" id="self-statement" >
-                                <h6>Self Statement:</h6>
-                                <TextareaAutosize 
-                                    style={{
-                                        padding:"1em",
-                                        borderRadius:textfieldStyle.borderRadius,
-                                        color:theme.palette.primary.dark,
-                                        backgroundColor:textfieldStyle.backgroundColor}}
+                    
+                            <label className="text-left mt-4 " id="" >
+                                <h6 >Self Statement:</h6>
+                               
+                                    <textarea
                                     onChange={(e)=>{setSelfStatement(e.target.value)}}
-                                    minRows={3}
-                                    cols={30}
+                                  
                                     value={selfStatement}
-                                    
+                                    className="textarea min-w-72 w-full bg-transparent text-white border border-white p-4 min-h-36 my-2"
                                     placeholder="Self Statement"/>
                             </label>
-                            <div style={{width:"100%"}}onClick={() => setOpenModal([!openModal[0],"bookmark"])}>
-                  
-                                    <FormControlLabel 
-                                control={
-                                    <Checkbox 
-                                    style={checkmarkStyle}
-                                        checked={isPrivate}
-                                        onChange={()=>{
-                                            setPrivacy(!isPrivate)
-                                        }}
-                                    />}
-                                label="Private" 
-                            />
-                            </div>
-                            <div style={{marginTop:"2em",marginBottom:"2em"}}>
-                               <div><h5>Collection</h5></div> 
-                            {collectionList()}
-                            </div>
-                    
-                     
-                            <Button 
-                                style={{backgroundColor:theme.palette.secondary.main,
-                                        color:theme.palette.secondary.contrastText,
-                                        padding:"1em",
-                                        fontWeight:"bold",
-                                        fontSize:"1em"}}
+                            <div className="text-left">
+                            {isPrivate?<button onClick={()=>setPrivacy(false)}className=" text-white btn text-bold">You are Private</button>:
+                            <button 
+                            onClick={()=>setPrivacy(true)}
+                            className="btn  text-bold text-white">You are Public</button>}
+   </div>
+  <div className="mt-8">
+
+                            <button
+                               className="bg-emerald-800 text-white"
                                 variant="outlined" 
                                 onClick={(e)=>handleOnSubmit(e)}
                             >
                                 Update
-                            </Button>
-                        </FormGroup>
-                        <Button className="delete"
+                            </button>
+                            </div>
+                        <button className="delete"
                                 onClick={handleClickOpen}
-                                style={{marginTop: "4em",maxWidth:"10em",marginBottom: "5em",
-                                        backgroundColor: theme.palette.error.main,
-                                        color:theme.palette.error.contrastText}}
-                        > Delete</Button>
+                                // style={{marginTop: "4em",maxWidth:"10em",marginBottom: "5em",
+                                //         backgroundColor: theme.palette.error.main,
+                                //         color:theme.palette.error.contrastText}}
+                        > Delete</button>
                         <DeleteDialog/>
         
                         </div>

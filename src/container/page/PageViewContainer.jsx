@@ -1,7 +1,7 @@
 import { PageType } from "../../core/constants";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState ,useLayoutEffect} from "react";
+import {  useState ,useLayoutEffect, useEffect} from "react";
 import "../../styles/PageView.css"
 import { fetchCommentsOfPage } from "../../actions/PageActions";
 import PageViewItem from "../../components/page/PageViewItem";
@@ -11,21 +11,20 @@ import PropTypes from "prop-types"
 import LinkPreview from "../../components/LinkPreview";
 import PageSkeleton from "../../components/PageSkeleton";
 import { getStory } from "../../actions/StoryActions";
-import ReactGA from "react-ga4"
 import CommentThread from "../../components/comment/CommentThread";
-import { comment } from "postcss";
 
-export default function PageViewContainer({page}){
+export default function PageViewContainer(props){
     PageViewContainer.propTypes = {
         page: PropTypes.object.isRequired
     }
- 
+    const page = useSelector(state=>state.pages.pageInView)
     const pathParams = useParams()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const loading = useSelector(state=>state.pages.loading)
     const lookingWrong = <div><h1>Looking in all the wrong places</h1></div>
     const comments = useSelector(state=>state.comments.comments)
+    const [pageDataElement,setPageDataElement]=useState(<div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>)
     const [rootComments,setRootComments]=useState([])
     useLayoutEffect(()=>{
         dispatch(getStory(pathParams))
@@ -34,26 +33,28 @@ export default function PageViewContainer({page}){
     useLayoutEffect(()=>{
         setRootComments(comments.filter(com=>com.parentId==null))
      },[comments])
-   let pageDataElement =(<div></div>)
+
 
   
+useLayoutEffect(()=>{
+
 
     if(!loading && page!=null){
 
     switch(page.type){
         case PageType.text:
-            pageDataElement = <div className='text' dangerouslySetInnerHTML={{__html:page.data}}></div>
+            setPageDataElement(<div className='text' dangerouslySetInnerHTML={{__html:page.data}}></div>)
         break;
-        case PageType.link: pageDataElement = <div><LinkPreview url={page.data}/></div>
+        case PageType.link: setPageDataElement(<div><LinkPreview url={page.data}/></div>)
         break;
         case PageType.picture:
-            pageDataElement = <img className='dashboard-data' src={page.data} alt={page.title}/>
+            setPageDataElement(<img className='dashboard-data' src={page.data} alt={page.title}/>)
         break;
         case PageType.video:
-            pageDataElement = <video src={page.data}/>
+           setPageDataElement(<video src={page.data}/>)
         break;
         default:
-            pageDataElement = <div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>
+            setPageDataElement(<div className='dashboard-data' dangerouslySetInnerHTML={{__html:page.data}}/>)
         break;
     }}else{
         if(loading){
@@ -62,37 +63,8 @@ export default function PageViewContainer({page}){
             return lookingWrong
         }
     }
-  
-        const commentList = ()=>{
-            
-        
-        return <CommentThread comments={rootComments}/>
-    // if(commentsInView && commentsInView.length>0){
-   
-    //     return(<div className="comment-thread">
-    //             <InfiniteScroll
-    //                             dataLength={commentsInView.length}
-    //             next={fetchComments}
-    //             hasMore={hasMoreComments} // Replace with a condition based on your data source
-    //             loader={<p>Loading...</p>}
-    //             endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
-    //                         >
-    //                         {commentsInView.map(comment=>{
-    //                             if(comment.parentCommentId==""||comment.parentCommentId==null){
-    //                             return (<CommentItem page={page} comment={comment}/>)
-                            
-                
-    //                         }else{
-    //                             return
-    //                         }})}
-    //                     </InfiniteScroll>
-    //     </div>)
-    // }else{
-    //     return(<div className="bg-emerald-700 min-h-24 rounded-b-lg py-4">
-    //         <h2 className="text-4xl"> No comments yet</h2>
-    //     </div>)
-    // }
-}
+},[page])
+    
     const pageDiv = ()=>{
         if(page){
             return(<PageViewItem page={page} currentProfile={currentProfile} />)
@@ -127,7 +99,7 @@ export default function PageViewContainer({page}){
     {title()}
 <div id="page">
     {pageDiv()}
-    {commentList()}
+    <CommentThread comments={rootComments}/>
     
    
 </div>

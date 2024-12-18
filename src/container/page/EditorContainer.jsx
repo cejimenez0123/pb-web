@@ -91,7 +91,7 @@ function EditorContainer({currentProfile}){
         if(currentProfile){
           if(pageInView){
               if(pageInView.type===PageType.text){
-                  return (<div id=""><RichEditor  initialContent={htmlContent}/></div>)
+                  return (<div id="max-w-[100vw]"><RichEditor  initialContent={htmlContent}/></div>)
               }else if(pageInView.type===PageType.picture){
                 
                   return (<div  className="image">
@@ -103,7 +103,7 @@ function EditorContainer({currentProfile}){
                       <PicturePageForm />
                   )
               }else{
-                  return (<div id=""><RichEditor initialContent={htmlContent}/></div>)}
+                  return (<div className="max-w-[100vw]"><RichEditor initialContent={htmlContent}/></div>)}
             }else{
 
               
@@ -135,24 +135,28 @@ function EditorContainer({currentProfile}){
         return(
           <div className="max-w-[100vw] sm:max-w-[45rem] mx-auto"> 
        
-                <div className=" rounded-lg sm:my-4 mx-auto ">
-                  <div className="bg-green-600  sm:rounded-t-lg content-end border border-white   flex flex-row  ">
-                    <div style={{borderRight:"1px solid white" }}
-                    className="  flex flex-col-reverse">
-                      <div className="flex-row flex">
-                    <input type="text " className=" p-2 bg-green-600 h-fit text-xl w-[21.5rem] sm:w-[30em] text-white font-bold" value={title} onChange={handleTitle}placeholder="Untitled"/>
-                    {isSaved?<h6 className=" mx-2 mt-1 text-white ">Saved</h6>:
-                    <h6 className=" mx-2 mt-1 text-white">Draft</h6>}</div>
+                <div className=" rounded-lg sm:my-4  mx-auto ">
+                  <div className="bg-green-600 bg-transparent sm:rounded-t-lg border border-white   flex flex-row  ">
+                    <div 
+                    className="flex-1 "
+                    
+                    style={{borderRight:"1px solid white" }}
+                    >
+                      <div className="text-left">
+                      {isSaved?<h6 className=" mx-2 mt-1 text-sm text-white ">Saved</h6>:
+                    <h6 className=" mx-2 mt-1 text-sm text-white">Draft</h6>}</div>
+                    <input type="text " className="bg-transparent p-2 bg-green-600 w-full h-fit text-xl font-bold" value={title} onChange={handleTitle}placeholder="Untitled"/>
+
                     </div>
-                    <div className="max-w-fit">
-                      
-                    {md?<div className="  flex flex-col p-1 ">
+
+                    <div>  
+                    {md?<div className="  flex   flex-col p-1 ">
                       <button className=" mb-1  bg-emerald-800 text-white "
                       onClick={handleClickAddToCollection}>Add to Collection</button>
                       <button className=" text-white bg-emerald-800 ">Post Public</button>
                     </div>:
                     <div className="dropdown dropdown-bottom dropdown-end">
-                    <div tabIndex={0} role="button" ><img className="w-12 h-12 bg-green-800 rounded-lg m-1" src={menu}/></div>
+                    <div tabIndex={0} role="button" ><img className="w-12 h-12 bg-green-800 rounded-lg mt-1 mx-auto" src={menu}/></div>
                     <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
                       <li className="text-green-600"
                       onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
@@ -160,7 +164,7 @@ function EditorContainer({currentProfile}){
                     </ul>
                   </div>}
                     
-                  </div>
+                </div>
                   </div>
                 {contentDiv()}
                 </div>

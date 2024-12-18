@@ -47,16 +47,15 @@ builder
 })
 .addCase(addCollectionListToCollection.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
-    state.loading = false})
-    .addCase(addCollectionListToCollection.rejected,(state,{payload})=>{
-   
-         
+    state.loading = false
+}).addCase(addCollectionListToCollection.rejected,(state,{payload})=>{  
     state.error = payload.error
     state.loading = false
 }).addCase(addStoryListToCollection.rejected,(state,{payload})=>{
     state.error = payload.error
     state.loading = false
 }).addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
+    state.loading=false
     state.collectionInView =payload.collection
 }).addCase(createCollection.pending,(state)=>{
     state.loading = true

@@ -1,4 +1,4 @@
-import React ,{ useEffect, useState } from 'react'
+import React ,{ useEffect, useLayoutEffect,useState } from 'react'
 import { useSelector,useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
@@ -6,6 +6,7 @@ import {signOutAction} from "../actions/UserActions"
 import { useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import debounce from '../core/debounce'
+import getDownloadPicture from '../domain/usecases/getDownloadPicture'
 import { 
             Container,
             Toolbar,
@@ -26,6 +27,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
 import LinkIcon from '@mui/icons-material/Link';
 import theme from '../theme'
+
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import Paths from '../core/paths'
@@ -59,6 +61,7 @@ function NavbarContainer(props){
     const [anchorElPageSmall,setAnchorElPageSmall] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedImage,setSelectedImage]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
    
    
    
@@ -111,6 +114,19 @@ function NavbarContainer(props){
       }else{
       setAnchorElNavCreate(event.currentTarget);}
   };
+  useLayoutEffect( ()=>{
+    if(currentProfile){
+    if( !currentProfile.profilePic.includes("http")){
+        getDownloadPicture(currentProfile.profilePic).then(url=>{
+           
+            setSelectedImage(url)
+        })
+    }else{
+        setSelectedImage(currentProfile.profilePic)
+    }
+  }
+    
+},[currentProfile])
   const handleElPageSmall = (event) => {
     if(anchorElPageSmall){
       setAnchorElPageSmall(null)
@@ -453,7 +469,7 @@ function NavbarContainer(props){
             <Box style={{display: currentProfile ? "":"none"}} sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={`${currentProfile.username}`} src={currentProfile.profilePic} />
+                  <Avatar alt={`${currentProfile.username}`} src={selectedImage} />
                 </IconButton>
               </Tooltip>
               <Menu

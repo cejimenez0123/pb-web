@@ -9,10 +9,7 @@
    
     }
 
-.rich-editor{
-    width: 45em;
 
-}
 .editor-btn-row{
     display: flexbox;
     flex-wrap: wrap;
@@ -59,18 +56,7 @@
 
 }
 @media (max-width: 900px) {
-    #EditorContainer{
-        display: flex;
-        flex-direction: column-reverse;
-    }
-    #EditorContainer #post-button-row{
-        margin-bottom: 5em;
-        width: 100%;
-  
-        display: flex;
-        justify-content: flex-end;
-   
-    }
+
 
 
     .editor-btn-row{
@@ -113,7 +99,7 @@
         background-color: rgb(15, 18, 15) !important;
     }
     }
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
         #editor {
             margin:auto;
             background-color: var(--tertiary);
@@ -122,9 +108,7 @@
             margin-bottom: 2em;
         
         }
-        .ql-editor{
-            
-        }
+        
     }
     @media (min-width: 600px){
         .ql-editor{min-height: 60vh;
@@ -151,7 +135,7 @@
   
   /* Customize icons in hover state */
   .ql-toolbar .ql-stroke:hover {
-    stroke: #039703 !important; /* Change color on hover */
+    stroke: #ddb928 !important; /* Change color on hover */
   }
   .ql-font{
     color:white !important;
@@ -165,6 +149,11 @@
     stroke: #039703 !important; 
  }
   .ql-toolbar .ql-fill:hover {
+    background-color: rgba(81, 166, 117, 0.65) !important;
     fill: white !important; /* Change color on hover */
   }
-  
+  div.ql-toolbar{
+
+    background-color: rgba(81, 166, 117, 0.65) !important;}
+  .ql-editor{min-height: 60vh;
+background-color: rgba(81, 166, 117, 0.65) !important;}

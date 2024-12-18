@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import {    logIn ,
             signUp,
             getCurrentProfile,
-            fetchAllProfiles,
+            // fetchAllProfiles,
             fetchProfile,
             setProfileInView,
             fetchFollowBooksForProfile,
@@ -22,7 +22,8 @@ import {    logIn ,
             getPageApprovals,
             searchDialogToggle,
             searchMultipleIndexes,
-            fetchArrayOfProfiles,
+            updateProfile,
+            // fetchArrayOfProfiles,
         } from "../actions/UserActions"
 import { createProfile } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"
@@ -53,6 +54,8 @@ const userSlice = createSlice({
      console.log(payload)
     }).addCase(createProfile.pending, (state)=>{
         state.loading=true
+    }).addCase(updateProfile.fulfilled,(state,{payload})=>{
+        state.currentProfile = payload.profile
     })
     .addCase(createProfile.fulfilled, (state, { payload })=>{
         state.loading=false    
@@ -85,13 +88,15 @@ const userSlice = createSlice({
     }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
        state.currentProfile = payload.profile
        state.loading = false
-    }).addCase(fetchAllProfiles.fulfilled,(state,{ payload })=>{
-        state.profilesInView = payload.profileList
-        state.loading=false
-    }).addCase(fetchAllProfiles.rejected,(state,{payload})=>{
-        state.error = payload.error
-        state.loading = false
-    }).addCase(fetchProfile.pending,(state)=>{
+    })
+    // .addCase(fetchAllProfiles.fulfilled,(state,{ payload })=>{
+    //     state.profilesInView = payload.profileList
+    //     state.loading=false
+    // }).addCase(fetchAllProfiles.rejected,(state,{payload})=>{
+    //     state.error = payload.error
+    //     state.loading = false
+    // })
+    .addCase(fetchProfile.pending,(state)=>{
         state.loading=true
     }).addCase(fetchProfile.fulfilled,(state,{ payload })=>{
        
@@ -182,9 +187,10 @@ const userSlice = createSlice({
         state.searchResults = payload.searchResults
     }).addCase(searchMultipleIndexes.rejected,(state,{payload})=>{
         state.error =payload
-    }).addCase(fetchArrayOfProfiles.fulfilled,(state,{payload})=>{
-        state.profilesInView = payload.profileList
     })
+    // .addCase(fetchArrayOfProfiles.fulfilled,(state,{payload})=>{
+    //     state.profilesInView = payload.profileList
+    // })
 }})
 
 

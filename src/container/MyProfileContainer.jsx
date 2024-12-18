@@ -33,14 +33,14 @@ function MyProfileContainer(props){
     const [openDialog,setOpenDialog]=useState(false)
     const [media,setMedia]=useState(MediaType.stories)
     const [openRefferal,setOpenRefferal]=useState(false)
-    const [pictureUrl,setPictureUrl]=useState("")
+    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [list,setList]=useState(<PageIndexList
         />
     )
     useLayoutEffect( ()=>{
         if(!currentProfile.profilePic.includes("http")){
             getDownloadPicture(currentProfile.profilePic).then(url=>{
-               console.log("Touch",url)
+               
                 setPictureUrl(url)
             })
         }else{
@@ -120,7 +120,7 @@ function MyProfileContainer(props){
                             <div className='flex sm:flex-row ml-4 mt-1  w-[100%] justify-between'>
                             <div className='text-left '>
                             <h5 className='text-xl font-bold'>{currentProfile.username}</h5>
-                            <p>{currentProfile.selfStatement}</p>
+                            <h6 className='max-h-48 overflow-scroll text-l'>{currentProfile.selfStatement}</h6>
                            
                             <MediaQuery minWidth={'600px'}>
                             <div className='mt-4 pt-2 flex flex-row'>
@@ -165,7 +165,7 @@ function MyProfileContainer(props){
                             </div> 
                             </div>
                             </div>
-                            <div role="tablist" className="tabs mt-8 shadow-md rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
+                            <div role="tablist" className="tabs mt-8 shadow-md min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  sm:max-w-[42rem] md:p-6">
   <PageIndexList/>
@@ -188,7 +188,7 @@ function MyProfileContainer(props){
   </div>
 </div>
 <Dialog className={
-                "bg-emerald-400 w-[100%] overscroll-none"
+                "bg-emerald-400 overscroll-none"
               }
               PaperProps={{
                 style: {
@@ -196,7 +196,7 @@ function MyProfileContainer(props){
                   boxShadow: 'none',
                  overflow:"hidden",
                  height:"100%",
-                 width:"60%",
+                 width:"100%",
                 
                 },
               }}
@@ -208,7 +208,7 @@ function MyProfileContainer(props){
                 }}/>
               </Dialog>
               <Dialog className={
-                "bg-emerald-400 w-[100%] overscroll-none"
+                "bg-emerald-400 w-[100%] md:max-w-[30em] mx-auto overscroll-none"
               }
               PaperProps={{
                 style: {

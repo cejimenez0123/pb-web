@@ -10,7 +10,11 @@ const PageIndexList = ()=>{
                    next={()=>{}}
                    scrollThreshold={1}
                    hasMore={false}
-                  
+                    endMessage={
+                      <div>
+                        <p>No Content</p>
+                      </div>
+                    }
                   >
                       {pagesInView.map(page=>{
                         return <PageIndexItem page={page} />

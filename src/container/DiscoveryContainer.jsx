@@ -49,15 +49,13 @@ function DiscoveryContainer(props){
    
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
     const [hasMoreLibraries,setHasMoreLibraries] =useState(false)
+    const [librariesInView,setLibraries]=useState([])
     const libCollection = useSelector(state=>state.libraries.librariesInView)
-    let librariesInView = []
-        if(libCollection && libCollection.length>0){
-            librariesInView =libCollection.sort((a,b)=>{
+ 
+    useEffect(()=>{
    
-                return b.created- a.created
-            })
-        }
-   
+   setLibraries(libCollection)
+    },[libCollection])
     useEffect(()=>{
         fetchContentItems()
         fetchLibraries()
@@ -76,16 +74,17 @@ const navigateToLibrary = (library)=>{
             hasMore={hasMoreLibraries}
             >
                 {librariesInView.map(library=>{
-                    const id = `${library.id}_${uuidv4()}`
-                    return(<div key={id} 
-                                onClick={()=>navigateToLibrary(library)} className='item'> 
-                                <div className='purpose'> 
-                                    <p>{library.purpose}</p>
-                                </div>
-                                <div className='name'>
-                                    <h5> {library.name}</h5>
-                                </div>
-                    </div>)
+                    return  <BookListItem book={library}/>
+                    // const id = `${library.id}_${uuidv4()}`
+                    // return(<div key={id} 
+                    //             onClick={()=>navigateToLibrary(library)} className='item'> 
+                    //             <div className='purpose'> 
+                    //                 <p>{library.purpose}</p>
+                    //             </div>
+                    //             <div className='name'>
+                    //                 <h5> {library.name}</h5>
+                    //             </div>
+                    // </div>)
                 })}
             </InfiniteScroll>)
         }

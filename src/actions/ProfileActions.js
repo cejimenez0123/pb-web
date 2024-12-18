@@ -16,6 +16,23 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
     }
     return data
  })
+//  const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async (params,thunkApi)=>{
+//     try {
+//     const {file }= params
+//     const fileName = `profile/${file.name}-${uuidv4()}.jpg`
+//     const storageRef = ref(storage, fileName);
+//     const blob = new Blob([file])
+//     await uploadBytes(storageRef, blob)
+  
+//     // const url = await getDownloadURL(storageRef)
+//         return{ 
+//             url: url
+//         }
+//     }catch(err){
+//         return{ error: new Error("Error: UPLOAD Profile Picture" + err.message) }
+//     }
+
+// })
  const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async (params,thunkApi)=>{
     try {
     const {file }= params

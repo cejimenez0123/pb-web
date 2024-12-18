@@ -78,7 +78,7 @@ builder
     }).addCase(getPublicLibraries.pending,(state)=>{
         state.pending = true
     }).addCase(getPublicLibraries.fulfilled,(state,{payload})=>{
-        state.librariesInView = payload.libraryList
+        state.librariesInView = payload.libraries
         state.loading = false
     }).addCase(getPublicLibraries.rejected,(state,{payload})=>{
         state.loading = false

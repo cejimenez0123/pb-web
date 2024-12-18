@@ -10,11 +10,11 @@ import Enviroment from "../core/Enviroment";
     url = Enviroment.url+"/collection"
     token = "token"
     async getPublicBooks(){
-        let res = await axios.get(this.url+"/public/book",{headers})
+        let res = await axios.get(this.url+"/public/book",this.headers)
         return res.data
     }
     async getPublicLibraries(){
-        let res = await axios.get(this.url+"/public/library",{headers})
+        let res = await axios.get(this.url+"/public/library",this.headers)
         return res.data
     }
     async getMyCollections(){
@@ -89,6 +89,7 @@ import Enviroment from "../core/Enviroment";
         },{headers:{
             Authorization:"Bearer "+localStorage.getItem(this.token)
         }})
+        console.log("Colds",res.data)
         return res.data
     }
     async addCollectionToCollection({parentCollection,childCollection}){
@@ -107,7 +108,7 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(Enviroment.url+"/profile/"+profile.id+"/library")
         return res.data
     }
-  
+    
     async fetchCollection({id}){
         const res = await axios.get(this.url+"/"+id)
         return res.data

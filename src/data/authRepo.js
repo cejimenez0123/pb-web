@@ -24,7 +24,7 @@ class AuthnRepo{
     async startSession({uId,email,password}){
 
         const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password})
-        localStorage.setItem("token",res.data.token)
+       
         return res.data
     }
     }
