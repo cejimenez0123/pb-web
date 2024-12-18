@@ -173,6 +173,7 @@ async (params,thunkApi) => {
 
     
           let data = await profileRepo.getMyProfiles({token:localStorage.getItem("token")})
+          console.log(data)
           return {
           profile: data.profiles[0]
          } 

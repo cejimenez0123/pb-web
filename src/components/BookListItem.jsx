@@ -10,10 +10,8 @@ import { setCollectionInView} from "../actions/CollectionActions"
 function BookListItem({book}){
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [page,setPage]=useState(null)
-    BookListItem.propTypes={
-        book: PropTypes.object.isRequired
-    }
+    
+ 
     const navigateToBook = ()=>{
        
         dispatch(setCollectionInView({collection:book}))

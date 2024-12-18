@@ -46,35 +46,7 @@ const getPublicBooks = createAsyncThunk(
       
     }
 )
-async function trySomething(){
-  try{
-  let snapshot = await getDocs(collection(db,"user"))
 
- let prosmises = snapshot.docs.map(async doc=>{
-       
-         const pack = doc.data();
-        const { id } = doc;
-        const docs = await getDocs(query(collection(db, "profile"),where("userId","==",id)))
-                            
-        const email =pack["email"]
-     
-        let profile = docs.docs.map(doc=>unpackProfileDoc(doc))[0]
-        if(profile){
-        let docpages = await getDocs(query(collection(db, "page"),where("profileId","==",profile.id)))
-        let docbooks = await getDocs(query(collection(db, "book"),where("userId","==",profile.id)))
-        let doclibrary = await getDocs(query(collection(db, "library"),where("profileId","==",profile.id)))
-        let pages = docpages.docs.map(doc=>unpackPageDoc(doc) )
-        let books = docbooks.docs.map(doc=>unpackBookDoc(doc))
-        let libraries = doclibrary.docs.map(doc=>unpackLibraryDoc(doc))
-         return  axios.post("http://localhost:3000/auth",{id,email,uId,profile:profile,pages,books,libraries})
-        }
-        })
-  console.log(await Promise.all(prosmises))
-
-  }catch(e){
-    console.log(e)
-  }
-}
 const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thunkApi){
     try{
       const data = await collectionRepo.fetchCollection(params)
@@ -459,7 +431,7 @@ function unpackBookDoc(doc){
             fetchArrayOfBooksAppened,
             saveRolesForBook,
             setBookInView,
-            trySomething,
+       
             deleteBook,clearBooksInView,
             updateBook,
             setBooksToBeAdded,

@@ -1,26 +1,29 @@
 import "../styles/About.css"
-import rickyBookshelf from "../images/ricky-bookshelf.jpg"
-import groupJpg from "../images/write-brooke-group.jpg"
+import rickyBookshelf from "../images/firstgroup.jpg"
+import groupJpg from "../images/table.png"
 import MediaQuery from "react-responsive"
 import { Button } from "@mui/material"
 import theme from "../theme"
 import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
-import ReactGA from "react-ga4";
-import useScrollTracking from "../core/useScrollTracking"
+import {useDispatch} from 'react-redux'
 export default function AboutContainer(props){
+    const dispatch = useDispatch()
     const navigate = useNavigate()
-    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-
     const forCreatives = ()=>{
         return(<div>
             <div className="box">
-
+<div id="for-creatives">
 <h1 className="poppins">For Creatives</h1>
+<div >
 <p > 
-Plumbum is for writers to help recreate the writers' workshop online.
-Writers' workshop are a place to receive feedback on your work from people 
-with the same goal as you of getting better at their craft.</p>
+Plumbum began during a university reprieve while walking to the gym.
+At home, I missed the encouragement I got from friends who shared my objectives. 
+Finding mutual support can be challenging when others do not share your interests. 
+Creatives need a place to test ideas before they launch, and that is what Plumbum is for. 
+</p>
+</div>
+</div>
 </div>
         </div>)
     }
@@ -28,38 +31,39 @@ const writingJourney = ()=>{
     return(<div>
         <div id="ready">
 <p >
-Ready to start your writing journey? 
-Sign up today, start a page and write anything.
-It's the place for your story on Plumbum.</p>
+Join us! If you're a writer or enjoy reading, 
+you're of discerning taste; share and save ideas and inspiration.
+ Plumbum is the place for your story.
+</p>
 <Button onClick={()=>{navigate(Paths.login())}}  
     style={{
 
             padding:"0.5em 1em",
-            backgroundColor:theme.palette.primary.dark,
+            backgroundColor:"#36322e",
             boxShadow:theme.attributes.boxShadow,
-
-color:"#5CCA61",fontSize:"2em"}}>Sign Up</Button>
+            color:"white"
+,fontSize:"2em"}}>Sign Up</Button>
 </div>
     </div>)
 }
 const detailsOfWorkshop=()=>{
-    return (<div>
+    return (<div id="workshop--details">
+        <h2 className="poppins">From Writers Workshop to Plumbum</h2>
+        <div className="workshop--text">
         <h3 className="poppins">What is a Writers' Workshop?</h3>
-        <ul>
+      
 <p >
-🔒It's a creative sanctuary. A place to receive feedback, control privacy,
-and build community.</p>
+A creative sanctuary where like minded writers can offer peer critique
+       </p>
 
-<p > 📝 Tired of oversharing your work?
-Plumbum allows you to control the visibility of your writing,
-whether you want it to be a private diary or a public masterpiece.
+        <h3 className="poppins">What is a Plumbum?</h3>
+        <p>Plumbum is the latin word for Lead, like a lead anvil or pipe. It's the root word of plumber</p>
+        <ul>
+<p > 📝 Tired of oversharing your work? We understand your work is meaningful.
+    Plumbum allows you to control visibility, share how you want, with who you want.
 </p >
 <p >💬 Need constructive feedback to refine your craft?
-    Join a community of fellow writers eager to share their insights and support your journey.
-</p>
-<p > 🌟 Create or join groups that resonate with your writing style,
-    genre, or interests, connect with like-minded individuals who 
-    appreciate your unique voice.
+    Join a community of people passionate about literature eager to share their insights and support your journey.
 </p>
 <p>📘 Organize all your related writing into books. 
     Reorganzing the work until you're satisfied.</p>
@@ -69,9 +73,9 @@ Plumbum is great place to begin work and find support to complete work.
 </p>
 
 </ul>
+</div>
     </div>)
 }
-useScrollTracking(); 
     const groupImage = ()=>{
         return(<div id="image-container1">
 <img src={groupJpg} id="group" alt="books"/>
@@ -87,8 +91,7 @@ useScrollTracking();
     <div  className="welcome">
     
     <div id="title">
-        <h1><strong>Welcome to Plumbum</strong></h1>
-   
+        <h1 className="welcome--plumbum">Welcome to <span>Plumbum</span></h1>
     </div>
         <MediaQuery minWidth={"1000px"}>
 <div id="bookshelf">
@@ -114,7 +117,10 @@ useScrollTracking();
 </div>
 
     <div className="request">
-<p>Any request for more feautres, problems, encoragement, send to plumbumapp@gmail.com</p>
+<p>Any request for more feautres, problems, encoragement, send to plumbumapp@gmail.com.
+
+</p>
+<p>Plumbum©</p>
 </div>
     </div>)
 }

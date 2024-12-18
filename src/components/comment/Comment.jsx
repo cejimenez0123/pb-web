@@ -20,7 +20,7 @@ export default function Comment({comment}){
             {/* <div class="comment-heading bg-green-400  text-slate-800"> */}
            <div className="comment-body  p-4  text-slate-800">
            <a onClick={()=>navigate(Paths.profile.createRoute(comment.profile.id))} class="comment-author text-sm mr-4">{comment.profile.username}</a>
-           <h6 className="text-md md:text-lg">{comment.content}</h6>
+           <h6 className="text-sm md:text-lg">{comment.content}</h6>
             
                    
                 </div>

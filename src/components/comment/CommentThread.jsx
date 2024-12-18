@@ -6,7 +6,7 @@ import Comment from "./Comment"
 export default function CommentThread({comments}){
    
 
-if(comments){
+if(comments.length>0){
     return(
         <ErrorBoundary>
         <div className="bg-emerald-700">
@@ -34,7 +34,7 @@ if(comments){
         </ErrorBoundary>)
 
                             }
-    return (<div>
-        Loading...
+    return (<div className="h-24 bg-green-400  rounded-b-lg">
+        <p className="font-bold my-8">Refer to others for review</p>
     </div>)
 }

@@ -92,7 +92,9 @@ className="bg-green-300 text-slate-800  w-8 h-8 py-2 px-4 rounded-lg">Is Open Co
    className="bg-green-400 text-slate-800  w-8 h-8 py-2 px-4 rounded-lg">Is Closed?</span>}</label>
    </div>
    <div>
-   <label className="btn  m-4 md:my-auto">{isPrivate?<span onClick={()=>setIsPrivate(false)}className="bg-green-300  text-slate-800  w-8 h-8 py-3 px-4 rounded-lg">Is Private</span>:<span 
+   <label className="btn  m-4 md:my-auto">{isPrivate?<span onClick={()=>setIsPrivate(false)}
+   className="bg-green-300  text-slate-800  w-8 h-8 py-3 px-4 rounded-lg">
+    Is Private</span>:<span 
    onClick={()=>setIsPrivate(true)}
    className="bg-green-400 w-8 h-8 text-slate-800 py-2 px-4 rounded-lg">Is Public</span>}</label>
    </div>

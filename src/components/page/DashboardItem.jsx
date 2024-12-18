@@ -62,6 +62,7 @@ const hanldeClickComment=(pageItem)=>{
     const params = {
         page: pageItem
     }
+
     dispatch(setPageInView(params))
     navigate(`/page/${pageItem.id}`)
 }

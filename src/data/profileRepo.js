@@ -5,25 +5,22 @@ class ProfileRepo {
     url = Enviroment.url+"/profile"
     token="token"
     async getMyProfiles({token}){
-        try{
+    
        
        
         let res = await axios.get(this.url+"/user/protected",{ headers:{
                 Authorization:"Bearer "+token
             }}
         )
-
+console.log(res)
         return res.data
-    }catch{
-        localStorage.removeItem(this.token)
-        return new Error("Outdated Token")
-    }
+  
     }
     async create({token,password,username,profilePicture,selfStatement,privacy}){
         let res = await axios.post(Enviroment.url+"/profile/",
         {password,username,profilePicture,selfStatement,privacy},{
             headers:{
-                Authorization:"Bearer "+token
+                Authorization:"Bearer "+localStorage.getItem(this.token)
             }
         })
         console.log(res)

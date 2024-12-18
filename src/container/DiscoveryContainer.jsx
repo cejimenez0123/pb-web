@@ -75,16 +75,7 @@ const navigateToLibrary = (library)=>{
             >
                 {librariesInView.map(library=>{
                     return  <BookListItem book={library}/>
-                    // const id = `${library.id}_${uuidv4()}`
-                    // return(<div key={id} 
-                    //             onClick={()=>navigateToLibrary(library)} className='item'> 
-                    //             <div className='purpose'> 
-                    //                 <p>{library.purpose}</p>
-                    //             </div>
-                    //             <div className='name'>
-                    //                 <h5> {library.name}</h5>
-                    //             </div>
-                    // </div>)
+           
                 })}
             </InfiniteScroll>)
         }

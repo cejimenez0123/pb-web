@@ -69,7 +69,7 @@ export default function CollectionContainer(props){
     return(<>
         {colInView?collectionInfo():null}
         <div className="text-left  max-w-[100vw]   mx-auto ">
-            <h3 className="text-2xl font-bold text-center">Anthologies</h3>
+            {colInView.collectionIdList && colInView.collectionIdList.length>0?<h3 className="text-2xl font-bold text-center">Anthologies</h3>:null}
             <div>
                 <InfiniteScroll
                 dataLength={collections.length}
