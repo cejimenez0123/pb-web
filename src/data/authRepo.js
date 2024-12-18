@@ -13,6 +13,14 @@ class AuthnRepo{
     async login(form){
 
     }
+    async referral({email,name}){
+        let res = await axios.post(Enviroment.url+"/auth/referral",{email,name},{
+            headers:{
+                Authorization:"Bearer "+localStorage.getItem("token")
+            }
+        })
+        return res.data
+    }
     async startSession({uId,email,password}){
 
         const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password})

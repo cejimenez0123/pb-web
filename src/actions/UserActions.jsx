@@ -50,8 +50,9 @@ const logIn = createAsyncThunk(
           }
         }}
 )
-const completeSignUp = createAsyncThunk("user/registerComplete",async (params,thunkApi)=>{
-  profileRepo.signUp()
+const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
+ let data = await authRepo.referral(params)
+ return data
 })
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
 
@@ -673,6 +674,8 @@ export {logIn,
         setSignedInTrue,
         setSignedInFalse,
         unpackProfileDoc,
+        referSomeone,
+        
         getPageApprovals,
         searchDialogToggle,
         searchMultipleIndexes,

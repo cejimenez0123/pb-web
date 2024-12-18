@@ -35,7 +35,7 @@ function LogInContainer(props) {
 
     const handleLogIn = (event)=>{
         event.preventDefault()
-        if(liEmail.length>3 && liPassword.length>6){
+        if(liEmail.length>3 && liPassword.length){
             const params ={email:liEmail,password:liPassword}
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{

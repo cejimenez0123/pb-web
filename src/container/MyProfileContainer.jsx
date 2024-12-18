@@ -16,8 +16,9 @@ import {Dialog} from "@mui/material"
 import CreateCollectinForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
 import { setPageInView } from '../actions/PageActions';
-import UseCaseDownloadPicture from '../domain/usecases/getDownloadUrl';
-import getDownloadPicture from '../domain/usecases/getDownloadUrl';
+import UseCaseDownloadPicture from '../domain/usecases/getDownloadPicture';
+import getDownloadPicture from '../domain/usecases/getDownloadPicture';
+import ReferralForm from '../components/auth/ReferralForm';
 const MediaType = {
     stories:"stories",
     books:"books",
@@ -39,6 +40,7 @@ function MyProfileContainer(props){
     useLayoutEffect( ()=>{
         if(!currentProfile.profilePic.includes("http")){
             getDownloadPicture(currentProfile.profilePic).then(url=>{
+               console.log("Touch",url)
                 setPictureUrl(url)
             })
         }else{
@@ -129,7 +131,7 @@ function MyProfileContainer(props){
                             <button onClick={ClickCreateAColleciton} className='bg-green-600 md:ml-4 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
-                            <a>Refer Someone?</a>
+                            <a onClick={()=>setOpenRefferal(true)} className='text-sm'>Refer Someone?</a>
                             </div> 
                             </MediaQuery>
                            
@@ -157,7 +159,7 @@ function MyProfileContainer(props){
                             <button onClick={ClickCreateAColleciton} className='bg-green-600 max-w-48 sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
-                            <a className='my-4 text-purple-800'>Refer Someone?</a>
+                            <a onClick={()=>setOpenRefferal(true)}className='my-4 text-sm text-white'>Refer Someone?</a>
                             </div>
                             </MediaQuery>
                             </div> 
@@ -220,10 +222,10 @@ function MyProfileContainer(props){
               }}
             
               open={openRefferal}
-              onClose={()=>setOpenDialog(false)}>
-                <CreateCollectinForm onClose={()=>{
-                    setOpenDialog(false)
-                }}/>
+              onClose={()=>setOpenRefferal(false)}>
+          <ReferralForm onClose={()=>{
+            setOpenRefferal(false)
+          }}/>
               </Dialog>
 </div>
              
