@@ -12,6 +12,7 @@ class CommentRepo{
        {headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
        return res.data
     }
+    
     async delete({id}){
         let res = await axios.post(Enviroment.url+"/comment/"+id,{profile,text},{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
         return res.data

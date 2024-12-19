@@ -22,7 +22,7 @@ function DiscoveryContainer(props){
         ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
     },[])
 
-
+    const [errorMessage,setErrorMessage]=useState(null)
     const [isGrid,setIsGrid] = useState(false)
     const isNotPhone = useMediaQuery({
         query: '(min-width: 999px)'
@@ -72,6 +72,7 @@ const navigateToLibrary = (library)=>{
             next={fetchLibraries}
             style={{display:"flex",flexDirections:"row"}}
             hasMore={hasMoreLibraries}
+            endMessage={<div>No More</div>}
             >
                 {librariesInView.map(library=>{
                     return  <BookListItem book={library}/>
@@ -138,7 +139,7 @@ const navigateToLibrary = (library)=>{
                     
                
                 },err=>{
-                    window.alert(err)
+                    // window.alert(err)
                 })
              
             )

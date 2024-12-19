@@ -28,11 +28,14 @@ function BookListItem({book}){
     return (
 
 
-<div  onClick={navigateToBook}className="max-w-48 col-item text-slate-900 min-w-56 h-48 mx-8 bg-green-400 rounded overflow-hidden shadow-lg">
- <div className="px-6 py-4">
-    <div className="font-bold text-xl mb-2">{book.title}</div>
+<div  onClick={navigateToBook}
+className="max-w-48 col-item text-slate-900 min-w-56 h-48 mx-8 bg-green-400 rounded  shadow-lg">
+ <div className="px-3 py-3">
+    <div className="font-bold text-l mb-2">{book.title}</div>
     <MediaQuery minWidth={"768px"}>
-     <h5 className="text-left  text-ellipsis">{book.purpose}</h5> 
+        <div className=" max-h-12 overflow-hidden">
+     <h5 className="text-left text-sm  m-1 ">{book.purpose}</h5> 
+     </div>
       </MediaQuery>
   </div>
 

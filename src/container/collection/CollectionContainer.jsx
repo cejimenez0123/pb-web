@@ -15,6 +15,7 @@ export default function CollectionContainer(props){
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const colInView = useSelector(state=>state.books.collectionInView)
+    
     const collections = useSelector(state=>state.books.collections)
     const params = useParams()
     useLayoutEffect(()=>{

@@ -106,13 +106,18 @@ console.log("res",res)
    
     return res.data
     }
-    async fetchCommentsOfPage({pageId}){
-        let res = await axios.get(this.url+"/"+pageId+"/comment",
-            {headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
-            }}
-        )
-        console.log(res)
+    async fetchCommentsOfPagePublic({pageId}){
+        let res = await axios.get(this.url+"/"+pageId+"/comment/public")
+        
+        
+        return res.data
+    }
+    async fetchCommentsOfPageProtected({pageId}){
+        let res = await axios.get(this.url+"/"+pageId+"/comment/public",{headers:{
+            Authorization: "Bearer "+localStorage.getItem(this.token)
+        }})
+        
+        
         return res.data
     }
     async getCollectionStoriesPublic({id}){

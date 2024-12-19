@@ -154,7 +154,7 @@ let profile = (<div></div>)
                     Discuss
                 </button>
                 <div className="dropdown  dropdown-top">
-        <div tabIndex={0} role="button" className="btn pt-2 mt-1 "> Share</div>
+        <div tabIndex={0} role="button" className=" pt-2  "> Share</div>
         <ul tabIndex={0} className="dropdown-content bg-white text-green-600 menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
         <li>
             <a disabled={!currentProfile} 

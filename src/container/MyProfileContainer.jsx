@@ -131,7 +131,7 @@ function MyProfileContainer(props){
                             <button onClick={ClickCreateAColleciton} className='bg-green-600 md:ml-4 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
-                            <a onClick={()=>setOpenRefferal(true)} className='text-sm'>Refer Someone?</a>
+                            <a onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 my-4 text-white'>Refer Someone?</a>
                             </div> 
                             </MediaQuery>
                            
@@ -159,7 +159,7 @@ function MyProfileContainer(props){
                             <button onClick={ClickCreateAColleciton} className='bg-green-600 max-w-48 sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
-                            <a onClick={()=>setOpenRefferal(true)}className='my-4 text-sm text-white'>Refer Someone?</a>
+                            <a onClick={()=>setOpenRefferal(true)}className='my-4 text-sm mx-4 text-white'>Refer Someone?</a>
                             </div>
                             </MediaQuery>
                             </div> 

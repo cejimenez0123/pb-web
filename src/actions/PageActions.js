@@ -369,17 +369,28 @@ const appendComment = createAction("pages/appendComment", (params)=> {
 })
 const fetchCommentsOfPage = createAsyncThunk("comments/fetchCommentsOfPages",async (params,thunkApi)=>{
   try{
-    let data = await storyRepo.fetchCommentsOfPage({pageId:params.id})
-    console.log(data)
-return {
+    let token = localStorage.getItem("token")
+    if(token){
+      let data = await storyRepo.fetchCommentsOfPageProtected({pageId:params.id})
+      return {
 
-  comments: data.comments
-}
+        comments: data.comments
+      }
+    }else{
+      let data = await storyRepo.fetchCommentsOfPagePublic({pageId:params.id})
+      return {
+
+        comments: data.comments
+      }
+    }
+    console.log(data)
+
 
 
 }catch(err){
-const error = err??new Error("Error: Fetch Comments"+err.message)
-return {error }
+
+throw err
+
 }}
 
 )

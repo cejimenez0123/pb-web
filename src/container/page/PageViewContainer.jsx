@@ -7,8 +7,6 @@ import { fetchCommentsOfPage } from "../../actions/PageActions";
 import PageViewItem from "../../components/page/PageViewItem";
 import checkResult from "../../core/checkResult";
 import {Helmet} from "react-helmet"
-
-import PageSkeleton from "../../components/PageSkeleton";
 import { getStory } from "../../actions/StoryActions";
 import CommentThread from "../../components/comment/CommentThread";
 import Paths from "../../core/paths";
@@ -68,15 +66,13 @@ export default function PageViewContainer(props){
            </div>) 
         }
     }
-    return(<div className="center">
-        
+    return(<div className="  mx-auto">
+  <div className=" max-w-[100vw] my-8 sm:max-w-[42rem] mx-auto">     
     {title()}
-<div id="page">
     {pageDiv()}
     <CommentThread comments={rootComments}/>
-    
+    </div> 
    
-</div>
 </div>)
 
   

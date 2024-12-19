@@ -35,6 +35,6 @@ if(comments.length>0){
 
                             }
     return (<div className="h-24 bg-green-400  rounded-b-lg">
-        <p className="font-bold my-8">Refer to others for review</p>
+        <p className="font-bold py-8">Refer to others for review</p>
     </div>)
 }

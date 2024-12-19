@@ -124,12 +124,21 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(this.url+"/profile/"+profile.id+"/book")
         return res.data
     }
-    async deleteCollectionToCollection({id}){
-        await axios.delete(this.url+"/"+id+"/collection/",
+    async deleteCollectionToCollection({id,childCollectionId}){
+        let res = await axios.delete(this.url+"/"+id+"/collection/"+childCollectionId,
             {headers:{
                 Authorization: "Bearer "+localStorage.getItem("token")
             }}
         )
+        return res.data
+    }
+    async deleteStoryToCollection({id,storyId}){
+       let res=  await axios.delete(this.url+"/"+id+"/story/"+storyId,
+            {headers:{
+                Authorization: "Bearer "+localStorage.getItem("token")
+            }}
+        )
+        return res.data
     }
     async fetchSubCollectionsProtected({id}){
         const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:{

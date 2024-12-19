@@ -169,17 +169,22 @@ const setSignedInFalse = createAction("users/setSignedInFalse", async(params)=>{
  )
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
-  
+  try{
 
+  let token = localStorage.getItem("token")
+  if(token){
+    let data = await profileRepo.getMyProfiles({token:token})
+        
+    return {
+    profile: data.profiles[0]
+   } 
+  }else{
+    throw new Error("No Token")
+  }
     
-          let data = await profileRepo.getMyProfiles({token:localStorage.getItem("token")})
-          console.log(data)
-          return {
-          profile: data.profiles[0]
-         } 
-            
-
-        });
+    }catch(error){
+      throw error
+    }});
 
 const updateProfile = createAsyncThunk("users/updateProfile",
                     async (params,thunkApi)=>{

@@ -15,7 +15,7 @@ import {    getProfileLibraries,
             deleteLibrary} from "../actions/LibraryActions"
 import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
-    librariesInView:[Library],
+    librariesInView:[],
     loading:false,
     error:"",
     bookmarkLibrary: null,

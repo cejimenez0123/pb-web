@@ -15,7 +15,9 @@ import {
         ,addCollectionListToCollection,
         addStoryListToCollection,
         getSubCollectionsProtected,
-        getSubCollectionsPublic
+        getSubCollectionsPublic,
+        deleteCollectionFromCollection,
+        deleteStoryFromCollection
             } from "../actions/CollectionActions"
 
 const initialState = {
@@ -33,7 +35,14 @@ const bookSlice = createSlice({
 name: 'books',
 initialState,
 extraReducers(builder) {
-builder
+builder.addCase(deleteCollectionFromCollection.fulfilled,(state,{payload})=>{
+    state.collectionInView = payload.collection
+}).addCase(deleteCollectionFromCollection.rejected,(state,{payload})=>{
+    state.error=payload.error
+}).addCase(deleteStoryFromCollection.fulfilled,(state,{payload})=>{
+    state.collectionInView = payload.collection
+    
+})
 .addCase(getSubCollectionsProtected.fulfilled,(state,{payload})=>{
     state.collections = payload.list
 }).addCase(getSubCollectionsPublic.fulfilled,(state,{payload})=>{

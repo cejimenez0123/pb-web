@@ -75,11 +75,12 @@ export default function AddToCollectionContainer(props){
         })
         console.log(newStories)
     }
+    
     const removeNewStory = (sto)=>{
         let list = newStories.filter(story=>{
             return story.id!=sto.id})
         setNewStories(list)
-        console.log(newCollection)
+    
     }
     const removeNewCollection = (col)=>{
         let list = newCollection.filter(collection=>col.id!=collection.id)
@@ -88,15 +89,16 @@ export default function AddToCollectionContainer(props){
     }
 
     const storyList = ()=>{
-        if(pagesInView){
-        return(<div className="max-w-96 max-h-96 overflow-scroll sm:mx-12 text-left mb-2">
-            <h6 className=" text-2xl ml-2 font-bold">Add Stories to Collection</h6>
+        if(pagesInView && colInView){
+        return(<div className=" my-4 max-h-96 mx-auto overflow-scroll sm:mx-12 text-left mb-2">
+            <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Stories to Collection</h6>
             <InfiniteScroll
+            className=" mx-2 "
         dataLength={pagesInView.length}>
-            {pagesInView.map(story=>{
-                return(<div className="text-left mx-1 flex flex-row justify-between border
+            {pagesInView.filter(story=>!colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)).map(story=>{
+                return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border
                 border-white rounded-lg p-4  my-2">
-                    <h2 className="text-xl my-auto max-w-[75%] overflow-hidden">{story?story.title:null}</h2>
+                    <h2 className="text-xl my-auto  overflow-hidden">{story?story.title:null}</h2>
                     {colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
                     <h1 onClick={()=>removeNewStory(story)}className="">
 <p className="text-2xl  h-8 rounded-full  "><img src={checked}/></p>
@@ -111,29 +113,30 @@ export default function AddToCollectionContainer(props){
             return null
         }}
     const colList = ()=>{
-        return(<div  className="max-w-96   sm:h-auto sm:min-h-full   sm:mx-12">
-            <h6 className="text-2xl font-bold text-lef ml-2 mb-2">Add New Collections</h6>
-            <InfiniteScroll
-            className="overflow-scroll mx-1"
+        if(pagesInView && colInView){
+            console.log("Colin",colInView)
+        return(<div className=" my-4 max-h-96 mx-auto overflow-scroll sm:mx-12 text-left mb-2">
+        <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Collections to Collection</h6>
+        <InfiniteScroll
+        className=" mx-2 "
         dataLength={collectionsList.length}>
-            {collectionsList.map(col=>{
-                return(<div className="text-left flex sm:min-w-96 flex-row justify-between border
-                border-white rounded-lg p-4  my-2">
-                    <h2 className="text-xl my-auto">{col?col.title:null}</h2>
-                    {colInView&& colInView.collecitonIdList && colInView.collectionIdList.find(colJoint=>colJoint.collecitonId==col.id)||newCollection.includes(col)?
-                    <button
-                    onClick={()=>removeNewCollection(col)}
-                    className="btn text-white btn-circle">
-<p className="text-2xl  content-center rounded-[60em]  "><img src={checked} /></p>
-</button>:
-<button  onClick={()=>addNewCollection(col)} className="btn btn-circle text-white  btn-outline">
+{collectionsList.filter(col=>!colInView.childCollections.find(joint=>joint.childCollectionId==col.id)).map(col=>{
+            return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border
+            border-white rounded-lg p-4  my-2">
+                <h2 className="text-xl my-auto  overflow-hidden">{col?col.title:null}</h2>
+                {colInView&& colInView.childCollections&& colInView.childCollections.find(colJoint=>colJoint.childCollectionId==col.id)||newCollection.includes(col)?
+                <h1  onClick={()=>removeNewCollection(col)}className="">
+<p className="text-2xl  h-8 rounded-full  "><img src={checked}/></p>
+</h1>:
+<h1 onClick={()=>addNewCollection(col)}className=" text-white  ">
 <p className="text-2xl  content-center rounded-[60em]"><img src={emptyBox}/></p>
-</button>}
-                </div>)
-            })}
-            </InfiniteScroll></div>)
+</h1>}
+            </div>)
+        })}
+        </InfiniteScroll></div>)}
+
     }
-    if(pending){
+    if(pending || !colInView){
         return(<div>
             Loading
             </div>)
@@ -142,8 +145,8 @@ export default function AddToCollectionContainer(props){
     return(<div className=''>
         <div className="static">
 <div className="border border-white rounded-lg m-4 sm:m-8 p-8 text-left">
-            <h2 className="text-2xl mb-2">{colInView?colInView.title:null}</h2>
-            <p className="sm:my-4 md:mx-2 p-2 min-h-24 max-w-[1/2] sm:p-4 bg-emerald-800 rounded-lg max-w-96">{colInView?colInView.purpose:null}</p>
+            <h2 className="text-2xl mb-2">{colInView.title && colInView.title.length>0?colInView.title:"Untitled"}</h2>
+            <p className="sm:my-4 md:mx-2 p-2 min-h-24 sm:p-4 bg-emerald-800 rounded-lg sm:max-w-[42rem]">{colInView?colInView.purpose:null}</p>
         
         <div className="flex flex-row justify-center">
         <button onClick={save}className="bg-green-600 ml-4 mt-4 px-4 text-xl">Save</button>
@@ -158,13 +161,23 @@ export default function AddToCollectionContainer(props){
             
             </div>
 <div className=" sm:flex sm:flex-row">
-{storyList()}
-{colList()}
 
+
+<div role="tablist" className="tabs mt-8 shadow-md rounded-lg   sm:mx-6 tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Stories" />
+  <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  md:w-[30em] md:p-6">
+  {storyList()}
+  </div>
+  <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-transparent border-white border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Collections" />
+  <div role="tabpanel" className="tab-content pt-1 max-w-[100svw] bg-transparent   md:w-[30em]  md:p-6 rounded-box ">
+  {colList()}
+   </div>
+</div>
+        </div>
 
  
 </div>
-</div>
+
 
     </div>)
 }
