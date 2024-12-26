@@ -8,7 +8,9 @@ import hashtagRepo from "../data/hashtagRepo"
 const getProfileHashtagCommentUse = createAsyncThunk("hashtag/fetchProfileHashtagComments",
 async ({profileId},thunkApi) => {
    let data = await hashtagRepo.fetchUserHashtagCommentUse({profileId})
-   return {hashtags:data.hashtags}
+   return {hashtags:data.hashtags
+
+   }
 }
 )
 const createHashtag = createAsyncThunk("hashtag/createHashtag", 
@@ -23,6 +25,15 @@ const deleteHashtagComment = createAsyncThunk("hashtag/deleteHashtagComment",
      let data =  await hashtagRepo.deleteComment({hashtagCommentId})
      return {
         hashtagCommentId,
+        message:data.message
+        }
+
+})
+const deleteHashtagStory = createAsyncThunk("hashtag/deleteHashtagStory", 
+    async ({hashtagStoryId},thunkApi) => {
+     let data =  await hashtagRepo.deleteStory({id:hashtagStoryId})
+     return {
+        hashtagStoryId,
         message:data.message
         }
 
@@ -44,18 +55,19 @@ const createHashtagComment = createAsyncThunk("hashtag/createHashtagComment",
        }
         
 })
-const createHashtagPage = createAsyncThunk("hashtag/createHashtagPage", 
-async ({name,commentId,profileId},thunkApi) => {
-        let data = await hashtagRepo.story({name,storyId,profileId})
-       return {
+const createHashtagPage = createAsyncThunk("hashtag/createHashtagStory", 
+async ({name,storyId,profile},thunkApi) => {
+        let data = await hashtagRepo.story({name,storyId,profile})
+      if(data.hashtag){
+        return {
         hashtag:data.hashtag
        }
-
+    }else{
+        console.log(data)
+        throw new Error(data.error)
+    }
 })
-const getHashtagPages = createAsyncThunk("hashtag/getHashtagPage",async (params,thunkApi)=>{
-    
 
-})
 const getHashtagComments = createAsyncThunk("hashtag/getHashtagComment",async (params,thunkApi)=>{
     const {comment}=params
     let hashtagCommentList = []
@@ -76,7 +88,19 @@ const getHashtagComments = createAsyncThunk("hashtag/getHashtagComment",async (p
 })
 const clearHashComments = createAction("hashtags/clearHashComments")
 const clearHashPages = createAction("hashtags/clearHashPages")
+const fetchStoryHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",async (params,thunkApi)=>{
+    const {profile,storyId}=params
 
+    if(profile){
+       let data =await hashtagRepo.fetchStoryHashtagsProtected({id:storyId})
+       return {hashtags:data.hashtags}
+    }else{
+       let data = await hashtagRepo.fetchStoryHashtagsPublic({id:storyId})
+       return {hashtags:data.hashtags}
+    }
+       
+
+})
 const unpackHashtagDoc = (doc)=>{
     const id = doc.id
     const pack = doc.pack()
@@ -104,10 +128,11 @@ export {unpackHashtagDoc,
         createHashtagComment,
         createHashtagPage,
         getHashtags,
-        getHashtagPages,
+        deleteHashtagStory,
         getHashtagComments,
         clearHashComments,
         clearHashPages,
         getProfileHashtagCommentUse,
-        deleteHashtagComment
+        deleteHashtagComment,
+        fetchStoryHashtags
 }

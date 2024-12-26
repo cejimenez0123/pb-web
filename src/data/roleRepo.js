@@ -6,11 +6,19 @@ import Enviroment from "../core/Enviroment"
 class RoleRepo{
     url=Enviroment.url+"/role"
     token = "token"
-    async create({role,profileId,storyId}){
+    async patchRoles({roles,profileId,storyId}){
 
-        await axios.post(this.url,{role,profileId,storyId},{headers:{
+        let res = await axios.put(this.url+"/story",{roles,profileId,storyId},{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")
         }})
+        return res.data
+    }
+    async storyRoles({storyId}){
+        let res = await axios.get(this.url+"/story/"+storyId,{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})
+        console.log(res)
+        return res.data
     }
 
 }

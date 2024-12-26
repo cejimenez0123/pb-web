@@ -21,19 +21,23 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../../core/constants"
 import Paths from "../../core/paths"
 import PicturePageForm from "../../components/PicturePageForm"
-import { updateStory } from "../../actions/StoryActions"
+import { getStory, updateStory } from "../../actions/StoryActions"
 import { debounce } from "lodash"
 import ErrorBoundary from "../../ErrorBoundary"
+import HashtagForm from "../../components/hashtag/HashtagForm"
+import RoleForm from "../../components/role/RoleForm"
 function EditorContainer(props){
         const pageInView = useSelector(state=>state.pages.pageInView)
        
         const pathParams = useParams()
         const dispatch = useDispatch()
+
         const md = useMediaQuery({ query: '(min-width:768px)'})
         const [title,setTitle] = useState("")
         const navigate = useNavigate()
         const [isSaved,setIsSaved]=useState(true)
-  
+       const [openHashtag,setOpenHashtag]=useState(false)
+       const [openRoles,setOpenRoles]=useState(false)
         const [privacy,setPrivacy] = useState(true)
 
         const [commentable,setCommentable] = useState(true)
@@ -50,6 +54,8 @@ function EditorContainer(props){
 useLayoutEffect(()=>{
   if(pageInView){
     setPageInfo(pageInView)
+  }else{
+    dispatch(getStory(pathParams))
   }
 
 },[pageInView])
@@ -61,9 +67,6 @@ useLayoutEffect(()=>{
         }
       }
     },[])
-  // useEffect(()=>{
-  
-  //   },[htmlContent,title])
 
    
       const [open, setOpen] = useState(false);
@@ -151,10 +154,10 @@ useLayoutEffect(()=>{
         }
         return(
           <div className="max-w-[100vw] sm:max-w-[45rem] mx-auto"> 
-       
+       <div>
                 <div className=" rounded-lg sm:my-4  mx-auto ">
-                  <div className="bg-green-600 bg-transparent sm:rounded-t-lg border border-white   flex flex-row  ">
-                    <div 
+                  <div className="bg-green-600  sm:rounded-t-lg border border-white   flex flex-row  ">
+                      <div 
                     className="flex-1 "
                     
                     style={{borderRight:"1px solid white" }}
@@ -167,7 +170,8 @@ useLayoutEffect(()=>{
                     </div>
 
                     <div>  
-                    {md?<div className="  flex   flex-col p-1 ">
+                    {md ?<div className="  flex   flex-col p-1 ">
+                     
                       <button className=" mb-1  bg-emerald-800 text-white "
                       onClick={handleClickAddToCollection}>Add to Collection</button>
                       <button className=" text-white bg-emerald-800 ">Post Public</button>
@@ -178,10 +182,18 @@ useLayoutEffect(()=>{
                       <li className="text-green-600"
                       onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
                       <li className="text-green-600"> Post Public</li>
+                      <li className="text-green-600" onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
+                      <li className="text-green-600" onClick={()=>setOpenRoles(!openRoles)}>Share</li>
                     </ul>
                   </div>}
                     
                 </div>
+                <div>
+                  
+                </div>
+                  </div>
+                  {openHashtag?
+                  <HashtagForm/>:null}
                   </div>
                   <ErrorBoundary>
                 {contentDiv()}
@@ -194,7 +206,29 @@ useLayoutEffect(()=>{
            
 
                     <div>
-                      
+                    <Dialog
+                    fullScreen={!md}
+        open={openRoles}
+        onClose={()=>{
+          setOpenRoles(false)
+        }}
+        className=""
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        {/* <DialogTitle id="alert-dialog-title">
+          {"Share"}
+        </DialogTitle> */}
+        {/* <DialogContent> */}
+          <div>
+            <RoleForm book={pageInView}
+            onClose={()=>{
+              setOpenRoles(false)
+            }}/>
+          </div>
+      
+  
+      </Dialog>
       <Dialog
         open={open}
         onClose={handleClose}

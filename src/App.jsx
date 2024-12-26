@@ -22,7 +22,6 @@ import {  fetchBookmarkLibrary,
 import checkResult from './core/checkResult';
 import {  getPublicBooks } from './actions/BookActions';
 import {  getCurrentProfile,
-          // fetchAllProfiles,
           fetchFollowBooksForProfile,
           fetchFollowLibraryForProfile,
           fetchFollowProfilesForProfile,
@@ -146,9 +145,10 @@ function App(props) {
             />
           <Route  path="/login"  
                   element={ 
-        
-            <LogInContainer logIn={props.logIn}
-            />
+        <LoggedRoute>
+            <LogInContainer logIn={props.logIn}/>
+            </LoggedRoute>
+          
        }
      />
      <Route path={Paths.collection.route()}
@@ -156,11 +156,17 @@ function App(props) {
      <Route path={'/signup'}
      element={<LoggedRoute><SignUpContainer/></LoggedRoute>}/>
      <Route path={Paths.addToCollection.route}
-     element={        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><AddToCollectionContainer/></PrivateRoute>}/>
+     element={        <PrivateRoute
+    
+      ><AddToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.addStoryToCollection.route}
-     element={<PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><AddStoryToCollectionContainer/></PrivateRoute>}/>
+     element={<PrivateRoute 
+     
+     ><AddStoryToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.editCollection.route()}
-      element={<PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><EditCollectionContainer/></PrivateRoute>}/>
+      element={<PrivateRoute 
+     
+      ><EditCollectionContainer/></PrivateRoute>}/>
      
       <Route path={Paths.about()} element={
    <AboutContainer/>
@@ -192,7 +198,7 @@ function App(props) {
     <Route  
         path="/page/image"  
         element={ 
-          <PrivateRoute loggedIn={!!props.currentProfile}>
+          <PrivateRoute >
             
           <EditorContainer 
             htmlContent={props.htmlContent}
@@ -203,7 +209,7 @@ function App(props) {
     <Route
       exact path="/page/text"
       element={
-        <PrivateRoute  loading={props.userLoading} loggedIn={!!props.currentProfile}>
+        <PrivateRoute  >
             <EditorContainer 
               htmlContent={props.htmlContent}
               currentProfile={props.currentProfile} 
@@ -213,7 +219,9 @@ function App(props) {
        <Route
       exact path="/page/link"
       element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
+        <PrivateRoute 
+      
+        >
             <EditorContainer 
               htmlContent={props.htmlContent}
               currentProfile={props.currentProfile} 

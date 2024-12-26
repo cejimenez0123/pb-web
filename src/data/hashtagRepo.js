@@ -44,8 +44,8 @@ class HashtagRepo{
         })
         return res.data
     }
-    async story({name,storyId,profileId}){
-        let res = await axios.post(this.url+"/story/"+storyId,{name,profileId},{
+    async story({name,storyId,profile}){
+        let res = await axios.post(this.url+"/story/"+storyId,{name,profile},{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem(this.token)
             }})
@@ -71,6 +71,20 @@ class HashtagRepo{
         return res.data
     
 }
+async fetchStoryHashtagsProtected(params){
+    let res = await axios.get(this.url+"/story/"+params.id+"/protected",{
+        headers:{
+            Authorization:"Bearer "+localStorage.getItem(this.token)
+        
+    }})
+
+    return res.data
+
+}
+    async fetchStoryHashtagsPublic(params){
+        let res = await axios.get(this.url+"/story/"+params.id+"/public")
+            return res.data
+    }
     }
 
 export default new HashtagRepo()

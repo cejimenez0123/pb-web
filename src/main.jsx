@@ -8,6 +8,7 @@ import {pageSlice} from './reducers/PageReducer';
 import userSlice from './reducers/UserReducer';
 import bookSlice from './reducers/BookReducer';
 import libSlice from './reducers/LibraryReducer';
+import rolesSlice from './reducers/RoleReducer.jsx';
 import { BrowserRouter } from 'react-router-dom';
 import logger from "redux-logger"
 import commentSlice from './reducers/CommentReducer';
@@ -19,7 +20,8 @@ const reducer = combineReducers({
   users: userSlice.reducer,
   books: bookSlice.reducer,
   libraries: libSlice.reducer,
-  comments: commentSlice.reducer
+  comments: commentSlice.reducer,
+  roles: rolesSlice.reducer
 })
 const store = configureStore({reducer:reducer,
 

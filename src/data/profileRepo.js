@@ -4,6 +4,10 @@ import Enviroment from "../core/Enviroment"
 class ProfileRepo {
     url = Enviroment.url+"/profile"
     token="token"
+    async all(){
+        let res = await axios.get(this.url+"/")
+        return res.data
+    }
     async getMyProfiles({token}){
     
         let res = await axios.get(this.url+"/user/protected",{ headers:{

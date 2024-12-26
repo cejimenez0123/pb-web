@@ -193,26 +193,6 @@ const updateProfile = createAsyncThunk("users/updateProfile",
           return {profile:data.profile}
   
 })
-// const fetchAllProfiles = createAsyncThunk("users/fetchAllProfiles",async (state,{params})=>{
-//     try {
-//     let  profileRef = collection(db,"profile")
-//     let snapshot = await getDocs(profileRef)
-//     let profileList = []
-//     snapshot.docs.forEach(doc => {
-//       const prof = unpackProfileDoc(doc)
-//       profileList.push(prof)
-
-//      })
-
-    
-//     return {profileList}
-    
-//     }catch(err) {
-//         return {
-//             error: new Error("Error: FETCH ALL PROFILES" + err.message)
-//         }
-//     }
-// })
 
 // const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async (params,thunkApi)=>{
 //     try {

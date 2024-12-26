@@ -101,7 +101,7 @@ function LogInCard(props){
   Email
   <input type="text" className="grow  overflow-hidden text-white" 
          value={props.email} 
-         onChange={(e) => props.setEmail(e.target.value)}
+         onChange={(e) => props.setEmail(e.target.value.trim())}
         placeholder='example@x.com' />
 </label>
 </div>

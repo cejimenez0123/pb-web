@@ -5,8 +5,8 @@ import "../styles/Navbar.css"
 import {signOutAction} from "../actions/UserActions"
 import { useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
-import debounce from '../core/debounce'
 import getDownloadPicture from '../domain/usecases/getDownloadPicture'
+import { debounce } from 'lodash'
 import { 
             Container,
             Toolbar,
@@ -360,10 +360,8 @@ function NavbarContainer(props){
                 aria-haspopup="true"
                
                 sx={{ my: 2, color: 'white', display: 'block' }} 
-                onClick={(e)=>{
-                
-                  debounce(handleClick(e),5)
-                }}>
+                onClick={(e)=>debounce(handleClick(e),1)
+                }>
 
                         Create {Boolean(anchorEl) ? <ExpandLess /> : <ExpandMore />}
                       </Button >

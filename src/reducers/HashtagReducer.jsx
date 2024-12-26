@@ -1,13 +1,14 @@
 
 import { createSlice } from "@reduxjs/toolkit"
-import { getHashtags,getHashtagComments,getHashtagPages,createHashtag,createHashtagComment,createHashtagPage, getProfileHashtagCommentUse, deleteHashtagComment } from "../actions/HashtagActions"
+import { getHashtags,createHashtag,createHashtagComment,createHashtagPage, getProfileHashtagCommentUse, deleteHashtagComment, fetchStoryHashtags } from "../actions/HashtagActions"
 const initialState = {
     hashtags:[],
     error: null,
     hashtagComments:[],
+    storyHashtags:[],
     profileHashtagComments:[],
-    profileHashtagStories:[],
-    hashtagStories:[]
+    profileHashtagsStory:[],
+   
 }
 const hashSlice = createSlice({
 name: 'hashtags',
@@ -25,7 +26,7 @@ builder
     }).addCase(createHashtagComment.fulfilled,(state,{payload})=>{
         state.hashtagComments=[...state.hashtagComments,payload.hashtag]
     }).addCase(createHashtagPage.fulfilled,(state,{payload})=>{
-        state.hashtagStories=[...state.hashtagStories,payload.hashtag]
+        state.storyHashtags=[...state.storyHashtags,payload.hashtag]
     }).addCase(getProfileHashtagCommentUse.fulfilled,(state,{payload})=>{
         state.profileHashtagComments = payload.hashtags
     }).addCase(getProfileHashtagCommentUse.rejected,(state,{payload})=>{
@@ -38,6 +39,8 @@ builder
        state.profileHashtagComments = hs
     }).addCase(deleteHashtagComment.rejected,(state,{payload})=>{
        
+     }).addCase(fetchStoryHashtags.fulfilled,(state,{payload})=>{
+        state.storyHashtags = payload.hashtags
      })
     
 

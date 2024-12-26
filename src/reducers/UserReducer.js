@@ -25,7 +25,7 @@ import {    logIn ,
             updateProfile,
             // fetchArrayOfProfiles,
         } from "../actions/UserActions"
-import { createProfile } from "../actions/ProfileActions"
+import { createProfile, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"
 const initialState = {
     signedIn: false,
@@ -46,7 +46,12 @@ const userSlice = createSlice({
     name: 'users',
     initialState,
     extraReducers(builder) {
-        builder
+        builder.addCase(fetchProfiles.fulfilled,(state,{payload})=>{
+            state.profilesInView = payload.profiles
+            state.loading=false
+        }).addCase(fetchProfiles.pending,(state,{payload})=>{
+            state.loading = true
+        })
         .addCase(logIn.pending,(state) => {
         state.loading = true
     }).addCase(createProfile.rejected, (state, { payload })=>{
