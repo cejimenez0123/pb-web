@@ -29,8 +29,8 @@ const deleteHashtagComment = createAsyncThunk("hashtag/deleteHashtagComment",
 })
 const getHashtags = createAsyncThunk("hashtag/getHashtags",async (params,thunkApi)=>{
 
-    let hashtags = []
-    let data = hashtagRepo.all()
+  
+    let data = await hashtagRepo.all()
     return {
         hashtags: data.hashtags
     }

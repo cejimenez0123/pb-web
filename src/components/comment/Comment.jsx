@@ -30,8 +30,8 @@ export default function Comment({comment}){
     const navigate = useNavigate()
     const handleIfHelpful = ()=>{
      dispatch(createHashtagComment({name:"helpful",profileId:currentProfile,commentId:comment.id})).then(res=>checkResult(res,payload=>{
-        const {hahtag}=payload
-
+        const {hashtag}=payload
+        setIsHelpful(hashtag)
 
      },err=>{
         window.alert(err.message)
@@ -40,7 +40,13 @@ export default function Comment({comment}){
     const handleDeleteHelpful = ()=>{
         if(isHelpful){
             if(isHelpful.id){
-                dispatch(deleteHashtagComment({hashtagCommentId:isHelpful.id}))
+                dispatch(deleteHashtagComment({hashtagCommentId:isHelpful.id})).then(res=>{
+                    checkResult(res,payload=>{
+                        setIsHelpful(null)
+                    },err=>{
+                        
+                    })
+                })
             }
         }
     }

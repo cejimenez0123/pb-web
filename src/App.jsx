@@ -44,7 +44,7 @@ import CollectionContainer from './container/collection/CollectionContainer';
 import AddToCollectionContainer from './container/collection/AddToCollection';
 import EditCollectionContainer from './container/collection/EditCollectionContainer.jsx';
 import SignUpContainer from './container/auth/SignUpContainer.jsx';
-import { getProfileHashtagCommentUse } from './actions/HashtagActions.js';
+import { getHashtags, getProfileHashtagCommentUse } from './actions/HashtagActions.js';
 function App(props) {
  
   const dispatch = useDispatch()
@@ -74,6 +74,7 @@ function App(props) {
       const profileParams = {
         profile: props.currentProfile
       }
+      dispatch(getHashtags())
       dispatch(getProfileHashtagCommentUse({profileId:props.currentProfile.id}))
       props.fetchHomeCollection(profileParams)
       props.fetchBookmarkLibrary(params)
