@@ -11,9 +11,10 @@ import libSlice from './reducers/LibraryReducer';
 import { BrowserRouter } from 'react-router-dom';
 import logger from "redux-logger"
 import commentSlice from './reducers/CommentReducer';
-
+import hashSlice from './reducers/HashtagReducer.jsx';
 
 const reducer = combineReducers({
+  hashtags:hashSlice.reducer,
   pages: pageSlice.reducer,
   users: userSlice.reducer,
   books: bookSlice.reducer,

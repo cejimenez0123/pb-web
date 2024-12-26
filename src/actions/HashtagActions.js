@@ -1,115 +1,60 @@
 import {db,auth} from "../core/di"
-import {where,deleteDoc,query,and,orderBy,updateDoc,or,collection,getDocs,getDoc,doc,setDoc, Timestamp, arrayUnion} from "firebase/firestore"
-import Page from "../domain/models/page"
-import PageComment from "../domain/models/page_comment"
+import {where,query,collection,getDocs,doc,setDoc, Timestamp, } from "firebase/firestore"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import Hashtag from "../domain/models/hashtag"
-import { create } from "@mui/material/styles/createTransitions"
 import HashtagComment from "../domain/models/hashtag_comment"
 import HashtagPage from "../domain/models/hashtag_page"
-
+import hashtagRepo from "../data/hashtagRepo"
+const getProfileHashtagCommentUse = createAsyncThunk("hashtag/fetchProfileHashtagComments",
+async ({profileId},thunkApi) => {
+   let data = await hashtagRepo.fetchUserHashtagCommentUse({profileId})
+   return {hashtags:data.hashtags}
+}
+)
 const createHashtag = createAsyncThunk("hashtag/createHashtag", 
-    async (params,thunkApi) => {
-        const ref = collection(db,Hashtag.className)
-        const id = doc(ref).id
-        const { profile}=params
-        const hashtagName = params["name"]
-   
-        try{
-      
-        
-        await setDoc(doc(db,Hashtag.className, id), { id,})
-        const created =Timestamp.now()
-        const hashtag = new Hashtag(id,hashtagName,profile.id,1,created)
-        return{
-            hashtag
+    async ({name,profileId},thunkApi) => {
+     let data =  await hashtagRepo.create({name,profileId})
+     return {hashtag:data.hashtag
+     }
+
+})
+const deleteHashtagComment = createAsyncThunk("hashtag/deleteHashtagComment", 
+    async ({hashtagCommentId},thunkApi) => {
+     let data =  await hashtagRepo.deleteComment({hashtagCommentId})
+     return {
+        hashtagCommentId,
+        message:data.message
         }
-    }catch(e){
-        return {error:e}
-    }
+
 })
 const getHashtags = createAsyncThunk("hashtag/getHashtags",async (params,thunkApi)=>{
 
     let hashtags = []
-    try{
-     let ref = collection(db, Hashtag.className)
-    const request = query(ref,)
-    const snapshot = await getDocs(request)
-        snapshot.docs.forEach(doc => {
-            let hashtag = unpackHashtagDoc(doc)
-            hashtags = [...hashtags,hashtag ]
-        })
-        return {
-            hashtags
-        }
-    }catch(err){
-        return {error: err}
+    let data = hashtagRepo.all()
+    return {
+        hashtags: data.hashtags
     }
+  
 })
 const createHashtagComment = createAsyncThunk("hashtag/createHashtagComment", 
-    async (params,thunkApi) => {
-        const ref = collection(db,HashtagComment.className)
+    async ({name,commentId,profileId},thunkApi) => {
+       let data = await hashtagRepo.comment({name,commentId,profileId})
+       return {
+        hashtag:data.hashtag
+       }
         
-        const { hashtag,comment}=params
-        const id = `${hashtag.id}_${comment.id}`
-        const created = Timestamp.now()
-        try{
-            await setDoc(doc(db,HashtagComment.className, id), { id,
-            hashtagId: hashtag.id,
-            commentId: comment.id,
-            created: created
-            })
-           let hashtag= new Hashtag(id,hashtagName,profile.id,1,created)
-        return {
-            hashtag: hashtag
-        }
-    }catch(e){
-        return {error:e}
-    }
 })
 const createHashtagPage = createAsyncThunk("hashtag/createHashtagPage", 
-    async (params,thunkApi) => {
-       
-        const ref = collection(db,HashtagPage.className)
-        // const id = doc(ref).id
-        const { hashtag,page}=params
-        const id = `${hashtag.id}_${page.id}`
-        const created = Timestamp.now()
-   
-        try{
-      
-        
-        await setDoc(doc(db,HashtagPage.className, id),
-         {  id,
-            hashtagId:hashtag.id,
-            pageId:page.id,
-            created})
-  
-        let hashtagPage = new HashtagPage(id,h,profile.id,1,created)
-        return {
-            hashtagPage: hashtagPage
-        }
-    }catch(e){
-        return {error:e}
-    }
+async ({name,commentId,profileId},thunkApi) => {
+        let data = await hashtagRepo.story({name,storyId,profileId})
+       return {
+        hashtag:data.hashtag
+       }
+
 })
 const getHashtagPages = createAsyncThunk("hashtag/getHashtagPage",async (params,thunkApi)=>{
-    const {page}=params
-    let hashtagPageList = []
-    try{
-     let ref = collection(db, HashtagPage.className)
-    const request = query(ref,where("pageId","==",page.id))
-    const snapshot = await getDocs(request)
-        snapshot.docs.forEach(doc => {
-            let hashtag = unpackHashtagPageDoc(doc)
-            hashtagPageList = [...hashtagPageList,hashtag ]
-        })
-        return {
-            hashtagPageList
-        }
-    }catch(err){
-        return {error: err}
-    }
+    
+
 })
 const getHashtagComments = createAsyncThunk("hashtag/getHashtagComment",async (params,thunkApi)=>{
     const {comment}=params
@@ -143,16 +88,7 @@ const unpackHashtagDoc = (doc)=>{
                                 created)
     return hashtag
 }
-const unpackHashtagPageDoc = (doc)=>{
-    const id = doc.id
-    const pack = doc.pack()
-    const {pageId,hashtagId,created}=pack
-    const hashtag = new HashtagPage(id,
-                                    hashtagId,
-                                    pageId,
-                                    created)
-    return hashtag
-}
+
 const unpackHashtagCommentDoc = (doc)=>{
     const id = doc.id
     const pack = doc.pack()
@@ -171,5 +107,7 @@ export {unpackHashtagDoc,
         getHashtagPages,
         getHashtagComments,
         clearHashComments,
-        clearHashPages
+        clearHashPages,
+        getProfileHashtagCommentUse,
+        deleteHashtagComment
 }

@@ -1,5 +1,5 @@
 import './App.css';
-import { connect} from "react-redux"
+import { useDispatch,connect} from "react-redux"
 import { useState } from 'react';
 import {Route, Routes} from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions';
@@ -32,10 +32,9 @@ import {  getCurrentProfile,
           getPageApprovals} from './actions/UserActions'
 import history from './history';
 import PrivateRoute from './PrivateRoute';
-import { createContext, useEffect} from 'react';
+import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
 import LibraryViewContainer from './container/library/LibraryViewContainer';
-import useAuth from './core/useAuth';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
 import {Helmet} from "react-helmet";
@@ -45,25 +44,28 @@ import CollectionContainer from './container/collection/CollectionContainer';
 import AddToCollectionContainer from './container/collection/AddToCollection';
 import EditCollectionContainer from './container/collection/EditCollectionContainer.jsx';
 import SignUpContainer from './container/auth/SignUpContainer.jsx';
+import { getProfileHashtagCommentUse } from './actions/HashtagActions.js';
 function App(props) {
-  const authState = useAuth()
-
+ 
+  const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   // useEffect(()=>{
   //   props.fetchAllProfiles()
   // },[]
   // )
   useEffect(()=>{
-    if(authState.user !== null && !authState.user.isAnonymous)  
+    // if(authState.user !== null && !authState.user.isAnonymous)  
       props.getCurrentProfile().then(result=>{
         checkResult(result,payload=>{
-          fetchData()
+          
   
       },err=>{
         
       })
   })},[])
-
+  useEffect(()=>{
+    fetchData()
+  },[props.currentProfile])
   const fetchData = ()=>{
     if(props.currentProfile!=null){
       const params = {
@@ -72,7 +74,7 @@ function App(props) {
       const profileParams = {
         profile: props.currentProfile
       }
-      
+      dispatch(getProfileHashtagCommentUse({profileId:props.currentProfile.id}))
       props.fetchHomeCollection(profileParams)
       props.fetchBookmarkLibrary(params)
       props.getPageApprovals(profileParams)
@@ -247,24 +249,10 @@ function App(props) {
       }/>
       <Route path="/profile/edit" element={
         
-        <PrivateRoute loggedIn={props.currentProfile}>
+        <PrivateRoute loading={props.userLoading} loggedIn={props.currentProfile}>
         <SettingsContainer />
         </PrivateRoute>
       }/>
-      {/* <Route path="/library/:id/edit" element={
-         <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
-        <UpdateLibraryContainer/>
-        </PrivateRoute>}/> */}
-      {/* <Route path="/book/:id/add" element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
-          <AddPageToBookContainer/>
-        </PrivateRoute>
-      }/> */}
-      {/* <Route path="/library/:id/add" element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
-          <AddItemsToLibraryContainer/>
-        </PrivateRoute>
-      }/> */}
       
     </Routes>
     </div>
