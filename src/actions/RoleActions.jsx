@@ -15,6 +15,7 @@ const patchRoles=createAsyncThunk("roles/patchRoles",async (params,thunkApi)=>{
 const fetchStoryRoles=createAsyncThunk("roles/fetchStoryRoles",async ({storyId},thunkApi)=>{
 
     let data = await roleRepo.storyRoles({storyId})
+    
     return {
      roles: data.roles
     }

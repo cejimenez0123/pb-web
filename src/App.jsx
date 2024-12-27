@@ -14,7 +14,7 @@ import MyProfileContainer from './container/MyProfileContainer';
 import CreateBookContainer from './container/book/CreateBookContainer';
 import CreateLibraryContainer from './container/library/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
-import ProfileContainer from './container/ProfileContainer';
+import ProfileContainer from './container/profile/ProfileContainer.jsx';
 import ApplyContainer from './container/auth/ApplyContainer';
 import SearchDialog from './components/SearchDialog';
 import {  fetchBookmarkLibrary,

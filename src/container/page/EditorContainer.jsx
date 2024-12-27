@@ -156,29 +156,22 @@ useLayoutEffect(()=>{
           <div className="max-w-[100vw] sm:max-w-[45rem] mx-auto"> 
        <div>
                 <div className=" rounded-lg sm:my-4  mx-auto ">
-                  <div className="bg-green-600  sm:rounded-t-lg border border-white   flex flex-row  ">
+                  <div className="bg-green-600  flex flex-row sm:rounded-t-lg border border-white   ">
                       <div 
-                    className="flex-1 "
-                    
-                    style={{borderRight:"1px solid white" }}
+                    className=" flex-1 text-left border-white border-r-2  "
                     >
-                      <div className="text-left">
-                      {isSaved?<h6 className=" mx-2 mt-1 text-sm text-white ">Saved</h6>:
-                    <h6 className=" mx-2 mt-1 text-sm text-white">Draft</h6>}</div>
-                    <input type="text " className="bg-transparent p-2 bg-green-600 w-full h-fit text-xl font-bold" value={title} onChange={(e)=>handleTitle(e)}placeholder="Untitled"/>
+                     
+                      {isSaved?<h6 className=" text-left mx-1 text-sm text-white ">Saved</h6>:
+                    <h6 className="text-left mx-1 text-sm text-white">Draft</h6>}
+                    <input type="text " className="bg-transparent p-2  bg-green-600 w-full text-xl font-bold" value={title} onChange={(e)=>handleTitle(e)}placeholder="Untitled"/>
 
                     </div>
 
-                    <div>  
-                    {md ?<div className="  flex   flex-col p-1 ">
-                     
-                      <button className=" mb-1  bg-emerald-800 text-white "
-                      onClick={handleClickAddToCollection}>Add to Collection</button>
-                      <button className=" text-white bg-emerald-800 ">Post Public</button>
-                    </div>:
+                    <div className="w-fit">  
+                    {
                     <div className="dropdown dropdown-bottom dropdown-end">
-                    <div tabIndex={0} role="button" ><img className="w-12 h-12 bg-green-800 rounded-lg mt-1 mx-auto" src={menu}/></div>
-                    <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                    <div tabIndex={0} role="button" ><img className="w-12 h-12  rounded-lg mt-1 mx-auto" src={menu}/></div>
+                    <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-60 p-2 shadow">
                       <li className="text-green-600"
                       onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
                       <li className="text-green-600"> Post Public</li>
@@ -216,10 +209,6 @@ useLayoutEffect(()=>{
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        {/* <DialogTitle id="alert-dialog-title">
-          {"Share"}
-        </DialogTitle> */}
-        {/* <DialogContent> */}
           <div>
             <RoleForm book={pageInView}
             onClose={()=>{

@@ -28,8 +28,12 @@ import Enviroment from "../core/Enviroment";
     
         return res.data
     }
-    async getPublicProfilesCollections({id}){
-        let res = await axios.get(this.url+`/id${id}/public`)
+    async getPublicProfileCollections({id}){
+        let res = await axios.get(this.url+`/profile/${id}/public`)
+        return res.data
+    }
+    async getProtectedProfileCollections({id}){
+        let res = await axios.get(this.url+`/profile/${id}/protected`)
         return res.data
     }
     async createCollection({
@@ -100,7 +104,11 @@ import Enviroment from "../core/Enviroment";
 
     async deleteCollection({id}){
       
-        let res = await axios.delete(this.url+"/"+id)
+        let res = await axios.delete(this.url+"/"+id,
+            {headers:{
+                Authorization:"Bearer "+localStorage.getItem("token")
+            }}
+        )
         return res.data
     }
     async getProfileLibraries({profile}){

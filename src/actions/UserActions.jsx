@@ -232,29 +232,14 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
 })
 
 const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
-    let pId= params["id"]
   
-   
- 
     try {
-    const docSnap = await getDoc(doc(db, "profile", pId))
-    const pack = docSnap.data()
-    let {id,username,profilePicture,selfStatement,bookmarkLibraryId,homeLibraryId,userId,privacy,created}=pack
-        if(privacy){
-            privacy=false
-        }
-   const profile = new Profile( id,
-                                username,
-                                profilePicture,
-                                selfStatement,
-                                bookmarkLibraryId,
-                                homeLibraryId,
-                                userId,
-                                privacy,
-                                created)
-    return {
-      profile
-    }
+      let data = await profileRepo.getProfile(params)
+
+
+      return{
+        profile:data.profile
+      }
     }catch(e){
       return {
         error: new Error("ERROR:FETCH PROFILEE:"+e.message)

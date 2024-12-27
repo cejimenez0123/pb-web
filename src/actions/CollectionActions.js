@@ -104,6 +104,10 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
       }
     }
 })
+const fetchProfileCollections =createAsyncThunk("collection/fetchProfileCollections",async(params,thunkApi)=>{
+
+    collectionRepo
+})
 const fetchCollection = createAsyncThunk("collection/getCollectionPublic",async(params,thunkApi)=>{
    let data = await collectionRepo.fetchCollection(params)
    return {
@@ -153,22 +157,39 @@ const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
         collections: data.collections
       }
 })
-const getPublicProfileCollections = createAsyncThunk("collection/getMyCollections",async (
+const getPublicProfileCollections = createAsyncThunk("collection/getPublicProfileCollections",async (
     params,thunkApi
 )=>{
 
-     let res = await collectionRepo.getPublicProfilesCollections({id:params["profile"].id})
+     let res = await collectionRepo.getPublicProfileCollections({id:params["profile"].id})
+
+      return {
+        data: res.data
+      }
+})
+const getProtectedProfileCollections = createAsyncThunk("collection/getProtectedProfileCollections",async (
+    params,thunkApi
+)=>{
+
+     let res = await collectionRepo.getProtectedProfileCollections({id:params["profile"].id})
 
       return {
         data: res.data
       }
 })
 
+
 const getProtectCollectionStories = createAsyncThunk("collection/getProtectCollectionStories",async(
     params,thunkApi
 )=>{
     let data = await storyRepo.getCollectionStoriesProtected(params)
     return {list:data.list}
+})
+const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
+    params,thunkApi
+)=>{
+   let data = await collectionRepo.deleteCollection(params)
+   return data
 })
 const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectionStories",
     async (params,thunkApi)=>{
@@ -183,6 +204,7 @@ export {
     isProfileMember,
     getMyCollections,
     createCollection,
+    getProtectedProfileCollections,
     getPublicProfileCollections,
     getProtectCollectionStories,
     getPublicCollectionStories,
@@ -193,6 +215,7 @@ export {
     addStoryListToCollection,
     getSubCollectionsProtected,
     getSubCollectionsPublic,
+    deleteCollection,
     deleteCollectionFromCollection,
     deleteStoryFromCollection
 }

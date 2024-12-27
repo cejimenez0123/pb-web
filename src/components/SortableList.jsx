@@ -42,9 +42,9 @@ export default function SortableList({ items, onOrderChange }) {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className="flex justify-between items-center p-4 bg-white rounded-lg shadow-md hover:bg-gray-100"
+                        className="flex justify-between items-center p-4 bg-transparent border-white border rounded-lg shadow-md hover:bg-gray-100"
                       >
-                        <span className="flex-grow text-slate-800">{item.title}</span>
+                        <span className="flex-grow text-white">{item.title}</span>
                         <button
                           onClick={() => handleDelete(index)}
                           className="ml-2 px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600"
