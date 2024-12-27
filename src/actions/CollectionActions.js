@@ -67,7 +67,7 @@ const addCollectionListToCollection = createAsyncThunk("books/addCollectionListT
 
     let data = await collectionRepo.addCollectionListToCollection({id,list})
 
-    console.log("DDfa",data)
+
     return {collection:data.collection}
 })
 const addStoryListToCollection = createAsyncThunk("books/addStoryListToCollection",async(
@@ -89,7 +89,7 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
     }=params
     try{
         let data = await collectionRepo.createCollection(params)
-        console.log(data.collection)
+     
 
         if(!data.collection){
         const {collection}=data
@@ -134,7 +134,7 @@ const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProte
  })
 const getSubCollectionsProtected = createAsyncThunk("collection/getSubCollectionsProtected",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchSubCollectionsProtected(params)
-    console.log("Colcd",data)
+  
     const list = data.collections.map(col=>col.childCollection)
     return {
         list:list
@@ -152,7 +152,7 @@ const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
 )=>{
 
      let data = await collectionRepo.getMyCollections()
-     console.log(data)
+
       return {
         collections: data.collections
       }
@@ -194,7 +194,7 @@ const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
 const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectionStories",
     async (params,thunkApi)=>{
         let data = await storyRepo.getCollectionStoriesPublic(params)
-        console.log(data)
+     
         return {list:data.list}
     }
 )

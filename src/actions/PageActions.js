@@ -382,7 +382,7 @@ const fetchCommentsOfPage = createAsyncThunk("comments/fetchCommentsOfPages",asy
         comments: data.comments
       }
     }
-    console.log(data)
+
 
 
 

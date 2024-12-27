@@ -75,7 +75,7 @@ export default function ContentList({profile}){
             dispatch(getProfilePages(params)).then((result) => {
                 checkResult(result,payload=>{
                 const {pageList}=payload
-                console.log(pageList)
+             
                 setPages(pageList)
                 setHasMorePages(false)
             },err=>{

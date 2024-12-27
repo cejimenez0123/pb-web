@@ -21,7 +21,7 @@ function RoleForm({book,onClose}){
         dispatch(fetchStoryRoles({storyId:book.id})).then(res=>{
             checkResult(res,payload=>{
                 setRoles(payload.roles)
-console.log("Ffdfd",payload)
+
             },err=>{
 
             })
@@ -43,7 +43,7 @@ console.log("Ffdfd",payload)
         if(book.collections){
 
         }else{
-            console.log(roles)
+       
             dispatch(patchRoles({roles:roles,profileId:currentProfile.id,storyId:book.id}))
         }}
     }

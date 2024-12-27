@@ -43,7 +43,7 @@ export default function SignUpContainer(props){
         }
       }, [location.search]);
     const completeSignUp=()=>{
-
+        if(password.length>6){
         dispatch(uploadProfilePicture({file:file})).then(res=>checkResult(res,payload=>{
                 const{fileName}=payload
                 const params = {token,password,username,profilePicture:fileName,selfStatement,privacy:isPrivate}
@@ -58,6 +58,7 @@ export default function SignUpContainer(props){
         },err=>{
             alert("profilepicture"+JSON.stringify(err))
         }))
+      }
     }
     return(
                 <div  className="">
@@ -80,7 +81,8 @@ export default function SignUpContainer(props){
          
          onChange={(e) => setPassword(e.target.value.trim())}
         placeholder='*****' />
-</label>      
+</label>
+{password.length>6?null:<h6>Minimum Password Length is 6 characters</h6>}    
 <label className="input poppins text-white border bg-transparent border-white  mt-4 flex items-center gap-2">
   Confirm Password
   <input type="password" className="grow text-white " 
@@ -121,10 +123,10 @@ export default function SignUpContainer(props){
       className="textarea bg-transparent border border-white text-xl" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>
          <button
             disabled={confirmPassword!==password}
-            className='bg-green-900 poppins border-none hover:bg-green-400 text-white font-bold py-2 px-4 mt-4 btn-lg rounded '
+            className='bg-green-900 poppins  border hover:bg-green-400 text-white font-bold py-2 px-4 mt-4 btn-lg rounded-lg '
                onClick={completeSignUp}
                 
-                variant="contained" >Submit</button>
+                 >Submit</button>
             </div>
             </div>  
             </div>   

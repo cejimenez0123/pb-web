@@ -1,5 +1,6 @@
 import { useState } from "react"
 import authRepo from "../../data/authRepo"
+import validateEmail from "../../core/validateEmail"
 
 
 
@@ -51,41 +52,46 @@ function ApplyContainer(props){
         <div className=""> 
             <div>
                 
-                <form onSubmit={(e)=>onClickApply(e)} className="form-data shadow-sm flex mb-12 pb-8 flex-col lg:rounded bg-transparent py-4 px-12 lg:max-w-[48rem] text-left mx-auto lg:mt-24">
-                <p className="text-green-100">* Required</p>
-                <div className="w-full text-center"><h1 className="mx-auto  poppins w-fit">Interest Form</h1></div>
-                <label className="input poppins mt-4 py-8 font-bold mb-8 lg:py-8 bg-transparent border border-green-100  text-slate-800 flex items-center gap-2">
+                <form onSubmit={(e)=>onClickApply(e)} className="form-data shadow-sm  bg-slate-700 bg-opacity-20 flex mb-12 pb-8 flex-col shadow-md lg:rounded-lg py-4 px-12 lg:max-w-[48rem] text-left mx-auto lg:mt-24">
+                <h6 className="text-white text-sm">* Required</h6>
+                <div className="w-full text-center"><h3 className="mx-auto  poppins w-fit">Interest Form</h3></div>
+                <label className="input poppins mt-4 text-white py-8 font-bold mb-8 lg:py-8 bg-transparent border border-green-100  text-white flex items-center gap-2">
   Preferred Name
-  <input type="text" className="grow pl-4  text-slate-800 w-full" 
+  <input type="text" className="grow pl-4 text-white w-full" 
          value={fullName}
          
          onChange={(e) => handleChangeFullName(e.target.value)}
         placeholder='Jon Doe' />
 </label>     
-<label className="input mt-4 poppins mb-8 font-bold  py-8 bg-transparent border border-green-100  text-slate-800  flex items-center gap-2">
+<label className="input mt-4 
+poppins mb-2 font-bold  py-8 bg-transparent border border-green-100  text-white flex items-center gap-2">
   * E-mail
-  <input type="text" className="grow text-slate-800 pl-4 w-full" 
+  <input type="text" className="grow  text-white pl-4 w-full" 
          value={email}
          
          onChange={(e) => handleChangeEmail(e.target.value.trim())}
         placeholder='' />
 </label>  
-                <label className="input poppins mt-4 mb-8 font-bold py-8 w-[100%] bg-transparent text-slate-800 border border-green-100 text-slate-800 flex items-center gap-2">
+{validateEmail(email)?<div className="h-[0.8rem]"></div>:<h6 className="text-[0.8rem]">Please use a valid email</h6>}
+<label className="input 
+poppins mt-4 mb-8 
+font-bold py-8 w-[100%] 
+bg-transparent text-white border border-green-100 text-white flex items-center gap-2">
   IG Handle
-  <input type="text" className="grow text-slate-800 pl-4 " 
+  <input type="text" className="grow text-white pl-4 " 
          value={igHandle}
          
          onChange={(e) => handleChangeIgHandle(e.target.value.trim())}
         placeholder='*****' />
 </label>   
-<label className="text-xl font-bold poppins text-green-100">Artist Statement</label>
-<label className="text-green-100  poppins text-l mb-2 pb-1 font-bold mt-4">
+<label className="text-xl font-bold poppins text-white">Artist Statement</label>
+<label className="text-white  poppins text-l mb-2 pb-1 font-bold mt-4">
     * Why are you applying?</label> 
-<textarea value={whyApply}onChange={(e)=>handleChangeWhyApply(e.target.value)}className="textarea bg-transparent w-[100%] text-xl h-min-24 border border-green-100 text-slate-800 "/> 
-<label className="text-green-100 text-l poppins mb-2 pb-1 font-bold mt-4"
+<textarea value={whyApply}onChange={(e)=>handleChangeWhyApply(e.target.value)}className="textarea bg-transparent w-[100%] text-xl h-min-24 border border-green-100 text-white "/> 
+<label className="text-wbjte text-l poppins mb-2 pb-1 font-bold mt-4"
 >* How did you find out?</label>
 <input value={howFindOut}onChange={(e)=>handleChangeHowFindOut(e.target.value)} 
-className="bg-transparent border border-green-100 py-8 text-slate-800 text-xl input text-slate-800"></input>
+className="bg-transparent border border-green-100 py-8 text-white text-xl input "></input>
 <button type="submit" className=" poppins hover:bg-green-400 font-bold border border-green-700 shadow-sm mt-4 mb-8 bg-green-700  btn-lg ">
                     Apply
                 </button>

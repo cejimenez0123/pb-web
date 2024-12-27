@@ -12,7 +12,7 @@ export function HashtagForm(){
     const dispatch = useDispatch()
     const [hashtags, setHashtags] = useState([]);
      useLayoutEffect(()=>{
-        console.log(storyHashtags)
+   
        setHashtags(storyHashtags)
     },[storyHashtags])
     const currentProfile = useSelector(state=>state.users.currentProfile)

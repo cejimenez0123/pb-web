@@ -26,7 +26,7 @@ export default function Comment({comment}){
         
        setIsHelpful(hs)
     },[hashtags])
-    console.log("ProfileHashtag",isHelpful)
+   
     const navigate = useNavigate()
     const handleIfHelpful = ()=>{
      dispatch(createHashtagComment({name:"helpful",profileId:currentProfile,commentId:comment.id})).then(res=>checkResult(res,payload=>{

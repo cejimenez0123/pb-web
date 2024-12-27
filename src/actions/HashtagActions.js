@@ -63,7 +63,7 @@ async ({name,storyId,profile},thunkApi) => {
         hashtag:data.hashtag
        }
     }else{
-        console.log(data)
+
         throw new Error(data.error)
     }
 })

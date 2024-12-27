@@ -130,7 +130,7 @@ function LogInCard(props){
                 
         </div>
         <div className='mt-4 p-4'>
-        <a  onClick={handleFirstTimeClick}className='text-white-100 poppins hover:text-green-400  '>Click here if this your first time?</a>
+        <a  onClick={handleFirstTimeClick}className='text-white poppins hover:text-green-400  '>Click here if this your first time?</a>
         </div>
         <div>
         

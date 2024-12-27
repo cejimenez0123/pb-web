@@ -40,7 +40,7 @@ function DashboardContainer(props){
                 fetchData()
                 },err=>{
                     fetchData()
-                console.log(err)
+          
             })})
         // }else{
         //     fetchData()

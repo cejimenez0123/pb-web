@@ -50,7 +50,7 @@ const getPublicBooks = createAsyncThunk(
 const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thunkApi){
     try{
       const data = await collectionRepo.fetchCollection(params)
-    console.log(data)
+   
     return {
       book:data.collection
     }

@@ -9,7 +9,6 @@ import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/page/EditorContainer'
 import PageViewContainer from './container/page/PageViewContainer'
-import BookViewContainer from './container/book/BookViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import CreateBookContainer from './container/book/CreateBookContainer';
 import CreateLibraryContainer from './container/library/CreateLibraryContainer';
@@ -193,12 +192,7 @@ function App(props) {
       <ProfileContainer profile={props.profileInView}/>
       }/>
     
-    <Route  path="/book/:id" 
-            element={
-              <BookViewContainer 
-        book={props.bookInView} 
-        pages={props.pagesInView}/>
-    }/>
+
     <Route  
         path="/page/image"  
         element={ 

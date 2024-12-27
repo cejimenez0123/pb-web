@@ -11,7 +11,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
     const data = await profileRepo.create(params)
 
     if(data.token){
-        console.log("FDdfdf",data.token)
+    
        localStorage.setItem("token",data.token)
     }
     return data
