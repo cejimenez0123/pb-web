@@ -181,11 +181,7 @@ section ul{
 }
 
 
-img[alt="bookshelves"]{
-    object-fit: cover;
-    height: 30em;
-    width: 100%;
-}
+
 #workshop--details{
     margin-top: 4em;
     max-width: 90vw;
@@ -197,10 +193,18 @@ img[alt="bookshelves"]{
     margin: auto;
 }
 #bookshelf{
-    height: 30em;
-    width:100%;
+    max-height: 10em !important;
+    max-width: 10em !important;
+
     overflow: hidden;
     border-radius: 24px;
+}
+img[alt="bookshelves"]{
+    object-fit: cover;
+    height: 20em;
+    width: 100%;
+ 
+    border-radius: 0.5rem;
 }
 #image-container1{
     margin-right: 2em;
@@ -208,13 +212,15 @@ img[alt="bookshelves"]{
 }
 img[alt="books"]{
     object-fit: cover;
-    height: 30em;
-    width: 100%;
+   height: 20em;
+     width: 100%;
+    border-radius: 0.5em;
+    
 }
 #image-container1 #group{
-    height: 16em;
- 
-    border-radius: 24px;
+    height: 15em;
+    border-radius: 0.5em;
+
 }
 
 }
