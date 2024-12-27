@@ -108,9 +108,9 @@ function LinkPreview({ url,size }) {
 
   if (previewData.videoId) {
     return (
-      // <div >
+    
         <img onClick={handleClick} style={{ cursor: 'pointer' }} className="thumbnail"src={previewData.videoThumbnail} alt="Video Thumbnail" />
-      //</div>
+
     );
   }
   const imageView = ()=>{
@@ -127,20 +127,20 @@ function LinkPreview({ url,size }) {
   }
   const previewTitle=()=>{
     if(previewData.title!=="Spotify"){
-    return(<h4 className='title text-slate-800 px-4 py-2'>{previewData.title}</h4>)
+    return(<h4 className=' text-slate-800 px-4 bg-emerald-200  text-[1rem] py-2'>{previewData.title}</h4>)
     }else{
       return(<div></div>)
     }
   }
   const previewDescription=()=>{
     if(previewData.title!=="Spotify"){
-      return(<p className='text-slate-800 p-4 ' >{previewData.description}</p>)
+      return(<h6 className='text-slate-800 p-4 bg-emerald-200  text-[0.8rem]' >{previewData.description}</h6>)
       }else{
-        return(<p className='text-slate-800 py-2'>{previewData.description}</p>)
+        return(<h6 className='text-slate-800 py-2  bg-emerald-200  text-[0.8rem]'>{previewData.description}</h6>)
       }
   }
   return (
-    <div className="link-preview  bg-green-400 text-slate-800" onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className="link-preview  text-slate-800" onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       {previewDescription()}
       {previewTitle()}

@@ -214,8 +214,9 @@ const navigateToLibrary = (library)=>{
                                     <img src={stream}/>
                         </button></div>:null}
                         </div>
-
+<div className='px-2'>
                     {pageList()}
+                    </div>
                     </div>
                     <div className=' lg:flex-1  lg:mx-4'>
                        <div className='w-24  mx-auto '>
