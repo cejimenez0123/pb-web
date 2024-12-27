@@ -12,11 +12,11 @@ export default function AboutContainer(props){
     const navigate = useNavigate()
     const forCreatives = ()=>{
         return(<div>
-            <div className="box">
+            <div className="box text-white" >
 <div id="for-creatives" >
 <h1 className="poppins">For Creatives</h1>
 <div >
-<h6 className="text-[1.2rem] poppins pt-4 text-left" > 
+<h6 className="text-[1.2rem] text-white poppins pt-4 text-left" > 
 Plumbum began during a university reprieve while walking to the gym.
 At home, I missed the encouragement I got from friends who shared my objectives. 
 Finding mutual support can be challenging when others do not share your interests. 
@@ -72,10 +72,10 @@ Plumbum is great place to begin work and find support to complete work.
 }
     const groupImage = ()=>{
         return(<div id="image-container1">
-<img src={groupJpg} id="group" alt="books"/>
+<img src={firstGroup} id="group" alt="books"/>
         </div>)
     }
-    return(<div id="about" className="px-8 py-8">
+    return(<div id="about" className="px-8 text-white py-8">
         
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300;400;700&display=swap" />
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -85,11 +85,11 @@ Plumbum is great place to begin work and find support to complete work.
     <div  className="welcome">
     
     <div id="title">
-        <h6 className="text-8xl text-white">Welcome to Plumbum</h6>
+        <h6 className="text-[4rem] text-white">Welcome to Plumbum</h6>
     </div>
         <MediaQuery minWidth={"1000px"}>
 <div id="bookshelf w-24 h-24">
-<img  src={firstGroup}alt="bookshelves" />
+<img  src={groupJpg}alt="bookshelves" />
 
 
 </div>
