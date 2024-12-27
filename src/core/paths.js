@@ -42,8 +42,8 @@ const Paths ={
             return `/story/${id}/collection`
         }
     },
-    home:()=>{return `/`},
-    about:()=>{return `/about`},
+    home:()=>{return `/dashboard`},
+    about:()=>{return `/`},
     profile:{route:()=>{return `/profile/:id`},
             createRoute:(id)=>{return `/profile/${id}`}},
     myProfile:()=>{return `/profile/home`}

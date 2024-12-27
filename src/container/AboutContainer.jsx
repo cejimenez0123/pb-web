@@ -30,19 +30,13 @@ Creatives need a place to test ideas before they launch, and that is what Plumbu
 const writingJourney = ()=>{
     return(<div>
         <div id="ready">
-<p >
+<h6 >
 Join us! If you're a writer or enjoy reading, 
 you're of discerning taste; share and save ideas and inspiration.
  Plumbum is the place for your story.
-</p>
-<Button onClick={()=>{navigate(Paths.login())}}  
-    style={{
-
-            padding:"0.5em 1em",
-            backgroundColor:"#36322e",
-            boxShadow:theme.attributes.boxShadow,
-            color:"white"
-,fontSize:"2em"}}>Sign Up</Button>
+</h6>
+<button className="text-2xl text-white bg-emerald-900 mt-4" onClick={()=>{navigate(Paths.apply())}}  
+   >Apply to Join Today</button>
 </div>
     </div>)
 }
