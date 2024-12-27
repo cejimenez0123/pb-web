@@ -33,7 +33,7 @@ const store = configureStore({reducer:reducer,
 
 })
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
+
   <Provider store={store} >
 
     {/* <React.StrictMode> */}
@@ -43,5 +43,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
   </Provider>
   
-   </BrowserRouter>,
+  ,
 );

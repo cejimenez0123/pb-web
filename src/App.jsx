@@ -1,7 +1,7 @@
 import './App.css';
 import { useDispatch,connect} from "react-redux"
 import { useState } from 'react';
-import {Route, Routes} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions';
 import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/auth/LogInContainer';
@@ -10,8 +10,6 @@ import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/page/EditorContainer'
 import PageViewContainer from './container/page/PageViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
-import CreateBookContainer from './container/book/CreateBookContainer';
-import CreateLibraryContainer from './container/library/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/profile/ProfileContainer.jsx';
 import ApplyContainer from './container/auth/ApplyContainer';
@@ -87,6 +85,7 @@ function App(props) {
    
   return (
       <Context.Provider value={[formerPage,setFormerPage]}>
+                <Router>
         {/* from-emerald-800 to-emerald-600 */}
       <div  className='App background-blur bg-gradient-to-br from-green-800 to-green-200'>
       <div/>
@@ -123,8 +122,9 @@ function App(props) {
         profile={props.currentProfile}/>
         <SearchDialog  />
         <div className='screen'>
-        <Routes history={history} >
-          <Route exact  path={Paths.home()} 
+
+      <Routes >
+          <Route path={Paths.home()} 
                         element={
                           <DashboardContainer 
                             getPublicStories={props.getPublicStories} 
@@ -171,7 +171,7 @@ function App(props) {
      
       ><EditCollectionContainer/></PrivateRoute>}/>
      
-      <Route path={Paths.about()} element={
+      <Route exact path={Paths.about()} element={
    <AboutContainer/>
       }/>
  
@@ -239,21 +239,7 @@ function App(props) {
               />
         </PrivateRoute>
       }/>
-      <Route path="/book/new" element={
-        <PrivateRoute  loading={props.userLoading} loggedIn={!!props.currentProfile}>
-          <CreateBookContainer pagesInView={props.pagesInView} booksInView={props.booksInView}/>
-        </PrivateRoute>
-      }/>
-    
-      <Route path="/library/new" element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
-        <CreateLibraryContainer/>
-        </PrivateRoute>
-      }/>
-      <Route path="/library/:id" element={
-        <LibraryViewContainer
-        />
-      }/>
+
       <Route path="/profile/edit" element={
         
         <PrivateRoute loading={props.userLoading} loggedIn={props.currentProfile}>
@@ -262,9 +248,11 @@ function App(props) {
       }/>
       
     </Routes>
+
     </div>
     </div>
     </div>
+    </Router>
     </Context.Provider>
   );
 }
