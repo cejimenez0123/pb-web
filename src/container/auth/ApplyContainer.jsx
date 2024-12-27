@@ -52,7 +52,7 @@ function ApplyContainer(props){
         <div className=""> 
             <div>
                 
-                <form onSubmit={(e)=>onClickApply(e)} className="form-data shadow-sm  bg-slate-700 bg-opacity-20 flex mb-12 pb-8 flex-col shadow-md lg:rounded-lg py-4 px-12 lg:max-w-[48rem] text-left mx-auto lg:mt-24">
+                <form onSubmit={(e)=>onClickApply(e)} className="form-data shadow-sm  bg-emerald-700 bg-opacity-60 flex mb-12 pb-8 flex-col shadow-md lg:rounded-lg py-4 px-12 lg:max-w-[48rem] text-left mx-auto lg:mt-24">
                 <h6 className="text-white text-sm">* Required</h6>
                 <div className="w-full text-center"><h3 className="mx-auto  poppins w-fit">Interest Form</h3></div>
                 <label className="input poppins mt-4 text-white py-8 font-bold mb-8 lg:py-8 bg-transparent border border-green-100  text-white flex items-center gap-2">

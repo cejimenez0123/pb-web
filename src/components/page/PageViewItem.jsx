@@ -130,24 +130,24 @@ let profile = (<div></div>)
         return(
         
         <div className="text-slate-800">
-            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2 bg-green-600 '>
+            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2 bg-emerald-600 '>
                 <div className="titles ">
                 {page.title.length>0?<p>{page.title}</p>:<p>Untitled</p>}
                 </div>
                 {profile}
             </div>
-            <div className="bg-green-400 ">
+            <div className="bg-emerald-400 ">
                 {pageDataElement}
                 </div>
-            <div className='bg-green-600  border-t'>
+            <div className='bg-emerald-600  border-t'>
                 <button 
-                className="bg-green-600 "
+                className="bg-emerald-600 "
                    disabled={!currentProfile} 
                 >
                     Yea
                 </button>
                 <button
-                className="bg-green-600 px-4 mx-4 rounded-none border-white border-l-1 border-r-1 border-t-0 border-b-0 "
+                className="bg-emerald-600 px-4 mx-4 rounded-none border-white border-l-1 border-r-1 border-t-0 border-b-0 "
                    disabled={!currentProfile} 
                     onClick={()=>{setCommenting(!commenting)}}>
                 

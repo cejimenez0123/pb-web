@@ -39,8 +39,8 @@ export default function CreateCollectinForm(props){
         </button>
         <div class="mb-4 flex flex-col">
         </div>
-        <h2 className="text-white mx-auto text-xl font-bold mb-4">Create Collection</h2>
-        <label className="text-white text-xl mb-2">
+        <h2 className="text-emerald-600 mx-auto text-xl font-bold mb-4">Create Collection</h2>
+        <label className="text-emerald-600 text-xl mb-2">
             Name of Collection
         </label>
         <input 

@@ -42,7 +42,7 @@ export default function SortableList({ items, onOrderChange }) {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className="flex justify-between items-center p-4 bg-transparent border-white border rounded-lg shadow-md hover:bg-gray-100"
+                        className="flex justify-between items-center p-4 bg-transparent border-emerald-600 border rounded-lg shadow-md hover:bg-gray-100"
                       >
                         <span className="flex-grow text-white">{item.title}</span>
                         <button

@@ -72,14 +72,14 @@ const hanldeClickComment=(pageItem)=>{
         
     if(page.type===PageType.text){
 
-        return( <div className='page-text'>
+        return( <div className='page-text py-4 '>
             <div 
     
            className={` ${isGrid?"h-48 overflow-clip ":""}`}
             >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className='p-4 '
+        } className='px-4 py-8'
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
         </div>)   
@@ -194,7 +194,7 @@ return <Button onClick={()=>{
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className='border-t bg-green-600 text-center border-green-100 '><div>
+        <div className='border-t bg-emerald-600 text-center border-green-100 '><div>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
@@ -206,7 +206,7 @@ return <Button onClick={()=>{
          </button>
          <button
              className=' px-4 rounded-none
-             border-x-2 border-y-0 text-xl bg-green-600 border-white text-slate-800'
+             border-x-2 border-y-0 text-xl bg-emerald-600 border-white text-slate-800'
              onClick={()=>hanldeClickComment(page)}
                  >
          
@@ -273,21 +273,23 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={`rounded-lg bg-green-400 w-[100vw] md:w-[34em] shadow-sm justify-self-center  overflow-hidden`}>
+        <div className={` relative rounded-lg bg-emerald-400 w-[100vw] md:w-[34em] shadow-sm justify-self-center  overflow-hidden`}>
         
-            <div className=' border-white border border-b border-2 bg-green-600  pl-2 text-slate-800   pb-2 pt-4'>
-                <div className=' flex flex-row  ml-4'>
+            {/* <div className=' border-white border border-b border-2 bg-emerald-600  pl-2 text-slate-800   pb-2 pt-4'> */}
+                <div className='absolute bg-gradient-to-r from-opacity-30 from-emerald-800 to-transparent"> flex flex-row pr-4 rounded-r-lg'>
                 {bookTitleDiv}
-                <p className="text-slate-800 " onClick={()=>{
+                <h6 className="text-white p-2 text-[0.8rem]" onClick={()=>{
                     dispatch(setPageInView({page}))
                     navigate(Paths.page.createRoute(page.id))
 
-                }} > {` `+page.title}</p>
-                </div>
+                }} > {` `+page.title}</h6>
                 {profileDiv}
-            </div>
+                </div>
+                <div className=''>
+            {/* </div> */}
                 {pageDataElement()}
                 {buttonRow()}
+                </div>
   </div>
      )}else{
         return(<div className='min-h-24'>
