@@ -1,16 +1,20 @@
 import React ,{useState,useEffect}from 'react'
 import "../App.css"
-import { getPublicPages,fetchArrayOfPagesAppened, fetchAppendPagesOfProfile, fetchPagesWhereProfileCommenters  } from '../actions/PageActions'
+import {  fetchAppendPagesOfProfile,
+    fetchPagesWhereProfileCommenters, 
+    getPublicStories  } from '../actions/PageActions'
 import { useSelector, useDispatch } from 'react-redux'
-import DashboardItem from '../components/DashboardItem'
+import DashboardItem from '../components/page/DashboardItem'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import {  fetchArrayOfBooksAppened, fetchBooksWhereProfileEditor, fetchBooksWhereProfileWriter } from '../actions/BookActions'
 import { clickMe, fetchHomeCollection, getCurrentProfile } from '../actions/UserActions'
 import { fetchArrayOfLibraries } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
-
+import ReactGA from "react-ga4"
 
 function DashboardContainer(props){
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+
     const dispatch = useDispatch()
     const currentProfile = useSelector((state)=>state.users.currentProfile)
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
@@ -65,7 +69,7 @@ function DashboardContainer(props){
     const fetchPublicContent =()=>{
         setHasMore(true)
         setItemsInView([])
-        dispatch(getPublicPages()).then(result=>{
+        dispatch(getPublicStories()).then(result=>{
             checkResult(result,payload=>{
                 setHasError(false)
                 const {pageList }= payload
@@ -115,82 +119,82 @@ function DashboardContainer(props){
     }}
 
     const fetchData =()=>{
-            if(currentProfile && homeCollection){
-                setHasMore(true)
-                if(homeCollection.books){
+            // if(currentProfile && homeCollection){
+            //     setHasMore(true)
+            //     if(homeCollection.books){
                    
-                    const params = {
-                        bookIdList:homeCollection.books,
-                        profile: currentProfile
-                    }
-                    if(homeCollection.books.length>0){
-                        dispatch(fetchArrayOfBooksAppened(params)).then(result=>
-                            checkResult(result,payload=>{
-                                setHasMore(false)
-                                const {bookList}=payload
-                                getBookListContent(bookList)
-                            },err=>{
+            //         const params = {
+            //             bookIdList:homeCollection.books,
+            //             profile: currentProfile
+            //         }
+            //         if(homeCollection.books.length>0){
+            //             dispatch(fetchArrayOfBooksAppened(params)).then(result=>
+            //                 checkResult(result,payload=>{
+            //                     setHasMore(false)
+            //                     const {bookList}=payload
+            //                     getBookListContent(bookList)
+            //                 },err=>{
 
-                            }))
+            //                 }))
                             
         
-                }
-                if(homeCollection.libraries){
+            //     }
+            //     if(homeCollection.libraries){
                     
-                    if(homeCollection.libraries.length>0){
-                        getLibraries()
-                    }}
-                if(homeCollection.profiles){
-                    homeCollection.profiles.forEach(id=>
-                        {
-                            const params ={
-                                id
-                            }
-                        dispatch(fetchAppendPagesOfProfile(params)).then(result=>
-                            checkResult(result,(payload)=>{
-                                setHasMore(false)
-                                        const {pageList} = payload
-                                        let list = pageList.map(page=>{return {type:"page",page}})
-                                        list.forEach(page=>{
-                                        if(!itemsInView.includes(page)){
-                                            setItemsInView(prevState=>[page,...prevState])
-                                        }
-                                        })
+            //         if(homeCollection.libraries.length>0){
+            //             getLibraries()
+            //         }}
+            //     if(homeCollection.profiles){
+            //         homeCollection.profiles.forEach(id=>
+            //             {
+            //                 const params ={
+            //                     id
+            //                 }
+            //             dispatch(fetchAppendPagesOfProfile(params)).then(result=>
+            //                 checkResult(result,(payload)=>{
+            //                     setHasMore(false)
+            //                             const {pageList} = payload
+            //                             let list = pageList.map(page=>{return {type:"page",page}})
+            //                             list.forEach(page=>{
+            //                             if(!itemsInView.includes(page)){
+            //                                 setItemsInView(prevState=>[page,...prevState])
+            //                             }
+            //                             })
                                       
-                        },error=>{
+            //             },error=>{
 
-                        }))
-                    }
-                ) 
-            }
-            dispatch(fetchBooksWhereProfileEditor()).then((result)=>checkResult(result,payload=>{
-                const {bookList}=payload
+            //             }))
+            //         }
+            //     ) 
+    //         }
+    //         dispatch(fetchBooksWhereProfileEditor()).then((result)=>checkResult(result,payload=>{
+    //             const {bookList}=payload
 
-                getBookListContent(bookList)
-            },err=>{
+    //             getBookListContent(bookList)
+    //         },err=>{
 
-            }))
-            dispatch(fetchBooksWhereProfileWriter()).then(result=>checkResult(result,payload=>{
-                const {bookList}=payload
-                getBookListContent(bookList)
-            },err=>{}))
-            dispatch(fetchPagesWhereProfileCommenters()).then(result=>checkResult(result,payload=>{
-                const {pageList}=payload
-                let items = pageList.map(page=>{return {type:"page",page: page}})
-                items.forEach(item=>{
-                   if(!itemsInView.includes(item)){
-                    setItemsInView(prevState=>[...prevState,item])
-                   }
-                })
-            },err=>{
+    //         }))
+    //         dispatch(fetchBooksWhereProfileWriter()).then(result=>checkResult(result,payload=>{
+    //             const {bookList}=payload
+    //             getBookListContent(bookList)
+    //         },err=>{}))
+    //         dispatch(fetchPagesWhereProfileCommenters()).then(result=>checkResult(result,payload=>{
+    //             const {pageList}=payload
+    //             let items = pageList.map(page=>{return {type:"page",page: page}})
+    //             items.forEach(item=>{
+    //                if(!itemsInView.includes(item)){
+    //                 setItemsInView(prevState=>[...prevState,item])
+    //                }
+    //             })
+    //         },err=>{
 
-            })
+    //         })
 
-            )
-        }
-    }else{
-        fetchPublicContent()
-    }
+    //         )
+    //     }
+    // }else{
+    //     fetchPublicContent()
+    // }
 
 }
     
@@ -292,6 +296,7 @@ function DashboardContainer(props){
                             }
                         }})}
                     </InfiniteScroll>
+                
                 </div>)
             }  else if(itemsInView!=null && itemsInView.length==0 && currentProfile){
                 return(

@@ -8,7 +8,7 @@ import { MenuButton } from '@mui/base/MenuButton'
 import { Menu } from '@mui/base/Menu';
 import { RoleType } from "../core/constants";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { fetchAllProfiles } from "../actions/UserActions";
+// import { fetchAllProfiles } from "../actions/UserActions";
 import { useDispatch } from "react-redux";
 import Role from "../domain/models/role";
 import theme from "../theme";
@@ -41,21 +41,21 @@ export default function RoleList({getRoles,item,type}) {
             setOldRoles()
            
        }else{
-        dispatch(fetchAllProfiles()).then((result) => {
+        // dispatch(fetchAllProfiles()).then((result) => {
             
-            checkResult(result,payload=>{
-                setProfiles()
-                setRoleList()
-                setOldRoles()
+        //     checkResult(result,payload=>{
+        //         setProfiles()
+        //         setRoleList()
+        //         setOldRoles()
                 
               
-            },err=>{
+        //     },err=>{
 
-            })
+        //     })
           
             
            
-        })
+        // })
        }
     }
     

@@ -8,16 +8,31 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "fireTest": "npm run build && firebase hosting:channel:deploy michael-que",
+<<<<<<< HEAD
     "build": "vite build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "find-cache-dir": "^5.0.0",
+=======
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "daisyui": "^4.12.20",
+>>>>>>> prisma
     "firebase-tools": "^13.1.0",
     "history": "^5.3.0",
     "lodash": "^4.17.21",
     "react": "^18.3.1",
+<<<<<<< HEAD
     "react-dom": "^18.3.1"
+=======
+    "react-beautiful-dnd": "^13.1.1",
+    "react-dom": "^18.3.1",
+    "react-ga4": "^2.1.0"
+>>>>>>> prisma
   },
   "devDependencies": {
     "@emotion/react": "^11.11.3",
@@ -30,6 +45,10 @@
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.2.1",
     "algoliasearch": "^4.22.1",
+<<<<<<< HEAD
+=======
+    "autoprefixer": "^10.4.20",
+>>>>>>> prisma
     "eslint": "^8.55.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -37,6 +56,7 @@
     "firebase": "^10.8.0",
     "gh-pages": "^6.2.0",
     "lottie-react": "^2.4.0",
+    "postcss": "^8.4.49",
     "react-bootstrap": "^2.10.0",
     "react-helmet": "^6.1.0",
     "react-infinite-scroll-component": "^6.1.0",
@@ -47,6 +67,7 @@
     "react-spotify-embed": "^2.0.3",
     "redux": "^5.0.1",
     "redux-logger": "^3.0.6",
+    "tailwindcss": "^3.4.16",
     "vite": "^5.0.8"
   }
 }

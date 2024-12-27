@@ -127,20 +127,20 @@ function LinkPreview({ url,size }) {
   }
   const previewTitle=()=>{
     if(previewData.title!=="Spotify"){
-    return(<h4 className='title'>{previewData.title}</h4>)
+    return(<h4 className='title text-slate-800 px-4 py-2'>{previewData.title}</h4>)
     }else{
       return(<div></div>)
     }
   }
   const previewDescription=()=>{
     if(previewData.title!=="Spotify"){
-      return(<p>{previewData.description}</p>)
+      return(<p className='text-slate-800 p-4 ' >{previewData.description}</p>)
       }else{
-        return(<p>{previewData.description}</p>)
+        return(<p className='text-slate-800 py-2'>{previewData.description}</p>)
       }
   }
   return (
-    <div className="link-preview" onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className="link-preview  bg-green-400 text-slate-800" onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       {previewDescription()}
       {previewTitle()}

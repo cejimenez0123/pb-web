@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,500&family=Roboto:wght@500&display=swap');
+=======
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,600&family=Roboto:wght@500&display=swap');
+>>>>>>> prisma
 
 #about {
     color:#02120A;;
@@ -8,8 +12,8 @@
 }
 .poppins{
     font-family: 'Poppins', sans-serif;
-    font-family: 'Roboto', sans-serif;
-    font-style: italic;
+    /* font-family: 'Roboto', sans-serif; */
+   
 }
 
 @media (max-width: 1000px){

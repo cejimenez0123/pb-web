@@ -15,7 +15,7 @@ export default function ProfileCard(props){
         <div  className="profile-container">
           <div >
             
-                <img className="profile-pic" inline="true" src={currentProfile.profilePicture} />
+                <img className="profile-pic" inline="true" src={currentProfile.profilePic} />
              <h6 className="username">{currentProfile.username}</h6>
         
            </div> 

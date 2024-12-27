@@ -1,11 +1,12 @@
-import React ,{ useEffect, useState } from 'react'
+import React ,{ useEffect, useLayoutEffect,useState } from 'react'
 import { useSelector,useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
 import {signOutAction} from "../actions/UserActions"
 import { useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
-import debounce from '../core/debounce'
+import getDownloadPicture from '../domain/usecases/getDownloadPicture'
+import { debounce } from 'lodash'
 import { 
             Container,
             Toolbar,
@@ -26,13 +27,16 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
 import LinkIcon from '@mui/icons-material/Link';
 import theme from '../theme'
+
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import Paths from '../core/paths'
-import { setEditingPage } from '../actions/PageActions'
+import { setEditingPage, setPageInView } from '../actions/PageActions'
 import { searchDialogToggle } from '../actions/UserActions'
 import SearchDialog from '../components/SearchDialog'
+import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
+import ReactGA from 'react-ga4'
 const PageName = {
   home: "Home",
   about:"About",
@@ -57,6 +61,7 @@ function NavbarContainer(props){
     const [anchorElPageSmall,setAnchorElPageSmall] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedImage,setSelectedImage]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
    
    
    
@@ -109,6 +114,19 @@ function NavbarContainer(props){
       }else{
       setAnchorElNavCreate(event.currentTarget);}
   };
+  useLayoutEffect( ()=>{
+    if(currentProfile){
+    if( !currentProfile.profilePic.includes("http")){
+        getDownloadPicture(currentProfile.profilePic).then(url=>{
+           
+            setSelectedImage(url)
+        })
+    }else{
+        setSelectedImage(currentProfile.profilePic)
+    }
+  }
+    
+},[currentProfile])
   const handleElPageSmall = (event) => {
     if(anchorElPageSmall){
       setAnchorElPageSmall(null)
@@ -133,11 +151,31 @@ function NavbarContainer(props){
         setAnchorElPage(e.currentTarget);
       }
     }
-  
+    const ClickWriteAStory = ()=>{
+      ReactGA.event({
+          category: "Page",
+          action: "Navigate To Editor",
+          label: "Write a Story", 
+          value: currentProfile.id,
+          nonInteraction: false
+        });
+        
+        dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
+        title:"Untitled",commentable:true
+      })).then(res=>checkResult(res,data=>{
+          dispatch(setPageInView({page:data.story}))
+          navigate(Paths.editPage.createRoute(data.story.id))
+      },e=>{
+
+      }))
+          
+    
+      
+  }
     return (
       <div>
         <AppBar position="static"
-                style={{backgroundColor:theme.palette.primary.dark}}>
+               className='bg-transparent'>
             <Container >
                 <Toolbar disableGutters={true}>
                     <Typography
@@ -222,8 +260,9 @@ function NavbarContainer(props){
                           <List style={{display:anchorElPageSmall?"":"none"}}>
                             <ListItemButton key="page" 
                               onClick={(e)=>{
-                                dispatch(setEditingPage({page:null}))
-                                navigate("/page/text")}}
+                                ClickWriteAStory()
+                              }
+                              }
                                 sx={{ pl: 6 }}
                             >
                               <CreateIcon/>
@@ -321,10 +360,8 @@ function NavbarContainer(props){
                 aria-haspopup="true"
                
                 sx={{ my: 2, color: 'white', display: 'block' }} 
-                onClick={(e)=>{
-                
-                  debounce(handleClick(e),5)
-                }}>
+                onClick={(e)=>debounce(handleClick(e),1)
+                }>
 
                         Create {Boolean(anchorEl) ? <ExpandLess /> : <ExpandMore />}
                       </Button >
@@ -364,7 +401,7 @@ function NavbarContainer(props){
                       sx={{ pl: 4}}
                       onClick={()=>{
                         handleClose()
-                        navigate("/page/text")
+                        ClickWriteAStory()
                         }}>
                       <CreateIcon/>
                     </ListItemButton>
@@ -430,7 +467,7 @@ function NavbarContainer(props){
             <Box style={{display: currentProfile ? "":"none"}} sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={`${currentProfile.username}`} src={currentProfile.profilePicture} />
+                  <Avatar alt={`${currentProfile.username}`} src={selectedImage} />
                 </IconButton>
               </Tooltip>
               <Menu

@@ -1,196 +1,84 @@
-import RichEditor from "../../components/RichEditor"
+import RichEditor from "../../components/page/RichEditor"
 import "../../styles/Editor.css"
 import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import debounce from "../../core/debounce"
+import { useParams,useNavigate } from "react-router-dom"
+import menu from "../../images/icons/menu.svg"
 import {  setHtmlContent,
-          createPage, 
-          updatePage,
-          saveRolesForPage, 
-          fetchEditingPage,
+      
+       
           deletePage, 
-          setPagesToBeAdded, 
-          setEditingPage, 
-          setPageInView } from "../../actions/PageActions"
-import React,{ useEffect, useState } from "react"
-import history from "../../history"
-import {  useParams,
-          useNavigate } from "react-router-dom"
-import {  Button,
-          FormControlLabel,
-          Checkbox, 
-          TextField, 
-         
-          FormGroup, 
-          MenuItem,
-          IconButton} from "@mui/material"
-
+          setEditingPage,
+          } from "../../actions/PageActions"
+import React,{ useEffect, useLayoutEffect, useState } from "react"
+import {  Button,} from "@mui/material"
+import { useMediaQuery } from "react-responsive"
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../../core/constants"
-import {Menu } from "@mui/joy"
-import theme from "../../theme"
-import checkResult from "../../core/checkResult"
-import RoleList from "../../components/RoleList"
-import { Add, Visibility } from "@mui/icons-material"
-import { Dropdown } from "react-bootstrap"
-import { RoleType } from "../../core/constants"
 import Paths from "../../core/paths"
 import PicturePageForm from "../../components/PicturePageForm"
-import { checkmarkStyle } from '../../styles/styles'
-import LinkPreview from "../../components/LinkPreview"
-import HashtagTextfield from "../../components/HashtagTextfield"
-function EditorContainer({currentProfile}){
+import { getStory, updateStory } from "../../actions/StoryActions"
+import { debounce } from "lodash"
+import ErrorBoundary from "../../ErrorBoundary"
+import HashtagForm from "../../components/hashtag/HashtagForm"
+import RoleForm from "../../components/role/RoleForm"
+function EditorContainer(props){
+        const pageInView = useSelector(state=>state.pages.pageInView)
+       
         const pathParams = useParams()
         const dispatch = useDispatch()
+
+        const md = useMediaQuery({ query: '(min-width:768px)'})
         const [title,setTitle] = useState("")
         const navigate = useNavigate()
-        const [privacy,setPrivacy] = useState(false)
+        const [isSaved,setIsSaved]=useState(true)
+       const [openHashtag,setOpenHashtag]=useState(false)
+       const [openRoles,setOpenRoles]=useState(false)
+        const [privacy,setPrivacy] = useState(true)
+
         const [commentable,setCommentable] = useState(true)
-        const [newRoles,setNewRoles]=useState([])
-        const [ePage,setEPage]=useState(null)
-        const editingPage = useSelector(state=>state.pages.editingPage)
+
         const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
-
-        useEffect(()=>{
-            const {id }= pathParams
-        
-            if(id && ePage==null){
-                const parm = {id:id}
-                dispatch(fetchEditingPage(parm)).then(result=>checkResult(result,payload=>{
-                  const {page} = payload
-                  setPageInfo(page)
-                },err=>{
-
-                }))
-              
-            }else if(ePage!=null && ePage.id==id){
-             setPageInfo(ePage)
-            }else{ 
-              dispatch(setHtmlContent(""))
-            }
-        },[])
-
-    const setPageInfo =(page)=>{
-      setEPage(page)
+        const {id }= pathParams
+ const setPageInfo =(page)=>{
       dispatch(setEditingPage({page}))
       setTitle(page.title)
       setPrivacy(page.privacy)
       setCommentable(page.commentable)
       dispatch(setHtmlContent(page.data))
     }
-    const saveNewPage=(onEnd)=>{ 
-      let href = window.location.href.split("/")
-      let type = href[href.length-1]
-      if(type=="link"){
-        type = PageType.link
-      }else if(type=="text"){
-        type = PageType.text
-      }else if(type=="image"){
-        type = PageType.image
-      }else{
-        type = PageType.text
-      }
-        const params ={
-          profileId: currentProfile.id,
-          data: htmlContent,
-          title: title,
-          privacy: privacy,
-          approvalScore:0,
-          commentable: commentable,
-          readers:[],
-          commenters:[],
-          editors:[],
-          writers:[],
-          type: type
-    }
-    dispatch(createPage(params)).then((result)=>{
-        checkResult(result,payload=>{
-            const {page} = payload
-          
-            setPageInfo(page)
-            if(onEnd){
-              onEnd(page)
-            }
-          },err=>{
-            console.error(err.message)
-          }
-        )})
+useLayoutEffect(()=>{
+  if(pageInView){
+    setPageInfo(pageInView)
+  }else{
+    dispatch(getStory(pathParams))
   }
-  const updatePageContent = (onEnd)=>{
-    
-    let params = { page: ePage,
-    title: title,
-    data: htmlContent,
-    privacy:privacy,
-    commentable:commentable,
-  
-  }
-  if(ePage.type === PageType.picture){
-    params = { page: ePage,
-      title: title,
-      data: editingPage.data,
-      privacy:privacy,
-      commentable:commentable,
-    
-    }
-  }
-  dispatch(updatePage(params)).then(result=>{
-    checkResult(result,(payload)=>{
-      const {page}=payload
-      const readers = newRoles.filter(role => role.role == RoleType.reader).map(role=>role.profile.userId)
-      const commenters = newRoles.filter(role => role.role == RoleType.commenter).map(role=>role.profile.userId)
-      const editors = newRoles.filter(role => role.role == RoleType.editor).map(role=>role.profile.userId)
-      const writers = newRoles.filter(role => role.role == RoleType.writer).map(role=>role.profile.userId)
-      let params ={
-        page:page,
-        readers,
-        commenters,
-        editors,
-        writers
-      }
-      dispatch(saveRolesForPage(params))
-      .then(result=>checkResult(result,payload=>{
-          const {page}=payload
-          dispatch(setEditingPage({page}))
-          setPageInfo(page)
-          window.alert("Saved")
-          if(onEnd){
-          onEnd(page)
-        }
-        
 
-      },err=>{
-          window.alert("Error updating roles")
-      }))
-    },(err)=>{
-        window.alert("Error updating pages")
-    })
-  })
-}
-    const onSavePress = (onEnd)=>{
-          if(ePage==null){
-            saveNewPage(onEnd)
-          }else{
-            updatePageContent(onEnd)
-          }
-    }
+},[pageInView])
+    useLayoutEffect(()=>{ 
+      if(htmlContent.length<0 && title.length<0){
+        let result =window.confirm("Story Will Be deleted")
+        if(result){
+          dispatch(deletePage(pathParams))
+        }
+      }
+    },[])
+
+   
       const [open, setOpen] = useState(false);
 
-      const handleClickOpen = () => {
-        setOpen(true);
-      };
     
       const handleClose = () => {
         setOpen(false);
       };
       const handleDelete =()=>{
           handleClose()
-          if(ePage){
-          const params = {page:ePage}
+          if(pageInView){
+          const params = {page:pageInView}
           dispatch(deletePage(params)).then(()=>{
             navigate("/profile/home")
           })
@@ -199,25 +87,31 @@ function EditorContainer({currentProfile}){
     
     
   
-        
-    
+     
+  
+ 
       const contentDiv = ()=>{
-        if(currentProfile){
-          if(ePage){
-              if(ePage.type===PageType.text){
-                  return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)
-              }else if(ePage.type===PageType.picture){
+          if(pageInView){
+              if(pageInView.type===PageType.text){
+                  return (<div id="max-w-[100vw]">
+                    <RichEditor title={title}
+                                privacy={privacy} 
+                                commentable={commentable} 
+                                setIsSaved={setIsSaved} 
+                                initialContent={pageInView.data}/>
+                                </div>)
+              }else if(pageInView.type===PageType.picture){
                 
                   return (<div  className="image">
 
-                    <img src={htmlContent} alt={ePage.data}/>
+                    <img src={htmlContent} alt={pageInView.data}/>
                     </div>)
-              }else if(ePage.type === PageType.link){
+              }else if(pageInView.type === PageType.link){
                   return(
                       <PicturePageForm />
                   )
               }else{
-                  return (<div id="editor"><RichEditor initialContent={htmlContent}/></div>)}
+                  return (<div className="max-w-[100vw]"><RichEditor initialContent={htmlContent}/></div>)}
             }else{
 
               
@@ -226,134 +120,104 @@ function EditorContainer({currentProfile}){
             if(last.toUpperCase()=="image".toUpperCase()||last.toUpperCase()=="link".toUpperCase()){
               return (<PicturePageForm />)
             }else{
-              return(<div id="editor"><RichEditor initialContent={""}/></div>)
+              return(<div id=""><RichEditor setIsSaved={setIsSaved} initialContent={""}/></div>)
             }
-          }
+          
             
           }
         }
-      const [anchorEl,setAnchorEl]=useState(null)
-      const addBtn = ()=>{
-        return editingPage?
-                <Dropdown>
-                  <IconButton
-                    onClick={(e)=>setAnchorEl(e.currentTarget)}
-                  >  <Add/>
-                  </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                >
-              <MenuItem onClick={()=>{
-                dispatch(setPagesToBeAdded({pageList:[ePage]}))
-                navigate("/book/new")
-              
-              }}>
-                Add to Book
-                </MenuItem>
-              <MenuItem onClick={()=>{
-                dispatch(setPagesToBeAdded({pageList:[ePage]}))
-                navigate(`/library/new`)
-              }
-              }> 
-              Add to Library
-          </MenuItem>
-      
-       
   
+        const handleClickAddToCollection=()=>{
+        
+          navigate(Paths.addStoryToCollection.createRoute(id))
+        }
+        const handlePostPublicly=()=>{
+          
+        }
+        const handleTitle = (e)=>{
+         setTitle(e.target.value)
+         debounce(()=>{
 
-</Menu>
-</Dropdown> 
-            :<div></div>
-          }
-const createForm = ()=>(<FormGroup  style={{marginBottom:"2em"}}
-      className="create-form" >
-<TextField 
-onChange={(e)=>setTitle(e.target.value)}  
-value={title} 
-label="Title"/>
-<FormControlLabel 
-control={<Checkbox 
-style={checkmarkStyle}
-checked={!privacy} 
-onChange={(e)=>setPrivacy(!e.target.checked)}
-/>} label={!privacy?"Public":"Draft"} />
-
-<FormControlLabel 
-control={<Checkbox style={checkmarkStyle}checked={commentable} onChange={(e)=>{
-setCommentable(e.target.checked)}}/>} label={commentable?"Commenting is on":"Commenting is off"} />
-
-
-<Button style={{backgroundColor:theme.palette.secondary.main,
-            color:theme.palette.secondary.contrastText}}
-    onClick={(e)=>onSavePress((page)=>{
-
-history.replace(`/page/${ePage.id}/edit`)
-})} className="">
-Save
-</Button>
-<div className="button-row">
-{addBtn()}
-{editingPage?<IconButton onClick={()=>{
-dispatch(setPageInView({page:editingPage}))
-navigate(Paths.page.createRoute(editingPage.id))
-}}><Visibility/></IconButton>:(<div></div>)}
-
-</div>
-
-<div id="post-button-row">
-<Button
-onClick={()=>debounce(onSavePress((page)=>{
-setPrivacy(false)
-dispatch(setPageInView({page:page}))
-navigate(Paths.page.createRoute(page.id))
-}),10)}
-style={{backgroundColor:theme.palette.secondary.main,
-    color:theme.palette.primary.contrastText,
-    width: "100%",
-    marginTop: "2em",
-    padding:"2em",
-    
-  }
-}
->Post</Button>
-</div>
-{deleteDiv}
-</FormGroup>)
-      let deleteDiv = (<div>
-        </div>) 
-      if(editingPage){ 
-       deleteDiv =(<Button variant="outlined"
-       onClick={handleClickOpen}
-        style={{
-          marginTop: "4em",
-          width: "10em",
-          color: theme.palette.error.contrastText,
-          backgroundColor:theme.palette.error.dark}}>
-          Delete
-      </Button>)
-      }
-   
+       
+          let params = { page:{id},
+          title: e.target.value,
+          data: htmlContent,
+          privacy:privacy,
+          commentable:commentable,  
+          type:"html"
+        }
+          setIsSaved(false)
+          dispatch(updateStory(params)).then(res=>{
+            setIsSaved(true)
+          })
+        },1)()
+        }
         return(
-          <div className="two-panel"> 
-              <div className="left-bar" >   
-                {contentDiv()}
-                <div style={{height:"100%"}}>
+          <div className="max-w-[100vw] sm:max-w-[45rem] mx-auto"> 
+       <div>
+                <div className=" rounded-lg sm:my-4  mx-auto ">
+                  <div className="bg-green-600  flex flex-row sm:rounded-t-lg border border-white   ">
+                      <div 
+                    className=" flex-1 text-left border-white border-r-2  "
+                    >
+                     
+                      {isSaved?<h6 className=" text-left mx-1 text-sm text-white ">Saved</h6>:
+                    <h6 className="text-left mx-1 text-sm text-white">Draft</h6>}
+                    <input type="text " className="bg-transparent p-2  bg-green-600 w-full text-xl font-bold" value={title} onChange={(e)=>handleTitle(e)}placeholder="Untitled"/>
 
+                    </div>
+
+                    <div className="w-fit">  
+                    {
+                    <div className="dropdown dropdown-bottom dropdown-end">
+                    <div tabIndex={0} role="button" ><img className="w-12 h-12  rounded-lg mt-1 mx-auto" src={menu}/></div>
+                    <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-60 p-2 shadow">
+                      <li className="text-green-600"
+                      onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
+                      <li className="text-green-600"> Post Public</li>
+                      <li className="text-green-600" onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
+                      <li className="text-green-600" onClick={()=>setOpenRoles(!openRoles)}>Share</li>
+                    </ul>
+                  </div>}
+                    
                 </div>
-              </div>
-              <div className="right-bar">
-               {createForm()} 
-               
-                    {ePage?<RoleList
-                                item={ePage} 
-                                type={"page"} 
-                                getRoles={roles=>{
-                                  setNewRoles(roles)
-                                      }
-                                    } />
-                                :(<div></div>)}
+                <div>
+                  
+                </div>
+                  </div>
+                  {openHashtag?
+                  <HashtagForm/>:null}
+                  </div>
+                  <ErrorBoundary>
+                {contentDiv()}
+                </ErrorBoundary>
+                </div>
+              
+
+             
+           
+           
+
                     <div>
+                    <Dialog
+                    fullScreen={!md}
+        open={openRoles}
+        onClose={()=>{
+          setOpenRoles(false)
+        }}
+        className=""
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+          <div>
+            <RoleForm book={pageInView}
+            onClose={()=>{
+              setOpenRoles(false)
+            }}/>
+          </div>
+      
+  
+      </Dialog>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -377,8 +241,10 @@ style={{backgroundColor:theme.palette.secondary.main,
       </Dialog>
     </div>
       </div>
-    </div>
+ 
   )     
 }
 
 export default EditorContainer
+
+

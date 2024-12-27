@@ -1,19 +1,14 @@
-.dashboard-item {
-  background-color: white;
-}
-.content-item{
-  box-shadow: var(--some-box-shadow);
+
+
+.page-text  {
+  color: #1e293b ;
 }
 @media (min-width:800px) {
 
 .content-item button {
-  color:white;
-  background-color: black;
   padding: 10px 20px;
   height: 100%;
   border: none;
-
- 
 }
 
 .content-item .text{
@@ -44,12 +39,9 @@
   border-top-left-radius: 8px;
   
 }
+.page-text span{font-size: 1.2rem !important;}
 
-.dashboard-item img{ 
-    width: 50em;    
-    height:auto;
-    margin: 0 auto;
-  } 
+  
 
  .dashboard-header{
   border-bottom: 1px solid grey;
@@ -61,6 +53,7 @@
 .dashboard-header .titles {
   display: flex;
   flex-direction: row;
+  color:black;
 }
 
 .content-item img{ 
@@ -88,6 +81,8 @@
   overflow: scroll;
   width: 70%;
 }}
+
+
 @media (max-width: 800px) {
   /* On screens with a width of 768px or more (desktop), set the width to 50% */
 

@@ -105,12 +105,12 @@
 #forums-list #page-list{
   margin: 1em 1em;
 }
-#forums-list #book-list{
+/* #forums-list #book-list{
   margin: 1em 1em;
   height: 100%;
 
-}
-#forums-list #book-list .book-list-item{
+} */
+/* #forums-list #book-list .book-list-item{
   color: #02120A;
   padding: 1em;
   margin: 1em;
@@ -121,7 +121,7 @@
   border-radius: 8px;
   box-shadow: var(--some-box-shadow);
   background-image: linear-gradient(0.25turn,#F6F6F3,transparent);
-}
+} */
 
 
 
@@ -272,7 +272,7 @@
     height: fit-content;
     overflow: hidden;
   }
-  #forums-list #book-list .book-list-item{
+  /* #forums-list #book-list .book-list-item{
     color: #02120A;
     padding: 1em;
     margin: 1em;
@@ -280,17 +280,17 @@
     box-shadow: var(--some-box-shadow);
     margin-bottom: 1.5em;
     border-radius: 24px;
-  }
-  .book-list-item .title{
+  } */
+  /* .book-list-item .title{
     padding-left: .5em;
-  }
-  .book-list-item .purpose{
+  } */
+  /* .book-list-item .purpose{
     text-overflow: ellipsis;
     padding-left: .5em;
     padding-right: .5em;
     max-height: 6.2em;
     overflow: hidden;
-  }
+  } */
   .item-row{
     justify-content: space-between;
     padding:0 1em;

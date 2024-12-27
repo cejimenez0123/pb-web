@@ -1,29 +1,27 @@
-import { Navigate,useNavigate } from "react-router-dom";
+import { Navigate,useNavigate,useLocation } from "react-router-dom";
 import {useSelector} from "react-redux"
 import PageSkeleton from "./components/PageSkeleton";
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
+import { useContext } from "react";
+import Context from "./context";
 const LoggedRoute = ({ loggedOut, children }) => {
+  
   const navigate = useNavigate()
-  useEffect(() => {
-    if (loggedOut && localStorage.getItem('loggedIn') === null) {
-        // console.log('This is the initial load');
-    } else {
-        if(localStorage.getItem('loggedIn') === true){
-          
-           navigateBack()
-        }
-    }
-  }, []);
-  const navigateBack = ()=>{
-    navigate(-1)
-  }
+  const location = useLocation();
+  const currentProfile = useSelector(state=>state.users.currentProfile)
   const loading = useSelector(state=>state.users.loading)
-  if(loading){
-    return(<div>
-      <PageSkeleton/>
-    </div>)
-  }else{
-    return loggedOut? children : navigateBack();
-  }};
+  const [formerPage,setFormerPage]=useContext(Context)
+  useEffect(()=>{
+   
+    if(currentProfile && !loading){     
+      if(formerPage){
+        navigate(formerPage)
+      }
+    }
+  },[currentProfile,location,navigate])
+
+
+  return children
+
+};
   export default LoggedRoute

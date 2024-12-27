@@ -1,5 +1,7 @@
 import { createAsyncThunk ,createAction} from "@reduxjs/toolkit"
 import Book from "../domain/models/book"
+import { unpackPageDoc } from "./PageActions"
+import {unpackLibraryDoc} from "./LibraryActions"
 import {  where,
           query,
           and,
@@ -15,6 +17,8 @@ import {  where,
           updateDoc} from "firebase/firestore"
 import { db,auth,client} from "../core/di"
 import Contributors from "../domain/models/contributor"
+import axios from "axios"
+import collectionRepo from "../data/collectionRepo"
 
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
@@ -44,13 +48,11 @@ const getPublicBooks = createAsyncThunk(
 )
 
 const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thunkApi){
-    let id = params["id"]
-    try {
-      const docSnap = await getDoc(doc(db, "book", id))
-      const book = unpackBookDoc(docSnap)
-    
+    try{
+      const data = await collectionRepo.fetchCollection(params)
+    console.log(data)
     return {
-      book
+      book:data.collection
     }
     }catch(e){
       return {
@@ -64,53 +66,10 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     async (params,thunkApi) => {
       try {
         const profile = params["profile"]
-        const ref = collection(db, "book")
-        let bookList = []
-        let queryReq = query(ref,and(where("profileId","==",profile.id),where("privacy","==",false)))
-        let queries = [queryReq]
-        if(auth.currentUser){
-          if(auth.currentUser.uid == profile.userId){
-            queryReq=  query(ref,where("profileId","==",profile.id))
-            queries = [queryReq]
+        const data = await collectionRepo.getProfileBooks({profile})
 
-          }else{
-            const queryWriter = query(
-              ref,
-                  where('profileId', '==', profile.id),
-                  where('writers', 'array-contains', auth.currentUser.uid)
-                );
-                const queryEditor = query(
-                  ref,
-                      where('profileId', '==', profile.id),
-                      where('editors', 'array-contains', auth.currentUser.uid)
-                    );
-                const queryCommenter = query(
-                      ref,
-                          where('profileId', '==', profile.id),
-                          where('commenters', 'array-contains', auth.currentUser.uid)
-                        );
-                const queryReader = query(
-                          ref,
-                              where('profileId', '==', profile.id),
-                              where('readers', 'array-contains', auth.currentUser.uid)
-                            );
-              queries= [ ...queries,
-                            queryWriter,
-                            queryEditor,
-                            queryCommenter,
-                            queryReader]
-              
-        }
-      }
-        let promises = queries.map(query=>{
-          return getDocs(query)
-        })
-        let snapshots = await Promise.all(promises)
-        const docs = snapshots.map(snapshot=>snapshot.docs).flat()
-        bookList = docs.map(doc=>unpackBookDoc(doc))
-    
             return {
-                bookList
+                bookList:data.collections
             }
           }catch(err){
     
@@ -124,8 +83,7 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
   const createBook = createAsyncThunk("books/createBook", async function(params,thunkApi){
 
     try{
-        const ref = collection(db,"book")
-        const id = doc(ref).id
+       
         const {
             title,
             purpose,
@@ -138,43 +96,16 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
             readers,
             writers,
           }=params
-            const created = Timestamp.now()
-            const updatedAt = created
-            await setDoc(doc(db,"book", id), 
-                        { 
-                            id:id,
-                            title:title,
-                            purpose:purpose,
-                            profileId:profileId,
-                            pageIdList:pageIdList,
-                            privacy:privacy,
-                            writingIsOpen:writingIsOpen,
-                            commenters,
-                            editors,
-                            readers,
-                            writers,
-                            updatedAt: created,
-                            created: created
-                        })
-          const contributors= new Contributors(commenters,readers,writers,editors)
-          if(!privacy){
-            client.initIndex("book").saveObject(
-              {objectID:id,titlee:title,type:"book"}).wait()
-          }            
-   const book = new Book(
-    id,
-    purpose,
-    title,
-    profileId,
-    pageIdList,
-    privacy,
-    writingIsOpen,
-    contributors,
-    updatedAt,
-    created,
-)
+          const data = await collectionRepo.createCollection({name:title,
+            profileId:profileId, purpose:purpose,privacy:privacy,writingIsOpen:writingIsOpen
+          })
+if(!privacy){
+            client.initIndex("collection").saveObject(
+              {objectID:data.id,title:params.title,type:"collection"}).wait()
+          }      
 
-    return { book }
+
+    return { book:data.book }
     }catch(error){
   
       return {
@@ -316,33 +247,12 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
       
   try{
     const { book,title,purpose,pageIdList,privacy,writingIsOpen } = params
-    let updatedAt =Timestamp.now()
-      let ref = doc(db,"book",book.id)
-      await updateDoc(ref,{
-        title:title,
-        pageIdList:pageIdList,
-        privacy: privacy,
-        writingIsOpen: writingIsOpen,
-        purpose: purpose,
-        updatedAt: updatedAt
-      })
-      if(!privacy){
-        client.initIndex("book").partialUpdateObject({objectID:book.id,title},{createIfNotExists:true}).wait()
-      }
-      const contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
-            
-      let newBook = new Book( book.id,
-                              purpose,
-                              title,
-                              book.profileId,
-                              pageIdList,
-                              privacy,
-                              writingIsOpen,
-                              contributors,
-                              updatedAt,
-                              book.created)
+    const data = await collectionRepo.updateCollection({id:book.id,title:title,purpose:purpose,
+      isOpenCollaboration:writingIsOpen,isPrivate:privacy
+    })
+     
       return {
-        book: newBook
+        book: data.collection
       }
     }catch(e){
     return {error: new Error("Error: UDATE BOOK -" + e.message)}
@@ -351,10 +261,10 @@ const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=
 const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>{
   try{
     const {book}=params
-    await deleteDoc(doc(db, "book", book.id));
+    let data = await collectionRepo.deleteCollection({id:book.id})
     client.initIndex("book").deleteObject(book.id).wait()
     return {
-      book:book
+      book:data
     }
   }catch(e){
     return {error: new Error("Error: DELETE BOOK"+e.message)};
@@ -362,25 +272,28 @@ const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>
 })
 const updateBookContent = createAsyncThunk("books/updateBookContent", async (params,thunkApi)=>{
   try {
+
     const {book,pageIdList} = params
-    let ref = doc(db,'book',book.id)
-    pageIdList.forEach(pageId => {
-     updateDoc(ref,{ pageIdList:arrayUnion(pageId)
-    })})
-   let contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
-    let newBook = new Book(book.id,
-                        book.purpose,
-                        book.title,
-                        book.profileId,
-                        pageIdList,
-                        book.privacy,
-                        book.writingIsOpen,
-                        contributors,
-                        book.updatedAt,
-                        book.created
-                        )
+
+    let data = collectionRepo.addStoriesToCollection({collection:book,storyIdList:pageIdList})
+  //   let ref = doc(db,'book',book.id)
+  //   pageIdList.forEach(pageId => {
+  //    updateDoc(ref,{ pageIdList:arrayUnion(pageId)
+  //   })})
+  //  let contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
+  //   let newBook = new Book(book.id,
+  //                       book.purpose,
+  //                       book.title,
+  //                       book.profileId,
+  //                       pageIdList,
+  //                       book.privacy,
+  //                       book.writingIsOpen,
+  //                       contributors,
+  //                       book.updatedAt,
+  //                       book.created
+  //                       )
     return {
-      book:newBook
+      book:data.collection
     } 
   }catch(e){
     return {error: new Error("Error: Update Book Content"+e.message)};
@@ -518,6 +431,7 @@ function unpackBookDoc(doc){
             fetchArrayOfBooksAppened,
             saveRolesForBook,
             setBookInView,
+       
             deleteBook,clearBooksInView,
             updateBook,
             setBooksToBeAdded,

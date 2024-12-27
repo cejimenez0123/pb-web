@@ -1,45 +1,40 @@
-import { Navigate,useNavigate} from 'react-router-dom';
+import {useNavigate,useLocation} from 'react-router-dom';
 import {useSelector}  from "react-redux"
-import PageSkeleton from './components/PageSkeleton';
+import Paths from './core/paths';
+import { useDispatch } from 'react-redux';
+import {  useLayoutEffect, useState } from 'react';
+import { getCurrentProfile } from './actions/UserActions';
+
 const PrivateRoute = ({loggedIn, children }) => {
-    const loading = useSelector(state=>state.users.loading)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-   const navigate = useNavigate()
-    // useEffect(() => {
-    //   if (loggedIn && localStorage.getItem('loggedIn') === null) {
-    //       // console.log('This is the initial load');
-    //   } else {
-    //       if(localStorage.getItem('loggedIn') === true){
-            
-    //          navigateBack()
-    //       }
-    //   }
-    // }, []);
-    const navigateBack = ()=>{
-      navigate(-1)
-    }
-    const firstTime = ()=>{
-      if (loggedIn && localStorage.getItem('loggedIn') === null) {
-        if((!currentProfile&&!loggedIn)|| localStorage.getItem("loggedIn")===false){
-          return <Navigate to="/login" />
+    const loading = useSelector(state=>state.users.loading)
+    const location = useLocation();
+    const [formerPage,setFormerPage]=useState("")
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    useLayoutEffect(() => {
+      setFormerPage(location.pathname)
+        if(!currentProfile){
+          navigate(Paths.login())
         }else{
-          return children
-        }
-    } else {
-        if(localStorage.getItem('loggedIn') === true){
-          
-           navigateBack()
-        }
+          if(loading){
+            navigate(formerPage)
+          }
+        
+        
+      }
+    }, [currentProfile, navigate, location]);
+    useLayoutEffect(()=>{
+      if(!currentProfile){
+        dispatch(getCurrentProfile())
+      }
+    },[])
+    if(!currentProfile){
+      return <div style={{color:"white"}}>Loading...</div>
     }
-   
-    }
-    if(loading){
-      return(<div>
-        <PageSkeleton/>
-      </div>)
-    }else{
-      return loggedIn? children : firstTime()
-    }
+
+      
+    return children
     
   };
 export default PrivateRoute;

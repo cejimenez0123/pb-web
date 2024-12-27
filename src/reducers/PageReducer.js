@@ -1,17 +1,16 @@
 
-import {  getPublicPages ,
+import { 
           setHtmlContent,
           getProfilePages,
-          createPage,
+    
           setPageInView,
           fetchPage,
           fetchArrayOfPages,
           setPagesToBeAdded,
-          fetchArrayOfPagesAppened,
           clearPagesInView,
           fetchEditingPage,
           deletePage,
-          fetchCommentsOfPage,
+         
           deleteComment,
           clearEditingPage,
           appendComment,
@@ -19,9 +18,13 @@ import {  getPublicPages ,
           fetchAppendPagesOfProfile,
           saveRolesForPage,
           updatePage,
-          setEditingPage
+          setEditingPage,
+          getPublicStories,
+       
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
+import { getMyStories, getStory,createStory, updateStory, deleteStory, getCollectionStoriesProtected} from "../actions/StoryActions"
+import { getProtectCollectionStories, getPublicCollectionStories } from "../actions/CollectionActions"
 
 const initialState = {pagesInView:[],
                       editingPage:null,
@@ -36,17 +39,54 @@ const pageSlice = createSlice({
     name: 'pages',
     initialState,
     extraReducers(builder) {
-        builder
-        .addCase(getPublicPages.pending,(state) => {
-        state.loading = true
+        builder.addCase(getPublicCollectionStories.pending,(state)=>{
+          state.loading=true
+        }).addCase(getPublicCollectionStories.fulfilled,(state,{payload})=>{
+          state.loading=false
+          state.pagesInView = payload.list
+        }).addCase(getCollectionStoriesProtected.fulfilled,(state,{payload})=>{
+          const {list}=payload
+         
+          state.loading = false
+          state.pagesInView =  list.map(joint=>joint.story)
+        }).addCase(getCollectionStoriesProtected.pending,(state)=>{
+          state.loading=true
+        
+        }).addCase(updateStory.rejected,(state,{payload})=>{
+            state.loading = false
+            state.error = payload.message
+        }).addCase(updateStory.fulfilled,(state,{payload})=>{
+          state.pageInView = payload.story
+          state.loading = false
+        }).addCase(updateStory.pending,(state)=>{
+          state.loading=true
+        })
+        .addCase(getPublicStories.pending,(state)=>{
+          state.loading = true
+        }).addCase(getStory.rejected,(state)=>{
+          state.loading = false
+          state.error ="  Failed to Fetch story"
+        }).addCase(getStory.fulfilled,(state,{payload})=>{
+          state.pageInView = payload.story
+        }).addCase(getMyStories.fulfilled,(state,{payload})=>{
+          state.pagesInView = payload.pageList
+          state.loading=false
+        }).addCase(getMyStories.pending,(state)=>{
+          state.loading=true
+        }).addCase(getMyStories.rejected,(state,{payload})=>{
+          state.error= payload.error
+          state.loading = false
+        }).addCase(getPublicStories.fulfilled,(state,{payload})=>{
+          state.loading = false
+          state.pagesInView = payload.stories
+        }   
+        )
+      .addCase(getPublicStories.rejected,(state,{payload})=>{
+        state.loading = false
+        state.error = payload.error
       })
-      .addCase(getPublicPages.fulfilled, (state, { payload }) => {
-        state.loading = false
-        const list=  payload.pageList
-        state.pagesInView = list
-      }).addCase(getPublicPages.rejected, (state) => {
-        state.loading = false
-      }).addCase(setHtmlContent,(state,{payload})=>{
+   
+      .addCase(setHtmlContent,(state,{payload})=>{
         state.editorHtmlContent = payload.html
       }).addCase(getProfilePages.pending,(state)=>{
         state.loading = true
@@ -67,19 +107,23 @@ const pageSlice = createSlice({
       ).addCase(deletePage.fulfilled,(state,{payload})=>{
         let filtered = state.pagesInView.filter(page => page.id !== payload.page.id)
         state.pagesInView = filtered
-      }).addCase(createPage.rejected,(state,{payload})=>{
+      })
+      .addCase(createStory.rejected,(state,{payload})=>{
+        state.loading=false
         state.error = payload.error
-        state.loading = false
-
-      }).addCase(createPage.pending,(state)=>{
-
+      })
+      .addCase(createStory.pending,(state)=>{
         state.loading = true
+      })
+      .addCase(createStory.fulfilled,(state,{payload})=>{
+        let {story}=payload
+  
+        state.loading = false
+        state.pageInView = story
+        state.editorHtmlContent = story.data
+      })
 
-      }).addCase(createPage.fulfilled,(state,{payload})=>{
-        state.loading =false
-        state.editingPage = payload.page
-
-      }).addCase(clearEditingPage,(state)=>{
+      .addCase(clearEditingPage,(state)=>{
         state.editingPage =null
       }).addCase(setPageInView,(state,{payload})=>{
      
@@ -108,30 +152,16 @@ const pageSlice = createSlice({
           state.loading = true
       }).addCase(setPagesToBeAdded.type,(state,{payload})=>{
         state.pagesToBeAdded = payload
-      }).addCase(fetchArrayOfPagesAppened.fulfilled,(state,{payload})=>{
-        state.pagesInView = [...state.pagesInView,...payload.pageList]
-        state.loading = false
-      }).addCase(fetchArrayOfPagesAppened.rejected,(state,{payload})=>{
-      state.error = payload.error
-      state.loading = false
-    }).addCase(clearPagesInView.type,(state)=>{
+      }).addCase(deleteStory.rejected,(state,{payload})=>{
+        state.error = payload.error
+      }).addCase(deleteStory.fulfilled,(state,{payload})=>{
+        state.pageInView = null
+      }).addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []
     }).addCase(fetchEditingPage.fulfilled,(state,{payload})=>{
       if(payload.page){
       state.editingPage = payload.page
       }
-    }).addCase(fetchCommentsOfPage.pending,(state,{payload})=>{
-      state.loading = true
-    }).addCase(fetchCommentsOfPage.rejected,(state,{payload})=>{
-        state.error = payload.error
-        state.loading =false
-    }).addCase(fetchCommentsOfPage.fulfilled,(state,{payload})=>{
-      if(Array.isArray(payload.comments)){
-        state.commentsInView = payload.comments
-      }else{
-        state.error = payload.error
-      }
-        state.loading =false
     }).addCase(deleteComment.rejected,(state,{payload})=>{
       state.error = payload.error
     }).addCase(deleteComment.fulfilled,(state,{payload})=>{

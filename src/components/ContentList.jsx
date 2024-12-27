@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { getProfilePages } from '../actions/PageActions';
 import { getProfileBooks } from '../actions/BookActions';
 import { getProfileLibraries } from '../actions/LibraryActions';
-import PageListItem from './PageListItem';
+import PageListItem from './page/PageIndexItem';
 import "../styles/MyProfile.css"
 import Book from '../domain/models/book'
 import ListItem from './ListItem';
@@ -75,6 +75,7 @@ export default function ContentList({profile}){
             dispatch(getProfilePages(params)).then((result) => {
                 checkResult(result,payload=>{
                 const {pageList}=payload
+                console.log(pageList)
                 setPages(pageList)
                 setHasMorePages(false)
             },err=>{
@@ -178,7 +179,7 @@ export default function ContentList({profile}){
                         return (<div key={library.id}>
                             <ListItem   ownerProfileId={library.profileId}
                                         key={library.id}
-                                        title={library.name}
+                                        title={library.title}
                                         type={"library"}
                                         id={library.id}
                                         item={library}/>
@@ -202,28 +203,28 @@ export default function ContentList({profile}){
         
         if(sortTime){
             let newPages = [...pages].sort((a,b)=>{
-                return b.created - a.created
+                return new Date(b.created) - new Date(a.created)
             })
             setPages(newPages);
             let newBooks = [...books].sort((a,b)=>{
-                return b.updatedAt - a.updatedAt
+                return new Date(b.updated) - new Date(a.updated)
             })
             setBooks(newBooks)
             let newLibraries = [...libraries].sort((a,b)=>{
-                return b.updatedAt - a.updatedAt
+                return new Date(b.updated) - new Date(a.updated)
             })
             setLibraries(newLibraries)
         }else{
             let newPages = [...pages].sort((a,b)=>{
-                return a.created - b.created
+                return new Date(a.created) - new Date(b.created)
             })
             setPages(newPages);
             let newBooks = [...books].sort((a,b)=>{
-                return a.updatedAt - b.updatedAt
+                return new Date(a.updated) - new Date(b.updated)
             })
             setBooks(newBooks)
             let newLibraries = [...libraries].sort((a,b)=>{
-                return a.updatedAt - b.updatedAt
+                return new Date(a.updated) - new Date(b.updated)
             })
             setLibraries(newLibraries)
         }
@@ -252,10 +253,10 @@ export default function ContentList({profile}){
         })
         setBooks(newBooks);
         let newLibraries = [...libraries].sort((a,b)=>{
-            if (a.name < b.name) {
+            if (a.title < b.title) {
                 return -1;
               }
-              if (a.name > b.name) {
+              if (a.title > b.title) {
                 return 1;
               }
               return 0;
@@ -283,10 +284,10 @@ export default function ContentList({profile}){
             })
             setBooks(newBooks);
             let newLibraries = [...libraries].sort((a,b)=>{
-                if (b.name < a.name) {
+                if (b.title < a.title) {
                     return -1;
                   }
-                  if (b.name > a.name) {
+                  if (b.title > a.title) {
                     return 1;
                   }
                   return 0;

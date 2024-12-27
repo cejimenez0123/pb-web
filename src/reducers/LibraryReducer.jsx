@@ -15,7 +15,7 @@ import {    getProfileLibraries,
             deleteLibrary} from "../actions/LibraryActions"
 import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
-    librariesInView:[Library],
+    librariesInView:[],
     loading:false,
     error:"",
     bookmarkLibrary: null,
@@ -78,11 +78,11 @@ builder
     }).addCase(getPublicLibraries.pending,(state)=>{
         state.pending = true
     }).addCase(getPublicLibraries.fulfilled,(state,{payload})=>{
-        state.librariesInView = payload.libraryList
+        state.librariesInView = payload.libraries
         state.loading = false
     }).addCase(getPublicLibraries.rejected,(state,{payload})=>{
         state.loading = false
-        state.error = payload.error
+        state.error = payload
     }).addCase(fetchArrayOfLibraries.rejected,(state,{payload})=>{
         state.error = payload.error
         state.loading = false

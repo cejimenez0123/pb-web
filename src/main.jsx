@@ -8,15 +8,20 @@ import {pageSlice} from './reducers/PageReducer';
 import userSlice from './reducers/UserReducer';
 import bookSlice from './reducers/BookReducer';
 import libSlice from './reducers/LibraryReducer';
+import rolesSlice from './reducers/RoleReducer.jsx';
 import { BrowserRouter } from 'react-router-dom';
 import logger from "redux-logger"
-
+import commentSlice from './reducers/CommentReducer';
+import hashSlice from './reducers/HashtagReducer.jsx';
 
 const reducer = combineReducers({
+  hashtags:hashSlice.reducer,
   pages: pageSlice.reducer,
   users: userSlice.reducer,
   books: bookSlice.reducer,
-  libraries: libSlice.reducer
+  libraries: libSlice.reducer,
+  comments: commentSlice.reducer,
+  roles: rolesSlice.reducer
 })
 const store = configureStore({reducer:reducer,
 
@@ -31,10 +36,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
   <Provider store={store} >
 
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
     <App />
        
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
 
   </Provider>
   

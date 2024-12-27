@@ -9,10 +9,7 @@
    
     }
 
-.rich-editor{
-    width: 45em;
 
-}
 .editor-btn-row{
     display: flexbox;
     flex-wrap: wrap;
@@ -46,16 +43,6 @@
     padding-bottom: 3em;
 }
 
-#EditorContainer .left-side-bar{
-    padding: 0 4em;
-}
-#EditorContainer .right-side-bar .form{
-    background-color:  var(--background-tertiary-light);
-    width: 23em;
-    padding: 4em 2em;
-    border-radius: 25px;
-    box-shadow: var(--some-box-shadow);
-}
 
 #EditorContainer .form input[type="text"]{
    background-color: white;
@@ -64,19 +51,12 @@
     background-color: rgb(15, 18, 15) !important;
 }
 }
+.ql-picker-options span::before{
+    color:#00FF00;
+
+}
 @media (max-width: 900px) {
-    #EditorContainer{
-        display: flex;
-        flex-direction: column-reverse;
-    }
-    #EditorContainer #post-button-row{
-        margin-bottom: 5em;
-        width: 100%;
-  
-        display: flex;
-        justify-content: flex-end;
-   
-    }
+
 
 
     .editor-btn-row{
@@ -119,7 +99,7 @@
         background-color: rgb(15, 18, 15) !important;
     }
     }
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
         #editor {
             margin:auto;
             background-color: var(--tertiary);
@@ -128,4 +108,68 @@
             margin-bottom: 2em;
         
         }
+        
     }
+    @media (min-width: 600px){
+        .ql-editor{min-height: 60vh;
+        border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;}
+    } 
+    
+    /* Change the stroke color of Quill icons */
+.ql-stroke {
+    stroke: #ffffff !important; /* Change this to your preferred color */
+  }
+  
+  /* Change the fill color of Quill icons */
+  .ql-fill {
+    fill: #ffffff !important; /* Change this to your preferred color */
+  }
+  
+  /* Change the color of icons in hover/focus state */
+  .ql-toolbar .ql-active .ql-stroke,
+  .ql-toolbar .ql-active .ql-fill {
+    stroke: white !important; /* Color when an icon is active */
+    fill: white !important;
+  }
+  
+  /* Customize icons in hover state */
+  .ql-toolbar .ql-stroke:hover {
+    stroke: #ddb928 !important; /* Change color on hover */
+  }
+  .ql-font{
+    color:white !important;
+    stroke:white !important;
+    fill: white !important;
+  }
+  .ql-picker-label{
+    color:white
+  }
+ .ql-picker-options *{
+    stroke: #039703 !important; 
+ }
+  .ql-toolbar .ql-fill:hover {
+    background-color: rgba(81, 166, 117, 0.65) !important;
+    fill: white !important; /* Change color on hover */
+  }
+  
+  .ql-formats{
+    position: relative;
+  }
+  .ql-formats .ql-picker-label svg{
+    position: absolute;
+    right: -0.5em !important;
+  }
+ .ql-toolbar .ql-formats svg{
+    height: 1em !important;
+    max-width: 3em !important;
+ }
+  div .ql-toolbar{
+    flex-wrap: wrap;
+    display: flex;
+    min-height: 9em;
+    font-size: medium !important;
+    background-color: rgba(81, 166, 117, 0.65) !important;}
+   
+  .ql-editor{min-height: 60vh;
+background-color: rgba(81, 166, 117, 0.65) !important;}

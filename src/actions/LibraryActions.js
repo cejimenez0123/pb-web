@@ -1,8 +1,12 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit"
 import Library from "../domain/models/library"
-import { deleteDoc,and,or,orderBy,getDoc,collection,setDoc,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
+import { getDoc,collection,doc ,Timestamp,getDocs,where,query,updateDoc} from "firebase/firestore"
 import { db,auth,client } from "../core/di"
 import Contributors from "../domain/models/contributor"
+import axios from "axios"
+import Enviroment from "../core/Enviroment"
+import collectionRepo from "../data/collectionRepo"
+import profileRepo from "../data/profileRepo"
 
 
 const updateLibrary = createAsyncThunk("libraries/updateLibrary", async function(params,thunkApi){
@@ -14,29 +18,14 @@ const updateLibrary = createAsyncThunk("libraries/updateLibrary", async function
       privacy,
       writingIsOpen
     }=params
-    const ref =doc(db, "library", library.id)
-    await updateDoc(ref, {
-      privacy:privacy,
-      writingIsOpen:writingIsOpen,
-      name:name,
-      purpose:purpose,
-    })
-    client.initIndex("library")
-    .partialUpdateObject({objectID:library.id,name},{createIfNotExists:true}).wait()
-    const contributors= new Contributors( library.commenters,
-                                          library.readers,
-                                          library.writers,
-                                          library.editors)
-    const libraryItem =new Library(library.id,
-              name,library.profileId,
-              purpose,library.pageIdList,
-              library.bookIdList,
-              writingIsOpen,
-              privacy,
-              contributors,
-              library.updatdedAt,
-              library.created)
-    return { library:libraryItem }
+
+    let data = await collectionRepo.updateCollection({id:library.id,
+        title:name,
+        purpose:purpose,
+        isPrivate:privacy,
+        isOpenCollaboration:writingIsOpen})
+
+    return { library:data.collection }
     }catch(error){
 
       return {
@@ -146,54 +135,10 @@ const   appendLibraryContent = createAsyncThunk("libraries/updateLibraryContent"
           
           })
 const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (params, thunkApi){
-    const {id } = params
-
- 
-
   try {
-  const docSnap = await getDoc(doc(db, "library", id))
-  const pack = docSnap.data()
-    // let lId = pack["id"]
-    let libName =pack["name"]
-    let pageIds = pack["pageIdList"]
-    let bookIds= pack["bookIdList"]
-    let profileId = pack["profileId"]
-    let commenters = pack["commenters"]
-    let writers = pack["writers"]
-    let editors = pack["editors"]
-    let readers = pack["readers"]
-    let purpose = pack["purpose"]
-    let privacy = pack["privacy"]
-    let writingIsOpen = pack["writingIsOpen"]
-    let created = pack["created"]
-    let updatedAt = pack["updatedAt"]
-    if(!commenters){
-      commenters = []
-    }
-    if(!writers){
-      writers = []
-    }
-    if(!editors){
-      editors = []
-    }
-    if(!readers){
-      readers = []
-    }
-    const contributors= new Contributors(commenters,
-    readers,writers,editors)
-  const library = new Library(id,
-                              libName,
-                              profileId,
-                            purpose,
-                            pageIds,
-                            bookIds,
-                            writingIsOpen,
-                            privacy,
-                            contributors,
-                            updatedAt,
-                            created)
+    const data = await collectionRepo.fetchCollection(params)
   return {
-    library
+    library: data.collection
   }
   }catch(e){
     return {
@@ -205,119 +150,32 @@ const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (
 
 
 const createLibrary = createAsyncThunk("library/createLibrary", async function(params,thunkApi){
-    const ref = collection(db,"library")
-    const id = doc(ref).id
-  
-    const {
-        name,
-        pageIdList,
-        bookIdList,
-        profileId,
-        purpose,
-        privacy,
-        writingIsOpen,
-        writers,
-        editors,
-        commenters,
-        readers,
-        }=params
 
-   const created = Timestamp.now()
-   if(!privacy){
-    client.initIndex("library").saveObject({objectID:id,name:name}).wait()
-   }
-   
     try{
-      
-    
-    const snapshot = await setDoc(doc(db,"library", id), {
-        id,
-        name,
-        purpose,
-        profileId,
-        pageIdList,
-        bookIdList,
-        privacy,
-        writingIsOpen,
-        readers,
-        writers,
-        editors,
-        commenters,
-        updatedAt:created,
-        created:created})
-  
-        const contributors= new Contributors(commenters,
-          readers,writers,editors)
-    const library =new Library( id,
-                                name,
-                                profileId,
-                                purpose,
-                                pageIdList,
-                                bookIdList,
-                                writingIsOpen,
-                                privacy,
-                                contributors,
-                                created,
-                                created)
+        let data = await collectionRepo.createCollection(params)
+        if(!privacy){
+          client.initIndex("collection").saveObject(
+            {objectID:data.id,title:params.title,type:"collection"}).wait()
+        }   
+        return {library: data.collection}
 
-    return { library }
       }catch(error){
       return {
         error: new Error(`Error: Create Library: ${error.message}`)
       }
     }
   
-  
   })
   
   const getProfileLibraries= createAsyncThunk(
     'libraries/getProfileLibraries',
     async (params,thunkApi) => {
-      let libList =[]
       try {
       const profile = params["profile"]
-      const ref = collection(db, "library")
-      let queryReq = query(ref,where("profileId","==",profile.id),where("privacy","==",false))
-      let queries = [queryReq]
-        if(auth.currentUser){
-        if(auth.currentUser.uid === profile.userId){
-
-          queryReq=  query(ref,where("profileId","==",profile.id))
-          queries = [queryReq]
-        }else{
-          const queryWriter = query(
-            ref,
-                where('profileId', '==', profile.id),
-                where('writers', 'array-contains', auth.currentUser.uid)
-              );
-          const queryEditor = query(
-                ref,
-                    where('profileId', '==', profile.id),
-                    where('editors', 'array-contains', auth.currentUser.uid)
-                  );
-          const queryCommenter = query(
-                    ref,
-                        where('profileId', '==', profile.id),
-                        where('commenters', 'array-contains', auth.currentUser.uid)
-                      );
-          const queryReader = query(
-                    ref,
-                        where('profileId', '==', profile.id),
-                        where('readers', 'array-contains', auth.currentUser.uid)
-                      );
-            queries= [...queries,queryWriter,queryEditor,queryCommenter,queryReader]
-        }
-
-     }
-     let promises = queries.map(query=>{
-      return getDocs(query)
-    })
-    let snapshots = await Promise.all(promises)
-    const docs = snapshots.map(snapshot=>snapshot.docs).flat()
-    libList = docs.map(doc=>unpackLibraryDoc(doc))
+      const data = await collectionRepo.getProfileLibraries({profile:profile}) 
     return {
   
-        libList
+        libList:data.collections
     }
 
     }catch(err){
@@ -341,51 +199,13 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
     'libraries/fetchBookmarkLibrary',
     async (params,thunkApi) => {
       let id = params["id"]
+
+
       try {
-      const docSnap = await getDoc(doc(db, "library", id))
-      const pack = docSnap.data()
-        let lId = pack["id"]
-        let libName =pack["name"]
-        let pageIds = pack["pageIdList"]
-        let bookIds= pack["bookIdList"]
-        let profileId = pack["profileId"]
-        let purpose = pack["purpose"]
-        let privacy = pack["privacy"]
-        let writingIsOpen = pack["writingIsOpen"]
-        let created = pack["created"]
-        let commenters = pack["commenters"]
-        const updatdedAt = pack["updatdedAt"]
-        let editors = pack["editors"]
-        let readers = pack["readers"]
-        let writers = pack["writers"]
-        if(!editors){
-          editors = []
-        }
-        if(!commenters){
-          commenters = []
-        }
-        if(!readers){
-          readers=[]
-        }
-        if(!writers){
-          writers=[]
-        }
-        const contributors= new Contributors(commenters,
-          readers,writers,editors)
-      const library = new Library(lId,
-                                  libName,
-                                  profileId,
-                                  purpose,
-                                  pageIds,
-                                  bookIds,
-                                  writingIsOpen,
-                                  privacy,
-                                  contributors,
-                                  updatdedAt,
-                                  created)
+        let data = await profileRepo.getProfileBookmarkCollection({profileId:id})
                                   
     return {
-        library
+        library:data.collections[0]
       }
       }catch(e){
         return {
@@ -438,18 +258,17 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
  const getPublicLibraries = createAsyncThunk(
   'libraries/getPublicLibraries',
   async (thunkApi) => {
-      let libraryList = []
-     const ref = collection(db, "library")
-  
-  const snapshot = await getDocs(query(ref, where("privacy", "==", false)))
-
-        snapshot.docs.forEach(doc => {
-              const library = unpackLibraryDoc(doc)                      
-            libraryList = [...libraryList, library]
-          })
+     
+      // const  = await axios(Enviroment.url+"/collection/public/library",{
+      //   headers:{
+      //     'Access-Control-Allow-Origin': "*"
+      // }
+      // })
+      // console.log()
+      let data = await collectionRepo.getPublicLibraries()
   return {
 
-      libraryList
+      libraries: data.libraries
     }
   
     
@@ -459,9 +278,9 @@ const deleteLibrary = createAsyncThunk("libraries/deleteLibrary", async (params,
   
   try{
     const {library }=params
-  await deleteDoc(doc(db, "library", library.id));
+  const data = await collectionRepo.deleteCollection({id:library.id})
   client.initIndex("library").deleteObject(library.id).wait()
-    return {library}
+    return {library:data}
   }catch(e){
     return {error: new Error("Error: Delete Library"+e.message)};
   }
@@ -671,5 +490,6 @@ export {  fetchLibrary,
           fetchArrayOfLibrariesAppend,
           clearLibrariesInView,
           setBookmarkLibrary,
+          unpackLibraryDoc,
           appendLibraryContent
           }

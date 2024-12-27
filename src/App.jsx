@@ -1,9 +1,10 @@
 import './App.css';
-import { connect} from "react-redux"
+import { useDispatch,connect} from "react-redux"
+import { useState } from 'react';
 import {Route, Routes} from 'react-router-dom';
-import { getPublicPages } from './actions/PageActions';
+import {  getPublicStories } from './actions/PageActions';
 import DashboardContainer from './container/DashboardContainer';
-import LogInContainer from './container/LogInContainer';
+import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer';
 import EditorContainer from './container/page/EditorContainer'
@@ -13,18 +14,22 @@ import MyProfileContainer from './container/MyProfileContainer';
 import CreateBookContainer from './container/book/CreateBookContainer';
 import CreateLibraryContainer from './container/library/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
+<<<<<<< HEAD
 import ProfileContainer from './container/ProfileContainer';
 import UpdateLibraryContainer from './container/library/UpdateLibraryContainer';
 import AddPageToBookContainer from './container/book/AddPageToBookContainer';
 import AddItemsToLibraryContainer from './container/library/AddItemsToLibraryContainer';
 import PrivacyNoticeContrainer from "./container/PrivacyNoticeContainer"
+=======
+import ProfileContainer from './container/profile/ProfileContainer.jsx';
+import ApplyContainer from './container/auth/ApplyContainer';
+>>>>>>> prisma
 import SearchDialog from './components/SearchDialog';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
 import checkResult from './core/checkResult';
 import {  getPublicBooks } from './actions/BookActions';
 import {  getCurrentProfile,
-          fetchAllProfiles,
           fetchFollowBooksForProfile,
           fetchFollowLibraryForProfile,
           fetchFollowProfilesForProfile,
@@ -36,31 +41,38 @@ import history from './history';
 import PrivateRoute from './PrivateRoute';
 import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
-import EditBookContainer from './container/book/EditBookContainer';
 import LibraryViewContainer from './container/library/LibraryViewContainer';
-import useAuth from './core/useAuth';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
 import {Helmet} from "react-helmet";
+import  Context from "./context"
+import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';
+import CollectionContainer from './container/collection/CollectionContainer';
+import AddToCollectionContainer from './container/collection/AddToCollection';
+import EditCollectionContainer from './container/collection/EditCollectionContainer.jsx';
+import SignUpContainer from './container/auth/SignUpContainer.jsx';
+import { getHashtags, getProfileHashtagCommentUse } from './actions/HashtagActions.js';
 function App(props) {
-  const authState = useAuth()
-  
-
+ 
+  const dispatch = useDispatch()
+  const [formerPage, setFormerPage] = useState(null);
+  // useEffect(()=>{
+  //   props.fetchAllProfiles()
+  // },[]
+  // )
   useEffect(()=>{
-    props.fetchAllProfiles()
-  },[]
-  )
-  useEffect(()=>{
-    if(authState.user !== null && !authState.user.isAnonymous)  
+    // if(authState.user !== null && !authState.user.isAnonymous)  
       props.getCurrentProfile().then(result=>{
         checkResult(result,payload=>{
-          fetchData()
+          
   
       },err=>{
         
       })
   })},[])
-
+  useEffect(()=>{
+    fetchData()
+  },[props.currentProfile])
   const fetchData = ()=>{
     if(props.currentProfile!=null){
       const params = {
@@ -69,7 +81,8 @@ function App(props) {
       const profileParams = {
         profile: props.currentProfile
       }
-      
+      dispatch(getHashtags())
+      dispatch(getProfileHashtagCommentUse({profileId:props.currentProfile.id}))
       props.fetchHomeCollection(profileParams)
       props.fetchBookmarkLibrary(params)
       props.getPageApprovals(profileParams)
@@ -81,7 +94,11 @@ function App(props) {
   }
    
   return (
-    <div className="App">
+      <Context.Provider value={[formerPage,setFormerPage]}>
+        {/* from-emerald-800 to-emerald-600 */}
+      <div  className='App background-blur bg-gradient-to-br from-green-800 to-green-200'>
+      <div/>
+      <div style={{position:"relative"}} >
        <Helmet>
                 <meta charSet="utf-8" />
                 <title>Plumbum</title>
@@ -118,7 +135,7 @@ function App(props) {
           <Route exact  path={Paths.home()} 
                         element={
                           <DashboardContainer 
-                            getPublicPages={props.getPublicPages} 
+                            getPublicStories={props.getPublicStories} 
                             pagesInView={props.pagesInView}
                           />
                         }
@@ -127,10 +144,10 @@ function App(props) {
                   element={
                     <DiscoveryContainer 
                       getPublicLibraries={props.getPublicLibraries}
-                      getPublicPages={props.getPublicPages} 
+                      getPublicStories={props.getPublicStories} 
                       getPublicBooks={props.getPublicBooks} 
                       pagesInView={props.pagesInView}
-                      fetchAllProfiles={props.fetchAllProfiles}
+                      // fetchAllProfiles={props.fetchAllProfiles}
                     />
                   }
             />
@@ -139,22 +156,39 @@ function App(props) {
                   />
           <Route  path="/login"  
                   element={ 
-          <LoggedRoute 
-        
-            loggedOut={!props.currentProfile}
-          >
-            <LogInContainer logIn={props.logIn}
-            />
-          </LoggedRoute>}
+        <LoggedRoute>
+            <LogInContainer logIn={props.logIn}/>
+            </LoggedRoute>
+          
+       }
      />
+     <Route path={Paths.collection.route()}
+     element={<CollectionContainer/>}/>
+     <Route path={'/signup'}
+     element={<LoggedRoute><SignUpContainer/></LoggedRoute>}/>
+     <Route path={Paths.addToCollection.route}
+     element={        <PrivateRoute
+    
+      ><AddToCollectionContainer/></PrivateRoute>}/>
+     <Route path={Paths.addStoryToCollection.route}
+     element={<PrivateRoute 
+     
+     ><AddStoryToCollectionContainer/></PrivateRoute>}/>
+     <Route path={Paths.editCollection.route()}
+      element={<PrivateRoute 
+     
+      ><EditCollectionContainer/></PrivateRoute>}/>
+     
       <Route path={Paths.about()} element={
    <AboutContainer/>
       }/>
-        
+ 
+        <Route path={Paths.apply()}
+        element={<ApplyContainer/>}/>
       <Route
       path={Paths.myProfile()}
       element={
-        <PrivateRoute loggedIn={!!props.currentProfile}>
+        <PrivateRoute >
           <MyProfileContainer currentProfile={props.currentProfile} 
                               pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
@@ -175,7 +209,8 @@ function App(props) {
     <Route  
         path="/page/image"  
         element={ 
-          <PrivateRoute loggedIn={!!props.currentProfile}>
+          <PrivateRoute >
+            
           <EditorContainer 
             htmlContent={props.htmlContent}
             currentProfile={props.currentProfile} 
@@ -185,7 +220,7 @@ function App(props) {
     <Route
       exact path="/page/text"
       element={
-        <PrivateRoute  loading={props.userLoading} loggedIn={!!props.currentProfile}>
+        <PrivateRoute  >
             <EditorContainer 
               htmlContent={props.htmlContent}
               currentProfile={props.currentProfile} 
@@ -195,7 +230,9 @@ function App(props) {
        <Route
       exact path="/page/link"
       element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
+        <PrivateRoute 
+      
+        >
             <EditorContainer 
               htmlContent={props.htmlContent}
               currentProfile={props.currentProfile} 
@@ -220,11 +257,7 @@ function App(props) {
           <CreateBookContainer pagesInView={props.pagesInView} booksInView={props.booksInView}/>
         </PrivateRoute>
       }/>
-      <Route path="/book/:id/edit" element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
-        <EditBookContainer book={props.bookInView} pages={props.pagesInView}/>
-        </PrivateRoute>
-      }/>
+    
       <Route path="/library/new" element={
         <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
         <CreateLibraryContainer/>
@@ -236,29 +269,16 @@ function App(props) {
       }/>
       <Route path="/profile/edit" element={
         
-        <PrivateRoute loggedIn={props.currentProfile}>
+        <PrivateRoute loading={props.userLoading} loggedIn={props.currentProfile}>
         <SettingsContainer />
-        </PrivateRoute>
-      }/>
-      <Route path="/library/:id/edit" element={
-         <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
-        <UpdateLibraryContainer/>
-        </PrivateRoute>}/>
-      <Route path="/book/:id/add" element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
-          <AddPageToBookContainer/>
-        </PrivateRoute>
-      }/>
-      <Route path="/library/:id/add" element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
-          <AddItemsToLibraryContainer/>
         </PrivateRoute>
       }/>
       
     </Routes>
-
     </div>
     </div>
+    </div>
+    </Context.Provider>
   );
 }
 
@@ -268,8 +288,8 @@ function mapDispatchToProps(dispatch){
     getPublicBooks:()=>dispatch(getPublicBooks()),
     fetchBookmarkLibrary:(params)=>dispatch(fetchBookmarkLibrary(params)),
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
-    getPublicPages:()=>dispatch(getPublicPages()),
-    fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
+    getPublicStories:()=>dispatch(getPublicStories()),
+    // fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
     fetchFollowBooksForProfile:(params)=>dispatch(fetchFollowBooksForProfile(params)) ,
     fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params)),
     fetchFollowProfilesForProfile:(params)=>dispatch(fetchFollowProfilesForProfile(params)),

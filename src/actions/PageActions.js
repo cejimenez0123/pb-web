@@ -1,34 +1,29 @@
 import {db,auth,client} from "../core/di"
-import {where,deleteDoc,query,and,orderBy,updateDoc,or,collection,getDocs,getDoc,doc,setDoc, Timestamp, arrayUnion} from "firebase/firestore"
+import {where,deleteDoc,query,and,updateDoc,or,collection,getDocs,getDoc,doc,setDoc, Timestamp, arrayUnion} from "firebase/firestore"
 import Page from "../domain/models/page"
-import PageComment from "../domain/models/page_comment"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import Contributors from "../domain/models/contributor"
 import UserApproval from "../domain/models/user_approval"
+import axios from "axios"
+import Enviroment from "../core/Enviroment"
+import storyRepo from "../data/storyRepo"
+import commentRepo from "../data/commentRepo"
 
-
-const getPublicPages = createAsyncThunk(
-    'pages/getPublicPages',
-    async (thunkApi) => {
-        let pageList = []
-      try{
-        let ref = collection(db, "page")
-        const request = query(ref, where("privacy", "==", false), orderBy("created", "desc"))
-        const snapshot = await getDocs(request)
-        snapshot.docs.forEach(doc => {
-                const page = unpackPageDoc(doc)  
-                pageList = [...pageList, page]
-            })
-    return {
-        pageList
-      }
+const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
+  
+  try{
+    const data = await storyRepo.getPublicStories()
     
-        }catch(err){
-          return {error: err}
-        }
-    }
 
-  )
+return {
+    stories:data.stories
+  }
+
+    }catch(err){
+      return {error: err}
+    }
+  
+})
 
 const setHtmlContent = createAction(
   'pages/setHtmlContent',(html)=>{
@@ -39,6 +34,14 @@ const setHtmlContent = createAction(
       }
   }
 )
+const updateStory = createAsyncThunk("pages/updateStory",async (params,thunkApi)=>{
+      try{
+        let data = storyRepo.updateStory( params)
+        return { story:data.story}
+      }catch(e){
+        return {error: e}
+      }
+})
 const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>{
       
   try{
@@ -48,8 +51,8 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
       commentable,
       privacy,
     
-    } = params
-      
+    } =params
+     
       let ref = doc(db,"page",page.id)
       await updateDoc(ref,{
         title,
@@ -85,176 +88,17 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
 const getProfilePages= createAsyncThunk(
   'pages/getProfilePages',
   async (params,thunkApi) => {
-    let pageList = []
-    const profile=params["profile"]
     try{
-    const ref = collection(db, "page")
-    let queryReq = query(ref,where("profileId","==",profile.id),where("privacy","==",false))
-    let queries= [queryReq]
-    if(auth.currentUser && (auth.currentUser.uid == profile.userId)){
-      queryReq = query(ref, where("profileId", "==", profile.id))
-      queries = [queryReq]
-    }else if(auth.currentUser && (auth.currentUser.uid !== profile.userId)){
-    
-      console.log(auth.currentUser.uid)
-      const queryWriter = query(
-    ref,
-        where('profileId', '==', profile.id),
-        where('writers', 'array-contains', auth.currentUser.uid)
-      );
-      const queryEditor = query(
-        ref,
-            where('profileId', '==', profile.id),
-            where('editors', 'array-contains', auth.currentUser.uid)
-          );
-      const queryCommenter = query(
-            ref,
-                where('profileId', '==', profile.id),
-                where('commenters', 'array-contains', auth.currentUser.uid)
-              );
-      const queryReader = query(
-                ref,
-                    where('profileId', '==', profile.id),
-                    where('readers', 'array-contains', auth.currentUser.uid)
-                  );
-   queries = [...queries,queryWriter,queryEditor,queryCommenter,queryReader]
-    //   // queryReq = query(ref, where("profileId", "==", profile.id))
-   
-      }
+    let data = await storyRepo.getProfileStories({profileId:params["profile"].id})
 
-  let promises = queries.map(query=>{
-    return getDocs(query)
-  })
-  let snapshots = await Promise.all(promises)
-  const docs = snapshots.map(snapshot=>snapshot.docs).flat()
-  pageList = docs.map(doc=>unpackPageDoc(doc))
   return {
-
-      pageList
-    }
-  }
-catch(e){
+    pageList:data.stories}
+  }catch(e){
 
   return {error:`Page Query Where Error: ${e.message}`}
-}
-})
-      // let readerSnap = await getDocs(queryReaders)
-      //   readerSnap.docs.forEach(doc=>{
-      //     const page = unpackPageDoc(doc)
-      //       pageList = [...pageList, page]
-      //       })
-      //     let queryCommenter = query(ref,where("profileId", "==", profile.id),where("commenters", "array-contains", auth.currentUser.uid))        
-  //     let queryWriter = query(ref,where("profileId", "==", profile.id, where("writers", "array-contains", auth.currentUser.uid)))  
-  //     let queryEditor = query(ref,where("profileId","==", profile.id),where("editors", "array-contains",auth.currentUser.uid))
-  //     let queryReaders = query(ref,where("profileId","==", profile.id),where("readers", "array-contains", auth.currentUser.uid))
-  //   try {
-  //     let snapshot = await getDocs(queryCommenter)
-  //     snapshot.docs.forEach(doc=>{
-  //         const page = unpackPageDoc(doc)
-  //         pageList = [...pageList, page]
-  //       })
-  //     }catch(e){
-  //       console.error(e)
-
-  //     }  
-  //     try {
-  //       let snapshot = await getDocs(queryReq)
-  //       snapshot.docs.forEach(doc=>{
-  //           const page = unpackPageDoc(doc)
-  //           pageList = [...pageList, page]
-  //         })
-  //       }catch(e){
-  //         console.error(`Page Query Where Req Error: ${e.message}`)
-  
-  //       }  
-  //     try{
-  //       let readerSnap = await getDocs(queryReaders)
-  //       readerSnap.docs.forEach(doc=>{
-  //         const page = unpackPageDoc(doc)
-  //           pageList = [...pageList, page]
-  //           })
-  //     }catch(e){
-  //       console.error(`Page Query Where Reader Error: ${e.message}`)
-  //     }
-  //     try{
-  //       let editorSnap = await getDocs(queryEditor)
-  //       editorSnap.docs.forEach(doc=>{
-  //         const page = unpackPageDoc(doc)
-  //         pageList = [...pageList, page]
-  //         })
-  //       }catch(e){
-  //         console.error(`Page Query Where Editor Error: ${e.message}`)
-  //     }
-  //     try{
-  //     let writerSnap = await getDocs(queryWriter)
-  //     writerSnap.docs.forEach(doc=>{
-  //         const page = unpackPageDoc(doc)
-  //         pageList = [...pageList, page]
-  //       })
-  //     }catch (e) {
-  //       console.error(`Page Query Where Writer Error: ${e.message}`)
-  //     }
-  //     return {pageList}
-  // }
-  // try{
-const createPage = createAsyncThunk("pages/createPage", async function(params,thunkApi){
-  const ref = collection(db,"page")
-  const id = doc(ref).id
-
-  const { profileId,
-          data,
-          privacy,
-          approvalScore,
-          type,
-          title,
-          readers,
-          commentable,
-          writers,
-          commenters,
-          editors,}=params
- const created = Timestamp.now()
-  try{
-
-  await setDoc(doc(db,"page", id), { id,
-                                                      title,
-                                                      data,
-                                                      profileId,
-                                                      approvalScore,
-                                                      privacy,
-                                                      commentable,
-                                                      type,
-                                                      readers,
-                                                      writers,
-                                                      commenters,
-                                                      editors,
-                                                      created:created})
-     const contributors= new Contributors(commenters,
-          readers,writers,editors)
-          if(!privacy){
-            client.initIndex("page").saveObject({objectID:id,title:title}).wait()
-            }
-  const page = new Page(  id,
-                          title,
-                          data,
-                          profileId,
-                          auth.currentUser.uid,
-                          approvalScore,
-                          privacy,
-                          commentable,
-                          type,
-                          contributors,
-                          created)
-
-  return { page }
-  }catch(error){
-    
-    return {
-      error: new Error(`Error: SavePage ${error.message}`)
-    }
-  }
+}})
 
 
-})
 const fetchPage=createAsyncThunk("pages/fetchPage", async function(params,thunkApi){
   let id = params["id"]
 
@@ -279,8 +123,9 @@ const fetchPage=createAsyncThunk("pages/fetchPage", async function(params,thunkA
 const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async function(params,thunkApi){
   let id = params["id"]
   try {
-    const docSnap = await getDoc(doc(db, "page", id))
-    const page = unpackPageDoc(docSnap)
+    storyRepo.get
+    // const docSnap = await getDoc(doc(db, "page", id))
+    // const page = unpackPageDoc(docSnap)
     return {
       page
     }
@@ -478,25 +323,30 @@ const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend
     }
   }
 )
-const createComment = createAsyncThunk("pages/createComment", async function(params,thunkApi){
+const createComment = createAsyncThunk("pages/createComment", async function({
+  profile,
+  text,
+  storyId,
+  parentCommentId,
+  },thunkApi){
   try{
-    const {profileId,
-      text,
-      pageId,
-      parentCommentId,
-      }=params
-    const commentRef = collection(db,"page_comment")
-    const id = doc(commentRef).id
-    const created = Timestamp.now()
-      await setDoc(doc(db,"page_comment",id), { 
-      id:id,
-      profileId: profileId,
-      text: text,
-      pageId:pageId,
-      parentCommentId:parentCommentId,
-      approvalScore:0.0,
-      created:created})
-      const comment =new PageComment(id,text,pageId,profileId,parentCommentId,0.0)
+
+
+ let data = await commentRepo.create({profile:profile,storyId:storyId,text,parentId:parentCommentId})
+return {comment:data.comment}
+
+    // const commentRef = collection(db,"page_comment")
+    // const id = doc(commentRef).id
+    // const created = Timestamp.now()
+    //   await setDoc(doc(db,"page_comment",id), { 
+    //   id:id,
+    //   profileId: profileId,
+    //   text: text,
+    //   pageId:pageId,
+    //   parentCommentId:parentCommentId,
+    //   approvalScore:0.0,
+    //   created:created})
+    //   const comment =new PageComment(id,text,pageId,profileId,parentCommentId,0.0)
   
   return { comment }
   }catch(error){
@@ -516,39 +366,30 @@ const appendComment = createAction("pages/appendComment", (params)=> {
     
   
 })
-const fetchCommentsOfPage = createAsyncThunk("pages/fetchCommentsOfPages",async (params,thunkApi)=>{
+const fetchCommentsOfPage = createAsyncThunk("comments/fetchCommentsOfPages",async (params,thunkApi)=>{
   try{
-    const {page} = params
-  // const ref = collection(db,"page",page.id,PageComment.className)
-  const ref = collection(db,"page_comment")
-  let request = query(ref,
-       where('pageId',"==",page.id),
-  )
-  const snapshot =await getDocs(request)
+    let token = localStorage.getItem("token")
+    if(token){
+      let data = await storyRepo.fetchCommentsOfPageProtected({pageId:params.id})
+      return {
 
-  let commentList = []
-  snapshot.docs.forEach(doc => {
-        const pack = doc.data();
-        const { id,
-      profileId,
-      text,
-      pageId,
-      parentCommentId,
-      approvalScore,
-      created}=pack
-     const comment = new PageComment(id,text,pageId,profileId,parentCommentId,approvalScore,created)
-      
-      commentList = [...commentList, comment]
-    })
-return {
+        comments: data.comments
+      }
+    }else{
+      let data = await storyRepo.fetchCommentsOfPagePublic({pageId:params.id})
+      return {
 
-  comments: commentList,
-}
+        comments: data.comments
+      }
+    }
+    console.log(data)
+
 
 
 }catch(err){
-const error = err??new Error("Error: Fetch Comments"+err.message)
-return {error }
+
+throw err
+
 }}
 
 )
@@ -573,10 +414,10 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
 const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>{
     try{
       const {page}=params
-    await deleteDoc(doc(db, "page", page.id));
+    let data = await storyRepo.deleteStory({id:page.id})
     client.initIndex("page").deleteObject(page.id).wait()
     return {
-      page:page
+      page:data
     }
     }catch(e){
       return {error: new Error("Error: Delete Page"+e.message)};
@@ -584,17 +425,20 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
   })
   const updateComment = createAsyncThunk(`pages/updateComment`, async (params,thunkApi)=>{
     const {comment,newText}=params
-    let ref = doc(db,"page_comment",comment.id)
-    await updateDoc(ref,{
-      text:newText
-    })
-    const newComment = new PageComment(comment.id,
-                    newText,
-                    comment.pageId,
-                    comment.profileId,
-                    comment.parentCommentId,
-                    comment.approvalScore,
-                    comment.created)
+
+
+
+    // let ref = doc(db,"page_comment",comment.id)
+    // await updateDoc(ref,{
+    //   text:newText
+    // })
+    // const newComment = new PageComment(comment.id,
+    //                 newText,
+    //                 comment.pageId,
+    //                 comment.profileId,
+    //                 comment.parentCommentId,
+    //                 comment.approvalScore,
+    //                 comment.created)
 
       return {
         comment:newComment
@@ -807,11 +651,11 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
                               return page
   }
 
-  export {getPublicPages,
+  export {
           pagesLoading,
           setHtmlContent,
           getProfilePages,
-          createPage,
+          
           setPageInView,
           fetchPage,
           fetchArrayOfPages,
@@ -836,6 +680,8 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           setEditingPage,
           createPageApproval,
           deletePageApproval,
-          unpackPageDoc
+          unpackPageDoc,
+          getPublicStories,
+         
         } 
         

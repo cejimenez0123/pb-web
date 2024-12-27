@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import {    logIn ,
             signUp,
             getCurrentProfile,
-            fetchAllProfiles,
+            // fetchAllProfiles,
             fetchProfile,
             setProfileInView,
             fetchFollowBooksForProfile,
@@ -22,15 +22,16 @@ import {    logIn ,
             getPageApprovals,
             searchDialogToggle,
             searchMultipleIndexes,
-            fetchArrayOfProfiles
+            updateProfile,
+            // fetchArrayOfProfiles,
         } from "../actions/UserActions"
-import { create } from "lodash"
+import { createProfile, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"
 const initialState = {
     signedIn: false,
     currentProfile: null,
     homeCollection: null,
-    loading:false,
+    loading:true,
     userApprovals:[],
     followedBooks: [],
     followedProfiles:[],
@@ -45,14 +46,30 @@ const userSlice = createSlice({
     name: 'users',
     initialState,
     extraReducers(builder) {
-        builder
+        builder.addCase(fetchProfiles.fulfilled,(state,{payload})=>{
+            state.profilesInView = payload.profiles
+            state.loading=false
+        }).addCase(fetchProfiles.pending,(state,{payload})=>{
+            state.loading = true
+        })
         .addCase(logIn.pending,(state) => {
         state.loading = true
+    }).addCase(createProfile.rejected, (state, { payload })=>{
+       state.loading=false
+     console.log(payload)
+    }).addCase(createProfile.pending, (state)=>{
+        state.loading=true
+    }).addCase(updateProfile.fulfilled,(state,{payload})=>{
+        state.currentProfile = payload.profile
     })
-    .addCase(logIn.fulfilled, (state, { payload }) => {
+    .addCase(createProfile.fulfilled, (state, { payload })=>{
+        state.loading=false    
+        console.log(payload)
+        state.currentProfile = payload.profile
+    }).addCase(logIn.fulfilled, (state, { payload }) => {
+       console.log(JSON.stringify(payload))
         state.loading = false
         state.signedIn = true
-        localStorage.setItem("loggedIn",true)
         state.currentProfile = payload.profile
     }).addCase(logIn.rejected, (state,{payload}) => {
         state.error = payload.error
@@ -70,20 +87,23 @@ const userSlice = createSlice({
     }).addCase(getCurrentProfile.rejected,(state,{payload})=>{   
         state.loading = false
         state.signedIn = false
-        // state.error = payload.error
+        state.currentProfile = null
+        localStorage.clear()
+        
     }).addCase(getCurrentProfile.pending,(state)=>{
         state.loading = true
     }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
        state.currentProfile = payload.profile
-       localStorage.setItem("loggedIn",true)
        state.loading = false
-    }).addCase(fetchAllProfiles.fulfilled,(state,{ payload })=>{
-        state.profilesInView = payload.profileList
-        state.loading=false
-    }).addCase(fetchAllProfiles.rejected,(state,{payload})=>{
-        state.error = payload.error
-        state.loading = false
-    }).addCase(fetchProfile.pending,(state)=>{
+    })
+    // .addCase(fetchAllProfiles.fulfilled,(state,{ payload })=>{
+    //     state.profilesInView = payload.profileList
+    //     state.loading=false
+    // }).addCase(fetchAllProfiles.rejected,(state,{payload})=>{
+    //     state.error = payload.error
+    //     state.loading = false
+    // })
+    .addCase(fetchProfile.pending,(state)=>{
         state.loading=true
     }).addCase(fetchProfile.fulfilled,(state,{ payload })=>{
        
@@ -173,10 +193,11 @@ const userSlice = createSlice({
     }).addCase(searchMultipleIndexes.fulfilled,(state,{payload})=>{
         state.searchResults = payload.searchResults
     }).addCase(searchMultipleIndexes.rejected,(state,{payload})=>{
-        state.error =payload.error
-    }).addCase(fetchArrayOfProfiles.fulfilled,(state,{payload})=>{
-        state.profilesInView = payload.profileList
+        state.error =payload
     })
+    // .addCase(fetchArrayOfProfiles.fulfilled,(state,{payload})=>{
+    //     state.profilesInView = payload.profileList
+    // })
 }})
 
 

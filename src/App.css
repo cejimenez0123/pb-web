@@ -1,11 +1,39 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
 
 .App{
+  text-align: center;
+  color: white;
   width: 100vw;
-  height: 90%;
-  overflow: scroll;
 }
 
+
+
+#root {
+  display: flex;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  width: 100vw;
+  min-height: 100vh;
+  height: 100%
+
+}
+.page-text p,div,span{
+  font-size: 1.4rem !important;
+}
+
+.ql-size-small{
+  font-size: 1.4rem !important;
+}
+.ql-size-normal,p{
+  font-size: 1.5rem !important;
+}
+
+.ql-size-large{
+  font-size: 1.7rem !important;
+}
+.ql-size-huge{
+  font-size: 1.9rem !important;
+}
 
 .container-row{
   display: flex;
@@ -51,6 +79,9 @@
 }
 .thumbnail{
   width: 100%;
+}
+.content *{
+  color:white !important;
 }
 @media (min-width: 850px) {
   .content-list{
@@ -265,6 +296,9 @@
   margin: auto;
 
 }
+#dashboard{
+  overflow-y: scroll;
+}
 .row{
   display: flex;
   flex-direction: row;
@@ -282,11 +316,7 @@
 .between{
   justify-content: space-between;
 }
-.screen{
-  margin-top: 2em;
-  height: 100%;
-  padding-bottom: 2em;
-}
+
 
 @media (min-width: 1000px) {
 
@@ -311,6 +341,7 @@
   }
   #dashboard {
     margin-top: 3em;
+   
   }
   
 }
@@ -639,29 +670,57 @@
     transform: rotate(360deg);
   }
 }
+.link-preview{
+  background-color: rgb(74 222 128);
+}
+.col-item{
+  background-color: #4ade80;
+}
+.col-item:hover {
+ 
+  background: 
+    linear-gradient(90deg,#0000 33%,rgba(255,255,255,0.3) 50%,#0000 66%)
+    #16a34a;
+  background-size:300% 100%;
+  animation: shine 2s infinite;
+}
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#0C9;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+}
+
+@keyframes shine {
+  0% {
+    background-position: right;    
+  }
+  /*100% {
+    background-position: left; it's the default value, no need to define it
+  }*/
+}
 .link-preview p{
-  margin-left: 1em;
-  margin-right: .5em;
+  padding-left: 1em;
+  padding: .5em;
   text-align: left ;
+  background-color: rgb(74 222 128);
 }
 .link-preview .title{
   margin-left: .5em;
   margin-right: .5em;
   text-align: left;
+  color: black
+  ;
 }
 @media (min-width: 900px) {
 
-
-
-  .screen{
-      min-height: 100vh;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
-      margin-top: 2em;
-      padding-left: 2em;
-      padding-right: 2em;
-  }}
+}
   @media (max-width: 900px) {
    
    
