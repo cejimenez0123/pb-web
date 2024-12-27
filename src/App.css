@@ -18,21 +18,21 @@
 
 }
 .page-text p,div,span{
-  font-size: 1.4rem !important;
+  font-size: 1rem !important;
 }
 
 .ql-size-small{
-  font-size: 1.4rem !important;
+  font-size: 1.2rem !important;
 }
 .ql-size-normal,p{
-  font-size: 1.5rem !important;
+  font-size: 1.3rem !important;
 }
 
 .ql-size-large{
-  font-size: 1.7rem !important;
+  font-size: 1.5rem !important;
 }
 .ql-size-huge{
-  font-size: 1.9rem !important;
+  font-size: 1.7rem !important;
 }
 
 .container-row{

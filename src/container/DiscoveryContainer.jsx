@@ -85,7 +85,7 @@ const navigateToLibrary = (library)=>{
         if(booksInView!=null){
             return(
         
-    <div className='md:ml-12'> <h3 className=' text-white 
+    <div className='md:ml-12'> <h3 className=' text-slate-800
     text-left 
     font-extrabold 
     mb-4
@@ -190,14 +190,16 @@ const navigateToLibrary = (library)=>{
 
               <div className=' text-left ' >
                
-                <h3 className={`text-white ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} font-extrabold text-2xl`}>Communities</h3>
+                <h3 className={`text-slate-800 ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} pb-4 font-extrabold text-2xl`}>Communities</h3>
+                <div className='pb-12'>
                 {libraryForums()}
+                </div>
                 {bookList()} 
                 <div className='flex  flex-col '>
                     <div className=' lg:w-128 lg:ml-32 mx-auto'>
 
                         <div className='flex flex-row'>
-                        <h3 className=' text-white  
+                        <h3 className=' text-slate-800
                                         font-extrabold 
                                         text-2xl 
                                         text-left 

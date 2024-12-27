@@ -173,7 +173,7 @@ function NavbarContainer(props){
       
   }
     return (
-      <div>
+      <div className='bg-emerald-600'>
         <AppBar position="static"
                className='bg-transparent'>
             <Container >

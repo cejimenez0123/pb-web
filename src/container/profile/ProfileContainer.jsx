@@ -9,7 +9,6 @@ import {    createFollowProfile,
 // import ProfileCard from "../components/ProfileCard"
 import theme from "../../theme"
 import "../../styles/Profile.css"
-import { Button,Skeleton } from "@mui/material"
 import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
 import PageIndexList from "../../components/page/PageIndexList"
@@ -126,7 +125,7 @@ function ProfileContainer(props){
                 {/* <ContentList profile={profile} */}
                          {/* />  */}
                          <div role="tablist" className="tabs mt-8 shadow-md min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Pages" />
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-600 text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  sm:max-w-[42rem] md:p-6">
   <PageIndexList/>
   </div>
@@ -135,7 +134,7 @@ function ProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-white bg-transparent  border-white border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
+    className="tab text-emerald-600 bg-transparent  border-white border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
     aria-label="Collecitons"
     />
   <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box pt-1">

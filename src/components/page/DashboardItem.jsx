@@ -72,14 +72,14 @@ const hanldeClickComment=(pageItem)=>{
         
     if(page.type===PageType.text){
 
-        return( <div className='page-text '>
+        return( <div className='page-text py-4 '>
             <div 
     
            className={` ${isGrid?"h-48 overflow-clip ":""}`}
             >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className='p-4 '
+        } className='px-4 py-8'
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
         </div>)   
@@ -194,7 +194,7 @@ return <Button onClick={()=>{
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className='border-t bg-green-600 text-center border-green-100 '><div>
+        <div className='border-t bg-emerald-600 text-center border-green-100 '><div>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
@@ -206,7 +206,7 @@ return <Button onClick={()=>{
          </button>
          <button
              className=' px-4 rounded-none
-             border-x-2 border-y-0 text-xl bg-green-600 border-white text-slate-800'
+             border-x-2 border-y-0 text-xl bg-emerald-600 border-white text-slate-800'
              onClick={()=>hanldeClickComment(page)}
                  >
          

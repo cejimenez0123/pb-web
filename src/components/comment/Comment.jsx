@@ -56,7 +56,7 @@ export default function Comment({comment}){
        setBranches(branches)
     },[comments])
     return(
-        <div class="bg-green-400 border-b border-white text-left" id="comment-1">
+        <div class="bg-emerald-400 border-b border-white text-left" id="comment-1">
 
            <div className="comment-body  p-4  text-slate-800">
            <a onClick={()=>navigate(Paths.profile.createRoute(comment.profile.id))} class="comment-author text-sm mr-4">{comment.profile.username}</a>

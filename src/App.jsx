@@ -88,7 +88,7 @@ function App(props) {
   return (
       <Context.Provider value={[formerPage,setFormerPage]}>
         {/* from-emerald-800 to-emerald-600 */}
-      <div  className='App background-blur bg-gradient-to-br from-green-800 to-green-200'>
+      <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
        <Helmet>

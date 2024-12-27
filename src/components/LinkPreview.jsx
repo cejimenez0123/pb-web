@@ -116,7 +116,7 @@ function LinkPreview({ url,size }) {
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image && <img className="thumbnail"src={previewData.image}  alt="Link Preview" />}
+      {previewData.image && <img className="thumbnail "src={previewData.image}  alt="Link Preview" />}
     </div>)
     }else{
       
@@ -134,9 +134,9 @@ function LinkPreview({ url,size }) {
   }
   const previewDescription=()=>{
     if(previewData.title!=="Spotify"){
-      return(<h6 className='text-slate-800 p-4 bg-emerald-200  text-[0.8rem]' >{previewData.description}</h6>)
+      return(<h6 className='text-slate-800 py-8 px-4 bg-emerald-200  text-[0.8rem]' >{previewData.description}</h6>)
       }else{
-        return(<h6 className='text-slate-800 py-2  bg-emerald-200  text-[0.8rem]'>{previewData.description}</h6>)
+        return(<h6 className='text-slate-800 py-4  bg-emerald-200  text-[0.8rem]'>{previewData.description}</h6>)
       }
   }
   return (

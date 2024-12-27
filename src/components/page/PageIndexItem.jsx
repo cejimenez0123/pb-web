@@ -100,10 +100,10 @@ function PageIndexItem({page,onDelete}) {
       </div>)
   
     }
-            return(<div className={`   border-white rounded-lg border flex flex-row justify-between  mb-1  `}>
+            return(<div className={`   border-emerald-600 rounded-lg border flex flex-row justify-between  mb-1  `}>
                 <div className="text-left max-w-[100vw] h-fit  my-auto md:ml-4 py-8   ">
                
-                <a className="text-white " onClick={handleOnClick}> 
+                <a className="text-emerald-700 " onClick={handleOnClick}> 
                    {page.title.length>0? <h6 className="text-xl ml-2 my-auto">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
