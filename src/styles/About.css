@@ -108,6 +108,7 @@
    
 }
 
+
 }
 @media (min-width: 1000px){
     #title h1{
@@ -197,7 +198,7 @@ section ul{
     max-width: 10em !important;
 
     overflow: hidden;
-    border-radius: 24px;
+    border-radius: 0.5rem;
 }
 img[alt="bookshelves"]{
     object-fit: cover;

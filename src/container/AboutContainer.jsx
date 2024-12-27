@@ -14,7 +14,7 @@ export default function AboutContainer(props){
         return(<div>
             <div className="box text-white" >
 <div id="for-creatives" >
-<h1 className="poppins">For Creatives</h1>
+<h6 className="poppins  font-bold text-[2rem]">For Creatives</h6>
 <div >
 <h6 className="text-[1.2rem] text-white poppins pt-4 text-left" > 
 Plumbum began during a university reprieve while walking to the gym.
@@ -71,6 +71,9 @@ Plumbum is great place to begin work and find support to complete work.
     </div>)
 }
     const groupImage = ()=>{
+        return<div className="relative my-8 overflow-hidden h-60 rounded-lg  ">
+        <img src={firstGroup} className="object-cover absolute top-[-6em] h-[20em] w-full "/>
+      </div>
         return(<div id="image-container1">
 <img src={firstGroup} id="group" alt="books"/>
         </div>)
@@ -84,12 +87,13 @@ Plumbum is great place to begin work and find support to complete work.
 <div>
     <div  className="welcome">
     
-    <div id="title">
+    <div id="title py-8">
         <h6 className="text-[4rem] text-white">Welcome to Plumbum</h6>
     </div>
         <MediaQuery minWidth={"1000px"}>
-<div id="bookshelf w-24 h-24">
-<img  src={groupJpg}alt="bookshelves" />
+   
+<div id="bookshelf w-24 h-24 rounded-lg object-cover">
+<img  className="rounded-lg" src={groupJpg}alt="bookshelves" />
 
 
 </div>
