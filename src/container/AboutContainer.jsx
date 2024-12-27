@@ -11,7 +11,7 @@ export default function AboutContainer(props){
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const forCreatives = ()=>{
-        return(<div className="text-emerald-600 sm:text-white">
+        return(<div className="text-emerald-600 mt-12 sm:text-white">
             <div className="box " >
 <div id="for-creatives" >
 <h6 className="poppins  font-bold text-[2rem]">For Creatives</h6>
@@ -71,8 +71,8 @@ Plumbum is great place to begin work and find support to complete work.
     </div>)
 }
     const groupImage = ()=>{
-        return<div className="relative   overflow-hidden h-60 sm:h-full rounded-lg  ">
-        <img src={firstGroup} className="object-cover absolute top-[-6em] sm:top-[-12em] rounde-lg h-[20em] sm:h-[35em] w-full "/>
+        return<div className="relative  mx-auto bg-red-100 w-fit overflow-hidden h-60 sm:h-full rounded-lg  ">
+        <img src={firstGroup} className="object-cover absolute top-[-6em] sm:top-[-12em] rounde-lg sm:h-[20em] sm:h-[35em] w-full "/>
       </div>
    
     }
@@ -83,7 +83,7 @@ Plumbum is great place to begin work and find support to complete work.
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,300&family=Roboto:wght@500&display=swap" rel="stylesheet"/>
 <div>
-    <div  className="welcome">
+    <div  className="welcome mb-8">
     
     <div id="title py-8">
         <h6 className="text-[4rem] text-emerald-600">Welcome to Plumbum</h6>
@@ -108,7 +108,7 @@ Plumbum is great place to begin work and find support to complete work.
     {detailsOfWorkshop()}
 </div>
 </div>
-<div className="details text-emerald-600 sm:text-white  box">
+<div className="details text-emerald-600  sm:text-white  box">
     {writingJourney()}
 </div>
 
