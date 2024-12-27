@@ -35,7 +35,7 @@ Join us! If you're a writer or enjoy reading,
 you're of discerning taste; share and save ideas and inspiration.
  Plumbum is the place for your story.
 </h6>
-<button className="text-2xl text-white bg-emerald-800 rouned-lg mt-4" onClick={()=>{navigate(Paths.apply())}}  
+<button className="text-2xl text-white bg-emerald-800 rouneded-lg mt-8" onClick={()=>{navigate(Paths.apply())}}  
    >Apply to Join Today</button>
 </div>
     </div>)
