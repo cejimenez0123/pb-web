@@ -14,19 +14,12 @@ import MyProfileContainer from './container/MyProfileContainer';
 import CreateBookContainer from './container/book/CreateBookContainer';
 import CreateLibraryContainer from './container/library/CreateLibraryContainer';
 import SettingsContainer from './container/SettingsContainer';
-<<<<<<< HEAD
-import ProfileContainer from './container/ProfileContainer';
-import UpdateLibraryContainer from './container/library/UpdateLibraryContainer';
-import AddPageToBookContainer from './container/book/AddPageToBookContainer';
-import AddItemsToLibraryContainer from './container/library/AddItemsToLibraryContainer';
-import PrivacyNoticeContrainer from "./container/PrivacyNoticeContainer"
-=======
 import ProfileContainer from './container/profile/ProfileContainer.jsx';
 import ApplyContainer from './container/auth/ApplyContainer';
->>>>>>> prisma
 import SearchDialog from './components/SearchDialog';
 import {  fetchBookmarkLibrary,
           getPublicLibraries } from './actions/LibraryActions';
+import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import checkResult from './core/checkResult';
 import {  getPublicBooks } from './actions/BookActions';
 import {  getCurrentProfile,

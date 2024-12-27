@@ -259,13 +259,8 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
   'libraries/getPublicLibraries',
   async (thunkApi) => {
      
-      // const  = await axios(Enviroment.url+"/collection/public/library",{
-      //   headers:{
-      //     'Access-Control-Allow-Origin': "*"
-      // }
-      // })
-      // console.log()
       let data = await collectionRepo.getPublicLibraries()
+      console.log(data)
   return {
 
       libraries: data.libraries
