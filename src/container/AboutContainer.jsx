@@ -7,7 +7,7 @@ import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
 export default function AboutContainer(props){
     const md = useMediaQuery({
-        query: '(max-width: 600px)'
+        query: '(max-width: 1000px)'
       })
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -48,10 +48,10 @@ you're of discerning taste; share and save ideas and inspiration.
     </div>)
 }
 const detailsOfWorkshop=()=>{
-    return (<div className="poppins   max-w-screen">
-        <h2 className="poppins text-center text-4xl font-bold   py-4">From Writers Workshop to Plumbum</h2>
+    return (<div className={`poppins   max-w-screen`}>
+        <h2 className="poppins text-center text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
-        <h3 className="poppins text-emerald-700  font-bold  text-2xl font-bold text-left">What is a Writers' Workshop?</h3>
+        <h3 className={`poppins  font-bold  text-2xl font-bold text-left ${md?"text-emerald-700":"text-white"}`}>What is a Writers' Workshop?</h3>
       
 <h6 className="py-4 text-left poppins text-[1.2rem]">
 A creative sanctuary where like minded writers can offer peer critique

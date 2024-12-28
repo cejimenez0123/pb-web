@@ -194,7 +194,7 @@ return <Button onClick={()=>{
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className='border-t bg-emerald-700  text-center border-green-100 '><div>
+        <div className='border-t bg-emerald-700 text-white  text-center border-green-100 '><div>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
