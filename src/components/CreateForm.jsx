@@ -96,7 +96,7 @@ Save
     {pagesToBeAdded.map(page =><ListItem key={page.id} onClick={()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
-    }}>{page.title}</ListItem>)}
+    }}>{page.title.length>0?page.title:"Untitled"}</ListItem>)}
 </List>
 </FormGroup>)
 }

@@ -65,20 +65,20 @@ function App(props) {
   },[props.currentProfile])
   const fetchData = ()=>{
     if(props.currentProfile!=null){
-      const params = {
-        id: props.currentProfile.bookmarkLibraryId
-      }
-      const profileParams = {
-        profile: props.currentProfile
-      }
+      // const params = {
+      //   id: props.currentProfile.bookmarkLibraryId
+      // }
+      // const profileParams = {
+      //   profile: props.currentProfile
+      // }
       dispatch(getHashtags())
       dispatch(getProfileHashtagCommentUse({profileId:props.currentProfile.id}))
-      props.fetchHomeCollection(profileParams)
-      props.fetchBookmarkLibrary(params)
-      props.getPageApprovals(profileParams)
-      props.fetchFollowBooksForProfile(profileParams)
-      props.fetchFollowLibraryForProfile(profileParams)
-      props.fetchFollowProfilesForProfile(profileParams)
+      // props.fetchHomeCollection(profileParams)
+      // props.fetchBookmarkLibrary(params)
+      // props.getPageApprovals(profileParams)
+      // props.fetchFollowBooksForProfile(profileParams)
+      // props.fetchFollowLibraryForProfile(profileParams)
+      // props.fetchFollowProfilesForProfile(profileParams)
     }
  
   }
@@ -265,13 +265,13 @@ function mapDispatchToProps(dispatch){
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicStories:()=>dispatch(getPublicStories()),
     // fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
-    fetchFollowBooksForProfile:(params)=>dispatch(fetchFollowBooksForProfile(params)) ,
-    fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params)),
-    fetchFollowProfilesForProfile:(params)=>dispatch(fetchFollowProfilesForProfile(params)),
+    // fetchFollowBooksForProfile:(params)=>dispatch(fetchFollowBooksForProfile(params)) ,
+    // fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params)),
+    // fetchFollowProfilesForProfile:(params)=>dispatch(fetchFollowProfilesForProfile(params)),
     fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),
     setSignedInTrue:()=>dispatch(setSignedInTrue()),
     setSignedInFalse:()=>dispatch(setSignedInFalse()),
-    getPageApprovals:(params)=>dispatch(getPageApprovals(params)),
+    // getPageApprovals:(params)=>dispatch(getPageApprovals(params)),
   }
 }
 function mapStateToProps(state){

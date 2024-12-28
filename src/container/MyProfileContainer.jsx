@@ -111,7 +111,7 @@ function MyProfileContainer(props){
     
             return(
             <div className=''>
-                    <div className=' w-full border-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
+                    <div className=' w-full border-2 border-emerald-300 mx-2 mt-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
                   
                         <div>
                             <div className='sm:flex-row flex-col flex  pr-0 pt-4'>
@@ -119,19 +119,19 @@ function MyProfileContainer(props){
                      
                             <div className='flex sm:flex-row ml-4 mt-1  w-[100%] justify-between'>
                             <div className='text-left '>
-                            <h5 className='text-xl font-bold'>{currentProfile.username}</h5>
-                            <h6 className='max-h-48 overflow-scroll text-l'>{currentProfile.selfStatement}</h6>
+                            <h5 className='text-xl text-emerald-900 font-bold'>{currentProfile.username}</h5>
+                            <h6 className='max-h-48 overflow-scroll text-emerald-900 '>{currentProfile.selfStatement}</h6>
                            
                             <MediaQuery minWidth={'600px'}>
                             <div className='mt-4 pt-2 flex flex-row'>
-                            <button onClick={ClickWriteAStory} className='bg-green-600 text-white  sm:text-xl text-bold'>
+                            <button onClick={ClickWriteAStory} className='bg-emerald-700 text-white  sm:text-xl text-bold'>
                                 Write a Story
                             </button>
                            
-                            <button onClick={ClickCreateAColleciton} className='bg-green-600 md:ml-4 text-white sm:text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 md:ml-4 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
-                            <a onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 my-4 text-white'>Refer Someone?</a>
+                            <a onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 my-4 text-emerald-800'>Refer Someone?</a>
                             </div> 
                             </MediaQuery>
                            
@@ -153,20 +153,20 @@ function MyProfileContainer(props){
                         <div className='text-left mt-2'>
                         <MediaQuery maxWidth={'600px'}>
                             <div className='ml-4 flex  flex-col '>
-                            <button onClick={ClickWriteAStory} className='bg-green-600 max-w-48 text-white mt-2 sm:text-xl text-bold'>
+                            <button onClick={ClickWriteAStory} className='bg-emerald-700 max-w-48 text-white mt-2 sm:text-xl text-bold'>
                                 Write a Story
                             </button>
-                            <button onClick={ClickCreateAColleciton} className='bg-green-600 max-w-48 sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 max-w-48 sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
-                            <a onClick={()=>setOpenRefferal(true)}className='my-4 text-sm mx-4 text-white'>Refer Someone?</a>
+                            <a onClick={()=>setOpenRefferal(true)}className='my-4 text-sm mx-4 text-emerald-800'>Refer Someone?</a>
                             </div>
                             </MediaQuery>
                             </div> 
                             </div>
                             </div>
                             <div role="tablist" className="tabs mt-8 shadow-md min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Pages" />
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800  shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent  text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  sm:max-w-[42rem] md:p-6">
   <PageIndexList/>
   </div>
@@ -175,14 +175,14 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-white bg-transparent  border-emerald-600 border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
+    className="tab text-emerald-800 bg-transparent  border-emerald-500 border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
     aria-label="Books"
     />
   <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box pt-1">
   <CollectionIndexList cols={books}/>
   </div>
 
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-transparent border-emerald-600 border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
+  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-800 bg-transparent border-emerald-500 border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
   <div role="tabpanel" className="tab-content pt-1 bg-transparent sm:max-w-[42rem]   rounded-box ">
     <CollectionIndexList cols={libraries}/>
   </div>

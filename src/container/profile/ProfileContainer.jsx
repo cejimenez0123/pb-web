@@ -134,7 +134,7 @@ function ProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-600 bg-transparent  border-white border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
+    className="tab text-emerald-600 bg-transparent  border-emerald-500 border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
     aria-label="Collecitons"
     />
   <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box pt-1">

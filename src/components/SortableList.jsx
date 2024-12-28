@@ -1,9 +1,13 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 export default function SortableList({ items, onOrderChange }) {
+  
     const [listItems,setListItems]=useState(items)
+    useEffect(()=>{
+      setListItems(items)
+    },[items])
     // Handle drag and drop
     const handleOnDragEnd = (result) => {
       if (!result.destination) return;
@@ -20,6 +24,7 @@ export default function SortableList({ items, onOrderChange }) {
     // Handle delete item
     const handleDelete = (index) => {
       const newList = listItems.filter((_, i) => i !== index);
+
       setListItems(newList);
       onOrderChange(newList);
     };
@@ -37,22 +42,25 @@ export default function SortableList({ items, onOrderChange }) {
                 {listItems && listItems.map((item, index) => (
 
                   <Draggable key={item.id} draggableId={item.id} index={index}>
-                    {(provided) => (
-                      <li
+                    {(provided) => {
+
+
+                      return(<li
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className="flex justify-between items-center p-4 bg-transparent border-emerald-600 border rounded-lg shadow-md hover:bg-gray-100"
+                        className="flex justify-between items-center p-4 bg-transparent border-emerald-600 border-1 rounded-lg shadow-md hover:bg-gray-100"
                       >
-                        <span className="flex-grow text-white">{item.title}</span>
+                        <h6 className="flex-grow text-emerald-800 text-left text-[1.2rem]">
+                          {item.story?item.story.title:item.childCollection?item.childCollection.title:"Not found"}</h6>
                         <button
                           onClick={() => handleDelete(index)}
-                          className="ml-2 px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600"
+                          className="ml-2 px-2 py-1 text-red-500 bg-transparent  border-1 border-red-500 rounded hover:bg-red-600"
                         >
                           Delete
                         </button>
                       </li>
-                    )}
+                    )}}
                   </Draggable>
                 ))}
                 {provided.placeholder}

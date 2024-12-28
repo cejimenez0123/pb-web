@@ -91,9 +91,9 @@ function LinkPreview({ url,size }) {
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      <div  className="link-preview" 
+      <div  className="link-preview spotify " 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"} link={url}/>
+        <Spotify width={"100%"}  height={"400rem"}  className='' link={url}/>
       </div>)
   }
   if (loading) {
@@ -140,7 +140,7 @@ function LinkPreview({ url,size }) {
       }
   }
   return (
-    <div className="link-preview  text-slate-800" onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className="link-preview text-slate-800" onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       {previewDescription()}
       {previewTitle()}

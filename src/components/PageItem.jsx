@@ -32,7 +32,7 @@ function PageItem({page,setPageIdList}){
         <div className="list-item">
             <div onClick={pageShow} className="title">
                 <h6>
-                    {page.title}
+                {page.title.length>0?page.title:"Untitled"}
                 </h6>
             </div>
              <IconButton onClick={()=>{

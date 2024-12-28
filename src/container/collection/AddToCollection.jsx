@@ -90,22 +90,22 @@ export default function AddToCollectionContainer(props){
 
     const storyList = ()=>{
         if(pagesInView && colInView){
-        return(<div className=" my-4 max-h-96 mx-auto overflow-scroll sm:mx-12 text-left mb-2">
+        return(<div className=" my-4 max-h-96 text-emerald-800 mx-auto overflow-scroll sm:mx-12 text-left mb-2">
             <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Stories to Collection</h6>
             <InfiniteScroll
             className=" mx-2 "
         dataLength={pagesInView.length}>
             {pagesInView.filter(story=>!colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)).map(story=>{
-                return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border
-                border-white rounded-lg p-4  my-2">
+                return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-1
+                border-emerald-400  rounded-lg p-4  my-2">
                     <h2 className="text-xl my-auto  overflow-hidden">{story?story.title:null}</h2>
-                    {colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
+                    <div className="bg-emerald-800 rounded-lg p-2">{colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
                     <h1 onClick={()=>removeNewStory(story)}className="">
-<p className="text-2xl  h-8 rounded-full  "><img src={checked}/></p>
+<p className="text-2xl   "><img src={checked}/></p>
 </h1>:
-<h1 onClick={()=>addNewStory(story)}className=" text-white  ">
-<p className="text-2xl  content-center rounded-[60em]"><img src={emptyBox}/></p>
-</h1>}
+<h1 onClick={()=>addNewStory(story)}className=" text-emerald-800">
+<p className="text-2xl  content-center "><img src={emptyBox}/></p>
+</h1>}</div>
                 </div>)
             })}
             </InfiniteScroll></div>)
@@ -114,23 +114,23 @@ export default function AddToCollectionContainer(props){
         }}
     const colList = ()=>{
         if(pagesInView && colInView){
-            console.log("Colin",colInView)
-        return(<div className=" my-4 max-h-96 mx-auto overflow-scroll sm:mx-12 text-left mb-2">
+        
+        return(<div className=" my-4 max-h-96 mx-auto text-emerald-800 overflow-scroll sm:mx-12 text-left mb-2">
         <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Collections to Collection</h6>
         <InfiniteScroll
         className=" mx-2 "
         dataLength={collectionsList.length}>
 {collectionsList.filter(col=>!colInView.childCollections.find(joint=>joint.childCollectionId==col.id)).map(col=>{
-            return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border
-            border-white rounded-lg p-4  my-2">
-                <h2 className="text-xl my-auto  overflow-hidden">{col?col.title:null}</h2>
-                {colInView&& colInView.childCollections&& colInView.childCollections.find(colJoint=>colJoint.childCollectionId==col.id)||newCollection.includes(col)?
+            return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-1
+            border-emerald-400 rounded-lg p-4  my-2">
+                <h2 className="text-xl my-auto  overflow-hidden">{col?col.title:"Untitled"}</h2>
+                <div className="bg-emerald-800 rounded-lg p-2">{colInView&& colInView.childCollections&& colInView.childCollections.find(colJoint=>colJoint.childCollectionId==col.id)||newCollection.includes(col)?
                 <h1  onClick={()=>removeNewCollection(col)}className="">
-<p className="text-2xl  h-8 rounded-full  "><img src={checked}/></p>
+<p className="text-2xl   "><img src={checked}/></p>
 </h1>:
-<h1 onClick={()=>addNewCollection(col)}className=" text-white  ">
+<h1 onClick={()=>addNewCollection(col)}className=" text-emerald-800">
 <p className="text-2xl  content-center rounded-[60em]"><img src={emptyBox}/></p>
-</h1>}
+</h1>}</div>
             </div>)
         })}
         </InfiniteScroll></div>)}
@@ -144,8 +144,8 @@ export default function AddToCollectionContainer(props){
  
     return(<div className=''>
         <div className="static">
-<div className="border border-white rounded-lg m-4 sm:m-8 p-8 text-left">
-            <h2 className="text-2xl mb-2">{colInView.title && colInView.title.length>0?colInView.title:"Untitled"}</h2>
+<div className="border-1 border-emerald-400  rounded-lg mx-2 my-2 sm:m-8 p-8 text-left">
+            <h2 className="text-2xl text-emerald-800 mb-2">{colInView.title && colInView.title.length>0?colInView.title:"Untitled"}</h2>
             <p className="sm:my-4 md:mx-2 p-2 min-h-24 sm:p-4 bg-emerald-800 rounded-lg sm:max-w-[42rem]">{colInView?colInView.purpose:null}</p>
         
         <div className="flex flex-row justify-center">
@@ -164,11 +164,11 @@ export default function AddToCollectionContainer(props){
 
 
 <div role="tablist" className="tabs mt-8 shadow-md rounded-lg   sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Stories" />
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm border-emerald-400 border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-800 text-xl" aria-label="Stories" />
   <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  md:w-[30em] md:p-6">
   {storyList()}
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-white bg-transparent border-white border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Collections" />
+  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent border-emerald-400 border-l-2 border-r-2 border-t-2   text-emerald-800 shadow-sm text-xl" aria-label="Collections" />
   <div role="tabpanel" className="tab-content pt-1 max-w-[100svw] bg-transparent   md:w-[30em]  md:p-6 rounded-box ">
   {colList()}
    </div>

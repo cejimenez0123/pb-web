@@ -17,7 +17,7 @@ const CollectionIndexList = (props)=>{
                     </div>}
                   >
                       {props.cols.map(col=>{
-                        return <div><CollectionIndexItem collection={col}/></div>
+                        return <div className="border-2 rounded-lg my-2 mx-2 border-emerald-200"><CollectionIndexItem collection={col}/></div>
                       })}  
                    </InfiniteScroll>)
 

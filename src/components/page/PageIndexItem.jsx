@@ -90,7 +90,7 @@ function PageIndexItem({page,onDelete}) {
    </div>)
     if(currentProfile!=null && page.authorId==currentProfile.id){
         buttonDiv = (<div className="dropdown dropdown-left">
-        <div tabIndex={0} role="button" className="mx-4"><img classname="w-12 h-12" src={edit}/></div>
+        <div tabIndex={0} role="button" className="bg-emerald-800 rounded-full  w-16 h-10 pt-2 pb-4 px-2  "><img classname="my-auto" src={edit}/></div>
         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
           <li className="text-green-600 " onClick={()=>{
             dispatch(setPageInView({page}))
@@ -100,11 +100,12 @@ function PageIndexItem({page,onDelete}) {
       </div>)
   
     }
-            return(<div className={`   border-emerald-600 rounded-lg border flex flex-row justify-between  mb-1  `}>
+            return(<div className={`   mb-1 mx-1 `}> 
+              <div  className="flex flex-row justify-between   " >
                 <div className="text-left max-w-[100vw] h-fit  my-auto md:ml-4 py-8   ">
                
                 <a className="text-emerald-700 " onClick={handleOnClick}> 
-                   {page.title.length>0? <h6 className="text-xl ml-2 my-auto">{page.title}</h6>:<h6>Unititled</h6>}
+                   {page && page.title && page.title.length>0? <h6 className="text-xl ml-2 my-auto">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                 <div className=" my-auto w-fit">
@@ -114,7 +115,7 @@ function PageIndexItem({page,onDelete}) {
              
             
                 </div>
-            </div>)}else{
+            </div>  </div>)}else{
                 return(<div className="list-item">
 
                     Loading...

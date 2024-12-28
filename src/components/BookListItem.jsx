@@ -27,7 +27,7 @@ function BookListItem({book}){
     }
     return (
 
-<div className="max-w-48  min-w-56 mx-8  rounded  shadow-lg bg-emerald-600">
+<div className="max-w-48  min-w-56 mx-8  rounded  shadow-sm bg-emerald-700">
 <div  onClick={navigateToBook}
 className=" text-white h-48 bg-transparent ">
  <div className="px-3 py-3">

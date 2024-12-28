@@ -135,9 +135,9 @@ const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProte
 const getSubCollectionsProtected = createAsyncThunk("collection/getSubCollectionsProtected",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchSubCollectionsProtected(params)
   
-    const list = data.collections.map(col=>col.childCollection)
+  
     return {
-        list:list
+        list:data.collections
     }
 })
 const getSubCollectionsPublic = createAsyncThunk("collection/getSubCollectionsPublic",async(params,thunkApi)=>{
@@ -198,6 +198,13 @@ const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectio
         return {list:data.list}
     }
 )
+const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent",
+    async ({id,storyToCol,colToCol,col},thunkApi)=>{
+        let data = await collectionRepo.updateCollectionContent({id,storyToCol,colToCol,col})
+     
+        return {collection:data.collection}
+    }
+)
 export {
     getPublicBooks,
     saveRoleToCollection,
@@ -217,5 +224,6 @@ export {
     getSubCollectionsPublic,
     deleteCollection,
     deleteCollectionFromCollection,
-    deleteStoryFromCollection
+    deleteStoryFromCollection,
+    patchCollectionContent
 }

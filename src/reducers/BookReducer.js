@@ -23,6 +23,7 @@ import {
 const initialState = {
     booksInView:[],
     collections:[],
+    collectionToCollectionsList:[],
     collectionInView:[],
     loading:false,
     error:"",
@@ -44,7 +45,7 @@ builder.addCase(deleteCollectionFromCollection.fulfilled,(state,{payload})=>{
     
 })
 .addCase(getSubCollectionsProtected.fulfilled,(state,{payload})=>{
-    state.collections = payload.list
+    state.collectionToCollectionsList = payload.list
 }).addCase(getSubCollectionsPublic.fulfilled,(state,{payload})=>{
     state.collections = payload.list
 }).addCase(addCollectionListToCollection.pending,(state,{payload})=>{

@@ -44,7 +44,7 @@ const detailsOfWorkshop=()=>{
     return (<div id="" className="poppins   max-w-screen">
         <h2 className="poppins text-center text-4xl font-bold   py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
-        <h3 className="poppins  text-white font-bold text-left">What is a Writers' Workshop?</h3>
+        <h3 className="poppins text-emerald-600 font-bold  text-font-bold text-left">What is a Writers' Workshop?</h3>
       
 <h6 className="py-4 text-left poppins text-[1.2rem]">
 A creative sanctuary where like minded writers can offer peer critique

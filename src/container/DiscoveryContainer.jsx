@@ -204,7 +204,7 @@ const navigateToLibrary = (library)=>{
                                         text-2xl 
                                         text-left 
                                         mx-4
-                                        my-4 pl-2 l
+                                        my-4 l
                                         lg:mb-4'>Pages</h3>
                         {isNotPhone?<div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
@@ -216,8 +216,10 @@ const navigateToLibrary = (library)=>{
                                     <img src={stream}/>
                         </button></div>:null}
                         </div>
-<div className='px-2'>
+<div className='max-w-screen'>
+    
                     {pageList()}
+                  
                     </div>
                     </div>
                     <div className=' lg:flex-1  lg:mx-4'>

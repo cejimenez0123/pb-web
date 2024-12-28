@@ -27,6 +27,7 @@ import { getMyStories, getStory,createStory, updateStory, deleteStory, getCollec
 import { getProtectCollectionStories, getPublicCollectionStories } from "../actions/CollectionActions"
 
 const initialState = {pagesInView:[],
+                      storyToCollectionList:[],
                       editingPage:null,
                       loading:false,
                       editorHtmlContent:"",
@@ -48,7 +49,7 @@ const pageSlice = createSlice({
           const {list}=payload
          
           state.loading = false
-          state.pagesInView =  list.map(joint=>joint.story)
+          state.storyToCollectionList= list
         }).addCase(getCollectionStoriesProtected.pending,(state)=>{
           state.loading=true
         

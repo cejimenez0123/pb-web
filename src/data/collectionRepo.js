@@ -71,6 +71,14 @@ import Enviroment from "../core/Enviroment";
         }})
         return res.data
     }
+    async updateCollectionContent({id,storyToCol,colToCol,col}){
+            let res = await axios.patch(this.url+"/"+id,{
+                storyToCol,colToCol,col
+            },{headers:{
+                Authorization:"Bearer "+localStorage.getItem("token")
+            }})
+            return res.data
+        }
     // async addStoriesToCollection({collection,storyIdList}){
    
     //     let res = await axios.post(Enviroment.url+"/collection/"+collection.id+"/story/",{
@@ -152,7 +160,7 @@ import Enviroment from "../core/Enviroment";
         const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")
         }})
-        console.log(res)
+       
         return res.data
     }
     async fetchSubCollectionsPublic({id}){

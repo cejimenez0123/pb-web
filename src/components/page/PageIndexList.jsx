@@ -17,7 +17,7 @@ const PageIndexList = ()=>{
                     }
                   >
                       {pagesInView.map(page=>{
-                        return <PageIndexItem page={page} />
+                        return <div className="rounded-lg border-3 mx-2 my-2 border-emerald-200 "><PageIndexItem page={page} /></div>
                       })}  
                    </InfiniteScroll>)
 

@@ -45,7 +45,7 @@ const PageName = {
   login:"Log In",
   search:"Search"
 }
-const pages = [ PageName.home,
+const pages = [ 
                 PageName.about,
                 PageName.discovery,
                 PageName.search,
@@ -173,7 +173,7 @@ function NavbarContainer(props){
       
   }
     return (
-      <div className='bg-emerald-600'>
+      <div className='bg-emerald-900'>
         <AppBar position="static"
                className='bg-transparent'>
             <Container >
