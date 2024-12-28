@@ -1,19 +1,26 @@
 import "../styles/About.css"
 import firstGroup from "../images/firstgroup.jpg"
 import groupJpg from "../images/table.png"
-import MediaQuery from "react-responsive"
-import { Button } from "@mui/material"
-import theme from "../theme"
+import { useMediaQuery } from "react-responsive"
 import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
 export default function AboutContainer(props){
+    const md = useMediaQuery({
+        query: '(max-width: 600px)'
+      })
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const forCreatives = ()=>{
-        return(<div className="text-emerald-600 mt-12 sm:text-white">
-            <div className="box " >
-<div id="for-creatives" >
+        return(<div className="grid sm:grid-cols-2 gap-8">
+    <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
+<img  className=" absolute top-[-9rem] sm:top-[-10rem] lg:top-[-18rem] rounded-lg" src={firstGroup}  alt="first group"/>
+ </div>
+   
+
+           <div className="">
+            <div className=" bg-[#23774ca6] text-white h-full rounded-lg p-4" >
+<div  >
 <h6 className="poppins  font-bold text-[2rem]">For Creatives</h6>
 <div >
 <h6 className="text-[1.2rem]  poppins pt-4 text-left" > 
@@ -25,32 +32,32 @@ Creatives need a place to test ideas before they launch, and that is what Plumbu
 </div>
 </div>
 </div>
-        </div>)
+        </div> </div>)
     }
 const writingJourney = ()=>{
     return(<div className="">
         <div id="ready">
-<h6  className="text-emerald sm:text-white">
+<h6  className="text-emerald text-lg poppins sm:text-white">
 Join us! If you're a writer or enjoy reading, 
 you're of discerning taste; share and save ideas and inspiration.
  Plumbum is the place for your story.
 </h6>
-<button className="text-2xl text-white bg-emerald-800 rouneded-lg mt-8" onClick={()=>{navigate(Paths.apply())}}  
+<button className="text-2xl text-white bg-emerald-800 rouneded-lg mb-24 mt-8" onClick={()=>{navigate(Paths.apply())}}  
    >Apply to Join Today</button>
 </div>
     </div>)
 }
 const detailsOfWorkshop=()=>{
-    return (<div id="" className="poppins   max-w-screen">
+    return (<div className="poppins   max-w-screen">
         <h2 className="poppins text-center text-4xl font-bold   py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
-        <h3 className="poppins text-emerald-600 font-bold  text-font-bold text-left">What is a Writers' Workshop?</h3>
+        <h3 className="poppins text-emerald-700  font-bold  text-2xl font-bold text-left">What is a Writers' Workshop?</h3>
       
 <h6 className="py-4 text-left poppins text-[1.2rem]">
 A creative sanctuary where like minded writers can offer peer critique
        </h6>
 
-        <h3 className="poppins text-left font-bold py-4">What is a Plumbum?</h3>
+        <h3 className="poppins text-2xl text-left font-bold py-4">What is a Plumbum?</h3>
         <h6 className="text-left py-4 text-[1.2rem] poppins">Plumbum is the latin word for Lead, like a lead anvil or pipe. It's the root word of plumber</h6>
         <ul className="text-left">
         <li className="py-3 text-[1.2rem]"><h6> 📝 Tired of oversharing your work? We understand your work is meaningful.
@@ -70,45 +77,60 @@ Plumbum is great place to begin work and find support to complete work.
 </div>
     </div>)
 }
-    const groupImage = ()=>{
-        return<div className="relative  mx-auto bg-red-100 w-fit overflow-hidden h-60 sm:h-full rounded-lg  ">
-        <img src={firstGroup} className="object-cover absolute top-[-6em] sm:top-[-12em] rounde-lg sm:h-[20em] sm:h-[35em] w-full "/>
-      </div>
+    // const groupImage = ()=>{
+    //     return<div className="relative min-w-42 mx-auto bg-red-100 w-fit overflow-hidden h-60 sm:h-full rounded-lg  ">
+    //     <img src={firstGroup} className="object-cover absolute top-[-6em] sm:top-[-12em] rounded-lg sm:h-[20em] sm:h-[35em]  "/>
+    //   </div>
    
-    }
-    return(<div id="about" className="px-8 text-emerald-600 sm:text-white py-8">
+    // }
+    return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
         
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300;400;700&display=swap" />
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,300&family=Roboto:wght@500&display=swap" rel="stylesheet"/>
 <div>
-    <div  className="welcome mb-8">
+    <div>
+    <div  className="grid md:grid-cols-2 gap-8 mb-8">
     
-    <div id="title py-8">
-        <h6 className="text-[4rem] text-emerald-600">Welcome to Plumbum</h6>
-    </div>
-        <MediaQuery minWidth={"1000px"}>
+    <div id="py-8 min-w-1/2 px-8">
+        <h6 className="text-[4rem] text-emerald-700 py-8 ">Welcome to Plumbum</h6>
+  </div>
+
+  <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
+<img  className=" absolute top-[-9rem] sm:top-[-10rem] lg:top-[-18rem] rounded-lg" src={groupJpg} alt="group pic"
+ />
+</div> 
    
-<div id="bookshelf w-24 h-24 rounded-lg object-cover">
-<img  className="rounded-lg" src={groupJpg}alt="bookshelves" />
 
+{/* max-height: 10em !important;
+    max-width: 10em !important;
 
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+img[alt="bookshelves"]{
+    object-fit: cover;
+    height: 20em;
+    width: 100%;
+ 
+    border-radius: 0.5rem;
+} */}
 </div>
-</MediaQuery>
+
 </div>
 <div>
-<div id="for" className=" text-white">
-    {groupImage()}
+
+    
     {forCreatives()}
+  
 </div>
-</div>
-<div className="details text-emerald-600 sm:text-white   box">
+<div className="details text-emerald-700 sm:text-white   box">
 
     {detailsOfWorkshop()}
 </div>
 </div>
-<div className="details text-emerald-600  sm:text-white  box">
+<div className="details text-emerald-700  sm:text-white  box">
     {writingJourney()}
 </div>
 
