@@ -92,7 +92,7 @@ bg-transparent text-white border border-green-100 text-white flex items-center g
 >* How did you find out?</label>
 <input value={howFindOut}onChange={(e)=>handleChangeHowFindOut(e.target.value)} 
 className="bg-transparent border border-green-100 py-8 text-white text-xl input "></input>
-<button type="submit" className=" poppins hover:bg-green-400 font-bold border border-green-700 shadow-sm mt-4 mb-8 bg-green-700  btn-lg ">
+<button type="submit" className=" poppins my-8 text-2xl px-12 mx-auto rounded-full bg-emerald-800 hover:bg-green-400 font-bold border border-green-700 shadow-sm">
                     Apply
                 </button>
                 </form>
