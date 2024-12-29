@@ -1,7 +1,5 @@
 import { createAsyncThunk ,createAction} from "@reduxjs/toolkit"
 import Book from "../domain/models/book"
-import { unpackPageDoc } from "./PageActions"
-import {unpackLibraryDoc} from "./LibraryActions"
 import {  where,
           query,
           and,
@@ -11,13 +9,9 @@ import {  where,
           getDocs,
           getDoc,
           doc,
-          setDoc,
-          deleteDoc, 
-          Timestamp,
           updateDoc} from "firebase/firestore"
 import { db,auth,client} from "../core/di"
 import Contributors from "../domain/models/contributor"
-import axios from "axios"
 import collectionRepo from "../data/collectionRepo"
 
 const getPublicBooks = createAsyncThunk(
@@ -243,62 +237,62 @@ const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params
       return {error }
     }                
 })
-const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=>{
+// const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=>{
       
-  try{
-    const { book,title,purpose,pageIdList,privacy,writingIsOpen } = params
-    const data = await collectionRepo.updateCollection({id:book.id,title:title,purpose:purpose,
-      isOpenCollaboration:writingIsOpen,isPrivate:privacy
-    })
+//   try{
+//     const { book,title,purpose,pageIdList,privacy,writingIsOpen } = params
+//     const data = await collectionRepo.updateCollection({id:book.id,title:title,purpose:purpose,
+//       isOpenCollaboration:writingIsOpen,isPrivate:privacy
+//     })
      
-      return {
-        book: data.collection
-      }
-    }catch(e){
-    return {error: new Error("Error: UDATE BOOK -" + e.message)}
-  }
-})
-const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>{
-  try{
-    const {book}=params
-    let data = await collectionRepo.deleteCollection({id:book.id})
-    client.initIndex("book").deleteObject(book.id).wait()
-    return {
-      book:data
-    }
-  }catch(e){
-    return {error: new Error("Error: DELETE BOOK"+e.message)};
-  }
-})
-const updateBookContent = createAsyncThunk("books/updateBookContent", async (params,thunkApi)=>{
-  try {
+//       return {
+//         book: data.collection
+//       }
+//     }catch(e){
+//     return {error: new Error("Error: UDATE BOOK -" + e.message)}
+//   }
+// })
+// const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>{
+//   try{
+//     const {book}=params
+//     let data = await collectionRepo.deleteCollection({id:book.id})
+//     client.initIndex("book").deleteObject(book.id).wait()
+//     return {
+//       book:data
+//     }
+//   }catch(e){
+//     return {error: new Error("Error: DELETE BOOK"+e.message)};
+//   }
+// })
+// const updateBookContent = createAsyncThunk("books/updateBookContent", async (params,thunkApi)=>{
+//   try {
 
-    const {book,pageIdList} = params
+//     const {book,pageIdList} = params
 
-    let data = collectionRepo.addStoriesToCollection({collection:book,storyIdList:pageIdList})
-  //   let ref = doc(db,'book',book.id)
-  //   pageIdList.forEach(pageId => {
-  //    updateDoc(ref,{ pageIdList:arrayUnion(pageId)
-  //   })})
-  //  let contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
-  //   let newBook = new Book(book.id,
-  //                       book.purpose,
-  //                       book.title,
-  //                       book.profileId,
-  //                       pageIdList,
-  //                       book.privacy,
-  //                       book.writingIsOpen,
-  //                       contributors,
-  //                       book.updatedAt,
-  //                       book.created
-  //                       )
-    return {
-      book:data.collection
-    } 
-  }catch(e){
-    return {error: new Error("Error: Update Book Content"+e.message)};
-  }
-})
+//     let data = collectionRepo.addStoriesToCollection({collection:book,storyIdList:pageIdList})
+//   //   let ref = doc(db,'book',book.id)
+//   //   pageIdList.forEach(pageId => {
+//   //    updateDoc(ref,{ pageIdList:arrayUnion(pageId)
+//   //   })})
+//   //  let contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
+//   //   let newBook = new Book(book.id,
+//   //                       book.purpose,
+//   //                       book.title,
+//   //                       book.profileId,
+//   //                       pageIdList,
+//   //                       book.privacy,
+//   //                       book.writingIsOpen,
+//   //                       contributors,
+//   //                       book.updatedAt,
+//   //                       book.created
+//   //                       )
+//     return {
+//       book:data.collection
+//     } 
+//   }catch(e){
+//     return {error: new Error("Error: Update Book Content"+e.message)};
+//   }
+// })
 
 const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",async (params,thunkApi)=>{
   try {
@@ -322,21 +316,7 @@ const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",as
     }
   }
 })
-const setBookInView = createAction("books/setBookInView", (params)=> {
 
-  const {book} = params
-  
-  return  {payload:
-    book}
-    
-  
-})
-const setBooksToBeAdded = createAction("books/setBooksToBeAdded",(params)=>{
-  let {bookList} = params
-  return {
-    payload: bookList
-  }
-})
 const fetchBooksWhereProfileEditor = createAsyncThunk("books/fetchBooksWhereProfileEditor",(params,thunkApi)=>{
   try{
   const ref = collection(db,"book")
@@ -430,12 +410,7 @@ function unpackBookDoc(doc){
             createBook,
             fetchArrayOfBooksAppened,
             saveRolesForBook,
-            setBookInView,
-       
-            deleteBook,clearBooksInView,
-            updateBook,
-            setBooksToBeAdded,
             appendSaveRolesFoBook,
-            updateBookContent,
+            // updateBookContent,
             fetchBooksWhereProfileEditor,
             fetchBooksWhereProfileWriter}

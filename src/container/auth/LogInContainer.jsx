@@ -93,46 +93,51 @@ function LogInCard(props){
     }
     
     return(
-    <div className='sm:border-4  md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-600 p-4 '><div className='   flex items-center gap-2'>
+    <div className='sm:border-4  md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         <div  className='mx-auto'>
-            <form className='max-w-72 pt-4'>
+            <form className='w-screen sm:max-w-82 text-center pt-4'>
         <h1 className='text-emerald-800 poppins pb-4'> Log In</h1>
         <div >
             
-        <label className="input  poppins text-emerald-600  overflow-hidden border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
+        <label className="input  poppins text-emerald-800   border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
   Email
-  <input type="text" className="grow  overflow-hidden  text-[1rem] py-2 bg-transparent text-emerald-600" 
+  <input type="text" className="grow  overflow-hidden w-72 text-[1rem] py-2 bg-transparent text-emerald-800" 
          value={props.email} 
          onChange={(e) => props.setEmail(e.target.value.trim())}
         placeholder='example@email.com' />
 </label>
 
-<div className='pb-4'>
-    <label className="input poppins text-emerald-600  overflow-hidden border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
+<div className='mb-8 max-w-[91vw] '>
+    <label className="input poppins inline-block flex flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
   Password
-  <input type="password" className="grow text-emerald-800 " 
+  <input type={showPassword?"text":`password`} className="shrink max-w-52  shrink text-emerald-800 " 
          value={props.password}
          
          onChange={(e) => props.setPassword(e.target.value.trim())}
         placeholder='*****' />
-</label>      
+         
+         <label onClick={()=>setShowPassword(!showPassword)}
+                className={`text-[0.7rem] min-w-[5em] w-64 p-2 ${showPassword?"bg-emreald text-white":"" }ml-1 my-auto`}>
+                    {showPassword?"Hide":"Show"}</label>
+</label> 
+    
     </div>
             <div 
-                className='text-emerald-600 poppins hover:text-green-400'
+                className='text-emerald-800 poppins hover:text-green-400'
                 onClick={()=>{
                     setOpen(true)
                 }}>
                 <a>Forgot Password?</a>
             </div>
             <button
-            className='bg-green-600 poppins  hover:bg-green-400 text-white font-bold py-2 px-4 mt-4 btn-lg rounded '
+            className='bg-green-600 poppins  rounded-full hover:bg-green-400 text-white font-bold py-2 px-8 mt-4 btn-lg  '
                onClick={props.handleSubmit}
                 
                 variant="contained" >Submit</button>
                 
         </div>
         <div className='mt-4 p-4'>
-        <a  onClick={handleFirstTimeClick}className='text-emerald-600 poppins hover:text-green-400  '>Click here if this your first time?</a>
+        <a  onClick={handleFirstTimeClick}className='text-emerald-800 poppins hover:text-green-400  '>Click here if this your first time?</a>
         </div>
         <div>
         

@@ -3,11 +3,7 @@ import {
         
         fetchBook,
         saveRolesForBook,
-        updateBook,
-        setBooksToBeAdded,
-        setBookInView,
-        clearBooksInView,
-        deleteBook,
+      
     
         } from "../actions/BookActions"
         import { createCollection, fetchCollection, fetchCollectionProtected, getMyCollections, getPublicBooks,
@@ -112,36 +108,13 @@ builder.addCase(clearCollections.type,(state)=>{
     state.loading = false
     state.error = payload.error
 
-}).addCase(fetchBook.fulfilled,(state,{payload})=>{
-  
-    state.loading = false
-    state.bookInView = payload.book
-}).addCase(clearBooksInView,(state)=>{
-    state.booksInView = []
+
 }).addCase(saveRolesForBook.rejected,(state,{payload})=>{
     state.error = payload.error
 }).addCase(saveRolesForBook.fulfilled,(state,{payload})=>{
  
     state.bookInView = payload.book
-}).addCase(updateBook.fulfilled,(state,{payload})=>{
-    state.bookInView = payload.book
-    state.loading = false
-}).addCase(updateBook.pending,(state)=>{
-    state.loading = true
-
-}).addCase(updateBook.rejected,(state,{payload})=>{
-    state.error = payload.error
-    state.loading =false
-}).addCase(setBooksToBeAdded.type,(state,{payload})=>{
-    state.booksToBeAdded = payload
-  }).addCase(setBookInView.type,(state,{payload})=>{
-    state.bookInView = payload.book
-  }).addCase(deleteBook.fulfilled,(state,{payload})=>{
-   let list = state.booksInView.filter(book=>book.id != payload.book.id)
-   state.booksInView = list
-  }).addCase(deleteBook.rejected,(state,{payload})=>{
-    state.error = payload.error
-  })
+})
 }
 
 })

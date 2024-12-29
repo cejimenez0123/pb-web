@@ -65,20 +65,10 @@ function App(props) {
   },[props.currentProfile])
   const fetchData = ()=>{
     if(props.currentProfile!=null){
-      // const params = {
-      //   id: props.currentProfile.bookmarkLibraryId
-      // }
-      // const profileParams = {
-      //   profile: props.currentProfile
-      // }
+
       dispatch(getHashtags())
       dispatch(getProfileHashtagCommentUse({profileId:props.currentProfile.id}))
-      // props.fetchHomeCollection(profileParams)
-      // props.fetchBookmarkLibrary(params)
-      // props.getPageApprovals(profileParams)
-      // props.fetchFollowBooksForProfile(profileParams)
-      // props.fetchFollowLibraryForProfile(profileParams)
-      // props.fetchFollowProfilesForProfile(profileParams)
+  
     }
  
   }

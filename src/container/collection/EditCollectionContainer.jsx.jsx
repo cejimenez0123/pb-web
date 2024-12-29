@@ -9,10 +9,8 @@ import add from "../../images/icons/add_box.svg"
 import { getCollectionStoriesProtected } from "../../actions/StoryActions"
 import SortableList from "../../components/SortableList"
 import checkResult from "../../core/checkResult"
-import { clearPagesInView } from "../../actions/PageActions"
 import StoryToCollection from "../../domain/models/storyToColleciton"
 import CollectionToCollection from "../../domain/models/ColllectionToCollection"
-import { getCurrentProfile } from "../../actions/UserActions"
 import { Dialog } from "@mui/material"
 import RoleForm from "../../components/role/RoleForm"
 import { useMediaQuery } from "react-responsive"
@@ -111,7 +109,7 @@ console.log(storyToCols)
     type="text" className="mx-w bg-transparent text-emerald-800 px-2 py-2 w-full mb-4 text-2xl" value={title}/>
        </div>
         <textarea className="  textarea text-[1rem] min-w-[90%] w-full max-w-screen text-white mx-auto sm:mx-8 bg-emerald-600 md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
-        <div className=" mt-8  justify-around ml-12 text-left gap-4 grid grid-flow-row-dense grid-cols-2 max-w-72 sm:max-w-[15em]">
+        <div className=" mt-8  justify-around ml-12 text-left gap-4 grid grid-flow-row-dense grid-cols-2 max-w-72 sm:max-w-[22rem]">
 
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
    <button className="btn btn-success text-emerald-900 p-2 max-w-24 text-center rounded-lg"
@@ -165,12 +163,7 @@ const handleStoryOrderChange = (newOrder) => {
     console.log(list)
     setNewCollections(list)
   };
-const removeFromCollection = ()=>{
-    let result = confirm("Are you sure you want to delete?")
-    if(result){
-        dispatch()
-    }
-}
+
 const deleteStory = (storyId)=>{
         dispatch(deleteStoryFromCollection({id:colInView.id,storyId:storyId}))
 }

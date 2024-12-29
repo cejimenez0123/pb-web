@@ -1,4 +1,4 @@
-import ContentList from "../../components/ContentList"
+
 import { useParams } from "react-router-dom"
 import { useLayoutEffect,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
@@ -122,8 +122,7 @@ function ProfileContainer(props){
                 <ProfileCard/>
             </div>
             <div className="">
-                {/* <ContentList profile={profile} */}
-                         {/* />  */}
+            
                          <div role="tablist" className="tabs mt-8 shadow-md min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-600 text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  sm:max-w-[42rem] md:p-6">

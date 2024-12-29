@@ -59,7 +59,7 @@ function RoleForm({book,onClose}){
        setRoles([...newRoles,roleI])
        console.log(roles)
     }
-    return(<div className="background-blur  h-screen bg-gradient-to-br from-emerald-300 to-emerald-50 px-4">
+    return(<div className="background-blur h-screen sm:min-w-[30em] bg-gradient-to-br from-emerald-300 to-emerald-50 px-4">
         <div className="pt-4">
            <div className=" flex text-emerald-900 flex-row justify-between">
             <div>Share</div><img onClick={onClose} src={close}/>
@@ -75,7 +75,7 @@ function RoleForm({book,onClose}){
                 Save</button>
         </div>
         <InfiniteScroll
-        className="scroll max-h-[22em] rounded-lg"
+        className="scroll max-h-full sm:max-h-[25em] overflow-y-scroll overflow-x-hidden rounded-lg"
         dataLength={profiles.length}
         next={()=>{
 

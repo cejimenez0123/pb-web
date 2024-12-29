@@ -39,6 +39,11 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
   try{
 
       let data = await storyRepo.postStory(params)
+      if(!data.story.isPrivate){
+        const {story}=data
+          client.initIndex("story").saveObject(
+            {objectID:story.id,title:story.title,type:"story"}).wait()
+        }  
       return {
         story:data.story
       }

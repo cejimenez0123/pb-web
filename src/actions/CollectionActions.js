@@ -91,7 +91,7 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
         let data = await collectionRepo.createCollection(params)
      
 
-        if(!data.collection){
+        if(!data.collection.isPrivate){
         const {collection}=data
           client.initIndex("collection").saveObject(
             {objectID:collection.id,title:collection.title,type:"collection"}).wait()
@@ -201,7 +201,10 @@ const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectio
 const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",async(params,thunkApi)=>{
 
 
-
+    let {roles} = await collectionRepo.patchCollectionRoles({roles,profileId,colId})
+    return {
+        roles
+    }
 })
 
 const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent",

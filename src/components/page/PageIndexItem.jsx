@@ -108,7 +108,7 @@ function PageIndexItem({page,onDelete}) {
                    {page && page.title && page.title.length>0? <h6 className="text-xl ml-2 my-auto">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
-                <div className=" my-auto w-fit">
+                <div className=" my-auto mx-4 w-fit">
                 {buttonDiv}
 
               
