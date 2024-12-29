@@ -143,7 +143,7 @@ export default function ContentList({profile}){
                        Loading...
                    </div>}
                    endMessage={<div className="no-more-data">
-                       <p>No more data to load.</p>
+                       <p>Fin</p>
                        </div>
                    }
                    >
@@ -172,7 +172,7 @@ export default function ContentList({profile}){
                         next={fetchLibraryData}
                         hasMore={hasMoreLibraries}
                         loader={<p>Loading...</p>}
-                        endMessage={<div className="no-more-data"><p>No more data to load.</p></div>}
+                        endMessage={<div className="no-more-data"><p>Fin</p></div>}
                     >
                     {libraries.map((library)=>{
         

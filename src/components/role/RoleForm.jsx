@@ -7,7 +7,7 @@ import { RoleType } from "../../core/constants"
 import Role from "../../domain/models/role"
 import close from "../../images/icons/close.svg"
 import checkResult from "../../core/checkResult"
-
+import { patchCollectionRoles } from "../../actions/CollectionActions"
 function RoleForm({book,onClose}){
     const profiles = useSelector(state=>state.users.profilesInView)
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -18,6 +18,8 @@ function RoleForm({book,onClose}){
     
     useLayoutEffect(()=>{
         dispatch(fetchProfiles())
+
+    if(!book.id.storyIdList){
         dispatch(fetchStoryRoles({storyId:book.id})).then(res=>{
             checkResult(res,payload=>{
                 setRoles(payload.roles)
@@ -25,7 +27,10 @@ function RoleForm({book,onClose}){
             },err=>{
 
             })
-        })
+        })}else{
+
+
+        }
     },[])
     useEffect(()=>{
         if(storyRoles){
@@ -40,8 +45,8 @@ function RoleForm({book,onClose}){
 
     const handlePatchRoles=()=>{
         if(currentProfile){
-        if(book.collections){
-
+        if(!!book.storyIdList && !!book.childCollections){
+            dispatch(patchCollectionRoles({roles,profileId:currentProfile.id,colId:book.id}))
         }else{
        
             dispatch(patchRoles({roles:roles,profileId:currentProfile.id,storyId:book.id}))
@@ -54,17 +59,17 @@ function RoleForm({book,onClose}){
        setRoles([...newRoles,roleI])
        console.log(roles)
     }
-    return(<div className="background-blur text-white h-screen bg-gradient-to-br from-green-800 to-green-200 px-4">
+    return(<div className="background-blur  h-screen bg-gradient-to-br from-emerald-300 to-emerald-50 px-4">
         <div className="pt-4">
-           <div className=" flex flex-row justify-between">
+           <div className=" flex text-emerald-900 flex-row justify-between">
             <div>Share</div><img onClick={onClose} src={close}/>
         </div>
         <div className=" py-4 ">
-            <p className="text-sm">{book.title}</p>
+            <p className="text-sm text-emerald-900">{book.title}</p>
         </div>
         <div>
-            <button className="btn  
-            text-white  botder border-white mb-8 bg-green-900"
+            <button className="
+            text-white  botder border-white mb-8 bg-emerald-800"
             onClick={handlePatchRoles}
             >
                 Save</button>
@@ -79,7 +84,7 @@ function RoleForm({book,onClose}){
       loader={<p>Loading...</p>}
         endMessage={
             <div className="no-more-data">
-                <p>No more data to load.</p>
+                <p>Fin</p>
             </div>
         }>
             
@@ -90,12 +95,12 @@ function RoleForm({book,onClose}){
                    if(roles){
                     role = roles.find(role=>role.profile.id==profile.id)
                    }
-                return(<div key={i}className="background-blur flex flex-row justify-between px-4 bg-opacity-30 bg-emerald-600  border-y border-white ">
+                return(<div key={i}className="background-blur flex flex-row rounded-full justify-between px-4 bg-opacity-60 bg-emerald-600  my-4 ">
                     <h6 className="text-sm opacity-100 text-white py-4 mx-2 mx-y">
                         {profile.username}</h6>
-                        <div>
-                        <div className="dropdown dropdown-bottom">
-  <div tabIndex={0}  role="button" className="btn m-1 bg-green-800 bg-opeacity-40 text-white w-24">{role?role.role:"Role"}</div>
+                        <div className="my-auto w-fit">
+                        <div className="dropdown   dropdown-bottom">
+  <div tabIndex={0}  role="button" className=" bg-green-800 bg-opeacity-90 py-2  px-4 rounded-full text-white ">{role?role.role:"Role"}</div>
   <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
   <li onClick={()=>handleUpdateRole({role:RoleType.role,profile:profile})}>
     <a className="label text-emerald-600">{RoleType.role}</a></li>

@@ -13,6 +13,9 @@ import { clearPagesInView } from "../../actions/PageActions"
 import StoryToCollection from "../../domain/models/storyToColleciton"
 import CollectionToCollection from "../../domain/models/ColllectionToCollection"
 import { getCurrentProfile } from "../../actions/UserActions"
+import { Dialog } from "@mui/material"
+import RoleForm from "../../components/role/RoleForm"
+import { useMediaQuery } from "react-responsive"
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{
@@ -28,7 +31,7 @@ function getUniqueValues(array) {
 export default function EditCollectionContainer(props){
     const colInView = useSelector(state=>state.books.collectionInView)
     const params = useParams()
-
+    const md = useMediaQuery({query:"(min-width:500px"})
     const loading = useSelector(state=>state.books.loading)
     const storyToCols = useSelector(state=>state.pages.storyToCollectionList)
     const colToCols = useSelector(state=>state.books.collectionToCollectionsList)
@@ -48,7 +51,7 @@ export default function EditCollectionContainer(props){
     const [isPrivate,setIsPrivate]=useState(colInView?colInView.isPrivate:true)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-
+    const [openAccess,setOpenAccess]=useState(false)
     useLayoutEffect(()=>{
        
             dispatch(fetchCollection(params))
@@ -121,7 +124,7 @@ console.log(storyToCols)
    <div>
     
    <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
-   }className=" bg-emerald-800 rounded-full p-2 "
+   }className=" bg-emerald-800 rounded-full mx-auto p-2 "
    src={add}/>
    </div>
 <div className=" text-emerald-900">
@@ -131,14 +134,17 @@ console.log(storyToCols)
    <div>
    <button    onClick={()=>setIsPrivate(!isPrivate)} 
    className={`${isPrivate?
-    " border-2 border-emerald-400":"border-4 border-emerald-600"} text-[1rem]  py-[0.85rem] bg-transparent text-emerald-800 rounded-lg`}>{
+    " border-2 border-emerald-400":"border-4 border-emerald-600"} text-[1rem]  py-[0.85rem] px-[1.85rem] bg-transparent text-emerald-800 rounded-lg`}>{
    isPrivate?
     "Is Private":"Is Public"}</button>
    </div>
-   <div className="mt-6">
-  <img className="p-2 rounded-lg bg-emerald-800 hover:bg-red-500 my-auto "
+   <div className="">
+  <img className="p-2 rounded-lg w-fit mx-auto bg-emerald-800 hover:bg-red-500 my-auto "
     src={deleteIcon} 
     onClick={handleDeleteCollection}/> 
+  </div>
+  <div>
+    <button onClick={()=>setOpenAccess(true)}className="text-white bg-emerald-600">Manage Access</button>
   </div>
    </div>
    </div>
@@ -193,6 +199,14 @@ const deleteSubCollection = (colId)=>{
   <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteSubCollection}/>
   </div>
 </div>
+<Dialog 
+fullScreen={!md}
+open={openAccess}
+onClose={()=>{
+    setOpenAccess(false)
+}}>
+    <RoleForm book={colInView} onClose={()=>setOpenAccess(false)}/>
+</Dialog>
         </div>)
     }
     

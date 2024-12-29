@@ -1,4 +1,4 @@
-import { useEffect ,useLayoutEffect} from "react"
+import { useEffect ,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { fetchCollection, fetchCollectionProtected, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
@@ -16,7 +16,9 @@ export default function CollectionContainer(props){
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const colInView = useSelector(state=>state.books.collectionInView)
-    
+    const sTcList = useSelector(state=>state.pages.storyToCollectionList)
+    let stories = sTcList.map(stc=>stc.story)
+    const [pages,setPages]=useState(stories)
     const collections = useSelector(state=>state.books.collections)
     const params = useParams()
     useLayoutEffect(()=>{
@@ -25,6 +27,7 @@ export default function CollectionContainer(props){
        
     },[currentProfile])
     const getSubCollections = ()=>{
+        
         currentProfile?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     useLayoutEffect(()=>{
@@ -71,8 +74,9 @@ export default function CollectionContainer(props){
 
 
     return(<>
-        {colInView?collectionInfo():null}
-        <div className="text-left  max-w-[100vw]   mx-auto ">
+
+<div className="pb-[10rem]">       {colInView?collectionInfo():null}
+        <div className="text-left  max-w-[100vw]    mx-auto ">
             {colInView.collectionIdList && colInView.collectionIdList.length>0?<h3 className="text-2xl font-bold text-center">Anthologies</h3>:null}
             <div>
                 <InfiniteScroll
@@ -81,6 +85,9 @@ export default function CollectionContainer(props){
                 next={()=>{}}
                 hasMore={false} // Replace with a condition based on your data source
                 loader={<p>Loading...</p>}
+                endMessage={
+                    <p>Fin</p>
+                }
                 >
                     {collections.map(col=>{
                        return <BookListItem book={col}/>
@@ -89,9 +96,9 @@ export default function CollectionContainer(props){
             </div>
             <h6 className="text-2xl mb-8 w-fit text-center text-slate-800 font-bold pl-4">Pages</h6>
         <div className=" ">
-        <PageList/>
+        <PageList items={pages} isGrid={false}/>
         </div>
             </div>
-
+            </div> 
     </>)
 }

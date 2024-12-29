@@ -93,12 +93,13 @@ function LogInCard(props){
     }
     
     return(
-    <div className='border-4  md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-600 p-4 '><div className='   flex items-center gap-2'>
+    <div className='sm:border-4  md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-600 p-4 '><div className='   flex items-center gap-2'>
         <div  className='mx-auto'>
+            <form className='max-w-72 pt-4'>
         <h1 className='text-emerald-800 poppins pb-4'> Log In</h1>
         <div >
             
-        <label className="input poppins text-emerald-600  border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
+        <label className="input  poppins text-emerald-600  overflow-hidden border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
   Email
   <input type="text" className="grow  overflow-hidden  text-[1rem] py-2 bg-transparent text-emerald-600" 
          value={props.email} 
@@ -107,7 +108,7 @@ function LogInCard(props){
 </label>
 
 <div className='pb-4'>
-    <label className="input poppins text-emerald-600  border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
+    <label className="input poppins text-emerald-600  overflow-hidden border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
   Password
   <input type="password" className="grow text-emerald-800 " 
          value={props.password}
@@ -136,6 +137,7 @@ function LogInCard(props){
         <div>
         
         </div>
+        </form>
         <Dialog
        
         open={open}

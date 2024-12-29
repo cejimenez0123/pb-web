@@ -193,7 +193,7 @@ function DashboardContainer(props){
                         next={fetchData}
                         hasMore={hasMore} 
                         loader={<p>Loading...</p>}
-                        endMessage={<div className='no-more-data'><p>No more data to load.</p></div>}
+                        endMessage={<div className='no-more-data'><p>Fin</p></div>}
                     >
                         {itemsInView.map((item,i)=>{
                             switch(item.type){

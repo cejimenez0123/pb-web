@@ -49,12 +49,12 @@ function ApplyContainer(props){
         
     }
     return(<>
-        <div className=""> 
+        <div className="pb-8"> 
             <div>
                 
-                <form onSubmit={(e)=>onClickApply(e)} className="form-data shadow-sm  bg-emerald-700 bg-opacity-60 flex mb-12 pb-8 flex-col shadow-md lg:rounded-lg py-4 px-12 lg:max-w-[48rem] text-left mx-auto lg:mt-24">
+                <form onSubmit={(e)=>onClickApply(e)} className="form-data shadow-sm  pb-24 bg-emerald-700 bg-opacity-60 flex mb-12  flex-col shadow-md lg:rounded-lg py-4 px-12 lg:max-w-[48rem] text-left mx-auto lg:mt-24">
                 <h6 className="text-white text-sm">* Required</h6>
-                <div className="w-full text-center"><h3 className="mx-auto  poppins w-fit">Interest Form</h3></div>
+                <div className="w-full text-center"><h3 className="mx-auto text-2xl poppins w-fit">Interest Form</h3></div>
                 <label className="input poppins mt-4 text-white py-8 font-bold mb-8 lg:py-8 bg-transparent border border-green-100  text-white flex items-center gap-2">
   Preferred Name
   <input type="text" className="grow pl-4 text-white w-full" 
@@ -92,7 +92,7 @@ bg-transparent text-white border border-green-100 text-white flex items-center g
 >* How did you find out?</label>
 <input value={howFindOut}onChange={(e)=>handleChangeHowFindOut(e.target.value)} 
 className="bg-transparent border border-green-100 py-8 text-white text-xl input "></input>
-<button type="submit" className=" poppins my-8 text-2xl px-12 mx-auto rounded-full bg-emerald-800 hover:bg-green-400 font-bold border border-green-700 shadow-sm">
+<button type="submit" className=" poppins my-8 text-2xl px-12 text-white mx-auto rounded-full bg-emerald-800 hover:bg-green-400 font-bold border border-green-700 shadow-sm">
                     Apply
                 </button>
                 </form>

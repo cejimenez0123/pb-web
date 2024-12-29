@@ -198,6 +198,12 @@ const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectio
         return {list:data.list}
     }
 )
+const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",async(params,thunkApi)=>{
+
+
+
+})
+
 const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent",
     async ({id,storyToCol,colToCol,col},thunkApi)=>{
         let data = await collectionRepo.updateCollectionContent({id,storyToCol,colToCol,col})
@@ -205,6 +211,7 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
         return {collection:data.collection}
     }
 )
+const clearCollections = createAction("collection/clearCollections")
 export {
     getPublicBooks,
     saveRoleToCollection,
@@ -225,5 +232,7 @@ export {
     deleteCollection,
     deleteCollectionFromCollection,
     deleteStoryFromCollection,
-    patchCollectionContent
+    patchCollectionContent,
+    patchCollectionRoles,
+    clearCollections
 }

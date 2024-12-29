@@ -13,7 +13,7 @@ const CollectionIndexList = (props)=>{
                    scrollThreshold={1}
                    hasMore={false}
                     endMessage={<div className="p-8" >
-                        <h2>Waiting for Content</h2>
+                        <h2>Fin</h2>
                     </div>}
                   >
                       {props.cols.map(col=>{
