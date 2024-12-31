@@ -91,9 +91,9 @@ function LinkPreview({ url,size }) {
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      <div  className="link-preview spotify " 
+      <div  className="link-preview rounded-t-lg spotify " 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"}  height={"400rem"}  className='' link={url}/>
+        <Spotify width={"100%"}   className='' link={url}/>
       </div>)
   }
   if (loading) {
@@ -109,38 +109,41 @@ function LinkPreview({ url,size }) {
   if (previewData.videoId) {
     return (
     
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className="thumbnail"src={previewData.videoThumbnail} alt="Video Thumbnail" />
+        <img onClick={handleClick} style={{ cursor: 'pointer' }} className="w-full
+       "src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
   }
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image && <img className="thumbnail "src={previewData.image}  alt="Link Preview" />}
+      {previewData.image && <img  className=" w-[100%] rounded-t-lg  "src={previewData.image}  alt="Link Preview" />}
     </div>)
     }else{
       
        return (
+        <div className='rounded-lg'>
         <Spotify width={"100%"}  link={url}/>
+        </div>
       )
     }
   }
   const previewTitle=()=>{
     if(previewData.title!=="Spotify"){
-    return(<h4 className=' text-slate-800 px-4 bg-emerald-200  text-[1rem] py-2'>{previewData.title}</h4>)
+    return(<h4 className=' text-slate-800 bg-emerald-200  text-[1rem] p-4'>{previewData.title}</h4>)
     }else{
       return(<div></div>)
     }
   }
   const previewDescription=()=>{
     if(previewData.title!=="Spotify"){
-      return(<h6 className='text-slate-800 py-8 px-4 bg-emerald-200  text-[0.8rem]' >{previewData.description}</h6>)
+      return(<h6 className='text-slate-800 py-8  p-3 bg-emerald-200  text-[0.8rem]' >{previewData.description}</h6>)
       }else{
-        return(<h6 className='text-slate-800 py-4  bg-emerald-200  text-[0.8rem]'>{previewData.description}</h6>)
+        return(<h6 className='text-slate-800 py-4  p-3 bg-emerald-200  text-[0.8rem]'>{previewData.description}</h6>)
       }
   }
   return (
-    <div className="link-preview text-slate-800" onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className="link-preview  text-slate-800 rounded-lg" onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       {previewDescription()}
       {previewTitle()}

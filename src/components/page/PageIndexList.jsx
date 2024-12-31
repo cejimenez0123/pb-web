@@ -5,7 +5,7 @@ const PageIndexList = ()=>{
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     if(pagesInView){
     return(<InfiniteScroll
-                   className="w-screen overflow-x-hidden sm:max-w-[42rem]"
+                   className="w-screen overflow-x-hidden "
                    dataLength={pagesInView.length}
                    next={()=>{}}
                    scrollThreshold={1}

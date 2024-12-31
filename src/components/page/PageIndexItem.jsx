@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setEditingPage, setHtmlContent, setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
+import {  setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
 import { PageType } from "../../core/constants";
 import {useNavigate} from 'react-router-dom'
 import addBox from "../../images/icons/add_box.svg"

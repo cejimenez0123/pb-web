@@ -20,18 +20,13 @@ import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import checkResult from './core/checkResult';
 import {  getPublicBooks } from './actions/BookActions';
 import {  getCurrentProfile,
-          fetchFollowBooksForProfile,
-          fetchFollowLibraryForProfile,
-          fetchFollowProfilesForProfile,
           fetchHomeCollection,
           setSignedInTrue,
           setSignedInFalse,
-          getPageApprovals} from './actions/UserActions'
-import history from './history';
+      } from './actions/UserActions'
 import PrivateRoute from './PrivateRoute';
 import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
-import LibraryViewContainer from './container/library/LibraryViewContainer';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
 import {Helmet} from "react-helmet";

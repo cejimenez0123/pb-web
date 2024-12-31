@@ -20,11 +20,11 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
         className="w-fit"
         style={isGrid?{overflow:"unset"}:{display:"flex",flexDirection:"column"}}
         endMessage={<div className="min-h-36 w-full">
-            <h1 className="mx-auto my-auto text-emerald-600 py-4  text-center mx-auto w-12">Fin</h1>
+            <h1 className="mx-auto my-auto text-emerald-600 py-2  text-center mx-auto w-12">Fin</h1>
         </div>}
         >
 
-           <div className={"max-w-[100vw] sm:w-[40rem] md:w-[50rem] mx-auto  "+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"")}>
+           <div className={"max-w-screen  "+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"")}>
           {pagesInView.map(page=>{
                 const id = `${page.id}_${uuidv4()}`
                 return(<div id={id} className="mb-2">

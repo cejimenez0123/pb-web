@@ -9,7 +9,7 @@ import ReactGA from 'react-ga4'
 import {IconButton} from "@mui/joy"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import {setPagesToBeAdded, setEditingPage, setPageInView, setHtmlContent} from "../../actions/PageActions"
+import { setPageInView} from "../../actions/PageActions"
 import CommentInput from "../comment/CommentInput"
 import checkResult from "../../core/checkResult"
 import Paths from "../../core/paths"

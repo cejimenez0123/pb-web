@@ -77,9 +77,7 @@
   flex-direction: row;
  
 }
-.thumbnail{
-  width: 100%;
-}
+
 .content *{
   color:white !important;
 }
@@ -365,8 +363,6 @@
   }
 
   .upload-picture .thumbnail{
-    width: 90%;
-    max-width:var(--large-list-item-width);
     margin-bottom:1em;
   }
 }
@@ -727,7 +723,6 @@
    
     
    .upload-picture .thumbnail{
-      width: 90%;
      margin-bottom: 1em;
     
 

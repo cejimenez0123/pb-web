@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import "../../Dashboard.css"
-import { deletePageApproval, setEditingPage, setHtmlContent, setPageInView, setPagesToBeAdded } from '../../actions/PageActions'
+import { deletePageApproval,  setHtmlContent, setPageInView, } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
 import { PageType } from '../../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
@@ -62,7 +62,6 @@ const hanldeClickComment=(pageItem)=>{
         page: pageItem
     }
     dispatch(setHtmlContent({html:pageItem.data}))
-    dispatch(setEditingPage(params))
     navigate(`/page/${pageItem.id}`)
 }
 }   
@@ -71,22 +70,22 @@ const hanldeClickComment=(pageItem)=>{
         
     if(page.type===PageType.text){
 
-        return( <div className=' '>
+        return( 
             <div 
     
-           className={` ${isGrid?"h-48 overflow-clip  ":""}`}
+           className={`  ${isGrid?"h-48 overflow-clip  ":""}`}
             >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className=' ql-editor '
+        } className=' ql-editor w-full rounded-lg'
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
-        </div>)   
+      )   
     }else if(page.type===PageType.picture){
         return(<img className='dashboard-content image ' src={page.data} alt={page.title}/>)
     }else if(page.type === PageType.link){
         return(<div 
-            className={`bg-white  ${isGrid?"h-48 overflow-clip":""}`}>
+            className={` ${isGrid?"h-48 overflow-clip":""}`}>
             <LinkPreview
         url={page.data}
             />
@@ -197,7 +196,7 @@ return <Button onClick={()=>{
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className=' bg-emerald-700 text-white  border-none  text-center '><div>
+        <div className=' bg-emerald-700 text-white rounded-b-lg border-none  text-center '><div>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
@@ -227,7 +226,7 @@ className="
          bg-transparent 
          ">
 Share</button>
-<ul tabIndex={0} className="dropdown-content  menu bg-white text-emerald-700 rounded-box z-[100] w-60 p-1 shadow">
+<ul tabIndex={0} className="dropdown-content  menu bg-white text-emerald-700 rounded-box  w-60 p-1 shadow">
 {currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
 
     navigate(Paths.editPage.createRoute(page.id))
@@ -270,12 +269,12 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={`rounded-lg relative bg-emerald-50  shadow-sm w-[95%] md:w-[34em] mx-auto shadow-sm justify-self-center  overflow-hidden`}>
+        <div className={`rounded-lg relative  page  bg-emerald-50 shadow-sm   `}>
         
-            <div className=' '>
+            <div className='rounded-lg    '>
                 <div className=' flex flex-row  '>
                 {bookTitleDiv}
-                <h6 className="text-white-800 px-4 py-1 text-[0.9rem] absolute bg-gradient-to-br from-emerald-900 to-opacity-0  " onClick={()=>{
+                <h6 className="text-white  rounded-t-lg py-1 px-3 text-[0.9rem] absolute bg-gradient-to-br from-emerald-900 to-opacity-0  " onClick={()=>{
                     dispatch(setPageInView({page}))
                     navigate(Paths.page.createRoute(page.id))
 
@@ -283,10 +282,11 @@ onClick={()=>ClickAddStoryToCollection()}>
                 </div>
                 {profileDiv}
             </div>
-             <div className='page min-h-12 text-slate-800'> 
+             <div className='min-h-36 text-slate-800'> 
                 {pageDataElement()}
-                </div> 
                 {buttonRow()}
+                </div> 
+               
   </div>
      )}else{
         return(<div className='min-h-24'>

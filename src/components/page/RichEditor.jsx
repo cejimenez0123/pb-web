@@ -1,9 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from "react"
 import { useDispatch,useSelector } from "react-redux";
-import { setEditingPage, setHtmlContent, setPageInView } from "../../actions/PageActions";
+import {  setHtmlContent, } from "../../actions/PageActions";
 import ReactQuill from "react-quill";
 import "../../styles/Editor.css"
-import { debounce, set } from "lodash";
+import { debounce, } from "lodash";
 import { updateStory } from "../../actions/StoryActions";
 import { useParams } from "react-router-dom";
 const fonts = ["Arial","Courier New","Georgia"]
@@ -27,14 +27,13 @@ export default function RichEditor({initContent,title,privacy,commentable,setIsS
         ['clean'],
       ],
     };
-    const setPageInfo = (page)=>{
-      dispatch(setHtmlContent(page.data))
-      setHtml(page.data)
-    }
+   
+
     useLayoutEffect(()=>{
-        if(fetchedPage.id === pathparams.id){
-          dispatch(setEditingPage({page:fetchedPage}))
-          setPageInfo(fetchedPage)
+        if(fetchedPage && fetchedPage.id === pathparams.id){
+
+          dispatch(setHtmlContent(initContent))
+          setHtml(initContent)
         }
       
     },[fetchedPage])
@@ -76,10 +75,10 @@ export default function RichEditor({initContent,title,privacy,commentable,setIsS
 
     
     }
-    return( <div>
+    return( <div className=" ">
      
       <ReactQuill 
-      className="bg-green-600 max-w-screen rich-editor sm:w-[46rem] rounded-lg  text-white stroke-white"
+      className="bg-green-600  overflow-scroll rounded-lg text-white stroke-white"
       modules={modules}
       formats={formats} value={html} onChange={(content)=>handleTextChange(content)}
         

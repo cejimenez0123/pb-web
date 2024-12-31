@@ -1,6 +1,6 @@
 import { useSelector,useDispatch} from 'react-redux'
 import DashboardItem from '../components/page/DashboardItem'
-import { useState,useEffect ,useContext} from 'react'
+import { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
@@ -9,7 +9,7 @@ import {getPublicStories } from '../actions/PageActions'
 import { getPublicBooks } from '../actions/CollectionActions'
 import { getPublicLibraries, setLibraryInView } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
-import MediaQuery, { useMediaQuery } from "react-responsive"
+import { useMediaQuery } from "react-responsive"
 import BookListItem from '../components/BookListItem'
 import Paths from '../core/paths'
 import uuidv4 from '../core/uuidv4'
@@ -124,7 +124,7 @@ const navigateToLibrary = (library)=>{
                <div className={""+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"sm:px-2")}>
               {pagesInView.map(page=>{
                     const id = `${page.id}_${uuidv4()}`
-                    return(<div className="my-2 mx-auto"id={id}>
+                    return(<div className=" mb-2"id={id}>
                         <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
                     </div>)
                 })}

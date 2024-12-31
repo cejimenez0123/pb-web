@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Enviroment from "../core/Enviroment";
 import storyRepo from "../data/storyRepo";
-
+import { client } from "../core/di";
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
     
     let token = localStorage.getItem("token")
@@ -22,7 +22,7 @@ const deleteStory = createAsyncThunk("pages/deleteStory",async (params,thunkApi)
   const {page}=params
   let data = await storyRepo.deleteStory({id:page.id})
   client.initIndex("page").deleteObject(page.id).wait()
-  
+
     return data
 })
 const getMyStories= createAsyncThunk(

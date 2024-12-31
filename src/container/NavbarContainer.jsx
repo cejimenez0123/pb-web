@@ -26,12 +26,9 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
 import LinkIcon from '@mui/icons-material/Link';
-import theme from '../theme'
-
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import Paths from '../core/paths'
-import { setEditingPage, setPageInView } from '../actions/PageActions'
 import { searchDialogToggle } from '../actions/UserActions'
 import SearchDialog from '../components/SearchDialog'
 import { createStory } from '../actions/StoryActions'
@@ -269,7 +266,7 @@ function NavbarContainer(props){
                             </ListItemButton>
                             <ListItemButton key={`image`} 
                               onClick={(e)=>{
-                              dispatch(setEditingPage({page:null}))
+                            
                               handleClose()
                               navigate("/page/image")}}
                               sx={{ pl: 6 }}
@@ -279,7 +276,7 @@ function NavbarContainer(props){
                             <ListItemButton     
                     sx={{ pl: 6 }} 
                     onClick={()=>{
-                      dispatch(setEditingPage({page:null}))
+                    
                       handleClose()
                       navigate("/page/link")}}>
                      <LinkIcon/>
@@ -416,7 +413,7 @@ function NavbarContainer(props){
                     <ListItemButton     
                     sx={{ pl: 4 }} 
                     onClick={()=>{
-                      dispatch(setEditingPage({page:null}))
+                
                       handleClose()
                       navigate("/page/link")}}>
                      <LinkIcon/>

@@ -126,11 +126,12 @@
     }
     @media (min-width: 600px){
         .ql-editor{min-height: 60vh;
-       
-        border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;}
+         border-bottom: 0.5em !important;
+        }
     } 
-    
+.page{
+  width: 40rem;
+}
     /* Change the stroke color of Quill icons */
 .ql-stroke {
     stroke: #052e16 !important; /* Change this to your preferred color */
@@ -181,8 +182,15 @@
     height: 1em !important;
     max-width: 3em !important;
  }
-  .ql-editor{min-height:12rem;
+ .quill {
+  border-bottom: 0.5em !important;
+ }
+  .ql-editor{
+    min-height:12rem;
     padding: 1em !important;
     padding-top: 3em !important;
-    color: #052e16 !important;;
-background: linear-gradient(#a7f3d0, #d1fae5)!important;}
+    color: #052e16 !important;
+    background: linear-gradient(#a7f3d0, #d1fae5)!important;
+    border-bottom: 0.5em !important;
+
+}
