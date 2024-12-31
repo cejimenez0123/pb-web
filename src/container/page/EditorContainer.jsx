@@ -8,6 +8,7 @@ import {   setEditingPage, setHtmlContent, setPageInView,
           } from "../../actions/PageActions"
 import React,{ useEffect, useLayoutEffect, useState } from "react"
 import {  Button,} from "@mui/material"
+import checkResult from "../../core/checkResult"
 import { useMediaQuery } from "react-responsive"
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -35,41 +36,43 @@ function EditorContainer(props){
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
         const [privacy,setPrivacy] = useState(true)
-        const [titleLocal,setTitleLocal]=useState("")
+        const [titleLocal,setTitleLocal]=useState(fetchedPage?fetchedPage.title:"")
         const [commentable,setCommentable] = useState(true)
 
         const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         const {id }= pathParams
  const setPageInfo =(page)=>{
-      // dispatch(setEditingPage({page}))
-      if(page){
-      setTitle(page.title)
+
+        dispatch(setEditingPage({page:page}))
+        setTitle(page.title)
       setTitleLocal(page.title)
       setPrivacy(page.privacy)
       setCommentable(page.commentable)
       dispatch(setHtmlContent(page.data))
-      }
+
     }
     useLayoutEffect(()=>{
+      if(fetchedPage.id!=pathParams.id){
       dispatch(getStory(pathParams)).then(res=>{
         checkResult(res,payload=>{
-          if(pageInView){
-            setPageInfo(pageInView)
-             }else{
-               if(fetchedPage){
-                 dispatch(setEditingPage({page:fetchedPage}))
-                 setPageInfo(fetchedPage)
-               }
-        }
-      })
+          if(payload.story){
+            setPageInfo(payload.story)
+            dispatch(setEditingPage({page:payload.story}))
+             }
+        
      
-      },err=>{})
+      },err=>{})})
+
+    }else{
+      
+            setPageInfo(fetchedPage)
+            dispatch(setEditingPage({page:fetchedPage}))
+             
+    }
     },[])
-  useLayoutEffect(()=>{
-   
-  },[])
+ 
     useLayoutEffect(()=>{ 
-      if(htmlContent.length<=0 && title.length<=0){
+      if(pageInView && pageInView.length<=0 && pageInView.length<=0){
         let result =window.confirm("Story Will Be deleted")
         if(result){
           dispatch(deleteStory(pathParams))
@@ -103,11 +106,11 @@ function EditorContainer(props){
           if(pageInView){
               if(pageInView.type===PageType.text){
                   return (<div id="max-w-[100vw]">
-                    <RichEditor title={title}
+                    <RichEditor title={titleLocal}
                                 privacy={privacy} 
                                 commentable={commentable} 
                                 setIsSaved={setIsSaved} 
-                                initialContent={pageInView.data}/>
+                                initContent={fetchedPage.data}/>
                                 </div>)
               }else if(pageInView.type===PageType.picture){
                 
@@ -120,7 +123,7 @@ function EditorContainer(props){
                       <PicturePageForm />
                   )
               }else{
-                  return (<div className="max-w-[100vw]"><RichEditor initialContent={htmlContent}/></div>)}
+                  return (<div className="max-w-[100vw]"><RichEditor initContent={fetchedPage.data}/></div>)}
             }else{
 
               
@@ -129,7 +132,7 @@ function EditorContainer(props){
             if(last.toUpperCase()=="image".toUpperCase()||last.toUpperCase()=="link".toUpperCase()){
               return (<PicturePageForm />)
             }else{
-              return(<div id=""><RichEditor setIsSaved={setIsSaved} initialContent={""}/></div>)
+              return(<div id=""><RichEditor setIsSaved={setIsSaved} initContent={""}/></div>)
             }
           
             
@@ -154,12 +157,13 @@ function EditorContainer(props){
             setIsSaved(true)
           })
         }
-        useEffect(()=>{
+        const handleTitle = (title)=>{
+          setTitleLocal(title)
           debounce(()=>{
 
-            
-            let params = { page:{id},
-            title: titleLocal,
+   
+                    let params = { page:{id},
+            title: title,
             data: htmlContent,
             privacy:privacy,
             commentable:commentable,  
@@ -169,8 +173,9 @@ function EditorContainer(props){
             dispatch(updateStory(params)).then(res=>{
               setIsSaved(true)
             })
-          },1000)()
-        },[titleLocal])
+          },100)()
+        }
+   
 
         return(
           <div className="max-w-[100vw] sm:max-w-[45rem] mx-auto"> 
@@ -183,7 +188,9 @@ function EditorContainer(props){
                      
                       {isSaved?<h6 className=" text-left p-1 mx-1 text-sm  ">Saved</h6>:
                     <h6 className="text-left mx-1 p-1 text-sm">Draft</h6>}
-                    <input type="text " className="p-2  text-emerald-8 w-full text-xl  bg-transparent font-bold" value={titleLocal} onChange={(e)=>setTitleLocal(e.target.value)}placeholder="Untitled"/>
+                    <input type="text " className="p-2  text-emerald-8 w-full text-xl  bg-transparent font-bold" value={titleLocal} onChange={(e)=>handleTitle(e.target.value)}
+                    
+                    placeholder="Untitled"/>
 
                     </div>
 

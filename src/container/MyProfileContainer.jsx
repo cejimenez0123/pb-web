@@ -64,7 +64,7 @@ function MyProfileContainer(props){
           dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
           title:"Untitled",commentable:true
         })).then(res=>checkResult(res,data=>{
-            dispatch(setPageInView({page:data.story}))
+    
             navigate(Paths.editPage.createRoute(data.story.id))
         },e=>{
 

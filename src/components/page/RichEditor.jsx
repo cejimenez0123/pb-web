@@ -7,14 +7,14 @@ import { debounce, set } from "lodash";
 import { updateStory } from "../../actions/StoryActions";
 import { useParams } from "react-router-dom";
 const fonts = ["Arial","Courier New","Georgia"]
-export default function RichEditor({title,privacy,commentable,setIsSaved}){
+export default function RichEditor({initContent,title,privacy,commentable,setIsSaved}){
     const pageInView = useSelector(state=>state.pages.editingPage)
     const fetchedPage = useSelector(state=>state.pages.pageInView)
     const ehtmlContent = useSelector(state=>state.pages.editorHtmlContent)
-    const [html,setHtml] = useState([])
+    const [html,setHtml] = useState(initContent)
     const param = useParams()
     const dispatch = useDispatch()
-  
+    const pathparams = useParams()
     const modules = {
       toolbar: [
         [{ 'font': []}],
@@ -32,15 +32,12 @@ export default function RichEditor({title,privacy,commentable,setIsSaved}){
       setHtml(page.data)
     }
     useLayoutEffect(()=>{
-      if(pageInView){
-     setPageInfo(pageInView)
-      }else{
-        if(fetchedPage){
+        if(fetchedPage.id === pathparams.id){
           dispatch(setEditingPage({page:fetchedPage}))
           setPageInfo(fetchedPage)
         }
-      }
-    },[])
+      
+    },[fetchedPage])
     const formats = [
       'header',
       'font',

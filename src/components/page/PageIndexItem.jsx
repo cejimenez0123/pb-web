@@ -24,8 +24,7 @@ function PageIndexItem({page,onDelete}) {
         const params = {
             page: page
         }
-        dispatch(setPageInView(params))
-        dispatch(setHtmlContent(page.data))
+       
         navigate(Paths.editPage.createRoute(page.id))
         
     }

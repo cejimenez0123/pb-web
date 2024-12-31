@@ -168,9 +168,7 @@ let profile = (<div></div>)
              {currentProfile && currentProfile.id == page.authorId? <li> <a
                         className=' text-green-600 '
                        onClick={()=> {
-                        dispatch(setPageInView({page}))
-                        dispatch(setEditingPage({page}))
-                        dispatch(setHtmlContent(page.data))
+                        
                         navigate(Paths.editPage.createRoute(page.id))
                        }}
                     >

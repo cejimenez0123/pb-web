@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import theme from '../../theme'
 import { updateLibraryContent } from '../../actions/LibraryActions'
 import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
@@ -75,11 +74,11 @@ const hanldeClickComment=(pageItem)=>{
         return( <div className=' '>
             <div 
     
-           className={` ${isGrid?"h-48 overflow-clip ":""}`}
+           className={` ${isGrid?"h-48 overflow-clip  ":""}`}
             >
             <div ref={
             (el)=>setContentItemEl(el)
-        } className='px-4  pt-12 pb-6 '
+        } className=' ql-editor '
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
         </div>)   
@@ -229,8 +228,7 @@ className="
 Share</button>
 <ul tabIndex={0} className="dropdown-content  menu bg-white text-emerald-700 rounded-box z-[100] w-60 p-1 shadow">
 {currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
-    dispatch(setHtmlContent(page.data))
-    dispatch(setEditingPage({page}))
+
     navigate(Paths.editPage.createRoute(page.id))
 }}>
     <a>Edit</a></li>:null}
@@ -254,8 +252,7 @@ onClick={()=>ClickAddStoryToCollection()}>
                  </a></li>
                 <li className=' text-emerald-700'> {(currentProfile && currentProfile.id == page.profileId )?
      <a onClick={()=>{
-        dispatch(setHtmlContent(page.data))
-        dispatch(setEditingPage({page}))
+  
         navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
      </li>
     <li> <IconButton onClick={onBookmarkPage}
@@ -297,7 +294,7 @@ onClick={()=>ClickAddStoryToCollection()}>
                 </div>
                 {profileDiv}
             </div>
-             <div className='page min-h-48 text-slate-800'> 
+             <div className='page min-h-12 text-slate-800'> 
                 {pageDataElement()}
                 </div> 
                 {buttonRow()}
