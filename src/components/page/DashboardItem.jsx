@@ -197,7 +197,7 @@ return <Button onClick={()=>{
         <button className='bg-transparent  '><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className=' bg-emerald-700 text-white  text-center '><div>
+        <div className=' bg-emerald-700 text-white  border-none  text-center '><div>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
@@ -223,7 +223,7 @@ className="
          rounded-none
          pl-8
          text-xl
-
+        border-none
          bg-transparent 
          ">
 Share</button>
@@ -266,18 +266,6 @@ onClick={()=>ClickAddStoryToCollection()}>
 </div>
 
                 
-    }
-    const addToBook=()=>{
-        ReactGA.event({
-            category: "Story",
-            action: "Add Story To Book",
-            label: "Add to book", 
-            value: page.id,
-            nonInteraction: false
-          });
-        const params = {pageList:[page]}
-        dispatch(setPagesToBeAdded(params))
-        navigate("/book/new")
     }
     if(page){
     
