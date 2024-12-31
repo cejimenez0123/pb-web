@@ -82,7 +82,7 @@ export default function PageViewItem({page}) {
 if(page){
     switch(page.type){
     case PageType.text:
-        pageDataElement = <div className='w-max  pt-4 px-4' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        pageDataElement = <div className='w-max ql-editor pt-4 px-4' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
         pageDataElement = <img className="dashboard-content image" src={page.data} alt={page.title}/>
@@ -140,9 +140,9 @@ let profile = (<div></div>)
             <div className=" bg-gradient-to-br from-emerald-100 to-emerald-400' ">
                 {pageDataElement}
                 </div>
-            <div className='bg-emerald-600 text-white border-t'>
+            <div className='bg-emerald-600 text-white border-none'>
                 <button 
-                className="bg-emerald-600 "
+                className="bg-emerald-600 border-none"
                    disabled={!currentProfile} 
                 >
                     Yea
@@ -155,7 +155,7 @@ let profile = (<div></div>)
                     Discuss
                 </button>
                 <div className="dropdown  dropdown-top">
-        <div tabIndex={0} role="button" className=" pt-2  "> Share</div>
+        <div tabIndex={0} role="button" className=" pt-2 border-none "> Share</div>
         <ul tabIndex={0} className="dropdown-content bg-white text-green-600 menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
         <li>
             <a disabled={!currentProfile} 

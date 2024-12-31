@@ -124,11 +124,11 @@ function MyProfileContainer(props){
                            
                             <MediaQuery minWidth={'600px'}>
                             <div className='mt-4 pt-2 flex flex-row'>
-                            <button onClick={ClickWriteAStory} className='bg-emerald-700 text-white  sm:text-xl text-bold'>
+                            <button onClick={ClickWriteAStory} className='bg-emerald-700 rounded-full text-white  sm:text-xl text-bold'>
                                 Write a Story
                             </button>
                            
-                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 md:ml-4 text-white sm:text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 rounded-full md:ml-4 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
                             <a onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 my-4 text-emerald-800'>Refer Someone?</a>
@@ -153,10 +153,10 @@ function MyProfileContainer(props){
                         <div className='text-left mt-2'>
                         <MediaQuery maxWidth={'600px'}>
                             <div className='ml-4 flex  flex-col '>
-                            <button onClick={ClickWriteAStory} className='bg-emerald-700 max-w-48 text-white mt-2 sm:text-xl text-bold'>
+                            <button onClick={ClickWriteAStory} className='bg-emerald-700 max-w-48 rounded-full text-white mt-2 sm:text-xl text-bold'>
                                 Write a Story
                             </button>
-                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 max-w-48 sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 max-w-48 rounded-full sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
                             <a onClick={()=>setOpenRefferal(true)}className='my-4 text-sm mx-4 text-emerald-800'>Refer Someone?</a>

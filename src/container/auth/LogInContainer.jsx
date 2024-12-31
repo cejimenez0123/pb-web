@@ -100,18 +100,18 @@ function LogInCard(props){
     return(
     <div className='sm:border-4  md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         <div  className='mx-auto'>
-            <form className='w-screen sm:max-w-82 text-center pt-4'>
+            <form className='max-w-[100vw] sm:max-w-82 text-center pt-4'>
         <h1 className='text-emerald-800 poppins pb-4'> Log In</h1>
         <div >
-            
-        <label className="input  poppins text-emerald-800   border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
+         <div className='max-w-[91vw]'>
+        <label className="input  poppins text-emerald-800 w-52 overflow-hidden pl-2  border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
   Email
-  <input type="text" className="grow  overflow-hidden w-72 text-[1rem] py-2 bg-transparent text-emerald-800" 
+  <input type="text" className="shrink overflow-hidden text-[1rem] max-w-full sm:max-w-52   py-2 bg-transparent text-emerald-800" 
          value={props.email} 
          onChange={(e) => props.setEmail(e.target.value.trim())}
         placeholder='example@email.com' />
 </label>
-
+</div>   
 <div className='mb-8 max-w-[91vw] '>
     <label className="input poppins inline-block flex flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
   Password
@@ -180,7 +180,7 @@ function LogInCard(props){
                             label="E-mail" 
                             value={forgotEmail} 
                             style={{marginTop:"4em",
-                            width:"90%",
+                            
                                     marginBottom:"2em",
                                     backgroundColor:theme.palette.secondary.contrastText}}
                             onChange={(e)=>setForgotEmail(e.target.value)}

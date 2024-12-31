@@ -89,7 +89,7 @@ function PageIndexItem({page,onDelete}) {
    </div>)
     if(currentProfile!=null && page.authorId==currentProfile.id){
         buttonDiv = (<div className="dropdown dropdown-left">
-        <div tabIndex={0} role="button" className="bg-emerald-800 rounded-full  w-16 h-10 pt-2 pb-4 px-2  "><img classname="my-auto" src={edit}/></div>
+        <div tabIndex={0} role="button" className=" bg-emerald-800 rounded-full  p-2 "><img classname="w-4 h-4" src={edit}/></div>
         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
           <li className="text-green-600 " onClick={()=>{
            handleOnClick()}}><a >Edit</a></li>
@@ -100,10 +100,10 @@ function PageIndexItem({page,onDelete}) {
     }
             return(<div className={`   mb-1 mx-1 `}> 
               <div  className="flex flex-row justify-between   " >
-                <div className="text-left max-w-[100vw] h-fit  my-auto md:ml-4 py-8   ">
+                <div className="text-left max-w-[100vw] h-fit  my-auto md:ml-4 py-6   ">
                
                 <a className="text-emerald-700 " onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
-                   {page && page.title && page.title.length>0? <h6 className="text-xl ml-2 my-auto md:max-w-[30rem]  overflow-scroll">{page.title}</h6>:<h6>Unititled</h6>}
+                   {page && page.title && page.title.length>0? <h6 className="text-l ml-2 my-auto max-w-[15rem] md:max-w-[30rem]  overflow-scroll">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                 <div className=" my-auto mx-4 w-fit">
