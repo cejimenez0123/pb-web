@@ -202,7 +202,7 @@ return <Button onClick={()=>{
          onClick={handleApprovalClick}
             
           className={`rounded-none
-          text-xl  text-white pr-8 bg-transparent   `}
+          text-xl  text-white pr-8 bg-transparent border-none  `}
         
          >
              Yea
