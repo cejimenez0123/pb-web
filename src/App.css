@@ -669,6 +669,7 @@
 
 .link-preview{
   background-color: rgb(74 222 128);
+  border-radius: 0.5em;
 }
 .col-item{
   background-color: #4ade80;
