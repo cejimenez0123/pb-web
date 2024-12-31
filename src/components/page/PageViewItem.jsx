@@ -9,7 +9,7 @@ import ReactGA from 'react-ga4'
 import {IconButton} from "@mui/joy"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import {setPagesToBeAdded, setEditingPage, setPageInView} from "../../actions/PageActions"
+import {setPagesToBeAdded, setEditingPage, setPageInView, setHtmlContent} from "../../actions/PageActions"
 import CommentInput from "../comment/CommentInput"
 import checkResult from "../../core/checkResult"
 import Paths from "../../core/paths"
@@ -22,6 +22,7 @@ export default function PageViewItem({page}) {
     PageViewItem.propTypes={
         page: PropTypes.object.isRequired
     }
+    
     const [pending,isPending]=useState(true)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
@@ -130,16 +131,16 @@ let profile = (<div></div>)
         return(
         
         <div className="text-slate-800">
-            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2 bg-emerald-600 '>
+            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2  bg-gradient-to-br from-emerald-100 to-emerald-400'>
                 <div className="titles ">
                 {page.title.length>0?<p>{page.title}</p>:<p>Untitled</p>}
                 </div>
                 {profile}
             </div>
-            <div className="bg-emerald-400 ">
+            <div className=" bg-gradient-to-br from-emerald-100 to-emerald-400' ">
                 {pageDataElement}
                 </div>
-            <div className='bg-emerald-600  border-t'>
+            <div className='bg-emerald-600 text-white border-t'>
                 <button 
                 className="bg-emerald-600 "
                    disabled={!currentProfile} 
@@ -168,6 +169,8 @@ let profile = (<div></div>)
                         className=' text-green-600 '
                        onClick={()=> {
                         dispatch(setPageInView({page}))
+                        dispatch(setEditingPage({page}))
+                        dispatch(setHtmlContent(page.data))
                         navigate(Paths.editPage.createRoute(page.id))
                        }}
                     >

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setHtmlContent, setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
+import { setEditingPage, setHtmlContent, setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
 import { PageType } from "../../core/constants";
 import {useNavigate} from 'react-router-dom'
 import addBox from "../../images/icons/add_box.svg"
@@ -25,8 +25,8 @@ function PageIndexItem({page,onDelete}) {
             page: page
         }
         dispatch(setHtmlContent(page.data))
-        dispatch(setPageInView(params))
-        navigate(`/page/${page.id}`)
+        dispatch(setEditingPage(params))
+        navigate(Paths.editPage.createRoute(page.id))
         
     }
     const handleAddClick = (type)=>{
@@ -93,8 +93,7 @@ function PageIndexItem({page,onDelete}) {
         <div tabIndex={0} role="button" className="bg-emerald-800 rounded-full  w-16 h-10 pt-2 pb-4 px-2  "><img classname="my-auto" src={edit}/></div>
         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
           <li className="text-green-600 " onClick={()=>{
-            dispatch(setPageInView({page}))
-            handleNavigate(Paths.editPage.createRoute(page.id))}}><a >Edit</a></li>
+           handleOnClick()}}><a >Edit</a></li>
           <li className="text-green-600 " onClick={()=>handleNavigate(Paths.addStoryToCollection.createRoute(page.id))}><a>Add to Collection</a></li>
         </ul>
       </div>)
@@ -104,7 +103,7 @@ function PageIndexItem({page,onDelete}) {
               <div  className="flex flex-row justify-between   " >
                 <div className="text-left max-w-[100vw] h-fit  my-auto md:ml-4 py-8   ">
                
-                <a className="text-emerald-700 " onClick={handleOnClick}> 
+                <a className="text-emerald-700 " onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
                    {page && page.title && page.title.length>0? <h6 className="text-xl ml-2 my-auto">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 

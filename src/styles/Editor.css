@@ -8,7 +8,14 @@
         justify-content: flex-end;
    
     }
-
+    div .ql-toolbar{
+      flex-wrap: wrap;
+      display: flex;
+      min-height: 4em;
+      font-size: medium !important;
+      background:  linear-gradient(#a7f3d0, #d1fae5)!important;
+    }
+     
 
 .editor-btn-row{
     display: flexbox;
@@ -108,7 +115,14 @@
             margin-bottom: 2em;
         
         }
-        
+        div .ql-toolbar{
+          flex-wrap: wrap;
+          display: flex;
+          min-height: 9em;
+          font-size: medium !important;
+          background:  linear-gradient(#a7f3d0, #d1fae5)!important;
+        }
+         
     }
     @media (min-width: 600px){
         .ql-editor{min-height: 60vh;
@@ -118,18 +132,18 @@
     
     /* Change the stroke color of Quill icons */
 .ql-stroke {
-    stroke: #ffffff !important; /* Change this to your preferred color */
+    stroke: #052e16 !important; /* Change this to your preferred color */
   }
   
   /* Change the fill color of Quill icons */
   .ql-fill {
-    fill: #ffffff !important; /* Change this to your preferred color */
+    fill: #052e16 !important; /* Change this to your preferred color */
   }
   
   /* Change the color of icons in hover/focus state */
   .ql-toolbar .ql-active .ql-stroke,
   .ql-toolbar .ql-active .ql-fill {
-    stroke: white !important; /* Color when an icon is active */
+    stroke: #052e16!important; /* Color when an icon is active */
     fill: white !important;
   }
   
@@ -138,21 +152,23 @@
     stroke: #ddb928 !important; /* Change color on hover */
   }
   .ql-font{
-    color:white !important;
-    stroke:white !important;
-    fill: white !important;
+    color:#052e16!important;
+    stroke:#052e16 !important;
+    fill: #052e16!important;
   }
   .ql-picker-label{
-    color:white
+    color:#052e16
   }
  .ql-picker-options *{
-    stroke: #039703 !important; 
+    stroke: #052e16 !important; 
  }
   .ql-toolbar .ql-fill:hover {
-    background-color: rgba(81, 166, 117, 0.65) !important;
+    background-color: #3e781a!important;
     fill: white !important; /* Change color on hover */
   }
-  
+  .ql-picker-label{
+    color: #052e16 !important;
+  }
   .ql-formats{
     position: relative;
   }
@@ -164,12 +180,7 @@
     height: 1em !important;
     max-width: 3em !important;
  }
-  div .ql-toolbar{
-    flex-wrap: wrap;
-    display: flex;
-    min-height: 9em;
-    font-size: medium !important;
-    background-color: rgba(81, 166, 117, 0.65) !important;}
-   
   .ql-editor{min-height: 60vh;
-background-color: rgba(81, 166, 117, 0.65) !important;}
+    padding: 1em !important;
+    color: #052e16 !important;;
+background: linear-gradient(#a7f3d0, #d1fae5)!important;}

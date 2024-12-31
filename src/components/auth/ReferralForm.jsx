@@ -7,7 +7,7 @@ export default function ReferralForm({onClose}){
     const [name,setName]=useState("")
     const [email,setEmail]=useState("")
     const handleClick = ()=>{
-        authRepo.referral({email,name}).then(data=>{
+        authRepo.referral({email:email.toLowerCase(),name}).then(data=>{
             if(data.message){
                 alert(data.message)
             }
@@ -26,7 +26,7 @@ export default function ReferralForm({onClose}){
         </label>
         <input 
         value={email}
-        onChange={(e)=>setEmail(e.target.value)}
+        onChange={(e)=>setEmail(e.target.value.toLocaleLowerCase())}
         className='text-xl my-4 rounded-lg p-2 bg-transparent border-white border text-white w-[100%]' type='text'/>
         <a className="btn p-2 mt-8 bg-red-100 text-white " onClick={handleClick}>Submit</a>
      </div>)

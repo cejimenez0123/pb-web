@@ -9,7 +9,7 @@ export default function CommentThread({comments}){
 if(comments.length>0){
     return(
         <ErrorBoundary>
-        <div className="bg-emerald-700">
+        <div className="bg-gradient-to-br from-emerald-100 to-emerald-400'">
                
                 <div class="replies">
                   
@@ -34,7 +34,7 @@ if(comments.length>0){
         </ErrorBoundary>)
 
                             }
-    return (<div className="h-24 bg-green-400  rounded-b-lg">
+    return (<div className="h-24 bg-gradient-to-br from-emerald-100 to-emerald-400 text-emerald-900  rounded-b-lg">
         <p className="font-bold py-8">Refer to others for review</p>
     </div>)
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import "../../Dashboard.css"
-import { deletePageApproval, setPageInView, setPagesToBeAdded } from '../../actions/PageActions'
+import { deletePageApproval, setEditingPage, setHtmlContent, setPageInView, setPagesToBeAdded } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
 import { PageType } from '../../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
@@ -62,8 +62,8 @@ const hanldeClickComment=(pageItem)=>{
     const params = {
         page: pageItem
     }
-
-    dispatch(setPageInView(params))
+    dispatch(setHtmlContent({html:pageItem.data}))
+    dispatch(setEditingPage(params))
     navigate(`/page/${pageItem.id}`)
 }
 }   
@@ -212,7 +212,7 @@ return <Button onClick={()=>{
          
            Review
          </button>
-         <div className="dropdown dropdown-top">
+         <div className="dropdown  dropdown-top">
 <button tabIndex={0} role="button" 
 className="             
       text-white
@@ -223,15 +223,21 @@ className="
          bg-transparent 
          ">
 Share</button>
-<ul tabIndex={0} className="dropdown-content menu bg-green-600 rounded-box z-[1] w-52 p-2 shadow">
+<ul tabIndex={0} className="dropdown-content  menu bg-white text-emerald-700 rounded-box z-[100] w-60 p-1 shadow">
+{page.authorId===currentProfile.id?<li onClick={()=>{
+    dispatch(setHtmlContent(page.data))
+    dispatch(setEditingPage({page}))
+    navigate(Paths.editPage.createRoute(page.id))
+}}>
+    <a>Edit</a></li>:null}
 <li><a disabled={!currentProfile} 
-className='text-slate-800'
+className=' text-emerald-700'
 
 onClick={()=>ClickAddStoryToCollection()}> 
                      Add to a Collection
      </a></li>
                 <li> <a
-                 className='text-slate-800'
+                 className=' text-emerald-700'
                 onClick={()=>{
                      navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
                      .then(() => {
@@ -240,11 +246,12 @@ onClick={()=>ClickAddStoryToCollection()}>
                        })
                  }}
              >
-                   Copy Share Link
+                    Share Link
                  </a></li>
-                <li> {(currentProfile && currentProfile.id == page.profileId )?
+                <li className=' text-emerald-700'> {(currentProfile && currentProfile.id == page.profileId )?
      <a onClick={()=>{
-        dispatch(setPageInView({page}))
+        dispatch(setHtmlContent(page.data))
+        dispatch(setEditingPage({page}))
         navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
      </li>
     <li> <IconButton onClick={onBookmarkPage}
@@ -286,7 +293,7 @@ onClick={()=>ClickAddStoryToCollection()}>
                 </div>
                 {profileDiv}
             </div>
-             <div className='page text-slate-800'> 
+             <div className='page min-h-48 text-slate-800'> 
                 {pageDataElement()}
                 </div> 
                 {buttonRow()}

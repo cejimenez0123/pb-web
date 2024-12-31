@@ -36,6 +36,7 @@ const logIn = createAsyncThunk(
         profile: profileRes.profiles[0]
       }
     }catch(error){
+
     try{
           const userCred = await signInWithEmailAndPassword(auth,email,password)
           const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
@@ -45,7 +46,9 @@ const logIn = createAsyncThunk(
             profile: profileRes.profiles[0]
           }
         }catch(error){
-          throw error
+          return {
+            error:error
+          }
         }
       }}
 )

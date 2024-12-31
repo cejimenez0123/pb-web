@@ -21,13 +21,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../../core/constants"
 import Paths from "../../core/paths"
 import PicturePageForm from "../../components/PicturePageForm"
-import { getStory, updateStory } from "../../actions/StoryActions"
+import { deleteStory, getStory, updateStory } from "../../actions/StoryActions"
 import { debounce } from "lodash"
 import ErrorBoundary from "../../ErrorBoundary"
 import HashtagForm from "../../components/hashtag/HashtagForm"
 import RoleForm from "../../components/role/RoleForm"
 function EditorContainer(props){
-        const pageInView = useSelector(state=>state.pages.pageInView)
+        const pageInView = useSelector(state=>state.pages.editingPage)
        
         const pathParams = useParams()
         const dispatch = useDispatch()
@@ -39,28 +39,31 @@ function EditorContainer(props){
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
         const [privacy,setPrivacy] = useState(true)
-
+        const [titleLocal,setTitleLocal]=useState("")
         const [commentable,setCommentable] = useState(true)
 
         const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         const {id }= pathParams
  const setPageInfo =(page)=>{
-      dispatch(setEditingPage({page}))
+      // dispatch(setEditingPage({page}))
       setTitle(page.title)
+      setTitleLocal(page.title)
       setPrivacy(page.privacy)
       setCommentable(page.commentable)
       dispatch(setHtmlContent(page.data))
     }
-useLayoutEffect(()=>{
-  if(pageInView){
-    setPageInfo(pageInView)
-  }else{
-    dispatch(getStory(pathParams))
-  }
+    useEffect(()=>{
+     
+          setPageInfo(pageInView)
+      
+    }),[pageInView]
+  useLayoutEffect(()=>{
 
-},[pageInView])
+    dispatch(getStory(pathParams))
+
+  },[])
     useLayoutEffect(()=>{ 
-      if(htmlContent.length<0 && title.length<0){
+      if(htmlContent.length<=0 && title.length<=0){
         let result =window.confirm("Story Will Be deleted")
         if(result){
           dispatch(deletePage(pathParams))
@@ -131,18 +134,11 @@ useLayoutEffect(()=>{
         
           navigate(Paths.addStoryToCollection.createRoute(id))
         }
-        const handlePostPublicly=()=>{
-          
-        }
-        const handleTitle = (e)=>{
-         setTitle(e.target.value)
-         debounce(()=>{
-
-       
+        const handlePostPublicly=(truthy)=>{
           let params = { page:{id},
-          title: e.target.value,
+          title: titleLocal,
           data: htmlContent,
-          privacy:privacy,
+          privacy:truthy,
           commentable:commentable,  
           type:"html"
         }
@@ -150,33 +146,51 @@ useLayoutEffect(()=>{
           dispatch(updateStory(params)).then(res=>{
             setIsSaved(true)
           })
-        },1)()
         }
+        useEffect(()=>{
+          debounce(()=>{
+
+            
+            let params = { page:{id},
+            title: titleLocal,
+            data: htmlContent,
+            privacy:privacy,
+            commentable:commentable,  
+            type:"html"
+          }
+            setIsSaved(false)
+            dispatch(updateStory(params)).then(res=>{
+              setIsSaved(true)
+            })
+          },1000)()
+        },[titleLocal])
+
         return(
           <div className="max-w-[100vw] sm:max-w-[45rem] mx-auto"> 
-       <div>
-                <div className=" rounded-lg sm:my-4  mx-auto ">
-                  <div className="bg-green-600  flex flex-row sm:rounded-t-lg border border-white   ">
+       <div className="sm:p-4">
+                <div className=" rounded-lg   mx-auto ">
+                  <div className="bg-emerald-600  text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400  sm:w-[46rem] flex flex-row sm:rounded-t-lg border border-white   ">
                       <div 
                     className=" flex-1 text-left border-white border-r-2  "
                     >
                      
-                      {isSaved?<h6 className=" text-left mx-1 text-sm text-white ">Saved</h6>:
-                    <h6 className="text-left mx-1 text-sm text-white">Draft</h6>}
-                    <input type="text " className="bg-transparent p-2  bg-green-600 w-full text-xl font-bold" value={title} onChange={(e)=>handleTitle(e)}placeholder="Untitled"/>
+                      {isSaved?<h6 className=" text-left p-1 mx-1 text-sm  ">Saved</h6>:
+                    <h6 className="text-left mx-1 p-1 text-sm">Draft</h6>}
+                    <input type="text " className="p-2  text-emerald-8 w-full text-xl  bg-transparent font-bold" value={titleLocal} onChange={(e)=>setTitleLocal(e.target.value)}placeholder="Untitled"/>
 
                     </div>
 
                     <div className="w-fit">  
                     {
                     <div className="dropdown dropdown-bottom dropdown-end">
-                    <div tabIndex={0} role="button" ><img className="w-12 h-12  rounded-lg mt-1 mx-auto" src={menu}/></div>
-                    <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-60 p-2 shadow">
+                    <div tabIndex={0} role="button" ><img className="w-12 h-16  bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
+                    <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1] w-60 p-2 shadow">
                       <li className="text-green-600"
                       onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
-                      <li className="text-green-600"> Post Public</li>
-                      <li className="text-green-600" onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
-                      <li className="text-green-600" onClick={()=>setOpenRoles(!openRoles)}>Share</li>
+           {privacy?<li onClick={()=>handlePostPublicly(false)} className="text-green-600 py-2">Post Public</li>:<li  onClick={()=>handlePostPublicly(true)}className="text-green-600 py-2">Make Private</li>}
+                      <li className="text-green-600 py-2" onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
+                      <li className="text-green-600 py-2" onClick={()=>setOpenRoles(!openRoles)}>Share</li>
+                      <li className="text-green-600 py-2" onClick={()=>handleDelete()}>Delete</li>
                     </ul>
                   </div>}
                     

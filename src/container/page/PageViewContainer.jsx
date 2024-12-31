@@ -1,4 +1,3 @@
-import { PageType } from "../../core/constants";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {  useState ,useLayoutEffect, useEffect} from "react";
@@ -9,7 +8,6 @@ import checkResult from "../../core/checkResult";
 import {Helmet} from "react-helmet"
 import { getStory } from "../../actions/StoryActions";
 import CommentThread from "../../components/comment/CommentThread";
-import Paths from "../../core/paths";
 
 export default function PageViewContainer(props){
 
@@ -67,7 +65,7 @@ export default function PageViewContainer(props){
         }
     }
     return(<div className="  mx-auto">
-  <div className=" max-w-[100vw] my-8 sm:max-w-[42rem] mx-auto">     
+  <div className=" max-w-[100vw]  my-8 sm:max-w-[42rem] mx-auto">     
     {title()}
     {pageDiv()}
     <CommentThread comments={rootComments}/>
