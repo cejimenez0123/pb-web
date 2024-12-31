@@ -24,8 +24,8 @@ function PageIndexItem({page,onDelete}) {
         const params = {
             page: page
         }
+        dispatch(setPageInView(params))
         dispatch(setHtmlContent(page.data))
-        dispatch(setEditingPage(params))
         navigate(Paths.editPage.createRoute(page.id))
         
     }
@@ -104,7 +104,7 @@ function PageIndexItem({page,onDelete}) {
                 <div className="text-left max-w-[100vw] h-fit  my-auto md:ml-4 py-8   ">
                
                 <a className="text-emerald-700 " onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
-                   {page && page.title && page.title.length>0? <h6 className="text-xl ml-2 my-auto">{page.title}</h6>:<h6>Unititled</h6>}
+                   {page && page.title && page.title.length>0? <h6 className="text-xl ml-2 my-auto md:max-w-[30rem]  overflow-scroll">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                 <div className=" my-auto mx-4 w-fit">

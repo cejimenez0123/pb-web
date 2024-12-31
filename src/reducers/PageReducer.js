@@ -9,7 +9,6 @@ import {
           setPagesToBeAdded,
           clearPagesInView,
           fetchEditingPage,
-          deletePage,
          
           deleteComment,
           clearEditingPage,
@@ -105,10 +104,7 @@ const pageSlice = createSlice({
           state.loading = false
        
         }
-      ).addCase(deletePage.fulfilled,(state,{payload})=>{
-        let filtered = state.pagesInView.filter(page => page.id !== payload.page.id)
-        state.pagesInView = filtered
-      })
+      )
       .addCase(createStory.rejected,(state,{payload})=>{
         state.loading=false
         state.error = payload.error

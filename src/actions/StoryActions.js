@@ -19,7 +19,10 @@ const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
 })
 const deleteStory = createAsyncThunk("pages/deleteStory",async (params,thunkApi)=>{
 
-   let data = storyRepo.deleteStory(params)
+  const {page}=params
+  let data = await storyRepo.deleteStory({id:page.id})
+  client.initIndex("page").deleteObject(page.id).wait()
+  
     return data
 })
 const getMyStories= createAsyncThunk(

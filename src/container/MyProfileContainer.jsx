@@ -110,7 +110,7 @@ function MyProfileContainer(props){
    
     
             return(
-            <div className=''>
+            <div className='pb-72'>
                     <div className=' w-full border-2 border-emerald-300 mx-2 mt-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
                   
                         <div>

@@ -668,7 +668,6 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
           appendSaveRolesForPage,
           createComment,
           fetchCommentsOfPage,
-          deletePage,
           deleteComment,
           clearEditingPage,
           appendComment,

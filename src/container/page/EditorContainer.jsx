@@ -4,11 +4,7 @@ import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
 import { useParams,useNavigate } from "react-router-dom"
 import menu from "../../images/icons/menu.svg"
-import {  setHtmlContent,
-      
-       
-          deletePage, 
-          setEditingPage,
+import {   setEditingPage, setHtmlContent, setPageInView,
           } from "../../actions/PageActions"
 import React,{ useEffect, useLayoutEffect, useState } from "react"
 import {  Button,} from "@mui/material"
@@ -28,10 +24,10 @@ import HashtagForm from "../../components/hashtag/HashtagForm"
 import RoleForm from "../../components/role/RoleForm"
 function EditorContainer(props){
         const pageInView = useSelector(state=>state.pages.editingPage)
-       
+        const fetchedPage = useSelector(state=>state.pages.pageInView)
         const pathParams = useParams()
         const dispatch = useDispatch()
-
+        const pending = useSelector(state=>state.pages.loading)
         const md = useMediaQuery({ query: '(min-width:768px)'})
         const [title,setTitle] = useState("")
         const navigate = useNavigate()
@@ -46,27 +42,37 @@ function EditorContainer(props){
         const {id }= pathParams
  const setPageInfo =(page)=>{
       // dispatch(setEditingPage({page}))
+      if(page){
       setTitle(page.title)
       setTitleLocal(page.title)
       setPrivacy(page.privacy)
       setCommentable(page.commentable)
       dispatch(setHtmlContent(page.data))
+      }
     }
-    useEffect(()=>{
+    useLayoutEffect(()=>{
+      dispatch(getStory(pathParams)).then(res=>{
+        checkResult(res,payload=>{
+          if(pageInView){
+            setPageInfo(pageInView)
+             }else{
+               if(fetchedPage){
+                 dispatch(setEditingPage({page:fetchedPage}))
+                 setPageInfo(fetchedPage)
+               }
+        }
+      })
      
-          setPageInfo(pageInView)
-      
-    }),[pageInView]
+      },err=>{})
+    },[])
   useLayoutEffect(()=>{
-
-    dispatch(getStory(pathParams))
-
+   
   },[])
     useLayoutEffect(()=>{ 
       if(htmlContent.length<=0 && title.length<=0){
         let result =window.confirm("Story Will Be deleted")
         if(result){
-          dispatch(deletePage(pathParams))
+          dispatch(deleteStory(pathParams))
         }
       }
     },[])
@@ -82,7 +88,7 @@ function EditorContainer(props){
           handleClose()
           if(pageInView){
           const params = {page:pageInView}
-          dispatch(deletePage(params)).then(()=>{
+          dispatch(deleteStory(params)).then(()=>{
             navigate("/profile/home")
           })
         }
@@ -142,6 +148,7 @@ function EditorContainer(props){
           commentable:commentable,  
           type:"html"
         }
+        setPrivacy(truthy)
           setIsSaved(false)
           dispatch(updateStory(params)).then(res=>{
             setIsSaved(true)

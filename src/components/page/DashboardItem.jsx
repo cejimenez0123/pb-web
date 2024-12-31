@@ -36,7 +36,7 @@ function DashboardItem({page,book,isGrid}) {
     const [bookmarked,setBookmarked]=useState(null)
 
 useEffect(()=>{
-    if(userApprovals!=null){
+    if(userApprovals!=null && page &&currentProfile){
     let ua = userApprovals.find(approval=>approval.pageId === page.id && approval.profileId === currentProfile.id)
     setApproved(ua)
     }
@@ -106,10 +106,14 @@ const handleApprovalClick = ()=>{
     if(Boolean(approved)){
         dispatch(deletePageApproval({userApproval:approved}))
     }else{
+        if(page){
+
+        
         const params = {pageId: page.id,
                         profileId: currentProfile.id,
                         score:2}
         dispatch(createPageApproval(params))
+        }
     }
 }
 const expandedBtn =()=>{
@@ -142,7 +146,7 @@ return <Button onClick={()=>{
     }
     const onBookmarkPage = ()=>{
         if(bookmarked && page){
-        let pageIdList = bookmarkLibrary.pageIdList.filter(id=>id!=page.id)
+        let pageIdList = bookmarkLibrary.pageIdList.filter(id=>page && id!=page.id)
         const params = {
             library:bookmarkLibrary,
             pageIdList:pageIdList,
@@ -161,7 +165,7 @@ return <Button onClick={()=>{
                 dispatch(updateLibraryContent(params)).then(result=>{
                     checkResult(result,(payload)=>{
                     const {library} = payload
-                         let found =library.pageIdList.find(id=>id==page.id)
+                         let found =library.pageIdList.find(id=>page&&id==page.id)
                         setBookmarked(Boolean(found))
                         },()=>{
 
@@ -199,7 +203,7 @@ return <Button onClick={()=>{
          onClick={handleApprovalClick}
             
           className={`rounded-none
-           border-x-1 text-xl border-y-0 px-4 bg-transparent   `}
+           border-x-1 text-xl border-y-0  mr-4 bg-transparent   `}
         
          >
              Yea
@@ -217,14 +221,14 @@ return <Button onClick={()=>{
 className="             
       text-white
          rounded-none
-         px-4 
+         ml-2
          text-xl
          btn-primary
          bg-transparent 
          ">
 Share</button>
 <ul tabIndex={0} className="dropdown-content  menu bg-white text-emerald-700 rounded-box z-[100] w-60 p-1 shadow">
-{page.authorId===currentProfile.id?<li onClick={()=>{
+{currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
     dispatch(setHtmlContent(page.data))
     dispatch(setEditingPage({page}))
     navigate(Paths.editPage.createRoute(page.id))

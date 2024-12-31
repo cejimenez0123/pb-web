@@ -1,6 +1,6 @@
-import React, { useLayoutEffect, useState } from "react"
+import React, { useEffect, useLayoutEffect, useState } from "react"
 import { useDispatch,useSelector } from "react-redux";
-import { setHtmlContent, setPageInView } from "../../actions/PageActions";
+import { setEditingPage, setHtmlContent, setPageInView } from "../../actions/PageActions";
 import ReactQuill from "react-quill";
 import "../../styles/Editor.css"
 import { debounce, set } from "lodash";
@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 const fonts = ["Arial","Courier New","Georgia"]
 export default function RichEditor({title,privacy,commentable,setIsSaved}){
     const pageInView = useSelector(state=>state.pages.editingPage)
+    const fetchedPage = useSelector(state=>state.pages.pageInView)
     const ehtmlContent = useSelector(state=>state.pages.editorHtmlContent)
     const [html,setHtml] = useState([])
     const param = useParams()
@@ -26,11 +27,20 @@ export default function RichEditor({title,privacy,commentable,setIsSaved}){
         ['clean'],
       ],
     };
+    const setPageInfo = (page)=>{
+      dispatch(setHtmlContent(page.data))
+      setHtml(page.data)
+    }
     useLayoutEffect(()=>{
-     
-      setHtml(pageInView.data)
-
-    },[pageInView])
+      if(pageInView){
+     setPageInfo(pageInView)
+      }else{
+        if(fetchedPage){
+          dispatch(setEditingPage({page:fetchedPage}))
+          setPageInfo(fetchedPage)
+        }
+      }
+    },[])
     const formats = [
       'header',
       'font',
@@ -59,9 +69,9 @@ export default function RichEditor({title,privacy,commentable,setIsSaved}){
           commentable:commentable,  
           type:"html"
         }
-          setIsSaved(false)
+        
           dispatch(updateStory(params)).then(res=>{
-            setIsSaved(true)
+        
           })
       }
       
@@ -72,7 +82,7 @@ export default function RichEditor({title,privacy,commentable,setIsSaved}){
     return( <div>
      
       <ReactQuill 
-      className="bg-green-600 rich-editor sm:w-[46rem] rounded-lg  text-white stroke-white"
+      className="bg-green-600 max-w-screen rich-editor sm:w-[46rem] rounded-lg  text-white stroke-white"
       modules={modules}
       formats={formats} value={html} onChange={(content)=>handleTextChange(content)}
         

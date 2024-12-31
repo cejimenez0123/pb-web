@@ -115,7 +115,7 @@ function LogInCard(props){
 <div className='mb-8 max-w-[91vw] '>
     <label className="input poppins inline-block flex flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
   Password
-  <input type={showPassword?"text":`password`} className="shrink max-w-52  shrink text-emerald-800 " 
+  <input type={showPassword?"text":`password`} className="shrink max-w-36 sm:max-w-52  shrink text-emerald-800 " 
          value={props.password}
          
          onChange={(e) => props.setPassword(e.target.value.trim())}
