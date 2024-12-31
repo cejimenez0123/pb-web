@@ -72,12 +72,14 @@ import Enviroment from "../core/Enviroment";
         return res.data
     }
     async patchCollectionRoles({roles,profileId,colId}){
-                await axios.patch(this.url+"/"+colId+"/role",{
+        let res = await axios.patch(this.url+"/"+colId+"/role",{
                     roles,
                     profileId
                 },{headers:{
                     Authorization:"Bearer "+localStorage.getItem("token")
                 }})
+
+        return res.data
     }
     async updateCollectionContent({id,storyToCol,colToCol,col}){
             let res = await axios.patch(this.url+"/"+id,{

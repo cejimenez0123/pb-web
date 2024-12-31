@@ -12,6 +12,7 @@ function RoleForm({book,onClose}){
     const profiles = useSelector(state=>state.users.profilesInView)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const storyRoles = useSelector(state=>state.roles.storyRoles)
+    const colRoles = useSelector(state=>state.roles.collectionRoles)
     const pending = useSelector(state=>state.roles.loading)
     const [roles,setRoles]=useState([])
     const dispatch = useDispatch()
@@ -19,7 +20,7 @@ function RoleForm({book,onClose}){
     useLayoutEffect(()=>{
         dispatch(fetchProfiles())
 
-    if(!book.id.storyIdList){
+    if(!book.childCollections){
         dispatch(fetchStoryRoles({storyId:book.id})).then(res=>{
             checkResult(res,payload=>{
                 setRoles(payload.roles)
@@ -33,7 +34,7 @@ function RoleForm({book,onClose}){
         }
     },[])
     useEffect(()=>{
-        if(storyRoles){
+        if(!book.childCollections){
 
       let list = storyRoles.map(role=>{
         return new Role(
@@ -45,7 +46,7 @@ function RoleForm({book,onClose}){
 
     const handlePatchRoles=()=>{
         if(currentProfile){
-        if(!!book.storyIdList && !!book.childCollections){
+        if(book.childCollections){
             dispatch(patchCollectionRoles({roles,profileId:currentProfile.id,colId:book.id}))
         }else{
        
@@ -59,7 +60,7 @@ function RoleForm({book,onClose}){
        setRoles([...newRoles,roleI])
        console.log(roles)
     }
-    return(<div className="background-blur h-screen sm:min-w-[30em] bg-gradient-to-br from-emerald-300 to-emerald-50 px-4">
+    return(<div className="background-blur h-screen sm:min-w-[30em] overflow-scroll max-h-[80vh] bg-gradient-to-br from-emerald-300 to-emerald-50 px-4">
         <div className="pt-4">
            <div className=" flex text-emerald-900 flex-row justify-between">
             <div>Share</div><img onClick={onClose} src={close}/>
@@ -69,7 +70,7 @@ function RoleForm({book,onClose}){
         </div>
         <div>
             <button className="
-            text-white  botder border-white mb-8 bg-emerald-800"
+            text-white  botder rounded-full text-xl shadow-sm border-white mb-8 bg-emerald-800"
             onClick={handlePatchRoles}
             >
                 Save</button>
@@ -84,7 +85,7 @@ function RoleForm({book,onClose}){
       loader={<p>Loading...</p>}
         endMessage={
             <div className="no-more-data">
-                <p>Fin</p>
+                <h6 className="mx-auto w-24 text-center text-2xl text-bold text-emerald-800">Fin</h6>
             </div>
         }>
             
@@ -95,7 +96,7 @@ function RoleForm({book,onClose}){
                    if(roles){
                     role = roles.find(role=>role.profile.id==profile.id)
                    }
-                return(<div key={i}className="background-blur flex flex-row rounded-full justify-between px-4 bg-opacity-60 bg-emerald-600  my-4 ">
+                return(<div key={i}className="background-blur shadow-sm flex flex-row rounded-full justify-between px-4 bg-opacity-60 bg-emerald-600  my-4 ">
                     <h6 className="text-sm opacity-100 text-white py-4 mx-2 mx-y">
                         {profile.username}</h6>
                         <div className="my-auto w-fit">

@@ -98,7 +98,7 @@ console.log(storyToCols)
 
     const collectionInfo=()=>{
         
-        return(<div className="h-fit max-w-[100vw]  sm:pb-8 sm:w-48 sm:border sm:border-white  mx-2 mt-4 md:mt-8 rounded rounded-lg mb-8 sm:text-left">
+        return(<div className=" max-w-[100vw] max-h-full  sm:pb-8 sm:w-48 sm:border sm:border-white  mx-2 mt-4 md:mt-8 rounded rounded-lg mb-8 sm:text-left">
     <div>
     <input 
       
@@ -106,9 +106,9 @@ console.log(storyToCols)
     setTitle(e.target.value)
 }}
 
-    type="text" className="mx-w bg-transparent text-emerald-800 px-2 py-2 w-full mb-4 text-2xl" value={title}/>
+    type="text" className="mx-w bg-transparent text-emerald-800 px-2 py-2 w-full mb-4  text-2xl" value={title}/>
        </div>
-        <textarea className="  textarea text-[1rem] min-w-[90%] w-full max-w-screen text-white mx-auto sm:mx-8 bg-emerald-600 md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
+        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea text-[1rem] min-w-[24rem]  text-white  sm:mx-8 bg-emerald-600 bg-opacity-60  max-w-[20em] md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
         <div className=" mt-8  justify-around ml-12 text-left gap-4 grid grid-flow-row-dense grid-cols-2 max-w-72 sm:max-w-[22rem]">
 
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
@@ -198,7 +198,9 @@ open={openAccess}
 onClose={()=>{
     setOpenAccess(false)
 }}>
+    <div className="overflow-y-scroll overflow-x-hidden">
     <RoleForm book={colInView} onClose={()=>setOpenAccess(false)}/>
+    </div>
 </Dialog>
         </div>)
     }

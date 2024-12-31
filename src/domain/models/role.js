@@ -4,17 +4,17 @@ export default class Role {
     id
     profile
     role
-    story
+    item
     created
     constructor(
         id,
         profile,
-        story,
+        item,
         role,
         created=Timestamp.now()
     ){
         this.id = id
-        this.story=story
+        this.item=item
         this.profile = profile
         this.role = role
         this.created = created

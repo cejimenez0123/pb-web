@@ -198,12 +198,13 @@ const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectio
         return {list:data.list}
     }
 )
-const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",async(params,thunkApi)=>{
+const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",async({roles,profileId,colId},thunkApi)=>{
 
 
-    let {roles} = await collectionRepo.patchCollectionRoles({roles,profileId,colId})
+    let data= await collectionRepo.patchCollectionRoles({roles,profileId,colId})
+
     return {
-        roles
+        roles:data.roles
     }
 })
 
