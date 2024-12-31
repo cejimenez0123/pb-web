@@ -91,7 +91,7 @@ function LinkPreview({ url,size }) {
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      <div  className="link-preview rounded-t-lg spotify " 
+      <div  className=" rounded-t-lg spotify " 
             style={{ cursor: 'pointer' }}>
         <Spotify width={"100%"}   className='' link={url}/>
       </div>)
@@ -143,7 +143,7 @@ function LinkPreview({ url,size }) {
       }
   }
   return (
-    <div className="link-preview  text-slate-800 rounded-lg" onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className="link-preview bg-emerald-[rgb(74 222 128)] text-slate-800 " onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       {previewDescription()}
       {previewTitle()}

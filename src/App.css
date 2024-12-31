@@ -703,14 +703,12 @@
   }*/
 }
 .link-preview p{
-  padding-left: 1em;
-  padding: .5em;
+ 
   text-align: left ;
   background-color: rgb(74 222 128);
 }
 .link-preview .title{
-  margin-left: .5em;
-  margin-right: .5em;
+
   text-align: left;
   color: black
   ;
