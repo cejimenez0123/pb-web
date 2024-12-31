@@ -193,7 +193,7 @@ function EditorContainer(props){
    
 if(fetchedPage){
         return(
-          <div className=" mx-auto  "> 
+          <div className=" mx-auto p-8  "> 
        <div className= "max-w-[100vw] w-[40em] mt-t mb-12 mx-auto">
                 <div className=" rounded-lg w-full  mx-auto ">
                   <div className="bg-emerald-600  text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400   flex flex-row sm:rounded-t-lg border border-white   ">
