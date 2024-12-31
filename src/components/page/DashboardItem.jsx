@@ -223,7 +223,7 @@ className="
          rounded-none
          ml-2
          text-xl
-         btn-primary
+
          bg-transparent 
          ">
 Share</button>

@@ -30,7 +30,6 @@ function EditorContainer(props){
         const dispatch = useDispatch()
         const pending = useSelector(state=>state.pages.loading)
         const md = useMediaQuery({ query: '(min-width:768px)'})
-        const [title,setTitle] = useState("")
         const navigate = useNavigate()
         const [isSaved,setIsSaved]=useState(true)
        const [openHashtag,setOpenHashtag]=useState(false)
@@ -44,7 +43,7 @@ function EditorContainer(props){
  const setPageInfo =(page)=>{
 
         dispatch(setEditingPage({page:page}))
-        setTitle(page.title)
+   
       setTitleLocal(page.title)
       setPrivacy(page.privacy)
       setCommentable(page.commentable)
@@ -52,7 +51,7 @@ function EditorContainer(props){
 
     }
     useLayoutEffect(()=>{
-      if(fetchedPage.id!=pathParams.id){
+      if(fetchedPage && pathParams && fetchedPage.id!=pathParams.id){
       dispatch(getStory(pathParams)).then(res=>{
         checkResult(res,payload=>{
           if(payload.story){
