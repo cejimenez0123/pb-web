@@ -3,9 +3,6 @@ import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
 
 
-
-
-
 function ApplyContainer(props){
    
     const [igHandle,setIgHandle]=useState("")
