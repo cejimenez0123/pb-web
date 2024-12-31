@@ -143,7 +143,7 @@ function LinkPreview({ url,size }) {
       }
   }
   return (
-    <div className="link-preview bg-emerald-[rgb(74 222 128)] text-slate-800 " onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className="link-preview bg-emerald-200 text-slate-800 " onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       {previewDescription()}
       {previewTitle()}
