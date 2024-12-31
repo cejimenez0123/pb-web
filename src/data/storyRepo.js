@@ -86,17 +86,18 @@ class StoryRepo{
          },{headers:{
             Authorization: "Bearer "+localStorage.getItem(this.token)
         }})
-console.log("res",res)
        
          return res.data
     }
     async deleteStory({id}){
     
+       
         let res = await axios.delete(this.url+"/"+id,
         {headers:{
             Authorization: "Bearer "+localStorage.getItem(this.token)
     }})
         return res.data
+        
     }
     async getCollectionStoriesProtected({id}){
         let res = await axios.get(this.url+"/collection/"+id+"/protected",{

@@ -38,7 +38,7 @@ function ApplyContainer(props){
         const form = {
             igHandle,
             fullName,
-            email,
+            email:email.toLowerCase(),
             whyApply,
             howFindOut
         }
