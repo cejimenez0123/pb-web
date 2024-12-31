@@ -38,10 +38,9 @@ const writingJourney = ()=>{
     return(<div className="">
         <div id="ready">
 <h6  className="text-emerald text-lg poppins sm:text-white">
-Join us! If you're a writer or enjoy reading, 
-you're of discerning taste; share and save ideas and inspiration.
- Plumbum is the place for your story.
-</h6>
+If you're a writer or enjoy reading, 
+you're of discerning taste; We are taking applications for betausers for our release in February.
+Join now!</h6>
 <button className="text-2xl text-white bg-emerald-800 rounded-full my-8 px-5 py-3" onClick={()=>{navigate(Paths.apply())}}  
    >Apply to Join Today</button>
 </div>

@@ -111,7 +111,7 @@ const navigateToLibrary = (library)=>{
     const pageList = ()=>{
         if(pagesInView!=null){
             return(<div 
-            className='w-fit mx-auto'
+            className=''
             >
                <InfiniteScroll
             dataLength={pagesInView.length}
@@ -121,10 +121,10 @@ const navigateToLibrary = (library)=>{
             style={isGrid?{overflow:"unset"}:{display:"flex",flexDirections:"row"}}
             >
 
-               <div className={"w-full "+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"sm:px-2")}>
+               <div className={""+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"sm:px-2")}>
               {pagesInView.map(page=>{
                     const id = `${page.id}_${uuidv4()}`
-                    return(<div className="my-2"id={id}>
+                    return(<div className="my-2 mx-auto"id={id}>
                         <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
                     </div>)
                 })}
