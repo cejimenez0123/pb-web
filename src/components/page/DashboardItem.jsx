@@ -269,7 +269,7 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={`rounded-lg relative  page  bg-emerald-50 shadow-sm   `}>
+        <div className={`rounded-lg relative  page  bg-emerald-50 mx-auto max-w-[96vw] shadow-sm   `}>
         
             <div className='rounded-lg    '>
                 <div className=' flex flex-row  '>
