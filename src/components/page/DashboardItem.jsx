@@ -202,13 +202,14 @@ return <Button onClick={()=>{
          onClick={handleApprovalClick}
             
           className={`rounded-none
-           border-x-1 text-xl border-y-0  mr-4 bg-transparent   `}
+           border-x-1 text-xl border-y-0  text-white mr-4 bg-transparent   `}
         
          >
              Yea
          </button>
          <button
-             className=' px-4 rounded-none
+             className=' px-4 rounded-none 
+             text-white
              border-x-2 border-y-0 text-xl bg-emerald-700 border-white '
              onClick={()=>hanldeClickComment(page)}
                  >

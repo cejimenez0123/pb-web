@@ -16,8 +16,6 @@ export default function AboutContainer(props){
     <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
 <img  className=" absolute top-[-9rem] sm:top-[-20%] md:top-[-30%] lg:top-[-30%] rounded-lg" src={firstGroup}  alt="first group"/>
  </div>
-   
-
            <div className="">
             <div className=" bg-[#23774ca6] text-white h-full rounded-lg p-4" >
 <div  >
