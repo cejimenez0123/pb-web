@@ -31,10 +31,10 @@ export default function CreateCollectinForm(props){
             
         })
     }
-    return(<form className="sm:border-white w-[100%] px-4 pb-8 sm:border-2 mx-auto bg-transparent sm:border rounded ">
+    return(<form className="sm:border-emerald-800 w-[100%] px-4 pb-8 bg-gradient-to-br from-emerald-100 to-emerald-400 sm:border-2 mx-auto bg-transparent sm:border rounded ">
 
         <div >
-        <button onClick={()=>props.onClose} className="bg-transparent flex flex-start" >
+        <button onClick={props.onClose} className="bg-transparent flex flex-start" >
             <img src={close}/>
         </button>
         <div class="mb-4 flex flex-col">
@@ -45,22 +45,22 @@ export default function CreateCollectinForm(props){
         </label>
         <input 
         value={name}
-        className="bg-transparent rounded-lg w-[100%] text-white p-2 text-xl border-white border"
+        className="bg-transparent rounded-lg w-[100%] text-emerald-800 p-2 text-xl border-emerald-700 border-1"
         onChange={(e)=>setName(e.target.value)}
         />
-        <label className="text-white text-xl">
+        <label className="text-emerald-800 text-xl">
             Purpose
         </label>
         <textarea value={purpose}
-        className="bg-transparent rounded-lg w-[100%] mt-2 text-white p-2 text-xl border-white border resize-y"
+        className="bg-transparent rounded-lg w-[100%] mt-2 text-emerald-800 p-2 text-xl border-emerald-700 border-1 resize-y"
                  onChange={(e)=>setPurpose(e.target.value)}/>
-        <label className="text-white h-18 mt-4 flex flex-row content-between my-auto">
+        <label className="text-emerald-800 h-18 mt-4 flex flex-row content-between my-auto">
             <p className="mr-2">Collection is {isPrivate?"Private":"Public"}</p> <input type="checkbox"
             className="checkbox border-white ml-28 border"
             checked={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}/>
         </label>
         
-        <label className="text-white flex mt-4  flex-row my-auto">
+        <label className="text-emerald-800 flex mt-4  flex-row my-auto">
             <p className="mr-1">Anyone can add to collection</p>
             <input  checked={writingIsOpen} 
             onChange={(e)=>setWritingIsOpen(e.target.checked)}

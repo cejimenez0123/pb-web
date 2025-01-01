@@ -97,7 +97,7 @@ export default function AddToCollectionContainer(props){
         dataLength={pagesInView.length}>
             {pagesInView.filter(story=>!colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)).map(story=>{
                 return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-1
-                border-emerald-400  rounded-lg p-4  my-2">
+                border-emerald-700  rounded-lg p-4  my-2">
                     <h2 className="text-xl my-auto  overflow-hidden">{story?story.title:null}</h2>
                     <div className="bg-emerald-800 rounded-lg p-2">{colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
                     <h1 onClick={()=>removeNewStory(story)}className="">
@@ -164,7 +164,7 @@ export default function AddToCollectionContainer(props){
 
 
 <div role="tablist" className="tabs mt-8 shadow-md rounded-lg   sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm border-emerald-400 border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-800 text-xl" aria-label="Stories" />
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm border-emerald-800 border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-800 text-xl" aria-label="Stories" />
   <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  md:w-[30em] md:p-6">
   {storyList()}
   </div>

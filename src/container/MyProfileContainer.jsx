@@ -15,8 +15,6 @@ import ReactGA from "react-ga4"
 import {Dialog} from "@mui/material"
 import CreateCollectinForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
-import { setPageInView } from '../actions/PageActions';
-import UseCaseDownloadPicture from '../domain/usecases/getDownloadPicture';
 import getDownloadPicture from '../domain/usecases/getDownloadPicture';
 import ReferralForm from '../components/auth/ReferralForm';
 const MediaType = {

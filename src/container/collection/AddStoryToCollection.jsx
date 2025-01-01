@@ -2,11 +2,12 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import { getStory } from "../../actions/StoryActions"
-import { getMyCollections } from "../../actions/CollectionActions"
+import { addStoryListToCollection, getMyCollections } from "../../actions/CollectionActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import CreateCollectinForm from "../../components/collection/CreateCollectionForm"
 import {Dialog} from "@mui/material"
-
+import addBox from "../../images/icons/add_box.svg"
+import emptyBox from "../../images/icons/empty_box.svg"
 export default function AddStoryToCollectionContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -14,6 +15,10 @@ export default function AddStoryToCollectionContainer(props){
     const [hasMoreCol,setHasMoreCol]=useState(true)
     const [openDialog,setOpenDialog]=useState(false)
     const collections = useSelector(state=>state.books.collections)
+    const addStory = (collection)=>{
+
+      dispatch(addStoryListToCollection({id:collection.id,list:[page]}))
+    }
     useEffect(()=>{
 
         dispatch(getStory({id:pathParams.id}))
@@ -26,19 +31,19 @@ export default function AddStoryToCollectionContainer(props){
   
     
     if(page && page.id == pathParams.id){
-        return(<div >
+        return(<div className="text-emerald-800">
            
-            <div className="border mt-16 text-left border-white p-8 mx-8 rounded-lg">
-            <h6 className="text-xl font-bold pb-2 font-bold">Your Story</h6>
-              <h6 className="text-xl pb-8">{page.title}</h6>
+            <div className="border-2 mt-16 text-left border-emerald-600 p-8 mx-2 sm:mx-8 rounded-lg">
+            <h6 className="text-xl font-bold pb-2  font-bold">Your Story</h6>
+              <h6 className="text-l pb-8">{page.title}</h6>
             
               <button  
               onClick={()=>setOpenDialog(true)}
-              className="bg-emerald-900">New Collection</button>
+              className="bg-emerald-900 text-white rounded-full">New Collection</button>
               </div>
             <div>
                 </div>
-                <div className="border mt-16 text-left border-white p-8 mx-8 rounded-lg">
+                <div className="border-2 border-emerald-600 mt-16 text-left  p-8 mx-2 sm:mx-8 rounded-lg">
                     <h6 className="text-xl font-bold pb-8 font-bold">Your Collections</h6>
                     {collections.length>0?
                     <InfiniteScroll
@@ -53,7 +58,8 @@ export default function AddStoryToCollectionContainer(props){
                 }
             >
              {collections.map(col=>{
-                return(<p>{col.title}</p>)
+                return(<div key={col.id} onClick={()=>addStory(col)} className="border-emerald-600 border-2 rounded-full px-6 py-4 my-3">
+                  <h6  className="text-l" >{col.title}</h6></div>)
              })}</InfiniteScroll>:null}
 
                 </div>

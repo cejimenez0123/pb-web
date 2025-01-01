@@ -141,31 +141,33 @@ function EditorContainer(props){
         }
         const handlePostPublicly=(truthy)=>{
           switch(fetchedPage.type){
-            case fetchPage.type == PageType.text:{
-              let params = { page:{id},
+            case PageType.text:{
+              let params = { page:fetchedPage,
               title: titleLocal,
               data: htmlContent,
               privacy:truthy,
               commentable:commentable,  
               type:fetchedPage.type
             }
-            setPrivacy(truthy)
               setIsSaved(false)
               dispatch(updateStory(params)).then(res=>{
+
+                setPrivacy(truthy)
                 setIsSaved(true)
               })
             }
             case PageType.link:{
-              let params = { page:{id},
+              let params = { page:fetchedPage,
               title: titleLocal,
               data: fetchedPage.data,
               privacy:truthy,
               commentable:commentable,  
               type:fetchedPage.type
             }
-            setPrivacy(truthy)
+           
               setIsSaved(false)
               dispatch(updateStory(params)).then(res=>{
+                setPrivacy(truthy)
                 setIsSaved(true)
               })
             }
@@ -210,18 +212,19 @@ if(fetchedPage){
                     </div>
 
                     <div className="">  
-                    {
+                    
                     <div className="dropdown dropdown-bottom dropdown-end">
                     <div tabIndex={0} role="button" ><img className="w-12 h-16  bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
                     <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1]  p-2 shadow">
-                      <li className="text-green-600"
+                      <li className="text-green-600 pt-3 pb-2 "
                       onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
-           {privacy?<li onClick={()=>handlePostPublicly(false)} className="text-green-600 py-2">Post Public</li>:<li  onClick={()=>handlePostPublicly(true)}className="text-green-600 py-2">Make Private</li>}
-                      <li className="text-green-600 py-2" onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
-                      <li className="text-green-600 py-2" onClick={()=>setOpenRoles(!openRoles)}>Share</li>
-                      <li className="text-green-600 py-2" onClick={()=>setOpen(true)}>Delete</li>
+           {privacy?<li onClick={()=>handlePostPublicly(false)} 
+           className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green-600 pt-3 pb-2 " onClick={()=>handlePostPublicly(true)}>Make Private</li>}
+                      <li className="text-green-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
+                      <li className="text-green-600 pt-3 pb-2 " onClick={()=>setOpenRoles(!openRoles)}>Share</li>
+                      <li className="text-green-600 pt-3 pb-2" onClick={()=>setOpen(true)}>Delete</li>
                     </ul>
-                  </div>}
+                  </div>
                     
                 </div>
                 <div>

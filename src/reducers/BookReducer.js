@@ -61,11 +61,18 @@ builder.addCase(clearCollections.type,(state)=>{
     state.error = payload.error
     state.loading = false
 }).addCase(addStoryListToCollection.rejected,(state,{payload})=>{
-    state.error = payload.error
+    if(payload.error){
+        state.error = payload.error
+    }
+   
     state.loading = false
 }).addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
     state.loading=false
     state.collectionInView =payload.collection
+    let collections = state.collections
+    let list = collections.filter(col=>col.id!=payload.collection)
+
+    state.collections = [...list,payload.collection]
 }).addCase(createCollection.pending,(state)=>{
     state.loading = true
 }).addCase(createCollection.fulfilled,(state,{payload})=>{
