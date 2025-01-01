@@ -61,7 +61,7 @@ function LogInContainer(props) {
     },[location,currentProfile])
   
     return (
-        <div id="">
+        <div id="" className='sm:mx-2'>
          
             <LogInCard  setError={setLogInError}
                         error={logInError}

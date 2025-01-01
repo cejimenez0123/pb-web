@@ -41,12 +41,8 @@ function App(props) {
  
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
-  // useEffect(()=>{
-  //   props.fetchAllProfiles()
-  // },[]
-  // )
   useEffect(()=>{
-    // if(authState.user !== null && !authState.user.isAnonymous)  
+  
       props.getCurrentProfile().then(result=>{
         checkResult(result,payload=>{
           
@@ -117,6 +113,8 @@ function App(props) {
                           />
                         }
             />
+          <Route path={Paths.editor.image()}
+              element={<EditorContainer/>}/>
           <Route  path="/discovery" 
                   element={
                     <DiscoveryContainer 

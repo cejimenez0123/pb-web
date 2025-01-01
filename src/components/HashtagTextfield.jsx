@@ -60,7 +60,7 @@ const HashtagTextfield=(page)=>{
         values.map(value=>{
             const regex = /[^a-zA-Z<>]/;
             const result = value.replace(regex, '').trim();
-            console.log(JSON.stringify(value))
+    
             htmlString+=(`<div className='hashtag'>#
             ${result}
             </div>`)

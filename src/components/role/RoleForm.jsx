@@ -58,7 +58,7 @@ function RoleForm({book,onClose}){
        let newRoles = roles.filter(role=>role.profile.id != profile.id)
         
        setRoles([...newRoles,roleI])
-       console.log(roles)
+     
     }
     return(<div className="background-blur h-screen sm:min-w-[30em] overflow-scroll max-h-[80vh] bg-gradient-to-br from-emerald-300 to-emerald-50 px-4">
         <div className="pt-4">

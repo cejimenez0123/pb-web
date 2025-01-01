@@ -3,11 +3,14 @@ import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
 import "../App.css"
+import { debounce } from 'lodash';
 function LinkPreview({ url,size }) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+  
+
     if(!url.includes('https://open.spotify.com/')){
     const fetchData = async () => {
       try {
@@ -46,9 +49,6 @@ function LinkPreview({ url,size }) {
           let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
          
           if (!image) {
-         
-            // let iframe = doc.querySelector('#urlSchemeIframeHandler');
-            // If og:image meta tag is not present, try to find other image elements
             if(!image){
             const imgElement = doc.querySelector('img');
 
@@ -69,14 +69,15 @@ function LinkPreview({ url,size }) {
           setLoading(false);
         }
       } catch (error) {
-        console.error("error1"+error);
         setLoading(false);
       }
     };
+    debounce(()=>{
 
     fetchData();
-  }
-  }, [url]);
+  
+},1000)()
+}}, [url]);
   const handleClick = () => {
     window.open(url, '_blank');
   };

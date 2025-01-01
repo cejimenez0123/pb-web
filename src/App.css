@@ -343,45 +343,7 @@
   }
   
 }
-@media (min-width: 900px){
-  .upload-picture{
-      margin:auto;
-      background-color: var(--tertiary);
-      width: 100%;
-      border-radius: 8px;
-      max-width: 600px;
-      margin-bottom: 2em;
 
-  }
-  .upload-picture .url{
-    background-color:white;
-    border-radius:8px;
-    min-width: 86%;
-    margin-bottom: 2em;
-    margin-top: 1em;
-  
-  }
-
-  .upload-picture .thumbnail{
-    margin-bottom:1em;
-  }
-}
-  @media (max-width: 900px){
-    .upload-picture{
-      margin:auto;
-      background-color: var(--tertiary);
-      width: 100%;
-      max-width: 600px;
-      margin-bottom: 2em;
-      padding-bottom: 2em;
-      padding-top: 2em;
-    }
-  .upload-picture .body{
-    margin-top: 1em;
-  }
- 
-
-}
 @media (min-width: 900px){
   .upload-picture .body{
     margin-top: 1em;

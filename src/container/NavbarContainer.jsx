@@ -34,6 +34,7 @@ import SearchDialog from '../components/SearchDialog'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
 import ReactGA from 'react-ga4'
+import { setPageInView } from '../actions/PageActions'
 const PageName = {
   home: "Home",
   about:"About",
@@ -266,9 +267,9 @@ function NavbarContainer(props){
                             </ListItemButton>
                             <ListItemButton key={`image`} 
                               onClick={(e)=>{
-                            
+                                dispatch(setPageInView({page:null}))
                               handleClose()
-                              navigate("/page/image")}}
+                              navigate(Paths.editor.image())}}
                               sx={{ pl: 6 }}
                             >
                               <ImageIcon/>
@@ -276,7 +277,7 @@ function NavbarContainer(props){
                             <ListItemButton     
                     sx={{ pl: 6 }} 
                     onClick={()=>{
-                    
+                      dispatch(setPageInView({page:null}))
                       handleClose()
                       navigate("/page/link")}}>
                      <LinkIcon/>

@@ -123,8 +123,12 @@ const pageSlice = createSlice({
       .addCase(clearEditingPage,(state)=>{
         state.editingPage =null
       }).addCase(setPageInView,(state,{payload})=>{
-     
-        state.pageInView = payload.page
+     if(payload && payload.page){
+      state.pageInView = payload.page
+     }else{
+      state.pageInView=null
+     }
+      
       }).addCase(setEditingPage.type,(state,{payload})=>{
         state.editingPage = payload
       }).addCase(saveRolesForPage.fulfilled,(state,{payload})=>{

@@ -260,7 +260,7 @@ const createLibrary = createAsyncThunk("library/createLibrary", async function(p
   async (thunkApi) => {
      
       let data = await collectionRepo.getPublicLibraries()
-      console.log(data)
+   
   return {
 
       libraries: data.libraries

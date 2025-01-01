@@ -1,8 +1,8 @@
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import React,{useState} from "react"
+import React,{useEffect, useState} from "react"
 import { updateLibraryContent } from "../../actions/LibraryActions"
-import {Button } from "@mui/material"
+import isValidUrl from "../../core/isValidUrl"
 import { PageType } from "../../core/constants"
 import { setProfileInView } from "../../actions/UserActions"
 import ReactGA from 'react-ga4'
@@ -17,12 +17,14 @@ import "../../styles/PageView.css"
 import LinkPreview from "../LinkPreview"
 import PropTypes from 'prop-types'
 import PageSkeleton from "../PageSkeleton"
+import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
+
 
 export default function PageViewItem({page}) {
     PageViewItem.propTypes={
         page: PropTypes.object.isRequired
     }
-    
+    const [image,setImage]=useState(null)
     const [pending,isPending]=useState(true)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
@@ -36,7 +38,7 @@ export default function PageViewItem({page}) {
             return(<CommentInput page={page} />)
         }
     }
-    let pageDataElement = (<div ></div>)
+   
     const [anchorEl,setAnchorEl]= useState(null)
 
     const handleToggle = (e) => {
@@ -79,13 +81,14 @@ export default function PageViewItem({page}) {
     }
     
 }
+let pageDataElement = (<div ></div>)
 if(page){
     switch(page.type){
     case PageType.text:
         pageDataElement = <div className='w-max ql-editor rounded-t-lg pt-4 px-4' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
-        pageDataElement = <img className="dashboard-content image" src={page.data} alt={page.title}/>
+        pageDataElement = <img className="w-[100%] " src={image} alt={page.title}/>
     break;
     case PageType.link:
         pageDataElement = <div className="" ><LinkPreview url={page.data}/></div>
@@ -94,6 +97,16 @@ if(page){
         pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
     
 }
+useEffect(()=>{
+    if(page.type==PageType.picture){
+        
+        if(!isValidUrl(page.data)){
+            getDownloadPicture(page.data).then(url=>setImage(url))
+        }else{
+            setImage(page.data)
+        }
+    }
+},[page])
 const navigateToProfile = ()=>{ 
     ReactGA.event({
         category: "Profile",
@@ -128,11 +141,66 @@ let profile = (<div></div>)
                 <p className="text-white" onClick={navigateToProfile}>{prof.username}</p>
             </div>)
         }
+    function ButtonRow({page,profile,}){
+        return(<div className='bg-emerald-600 text-white'>
+        <button 
+        className="bg-emerald-600 text-white text-xl border-none"
+           disabled={!profile} 
+        >
+            Yea
+        </button>
+        <button
+        className="bg-emerald-600 px-4 mx-4  text-white text-xl rounded-none border-white border-l-1 border-r-1 border-t-0 border-b-0 "
+           disabled={!profile} 
+            onClick={()=>{setCommenting(!commenting)}}>
+        
+            Discuss
+        </button>
+        <div className="dropdown  dropdown-top">
+<div tabIndex={0} role="button" className=" pt-2 border-none text-[2rem] text-white text-bold "> <p>Share</p></div>
+<ul tabIndex={0} className="dropdown-content bg-white text-green-600 menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+<li>
+    <a disabled={!profile} 
+className=' text-green-600 '
+
+onClick={()=>{}}> 
+                    Add to Collection
+ 
+   </a></li>
+     {currentProfile && currentProfile.id == page.authorId? <li> <a
+                className=' text-green-600 '
+               onClick={()=> {
+                
+                navigate(Paths.editPage.createRoute(page.id))
+               }}
+            >
+                 Edit
+                </a></li>:null}           
+               <li> <a
+                className=' text-green-600 '
+               onClick={()=>copyShareLink()}
+            >
+                  Copy Share Link
+                </a></li>
+               <li> {(currentProfile && currentProfile.id == page.profileId )?
+    <a onClick={()=>{
+        dispatch(setPageInView({page}))
+        navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
+    </li>
+   <li> <IconButton onClick={onBookmarkPage}
+   className=" text-green-600 "
+   disabled={!currentProfile}> 
+    {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
+    </IconButton></li>
+    </ul>
+</div>
+    </div>)
+    }
         return(
         
         <div className="text-slate-800 ">
       
-            <div className="relative  ">
+            <div className="relative bg-white ">
             <div className=' absolute '>
                 <div className=" text-white px-4 pb-2 rounded-tl-lg text-md bg-gradient-to-br from-emerald-900 to-opacity-40 ">
                 {page.title.length>0?<h6>{page.title}</h6>:<h6>Untitled</h6>}
@@ -141,60 +209,8 @@ let profile = (<div></div>)
             </div>
                 {pageDataElement}
                 </div>
-            <div className='bg-emerald-600 text-white'>
-                <button 
-                className="bg-emerald-600 text-white text-xl border-none"
-                   disabled={!currentProfile} 
-                >
-                    Yea
-                </button>
-                <button
-                className="bg-emerald-600 px-4 mx-4  text-xl rounded-none border-white border-l-1 border-r-1 border-t-0 border-b-0 "
-                   disabled={!currentProfile} 
-                    onClick={()=>{setCommenting(!commenting)}}>
-                
-                    Discuss
-                </button>
-                <div className="dropdown  dropdown-top">
-        <div tabIndex={0} role="button" className=" pt-2 border-none text-[2rem] text-white text-bold "> <p>Share</p></div>
-        <ul tabIndex={0} className="dropdown-content bg-white text-green-600 menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-        <li>
-            <a disabled={!currentProfile} 
-  className=' text-green-600 '
-  
-  onClick={()=>{}}> 
-                            Add to Collection
-         
-           </a></li>
-             {currentProfile && currentProfile.id == page.authorId? <li> <a
-                        className=' text-green-600 '
-                       onClick={()=> {
-                        
-                        navigate(Paths.editPage.createRoute(page.id))
-                       }}
-                    >
-                         Edit
-                        </a></li>:null}           
-                       <li> <a
-                        className=' text-green-600 '
-                       onClick={()=>copyShareLink()}
-                    >
-                          Copy Share Link
-                        </a></li>
-                       <li> {(currentProfile && currentProfile.id == page.profileId )?
-            <a onClick={()=>{
-                dispatch(setPageInView({page}))
-                navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
-            </li>
-           <li> <IconButton onClick={onBookmarkPage}
-           className=" text-green-600 "
-           disabled={!currentProfile}> 
-            {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
-            </IconButton></li>
-            </ul>
-      </div>
-            </div>
             
+            <ButtonRow page={page} profile={currentProfile}/>
             
                 {commentBox()}   
         </div>
