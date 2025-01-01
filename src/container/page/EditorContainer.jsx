@@ -179,8 +179,7 @@ function EditorContainer(props){
           navigate(Paths.addStoryToCollection.createRoute(id))
         }
         const handlePostPublicly=(truthy)=>{
-          switch(fetchedPage.type){
-            case PageType.text:{
+     
               let params = { page:fetchedPage,
               title: titleLocal,
               data: htmlContent,
@@ -195,23 +194,23 @@ function EditorContainer(props){
                 setIsSaved(true)
               })
             }
-            case PageType.link:{
-              let params = { page:fetchedPage,
-              title: titleLocal,
-              data: fetchedPage.data,
-              privacy:truthy,
-              commentable:commentable,  
-              type:fetchedPage.type
-            }
+            // case PageType.link:{
+            //   let params = { page:fetchedPage,
+            //   title: titleLocal,
+            //   data: fetchedPage.data,
+            //   privacy:truthy,
+            //   commentable:commentable,  
+            //   type:fetchedPage.type
+            // }
            
-              setIsSaved(false)
-              dispatch(updateStory(params)).then(res=>{
-                setPrivacy(truthy)
-                setIsSaved(true)
-              })
-            }
-            }
-          }
+            //   setIsSaved(false)
+            //   dispatch(updateStory(params)).then(res=>{
+            //     setPrivacy(truthy)
+            //     setIsSaved(true)
+            //   })
+            // }
+            // }
+          
         const handleTitle = (title)=>{
           setTitleLocal(title)
           debounce(()=>{
