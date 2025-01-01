@@ -82,7 +82,7 @@ export default function PageViewItem({page}) {
 if(page){
     switch(page.type){
     case PageType.text:
-        pageDataElement = <div className='w-max ql-editor pt-4 px-4' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        pageDataElement = <div className='w-max ql-editor rounded-t-lg pt-4 px-4' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
         pageDataElement = <img className="dashboard-content image" src={page.data} alt={page.title}/>
@@ -130,32 +130,33 @@ let profile = (<div></div>)
         }
         return(
         
-        <div className="text-slate-800">
-            <div className=' border-b rounded-t-lg text-left pl-4 pt-4 pb-2  bg-gradient-to-br from-emerald-100 to-emerald-400'>
-                <div className="titles ">
-                {page.title.length>0?<p>{page.title}</p>:<p>Untitled</p>}
+        <div className="text-slate-800 ">
+      
+            <div className="relative  ">
+            <div className=' absolute '>
+                <div className=" text-white px-4 pb-2 rounded-tl-lg text-md bg-gradient-to-br from-emerald-900 to-opacity-40 ">
+                {page.title.length>0?<h6>{page.title}</h6>:<h6>Untitled</h6>}
                 </div>
                 {profile}
             </div>
-            <div className=" bg-gradient-to-br from-emerald-100 to-emerald-400' ">
                 {pageDataElement}
                 </div>
             <div className='bg-emerald-600 text-white border-none'>
                 <button 
-                className="bg-emerald-600 border-none"
+                className="bg-emerald-600  text-xl border-none"
                    disabled={!currentProfile} 
                 >
                     Yea
                 </button>
                 <button
-                className="bg-emerald-600 px-4 mx-4 rounded-none border-white border-l-1 border-r-1 border-t-0 border-b-0 "
+                className="bg-emerald-600 px-4 mx-4  text-xl rounded-none border-white border-l-1 border-r-1 border-t-0 border-b-0 "
                    disabled={!currentProfile} 
                     onClick={()=>{setCommenting(!commenting)}}>
                 
                     Discuss
                 </button>
                 <div className="dropdown  dropdown-top">
-        <div tabIndex={0} role="button" className=" pt-2 border-none "> Share</div>
+        <div tabIndex={0} role="button" className=" pt-2 border-none text-[2rem] text-bold "> <p>Share</p></div>
         <ul tabIndex={0} className="dropdown-content bg-white text-green-600 menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
         <li>
             <a disabled={!currentProfile} 
