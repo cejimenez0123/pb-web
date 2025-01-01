@@ -14,8 +14,11 @@ import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
 import LinkPreview from '../LinkPreview'
 import ReactGA from 'react-ga4'
+import isValidUrl from "../../core/isValidUrl"
 import {useMediaQuery} from 'react-responsive'
 import bookmarkadd from "../../images/bookmarkadd.svg"
+import getDownloadPicture from '../../domain/usecases/getDownloadPicture'
+import loadingJson from "../../images/loading-animation.json"
 function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -33,6 +36,7 @@ function DashboardItem({page,book,isGrid}) {
     const [contentItemEl,setContentItemEl] = useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState(null)
+   
 
 useEffect(()=>{
     if(userApprovals!=null && page &&currentProfile){
@@ -41,11 +45,6 @@ useEffect(()=>{
     }
    
 },[userApprovals])
-useEffect(()=>{
-    if(contentItemEl){
-        setOverflowActive(contentItemEl.offsetHeight < contentItemEl.scrollHeight)
-    }
-},[])
 useEffect(()=>{
 
     if(bookmarkLibrary && page){
@@ -58,46 +57,57 @@ useEffect(()=>{
 const hanldeClickComment=(pageItem)=>{
     
   if(pageItem){ 
-    const params = {
-        page: pageItem
-    }
     dispatch(setHtmlContent({html:pageItem.data}))
     navigate(`/page/${pageItem.id}`)
 }
 }   
-    const pageDataElement=()=>{
+    const PageDataElement=({page})=>{
+        const [image,setImage]=useState(loadingJson)
+        useEffect(()=>{
+            if(page && page.type==PageType.picture){
+                if(isValidUrl(page.data)){
+                    setImage(image)
+                }else{
+                    if(page.data&& page.data.length>0){
+                        console.log(page.data)
+                    getDownloadPicture(page.data).then(url=>setImage(url))
+                    }
+                }
+        
+            }
+        
+        },[page])
         if(page){
         
-    if(page.type===PageType.text){
+   switch(page.type){
+        case PageType.text:{
 
         return( 
             <div 
     
            className={`  ${isGrid?"h-48 overflow-clip  ":""}`}
             >
-            <div ref={
-            (el)=>setContentItemEl(el)
-        } className=' ql-editor w-full rounded-lg'
+            <div className=' ql-editor w-full rounded-lg'
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
-      )   
-    }else if(page.type===PageType.picture){
-        return(<img className='dashboard-content image ' src={page.data} alt={page.title}/>)
-    }else if(page.type === PageType.link){
+      )   }
+      case PageType.picture:{
+        console.log(page)
+        return(<img className='w-[100%] ' src={image} alt={page.title}/>)
+    }
+    case PageType.link:{
         return(<div 
-            className={` ${isGrid?"h-48 overflow-clip":""}`}>
+            className={` ${isGrid?"h-48 overflow-clip":"h-full"}`}>
             <LinkPreview
-        url={page.data}
+                    url={page.data}
             />
             </div>)
-    }else{
+    }
+    default:
         return(<div className='empty'>
         Loading...
 </div>)
-    }}else{
-        return(<div className='empty'>
-                Loading...
-        </div>)
+    }
     }
 }
 const handleApprovalClick = ()=>{
@@ -221,12 +231,13 @@ className="
       text-white
          rounded-none
          pl-8
+      
          text-xl
         border-none
          bg-transparent 
          ">
 Share</button>
-<ul tabIndex={0} className="dropdown-content  menu bg-white text-emerald-700 rounded-box  w-60 p-1 shadow">
+<ul tabIndex={0} className="dropdown-content    z-50 menu bg-white text-emerald-700 rounded-box  w-60 p-1 shadow">
 {currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
 
     navigate(Paths.editPage.createRoute(page.id))
@@ -282,8 +293,8 @@ onClick={()=>ClickAddStoryToCollection()}>
                 </div>
                 {profileDiv}
             </div>
-             <div className='min-h-36 text-slate-800'> 
-                {pageDataElement()}
+             <div className='min-h-36 flex flex-col justify-between text-slate-800'> 
+                <PageDataElement page={page}/>
                 {buttonRow()}
                 </div> 
                
@@ -295,5 +306,6 @@ onClick={()=>ClickAddStoryToCollection()}>
      }
 
 }
+
 
 export default DashboardItem

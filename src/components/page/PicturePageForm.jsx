@@ -45,11 +45,7 @@ function PicturePageForm({createPage}){
 
         }
     },[])
-    // const handleChange = (text)=>{
-    //         setLocalContent(text)
-    //         dispatch(setHtmlContent(text))
 
-    // }
     const contentDiv =()=>{
         let href = window.location.href.split("/")
         const last = href[href.length-1]
@@ -75,7 +71,17 @@ function PicturePageForm({createPage}){
               setFile(file)
               setErrorMessage('');
               setImage(URL.createObjectURL(file));
+              const params = {file:file}
+              dispatch(uploadPicture(params)).then((result) => 
+                checkResult(result,payload=>{
+                    const href = payload["url"]
+                    setLocalContent(href)
+                    const fileName =payload.ref
+                    let path = window.location.href.split("/")
+                    const last = path[path.length-1]
+                    createPage({data:fileName,type:last})},err=>{}))
             }
+            
           };
         const savePage = ()=>{
         const params = {file:file}
@@ -132,13 +138,7 @@ function PicturePageForm({createPage}){
                    onInput={handleFileInput}/>
                          
                     <div style={{ marginTop: '20px' }}>
-{/*                       
-                      <img
-                      className="mx-auto"
-                        src={image}
-                        alt="Selected"
-                        style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }}
-                      /> */}
+      
                       </div>
                     </div>)
                     }}

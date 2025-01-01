@@ -88,7 +88,7 @@ if(page){
         pageDataElement = <div className='w-max ql-editor rounded-t-lg pt-4 px-4' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
-        pageDataElement = <img className="w-[100%] " src={image} alt={page.title}/>
+        pageDataElement = <img className="w-[100%] min-h-72 " src={image} alt={page.title}/>
     break;
     case PageType.link:
         pageDataElement = <div className="" ><LinkPreview url={page.data}/></div>

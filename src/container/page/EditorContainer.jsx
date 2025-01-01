@@ -24,7 +24,8 @@ import RoleForm from "../../components/role/RoleForm"
 import LinkPreview from "../../components/LinkPreview"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import isValidUrl from "../../core/isValidUrl"
-import { fetchPage } from "../../actions/PageActions"
+import { fetchPage, setHtmlContent } from "../../actions/PageActions"
+import { comment } from "postcss"
 
 function EditorContainer(props){
   const location = useLocation()
@@ -43,7 +44,7 @@ function EditorContainer(props){
         const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         const {id }= pathParams
         const [downloadUrl,setDownloadUrl]=useState("")
-    
+        const [imageParams,setImageParams]=useState({})
         useLayoutEffect( ()=>{
           if(fetchedPage){
 
@@ -121,17 +122,20 @@ function EditorContainer(props){
         
         params.profileId = currentProfile.id
         params.title =titleLocal
-        params.privacy = true
-        params.commentable = true
+        params.privacy = privacy
+        params.commentable = commentable
 
-  
-         dispatch(createStory(params)).then(res=>checkResult(res,payload=>{
-              const {story}=payload
-              navigate(Paths.editPage.createRoute(story.id))
-         },err=>{
-
-         }))
+  createPageAction(params)
+        
       
+      }
+      const createPageAction = (params)=>{
+        dispatch(createStory(params)).then(res=>checkResult(res,payload=>{
+          const {story}=payload
+          navigate(Paths.editPage.createRoute(story.id))
+     },err=>{
+
+     }))
       }
       const ContentDiv = ({page})=>{
           if(page){
@@ -163,7 +167,8 @@ function EditorContainer(props){
             let last = href[href.length-1]
             if(last.toUpperCase()=="image".toUpperCase()||last.toUpperCase()=="link".toUpperCase()){
               return (<PicturePageForm createPage={(params)=>{
-              handlePageForm(params)
+                setImageParams(params)
+                handlePageForm(params)
               }}/>)
             }else{
               return(<div id=""><RichEditor setIsSaved={setIsSaved} initContent={""}/></div>)
@@ -179,7 +184,59 @@ function EditorContainer(props){
           navigate(Paths.addStoryToCollection.createRoute(id))
         }
         const handlePostPublicly=(truthy)=>{
-     
+          setPrivacy(truthy)
+          if(id){
+          debounce(()=>{
+
+            let params = imageParams
+            if(!params.file){
+              params.page={id},
+              params.title=titleLocal,
+              params.data=htmlContent,
+              params.privacy=privacy,
+              params.commentable=commentable,  
+              params.type=fetchedPage.type
+            }else{
+              params.page={id},
+              params.title=titleLocal,
+              params.privacy=privacy,
+              params.commentable=commentable,  
+              params.type=fetchedPage.type
+            }
+            
+                
+            setIsSaved(false)
+            dispatch(updateStory(params)).then(res=>{
+              setIsSaved(true)
+            })
+          },100)()
+
+        }else{
+
+          if(imageParams.file){
+            
+            dispatch(uploadPicture({file:imageParams.file})).then((result) => 
+              checkResult(result,payload=>{
+                const href = payload["url"]
+              
+                  setLocalContent(href)
+                  const fileName =payload.ref
+                  // dispatch(setHtmlContent(fileName))
+                let params = imageParams
+                params.data = fileName
+               
+                params.profileId = currentProfile.id
+                params.title =titleLocal
+                params.privacy = true
+                params.commentable = commentable
+                params.type = PageType.picture
+                createPageAction(params)
+                  
+          
+         
+        }))
+        }}
+     setPrivacy(truthy)
               let params = { page:fetchedPage,
               title: titleLocal,
               data: htmlContent,
@@ -190,45 +247,65 @@ function EditorContainer(props){
               setIsSaved(false)
               dispatch(updateStory(params)).then(res=>{
 
-                setPrivacy(truthy)
+              
                 setIsSaved(true)
               })
             }
-            // case PageType.link:{
-            //   let params = { page:fetchedPage,
-            //   title: titleLocal,
-            //   data: fetchedPage.data,
-            //   privacy:truthy,
-            //   commentable:commentable,  
-            //   type:fetchedPage.type
-            // }
-           
-            //   setIsSaved(false)
-            //   dispatch(updateStory(params)).then(res=>{
-            //     setPrivacy(truthy)
-            //     setIsSaved(true)
-            //   })
-            // }
-            // }
+
           
         const handleTitle = (title)=>{
           setTitleLocal(title)
+          if(id){
           debounce(()=>{
-
-   
-                    let params = { page:{id},
-            title: title,
-            data: htmlContent,
-            privacy:privacy,
-            commentable:commentable,  
-            type:fetchedPage.type
-          }
+            let params = imageParams
+            if(!params.file){
+              params.page={id},
+              params.title = titleLocal
+              params.data=htmlContent,
+              params.privacy=privacy
+              params.scommentable=commentable,  
+              params.type=fetchedPage.type
+            }else{
+              params.page={id},
+              params.title = titleLocal
+              params.privacy=privacy
+              params.scommentable=commentable,  
+              params.type=fetchedPage.type
+            }
+                 
             setIsSaved(false)
             dispatch(updateStory(params)).then(res=>{
               setIsSaved(true)
             })
           },100)()
-        }
+
+        }else{
+
+          if(imageParams.file){
+            
+            dispatch(uploadPicture({file:imageParams.file})).then((result) => 
+              checkResult(result,payload=>{
+                const href = payload["url"]
+              
+                  setLocalContent(href)
+                  const fileName =payload.ref
+                  // dispatch(setHtmlContent(fileName))
+                let params = imageParams
+                params.data = fileName
+               
+                params.profileId = currentProfile.id
+                params.title =titleLocal
+                params.privacy = true
+                params.commentable = commentable
+                params.type = PageType.picture
+                createPageAction(params)
+                  
+          
+         
+        }))
+        }}
+      }
+        
 
    const topBar=()=>{
     return(<div className=" rounded-lg w-full  mx-auto ">

@@ -34,7 +34,7 @@ import SearchDialog from '../components/SearchDialog'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
 import ReactGA from 'react-ga4'
-import { setPageInView } from '../actions/PageActions'
+import { setHtmlContent, setPageInView } from '../actions/PageActions'
 const PageName = {
   home: "Home",
   about:"About",
@@ -269,6 +269,7 @@ function NavbarContainer(props){
                               onClick={(e)=>{
                                 dispatch(setPageInView({page:null}))
                               handleClose()
+                              dispatch(setHtmlContent(""))
                               navigate(Paths.editor.image())}}
                               sx={{ pl: 6 }}
                             >

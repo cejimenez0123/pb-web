@@ -6,13 +6,11 @@ import getDownloadPicture from "../domain/usecases/getDownloadPicture";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
 import {    Button,
-            
-            Checkbox,
-            FormControlLabel,
+    
             Dialog,
             DialogActions,
             DialogContent,
-            styled,
+    
             DialogContentText,
             DialogTitle,
             IconButton} from "@mui/material";
