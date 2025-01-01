@@ -10,22 +10,31 @@ import "../../App.css"
 import LinkPreview from '../LinkPreview';
 import { setHtmlContent } from '../../actions/PageActions';
 import getDownloadPicture from '../../domain/usecases/getDownloadPicture';
+import { PageType } from '../../core/constants';
 
 function PicturePageForm({createPage}){
     const dispatch = useDispatch()
     const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
     const [localContent,setLocalContent] = useState("")
     const ePage = useSelector(state=>state.pages.pageInView)
-    const [fileName,setFilename]=useState("")
     const [file,setFile]=useState(null)
     const [errorMessage,setErrorMessage]=useState(null)
     const [image,setImage]=useState(null)
     useEffect(()=>{
         if(ePage){
-            setLocalContent(ePage.data)
-        }else{
-            setLocalContent(htmlContent)
-        }
+            switch(ePage.type){
+                case PageType.link:{
+                    dispatch(setHtmlContent(ePage.data))
+                    setLocalContent(ePage.data)
+                }
+                case PageType.picture:{
+                    if(isValidUrl(ePage.data)){
+                        setImage(ePage.data)
+                    }else{
+                    getDownloadPicture(ePage.data).then(url=>{
+                        setImage(url)
+                    })}
+                }}}
     
     },[])
     useEffect(()=>{
@@ -75,11 +84,14 @@ function PicturePageForm({createPage}){
               dispatch(uploadPicture(params)).then((result) => 
                 checkResult(result,payload=>{
                     const href = payload["url"]
-                    setLocalContent(href)
                     const fileName =payload.ref
+                    dispatch(setHtmlContent(fileName))
+                    setLocalContent(href)
+                 
                     let path = window.location.href.split("/")
                     const last = path[path.length-1]
-                    createPage({data:fileName,type:last})},err=>{}))
+                    createPage({file,data:fileName,type:last})
+                },err=>{}))
             }
             
           };
@@ -90,6 +102,7 @@ function PicturePageForm({createPage}){
                 const href = payload["url"]
                 setLocalContent(href)
                 const fileName =payload.ref
+                dispatch(setHtmlContent(fileName))
                 let path = window.location.href.split("/")
                 const last = path[path.length-1]
                 createPage({data:fileName,type:last})},err=>{}))
@@ -122,9 +135,7 @@ function PicturePageForm({createPage}){
             )
            
         }
-    // default:return(
-    //     <img className="rounded-lg my-4 mx-auto" src={image} alt={ePage?ePage.title:""} />
-    // )
+
 }}
     const uploadBtn =()=>{
         let href = window.location.href.split("/")

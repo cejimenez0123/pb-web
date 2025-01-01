@@ -24,8 +24,7 @@ import RoleForm from "../../components/role/RoleForm"
 import LinkPreview from "../../components/LinkPreview"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import isValidUrl from "../../core/isValidUrl"
-import { fetchPage, setHtmlContent } from "../../actions/PageActions"
-import { comment } from "postcss"
+
 
 function EditorContainer(props){
   const location = useLocation()
@@ -38,34 +37,34 @@ function EditorContainer(props){
         const [isSaved,setIsSaved]=useState(true)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
-        const [privacy,setPrivacy] = useState(true)
+        const [privacy,setPrivacy] = useState(fetchedPage?fetchedPage.isPrivate:true)
         const [titleLocal,setTitleLocal]=useState(fetchedPage?fetchedPage.title:"")
         const [commentable,setCommentable] = useState(true)
         const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         const {id }= pathParams
-        const [downloadUrl,setDownloadUrl]=useState("")
+        const [image,setImage]=useState(null)
         const [imageParams,setImageParams]=useState({})
         useLayoutEffect( ()=>{
           if(fetchedPage){
-
        
           if(fetchedPage.type == PageType.picture && !isValidUrl(fetchedPage.data)){
               getDownloadPicture(fetchedPage.data).then(url=>{
-                  console.log(url)
-                  setDownloadUrl(url)
+                  setImage(url)
+                 
               })
           }else{
             if( fetchedPage.type==PageType.picture && isValidUrl(fetchedPage.data))
-              setDownloadUrl(fetchedPage.data)
+             setImage(fetchedPage.data)
           }
+          
         }
           
-      },[])
+      },[fetchedPage])
  const setPageInfo =(page)=>{
   if(page){
-  
+    
       setTitleLocal(page.title)
-      setPrivacy(page.privacy)
+      setPrivacy(page.isPrivate)
       setCommentable(page.commentable)
   }
 
@@ -139,28 +138,30 @@ function EditorContainer(props){
       }
       const ContentDiv = ({page})=>{
           if(page){
-              if(page.type===PageType.text){
-                  return (<div >
-                    <RichEditor title={titleLocal}
-                                privacy={privacy} 
-                                commentable={commentable} 
-                                setIsSaved={setIsSaved} 
-                                initContent={page.data}/>
-                                </div>)
-              }else if(page.type===PageType.picture){
-                
-                  return (<div  className="mx-auto  bg-emerald-200 rounded-b-lg w-full p-8">
+            switch(page.type){
+              case PageType.text:{
+                return (<div >
+                  <RichEditor title={titleLocal}
+                              privacy={privacy} 
+                              commentable={commentable} 
+                              setIsSaved={setIsSaved} 
+                              initContent={page.data}/>
+                              </div>)
+              }
+              case PageType.picture:{
+                return (<div  className="mx-auto  bg-emerald-200 rounded-b-lg w-full p-8">
 
-                    <img  className="rounded-lg my-4 mx-auto"
-                    src={downloadUrl} alt={page.title}/>
-                    </div>)
-              }else if(page.type === PageType.link){
+                <img  className="rounded-lg my-4 mx-auto"
+                src={image} alt={page.title}/>
+                </div>)
+              }
+            
+          case PageType.link:{
+
                   return(
                      <LinkPreview url={page.data}/>
                   )
-              }else{
-                  return (<div className=""><RichEditor initContent={page.data}/></div>)}
-            }else{
+                }}}else{
 
               
             let href = window.location.href.split("/")
@@ -190,16 +191,17 @@ function EditorContainer(props){
 
             let params = imageParams
             if(!params.file){
-              params.page={id},
-              params.title=titleLocal,
-              params.data=htmlContent,
-              params.privacy=privacy,
-              params.commentable=commentable,  
+              params.page={id}
+              params.title=titleLocal
+              params.data=!fetchedPage.type==PageType.text?fetchedPage.data:htmlContent
+              params.privacy=truthy
+              params.commentable=commentable, 
               params.type=fetchedPage.type
             }else{
               params.page={id},
+              params.data=!fetchedPage.type==PageType.text?fetchedPage.data:htmlContent
               params.title=titleLocal,
-              params.privacy=privacy,
+              params.privacy=truthy,
               params.commentable=commentable,  
               params.type=fetchedPage.type
             }
@@ -227,7 +229,7 @@ function EditorContainer(props){
                
                 params.profileId = currentProfile.id
                 params.title =titleLocal
-                params.privacy = true
+                params.privacy = privacy
                 params.commentable = commentable
                 params.type = PageType.picture
                 createPageAction(params)
@@ -236,11 +238,10 @@ function EditorContainer(props){
          
         }))
         }}
-     setPrivacy(truthy)
               let params = { page:fetchedPage,
               title: titleLocal,
               data: htmlContent,
-              privacy:truthy,
+              privacy:privacy,
               commentable:commentable,  
               type:fetchedPage.type
             }
