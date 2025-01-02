@@ -137,6 +137,7 @@ import Enviroment from "../core/Enviroment";
     
     async fetchCollection({id}){
         const res = await axios.get(this.url+"/"+id)
+        console.log("Res",res)
         return res.data
     }
     async fetchCollectionProtected({id}){
@@ -174,9 +175,7 @@ import Enviroment from "../core/Enviroment";
         return res.data
     }
     async fetchSubCollectionsPublic({id}){
-        const res = await axios.get(this.url+"/"+id+"/collection/public",{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
-        }})
+        const res = await axios.get(this.url+"/"+id+"/collection/public")
         return res.data
     }
 }

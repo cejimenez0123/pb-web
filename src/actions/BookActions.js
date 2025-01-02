@@ -74,38 +74,38 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     }
   )
   const clearBooksInView = createAction("books/clearBooksInView")
-  const createBook = createAsyncThunk("books/createBook", async function(params,thunkApi){
+//   const createBook = createAsyncThunk("books/createBook", async function(params,thunkApi){
 
-    try{
+//     try{
        
-        const {
-            title,
-            purpose,
-            profileId,
-            pageIdList,
-            privacy,
-            writingIsOpen,
-            commenters,
-            editors,
-            readers,
-            writers,
-          }=params
-          const data = await collectionRepo.createCollection({name:title,
-            profileId:profileId, purpose:purpose,privacy:privacy,writingIsOpen:writingIsOpen
-          })
-if(!privacy){
-            client.initIndex("collection").saveObject(
-              {objectID:data.id,title:params.title,type:"collection"}).wait()
-          }      
+//         const {
+//             title,
+//             purpose,
+//             profileId,
+//             pageIdList,
+//             privacy,
+//             writingIsOpen,
+//             commenters,
+//             editors,
+//             readers,
+//             writers,
+//           }=params
+//           const data = await collectionRepo.createCollection({name:title,
+//             profileId:profileId, purpose:purpose,privacy:privacy,writingIsOpen:writingIsOpen
+//           })
+// if(!privacy){
+//             client.initIndex("collection").saveObject(
+//               {objectID:data.id,title:params.title,type:"collection"}).wait()
+//           }      
 
 
-    return { book:data.book }
-    }catch(error){
+//     return { book:data.book }
+//     }catch(error){
   
-      return {
-        error: new Error(`Error: CreateBook ${error.message}`)
-      }
-    }})
+//       return {
+//         error: new Error(`Error: CreateBook ${error.message}`)
+//       }
+//     }})
 
 
     const fetchArrayOfBooks = createAsyncThunk("books/fetchArrayOfBooks",async (params,thunkApi)=>{
@@ -407,7 +407,7 @@ function unpackBookDoc(doc){
             fetchBook,
             fetchArrayOfBooks,
             getProfileBooks,
-            createBook,
+            // createBook,
             fetchArrayOfBooksAppened,
             saveRolesForBook,
             appendSaveRolesFoBook,

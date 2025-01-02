@@ -18,7 +18,7 @@ import {
             } from "../actions/CollectionActions"
 
 const initialState = {
-    booksInView:[],
+    // booksInView:[],
     collections:[],
     collectionToCollectionsList:[],
     collectionInView:[],
@@ -45,8 +45,11 @@ builder.addCase(clearCollections.type,(state)=>{
 })
 .addCase(getSubCollectionsProtected.fulfilled,(state,{payload})=>{
     state.collectionToCollectionsList = payload.list
+    state.collections = payload.list.map(item=>item.childCollection)
 }).addCase(getSubCollectionsPublic.fulfilled,(state,{payload})=>{
-    state.collections = payload.list
+    
+    state.collectionToCollectionsList = payload.list
+    state.collections = payload.list.map(item=>item.childCollection)
 }).addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
 })
@@ -85,11 +88,13 @@ builder.addCase(clearCollections.type,(state)=>{
     state.loading = false
     state.error = payload.error
 
-}).addCase(getPublicBooks.fulfilled,(state,{payload})=>{
-    state.loading = false
-    state.booksInView = payload.bookList
+})
+// .addCase(getPublicBooks.fulfilled,(state,{payload})=>{
+//     state.loading = false
+//     state.booksInView = payload.bookList
 
-}).addCase(saveRoleToCollection.rejected,(state,{payload})=>{
+// })
+.addCase(saveRoleToCollection.rejected,(state,{payload})=>{
     state.loading = false
     state.error = "Error Saving Role"
 }).addCase(getMyCollections.fulfilled,(state,{payload})=>{

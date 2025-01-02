@@ -54,19 +54,23 @@ export default function CreateCollectinForm(props){
         <textarea value={purpose}
         className="bg-transparent rounded-lg w-[100%] mt-2 text-emerald-800 p-2 text-xl border-emerald-700 border-1 resize-y"
                  onChange={(e)=>setPurpose(e.target.value)}/>
-        <label className="text-emerald-800 h-18 mt-4 flex flex-row content-between my-auto">
+        {/* <label className="text-emerald-800 h-18 mt-4 flex flex-row content-between my-auto">
             <p className="mr-2">Collection is {isPrivate?"Private":"Public"}</p> <input type="checkbox"
             className="checkbox border-white ml-28 border"
             checked={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}/>
-        </label>
-        
-        <label className="text-emerald-800 flex mt-4  flex-row my-auto">
-            <p className="mr-1">Anyone can add to collection</p>
-            <input  checked={writingIsOpen} 
-            onChange={(e)=>setWritingIsOpen(e.target.checked)}
-            className="checkbox border-white border ml-12"
-            type="checkbox"/>
-        </label>
+        </label> */}
+        <div className="my-4 w-fit max-w-36">
+            {isPrivate?<h6 onClick={()=>setIsPrivate(false)} className={"bg-emerald-800 text-white rounded-full px-4 py-2 text-center"}>is Private</h6>:<h6
+            className={"bg-emerald-700 text-white rounded-full px-4 py-2 text-center "}
+            onClick={()=>setIsPrivate(true)}>is Public</h6>}
+        </div>
+{/*         
+        <label className="text-emerald-800 flex mt-4  flex-row my-auto"> */}
+        <div className="my-4">
+            {writingIsOpen?<button className={"bg-emerald-800 text-white rounded-full px-4 "}onClick={()=>setWritingIsOpen(false)}>Anyone can add to collection</button>:<button
+            onClick={()=>setWritingIsOpen(true)}
+            className={"bg-emerald-700 rounded-full text-white px-4 "}>Writing is closed access</button>}
+    </div>
 <button onClick={(e)=>clickCreateCollection(e)} className="bg-emerald-800 mt-8 text-white">
     Submit
 </button>

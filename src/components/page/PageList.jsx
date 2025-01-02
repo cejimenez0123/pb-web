@@ -5,7 +5,7 @@ import uuidv4 from "../../core/uuidv4"
 import DashboardItem from "./DashboardItem"
 const PageList = ({items,isGrid,fetchContentItems})=>{
 
-    const pagesInView = items?items:useSelector(state=>state.pages.pagesInView)
+    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
       })
@@ -14,7 +14,7 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
         >
            <InfiniteScroll
         dataLength={pagesInView.length}
-        next={fetchContentItems}
+        next={()=>{}}
         scrollThreshold={1}
         hasMore={false}
         className="w-fit"

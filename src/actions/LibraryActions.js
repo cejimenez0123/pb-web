@@ -149,23 +149,7 @@ const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (
 })
 
 
-const createLibrary = createAsyncThunk("library/createLibrary", async function(params,thunkApi){
 
-    try{
-        let data = await collectionRepo.createCollection(params)
-        if(!privacy){
-          client.initIndex("collection").saveObject(
-            {objectID:data.id,title:params.title,type:"collection"}).wait()
-        }   
-        return {library: data.collection}
-
-      }catch(error){
-      return {
-        error: new Error(`Error: Create Library: ${error.message}`)
-      }
-    }
-  
-  })
   
   const getProfileLibraries= createAsyncThunk(
     'libraries/getProfileLibraries',
@@ -474,7 +458,7 @@ const lib = new Library(  id,
 export {  fetchLibrary,
           updateLibrary,
           updateLibraryContent,
-          createLibrary,
+    
           getProfileLibraries,
           fetchBookmarkLibrary,
           setLibraryInView,

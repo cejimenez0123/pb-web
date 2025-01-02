@@ -99,8 +99,9 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
         return {collection: data.collection}
 
       }catch(error){
+        console.log(error)
       return {
-        error: new Error(`Error: Create Library: ${error.message}`)
+        error
       }
     }
 })
@@ -128,23 +129,24 @@ const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCo
  })
 const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProtected",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchCollectionProtected(params)
+    console.log("Data",data)
     return {
      collection:data.collection
     }
  })
 const getSubCollectionsProtected = createAsyncThunk("collection/getSubCollectionsProtected",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchSubCollectionsProtected(params)
-  
+  console.log(data)
   
     return {
         list:data.collections
     }
 })
 const getSubCollectionsPublic = createAsyncThunk("collection/getSubCollectionsPublic",async(params,thunkApi)=>{
-    let data = await collectionRepo.fetchSubCollectionsProtected(params)
-    const list = data.collections.map(col=>col.childCollection)
+    let data = await collectionRepo.fetchSubCollectionsPublic(params)
+   
     return {
-        list:list
+        list:data.list
     }
 })
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
@@ -191,13 +193,13 @@ const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
    let data = await collectionRepo.deleteCollection(params)
    return data
 })
-const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectionStories",
-    async (params,thunkApi)=>{
-        let data = await storyRepo.getCollectionStoriesPublic(params)
+// const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectionStories",
+//     async (params,thunkApi)=>{
+//         let data = await storyRepo.getCollectionStoriesPublic(params)
      
-        return {list:data.list}
-    }
-)
+//         return {list:data.list}
+//     }
+// )
 const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",async({roles,profileId,colId},thunkApi)=>{
 
 
@@ -225,7 +227,8 @@ export {
     getProtectedProfileCollections,
     getPublicProfileCollections,
     getProtectCollectionStories,
-    getPublicCollectionStories,
+    // getPublicCollectionStories,
+
     fetchCollection,
     fetchCollectionProtected,
     setCollectionInView,

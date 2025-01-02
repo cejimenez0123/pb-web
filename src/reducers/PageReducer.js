@@ -22,8 +22,9 @@ import {
        
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
-import { getMyStories, getStory,createStory, updateStory, deleteStory, getCollectionStoriesProtected} from "../actions/StoryActions"
-import { getProtectCollectionStories, getPublicCollectionStories } from "../actions/CollectionActions"
+import { getMyStories, getStory,createStory, 
+  updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
+
 
 const initialState = {pagesInView:[],
                       storyToCollectionList:[],
@@ -39,15 +40,22 @@ const pageSlice = createSlice({
     name: 'pages',
     initialState,
     extraReducers(builder) {
-        builder.addCase(getPublicCollectionStories.pending,(state)=>{
-          state.loading=true
-        }).addCase(getPublicCollectionStories.fulfilled,(state,{payload})=>{
-          state.loading=false
-          state.pagesInView = payload.list
-        }).addCase(getCollectionStoriesProtected.fulfilled,(state,{payload})=>{
-          const {list}=payload
-         
+        builder
+        // .addCase(getPublicCollectionStories.pending,(state)=>{
+        //   state.loading=true
+        // })
+    .addCase(getCollectionStoriesPublic.fulfilled,(state,{payload})=>{
+      const {list}=payload
           state.loading = false
+      
+          state.pagesInView = list.map(item=>item.story)
+          state.storyToCollectionList= list
+    })
+        .addCase(getCollectionStoriesProtected.fulfilled,(state,{payload})=>{
+          const {list}=payload
+          state.loading = false
+      
+          state.pagesInView = list.map(item=>item.story)
           state.storyToCollectionList= list
         }).addCase(getCollectionStoriesProtected.pending,(state)=>{
           state.loading=true

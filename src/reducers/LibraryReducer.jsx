@@ -1,7 +1,7 @@
 import Library from "../domain/models/library"
 import {    getProfileLibraries,
             fetchLibrary,
-            createLibrary,
+            // createLibrary,
             fetchBookmarkLibrary,
             updateLibrary,
             setLibraryInView,
@@ -46,15 +46,17 @@ builder
         return {...state,
                 loading:false,
                 libraryInView: payload.library}
-    }).addCase(createLibrary.pending,(state)=>{
-        return {...state,loading: true}
-    }).addCase(createLibrary.rejected,(state,{payload})=>{
-        return {...state,error: payload.error}
-    }).addCase(createLibrary.fulfilled,(state,{payload})=>{
-        return {...state,
-                loading: false,
-                libraryInView: payload.library}
-    }).addCase(fetchBookmarkLibrary.fulfilled,(state,{payload})=>{
+    })
+    // .addCase(createLibrary.pending,(state)=>{
+    //     return {...state,loading: true}
+    // }).addCase(createLibrary.rejected,(state,{payload})=>{
+    //     return {...state,error: payload.error}
+    // }).addCase(createLibrary.fulfilled,(state,{payload})=>{
+    //     return {...state,
+    //             loading: false,
+    //             libraryInView: payload.library}
+    // })
+    .addCase(fetchBookmarkLibrary.fulfilled,(state,{payload})=>{
         if(payload.library){
             state.bookmarkLibrary = payload.library
         }

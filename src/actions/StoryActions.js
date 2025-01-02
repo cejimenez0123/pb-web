@@ -72,7 +72,7 @@ const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesP
   try{
 
      let data = await storyRepo.getCollectionStoriesPublic(params)
-     console
+    
      return {
       list:data.list
      }
