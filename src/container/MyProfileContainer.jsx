@@ -13,7 +13,7 @@ import CollectionIndexList from '../components/collection/CollectionIndexList';
 import Paths from '../core/paths';
 import ReactGA from "react-ga4"
 import {Dialog} from "@mui/material"
-import CreateCollectinForm from '../components/collection/CreateCollectionForm';
+import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
 import getDownloadPicture from '../domain/usecases/getDownloadPicture';
 import ReferralForm from '../components/auth/ReferralForm';
@@ -201,7 +201,7 @@ function MyProfileContainer(props){
             
               open={openDialog}
               onClose={()=>setOpenDialog(false)}>
-                <CreateCollectinForm onClose={()=>{
+                <CreateCollectionForm onClose={()=>{
                     setOpenDialog(false)
                 }}/>
               </Dialog>

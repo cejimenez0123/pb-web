@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import { clearPagesInView } from "../../actions/PageActions"
 
-export default function CreateCollectinForm(props){
+export default function CreateCollectionForm(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [name,setName]=useState("")
     const [purpose,setPurpose]=useState("")
@@ -39,8 +39,8 @@ export default function CreateCollectinForm(props){
         </button>
         <div class="mb-4 flex flex-col">
         </div>
-        <h2 className="text-emerald-600 mx-auto text-xl font-bold mb-4">Create Collection</h2>
-        <label className="text-emerald-600 text-xl mb-2">
+        <h2 className="text-emerald-800 mx-auto text-xl font-bold mb-4">Create Collection</h2>
+        <label className="text-emerald-800 text-xl mb-2">
             Name of Collection
         </label>
         <input 
@@ -60,18 +60,18 @@ export default function CreateCollectinForm(props){
             checked={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}/>
         </label> */}
         <div className="my-4 w-fit max-w-36">
-            {isPrivate?<h6 onClick={()=>setIsPrivate(false)} className={"bg-emerald-800 text-white rounded-full px-4 py-2 text-center"}>is Private</h6>:<h6
-            className={"bg-emerald-700 text-white rounded-full px-4 py-2 text-center "}
+            {isPrivate?<h6 onClick={()=>setIsPrivate(false)} className={"bg-emerald-800 text-[1.2rem] text-white rounded-full px-4 py-2 text-center"}>is Private</h6>:<h6
+            className={"bg-emerald-700 text-white rounded-full text-[1.2rem] px-4 py-2 text-center "}
             onClick={()=>setIsPrivate(true)}>is Public</h6>}
         </div>
 {/*         
         <label className="text-emerald-800 flex mt-4  flex-row my-auto"> */}
         <div className="my-4">
-            {writingIsOpen?<button className={"bg-emerald-800 text-white rounded-full px-4 "}onClick={()=>setWritingIsOpen(false)}>Anyone can add to collection</button>:<button
+            {writingIsOpen?<button className={"bg-emerald-800 text-white text-[1.2rem] rounded-full px-4 "}onClick={()=>setWritingIsOpen(false)}>Anyone can add to collection</button>:<button
             onClick={()=>setWritingIsOpen(true)}
-            className={"bg-emerald-700 rounded-full text-white px-4 "}>Writing is closed access</button>}
+            className={"bg-emerald-700 rounded-full text-[1.2rem] text-white px-4 "}>Writing is closed access</button>}
     </div>
-<button onClick={(e)=>clickCreateCollection(e)} className="bg-emerald-800 mt-8 text-white">
+<button onClick={(e)=>clickCreateCollection(e)} className="bg-emerald-800  px-5 rounded-full text-[1.2rem] t-8 text-white">
     Submit
 </button>
     </div>

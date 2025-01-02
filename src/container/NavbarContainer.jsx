@@ -33,7 +33,12 @@ import { searchDialogToggle } from '../actions/UserActions'
 import SearchDialog from '../components/SearchDialog'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import ReactGA from 'react-ga4'
+import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setHtmlContent, setPageInView } from '../actions/PageActions'
 const PageName = {
   home: "Home",
@@ -60,8 +65,7 @@ function NavbarContainer(props){
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedImage,setSelectedImage]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-   
-   
+    const [openDialog,setOpenDialog]=useState(false)
    
     const createRef = React.useRef()
     const pageRef = React.useRef()
@@ -286,7 +290,8 @@ function NavbarContainer(props){
                           </List>
                           <ListItemButton  key="Collection" 
                                     onClick={()=>{ 
-                                     
+                                     handleClose()
+                                     setOpenDialog(true)
                                      
                                       }} 
                                     sx={{ pl: 4 }}>
@@ -429,17 +434,13 @@ function NavbarContainer(props){
                     </ListItemButton>
                     </List>
 
-                    <MenuItem onClick={()=>{
+                  
+                  
+                     <MenuItem onClick={()=>{
                         handleClose()
-                        navigate("/book/new")
+                        setOpenDialog(true)
                     }}>
-                        Book
-                    </MenuItem>
-                    <MenuItem onClick={()=>{
-                        handleClose()
-                        navigate("/library/new")
-                    }}>
-                        Library
+                       Collection
                     </MenuItem> 
                   </Menu>
                   </div>
@@ -516,7 +517,22 @@ function NavbarContainer(props){
       
 
       </AppBar>
-      
+      <Dialog className={
+                "bg-emerald-400"
+              }
+              PaperProps={{
+                style: {
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                },
+              }}
+            
+              open={openDialog}
+              onClose={()=>setOpenDialog(false)}>
+                <CreateCollectionForm onClose={()=>{
+                  setOpenDialog(false)
+                }}/>
+              </Dialog>
     
       </div>
     );

@@ -106,12 +106,12 @@ import Enviroment from "../core/Enviroment";
         return res.data
     }
     async addStoryListToCollection({id,list}){
+        
         let res = await axios.post(this.url+"/"+id+"/story",{
             list:list
         },{headers:{
             Authorization:"Bearer "+localStorage.getItem(this.token)
         }})
-        console.log("Colds",res.data)
         return res.data
     }
     async addCollectionToCollection({parentCollection,childCollection}){
@@ -165,6 +165,7 @@ import Enviroment from "../core/Enviroment";
                 Authorization: "Bearer "+localStorage.getItem("token")
             }}
         )
+        console.log(res)
         return res.data
     }
     async fetchSubCollectionsProtected({id}){

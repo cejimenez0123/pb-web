@@ -118,7 +118,7 @@ function LinkPreview({ url,isGrid}) {
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image && <img  className={isGrid?"max-w-48 rounded-lg mx-auto ":"  w-[100%] rounded-t-lg  "}src={previewData.image}  alt="Link Preview" />}
+      {previewData.image && <img  className={isGrid?"rounded-lg pt-8 w-fit max-h-36 w-[100%] overflow-hidden mx-auto max-w-[96%] ":"  w-[100%] rounded-t-lg  "}src={previewData.image}  alt="Link Preview" />}
     </div>)
     }else{
       

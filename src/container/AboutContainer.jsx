@@ -21,11 +21,11 @@ export default function AboutContainer(props){
 <div  >
 <h6 className="poppins  font-bold text-[2rem]">For Creatives</h6>
 <div >
-<h6 className="text-[1.2rem]  poppins pt-4 text-left" > 
-Plumbum began during a university reprieve while walking to the gym.
-At home, I missed the encouragement I got from friends who shared my objectives. 
-Finding mutual support can be challenging when others do not share your interests. 
-Creatives need a place to test ideas before they launch, and that is what Plumbum is for. 
+<h6 className="text-[1rem]  poppins pt-4 text-left" > 
+The idea for Plumbum came to me while I was walking to the gym during a university break.
+The encouragement I got from friends who supported my goals was missing at home.
+Finding mutual support in writing is challenging. 
+There's not one kind of look for a writer. Creatives need a place to test their skills and gain confidence in and that is what Plumbum is for. 
 </h6>
 </div>
 </div>
@@ -35,10 +35,13 @@ Creatives need a place to test ideas before they launch, and that is what Plumbu
 const writingJourney = ()=>{
     return(<div className="">
         <div id="ready">
-<h6  className="text-emerald text-lg poppins sm:text-white">
-If you're a writer or enjoy reading, 
-you're of discerning taste; We are taking applications for betausers for our release in February.
-Join now!</h6>
+<div  className="text-emerald mt-8 poppins sm:text-white">
+<h5 className="text-[1.2rem]">If you're a writer or enjoy reading, stay engaged with people with shared goals.
+</h5>
+<h5 className="text-[1.2rem]">We are taking applications for beta users for our release in February.
+</h5>
+<h3 className="text-[1.4rem]">Get started now!!</h3>
+</div>
 <button className="text-2xl text-white bg-emerald-800 rounded-full my-8 px-5 py-3" onClick={()=>{navigate(Paths.apply())}}  
    >Apply to Join Today</button>
 </div>
@@ -51,23 +54,30 @@ const detailsOfWorkshop=()=>{
         <h3 className={`poppins  font-bold  text-2xl font-bold text-left ${md?"text-emerald-700":"text-white"}`}>What is a Writers' Workshop?</h3>
       
 <h6 className="py-4 text-left poppins text-[1.2rem]">
-A creative sanctuary where like minded writers can offer peer critique
+Peer critiques by like-minded writers
        </h6>
 
         <h3 className="poppins text-2xl text-left font-bold py-4">What is a Plumbum?</h3>
-        <h6 className="text-left py-4 text-[1.2rem] poppins">Plumbum is the latin word for Lead, like a lead anvil or pipe. It's the root word of plumber</h6>
+        <h6 className="text-left py-4 text-[1.2rem] poppins">Plumbum is the Latin word for lead, like a lead anvil or pipe. It's the root word for plumber.
+</h6>
         <ul className="text-left">
-        <li className="py-3 text-[1.2rem]"><h6> 📝 Tired of oversharing your work? We understand your work is meaningful.
-    Plumbum allows you to control visibility, share how you want, with who you want.
+
+
+
+
+
+
+
+    <li className="py-3 text-[1.2rem]"><h6> 📝 Worried about publishing publicly, but still need people to read your stuff? 
+        Plumbum lets you control visibility and share how you want.
+    
     </h6></li >
-<li className="py-3 text-[1.2rem]"><h6>💬 Need constructive feedback to refine your craft?
-    Join a community of people passionate about literature eager to share their insights and support your journey.
+<li className="py-3 text-[1.2rem]"><h6>💬 Looking for constructive feedback?
+Be part of a community of writers who are eager to share their insights and support you.
 </h6></li>
-<li className="py-3 text-[1.2rem]"><h6>📘 Organize all your related writing into books. 
-    Reorganzing the work until you're satisfied. </h6></li>
+<li className="py-3 text-[1.2rem]"><h6>📘 Make collections to organize and reorganize everything you find, so you can tell the story you want. </h6></li>
 <li className="py-3 text-[1.2rem]"><h6>
-📚 Whether you're a seasoned novelist or just beginning your literary adventure.
-Plumbum is great place to begin work and find support to complete work.
+📚 Whether you're a seasoned novelist or just starting out. It's a great place to get started and get support.
 </h6></li>
 
 </ul>

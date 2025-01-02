@@ -85,19 +85,19 @@ const hanldeClickComment=(pageItem)=>{
         return( 
             <div 
     
-           className={`  ${isGrid?"max-h-[13em] rounded-lg overflow-hidden p-2 max-w-48 mx-auto overflow-clip  ":""}`}
+           className={`  ${isGrid?"max-h-[12em] rounded-lg max-w-48 mx-auto overflow-clip mt-4 ":""}`}
             >
-            <div className={` ql-editor w-full ${isGrid?"rounded-lg":""}`}
+            <div className={` w-[100%] bg-emerald-50 text-emerald-800 p-2 overflow-hidden text-[0.8rem] ${isGrid?"isGrid mt-1 rounded-lg overflow-hidden":"  ql-editor"}`}
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
       )   }
       case PageType.picture:{
         console.log(page)
-        return(<div className={` ${isGrid?"max-h-40 overflow-clip rounded-lg mx-auto pt-2 max-w-48":"w-[100%]"}`} ><img className='rounded-t-lg' src={image} alt={page.title}/></div>)
+        return(<div className={` ${isGrid?"max-h-40 overflow-clip rounded-lg mx-auto pt-2 max-w-48":"w-[100%]"}`} ><img className={isGrid?"rounded-lg":'rounded-t-lg'} src={image} alt={page.title}/></div>)
     }
     case PageType.link:{
         return(<div 
-            className={` ${isGrid?"max-h-48 px-2":"w-[100%]"}`}>
+            className={` ${isGrid?"max-h-36 mx-auto mx-auto w-fit px-2":"w-[100%]"}`}>
             <LinkPreview
             isGrid={isGrid}
                     url={page.data}

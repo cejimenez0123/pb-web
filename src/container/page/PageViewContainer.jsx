@@ -68,6 +68,7 @@ export default function PageViewContainer(props){
   <div className=" max-w-[96vw]  my-8 sm:max-w-[42rem] mx-auto">     
     {title()}
     {pageDiv()}
+    
     <CommentThread comments={rootComments}/>
     </div> 
    

@@ -73,11 +73,14 @@ const addCollectionListToCollection = createAsyncThunk("books/addCollectionListT
 const addStoryListToCollection = createAsyncThunk("books/addStoryListToCollection",async(
     {id,list},thunkApi
 )=>{
-
+try{
 
     let data = await collectionRepo.addStoryListToCollection({id,list})
-    
+    console.log(data)
     return {collection:data.collection}
+}catch(error){
+    return {error}
+}
 })
 const createCollection = createAsyncThunk("collection/createCollection",async (params,thunkApi)=>{
     let {
@@ -117,6 +120,7 @@ const fetchCollection = createAsyncThunk("collection/getCollectionPublic",async(
 })
 const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCollection",async({id,storyId},thunkApi)=>{
     let data = await collectionRepo.deleteStoryToCollection({id,storyId})
+    console.log("data",data)
     return {
      collection:data.collection
     }

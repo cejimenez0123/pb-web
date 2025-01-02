@@ -40,9 +40,14 @@ builder.addCase(clearCollections.type,(state)=>{
 }).addCase(deleteCollectionFromCollection.rejected,(state,{payload})=>{
     state.error=payload.error
 }).addCase(deleteStoryFromCollection.fulfilled,(state,{payload})=>{
-    state.collectionInView = payload.collection
-    
-})
+
+    let list = state.collections
+    const index = list.findIndex(col=>col.id==payload.collection.id)
+    if(index>0){
+            list[index]=payload.collection
+            state.collections = list
+    }})
+  
 .addCase(getSubCollectionsProtected.fulfilled,(state,{payload})=>{
     state.collectionToCollectionsList = payload.list
     state.collections = payload.list.map(item=>item.childCollection)
@@ -71,11 +76,13 @@ builder.addCase(clearCollections.type,(state)=>{
     state.loading = false
 }).addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
     state.loading=false
-    state.collectionInView =payload.collection
-    let collections = state.collections
-    let list = collections.filter(col=>col.id!=payload.collection)
-
-    state.collections = [...list,payload.collection]
+   let list = state.collections
+    // state.collectionInView =payload.collection
+    const index = list.findIndex(col=>col.id==payload.collection.id)
+    if(index>0){
+        list[index]=payload.collection
+        state.collections = list
+    }
 }).addCase(createCollection.pending,(state)=>{
     state.loading = true
 }).addCase(createCollection.fulfilled,(state,{payload})=>{
