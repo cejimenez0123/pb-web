@@ -85,20 +85,21 @@ const hanldeClickComment=(pageItem)=>{
         return( 
             <div 
     
-           className={`  ${isGrid?"h-48 overflow-clip  ":""}`}
+           className={`  ${isGrid?"max-h-[13em] rounded-lg overflow-hidden p-2 max-w-48 mx-auto overflow-clip  ":""}`}
             >
-            <div className=' ql-editor w-full rounded-lg'
+            <div className={` ql-editor w-full ${isGrid?"rounded-lg":""}`}
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
       )   }
       case PageType.picture:{
         console.log(page)
-        return(<img className='w-[100%] ' src={image} alt={page.title}/>)
+        return(<div className={` ${isGrid?"max-h-40 overflow-clip rounded-lg mx-auto pt-2 max-w-48":"w-[100%]"}`} ><img src={image} alt={page.title}/></div>)
     }
     case PageType.link:{
         return(<div 
-            className={` ${isGrid?"h-48 overflow-clip":"h-full"}`}>
+            className={` ${isGrid?"max-h-48 px-2":"w-[100%]"}`}>
             <LinkPreview
+            isGrid={isGrid}
                     url={page.data}
             />
             </div>)
@@ -186,7 +187,6 @@ return <Button onClick={()=>{
     const ClickAddStoryToCollection=()=>{
         navigate(Paths.addStoryToCollection.createRoute(page.id))
     }
-    let bookTitleDiv =  (<div></div>)
     if(book){
         
         let title = ""
@@ -202,8 +202,8 @@ return <Button onClick={()=>{
         }><p>{title} {">"}</p></a>)
     }
     const buttonRow = ( )=>{
-        return isGrid?<div className='text-right text-white '>
-        <button className='bg-transparent  '><img src={bookmarkadd}/></button>
+        return isGrid?<div className='text-right  h-fit text-white '>
+        <button className='bg-transparent absolute right-1 bottom-1'><img src={bookmarkadd}/></button>
     
     </div>:
         <div className=' bg-emerald-700 text-white rounded-b-lg border-none  text-center '><div>
@@ -261,7 +261,9 @@ onClick={()=>ClickAddStoryToCollection()}>
              >
                     Share Link
                  </a></li>
-                <li className=' text-emerald-700'> {(currentProfile && currentProfile.id == page.profileId )?
+                <li className=' text-emerald-700'> 
+                {(currentProfile && currentProfile.id == page.profileId )
+                ?
      <a onClick={()=>{
   
         navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
@@ -280,23 +282,23 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={`rounded-lg relative  page  bg-emerald-50 mx-auto max-w-[96vw] shadow-sm   `}>
+        <div className={`rounded-lg relative   ${isGrid?"bg-emerald-700 h-60 max-w-52 ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
         
-            <div className='rounded-lg    '>
-                <div className=' flex flex-row  '>
-                {bookTitleDiv}
+        <div className='justify-between flex flex-col'>
+              
                 <h6 className="text-white  rounded-t-lg py-1 px-3 text-[0.9rem] absolute bg-gradient-to-br from-emerald-900 to-opacity-0  " onClick={()=>{
                     dispatch(setPageInView({page}))
                     navigate(Paths.page.createRoute(page.id))
 
                 }} > {` `+page.title.length>0?page.title:"Untitled"}</h6>
-                </div>
-                {profileDiv}
-            </div>
-             <div className='min-h-36 flex flex-col justify-between text-slate-800'> 
-                <PageDataElement page={page}/>
+             
+          <div className=' rounded-lg'>
+               <PageDataElement page={page}/>
+               </div>
+             
                 {buttonRow()}
-                </div> 
+                </div>
+            
                
   </div>
      )}else{

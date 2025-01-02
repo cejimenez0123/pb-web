@@ -111,7 +111,7 @@ const navigateToLibrary = (library)=>{
     const pageList = ()=>{
         if(pagesInView!=null){
             return(<div 
-            className=''
+            className='max-w-[40em]'
             >
                <InfiniteScroll
             dataLength={pagesInView.length}

@@ -301,7 +301,8 @@ function LibraryViewContainer(props){
                             
                                 return(<div key={story.page.id+"_"+uuidv4()}>
                                 
-                                <DashboardItem book={story.book} library={libraryInView}
+                                <DashboardItem book={story.book} isGrid={false}
+                                library={libraryInView}
                                                 page={story.page}/>
                             </div>)}else if(story.book){
                                 return(<div key={story.book.id+"_"+uuidv4()}>
