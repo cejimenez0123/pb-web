@@ -85,9 +85,9 @@ const hanldeClickComment=(pageItem)=>{
         return( 
             <div 
     
-           className={`  ${isGrid?"max-h-[12em] rounded-lg max-w-48 mx-auto overflow-clip mt-4 ":""}`}
+           className={`  ${isGrid?"max-h-[12em] rounded-lg max-w-48  mx-auto overflow-clip mt-4 ":""}`}
             >
-            <div className={` w-[100%] bg-emerald-50 text-emerald-800 p-2 overflow-hidden text-[0.8rem] ${isGrid?"isGrid mt-1 rounded-lg overflow-hidden":"  ql-editor"}`}
+            <div className={` w-[100%] bg-emerald-50 text-emerald-800 px-4 pb-8 overflow-hidden  pt-8 text-[0.8rem] ${isGrid?"isGrid mt-1 rounded-lg overflow-hidden":"  ql-editor"}`}
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
       )   }

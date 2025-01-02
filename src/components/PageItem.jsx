@@ -13,7 +13,7 @@ function PageItem({page,setPageIdList}){
     let pageDataElement = (<div></div>)
     switch(page.type){
         case PageType.text:
-            pageDataElement = <div className='dashboard-content ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
+            pageDataElement = <div className='dashboard-content pt-8 ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         break;
         case PageType.picture:
             pageDataElement = <img className='dashborad-content' src={page.data} alt={page.title}/>

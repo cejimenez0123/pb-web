@@ -85,7 +85,7 @@ let pageDataElement = (<div ></div>)
 if(page){
     switch(page.type){
     case PageType.text:
-        pageDataElement = <div className={isGrid?" rounded-lg overflow-hidden":'w-max ql-editor rounded-t-lg pt-4 px-4'} dangerouslySetInnerHTML={{__html:page.data}}></div>
+        pageDataElement = <div className={ "rounded-t-lg overflow-hidden w-max ql-editor  pt-8 pb-8 px-4"} dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
         pageDataElement = <img className="w-[100%] rounded-t-lg min-h-72 " src={image} alt={page.title}/>

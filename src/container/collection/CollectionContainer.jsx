@@ -46,7 +46,7 @@ export default function CollectionContainer(props){
     <h3 className="m-8  text-emerald-800 text-3xl">{colInView.title}</h3>
         <h3 className="text-emerald-800  md:mx-8 rounded-lg p-4">{colInView.purpose}</h3>
         <div className="md:ml-8 mt-8 flex flex-row">
-   <button className="bg-emerald-700 rounded-full text-[1.2rem]">Follow</button>
+   <button className="bg-emerald-700 text-white rounded-full text-[1rem] sm:text-[1.2rem]">Follow</button>
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
    <div
     className="flex-row flex mx-2"
