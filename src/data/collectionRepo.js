@@ -81,10 +81,9 @@ import Enviroment from "../core/Enviroment";
 
         return res.data
     }
-    async updateCollectionContent({id,storyToCol,colToCol,col}){
-            let res = await axios.patch(this.url+"/"+id,{
-                storyToCol,colToCol,col
-            },{headers:{
+    async updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile}){
+            let res = await axios.patch(this.url+"/"+id,
+            {id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},{headers:{
                 Authorization:"Bearer "+localStorage.getItem("token")
             }})
             return res.data
@@ -141,7 +140,7 @@ import Enviroment from "../core/Enviroment";
         return res.data
     }
     async fetchCollectionProtected({id}){
-        const res = await axios.get(this.url+"/"+id,{headers:{
+        const res = await axios.get(this.url+"/"+id+"/protected",{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")
         }})
         return res.data

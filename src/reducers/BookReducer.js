@@ -16,6 +16,7 @@ import {
         deleteStoryFromCollection,
         clearCollections
             } from "../actions/CollectionActions"
+import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
 
 const initialState = {
     // booksInView:[],
@@ -39,6 +40,8 @@ builder.addCase(clearCollections.type,(state)=>{
     state.collectionInView = payload.collection
 }).addCase(deleteCollectionFromCollection.rejected,(state,{payload})=>{
     state.error=payload.error
+}).addCase(deleteCollectionRole.fulfilled,(state,{payload})=>{
+    state.collectionInView = payload.collection
 }).addCase(deleteStoryFromCollection.fulfilled,(state,{payload})=>{
 
     let list = state.collections
@@ -83,6 +86,8 @@ builder.addCase(clearCollections.type,(state)=>{
         list[index]=payload.collection
         state.collections = list
     }
+}).addCase(postCollectionRole.fulfilled,(state,{payload})=>{
+    state.collectionInView = payload.collection
 }).addCase(createCollection.pending,(state)=>{
     state.loading = true
 }).addCase(createCollection.fulfilled,(state,{payload})=>{

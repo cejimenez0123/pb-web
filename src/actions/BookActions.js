@@ -237,62 +237,6 @@ const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params
       return {error }
     }                
 })
-// const updateBook = createAsyncThunk("books/updateBooks",async (params,thunkApi)=>{
-      
-//   try{
-//     const { book,title,purpose,pageIdList,privacy,writingIsOpen } = params
-//     const data = await collectionRepo.updateCollection({id:book.id,title:title,purpose:purpose,
-//       isOpenCollaboration:writingIsOpen,isPrivate:privacy
-//     })
-     
-//       return {
-//         book: data.collection
-//       }
-//     }catch(e){
-//     return {error: new Error("Error: UDATE BOOK -" + e.message)}
-//   }
-// })
-// const deleteBook= createAsyncThunk("books/deleteBook", async (params,thunkApi)=>{
-//   try{
-//     const {book}=params
-//     let data = await collectionRepo.deleteCollection({id:book.id})
-//     client.initIndex("book").deleteObject(book.id).wait()
-//     return {
-//       book:data
-//     }
-//   }catch(e){
-//     return {error: new Error("Error: DELETE BOOK"+e.message)};
-//   }
-// })
-// const updateBookContent = createAsyncThunk("books/updateBookContent", async (params,thunkApi)=>{
-//   try {
-
-//     const {book,pageIdList} = params
-
-//     let data = collectionRepo.addStoriesToCollection({collection:book,storyIdList:pageIdList})
-//   //   let ref = doc(db,'book',book.id)
-//   //   pageIdList.forEach(pageId => {
-//   //    updateDoc(ref,{ pageIdList:arrayUnion(pageId)
-//   //   })})
-//   //  let contributors= new Contributors(book.commenters,book.readers,book.writers,book.editors)
-//   //   let newBook = new Book(book.id,
-//   //                       book.purpose,
-//   //                       book.title,
-//   //                       book.profileId,
-//   //                       pageIdList,
-//   //                       book.privacy,
-//   //                       book.writingIsOpen,
-//   //                       contributors,
-//   //                       book.updatedAt,
-//   //                       book.created
-//   //                       )
-//     return {
-//       book:data.collection
-//     } 
-//   }catch(e){
-//     return {error: new Error("Error: Update Book Content"+e.message)};
-//   }
-// })
 
 const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",async (params,thunkApi)=>{
   try {

@@ -9,54 +9,120 @@ import edit from "../../images/icons/edit.svg"
 import Paths from "../../core/paths"
 import InfiniteScroll from "react-infinite-scroll-component"
 import BookListItem from "../../components/BookListItem"
-
+import Role from "../../domain/models/role"
+import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions"
+import { RoleType } from "../../core/constants"
+import checkResult from "../../core/checkResult"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const colInView = useSelector(state=>state.books.collectionInView)
-    const sTcList = useSelector(state=>state.pages.storyToCollectionList)
-    let stories = sTcList.map(stc=>stc.story)
-    const [pages,setPages]=useState(stories)
+    const collection = useSelector(state=>state.books.collectionInView)
+    const [role,setRole]=useState(null)
     const collections = useSelector(state=>state.books.collections)
     const params = useParams()
+    const deleteFollow=()=>{
+        if(currentProfile){
+            dispatch(deleteCollectionRole({role})).then(res=>{
+                checkResult(res,payload=>{
+                  
+                        getCol()
+                  
+                   
+                },err=>{
+
+                })
+            })
+
+        }else{
+            window.alert("please sign in")
+        }
+    }
+    const handleFollow = ()=>{
+if(currentProfile){
+
+
+        dispatch(postCollectionRole({type:collection.followersAre??RoleType.commenter,profileId:currentProfile.id,collectionId:collection.id}))
+        .then(res=>{
+            checkResult(res,payload=>{
+           
+          getCol()
+            },err=>{
+                window.alert(err.message)
+            })
+        })
+    }else{
+        window.alert("Please Sign In")
+    }
+    }
+    const getCol=()=>{
+        currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
+    }
     useLayoutEffect(()=>{
        
-        currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
+       getCol()
        
     },[currentProfile])
-    const getSubCollections = ()=>{
+  
+    const getContent= ()=>{
         dispatch(clearCollections())
+        currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
+    
         currentProfile?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
+    const findRole = ()=>{
+    
+            let foundRole= collection && collection.roles&& currentProfile?collection.roles.find(role=>role.profileId==currentProfile.id):null
+           if(foundRole){
+            const fRole = new Role(foundRole.id,currentProfile,collection,foundRole.role,foundRole.created)
+            setRole(fRole)
+           }else{
+            setRole(null)
+           }
+          
+             
+                    
+    }
+
+           
+    useEffect(findRole,[collection])   
     useLayoutEffect(()=>{
-        currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
-      getSubCollections()
-    },[colInView])
+       
+        findRole()
+        getContent()
+    },[collection])
   
 
    
     const collectionInfo=()=>{
+       
         
-        
-        if(!colInView){
+        if(!collection){
             return(<div>Loading</div>)
         }
+       
         return(<div className="h-fit max-w-[100vw] sm:pb-8 sm:w-48 sm:border-2 p-4 sm:border-emerald-800  mx-8 mt-4 md:mx-8 md:mt-8  rounded-lg mb-8 text-left">
-    <h3 className="m-8  text-emerald-800 text-3xl">{colInView.title}</h3>
-        <h3 className="text-emerald-800  md:mx-8 rounded-lg p-4">{colInView.purpose}</h3>
-        <div className="md:ml-8 mt-8 flex flex-row">
-   <button className="bg-emerald-700 text-white rounded-full text-[1rem] sm:text-[1.2rem]">Follow</button>
-   {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
+    <h3 className="m-8  text-emerald-800 text-3xl">{collection.title}</h3>
+        <h3 className="text-emerald-800  md:mx-8 rounded-lg p-4">{collection.purpose}</h3>
+        <div className={"md:ml-8 mt-8 flex flex-row"}>
+   {!role?<button
+   onClick={handleFollow}
+   className={"bg-emerald-700 text-white  min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"}>Follow</button>:
+   <button 
+   onClick={deleteFollow}
+   className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"} >
+        {role.role}
+   </button>}
+   {currentProfile&& (collection.isOpenCollaboration || collection.profileId==currentProfile.id)?
    <div
     className="flex-row flex mx-2"
    >
-    <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
+    <img onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))
    }className="rounded-full bg-emerald-800 p-3 mr-2 my-auto"src={add}/>
-   {colInView.profileId==currentProfile.id?<img 
+   {collection.profileId==currentProfile.id?<img 
    onClick={()=>{
   
-    navigate(Paths.editCollection.createRoute(colInView.id))}}
+    navigate(Paths.editCollection.createRoute(collection.id))}}
    className="rounded-full bg-emerald-800 p-3  my-auto"src={edit}/>:null}</div>:null}
 
 
@@ -64,14 +130,14 @@ export default function CollectionContainer(props){
    
    </div></div>)}
 
-if(colInView && collections){
+if(collection && collections){
   
 
     return(<>
 
-<div className="pb-[10rem] ">       {colInView?collectionInfo():<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
+<div className="pb-[10rem] ">       {collection?collectionInfo():<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
         <div className="text-left  max-w-[100vw]    mx-auto ">
-            {colInView && collections.length>0? <div>
+            {collection && collections.length>0? <div>
                 <h3 className="text-2xl text-emerald-800 font-bold text-center">Anthologies</h3>:
             <div>
                 <InfiniteScroll

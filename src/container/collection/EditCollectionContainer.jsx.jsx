@@ -46,18 +46,23 @@ export default function EditCollectionContainer(props){
     const [newCollections,setNewCollections]=useState(ctcList)
     const [title,setTitle]=useState("")
     const [purpose,setPurpose]=useState("")
-    const [isPrivate,setIsPrivate]=useState(colInView?colInView.isPrivate:true)
+    const [isPrivate,setIsPrivate]=useState(true)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [openAccess,setOpenAccess]=useState(false)
     useLayoutEffect(()=>{
-       
-            dispatch(fetchCollection(params))
-                },[])
+            currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
+    },[])
 
     useEffect(()=>{
+    if(colInView){
+
+    
         setTitle(colInView.title)
         setPurpose(colInView.purpose)
+        setIsPrivate(colInView.isPrivate)
+        setOpenAccess(colInView.isOpenCollaboration)
+    }
     },[colInView])
     useLayoutEffect(()=>{
 
@@ -82,8 +87,8 @@ console.log(storyToCols)
     const handleDeleteCollection = ()=>{
         const {id}=params
 
-        dispatch(deleteCollection({id})).then(res=>checkResult(res,payload=>{
-                navigate(Paths.myProfile.createRoute(currentProfile.id))
+        dispatch(deleteCollection(params)).then(res=>checkResult(res,payload=>{
+                navigate(Paths.myProfile())
         },err=>{
 
         }))
@@ -91,9 +96,7 @@ console.log(storyToCols)
  
    
     const updateCollection = ()=>{
-
-       
-        dispatch(patchCollectionContent({id:params.id,storyToCol:newPages,colToCol:newCollections,col:colInView,profile:currentProfile}))
+        dispatch(patchCollectionContent({id:params.id,isPrivate:isPrivate,isOpenCollaboration:isOpen,title,purpose,storyToCol:newPages,colToCol:newCollections,col:colInView,profile:currentProfile}))
     }
 
     const collectionInfo=()=>{
@@ -108,11 +111,11 @@ console.log(storyToCols)
 
     type="text" className="mx-w bg-transparent text-emerald-800 px-2 py-2 w-full mb-4  text-2xl" value={title}/>
        </div>
-        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea text-[1rem] min-w-[24rem]  text-white  sm:mx-8 bg-emerald-600 bg-opacity-60  max-w-[20em] md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
+        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea text-[1rem]  text-white  sm:mx-8 bg-emerald-600 bg-opacity-60  max-w-[96vw] sm:max-w-[20em] md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
         <div className=" mt-8  justify-around ml-12 text-left gap-4 grid grid-flow-row-dense grid-cols-2 max-w-72 sm:max-w-[22rem]">
 
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
-   <button className="btn btn-success text-emerald-900 p-2 max-w-24 text-center rounded-lg"
+   <button className="bg-emerald-800 text-white w-[9rem] text-center rounded-full"
    
    onClick={updateCollection}
    
@@ -122,27 +125,27 @@ console.log(storyToCols)
    <div>
     
    <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
-   }className=" bg-emerald-800 rounded-full mx-auto p-2 "
+   }className=" bg-emerald-800 w-12 h-12 rounded-full mx-auto p-2"
    src={add}/>
    </div>
 <div className=" text-emerald-900">
-<button   onClick={()=>setIsOpen(!isOpen)} className={(isOpen?"border-green-800":"border-emerald-400")+" px-2 min-w-36 py-3 border-2 bg-transparent text-[1rem]   text-emerald-800 rounded-lg"}>
+<button   onClick={()=>setIsOpen(!isOpen)} className={(isOpen?"border-green-800":"border-emerald-400")+" px-2 min-w-36 py-3 border-2 bg-transparent text-[1rem]   text-emerald-800 w-[9rem] rounded-full"}>
     {isOpen?<h3 className="">Is Open Collab?</h3>:<h3 className=" ">Is Closed</h3>}</button>
    </div>
    <div>
    <button    onClick={()=>setIsPrivate(!isPrivate)} 
    className={`${isPrivate?
-    " border-2 border-emerald-400":"border-4 border-emerald-600"} text-[1rem]  py-[0.85rem] px-[1.85rem] bg-transparent text-emerald-800 rounded-lg`}>{
+    " border-2 border-emerald-400":"border-4 border-emerald-600"} text-[1rem]  py-[0.85rem] px-[1.85rem] bg-transparent text-emerald-800 w-[9rem] rounded-full`}>{
    isPrivate?
     "Is Private":"Is Public"}</button>
    </div>
    <div className="">
-  <img className="p-2 rounded-lg w-fit mx-auto bg-emerald-800 hover:bg-red-500 my-auto "
+  <img className="p-2 rounded-full w-12 h-12  mt-2 w-fit mx-auto bg-emerald-800 hover:bg-red-500  "
     src={deleteIcon} 
     onClick={handleDeleteCollection}/> 
   </div>
   <div>
-    <button onClick={()=>setOpenAccess(true)}className="text-white bg-emerald-600">Manage Access</button>
+    <button onClick={()=>setOpenAccess(true)}className="text-white rounded-full bg-emerald-600">Manage Access</button>
   </div>
    </div>
    </div>
@@ -171,10 +174,15 @@ const deleteSubCollection = (colId)=>{
     dispatch(deleteCollectionFromCollection({id:colInView.id,childCollectionId:colId.id}))
 }
     if(!colInView){
-
-        return(<div className="skeleton w-96 h-96">
+        if(loading){
+        return(<div className="skeleton w-96 bg-emerald-50 max-w-[96vw]  m-2 h-96"/>
        
+        )
+    }else{
+        return(<div className="w-[100%] h-[100%]" >
+            <h6 className="text-emerald-800 mx-auto my-24">Collection Not Found </h6>
         </div>)
+    }
     }
     if(colInView){
         return(<div>

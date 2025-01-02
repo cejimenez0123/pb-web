@@ -1,6 +1,5 @@
-import { Navigate,useNavigate,useLocation } from "react-router-dom";
+import {useNavigate,useLocation } from "react-router-dom";
 import {useSelector} from "react-redux"
-import PageSkeleton from "./components/PageSkeleton";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import Context from "./context";

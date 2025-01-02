@@ -1,6 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import Enviroment from "../core/Enviroment";
 import storyRepo from "../data/storyRepo";
 import { client } from "../core/di";
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{

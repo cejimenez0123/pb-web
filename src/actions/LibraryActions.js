@@ -255,14 +255,14 @@ const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (
 )
 const deleteLibrary = createAsyncThunk("libraries/deleteLibrary", async (params,thunkApi)=>{
   
-  try{
-    const {library }=params
-  const data = await collectionRepo.deleteCollection({id:library.id})
-  client.initIndex("library").deleteObject(library.id).wait()
-    return {library:data}
-  }catch(e){
-    return {error: new Error("Error: Delete Library"+e.message)};
-  }
+  // try{
+  //   const {library }=params
+  // const data = await collectionRepo.deleteCollection({id:library.id})
+  // client.initIndex("library").deleteObject(library.id).wait()
+  //   return {library:data}
+  // }catch(e){
+  //   return {error: new Error("Error: Delete Library"+e.message)};
+  // }
 })
 const fetchArrayOfLibraries = createAsyncThunk("libraries/fetchArrayOfLibraries",async (params,thunkApi)=>{
   try{

@@ -3,7 +3,7 @@ import axios from "axios"
 import collectionRepo from "../data/collectionRepo"
 import Enviroment from "../core/Enviroment"
 import storyRepo from "../data/storyRepo"
-
+import { client } from "../core/di"
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
     async (thunkApi) => {
@@ -195,6 +195,7 @@ const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
     params,thunkApi
 )=>{
    let data = await collectionRepo.deleteCollection(params)
+
    return data
 })
 // const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectionStories",
@@ -215,8 +216,8 @@ const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",
 })
 
 const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent",
-    async ({id,storyToCol,colToCol,col},thunkApi)=>{
-        let data = await collectionRepo.updateCollectionContent({id,storyToCol,colToCol,col})
+    async ({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},thunkApi)=>{
+        let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
      
         return {collection:data.collection}
     }
