@@ -5,7 +5,7 @@ const PageIndexList = ()=>{
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     if(pagesInView){
     return(<InfiniteScroll
-                   className="w-screen overflow-x-hidden "
+                   className="max-w-[40em] overflow-x-hidden "
                    dataLength={pagesInView.length}
                    next={()=>{}}
                    scrollThreshold={1}
@@ -17,7 +17,7 @@ const PageIndexList = ()=>{
                     }
                   >
                       {pagesInView.map(page=>{
-                        return <div className="rounded-lg border-3 mx-2 my-2 border-emerald-200 "><PageIndexItem page={page} /></div>
+                        return <PageIndexItem page={page} />
                       })}  
                    </InfiniteScroll>)
 

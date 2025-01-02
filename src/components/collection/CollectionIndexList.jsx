@@ -7,7 +7,7 @@ const CollectionIndexList = (props)=>{
     if(props.cols){
        
     return(<InfiniteScroll
-                   
+                   className="max-w-[40em]"
                    dataLength={props.cols.length}
                    next={()=>{}}
                    scrollThreshold={1}
@@ -17,7 +17,7 @@ const CollectionIndexList = (props)=>{
                     </div>}
                   >
                       {props.cols.map(col=>{
-                        return <div className="border-2 rounded-lg my-2 mx-2 border-emerald-200"><CollectionIndexItem collection={col}/></div>
+                        return <CollectionIndexItem collection={col}/>
                       })}  
                    </InfiniteScroll>)
 

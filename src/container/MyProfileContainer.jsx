@@ -122,11 +122,11 @@ function MyProfileContainer(props){
                            
                             <MediaQuery minWidth={'600px'}>
                             <div className='mt-4 pt-2 flex flex-row'>
-                            <button onClick={ClickWriteAStory} className='bg-emerald-700 rounded-full text-white  sm:text-xl text-bold'>
+                            <button onClick={ClickWriteAStory} className='bg-emerald-700 rounded-full text-white  sm:text-[1rem] text-bold'>
                                 Write a Story
                             </button>
                            
-                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 rounded-full md:ml-4 text-white sm:text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 rounded-full md:ml-4 text-white sm:text-[1rem]   text-bold'>
                                 Create Collection
                             </button>
                             <a onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 my-4 text-emerald-800'>Refer Someone?</a>
@@ -165,7 +165,7 @@ function MyProfileContainer(props){
                             </div>
                             <div role="tablist" className="tabs mt-8 shadow-md min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800  shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent  text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  sm:max-w-[42rem] md:p-6">
+  <div role="tabpanel" className="tab-content  pt-1  ">
   <PageIndexList/>
   </div>
 
@@ -176,12 +176,12 @@ function MyProfileContainer(props){
     className="tab text-emerald-800 bg-transparent  border-emerald-500 border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
     aria-label="Books"
     />
-  <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box pt-1">
+  <div role="tabpanel" className="tab-content bg-transparent   pt-1">
   <CollectionIndexList cols={books}/>
   </div>
 
   <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-800 bg-transparent border-emerald-500 border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
-  <div role="tabpanel" className="tab-content pt-1 bg-transparent sm:max-w-[42rem]   rounded-box ">
+  <div role="tabpanel" className="tab-content bg-transparent   ">
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>

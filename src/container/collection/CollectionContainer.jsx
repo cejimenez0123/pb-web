@@ -42,22 +42,22 @@ export default function CollectionContainer(props){
         if(!colInView){
             return(<div>Loading</div>)
         }
-        return(<div className="h-fit max-w-[100vw] sm:pb-8 sm:w-48 sm:border-2 p-4 sm:border-emerald-800  mx-2 mt-4 md:mx-8 md:mt-8  rounded-lg mb-8 text-left">
+        return(<div className="h-fit max-w-[100vw] sm:pb-8 sm:w-48 sm:border-2 p-4 sm:border-emerald-800  mx-8 mt-4 md:mx-8 md:mt-8  rounded-lg mb-8 text-left">
     <h3 className="m-8  text-emerald-800 text-3xl">{colInView.title}</h3>
-        <h3 className=" md:mx-8 text-emerald-800 max-w-[100vw] md:max-w-96 rounded-lg p-4">{colInView.purpose}</h3>
+        <h3 className="text-emerald-800  md:mx-8 rounded-lg p-4">{colInView.purpose}</h3>
         <div className="md:ml-8 mt-8 flex flex-row">
-   <button className="bg-emerald-700 rounded-full text-l">Follow</button>
+   <button className="bg-emerald-700 rounded-full text-[1.2rem]">Follow</button>
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
    <div
     className="flex-row flex mx-2"
    >
     <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
-   }className="rounded-full bg-emerald-800 p-2 mr-2 my-auto"src={add}/>
+   }className="rounded-full bg-emerald-800 p-3 mr-2 my-auto"src={add}/>
    {colInView.profileId==currentProfile.id?<img 
    onClick={()=>{
   
     navigate(Paths.editCollection.createRoute(colInView.id))}}
-   className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}</div>:null}
+   className="rounded-full bg-emerald-800 p-3  my-auto"src={edit}/>:null}</div>:null}
 
 
 
@@ -71,7 +71,7 @@ if(colInView && collections){
 
 <div className="pb-[10rem] ">       {colInView?collectionInfo():<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
         <div className="text-left  max-w-[100vw]    mx-auto ">
-            {colInView && colInView.childCollections.length>0? <div>
+            {colInView && collections.length>0? <div>
                 <h3 className="text-2xl text-emerald-800 font-bold text-center">Anthologies</h3>:
             <div>
                 <InfiniteScroll

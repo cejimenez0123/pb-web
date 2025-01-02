@@ -26,7 +26,7 @@ export default function CollectionIndexItem({collection}){
         if(currentProfile && currentProfile.id == collection.profileId){
             buttonDiv =(
                 <div className="dropdown dropdown-left justify-content-center">
-    <div tabIndex={0} role="button" className=" rounded-full bg-emerald-800 w-16 h-10 pt-2 pb-4 px-2  "><img classname=" " src={edit}/></div>
+    <button tabIndex={0} role="button" className=" rounded-full bg-emerald-800  px-2  "><img classname="w-5 h-5" src={edit}/></button>
         <ul tabIndex={0} className="dropdown-content menu bg-white text-slate-800 rounded-box z-[1] w-52 shadow">
             <li onClick={()=>
                 {
@@ -46,12 +46,12 @@ export default function CollectionIndexItem({collection}){
             </div>)
         }
     return(
-    
-                <div className={` rounded-lg px-1 flex flex-row justify-between mb-1    `}>
+        <div className="border-3 shadow-sm rounded-full  py-1 my-2 mx-2 border-emerald-300">
+                <div className={`  px-1 flex flex-row justify-between   `}>
              
-                <div className="text-left my-auto md:ml-4 py-8  ">
-                <a onClick={()=>navigate(Paths.collection.createRoute(collection.id))}className="text-emerald-800 " > 
-                   {collection && collection.title && collection.title.length>0? <h6 className="text-l ml-2 my-auto">{collection.title}</h6>:<h6>Unititled</h6>}
+                <div className="text-left my-auto md:ml-4 py-4 mt-1 mx-4 ">
+                <a className={"w-[80%]"}onClick={()=>navigate(Paths.collection.createRoute(collection.id))}> 
+                   {collection && collection.title && collection.title.length>0? <h6 className="text-[1rem] w-[10rem] sm:w-[100%] text-emerald-800 ml-2 my-auto">{collection.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                <div className="my-auto  mx-4  w-fit">
@@ -60,7 +60,7 @@ export default function CollectionIndexItem({collection}){
                 </div>
                    
             
-             
+             </div>
           
         </div>)
       }else{

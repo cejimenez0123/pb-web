@@ -89,7 +89,7 @@ function PageIndexItem({page,onDelete}) {
    </div>)
     if(currentProfile!=null && page.authorId==currentProfile.id){
         buttonDiv = (<div className="dropdown dropdown-left">
-        <div tabIndex={0} role="button" className=" bg-emerald-800 rounded-full  p-2 "><img classname="w-4 h-4" src={edit}/></div>
+        <button tabIndex={0} role="button" className="  rounded-full bg-emerald-800  px-2  "><img classname="h-5 w-5" src={edit}/></button>
         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
           <li className="text-green-600 " onClick={()=>{
            handleOnClick()}}><a >Edit</a></li>
@@ -98,12 +98,13 @@ function PageIndexItem({page,onDelete}) {
       </div>)
   
     }
-            return(<div className={`   mb-1 mx-1 `}> 
-              <div  className="flex flex-row justify-between   " >
-                <div className="text-left max-w-[100vw] h-fit  my-auto md:ml-4 py-6   ">
+            return(
+                <div className="border-3  shadow-sm  rounded-full   my-2 mx-2 border-emerald-300"><div className={`   mb-1 `}> 
+              <div  className=" px-1 flex flex-row justify-between  w-[100%]   " >
+                <div className="text-left my-auto mx-4 py-4 mt-1 ">
                
-                <a className="text-emerald-700 " onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
-                   {page && page.title && page.title.length>0? <h6 className="text-l ml-2 my-auto max-w-[15rem] md:max-w-[30rem]  overflow-scroll">{page.title}</h6>:<h6>Unititled</h6>}
+                <a className="text-emerald-700" onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
+                   {page && page.title && page.title.length>0? <h6 className="text-[1rem] my-auto w-[10rem] sm:w-[100%] overflow-scroll">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                 <div className=" my-auto mx-4 w-fit">
@@ -112,7 +113,7 @@ function PageIndexItem({page,onDelete}) {
               
              
             
-                </div>
+                </div></div>
             </div>  </div>)}else{
                 return(<div className="list-item">
 

@@ -28,7 +28,7 @@ const Paths ={
         createRoute:(id)=>{return `/page/${id}/edit`}},
     editBook:(id)=>{return `/book${id}/edit`},
     createBook:()=>{return `book/new`},
-    createLibrary:()=>{return `/library/new`},
+    // createLibrary:()=>{return `/library/new`},
     addToCollection:{
         route:'/collection/:id/add',
         createRoute:(id)=>{return `/collection/${id}/add`},
