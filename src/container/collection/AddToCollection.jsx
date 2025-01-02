@@ -19,6 +19,7 @@ export default function AddToCollectionContainer(props){
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const collections = useSelector(state=>state.books.collections)
     const cTcList = useSelector(state=>state.books.collectionToCollectionsList)
+    
     const [collectionsList,setCollectionList]=useState([])
     const [newStories,setNewStories]=useState([])  
     const[newCollection,setNewCollections]=useState([])
@@ -110,13 +111,20 @@ export default function AddToCollectionContainer(props){
         }
     const colList = ()=>{
     console.log(cTcList)
-        
+
+        let list =[]
+         if(collections){
+            list = collections
+         }
+         if(cTcList.length>0){
+            list = cTcList.filter(col=>!colInView.childCollections.find(joint=>joint.childCollectionId==col.id))
+         }
         return(<div className=" my-4 max-h-96 mx-auto text-emerald-800 overflow-scroll sm:mx-12 text-left mb-2">
         <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Collections to Collection</h6>
         <InfiniteScroll
         className=" mx-2 "
-        dataLength={cTcList.length}>
-{cTcList.filter(col=>!colInView.childCollections.find(joint=>joint.childCollectionId==col.id)).map(col=>{
+        dataLength={list.length}>
+{list.map(col=>{
             return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-1
             border-emerald-400 rounded-lg p-4  my-2">
                 <h2 className="text-l my-auto max-w-[60%] overflow-hidden">{col?col.title:"Untitled"}</h2>
@@ -148,7 +156,7 @@ export default function AddToCollectionContainer(props){
         <button onClick={save}className="bg-green-600 ml-4 rounded-full mt-4 px-4 text-xl">Save</button>
     <div className="text-xl my-auto flex flex-col content-center px-4   pt-[0.7em] rounded-full">
     
-    <span className="text-center mx-a">{newCollection.length+newStories.length}</span>
+    <span className="text-center  text-emerald-800  mx-a">{newCollection.length+newStories.length}</span>
     <span className=" text-center text-emerald-800 text-sm">New items</span> 
     </div>
     </div>

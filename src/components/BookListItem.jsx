@@ -14,7 +14,7 @@ function BookListItem({book}){
  
     const navigateToBook = ()=>{
        
-        dispatch(setCollectionInView({collection:book}))
+        // dispatch(setCollectionInView({collection:book}))
         dispatch(clearPagesInView())
         navigate(Paths.collection.createRoute(book.id))
         ReactGA.event({
@@ -27,8 +27,8 @@ function BookListItem({book}){
     }
     return (
 
-<div className="max-w-48  min-w-56 mx-8  rounded  shadow-sm bg-emerald-700">
-<div  onClick={navigateToBook}
+<div onClick={navigateToBook} className="max-w-48  min-w-56 mx-8  rounded  shadow-sm bg-emerald-700">
+<div  
 className=" text-white h-48 bg-transparent ">
  <div className="px-3 py-3">
     <div className="font-bold text-l mb-2">{book.title}</div>

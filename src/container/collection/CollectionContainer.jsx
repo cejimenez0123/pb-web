@@ -69,9 +69,10 @@ if(colInView && collections){
 
     return(<>
 
-<div className="pb-[10rem] ">       {colInView?collectionInfo():null}
+<div className="pb-[10rem] ">       {colInView?collectionInfo():<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
         <div className="text-left  max-w-[100vw]    mx-auto ">
-            {colInView && colInView.childCollections ? <h3 className="text-2xl text-emerald-800 font-bold text-center">Anthologies</h3>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
+            {colInView && colInView.childCollections.length>0? <div>
+                <h3 className="text-2xl text-emerald-800 font-bold text-center">Anthologies</h3>:
             <div>
                 <InfiniteScroll
                 dataLength={collections.length}
@@ -90,6 +91,7 @@ if(colInView && collections){
                     })}
                 </InfiniteScroll>
             </div>
+            </div>:null}
             <h6 className="text-2xl mb-8 w-fit text-center text-slate-800 font-bold pl-4">Pages</h6>
         <div className=" ">
         <PageList  isGrid={false}/>

@@ -144,7 +144,7 @@ let profile = (<div></div>)
     function ButtonRow({page,profile,}){
         return(<div className='bg-emerald-600 text-white'>
         <button 
-        className="bg-emerald-600 text-white text-xl border-none"
+        className="bg-emerald-600 text-white mx-auto text-xl border-none"
            disabled={!profile} 
         >
             Yea
@@ -157,7 +157,7 @@ let profile = (<div></div>)
             Discuss
         </button>
         <div className="dropdown  dropdown-top">
-<div tabIndex={0} role="button" className=" pt-2 border-none text-[2rem] text-white text-bold "> <p>Share</p></div>
+<div tabIndex={0} role="button" className=" pt-2 border-none  mx-auto text-[2rem] text-white text-bold "> <p>Share</p></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-green-600 menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
 <li>
     <a disabled={!profile} 
