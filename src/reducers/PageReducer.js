@@ -53,6 +53,7 @@ const pageSlice = createSlice({
     })
         .addCase(getCollectionStoriesProtected.fulfilled,(state,{payload})=>{
           const {list}=payload
+          console.log("list",list)
           state.loading = false
       
           state.pagesInView = list.map(item=>item.story)

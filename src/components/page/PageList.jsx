@@ -26,10 +26,14 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
 
            <div className={"max-w-screen  "+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"")}>
           {pagesInView.map(page=>{
+            if(page){
                 const id = `${page.id}_${uuidv4()}`
                 return(<div id={id} className="mb-2">
                     <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
                 </div>)
+            }else{
+                return null
+            }
             })}
             </div>
         </InfiniteScroll> </div>)

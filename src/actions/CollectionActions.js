@@ -76,7 +76,7 @@ const addStoryListToCollection = createAsyncThunk("books/addStoryListToCollectio
 try{
 
     let data = await collectionRepo.addStoryListToCollection({id,list})
-    console.log(data)
+    console.log("Dadadsd",data)
     return {collection:data.collection}
 }catch(error){
     return {error}
@@ -108,12 +108,10 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
       }
     }
 })
-const fetchProfileCollections =createAsyncThunk("collection/fetchProfileCollections",async(params,thunkApi)=>{
 
-    collectionRepo
-})
 const fetchCollection = createAsyncThunk("collection/getCollectionPublic",async(params,thunkApi)=>{
    let data = await collectionRepo.fetchCollection(params)
+   console.log("fetchCollection",data)
    return {
     collection:data.collection
    }
@@ -148,7 +146,7 @@ const getSubCollectionsProtected = createAsyncThunk("collection/getSubCollection
 })
 const getSubCollectionsPublic = createAsyncThunk("collection/getSubCollectionsPublic",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchSubCollectionsPublic(params)
-   
+   console.log("lisdti",data)
     return {
         list:data.list
     }

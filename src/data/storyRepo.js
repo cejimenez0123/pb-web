@@ -43,6 +43,7 @@ class StoryRepo{
                 
             }
         })
+        console.log(res)
         return res.data
     }
     async getPublicProfileStories({profileId}){

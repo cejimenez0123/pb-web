@@ -18,9 +18,11 @@ export default function CollectionContainer(props){
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
+    const pending = useSelector(state=>state.books.loading)
     const [role,setRole]=useState(null)
     const collections = useSelector(state=>state.books.collections)
     const params = useParams()
+    const {id}=params
     const deleteFollow=()=>{
         if(currentProfile){
             dispatch(deleteCollectionRole({role})).then(res=>{
@@ -59,16 +61,15 @@ if(currentProfile){
         currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
     }
     useLayoutEffect(()=>{
-       
        getCol()
-       
-    },[currentProfile])
+    },[id])
   
     const getContent= ()=>{
         dispatch(clearCollections())
-        currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
+        let token = localStorage.getItem("token")
+        token?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
     
-        currentProfile?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
+        token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     const findRole = ()=>{
     
@@ -129,7 +130,17 @@ if(currentProfile){
 
    
    </div></div>)}
-
+if(!collection){
+    if(pending){
+    return(<div>
+        <h6 className="text-emerald-800"> Loading</h6>
+    </div>)
+    }else{
+        <div>
+            <h6 className="text-emerald-800">Collection Not Found</h6>
+        </div>
+    }
+}
 if(collection && collections){
   
 
@@ -166,7 +177,5 @@ if(collection && collections){
             </div> 
     </>)
 }
-return(<div>
-    Loading...
-</div>)
+
 }

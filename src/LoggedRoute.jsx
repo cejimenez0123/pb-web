@@ -3,6 +3,7 @@ import {useSelector} from "react-redux"
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import Context from "./context";
+import Paths from "./core/paths";
 const LoggedRoute = ({ loggedOut, children }) => {
   
   const navigate = useNavigate()
@@ -15,6 +16,8 @@ const LoggedRoute = ({ loggedOut, children }) => {
     if(currentProfile && !loading){     
       if(formerPage){
         navigate(formerPage)
+      }else{
+        navigate(Paths.myProfile())
       }
     }
   },[currentProfile,location,navigate])

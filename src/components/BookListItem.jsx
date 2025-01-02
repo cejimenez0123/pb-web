@@ -1,20 +1,13 @@
-import { useState } from "react"
 import {useNavigate} from "react-router-dom"
 import Paths from "../core/paths"
-import PropTypes from "prop-types"
 import ReactGA from "react-ga4"
 import MediaQuery from "react-responsive"
 import { clearPagesInView } from "../actions/PageActions"
 import { useDispatch } from "react-redux"
-import { setCollectionInView} from "../actions/CollectionActions"
 function BookListItem({book}){
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    
- 
-    const navigateToBook = ()=>{
-       
-        // dispatch(setCollectionInView({collection:book}))
+    const navigateToBook = ()=>{  
         dispatch(clearPagesInView())
         navigate(Paths.collection.createRoute(book.id))
         ReactGA.event({
@@ -33,7 +26,7 @@ className=" text-white h-48 bg-transparent ">
  <div className="px-3 py-3">
     <div className="font-bold text-l mb-2">{book.title}</div>
     <MediaQuery minWidth={"768px"}>
-        <div className=" max-h-12 overflow-hidden">
+        <div className=" max-h-12 overflow-clip">
      <h5 className="text-left text-sm  m-1 ">{book.purpose}</h5> 
      </div>
       </MediaQuery>

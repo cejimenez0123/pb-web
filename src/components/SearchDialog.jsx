@@ -16,12 +16,12 @@ export default function SearchDialog(props){
     const searchResults = useSelector(state=>state.users.searchResults)
     const [searchQuery,setSearchQuery] = useState("");
     const dispatch = useDispatch()
-    const [searchContent,setSearchContent] = useState([]);
-    const pagesInView = useSelector(state=>state.pages.pagesInView)
+    // const [searchContent,setSearchContent] = useState([]);
+    // const pagesInView = useSelector(state=>state.pages.pagesInView)
     const mediaQuery = useMediaQuery('(max-width:850px)')
  
     useEffect(()=>{
-      setSearchContent(pagesInView)
+      // setSearchContent(pagesInView)
      
     },[])
     useEffect(()=>{
@@ -40,7 +40,7 @@ export default function SearchDialog(props){
                         })
                     
                     })
-                    setSearchContent(items.flat())
+                    // setSearchContent(items.flat())
                     ;
             },err=>{
 
@@ -72,15 +72,15 @@ export default function SearchDialog(props){
                 />
             <img style={{height:"2em"}}src={AlgoliaIcon}/>
        </div>         
-    <InfiniteScroll
+    {/* <InfiniteScroll
         className="scroll"
      dataLength={searchContent.length}
      next={()=>{}}
      hasMore={false}
      loader={<p>Loading...</p>}
      endMessage={<div className="no-more-data"><p>Nothing Found</p></div>}
-  >
-        {searchContent.map((content,i)=>{
+  > */}
+        {/* {searchContent.map((content,i)=>{
             if(content.title){
               return(<div onClick={()=>handleOnClick(content)}key={i} className='search-return'>
                 <h6 className='text'>{content.title}</h6></div>)
@@ -99,10 +99,10 @@ export default function SearchDialog(props){
                             {content.username}
                         </h6></div>)
             }
-        })}
-    </InfiniteScroll>
+        })} */}
+    {/* </InfiniteScroll>
     <div style={{height:"100%"}}>
-    </div>
+    </div> */}
   </Dialog>
   return(<div></div>)
   }

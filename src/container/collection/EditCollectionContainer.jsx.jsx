@@ -56,8 +56,6 @@ export default function EditCollectionContainer(props){
 
     useEffect(()=>{
     if(colInView){
-
-    
         setTitle(colInView.title)
         setPurpose(colInView.purpose)
         setIsPrivate(colInView.isPrivate)
@@ -66,9 +64,14 @@ export default function EditCollectionContainer(props){
     },[colInView])
     useLayoutEffect(()=>{
 
-                    dispatch(getCollectionStoriesProtected(params))
-                    dispatch(getSubCollectionsProtected(params))
-            },[colInView])
+        if(currentProfile){
+            dispatch(getCollectionStoriesProtected(params))
+            dispatch(getSubCollectionsProtected(params))
+        }
+
+                   
+    },[colInView])
+            
         useEffect(()=>{
 console.log(storyToCols)
             let stcList = storyToCols.map(stc=>{

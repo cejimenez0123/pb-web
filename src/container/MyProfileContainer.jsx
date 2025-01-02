@@ -154,7 +154,7 @@ function MyProfileContainer(props){
                             <button onClick={ClickWriteAStory} className='bg-emerald-700 max-w-48 rounded-full text-white mt-2 sm:text-xl text-bold'>
                                 Write a Story
                             </button>
-                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 max-w-48 rounded-full sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
+                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 max-w-48 rounded-full ml-4 mt-2 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
                             <a onClick={()=>setOpenRefferal(true)}className='my-4 text-sm mx-4 text-emerald-800'>Refer Someone?</a>
@@ -163,8 +163,8 @@ function MyProfileContainer(props){
                             </div> 
                             </div>
                             </div>
-                            <div role="tablist" className="tabs mt-8 shadow-md min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800  shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent  text-xl" aria-label="Pages" />
+                            <div role="tablist" className="tabs mt-8  min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800   border-l-2 border-r-2 border-t-2 bg-transparent  text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content  pt-1  ">
   <PageIndexList/>
   </div>
@@ -173,7 +173,7 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800 bg-transparent  border-emerald-500 border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
+    className="tab text-emerald-800 bg-transparent  border-emerald-500 border-l-2 border-r-2 border-t-2  text-xl"
     aria-label="Books"
     />
   <div role="tabpanel" className="tab-content bg-transparent   pt-1">
