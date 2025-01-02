@@ -37,7 +37,7 @@ function DiscoveryContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
     let booksInView = []
-    let bookCol = useSelector(state=>state.books.booksInView)
+    let bookCol = useSelector(state=>state.books.collections)
     if(bookCol){
   booksInView =[...bookCol].sort(
             (a,b)=>{

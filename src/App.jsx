@@ -157,6 +157,9 @@ function App(props) {
       <Route exact path={Paths.about()} element={
    <AboutContainer/>
       }/>
+       <Route exact path={"/about"} element={
+   <AboutContainer/>
+      }/>
  
         <Route path={Paths.apply()}
         element={<ApplyContainer/>}/>

@@ -89,11 +89,11 @@ builder.addCase(clearCollections.type,(state)=>{
     state.error = payload.error
 
 })
-// .addCase(getPublicBooks.fulfilled,(state,{payload})=>{
-//     state.loading = false
-//     state.booksInView = payload.bookList
+.addCase(getPublicBooks.fulfilled,(state,{payload})=>{
+    state.loading = false
+    state.collections= payload.books
 
-// })
+})
 .addCase(saveRoleToCollection.rejected,(state,{payload})=>{
     state.loading = false
     state.error = "Error Saving Role"

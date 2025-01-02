@@ -11,10 +11,10 @@ const getPublicBooks = createAsyncThunk(
    
         try{
                 let res = await axios(Enviroment.url+"/collection/public/book")
-    
+                console.log(res)
     return {
   
-        bookList: res.data.books
+        books: res.data.books
     }
 }catch (error) {
     return{
