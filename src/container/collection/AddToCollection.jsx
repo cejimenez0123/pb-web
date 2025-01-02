@@ -127,7 +127,7 @@ export default function AddToCollectionContainer(props){
 {list.map(col=>{
             return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-1
             border-emerald-400 rounded-lg p-4  my-2">
-                <h2 className="text-l my-auto max-w-[60%] overflow-hidden">{col?col.title:"Untitled"}</h2>
+                <h2 className="text-l my-auto max-w-[60%] no-underline overflow-hidden">{col?col.title:"Untitled"}</h2>
                 <div className="bg-emerald-800 rounded-lg p-2">{colInView&& colInView.childCollections&& colInView.childCollections.find(colJoint=>colJoint.childCollectionId==col.id)||newCollection.includes(col)?
                 <h1  onClick={()=>removeNewCollection(col)}className="">
 <p className="text-2xl   "><img src={checked}/></p>

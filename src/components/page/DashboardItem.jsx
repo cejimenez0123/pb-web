@@ -93,7 +93,7 @@ const hanldeClickComment=(pageItem)=>{
       )   }
       case PageType.picture:{
         console.log(page)
-        return(<div className={` ${isGrid?"max-h-40 overflow-clip rounded-lg mx-auto pt-2 max-w-48":"w-[100%]"}`} ><img src={image} alt={page.title}/></div>)
+        return(<div className={` ${isGrid?"max-h-40 overflow-clip rounded-lg mx-auto pt-2 max-w-48":"w-[100%]"}`} ><img className='rounded-t-lg' src={image} alt={page.title}/></div>)
     }
     case PageType.link:{
         return(<div 
@@ -282,7 +282,9 @@ onClick={()=>ClickAddStoryToCollection()}>
     if(page){
     
         return(
-        <div className={`rounded-lg relative   ${isGrid?"bg-emerald-700 h-60 max-w-52 ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
+        <div onClick={()=>{
+            isGrid?navigate(Paths.page.createRoute(page.id)):null
+        }} className={`rounded-lg relative   ${isGrid?"bg-emerald-700 h-60 max-w-52 ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
         
         <div className='justify-between flex flex-col'>
               

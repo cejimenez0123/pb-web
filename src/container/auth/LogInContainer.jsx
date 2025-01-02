@@ -106,7 +106,7 @@ function LogInCard(props){
          <div className='max-w-[91vw]'>
         <label className="input  poppins text-emerald-800 w-52 overflow-hidden pl-2  border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
   Email
-  <input type="text" className="shrink overflow-hidden text-[1rem] max-w-full sm:max-w-52   py-2 bg-transparent text-emerald-800" 
+  <input type="text" className="shrink overflow-hidden text-[1rem] w-[100%] sm:max-w-[100%]  py-2 bg-transparent text-emerald-800" 
          value={props.email} 
          onChange={(e) => props.setEmail(e.target.value.trim())}
         placeholder='example@email.com' />

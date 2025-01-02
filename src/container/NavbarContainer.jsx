@@ -284,9 +284,16 @@ function NavbarContainer(props){
                      <LinkIcon/>
                     </ListItemButton>
                           </List>
-                     
+                          <ListItemButton  key="Collection" 
+                                    onClick={()=>{ 
+                                     
+                                     
+                                      }} 
+                                    sx={{ pl: 4 }}>
+                            <ListItemText primary="Collection" />
+                        </ListItemButton>
 
-                        <ListItemButton  key="book" 
+                        {/* <ListItemButton  key="book" 
                                     onClick={()=>{ 
                                       handleClose()
                                       navigate("/book/new")
@@ -299,7 +306,7 @@ function NavbarContainer(props){
                           handleClose()
                           navigate("/library/new")}} sx={{ pl: 4 }}>
                            <ListItemText primary="Library" />
-                         </ListItemButton>
+                         </ListItemButton> */}
                
                              </List>
                             

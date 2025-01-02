@@ -17,7 +17,7 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
         next={()=>{}}
         scrollThreshold={1}
         hasMore={false}
-        className="w-fit"
+        className={isGrid?"":"w-fit"}
         style={isGrid?{overflow:"unset"}:{display:"flex",flexDirection:"column"}}
         endMessage={<div className="min-h-36 w-full">
             <h1 className="mx-auto my-auto text-emerald-600 py-2  text-center mx-auto w-12">Fin</h1>

@@ -46,10 +46,10 @@ const clickUpdateComment = ()=>{
 }
     const input = ()=>{
         
-    return(<div style={{display: show?"":"none"}}className="p-2 bg-green-600">
+    return(<div style={{display: show?"":"none"}}className="p-2 bg-emerald-600">
 <textarea
   
-  className="textarea w-[96svw] bg-green-400 md:max-w-[50em] sm:max-w[40em] max-w-[100vw] text-slate-800 sm:w-96 mx-auto textarea-bordered "
+  className="textarea w-[100%] mb-2 bg-emerald-400 md:max-w-[50em] sm:max-w[40em] max-w-[100vw] text-slate-800 sm:w-96 mx-auto textarea-bordered "
   
 
   value={commentInput}
@@ -62,13 +62,13 @@ const clickUpdateComment = ()=>{
        {currentProfile? 
         defaultComment?
             <button 
-            className="bg-green-800 text-white hover:bg-emerald-500"
+            className="bg-emerald-400 text-white hover:bg-emerald-500"
        onClick={clickUpdateComment}>Update</button>
        :
        
        <button  
-       onClick={saveComment}   className="bg-green-800 text-white hover:bg-emerald-500"> {parentComment?"Reply":"Save Comment"}</button>:
-       <button className="bg-green-200 text-slate-800" 
+       onClick={saveComment}   className="bg-emerald-800 text-white hover:bg-emerald-500"> {parentComment?"Reply":"Save Comment"}</button>:
+       <button className="bg-emerald-200 text-white-800" 
        disabled={!currentProfile} onClick={saveComment}>
             Disabled
         </button>}

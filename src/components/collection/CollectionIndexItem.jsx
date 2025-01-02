@@ -51,7 +51,7 @@ export default function CollectionIndexItem({collection}){
              
                 <div className="text-left my-auto md:ml-4 py-4 mt-1 mx-4 ">
                 <a className={"w-[80%]"}onClick={()=>navigate(Paths.collection.createRoute(collection.id))}> 
-                   {collection && collection.title && collection.title.length>0? <h6 className="text-[1rem] w-[10rem] sm:w-[100%] text-emerald-800 ml-2 my-auto">{collection.title}</h6>:<h6>Unititled</h6>}
+                   {collection && collection.title && collection.title.length>0? <h6 className="text-[1rem] w-[10rem] sm:w-[100%] no-underline text-emerald-800 ml-2 my-auto">{collection.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                <div className="my-auto  mx-4  w-fit">

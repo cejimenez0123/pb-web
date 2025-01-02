@@ -103,7 +103,7 @@ function PageIndexItem({page,onDelete}) {
               <div  className=" px-1 flex flex-row justify-between  w-[100%]   " >
                 <div className="text-left my-auto mx-4 py-4 mt-1 ">
                
-                <a className="text-emerald-700" onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
+                <a className="text-emerald-700 no-underline" onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
                    {page && page.title && page.title.length>0? <h6 className="text-[1rem] my-auto w-[10rem] sm:w-[100%] overflow-scroll">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 

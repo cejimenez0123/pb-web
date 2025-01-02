@@ -88,13 +88,13 @@ if(page){
         pageDataElement = <div className='w-max ql-editor rounded-t-lg pt-4 px-4' dangerouslySetInnerHTML={{__html:page.data}}></div>
     break;
     case PageType.picture:
-        pageDataElement = <img className="w-[100%] min-h-72 " src={image} alt={page.title}/>
+        pageDataElement = <img className="w-[100%] rounded-t-lg min-h-72 " src={image} alt={page.title}/>
     break;
     case PageType.link:
-        pageDataElement = <div className="" ><LinkPreview url={page.data}/></div>
+        pageDataElement = <div className=" rounded-t-lg" ><LinkPreview url={page.data}/></div>
         break;
     default:
-        pageDataElement = <div className='dashboard-content' dangerouslySetInnerHTML={{__html:page.data}}/>
+        pageDataElement = <div className='dashboard-content rounded-lg' dangerouslySetInnerHTML={{__html:page.data}}/>
     
 }
 useEffect(()=>{
@@ -150,20 +150,23 @@ let profile = (<div></div>)
             Yea
         </button>
         <button
-        className="bg-emerald-600 px-4 mx-4  text-white text-xl rounded-none border-white border-l-1 border-r-1 border-t-0 border-b-0 "
+        className="bg-emerald-600  px-4 mx-4  text-white text-xl rounded-none border-white border-l-1 border-r-1 border-t-0 border-b-0 "
            disabled={!profile} 
             onClick={()=>{setCommenting(!commenting)}}>
         
             Discuss
         </button>
         <div className="dropdown  dropdown-top">
-<div tabIndex={0} role="button" className=" pt-2 border-none  mx-auto text-[2rem] text-white text-bold "> <p>Share</p></div>
+<div tabIndex={0} role="button" className=" pt-2 border-none  bg-emerald-600 mx-auto text-[2rem] text-white text-bold "> <p>Share</p></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-green-600 menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
 <li>
     <a disabled={!profile} 
 className=' text-green-600 '
 
-onClick={()=>{}}> 
+onClick={()=>{
+    navigate(Paths.addStoryToCollection.createRoute(page.id))
+
+}}> 
                     Add to Collection
  
    </a></li>
@@ -202,7 +205,7 @@ onClick={()=>{}}>
       
             <div className="relative bg-white ">
             <div className=' absolute '>
-                <div className=" text-white px-4 pb-2 rounded-tl-lg text-md bg-gradient-to-br from-emerald-900 to-opacity-40 ">
+                <div className=" text-white px-4  py-2 rounded-tl-lg text-md bg-gradient-to-br from-emerald-900 to-opacity-40 ">
                 {page.title.length>0?<h6>{page.title}</h6>:<h6>Untitled</h6>}
                 </div>
                 {profile}
