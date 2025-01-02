@@ -208,11 +208,11 @@ const navigateToLibrary = (library)=>{
                                         lg:mb-4'>Pages</h3>
                         {isNotPhone?<div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
-                                            ml-2 mr-0 px-1 py-0'>
+                                            ml-2 mr-0 px-1 border-none py-0'>
                                 <img src={grid}/>
                         </button>
                         <button onClick={()=>onClickForGrid(false)}
-                                className='bg-transparent px-1 py-0'>
+                                className='bg-transparent border-none px-1 py-0'>
                                     <img src={stream}/>
                         </button></div>:null}
                         </div>
