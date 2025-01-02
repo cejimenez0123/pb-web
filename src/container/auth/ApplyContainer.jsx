@@ -123,7 +123,7 @@ return (
 
           {/* Email */}
           <label className="input mt-4 poppins mb-2 font-bold py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
-            <h6 className="text-[0.8rem]">* E-mail</h6>
+            <h6 className="font-bold text-[0.8rem]">* E-mail</h6>
             <input
               type="text"
               className="grow text-white pl-4 w-[100%]"
@@ -138,7 +138,7 @@ return (
 
           {/* IG Handle */}
           <label className="input poppins mt-4 mb-8 font-bold py-8 w-[100%] bg-transparent text-white border border-green-100 text-white flex items-center gap-2">
-            <h6 className="text-[0.8rem]">IG Handle</h6>
+            <h6 className="font-bold  text-[0.8rem]">IG Handle</h6>
             <input
               type="text"
               className="grow text-white pl-4"

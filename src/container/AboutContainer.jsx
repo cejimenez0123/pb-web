@@ -36,11 +36,11 @@ const writingJourney = ()=>{
     return(<div className="">
         <div id="ready">
 <div  className="text-emerald mt-8 poppins sm:text-white">
-<h5 className="text-[1.2rem]">If you're a writer or enjoy reading, stay engaged with people with shared goals.
+<h5 className="text-[1.2rem] poppins my-4">If you're a writer or enjoy reading, stay engaged with people with shared goals.
 </h5>
-<h5 className="text-[1.2rem]">We are taking applications for beta users for our release in February.
+<h5 className="text-[1.2rem] poppins my-4">We are taking applications for beta users for our release in February.
 </h5>
-<h3 className="text-[1.4rem]">Get started now!!</h3>
+<h3 className="text-[1.4rem] poppins my-4 font-bold">Get started now!!</h3>
 </div>
 <button className="text-2xl text-white bg-emerald-800 rounded-full my-8 px-5 py-3" onClick={()=>{navigate(Paths.apply())}}  
    >Apply to Join Today</button>
@@ -48,7 +48,7 @@ const writingJourney = ()=>{
     </div>)
 }
 const detailsOfWorkshop=()=>{
-    return (<div className={`poppins   max-w-screen`}>
+    return (<div className={`poppins px-4 py-2  max-w-[100vw]`}>
         <h2 className="poppins text-center text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
         <h3 className={`poppins  font-bold  text-2xl font-bold text-left ${md?"text-emerald-700":"text-white"}`}>What is a Writers' Workshop?</h3>
@@ -58,9 +58,9 @@ Peer critiques by like-minded writers
        </h6>
 
         <h3 className="poppins text-2xl text-left font-bold py-4">What is a Plumbum?</h3>
-        <h6 className="text-left py-4 text-[1.2rem] poppins">Plumbum is the Latin word for lead, like a lead anvil or pipe. It's the root word for plumber.
+        <h6 className="text-left py-4 px-12 text-[1rem] poppins">Plumbum is the Latin word for lead, like a lead anvil or pipe. It's the root word for plumber. It's also a fun word we'd like to mean creativity and resilience. It's place to find support in your writing goals.
 </h6>
-        <ul className="text-left">
+        <ul className="text-left px-4">
 
 
 
@@ -68,15 +68,15 @@ Peer critiques by like-minded writers
 
 
 
-    <li className="py-3 text-[1.2rem]"><h6> 📝 Worried about publishing publicly, but still need people to read your stuff? 
+    <li className="py-3 text-[1rem]"><h6> 📝 Worried about publishing publicly, but still need people to read your stuff? 
         Plumbum lets you control visibility and share how you want.
     
     </h6></li >
-<li className="py-3 text-[1.2rem]"><h6>💬 Looking for constructive feedback?
+<li className="py-3 text-[1rem]"><h6>💬 Looking for constructive feedback?
 Be part of a community of writers who are eager to share their insights and support you.
 </h6></li>
-<li className="py-3 text-[1.2rem]"><h6>📘 Make collections to organize and reorganize everything you find, so you can tell the story you want. </h6></li>
-<li className="py-3 text-[1.2rem]"><h6>
+<li className="py-3 text-[1rem]"><h6>📘 Make collections to organize and reorganize everything you find, so you can tell the story you want. </h6></li>
+<li className="py-3 text-[1rem]"><h6>
 📚 Whether you're a seasoned novelist or just starting out. It's a great place to get started and get support.
 </h6></li>
 
