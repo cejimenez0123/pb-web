@@ -1,17 +1,27 @@
  import Context from "../../context" 
  import { useParams } from "react-router-dom"
- import { useContext } from "react"
+ import { useContext, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import RichEditor from "./RichEditor"
 import { updateStory } from "../../actions/StoryActions"
 import checkResult from "../../core/checkResult"
 import { PageType } from "../../core/constants"
 import { useSelector } from "react-redux"
+import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
  export default function EditorDiv({title,isPrivate,comment}){
         const {setIsSaved}=useContext(Context)
         const pageParams = useParams()
         const page = useSelector(state=>state.pages.pageInView)
         const dispatch = useDispatch()
+        const [image,setImage]=useState(null)
+        useEffect(()=>{
+          if(page && page.type==PageType.picture){
+            getDownloadPicture(page.data).then(url=>{
+              setImage(url)
+            })
+          }
+        
+        },[])
         const dispatchContent=(content)=>{
         
     
