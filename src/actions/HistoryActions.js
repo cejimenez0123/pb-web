@@ -18,4 +18,4 @@ const postCollectionHistory = createAsyncThunk("history/postCollectionHistory",a
   return {profile}
 })
 
-export {postStory}
+export {postStoryHistory,postCollectionHistory}

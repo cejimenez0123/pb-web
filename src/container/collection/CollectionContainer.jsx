@@ -105,7 +105,7 @@ if(currentProfile){
             return(<div>Loading</div>)
         }
        
-        return(<div className="h-fit max-w-[100vw] sm:pb-8 sm:w-48 sm:border-2 p-4 sm:border-emerald-800  mx-8 mt-4 md:mx-8 md:mt-8  rounded-lg mb-8 text-left">
+        return(<div className="h-fit max-w-[100vw] sm:max-w-[60em] mx-auto sm:pb-8 sm:w-48 sm:border-2 p-4 sm:border-emerald-800  mx-8 mt-4 md:mx-8 md:mt-8  rounded-lg mb-8 text-left">
     <h3 className="m-8  text-emerald-800 text-3xl">{collection.title}</h3>
         <h3 className="text-emerald-800  md:mx-8 rounded-lg p-4">{collection.purpose}</h3>
         <div className={"md:ml-8 mt-8 flex flex-row"}>

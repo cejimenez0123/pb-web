@@ -11,7 +11,7 @@ const getPublicBooks = createAsyncThunk(
    
         try{
                 let res = await axios(Enviroment.url+"/collection/public/book")
-                console.log(res)
+            
     return {
   
         books: res.data.books
@@ -76,7 +76,7 @@ const addStoryListToCollection = createAsyncThunk("books/addStoryListToCollectio
 try{
 
     let data = await collectionRepo.addStoryListToCollection({id,list})
-    console.log("Dadadsd",data)
+   
     return {collection:data.collection}
 }catch(error){
     return {error}
@@ -102,7 +102,7 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
         return {collection: data.collection}
 
       }catch(error){
-        console.log(error)
+       
       return {
         error
       }
@@ -111,14 +111,13 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
 
 const fetchCollection = createAsyncThunk("collection/getCollectionPublic",async(params,thunkApi)=>{
    let data = await collectionRepo.fetchCollection(params)
-   console.log("fetchCollection",data)
+
    return {
     collection:data.collection
    }
 })
 const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCollection",async({id,storyId},thunkApi)=>{
     let data = await collectionRepo.deleteStoryToCollection({id,storyId})
-    console.log("data",data)
     return {
      collection:data.collection
     }
@@ -131,7 +130,7 @@ const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCo
  })
 const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProtected",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchCollectionProtected(params)
-    console.log("Data",data)
+   
     return {
      collection:data.collection
     }
@@ -146,11 +145,10 @@ const getSubCollectionsProtected = createAsyncThunk("collection/getSubCollection
 })
 const getSubCollectionsPublic = createAsyncThunk("collection/getSubCollectionsPublic",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchSubCollectionsPublic(params)
-   console.log("lisdti",data)
     return {
         list:data.list
-    }
-})
+    
+}})
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
     params,thunkApi
 )=>{
