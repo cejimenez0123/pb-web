@@ -69,7 +69,7 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
    
         
       className={`
-      text-xl      text-center mx-auto  bg-transparent  border-none  `}
+      text-xl    text-white  text-center mx-auto  bg-transparent  border-none  `}
     
      >
          Yea{likeFound?"h!":""}
@@ -77,7 +77,7 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
      </div>
      <div className="flex-1/3 grow bg-emerald-700  border-white border-l-2 border-r-2 border-t-0 border-b-0  text-center ">
     <button
-    className="  text-white text-xl bg-transparent rounded-none  "
+    className="  text-white text-xl border-none bg-transparent rounded-none  "
        disabled={!profile} 
         onClick={()=>{setComment(!comment)}}>
     
@@ -85,7 +85,7 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
     </button>
     </div>
     <div className="dropdown  flex-1/3 grow bg-emerald-700  text-center dropdown-top">
-<div tabIndex={0} role="button" className=" border-none  mx-auto  text-white text-bold "> <button className="text-[1.3rem] bg-transparent mx-auto my-auto">Share</button></div>
+<div tabIndex={0} role="button" className=" border-none  mx-auto  text-white text-bold "> <button className="text-[1.3rem] bg-transparent text-white mx-auto my-auto">Share</button></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-emerald-700 menu bg rounded-box z-[1] w-52 p-2 shadow">
 <li>
 <a disabled={!profile} 
