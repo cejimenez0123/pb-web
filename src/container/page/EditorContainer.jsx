@@ -4,7 +4,7 @@ import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
 import { useParams,useNavigate, useLocation } from "react-router-dom"
 import menu from "../../images/icons/menu.svg"
-import React,{ useEffect, useLayoutEffect, useState } from "react"
+import React,{ useContext, useEffect, useLayoutEffect, useState } from "react"
 import {  Button,} from "@mui/material"
 import checkResult from "../../core/checkResult"
 import { useMediaQuery } from "react-responsive"
@@ -24,17 +24,19 @@ import RoleForm from "../../components/role/RoleForm"
 import LinkPreview from "../../components/LinkPreview"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import isValidUrl from "../../core/isValidUrl"
-
+import Context from "../../context"
+import EditorDiv from "../../components/page/EditorDiv"
 
 function EditorContainer(props){
-  const location = useLocation()
         const currentProfile = useSelector(state=>state.users.currentProfile)
-        const fetchedPage = useSelector(state=>state.pages.pageInView)
+        const page = useSelector(state=>state.pages.pageInView)
+        const [fetchedPage,setFetchedPage]=useState(null)
+       
         const pathParams = useParams()
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
         const navigate = useNavigate()
-        const [isSaved,setIsSaved]=useState(true)
+        const {isSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
         const [privacy,setPrivacy] = useState(fetchedPage?fetchedPage.isPrivate:true)
@@ -44,6 +46,12 @@ function EditorContainer(props){
         const {id }= pathParams
         const [image,setImage]=useState(null)
         const [imageParams,setImageParams]=useState({})
+        useEffect(()=>{
+          if(fetchedPage==null || (fetchedPage && fetchedPage.id != pathParams.id)){
+            setFetchedPage(page)
+          }
+         
+        },[page])
         useLayoutEffect( ()=>{
           if(fetchedPage){
        
@@ -77,8 +85,8 @@ function EditorContainer(props){
       if(id){ 
       dispatch(getStory(pathParams)).then(res=>{
         checkResult(res,payload=>{
-         
           if(payload.story){
+            setFetchedPage(payload.story)
             setPageInfo(payload.story)
           
              }
@@ -136,49 +144,7 @@ function EditorContainer(props){
 
      }))
       }
-      const ContentDiv = ({page})=>{
-          if(page){
-            switch(page.type){
-              case PageType.text:{
-                return (<div >
-                  <RichEditor title={titleLocal}
-                              privacy={privacy} 
-                              commentable={commentable} 
-                              setIsSaved={setIsSaved} 
-                              initContent={page.data}/>
-                              </div>)
-              }
-              case PageType.picture:{
-                return (<div  className="mx-auto  bg-emerald-200 rounded-b-lg w-full p-8">
-
-                <img  className="rounded-lg my-4 mx-auto"
-                src={image} alt={page.title}/>
-                </div>)
-              }
-            
-          case PageType.link:{
-
-                  return(
-                     <LinkPreview url={page.data}/>
-                  )
-                }}}else{
-
-              
-            let href = window.location.href.split("/")
-            let last = href[href.length-1]
-            if(last.toUpperCase()=="image".toUpperCase()||last.toUpperCase()=="link".toUpperCase()){
-              return (<PicturePageForm createPage={(params)=>{
-                setImageParams(params)
-                handlePageForm(params)
-              }}/>)
-            }else{
-              return(<div id=""><RichEditor setIsSaved={setIsSaved} initContent={""}/></div>)
-            }
-          
-            
-          }
-          
-        }
+    
   
         const handleClickAddToCollection=()=>{
         
@@ -187,7 +153,7 @@ function EditorContainer(props){
         const handlePostPublicly=(truthy)=>{
           setPrivacy(truthy)
           if(id){
-          debounce(()=>{
+       
 
             let params = imageParams
             if(!params.file){
@@ -207,11 +173,11 @@ function EditorContainer(props){
             }
             
                 
-            setIsSaved(false)
+          
             dispatch(updateStory(params)).then(res=>{
-              setIsSaved(true)
+              
             })
-          },100)()
+       
 
         }else{
 
@@ -245,11 +211,11 @@ function EditorContainer(props){
               commentable:commentable,  
               type:fetchedPage.type
             }
-              setIsSaved(false)
+              
               dispatch(updateStory(params)).then(res=>{
 
               
-                setIsSaved(true)
+       
               })
             }
 
@@ -274,9 +240,9 @@ function EditorContainer(props){
               params.type=fetchedPage.type
             }
                  
-            setIsSaved(false)
+         
             dispatch(updateStory(params)).then(res=>{
-              setIsSaved(true)
+           
             })
           },100)()
 
@@ -355,7 +321,7 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
        <div className= "max-w-[100vw] w-[40em] pt-8 mb-12 mx-auto">
                 {topBar()}
                   <ErrorBoundary>
-              <ContentDiv page={fetchedPage}/>
+              <EditorDiv title={titleLocal} isPrivate={privacy} comment={commentable}/>
                 </ErrorBoundary>
                 </div>
                     <div>

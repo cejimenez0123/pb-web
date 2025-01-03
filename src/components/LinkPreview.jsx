@@ -143,7 +143,7 @@ function LinkPreview({ url,isGrid}) {
         return(<h6 className={'text-slate-800 py-4  top-1 p-3 bg-emerald-200  text-[0.8rem]'}>{previewData.description}</h6>)
       }
   }
-  console.log(isGrid)
+
   return (
     <div className={isGrid?" text-white w-fit  p-2  mx-auto":"link-preview bg-emerald-200 text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}

@@ -12,8 +12,8 @@ const CollectionIndexList = (props)=>{
                    next={()=>{}}
                    scrollThreshold={1}
                    hasMore={false}
-                    endMessage={<div className="p-8" >
-                        <h2>Fin</h2>
+                    endMessage={<div className="text-emerald-800 p-8" >
+                        <h2 className="text-xl py-2">Fin</h2>
                     </div>}
                   >
                       {props.cols.map(col=>{

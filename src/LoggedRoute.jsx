@@ -10,7 +10,7 @@ const LoggedRoute = ({ loggedOut, children }) => {
   const location = useLocation();
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const loading = useSelector(state=>state.users.loading)
-  const [formerPage,setFormerPage]=useContext(Context)
+  const {formerPage,setFormerPage}=useContext(Context)
   useEffect(()=>{
    
     if(currentProfile && !loading){     

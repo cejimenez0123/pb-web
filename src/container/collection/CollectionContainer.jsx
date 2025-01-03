@@ -14,6 +14,7 @@ import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActi
 import { RoleType } from "../../core/constants"
 import checkResult from "../../core/checkResult"
 import { clearPagesInView } from "../../actions/PageActions"
+import { postCollectionHistory } from "../../actions/HistoryActions"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
     const {pathName}=useLocation()
@@ -25,6 +26,12 @@ export default function CollectionContainer(props){
     const collections = useSelector(state=>state.books.collections)
     const params = useParams()
     const {id}=params
+     useLayoutEffect(()=>{
+        if(currentProfile && collection){
+            dispatch(postCollectionHistory({profile:currentProfile,collection}))
+        }
+     
+    },[])
     const deleteFollow=()=>{
         if(currentProfile){
             dispatch(deleteCollectionRole({role})).then(res=>{

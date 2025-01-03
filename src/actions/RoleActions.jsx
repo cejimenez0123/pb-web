@@ -39,7 +39,6 @@ const deleteCollectionRole=createAsyncThunk("books/deleteCollectionRoles",async 
 
     let data = await roleRepo.deleteCollectionRole({role})
     let colData = await collectionRepo.fetchCollection({id:role.item.id})
-console.log("rsult ",colData)
     return {
      collection: colData.collection
     }

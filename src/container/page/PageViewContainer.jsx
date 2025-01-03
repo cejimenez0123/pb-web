@@ -8,6 +8,7 @@ import checkResult from "../../core/checkResult";
 import {Helmet} from "react-helmet"
 import { getStory } from "../../actions/StoryActions";
 import CommentThread from "../../components/comment/CommentThread";
+import { postStoryHistory } from "../../actions/HistoryActions";
 
 export default function PageViewContainer(props){
 
@@ -21,8 +22,8 @@ export default function PageViewContainer(props){
     const comments = useSelector(state=>state.comments.comments)
     const [rootComments,setRootComments]=useState([])
     useLayoutEffect(()=>{
-            if(currentProfile){
-                // dispatch()
+            if(currentProfile && page){
+                dispatch(postStoryHistory({profile:currentProfile,story:page}))
             }
     },[])
     useLayoutEffect(()=>{

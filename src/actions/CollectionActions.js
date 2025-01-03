@@ -191,7 +191,7 @@ const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
     params,thunkApi
 )=>{
    let data = await collectionRepo.deleteCollection(params)
-
+   client.initIndex("collection").deleteObject(params.id).wait()
    return data
 })
 // const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectionStories",

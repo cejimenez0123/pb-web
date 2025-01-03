@@ -27,6 +27,7 @@ import {    logIn ,
         } from "../actions/UserActions"
 import { createProfile, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"
+import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 const initialState = {
     signedIn: false,
     currentProfile: null,
@@ -93,6 +94,10 @@ const userSlice = createSlice({
         }  
       
         
+    }).addCase(postStoryHistory.fulfilled,(state,{payload})=>{
+        state.currentProfile = payload.profile
+    }).addCase(postCollectionHistory.fulfilled,(state,{payload})=>{
+        state.currentProfile = payload.profile
     }).addCase(getCurrentProfile.pending,(state)=>{
         state.loading = true
     }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
