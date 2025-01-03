@@ -13,7 +13,7 @@ const HashtagTextfield=(page)=>{
         e.preventDefault();
         const htmlContent = e.target.innerHTML
         let values = htmlContent.split(/(?<![a-zA-Z<> ])|(?![a-zA-Z<> ])/)
-   
+        console.log(values)
      
         // let values = []
         // let i = 0

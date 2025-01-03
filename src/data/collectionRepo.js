@@ -54,7 +54,7 @@ import Enviroment from "../core/Enviroment";
         },{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")
         }})
-        console.log(res)
+
         return res.data
     }
     async updateCollection({id,title,
@@ -88,13 +88,7 @@ import Enviroment from "../core/Enviroment";
             }})
             return res.data
         }
-    // async addStoriesToCollection({collection,storyIdList}){
-   
-    //     let res = await axios.post(Enviroment.url+"/collection/"+collection.id+"/story/",{
-    //         storyIdList:storyIdList
-    //     })
-    //     return res.data
-    // }
+
     async addCollectionListToCollection({id,list,profile}){
         let res = await axios.post(this.url+"/"+id+"/collection",{
             list:list,
@@ -102,7 +96,7 @@ import Enviroment from "../core/Enviroment";
         },{headers:{
             Authorization:"Bearer "+localStorage.getItem(this.token)
         }})
-        console.log(res)
+   
         return res.data
     }
     async addStoryListToCollection({id,list,profile}){
@@ -138,7 +132,7 @@ import Enviroment from "../core/Enviroment";
     
     async fetchCollection({id}){
         const res = await axios.get(this.url+"/"+id)
-        console.log("Res",res)
+
         return res.data
     }
     async fetchCollectionProtected({id}){
@@ -166,7 +160,7 @@ import Enviroment from "../core/Enviroment";
                 Authorization: "Bearer "+localStorage.getItem("token")
             }}
         )
-        console.log(res)
+
         return res.data
     }
     async fetchSubCollectionsProtected({id}){

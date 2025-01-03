@@ -16,9 +16,7 @@ import {    Button,
             IconButton} from "@mui/material";
 import "../styles/Setting.css"
 import theme from "../theme"
-import { fetchArrayOfPages, } from "../actions/PageActions";
-import { fetchArrayOfBooks,} from "../actions/BookActions";
-import { fetchArrayOfLibraries, } from "../actions/LibraryActions";
+
 import checkResult from "../core/checkResult";
 import { checkmarkStyle } from "../styles/styles";
 import Paths from "../core/paths";

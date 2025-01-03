@@ -44,7 +44,7 @@ export default function AddToCollectionContainer(props){
             
         }
     )
-    console.log("lifsst",storyIdList)
+
    if (storyIdList.length>0) dispatch(addStoryListToCollection({id:colInView.id,list:storyIdList,profile:currentProfile})).then(res=>{
        
             dispatch(clearPagesInView())
@@ -70,7 +70,7 @@ export default function AddToCollectionContainer(props){
         setNewStories(state=>{
             return [...state,story]
         })
-        console.log(newStories)
+    
     }
     
     const removeNewStory = (sto)=>{
@@ -82,7 +82,7 @@ export default function AddToCollectionContainer(props){
     const removeNewCollection = (col)=>{
         let list = newCollection.filter(collection=>col.id!=collection.id)
         setNewCollections(list)
-        console.log(newCollection)
+    
     }
 
     const storyList = ()=>{
@@ -111,8 +111,6 @@ export default function AddToCollectionContainer(props){
             </InfiniteScroll></div>)
         }
     const colList = ()=>{
-    console.log(cTcList)
-
         let list =[]
          if(collections){
             list = collections

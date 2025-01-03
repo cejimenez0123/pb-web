@@ -40,13 +40,12 @@ function LogInContainer(props) {
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     if(payload.error){
-                        alert("Error with Username or Password")
+                        window.alert("Error with Username or Password")
                     }else{
                         navigate(Paths.myProfile())
                     }
-              
                 },err=>{
-                    alert("server error")
+                    window.alert("server error")
                 })
             })
            

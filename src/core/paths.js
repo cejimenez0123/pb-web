@@ -26,9 +26,7 @@ const Paths ={
     login:()=>{return `/login`},
     editPage:{route:()=>{return `/page/:id/edit`},
         createRoute:(id)=>{return `/page/${id}/edit`}},
-    editBook:(id)=>{return `/book${id}/edit`},
-    createBook:()=>{return `book/new`},
-    // createLibrary:()=>{return `/library/new`},
+
     addToCollection:{
         route:'/collection/:id/add',
         createRoute:(id)=>{return `/collection/${id}/add`},

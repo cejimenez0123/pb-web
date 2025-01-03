@@ -78,7 +78,7 @@ function DashboardContainer(props){
                     setItemsInView(items)
                     setHasError(false)
                 },err=>{
-                    console.log(err)
+               
                 })})
     
     }

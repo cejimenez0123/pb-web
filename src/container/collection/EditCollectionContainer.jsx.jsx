@@ -214,10 +214,9 @@ const handleStoryOrderChange = (newOrder) => {
   };
   const handleColOrderChange = (newOrder) => {
     let list = newOrder.map((stc,i)=>{
-        console.log(i)
+     
         return new CollectionToCollection(stc.id,i,stc.childCollection,stc.parentCollection,currentProfile)
     })
-    console.log(list)
     setNewCollections(list)
   };
 
