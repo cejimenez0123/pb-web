@@ -153,42 +153,7 @@ function PicturePageForm({createPage}){
                       </div>
                     </div>)
                     }}
-{/* //             return(<div>
-//             <Button 
-//             style={{backgroundColor:saveButtonStyle.backgroundColor,
-//                     marginTop: "2em"
-//                 }}
-//             component="label" variant="contained" 
-//             startIcon={<CloudUploadIcon  />}
-//         >
-// Upload Picture
-// <VisuallyHiddenInput type="file"  name ='picture'
-// onInput={(e)=>{
-//     const files = Array.from(e.target.files)
-//     const params = { file: files[0]
-//     }
-//     dispatch(uploadPicture(params)).then((result) => 
-//         checkResult(result,payload=>{
-//             const href = payload["url"]
-//             setLocalContent(href)
-//             const fileName =payload.ref
-//             let path = window.location.href.split("/")
-//             const last = path[path.length-1]
-//             createPage({data:fileName,type:last})
-//     },err=>{
 
-//     })
-//     )
-// }}            
-// />
-// </Button>
-// </div>
-// ) */
-    // }else{
-    //     return(<div></div>)
-    // }
-// }
-}
 
     
     return(<div className='mx-auto  bg-emerald-200 rounded-b-lg w-full p-8'>

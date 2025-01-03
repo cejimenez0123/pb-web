@@ -111,25 +111,38 @@ function MyProfileContainer(props){
             <div className='pb-72'>
                     <div className='  border-2 border-emerald-300 max-w-[96vw] mx-auto sm:max-w-[60em] sm:mx-auto mt-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
                   
-                        <div>
-                            <div className='sm:flex-row flex-col flex  pr-0 pt-4'>
+                        <div className='w-[100%] '>
+                            <div className='sm:flex-row  flex-col flex justify-between pr-0 pt-4'>
                         <img className={"max-w-36 max-h-36 ml-6 rounded-lg"}src={pictureUrl}/>
                      
                             <div className='flex sm:flex-row ml-4 mt-1  w-[100%] justify-between'>
                             <div className='text-left '>
                             <h5 className='text-xl text-emerald-900 font-bold'>{currentProfile.username}</h5>
                             <h6 className='max-h-48 overflow-scroll text-emerald-900 '>{currentProfile.selfStatement}</h6>
-                           
+                            </div>
+                            {}
+                    
                             <MediaQuery minWidth={'600px'}>
-                            <div className='mt-4 pt-2 flex flex-row'>
-                            <button onClick={ClickWriteAStory} className='bg-emerald-700 rounded-full text-white  sm:text-[1rem] text-bold'>
-                                Write a Story
+                            <div className='justify-around flex flex-row max-w-[96vw] flex-wrap sm:w-60'>
+                                <div>
+                                <button onClick={()=>navigate(Paths.workshop.route())}
+                                className='bg-emerald-700 rounded-full text-white w-[9rem] text-center py-2 sm:text-[0.8rem] text-bold'>
+                                    <h6 className=''>Find a  Group</h6>
+                                </button>
+                                </div>
+                                <div>
+                            <button onClick={ClickWriteAStory} className='bg-emerald-700 rounded-full text-white w-[9rem] py-2  text-center sm:text-[0.8rem] text-bold'>
+                                <h6 >Write a Story</h6>
                             </button>
-                           
-                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 rounded-full md:ml-4 text-white sm:text-[1rem]   text-bold'>
-                                Create Collection
+                            </div>
+                            <div>
+                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 rounded-full  w-[9rem] text-white sm:text-[0.8rem] py-2   text-bold'>
+                                <h6 >Create Collection</h6>
                             </button>
+                            </div>
+                            <div>
                             <a onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 my-4 text-emerald-800'>Refer Someone?</a>
+                            </div>
                             </div> 
                             </MediaQuery>
                            
@@ -146,7 +159,7 @@ function MyProfileContainer(props){
                             </div>
                             </MediaQuery>
                        
-                        </div>
+                       
                         </div>
                         <div className='text-left mt-2'>
                         <MediaQuery maxWidth={'600px'}>

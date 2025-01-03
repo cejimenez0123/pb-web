@@ -108,27 +108,27 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
 //     }})
 
 
-    const fetchArrayOfBooks = createAsyncThunk("books/fetchArrayOfBooks",async (params,thunkApi)=>{
-      try{
+    // const fetchArrayOfBooks = createAsyncThunk("books/fetchArrayOfBooks",async (params,thunkApi)=>{
+    //   try{
       
-      const bookIdList = params["bookIdList"]
+    //   const bookIdList = params["bookIdList"]
       
-      const promises = bookIdList.map((bId) => {
-        const bookRef = doc(db, "book", bId);
-        return getDoc(bookRef);
-      });
+    //   const promises = bookIdList.map((bId) => {
+    //     const bookRef = doc(db, "book", bId);
+    //     return getDoc(bookRef);
+    //   });
       // Use Promise.all to resolve all promises concurrently
-      let snapshots = await Promise.all(promises)
-      let bookList = snapshots.map(snapshot => unpackBookDoc(snapshot))
+//       let snapshots = await Promise.all(promises)
+//       let bookList = snapshots.map(snapshot => unpackBookDoc(snapshot))
 
-        return {
-          bookList
-        }
-      }catch(err){
-        const error = err??new Error("Error: Fetch Array of Books")
-        return {error }
-      }
-})
+//         return {
+//           bookList
+//         }
+//       }catch(err){
+//         const error = err??new Error("Error: Fetch Array of Books")
+//         return {error }
+//       }
+// })
 const fetchArrayOfBooksAppened = createAsyncThunk("books/fetchArrayOfBooksAppend",async (params,thunkApi)=>{
 
   const ref = collection(db,"book")
@@ -348,13 +348,12 @@ function unpackBookDoc(doc){
     return book
 }
   export {  getPublicBooks,
-            fetchBook,
-            fetchArrayOfBooks,
+            fetchBook, 
             getProfileBooks,
-            // createBook,
+    
             fetchArrayOfBooksAppened,
             saveRolesForBook,
             appendSaveRolesFoBook,
-            // updateBookContent,
+            
             fetchBooksWhereProfileEditor,
             fetchBooksWhereProfileWriter}

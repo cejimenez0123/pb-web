@@ -26,31 +26,37 @@ import profileRepo from "../data/profileRepo";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
-      const {email,password}=params
       try{
-      const authData = await authRepo.startSession({uId:null,email:email,password})
-      localStorage.setItem("token",authData.token)
+      const {email,password}=params
+      const userCred = await signInWithEmailAndPassword(auth,email,password)
       
-      const profileRes = await profileRepo.getMyProfiles({token:authData.token})
-      return{
-        profile: profileRes.profiles[0]
-      }
-    }catch(error){
+      
+      if(userCred.user.uid){
+        const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
+        const profileRes = await profileRepo.getMyProfiles({token:authData.token})
+        return{
+          profile: profileRes.profiles[0]
+        }
+      }else{
 
-    try{
-          const userCred = await signInWithEmailAndPassword(auth,email,password)
-          const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
-          localStorage.setItem("token",authData.token)
-          const profileRes = await profileRepo.getMyProfiles({token:authData.token})
-          return{
-            profile: profileRes.profiles[0]
-          }
-        }catch(error){
+        const authData = await authRepo.startSession({uId:null,email:email,password})
+        const profileRes = await profileRepo.getMyProfiles({token:authData.token})
+        return{
+          profile: profileRes.profiles[0]
+        }
+      }
+
+     
+ 
+
+  
+    }catch(error){ 
+   
           return {
             error:error
           }
         }
-      }}
+      }
 )
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
@@ -186,7 +192,7 @@ async (params,thunkApi) => {
   }
     
     }catch(error){
-      throw error
+      return {error}
     }});
 
 const updateProfile = createAsyncThunk("users/updateProfile",
