@@ -192,7 +192,7 @@ const userSlice = createSlice({
     }).addCase(getPageApprovals.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(createPageApproval.fulfilled,(state,{payload})=>{
-        state.userApprovals = [...state.userApprovals,payload.userApproval]
+        state.currentProfile = payload.profile
     }).addCase(deletePageApproval.fulfilled,(state,{payload})=>{
         const list = state.userApprovals.filter(ua=> ua!=null &&payload.userApproval && ua.id != payload.userApproval.id)
         state.userApprovals = list

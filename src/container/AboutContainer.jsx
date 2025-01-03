@@ -108,27 +108,10 @@ Be part of a community of writers who are eager to share their insights and supp
 <img  className=" absolute top-[-8em] sm:top-[-15em] md:top-[-35%] lg:top-[-60%] rounded-lg" src={groupJpg} alt="group pic"
  />
 </div> 
-   
-
-{/* max-height: 10em !important;
-    max-width: 10em !important;
-
-    overflow: hidden;
-    border-radius: 0.5rem;
-}
-img[alt="bookshelves"]{
-    object-fit: cover;
-    height: 20em;
-    width: 100%;
- 
-    border-radius: 0.5rem;
-} */}
 </div>
-
 </div>
 <div>
 
-    
     {forCreatives()}
   
 </div>

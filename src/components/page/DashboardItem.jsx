@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import "../../Dashboard.css"
 import { deletePageApproval,  setHtmlContent, setPageInView, } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
@@ -21,30 +21,34 @@ import getDownloadPicture from '../../domain/usecases/getDownloadPicture'
 import loadingJson from "../../images/loading-animation.json"
 function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
+
     const navigate = useNavigate()
     const isNotPhone = useMediaQuery({
         query: '(min-width: 500px)'
       })
     const userApprovals = useSelector(state=>state.users.userApprovals)
-    const [approved,setApproved]=useState(null)
+ 
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const [expanded,setExpanded]=useState(false)
+   const [likeFound,setLikeFound]=useState(null)
     const profile = useSelector(state=>state.users.profilesInView).find(prof=>{
        return prof!=null&& prof.id == page.profileId
     })
-    const [contentItemEl,setContentItemEl] = useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState(null)
-   
 
-useEffect(()=>{
-    if(userApprovals!=null && page &&currentProfile){
-    let ua = userApprovals.find(approval=>approval.pageId === page.id && approval.profileId === currentProfile.id)
-    setApproved(ua)
-    }
-   
-},[userApprovals])
+
+    useLayoutEffect(()=>{
+        if(currentProfile && page){
+            let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
+            setLikeFound(found)
+        }else{
+            setLikeFound(null)
+        }
+            
+    },[currentProfile]),
+
 useEffect(()=>{
 
     if(bookmarkLibrary && page){
@@ -53,15 +57,13 @@ useEffect(()=>{
     }
    
 },[page])
-
-const hanldeClickComment=(pageItem)=>{
-    
+const hanldeClickComment=(pageItem)=>{   
   if(pageItem){ 
     dispatch(setHtmlContent({html:pageItem.data}))
     navigate(`/page/${pageItem.id}`)
 }
 }   
-    const PageDataElement=({page})=>{
+const PageDataElement=({page})=>{
         const [image,setImage]=useState(loadingJson)
         useEffect(()=>{
             if(page && page.type==PageType.picture){
@@ -69,7 +71,7 @@ const hanldeClickComment=(pageItem)=>{
                     setImage(image)
                 }else{
                     if(page.data&& page.data.length>0){
-                        console.log(page.data)
+                  
                     getDownloadPicture(page.data).then(url=>setImage(url))
                     }
                 }
@@ -92,7 +94,7 @@ const hanldeClickComment=(pageItem)=>{
         </div>
       )   }
       case PageType.picture:{
-        console.log(page)
+   
         return(<div className={` ${isGrid?"max-h-40 overflow-clip rounded-lg mx-auto pt-2 max-w-48":"w-[100%]"}`} ><img className={isGrid?"rounded-lg":'rounded-t-lg'} src={image} alt={page.title}/></div>)
     }
     case PageType.link:{
@@ -112,18 +114,28 @@ const hanldeClickComment=(pageItem)=>{
     }
 }
 const handleApprovalClick = ()=>{
-    if(Boolean(approved)){
-        dispatch(deletePageApproval({userApproval:approved}))
+    if(currentProfile){
+        if(likeFound ){
+         dispatch(deletePageApproval({id:likeFound.id})).then(res=>{
+            checkResult(res,payload=>{
+                setLikeFound(null)
+            },err=>{
+
+            })
+        })
     }else{
-        if(page){
+        if(page ){
 
         
-        const params = {pageId: page.id,
-                        profileId: currentProfile.id,
-                        score:2}
+        const params = {story:page,
+            profile:currentProfile,
+                        }
         dispatch(createPageApproval(params))
         }
     }
+}else{
+    window.alert("Please Sign Up")
+}
 }
 const expandedBtn =()=>{
     if(overflowActive && !expanded){
@@ -206,35 +218,42 @@ return <Button onClick={()=>{
         <button className='bg-transparent absolute right-1 bottom-1'><img src={bookmarkadd}/></button>
     
     </div>:
-        <div className=' bg-emerald-700 text-white rounded-b-lg border-none  text-center '><div>
+        <div className='  flex flex-row rounded-b-lg justify-center justify-evenly sm:max-w-[100%]  '>
+            
+         <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center rounded-bl-lg grow flex-1/3`}>
          <button disabled={!currentProfile} 
          onClick={handleApprovalClick}
             
-          className={`rounded-none
-          text-xl  text-white pr-10 bg-transparent border-none  `}
+          className={`
+          text-xl      text-center mx-auto  bg-transparent  border-none  `}
         
          >
-             Yea
+             Yea{likeFound?"h!":""}
          </button>
+         </div>
+         <div className={" bg-emerald-700 text-center border-white grow flex-1/3"}>
          <button
-             className=' px-4 rounded-none 
+             className='rounded-none 
              text-white
-             border-x-2 border-y-0 text-xl bg-emerald-700 border-white '
+        text-center mx-auto
+       bg-transparent
+             border-x-2 border-y-0 text-xl  '
              onClick={()=>hanldeClickComment(page)}
                  >
          
            Review
          </button>
-         <div className="dropdown  dropdown-top">
+         </div>
+         <div className="dropdown    text-center   bg-emerald-700    rounded-br-lg  grow flex-1/3 dropdown-top">
 <button tabIndex={0} role="button" 
 className="             
       text-white
-         rounded-none
-         pl-10
-      
-         text-xl
+
+      text-center mx-auto
+      bg-transparent
+        text-xl
         border-none
-         bg-transparent 
+     
          ">
 Share</button>
 <ul tabIndex={0} className="dropdown-content    z-50 menu bg-white text-emerald-700 rounded-box  w-60 p-1 shadow">
@@ -274,7 +293,7 @@ onClick={()=>ClickAddStoryToCollection()}>
      </IconButton></li>
 </ul>
 </div>
-</div>
+
 </div>
 
                 
@@ -294,13 +313,13 @@ onClick={()=>ClickAddStoryToCollection()}>
 
                 }} > {` `+page.title.length>0?page.title:"Untitled"}</h6>
              
-          <div className=' rounded-lg'>
+          <div className=' rounded-lg '>
                <PageDataElement page={page}/>
-               </div>
+            
              
                 {buttonRow()}
                 </div>
-            
+                </div>
                
   </div>
      )}else{

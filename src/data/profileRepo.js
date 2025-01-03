@@ -14,7 +14,7 @@ class ProfileRepo {
                 Authorization:"Bearer "+token
             }}
         )
-console.log(res)
+
         return res.data
   
     }

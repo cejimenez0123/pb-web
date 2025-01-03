@@ -8,6 +8,8 @@ import axios from "axios"
 import Enviroment from "../core/Enviroment"
 import storyRepo from "../data/storyRepo"
 import commentRepo from "../data/commentRepo"
+import likeRepo from "../data/likeRepo"
+import profileRepo from "../data/profileRepo"
 
 const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
   
@@ -589,29 +591,24 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
  
   const createPageApproval = createAsyncThunk("users/createPageApproval",async (params,thunkApi)=>{
    try{
-    const {pageId,profileId,score}=params
-    const id = `${profileId}_${pageId}`
-    await setDoc(doc(db,UserApproval.className,id), { 
-      id,
-      pageId,
-      profileId,
-      score 
-    })
-    let userApproval = new UserApproval(id,pageId,profileId,score)
+    const {story,profile,score}=params
+    const data = await likeRepo.storyCreate({story,profile})
     return {
-      userApproval
+      profile:data.profile
     }
   }catch(e){
     return {error: e}
   }
   })
   const deletePageApproval = createAsyncThunk("users/deletePageApproval",async (params,thunkApi)=>{
-    const {userApproval}=params
    
-   await deleteDoc(doc(db,UserApproval.className,userApproval.id))
-    try{
+try{
+      const data = await likeRepo.storyDelete(params)
+      const token = localStorage.getItem("token")
+      let profileData = await profileRepo.getMyProfiles({token:token})
+        
       return {
-        userApproval
+      profile: profileData.profiles[0]
       }
     }catch(e){
       return {
