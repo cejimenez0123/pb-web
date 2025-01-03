@@ -85,7 +85,7 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
     </button>
     </div>
     <div className="dropdown  flex-1/3 grow bg-emerald-700  text-center dropdown-top">
-<div tabIndex={0} role="button" className=" border-none  mx-auto  text-white text-bold "> <button className="text-[1.3rem] bg-transparent text-white mx-auto my-auto">Share</button></div>
+<div tabIndex={0} role="button" className=" border-none  mx-auto  text-white text-bold "> <button className="text-[1.3rem] border-none bg-transparent text-white mx-auto my-auto">Share</button></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-emerald-700 menu bg rounded-box z-[1] w-52 p-2 shadow">
 <li>
 <a disabled={!profile} 
