@@ -30,7 +30,7 @@ export default function SortableList({ items, onOrderChange }) {
     };
   
     return (
-      <div className="p-4 max-w-md mx-auto">
+      <div className=" py-4 mx-auto">
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId="sortableList">
             {(provided) => (
@@ -49,7 +49,7 @@ export default function SortableList({ items, onOrderChange }) {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className="flex justify-between items-center p-4 bg-transparent border-emerald-600 border-1 rounded-lg shadow-md hover:bg-gray-100"
+                        className="flex justify-between w-[100%] items-center p-4 bg-transparent border-emerald-600 border-1 rounded-full shadow-md hover:bg-gray-100"
                       >
                         <h6 className="flex-grow text-emerald-800 text-left text-[1.2rem]">
                           {item.story?item.story.title:item.childCollection?item.childCollection.title:"Not found"}</h6>

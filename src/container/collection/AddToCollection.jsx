@@ -4,8 +4,8 @@ import { useNavigate, useParams } from "react-router-dom"
 import { addCollectionListToCollection,fetchCollectionProtected, addStoryListToCollection, fetchCollection, getMyCollections } from "../../actions/CollectionActions"
 import { getMyStories } from "../../actions/StoryActions"
 import InfiniteScroll from "react-infinite-scroll-component"
-import checked from "../../images/icons/checked_box.svg"
-import emptyBox from "../../images/icons/empty_box.svg"
+import checked from "../../images/icons/check.svg"
+import emptyBox from "../../images/icons/empty_circle.svg"
 import "../../App.css"
 import Paths from "../../core/paths"
 import { clearPagesInView } from "../../actions/PageActions"
@@ -13,15 +13,13 @@ export default function AddToCollectionContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const pending = useSelector(state=>state.books.loading)
     const profile = useSelector(state=>state.users.currentProfile)
     const colInView = useSelector(state=>state.books.collectionInView)
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const collections = useSelector(state=>state.books.collections)
     const cTcList = useSelector(state=>state.books.collectionToCollectionsList)
-    
-    const [collectionsList,setCollectionList]=useState([])
     const [newStories,setNewStories]=useState([])  
     const[newCollection,setNewCollections]=useState([])
 
@@ -35,7 +33,7 @@ export default function AddToCollectionContainer(props){
     const save = ( )=>{
         let storyIdList = newStories.filter(stor=>stor)
         let collectionIdList = newCollection.filter(col=>col).map(col=>col.id)
-     if(collectionIdList.length>0) dispatch(addCollectionListToCollection({id:colInView.id,list:collectionIdList})).then(
+     if(collectionIdList.length>0 && currentProfile) dispatch(addCollectionListToCollection({id:colInView.id,list:collectionIdList,profile:currentProfile})).then(
         ()=>{
       
                 dispatch(clearPagesInView())
@@ -47,7 +45,7 @@ export default function AddToCollectionContainer(props){
         }
     )
     console.log("lifsst",storyIdList)
-   if (storyIdList.length>0) dispatch(addStoryListToCollection({id:colInView.id,list:storyIdList})).then(res=>{
+   if (storyIdList.length>0) dispatch(addStoryListToCollection({id:colInView.id,list:storyIdList,profile:currentProfile})).then(res=>{
        
             dispatch(clearPagesInView())
             setNewCollections([])
@@ -101,9 +99,9 @@ export default function AddToCollectionContainer(props){
                 return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-1
                 border-emerald-700  rounded-lg p-4  my-2">
                     <h2 className="text-l max-w-[60%] my-auto  overflow-clip">{story?story.title:null}</h2>
-                    <div className="bg-emerald-800 rounded-lg p-2">{colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
+                    <div className="bg-emerald-800 rounded-full p-2">{colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
                     <h1 onClick={()=>removeNewStory(story)}className="">
-<p className="text-2xl   "><img src={checked}/></p>
+<p className="text-2xl    "><img src={checked}/></p>
 </h1>:
 <h1 onClick={()=>addNewStory(story)}className=" text-emerald-800">
 <p className="text-2xl  content-center "><img src={emptyBox}/></p>

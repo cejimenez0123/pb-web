@@ -61,21 +61,21 @@ const setCollectionInView = createAction("books/setCollectionInView", (params)=>
     
   })
 const addCollectionListToCollection = createAsyncThunk("books/addCollectionListToCollection",async(
-    {id,list},thunkApi
+    {id,list,profile},thunkApi
 )=>{
   
 
-    let data = await collectionRepo.addCollectionListToCollection({id,list})
+    let data = await collectionRepo.addCollectionListToCollection({id,list,profile})
 
 
     return {collection:data.collection}
 })
 const addStoryListToCollection = createAsyncThunk("books/addStoryListToCollection",async(
-    {id,list},thunkApi
+    {id,list,profile},thunkApi
 )=>{
 try{
 
-    let data = await collectionRepo.addStoryListToCollection({id,list})
+    let data = await collectionRepo.addStoryListToCollection({id,list,profile})
    
     return {collection:data.collection}
 }catch(error){

@@ -2,7 +2,7 @@ import { useEffect ,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { clearCollections, fetchCollection, fetchCollectionProtected, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
-import add from "../../images/icons/add_box.svg"
+import add from "../../images/icons/add_circle.svg"
 import PageList from "../../components/page/PageList"
 import { getCollectionStoriesProtected, getCollectionStoriesPublic } from "../../actions/StoryActions"
 import edit from "../../images/icons/edit.svg"
@@ -22,6 +22,7 @@ export default function CollectionContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
     const pending = useSelector(state=>state.books.loading)
+    const [canUserAdd,setCanUserAdd]=useState(false)
     const [role,setRole]=useState(null)
     const collections = useSelector(state=>state.books.collections)
     const params = useParams()
@@ -72,6 +73,26 @@ if(currentProfile){
     useEffect(()=>{
        getCol()
     },[id])
+    useLayoutEffect(()=>{
+        if(collection.isOpenCollaboration){
+            setCanUserAdd(true)
+            return
+        }
+        if(collection){
+            const arr = [RoleType.writer,RoleType.editor]
+            if(collection.roles){
+             let role =   collection.roles.find(role=>{
+                   return role.profile.id == currentProfile.id
+                })
+
+                if(role && arr.includes(role.role)){
+                    setCanUserAdd(true)
+                    return
+                }
+            }
+        }
+        setCanUserAdd(false)
+    },[collection])
   
     const getContent= ()=>{
         dispatch(clearCollections())
@@ -82,16 +103,17 @@ if(currentProfile){
         token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     const findRole = ()=>{
-    
-            let foundRole= collection && collection.roles&& currentProfile?collection.roles.find(role=>role.profileId==currentProfile.id):null
-           if(foundRole){
+    if(collection && collection.roles && currentProfile){
+            let foundRole=  collection.roles.find(role=>role.profileId==currentProfile.id)
+          console.log(foundRole)
+            if(foundRole){
             const fRole = new Role(foundRole.id,currentProfile,collection,foundRole.role,foundRole.created)
             setRole(fRole)
            }else{
             setRole(null)
            }
           
-             
+        }   
                     
     }
 
@@ -113,24 +135,26 @@ if(currentProfile){
         }
        
         return(<div className="h-fit max-w-[100vw] sm:max-w-[60em] mx-auto sm:pb-8 sm:w-48 sm:border-2 p-4 sm:border-emerald-800  mx-8 mt-4 md:mx-8 md:mt-8  rounded-lg mb-8 text-left">
-    <h3 className="m-8  text-emerald-800 text-3xl">{collection.title}</h3>
+    <h3 className="mt-8 mb-2 mx-8  text-emerald-800 text-3xl">{collection.title}</h3>
+    {collection.profile?<h3 onClick={()=>navigate(Paths.profile.createRoute(collection.profile.id))} className="text-emerald-800 mx-8 rounded-lg p-2">by {collection.profile.username}</h3>:null}
         <h3 className="text-emerald-800  md:mx-8 rounded-lg p-4">{collection.purpose}</h3>
+
         <div className={"md:ml-8 mt-8 flex flex-row"}>
    {!role?<button
    onClick={handleFollow}
-   className={"bg-emerald-700 text-white  min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"}>Follow</button>:
+   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"}>Follow</button>:
    <button 
    onClick={deleteFollow}
    className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"} >
         {role.role}
    </button>}
-   {currentProfile&& (collection.isOpenCollaboration || collection.profileId==currentProfile.id)?
+   {(true)?
    <div
     className="flex-row flex mx-2"
    >
     <img onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))
    }className="rounded-full bg-emerald-800 p-3 mr-2 my-auto"src={add}/>
-   {collection.profileId==currentProfile.id?<img 
+   {currentProfile && collection.profileId==currentProfile.id?<img 
    onClick={()=>{
   
     navigate(Paths.editCollection.createRoute(collection.id))}}
