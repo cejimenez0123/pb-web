@@ -231,13 +231,13 @@ return <Button onClick={()=>{
              Yea{likeFound?"h!":""}
          </button>
          </div>
-         <div className={" bg-emerald-700 text-center border-white grow flex-1/3"}>
+         <div className={" bg-emerald-700 border-white border-x-2 border-y-0  text-center border-white grow flex-1/3"}>
          <button
              className='rounded-none 
              text-white
         text-center mx-auto
        bg-transparent
-             border-x-2 border-y-0 text-xl  '
+       text-xl  '
              onClick={()=>hanldeClickComment(page)}
                  >
          
