@@ -171,7 +171,8 @@ function App(props) {
           <MyProfileContainer currentProfile={props.currentProfile} 
                               pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
-                              librariesInView={props.librariesInView}/>
+                              // librariesInView={props.librariesInView}
+                              />
        </PrivateRoute>
       }
     />
@@ -248,7 +249,7 @@ function mapDispatchToProps(dispatch){
   return{ 
     getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
     getPublicBooks:()=>dispatch(getPublicBooks()),
-    fetchBookmarkLibrary:(params)=>dispatch(fetchBookmarkLibrary(params)),
+    // fetchBookmarkLibrary:(params)=>dispatch(fetchBookmarkLibrary(params)),
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicStories:()=>dispatch(getPublicStories()),
     // fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
@@ -270,7 +271,7 @@ function mapStateToProps(state){
     currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,
     pagesInView: state.pages.pagesInView,
-    librariesInView: state.libraries.librariesInView,
+    // librariesInView: state.libraries.librariesInView,
     bookLoading: state.books.loading,
     userLoading: state.users.loading
   }

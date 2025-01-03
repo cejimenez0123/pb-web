@@ -35,45 +35,45 @@ const updateLibrary = createAsyncThunk("libraries/updateLibrary", async function
   
   
   })
-  const updateLibraryContent = createAsyncThunk("libraries/updateLibraryContent", async function(params,thunkApi){
+  // const updateLibraryContent = createAsyncThunk("libraries/updateLibraryContent", async function(params,thunkApi){
 
     
-    try{
-      const {
-        library,
-        pageIdList,
-        bookIdList
-          }=params
+  //   try{
+  //     const {
+  //       library,
+  //       pageIdList,
+  //       bookIdList
+  //         }=params
 
-      let updatedAt =  Timestamp.now()
-      const ref =doc(db, "library", library.id)
+  //     let updatedAt =  Timestamp.now()
+  //     const ref =doc(db, "library", library.id)
       
-    await updateDoc(ref, {
-        pageIdList: pageIdList,
-            bookIdList: bookIdList,
-            updatedAt: updatedAt
-          });
-        const contributors= new Contributors(library.commenters,
-          library.readers,library.writers,library.editors)
-      const newLibrary =new Library(library.id,
-                  library.name,library.profileId,
-                  library.purpose,pageIdList,
-                  bookIdList,
-                  library.writingIsOpen,
-                  library.privacy,
-                  contributors,
-                  updatedAt,
-                  library.created)
-        return { library: newLibrary }
-        }catch(error){
+  //   await updateDoc(ref, {
+  //       pageIdList: pageIdList,
+  //           bookIdList: bookIdList,
+  //           updatedAt: updatedAt
+  //         });
+  //       const contributors= new Contributors(library.commenters,
+  //         library.readers,library.writers,library.editors)
+  //     const newLibrary =new Library(library.id,
+  //                 library.name,library.profileId,
+  //                 library.purpose,pageIdList,
+  //                 bookIdList,
+  //                 library.writingIsOpen,
+  //                 library.privacy,
+  //                 contributors,
+  //                 updatedAt,
+  //                 library.created)
+  //       return { library: newLibrary }
+  //       }catch(error){
     
-          return {
-            error: new Error(`Error: update conteent Library ${error.message}`)
-          }
-        }
+  //         return {
+  //           error: new Error(`Error: update conteent Library ${error.message}`)
+  //         }
+  //       }
       
       
-      })
+  //     })
       
 const   appendLibraryContent = createAsyncThunk("libraries/updateLibraryContent", async function(params,thunkApi){
 
@@ -457,8 +457,7 @@ const lib = new Library(  id,
 }
 export {  fetchLibrary,
           updateLibrary,
-          updateLibraryContent,
-    
+         
           getProfileLibraries,
           fetchBookmarkLibrary,
           setLibraryInView,

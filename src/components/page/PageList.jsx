@@ -3,6 +3,7 @@ import { useMediaQuery } from "react-responsive"
 import InfiniteScroll from "react-infinite-scroll-component"
 import uuidv4 from "../../core/uuidv4"
 import DashboardItem from "./DashboardItem"
+import ErrorBoundary from "../../ErrorBoundary"
 const PageList = ({items,isGrid,fetchContentItems})=>{
 
     const pagesInView = useSelector(state=>state.pages.pagesInView)
@@ -28,9 +29,9 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
           {pagesInView.map(page=>{
             if(page){
                 const id = `${page.id}_${uuidv4()}`
-                return(<div id={id} className="mb-2">
+                return(<ErrorBoundary><div id={id} className="mb-2">
                     <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
-                </div>)
+                </div></ErrorBoundary>)
             }else{
                 return null
             }

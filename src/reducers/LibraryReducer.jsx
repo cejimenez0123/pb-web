@@ -11,7 +11,7 @@ import {    getProfileLibraries,
             clearLibrariesInView,
             setBookmarkLibrary,
             saveRolesForLibrary,
-            updateLibraryContent,
+
             deleteLibrary} from "../actions/LibraryActions"
 import { createSlice } from "@reduxjs/toolkit"
 const initialState = {

@@ -1,16 +1,12 @@
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import React,{useEffect, useLayoutEffect,useState} from "react"
-import { updateLibraryContent } from "../../actions/LibraryActions"
 import isValidUrl from "../../core/isValidUrl"
 import { PageType } from "../../core/constants"
 import { setProfileInView } from "../../actions/UserActions"
 import ReactGA from 'react-ga4'
 import PageViewButtonRow  from "./PageViewButtonRow"
-import { setPageInView} from "../../actions/PageActions"
 import CommentInput from "../comment/CommentInput"
-import checkResult from "../../core/checkResult"
-import Paths from "../../core/paths"
 import "../../styles/PageView.css"
 import LinkPreview from "../LinkPreview"
 import PropTypes from 'prop-types'
@@ -49,7 +45,7 @@ export default function PageViewItem({page}) {
     }
  })
   };
-//   const onBookmarkPage = ()=>{
+  const onBookmarkPage = ()=>{
 //     if(bookmarked && page){
 //     let pageIdList = bookmarkLibrary.pageIdList.filter(id=>id!=page.id)
 //     const params = {
@@ -79,7 +75,7 @@ export default function PageViewItem({page}) {
 //         }
 //     }
     
-// }
+}
 let pageDataElement = (<div ></div>)
 if(page){
     switch(page.type){

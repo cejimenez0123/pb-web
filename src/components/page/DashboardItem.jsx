@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { updateLibraryContent } from '../../actions/LibraryActions'
 import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
 import LinkPreview from '../LinkPreview'
@@ -166,34 +165,34 @@ return <Button onClick={()=>{
 
     }
     const onBookmarkPage = ()=>{
-        if(bookmarked && page){
-        let pageIdList = bookmarkLibrary.pageIdList.filter(id=>page && id!=page.id)
-        const params = {
-            library:bookmarkLibrary,
-            pageIdList:pageIdList,
-            bookIdList: bookmarkLibrary.bookIdList
-              }
-              dispatch(updateLibraryContent(params))
-              setBookmarked(false)
-        }else{
-            if(bookmarkLibrary && currentProfile && page){
-                const pageIdList = [...bookmarkLibrary.pageIdList,page.id]
-                const params = {
-                    library:bookmarkLibrary,
-                    pageIdList:pageIdList,
-                    bookIdList: bookmarkLibrary.bookIdList
-                      }
-                dispatch(updateLibraryContent(params)).then(result=>{
-                    checkResult(result,(payload)=>{
-                    const {library} = payload
-                         let found =library.pageIdList.find(id=>page&&id==page.id)
-                        setBookmarked(Boolean(found))
-                        },()=>{
+    //     if(bookmarked && page){
+    //     let pageIdList = bookmarkLibrary.pageIdList.filter(id=>page && id!=page.id)
+    //     const params = {
+    //         library:bookmarkLibrary,
+    //         pageIdList:pageIdList,
+    //         bookIdList: bookmarkLibrary.bookIdList
+    //           }
+    //           dispatch(updateLibraryContent(params))
+    //           setBookmarked(false)
+    //     }else{
+    //         if(bookmarkLibrary && currentProfile && page){
+    //             const pageIdList = [...bookmarkLibrary.pageIdList,page.id]
+    //             const params = {
+    //                 library:bookmarkLibrary,
+    //                 pageIdList:pageIdList,
+    //                 bookIdList: bookmarkLibrary.bookIdList
+    //                   }
+    //             dispatch(updateLibraryContent(params)).then(result=>{
+    //                 checkResult(result,(payload)=>{
+    //                 const {library} = payload
+    //                      let found =library.pageIdList.find(id=>page&&id==page.id)
+    //                     setBookmarked(Boolean(found))
+    //                     },()=>{
 
-                    })
-                })
-            }
-        }
+    //                 })
+    //             })
+    //         }
+    //     }
         
     }
     const ClickAddStoryToCollection=()=>{
