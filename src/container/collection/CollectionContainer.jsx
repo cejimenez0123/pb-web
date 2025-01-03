@@ -1,6 +1,6 @@
 import { useEffect ,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { clearCollections, fetchCollection, fetchCollectionProtected, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_box.svg"
 import PageList from "../../components/page/PageList"
@@ -13,8 +13,10 @@ import Role from "../../domain/models/role"
 import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions"
 import { RoleType } from "../../core/constants"
 import checkResult from "../../core/checkResult"
+import { clearPagesInView } from "../../actions/PageActions"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
+    const {pathName}=useLocation()
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
@@ -60,12 +62,13 @@ if(currentProfile){
     const getCol=()=>{
         currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
     }
-    useLayoutEffect(()=>{
+    useEffect(()=>{
        getCol()
     },[id])
   
     const getContent= ()=>{
         dispatch(clearCollections())
+        dispatch(clearPagesInView())
         let token = localStorage.getItem("token")
         token?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
     
@@ -95,7 +98,7 @@ if(currentProfile){
   
 
    
-    const collectionInfo=()=>{
+    const CollectionInfo=({collection})=>{
        
         
         if(!collection){
@@ -146,7 +149,7 @@ if(collection && collections){
 
     return(<>
 
-<div className="pb-[10rem] ">       {collection?collectionInfo():<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
+<div className="pb-[10rem] ">       {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
         <div className="text-left  max-w-[100vw]    mx-auto ">
             {collection && collections.length>0? <div>
                 <h3 className="text-2xl text-emerald-800 font-bold text-center">Anthologies</h3>:
@@ -170,7 +173,7 @@ if(collection && collections){
             </div>
             </div>:null}
             <h6 className="text-2xl mb-8 w-fit text-center text-slate-800 font-bold pl-4">Pages</h6>
-        <div className=" ">
+        <div className=" max-w-[100vw] px-2 sm:max-w-[40em] mx-auto ">
         <PageList  isGrid={false}/>
         </div>
             </div>

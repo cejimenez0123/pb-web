@@ -21,6 +21,11 @@ export default function PageViewContainer(props){
     const comments = useSelector(state=>state.comments.comments)
     const [rootComments,setRootComments]=useState([])
     useLayoutEffect(()=>{
+            if(currentProfile){
+                // dispatch()
+            }
+    },[])
+    useLayoutEffect(()=>{
         dispatch(getStory(pathParams)).then(res=>checkResult(res,payload=>{
 
         },err=>{

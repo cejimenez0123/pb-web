@@ -1,4 +1,4 @@
-class HistorygRepo{
+class HistoryRepo{
     headers= {
         'Access-Control-Allow-Origin': "*"
     }
@@ -8,7 +8,8 @@ class HistorygRepo{
     async storyCreate({profile,story}){
 
     }
-    async collectionCreate({profile,story}){
+    async collectionCreate({profile,collection}){
         
     }
 }
+export default new HistoryRepo()

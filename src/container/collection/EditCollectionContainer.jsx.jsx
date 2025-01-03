@@ -99,7 +99,9 @@ console.log(storyToCols)
  
    
     const updateCollection = ()=>{
-        dispatch(patchCollectionContent({id:params.id,isPrivate:isPrivate,isOpenCollaboration:isOpen,title,purpose,storyToCol:newPages,colToCol:newCollections,col:colInView,profile:currentProfile}))
+        dispatch(patchCollectionContent({id:params.id,isPrivate:isPrivate,isOpenCollaboration:isOpen,title,purpose,storyToCol:newPages,colToCol:newCollections,col:colInView,profile:currentProfile})).then(res=>{
+            window.alert("Successful Update")
+        },err=>{})
     }
 
     const collectionInfo=()=>{
@@ -114,11 +116,12 @@ console.log(storyToCols)
 
     type="text" className="mx-w bg-transparent text-emerald-800 px-2 py-2 w-full mb-4  text-2xl" value={title}/>
        </div>
-        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea text-[1rem]  text-white  sm:mx-8 bg-emerald-600 bg-opacity-60  max-w-[96vw] sm:max-w-[20em] md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
-        <div className=" mt-8  justify-around ml-12 text-left gap-4 grid grid-flow-row-dense grid-cols-2 max-w-72 sm:max-w-[22rem]">
+        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  text-[1rem]  text-white  sm:mx-8 bg-emerald-600 bg-opacity-60  max-w-[96vw] w-[100%] md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
+        
+        <div className=" mt-8 w-[100%] mx-auto justify-around ml-12  gap-4 grid grid-flow-row-dense grid-cols-2  sm:max-w-[22rem]">
 
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
-   <button className="bg-emerald-800 text-white w-[9rem] text-center rounded-full"
+   <button className="bg-emerald-800 text-white ml-2 w-[9rem] text-center rounded-full"
    
    onClick={updateCollection}
    
@@ -148,7 +151,7 @@ console.log(storyToCols)
     onClick={handleDeleteCollection}/> 
   </div>
   <div>
-    <button onClick={()=>setOpenAccess(true)}className="text-white rounded-full bg-emerald-600">Manage Access</button>
+    <button onClick={()=>setOpenAccess(true)}className="text-white px-2 py-3 text-[1rem] w-[9rem] rounded-full bg-emerald-600">Manage Access</button>
   </div>
    </div>
    </div>
