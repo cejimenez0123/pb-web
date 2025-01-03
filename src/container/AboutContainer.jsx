@@ -14,7 +14,7 @@ export default function AboutContainer(props){
     const forCreatives = ()=>{
         return(<div className="grid sm:grid-cols-2 gap-8">
     <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
-<img  className=" absolute top-[-35%] sm:top-[-20%] md:top-[-30%] lg:top-[-30%] rounded-lg" src={firstGroup}  alt="first group"/>
+<img  className=" absolute top-[-35%] sm:top-[-20%] md:top-[-30%] lg:top-[-80%] rounded-lg" src={firstGroup}  alt="first group"/>
  </div>
            <div className="">
             <div className=" bg-[#23774ca6] text-white h-full rounded-lg p-4" >
@@ -105,7 +105,7 @@ Be part of a community of writers who are eager to share their insights and supp
   </div>
 
   <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
-<img  className=" absolute top-[-30%] sm:top-[-15rem] md:top-[-35%] lg:top-[-60%] rounded-lg" src={groupJpg} alt="group pic"
+<img  className=" absolute top-[-8em] sm:top-[-15em] md:top-[-35%] lg:top-[-60%] rounded-lg" src={groupJpg} alt="group pic"
  />
 </div> 
    
