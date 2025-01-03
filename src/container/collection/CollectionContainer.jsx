@@ -15,6 +15,7 @@ import { RoleType } from "../../core/constants"
 import checkResult from "../../core/checkResult"
 import { clearPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
+import { current } from "@reduxjs/toolkit"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
     const {pathName}=useLocation()
@@ -74,11 +75,11 @@ if(currentProfile){
        getCol()
     },[id])
     useLayoutEffect(()=>{
-        if(collection.isOpenCollaboration){
+        if(collection.isOpenCollaboration && currentProfile){
             setCanUserAdd(true)
             return
         }
-        if(collection){
+        if(collection && currentProfile){
             const arr = [RoleType.writer,RoleType.editor]
             if(collection.roles){
              let role =   collection.roles.find(role=>{
