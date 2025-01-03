@@ -40,7 +40,7 @@ function DashboardItem({page,book,isGrid}) {
 
 
     useLayoutEffect(()=>{
-        if(currentProfile && page){
+        if(currentProfile && page && currentProfile.likedStories){
             let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
             setLikeFound(found)
         }else{
