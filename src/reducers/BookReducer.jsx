@@ -1,11 +1,4 @@
 import { createSlice} from "@reduxjs/toolkit"
-import { 
-        
-        fetchBook,
-        saveRolesForBook,
-      
-    
-        } from "../actions/BookActions"
         import { createCollection, fetchCollection, fetchCollectionProtected, getMyCollections, getPublicBooks,
                 saveRoleToCollection
         ,addCollectionListToCollection,
@@ -17,7 +10,7 @@ import {
         clearCollections
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
-import { fetchWorkshopGroups } from "../actions/WorkshopActions"
+import { createWorkshopGroup, fetchWorkshopGroups } from "../actions/WorkshopActions"
 
 const initialState = {
     groups:[],
@@ -27,15 +20,16 @@ const initialState = {
     loading:false,
     error:"",
     bookInView: null,
-    booksToBeAdded: [],
-    bookRoles: [],
     role:null
 }
 const bookSlice = createSlice({
 name: 'books',
 initialState,
 extraReducers(builder) {
-builder.addCase(fetchWorkshopGroups.fulfilled,(state,{payload})=>{
+builder.addCase(createWorkshopGroup.fulfilled,(state,{payload})=>{
+    state.collectionInView = payload.collection
+  
+}).addCase(fetchWorkshopGroups.fulfilled,(state,{payload})=>{
     state.groups = payload.groups
 }).addCase(clearCollections.type,(state)=>{
     state.collections=[]
@@ -130,19 +124,6 @@ builder.addCase(fetchWorkshopGroups.fulfilled,(state,{payload})=>{
     state.loading=false
 }).addCase(fetchCollectionProtected.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
-}).addCase(fetchBook.pending,(state)=>{
-    state.loading = true
-
-}).addCase(fetchBook.rejected,(state,{payload})=>{
-    state.loading = false
-    state.error = payload.error
-
-
-}).addCase(saveRolesForBook.rejected,(state,{payload})=>{
-    state.error = payload.error
-}).addCase(saveRolesForBook.fulfilled,(state,{payload})=>{
- 
-    state.bookInView = payload.book
 })
 }
 

@@ -1,118 +1,141 @@
 
 
 import React, { useEffect, useState } from 'react';
-import {registerUser,fetchActiveUsers,fetchWorkshopGroups} from "../../actions/WorkshopActions"
-import LocationAccess from '../../components/LocationAccess';
+import {registerUser,fetchActiveUsers,fetchWorkshopGroups, createWorkshopGroup} from "../../actions/WorkshopActions"
 import { useSelector } from 'react-redux';
-import LocationPoint from '../../domain/models/location';
 import { useDispatch } from 'react-redux';
-import axios from "axios"
+import { debounce } from 'lodash';
+import { generate, count } from "random-words"
+import checkResult from '../../core/checkResult';
+import { useNavigate } from 'react-router-dom';
+import Paths from '../../core/paths';
 const WorkshopContainer = (props) => {
   const [activeUsers, setActiveUsers] = useState([]);
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [loading,setLoading]=useState(false)
   const [error,setError]=useState("")
-  // const [workshopGroups, setWorkshopGroups] = useState([]);
+  const [radius,setRadius]=useState(50)
   const workshopGroups = useSelector(state=>state.books.groups)
-  const [location,setLocation]=useState(new LocationPoint(40.7128,74.0060))
+  const [location,setLocation]=useState({latitude:40.7128, longitude:74.0060})
   const currentProfile = useSelector(state=>state.users.currentProfile)
-  const [locationName,setLocationName]=useState("")
-  const fetchLocation = async ({latitude, longitude}) => {
-    const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse`,
-        {
-            params: {
-                lat: latitude,
-                lon: longitude,
-                format: "json",
-            },
-        }
-    );
-    const address = response.data.address;
-    const city = address.city || address.town || address.village;
-    const neighborhood = address.neighbourhood;
-    return neighborhood || city || "";
-}
-  useEffect(() => {
+  
+  useEffect(()=>{
+    requestLocation()},[])
+    const fetchGroups = () => {
+      dispatch(fetchWorkshopGroups({radius:radius}))
 
-if(currentProfile && location){
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      let point = new LocationPoint(position.coords.latitude,position.coords.longitude)
-    
-      setLocation(point);
-       setError(null);
-      setLoading(false);},(err) => {
-        setError("Unable to retrieve location. Please allow location access.");
-        setLoading(false);
-        
-      })
-    
-    
-
-    const profileId = currentProfile.id; // Replace with actual user ID
-    registerUser(profileId, location);
+    };
     const fetchUsers = async () => {
       const profiles = await fetchActiveUsers();
       setActiveUsers(profiles);
     };
+  useEffect(() => {
+if(currentProfile && location){
+    const profileId = currentProfile.id; 
+    registerUser(profileId, location);
 
-    // Fetch workshop groups
-    const fetchGroups = async () => {
-      // const {groups} = 
-      dispatch(fetchWorkshopGroups({radius:50}))
+    
+   let deb = debounce( ()=>{
+    fetchUsers()
+    fetchGroups()
+   }
+    ,500
+  )
+  deb()
+    return () =>{} 
+  }}, [currentProfile]);
 
-      // setWorkshopGroups(groups);
-    };
-
-    fetchUsers();
-    fetchGroups();
-    fetchLocation(location).then(name=>{
-      setLocationName(name)
-    })
-    // const interval = setInterval(() => {
+  const requestLocation=()=>{
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      
+        setError(null);
+        setLoading(false);
+      },
+      (err) => {
+        console.log("location error")
+        setError("Unable to retrieve location. Please allow location access.");
+        setLoading(false);
   
-    return () => {}
-  }}, [currentProfile,location]);
-  const ProfileCard = ({profile}) =>{
-    if(profile){
+      }
+    );
+  }
+  const handleGroupClick=(index)=>{
+    let group = workshopGroups[index]
+    let groupName = generate({ min: 3, max: 6,seed:"fiction",join:" " })
 
-    }
+    dispatch(createWorkshopGroup({profile:currentProfile,group,groupName})).then(res=>{
+      checkResult(res,payload=>{
+        if(payload && payload.collection){
+          navigate(Paths.collection.createRoute(payload.collection.id))
+        }
+         
+      },err=>{
+        window.alert(JSON.stringify(err))
+      })
+    })
+
   }
   return (
-    // <div>
-    // <div className='flex flex-row justify-evenly sm:flex-col' >
-      <div>
-      <div>
-      <ProfileCard profile={currentProfile}/>
+  <div className=' justify-evenly sm:p-4 flex flex-col sm:flex-row '>
+      <div className=" ">
+    
+      {currentProfile?(
+        <div className="text-emerald-800 shadow-sm sm:h-[30em] mt-20 flex flex-col  border-2 text-left w-[20rem] border-emerald-600 p-4    rounded-lg ">
+       <div>
+     <h2 className='text-xl font-bold'> {currentProfile.username}</h2></div>
+<div>
+        <label className='border-1 my-4 number border-emerald-600 rounded-full   px-4'>Radius
+     
+       
+        <input type={"number"} 
+        value={radius}
+        onChange={(e)=>{
+          setRadius(e.target.value)
+        }}
+        className="input max-w-36 text-emerald-800 bg-transparent "/></label>
+
       </div>
       <div>
-      <h6 className='text-emerald-800'>Active Users</h6>
-      <ul>
-        {activeUsers && activeUsers.length>0?activeUsers.map((user, index) => (
-          <li className='text-emerald-800' key={index}>{user.username}</li>
-        )):null}
-      </ul>
-      <div>
-      <h6 className='text-emerald-800'>Workshop Groups</h6>
+      <button  className="bg-emerald-700 text-white rounded-full"onClick={fetchGroups}>Find New Groups</button> 
+       
+     
+        </div>
+        </div>
+  ):null}
+      </div>
+      
+ 
+      <div className='text-emerald-800 border-emerald-600 py-8 min-w-[25em] px-2 pt-20 border-2 rounded-full h-[40em]'>
+     
+      <h6 className='text-emerald-800 text-2xl font-bold mb-4'>Workshop Groups</h6>
       {workshopGroups && workshopGroups.length>0 && workshopGroups.map((group, index) => 
       {
         
      
         return(
-        <div className='text-emerald-800' key={index}>
-          <h2>Group {index + 1}</h2>
-          <ul>
-            {group.map((user, i) => (
-              <li className="text-emerald-800" key={i}>{user.username}</li>
-            ))} 
-          </ul>
+        <div onClick={()=>handleGroupClick(index)}className=' border-1 my-2 border-emerald-600 px-4 flex flex-row justify-between rounded-full mx-2' key={index}>
+          <h2 className='my-auto p-4'>Local Group {index + 1}</h2>
+          <h5 className='my-auto  p-2 rounded-full text-white bg-emerald-500'>Start</h5>
         </div>
       )})}
         </div>
-    
+        <div className='border-2 border-emerald-600 w-[20em] h-[30em] mt-20 p-4 rounded-lg '>
+      <h6 className='text-emerald-800'>Active Users</h6>
+      <ul>
+        {activeUsers && activeUsers.length>0?activeUsers.map((user, index) => (
+          <li className='text-emerald-800 my-2 ' key={index}>
+            <div className='border-1 text-left px-4 border-emerald-600 p-2 rounded-full'>{user.username}</div></li>
+        )):null}
+      </ul>
+      </div>
     </div>
-    </div>
+ 
   );
 };
 
