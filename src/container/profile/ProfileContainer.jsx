@@ -5,9 +5,8 @@ import { useDispatch,useSelector } from "react-redux"
 import {    createFollowProfile,
             deleteFollowProfile, 
             fetchProfile,
-            updateHomeCollection,fetchFollowProfilesForProfile } from "../../actions/UserActions"
+            updateHomeCollection,} from "../../actions/UserActions"
 // import ProfileCard from "../components/ProfileCard"
-import theme from "../../theme"
 import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
@@ -18,9 +17,7 @@ function ProfileContainer(props){
 
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collections = useSelector(state=>state.books.collections)
-    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const profile = useSelector(state=>state.users.profileInView)
-    const followedProfiles = useSelector(state=>state.users.followedProfiles)
     const homeCollection = useSelector(state=>state.users.homeCollection)
     const dispatch = useDispatch()
     const pathParams = useParams()

@@ -25,10 +25,10 @@ const deleteStory = createAsyncThunk("pages/deleteStory",async (params,thunkApi)
 })
 const getMyStories= createAsyncThunk(
     'pages/getMyStories',
-    async (params,thunkApi) => {
+    async ({profile,draft},thunkApi) => {
       try{
-      let data = await storyRepo.getMyStories({profileId:params["profile"].id})
-  
+      let data = await storyRepo.getMyStories({profileId:profile.id,draft})
+  console.log(data)
     return {
       pageList:data.stories
     }
@@ -68,9 +68,7 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
 })
 const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesPublic",async (params,thunkApi)=>{
   try{
-
      let data = await storyRepo.getCollectionStoriesPublic(params)
-    console.log(data)
      return {
       list:data.list
      }

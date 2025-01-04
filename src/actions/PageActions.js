@@ -89,9 +89,9 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
 
 const getProfilePages= createAsyncThunk(
   'pages/getProfilePages',
-  async (params,thunkApi) => {
+  async ({profile},thunkApi) => {
     try{
-    let data = await storyRepo.getProfileStories({profileId:params["profile"].id})
+    let data = await storyRepo.getPublicProfileStories({profileId:profile.id})
 
   return {
     pageList:data.stories}

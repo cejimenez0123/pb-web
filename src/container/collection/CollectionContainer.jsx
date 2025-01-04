@@ -75,7 +75,7 @@ if(currentProfile){
        getCol()
     },[id])
     useLayoutEffect(()=>{
-        if(collection.isOpenCollaboration && currentProfile){
+        if(collection && collection.isOpenCollaboration && currentProfile){
             setCanUserAdd(true)
             return
         }
@@ -149,7 +149,7 @@ if(currentProfile){
    className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"} >
         {role.role}
    </button>}
-   {(true)?
+   {canUserAdd?
    <div
     className="flex-row flex mx-2"
    >

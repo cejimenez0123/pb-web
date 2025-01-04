@@ -9,10 +9,13 @@ import { generate, count } from "random-words"
 import checkResult from '../../core/checkResult';
 import { useNavigate } from 'react-router-dom';
 import Paths from '../../core/paths';
+import { getProfilePages } from '../../actions/PageActions';
+import { getMyStories } from '../../actions/StoryActions';
 const WorkshopContainer = (props) => {
   const [activeUsers, setActiveUsers] = useState([]);
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const pages = useSelector(state=>state.pages.pagesInView)
   const [loading,setLoading]=useState(false)
   const [error,setError]=useState("")
   const [radius,setRadius]=useState(50)
@@ -33,6 +36,7 @@ const WorkshopContainer = (props) => {
   useEffect(() => {
 if(currentProfile && location){
     const profileId = currentProfile.id; 
+    dispatch(getMyStories({profile:currentProfile,draft:"draft"}))
     registerUser(profileId, location);
 
     
@@ -67,7 +71,7 @@ if(currentProfile && location){
   }
   const handleGroupClick=(index)=>{
     let group = workshopGroups[index]
-    let groupName = generate({ min: 3, max: 6,seed:"fiction",join:" " })
+    let groupName = generate({ min: 3, max: 6,join:" " })
 
     dispatch(createWorkshopGroup({profile:currentProfile,group,groupName})).then(res=>{
       checkResult(res,payload=>{
@@ -106,6 +110,11 @@ if(currentProfile && location){
        
      
         </div>
+          <div>{pages?pages.map(page=>{
+            return <div className='text-emerald-800'>
+              {page.title}
+              </div>
+          }):null}</div>
         </div>
   ):null}
       </div>
