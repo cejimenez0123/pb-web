@@ -23,6 +23,8 @@ import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
+import { registerUser } from "./WorkshopActions";
+import LocationPoint from "../domain/models/location";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -30,19 +32,30 @@ const logIn = createAsyncThunk(
       const {email,password}=params
       const userCred = await signInWithEmailAndPassword(auth,email,password)
       
+
       
       if(userCred.user.uid){
         const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
-        const profileRes = await profileRepo.getMyProfiles({token:authData.token})
+        const {token}=authData
+        localStorage.setItem("token",token)
+        const profileRes = await profileRepo.getMyProfiles({token:token})
+        const profile = profileRes.profiles[0]
+        let location = new LocationPoint(40.7128,74.0060)
+        registerUser(profile.id,location)
         return{
-          profile: profileRes.profiles[0]
+          profile:profile
         }
       }else{
 
         const authData = await authRepo.startSession({uId:null,email:email,password})
+        const {token}=authData
+        localStorage.setItem("token",token)
         const profileRes = await profileRepo.getMyProfiles({token:authData.token})
+        const profile = profileRes.profiles[0]
+        let location = new LocationPoint(40.7128,74.0060)
+        registerUser(profile.id,location)
         return{
-          profile: profileRes.profiles[0]
+          profile: profile
         }
       }
 

@@ -2,18 +2,56 @@
 
 import React, { useEffect, useState } from 'react';
 import {registerUser,fetchActiveUsers,fetchWorkshopGroups} from "../../actions/WorkshopActions"
-
-const WorkshopContainer = () => {
+import LocationAccess from '../../components/LocationAccess';
+import { useSelector } from 'react-redux';
+import LocationPoint from '../../domain/models/location';
+import { useDispatch } from 'react-redux';
+import axios from "axios"
+const WorkshopContainer = (props) => {
   const [activeUsers, setActiveUsers] = useState([]);
-  const [workshopGroups, setWorkshopGroups] = useState([]);
-
+  const dispatch = useDispatch()
+  const [loading,setLoading]=useState(false)
+  const [error,setError]=useState("")
+  // const [workshopGroups, setWorkshopGroups] = useState([]);
+  const workshopGroups = useSelector(state=>state.books.groups)
+  const [location,setLocation]=useState(new LocationPoint(40.7128,74.0060))
+  const currentProfile = useSelector(state=>state.users.currentProfile)
+  const [locationName,setLocationName]=useState("")
+  const fetchLocation = async ({latitude, longitude}) => {
+    const response = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse`,
+        {
+            params: {
+                lat: latitude,
+                lon: longitude,
+                format: "json",
+            },
+        }
+    );
+    const address = response.data.address;
+    const city = address.city || address.town || address.village;
+    const neighborhood = address.neighbourhood;
+    return neighborhood || city || "";
+}
   useEffect(() => {
 
-    const userId = 'user123'; // Replace with actual user ID
-    const location = { latitude: 40.7128, longitude: -74.0060 }; // Replace with actual location
-    registerUser(userId, location);
+if(currentProfile && location){
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      let point = new LocationPoint(position.coords.latitude,position.coords.longitude)
+    
+      setLocation(point);
+       setError(null);
+      setLoading(false);},(err) => {
+        setError("Unable to retrieve location. Please allow location access.");
+        setLoading(false);
+        
+      })
+    
+    
 
-    // Fetch active users periodically
+    const profileId = currentProfile.id; // Replace with actual user ID
+    registerUser(profileId, location);
     const fetchUsers = async () => {
       const profiles = await fetchActiveUsers();
       setActiveUsers(profiles);
@@ -21,41 +59,59 @@ const WorkshopContainer = () => {
 
     // Fetch workshop groups
     const fetchGroups = async () => {
-      const groups = await fetchWorkshopGroups(50); // 50km radius
-      setWorkshopGroups(groups);
+      // const {groups} = 
+      dispatch(fetchWorkshopGroups({radius:50}))
+
+      // setWorkshopGroups(groups);
     };
 
     fetchUsers();
     fetchGroups();
+    fetchLocation(location).then(name=>{
+      setLocationName(name)
+    })
+    // const interval = setInterval(() => {
+  
+    return () => {}
+  }}, [currentProfile,location]);
+  const ProfileCard = ({profile}) =>{
+    if(profile){
 
-    const interval = setInterval(() => {
-      fetchUsers();
-      fetchGroups();
-    }, 5000); // Update every 5 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
+    }
+  }
   return (
-    <div>
-      <h1 className='text-emerald-800'>Active Users</h1>
+    // <div>
+    // <div className='flex flex-row justify-evenly sm:flex-col' >
+      <div>
+      <div>
+      <ProfileCard profile={currentProfile}/>
+      </div>
+      <div>
+      <h6 className='text-emerald-800'>Active Users</h6>
       <ul>
         {activeUsers && activeUsers.length>0?activeUsers.map((user, index) => (
           <li className='text-emerald-800' key={index}>{user.username}</li>
         )):null}
       </ul>
-
-      <h1 className='text-emerald-800'>Workshop Groups</h1>
-      {workshopGroups && workshopGroups.length>0 && workshopGroups.map((group, index) => (
-        <div key={index}>
+      <div>
+      <h6 className='text-emerald-800'>Workshop Groups</h6>
+      {workshopGroups && workshopGroups.length>0 && workshopGroups.map((group, index) => 
+      {
+        
+     
+        return(
+        <div className='text-emerald-800' key={index}>
           <h2>Group {index + 1}</h2>
           <ul>
             {group.map((user, i) => (
-              <li key={i}>{user.userId}</li>
-            ))}
+              <li className="text-emerald-800" key={i}>{user.username}</li>
+            ))} 
           </ul>
         </div>
-      ))}
+      )})}
+        </div>
+    
+    </div>
     </div>
   );
 };

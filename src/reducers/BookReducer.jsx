@@ -17,9 +17,10 @@ import {
         clearCollections
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
+import { fetchWorkshopGroups } from "../actions/WorkshopActions"
 
 const initialState = {
-    // booksInView:[],
+    groups:[],
     collections:[],
     collectionToCollectionsList:[],
     collectionInView:[],
@@ -34,7 +35,9 @@ const bookSlice = createSlice({
 name: 'books',
 initialState,
 extraReducers(builder) {
-builder.addCase(clearCollections.type,(state)=>{
+builder.addCase(fetchWorkshopGroups.fulfilled,(state,{payload})=>{
+    state.groups = payload.groups
+}).addCase(clearCollections.type,(state)=>{
     state.collections=[]
 }).addCase(deleteCollectionFromCollection.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection

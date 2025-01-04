@@ -46,7 +46,7 @@ function LogInContainer(props) {
                         navigate(Paths.myProfile())
                     }
                 },err=>{
-                    window.alert("server error")
+                    window.alert("Wrong username or password")
                 })
             })
            

@@ -6,7 +6,7 @@ import { combineReducers, configureStore} from '@reduxjs/toolkit';
 import { Provider } from 'react-redux'
 import {pageSlice} from './reducers/PageReducer';
 import userSlice from './reducers/UserReducer';
-import bookSlice from './reducers/BookReducer';
+import bookSlice from './reducers/BookReducer.jsx';
 import libSlice from './reducers/LibraryReducer';
 import rolesSlice from './reducers/RoleReducer.jsx';
 import { BrowserRouter } from 'react-router-dom';

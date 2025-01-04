@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-
-const LocationAccess = () => {
+import LocationPoint from '../domain/models/location';
+const LocationAccess = ({whatIsLocaiton}) => {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -21,12 +21,14 @@ const LocationAccess = () => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
+        whatIsLocaiton(new LocationPoint(position.coords.latitude,position.coords.longitude))
         setError(null);
         setLoading(false);
       },
       (err) => {
         setError("Unable to retrieve location. Please allow location access.");
         setLoading(false);
+        whatIsLocaiton(false)
       }
     );
   };
