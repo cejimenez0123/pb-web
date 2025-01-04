@@ -27,7 +27,7 @@ function MyProfileContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collections = useSelector(state=>state.books.collections)
     const [books,setBooks]=useState(collections)
-    const [libraries,setLibraries]=useState(collections.filter(col=>col.collectionIdList>0))
+    const [libraries,setLibraries]=useState([])
     const [openDialog,setOpenDialog]=useState(false)
     const [media,setMedia]=useState(MediaType.stories)
     const [openRefferal,setOpenRefferal]=useState(false)

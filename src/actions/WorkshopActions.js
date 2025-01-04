@@ -34,16 +34,17 @@ const fetchActiveUsers = async () => {
     }
   };
 const createWorkshopGroup = createAsyncThunk("books/createWorkshopGroup",
-async ({profile,group,groupName},thunkApi)=>{
+async ({profile,group,page,groupName,location},thunkApi)=>{
     try{
         let colData = await collectionRepo.createCollection({title:groupName,isPrivate:true,
-          isOpenCollaboration:false,profileId:profile.id,purpose:"Get Feedback"
+          isOpenCollaboration:false,profileId:profile.id,type:"feedback",location
           
         })
         let collection = colData.collection
        let role = new Role(null,profile,collection,RoleType.editor)
-       let roles = group.map(profile=>new Role(null,profile,collection,RoleType.writer))        
+       let roles = group.map(profile=>new Role(null,profile,collection,RoleType.editor))        
         roles=[...roles,role]
+        await collectionRepo.addStoryListToCollection({id:collection.id,list:[page],profile})
        let data = await roleRepo.patchCollectionRoles({roles,profile,collection})
        console.log("colData",colData) 
        console.log("Data",data)
@@ -61,11 +62,60 @@ async ({profile,group,groupName},thunkApi)=>{
     }
 }
 )
+function mergeSmallArrays(input) {
+  // Flatten the input array to separate items and small arrays
+  let result = [];
+  let flattened = [];
+  for (let i = 0; i <input.length; i++) { 
+    let item = input[i]
+    if (Array.isArray(item)) {
+      if (item.length < 6) {
+        flattened.push(...item);
+      } else {
+        result.push(item); // Keep arrays with 6 or more items as is
+      }
+    } else {
+      result.push(item); // Include non-array items as is
+    }
+  }
+ 
+    // Merge the small items into groups of 6 or less
+ 
+    let tempGroup = [];
+    flattened.forEach(item => {
+      tempGroup.push(item);
+      if (tempGroup.length === 6) {
+        result.push(tempGroup);
+        tempGroup = [];
+      }
+    });
+
+
+
+
+
+  // Push any remaining items as a group
+  if (tempGroup.length > 0) {
+    result.push(tempGroup);
+  }
+
+  return result;
+}
+
+// Example usage
+
+
 const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    async ({radius=50},thunkApi) => {
     try {
-        const response = await axios.get(Enviroment.url+`/workshop/groups?radius=${radius}`);
+        const response = await axios.get(Enviroment.url+`/workshop/groups?radius=${radius}`,{
+          headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+          }
+        });
         const {groups}= response.data
-        return {groups}
+        let result = mergeSmallArrays(groups)
+        console.log(result)
+        return {groups:  result}
       } catch (error) {
         console.log( error);
         return [];

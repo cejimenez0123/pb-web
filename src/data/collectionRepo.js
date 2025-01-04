@@ -41,6 +41,8 @@ import Enviroment from "../core/Enviroment";
         purpose,
         isPrivate,
         profileId,
+        type,
+        location,
         isOpenCollaboration
     }){
        
@@ -50,6 +52,8 @@ import Enviroment from "../core/Enviroment";
             purpose,
             isPrivate:isPrivate,
             profileId:profileId,
+            type,
+            location,
             isOpenCollaboration:isOpenCollaboration
         },{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")

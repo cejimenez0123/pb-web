@@ -258,6 +258,14 @@ const setPageInView = createAction("pages/setPageInView", (params)=> {
     
   
 })
+const setPagesInView = createAction("pages/setPagesInView", (params)=> {
+
+  const {pages} = params
+  return  {payload:
+    pages}
+    
+  
+})
 const setEditingPage = createAction("pages/setEditingPage", (params)=> {
 
   const {page} = params
@@ -674,6 +682,7 @@ try{
           fetchPagesWhereProfileEditor,
           fetchPagesWhereProfileWriter,
           setEditingPage,
+          setPagesInView,
           createPageApproval,
           deletePageApproval,
           unpackPageDoc,
