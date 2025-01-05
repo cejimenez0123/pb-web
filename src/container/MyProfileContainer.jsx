@@ -108,10 +108,10 @@ function MyProfileContainer(props){
    
     
             return(
-            <div className='pb-72'>
-                    <div className='  border-2 border-emerald-300 max-w-[96vw] mx-auto sm:max-w-[60em] sm:mx-auto mt-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
+            <div className='pb-72 pt-8'>
+                    <div className='  border-2 border-emerald-300 max-w-[96vw] mx-auto sm:m-h-[30em] sm:max-w-[50em] sm:mx-auto mt-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
                   
-                        <div className='w-[100%] '>
+                        <div className='  '>
                             <div className='sm:flex-row  flex-col flex justify-between pr-0 pt-4'>
                         <img className={"max-w-36 max-h-36 ml-6 rounded-lg"}src={pictureUrl}/>
                      
@@ -176,10 +176,11 @@ function MyProfileContainer(props){
                             </div> 
                             </div>
                             </div>
+                            {/*  */}
                             <div className='max-w-[96vw] mx-auto sm:max-w-[42em] '>
                             <div role="tablist" className="tabs mt-8  min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800   border-l-2 border-r-2 border-t-2 bg-transparent  text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content pt-1 rounded-lg border-t-2 border-emerald-400 ">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800 [--tab-border-color:green]   border-l-2 border-r-2 border-t-2 bg-transparent  text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content pt-1 sm:py-4  px-2 rounded-lg max-w-[100vw]  border-t-2 border-emerald-400 ">
   <PageIndexList/>
   </div>
 
@@ -187,15 +188,15 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800 bg-transparent  border-emerald-400 border-l-2 border-r-2 border-t-2  text-xl"
+    className="tab text-emerald-800 bg-transparent   [--tab-border-color:green] border-l-2 border-r-2 border-t-2  text-xl"
     aria-label="Books"
     />
-  <div role="tabpanel" className="tab-content bg-transparent  rounded-lg border-t-2 border-emerald-400 pt-1">
+  <div role="tabpanel" className="tab-content sm:py-4  px-2  bg-transparent  rounded-lg border-t-2 border-emerald-400 pt-1">
   <CollectionIndexList cols={books}/>
   </div>
 
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-800 bg-transparent border-emerald-400 border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
-  <div role="tabpanel" className="tab-content bg-transparent  rounded-lg border-t-2 border-emerald-400 ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-800 bg-transparent  [--tab-border-color:green] border-emerald-400 border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
+  <div role="tabpanel" className="tab-content sm:y-4  px-2 bg-transparent  rounded-lg border-t-2 border-emerald-400 ">
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>

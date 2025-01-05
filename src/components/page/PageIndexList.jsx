@@ -11,8 +11,8 @@ const PageIndexList = ()=>{
                    scrollThreshold={1}
                    hasMore={false}
                     endMessage={
-                      <div>
-                        <p>No Content</p>
+                      <div className="p-12" >
+                        <p className="text-emerald-600">fin</p>
                       </div>
                     }
                   >

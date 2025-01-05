@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux"
-
 import InfiniteScroll from "react-infinite-scroll-component"
 import CollectionIndexItem from "./CollectionIndexItem"
 const CollectionIndexList = (props)=>{

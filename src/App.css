@@ -20,26 +20,63 @@
 /* .page p,div,span{
   font-size: 0.9rem !important;
 } */
+@media (min-width:768px) {
+  
 
- .ql-size-small{
+#editor .ql-size-small{
   font-size: 1rem !important;
 } 
 .isGrid .ql-size-normal,p{
   font-size: 1.3rem !important;
 }
 
-.ql-size-large{
+#editor .ql-size-large{
   font-size: 1.5rem !important;
 }
-.ql-size-huge{
+#editor .ql-size-huge{
   font-size: 1.7rem !important;
 } 
 
+
+}
 .container-row{
   display: flex;
   flex-direction: row;
 }
+@media (max-width:768px) {
+  
 
+  #editor .ql-size-small{
+    font-size: 0.8rem !important;
+  } 
+  .isGrid .ql-size-normal,p{
+    font-size: 1.1rem !important;
+  }
+  
+  #editor .ql-size-large{
+    font-size: 1.3rem !important;
+  }
+  #editor .ql-size-huge{
+    font-size: 1.5em !important;
+  } 
+  .page .ql-size-small{
+    font-size: 0.6rem !important;
+  } 
+  .page .isGrid .ql-size-normal,p{
+    font-size: 0.85rem !important;
+  }
+  .page .ql-size-normal{
+    font-size: 0.85rem !important;
+  }
+  
+  .page .ql-size-large{
+    font-size: 1.15rem !important;
+  }
+  .page .ql-size-huge{
+    font-size: 1.35em !important;
+  } 
+  
+  }
 
 :root{
   --text-color:#02120A;

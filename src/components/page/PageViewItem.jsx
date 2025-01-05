@@ -12,6 +12,7 @@ import LinkPreview from "../LinkPreview"
 import PropTypes from 'prop-types'
 import PageSkeleton from "../PageSkeleton"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
+import Paths from "../../core/paths"
 
 
 export default function PageViewItem({page}) {
@@ -22,8 +23,8 @@ export default function PageViewItem({page}) {
     const [pending,isPending]=useState(true)
     
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [profilePic,setProfilePic]=useState(null)
     const [bookmarked,setBookmarked]= useState(false)
     const profilesInView = useSelector(state=>state.users.profilesInView)
     const [commenting,setCommenting]=useState(false)
@@ -45,37 +46,8 @@ export default function PageViewItem({page}) {
     }
  })
   };
-  const onBookmarkPage = ()=>{
-//     if(bookmarked && page){
-//     let pageIdList = bookmarkLibrary.pageIdList.filter(id=>id!=page.id)
-//     const params = {
-//         library:bookmarkLibrary,
-//         pageIdList:pageIdList,
-//         bookIdList: bookmarkLibrary.bookIdList
-//           }
-//           dispatch(updateLibraryContent(params))
-//           setBookmarked(false)
-//     }else{
-//         if(bookmarkLibrary && currentProfile && page){
-//             const pageIdList = [...bookmarkLibrary.pageIdList,page.id]
-//             const params = {
-//                 library:bookmarkLibrary,
-//                 pageIdList:pageIdList,
-//                 bookIdList: bookmarkLibrary.bookIdList
-//                   }
-//             dispatch(updateLibraryContent(params)).then(result=>{
-//                 checkResult(result,(payload)=>{
-//                 const {library} = payload
-//                      let found =library.pageIdList.find(id=>id==page.id)
-//                     setBookmarked(Boolean(found))
-//                     },()=>{
 
-//                 })
-//             })
-//         }
-//     }
-    
-}
+
 let pageDataElement = (<div ></div>)
 if(page){
     switch(page.type){
@@ -100,6 +72,11 @@ useEffect(()=>{
         }else{
             setImage(page.data)
         }
+    }
+    if(page.author){
+        getDownloadPicture(page.author.profilePic).then(url=>
+            setProfilePic(url)
+        )
     }
 },[page])
 const navigateToProfile = ()=>{ 
@@ -127,12 +104,12 @@ let profile = (<div></div>)
 
         return(
         
-        <div className="text-slate-800 ">
+        <div className="page rounded-b-lg ">
       
-            <div className="relative bg-white ">
-            <div className=' absolute '>
-                <div className=" text-white px-4  py-2 rounded-tl-lg text-md bg-gradient-to-br from-emerald-900 to-opacity-40 ">
-                {page.title.length>0?<h6>{page.title}</h6>:<h6>Untitled</h6>}
+            <div className="relative  ">
+            <div onClick={()=>navigate(Paths.profile.createRoute(page.author.id))} className=' absolute   pr-3 flex flex-row justift-start '>
+                <div className=" text-white px-3 flex flex-row py-2 rounded-tl-lg text-elipsis text-md rounded-br-lg bg-gradient-to-br from-emerald-600 to-opacity-30 ">
+                {profilePic?<div  className="overflow-hidden rounded-full my-auto h-7 w-8  border-2 border-white mr-4"><img className="object-scale-down h-6 h-8  " src={profilePic}/></div>:null}{page.title.length>0?<span className="my-auto">{page.title} </span>:<span className="my-auto">Untitled</span>}
                 </div>
                 {profile}
             </div>
