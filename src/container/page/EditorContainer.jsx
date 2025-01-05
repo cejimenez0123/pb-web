@@ -79,7 +79,16 @@ function EditorContainer(props){
     }
     useLayoutEffect(()=>{
         fetchStory()
-
+        // useEffect(() => {
+          const subscription = deleteStory
+        
+          return () => {
+            if(htmlContent.trim.length<1 && titleLocal.length==0){
+              dispatch(subscription({page:{id:pathParams.id}}))
+            }}
+      
+          // };},[])  
+  
     },[])
     const fetchStory = ()=>{
       if(id){ 
@@ -272,7 +281,6 @@ function EditorContainer(props){
         }))
         }}
       }
-        
 
    const topBar=()=>{
     return(<div className=" rounded-lg w-full  mx-auto ">

@@ -47,6 +47,7 @@ import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
               case PageType.text:{
                 return (<div >
                   <RichEditor
+                  page={page}
                                 handleChange={(content)=>{
                                 dispatchContent(content)
 

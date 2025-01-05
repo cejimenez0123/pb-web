@@ -28,8 +28,8 @@ className=" text-white h-48 bg-transparent ">
  <div className="px-3 py-3">
     <div className="font-bold text-l mb-2">{book.title}</div>
     <MediaQuery minWidth={"768px"}>
-        <div className=" max-h-12 sm:max-h-36 overflow-clip">
-     <h5 className="text-left text-white text-sm  m-1 ">{book.purpose}</h5> 
+        <div className=" p-1">
+     <h5 className="text-left text-white text-sm text-ellipsis overflow-hidden m-1 ">{book.purpose}</h5> 
      </div>
       </MediaQuery>
   </div>

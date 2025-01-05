@@ -163,7 +163,7 @@ if(group.length>0 ){
      
         </div>
           <div
-          className='overflow-scroll py-3'
+          className='overflow-scroll mt-3 rounded-lg py-3'
           >{pages?pages.map((page,index)=>{
             return <PageWorkshopItem page={page} index={index} checked={checkedPage} onChecked={e=>{
               let truthy=e.target.value
@@ -188,7 +188,7 @@ if(group.length>0 ){
       </div>
       
  
-      <div className='text-emerald-800 mx-auto max-w-[94vw] sm:border-emerald-600  py-8 sm:shadow-sm sm:min-w-[36em] px-2 pt-20 sm:border-2 sm:rounded-full  h-[40em]'>
+      <div className='text-emerald-800 mx-auto max-w-[94vw] sm:border-emerald-600  py-8 sm:shadow-sm sm:min-w-[36em] px-2 pt-20 sm:border-2 sm:rounded-full  h-[90vh]'>
      <div className='sm:px-4'>
       <h6 className='text-emerald-800 text-2xl font-bold mb-4'>Workshop Groups</h6>
       <div className='overflow-scroll'>{workshopGroups && workshopGroups.length>0 && workshopGroups.map((group, index) => 
@@ -216,8 +216,8 @@ if(group.length>0 ){
         </div>
         </div>
         <div className='border-2 border-emerald-600 w-[92vw]  mx-auto sm:w-[20em] h-[30em] mt-20 p-4 rounded-lg '>
-      <h6 className='text-emerald-800'>Active Users</h6>
-      <ul className='overflow-scroll'>
+      <h6 className='text-emerald-800 text-lg font-bold text-left mx-3'>Active Users</h6>
+      <ul className='overflow-scroll mt-3'>
         {activeUsers && activeUsers.length>0?activeUsers.map((user, index) => (
           <li className='text-emerald-800 my-2 ' key={index}>
             <div className='border-1 text-left px-4 border-emerald-600 p-2 rounded-full'>{user.username}</div></li>

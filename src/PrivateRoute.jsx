@@ -18,6 +18,7 @@ const PrivateRoute = ({loggedIn, children }) => {
           navigate(Paths.login())
         }else{
           if(loading){
+            location.pathname = formerPage
             navigate(formerPage)
           }
         

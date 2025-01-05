@@ -163,7 +163,7 @@ function NavbarContainer(props){
         });
         
         dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
-        title:"Untitled",commentable:true
+        title:"",commentable:true
       })).then(res=>checkResult(res,data=>{
       
           navigate(Paths.editPage.createRoute(data.story.id))
