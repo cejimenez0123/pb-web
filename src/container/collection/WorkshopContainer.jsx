@@ -21,10 +21,10 @@ const WorkshopContainer = (props) => {
   const navigate = useNavigate()
   const pages = useSelector(state=>state.pages.pagesInView)
   const [loading,setLoading]=useState(false)
-  const [error,setError]=useState("")
+  const [error,setError]=useState(null)
   const [radius,setRadius]=useState(50)
   const workshopGroups = useSelector(state=>state.books.groups)
-  
+
   const [location,setLocation]=useState({latitude:40.7128, longitude:74.0060})
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const [checkedPage,setCheckedPaged]=useState(null)
@@ -32,6 +32,14 @@ const WorkshopContainer = (props) => {
     requestLocation()
   
   },[currentProfile])
+  useEffect(()=>{
+setTimeout(()=>{
+  if(error){
+    setError(null)
+  }
+ 
+},4001)
+  },[error])
     const fetchGroups = () => {
       dispatch(fetchWorkshopGroups({radius:radius}))
 
@@ -76,10 +84,12 @@ if(currentProfile && location){
       }
     );
   }
+
   const handleGroupClick=(index)=>{
     let group = workshopGroups[index]
     let groupName = generate({ min: 3, max: 6,join:" " })
-if(group.length>0){
+    if(checkedPage){
+if(group.length>0 ){
     dispatch(createWorkshopGroup({profile:currentProfile,page:checkedPage,group,groupName,location})).then(res=>{
       checkResult(res,payload=>{
         if(payload && payload.collection){
@@ -92,6 +102,7 @@ if(group.length>0){
     })
   }else{
 
+
     const roles = [new Role("",profile,group,RoleType.writer)]
     dispatch(patchCollectionRoles({roles,profileId:currentProfile.id,collection:book})).then(res=>{
       checkResult(res,payload=>{
@@ -100,13 +111,33 @@ if(group.length>0){
 
       })
     })
+  }}else{
+    setError("Please choose a story you want to share!")
   }
   }
   const handleStoryChoice=(page)=>{
 
   }
   return (
-  <div className='sm:w-[98vw] mx-auto justify-between sm:p-4 flex flex-col sm:flex-row '>
+    <div className='sm:p-4  sm:w-[98vw] mx-auto '>
+      <div className='fixed top-1 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
+  {error? <div role="alert" className="alert    alert-warning animate-fade-out">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-6 w-6 shrink-0 stroke-current"
+    fill="none"
+    viewBox="0 0 24 24">
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+  <span>{error}</span>
+</div>:null}
+</div>
+  <div className='justify-between  flex flex-col sm:flex-row '>
+
       <div className=" mx-auto">
     
       {currentProfile?(
@@ -126,7 +157,8 @@ if(group.length>0){
 
       </div>
       <div>
-      <button  className="bg-emerald-700 text-white rounded-full"onClick={fetchGroups}>Find New Groups</button> 
+      <button  className="bg-emerald-700 text-white rounded-full"
+      onClick={fetchGroups}>Find New Groups</button> 
        
      
         </div>
@@ -136,7 +168,18 @@ if(group.length>0){
             return <PageWorkshopItem page={page} index={index} checked={checkedPage} onChecked={e=>{
               let truthy=e.target.value
               if(truthy){
-                setCheckedPaged(page)
+                if(checkedPage.id==page.id){
+                  setCheckedPaged(null)
+
+                }else{
+                  setCheckedPaged(page)
+                  setError(null)
+          
+               
+                }
+               
+              }else{
+                setCheckedPaged(null)
               }
             }}/>
           }):null}</div>
@@ -145,10 +188,10 @@ if(group.length>0){
       </div>
       
  
-      <div className='text-emerald-800 mx-auto max-w-[92vw] sm:border-emerald-600 mx-2 py-8 sm:shadow-sm sm:min-w-[28em] px-2 pt-20 sm:border-2 sm:rounded-full h-[40em]'>
-     
+      <div className='text-emerald-800 mx-auto max-w-[94vw] sm:border-emerald-600  py-8 sm:shadow-sm sm:min-w-[36em] px-2 pt-20 sm:border-2 sm:rounded-full  h-[40em]'>
+     <div className='sm:px-4'>
       <h6 className='text-emerald-800 text-2xl font-bold mb-4'>Workshop Groups</h6>
-      {workshopGroups && workshopGroups.length>0 && workshopGroups.map((group, index) => 
+      <div className='overflow-scroll'>{workshopGroups && workshopGroups.length>0 && workshopGroups.map((group, index) => 
       {
         if(group.length>0){
           return(
@@ -169,6 +212,8 @@ if(group.length>0){
         }
      
        })}
+       </div>
+        </div>
         </div>
         <div className='border-2 border-emerald-600 w-[92vw]  mx-auto sm:w-[20em] h-[30em] mt-20 p-4 rounded-lg '>
       <h6 className='text-emerald-800'>Active Users</h6>
@@ -179,8 +224,9 @@ if(group.length>0){
         )):null}
       </ul>
       </div>
+      
     </div>
- 
+    </div>
   );
 };
 

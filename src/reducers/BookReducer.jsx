@@ -11,7 +11,7 @@ import { createSlice} from "@reduxjs/toolkit"
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
 import { createWorkshopGroup, fetchWorkshopGroups } from "../actions/WorkshopActions"
-
+import { patchCollectionRoles } from "../actions/CollectionActions"
 const initialState = {
     groups:[],
     collections:[],
@@ -19,6 +19,7 @@ const initialState = {
     collectionInView:[],
     loading:false,
     error:"",
+    roles:[],
     bookInView: null,
     role:null
 }
@@ -26,7 +27,14 @@ const bookSlice = createSlice({
 name: 'books',
 initialState,
 extraReducers(builder) {
-builder.addCase(createWorkshopGroup.fulfilled,(state,{payload})=>{
+builder.addCase(patchCollectionRoles.fulfilled,(state,{payload})=>{
+    if(payload.collection){
+        state.bookInView = payload.collection
+    }
+    if(payload.roles){
+        state.roles = payload.collection
+    }
+}).addCase(createWorkshopGroup.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
   
 }).addCase(fetchWorkshopGroups.fulfilled,(state,{payload})=>{

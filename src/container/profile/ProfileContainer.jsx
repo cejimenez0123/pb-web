@@ -5,8 +5,7 @@ import { useDispatch,useSelector } from "react-redux"
 import {    createFollowProfile,
             deleteFollowProfile, 
             fetchProfile,
-            updateHomeCollection,} from "../../actions/UserActions"
-// import ProfileCard from "../components/ProfileCard"
+            updateHomeCollection} from "../../actions/UserActions"
 import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
@@ -25,7 +24,7 @@ function ProfileContainer(props){
     useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
-                
+                    dispatch()
                 },()=>{
                 })
         })

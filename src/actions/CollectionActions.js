@@ -200,7 +200,7 @@ const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",
 
     return {
         roles:data.roles??[],
-        colleciton:data.collection??[]
+        collection:data.collection??[]
     }
 })
 
