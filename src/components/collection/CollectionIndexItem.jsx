@@ -46,12 +46,12 @@ export default function CollectionIndexItem({collection}){
             </div>)
         }
     return(
-        <div className="border-3 shadow-sm rounded-full  py-1 my-2 mx-2 border-emerald-500">
+        <div id={collection.id} className="border-3 shadow-sm rounded-full  py-1 my-2 mx-2 border-emerald-500">
                 <div className={`  px-1 flex flex-row justify-between   `}>
              
                 <div className="text-left my-auto md:ml-4 py-4 mt-1 mx-4 ">
                 <a className={"w-[12em] sm:w-full"}onClick={()=>navigate(Paths.collection.createRoute(collection.id))}> 
-                   {collection && collection.title && collection.title.length>0? <h6 className="text-[0.8rem] sm:text-[1rem] w-[10rem] sm:w-[100%] no-underline text-ellipsis  whitespace-nowrap overflow-hidden text-emerald-800 ml-2 my-auto">{collection.title}</h6>:<h6>Unititled</h6>}
+                   {collection && collection.title && collection.title.length>0? <h6 className="text-[0.8rem] sm:text-[1rem] w-[10rem] sm:w-[100%] no-underline text-ellipsis  whitespace-nowrap overflow-hidden text-emerald-800 ml-2 my-auto">{collection.title}</h6>:<h6 className="text-[0.8rem] sm:text-[1rem]">Unititled</h6>}
                 </a>
                 </div> 
                <div className="my-auto  mx-4  w-fit">

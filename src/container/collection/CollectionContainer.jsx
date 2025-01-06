@@ -90,53 +90,61 @@ if(currentProfile){
           const found =   collection.roles.find(colRole=>{
                    return colRole.profile.id == currentProfile.id
                 })
+                if(found){
+
+           
         const inst =new Role(found.id,currentProfile,collection,found.role,found.created)
         setRole(inst) 
-     
+    }
             }}
     },[collection,currentProfile])
     useLayoutEffect(()=>{
-        let arr = [RoleType.editor,RoleType.writer,RoleType.commenter,RoleType.reader]
-        if(collection && collection.isOpenCollaboration && currentProfile){
+        const allArr = [RoleType.editor,RoleType.writer,RoleType.commenter,RoleType.reader]
+        if(collection && currentProfile && collection.profileId==currentProfile.id){
             setCanUserAdd(true)
+            setCanUserEdit(true)
             setCanUserSee(true)
-            if(collection.profileId==currentProfile.id||(role && role.role==RoleType.editor)){
+            return
+        }else{
+            if(role && allArr.includes(role.role) ){
+                setCanUserSee(true)
+                if(role && role.role==RoleType.editor){
+                setCanUserAdd(true)
                 setCanUserEdit(true)
                 return
-            }else{
-                setCanUserEdit(false)  
-             
-            }
-        }else{
-            if(collection && !collection.isPrivate){
-                setCanUserSee(true)
-                        }else{
-                setCanUserSee(false)
-                            
-            }
-            if(role && arr.includes(role.role) ){
-            setCanUserSee(true)    
-
-            arr = [RoleType.editor,RoleType.writer]
-                if(role && arr.includes(role.role)){
+            }else{  
+                const addArr = [RoleType.editor,RoleType.writer]
+                if(role && addArr.includes(role.role)){
+                    setCanUserSee(true)
                     setCanUserAdd(true)
-
-                if(role && role.role == RoleType.editor || currentProfile.id == collection.profileId){
-                    setCanUserEdit(true)
                     return
-                 }else{
-                    setCanUserEdit(false)
-                    setCanUserAdd(false)
-                    return
-                    
-                } 
+                }else{
+                    if(collection && collection.isOpenCollaboration && currentProfile){
+                        setCanUserAdd(true)
+                    }else{
+                        setCanUserAdd(false)
+                        setCanUserEdit(false)
+                    }
+                    if(collection && !collection.isPrivate){
+                        setCanUserSee(true)
+                                }else{
+                        setCanUserSee(false)
+                    }
+                }
+                
+                
             }
-            
+       
+ 
+
+                
+           
+        
    
     }
 }}
                 
-    ,[role])
+    ,[currentProfile])
     const getContent= ()=>{
         dispatch(clearCollections())
         dispatch(clearPagesInView())
@@ -254,14 +262,14 @@ if(collection && canUserSee){
             <h6 className="text-emerald-800"> Loading</h6>
         </div>)
         }else{
-            if( !canUserAdd && !canUserSee && !canUserEdit){
+            if( !canUserSee){
                     return<div>
                         Private
                     </div>
             }else{
-                return<div>
-                <h6 className="text-emerald-800">Collection Not Found</h6>
-            </div>
+                return<div className="flex flex-row justify-center">
+                <div className="my-auto p-24"><h6 className="text-emerald-800  poppins text-xl">Collection Not Found</h6></div>
+                </div>
             }
            
         }

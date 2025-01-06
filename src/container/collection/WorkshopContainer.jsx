@@ -97,7 +97,7 @@ if(group.length>0 ){
         }
          
       },err=>{
-        window.alert(JSON.stringify(err))
+        setError(err.message)
       })
     })
   }else{
