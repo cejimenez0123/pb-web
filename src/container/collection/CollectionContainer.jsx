@@ -268,7 +268,7 @@ if(collection && canUserSee){
                     </div>
             }else{
                 return<div className="flex flex-row justify-center">
-                <div className="my-auto p-24"><h6 className="text-emerald-800  poppins text-xl">Collection Not Found</h6></div>
+                <div className="my-auto p-24 "><h6 className="text-emerald-800  poppins text-xl ">Collection Not Found</h6></div>
                 </div>
             }
            

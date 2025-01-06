@@ -146,42 +146,6 @@ const contributors= new Contributors(commenters,readers,writers,editors)
 }
 )
 
-const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params,thunkApi)=>{
-    
-   try {
-    const {book,
-          readers,
-          commenters,
-          editors,
-          writers} = params
-   
-      let ref = doc(db,'book',book.id)
-      await updateDoc(ref,{ editors: editors,
-        commenters:commenters,
-        writers: writers,
-        readers: readers,
-      })
-      const contributors= new Contributors(commenters,readers,writers,editors)
-            
-     const newBook =new Book( book.id,
-                book.purpose,
-                book.title,
-                book.profileId,
-                book.pageIdList,
-                book.privacy,
-                book.writingIsOpen,
-                contributors,
-                book.updatedAt,
-                book.created)
-      return{
-        book:newBook
-      }
- 
-    }catch(e){
-      const error = e??new Error("Error: SAVE BOOK ROLES")
-      return {error }
-    }                
-})
 
 const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",async (params,thunkApi)=>{
   try {
@@ -293,12 +257,8 @@ function unpackBookDoc(doc){
     return book
 }
   export {  getPublicBooks,
-         
             getProfileBooks,
-    
             fetchArrayOfBooksAppened,
-         
             appendSaveRolesFoBook,
-            
             fetchBooksWhereProfileEditor,
             fetchBooksWhereProfileWriter}
