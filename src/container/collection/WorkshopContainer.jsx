@@ -10,7 +10,6 @@ import checkResult from '../../core/checkResult';
 import { useNavigate } from 'react-router-dom';
 import Paths from '../../core/paths';
 import { patchCollectionRoles } from '../../actions/CollectionActions.js'
-import { getProfilePages, setPageInView } from '../../actions/PageActions';
 import { getMyStories } from '../../actions/StoryActions';
 import PageWorkshopItem from '../page/PageWorkshopItem';
 import Role from '../../domain/models/role';

@@ -1,7 +1,8 @@
 
 import { 
           setHtmlContent,
-          getProfilePages,
+          getProtectedProfilePages,
+          getPublicProfilePages,
     
           setPageInView,
           fetchPage,
@@ -99,23 +100,17 @@ const pageSlice = createSlice({
    
       .addCase(setHtmlContent,(state,{payload})=>{
         state.editorHtmlContent = payload.html
-      }).addCase(getProfilePages.pending,(state)=>{
-        state.loading = true
-      }).addCase(getProfilePages.fulfilled,(state,{payload})=>{
+      }).addCase(getPublicProfilePages.fulfilled,(state,{payload})=>{
         state.loading = false
     
         state.pagesInView = payload.pageList
-      }).addCase(
-        getProfilePages.rejected,(state,{payload,error})=>{
-          if(error!=null){
-            state.error = error.name
-          }else{
-          state.error = payload.error
-          }
-          state.loading = false
-       
-        }
-      )
+      }).addCase(getProtectedProfilePages.pending,(state)=>{
+        state.loading = true
+      }).addCase(getProtectedProfilePages.fulfilled,(state,{payload})=>{
+        state.loading = false
+    
+        state.pagesInView = payload.pageList
+      })
       .addCase(createStory.rejected,(state,{payload})=>{
         state.loading=false
         state.error = payload.error

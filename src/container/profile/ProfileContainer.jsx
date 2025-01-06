@@ -11,7 +11,7 @@ import ReactGA from 'react-ga4'
 import PageIndexList from "../../components/page/PageIndexList"
 import CollectionIndexList from "../../components/collection/CollectionIndexList"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
-import { getProfilePages } from "../../actions/PageActions"
+import { getProtectedProfilePages,getPublicProfilePages } from "../../actions/PageActions"
 import { createFollow, deleteFollow } from "../../actions/FollowAction"
 import { getProtectedProfileCollections, getPublicProfileCollections } from "../../actions/CollectionActions"
 function ProfileContainer(props){
@@ -41,8 +41,8 @@ function ProfileContainer(props){
     useLayoutEffect(()=>{
 
         if(profile){
-            dispatch(getProfilePages({profile}))
-            currentProfile?dispatch(getProtectedProfileCollections({profile})):dispatch(getPublicProfileCollections({profile}))
+            currentProfile&&localStorage.getItem("token")?dispatch(getProtectedProfilePages({profile})):dispatch(getPublicProfileCollections({profile}))
+            currentProfile&&localStorage.getItem("token")?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile}))
         }
     },[profile,currentProfile])
     useLayoutEffect(()=>{

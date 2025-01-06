@@ -87,13 +87,26 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
   }
 })
 
-const getProfilePages= createAsyncThunk(
-  'pages/getProfilePages',
+const getPublicProfilePages= createAsyncThunk(
+  'pages/getPublicProfilePages',
   async ({profile},thunkApi) => {
     try{
      let token= localStorage.getItem("token")
-    let data=token? await storyRepo.getProtectedProfileStories({profileId:profile.id}):await storyRepo.getPublicProfileStories({profileId:profile.id})
-      console.log(data)
+    let data= await storyRepo.getPublicProfileStories({profileId:profile.id})
+  
+  return {
+    pageList:data.stories}
+  }catch(e){
+
+  return {error:`Page Query Where Error: ${e.message}`}
+}})
+const getProtectedProfilePages= createAsyncThunk(
+  'pages/getProtectedProfilePages',
+  async ({profile},thunkApi) => {
+    try{
+     let token= localStorage.getItem("token")
+    let data= await storyRepo.getProtectedProfileStories({profileId:profile.id})
+  
   return {
     pageList:data.stories}
   }catch(e){
@@ -660,7 +673,8 @@ try{
   export {
           pagesLoading,
           setHtmlContent,
-          getProfilePages,
+          getProtectedProfilePages,
+          getPublicProfilePages,
           
           setPageInView,
           fetchPage,
