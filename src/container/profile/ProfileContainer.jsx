@@ -104,7 +104,7 @@ checkIfFollowing({profile})
     }
    const ProfileCard =()=>{
     if(profile!=null){
-      return(<div className="pb-8 border-2 rounded-lg  sm:m-h-[30em] mx-auto sm:max-w-[52em] border-emerald-800">
+      return(<div className="pb-8 border-3 rounded-lg  sm:m-h-[30em] mx-auto sm:max-w-[52em] border-emerald-400">
         <div className="text-left p-4">
             <div className="flex flex-row">  
             <img src={profilePic} className="max-w-36 object-fit max-h-42 mb-2 rounded-lg" alt=""/>
