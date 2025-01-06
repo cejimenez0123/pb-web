@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import {  setPageInView,setPagesToBeAdded } from "../../actions/PageActions";
 import { PageType } from "../../core/constants";
 import {useNavigate} from 'react-router-dom'
-import addBox from "../../images/icons/add_box.svg"
+import addBox from "../../images/icons/add_circle.svg"
 import edit from "../../images/icons/edit.svg"
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
@@ -79,7 +79,7 @@ function PageIndexItem({page,onDelete}) {
     
    let buttonDiv= (<div>
     <div className="dropdown dropdown-left">
-  <div tabIndex={0} role="button" className=" my-auto"><img className={"min-w-8 min-h-8"}src={addBox}/></div>
+  <div tabIndex={0} role="button" className=" my-auto"><img className={"min-w-8 min-h-8 bg-emerald-800 p-2 rounded-full"}src={addBox}/></div>
   <ul tabIndex={0} className="dropdown-content menu  rounded-box z-[1] md:w-72 p-2">
     <li className="text-green-600 "><a onClick={()=>handleAddClick("book")}>Add to Collection</a></li>
     <li className="text-green-600 "><a >Share</a></li>
