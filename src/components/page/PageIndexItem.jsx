@@ -103,8 +103,8 @@ function PageIndexItem({page,onDelete}) {
               <div  className=" px-1 flex flex-row justify-between  w-[100%]   " >
                 <div className="text-left my-auto mx-4 py-4 mt-1 ">
                
-                <a className="text-emerald-700 no-underline " onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
-                   {page && page.title && page.title.length>0? <h6 className="text-[0.8rem] sm:text-[1.2rem] text-ellipsis  whitespace-nowrap overflow-hidden my-auto w-[12em] ">{page.title}</h6>:<h6>Unititled</h6>}
+                <a className="text-emerald-700 no-underline w-[96%]" onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
+                   {page && page.title && page.title.length>0? <h6 className="text-[0.8rem] sm:text-[1.2rem] text-ellipsis  whitespace-nowrap overflow-hidden my-auto  ">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                 <div className=" my-auto mx-4 w-fit">

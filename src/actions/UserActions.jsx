@@ -416,13 +416,13 @@ const deleteFollowLibrary= createAsyncThunk("users/deleteFollowLibrary", async (
           })
 const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (params,thunkApi)=>{
             try{
-              const {followProfile,follower,following}=params
-              if(followProfile){
-                await deleteDoc(doc(db,"follow_profile",followProfile.id));
-              }else{
-                await deleteDoc(doc(db,"follow_profile",`${follower.id}_${following.id}`));
+              // const {followProfile,follower,following}=params
+              // if(followProfile){
+              //   await deleteDoc(doc(db,"follow_profile",followProfile.id));
+              // }else{
+              //   await deleteDoc(doc(db,"follow_profile",`${follower.id}_${following.id}`));
             
-              }
+              // }
               return {
                 followProfile
               }
@@ -432,19 +432,19 @@ const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (
 })
 const createFollowProfile = createAsyncThunk("users/createFollowProfile", async function(params,thunkApi){
             try{
-                const {
-                    follower,
-                    following
-                }=params
-                const id = `${follower.id}_${following.id}`
-                const created = Timestamp.now()
-                    await setDoc(doc(db,"follow_profile",id), { 
-                        id:id,
-                        followerId: follower.id,
-                        followingId: following.id,
-                        created: created
-                    })
-                    const lb = new FollowProfile(id,follower.id,following.id,created);
+                // const {
+                //     follower,
+                //     following
+                // }=params
+                // const id = `${follower.id}_${following.id}`
+                // const created = Timestamp.now()
+                //     await setDoc(doc(db,"follow_profile",id), { 
+                //         id:id,
+                //         followerId: follower.id,
+                //         followingId: following.id,
+                //         created: created
+                //     })
+                //     const lb = new FollowProfile(id,follower.id,following.id,created);
                 return { 
                     followProfile:lb
                 }

@@ -177,10 +177,10 @@ function MyProfileContainer(props){
                             </div>
                             </div>
                             {/*  */}
-                            <div className='max-w-[96vw] mx-auto sm:max-w-[42em] '>
-                            <div role="tablist" className="tabs mt-8  min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800 [--tab-border-color:green]   border-l-2 border-r-2 border-t-2 bg-transparent  text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content pt-1 sm:py-4  px-2 rounded-lg max-w-[100vw]  border-t-2 border-emerald-400 ">
+                            <div className='max-w-[94vw] mx-auto sm:max-w-[42em] '>
+                            <div role="tablist" className="tabs border-emerald-300 mt-8  min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800 [--tab-border-color:emerald] bg-transparent   border-l-3 border-r-3 border-t-3 text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content pt-1 sm:py-4  px-2 rounded-lg max-w-[100vw]  border-b-3 border-l-3 borde-r-3  border-emerald-300 ">
   <PageIndexList/>
   </div>
 
@@ -188,21 +188,21 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800 bg-transparent   [--tab-border-color:green] border-l-2 border-r-2 border-t-2  text-xl"
+    className="tab text-emerald-800 bg-transparent   [--tab-border-color:rgb(52 211 153)] border-b-3  border-l-3 border-r-3 border-b-3 border-t-1 text-xl"
     aria-label="Books"
     />
-  <div role="tabpanel" className="tab-content sm:py-4  px-2  bg-transparent  rounded-lg border-t-2 border-emerald-400 pt-1">
+  <div role="tabpanel" className="tab-content sm:py-4  px-2  bg-transparent  rounded-lg border-t-2 border-l-3 border-r-3 border-b-3 border-emerald-400 pt-1">
   <CollectionIndexList cols={books}/>
   </div>
 
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-800 bg-transparent  [--tab-border-color:green] border-emerald-400 border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
-  <div role="tabpanel" className="tab-content sm:y-4  px-2 bg-transparent  rounded-lg border-t-2 border-emerald-400 ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-800 bg-transparent  [--tab-border-color:rgb(52 211 153)]  border-emerald-400 border-l-3 border-r-3 border-t-1   shadow-sm text-xl" aria-label="Libraries" />
+  <div role="tabpanel" className="tab-content sm:y-4  px-2 bg-transparent  rounded-lg border-3 border-emerald-400 ">
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>
 </div>
 <Dialog className={
-                "bg-emerald-400 ov erscroll-none"
+                "bg-emerald-400 bg-opacity-30 "
               }
               PaperProps={{
                 style: {
@@ -222,7 +222,7 @@ function MyProfileContainer(props){
                 }}/>
               </Dialog>
               <Dialog className={
-                "bg-emerald-400 w-[100%] md:max-w-[30em] mx-auto overscroll-none"
+                "bg-emerald-400 bg-opacity-30 w-[100%] md:max-w-[30em] mx-auto overscroll-none"
               }
               PaperProps={{
                 style: {

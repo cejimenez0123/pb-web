@@ -5,7 +5,7 @@ const CollectionIndexList = (props)=>{
     if(props.cols){
        
     return(<InfiniteScroll
-                   className="max-w-[40em]"
+                   className="max-w-[96%] mx-auto"
                    dataLength={props.cols.length}
                    next={()=>{}}
                    scrollThreshold={1}

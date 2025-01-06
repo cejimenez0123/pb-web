@@ -11,6 +11,8 @@ import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
 import PageIndexList from "../../components/page/PageIndexList"
 import CollectionIndexList from "../../components/collection/CollectionIndexList"
+import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
+import { getProfilePages } from "../../actions/PageActions"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
 
@@ -20,15 +22,35 @@ function ProfileContainer(props){
     const homeCollection = useSelector(state=>state.users.homeCollection)
     const dispatch = useDispatch()
     const pathParams = useParams()
+    const [profilePic,setProfilePic]=useState(null)
     const [following,setFollowing]=useState(null)
+
     useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
-                    dispatch()
+                const {profile}=payload
+                if(profile){
+                
+                }
+                
                 },()=>{
                 })
         })
     },[])
+    useLayoutEffect(()=>{
+
+        if(profile){
+            dispatch(getProfilePages({profile}))
+
+        }
+    },[profile])
+    useLayoutEffect(()=>{
+        if(profile){
+            getDownloadPicture(profile.profilePic).then(url=>{
+                setProfilePic(url)
+            })
+        }
+    },[profile])
     const onClickFollow = () => {
         if(currentProfile){
             if(following){      
@@ -84,24 +106,27 @@ function ProfileContainer(props){
     let followDiv=()=>{
 
        return following?
-       (<button 
+       (<div 
+        className=""
                 onClick={onClickFollow}>
-                    Follower</button>):(
-         <button   
+                    Follower</div>):(
+         <div className="border-2 border-emerald-600 bg-transparent w-[9rem] rounded-full text-center"
                     onClick={onClickFollow}
-        >Follow</button>)
+        ><h5 className="text-emerald-800 py-2 font-bold">Follow</h5></div>)
     }
    const ProfileCard =()=>{
     if(profile!=null){
-      return(<div className="pb-8">
-        <div className="text-left px-4">
+      return(<div className="pb-8 border-2 rounded-lg  sm:m-h-[30em] mx-auto sm:max-w-[52em] border-emerald-800">
+        <div className="text-left p-4">
             <div className="flex flex-row">  
-            <img src={profile.profilePic} className="max-w-36 max-h-36 mb-2 rounded-lg" alt=""/>
-         
-            <div className="">
-            <h5 className="text-[0.8em] px-2 max-h-48 overflow-scroll">{profile.selfStatement}</h5>
+            <img src={profilePic} className="max-w-36 object-fit max-h-42 mb-2 rounded-lg" alt=""/>
+         <div>
+            <div className="px-3 pt-3 flex flex-col justify-between  h-48">
+           <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem]  text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
+           </div> 
+            <div className="h-fit pb-2"><h5 className="text-emerald-800 text-[1.2rem] font-bold">{profile.username}</h5></div>
         </div></div>
-        <h5 className="mb-2">{profile.username}</h5>
+        </div>
             <div>
                 {followDiv()}
             </div>
@@ -118,11 +143,10 @@ function ProfileContainer(props){
             <div className="pt-8">
                 <ProfileCard/>
             </div>
-            <div className="">
             
-                         <div role="tablist" className="tabs mt-8 shadow-md min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm   border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-600 text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  shadow-sm  sm:max-w-[42rem] md:p-6">
+                         <div role="tablist" className="tabs mt-8 shadow-md min-h-48 rounded-lg  mx-auto max-w-[96vw]   sm:max-w-[42em]  tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  bg-transparent text-emerald-700 text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content mx-auto  border-emerald-400 border-3 w-[100%] h-[100%] rounded-lg  ">
   <PageIndexList/>
   </div>
 
@@ -130,14 +154,14 @@ function ProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-600 bg-transparent  border-emerald-300 border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
+    className="tab text-emerald-700 bg-transparent   text-xl"
     aria-label="Collecitons"
     />
-  <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box pt-1">
+  <div role="tabpanel" className="tab-content bg-transparent border-emerald-400 border-3 w-[100%] h-[100%] rounded-lg  ">
   <CollectionIndexList cols={collections}/>
 </div>
 </div>
-            </div>
+            
         </div> 
             )
 }

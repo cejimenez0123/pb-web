@@ -18,9 +18,7 @@ class StoryRepo{
 
     }
     async getPublicProfileStories({profileId}){
-        let res = await axios.get(this.url+"/profile/"+profileId+"/public",{headers:{
-            'Access-Control-Allow-Origin':"*"
-        }})
+        let res = await axios.get(this.url+"/profile/"+profileId+"/public")
         return res.data
     }
     async getProtectedProfileStories({profileId}){
