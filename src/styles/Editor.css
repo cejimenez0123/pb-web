@@ -129,9 +129,7 @@
          border-bottom: 0.5em !important;
         }
     } 
-.page{
-  width: 40rem;
-}
+
     /* Change the stroke color of Quill icons */
 .ql-stroke {
     stroke: #052e16 !important; /* Change this to your preferred color */

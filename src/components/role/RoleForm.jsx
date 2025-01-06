@@ -47,7 +47,7 @@ function RoleForm({book,onClose}){
     const handlePatchRoles=()=>{
         if(currentProfile){
         if(book.childCollections){
-            dispatch(patchCollectionRoles({roles,profileId:currentProfile.id,colId:book.id}))
+            dispatch(patchCollectionRoles({roles,profile:currentProfile,collection:book}))
         }else{
        
             dispatch(patchRoles({roles:roles,profileId:currentProfile.id,storyId:book.id}))

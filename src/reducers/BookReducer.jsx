@@ -1,11 +1,4 @@
 import { createSlice} from "@reduxjs/toolkit"
-import { 
-        
-        fetchBook,
-        saveRolesForBook,
-      
-    
-        } from "../actions/BookActions"
         import { createCollection, fetchCollection, fetchCollectionProtected, getMyCollections, getPublicBooks,
                 saveRoleToCollection
         ,addCollectionListToCollection,
@@ -17,24 +10,40 @@ import {
         clearCollections
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
-
+import { createWorkshopGroup, fetchWorkshopGroups } from "../actions/WorkshopActions"
+import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
 const initialState = {
-    // booksInView:[],
+    groups:[],
     collections:[],
     collectionToCollectionsList:[],
     collectionInView:[],
     loading:false,
     error:"",
+    roles:[],
     bookInView: null,
-    booksToBeAdded: [],
-    bookRoles: [],
     role:null
 }
 const bookSlice = createSlice({
 name: 'books',
 initialState,
 extraReducers(builder) {
-builder.addCase(clearCollections.type,(state)=>{
+builder.addCase(patchCollectionRoles.fulfilled,(state,{payload})=>{
+    if(payload.collection){
+        state.bookInView = payload.collection
+    }
+    if(payload.roles){
+        state.roles = payload.collection
+    }
+}).addCase(getProtectedProfileCollections.fulfilled,(state,{payload})=>{
+   state.collections= payload.collections
+}).addCase(getPublicProfileCollections.fulfilled,(state,{payload})=>{
+    state.collections = payload.collections
+}).addCase(createWorkshopGroup.fulfilled,(state,{payload})=>{
+    state.collectionInView = payload.collection
+  
+}).addCase(fetchWorkshopGroups.fulfilled,(state,{payload})=>{
+    state.groups = payload.groups
+}).addCase(clearCollections.type,(state)=>{
     state.collections=[]
 }).addCase(deleteCollectionFromCollection.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
@@ -127,19 +136,6 @@ builder.addCase(clearCollections.type,(state)=>{
     state.loading=false
 }).addCase(fetchCollectionProtected.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
-}).addCase(fetchBook.pending,(state)=>{
-    state.loading = true
-
-}).addCase(fetchBook.rejected,(state,{payload})=>{
-    state.loading = false
-    state.error = payload.error
-
-
-}).addCase(saveRolesForBook.rejected,(state,{payload})=>{
-    state.error = payload.error
-}).addCase(saveRolesForBook.fulfilled,(state,{payload})=>{
- 
-    state.bookInView = payload.book
 })
 }
 

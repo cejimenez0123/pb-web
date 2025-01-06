@@ -4,6 +4,7 @@ import collectionRepo from "../data/collectionRepo"
 import Enviroment from "../core/Enviroment"
 import storyRepo from "../data/storyRepo"
 import { client } from "../core/di"
+import roleRepo from "../data/roleRepo"
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
     async (thunkApi) => {
@@ -160,20 +161,20 @@ const getPublicProfileCollections = createAsyncThunk("collection/getPublicProfil
     params,thunkApi
 )=>{
 
-     let res = await collectionRepo.getPublicProfileCollections({id:params["profile"].id})
-
+     let data = await collectionRepo.getPublicProfileCollections({id:params["profile"].id})
+console.log(data)
       return {
-        data: res.data
+      collections:data.collections
       }
 })
 const getProtectedProfileCollections = createAsyncThunk("collection/getProtectedProfileCollections",async (
     params,thunkApi
 )=>{
 
-     let res = await collectionRepo.getProtectedProfileCollections({id:params["profile"].id})
-
+     let data = await collectionRepo.getProtectedProfileCollections({id:params["profile"].id})
+console.log(data)
       return {
-        data: res.data
+        collections:data.collections
       }
 })
 
@@ -191,20 +192,15 @@ const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
    client.initIndex("collection").deleteObject(params.id).wait()
    return data
 })
-// const getPublicCollectionStories=createAsyncThunk("collection/getPublicCollectionStories",
-//     async (params,thunkApi)=>{
-//         let data = await storyRepo.getCollectionStoriesPublic(params)
-     
-//         return {list:data.list}
-//     }
-// )
-const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",async({roles,profileId,colId},thunkApi)=>{
+
+const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",async({roles,profile,collection},thunkApi)=>{
 
 
-    let data= await collectionRepo.patchCollectionRoles({roles,profileId,colId})
+    let data= await roleRepo.patchCollectionRoles({roles,profile,collection})
 
     return {
-        roles:data.roles
+        roles:data.roles??[],
+        collection:data.collection??[]
     }
 })
 

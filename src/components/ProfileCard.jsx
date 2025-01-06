@@ -1,13 +1,7 @@
 import React from "react"
-import { Settings } from "@mui/icons-material"
-import { useNavigate } from "react-router-dom"
-import { IconButton } from "@mui/material"
 import {useSelector} from 'react-redux'
-import theme from "../theme"
 export default function ProfileCard(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
-
-
     if(currentProfile){
         
         return (

@@ -2,13 +2,12 @@ import { useSelector } from "react-redux"
 import { useState,useLayoutEffect, useEffect } from "react"
 import CommentInput from "./CommentInput"
 import CommentThread from "./CommentThread"
-import moreHoriz from "../../images/icons/more_horiz.svg"
 import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import { useDispatch } from "react-redux"
 import { deleteHashtagComment, createHashtagComment } from "../../actions/HashtagActions"
 import checkResult from "../../core/checkResult"
-export default function Comment({comment}){
+export default function Comment({comment,level}){
     const comments = useSelector(state=>state.comments.comments)
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -55,29 +54,34 @@ export default function Comment({comment}){
      
        setBranches(branches)
     },[comments])
-    return(
-        <div class="bg-emerald-400 border-b border-white text-left" id="comment-1">
+    
+    return(<div className="max-w-[99%] ml-1">
 
-           <div className="comment-body  p-4  text-slate-800">
-           <a onClick={()=>navigate(Paths.profile.createRoute(comment.profile.id))} class="comment-author text-sm mr-4">{comment.profile.username}</a>
-           <h6 className="text-sm md:text-lg">{comment.content}</h6>
-            
-                   
-                </div>
-                <div class=" flex flex-row pb-2 justify-between">
+
+        <div class=" text-left   sm:min-w-[30em] max-w-[100%] py-1 sm:my-4 " id={`comment-${comment.id}`}>
+<div className=" p-1 sm:border-emerald-500 sm:border-2 sm:rounded-full ">
+           <div className=" sm:rounded-full bg-emerald-700 text-white rounded-lg sm:px-8 sm:rounded-full  py-4 ">
+           <a onClick={()=>navigate(Paths.profile.createRoute(comment.profile.id))} class=" text-[0.8rem] sm:sm mx-4 text-white  mr-4">{comment.profile.username}</a>
+           <h6 className="text-[0.8rem] md:text-lg  mx-3 p-3">{comment.content}</h6>
+           <div class=" flex flex-row sm:pb-2 justify-between">
                     
-                    {isHelpful?<a onClick={handleDeleteHelpful} className="text-sm text-white mt-4 ml-4">Comment is helpful</a>:<a onClick={handleIfHelpful}className="text-sm mt-4 ml-4"> Was comment helpful?</a>}
+                    {isHelpful?<a onClick={handleDeleteHelpful} className="text-[0.8rem] sm:text-sm text-orange-400  mt-4 ml-6">Glad it helped!</a>:<a onClick={handleIfHelpful}className="text-[0.8rem] sm:text-sm text-white mt-4 ml-8"> Was comment helpful?</a>}
                   
-                   
-                    <a onClick={()=>setReplyInput(!replyInput) }
-                    className="justify-self-end btn rounded-full p-2 btn-info text-white mx-2 text-center">Reply</a>
-                  
+                   <div 
+                   onClick={()=>setReplyInput(!replyInput) }
+                   className="justify-self-end  flex flex-row text-[0.7rem] font-bold sm:text-[0.8rem] mr-2 rounded-full sm:text-[1rem] bg-emerald-100  text-white mx-2 text-center">
+                    <h6 
+                    className="text-emerald-700 my-auto underline-none px-3 ">Reply</h6>
+            </div>      
                 </div>
+                   
+                </div>
+                </div> 
                 {replyInput?<CommentInput parentComment={comment}/>:null}
                 <div>
-                    <CommentThread comments={branches}/>
+                    <CommentThread comments={branches} level={level+1}/>
                     </div>
-            </div>         
-           
+          </div>        
+            </div>  
 )
 }

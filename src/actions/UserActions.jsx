@@ -23,34 +23,53 @@ import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
+import { registerUser } from "./WorkshopActions";
+import LocationPoint from "../domain/models/location";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
-      const {email,password}=params
       try{
-      const authData = await authRepo.startSession({uId:null,email:email,password})
-      localStorage.setItem("token",authData.token)
+      const {email,password}=params
+      const userCred = await signInWithEmailAndPassword(auth,email,password)
       
-      const profileRes = await profileRepo.getMyProfiles({token:authData.token})
-      return{
-        profile: profileRes.profiles[0]
-      }
-    }catch(error){
 
-    try{
-          const userCred = await signInWithEmailAndPassword(auth,email,password)
-          const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
-          localStorage.setItem("token",authData.token)
-          const profileRes = await profileRepo.getMyProfiles({token:authData.token})
-          return{
-            profile: profileRes.profiles[0]
-          }
-        }catch(error){
+      
+      if(userCred.user.uid){
+        const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
+        const {token}=authData
+        localStorage.setItem("token",token)
+        const profileRes = await profileRepo.getMyProfiles({token:token})
+        const profile = profileRes.profiles[0]
+        let location = new LocationPoint(40.7128,74.0060)
+        registerUser(profile.id,location)
+        return{
+          profile:profile
+        }
+      }else{
+
+        const authData = await authRepo.startSession({uId:null,email:email,password})
+        const {token}=authData
+        localStorage.setItem("token",token)
+        const profileRes = await profileRepo.getMyProfiles({token:authData.token})
+        const profile = profileRes.profiles[0]
+        let location = new LocationPoint(40.7128,74.0060)
+        registerUser(profile.id,location)
+        return{
+          profile: profile
+        }
+      }
+
+     
+ 
+
+  
+    }catch(error){ 
+   
           return {
             error:error
           }
         }
-      }}
+      }
 )
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
@@ -186,7 +205,7 @@ async (params,thunkApi) => {
   }
     
     }catch(error){
-      throw error
+      return {error}
     }});
 
 const updateProfile = createAsyncThunk("users/updateProfile",
@@ -364,46 +383,46 @@ const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunk
   }
 })
 const deleteFollowBook= createAsyncThunk("users/deleteFollowBook", async (params,thunkApi)=>{
-            try{
-              const {followBook,book,profile}=params
-              if(followBook){
-                await deleteDoc(doc(db,"follow_book",followBook.id));
-              }else{
-                await deleteDoc(doc(db,"follow_book",`${profile.id}_${book.id}`));
+            // try{
+            //   const {followBook,book,profile}=params
+            //   if(followBook){
+            //     await deleteDoc(doc(db,"follow_book",followBook.id));
+            //   }else{
+            //     await deleteDoc(doc(db,"follow_book",`${profile.id}_${book.id}`));
             
-              }
-              return {
-                followBook
-              }
-            }catch(e){
-              return {error: new Error("Error: Delete Follow Book"+e.message)};
-            }
+            //   }
+            //   return {
+            //     followBook
+            //   }
+            // }catch(e){
+            //   return {error: new Error("Error: Delete Follow Book"+e.message)};
+            // }
           })
 const deleteFollowLibrary= createAsyncThunk("users/deleteFollowLibrary", async (params,thunkApi)=>{
-            try{
-              const {followLibrary,library,profile}=params
-              if(followLibrary){
-                await deleteDoc(doc(db, "follow_library",followLibrary.id));
-              }else{
-                await deleteDoc(doc(db, "follow_library",`${profile.id}_${library.id}`));
+            // try{
+            //   const {followLibrary,library,profile}=params
+            //   if(followLibrary){
+            //     await deleteDoc(doc(db, "follow_library",followLibrary.id));
+            //   }else{
+            //     await deleteDoc(doc(db, "follow_library",`${profile.id}_${library.id}`));
             
-              }
-              return {
-                followLibrary: followLibrary
-              }
-            }catch(e){
-              return {error: new Error("Error: Delete Follow Library"+e.message)};
-            }
+            //   }
+            //   return {
+            //     followLibrary: followLibrary
+            //   }
+            // }catch(e){
+            //   return {error: new Error("Error: Delete Follow Library"+e.message)};
+            // }
           })
 const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (params,thunkApi)=>{
             try{
-              const {followProfile,follower,following}=params
-              if(followProfile){
-                await deleteDoc(doc(db,"follow_profile",followProfile.id));
-              }else{
-                await deleteDoc(doc(db,"follow_profile",`${follower.id}_${following.id}`));
+              // const {followProfile,follower,following}=params
+              // if(followProfile){
+              //   await deleteDoc(doc(db,"follow_profile",followProfile.id));
+              // }else{
+              //   await deleteDoc(doc(db,"follow_profile",`${follower.id}_${following.id}`));
             
-              }
+              // }
               return {
                 followProfile
               }
@@ -417,15 +436,15 @@ const createFollowProfile = createAsyncThunk("users/createFollowProfile", async 
                     follower,
                     following
                 }=params
-                const id = `${follower.id}_${following.id}`
-                const created = Timestamp.now()
-                    await setDoc(doc(db,"follow_profile",id), { 
-                        id:id,
-                        followerId: follower.id,
-                        followingId: following.id,
-                        created: created
-                    })
-                    const lb = new FollowProfile(id,follower.id,following.id,created);
+                // const id = `${follower.id}_${following.id}`
+                // const created = Timestamp.now()
+                //     await setDoc(doc(db,"follow_profile",id), { 
+                //         id:id,
+                //         followerId: follower.id,
+                //         followingId: following.id,
+                //         created: created
+                //     })
+                //     const lb = new FollowProfile(id,follower.id,following.id,created);
                 return { 
                     followProfile:lb
                 }

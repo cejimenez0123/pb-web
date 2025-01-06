@@ -27,7 +27,7 @@ function MyProfileContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collections = useSelector(state=>state.books.collections)
     const [books,setBooks]=useState(collections)
-    const [libraries,setLibraries]=useState(collections.filter(col=>col.collectionIdList>0))
+    const [libraries,setLibraries]=useState([])
     const [openDialog,setOpenDialog]=useState(false)
     const [media,setMedia]=useState(MediaType.stories)
     const [openRefferal,setOpenRefferal]=useState(false)
@@ -60,7 +60,7 @@ function MyProfileContainer(props){
           });
           
           dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
-          title:"Untitled",commentable:true
+          title:"",commentable:true
         })).then(res=>checkResult(res,data=>{
     
             navigate(Paths.editPage.createRoute(data.story.id))
@@ -71,11 +71,11 @@ function MyProfileContainer(props){
       
         
     }
-    const ClickCreateAColleciton = ()=>{
+    const ClickCreateACollection = ()=>{
         ReactGA.event({
-            category: "Colleciton",
+            category: "Collection",
             action: "Navigate to Create Collection",
-            label: "Create A Colleciton", 
+            label: "Create A Collection", 
             value: currentProfile.id,
             nonInteraction: false
           });
@@ -108,28 +108,41 @@ function MyProfileContainer(props){
    
     
             return(
-            <div className='pb-72'>
-                    <div className='  border-2 border-emerald-300 max-w-[96vw] mx-auto sm:max-w-[60em] sm:mx-auto mt-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
+            <div className='pb-72 pt-8'>
+                    <div className='  border-2 border-emerald-300 max-w-[96vw] mx-auto sm:m-h-[30em] sm:max-w-[50em] sm:mx-auto mt-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
                   
-                        <div>
-                            <div className='sm:flex-row flex-col flex  pr-0 pt-4'>
+                        <div className='  '>
+                            <div className='sm:flex-row  flex-col flex justify-between pr-0 pt-4'>
                         <img className={"max-w-36 max-h-36 ml-6 rounded-lg"}src={pictureUrl}/>
                      
                             <div className='flex sm:flex-row ml-4 mt-1  w-[100%] justify-between'>
                             <div className='text-left '>
                             <h5 className='text-xl text-emerald-900 font-bold'>{currentProfile.username}</h5>
                             <h6 className='max-h-48 overflow-scroll text-emerald-900 '>{currentProfile.selfStatement}</h6>
-                           
+                            </div>
+                            {}
+                    
                             <MediaQuery minWidth={'600px'}>
-                            <div className='mt-4 pt-2 flex flex-row'>
-                            <button onClick={ClickWriteAStory} className='bg-emerald-700 rounded-full text-white  sm:text-[1rem] text-bold'>
-                                Write a Story
+                            <div className='justify-around flex flex-row max-w-[96vw] flex-wrap sm:w-60'>
+                                <div>
+                                <button onClick={()=>navigate(Paths.workshop.route())}
+                                className='bg-emerald-700 rounded-full text-white w-[9rem] text-center py-2 sm:text-[0.8rem] text-bold'>
+                                    <h6 className=''>Find a  Group</h6>
+                                </button>
+                                </div>
+                                <div>
+                            <button onClick={ClickWriteAStory} className='bg-emerald-700 rounded-full text-white w-[9rem] py-2  text-center sm:text-[0.8rem] text-bold'>
+                                <h6 >Write a Story</h6>
                             </button>
-                           
-                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 rounded-full md:ml-4 text-white sm:text-[1rem]   text-bold'>
-                                Create Collection
+                            </div>
+                            <div>
+                            <button onClick={ClickCreateACollection} className='bg-emerald-700 rounded-full  w-[9rem] text-white sm:text-[0.8rem] py-2   text-bold'>
+                                <h6 >Create Collection</h6>
                             </button>
+                            </div>
+                            <div>
                             <a onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 my-4 text-emerald-800'>Refer Someone?</a>
+                            </div>
                             </div> 
                             </MediaQuery>
                            
@@ -146,7 +159,7 @@ function MyProfileContainer(props){
                             </div>
                             </MediaQuery>
                        
-                        </div>
+                       
                         </div>
                         <div className='text-left mt-2'>
                         <MediaQuery maxWidth={'600px'}>
@@ -154,7 +167,7 @@ function MyProfileContainer(props){
                             <button onClick={ClickWriteAStory} className='bg-emerald-700 max-w-48 rounded-full text-white mt-2 sm:text-xl text-bold'>
                                 Write a Story
                             </button>
-                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 max-w-48 rounded-full sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
+                            <button onClick={ClickCreateACollection} className='bg-emerald-700 max-w-48 rounded-full sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
                             <a onClick={()=>setOpenRefferal(true)}className='my-4 text-sm mx-4 text-emerald-800'>Refer Someone?</a>
@@ -163,10 +176,11 @@ function MyProfileContainer(props){
                             </div> 
                             </div>
                             </div>
-                            <div className='max-w-[96vw] mx-auto sm:max-w-[42em] '>
-                            <div role="tablist" className="tabs mt-8  min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800   border-l-2 border-r-2 border-t-2 bg-transparent  text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content pt-1 rounded-lg border-t-2 border-emerald-400 ">
+                            {/*  */}
+                            <div className='max-w-[94vw] mx-auto sm:max-w-[42em] '>
+                            <div role="tablist" className="tabs border-emerald-300 mt-8  min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800 [--tab-border-color:emerald] bg-transparent   border-l-3 border-r-3 border-t-3 text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content pt-1 sm:py-4  px-2 rounded-lg max-w-[100vw]  border-b-3 border-l-3 borde-r-3  border-emerald-300 ">
   <PageIndexList/>
   </div>
 
@@ -174,21 +188,21 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800 bg-transparent  border-emerald-400 border-l-2 border-r-2 border-t-2  text-xl"
+    className="tab text-emerald-800 bg-transparent   [--tab-border-color:rgb(52 211 153)] border-b-3  border-l-3 border-r-3 border-b-3 border-t-1 text-xl"
     aria-label="Books"
     />
-  <div role="tabpanel" className="tab-content bg-transparent  rounded-lg border-t-2 border-emerald-400 pt-1">
+  <div role="tabpanel" className="tab-content sm:py-4  px-2  bg-transparent  rounded-lg border-t-2 border-l-3 border-r-3 border-b-3 border-emerald-400 pt-1">
   <CollectionIndexList cols={books}/>
   </div>
 
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-800 bg-transparent border-emerald-400 border-l-2 border-r-2 border-t-2   shadow-sm text-xl" aria-label="Libraries" />
-  <div role="tabpanel" className="tab-content bg-transparent  rounded-lg border-t-2 border-emerald-400 ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-800 bg-transparent  [--tab-border-color:rgb(52 211 153)]  border-emerald-400 border-l-3 border-r-3 border-t-1   shadow-sm text-xl" aria-label="Libraries" />
+  <div role="tabpanel" className="tab-content sm:y-4  px-2 bg-transparent  rounded-lg border-3 border-emerald-400 ">
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>
 </div>
 <Dialog className={
-                "bg-emerald-400 ov erscroll-none"
+                "bg-emerald-400 bg-opacity-30 "
               }
               PaperProps={{
                 style: {
@@ -208,7 +222,7 @@ function MyProfileContainer(props){
                 }}/>
               </Dialog>
               <Dialog className={
-                "bg-emerald-400 w-[100%] md:max-w-[30em] mx-auto overscroll-none"
+                "bg-emerald-400 bg-opacity-30 w-[100%] md:max-w-[30em] mx-auto overscroll-none"
               }
               PaperProps={{
                 style: {

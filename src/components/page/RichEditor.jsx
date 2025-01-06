@@ -7,12 +7,12 @@ import { useDispatch } from "react-redux";
 import { setHtmlContent } from "../../actions/PageActions";
 
 const fonts = ["Arial","Courier New","Georgia"]
-export default function RichEditor({handleChange}){
+export default function RichEditor({page,handleChange}){
 
     
-      const page = useSelector(state=>state.pages.pageInView)
-      const [html,setHtml] = useState(page.data)
-    const dispatch = useDispatch()
+     
+      const [html,setHtml] = useState(page?page.data:"")
+   
  
     const modules = {
       toolbar: [

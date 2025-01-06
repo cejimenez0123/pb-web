@@ -37,6 +37,8 @@ import AddToCollectionContainer from './container/collection/AddToCollection';
 import EditCollectionContainer from './container/collection/EditCollectionContainer.jsx';
 import SignUpContainer from './container/auth/SignUpContainer.jsx';
 import { getHashtags, getProfileHashtagCommentUse } from './actions/HashtagActions.js';
+import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
+
 function App(props) {
  
   const dispatch = useDispatch()
@@ -56,19 +58,18 @@ function App(props) {
     fetchData()
   },[props.currentProfile])
   const fetchData = ()=>{
-    if(props.currentProfile!=null){
-
+    const {currentProfile}=props
+    if(currentProfile){
       dispatch(getHashtags())
-      dispatch(getProfileHashtagCommentUse({profileId:props.currentProfile.id}))
-  
+      dispatch(getProfileHashtagCommentUse({profileId:currentProfile.id}))
     }
  
   }
-   
+
   return (
       <Context.Provider value={{formerPage,setFormerPage,isSaved,setIsSaved}}>
                 <Router>
-        {/* from-emerald-800 to-emerald-600 */}
+      
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
@@ -83,6 +84,10 @@ function App(props) {
   rel="stylesheet"
   href="https://unpkg.com/react-quill@1.3.3/dist/quill.snow.css"
 />
+<script src="/socket.io/socket.io.js"></script>
+
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+
 <script
   src="https://unpkg.com/react@16/umd/react.development.js"
   crossorigin
@@ -171,11 +176,14 @@ function App(props) {
           <MyProfileContainer currentProfile={props.currentProfile} 
                               pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
-                              // librariesInView={props.librariesInView}
+                          
                               />
        </PrivateRoute>
       }
     />
+    <Route 
+    path={Paths.workshop.route()}
+    element={<WorkshopContainer/>}/>
     <Route path="/profile/:id" element={
       <ProfileContainer profile={props.profileInView}/>
       }/>
@@ -271,7 +279,7 @@ function mapStateToProps(state){
     currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,
     pagesInView: state.pages.pagesInView,
-    // librariesInView: state.libraries.librariesInView,
+   
     bookLoading: state.books.loading,
     userLoading: state.users.loading
   }

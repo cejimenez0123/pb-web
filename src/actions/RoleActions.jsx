@@ -21,13 +21,7 @@ const fetchStoryRoles=createAsyncThunk("roles/fetchStoryRoles",async ({storyId},
      roles: data.roles
     }
 })
-const patchCollectionRoles=createAsyncThunk("roles/patchCollectionRoles",async (params,thunkApi)=>{
 
-    let data = await roleRepo.patchCollectionRole(params)
-    return {
-     roles: data.roles
-    }
-})
 const postCollectionRole=createAsyncThunk("books/postCollectionRoles",async ({type,profileId,collectionId},thunkApi)=>{
 
     let data = await roleRepo.postCollectionRole({type,profileId,collectionId})
@@ -56,7 +50,6 @@ export {
     patchRoles,
     fetchStoryRoles,
     fetchCollectionRoles,
-    patchCollectionRoles,
     postCollectionRole,
     deleteCollectionRole
 }

@@ -34,7 +34,7 @@ class RoleRepo{
         console.log("rsultd",res)
         return res.data
     }
-    async patchCollectionRole({roles,profile,collection}){
+    async patchCollectionRoles({roles,profile,collection}){
 
         let res = await axios.put(this.url+"/collection",{roles,profileId:profile.id,collectionId:collection.id},{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")

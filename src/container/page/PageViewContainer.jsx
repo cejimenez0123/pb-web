@@ -71,7 +71,7 @@ export default function PageViewContainer(props){
         }
     }
     return(<div className="  mx-auto">
-  <div className=" max-w-[96vw]  my-8 sm:max-w-[42rem] mx-auto">     
+  <div className=" max-w-[96vw]  my-8 sm:max-w-[44em] mx-auto">     
     {title()}
     {pageDiv()}
     

@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux"
-
 import InfiniteScroll from "react-infinite-scroll-component"
 import CollectionIndexItem from "./CollectionIndexItem"
 const CollectionIndexList = (props)=>{
@@ -7,7 +5,7 @@ const CollectionIndexList = (props)=>{
     if(props.cols){
        
     return(<InfiniteScroll
-                   className="max-w-[40em]"
+                   className="max-w-[96%] max-h-[36em] py-2 overflow-scroll mx-auto"
                    dataLength={props.cols.length}
                    next={()=>{}}
                    scrollThreshold={1}

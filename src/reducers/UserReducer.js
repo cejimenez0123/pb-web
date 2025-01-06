@@ -28,6 +28,7 @@ import {    logIn ,
 import { createProfile, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
+import { createFollow, deleteFollow } from "../actions/FollowAction"
 const initialState = {
     signedIn: false,
     currentProfile: null,
@@ -52,6 +53,16 @@ const userSlice = createSlice({
             state.loading=false
         }).addCase(fetchProfiles.pending,(state,{payload})=>{
             state.loading = true
+        }).addCase(createFollow.fulfilled,(state,{payload})=>{
+            const {follow}=payload
+            if(follow && follow.following){
+                state.profileInView = follow.following
+            }
+
+        }).addCase(deleteFollow.fulfilled,(state,{payload})=>{
+            if(payload.profile){
+                state.profileInView = payload.profile
+            }
         })
         .addCase(logIn.pending,(state) => {
         state.loading = true
@@ -86,14 +97,12 @@ const userSlice = createSlice({
     }).addCase(signUp.rejected,(state,{payload})=>{   
         state.error = payload.error
     }).addCase(getCurrentProfile.rejected,(state,{payload})=>{ 
-        if(payload.error){
+        if(payload && payload.error){
             state.loading = false
             state.signedIn = false
             state.currentProfile = null
             localStorage.clear()
         }  
-      
-        
     }).addCase(postStoryHistory.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
     }).addCase(postCollectionHistory.fulfilled,(state,{payload})=>{
@@ -104,13 +113,7 @@ const userSlice = createSlice({
        state.currentProfile = payload.profile
        state.loading = false
     })
-    // .addCase(fetchAllProfiles.fulfilled,(state,{ payload })=>{
-    //     state.profilesInView = payload.profileList
-    //     state.loading=false
-    // }).addCase(fetchAllProfiles.rejected,(state,{payload})=>{
-    //     state.error = payload.error
-    //     state.loading = false
-    // })
+ 
     .addCase(fetchProfile.pending,(state)=>{
         state.loading=true
     }).addCase(fetchProfile.fulfilled,(state,{ payload })=>{

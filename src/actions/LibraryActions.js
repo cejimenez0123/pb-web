@@ -34,47 +34,7 @@ const updateLibrary = createAsyncThunk("libraries/updateLibrary", async function
     }
   
   
-  })
-  // const updateLibraryContent = createAsyncThunk("libraries/updateLibraryContent", async function(params,thunkApi){
-
-    
-  //   try{
-  //     const {
-  //       library,
-  //       pageIdList,
-  //       bookIdList
-  //         }=params
-
-  //     let updatedAt =  Timestamp.now()
-  //     const ref =doc(db, "library", library.id)
-      
-  //   await updateDoc(ref, {
-  //       pageIdList: pageIdList,
-  //           bookIdList: bookIdList,
-  //           updatedAt: updatedAt
-  //         });
-  //       const contributors= new Contributors(library.commenters,
-  //         library.readers,library.writers,library.editors)
-  //     const newLibrary =new Library(library.id,
-  //                 library.name,library.profileId,
-  //                 library.purpose,pageIdList,
-  //                 bookIdList,
-  //                 library.writingIsOpen,
-  //                 library.privacy,
-  //                 contributors,
-  //                 updatedAt,
-  //                 library.created)
-  //       return { library: newLibrary }
-  //       }catch(error){
-    
-  //         return {
-  //           error: new Error(`Error: update conteent Library ${error.message}`)
-  //         }
-  //       }
-      
-      
-  //     })
-      
+  })  
 const   appendLibraryContent = createAsyncThunk("libraries/updateLibraryContent", async function(params,thunkApi){
 
     
@@ -253,17 +213,7 @@ const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (
     
   }
 )
-const deleteLibrary = createAsyncThunk("libraries/deleteLibrary", async (params,thunkApi)=>{
-  
-  // try{
-  //   const {library }=params
-  // const data = await collectionRepo.deleteCollection({id:library.id})
-  // client.initIndex("library").deleteObject(library.id).wait()
-  //   return {library:data}
-  // }catch(e){
-  //   return {error: new Error("Error: Delete Library"+e.message)};
-  // }
-})
+
 const fetchArrayOfLibraries = createAsyncThunk("libraries/fetchArrayOfLibraries",async (params,thunkApi)=>{
   try{
     const libraryIdList = params["libraryIdList"]
@@ -463,7 +413,6 @@ export {  fetchLibrary,
           setLibraryInView,
           saveRolesForLibrary,
           getPublicLibraries,
-          deleteLibrary,
           fetchArrayOfLibraries,
           fetchArrayOfLibrariesAppend,
           clearLibrariesInView,

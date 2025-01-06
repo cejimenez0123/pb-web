@@ -5,6 +5,9 @@ const Paths ={
         createRoute:(id)=>{return `/library/${id}`;}},
     page:{ route: ()=>`/page/:id`,createRoute:(id)=>{return `/page/${id}`
     }},
+    workshop:{
+        route:()=>"/workshop"
+    },
     editCollection:{
         route: ()=>`/collection/:id/edit`,
         createRoute:(id)=>{return `/collection/${id}/edit`;}},
@@ -31,7 +34,7 @@ const Paths ={
         route:'/collection/:id/add',
         createRoute:(id)=>{return `/collection/${id}/add`},
     addItemsToLibrary:(id)=>{return `/library/${id}/add`},},
-    createColleciton:{
+    createCollection:{
         route:()=>{return "/collection"}
     },
     addStoryToCollection:{

@@ -24,6 +24,8 @@ export default function CollectionContainer(props){
     const collection = useSelector(state=>state.books.collectionInView)
     const pending = useSelector(state=>state.books.loading)
     const [canUserAdd,setCanUserAdd]=useState(false)
+    const [canUserEdit,setCanUserEdit]=useState(false)
+    const [canUserSee,setCanUserSee]=useState(false)
     const [role,setRole]=useState(null)
     const collections = useSelector(state=>state.books.collections)
     const params = useParams()
@@ -53,9 +55,12 @@ export default function CollectionContainer(props){
     }
     const handleFollow = ()=>{
 if(currentProfile){
+    let type = collection.followersAre??RoleType.commenter
+        if(currentProfile.id == collection.profileId){
+            type = RoleType.editor
+        }
 
-
-        dispatch(postCollectionRole({type:collection.followersAre??RoleType.commenter,profileId:currentProfile.id,collectionId:collection.id}))
+        dispatch(postCollectionRole({type:type,profileId:currentProfile.id,collectionId:collection.id}))
         .then(res=>{
             checkResult(res,payload=>{
            
@@ -75,26 +80,71 @@ if(currentProfile){
        getCol()
     },[id])
     useLayoutEffect(()=>{
-        if(collection.isOpenCollaboration && currentProfile){
-            setCanUserAdd(true)
-            return
-        }
         if(collection && currentProfile){
-            const arr = [RoleType.writer,RoleType.editor]
-            if(collection.roles){
-             let role =   collection.roles.find(role=>{
-                   return role.profile.id == currentProfile.id
-                })
+     
+     
+     
+        if(collection.roles){
 
-                if(role && arr.includes(role.role)){
+          
+          const found =   collection.roles.find(colRole=>{
+                   return colRole.profile.id == currentProfile.id
+                })
+                if(found){
+
+           
+        const inst =new Role(found.id,currentProfile,collection,found.role,found.created)
+        setRole(inst) 
+    }
+            }}
+    },[collection,currentProfile])
+    useLayoutEffect(()=>{
+        const allArr = [RoleType.editor,RoleType.writer,RoleType.commenter,RoleType.reader]
+        if(collection && currentProfile && collection.profileId==currentProfile.id){
+            setCanUserAdd(true)
+            setCanUserEdit(true)
+            setCanUserSee(true)
+            return
+        }else{
+            if(role && allArr.includes(role.role) ){
+                setCanUserSee(true)
+                if(role && role.role==RoleType.editor){
+                setCanUserAdd(true)
+                setCanUserEdit(true)
+                return
+            }else{  
+                const addArr = [RoleType.editor,RoleType.writer]
+                if(role && addArr.includes(role.role)){
+                    setCanUserSee(true)
                     setCanUserAdd(true)
                     return
+                }else{
+                    if(collection && collection.isOpenCollaboration && currentProfile){
+                        setCanUserAdd(true)
+                    }else{
+                        setCanUserAdd(false)
+                        setCanUserEdit(false)
+                    }
+                    if(collection && !collection.isPrivate){
+                        setCanUserSee(true)
+                                }else{
+                        setCanUserSee(false)
+                    }
                 }
+                
+                
             }
-        }
-        setCanUserAdd(false)
-    },[collection])
-  
+       
+ 
+
+                
+           
+        
+   
+    }
+}}
+                
+    ,[currentProfile])
     const getContent= ()=>{
         dispatch(clearCollections())
         dispatch(clearPagesInView())
@@ -109,6 +159,7 @@ if(currentProfile){
      
             if(foundRole){
             const fRole = new Role(foundRole.id,currentProfile,collection,foundRole.role,foundRole.created)
+           
             setRole(fRole)
            }else{
             setRole(null)
@@ -149,41 +200,35 @@ if(currentProfile){
    className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"} >
         {role.role}
    </button>}
-   {(true)?
    <div
     className="flex-row flex mx-2"
    >
+   {canUserAdd?
+
     <img onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))
-   }className="rounded-full bg-emerald-800 p-3 mr-2 my-auto"src={add}/>
-   {currentProfile && collection.profileId==currentProfile.id?<img 
+   }className="rounded-full bg-emerald-800 p-3 mr-2 my-auto"src={add}/>:null}
+   {canUserEdit?
+   
+   <img 
    onClick={()=>{
   
     navigate(Paths.editCollection.createRoute(collection.id))}}
-   className="rounded-full bg-emerald-800 p-3  my-auto"src={edit}/>:null}</div>:null}
+   className="rounded-full bg-emerald-800 p-3  my-auto"src={edit}/>:null}</div>:
+
 
 
 
    
    </div></div>)}
-if(!collection){
-    if(pending){
-    return(<div>
-        <h6 className="text-emerald-800"> Loading</h6>
-    </div>)
-    }else{
-        <div>
-            <h6 className="text-emerald-800">Collection Not Found</h6>
-        </div>
-    }
-}
-if(collection && collections){
+
+if(collection && canUserSee){
   
 
     return(<>
 
 <div className="pb-[10rem] ">       {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
         <div className="text-left  max-w-[100vw]    mx-auto ">
-            {collection && collections.length>0? <div>
+            {collections && collections.length>0? <div>
                 <h3 className="text-2xl text-emerald-800 font-bold text-center">Anthologies</h3>:
             <div>
                 <InfiniteScroll
@@ -211,6 +256,23 @@ if(collection && collections){
             </div>
             </div> 
     </>)
+}else{
+    if(pending){
+        return(<div>
+            <h6 className="text-emerald-800"> Loading</h6>
+        </div>)
+        }else{
+            if( !canUserSee){
+                    return<div>
+                        Private
+                    </div>
+            }else{
+                return<div className="flex flex-row justify-center">
+                <div className="my-auto p-24 "><h6 className="text-emerald-800  poppins text-xl ">Collection Not Found</h6></div>
+                </div>
+            }
+           
+        }
 }
 
 }

@@ -17,10 +17,17 @@ class StoryRepo{
         return res.data
 
     }
-    async getProfileStories({profileId}){
-        let res = await axios.get(this.url+"/profile/"+profileId+"/public",{headers:{
-            Authorization: "Bearer "+localStorage.getItem(this.token),'Access-Control-Allow-Origin':"*"
-        }})
+    async getPublicProfileStories({profileId}){
+        let res = await axios.get(this.url+"/profile/"+profileId+"/public")
+        return res.data
+    }
+    async getProtectedProfileStories({profileId}){
+        let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
+            headers:{
+                Authorization:"Bearer "+localStorage.getItem("token")
+            }
+        })
+
         return res.data
     }
     async getStoryProtected({id}){
@@ -36,8 +43,8 @@ class StoryRepo{
         let res = await axios.get(this.url+"/"+id+"/public")
         return res.data
     }
-    async getMyStories(props){
-        let res = await axios.get(this.url+"/profile/private",{
+    async getMyStories({profile,draft=""}){
+        let res = await axios.get(this.url+"/profile/private/"+draft,{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem(this.token)
                 

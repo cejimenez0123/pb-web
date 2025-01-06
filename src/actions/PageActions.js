@@ -89,10 +89,11 @@ const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>
 
 const getProfilePages= createAsyncThunk(
   'pages/getProfilePages',
-  async (params,thunkApi) => {
+  async ({profile},thunkApi) => {
     try{
-    let data = await storyRepo.getProfileStories({profileId:params["profile"].id})
-
+     let token= localStorage.getItem("token")
+    let data=token? await storyRepo.getProtectedProfileStories({profileId:profile.id}):await storyRepo.getPublicProfileStories({profileId:profile.id})
+      console.log(data)
   return {
     pageList:data.stories}
   }catch(e){
@@ -255,6 +256,14 @@ const setPageInView = createAction("pages/setPageInView", (params)=> {
   const {page} = params
   return  {payload:
     page}
+    
+  
+})
+const setPagesInView = createAction("pages/setPagesInView", (params)=> {
+
+  const {pages} = params
+  return  {payload:
+    pages}
     
   
 })
@@ -674,6 +683,7 @@ try{
           fetchPagesWhereProfileEditor,
           fetchPagesWhereProfileWriter,
           setEditingPage,
+          setPagesInView,
           createPageApproval,
           deletePageApproval,
           unpackPageDoc,

@@ -74,61 +74,6 @@ const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thun
     }
   )
   const clearBooksInView = createAction("books/clearBooksInView")
-//   const createBook = createAsyncThunk("books/createBook", async function(params,thunkApi){
-
-//     try{
-       
-//         const {
-//             title,
-//             purpose,
-//             profileId,
-//             pageIdList,
-//             privacy,
-//             writingIsOpen,
-//             commenters,
-//             editors,
-//             readers,
-//             writers,
-//           }=params
-//           const data = await collectionRepo.createCollection({name:title,
-//             profileId:profileId, purpose:purpose,privacy:privacy,writingIsOpen:writingIsOpen
-//           })
-// if(!privacy){
-//             client.initIndex("collection").saveObject(
-//               {objectID:data.id,title:params.title,type:"collection"}).wait()
-//           }      
-
-
-//     return { book:data.book }
-//     }catch(error){
-  
-//       return {
-//         error: new Error(`Error: CreateBook ${error.message}`)
-//       }
-//     }})
-
-
-    const fetchArrayOfBooks = createAsyncThunk("books/fetchArrayOfBooks",async (params,thunkApi)=>{
-      try{
-      
-      const bookIdList = params["bookIdList"]
-      
-      const promises = bookIdList.map((bId) => {
-        const bookRef = doc(db, "book", bId);
-        return getDoc(bookRef);
-      });
-      // Use Promise.all to resolve all promises concurrently
-      let snapshots = await Promise.all(promises)
-      let bookList = snapshots.map(snapshot => unpackBookDoc(snapshot))
-
-        return {
-          bookList
-        }
-      }catch(err){
-        const error = err??new Error("Error: Fetch Array of Books")
-        return {error }
-      }
-})
 const fetchArrayOfBooksAppened = createAsyncThunk("books/fetchArrayOfBooksAppend",async (params,thunkApi)=>{
 
   const ref = collection(db,"book")
@@ -201,42 +146,6 @@ const contributors= new Contributors(commenters,readers,writers,editors)
 }
 )
 
-const saveRolesForBook = createAsyncThunk("books/saveRolesForBook",async (params,thunkApi)=>{
-    
-   try {
-    const {book,
-          readers,
-          commenters,
-          editors,
-          writers} = params
-   
-      let ref = doc(db,'book',book.id)
-      await updateDoc(ref,{ editors: editors,
-        commenters:commenters,
-        writers: writers,
-        readers: readers,
-      })
-      const contributors= new Contributors(commenters,readers,writers,editors)
-            
-     const newBook =new Book( book.id,
-                book.purpose,
-                book.title,
-                book.profileId,
-                book.pageIdList,
-                book.privacy,
-                book.writingIsOpen,
-                contributors,
-                book.updatedAt,
-                book.created)
-      return{
-        book:newBook
-      }
- 
-    }catch(e){
-      const error = e??new Error("Error: SAVE BOOK ROLES")
-      return {error }
-    }                
-})
 
 const appendSaveRolesFoBook= createAsyncThunk("books/appendSaveRolesForBooks",async (params,thunkApi)=>{
   try {
@@ -348,13 +257,8 @@ function unpackBookDoc(doc){
     return book
 }
   export {  getPublicBooks,
-            fetchBook,
-            fetchArrayOfBooks,
             getProfileBooks,
-            // createBook,
             fetchArrayOfBooksAppened,
-            saveRolesForBook,
             appendSaveRolesFoBook,
-            // updateBookContent,
             fetchBooksWhereProfileEditor,
             fetchBooksWhereProfileWriter}

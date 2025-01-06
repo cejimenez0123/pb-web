@@ -1,84 +1,90 @@
 
 import { useParams } from "react-router-dom"
-import { useLayoutEffect,useState} from "react"
+import { useEffect, useLayoutEffect,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
-import {    createFollowProfile,
-            deleteFollowProfile, 
+import { 
             fetchProfile,
-            updateHomeCollection,fetchFollowProfilesForProfile } from "../../actions/UserActions"
-// import ProfileCard from "../components/ProfileCard"
-import theme from "../../theme"
+        } from "../../actions/UserActions"
 import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
 import PageIndexList from "../../components/page/PageIndexList"
 import CollectionIndexList from "../../components/collection/CollectionIndexList"
+import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
+import { getProfilePages } from "../../actions/PageActions"
+import { createFollow, deleteFollow } from "../../actions/FollowAction"
+import { getProtectedProfileCollections, getPublicProfileCollections } from "../../actions/CollectionActions"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
 
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collections = useSelector(state=>state.books.collections)
-    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const profile = useSelector(state=>state.users.profileInView)
-    const followedProfiles = useSelector(state=>state.users.followedProfiles)
     const homeCollection = useSelector(state=>state.users.homeCollection)
     const dispatch = useDispatch()
     const pathParams = useParams()
+    const [profilePic,setProfilePic]=useState(null)
     const [following,setFollowing]=useState(null)
+
     useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
+                const {profile}=payload
+                    if(profile){
+                
+                    }
                 
                 },()=>{
                 })
         })
     },[])
+    useLayoutEffect(()=>{
+
+        if(profile){
+            dispatch(getProfilePages({profile}))
+            currentProfile?dispatch(getProtectedProfileCollections({profile})):dispatch(getPublicProfileCollections({profile}))
+        }
+    },[profile,currentProfile])
+    useLayoutEffect(()=>{
+        if(profile){
+            getDownloadPicture(profile.profilePic).then(url=>{
+                setProfilePic(url)
+            })
+        }
+    },[profile])
+    useEffect(()=>{
+checkIfFollowing({profile})
+
+    },[profile?profile.followers:null,currentProfile])
+    const checkIfFollowing =({profile})=>{
+
+    if(currentProfile && profile && profile.followers){
+        let found = profile.followers.find(follow=>follow.followerId==currentProfile.id)
+         setFollowing(found)
+     }
+    }
     const onClickFollow = () => {
         if(currentProfile){
-            if(following){      
+            if(following){    
+
+              dispatch(deleteFollow({follow:following})).then(res=>
+                checkResult(res,payload=>{
+                    const{profile}=payload
+                    checkIfFollowing({profile})
+                },err=>{
+
+                })
+              )
               
-                    const params =  {
-                        followProfile:following,
+                }else{
+                if(profile){
+                    const params = {
                         follower:currentProfile,
                         following:profile
                     }
-                    dispatch(deleteFollowProfile(params)).then(result=>{
-                        checkResult(result,()=>{
-                            setFollowing(null)
-                        },()=>{})
-                    })
-                }else{
-                const params = {
-                    follower: currentProfile,
-                    following: profile
+                    dispatch(createFollow(params))
                 }
-                dispatch(createFollowProfile(params)).then(result=>{
-                 checkResult(result,payload=>{
-                    const {followProfile}= payload;
-                        setFollowing(followProfile)
-            
-                        let books = [...homeCollection.books]
-                        let libraries = [...homeCollection.libraries]
-                        let pages = [...homeCollection.pages]
-                        let profiles = [...homeCollection.profiles]
-                        
-                        let id = homeCollection.profiles.find(id=>id==followProfile.followingId)
-                        if(!id){
-                           profiles = [...homeCollection.profiles,followProfile.followingId]
-                        
-                        const homeParams ={
-                            profile: currentProfile,
-                            books: books,
-                            pages: pages,
-                            libraries:libraries,
-                            profiles:profiles
-                        }
-                        dispatch(updateHomeCollection(homeParams))}
-                    },()=>{
-
-                    }) 
-                })
-            
+               
             }
         }else{
             window.alert("Please login first!")
@@ -88,25 +94,28 @@ function ProfileContainer(props){
     let followDiv=()=>{
 
        return following?
-       (<button 
+       (<div 
+        className=" bg-emerald-600  w-[9rem] rounded-full text-white text-center"
                 onClick={onClickFollow}>
-                    Follower</button>):(
-         <button   
+             <h5 className="text-white py-3 font-bold"> Following</h5>   </div>):(
+         <div className="border-2 border-emerald-600 bg-transparent w-[9rem] rounded-full text-center"
                     onClick={onClickFollow}
-        >Follow</button>)
+        ><h5 className="text-emerald-800 py-3 font-bold">Follow</h5></div>)
     }
    const ProfileCard =()=>{
     if(profile!=null){
-      return(<div className="pb-8">
-        <div className="text-left px-4">
+      return(<div className="pb-8 border-3 rounded-lg  sm:m-h-[30em] mx-auto sm:max-w-[52em] border-emerald-400">
+        <div className="text-left p-4">
             <div className="flex flex-row">  
-            <img src={profile.profilePic} className="max-w-36 max-h-36 mb-2 rounded-lg" alt=""/>
-         
-            <div className="">
-            <h5 className="text-[0.8em] px-2 max-h-48 overflow-scroll">{profile.selfStatement}</h5>
+            <img src={profilePic} className="max-w-36 object-fit max-h-42 mb-2 rounded-lg" alt=""/>
+         <div>
+            <div className="px-3 pt-3 flex flex-col justify-between  h-48">
+           <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem]  text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
+           </div> 
+            <div className="h-fit pb-2"><h5 className="text-emerald-800 text-[1.2rem] font-bold">{profile.username}</h5></div>
         </div></div>
-        <h5 className="mb-2">{profile.username}</h5>
-            <div>
+        </div>
+            <div className="mt-3">
                 {followDiv()}
             </div>
         </div>
@@ -116,16 +125,16 @@ function ProfileContainer(props){
        return <div className=" skeleton profile-card"/>
     }
 }
+///Alert
     return(
         <div className="">
             <div className="pt-8">
                 <ProfileCard/>
             </div>
-            <div className="">
             
-                         <div role="tablist" className="tabs mt-8 shadow-md min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-600 text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content max-w-[100svw] pt-1  sm:max-w-[42rem] md:p-6">
+                         <div role="tablist" className="tabs mt-8 shadow-md mb-36 min-h-48 rounded-lg  mx-auto max-w-[96vw]   sm:max-w-[42em]  tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  [--tab-border-color:rgb(52 211 153)] bg-transparent text-emerald-700 text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content mx-auto  border-emerald-400 border-3 w-[100%] h-[100%] rounded-lg  ">
   <PageIndexList/>
   </div>
 
@@ -133,14 +142,14 @@ function ProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-600 bg-transparent  border-emerald-500 border-l-2 border-r-2 border-t-2 shadow-sm text-xl"
-    aria-label="Collecitons"
+    className="tab text-emerald-700 [--tab-border-color:rgb(52 211 153)] bg-transparent   text-xl"
+    aria-label="Collections"
     />
-  <div role="tabpanel" className="tab-content bg-transparent sm:max-w-[42rem]   rounded-box pt-1">
+  <div role="tabpanel" className="tab-content bg-transparent border-emerald-400  p-2 border-3 w-[100%] h-[100%] rounded-lg  ">
   <CollectionIndexList cols={collections}/>
 </div>
 </div>
-            </div>
+            
         </div> 
             )
 }
