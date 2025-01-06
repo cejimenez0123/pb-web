@@ -674,8 +674,7 @@ try{
           pagesLoading,
           setHtmlContent,
           getProtectedProfilePages,
-          getPublicProfilePages,
-          
+          getPublicProfilePages,        
           setPageInView,
           fetchPage,
           fetchArrayOfPages,
