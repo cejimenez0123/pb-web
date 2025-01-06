@@ -33,7 +33,9 @@ import Enviroment from "../core/Enviroment";
         return res.data
     }
     async getProtectedProfileCollections({id}){
-        let res = await axios.get(this.url+`/profile/${id}/protected`)
+        let res = await axios.get(this.url+`/profile/${id}/protected`,{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})
         return res.data
     }
     async createCollection({

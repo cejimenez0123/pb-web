@@ -383,36 +383,36 @@ const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunk
   }
 })
 const deleteFollowBook= createAsyncThunk("users/deleteFollowBook", async (params,thunkApi)=>{
-            try{
-              const {followBook,book,profile}=params
-              if(followBook){
-                await deleteDoc(doc(db,"follow_book",followBook.id));
-              }else{
-                await deleteDoc(doc(db,"follow_book",`${profile.id}_${book.id}`));
+            // try{
+            //   const {followBook,book,profile}=params
+            //   if(followBook){
+            //     await deleteDoc(doc(db,"follow_book",followBook.id));
+            //   }else{
+            //     await deleteDoc(doc(db,"follow_book",`${profile.id}_${book.id}`));
             
-              }
-              return {
-                followBook
-              }
-            }catch(e){
-              return {error: new Error("Error: Delete Follow Book"+e.message)};
-            }
+            //   }
+            //   return {
+            //     followBook
+            //   }
+            // }catch(e){
+            //   return {error: new Error("Error: Delete Follow Book"+e.message)};
+            // }
           })
 const deleteFollowLibrary= createAsyncThunk("users/deleteFollowLibrary", async (params,thunkApi)=>{
-            try{
-              const {followLibrary,library,profile}=params
-              if(followLibrary){
-                await deleteDoc(doc(db, "follow_library",followLibrary.id));
-              }else{
-                await deleteDoc(doc(db, "follow_library",`${profile.id}_${library.id}`));
+            // try{
+            //   const {followLibrary,library,profile}=params
+            //   if(followLibrary){
+            //     await deleteDoc(doc(db, "follow_library",followLibrary.id));
+            //   }else{
+            //     await deleteDoc(doc(db, "follow_library",`${profile.id}_${library.id}`));
             
-              }
-              return {
-                followLibrary: followLibrary
-              }
-            }catch(e){
-              return {error: new Error("Error: Delete Follow Library"+e.message)};
-            }
+            //   }
+            //   return {
+            //     followLibrary: followLibrary
+            //   }
+            // }catch(e){
+            //   return {error: new Error("Error: Delete Follow Library"+e.message)};
+            // }
           })
 const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (params,thunkApi)=>{
             try{
@@ -432,10 +432,10 @@ const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (
 })
 const createFollowProfile = createAsyncThunk("users/createFollowProfile", async function(params,thunkApi){
             try{
-                // const {
-                //     follower,
-                //     following
-                // }=params
+                const {
+                    follower,
+                    following
+                }=params
                 // const id = `${follower.id}_${following.id}`
                 // const created = Timestamp.now()
                 //     await setDoc(doc(db,"follow_profile",id), { 

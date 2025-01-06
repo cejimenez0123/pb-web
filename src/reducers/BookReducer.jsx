@@ -11,7 +11,7 @@ import { createSlice} from "@reduxjs/toolkit"
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
 import { createWorkshopGroup, fetchWorkshopGroups } from "../actions/WorkshopActions"
-import { patchCollectionRoles } from "../actions/CollectionActions"
+import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
 const initialState = {
     groups:[],
     collections:[],
@@ -34,6 +34,10 @@ builder.addCase(patchCollectionRoles.fulfilled,(state,{payload})=>{
     if(payload.roles){
         state.roles = payload.collection
     }
+}).addCase(getProtectedProfileCollections.fulfilled,(state,{payload})=>{
+   state.collections= payload.collections
+}).addCase(getPublicProfileCollections.fulfilled,(state,{payload})=>{
+    state.collections = payload.collections
 }).addCase(createWorkshopGroup.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
   

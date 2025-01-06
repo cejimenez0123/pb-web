@@ -71,11 +71,11 @@ function MyProfileContainer(props){
       
         
     }
-    const ClickCreateAColleciton = ()=>{
+    const ClickCreateACollection = ()=>{
         ReactGA.event({
-            category: "Colleciton",
+            category: "Collection",
             action: "Navigate to Create Collection",
-            label: "Create A Colleciton", 
+            label: "Create A Collection", 
             value: currentProfile.id,
             nonInteraction: false
           });
@@ -136,7 +136,7 @@ function MyProfileContainer(props){
                             </button>
                             </div>
                             <div>
-                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 rounded-full  w-[9rem] text-white sm:text-[0.8rem] py-2   text-bold'>
+                            <button onClick={ClickCreateACollection} className='bg-emerald-700 rounded-full  w-[9rem] text-white sm:text-[0.8rem] py-2   text-bold'>
                                 <h6 >Create Collection</h6>
                             </button>
                             </div>
@@ -167,7 +167,7 @@ function MyProfileContainer(props){
                             <button onClick={ClickWriteAStory} className='bg-emerald-700 max-w-48 rounded-full text-white mt-2 sm:text-xl text-bold'>
                                 Write a Story
                             </button>
-                            <button onClick={ClickCreateAColleciton} className='bg-emerald-700 max-w-48 rounded-full sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
+                            <button onClick={ClickCreateACollection} className='bg-emerald-700 max-w-48 rounded-full sm:ml-4 mt-2 text-white sm:text-xl  text-bold'>
                                 Create Collection
                             </button>
                             <a onClick={()=>setOpenRefferal(true)}className='my-4 text-sm mx-4 text-emerald-800'>Refer Someone?</a>

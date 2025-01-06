@@ -28,6 +28,7 @@ import {    logIn ,
 import { createProfile, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
+import { createFollow, deleteFollow } from "../actions/FollowAction"
 const initialState = {
     signedIn: false,
     currentProfile: null,
@@ -52,6 +53,16 @@ const userSlice = createSlice({
             state.loading=false
         }).addCase(fetchProfiles.pending,(state,{payload})=>{
             state.loading = true
+        }).addCase(createFollow.fulfilled,(state,{payload})=>{
+            const {follow}=payload
+            if(follow && follow.following){
+                state.profileInView = follow.following
+            }
+
+        }).addCase(deleteFollow.fulfilled,(state,{payload})=>{
+            if(payload.profile){
+                state.profileInView = payload.profile
+            }
         })
         .addCase(logIn.pending,(state) => {
         state.loading = true

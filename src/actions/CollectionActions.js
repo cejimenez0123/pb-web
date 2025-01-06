@@ -161,20 +161,20 @@ const getPublicProfileCollections = createAsyncThunk("collection/getPublicProfil
     params,thunkApi
 )=>{
 
-     let res = await collectionRepo.getPublicProfileCollections({id:params["profile"].id})
-
+     let data = await collectionRepo.getPublicProfileCollections({id:params["profile"].id})
+console.log(data)
       return {
-        data: res.data
+      collections:data.collections
       }
 })
 const getProtectedProfileCollections = createAsyncThunk("collection/getProtectedProfileCollections",async (
     params,thunkApi
 )=>{
 
-     let res = await collectionRepo.getProtectedProfileCollections({id:params["profile"].id})
-
+     let data = await collectionRepo.getProtectedProfileCollections({id:params["profile"].id})
+console.log(data)
       return {
-        data: res.data
+        collections:data.collections
       }
 })
 
