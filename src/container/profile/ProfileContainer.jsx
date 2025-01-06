@@ -55,7 +55,7 @@ function ProfileContainer(props){
     useEffect(()=>{
 checkIfFollowing({profile})
 
-    },[profile??profile.followers,currentProfile])
+    },[profile?profile.followers:null,currentProfile])
     const checkIfFollowing =({profile})=>{
 
     if(currentProfile && profile && profile.followers){
