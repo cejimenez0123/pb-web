@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {  useState ,useLayoutEffect, useEffect} from "react";
+import {  useState ,useLayoutEffect} from "react";
 import "../../styles/PageView.css"
 import { fetchCommentsOfPage } from "../../actions/PageActions";
 import PageViewItem from "../../components/page/PageViewItem";

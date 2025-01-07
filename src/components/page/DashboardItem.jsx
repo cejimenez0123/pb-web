@@ -52,7 +52,7 @@ useEffect(()=>{
 },[page])
 const hanldeClickComment=()=>{   
   if(page){ 
-    navigate(`/page/${page.id}`)
+    navigate(Paths.page.createRoute(page.id))
 }
 }   
 const PageDataElement=({page})=>{
@@ -206,9 +206,8 @@ return <Button onClick={()=>{
        bg-transparent py-2
        border-none
        text-xl  '
-             onClick={()=>hanldeClickComment(page)}
+             onClick={()=>hanldeClickComment()}
                  >
-         
            Review
          </div>
          </div>
