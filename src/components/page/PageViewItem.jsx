@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom"
 import React,{useEffect, useLayoutEffect,useState} from "react"
 import isValidUrl from "../../core/isValidUrl"
 import { PageType } from "../../core/constants"
-import { setProfileInView } from "../../actions/UserActions"
-import ReactGA from 'react-ga4'
 import PageViewButtonRow  from "./PageViewButtonRow"
 import CommentInput from "../comment/CommentInput"
 import "../../styles/PageView.css"
