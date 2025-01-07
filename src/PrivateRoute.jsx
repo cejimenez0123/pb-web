@@ -18,13 +18,13 @@ const PrivateRoute = ({loggedIn, children }) => {
           navigate(Paths.login())
         }else{
           if(loading){
-            location.pathname = formerPage
+        
             navigate(formerPage)
           }
         
         
       }
-    }, [currentProfile, navigate, location]);
+    }, [location.pathname]);
     useLayoutEffect(()=>{
       if(!currentProfile){
         dispatch(getCurrentProfile())
