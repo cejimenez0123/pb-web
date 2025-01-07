@@ -1,10 +1,6 @@
-import React, { useEffect, useLayoutEffect, useState } from "react"
-import { useSelector } from "react-redux";
+import React, {  useState } from "react"
 import ReactQuill from "react-quill";
 import "../../styles/Editor.css"
-import { debounce } from "lodash";
-import { useDispatch } from "react-redux";
-import { setHtmlContent } from "../../actions/PageActions";
 
 const fonts = ["Arial","Courier New","Georgia"]
 export default function RichEditor({page,handleChange}){

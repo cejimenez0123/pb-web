@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import React,{useEffect, useState} from "react"
+import React,{useEffect, useLayoutEffect,useState} from "react"
 import isValidUrl from "../../core/isValidUrl"
 import { PageType } from "../../core/constants"
 import { setProfileInView } from "../../actions/UserActions"
