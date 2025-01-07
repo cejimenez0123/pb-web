@@ -302,17 +302,18 @@ onClick={()=>ClickAddStoryToCollection()}>
         return(
         <div onClick={()=>{
             isGrid?navigate(Paths.page.createRoute(page.id)):null
-        }} className={`rounded-lg relative   ${isGrid?"bg-emerald-700 h-60 max-w-52 ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
+        }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-60 max-w-52 ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
         
-        <div className='justify-between flex flex-col'>
-                {page.profile?<ProfileCircle profile={page.profile}/>:null}
-                <h6 className="text-emerald-800 rounded-t-lg py-3 px-3 text-[0.9rem] absolute  " onClick={()=>{
+       
+             
+          <div className=' rounded-lg relative '>
+          <div className=' justify-between '>
+               <span className='absolute flex flex-row p-2'> {page.author?<ProfileCircle profile={page.author}/>:null}
+                <h6 className="text-emerald-800 my-auto ml-1 text-[0.9rem]  " onClick={()=>{
                     dispatch(setPageInView({page}))
                     navigate(Paths.page.createRoute(page.id))
 
-                }} > {` `+page.title.length>0?page.title:"Untitled"}</h6>
-             
-          <div className=' rounded-lg '>
+                }} > {` `+page.title.length>0?page.title:"Untitled"}</h6></span>
                <PageDataElement page={page}/>
             
              
