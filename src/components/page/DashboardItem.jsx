@@ -53,9 +53,11 @@ useEffect(()=>{
    
 },[page])
 const hanldeClickComment=(pageItem)=>{   
-  if(pageItem){ 
+  if(pageItem && currentProfile){ 
     dispatch(setHtmlContent({html:pageItem.data}))
     navigate(`/page/${pageItem.id}`)
+}else{
+    window.alert("Please sign up")
 }
 }   
 const PageDataElement=({page})=>{
@@ -118,13 +120,15 @@ const handleApprovalClick = ()=>{
             })
         })
     }else{
-        if(page ){
+        if(page&&currentProfile ){
 
         
         const params = {story:page,
             profile:currentProfile,
                         }
         dispatch(createPageApproval(params))
+        }else{
+            window.alert("Please sign in")
         }
     }
 }else{
@@ -209,38 +213,39 @@ return <Button onClick={()=>{
     }
     const buttonRow = ( )=>{
         return isGrid?<div className='text-right  h-fit text-white '>
-        <button className='bg-transparent absolute right-1 bottom-1'><img src={bookmarkadd}/></button>
+        <div className='bg-transparent absolute right-1 bottom-1'><img src={bookmarkadd}/></div>
     
     </div>:
         <div className='  flex flex-row rounded-b-lg justify-center justify-evenly sm:max-w-[100%]  '>
             
          <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center rounded-bl-lg grow flex-1/3`}>
-         <button disabled={!currentProfile} 
-         onClick={handleApprovalClick}
+         <div
+         
+         onClick={()=>handleApprovalClick}
             
           className={`
-          text-xl      text-center mx-auto text-white border-none bg-transparent  border-none  `}
+          text-xl   py-2    text-center mx-auto text-white border-none bg-transparent  border-none  `}
         
          >
              Yea{likeFound?"h!":""}
-         </button>
+         </div>
          </div>
          <div className={" bg-emerald-700 border-white border-x-2 border-y-0  text-center border-white grow flex-1/3"}>
-         <button
+         <div
              className='
              text-white
         text-center mx-auto
-       bg-transparent
+       bg-transparent py-2
        border-none
        text-xl  '
              onClick={()=>hanldeClickComment(page)}
                  >
          
            Review
-         </button>
          </div>
-         <div className="dropdown    text-center   bg-emerald-700    rounded-br-lg  grow flex-1/3 dropdown-top">
-<button tabIndex={0} role="button" 
+         </div>
+         <div className="dropdown    text-center   bg-emerald-700  py-2 rounded-br-lg  grow flex-1/3 dropdown-top">
+<div tabIndex={0} role="button" 
 className="             
       text-white
 
@@ -250,7 +255,7 @@ className="
         border-none
      
          ">
-Share</button>
+Share</div>
 <ul tabIndex={0} className="dropdown-content    z-50 menu bg-white text-emerald-700 rounded-box  w-60 p-1 shadow">
 {currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
 
