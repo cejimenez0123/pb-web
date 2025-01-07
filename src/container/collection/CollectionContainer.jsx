@@ -15,7 +15,7 @@ import { RoleType } from "../../core/constants"
 import checkResult from "../../core/checkResult"
 import { clearPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
-import { current } from "@reduxjs/toolkit"
+import ProfileCircle from "../../components/profile/ProfileCircle"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
     const {pathName}=useLocation()
@@ -194,9 +194,11 @@ if(currentProfile){
             return(<div>Loading</div>)
         }
        
-        return(<div className="h-fit max-w-[100vw] sm:max-w-[60em] mx-auto sm:pb-8 sm:w-48 sm:border-4 p-4 sm:border-emerald-600  mx-8 mt-4 md:mx-8 md:mt-8  rounded-lg mb-8 text-left">
+        return(<div className="h-fit max-w-[100vw] sm:max-w-[60em] mx-auto sm:pb-8 sm:w-48 sm:border-4 p-4 sm:border-emerald-600   rounded-lg mb-8 text-left">
+                {collection.profile?<div className="flex flex-row"><div className="min-w-8 min-h-8  my-auto"><ProfileCircle profile={collection.profile}/></div><span onClick={()=>navigate(Paths.profile.createRoute(collection.profile.id))} className="text-emerald-800 mx-2 my-auto rounded-lg ">{collection.profile.username}</span></div>:null}
+                <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
     <h3 className="mt-8 mb-2 mx-8  text-emerald-800 text-3xl">{collection.title}</h3>
-    {collection.profile?<h3 onClick={()=>navigate(Paths.profile.createRoute(collection.profile.id))} className="text-emerald-800 mx-8 rounded-lg p-2">by {collection.profile.username}</h3>:null}
+
         <h3 className="text-emerald-800  md:mx-8 rounded-lg p-4">{collection.purpose}</h3>
 
         <div className={"md:ml-8 mt-8 flex flex-row"}>
@@ -227,7 +229,7 @@ if(currentProfile){
 
 
    
-   </div></div>)}
+   </div></div></div>)}
 
 if(collection){
   
