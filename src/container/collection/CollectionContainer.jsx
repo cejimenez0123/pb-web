@@ -125,9 +125,9 @@ if(currentProfile){
     
     }}
     const soUserCanAdd = ()=>{
-        if(collection&&currentProfile){    
+        if(collection&&currentProfile&& collection.roles){    
             let found =  collection.roles.find(colRole=>{
-                return colRoleprofileId = currentProfile.id
+                return colRole.profileId = currentProfile.id
             })
             if(collection.isOpenCollaboration||(found && writeArr.includes(found.role))||collection.profileId==currentProfile.id){
                 setCanUserAdd(true)

@@ -18,15 +18,14 @@ import {useMediaQuery} from 'react-responsive'
 import bookmarkadd from "../../images/bookmarkadd.svg"
 import getDownloadPicture from '../../domain/usecases/getDownloadPicture'
 import loadingJson from "../../images/loading-animation.json"
+import ProfileCircle from '../profile/ProfileCircle'
 function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
 
     const navigate = useNavigate()
-    const isNotPhone = useMediaQuery({
-        query: '(min-width: 500px)'
-      })
-    const userApprovals = useSelector(state=>state.users.userApprovals)
- 
+    // const isNotPhone = useMediaQuery({
+    //     query: '(min-width: 500px)'
+    //   })
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const [expanded,setExpanded]=useState(false)
@@ -86,9 +85,9 @@ const PageDataElement=({page})=>{
         return( 
             <div 
     
-           className={`  ${isGrid?"max-h-[12em] rounded-lg max-w-48  mx-auto overflow-clip mt-4 ":"rounded-t-lg"}`}
+           className={`  ${isGrid?"max-h-[12em]  rounded-lg max-w-48  mx-auto overflow-clip mt-4 ":"rounded-t-lg "} bg-emerald-200 pt-12`}
             >
-            <div className={` w-[100%] bg-emerald-50 text-emerald-800 px-4 pb-8 overflow-hidden pt-8 text-[0.8rem] ${isGrid?"isGrid mt-1 rounded-lg overflow-hidden":" rounded-t-lg  ql-editor"}`}
+            <div className={` w-[100%]  text-emerald-800 px-4 pb-8 overflow-hidden pt-12 text-[0.8rem] ${isGrid?"isGrid mt-1 rounded-lg overflow-hidden":" rounded-t-lg  ql-editor"}`}
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
       )   }
@@ -306,8 +305,8 @@ onClick={()=>ClickAddStoryToCollection()}>
         }} className={`rounded-lg relative   ${isGrid?"bg-emerald-700 h-60 max-w-52 ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
         
         <div className='justify-between flex flex-col'>
-              
-                <h6 className="text-white  rounded-t-lg py-1 px-3 text-[0.9rem] absolute bg-gradient-to-br from-emerald-900 to-opacity-0  " onClick={()=>{
+                {page.profile?<ProfileCircle profile={page.profile}/>:null}
+                <h6 className="text-emerald-800 rounded-t-lg py-3 px-3 text-[0.9rem] absolute  " onClick={()=>{
                     dispatch(setPageInView({page}))
                     navigate(Paths.page.createRoute(page.id))
 
