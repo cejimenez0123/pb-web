@@ -92,8 +92,8 @@ function PageIndexItem({page,onDelete}) {
             
         <button tabIndex={0} role="button" className="rounded-full bg-emerald-800  px-2  h-[2.5rem] w-[2.5rem]"><img classname=" my-auto mx-auto pb-1" src={edit}/></button>
         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-          <li className="text-green-600 " onClick={()=>{
-           handleOnClick()}}><a >Edit</a></li>
+          <li className="text-green-600 " onClick={
+           handleOnClick}><a >Edit</a></li>
           <li className="text-green-600 " onClick={()=>handleNavigate(Paths.addStoryToCollection.createRoute(page.id))}><a>Add to Collection</a></li>
         </ul>
       </div>)

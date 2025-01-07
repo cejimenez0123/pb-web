@@ -110,7 +110,7 @@ checkIfFollowing({profile})
             <img src={profilePic} className="max-w-36 object-fit max-h-42 mb-2 rounded-lg" alt=""/>
          <div>
             <div className="px-3 pt-3 flex flex-col justify-between  h-48">
-           <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem]  text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
+           <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem]  h-40 overflow-y-scroll flex-wrap flex text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
            </div> 
             <div className="h-fit pb-2"><h5 className="text-emerald-800 text-[1.2rem] font-bold">{profile.username}</h5></div>
         </div></div>
@@ -128,16 +128,15 @@ checkIfFollowing({profile})
 ///Alert
     return(
         <div className="">
-            <div className="pt-8">
+            <div className="pt-2 md:pt-8 mx-2">
                 <ProfileCard/>
             </div>
-            
-                         <div role="tablist" className="tabs mt-8 shadow-md mb-36 min-h-48 rounded-lg  mx-auto max-w-[96vw]   sm:max-w-[42em]  tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  [--tab-border-color:rgb(52 211 153)] bg-transparent text-emerald-700 text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content mx-auto  border-emerald-400 border-3 w-[100%] h-[100%] rounded-lg  ">
+            <div className=" w-[96vw]  md:max-w-[42em] mt-4 mb-1 mx-auto">
+                         <div role="tablist" className="tabs  shadow-md mb-36 rounded-lg w-[96vw]  md:max-w-[42em] tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  [--tab-border-color:rgb(52 211 153)] bg-transparent text-emerald-800 text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content w-[100%] border-emerald-400 border-3 h-[100%] rounded-lg  ">
   <PageIndexList/>
   </div>
-
   <input
     type="radio"
     name="my_tabs_2"
@@ -145,11 +144,11 @@ checkIfFollowing({profile})
     className="tab text-emerald-700 [--tab-border-color:rgb(52 211 153)] bg-transparent   text-xl"
     aria-label="Collections"
     />
-  <div role="tabpanel" className="tab-content bg-transparent border-emerald-400  p-2 border-3 w-[100%] h-[100%] rounded-lg  ">
+  <div role="tabpanel" className="tab-content bg-transparent border-emerald-400   border-3 rounded-lg  ">
   <CollectionIndexList cols={collections}/>
 </div>
 </div>
-            
+</div>    
         </div> 
             )
 }

@@ -134,7 +134,7 @@ const ProfleInfo = ({profile})=>{
    
     
             return(
-            <div className='pb-72 pt-4 sm:pt-8'>
+            <div className='md:pb-72 pt-4 sm:pt-8'>
      
                     <div className=' flex flex-col relative  justify-start sm:flex-row sm:justify-between border-4 border-emerald-300  pb-4 max-w-[94vw] mx-auto lg:h-[16em]  lg:max-w-[50em]   sm:mx-auto mt-2  rounded-lg'>
                            <div className='absolute top-1   right-1'>
@@ -202,11 +202,11 @@ const ProfleInfo = ({profile})=>{
                          </div>
                           </div>
                 </div>
-                            <div className='max-w-[100vw] mx-atuo  flex flex-col justify-center'>
+                            <div className='w-[96vw] mt-8 mx-auto md:w-[42em]'>
 
-                            <div role="tablist" className="tabs border-emerald-300 mt-8 max-w-[94vw] mx-auto border-b-4 border-emerald-500 lg:min-h-48 rounded-lg  lg:max-w-128 lg:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800 border-3 border-3 lg:max-w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content  lg:max-w-[42em] pt-1 lg:py-4 rounded-lg  max-w-[94vw] mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4  border-emerald-300 ">
+                            <div role="tablist" className="tabs border-emerald-300  mx-auto border-b-4 border-emerald-500  rounded-lg w-[96vw] mx-auto md:w-[42em]  tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800 border-3 border-3 w-[96vw] mx-auto md:w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
   <PageIndexList/>
   </div>
 
@@ -214,15 +214,15 @@ const ProfleInfo = ({profile})=>{
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800  lg:max-w-[42em] [--tab-border-color:emerald] bg-transparent   border-3 text-xl" aria-label="Books"
+    className="tab text-emerald-800   [--tab-border-color:emerald] bg-transparent   border-3 text-xl" aria-label="Books"
     />
   <div role="tabpanel" 
-  className="tab-content  lg:max-w-[42em] pt-1 lg:py-4 rounded-lg  max-w-[94vw] mx-auto border-t-3 border-t-emerald-500 border-l-4 border-b-4 border-r-4 border-emerald-300">
+   className="tab-content   pt-1 lg:py-4 rounded-lg w-[100%] mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4  border-emerald-300 ">
   <CollectionIndexList cols={books}/>
   </div>
 
-  <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 text-emerald-800  lg:max-w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
-  <div role="tabpanel" className="tab-content  lg:max-w-[42em] pt-1 lg:py-4 rounded-lg  max-w-[94vw] mx-auto border-t-3 border-t-emerald-500 border-l-4 border-b-4 border-r-4  border-emerald-300">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 text-emerald-800   [--tab-border-color:emerald] bg-transparent border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
+  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  w-[100%] border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4  border-emerald-300 ">
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>
