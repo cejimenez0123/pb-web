@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import "../../Dashboard.css"
-import { deletePageApproval,  setHtmlContent, setPageInView, } from '../../actions/PageActions'
+import { deletePageApproval,   setPageInView, } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
 import { PageType } from '../../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
@@ -12,9 +12,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
 import LinkPreview from '../LinkPreview'
-import ReactGA from 'react-ga4'
 import isValidUrl from "../../core/isValidUrl"
-import {useMediaQuery} from 'react-responsive'
 import bookmarkadd from "../../images/bookmarkadd.svg"
 import getDownloadPicture from '../../domain/usecases/getDownloadPicture'
 import loadingJson from "../../images/loading-animation.json"
@@ -161,34 +159,7 @@ return <Button onClick={()=>{
 
     }
     const onBookmarkPage = ()=>{
-    //     if(bookmarked && page){
-    //     let pageIdList = bookmarkLibrary.pageIdList.filter(id=>page && id!=page.id)
-    //     const params = {
-    //         library:bookmarkLibrary,
-    //         pageIdList:pageIdList,
-    //         bookIdList: bookmarkLibrary.bookIdList
-    //           }
-    //           dispatch(updateLibraryContent(params))
-    //           setBookmarked(false)
-    //     }else{
-    //         if(bookmarkLibrary && currentProfile && page){
-    //             const pageIdList = [...bookmarkLibrary.pageIdList,page.id]
-    //             const params = {
-    //                 library:bookmarkLibrary,
-    //                 pageIdList:pageIdList,
-    //                 bookIdList: bookmarkLibrary.bookIdList
-    //                   }
-    //             dispatch(updateLibraryContent(params)).then(result=>{
-    //                 checkResult(result,(payload)=>{
-    //                 const {library} = payload
-    //                      let found =library.pageIdList.find(id=>page&&id==page.id)
-    //                     setBookmarked(Boolean(found))
-    //                     },()=>{
 
-    //                 })
-    //             })
-    //         }
-    //     }
         
     }
     const ClickAddStoryToCollection=()=>{
