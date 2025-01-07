@@ -89,7 +89,8 @@ function PageIndexItem({page,onDelete}) {
    </div>)
     if(currentProfile!=null && page.authorId==currentProfile.id){
         buttonDiv = (<div className="dropdown dropdown-left">
-        <button tabIndex={0} role="button" className="  rounded-full bg-emerald-800  px-2  "><img classname="h-5 w-5" src={edit}/></button>
+            
+        <button tabIndex={0} role="button" className="rounded-full bg-emerald-800  px-2  h-[2.5rem] w-[2.5rem]"><img classname=" my-auto mx-auto pb-1" src={edit}/></button>
         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
           <li className="text-green-600 " onClick={()=>{
            handleOnClick()}}><a >Edit</a></li>
@@ -99,12 +100,12 @@ function PageIndexItem({page,onDelete}) {
   
     }
             return(
-                <div className="border-3  shadow-sm  rounded-full   my-2 mx-2 border-emerald-300"><div className={`   mb-1 `}> 
-              <div  className=" px-1 flex flex-row justify-between  w-[100%]   " >
+                <div className="border-3  shadow-sm  rounded-full  w-full my-3 py-1 mx-2 border-emerald-300"><div className={`   mb-1 `}> 
+              <div  className=" px-1 flex flex-row justify-between  " >
                 <div className="text-left my-auto mx-4 py-4 mt-1 ">
                
-                <a className="text-emerald-700 no-underline w-[96%]" onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
-                   {page && page.title && page.title.length>0? <h6 className="text-[0.8rem] sm:text-[1.2rem] text-ellipsis  whitespace-nowrap overflow-hidden my-auto  ">{page.title}</h6>:<h6>Unititled</h6>}
+                <a className="text-emerald-700 no-underline " onClick={()=>{navigate(Paths.page.createRoute(page.id))}}> 
+                   {page && page.title && page.title.length>0? <h6 className="text-[1rem] sm:text-[1.2rem] text-ellipsis  whitespace-nowrap overflow-hidden my-auto  ">{page.title}</h6>:<h6>Unititled</h6>}
                 </a>
                 </div> 
                 <div className=" my-auto mx-4 w-fit">
@@ -115,10 +116,7 @@ function PageIndexItem({page,onDelete}) {
             
                 </div></div>
             </div>  </div>)}else{
-                return(<div className="list-item">
-
-                    Loading...
-                </div>)
+                return(null)
             }
     
     }

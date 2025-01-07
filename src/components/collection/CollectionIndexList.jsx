@@ -5,7 +5,7 @@ const CollectionIndexList = (props)=>{
     if(props.cols){
        
     return(<InfiniteScroll
-                   className="max-w-[96%] max-h-[36em] py-2 overflow-scroll mx-auto"
+                   className=" max-w-[94vw] md:w-[42em] max-h-[36em] py-2 overflow-scroll mx-auto"
                    dataLength={props.cols.length}
                    next={()=>{}}
                    scrollThreshold={1}
@@ -15,7 +15,7 @@ const CollectionIndexList = (props)=>{
                     </div>}
                   >
                       {props.cols.map(col=>{
-                        return <CollectionIndexItem collection={col}/>
+                        return<div className="sm:mx-4 my-2"><CollectionIndexItem collection={col}/></div> 
                       })}  
                    </InfiniteScroll>)
 
