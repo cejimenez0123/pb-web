@@ -137,7 +137,7 @@ if(currentProfile){
         }
     }
     const soUserCanEdit=()=>{
-        if(collection&&currentProfile){    
+        if(collection&&currentProfile && collection.roles){    
             let found =  collection.roles.find(colRole=>{
                 return colRole && colRole.profileId == currentProfile.id
             })
@@ -231,7 +231,7 @@ if(currentProfile){
    
    </div></div></div>)}
 
-if(collection){
+if(collection&&canUserSee){
   
 
     return(<>
@@ -268,7 +268,7 @@ if(collection){
     </>)
 }else{
     if(pending){
-        return(<div><h6>Loadinging</h6></div>)
+        return(<div><h6>Loading</h6></div>)
     }else{
         return(<div>Private</div>)
     }
