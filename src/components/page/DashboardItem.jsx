@@ -53,11 +53,9 @@ useEffect(()=>{
    
 },[page])
 const hanldeClickComment=(pageItem)=>{   
-  if(pageItem && currentProfile){ 
+  if(pageItem){ 
     dispatch(setHtmlContent({html:pageItem.data}))
     navigate(`/page/${pageItem.id}`)
-}else{
-    window.alert("Please sign up")
 }
 }   
 const PageDataElement=({page})=>{
