@@ -7,23 +7,20 @@ import { getCurrentProfile } from './actions/UserActions';
 
 const PrivateRoute = ({loggedIn, children }) => {
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const loading = useSelector(state=>state.users.loading)
+    const [pending,setPending]=useState(false)
     const location = useLocation();
     const [formerPage,setFormerPage]=useState("")
     const navigate = useNavigate()
     const dispatch = useDispatch()
     useLayoutEffect(() => {
-      setFormerPage(location.pathname)
-        if(!currentProfile){
-          navigate(Paths.login())
-        }else{
-          if(loading){
-        
-            navigate(formerPage)
-          }
-        
-        
-      }
+        if(!pending||currentProfile){
+         setFormerPage(location.pathname)
+            if(!currentProfile){
+              navigate(Paths.login())
+            }else{
+              navigate(formerPage)
+            }
+    }
     }, [location.pathname]);
     useLayoutEffect(()=>{
       if(!currentProfile){
