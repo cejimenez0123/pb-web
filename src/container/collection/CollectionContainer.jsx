@@ -90,7 +90,7 @@ if(currentProfile){
 
           
           const found =   collection.roles.find(colRole=>{
-                   return colRole.profile.id == currentProfile.id
+                   return colRole&& colRole.profile && colRole.profileId == currentProfile.id
                 })
                 if(found){
 
@@ -113,7 +113,7 @@ if(currentProfile){
         
             if(currentProfile){
             let found =  collection.roles.find(colRole=>{
-                return colRole.profileId = currentProfile.id
+                return colRole && colRole.profileId == currentProfile.id
             })
             if(sightArr.includes(found.role)||collection.profileId==currentProfile.id){
                 setCanUserSee(true)
@@ -127,7 +127,7 @@ if(currentProfile){
     const soUserCanAdd = ()=>{
         if(collection&&currentProfile&& collection.roles){    
             let found =  collection.roles.find(colRole=>{
-                return colRole.profileId = currentProfile.id
+                return colRole && colRole.profileId == currentProfile.id
             })
             if(collection.isOpenCollaboration||(found && writeArr.includes(found.role))||collection.profileId==currentProfile.id){
                 setCanUserAdd(true)
@@ -138,8 +138,8 @@ if(currentProfile){
     }
     const soUserCanEdit=()=>{
         if(collection&&currentProfile){    
-            let found =  collection.roles.find(col=>{
-                return role.profileId = currentProfile.id
+            let found =  collection.roles.find(colRole=>{
+                return colRole && colRole.profileId == currentProfile.id
             })
             if((found && RoleType.editor==found.role)||collection.profileId==currentProfile.id){
                 setCanUserEdit(true)
@@ -194,7 +194,7 @@ if(currentProfile){
             return(<div>Loading</div>)
         }
        
-        return(<div className="h-fit max-w-[100vw] sm:max-w-[60em] mx-auto sm:pb-8 sm:w-48 sm:border-4 p-4 sm:border-emerald-600   rounded-lg mb-8 text-left">
+        return(<div className="h-fit w-[94vw] mx-auto lg:w-[50em] mx-auto mt-4 sm:pb-8 sm:border-4 p-4 sm:border-emerald-600   rounded-lg mb-8 text-left">
                 {collection.profile?<div className="flex flex-row"><div className="min-w-8 min-h-8  my-auto"><ProfileCircle profile={collection.profile}/></div><span onClick={()=>navigate(Paths.profile.createRoute(collection.profile.id))} className="text-emerald-800 mx-2 my-auto rounded-lg ">{collection.profile.username}</span></div>:null}
                 <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
     <h3 className="mt-8 mb-2 mx-8  text-emerald-800 text-3xl">{collection.title}</h3>

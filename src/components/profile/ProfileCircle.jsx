@@ -10,13 +10,10 @@ function ProfileCircle({profile}){
     const navigate = useNavigate()
     useEffect(()=>{
         if(profile){
-
-     
         getDownloadPicture(profile.profilePic).then(image=>{
             setProfilePic(image)
             setPending(false)
     }
-    
         )
     }
     },[profile])
