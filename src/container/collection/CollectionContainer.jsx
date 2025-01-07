@@ -23,6 +23,8 @@ export default function CollectionContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
     const pending = useSelector(state=>state.books.loading)
+    const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
+    const writeArr = [RoleType.editor,RoleType.writer]
     const [canUserAdd,setCanUserAdd]=useState(false)
     const [canUserEdit,setCanUserEdit]=useState(false)
     const [canUserSee,setCanUserSee]=useState(false)
@@ -98,53 +100,59 @@ if(currentProfile){
     }
             }}
     },[collection,currentProfile])
-    useLayoutEffect(()=>{
-        const allArr = [RoleType.editor,RoleType.writer,RoleType.commenter,RoleType.reader]
-        if(collection && currentProfile && collection.profileId==currentProfile.id){
-            setCanUserAdd(true)
-            setCanUserEdit(true)
-            setCanUserSee(true)
-            return
-        }else{
-            if(role && allArr.includes(role.role) ){
-                setCanUserSee(true)
-                if(role && role.role==RoleType.editor){
-                setCanUserAdd(true)
-                setCanUserEdit(true)
-                return
-            }else{  
-                const addArr = [RoleType.editor,RoleType.writer]
-                if(role && addArr.includes(role.role)){
-                    setCanUserSee(true)
-                    setCanUserAdd(true)
-                    return
-                }else{
-                    if(collection && collection.isOpenCollaboration && currentProfile){
-                        setCanUserAdd(true)
-                    }else{
-                        setCanUserAdd(false)
-                        setCanUserEdit(false)
-                    }
-                    if(collection && !collection.isPrivate){
-                        setCanUserSee(true)
-                                }else{
-                        setCanUserSee(false)
-                    }
-                }
-                
-                
-            }
-       
- 
-
-                
-           
+    const soUserCanSee=()=>{
         
-   
+       if(collection){
+       
+            if( !collection.isPrivate){
+
+                setCanUserSee(true)
+
+                    return 
+        }
+        
+            if(currentProfile){
+            let found =  collection.roles.find(colRole=>{
+                return colRole.profileId = currentProfile.id
+            })
+            if(sightArr.includes(found.role)||collection.profileId==currentProfile.id){
+                setCanUserSee(true)
+            }else{
+                setCanUserSee(false)
+            }
+        }
+        
+    
+    }}
+    const soUserCanAdd = ()=>{
+        if(collection&&currentProfile){    
+            let found =  collection.roles.find(colRole=>{
+                return colRoleprofileId = currentProfile.id
+            })
+            if(collection.isOpenCollaboration||(found && writeArr.includes(found.role))||collection.profileId==currentProfile.id){
+                setCanUserAdd(true)
+            }else{
+                setCanUserAdd(false)
+            }
+        }
     }
-}}
-                
-    ,[currentProfile])
+    const soUserCanEdit=()=>{
+        if(collection&&currentProfile){    
+            let found =  collection.roles.find(col=>{
+                return role.profileId = currentProfile.id
+            })
+            if((found && RoleType.editor==found.role)||collection.profileId==currentProfile.id){
+                setCanUserEdit(true)
+            }else{
+                setCanUserEdit(false)
+            }
+        } 
+    }
+    useLayoutEffect(()=>{
+       soUserCanSee() 
+       soUserCanAdd()   
+       soUserCanEdit() 
+    },[currentProfile,collection])
     const getContent= ()=>{
         dispatch(clearCollections())
         dispatch(clearPagesInView())
@@ -192,21 +200,21 @@ if(currentProfile){
         <h3 className="text-emerald-800  md:mx-8 rounded-lg p-4">{collection.purpose}</h3>
 
         <div className={"md:ml-8 mt-8 flex flex-row"}>
-   {!role?<button
+   {!role?<div
    onClick={handleFollow}
-   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"}>Follow</button>:
-   <button 
+   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}><h6 className="px-4 py-3  ">Follow</h6></div>:
+   <div
    onClick={deleteFollow}
    className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"} >
         {role.role}
-   </button>}
+   </div>}
    <div
-    className="flex-row flex mx-2"
+    className="flex-row flex justify-around px-4 "
    >
    {canUserAdd?
 
     <img onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))
-   }className="rounded-full bg-emerald-800 p-3 mr-2 my-auto"src={add}/>:null}
+   }className="rounded-full bg-emerald-800 p-3   my-auto"src={add}/>:null}
    {canUserEdit?
    
    <img 
@@ -221,7 +229,7 @@ if(currentProfile){
    
    </div></div>)}
 
-if(collection && canUserSee){
+if(collection){
   
 
     return(<>
@@ -258,21 +266,10 @@ if(collection && canUserSee){
     </>)
 }else{
     if(pending){
-        return(<div>
-            <h6 className="text-emerald-800"> Loading</h6>
-        </div>)
-        }else{
-            if( !canUserSee){
-                    return<div>
-                        Private
-                    </div>
-            }else{
-                return<div className="flex flex-row justify-center">
-                <div className="my-auto p-24 "><h6 className="text-emerald-800  poppins text-xl ">Collection Not Found</h6></div>
-                </div>
-            }
-           
-        }
+        return(<div><h6>Loadinging</h6></div>)
+    }else{
+        return(<div>Private</div>)
+    }
 }
 
 }

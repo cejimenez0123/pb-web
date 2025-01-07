@@ -110,9 +110,9 @@ console.log(storyToCols)
     const updateCollection = ()=>{
         dispatch(patchCollectionContent({id:params.id,isPrivate:isPrivate,isOpenCollaboration:isOpen,title,purpose,storyToCol:newPages,colToCol:newCollections,col:colInView,profile:currentProfile})).then(res=>{
            setSuccess("Successful Update")
-         
+         setError(null)
         },err=>{
-
+            setSuccess(null)
             setError(err.message)
         })
     }
@@ -145,7 +145,7 @@ console.log(storyToCols)
         <div className=" mt-8 w-[100%]  justify-around md:ml-12  gap-3 grid grid-flow-row-dense grid-cols-2  sm:max-w-[22rem]">
 
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
-   <button className="bg-emerald-800 text-white sm:ml-0 w-[10em] h-[4em] text-center rounded-full"
+   <button className="bg-emerald-800 text-white sm:ml-0 w-[10em] h-[5em] text-center rounded-full"
    
    onClick={updateCollection}
    
@@ -161,21 +161,24 @@ console.log(storyToCols)
    onClick={()=>navigate(Paths.collection.createRoute(colInView.id))}
     className=" bg-emerald-800 w-12 h-12 rounded-full mx-auto p-2" src={view}/>
    </div>
-<div className=" text-emerald-900">
-<button   onClick={()=>handleSetOpen(!isOpen)} className={(isOpen?"border-green-800":"border-emerald-400")+" px-2 min-w-36 py-3 border-2 bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[4em] rounded-full"}>
-    {isOpen?<h3 className="">Open Collab</h3>:<h3 className=" ">Close Collab</h3>}</button>
-   </div>
+{/* <div className=" text-emerald-900"> */}
+{/* <div   className={(isOpen?"border-green-800 border-4":"border-emerald-400 border-2")+" px-2 min-w-36 py-3  bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}> */}
+    {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 border-4 px-2 min-w-36 text-center py-3  bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="">Collection is Open Collab</h3> </div>:
+    <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 px-2 min-w-36 py-3 text-center bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className=" ">Collection is Close Collab</h3></div>}
+    
+    {/* </div> */}
+   {/* </div> */}
    <div>
    <button    onClick={()=>setIsPrivate(!isPrivate)} 
    className={`${isPrivate?
-    " border-2 border-emerald-300":"border-2 border-success"} text-[1rem]  py-[0.85rem] px-[1.85rem] bg-transparent text-emerald-800 w-[10em] h-[4em] rounded-full`}>{
+    " border-2 border-emerald-300":"border-4 border-success"} text-[1rem]  py-[0.85rem] px-[1.85rem] bg-transparent text-emerald-800 w-[10em] h-[5em] rounded-full`}>{
    isPrivate?
     "Is Private":"Is Public"}</button>
    </div>
    <div>
     <div className="">
     <div className="dropdown">
-  <div tabIndex={0} role="button"  className=" "> <label className=" text-emerald-700 border-2 border-emerald-600 rounded-full text-center   p-2 w-[10em] h-[4em] ">Followers are <span   className="text-emerald-700">{followersAre}s</span>   </label>
+  <div tabIndex={0} role="button"  className=" "> <label className=" text-emerald-700 border-2 border-emerald-600 rounded-full text-center   py-3 px-2 w-[10em] h-[5em] ">Followers are <span   className="text-emerald-700 shadow-sm">{followersAre}s</span>   </label>
  
 </div>
   <ul tabIndex={0} className="dropdown-content menu bg-white text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
@@ -198,7 +201,7 @@ console.log(storyToCols)
    <div>
   
  
-    <button onClick={()=>setOpenAccess(true)}className="text-white px-2 py-3 text-[1rem] w-[10em] h-[4em] rounded-full bg-emerald-600">Manage Access</button>
+    <button onClick={()=>setOpenAccess(true)}className="text-white px-2 py-3 text-[1rem] w-[10em] h-[5em] rounded-full bg-emerald-600">Manage Access</button>
   </div>
    <div>
 
