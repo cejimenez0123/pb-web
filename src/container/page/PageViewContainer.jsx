@@ -30,7 +30,7 @@ export default function PageViewContainer(props){
         dispatch(getStory(pathParams)).then(res=>checkResult(res,payload=>{
 
         },err=>{
-            navigate(-1)
+           
         }))
         dispatch(fetchCommentsOfPage(pathParams))
     },[currentProfile])
