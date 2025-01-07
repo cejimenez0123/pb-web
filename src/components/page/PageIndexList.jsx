@@ -5,7 +5,7 @@ const PageIndexList = ()=>{
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     if(pagesInView){
     return(<InfiniteScroll
-      className=" max-w-[94vw] md:w-[42em] max-h-[36em] py-2 overflow-scroll mx-auto"
+      className=" max-w-[94vw] md:w-[42em] max-h-[36em] py-2 overflow-y-scroll overlfow-x-hidden mx-auto"
                    dataLength={pagesInView.length}
                    next={()=>{}}
                    scrollThreshold={1}

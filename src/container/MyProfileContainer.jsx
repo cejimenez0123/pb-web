@@ -1,4 +1,4 @@
-import React,{ useEffect,useLayoutEffect, useState }  from 'react';
+import React,{ useLayoutEffect, useState }  from 'react';
 import { useLocation, useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
 import workshop from "../images/icons/workshop.svg"
@@ -44,18 +44,7 @@ function MyProfileContainer(props){
     useLayoutEffect(()=>{
         location.pathname=Paths.myProfile()
     },[])
-    useLayoutEffect( ()=>{
-        if(!currentProfile.profilePic.includes("http")){
-            getDownloadPicture(currentProfile.profilePic).then(url=>{
-               
-                setPictureUrl(url)
-            })
-        }else{
-            setPictureUrl(currentProfile.profilePic)
-        }
-        
-        
-    },[])
+
    
     const dispatch = useDispatch()
 
@@ -113,89 +102,111 @@ function MyProfileContainer(props){
             setBooks(boos)
         }
     },[collections])
+const ProfleInfo = ({profile})=>{
+    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
+    
+    useLayoutEffect( ()=>{
 
+        if(!profile.profilePic.includes("http")){
+            getDownloadPicture(currentProfile.profilePic).then(url=>{
+               
+                setPictureUrl(url)
+            })
+        }else{
+            setPictureUrl(profile.profilePic)
+        }
+        
+        
+    },[profile])
+    return (                           
+    <div className='flex-row  w-[84vw]   lg:max-w-[24em] justify-start  mx-auto  lg:w-full  mx-auto flex    '>
+    <img className={" min-w-24 overflow-hidden mx-2 h-24 lg:w-36 lg:h-36  sm:ml-6 rounded-full lg:rounded-lg"}src={pictureUrl}/>
+ 
+
+        <div className='text-left sm:mx-3 mb-2 h-48 flex flex-col '>
+        <h5 className='sm:text-xl text-emerald-900 font-bold'>{profile.username}</h5>
+       <div className='w-[100%] max-w-[20em] text-left '>
+        <h6 className='sm:max-h-48  sm:w-60 text-[0.8rem] sm:text-[0.8rem]  text-emerald-900 '>
+            {currentProfile.selfStatement}</h6></div> 
+   =
+        </div></div>)
+}
    
     
             return(
-            <div className='pb-72 pt-8'>
-                    <div className='  border-4 border-emerald-300 max-w-[94vw] mx-auto sm:m-h-[30em] sm:max-w-[50em] sm:mx-auto mt-2 py-4 sm:m-4 sm:pb-4 rounded-lg'>
-                  
-                        <div className='  '>
-                            <div className='sm:flex-row  flex-col flex  justify-between pr-0 pt-4'>
-                        <img className={"max-w-36 max-h-36  ml-6 rounded-lg"}src={pictureUrl}/>
-                     
-                            <div className='flex sm:flex-row ml-4 mt-1  w-[100%] justify-between'>
-                            <div className='text-left mx-3 mt-3 mb-2 '>
-                            <h5 className='sm:text-xl text-emerald-900 font-bold'>{currentProfile.username}</h5>
-                            <h6 className='max-h-48 overflow-scroll  text-[0.9rem] sm:text-[0.8rem]  text-emerald-900 '>{currentProfile.selfStatement}</h6>
+            <div className='pb-72 pt-4 sm:pt-8'>
+     
+                    <div className=' flex flex-col relative  justify-start sm:flex-row sm:justify-between border-4 border-emerald-300  pb-4 max-w-[94vw] mx-auto lg:h-[16em]  lg:max-w-[50em]   sm:mx-auto mt-2  rounded-lg'>
+                           <div className='absolute top-1   right-1'>
+                           {isNotPhone?
+                       <span className=' m-3 pr-4 flex-row flex w-36  justify-evenly'>     
+                       <img className='bg-emerald-500 rounded-full p-1 mx-3 min-w-8 h-8' src={settings}/>
+                   
+                    <img      className=' bg-emerald-500  rounded-full p-1 min-w-8 h-8'
+                            src={notifications}/>
+
+                      
+                          </span>:null}
+                           </div>
+                           <div className='max-h-[100%]'>
+                           <div className='flex flex-col lg:flex-row z lg:w-[40em] mt-4 '>
+                            
+                            <ProfleInfo profile={currentProfile}/>
+                          
+                        <MediaQuery maxWidth={'600px'}>
+
+                            <div className=' w-[86%] mx-auto grid grid-cols-2 gap-2 '>
+                                <div onClick={ClickWriteAStory} 
+                                className='bg-emerald-500  flex rounded-full text-white mt-2 w-[10em] h-[3em]  text-bold'>
+                               <h6 className='my-auto text-md mx-auto '> Write a Story</h6>
                             </div>
-                            {}
-                    
-                            <MediaQuery minWidth={'600px'}>
-                            <div className='justify-around flex flex-row max-w-[96vw] flex-wrap sm:w-60'>
+                            <div className='w-[10em] flex h-[3em]'>
+                            <img  onClick={()=>{navigate(Paths.workshop.route())}}className={`bg-emerald-600 rounded-full mx-auto mt-2  h-[3em] w-[3em] p-1 `}src={workshop} />
+                            </div>
+                            <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  w-[10em] h-[3em] text-white   text-bold'>
+                               <h6 className='mx-auto my-auto'>Create Collection</h6> 
+                            </div>
+                            <div className='w-[10em] h-[3em] flex'>
+                            <h6 onClick={()=>setOpenRefferal(true)}className='my-auto mx-auto text-sm  text-emerald-800'>Refer Someone?</h6>
+                            </div>
+                            </div>
+                            </MediaQuery>
+                      
+                            </div>
+                            <div className='absolute bottom-[2em] right-[3em] '>
+
+                          {isNotPhone?
+                            <div className='   grid grid-cols-2  gap-1  '>
                                 <div>
                                 <div onClick={()=>navigate(Paths.workshop.route())}
-                                className='bg-emerald-700 rounded-full text-white w-[9rem] text-center py-3 sm:text-[0.8rem] text-bold'>
-                                    <h6 className=''>Find a Workshop Group</h6>
+                                className='bg-emerald-700 rounded-full text-white flex w-[9rem] h-[4rem]  '>
+                                    <h6 className='text-center lg:text-[0.8rem] px-2 my-auto'>Find a Workshop Group</h6>
                                 </div>
 
                                 </div>
                                 <div>
-                            <div onClick={ClickWriteAStory} className='bg-emerald-500 rounded-full text-white w-[9rem] py-3 text-center sm:text-[0.8rem] text-bold'>
-                                <h6 >Write a Story</h6>
+                            <div onClick={ClickWriteAStory} className='bg-emerald-500 rounded-full flex text-white w-[8rem] lg:w-[9rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
+                            <h6 className='text-center lg:text-[0.8rem] px-2 mx-auto my-auto'>Write a Story</h6>
                             </div>
                             </div>
                             <div>
-                            <div onClick={ClickCreateACollection} className='bg-emerald-500 rounded-full  w-[9rem] text-white sm:text-[0.8rem] py-3   text-bold'>
-                                <h6 >Create Collection</h6>
+                            <div onClick={ClickCreateACollection} className='bg-emerald-500 rounded-full flex text-white w-[9rem]  h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
+                            <h6 className='text-center  lg:text-[0.8rem] px-2 mx-auto my-auto'>Create Collection</h6>
                             </div>
                             </div>
-                            <div>
-                            <a onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 my-6 text-emerald-800'>Refer Someone?</a>
+                            <div className=' mt-6'> 
+                            <h6 onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 text-emerald-800'>Refer Someone?</h6>
                             </div>
                             </div> 
-                            </MediaQuery>
-                           
-                            </div>
-                            <MediaQuery minWidth={'800px'}>
-                            <div className='w-full text-right flex sm:mr-8 flex-row h-12'>
-                            <button className=' sm:mr-4 bg-transparent'>
-                            <img src={settings}/>
-                        </button>
-                        <button className=' bg-transparent'>
-                            <img 
-                            src={notifications}/>
-                        </button>
-                            </div>
-                            </MediaQuery>
-                       
-                       
-                        </div>
-                        <div className='text-left mt-2'>
-                        <MediaQuery maxWidth={'600px'}>
-                            <div className='ml-4 flex  flex-col '>
-                            <div className='flex-row  flex  justify-between w-[83%]'>
-                                <button onClick={ClickWriteAStory} 
-                                className='bg-emerald-500 max-w-48 min-w-[12rem] rounded-full text-white mt-2 sm:text-xl text-bold'>
-                                Write a Story
-                            </button>
-                            <img  onClick={()=>{navigate(Paths.workshop.route())}}className={`bg-emerald-600 rounded-full h-12 mt-1 p-2`}src={workshop} />
-                            </div>
-                            <button onClick={ClickCreateACollection} className='bg-emerald-700 max-w-48 rounded-full sm:ml-4 mt-4 text-white sm:text-xl  text-bold'>
-                                Create Collection
-                            </button>
-                            <a onClick={()=>setOpenRefferal(true)}className='my-6 text-sm mx-4 text-emerald-800'>Refer Someone?</a>
-                            </div>
-                            </MediaQuery>
-                            </div> 
-                            </div>
-                            </div>
-                            {/*  */}
+                         :null}
+                         </div>
+                          </div>
+                </div>
                             <div className='max-w-[100vw] mx-atuo  flex flex-col justify-center'>
 
-                            <div role="tablist" className="tabs border-emerald-300 mt-8 max-w-[94vw] mx-auto border-b-4 border-emerald-500 min-h-48 rounded-lg  sm:max-w-128 sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800  sm:max-w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content  sm:max-w-[42em] pt-1 sm:py-4 rounded-lg  max-w-[94vw] mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4  border-emerald-300 ">
+                            <div role="tablist" className="tabs border-emerald-300 mt-8 max-w-[94vw] mx-auto border-b-4 border-emerald-500 lg:min-h-48 rounded-lg  lg:max-w-128 lg:mx-6 tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800 border-3 border-3 lg:max-w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content  lg:max-w-[42em] pt-1 lg:py-4 rounded-lg  max-w-[94vw] mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4  border-emerald-300 ">
   <PageIndexList/>
   </div>
 
@@ -203,15 +214,15 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800  sm:max-w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Books"
+    className="tab text-emerald-800  lg:max-w-[42em] [--tab-border-color:emerald] bg-transparent   border-3 text-xl" aria-label="Books"
     />
   <div role="tabpanel" 
-  className="tab-content  sm:max-w-[42em] pt-1 sm:py-4 rounded-lg  max-w-[94vw] mx-auto border-t-3 border-t-emerald-500 border-l-4 border-b-4 border-4-4 border-emerald-300">
+  className="tab-content  lg:max-w-[42em] pt-1 lg:py-4 rounded-lg  max-w-[94vw] mx-auto border-t-3 border-t-emerald-500 border-l-4 border-b-4 border-r-4 border-emerald-300">
   <CollectionIndexList cols={books}/>
   </div>
 
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-800  sm:max-w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-3 border-r-3 border-t-3 text-xl" aria-label="Libraries" />
-  <div role="tabpanel" className="tab-content  sm:max-w-[42em] pt-1 sm:py-4 rounded-lg  max-w-[94vw] mx-auto border-t-3 border-t-emerald-500 border-l-3 border-b-3 border-r-3  border-emerald-300">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 text-emerald-800  lg:max-w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
+  <div role="tabpanel" className="tab-content  lg:max-w-[42em] pt-1 lg:py-4 rounded-lg  max-w-[94vw] mx-auto border-t-3 border-t-emerald-500 border-l-4 border-b-4 border-r-4  border-emerald-300">
     <CollectionIndexList cols={libraries}/>
   </div>
 </div>
