@@ -52,10 +52,9 @@ useEffect(()=>{
     }
    
 },[page])
-const hanldeClickComment=(pageItem)=>{   
-  if(pageItem){ 
-    dispatch(setHtmlContent({html:pageItem.data}))
-    navigate(`/page/${pageItem.id}`)
+const hanldeClickComment=()=>{   
+  if(page){ 
+    navigate(`/page/${page.id}`)
 }
 }   
 const PageDataElement=({page})=>{
