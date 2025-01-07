@@ -23,9 +23,6 @@ function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
 
     const navigate = useNavigate()
-    // const isNotPhone = useMediaQuery({
-    //     query: '(min-width: 500px)'
-    //   })
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const [expanded,setExpanded]=useState(false)
@@ -69,7 +66,6 @@ const PageDataElement=({page})=>{
                     setImage(image)
                 }else{
                     if(page.data&& page.data.length>0){
-                  
                     getDownloadPicture(page.data).then(url=>setImage(url))
                     }
                 }

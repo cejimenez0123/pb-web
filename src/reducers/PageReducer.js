@@ -15,7 +15,7 @@ import {
           clearEditingPage,
           appendComment,
           updateComment,
-          fetchAppendPagesOfProfile,
+    
           saveRolesForPage,
           updatePage,
           setEditingPage,
@@ -23,7 +23,7 @@ import {
        
         } from "../actions/PageActions"
 import { createSlice} from "@reduxjs/toolkit"
-import { getMyStories, getStory,createStory, 
+import { getMyStories, getStory,createStory, fetchRecommendedStories,
   updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
 
 
@@ -51,6 +51,9 @@ const pageSlice = createSlice({
       
           state.pagesInView = list.map(item=>item.story)
           state.storyToCollectionList= list
+    }).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
+          state.pagesInView = payload.stories
+
     })
         .addCase(getCollectionStoriesProtected.fulfilled,(state,{payload})=>{
           const {list}=payload
@@ -192,10 +195,6 @@ const pageSlice = createSlice({
           }
         })
         state.commentsInView = newList
-      }).addCase(fetchAppendPagesOfProfile.fulfilled,(state,{payload})=>{
-        state.pagesInView = [...state.pagesInView,...payload.pageList]
-      }).addCase(fetchAppendPagesOfProfile.rejected,(state,{payload})=>{
-        state.error = payload.error
       }).addCase(updatePage.fulfilled,(state,{payload})=>{
         if(payload.page){
         state.editingPage = payload.page

@@ -30,6 +30,12 @@ class StoryRepo{
 
         return res.data
     }
+    async recommendations(){
+        let res = await axios.get(this.url+"/recommendations",{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})
+        return res.data
+    }
     async getStoryProtected({id}){
         let res = await axios.get(this.url+"/"+id+"/protected",{
             headers:{

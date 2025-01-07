@@ -199,7 +199,7 @@ if(currentProfile){
                 <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
     <h3 className="mt-8 mb-2 mx-8  text-emerald-800 text-3xl">{collection.title}</h3>
 
-        <h3 className="text-emerald-800  md:mx-8 rounded-lg p-4">{collection.purpose}</h3>
+        <h6 className="text-emerald-800  md:mx-8 rounded-lg p-4">{collection.purpose}</h6>
 
         <div className={"md:ml-8 mt-8 flex flex-row"}>
    {!role?<div

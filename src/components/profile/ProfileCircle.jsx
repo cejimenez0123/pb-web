@@ -10,12 +10,15 @@ function ProfileCircle({profile}){
     const navigate = useNavigate()
     useEffect(()=>{
         if(profile){
+            if(isValidUrl(profile.profilePic)){
+                setProfilePic(profilePic)
+            }else{
         getDownloadPicture(profile.profilePic).then(image=>{
             setProfilePic(image)
             setPending(false)
     }
         )
-    }
+            }}
     },[profile])
 if(isValidUrl(profilePic)&&!pending&&profile){
   return(<div  onClick={()=>navigate(Paths.profile.createRoute(profile.id))}className="overflow-hidden rounded-full max-h-7 max-w-8  border-2 border-white "><img className="object-scale-down h-6 h-8  " src={profilePic}/></div> )

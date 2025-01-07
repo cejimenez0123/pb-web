@@ -34,6 +34,22 @@ try{
   }
 }
 })
+const fetchRecommendedStories = createAsyncThunk(
+  'pages/fetchRecommendedStories',
+  async (params,thunkApi) => {
+
+      let data = await storyRepo.recommendations()
+      if(data.stories){
+        return {
+          stories:data.stories
+        }
+      }else{
+        return{
+          stories:[]
+        }
+      }
+
+  })
 const getMyStories= createAsyncThunk(
     'pages/getMyStories',
     async ({profile,draft},thunkApi) => {
@@ -102,5 +118,5 @@ const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStori
   }
 })
 export {deleteStory,getStory,getMyStories,createStory,updateStory,
-  getCollectionStoriesProtected,getCollectionStoriesPublic
+  getCollectionStoriesProtected,getCollectionStoriesPublic,fetchRecommendedStories
 }
