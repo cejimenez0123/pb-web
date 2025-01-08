@@ -10,11 +10,11 @@ import { useMediaQuery } from "react-responsive";
 import Paths from "../../core/paths";
 import ReactGA from "react-ga4"
 import { setCollectionInView } from "../../actions/CollectionActions";
-function IndexItem({item,page,onDelete}) {
+function IndexItem({item}) {
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
-    
+    const [canUserAdd,setCanUserAdd]=useState(false)
     const [showPreview,setShowPreview] = useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
@@ -25,6 +25,7 @@ function IndexItem({item,page,onDelete}) {
     }
     useLayoutEffect(()=>{
       soCanUserEdit()
+      soCanUserAdd()
     },[currentProfile,item])
     const handleOnClick = ()=>{
        
@@ -36,16 +37,13 @@ function IndexItem({item,page,onDelete}) {
     }
 
     const handleNavigate=()=>{
-      console.log(item)
         if(item &&item.storyIdList){
-    
               dispatch(setCollectionInView({collection:item}))
               navigate(Paths.collection.createRoute(item.id))
         }else if(item){
               dispatch(setHtmlContent(item.data))
               dispatch(setPageInView({page:item}))
               navigate(Paths.page.createRoute(item.id))
-     
         }
 
     }
@@ -56,19 +54,38 @@ function IndexItem({item,page,onDelete}) {
         navigate(Paths.addStoryToCollection.createRoute(item.id))
        }
     }
-   let buttonDiv= (<div>
+   let buttonDiv= canUserAdd?(<div>
     <div className="dropdown dropdown-left">
   <div tabIndex={0} role="button" className=" my-auto"><img className={"min-w-8 min-h-8 bg-emerald-800 p-2 rounded-full"}src={addBox}/></div>
-  <ul tabIndex={0} className="dropdown-content menu  rounded-box z-[1] md:w-72 p-2">
-    <li className="text-green-600 "><a onClick={handleAddToClick}>{item.storyIdList?"Add to Collection":`Add ${item.title} to Collection` }</a></li>
+  <ul tabIndex={0} className="dropdown-content menu  bg-slate-100 rounded-box z-[1] md:w-72 p-2">
+    {canUserAdd?<li className="text-green-600" onClick={handleAddToClick}><a >{item && item.storyIdList!=null?`Add ${item.title} to Collection`:"Add to Collection" }</a></li>:null}
     <li className="text-green-600 "><a >Share</a></li>
   </ul>
 </div>
 
-   </div>)
+   </div>):null
+   const soCanUserAdd=()=>{
+    let arr=[RoleType.editor,RoleType.writer]
+    let found = item && item.roles?item.roles.find(role=>role.profileId==currentProfile.id):null
+    if(currentProfile && item){
+      if(currentProfile.id==item.authorId){
+        setCanUserAdd(true)
+        return
+      }
+      if(currentProfile.id==item.profileId){
+        setCanUserAdd(true)
+        return
+      }
+      if(found && arr.includes(found.role)){
+        setCanUserAdd(true)
+        return
+      }
+    }
+    setCanUserAdd(false)
+   }
    const soCanUserEdit=()=>{
       let found = item && item.roles?item.roles.find(role=>role.profileId==currentProfile.id):null
-      if(currentProfile){
+      if(currentProfile && item){
         if(currentProfile.id==item.authorId){
           setCanUserEdit(true)
           return
@@ -89,9 +106,9 @@ function IndexItem({item,page,onDelete}) {
             
         <button tabIndex={0} role="button" className="rounded-full bg-emerald-800  px-2  h-[2.5rem] w-[2.5rem]"><img classname=" my-auto mx-auto pb-1" src={edit}/></button>
         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-          <li className="text-green-600 " onClick={
-           handleOnClick}><a >Edit</a></li>
-          <li className="text-green-600 " onClick={()=>handleNavigate(Paths.addStoryToCollection.createRoute(page.id))}><a>Add to Collection</a></li>
+          {canUserEdit?<li className="text-green-600 " onClick={
+           handleOnClick}><a >Edit</a></li>:null}
+          {canUserAdd?<li className="text-green-600 " onClick={handleAddToClick}><a>{item && item.storyIdList!=null?`Add ${item.title} to Collection`:"Add to Collection" }</a></li>:null}
         </ul>
       </div>)
   
