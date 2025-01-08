@@ -28,20 +28,20 @@ function IndexItem({item,page,onDelete}) {
     },[currentProfile,item])
     const handleOnClick = ()=>{
        
-      if(item.storyIdList){
+      if(item && item.storyIdList){
         navigate(Paths.editCollection.createRoute(item.id))
-      }else{
+      }else if(item){
         navigate(Paths.editPage.createRoute(item.id))
       }  
     }
 
     const handleNavigate=()=>{
       console.log(item)
-        if(item.storyIdList){
+        if(item &&item.storyIdList){
     
               dispatch(setCollectionInView({collection:item}))
               navigate(Paths.collection.createRoute(item.id))
-        }else{
+        }else if(item){
               dispatch(setHtmlContent(item.data))
               dispatch(setPageInView({page:item}))
               navigate(Paths.page.createRoute(item.id))
@@ -50,9 +50,9 @@ function IndexItem({item,page,onDelete}) {
 
     }
     const handleAddToClick = ()=>{
-       if(item.storyIdList){
+       if(item && item.storyIdList){
         navigate(Paths.addToCollection.createRoute(item.id))
-       }else{
+       }else if (item){
         navigate(Paths.addStoryToCollection.createRoute(item.id))
        }
     }
