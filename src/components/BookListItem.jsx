@@ -13,8 +13,8 @@ function BookListItem({book}){
         dispatch(setCollectionInView({collection:book}))
         navigate(Paths.collection.createRoute(book.id))
         ReactGA.event({
-            category: "Book",
-            action: "Navigate to Book",
+            category: "Collection",
+            action: "Navigate to Collection",
             label: book.title, 
             value: book.id,
             nonInteraction: false

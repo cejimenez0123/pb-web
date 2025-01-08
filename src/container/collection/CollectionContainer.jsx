@@ -157,17 +157,17 @@ if(currentProfile){
         token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     const findRole = ()=>{
-    if(collection && collection.roles && currentProfile){
-            let foundRole=  collection.roles.find(role=>role.profileId==currentProfile.id)
-     
-            if(foundRole){
-            const fRole = new Role(foundRole.id,currentProfile,collection,foundRole.role,foundRole.created)
-           
-            setRole(fRole)
-           }else{
-            setRole(null)
-           }
-          
+            if(collection && currentProfile){
+                let foundRole=  collection.roles.find(role=>{
+                    console.log("rolesds",role)
+                    return role.profileId==currentProfile.id})
+                console.log("getCollectionPub",foundRole)
+                if(foundRole){  
+                    const fRole = new Role(foundRole.id,currentProfile,collection,foundRole.role,foundRole.created)
+                    setRole(fRole)
+                 }else{
+                    setRole(null)
+                }
         }               
     }
   
@@ -176,7 +176,7 @@ if(currentProfile){
 
         findRole()
         getContent()
-    },[collection])
+    },[])
   
 
    
@@ -198,8 +198,8 @@ if(currentProfile){
    className={"border-emerald-600 bg-transparent border-2 text-emerald-600  min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}><h6 className="px-4 py-3  ">Follow</h6></div>:
    <div
    onClick={deleteFollow}
-   className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem]"} >
-        {role.role}
+   className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full flex text-[1rem] "} >
+       <h6 className="mx-auto my-auto text-[1rem] sm:text-[1.2rem]"> {role.role}</h6>
    </div>}
    <div
     className="flex flex-row   "
