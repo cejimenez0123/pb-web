@@ -9,8 +9,7 @@ import userSlice from './reducers/UserReducer';
 import bookSlice from './reducers/BookReducer.jsx';
 import libSlice from './reducers/LibraryReducer';
 import rolesSlice from './reducers/RoleReducer.jsx';
-import { BrowserRouter } from 'react-router-dom';
-import logger from "redux-logger"
+// import logger from "redux-logger"
 import commentSlice from './reducers/CommentReducer';
 import hashSlice from './reducers/HashtagReducer.jsx';
 
@@ -30,7 +29,7 @@ const store = configureStore({reducer:reducer,
     { serializableCheck: false
     }
   )
-  .concat(logger)
+  // .concat(logger)
 
 })
 ReactDOM.createRoot(document.getElementById('root')).render(
