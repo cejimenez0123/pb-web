@@ -51,7 +51,7 @@ function App(props) {
           
   
       },err=>{
-        
+        localStorage.clear()
       })
   })},[])
   useEffect(()=>{
@@ -120,7 +120,8 @@ function App(props) {
                         }
             />
           <Route path={Paths.editor.image()}
-              element={<EditorContainer/>}/>
+              element={
+                <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><EditorContainer/></PrivateRoute>}/>
           <Route  path="/discovery" 
                   element={
                     <DiscoveryContainer 
@@ -257,17 +258,11 @@ function mapDispatchToProps(dispatch){
   return{ 
     getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
     getPublicBooks:()=>dispatch(getPublicBooks()),
-    // fetchBookmarkLibrary:(params)=>dispatch(fetchBookmarkLibrary(params)),
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicStories:()=>dispatch(getPublicStories()),
-    // fetchAllProfiles:()=>dispatch(fetchAllProfiles()), 
-    // fetchFollowBooksForProfile:(params)=>dispatch(fetchFollowBooksForProfile(params)) ,
-    // fetchFollowLibraryForProfile:(params)=>dispatch(fetchFollowLibraryForProfile(params)),
-    // fetchFollowProfilesForProfile:(params)=>dispatch(fetchFollowProfilesForProfile(params)),
     fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),
     setSignedInTrue:()=>dispatch(setSignedInTrue()),
     setSignedInFalse:()=>dispatch(setSignedInFalse()),
-    // getPageApprovals:(params)=>dispatch(getPageApprovals(params)),
   }
 }
 function mapStateToProps(state){

@@ -1,4 +1,3 @@
-import RichEditor from "../../components/page/RichEditor"
 import "../../styles/Editor.css"
 import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
@@ -15,13 +14,11 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../../core/constants"
 import Paths from "../../core/paths"
-import PicturePageForm from "../../components/page/PicturePageForm"
 import {createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions"
 import { debounce } from "lodash"
 import ErrorBoundary from "../../ErrorBoundary"
 import HashtagForm from "../../components/hashtag/HashtagForm"
 import RoleForm from "../../components/role/RoleForm"
-import LinkPreview from "../../components/LinkPreview"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import isValidUrl from "../../core/isValidUrl"
 import Context from "../../context"
@@ -31,7 +28,6 @@ function EditorContainer(props){
         const currentProfile = useSelector(state=>state.users.currentProfile)
         const page = useSelector(state=>state.pages.pageInView)
         const [fetchedPage,setFetchedPage]=useState(null)
-       
         const pathParams = useParams()
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
@@ -45,12 +41,12 @@ function EditorContainer(props){
         const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         const {id }= pathParams
         const [image,setImage]=useState(null)
-        const [imageParams,setImageParams]=useState({})
+      
         useEffect(()=>{
-          if(fetchedPage==null || (fetchedPage && fetchedPage.id != pathParams.id)){
+          if(page){
             setFetchedPage(page)
           }
-         
+            
         },[page])
         useLayoutEffect( ()=>{
           if(fetchedPage){
@@ -64,7 +60,7 @@ function EditorContainer(props){
             if( fetchedPage.type==PageType.picture && isValidUrl(fetchedPage.data))
              setImage(fetchedPage.data)
           }
-          
+          setTitleLocal(fetchedPage.title)
         }
           
       },[fetchedPage])
@@ -78,30 +74,24 @@ function EditorContainer(props){
 
     }
     useLayoutEffect(()=>{
-        fetchStory()
-        // useEffect(() => {
-          const subscription = deleteStory
-        
+      fetchStory()
+    },[currentProfile])
+
+    useLayoutEffect(()=>{
+          const subscription = deleteStory  
           return () => {
-            if(htmlContent.trim.length<1 && titleLocal.length==0){
-              dispatch(subscription({page:{id:pathParams.id}}))
+            if(page && page.data.length==0 && page.title.length==0){
+              dispatch(subscription({page:{id:id}}))
             }}
-      
-          // };},[])  
-  
     },[])
     const fetchStory = ()=>{
-      if(id){ 
-      dispatch(getStory(pathParams)).then(res=>{
+      if(!page||(page && page.id!=id)){
+      dispatch(getStory({id:id})).then(res=>{
         checkResult(res,payload=>{
-          if(payload.story){
-            setFetchedPage(payload.story)
-            setPageInfo(payload.story)
-          
-             }
-        
-          
-      },err=>{})})
+          console.log(payload)
+      },err=>{
+        window.alert(err.message)
+      })})
     }
     }
     useLayoutEffect(()=>{ 
@@ -128,22 +118,6 @@ function EditorContainer(props){
             navigate("/profile/home")
           })
         }
-      }
-    
-    
-  
-     
-  
-      const handlePageForm=(params)=>{
-        
-        params.profileId = currentProfile.id
-        params.title =titleLocal
-        params.privacy = privacy
-        params.commentable = commentable
-
-  createPageAction(params)
-        
-      
       }
       const createPageAction = (params)=>{
         dispatch(createStory(params)).then(res=>checkResult(res,payload=>{
@@ -180,12 +154,7 @@ function EditorContainer(props){
               params.commentable=commentable,  
               params.type=fetchedPage.type
             }
-            
-                
-          
-            dispatch(updateStory(params)).then(res=>{
-              
-            })
+            dispatch(updateStory(params))
        
 
         }else{

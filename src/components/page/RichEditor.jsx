@@ -1,14 +1,18 @@
-import React, {  useState } from "react"
+import React, {  useEffect, useState } from "react"
 import ReactQuill from "react-quill";
 import "../../styles/Editor.css"
+import { useParams } from "react-router-dom";
 
 const fonts = ["Arial","Courier New","Georgia"]
 export default function RichEditor({page,handleChange}){
-
-    
-     
-      const [html,setHtml] = useState(page?page.data:"")
-   
+      const pathParams = useParams()
+  
+      const [html,setHtml] = useState("")
+    useEffect(()=>{
+        if(page){
+          setHtml(page.data)
+        }
+    },[page])
  
     const modules = {
       toolbar: [
@@ -47,13 +51,13 @@ export default function RichEditor({page,handleChange}){
     }
 
   
-    return( <div className=" ">
+    return( 
      
       <ReactQuill 
-      className="bg-green-600  overflow-scroll rounded-lg text-white stroke-white"
+      className="bg-green-600   rounded-lg text-white stroke-white"
       modules={modules}
       formats={formats} value={html} onChange={(content)=>handleTextChange(content)}
         
      />
-    </div>)
+    )
 }

@@ -8,9 +8,8 @@ import { getMyCollections } from '../actions/CollectionActions';
 import notifications from "../images/icons/notifications.svg"
 import settings from "../images/icons/settings.svg"
 import { getCurrentProfile } from '../actions/UserActions';
-import PageIndexList from '../components/page/PageIndexList';
+import IndexList from '../components/page/IndexList';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
-import CollectionIndexList from '../components/collection/CollectionIndexList';
 import Paths from '../core/paths';
 import ReactGA from "react-ga4"
 import {Dialog} from "@mui/material"
@@ -28,7 +27,7 @@ function MyProfileContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collections = useSelector(state=>state.books.collections)
     const [books,setBooks]=useState(collections)
- 
+    const pages = useSelector(state=>state.pages.pagesInView)
     const isNotPhone = useMediaQuery({
         query: '(min-width: 600px)'
       })
@@ -38,8 +37,7 @@ function MyProfileContainer(props){
     const location =useLocation()
     const [openRefferal,setOpenRefferal]=useState(false)
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    const [list,setList]=useState(<PageIndexList
-        />
+    const [list,setList]=useState([]
     )
     useLayoutEffect(()=>{
         location.pathname=Paths.myProfile()
@@ -119,7 +117,7 @@ const ProfleInfo = ({profile})=>{
         
     },[profile])
     return (                           
-    <div className='flex-row  w-[84vw]   lg:max-w-[24em] justify-start  mx-auto  lg:w-full  mx-auto flex    '>
+    <div className='flex-row   mx-auto  flex    '>
     <img className={" min-w-24 overflow-hidden mx-2 h-24 lg:w-36 lg:h-36  sm:ml-6 rounded-full lg:rounded-lg"}src={pictureUrl}/>
  
 
@@ -148,8 +146,8 @@ const ProfleInfo = ({profile})=>{
                       
                           </span>:null}
                            </div>
-                           <div className='max-h-[100%]'>
-                           <div className='flex flex-col lg:flex-row z lg:w-[40em] mt-4 '>
+                           <div className='max-h-[100%] flex'>
+                           <div className='flex flex-col lg:flex-row lg:px-8 mx-auto mt-4 '>
                             
                             <ProfleInfo profile={currentProfile}/>
                           
@@ -207,7 +205,7 @@ const ProfleInfo = ({profile})=>{
                             <div role="tablist" className="tabs border-emerald-300  mx-auto border-b-4 border-emerald-500  rounded-lg w-[96vw] mx-auto md:w-[42em]  tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800 border-3 border-3 w-[96vw] mx-auto md:w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
-  <PageIndexList/>
+  <IndexList items={pages}/>
   </div>
 
   <input
@@ -218,12 +216,12 @@ const ProfleInfo = ({profile})=>{
     />
   <div role="tabpanel" 
    className="tab-content   pt-1 lg:py-4 rounded-lg w-[100%] mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4  border-emerald-300 ">
-  <CollectionIndexList cols={books}/>
+  <IndexList items={books}/>
   </div>
 
   <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 text-emerald-800   [--tab-border-color:emerald] bg-transparent border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
   <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  w-[100%] border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4  border-emerald-300 ">
-    <CollectionIndexList cols={libraries}/>
+    <IndexList items={libraries}/>
   </div>
 </div>
 

@@ -8,7 +8,7 @@ import {
 import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
-import PageIndexList from "../../components/page/PageIndexList"
+import PageIndexList from "../../components/page/IndexList"
 import CollectionIndexList from "../../components/collection/CollectionIndexList"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { getProtectedProfilePages,getPublicProfilePages } from "../../actions/PageActions"
@@ -25,7 +25,7 @@ function ProfileContainer(props){
     const pathParams = useParams()
     const [profilePic,setProfilePic]=useState(null)
     const [following,setFollowing]=useState(null)
-
+    const pages = useSelector(state=>state.pages.pagesInView)
     useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
@@ -135,7 +135,7 @@ checkIfFollowing({profile})
                          <div role="tablist" className="tabs  shadow-md mb-36 rounded-lg w-[96vw]  md:max-w-[42em] tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  [--tab-border-color:rgb(52 211 153)] bg-transparent text-emerald-800 text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content w-[100%] border-emerald-400 border-3 h-[100%] rounded-lg  ">
-  <PageIndexList/>
+  <IndexList items={pages}/>
   </div>
   <input
     type="radio"
@@ -145,7 +145,7 @@ checkIfFollowing({profile})
     aria-label="Collections"
     />
   <div role="tabpanel" className="tab-content bg-transparent border-emerald-400   border-3 rounded-lg  ">
-  <CollectionIndexList cols={collections}/>
+  <IndexList items={collections}/>
 </div>
 </div>
 </div>    

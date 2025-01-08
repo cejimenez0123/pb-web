@@ -47,6 +47,7 @@ class StoryRepo{
     }
     async getStoryPublic({id}){
         let res = await axios.get(this.url+"/"+id+"/public")
+        console.log("getStor",res)
         return res.data
     }
     async getMyStories({profile,draft=""}){

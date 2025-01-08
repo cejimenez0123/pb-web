@@ -1,12 +1,12 @@
-import { useSelector } from "react-redux"
-import PageIndexItem from "./PageIndexItem"
+
 import InfiniteScroll from "react-infinite-scroll-component"
-const PageIndexList = ()=>{
-    const pagesInView = useSelector(state=>state.pages.pagesInView)
-    if(pagesInView){
+import IndexItem from "./IndexItem"
+const IndexList = ({items})=>{
+  
+    if(items){
     return(<InfiniteScroll
       className="   overflow-y-scroll overlfow-x-hidden "
-                   dataLength={pagesInView.length}
+                   dataLength={items.length}
                    next={()=>{}}
                    scrollThreshold={1}
                    hasMore={false}
@@ -16,8 +16,8 @@ const PageIndexList = ()=>{
                       </div>
                     }
                   >
-                      {pagesInView.map(page=>{
-                        return <div className=" my-2"><PageIndexItem page={page} /></div>
+                      {items.map(item=>{
+                        return <div className=" my-2"><IndexItem page={item} item={item} /></div>
                       })}  
                    </InfiniteScroll>)
 
@@ -26,4 +26,4 @@ const PageIndexList = ()=>{
                     }
 }
 
-export default PageIndexList
+export default IndexList

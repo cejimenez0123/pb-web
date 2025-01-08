@@ -8,6 +8,7 @@ import checkResult from "../../core/checkResult"
 import { PageType } from "../../core/constants"
 import { useSelector } from "react-redux"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
+import { setHtmlContent } from "../../actions/PageActions"
  export default function EditorDiv({title,isPrivate,comment}){
         const {setIsSaved}=useContext(Context)
         const pageParams = useParams()
@@ -20,25 +21,21 @@ import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
               setImage(url)
             })
           }
-        
         },[])
         const dispatchContent=(content)=>{
-        
-    
           let params = { page:pageParams,
             title: title,
             data: content,
             privacy:isPrivate,
             commentable:comment,  
             type:"html"
-          }
+            }
+            dispatch(setHtmlContent(content))
             setIsSaved(false)
             dispatch(updateStory(params)).then((res)=>{
-        checkResult(res,payload=>{
+            checkResult(res,payload=>{
                 setIsSaved(content==payload.story.data)
-},err=>{
-
-})
+                },err=>{})
             })
     
         }
@@ -50,7 +47,6 @@ import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
                   page={page}
                                 handleChange={(content)=>{
                                 dispatchContent(content)
-
                               }}/>
                               </div>)
               }

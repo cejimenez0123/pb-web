@@ -9,12 +9,13 @@ const PrivateRoute = ({loggedIn, children }) => {
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [pending,setPending]=useState(false)
     const location = useLocation();
+    const token = localStorage.getItem("token")
     const [formerPage,setFormerPage]=useState("")
     const navigate = useNavigate()
     const dispatch = useDispatch()
     useLayoutEffect(() => {
-        if(!pending||currentProfile){
-            if(!currentProfile){
+        if(!pending||token){
+            if(!token){
               navigate(Paths.login())
             }else{
               navigate(formerPage)
