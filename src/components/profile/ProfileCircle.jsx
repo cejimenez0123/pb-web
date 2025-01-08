@@ -20,8 +20,8 @@ function ProfileCircle({profile}){
             }}
     },[profile])
 if(profilePic && isValidUrl(profilePic)&&!pending&&profile){
-  return(<div  onClick={()=>navigate(Paths.profile.createRoute(profile.id))}className="overflow-hidden rounded-full max-h-7 max-w-8  border-2 border-white ">
-    <img className="object-scale-down h-10 h-10  " src={profilePic}/></div> )
+  return(<div  onClick={()=>navigate(Paths.profile.createRoute(profile.id))}className="overflow-hidden rounded-full max-h-8 max-w-8  border-2 border-white ">
+    <img className="object-fit  " src={profilePic}/></div> )
 
 }else{
     return <div className="w-7 skeleton  bg-slate-400 h-8"></div>

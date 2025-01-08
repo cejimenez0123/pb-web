@@ -109,8 +109,9 @@ console.log(storyToCols)
    
     const updateCollection = ()=>{
         dispatch(patchCollectionContent({id:params.id,isPrivate:isPrivate,isOpenCollaboration:isOpen,title,purpose,storyToCol:newPages,colToCol:newCollections,col:colInView,profile:currentProfile})).then(res=>{
-           setSuccess("Successful Update")
-         setError(null)
+            setError(null)
+              setSuccess("Successful Update")
+
         },err=>{
             setSuccess(null)
             setError(err.message)
@@ -136,7 +137,7 @@ console.log(storyToCols)
 }}
     type="text" className="bg-transparent text-emerald-800 px-2 py-2 w-full mb-4  text-2xl" value={title}/>
        </div>
-        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  text-[1rem]  text-white  sm:mx-8 bg-emerald-600 bg-opacity-60  max-w-[96vw] w-[100%] md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
+        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  text-[1rem]  text-emerald-800  sm:mx-8 border-emerald-600 bg-transparent  max-w-[96vw] w-[100%] md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
         </div>
         
         {/*  */}
@@ -163,8 +164,8 @@ console.log(storyToCols)
    </div>
 {/* <div className=" text-emerald-900"> */}
 {/* <div   className={(isOpen?"border-green-800 border-4":"border-emerald-400 border-2")+" px-2 min-w-36 py-3  bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}> */}
-    {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 border-4 px-2 min-w-36 text-center py-3  bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] lg:text-[1rem] ">Collection is Open Collab</h3> </div>:
-    <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 px-2 min-w-36 py-3 text-center bg-transparent mx-auto   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] lg:text-[1rem]  ">Collection is Close Collab</h3></div>}
+    {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 border-4 min-w-36 text-center  flex  bg-transparent m text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[1rem] ">Collection is Open Collab</h3> </div>:
+    <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 min-w-36 flex text-center bg-transparent mx-auto   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[1rem]  ">Collection is Close Collab</h3></div>}
     
     {/* </div> */}
    {/* </div> */}
@@ -250,7 +251,7 @@ const deleteSubCollection = (colId)=>{
     }
     if(colInView){
         return(<div>
-                  <div className='fixed top-2 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
+                  <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
              {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>
   <svg
     xmlns="http://www.w3.org/2000/svg"

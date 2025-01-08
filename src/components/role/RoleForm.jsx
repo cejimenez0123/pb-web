@@ -16,7 +16,8 @@ function RoleForm({book,onClose}){
     const pending = useSelector(state=>state.roles.loading)
     const [roles,setRoles]=useState([])
     const dispatch = useDispatch()
-    
+    const [error,setError]=useState(null)
+    const [success,setSuccess]=useState(null)
     useLayoutEffect(()=>{
         dispatch(fetchProfiles())
 
@@ -48,10 +49,31 @@ function RoleForm({book,onClose}){
         if(currentProfile){
         if(book.childCollections){
             dispatch(patchCollectionRoles({roles,profile:currentProfile,collection:book}))
+            .then(
+                res=>checkResult(res,payload=>{
+                        setSuccess("Successful Save")
+                        setError(null)
+                },err=>{
+                    setError("Error Saved")
+                    setSuccess(null)
+                })
+            )
         }else{
        
-            dispatch(patchRoles({roles:roles,profileId:currentProfile.id,storyId:book.id}))
-        }}
+            dispatch(patchRoles({roles:roles,profileId:currentProfile.id,storyId:book.id}))     .then(
+                res=>checkResult(res,payload=>{
+                        setSuccess("Successful Save")
+                        setError(null)
+                },err=>{
+                    setError("Error Saved")
+                    setSuccess(null)
+                })
+            )}
+        
+        }else{
+            setError("No current Profile")
+            setSuccess(null)
+        }
     }
     const handleUpdateRole=({role,profile})=>{
        let roleI = new Role(null,profile,book,role)
@@ -61,7 +83,11 @@ function RoleForm({book,onClose}){
      
     }
     return(<div className="background-blur h-screen sm:min-w-[30em] overflow-scroll max-h-[80vh] bg-gradient-to-br from-emerald-300 to-emerald-50 px-4">
-        <div className="pt-4">
+                          <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
+         {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>{error?error:success}</div>:null}
+       
+         </div> <div className="pt-4">
+            
            <div className=" flex text-emerald-900 flex-row justify-between">
             <div>Share</div><img onClick={onClose} src={close}/>
         </div>
@@ -69,11 +95,11 @@ function RoleForm({book,onClose}){
             <p className="text-sm text-emerald-900">{book.title}</p>
         </div>
         <div>
-            <button className="
-            text-white  botder rounded-full text-xl shadow-sm border-white mb-8 bg-emerald-800"
+            <div className="
+            text-white  botder rounded-full flex text-l lg:text-xl w-[5em] h-[3em] shadow-sm border-white mb-8 bg-emerald-800"
             onClick={handlePatchRoles}
             >
-                Save</button>
+                <h6 className="mx-auto my-auto">Save</h6></div>
         </div>
         <InfiniteScroll
         className="scroll max-h-full sm:max-h-[25em] overflow-y-scroll overflow-x-hidden rounded-lg"
@@ -96,7 +122,10 @@ function RoleForm({book,onClose}){
                    if(roles){
                     role = roles.find(role=>role.profile.id==profile.id)
                    }
-                return(<div key={i}className="background-blur shadow-sm flex flex-row rounded-full justify-between px-4 bg-opacity-60 bg-emerald-600  my-4 ">
+                return(<div> 
+
+             <div key={i}className="background-blur shadow-sm flex flex-row rounded-full justify-between px-4 bg-opacity-60 bg-emerald-600  my-4 ">
+                    
                     <h6 className="text-sm opacity-100 text-white py-4 mx-2 mx-y">
                         {profile.username}</h6>
                         <div className="my-auto w-fit">
@@ -118,7 +147,7 @@ function RoleForm({book,onClose}){
     ><a className="label text-emerald-600">{RoleType.editor}</a></li>
   </ul>
 </div>
-  
+</div>
                     </div></div>)
             })}
             

@@ -215,12 +215,11 @@ const ProfleInfo = ({profile})=>{
     className="tab text-emerald-800   [--tab-border-color:emerald] bg-transparent   border-3 text-xl" aria-label="Books"
     />
   <div role="tabpanel" 
-   className="tab-content   pt-1 lg:py-4 rounded-lg w-[100%] mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4  border-emerald-300 ">
+   className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
   <IndexList items={books}/>
   </div>
-
   <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 text-emerald-800   [--tab-border-color:emerald] bg-transparent border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
-  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  w-[100%] border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4  border-emerald-300 ">
+  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
     <IndexList items={libraries}/>
   </div>
 </div>

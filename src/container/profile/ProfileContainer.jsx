@@ -8,8 +8,7 @@ import {
 import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
-import PageIndexList from "../../components/page/IndexList"
-import CollectionIndexList from "../../components/collection/CollectionIndexList"
+import IndexList from "../../components/page/IndexList"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { getProtectedProfilePages,getPublicProfilePages } from "../../actions/PageActions"
 import { createFollow, deleteFollow } from "../../actions/FollowAction"
@@ -39,12 +38,10 @@ function ProfileContainer(props){
         })
     },[])
     useLayoutEffect(()=>{
-
-        if(profile){
-            currentProfile&&localStorage.getItem("token")?dispatch(getProtectedProfilePages({profile})):dispatch(getPublicProfileCollections({profile}))
+            currentProfile&&localStorage.getItem("token")?dispatch(getProtectedProfilePages({profile})):dispatch(getPublicProfilePages({profile}))
             currentProfile&&localStorage.getItem("token")?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile}))
-        }
-    },[profile,currentProfile])
+    
+    },[currentProfile])
     useLayoutEffect(()=>{
         if(profile){
             getDownloadPicture(profile.profilePic).then(url=>{
@@ -131,20 +128,20 @@ checkIfFollowing({profile})
             <div className="pt-2 md:pt-8 mx-2">
                 <ProfileCard/>
             </div>
-            <div className=" w-[96vw]  md:max-w-[42em] mt-4 mb-1 mx-auto">
+            <div className=" w-[96vw]  md:w-[42em] mt-4 mb-1 mx-auto">
                          <div role="tablist" className="tabs  shadow-md mb-36 rounded-lg w-[96vw]  md:max-w-[42em] tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  [--tab-border-color:rgb(52 211 153)] bg-transparent text-emerald-800 text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content w-[100%] border-emerald-400 border-3 h-[100%] rounded-lg  ">
+  <div role="tabpanel" className="tab-content w-[96vw]  md:max-w-[42em] border-emerald-400 border-3 h-[100%] rounded-lg border-3 border-emerald-400 ">
   <IndexList items={pages}/>
   </div>
   <input
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-700 [--tab-border-color:rgb(52 211 153)] bg-transparent   text-xl"
+    className="tab  [--tab-border-color:rgb(52 211 153)] bg-transparent text-emerald-800 text-xl"
     aria-label="Collections"
     />
-  <div role="tabpanel" className="tab-content bg-transparent border-emerald-400   border-3 rounded-lg  ">
+  <div role="tabpanel"  className="tab-content w-[96vw]  md:max-w-[42em] border-emerald-400 border-3 h-[100%] rounded-lg  border-3 border-emerald-400 ">
   <IndexList items={collections}/>
 </div>
 </div>
