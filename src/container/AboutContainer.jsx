@@ -14,7 +14,7 @@ export default function AboutContainer(props){
     const forCreatives = ()=>{
         return(<div className="grid sm:grid-cols-2 gap-8">
     <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
-<img  className=" absolute top-[-35%] sm:top-[-20%] md:top-[-30%] lg:top-[-80%] rounded-lg" src={firstGroup}  alt="first group"/>
+<img  className=" absolute top-[-52%] sm:top-[-20%] md:top-[-30%] lg:top-[-80%] rounded-lg" src={firstGroup}  alt="first group"/>
  </div>
            <div className="">
             <div className=" bg-[#23774ca6] text-white h-full rounded-lg p-4" >
@@ -49,7 +49,7 @@ const writingJourney = ()=>{
 }
 const detailsOfWorkshop=()=>{
     return (<div className={`poppins px-4 py-2  max-w-[100vw]`}>
-        <h2 className="poppins text-center text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
+        <h2 className="poppins text-center text-emerald-800 lg:text-white text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
         <h3 className={`poppins  font-bold  text-2xl font-bold text-left ${md?"text-emerald-700":"text-white"}`}>What is a Writers' Workshop?</h3>
       
@@ -84,12 +84,7 @@ Be part of a community of writers who are eager to share their insights and supp
 </div>
     </div>)
 }
-    // const groupImage = ()=>{
-    //     return<div className="relative min-w-42 mx-auto bg-red-100 w-fit overflow-hidden h-60 sm:h-full rounded-lg  ">
-    //     <img src={firstGroup} className="object-cover absolute top-[-6em] sm:top-[-12em] rounded-lg sm:h-[20em] sm:h-[35em]  "/>
-    //   </div>
-   
-    // }
+
     return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
         
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300;400;700&display=swap" />
@@ -105,7 +100,7 @@ Be part of a community of writers who are eager to share their insights and supp
   </div>
 
   <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
-<img  className=" absolute top-[-8em] sm:top-[-15em] md:top-[-35%] lg:top-[-60%] rounded-lg" src={groupJpg} alt="group pic"
+<img  className=" absolute top-[-8em] sm:top-[-15em] md:top-[-35%] lg:top-[-75%] rounded-lg" src={groupJpg} alt="group pic"
  />
 </div> 
 </div>
