@@ -23,7 +23,6 @@ const WorkshopContainer = (props) => {
   const [error,setError]=useState(null)
   const [radius,setRadius]=useState(50)
   const workshopGroups = useSelector(state=>state.books.groups)
-
   const [location,setLocation]=useState({latitude:40.7128, longitude:74.0060})
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const [checkedPage,setCheckedPaged]=useState(null)
@@ -162,7 +161,7 @@ if(group.length>0 ){
      
         </div>
           <div
-          className='overflow-scroll mt-3 rounded-lg py-3'
+          className='overflow-scroll mt-3 max-h-72 rounded-lg py-3'
           >{pages?pages.map((page,index)=>{
             return <PageWorkshopItem page={page} index={index} checked={checkedPage} onChecked={e=>{
               let truthy=e.target.value
@@ -187,10 +186,10 @@ if(group.length>0 ){
       </div>
       
  
-      <div className='text-emerald-800 mx-auto max-w-[94vw] sm:border-emerald-600  py-8 sm:shadow-sm sm:min-w-[36em] px-2 pt-20 sm:border-2 sm:rounded-full  h-[90vh]'>
+      <div className='text-emerald-800 mx-auto  max-h-[28rem] max-w-[94vw] sm:border-emerald-600  py-8 sm:shadow-sm sm:min-w-[36em] px-2 pt-20 sm:border-2 sm:rounded-full  h-[90vh]'>
      <div className='sm:px-4'>
       <h6 className='text-emerald-800 text-2xl font-bold mb-4'>Workshop Groups</h6>
-      <div className='overflow-scroll'>{workshopGroups && workshopGroups.length>0 && workshopGroups.map((group, index) => 
+      <div className='overflow-scroll '>{workshopGroups && workshopGroups.length>0 && workshopGroups.map((group, index) => 
       {
         if(group.length>0){
           return(

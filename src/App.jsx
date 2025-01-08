@@ -14,8 +14,7 @@ import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/profile/ProfileContainer.jsx';
 import ApplyContainer from './container/auth/ApplyContainer';
 import SearchDialog from './components/SearchDialog';
-import {  fetchBookmarkLibrary,
-          getPublicLibraries } from './actions/LibraryActions';
+import {  getPublicLibraries } from './actions/LibraryActions';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import checkResult from './core/checkResult';
 import {  getPublicBooks } from './actions/BookActions';
@@ -158,7 +157,6 @@ function App(props) {
      ><AddStoryToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.editCollection.route()}
       element={<PrivateRoute 
-     
       ><EditCollectionContainer/></PrivateRoute>}/>
      
       <Route exact path={Paths.about()} element={
@@ -184,7 +182,7 @@ function App(props) {
     />
     <Route 
     path={Paths.workshop.route()}
-    element={<WorkshopContainer/>}/>
+    element={<PrivateRoute><WorkshopContainer/></PrivateRoute>}/>
     <Route path="/profile/:id" element={
       <ProfileContainer profile={props.profileInView}/>
       }/>

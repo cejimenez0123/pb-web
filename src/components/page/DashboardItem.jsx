@@ -276,7 +276,8 @@ onClick={()=>ClickAddStoryToCollection()}>
              
           <div className=' rounded-lg relative '>
           <div className=' justify-between '>
-               <span className='absolute flex flex-row p-2'> {page.author?<ProfileCircle profile={page.author}/>:null}
+               <span className='absolute flex flex-row w-24 p-2'> 
+               {page.author?<ProfileCircle profile={page.author}/>:null}
                 <h6 className="text-emerald-800 my-auto ml-1 text-[0.9rem]  " onClick={()=>{
                     dispatch(setPageInView({page}))
                     navigate(Paths.page.createRoute(page.id))

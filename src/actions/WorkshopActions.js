@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 import Enviroment from '../core/Enviroment';
-console.log(Enviroment.url)
+console.log("Enviroment",Enviroment.url)
 const socket = io(Enviroment.url);
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';

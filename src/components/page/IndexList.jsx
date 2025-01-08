@@ -5,7 +5,7 @@ const IndexList = ({items})=>{
   
     if(items){
     return(<InfiniteScroll
-      className="   overflow-y-scroll overlfow-x-hidden "
+      className="   overflow-y-scroll w-[100%] overlfow-x-hidden "
                    dataLength={items.length}
                    next={()=>{}}
                    scrollThreshold={1}

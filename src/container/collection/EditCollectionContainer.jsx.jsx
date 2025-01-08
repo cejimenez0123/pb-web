@@ -163,8 +163,8 @@ console.log(storyToCols)
    </div>
 {/* <div className=" text-emerald-900"> */}
 {/* <div   className={(isOpen?"border-green-800 border-4":"border-emerald-400 border-2")+" px-2 min-w-36 py-3  bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}> */}
-    {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 border-4 px-2 min-w-36 text-center py-3  bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="">Collection is Open Collab</h3> </div>:
-    <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 px-2 min-w-36 py-3 text-center bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className=" ">Collection is Close Collab</h3></div>}
+    {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 border-4 px-2 min-w-36 text-center py-3  bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] lg:text-[1rem] ">Collection is Open Collab</h3> </div>:
+    <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 px-2 min-w-36 py-3 text-center bg-transparent mx-auto   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] lg:text-[1rem]  ">Collection is Close Collab</h3></div>}
     
     {/* </div> */}
    {/* </div> */}

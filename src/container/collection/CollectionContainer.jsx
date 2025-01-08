@@ -80,12 +80,9 @@ if(currentProfile){
     }
     useEffect(()=>{
        getCol()
-    },[id])
+    },[currentProfile,id])
     useLayoutEffect(()=>{
         if(collection && currentProfile){
-     
-     
-     
         if(collection.roles){
 
           
@@ -105,19 +102,17 @@ if(currentProfile){
        if(collection){
        
             if( !collection.isPrivate){
-
                 setCanUserSee(true)
 
                     return 
-        }
-        
+             }
             if(currentProfile){
             let found =  collection.roles.find(colRole=>{
                 return colRole && colRole.profileId == currentProfile.id
             })
-            if(sightArr.includes(found.role)||collection.profileId==currentProfile.id){
+                 if(found && sightArr.includes(found.role)||collection.profileId==currentProfile.id){
                 setCanUserSee(true)
-            }else{
+                    }else{
                 setCanUserSee(false)
             }
         }
@@ -148,7 +143,7 @@ if(currentProfile){
             }
         } 
     }
-    useLayoutEffect(()=>{
+    useEffect(()=>{
        soUserCanSee() 
        soUserCanAdd()   
        soUserCanEdit() 
@@ -173,35 +168,31 @@ if(currentProfile){
             setRole(null)
            }
           
-        }   
-                    
+        }               
     }
-
-           
-    useEffect(findRole,[collection])   
+  
+   
     useLayoutEffect(()=>{
-       
+
         findRole()
         getContent()
     },[collection])
   
 
    
-    const CollectionInfo=({collection})=>{
-       
-        
+    const CollectionInfo=({collection})=>{  
         if(!collection){
             return(<div>Loading</div>)
         }
        
-        return(<div className="h-fit w-[94vw] mx-auto lg:w-[50em] mx-auto mt-4 sm:pb-8 sm:border-4 p-4 sm:border-emerald-600   rounded-lg mb-8 text-left">
+        return(<div><div className="h-fit w-[96vw] mx-auto lg:w-[50em] mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600   rounded-lg mb-8 text-left">
                 {collection.profile?<div className="flex flex-row"><div className="min-w-8 min-h-8  my-auto"><ProfileCircle profile={collection.profile}/></div><span onClick={()=>navigate(Paths.profile.createRoute(collection.profile.id))} className="text-emerald-800 mx-2 my-auto rounded-lg ">{collection.profile.username}</span></div>:null}
                 <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
-    <h3 className="mt-8 mb-2 mx-8  text-emerald-800 text-3xl">{collection.title}</h3>
+    <h3 className="mt-8 mb-2  text-emerald-800 text-xl sm:text-3xl">{collection.title}</h3>
 
-        <h6 className="text-emerald-800  md:mx-8 rounded-lg p-4">{collection.purpose}</h6>
-
-        <div className={"md:ml-8 mt-8 flex flex-row"}>
+        <h6 className="text-emerald-800   rounded-lg py-4 px-2">{collection.purpose}</h6>
+</div>
+        <div className={" w-36  mx-auto flex flex-row"}>
    {!role?<div
    onClick={handleFollow}
    className={"border-emerald-600 bg-transparent border-2 text-emerald-600  min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}><h6 className="px-4 py-3  ">Follow</h6></div>:
@@ -211,12 +202,11 @@ if(currentProfile){
         {role.role}
    </div>}
    <div
-    className="flex-row flex justify-around px-4 "
+    className="flex flex-row   "
    >
    {canUserAdd?
-
     <img onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))
-   }className="rounded-full bg-emerald-800 p-3   my-auto"src={add}/>:null}
+   }className="rounded-full bg-emerald-800 p-3  mx-2 my-auto"src={add}/>:null}
    {canUserEdit?
    
    <img 

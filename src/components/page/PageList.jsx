@@ -12,7 +12,7 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
       })
     if(pagesInView!=null){
         return(<div 
-        >
+        ><ErrorBoundary>
            <InfiniteScroll
         dataLength={pagesInView.length}
         next={()=>{}}
@@ -29,15 +29,15 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
           {pagesInView.map(page=>{
             if(page){
                 const id = `${page.id}_${uuidv4()}`
-                return(<ErrorBoundary><div id={id} className="mb-2">
+                return(<div id={id} key={id}className="mb-2">
                     <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
-                </div></ErrorBoundary>)
+                </div>)
             }else{
                 return null
             }
             })}
             </div>
-        </InfiniteScroll> </div>)
+        </InfiniteScroll> </ErrorBoundary></div>)
     }
     return(<div>
         Loading..
