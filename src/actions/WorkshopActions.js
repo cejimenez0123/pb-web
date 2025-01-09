@@ -23,10 +23,16 @@ const registerUser = (profileId, location) => {
 const disconnectUser = () => {
     socket.disconnect();
 };
-const fetchActiveUsers = async () => {
+const fetchActiveUsers = async ({profile,story}) => {
     try {
-      const response = await axios.get(Enviroment.url+'/workshop/active-users');
 
+      const response = await axios.post(Enviroment.url+`/workshop/active-users`,{
+        story:story,
+        profile:profile
+      },{headers:{
+        Authorization:"Bearer "+localStorage.getItem("token")
+      }});  
+// console.log("Rponer",response)
       return response.data.profiles;
     } catch (error) {
       console.error('Error fetching active users:', error);
@@ -34,28 +40,14 @@ const fetchActiveUsers = async () => {
     }
   };
 const createWorkshopGroup = createAsyncThunk("books/createWorkshopGroup",
-async ({profile,group,page,groupName,location},thunkApi)=>{
+async ({profile,story,location},thunkApi)=>{
     try{
-        let colData = await collectionRepo.createCollection({title:groupName,isPrivate:true,
-          isOpenCollaboration:false,profileId:profile.id,type:"feedback",location
-          
-        })
-        let collection = colData.collection
-       let role = new Role(null,profile,collection,RoleType.editor)
-       let roles = group.map(profile=>new Role(null,profile,collection,RoleType.editor))        
-        roles=[...roles,role]
-        await collectionRepo.addStoryListToCollection({id:collection.id,list:[page],profile})
-       let data = await roleRepo.patchCollectionRoles({roles,profile,collection})
-       console.log("colData",colData) 
-       console.log("Data",data)
-       
-       return {
-          collection: data.collection,
-          roles:data.roles
-        }  
-      
+     let res = await axios.post(Enviroment.url+'/workshop/groups',{profile,story:story,location},{headers:{
+      Authorization:"Bearer "+localStorage.getItem("token")
+     }})
+    
+  return({collection:res.data.collection})
       }catch(error){
-        console.log(error)
           return {
             error
           }
@@ -112,10 +104,11 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
             Authorization:"Bearer "+localStorage.getItem("token")
           }
         });
-        const {groups}= response.data
-        let result = mergeSmallArrays(groups)
-        console.log(result)
-        return {groups:  result}
+        console.log("REreere",response.data)
+        // const {groups}= response.data
+        // let result = mergeSmallArrays(groups)
+     
+        return response.data
       } catch (error) {
         console.log( error);
         return [];

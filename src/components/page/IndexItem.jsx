@@ -20,9 +20,6 @@ function IndexItem({item}) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
-    const onToggle = ()=>{
-        setShowPreview(!showPreview)
-    }
     useLayoutEffect(()=>{
       soCanUserEdit()
       soCanUserAdd()
@@ -112,14 +109,19 @@ className="mx-auto my-auto"
             
         <div tabIndex={0} role="button" className="rounded-full bg-emerald-800  px-2  h-[2.5rem] w-[2.5rem] flex">
           <img classname=" my-auto mx-auto " src={edit}/></div>
-        <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+
+        <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-[1] w-52 p-2 shadow">
           {canUserEdit?<li className="text-green-600 " onClick={
            handleOnClick}><a >Edit</a></li>:null}
+          {!item.storyIdList?<li className="text-green-600 " onClick={()=>navigate(Paths.workshop.createRoute(item.id))}>Get Feedback</li>:null}
           {canUserAdd?<li className="text-green-600 " onClick={handleAddToClick}><a>{item && item.storyIdList!=null?`Add ${item.title} to Collection`:"Add to Collection" }</a></li>:null}
         </ul>
         </div>
       </div>)
   
+    }
+    if(!canUserAdd&&!canUserEdit){
+      buttonDiv=null
     }
     return(
                 <div className="border-3  shadow-sm  rounded-full max-w-[94vw] lg:max-w-[42em]  w-full my-3 py-1 border-emerald-300"><div className={`   mb-1 `}> 

@@ -34,6 +34,7 @@ export default function CollectionIndexItem({collection}){
                     navigate(Paths.editCollection.createRoute(collection.id))
                     }}><a>Edit</a></li>
             <li onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))}><a>Add to {collection.title}</a></li>
+     
             <li><a>Share</a></li>
         </ul>
       

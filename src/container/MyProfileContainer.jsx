@@ -158,9 +158,9 @@ const ProfleInfo = ({profile})=>{
                                 className='bg-emerald-500  flex rounded-full text-white mt-2 w-[10em] h-[3em]  text-bold'>
                                <h6 className='my-auto text-md mx-auto '> Write a Story</h6>
                             </div>
-                            <div className='w-[10em] flex h-[3em]'>
-                            <img  onClick={()=>{navigate(Paths.workshop.route())}}className={`bg-emerald-600 rounded-full mx-auto mt-2  h-[3em] w-[3em] p-1 `}src={workshop} />
-                            </div>
+                            {/* <div className='w-[10em] flex h-[3em]'>
+                            <img  onClick={()=>{navigate(Paths.workshop.)}}className={`bg-emerald-600 rounded-full mx-auto mt-2  h-[3em] w-[3em] p-1 `}src={workshop} />
+                            </div> */}
                             <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  w-[10em] h-[3em] text-white   text-bold'>
                                <h6 className='mx-auto my-auto'>Create Collection</h6> 
                             </div>

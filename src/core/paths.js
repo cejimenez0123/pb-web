@@ -6,7 +6,8 @@ const Paths ={
     page:{ route: ()=>`/page/:id`,createRoute:(id)=>{return `/page/${id}`
     }},
     workshop:{
-        route:()=>"/workshop"
+        route:()=>"/workshop/page/:pageId",
+        createRoute:(pageId)=>{return "/workshop/page/"+pageId}
     },
     editCollection:{
         route: ()=>`/collection/:id/edit`,

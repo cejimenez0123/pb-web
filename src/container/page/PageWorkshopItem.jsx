@@ -8,8 +8,12 @@ function PageWorkshopItem({index,page,checked,onChecked}){
     }else{
         setIsChecked(false)
     }},[checked])
-    return(<div  className='text-emerald-800 shadow-sm    min-h-8 border-emerald-600 border-2 my-2 px-4 rounded-full'>
-    <div className=' h-fit my-auto pt-2 flex flex-row justify-between '> <h6 className='pt-1'> {page.title.length>=0?page.title:"Untitled"}</h6><div className='pb-1'><input type="radio" onChange={onChecked} name={`radio-${index}`} className="radio radio-success" checked={isChecked} /></div></div>
+    if(page){
+    return(<div  className='text-emerald-800 shadow-sm   flex min-h-8 border-emerald-600 border-2 my-2 py-2 px-4 rounded-full'>
+<h6 className='mx-auto my-auto'> {page.title.length>=0?page.title:"Untitled"}</h6>
       </div>)
+    }else{
+        return <div className="skeleton py-2 px-4 "/>
+    }
 }
 export default PageWorkshopItem
