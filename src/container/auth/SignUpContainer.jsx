@@ -87,8 +87,10 @@ export default function SignUpContainer(props){
   <span>{error?error:success}</span>
 </div>:null}</div>
 
-        <div className=" px-4 my-2  bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] mx-auto">
-        <h2 className='text-green-100 poppins flex text-4xl pt-8 px-4 md:pt-4 md:pb-4'>Complete Sign Up</h2>
+        <div className=" px-4 my-2  bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
+          <div className="flex">
+        <h2 className='text-green-100 poppins text-4xl text-center mx-auto pt-8  px-4 md:pt-24 md:pb-8'>Complete Sign Up</h2>
+        </div>
         <div className='pb-4 mx-auto'>
             <label className="input poppins text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
   Username
@@ -98,6 +100,7 @@ export default function SignUpContainer(props){
          onChange={(e) => setUsername(e.target.value.trim())}
          />
 </label>
+{username.length==0 || username.length>6?null:<h6>Minimum username length is 4 characters</h6>}    
 <div className='pb-4'>
             <label className="input poppins text-white border bg-transparent  rounded-full h-[4em] border-white  mt-4 flex items-center">
   Password
@@ -118,7 +121,7 @@ export default function SignUpContainer(props){
 </label>  
 
 <label className="w-full mt-8 flex flex-row justify-content-between  text-left">
-    <span>Will you account be private?</span><input value={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}
+    <span>Will your account be private?</span><input value={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}
     type="checkbox" className="toggle my-auto toggle-success"  /></label>
     </div>
     
@@ -151,9 +154,9 @@ export default function SignUpContainer(props){
       <label className="text-left  min-w-[100%] mx-auto poppins text-xl font-bold  mb-2">Self Statement </label> 
       <textarea 
       placeholder="What are you about?"
-      className="textarea bg-transparent border min-w-[80vw]  border-white text-l lg:text-xl" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>
+      className="textarea bg-transparent border w-[100%]  border-white text-l lg:text-xl" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>
          <div
-            disabled={confirmPassword!==password}
+            disabled={confirmPassword!==password&&username.length>4}
             className='bg-violet-700 poppins  flex border hover:bg-emerald-400  border-0 text-white py-2 rounded-full px-4 mt-4 min-h-12 '
                onClick={completeSignUp}
                 
