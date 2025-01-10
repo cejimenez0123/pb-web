@@ -228,13 +228,14 @@ Share</div>
 
     navigate(Paths.editPage.createRoute(page.id))
 }}>
-    <a>Edit</a></li>:null}
-<li><a disabled={!currentProfile} 
+    <a>Edit</a></li>:null}<li
 className=' text-emerald-700'
 
-onClick={()=>ClickAddStoryToCollection()}> 
+onClick={()=>ClickAddStoryToCollection()}><a>
                      Add to a Collection
      </a></li>
+
+{currentProfile && page.authorId===currentProfile.id?<li onClick={()=>navigate(Paths.workshop.createRoute(page.id))}><a>Get feedback</a></li>:null}
                 <li> <a
                  className=' text-emerald-700'
                 onClick={()=>{

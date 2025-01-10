@@ -20,20 +20,26 @@ const registerUser = (profileId, location) => {
 const disconnectUser = () => {
     socket.disconnect();
 };
-const postAcitveUser = createAsyncThunk("books/postActiveUser",async(params,thunkApi)=>{
+const postActiveUser = createAsyncThunk("books/postActiveUser",async(params,thunkApi)=>{
     try {
-
-     let data= workshopRepo.postActiveUser({story,profile})
-     console.log("Acitve",data)
-      return data
+const {story,profile}=params
+     let data= await workshopRepo.postActiveUser({story,profile})
+      return {
+        profiles:data.profiles,
+        profile:data.profile,
+        story:data.story
+      }
     } catch (error) {
       console.error('Error fetching active users:', error);
-      return [];
-    }})
+      return { profiles:[],
+        profile:null,
+      story:null}
+    }}
+  )
 const createWorkshopGroup = createAsyncThunk("books/createWorkshopGroup",
 async ({profile,story,location},thunkApi)=>{
     try{    
-        let data = workshopRepo.joinWorkshop({profile,story,location})
+        let data =await workshopRepo.joinWorkshop({profile,story,location})
         return({collection:data.collection})
     }catch(error){
           
@@ -106,4 +112,4 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
 // const fetchWorkshopGroups = async (radius = 50) => {
    
 //   };
-export {registerUser,disconnectUser, postAcitveUser,createWorkshopGroup, fetchWorkshopGroups }
+export {registerUser,disconnectUser, postActiveUser,createWorkshopGroup, fetchWorkshopGroups }
