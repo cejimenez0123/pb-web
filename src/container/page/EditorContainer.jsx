@@ -1,7 +1,7 @@
 import "../../styles/Editor.css"
 import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import { useParams,useNavigate, useLocation } from "react-router-dom"
+import { useParams,useNavigate, useLocation} from "react-router-dom"
 import menu from "../../images/icons/menu.svg"
 import React,{ useContext, useEffect, useLayoutEffect, useState } from "react"
 import {  Button,} from "@mui/material"
@@ -27,12 +27,18 @@ import EditorDiv from "../../components/page/EditorDiv"
 function EditorContainer(props){
         const currentProfile = useSelector(state=>state.users.currentProfile)
         const page = useSelector(state=>state.pages.pageInView)
+        const location = useLocation()
+        const [error,setError]=useState(null)
+        const [success,setSuccess]=useState(null)
         const [fetchedPage,setFetchedPage]=useState(null)
         const pathParams = useParams()
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
         const navigate = useNavigate()
-        const {isSaved}=useContext(Context)
+        let href =location.pathname.split("/")
+        let last = href[href.length-1]
+        const [type,setType]=useState(last)
+        const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
         const [privacy,setPrivacy] = useState(fetchedPage?fetchedPage.isPrivate:true)
@@ -40,13 +46,13 @@ function EditorContainer(props){
         const [commentable,setCommentable] = useState(true)
         const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         const {id }= pathParams
+        const [imageParams,setImageParams]=useState({})
         const [image,setImage]=useState(null)
       
         useEffect(()=>{
           if(page){
             setFetchedPage(page)
           }
-            
         },[page])
         useLayoutEffect( ()=>{
           if(fetchedPage){
@@ -57,22 +63,16 @@ function EditorContainer(props){
                  
               })
           }else{
-            if( fetchedPage.type==PageType.picture && isValidUrl(fetchedPage.data))
-             setImage(fetchedPage.data)
+            if( fetchedPage.type==PageType.picture && isValidUrl(fetchedPage.data)){
+            
+            setType(fetchedPage.type)
+              setImage(fetchedPage.data)
           }
           setTitleLocal(fetchedPage.title)
         }
-          
+      }
       },[fetchedPage])
- const setPageInfo =(page)=>{
-  if(page){
-    
-      setTitleLocal(page.title)
-      setPrivacy(page.isPrivate)
-      setCommentable(page.commentable)
-  }
-
-    }
+/
     useLayoutEffect(()=>{
       fetchStory()
     },[currentProfile])
@@ -84,24 +84,23 @@ function EditorContainer(props){
               dispatch(subscription({page:{id:id}}))
             }}
     },[])
+  
     const fetchStory = ()=>{
       if(!page||(page && page.id!=id)){
       dispatch(getStory({id:id})).then(res=>{
         checkResult(res,payload=>{
-          console.log(payload)
+          const {story}=payload
+          setType(story.type)
+          setTitleLocal(story.title)
+          setCommentable(story.commentable)
+          setPrivacy(story.privacy)
+          
       },err=>{
-        window.alert(err.message)
+       setError(err.message)
+       setSuccess(null)
       })})
     }
     }
-    useLayoutEffect(()=>{ 
-      if(fetchedPage && fetchedPage.title.length<=0 && fetchedPage.data.length<=0){
-        let result =window.confirm("Story Will Be deleted")
-        if(result){
-          dispatch(deleteStory(pathParams))
-        }
-      }
-    },[])
 
    
       const [open, setOpen] = useState(false);
@@ -115,12 +114,23 @@ function EditorContainer(props){
           if(fetchedPage){
           const params = {page:fetchedPage}
           dispatch(deleteStory(params)).then(()=>{
-            navigate("/profile/home")
+            navigate(Paths.myProfile())
           })
         }
       }
       const createPageAction = (params)=>{
-        dispatch(createStory(params)).then(res=>checkResult(res,payload=>{
+        // let updated =params
+        // updated.title=titleLocal
+        // updated.profileId = currentProfile.id
+        // updated.truthy
+       let updated= {     
+        profileId:currentProfile.id,
+          data:htmlContent,
+          privacy,
+          type,
+          title:titleLocal,
+          commentable}
+        dispatch(createStory(updated)).then(res=>checkResult(res,payload=>{
           const {story}=payload
           navigate(Paths.editPage.createRoute(story.id))
      },err=>{
@@ -136,8 +146,6 @@ function EditorContainer(props){
         const handlePostPublicly=(truthy)=>{
           setPrivacy(truthy)
           if(id){
-       
-
             let params = imageParams
             if(!params.file){
               params.page={id}
@@ -148,39 +156,32 @@ function EditorContainer(props){
               params.type=fetchedPage.type
             }else{
               params.page={id},
-              params.data=!fetchedPage.type==PageType.text?fetchedPage.data:htmlContent
+             params.data=!fetchedPage.type==PageType.text?fetchedPage.data:htmlContent
               params.title=titleLocal,
               params.privacy=truthy,
               params.commentable=commentable,  
               params.type=fetchedPage.type
             }
             dispatch(updateStory(params))
-       
-
+            setImageParams(params)
         }else{
-
-          if(imageParams.file){
+          if(params.file){
             
-            dispatch(uploadPicture({file:imageParams.file})).then((result) => 
+            dispatch(uploadPicture({file:params.file})).then((result) => 
               checkResult(result,payload=>{
                 const href = payload["url"]
-              
                   setLocalContent(href)
                   const fileName =payload.ref
-                  // dispatch(setHtmlContent(fileName))
+             
                 let params = imageParams
                 params.data = fileName
-               
                 params.profileId = currentProfile.id
                 params.title =titleLocal
                 params.privacy = privacy
                 params.commentable = commentable
                 params.type = PageType.picture
                 createPageAction(params)
-                  
-          
-         
-        }))
+          }))
         }}
               let params = { page:fetchedPage,
               title: titleLocal,
@@ -188,12 +189,8 @@ function EditorContainer(props){
               privacy:privacy,
               commentable:commentable,  
               type:fetchedPage.type
-            }
-              
+            }             
               dispatch(updateStory(params)).then(res=>{
-
-              
-       
               })
             }
 
@@ -203,6 +200,7 @@ function EditorContainer(props){
           if(id){
           debounce(()=>{
             let params = imageParams
+   
             if(!params.file){
               params.page={id},
               params.title = titleLocal
@@ -215,40 +213,14 @@ function EditorContainer(props){
               params.title = titleLocal
               params.privacy=privacy
               params.scommentable=commentable,  
-              params.type=fetchedPage.type
-            }
-                 
-         
+              params.type=fetchedPage.type   
+              setIsSaved(false)
             dispatch(updateStory(params)).then(res=>{
-           
-            })
-          },100)()
+  setIsSaved(true)
+            })}},100)()
 
-        }else{
-
-          if(imageParams.file){
-            
-            dispatch(uploadPicture({file:imageParams.file})).then((result) => 
-              checkResult(result,payload=>{
-                const href = payload["url"]
-              
-                  setLocalContent(href)
-                  const fileName =payload.ref
-                  // dispatch(setHtmlContent(fileName))
-                let params = imageParams
-                params.data = fileName
-               
-                params.profileId = currentProfile.id
-                params.title =titleLocal
-                params.privacy = true
-                params.commentable = commentable
-                params.type = PageType.picture
-                createPageAction(params)
-                  
-          
-         
-        }))
-        }}
+  
+}
       }
 
    const topBar=()=>{
@@ -294,11 +266,30 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
   
 
         return(
-          <div id="editor" className=" mx-auto md:p-8  "> 
-       <div className= "max-w-[100vw] w-[40em] pt-8 mb-12 mx-auto">
+          <div  className=" mx-auto md:p-8  "> 
+            {error || success? <div role="alert" className="alert    alert-warning animate-fade-out">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-6 w-6 shrink-0 stroke-current"
+    fill="none"
+    viewBox="0 0 24 24">
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+  <span>{error?error:success}</span>
+</div>:null}
+       <div className= "mx-2 lg:w-[40em] pt-8 mb-12 mx-auto">
                 {topBar()}
                   <ErrorBoundary>
-              <EditorDiv title={titleLocal} isPrivate={privacy} comment={commentable}/>
+              <EditorDiv title={titleLocal} isPrivate={privacy} comment={commentable}
+              setParams={params=>{
+                setImageParams(params)
+                createPageAction(params)
+           
+              }}/>
                 </ErrorBoundary>
                 </div>
                     <div>

@@ -1,19 +1,14 @@
 
 
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import {registerUser,fetchActiveUsers,createWorkshopGroup} from "../../actions/WorkshopActions"
+import {registerUser,postAcitveUser,createWorkshopGroup} from "../../actions/WorkshopActions"
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { debounce } from 'lodash';
-import { generate, count } from "random-words"
 import checkResult from '../../core/checkResult';
 import { useNavigate, useParams } from 'react-router-dom';
 import Paths from '../../core/paths';
-import { patchCollectionRoles } from '../../actions/CollectionActions.js'
-import { getMyStories, getStory } from '../../actions/StoryActions';
+import { getStory } from '../../actions/StoryActions';
 import PageWorkshopItem from '../page/PageWorkshopItem';
-import Role from '../../domain/models/role';
-import { RoleType } from '../../core/constants';
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
   const dispatch = useDispatch()
@@ -21,11 +16,12 @@ const WorkshopContainer = (props) => {
   const page = useSelector(state=>state.pages.pageInView)
   const [loading,setLoading]=useState(false)
   const [error,setError]=useState(null)
+  const [success,setSuccess]=useState(null)
   const [radius,setRadius]=useState(50)
   const [location,setLocation]=useState({latitude:40.7128, longitude:74.0060})
   const currentProfile = useSelector(state=>state.users.currentProfile)
   useEffect(()=>{
-    requestLocation()
+   
   
   },[currentProfile])
   useEffect(()=>{
@@ -37,13 +33,26 @@ setTimeout(()=>{
 },4001)
   },[error])
 
-  
+  useEffect(()=>{
+    if(page && currentProfile){
+      requestLocation()
+      dispatch(postAcitveUser({story:page,profile:currentProfile})).then(res=>{
+          checkResult(res,payload=>{
+
+          },err=>{
+            setError("")
+          })
+      })
+    }
+  },[page,currentProfile])
   useLayoutEffect(()=>{
     console.log(pathParams)
     dispatch(getStory({id:pathParams.pageId}))
   },[pathParams.pageId])
 
-
+  useEffect(()=>{
+    registerUser(currentProfile.id,location)
+  },[currentProfile,location])
   const requestLocation=()=>{
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -51,13 +60,13 @@ setTimeout(()=>{
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
-      
+        
         setError(null);
         setLoading(false);
       },
       (err) => {
         console.log("location error")
-        setError("Unable to retrieve location. Please allow location access.");
+        setError("We use location to conect with you fellow writers. Reload for access.");
         setLoading(false);
   
       }
@@ -79,31 +88,15 @@ setTimeout(()=>{
     })
   }else{
     setError("No Page")
-  }
-  // }else{
+    
+  }}
 
-
-    // const roles = [new Role("",profile,group,RoleType.writer)]
-    // dispatch(patchCollectionRoles({roles,profileId:currentProfile.id,collection:book})).then(res=>{
-    //   checkResult(res,payload=>{
-
-    //   },err=>{
-
-    //   })
-    // })
-  // }}else{
-  //   setError("Please choose a story you want to share!")
-  // }
-  }
- const fetchGroup = ()=>{
-
- }
   return (
     <div>
   
     {/* <div className='sm:p-4  sm:w-[98vw] mx-auto '>
       <div className='fixed top-1 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'> */}
-  {error? <div role="alert" className="alert    alert-warning animate-fade-out">
+  {error || success? <div role="alert" className="alert    alert-warning animate-fade-out">
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="h-6 w-6 shrink-0 stroke-current"
@@ -115,7 +108,7 @@ setTimeout(()=>{
       strokeWidth="2"
       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
-  <span>{error}</span>
+  <span>{error?error:success}</span>
 </div>:null}
 {/* </div> */}
   {/* <div className='justify-between  flex flex-col sm:flex-row '>

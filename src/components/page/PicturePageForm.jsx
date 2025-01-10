@@ -3,7 +3,6 @@ import {    useEffect,
             useState } from 'react';
 import { uploadPicture } from '../../actions/UserActions';
 import { useDispatch, useSelector } from 'react-redux';
-import {  saveButtonStyle } from '../../styles/styles';
 import checkResult from '../../core/checkResult';
 import isValidUrl from '../../core/isValidUrl';
 import "../../App.css"
@@ -126,9 +125,9 @@ function PicturePageForm({createPage}){
        case "image".toLowerCase():{
             return(
                 <div className='text-left'>
-                    <button onClick={()=>{
+                    <div onClick={()=>{
                        savePage()
-                    }}  className='bg-emerald-600 rounded-full text-xl px-4'>Save</button>
+                    }}  className='bg-emerald-600 rounded-full text-xl w-[8em] h-[4em] flex'><h6 className='my-auto mx-auto'>Save</h6></div>
                 <img className="rounded-lg overflow-hidden my-4 mx-auto" src={image} alt={ePage?ePage.title:""} />
                 
                 </div>

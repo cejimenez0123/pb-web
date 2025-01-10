@@ -421,7 +421,7 @@ function NavbarContainer(props){
                     sx={{ pl: 4 }} 
                     onClick={()=>{
                       handleClose()
-                      navigate("/page/image")}}>
+                      navigate(Paths.editor.image())}}>
                      <ImageIcon/>
                     </ListItemButton>
                     <ListItemButton     

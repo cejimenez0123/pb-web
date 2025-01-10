@@ -155,16 +155,13 @@ const ProfleInfo = ({profile})=>{
 
                             <div className=' w-[86%] mx-auto grid grid-cols-2 gap-2 '>
                                 <div onClick={ClickWriteAStory} 
-                                className='bg-emerald-500  flex rounded-full text-white mt-2 w-[10em] h-[3em]  text-bold'>
+                                className='bg-emerald-500  flex rounded-full text-white md:mt-2  h-[5em] w-[8em] md:w-[10em] md:h-[3em]  text-bold'>
                                <h6 className='my-auto text-md mx-auto '> Write a Story</h6>
                             </div>
-                            {/* <div className='w-[10em] flex h-[3em]'>
-                            <img  onClick={()=>{navigate(Paths.workshop.)}}className={`bg-emerald-600 rounded-full mx-auto mt-2  h-[3em] w-[3em] p-1 `}src={workshop} />
-                            </div> */}
-                            <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  w-[10em] h-[3em] text-white   text-bold'>
-                               <h6 className='mx-auto my-auto'>Create Collection</h6> 
+                            <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5em] w-[8em]  md:w-[10em] md:h-[3em] text-white   text-bold'>
+                              <div className='mx-auto text-md md:text-l my-auto flex-col flex md:flex-row'><h6 >Create </h6><h6>Collection</h6> </div> 
                             </div>
-                            <div className='w-[10em] h-[3em] flex'>
+                            <div className='w-[10em] h-[3em] mx-auto flex'>
                             <h6 onClick={()=>setOpenRefferal(true)}className='my-auto mx-auto text-sm  text-emerald-800'>Refer Someone?</h6>
                             </div>
                             </div>

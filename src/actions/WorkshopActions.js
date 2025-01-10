@@ -4,10 +4,7 @@ console.log("Enviroment",Enviroment.url)
 const socket = io(Enviroment.url);
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import collectionRepo from '../data/collectionRepo';
-import Role from '../domain/models/role';
-import { RoleType } from '../core/constants';
-import roleRepo from '../data/roleRepo';
+import workshopRepo from '../data/workshopRepo';
 
 socket.on("connect", () => {
     console.log("Connected to the server:", socket.id);
@@ -23,32 +20,25 @@ const registerUser = (profileId, location) => {
 const disconnectUser = () => {
     socket.disconnect();
 };
-const fetchActiveUsers = async ({profile,story}) => {
+const postAcitveUser = createAsyncThunk("books/postActiveUser",async(params,thunkApi)=>{
     try {
 
-      const response = await axios.post(Enviroment.url+`/workshop/active-users`,{
-        story:story,
-        profile:profile
-      },{headers:{
-        Authorization:"Bearer "+localStorage.getItem("token")
-      }});  
-// console.log("Rponer",response)
-      return response.data.profiles;
+     let data= workshopRepo.postActiveUser({story,profile})
+     console.log("Acitve",data)
+      return data
     } catch (error) {
       console.error('Error fetching active users:', error);
       return [];
-    }
-  };
+    }})
 const createWorkshopGroup = createAsyncThunk("books/createWorkshopGroup",
 async ({profile,story,location},thunkApi)=>{
-    try{
-     let res = await axios.post(Enviroment.url+'/workshop/groups',{profile,story:story,location},{headers:{
-      Authorization:"Bearer "+localStorage.getItem("token")
-     }})
-    
-  return({collection:res.data.collection})
-      }catch(error){
-          return {
+    try{    
+        let data = workshopRepo.joinWorkshop({profile,story,location})
+        return({collection:data.collection})
+    }catch(error){
+          
+        
+        return {
             error
           }
     }
@@ -94,7 +84,7 @@ function mergeSmallArrays(input) {
   return result;
 }
 
-// Example usage
+
 
 
 const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    async ({radius=50},thunkApi) => {
@@ -104,10 +94,7 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
             Authorization:"Bearer "+localStorage.getItem("token")
           }
         });
-        console.log("REreere",response.data)
-        // const {groups}= response.data
-        // let result = mergeSmallArrays(groups)
-     
+    
         return response.data
       } catch (error) {
         console.log( error);
@@ -119,4 +106,4 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
 // const fetchWorkshopGroups = async (radius = 50) => {
    
 //   };
-export {registerUser,disconnectUser, fetchActiveUsers,createWorkshopGroup, fetchWorkshopGroups }
+export {registerUser,disconnectUser, postAcitveUser,createWorkshopGroup, fetchWorkshopGroups }

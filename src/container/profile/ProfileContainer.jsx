@@ -38,10 +38,11 @@ function ProfileContainer(props){
         })
     },[])
     useLayoutEffect(()=>{
-            currentProfile&&localStorage.getItem("token")?dispatch(getProtectedProfilePages({profile})):dispatch(getPublicProfilePages({profile}))
-            currentProfile&&localStorage.getItem("token")?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile}))
+
+            profile&&localStorage.getItem("token")?dispatch(getProtectedProfilePages({profile:profile})):dispatch(getPublicProfilePages({profile:profile}))
+            profile&&localStorage.getItem("token")?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile:profile}))
     
-    },[currentProfile])
+    },[profile])
     useLayoutEffect(()=>{
         if(profile){
             getDownloadPicture(profile.profilePic).then(url=>{

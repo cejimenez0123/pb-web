@@ -189,7 +189,7 @@ function App(props) {
     
 
     <Route  
-        path="/page/image"  
+        path={Paths.editor.image()}
         element={ 
           <PrivateRoute >
             
