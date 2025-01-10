@@ -16,6 +16,8 @@ import checkResult from "../../core/checkResult"
 import { clearPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
+import loadingJson from "../../images/loading.gif"
+import Lottie from "lottie-react"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
     const {pathName}=useLocation()
@@ -258,9 +260,9 @@ if(collection&&canUserSee){
     </>)
 }else{
     if(pending){
-        return(<div><h6>Loading</h6></div>)
-    }else{
-        return(<div>Private</div>)
+        return(<div><img className="w-24 h-24" src={loadingJson}/></div>)
+    }else if(!collection){
+        return(<div className="mx-auto my-24"><h6 className=" poppins text-xl text-emerald-800">Collection does not exist</h6></div>)
     }
 }
 

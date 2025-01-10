@@ -15,7 +15,6 @@ import LinkPreview from '../LinkPreview'
 import isValidUrl from "../../core/isValidUrl"
 import bookmarkadd from "../../images/bookmarkadd.svg"
 import getDownloadPicture from '../../domain/usecases/getDownloadPicture'
-import loadingJson from "../../images/loading-animation.json"
 import ProfileCircle from '../profile/ProfileCircle'
 function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
@@ -56,15 +55,15 @@ const hanldeClickComment=()=>{
 }
 }   
 const PageDataElement=({page})=>{
-        const [image,setImage]=useState(loadingJson)
+        const [image,setImage]=useState(null)
         useEffect(()=>{
             if(page && page.type==PageType.picture){
                 if(isValidUrl(page.data)){
                     setImage(image)
                 }else{
-                    if(page.data&& page.data.length>0){
+            if(page.data&& page.data.length>0){
                     getDownloadPicture(page.data).then(url=>setImage(url))
-                    }
+            }
                 }
         
             }
@@ -80,13 +79,15 @@ const PageDataElement=({page})=>{
     
            className={`  ${isGrid?"max-h-[12em]  rounded-lg max-w-48  mx-auto overflow-clip mt-4 ":"rounded-t-lg "} bg-emerald-200 pt-12`}
             >
-            <div className={` w-[100%]  text-emerald-800 px-4 pb-8 overflow-hidden pt-12 text-[0.8rem] ${isGrid?"isGrid mt-1 rounded-lg overflow-hidden":" rounded-t-lg  ql-editor"}`}
+            <div className={` w-[100%]  text-emerald-800 px-4 pb-8  pt-12 text-[0.8rem] ${isGrid?"isGrid mt-1 rounded-lg overflow-hidden":" rounded-t-lg  ql-editor"}`}
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
       )   }
       case PageType.picture:{
    
-        return(<div className={` ${isGrid?"max-h-40 overflow-clip rounded-lg mx-auto pt-2 max-w-48":"w-[100%]"}`} ><img className={isGrid?"rounded-lg":'rounded-t-lg'} src={image} alt={page.title}/></div>)
+        return(<div className={` ${isGrid?"max-h-40 rounded-lg mx-auto pt-2 max-w-48":"w-[100%] min-h-40"}`} ><img className={isGrid?"rounded-lg":'rounded-t-lg'}
+        
+        src={image} alt={page.title}/></div>)
     }
     case PageType.link:{
         return(<div 

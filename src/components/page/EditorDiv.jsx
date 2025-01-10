@@ -10,6 +10,7 @@ import { useSelector } from "react-redux"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { setHtmlContent } from "../../actions/PageActions"
 import PicturePageForm from "../../components/page/PicturePageForm"
+import LinkPreview from "../LinkPreview"
  export default function EditorDiv({title,isPrivate,comment,setParams}){
         const {setIsSaved}=useContext(Context)
         const location = useLocation()

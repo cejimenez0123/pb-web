@@ -173,12 +173,10 @@ const ProfleInfo = ({profile})=>{
                           {isNotPhone?
                             <div className='   grid grid-cols-2  gap-1  '>
                                 <div>
-                                <div onClick={()=>navigate(Paths.workshop.route())}
-                                className='bg-emerald-700 rounded-full text-white flex w-[9rem] h-[4rem]  '>
-                                    <h6 className='text-center lg:text-[0.8rem] px-2 my-auto'>Find a Workshop Group</h6>
-                                </div>
-
-                                </div>
+                                    <div                                 className='bg-emerald-700 rounded-full text-white flex w-[9rem] h-[4rem]  '>
+                                    <h6 className='mx-auto lg:text-[0.8rem] px-2 my-auto'> Join a Workshop</h6>
+                                        </div>
+                                </div> 
                                 <div>
                             <div onClick={ClickWriteAStory} className='bg-emerald-500 rounded-full flex text-white w-[8rem] lg:w-[9rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
                             <h6 className='text-center lg:text-[0.8rem] px-2 mx-auto my-auto'>Write a Story</h6>

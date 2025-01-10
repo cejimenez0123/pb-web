@@ -267,7 +267,7 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
 
         return(
           <div  className=" mx-auto md:p-8  "> 
-            {error || success? <div role="alert" className="alert    alert-warning animate-fade-out">
+            {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="h-6 w-6 shrink-0 stroke-current"

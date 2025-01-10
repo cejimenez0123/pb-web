@@ -265,19 +265,7 @@ function SettingsContainer(props) {
           setPictureUrl(URL.createObjectURL(file))
           
         }
-        // const files = Array.from(e.target.files)
-        // const params = { file: files[0]
-        // }
-        // dispatch(uploadProfilePicture(params)).then((result) => {
-        //     checkResult(result,(payload)=>{
-        //         const {url}= payload
-        //         setProfilePic(url)
-        //     },(err)=>{
-        //         window.alert(err.message)
-        //         setSignUpError(true)
-        //     })
-    
-        // })
+ 
     }
     const collectionList = ()=>{
         return (

@@ -9,12 +9,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Paths from '../../core/paths';
 import { getStory } from '../../actions/StoryActions';
 import PageWorkshopItem from '../page/PageWorkshopItem';
+import loadingAnimation from "../../images/loading.gif"
+
+import { setCollectionInView } from '../../actions/CollectionActions';
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const page = useSelector(state=>state.pages.pageInView)
-  const [loading,setLoading]=useState(false)
+  const [loading,setLoading]=useState(true)
   const [error,setError]=useState(null)
   const [success,setSuccess]=useState(null)
   const [radius,setRadius]=useState(50)
@@ -78,30 +81,39 @@ setTimeout(()=>{
   }
 
   const handleGroupClick=()=>{
-    setSuccess("loading...")
+    setLoading(true)
     setError(null)
+    setSuccess(null)
     if(page){
         dispatch(createWorkshopGroup({profile:currentProfile,story:page,location})).then(res=>{
       checkResult(res,payload=>{
         if(payload && payload.collection){
+          setLoading(false)
           navigate(Paths.collection.createRoute(payload.collection.id))
+        }
+        if(payload.error){
+          setError(payload.error.message)
+          setSuccess(null)
+          setLoading(false)
         }
          
       },err=>{
+        setLoading(false)
         setError(err.message)
+        setSuccess(null)
       })
     })
   }else{
     setError("No Page")
-    
+    setSuccess(null)
   }}
 
   return (
     <div>
      <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
    {error || success? 
-  <div role="alert" className="alert    
-  alert-warning animate-fade-out">
+  <div role="alert" className={`alert    
+  ${success?"alert-success":"alert-warning"} animate-fade-out`}>
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="h-6 w-6 shrink-0 stroke-current"
@@ -135,8 +147,14 @@ setTimeout(()=>{
   
       </div>
       <div  className="bg-emerald-700 flex text-white mt-8 rounded-full"
-      onClick={handleGroupClick} ><h6 className='mx-auto my-auto py-2'>Join a Workshop</h6></div>
-  </div>):null}
+      onClick={handleGroupClick} ><h6 className='mx-auto p-6 my-auto'>Join a Workshop</h6>
+    </div>       <div className='w-fit flex justify-center p-8'>     
+  {loading?<img src={loadingAnimation} className='max-w-24 mx-auto p-6 max-h-24 '/>:null}
+  </div>
+  </div>
+
+):null}
+
     </div>
   );
 };
