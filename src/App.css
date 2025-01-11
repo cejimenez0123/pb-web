@@ -741,3 +741,14 @@ iframe[title="Spotify Web Player"]{
       border-radius: 0.5rem !important;
       padding-top: 4em !important;
     }
+
+    .is-tooltip{
+      visibility: hidden;
+      position: absolute;
+      ;
+    }
+    .has-tooltip:hover .is-tooltip {
+      visibility: visible;
+      display: relative;
+      z-index: 100;
+    }

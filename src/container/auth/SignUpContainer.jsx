@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux";
 import { uploadProfilePicture,createProfile } from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
-
-
+import info from "../../images/icons/info.svg"
+import "../../App.css"
 export default function SignUpContainer(props){
     const location = useLocation();
     const [token, setToken] = useState('');
@@ -130,22 +130,34 @@ Email
 </label>  
 
 <label className="w-full mt-8 flex flex-row justify-content-between  text-left">
-    <span>Will your account be private?</span><input value={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}
-    type="checkbox" className="toggle my-auto toggle-success"  /></label>
+<div className="flex flex-row">
+  <div className='has-tooltip mx-2'>
+ <img src={info}/> <span className=' bg-slate-50 text-emerald-800 rounded-lg p-2 is-tooltip'>Do you want to found?</span>
+</div>
+    <span>Will your account be private?</span>    </div>
+
+<input value={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}
+    type="checkbox" className="toggle my-auto toggle-success"  />
+
+
+
+</label>
+
+
     </div>
-    
+    <div className="text-left">
       <label className="flex font-bold text-left pb-2 flex-col">
         Add a Profile Picture
         </label>
     <input
-    className="file-input my-8  w-[100%] "
+    className="file-input my-8  text-left w-[100%] md:max-w-[20em]"
         type="file"
         accept="image/*"
         onInput={handleFileInput}
      
        
       />
-      
+   </div>   
 {/* </label> */}
 
       {selectedImage && (
@@ -166,7 +178,7 @@ Email
       className="textarea bg-transparent border w-[100%]  border-white text-l lg:text-xl" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>
          <div
             disabled={confirmPassword!==password&&username.length>4}
-            className='bg-violet-700 poppins  flex border hover:bg-emerald-400  border-0 text-white py-2 rounded-full px-4 mt-4 min-h-12 '
+            className='bg-cyan-500 poppins text-white max-w-[16em] mx-auto mb-12 flex border hover:bg-emerald-400  border-0 text-white py-2 rounded-full px-4 mt-4 min-h-12 '
                onClick={completeSignUp}
                 
                  ><h6 className="mx-auto my-auto py-2 text-xl">Join Plumbum!</h6></div>
