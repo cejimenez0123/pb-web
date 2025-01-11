@@ -193,19 +193,19 @@ return <Button onClick={()=>{
          onClick={()=>handleApprovalClick}
             
           className={`
-          text-xl   py-2    text-center mx-auto text-white border-none bg-transparent  border-none  `}
+          text-xl   py-2   mont-medium text-center mx-auto text-white border-none bg-transparent  border-none  `}
         
          >
              Yea{likeFound?"h!":""}
          </div>
          </div>
-         <div className={" bg-emerald-700 border-white border-x-2 border-y-0  text-center border-white grow flex-1/3"}>
+         <div className={" bg-emerald-700 mont-medium  border-white border-x-2 border-y-0  text-center border-white grow flex-1/3"}>
          <div
              className='
              text-white
         text-center mx-auto
        bg-transparent py-2
-       border-none
+       border-none mont-medium 
        text-xl  '
              onClick={()=>hanldeClickComment()}
                  >
@@ -220,7 +220,7 @@ className="
       text-center mx-auto
       bg-transparent
         text-xl
-        border-none
+        border-none mont-medium 
      
          ">
 Share</div>

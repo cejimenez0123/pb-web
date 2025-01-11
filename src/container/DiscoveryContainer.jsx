@@ -85,11 +85,11 @@ const navigateToLibrary = (library)=>{
         if(booksInView!=null){
             return(
         
-    <div className='md:ml-12'> <h3 className=' text-slate-800
+    <div className='md:ml-12'> <h3 className=' text-emerald-900
     text-left 
     font-extrabold 
     mb-4
-    pl-4 pt-2 mt-1 mx-4 text-2xl'>Collections</h3>
+    pl-4 pt-2 mt-1 mx-4 lora-bold text-2xl'>Collections</h3>
                 <InfiniteScroll
             className={`mt-1   flex-row"} flex`}
             dataLength={booksInView.length}
@@ -190,7 +190,7 @@ const navigateToLibrary = (library)=>{
 
               <div className=' text-left ' >
                
-                <h3 className={`text-slate-800 ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} pb-4 font-extrabold text-2xl`}>Communities</h3>
+                <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} pb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
                 <div className='pb-12'>
                 {libraryForums()}
                 </div>
@@ -199,11 +199,12 @@ const navigateToLibrary = (library)=>{
                     <div className=' lg:w-128 lg:ml-32 mx-auto'>
 
                         <div className='flex flex-row'>
-                        <h3 className=' text-slate-800
+                        <h3 className=' text-emerald-900
                                         font-extrabold 
                                         text-2xl 
                                         text-left 
                                         mx-4
+                                        lora-bold
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
                         {isNotPhone?<div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
