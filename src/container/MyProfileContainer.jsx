@@ -241,7 +241,7 @@ const ProfleInfo = ({profile})=>{
                 }}/>
               </Dialog>
               <Dialog className={
-                "bg-emerald-400 bg-opacity-30 w-[100%] md:max-w-[30em] mx-auto overscroll-none"
+                "bg-emerald-400 bg-opacity-80 w-[100%] md:max-w-[30em] mx-auto overscroll-none"
               }
               PaperProps={{
                 style: {

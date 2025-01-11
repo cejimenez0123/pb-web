@@ -52,8 +52,7 @@ const logIn = createAsyncThunk(
         localStorage.setItem("token",token)
         const profileRes = await profileRepo.getMyProfiles({token:authData.token})
         const profile = profileRes.profiles[0]
-        let location = new LocationPoint(40.7128,74.0060)
-        registerUser(profile.id,location)
+ 
         return{
           profile: profile
         }

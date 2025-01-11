@@ -263,8 +263,6 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
     <HashtagForm/>:null}
     </div>)
    }
-  
-
         return(
           <div  className=" mx-auto md:p-8  "> 
             {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>

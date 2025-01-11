@@ -3,13 +3,13 @@ import {where,deleteDoc,query,and,updateDoc,or,collection,getDocs,getDoc,doc,set
 import Page from "../domain/models/page"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import Contributors from "../domain/models/contributor"
-import UserApproval from "../domain/models/user_approval"
-import axios from "axios"
-import Enviroment from "../core/Enviroment"
+import {storage} from "../core/di"
 import storyRepo from "../data/storyRepo"
 import commentRepo from "../data/commentRepo"
 import likeRepo from "../data/likeRepo"
 import profileRepo from "../data/profileRepo"
+import { PageType } from "../core/constants"
+import { deleteObject } from "firebase/storage"
 
 const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
   
@@ -439,6 +439,10 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
     try{
       const {page}=params
     let data = await storyRepo.deleteStory({id:page.id})
+    if(page.type==PageType.picture){
+      let refer = ref(storage,page.data)
+      deleteObject(refer)
+    }
     client.initIndex("page").deleteObject(page.id).wait()
     return {
       page:data

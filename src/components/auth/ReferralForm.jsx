@@ -26,8 +26,8 @@ export default function ReferralForm({onClose}){
         </label>
         <input 
         value={email}
-        onChange={(e)=>setEmail(e.target.value.toLocaleLowerCase())}
+        onChange={(e)=>setEmail(e.target.value.toLocaleLowerCase().trim())}
         className='text-xl my-4 rounded-lg p-2 bg-transparent border-white border text-white w-[100%]' type='text'/>
-        <a className="btn p-2 mt-8 bg-red-100 text-white " onClick={handleClick}>Submit</a>
+        <div className=" rounded-full w-24 h-12 flex bg-purple-200 text-white " onClick={handleClick}><h6 className="text-emerald-800 mx-auto my-auto">Submit</h6></div>
      </div>)
 }

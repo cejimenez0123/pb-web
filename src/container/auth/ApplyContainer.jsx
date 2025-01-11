@@ -58,7 +58,7 @@ function ApplyContainer(props){
       setFullName(text)
     }
     const handleChangeEmail = (text)=>{
-        setEmail(text)
+        setEmail(text.trim())
     }
     const handleChangeWhyApply =(text)=>{
       setWhyApply(text)

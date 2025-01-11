@@ -19,6 +19,7 @@ export default function SignUpContainer(props){
     const [error,setError]=useState(null)
     const [success,setSuccess]=useState(null)
     const [isPrivate,setIsPrivate]=useState(false)
+    const [email,setEmail]=useState("")
     const handleFileInput = (e) => {
     const file = e.target.files[0];
 
@@ -47,7 +48,7 @@ export default function SignUpContainer(props){
         if(password.length>6){
         dispatch(uploadProfilePicture({file:file})).then(res=>checkResult(res,payload=>{
                 const{fileName}=payload
-                const params = {token,password,username,profilePicture:fileName,selfStatement,privacy:isPrivate}
+                const params = {email,token,password,username,profilePicture:fileName,selfStatement,privacy:isPrivate}
                 dispatch(createProfile(params))
                 .then(res=>checkResult(res,payload=>{
                    const {profile}=payload
@@ -92,6 +93,14 @@ export default function SignUpContainer(props){
         <h2 className='text-green-100 poppins text-4xl text-center mx-auto pt-8  px-4 md:pt-24 md:pb-8'>Complete Sign Up</h2>
         </div>
         <div className='pb-4 mx-auto'>
+        <label className="input poppins text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
+Email
+  <input className="grow text-white mx-2 " 
+         value={email}
+         placeholder="email"
+         onChange={(e) => setEmail(e.target.value.trim())}
+         />
+</label>
             <label className="input poppins text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
   Username
   <input className="grow text-white mx-2 " 

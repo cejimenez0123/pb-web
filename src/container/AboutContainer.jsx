@@ -120,7 +120,7 @@ Be part of a community of writers who are eager to share their insights and supp
 </div>
 
     <div className="request mt-12 text-emerald-700  ">
-<h6>Any request for more feautres, problems, encoragement, send to plumbumapp@gmail.com.
+<h6>Any request for more feautures, problems, encoragement, send to plumbumapp@gmail.com.
 
 </h6>
 <h6 className="text-emerald-700 mt-12">Plumbum©</h6>

@@ -18,14 +18,14 @@ class ProfileRepo {
         return res.data
   
     }
-    async create({token,password,username,profilePicture,selfStatement,privacy}){
+    async create({email,token,password,username,profilePicture,selfStatement,privacy}){
         let res = await axios.post(Enviroment.url+"/profile/",
-        {password,username,profilePicture,selfStatement,privacy},{
+        {email,password,username,profilePicture,selfStatement,privacy},{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem(this.token)
             }
         })
-        console.log(res)
+
         return res.data
     }
     async getCurrentProfile(auth){
