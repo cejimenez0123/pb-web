@@ -1,9 +1,15 @@
 import { useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
-
-
+import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/material"
+import { useMediaQuery } from "react-responsive"
+import { useNavigate } from "react-router-dom"
+import Paths from "../../core/paths"
 function ApplyContainer(props){
+  const isNotPhone = useMediaQuery({
+    query: '(min-width: 600px)'
+  })
+  const navigate = useNavigate()
     const genres = [
         "Fiction",
         "Non-fiction",
@@ -36,7 +42,7 @@ function ApplyContainer(props){
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [comfortLevel,setComfortLevel]=useState(0)
     const [platformFeatures,setPlatformFeatures]=useState("")
-
+    const [user,setUser]=useState(null)
     const [betaTest,setBetaTester]=useState([])
     const [igError,setIgError]=useState(false)
     const [nameError,setNameError]=useState(false)
@@ -86,16 +92,26 @@ function ApplyContainer(props){
             // ... other form data
           };
         authRepo.apply(form).then(data=>{
+          console.log("FDDdF",data)
+if(data.user){
+  console.log("FDDF",data.user)
+  setUser(data.user)
+}
+if(data.error){
+  window.alert("error:"+data.error.message)
+}
           
-            alert(data.message)
-        }).catch(e=>alert("error:"+e.message))
+        }).catch(e=>window.alert("error:"+e.message))
     }else{
         window.alert("Please use valid email")
     }
 
     }
 
-
+const handleClose= ()=>{
+  setUser(null)
+  navigate(Paths.about())
+}
 return (
   <>
     <div className="sm:pb-8">
@@ -114,7 +130,7 @@ return (
             Preferred Name
             <input
               type="text"
-              className="grow pl-4 text-white open-sans-medium w-full"
+              className="grow pl-4 text-white  w-full"
               value={fullName}
               onChange={(e) => handleChangeFullName(e.target.value)}
               placeholder="Jon Doe"
@@ -122,26 +138,26 @@ return (
           </label>
 
           {/* Email */}
-          <label className="input mt-4 poppins mb-2 font-bold py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
+          <label className="input mt-4 mb-2 font-bold py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
             <h6 className="font-bold lora-bold text-[0.8rem]">* E-mail</h6>
             <input
               type="text"
-              className="grow text-white pl-4 w-[100%]"
+              className="grow text-white lora-bold pl-4 w-[100%]"
               value={email}
               onChange={(e) => handleChangeEmail(e.target.value.trim())}
               placeholder=""
             />
           </label>
           {email.length>0 && !validateEmail(email) ?
-            (<h6 className="text-[0.8rem] text-red-500">Please use a valid email</h6>
+            (<h6 className="text-[0.8rem] lora-bold text-red-500">Please use a valid email</h6>
           ):null}
 
           {/* IG Handle */}
-          <label className="input poppins mt-4 mb-8 font-bold py-8 w-[100%] bg-transparent text-white border border-green-100 text-white flex items-center gap-2">
+          <label className="input mt-4 mb-8 font-bold py-8 w-[100%] bg-transparent text-white border border-green-100 text-white flex items-center gap-2">
             <h6 className="font-bold  lora-bold text-[0.8rem]">IG Handle</h6>
             <input
               type="text"
-              className="grow open-sans-medium text-white pl-4"
+              className="grow  lora-bold text-white pl-4"
               value={igHandle}
               onChange={(e) => handleChangeIgHandle(e.target.value.trim())}
               placeholder="*****"
@@ -283,6 +299,81 @@ return (
           </button>
         </form>
       </div>
+      {/* <Dialog className={
+                "bg-emerald-400 bg-opacity-30 "
+              }
+              PaperProps={{
+                style: {
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                 overflow:"hidden",
+                 height:"100%",
+                 width:"100%",
+                
+                },
+              }}
+            
+              open={openDialog}
+              onClose={()=>setOpenDialog(false)}>
+                <CreateCollectionForm onClose={()=>{
+                    setOpenDialog(false)
+                }}/>
+              </Dialog> */}
+              <Dialog className={
+                "bg-emerald-50  w-[100%] mx-auto overscroll-none"
+              }
+              fullScreen={!isNotPhone}
+              PaperProps={{
+                style: {
+            
+          
+                 overflow:"hidden",
+                 height:"100%",
+                 width:"100%",
+                
+                },
+              }}
+            
+              open={user}
+              onClose={()=>handleClose()}>
+        <div>
+        {user?<div>
+     
+      <DialogContent>
+      <DialogTitle id="alert-dialog-title">
+        <p>Thank You {user.preferredName 
+}! You’re In—Welcome to the Journey! </p>
+      </DialogTitle>
+        <div id="welcome"className=" p-8 lora-medium leading-[1.5em] overflow-scroll">
+   
+
+<h6  >Congratulations! You’re officially on board as a beta user for Plumbum, where we’re redefining what it means to create, connect, and grow as a writer.</h6>
+<br/>
+<h6>
+This is more than just an app. Together, we’re building a space where writers like you can test ideas, share stories, and discover the confidence to take your work to the next level.
+</h6>
+<br/>
+<h6>
+We’ll start onboarding beta users at the end of February, and we can’t wait to celebrate with you at our Launch Party! Details are on the way, so stay tuned through 
+our instagram <a href="https://www.instagram.com/plumbumapp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">@plumbumapp</a> or through our parnters  
+<a href="https://www.instagram.com/bxwriters?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="> @bxwriters.</a>
+</h6>
+<br/>
+<h6>Thank you for joining this exciting journey. Your insights and creativity will help shape Plumbum into a community where creativity thrives.
+</h6>
+<br/>
+<h6>Let’s make our story, together!</h6>
+<br/>
+<h6>-Sol Emilio Christian, Founder of Plumbum</h6>
+
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Until Later</Button>
+     
+      </DialogActions></div>
+        :null}</div>
+              </Dialog>
     </div>
   </>
 );
