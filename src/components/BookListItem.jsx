@@ -26,10 +26,10 @@ function BookListItem({book}){
 <div  
 className=" text-white h-48 bg-transparent ">
  <div className="px-3 py-3">
-    <div className="font-bold text-l mb-2">{book.title}</div>
+    <div className="font-bold text-l lora-bold b-2">{book.title}</div>
     
         <div className=" p-1">
-     <h5 className="text-left text-white text-sm text-ellipsis overflow-hidden m-1 ">{book.purpose}</h5> 
+     <h5 className="text-left text-white text-sm open-sans-medium text-ellipsis overflow-hidden m-1 ">{book.purpose}</h5> 
      </div>
    
   </div>

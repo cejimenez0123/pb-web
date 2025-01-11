@@ -19,9 +19,9 @@ export default function AboutContainer(props){
            <div className="">
             <div className=" bg-[#23774ca6] text-white h-full rounded-lg p-4" >
 <div  >
-<h6 className="poppins  font-bold text-[2rem]">For Creatives</h6>
+<h6 className="lora-medium font-bold text-[2rem]">For Creatives</h6>
 <div >
-<h6 className="text-[1rem]  poppins pt-4 text-left" > 
+<h6 className="text-[1rem]  open-sans-medium pt-4 text-left" > 
 The idea for Plumbum came to me while I was walking to the gym during a university break.
 The encouragement I got from friends who supported my goals was missing at home.
 Finding mutual support in writing is challenging. 
@@ -35,30 +35,30 @@ There's not one kind of look for a writer. Creatives need a place to test their 
 const writingJourney = ()=>{
     return(<div className="">
         <div id="ready">
-<div  className="text-emerald mt-8 poppins sm:text-white">
-<h5 className="text-[1.2rem] poppins my-4">If you're a writer or enjoy reading, stay engaged with people with shared goals.
+<div  className="text-emerald mt-8 open-sans-medium sm:text-white">
+<h5 className="text-[1.2rem] open-sans-medium my-4">If you're a writer or enjoy reading, stay engaged with people with shared goals.
 </h5>
-<h5 className="text-[1.2rem] poppins my-4">We are taking applications for beta users for our release in February.
+<h5 className="text-[1.2rem] open-sans-medium my-4">We are taking applications for beta users for our release in February.
 </h5>
-<h3 className="text-[1.4rem] poppins my-4 font-bold">Get started now!!</h3>
+<h3 className="text-[1.4rem] open-sans-medium  my-4 font-bold">Get started now!!</h3>
 </div>
-<button className="text-2xl text-white bg-emerald-800 rounded-full my-8 px-5 py-3" onClick={()=>{navigate(Paths.apply())}}  
-   >Apply to Join Today</button>
+<div className="text-2xl flex text-white bg-emerald-800 rounded-full my-8 px-5 py-4" onClick={()=>{navigate(Paths.apply())}}  
+   > <h6 className="mx-auto mont-medium my-auto">Apply to Join Today</h6></div>
 </div>
     </div>)
 }
 const detailsOfWorkshop=()=>{
-    return (<div className={`poppins px-4 py-2  max-w-[100vw]`}>
-        <h2 className="poppins text-center text-emerald-800 lg:text-white text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
+    return (<div className={` px-4 py-2  max-w-[100vw]`}>
+        <h2 className="lora-medium text-center text-emerald-800 lg:text-white text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
-        <h3 className={`poppins  font-bold  text-2xl font-bold text-left ${md?"text-emerald-700":"text-white"}`}>What is a Writers' Workshop?</h3>
+        <h3 className={`lora-medium font-bold  text-2xl font-bold text-left ${md?"text-emerald-700":"text-white"}`}>What is a Writers' Workshop?</h3>
       
-<h6 className="py-4 text-left poppins text-[1.2rem]">
+<h6 className="py-4 text-left open-sans-medium text-[1.2rem]">
 Peer critiques by like-minded writers
        </h6>
 
-        <h3 className="poppins text-2xl text-left font-bold py-4">What is a Plumbum?</h3>
-        <h6 className="text-left py-4 px-12 text-[1rem] poppins">Plumbum is the Latin word for lead, like a lead anvil or pipe. It's the root word for plumber. It's also a fun word we'd like to mean creativity and resilience. It's place to find support in your writing goals.
+        <h3 className="lora-medium text-2xl text-left font-bold py-4">What is a Plumbum?</h3>
+        <h6 className="text-left py-4 px-12 text-[1rem] open-sans-medium">Plumbum is the Latin word for lead, like a lead anvil or pipe. It's the root word for plumber. It's also a fun word we'd like to mean creativity and resilience. It's place to find support in your writing goals.
 </h6>
         <ul className="text-left px-4">
 
@@ -68,15 +68,15 @@ Peer critiques by like-minded writers
 
 
 
-    <li className="py-3 text-[1rem]"><h6> 📝 Worried about publishing publicly, but still need people to read your stuff? 
+    <li className="py-3 open-sans-medium text-[1rem]"><h6> 📝 Worried about publishing publicly, but still need people to read your stuff? 
         Plumbum lets you control visibility and share how you want.
     
     </h6></li >
-<li className="py-3 text-[1rem]"><h6>💬 Looking for constructive feedback?
+<li className="py-3 open-sans-medium  text-[1rem]"><h6>💬 Looking for constructive feedback?
 Be part of a community of writers who are eager to share their insights and support you.
 </h6></li>
-<li className="py-3 text-[1rem]"><h6>📘 Make collections to organize and reorganize everything you find, so you can tell the story you want. </h6></li>
-<li className="py-3 text-[1rem]"><h6>
+<li className="py-3 open-sans-medium  text-[1rem]"><h6>📘 Make collections to organize and reorganize everything you find, so you can tell the story you want. </h6></li>
+<li className="py-3 open-sans-medium  text-[1rem]"><h6>
 📚 Whether you're a seasoned novelist or just starting out. It's a great place to get started and get support.
 </h6></li>
 
@@ -96,7 +96,7 @@ Be part of a community of writers who are eager to share their insights and supp
     <div  className="grid md:grid-cols-2 gap-8 mb-8">
     
     <div id="py-8 min-w-1/2 px-8">
-        <h6 className="text-[4rem] text-emerald-700 py-8 ">Welcome to Plumbum</h6>
+        <h6 className="text-[4rem] lora-medium text-emerald-700 py-8 ">Welcome to <br/>Plumbum</h6>
   </div>
 
   <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">

@@ -38,13 +38,12 @@ export default function CollectionContainer(props){
         if(currentProfile && collection){
             dispatch(postCollectionHistory({profile:currentProfile,collection}))
         }
-     
     },[])
     const deleteFollow=()=>{
         if(currentProfile){
             dispatch(deleteCollectionRole({role})).then(res=>{
                 checkResult(res,payload=>{
-                  
+             
                         getCol()
                   
                    
@@ -118,7 +117,26 @@ if(currentProfile){
                 setCanUserSee(false)
             }
         }
-        
+        if(!canUserSee){
+            if(collection.parentCollections){
+                    collection.parentCollections.find(cTc=>{
+                        const col = cTc.parentCollection
+                        if(!col.isPrivate){
+                            setCanUserSee(true)
+                        }else{
+                        if(col.roles){
+                     let found = col.roles.find(colRole=>{
+                            return colRole && colRole.profileId == currentProfile.id
+                        })
+                    if(found || sightArr.includes(found.role)||collection.profileId==currentProfile.id){
+                            setCanUserSee(true)
+                                }else{
+                            setCanUserSee(false)
+                        }
+                    }}
+                    })
+            }
+        }
     
     }}
     const soUserCanAdd = ()=>{
@@ -159,7 +177,7 @@ if(currentProfile){
         token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     const findRole = ()=>{
-            if(collection && currentProfile){
+            if(collection && currentProfile && collection.roles){
                 let foundRole=  collection.roles.find(role=>{
                     console.log("rolesds",role)
                     return role.profileId==currentProfile.id})
@@ -190,14 +208,14 @@ if(currentProfile){
         return(<div><div className="h-fit w-[96vw] mx-auto lg:w-[50em] mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600   rounded-lg mb-8 text-left">
                 {collection.profile?<div className="flex flex-row"><div className="min-w-8 min-h-8  my-auto"><ProfileCircle profile={collection.profile}/></div><span onClick={()=>navigate(Paths.profile.createRoute(collection.profile.id))} className="text-emerald-800 mx-2 my-auto rounded-lg ">{collection.profile.username}</span></div>:null}
                 <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
-    <h3 className="mt-8 mb-2  text-emerald-800 text-xl sm:text-3xl">{collection.title}</h3>
+    <h3 className="mt-8 mb-2  text-emerald-800 lora-medium text-xl sm:text-3xl">{collection.title}</h3>
 
-        <h6 className="text-emerald-800   rounded-lg py-4 px-2">{collection.purpose}</h6>
+        <h6 className="text-emerald-800  open-sans-medium rounded-lg py-4 px-2">{collection.purpose}</h6>
 </div>
         <div className={" w-36  mx-auto flex flex-row"}>
    {!role?<div
    onClick={handleFollow}
-   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}><h6 className="px-4 py-3  ">Follow</h6></div>:
+   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  mont-medium min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}><h6 className="px-4 py-3 mont-medium  ">Follow</h6></div>:
    <div
    onClick={deleteFollow}
    className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full flex text-[1rem] "} >
@@ -231,7 +249,7 @@ if(collection&&canUserSee){
 <div className="pb-[10rem] ">       {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
         <div className="text-left  max-w-[100vw]    mx-auto ">
             {collections && collections.length>0? <div>
-                <h3 className="text-2xl text-emerald-800 font-bold text-center">Anthologies</h3>:
+                <h3 className="text-2xl lora-bold text-emerald-800 font-bold text-center">Anthologies</h3>:
             <div>
                 <InfiniteScroll
                 dataLength={collections.length}
@@ -251,7 +269,7 @@ if(collection&&canUserSee){
                 </InfiniteScroll>
             </div>
             </div>:null}
-            <h6 className="text-2xl mb-8 w-fit text-center text-slate-800 font-bold pl-4">Pages</h6>
+            <h6 className="text-2xl mb-8 w-fit text-center  lora-medium text-emerald-800 font-bold pl-4">Pages</h6>
         <div className=" max-w-[100vw] px-2 sm:max-w-[40em] mx-auto ">
         <PageList  isGrid={false}/>
         </div>
@@ -260,9 +278,10 @@ if(collection&&canUserSee){
     </>)
 }else{
     if(pending){
-        return(<div><img className="w-24 h-24" src={loadingJson}/></div>)
-    }else if(!collection){
-        return(<div className="mx-auto my-24"><h6 className=" poppins text-xl text-emerald-800">Collection does not exist</h6></div>)
+        return(<div><div className="skeleton h-fit w-[96vw] mx-auto lg:w-[50em] lg:h-[20em] bg-slate-100 mx-auto mt-4 sm:pb-8 p-4   rounded-lg mb-8 text-left"/>
+        <div className=" max-w-[100vw] skeleton px-2 sm:max-w-[40em] bg-slate-100 mx-auto  h-40"/></div>)
+    }else{
+        return(<div className="mx-auto my-36"><h6 className=" poppins text-xl text-emerald-800">Collection does not exist</h6></div>)
     }
 }
 

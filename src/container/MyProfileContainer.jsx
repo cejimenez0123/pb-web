@@ -173,7 +173,8 @@ const ProfleInfo = ({profile})=>{
                           {isNotPhone?
                             <div className='   grid grid-cols-2  gap-1  '>
                                 <div>
-                                    <div                                 className='bg-emerald-700 rounded-full text-white flex w-[9rem] h-[4rem]  '>
+                                    <div                    onClick={()=>navigate(Paths.workshop.reader())} 
+                                        className='bg-emerald-700 rounded-full text-white flex w-[9rem] h-[4rem]  '>
                                     <h6 className='mx-auto lg:text-[0.8rem] px-2 my-auto'> Join a Workshop</h6>
                                         </div>
                                 </div> 

@@ -128,8 +128,8 @@ className="mx-auto my-auto"
               <div  className=" px-8 flex flex-row justify-between  " >
                 <div className="text-left my-auto  py-4 mt-1 ">
                    {item && item.title && item.title.length>0? <h6 onClick={handleNavigate}
-         className={`text-[0.9rem] md:text-[1.2rem] text-ellipsis ${buttonDiv?"max-w-[12em] ":"max-w-[18em]"} whitespace-nowrap text-emerald-700 no-underline overflow-hidden my-auto`}>{item.title}</h6>:
-                   <h6 className={`text-[0.9rem] md:text-[1.2rem] text-ellipsis ${buttonDiv?"max-w-[12em]":""}  whitespace-nowrap text-emerald-700 no-underline overflow-hidden my-auto`}
+         className={`text-[0.9rem] md:text-[1.2rem] text-ellipsis ${buttonDiv?"max-w-[12em] md:max-w-[20em] ":"max-w-[18em]"} whitespace-nowrap text-emerald-700 no-underline overflow-hidden my-auto`}>{item.title}</h6>:
+                   <h6 className={`text-[0.9rem] md:text-[1.2rem] text-ellipsis ${buttonDiv?"max-w-[12em] ":""}  whitespace-nowrap text-emerald-700 no-underline overflow-hidden my-auto`}
                    onClick={handleNavigate}>Unititled</h6>}
                 </div> 
                 <div className=" my-auto w-fit">

@@ -12,6 +12,12 @@ class WorkshopRepo{
         }})
        return res.data
     }
+    async joinGlobalWorkshop({profile,story}){
+      let res = await axios.post(Enviroment.url+'/workshop/groups/global',{profile,story},{headers:{
+          Authorization:"Bearer "+localStorage.getItem(this.token)
+      }})
+     return res.data
+  }
     async postActiveUser({story,profile}){
 
 

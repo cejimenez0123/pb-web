@@ -122,7 +122,7 @@ const navigateToLibrary = (library)=>{
             >
 
                <div className={""+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"sm:px-2")}>
-              {pagesInView.map(page=>{
+              {pagesInView.filter(page=>page).map(page=>{
                     const id = `${page.id}_${uuidv4()}`
                     return(<div className=" mb-2"id={id}>
                         <DashboardItem isGrid={isGrid} key={page.id} page={page}/>

@@ -180,12 +180,15 @@ function App(props) {
        </PrivateRoute>
       }
     />
+      <Route path={Paths.workshop.reader()}
+    element={<WorkshopContainer/>}/>
     <Route 
     path={Paths.workshop.route()}
     element={<PrivateRoute><WorkshopContainer/></PrivateRoute>}/>
     <Route path="/profile/:id" element={
       <ProfileContainer profile={props.profileInView}/>
       }/>
+  
     
 
     <Route  

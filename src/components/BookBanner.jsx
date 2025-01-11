@@ -65,7 +65,7 @@ const BookBanner = ({ books, speed = 40000 }) => {
         
     }
     return(<div onClick={handleOnClick} className="book-banner-item">
-            <h6> {book.title}</h6>
+            <h6 className="lora-medium"> {book.title}</h6>
 
     </div>)
   }

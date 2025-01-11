@@ -7,6 +7,7 @@ const Paths ={
     }},
     workshop:{
         route:()=>"/workshop/page/:pageId",
+        reader:()=>"/workshop",
         createRoute:(pageId)=>{return "/workshop/page/"+pageId}
     },
     editCollection:{

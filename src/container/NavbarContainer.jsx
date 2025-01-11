@@ -46,11 +46,13 @@ const PageName = {
   create: "Create",
   discovery:"Discovery",
   login:"Log In",
-  search:"Search"
+  search:"Search",
+  workshop:"Workshop"
 }
 const pages = [ 
                 PageName.about,
                 PageName.discovery,
+                PageName.workshop,
                 PageName.search,
                 PageName.create, 
                 PageName.login,
@@ -81,6 +83,8 @@ function NavbarContainer(props){
           navigate("/discovery")
       }else if(page===PageName.about){
         navigate(Paths.about())
+      }else if(page==PageName.workshop){
+        navigate(Paths.workshop.reader())
       }
       setAnchorElNav(null)
     }  
@@ -238,6 +242,11 @@ function NavbarContainer(props){
                         <Typography textAlign="center">{page}</Typography>
                       </MenuItem>)
 )
+                        }else if(page==PageName.workshop){
+                          return currentProfile?<MenuItem onClick={()=>handleCloseNavMenu(page) } 
+                          key={page} >
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>:null
                         }else if( page==PageName.create){
 
                             
@@ -284,7 +293,7 @@ function NavbarContainer(props){
                     onClick={()=>{
                       dispatch(setPageInView({page:null}))
                       handleClose()
-                      navigate("/page/link")}}>
+                      navigate(Paths.editor.link())}}>
                      <LinkIcon/>
                     </ListItemButton>
                           </List>
@@ -297,21 +306,6 @@ function NavbarContainer(props){
                                     sx={{ pl: 4 }}>
                             <ListItemText primary="Collection" />
                         </ListItemButton>
-
-                        {/* <ListItemButton  key="book" 
-                                    onClick={()=>{ 
-                                      handleClose()
-                                      navigate("/book/new")
-                                      }} 
-                                    sx={{ pl: 4 }}>
-                            <ListItemText primary="Book" />
-                        </ListItemButton>
-                         <ListItemButton key="library" onClick={()=>{ 
-                          
-                          handleClose()
-                          navigate("/library/new")}} sx={{ pl: 4 }}>
-                           <ListItemText primary="Library" />
-                         </ListItemButton> */}
                
                              </List>
                             
@@ -448,6 +442,14 @@ function NavbarContainer(props){
                   // 
            
                   :(<div></div>) 
+                }else if(page==PageName.workshop){
+                  return( currentProfile?<Button
+                    key={page}
+                    onClick={()=>navigate(Paths.workshop.reader())}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                    {page}
+                  </Button>:null)
                 }else if(page ==PageName.search){
                   return(<Button
                     key={page}

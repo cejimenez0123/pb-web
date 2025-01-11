@@ -21,12 +21,16 @@ const WorkshopContainer = (props) => {
   const [error,setError]=useState(null)
   const [success,setSuccess]=useState(null)
   const [radius,setRadius]=useState(50)
-  const [location,setLocation]=useState({latitude:40.7128, longitude:74.0060})
+  const [location,setLocation]=useState(null)
   const currentProfile = useSelector(state=>state.users.currentProfile)
-  useEffect(()=>{
-   
+  const [isGlobal,setIsGlobal]=useState(false)
   
-  },[currentProfile])
+  useEffect(()=>{
+   if(isGlobal){
+    setLocation(null)
+   }
+  
+  },[isGlobal])
   useEffect(()=>{
 setTimeout(()=>{
   if(error){
@@ -37,28 +41,44 @@ setTimeout(()=>{
   },[error])
 
   useEffect(()=>{
-    if(page && currentProfile){
-      requestLocation()
+    if(currentProfile){
+      if(!isGlobal){
+        requestLocation()
+      }
+      
       dispatch(postActiveUser({story:page,profile:currentProfile})).then(res=>{
           checkResult(res,payload=>{
             if(payload.profiles){
               setSuccess(payload.profiles.length+" Users Active")
               setError(null)
+              setLoading(false)
             }
           },err=>{
             setError("Error getting active users")
             setSuccess(null)
+            setLoading(false)
           })
       })
+
     }
   },[page,currentProfile])
+  useEffect(()=>{
+  
+},[isGlobal])
   useLayoutEffect(()=>{
-    console.log(pathParams)
-    dispatch(getStory({id:pathParams.pageId}))
+  
+    const {pageId}=pathParams
+    if(pageId){
+      dispatch(getStory({id:pageId}))
+    }
+  
   },[pathParams.pageId])
 
   useEffect(()=>{
-    registerUser(currentProfile.id,location)
+    if(currentProfile){
+      registerUser(currentProfile.id,location)
+    }
+
   },[currentProfile,location])
   const requestLocation=()=>{
     navigator.geolocation.getCurrentPosition(
@@ -84,8 +104,9 @@ setTimeout(()=>{
     setLoading(true)
     setError(null)
     setSuccess(null)
-    if(page){
-        dispatch(createWorkshopGroup({profile:currentProfile,story:page,location})).then(res=>{
+    
+    if(pathParams.pageId && page){
+        dispatch(createWorkshopGroup({profile:currentProfile,story:page,isGlobal,location})).then(res=>{
       checkResult(res,payload=>{
         if(payload && payload.collection){
           setLoading(false)
@@ -104,9 +125,27 @@ setTimeout(()=>{
       })
     })
   }else{
-    setError("No Page")
-    setSuccess(null)
-  }}
+    dispatch(createWorkshopGroup({profile:currentProfile,story:null,isGlobal,location})).then(res=>{
+      checkResult(res,payload=>{
+        if(payload && payload.collection){
+          setLoading(false)
+          navigate(Paths.collection.createRoute(payload.collection.id))
+        }
+        if(payload.error){
+          setError(payload.error.message)
+          setSuccess(null)
+          setLoading(false)
+        }
+         
+      },err=>{
+        setLoading(false)
+        setError(err.message)
+        setSuccess(null)
+      })
+    })
+  }
+  
+  }
 
   return (
     <div>
@@ -132,9 +171,11 @@ setTimeout(()=>{
       {currentProfile?(
         <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4    rounded-lg ">
        <div>
-     <h2 className='text-xl font-bold'> {currentProfile.username}</h2></div>
+     <h2 className='text-xl my-8 font-bold '> {currentProfile.username}</h2></div>
+     <label className='flex flex-row justify-between'><h6 className='open-sans-medium'> Go Global</h6> <input checked={isGlobal} type="checkbox" onClick={()=>{setIsGlobal(!isGlobal)}} className='toggle bg-white'/></label>
 <div>
-        <label className='border-1 my-4 number border-emerald-600 rounded-full   px-4'>Radius
+
+        {!isGlobal?<label className='border-1 my-4 number border-emerald-600 rounded-full   px-4'>Radius
      
        
         <input type={"number"} 
@@ -142,8 +183,8 @@ setTimeout(()=>{
         onChange={(e)=>{
           setRadius(e.target.value)
         }}
-        className="input max-w-36 text-emerald-800 bg-transparent "/></label>
-  <PageWorkshopItem page={page}/>
+        className="input max-w-36 text-emerald-800 bg-transparent "/>km</label>:null}
+  {page?<PageWorkshopItem page={page}/>:null}
   
       </div>
       <div  className="bg-emerald-700 flex text-white mt-8 rounded-full"

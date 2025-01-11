@@ -135,7 +135,7 @@ function LogInCard(props){
                 <a>Forgot Password?</a>
             </div>
             <button
-            className='bg-green-600 poppins  text-white rounded-full hover:bg-green-400  font-bold py-2 px-8 mt-4 btn-lg  '
+            className='bg-green-600 poppins  text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
                onClick={props.handleSubmit}
                 
                 variant="contained" >Submit</button>

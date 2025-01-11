@@ -1,11 +1,30 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
-
-.App{
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Montserrat:wght@500&family=Open+Sans&display=swap');.App{
   text-align: center;
   color: white;
   width: 100vw;
 }
 
+.lora-medium{
+  font-family: "Lora", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+.lora-bold{
+  font-family: "Lora", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+.open-sans-meidum {
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
 
 
 #root {
@@ -20,6 +39,12 @@
 /* .page p,div,span{
   font-size: 0.9rem !important;
 } */
+.mont-medium {
+  font-family: "Montserrat", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
 @media (min-width:768px) {
   
 
@@ -706,7 +731,12 @@ iframe[title="Spotify Web Player"]{
   }*/
 }
 .link-preview p{
- 
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
   text-align: left ;
   background-color: rgb(74 222 128);
 }
