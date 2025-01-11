@@ -186,7 +186,7 @@ function NavbarContainer(props){
                 <Toolbar disableGutters={true}>
                     <Typography
                         onClick={()=>{
-                            navigate("/")
+                            navigate("/discovery")
                         }}
                         variant="h6"
                         noWrap
@@ -338,6 +338,7 @@ function NavbarContainer(props){
               variant="h5"
               noWrap
               component="a"
+              onClick={()=>navigate("/discovery")}
               href="#app-bar-with-responsive-menu"
               sx={{
                 mr: 2,

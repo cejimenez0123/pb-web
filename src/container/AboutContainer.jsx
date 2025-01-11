@@ -42,13 +42,13 @@ const writingJourney = ()=>{
 </h5>
 <h3 className="text-[1.4rem] open-sans-medium  my-4 font-bold">Get started now!!</h3>
 </div>
-<div className="text-2xl flex text-white bg-emerald-800 rounded-full my-8 px-5 py-4" onClick={()=>{navigate(Paths.apply())}}  
+<div className="text-2xl flex text-white max-w-[30em] mx-auto my-12 bg-emerald-800 rounded-full  px-5 py-4" onClick={()=>{navigate(Paths.apply())}}  
    > <h6 className="mx-auto mont-medium my-auto">Apply to Join Today</h6></div>
 </div>
     </div>)
 }
 const detailsOfWorkshop=()=>{
-    return (<div className={` px-4 py-2  max-w-[100vw]`}>
+    return (<div className={` py-2  max-w-[100vw]`}>
         <h2 className="lora-medium text-center text-emerald-800 lg:text-white text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
         <h3 className={`lora-medium font-bold  text-2xl font-bold text-left ${md?"text-emerald-700":"text-white"}`}>What is a Writers' Workshop?</h3>
@@ -58,7 +58,7 @@ Peer critiques by like-minded writers
        </h6>
 
         <h3 className="lora-medium text-2xl text-left font-bold py-4">What is a Plumbum?</h3>
-        <h6 className="text-left py-4 px-12 text-[1rem] open-sans-medium">Plumbum is the Latin word for lead, like a lead anvil or pipe. It's the root word for plumber. It's also a fun word we'd like to mean creativity and resilience. It's place to find support in your writing goals.
+        <h6 className="text-left pb-4 pt-2 px-2 text-[1rem] open-sans-medium">Plumbum is the Latin word for lead, like a lead anvil or pipe. It's the root word for plumber. It's also a fun word we'd like to mean creativity and resilience. It's place to find support in your writing goals.
 </h6>
         <ul className="text-left px-4">
 
