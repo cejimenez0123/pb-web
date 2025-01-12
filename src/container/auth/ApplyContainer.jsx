@@ -348,10 +348,11 @@ Founder of Plumbum</h6>
         </div>:<div className="min-h-40 lora-medium min-w-36 flex"><div className="mx-auto my-auto"><p className=" ">User already applied</p>
         <br/>
         <p>Message  <a href="https://www.instagram.com/plumbumapp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">@plumbumapp </a>
-         or email plumbumapp@gmail.com with </p>
+         or email plumbumapp@gmail.com with:</p>
          <br/>
          <p>Subject:I want to be an alpha user!</p>
-         
+         <br/>
+         <p>We may add you on early.</p>
           </div></div>}
       </DialogContent>
       <DialogActions>
