@@ -7,7 +7,7 @@ import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
 export default function AboutContainer(props){
     const md = useMediaQuery({
-        query: '(max-width: 1000px)'
+        query: '(min-width: 800px)'
       })
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -35,7 +35,7 @@ There's not one kind of look for a writer. Creatives need a place to test their 
 const writingJourney = ()=>{
     return(<div className="">
         <div id="ready">
-<div  className="text-emerald mt-8 open-sans-medium sm:text-white">
+<div  className="text-emerald-800 mt-8 open-sans-medium lg:text-white">
 <h5 className="text-[1.2rem] open-sans-medium my-4">If you're a writer or enjoy reading, stay engaged with people with shared goals.
 </h5>
 <h5 className="text-[1.2rem] open-sans-medium my-4">We are taking applications for beta users for our release in February.
@@ -48,10 +48,10 @@ const writingJourney = ()=>{
     </div>)
 }
 const detailsOfWorkshop=()=>{
-    return (<div className={` py-2  max-w-[100vw]`}>
+    return (<div className={` py-2   lg:text-white text-emerald-700 max-w-[100vw]`}>
         <h2 className="lora-medium text-center text-emerald-800 lg:text-white text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
-        <h3 className={`lora-medium font-bold  text-2xl font-bold text-left ${md?"text-emerald-700":"text-white"}`}>What is a Writers' Workshop?</h3>
+        <h3 className={`lora-medium font-bold  text-2xl font-bold text-left `}>What is a Writers' Workshop?</h3>
       
 <h6 className="py-4 text-left open-sans-medium text-[1.2rem]">
 Peer critiques by like-minded writers

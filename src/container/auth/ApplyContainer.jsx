@@ -92,16 +92,17 @@ function ApplyContainer(props){
             // ... other form data
           };
         authRepo.apply(form).then(data=>{
-          console.log("FDDdF",data)
+        
 if(data.user){
-  console.log("FDDF",data.user)
   setUser(data.user)
-}
-if(data.error){
-  window.alert("error:"+data.error.message)
-}
+}else if(data.message=="User has already applied"){
+setUser(data)
+} 
+        
           
-        }).catch(e=>window.alert("error:"+e.message))
+        }).catch(e=>{
+          console.log(JSON.stringify(e))
+          window.alert("error:"+e.message)})
     }else{
         window.alert("Please use valid email")
     }
@@ -299,37 +300,15 @@ return (
           </button>
         </form>
       </div>
-      {/* <Dialog className={
-                "bg-emerald-400 bg-opacity-30 "
-              }
-              PaperProps={{
-                style: {
-                  backgroundColor: 'transparent',
-                  boxShadow: 'none',
-                 overflow:"hidden",
-                 height:"100%",
-                 width:"100%",
-                
-                },
-              }}
-            
-              open={openDialog}
-              onClose={()=>setOpenDialog(false)}>
-                <CreateCollectionForm onClose={()=>{
-                    setOpenDialog(false)
-                }}/>
-              </Dialog> */}
+     
               <Dialog className={
                 "bg-emerald-50  w-[100%] mx-auto overscroll-none"
               }
-              fullScreen={!isNotPhone}
+              fullScreen={!isNotPhone&&user && user.preferredName}
               PaperProps={{
                 style: {
             
-          
-                 overflow:"hidden",
-                 height:"100%",
-                 width:"100%",
+      
                 
                 },
               }}
@@ -340,13 +319,12 @@ return (
         {user?<div>
      
       <DialogContent>
-      <DialogTitle id="alert-dialog-title">
-        <p>Thank You {user.preferredName 
-}! You’re In—Welcome to the Journey! </p>
-      </DialogTitle>
-        <div id="welcome"className=" p-8 lora-medium leading-[1.5em] overflow-scroll">
    
 
+  {user && user.preferredName?
+        <div id="welcome"className=" p-8 lora-medium leading-[1.5em] overflow-scroll">
+           <p>Thank You {user.preferredName}! You’re In—Welcome to the Journey! </p>
+<br/>
 <h6  >Congratulations! You’re officially on board as a beta user for Plumbum, where we’re redefining what it means to create, connect, and grow as a writer.</h6>
 <br/>
 <h6>
@@ -364,15 +342,23 @@ our instagram <a href="https://www.instagram.com/plumbumapp?utm_source=ig_web_bu
 <br/>
 <h6>Let’s make our story, together!</h6>
 <br/>
-<h6>-Sol Emilio Christian, Founder of Plumbum</h6>
+<h6>-Sol Emilio Christian, <br/>
+Founder of Plumbum</h6>
 
-        </div>
+        </div>:<div className="min-h-40 lora-medium min-w-36 flex"><div className="mx-auto my-auto"><p className=" ">User already applied</p>
+        <br/>
+        <p>Message  <a href="https://www.instagram.com/plumbumapp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">@plumbumapp </a>
+         or email plumbumapp@gmail.com with </p>
+         <br/>
+         <p>Subject:I want to be an alpha user!</p>
+         
+          </div></div>}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Until Later</Button>
+        <Button onClick={handleClose} ><span className="mont-medium">Until Later</span></Button>
      
       </DialogActions></div>
-        :null}</div>
+        :<DialogContent><div className="flex"><p className="mx-auto my-auto">Error. Try again later</p></div></DialogContent>}</div>
               </Dialog>
     </div>
   </>
