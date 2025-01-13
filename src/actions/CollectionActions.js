@@ -207,7 +207,11 @@ const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",
 const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent",
     async ({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},thunkApi)=>{
         let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
-     
+        if(!isPrivate){
+            
+              client.initIndex("collection").saveObject(
+                {objectID:id,title:title,type:"collection"}).wait()
+            }  
         return {collection:data.collection}
     }
 )

@@ -211,6 +211,11 @@ const updateProfile = createAsyncThunk("users/updateProfile",
                     async (params,thunkApi)=>{
 
           let data = await  profileRepo.updateProfile(params)
+          if(data.profile){
+            const {profile}=data
+            client.initIndex("profile").saveObject(
+                {objectID:profile.id,username:profile.username,type:"profile"}).wait()
+        }
           return {profile:data.profile}
   
 })

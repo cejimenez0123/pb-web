@@ -101,10 +101,10 @@ function LogInCard(props){
     <div className='sm:border-4  md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         <div  className='mx-auto'>
             <form className='max-w-[100vw] sm:max-w-82 text-center pt-4'>
-        <h1 className='text-emerald-800 poppins pb-4'> Log In</h1>
+        <h1 className='text-emerald-800 lora-medium pb-4'> Log In</h1>
         <div >
          <div className='max-w-[91vw]'>
-        <label className="input  poppins text-emerald-800 w-52 overflow-hidden pl-2  border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
+        <label className="input  open-sans-medium text-emerald-800 w-52 overflow-hidden pl-2  border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
   Email
   <input type="text" className="shrink overflow-hidden text-[1rem] w-[100%] sm:max-w-[100%]  py-2 bg-transparent text-emerald-800" 
          value={props.email} 
@@ -113,7 +113,7 @@ function LogInCard(props){
 </label>
 </div>   
 <div className='mb-8 max-w-[91vw] '>
-    <label className="input poppins inline-block flex flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
+    <label className="input open-sans-medium inline-block flex flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
   Password
   <input type={showPassword?"text":`password`} className="shrink max-w-36 sm:max-w-52  shrink text-emerald-800 " 
          value={props.password}
@@ -122,27 +122,27 @@ function LogInCard(props){
         placeholder='*****' />
          
          <label onClick={()=>setShowPassword(!showPassword)}
-                className={`text-[0.7rem] min-w-[5em] w-64 p-2 ${showPassword?"bg-emreald text-white":"" }ml-1 my-auto`}>
+                className={`text-[0.7rem] min-w-[5em] w-64 open-sans-medium p-2 ${showPassword?"":"" }ml-1 my-auto`}>
                     {showPassword?"Hide":"Show"}</label>
 </label> 
     
     </div>
             <div 
-                className='text-emerald-800 poppins hover:text-green-400'
+                className='text-emerald-800 open-sans-medium hover:text-green-400'
                 onClick={()=>{
                     setOpen(true)
                 }}>
                 <a>Forgot Password?</a>
             </div>
             <button
-            className='bg-green-600 poppins  text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
+            className='bg-green-600 mont-medium  text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
                onClick={props.handleSubmit}
                 
                 variant="contained" >Submit</button>
                 
         </div>
         <div className='mt-4 p-4'>
-        <a  onClick={handleFirstTimeClick}className='text-emerald-800 poppins hover:text-green-400  '>Click here if this your first time?</a>
+        <a  onClick={handleFirstTimeClick}className='text-emerald-800 open-sans-medium hover:text-green-400  '>Click here if this your first time?</a>
         </div>
         <div>
         

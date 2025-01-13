@@ -6,9 +6,6 @@ import {  getFirestore} from "firebase/firestore";
 import { getStorage } from "firebase/storage"
 import algoliasearch from "algoliasearch";
 
-// import { firebaseConfig } from '../fire';
-
-
 // const testConfig = {
 //   apiKey: `${process.env.TEST_FIREBASE_API_KEY}`,
 //   authDomain:`${process.env.TEST_AUTH_DOMAIN}`,
@@ -22,9 +19,6 @@ import algoliasearch from "algoliasearch";
 
 const client = algoliasearch(import.meta.env.VITE_ALGOLIA_APP_ID,
   import.meta.env.VITE_ALGOLIA_API_KEY)
-
-// Create a new index. An index stores the data that you want to make searchable in Algolia.
-
 const config = { apiKey:import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
   databaseURL: import.meta.env.VITE_DATABASE_URL,

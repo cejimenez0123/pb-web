@@ -5,11 +5,9 @@ import info from "../images/icons/info.svg"
 function InfoTooltip({text=" This is a tooltip"}){
     const [focus,setFocus]=useState(false)
       const handleToggle = (e) => {
-    e.stopPropagation(); // Prevent the click event from propagating to parent elements
-    setFocus((prev) => !prev);
+    e.stopPropagation(); 
+        setFocus((prev) => !prev);
   };
-
-  // Close tooltip when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
       setFocus(false);
