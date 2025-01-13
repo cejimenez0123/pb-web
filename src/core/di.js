@@ -33,8 +33,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app,{setPersistence: browserLocalPersistence})
 
 const storage = getStorage(app)
-
-
 const db =getFirestore(app)
 
   export {db,app,auth,storage,client}
