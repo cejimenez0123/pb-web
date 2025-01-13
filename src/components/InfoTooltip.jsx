@@ -1,0 +1,44 @@
+
+import { useState,useEffect } from "react"
+import info from "../images/icons/info.svg"
+
+function InfoTooltip({text=" This is a tooltip"}){
+    const [focus,setFocus]=useState(false)
+      const handleToggle = (e) => {
+    e.stopPropagation(); // Prevent the click event from propagating to parent elements
+    setFocus((prev) => !prev);
+  };
+
+  // Close tooltip when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setFocus(false);
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+    return( 
+
+        <div     onClick={handleToggle}
+          
+     className="relative h-fit my-auto w-fit mx-2 group" >
+
+    <img className="  text-white "
+    alt="info"
+    src={info}
+    />
+
+<div
+        className={`absolute bg-slate-50 open-sans-medium text-sm text-black p-2 bottom-full mb-2 rounded-lg min-w-24 shadow-lg transition-opacity duration-200 ${
+          focus ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      >   {text}
+      </div>
+  
+  </div>
+  )
+}
+export default InfoTooltip

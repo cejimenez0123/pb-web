@@ -746,10 +746,19 @@ iframe[title="Spotify Web Player"]{
   color: black
   ;
 }
-@media (min-width: 900px) {
 
+.is-tooltip{
+  visibility:collapse ;
+  position: absolute ;
+  
+  ;
 }
-  @media (max-width: 900px) {
+.has-tooltip:hover .is-tooltip {
+  visibility: visible;
+  display: relative;
+  z-index: 100;
+}
+@media (max-width: 900px) {
    
    
     
@@ -765,21 +774,12 @@ iframe[title="Spotify Web Player"]{
       margin-bottom:1em;
     
     }
-    }
+  }
     
-    .spotify .TrackListWidget_widgetContainer__VVETD{
-      border-radius: 0.5rem !important;
-      padding-top: 4em !important;
-    }
+  .spotify .TrackListWidget_widgetContainer__VVETD{
+    border-radius: 0.5rem !important;
+    padding-top: 4em !important;
+  }
 
-    .is-tooltip{
-      visibility: hidden;
-      position: absolute;
-      ;
-    }
-    .has-tooltip:hover .is-tooltip {
-      visibility: visible;
-      display: relative;
-      z-index: 100;
-    }
+   
 

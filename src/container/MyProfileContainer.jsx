@@ -31,6 +31,9 @@ function MyProfileContainer(props){
     const isNotPhone = useMediaQuery({
         query: '(min-width: 600px)'
       })
+      const isPhone =  useMediaQuery({
+        query: '(max-width: 600px)'
+      })
     const [libraries,setLibraries]=useState([])
     const [openDialog,setOpenDialog]=useState(false)
     const [media,setMedia]=useState(MediaType.stories)
@@ -234,7 +237,7 @@ const ProfleInfo = ({profile})=>{
                 
                 },
               }}
-            
+            fullScreen={isPhone}
               open={openDialog}
               onClose={()=>setOpenDialog(false)}>
                 <CreateCollectionForm onClose={()=>{

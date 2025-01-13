@@ -8,8 +8,11 @@ import CreateCollectionForm from "../../components/collection/CreateCollectionFo
 import {Dialog} from "@mui/material"
 import addBox from "../../images/icons/add_box.svg"
 import clear from "../../images/icons/clear.svg"
-import emptyBox from "../../images/icons/empty_box.svg"
+import { useMediaQuery } from "react-responsive"
 export default function AddStoryToCollectionContainer(props){
+  const isPhone =  useMediaQuery({
+    query: '(max-width: 600px)'
+  })
     const pathParams = useParams()
     const dispatch = useDispatch()
     const page = useSelector(state=>state.pages.pageInView)
@@ -81,6 +84,7 @@ export default function AddStoryToCollectionContainer(props){
               <Dialog className={
                 "bg-emerald-400"
               }
+              fullScreen={isPhone}
               PaperProps={{
                 style: {
                   backgroundColor: 'transparent',

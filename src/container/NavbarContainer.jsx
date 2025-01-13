@@ -34,12 +34,10 @@ import SearchDialog from '../components/SearchDialog'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import ReactGA from 'react-ga4'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setHtmlContent, setPageInView } from '../actions/PageActions'
+import { useMediaQuery } from 'react-responsive'
 const PageName = {
   home: "Home",
   about:"About",
@@ -58,6 +56,9 @@ const pages = [
                 PageName.login,
                 ]
 function NavbarContainer(props){
+  const isPhone =  useMediaQuery({
+    query: '(max-width: 600px)'
+  })
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [anchorElNav, setAnchorElNav] = useState(null);
@@ -520,13 +521,20 @@ function NavbarContainer(props){
       
 
       </AppBar>
-      <Dialog className={
-                "bg-emerald-400"
+      <Dialog 
+      fullScreen={isPhone}
+      
+      className={
+                "bg-emerald-400 bg-opacity-30 "
               }
               PaperProps={{
                 style: {
                   backgroundColor: 'transparent',
                   boxShadow: 'none',
+                 overflow:"hidden",
+                 height:"100%",
+                 width:"100%",
+                
                 },
               }}
             
