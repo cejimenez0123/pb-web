@@ -69,7 +69,8 @@ const pageSlice = createSlice({
             state.loading = false
             state.error = payload.message
         }).addCase(updateStory.fulfilled,(state,{payload})=>{
-          state.editingPage = payload.story
+          state.pageInView= payload.story
+          
           state.loading = false
         }).addCase(updateStory.pending,(state)=>{
           state.loading=true

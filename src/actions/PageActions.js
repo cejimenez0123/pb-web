@@ -36,14 +36,7 @@ const setHtmlContent = createAction(
       }
   }
 )
-const updateStory = createAsyncThunk("pages/updateStory",async (params,thunkApi)=>{
-      try{
-        let data = storyRepo.updateStory( params)
-        return { story:data.story}
-      }catch(e){
-        return {error: e}
-      }
-})
+
 const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>{
       
   try{

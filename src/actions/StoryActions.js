@@ -96,8 +96,9 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
     story: data.story
   }
 }catch(e){
+  console.log(e)
   return{
-    error: "Update Story"+e
+    error: e
   }
 }
 })

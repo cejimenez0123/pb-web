@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 import Paths from "../../core/paths";
 import ReactGA from "react-ga4"
+import { setEditingPage } from '../../actions/PageActions'
 import { setCollectionInView } from "../../actions/CollectionActions";
 function IndexItem({item}) {
     const isPhone =  useMediaQuery({
@@ -29,6 +30,8 @@ function IndexItem({item}) {
       if(item && item.storyIdList){
         navigate(Paths.editCollection.createRoute(item.id))
       }else if(item){
+        dispatch(setHtmlContent(item.data))
+        dispatch(setEditingPage({page:item}))
         navigate(Paths.editPage.createRoute(item.id))
       }  
     }

@@ -42,6 +42,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunkApi)=>{
 
   let data = await profileRepo.all()
+
   return {
     profiles:data.profiles
   }

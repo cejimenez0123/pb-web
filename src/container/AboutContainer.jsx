@@ -5,12 +5,15 @@ import { useMediaQuery } from "react-responsive"
 import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
+import { useEffect } from "react"
+import { fetchProfiles } from "../actions/ProfileActions"
 export default function AboutContainer(props){
     const md = useMediaQuery({
         query: '(min-width: 800px)'
       })
     const dispatch = useDispatch()
     const navigate = useNavigate()
+   
     const forCreatives = ()=>{
         return(<div className="grid sm:grid-cols-2 gap-8">
     <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">

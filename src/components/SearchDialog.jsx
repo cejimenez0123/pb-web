@@ -40,13 +40,13 @@ export default function SearchDialog(props){
                         })
                     
                     })
-                    // setSearchContent(items.flat())
+                    setSearchContent(items.flat())
                     ;
             },err=>{
 
             })
         })
-    //  setSearchContent(pages)
+
      }
    ,[searchQuery])
      const handleOnClick = (searchItem)=>{
@@ -73,7 +73,7 @@ export default function SearchDialog(props){
             <img style={{height:"2em"}}src={AlgoliaIcon}/>
        </div>         
     <InfiniteScroll
-        className="scroll"
+        className="scroll max-w-[100%] overflow-hidden"
      dataLength={searchContent.length}
      next={()=>{}}
      hasMore={false}
@@ -81,24 +81,14 @@ export default function SearchDialog(props){
      endMessage={<div className="no-more-data"><p>Nothing Found</p></div>}
   > 
        {searchContent.map((content,i)=>{
-            if(content.title){
-              return(<div onClick={()=>handleOnClick(content)}key={i} className='search-return'>
-                <h6 className='text'>{content.title}</h6></div>)
-            }else if(content.name){
-              return(<div onClick={()=>handleOnClick(content)} key={i} 
-                className='search-return'>
-                    
-                    <h6 className='text'>
-                        {content.name}
-                    </h6></div>)
-            }else if(content.username){
-                return(<div key={i} 
-                    onClick={()=>handleOnClick(content)}
-                    className='search-return'>
-                        <h6 className='text'>
-                            {content.username}
-                        </h6></div>)
-            }
+
+        return(<div
+        className="py-2 border-2 px-4 my-2 max-w-[90%] border-emerald-200 rounded-full"
+        onClick={()=>handleOnClick(content)}>
+          {content.title?content.title:content.username}
+        </div>)
+   
+           
         })}
     </InfiniteScroll>
     <div style={{height:"100%"}}>

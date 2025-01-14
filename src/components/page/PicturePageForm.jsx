@@ -17,6 +17,8 @@ function PicturePageForm({createPage}){
     const [localContent,setLocalContent] = useState("")
     const ePage = useSelector(state=>state.pages.pageInView)
     const [file,setFile]=useState(null)
+    let href =location.pathname.split("/")
+    let last = href[href.length-1]
     const [errorMessage,setErrorMessage]=useState(null)
     const [image,setImage]=useState(null)
     useEffect(()=>{
@@ -104,13 +106,16 @@ function PicturePageForm({createPage}){
                 dispatch(setHtmlContent(fileName))
                 let path = window.location.href.split("/")
                 const last = path[path.length-1]
-                createPage({data:fileName,type:last})},err=>{}))
+                createPage({data:fileName,type:last})},err=>{}
+            
+            
+            ))
             }
 
 
     const checkContentTypeDiv = (type)=>{
-        switch(type.toLowerCase()){
-            case "link".toLowerCase():{  
+        switch(last){
+            case PageType.link:{  
                 if(isValidUrl(localContent)){        
                     return(
                     <LinkPreview url={localContent} />
@@ -122,7 +127,7 @@ function PicturePageForm({createPage}){
             }
 
        }
-       case "image".toLowerCase():{
+       case PageType.picture:{
             return(
                 <div className='text-left'>
                     <div onClick={()=>{
@@ -156,28 +161,23 @@ function PicturePageForm({createPage}){
 
     
     return(<div className='mx-auto  bg-emerald-200 rounded-b-lg w-full p-8'>
- 
-        
-
-        <label className='my-2 border-emerald-800 border-1 p-2 rounded-lg  text-emerald-800 '>
+      {uploadBtn()}
+       {!image? <label className='my-2 border-emerald-800 border-1 p-2 rounded-lg  text-emerald-800 '>
             URL
             <input 
             type='text'
                     value={localContent}
-                    className='w-[65vw] sm:w-[25em] text-emerald-800 input bg-transparent'
+                    className='max-w-[65vw] lg:w-[25em] text-emerald-800 input bg-transparent'
                  
                     onChange={(e)=>{
                         setLocalContent(e.target.value)
                         dispatch(setHtmlContent(e.target.value))}}
                 />
-            </label>
-            {uploadBtn()}
-        <p>{errorMessage}</p>
+            </label>:null}
             {contentDiv()}
-           
-      
-            
-    
+       
+        <p>{errorMessage}</p>
+        
 </div>)
 }
 export default PicturePageForm

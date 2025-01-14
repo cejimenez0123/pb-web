@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import "../../Dashboard.css"
-import { deletePageApproval,   setPageInView, } from '../../actions/PageActions'
+import { deletePageApproval,   setEditingPage,   setPageInView, } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
 import { PageType } from '../../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
@@ -14,6 +14,7 @@ import Paths from '../../core/paths'
 import LinkPreview from '../LinkPreview'
 import isValidUrl from "../../core/isValidUrl"
 import bookmarkadd from "../../images/bookmarkadd.svg"
+
 import getDownloadPicture from '../../domain/usecases/getDownloadPicture'
 import ProfileCircle from '../profile/ProfileCircle'
 function DashboardItem({page,book,isGrid}) {
@@ -226,7 +227,7 @@ className="
 Share</div>
 <ul tabIndex={0} className="dropdown-content    z-50 menu bg-white text-emerald-700 rounded-box  w-60 p-1 shadow">
 {currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
-
+    dispatch(setEditingPage({page:page}))
     navigate(Paths.editPage.createRoute(page.id))
 }}>
     <a>Edit</a></li>:null}<li
@@ -253,7 +254,7 @@ onClick={()=>ClickAddStoryToCollection()}><a>
                 {(currentProfile && currentProfile.id == page.profileId )
                 ?
      <a onClick={()=>{
-  
+        dispatch(setEditingPage({page}))
         navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
      </li>
     <li> <IconButton onClick={onBookmarkPage}

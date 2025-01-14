@@ -101,7 +101,7 @@ navigate(Paths.addStoryToCollection.createRoute(page.id))
  {currentProfile && currentProfile.id == page.authorId? <li> <a
             className=' text-green-600 '
            onClick={()=> {
-            
+            dispatch(setEditingPage({page}))
             navigate(Paths.editPage.createRoute(page.id))
            }}
         >

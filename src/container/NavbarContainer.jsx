@@ -36,7 +36,7 @@ import checkResult from '../core/checkResult'
 import Dialog from '@mui/material/Dialog';
 import ReactGA from 'react-ga4'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
-import { setHtmlContent, setPageInView } from '../actions/PageActions'
+import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions'
 import { useMediaQuery } from 'react-responsive'
 const PageName = {
   home: "Home",
@@ -170,7 +170,8 @@ function NavbarContainer(props){
         dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
         title:"",commentable:true
       })).then(res=>checkResult(res,data=>{
-      
+          dispatch(setPageInView({page:data.story}))
+          dispatch(setEditingPage({page:data.story}))
           navigate(Paths.editPage.createRoute(data.story.id))
       },e=>{
 
@@ -282,6 +283,7 @@ function NavbarContainer(props){
                             <ListItemButton key={`image`} 
                               onClick={(e)=>{
                                 dispatch(setPageInView({page:null}))
+                                dispatch(setEditingPage({page:null}))
                               handleClose()
                               dispatch(setHtmlContent(""))
                               navigate(Paths.editor.image())}}
@@ -293,7 +295,9 @@ function NavbarContainer(props){
                     sx={{ pl: 6 }} 
                     onClick={()=>{
                       dispatch(setPageInView({page:null}))
+                      dispatch(setEditingPage({page:null}))
                       handleClose()
+                      dispatch(setHtmlContent(""))
                       navigate(Paths.editor.link())}}>
                      <LinkIcon/>
                     </ListItemButton>
@@ -416,16 +420,22 @@ function NavbarContainer(props){
                     <ListItemButton     
                     sx={{ pl: 4 }} 
                     onClick={()=>{
-                      handleClose()
+                      dispatch(setPageInView({page:null}))
+                      dispatch(setEditingPage({page:null}))
+                    handleClose()
+                    dispatch(setHtmlContent(""))
                       navigate(Paths.editor.image())}}>
                      <ImageIcon/>
                     </ListItemButton>
                     <ListItemButton     
                     sx={{ pl: 4 }} 
                     onClick={()=>{
-                
+                      dispatch(setPageInView({page:null}))
+                      dispatch(setEditingPage({page:null}))
+                    handleClose()
+                    dispatch(setHtmlContent(""))
                       handleClose()
-                      navigate("/page/link")}}>
+                      navigate(Paths.editor.link())}}>
                      <LinkIcon/>
                     </ListItemButton>
                     </List>
@@ -441,7 +451,7 @@ function NavbarContainer(props){
                   </Menu>
                   </div>
                   )
-                  // 
+               
            
                   :(<div></div>) 
                 }else if(page==PageName.workshop){

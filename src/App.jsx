@@ -197,8 +197,8 @@ function App(props) {
           <PrivateRoute >
             
           <EditorContainer 
-            htmlContent={props.htmlContent}
-            currentProfile={props.currentProfile} 
+          
+
             />
       </PrivateRoute>
         }/>
@@ -207,8 +207,7 @@ function App(props) {
       element={
         <PrivateRoute  >
             <EditorContainer 
-              htmlContent={props.htmlContent}
-              currentProfile={props.currentProfile} 
+           
               />
         </PrivateRoute>
       }/>
@@ -219,8 +218,7 @@ function App(props) {
       
         >
             <EditorContainer 
-              htmlContent={props.htmlContent}
-              currentProfile={props.currentProfile} 
+         
               />
         </PrivateRoute>
       }/>

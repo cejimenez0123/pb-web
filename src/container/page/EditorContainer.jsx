@@ -23,10 +23,11 @@ import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import isValidUrl from "../../core/isValidUrl"
 import Context from "../../context"
 import EditorDiv from "../../components/page/EditorDiv"
+import {  setEditingPage, setHtmlContent,   } from "../../actions/PageActions"
 
 function EditorContainer(props){
+
         const currentProfile = useSelector(state=>state.users.currentProfile)
-        const page = useSelector(state=>state.pages.pageInView)
         const location = useLocation()
         const [error,setError]=useState(null)
         const [success,setSuccess]=useState(null)
@@ -37,70 +38,87 @@ function EditorContainer(props){
         const navigate = useNavigate()
         let href =location.pathname.split("/")
         let last = href[href.length-1]
-        const [type,setType]=useState(last)
+        const [type,setType]=useState("html")
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
-        const [privacy,setPrivacy] = useState(fetchedPage?fetchedPage.isPrivate:true)
-        const [titleLocal,setTitleLocal]=useState(fetchedPage?fetchedPage.title:"")
+        const [privacy,setPrivacy] = useState(true)
+        const [titleLocal,setTitleLocal]=useState("")
         const [commentable,setCommentable] = useState(true)
-        const htmlContent = useSelector((state)=>state.pages.editorHtmlContent)
         const {id }= pathParams
-        const [imageParams,setImageParams]=useState({})
-        const [image,setImage]=useState(null)
-      
-        useEffect(()=>{
-          if(page){
-            setFetchedPage(page)
-          }
-        },[page])
-        useLayoutEffect( ()=>{
-          if(fetchedPage){
-       
-          if(fetchedPage.type == PageType.picture && !isValidUrl(fetchedPage.data)){
-              getDownloadPicture(fetchedPage.data).then(url=>{
-                  setImage(url)
-                 
-              })
-          }else{
-            if( fetchedPage.type==PageType.picture && isValidUrl(fetchedPage.data)){
-            
-            setType(fetchedPage.type)
-              setImage(fetchedPage.data)
-          }
-          setTitleLocal(fetchedPage.title)
-        }
+        const [parameters,setParameters] = useState({page:pathParams,title:titleLocal,type:type,
+          data:"",privacy:privacy,commentable:commentable
+        })
+  
+   
+      const handleUpdate=(params)=>{
+       dispatch(updateStory(params)).then(res=>{
+          checkResult(res,payload=>{
+          },err=>{
+            setError(err.message)
+          })}
+
+      )}
+      const dispatchContent=(content)=>{
+            let params = parameters
+
+            params.data = content
+            setParameters(params)
+
+              handleUpdate(params)
+
       }
-      },[fetchedPage])
-/
     useLayoutEffect(()=>{
-      fetchStory()
-    },[currentProfile])
+      if(currentProfile){
+        fetchStory()
+      }
+    },[currentProfile,location.pathname])
 
     useLayoutEffect(()=>{
           const subscription = deleteStory  
           return () => {
-            if(page && page.data.length==0 && page.title.length==0){
+            if(fetchedPage && fetchedPage.data.length==0 &fetchedPage.title.length==0){
               dispatch(subscription({page:{id:id}}))
+            }else{
+              handleUpdate(parameters)
             }}
     },[])
   
+  const setStoryData=(story)=>{
+             setFetchedPage(story)
+            setType(story.type)
+            
+             setTitleLocal(story.title)
+             setCommentable(story.commentable)
+             setPrivacy(story.privacy)
+            if(story.type == story.picture && !isValidUrl(story.data)){
+                getDownloadPicture(story.data).then(url=>{
+                    setImage(url)
+                   
+                })
+            }else if( story.type==PageType.picture && isValidUrl(story.data)){
+              
+              setType(story.type)
+             setImage(story.data)
+            
+          }}
     const fetchStory = ()=>{
-      if(!page||(page && page.id!=id)){
+  
       dispatch(getStory({id:id})).then(res=>{
         checkResult(res,payload=>{
           const {story}=payload
-          setType(story.type)
-          setTitleLocal(story.title)
-          setCommentable(story.commentable)
-          setPrivacy(story.privacy)
-          
+          dispatch(setHtmlContent(story.data))
+          dispatch(setEditingPage({page:story}))
+          setStoryData(story)
+     
       },err=>{
-       setError(err.message)
+
        setSuccess(null)
       })})
     }
-    }
+    useEffect(()=>{
+fetchStory()
+    },[id])
 
    
       const [open, setOpen] = useState(false);
@@ -119,110 +137,44 @@ function EditorContainer(props){
         }
       }
       const createPageAction = (params)=>{
-        // let updated =params
-        // updated.title=titleLocal
-        // updated.profileId = currentProfile.id
-        // updated.truthy
-       let updated= {     
-        profileId:currentProfile.id,
-          data:htmlContent,
-          privacy,
-          type,
-          title:titleLocal,
-          commentable}
-        dispatch(createStory(updated)).then(res=>checkResult(res,payload=>{
+        let pars = params
+        pars.profileId = currentProfile.id
+        pars.title = titleLocal
+        pars.profileId = currentProfile.id
+        pars.privacy = privacy
+        pars.commentable = commentable
+    
+        dispatch(createStory(pars)).then(res=>checkResult(res,payload=>{
           const {story}=payload
+          dispatch(setEditingPage({page}))
           navigate(Paths.editPage.createRoute(story.id))
      },err=>{
-
+      console.log(err.message)
+setError(err.message)
      }))
       }
-    
-  
         const handleClickAddToCollection=()=>{
         
           navigate(Paths.addStoryToCollection.createRoute(id))
         }
         const handlePostPublicly=(truthy)=>{
           setPrivacy(truthy)
-          if(id){
-            let params = imageParams
-            if(!params.file){
-              params.page={id}
-              params.title=titleLocal
-              params.data=!fetchedPage.type==PageType.text?fetchedPage.data:htmlContent
-              params.privacy=truthy
-              params.commentable=commentable, 
-              params.type=fetchedPage.type
-            }else{
-              params.page={id},
-             params.data=!fetchedPage.type==PageType.text?fetchedPage.data:htmlContent
-              params.title=titleLocal,
-              params.privacy=truthy,
-              params.commentable=commentable,  
-              params.type=fetchedPage.type
-            }
-            dispatch(updateStory(params))
-            setImageParams(params)
-        }else{
-          if(params.file){
-            
-            dispatch(uploadPicture({file:params.file})).then((result) => 
-              checkResult(result,payload=>{
-                const href = payload["url"]
-                  setLocalContent(href)
-                  const fileName =payload.ref
-             
-                let params = imageParams
-                params.data = fileName
-                params.profileId = currentProfile.id
-                params.title =titleLocal
-                params.privacy = privacy
-                params.commentable = commentable
-                params.type = PageType.picture
-                createPageAction(params)
-          }))
-        }}
-              let params = { page:fetchedPage,
-              title: titleLocal,
-              data: htmlContent,
-              privacy:privacy,
-              commentable:commentable,  
-              type:fetchedPage.type
-            }             
-              dispatch(updateStory(params)).then(res=>{
-              })
+          let params = parameters
+          params.privacy = truthy
+          setParameters(params)
+          handleUpdate(params)
             }
 
           
         const handleTitle = (title)=>{
           setTitleLocal(title)
-          if(id){
-          debounce(()=>{
-            let params = imageParams
-   
-            if(!params.file){
-              params.page={id},
-              params.title = titleLocal
-              params.data=htmlContent,
-              params.privacy=privacy
-              params.scommentable=commentable,  
-              params.type=fetchedPage.type
-            }else{
-              params.page={id},
-              params.title = titleLocal
-              params.privacy=privacy
-              params.scommentable=commentable,  
-              params.type=fetchedPage.type   
-              setIsSaved(false)
-            dispatch(updateStory(params)).then(res=>{
-  setIsSaved(true)
-            })}},100)()
+          let params = parameters
+          params.title = title
+          setParameters(params)
+          handleUpdate(params)
 
-  
-}
       }
-
+  
    const topBar=()=>{
     return(<div className=" rounded-lg w-full  mx-auto ">
     <div className="bg-emerald-600  text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400   flex flex-row sm:rounded-t-lg border border-white   ">
@@ -282,12 +234,12 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
        <div className= "mx-2 lg:w-[40em] pt-8 mb-12 mx-auto">
                 {topBar()}
                   <ErrorBoundary>
-              <EditorDiv title={titleLocal} isPrivate={privacy} comment={commentable}
-              setParams={params=>{
-                setImageParams(params)
-                createPageAction(params)
            
-              }}/>
+          <EditorDiv  
+          createPage={createPageAction}
+         parameters={parameters}
+            
+              handleChange={(content)=>dispatchContent(content)}/>
                 </ErrorBoundary>
                 </div>
                     <div>

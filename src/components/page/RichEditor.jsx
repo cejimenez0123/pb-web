@@ -1,19 +1,21 @@
-import React, {  useEffect, useState } from "react"
+import React, {  useEffect, useLayoutEffect, useState } from "react"
 import ReactQuill from "react-quill";
 import "../../styles/Editor.css"
-import { useParams } from "react-router-dom";
-
+import { useSelector } from "react-redux";
+import { setHtmlContent } from "../../actions/PageActions";
+import { useDispatch } from "react-redux";
 const fonts = ["Arial","Courier New","Georgia"]
-export default function RichEditor({page,handleChange}){
-      const pathParams = useParams()
-  
-      const [html,setHtml] = useState("")
+export default function RichEditor({ initContent,handleChange}){
+
+    
+      const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
+      const [html,setHtml] = useState(htmlContent)
+
     useEffect(()=>{
-        if(page){
-          setHtml(page.data)
-        }
-    },[page])
- 
+       
+          setHtml(htmlContent)
+      
+    },[])
     const modules = {
       toolbar: [
         [{ 'font': []}],

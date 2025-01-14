@@ -116,19 +116,17 @@ const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
           indexName: 'profile',
           query: query,
         }, {
-          indexName: 'page',
+          indexName: 'story',
   query: query,
 
 }, {
-  indexName: 'book',
-  query: query,
-  
-}, {
-  indexName: 'library',
+  indexName: 'collection',
   query: query,
   
 }];
+
   let {results}= await client.multipleQueries(queries)
+  console.log(results)
   return {results}
 })
 

@@ -1,90 +1,68 @@
- import Context from "../../context" 
- import { useLocation, useParams } from "react-router-dom"
+
  import { useContext, useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
 import RichEditor from "./RichEditor"
-import { updateStory } from "../../actions/StoryActions"
-import checkResult from "../../core/checkResult"
 import { PageType } from "../../core/constants"
 import { useSelector } from "react-redux"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
-import { setHtmlContent } from "../../actions/PageActions"
-import PicturePageForm from "../../components/page/PicturePageForm"
 import LinkPreview from "../LinkPreview"
- export default function EditorDiv({title,isPrivate,comment,setParams}){
-        const {setIsSaved}=useContext(Context)
-        const location = useLocation()
-        const pageParams = useParams()
-        const page = useSelector(state=>state.pages.pageInView)
-        const dispatch = useDispatch()
-        const [type,setType]=useState(page?page.type:null)
+import PicturePageForm from "./PicturePageForm"
+ export default function EditorDiv({parameters,handleChange,createPage}){
+        const ePage = useSelector(state=>state.pages.editingPage)
+        const loading = useSelector(state=>state.pages.loading)
+        let href =location.pathname.split("/")
+        let last = href[href.length-1]
+        const [type,setType]=useState(ePage?ePage.type:last)
         const [image,setImage]=useState(null)
+      
+        
         useEffect(()=>{
-          if(page && page.type==PageType.picture){
-            getDownloadPicture(page.data).then(url=>{
+          if(ePage && ePage.type==PageType.picture){
+            getDownloadPicture(ePage.data).then(url=>{
               setImage(url)
             })
           }
-        },[page])
-        
-        const dispatchContent=(content)=>{
-          let params = { page:pageParams,
-            title: title,
-            data: content,
-            privacy:isPrivate,
-            commentable:comment,  
-            type:"html"
-            }
-            setType(PageType.text)
-            dispatch(setHtmlContent(content))
-            setIsSaved(false)
-            dispatch(updateStory(params)).then((res)=>{
-            checkResult(res,payload=>{
-              setType(payload.story.type)
-                setIsSaved(content==payload.story.data)
-                },err=>{})
-            })
-    
-        }
-        if(!page){
-          if(last.toUpperCase()=="image".toUpperCase()||last.toUpperCase()=="link".toUpperCase()){
-            return (<PicturePageForm createPage={(params)=>{
-              setParams(params)
-       
-            }}/>)
+        },[ePage])
+        useEffect(()=>{
+          if(ePage){
+            setType(ePage.type)
           }else{
-            return(<div id=""><RichEditor  handleChange={(content)=>{
-              dispatchContent(content)
+            setType(last)
+          }
+      },[ePage])
 
-            }}/></div>)
-        }
-      }
-            switch(page.type){
 
+
+      switch(type){
               case PageType.picture:{
+                if(!ePage){
+                  return(<div><PicturePageForm createPage={createPage}/></div>)
+                }
                 return (<div  className="mx-auto  bg-emerald-200 rounded-b-lg w-full p-8">
 
                 <img  className="rounded-lg my-4 mx-auto"
-                src={image} alt={page.title}/>
+                src={image} alt={ePage.title}/>
                 </div>)
               }
             
           case PageType.link:{
-
+                if(!ePage){
+                  return(<div><PicturePageForm createPage={createPage}/></div>)
+                }
                   return(
-                     <LinkPreview url={page.data}/>
+                     <LinkPreview url={ePage.data}/>
                   )
                 
             
               }
+          case PageType.text:{
+                return(<RichEditor initContent={parameters.data} handleChange={(content)=>{
+                  handleChange(content)}}/>)
+              }
           default:{
-         
-        
-        return(  <RichEditor  handleChange={(content)=>{
-          dispatchContent(content)}}
-/>
-        )
-
-          }} } 
-           
-        
+                return(<RichEditor  initContent={parameters.data}  handleChange={(content)=>{
+                  handleChange(content)}}/>)
+              }
+          }
+     
+      
+    }
