@@ -100,7 +100,10 @@ const userSlice = createSlice({
         state.signedIn= true
         state.loading = false
     }).addCase(signUp.rejected,(state,{payload})=>{   
+      if(payload.error){
         state.error = payload.error
+      }
+ 
     }).addCase(getCurrentProfile.rejected,(state,{payload})=>{ 
         if(payload && payload.error){
             state.loading = false

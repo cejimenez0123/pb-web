@@ -21,20 +21,24 @@ class ProfileRepo {
     }
     async create({email,token,password,username,profilePicture,selfStatement,privacy}){
         let res = await axios.post(this.url,
-        {email,password,username,profilePicture,selfStatement,privacy},{
+        {email,token,password,username,profilePicture,selfStatement,privacy},{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
+                Authorization:"Bearer "+token
             }
         })
 
         return res.data
     }
 
-    async register({uId,email,password,username,profilePicture,selfStatement,privacy}){
-       const res = await axios.post(Enviroment.url+"/auth/register",{uId,email,password,username,
+    async register({uId,token,password,username,profilePicture,selfStatement,privacy}){
+
+       const res = await axios.post(Enviroment.url+"/auth/register",{uId,token,password,username,
         profilePicture,selfStatement,privacy
-       })
-        return res.data
+       },{headers:{
+        Authorization:"Bearer "+token
+       }}) 
+       console.log(res.data)
+       return res.data
     
     }
     async getProfile(params){

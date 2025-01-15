@@ -75,27 +75,35 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
-      const{uId,email,password,username,profilePicture,selfStatement,privacy}=params
+      const{email,token,password,username,profilePicture,selfStatement,privacy}=params
 
       try {
         
           const userCred = await  createUserWithEmailAndPassword(auth, email, password)
-          let {profile,token}= await profileRepo.register({uId:userCred.user.uid,email,password,username,profilePicture,selfStatement,privacy})
-          localStorage.setItem("token",token)
+          let data = await profileRepo.register({uId:userCred.user.uid,token,email,password,username,profilePicture,selfStatement,privacy})
+       
+            localStorage.setItem("token",data.token)
 
-         client.initIndex("profile").saveObject({ objectID:profile.id,
+         client.initIndex("profile").saveObject({ objectID:data.profile.id,
                                               username:username,
                                              }).wait()                                       
       return {
       
-            profile
+            profile:data.profile
             
       }
     } catch (error){
-
-        return {
-            error: new Error("Error: performing sign up")
+        try{
+          let data = await profileRepo.register({token,password,username,profilePicture,selfStatement,privacy})
+          localStorage.setItem("token",data.token)
+          client.initIndex("profile").saveObject({ objectID:data.profile.id,
+            username:username,
+           }).wait()       
+          return {profile:data.profile}
+        }catch(error){
+          return {error}
         }
+       
     }
     }
 )

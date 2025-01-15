@@ -171,7 +171,7 @@ function LogInCard({setLogInError}){
        
         open={open}
         onClose={()=>{setOpen(false)}}
-      
+      x
                 >
                 <div>
                     <Clear onClick={

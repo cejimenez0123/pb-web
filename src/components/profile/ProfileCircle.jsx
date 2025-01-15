@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Paths from "../../core/paths";
 
 function ProfileCircle({profile}){
-    const [profilePic,setProfilePic]=useState(null)
+    const [profilePic,setProfilePic]=useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png")
     const [pending,setPending]=useState(true)
     const navigate = useNavigate()
     useEffect(()=>{
