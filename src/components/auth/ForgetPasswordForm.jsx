@@ -12,12 +12,18 @@ const ForgotPasswordForm = ({close})=>{
     const [email,setEmail]=useState("")
     const [error,setError]=useState(null)
     const [success,setSuccess]=useState(null)
+    const [loading,setLoading]=useState(false)
     const handleClick=()=>{
+        setLoading(true)
             authRepo.forgotPassword({username,email}).then(data=>{
-                console.log("aut",data)
+                setError(null)   
 setSuccess(data.message)
+setLoading(false)
+
             }).catch(err=>{
+                setLoading(false)
                 if(err.message){
+                    setSuccess(null)
                     setError(err.message)
                 }
 
@@ -61,7 +67,9 @@ setSuccess(data.message)
                             variant='outlined'
                          >
                          <h6 className="mx-auto mont-medium my-auto">Sent</h6>
+                        
                    </a>
+                   {loading?<h6>Loading...</h6>:null}
                    </div>
     </div>)
 }
