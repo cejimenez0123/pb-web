@@ -47,8 +47,8 @@ function EditorContainer(props){
         const [commentable,setCommentable] = useState(true)
         const [image,setImage]=useState(null)
         const {id }= pathParams
-        const [parameters,setParameters] = useState({page:pathParams,title:titleLocal,type:type,
-          data:"",privacy:privacy,commentable:commentable,type:editPage?editPage.type:"html"
+        const [parameters,setParameters] = useState({page:pathParams,title:titleLocal,
+          data:editPage?editPage.data:"",privacy:privacy,commentable:commentable,type:type
         })
   
    
@@ -86,7 +86,7 @@ function EditorContainer(props){
   
   const setStoryData=(story)=>{
              setFetchedPage(story)
-              setType(story.type)
+            setType(story.type)
              setTitleLocal(story.title)
              setCommentable(story.commentable)
              setPrivacy(story.privacy)
