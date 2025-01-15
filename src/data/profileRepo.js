@@ -9,13 +9,10 @@ class ProfileRepo {
         return res.data
     }
     async getMyProfiles({token}){
-        let str = token
-        if(str){
-            str=localStorage.getItem(this.token)
-        }
-        console.log(str)
+      
+    
         let res = await axios.get(this.url+"/user/protected",{ headers:{
-                Authorization:"Bearer "+str
+                Authorization:"Bearer "+token
             }}
         )
 

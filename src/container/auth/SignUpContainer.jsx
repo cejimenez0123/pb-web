@@ -1,17 +1,19 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState,useEffect } from "react";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useState,useEffect, useLayoutEffect } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture,createProfile } from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
 import info from "../../images/icons/info.svg"
 import "../../App.css"
+import authRepo from "../../data/authRepo";
 export default function SignUpContainer(props){
     const location = useLocation();
     const [token, setToken] = useState('');
     const [password,setPassword]=useState("")
     const navigate = useNavigate()
     const [username,setUsername]=useState("")
+    const searchParams = useSearchParams()
     const [confirmPassword,setConfirmPassword]=useState("")
     const [selectedImage, setSelectedImage] = useState(null);
     const [selfStatement,setSelfStatement]=useState("")
@@ -22,7 +24,11 @@ export default function SignUpContainer(props){
     const [email,setEmail]=useState("")
     const handleFileInput = (e) => {
     const file = e.target.files[0];
+      useLayoutEffect(()=>{
 
+        const token = searchParams.get('token'); 
+        authRepo.user({token:token})
+      })
     if (file) {
       // Check file type
       if (!file.type.startsWith('image/')) {

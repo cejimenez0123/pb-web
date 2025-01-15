@@ -37,9 +37,10 @@ import EditCollectionContainer from './container/collection/EditCollectionContai
 import SignUpContainer from './container/auth/SignUpContainer.jsx';
 import { getHashtags, getProfileHashtagCommentUse } from './actions/HashtagActions.js';
 import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
-
+import ResetPasswordContainer from './container/auth/ResetPassword.jsx';
+import { useSearchParams } from 'react-router-dom';
 function App(props) {
- 
+
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
@@ -143,6 +144,8 @@ function App(props) {
           
        }
      />
+     <Route path={'/reset-password' }
+     element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
      element={<CollectionContainer/>}/>
      <Route path={'/signup'}

@@ -10,8 +10,14 @@ class AuthRepo{
        let res = await axios.post(Enviroment.url+"/auth/apply",form,{headers:this.headers})
        return res.data
     }
-    async login(form){
-
+    async user({token}){
+        let res = await axios.get(Enviroment.url+"/auth/user",{
+            headers:{
+                Authorization:"Bearer "+token
+            }
+        })
+        console.log(res)
+        return res.data
     }
     async referral({email,name}){
 
@@ -22,6 +28,15 @@ class AuthRepo{
             }
         })
         return res.data
+    }
+    async resetPassword({username,password,token}){
+         let res =   await axios.post(Enviroment.url+"/auth/reset-password",{username,password,token})
+         console.log(res)
+         return res.data
+    }
+    async forgotPassword({username,email}){
+      let res =  await axios.post(Enviroment.url+"/auth/forgot-password",{username,email})
+      return res.data
     }
     async startSession({uId,email,password}){
 

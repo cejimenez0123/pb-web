@@ -19,6 +19,7 @@ import ReactGA from "react-ga4"
 import Paths from '../../core/paths';
 import { useLocation } from 'react-router-dom';
 import checkResult from '../../core/checkResult';
+import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 
 function LogInContainer(props) {
     const location = useLocation()
@@ -177,8 +178,9 @@ function LogInCard({setLogInError}){
                         ()=>setOpen(false)
                     }/>    
                 </div>  
+                <ForgotPasswordForm/>
 
-                    <FormGroup
+                    {/* <FormGroup
                      style={{
                        
                             marginLeft: inputStyle.marginLeft,
@@ -208,26 +210,28 @@ function LogInCard({setLogInError}){
                                     color:theme.palette.secondary.contrastText}}
                             variant='outlined'
                             onClick={()=>{
-                                if(forgotEmail.length > 0){
-                                sendPasswordResetEmail(auth, forgotEmail)
-                                .then(() => {
-                                  window.alert("Email Sent!")
-                                })
-                                .catch((error) => {
-                                  const errorCode = error.code;
-                                  const errorMessage = error.message;
-                                  if(error.message.includes("(auth/user-not-found)")){
-                                    window.alert("User not found")
-                                  }
+                                {username,email}
+                            
+                                // if(forgotEmail.length > 0){
+                                // sendPasswordResetEmail(auth, forgotEmail)
+                                // .then(() => {
+                                //   window.alert("Email Sent!")
+                                // })
+                                // .catch((error) => {
+                                //   const errorCode = error.code;
+                                //   const errorMessage = error.message;
+                                //   if(error.message.includes("(auth/user-not-found)")){
+                                //     window.alert("User not found")
+                                //   }
                             
                                   // ..
-                                });}else{
-                                    window.alert("Please write an email")
-                                }
+                                // });}else{
+                                //     window.alert("Please write an email")
+                                // }
                             }}>
                             Send
                         </Button>
-                    </FormGroup>
+                    </FormGroup> */}
                 </Dialog>
                 </div></div>
     </div>)

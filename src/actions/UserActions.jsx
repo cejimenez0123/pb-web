@@ -44,7 +44,7 @@ const logIn = createAsyncThunk(
       }else{
 
         const authData = await authRepo.startSession({uId:null,email:email,password})
-        console.log(authData)
+
         const {token}=authData
         localStorage.setItem("token",token)
         const profileRes = await profileRepo.getMyProfiles({token:authData.token})
@@ -54,7 +54,7 @@ const logIn = createAsyncThunk(
           profile: profile
         }
      } }catch(error){
-        console.log("2",error)
+        
           return {
             error:error
           }
@@ -116,7 +116,7 @@ const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
 }];
 
   let {results}= await client.multipleQueries(queries)
-  console.log(results)
+
   return {results}
 })
 
@@ -183,6 +183,7 @@ async (params,thunkApi) => {
   let token = localStorage.getItem("token")
   if(token){
     let data = await profileRepo.getMyProfiles({token:token})
+    console.log("oppo",data)
     return {
     profile: data.profiles[0]
    } 
