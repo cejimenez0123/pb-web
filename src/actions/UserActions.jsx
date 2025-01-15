@@ -12,10 +12,8 @@ import {  where,
           setDoc,
           getDoc,
           doc,
-          updateDoc,
           Timestamp} from "firebase/firestore"
 import UserApproval from "../domain/models/user_approval";
-import Profile from "../domain/models/profile";
 import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
 import FollowBook from "../domain/models/follow_book"
 import FollowLibrary from "../domain/models/follow_library"
@@ -23,52 +21,44 @@ import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
-import { registerUser } from "./WorkshopActions";
-import LocationPoint from "../domain/models/location";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
-      try{
       const {email,password}=params
+     
+      try{
       const userCred = await signInWithEmailAndPassword(auth,email,password)
-      
-
-      
-      if(userCred.user.uid){
+     if(userCred.user){
+        
         const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
         const {token}=authData
+        console.log("1",token)
         localStorage.setItem("token",token)
         const profileRes = await profileRepo.getMyProfiles({token:token})
         const profile = profileRes.profiles[0]
-        let location = new LocationPoint(40.7128,74.0060)
-        registerUser(profile.id,location)
+     
+   
         return{
           profile:profile
         }
       }else{
 
         const authData = await authRepo.startSession({uId:null,email:email,password})
+        console.log(authData)
         const {token}=authData
         localStorage.setItem("token",token)
         const profileRes = await profileRepo.getMyProfiles({token:authData.token})
         const profile = profileRes.profiles[0]
- 
+        
         return{
           profile: profile
         }
-      }
-
-     
- 
-
-  
-    }catch(error){ 
-   
+     } }catch(error){
+        console.log("2",error)
           return {
             error:error
           }
-        }
-      }
+        }}
 )
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
@@ -193,7 +183,6 @@ async (params,thunkApi) => {
   let token = localStorage.getItem("token")
   if(token){
     let data = await profileRepo.getMyProfiles({token:token})
-        
     return {
     profile: data.profiles[0]
    } 

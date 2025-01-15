@@ -15,7 +15,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../../core/constants"
 import Paths from "../../core/paths"
 import {createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions"
-import { debounce } from "lodash"
 import ErrorBoundary from "../../ErrorBoundary"
 import HashtagForm from "../../components/hashtag/HashtagForm"
 import RoleForm from "../../components/role/RoleForm"
@@ -32,22 +31,24 @@ function EditorContainer(props){
         const [error,setError]=useState(null)
         const [success,setSuccess]=useState(null)
         const [fetchedPage,setFetchedPage]=useState(null)
+        const editPage = useSelector(state=>state.pages.editingPage)
         const pathParams = useParams()
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
         const navigate = useNavigate()
         let href =location.pathname.split("/")
         let last = href[href.length-1]
-        const [type,setType]=useState("html")
+        const [type,setType]=useState(editPage?editPage.type:"html")
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
         const [privacy,setPrivacy] = useState(true)
         const [titleLocal,setTitleLocal]=useState("")
         const [commentable,setCommentable] = useState(true)
+        const [image,setImage]=useState(null)
         const {id }= pathParams
         const [parameters,setParameters] = useState({page:pathParams,title:titleLocal,type:type,
-          data:"",privacy:privacy,commentable:commentable
+          data:"",privacy:privacy,commentable:commentable,type:editPage?editPage.type:"html"
         })
   
    
@@ -64,8 +65,7 @@ function EditorContainer(props){
 
             params.data = content
             setParameters(params)
-
-              handleUpdate(params)
+            handleUpdate(params)
 
       }
     useLayoutEffect(()=>{
@@ -86,8 +86,7 @@ function EditorContainer(props){
   
   const setStoryData=(story)=>{
              setFetchedPage(story)
-            setType(story.type)
-            
+              setType(story.type)
              setTitleLocal(story.title)
              setCommentable(story.commentable)
              setPrivacy(story.privacy)
@@ -106,10 +105,14 @@ function EditorContainer(props){
   
       dispatch(getStory({id:id})).then(res=>{
         checkResult(res,payload=>{
+        
           const {story}=payload
           dispatch(setHtmlContent(story.data))
           dispatch(setEditingPage({page:story}))
           setStoryData(story)
+          let params = parameters
+          params.page = story
+          setParameters(params)
      
       },err=>{
 
@@ -118,7 +121,7 @@ function EditorContainer(props){
     }
     useEffect(()=>{
 fetchStory()
-    },[id])
+    },[])
 
    
       const [open, setOpen] = useState(false);
@@ -177,7 +180,7 @@ setError(err.message)
   
    const topBar=()=>{
     return(<div className=" rounded-lg w-full  mx-auto ">
-    <div className="bg-emerald-600  text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400   flex flex-row sm:rounded-t-lg border border-white   ">
+    <div className=" text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400   flex flex-row sm:rounded-t-lg border border-white   ">
         <div 
       className=" flex-1 text-left border-white border-r-2  "
       >
@@ -193,10 +196,11 @@ setError(err.message)
       <div className="">  
       
       <div className="dropdown dropdown-bottom dropdown-end">
-      <div tabIndex={0} role="button" ><img className="w-12 h-16  bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
+      <div tabIndex={0} role="button" ><img className="w-36 h-16  bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
       <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1]  p-2 shadow">
         <li className="text-green-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
+        <li onClick={()=>{navigate(Paths.workshop.createRoute(parameters.page.id))}} className="text-green-600 pt-3 pb-2 "><a>Get Feedback</a></li>
 {privacy?<li onClick={()=>handlePostPublicly(false)} 
 className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green-600 pt-3 pb-2 " onClick={()=>handlePostPublicly(true)}>Make Private</li>}
         <li className="text-green-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
@@ -212,7 +216,7 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
     </div>
 
     {openHashtag?
-    <HashtagForm/>:null}
+    <HashtagForm item={parameters.page}/>:null}
     </div>)
    }
         return(

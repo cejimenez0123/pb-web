@@ -4,10 +4,10 @@ import { useSelector } from "react-redux";
 import { createHashtagPage, deleteHashtagStory, fetchStoryHashtags,  } from "../../actions/HashtagActions";
 import { useDispatch } from "react-redux";
 import checkResult from "../../core/checkResult";
-import clear from "../../images/icons/clear.svg"
+import clear from "../../images/icons/close.svg"
 export function HashtagForm(){
     const storyHashtags = useSelector(state=>state.hashtags.storyHashtags)
-    const  page = useSelector(state=>state.pages.pageInView)
+    const  page = useSelector(state=>state.pages.editingPage)
     const [inputValue, setInputValue] = useState('');
     const dispatch = useDispatch()
     const [hashtags, setHashtags] = useState([]);
@@ -58,22 +58,23 @@ export function HashtagForm(){
     };
   
     return (
-      <div>
+      <div className="bg-gradient-to-br max-w-[42em]  from-emerald-100 to-emerald-400 ">
         <textarea
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Type a hashtag and press Enter"
           rows="3"
-        className="textarea w-[100vw] sm:w-full border-b border-white bg-transparent text-white"
+        className="textarea  my-1 w-[96%] mx-2 border-b border-emerald-800 bg-transparent text-emerald-800"
         />
 
-      <div>
-        <h4>Hashtags:</h4>
-        <ul className="flex flex-wrap p-2">
+      <div className="text-left mx-2 my-1">
+        <h4 className="text-emerald-800">Hashtags:</h4>
+        <ul className="flex flex-wrap p-4">
           {hashtags.map((hash, index) => (
-            <li  className=" p-1 flex flex-row m-1 text-sm rounded-lg text-black bg-slate-300 "key={index}>#{hash.hashtag.name}<img 
-            className="color-black mx-1 my-auto" 
+            <li  className=" p-1 flex flex-row m-1 text-sm rounded-lg text-white bg-emerald-800 "key={index}>
+              <h6 className="my-auto mx-2">#{hash.hashtag.name}</h6><img 
+            className=" my-auto" 
             onClick={()=>deleteHashtag(hash)}
             src={clear}/></li>
           ))}

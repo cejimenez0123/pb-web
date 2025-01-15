@@ -9,9 +9,13 @@ class ProfileRepo {
         return res.data
     }
     async getMyProfiles({token}){
-    
+        let str = token
+        if(str){
+            str=localStorage.getItem(this.token)
+        }
+        console.log(str)
         let res = await axios.get(this.url+"/user/protected",{ headers:{
-                Authorization:"Bearer "+token
+                Authorization:"Bearer "+str
             }}
         )
 
@@ -19,7 +23,7 @@ class ProfileRepo {
   
     }
     async create({email,token,password,username,profilePicture,selfStatement,privacy}){
-        let res = await axios.post(Enviroment.url+"/profile/",
+        let res = await axios.post(this.url,
         {email,password,username,profilePicture,selfStatement,privacy},{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem(this.token)
@@ -28,9 +32,7 @@ class ProfileRepo {
 
         return res.data
     }
-    async getCurrentProfile(auth){
-        axios.get(Enviroment.url+"/profile")
-    }
+
     async register({uId,email,password,username,profilePicture,selfStatement,privacy}){
        const res = await axios.post(Enviroment.url+"/auth/register",{uId,email,password,username,
         profilePicture,selfStatement,privacy
@@ -40,11 +42,11 @@ class ProfileRepo {
     }
     async getProfile(params){
         const {id}=params
-        let res = await axios.get(Enviroment.url+"/profile/"+id)
+        let res = await axios.get(this.url+"/"+id)
         return res.data
     }
     async updateProfile(params){
-        let res = await axios.put(Enviroment.url+"/profile/"+params.profile.id,{
+        let res = await axios.put(this.url+"/"+params.profile.id,{
             ...params
         },{headers:{
             Authorization:"Bearer "+localStorage.getItem(this.token)
@@ -52,11 +54,11 @@ class ProfileRepo {
         return res.data
     }
     async getProfileBookmarkCollection({profileId}){
-        let res = await axios.get(Enviroment.url+"/profile/"+id+"/collection")
+        let res = await axios.get(this.url+"/"+id+"/collection")
         return res.data
     }
     async createBookmark({profile,collection}){
-        let res = await axios.post(Enviroment.url+"/profile/"+profile.id+"/collection/"+collection.id)
+        let res = await axios.post(this.url+"/"+profile.id+"/collection/"+collection.id)
         return res.data
     }
 }

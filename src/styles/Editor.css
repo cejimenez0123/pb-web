@@ -59,7 +59,7 @@
 }
 }
 .ql-picker-options span::before{
-    color:#00FF00;
+    color:#052e16
 
 }
 @media (max-width: 900px) {
@@ -156,8 +156,20 @@
     stroke:#052e16 !important;
     fill: #052e16!important;
   }
+  .ql-font-serif{
+    font-family: "Lora", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    color:#052e16!important;
+    stroke:#052e16 !important;
+    fill: #052e16!important;
+  }
   .ql-picker-label{
-    color:#052e16
+    color:#052e16 
+  }
+ span.ql-picker-item *{
+    color: #052e16 !important;
   }
  .ql-picker-options *{
     stroke: #052e16 !important; 

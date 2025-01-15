@@ -2,7 +2,7 @@ import axios from "axios"
 import Enviroment from "../core/Enviroment"
 
 
-class AuthnRepo{
+class AuthRepo{
     headers= {
         'Access-Control-Allow-Origin': "*"
     }
@@ -14,6 +14,8 @@ class AuthnRepo{
 
     }
     async referral({email,name}){
+
+      
         let res = await axios.post(Enviroment.url+"/auth/referral",{email,name},{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem("token")
@@ -24,9 +26,9 @@ class AuthnRepo{
     async startSession({uId,email,password}){
 
         const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password})
-       
+       console.log("Token",res)
         return res.data
     }
     }
 
-export default new AuthnRepo()
+export default new AuthRepo()

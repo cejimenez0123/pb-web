@@ -22,53 +22,40 @@ import checkResult from '../../core/checkResult';
 
 function LogInContainer(props) {
     const location = useLocation()
-    const dispatch = useDispatch()
+
   
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [liEmail, setLiEmail] = useState('');
-    const [liPassword, setLiPassword] = useState('');
-    const [logInError,setLogInError] = useState(false)
-    const navigate = useNavigate()
+  
+    const [logInError,setLogInError] = useState(null)
+
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
 
 
 
-    const handleLogIn = (event)=>{
-        event.preventDefault()
-        if(liEmail.length>3 && liPassword.length){
-            const params ={email:liEmail.toLowerCase(),password:liPassword}
-            dispatch(logIn(params)).then(res=>{
-                checkResult(res,payload=>{
-                    if(payload.error){
-                        window.alert(payload.error.message)
-                        window.alert("Error with Username or Password")
-                    }else{
-                        navigate(Paths.myProfile())
-                    }
-                },err=>{
-                    window.alert("Wrong username or password")
-                })
-            })
-           
-        }else{
-            setLogInError(true)
-        }
-    }
-    useEffect(()=>{
-        if(currentProfile){
-            navigate(-1)
-        }
-    },[location,currentProfile])
   
     return (
         <div id="" className='sm:mx-2'>
-         
+             <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
+   {logInError?
+  <div role="alert" className={`alert    
+  ${"alert-warning"} animate-fade-out`}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-6 w-6 shrink-0 stroke-current"
+    fill="none"
+    viewBox="0 0 24 24">
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+  <span>{logInError}</span>
+</div>:null}</div>
             <LogInCard  setError={setLogInError}
                         error={logInError}
-                        password={liPassword} 
-                        email={liEmail}
+            setLogInError={setLogInError}
                         handleSubmit={(e)=>handleLogIn(e)}
-                        setEmail={setLiEmail}
+            
                         setPassword={(str)=>setLiPassword(str)}/>
          
         </div>
@@ -85,8 +72,13 @@ const inputStyle = {
 
 
 
-function LogInCard(props){
+function LogInCard({setLogInError}){
+    const dispatch = useDispatch()
     const navigate = useNavigate()
+    const currentProfile = useSelector(state=>state.users.currentProfile)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
     const [showPassword, setShowPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("")
     const [open,setOpen] = useState(false);
@@ -96,9 +88,35 @@ function LogInCard(props){
     const handleFirstTimeClick=()=>{
         navigate("/apply")
     }
+
+    const handleLogIn = (event)=>{
+        event.preventDefault()
+        if(email.length>3 && password.length){
+            const params ={email:email.toLowerCase(),password:password}
+            dispatch(logIn(params)).then(res=>{
+                checkResult(res,payload=>{
+                    if(payload.error){
+                        setLogInError("Error with Username or Password")
+                    }else{
+                        navigate(Paths.myProfile())
+                    }
+                },err=>{
+                    setLogInError(err.message)
+                })
+            })       
+        }else{
+            setLogInError("Error")
+        }
+    }
+    useEffect(()=>{
+        if(currentProfile){
+            navigate(-1)
+        }
+    },[location,currentProfile])
     
     return(
     <div className='sm:border-4  md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+        
         <div  className='mx-auto'>
             <form className='max-w-[100vw] sm:max-w-82 text-center pt-4'>
         <h1 className='text-emerald-800 lora-medium pb-4'> Log In</h1>
@@ -107,8 +125,8 @@ function LogInCard(props){
         <label className="input  open-sans-medium text-emerald-800 w-52 overflow-hidden pl-2  border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
   Email
   <input type="text" className="shrink overflow-hidden text-[1rem] w-[100%] sm:max-w-[100%]  py-2 bg-transparent text-emerald-800" 
-         value={props.email} 
-         onChange={(e) => props.setEmail(e.target.value.trim())}
+         value={email} 
+         onChange={(e) => setEmail(e.target.value.trim())}
         placeholder='example@email.com' />
 </label>
 </div>   
@@ -116,9 +134,9 @@ function LogInCard(props){
     <label className="input open-sans-medium inline-block flex flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
   Password
   <input type={showPassword?"text":`password`} className="shrink max-w-36 sm:max-w-52  shrink text-emerald-800 " 
-         value={props.password}
+         value={password}
          
-         onChange={(e) => props.setPassword(e.target.value.trim())}
+         onChange={(e) => setPassword(e.target.value.trim())}
         placeholder='*****' />
          
          <label onClick={()=>setShowPassword(!showPassword)}
@@ -136,7 +154,7 @@ function LogInCard(props){
             </div>
             <button
             className='bg-green-600 mont-medium  text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
-               onClick={props.handleSubmit}
+               onClick={handleLogIn}
                 
                 variant="contained" >Submit</button>
                 
