@@ -27,8 +27,7 @@ import { useLocation } from "react-router-dom"
     
 
         if(!page){
-          return(<div className="skeleton w-24 h-24"/>)
-        }else{
+        if(last){
          
           switch(last){
             case PageType.picture:{
@@ -54,6 +53,10 @@ import { useLocation } from "react-router-dom"
               return(<RichEditor  initContent={parameters.data}  handleChange={(content)=>{
                 handleChange(content)}}/>)
             }
+        }}else{
+          if(!page){
+          return(<div className="skeleton w-24 h-24"/>)
+          }
         }
         }
 
