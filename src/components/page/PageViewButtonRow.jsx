@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { IconButton } from "@mui/material"
 import { BookmarkBorder as BookmarkBorderIcon } from "@mui/icons-material"
 import ReactGA from "react-ga4"
+import { setEditingPage } from "../../actions/PageActions"
 export default function PageViewButtonRow({page,profile,setCommenting}){
 
     const [likeFound,setLikeFound]=useState(null)
@@ -116,6 +117,7 @@ navigate(Paths.addStoryToCollection.createRoute(page.id))
            <li> {(currentProfile && currentProfile.id == page.profileId )?
 <a onClick={()=>{
     dispatch(setPageInView({page}))
+    dispatch(setEditingPage({page}))
     navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
 </li>
 <li> <IconButton onClick={()=>{}}

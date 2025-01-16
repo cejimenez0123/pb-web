@@ -6,50 +6,48 @@ import { useSelector } from "react-redux"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import LinkPreview from "../LinkPreview"
 import PicturePageForm from "./PicturePageForm"
+import EditorContext from "../../container/page/EditorContext"
  export default function EditorDiv({parameters,handleChange,createPage}){
-        const ePage = useSelector(state=>state.pages.editingPage)
+        const {page} = useContext(EditorContext)
+        
         const loading = useSelector(state=>state.pages.loading)
-        let href =location.pathname.split("/")
-        let last = href[href.length-1]
-        const [type,setType]=useState(ePage?ePage.type:last)
+    
+        const [type,setType]=useState()
         const [image,setImage]=useState(null)
       
         
         useEffect(()=>{
-          if(ePage && ePage.type==PageType.picture){
-            getDownloadPicture(ePage.data).then(url=>{
+          if(page && page.type==PageType.picture){
+            getDownloadPicture(page.data).then(url=>{
               setImage(url)
             })
           }
-        },[ePage])
-        useEffect(()=>{
-          if(ePage){
-            setType(ePage.type)
-          }else{
-            setType(last)
-          }
-      },[ePage])
+        },[page])
+      
+console.log(page)
+        if(!page){
+          return(<div className="skeleton"/>)
+        }
 
-
-
-      switch(type){
+      switch(page.type){
               case PageType.picture:{
-                if(!ePage){
+                if(!page){
                   return(<div><PicturePageForm createPage={createPage}/></div>)
                 }
                 return (<div  className="mx-auto  bg-emerald-200 rounded-b-lg w-full p-8">
 
                 <img  className="rounded-lg my-4 mx-auto"
-                src={image} alt={ePage.title}/>
+                src={image} alt={page.title}/>
                 </div>)
               }
             
           case PageType.link:{
-                if(!ePage){
+                if(!page){
                   return(<div><PicturePageForm createPage={createPage}/></div>)
                 }
+                console.log("page touch")
                   return(
-                     <LinkPreview url={ePage.data}/>
+                     <LinkPreview url={page.data}/>
                   )
                 
             

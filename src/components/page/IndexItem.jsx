@@ -32,6 +32,7 @@ function IndexItem({item}) {
       }else if(item){
         dispatch(setHtmlContent(item.data))
         dispatch(setEditingPage({page:item}))
+        dispatch(setPageInView({page:item}))
         navigate(Paths.editPage.createRoute(item.id))
       }  
     }

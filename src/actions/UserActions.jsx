@@ -191,7 +191,7 @@ async (params,thunkApi) => {
   let token = localStorage.getItem("token")
   if(token){
     let data = await profileRepo.getMyProfiles({token:token})
-    console.log("oppo",data)
+  
     return {
     profile: data.profiles[0]
    } 

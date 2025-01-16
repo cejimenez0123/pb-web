@@ -11,12 +11,16 @@ import { getCurrentProfile } from '../actions/UserActions';
 import IndexList from '../components/page/IndexList';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
+import { debounce } from 'lodash';
+import { setPageInView } from '../actions/PageActions';
 import ReactGA from "react-ga4"
 import {Dialog} from "@mui/material"
+import { setEditingPage } from '../actions/PageActions';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
 import getDownloadPicture from '../domain/usecases/getDownloadPicture';
 import ReferralForm from '../components/auth/ReferralForm';
+import { PageType } from '../core/constants';
 const MediaType = {
     stories:"stories",
     books:"books",
@@ -49,7 +53,8 @@ function MyProfileContainer(props){
    
     const dispatch = useDispatch()
 
-    const ClickWriteAStory = ()=>{
+    const ClickWriteAStory = debounce(()=>{
+      if(currentProfile){
         ReactGA.event({
             category: "Page",
             action: "Navigate To Editor",
@@ -58,18 +63,19 @@ function MyProfileContainer(props){
             nonInteraction: false
           });
           
-          dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
+          dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
           title:"",commentable:true
-        })).then(res=>checkResult(res,data=>{
-          dispatch(setEditingPage({page}))
-            navigate(Paths.editPage.createRoute(data.story.id))
+        })).then(res=>checkResult(res,payload=>{
+            dispatch(setEditingPage({page:payload.story}))
+            dispatch(setPageInView({page:payload.story}))
+            navigate(Paths.editPage.createRoute(payload.story.id))
         },e=>{
 
         }))
             
-      
+      }},20)
+    
         
-    }
     const ClickCreateACollection = ()=>{
         ReactGA.event({
             category: "Collection",

@@ -22,16 +22,19 @@ import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import isValidUrl from "../../core/isValidUrl"
 import Context from "../../context"
 import EditorDiv from "../../components/page/EditorDiv"
-import {  setEditingPage, setHtmlContent,   } from "../../actions/PageActions"
+import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions/PageActions"
+import { debounce } from "lodash"
+import EditorContext from "./EditorContext"
 
 function EditorContainer(props){
-
+    
         const currentProfile = useSelector(state=>state.users.currentProfile)
         const location = useLocation()
         const [error,setError]=useState(null)
         const [success,setSuccess]=useState(null)
         const [fetchedPage,setFetchedPage]=useState(null)
         const editPage = useSelector(state=>state.pages.editingPage)
+        const pageInView = useSelector(state=>state.pages.pageInView)
         const pathParams = useParams()
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
@@ -52,14 +55,15 @@ function EditorContainer(props){
         })
   
    
-      const handleUpdate=(params)=>{
+      const handleUpdate=debounce((params)=>{
        dispatch(updateStory(params)).then(res=>{
           checkResult(res,payload=>{
+            setFetchedPage(payload.story)
           },err=>{
             setError(err.message)
           })}
 
-      )}
+      )},200)
       const dispatchContent=(content)=>{
             let params = parameters
 
@@ -75,15 +79,16 @@ function EditorContainer(props){
     },[currentProfile,location.pathname])
 
     useLayoutEffect(()=>{
-          const subscription = deleteStory  
-          return () => {
-            if(fetchedPage && fetchedPage.data.length==0 &fetchedPage.title.length==0){
-              dispatch(subscription({page:{id:id}}))
+return ()=>{
+  const {page}=parameters
+            if(page && page.data.length==0 && page.title.length==0){
+              dispatch(deleteStory({page:page}))
             }else{
               handleUpdate(parameters)
-            }}
-    },[])
-  
+            }
+          }
+    },[location.pathname])
+  console.log(type)
   const setStoryData=(story)=>{
              setFetchedPage(story)
             setType(story.type)
@@ -109,6 +114,7 @@ function EditorContainer(props){
           const {story}=payload
           dispatch(setHtmlContent(story.data))
           dispatch(setEditingPage({page:story}))
+          dispatch(setPageInView({page:story}))
           setStoryData(story)
           let params = parameters
           params.page = story
@@ -130,7 +136,7 @@ fetchStory()
       const handleClose = () => {
         setOpen(false);
       };
-      const handleDelete =()=>{
+      const handleDelete =debounce(()=>{
           handleClose()
           if(fetchedPage){
           const params = {page:fetchedPage}
@@ -138,7 +144,7 @@ fetchStory()
             navigate(Paths.myProfile())
           })
         }
-      }
+      },20)
       const createPageAction = (params)=>{
         let pars = params
         pars.profileId = currentProfile.id
@@ -149,10 +155,10 @@ fetchStory()
     
         dispatch(createStory(pars)).then(res=>checkResult(res,payload=>{
           const {story}=payload
-          dispatch(setEditingPage({page}))
+          dispatch(setEditingPage({page:story}))
           navigate(Paths.editPage.createRoute(story.id))
      },err=>{
-      console.log(err.message)
+
 setError(err.message)
      }))
       }
@@ -166,7 +172,7 @@ setError(err.message)
           params.privacy = truthy
           setParameters(params)
           handleUpdate(params)
-            }
+        }
 
           
         const handleTitle = (title)=>{
@@ -220,6 +226,7 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
     </div>)
    }
         return(
+          <EditorContext.Provider value={{page:fetchedPage}}>
           <div  className=" mx-auto md:p-8  "> 
             {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>
   <svg
@@ -283,7 +290,7 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={()=>handleDelete()} autoFocus>
+          <Button onClick={handleDelete} autoFocus>
             Agree
           </Button>
         </DialogActions>
@@ -291,7 +298,7 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
       </Dialog>
     </div>
       </div>
- 
+      </EditorContext.Provider>
   )    
 
 
