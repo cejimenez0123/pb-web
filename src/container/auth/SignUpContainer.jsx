@@ -166,7 +166,7 @@ setToken(token)
 <label className="w-full mt-8 flex flex-row justify-content-between  text-left">
 <div className="flex flex-row">
   <div className='has-tooltip mx-2'>
- <img src={info}/> <span className=' bg-slate-50 text-emerald-800 rounded-lg p-2 is-tooltip'>Do you want to found?</span>
+ <img src={info}/> <span className=' bg-slate-50 text-emerald-800 rounded-lg p-2 is-tooltip'>Would you like to be hidden from search?</span>
 </div>
     <span>Will your account be private?</span>    </div>
     <div className="flex flex-row">
