@@ -88,7 +88,7 @@ return ()=>{
             }
           }
     },[location.pathname])
-  console.log(type)
+
   const setStoryData=(story)=>{
              setFetchedPage(story)
             setType(story.type)

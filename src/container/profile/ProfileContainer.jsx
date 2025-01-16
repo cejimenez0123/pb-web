@@ -13,6 +13,7 @@ import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { getProtectedProfilePages,getPublicProfilePages } from "../../actions/PageActions"
 import { createFollow, deleteFollow } from "../../actions/FollowAction"
 import { getProtectedProfileCollections, getPublicProfileCollections } from "../../actions/CollectionActions"
+import { debounce } from "lodash"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
 
@@ -53,7 +54,7 @@ function ProfileContainer(props){
     useEffect(()=>{
 checkIfFollowing({profile})
 
-    },[profile?profile.followers:null,currentProfile])
+    },[profile,currentProfile])
     const checkIfFollowing =({profile})=>{
 
     if(currentProfile && profile && profile.followers){
@@ -61,7 +62,7 @@ checkIfFollowing({profile})
          setFollowing(found)
      }
     }
-    const onClickFollow = () => {
+    const onClickFollow = debounce(()=>{
         if(currentProfile){
             if(following){    
 
@@ -80,14 +81,16 @@ checkIfFollowing({profile})
                         follower:currentProfile,
                         following:profile
                     }
-                    dispatch(createFollow(params))
+                    dispatch(createFollow(params)).then(res=>{
+                           checkIfFollowing()
+                    })
                 }
                
             }
         }else{
             window.alert("Please login first!")
         }
-    }
+    },[20])
 
     let followDiv=()=>{
 

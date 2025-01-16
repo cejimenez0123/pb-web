@@ -61,12 +61,12 @@ const userSlice = createSlice({
         }).addCase(createFollow.fulfilled,(state,{payload})=>{
             const {follow}=payload
             if(follow && follow.following){
-                state.profileInView = follow.following
+                state.currentProfile = follow.following
             }
 
         }).addCase(deleteFollow.fulfilled,(state,{payload})=>{
             if(payload.profile){
-                state.profileInView = payload.profile
+                state.currentProfile = payload.profile
             }
         })
         .addCase(logIn.pending,(state) => {

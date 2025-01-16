@@ -250,20 +250,18 @@ const ProfleInfo = ({profile})=>{
                     setOpenDialog(false)
                 }}/>
               </Dialog>
-              <Dialog className={
-                "bg-emerald-400 bg-opacity-80 w-[100%] md:max-w-[30em] mx-auto overscroll-none"
-              }
-              PaperProps={{
-                style: {
-                  backgroundColor: 'transparent',
-                  boxShadow: 'none',
-                 overflow:"hidden",
-                 height:"100%",
-                 width:"60%",
+              <Dialog
+              //  className={
+              //   "bg-emerald-400  mx-auto overscroll-none"
+              // }
+              // PaperProps={{
+              //   style: {
+              //     backgroundColor: 'transparent',
                 
-                },
-              }}
-            
+                
+              //   },
+              // }}
+              fullScreen={isPhone}
               open={openRefferal}
               onClose={()=>setOpenRefferal(false)}>
           <ReferralForm onClose={()=>{
