@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import storyRepo from "../data/storyRepo";
 import { client } from "../core/di";
+import { PageType } from "../core/constants";
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
   try{
     let token = localStorage.getItem("token")
@@ -26,17 +27,18 @@ const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
 const deleteStory = createAsyncThunk("pages/deleteStory",async (params,thunkApi)=>{
 try{
   const {page}=params
-
+  if(page.type==PageType.picture){
+    let refer = ref(storage,page.data)
+    deleteObject(refer)
+  }
   let data = await storyRepo.deleteStory({id:page.id})
   client.initIndex("page").deleteObject(page.id).wait()
-
-    return {
-      message:data.message
-    }
+console.log(data)
+    return data
 
 
 }catch(error){
-  console.log(error)
+
   return {
     error
   }

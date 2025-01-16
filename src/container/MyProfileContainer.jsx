@@ -12,7 +12,7 @@ import IndexList from '../components/page/IndexList';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
-import { setPageInView } from '../actions/PageActions';
+import { setPageInView, setPagesInView } from '../actions/PageActions';
 import ReactGA from "react-ga4"
 import {Dialog} from "@mui/material"
 import { setEditingPage } from '../actions/PageActions';
@@ -109,14 +109,12 @@ function MyProfileContainer(props){
    
 
     useLayoutEffect(()=>{
-        if(!currentProfile){
-            dispatch(getCurrentProfile()).then(res=>console.log("Resd",res))
-        }else{
-            dispatch(getMyStories({profile:currentProfile}))
-            dispatch(getMyCollections({profile:currentProfile}))
+      dispatch(setPagesInView({pages:[]}))
 
-        }
-    },[])
+      dispatch(getMyStories({profile:currentProfile}))
+      dispatch(getMyCollections({profile:currentProfile}))
+    
+    },[currentProfile])
     useLayoutEffect(()=>{
        debounce(()=>{ if(collections && collections.length>0){
             let libs=collections.filter(col=>{

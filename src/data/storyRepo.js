@@ -105,8 +105,6 @@ class StoryRepo{
          return res.data
     }
     async deleteStory({id}){
-    
-       
         let res = await axios.delete(this.url+"/"+id,
         {headers:{
             Authorization: "Bearer "+localStorage.getItem(this.token)

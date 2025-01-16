@@ -29,7 +29,7 @@ import EditorContext from "./EditorContext"
 function EditorContainer(props){
     
         const currentProfile = useSelector(state=>state.users.currentProfile)
-        const location = useLocation()
+
         const [error,setError]=useState(null)
         const [success,setSuccess]=useState(null)
         const [fetchedPage,setFetchedPage]=useState(null)
@@ -39,30 +39,42 @@ function EditorContainer(props){
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
         const navigate = useNavigate()
-     
-        const [type,setType]=useState(editPage?editPage.type:"html")
+        const location = useLocation()
+        let href =location.pathname.split("/")
+        let last = href[href.length-1]
+        const [type,setType]=useState(editPage?editPage.type:pageInView?pageInView.type:last)
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
-        const [privacy,setPrivacy] = useState(true)
-        const [titleLocal,setTitleLocal]=useState("")
-        const [commentable,setCommentable] = useState(true)
+        const [privacy,setPrivacy] = useState(editPage?editPage.isPrivate:pageInView?pageInView.isPrivate:true)
+        const [titleLocal,setTitleLocal]=useState(editPage?editPage.title:pageInView?pageInView.title:"")
+        const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
         const [image,setImage]=useState(null)
         const {id }= pathParams
-        const [parameters,setParameters] = useState({page:pathParams,title:titleLocal,
-          data:editPage?editPage.data:"",privacy:privacy,commentable:commentable,type:type
+        const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
+          data:editPage?editPage.data:pageInView?pageInView.data:"",privacy:privacy,commentable:commentable,type:type
         })
-  
+        
    
       const handleUpdate=debounce((params)=>{
+        setIsSaved(false)
        dispatch(updateStory(params)).then(res=>{
           checkResult(res,payload=>{
-            setFetchedPage(payload.story)
+            if(payload.story){
+    setFetchedPage(payload.story)
+    setIsSaved(true)
+            }
+        
           },err=>{
             setError(err.message)
           })}
 
       )},200)
+      useEffect(()=>{
+        if(parameters.page && parameters.page.type){
+          setType(parameters.page.type)
+        }
+      },[parameters.page])
       const dispatchContent=(content)=>{
             let params = parameters
             params.data = content
@@ -70,6 +82,11 @@ function EditorContainer(props){
             handleUpdate(params)
 
       }
+    useEffect(()=>{
+      if(fetchedPage){
+        handleUpdate(parameters)
+      }
+    },[parameters.data,parameters.title,parameters.privacy,parameters.commentable])
     useLayoutEffect(()=>{
       if(currentProfile){
         fetchStory()
@@ -79,11 +96,13 @@ function EditorContainer(props){
     useLayoutEffect(()=>{
 return ()=>{
   const {page}=parameters
-            if(page && page.data.length==0 && page.title.length==0){
-              dispatch(deleteStory({page:page}))
-            }else{
+            if(page){
+             if(parameters.data && parameters.data.length==0 && parameters.title.length==0){
+         
+              dispatch(deleteStory({page:page}))}
+             }else{
               handleUpdate(parameters)
-            }
+             }
           }
     },[location.pathname])
 
@@ -135,18 +154,17 @@ fetchStory()
         setOpen(false);
       };
       const handleDelete =debounce(()=>{
-          handleClose()
-          if(fetchedPage){
-          const params = {page:fetchedPage}
-          dispatch(deleteStory(params)).then(()=>{
+        console.log(parameters)
+          dispatch(deleteStory(parameters)).then(()=>{
             navigate(Paths.myProfile())
           })
-        }
-      },20)
+          handleClose()
+      },10)
       const createPageAction = (params)=>{
         let pars = params
         pars.profileId = currentProfile.id
         pars.title = titleLocal
+    
         pars.profileId = currentProfile.id
         pars.privacy = privacy
         pars.commentable = commentable
@@ -164,13 +182,13 @@ setError(err.message)
         
           navigate(Paths.addStoryToCollection.createRoute(id))
         }
-        const handlePostPublicly=(truthy)=>{
-          setPrivacy(truthy)
+        const handlePostPublicly=debounce((truthy)=>{
+    
           let params = parameters
           params.privacy = truthy
           setParameters(params)
-          handleUpdate(params)
-        }
+         setPrivacy(truthy)
+        },10)
 
           
         const handleTitle = (title)=>{
@@ -178,7 +196,7 @@ setError(err.message)
           let params = parameters
           params.title = title
           setParameters(params)
-          handleUpdate(params)
+       
 
       }
   
@@ -224,7 +242,7 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
     </div>)
    }
         return(
-          <EditorContext.Provider value={{page:fetchedPage}}>
+          <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
           <div  className=" mx-auto md:p-8  "> 
             {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>
   <svg
@@ -288,7 +306,7 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleDelete} autoFocus>
+          <Button onClick={handleDelete}>
             Agree
           </Button>
         </DialogActions>

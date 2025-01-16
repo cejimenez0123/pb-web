@@ -151,13 +151,13 @@ function NavbarContainer(props){
     const handleCloseUserMenu = () => {
       setAnchorElUser(null);
     };
-    const handleOpenElPage = (e) => {
+    const handleOpenElPage = debounce((e) => {
       if(anchorElPage) {
         setAnchorElPage(null)
       }else{
-        setAnchorElPage(e.currentTarget);
+        setAnchorElPage(e.target);
       }
-    }
+    },10)
     const ClickWriteAStory = debounce(()=>{
       ReactGA.event({
           category: "Page",
@@ -396,11 +396,9 @@ function NavbarContainer(props){
                       ref={pageRef}
             
               
-                onClick={(e)=>{
-                
-                  debounce(
-                   handleOpenElPage(e),5)
-                }}>
+                onClick={(e)=>
+                   handleOpenElPage(e)
+                }>
                     Page {Boolean(anchorElPage)?<ExpandLess/>:<ExpandMore/>}
                     </MenuItem>
                     <List  

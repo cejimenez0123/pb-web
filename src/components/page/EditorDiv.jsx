@@ -27,7 +27,7 @@ import { useLocation } from "react-router-dom"
     
 
         if(!page){
-        if(last){
+          if(last){
          
           switch(last){
             case PageType.picture:{
@@ -50,15 +50,12 @@ import { useLocation } from "react-router-dom"
                 handleChange(content)}}/>)
             }
         default:{
-              return(<RichEditor  initContent={parameters.data}  handleChange={(content)=>{
-                handleChange(content)}}/>)
+    
+            return(<div className="skeleton w-24 h-24"/>)
+            
             }
-        }}else{
-          if(!page){
-          return(<div className="skeleton w-24 h-24"/>)
-          }
         }
-        }
+        }}
 
       switch(page.type){
               case PageType.picture:{
@@ -73,13 +70,9 @@ import { useLocation } from "react-router-dom"
               }
             
           case PageType.link:{
-                if(!page){
+           
                   return(<div><PicturePageForm createPage={createPage}/></div>)
-                }
-                console.log("page touch")
-                  return(
-                     <LinkPreview url={page.data}/>
-                  )
+                
                 
             
               }

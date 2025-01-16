@@ -5,6 +5,7 @@ import { IconButton } from "@mui/material"
 import { BookmarkBorder as BookmarkBorderIcon } from "@mui/icons-material"
 import ReactGA from "react-ga4"
 import { setEditingPage } from "../../actions/PageActions"
+import Paths from "../../core/paths"
 export default function PageViewButtonRow({page,profile,setCommenting}){
 
     const [likeFound,setLikeFound]=useState(null)
