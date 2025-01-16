@@ -1,4 +1,4 @@
-import React,{ useLayoutEffect, useState }  from 'react';
+import React,{ useLayoutEffect,useEffect, useState }  from 'react';
 import { useLocation, useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
 import workshop from "../images/icons/workshop.svg"
@@ -18,9 +18,10 @@ import {Dialog} from "@mui/material"
 import { setEditingPage } from '../actions/PageActions';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
-import getDownloadPicture from '../domain/usecases/getDownloadPicture';
+
 import ReferralForm from '../components/auth/ReferralForm';
 import { PageType } from '../core/constants';
+import ProfleInfo from '../components/profile/ProfileInfo';
 const MediaType = {
     stories:"stories",
     books:"books",
@@ -28,24 +29,43 @@ const MediaType = {
 }
 function MyProfileContainer(props){
     const navigate = useNavigate()
+    const [search,setSearch]=useState("")
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const collections = useSelector(state=>state.books.collections)
+    const collections = useSelector(state=>state.books.collections).filter(page=>{
+      if(search.length>0){
+       return page.title.toLowerCase().includes(search.toLowerCase())
+      }else{
+       return true
+      }
+  
+     })
     const [books,setBooks]=useState(collections)
-    const pages = useSelector(state=>state.pages.pagesInView)
+    const [libraries,setLibraries]=useState([])
+    const pages = useSelector(state=>state.pages.pagesInView).filter(page=>{
+     if(search.length>0){
+      return page.title.toLowerCase().includes(search.toLowerCase())
+     }else{
+      return true
+     }
+ 
+    })
+    const handleSearch = (value)=>{
+        setSearch(value)
+    }
     const isNotPhone = useMediaQuery({
         query: '(min-width: 600px)'
       })
       const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
-    const [libraries,setLibraries]=useState([])
+
     const [openDialog,setOpenDialog]=useState(false)
     const [media,setMedia]=useState(MediaType.stories)
     const location =useLocation()
+   
     const [openRefferal,setOpenRefferal]=useState(false)
-    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    const [list,setList]=useState([]
-    )
+  
+   
     useLayoutEffect(()=>{
         location.pathname=Paths.myProfile()
     },[])
@@ -98,7 +118,7 @@ function MyProfileContainer(props){
         }
     },[])
     useLayoutEffect(()=>{
-        if(collections && collections.length>0){
+       debounce(()=>{ if(collections && collections.length>0){
             let libs=collections.filter(col=>{
                 return col && col.childCollections && col.childCollections.length>0
             })
@@ -107,37 +127,9 @@ function MyProfileContainer(props){
                 return col && col.childCollections && col.childCollections.length==0
             })
             setBooks(boos)
-        }
+        }},20)()
     },[collections])
-const ProfleInfo = ({profile})=>{
-    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    
-    useLayoutEffect( ()=>{
 
-        if(!profile.profilePic.includes("http")){
-            getDownloadPicture(currentProfile.profilePic).then(url=>{
-               
-                setPictureUrl(url)
-            })
-        }else{
-            setPictureUrl(profile.profilePic)
-        }
-        
-        
-    },[profile])
-    return (                           
-    <div className='flex-row   mx-auto  flex    '>
-    <img className={" min-w-24 overflow-hidden mx-2 h-24 lg:w-36 lg:h-36  sm:ml-6 rounded-full lg:rounded-lg"}src={pictureUrl}/>
- 
-
-        <div className='text-left sm:mx-3 mb-2 h-48 flex flex-col '>
-        <h5 className='sm:text-xl text-emerald-900 font-bold'>{profile.username}</h5>
-       <div className='w-[100%] max-w-[20em] text-left '>
-        <h6 className='sm:max-h-48  sm:w-60 text-[0.8rem] sm:text-[0.8rem]  text-emerald-900 '>
-            {currentProfile.selfStatement}</h6></div> 
-   =
-        </div></div>)
-}
    
     
             return(
@@ -158,7 +150,7 @@ const ProfleInfo = ({profile})=>{
                            <div className='max-h-[100%] flex'>
                            <div className='flex flex-col lg:flex-row lg:px-8 mx-auto mt-4 '>
                             
-                            <ProfleInfo profile={currentProfile}/>
+                           {currentProfile? <ProfleInfo profile={currentProfile}/>:null}
                           
                         <MediaQuery maxWidth={'600px'}>
 
@@ -204,11 +196,15 @@ const ProfleInfo = ({profile})=>{
                          :null}
                          </div>
                           </div>
-                </div>
-                            <div className='w-[96vw] mt-8 mx-auto md:w-[42em]'>
+                </div> 
+                {isPhone? <label className='flex  mt-8 flex-row mx-2'>
+<span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search</span>
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className='rounded-lg px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 border-emerald-700 border-1 text-emerald-800' />
+  </label>:null}
+                            <div className='w-[96vw] lg:mt-8 mx-auto md:w-[42em]'>
 
-                            <div role="tablist" className="tabs border-emerald-300  mx-auto border-b-4 border-emerald-500  rounded-lg w-[96vw] mx-auto md:w-[42em]  tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab text-emerald-800 border-3 border-3 w-[96vw] mx-auto md:w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
+                            <div role="tablist" className="tabs border-emerald-300  mx-auto border-b-4 border-emerald-500  rounded-lg w-[96vw] mx-auto md:w-[38em]  tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab mont-medium text-emerald-800 border-3 border-3 w-[96vw] mx-auto md:w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
   <IndexList items={pages}/>
   </div>
@@ -217,16 +213,20 @@ const ProfleInfo = ({profile})=>{
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800   [--tab-border-color:emerald] bg-transparent   border-3 text-xl" aria-label="Books"
+    className="tab text-emerald-800 mont-medium  [--tab-border-color:emerald] bg-transparent   border-3 text-xl" aria-label="Books"
     />
   <div role="tabpanel" 
    className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
   <IndexList items={books}/>
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 text-emerald-800   [--tab-border-color:emerald] bg-transparent border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
+  <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 mont-medium text-emerald-800   [--tab-border-color:emerald] bg-transparent border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
   <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
     <IndexList items={libraries}/>
   </div>
+  {isNotPhone?  <label className='flex flex-row mx-4'>
+<span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search</span>
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className='rounded-lg px-2 w-full min-w-58 py-1 text-sm bg-transparent my-1 border-emerald-700 border-1 text-emerald-800' />
+  </label>:null}
 </div>
 
 </div>
@@ -251,16 +251,7 @@ const ProfleInfo = ({profile})=>{
                 }}/>
               </Dialog>
               <Dialog
-              //  className={
-              //   "bg-emerald-400  mx-auto overscroll-none"
-              // }
-              // PaperProps={{
-              //   style: {
-              //     backgroundColor: 'transparent',
-                
-                
-              //   },
-              // }}
+      
               fullScreen={isPhone}
               open={openRefferal}
               onClose={()=>setOpenRefferal(false)}>

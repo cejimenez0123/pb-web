@@ -170,7 +170,7 @@ function App(props) {
       }/>
  
         <Route path={Paths.apply()}
-        element={<ApplyContainer/>}/>
+        element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
       <Route
       path={Paths.myProfile()}
       element={

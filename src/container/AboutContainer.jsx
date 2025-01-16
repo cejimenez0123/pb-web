@@ -5,8 +5,6 @@ import { useMediaQuery } from "react-responsive"
 import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
-import { useEffect } from "react"
-import { fetchProfiles } from "../actions/ProfileActions"
 export default function AboutContainer(props){
     const md = useMediaQuery({
         query: '(min-width: 800px)'
@@ -46,7 +44,7 @@ const writingJourney = ()=>{
 <h3 className="text-[1.4rem] open-sans-medium  my-4 font-bold">Get started now!!</h3>
 </div>
 <div className="text-2xl flex text-white max-w-[30em] mx-auto my-12 bg-emerald-800 rounded-full  px-5 py-4" onClick={()=>{navigate(Paths.apply())}}  
-   > <h6 className="mx-auto mont-medium my-auto">Apply to Join Today</h6></div>
+   > <h5 className="mx-auto mont-medium  my-auto">Apply to Join Today</h5></div>
 </div>
     </div>)
 }

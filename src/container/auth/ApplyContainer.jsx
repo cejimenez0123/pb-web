@@ -90,7 +90,7 @@ function ApplyContainer(props){
             genres: selectedGenres.includes("Other")
               ? [...selectedGenres.filter((g) => g !== "Other"), otherGenre]
               : selectedGenres,
-            // ... other form data
+         
           };
         authRepo.apply(form).then(data=>{
         
@@ -314,7 +314,7 @@ return (
 
           <button
             type="submit"
-            className="mont-medium my-8 text-2xl mont-medium px-16 text-white mx-auto rounded-full bg-cyan-800 hover:bg-green-400 font-bold border-none shadow-sm"
+            className="mont-medium my-8 text-2xl mont-medium px-20 text-white mx-auto rounded-full bg-green-600 hover:bg-green-400 font-bold border-none shadow-sm"
           >
             Apply
           </button>
