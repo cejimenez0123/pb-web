@@ -255,6 +255,7 @@ onClick={()=>ClickAddStoryToCollection()}><a>
                 ?
      <a onClick={()=>{
         dispatch(setEditingPage({page}))
+        dispatch(setPageInView({page:null}))
         navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
      </li>
     <li> <IconButton onClick={onBookmarkPage}

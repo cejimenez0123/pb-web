@@ -158,7 +158,7 @@ function NavbarContainer(props){
         setAnchorElPage(e.currentTarget);
       }
     }
-    const ClickWriteAStory = ()=>{
+    const ClickWriteAStory = debounce(()=>{
       ReactGA.event({
           category: "Page",
           action: "Navigate To Editor",
@@ -175,11 +175,11 @@ function NavbarContainer(props){
           navigate(Paths.editPage.createRoute(data.story.id))
       },e=>{
 
-      }))
+      }))},10)
           
     
       
-  }
+  // }
     return (
       <div className='bg-emerald-900'>
         <AppBar position="static"
@@ -371,7 +371,7 @@ function NavbarContainer(props){
                 aria-haspopup="true"
                
                 sx={{ my: 2, color: 'white', display: 'block' }} 
-                onClick={(e)=>debounce(handleClick(e),1)
+                onClick={(e)=>handleClick(e)
                 }>
 
                         Create {Boolean(anchorEl) ? <ExpandLess /> : <ExpandMore />}

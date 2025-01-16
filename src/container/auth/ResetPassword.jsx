@@ -22,8 +22,7 @@ function ResetPasswordContainer(props){
             if(password.length>6){
             const token = query.get("token")
         authRepo.resetPassword({password,token}).then(data=>{
-         
-      
+
             if(data.profile){
                 navigate(Paths.login())
             }else if(data.error){

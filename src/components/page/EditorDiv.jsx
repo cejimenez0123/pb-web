@@ -7,12 +7,13 @@ import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import LinkPreview from "../LinkPreview"
 import PicturePageForm from "./PicturePageForm"
 import EditorContext from "../../container/page/EditorContext"
+import { useLocation } from "react-router-dom"
+
  export default function EditorDiv({parameters,handleChange,createPage}){
+        const location = useLocation()
         const {page} = useContext(EditorContext)
-        
-        const loading = useSelector(state=>state.pages.loading)
-    
-        const [type,setType]=useState()
+        let href =location.pathname.split("/")
+        let last = href[href.length-1]
         const [image,setImage]=useState(null)
       
         
@@ -23,10 +24,37 @@ import EditorContext from "../../container/page/EditorContext"
             })
           }
         },[page])
-      
-console.log(page)
+    
+
         if(!page){
-          return(<div className="skeleton"/>)
+          return(<div className="skeleton w-24 h-24"/>)
+        }else{
+         
+          switch(last){
+            case PageType.picture:{
+            
+                return(<div><PicturePageForm createPage={createPage}/></div>)
+              
+           
+            }
+          
+        case PageType.link:{
+        
+                return(<div><PicturePageForm createPage={createPage}/></div>)
+            
+             
+              
+          
+            }
+        case PageType.text:{
+              return(<RichEditor initContent={parameters.data} handleChange={(content)=>{
+                handleChange(content)}}/>)
+            }
+        default:{
+              return(<RichEditor  initContent={parameters.data}  handleChange={(content)=>{
+                handleChange(content)}}/>)
+            }
+        }
         }
 
       switch(page.type){

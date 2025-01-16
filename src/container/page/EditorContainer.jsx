@@ -39,8 +39,7 @@ function EditorContainer(props){
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
         const navigate = useNavigate()
-        let href =location.pathname.split("/")
-        let last = href[href.length-1]
+     
         const [type,setType]=useState(editPage?editPage.type:"html")
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
@@ -66,7 +65,6 @@ function EditorContainer(props){
       )},200)
       const dispatchContent=(content)=>{
             let params = parameters
-
             params.data = content
             setParameters(params)
             handleUpdate(params)
