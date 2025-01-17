@@ -17,7 +17,6 @@ import { clearPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import loadingJson from "../../images/loading.gif"
-import Lottie from "lottie-react"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
     const {pathName}=useLocation()
@@ -25,6 +24,7 @@ export default function CollectionContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
     const pending = useSelector(state=>state.books.loading)
+    const [loading,setLoading]=useState(true)
     const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
     const writeArr = [RoleType.editor,RoleType.writer]
     const [canUserAdd,setCanUserAdd]=useState(false)
@@ -83,23 +83,24 @@ if(currentProfile){
        getCol()
     },[currentProfile,id])
     useLayoutEffect(()=>{
-        if(collection && currentProfile){
-        if(collection.roles){
+        findRole()
+        // if(collection && currentProfile){
+    //     if(collection.roles){
 
           
-          const found =   collection.roles.find(colRole=>{
-                   return colRole&& colRole.profile && colRole.profileId == currentProfile.id
-                })
-                if(found){
+    //       const found =   collection.roles.find(colRole=>{
+    //                return colRole&& colRole.profile && colRole.profileId == currentProfile.id
+    //             })
+    //             if(found){
 
            
-        const inst =new Role(found.id,currentProfile,collection,found.role,found.created)
-        setRole(inst) 
-    }
-            }}
+    //     const inst =new Role(found.id,currentProfile,collection,found.role,found.created)
+    //     setRole(inst) 
+    // }
+    //         }}
     },[collection,currentProfile])
     const soUserCanSee=()=>{
-        
+        setLoading(true)
        if(collection){
        
             if( !collection.isPrivate){
@@ -138,7 +139,8 @@ if(currentProfile){
             }
         }
     
-    }}
+    }
+setLoading(false)}
     const soUserCanAdd = ()=>{
         if(collection&&currentProfile&& collection.roles){    
             let found =  collection.roles.find(colRole=>{
@@ -177,11 +179,12 @@ if(currentProfile){
         token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     const findRole = ()=>{
+     
             if(collection && currentProfile && collection.roles){
                 let foundRole=  collection.roles.find(role=>{
-                    console.log("rolesds",role)
+                 
                     return role.profileId==currentProfile.id})
-                console.log("getCollectionPub",foundRole)
+            
                 if(foundRole){  
                     const fRole = new Role(foundRole.id,currentProfile,collection,foundRole.role,foundRole.created)
                     setRole(fRole)
@@ -241,7 +244,7 @@ if(currentProfile){
    
    </div></div></div>)}
 
-if(collection&&canUserSee){
+if(collection&&canUserSee&&!loading){
   
 
     return(<>
@@ -277,11 +280,15 @@ if(collection&&canUserSee){
             </div> 
     </>)
 }else{
-    if(pending){
-        return(<div><div className="skeleton h-fit w-[96vw] mx-auto lg:w-[50em] lg:h-[20em] bg-slate-100 mx-auto mt-4 sm:pb-8 p-4   rounded-lg mb-8 text-left"/>
+    if(!loading){
+     
+        return(<div>
+            <div className="skeleton h-fit w-[96vw] mx-auto lg:w-[50em] lg:h-[25em] bg-slate-100 mx-auto mt-4 sm:pb-8 p-4  bg-slate-50 rounded-lg mb-8 text-left"/>
         <div className=" max-w-[100vw] skeleton px-2 sm:max-w-[40em] bg-slate-100 mx-auto  h-40"/></div>)
     }else{
-        return(<div className="mx-auto my-36"><h6 className=" poppins text-xl text-emerald-800">Collection does not exist</h6></div>)
+
+            return(<div className="mx-auto my-36"><h6 className=" lora-bold text-xl text-emerald-800">Collection does not exist</h6></div>)
+    
     }
 }
 
