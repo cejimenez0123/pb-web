@@ -45,6 +45,7 @@ const Paths ={
             return `/story/${id}/collection`
         }
     },
+    discovery:()=>"/discovery",
     home:()=>{return `/home`},
     about:()=>{return `/`},
     profile:{route:()=>{return `/profile/:id`},

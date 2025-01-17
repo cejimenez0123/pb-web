@@ -173,7 +173,7 @@ setTimeout(()=>{
         <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4    rounded-lg ">
        <div>
      <h2 className='text-xl my-8 font-bold '> {currentProfile.username}</h2></div>
-     <label className='flex flex-row justify-between'><div className='flex flex-row'><InfoTooltip text="Do you want to find users local to your area or around the world?" /><h6 className='open-sans-medium'> Go Global</h6></div> <input checked={isGlobal} type="checkbox" onClick={()=>{setIsGlobal(!isGlobal)}} className='toggle bg-white'/></label>
+     <label className='flex flex-row justify-between'><div className='flex flex-row'><InfoTooltip text="Do you want to find users local to your area or around the world?" /><h6 className='open-sans-medium'> Go Global</h6></div> <input checked={isGlobal} type="checkbox bg-slate-700" onClick={()=>{setIsGlobal(!isGlobal)}} className='toggle bg-white'/></label>
 <div>
 
         {!isGlobal?<label className='border-1 my-4 number border-emerald-600 rounded-full   px-4'>Radius

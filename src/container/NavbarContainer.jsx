@@ -80,10 +80,8 @@ function NavbarContainer(props){
     const handleCloseNavMenu = (page) => {
       if(page===PageName.login){
           navigate("/login")                    
-      }else if(page===PageName.home){
-          navigate("/")
       }else if(page===PageName.discovery){
-          navigate("/discovery")
+          navigate(Paths.discovery())
       }else if(page===PageName.about){
         navigate(Paths.about())
       }else if(page==PageName.workshop){
