@@ -57,9 +57,9 @@ const hanldeClickComment=()=>{
 }
 }   
 const PageDataElement=({page})=>{
-        const [image,setImage]=useState(null)
+        const [image,setImage]=useState(page.data)
         useEffect(()=>{
-            setLoading(true)
+            
             if(page && page.type==PageType.picture){
                 if(isValidUrl(page.data)){
                     setImage(page.data)
