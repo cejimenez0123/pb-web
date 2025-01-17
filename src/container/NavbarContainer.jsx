@@ -78,8 +78,8 @@ function NavbarContainer(props){
       dispatch(searchDialogToggle({open:true}))
     }
     const handleCloseNavMenu = (page) => {
-      if(page===PageName.login){
-          navigate("/login")                    
+      if(page==PageName.login){
+          navigate(Paths.login())                    
       }else if(page===PageName.discovery){
           navigate(Paths.discovery())
       }else if(page===PageName.about){
@@ -457,7 +457,7 @@ function NavbarContainer(props){
                 }else if(page==PageName.workshop||page==PageName.home){
                   return( currentProfile?<Button
                     key={page}
-                    onClick={()=>navigate(page)}
+                    onClick={()=>handleCloseNavMenu(page)}
                     sx={{ my: 2, color: 'white', display: 'block' }}
                   >
                     {page}
@@ -465,7 +465,7 @@ function NavbarContainer(props){
                 }else if(page==PageName.about||page==PageName.login){
                   return currentProfile?null:<Button
                     key={page}
-                    onClick={()=>navigate(page)}
+                    onClick={()=>handleCloseNavMenu(page)}
                     sx={{ my: 2, color: 'white', display: 'block' }}
                   >
                     {page}
@@ -478,8 +478,7 @@ function NavbarContainer(props){
                   >
                     {page}
                   </Button>)
-                }else if(currentProfile && page==PageName.login){
-                  return(<div></div>)
+                
                 }else{     
               return(<Button
     key={page}
@@ -520,7 +519,7 @@ function NavbarContainer(props){
                   <MenuItem key={setting} 
                             onClick={()=>{
                                 if(setting== SettingName.profile){
-                                    navigate("/profile/home")
+                                    navigate(Paths.myProfile())
                                 }else if(setting== SettingName.logout){
                                     dispatch(signOutAction())
                                 }else if(setting== SettingName.account){
