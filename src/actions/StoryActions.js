@@ -5,7 +5,7 @@ import { PageType } from "../core/constants";
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
   try{
     let token = localStorage.getItem("token")
-    console.log(token)
+
     if(token){
   
      let data = await storyRepo.getStoryProtected({id:params.id})
@@ -33,7 +33,7 @@ try{
   }
   let data = await storyRepo.deleteStory({id:page.id})
   client.initIndex("page").deleteObject(page.id).wait()
-console.log(data)
+
     return data
 
 
@@ -65,7 +65,7 @@ const getMyStories= createAsyncThunk(
     async ({profile,draft},thunkApi) => {
       try{
       let data = await storyRepo.getMyStories({profileId:profile.id,draft})
-  console.log(data)
+
     return {
       pageList:data.stories
     }

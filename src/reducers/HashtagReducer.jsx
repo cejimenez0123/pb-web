@@ -30,7 +30,8 @@ builder
     }).addCase(getProfileHashtagCommentUse.fulfilled,(state,{payload})=>{
         state.profileHashtagComments = payload.hashtags
     }).addCase(getProfileHashtagCommentUse.rejected,(state,{payload})=>{
-        state.error = payload.error
+        console.log(payload)
+        if(payload.error){state.error = payload.error}
     }).addCase(deleteHashtagComment.fulfilled,(state,{payload})=>{
        let hashtags = state.profileHashtagComments
        let hs = hashtags.filter(hash=>{

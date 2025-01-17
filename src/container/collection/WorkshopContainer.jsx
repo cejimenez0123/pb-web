@@ -10,8 +10,7 @@ import Paths from '../../core/paths';
 import { getStory } from '../../actions/StoryActions';
 import PageWorkshopItem from '../page/PageWorkshopItem';
 import loadingAnimation from "../../images/loading.gif"
-
-import { setCollectionInView } from '../../actions/CollectionActions';
+import InfoTooltip from '../../components/InfoTooltip';
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
   const dispatch = useDispatch()
@@ -23,7 +22,7 @@ const WorkshopContainer = (props) => {
   const [radius,setRadius]=useState(50)
   const [location,setLocation]=useState(null)
   const currentProfile = useSelector(state=>state.users.currentProfile)
-  const [isGlobal,setIsGlobal]=useState(false)
+  const [isGlobal,setIsGlobal]=useState(true)
   
   useEffect(()=>{
    if(isGlobal){
@@ -39,12 +38,14 @@ setTimeout(()=>{
  
 },4001)
   },[error])
-
+  useEffect(()=>{
+    if(!isGlobal && !location){
+      requestLocation()
+    }
+  },[isGlobal])
   useEffect(()=>{
     if(currentProfile){
-      if(!isGlobal){
-        requestLocation()
-      }
+      
       
       dispatch(postActiveUser({story:page,profile:currentProfile})).then(res=>{
           checkResult(res,payload=>{
@@ -172,7 +173,7 @@ setTimeout(()=>{
         <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4    rounded-lg ">
        <div>
      <h2 className='text-xl my-8 font-bold '> {currentProfile.username}</h2></div>
-     <label className='flex flex-row justify-between'><h6 className='open-sans-medium'> Go Global</h6> <input checked={isGlobal} type="checkbox" onClick={()=>{setIsGlobal(!isGlobal)}} className='toggle bg-white'/></label>
+     <label className='flex flex-row justify-between'><div className='flex flex-row'><InfoTooltip text="Do you want to find users local to your area or around the world?" /><h6 className='open-sans-medium'> Go Global</h6></div> <input checked={isGlobal} type="checkbox" onClick={()=>{setIsGlobal(!isGlobal)}} className='toggle bg-white'/></label>
 <div>
 
         {!isGlobal?<label className='border-1 my-4 number border-emerald-600 rounded-full   px-4'>Radius

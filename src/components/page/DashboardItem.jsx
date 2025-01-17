@@ -237,7 +237,7 @@ onClick={()=>ClickAddStoryToCollection()}><a>
                      Add to a Collection
      </a></li>
 
-{currentProfile && page.authorId===currentProfile.id?<li onClick={()=>navigate(Paths.workshop.createRoute(page.id))}><a>Get feedback</a></li>:null}
+{currentProfile && page.authorId==currentProfile.id?<li onClick={()=>navigate(Paths.workshop.createRoute(page.id))}><a>Get feedback</a></li>:null}
                 <li> <a
                  className=' text-emerald-700'
                 onClick={()=>{

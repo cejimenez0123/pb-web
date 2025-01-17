@@ -47,7 +47,7 @@ class StoryRepo{
     }
     async getStoryPublic({id}){
         let res = await axios.get(this.url+"/"+id+"/public")
-        console.log("getStor",res)
+      
         return res.data
     }
     async getMyStories({profile,draft=""}){
@@ -57,7 +57,7 @@ class StoryRepo{
                 
             }
         })
-        console.log(res)
+     
         return res.data
     }
     async getPublicProfileStories({profileId}){
@@ -101,7 +101,7 @@ class StoryRepo{
          },{headers:{
             Authorization: "Bearer "+localStorage.getItem(this.token)
         }})
-        console.log(res)
+
        
          return res.data
     }

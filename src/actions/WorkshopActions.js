@@ -1,6 +1,10 @@
 import { io } from 'socket.io-client';
 import Enviroment from '../core/Enviroment';
 console.log("Enviroment",Enviroment.url)
+let domain = import.meta.env.VITE_DOMAIN
+if(import.meta.env.VITE_NODE_ENV=="dev"){
+  domain=import.meta.env.VITE_DEV_DOMAIN
+}
 const socket = io(Enviroment.url);
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
