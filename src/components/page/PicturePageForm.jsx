@@ -15,7 +15,8 @@ import EditorContext from '../../container/page/EditorContext';
 import { debounce } from 'lodash';
 function PicturePageForm(props){
     const dispatch = useDispatch()
-    const {parameters,setParameters}=useContext(EditorContext)
+    const {page,parameters,setParameters} = useContext(EditorContext)
+    
     const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
     const [localContent,setLocalContent] = useState("")
     const ePage = useSelector(state=>state.pages.editingPage)
@@ -27,15 +28,24 @@ function PicturePageForm(props){
     const [image,setImage]=useState(null)
     const handleLocalContent=(e)=>{
     if(last==PageType.picture){
-        if(isValidUrl(e.target.value))setImage(e.target.value)
-    }
+        if(isValidUrl(e.target.value)){
+            
+            setImage(e.target.value)
+            dispatch(setHtmlContent(e.target.value))
+            let params = parameters
+            params.data = e.target.value
+            setParameters(params)
+        }
+    }else{
         setLocalContent(e.target.value)
-        dispatch(setHtmlContent(e.target.value))
+    
         let params = parameters
+        setImage(null)
         params.data = e.target.value
         setParameters(params)
-    }
+    }}
     useEffect(()=>{
+        console.log("lorax")
         if(ePage){
             switch(ePage.type){
                 case PageType.link:{
@@ -44,27 +54,23 @@ function PicturePageForm(props){
                     setImage(null)
                 }
                 case PageType.picture:{
-                    if(isValidUrl(ePage.data)){
-                        setImage(ePage.data)
-                    }else{
-                    getDownloadPicture(ePage.data).then(url=>{
-                        setImage(url)
-                    })}
-                }}}
+                    console.log("b")
+                        if(isValidUrl(ePage.data)){
+                            setImage(ePage.data)    
+                            setLocalContent(page.data)
+                        }else{
+                            getDownloadPicture(ePage.data).then(url=>{
+                                console.log("Touch")
+                                setImage(url)
+                                setLocalContent(url)
+                            })
+                        }
+                    
+                }
+            }}
     
-    },[])
-    useEffect(()=>{
-        if(ePage && ePage.type==PageType.picture){
-            if(!isValidUrl(ePage.data)){
-                getDownloadPicture(ePage.data).then(url=>{
-                    setImage(url)
-                })
-              
-            }else{
-                setImage(ePage.data)
-            }
-        }
-    },[])
+    },[ePage])
+  
 
     const contentDiv =()=>{
        
@@ -76,11 +82,9 @@ function PicturePageForm(props){
     
     }
    
-    useEffect(()=>{
-       let bounce = debounce(()=>dispatch(setHtmlContent(localContent)),10)
-       return bounce()
-    },[localContent])
+ 
         const handleFileInput = (e) => {
+            e.preventDefault()
             const fil = e.target.files[0];
             
             if (fil) {
@@ -91,45 +95,28 @@ function PicturePageForm(props){
                 return;
               }
               setFile(fil)
-              setErrorMessage('');
-              setImage(URL.createObjectURL(fil));
+        
               let params = parameters
-                 params.file = file
+                 params.file = fil
                  setParameters(params)
+                 if(localContent.length==0){
+
+              
               dispatch(uploadPicture(parameters)).then((result) => 
                 checkResult(result,payload=>{
                     const href = payload["url"]
                     const fileName =payload.ref
-            
                     setLocalContent(href)
+                    setImage(href)
                     params.data = fileName
+                    dispatch(setHtmlContent(fileName))
                     setParameters(params)
                 },err=>{}))
             }
+        }
             
           };
-          useEffect(()=>{
-            if(parameters.file){
-                dispatch(uploadPicture(parameters)).then((result) => 
-                  checkResult(result,payload=>{
-                      const href = payload["url"]
-                      setLocalContent(href)
-                      const fileName =payload.ref
-                      let params = parameters
-                      params.data = fileName
-                      setParameters(params)
-                      dispatch(setHtmlContent(fileName))
-                  }
-                      ,err=>{}
-                  
-                  
-                  ))
-                  }else{
-                      let params = parameters
-                      params.data = htmlContent
-                      setParameters(parameters)
-                  }
-          },[localContent])
+      
    
 
     const checkContentTypeDiv = (type)=>{
@@ -147,6 +134,7 @@ function PicturePageForm(props){
 
        }
        case PageType.picture:{
+     
             return(
                 <div className='text-left'>
                         <img className="rounded-lg overflow-hidden my-4 mx-auto" src={image} alt={ePage?ePage.title:""} />
@@ -178,7 +166,7 @@ function PicturePageForm(props){
     
     return(<div className='mx-auto  bg-emerald-200 rounded-b-lg w-full p-8'>
       {uploadBtn()}
-       <label className='my-2 border-emerald-800 border-1 p-2 rounded-lg  text-emerald-800 '>
+      {!image? <label className='my-2 border-emerald-800 border-1 p-2 rounded-lg  text-emerald-800 '>
             URL
             <input 
             type='text'
@@ -187,7 +175,7 @@ function PicturePageForm(props){
                  
                     onChange={(e)=>handleLocalContent(e)}
                 />
-            </label>
+            </label>:null}
                         {contentDiv()}
          
        

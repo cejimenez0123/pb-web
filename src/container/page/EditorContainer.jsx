@@ -36,6 +36,7 @@ function EditorContainer(props){
         const [fetchedPage,setFetchedPage]=useState(null)
         const editPage = useSelector(state=>state.pages.editingPage)
         const pageInView = useSelector(state=>state.pages.pageInView)
+        const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
         const pathParams = useParams()
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
@@ -72,14 +73,16 @@ function EditorContainer(props){
       )},40)
       useEffect(()=>{
         if(!fetchedPage){
-          if((last==PageType.picture||last==PageType.link)&&isValidUrl(parameters.data)){
+          if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
               let params = parameters
+              params.data = 
               params.type = last 
-              setParameters(last)
+              setParameters(params)
             
         if(parameters.page && parameters.page.id){
             handleUpdate(parameters)
         }else{
+      
           createPageAction(parameters)
         }
           }
@@ -116,7 +119,15 @@ return ()=>{
              }
           }
     },[location.pathname])
-
+    useEffect(()=>{
+        if(last==PageType.picture&&htmlContent.length>5&&parameters.page && !parameters.page.id){
+           let params = parameters
+           params.data = htmlContent
+           params.type = PageType.picture
+           setParameters(params)
+            createPageAction(parameters)
+        }
+    },[htmlContent])
   const setStoryData=(story)=>{
              setFetchedPage(story)
          
@@ -275,7 +286,7 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
            
           <EditorDiv  
           createPage={createPageAction}
-         parameters={parameters}
+        //  parameters={parameters}
             
               handleChange={(content)=>dispatchContent(content)}/>
                 </ErrorBoundary>

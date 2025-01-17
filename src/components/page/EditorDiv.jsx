@@ -7,9 +7,9 @@ import PicturePageForm from "./PicturePageForm"
 import EditorContext from "../../container/page/EditorContext"
 import { useLocation } from "react-router-dom"
 
- export default function EditorDiv({parameters,handleChange,createPage}){
+ export default function EditorDiv({handleChange,createPage}){
         const location = useLocation()
-        const {page} = useContext(EditorContext)
+        const {page,parameters,setParameters} = useContext(EditorContext)
         let href =location.pathname.split("/")
         let last = href[href.length-1]
         const [image,setImage]=useState(null)

@@ -219,8 +219,10 @@ const updateProfile = createAsyncThunk("users/updateProfile",
 
 const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunkApi)=>{
   try {
-  const {file,
-        }= params
+  const {file}= params
+  if(file){
+
+
   const fileName = `image/picture-${file.name}.jpg`
   const storageRef = ref(storage, fileName);
   const blob = new Blob([file])
@@ -231,8 +233,11 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
           ref:fileName,
           url: url
       }
+    }else{
+        throw new Error("file not found")
+    }
   }catch(err){
-      return{ error: new Error("Error: UPLOAD Picture" + err.message) }
+      return{ error: err }
   }
 
 })
