@@ -25,7 +25,7 @@ import EditorDiv from "../../components/page/EditorDiv"
 import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions/PageActions"
 import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
-import { LastPageSharp } from "@mui/icons-material"
+
 
 function EditorContainer(props){
     
@@ -47,10 +47,9 @@ function EditorContainer(props){
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
-        const [privacy,setPrivacy] = useState(editPage?editPage.isPrivate:pageInView?pageInView.isPrivate:true)
+        const [privacy,setPrivacy] = useState(true)
         const [titleLocal,setTitleLocal]=useState(editPage?editPage.title:pageInView?pageInView.title:"")
         const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
-        const [image,setImage]=useState(null)
         const {id }= pathParams
         const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
           data:editPage?editPage.data:pageInView?pageInView.data:"",privacy:privacy,commentable:commentable
@@ -134,17 +133,7 @@ return ()=>{
              setTitleLocal(story.title)
              setCommentable(story.commentable)
              setPrivacy(story.privacy)
-            if(story.type == story.picture && !isValidUrl(story.data)){
-                getDownloadPicture(story.data).then(url=>{
-                    setImage(url)
-                   
-                })
-            }else if( story.type==PageType.picture && isValidUrl(story.data)){
-              
-             
-             setImage(story.data)
-            
-          }}
+  }
     const fetchStory = ()=>{
   if(id){
       dispatch(getStory({id:id})).then(res=>{

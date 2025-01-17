@@ -65,9 +65,12 @@ const PageDataElement=({page})=>{
                     setImage(page.data)
                     setLoading(false)
                 }else{
-                    getDownloadPicture(page).then(url=>{
+                    getDownloadPicture(page.data).then(url=>{
                         setImage(url)
                         setLoading(false)
+                    }).catch(err=>{
+                        setLoading(false)
+                    
                     })
                 }
         
