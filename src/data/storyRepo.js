@@ -101,6 +101,7 @@ class StoryRepo{
          },{headers:{
             Authorization: "Bearer "+localStorage.getItem(this.token)
         }})
+        console.log(res)
        
          return res.data
     }

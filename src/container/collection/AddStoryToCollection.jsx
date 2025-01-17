@@ -7,7 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import CreateCollectionForm from "../../components/collection/CreateCollectionForm"
 import {Dialog} from "@mui/material"
 import addBox from "../../images/icons/add_box.svg"
-import clear from "../../images/icons/clear.svg"
+import clear from "../../images/icons/close.svg"
 import { useMediaQuery } from "react-responsive"
 export default function AddStoryToCollectionContainer(props){
   const isPhone =  useMediaQuery({
@@ -42,7 +42,7 @@ export default function AddStoryToCollectionContainer(props){
     if(page && page.id == pathParams.id){
         return(<div className="text-emerald-800">
            
-            <div className="border-2 mt-16 text-left border-emerald-600 p-8 mx-8 sm:mx-8 rounded-lg">
+            <div className="border-2 mt-16 w-[96vw] lg:max-w-[50em] mx-auto text-left border-emerald-600 p-8 mx-8 sm:mx-8 rounded-lg">
             <h6 className="text-xl font-bold pb-2  font-bold">Your Story</h6>
               <h6 className="text-l pb-8">{page.title}</h6>
             

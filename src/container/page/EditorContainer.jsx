@@ -41,7 +41,7 @@ function EditorContainer(props){
         const navigate = useNavigate()
         const location = useLocation()
         let href =location.pathname.split("/")
-        let last = href[href.length-1]
+        const last = href[href.length-1]
         const [type,setType]=useState(editPage?editPage.type:pageInView?pageInView.type:last)
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
@@ -51,6 +51,7 @@ function EditorContainer(props){
         const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
         const [image,setImage]=useState(null)
         const {id }= pathParams
+        const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
         const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
           data:editPage?editPage.data:pageInView?pageInView.data:"",privacy:privacy,commentable:commentable,type:type
         })
@@ -69,7 +70,18 @@ function EditorContainer(props){
             setError(err.message)
           })}
 
-      )},200)
+      )},40)
+      useEffect(()=>{
+        if(!fetchedPage){
+          if((last==PageType.picture||last==PageType.link)&&isValidUrl(parameters.data)){
+        if(parameters.page && parameters.page.id){
+            handleUpdate(parameters)
+        }else{
+          createPageAction(parameters)
+        }
+          }
+        }
+      },[parameters.data])
       useEffect(()=>{
         if(parameters.page && parameters.page.type){
           setType(parameters.page.type)
@@ -124,7 +136,7 @@ return ()=>{
             
           }}
     const fetchStory = ()=>{
-  
+  if(id){
       dispatch(getStory({id:id})).then(res=>{
         checkResult(res,payload=>{
         
@@ -136,11 +148,11 @@ return ()=>{
           let params = parameters
           params.page = story
           setParameters(params)
-     
+        
       },err=>{
 
        setSuccess(null)
-      })})
+      })})}
     }
     useEffect(()=>{
 fetchStory()

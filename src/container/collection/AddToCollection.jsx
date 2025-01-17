@@ -155,7 +155,7 @@ export default function AddToCollectionContainer(props){
  
     return(<div className=''>
         <div className="static">
-<div className="border-3 border-emerald-600 w-[96vw]  lg:max-w-[50em] mx-auto rounded-lg  my-2 sm:m-8 p-8 text-left">
+<div className="border-3 border-emerald-600 w-[96vw]  sm:max-w-[42em] mx-auto rounded-lg  my-2 sm:m-8 p-8 text-left">
             <h2 className="text-2xl text-emerald-800 mb-2">{colInView.title && colInView.title.length>0?colInView.title:"Untitled"}</h2>
             <h6 className="sm:my-4 text-emerald-800 sm:mx-8 p-4 min-h-24 text-lg sm:max-w-[35rem]">{colInView?colInView.purpose:null}</h6>
         
