@@ -25,6 +25,7 @@ function DashboardItem({page,book,isGrid}) {
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
     const [expanded,setExpanded]=useState(false)
    const [likeFound,setLikeFound]=useState(null)
+   const [loading,setLoading]=useState(false)
     const profile = useSelector(state=>state.users.profilesInView).find(prof=>{
        return prof!=null&& prof.id == page.profileId
     })
@@ -58,13 +59,16 @@ const hanldeClickComment=()=>{
 const PageDataElement=({page})=>{
         const [image,setImage]=useState(null)
         useEffect(()=>{
+            setLoading(true)
             if(page && page.type==PageType.picture){
                 if(isValidUrl(page.data)){
-                    setImage(image)
+                    setImage(page.data)
+                    setLoading(false)
                 }else{
-            if(page.data&& page.data.length>0){
-                    getDownloadPicture(page.data).then(url=>setImage(url))
-            }
+                    getDownloadPicture(page).then(url=>{
+                        setImage(url)
+                        setLoading(false)
+                    })
                 }
         
             }
@@ -86,9 +90,9 @@ const PageDataElement=({page})=>{
       )   }
       case PageType.picture:{
    
-        return(<div className={` ${isGrid?"max-h-40 rounded-lg mx-auto pt-2 max-w-48":"w-[100%] min-h-40"}`} ><img className={isGrid?"rounded-lg":'rounded-t-lg'}
+        return(image?<div className={` ${isGrid?"max-h-40 rounded-lg mx-auto pt-2 max-w-48":"w-[100%] min-h-40"}`} ><img className={isGrid?"rounded-lg":'rounded-t-lg'}
         
-        src={image} alt={page.title}/></div>)
+        src={image} alt={page.title}/></div>:<div className='skeleton w-[100%] min-h-40'/>)
     }
     case PageType.link:{
         return(<div 
@@ -149,17 +153,7 @@ return <Button onClick={()=>{
    }
 }
 
-    let profileDiv = (<div>
 
-    </div>)
-    if(profile){
-        profileDiv = (<p className="text-slate-800" onClick={()=>{
-            navigate(`/profile/${profile.id}`)
-        }}>
-            {profile.username}
-        </p>)
-
-    }
     const onBookmarkPage = ()=>{
 
         
@@ -177,7 +171,7 @@ return <Button onClick={()=>{
         }
         bookTitleDiv = (<a onClick={
             ()=>{
-                navigate(`/book/${book.id}`)
+                navigate(Paths.collection.createRoute(book.id))
             }
         }><p>{title} {">"}</p></a>)
     }
@@ -228,6 +222,7 @@ Share</div>
 <ul tabIndex={0} className="dropdown-content    z-50 menu bg-white text-emerald-700 rounded-box  w-60 p-1 shadow">
 {currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
     dispatch(setEditingPage({page:page}))
+    dispatch(setPageInView({page:page}))
     navigate(Paths.editPage.createRoute(page.id))
 }}>
     <a>Edit</a></li>:null}<li
@@ -243,7 +238,6 @@ onClick={()=>ClickAddStoryToCollection()}><a>
                 onClick={()=>{
                      navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
                      .then(() => {
-                         // Successfully copied to clipboard
                          alert('Text copied to clipboard');
                        })
                  }}
