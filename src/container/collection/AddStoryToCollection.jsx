@@ -6,7 +6,7 @@ import { addStoryListToCollection, deleteStoryFromCollection, getMyCollections }
 import InfiniteScroll from "react-infinite-scroll-component"
 import CreateCollectionForm from "../../components/collection/CreateCollectionForm"
 import {Dialog} from "@mui/material"
-import addBox from "../../images/icons/add_box.svg"
+import addBox from "../../images/icons/add_circle.svg"
 import clear from "../../images/icons/close.svg"
 import { useMediaQuery } from "react-responsive"
 export default function AddStoryToCollectionContainer(props){

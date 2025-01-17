@@ -25,6 +25,7 @@ import EditorDiv from "../../components/page/EditorDiv"
 import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions/PageActions"
 import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
+import { LastPageSharp } from "@mui/icons-material"
 
 function EditorContainer(props){
     
@@ -42,7 +43,7 @@ function EditorContainer(props){
         const location = useLocation()
         let href =location.pathname.split("/")
         const last = href[href.length-1]
-        const [type,setType]=useState(editPage?editPage.type:pageInView?pageInView.type:last)
+        // const [type,setType]=useState(editPage?editPage.type:pageInView?pageInView.type:"html")
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
@@ -51,14 +52,13 @@ function EditorContainer(props){
         const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
         const [image,setImage]=useState(null)
         const {id }= pathParams
-        const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
         const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
-          data:editPage?editPage.data:pageInView?pageInView.data:"",privacy:privacy,commentable:commentable,type:type
+          data:editPage?editPage.data:pageInView?pageInView.data:"",privacy:privacy,commentable:commentable
         })
         
    
       const handleUpdate=debounce((params)=>{
-        setIsSaved(false)
+        setIsSaved(false) 
        dispatch(updateStory(params)).then(res=>{
           checkResult(res,payload=>{
             if(payload.story){
@@ -74,6 +74,10 @@ function EditorContainer(props){
       useEffect(()=>{
         if(!fetchedPage){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(parameters.data)){
+              let params = parameters
+              params.type = last 
+              setParameters(last)
+            
         if(parameters.page && parameters.page.id){
             handleUpdate(parameters)
         }else{
@@ -82,11 +86,7 @@ function EditorContainer(props){
           }
         }
       },[parameters.data])
-      useEffect(()=>{
-        if(parameters.page && parameters.page.type){
-          setType(parameters.page.type)
-        }
-      },[parameters.page])
+     
       const dispatchContent=(content)=>{
             let params = parameters
             params.data = content

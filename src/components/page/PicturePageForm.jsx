@@ -13,7 +13,7 @@ import { PageType } from '../../core/constants';
 import { useLocation } from 'react-router-dom';
 import EditorContext from '../../container/page/EditorContext';
 import { debounce } from 'lodash';
-function PicturePageForm({createPage}){
+function PicturePageForm(props){
     const dispatch = useDispatch()
     const {parameters,setParameters}=useContext(EditorContext)
     const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
@@ -25,18 +25,23 @@ function PicturePageForm({createPage}){
     const last = href[href.length-1]
     const [errorMessage,setErrorMessage]=useState(null)
     const [image,setImage]=useState(null)
-    const handleLocalContent=debounce((e)=>{
+    const handleLocalContent=(e)=>{
+    if(last==PageType.picture){
+        if(isValidUrl(e.target.value))setImage(e.target.value)
+    }
+        setLocalContent(e.target.value)
         dispatch(setHtmlContent(e.target.value))
         let params = parameters
         params.data = e.target.value
         setParameters(params)
-    },10)
+    }
     useEffect(()=>{
         if(ePage){
             switch(ePage.type){
                 case PageType.link:{
                     dispatch(setHtmlContent(ePage.data))
                     setLocalContent(ePage.data)
+                    setImage(null)
                 }
                 case PageType.picture:{
                     if(isValidUrl(ePage.data)){
@@ -49,12 +54,14 @@ function PicturePageForm({createPage}){
     
     },[])
     useEffect(()=>{
-        if(ePage && ePage.type=="image"){
+        if(ePage && ePage.type==PageType.picture){
             if(!isValidUrl(ePage.data)){
                 getDownloadPicture(ePage.data).then(url=>{
                     setImage(url)
                 })
               
+            }else{
+                setImage(ePage.data)
             }
         }
     },[])
@@ -74,18 +81,18 @@ function PicturePageForm({createPage}){
        return bounce()
     },[localContent])
         const handleFileInput = (e) => {
-            const file = e.target.files[0];
+            const fil = e.target.files[0];
             
-            if (file) {
+            if (fil) {
               // Check file type
-              if (!file.type.startsWith('image/')) {
+              if (!fil.type.startsWith('image/')) {
                 setErrorMessage('Please upload a valid image file.');
                 setImage(null)
                 return;
               }
-              setFile(file)
+              setFile(fil)
               setErrorMessage('');
-              setImage(URL.createObjectURL(file));
+              setImage(URL.createObjectURL(fil));
               let params = parameters
                  params.file = file
                  setParameters(params)
@@ -123,35 +130,14 @@ function PicturePageForm({createPage}){
                       setParameters(parameters)
                   }
           },[localContent])
-        const savePage = ()=>{
-            if(parameters.file){
-          dispatch(uploadPicture(parameters)).then((result) => 
-            checkResult(result,payload=>{
-                const href = payload["url"]
-                setLocalContent(href)
-                const fileName =payload.ref
-                let params = parameters
-                params.data = fileName
-                setParameters(params)
-                dispatch(setHtmlContent(fileName))
-            }
-                ,err=>{}
-            
-            
-            ))
-            }else{
-                let params = parameters
-                params.data = htmlContent
-                setParameters(parameters)
-            }}
-
+   
 
     const checkContentTypeDiv = (type)=>{
         switch(type){
             case PageType.link:{  
-                if(isValidUrl(localContent)){        
+                if(isValidUrl(htmlContent)){        
                     return(
-                    <LinkPreview url={localContent} />
+                    <LinkPreview url={htmlContent} />
                     )
                  }else{
                     return (<div className={"text-emerald-800 p-4"}>
@@ -188,23 +174,21 @@ function PicturePageForm({createPage}){
                     </div>)
                     }}
 
-
+                 
     
     return(<div className='mx-auto  bg-emerald-200 rounded-b-lg w-full p-8'>
       {uploadBtn()}
-       {!image? <label className='my-2 border-emerald-800 border-1 p-2 rounded-lg  text-emerald-800 '>
+       <label className='my-2 border-emerald-800 border-1 p-2 rounded-lg  text-emerald-800 '>
             URL
             <input 
             type='text'
                     value={localContent}
                     className='max-w-[65vw] lg:w-[25em] text-emerald-800 input bg-transparent'
                  
-                    onChange={(e)=>{
-                        setLocalContent(e.target.value)
-                      handleLocalContent(e)}}
+                    onChange={(e)=>handleLocalContent(e)}
                 />
-            </label>:null}
-            {contentDiv()}
+            </label>
+                        {contentDiv()}
          
        
         <p>{errorMessage}</p>

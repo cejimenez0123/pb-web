@@ -2,9 +2,7 @@
  import { useContext, useEffect, useState } from "react"
 import RichEditor from "./RichEditor"
 import { PageType } from "../../core/constants"
-import { useSelector } from "react-redux"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
-import LinkPreview from "../LinkPreview"
 import PicturePageForm from "./PicturePageForm"
 import EditorContext from "../../container/page/EditorContext"
 import { useLocation } from "react-router-dom"
@@ -32,14 +30,14 @@ import { useLocation } from "react-router-dom"
           switch(last){
             case PageType.picture:{
             
-                return(<div><PicturePageForm createPage={createPage}/></div>)
+                return(<div><PicturePageForm /></div>)
               
            
             }
           
         case PageType.link:{
         
-                return(<div><PicturePageForm createPage={createPage}/></div>)
+                return(<div><PicturePageForm /></div>)
             
              
               

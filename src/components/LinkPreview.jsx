@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect,useEffect } from 'react';
 import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
@@ -8,76 +8,75 @@ function LinkPreview({ url,isGrid}) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-  
+  useLayoutEffect(() => {
 
-    if(!url.includes('https://open.spotify.com/')){
-    const fetchData = async () => {
-      try {
-        const headers = {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-        };
-    
-        const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
-          headers: headers,
+    if(!url.includes('https://open.spotify.com/')){  
+    fetchData(url).then(data=>{
 
-        }
-        )
-        ;
-        
-        const data = await response.text();
-        
-        const isYouTubeVideo = isYouTubeURL(url);
-        if (isYouTubeVideo) {
-          const videoId = extractYouTubeVideoId(url);
-          const videoThumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-
-          setPreviewData({
-            videoId,
-            videoThumbnail,
-          });
-          setLoading(false);
-        } else {
-          const parser = new DOMParser();
-          
-          const doc = parser.parseFromString(data, 'text/html');
-          
-          let title = doc.querySelector('title')?.textContent || '';
-          const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-          let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
-         
-          if (!image) {
-            if(!image){
-            const imgElement = doc.querySelector('img');
-
-            if (imgElement) {
-              image = imgElement.getAttribute('src') || '';
-            }
-
-          }
-          }
-        
-          setPreviewData({
-              title,
-              description,
-              image,
-          });
-     
-        
-          setLoading(false);
-        }
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-    debounce(()=>{
-
-    fetchData();
-  
-},1000)()
+    })
+    return 
 }}, [url]);
+
+const fetchData = async (url) => {
+  try {
+    const headers = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
+    const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
+      headers: headers,
+
+    }
+    )
+    ;
+    
+    const data = await response.text();
+    
+    const isYouTubeVideo = isYouTubeURL(url);
+    if (isYouTubeVideo) {
+      const videoId = extractYouTubeVideoId(url);
+      const videoThumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+
+      setPreviewData({
+        videoId,
+        videoThumbnail,
+      });
+      setLoading(false);
+    } else {
+      const parser = new DOMParser();
+      
+      const doc = parser.parseFromString(data, 'text/html');
+      
+      let title = doc.querySelector('title')?.textContent || '';
+      const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+      let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+     
+      if (!image) {
+        if(!image){
+        const imgElement = doc.querySelector('img');
+
+        if (imgElement) {
+          image = imgElement.getAttribute('src') || '';
+        }
+
+      }
+      }
+    
+      setPreviewData({
+          title,
+          description,
+          image,
+      });
+ 
+    
+      setLoading(false);
+    }
+  } catch (error) {
+    setLoading(false);
+  }
+};
   const handleClick = () => {
     window.open(url, '_blank');
   };
