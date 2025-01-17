@@ -10,7 +10,7 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
       })
-    if(pagesInView!=null){
+    if(pagesInView!=null&&pagesInView.length>0){
         return(<div 
         ><ErrorBoundary>
            <InfiniteScroll
@@ -39,8 +39,11 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
             </div>
         </InfiniteScroll> </ErrorBoundary></div>)
     }
+    if(pagesInView&& pagesInView.length==0){
+        return(<div>No current content</div>)
+    }
     return(<div>
-        Loading..
+       <h1 className="lora-medium"> Error</h1>
     </div>)
 }
 export default PageList

@@ -48,12 +48,14 @@ const PageName = {
   workshop:"Workshop"
 }
 const pages = [ 
+  PageName.home,
                 PageName.about,
                 PageName.discovery,
                 PageName.workshop,
                 PageName.search,
                 PageName.create, 
                 PageName.login,
+               
                 ]
 function NavbarContainer(props){
   const isPhone =  useMediaQuery({
@@ -86,6 +88,8 @@ function NavbarContainer(props){
         navigate(Paths.about())
       }else if(page==PageName.workshop){
         navigate(Paths.workshop.reader())
+      }else if(page==PageName.home){
+        navigate(Paths.home())
       }
       setAnchorElNav(null)
     }  
@@ -189,7 +193,7 @@ function NavbarContainer(props){
                 <Toolbar disableGutters={true}>
                     <Typography
                         onClick={()=>{
-                            navigate("/discovery")
+                            navigate("/")
                         }}
                         variant="h6"
                         noWrap
@@ -205,7 +209,7 @@ function NavbarContainer(props){
                         }}
                     >
                 Pb
-                    </Typography>
+                     </Typography>
   
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
@@ -239,14 +243,13 @@ function NavbarContainer(props){
               >
                 {pages.map((page) => {
                         
-                        if(page==PageName.home || page==PageName.discovery){
-                            return( (<MenuItem onClick={()=>handleCloseNavMenu(page) } 
-                            key={page} >
-                        <Typography textAlign="center">{page}</Typography>
-                      </MenuItem>)
-)
-                        }else if(page==PageName.workshop){
+                         if(page==PageName.workshop||page==PageName.home){
                           return currentProfile?<MenuItem onClick={()=>handleCloseNavMenu(page) } 
+                          key={page} >
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>:null
+                        }else if(page==PageName.about||page==PageName.login){
+                          return !currentProfile?<MenuItem onClick={()=>handleCloseNavMenu(page) } 
                           key={page} >
                       <Typography textAlign="center">{page}</Typography>
                     </MenuItem>:null
@@ -344,7 +347,7 @@ function NavbarContainer(props){
               variant="h5"
               noWrap
               component="a"
-              onClick={()=>navigate("/discovery")}
+              onClick={()=>navigate("/")}
               href="#app-bar-with-responsive-menu"
               sx={{
                 mr: 2,
@@ -453,14 +456,22 @@ function NavbarContainer(props){
                
            
                   :(<div></div>) 
-                }else if(page==PageName.workshop){
+                }else if(page==PageName.workshop||page==PageName.home){
                   return( currentProfile?<Button
                     key={page}
-                    onClick={()=>navigate(Paths.workshop.reader())}
+                    onClick={()=>navigate(page)}
                     sx={{ my: 2, color: 'white', display: 'block' }}
                   >
                     {page}
                   </Button>:null)
+                }else if(page==PageName.about||page==PageName.login){
+                  return currentProfile?null:<Button
+                    key={page}
+                    onClick={()=>navigate(page)}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                    {page}
+                  </Button>
                 }else if(page ==PageName.search){
                   return(<Button
                     key={page}

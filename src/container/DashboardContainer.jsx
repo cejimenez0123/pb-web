@@ -15,7 +15,6 @@ function DashboardContainer(props){
     const dispatch = useDispatch()
     const currentProfile = useSelector((state)=>state.users.currentProfile)
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
-    const homeCollection = useSelector((state)=>state.users.homeCollection)
     const [itemsInView,setItemsInView] = useState([])
     const [hasMore,setHasMore] = useState(false)
     const [hasError,setHasError] = useState(false)
@@ -106,10 +105,10 @@ function DashboardContainer(props){
             <div id="dashboard" >
                 <div>
                     <div style={{padding:"2em",textAlign:"center"}}>
-                        <h1 >HOME</h1>
+                    
                     </div>
                     <div className='max-w-[94vw] mx-auto lg:max-w-[42em] '> 
-                    <PageList/>
+                    <PageList items={itemsInView}/>
                     </div>
                 </div>
             </div>

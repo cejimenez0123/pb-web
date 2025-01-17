@@ -10,9 +10,10 @@ export default function ReferralForm({onClose}){
         authRepo.referral({email:email.toLowerCase(),name}).then(data=>{
             if(data.message){
                 alert(data.message)
+                onClose()
             }
         })}
-    return(   <div className="bg-emerald-800  px-3 py-4">
+    return(   <div className="bg-emerald-700  m-1 px-3 py-4">
 
           <label className="text-white open-sans-mediummt-3">
             Name

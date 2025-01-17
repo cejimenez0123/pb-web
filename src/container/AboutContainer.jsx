@@ -22,7 +22,7 @@ export default function AboutContainer(props){
 <div  >
 <h6 className="lora-medium font-bold text-[2rem]">For Creatives</h6>
 <div >
-<h6 className="text-[1rem]  open-sans-medium pt-4 text-left" > 
+<h6 className="text-[1rem] leading-loose open-sans-medium pt-4 text-left" > 
 The idea for Plumbum came to me while I was walking to the gym during a university break.
 The encouragement I got from friends who supported my goals was missing at home.
 Finding mutual support in writing is challenging. 
@@ -36,7 +36,7 @@ There's not one kind of look for a writer. Creatives need a place to test their 
 const writingJourney = ()=>{
     return(<div className="">
         <div id="ready">
-<div  className="text-emerald-800 mt-8 open-sans-medium lg:text-white">
+<div  className="text-emerald-800 mt-8 leading-relaxed open-sans-medium lg:text-white">
 <h5 className="text-[1.2rem] open-sans-medium my-4">If you're a writer or enjoy reading, stay engaged with people with shared goals.
 </h5>
 <h5 className="text-[1.2rem] open-sans-medium my-4">We are taking applications for beta users for our release in February.
@@ -49,19 +49,19 @@ const writingJourney = ()=>{
     </div>)
 }
 const detailsOfWorkshop=()=>{
-    return (<div className={` py-2   lg:text-white text-emerald-700 max-w-[100vw]`}>
+    return (<div className={` py-2  leading-loose lg:text-white text-emerald-700 max-w-[100vw]`}>
         <h2 className="lora-medium text-center text-emerald-800 lg:text-white text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
         <h3 className={`lora-medium font-bold  text-2xl font-bold text-left `}>What is a Writers' Workshop?</h3>
       
-<h6 className="py-4 text-left open-sans-medium text-[1.2rem]">
+<h6 className="py-4 text-left open-sans-medium text-[1rem]">
 Peer critiques by like-minded writers
        </h6>
 
         <h3 className="lora-medium text-2xl text-left font-bold py-4">What is a Plumbum?</h3>
         <h6 className="text-left pb-4 pt-2 px-2 text-[1rem] open-sans-medium">Plumbum is the Latin word for lead, like a lead anvil or pipe. It's the root word for plumber. It's also a fun word we'd like to mean creativity and resilience. It's place to find support in your writing goals.
 </h6>
-        <ul className="text-left px-4">
+        <ul className="text-left  px-4">
 
 
 
@@ -73,11 +73,11 @@ Peer critiques by like-minded writers
         Plumbum lets you control visibility and share how you want.
     
     </h6></li >
-<li className="py-3 open-sans-medium  text-[1rem]"><h6>💬 Looking for constructive feedback?
+<li className="py-3 open-sans-medium   text-[1rem]"><h6>💬 Looking for constructive feedback?
 Be part of a community of writers who are eager to share their insights and support you.
 </h6></li>
-<li className="py-3 open-sans-medium  text-[1rem]"><h6>📘 Make collections to organize and reorganize everything you find, so you can tell the story you want. </h6></li>
-<li className="py-3 open-sans-medium  text-[1rem]"><h6>
+<li className="py-3 open-sans-medium text-[1rem]"><h6>📘 Make collections to organize and reorganize everything you find, so you can tell the story you want. </h6></li>
+<li className="py-3 open-sans-medium text-[1rem]"><h6>
 📚 Whether you're a seasoned novelist or just starting out. It's a great place to get started and get support.
 </h6></li>
 
