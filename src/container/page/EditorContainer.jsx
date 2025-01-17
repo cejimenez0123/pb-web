@@ -43,7 +43,6 @@ function EditorContainer(props){
         const location = useLocation()
         let href =location.pathname.split("/")
         const last = href[href.length-1]
-        // const [type,setType]=useState(editPage?editPage.type:pageInView?pageInView.type:"html")
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
@@ -120,7 +119,7 @@ return ()=>{
 
   const setStoryData=(story)=>{
              setFetchedPage(story)
-            setType(story.type)
+         
              setTitleLocal(story.title)
              setCommentable(story.commentable)
              setPrivacy(story.privacy)
@@ -131,7 +130,7 @@ return ()=>{
                 })
             }else if( story.type==PageType.picture && isValidUrl(story.data)){
               
-              setType(story.type)
+             
              setImage(story.data)
             
           }}

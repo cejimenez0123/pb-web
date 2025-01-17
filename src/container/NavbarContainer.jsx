@@ -170,6 +170,7 @@ function NavbarContainer(props){
         dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
         title:"",commentable:true
       })).then(res=>checkResult(res,data=>{
+          handleClose()
           dispatch(setPageInView({page:data.story}))
           dispatch(setEditingPage({page:data.story}))
           navigate(Paths.editPage.createRoute(data.story.id))

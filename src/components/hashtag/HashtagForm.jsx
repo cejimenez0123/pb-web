@@ -58,6 +58,7 @@ export function HashtagForm(){
     };
   
     return (
+      <form>
       <div className="bg-gradient-to-br max-w-[42em]  from-emerald-100 to-emerald-400 ">
         <textarea
           value={inputValue}
@@ -65,9 +66,9 @@ export function HashtagForm(){
           onKeyDown={handleKeyDown}
           placeholder="Type a hashtag and press Enter"
           rows="3"
-        className="textarea  my-1 w-[96%] mx-2 border-b border-emerald-800 bg-transparent text-emerald-800"
+        className="textarea  my-1 w-[96%] mx-2 border-2 border-emerald-600 bg-transparent text-emerald-800"
         />
-
+      <button type="submit" className="hidden">Submit</button>
       <div className="text-left mx-2 my-1">
         <h4 className="text-emerald-800">Hashtags:</h4>
         <ul className="flex flex-wrap p-4">
@@ -81,6 +82,7 @@ export function HashtagForm(){
         </ul>
       </div>
     </div>
+    </form>
   );
 };
 

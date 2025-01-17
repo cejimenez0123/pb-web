@@ -95,7 +95,7 @@ useEffect(()=>{
             <div className="relative  ">
             <div onClick={()=>{navigate(Paths.profile.createRoute(page.author.id))}} className=' absolute   pr-3 flex flex-row justift-start '>
                 <div className=" text-emerald-800 px-3 flex flex-row py-2 rounded-tl-lg text-elipsis text-md rounded-br-lg bg-gradient-to-br from-emerald-300 to-opacity-0 ">
-                {profilePic?<div  className="overflow-hidden rounded-full my-auto h-7 w-8  border-2 border-white mr-4"><img className="object-scale-down h-6 h-8  " src={profilePic}/></div>:null}{page.title.length>0?<span className="my-auto">{page.title} </span>:<span className="my-auto">Untitled</span>}
+                {profilePic?<div  className="overflow-hidden rounded-full my-auto h-7 w-8  border-2 border-white mr-4"><img className="object-scale-down h-6 h-8  " src={profilePic}/></div>:null}{page.title.length>0?<span className="my-auto text-ellipsis">{page.title} </span>:<span className="my-auto">Untitled</span>}
                 </div>
                
             </div>
