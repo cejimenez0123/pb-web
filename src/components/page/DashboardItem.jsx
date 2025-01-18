@@ -14,7 +14,7 @@ import Paths from '../../core/paths'
 import LinkPreview from '../LinkPreview'
 import isValidUrl from "../../core/isValidUrl"
 import bookmarkadd from "../../images/bookmarkadd.svg"
-
+import PageDataElement from './PageDataElement'
 import getDownloadPicture from '../../domain/usecases/getDownloadPicture'
 import ProfileCircle from '../profile/ProfileCircle'
 function DashboardItem({page,book,isGrid}) {
@@ -56,66 +56,7 @@ const hanldeClickComment=()=>{
     navigate(Paths.page.createRoute(page.id))
 }
 }   
-const PageDataElement=({page})=>{
-        const [image,setImage]=useState(page.data)
-        useEffect(()=>{
-            
-            if(page && page.type==PageType.picture){
-                if(isValidUrl(page.data)){
-                    setImage(page.data)
-                    setLoading(false)
-                }else{
-                    getDownloadPicture(page.data).then(url=>{
-                        setImage(url)
-                        setLoading(false)
-                    }).catch(err=>{
-                        setLoading(false)
-                    
-                    })
-                }
-        
-            }
-        
-        },[page])
-        if(page){
-        
-   switch(page.type){
-        case PageType.text:{
 
-        return( 
-            <div 
-    
-           className={`  ${isGrid?"h-60 isGrid p-2 rounded-lg w-[96%] mx-auto overflow-hidden text-ellipsis":"rounded-t-lg pt-12"} bg-emerald-200 `}
-            >
-            <div className={` w-[100%]  text-emerald-800 px-4   text-[0.8rem] ${isGrid?"isGrid mt-2 rounded-lg overflow-hidden":" pb-8  rounded-t-lg pt-12 ql-editor"}`}
-        dangerouslySetInnerHTML={{__html:page.data}}></div>
-        </div>
-      )   }
-      case PageType.picture:{
-   
-        return(image?<div className={` ${isGrid?"   max-w-[100%] max-h-96 overflow-hidden rounded-lg mx-auto pt-2 w-[96%]":"w-[100%] "}`} >
-            <div className={` ${isGrid?"h-[100%] justify-center overflow-hidden w-full rounded-lg ":""}`}>
-            <img className={isGrid?"rounded-lg   ":'rounded-t-lg'}
-        
-        src={image} alt={page.title}/>
-        </div></div>:<div className='skeleton w-[100%] min-h-40'/>)
-    }
-    case PageType.link:{
-        return(<div 
-            className={`w-[100%] ${isGrid?"mx-auto mx-auto w-fit px-2":""}`}>
-            <LinkPreview
-            isGrid={isGrid}
-                    url={page.data}
-            />
-            </div>)
-    }
-    default:
-        return(<div className='skeleton'>
-        Loading...
-</div>)
-    }
-    }
-}
 const header=()=>{
     return  page.author&&!isGrid?    <span className={isGrid?"":'absolute flex flex-row text-ellipsis w-24 p-2'}>   <ProfileCircle profile={page.author}/> 
              
@@ -213,10 +154,10 @@ return <Button onClick={()=>{
          onClick={handleApprovalClick}
             
           className={`
-          text-xl   py-2   mont-medium text-center mx-auto text-white border-none bg-transparent  border-none  `}
+            py-2   flex mont-medium  mx-auto text-white border-none h-[100%]  border-none  `}
         
          >
-             Yea{likeFound?"h!":""}
+            <h6 className=' text-[1.2rem] mont-medium my-auto mx-auto'>Yea{likeFound?"h!":""}</h6> 
          </div>
          </div>
          <div className={" bg-emerald-700 mont-medium  border-white border-x-2 border-y-0  text-center border-white grow flex-1/3"}>
@@ -226,10 +167,10 @@ return <Button onClick={()=>{
         text-center mx-auto
        bg-transparent py-2
        border-none mont-medium 
-       text-xl  '
+         '
              onClick={()=>hanldeClickComment()}
                  >
-           Review
+          <h6 className='text-[1.2rem]'> Review</h6>
          </div>
          </div>
          <div className="dropdown    text-center   bg-emerald-700  py-2 rounded-br-lg  grow flex-1/3 dropdown-top">
@@ -239,11 +180,11 @@ className="
 
       text-center mx-auto
       bg-transparent
-        text-xl
+       
         border-none mont-medium 
      
          ">
-Share</div>
+<h6 className=' text-[1.2rem]'>Share</h6></div>
 <ul tabIndex={0} className="dropdown-content    z-50 menu bg-white text-emerald-700 rounded-box  w-60 p-1 shadow">
 {currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
     dispatch(setEditingPage({page:page}))
@@ -292,7 +233,7 @@ onClick={()=>ClickAddStoryToCollection()}><a>
     
         return(
         
-                <div className='relative shrink  h-fit'>
+                <div className='relative shrink my-2 h-fit'>
         <div onClick={()=>{
             isGrid?navigate(Paths.page.createRoute(page.id)):null
         }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-fit min-h-56  w-[100%]  ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>

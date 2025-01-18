@@ -16,6 +16,7 @@ import uuidv4 from '../core/uuidv4'
 import ReactGA from "react-ga4"
 import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
+import InfoTooltip from '../components/InfoTooltip'
 function DiscoveryContainer(props){
     
     useEffect(()=>{
@@ -89,10 +90,9 @@ const navigateToLibrary = (library)=>{
     <div className='md:ml-12'> <h3 className=' text-emerald-900
     text-left 
     font-extrabold 
-    mb-4
-    pl-4 pt-2 mt-1 mx-4 lora-bold text-2xl'>Collections</h3>
+    pl-4   mx-4 lora-bold text-2xl'>Collections</h3>
                 <InfiniteScroll
-            className={`mt-1   flex-row"} flex`}
+            className={`   min-h-[12rem] flex-row flex`}
             dataLength={booksInView.length}
             next={fetchContentItems}
             hasMore={false}
@@ -100,7 +100,7 @@ const navigateToLibrary = (library)=>{
                 {booksInView.map(book=>{
                     let id = `${book.id}_${uuidv4()}`
                     return(
-                        <div key={id}>
+                        <div key={id} className='my-auto'>
                             <BookListItem book={book}/>
                         </div>)
                 })}
@@ -193,16 +193,18 @@ className={`${
         return(
             <ErrorBoundary>
             <div 
-            //id="discover" 
+
             className=' mx-auto ml-24 mt-4' >
 
               <div className=' text-left ' >
                
                 <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} pb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
-                <div className='pb-12'>
+                <div className='mb-12'>
                 {libraryForums()}
                 </div>
+                <div className='mb-12'>
                 {bookList()} 
+                </div>
                 <div className='flex  flex-col '>
                     <div className=' lg:w-128 lg:ml-32 mx-auto'>
 

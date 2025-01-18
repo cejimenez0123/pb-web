@@ -22,7 +22,7 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
             setLikeFound(null)
         }
             
-    },[currentProfile])
+    },[currentProfile,page])
     const copyShareLink=()=>{
         ReactGA.event({
             category: "Page View",

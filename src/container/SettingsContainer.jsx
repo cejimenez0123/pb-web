@@ -286,13 +286,12 @@ function SettingsContainer(props) {
             </div>
         )
     }
-    const textfieldStyle = {backgroundColor:theme.palette.primary.extraLight,borderRadius:"8px",width:"100%" }
-    if(!pending){
+     if(!pending){
             return(<div >
-                    <div  className="my-4 max-w-96 mx-auto p-3">
-                      <label className="text-left">Username:
-                            <input type="text"  style={textfieldStyle} 
-                                        className={"input text-white bg-transparent border border-white "}
+                    <div  className="my-4 text-emerald-800 max-w-96 mx-auto p-3">
+                      <label className="text-left flex flex-col lora-medium"><h4 className="text-2xl">Username:</h4>
+                            <input type="text"   
+                                        className={" text-xl px-4 py-2 rounded-full  open-sans-medium text-emerald-800 bg-transparent border-2 border-emerald-800 border-2  "}
                                         value={newUsername}
                                         onChange={(e)=>setNewUsername(e.target.value)
                                         }
@@ -320,32 +319,32 @@ function SettingsContainer(props) {
                     </div>
                     
                             <label className="text-left mt-4 " id="" >
-                                <h6 >Self Statement:</h6>
+                                <h6 className="lora-medium text-2xl">Self Statement:</h6>
                                
                                     <textarea
                                     onChange={(e)=>{setSelfStatement(e.target.value)}}
                                   
                                     value={selfStatement}
-                                    className="textarea min-w-72 w-full bg-transparent text-white border border-white p-4 min-h-36 my-2"
+                                    className="textarea min-w-72 w-full  text-emerald-800 border-2 bg-transparent border-emerald-800 p-4 min-h-36 my-2"
                                     placeholder="Self Statement"/>
                             </label>
                             <div className="text-left">
-                            {isPrivate?<button onClick={()=>setPrivacy(false)}className=" text-white btn text-bold">You are Private</button>:
+                            {isPrivate?<button onClick={()=>setPrivacy(false)}className=" text-emerald-800 bg-transparent mont-medium rounded-full border-emerald-800 border-1 text-bold">You are Private</button>:
                             <button 
                             onClick={()=>setPrivacy(true)}
-                            className="btn  text-bold text-white">You are Public</button>}
+                            className="btn  text-bold border-emerald-800 border-1 rounded-full bg-transparent mont-medium">You are Public</button>}
    </div>
   <div className="mt-8">
 
                             <button
-                               className="bg-emerald-800 text-white"
+                               className="bg-emerald-800 text-white px-4 py-2 mont-medium rounded-full text-2xl"
                                 variant="outlined" 
                                 onClick={(e)=>handleOnSubmit(e)}
                             >
                                 Update
                             </button>
                             </div>
-                        <button className="delete"
+                        <button className="rounded-full py-2 w-[10rem] mt-24 text-2xl mont-medium bg-orange-800 text-white"
                                 onClick={handleClickOpen}
                                 // style={{marginTop: "4em",maxWidth:"10em",marginBottom: "5em",
                                 //         backgroundColor: theme.palette.error.main,

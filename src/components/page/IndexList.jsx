@@ -2,6 +2,7 @@
 import InfiniteScroll from "react-infinite-scroll-component"
 import IndexItem from "./IndexItem"
 import { useEffect, useState } from "react"
+import uuidv4 from "../../core/uuidv4"
 const IndexList = ({items})=>{
       const [sortTime,setSortTime]=useState(null)
     const [sortAlpha,setSortAlpha]=useState(null)
@@ -45,7 +46,8 @@ const IndexList = ({items})=>{
                     }
                   >
                       {items.map(item=>{
-                        return <div key={item.id} className="mx-2 my-2"><IndexItem page={item} item={item} /></div>
+                        let uuid= uuidv4()
+                        return <div key={uuid+item.id} className="mx-2 my-2"><IndexItem page={item} item={item} /></div>
                       })}  
                    </InfiniteScroll>)
 

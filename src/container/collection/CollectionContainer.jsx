@@ -17,9 +17,11 @@ import { clearPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import loadingJson from "../../images/loading.gif"
+import Alert from "../../components/Alert"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
-    const {pathName}=useLocation()
+    const [error,setError]=useState(null)
+    const [success,setSuccess]=useState(null)
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
@@ -53,7 +55,7 @@ export default function CollectionContainer(props){
             })
 
         }else{
-            window.alert("please sign in")
+            setError("please sign in")
         }
     }
     const handleFollow = ()=>{
@@ -69,11 +71,11 @@ if(currentProfile){
            
           getCol()
             },err=>{
-                window.alert(err.message)
+                setError(err.message)
             })
         })
     }else{
-        window.alert("Please Sign In")
+        setError("Please Sign In")
     }
     }
     const getCol=()=>{
@@ -244,7 +246,8 @@ if(collection&&canUserSee&&!loading){
 
     return(<>
 
-<div className="pb-[10rem] ">       {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
+<div className="pb-[10rem] ">   
+<Alert error={error} success={success}/>    {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
         <div className="text-left  max-w-[100vw]    mx-auto ">
             {collections && collections.length>0? <div>
                 <h3 className="text-2xl lora-bold text-emerald-800 font-bold text-center">Anthologies</h3>:
