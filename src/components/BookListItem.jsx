@@ -22,7 +22,7 @@ function BookListItem({book}){
     }
     return (
 
-<div onClick={navigateToBook} className="max-w-48  min-w-56 mx-8  rounded  shadow-sm bg-emerald-700">
+<div onClick={navigateToBook} className=" h-[10rem] w-[15rem] mx-8  rounded-lg  shadow-sm bg-emerald-700">
 <div  
 className=" text-white h-48 bg-transparent ">
  <div className="px-3 py-3">
