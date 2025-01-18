@@ -7,7 +7,6 @@ import { createStory, getMyStories } from '../actions/StoryActions';
 import { getMyCollections } from '../actions/CollectionActions';
 import notifications from "../images/icons/notifications.svg"
 import settings from "../images/icons/settings.svg"
-import { getCurrentProfile } from '../actions/UserActions';
 import IndexList from '../components/page/IndexList';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
@@ -131,9 +130,9 @@ function MyProfileContainer(props){
    
     
             return(
-            <div className='md:pb-72 pt-4 sm:pt-8'>
+            <div className='md:pb-72 pt-4 md:pt-8'>
      
-                    <div className=' flex flex-col relative  justify-start sm:flex-row sm:justify-between border-4 border-emerald-300  pb-4 max-w-[94vw] mx-auto lg:h-[20em]  lg:max-w-[56rem]   sm:mx-auto mt-2  rounded-lg'>
+                    <div className=' flex flex-col relative  justify-start md:flex-row md:justify-between border-4 border-emerald-300  pb-4 max-w-[94vw] mx-auto lg:h-[20em]  lg:max-w-[56rem]   lg:mx-auto mt-2  rounded-lg'>
                            <div className='absolute top-1   right-1'>
                            {isNotPhone?
                        <span className=' m-3 pr-4 flex-row flex w-36  justify-evenly'>     
@@ -147,9 +146,9 @@ function MyProfileContainer(props){
                            </div>
                            <div className='max-h-[100%] flex'>
                            <div className='p-4' >
-                            
+                            <div className='my-4'>
                            {currentProfile? <ProfileInfo profile={currentProfile}/>:null}
-                          
+                           </div>
                         <MediaQuery maxWidth={'600px'}>
 
                             <div className=' w-[86%] mx-auto grid grid-cols-2 gap-2 '>
