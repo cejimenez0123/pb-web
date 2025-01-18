@@ -226,19 +226,20 @@ setError(err.message)
 
       </div>
 
-      <div className="">  
+      <div className="  h-[100%] ">  
       
-      <div className="dropdown dropdown-bottom dropdown-end">
-      <div tabIndex={0} role="button" ><img className="w-36 h-16  bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
+      <div className="dropdown dropdown-bottom   h-[100%] dropdown-end">
+      <div tabIndex={0} role="button" ><img className="min-w-16 h-[100%] bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
       <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1]  p-2 shadow">
-        <li className="text-green-600 pt-3 pb-2 "
+        <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
-        <li onClick={()=>{navigate(Paths.workshop.createRoute(parameters.page.id))}} className="text-green-600 pt-3 pb-2 "><a>Get Feedback</a></li>
+        <li onClick={()=>{navigate(Paths.workshop.createRoute(parameters.page.id))}} className="text-emerald-600 pt-3 pb-2 "><a>Get Feedback</a></li>
+        {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {privacy?<li onClick={()=>handlePostPublicly(false)} 
-className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green-600 pt-3 pb-2 " onClick={()=>handlePostPublicly(true)}>Make Private</li>}
-        <li className="text-green-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
-        {fetchedPage?<li className="text-green-600 pt-3 pb-2 " onClick={()=>setOpenRoles(!openRoles)}>Share</li>:null}
-        <li className="text-green-600 pt-3 pb-2" onClick={()=>setOpen(true)}>Delete</li>
+className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>handlePostPublicly(true)}>Make Private</li>}
+        <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
+        {fetchedPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpenRoles(!openRoles)}>Share</li>:null}
+        <li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpen(true)}>Delete</li>
       </ul>
     </div>
       

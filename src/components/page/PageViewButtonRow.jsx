@@ -74,20 +74,20 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
       text-xl    text-white  text-center mx-auto py-2 bg-transparent  border-none  `}
     
      >
-         Yea{likeFound?"h!":""}
+        <h6 className="text-xl"> Yea{likeFound?"h!":""}</h6>
      </div>
      </div>
      <div className="flex-1/3 grow bg-emerald-700  border-white border-l-2 border-r-2 border-t-0 border-b-0  text-center ">
     <div
-    className="  text-white text-xl py-2 border-none bg-transparent rounded-none  "
+    className="  text-white  py-2 border-none bg-transparent rounded-none  "
        disabled={!profile} 
         onClick={()=>{setComment(!comment)}}>
-    
-        Discuss
+    <h6 className="text-xl">
+        Discuss</h6>
     </div>
     </div>
     <div className="dropdown  flex-1/3 grow bg-emerald-700  text-center dropdown-top">
-<div tabIndex={0} role="button" className=" border-none  mx-auto  text-white text-bold "> <div className="text-[1.3rem] py-2 border-none bg-transparent text-white mx-auto my-auto">Share</div></div>
+<div tabIndex={0} role="button" className="         text-white  text-center mx-auto py-2 bg-transparent  border-none  "> <h6 className="text-xl   border-none bg-transparent text-white mx-auto my-auto">Share</h6></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-emerald-700 menu bg rounded-box z-[1] w-52  shadow">
 <li>
 <a disabled={!profile} 
