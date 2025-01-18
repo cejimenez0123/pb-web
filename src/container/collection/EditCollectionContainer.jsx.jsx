@@ -32,7 +32,9 @@ function getUniqueValues(array) {
 export default function EditCollectionContainer(props){
     const colInView = useSelector(state=>state.books.collectionInView)
     const params = useParams()
-    const md = useMediaQuery({query:"(min-width:500px"})
+    const isPhone =  useMediaQuery({
+        query: '(max-width: 600px)'
+      })
     const loading = useSelector(state=>state.books.loading)
     const storyToCols = useSelector(state=>state.pages.storyToCollectionList)
     const colToCols = useSelector(state=>state.books.collectionToCollectionsList)
@@ -286,13 +288,13 @@ const deleteSubCollection = (colId)=>{
 </div>
 </div>
 <Dialog 
-fullScreen={!md}
+fullScreen={isPhone}
 open={openAccess}
 onClose={()=>{
     setOpenAccess(false)
 }}>
     
-    <div className="overflow-y-scroll overflow-x-hidden">
+    <div className="overflow-y-scroll  h-[100%] overflow-x-hidden">
     <RoleForm book={colInView} onClose={()=>setOpenAccess(false)}/>
     </div>
 </Dialog>

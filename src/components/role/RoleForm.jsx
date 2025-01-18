@@ -5,7 +5,7 @@ import { fetchProfiles } from "../../actions/ProfileActions"
 import { fetchStoryRoles, patchRoles } from "../../actions/RoleActions"
 import { RoleType } from "../../core/constants"
 import Role from "../../domain/models/role"
-import close from "../../images/icons/close.svg"
+import close from "../../images/icons/clear.svg"
 import checkResult from "../../core/checkResult"
 import { patchCollectionRoles } from "../../actions/CollectionActions"
 function RoleForm({book,onClose}){
@@ -82,24 +82,24 @@ function RoleForm({book,onClose}){
        setRoles([...newRoles,roleI])
      
     }
-    return(<div className="background-blur h-screen sm:min-w-[30em] overflow-scroll max-h-[80vh] bg-gradient-to-br from-emerald-300 to-emerald-50 px-4">
+    return(<div className="background-blur lg:p-2 h-screen w-[100%] overflow-scroll h-[100%] bg-emerald-100 px-4">
                           <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
          {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>{error?error:success}</div>:null}
        
          </div> <div className="pt-4">
             
            <div className=" flex text-emerald-900 flex-row justify-between">
-            <div>Share</div><img onClick={onClose} src={close}/>
+            <div className="lora-medium"><h1 className="text-[2rem]">Share</h1></div><img onClick={onClose} src={close}/>
         </div>
         <div className=" py-4 ">
             <p className="text-sm text-emerald-900">{book.title}</p>
         </div>
         <div>
             <div className="
-            text-white  botder rounded-full flex text-l lg:text-xl w-[5em] h-[3em] shadow-sm border-white mb-8 bg-emerald-800"
+            text-white  botder rounded-full flex text-l lg:text-xl w-[8rem] h-[4rem] mont-medium shadow-sm border-white mb-8 bg-emerald-800"
             onClick={handlePatchRoles}
             >
-                <h6 className="mx-auto my-auto">Save</h6></div>
+                <h6 className="mx-auto text-[1.2rem] mx-auto my-auto">Save</h6></div>
         </div>
         <InfiniteScroll
         className="scroll max-h-full sm:max-h-[25em] overflow-y-scroll overflow-x-hidden rounded-lg"
@@ -124,13 +124,13 @@ function RoleForm({book,onClose}){
                    }
                 return(<div> 
 
-             <div key={i}className="background-blur shadow-sm flex flex-row rounded-full justify-between px-4 bg-opacity-60 bg-emerald-600  my-4 ">
+             <div key={i}className=" shadow-sm flex flex-row rounded-full justify-between px-4 bg-opacity-60 bg-transparent border-emerald-600 border-2  my-4 ">
                     
-                    <h6 className="text-sm opacity-100 text-white py-4 mx-2 mx-y">
+                    <h6 className="text-sm opacity-100 text-emerald-800 py-4 mx-2 mx-y">
                         {profile.username}</h6>
                         <div className="my-auto w-fit">
                         <div className="dropdown   dropdown-bottom">
-  <div tabIndex={0}  role="button" className=" bg-green-800 bg-opeacity-90 py-2  px-4 rounded-full text-white ">{role?role.role:"Role"}</div>
+  <div tabIndex={0}  role="button" className=" bg-green-800 bg-opeacity-90 py-2  px-4 mont-medium rounded-full text-white ">{role?role.role:"Role"}</div>
   <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
   <li onClick={()=>handleUpdateRole({role:RoleType.role,profile:profile})}>
     <a className="label text-emerald-600">{RoleType.role}</a></li>
