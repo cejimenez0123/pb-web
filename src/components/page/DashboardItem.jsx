@@ -34,14 +34,14 @@ function DashboardItem({page,book,isGrid}) {
 
 
     useLayoutEffect(()=>{
-        if(currentProfile && page && currentProfile.likedStories){
+        if(currentProfile && page){
             let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
             setLikeFound(found)
         }else{
             setLikeFound(null)
         }
             
-    },[currentProfile]),
+    },[currentProfile,page]),
 
 useEffect(()=>{
 
@@ -210,7 +210,7 @@ return <Button onClick={()=>{
          <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center rounded-bl-lg grow flex-1/3`}>
          <div
          
-         onClick={()=>handleApprovalClick}
+         onClick={handleApprovalClick}
             
           className={`
           text-xl   py-2   mont-medium text-center mx-auto text-white border-none bg-transparent  border-none  `}
