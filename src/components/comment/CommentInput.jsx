@@ -58,7 +58,7 @@ const clickUpdateComment = ()=>{
   onChange={(e)=>{
      setComment(e.target.value)
 }}></textarea>
-    <div className="flex flex-row-reverse mx-4">
+    <div className="flex rounded-full flex-row-reverse mx-4">
        {currentProfile? 
         defaultComment?
             <button 
@@ -67,7 +67,7 @@ const clickUpdateComment = ()=>{
        :
        
        <button  
-       onClick={saveComment}   className="bg-emerald-800 text-white  mx-4 hover:bg-emerald-500"> {parentComment?"Reply":"Save Comment"}</button>:
+       onClick={saveComment}   className="bg-emerald-800 rounded-full text-white  mx-4 hover:bg-emerald-500"> {parentComment?"Reply":"Save Comment"}</button>:
        <button className="bg-emerald-200 text-white-800" 
        disabled={!currentProfile} onClick={saveComment}>
             Disabled

@@ -316,3 +316,6 @@
 
   }
   /* https://codesandbox.io/s/infinite-horizontal-auto-scroll-y82f8?file=/src/styles.css:0-520 */
+  .break-inside-avoid {
+    break-inside: avoid;
+  }

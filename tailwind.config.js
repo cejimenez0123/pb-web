@@ -13,6 +13,12 @@ export default {
   theme: {
     width: {
       '128': '48rem',
+      'page':"50em",
+      'info':"55rem"
+
+    },
+    height:{
+      "info":"18rem"
     },
     borderWidth: {
       DEFAULT: '1px',

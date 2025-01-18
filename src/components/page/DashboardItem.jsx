@@ -85,21 +85,24 @@ const PageDataElement=({page})=>{
         return( 
             <div 
     
-           className={`  ${isGrid?"max-h-[12em]  rounded-lg max-w-48  mx-auto overflow-clip mt-4 ":"rounded-t-lg "} bg-emerald-200 pt-12`}
+           className={`  ${isGrid?"h-60 isGrid p-2 rounded-lg w-[96%] mx-auto overflow-hidden text-ellipsis":"rounded-t-lg pt-12"} bg-emerald-200 `}
             >
-            <div className={` w-[100%]  text-emerald-800 px-4 pb-8  pt-12 text-[0.8rem] ${isGrid?"isGrid mt-1 rounded-lg overflow-hidden":" rounded-t-lg  ql-editor"}`}
+            <div className={` w-[100%]  text-emerald-800 px-4   text-[0.8rem] ${isGrid?"isGrid mt-2 rounded-lg overflow-hidden":" pb-8  rounded-t-lg pt-12 ql-editor"}`}
         dangerouslySetInnerHTML={{__html:page.data}}></div>
         </div>
       )   }
       case PageType.picture:{
    
-        return(image?<div className={` ${isGrid?"max-h-40 rounded-lg mx-auto pt-2 max-w-48":"w-[100%] min-h-40"}`} ><img className={isGrid?"rounded-lg":'rounded-t-lg'}
+        return(image?<div className={` ${isGrid?"   max-w-[100%] max-h-96 overflow-hidden rounded-lg mx-auto pt-2 w-[96%]":"w-[100%] "}`} >
+            <div className={` ${isGrid?"h-[100%] justify-center overflow-hidden w-full rounded-lg ":""}`}>
+            <img className={isGrid?"rounded-lg   ":'rounded-t-lg'}
         
-        src={image} alt={page.title}/></div>:<div className='skeleton w-[100%] min-h-40'/>)
+        src={image} alt={page.title}/>
+        </div></div>:<div className='skeleton w-[100%] min-h-40'/>)
     }
     case PageType.link:{
         return(<div 
-            className={` ${isGrid?"max-h-36 mx-auto mx-auto w-fit px-2":"w-[100%]"}`}>
+            className={`w-[100%] ${isGrid?"mx-auto mx-auto w-fit px-2":""}`}>
             <LinkPreview
             isGrid={isGrid}
                     url={page.data}
@@ -107,11 +110,27 @@ const PageDataElement=({page})=>{
             </div>)
     }
     default:
-        return(<div className='empty'>
+        return(<div className='skeleton'>
         Loading...
 </div>)
     }
     }
+}
+const header=()=>{
+    return  page.author&&!isGrid?    <span className={isGrid?"":'absolute flex flex-row text-ellipsis w-24 p-2'}>   <ProfileCircle profile={page.author}/> 
+             
+    <h6 className="text-emerald-400  my-auto ml-1 text-[0.9rem]  " onClick={()=>{
+        dispatch(setPageInView({page}))
+        navigate(Paths.page.createRoute(page.id))
+
+    }} > {` `+page.title.length>0?page.title:"Untitled"}</h6></span>:
+    <span className={"flex-row flex mb-1"}>   <ProfileCircle profile={page.author}/> 
+             
+    <h6 className="text-white mx-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.8rem]  " onClick={()=>{
+        dispatch(setPageInView({page}))
+        navigate(Paths.page.createRoute(page.id))
+
+    }} > {` `+page.title.length>0?page.title:"Untitled"}</h6></span>
 }
 const handleApprovalClick = ()=>{
     if(currentProfile){
@@ -178,11 +197,14 @@ return <Button onClick={()=>{
             }
         }><p>{title} {">"}</p></a>)
     }
-    const buttonRow = ( )=>{
-        return isGrid?<div className='text-right  h-fit text-white '>
-        <div className='bg-transparent absolute right-1 bottom-1'><img src={bookmarkadd}/></div>
+    const bookmarkBtn =()=>{
+        return isGrid ?<div className=' w-fit   h-fit text-white '>
+        <div className='bg-transparent '><img src={bookmarkadd}/></div>
     
-    </div>:
+    </div>:null
+    }
+    const buttonRow = ( )=>{
+        return isGrid?null:
         <div className='  flex flex-row rounded-b-lg justify-center justify-evenly sm:max-w-[100%]  '>
             
          <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center rounded-bl-lg grow flex-1/3`}>
@@ -269,29 +291,33 @@ onClick={()=>ClickAddStoryToCollection()}><a>
     if(page){
     
         return(
+        
+                <div className='relative shrink  h-fit'>
         <div onClick={()=>{
             isGrid?navigate(Paths.page.createRoute(page.id)):null
-        }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-60 max-w-52 ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
+        }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-fit min-h-56  w-[100%]  ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
         
        
              
-          <div className=' rounded-lg relative '>
-          <div className=' justify-between '>
-               <span className='absolute flex flex-row w-24 p-2'> 
-               {page.author?<ProfileCircle profile={page.author}/>:null}
-                <h6 className="text-emerald-800 my-auto ml-1 text-[0.9rem]  " onClick={()=>{
-                    dispatch(setPageInView({page}))
-                    navigate(Paths.page.createRoute(page.id))
-
-                }} > {` `+page.title.length>0?page.title:"Untitled"}</h6></span>
-               <PageDataElement page={page}/>
-            
-             
+          <div className={isGrid?' rounded-lg flex justify-between flex-col h-[100%]  pt-1':""}>
+            {!isGrid?header():null}
+          <PageDataElement page={page}/>
                 {buttonRow()}
+                {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1 w-[100%] min-w-52 rounded-b-lg bottom-0'>
+                {header()}
+                {bookmarkBtn()} </div>   :null}
                 </div>
+                <div>
+            
                 </div>
+              
+          
+              
                
   </div>
+  </div>
+ 
+ 
      )}else{
         return(<div className='min-h-24'>
             Loading...

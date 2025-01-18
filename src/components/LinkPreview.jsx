@@ -91,9 +91,9 @@ const fetchData = async (url) => {
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      <div  className={isGrid?" rounded-t-lg pt-8  mx-auto max-w-[15rem] spotify ":"spotify"} 
+      <div  className={isGrid?" rounded-lg   mx-auto max-w-[100%]  ":"spotify"} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"}   wide={isGrid?true:false} link={url}/>
+        <Spotify width={"100%"} className='rounded-lg overflow-hidden'   link={url}/>
       </div>)
   }
   if (loading) {
@@ -120,9 +120,8 @@ const fetchData = async (url) => {
       {previewData.image && <img  className={isGrid?"rounded-lg pt-8 w-fit max-h-36 w-[100%] overflow-hidden mx-auto max-w-[96%] ":"  w-[100%] rounded-t-lg  "}src={previewData.image}  alt="Link Preview" />}
     </div>)
     }else{
-      
        return (
-        <div className='rounded-lg'>
+        <div className='rounded-lg w-[100%]'>
         <Spotify width={"100%"}  height={"120"}link={url}/>
         </div>
       )
@@ -144,9 +143,9 @@ const fetchData = async (url) => {
   }
 
   return (
-    <div className={isGrid?" text-white w-fit  p-2  mx-auto":"link-preview bg-emerald-200 text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className={isGrid?" text-white w-fit  p-2 w-[100%] mx-auto":"link-preview bg-emerald-200 text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
-     {isGrid?null:previewDescription()}
+   {previewDescription()}
       {previewTitle()}
     </div>
   );

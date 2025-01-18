@@ -62,7 +62,7 @@ export default function Comment({comment,level}){
 <div className=" p-1 sm:border-emerald-500 sm:border-2 sm:rounded-full ">
            <div className=" sm:rounded-full bg-emerald-700 text-white rounded-lg sm:px-8 sm:rounded-full  py-4 ">
            <a onClick={()=>navigate(Paths.profile.createRoute(comment.profile.id))} class=" text-[0.8rem] sm:sm mx-4 text-white  mr-4">{comment.profile.username}</a>
-           <h6 className="text-[0.8rem] md:text-lg  mx-3 p-3">{comment.content}</h6>
+           <h6 className="text-[0.8rem] md:text-md  mx-3 p-3">{comment.content}</h6>
            <div class=" flex flex-row sm:pb-2 justify-between">
                     
                     {isHelpful?<a onClick={handleDeleteHelpful} className="text-[0.8rem] sm:text-sm text-orange-400  mt-4 ml-6">Glad it helped!</a>:<a onClick={handleIfHelpful}className="text-[0.8rem] sm:text-sm text-white mt-4 ml-8"> Was comment helpful?</a>}

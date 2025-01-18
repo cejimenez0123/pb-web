@@ -1,6 +1,6 @@
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { useState,useEffect } from "react"
-const ProfleInfo = ({profile})=>{
+const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     
     useEffect( ()=>{
@@ -17,7 +17,7 @@ const ProfleInfo = ({profile})=>{
         
     },[])
     return (                           
-    <div className='flex-row   mx-auto  flex    '>
+    <div className='flex-row   mx-auto  flex  '>
     <img className={" min-w-24 overflow-hidden mx-2 h-24 lg:w-36 lg:h-36  sm:ml-6 rounded-full lg:rounded-lg"}src={pictureUrl}/>
  
 
@@ -30,4 +30,4 @@ const ProfleInfo = ({profile})=>{
         </div></div>)
 }
 
-export default ProfleInfo
+export default ProfileInfo

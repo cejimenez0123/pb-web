@@ -19,17 +19,21 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
         scrollThreshold={1}
         hasMore={false}
         className={isGrid?"":"w-fit"}
-        style={isGrid?{overflow:"unset"}:{display:"flex",flexDirection:"column"}}
+
         endMessage={<div className="min-h-36 w-full">
             <h1 className="mx-auto my-auto text-emerald-600 py-2  text-center mx-auto w-12">Fin</h1>
         </div>}
         >
 
-           <div className={"max-w-screen  "+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"")}>
+<div className={`max-w-screen ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>
+
           {pagesInView.map(page=>{
             if(page){
                 const id = `${page.id}_${uuidv4()}`
-                return(<div id={id} key={id}className="mb-2">
+                return(<div  key={id}
+
+  className={`${isGrid && isNotPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
+>
                     <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
                 </div>)
             }else{

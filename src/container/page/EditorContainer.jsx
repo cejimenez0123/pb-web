@@ -269,13 +269,13 @@ className="text-green-600 pt-3 pb-2 ">Post Public</li>:<li className="text-green
   </svg>
   <span>{error?error:success}</span>
 </div>:null}
-       <div className= "mx-2 lg:w-[40em] pt-8 mb-12 mx-auto">
+       <div className= "mx-2 lg:w-page pt-8 mb-12 mx-auto">
                 {topBar()}
                   <ErrorBoundary>
            
           <EditorDiv  
           createPage={createPageAction}
-        //  parameters={parameters}
+    
             
               handleChange={(content)=>dispatchContent(content)}/>
                 </ErrorBoundary>

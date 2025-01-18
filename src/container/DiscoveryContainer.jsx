@@ -111,20 +111,42 @@ const navigateToLibrary = (library)=>{
     const pageList = ()=>{
         if(pagesInView!=null){
             return(<div 
-            className='max-w-[40em]'
+            className='max-w-[52em] mx-auto max-w-screen '
             >
                <InfiniteScroll
             dataLength={pagesInView.length}
             next={fetchContentItems}
             scrollThreshold={1}
             hasMore={false}
-            style={isGrid?{overflow:"unset"}:{display:"flex",flexDirections:"row"}}
-            >
+                >
+               
+<div 
+// className={`${isGrid && isNotPhone ? 'flex flex-wrap flex-row flex-col items-top' : ''}`}
+// className={`max-w-screen mx-auto ${
+//     isGrid && isNotPhone ? 'flex flex-wrap ' : ''
+//   }`}
+// className={` ${
+//     isGrid && isNotPhone ? 'grid gap-1 grid-cols-2 auto-rows-auto max-w-[52em] items-start break-inside-avoid  grid-flow-row  ' : 'max-w-screen '
+//   }`}
+className={`${
+    isGrid && isNotPhone ? 'grid-cols-2 grid gap-2 ' : ''
+  }`}
+//   className={`max-w-screen mx-auto ${
+//     isGrid && isNotPhone ? ' grid  grid-flow-row-dense grid-cols-2 ' : ''
+//   }`}
+>
+ 
+                {pagesInView.filter(page=>page).map(page=>{
 
-               <div className={""+(isGrid && isNotPhone?'grid grid-cols-2 lg:gap-4':"sm:px-2")}>
-              {pagesInView.filter(page=>page).map(page=>{
                     const id = `${page.id}_${uuidv4()}`
-                    return(<div className=" mb-2"id={id}>
+                    return(<div 
+                        // className={isGrid?"max-w-[22em]":"m-1  h-fit "}
+                        key={id}
+                        // className=" mb-4 "
+                        className="break-inside-avoid mb-4  auto-cols-min"
+     
+                    >
+                        
                         <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
                     </div>)
                 })}
@@ -134,24 +156,9 @@ const navigateToLibrary = (library)=>{
     }
     const fetchContentItems = ()=>{
     
-            dispatch(getPublicStories()).then(result=>checkResult(
-                result,payload=>{
-                    
-               
-                },err=>{
-                    // window.alert(err)
-                })
-             
-            )
-            dispatch(getPublicBooks()).then(result=>checkResult(result,
-                payload=>{
-                
-             
-                  
-                },err=>{
-
-                })
-            )   
+            dispatch(getPublicStories())
+            
+            dispatch(getPublicBooks())  
         }
         const fetchLibraries = ()=>{
             setHasMoreLibraries(true)

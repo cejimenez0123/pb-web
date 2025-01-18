@@ -84,28 +84,16 @@ if(currentProfile){
     },[currentProfile,id])
     useLayoutEffect(()=>{
         findRole()
-        // if(collection && currentProfile){
-    //     if(collection.roles){
+        soUserCanSee()
+        setLoading(false)
 
-          
-    //       const found =   collection.roles.find(colRole=>{
-    //                return colRole&& colRole.profile && colRole.profileId == currentProfile.id
-    //             })
-    //             if(found){
-
-           
-    //     const inst =new Role(found.id,currentProfile,collection,found.role,found.created)
-    //     setRole(inst) 
-    // }
-    //         }}
     },[collection,currentProfile])
     const soUserCanSee=()=>{
-        setLoading(true)
+        
        if(collection){
        
             if( !collection.isPrivate){
                 setCanUserSee(true)
-
                     return 
              }
             if(currentProfile){
@@ -114,8 +102,12 @@ if(currentProfile){
             })
                  if(found && sightArr.includes(found.role)||collection.profileId==currentProfile.id){
                 setCanUserSee(true)
+                return
                     }else{
-                setCanUserSee(false)
+                setCanUserSee(false
+              
+                )
+                return
             }
         }
         if(!canUserSee){
@@ -124,15 +116,18 @@ if(currentProfile){
                         const col = cTc.parentCollection
                         if(!col.isPrivate){
                             setCanUserSee(true)
+                            return
                         }else{
-                        if(col.roles){
+                            if(col.roles){
                      let found = col.roles.find(colRole=>{
                             return colRole && colRole.profileId == currentProfile.id
                         })
                     if(found || sightArr.includes(found.role)||collection.profileId==currentProfile.id){
                             setCanUserSee(true)
-                                }else{
+                              return
+                        }else{
                             setCanUserSee(false)
+                            return
                         }
                     }}
                     })
@@ -208,7 +203,7 @@ setLoading(false)}
             return(<div>Loading</div>)
         }
        
-        return(<div><div className="h-fit w-[96vw] mx-auto lg:w-[50em] mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600   rounded-lg mb-8 text-left">
+        return(<div><div className=" w-[96vw] mx-auto lg:w-info h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600   rounded-lg mb-8 text-left">
                 {collection.profile?<div className="flex flex-row"><div className="min-w-8 min-h-8  my-auto"><ProfileCircle profile={collection.profile}/></div><span onClick={()=>navigate(Paths.profile.createRoute(collection.profile.id))} className="text-emerald-800 mx-2 my-auto rounded-lg ">{collection.profile.username}</span></div>:null}
                 <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
     <h3 className="mt-8 mb-2  text-emerald-800 lora-medium text-xl sm:text-3xl">{collection.title}</h3>

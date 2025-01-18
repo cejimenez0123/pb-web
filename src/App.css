@@ -36,9 +36,10 @@
   height: 100%
 
 }
-/* .page p,div,span{
-  font-size: 0.9rem !important;
-} */
+
+.isGrid p,div,span{
+  font-size: 0.8rem !important;
+}
 .mont-medium {
   font-family: "Montserrat", serif;
   font-optical-sizing: auto;
@@ -783,3 +784,5 @@ iframe[title="Spotify Web Player"]{
 
    
 
+
+  

@@ -128,7 +128,7 @@ className="mx-auto my-auto"
       buttonDiv=null
     }
     return(
-                <div className="border-3  shadow-sm  rounded-full max-w-[94vw] lg:max-w-[42em]  w-full my-3 py-1 border-emerald-300"><div className={`   mb-1 `}> 
+                <div className="border-3  shadow-sm  rounded-full max-w-[94vw] lg:w-[100%]  w-full my-3 py-1 border-emerald-300"><div className={`   mb-1 `}> 
               <div  className=" px-8 flex flex-row justify-between  " >
                 <div className="text-left my-auto  py-4 mt-1 ">
                    {item && item.title && item.title.length>0? <h6 onClick={handleNavigate}

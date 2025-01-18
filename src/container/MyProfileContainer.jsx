@@ -21,7 +21,7 @@ import checkResult from '../core/checkResult';
 
 import ReferralForm from '../components/auth/ReferralForm';
 import { PageType } from '../core/constants';
-import ProfleInfo from '../components/profile/ProfileInfo';
+import ProfileInfo from '../components/profile/ProfileInfo';
 const MediaType = {
     stories:"stories",
     books:"books",
@@ -133,7 +133,7 @@ function MyProfileContainer(props){
             return(
             <div className='md:pb-72 pt-4 sm:pt-8'>
      
-                    <div className=' flex flex-col relative  justify-start sm:flex-row sm:justify-between border-4 border-emerald-300  pb-4 max-w-[94vw] mx-auto lg:h-[16em]  lg:max-w-[50em]   sm:mx-auto mt-2  rounded-lg'>
+                    <div className=' flex flex-col relative  justify-start sm:flex-row sm:justify-between border-4 border-emerald-300  pb-4 max-w-[94vw] mx-auto lg:h-[20em]  lg:max-w-[56rem]   sm:mx-auto mt-2  rounded-lg'>
                            <div className='absolute top-1   right-1'>
                            {isNotPhone?
                        <span className=' m-3 pr-4 flex-row flex w-36  justify-evenly'>     
@@ -146,9 +146,9 @@ function MyProfileContainer(props){
                           </span>:null}
                            </div>
                            <div className='max-h-[100%] flex'>
-                           <div className='flex flex-col lg:flex-row lg:px-8 mx-auto mt-4 '>
+                           <div className='p-4' >
                             
-                           {currentProfile? <ProfleInfo profile={currentProfile}/>:null}
+                           {currentProfile? <ProfileInfo profile={currentProfile}/>:null}
                           
                         <MediaQuery maxWidth={'600px'}>
 
@@ -194,16 +194,17 @@ function MyProfileContainer(props){
                          :null}
                          </div>
                           </div>
-                </div> 
+                </div>
+                <div className='lg:w-page mx-auto'> 
                 {isPhone? <label className='flex  mt-8 flex-row mx-2'>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search</span>
   <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className='rounded-lg px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 border-emerald-700 border-1 text-emerald-800' />
   </label>:null}
-                            <div className='w-[96vw] lg:mt-8 mx-auto md:w-[42em]'>
+                            <div className='w-[96vw]  lg:mt-8 mx-auto md:w-[50em]'>
 
-                            <div role="tablist" className="tabs border-emerald-300  mx-auto border-b-4 border-emerald-500  rounded-lg w-[96vw] mx-auto md:w-[38em]  tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab mont-medium text-emerald-800 border-3 border-3 w-[96vw] mx-auto md:w-[42em] [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
+                            <div role="tablist" className="tabs border-emerald-300  mx-auto border-b-4 border-emerald-500  rounded-lg w-[96vw] mx-auto lg:w-page  tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab mont-medium text-emerald-800 border-3 border-3 w-[96vw] mx-auto lg:w-page [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
+  <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-page border-emerald-300 ">
   <IndexList items={pages}/>
   </div>
 
@@ -214,11 +215,11 @@ function MyProfileContainer(props){
     className="tab text-emerald-800 mont-medium  [--tab-border-color:emerald] bg-transparent   border-3 text-xl" aria-label="Books"
     />
   <div role="tabpanel" 
-   className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
+   className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-page border-emerald-300 ">
   <IndexList items={books}/>
   </div>
   <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 mont-medium text-emerald-800   [--tab-border-color:emerald] bg-transparent border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
-  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-[42em] border-emerald-300 ">
+  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-page border-emerald-300 ">
     <IndexList items={libraries}/>
   </div>
   {isNotPhone?  <label className='flex flex-row mx-4'>
@@ -227,6 +228,7 @@ function MyProfileContainer(props){
   </label>:null}
 </div>
 
+</div>
 </div>
 <Dialog className={
                 "bg-emerald-400 bg-opacity-30 "
