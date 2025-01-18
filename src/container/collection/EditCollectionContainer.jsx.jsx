@@ -133,12 +133,12 @@ console.log(storyToCols)
         
         return(<div className="   sm:flex-row sm:flex justify-around lg:w-info mx-auto max-h-full  sm:pb-8 sm:w-48 p-4 sm:border-emerald-600 sm:border-2 mx-2 mt-4 md:mt-8 rounded-lg mb-8 sm:text-left">
     <div>
-        <div>
+        <div className="lg:w-[30em]">
     <input 
   onChange={(e)=>{
     setTitle(e.target.value)
 }}
-    type="text" className="bg-transparent text-emerald-800 px-2 py-2 w-full mb-4  lora-medium text-2xl" value={title}/>
+    type="text" className="bg-transparent min-w-[100%] text-emerald-800  border-1 border-emerald-200  rounded-full  px-4 py-2 ml-4 text-ellipsis w-full mb-4  lora-medium text-2xl" value={title}/>
        </div>
         <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  text-[0.8rem]  text-emerald-800  sm:mx-8 border-emerald-600 bg-transparent lg:h-[17em] max-w-[96vw] w-[100%] md:w-92 md:max-w-96 rounded-lg p-2" value={purpose}/>
         </div>
@@ -159,11 +159,11 @@ console.log(storyToCols)
    <div className="flex flex-row">
     
    <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
-   }className=" bg-emerald-800 h-4 w-4 p-2 rounded-full mx-auto "
+   }className=" bg-emerald-800 p-2 rounded-full mx-auto "
    src={add}/>
    <img
    onClick={()=>navigate(Paths.collection.createRoute(colInView.id))}
-    className=" bg-emerald-800 w-4 h-4 rounded-full mx-auto p-2" src={view}/>
+    className=" bg-emerald-800 rounded-full mx-auto p-2" src={view}/>
    </div>
     {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 mont-medium border-4 min-w-36 text-center  flex  bg-transparent m text-[1rem]  mx-auto text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[0.8rem] ">Collection is Open Collab</h3> </div>:
     <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 min-w-36 mont-medium flex text-center bg-transparent mx-auto   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[0.8rem]  ">Collection is Close Collab</h3></div>}

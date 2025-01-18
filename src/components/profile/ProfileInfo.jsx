@@ -18,7 +18,7 @@ const ProfileInfo = ({profile})=>{
     },[])
     return (                           
     <div className='flex-row   mx-auto  flex  '>
-    <img className={" min-w-24 overflow-hidden mx-2 h-24 lg:w-36 lg:h-36  sm:ml-6 rounded-full lg:rounded-lg"}src={pictureUrl}/>
+    <img className={" min-w-24 overflow-hidden mx-2 h-24 max-w-36 max-h-36  sm:ml-6 rounded-full lg:rounded-lg"}src={pictureUrl}/>
  
 
         <div className='text-left sm:mx-3 mb-2 h-48 flex flex-col '>
