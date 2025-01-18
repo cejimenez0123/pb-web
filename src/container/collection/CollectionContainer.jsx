@@ -224,14 +224,14 @@ setLoading(false)}
    >
    {canUserAdd?
     <img onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))
-   }className="rounded-full bg-emerald-800 p-3  mx-2 my-auto"src={add}/>:null}
+   }className="rounded-full bg-emerald-800 p-2 mx-2 my-auto"src={add}/>:null}
    {canUserEdit?
    
    <img 
    onClick={()=>{
   
     navigate(Paths.editCollection.createRoute(collection.id))}}
-   className="rounded-full bg-emerald-800 p-3  my-auto"src={edit}/>:null}</div>:
+   className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}</div>:
 
 
 

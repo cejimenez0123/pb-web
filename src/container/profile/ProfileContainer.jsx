@@ -4,7 +4,8 @@ import { useEffect, useLayoutEffect,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { 
             fetchProfile,
-        } from "../../actions/UserActions"
+        } from "../../actions/UserActions" 
+import ProfileCard from "../../components/ProfileCard"
 import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
@@ -92,45 +93,35 @@ checkIfFollowing({profile})
         }
     },[20])
 
-    let followDiv=()=>{
-
-       return following?
-       (<div 
-        className=" bg-emerald-600  w-[9rem] rounded-full text-white text-center"
-                onClick={onClickFollow}>
-             <h5 className="text-white py-3 font-bold"> Following</h5>   </div>):(
-         <div className="border-2 border-emerald-600 bg-transparent w-[9rem] rounded-full text-center"
-                    onClick={onClickFollow}
-        ><h5 className="text-emerald-800 py-3 font-bold">Follow</h5></div>)
-    }
-   const ProfileCard =()=>{
-    if(profile!=null){
-      return(<div className="pb-8 border-3 rounded-lg  sm:m-h-[30em] mx-auto sm:max-w-[52em] border-emerald-400">
-        <div className="text-left p-4">
-            <div className="flex flex-row">  
-            <img src={profilePic} className="max-w-36 object-fit max-h-42 mb-2 rounded-lg" alt=""/>
-         <div>
-            <div className="px-3 pt-3 flex flex-col justify-between  h-48">
-           <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem]  h-40 overflow-y-scroll flex-wrap flex text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
-           </div> 
-            <div className="h-fit pb-2"><h5 className="text-emerald-800 text-[1.2rem] font-bold">{profile.username}</h5></div>
-        </div></div>
-        </div>
-            <div className="mt-3">
-                {followDiv()}
-            </div>
-        </div>
+ 
+//    const ProfileCard =()=>{
+//     if(profile!=null){
+//       return(<div className="pb-8 border-3 rounded-lg  sm:min-h-[30em] mx-auto sm:max-w-[52em] border-emerald-400">
+//         <div className="text-left p-4">
+//             <div className="flex flex-row">  
+//             <img src={profilePic} className="max-w-36 object-fit max-h-36 mb-2 rounded-lg" alt=""/>
+//          <div>
+//             <div className="px-3 pt-3 flex flex-col justify-between  h-48">
+//            <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem]  h-40 overflow-y-scroll flex-wrap flex text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
+//            </div> 
+//             <div className="h-fit pb-2"><h5 className="text-emerald-800 text-[1.2rem] font-bold">{profile.username}</h5></div>
+//         </div></div>
+//         </div>
+//             <div className="mt-3">
+//                 {followDiv()}
+//             </div>
+//         </div>
       
-        </div>)
-    }else{
-       return <div className=" skeleton profile-card"/>
-    }
-}
+//         </div>)
+//     }else{
+//        return <div className=" skeleton profile-card"/>
+//     }
+// }
 ///Alert
     return(
         <div className="">
             <div className="pt-2 md:pt-8 mx-2">
-                <ProfileCard/>
+                <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow}/>
             </div>
             <div className=" w-[96vw]  md:w-[42em] mt-4 mb-1 mx-auto">
                          <div role="tablist" className="tabs  shadow-md mb-36 rounded-lg w-[96vw]  md:max-w-[42em] tabs-lifted">
