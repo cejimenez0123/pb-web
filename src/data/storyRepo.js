@@ -18,16 +18,19 @@ class StoryRepo{
 
     }
     async getPublicProfileStories({profileId}){
+        console.log("profileId",profileId)
         let res = await axios.get(this.url+"/profile/"+profileId+"/public")
+        
         return res.data
     }
     async getProtectedProfileStories({profileId}){
+
         let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem("token")
             }
         })
-
+        console.log("DSDSDsA",data)
         return res.data
     }
     async recommendations(){
@@ -61,7 +64,7 @@ class StoryRepo{
         return res.data
     }
     async getPublicProfileStories({profileId}){
-        let res = await axios.get(this.url+"/profile"+profileId)
+        let res = await axios.get(this.url+"/profile/"+profileId+"/public")
         return res.data
     }
     async postStory({ 

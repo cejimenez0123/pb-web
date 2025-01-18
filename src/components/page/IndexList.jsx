@@ -45,7 +45,7 @@ const IndexList = ({items})=>{
                     }
                   >
                       {items.map(item=>{
-                        return <div className="mx-2 my-2"><IndexItem page={item} item={item} /></div>
+                        return <div key={item.id} className="mx-2 my-2"><IndexItem page={item} item={item} /></div>
                       })}  
                    </InfiniteScroll>)
 

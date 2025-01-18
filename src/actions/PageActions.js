@@ -86,9 +86,10 @@ const getPublicProfilePages= createAsyncThunk(
     try{
 
     let data= await storyRepo.getPublicProfileStories({profileId:profile.id})
-  
+  console.log("DSDSDSDS",data)
   return {
-    pageList:data.stories}
+    pageList:data.stories
+  }
   }catch(e){
 
   return {error:`Page Query Where Error: ${e.message}`}
@@ -97,7 +98,7 @@ const getProtectedProfilePages= createAsyncThunk(
   'pages/getProtectedProfilePages',
   async ({profile},thunkApi) => {
     try{
-     let token= localStorage.getItem("token")
+
     let data= await storyRepo.getProtectedProfileStories({profileId:profile.id})
   
   return {
