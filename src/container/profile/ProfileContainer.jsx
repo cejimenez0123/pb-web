@@ -125,7 +125,7 @@ checkIfFollowing({profile})
             </div>
             <div className=" w-[96vw]  md:w-[42em] mt-4 mb-1 mx-auto">
                          <div role="tablist" className="tabs  shadow-md mb-36 rounded-lg w-[96vw]  md:max-w-[42em] tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  [--tab-border-color:rgb(52 211 153)] bg-transparent text-emerald-800 text-xl" aria-label="Pages" />
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  [--tab-border-color:emerald] bg-transparent text-emerald-800 text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content w-[96vw]  md:max-w-[42em] border-emerald-400 border-3 h-[100%] rounded-lg border-3 border-emerald-400 ">
   <IndexList items={pages}/>
   </div>
@@ -133,7 +133,7 @@ checkIfFollowing({profile})
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab  [--tab-border-color:rgb(52 211 153)] bg-transparent text-emerald-800 text-xl"
+    className="tab  [--tab-border-color:emerald] bg-transparent text-emerald-800 text-xl"
     aria-label="Collections"
     />
   <div role="tabpanel"  className="tab-content w-[96vw]  md:max-w-[42em] border-emerald-400 border-3 h-[100%] rounded-lg  border-3 border-emerald-400 ">
