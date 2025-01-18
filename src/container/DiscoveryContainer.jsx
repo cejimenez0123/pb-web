@@ -75,7 +75,8 @@ const navigateToLibrary = (library)=>{
             endMessage={<div>No More</div>}
             >
                 {librariesInView.map(library=>{
-                    return  <BookListItem book={library}/>
+                    return     <div key={library.id}>
+                  <BookListItem book={library}/></div>
            
                 })}
             </InfiniteScroll>)

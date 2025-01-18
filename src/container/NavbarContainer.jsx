@@ -193,6 +193,7 @@ function NavbarContainer(props){
                         onClick={()=>{
                             navigate("/")
                         }}
+                        className='text-white'
                         variant="h6"
                         noWrap
                         component="a"
@@ -344,6 +345,7 @@ function NavbarContainer(props){
             <Typography
               variant="h5"
               noWrap
+              className='text-white'
               component="a"
               onClick={()=>navigate("/")}
               href="#app-bar-with-responsive-menu"
