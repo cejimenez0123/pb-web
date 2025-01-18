@@ -129,7 +129,7 @@ console.log(storyToCols)
     }
     const collectionInfo=()=>{
         
-        return(<div className="   sm:flex-row sm:flex justify-around sm:max-w-[50em] mx-auto max-h-full  sm:pb-8 sm:w-48 p-4 sm:border-emerald-600 sm:border-2 mx-2 mt-4 md:mt-8 rounded-lg mb-8 sm:text-left">
+        return(<div className="   sm:flex-row sm:flex justify-around lg:w-info mx-auto max-h-full  sm:pb-8 sm:w-48 p-4 sm:border-emerald-600 sm:border-2 mx-2 mt-4 md:mt-8 rounded-lg mb-8 sm:text-left">
     <div>
         <div>
     <input 
@@ -138,54 +138,51 @@ console.log(storyToCols)
 }}
     type="text" className="bg-transparent text-emerald-800 px-2 py-2 w-full mb-4  lora-medium text-2xl" value={title}/>
        </div>
-        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  text-[1rem]  text-emerald-800  sm:mx-8 border-emerald-600 bg-transparent  max-w-[96vw] w-[100%] md:w-92 md:max-w-96 rounded-lg p-4" value={purpose}/>
+        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  text-[0.8rem]  text-emerald-800  sm:mx-8 border-emerald-600 bg-transparent lg:h-[17em] max-w-[96vw] w-[100%] md:w-92 md:max-w-96 rounded-lg p-2" value={purpose}/>
         </div>
         
-        {/*  */}
+  
         
         <div className="">
-        <div className=" mt-8 w-[100%]  justify-around md:ml-12  gap-3 grid grid-flow-row-dense grid-cols-2  sm:max-w-[22rem]">
+        <div className=" mt-8 w-[100%]  justify-around md:ml-12  gap-2 grid  grid-cols-2  ">
 
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
-   <button className="bg-emerald-800 mont-medium text-white sm:ml-0 w-[10em] h-[5em] text-center rounded-full"
+   <span className="bg-emerald-800 flex  mont-medium text-white sm:ml-0 w-[10em] h-[5em] text-center mx-auto rounded-full"
    
    onClick={updateCollection}
    
-   >Update</button>
+   ><h6 className="mx-auto my-auto">Update</h6></span>
    :null}
  
    <div className="flex flex-row">
     
    <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
-   }className=" bg-emerald-800 w-12 h-12 rounded-full mx-auto p-2"
+   }className=" bg-emerald-800 h-4 w-4 p-2 rounded-full mx-auto "
    src={add}/>
    <img
    onClick={()=>navigate(Paths.collection.createRoute(colInView.id))}
-    className=" bg-emerald-800 w-12 h-12 rounded-full mx-auto p-2" src={view}/>
+    className=" bg-emerald-800 w-4 h-4 rounded-full mx-auto p-2" src={view}/>
    </div>
-{/* <div className=" text-emerald-900"> */}
-{/* <div   className={(isOpen?"border-green-800 border-4":"border-emerald-400 border-2")+" px-2 min-w-36 py-3  bg-transparent mx-auto text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}> */}
-    {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 mont-medium border-4 min-w-36 text-center  flex  bg-transparent m text-[1rem]   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.9rem] w-[6em] mx-auto my-auto lg:text-[1rem] ">Collection is Open Collab</h3> </div>:
-    <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 min-w-36 mont-medium flex text-center bg-transparent mx-auto   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.9rem] w-[6em] mx-auto my-auto lg:text-[1rem]  ">Collection is Close Collab</h3></div>}
+    {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 mont-medium border-4 min-w-36 text-center  flex  bg-transparent m text-[1rem]  mx-auto text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[0.8rem] ">Collection is Open Collab</h3> </div>:
+    <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 min-w-36 mont-medium flex text-center bg-transparent mx-auto   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[0.8rem]  ">Collection is Close Collab</h3></div>}
     
-    {/* </div> */}
-   {/* </div> */}
+ 
    <div>
    
     {isPrivate?<div
        className={`
-        " border-2 flex border-emerald-300 w-[10em] h-[5em]  mont-medium bg-transparent text-emerald-800  rounded-full`}
+        " border-2 flex border-emerald-300 w-[10em] h-[5em]  mont-medium bg-transparent text-emerald-800  mx-auto rounded-full`}
     ><a className="mx-auto text-emerald-800 my-auto">
         Is Private
     </a></div>:<div
     
     className={`
-        " border-2 border-emerald-300 border-4 flex border-success w-[10em] h-[5em]  bg-transparent text-emerald-800  rounded-full`}
+        " border-2 border-emerald-300 border-4 flex mx-auto border-success w-[10em] h-[5em]  bg-transparent text-emerald-800  rounded-full`}
    ><a className="mx-auto my-auto text-emerald-800">Is Public</a></div>}
   
    </div>
-   <div>
-    <div className="">
+   <div className="mx-auto">
+    <div >
     <div className="dropdown">
   <div tabIndex={0} role="button"  className=" "> <label className=" text-emerald-700 border-2 border-emerald-600 rounded-full text-center   py-3 px-2 w-[10em] mont-medium h-[5em] ">Followers are <span   className="text-emerald-700 shadow-sm">{followersAre}s</span>   </label>
  
@@ -205,10 +202,10 @@ console.log(storyToCols)
 
    </div>
    </div>
-   <div>
+   <div className="mx-auto my-auto">
   
  
-    <button onClick={()=>setOpenAccess(true)}className="text-white px-2 py-3 text-[1rem] w-[10em] h-[5em] rounded-full mont-medium bg-emerald-600">Manage Access</button>
+    <a onClick={()=>setOpenAccess(true)}className="text-white px-2 py-3 text-[0.8rem] w-[10em]  rounded-full mont-medium bg-emerald-600">Manage Access</a>
   </div>
    <div>
 
@@ -273,19 +270,20 @@ const deleteSubCollection = (colId)=>{
   <span>{error?error:success}</span>
 </div>:null}</div>
             {collectionInfo()}
-    
-                            <div role="tablist" className="tabs mt-8 max-w-[96vw] mb-48 sm:w-[40em] mx-auto rounded-lg sm:mx-6 tabs-lifted">
+    <div className="max-w-[96vw] lg:w-page mx-auto">
+                            <div role="tablist" className="tabs mt-8 max-w-[96vw] mb-48 lg::w-page mx-auto rounded-lg sm:mx-6 tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-900 text-xl" aria-label="Stories" />
-  <div role="tabpanel" className="tab-content max-w-[96vw] pt-1  sm:w-[40em]  border-emerald-600 rounded-lg border-2">
+  <div role="tabpanel" className="tab-content max-w-[96vw] pt-1   border-emerald-600 lg::w-page rounded-lg border-2">
     {newPages.length==0?<div><h6 className="text-emerald-700 py-24 text-center bg-opacity-20 bg-emerald-400 rounded-lg m-4  text-xl">Room for who you are</h6></div>:<SortableList items={newPages} onOrderChange={handleStoryOrderChange}
   onDelete={deleteStory}/>}
 
   </div>
   <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
-  <div role="tabpanel" className="tab-content max-w-[96vw] pt-1 bg-transparent sm:w-[40em]  border-emerald-600 border-2 rounded-lg md:p-6 ">
+  <div role="tabpanel" className="tab-content max-w-[96vw] pt-1 bg-transparent lg:w-page  border-emerald-600 border-2 rounded-lg md:p-6 ">
  <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20"><h6 className="text-emerald-800 py-24 text-center  m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:<SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteSubCollection}/>}
  </div> 
   </div>
+</div>
 </div>
 <Dialog 
 fullScreen={!md}
@@ -293,6 +291,7 @@ open={openAccess}
 onClose={()=>{
     setOpenAccess(false)
 }}>
+    
     <div className="overflow-y-scroll overflow-x-hidden">
     <RoleForm book={colInView} onClose={()=>setOpenAccess(false)}/>
     </div>
