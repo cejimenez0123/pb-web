@@ -85,7 +85,10 @@ const pageSlice = createSlice({
           state.pageInView = payload.story
         
         }).addCase(getMyStories.fulfilled,(state,{payload})=>{
-          state.pagesInView = payload.pageList
+          if(payload.pageList){
+            state.pagesInView =    payload.pageList
+          }
+     
           state.loading=false
         }).addCase(getMyStories.pending,(state)=>{
           state.loading=true
@@ -106,14 +109,18 @@ const pageSlice = createSlice({
         state.editorHtmlContent = payload.html
       }).addCase(getPublicProfilePages.fulfilled,(state,{payload})=>{
         state.loading = false
-    
-        state.pagesInView = payload.pageList
+    if(payload.pageList){
+      state.pagesInView = payload.pageList
+    }
+  
       }).addCase(getProtectedProfilePages.pending,(state)=>{
         state.loading = true
       }).addCase(getProtectedProfilePages.fulfilled,(state,{payload})=>{
         state.loading = false
-    
-        state.pagesInView = payload.pageList
+        if(payload.pageList){
+          state.pagesInView = payload.pageList
+        }
+     
       })
       .addCase(createStory.rejected,(state,{payload})=>{
         state.loading=false

@@ -19,14 +19,14 @@ function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
 
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const collections = useSelector(state=>state.books.collections)
+    const collections = useSelector(state=>state.books.collections).filter(col=>col)
     const profile = useSelector(state=>state.users.profileInView)
     const homeCollection = useSelector(state=>state.users.homeCollection)
     const dispatch = useDispatch()
     const pathParams = useParams()
-    const [profilePic,setProfilePic]=useState(null)
+
     const [following,setFollowing]=useState(null)
-    const pages = useSelector(state=>state.pages.pagesInView)
+    const pages = useSelector(state=>state.pages.pagesInView).filter(page=>page)
     useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
@@ -45,13 +45,13 @@ function ProfileContainer(props){
             profile&&localStorage.getItem("token")?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile:profile}))
     
     },[profile])
-    useLayoutEffect(()=>{
-        if(profile){
-            getDownloadPicture(profile.profilePic).then(url=>{
-                setProfilePic(url)
-            })
-        }
-    },[profile])
+    // useLayoutEffect(()=>{
+    //     if(profile){
+    //         getDownloadPicture(profile.profilePic).then(url=>{
+    //             setProfilePic(url)
+    //         })
+    //     }
+    // },[profile])
     useEffect(()=>{
 checkIfFollowing({profile})
 

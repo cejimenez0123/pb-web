@@ -58,7 +58,7 @@ function IndexItem({item}) {
 
    const soCanUserAdd=()=>{
     let arr=[RoleType.editor,RoleType.writer]
-    let found = item && item.roles?item.roles.find(role=>role.profileId==currentProfile.id):null
+    let found = item && item.roles?item.roles.find(role=>currentProfile && role.profileId==currentProfile.id):null
     if(currentProfile && item){
       if(currentProfile.id==item.authorId){
         setCanUserAdd(true)
@@ -76,7 +76,7 @@ function IndexItem({item}) {
     setCanUserAdd(false)
    }
    const soCanUserEdit=()=>{
-      let found = item && item.roles?item.roles.find(role=>role.profileId==currentProfile.id):null
+      let found = item && item.roles?item.roles.find(role=>currentProfile && role.profileId==currentProfile.id):null
       if(currentProfile && item){
         if(currentProfile.id==item.authorId){
           setCanUserEdit(true)
