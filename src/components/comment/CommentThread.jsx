@@ -4,7 +4,7 @@ import ErrorBoundary from "../../ErrorBoundary"
 import Comment from "./Comment"
 import { useMediaQuery } from "react-responsive"
 
-export default function CommentThread({comments,level=0}){
+export default function CommentThread({page,comments,level=0}){
    
 let sm =useMediaQuery({
     query: '(max-width: 900px)'
@@ -28,7 +28,10 @@ if(comments.length>0){
                       </div>}
                      >
                         {comments.map(com=>{
-                            return(<div className={`sm:ml-3 border-l-2 sm:rounded-full  border-emerald-200`}><Comment comment={com} level={level+1}/></div>)
+                            return(<div 
+                                key={com.id}
+                                className={`ml-1 sm:rounded-full  `}>
+                                    <Comment page={page} comment={com} level={level+1}/></div>)
                         })}
                       </InfiniteScroll>
         </div>

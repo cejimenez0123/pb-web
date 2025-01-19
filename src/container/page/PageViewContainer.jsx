@@ -9,7 +9,7 @@ import {Helmet} from "react-helmet"
 import { getStory } from "../../actions/StoryActions";
 import CommentThread from "../../components/comment/CommentThread";
 import { postStoryHistory } from "../../actions/HistoryActions";
-
+import { getProfileHashtagCommentUse } from "../../actions/HashtagActions";
 export default function PageViewContainer(props){
 
     const page = useSelector(state=>state.pages.pageInView)
@@ -18,12 +18,12 @@ export default function PageViewContainer(props){
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const loading = useSelector(state=>state.pages.loading)
-    const lookingWrong = <div><h1>Looking in all the wrong places</h1></div>
     const comments = useSelector(state=>state.comments.comments)
     const [rootComments,setRootComments]=useState([])
     useLayoutEffect(()=>{
             if(currentProfile && page){
                 dispatch(postStoryHistory({profile:currentProfile,story:page}))
+                dispatch(getProfileHashtagCommentUse({profileId:currentProfile.id}))
             }
     },[])
     useLayoutEffect(()=>{
@@ -71,11 +71,11 @@ export default function PageViewContainer(props){
         }
     }
     return(<div className="  mx-auto">
-  <div className=" max-w-[96vw]  my-8 sm:max-w-[44em] mx-auto">     
+  <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {title()}
     {pageDiv()}
     
-    <CommentThread comments={rootComments}/>
+    <CommentThread page={page} comments={rootComments}/>
     </div> 
    
 </div>)

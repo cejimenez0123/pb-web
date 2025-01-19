@@ -415,9 +415,12 @@ const deleteComment = createAsyncThunk("pages/deleteComment",async (params,thunk
   const { comment}= params
 
   try{
-  await deleteDoc(doc(db, "page_comment", comment.id));
+  // await deleteDoc(doc(db, "page_comment", comment.id));
+     let data = commentRepo.delete({id:comment.id})
+
   return {
-    comment
+    comment,
+    message:data.message
   }
   }catch(e){
     return{ error: new Error("Error Deleteing comment"+e.message)}
@@ -448,22 +451,11 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
   const updateComment = createAsyncThunk(`pages/updateComment`, async (params,thunkApi)=>{
     const {comment,newText}=params
 
+          let data = await commentRepo.update({id:comment.id,text:newText})
 
-
-    // let ref = doc(db,"page_comment",comment.id)
-    // await updateDoc(ref,{
-    //   text:newText
-    // })
-    // const newComment = new PageComment(comment.id,
-    //                 newText,
-    //                 comment.pageId,
-    //                 comment.profileId,
-    //                 comment.parentCommentId,
-    //                 comment.approvalScore,
-    //                 comment.created)
 
       return {
-        comment:newComment
+        comment:data.comment
       }
   })
   const fetchPagesWhereProfileWriter = createAction("books/fetchBooksWhereProfileEditor",(params,thunkApi)=>{

@@ -14,11 +14,11 @@ class CommentRepo{
     }
     
     async delete({id}){
-        let res = await axios.post(Enviroment.url+"/comment/"+id,{profile,text},{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
+        let res = await axios.delete(Enviroment.url+"/comment/"+id,{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
         return res.data
     }
-   async update({id,text,profile}){
-    let res = await axios.post(Enviroment.url+"/comment/"+id,{profile,text},{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
+   async update({id,text}){
+    let res = await axios.patch(Enviroment.url+"/comment/"+id,{text},{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
     return res.data
    }
 

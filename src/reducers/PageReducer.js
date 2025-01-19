@@ -13,8 +13,8 @@ import {
          
           deleteComment,
           clearEditingPage,
-          appendComment,
-          updateComment,
+     
+       
     
           saveRolesForPage,
           updatePage,
@@ -35,7 +35,7 @@ const initialState = {pagesInView:[],
                       error:"",
                       pageInView: null,
                       pagesToBeAdded: [],
-                      commentsInView:[]
+            
                     }
 const pageSlice = createSlice({
     name: 'pages',
@@ -180,30 +180,7 @@ const pageSlice = createSlice({
       if(payload.page){
       state.editingPage = payload.page
       }
-    }).addCase(deleteComment.rejected,(state,{payload})=>{
-      state.error = payload.error
-    }).addCase(deleteComment.fulfilled,(state,{payload})=>{
-       let comments= state.commentsInView.filter(com=>com.id !== payload.comment)
-      state.commentsInView = comments
-      }).addCase(appendComment,(state,{payload})=>{
-        if(Array.isArray(state.commentsInView)){
-          state.commentsInView = [...state.commentsInView,payload.comment]
-        }else{
-          state.commentsInView = [payload.comment]
-        }
-        
-      }).addCase(updateComment.rejected,(state,{payload})=>{
-        state.error = payload.error
-      }).addCase(updateComment.fulfilled,(state,{payload})=>{
-       let newList = state.commentsInView.map(comment=>{
-          if(comment.id === payload.comment.id){
-            return payload.comment
-          }else{
-            return comment
-          }
-        })
-        state.commentsInView = newList
-      }).addCase(updatePage.fulfilled,(state,{payload})=>{
+    }).addCase(updatePage.fulfilled,(state,{payload})=>{
         if(payload.page){
         state.editingPage = payload.page
         }

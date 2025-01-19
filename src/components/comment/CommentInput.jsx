@@ -4,14 +4,15 @@ import { appendComment, createComment,updateComment } from "../../actions/PageAc
 import { useEffect, useState } from "react"
 import checkResult from "../../core/checkResult"
 
-export default function CommentInput({page,defaultComment,parentComment,parentProfile}){
+
+export default function CommentInput({parentComment,page,defaultComment,handleClose}){
     const dispatch = useDispatch()
-    const pageInView = useSelector(state=>state.pages.pageInView)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [commentInput,setComment] = useState("Remember the sandwich method.\n Compliment.Critique.Compliment")
+    const [commentInput,setComment] = useState(defaultComment?defaultComment.content:"Remember the sandwich method.\n Compliment.Critique.Compliment")
     const [show,setShow]=useState(true)
-    const saveComment=()=>{
-        if(currentProfile && pageInView && commentInput.length >7){
+    const saveComment=(e)=>{
+        e.preventDefault()
+        if(currentProfile && page && commentInput.length >7){
             let id = ""
             if(parentComment){
                 id = parentComment.id
@@ -26,6 +27,7 @@ export default function CommentInput({page,defaultComment,parentComment,parentPr
             checkResult(result,payload=>{
                 setComment("")
                 setShow(false)
+                handleClose()
                 const comment = payload
                 const params = {comment}
                 dispatch(appendComment(params))
@@ -37,19 +39,20 @@ export default function CommentInput({page,defaultComment,parentComment,parentPr
     }}
 
 const clickUpdateComment = ()=>{
-    const params =  {profile: currentProfile,
-        text:commentInput,
-        storyId:page.id,
-        parentCommentId:id,
+    const params =  {
+        newText:commentInput,
+        comment:defaultComment,
+       
   }
     dispatch(updateComment(params))
+    handleClose()
 }
     const input = ()=>{
         
-    return(<div style={{display: show?"":"none"}}className=" p-2">
+    return(<div style={{display: show?"":"none"}}className="bg-emerald-500 rounded-b-lg p-2">
 <textarea
   
-  className="textarea w-[96%] mb-2 p-2 bg-transparent border-emerald-600 border-1 md:max-w-[50em] sm:max-w[40em] max-w-[100vw] text-slate-800 sm:w-96 mx-auto textarea-bordered "
+  className="textarea  mb-2 mx-auto min-h-30 open-sans-medium p-2 bg-transparent border-white border-2  text-white w-[100%] mx-auto textarea-bordered "
   
 
   value={commentInput}
@@ -58,7 +61,7 @@ const clickUpdateComment = ()=>{
   onChange={(e)=>{
      setComment(e.target.value)
 }}></textarea>
-    <div className="flex rounded-full flex-row-reverse mx-4">
+    <div className="flex rounded-full flex-row-reverse ">
        {currentProfile? 
         defaultComment?
             <button 
@@ -67,7 +70,7 @@ const clickUpdateComment = ()=>{
        :
        
        <button  
-       onClick={saveComment}   className="bg-emerald-800 rounded-full text-white  mx-4 hover:bg-emerald-500"> {parentComment?"Reply":"Save Comment"}</button>:
+       onClick={saveComment}   className="bg-emerald-800 rounded-full text-white  mont-medium sm:mx-4 hover:border-green-100 hover:bg-green-500"> {parentComment?"Reply":"Save Comment"}</button>:
        <button className="bg-emerald-200 text-white-800" 
        disabled={!currentProfile} onClick={saveComment}>
             Disabled

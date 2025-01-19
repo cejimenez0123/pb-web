@@ -19,11 +19,14 @@ export default function PageViewItem({page}) {
     
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const navigate = useNavigate()
-
+  
     const [commenting,setCommenting]=useState(false)
+    const handleClose=()=>{
+        setCommenting(false)
+    }
       const commentBox = ()=>{
         if (commenting){
-            return(<CommentInput page={page} />)
+            return(<CommentInput page={page}  handleClose={handleClose}/>)
         }
     }
 
