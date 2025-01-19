@@ -17,6 +17,7 @@ import RoleForm from "../../components/role/RoleForm"
 import { useMediaQuery } from "react-responsive"
 import { RoleType } from "../../core/constants"
 import Role from "../../domain/models/role"
+import Alert from "../../components/Alert"
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{
@@ -254,23 +255,17 @@ const deleteSubCollection = (colId)=>{
         </div>)
     }
     }
+    setTimeout(()=>{
+
+        setError(null)
+      setSuccess(null)
+      
+     
+    },4001)
     if(colInView){
         return(<div>
-                  <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
-             {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-6 w-6 shrink-0 stroke-current"
-    fill="none"
-    viewBox="0 0 24 24">
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-  <span>{error?error:success}</span>
-</div>:null}</div>
+            <Alert error={error} success={success}/>
+     
             {collectionInfo()}
     <div className="max-w-[96vw] lg:w-page mx-auto">
                             <div role="tablist" className="tabs mt-8 max-w-[96vw] mb-2 lg:mb-48 lg::w-page mx-auto rounded-lg sm:mx-6 tabs-lifted">

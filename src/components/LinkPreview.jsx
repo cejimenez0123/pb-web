@@ -145,8 +145,10 @@ const fetchData = async (url) => {
   return (
     <div className={isGrid?" text-white w-fit  p-2 w-[100%] mx-auto":"link-preview bg-emerald-200 text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
+      <div className='text-left open-sans-medium'>
    {previewDescription()}
       {previewTitle()}
+      </div>
     </div>
   );
 }

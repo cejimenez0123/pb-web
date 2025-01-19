@@ -107,7 +107,7 @@ function DashboardContainer(props){
                     <div style={{padding:"2em",textAlign:"center"}}>
                     
                     </div>
-                    <div className='max-w-[94vw] mx-auto lg:max-w-[42em] '> 
+                    <div className='max-w-[94vw] mx-auto sm:w-page '> 
                     <PageList items={itemsInView}/>
                     </div>
                 </div>

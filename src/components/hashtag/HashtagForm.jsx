@@ -59,7 +59,7 @@ export function HashtagForm(){
   
     return (
       <form>
-      <div className="bg-gradient-to-br max-w-[42em]  from-emerald-100 to-emerald-400 ">
+      <div className="bg-gradient-to-br max-w-page from-emerald-100 to-emerald-400 ">
         <textarea
           value={inputValue}
           onChange={handleInputChange}

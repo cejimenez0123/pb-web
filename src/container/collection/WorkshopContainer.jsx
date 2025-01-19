@@ -11,6 +11,7 @@ import { getStory } from '../../actions/StoryActions';
 import PageWorkshopItem from '../page/PageWorkshopItem';
 import loadingAnimation from "../../images/loading.gif"
 import InfoTooltip from '../../components/InfoTooltip';
+import Alert from '../../components/Alert';
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
   const dispatch = useDispatch()
@@ -32,9 +33,10 @@ const WorkshopContainer = (props) => {
   },[isGlobal])
   useEffect(()=>{
 setTimeout(()=>{
-  if(error){
+
     setError(null)
-  }
+  setSuccess(null)
+  
  
 },4001)
   },[error])
@@ -150,8 +152,8 @@ setTimeout(()=>{
 
   return (
     <div>
-     <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
-   {error || success? 
+     {/* <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'> */}
+   {/* {error || success? 
   <div role="alert" className={`alert    
   ${success?"alert-success":"alert-warning"} animate-fade-out`}>
   <svg
@@ -166,9 +168,9 @@ setTimeout(()=>{
       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
   <span>{error?error:success}</span>
-</div>:null}</div>
+</div>:null}</div> */}
 
-    
+    <Alert error={error} success={success}/>
       {currentProfile?(
         <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4    rounded-lg ">
        <div>

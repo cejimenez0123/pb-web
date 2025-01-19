@@ -5,6 +5,7 @@ import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/materi
 import { useMediaQuery } from "react-responsive"
 import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
+import Alert from "../../components/Alert"
 function ApplyContainer(props){
   const isNotPhone = useMediaQuery({
     query: '(min-width: 600px)'
@@ -116,10 +117,18 @@ const handleClose= ()=>{
   setUser(null)
   navigate(Paths.about())
 }
+setTimeout(()=>{
+
+  setError(null)
+
+
+
+},4001)
 return (
   <>
     <div className="sm:pb-8">
-    <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
+      <Alert error={error} />
+    {/* <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
    {error?
   <div role="alert" className={`alert    
   ${"alert-warning"} animate-fade-out`}>
@@ -135,7 +144,7 @@ return (
       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
   <span>{error}</span>
-</div>:null}</div>
+</div>:null}</div> */}
       <div>
         <form
           onSubmit={(e) => onClickApply(e)}

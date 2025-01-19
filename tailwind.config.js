@@ -42,8 +42,14 @@ export default {
     },
     keyframes: {
       fadeOut: {
-        '0%': { opacity: 1 },
-        '100%': { opacity: 0 },
+        '0%': { opacity: 1 ,
+          display:"content"
+        },
+        '100%': { opacity: 0,
+          display:"hidden"
+         
+         },
+      
       },
     },
   },
