@@ -17,8 +17,8 @@ export default function AboutContainer(props){
     <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
 <img  className=" absolute top-[-52%] sm:top-[-20%] md:top-[-30%] lg:top-[-80%] rounded-lg" src={firstGroup}  alt="first group"/>
  </div>
-           <div className="">
-            <div className=" bg-[#23774ca6] text-white h-full rounded-lg p-4" >
+           
+            <div className=" bg-[#23774ca6] text-white h-[100%] rounded-lg p-4" >
 <div  >
 <h6 className="lora-medium font-bold text-[2rem]">For Creatives</h6>
 <div >
@@ -29,7 +29,7 @@ Finding mutual support in writing is challenging.
 There's not one kind of look for a writer. Creatives need a place to test their skills and gain confidence in and that is what Plumbum is for. 
 </h6>
 </div>
-</div>
+
 </div>
         </div> </div>)
     }
@@ -44,7 +44,7 @@ const writingJourney = ()=>{
 <h3 className="text-[1.4rem] open-sans-medium  my-4 font-bold">Get started now!!</h3>
 </div>
 <div className="text-2xl flex text-white max-w-[30em] mx-auto my-12 bg-emerald-800 rounded-full  px-5 py-4" onClick={()=>{navigate(Paths.apply())}}  
-   > <h5 className="mx-auto mont-medium  my-auto">Apply to Join Today</h5></div>
+   > <h5 className="mx-auto mont-medium text-xl tracking-wide my-auto">Apply to Join Today</h5></div>
 </div>
     </div>)
 }

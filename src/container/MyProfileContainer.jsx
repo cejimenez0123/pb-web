@@ -154,10 +154,10 @@ function MyProfileContainer(props){
                             <div className=' w-[86%] mx-auto grid grid-cols-2 gap-2 '>
                                 <div onClick={ClickWriteAStory} 
                                 className='bg-emerald-500  flex rounded-full text-white md:mt-2  h-[5em] w-[8em] md:w-[10em] md:h-[3em]  text-bold'>
-                               <h6 className='my-auto text-md mx-auto '> Write a Story</h6>
+                               <h6 className='my-auto text-[0.7rem] md:text-md mx-auto '> Write a Story</h6>
                             </div>
                             <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5em] w-[8em]  md:w-[10em] md:h-[3em] text-white   text-bold'>
-                              <div className='mx-auto text-md md:text-l my-auto flex-col flex md:flex-row'><h6 >Create </h6><h6>Collection</h6> </div> 
+                              <div className='mx-auto text-[0.7rem] md:text-md my-auto flex-col flex md:flex-row'><h6 >Create </h6><h6>Collection</h6> </div> 
                             </div>
                             <div className='w-[10em] h-[3em] mx-auto flex'>
                             <h6 onClick={()=>setOpenRefferal(true)}className='my-auto mx-auto text-sm  text-emerald-800'>Refer Someone?</h6>
@@ -197,7 +197,7 @@ function MyProfileContainer(props){
                 <div className='md:w-page mx-auto'> 
                 {isPhone? <label className='flex  mt-8 flex-row mx-2'>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className='rounded-lg px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 border-emerald-700 border-1 text-emerald-800' />
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
   </label>:null}
                             <div className='w-[96vw]  lg:mt-8 mx-auto md:w-page'>
 

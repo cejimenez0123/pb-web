@@ -12,6 +12,7 @@ import { createSlice} from "@reduxjs/toolkit"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
 import { createWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActions"
 import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
+import { setCollections } from "../actions/BookActions"
 const initialState = {
     groups:[],
     collections:[],
@@ -119,7 +120,12 @@ state.loading = true
     state.loading = false
     state.collections= payload.books
 
-})
+}).addCase(setCollections.type,(state,{payload})=>{
+   if(payload.collections){
+    state.collections = payload.collections
+   }
+ 
+    })
 .addCase(saveRoleToCollection.rejected,(state,{payload})=>{
     state.loading = false
     state.error = "Error Saving Role"

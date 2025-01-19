@@ -40,7 +40,7 @@ if(page){
             <div className="relative  ">
             <div onClick={()=>{navigate(Paths.profile.createRoute(page.author.id))}} className=' absolute   pr-3 flex flex-row justift-start '>
                 <div className=" text-emerald-600 px-3 flex flex-row py-2 rounded-tl-lg text-elipsis text-md rounded-br-lg bg-transparent to-opacity-0 ">
-                {page && page.author?<ProfileCircle profile={page.author}/>:null}{page.title.length>0?<span className="my-auto text-ellipsis">{page.title} </span>:<span className="my-auto">Untitled</span>}
+                {page && page.author?<ProfileCircle profile={page.author}/>:null}{page.title.length>0?<span className="my-auto mx-2 text-ellipsis">{page.title} </span>:<span className="my-auto">Untitled</span>}
                 </div>
               
             </div>

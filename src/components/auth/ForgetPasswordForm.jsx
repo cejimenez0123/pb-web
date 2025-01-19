@@ -48,28 +48,26 @@ setLoading(false)
 </div>:null}</div>
                    <div className="flex flex-col">
                          <Typography 
-                    id="modal-modal-title" variant="h6" component="h2"
+                    id="modal-modal-title" className="text-emerald-700" variant="h6" component="h2"
                     >
       Forgot Password
     </Typography>
-{/* <input value={email} onChange={(e)=>setEmail(e.target.value.trim())}/> */}
-<label  className="flex-row flex my-8 border-emerald-400 rounded-full border-1 px-4">
-    <h6 className="my-auto">Username</h6>
-<input  placeholder="username" className="input bg-transparent w-[100%] text-emerald-800" value={username} onChange={(e)=>setUsername(e.target.value.trim())}/>
-</label>     
-<label  className="flex-row flex border-emerald-400 rounded-full border-1 px-4">
-    <h6 className="my-auto">Email</h6>
+
+<div className=" py-8 ">
+<label  className="flex-row flex border-emerald-600 rounded-full border-1 px-4">
+    <h6 className="my-auto text-l text-emerald-800 lora-medium">Email</h6>
 <input  placeholder="email" className="input bg-transparent w-[100%] text-emerald-800" value={email} onChange={(e)=>setEmail(e.target.value.trim())}/>
 </label>         
                         <a
                         onClick={handleClick}
-                            className="my-8 bg-emerald-400 text-white flex rounded-full py-3"
+                            className="my-8 bg-emerald-600 text-white flex rounded-full py-3"
                             variant='outlined'
                          >
                          <h6 className="mx-auto mont-medium my-auto">Sent</h6>
                         
                    </a>
                    {loading?<h6>Loading...</h6>:null}
+                   </div>
                    </div>
     </div>)
 }

@@ -8,6 +8,7 @@ import { searchDialogToggle, searchMultipleIndexes } from "../actions/UserAction
 import checkResult from "../core/checkResult";
 import { useNavigate } from "react-router-dom";
 import AlgoliaIcon from "../images/algolia.svg"
+import ProfileCircle from "./profile/ProfileCircle";
 
 
 export default function SearchDialog(props){
@@ -57,12 +58,13 @@ export default function SearchDialog(props){
    const closeDialog = ()=>{
         dispatch(searchDialogToggle({open:false}))
    }
-    return<Dialog  fullScreen={mediaQuery} className="search-dialog"
+    return<Dialog  fullScreen={mediaQuery} 
                    open={searchDialogOpen} >
-    <div className='header'>
+                    <div className="pt-3">
+    <div className='header py-3 px-3'>
       <ClearIcon onClick={closeDialog}/>
     </div>
-    <div style={{width:"94%",margin:"auto",display:"flex",flexDirection:"row"}}>
+    <div className="flex flex-row px-3">
     <TextField  value={searchQuery}
                 style={{flex:"auto"}}
                 onChange={(e)=>debounce(setSearchQuery(e.currentTarget.value),10)}
@@ -70,7 +72,7 @@ export default function SearchDialog(props){
                
               
                 />
-            <img style={{height:"2em"}}src={AlgoliaIcon}/>
+            <img className="my-auto max-h-8" src={AlgoliaIcon}/>
        </div>         
     <InfiniteScroll
         className="scroll max-w-[100%] overflow-hidden"
@@ -83,15 +85,17 @@ export default function SearchDialog(props){
        {searchContent.map((content,i)=>{
 
         return(<div
-        className="py-2 border-2 px-4 my-2 max-w-[90%] border-emerald-200 rounded-full"
+        key={i}
+        className="py-3 border-2 px-4 my-2 w-[94%] mx-auto border-emerald-200 rounded-full"
         onClick={()=>handleOnClick(content)}>
-          {content.title?content.title:content.username}
+         {content.title?content.title:content.username}
         </div>)
    
            
         })}
     </InfiniteScroll>
     <div style={{height:"100%"}}>
+    </div>
     </div>
   </Dialog>
 }

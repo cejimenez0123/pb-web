@@ -18,7 +18,7 @@ const ProfileInfo = ({profile})=>{
     },[])
     return (                           
     <div className='flex-row   mx-auto   flex  '>
-        <div className="max-w-16 max-h-16 mr-6 rounded-full overflow-hidden">
+        <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mr-6 rounded-full overflow-hidden">
     <img className={"object-fit "}src={pictureUrl}/>
     </div>
 

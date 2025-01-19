@@ -131,9 +131,9 @@ function IndexItem({item}) {
 
 
     return(
-                <div onClick={handleNavigate} className="border-3  shadow-sm  rounded-full max-w-[94vw] lg:w-[100%]  w-full my-3 py-1 border-emerald-300"><div className={`   mb-1 `}> 
+                <div className="border-3  shadow-sm  rounded-full max-w-[94vw] lg:w-[100%]  w-full my-3 py-1 border-emerald-300"><div className={`   mb-1 `}> 
               <div  className=" px-8 flex flex-row justify-between  " >
-                <div className="text-left my-auto  py-4 mt-1 ">
+                <div onClick={handleNavigate} className="text-left  my-auto  py-4 mt-1 ">
                    {item && item.title && item.title.length>0? <h6 
          className={`text-[0.9rem] md:text-[1.2rem] text-ellipsis max-w-[12em] md:max-w-[20em] ":"max-w-[18em]"} whitespace-nowrap text-emerald-700 no-underline overflow-hidden my-auto`}>{item.title}</h6>:
                    <h6 className={`text-[0.9rem] md:text-[1.2rem] text-ellipsis max-w-[12em] ":""}  whitespace-nowrap text-emerald-700 no-underline overflow-hidden my-auto`}

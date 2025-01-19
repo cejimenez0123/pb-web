@@ -123,18 +123,18 @@ function LogInCard({setLogInError}){
         <h1 className='text-emerald-800 lora-medium pb-4'> Log In</h1>
         <div >
          <div className='max-w-[91vw]'>
-        <label className="input  open-sans-medium text-emerald-800 w-52 overflow-hidden pl-2  border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
+        <label className="input  open-sans-medium text-emerald-800 pl-6 w-52 overflow-hidden pl-2  rounded-full border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
   Email
-  <input type="text" className="shrink overflow-hidden text-[1rem] w-[100%] sm:max-w-[100%]  py-2 bg-transparent text-emerald-800" 
+  <input type="text" className="shrink overflow-hidden  text-[1rem] w-[100%] sm:max-w-[100%]  open-sans-medium py-2 bg-transparent text-emerald-800" 
          value={email} 
          onChange={(e) => setEmail(e.target.value.trim())}
         placeholder='example@email.com' />
 </label>
 </div>   
 <div className='mb-8 max-w-[91vw] '>
-    <label className="input open-sans-medium inline-block flex flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
+    <label className="input open-sans-medium pl-6 inline-block flex rounded-full flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
   Password
-  <input type={showPassword?"text":`password`} className="shrink max-w-36 sm:max-w-52  shrink text-emerald-800 " 
+  <input type={showPassword?"text":`password`} className="shrink max-w-36 open-sans-medium sm:max-w-52  shrink text-emerald-800 " 
          value={password}
          
          onChange={(e) => setPassword(e.target.value.trim())}
@@ -147,21 +147,21 @@ function LogInCard({setLogInError}){
     
     </div>
             <div 
-                className='text-emerald-800 open-sans-medium hover:text-green-400'
+                className='  '
                 onClick={()=>{
                     setOpen(true)
                 }}>
-                <a>Forgot Password?</a>
+                <a className='text-[1rem] mont-medium hover:text-green-400 text-emerald-800'>Forgot Password?</a>
             </div>
             <button
-            className='bg-green-600 mont-medium  text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
+            className='bg-green-600   text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
                onClick={handleLogIn}
                 
-                variant="contained" >Submit</button>
+                variant="contained" ><h6 className='mont-medium text-xl tracking-wide'>Log In</h6></button>
                 
         </div>
         <div className='mt-4 p-4'>
-        <a  onClick={handleFirstTimeClick}className='text-emerald-800 open-sans-medium hover:text-green-400  '>Click here if this your first time?</a>
+        <a  onClick={handleFirstTimeClick}className='text-emerald-800 text-xl open-sans-medium hover:text-green-400  '>Click here if this your first time?</a>
         </div>
         <div>
         
@@ -180,58 +180,7 @@ function LogInCard({setLogInError}){
                 </div>  
                 <ForgotPasswordForm/>
 
-                    {/* <FormGroup
-                     style={{
-                       
-                            marginLeft: inputStyle.marginLeft,
-                            margin:"4em auto 0em auto ",
-                            padding:"2em",
-                            minWidth: "20em"
-                            }}  
-                    
-                     >
-                         <Typography 
-                    id="modal-modal-title" variant="h6" component="h2"
-                    >
-      Forgot Password
-    </Typography>
-
-                        <TextField 
-                            label="E-mail" 
-                            value={forgotEmail} 
-                            style={{marginTop:"4em",
-                            
-                                    marginBottom:"2em",
-                                    backgroundColor:theme.palette.secondary.contrastText}}
-                            onChange={(e)=>setForgotEmail(e.target.value)}
-                        />
-                        <Button 
-                            style={{backgroundColor:theme.palette.secondary.main,
-                                    color:theme.palette.secondary.contrastText}}
-                            variant='outlined'
-                            onClick={()=>{
-                                {username,email}
-                            
-                                // if(forgotEmail.length > 0){
-                                // sendPasswordResetEmail(auth, forgotEmail)
-                                // .then(() => {
-                                //   window.alert("Email Sent!")
-                                // })
-                                // .catch((error) => {
-                                //   const errorCode = error.code;
-                                //   const errorMessage = error.message;
-                                //   if(error.message.includes("(auth/user-not-found)")){
-                                //     window.alert("User not found")
-                                //   }
-                            
-                                  // ..
-                                // });}else{
-                                //     window.alert("Please write an email")
-                                // }
-                            }}>
-                            Send
-                        </Button>
-                    </FormGroup> */}
+            
                 </Dialog>
                 </div></div>
     </div>)

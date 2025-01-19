@@ -10,10 +10,12 @@ import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
 import IndexList from "../../components/page/IndexList"
-import { getProtectedProfilePages,getPublicProfilePages } from "../../actions/PageActions"
+import { getProtectedProfilePages,getPublicProfilePages, setPagesInView } from "../../actions/PageActions"
 import { createFollow, deleteFollow } from "../../actions/FollowAction"
 import { getProtectedProfileCollections, getPublicProfileCollections } from "../../actions/CollectionActions"
 import { debounce } from "lodash"
+import { DisabledByDefaultTwoTone } from "@mui/icons-material"
+import { setCollections } from "../../actions/BookActions"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
 
@@ -39,18 +41,13 @@ function ProfileContainer(props){
         })
     },[])
     useLayoutEffect(()=>{
-
+                dispatch(setPagesInView({pages:[]}))
+                dispatch(setCollections({collections:[]}))
             localStorage.getItem("token")?dispatch(getProtectedProfilePages({profile:profile})):dispatch(getPublicProfilePages({profile:profile}))
             localStorage.getItem("token")?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile:profile}))
     
     },[profile])
-    // useLayoutEffect(()=>{
-    //     if(profile){
-    //         getDownloadPicture(profile.profilePic).then(url=>{
-    //             setProfilePic(url)
-    //         })
-    //     }
-    // },[profile])
+
     useEffect(()=>{
 checkIfFollowing({profile})
 
