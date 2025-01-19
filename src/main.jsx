@@ -18,7 +18,7 @@ const reducer = combineReducers({
   pages: pageSlice.reducer,
   users: userSlice.reducer,
   books: bookSlice.reducer,
-  // libraries: libSlice.reducer,
+ libraries: libSlice.reducer,
   comments: commentSlice.reducer,
   roles: rolesSlice.reducer
 })
