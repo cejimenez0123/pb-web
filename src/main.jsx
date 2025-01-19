@@ -18,7 +18,7 @@ const reducer = combineReducers({
   pages: pageSlice.reducer,
   users: userSlice.reducer,
   books: bookSlice.reducer,
-  libraries: libSlice.reducer,
+  // libraries: libSlice.reducer,
   comments: commentSlice.reducer,
   roles: rolesSlice.reducer
 })
@@ -29,7 +29,7 @@ const store = configureStore({reducer:reducer,
     { serializableCheck: false
     }
   )
-   .concat(logger)
+  //  .concat(logger)
 
 })
 ReactDOM.createRoot(document.getElementById('root')).render(
