@@ -3,6 +3,7 @@ import { useSelector,useDispatch} from "react-redux"
 import { appendComment, createComment,updateComment } from "../../actions/PageActions"
 import { useEffect, useState } from "react"
 import checkResult from "../../core/checkResult"
+import { debounce } from "lodash"
 
 
 export default function CommentInput({parentComment,page,defaultComment,handleClose}){
@@ -10,16 +11,17 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [commentInput,setComment] = useState(defaultComment?defaultComment.content:"Remember the sandwich method.\n Compliment.Critique.Compliment")
     const [show,setShow]=useState(true)
-    const saveComment=(e)=>{
+    const saveComment=debounce((e)=>{
         e.preventDefault()
-        if(currentProfile && page && commentInput.length >7){
+        if(commentInput.length>7){
+        if(currentProfile && page ){
             let id = ""
             if(parentComment){
                 id = parentComment.id
             }
         const params =  {profile: currentProfile,
               text:commentInput,
-              storyId:pageInView.id,
+              storyId:page.id,
               parentCommentId:id,
         }
     
@@ -36,7 +38,9 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
             })
     
         })
-    }}
+    }}else{
+        window.alert("Comment must be at least 7 characters")
+    }},10)
 
 const clickUpdateComment = ()=>{
     const params =  {
@@ -70,7 +74,7 @@ const clickUpdateComment = ()=>{
        :
        
        <button  
-       onClick={saveComment}   className="bg-emerald-800 rounded-full text-white  mont-medium sm:mx-4 hover:border-green-100 hover:bg-green-500"> {parentComment?"Reply":"Save Comment"}</button>:
+       onClick={(e)=>saveComment(e)}   className="bg-emerald-800 rounded-full text-white  mont-medium sm:mx-4 hover:border-green-100 hover:bg-green-500"> {parentComment?"Reply":"Save Comment"}</button>:
        <button className="bg-emerald-200 text-white-800" 
        disabled={!currentProfile} onClick={saveComment}>
             Disabled

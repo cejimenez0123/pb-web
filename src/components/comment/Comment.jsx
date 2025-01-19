@@ -95,7 +95,8 @@ export default function Comment({page,comment,level}){
                    onClick={()=>setReplyInput(!replyInput) }
                 
                   
-                    className="  place-self-end bottom-0  mt-8  sm:flex sm:flex-row text-[0.9rem] mont-medium md:px-4   font-bold sm:text-[1rem] mr-2 rounded-full sm:bg-emerald-600 py-2  text-white sm:mx-2 sm:text-center text-white sm:text-emerald-700 sm:my-auto  no-underline  mont-medium ">Reply</h6>
+                    className="  place-self-end bottom-0  mt-8  sm:flex sm:flex-row text-[0.9rem] mont-medium md:px-4   font-bold sm:text-[1rem] mr-2 rounded-full sm:bg-emerald-600 py-2  text-white sm:mx-2 sm:text-center text-white sm:text-emerald-700 sm:my-auto  no-underline  mont-medium ">
+                        {!replyInput?"Reply":"Close"}</h6>
       
                 </div>
                    

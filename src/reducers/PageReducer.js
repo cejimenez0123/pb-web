@@ -10,12 +10,7 @@ import {
           setPagesToBeAdded,
           clearPagesInView,
           fetchEditingPage,
-         
-          deleteComment,
           clearEditingPage,
-     
-       
-    
           saveRolesForPage,
           updatePage,
           setEditingPage,

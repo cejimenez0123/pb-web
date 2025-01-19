@@ -353,20 +353,7 @@ const createComment = createAsyncThunk("pages/createComment", async function({
  let data = await commentRepo.create({profile:profile,storyId:storyId,text,parentId:parentCommentId})
 return {comment:data.comment}
 
-    // const commentRef = collection(db,"page_comment")
-    // const id = doc(commentRef).id
-    // const created = Timestamp.now()
-    //   await setDoc(doc(db,"page_comment",id), { 
-    //   id:id,
-    //   profileId: profileId,
-    //   text: text,
-    //   pageId:pageId,
-    //   parentCommentId:parentCommentId,
-    //   approvalScore:0.0,
-    //   created:created})
-    //   const comment =new PageComment(id,text,pageId,profileId,parentCommentId,0.0)
   
-  return { comment }
   }catch(error){
    
     return {
@@ -415,11 +402,11 @@ const deleteComment = createAsyncThunk("pages/deleteComment",async (params,thunk
   const { comment}= params
 
   try{
-  // await deleteDoc(doc(db, "page_comment", comment.id));
-     let data = commentRepo.delete({id:comment.id})
+  
+     let data = await commentRepo.delete({id:comment.id})
 
   return {
-    comment,
+    comment:data.comment,
     message:data.message
   }
   }catch(e){

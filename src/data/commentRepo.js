@@ -14,7 +14,12 @@ class CommentRepo{
     }
     
     async delete({id}){
-        let res = await axios.delete(Enviroment.url+"/comment/"+id,{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
+       let token= localStorage.getItem("token")
+    
+        let res = await axios.delete(Enviroment.url+"/comment/"+id,
+        {headers:
+            {Authorization:"Bearer "+token}})
+            console.log(res)
         return res.data
     }
    async update({id,text}){

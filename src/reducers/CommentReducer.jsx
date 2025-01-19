@@ -43,18 +43,19 @@ builder.addCase(createComment.fulfilled,(state,{payload})=>{
     
    let newList = list.map(comment=>{
       if(comment.id==payload.comment.id){
-        console.log("touch")
+ 
         return payload.comment
       }else{
         return comment
       }
     })
-    console.log("newList",newList)
+
     state.comments = newList
   }).addCase(deleteComment.rejected,(state,{payload})=>{
     state.error = payload.error
   }).addCase(deleteComment.fulfilled,(state,{payload})=>{
-     let comments= state.commentsInView.filter(com=>com.id !== payload.comment)
-    state.commentsInView = comments
+    let list = state.comments
+     let comments= list.filter(com=>com.id !== payload.comment.id)
+    state.comments = comments
     })}})
 export default commentSlice
