@@ -3,7 +3,6 @@ import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
 import "../App.css"
-import { debounce } from 'lodash';
 function LinkPreview({ url,isGrid}) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -91,9 +90,10 @@ const fetchData = async (url) => {
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      <div  className={isGrid?" rounded-lg   mx-auto max-w-[100%]  ":"spotify"} 
+      <div  className={"spotify"+isGrid?" rounded-lg   mx-auto   ":""} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"} className='rounded-lg overflow-hidden'   link={url}/>
+        <Spotify width={"100%"} style={{minHeight:"27.5em",borderRadius:"2em",overflow:"hidden"}} className="bg-emerald-200 max-h-[20em]"
+         link={url}/>
       </div>)
   }
   if (loading) {
@@ -121,8 +121,8 @@ const fetchData = async (url) => {
     </div>)
     }else{
        return (
-        <div className='rounded-lg w-[100%]'>
-        <Spotify width={"100%"}  height={"120"}link={url}/>
+        <div className='spotify rounded-lg w-[100%]'>
+        <Spotify width={"100%"}  height={"140"}link={url}/>
         </div>
       )
     }
@@ -143,7 +143,7 @@ const fetchData = async (url) => {
   }
 
   return (
-    <div className={isGrid?" text-white w-fit  p-2 w-[100%] mx-auto":"link-preview bg-emerald-200 text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className={isGrid?" text-white w-fit  p-2 w-[100%] mx-auto":"h-fit bg-emerald-200 text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       <div className='text-left open-sans-medium'>
    {previewDescription()}

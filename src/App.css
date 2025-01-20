@@ -52,6 +52,9 @@
   font-weight: 700;
   font-style: normal;
 }
+.spotify body{
+  max-height: 10em !important;
+}
 @media (min-width:768px) {
   
 

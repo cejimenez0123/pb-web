@@ -75,7 +75,7 @@ function EditorContainer(props){
         if(!fetchedPage){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
               let params = parameters
-              params.data = 
+              params.data = htmlContent
               params.type = last 
               setParameters(params)
             
@@ -229,7 +229,7 @@ setError(err.message)
 
       <div className="  h-[100%] ">  
       
-      <div className="dropdown dropdown-bottom   h-[100%] dropdown-end">
+      <div className="dropdown dropdown-bottom  min-h-[4rem] h-[100%] dropdown-end">
       <div tabIndex={0} role="button" ><img className="min-w-16 h-[100%] bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
       <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1]  p-2 shadow">
         <li className="text-emerald-600 pt-3 pb-2 "

@@ -2,7 +2,6 @@ import React, { useEffect, useLayoutEffect, useState } from 'react'
 import "../../Dashboard.css"
 import { deletePageApproval,   setEditingPage,   setPageInView, } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
-import { PageType } from '../../core/constants'
 import {useDispatch, useSelector} from 'react-redux'
 import { IconButton} from '@mui/joy'
 import { useNavigate } from 'react-router-dom'
@@ -11,11 +10,8 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
-import LinkPreview from '../LinkPreview'
-import isValidUrl from "../../core/isValidUrl"
 import bookmarkadd from "../../images/bookmarkadd.svg"
 import PageDataElement from './PageDataElement'
-import getDownloadPicture from '../../domain/usecases/getDownloadPicture'
 import ProfileCircle from '../profile/ProfileCircle'
 function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()

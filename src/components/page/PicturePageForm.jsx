@@ -16,8 +16,6 @@ import { debounce } from 'lodash';
 function PicturePageForm(props){
     const dispatch = useDispatch()
     const {page,parameters,setParameters} = useContext(EditorContext)
-    
-    const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
     const [localContent,setLocalContent] = useState("")
     const ePage = useSelector(state=>state.pages.editingPage)
     const [file,setFile]=useState(null)
@@ -38,9 +36,9 @@ function PicturePageForm(props){
         }
     }else{
         setLocalContent(e.target.value)
-    
-        let params = parameters
         setImage(null)
+        dispatch(setHtmlContent(e.target.value))
+        let params = parameters
         params.data = e.target.value
         setParameters(params)
     }}
@@ -54,10 +52,10 @@ function PicturePageForm(props){
                     setImage(null)
                 }
                 case PageType.picture:{
-                    console.log("b")
+                
                         if(isValidUrl(ePage.data)){
                             setImage(ePage.data)    
-                            setLocalContent(page.data)
+                            setLocalContent(ePage.data)
                         }else{
                             getDownloadPicture(ePage.data).then(url=>{
                                 console.log("Touch")
@@ -122,9 +120,9 @@ function PicturePageForm(props){
     const checkContentTypeDiv = (type)=>{
         switch(type){
             case PageType.link:{  
-                if(isValidUrl(htmlContent)){        
+                if(isValidUrl(localContent)){        
                     return(
-                    <LinkPreview url={htmlContent} />
+                    <LinkPreview url={localContent} />
                     )
                  }else{
                     return (<div className={"text-emerald-800 p-4"}>

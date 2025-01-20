@@ -6,9 +6,12 @@ import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import PicturePageForm from "./PicturePageForm"
 import EditorContext from "../../container/page/EditorContext"
 import { useLocation } from "react-router-dom"
+import { setHtmlContent } from "../../actions/PageActions"
+import { useDispatch } from "react-redux"
 
  export default function EditorDiv({handleChange,createPage}){
         const location = useLocation()
+        const dispatch = useDispatch()
         const {page,parameters,setParameters} = useContext(EditorContext)
         let href =location.pathname.split("/")
         let last = href[href.length-1]
@@ -20,6 +23,8 @@ import { useLocation } from "react-router-dom"
             getDownloadPicture(page.data).then(url=>{
               setImage(url)
             })
+          }else if(page){
+            dispatch(setHtmlContent(page.data))
           }
         },[page])
     
@@ -60,7 +65,7 @@ import { useLocation } from "react-router-dom"
                 if(!page){
                   return(<div><PicturePageForm createPage={createPage}/></div>)
                 }
-                return (<div  className="mx-auto  bg-emerald-200 rounded-b-lg w-full p-8">
+                return (<div  className="mx-auto  bg-emerald-200 rounded-b-lg  w-full p-8">
 
                 <img  className="rounded-lg my-4 mx-auto"
                 src={image} alt={page.title}/>
@@ -69,7 +74,7 @@ import { useLocation } from "react-router-dom"
             
           case PageType.link:{
            
-                  return(<div><PicturePageForm createPage={createPage}/></div>)
+                  return(<div><PicturePageForm /></div>)
                 
                 
             
