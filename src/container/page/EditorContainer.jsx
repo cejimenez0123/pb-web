@@ -31,7 +31,7 @@ import Alert from "../../components/Alert"
 function EditorContainer(props){
     
         const currentProfile = useSelector(state=>state.users.currentProfile)
-
+        const [getFeedback,setFeedback]=useState(false)
         const [error,setError]=useState(null)
         const [success,setSuccess]=useState(null)
         const [fetchedPage,setFetchedPage]=useState(null)
@@ -229,9 +229,9 @@ setError(err.message)
 
       <div className="  h-[100%] ">  
       
-      <div className="dropdown dropdown-bottom  min-h-[4rem] h-[100%] dropdown-end">
-      <div tabIndex={0} role="button" ><img className="min-w-16 h-[100%] bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
-      <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1]  p-2 shadow">
+      <div className="dropdown dropdown-bottom   dropdown-end">
+      <div tabIndex={0} role="button" ><img className="min-w-16 min-h-[4rem]   bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
+      <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1] shadow">
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
         <li onClick={()=>{navigate(Paths.workshop.createRoute(parameters.page.id))}} className="text-emerald-600 pt-3 pb-2 "><a>Get Feedback</a></li>
@@ -295,6 +295,16 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
           </div>
       
   
+      </Dialog>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <div className="rounded-lg">
+       
+        </div>
       </Dialog>
       <Dialog
         open={open}

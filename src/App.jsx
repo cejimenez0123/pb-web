@@ -39,11 +39,14 @@ import { getHashtags, getProfileHashtagCommentUse } from './actions/HashtagActio
 import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
 import ResetPasswordContainer from './container/auth/ResetPassword.jsx';
 import { useSearchParams } from 'react-router-dom';
+import Alert from './components/Alert.jsx';
 function App(props) {
 
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
+  const [success,setSuccess]=useState(null)
+  const [error,setError]=useState(null)
   useEffect(()=>{
   
       props.getCurrentProfile().then(result=>{
@@ -67,7 +70,7 @@ function App(props) {
   }
 
   return (
-      <Context.Provider value={{formerPage,setFormerPage,isSaved,setIsSaved}}>
+      <Context.Provider value={{formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
                 <Router>
       
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
@@ -109,7 +112,7 @@ function App(props) {
         profile={props.currentProfile}/>
         <SearchDialog  />
         <div className='screen'>
-
+<Alert error={error} success={success}/>
       <Routes >
           <Route path={Paths.home()} 
                         element={
