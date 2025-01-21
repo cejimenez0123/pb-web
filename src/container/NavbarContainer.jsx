@@ -4,7 +4,6 @@ import '../App.css'
 import "../styles/Navbar.css"
 import {signOutAction} from "../actions/UserActions"
 import { useNavigate } from 'react-router-dom'
-import AppBar from '@mui/material/AppBar'
 import menu from "../images/icons/menu.svg"
 import getDownloadPicture from '../domain/usecases/getDownloadPicture'
 import { debounce } from 'lodash'
@@ -244,18 +243,20 @@ return (<li onClick={()=>openDialogAction()}
 
 }else{
 return(  <li onClick={()=>handleCloseNavMenu(page) } >
-<a   className=' text-emerald-800 no-underline' key={page} >
+<a   className=' text-emerald-800  no-underline' key={page} >
 {page}</a></li>
 
 )
-}
-          })
+} })
         }
       
       </ul>
     </div>
-    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-xl">Pb</a>
+  
   </div>
+  <div className='navbar-center lg:navbar-start'>
+    <a  onClick={()=>navigate("/")}className="btn btn-ghost  text-xl">Pb</a>
+    </div>
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">
     {pages.map((page) => {

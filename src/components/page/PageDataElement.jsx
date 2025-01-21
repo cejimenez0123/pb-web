@@ -4,7 +4,7 @@ import { PageType } from "../../core/constants"
 import LinkPreview from "../LinkPreview"
 import isValidUrl from "../../core/isValidUrl"
 export default function PageDataElement({page,isGrid}){
-    const [image,setImage]=useState(page.data)
+    const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const [loading,setLoading]=useState(true)
     useEffect(()=>{
         
@@ -59,7 +59,7 @@ case PageType.link:{
         </div>)
 }
 default:
-    return(<div className='skeleton'>
+    return(<div className='skeleton min-h-24'>
     Loading...
 </div>)
 }
