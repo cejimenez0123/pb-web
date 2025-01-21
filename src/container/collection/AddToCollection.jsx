@@ -87,18 +87,18 @@ export default function AddToCollectionContainer(props){
 
     const storyList = ()=>{
       
-        return(<div className=" my-4 lg:w-page text-emerald-800 mx-auto overflow-scroll sm:mx-12 text-left mb-2">
+        return(<div className=" my-4 lg:w-page text-emerald-800 mx-auto overflow-scroll mx-auto text-left mb-2">
             <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Stories to Collection</h6>
             <InfiniteScroll
             className=" mx-2 "
         dataLength={pagesInView.length}>
             {pagesInView.filter(str=>str)
             .filter(story=>
-                !colInView.storyIdList.find(storyJoint=>
+                colInView && colInView.storyIdList && !colInView.storyIdList.find(storyJoint=>
                     storyJoint.storyId==story.id)).map(story=>{
                 return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-3
                 border-emerald-400  rounded-full py-4 px-8  my-2">
-                    <h2 className="text-l max-w-[60%] my-auto  overflow-clip">{story?story.title:null}</h2>
+                    <h2 className="text-l max-w-[60%] my-auto  overflow-clip">{story.title && story.title.trim().length>0?story.title:"Untitled"}</h2>
                     <div className="bg-emerald-800 rounded-full p-2">{colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
                     <h1 onClick={()=>removeNewStory(story)}className="">
 <p className="text-2xl    "><img className="max-h-[1.5rem] max-w-[1.5rem]" src={checked}/></p>
@@ -126,7 +126,7 @@ export default function AddToCollectionContainer(props){
 {list.map(col=>{
             return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-3
             border-emerald-400 rounded-full py-4 px-8   my-2">
-                <h2 className="text-l my-auto max-w-[60%] no-underline overflow-clip">{col?col.title:"Untitled"}</h2>
+                <h2 className="text-l my-auto max-w-[60%] no-underline overflow-clip">{col.title && col.title.trim().length>0?col.title:"Untitled"}</h2>
                 <div className="bg-emerald-800 rounded-full p-2">
                     {colInView&& colInView.childCollections&& colInView.childCollections.find(colJoint=>colJoint.childCollectionId==col.id)||newCollection.includes(col)?
 <img onClick={()=>removeNewCollection(col)}src={checked}/>
@@ -155,8 +155,8 @@ export default function AddToCollectionContainer(props){
  
     return(<div className=''>
         <div className="static">
-<div className="border-3 border-emerald-600 w-[96vw]  sm:max-w-[42em] mx-auto rounded-lg  my-2 sm:m-8 p-8 text-left">
-            <h2 className="text-2xl text-emerald-800 mb-2">{colInView.title && colInView.title.length>0?colInView.title:"Untitled"}</h2>
+<div className="border-3 border-emerald-600 w-[96vw]  lg:w-info h-info mx-auto mx-auto rounded-lg  my-2 sm:m-8 p-8 text-left">
+            <h2 className="text-2xl text-emerald-800 mb-2">{colInView.title && colInView.title.trim().length>0?colInView.title:"Untitled"}</h2>
             <h6 className="sm:my-4 text-emerald-800 sm:mx-8 p-4 min-h-24 text-lg sm:max-w-[35rem]">{colInView?colInView.purpose:null}</h6>
         
         <div className="flex flex-row justify-center">
@@ -174,13 +174,13 @@ export default function AddToCollectionContainer(props){
 <div className=" sm:flex sm:flex-row">
 
 
-<div role="tablist" className="tabs mt-8 shadow-md rounded-lg  w-[96vw]  lg:max-w-[42em] bg-emerald-600 border-3 border-emerald-600 mx-auto  sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab border-emerald-800 border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Stories" />
-  <div role="tabpanel" className="tab-content border-3 bg-emerald-50 h-[100%]  pt-1  md:p-6">
+<div role="tablist" className="tabs mt-8 shadow-md rounded-lg    max-w-[96vw] lg:w-page  lg:w-page bg-emerald-600 border-3 border-emerald-600 mx-auto  sm:mx-6 tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab border-emerald-800   max-w-[96vw] lg:w-page border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Stories" />
+  <div role="tabpanel" className="tab-content border-3 bg-emerald-50 h-[100%]  max-w-[96vw] lg:w-page  pt-1 mx-auto md:p-6">
   {storyList()}
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent  border-l-2 border-r-2 border-t-2   text-white  text-xl" aria-label="Collections" />
-  <div role="tabpanel" className="tab-content pt-1 bg-emerald-50  border-3   h-[100%]  md:p-6 rounded-box ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent   max-w-[96vw] lg:w-page  border-l-2 border-r-2 border-t-2   text-white  text-xl" aria-label="Collections" />
+  <div role="tabpanel" className="tab-content pt-1 bg-emerald-50  border-3  max-w-[96vw] lg:w-page mx-auto lg:w-page  h-[100%]  md:p-6 rounded-box ">
   {colList()}
    </div>
 </div>

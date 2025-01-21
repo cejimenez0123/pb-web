@@ -238,8 +238,8 @@ setError(err.message)
       <div tabIndex={0} role="button" ><img className="min-w-16 min-h-[4rem]   bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
       <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1] shadow">
         <li className="text-emerald-600 pt-3 pb-2 "
-        onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
-        <li onClick={()=>{setFeedback(true)}} className="text-emerald-600 pt-3 pb-2 "><a>Get Feedback</a></li>
+        onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
+        <li onClick={()=>{setFeedback(true)}} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {privacy?<li onClick={()=>handlePostPublicly(false)} 
 className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>handlePostPublicly(true)}>Make Private</li>}
