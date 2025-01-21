@@ -21,8 +21,10 @@ import ReactGA from 'react-ga4'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions'
 import { useMediaQuery } from 'react-responsive'
+import isValidUrl from '../core/isValidUrl'
 import ProfileCircle from '../components/profile/ProfileCircle'
 import Collection from '../domain/models/collection'
+import Enviroment from '../core/Enviroment'
 const PageName = {
   home: "Home",
   about:"About",
@@ -48,17 +50,26 @@ function NavbarContainer(props){
   })
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
+    const currentProfile= useSelector((state)=>{return state.users.currentProfile;});
     const [anchorElNavCreate,setAnchorElNavCreate] = useState(null);
     const [anchorElPage,setAnchorElPage] = useState(null);
     const [anchorElPageSmall,setAnchorElPageSmall] = useState(null);
-    const [anchorElUser, setAnchorElUser] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedImage,setSelectedImage]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [openDialog,setOpenDialog]=useState(false)
-   
-    const createRef = React.useRef()
-    const pageRef = React.useRef()
+    useEffect(()=>{
+      if(currentProfile){
+          if(isValidUrl(currentProfile.profilePic)){
+              setProfilePic(currentProfile.profilePic)
+        
+          }else{
+           getDownloadPicture(currentProfile.profilePic).then(image=>{
+              setProfilePic(image)
+           } )
+          }}
+  },[currentProfile])
+
     const openDialogAction = ()=>{
       dispatch(searchDialogToggle({open:true}))
     }
@@ -92,7 +103,7 @@ function NavbarContainer(props){
     const handleClosePage = () => {
       setAnchorElPage(null);
   };
-    const currentProfile= useSelector((state)=>{return state.users.currentProfile;});
+    
     const SettingName = {
         profile: "Profile",
         account: "Account",
@@ -108,19 +119,19 @@ function NavbarContainer(props){
       }else{
       setAnchorElNavCreate(event.currentTarget);}
   };
-  useLayoutEffect( ()=>{
-    if(currentProfile){
-    if( !currentProfile.profilePic.includes("http")){
-        getDownloadPicture(currentProfile.profilePic).then(url=>{
+//   useLayoutEffect( ()=>{
+//     if(currentProfile){
+//     if( !currentProfile.profilePic.includes("http")){
+//         getDownloadPicture(currentProfile.profilePic).then(url=>{
            
-            setSelectedImage(url)
-        })
-    }else{
-        setSelectedImage(currentProfile.profilePic)
-    }
-  }
+//             setSelectedImage(url)
+//         })
+//     }else{
+//         setSelectedImage(currentProfile.profilePic)
+//     }
+//   }
     
-},[currentProfile])
+// },[currentProfile])
   const handleElPageSmall = (event) => {
     if(anchorElPageSmall){
       setAnchorElPageSmall(null)
@@ -316,13 +327,14 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
   <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
-          {currentProfile?<ProfileCircle profile={currentProfile}/>:null}
+          {profilePic!=Enviroment.blankProfile?<div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
+    <img className="object-fit  " src={profilePic}/></div>:null}
     
         </div> 
       </div>
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content bg-emerald-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+        className="menu menu-sm dropdown-content bg-emerald-50 rounded-box z-[1] mt-3 w-52 p-2 shadow">
       {settings.map((setting) => (
                     
                     <li key={setting} 
@@ -335,7 +347,7 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
                                       navigate("/profile/edit")
                                   }
                                   handleCloseUserMenu()
-                    }}><a>{setting}</a></li>
+                    }}><a className='text-emerald-800'>{setting}</a></li>
                   ))}
                        </ul>
 
