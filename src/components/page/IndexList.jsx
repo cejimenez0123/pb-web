@@ -34,7 +34,7 @@ const IndexList = ({items})=>{
     },[])
     if(items){
     return(<InfiniteScroll
-      className="   overflow-y-scroll overlfow-x-hidden "
+      className="   overflow-y-scroll "
                    dataLength={items.length}
                    next={()=>{}}
                    scrollThreshold={1}
@@ -46,8 +46,8 @@ const IndexList = ({items})=>{
                     }
                   >
                       {items.map(item=>{
-                        let uuid= uuidv4()
-                        return <div key={uuid+item.id} className="mx-2 my-2"><IndexItem page={item} item={item} /></div>
+                      
+                        return <IndexItem key={ item.id} page={item} item={item} />
                       })}  
                    </InfiniteScroll>)
 

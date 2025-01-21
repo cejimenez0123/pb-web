@@ -146,9 +146,7 @@
 .nav-item i{
     color:green;
 }
-.dropdown .dropdown-menu{
-    z-index: 2;
-}
+
 
   .visible {
     max-height: 1000px; /* Adjust as needed */

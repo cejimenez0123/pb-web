@@ -153,11 +153,11 @@ function MyProfileContainer(props){
 
                             <div className=' w-[86%] mx-auto grid grid-cols-2 gap-2 '>
                                 <div onClick={ClickWriteAStory} 
-                                className='bg-emerald-500  flex rounded-full text-white md:mt-2  h-[5em] w-[8em] md:w-[10em] md:h-[3em]  text-bold'>
-                               <h6 className='my-auto text-[0.7rem] md:text-md mx-auto '> Write a Story</h6>
+                                className='bg-emerald-600  flex rounded-full text-white md:mt-2  h-[5em] w-[8em] md:w-[10em] md:h-[3em]  text-bold'>
+                               <h6 className='my-auto text-[0.7rem] mont-medium md:text-md mx-auto '> Write a Story</h6>
                             </div>
                             <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5em] w-[8em]  md:w-[10em] md:h-[3em] text-white   text-bold'>
-                              <div className='mx-auto text-[0.7rem] md:text-md my-auto flex-col flex md:flex-row'><h6 >Create </h6><h6>Collection</h6> </div> 
+                              <div className='mx-auto text-[0.7rem] md:text-md my-auto mont-medium flex-col flex md:flex-row'><h6 >Create </h6><h6>Collection</h6> </div> 
                             </div>
                             <div className='w-[10em] h-[3em] mx-auto flex'>
                             <h6 onClick={()=>setOpenRefferal(true)}className='my-auto mx-auto text-sm  text-emerald-800'>Refer Someone?</h6>
@@ -177,7 +177,7 @@ function MyProfileContainer(props){
                                         </div>
                                 </div> 
                                 <div>
-                            <div onClick={ClickWriteAStory} className='bg-emerald-500 rounded-full flex text-white w-[8rem] lg:w-[9rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
+                            <div onClick={ClickWriteAStory} className='bg-emerald-600 rounded-full flex text-white w-[8rem] lg:w-[9rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
                             <h6 className='text-center text-[0.8rem] px-2 mx-auto my-auto'>Write a Story</h6>
                             </div>
                             </div>
@@ -202,7 +202,7 @@ function MyProfileContainer(props){
                             <div className='w-[96vw]  lg:mt-8 mx-auto md:w-page'>
 
                             <div role="tablist" className="tabs border-emerald-300 md:w-page mx-auto border-b-4 border-emerald-500  rounded-lg w-[96vw] mx-auto  tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab mont-medium text-emerald-800 border-3 border-3 w-[96vw] mx-auto lg:w-page [--tab-border-color:emerald] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab mont-medium text-emerald-800 border-3 border-3 w-[96vw] mx-auto lg:w-page [--tab-border-color:emerald] [--tab-bg:transparent] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-page border-emerald-300 ">
   <IndexList items={pages}/>
   </div>
@@ -211,19 +211,19 @@ function MyProfileContainer(props){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800 mont-medium  [--tab-border-color:emerald] bg-transparent   border-3 text-xl" aria-label="Books"
+    className="tab text-emerald-800 mont-medium  [--tab-border-color:emerald] [--tab-bg:transparent]   border-3 text-xl" aria-label="Books"
     />
   <div role="tabpanel" 
    className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto lg:w-page border-emerald-300 ">
   <IndexList items={books}/>
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 mont-medium text-emerald-800   [--tab-border-color:emerald] bg-transparent border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
+  <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 mont-medium text-emerald-800  [--tab-bg:transparent] [--tab-border-color:emerald] bg-transparent border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
   <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto lg:w-page border-emerald-300 ">
     <IndexList items={libraries}/>
   </div>
-  {isNotPhone?  <label className='flex flex-row mx-4'>
-<span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className='rounded-lg px-2 w-full min-w-58 py-1 text-sm bg-transparent my-1 border-emerald-700 border-1 text-emerald-800' />
+  {isNotPhone?  <label className='flex border-emerald-600 border-2 rounded-full my-1 flex-row mx-4 '>
+<span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2   w-full min-w-58 py-1 text-sm bg-transparent my-1  text-emerald-800' />
   </label>:null}
 </div>
 

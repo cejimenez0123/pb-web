@@ -29,7 +29,9 @@ import Alert from "../../components/Alert"
 
 
 function EditorContainer(props){
-    
+       const isPhone =  useMediaQuery({
+        query: '(max-width: 600px)'
+      })
         const currentProfile = useSelector(state=>state.users.currentProfile)
         const [getFeedback,setFeedback]=useState(false)
         const [error,setError]=useState(null)
@@ -38,6 +40,7 @@ function EditorContainer(props){
         const editPage = useSelector(state=>state.pages.editingPage)
         const pageInView = useSelector(state=>state.pages.pageInView)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
+
         const pathParams = useParams()
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
@@ -45,6 +48,7 @@ function EditorContainer(props){
         const location = useLocation()
         let href =location.pathname.split("/")
         const last = href[href.length-1]
+        const [feedback,setFeedbackStr]=useState("I want readers to go in blind.")
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
@@ -53,7 +57,7 @@ function EditorContainer(props){
         const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
         const {id }= pathParams
         const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
-          data:editPage?editPage.data:pageInView?pageInView.data:"",privacy:privacy,commentable:commentable
+          data:editPage?editPage.data:pageInView?pageInView.data:"",description:feedback,privacy:privacy,commentable:commentable
         })
         
    
@@ -64,10 +68,12 @@ function EditorContainer(props){
             if(payload.story){
     setFetchedPage(payload.story)
     setIsSaved(true)
+    return true 
             }
         
           },err=>{
             setError(err.message)
+            return false
           })}
 
       )},40)
@@ -76,6 +82,7 @@ function EditorContainer(props){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
               let params = parameters
               params.data = htmlContent
+
               params.type = last 
               setParameters(params)
             
@@ -129,8 +136,7 @@ return ()=>{
         }
     },[htmlContent])
   const setStoryData=(story)=>{
-             setFetchedPage(story)
-         
+             setFetchedPage(story)   
              setTitleLocal(story.title)
              setCommentable(story.commentable)
              setPrivacy(story.privacy)
@@ -166,7 +172,6 @@ fetchStory()
         setOpen(false);
       };
       const handleDelete =debounce(()=>{
-        console.log(parameters)
           dispatch(deleteStory(parameters)).then(()=>{
             navigate(Paths.myProfile())
           })
@@ -234,7 +239,7 @@ setError(err.message)
       <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1] shadow">
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a>Add to Collection</a></li>
-        <li onClick={()=>{navigate(Paths.workshop.createRoute(parameters.page.id))}} className="text-emerald-600 pt-3 pb-2 "><a>Get Feedback</a></li>
+        <li onClick={()=>{setFeedback(true)}} className="text-emerald-600 pt-3 pb-2 "><a>Get Feedback</a></li>
         {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {privacy?<li onClick={()=>handlePostPublicly(false)} 
 className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>handlePostPublicly(true)}>Make Private</li>}
@@ -253,6 +258,21 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
     {openHashtag?
     <HashtagForm item={parameters.page}/>:null}
     </div>)
+   }
+   const handleFeedback=()=>{
+    let params = parameters
+       params.description = feedback
+       setParameters(params)
+       handleUpdate(params).then(truthy=>{
+        if(truthy){
+  navigate(Paths.workshop.createRoute(params.page.id))
+        }else{
+          setError("Error with feedback")
+          setSuccess(null)
+        }
+      
+       })
+
    }
    setTimeout(()=>{
 
@@ -296,22 +316,36 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
       
   
       </Dialog>
+
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={getFeedback}
+        fullScreen={isPhone}
+        onClose={()=>{setFeedback(false)}}
+        className=""
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-      >
-        <div className="rounded-lg">
-       
-        </div>
+      >    <DialogTitle id="alert-dialog-title">
+      {"What kind of feedback do you want?"}
+    </DialogTitle>
+    <DialogContent className="">
+            <textarea 
+            value={feedback}
+            onChange={e=>setFeedbackStr(e.target.value)}
+            className="textarea w-[100%] min-h-[7rem] rounded-lg border-2 bg-transparent text-emerald-400 border-emerald-400"/>
+                   <DialogActions>
+          <Button onClick={handleClose}>Continue Working</Button>
+          <Button onClick={handleFeedback}>
+           Get feedback
+          </Button>
+        </DialogActions>
+    </DialogContent>
+   
       </Dialog>
       <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
+
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      open={open}>
         <div className="rounded-lg">
         <DialogTitle id="alert-dialog-title">
           {"Deleting?"}

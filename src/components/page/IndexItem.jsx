@@ -24,7 +24,7 @@ function IndexItem({item}) {
     useLayoutEffect(()=>{
       soCanUserEdit()
       soCanUserAdd()
-    },[currentProfile,item])
+    },[])
     const handleEditClick = ()=>{
        
       if(item && item.storyIdList){
@@ -88,64 +88,74 @@ function IndexItem({item}) {
       }
       setCanUserEdit(false)
    }
-   const ButtonDiv = ({item,canUserAdd,canUserEdit})=>{
-    const navigate = useNavigate()
+
     const handleAddToClick = ()=>{
       if(item && item.storyIdList){
        navigate(Paths.addToCollection.createRoute(item.id))
       }else{
        navigate(Paths.addStoryToCollection.createRoute(item.id))
       }
-   }
-    if(canUserAdd&&!canUserEdit){
-      return(
-        <div className="dropdown dropdown-left">
-        <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 flex"> <img classname="my-auto mx-auto  " src={addBox}/></div>
-        <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-      
-              <li className="text-green-600" onClick={handleAddToClick}><a >{item && item.storyIdList!=null?`Add ${item.title} to Collection`:"Add to Collection" }</a></li>
-              <li className="text-green-600 "><a >Share</a></li>
-              </ul>
-  
-            
-  
-           </div>
-      ) 
-    }else if(canUserEdit){
-      return  ( 
-        <div className="dropdown dropdown-left">
-  <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 flex"> <img classname="  my-auto mx-auto  " src={edit}/></div>
-  <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-  <li className="text-green-600 " onClick={
-         handleEditClick}><a >Edit</a></li>
-        {!item.storyIdList?<li className="text-green-600 " onClick={()=>navigate(Paths.workshop.createRoute(item.id))}>Get Feedback</li>:null}
-        {canUserAdd?<li className="text-green-600 " onClick={handleAddToClick}><a>{item && item.storyIdList!=null?`Add ${item.title} to Collection`:"Add to Collection" }</a></li>:null}
-  </ul>
-</div>
-        
-  )
-    }else{
-      return null
     }
-   }
+
+   
+   
 
 
     return(
-                <div className="border-3  shadow-sm  rounded-full max-w-[94vw] lg:w-[100%]  w-full my-3 py-1 border-emerald-300"><div className={`   mb-1 `}> 
-              <div  className=" px-8 flex flex-row justify-between  " >
-                <div onClick={handleNavigate} className="text-left  my-auto  py-4 mt-1 ">
-                   {item && item.title && item.title.length>0? <h6 
-         className={`text-[0.9rem] md:text-[1.2rem] text-ellipsis max-w-[12em] md:max-w-[20em] ":"max-w-[18em]"} whitespace-nowrap text-emerald-700 no-underline overflow-hidden my-auto`}>{item.title}</h6>:
-                   <h6 className={`text-[0.9rem] md:text-[1.2rem] text-ellipsis max-w-[12em] ":""}  whitespace-nowrap text-emerald-700 no-underline overflow-hidden my-auto`}
-                   >Unititled</h6>}
-                </div> 
-                <div className=" my-auto w-fit">
-                  <ButtonDiv canUserAdd={canUserAdd} item={item} canUserEdit={canUserEdit}/>
-                  </div>
-                </div>
-              </div>  
-            </div>)
-            
+  
+                <div className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full w-[96%]  w-full  py-[1.4em] border-emerald-300">
+                
+         <div className=" h-fit my-auto lg:w-[26em] w-fit text-ellipsis overflow-hidden ">
+              
+              
+                   {item.title && item.title.length>0? 
+                     <span className={`   text-emerald-700 my-auto`}>
+                   <h6   onClick={handleNavigate}
+         className={`text-[0.9rem] lg:text-[1.3rem ] max-w-[45vw]  text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
+       {item.title}</h6></span>:
+ <span className={` bg-red-100 whitespace-nowrap max-w-[45vw]  text-emerald-700 no-underline text-ellipsis my-auto`}>
+                   <h6  onClick={handleNavigate}  className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
+                   whitespace-nowrap text-emerald-700 no-underline  my-auto`}
+                   >Untitled</h6></span>}
+                   
+
+</div>
+
+           
+              { canUserEdit?(
+       
+       <div className="dropdown  my-auto w-fit dropdown-left">
+  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <img classname="  my-auto mx-auto  " src={edit}/></div>
+  <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
+  <li className="" onClick={
+        handleEditClick}><a className="text-green-600 ">Edit</a></li>
+       {!item.storyIdList?<li className="text-green-600 " onClick={()=>navigate(Paths.workshop.createRoute(item.id))}>Get Feedback</li>:null}
+       {canUserAdd?<li className="text-green-600 no-underline" onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add ${item.title} to Collection`:"Add to Collection" }</a></li>:null}
+  </ul>
+  </div>
+       
+  )
+  : canUserAdd&&!canUserEdit?(
+  
+   <div className="dropdown my-auto w-fit dropdown-left">
+   <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <img classname="my-auto mx-auto  " src={addBox}/></div>
+   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10  w-52 p-2 shadow">
+  
+         <li className="no-underline text-green-600"  onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add ${item.title} to Collection`:"Add to Collection" }</a></li>
+         <li className="text-green-600 no-underline" ><a >Share</a></li>
+         </ul>
+  
+       
+  
+      </div>
+  ) :null}  
+        
+
+</div>
+               
+                
+               )
+           
     
     }
     

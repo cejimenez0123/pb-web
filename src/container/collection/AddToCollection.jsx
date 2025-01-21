@@ -87,7 +87,7 @@ export default function AddToCollectionContainer(props){
 
     const storyList = ()=>{
       
-        return(<div className=" my-4 max-h-96 text-emerald-800 mx-auto overflow-scroll sm:mx-12 text-left mb-2">
+        return(<div className=" my-4 lg:w-page text-emerald-800 mx-auto overflow-scroll sm:mx-12 text-left mb-2">
             <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Stories to Collection</h6>
             <InfiniteScroll
             className=" mx-2 "
@@ -101,10 +101,10 @@ export default function AddToCollectionContainer(props){
                     <h2 className="text-l max-w-[60%] my-auto  overflow-clip">{story?story.title:null}</h2>
                     <div className="bg-emerald-800 rounded-full p-2">{colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
                     <h1 onClick={()=>removeNewStory(story)}className="">
-<p className="text-2xl    "><img src={checked}/></p>
+<p className="text-2xl    "><img className="max-h-[1.5rem] max-w-[1.5rem]" src={checked}/></p>
 </h1>:
 <h1 onClick={()=>addNewStory(story)}className=" text-emerald-800">
-<p className="text-2xl  content-center "><img src={emptyBox}/></p>
+<p className="text-2xl  content-center "><img className="max-h-[1.5rem] max-w-[1.5rem]"src={emptyBox}/></p>
 </h1>}</div>
                 </div>)
             })}

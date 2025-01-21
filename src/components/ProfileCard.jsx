@@ -30,7 +30,7 @@ export default function ProfileCard({profile,onClickFollow,following}){
           }}
   },[profile])
         if(profile!=null){
-      return(<div className="pb-8 border-3 rounded-lg  sm:min-h-[30em] mx-auto sm:max-w-[52em] border-emerald-400">
+      return(<div className="pb-8 border-3 rounded-lg  w-[96vw] lg:h-info mx-auto lg:w-info border-emerald-400">
         <div className="text-left p-4">
             <div className="flex flex-row">
               <div>  

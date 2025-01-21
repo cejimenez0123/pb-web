@@ -5,26 +5,9 @@ import "../styles/Navbar.css"
 import {signOutAction} from "../actions/UserActions"
 import { useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
+import menu from "../images/icons/menu.svg"
 import getDownloadPicture from '../domain/usecases/getDownloadPicture'
 import { debounce } from 'lodash'
-import { 
-            Container,
-            Toolbar,
-            Typography,
-            Box,
-            IconButton,
-            Menu,
-            MenuItem,
-            Button,
-            Tooltip,
-            Avatar,
-        } from '@mui/material'
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import MenuIcon from '@mui/icons-material/Menu';
 import LinkIcon from '@mui/icons-material/Link';
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
@@ -38,6 +21,8 @@ import ReactGA from 'react-ga4'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions'
 import { useMediaQuery } from 'react-responsive'
+import ProfileCircle from '../components/profile/ProfileCircle'
+import Collection from '../domain/models/collection'
 const PageName = {
   home: "Home",
   about:"About",
@@ -183,389 +168,184 @@ function NavbarContainer(props){
     
       
   // }
-    return (
-      <div className='bg-emerald-900'>
-        <AppBar position="static"
-               className='bg-transparent'>
-            <Container >
-                <Toolbar disableGutters={true}>
-                    <Typography
-                        onClick={()=>{
-                            navigate("/")
-                        }}
-                        className='text-white'
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'helvetica',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                Pb
-                     </Typography>
-  
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={(e)=>handleOpenNavMenu(e)}
-                            color="inherit"
-                        >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-              
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: 'block', md: 'none' },
-                }}
-              >
-                {pages.map((page) => {
-                        
-                         if(page==PageName.workshop||page==PageName.home){
-                          return currentProfile?<MenuItem onClick={()=>handleCloseNavMenu(page) } 
-                          key={page} >
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>:null
-                        }else if(page==PageName.about||page==PageName.login){
-                          return !currentProfile?<MenuItem onClick={()=>handleCloseNavMenu(page) } 
-                          key={page} >
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>:null
-                        }else if( page==PageName.create){
+  return(<div className="navbar bg-emerald-800">
+  <div className="navbar-start">
+    <div className="dropdown lg:hidden">
+      <div tabIndex={0} role="button" className="btn btn-ghost ">
+        <img src={menu}/>
 
-                            
-                            return currentProfile?(
-                            
-                          <div key={page}>  
-                           <MenuItem onClick={(e)=>         
-                        handleOpenElNavCreate(e)
-                  } key={page} >
-                    <Typography textAlign="center">{page}
-                    {anchorElNavCreate?<ExpandMore/>: <ExpandLess/>}</Typography>
-                  </MenuItem>
-                   
-                    <List style={{display:anchorElNavCreate?"":"none"}}>
-                      <ListItemButton key="page" 
-                        onClick={(e)=>{
-                            handleElPageSmall(e)
-                         }}sx={{ pl: 4 }}
-                        >
-                         Page {anchorElPageSmall?<ExpandMore/>:<ExpandLess/>}
-                          </ListItemButton>
-                          <List style={{display:anchorElPageSmall?"":"none"}}>
-                            <ListItemButton key="page" 
-                              onClick={(e)=>{
-                                ClickWriteAStory()
-                              }
-                              }
-                                sx={{ pl: 6 }}
-                            >
-                              <CreateIcon/>
-                            </ListItemButton>
-                            <ListItemButton key={`image`} 
-                              onClick={(e)=>{
-                                dispatch(setPageInView({page:null}))
-                                dispatch(setEditingPage({page:null}))
-                              handleClose()
-                              dispatch(setHtmlContent(""))
-                              navigate(Paths.editor.image())}}
-                              sx={{ pl: 6 }}
-                            >
-                              <ImageIcon/>
-                            </ListItemButton>
-                            <ListItemButton     
-                    sx={{ pl: 6 }} 
-                    onClick={()=>{
-                      dispatch(setPageInView({page:null}))
-                      dispatch(setEditingPage({page:null}))
-                      handleClose()
-                      dispatch(setHtmlContent(""))
-                      navigate(Paths.editor.link())}}>
-                     <LinkIcon/>
-                    </ListItemButton>
-                          </List>
-                          <ListItemButton  key="Collection" 
-                                    onClick={()=>{ 
-                                     handleClose()
-                                     setOpenDialog(true)
-                                     
-                                      }} 
-                                    sx={{ pl: 4 }}>
-                            <ListItemText primary="Collection" />
-                        </ListItemButton>
-               
-                             </List>
-                            
-                             </div>):(<div></div>)
-                        }else if(page == PageName.login){
-                  return currentProfile?(<div></div>):
-                (<MenuItem onClick={()=>handleCloseNavMenu(page) } 
-                            key={page} >
-                        <Typography textAlign="center">{page}</Typography>
-                      </MenuItem>)
-
-                    }else if(page==PageName.search){
-                      return (<MenuItem onClick={()=>openDialogAction()} 
-                                key={page} >
-                            <Typography textAlign="center">{page}</Typography>
-                          </MenuItem>)
-    
-                        }else{
-                      return(<MenuItem onClick={()=>handleCloseNavMenu(page) } 
-                      key={page} >
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>)
-                    }
-            })
-          }
-              </Menu>
-            </Box>
-            
-            <Typography
-              variant="h5"
-              noWrap
-              className='text-white'
-              component="a"
-              onClick={()=>navigate("/")}
-              href="#app-bar-with-responsive-menu"
-              sx={{
-                mr: 2,
-                display: { xs: 'flex', md: 'none' },
-                flexGrow: 1,
-                fontFamily: 'helvetica',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              Pb
-            </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              {pages.map((page) => {
-                if( page==PageName.create){
-                
-                  return currentProfile?(<div>
-                    <Button 
-                      key={page}
-                      ref={createRef}
-            
-                aria-controls="simple-menu"
-                aria-haspopup="true"
-               
-                sx={{ my: 2, color: 'white', display: 'block' }} 
-                onClick={(e)=>handleClick(e)
-                }>
-
-                        Create {Boolean(anchorEl) ? <ExpandLess /> : <ExpandMore />}
-                      </Button >
-                  <Menu
-                    sx={{ mt: '45px' }}
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                  >
-                    <MenuItem
-                      ref={pageRef}
-            
-              
-                onClick={(e)=>
-                   handleOpenElPage(e)
-                }>
-                    Page {Boolean(anchorElPage)?<ExpandLess/>:<ExpandMore/>}
-                    </MenuItem>
-                    <List  
-         
-                    style={{display:Boolean(anchorEl)&&Boolean(anchorElPage)?"":"none" }}
-                    // open={Boolean(anchorEl)&&Boolean(anchorElPage)}
-                    onClose={handleClosePage}>
-                      <ListItemButton 
-                      sx={{ pl: 4}}
-                      onClick={()=>{
-                        handleClose()
-                        ClickWriteAStory()
-                        }}>
-                      <CreateIcon/>
-                    </ListItemButton>
-               
-                    <ListItemButton     
-                    sx={{ pl: 4 }} 
-                    onClick={()=>{
-                      dispatch(setPageInView({page:null}))
-                      dispatch(setEditingPage({page:null}))
-                    handleClose()
-                    dispatch(setHtmlContent(""))
-                      navigate(Paths.editor.image())}}>
-                     <ImageIcon/>
-                    </ListItemButton>
-                    <ListItemButton     
-                    sx={{ pl: 4 }} 
-                    onClick={()=>{
-                      dispatch(setPageInView({page:null}))
-                      dispatch(setEditingPage({page:null}))
-                    handleClose()
-                    dispatch(setHtmlContent(""))
-                      handleClose()
-                      navigate(Paths.editor.link())}}>
-                     <LinkIcon/>
-                    </ListItemButton>
-                    </List>
-
-                  
-                  
-                     <MenuItem onClick={()=>{
-                        handleClose()
-                        setOpenDialog(true)
-                    }}>
-                       Collection
-                    </MenuItem> 
-                  </Menu>
-                  </div>
-                  )
-               
-           
-                  :(<div></div>) 
-                }else if(page==PageName.workshop||page==PageName.home){
-                  return( currentProfile?<Button
-                    key={page}
-                    onClick={()=>handleCloseNavMenu(page)}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                  >
-                    {page}
-                  </Button>:null)
-                }else if(page==PageName.about||page==PageName.login){
-                  return currentProfile?null:<Button
-                    key={page}
-                    onClick={()=>handleCloseNavMenu(page)}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                  >
-                    {page}
-                  </Button>
-                }else if(page ==PageName.search){
-                  return(<Button
-                    key={page}
-                    onClick={()=>openDialogAction()}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                  >
-                    {page}
-                  </Button>)
-                
-                }else{     
-              return(<Button
-    key={page}
-    onClick={()=>handleCloseNavMenu(page)}
-    sx={{ my: 2, color: 'white', display: 'block' }}
-  >
-    {page}
-  </Button>)}
-                })
-            
-              }
-            </Box>
-            {currentProfile?
-            <Box style={{display: currentProfile ? "":"none"}} sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={`${currentProfile.username}`} src={selectedImage} />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                    
-                  <MenuItem key={setting} 
-                            onClick={()=>{
-                                if(setting== SettingName.profile){
-                                    navigate(Paths.myProfile())
-                                }else if(setting== SettingName.logout){
-                                    dispatch(signOutAction())
-                                }else if(setting== SettingName.account){
-                                    navigate("/profile/edit")
-                                }
-                                handleCloseUserMenu()
-                  }}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>:<div></div>}
-          </Toolbar>
-
-        </Container>
-      
-
-      </AppBar>
-      <Dialog 
-      fullScreen={isPhone}
-      
-      className={
-                "bg-emerald-400 bg-opacity-30 "
-              }
-              PaperProps={{
-                style: {
-                  backgroundColor: 'transparent',
-                  boxShadow: 'none',
-                 overflow:"hidden",
-                 height:"100%",
-                 width:"100%",
-                
-                },
-              }}
-            
-              open={openDialog}
-              onClose={()=>setOpenDialog(false)}>
-                <CreateCollectionForm onClose={()=>{
-                  setOpenDialog(false)
-                }}/>
-              </Dialog>
-    
       </div>
-    );
+      <ul
+        tabIndex={0}
+        className="menu menu-sm dropdown-content bg-emerald-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+          {pages.map((page) => {
+if(page==PageName.workshop||page==PageName.home){
+  return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
+  key={page} >
+<a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
+</li>:null
+}else if(page==PageName.about||page==PageName.login){
+  return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
+  key={page} >
+<a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
+</li>:null
+}else if( page==PageName.create){
+
+    return(currentProfile?  
+        <li  
+     
+     className="z-[2]  w-52">
+    
+     <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline' tabindex="0">Create</a>
+       <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
+         <li onClick={ClickWriteAStory}><a  >  <CreateIcon className='text-emerald-800'/></a></li>
+         <li    onClick={(e)=>{
+        dispatch(setPageInView({page:null}))
+        dispatch(setEditingPage({page:null}))
+      handleClose()
+      dispatch(setHtmlContent(""))
+      navigate(Paths.editor.image())}}><a>     <ImageIcon className='text-emerald-800'/></a></li>
+         <li><a    onClick={()=>{
+dispatch(setPageInView({page:null}))
+dispatch(setEditingPage({page:null}))
+handleClose()
+dispatch(setHtmlContent(""))
+navigate(Paths.editor.link())}}>
+<LinkIcon className='text-emerald-800'/></a></li>
+       <li  onClick={()=>{ 
+             handleClose()
+             setOpenDialog(true)
+             
+     } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
+
+}else if(page == PageName.login){
+return currentProfile?(<div></div>):
+(<li onClick={()=>handleCloseNavMenu(page) } 
+    key={page} >
+<a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
+</li>)
+
+}else if(page==PageName.search){
+return (<li onClick={()=>openDialogAction()} 
+        key={page} >
+    <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
+  </li>)
+
+}else{
+return(  <li onClick={()=>handleCloseNavMenu(page) } >
+<a   className=' text-emerald-800 no-underline' key={page} >
+{page}</a></li>
+
+)
+}
+          })
+        }
+      
+      </ul>
+    </div>
+    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-xl">Pb</a>
+  </div>
+  <div className="navbar-center hidden lg:flex">
+    <ul className="menu menu-horizontal px-1">
+    {pages.map((page) => {
+if(page==PageName.workshop||page==PageName.home){
+  return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
+  key={page} >
+<a  className=' text-white no-underline' textAlign="center">{page}</a>
+</li>:null
+}else if(page==PageName.about||page==PageName.login){
+  return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
+  key={page} >
+<a  className=' text-white no-underline' textAlign="center">{page}</a>
+</li>:null
+}else if( page==PageName.create){
+
+    return(currentProfile?  
+        <li  
+     
+     className="z-[2] dropdown w-52">
+    
+     <a      tabIndex={1} role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
+       <ul      tabIndex={1} className="p-2 dropdown-content menu menu-sm rounded-box  ">
+         <li onClick={ClickWriteAStory}><a  >  <CreateIcon className='text-emerald-800'/></a></li>
+         <li    onClick={(e)=>{
+        dispatch(setPageInView({page:null}))
+        dispatch(setEditingPage({page:null}))
+      handleClose()
+      dispatch(setHtmlContent(""))
+      navigate(Paths.editor.image())}}><a>     <ImageIcon className='text-emerald-800'/></a></li>
+         <li><a    onClick={()=>{
+dispatch(setPageInView({page:null}))
+dispatch(setEditingPage({page:null}))
+handleClose()
+dispatch(setHtmlContent(""))
+navigate(Paths.editor.link())}}>
+<LinkIcon className='text-emerald-800'/></a></li>
+       <li  onClick={()=>{ 
+             handleClose()
+             setOpenDialog(true)
+             
+     } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
+
+}else if(page == PageName.login){
+return currentProfile?(<div></div>):
+(<li onClick={()=>handleCloseNavMenu(page) } 
+    key={page} >
+<a className=' text-white no-underline' textAlign="center">{page}</a>
+</li>)
+
+}else if(page==PageName.search){
+return (<li onClick={()=>openDialogAction()} 
+        key={page} >
+    <a className=' text-white no-underline' textAlign="center">{page}</a>
+  </li>)
+
+}else{
+return(  <li onClick={()=>handleCloseNavMenu(page) } >
+<a   className=' text-white no-underline' key={page} >
+{page}</a></li>
+
+)
+}
+          })
+        }
+
+    </ul>
+  </div>
+  <div className="navbar-end">
+  <div className="dropdown dropdown-end">
+      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+        <div className="w-5 rounded-full">
+          {currentProfile?<ProfileCircle profile={currentProfile}/>:null}
+    
+        </div> 
+      </div>
+      <ul
+        tabIndex={0}
+        className="menu menu-sm dropdown-content bg-emerald-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+      {settings.map((setting) => (
+                    
+                    <li key={setting} 
+                              onClick={()=>{
+                                  if(setting== SettingName.profile){
+                                      navigate(Paths.myProfile())
+                                  }else if(setting== SettingName.logout){
+                                      dispatch(signOutAction())
+                                  }else if(setting== SettingName.account){
+                                      navigate("/profile/edit")
+                                  }
+                                  handleCloseUserMenu()
+                    }}><a>{setting}</a></li>
+                  ))}
+                       </ul>
+
+    </div>
+    </div>
+    <Dialog open={openDialog}>
+<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>
+    </Dialog>
+</div>)
+
 }
 
 export default NavbarContainer
