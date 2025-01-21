@@ -194,7 +194,7 @@ className={`${
             <ErrorBoundary>
             <div 
 
-            className=' mx-auto ml-24 mt-4' >
+            className=' mx-auto  mt-4' >
 
               <div className=' text-left ' >
                
