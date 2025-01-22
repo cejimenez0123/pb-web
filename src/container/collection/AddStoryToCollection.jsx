@@ -52,7 +52,7 @@ export default function AddStoryToCollectionContainer(props){
               </div>
             <div>
                 </div>
-                <div className="border-2   max-w-[96vw] lg:w-page  mx-auto border-emerald-600 mt-16 text-left   mx-2 rounded-lg">
+                <div className="border-2   max-w-[96vw] md:w-page  mx-auto border-emerald-600 mt-16 text-left   mx-2 rounded-lg">
                     <h6 className="text-xl font-bold pb-8 mont-medium font-bold">Your Collections</h6>
                     {collections.length>0?
                     <InfiniteScroll

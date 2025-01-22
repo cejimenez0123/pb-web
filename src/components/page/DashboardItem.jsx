@@ -15,8 +15,9 @@ import PageDataElement from './PageDataElement'
 import ProfileCircle from '../profile/ProfileCircle'
 import Context from '../../context'
 import Enviroment from '../../core/Enviroment'
-function DashboardItem({page,book,isGrid}) {
+function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const dispatch = useDispatch()
+    const [takingFeedback,setTakingFeedback]=useState(forFeedback)
     const {setSuccess,setError}=useContext(Context)
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -184,20 +185,14 @@ className="
          ">
 <h6 className=' text-[1.2rem]'>Share</h6></div>
 <ul tabIndex={0} className="dropdown-content      text-emerald-800  z-50 menu bg-white rounded-box  w-60 p-1 shadow">
-{/* {currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
-    dispatch(setEditingPage({page:page}))
-    dispatch(setPageInView({page:page}))
-    navigate(Paths.editPage.createRoute(page.id))
-}}>
-    <a>Edit</a></li>:null}*/}
+
     <li 
 className=' text-emerald-700'
 
 onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
                      Add to a Collection
      </a></li>
-{/* 
-{currentProfile && page.authorId==currentProfile.id?<li onClick={()=>navigate(Paths.workshop.createRoute(page.id))}><a>Get feedback</a></li>:null} */}
+
                 <li> <a
                  className=' text-emerald-700'
                 onClick={()=>{

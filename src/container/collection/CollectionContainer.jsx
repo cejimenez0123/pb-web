@@ -249,7 +249,7 @@ if(collection&&canUserSee&&!loading){
 
 <div className="pb-[10rem] ">   
 <Alert/>    {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
-        <div className="text-left  lg:w-page max-w-[96vw]  mx-auto ">
+        <div className="text-left  md:w-page max-w-[96vw]  mx-auto ">
             {collections && collections.length>0? <div>
                 <h3 className="text-2xl lora-bold text-emerald-800 font-bold text-center">Anthologies</h3>:
             <div>

@@ -125,7 +125,7 @@ function IndexItem({item}) {
               { canUserEdit?(
        
        <div className="dropdown  my-auto w-fit dropdown-left">
-  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <img classname="  my-auto mx-auto  " src={edit}/></div>
+  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <img className="  my-auto mx-auto  " src={edit}/></div>
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
         handleEditClick}><a className="text-green-600 ">Edit</a></li>

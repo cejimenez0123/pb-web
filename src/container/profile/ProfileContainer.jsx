@@ -137,7 +137,7 @@ checkIfFollowing()
   <div role="tabpanel"  className="tab-content w-[96vw]  md:w-page mx-auto border-emerald-400 border-3 h-[100%] rounded-lg  border-3 border-emerald-400 ">
   <IndexList items={collections}/>
 </div>
-</div>:<div className="skeleton bg-slate-200 h-page w-[96vw] mx-auto lg:w-page"></div>}
+</div>:<div className="skeleton bg-slate-200 h-page w-[96vw] mx-auto md:w-page"></div>}
 </div>    
 
             )

@@ -4,7 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import uuidv4 from "../../core/uuidv4"
 import DashboardItem from "./DashboardItem"
 import ErrorBoundary from "../../ErrorBoundary"
-const PageList = ({items,isGrid,fetchContentItems})=>{
+const PageList = ({forFeedback,isGrid,fetchContentItems})=>{
 
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const isNotPhone = useMediaQuery({
@@ -34,7 +34,7 @@ const PageList = ({items,isGrid,fetchContentItems})=>{
 
   className={`${isGrid && isNotPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
 >
-                    <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
+                    <DashboardItem forFeedback={forFeedback} isGrid={isGrid} key={page.id} page={page}/>
                 </div>)
             }else{
                 return null

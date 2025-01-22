@@ -89,6 +89,7 @@ class StoryRepo{
             page,
             data,
             privacy,
+            description,
             approvalScore,
             title,
             commentable,
@@ -97,6 +98,7 @@ class StoryRepo{
        const res = await axios.put(this.url+"/"+page.id,{
             data: data,
             isPrivate:privacy,
+            description,
             approvalScore:approvalScore,
             title:title,
             commentable:commentable,

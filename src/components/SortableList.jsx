@@ -30,7 +30,7 @@ export default function SortableList({ items, onOrderChange }) {
     };
   if(listItems.length>0){
     return (
-      <div className=" py-4 mx-auto">
+      <div className=" py-4 mx-auto w-[96vw] md:w-page">
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId="sortableList">
             {(provided) => (

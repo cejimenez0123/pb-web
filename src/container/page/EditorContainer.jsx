@@ -57,7 +57,7 @@ function EditorContainer(props){
         const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
         const {id }= pathParams
         const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
-          data:editPage?editPage.data:pageInView?pageInView.data:"",needsFeedback:false,description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:"",privacy:privacy,commentable:commentable
+          data:editPage?editPage.data:pageInView?pageInView.data:"",needsFeedback:false,description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:feedback,privacy:privacy,commentable:commentable
         })
         
    
@@ -265,6 +265,7 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
     let params = parameters
        params.description = feedback
        params.needsFeedback = true
+       console.log(feedback)
        setParameters(params)
        handleUpdate(params)
        if(params.page.id){
@@ -285,7 +286,7 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
           <div  className=" mx-auto md:p-8  "> 
             <Alert />
-                <div className= "mx-2 lg:w-page pt-8 mb-12 mx-auto">
+                <div className= "mx-2 md:w-page pt-8 mb-12 mx-auto">
                 {topBar()}
                   <ErrorBoundary>
            

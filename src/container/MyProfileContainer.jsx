@@ -30,9 +30,12 @@ function MyProfileContainer(props){
     const navigate = useNavigate()
     const [search,setSearch]=useState("")
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const collections = useSelector(state=>state.books.collections).filter(page=>{
+    const collections = useSelector(state=>state.books.collections).filter(col=>{
+      if(search.toLowerCase()=="feedback"){
+        return col.type=="feedback"
+      }
       if(search.length>0){
-       return page.title.toLowerCase().includes(search.toLowerCase())
+       return col.title.toLowerCase().includes(search.toLowerCase())
       }else{
        return true
       }

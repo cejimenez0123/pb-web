@@ -133,7 +133,7 @@ console.log(storyToCols)
     }
     const collectionInfo=()=>{
         
-        return(<div className="   sm:flex-row sm:flex justify-around lg:w-info mx-auto max-h-full  sm:pb-8 sm:w-48 p-4 sm:border-emerald-600 sm:border-2 mx-2 mt-4 md:mt-8 rounded-lg mb-8 sm:text-left">
+        return(<div className="   sm:flex-row sm:flex justify-around lg:w-info mx-auto max-h-info sm:pb-8 sm:w-48 p-4 sm:border-emerald-600 sm:border-2 mx-2 mt-4 md:mt-8 rounded-lg mb-8 sm:text-left">
     <div>
         <div className="lg:w-[30em]">
     <input 
@@ -148,10 +148,10 @@ console.log(storyToCols)
   
         
         <div className="">
-        <div className=" mt-8 w-[100%]  justify-around md:ml-12  gap-2 grid  grid-cols-2  ">
+        <div className=" mt-8 w-[100%]   justify-evenly md:ml-12  gap-2 grid  grid-cols-2  ">
 
    {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
-   <span className="bg-emerald-800 flex  mont-medium text-white sm:ml-0 w-[10em] h-[5em] text-center mx-auto rounded-full"
+   <span className="bg-emerald-800 flex  mx-auto mont-medium text-white w-[8rem] h-[4rem] text-center  rounded-full"
    
    onClick={updateCollection}
    
@@ -161,11 +161,11 @@ console.log(storyToCols)
    <div className="flex flex-row">
     
    <img onClick={()=>navigate(Paths.addToCollection.createRoute(colInView.id))
-   }className=" bg-emerald-800 p-2 rounded-full mx-auto "
+   }className=" bg-emerald-800 max-h-10 p-2 rounded-full mx-auto "
    src={add}/>
    <img
    onClick={()=>navigate(Paths.collection.createRoute(colInView.id))}
-    className=" bg-emerald-800 rounded-full mx-auto p-2" src={view}/>
+    className=" bg-emerald-800 rounded-full mx-auto  max-h-10 p-2 " src={view}/>
    </div>
     {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 mont-medium border-4 min-w-36 text-center  flex  bg-transparent m text-[1rem]  mx-auto text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[0.8rem] ">Collection is Open Collab</h3> </div>:
     <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 min-w-36 mont-medium flex text-center bg-transparent mx-auto   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[0.8rem]  ">Collection is Close Collab</h3></div>}
@@ -175,20 +175,20 @@ console.log(storyToCols)
    
     {isPrivate?<div
        className={`
-        " border-2 flex border-emerald-300 w-[10em] h-[5em]  mont-medium bg-transparent text-emerald-800  mx-auto rounded-full`}
+        " border-2 flex border-emerald-300 w-[8rem] h-[4rem]  mont-medium bg-transparent text-emerald-800  mx-auto rounded-full`}
     ><a className="mx-auto text-emerald-800 my-auto">
         Is Private
     </a></div>:<div
     
     className={`
-        " border-2 border-emerald-300 border-4 flex mx-auto border-success w-[10em] h-[5em]  bg-transparent text-emerald-800  rounded-full`}
-   ><a className="mx-auto my-auto text-emerald-800">Is Public</a></div>}
+        " border-2 border-emerald-300 border-4 flex mx-auto border-success  m-1 w-[8rem] h-[4rem]  bg-transparent text-emerald-800  rounded-full`}
+   ><a className="mx-auto my-auto mont-medium text-emerald-800">Is Public</a></div>}
   
    </div>
    <div className="mx-auto">
     <div >
     <div className="dropdown">
-  <div tabIndex={0} role="button"  className=" "> <label className=" text-emerald-700 border-2 border-emerald-600 rounded-full text-center   py-3 px-2 w-[10em] mont-medium h-[5em] ">Followers are <span   className="text-emerald-700 shadow-sm">{followersAre}s</span>   </label>
+  <div tabIndex={0} role="button"  className="  w-[8rem] h-[4rem] border-2 border-emerald-600   flex rounded-full"> <span className=" text-emerald-700  text-center   mx-auto my-auto  mont-medium  ">Followers are<br/> <span   className="text-emerald-700 ">{followersAre}s</span>   </span>
  
 </div>
   <ul tabIndex={0} className="dropdown-content menu bg-white text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
@@ -206,11 +206,11 @@ console.log(storyToCols)
 
    </div>
    </div>
-   <div className="mx-auto my-auto">
+   
   
  
-    <a onClick={()=>setOpenAccess(true)}className="text-white px-2 py-3 text-[0.8rem] w-[10em]  rounded-full mont-medium bg-emerald-600">Manage Access</a>
-  </div>
+    <a onClick={()=>setOpenAccess(true)}className="text-white  text-[0.8rem]  mx-auto flex w-[8rem] h-[4rem] rounded-full mont-medium bg-emerald-600"><span className="mx-auto my-auto">Manage Access</span></a>
+
    <div>
 
 </div>
@@ -268,16 +268,16 @@ const deleteSubCollection = (colId)=>{
             <Alert />
      
             {collectionInfo()}
-    <div className="max-w-[96vw] lg:w-page mx-auto">
+    <div className="max-w-[96vw] md:w-page mx-auto">
                             <div role="tablist" className="tabs mt-8 max-w-[96vw] mb-2 lg:mb-48 lg::w-page mx-auto rounded-lg sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-900 text-xl" aria-label="Stories" />
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm [--tab-bg:transparent]  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-900 text-xl" aria-label="Stories" />
   <div role="tabpanel" className="tab-content max-w-[96vw] pt-1   border-emerald-600 lg::w-page rounded-lg border-2">
     {newPages.length==0?<div><h6 className="text-emerald-700 py-24 text-center bg-opacity-20 bg-emerald-400 rounded-lg m-4  text-xl">Room for who you are</h6></div>:<SortableList items={newPages} onOrderChange={handleStoryOrderChange}
   onDelete={deleteStory}/>}
 
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
-  <div role="tabpanel" className="tab-content max-w-[96vw] pt-1 bg-transparent lg:w-page  border-emerald-600 border-2 rounded-lg md:p-6 ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 [--tab-bg:transparent] border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
+  <div role="tabpanel" className="tab-content max-w-[96vw] pt-1 bg-transparent  md:w-page  border-emerald-600 border-2 rounded-lg md:p-6 ">
  <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20"><h6 className="text-emerald-800 py-24 text-center  m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:<SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteSubCollection}/>}
  </div> 
   </div>

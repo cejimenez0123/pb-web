@@ -87,7 +87,7 @@ export default function AddToCollectionContainer(props){
 
     const storyList = ()=>{
       
-        return(<div className=" my-4 lg:w-page text-emerald-800 mx-auto overflow-scroll mx-auto text-left mb-2">
+        return(<div className=" my-4 md:w-page text-emerald-800 mx-auto overflow-scroll mx-auto text-left mb-2">
             <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Stories to Collection</h6>
             <InfiniteScroll
             className=" mx-2 "
@@ -174,13 +174,13 @@ export default function AddToCollectionContainer(props){
 <div className=" sm:flex sm:flex-row">
 
 
-<div role="tablist" className="tabs mt-8 shadow-md rounded-lg    max-w-[96vw] lg:w-page  lg:w-page bg-emerald-600 border-3 border-emerald-600 mx-auto  sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab border-emerald-800   max-w-[96vw] lg:w-page border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Stories" />
-  <div role="tabpanel" className="tab-content border-3 bg-emerald-50 h-[100%]  max-w-[96vw] lg:w-page  pt-1 mx-auto md:p-6">
+<div role="tablist" className="tabs mt-8 shadow-md rounded-lg    max-w-[96vw] md:w-page   bg-emerald-600 border-3 border-emerald-600 mx-auto  sm:mx-6 tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab border-emerald-800   max-w-[96vw] md:w-page border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Stories" />
+  <div role="tabpanel" className="tab-content border-3 bg-emerald-50 h-[100%]  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
   {storyList()}
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent   max-w-[96vw] lg:w-page  border-l-2 border-r-2 border-t-2   text-white  text-xl" aria-label="Collections" />
-  <div role="tabpanel" className="tab-content pt-1 bg-emerald-50  border-3  max-w-[96vw] lg:w-page mx-auto lg:w-page  h-[100%]  md:p-6 rounded-box ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent   max-w-[96vw] md:w-page  border-l-2 border-r-2 border-t-2   text-white  text-xl" aria-label="Collections" />
+  <div role="tabpanel" className="tab-content pt-1 bg-emerald-50  border-3  max-w-[96vw] md:w-page mx-auto h-[100%]  md:p-6 rounded-box ">
   {colList()}
    </div>
 </div>
