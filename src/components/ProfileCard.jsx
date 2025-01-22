@@ -46,8 +46,12 @@ export default function ProfileCard({profile,onClickFollow,following}){
         </div>
         
         </div>
-            <div className="mt-3">
+            <div className="mt-3 flex flex-row">
                 <FollowDiv following={following} onClickFollow={onClickFollow}/>
+                <div className="text-emerald-800 text-center mx-4">
+                    <h5 className="open-sans-bold text-[1rem] ">Followers</h5>
+                <h6>{profile.followers.length}</h6>
+                </div>
             </div>
         </div>
       

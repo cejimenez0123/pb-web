@@ -14,11 +14,13 @@ export default {
     width: {
       '128': '48rem',
       'page':"50em",
-      'info':"55rem"
+      'info':"55rem",
+    
 
     },
     height:{
-      "info":"18rem"
+      "info":"18rem",
+      "item":"20rem"
     },
     borderWidth: {
       DEFAULT: '1px',

@@ -146,7 +146,7 @@ function MyProfileContainer(props){
                            </div>
                            <div className='max-h-[100%] flex'>
                            <div className='p-4' >
-                            <div className='my-4'>
+                            <div className='my-4 h-[15em]'>
                            {currentProfile? <ProfileInfo profile={currentProfile}/>:null}
                            </div>
                         <MediaQuery maxWidth={'600px'}>
@@ -157,7 +157,7 @@ function MyProfileContainer(props){
                                <h6 className='my-auto text-[0.7rem] mont-medium md:text-md mx-auto '> Write a Story</h6>
                             </div>
                             <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5em] w-[8em]  md:w-[10em] md:h-[3em] text-white   text-bold'>
-                              <div className='mx-auto text-[0.7rem] md:text-md my-auto mont-medium flex-col flex md:flex-row'><h6 >Create </h6><h6>Collection</h6> </div> 
+                              <div className='mx-auto text-[0.7rem] md:text-md my-auto mont-medium  flex-col flex md:flex-row'><h6 className='text-center' >Create Collection</h6> </div> 
                             </div>
                             <div className='w-[10em] h-[3em] mx-auto flex'>
                             <h6 onClick={()=>setOpenRefferal(true)}className='my-auto mx-auto text-sm  text-emerald-800'>Refer Someone?</h6>
@@ -172,22 +172,22 @@ function MyProfileContainer(props){
                             <div className='   grid grid-cols-2  gap-1  '>
                                 <div>
                                     <div                    onClick={()=>navigate(Paths.workshop.reader())} 
-                                        className='bg-emerald-700 rounded-full text-white flex w-[9rem] h-[4rem]  '>
+                                        className='bg-emerald-700 rounded-full mont-medium text-white flex w-[9rem] h-[4rem]  '>
                                     <h6 className='mx-auto lg:text-[0.8rem] px-2 my-auto'> Join a Workshop</h6>
                                         </div>
                                 </div> 
                                 <div>
-                            <div onClick={ClickWriteAStory} className='bg-emerald-600 rounded-full flex text-white w-[8rem] lg:w-[9rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
-                            <h6 className='text-center text-[0.8rem] px-2 mx-auto my-auto'>Write a Story</h6>
+                            <div onClick={ClickWriteAStory} className='bg-emerald-600 rounded-full flex text-white w-[8rem] mont-medium lg:w-[9rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
+                            <h6 className='text-center text-[0.8rem] px-2 mx-auto mont-medium my-auto'>Write a Story</h6>
                             </div>
                             </div>
                             <div>
-                            <div onClick={ClickCreateACollection} className='bg-emerald-500 rounded-full flex text-white w-[9rem]  h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
-                            <h6 className='text-center  text-[0.8rem] px-2 mx-auto my-auto'>Create Collection</h6>
+                            <div onClick={ClickCreateACollection} className='bg-emerald-500 btn mont-medium rounded-full flex text-white w-[9rem]  border-emerald-500 border-1 h-[4rem] py-3  text-bold'>
+                         <h6 className='text-[0.8rem]'>Create Collection</h6>
                             </div>
                             </div>
                             <div className=' mt-6'> 
-                            <h6 onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 text-emerald-800'>Refer Someone?</h6>
+                            <h6 onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 mont-medium text-emerald-800'>Refer Someone?</h6>
                             </div>
                             </div> 
                          :null}

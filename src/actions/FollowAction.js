@@ -16,7 +16,7 @@ const createFollow = createAsyncThunk("follow/createFollow",    async ({follower
 const deleteFollow = createAsyncThunk("follow/deleteFollow",    async ({follow},thunkApi) => {
     try{
     let data = await followRepo.delete({id:follow.id})
-    return {profile:data.profile}
+    return {profile:data.profile,followed:data.followed}
 
     }catch(error){
         

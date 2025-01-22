@@ -18,7 +18,6 @@ import {createStory, deleteStory, getStory, updateStory } from "../../actions/St
 import ErrorBoundary from "../../ErrorBoundary"
 import HashtagForm from "../../components/hashtag/HashtagForm"
 import RoleForm from "../../components/role/RoleForm"
-import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import isValidUrl from "../../core/isValidUrl"
 import Context from "../../context"
 import EditorDiv from "../../components/page/EditorDiv"
@@ -26,6 +25,7 @@ import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions
 import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
 import Alert from "../../components/Alert"
+import FeedbackDialog from "../../components/page/FeedbackDialog"
 
 
 function EditorContainer(props){
@@ -33,9 +33,9 @@ function EditorContainer(props){
         query: '(max-width: 600px)'
       })
         const currentProfile = useSelector(state=>state.users.currentProfile)
-        const [getFeedback,setFeedback]=useState(false)
-        const [error,setError]=useState(null)
-        const [success,setSuccess]=useState(null)
+        const [feedbackDialog,setFeedbackDialog]=useState(false)
+        const {setError,setSuccess}=useContext(Context)
+        const [feedback,setFeedback]=useState("")
         const [fetchedPage,setFetchedPage]=useState(null)
         const editPage = useSelector(state=>state.pages.editingPage)
         const pageInView = useSelector(state=>state.pages.pageInView)
@@ -48,7 +48,7 @@ function EditorContainer(props){
         const location = useLocation()
         let href =location.pathname.split("/")
         const last = href[href.length-1]
-        const [feedback,setFeedbackStr]=useState("I want readers to go in blind.")
+      
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
@@ -57,12 +57,13 @@ function EditorContainer(props){
         const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
         const {id }= pathParams
         const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
-          data:editPage?editPage.data:pageInView?pageInView.data:"",description:feedback,privacy:privacy,commentable:commentable
+          data:editPage?editPage.data:pageInView?pageInView.data:"",needsFeedback:false,description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:"",privacy:privacy,commentable:commentable
         })
         
    
       const handleUpdate=debounce((params)=>{
-        setIsSaved(false) 
+        setIsSaved(false)
+        if(params.data.length>0){ 
        dispatch(updateStory(params)).then(res=>{
           checkResult(res,payload=>{
             if(payload.story){
@@ -75,8 +76,8 @@ function EditorContainer(props){
             setError(err.message)
             return false
           })}
-
-      )},40)
+        
+      )}},40)
       useEffect(()=>{
         if(!fetchedPage){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
@@ -239,7 +240,7 @@ setError(err.message)
       <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1] shadow">
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
-        <li onClick={()=>{setFeedback(true)}} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
+        <li onClick={()=>{setFeedbackDialog(true)}} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {privacy?<li onClick={()=>handlePostPublicly(false)} 
 className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>handlePostPublicly(true)}>Make Private</li>}
@@ -260,8 +261,10 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
     </div>)
    }
    const handleFeedback=()=>{
+   
     let params = parameters
        params.description = feedback
+       params.needsFeedback = true
        setParameters(params)
        handleUpdate(params).then(truthy=>{
         if(truthy){
@@ -284,7 +287,7 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
           <div  className=" mx-auto md:p-8  "> 
-            <Alert error={error} success={success}/>
+            <Alert />
                 <div className= "mx-2 lg:w-page pt-8 mb-12 mx-auto">
                 {topBar()}
                   <ErrorBoundary>
@@ -316,31 +319,10 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
       
   
       </Dialog>
+<FeedbackDialog page={editPage} open={feedbackDialog} handleChange={setFeedback} handleFeedback={handleFeedback} handleClose={()=>{
+  setFeedbackDialog(false)
+}} />
 
-      <Dialog
-        open={getFeedback}
-        fullScreen={isPhone}
-        onClose={()=>{setFeedback(false)}}
-        className=""
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >    <DialogTitle id="alert-dialog-title">
-      {"What kind of feedback do you want?"}
-    </DialogTitle>
-    <DialogContent className="">
-            <textarea 
-            value={feedback}
-            onChange={e=>setFeedbackStr(e.target.value)}
-            className="textarea w-[100%] min-h-[7rem] rounded-lg border-2 bg-transparent text-emerald-400 border-emerald-400"/>
-                   <DialogActions>
-          <Button onClick={handleClose}>Continue Working</Button>
-          <Button onClick={handleFeedback}>
-           Get feedback
-          </Button>
-        </DialogActions>
-    </DialogContent>
-   
-      </Dialog>
       <Dialog
 
       aria-labelledby="alert-dialog-title"

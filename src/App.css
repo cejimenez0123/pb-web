@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Montserrat:wght@500&family=Open+Sans&display=swap');.App{
-  text-align: center;
-  color: white;
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Montserrat:wght@500&family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&display=swap');
+.App{
+
   width: 100vw;
 }
 
@@ -25,7 +25,14 @@
   font-variation-settings:
     "wdth" 100;
 }
-
+.open-sans-bold {
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
 
 #root {
   display: flex;

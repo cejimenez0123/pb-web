@@ -43,7 +43,6 @@ function PicturePageForm(props){
         setParameters(params)
     }}
     useEffect(()=>{
-        console.log("lorax")
         if(ePage){
             switch(ePage.type){
                 case PageType.link:{
@@ -58,7 +57,7 @@ function PicturePageForm(props){
                             setLocalContent(ePage.data)
                         }else{
                             getDownloadPicture(ePage.data).then(url=>{
-                                console.log("Touch")
+                                
                                 setImage(url)
                                 setLocalContent(url)
                             })
@@ -124,13 +123,16 @@ function PicturePageForm(props){
                     return(
                     <LinkPreview url={localContent} />
                     )
-                 }else{
+                 }else if(localContent.length>0){
                     return (<div className={"text-emerald-800 p-4"}>
                         <p>URL is not valid</p>
                         </div>)
-            }
+                 }else{
+                    return null
+                 }
+                }
 
-       }
+       
        case PageType.picture:{
      
             return(
@@ -164,12 +166,12 @@ function PicturePageForm(props){
     
     return(<div className='mx-auto  bg-emerald-200 rounded-b-lg w-full p-8'>
       {uploadBtn()}
-      {!image? <label className='my-2 border-emerald-800 border-1 p-2 rounded-lg  text-emerald-800 '>
-            URL
+      {!image? <label className='my-2 border-emerald-600 border-2 max-w-[30em] mx-auto py-4 flex pl-2 pr-3 rounded-full  bg-transparent  text-emerald-800 '>
+            <h6 className='mont-medium my-auto'>URL</h6>
             <input 
             type='text'
                     value={localContent}
-                    className='max-w-[65vw] lg:w-[25em] text-emerald-800 input bg-transparent'
+                    className=' text-emerald-800 text-[1.2rem] mx-1 w-[90%] my-auto bg-transparent'
                  
                     onChange={(e)=>handleLocalContent(e)}
                 />

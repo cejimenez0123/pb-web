@@ -594,10 +594,9 @@ export {logIn,
         createFollowLibrary,
         fetchFollowBooksForProfile,
         fetchFollowLibraryForProfile,
-        deleteFollowBook,
-        deleteFollowLibrary,
+     
         deleteFollowProfile,
-        createFollowProfile,
+  
         fetchFollowProfilesForProfile,
         signOutAction,
         clickMe,

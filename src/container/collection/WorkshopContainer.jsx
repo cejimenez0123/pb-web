@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {registerUser,postActiveUser,createWorkshopGroup} from "../../actions/WorkshopActions"
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -12,14 +12,15 @@ import PageWorkshopItem from '../page/PageWorkshopItem';
 import loadingAnimation from "../../images/loading.gif"
 import InfoTooltip from '../../components/InfoTooltip';
 import Alert from '../../components/Alert';
+import Context from '../../context';
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const page = useSelector(state=>state.pages.pageInView)
   const [loading,setLoading]=useState(true)
-  const [error,setError]=useState(null)
-  const [success,setSuccess]=useState(null)
+  const {error,setError,setSuccess}=useContext(Context)
+
   const [radius,setRadius]=useState(50)
   const [location,setLocation]=useState(null)
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -40,11 +41,7 @@ setTimeout(()=>{
  
 },4001)
   },[error])
-  useEffect(()=>{
-    if(!isGlobal && !location){
-      requestLocation()
-    }
-  },[isGlobal])
+
   useEffect(()=>{
     if(currentProfile){
       
@@ -52,14 +49,15 @@ setTimeout(()=>{
       dispatch(postActiveUser({story:page,profile:currentProfile})).then(res=>{
           checkResult(res,payload=>{
             if(payload.profiles){
-              setSuccess(payload.profiles.length+" Users Active")
               setError(null)
+
+              setSuccess(payload.profiles.length+" Users Active")
               setLoading(false)
             }
           },err=>{
+            setSuccess(null) 
             setError("Error getting active users")
-            setSuccess(null)
-            setLoading(false)
+          setLoading(false)
           })
       })
 
@@ -102,7 +100,12 @@ setTimeout(()=>{
       }
     );
   }
-
+  const handleGlobal = () => {
+   setIsGlobal(!isGlobal)
+   if(isGlobal){
+    requestLocation()
+   }
+  };
   const handleGroupClick=()=>{
     setLoading(true)
     setError(null)
@@ -153,12 +156,11 @@ setTimeout(()=>{
   return (
     <div>
 
-    <Alert error={error} success={success}/>
       {currentProfile?(
         <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4    rounded-lg ">
        <div>
      <h2 className='text-xl my-8 font-bold '> {currentProfile.username}</h2></div>
-     <label className='flex flex-row justify-between'><div className='flex flex-row'><InfoTooltip text="Do you want to find users local to your area or around the world?" /><h6 className='open-sans-medium'> Go Global</h6></div> <input checked={isGlobal} type="checkbox bg-slate-700" onClick={()=>{setIsGlobal(!isGlobal)}} className='toggle bg-white'/></label>
+     <label className='flex flex-row justify-between'><div className='flex flex-row'><InfoTooltip text="Do you want to find users local to your area or around the world?" /><h6 className='mont-medium text-xl'> Go Global</h6></div> <input checked={isGlobal} type="checkbox"  onChange={handleGlobal}  className='toggle bg-white bg-slate-400'/></label>
 <div>
 
         {!isGlobal?<label className='border-1 my-4 number border-emerald-600 rounded-full   px-4'>Radius
@@ -174,7 +176,7 @@ setTimeout(()=>{
   
       </div>
       <div  className="bg-emerald-700 flex text-white mt-8 rounded-full"
-      onClick={handleGroupClick} ><h6 className='mx-auto p-6 my-auto'>Join a Workshop</h6>
+      onClick={handleGroupClick} ><h6 className='mx-auto lg:text-xl p-6 my-auto'>Join a Workshop</h6>
     </div>       <div className='w-fit flex justify-center p-8'>     
   {loading?<img src={loadingAnimation} className='max-w-24 mx-auto p-6 max-h-24 '/>:null}
   </div>

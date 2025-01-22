@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
 import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/material"
@@ -44,7 +44,7 @@ function ApplyContainer(props){
     const [comfortLevel,setComfortLevel]=useState(0)
     const [platformFeatures,setPlatformFeatures]=useState("")
     const [user,setUser]=useState(null)
-    const [error,setError]=useState(null)
+    const [error,setError]=useContext(Context)
     const [betaTest,setBetaTester]=useState([])
     const [igError,setIgError]=useState(false)
     const [nameError,setNameError]=useState(false)
@@ -127,7 +127,7 @@ setTimeout(()=>{
 return (
   <>
     <div className="sm:pb-8">
-      <Alert error={error} />
+      <Alert  />
     {/* <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
    {error?
   <div role="alert" className={`alert    

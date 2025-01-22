@@ -113,7 +113,7 @@ function IndexItem({item}) {
                    <h6   onClick={handleNavigate}
          className={`text-[0.9rem] lg:text-[1.3rem ] max-w-[45vw]  text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
        {item.title}</h6></span>:
- <span className={` bg-red-100 whitespace-nowrap max-w-[45vw]  text-emerald-700 no-underline text-ellipsis my-auto`}>
+ <span className={`  whitespace-nowrap max-w-[45vw]  text-emerald-700 no-underline text-ellipsis my-auto`}>
                    <h6  onClick={handleNavigate}  className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
                    whitespace-nowrap text-emerald-700 no-underline  my-auto`}
                    >Untitled</h6></span>}

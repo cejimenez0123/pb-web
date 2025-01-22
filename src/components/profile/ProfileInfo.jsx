@@ -1,5 +1,6 @@
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { useState,useEffect } from "react"
+import "../../App.css"
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     
@@ -16,10 +17,12 @@ const ProfileInfo = ({profile})=>{
         
         
     },[])
-    return (                           
-    <div className='flex-row   mx-auto   flex  '>
+    return (  
+        <div className="flex h-[100%] flex-col justify-between">                       
+    <div className='flex-row    mx-auto   flex  '>
         <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mr-6 rounded-full overflow-hidden">
     <img className={"object-fit "}src={pictureUrl}/>
+   
     </div>
 
         <div className='text-left sm:mx-3 mb-2 h-48 flex flex-col '>
@@ -27,8 +30,16 @@ const ProfileInfo = ({profile})=>{
        <div className='w-[100%] max-w-[20em] text-left '>
         <h6 className='sm:max-h-48  sm:w-60 text-[0.8rem] sm:text-[0.8rem]  text-emerald-900 '>
             {profile.selfStatement}</h6></div> 
-  
-        </div></div>)
+          
+        </div>
+        </div>
+        <div className="text-emerald-800 flex flex-row justify-start px-4">
+            {profile.followers.length>0?<div className="text-center open-sans-bold ">
+                <h5 className="text-[1rem]">Followers</h5>
+                <h6 className="text-[1.2rem]">{profile.followers.length}</h6>
+            </div>:null}
+        </div>
+        </div>  )
 }
 
 export default ProfileInfo

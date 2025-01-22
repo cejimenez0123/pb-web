@@ -8,15 +8,11 @@ import {    logIn ,
             fetchFollowBooksForProfile,
             fetchFollowLibraryForProfile,
             fetchFollowProfilesForProfile,
-            createFollowBook,
-            createFollowLibrary,
-            createFollowProfile,
+         
             signOutAction,
             fetchHomeCollection,
             updateHomeCollection,
-            deleteFollowLibrary,
-            deleteFollowProfile,
-            deleteFollowBook,
+            
             setSignedInTrue,
             setSignedInFalse,
             getPageApprovals,
@@ -68,6 +64,9 @@ const userSlice = createSlice({
         }).addCase(deleteFollow.fulfilled,(state,{payload})=>{
             if(payload.profile){
                 state.currentProfile = payload.profile
+            }
+            if(payload.followed){
+                state.profileInView = payload.followed
             }
         })
         .addCase(logIn.pending,(state) => {
@@ -146,26 +145,30 @@ const userSlice = createSlice({
         if(Array.isArray(payload.followList)){
             state.followedLibraries = payload.followList
         }
-    }).addCase(createFollowBook.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(createFollowBook.fulfilled,(state,{payload})=>{
-        state.followedBooks = [...state.followedBooks,payload.followBook]
-    }).addCase(createFollowLibrary.fulfilled,(state,{payload})=>{
-        state.followedLibraries = [...state.followedLibraries,payload.followLibrary]
-    }).addCase(createFollowLibrary.rejected,(state,{payload})=>{
+    })
+    // .addCase(createFollowBook.rejected,(state,{payload})=>{
+    //     state.error = payload.error
+    // }).addCase(createFollowBook.fulfilled,(state,{payload})=>{
+    //     state.followedBooks = [...state.followedBooks,payload.followBook]
+    // }).addCase(createFollowLibrary.fulfilled,(state,{payload})=>{
+    //     state.followedLibraries = [...state.followedLibraries,payload.followLibrary]
+    // }).addCase(createFollowLibrary.rejected,(state,{payload})=>{
         
-        state.error = payload.error
-    }).addCase(fetchFollowProfilesForProfile.rejected,(state,{payload})=>{
+        // state.error = payload.error
+    // })
+    .addCase(fetchFollowProfilesForProfile.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(fetchFollowProfilesForProfile.fulfilled,(state,{payload})=>{
         if(Array.isArray(payload.followList)){
         state.followedProfiles = payload.followList
         }
-    }).addCase(createFollowProfile.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(createFollowProfile.fulfilled,(state,{payload})=>{
-        state.followedProfiles = [...state.followedProfiles,payload.followProfile]
-    }).addCase(signOutAction.fulfilled,(state,{payload})=>{
+    })
+    // .addCase(createFollowProfile.rejected,(state,{payload})=>{
+    //     state.error = payload.error
+    // }).addCase(createFollowProfile.fulfilled,(state,{payload})=>{
+    //     state.followedProfiles = [...state.followedProfiles,payload.followProfile]
+    // })
+    .addCase(signOutAction.fulfilled,(state,{payload})=>{
         state.currentProfile = null
         state.followedBooks = []
         state.followedLibraries = []
@@ -184,15 +187,6 @@ const userSlice = createSlice({
         state.homeCollection = payload.collection
     }).addCase(updateHomeCollection.rejected,(state,{payload})=>{
         state.error = payload.error
-    }).addCase(deleteFollowBook.fulfilled,(state,{payload})=>{
-        const list = state.followedBooks.filter(fb=>fb!=null && fb.id != payload.followBook.id)
-        state.followedBooks = list
-    }).addCase(deleteFollowLibrary.fulfilled,(state,{payload})=>{
-        const list = state.followedLibraries.filter(fl=>fl!=null &&fl.id != payload.followLibrary.id)
-        state.followedBooks = list
-    }).addCase(deleteFollowProfile.fulfilled,(state,{payload})=>{
-        const list = state.followedProfiles.filter(fp=> fp!=null &&payload.followProfile && fp.id != payload.followLibrary.id)
-        state.followedBooks = list
     }).addCase(setSignedInTrue.type,(state,{payload})=>{
         state.signedIn = true
     }).addCase(setSignedInFalse.type,(state,{payload})=>{

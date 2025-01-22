@@ -43,7 +43,7 @@ const pages = [
                 PageName.login,
                
                 ]
-function NavbarContainer(props){
+function NavbarContainer({profile}){
   const isPhone =  useMediaQuery({
     query: '(max-width: 600px)'
   })
@@ -118,43 +118,8 @@ function NavbarContainer(props){
       }else{
       setAnchorElNavCreate(event.currentTarget);}
   };
-//   useLayoutEffect( ()=>{
-//     if(currentProfile){
-//     if( !currentProfile.profilePic.includes("http")){
-//         getDownloadPicture(currentProfile.profilePic).then(url=>{
-           
-//             setSelectedImage(url)
-//         })
-//     }else{
-//         setSelectedImage(currentProfile.profilePic)
-//     }
-//   }
-    
-// },[currentProfile])
-  const handleElPageSmall = (event) => {
-    if(anchorElPageSmall){
-      setAnchorElPageSmall(null)
-    }else{
-    setAnchorElPageSmall(event.currentTarget);
-  }
-};
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
-  
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
-    const handleCloseUserMenu = () => {
-      setAnchorElUser(null);
-    };
-    const handleOpenElPage = debounce((e) => {
-      if(anchorElPage) {
-        setAnchorElPage(null)
-      }else{
-        setAnchorElPage(e.target);
-      }
-    },10)
+
+
     const ClickWriteAStory = debounce(()=>{
       ReactGA.event({
           category: "Page",
@@ -229,11 +194,11 @@ navigate(Paths.editor.link())}}>
      } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
 
 }else if(page == PageName.login){
-return currentProfile?(<div></div>):
+return !currentProfile?
 (<li onClick={()=>handleCloseNavMenu(page) } 
     key={page} >
 <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
-</li>)
+</li>):null
 
 }else if(page==PageName.search){
 return (<li onClick={()=>openDialogAction()} 
@@ -255,7 +220,7 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
   
   </div>
   <div className='navbar-center lg:navbar-start'>
-    <a  onClick={()=>navigate("/")}className="btn btn-ghost  text-xl">Pb</a>
+    <a  onClick={()=>navigate("/")}className="btn btn-ghost lora-bold text-xl">{isPhone?"Pb":"Plumbum"}</a>
     </div>
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">
@@ -347,7 +312,7 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
                                   }else if(setting== SettingName.account){
                                       navigate("/profile/edit")
                                   }
-                                  handleCloseUserMenu()
+                              
                     }}><a className='text-emerald-800'>{setting}</a></li>
                   ))}
                        </ul>

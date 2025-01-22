@@ -1,6 +1,6 @@
-import { useEffect ,useLayoutEffect, useState} from "react"
+import { useContext, useEffect ,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import {  useNavigate, useParams } from "react-router-dom"
 import { clearCollections, fetchCollection, fetchCollectionProtected, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import PageList from "../../components/page/PageList"
@@ -18,10 +18,11 @@ import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import loadingJson from "../../images/loading.gif"
 import Alert from "../../components/Alert"
+import Context from "../../context"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
-    const [error,setError]=useState(null)
-    const [success,setSuccess]=useState(null)
+
+    const {setError}=useContext(Context)
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
@@ -170,10 +171,9 @@ setLoading(false)}
     const getContent= ()=>{
         dispatch(clearCollections())
         dispatch(clearPagesInView())
-        let token = localStorage.getItem("token")
-        token?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
+        currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
     
-        token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
+        currentProfile?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     const findRole = ()=>{
      
@@ -247,8 +247,8 @@ if(collection&&canUserSee&&!loading){
     return(<>
 
 <div className="pb-[10rem] ">   
-<Alert error={error} success={success}/>    {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
-        <div className="text-left  max-w-[100vw]    mx-auto ">
+<Alert/>    {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
+        <div className="text-left  lg:w-page max-w-[96vw]  mx-auto ">
             {collections && collections.length>0? <div>
                 <h3 className="text-2xl lora-bold text-emerald-800 font-bold text-center">Anthologies</h3>:
             <div>
@@ -271,7 +271,7 @@ if(collection&&canUserSee&&!loading){
             </div>
             </div>:null}
             <h6 className="text-2xl mb-8 w-fit text-center  lora-medium text-emerald-800 font-bold pl-4">Pages</h6>
-        <div className=" max-w-[100vw] px-2 sm:max-w-[40em] mx-auto ">
+        <div className=" mx-auto ">
         <PageList  isGrid={false}/>
         </div>
             </div>

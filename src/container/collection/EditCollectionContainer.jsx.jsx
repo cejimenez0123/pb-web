@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react"
+import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import Paths from "../../core/paths"
@@ -18,6 +18,7 @@ import { useMediaQuery } from "react-responsive"
 import { RoleType } from "../../core/constants"
 import Role from "../../domain/models/role"
 import Alert from "../../components/Alert"
+import Context from "../../context"
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{
@@ -42,8 +43,8 @@ export default function EditCollectionContainer(props){
     const [isOpen,setIsOpen]=useState(false)
     const [followersAre,setFollowersAre]=useState(RoleType.commenter)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [error,setError]=useState(null)
-    const [success,setSuccess]=useState(null)
+    const {setError,setSuccess}=useContext(Context)
+   
     const stcList = storyToCols.map(stc=>{
                     return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
                 })
@@ -264,7 +265,7 @@ const deleteSubCollection = (colId)=>{
     },4001)
     if(colInView){
         return(<div>
-            <Alert error={error} success={success}/>
+            <Alert />
      
             {collectionInfo()}
     <div className="max-w-[96vw] lg:w-page mx-auto">

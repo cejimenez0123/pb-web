@@ -30,7 +30,7 @@ class StoryRepo{
                 Authorization:"Bearer "+localStorage.getItem("token")
             }
         })
-        console.log("DSDSDsA",data)
+  
         return res.data
     }
     async recommendations(){

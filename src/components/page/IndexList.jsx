@@ -45,9 +45,9 @@ const IndexList = ({items})=>{
                       </div>
                     }
                   >
-                      {items.map(item=>{
+                      {items.map((item,i)=>{
                       
-                        return <IndexItem key={ item.id} page={item} item={item} />
+                        return <IndexItem key={ i+item.id} page={item} item={item} />
                       })}  
                    </InfiniteScroll>)
 

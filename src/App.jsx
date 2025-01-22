@@ -112,7 +112,7 @@ function App(props) {
         profile={props.currentProfile}/>
         <SearchDialog  />
         <div className='screen'>
-<Alert error={error} success={success}/>
+<Alert />
       <Routes >
           <Route path={Paths.home()} 
                         element={

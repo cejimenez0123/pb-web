@@ -1,6 +1,6 @@
 
 import { useParams } from "react-router-dom"
-import { useEffect, useLayoutEffect,useState} from "react"
+import { useContext, useEffect, useLayoutEffect,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { 
             fetchProfile,
@@ -14,15 +14,19 @@ import { getProtectedProfilePages,getPublicProfilePages, setPagesInView } from "
 import { createFollow, deleteFollow } from "../../actions/FollowAction"
 import { getProtectedProfileCollections, getPublicProfileCollections } from "../../actions/CollectionActions"
 import { debounce } from "lodash"
-import { DisabledByDefaultTwoTone } from "@mui/icons-material"
 import { setCollections } from "../../actions/BookActions"
+import { useMediaQuery } from "react-responsive"
+import Context from "../../context"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-
+    const {setError,setSuccess}=useContext(Context)
+    const isPhone =  useMediaQuery({
+        query: '(max-width: 600px)'
+      })
+    const [pending,setPending]=useState(true)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collections = useSelector(state=>state.books.collections).filter(col=>col)
     const profile = useSelector(state=>state.users.profileInView)
-    const homeCollection = useSelector(state=>state.users.homeCollection)
     const dispatch = useDispatch()
     const pathParams = useParams()
 
@@ -33,40 +37,52 @@ function ProfileContainer(props){
                 checkResult(result,payload=>{
                 const {profile}=payload
                     if(profile){
-                
+                        getContent()
                     }
                 
                 },()=>{
                 })
         })
     },[])
-    useLayoutEffect(()=>{
-                dispatch(setPagesInView({pages:[]}))
-                dispatch(setCollections({collections:[]}))
+   
+    useEffect(()=>{
+            
+    },[profile])
+    const getContent=()=>{
+        dispatch(setPagesInView({pages:[]}))
+            dispatch(setCollections({collections:[]}))
             localStorage.getItem("token")?dispatch(getProtectedProfilePages({profile:profile})):dispatch(getPublicProfilePages({profile:profile}))
             localStorage.getItem("token")?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile:profile}))
-    
-    },[profile])
-
+        setPending(false)
+    }
     useEffect(()=>{
-checkIfFollowing({profile})
+checkIfFollowing()
 
     },[profile,currentProfile])
-    const checkIfFollowing =({profile})=>{
-
-    if(currentProfile && profile && profile.followers){
+    const checkIfFollowing =()=>{
+        if(currentProfile){
+        if(currentProfile.id==profile.id){
+            setFollowing(true)
+            return
+        }
+    if( profile && profile.followers){
         let found = profile.followers.find(follow=>follow.followerId==currentProfile.id)
          setFollowing(found)
+     }else{
+        setFollowing( null)
      }
     }
+    }
+   
     const onClickFollow = debounce(()=>{
         if(currentProfile){
+        if(profile && currentProfile.id !=profile.id){
             if(following){    
 
               dispatch(deleteFollow({follow:following})).then(res=>
                 checkResult(res,payload=>{
-                    const{profile}=payload
-                    checkIfFollowing({profile})
+                  
+        
                 },err=>{
 
                 })
@@ -79,49 +95,35 @@ checkIfFollowing({profile})
                         following:profile
                     }
                     dispatch(createFollow(params)).then(res=>{
-                           checkIfFollowing()
+                     
                     })
                 }
                
+            }}else{
+                setSuccess(null)
+                setError("This is you silly")
+                
             }
         }else{
-            window.alert("Please login first!")
+            setSuccess(null)
+            setError("Please login first!")
+            
         }
     },[20])
 
  
-//    const ProfileCard =()=>{
-//     if(profile!=null){
-//       return(<div className="pb-8 border-3 rounded-lg  sm:min-h-[30em] mx-auto sm:max-w-[52em] border-emerald-400">
-//         <div className="text-left p-4">
-//             <div className="flex flex-row">  
-//             <img src={profilePic} className="max-w-36 object-fit max-h-36 mb-2 rounded-lg" alt=""/>
-//          <div>
-//             <div className="px-3 pt-3 flex flex-col justify-between  h-48">
-//            <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem]  h-40 overflow-y-scroll flex-wrap flex text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
-//            </div> 
-//             <div className="h-fit pb-2"><h5 className="text-emerald-800 text-[1.2rem] font-bold">{profile.username}</h5></div>
-//         </div></div>
-//         </div>
-//             <div className="mt-3">
-//                 {followDiv()}
-//             </div>
-//         </div>
-      
-//         </div>)
-//     }else{
-//        return <div className=" skeleton profile-card"/>
-//     }
-// }
-///Alert
+
     return(
         <div className="">
             <div className="pt-2 md:pt-8 mx-2">
                 <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow}/>
             </div>
-            <div className=" w-[96vw]  md:w-info md:h-info mt-4 mb-1 mx-auto">
-                         <div role="tablist" className="tabs  shadow-md mb-36 rounded-lg w-[96vw] mx-auto md:w-page tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  [--tab-border-color:emerald] bg-transparent focus:bg-emerald-200 text-emerald-800 text-xl" aria-label="Pages" />
+            {isPhone? <label className='flex  mt-8 flex-row mx-2'>
+<span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search</span>
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
+  </label>:null}
+                       {!pending?  <div role="tablist" className="tabs  mt-8 shadow-md mb-36 rounded-lg w-[96vw] mx-auto md:w-page tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab [--tab-bg:transparent] [--tab-border-color:emerald] bg-transparent focus:bg-emerald-200 text-emerald-800 text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content w-[96vw]  mx-auto md:w-page border-emerald-400 border-3 h-[100%] rounded-lg border-3 border-emerald-400 ">
   <IndexList items={pages}/>
   </div>
@@ -129,15 +131,15 @@ checkIfFollowing({profile})
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab  [--tab-border-color:emerald] active:bg-emerald-200  text-emerald-800 text-xl"
+    className="tab  [--tab-border-color:emerald] [--tab-bg:transparent] active:bg-emerald-200  text-emerald-800 text-xl"
     aria-label="Collections"
     />
   <div role="tabpanel"  className="tab-content w-[96vw]  md:w-page mx-auto border-emerald-400 border-3 h-[100%] rounded-lg  border-3 border-emerald-400 ">
   <IndexList items={collections}/>
 </div>
-</div>
+</div>:<div className="skeleton bg-slate-200 h-page w-[96vw] mx-auto lg:w-page"></div>}
 </div>    
-        </div> 
+
             )
 }
 export default ProfileContainer
