@@ -29,7 +29,16 @@ export default function PageViewItem({page}) {
             return(<CommentInput page={page}  handleClose={handleClose}/>)
         }
     }
+    const header=()=>{
 
+        return <span className={"flex-row flex justify-between px-1 rounded-t-lg lex pt-2 pb-1"}>   <ProfileCircle profile={page.author}/> 
+                  
+         <h6 className="text-emerald-700 mx-2  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]  " onClick={()=>{
+             dispatch(setPageInView({page}))
+             navigate(Paths.page.createRoute(page.id))
+     
+         }} >{` `+page.title.length>0?page.title:"Untitled"}</h6></span>
+     }
 if(page){
     
 
@@ -37,13 +46,15 @@ if(page){
         
         <div className="page rounded-lg overflow-clip">
       <div>
-            <div className="relative  ">
-            <div onClick={()=>{navigate(Paths.profile.createRoute(page.author.id))}} className=' absolute   pr-3 flex flex-row justift-start '>
-                <div className=" text-emerald-600 px-3 my-2 flex flex-row rounded-tl-lg text-elipsis text-md rounded-br-lg bg-transparent to-opacity-0 ">
-                {page && page.author?<ProfileCircle profile={page.author}/>:null}{page.title.length>0?<span className="my-auto mx-2 text-ellipsis">{page.title} </span>:<span className="my-auto">Untitled</span>}
-                </div>
+        <div>
+        
+                {header()}
+            {/* <div onClick={()=>{navigate(Paths.profile.createRoute(page.author.id))}} className=' absolute   pr-3 flex flex-row justift-start '>
+                <div className=" text-emerald-600 px-3 my-2 flex flex-row rounded-tl-lg text-elipsis text-md rounded-br-lg bg-transparent to-opacity-0 "> */}
+                {/* {page && page.author?<ProfileCircle profile={page.author}/>:null}{page.title.length>0?<span className="my-auto mx-2 text-ellipsis">{page.title} </span>:<span className="my-auto">Untitled</span>} */}
+                {/* </div> */}
               
-            </div>
+       
                 <PageDataElement page={page} isGrid={false}/>
                 </div>
             

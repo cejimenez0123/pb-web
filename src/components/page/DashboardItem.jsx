@@ -58,13 +58,13 @@ const hanldeClickComment=()=>{
 
 const header=()=>{
 
-   return <span className={"flex-row flex px-1 rounded-t-lg lex pt-2 pb-1"}>   <ProfileCircle profile={page.author}/> 
+   return <span className={"flex-row flex justify-between px-1 rounded-t-lg lex pt-2 pb-1"}>   <ProfileCircle profile={page.author}/> 
              
     <h6 className="text-emerald-700 mx-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]  " onClick={()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
 
-    }} > {` `+page.title.length>0?page.title:"Untitled"}</h6></span>
+    }} >{` `+page.title.length>0?page.title:"Untitled"}</h6></span>
 }
 const handleApprovalClick = ()=>{
     if(currentProfile){

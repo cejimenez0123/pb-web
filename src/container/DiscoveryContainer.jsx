@@ -112,7 +112,7 @@ const navigateToLibrary = (library)=>{
     const pageList = ()=>{
         if(pagesInView!=null){
             return(<div 
-            className='max-w-[52em] mx-auto max-w-screen '
+            className=' w-[96vw] md:w-page mx-auto '
             >
                <InfiniteScroll
             dataLength={pagesInView.length}
@@ -194,7 +194,7 @@ className={`${
             <ErrorBoundary>
             <div 
 
-            className=' mx-auto  mt-4' >
+            className=' max-w-[100vw] mt-4' >
 
               <div className=' text-left ' >
                
@@ -205,10 +205,9 @@ className={`${
                 <div className='mb-12'>
                 {bookList()} 
                 </div>
-                <div className='flex  flex-col '>
-                    <div className=' lg:w-128 lg:ml-32 mx-auto'>
+                <div className='flex max-w-[96vw] md:w-page mx-auto flex-col '>
+                    
 
-                        <div className='flex flex-row'>
                         <h3 className=' text-emerald-900
                                         font-extrabold 
                                         text-2xl 
@@ -240,8 +239,8 @@ className={`${
                    
                     </div>
                     </div>
-                    </div>
-                    </div > 
+            
+                 
            
                     </div>
                     </div>
