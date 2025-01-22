@@ -19,8 +19,8 @@ export default function AboutContainer(props){
  </div>
            
             <div className=" bg-[#23774ca6] text-white h-[100%] rounded-lg p-4" >
-<div  >
-<h6 className="lora-medium font-bold text-[2rem]">For Creatives</h6>
+<div className="text-center" >
+<h6 className="lora-medium font-bold text-center w-fit text-[2rem]">For Creatives</h6>
 <div >
 <h6 className="text-[1rem] leading-loose open-sans-medium pt-4 text-left" > 
 The idea for Plumbum came to me while I was walking to the gym during a university break.
