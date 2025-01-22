@@ -130,7 +130,7 @@ function IndexItem({item}) {
   <li className="" onClick={
         handleEditClick}><a className="text-green-600 ">Edit</a></li>
        {!item.storyIdList?<li className="text-green-600 " onClick={()=>navigate(Paths.workshop.createRoute(item.id))}>Get Feedback</li>:null}
-       {canUserAdd?<li className="text-green-600 no-underline" onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add ${item.title} to Collection`:"Add to Collection" }</a></li>:null}
+       {canUserAdd?<li className="text-green-600 no-underline" onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>:null}
   </ul>
   </div>
        
