@@ -34,14 +34,14 @@ const IndexList = ({items})=>{
     },[])
     if(items){
     return(<InfiniteScroll
-      className="   overflow-y-scroll "
+      className="   overflow-y-scroll max-h-page"
                    dataLength={items.length}
                    next={()=>{}}
                    scrollThreshold={1}
                    hasMore={false}
                     endMessage={
-                      <div className="p-12" >
-                        <h3 className="text-emerald-600">fin</h3>
+                      <div className="p-12 flex" >
+                        <h3 className="text-emerald-600 lora-bold text-xl tracking-wide mx-auto">There's always room. Breate to let in creativity.</h3>
                       </div>
                     }
                   >

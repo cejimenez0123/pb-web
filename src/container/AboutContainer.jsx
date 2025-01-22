@@ -97,7 +97,7 @@ Be part of a community of writers who are eager to share their insights and supp
     <div  className="grid md:grid-cols-2 gap-8 mb-8">
     
     <div id="py-8 min-w-1/2 px-8">
-        <h6 className="text-[4rem] lora-medium text-emerald-700 py-8 ">Welcome to <br/>Plumbum</h6>
+        <h6 className="text-[4rem] text-center lora-medium text-emerald-700 py-8 ">Welcome to <br/>Plumbum</h6>
   </div>
 
   <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">

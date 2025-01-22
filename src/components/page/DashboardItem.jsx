@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import "../../Dashboard.css"
 import { deletePageApproval,   setEditingPage,   setPageInView, } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
@@ -13,9 +13,11 @@ import Paths from '../../core/paths'
 import bookmarkadd from "../../images/bookmarkadd.svg"
 import PageDataElement from './PageDataElement'
 import ProfileCircle from '../profile/ProfileCircle'
+import Context from '../../context'
+import Enviroment from '../../core/Enviroment'
 function DashboardItem({page,book,isGrid}) {
     const dispatch = useDispatch()
-
+    const {setSuccess,setError}=useContext(Context)
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
@@ -88,11 +90,11 @@ const handleApprovalClick = ()=>{
                         }
         dispatch(createPageApproval(params))
         }else{
-            window.alert("Please sign in")
+            setError("Sign Up so you can show support")
         }
     }
 }else{
-    window.alert("Please Sign Up")
+    setError("Please Sign Up")
 }
 }
 const expandedBtn =()=>{
@@ -181,39 +183,41 @@ className="
      
          ">
 <h6 className=' text-[1.2rem]'>Share</h6></div>
-<ul tabIndex={0} className="dropdown-content    z-50 menu bg-white text-emerald-700 rounded-box  w-60 p-1 shadow">
-{currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
+<ul tabIndex={0} className="dropdown-content      text-emerald-800  z-50 menu bg-white rounded-box  w-60 p-1 shadow">
+{/* {currentProfile&& page.authorId===currentProfile.id?<li onClick={()=>{
     dispatch(setEditingPage({page:page}))
     dispatch(setPageInView({page:page}))
     navigate(Paths.editPage.createRoute(page.id))
 }}>
-    <a>Edit</a></li>:null}<li
+    <a>Edit</a></li>:null}*/}
+    <li 
 className=' text-emerald-700'
 
-onClick={()=>ClickAddStoryToCollection()}><a>
+onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
                      Add to a Collection
      </a></li>
-
-{currentProfile && page.authorId==currentProfile.id?<li onClick={()=>navigate(Paths.workshop.createRoute(page.id))}><a>Get feedback</a></li>:null}
+{/* 
+{currentProfile && page.authorId==currentProfile.id?<li onClick={()=>navigate(Paths.workshop.createRoute(page.id))}><a>Get feedback</a></li>:null} */}
                 <li> <a
                  className=' text-emerald-700'
                 onClick={()=>{
-                     navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
+                     navigator.clipboard.writeText("https://plumbum.app/page"+Paths.page.createRoute(page.id))
                      .then(() => {
-                         alert('Text copied to clipboard');
+                         setSuccess('Text copied to clipboard');
                        })
                  }}
              >
                     Share Link
                  </a></li>
-                <li className=' text-emerald-700'> 
-                {(currentProfile && currentProfile.id == page.profileId )
-                ?
+                 {(currentProfile && currentProfile.id == page.authorId )
+                ? <li className=' text-emerald-700'> 
+              
      <a onClick={()=>{
         dispatch(setEditingPage({page}))
         dispatch(setPageInView({page:null}))
-        navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
-     </li>
+        navigate(Paths.editPage.createRoute(page.id))}}
+        className='text-emerald-700'>Edit</a>
+     </li>:null}
     <li> <IconButton onClick={onBookmarkPage}
     disabled={!currentProfile}> 
      {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}

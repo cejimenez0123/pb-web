@@ -34,7 +34,7 @@ const ProfileInfo = ({profile})=>{
         </div>
         </div>
         <div className="text-emerald-800 flex flex-row justify-start px-4">
-            {profile.followers.length>0?<div className="text-center open-sans-bold ">
+            {profile.followers && profile.followers.length>0?<div className="text-center open-sans-bold ">
                 <h5 className="text-[1rem]">Followers</h5>
                 <h6 className="text-[1.2rem]">{profile.followers.length}</h6>
             </div>:null}

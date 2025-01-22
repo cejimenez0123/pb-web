@@ -266,15 +266,12 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
        params.description = feedback
        params.needsFeedback = true
        setParameters(params)
-       handleUpdate(params).then(truthy=>{
-        if(truthy){
-  navigate(Paths.workshop.createRoute(params.page.id))
-        }else{
-          setError("Error with feedback")
-          setSuccess(null)
-        }
+       handleUpdate(params)
+       if(params.page.id){
+        navigate(Paths.workshop.createRoute(params.page.id))
+       }
+
       
-       })
 
    }
    setTimeout(()=>{

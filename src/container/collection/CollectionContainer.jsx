@@ -196,7 +196,7 @@ setLoading(false)}
 
         findRole()
         getContent()
-    },[])
+    },[collection])
   
 
    
@@ -215,7 +215,8 @@ setLoading(false)}
         <div className={" w-36  mx-auto flex flex-row"}>
    {!role?<div
    onClick={handleFollow}
-   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  mont-medium min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}><h6 className="px-4 py-3 mont-medium  ">Follow</h6></div>:
+   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  mont-medium min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}>
+    <h6 className="px-4 py-3 mont-medium text-center  ">Follow</h6></div>:
    <div
    onClick={deleteFollow}
    className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full flex text-[1rem] "} >

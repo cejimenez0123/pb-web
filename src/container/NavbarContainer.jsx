@@ -220,7 +220,7 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
   
   </div>
   <div className='navbar-center lg:navbar-start'>
-    <a  onClick={()=>navigate("/")}className="btn btn-ghost lora-bold text-xl">{isPhone?"Pb":"Plumbum"}</a>
+    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{isPhone?"Pb":"Plumbum"}</a>
     </div>
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">
