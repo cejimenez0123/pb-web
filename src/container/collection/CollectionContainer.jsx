@@ -273,7 +273,7 @@ if(collection&&canUserSee&&!loading){
             </div>:null}
             <h6 className="text-2xl mb-8 w-fit text-center  lora-medium text-emerald-800 font-bold pl-4">Pages</h6>
         <div className=" mx-auto ">
-        <PageList  isGrid={false}/>
+        <PageList  isGrid={false} forFeedback={collection&&collection.type=="feedback"}/>
         </div>
             </div>
             </div> 

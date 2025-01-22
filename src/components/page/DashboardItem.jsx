@@ -59,7 +59,7 @@ const hanldeClickComment=()=>{
 const header=()=>{
     return  page.author&&!isGrid?    <span className={isGrid?"":'absolute flex flex-row text-ellipsis w-24 p-2'}>   <ProfileCircle profile={page.author}/> 
              
-    <h6 className="text-emerald-400  my-auto ml-1 text-[0.9rem]  " onClick={()=>{
+    <h6 className="text-green-600 drop-shadow-md whitespace-nowrap  my-auto ml-1 w-[65vw] md:max-w-[35em] overflow-hidden text-ellipsis text-[0.9rem]  " onClick={()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
 
@@ -232,11 +232,17 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
         <div onClick={()=>{
             isGrid?navigate(Paths.page.createRoute(page.id)):null
         }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-fit min-h-56  w-[100%]  ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
-        
+               {!isGrid?header():null}
+        {page.description && page.description && takingFeedback?<div className='min-h-24 pt-16 p-2'>
+            <label className='text-emerald-800'>Feedback Request:</label>
+            <h6 className='p-2 open-sans-medium text-left text-emerald-800'>
+                {page.description}
+            </h6>
+        </div>:null}
        
              
           <div className={isGrid?' rounded-lg flex justify-between flex-col h-[100%]  pt-1':""}>
-            {!isGrid?header():null}
+         
           <PageDataElement page={page}/>
                 {buttonRow()}
                 {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1 w-[100%] min-w-52 rounded-b-lg bottom-0'>

@@ -12,10 +12,11 @@ export default function Alert(){
       
       },4001)},[error,success])
     return( error || success?       <div className='fixed top-4 left-0 right-0  w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
-    <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>
-<svg
+    <div role="alert" className={`alert  h-24  ${success?"alert-success":"alert-warning"} animate-fade-out`}>
+<div className="flex-row flex my-auto w-[100%]">
+    {success?<svg
 xmlns="http://www.w3.org/2000/svg"
-className="h-6 w-6 shrink-0 stroke-current"
+className="max-h-6 max-w-6 shrink-0 my-auto stroke-current"
 fill="none"
 viewBox="0 0 24 24">
 <path
@@ -23,7 +24,7 @@ strokeLinecap="round"
 strokeLinejoin="round"
 strokeWidth="2"
 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-</svg>
-<span>{error?err:success}</span>
-</div></div> :null)
+</svg>:null}
+<span className="my-auto  mx-4 whitespace-nowrap ">{error?err:success}</span></div>
+<span/></div></div> :null)
 }
