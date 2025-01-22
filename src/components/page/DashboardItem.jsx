@@ -14,7 +14,6 @@ import bookmarkadd from "../../images/bookmarkadd.svg"
 import PageDataElement from './PageDataElement'
 import ProfileCircle from '../profile/ProfileCircle'
 import Context from '../../context'
-import Enviroment from '../../core/Enviroment'
 function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const dispatch = useDispatch()
     const [takingFeedback,setTakingFeedback]=useState(forFeedback)
@@ -58,7 +57,9 @@ const hanldeClickComment=()=>{
 
 const header=()=>{
 
-   return <span className={"flex-row flex justify-between px-1 rounded-t-lg lex pt-2 pb-1"}>   <ProfileCircle profile={page.author}/> 
+   return <span className={"flex-row flex justify-start px-1 rounded-t-lg lex pt-2 pb-1"}>   <span className='flex justify-start flex-row'><ProfileCircle profile={page.author}/>
+   </span>
+
              
     <h6 className="text-emerald-700 mx-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]  " onClick={()=>{
         dispatch(setPageInView({page}))
@@ -132,8 +133,8 @@ return <Button onClick={()=>{
         }><p>{title} {">"}</p></a>)
     }
     const bookmarkBtn =()=>{
-        return isGrid ?<div className=' w-fit   h-fit text-white '>
-        <div className='bg-transparent '><img src={bookmarkadd}/></div>
+        return isGrid ?<div className='max-w-[100%]  my-auto  h-fit text-white '>
+        <div className='bg-transparent '><img className='text-white' src={bookmarkadd}/></div>
     
     </div>:null
     }
@@ -207,10 +208,10 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
         navigate(Paths.editPage.createRoute(page.id))}}
         className='text-emerald-700'>Edit</a>
      </li>:null}
-    <li> <IconButton onClick={onBookmarkPage}
+    <li> <button className="my-auto"onClick={onBookmarkPage}
     disabled={!currentProfile}> 
      {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
-     </IconButton></li>
+     </button></li>
 </ul>
 </div>
 
@@ -225,7 +226,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
                 <div className='relative shrink my-2 h-fit'>
         <div onClick={()=>{
             isGrid?navigate(Paths.page.createRoute(page.id)):null
-        }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-fit min-h-56  w-[100%]  ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
+        }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-fit min-h-56   ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
                {!isGrid?header():null}
         {page.description && page.description && takingFeedback?<div className='min-h-24 pt-16 p-2'>
             <label className='text-emerald-800'>Feedback Request:</label>
@@ -239,8 +240,9 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
          
           <PageDataElement page={page}/>
                 {buttonRow()}
-                {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1 w-[100%] min-w-52 rounded-b-lg bottom-0'>
+                {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1 w-52 rounded-b-lg bottom-0'>
                 {header()}
+            
                 {bookmarkBtn()} </div>   :null}
                 </div>
                 <div>
