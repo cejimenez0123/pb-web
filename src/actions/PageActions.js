@@ -203,40 +203,45 @@ const appendSaveRolesForPage = createAsyncThunk("pages/appendSaveRolesForPages",
     }
   }
 })
-const fetchAppendPagesOfProfile = createAsyncThunk("pages/fetchAppendPagesOfProfile", async(params,thunkApi)=>{
-  const {id} = params
-if(id){
-   
-  const ref = collection(db, "page")
-  let queryReq = query(ref,and(where("profileId","==",id),where("privacy","==",false)))
-  if(auth.currentUser.emailVerified){
-  queryReq = query(ref,
-                 and(where("profileId", "==", id),
-                 or(where('commenters', 'array-contains', auth.currentUser.uid),
-                    where('readers','array-contains', auth.currentUser.uid),
-                    where('editors', 'array-contains', auth.currentUser.uid),
-                    where('writers', 'array-contains', auth.currentUser.uid),
-                    where("privacy","==",false))))
- }else{
-    queryReq = query(ref,and(where("profileId","==",id),where("privacy","==",false)))
- }
-let pageList = []
-const snapshot = await getDocs(queryReq
-              );
-   
-      snapshot.docs.forEach(doc => {
-         const page = unpackPageDoc(doc)
-   
-          pageList = [...pageList, page]
-        })
-      
-return {
+const appendToPagesInView = createAction("pages/appendToPagesInView", (params)=> {
 
-    pageList
-}}else{
-  return {pageList:[]}
-}
-})
+  const {pages} = params
+  return  {payload:
+    pages}})
+// const fetchAppendPagesOfProfile = createAsyncThunk("pages/fetchAppendPagesOfProfile", async(params,thunkApi)=>{
+//   const {id} = params
+// if(id){
+   
+//   const ref = collection(db, "page")
+//   let queryReq = query(ref,and(where("profileId","==",id),where("privacy","==",false)))
+//   if(auth.currentUser.emailVerified){
+//   queryReq = query(ref,
+//                  and(where("profileId", "==", id),
+//                  or(where('commenters', 'array-contains', auth.currentUser.uid),
+//                     where('readers','array-contains', auth.currentUser.uid),
+//                     where('editors', 'array-contains', auth.currentUser.uid),
+//                     where('writers', 'array-contains', auth.currentUser.uid),
+//                     where("privacy","==",false))))
+//  }else{
+//     queryReq = query(ref,and(where("profileId","==",id),where("privacy","==",false)))
+//  }
+// let pageList = []
+// const snapshot = await getDocs(queryReq
+//               );
+   
+//       snapshot.docs.forEach(doc => {
+//          const page = unpackPageDoc(doc)
+   
+//           pageList = [...pageList, page]
+//         })
+      
+// return {
+
+//     pageList
+// }}else{
+//   return {pageList:[]}
+// }
+// })
 const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (params,thunkApi)=>{
 try{ 
   const pageIdList = params["pageIdList"]
@@ -668,7 +673,7 @@ try{
           clearEditingPage,
           appendComment,
           updateComment,
-          fetchAppendPagesOfProfile,
+          // fetchAppendPagesOfProfile,
           fetchPagesWhereProfileCommenters,
           fetchPagesWhereProfileEditor,
           fetchPagesWhereProfileWriter,
@@ -678,6 +683,6 @@ try{
           deletePageApproval,
           unpackPageDoc,
           getPublicStories,
-         
+         appendToPagesInView
         } 
         

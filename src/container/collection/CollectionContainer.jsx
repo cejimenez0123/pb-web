@@ -13,7 +13,7 @@ import Role from "../../domain/models/role"
 import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions"
 import { RoleType } from "../../core/constants"
 import checkResult from "../../core/checkResult"
-import { clearPagesInView } from "../../actions/PageActions"
+import { appendToPagesInView, clearPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import loadingJson from "../../images/loading.gif"
@@ -28,13 +28,31 @@ export default function CollectionContainer(props){
     const collection = useSelector(state=>state.books.collectionInView)
     const pending = useSelector(state=>state.books.loading)
     const [loading,setLoading]=useState(true)
+    const pages = useSelector(state=>state.pages.pagesInView)
     const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
     const writeArr = [RoleType.editor,RoleType.writer]
     const [canUserAdd,setCanUserAdd]=useState(false)
     const [canUserEdit,setCanUserEdit]=useState(false)
     const [canUserSee,setCanUserSee]=useState(false)
     const [role,setRole]=useState(null)
+    const [hasMore,setHasMore]=useState(true)
+    const [indexCol,setIndexCol]=useState(0)
     const collections = useSelector(state=>state.books.collections)
+
+
+    const getMore=()=>{
+        
+           for(let i = 0;i<collections.length;i+=1){
+           let stories= collections[i].storyIdList.map(sTc=>sTc.story)
+
+dispatch(appendToPagesInView({pages:stories}))
+           }
+       
+    }
+    useEffect(()=>{
+        if(pages.length==0){
+        getMore()}
+    },[pages])
     const params = useParams()
     const {id}=params
      useLayoutEffect(()=>{
@@ -273,7 +291,7 @@ if(collection&&canUserSee&&!loading){
             </div>:null}
             <h6 className="text-2xl mb-8 w-fit text-center  lora-medium text-emerald-800 font-bold pl-4">Pages</h6>
         <div className=" mx-auto ">
-        <PageList  isGrid={false} forFeedback={collection&&collection.type=="feedback"}/>
+        <PageList  isGrid={false} hasMore={hasMore} getMore={getMore}  forFeedback={collection&&collection.type=="feedback"}/>
         </div>
             </div>
             </div> 

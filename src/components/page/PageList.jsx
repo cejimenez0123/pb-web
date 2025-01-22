@@ -4,28 +4,33 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import uuidv4 from "../../core/uuidv4"
 import DashboardItem from "./DashboardItem"
 import ErrorBoundary from "../../ErrorBoundary"
-const PageList = ({forFeedback,isGrid,fetchContentItems})=>{
-
+const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
+    let more=true
+    if(!hasMore){
+  more=false
+    }else{
+        more=hasMore
+    }
     const pagesInView = useSelector(state=>state.pages.pagesInView)
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
       })
-    if(pagesInView!=null&&pagesInView.length>0){
+    if(pagesInView!=null){
         return(<div 
         ><ErrorBoundary>
            <InfiniteScroll
         dataLength={pagesInView.length}
-        next={()=>{}}
+        next={getMore}
         scrollThreshold={1}
-        hasMore={false}
+        hasMore={more}
         className={isGrid?"":"w-fit"}
 
-        endMessage={<div className="min-h-36 w-full">
+        endMessage={<div className="md:min-h-page w-full">
             <h1 className="mx-auto my-auto text-emerald-600 py-2  text-center mx-auto w-12">Fin</h1>
         </div>}
         >
 
-<div className={`max-w-screen ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>
+<div className={`max-w-[96vw] mx-auto ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>
 
           {pagesInView.map(page=>{
             if(page){
@@ -43,9 +48,7 @@ const PageList = ({forFeedback,isGrid,fetchContentItems})=>{
             </div>
         </InfiniteScroll> </ErrorBoundary></div>)
     }
-    if(pagesInView&& pagesInView.length==0){
-        return(<div>No current content</div>)
-    }
+    
     return(<div>
        <h1 className="lora-medium"> Error</h1>
     </div>)

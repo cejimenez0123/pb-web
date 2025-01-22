@@ -57,16 +57,10 @@ const hanldeClickComment=()=>{
 }   
 
 const header=()=>{
-    return  page.author&&!isGrid?    <span className={isGrid?"":'absolute flex flex-row text-ellipsis w-24 p-2'}>   <ProfileCircle profile={page.author}/> 
-             
-    <h6 className="text-green-600 drop-shadow-md whitespace-nowrap  my-auto ml-1 w-[65vw] md:max-w-[35em] overflow-hidden text-ellipsis text-[0.9rem]  " onClick={()=>{
-        dispatch(setPageInView({page}))
-        navigate(Paths.page.createRoute(page.id))
 
-    }} > {` `+page.title.length>0?page.title:"Untitled"}</h6></span>:
-    <span className={"flex-row flex mb-1"}>   <ProfileCircle profile={page.author}/> 
+   return <span className={"flex-row flex px-1 rounded-t-lg lex pt-2 pb-1"}>   <ProfileCircle profile={page.author}/> 
              
-    <h6 className="text-white mx-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.8rem]  " onClick={()=>{
+    <h6 className="text-emerald-700 mx-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]  " onClick={()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
 

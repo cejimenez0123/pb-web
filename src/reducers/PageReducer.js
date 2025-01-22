@@ -3,7 +3,7 @@ import {
           setHtmlContent,
           getProtectedProfilePages,
           getPublicProfilePages,
-    
+          appendToPagesInView,
           setPageInView,
           fetchPage,
           fetchArrayOfPages,
@@ -49,6 +49,18 @@ const pageSlice = createSlice({
     }).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
           state.pagesInView = payload.stories
 
+    }).addCase(appendToPagesInView.type,(state,{payload})=>{
+
+      if(payload.length>0){
+        payload.forEach(page=>{
+       let found = state.pagesInView.find(p=>p.id==page.id)
+       if(!found){
+        state.pagesInView = [...state.pagesInView,page]
+       }
+        })
+       
+      }
+     
     })
         .addCase(getCollectionStoriesProtected.fulfilled,(state,{payload})=>{
           const {list}=payload

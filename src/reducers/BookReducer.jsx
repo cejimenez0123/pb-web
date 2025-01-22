@@ -70,7 +70,7 @@ state.loading = true
     state.collectionToCollectionsList = payload.list
     state.collections = payload.list.map(item=>item.childCollection)
 }).addCase(getSubCollectionsPublic.fulfilled,(state,{payload})=>{
-    
+    console.log(payload.list)
     state.collectionToCollectionsList = payload.list
     state.collections = payload.list.map(item=>item.childCollection)
 }).addCase(addCollectionListToCollection.pending,(state,{payload})=>{
