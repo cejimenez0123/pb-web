@@ -142,7 +142,7 @@ console.log(storyToCols)
     type="text" className="bg-transparent w-fit text-emerald-800  border-1 border-emerald-200  rounded-full  px-4 py-2 ml-4 text-ellipsis w-full mb-4  lora-medium text-2xl" value={title}/>
        </div>
        <div className="">
-        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  mb-4 text-[0.8rem]  text-emerald-800  border-emerald-600 bg-transparent md:h-[8em] max-w-[96vw] md:w-[100%] md:w-92 md:max-w-96 rounded-lg p-2" value={purpose}/>
+        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  mb-4 text-[0.8rem]  text-emerald-800 w-[92vw]  border-emerald-600 bg-transparent md:h-[8em] max-w-[96vw] md:w-[100%] md:w-92 md:max-w-96 rounded-lg p-2" value={purpose}/>
         
         <HashtagForm item={colInView}/>
         </div>
@@ -281,7 +281,7 @@ const deleteSubCollection = (colId)=>{
   </div>
   <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 max-w-[96vw] md:w-page [--tab-bg:transparent] border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
   <div role="tabpanel" className="tab-content max-w-[96vw] pt-1  min-h-[20em] border-emerald-600 lg::w-page rounded-lg border-2">
-     <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20"><h6 className="text-emerald-800 py-24 text-center 
+     <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20 mx-4"><h6 className="text-emerald-800 py-24 text-center 
    m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:
    <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteSubCollection}/>}
  </div> 
