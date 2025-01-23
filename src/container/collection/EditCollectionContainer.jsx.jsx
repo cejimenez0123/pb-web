@@ -280,8 +280,10 @@ const deleteSubCollection = (colId)=>{
 
   </div>
   <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 max-w-[96vw] md:w-page [--tab-bg:transparent] border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
-  <div role="tabpanel" className="tab-content max-w-[96vw]  pt-1 bg-transparent  md:w-page  border-emerald-600 border-2 px-4 rounded-lg md:p-6 ">
- <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20"><h6 className="text-emerald-800 py-24 text-center   m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:<SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteSubCollection}/>}
+  <div role="tabpanel" className="tab-content max-w-[96vw] pt-1  min-h-[20em] border-emerald-600 lg::w-page rounded-lg border-2">
+     <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20"><h6 className="text-emerald-800 py-24 text-center 
+   m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:
+   <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteSubCollection}/>}
  </div> 
   </div>
 </div>

@@ -50,7 +50,7 @@ function NavbarContainer({profile}){
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
-    const currentProfile= useSelector((state)=>{return state.users.currentProfile;});
+    const currentProfile= useSelector((state)=>state.users.currentProfile);
     const [anchorElNavCreate,setAnchorElNavCreate] = useState(null);
     const [anchorElPage,setAnchorElPage] = useState(null);
     const [anchorElPageSmall,setAnchorElPageSmall] = useState(null);
@@ -265,11 +265,11 @@ navigate(Paths.editor.link())}}>
      } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
 
 }else if(page == PageName.login){
-return currentProfile?(<div></div>):
+return !currentProfile?
 (<li onClick={()=>handleCloseNavMenu(page) } 
     key={page} >
 <a className=' text-white no-underline' textAlign="center">{page}</a>
-</li>)
+</li>):null
 
 }else if(page==PageName.search){
 return (<li onClick={()=>openDialogAction()} 

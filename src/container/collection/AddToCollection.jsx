@@ -87,19 +87,20 @@ export default function AddToCollectionContainer(props){
 
     const storyList = ()=>{
       
-        return(<div className=" my-4 md:w-page text-emerald-800 mx-auto overflow-scroll mx-auto text-left mb-2">
-            <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Stories to Collection</h6>
+        return(<div className=" my-4 md:max-w-page text-emerald-800  overflow-scroll text-left mb-2">
+            <h6 className=" text-xl  mt-4 mb-2 ml-2 lora-medium">Add Stories to Collection</h6>
             <InfiniteScroll
-            className=" mx-2 "
+           
         dataLength={pagesInView.length}>
             {pagesInView.filter(str=>str)
             .filter(story=>
                 colInView && colInView.storyIdList && !colInView.storyIdList.find(storyJoint=>
                     storyJoint.storyId==story.id)).map(story=>{
-                return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-3
-                border-emerald-400  rounded-full py-4 px-8  my-2">
-                    <h2 className="text-l max-w-[60%] my-auto  overflow-clip">{story.title && story.title.trim().length>0?story.title:"Untitled"}</h2>
-                    <div className="bg-emerald-800 rounded-full p-2">{colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
+                return(<div className="text-left mx-auto md:w-[96%] sm:mx-auto flex flex-row justify-between border-3
+                border-emerald-400 rounded-full py-4  my-2">
+                    <h2 className="text-l my-auto text-nowrap text-md md:text-lg ml-8  mont-medium overflow-hidden text-ellipsis">
+                        {story.title && story.title.trim().length>0?story.title:"Untitled"}</h2>
+                    <div className="bg-emerald-800 rounded-full max-w-[10em] overflow-hidden text-ellipsis mr-6 p-2">{colInView && colInView.storyIdList && colInView.storyIdList.find(storyJoint=>storyJoint.storyId==story.id)||newStories.includes(story)?
                     <h1 onClick={()=>removeNewStory(story)}className="">
 <p className="text-2xl    "><img className="max-h-[1.5rem] max-w-[1.5rem]" src={checked}/></p>
 </h1>:
@@ -118,21 +119,23 @@ export default function AddToCollectionContainer(props){
          if(cTcList.length>0){
             list = cTcList.filter(col=>!colInView.childCollections.find(joint=>joint.childCollectionId==col.id))
          }
-        return(<div className=" my-4 max-h-96 mx-auto text-emerald-800 overflow-scroll sm:mx-12 text-left mb-2">
-        <h6 className=" text-2xl  mt-4 mb-2 ml-2 font-bold">Add Collections to Collection</h6>
+        return(<div className=" my-4 max-h-96 mx-auto text-emerald-800 overflow-scroll text-left mb-2">
+        <h6 className=" text-xl lora-medium  mt-4 mb-2 ml-2 font-bold">Add Collections to Collection</h6>
         <InfiniteScroll
-        className=" mx-2 "
+        className="  "
         dataLength={list.length}>
 {list.map(col=>{
-            return(<div className="text-left mx-auto   sm:mx-1 flex flex-row justify-between border-3
-            border-emerald-400 rounded-full py-4 px-8   my-2">
-                <h2 className="text-l my-auto max-w-[60%] no-underline overflow-clip">{col.title && col.title.trim().length>0?col.title:"Untitled"}</h2>
-                <div className="bg-emerald-800 rounded-full p-2">
+            return(<div className="text-left mx-auto md:w-[96%] sm:mx-auto flex flex-row justify-between border-3
+            border-emerald-400 rounded-full py-4  my-2">
+                <h2 className="text-l my-auto text-nowrap text-md md:text-lg ml-8  mont-medium overflow-hidden text-ellipsis">
+                    {col.title && col.title.trim().length>0?col.title:"Untitled"}</h2>
+                    <div className="bg-emerald-800 rounded-full max-w-[10em] overflow-hidden text-ellipsis mr-6 p-2">
+                   
                     {colInView&& colInView.childCollections&& colInView.childCollections.find(colJoint=>colJoint.childCollectionId==col.id)||newCollection.includes(col)?
-<img onClick={()=>removeNewCollection(col)}src={checked}/>
+<img className="max-w-8 max-h-8"
+onClick={()=>removeNewCollection(col)}src={checked}/>
 :
-
-<img onClick={()=>addNewCollection(col)} src={emptyBox}/>
+<img className="max-w-8 max-h-8" onClick={()=>addNewCollection(col)} src={emptyBox}/>
 }</div>
             </div>)
         })}
@@ -155,12 +158,12 @@ export default function AddToCollectionContainer(props){
  
     return(<div className=''>
         <div className="static">
-<div className="border-3 border-emerald-600 w-[96vw]  lg:w-info h-info mx-auto mx-auto rounded-lg  my-2 sm:m-8 p-8 text-left">
-            <h2 className="text-2xl text-emerald-800 mb-2">{colInView.title && colInView.title.trim().length>0?colInView.title:"Untitled"}</h2>
+<div className="border-3 border-emerald-600 w-[96vw]  lg:w-info h-info mx-auto  rounded-lg  my-2  p-8 text-left">
+            <h2 className="text-2xl whitespace-nowrap  overflow-hidden md:max-w-[30em]  text-nowrap text-emerald-800 mb-2">{colInView.title && colInView.title.trim().length>0?colInView.title:"Untitled"}</h2>
             <h6 className="sm:my-4 text-emerald-800 sm:mx-8 p-4 min-h-24 text-lg sm:max-w-[35rem]">{colInView?colInView.purpose:null}</h6>
         
         <div className="flex flex-row justify-center">
-        <button onClick={save}className="bg-green-600 ml-4 rounded-full text-white mt-4 px-4 text-xl">Save</button>
+        <button onClick={save}className="bg-green-600 ml-4 mont-medium rounded-full text-white mt-4 px-6 text-xl">Save</button>
     <div className="text-xl my-auto flex flex-col content-center px-4   pt-[0.7em] rounded-full">
     
     <span className="text-center  text-emerald-800  mx-a">{newCollection.length+newStories.length}</span>
@@ -171,16 +174,16 @@ export default function AddToCollectionContainer(props){
 
             
             </div>
-<div className=" sm:flex sm:flex-row">
+<div className=" sm:flex max-w-[96vw] md:w-page mx-auto sm:flex-row">
 
 
-<div role="tablist" className="tabs mt-8 shadow-md rounded-lg    max-w-[96vw] md:w-page   bg-emerald-600 border-3 border-emerald-600 mx-auto  sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab border-emerald-800 [--tab-bg:transparent]  max-w-[96vw] md:w-page border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Stories" />
+<div role="tablist" className="tabs mt-8 shadow-md rounded-lg    max-w-[96vw] md:w-page   bg-emerald-600 border-3 border-emerald-600 mx-auto  sm:tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab border-emerald-800 [--tab-bg:transparent] rounded-t-l max-w-[96vw] md:w-page border-l-2 border-r-2 border-t-2 bg-transparent text-white mont-medium text-xl" aria-label="Stories" />
   <div role="tabpanel" className="tab-content border-3 bg-emerald-50 h-[100%]  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
   {storyList()}
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent   [--tab-bg:transparent] max-w-[96vw] md:w-page  border-l-2 border-r-2 border-t-2   text-white  text-xl" aria-label="Collections" />
-  <div role="tabpanel" className="tab-content pt-1 bg-emerald-50  border-3  max-w-[96vw] md:w-page mx-auto h-[100%]  md:p-6 rounded-box ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent   [--tab-bg:transparent] max-w-[96vw] md:w-page rounded-t-lg border-l-2 border-r-2 border-t-2   mont-medium text-white  text-xl" aria-label="Collections" />
+  <div role="tabpanel"className="tab-content border-3 bg-emerald-50 h-[100%]  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
   {colList()}
    </div>
 </div>
