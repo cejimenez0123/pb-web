@@ -48,9 +48,15 @@ const getRecommendedCollections = createAsyncThunk(
     async (params,thunkApi) => {
     
         try{
-       
+       if(params.collection){
           const {collections}= await collectionRepo.recommendedCollections({colId:params.collection.id})
-return {collections:collections}
+          return {collections:collections}
+        }else{
+            return{
+                error: new Error(`getRecommendedCollections  No Collection`)
+            }
+       }
+
 }catch (error) {
     return{
         error: new Error(`getRecommendedCollections ${error.message}`)

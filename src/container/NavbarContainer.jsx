@@ -52,8 +52,7 @@ function NavbarContainer({profile}){
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const currentProfile= useSelector((state)=>state.users.currentProfile);
     const [anchorElNavCreate,setAnchorElNavCreate] = useState(null);
-    const [anchorElPage,setAnchorElPage] = useState(null);
-    const [anchorElPageSmall,setAnchorElPageSmall] = useState(null);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedImage,setSelectedImage]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [openDialog,setOpenDialog]=useState(false)
@@ -88,20 +87,11 @@ function NavbarContainer({profile}){
     }  
   
     const [openCreate,setOpenCreate] = useState(false)
-    const handleClick = (event) => {
-      setOpenCreate(!openCreate)
-      if(anchorEl) {
-        setAnchorEl(null)
-      }else{
-        setAnchorEl(event.currentTarget);
-      }
-    };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const handleClosePage = () => {
-      setAnchorElPage(null);
-  };
+ 
     
     const SettingName = {
         profile: "Profile",
@@ -112,12 +102,7 @@ function NavbarContainer({profile}){
                       SettingName.account,
                       SettingName.logout]; 
    
-    const handleOpenElNavCreate = (event) => {
-      if(anchorElNavCreate){
-        setAnchorElNavCreate(null)
-      }else{
-      setAnchorElNavCreate(event.currentTarget);}
-  };
+
 
 
     const ClickWriteAStory = debounce(()=>{
@@ -243,26 +228,26 @@ if(page==PageName.workshop||page==PageName.home){
      className="z-[2] dropdown w-52">
     
      <a      tabIndex={1} role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
-       <ul      tabIndex={1} className="p-2 dropdown-content menu menu-sm rounded-box  ">
-         <li onClick={ClickWriteAStory}><a  >  <CreateIcon className='text-emerald-800'/></a></li>
+       <ul      tabIndex={1} className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
+         <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <CreateIcon className='text-emerald-800'/></a></li>
          <li    onClick={(e)=>{
         dispatch(setPageInView({page:null}))
         dispatch(setEditingPage({page:null}))
       handleClose()
       dispatch(setHtmlContent(""))
-      navigate(Paths.editor.image())}}><a>     <ImageIcon className='text-emerald-800'/></a></li>
+      navigate(Paths.editor.image())}}><a className='mx-auto'>     <ImageIcon className='text-emerald-800'/></a></li>
          <li><a    onClick={()=>{
 dispatch(setPageInView({page:null}))
 dispatch(setEditingPage({page:null}))
 handleClose()
 dispatch(setHtmlContent(""))
-navigate(Paths.editor.link())}}>
+navigate(Paths.editor.link())}} className='mx-auto'>
 <LinkIcon className='text-emerald-800'/></a></li>
        <li  onClick={()=>{ 
              handleClose()
              setOpenDialog(true)
              
-     } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
+     } }><a className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
 
 }else if(page == PageName.login){
 return !currentProfile?

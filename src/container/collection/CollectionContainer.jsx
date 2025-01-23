@@ -65,7 +65,7 @@ export default function CollectionContainer(props){
                 
                     let blank = Enviroment.blankPage
                     if(payload.pages){
-                        dispatch(appendToPagesInView({pages:[blank,...payload.pages]}))
+                        dispatch(appendToPagesInView({pages:[Enviroment.blankPage,...payload.pages]}))
                         setHasMore(false)
                     }
                  
@@ -82,18 +82,13 @@ export default function CollectionContainer(props){
 
 dispatch(appendToPagesInView({pages:stories}))
         }
-        if(canUserEdit){
-            getRecommendations()
-        }
+    
     }
 
+ 
     useEffect(()=>{
-        if(pages.length==0){
-        getMore()}
-    },[pages])
-    useEffect(()=>{
-        if(collection){
-
+     
+            getMore()
         
         dispatch(getRecommendedCollections({collection})).then(res=>{
             checkResult(res,payload=>{
@@ -103,14 +98,12 @@ dispatch(appendToPagesInView({pages:stories}))
                 }
 
             },err=>{
-                console.log("/r",err)
+
             })
     })
-        }
+    
     },[collection])
-    useEffect(()=>{
-       
-    },[canUserEdit])
+  
     const params = useParams()
     const {id}=params
      useLayoutEffect(()=>{
@@ -132,7 +125,7 @@ dispatch(appendToPagesInView({pages:stories}))
             })
 
         }else{
-            setError("please sign in")
+            setError("Please sign in")
         }
     }
     const handleFollow = ()=>{
@@ -291,7 +284,7 @@ setLoading(false)}
                 Loading
             </div>
         }
-        className="flex flex-row"
+        className="flex max-v-[96vw] mx-auto flex-row"
         endMessage={
             <div className="py-12">
                 <h6 className="lora-medium">Fin</h6>
@@ -317,11 +310,11 @@ setLoading(false)}
         <div className={" w-36  mx-auto flex flex-row"}>
    {!role?<div
    onClick={handleFollow}
-   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  mont-medium min-w-36 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}>
-    <h6 className="px-4 py-3 mont-medium text-center  ">Follow</h6></div>:
+   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  mont-medium w-36 min-h-12 max-h-14 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}>
+    <h6 className="px-4 py-3 mont-medium  text-[1rem] sm:text-[1.2rem] text-center  ">Follow</h6></div>:
    <div
    onClick={deleteFollow}
-   className={"bg-emerald-500 text-white min-w-36 px-4 rounded-full flex text-[1rem] "} >
+   className={"bg-emerald-500 text-white w-36 px-4 min-h-12 max-h-14 rounded-full flex text-[1rem] "} >
        <h6 className="mx-auto my-auto text-[1rem] sm:text-[1.2rem]"> {role.role}</h6>
    </div>}
    <div
@@ -343,47 +336,53 @@ setLoading(false)}
 
    
    </div></div></div>)}
-
+const bookList=()=>{
+    return(<div>
+        <h3 className="text-2xl lora-bold text-emerald-800 font-bold text-center">Anthologies</h3>:
+    <div>
+        <InfiniteScroll
+        dataLength={collections.length}
+        className="flex flex-row py-8"
+        next={()=>{}}
+        hasMore={false} // Replace with a condition based on your data source
+        loader={<p>Loading...</p>}
+        endMessage={
+            <div className="text-emerald-800 p-5">
+            <p className="mx-auto lora-medium">Fin</p>
+            </div>
+        }
+        >
+            {collections.map((col,i)=>{
+               return <BookListItem key={col.id+i}book={col}/>
+            })}
+        </InfiniteScroll>
+    </div>
+    </div>)
+}
 if(collection&&canUserSee&&!loading){
   
 
     return(<>
 
-<div className="pb-[10rem] flex flex-col ">   
+<div className=" flex flex-col ">   
+<div>
   {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 max-w-[96vw] mx-auto md:w-info h-info"/>}
-        <div className="text-left   mx-auto ">
-            {collections && collections.length>0? <div>
-                <h3 className="text-2xl lora-bold text-emerald-800 font-bold text-center">Anthologies</h3>:
-            <div>
-                <InfiniteScroll
-                dataLength={collections.length}
-                className="flex flex-row py-8"
-                next={()=>{}}
-                hasMore={false} // Replace with a condition based on your data source
-                loader={<p>Loading...</p>}
-                endMessage={
-                    <div className="text-emerald-800 p-5">
-                    <p className="mx-auto lora-medium">Fin</p>
-                    </div>
-                }
-                >
-                    {collections.map(col=>{
-                       return <BookListItem book={col}/>
-                    })}
-                </InfiniteScroll>
+</div>
+<div>
+            {collections && collections.length>0?bookList() :null}
             </div>
-            </div>:null}
+            <div className=" mx-auto  max-w-[96vw] md:w-page  min-h-[20em]">     
             <h6 className="text-2xl mb-8 w-fit text-center  lora-bold text-emerald-800 font-bold pl-4">Pages</h6>
-        <div className=" mx-auto max-w-[96vw] md:w-page h-page">
+
         <PageList  isGrid={false} hasMore={hasMore} getMore={getMore}  forFeedback={collection&&collection.type=="feedback"}/>
         </div>
-     
-            </div>
-            <div className="my-12 text-center">
-               <h6 className="lora-bold text-emerald-800 mx-auto  w-fit text-2xl my-8">Explore</h6>
+    
+            <div className="my-12 px-4 text-center">
+               <h6 className="lora-bold text-emerald-800 mx-auto  w-fit text-3xl my-8">Explore</h6>
             {colList()}
-            </div>
-            </div> 
+         </div>
+         </div>
+      
     </>)
 }else{
     if(!loading){
