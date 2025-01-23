@@ -179,7 +179,7 @@ className="
      
          ">
 <h6 className=' text-[1.2rem]'>Share</h6></div>
-<ul tabIndex={0} className="dropdown-content      text-emerald-800  z-50 menu bg-white rounded-box  w-60 p-1 shadow">
+<ul tabIndex={0} className="dropdown-content  text-center    text-emerald-800  z-50 menu bg-emerald-50 rounded-box  w-60 p-1 shadow">
 
     <li 
 className=' text-emerald-700'
@@ -208,7 +208,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
         navigate(Paths.editPage.createRoute(page.id))}}
         className='text-emerald-700'>Edit</a>
      </li>:null}
-    <li> <button className="my-auto"onClick={onBookmarkPage}
+    <li> <button className="my-auto w-fit mx-auto bg-transparent"onClick={onBookmarkPage}
     disabled={!currentProfile}> 
      {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
      </button></li>

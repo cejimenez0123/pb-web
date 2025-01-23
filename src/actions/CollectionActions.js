@@ -26,18 +26,34 @@ const getPublicBooks = createAsyncThunk(
     }
 )
 
-const getRecommendedCollections = createAsyncThunk(
-    'collections/recommendations',
+const getRecommendedCollectionStory = createAsyncThunk(
+    'collections/recommendatedCollectionStory',
     async (params,thunkApi) => {
     
    console.log("params",params)
         try{
-           let data = await  collectionRepo.recommendations({colId:params.collection.id})
+           let data = await  collectionRepo.recommendedStories({colId:params.collection.id})
 
 return {pages:data.pages}
 }catch (error) {
     return{
         error: new Error(`getREcommendations ${error.message}`)
+    }
+}
+      
+    }
+)
+const getRecommendedCollections = createAsyncThunk(
+    'collections/recommendedCollections',
+    async (params,thunkApi) => {
+    
+        try{
+       
+          const {collections}= await collectionRepo.recommendedCollections({colId:params.collection.id})
+return {collections:collections}
+}catch (error) {
+    return{
+        error: new Error(`getRecommendedCollections ${error.message}`)
     }
 }
       
@@ -256,6 +272,7 @@ export {
     deleteStoryFromCollection,
     patchCollectionContent,
     patchCollectionRoles,
-    clearCollections
-    ,getRecommendedCollections
+    clearCollections,
+    getRecommendedCollections,
+    getRecommendedCollectionStory
 }

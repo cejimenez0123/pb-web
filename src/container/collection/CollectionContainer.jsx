@@ -1,7 +1,7 @@
 import { useContext, useEffect ,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {  useNavigate, useParams } from "react-router-dom"
-import { clearCollections, fetchCollection, fetchCollectionProtected, getRecommendedCollections, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
+import { clearCollections, fetchCollection, fetchCollectionProtected, getRecommendedCollections, getRecommendedCollectionStory, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import PageList from "../../components/page/PageList"
 import { getCollectionStoriesProtected, getCollectionStoriesPublic } from "../../actions/StoryActions"
@@ -18,8 +18,6 @@ import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import Alert from "../../components/Alert"
 import Context from "../../context"
-import Collection from "../../domain/models/collection"
-import { Story } from "../../domain/models/page"
 import Enviroment from "../../core/Enviroment"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
@@ -39,42 +37,45 @@ export default function CollectionContainer(props){
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(true)
     const [indexCol,setIndexCol]=useState(0)
+    const [recommendedCols,setRecommendedCols]=useState([])
     const collections = useSelector(state=>state.books.collections)
 
     const getRecommendations =()=>{
         if(collection && collection.id){
+          
         if(collections.length>0){
         for(let i = 0;i<collections.length;i+=1){
           if(collection[i] && collection[i].id){  
-        dispatch(getRecommendedCollections({collection:collection[i]})).then(res=>{
+        dispatch(getRecommendedCollectionStory({collection:collection[i]})).then(res=>{
             checkResult(res,payload=>{
                 if(payload.pages){
                   dispatch(appendToPagesInView({pages:payload.pages}))
+                  setHasMore(false)
                 }
 
             },err=>{
-
+                setHasMore(false)
             })
         })
     }}}
 
-     
 
-            dispatch(getRecommendedCollections({collection:collection})).then(res=>{
+            dispatch(getRecommendedCollectionStory({collection:collection})).then(res=>{
                 checkResult(res,payload=>{
                 
                     let blank = Enviroment.blankPage
                     if(payload.pages){
                         dispatch(appendToPagesInView({pages:[blank,...payload.pages]}))
+                        setHasMore(false)
                     }
                  
     
                 },err=>{
-
+                    setHasMore(false)
                 })
             })
-        }
-    }
+        }}
+    
     const getMore=()=>{
     for(let i = 0;i<collections.length;i+=1){
         let stories= collections[i].storyIdList.map(sTc=>sTc.story)
@@ -90,6 +91,23 @@ dispatch(appendToPagesInView({pages:stories}))
         if(pages.length==0){
         getMore()}
     },[pages])
+    useEffect(()=>{
+        if(collection){
+
+        
+        dispatch(getRecommendedCollections({collection})).then(res=>{
+            checkResult(res,payload=>{
+                console.log("/r",payload)
+                if(payload.collections){
+                setRecommendedCols(payload.collections)
+                }
+
+            },err=>{
+                console.log("/r",err)
+            })
+    })
+        }
+    },[collection])
     useEffect(()=>{
        
     },[canUserEdit])
@@ -265,7 +283,24 @@ setLoading(false)}
         getContent()
     },[collection])
   
-
+    const colList = ()=>{
+        return(<InfiniteScroll dataLength={recommendedCols.length}
+            hasMore={false}
+        loader={
+            <div>
+                Loading
+            </div>
+        }
+        className="flex flex-row"
+        endMessage={
+            <div className="py-12">
+                <h6 className="lora-medium">Fin</h6>
+            </div>
+        }> 
+    
+            {recommendedCols.map(col=><BookListItem book={col}/>)}
+        </InfiniteScroll>)
+    }
    
     const CollectionInfo=({collection})=>{  
         if(!collection){
@@ -314,9 +349,9 @@ if(collection&&canUserSee&&!loading){
 
     return(<>
 
-<div className="pb-[10rem] ">   
-<Alert/>    {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 w-72 h-36 m-2"/>}
-        <div className="text-left  md:w-page max-w-[96vw]  mx-auto ">
+<div className="pb-[10rem] flex flex-col ">   
+  {collection?<CollectionInfo collection={collection}/>:<div className="skeleton bg-slate-200 max-w-[96vw] mx-auto md:w-info h-info"/>}
+        <div className="text-left   mx-auto ">
             {collections && collections.length>0? <div>
                 <h3 className="text-2xl lora-bold text-emerald-800 font-bold text-center">Anthologies</h3>:
             <div>
@@ -328,7 +363,7 @@ if(collection&&canUserSee&&!loading){
                 loader={<p>Loading...</p>}
                 endMessage={
                     <div className="text-emerald-800 p-5">
-                    <p className="mx-auto">Fin</p>
+                    <p className="mx-auto lora-medium">Fin</p>
                     </div>
                 }
                 >
@@ -338,10 +373,15 @@ if(collection&&canUserSee&&!loading){
                 </InfiniteScroll>
             </div>
             </div>:null}
-            <h6 className="text-2xl mb-8 w-fit text-center  lora-medium text-emerald-800 font-bold pl-4">Pages</h6>
-        <div className=" mx-auto ">
+            <h6 className="text-2xl mb-8 w-fit text-center  lora-bold text-emerald-800 font-bold pl-4">Pages</h6>
+        <div className=" mx-auto max-w-[96vw] md:w-page h-page">
         <PageList  isGrid={false} hasMore={hasMore} getMore={getMore}  forFeedback={collection&&collection.type=="feedback"}/>
         </div>
+     
+            </div>
+            <div className="my-12 text-center">
+               <h6 className="lora-bold text-emerald-800 mx-auto  w-fit text-2xl my-8">Explore</h6>
+            {colList()}
             </div>
             </div> 
     </>)

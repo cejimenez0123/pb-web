@@ -73,7 +73,7 @@ const navigateToLibrary = (library)=>{
             next={fetchLibraries}
             style={{display:"flex",flexDirections:"row"}}
             hasMore={hasMoreLibraries}
-            endMessage={<div>No More</div>}
+            endMessage={<div className='flex min-w-72 mont-medium'><span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '><h6 className=''>Join the community. <br/>Apply to join today.</h6><h6>Share your own work.</h6><h6> This is what we have for now.</h6></span></div>}
             >
                 {librariesInView.map(library=>{
                     return     <div key={library.id}>
@@ -96,9 +96,11 @@ const navigateToLibrary = (library)=>{
             dataLength={booksInView.length}
             next={fetchContentItems}
             hasMore={false}
+            endMessage={<div className='flex min-w-72 mont-medium'><span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '><h6 className=''>Join the community. <br/>Apply to join today.</h6><h6>Share your own work.</h6><h6> This is what we have for now.</h6></span></div>}
             >
-                {booksInView.map(book=>{
-                    let id = `${book.id}_${uuidv4()}`
+
+                {booksInView.map((book,i)=>{
+                    let id = `${book.id}_${i}`
                     return(
                         <div key={id} className='my-auto'>
                             <BookListItem book={book}/>

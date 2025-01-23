@@ -176,8 +176,13 @@ import Enviroment from "../core/Enviroment";
       
         return res.data
     }
-    async recommendations({colId}){
-        const res = await axios.get(this.url+"/"+colId+"/recommendations",{headers:{
+    async recommendedCollections({colId}){
+        const res = await axios.get(this.url+"/"+colId+"/recommendations",)
+
+        return res.data
+    }
+    async recommendedStories({colId}){
+        const res = await axios.get(this.url+"/"+colId+"/story/recommendations",{headers:{
          "Authorization":"Bearer "+localStorage.getItem("token")
         }})
         console.log(res.data)

@@ -27,13 +27,13 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
         className={isGrid?"":"w-fit"}
 
         endMessage={<div className="md:min-h-page w-full">
-            <h1 className="mx-auto my-auto text-emerald-600 py-2  text-center mx-auto w-12">Fin</h1>
+            <h1 className="mx-auto my-auto text-emerald-600 py-2 lora-medium  text-center mx-auto w-12">Fin</h1>
         </div>}
         >
 <div className={`max-w-[96vw] mx-auto ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>
 
 
-          {pagesInView.map(page=>{
+          {pagesInView.map((page,i)=>{
             if(page==Enviroment.blankPage){
                 return <div className="text-center">
 <h5 className="mx-auto text-emerald-800 text-xl py-12 lora-medium text-center">Recommendations</h5>
@@ -42,7 +42,7 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
             }else{
             
             if(page){
-                const id = `${page.id}_${uuidv4()}`
+                const id = `${page.id}_${i}`
                 return(<div  key={id}
 
   className={`${isGrid && isNotPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
