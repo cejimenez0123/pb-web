@@ -109,7 +109,7 @@ const userSlice = createSlice({
             state.loading = false
             state.signedIn = false
             state.currentProfile = null
-            localStorage.clear()
+           
         }  
     }).addCase(postStoryHistory.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile

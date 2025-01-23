@@ -7,7 +7,8 @@ import { createSlice} from "@reduxjs/toolkit"
         getSubCollectionsPublic,
         deleteCollectionFromCollection,
         deleteStoryFromCollection,
-        clearCollections
+        clearCollections,
+      
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
 import { createWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActions"
@@ -71,8 +72,10 @@ state.loading = true
     state.collections = payload.list.map(item=>item.childCollection)
 }).addCase(getSubCollectionsPublic.fulfilled,(state,{payload})=>{
     console.log(payload.list)
+    if(payload.list){
     state.collectionToCollectionsList = payload.list
     state.collections = payload.list.map(item=>item.childCollection)
+    }
 }).addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
 })

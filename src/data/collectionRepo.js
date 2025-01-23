@@ -176,9 +176,16 @@ import Enviroment from "../core/Enviroment";
       
         return res.data
     }
+    async recommendations({colId}){
+        const res = await axios.get(this.url+"/"+colId+"/recommendations",{headers:{
+         "Authorization":"Bearer "+localStorage.getItem("token")
+        }})
+        console.log(res.data)
+        return res.data
+    }
     async fetchSubCollectionsPublic({id}){
         const res = await axios.get(this.url+"/"+id+"/collection/public")
-        console.log(res.data)
+       
         return res.data
     }
 }

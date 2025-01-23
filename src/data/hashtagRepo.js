@@ -81,9 +81,36 @@ async fetchStoryHashtagsProtected(params){
     return res.data
 
 }
+async fetchCollectionHashtagsProtected({id}){
+    let res = await axios.get(this.url+"/collection/"+id+"/protected",{
+        headers:{
+            Authorization:"Bearer "+localStorage.getItem(this.token)
+        
+    }})
+
+    return res.data
+
+}
+async fetchStoryHashtagsPublic({id}){
+    let res = await axios.get(this.url+"/collection/"+id+"/public")
+        return res.data
+}
     async fetchStoryHashtagsPublic(params){
         let res = await axios.get(this.url+"/story/"+params.id+"/public")
             return res.data
+    }
+    async collection({name,colId,profile}){
+        let res = await axios.post(this.url+"/collection/"+colId,{name,profile},{
+            headers:{
+                Authorization:"Bearer "+localStorage.getItem(this.token)
+            }})
+        return res.data
+    }
+    async deleteCollection({hashId}){
+        let res = await axios.delete(this.url+"/collection/"+hashId,{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})
+        return res.data
     }
     }
 

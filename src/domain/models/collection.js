@@ -2,16 +2,14 @@
 
 class Collection{
     
-    pages
-    books
-    libraries
+    storyIdList
+    childCollections
     profiles
     
-    constructor(pages=[],books=[],libraries=[],profiles=[]){
-        this.books =books
-        this.pages =pages
-        this.libraries = libraries
-        this.profiles = profiles
+    constructor(pages=[],cols=[],profile){
+        this.storyIdList = pages
+        this.childCollections = cols
+        this.profile = profile
     }
 }
 export default Collection

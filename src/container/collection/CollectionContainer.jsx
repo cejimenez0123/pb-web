@@ -1,7 +1,7 @@
 import { useContext, useEffect ,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {  useNavigate, useParams } from "react-router-dom"
-import { clearCollections, fetchCollection, fetchCollectionProtected, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
+import { clearCollections, fetchCollection, fetchCollectionProtected, getRecommendedCollections, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import PageList from "../../components/page/PageList"
 import { getCollectionStoriesProtected, getCollectionStoriesPublic } from "../../actions/StoryActions"
@@ -16,9 +16,11 @@ import checkResult from "../../core/checkResult"
 import { appendToPagesInView, clearPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
-import loadingJson from "../../images/loading.gif"
 import Alert from "../../components/Alert"
 import Context from "../../context"
+import Collection from "../../domain/models/collection"
+import { Story } from "../../domain/models/page"
+import Enviroment from "../../core/Enviroment"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
@@ -39,20 +41,58 @@ export default function CollectionContainer(props){
     const [indexCol,setIndexCol]=useState(0)
     const collections = useSelector(state=>state.books.collections)
 
+    const getRecommendations =()=>{
+        if(collection && collection.id){
+        if(collections.length>0){
+        for(let i = 0;i<collections.length;i+=1){
+          if(collection[i] && collection[i].id){  
+        dispatch(getRecommendedCollections({collection:collection[i]})).then(res=>{
+            checkResult(res,payload=>{
+                if(payload.pages){
+                  dispatch(appendToPagesInView({pages:payload.pages}))
+                }
 
+            },err=>{
+
+            })
+        })
+    }}}
+
+     
+
+            dispatch(getRecommendedCollections({collection:collection})).then(res=>{
+                checkResult(res,payload=>{
+                
+                    let blank = Enviroment.blankPage
+                    if(payload.pages){
+                        dispatch(appendToPagesInView({pages:[blank,...payload.pages]}))
+                    }
+                 
+    
+                },err=>{
+
+                })
+            })
+        }
+    }
     const getMore=()=>{
-        
-           for(let i = 0;i<collections.length;i+=1){
-           let stories= collections[i].storyIdList.map(sTc=>sTc.story)
+    for(let i = 0;i<collections.length;i+=1){
+        let stories= collections[i].storyIdList.map(sTc=>sTc.story)
 
 dispatch(appendToPagesInView({pages:stories}))
-           }
-       
+        }
+        if(canUserEdit){
+            getRecommendations()
+        }
     }
+
     useEffect(()=>{
         if(pages.length==0){
         getMore()}
     },[pages])
+    useEffect(()=>{
+       
+    },[canUserEdit])
     const params = useParams()
     const {id}=params
      useLayoutEffect(()=>{
@@ -170,18 +210,27 @@ setLoading(false)}
         }
     }
     const soUserCanEdit=()=>{
+        if(currentProfile && collection){
+            
+            
+            if(collection.profileId==currentProfile.id){
+            setCanUserEdit(true)
+            return
+        }
         if(collection&&currentProfile && collection.roles){    
             let found =  collection.roles.find(colRole=>{
                 return colRole && colRole.profileId == currentProfile.id
             })
             if((found && RoleType.editor==found.role)||collection.profileId==currentProfile.id){
                 setCanUserEdit(true)
+                return
             }else{
                 setCanUserEdit(false)
+                return
             }
-        } 
+        } }
     }
-    useEffect(()=>{
+    useLayoutEffect(()=>{
        soUserCanSee() 
        soUserCanAdd()   
        soUserCanEdit() 
@@ -224,7 +273,7 @@ setLoading(false)}
         }
        
         return(<div><div className=" w-[96vw] mx-auto lg:w-info h-fit lg:h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600   rounded-lg mb-8 text-left">
-                {collection.profile?<div className="flex flex-row"><div className="min-w-8 min-h-8  my-auto"><ProfileCircle profile={collection.profile}/></div><span onClick={()=>navigate(Paths.profile.createRoute(collection.profile.id))} className="text-emerald-800 mx-2 my-auto rounded-lg ">{collection.profile.username}</span></div>:null}
+                {collection.profile?<div className="flex flex-row"><div className="min-w-8 min-h-8  my-auto text-emerald-800"><ProfileCircle profile={collection.profile}/></div></div>:null}
                 <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
     <h3 className="mt-8 mb-2  text-emerald-800 lora-medium text-xl sm:text-3xl">{collection.title}</h3>
 

@@ -160,7 +160,7 @@ export default function AddToCollectionContainer(props){
             <h6 className="sm:my-4 text-emerald-800 sm:mx-8 p-4 min-h-24 text-lg sm:max-w-[35rem]">{colInView?colInView.purpose:null}</h6>
         
         <div className="flex flex-row justify-center">
-        <button onClick={save}className="bg-green-600 ml-4 rounded-full mt-4 px-4 text-xl">Save</button>
+        <button onClick={save}className="bg-green-600 ml-4 rounded-full text-white mt-4 px-4 text-xl">Save</button>
     <div className="text-xl my-auto flex flex-col content-center px-4   pt-[0.7em] rounded-full">
     
     <span className="text-center  text-emerald-800  mx-a">{newCollection.length+newStories.length}</span>
@@ -175,11 +175,11 @@ export default function AddToCollectionContainer(props){
 
 
 <div role="tablist" className="tabs mt-8 shadow-md rounded-lg    max-w-[96vw] md:w-page   bg-emerald-600 border-3 border-emerald-600 mx-auto  sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab border-emerald-800   max-w-[96vw] md:w-page border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Stories" />
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab border-emerald-800 [--tab-bg:transparent]  max-w-[96vw] md:w-page border-l-2 border-r-2 border-t-2 bg-transparent text-white text-xl" aria-label="Stories" />
   <div role="tabpanel" className="tab-content border-3 bg-emerald-50 h-[100%]  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
   {storyList()}
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent   max-w-[96vw] md:w-page  border-l-2 border-r-2 border-t-2   text-white  text-xl" aria-label="Collections" />
+  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent   [--tab-bg:transparent] max-w-[96vw] md:w-page  border-l-2 border-r-2 border-t-2   text-white  text-xl" aria-label="Collections" />
   <div role="tabpanel" className="tab-content pt-1 bg-emerald-50  border-3  max-w-[96vw] md:w-page mx-auto h-[100%]  md:p-6 rounded-box ">
   {colList()}
    </div>

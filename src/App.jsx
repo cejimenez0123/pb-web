@@ -48,15 +48,11 @@ function App(props) {
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
   useEffect(()=>{
-  
-      props.getCurrentProfile().then(result=>{
-        checkResult(result,payload=>{
-          
-  
-      },err=>{
-        localStorage.clear()
-      })
-  })},[])
+  if(localStorage.getItem("token")){
+    props.getCurrentProfile()
+  }
+
+  },[localStorage.getItem("token")])
   useEffect(()=>{
     fetchData()
   },[props.currentProfile])

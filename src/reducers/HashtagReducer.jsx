@@ -6,6 +6,7 @@ const initialState = {
     error: null,
     hashtagComments:[],
     storyHashtags:[],
+    collectionHashtags:[],
     profileHashtagComments:[],
     profileHashtagsStory:[],
    
@@ -30,8 +31,8 @@ builder
     }).addCase(getProfileHashtagCommentUse.fulfilled,(state,{payload})=>{
         state.profileHashtagComments = payload.hashtags
     }).addCase(getProfileHashtagCommentUse.rejected,(state,{payload})=>{
-        console.log(payload)
-        if(payload.error){state.error = payload.error}
+    
+        if(payload && payload.error){state.error = payload.error}
     }).addCase(deleteHashtagComment.fulfilled,(state,{payload})=>{
        let hashtags = state.profileHashtagComments
        let hs = hashtags.filter(hash=>{

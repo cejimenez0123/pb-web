@@ -57,7 +57,7 @@ const hanldeClickComment=()=>{
 
 const header=()=>{
 
-   return <span className={"flex-row flex justify-start px-1 rounded-t-lg lex pt-2 pb-1"}>   <span className='flex justify-start flex-row'><ProfileCircle profile={page.author}/>
+   return <span className={"flex-row flex justify-between px-1 rounded-t-lg lex pt-2 pb-1"}>   <span className='flex justify-start flex-row'><ProfileCircle profile={page.author}/>
    </span>
 
              

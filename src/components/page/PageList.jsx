@@ -4,6 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import uuidv4 from "../../core/uuidv4"
 import DashboardItem from "./DashboardItem"
 import ErrorBoundary from "../../ErrorBoundary"
+import Enviroment from "../../core/Enviroment"
 const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
     let more=true
     if(!hasMore){
@@ -29,10 +30,17 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
             <h1 className="mx-auto my-auto text-emerald-600 py-2  text-center mx-auto w-12">Fin</h1>
         </div>}
         >
-
 <div className={`max-w-[96vw] mx-auto ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>
 
+
           {pagesInView.map(page=>{
+            if(page==Enviroment.blankPage){
+                return <div className="text-center">
+<h5 className="mx-auto text-emerald-800 text-xl py-12 lora-medium text-center">Recommendations</h5>
+                    </div>
+
+            }else{
+            
             if(page){
                 const id = `${page.id}_${uuidv4()}`
                 return(<div  key={id}
@@ -44,7 +52,7 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
             }else{
                 return null
             }
-            })}
+            }})}
             </div>
         </InfiniteScroll> </ErrorBoundary></div>)
     }

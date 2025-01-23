@@ -17,9 +17,11 @@ import {
           getPublicStories,
        
         } from "../actions/PageActions"
+        
 import { createSlice} from "@reduxjs/toolkit"
 import { getMyStories, getStory,createStory, fetchRecommendedStories,
   updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
+import { getRecommendedCollections } from "../actions/CollectionActions"
 
 
 const initialState = {pagesInView:[],
@@ -40,12 +42,20 @@ const pageSlice = createSlice({
         // .addCase(getPublicCollectionStories.pending,(state)=>{
         //   state.loading=true
         // })
+        // .addCase(getRecommendedCollections.fulfilled,(state,{payload})=>{
+        //   console.log("bookREdicer",payload)
+        //   })
     .addCase(getCollectionStoriesPublic.fulfilled,(state,{payload})=>{
       const {list}=payload
-          state.loading = false
-      
+         
+      state.loading = false
+      if(list){
           state.pagesInView = list.map(item=>item.story)
           state.storyToCollectionList= list
+      }else{
+        state.pagesInView=[]
+        state.storyToCollectionList = []
+      }
     }).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
           state.pagesInView = payload.stories
 
@@ -53,7 +63,7 @@ const pageSlice = createSlice({
 
       if(payload.length>0){
         payload.forEach(page=>{
-       let found = state.pagesInView.find(p=>p.id==page.id)
+       let found = state.pagesInView.find(p=>p&&page&& p.id==page.id)
        if(!found){
         state.pagesInView = [...state.pagesInView,page]
        }
@@ -66,9 +76,10 @@ const pageSlice = createSlice({
           const {list}=payload
     
           state.loading = false
-      
+      if(list){
           state.pagesInView = list.map(item=>item.story)
           state.storyToCollectionList= list
+      }
         }).addCase(getCollectionStoriesProtected.pending,(state)=>{
           state.loading=true
         

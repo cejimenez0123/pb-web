@@ -19,6 +19,7 @@ import { RoleType } from "../../core/constants"
 import Role from "../../domain/models/role"
 import Alert from "../../components/Alert"
 import Context from "../../context"
+import HashtagForm from "../../components/hashtag/HashtagForm"
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{
@@ -70,9 +71,7 @@ export default function EditCollectionContainer(props){
         setPurpose(colInView.purpose)
         setIsPrivate(colInView.isPrivate)
         setFollowersAre(colInView.followersAre??RoleType.commenter)
-        handleSetOpen(colInView.isOpenCollaboration)
-        
-        
+        handleSetOpen(colInView.isOpenCollaboration) 
     }
     },[colInView])
     useLayoutEffect(()=>{
@@ -135,17 +134,20 @@ console.log(storyToCols)
         
         return(<div className="   sm:flex-row sm:flex justify-around lg:w-info mx-auto max-h-info sm:pb-8 sm:w-48 p-4 sm:border-emerald-600 sm:border-2 mx-2 mt-4 md:mt-8 rounded-lg mb-8 sm:text-left">
     <div>
-        <div className="lg:w-[30em]">
+        <div className="lg:w-[28em] mx-auto">
     <input 
   onChange={(e)=>{
     setTitle(e.target.value)
 }}
-    type="text" className="bg-transparent min-w-[100%] text-emerald-800  border-1 border-emerald-200  rounded-full  px-4 py-2 ml-4 text-ellipsis w-full mb-4  lora-medium text-2xl" value={title}/>
+    type="text" className="bg-transparent w-fit text-emerald-800  border-1 border-emerald-200  rounded-full  px-4 py-2 ml-4 text-ellipsis w-full mb-4  lora-medium text-2xl" value={title}/>
        </div>
-        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  text-[0.8rem]  text-emerald-800  sm:mx-8 border-emerald-600 bg-transparent lg:h-[17em] max-w-[96vw] w-[100%] md:w-92 md:max-w-96 rounded-lg p-2" value={purpose}/>
+       <div className="">
+        <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  mb-4 text-[0.8rem]  text-emerald-800  border-emerald-600 bg-transparent md:h-[8em] max-w-[96vw] md:w-[100%] md:w-92 md:max-w-96 rounded-lg p-2" value={purpose}/>
+        
+        <HashtagForm item={colInView}/>
         </div>
         
-  
+  </div>
         
         <div className="">
         <div className=" mt-8 w-[100%]   justify-evenly md:ml-12  gap-2 grid  grid-cols-2  ">
@@ -220,6 +222,7 @@ console.log(storyToCols)
     onClick={handleDeleteCollection}/> 
   </div>
   
+
    </div>
    </div></div>
 )}

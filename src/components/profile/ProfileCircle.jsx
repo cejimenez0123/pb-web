@@ -26,8 +26,8 @@ function ProfileCircle({profile}){
             }}
     },[profile])
 
-  return(<span className="flex flex-row"><div  onClick={()=>navigate(Paths.profile.createRoute(profile.id))}className="overflow-hidden rounded-full max-w-8 min-w-8  min-h-8 max-h-8  border-2 border-white ">
-    <img className="object-fit max-h-9 max-w-10 " src={profilePic}/></div> <h6 className="my-auto  mx-1 text-white">{profile.username}</h6></span>)
+  return(<span className="flex flex-row">{profile?<span className="flex flex-row"><div  onClick={()=>navigate(Paths.profile.createRoute(profile.id))}className="overflow-hidden rounded-full max-w-8 min-w-8  min-h-8 max-h-8  border-2 border-white ">
+    <img className="object-fit max-h-9 max-w-10 " src={profilePic}/></div> <h6 className="my-auto  mx-1 text-emerald-800">{profile.username}</h6></span>:<div className=" max-w-8 min-w-8  bg-slate-100 skeleton"/>}</span>)
 
 
 }
