@@ -214,8 +214,8 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
 
     </div>
 
-  <div className="navbar-end hidden md:flex md:flex-row">
-    <ul className="menu menu-horizontal md:w-[50em] px-1">
+  <div className={(currentProfile?"navbar-center ":" md:w-[50em] navbar-end") +`hidden md:flex md:flex-row`}>
+    <ul className="menu menu-horizontal px-1">
     {pages.map((page) => {
 if(page==PageName.workshop||page==PageName.home){
   return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 

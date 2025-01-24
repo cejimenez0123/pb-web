@@ -34,10 +34,10 @@ There's not one kind of look for a writer. Creatives need a place to test their 
         </div> </div>)
     }
 const writingJourney = ()=>{
-    return(<div className="">
-        <div id="ready">
-<div  className="text-emerald-800 mt-8 leading-relaxed open-sans-medium lg:text-white">
-<h5 className="text-[1.2rem] open-sans-medium my-4">If you're a writer or enjoy reading, stay engaged with people with shared goals.
+    return(<div className="text-center">
+        {/* <div id="ready" className="text-center"> */}
+<div  className="text-emerald-800 mt-8 leading-relaxed open-sans-medium text-center lg:text-white">
+<h5 className="text-[1.2rem] mx-auto text-center w-fit  open-sans-medium my-4">If you're a writer or enjoy reading, stay engaged with people with shared goals.
 </h5>
 <h5 className="text-[1.2rem] open-sans-medium my-4">We are taking applications for beta users for our release in February.
 </h5>
@@ -45,7 +45,7 @@ const writingJourney = ()=>{
 </div>
 <div className="text-2xl flex text-white max-w-[30em] mx-auto my-12 bg-emerald-800 rounded-full  px-5 py-4" onClick={()=>{navigate(Paths.apply())}}  
    > <h5 className="mx-auto mont-medium text-xl tracking-wide my-auto">Apply to Join Today</h5></div>
-</div>
+{/* </div> */}
     </div>)
 }
 const detailsOfWorkshop=()=>{
@@ -120,7 +120,7 @@ Be part of a community of writers who are eager to share their insights and supp
     {writingJourney()}
 </div>
 
-    <div className="request mt-12 text-emerald-700  ">
+    <div className="request text-center mt-12 text-emerald-700  ">
 <h6>Any request for more feautures, problems, encoragement, send to plumbumapp@gmail.com.
 
 </h6>
