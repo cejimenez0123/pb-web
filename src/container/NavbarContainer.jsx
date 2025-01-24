@@ -54,8 +54,7 @@ function NavbarContainer({profile}){
     const [anchorElNavCreate,setAnchorElNavCreate] = useState(null);
 
     const [anchorEl, setAnchorEl] = useState(null);
-    const [selectedImage,setSelectedImage]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    const [openDialog,setOpenDialog]=useState(false)
+      const [openDialog,setOpenDialog]=useState(false)
     useEffect(()=>{
       if(currentProfile){
           if(isValidUrl(currentProfile.profilePic)){
@@ -65,7 +64,9 @@ function NavbarContainer({profile}){
            getDownloadPicture(currentProfile.profilePic).then(image=>{
               setProfilePic(image)
            } )
-          }}
+          }}else{
+            setProfilePic(Enviroment.blankProfile)
+          }
   },[currentProfile])
 
     const openDialogAction = ()=>{

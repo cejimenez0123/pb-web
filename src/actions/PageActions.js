@@ -86,7 +86,7 @@ const getPublicProfilePages= createAsyncThunk(
     try{
 
     let data= await storyRepo.getPublicProfileStories({profileId:profile.id})
-  console.log("DSDSDSDS",data)
+
   return {
     pageList:data.stories
   }

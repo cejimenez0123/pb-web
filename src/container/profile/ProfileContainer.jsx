@@ -1,5 +1,5 @@
 
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import { useContext, useEffect, useLayoutEffect,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { 
@@ -23,15 +23,31 @@ function ProfileContainer(props){
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
+    const pathname = useLocation().pathname
+    const pathParams = useParams()
     const [pending,setPending]=useState(true)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const collections = useSelector(state=>state.books.collections).filter(col=>col)
+    const collections = useSelector(state=>state.books.collections).filter(col=>col).filter(page=>{
+        if(search.length>0){
+         return page.title.toLowerCase().includes(search.toLowerCase())
+        }else{
+         return true
+        }
+    
+       })
     const profile = useSelector(state=>state.users.profileInView)
     const dispatch = useDispatch()
-    const pathParams = useParams()
 
+    const [search,setSearch]=useState("")
     const [following,setFollowing]=useState(null)
-    const pages = useSelector(state=>state.pages.pagesInView).filter(page=>page)
+    const pages = useSelector(state=>state.pages.pagesInView).filter(page=>page).filter(page=>{
+        if(search.length>0){
+         return page.title.toLowerCase().includes(search.toLowerCase())
+        }else{
+         return true
+        }
+    
+       })
     useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
@@ -43,11 +59,9 @@ function ProfileContainer(props){
                 },()=>{
                 })
         })
-    },[])
+    },[pathname])
    
-    useEffect(()=>{
-            
-    },[profile])
+ 
     const getContent=()=>{
         dispatch(setPagesInView({pages:[]}))
             dispatch(setCollections({collections:[]}))
@@ -59,6 +73,9 @@ function ProfileContainer(props){
 checkIfFollowing()
 
     },[profile,currentProfile])
+    const handleSearch = (value)=>{
+        setSearch(value)
+    }
     const checkIfFollowing =()=>{
         if(currentProfile){
         if(currentProfile.id==profile.id){
@@ -118,9 +135,9 @@ checkIfFollowing()
             <div className="pt-2 md:pt-8 mx-2">
                 <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow}/>
             </div>
-            {isPhone? <label className='flex  mt-8 flex-row mx-2'>
-<span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
+            {isPhone? <label className='flex   border-emerald-400 border-2 rounded-full mt-8 flex-row mx-2'>
+<span className='my-auto text-emerald-800 mx-1 w-full mont-medium'> Search:</span>
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
   </label>:null}
                        {!pending?  <div role="tablist" className="tabs  mt-8 shadow-md mb-36 rounded-lg w-[96vw] mx-auto md:w-page tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab [--tab-bg:transparent] [--tab-border-color:emerald] bg-transparent focus:bg-emerald-200 text-emerald-800 text-xl" aria-label="Pages" />

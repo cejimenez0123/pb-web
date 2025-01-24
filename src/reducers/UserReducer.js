@@ -170,13 +170,11 @@ const userSlice = createSlice({
     // })
     .addCase(signOutAction.fulfilled,(state,{payload})=>{
         state.currentProfile = null
-        state.followedBooks = []
-        state.followedLibraries = []
-        state.followedProfiles = []
-        state.homeCollection = null
+    
+
         state.loading = false
         state.signedIn = false
-        localStorage.setItem('loggedIn', false)
+      
     }).addCase(signOutAction.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(fetchHomeCollection.fulfilled,(state,{payload})=>{
