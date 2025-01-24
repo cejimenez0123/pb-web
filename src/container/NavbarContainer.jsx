@@ -243,7 +243,7 @@ function NavbarContainer({profile}){
           
     
       const menuHoriz=()=>{
-        return<div className={(currentProfile?"navbar-center w-[100%]":" md:w-[50em] navbar-end") +`hidden md:flex md:flex-row`}>
+        return<div className={` h-[100%] `}>
         <ul className="menu menu-horizontal px-1">
         {pages.map((page) => {
     if(page==PageName.workshop||page==PageName.home){
@@ -316,8 +316,6 @@ function NavbarContainer({profile}){
      <div className='navbar-start '>
     {isPhone?menuDropdown():
     <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
-  
-
   </div>
   <div className='navbar-center'>
       {!isPhone?menuHoriz():  <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
