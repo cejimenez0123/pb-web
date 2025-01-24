@@ -32,7 +32,7 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
                 handleClose()
                 const comment = payload
                 const params = {comment}
-                dispatch(appendComment(params))
+                // dispatch(appendComment(params))
             },(err)=>{
                 window.alert(err)
             })

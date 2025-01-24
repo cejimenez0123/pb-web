@@ -130,8 +130,14 @@ function NavbarContainer({profile}){
       
   // }
   return(<div className="navbar bg-emerald-800">
-  <div className="navbar-start">
-    <div className="dropdown lg:hidden">
+      {!isPhone?<div className='navbar-start '>
+    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{isPhone?"Pb":"Plumbum"}</a>
+    </div>:null}
+    {isPhone?<div className='navbar-start'>
+    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{isPhone?"Pb":"Plumbum"}</a>
+    </div>:null}
+  <div className="navbar-end ">
+    <div className="dropdown dropdown-left lg:hidden">
       <div tabIndex={0} role="button" className="btn btn-ghost ">
         <img src={menu}/>
 
@@ -204,12 +210,12 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
       </ul>
     </div>
   
-  </div>
-  <div className='navbar-center lg:navbar-start'>
-    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{isPhone?"Pb":"Plumbum"}</a>
+
+
     </div>
-  <div className="navbar-center hidden lg:flex">
-    <ul className="menu menu-horizontal px-1">
+
+  <div className="navbar-end hidden md:flex md:flex-row">
+    <ul className="menu menu-horizontal md:w-[50em] px-1">
     {pages.map((page) => {
 if(page==PageName.workshop||page==PageName.home){
   return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 

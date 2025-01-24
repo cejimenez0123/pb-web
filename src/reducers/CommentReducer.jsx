@@ -15,7 +15,27 @@ name: 'comments',
 initialState,
 extraReducers(builder) {
 builder.addCase(createComment.fulfilled,(state,{payload})=>{
-    state.comments = [payload.comment,...state.comments]
+    let list = state.comments
+    if(payload.comment){
+   let index = list.findIndex(com=>com.id==payload.comment.id)
+   if(index>-1){
+    list[i]=payload.comment
+    // let arr = list.map(com=>{
+    //   if(com.id==payload.comment.id){
+    //     return payload.comment
+    //   }
+    // })
+    state.comments = list
+  }else{
+ 
+    list.push(payload.comment)
+    state.comments = list
+  
+    
+  
+   }
+  }
+   
 }).addCase(createComment.pending,(state,{payload})=>{
     state.loading=true
 }).addCase(createComment.rejected,(state,{payload})=>{
@@ -29,9 +49,30 @@ builder.addCase(createComment.fulfilled,(state,{payload})=>{
  
     state.comments = payload.comments
     state.loading =false
-}).addCase(appendComment,(state,{payload})=>{
-    if(Array.isArray(state.comments)){
-      state.comments = [...state.comments,payload.comment]
+}).addCase(appendComment.type,(state,{payload})=>{
+  let list = state.comments
+  if(Array.isArray(state.comments)){
+  
+  if(payload){
+ let index = list.findIndex(com=>com.id==payload.id)
+ if(index>-1){
+  list[i]=payload
+  // let arr = list.map(com=>{
+  //   if(com.id==payload.comment.id){
+  //     return payload.comment
+  //   }
+  // })
+  state.comments = list
+}else{
+
+  list.push(payload.comment)
+  state.comments = list
+
+  
+
+ }
+}
+   
     }else{
       state.comments = [payload.comment]
     }
