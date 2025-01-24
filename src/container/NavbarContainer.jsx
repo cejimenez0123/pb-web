@@ -275,7 +275,7 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
 
     </ul>
   </div>
-  <div className="navbar-end">
+  {currentProfile?<div className="navbar-end">
   <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
@@ -304,7 +304,7 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
                        </ul>
 
     </div>
-    </div>
+    </div>:null}
     <Dialog open={openDialog}>
 <CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>
     </Dialog>
