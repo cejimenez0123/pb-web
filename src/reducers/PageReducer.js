@@ -15,13 +15,14 @@ import {
           updatePage,
           setEditingPage,
           getPublicStories,
+          setPagesInView,
        
         } from "../actions/PageActions"
         
 import { createSlice} from "@reduxjs/toolkit"
 import { getMyStories, getStory,createStory, fetchRecommendedStories,
   updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
-import { getRecommendedCollections } from "../actions/CollectionActions"
+import { getRecommendedCollectionStory } from "../actions/CollectionActions"
 
 
 const initialState = {pagesInView:[],
@@ -39,12 +40,7 @@ const pageSlice = createSlice({
     initialState,
     extraReducers(builder) {
         builder
-        // .addCase(getPublicCollectionStories.pending,(state)=>{
-        //   state.loading=true
-        // })
-        // .addCase(getRecommendedCollections.fulfilled,(state,{payload})=>{
-        //   console.log("bookREdicer",payload)
-        //   })
+   
     .addCase(getCollectionStoriesPublic.fulfilled,(state,{payload})=>{
       const {list}=payload
          
@@ -186,6 +182,13 @@ const pageSlice = createSlice({
           state.loading = false
       }).addCase(fetchArrayOfPages.pending,(state)=>{
           state.loading = true
+      }).addCase(setPagesInView.type,(state,{payload})=>{
+        if(payload.length>0){
+          state.pagesInView = payload
+        }else{
+          state.pagesInView=[]
+        }
+    
       }).addCase(setPagesToBeAdded.type,(state,{payload})=>{
         state.pagesToBeAdded = payload
       }).addCase(deleteStory.rejected,(state,{payload})=>{

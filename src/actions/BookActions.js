@@ -40,7 +40,7 @@ const getPublicBooks = createAsyncThunk(
       
     }
 )
-const setCollections = createAction("books/setCollections", (params)=> {
+const setCollections = createAction("cols/setCollections", (params)=> {
 
   const {collections} = params
   return  {payload:

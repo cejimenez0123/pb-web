@@ -124,8 +124,11 @@ state.loading = true
     state.collections= payload.books
 
 }).addCase(setCollections.type,(state,{payload})=>{
-   if(payload.collections){
-    state.collections = payload.collections
+   if(payload.length>0){
+    state.collections = payload
+    
+   }else{
+    state.collections=[]
    }
  
     })

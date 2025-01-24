@@ -1,37 +1,14 @@
 
 import InfiniteScroll from "react-infinite-scroll-component"
 import IndexItem from "./IndexItem"
-import { useEffect, useState } from "react"
-import uuidv4 from "../../core/uuidv4"
+import { useLayoutEffect, useState } from "react"
+
 const IndexList = ({items})=>{
-      const [sortTime,setSortTime]=useState(null)
-    const [sortAlpha,setSortAlpha]=useState(null)
+
     const [list,setList]=useState(items)
-    useEffect(()=>{
-        if(sortAlpha){
-        let sorted=[...items].sort((a,b)=>{
-            if (a.title < b.title) {
-                return -1;
-              }
-              if (a.title > b.title) {
-                return 1;
-              }
-              return 0;
-        })
-        setList(sorted)
-      }else{
-        let sorted = [...items].sort((a,b)=>{
-          if (a.title < b.title) {
-              return -1;
-            }
-            if (a.title > b.title) {
-              return 1;
-            }
-            return 0;
-      })
-      setList(sorted)
-      }
-    },[])
+    useLayoutEffect(()=>{setList(items)},[items])
+
+
     if(items){
     return(<InfiniteScroll
       className="   overflow-y-scroll "
