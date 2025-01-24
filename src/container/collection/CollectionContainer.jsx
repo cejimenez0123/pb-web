@@ -18,6 +18,7 @@ import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import Context from "../../context"
 import Enviroment from "../../core/Enviroment"
+
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
@@ -109,7 +110,7 @@ dispatch(appendToPagesInView({pages:stories}))
         
         dispatch(getRecommendedCollections({collection})).then(res=>{
             checkResult(res,payload=>{
-                console.log("/r",payload)
+       
                 if(payload.collections){
                     let newRecommendations = payload.collections.filter(col=>{
                         let found = collection.childCollections.find(cTc=>cTc.childCollectionId ==col.id)
@@ -281,7 +282,11 @@ setLoading(false)}
         token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     const findRole = ()=>{
-     
+        if(collection && currentProfile){
+            setRole(new Role("owner",currentProfile,collection,RoleType.editor,new Date()))
+            return
+        
+        }
             if(collection && currentProfile && collection.roles){
                 let foundRole=  collection.roles.find(role=>{
                  
