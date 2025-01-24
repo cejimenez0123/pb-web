@@ -84,9 +84,46 @@ function NavbarContainer({profile}){
       }else if(page==PageName.home){
         navigate(Paths.home())
       }
-      setAnchorElNav(null)
+
     }  
+  const navbarEnd=()=>{
+    return  currentProfile?<div className="navbar-end">
+    <div className="dropdown dropdown-end">
+        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+          <div className="w-5 rounded-full">
+            {profilePic!=Enviroment.blankProfile?<div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
+      <img className="object-fit  " src={profilePic}/></div>:null}
+      
+          </div> 
+        </div>
+        <ul
+          tabIndex={0}
+          className="menu menu-sm dropdown-content bg-emerald-50 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+        {settings.map((setting) => (
+                      
+                      <li key={setting} 
+                                onClick={()=>{
+                                    if(setting== SettingName.profile){
+                                        navigate(Paths.myProfile())
+                                    }else if(setting== SettingName.logout){
+                                        dispatch(signOutAction())
+                                    }else if(setting== SettingName.account){
+                                        navigate("/profile/edit")
+                                    }
+                                
+                      }}><a className='text-emerald-800'>{setting}</a></li>
+                    ))}
+                         </ul>
   
+      </div>
+      </div>:null
+      
+      
+      
+      
+      
+      }
+ 
     const [openCreate,setOpenCreate] = useState(false)
 
     const handleClose = () => {
@@ -104,7 +141,85 @@ function NavbarContainer({profile}){
                       SettingName.logout]; 
    
 
-
+      const menuDropdown=()=>{
+        return(
+        <div className="dropdown  lg:hidden">
+          <div tabIndex={0} role="button" className="btn btn-ghost ">
+            <img src={menu}/>
+    
+          </div>
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content bg-emerald-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+              {pages.map((page) => {
+    if(page==PageName.workshop||page==PageName.home){
+      return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
+      key={page} >
+    <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
+    </li>:null
+    }else if(page==PageName.about||page==PageName.login){
+      return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
+      key={page} >
+    <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
+    </li>:null
+    }else if( page==PageName.create){
+    
+        return(currentProfile?  
+            <li  
+         
+         className="z-[2]  w-52">
+        
+         <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline' tabindex="0">Create</a>
+           <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
+             <li onClick={ClickWriteAStory}><a  >  <CreateIcon className='text-emerald-800'/></a></li>
+             <li    onClick={(e)=>{
+            dispatch(setPageInView({page:null}))
+            dispatch(setEditingPage({page:null}))
+          handleClose()
+          dispatch(setHtmlContent(""))
+          navigate(Paths.editor.image())}}><a>     <ImageIcon className='text-emerald-800'/></a></li>
+             <li><a    onClick={()=>{
+    dispatch(setPageInView({page:null}))
+    dispatch(setEditingPage({page:null}))
+    handleClose()
+    dispatch(setHtmlContent(""))
+    navigate(Paths.editor.link())}}>
+    <LinkIcon className='text-emerald-800'/></a></li>
+           <li  onClick={()=>{ 
+                 handleClose()
+                 setOpenDialog(true)
+                 
+         } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
+    
+    }else if(page == PageName.login){
+    return !currentProfile?
+    (<li onClick={()=>handleCloseNavMenu(page) } 
+        key={page} >
+    <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
+    </li>):null
+    
+    }else if(page==PageName.search){
+    return (<li onClick={()=>openDialogAction()} 
+            key={page} >
+        <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
+      </li>)
+    
+    }else{
+    return(  <li onClick={()=>handleCloseNavMenu(page) } >
+    <a   className=' text-emerald-800  no-underline' key={page} >
+    {page}</a></li>
+    
+    )
+    } })
+            }
+          
+          </ul>
+        </div>
+      
+    
+    
+     )
+      }
 
     const ClickWriteAStory = debounce(()=>{
       ReactGA.event({
@@ -127,160 +242,87 @@ function NavbarContainer({profile}){
       }))},10)
           
     
-      
-  // }
-  return(<div className="navbar bg-emerald-800">
-      {!isPhone?<div className='navbar-start '>
-    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{isPhone?"Pb":"Plumbum"}</a>
-    </div>:null}
-    {isPhone?<div className='navbar-start'>
-    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{isPhone?"Pb":"Plumbum"}</a>
-    </div>:null}
-  <div className="navbar-end ">
-    <div className="dropdown dropdown-left lg:hidden">
-      <div tabIndex={0} role="button" className="btn btn-ghost ">
-        <img src={menu}/>
-
-      </div>
-      <ul
-        tabIndex={0}
-        className="menu menu-sm dropdown-content bg-emerald-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-          {pages.map((page) => {
-if(page==PageName.workshop||page==PageName.home){
-  return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
-  key={page} >
-<a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
-</li>:null
-}else if(page==PageName.about||page==PageName.login){
-  return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
-  key={page} >
-<a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
-</li>:null
-}else if( page==PageName.create){
-
-    return(currentProfile?  
-        <li  
-     
-     className="z-[2]  w-52">
+      const menuHoriz=()=>{
+        return<div className={(currentProfile?"navbar-center w-[100%]":" md:w-[50em] navbar-end") +`hidden md:flex md:flex-row`}>
+        <ul className="menu menu-horizontal px-1">
+        {pages.map((page) => {
+    if(page==PageName.workshop||page==PageName.home){
+      return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
+      key={page} >
+    <a  className=' text-white no-underline' textAlign="center">{page}</a>
+    </li>:null
+    }else if(page==PageName.about||page==PageName.login){
+      return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
+      key={page} >
+    <a  className=' text-white no-underline' textAlign="center">{page}</a>
+    </li>:null
+    }else if( page==PageName.create){
     
-     <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline' tabindex="0">Create</a>
-       <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
-         <li onClick={ClickWriteAStory}><a  >  <CreateIcon className='text-emerald-800'/></a></li>
-         <li    onClick={(e)=>{
-        dispatch(setPageInView({page:null}))
-        dispatch(setEditingPage({page:null}))
-      handleClose()
-      dispatch(setHtmlContent(""))
-      navigate(Paths.editor.image())}}><a>     <ImageIcon className='text-emerald-800'/></a></li>
-         <li><a    onClick={()=>{
-dispatch(setPageInView({page:null}))
-dispatch(setEditingPage({page:null}))
-handleClose()
-dispatch(setHtmlContent(""))
-navigate(Paths.editor.link())}}>
-<LinkIcon className='text-emerald-800'/></a></li>
-       <li  onClick={()=>{ 
-             handleClose()
-             setOpenDialog(true)
-             
-     } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
-
-}else if(page == PageName.login){
-return !currentProfile?
-(<li onClick={()=>handleCloseNavMenu(page) } 
-    key={page} >
-<a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
-</li>):null
-
-}else if(page==PageName.search){
-return (<li onClick={()=>openDialogAction()} 
-        key={page} >
-    <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
-  </li>)
-
-}else{
-return(  <li onClick={()=>handleCloseNavMenu(page) } >
-<a   className=' text-emerald-800  no-underline' key={page} >
-{page}</a></li>
-
-)
-} })
-        }
-      
-      </ul>
-    </div>
-  
-
-
-    </div>
-
-  <div className={(currentProfile?"navbar-center ":" md:w-[50em] navbar-end") +`hidden md:flex md:flex-row`}>
-    <ul className="menu menu-horizontal px-1">
-    {pages.map((page) => {
-if(page==PageName.workshop||page==PageName.home){
-  return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
-  key={page} >
-<a  className=' text-white no-underline' textAlign="center">{page}</a>
-</li>:null
-}else if(page==PageName.about||page==PageName.login){
-  return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
-  key={page} >
-<a  className=' text-white no-underline' textAlign="center">{page}</a>
-</li>:null
-}else if( page==PageName.create){
-
-    return(currentProfile?  
-        <li  
-     
-     className="z-[2] dropdown w-52">
+        return(currentProfile?  
+            <li  
+         
+         className="z-[2] dropdown w-52">
+        
+         <a      tabIndex={1} role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
+           <ul      tabIndex={1} className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
+             <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <CreateIcon className='text-emerald-800'/></a></li>
+             <li    onClick={(e)=>{
+            dispatch(setPageInView({page:null}))
+            dispatch(setEditingPage({page:null}))
+          handleClose()
+          dispatch(setHtmlContent(""))
+          navigate(Paths.editor.image())}}><a className='mx-auto'>     <ImageIcon className='text-emerald-800'/></a></li>
+             <li><a    onClick={()=>{
+    dispatch(setPageInView({page:null}))
+    dispatch(setEditingPage({page:null}))
+    handleClose()
+    dispatch(setHtmlContent(""))
+    navigate(Paths.editor.link())}} className='mx-auto'>
+    <LinkIcon className='text-emerald-800'/></a></li>
+           <li  onClick={()=>{ 
+                 handleClose()
+                 setOpenDialog(true)
+                 
+         } }><a className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
     
-     <a      tabIndex={1} role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
-       <ul      tabIndex={1} className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
-         <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <CreateIcon className='text-emerald-800'/></a></li>
-         <li    onClick={(e)=>{
-        dispatch(setPageInView({page:null}))
-        dispatch(setEditingPage({page:null}))
-      handleClose()
-      dispatch(setHtmlContent(""))
-      navigate(Paths.editor.image())}}><a className='mx-auto'>     <ImageIcon className='text-emerald-800'/></a></li>
-         <li><a    onClick={()=>{
-dispatch(setPageInView({page:null}))
-dispatch(setEditingPage({page:null}))
-handleClose()
-dispatch(setHtmlContent(""))
-navigate(Paths.editor.link())}} className='mx-auto'>
-<LinkIcon className='text-emerald-800'/></a></li>
-       <li  onClick={()=>{ 
-             handleClose()
-             setOpenDialog(true)
-             
-     } }><a className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
-
-}else if(page == PageName.login){
-return !currentProfile?
-(<li onClick={()=>handleCloseNavMenu(page) } 
-    key={page} >
-<a className=' text-white no-underline' textAlign="center">{page}</a>
-</li>):null
-
-}else if(page==PageName.search){
-return (<li onClick={()=>openDialogAction()} 
+    }else if(page == PageName.login){
+    return !currentProfile?
+    (<li onClick={()=>handleCloseNavMenu(page) } 
         key={page} >
     <a className=' text-white no-underline' textAlign="center">{page}</a>
-  </li>)
+    </li>):null
+    
+    }else if(page==PageName.search){
+    return (<li onClick={()=>openDialogAction()} 
+            key={page} >
+        <a className=' text-white no-underline' textAlign="center">{page}</a>
+      </li>)
+    
+    }else{
+    return(  <li onClick={()=>handleCloseNavMenu(page) } >
+    <a   className=' text-white no-underline' key={page} >
+    {page}</a></li>
+    
+    )
+    }
+              })
+            }
+    
+        </ul>
+      </div>
+      }
+  // }
+  return(<div className="navbar bg-emerald-800">
+     <div className='navbar-start '>
+    {isPhone?menuDropdown():
+    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
+  
 
-}else{
-return(  <li onClick={()=>handleCloseNavMenu(page) } >
-<a   className=' text-white no-underline' key={page} >
-{page}</a></li>
-
-)
-}
-          })
-        }
-
-    </ul>
   </div>
+  <div className='navbar-center'>
+      {!isPhone?menuHoriz():  <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
+  </div>
+
   {currentProfile?<div className="navbar-end">
   <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
@@ -310,7 +352,13 @@ return(  <li onClick={()=>handleCloseNavMenu(page) } >
                        </ul>
 
     </div>
-    </div>:null}
+    </div>:<div className="navbar-end"></div>}
+    
+    
+    
+    
+    
+  
     <Dialog open={openDialog}>
 <CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>
     </Dialog>
