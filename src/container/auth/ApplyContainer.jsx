@@ -6,6 +6,7 @@ import { useMediaQuery } from "react-responsive"
 import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import Alert from "../../components/Alert"
+import Context from "../../context"
 function ApplyContainer(props){
   const isNotPhone = useMediaQuery({
     query: '(min-width: 600px)'
@@ -44,7 +45,7 @@ function ApplyContainer(props){
     const [comfortLevel,setComfortLevel]=useState(0)
     const [platformFeatures,setPlatformFeatures]=useState("")
     const [user,setUser]=useState(null)
-    const [error,setError]=useContext(Context)
+    const {error,setError}=useContext(Context)
     const [betaTest,setBetaTester]=useState([])
     const [igError,setIgError]=useState(false)
     const [nameError,setNameError]=useState(false)
