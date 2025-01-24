@@ -103,7 +103,7 @@ function IndexItem({item}) {
 
     return(
   
-                <div className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full w-[96%]  w-full  py-[1.4em] border-emerald-300">
+                <div className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full w-[96%] min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
                 
          <div className=" h-fit my-auto lg:w-[26em] w-fit text-ellipsis overflow-hidden ">
               

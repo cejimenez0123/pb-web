@@ -5,8 +5,12 @@ import uuidv4 from "../../core/uuidv4"
 import DashboardItem from "./DashboardItem"
 import ErrorBoundary from "../../ErrorBoundary"
 import Enviroment from "../../core/Enviroment"
-const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
+import loadingGif from "../../images/loading.gif"
+import { useEffect, useState } from "react"
+
+const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
     let more=true
+    const [list,setList]=useState([])
     if(!hasMore){
   more=false
     }else{
@@ -16,14 +20,29 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
       })
-    if(pagesInView!=null){
+
+    // useEffect(()=>{
+    //     if(items){
+    //         let additions =  pagesInView.filter(page=>{
+    //              return !items.find(item=>item.id==page.id)
+    //           })
+    //           setList([...items,...additions])
+    //       }else{
+    //           setList([...pagesInView])
+    //       }
+    // },[items])
+  
         return(<div 
-        ><ErrorBoundary>
+        >
+             <ErrorBoundary fallback={<div>Error</div>}>
            <InfiniteScroll
         dataLength={pagesInView.length}
         next={getMore}
         scrollThreshold={1}
         hasMore={more}
+        loader={<div className=" flex p-12">
+            <img className="mx-auto my-auto max-h-24 max-w-24" src={loadingGif}/>
+        </div>}
         className={isGrid?"":"w-fit"}
 
         endMessage={<div className="md:min-h-page w-full">
@@ -37,7 +56,8 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
             if(page==Enviroment.blankPage){
                 return <div className="text-center">
 <h5 className="mx-auto text-emerald-800 text-xl py-12 lora-medium text-center">Recommendations</h5>
-                    </div>
+                   
+                 </div>
 
             }else{
             
@@ -54,11 +74,11 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
             }
             }})}
             </div>
-        </InfiniteScroll> </ErrorBoundary></div>)
-    }
+        </InfiniteScroll> 
+        </ErrorBoundary>
+        </div>)
+
     
-    return(<div>
-       <h1 className="lora-medium"> Error</h1>
-    </div>)
+
 }
 export default PageList

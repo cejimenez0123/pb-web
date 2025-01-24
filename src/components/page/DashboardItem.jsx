@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import "../../Dashboard.css"
-import { deletePageApproval,   setEditingPage,   setPageInView, } from '../../actions/PageActions'
+import { deletePageApproval,   setEditingPage,   setPageInView, setPagesInView, } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
 import {useDispatch, useSelector} from 'react-redux'
 import { IconButton} from '@mui/joy'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@mui/material'
+import addCircle from "../../images/icons/add_circle.svg"
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import checkResult from '../../core/checkResult'
@@ -13,23 +14,49 @@ import Paths from '../../core/paths'
 import bookmarkadd from "../../images/bookmarkadd.svg"
 import PageDataElement from './PageDataElement'
 import ProfileCircle from '../profile/ProfileCircle'
+import { addStoryListToCollection } from '../../actions/CollectionActions'
 import Context from '../../context'
+import Enviroment from '../../core/Enviroment'
 function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const dispatch = useDispatch()
+    
+    const pathParams = useParams()
+    const location = useLocation()
     const [takingFeedback,setTakingFeedback]=useState(forFeedback)
     const {setSuccess,setError}=useContext(Context)
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const bookmarkLibrary = useSelector(state=>state.libraries.bookmarkLibrary)
+   const pagesInView = useSelector(state=>state.pages.pagesInView)
     const [expanded,setExpanded]=useState(false)
+    const colInView = useSelector(state=>state.books.collectionInView)
    const [likeFound,setLikeFound]=useState(null)
-   const [loading,setLoading]=useState(false)
-    const profile = useSelector(state=>state.users.profilesInView).find(prof=>{
-       return prof!=null&& prof.id == page.profileId
-    })
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState(null)
+    const addStoryToCollection = ()=>{
+      
+       const list= [page]
+       if(location.pathname.includes("collection")&&pathParams.id&&colInView.id==pathParams.id)
+        dispatch(addStoryListToCollection({id:colInView.id,list:list,profile:currentProfile})).then(res=>{
+    checkResult(res,payload=>{
+        let pages = pagesInView
+        let index = pages.findIndex(page=>page==Enviroment.blankPage)
+        let stories = payload.collection.storyIdList.map(sTc=>sTc.story)
+       let back = pages.slice(index,pages.length).filter(page=>{
+return !stories.find(story=>story.id==page.id)
+       })
 
+        
+       
+        dispatch(setPagesInView({pages:[...stories,...back]}))
+        setSuccess("Added")
+    },err=>{
+        setError(err)
+    })
+  
+          
+        
+    })
+    }
 
     useLayoutEffect(()=>{
         if(currentProfile && page){
@@ -39,16 +66,9 @@ function DashboardItem({page,forFeedback=false, book,isGrid}) {
             setLikeFound(null)
         }
             
-    },[currentProfile,page]),
+    },[currentProfile,page])
 
-useEffect(()=>{
 
-    if(bookmarkLibrary && page){
-        let found = bookmarkLibrary.pageIdList.find(id=>id==page.id)
-        setBookmarked(Boolean(found))
-    }
-   
-},[page])
 const hanldeClickComment=()=>{   
   if(page){ 
     navigate(Paths.page.createRoute(page.id))
@@ -167,7 +187,7 @@ return <Button onClick={()=>{
           <h6 className='text-[1.2rem]'> Review</h6>
          </div>
          </div>
-         <div className="dropdown    text-center   bg-emerald-700  py-2 rounded-br-lg  grow flex-1/3 dropdown-top">
+         {!page.recommended?<div className="dropdown    text-center   bg-emerald-700  py-2 rounded-br-lg  grow flex-1/3 dropdown-top">
 <div tabIndex={0} role="button" 
 className="             
       text-white
@@ -179,7 +199,7 @@ className="
      
          ">
 <h6 className=' text-[1.2rem]'>Share</h6></div>
-<ul tabIndex={0} className="dropdown-content  text-center    text-emerald-800  z-50 menu bg-emerald-50 rounded-box  w-60 p-1 shadow">
+<ul tabIndex={0} className="dropdown-content  text-center    text-emerald-800  z-50 menu bg-emerald-100 rounded-box  w-60 p-1 shadow">
 
     <li 
 className=' text-emerald-700'
@@ -213,7 +233,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
      {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
      </button></li>
 </ul>
-</div>
+</div>:<div onClick={addStoryToCollection} className='  bg-emerald-700 flex rounded-br-lg grow flex-1/3 '> <img  className="mx-auto my-auto" src={addCircle}/></div>}
 
 </div>
 

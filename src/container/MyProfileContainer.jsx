@@ -198,9 +198,9 @@ function MyProfileContainer(props){
                           </div>
                 </div>
                 <div className='md:w-page mx-auto'> 
-                {isPhone? <label className='flex  mt-8 flex-row mx-2'>
-<span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
+                {isPhone? <label className='flex border-emerald-700 border-2 rounded-full mb-1 mt-8 flex-row mx-2'>
+<span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search:</span>
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
   </label>:null}
                             <div className='w-[96vw] md:mt-8 mx-auto md:w-page'>
 

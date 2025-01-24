@@ -16,7 +16,6 @@ import checkResult from "../../core/checkResult"
 import { appendToPagesInView, clearPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
-import Alert from "../../components/Alert"
 import Context from "../../context"
 import Enviroment from "../../core/Enviroment"
 export default function CollectionContainer(props){
@@ -26,9 +25,9 @@ export default function CollectionContainer(props){
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
-    const pending = useSelector(state=>state.books.loading)
+
     const [loading,setLoading]=useState(true)
-    const pages = useSelector(state=>state.pages.pagesInView)
+  
     const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
     const writeArr = [RoleType.editor,RoleType.writer]
     const [canUserAdd,setCanUserAdd]=useState(false)
@@ -36,7 +35,7 @@ export default function CollectionContainer(props){
     const [canUserSee,setCanUserSee]=useState(false)
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(true)
-    const [indexCol,setIndexCol]=useState(0)
+
     const [recommendedCols,setRecommendedCols]=useState([])
     const collections = useSelector(state=>state.books.collections)
 
@@ -48,8 +47,14 @@ export default function CollectionContainer(props){
           if(collection[i] && collection[i].id){  
         dispatch(getRecommendedCollectionStory({collection:collection[i]})).then(res=>{
             checkResult(res,payload=>{
-                if(payload.pages){
-                  dispatch(appendToPagesInView({pages:payload.pages}))
+                let stories = payload.pages
+                let recommended =stories.map(story=>{
+                       let page = story
+                        page["recommended"] = true
+                        return page
+                })
+                if(recommended){
+                  dispatch(appendToPagesInView({pages:recommended}))
                   setHasMore(false)
                 }
 
@@ -63,10 +68,19 @@ export default function CollectionContainer(props){
             dispatch(getRecommendedCollectionStory({collection:collection})).then(res=>{
                 checkResult(res,payload=>{
                 
-                    let blank = Enviroment.blankPage
+                
                     if(payload.pages){
-                        dispatch(appendToPagesInView({pages:[Enviroment.blankPage,...payload.pages]}))
-                        setHasMore(false)
+                        let stories = payload.pages
+                        let recommended =stories.map(story=>{
+                               let page = story
+                                page["recommended"] = true
+                                return page
+                        })
+                        if(recommended){
+                          dispatch(appendToPagesInView({pages:[Enviroment.blankPage,...recommended]}))
+                          setHasMore(false)
+                        }
+
                     }
                  
     
@@ -82,7 +96,10 @@ export default function CollectionContainer(props){
 
 dispatch(appendToPagesInView({pages:stories}))
         }
-    
+        if((currentProfile && collection && currentProfile.id==collection.profileId)||canUserAdd||canUserEdit){
+            getRecommendations()
+        }
+
     }
 
  
@@ -94,7 +111,11 @@ dispatch(appendToPagesInView({pages:stories}))
             checkResult(res,payload=>{
                 console.log("/r",payload)
                 if(payload.collections){
-                setRecommendedCols(payload.collections)
+                    let newRecommendations = payload.collections.filter(col=>{
+                        let found = collection.childCollections.find(cTc=>cTc.childCollectionId ==col.id)
+                        return col.id !=collection.id && !found
+                    })
+                setRecommendedCols(newRecommendations)
                 }
 
             },err=>{
@@ -153,7 +174,7 @@ if(currentProfile){
     }
     useEffect(()=>{
        getCol()
-    },[currentProfile,id])
+    },[currentProfile])
     useLayoutEffect(()=>{
         findRole()
         soUserCanSee()
@@ -168,7 +189,12 @@ if(currentProfile){
                 setCanUserSee(true)
                     return 
              }
+             
             if(currentProfile){
+                if(currentProfile.id==collection.profileId){
+                    setCanUserSee(true)
+                    return
+                }
             let found =  collection.roles.find(colRole=>{
                 return colRole && colRole.profileId == currentProfile.id
             })
@@ -249,9 +275,10 @@ setLoading(false)}
     const getContent= ()=>{
         dispatch(clearCollections())
         dispatch(clearPagesInView())
-        currentProfile?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
+        let token=localStorage.getItem("token")
+        token?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
     
-        currentProfile?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
+        token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     const findRole = ()=>{
      
@@ -310,12 +337,12 @@ setLoading(false)}
         <div className={" w-36  mx-auto flex flex-row"}>
    {!role?<div
    onClick={handleFollow}
-   className={"border-emerald-600 bg-transparent border-2 text-emerald-600  mont-medium w-36 min-h-12 max-h-14 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}>
+   className={"border-emerald-600 bg-transparent border-2 sm:ml-4 text-emerald-600  mont-medium w-40 min-h-12 max-h-14 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}>
     <h6 className="px-4 py-3 mont-medium  text-[1rem] sm:text-[1.2rem] text-center  ">Follow</h6></div>:
    <div
    onClick={deleteFollow}
-   className={"bg-emerald-500 text-white w-36 px-4 min-h-12 max-h-14 rounded-full flex text-[1rem] "} >
-       <h6 className="mx-auto my-auto text-[1rem] sm:text-[1.2rem]"> {role.role}</h6>
+   className={"bg-emerald-500 text-white w-40 px-4 sm:ml-4 min-h-12 max-h-14 rounded-full flex text-[1rem] "} >
+       <h6 className="mx-auto mont-medium my-auto text-[1rem]"> {role.role}</h6>
    </div>}
    <div
     className="flex flex-row   "
@@ -385,14 +412,14 @@ if(collection&&canUserSee&&!loading){
       
     </>)
 }else{
-    if(!loading){
+    if(loading){
      
         return(<div>
             <div className="skeleton h-fit w-[96vw] mx-auto lg:w-[50em] lg:h-[25em] bg-slate-100 mx-auto mt-4 sm:pb-8 p-4  bg-slate-50 rounded-lg mb-8 text-left"/>
         <div className=" max-w-[100vw] skeleton px-2 sm:max-w-[40em] bg-slate-100 mx-auto  h-40"/></div>)
     }else{
 
-            return(<div className="mx-auto my-36"><h6 className=" lora-bold text-xl text-emerald-800">Collection does not exist</h6></div>)
+            return(<div className="mx-auto my-36 flex"><h6 className=" lora-bold text-xl  mx-auto text-emerald-800">Collection does not exist</h6></div>)
     
     }
 }
