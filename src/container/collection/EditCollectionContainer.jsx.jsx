@@ -12,7 +12,7 @@ import SortableList from "../../components/SortableList"
 import checkResult from "../../core/checkResult"
 import StoryToCollection from "../../domain/models/storyToColleciton"
 import CollectionToCollection from "../../domain/models/ColllectionToCollection"
-import { Dialog } from "@mui/material"
+import { Dialog,DialogActions,DialogTitle,DialogContent,DialogContentText ,Button} from "@mui/material"
 import RoleForm from "../../components/role/RoleForm"
 import { useMediaQuery } from "react-responsive"
 import { RoleType } from "../../core/constants"
@@ -42,6 +42,7 @@ export default function EditCollectionContainer(props){
     const storyToCols = useSelector(state=>state.pages.storyToCollectionList)
     const colToCols = useSelector(state=>state.books.collectionToCollectionsList)
     const [isOpen,setIsOpen]=useState(false)
+    const [openDelete,setOpenDelete]=useState(false)
     const [followersAre,setFollowersAre]=useState(RoleType.commenter)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const {setError,setSuccess}=useContext(Context)
@@ -100,7 +101,7 @@ console.log(storyToCols)
         },[storyToCols,colToCols])
     
     const handleDeleteCollection = ()=>{
-        const {id}=params
+     
 
         dispatch(deleteCollection(params)).then(res=>checkResult(res,payload=>{
                 navigate(Paths.myProfile())
@@ -130,6 +131,7 @@ console.log(storyToCols)
             }
         }
     }
+    
     const collectionInfo=()=>{
         
         return(<div className="   sm:flex-row sm:flex justify-around lg:w-info mx-auto max-h-info sm:pb-8 sm:w-48 p-4 sm:border-emerald-600 sm:border-2 mx-2 mt-4 md:mt-8 rounded-lg mb-8 sm:text-left">
@@ -139,7 +141,7 @@ console.log(storyToCols)
   onChange={(e)=>{
     setTitle(e.target.value)
 }}
-    type="text" className="bg-transparent w-fit text-emerald-800  border-1 border-emerald-200  rounded-full  px-4 py-2 ml-4 text-ellipsis w-full mb-4  lora-medium text-2xl" value={title}/>
+    type="text" className="bg-transparent w-fit text-emerald-800  border-1 border-emerald-200  rounded-full  px-2 py-2  text-ellipsis w-full mb-4  lora-medium text-2xl" value={title}/>
        </div>
        <div className="">
         <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  mb-4 text-[0.8rem]  text-emerald-800 w-[92vw]  border-emerald-600 bg-transparent md:h-[8em] max-w-[96vw] md:w-[100%] md:w-92 md:max-w-96 rounded-lg p-2" value={purpose}/>
@@ -219,7 +221,7 @@ console.log(storyToCols)
    <div className="">
   <img className="p-2 rounded-full w-12 h-12  mt-2 w-fit mx-auto bg-emerald-800 hover:bg-red-500  "
     src={deleteIcon} 
-    onClick={handleDeleteCollection}/> 
+    onClick={()=>setOpenDelete(!openDelete)}/> 
   </div>
   
 
@@ -298,6 +300,29 @@ onClose={()=>{
     <div className="overflow-y-scroll  h-[100%] overflow-x-hidden">
     <RoleForm book={colInView} onClose={()=>setOpenAccess(false)}/>
     </div>
+</Dialog>
+<Dialog
+
+aria-labelledby="alert-dialog-title"
+aria-describedby="alert-dialog-description"
+open={openDelete}
+onClose={()=>setOpenDelete(false)}>
+  <div className="rounded-lg">
+  <DialogTitle id="alert-dialog-title">
+    {"Deleting?"}
+  </DialogTitle>
+  <DialogContent>
+    <DialogContentText id="alert-dialog-description" className="open-sans-medium">
+      Are you sure you want to delete this <strong>{colInView.title}</strong>?
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={()=>setOpenDelete(false)}>Disagree</Button>
+    <Button onClick={handleDeleteCollection}>
+      Agree
+    </Button>
+  </DialogActions>
+  </div>
 </Dialog>
         </div>)
     }

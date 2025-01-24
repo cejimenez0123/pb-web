@@ -346,9 +346,7 @@ function SettingsContainer(props) {
                             </div>
                         <button className="rounded-full py-2 w-[10rem] mt-24 text-2xl mont-medium bg-orange-800 text-white"
                                 onClick={handleClickOpen}
-                                // style={{marginTop: "4em",maxWidth:"10em",marginBottom: "5em",
-                                //         backgroundColor: theme.palette.error.main,
-                                //         color:theme.palette.error.contrastText}}
+                            
                         > Delete</button>
                         <DeleteDialog/>
         

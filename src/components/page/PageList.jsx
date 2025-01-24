@@ -8,9 +8,9 @@ import Enviroment from "../../core/Enviroment"
 import loadingGif from "../../images/loading.gif"
 import { useEffect, useState } from "react"
 
-const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
+const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
     let more=true
-    const [list,setList]=useState([])
+ 
     if(!hasMore){
   more=false
     }else{
@@ -21,16 +21,9 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
         query: '(min-width: 768px)'
       })
 
-    // useEffect(()=>{
-    //     if(items){
-    //         let additions =  pagesInView.filter(page=>{
-    //              return !items.find(item=>item.id==page.id)
-    //           })
-    //           setList([...items,...additions])
-    //       }else{
-    //           setList([...pagesInView])
-    //       }
-    // },[items])
+    if(pagesInView.length>0&&pagesInView[0]==Enviroment.blankPage){
+
+    }
   
         return(<div 
         >
@@ -53,9 +46,16 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
 
 
           {pagesInView.map((page,i)=>{
+            if(page==Enviroment.blankPage&&i==0){
+                return(<div className="mx-auto text-emerald-800 text-xl py-12 lora-medium text-center">
+                   <p> Refer your local friends for local feedback</p> <p>or</p><p> refer others so there's more to read</p>
+                   <h5 className="mx-auto text-emerald-800 text-2xl py-12 lora-bold text-center">Recommendations</h5>
+                   
+                    </div>)
+            }
             if(page==Enviroment.blankPage){
                 return <div className="text-center">
-<h5 className="mx-auto text-emerald-800 text-xl py-12 lora-medium text-center">Recommendations</h5>
+<h5 className="mx-auto text-emerald-800 text-xl py-12 lora-bold text-center">Recommendations</h5>
                    
                  </div>
 

@@ -22,7 +22,7 @@ const IndexList = ({items})=>{
                       </div>
                     }
                   >
-                      {items.map((item,i)=>{
+                      {items.filter(item=>item).map((item,i)=>{
                       
                         return <IndexItem key={ i+item.id} page={item} item={item} />
                       })}  

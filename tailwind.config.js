@@ -20,7 +20,8 @@ export default {
     },
     height:{
       "info":"18rem",
-      "item":"20rem"
+      "item":"20rem",
+      "page":"55em"
     },
     borderWidth: {
       DEFAULT: '1px',

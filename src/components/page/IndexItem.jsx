@@ -25,6 +25,35 @@ function IndexItem({item}) {
       soCanUserEdit()
       soCanUserAdd()
     },[])
+    const copyShareLink=()=>{
+      if(item && item.storyIdList){
+        ReactGA.event({
+          category: "Page View",
+          action: "Copy Collection Share Link",
+          label: item.title, 
+          value: item.id,
+          nonInteraction: false
+        });
+      navigator.clipboard.writeText(`https://plumbum.app`+Paths.collection.createRoute(item.id))
+                              .then(() => {
+                                  // Successfully copied to clipboard
+                                  alert('Text copied to clipboard');
+                                })
+
+      }else{
+      ReactGA.event({
+          category: "Page View",
+          action: "Copy Story Share Link",
+          label: item.title, 
+          value: item.id,
+          nonInteraction: false
+        });
+      navigator.clipboard.writeText(`https://plumbum.app`+Paths.page.createRoute(item.id))
+                              .then(() => {
+                                  // Successfully copied to clipboard
+                                  alert('Text copied to clipboard');
+                                })
+  }}
     const handleEditClick = ()=>{
        
       if(item && item.storyIdList){
@@ -141,8 +170,8 @@ function IndexItem({item}) {
    <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <img classname="my-auto mx-auto  " src={addBox}/></div>
    <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10  w-52 p-2 shadow">
   
-         <li className="no-underline text-green-600"  onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add ${item.title} to Collection`:"Add to Collection" }</a></li>
-         <li className="text-green-600 no-underline" ><a >Share</a></li>
+         <li className="no-underline text-emerald-600"  onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>
+         <li  onClick={copyShareLink}><a className="text-emerald-600 no-underline" >Share</a></li>
          </ul>
   
        

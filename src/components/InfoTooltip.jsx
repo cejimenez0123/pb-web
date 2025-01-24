@@ -21,7 +21,7 @@ function InfoTooltip({text=" This is a tooltip"}){
     return( 
 
         <div     onClick={handleToggle}
-          
+          onFocusCapture={handleToggle}
      className="relative h-fit my-auto w-fit mx-2 group" >
 
     <img className="  text-white "

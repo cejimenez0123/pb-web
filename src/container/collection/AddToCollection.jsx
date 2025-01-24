@@ -9,6 +9,7 @@ import emptyBox from "../../images/icons/empty_circle.svg"
 import "../../App.css"
 import Paths from "../../core/paths"
 import { clearPagesInView } from "../../actions/PageActions"
+let colStr = "collection"
 export default function AddToCollectionContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
@@ -23,7 +24,7 @@ export default function AddToCollectionContainer(props){
     const [newStories,setNewStories]=useState([])  
     const[newCollection,setNewCollections]=useState([])
 
-
+    const [tab,setTab]=useState("page")
    
     useLayoutEffect(()=>{
      
@@ -87,10 +88,10 @@ export default function AddToCollectionContainer(props){
 
     const storyList = ()=>{
       
-        return(<div className=" my-4 md:max-w-page text-emerald-800  overflow-scroll text-left mb-2">
+        return(<div className=" my-4 md:w-page text-emerald-800  overflow-scroll text-left mb-2">
             <h6 className=" text-xl  mt-4 mb-2 ml-2 lora-medium">Add Stories to Collection</h6>
             <InfiniteScroll
-           
+           className="max-w-[96vw] md:w-page"
         dataLength={pagesInView.length}>
             {pagesInView.filter(str=>str)
             .filter(story=>
@@ -155,8 +156,8 @@ onClick={()=>removeNewCollection(col)}src={checked}/>
         }
         
     }
- 
-    return(<div className=''>
+    
+    return(<div className='max-h-[100vh] overflow-scroll'>
         <div className="static">
 <div className="border-3 border-emerald-600 w-[96vw]  lg:w-info h-info mx-auto  rounded-lg  my-2  p-8 text-left">
             <h2 className="text-2xl whitespace-nowrap  overflow-hidden md:max-w-[30em]  text-nowrap text-emerald-800 mb-2">{colInView.title && colInView.title.trim().length>0?colInView.title:"Untitled"}</h2>
@@ -174,16 +175,18 @@ onClick={()=>removeNewCollection(col)}src={checked}/>
 
             
             </div>
-<div className=" sm:flex max-w-[96vw] md:w-page mx-auto sm:flex-row">
+<div className=" sm:flex max-w-[96vw] rounded-t-lg  overflow-hidden md:w-page mx-auto sm:flex-row">
 
 
-<div role="tablist" className="tabs mt-8 shadow-md rounded-lg    max-w-[96vw] md:w-page   bg-emerald-600 border-3 border-emerald-600 mx-auto  sm:tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab border-emerald-800 [--tab-bg:transparent] rounded-t-l max-w-[96vw] md:w-page border-l-2 border-r-2 border-t-2 bg-transparent text-white mont-medium text-xl" aria-label="Stories" />
-  <div role="tabpanel" className="tab-content border-3 bg-emerald-50 h-[100%]  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
+<div role="tablist" className="tabs mt-8 shadow-md rounded-lg    max-w-[96vw] md:w-page rounded-t-lg  mx-auto  sm:tabs-lifted">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked={tab=="page"} onClick={()=>setTab("page")}className={`tab     [--tab-border:emerald] rounded-t-lg max-w-[96vw] md:w-page border-l-2  border-r-2 border-t-2 text-emerald-800 mont-medium text-xl ${tab=="page"?" h-[2.4rem] border-emerald-800 border-2  ":"  bg-emerald-800 bg-opacity-10 border-emerald-800 "}`}aria-label="Stories" />
+  <div role="tabpanel" className="tab-content  overflow-scroll border-3  border-l-1 border-emerald-600 border-2 px-1 rounded-b-lg rounded-tr-lg bg-emerald-50 h-[100%]  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
   {storyList()}
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab  bg-transparent   [--tab-bg:transparent] max-w-[96vw] md:w-page rounded-t-lg border-l-2 border-r-2 border-t-2   mont-medium text-white  text-xl" aria-label="Collections" />
-  <div role="tabpanel"className="tab-content border-3 bg-emerald-50 h-[100%]  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
+  <input type="radio" name="my_tabs_2" role="tab" defaultChecked={tab==colStr} 
+  onClick={()=>setTab(colStr)}
+  className={`tab ${tab==colStr?"border-2 h-[2.4rem] border-emerald-800":"  bg-emerald-800 bg-opacity-10 border-emerald-800"} border-b-emerald-50 border-b-2 border-2 [--tab-border:emerald] max-w-[96vw] text-emerald-800 md:w-page rounded-t-lg border-l-2 border-r-2 border-t-2   mont-medium text-emerald-800  text-xl`} aria-label="Collections" />
+  <div role="tabpanel"className="tab-content border-3 bg-emerald-50 h-[100%] border-l-1 border-emerald-600  px-1  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
   {colList()}
    </div>
 </div>
