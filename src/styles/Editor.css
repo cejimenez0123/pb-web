@@ -195,6 +195,12 @@
  .quill {
   border-bottom: 0.5em !important;
  }
+ .ql-editor strong{
+  font-weight: 600!important;
+ }
+ .ql-editor em{
+  font-style: italic!important;
+ }
   .ql-editor{
     min-height:12rem;
     padding: 1em !important;

@@ -1,4 +1,4 @@
-import {db,auth} from "../core/di"
+import {db,auth, client} from "../core/di"
 import {where,query,collection,getDocs,doc,setDoc, Timestamp, } from "firebase/firestore"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import Hashtag from "../domain/models/hashtag"
@@ -19,11 +19,12 @@ const createHashtag = createAsyncThunk("hashtag/createHashtag",
     const {hashtag}=data
      if(hashtag){
         client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:hashtag.name},{createIfNotExists:true}).wait()
-     }
+    
+        return {hashtag:data.hashtag
+        } 
+    }
    
     
-     return {hashtag:data.hashtag
-     }
 
 })
 const deleteHashtagComment = createAsyncThunk("hashtag/deleteHashtagComment", 
@@ -63,20 +64,36 @@ const createHashtagComment = createAsyncThunk("hashtag/createHashtagComment",
 })
 const createHashtagPage = createAsyncThunk("hashtag/createHashtagStory", 
 async ({name,storyId,profile},thunkApi) => {
+    try{
         let data = await hashtagRepo.story({name,storyId,profile})
-      if(data.hashtag){
-        return {
-        hashtag:data.hashtag
-       }
-    }else{
 
-        throw new Error(data.error)
+const {hashtag}=data
+      if(hashtag){
+             client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:hashtag.name},{createIfNotExists:true}).wait()
+             return {
+                hashtag:data.hashtag
+                }
+            }else{
+                throw new Error("Hashtag already created")
+            }
+
+       
+    }catch(err){
+        return{
+            hashtag:null
+            ,error:err
+        }
     }
+   
 })
 const createHashtagCollection = createAsyncThunk("hashtag/createHashtagCollection", 
 async ({name,colId,profile},thunkApi) => {
         let data = await hashtagRepo.collection({name,colId,profile})
       if(data.hashtag){
+        const {hashtag}=data
+        if(hashtag.id){
+            client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:hashtag.name},{createIfNotExists:true}).wait()
+         }
         return {
         hashtag:data.hashtag
        }
@@ -126,6 +143,7 @@ const fetchCollectionHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",a
 
 })
 const fetchStoryHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",async (params,thunkApi)=>{
+    try{
     const {profile,storyId}=params
 
     if(profile){
@@ -133,9 +151,11 @@ const fetchStoryHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",async 
        return {hashtags:data.hashtags}
     }else{
        let data = await hashtagRepo.fetchStoryHashtagsPublic({id:storyId})
-       return {hashtags:data.hashtags}
+       return {hashtags:data.hashtags.filter(hash=>hash)}
     }
-       
+}catch(error){
+    return {hashtags:[],error}
+}   
 
 })
 const unpackHashtagDoc = (doc)=>{

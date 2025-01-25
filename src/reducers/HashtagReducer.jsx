@@ -27,7 +27,10 @@ builder
     }).addCase(createHashtagComment.fulfilled,(state,{payload})=>{
         state.hashtagComments=[...state.hashtagComments,payload.hashtag]
     }).addCase(createHashtagPage.fulfilled,(state,{payload})=>{
-        state.storyHashtags=[...state.storyHashtags,payload.hashtag]
+        if(payload.hashtag&&payload.hashtag.name){
+            state.storyHashtags=[...state.storyHashtags,payload.hashtag]
+        }
+
     }).addCase(getProfileHashtagCommentUse.fulfilled,(state,{payload})=>{
         state.profileHashtagComments = payload.hashtags
     }).addCase(getProfileHashtagCommentUse.rejected,(state,{payload})=>{

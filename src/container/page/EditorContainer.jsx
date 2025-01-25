@@ -234,7 +234,7 @@ setError(err.message)
        
         {isSaved?<h6 className=" text-left p-1 mx-1 text-sm  ">Saved</h6>:
       <h6 className="text-left mx-1 p-1 text-sm">Draft</h6>}
-      <input type="text " className="p-2  text-emerald-8  text-xl  bg-transparent font-bold" value={titleLocal} onChange={(e)=>handleTitle(e.target.value)}
+      <input type="text " className="p-2  w-[90%]  text-emerald-8  text-xl  bg-transparent font-bold" value={titleLocal} onChange={(e)=>handleTitle(e.target.value)}
       
       placeholder="Untitled"/>
 
