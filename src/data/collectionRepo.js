@@ -176,6 +176,16 @@ import Enviroment from "../core/Enviroment";
       
         return res.data
     }
+    async postProfileToCollection({collection,type,token}){
+        const res = await axios.post(this.url+"/home",{collection,type},{
+            headers:{
+                Authorization:"Bearer "+token
+            }
+        })
+        console.log(res)
+        return res.data
+
+    }
     async recommendedColCollections({colId}){
         const res = await axios.get(this.url+"/"+colId+"/recommendations",)
 

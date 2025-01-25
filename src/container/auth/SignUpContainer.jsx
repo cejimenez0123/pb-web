@@ -1,15 +1,17 @@
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useState,useEffect, useLayoutEffect } from "react";
+import { useState,useEffect, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { uploadProfilePicture,createProfile } from "../../actions/ProfileActions";
+import { uploadProfilePicture} from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
 import info from "../../images/icons/info.svg"
 import "../../App.css"
-import authRepo from "../../data/authRepo";
 import { signUp } from "../../actions/UserActions";
+import Context from "../../context";
 export default function SignUpContainer(props){
     const location = useLocation();
+  
+    
     const [token, setToken] = useState('');
     const [password,setPassword]=useState("")
     const navigate = useNavigate()
@@ -19,8 +21,8 @@ export default function SignUpContainer(props){
     const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
     const [selfStatement,setSelfStatement]=useState("")
     const [file,setFile]=useState(null)
-    const [error,setError]=useState(null)
-    const [success,setSuccess]=useState(null)
+    const {error,setError,setSuccess,success}=useContext(Context)
+
     const [isPrivate,setIsPrivate]=useState(false)
     const [email,setEmail]=useState("")
     const handleFileInput = (e) => {
@@ -53,12 +55,15 @@ setToken(token)
      const dispatch = useDispatch()
 
     const completeSignUp=()=>{
-     const token = searchParams[0].get("token")
+     let toke = searchParams[0].get("token")
+     if(!toke){
+      toke = token
+     }
     if( password.length>6&&username.length>3){
         if(file){
         dispatch(uploadProfilePicture({file:file})).then(res=>checkResult(res,payload=>{
                 const{fileName}=payload
-                const params = {email,token,password,username,profilePicture:fileName,selfStatement,privacy:isPrivate}
+                const params = {email,token:toke,password,username,profilePicture:fileName,selfStatement,privacy:isPrivate}
                 dispatch(signUp(params))
 
                 .then(res=>checkResult(res,payload=>{
@@ -83,25 +88,21 @@ setToken(token)
         })
       )
       }else{
-        const params = {email,token,password,username,profilePicture:selectedImage,selfStatement,privacy:isPrivate}
+        const params = {email,token:toke,password,username,profilePicture:selectedImage,selfStatement,privacy:isPrivate}
       dispatch(signUp(params))
         .then(res=>checkResult(res,payload=>{
             const {profile}=payload
+           
+           if(profile){navigate(Paths.myProfile())}
+           else{
+            setSuccess(null)
+            setError("Try reusing the link")
+           }
           
-           if(profile){navigate(Paths.myProfile())}else{
-            setError("Error creating profile")
-            setSuccess(null)
-           }
-           if(payload.error){
-            setError(payload.error)
-           }
         },err=>{
-            setSuccess(null)
-            if(err.message){
+
               setError(err.mesage)
-            }else{
-              setError(err)
-            }
+          
     
         }))}}else{
           setError("Password and Username can't be empty")
@@ -110,23 +111,7 @@ setToken(token)
     }
     return(
                 <div  className=" ">
- <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
-   {error || success? 
-  <div role="alert" className={`alert    
-  ${success?"alert-success":"alert-warning"} animate-fade-out`}>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-6 w-6 shrink-0 stroke-current"
-    fill="none"
-    viewBox="0 0 24 24">
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-  <span>{error?error:success}</span>
-</div>:null}</div>
+
 
         <div className=" px-4 my-2  bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
           <div className="flex">
@@ -163,14 +148,14 @@ setToken(token)
         placeholder='*****' />
 </label>  
 {password==confirmPassword?null:<h6>Passwords need to match</h6>}  
-<label className="w-full mt-8 flex flex-row justify-content-between  text-left">
-<div className="flex flex-row">
+<label className="w-full mt-8 flex flex-row justify-between  text-left">
+<div className="flex  flex-row">
   <div className='has-tooltip mx-2'>
  <img src={info}/> <span className=' bg-slate-50 text-emerald-800 rounded-lg p-2 is-tooltip'>Would you like to be hidden from search?</span>
 </div>
-    <span>Will your account be private?</span>    </div>
+    <span className="text-white text-l open-sans-medium">Will your account be private?</span>    </div>
     <div className="flex flex-row">
-<h6 className="mx-2  my-auto ">{isPrivate?"Yes":"No"}</h6>
+<h6 className="mx-2  my-auto text-white ">{isPrivate?"Yes":"No"}</h6>
 <input value={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}
     type="checkbox" className="toggle my-auto toggle-success"  />
 
@@ -180,8 +165,8 @@ setToken(token)
 
 
     </div>
-    <div className="mb-8">
-      <label className="flex font-bold text-left pb-2 flex-col">
+    <div className="mb-8 flex flex-col mx-auto">
+      <label className="flex font-bold text-white lora-medium text-xl text-left pb-2 flex-col">
         Add a Profile Picture
         </label>
     <input
@@ -212,10 +197,10 @@ setToken(token)
       className="textarea bg-transparent border w-[100%]  border-white text-md lg:text-l" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>
          <div
             disabled={confirmPassword!==password&&username.length>4}
-            className='bg-green-600 mont-medium text-white max-w-[18em] mx-auto mb-12 flex border hover:bg-emerald-400  border-0 text-white py-2 rounded-full px-4 mt-4 min-h-14 '
+            className='bg-green-600 mont-medium text-white max-w-[18em] mx-auto mb-12 flex border hover:bg-emerald-400 bg-gradient-to-r from-emerald-300  to-emerald-500  border-0 text-white py-2 rounded-full px-4 mt-8 min-h-14 '
                onClick={completeSignUp}
                 
-                 ><h6 className="mx-auto my-auto py-3 px-1 text-xl">Join Plumbum!</h6></div>
+                 ><h6 className="mx-auto my-auto py-4 px-1 text-xl">Join Plumbum!</h6></div>
             </div>
             
             </div>   

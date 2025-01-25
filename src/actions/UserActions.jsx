@@ -21,6 +21,7 @@ import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
+import collectionRepo from "../data/collectionRepo";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -81,12 +82,14 @@ const signUp = createAsyncThunk(
         
           const userCred = await  createUserWithEmailAndPassword(auth, email, password)
           let data = await profileRepo.register({uId:userCred.user.uid,token,email,password,username,profilePicture,selfStatement,privacy})
-       
-            localStorage.setItem("token",data.token)
-
+           
+        
+            if(!privacy){
          client.initIndex("profile").saveObject({ objectID:data.profile.id,
                                               username:username,
-                                             }).wait()                                       
+                                             }).wait()  
+                                            }                                    
+                
       return {
       
             profile:data.profile

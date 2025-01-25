@@ -9,11 +9,11 @@ const LoggedRoute = ({ loggedOut, children }) => {
   const navigate = useNavigate()
   const location = useLocation();
   const currentProfile = useSelector(state=>state.users.currentProfile)
-  const loading = useSelector(state=>state.users.loading)
+
   const {formerPage,setFormerPage}=useContext(Context)
   useEffect(()=>{
    
-    if(currentProfile && !loading){     
+    if(currentProfile){     
       if(formerPage){
         navigate(formerPage)
       }else{
@@ -21,7 +21,7 @@ const LoggedRoute = ({ loggedOut, children }) => {
       }
     }
 
-  },[currentProfile])
+  },[currentProfile,location.pathname])
   useEffect(()=>{
       setFormerPage(location.pathname)
   },[location.pathname])
