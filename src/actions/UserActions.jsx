@@ -29,9 +29,9 @@ const logIn = createAsyncThunk(
      
       try{
       const userCred = await signInWithEmailAndPassword(auth,email,password)
-     if(userCred.user){
+      if(userCred.user){
         
-        const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
+      const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
         const {token}=authData
         console.log("1",token)
         localStorage.setItem("token",token)
@@ -41,8 +41,11 @@ const logIn = createAsyncThunk(
    
         return{
           profile:profile
+        }}else{
+          throw new Error("Check")
         }
-      }else{
+    }catch(error){
+  try{
 
         const authData = await authRepo.startSession({uId:null,email:email,password})
 
@@ -53,13 +56,10 @@ const logIn = createAsyncThunk(
         
         return{
           profile: profile
+       } }catch(error){
+return{error}
         }
-     } }catch(error){
-        
-          return {
-            error:error
-          }
-        }}
+    }}
 )
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)

@@ -96,6 +96,7 @@ function LogInCard({setLogInError}){
             const params ={email:email.toLowerCase(),password:password}
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
+                        console.log(payload)
                     if(payload.error){
                         setLogInError("Error with Username or Password")
                     }else{

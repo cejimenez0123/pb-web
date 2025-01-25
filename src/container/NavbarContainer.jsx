@@ -64,9 +64,7 @@ function NavbarContainer({profile}){
            getDownloadPicture(currentProfile.profilePic).then(image=>{
               setProfilePic(image)
            } )
-          }}else{
-            setProfilePic(Enviroment.blankProfile)
-          }
+          }}
   },[currentProfile])
 
     const openDialogAction = ()=>{
