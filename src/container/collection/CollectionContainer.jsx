@@ -90,7 +90,8 @@ export default function CollectionContainer(props){
                     setHasMore(false)
                 })
             })
-        }}
+        }
+    }
     
     const getMore=()=>{
     for(let i = 0;i<collections.length;i+=1){
@@ -329,7 +330,7 @@ setLoading(false)}
 
    
     const CollectionInfo=({collection})=>{  
-        if(!collection){
+        if(loading){
             return(<div className="lg:w-info h-info w-[96vw] skeleton bg-slate-200"></div>)
         }
        
