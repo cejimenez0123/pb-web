@@ -51,10 +51,10 @@ function NavbarContainer({profile}){
     const navigate = useNavigate()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const currentProfile= useSelector((state)=>state.users.currentProfile);
-    const [anchorElNavCreate,setAnchorElNavCreate] = useState(null);
+  
 
-    const [anchorEl, setAnchorEl] = useState(null);
-      const [openDialog,setOpenDialog]=useState(false)
+
+  const [openDialog,setOpenDialog]=useState(false)
     useEffect(()=>{
       if(currentProfile){
           if(isValidUrl(currentProfile.profilePic)){
@@ -124,9 +124,7 @@ function NavbarContainer({profile}){
  
     const [openCreate,setOpenCreate] = useState(false)
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+  
  
     
     const SettingName = {
@@ -323,7 +321,7 @@ function NavbarContainer({profile}){
   <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
-          {profilePic!=Enviroment.blankProfile?<div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
+          {profilePic?<div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
     <img className="object-fit  " src={profilePic}/></div>:null}
     
         </div> 
