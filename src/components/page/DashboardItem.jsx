@@ -17,6 +17,7 @@ import ProfileCircle from '../profile/ProfileCircle'
 import { addStoryListToCollection } from '../../actions/CollectionActions'
 import Context from '../../context'
 import Enviroment from '../../core/Enviroment'
+import ErrorBoundary from '../../ErrorBoundary'
 function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const dispatch = useDispatch()
     
@@ -33,7 +34,7 @@ function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState(null)
     const addStoryToCollection = ()=>{
-      
+      if(page){
        const list= [page]
        if(location.pathname.includes("collection")&&pathParams.id&&colInView.id==pathParams.id)
         dispatch(addStoryListToCollection({id:colInView.id,list:list,profile:currentProfile})).then(res=>{
@@ -42,7 +43,7 @@ function DashboardItem({page,forFeedback=false, book,isGrid}) {
         let index = pages.findIndex(page=>page==Enviroment.blankPage)
         let stories = payload.collection.storyIdList.map(sTc=>sTc.story)
        let back = pages.slice(index,pages.length).filter(page=>{
-return !stories.find(story=>story.id==page.id)
+return !stories.find(story=>story && page && story.id==page.id)
        })
 
         
@@ -55,12 +56,12 @@ return !stories.find(story=>story.id==page.id)
   
           
         
-    })
+    })}
     }
 
     useLayoutEffect(()=>{
         if(currentProfile && page){
-            let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
+            let found =currentProfile &&currentProfile.likedStories? currentProfile.likedStories.find(like=>like && like.storyId==page.id):null
             setLikeFound(found)
         }else{
             setLikeFound(null)
@@ -233,7 +234,8 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
      {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
      </button></li>
 </ul>
-</div>:<div onClick={addStoryToCollection} className='  bg-emerald-700 flex rounded-br-lg grow flex-1/3 '> <img  className="mx-auto my-auto" src={addCircle}/></div>}
+</div>:<div onClick={addStoryToCollection} 
+className='  bg-emerald-700 flex rounded-br-lg grow flex-1/3 '> <img  className="mx-auto my-auto" src={addCircle}/></div>}
 
 </div>
 
@@ -242,7 +244,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
     if(page){
     
         return(
-        
+        <ErrorBoundary>
                 <div className='relative shrink my-2 h-fit'>
         <div onClick={()=>{
             isGrid?navigate(Paths.page.createRoute(page.id)):null
@@ -275,7 +277,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
   </div>
   </div>
  
- 
+  </ErrorBoundary>
      )}else{
         return null
      }

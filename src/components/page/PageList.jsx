@@ -20,7 +20,7 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
       })
-
+if(pagesInView && pagesInView.length){
   
   
         return(<div 
@@ -76,7 +76,7 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
         </ErrorBoundary>
         </div>)
 
-    
+        }
 
 }
 export default PageList
