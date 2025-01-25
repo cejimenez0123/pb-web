@@ -330,7 +330,7 @@ setLoading(false)}
 
    
     const CollectionInfo=({collection})=>{  
-        if(loading){
+        if(loading||!collection){
             return(<div className="lg:w-info h-info w-[96vw] skeleton bg-slate-200"></div>)
         }
        
