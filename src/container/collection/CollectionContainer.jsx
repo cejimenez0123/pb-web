@@ -1,7 +1,7 @@
 import { useContext, useEffect ,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {  useNavigate, useParams } from "react-router-dom"
-import { clearCollections, fetchCollection, fetchCollectionProtected, getRecommendedCollections, getRecommendedCollectionStory, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
+import { clearCollections, fetchCollection, fetchCollectionProtected, getRecommendedCollections, getRecommendedCollectionsProfile, getRecommendedCollectionStory, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import PageList from "../../components/page/PageList"
 import { getCollectionStoriesProtected, getCollectionStoriesPublic } from "../../actions/StoryActions"
@@ -37,7 +37,7 @@ export default function CollectionContainer(props){
     const [canUserSee,setCanUserSee]=useState(false)
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(true)
-
+    const params = useParams()
     const [recommendedCols,setRecommendedCols]=useState([])
     const collections = useSelector(state=>state.books.collections)
 
@@ -120,18 +120,32 @@ export default function CollectionContainer(props){
                         let found = collection.childCollections.find(cTc=>cTc.childCollectionId ==col.id)
                         return col.id !=collection.id && !found
                     })
+                    if(newRecommendations.length==0){
+                        if(currentProfile){
+                            dispatch(getRecommendedCollectionsProfile())
+                        }
+                    }else{
+
+                
                 setRecommendedCols(newRecommendations)
+            }
                 }
 
             },err=>{
-
+                if(currentProfile){
+                    dispatch(getRecommendedCollectionsProfile())
+                }
             })
     })
-    
+      
     },[collection])
-  
-    const params = useParams()
-    const {id}=params
+    useEffect(()=>{
+        if(localStorage.getItem("token")&&recommendedCols.length==0){
+            dispatch(getRecommendedCollectionsProfile())
+        }
+    },[recommendedCols])
+
+ 
      useLayoutEffect(()=>{
         if(currentProfile && collection){
             dispatch(postCollectionHistory({profile:currentProfile,collection}))
@@ -175,11 +189,12 @@ if(currentProfile){
     }
     }
     const getCol=()=>{
-        currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
+        localStorage.getItem("token")?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
     }
     useLayoutEffect(()=>{
        getCol()
     },[currentProfile,location.pathname])
+
     useLayoutEffect(()=>{
         findRole()
         soUserCanSee()
@@ -311,29 +326,11 @@ setLoading(false)}
         findRole()
         getContent()
     },[collection])
-  
-    const colList = ()=>{
-        return(<InfiniteScroll dataLength={recommendedCols.length}
-            hasMore={false}
-        loader={
-            <div>
-                Loading
-            </div>
-        }
-        className="flex max-v-[96vw] mx-auto flex-row"
-        endMessage={
-            <div className="py-12">
-                <h6 className="lora-medium">Fin</h6>
-            </div>
-        }> 
-    
-            {recommendedCols.map(col=><BookListItem book={col}/>)}
-        </InfiniteScroll>)
-    }
+
    
     const CollectionInfo=({collection})=>{  
         if(!collection){
-            return(<div>Loading</div>)
+            return(<div className="lg:w-info h-info w-[96vw] skeleton bg-slate-200"></div>)
         }
        
         return(<div><div className=" w-[96vw] mx-auto lg:w-info h-fit lg:h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600   rounded-lg mb-8 text-left">
