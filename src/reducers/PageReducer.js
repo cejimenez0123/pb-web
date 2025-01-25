@@ -28,7 +28,7 @@ import { getRecommendedCollectionStory } from "../actions/CollectionActions"
 const initialState = {pagesInView:[],
                       storyToCollectionList:[],
                       editingPage:null,
-                      loading:false,
+                      loading:true,
                       editorHtmlContent:"",
                       error:"",
                       pageInView: null,
@@ -53,7 +53,7 @@ const pageSlice = createSlice({
         state.storyToCollectionList = []
       }
     }).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
-     
+     state.loading=false
       state.pagesInView = payload.stories
     }).addCase(appendToPagesInView.type,(state,{payload})=>{
 

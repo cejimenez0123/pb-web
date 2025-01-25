@@ -120,7 +120,5 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
 
 
 })
-// const fetchWorkshopGroups = async (radius = 50) => {
-   
-//   };
+
 export {registerUser,disconnectUser, postActiveUser,createWorkshopGroup, fetchWorkshopGroups }

@@ -277,9 +277,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
  
  
      )}else{
-        return(<div className='min-h-24'>
-            Loading...
-        </div>)
+        return null
      }
 
 }

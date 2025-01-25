@@ -32,6 +32,7 @@ const PrivateRoute = ({loggedIn, children }) => {
     },[location.pathname])
     useLayoutEffect(()=>{
       if(!currentProfile){
+
         dispatch(getCurrentProfile()).then(res=>{
           checkResult(res,payload=>{
             if(payload.error){
@@ -57,6 +58,11 @@ const PrivateRoute = ({loggedIn, children }) => {
         setPending(false)
       }
     },[])
+    useLayoutEffect(()=>{
+      if(currentProfile&&currentProfile.id){
+        setPending(false)
+      }
+    },[currentProfile])
     if(pending){
       return <div style={{color:"white"}}>Loading...</div>
     }

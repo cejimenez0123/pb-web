@@ -1,4 +1,4 @@
-import React ,{useState,useEffect}from 'react'
+import React ,{useState,useEffect,useLayoutEffect, useContext}from 'react'
 import "../App.css"
 import { useSelector, useDispatch } from 'react-redux'
 import{ getCurrentProfile } from '../actions/UserActions'
@@ -8,37 +8,39 @@ import ReactGA from "react-ga4"
 import PageList from '../components/page/PageList'
 import ExploreList from '../components/collection/ExploreList'
 import { getRecommendedCollectionsProfile } from '../actions/CollectionActions'
+import Context from '../context'
+import { useLocation } from 'react-router-dom'
+import { setPageInView, setPagesInView } from '../actions/PageActions'
+import { setCollections } from '../actions/BookActions'
 
 function DashboardContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-
+    // const {setError}=useContext(Context)
     const dispatch = useDispatch()
     const currentProfile = useSelector((state)=>state.users.currentProfile)
-   
+   const hashtags=useSelector(state=>state.hashtags.hashtags)
     const collections = useSelector(state=>state.books.collections)
-    // const [itemsInView,setItemsInView] = useState([])
+    const pages = useSelector(state=>state.pages.pagesInView)
     const [hasMore,setHasMore] = useState(false)
-    const [recommendedCols,setRecommendedCols]=useState([])
-    const [hasError,setHasError] = useState(false)
-    useEffect(()=>{
-       
-           dispatch(getCurrentProfile()).then(result=>{
-            checkResult(result,payload=>{
-                
-                    
-            })})
-     
-    
-    }
+    const getContent=()=>{
+
+        dispatch(setPagesInView({pages:[]}))
+        dispatch(setCollections({collections:[]}))
   
-   
-,[])
-        useEffect(()=>{
-        if(currentProfile){
+            dispatch(fetchRecommendedStories())
+        
+    
+        
             dispatch(getRecommendedCollectionsProfile())
-           dispatch(fetchRecommendedStories())
-        }},[currentProfile])
-      
+        
+    }
+
+useEffect(()=>{
+    console.log("Tocuh")
+getContent()
+   
+},[])
+
 
         return(
             <div id="dashboard" >
@@ -47,7 +49,7 @@ function DashboardContainer(props){
                         <h2 className="lora-bold text-2xl">Recommendations</h2>
                     </div>
                     <div className='max-w-[94vw] mx-auto sm:w-page '> 
-                    <PageList />
+                    <PageList hasMore={hasMore} getMore={getContent}/>
                     </div>
                 </div>
                 <ExploreList items={collections}/>

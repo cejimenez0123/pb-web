@@ -21,13 +21,11 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
         query: '(min-width: 768px)'
       })
 
-    if(pagesInView.length>0&&pagesInView[0]==Enviroment.blankPage){
-
-    }
+  
   
         return(<div 
         >
-             {/* <ErrorBoundary fallback={<div>Error</div>}> */}
+             <ErrorBoundary fallback={<div><h1 className="text-emerald-800">Error</h1></div>}>
            <InfiniteScroll
         dataLength={pagesInView.length}
         next={getMore}
@@ -75,7 +73,7 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
             }})}
             </div>
         </InfiniteScroll> 
-        {/* </ErrorBoundary> */}
+        </ErrorBoundary>
         </div>)
 
     
