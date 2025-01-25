@@ -4,22 +4,27 @@ import Paths from './core/paths';
 import { useDispatch } from 'react-redux';
 import {  useEffect, useLayoutEffect, useState } from 'react';
 import { getCurrentProfile } from './actions/UserActions';
+import checkResult from './core/checkResult';
 
 const PrivateRoute = ({loggedIn, children }) => {
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [pending,setPending]=useState(false)
+    const [pending,setPending]=useState(true)
     const location = useLocation();
-    const token = localStorage.getItem("token")
+
     const [formerPage,setFormerPage]=useState("")
     const navigate = useNavigate()
     const dispatch = useDispatch()
     useLayoutEffect(() => {
-        if(!pending||token){
-            if(!token){
-              navigate(Paths.login())
-            }else{
-              navigate(formerPage)
-            }
+      const token = localStorage.getItem("token")
+      
+    if(token){
+      if(pending){
+        navigate(formerPage)
+      }
+     
+    }else{
+      navigate(Paths.login())
+     
     }
     }, [currentProfile]);
     useEffect(()=>{
@@ -27,10 +32,19 @@ const PrivateRoute = ({loggedIn, children }) => {
     },[location.pathname])
     useLayoutEffect(()=>{
       if(!currentProfile){
-        dispatch(getCurrentProfile())
+        dispatch(getCurrentProfile()).then(res=>{
+          checkResult(res,payload=>{
+            setPending(false)
+          },err=>{
+            setPending(false)
+            navigate(formerPage)
+          })
+        })
+      }else{
+        setPending(false)
       }
     },[])
-    if(!currentProfile||pending){
+    if(pending){
       return <div style={{color:"white"}}>Loading...</div>
     }
 

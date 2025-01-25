@@ -112,10 +112,11 @@ function App(props) {
       <Routes >
           <Route path={Paths.home()} 
                         element={
+                          <PrivateRoute>
                           <DashboardContainer 
                             getPublicStories={props.getPublicStories} 
                             pagesInView={props.pagesInView}
-                          />
+                          /></PrivateRoute>
                         }
             />
           <Route path={Paths.editor.image()}

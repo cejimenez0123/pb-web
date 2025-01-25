@@ -1,8 +1,6 @@
 import React ,{useState,useEffect}from 'react'
 import "../App.css"
 import { useSelector, useDispatch } from 'react-redux'
-import DashboardItem from '../components/page/DashboardItem'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import{ getCurrentProfile } from '../actions/UserActions'
 import { fetchRecommendedStories } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'

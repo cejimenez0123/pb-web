@@ -1,5 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component"
-import ErrorBoundary from "../../ErrorBoundary"
+import ErrorBoundary from "../../ErrorBoundary.jsx"
 
 import Comment from "./Comment"
 import { useMediaQuery } from "react-responsive"

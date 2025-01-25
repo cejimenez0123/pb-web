@@ -276,13 +276,13 @@ const deleteSubCollection = (colId)=>{
     <div className="max-w-[96vw] md:w-page mx-auto">
                             <div role="tablist" className="tabs mt-8 max-w-[96vw] mb-2 lg:mb-48 lg::w-page mx-auto rounded-lg sm:mx-6 tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm [--tab-bg:transparent]  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-900 text-xl" aria-label="Stories" />
-  <div role="tabpanel" className="tab-content max-w-[96vw] pt-1  min-h-[20em] border-emerald-600 lg::w-page rounded-lg border-2">
+  <div role="tabpanel" className="tab-content w-[96vw] mx-auto pt-1  md:min-h-page border-emerald-600 md:w-page rounded-lg border-2">
     {newPages.length==0?<div><h6 className="text-emerald-700 py-24 text-center bg-opacity-20 bg-emerald-400 rounded-lg m-4  text-xl">Room for who you are</h6></div>:<SortableList items={newPages} onOrderChange={handleStoryOrderChange}
   onDelete={deleteStory}/>}
 
   </div>
   <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 max-w-[96vw] md:w-page [--tab-bg:transparent] border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
-  <div role="tabpanel" className="tab-content max-w-[96vw] pt-1  min-h-[20em] border-emerald-600 lg::w-page rounded-lg border-2">
+  <div role="tabpanel" className="tab-content w-[96vw] pt-1 mx-auto  md:min-h-page border-emerald-600 md::w-page rounded-lg border-2">
      <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20 mx-4"><h6 className="text-emerald-800 py-24 text-center 
    m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:
    <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteSubCollection}/>}

@@ -96,7 +96,13 @@ const navigateToLibrary = (library)=>{
             dataLength={booksInView.length}
             next={fetchContentItems}
             hasMore={false}
-            endMessage={<div className='flex min-w-72 mont-medium'><span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '><h6 className=''>Join the community. <br/>Apply to join today.</h6><h6>Share your own work.</h6><h6> This is what we have for now.</h6></span></div>}
+            endMessage={<div className='flex min-w-72 mont-medium'>
+                <span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '>
+                    <h6 className=''>
+                        Join the community. <br/>Apply to join today.
+                        </h6><h6>Share your own work.</h6>
+                        <h6> This is what we have for now.</h6>
+                        </span></div>}
             >
 
                 {booksInView.map((book,i)=>{

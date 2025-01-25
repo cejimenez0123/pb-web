@@ -19,12 +19,14 @@ export default class ErrorBoundary extends React.Component {
     //   logErrorToMyService(error, info.componentStack);
     }
   
-    render() {
+    // render() {
+      
+     
+      render() {
       if (this.state.hasError) {
         // You can render any custom fallback UI
         return this.props.fallback;
       }
-  
       return this.props.children;
     }
   }
