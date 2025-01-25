@@ -18,12 +18,23 @@ export default function AddStoryToCollectionContainer(props){
     const page = useSelector(state=>state.pages.pageInView)
     const [hasMoreCol,setHasMoreCol]=useState(true)
     const [openDialog,setOpenDialog]=useState(false)
+    const [search,setSearch]=useState("")
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const collections = useSelector(state=>state.books.collections)
+    const collections = useSelector(state=>state.books.collections).filter(col=>col).filter(col=>{
+      if(search.length>0){
+       return col.title.toLowerCase().includes(search.toLowerCase())
+      }else{
+       return true
+      }
+  
+     })
     const addStory = (e,collection)=>{
         e.preventDefault()
       dispatch(addStoryListToCollection({id:collection.id,list:[page],profile:currentProfile}))
     }
+    const handleSearch = (value)=>{
+      setSearch(value)
+  }
     const deleteStory = (e,collection)=>{
       e.preventDefault()
       dispatch(deleteStoryFromCollection({id:collection.id,storyId:page.id}))
@@ -40,9 +51,9 @@ export default function AddStoryToCollectionContainer(props){
   
     
     if(page && page.id == pathParams.id){
-        return(<div className="text-emerald-800">
+        return(<div className="text-emerald-800 w-[100vw]">
            
-            <div className="border-2 mt-16 w-[96vw] h-info lg:w-info mx-auto mx-auto text-left border-emerald-600 p-8 mx-8 sm:mx-8 rounded-lg">
+            <div className="border-2 mt-16 w-[96vw] h-info mx-auto md:w-info  text-left border-emerald-600 p-8   rounded-lg">
             <h6 className="text-xl font-bold pb-2 lora-medium  font-bold">Your Story</h6>
               <h6 className="text-xl mont-medium pb-8">{page.title}</h6>
             
@@ -52,8 +63,13 @@ export default function AddStoryToCollectionContainer(props){
               </div>
             <div>
                 </div>
-                <div className="border-2   max-w-[96vw] md:w-page  mx-auto border-emerald-600 mt-16 text-left   mx-2 rounded-lg">
-                    <h6 className="text-xl font-bold pb-8 mont-medium font-bold">Your Collections</h6>
+                <div className="border-2   max-w-[96vw] md:w-page md:px-2  mx-auto border-emerald-600  md:mb-4 mb-1 mt-16 text-left   mx-2 rounded-lg">
+                    <div className="flex flex-col md:flex-row pb-8 md:ml-4 pt-4  w-[100%]">
+                    <h6 className="text-xl font-bold my-auto ml-4 lora-medium font-bold">Your Collections</h6>
+                   <label className='flex my-auto w-[80%] mt-4 mx-auto border-emerald-600 border-2 rounded-full my-1 flex-row md:mx-4 '>
+<span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2   w-full min-w-58 py-1  text-sm bg-transparent my-1  text-emerald-800' />
+  </label></div>
                     {collections.length>0?
                     <InfiniteScroll
                 className="scroll "
@@ -61,8 +77,8 @@ export default function AddStoryToCollectionContainer(props){
                 hasMore={hasMoreCol} // Replace with a condition based on your data source
                 loader={<p>Loading...</p>}
                 endMessage={
-                    <div className="no-more-data">
-                        <p>No more data to load.</p>
+                    <div className="flex ">
+                        <p className="text-emerald-800 mx-auto md:text-xl py-12 lora-medium">Fin </p>
                     </div>
                 }
             >

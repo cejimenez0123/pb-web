@@ -57,10 +57,15 @@ function EditorContainer(props){
         const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
         const {id }= pathParams
         const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
-          data:editPage?editPage.data:pageInView?pageInView.data:"",needsFeedback:false,description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:feedback,privacy:privacy,commentable:commentable
+          data:editPage?editPage.data:pageInView?pageInView.data:"",
+          needsFeedback:false,
+          description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:feedback
+          ,
+          privacy:privacy,
+          commentable:commentable
         })
         
-   
+  
       const handleUpdate=debounce((params)=>{
         setIsSaved(false)
         if(params.data.length>0){ 
@@ -137,10 +142,12 @@ return ()=>{
         }
     },[htmlContent])
   const setStoryData=(story)=>{
+            console.log("Stor",story)
              setFetchedPage(story)   
              setTitleLocal(story.title)
              setCommentable(story.commentable)
-             setPrivacy(story.privacy)
+             setPrivacy(story.isPrivate)
+             
   }
     const fetchStory = ()=>{
   if(id){
@@ -237,7 +244,7 @@ setError(err.message)
       
       <div className="dropdown dropdown-bottom   dropdown-end">
       <div tabIndex={0} role="button" ><img className="min-w-16 min-h-[4rem]   bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
-      <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1] shadow">
+      <ul tabIndex={0} className="dropdown-content text-center menu bg-white rounded-box z-[1] shadow">
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
         <li onClick={()=>{setFeedbackDialog(true)}} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
