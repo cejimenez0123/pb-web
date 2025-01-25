@@ -14,9 +14,9 @@ function DashboardContainer(props){
 
     const dispatch = useDispatch()
     const currentProfile = useSelector((state)=>state.users.currentProfile)
-    const pagesInView = useSelector((state)=>state.pages.pagesInView)
+   
     const collections = useSelector(state=>state.books.collections)
-    const [itemsInView,setItemsInView] = useState([])
+    // const [itemsInView,setItemsInView] = useState([])
     const [hasMore,setHasMore] = useState(false)
     const [recommendedCols,setRecommendedCols]=useState([])
     const [hasError,setHasError] = useState(false)
@@ -36,7 +36,7 @@ function DashboardContainer(props){
         useEffect(()=>{
         if(currentProfile){
             dispatch(getRecommendedCollectionsProfile())
-            dispatch(fetchRecommendedStories())
+           dispatch(fetchRecommendedStories())
         }},[currentProfile])
       
 
@@ -47,7 +47,7 @@ function DashboardContainer(props){
                         <h2 className="lora-bold text-2xl">Recommendations</h2>
                     </div>
                     <div className='max-w-[94vw] mx-auto sm:w-page '> 
-                    <PageList items={itemsInView}/>
+                    <PageList />
                     </div>
                 </div>
                 <ExploreList items={collections}/>

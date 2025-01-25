@@ -27,7 +27,7 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
   
         return(<div 
         >
-             <ErrorBoundary fallback={<div>Error</div>}>
+             {/* <ErrorBoundary fallback={<div>Error</div>}> */}
            <InfiniteScroll
         dataLength={pagesInView.length}
         next={getMore}
@@ -75,7 +75,7 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
             }})}
             </div>
         </InfiniteScroll> 
-        </ErrorBoundary>
+        {/* </ErrorBoundary> */}
         </div>)
 
     

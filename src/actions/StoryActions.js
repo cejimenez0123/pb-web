@@ -47,7 +47,7 @@ try{
 const fetchRecommendedStories = createAsyncThunk(
   'pages/fetchRecommendedStories',
   async (params,thunkApi) => {
-
+try{
       let data = await storyRepo.recommendations()
       if(data.stories){
         return {
@@ -58,7 +58,9 @@ const fetchRecommendedStories = createAsyncThunk(
           stories:[]
         }
       }
-
+    }catch(error){
+      return {error}
+    }
   })
 const getMyStories= createAsyncThunk(
     'pages/getMyStories',

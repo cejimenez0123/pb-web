@@ -247,7 +247,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
         <div onClick={()=>{
             isGrid?navigate(Paths.page.createRoute(page.id)):null
         }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-fit min-h-56   ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
-               {!isGrid?header():null}
+               {!isGrid&&page?header():null}
         {page.description && page.description && takingFeedback?<div className='min-h-24 pt-16 p-2'>
             <label className='text-emerald-800'>Feedback Request:</label>
             <h6 className='p-2 open-sans-medium text-left text-emerald-800'>

@@ -53,8 +53,8 @@ const pageSlice = createSlice({
         state.storyToCollectionList = []
       }
     }).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
-          state.pagesInView = payload.stories
-
+     
+      state.pagesInView = payload.stories
     }).addCase(appendToPagesInView.type,(state,{payload})=>{
 
       if(payload.length>0){
