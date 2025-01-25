@@ -34,9 +34,9 @@ switch(page.type){
     return( 
         <div 
 
-       className={`  ${isGrid?"h-60 isGrid p-2 rounded-lg w-[96%] mx-auto overflow-hidden text-ellipsis":"rounded-t-lg pt-12"} bg-emerald-200 `}
+       className={`  ${isGrid?"h-60 isGrid p-2 rounded-lg w-[96%] mx-auto overflow-hidden text-ellipsis":"rounded-t-lg "} bg-emerald-200 `}
         >
-        <div className={` w-[100%]  text-emerald-800 px-4   text-[0.8rem] ${isGrid?"isGrid mt-2 rounded-lg overflow-hidden":" pb-8  rounded-t-lg pt-12 ql-editor"}`}
+        <div className={` w-[100%]  text-emerald-800 px-4   text-[0.8rem] ${isGrid?"isGrid mt-2 rounded-lg overflow-hidden":" pb-8  rounded-t-lg  ql-editor"}`}
     dangerouslySetInnerHTML={{__html:page.data}}></div>
     </div>
   )   }
