@@ -207,12 +207,14 @@ if(currentProfile){
        if(collection){
        
             if( !collection.isPrivate){
+            
                 setCanUserSee(true)
                     return 
              }
              
             if(currentProfile){
                 if(currentProfile.id==collection.profileId){
+                    
                     setCanUserSee(true)
                     return
                 }
@@ -254,7 +256,8 @@ if(currentProfile){
         }
     
     }
-setLoading(false)}
+
+}
     const soUserCanAdd = ()=>{
         if(collection&&currentProfile&& collection.roles){    
             let found =  collection.roles.find(colRole=>{
