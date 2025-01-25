@@ -133,15 +133,15 @@ return (
       <div>
         <form
           onSubmit={(e) => onClickApply(e)}
-          className="form-data shadow-sm max-w-[40em] sm:my-8 rounded-lg pb-30 bg-emerald-700 bg-opacity-60 flex sm:mb-12 flex-col shadow-md py-4 px-12 lg:max-w-[48rem] text-left mx-auto lg:mt-24"
+          className="form-data shadow-sm  sm:my-8 md:rounded-lg pb-30 bg-emerald-700 bg-opacity-80 flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] text-left mx-auto lg:mt-24"
         >
           <h6 className="text-white lora-bold text-sm">* Required</h6>
           <div className="w-full text-center">
-            <h3 className="mx-auto text-2xl lora-bold my-8 w-fit">Interest Form</h3>
+            <h3 className="mx-auto text-2xl text-white lora-bold my-8 w-fit">Interest Form</h3>
           </div>
           
           {/* Preferred Name */}
-          <label className="input text-[0.8rem] lora-bold mt-4 text-white py-8 font-bold mb-4 lg:py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
+          <label className="input text-[0.8rem] rounded-full lora-bold mt-4 text-white py-8 font-bold mb-4 lg:py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
             Preferred Name
             <input
               type="text"
@@ -153,7 +153,7 @@ return (
           </label>
 
           {/* Email */}
-          <label className="input mt-4 mb-2 font-bold py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
+          <label className="input mt-4 mb-2 rounded-full font-bold py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
             <h6 className="font-bold lora-bold text-[0.8rem]">* E-mail</h6>
             <input
               type="text"
@@ -168,11 +168,11 @@ return (
           ):null}
 
           {/* IG Handle */}
-          <label className="input mt-4 mb-8 font-bold py-8 w-[100%] bg-transparent text-white border border-green-100 text-white flex items-center gap-2">
-            <h6 className="font-bold  lora-bold text-[0.8rem]">IG Handle</h6>
+          <label className="input mt-4 rounded-full mb-8 font-bold py-8 w-[100%] bg-transparent text-white border border-green-100 text-white flex items-center ">
+            <h6 className="font-bold  lora-bold text-[0.8rem]">IG Handle </h6>
             <input
               type="text"
-              className="grow  lora-bold text-white pl-4"
+              className="grow  lora-bold text-white mx-2 "
               value={igHandle}
               onChange={(e) => handleChangeIgHandle(e.target.value.trim())}
               placeholder="*****"
@@ -209,7 +209,7 @@ return (
         type="checkbox"
         value={genre}
         onChange={(e) => handleGenreSelection(e.target.value)}
-        className="checkbox mx-1 border-white border-1"
+        className="checkbox mx-1 border-white   border-1"
       />
       <span className="text-white open-sans-medium">{genre}</span>
     </label>
@@ -263,9 +263,9 @@ return (
  </label> <select
   value={feedbackFrequency}
   onChange={(e) => setFeedbackFrequency(e.target.value)}
-  className="select bg-transparent border border-green-100 text-white w-full text-l sm:text-xl"
+  className="select bg-transparent border rounded-full  border-green-100 text-white w-full text-l sm:text-xl"
 >
-  <option value="" className="open-sans-medium "disabled>
+  <option value="" className="open-sans-medium   "disabled>
     Select an option
   </option>
   <option value="daily">Daily</option>
@@ -281,7 +281,7 @@ return (
           <select
             value={workshopPreference}
             onChange={(e) => setWorkshopPreference(e.target.value)}
-            className="select open-sans-medium bg-transparent border border-green-100 text-white w-full text-l sm:text-xl"
+            className="select rounded-full  open-sans-medium bg-transparent border border-green-100 text-white w-full text-l sm:text-xl"
           >
             <option value="in-person">In-person</option>
             <option value="online">Online</option>
@@ -308,7 +308,7 @@ return (
 
           <button
             type="submit"
-            className="mont-medium my-8 text-2xl mont-medium px-20 text-white mx-auto rounded-full bg-green-600 hover:bg-green-400 font-bold border-none shadow-sm"
+            className="mont-medium my-8 text-2xl text-emerald-800  mont-medium px-20  mx-auto rounded-full bg-gradient-to-r from-emerald-300 to-emerald-500 hover:bg-green-400 font-bold border-none shadow-sm"
           >
             Apply
           </button>
