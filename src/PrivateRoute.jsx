@@ -37,7 +37,12 @@ const PrivateRoute = ({loggedIn, children }) => {
             setPending(false)
           },err=>{
             setPending(false)
-            navigate(formerPage)
+            if(formerPage){
+              navigate(formerPage)
+            }else{
+              navigate(Paths.login())
+            }
+           
           })
         })
       }else{
