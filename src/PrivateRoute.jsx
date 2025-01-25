@@ -34,7 +34,15 @@ const PrivateRoute = ({loggedIn, children }) => {
       if(!currentProfile){
         dispatch(getCurrentProfile()).then(res=>{
           checkResult(res,payload=>{
-            setPending(false)
+            if(payload.error){
+              setPending(false)
+              if(formerPage){
+                navigate(formerPage)
+              }else{
+                navigate(Paths.login())
+              }
+            }
+       
           },err=>{
             setPending(false)
             if(formerPage){
