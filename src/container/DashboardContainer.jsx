@@ -21,7 +21,7 @@ function DashboardContainer(props){
    const hashtags=useSelector(state=>state.hashtags.hashtags)
     const collections = useSelector(state=>state.books.collections)
     const pages = useSelector(state=>state.pages.pagesInView)
-    const [hasMore,setHasMore] = useState(false)
+    const [hasMore,setHasMore] = useState(true)
     const getContent=()=>{
 
         dispatch(setPagesInView({pages:[]}))
@@ -32,6 +32,7 @@ function DashboardContainer(props){
     
         
             dispatch(getRecommendedCollectionsProfile())
+            setHasMore(false)
         
     }
 
