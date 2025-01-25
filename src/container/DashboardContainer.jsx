@@ -45,8 +45,8 @@ function DashboardContainer(props){
         return(
             <div id="dashboard" >
                 <div>
-                    <div style={{padding:"2em",textAlign:"center"}}>
-                    
+                    <div   style={{padding:"2em",textAlign:"center"}}>
+                        <h2 className="lora-bold text-2xl">Recommendations</h2>
                     </div>
                     <div className='max-w-[94vw] mx-auto sm:w-page '> 
                     <PageList items={itemsInView}/>
