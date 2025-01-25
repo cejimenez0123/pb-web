@@ -18,6 +18,7 @@ import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import Context from "../../context"
 import Enviroment from "../../core/Enviroment"
+import ExploreList from "../../components/collection/ExploreList"
 
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
@@ -93,14 +94,17 @@ export default function CollectionContainer(props){
     
     const getMore=()=>{
     for(let i = 0;i<collections.length;i+=1){
-        let stories= collections[i].storyIdList.map(sTc=>sTc.story)
+        if(collections[i]&&collections[i].storyIdList){
+            let stories= collections[i].storyIdList.map(sTc=>sTc.story)
 
-dispatch(appendToPagesInView({pages:stories}))
+            dispatch(appendToPagesInView({pages:stories}))
+        }
+      
         }
         if((currentProfile && collection && currentProfile.id==collection.profileId)||canUserAdd||canUserEdit){
             getRecommendations()
         }
-
+            setHasMore(false)
     }
 
  
@@ -173,9 +177,9 @@ if(currentProfile){
     const getCol=()=>{
         currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
     }
-    useEffect(()=>{
+    useLayoutEffect(()=>{
        getCol()
-    },[currentProfile])
+    },[currentProfile,location.pathname])
     useLayoutEffect(()=>{
         findRole()
         soUserCanSee()
@@ -282,7 +286,7 @@ setLoading(false)}
         token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
         }
     const findRole = ()=>{
-        if(collection && currentProfile){
+        if(collection && currentProfile&& collection.profileId==currentProfile.id){
             setRole(new Role("owner",currentProfile,collection,RoleType.editor,new Date()))
             return
         
@@ -408,11 +412,8 @@ if(collection&&canUserSee&&!loading){
 
         <PageList  isGrid={false} hasMore={hasMore} getMore={getMore}  forFeedback={collection&&collection.type=="feedback"}/>
         </div>
-    
-            <div className="my-12 px-4 text-center">
-               <h6 className="lora-bold text-emerald-800 mx-auto  w-fit text-3xl my-8">Explore</h6>
-            {colList()}
-         </div>
+    <ExploreList items={recommendedCols}/>
+         
          </div>
       
     </>)

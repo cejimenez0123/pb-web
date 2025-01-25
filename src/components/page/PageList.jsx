@@ -38,8 +38,8 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
         </div>}
         className={isGrid?"":"w-fit"}
 
-        endMessage={<div className="md:min-h-page w-full">
-            <h1 className="mx-auto my-auto text-emerald-600 py-2 lora-medium  text-center mx-auto w-12">Fin</h1>
+        endMessage={<div className="min-h-72 flex w-full">
+            <h2 className="mx-auto my-auto text-xl  text-emerald-600 py-2 lora-medium  text-center mx-auto w-12">Sharing you work!<br/> Encourages others to share!<br/>This is what we have now!<br/>Check in later</h2>
         </div>}
         >
 <div className={`max-w-[96vw] mx-auto ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>

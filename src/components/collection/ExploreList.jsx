@@ -1,5 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component"
-
+import BookListItem from "../BookListItem"
 export default function ExploreList({items}){
     return  <div className="my-12 px-4 text-center">
     <h6 className="lora-bold text-emerald-800 mx-auto  w-fit text-3xl my-8">Explore</h6>
@@ -11,13 +11,18 @@ export default function ExploreList({items}){
             </div>
         }
         className="flex max-v-[96vw] mx-auto flex-row"
-        endMessage={
-            <div className="py-12">
-                <h6 className="lora-medium">Fin</h6>
-            </div>
-        }> 
+        endMessage={<div className='flex min-w-72 mont-medium'>
+        <span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '>
+            <h6 className=''>
+                Join the community. <br/>Apply to join today.
+                </h6><h6>Share your own work.</h6>
+                <h6> This is what we have for now.
+                    <br/>
+                    Check in later
+                </h6>
+                </span></div>}> 
     
-            {item.map(item=><BookListItem book={item}/>)}
+            {items.map((item,i)=><BookListItem key={item.id+i} book={item}/>)}
         </InfiniteScroll>
 </div>
 }

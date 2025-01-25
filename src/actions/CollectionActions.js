@@ -43,19 +43,39 @@ return {pages:data.pages}
       
     }
 )
+
 const getRecommendedCollections = createAsyncThunk(
     'collections/recommendedCollections',
     async (params,thunkApi) => {
     
         try{
        if(params.collection){
-          const {collections}= await collectionRepo.recommendedCollections({colId:params.collection.id})
+          const {collections}= await collectionRepo.recommendedColCollections({colId:params.collection.id})
           return {collections:collections}
         }else{
             return{
                 error: new Error(`getRecommendedCollections  No Collection`)
             }
        }
+
+}catch (error) {
+    return{
+        error: new Error(`getRecommendedCollections ${error.message}`)
+    }
+}
+      
+    }
+)
+const getRecommendedCollectionsProfile = createAsyncThunk(
+    'collections/recommendedCollections',
+    async (params,thunkApi) => {
+    
+        try{
+
+          const {collections}= await collectionRepo.recommendations()
+          return {collections:collections}
+    
+     
 
 }catch (error) {
     return{
@@ -280,5 +300,6 @@ export {
     patchCollectionRoles,
     clearCollections,
     getRecommendedCollections,
-    getRecommendedCollectionStory
+    getRecommendedCollectionStory,
+    getRecommendedCollectionsProfile
 }
