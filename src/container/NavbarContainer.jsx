@@ -171,18 +171,18 @@ function NavbarContainer({profile}){
              <li    onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
-          handleClose()
+     
           dispatch(setHtmlContent(""))
           navigate(Paths.editor.image())}}><a>     <ImageIcon className='text-emerald-800'/></a></li>
              <li><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
-    handleClose()
+
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}}>
     <LinkIcon className='text-emerald-800'/></a></li>
            <li  onClick={()=>{ 
-                 handleClose()
+             
                  setOpenDialog(true)
                  
          } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
@@ -229,7 +229,7 @@ function NavbarContainer({profile}){
         dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
         title:"",commentable:true
       })).then(res=>checkResult(res,data=>{
-          handleClose()
+      
           dispatch(setPageInView({page:data.story}))
           dispatch(setEditingPage({page:data.story}))
           navigate(Paths.editPage.createRoute(data.story.id))
@@ -265,18 +265,18 @@ function NavbarContainer({profile}){
              <li    onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
-          handleClose()
+    
           dispatch(setHtmlContent(""))
           navigate(Paths.editor.image())}}><a className='mx-auto'>     <ImageIcon className='text-emerald-800'/></a></li>
              <li><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
-    handleClose()
+
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}} className='mx-auto'>
     <LinkIcon className='text-emerald-800'/></a></li>
            <li  onClick={()=>{ 
-                 handleClose()
+
                  setOpenDialog(true)
                  
          } }><a className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)

@@ -21,7 +21,7 @@ const LoggedRoute = ({ loggedOut, children }) => {
       }
     }
 
-  },[currentProfile,location.pathname])
+  },[currentProfile])
   useEffect(()=>{
       setFormerPage(location.pathname)
   },[location.pathname])

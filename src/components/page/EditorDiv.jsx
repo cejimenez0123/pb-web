@@ -28,9 +28,9 @@ import { useDispatch } from "react-redux"
           }
         },[page])
     
-
-        if(!page){
-          if(last){
+          let types = [PageType.link,PageType.picture,PageType.text]
+    
+          if(types.includes(last)){
          
           switch(last){
             case PageType.picture:{
@@ -58,7 +58,7 @@ import { useDispatch } from "react-redux"
             
             }
         }
-        }}
+        }else if(page){
 
       switch(page.type){
               case PageType.picture:{
@@ -89,5 +89,7 @@ import { useDispatch } from "react-redux"
               }
           }
      
-      
+        }else{
+          return<div>Loading</div>
+        }
     }
