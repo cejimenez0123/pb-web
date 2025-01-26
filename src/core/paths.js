@@ -49,6 +49,7 @@ const Paths ={
     about:()=>{return `/`},
     profile:{route:()=>{return `/profile/:id`},
             createRoute:(id)=>{return `/profile/${id}`}},
-    myProfile:()=>{return `/profile/home`}
+    myProfile:()=>{return `/profile/home`},
+    notifications:()=>{return"/profile/alert"}
 }
 export default Paths

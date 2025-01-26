@@ -40,6 +40,7 @@ import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
 import ResetPasswordContainer from './container/auth/ResetPassword.jsx';
 import { useSearchParams } from 'react-router-dom';
 import Alert from './components/Alert.jsx';
+import NotificationContainer from './container/profile/NotificationContainer.jsx';
 function App(props) {
 
   const dispatch = useDispatch()
@@ -119,6 +120,8 @@ function App(props) {
                           /></PrivateRoute>
                         }
             />
+            <Route path={Paths.notifications()}
+            element={<PrivateRoute><NotificationContainer/></PrivateRoute>}/>
           <Route path={Paths.editor.image()}
               element={
                 <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><EditorContainer/></PrivateRoute>}/>

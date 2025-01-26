@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import storyRepo from "../data/storyRepo";
 import { client } from "../core/di";
 import { PageType } from "../core/constants";
+import hashtagRepo from "../data/hashtagRepo";
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
   try{
     let token = localStorage.getItem("token")
@@ -67,7 +68,13 @@ const getMyStories= createAsyncThunk(
     async ({profile,draft},thunkApi) => {
       try{
       let data = await storyRepo.getMyStories({profileId:profile.id,draft})
-
+      const uploadAlgolia=async ()=>{
+        let data = await hashtagRepo.all()
+        console.log(data)
+       
+    
+    }
+    uploadAlgolia()
     return {
       pageList:data.stories
     }

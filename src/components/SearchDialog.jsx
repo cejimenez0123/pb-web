@@ -88,7 +88,7 @@ export default function SearchDialog(props){
         key={i}
         className="py-3 border-2 px-4 my-2 w-[94%] mx-auto border-emerald-200 rounded-full"
         onClick={()=>handleOnClick(content)}>
-         {content.title?content.title:content.username}
+         {content.title?content.title:content.username?content.username:content.name}
         </div>)
    
            

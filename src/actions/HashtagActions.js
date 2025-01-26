@@ -18,7 +18,7 @@ const createHashtag = createAsyncThunk("hashtag/createHashtag",
      let data =  await hashtagRepo.create({name,profileId})
     const {hashtag}=data
      if(hashtag){
-        client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:hashtag.name},{createIfNotExists:true}).wait()
+        client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:name},{createIfNotExists:true}).wait()
     
         return {hashtag:data.hashtag
         } 
@@ -69,7 +69,7 @@ async ({name,storyId,profile},thunkApi) => {
 
 const {hashtag}=data
       if(hashtag){
-             client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:hashtag.name},{createIfNotExists:true}).wait()
+             client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:name},{createIfNotExists:true}).wait()
              return {
                 hashtag:data.hashtag
                 }
@@ -92,7 +92,7 @@ async ({name,colId,profile},thunkApi) => {
       if(data.hashtag){
         const {hashtag}=data
         if(hashtag.id){
-            client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:hashtag.name},{createIfNotExists:true}).wait()
+            client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:name},{createIfNotExists:true}).wait()
          }
         return {
         hashtag:data.hashtag
@@ -180,6 +180,8 @@ const unpackHashtagCommentDoc = (doc)=>{
                                     created)
     return hashtag
 }
+
+
 export {unpackHashtagDoc,
         createHashtag,
         createHashtagComment,
@@ -196,3 +198,4 @@ export {unpackHashtagDoc,
         deleteHashtagCollection,
         createHashtagCollection
 }
+

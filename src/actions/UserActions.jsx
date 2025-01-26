@@ -124,7 +124,7 @@ const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
   indexName: 'collection',
   query: query,
   
-}];
+},{indexName:"hashtag",query:query}];
 
   let {results}= await client.multipleQueries(queries)
 

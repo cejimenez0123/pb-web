@@ -27,17 +27,19 @@ function DashboardContainer(props){
         dispatch(setPagesInView({pages:[]}))
         dispatch(setCollections({collections:[]}))
   
-            dispatch(fetchRecommendedStories())
+            dispatch(fetchRecommendedStories()).then(res=>{
+                setHasMore(false)
+            })
         
     
         
             dispatch(getRecommendedCollectionsProfile())
-            setHasMore(false)
+           
         
     }
 
 useEffect(()=>{
-    console.log("Tocuh")
+    setHasMore(true)
 getContent()
    
 },[])

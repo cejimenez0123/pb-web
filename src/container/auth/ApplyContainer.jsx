@@ -308,7 +308,7 @@ return (
 
           <button
             type="submit"
-            className="mont-medium my-8 py-2 text-2xl text-emerald-800  mont-medium px-20  mx-auto rounded-full bg-gradient-to-r from-emerald-300 to-emerald-500 hover:bg-green-400 font-bold border-none shadow-sm"
+            className="mont-medium my-8 py-4 text-2xl text-emerald-800  mont-medium px-20  mx-auto rounded-full bg-gradient-to-r from-emerald-300 to-emerald-500 hover:bg-green-400 font-bold border-none shadow-sm"
           >
             Apply
           </button>
