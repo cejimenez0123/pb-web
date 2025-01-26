@@ -33,10 +33,10 @@ const logIn = createAsyncThunk(
         
       const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
         const {token}=authData
-      
         localStorage.setItem("token",token)
         const profileRes = await profileRepo.getMyProfiles({token:token})
-        const profile = profileRes.profile
+        console.log(profileRes)
+        const profile = profileRes.profiles[0]
      
    
         return{
@@ -48,10 +48,11 @@ const logIn = createAsyncThunk(
   try{
 
         const authData = await authRepo.startSession({uId:null,email:email,password})
-
+        console.log(authData)
         const {token}=authData
         localStorage.setItem("token",token)
         const profileRes = await profileRepo.getMyProfiles({token:authData.token})
+        console.log(profileRes)
         const profile = profileRes.profile
         
         return{
@@ -196,7 +197,7 @@ async (params,thunkApi) => {
     let data = await profileRepo.getMyProfiles({token:token})
 
     return {
-    profile: data.profile
+    profile: data.profiles[0]
    } 
   }else{
     throw new Error("No Token")
