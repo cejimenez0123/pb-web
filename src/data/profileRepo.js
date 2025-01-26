@@ -29,7 +29,18 @@ class ProfileRepo {
 
         return res.data
     }
+    async notifications({token,profile}){
+    
 
+const params = new URLSearchParams({profileId:profile.id})
+
+        let res = await axios.get(this.url+"/"+profile.id+"/alert",{headers:{
+            Authorization:"Bearer "+token
+        }})
+        console.log(res)
+     return res.data
+
+    }
     async register({uId,token,password,username,profilePicture,selfStatement,privacy}){
 
        const res = await axios.post(Enviroment.url+"/auth/register",{uId,token,password,username,
@@ -37,7 +48,7 @@ class ProfileRepo {
        },{headers:{
         Authorization:"Bearer "+token
        }}) 
-       console.log(res.data)
+
        return res.data
     
     }

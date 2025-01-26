@@ -30,7 +30,7 @@ const getRecommendedCollectionStory = createAsyncThunk(
     'collections/recommendatedCollectionStory',
     async (params,thunkApi) => {
     
-   console.log("params",params)
+   
         try{
            let data = await  collectionRepo.recommendedStories({colId:params.collection.id})
 

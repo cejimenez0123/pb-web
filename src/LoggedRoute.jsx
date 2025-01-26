@@ -15,7 +15,12 @@ const LoggedRoute = ({ loggedOut, children }) => {
    
     if(currentProfile){     
       if(formerPage){
-        navigate(formerPage)
+        if(formerPage==Paths.login()){
+          navigate(Paths.myProfile())
+        }else{
+          navigate(formerPage)
+        }
+    
       }else{
         navigate(Paths.myProfile())
       }

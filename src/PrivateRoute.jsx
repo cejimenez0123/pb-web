@@ -11,37 +11,52 @@ const PrivateRoute = ({loggedIn, children }) => {
     const [pending,setPending]=useState(true)
     const location = useLocation();
 
-    const [formerPage,setFormerPage]=useState("")
+    const [formerPage,setFormerPage]=useState(null)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    useLayoutEffect(() => {
-      const token = localStorage.getItem("token")
-      
-    if(token){
-      if(pending){
-        navigate(formerPage)
+    useLayoutEffect(()=>{
+      if(currentProfile&&currentProfile.id){
+        setPending(false)
       }
-     
+    },[currentProfile])
+    useLayoutEffect(() => {
+      // const token = localStorage.getItem("token")
+console.log(formerPage)
+    if(currentProfile){
+      setPending(false)
+        if(formerPage&&formerPage!=Paths.login()){
+          navigate(formerPage)
+        }else{
+          navigate(Paths.myProfile())
+        }
+    
     }else{
+      setPending(false)
       navigate(Paths.login())
      
     }
     }, [currentProfile]);
     useEffect(()=>{
+     if(location.pathname){
+      console.log(location.pathname)
       setFormerPage(location.pathname)
+     }
+
     },[location.pathname])
     useLayoutEffect(()=>{
       if(!currentProfile){
-
+        setPending(true)
         dispatch(getCurrentProfile()).then(res=>{
           checkResult(res,payload=>{
             if(payload.error){
               setPending(false)
-              if(formerPage){
-                navigate(formerPage)
-              }else{
+              
                 navigate(Paths.login())
-              }
+            
+            }
+            if(formerPage){
+              setPending(false)
+              navigate(formerPage)
             }
        
           },err=>{
@@ -58,11 +73,7 @@ const PrivateRoute = ({loggedIn, children }) => {
         setPending(false)
       }
     },[])
-    useLayoutEffect(()=>{
-      if(currentProfile&&currentProfile.id){
-        setPending(false)
-      }
-    },[currentProfile])
+   
     if(pending){
       return <div style={{color:"white"}}>Loading...</div>
     }

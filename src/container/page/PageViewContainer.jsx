@@ -1,6 +1,6 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {  useState ,useLayoutEffect} from "react";
+import {  useState ,useLayoutEffect, useEffect} from "react";
 import "../../styles/PageView.css"
 import { fetchCommentsOfPage } from "../../actions/PageActions";
 import PageViewItem from "../../components/page/PageViewItem";
@@ -11,12 +11,14 @@ import CommentThread from "../../components/comment/CommentThread";
 import { postStoryHistory } from "../../actions/HistoryActions";
 import { getProfileHashtagCommentUse } from "../../actions/HashtagActions";
 export default function PageViewContainer(props){
-
+    const location = useLocation()
     const page = useSelector(state=>state.pages.pageInView)
     const pathParams = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
+    const [canUserSee,setCanUserSee]=useState(false)
+    const [canUserEdit,setCanUserEdit]=useState(false)
     const loading = useSelector(state=>state.pages.loading)
     const comments = useSelector(state=>state.comments.comments)
     const [rootComments,setRootComments]=useState([])
@@ -33,16 +35,29 @@ export default function PageViewContainer(props){
            
         }))
         dispatch(fetchCommentsOfPage(pathParams))
-    },[currentProfile])
+    },[location.pathname])
     useLayoutEffect(()=>{
         setRootComments(comments?comments.filter(com=>com.parentId==null):[])
      },[comments])
 
 
-  
-
-    const pageDiv = ()=>{
+     const soCanUserSee=()=>{
         if(page){
+            if(!page.isPrivate||(currentProfile && page && page.authorId==currentProfile.id)){
+                setCanUserSee(true)
+                return
+            }
+            if(page.betaReaders){
+                console.log(page.betaReaders)
+                return
+            }
+        }
+     }
+    useEffect(()=>{
+        soCanUserSee()
+    },[currentProfile,page])
+    const pageDiv = ()=>{
+        if(canUserSee){
             return(<PageViewItem page={page} currentProfile={currentProfile} />)
         }else{
             return(<div className="empty"><h6>This page doesn't exist</h6></div>)

@@ -20,19 +20,19 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
       })
-if(pagesInView && pagesInView.length){
+// if(pagesInView && pagesInView.length){
   
   
         return(<div 
         >
              <ErrorBoundary fallback={<div><h1 className="text-emerald-800">Error</h1></div>}>
            <InfiniteScroll
-        dataLength={pagesInView.length}
+        dataLength={pagesInView.length?pagesInView.length:0}
         next={getMore}
         scrollThreshold={1}
         hasMore={more}
-        loader={<div className=" flex p-12">
-            <img className="mx-auto my-auto max-h-24 max-w-24" src={loadingGif}/>
+        loader={<div className=" flex ">
+            <img className="mx-auto my-auto w-[4em] h-[4em] " src={loadingGif}/>
         </div>}
         className={isGrid?"":"w-fit"}
 
@@ -43,7 +43,7 @@ if(pagesInView && pagesInView.length){
 <div className={`max-w-[96vw] mx-auto ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>
 
 
-          {pagesInView.map((page,i)=>{
+          {pagesInView.length?pagesInView.map((page,i)=>{
             if(page==Enviroment.blankPage&&i==0){
                 return(<div className="mx-auto text-emerald-800 text-xl py-12 lora-medium text-center">
                    <p> Refer your local friends for local feedback</p> <p>or</p><p> refer others so there's more to read</p>
@@ -70,13 +70,12 @@ if(pagesInView && pagesInView.length){
             }else{
                 return null
             }
-            }})}
+            }}):null}
             </div>
         </InfiniteScroll> 
         </ErrorBoundary>
         </div>)
 
-        }
-
+        
 }
 export default PageList

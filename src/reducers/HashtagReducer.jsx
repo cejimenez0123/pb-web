@@ -21,7 +21,10 @@ builder
     }).addCase(getHashtags.rejected,(state,{payload})=>{
         state.error = payload.error  
     }).addCase(createHashtag.fulfilled,(state,{payload})=>{
-        state.hashtags = [...state.hashtags,payload.hashtag]
+        if(payload&&payload.hashtag){
+            state.hashtags = [...state.hashtags,payload.hashtag]
+        }
+       
     }).addCase(createHashtag.rejected,(state,{payload})=>{
         state.error = payload.error  
     }).addCase(createHashtagComment.fulfilled,(state,{payload})=>{
