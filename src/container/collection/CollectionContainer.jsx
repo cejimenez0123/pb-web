@@ -44,7 +44,10 @@ export default function CollectionContainer(props){
 
     const getRecommendations =()=>{
         if(collection && collection.id){
-          
+          collection.childCollections.forEach((col)=>{
+            let stories = col.childCollection.storyIdList.map(stc=>stc.story)
+            appendToPagesInView({pages:stories})
+          })
         if(collections.length>0){
             for(let i = 0;i<collections.length;i+=1){
           if(collection[i] && collection[i].id){ 
@@ -196,16 +199,20 @@ if(currentProfile){
         dispatch(setPagesInView({pages:[]}))
         localStorage.getItem("token")?dispatch(fetchCollectionProtected(params)).then(res=>{
             checkResult(res,payload=>{
+             
+                dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
                 dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
-                console.log("!2",payload)
+
                 findRole()
             },err=>{
 
             })
         }):dispatch(fetchCollection(params).then(res=>{
             checkResult(res,payload=>{
+             
+                dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
                 dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
-               
+               findRole()
            
             },err=>{
 
@@ -390,13 +397,13 @@ const bookList=()=>{
     <div>
         <InfiniteScroll
         dataLength={collections.length}
-        className="flex flex-row py-8"
+        className="flex flex-row justify-center py-8"
         next={()=>{}}
         hasMore={false} // Replace with a condition based on your data source
         loader={<p>Loading...</p>}
         endMessage={
-            <div className="text-emerald-800 p-5">
-            <p className="mx-auto lora-medium">Fin</p>
+            <div className="text-emerald-800 text-center p-5">
+            <h6 className="mx-auto text-sm  lora-medium">That's it for now. <br/>Check in later for more</h6>
             </div>
         }
         >

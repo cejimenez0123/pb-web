@@ -202,7 +202,7 @@ import Enviroment from "../core/Enviroment";
         const res = await axios.get(this.url+"/"+colId+"/story/recommendations",{headers:{
          "Authorization":"Bearer "+localStorage.getItem("token")
         }})
-        console.log(res.data)
+   
         return res.data
     }
     async fetchSubCollectionsPublic({id}){
