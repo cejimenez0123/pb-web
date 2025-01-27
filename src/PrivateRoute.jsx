@@ -14,68 +14,46 @@ const PrivateRoute = ({loggedIn, children }) => {
     const [formerPage,setFormerPage]=useState(null)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    useLayoutEffect(()=>{
-      if(currentProfile&&currentProfile.id){
-        setPending(false)
-      }
-    },[currentProfile])
+   
     useLayoutEffect(() => {
-      // const token = localStorage.getItem("token")
-console.log(formerPage)
-    if(currentProfile){
-      setPending(false)
-        if(formerPage&&formerPage!=Paths.login()){
-          navigate(formerPage)
-        }else{
-          navigate(Paths.myProfile())
-        }
-    
+    if(currentProfile&&currentProfile.id){
+        setPending(false)
     }else{
-      setPending(false)
-      navigate(Paths.login())
-     
+      if(!pending){
+        navigate(Paths.login())
+      }
+    
     }
     }, [currentProfile]);
     useEffect(()=>{
      if(location.pathname){
-      console.log(location.pathname)
       setFormerPage(location.pathname)
      }
 
     },[location.pathname])
     useLayoutEffect(()=>{
-      if(!currentProfile){
-        setPending(true)
+      setPending(true)
+  
+      
         dispatch(getCurrentProfile()).then(res=>{
           checkResult(res,payload=>{
-            if(payload.error){
-              setPending(false)
-              
-                navigate(Paths.login())
-            
-            }
-            if(formerPage){
-              setPending(false)
-              navigate(formerPage)
-            }
-       
-          },err=>{
+    
             setPending(false)
+          },err=>{
+          setPending(false)
             if(formerPage){
               navigate(formerPage)
             }else{
               navigate(Paths.login())
             }
-           
+          
           })
         })
-      }else{
-        setPending(false)
-      }
+    
     },[])
    
     if(pending){
-      return <div style={{color:"white"}}>Loading...</div>
+      return <div ><h1 className='text-emerald-800'>Loading...</h1></div>
     }
 
       

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import Paths from "../../core/paths"
 import { deleteCollection, patchCollectionContent } from "../../actions/CollectionActions"
 import deleteIcon from "../../images/icons/delete.svg"
+import arrowDown from "../../images/icons/arrow_down.svg"
 import { deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollection, fetchCollectionProtected, getSubCollectionsProtected } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import view from "../../images/icons/view.svg"
@@ -20,6 +21,7 @@ import Role from "../../domain/models/role"
 import Alert from "../../components/Alert"
 import Context from "../../context"
 import HashtagForm from "../../components/hashtag/HashtagForm"
+import { current } from "@reduxjs/toolkit"
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{
@@ -45,6 +47,7 @@ export default function EditCollectionContainer(props){
     const [openDelete,setOpenDelete]=useState(false)
     const [followersAre,setFollowersAre]=useState(RoleType.commenter)
     const currentProfile = useSelector(state=>state.users.currentProfile)
+    const [canUserEdit,setCanUserEdit]=useState(false)
     const {setError,setSuccess}=useContext(Context)
    
     const stcList = storyToCols.map(stc=>{
@@ -78,15 +81,18 @@ export default function EditCollectionContainer(props){
     useLayoutEffect(()=>{
 
         if(currentProfile){
+          soCanUserEdit()
             dispatch(getCollectionStoriesProtected(params))
             dispatch(getSubCollectionsProtected(params))
+        }else{
+          setCanUserEdit(false)
         }
 
                    
     },[colInView])
             
         useEffect(()=>{
-console.log(storyToCols)
+
             let stcList = storyToCols.map(stc=>{
                            
                 return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
@@ -99,7 +105,14 @@ console.log(storyToCols)
                 setNewCollections(newList)
             
         },[storyToCols,colToCols])
-    
+    const soCanUserEdit=()=>{
+      if(colInView && currentProfile && colInView.profileId==currentProfile.id){
+     
+        setCanUserEdit(true)
+        return
+      }
+      
+    }
     const handleDeleteCollection = ()=>{
      
 
@@ -122,6 +135,11 @@ console.log(storyToCols)
             setError(err.message)
         })
     }
+    useEffect(()=>{
+      if(isOpen){
+        setFollowersAre(RoleType.writer)
+      }
+    },[isOpen])
     const handleSetOpen=(open)=>{
         setIsOpen(open)
         if(open){
@@ -141,9 +159,9 @@ console.log(storyToCols)
   onChange={(e)=>{
     setTitle(e.target.value)
 }}
-    type="text" className="bg-transparent w-fit text-emerald-800  border-1 border-emerald-200  rounded-full  px-2 py-2  text-ellipsis w-full mb-4  lora-medium text-2xl" value={title}/>
+    type="text" className="bg-transparent w-fit text-emerald-800 border-1 border-emerald-200  rounded-full  px-2 py-2  text-ellipsis w-full mb-4  lora-medium text-2xl" value={title}/>
        </div>
-       <div className="">
+       <div className=" md:max-w-[27em] ">
         <textarea onChange={e=>setPurpose(e.target.value)}className="  textarea  mb-4 text-[0.8rem]  text-emerald-800 w-[92vw]  border-emerald-600 bg-transparent md:h-[8em] max-w-[96vw] md:w-[100%] md:w-92 md:max-w-96 rounded-lg p-2" value={purpose}/>
         
         <HashtagForm item={colInView}/>
@@ -154,8 +172,8 @@ console.log(storyToCols)
         <div className="">
         <div className=" mt-8 w-[100%]   justify-evenly md:ml-12  gap-2 grid  grid-cols-2  ">
 
-   {currentProfile&& (colInView.isOpenCollaboration || colInView.profileId==currentProfile.id)?
-   <span className="bg-emerald-800 flex  mx-auto mont-medium text-white w-[8rem] h-[4rem] text-center  rounded-full"
+   {canUserEdit?
+   <span className="bg-emerald-800 flex  mx-auto mont-medium text-white w-[9rem] h-[4rem] text-center  rounded-full"
    
    onClick={updateCollection}
    
@@ -171,7 +189,7 @@ console.log(storyToCols)
    onClick={()=>navigate(Paths.collection.createRoute(colInView.id))}
     className=" bg-emerald-800 rounded-full mx-auto  max-h-10 p-2 " src={view}/>
    </div>
-    {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-green-800 mont-medium border-4 min-w-36 text-center  flex  bg-transparent m text-[1rem]  mx-auto text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[0.8rem] ">Collection is Open Collab</h3> </div>:
+    {isOpen?<div  onClick={()=>setIsOpen(false)} className={"border-emerald-500 mont-medium border-4 min-w-36 text-center  flex  bg-transparent m text-[1rem]  mx-auto text-emerald-800 w-[9rem] h-[4rem] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[0.8rem] ">Collection is Open Collab</h3> </div>:
     <div onClick={()=>setIsOpen(true)} className={"border-emerald-400 border-2 min-w-36 mont-medium flex text-center bg-transparent mx-auto   text-emerald-800 w-[10em] h-[5em] rounded-full"}><h3 className="text-[0.8rem] w-[6em] mx-auto my-auto lg:text-[0.8rem]  ">Collection is Close Collab</h3></div>}
     
  
@@ -179,23 +197,24 @@ console.log(storyToCols)
    
     {isPrivate?<div
        className={`
-        " border-2 flex border-emerald-300 w-[8rem] h-[4rem]  mont-medium bg-transparent text-emerald-800  mx-auto rounded-full`}
+        " border-2 flex border-emerald-300 w-[9rem] h-[4rem] mont-medium bg-transparent text-emerald-800  mx-auto rounded-full`}
     ><a className="mx-auto text-emerald-800 my-auto">
         Is Private
     </a></div>:<div
     
     className={`
-        " border-2 border-emerald-300 border-4 flex mx-auto border-success  m-1 w-[8rem] h-[4rem]  bg-transparent text-emerald-800  rounded-full`}
+        " border-2 border-emerald-300 border-4 flex mx-auto border-success  m-1 w-[9rem] h-[4rem]  bg-transparent text-emerald-800  rounded-full`}
    ><a className="mx-auto my-auto mont-medium text-emerald-800">Is Public</a></div>}
   
    </div>
    <div className="mx-auto">
     <div >
     <div className="dropdown">
-  <div tabIndex={0} role="button"  className="  w-[8rem] h-[4rem] border-2 border-emerald-600   flex rounded-full"> <span className=" text-emerald-700  text-center   mx-auto my-auto  mont-medium  ">Followers are<br/> <span   className="text-emerald-700 ">{followersAre}s</span>   </span>
+  <div tabIndex={0} role="button"  className="  w-[9rem] h-[4rem] border-2 border-emerald-600  text-center flex rounded-full"> <span className=" text-emerald-700  text-center   mx-auto my-auto  mont-medium  ">
+    Followers are<br/> <span   className="text-emerald-700 mx-auto flex-row flex ">{followersAre}s<img src={arrowDown}/></span>   </span>
  
 </div>
-  <ul tabIndex={0} className="dropdown-content menu bg-white text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
+  <ul tabIndex={0} className={`dropdown-content menu bg-white text-emerald-800 rounded-box z-[1] w-52 p-2 shadow ${isOpen?"hidden":""}`}>
   <li onClick={()=>{setFollowersAre(RoleType.commenter)}}><a>{RoleType.commenter}</a></li>
         <li
         onClick={()=>{setFollowersAre(RoleType.reader)}}
@@ -213,7 +232,7 @@ console.log(storyToCols)
    
   
  
-    <a onClick={()=>setOpenAccess(true)}className="text-white  text-[0.8rem]  mx-auto flex w-[8rem] h-[4rem] rounded-full mont-medium bg-emerald-600"><span className="mx-auto my-auto">Manage Access</span></a>
+    <a onClick={()=>setOpenAccess(true)}className="text-white  text-[0.8rem]  mx-auto flex w-[9rem] h-[4rem] rounded-full mont-medium bg-emerald-600"><span className="mx-auto my-auto">Manage Access</span></a>
 
    <div>
 
@@ -270,10 +289,10 @@ const deleteSubCollection = (colId)=>{
     },4001)
     if(colInView){
         return(<div>
-            <Alert />
+      
      
             {collectionInfo()}
-    <div className="max-w-[96vw] md:w-page mx-auto">
+            {canUserEdit? <div className="max-w-[96vw] md:w-page mx-auto"><div >
                             <div role="tablist" className="tabs mt-8 max-w-[96vw] mb-2 lg:mb-48 lg::w-page mx-auto rounded-lg sm:mx-6 tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm [--tab-bg:transparent]  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-900 text-xl" aria-label="Stories" />
   <div role="tabpanel" className="tab-content w-[96vw] mx-auto pt-1  md:min-h-page border-emerald-600 md:w-page rounded-lg border-2">
@@ -281,8 +300,8 @@ const deleteSubCollection = (colId)=>{
   onDelete={deleteStory}/>}
 
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 max-w-[96vw] md:w-page [--tab-bg:transparent] border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
-  <div role="tabpanel" className="tab-content w-[96vw] pt-1 mx-auto  md:min-h-page border-emerald-600 md::w-page rounded-lg border-2">
+ <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 max-w-[96vw] md:w-page [--tab-bg:transparent] border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
+  <div role="tabpanel" className="tab-content w-[96vw] md:w-page pt-1 mx-auto  md:min-h-page border-emerald-600 md::w-page rounded-lg border-2">
      <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20 mx-4"><h6 className="text-emerald-800 py-24 text-center 
    m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:
    <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteSubCollection}/>}
@@ -290,6 +309,7 @@ const deleteSubCollection = (colId)=>{
   </div>
 </div>
 </div>
+</div>:loading?<div className="skeleton w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex"><h1 className="text-emerald-800 mx-auto my-auto">Private:Are you sure you're in the right place</h1></div>}
 <Dialog 
 fullScreen={isPhone}
 open={openAccess}

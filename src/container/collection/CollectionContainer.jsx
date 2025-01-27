@@ -13,12 +13,13 @@ import Role from "../../domain/models/role"
 import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions"
 import { RoleType } from "../../core/constants"
 import checkResult from "../../core/checkResult"
-import { appendToPagesInView, clearPagesInView } from "../../actions/PageActions"
+import { appendToPagesInView, clearPagesInView, setPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import Context from "../../context"
 import Enviroment from "../../core/Enviroment"
 import ExploreList from "../../components/collection/ExploreList"
+import { setCollections } from "../../actions/BookActions"
 
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
@@ -45,8 +46,9 @@ export default function CollectionContainer(props){
         if(collection && collection.id){
           
         if(collections.length>0){
-        for(let i = 0;i<collections.length;i+=1){
-          if(collection[i] && collection[i].id){  
+            for(let i = 0;i<collections.length;i+=1){
+          if(collection[i] && collection[i].id){ 
+
         dispatch(getRecommendedCollectionStory({collection:collection[i]})).then(res=>{
             checkResult(res,payload=>{
                 let stories = payload.pages
@@ -297,8 +299,8 @@ if(currentProfile){
        soUserCanEdit() 
     },[currentProfile,collection])
     const getContent= ()=>{
-        dispatch(clearCollections())
-        dispatch(clearPagesInView())
+        dispatch(setCollections({collections:[]}))
+        dispatch(setPagesInView({pages:[]}))
         let token=localStorage.getItem("token")
         token?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
     
@@ -329,7 +331,7 @@ if(currentProfile){
 
         findRole()
         getContent()
-    },[collection])
+    },[location.pathname,currentProfile])
 
    
     const CollectionInfo=({collection})=>{  
@@ -363,9 +365,7 @@ if(currentProfile){
    {canUserEdit?
    
    <img 
-   onClick={()=>{
-  
-    navigate(Paths.editCollection.createRoute(collection.id))}}
+   onClick={()=>navigate(Paths.editCollection.createRoute(collection.id))}
    className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}</div>:
 
 

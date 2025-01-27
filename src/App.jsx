@@ -38,7 +38,6 @@ import SignUpContainer from './container/auth/SignUpContainer.jsx';
 import { getHashtags, getProfileHashtagCommentUse } from './actions/HashtagActions.js';
 import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
 import ResetPasswordContainer from './container/auth/ResetPassword.jsx';
-import { useSearchParams } from 'react-router-dom';
 import Alert from './components/Alert.jsx';
 import NotificationContainer from './container/profile/NotificationContainer.jsx';
 function App(props) {
