@@ -79,10 +79,6 @@ state.loading = true
     }
 }).addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
-}).addCase(getRecommendedCollectionsProfile.fulfilled,(state,{payload})=>{
-    if(payload && payload.collections && payload.collections.length){
-        state.collections = payload.collections
-    }
 })
 .addCase(addStoryListToCollection.pending,(state,{payload})=>{
    

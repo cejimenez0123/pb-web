@@ -1,10 +1,9 @@
 import { useContext, useEffect ,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {  useNavigate, useParams } from "react-router-dom"
-import { clearCollections, fetchCollection, fetchCollectionProtected, getRecommendedCollections, getRecommendedCollectionsProfile, getRecommendedCollectionStory, getSubCollectionsProtected, getSubCollectionsPublic } from "../../actions/CollectionActions"
+import { fetchCollection, fetchCollectionProtected, getRecommendedCollections, getRecommendedCollectionsProfile, getRecommendedCollectionStory } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import PageList from "../../components/page/PageList"
-import { getCollectionStoriesProtected, getCollectionStoriesPublic } from "../../actions/StoryActions"
 import edit from "../../images/icons/edit.svg"
 import Paths from "../../core/paths"
 import InfiniteScroll from "react-infinite-scroll-component"
@@ -20,6 +19,7 @@ import Context from "../../context"
 import Enviroment from "../../core/Enviroment"
 import ExploreList from "../../components/collection/ExploreList"
 import { setCollections } from "../../actions/BookActions"
+import { Checkroom } from "@mui/icons-material"
 
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
@@ -192,7 +192,25 @@ if(currentProfile){
     }
     }
     const getCol=()=>{
-        localStorage.getItem("token")?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
+        dispatch(setCollections({collections:[]}))
+        dispatch(setPagesInView({pages:[]}))
+        localStorage.getItem("token")?dispatch(fetchCollectionProtected(params)).then(res=>{
+            checkResult(res,payload=>{
+                dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
+                console.log("!2",payload)
+                findRole()
+            },err=>{
+
+            })
+        }):dispatch(fetchCollection(params).then(res=>{
+            checkResult(res,payload=>{
+                dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
+               
+           
+            },err=>{
+
+            })
+        }))
     }
     useLayoutEffect(()=>{
        getCol()
@@ -298,14 +316,7 @@ if(currentProfile){
        soUserCanAdd()   
        soUserCanEdit() 
     },[currentProfile,collection])
-    const getContent= ()=>{
-        dispatch(setCollections({collections:[]}))
-        dispatch(setPagesInView({pages:[]}))
-        let token=localStorage.getItem("token")
-        token?dispatch(getCollectionStoriesProtected(params)):dispatch(getCollectionStoriesPublic(params))
-    
-        token?dispatch(getSubCollectionsProtected(params)):dispatch(getSubCollectionsPublic(params))
-        }
+   
     const findRole = ()=>{
         if(collection && currentProfile&& collection.profileId==currentProfile.id){
             setRole(new Role("owner",currentProfile,collection,RoleType.editor,new Date()))
@@ -328,9 +339,9 @@ if(currentProfile){
   
    
     useLayoutEffect(()=>{
-
-        findRole()
-        getContent()
+        getCol()
+       
+     
     },[location.pathname,currentProfile])
 
    
