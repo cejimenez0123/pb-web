@@ -438,7 +438,7 @@ const bookList=()=>{
         hasMore={false} // Replace with a condition based on your data source
         loader={<p>Loading...</p>}
         endMessage={
-            <div className="text-emerald-800 text-center p-5">
+            <div className="text-emerald-800 min-w-36 text-center p-5">
             <h6 className="mx-auto text-sm  lora-medium">That's it for now. <br/>Check in later for more</h6>
             </div>
         }
