@@ -1,7 +1,7 @@
 import InfiniteScroll from "react-infinite-scroll-component"
 import BookListItem from "../BookListItem"
 export default function ExploreList({items}){
-    return  <div className="my-12 px-4 text-center">
+    return  <div className="my-12  text-center">
     <h6 className="lora-bold text-emerald-800 mx-auto  w-fit text-3xl my-8">Explore</h6>
  <InfiniteScroll dataLength={items.length}
             hasMore={false}

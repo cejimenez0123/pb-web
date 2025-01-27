@@ -14,32 +14,6 @@ import { db,auth,client} from "../core/di"
 import Contributors from "../domain/models/contributor"
 import collectionRepo from "../data/collectionRepo"
 
-const getPublicBooks = createAsyncThunk(
-    'books/getPublicBooks',
-    async (thunkApi) => {
-        let bookList = []
-   
-        try{
-    const snapshot = await getDocs(query(collection(db, "book"), where("privacy", "==", false)))
-
-          snapshot.docs.forEach(doc => {
-
-              const book = unpackBookDoc(doc)
-              bookList = [...bookList,book]
-            })
-    
-    return {
-  
-        bookList
-    }
-}catch (error) {
-    return{
-        error: new Error(`getPublicBooks ${error.message}`)
-    }
-}
-      
-    }
-)
 const setCollections = createAction("cols/setCollections", (params)=> {
 
   const {collections} = params
@@ -263,7 +237,7 @@ function unpackBookDoc(doc){
                         )
     return book
 }
-  export { setCollections, getPublicBooks,
+  export { setCollections, 
             getProfileBooks,
             fetchArrayOfBooksAppened,
             appendSaveRolesFoBook,

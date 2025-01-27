@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
-import {getPublicStories } from '../actions/PageActions'
+import {getPublicStories, setPageInView, setPagesInView } from '../actions/PageActions'
 import { getPublicBooks } from '../actions/CollectionActions'
 import { getPublicLibraries, setLibraryInView } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
@@ -17,6 +17,7 @@ import ReactGA from "react-ga4"
 import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
 import InfoTooltip from '../components/InfoTooltip'
+import { setCollections } from '../actions/BookActions'
 function DiscoveryContainer(props){
     
     useEffect(()=>{
@@ -162,7 +163,8 @@ className={`${
         }
     }
     const fetchContentItems = ()=>{
-    
+            dispatch(setPagesInView({pages:[]}))
+            dispatch(setCollections({collections:[]}))
             dispatch(getPublicStories())
             
             dispatch(getPublicBooks())  

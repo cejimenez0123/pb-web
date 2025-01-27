@@ -17,7 +17,6 @@ import SearchDialog from './components/SearchDialog';
 import {  getPublicLibraries } from './actions/LibraryActions';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import checkResult from './core/checkResult';
-import {  getPublicBooks } from './actions/BookActions';
 import {  getCurrentProfile,
           fetchHomeCollection,
           setSignedInTrue,
@@ -60,8 +59,8 @@ function App(props) {
   const fetchData = ()=>{
     const {currentProfile}=props
     if(currentProfile){
-      dispatch(getHashtags())
-      dispatch(getProfileHashtagCommentUse({profileId:currentProfile.id}))
+      // dispatch(getHashtags())
+      // dispatch(getProfileHashtagCommentUse({profileId:currentProfile.id}))
     }
  
   }
@@ -130,7 +129,7 @@ function App(props) {
                     <DiscoveryContainer 
                       getPublicLibraries={props.getPublicLibraries}
                       getPublicStories={props.getPublicStories} 
-                      getPublicBooks={props.getPublicBooks} 
+                      
                       pagesInView={props.pagesInView}
                       // fetchAllProfiles={props.fetchAllProfiles}
                     />
@@ -265,7 +264,7 @@ function App(props) {
 function mapDispatchToProps(dispatch){
   return{ 
     getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
-    getPublicBooks:()=>dispatch(getPublicBooks()),
+    
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicStories:()=>dispatch(getPublicStories()),
     fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),
