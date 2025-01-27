@@ -12,6 +12,10 @@ class HashtagRepo{
             let res = await axios.get(this.url+"/")
             return res.data
     }
+    async fetch({id}){
+        let res = await axios.get(this.url+"/"+id)
+        return res.data
+    }
     async create({name,profileId}){
        
    let res =    await axios.post(this.url,{
@@ -23,7 +27,7 @@ class HashtagRepo{
         })
         return res.data
     }
-    async fetch({storyId,profileId}){
+    async fetchStoryHashtag({storyId,profileId}){
      let res=  await axios.get(this.url+"/profile/"+profileId+"/story/"+storyId,{headers:{
             Authorization:"Bearer "+localStorage.getItem(this.token)
         }})

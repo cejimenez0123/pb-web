@@ -3,12 +3,12 @@ import { createSlice} from "@reduxjs/toolkit"
                 saveRoleToCollection
         ,addCollectionListToCollection,
         addStoryListToCollection,
-        getSubCollectionsProtected,
-        getSubCollectionsPublic,
+        // getSubCollectionsProtected,
+        // getSubCollectionsPublic,
         deleteCollectionFromCollection,
         deleteStoryFromCollection,
         clearCollections,
-        getRecommendedCollectionsProfile,
+        // getRecommendedCollectionsProfile,
       
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
@@ -68,16 +68,16 @@ state.loading = true
             state.collections = list
     }})
   
-.addCase(getSubCollectionsProtected.fulfilled,(state,{payload})=>{
-    state.collectionToCollectionsList = payload.list
-    state.collections = payload.list.map(item=>item.childCollection)
-}).addCase(getSubCollectionsPublic.fulfilled,(state,{payload})=>{
-    console.log(payload.list)
-    if(payload.list){
-    state.collectionToCollectionsList = payload.list
-    state.collections = payload.list.map(item=>item.childCollection)
-    }
-}).addCase(addCollectionListToCollection.pending,(state,{payload})=>{
+// .addCase(getSubCollectionsProtected.fulfilled,(state,{payload})=>{
+//     state.collectionToCollectionsList = payload.list
+//     state.collections = payload.list.map(item=>item.childCollection)
+// }).addCase(getSubCollectionsPublic.fulfilled,(state,{payload})=>{
+//     console.log(payload.list)
+//     if(payload.list){
+//     state.collectionToCollectionsList = payload.list
+//     state.collections = payload.list.map(item=>item.childCollection)
+//     }})
+.addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
 })
 .addCase(addStoryListToCollection.pending,(state,{payload})=>{

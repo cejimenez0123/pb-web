@@ -108,25 +108,14 @@ async ({hashId},thunkApi) => {
       return data
   
 })
-
-const getHashtagComments = createAsyncThunk("hashtag/getHashtagComment",async (params,thunkApi)=>{
-    const {comment}=params
-    let hashtagCommentList = []
-    try{
-     let ref = collection(db, HashtagComment.className)
-    const request = query(ref,where("comment","==",comment.id))
-    const snapshot = await getDocs(request)
-        snapshot.docs.forEach(doc => {
-            let hashtag = unpackHashtagCommentDoc(doc)
-            hashtagCommentList = [...hashtagCommentList,hashtag ]
-        })
-        return {
-            hashtagCommentList
-        }
-    }catch(err){
-        return {error: err}
-    }
+const fetchHashtag = createAsyncThunk("hashtag/fetchHashtag",async (params,thunkApi)=>{
+    const {id}=params
+   const data = await hashtagRepo.fetch({id})
+   return{
+    hashtag:data.hashtag
+   }
 })
+
 const clearHashComments = createAction("hashtags/clearHashComments")
 const clearHashPages = createAction("hashtags/clearHashPages")
 const fetchCollectionHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",async (params,thunkApi)=>{
@@ -188,7 +177,8 @@ export {unpackHashtagDoc,
         createHashtagPage,
         getHashtags,
         deleteHashtagStory,
-        getHashtagComments,
+        // getHashtagComments,
+        fetchHashtag,
         clearHashComments,
         clearHashPages,
         fetchCollectionHashtags,

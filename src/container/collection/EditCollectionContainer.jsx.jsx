@@ -5,10 +5,9 @@ import Paths from "../../core/paths"
 import { deleteCollection, patchCollectionContent } from "../../actions/CollectionActions"
 import deleteIcon from "../../images/icons/delete.svg"
 import arrowDown from "../../images/icons/arrow_down.svg"
-import { deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollection, fetchCollectionProtected, getSubCollectionsProtected } from "../../actions/CollectionActions"
+import { deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollection, fetchCollectionProtected,  } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import view from "../../images/icons/view.svg"
-import { getCollectionStoriesProtected } from "../../actions/StoryActions"
 import SortableList from "../../components/SortableList"
 import checkResult from "../../core/checkResult"
 import StoryToCollection from "../../domain/models/storyToColleciton"
@@ -22,6 +21,7 @@ import Alert from "../../components/Alert"
 import Context from "../../context"
 import HashtagForm from "../../components/hashtag/HashtagForm"
 import { current } from "@reduxjs/toolkit"
+import { setPagesInView } from "../../actions/PageActions"
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{
@@ -40,7 +40,8 @@ export default function EditCollectionContainer(props){
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
-    const loading = useSelector(state=>state.books.loading)
+      const [pending,setPending]=useState(true)
+    // const loading = useSelector(state=>state.books.loading)
     const storyToCols = useSelector(state=>state.pages.storyToCollectionList)
     const colToCols = useSelector(state=>state.books.collectionToCollectionsList)
     const [isOpen,setIsOpen]=useState(false)
@@ -49,16 +50,9 @@ export default function EditCollectionContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [canUserEdit,setCanUserEdit]=useState(false)
     const {setError,setSuccess}=useContext(Context)
-   
-    const stcList = storyToCols.map(stc=>{
-                    return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
-                })
-    const ctcList = colToCols.map(stc=>{
-                                    return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)})
-                        
-                
-    const [newPages,setNewPages]=useState(stcList)
-    const [newCollections,setNewCollections]=useState(ctcList)
+  
+    const [newPages,setNewPages]=useState([])
+    const [newCollections,setNewCollections]=useState([])
     const [title,setTitle]=useState("")
     const [purpose,setPurpose]=useState("")
     const [isPrivate,setIsPrivate]=useState(true)
@@ -68,7 +62,38 @@ export default function EditCollectionContainer(props){
     useLayoutEffect(()=>{
             currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
     },[params.id,currentProfile])
+    useLayoutEffect(()=>{
+soCanUserEdit()
+    },[colInView])
+    useLayoutEffect(()=>{
 
+        if(currentProfile){
+          if(colInView ){
+          if(colInView.storyIdList){
+            let stcList = colInView.storyIdList.map((stc,i)=>{
+                           let index = i
+                           if(stc.index){
+                            index= stc.index
+                           }
+              return new StoryToCollection(stc.id,index,stc.collection,stc.story,currentProfile)
+          })
+              setNewPages(stcList)
+        }
+        if(colInView.childCollections){
+              let newList = colInView.childCollections.map(stc=>{
+                  return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
+          })
+      
+              setNewCollections(newList)
+        }
+          }
+            
+        }else{
+          setCanUserEdit(false)
+        }
+
+                   
+    },[colInView,currentProfile])
     useEffect(()=>{
     if(colInView){
         setTitle(colInView.title)
@@ -78,33 +103,46 @@ export default function EditCollectionContainer(props){
         handleSetOpen(colInView.isOpenCollaboration) 
     }
     },[colInView])
-    useLayoutEffect(()=>{
+    // useLayoutEffect(()=>{
 
-        if(currentProfile){
-          soCanUserEdit()
-            dispatch(getCollectionStoriesProtected(params))
-            dispatch(getSubCollectionsProtected(params))
-        }else{
-          setCanUserEdit(false)
-        }
+    //     if(currentProfile){
+    //       soCanUserEdit()
+    //       if(colInView){
+          
+    //         let stcList = colInView.storyIdList.map(stc=>{
+                           
+    //           return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
+    //       })
+    //           setNewPages(stcList)
+    //           let newList = colInView.childCollections.map(stc=>{
+    //               return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
+    //       })
+      
+    //           setNewCollections(newList)
+
+    //       }
+            
+    //     }else{
+    //       setCanUserEdit(false)
+    //     }
 
                    
-    },[colInView])
+    // },[colInView])
             
-        useEffect(()=>{
+        // useEffect(()=>{
 
-            let stcList = storyToCols.map(stc=>{
+        //     let stcList = storyToCols.map(stc=>{
                            
-                return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
-            })
-                setNewPages(stcList)
-                let newList = colToCols.map(stc=>{
-                    return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
-            })
+        //         return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
+        //     })
+        //         setNewPages(stcList)
+        //         let newList = colToCols.map(stc=>{
+        //             return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
+        //     })
         
-                setNewCollections(newList)
+        //         setNewCollections(newList)
             
-        },[storyToCols,colToCols])
+        // },[storyToCols,colToCols])
     const soCanUserEdit=()=>{
       if(colInView && currentProfile && colInView.profileId==currentProfile.id){
      
@@ -270,7 +308,7 @@ const deleteSubCollection = (colId)=>{
     dispatch(deleteCollectionFromCollection({id:colInView.id,childCollectionId:colId.id}))
 }
     if(!colInView){
-        if(loading){
+        if(pending){
         return(<div className="skeleton w-96 bg-emerald-50 max-w-[96vw]  m-2 h-96"/>
        
         )
@@ -309,7 +347,7 @@ const deleteSubCollection = (colId)=>{
   </div>
 </div>
 </div>
-</div>:loading?<div className="skeleton w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex"><h1 className="text-emerald-800 mx-auto my-auto">Private:Are you sure you're in the right place</h1></div>}
+</div>:pending?<div className="skeleton w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex"><h1 className="text-emerald-800 mx-auto my-auto">Private:Are you sure you're in the right place</h1></div>}
 <Dialog 
 fullScreen={isPhone}
 open={openAccess}

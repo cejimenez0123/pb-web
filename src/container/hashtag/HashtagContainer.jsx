@@ -1,33 +1,71 @@
 import { useSelector,useDispatch} from 'react-redux'
-import DashboardItem from '../components/page/DashboardItem'
-import { useState,useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import DashboardItem from '../../components/page/DashboardItem'
+import { useState,useEffect, useLayoutEffect } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import "../styles/Discovery.css"
-import ErrorBoundary from '../ErrorBoundary'
-import {getPublicStories } from '../actions/PageActions'
-import { getPublicBooks } from '../actions/CollectionActions'
-import { getPublicLibraries, setLibraryInView } from '../actions/LibraryActions'
-import checkResult from '../core/checkResult'
+import ErrorBoundary from '../../ErrorBoundary'
+import checkResult from '../../core/checkResult'
 import { useMediaQuery } from "react-responsive"
-import BookListItem from '../components/BookListItem'
-import Paths from '../core/paths'
-import uuidv4 from '../core/uuidv4'
+import BookListItem from '../../components/BookListItem'
 import ReactGA from "react-ga4"
-import grid from "../images/grid.svg"
-import stream from "../images/stream.svg"
-import InfoTooltip from '../components/InfoTooltip'
-function DiscoveryContainer(props){
-    
+import grid from "../../images/grid.svg"
+import stream from "../../images/stream.svg"
+import InfoTooltip from '../../components/InfoTooltip'
+import loadingGif from "../../images/loading.gif"
+import { fetchHashtag } from '../../actions/HashtagActions'
+import { setCollections } from '../../actions/BookActions'
+import { appendToPagesInView, setPagesInView } from '../../actions/PageActions'
+export default function HashtagContainer(props){
+    const location = useLocation()
+    const params = useParams()
+    const [hash,setHashtag]=useState(null)
+    const [hasMoreLibraries,setHasMoreLibraries]=useState(true)
+    const [hasMoreBooks,setHasMoreBooks]=useState(true)
+    const [hasMorePages,setHasMorePages]=useState(true)
     useEffect(()=>{
-        ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+        ReactGA.send({ hitType: "pageview", page: location.pathname+window.location.search, title: "About Page" })
     },[])
 
-    const [errorMessage,setErrorMessage]=useState(null)
+  
     const [isGrid,setIsGrid] = useState(false)
     const isNotPhone = useMediaQuery({
         query: '(min-width: 999px)'
       })
+      const addPages=(cols)=>{
+        for(let i=0;i<cols.length;i++){
+          const stories = cols[i].collection.storyIdList.map(sTc=>sTc.story)
+          dispatch(appendToPagesInView({pages:stories}))
+        }
+      }
+      const getHashtag=()=>{
+        const {id}=params
+        dispatch(setCollections({collections:[]}))
+        dispatch(setPagesInView({pages:[]}))
+        dispatch(fetchHashtag({id})).then(res=>{
+            checkResult(res,payload=>{
+               console.log("gethash",payload)
+                const {hashtag}=payload
+                setHashtag(hashtag)
+                if(hashtag.collections.length>0){
+                    dispatch(setCollections({collections:hashtag.collections.map(co=>co.collection)}))
+                    addPages(hashtag.collections)
+                }
+
+                setHasMoreBooks(false)
+                setHasMoreLibraries(false)
+                setHasMorePages(false)
+
+            },err=>{
+
+                setHasMoreBooks(false)
+                setHasMoreLibraries(false)
+                setHasMorePages(false)
+            })
+        })
+      }
+      useLayoutEffect(()=>{
+           getHashtag()
+      },[location.pathname])
     useEffect(
         ()=>{
             if(!isNotPhone){
@@ -37,45 +75,25 @@ function DiscoveryContainer(props){
     )
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    let booksInView = []
-    let bookCol = useSelector(state=>state.books.collections)
-    if(bookCol){
-  booksInView =[...bookCol].sort(
-            (a,b)=>{
-            
-                return new Date(b.created)- new Date(a.created)
-            }   
-        )  
-    }
-   
+
+    let collections = useSelector(state=>state.books.collections)
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
-    const [hasMoreLibraries,setHasMoreLibraries] =useState(false)
-    const [librariesInView,setLibraries]=useState([])
-    const libCollection = useSelector(state=>state.libraries.librariesInView)
- 
-    useEffect(()=>{
-   
-   setLibraries(libCollection)
-    },[libCollection])
-    useEffect(()=>{
-        fetchContentItems()
-        fetchLibraries()
-    },[])
-const navigateToLibrary = (library)=>{
-    dispatch(setLibraryInView({library:library}))
-    navigate(Paths.library.createRoute(library.id))
-}
+    const [books,setBooks]=useState(collections.filter(col=>col.childCollections.length==0))
+    const [libraries,setLibraries]=useState(collections.filter(col=>col.childCollections.length>0))
+
+    
+
     const libraryForums = ()=>{
-        if(librariesInView!=null){
+        if(libraries!=null){
             return (<InfiniteScroll
-            className='min-h-24'
-            dataLength={librariesInView.length}
-            next={fetchLibraries}
-            style={{display:"flex",flexDirections:"row"}}
+            className='min-h-[12rem] flex max-w-[100vw] flex-row justify-center'
+            dataLength={libraries.length}
+    
+         
             hasMore={hasMoreLibraries}
-            endMessage={<div className='flex min-w-72 mont-medium'><span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '><h6 className=''>Join the community. <br/>Apply to join today.</h6><h6>Share your own work.</h6><h6> This is what we have for now.</h6></span></div>}
+            endMessage={<div className='flex  min-w-72 px-24 j mont-medium'><span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '><h6 className=''>Join the community. <br/>Apply to join today.</h6><h6>Share your own work.</h6><h6> This is what we have for now.</h6></span></div>}
             >
-                {librariesInView.map(library=>{
+                {libraries.map(library=>{
                     return     <div key={library.id}>
                   <BookListItem book={library}/></div>
            
@@ -84,18 +102,18 @@ const navigateToLibrary = (library)=>{
         }
     }
     const bookList = ()=>{
-        if(booksInView!=null){
+        if(books.length>0){
             return(
         
-    <div className='md:ml-12'> <h3 className=' text-emerald-900
+    <div className='w-[100vw]'> <h3 className=' text-emerald-900
     text-left 
     font-extrabold 
-    pl-4   mx-4 lora-bold text-2xl'>Collections</h3>
+     lora-bold text-2xl ml-4 md:ml-24'>Collections</h3>
                 <InfiniteScroll
-            className={`   min-h-[12rem] flex-row flex`}
-            dataLength={booksInView.length}
-            next={fetchContentItems}
-            hasMore={false}
+            className={`  max-w-[100vw] my-2 min-h-[12rem] md:justify-center flex-row flex`}
+            dataLength={books.length}
+          
+            hasMore={hasMoreBooks}
             endMessage={<div className='flex min-w-72 mont-medium'>
                 <span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '>
                     <h6 className=''>
@@ -105,10 +123,10 @@ const navigateToLibrary = (library)=>{
                         </span></div>}
             >
 
-                {booksInView.map((book,i)=>{
+                {books.map((book,i)=>{
                     let id = `${book.id}_${i}`
                     return(
-                        <div key={id} className='my-auto'>
+                        <div key={id} >
                             <BookListItem book={book}/>
                         </div>)
                 })}
@@ -118,15 +136,24 @@ const navigateToLibrary = (library)=>{
         }
     }
     const pageList = ()=>{
-        if(pagesInView!=null){
+        
+            
             return(<div 
             className=' w-[96vw] md:w-page mx-auto '
             >
                <InfiniteScroll
             dataLength={pagesInView.length}
-            next={fetchContentItems}
+            next={()=>{
+
+            }}
+        endMessage={<div className='flex'>
+            <h2  className='mx-auto my-12 text-emerald-800 lora-medium'>You can write for the hashtag<br/> Add a hashtag to your work.</h2>
+        </div>}
+            loader={<div className='flex'>
+                <img className="max-h-36 mx-auto my-12 max-w-36"src={loadingGif}/>
+            </div>}
             scrollThreshold={1}
-            hasMore={false}
+            hasMore={hasMorePages}
                 >
                
 <div 
@@ -143,9 +170,9 @@ className={`${
 
 >
  
-                {pagesInView.filter(page=>page).map(page=>{
+                {pagesInView.filter(page=>page).map((page,i)=>{
 
-                    const id = `${page.id}_${uuidv4()}`
+                    const id = `${page.id}_${i}`
                     return(<div 
                         // className={isGrid?"max-w-[22em]":"m-1  h-fit "}
                         key={id}
@@ -160,29 +187,15 @@ className={`${
                 </div>
             </InfiniteScroll> </div>)
         }
-    }
-    const fetchContentItems = ()=>{
     
-            dispatch(getPublicStories())
-            
-            dispatch(getPublicBooks())  
-        }
-        const fetchLibraries = ()=>{
-            setHasMoreLibraries(true)
-            dispatch(getPublicLibraries()).then(result=>checkResult(result,payload=>{
-            
-                setHasMoreLibraries(false)
-            },err=>{
 
-            }))
-        }
         const onClickForGrid =(bool)=>{
 
 
             setIsGrid(bool)
             if(bool){
                 ReactGA.event({
-                    category: "Discovery",
+                    category: "Hashtag",
                     action: "Click for Grid View",
                     label: "GRID ICON", 
                     nonInteraction: false
@@ -201,13 +214,15 @@ className={`${
             <div 
 
             className=' max-w-[100vw] mt-4' >
-
+               {hash? <div className='w-[100%] flex '>
+                    <h1 className='lora-bold mx-auto py-12 md:py-24'>#{hash.name}</h1>
+                </div>:null}
               <div className=' text-left ' >
-               
-                <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} pb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
+              {libraries.length>0?<>
+             <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} pb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
                 <div className='mb-12'>
                 {libraryForums()}
-                </div>
+                </div></> :null}
                 <div className='mb-12'>
                 {bookList()} 
                 </div>
@@ -218,7 +233,7 @@ className={`${
                                         font-extrabold 
                                         text-2xl 
                                         text-left 
-                                        mx-4
+                                        mx-auto md:mx-4
                                         lora-bold
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
@@ -253,7 +268,4 @@ className={`${
              
             </ErrorBoundary>
         )
-
-}
-
-export default DiscoveryContainer
+    }

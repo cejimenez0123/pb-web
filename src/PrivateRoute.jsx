@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import {  useEffect, useLayoutEffect, useState } from 'react';
 import { getCurrentProfile } from './actions/UserActions';
 import checkResult from './core/checkResult';
-
+import loading from "./images/loading.gif"
 const PrivateRoute = ({loggedIn, children }) => {
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [pending,setPending]=useState(true)
@@ -53,7 +53,7 @@ const PrivateRoute = ({loggedIn, children }) => {
     },[])
    
     if(pending){
-      return <div ><h1 className='text-emerald-800'>Loading...</h1></div>
+      return <div className='flex '><img className='mx-auto my-24 max-h-36 max-w-36' src={loading}/></div>
     }
 
       

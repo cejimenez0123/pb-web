@@ -195,11 +195,12 @@ if(currentProfile){
     }
     }
     const getCol=()=>{
+        setHasMore(true)
         dispatch(setCollections({collections:[]}))
         dispatch(setPagesInView({pages:[]}))
         localStorage.getItem("token")?dispatch(fetchCollectionProtected(params)).then(res=>{
             checkResult(res,payload=>{
-             
+             setHasMore(false)
                 dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
                 dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
 

@@ -10,6 +10,10 @@ const Paths ={
         reader:()=>"/workshop",
         createRoute:(pageId)=>{return "/workshop/page/"+pageId}
     },
+    hashtag:{
+        route:()=>"/hashtag/:id",
+        createRoute:(id)=>`/hashtag/${id}`
+    },
     editCollection:{
         route: ()=>`/collection/:id/edit`,
         createRoute:(id)=>{return `/collection/${id}/edit`;}},

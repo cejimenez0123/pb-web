@@ -194,18 +194,13 @@ const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProte
      collection:data.collection
     }
  })
-const getSubCollectionsProtected = createAsyncThunk("collection/getSubCollectionsProtected",async(params,thunkApi)=>{
-    let data = await collectionRepo.fetchSubCollectionsProtected(params)
-    return {
-        list:data.collections
-    }
-})
-const getSubCollectionsPublic = createAsyncThunk("collection/getSubCollectionsPublic",async(params,thunkApi)=>{
-    let data = await collectionRepo.fetchSubCollectionsPublic(params)
-    return {
-        list:data.list
+
+// const getSubCollectionsPublic = createAsyncThunk("collection/getSubCollectionsPublic",async(params,thunkApi)=>{
+//     let data = await collectionRepo.fetchSubCollectionsPublic(params)
+//     return {
+//         list:data.list
     
-}})
+// }})
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
     params,thunkApi
 )=>{
@@ -291,8 +286,8 @@ export {
     setCollectionInView,
     addCollectionListToCollection,
     addStoryListToCollection,
-    getSubCollectionsProtected,
-    getSubCollectionsPublic,
+    // getSubCollectionsProtected,
+    // getSubCollectionsPublic,
     deleteCollection,
     deleteCollectionFromCollection,
     deleteStoryFromCollection,

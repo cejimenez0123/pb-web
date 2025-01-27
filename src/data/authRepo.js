@@ -36,6 +36,7 @@ class AuthRepo{
     }
     async forgotPassword({username,email}){
       let res =  await axios.post(Enviroment.url+"/auth/forgot-password",{username,email})
+     
       return res.data
     }
     async startSession({uId,email,password}){

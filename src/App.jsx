@@ -40,6 +40,7 @@ import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
 import ResetPasswordContainer from './container/auth/ResetPassword.jsx';
 import Alert from './components/Alert.jsx';
 import NotificationContainer from './container/profile/NotificationContainer.jsx';
+import HashtagContainer from './container/hashtag/HashtagContainer.jsx';
 function App(props) {
 
   const dispatch = useDispatch()
@@ -167,6 +168,9 @@ function App(props) {
       <Route exact path={Paths.about()} element={
    <AboutContainer/>
       }/>
+       <Route path={Paths.hashtag.route()}
+      element={<HashtagContainer/>}/>
+     
        <Route exact path={"/about"} element={
    <AboutContainer/>
       }/>
