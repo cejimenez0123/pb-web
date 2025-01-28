@@ -220,11 +220,11 @@ function App(props) {
               />
         </PrivateRoute>
       }/>
-      <Route path="/page/:id" element={
+      <Route path={Paths.page.route()} element={
           <PageViewContainer page={props.pageInView}/>}
     /> 
        <Route
-      path="/page/:id/edit"
+      path={Paths.editPage.route()}
       element={
         <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
             <EditorContainer 

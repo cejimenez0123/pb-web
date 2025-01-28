@@ -3,7 +3,7 @@ const Paths ={
     library: {
         route: ()=>`/library/:id`,
         createRoute:(id)=>{return `/library/${id}`;}},
-    page:{ route: ()=>`/page/:id`,createRoute:(id)=>{return `/page/${id}`
+    page:{ route: ()=>`/story/:id`,createRoute:(id)=>{return `/story/${id}`
     }},
     workshop:{
         route:()=>"/workshop/page/:pageId",
@@ -28,13 +28,13 @@ const Paths ={
         createRoute:(id)=>{return "/collection/"+id}
     },
     editor:{
-        text:()=>{return `/page/text`},
-        link:()=>{ return `/page/link`},
+        text:()=>{return `/story/text`},
+        link:()=>{ return `/story/link`},
         image:()=>{return `/page/image`}   
     },
     login:()=>{return `/login`},
-    editPage:{route:()=>{return `/page/:id/edit`},
-        createRoute:(id)=>{return `/page/${id}/edit`}},
+    editPage:{route:()=>{return `/story/:id/edit`},
+        createRoute:(id)=>{return `/story/${id}/edit`}},
 
     addToCollection:{
         route:'/collection/:id/add',

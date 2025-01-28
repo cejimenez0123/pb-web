@@ -230,7 +230,7 @@ if(currentProfile){
     }
     }
     const getCol=()=>{
-
+        dispatch(setPagesInView({pages:[]}))
        currentProfile?dispatch(fetchCollectionProtected(params)).then(res=>{
             checkResult(res,payload=>{
              dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
@@ -250,12 +250,7 @@ if(currentProfile){
         })
     }
  
-    // useLayoutEffect(()=>{
-    //     if(!collection||(collection.id!=pathParams.id)){
-    //         getCol()
-    //     }
 
-    // },[currentProfile,location.pathname])
 
     const soUserCanSee=()=>{
         
