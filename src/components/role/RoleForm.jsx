@@ -1,4 +1,4 @@
-import { useEffect,useLayoutEffect,useState } from "react"
+import { useContext, useEffect,useLayoutEffect,useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { useSelector ,useDispatch } from "react-redux"
 import { fetchProfiles } from "../../actions/ProfileActions"
@@ -8,47 +8,44 @@ import Role from "../../domain/models/role"
 import close from "../../images/icons/clear.svg"
 import checkResult from "../../core/checkResult"
 import { patchCollectionRoles } from "../../actions/CollectionActions"
-function RoleForm({book,onClose}){
+import Context from "../../context"
+import ProfileCircle from "../profile/ProfileCircle"
+function RoleForm({item,onClose}){
     const profiles = useSelector(state=>state.users.profilesInView)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const storyRoles = useSelector(state=>state.roles.storyRoles)
-    const colRoles = useSelector(state=>state.roles.collectionRoles)
+   
+    const {error,success,setError,setSuccess}=useContext(Context)
     const pending = useSelector(state=>state.roles.loading)
     const [roles,setRoles]=useState([])
     const dispatch = useDispatch()
-    const [error,setError]=useState(null)
-    const [success,setSuccess]=useState(null)
+
     useLayoutEffect(()=>{
         dispatch(fetchProfiles())
-
-    if(!book.childCollections){
-        dispatch(fetchStoryRoles({storyId:book.id})).then(res=>{
-            checkResult(res,payload=>{
-                setRoles(payload.roles)
-
-            },err=>{
-
-            })
-        })}else{
-
-
-        }
     },[])
+
     useEffect(()=>{
-        if(!book.childCollections){
+        if(item && item.storyIdList && item.roles){
+           const list = item.roles.map(role=>{
+                    return new Role(
+                    role.id,role.profile,role.collection,role.role,role.created)
+                    })
+                    setRoles(list)
 
-      let list = storyRoles.map(role=>{
-        return new Role(
-        role.id,role.profile,role.story,role.role,role.created)
-        })
-        setRoles(list)
+    }else{
+        if(item && item.betaReaders){
+            const list = item.betaReaders.map(role=>{
+                return new Role(
+                role.id,role.profile,role.story,role.role,role.created)
+                })
+                setRoles(list)
+        }
     }
-    },[])
+    },[item])
 
     const handlePatchRoles=()=>{
         if(currentProfile){
-        if(book.childCollections){
-            dispatch(patchCollectionRoles({roles,profile:currentProfile,collection:book}))
+        if(item.storyIdList){
+            dispatch(patchCollectionRoles({roles,profile:currentProfile,collection:item}))
             .then(
                 res=>checkResult(res,payload=>{
                         setSuccess("Successful Save")
@@ -60,7 +57,7 @@ function RoleForm({book,onClose}){
             )
         }else{
        
-            dispatch(patchRoles({roles:roles,profileId:currentProfile.id,storyId:book.id}))     .then(
+            dispatch(patchRoles({roles:roles,profileId:currentProfile.id,storyId:item.id}))     .then(
                 res=>checkResult(res,payload=>{
                         setSuccess("Successful Save")
                         setError(null)
@@ -76,7 +73,7 @@ function RoleForm({book,onClose}){
         }
     }
     const handleUpdateRole=({role,profile})=>{
-       let roleI = new Role(null,profile,book,role)
+       let roleI = new Role(null,profile,item,role)
        let newRoles = roles.filter(role=>role.profile.id != profile.id)
         
        setRoles([...newRoles,roleI])
@@ -92,7 +89,7 @@ function RoleForm({book,onClose}){
             <div className="lora-medium"><h1 className="text-[2rem]">Share</h1></div><img onClick={onClose} src={close}/>
         </div>
         <div className=" py-4 ">
-            <p className="text-sm text-emerald-900">{book.title}</p>
+            <p className="text-sm text-emerald-900">{item.title}</p>
         </div>
         <div>
             <div className="
@@ -124,14 +121,12 @@ function RoleForm({book,onClose}){
                    }
                 return(<div> 
 
-             <div key={i}className=" shadow-sm flex flex-row rounded-full justify-between px-4 bg-opacity-60 bg-transparent border-emerald-600 border-2  my-4 ">
-                    
-                    <h6 className="text-sm opacity-100 text-emerald-800 py-4 mx-2 mx-y">
-                        {profile.username}</h6>
+             <div key={i}className=" shadow-sm flex flex-row h-[4em] rounded-full justify-between px-4 bg-opacity-60 bg-transparent border-emerald-600 border-2  my-4 ">
+                    <span className="my-auto"><ProfileCircle  profile={profile}/></span>
                         <div className="my-auto w-fit">
-                        <div className="dropdown   dropdown-bottom">
-  <div tabIndex={0}  role="button" className=" bg-green-800 bg-opeacity-90 py-2  px-4 mont-medium rounded-full text-white ">{role?role.role:"Role"}</div>
-  <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                        <div className="dropdown   dropdown-left">
+  <div tabIndex={0}  role="button" className=" bg-green-800 bg-opeacity-90 py-2 w-[9em] px-4 mont-medium rounded-full flex text-white "><h6 className="mx-auto my-auto">{role?role.role:"Role"}</h6></div>
+  <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-[1] w-52 p-2 shadow">
   <li onClick={()=>handleUpdateRole({role:RoleType.role,profile:profile})}>
     <a className="label text-emerald-600">{RoleType.role}</a></li>
   <li onClick={()=>handleUpdateRole({role:RoleType.reader,profile:profile})}>

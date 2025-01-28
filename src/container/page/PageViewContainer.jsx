@@ -24,7 +24,10 @@ export default function PageViewContainer(props){
     const [rootComments,setRootComments]=useState([])
     useLayoutEffect(()=>{
             if(currentProfile && page){
-                dispatch(postStoryHistory({profile:currentProfile,story:page}))
+                if(import.meta.env.VITE_NODE_ENV!="dev"){
+                    dispatch(postStoryHistory({profile:currentProfile,story:page}))
+             
+                }
                 dispatch(getProfileHashtagCommentUse({profileId:currentProfile.id}))
             }
     },[])
@@ -87,8 +90,8 @@ export default function PageViewContainer(props){
     }
     return(<div className="  mx-auto">
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
-    {title()}
-    {pageDiv()}
+    {canUserSee?<>{title()}
+    {pageDiv()}</>:<div className="skeleton  max-w-[96vw] mx-auto md:w-page h-page"/>}
     
     <CommentThread page={page} comments={rootComments}/>
     </div> 

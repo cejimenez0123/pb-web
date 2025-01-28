@@ -47,7 +47,10 @@ const userSlice = createSlice({
     initialState,
     extraReducers(builder) {
         builder.addCase(fetchProfiles.fulfilled,(state,{payload})=>{
-            state.profilesInView = payload.profiles
+            const profiles = payload.profiles.filter(prof=>{
+               return state.currentProfile && prof.id!=state.currentProfile.id
+            })
+            state.profilesInView = profiles
             state.loading=false
         }).addCase(fetchProfiles.pending,(state,{payload})=>{
             state.loading = true

@@ -195,12 +195,7 @@ const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProte
     }
  })
 
-// const getSubCollectionsPublic = createAsyncThunk("collection/getSubCollectionsPublic",async(params,thunkApi)=>{
-//     let data = await collectionRepo.fetchSubCollectionsPublic(params)
-//     return {
-//         list:data.list
-    
-// }})
+
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
     params,thunkApi
 )=>{

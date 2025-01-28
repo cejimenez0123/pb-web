@@ -121,9 +121,7 @@ function App(props) {
             />
             <Route path={Paths.notifications()}
             element={<PrivateRoute><NotificationContainer/></PrivateRoute>}/>
-          <Route path={Paths.editor.image()}
-              element={
-                <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}><EditorContainer/></PrivateRoute>}/>
+    
           <Route  path="/discovery" 
                   element={
                     <DiscoveryContainer 
@@ -210,17 +208,9 @@ function App(props) {
             />
       </PrivateRoute>
         }/>
-    <Route
-      exact path="/page/text"
-      element={
-        <PrivateRoute  >
-            <EditorContainer 
-           
-              />
-        </PrivateRoute>
-      }/>
+
        <Route
-      exact path="/page/link"
+      exact path={Paths.editor.link()}
       element={
         <PrivateRoute 
       

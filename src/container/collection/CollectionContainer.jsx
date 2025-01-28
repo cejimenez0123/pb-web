@@ -463,7 +463,7 @@ if(collection&&canUserSee){
 
         <PageList  isGrid={false} hasMore={hasMore}  forFeedback={collection&&collection.type=="feedback"}/>
         </div>
-    <ExploreList items={recommendedCols}/>
+    <ExploreList />
          
          </div>
       

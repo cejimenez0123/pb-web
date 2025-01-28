@@ -143,6 +143,7 @@ state.loading = true
 }).addCase(fetchCollection.fulfilled,(state,{payload})=>{
     state.collectionInView=payload.collection
     state.collections = payload.collection.childCollections.map(cTc=>cTc.childCollection)
+    state.collectionToCollectionsList = payload.collection.childCollections
     state.loading = false
 }).addCase(fetchCollectionProtected.pending,(state)=>{
     state.loading=false

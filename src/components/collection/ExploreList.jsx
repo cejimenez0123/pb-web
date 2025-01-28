@@ -1,6 +1,9 @@
 import InfiniteScroll from "react-infinite-scroll-component"
 import BookListItem from "../BookListItem"
-export default function ExploreList({items}){
+import { useSelector } from "react-redux"
+export default function ExploreList(){
+    const items = useSelector(state=>state.books.recommendedCols)??[]
+
     return  <div className="my-12  text-center">
     <h6 className="lora-bold text-emerald-800 mx-auto  w-fit text-3xl my-8">Explore</h6>
  <InfiniteScroll dataLength={items.length}

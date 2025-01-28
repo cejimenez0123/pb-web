@@ -70,14 +70,14 @@ class StoryRepo{
     async postStory({ 
         profileId,
         data,
-        privacy,
+        isPrivate,
         approvalScore,
         type,
         title,
         commentable}){
      
         const res = await axios.post(this.url,{
-            title,data,isPrivate:privacy,authorId:profileId,commentable:commentable,
+            title,data,isPrivate,authorId:profileId,commentable:commentable,
             type
     },{headers:{
         Authorization: "Bearer "+localStorage.getItem(this.token)
@@ -88,17 +88,19 @@ class StoryRepo{
         const { 
             page,
             data,
-            privacy,
+            isPrivate,
             description,
             approvalScore,
             title,
+            needsFeedback,
             commentable,
             type
            }=params
        const res = await axios.put(this.url+"/"+page.id,{
             data: data,
-            isPrivate:privacy,
+            isPrivate:isPrivate,
             description,
+            needsFeedback,
             approvalScore:approvalScore,
             title:title,
             commentable:commentable,

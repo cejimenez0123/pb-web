@@ -1,11 +1,11 @@
 import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Paths from "../../core/paths"
 import { deleteCollection, patchCollectionContent } from "../../actions/CollectionActions"
 import deleteIcon from "../../images/icons/delete.svg"
 import arrowDown from "../../images/icons/arrow_down.svg"
-import { deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollection, fetchCollectionProtected,  } from "../../actions/CollectionActions"
+import { deleteCollectionFromCollection, deleteStoryFromCollection,  fetchCollectionProtected,  } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import view from "../../images/icons/view.svg"
 import SortableList from "../../components/SortableList"
@@ -41,6 +41,7 @@ export default function EditCollectionContainer(props){
         query: '(max-width: 600px)'
       })
       const [pending,setPending]=useState(true)
+    const location = useLocation()
     // const loading = useSelector(state=>state.books.loading)
     const storyToCols = useSelector(state=>state.pages.storyToCollectionList)
     const colToCols = useSelector(state=>state.books.collectionToCollectionsList)
@@ -59,41 +60,51 @@ export default function EditCollectionContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [openAccess,setOpenAccess]=useState(false)
+    const setItems=()=>{
+      if(currentProfile){
+        if(colInView ){
+        if(colInView.storyIdList){
+          let stcList = colInView.storyIdList.map((stc,i)=>{
+                         let index = i
+                         if(stc.index){
+                          index= stc.index
+                         }
+            return new StoryToCollection(stc.id,index,stc.collection,stc.story,currentProfile)
+        })
+            setNewPages(stcList)
+      }
+      if(colInView.childCollections){
+            let newList = colInView.childCollections.map(stc=>{
+                return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
+        })
+    
+            setNewCollections(newList)
+      }
+        }
+          
+      }
+    }
     useLayoutEffect(()=>{
-            currentProfile?dispatch(fetchCollectionProtected(params)):dispatch(fetchCollection(params))
-    },[params.id,currentProfile])
+      soCanUserEdit(colInView)
+    },[currentProfile,colInView])
     useLayoutEffect(()=>{
-soCanUserEdit()
-    },[colInView])
-    useLayoutEffect(()=>{
+            if(currentProfile){
+              dispatch(fetchCollectionProtected(params)).then(res=>{
+                checkResult(res,payload=>{
+                  soCanUserEdit(payload.collection)
+                  setItems()
+                },err=>{
+                setPending(false)
+                })
+          
+            })
+          }else{
+              setCanUserEdit(false)
+              setPending(false)
+            }
+    },[location.pathname,currentProfile])
+ 
 
-        if(currentProfile){
-          if(colInView ){
-          if(colInView.storyIdList){
-            let stcList = colInView.storyIdList.map((stc,i)=>{
-                           let index = i
-                           if(stc.index){
-                            index= stc.index
-                           }
-              return new StoryToCollection(stc.id,index,stc.collection,stc.story,currentProfile)
-          })
-              setNewPages(stcList)
-        }
-        if(colInView.childCollections){
-              let newList = colInView.childCollections.map(stc=>{
-                  return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
-          })
-      
-              setNewCollections(newList)
-        }
-          }
-            
-        }else{
-          setCanUserEdit(false)
-        }
-
-                   
-    },[colInView,currentProfile])
     useEffect(()=>{
     if(colInView){
         setTitle(colInView.title)
@@ -103,50 +114,53 @@ soCanUserEdit()
         handleSetOpen(colInView.isOpenCollaboration) 
     }
     },[colInView])
-    // useLayoutEffect(()=>{
+    useLayoutEffect(()=>{
 
-    //     if(currentProfile){
-    //       soCanUserEdit()
-    //       if(colInView){
+        if(currentProfile&&canUserEdit){
+        
+          if(colInView&&colInView.storyIdList){
           
-    //         let stcList = colInView.storyIdList.map(stc=>{
+            let stcList = colInView.storyIdList.map(stc=>{
                            
-    //           return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
-    //       })
-    //           setNewPages(stcList)
-    //           let newList = colInView.childCollections.map(stc=>{
-    //               return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
-    //       })
+              return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
+          })
+              setNewPages(stcList)
+              let newList = colInView.childCollections.map(stc=>{
+                  return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
+          })
       
-    //           setNewCollections(newList)
+              setNewCollections(newList)
 
-    //       }
+          }
             
-    //     }else{
-    //       setCanUserEdit(false)
-    //     }
+        }
 
                    
-    // },[colInView])
-            
-        // useEffect(()=>{
+    },[colInView])
+    const setContent=()=>{
+      if(colInView){
+        if(colInView.storyIdList){
 
-        //     let stcList = storyToCols.map(stc=>{
-                           
-        //         return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
-        //     })
-        //         setNewPages(stcList)
-        //         let newList = colToCols.map(stc=>{
-        //             return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
-        //     })
         
-        //         setNewCollections(newList)
-            
-        // },[storyToCols,colToCols])
-    const soCanUserEdit=()=>{
-      if(colInView && currentProfile && colInView.profileId==currentProfile.id){
-     
+      let stcList = colInView.storyIdList.map(stc=>{
+                           
+        return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
+    })
+        setNewPages(stcList)
+        }
+        if(colInView.childCollections){
+        let newList = colInView.childCollections.map(stc=>{
+            return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
+    })
+
+        setNewCollections(newList)
+      }
+    }  } 
+  
+    const soCanUserEdit=(collection)=>{
+      if(collection && currentProfile && collection.profileId==currentProfile.id){
         setCanUserEdit(true)
+        setPending(false)
         return
       }
       
@@ -210,13 +224,13 @@ soCanUserEdit()
         <div className="">
         <div className=" mt-8 w-[100%]   justify-evenly md:ml-12  gap-2 grid  grid-cols-2  ">
 
-   {canUserEdit?
+
    <span className="bg-emerald-800 flex  mx-auto mont-medium text-white w-[9rem] h-[4rem] text-center  rounded-full"
    
    onClick={updateCollection}
    
    ><h6 className="mx-auto my-auto">Update</h6></span>
-   :null}
+
  
    <div className="flex flex-row">
     
@@ -318,19 +332,15 @@ const deleteSubCollection = (colId)=>{
         </div>)
     }
     }
-    setTimeout(()=>{
 
-        setError(null)
-      setSuccess(null)
-      
-     
-    },4001)
     if(colInView){
         return(<div>
       
      
-            {collectionInfo()}
-            {canUserEdit? <div className="max-w-[96vw] md:w-page mx-auto"><div >
+            {canUserEdit?!pending?collectionInfo():<div className="w-[96vw] mx-auto md:w-info h-info flex">
+              <h6 className="mx-auto my-auto text-emerald-700 text-2xl">You sure you're in the right place</h6>
+              </div>:<div className="skeleton w-[96vw] mx-auto md:w-info h-info "/>}
+            {canUserEdit?!pending?<>     <div className="max-w-[96vw] md:w-page mx-auto"><div >
                             <div role="tablist" className="tabs mt-8 max-w-[96vw] mb-2 lg:mb-48 lg::w-page mx-auto rounded-lg sm:mx-6 tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm [--tab-bg:transparent]  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-900 text-xl" aria-label="Stories" />
   <div role="tabpanel" className="tab-content w-[96vw] mx-auto pt-1  md:min-h-page border-emerald-600 md:h-page md:w-page rounded-lg border-2">
@@ -338,7 +348,7 @@ const deleteSubCollection = (colId)=>{
   onDelete={deleteStory}/>}
 
   </div>
- <input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 max-w-[96vw] md:w-page [--tab-bg:transparent] border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
+<input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 max-w-[96vw] md:w-page [--tab-bg:transparent] border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
   <div role="tabpanel" className="tab-content w-[96vw] md:w-page pt-1 mx-auto  md:h-page border-emerald-600 md::w-page rounded-lg border-2">
      <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20 mx-4"><h6 className="text-emerald-800 py-24 text-center 
    m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:
@@ -347,7 +357,7 @@ const deleteSubCollection = (colId)=>{
   </div>
 </div>
 </div>
-</div>:pending?<div className="skeleton w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex"><h1 className="text-emerald-800 mx-auto my-auto">Private:Are you sure you're in the right place</h1></div>}
+</div></>:null:null}
 <Dialog 
 fullScreen={isPhone}
 open={openAccess}
@@ -356,7 +366,7 @@ onClose={()=>{
 }}>
     
     <div className="overflow-y-scroll  h-[100%] overflow-x-hidden">
-    <RoleForm book={colInView} onClose={()=>setOpenAccess(false)}/>
+    <RoleForm item={colInView} onClose={()=>setOpenAccess(false)}/>
     </div>
 </Dialog>
 <Dialog

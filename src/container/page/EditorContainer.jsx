@@ -25,7 +25,7 @@ import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions
 import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
 import Alert from "../../components/Alert"
-import FeedbackDialog from "../../components/page/FeedbackDialog"
+import DescriptionDialog from "../../components/page/FeedbackDialog"
 
 
 function EditorContainer(props){
@@ -35,12 +35,12 @@ function EditorContainer(props){
         const currentProfile = useSelector(state=>state.users.currentProfile)
         const [feedbackDialog,setFeedbackDialog]=useState(false)
         const {setError,setSuccess}=useContext(Context)
-        const [feedback,setFeedback]=useState("")
+  
         const [fetchedPage,setFetchedPage]=useState(null)
         const editPage = useSelector(state=>state.pages.editingPage)
         const pageInView = useSelector(state=>state.pages.pageInView)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-
+        const [openDescription,setOpenDescription]=useState(false)
         const pathParams = useParams()
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:768px)'})
@@ -48,20 +48,21 @@ function EditorContainer(props){
         const location = useLocation()
         let href =location.pathname.split("/")
         const last = href[href.length-1]
-      
+      const [description,setDescription]=useState("")
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
-        const [privacy,setPrivacy] = useState(true)
+       const [needsFeedback,setNeedFeedback]=useState(editPage?editPage.needsFeedback:pageInView?pageInView.needsFeedback:false)
+        const [isPrivate,setIsPrivate] = useState(editPage?editPage.isPrivate:pageInView?pageInView.isPrivate:true)
         const [titleLocal,setTitleLocal]=useState(editPage?editPage.title:pageInView?pageInView.title:"")
         const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
         const {id }= pathParams
         const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
           data:editPage?editPage.data:pageInView?pageInView.data:"",
-          needsFeedback:false,
-          description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:feedback
+          needsFeedback:needsFeedback,
+          description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:description
           ,
-          privacy:privacy,
+          privacy:isPrivate,
           commentable:commentable
         })
         
@@ -71,8 +72,9 @@ function EditorContainer(props){
         if(params.data.length>0){ 
        dispatch(updateStory(params)).then(res=>{
           checkResult(res,payload=>{
+              
             if(payload.story){
-    setFetchedPage(payload.story)
+            
     setIsSaved(true)
     return true 
             }
@@ -82,7 +84,7 @@ function EditorContainer(props){
             return false
           })}
         
-      )}},40)
+      )}},200)
       useEffect(()=>{
         if(!fetchedPage){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
@@ -113,7 +115,7 @@ function EditorContainer(props){
       if(fetchedPage){
         handleUpdate(parameters)
       }
-    },[parameters.data,parameters.title,parameters.privacy,parameters.commentable])
+    },[parameters.data,parameters.title,parameters.isPrivate,parameters.commentable])
     useLayoutEffect(()=>{
       if(currentProfile){
         fetchStory()
@@ -142,11 +144,11 @@ return ()=>{
         }
     },[htmlContent])
   const setStoryData=(story)=>{
-            console.log("Stor",story)
+        
              setFetchedPage(story)   
              setTitleLocal(story.title)
              setCommentable(story.commentable)
-             setPrivacy(story.isPrivate)
+             setIsPrivate(story.isPrivate)
              
   }
     const fetchStory = ()=>{
@@ -168,9 +170,7 @@ return ()=>{
        setSuccess(null)
       })})}
     }
-    useEffect(()=>{
-fetchStory()
-    },[])
+  
 
    
       const [open, setOpen] = useState(false);
@@ -191,7 +191,7 @@ fetchStory()
         pars.title = titleLocal
     
         pars.profileId = currentProfile.id
-        pars.privacy = privacy
+        pars.isPrivate = isPrivate
         pars.commentable = commentable
     
         dispatch(createStory(pars)).then(res=>checkResult(res,payload=>{
@@ -208,11 +208,25 @@ setError(err.message)
           navigate(Paths.addStoryToCollection.createRoute(id))
         }
         const handlePostPublicly=debounce((truthy)=>{
-    
+  
           let params = parameters
-          params.privacy = truthy
+          params.description = description
+          setNeedFeedback(false)
+          setIsPrivate(truthy)
+          params.isPrivate = truthy
+          params.needsFeedback = false
+       
           setParameters(params)
-         setPrivacy(truthy)
+       handleUpdate(params)
+         setFeedbackDialog(false)
+    setOpenDescription(false)
+         
+    if(!truthy){
+      navigate(Paths.page.createRoute(id))
+   }
+       
+          
+       
         },10)
 
           
@@ -247,10 +261,17 @@ setError(err.message)
       <ul tabIndex={0} className="dropdown-content text-center menu bg-white rounded-box z-[1] shadow">
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
-        <li onClick={()=>{setFeedbackDialog(true)}} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
+        <li onClick={()=>{setFeedbackDialog(true)
+          setOpenDescription(false)
+        }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
-{privacy?<li onClick={()=>handlePostPublicly(false)} 
-className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>handlePostPublicly(true)}>Make Private</li>}
+{isPrivate?<li onClick={()=>{
+    setFeedbackDialog(false) 
+    setOpenDescription(true)} }
+className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
+<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
+  handlePostPublicly(true)
+  }}>Make Private</li>}
         <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
         {fetchedPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpenRoles(!openRoles)}>Share</li>:null}
         <li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpen(true)}>Delete</li>
@@ -292,7 +313,7 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
           <div  className=" mx-auto md:p-8  "> 
-            <Alert />
+     
                 <div className= "mx-2 md:w-page pt-8 mb-12 mx-auto">
                 {topBar()}
                   <ErrorBoundary>
@@ -316,7 +337,7 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
         aria-describedby="alert-dialog-description"
       >
           <div>
-            <RoleForm book={fetchedPage}
+            <RoleForm item={fetchedPage}
             onClose={()=>{
               setOpenRoles(false)
             }}/>
@@ -324,8 +345,18 @@ className="text-emerald-600 pt-3 pb-2 ">Post Public</li>:<li className="text-eme
       
   
       </Dialog>
-<FeedbackDialog page={editPage} open={feedbackDialog} handleChange={setFeedback} handleFeedback={handleFeedback} handleClose={()=>{
-  setFeedbackDialog(false)
+<DescriptionDialog 
+page={editPage}
+open={feedbackDialog||openDescription} 
+isFeedback={feedbackDialog}
+
+handleChange={setDescription} 
+handleFeedback={handleFeedback}
+handlePostPublic={()=>handlePostPublicly(false)}
+handleClose={()=>{
+    setIsPrivate(true)
+    setOpenDescription(false)
+    setFeedbackDialog(false)
 }} />
 
       <Dialog

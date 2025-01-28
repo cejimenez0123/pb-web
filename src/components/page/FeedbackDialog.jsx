@@ -2,7 +2,7 @@ import { useMediaQuery } from "react-responsive"
 import {Dialog,DialogTitle,DialogActions,DialogContent} from "@mui/material"
 import { useState } from "react"
 
-export default function FeedbackDialog({page,string,open,handleClose,handleChange,handleFeedback}){
+export default function DescriptionDialog({open,isFeedback,handleClose,handleChange,handlePostPublic,handleFeedback}){
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
@@ -15,19 +15,23 @@ export default function FeedbackDialog({page,string,open,handleClose,handleChang
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >    <DialogTitle id="alert-dialog-title">
-      {"What kind of feedback do you want?"}
+      {!isFeedback?"Add a description for context":"What kind of feedback do you want?"}
     </DialogTitle>
     <DialogContent className="">
             <textarea 
             value={feedback}
-            onChange={e=>{setFeedback(e.target.value)
-                handleChange(e.target.value)}}
+            onChange={e=>{
+                setFeedback(e.target.value)
+                handleChange(e.target.value)
+              }}
             className="textarea w-[100%] min-h-[7rem] rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600"/>
                    <DialogActions className="mt-8">
           <h2 className="mont-medium text-emerald-700" onClick={handleClose}>Continue Working</h2>
-          <h2 className="mont-medium text-emerald-700" onClick={handleFeedback}>
-           Get feedback
-          </h2>
+             {isFeedback? <h2 className="mont-medium text-emerald-700" onClick={()=>handleFeedback()}>
+     Get feedback
+          </h2>:<h2 className="mont-medium text-emerald-700" onClick={()=>handlePostPublic()}>
+  Publish
+          </h2>}
         </DialogActions>
     </DialogContent>
    

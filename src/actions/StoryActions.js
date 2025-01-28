@@ -33,7 +33,7 @@ try{
     deleteObject(refer)
   }
   let data = await storyRepo.deleteStory({id:page.id})
-  client.initIndex("page").deleteObject(page.id).wait()
+  client.initIndex("story").deleteObject(page.id).wait()
 
     return data
 
@@ -88,8 +88,8 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
       let data = await storyRepo.postStory(params)
       if(!data.story.isPrivate){
         const {story}=data
-          client.initIndex("story").saveObject(
-            {objectID:story.id,title:story.title,type:"story"}).wait()
+          client.initIndex("story").partialUpdateObject(
+            {objectID:story.id,title:story.title,type:"story"},{createIfNotExists:true}).wait()
         }  
       return {
         story:data.story
@@ -102,7 +102,18 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
 })
 const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=>{
   try{
+ 
   let data = await storyRepo.updateStory(params)
+  if(data.story&& params && !data.story.isPrivate&&data.story.id){
+  
+    client.initIndex("story").partialUpdateObject(
+      {objectID:data.story.id,title:data.story.title,type:"story"},{createIfNotExists:true}).wait()
+   }else{
+    console.log("x",data)
+      if(data.story.isPrivate){
+        client.initIndex("story").deleteObject(data.story.id)
+      }
+   }
   return {
     story: data.story
   }
