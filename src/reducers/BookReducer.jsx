@@ -8,6 +8,7 @@ import { createSlice} from "@reduxjs/toolkit"
         deleteCollectionFromCollection,
         deleteStoryFromCollection,
         clearCollections,
+        getRecommendedCollectionsProfile,
         // getRecommendedCollectionsProfile,
       
             } from "../actions/CollectionActions"
@@ -20,11 +21,11 @@ const initialState = {
     collections:[],
     collectionToCollectionsList:[],
     collectionInView:[],
-
+    recommendedCols:[],
     loading:false,
     error:"",
     roles:[],
-    bookInView: null,
+
     role:null
 }
 const bookSlice = createSlice({
@@ -33,7 +34,7 @@ initialState,
 extraReducers(builder) {
 builder.addCase(patchCollectionRoles.fulfilled,(state,{payload})=>{
     if(payload.collection){
-        state.bookInView = payload.collection
+        state.collectionInView = payload.collection
     }
     if(payload.roles){
         state.roles = payload.collection
@@ -57,6 +58,8 @@ state.loading = true
     state.collectionInView = payload.collection
 }).addCase(deleteCollectionFromCollection.rejected,(state,{payload})=>{
     state.error=payload.error
+}).addCase(getRecommendedCollectionsProfile.fulfilled,(state,{payload})=>{
+    state.recommendedCols = payload.collections
 }).addCase(deleteCollectionRole.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
 }).addCase(deleteStoryFromCollection.fulfilled,(state,{payload})=>{
@@ -68,15 +71,7 @@ state.loading = true
             state.collections = list
     }})
   
-// .addCase(getSubCollectionsProtected.fulfilled,(state,{payload})=>{
-//     state.collectionToCollectionsList = payload.list
-//     state.collections = payload.list.map(item=>item.childCollection)
-// }).addCase(getSubCollectionsPublic.fulfilled,(state,{payload})=>{
-//     console.log(payload.list)
-//     if(payload.list){
-//     state.collectionToCollectionsList = payload.list
-//     state.collections = payload.list.map(item=>item.childCollection)
-//     }})
+
 .addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
 })
@@ -124,13 +119,11 @@ state.loading = true
     state.loading = false
     state.collections= payload.books
 
-}).addCase(setCollections.type,(state,{payload})=>{
-   if(payload.length>0){
+}).addCase(setCollections,(state,{payload})=>{
+ 
     state.collections = payload
     
-   }else{
-    state.collections=[]
-   }
+ 
  
     })
 .addCase(saveRoleToCollection.rejected,(state,{payload})=>{
@@ -149,11 +142,13 @@ state.loading = true
     state.loading=true
 }).addCase(fetchCollection.fulfilled,(state,{payload})=>{
     state.collectionInView=payload.collection
+    state.collections = payload.collection.childCollections.map(cTc=>cTc.childCollection)
     state.loading = false
 }).addCase(fetchCollectionProtected.pending,(state)=>{
     state.loading=false
 }).addCase(fetchCollectionProtected.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
+    state.collections = payload.collection.childCollections.map(cTc=>cTc.childCollection)
 })
 }
 

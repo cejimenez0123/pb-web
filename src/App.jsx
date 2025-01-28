@@ -276,8 +276,8 @@ function mapStateToProps(state){
   return{
     profile: state.users.profileInView,
     signedIn: state.users.signedIn,
-    bookInView: state.books.bookInView,
-    booksInView: state.books.booksInView,
+    // bookInView: state.books.bookInView,
+    // booksInView: state.books.booksInView,
     currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,
     pagesInView: state.pages.pagesInView,

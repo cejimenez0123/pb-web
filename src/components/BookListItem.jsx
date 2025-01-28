@@ -1,15 +1,16 @@
 import {useNavigate} from "react-router-dom"
 import Paths from "../core/paths"
 import ReactGA from "react-ga4"
-import MediaQuery from "react-responsive"
 import { clearPagesInView } from "../actions/PageActions"
 import { useDispatch } from "react-redux"
 import { setCollectionInView } from "../actions/CollectionActions"
+import { setCollections } from "../actions/BookActions"
 function BookListItem({book}){
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const navigateToBook = ()=>{  
         dispatch(clearPagesInView())
+        dispatch(setCollections({collections:[]}))
         dispatch(setCollectionInView({collection:book}))
         navigate(Paths.collection.createRoute(book.id))
         ReactGA.event({

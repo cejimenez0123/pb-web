@@ -16,6 +16,7 @@ export default function AddStoryToCollectionContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
     const page = useSelector(state=>state.pages.pageInView)
+    const collection =useSelection(state=>state.books.collectionInView)
     const [hasMoreCol,setHasMoreCol]=useState(true)
     const [openDialog,setOpenDialog]=useState(false)
     const [search,setSearch]=useState("")

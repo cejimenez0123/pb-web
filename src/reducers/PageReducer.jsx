@@ -183,11 +183,9 @@ const pageSlice = createSlice({
       }).addCase(fetchArrayOfPages.pending,(state)=>{
           state.loading = true
       }).addCase(setPagesInView.type,(state,{payload})=>{
-        if(payload.length>0){
+    
           state.pagesInView = payload
-        }else{
-          state.pagesInView=[]
-        }
+      
     
       }).addCase(setPagesToBeAdded.type,(state,{payload})=>{
         state.pagesToBeAdded = payload

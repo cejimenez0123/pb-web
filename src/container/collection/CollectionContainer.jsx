@@ -1,6 +1,6 @@
 import { useContext, useEffect ,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
-import {  useNavigate, useParams } from "react-router-dom"
+import {  useLocation, useNavigate, useParams } from "react-router-dom"
 import { fetchCollection, fetchCollectionProtected, getRecommendedCollections, getRecommendedCollectionsProfile, getRecommendedCollectionStory } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import PageList from "../../components/page/PageList"
@@ -29,9 +29,9 @@ export default function CollectionContainer(props){
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
-const pathParams =useParams()
+    const collections = useSelector(state=>state.books.collections)
     const [loading,setLoading]=useState(true)
-  
+    const location = useLocation()
     const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
     const writeArr = [RoleType.editor,RoleType.writer]
     const [canUserAdd,setCanUserAdd]=useState(false)
@@ -40,20 +40,15 @@ const pathParams =useParams()
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(false)
     const params = useParams()
-    const [recommendedCols,setRecommendedCols]=useState([])
-    const collections = useSelector(state=>state.books.collections)
+    const recommendedCols = useSelector(state=>state.books.recommendedCols)
+  
 
     
 
     const getRecommendations =()=>{
-       
-
+        dispatch(appendToPagesInView({pages:[Enviroment.blankPage]}))
         if(collection && collection.id ){
-          collection.childCollections.forEach((col)=>{
-            let stories = col.childCollection.storyIdList.map(stc=>stc.story)
-            appendToPagesInView({pages:[...stories]})
-          })
-          
+
           dispatch(getRecommendedCollectionStory({collection:collection})).then(res=>{
             checkResult(res,payload=>{
                 let stories = payload.pages
@@ -62,17 +57,18 @@ const pathParams =useParams()
                         page["recommended"] = true
                         return page
                 })
-                if(recommended){
-                    setHasMore(false)
-                  dispatch(appendToPagesInView({pages:[Enviroment.blankPage,...recommended]}))
+                setHasMore(false)
+           
+                 
+                  dispatch(appendToPagesInView({pages:recommended}))
               
-                }
+                
 
             },err=>{
                 setHasMore(false)
             })
         })
-        }
+        
         if(collections && collections.length>0){
             for(let i = 0;i<collections.length;i+=1){
           if(collections[i] && collections[i].id){ 
@@ -85,60 +81,74 @@ const pathParams =useParams()
                         page["recommended"] = true
                         return page
                 })
-                if(recommended){
-                    setHasMore(false)
+             
+             
+                
                   dispatch(appendToPagesInView({pages:recommended}))
               
-                }
+                
 
             },err=>{
                 setHasMore(false)
             })
         })
-    }}}
+        }
+    }}
     
     if(currentProfile && collection&&collection.id){
         dispatch(getRecommendedCollectionStory({collection:collection})).then(res=>{
             checkResult(res,payload=>{
                 let stories = payload.pages
+                setHasMore(false)
                 let recommended =stories.map(story=>{
                        let page = story
                         page["recommended"] = true
                         return page
                 })
                 if(recommended){
-                    setHasMore(false)
+                  
                   dispatch(appendToPagesInView({pages:recommended}))
               
                 }
 
             },err=>{
                 setHasMore(false)
-            })})
+            })})}}}
 
          
         
-    }}
+    
  
-    const getMore=()=>{
-        if(canUserAdd||canUserEdit){
-            getRecommendations()
-        }
-        for(let i = 0;i<collections.length;i+=1){
-            if(collections[i]&&collections[i].storyIdList){
-                let stories= collections[i].storyIdList.map(sTc=>sTc.story)
+    const getContent=()=>{
+   
     
-                dispatch(appendToPagesInView({pages:stories}))
-            }
-          
-            }
-            
-                setHasMore(false)
+        if(collection&&collection.storyIdList&&collection.childCollections){
+            dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
+           
+            let list = collection.childCollections.map(ctc=>ctc.childCollection)
+            for(let i = 0;i<list.length;i+=1){
+                if(list[i]&&list[i].storyIdList){
+                    let stories= list[i].storyIdList.map(sTc=>sTc.story)
+                    dispatch(appendToPagesInView({pages:stories}))
+            }   
         }
-    
-    useEffect(()=>{
-     
-       
+        }}
+     const checkPermissions=()=>{
+        findRole()
+        soUserCanSee()
+        soUserCanAdd()
+        soUserCanEdit()
+        dispatch(getRecommendedCollectionsProfile())  
+     }
+   
+
+    useLayoutEffect(()=>{
+  
+  
+     getCol() 
+    },[location.pathname])
+    const getMore = ()=>{
+      
        
         dispatch(getRecommendedCollections({collection})).then(res=>{
             checkResult(res,payload=>{
@@ -148,25 +158,22 @@ const pathParams =useParams()
                         let found = collection.childCollections.find(cTc=>cTc.childCollectionId ==col.id)
                         return col.id !=collection.id && !found
                     })
-                    // if(newRecommendations.length==0){
-                    //     if(currentProfile){
-                    //         dispatch(getRecommendedCollectionsProfile())
-                    //     }
-                    // }else{
+                    if(newRecommendations.length==0){
+                        if(currentProfile){
+                            dispatch(getRecommendedCollectionsProfile())
+                        }
+                    }else{
 
                 
                 setRecommendedCols(newRecommendations)
-            // }
+            }
                 }
 
             },err=>{
-                if(currentProfile){
-                    dispatch(getRecommendedCollectionsProfile())
-                }
+             
             })
     })
-      
-    },[collection])
+    }    
     // useEffect(()=>{
     //     if(localStorage.getItem("token")&&recommendedCols.length==0){
     //         dispatch(getRecommendedCollectionsProfile())
@@ -175,12 +182,15 @@ const pathParams =useParams()
 
  
      useLayoutEffect(()=>{
+        if(import.meta.env.VITE_NOTE_ENV!="dev"){ 
         if(currentProfile && collection){
             dispatch(postCollectionHistory({profile:currentProfile,collection}))
         }
+    }
     },[currentProfile])
     useLayoutEffect(()=>{
         dispatch(getCurrentProfile())
+        getMore()
     },[])
     const deleteFollow=()=>{
         if(currentProfile){
@@ -220,50 +230,32 @@ if(currentProfile){
     }
     }
     const getCol=()=>{
-        dispatch(setPagesInView({pages:[]}))
-        localStorage.getItem("token")?dispatch(fetchCollectionProtected(params)).then(res=>{
+
+       currentProfile?dispatch(fetchCollectionProtected(params)).then(res=>{
             checkResult(res,payload=>{
-                findRole()
-                setLoading(false)
-                setHasMore(false)
-                soUserCanSee()
-                soUserCanAdd()
-                soUserCanEdit()
-                console.log("payload",payload.collection)
-                dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-                dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
-                getMore()
-              
+             dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
+             checkPermissions()
             },err=>{
 
             })
-        }):dispatch(fetchCollection(params).then(res=>{
+        }):dispatch(fetchCollection(params)).then(res=>{
             checkResult(res,payload=>{
-                findRole()
-               
-                setLoading(false)
-                console.log("payload",payload.collection)
-                dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-                dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
-                soUserCanSee()
-                soUserCanAdd()
-                soUserCanEdit()
-                findRole()
            
+        
+                dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
+                checkPermissions()
             },err=>{
 
             })
-        }))
+        })
     }
-    useLayoutEffect(()=>{
-            getMore()
-    },[collection])
-    useLayoutEffect(()=>{
-        if(!collection||(collection.id!=pathParams.id)){
-            getCol()
-        }
+ 
+    // useLayoutEffect(()=>{
+    //     if(!collection||(collection.id!=pathParams.id)){
+    //         getCol()
+    //     }
 
-    },[currentProfile,location.pathname])
+    // },[currentProfile,location.pathname])
 
     const soUserCanSee=()=>{
         
@@ -272,6 +264,7 @@ if(currentProfile){
             if( !collection.isPrivate){
             
                 setCanUserSee(true)
+            getContent()
                     return 
              }
              
@@ -279,6 +272,7 @@ if(currentProfile){
                 if(currentProfile.id==collection.profileId){
                     
                     setCanUserSee(true)
+                    getContent()
                     return
                 }
             let found =  collection.roles.find(colRole=>{
@@ -286,6 +280,7 @@ if(currentProfile){
             })
                  if(found && sightArr.includes(found.role)){
                 setCanUserSee(true)
+                getContent()
                 return
                     }else{
                 setCanUserSee(false)
@@ -297,6 +292,7 @@ if(currentProfile){
                     collection.parentCollections.find(cTc=>{
                         const col = cTc.parentCollection
                         if(!col.isPrivate){
+                            getContent()
                             setCanUserSee(true)
                             return
                         }else{
@@ -305,7 +301,8 @@ if(currentProfile){
                             return colRole && colRole.profileId == currentProfile.id
                         })
                     if(found || sightArr.includes(found.role)||collection.profileId==currentProfile.id){
-                            setCanUserSee(true)
+                        getContent() 
+                        setCanUserSee(true)
                               return
                         }else{
                             setCanUserSee(false)
@@ -322,6 +319,7 @@ if(currentProfile){
     const soUserCanAdd = ()=>{
         if(currentProfile&&collection){
         if(collection.profileId==currentProfile.id){
+            getRecommendations()
             setCanUserAdd(true)
             return
         }
@@ -330,6 +328,7 @@ if(currentProfile){
                 return colRole && colRole.profileId == currentProfile.id
             })
             if(collection.isOpenCollaboration||(found && writeArr.includes(found.role))||collection.profileId==currentProfile.id){
+             
                 setCanUserAdd(true)
                 return
             }else{
@@ -338,6 +337,7 @@ if(currentProfile){
             }
         }
     }}
+   
     const soUserCanEdit=()=>{
         if(currentProfile && collection){
             
@@ -358,11 +358,7 @@ if(currentProfile){
             }
         } }
     }
-    useLayoutEffect(()=>{
-       soUserCanSee() 
-       soUserCanAdd()   
-       soUserCanEdit() 
-    },[currentProfile,collection])
+
    
     const findRole = ()=>{
         if(collection && currentProfile&& collection.profileId==currentProfile.id){
@@ -433,7 +429,7 @@ const bookList=()=>{
     <div>
         <InfiniteScroll
         dataLength={collections.length}
-        className="flex flex-row justify-center py-8"
+        className="flex flex-row md:justify-center py-8"
         next={()=>{}}
         hasMore={false} // Replace with a condition based on your data source
         loader={<p>Loading...</p>}
