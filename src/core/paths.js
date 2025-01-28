@@ -43,9 +43,11 @@ const Paths ={
         route:()=>{return "/collection"}
     },
     addStoryToCollection:{
-        route:"/story/:id/collection",
+        collection:(id)=>`/item/${id}/collection`,
+        story:(id)=>`/item/${id}/story`,
+               route:"/item/:id/:type",
         createRoute:(id)=>{
-            return `/story/${id}/collection`
+            return `/item/${id}/collection`
         }
     },
     discovery:()=>"/discovery",

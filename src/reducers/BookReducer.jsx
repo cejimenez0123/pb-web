@@ -55,7 +55,11 @@ state.loading = true
 }).addCase(clearCollections.type,(state)=>{
     state.collections=[]
 }).addCase(deleteCollectionFromCollection.fulfilled,(state,{payload})=>{
-    state.collectionInView = payload.collection
+    const {collection}=payload
+    if(collection){
+        state.collectionInView = collection
+    }
+  
 }).addCase(deleteCollectionFromCollection.rejected,(state,{payload})=>{
     state.error=payload.error
 }).addCase(getRecommendedCollectionsProfile.fulfilled,(state,{payload})=>{
@@ -66,7 +70,7 @@ state.loading = true
 
     let list = state.collections
     const index = list.findIndex(col=>col.id==payload.collection.id)
-    if(index>0){
+    if(index>0&&payload.collection){
             list[index]=payload.collection
             state.collections = list
     }})
@@ -92,9 +96,9 @@ state.loading = true
    
     state.loading = false
 }).addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
-    state.loading=false
+   
    let list = state.collections
-    // state.collectionInView =payload.collection
+  
     const index = list.findIndex(col=>col.id==payload.collection.id)
     if(index>0){
         list[index]=payload.collection
@@ -122,15 +126,22 @@ state.loading = true
 }).addCase(setCollections,(state,{payload})=>{
  
     state.collections = payload
-    
- 
  
     })
 .addCase(saveRoleToCollection.rejected,(state,{payload})=>{
     state.loading = false
     state.error = "Error Saving Role"
 }).addCase(getMyCollections.fulfilled,(state,{payload})=>{
-    state.collections = payload.collections
+    let cols = state.collections
+    const list = cols.map(col=>{
+        return payload.collections.find(colx=>{
+           return col.id==colx.id}
+        )
+    })
+    const filtered = payload.collections.filter(col=>{
+       return !state.collections.find(colx=>col.id==colx.id)
+    })
+    state.collections =[...list,...filtered]
     state.loading =false
 }).addCase(getMyCollections.pending,)
 .addCase(getMyCollections.rejected,(state,{payload})=>{

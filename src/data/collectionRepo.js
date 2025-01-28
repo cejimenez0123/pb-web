@@ -102,7 +102,7 @@ import Enviroment from "../core/Enviroment";
         },{headers:{
             Authorization:"Bearer "+localStorage.getItem(this.token)
         }})
-   
+   console.log(res)
         return res.data
     }
     async addStoryListToCollection({id,list,profile}){
@@ -128,6 +128,7 @@ import Enviroment from "../core/Enviroment";
                 Authorization:"Bearer "+localStorage.getItem("token")
             }}
         )
+        console.log("POP",res)
         return res.data
     }
     async getProfileLibraries({profile}){
@@ -152,12 +153,13 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(this.url+"/profile/"+profile.id+"/book")
         return res.data
     }
-    async deleteCollectionToCollection({id,childCollectionId}){
-        let res = await axios.delete(this.url+"/"+id+"/collection/"+childCollectionId,
+    async deleteCollectionToCollection({parentId,id,}){
+        let res = await axios.delete(this.url+"/"+parentId+"/collection/"+id,
             {headers:{
                 Authorization: "Bearer "+localStorage.getItem("token")
             }}
         )
+        console.log(res)
         return res.data
     }
     async deleteStoryToCollection({id,storyId}){

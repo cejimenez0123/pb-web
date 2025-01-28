@@ -94,7 +94,7 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
 className=' text-green-600 '
 
 onClick={()=>{
-navigate(Paths.addStoryToCollection.createRoute(page.id))
+navigate(Paths.addStoryToCollection.story(page.id))
 
 }}> 
                 Add to Collection

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import dragHandle from "../images/icons/drag_handle.svg"
-export default function SortableList({ items, onOrderChange }) {
+export default function SortableList({ items, onOrderChange, }) {
   
     const [listItems,setListItems]=useState(items)
     useEffect(()=>{

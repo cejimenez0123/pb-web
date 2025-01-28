@@ -11,8 +11,8 @@ export default function Alert(){
       
       
       },4001)},[error,success])
-    return( error || success?       <div className='fixed top-4 left-0 right-0  w-[96vw]  mx-auto md:w-[60%]  z-50 mx-auto'>
-    <div role="alert" className={`alert h-[6em]  w-[96vw]   ${success?"alert-success":"alert-warning"} animate-fade-out`}>
+    return( error || success?       <div className='fixed top-4 left-0 right-0  w-[96vw]  mx-auto md:w-page z-50 mx-auto'>
+    <div role="alert" className={`alert h-[6em]  w-[96vw]   md:w-page mx-auto ${success?"alert-success":"alert-warning"} animate-fade-out`}>
 <div className="flex-row flex my-auto w-[100%]">
     {success?<svg
 xmlns="http://www.w3.org/2000/svg"

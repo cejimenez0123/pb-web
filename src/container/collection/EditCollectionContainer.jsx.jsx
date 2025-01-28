@@ -5,7 +5,7 @@ import Paths from "../../core/paths"
 import { deleteCollection, patchCollectionContent } from "../../actions/CollectionActions"
 import deleteIcon from "../../images/icons/delete.svg"
 import arrowDown from "../../images/icons/arrow_down.svg"
-import { deleteCollectionFromCollection, deleteStoryFromCollection,  fetchCollectionProtected,  } from "../../actions/CollectionActions"
+import {  deleteStoryFromCollection,  fetchCollectionProtected,  } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import view from "../../images/icons/view.svg"
 import SortableList from "../../components/SortableList"
@@ -318,9 +318,7 @@ const handleStoryOrderChange = (newOrder) => {
 const deleteStory = (storyId)=>{
         dispatch(deleteStoryFromCollection({id:colInView.id,storyId:storyId}))
 }
-const deleteSubCollection = (colId)=>{
-    dispatch(deleteCollectionFromCollection({id:colInView.id,childCollectionId:colId.id}))
-}
+
     if(!colInView){
         if(pending){
         return(<div className="skeleton w-96 bg-emerald-50 max-w-[96vw]  m-2 h-96"/>
@@ -352,7 +350,7 @@ const deleteSubCollection = (colId)=>{
   <div role="tabpanel" className="tab-content w-[96vw] md:w-page pt-1 mx-auto  md:h-page border-emerald-600 md::w-page rounded-lg border-2">
      <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20 mx-4"><h6 className="text-emerald-800 py-24 text-center 
    m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:
-   <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteSubCollection}/>}
+   <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={(colId)=>deleteSubCollection(colId)}/>}
  </div> 
   </div>
 </div>

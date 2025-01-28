@@ -205,7 +205,7 @@ setError(err.message)
       }
         const handleClickAddToCollection=()=>{
         
-          navigate(Paths.addStoryToCollection.createRoute(id))
+          navigate(Paths.addStoryToCollection.story(id))
         }
         const handlePostPublicly=debounce((truthy)=>{
   

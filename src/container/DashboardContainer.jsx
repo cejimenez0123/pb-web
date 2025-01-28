@@ -10,17 +10,18 @@ import ExploreList from '../components/collection/ExploreList'
 import { getRecommendedCollectionsProfile } from '../actions/CollectionActions'
 import Context from '../context'
 import { useLocation } from 'react-router-dom'
-import { setPageInView, setPagesInView } from '../actions/PageActions'
+import {  setPagesInView } from '../actions/PageActions'
 import { setCollections } from '../actions/BookActions'
 
 function DashboardContainer(props){
-    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
+    const location = useLocation()
+    ReactGA.send({ hitType: "pageview", page: location.pathname+window.location.search, title: "About Page" })
     // const {setError}=useContext(Context)
     const dispatch = useDispatch()
     const currentProfile = useSelector((state)=>state.users.currentProfile)
    const hashtags=useSelector(state=>state.hashtags.hashtags)
     const collections = useSelector(state=>state.books.collections)
-    const pages = useSelector(state=>state.pages.pagesInView)
+   
     const [hasMore,setHasMore] = useState(true)
     const getContent=()=>{
 

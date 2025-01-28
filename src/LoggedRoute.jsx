@@ -14,16 +14,16 @@ const LoggedRoute = ({ loggedOut, children }) => {
   useEffect(()=>{
    
     if(currentProfile){     
-      if(formerPage){
-        if(formerPage==Paths.login()){
+      // if(formerPage){
+      //   if(formerPage==Paths.login()){
           navigate(Paths.myProfile())
-        }else{
-          navigate(formerPage)
-        }
+        // }else{
+        //   navigate(formerPage)
+        // }
     
-      }else{
-        navigate(Paths.myProfile())
-      }
+      // }else{
+      //   navigate(Paths.myProfile())
+      // }
     }
 
   },[currentProfile])

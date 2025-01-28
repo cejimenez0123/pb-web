@@ -120,9 +120,9 @@ function IndexItem({item}) {
 
     const handleAddToClick = ()=>{
       if(item && item.storyIdList){
-       navigate(Paths.addToCollection.createRoute(item.id))
+       navigate(Paths.addStoryToCollection.collection(item.id))
       }else{
-       navigate(Paths.addStoryToCollection.createRoute(item.id))
+       navigate(Paths.addStoryToCollection.story(item.id))
       }
     }
 

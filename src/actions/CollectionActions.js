@@ -123,7 +123,6 @@ const setCollectionInView = createAction("books/setCollectionInView", (params)=>
 const addCollectionListToCollection = createAsyncThunk("books/addCollectionListToCollection",async(
     {id,list,profile},thunkApi
 )=>{
-  
 
     let data = await collectionRepo.addCollectionListToCollection({id,list,profile})
 
@@ -182,11 +181,17 @@ const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCo
      collection:data.collection
     }
  })
- const deleteCollectionFromCollection = createAsyncThunk("collection/deleteCollectionFromCollection",async({id,childCollectionId},thunkApi)=>{
-    let data = await collectionRepo.deleteCollectionToCollection({id,childCollectionId})
-    return {
-     collection:data.collection
-    }
+ const deleteCollectionFromCollection = createAsyncThunk("collection/deleteCollectionFromCollection",async({id,parentId},thunkApi)=>{
+   try{
+    let data = await collectionRepo.deleteCollectionToCollection({id:id,parentId:parentId})
+    console.log("XS",data)
+
+    return data
+    
+}catch(error){
+    console.log("ES",error)
+    return{error,collection:null}
+}
  })
 const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProtected",async(params,thunkApi)=>{
     let data = await collectionRepo.fetchCollectionProtected(params)  
@@ -201,7 +206,7 @@ const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
 )=>{
 
      let data = await collectionRepo.getMyCollections()
-    console.log(data)
+
       return {
         collections: data.collections
       }
@@ -258,8 +263,7 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
         let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
         if(!isPrivate){
             
-              client.initIndex("collection").saveObject(
-                {objectID:id,title:title,type:"collection"}).wait()
+              client.initIndex("collection").partialUpdateObject({objectID:id,title:title,type:"collection"},{createIfNotExists:true}).wait()
             }  
         return {collection:data.collection}
     }

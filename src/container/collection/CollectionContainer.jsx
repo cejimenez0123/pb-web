@@ -21,7 +21,8 @@ import ExploreList from "../../components/collection/ExploreList"
 import { setCollections } from "../../actions/BookActions"
 import { Checkroom } from "@mui/icons-material"
 import { getCurrentProfile } from "../../actions/UserActions"
-
+import bookmarkOutline from "../../images/bookmarkoutline.svg"
+import bookmarkFill from "../../images/bookmarkfill.svg"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
@@ -40,12 +41,11 @@ export default function CollectionContainer(props){
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(false)
     const params = useParams()
-    const recommendedCols = useSelector(state=>state.books.recommendedCols)
   
-
     
 
     const getRecommendations =()=>{
+        setHasMore(true)
         dispatch(appendToPagesInView({pages:[Enviroment.blankPage]}))
         if(collection && collection.id ){
 
@@ -93,9 +93,10 @@ export default function CollectionContainer(props){
             })
         })
         }
-    }}
+    }
     
     if(currentProfile && collection&&collection.id){
+   
         dispatch(getRecommendedCollectionStory({collection:collection})).then(res=>{
             checkResult(res,payload=>{
                 let stories = payload.pages
@@ -113,7 +114,8 @@ export default function CollectionContainer(props){
 
             },err=>{
                 setHasMore(false)
-            })})}}}
+            })})
+    }}}}
 
          
         
@@ -134,17 +136,27 @@ export default function CollectionContainer(props){
         }
         }}
      const checkPermissions=()=>{
+      
         findRole()
         soUserCanSee()
         soUserCanAdd()
         soUserCanEdit()
+        getContent()
+        getRecommendations()
         dispatch(getRecommendedCollectionsProfile())  
      }
-   
-
+     useLayoutEffect(()=>{
+        if(collection){
+            checkPermissions()
+        }
+        
+     },[collection,currentProfile])
+    //  useEffect(()=>{
+    //     soUserCanSee()
+    //     soUserCanAdd()
+    //     soUserCanEdit()
+    //  },[currentProfile])
     useLayoutEffect(()=>{
-  
-  
      getCol() 
     },[location.pathname])
     const getMore = ()=>{
@@ -162,11 +174,7 @@ export default function CollectionContainer(props){
                         if(currentProfile){
                             dispatch(getRecommendedCollectionsProfile())
                         }
-                    }else{
-
-                
-                setRecommendedCols(newRecommendations)
-            }
+                    }
                 }
 
             },err=>{
@@ -174,11 +182,11 @@ export default function CollectionContainer(props){
             })
     })
     }    
-    // useEffect(()=>{
-    //     if(localStorage.getItem("token")&&recommendedCols.length==0){
-    //         dispatch(getRecommendedCollectionsProfile())
-    //     }
-    // },[recommendedCols])
+    useLayoutEffect(()=>{
+       
+            dispatch(getRecommendedCollectionsProfile())
+        
+    },[])
 
  
      useLayoutEffect(()=>{
@@ -187,7 +195,7 @@ export default function CollectionContainer(props){
             dispatch(postCollectionHistory({profile:currentProfile,collection}))
         }
     }
-    },[currentProfile])
+    },[])
     useLayoutEffect(()=>{
         dispatch(getCurrentProfile())
         getMore()
@@ -231,19 +239,21 @@ if(currentProfile){
     }
     const getCol=()=>{
         dispatch(setPagesInView({pages:[]}))
+        dispatch(setCollections({collections:[]}))
        currentProfile?dispatch(fetchCollectionProtected(params)).then(res=>{
             checkResult(res,payload=>{
              dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-             checkPermissions()
+             dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
+           
             },err=>{
 
             })
         }):dispatch(fetchCollection(params)).then(res=>{
             checkResult(res,payload=>{
            
-        
+                dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
                 dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-                checkPermissions()
+            
             },err=>{
 
             })
@@ -259,7 +269,7 @@ if(currentProfile){
             if( !collection.isPrivate){
             
                 setCanUserSee(true)
-            getContent()
+        
                     return 
              }
              
@@ -267,7 +277,7 @@ if(currentProfile){
                 if(currentProfile.id==collection.profileId){
                     
                     setCanUserSee(true)
-                    getContent()
+                 
                     return
                 }
             let found =  collection.roles.find(colRole=>{
@@ -275,7 +285,7 @@ if(currentProfile){
             })
                  if(found && sightArr.includes(found.role)){
                 setCanUserSee(true)
-                getContent()
+               
                 return
                     }else{
                 setCanUserSee(false)
@@ -287,7 +297,7 @@ if(currentProfile){
                     collection.parentCollections.find(cTc=>{
                         const col = cTc.parentCollection
                         if(!col.isPrivate){
-                            getContent()
+                           
                             setCanUserSee(true)
                             return
                         }else{
@@ -296,7 +306,7 @@ if(currentProfile){
                             return colRole && colRole.profileId == currentProfile.id
                         })
                     if(found || sightArr.includes(found.role)||collection.profileId==currentProfile.id){
-                        getContent() 
+                      
                         setCanUserSee(true)
                               return
                         }else{
@@ -312,9 +322,13 @@ if(currentProfile){
 
 }
     const soUserCanAdd = ()=>{
+        if(!currentProfile){
+            setCanUserAdd(false)
+            return
+        }
         if(currentProfile&&collection){
         if(collection.profileId==currentProfile.id){
-            getRecommendations()
+      
             setCanUserAdd(true)
             return
         }
@@ -334,6 +348,10 @@ if(currentProfile){
     }}
    
     const soUserCanEdit=()=>{
+        if(!currentProfile){
+            setCanUserEdit(false)
+            return
+        }
         if(currentProfile && collection){
             
             if(collection.profileId==currentProfile.id){
@@ -384,40 +402,55 @@ if(currentProfile){
             return(<div className="lg:w-info h-info  w-[96vw] skeleton bg-slate-200"></div>)
         }
        
-        return(<div><div className=" w-[96vw] mx-auto lg:w-info h-fit lg:h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600   rounded-lg mb-8 text-left">
-                {collection.profile?<div className="flex flex-row"><div className="min-w-8 min-h-8  my-auto text-emerald-800"><ProfileCircle profile={collection.profile}/></div></div>:null}
+        return(<div className=" w-[96vw] mx-auto lg:w-info h-fit lg:h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600 flex flex-col jusify-between  rounded-lg mb-8 text-left">
+    
+        <div>
+                {collection.profile?
+                <div className="flex flex-row">
+                <div className="min-w-8 min-h-8  my-auto text-emerald-800">
+                    <ProfileCircle profile={collection.profile}/>
+                    </div></div>:null}
                 <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
     <h3 className="mt-8 mb-2  text-emerald-800 lora-medium text-xl sm:text-3xl">{collection.title}</h3>
 
         <h6 className="text-emerald-800  open-sans-medium rounded-lg py-4 px-2">{collection.purpose}</h6>
 </div>
-        <div className={" w-36  mx-auto flex flex-row"}>
+</div>
+{/* // */}
+        <div className=" w-[100%]  mx-auto flex justify-between flex-row">
+   <div className="flex flex-row">
    {!role?<div
    onClick={handleFollow}
    className={"border-emerald-600 bg-transparent border-2 sm:ml-4 text-emerald-600  mont-medium w-40 min-h-12 max-h-14 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}>
-    <h6 className="px-4 py-3 mont-medium  text-[1rem] sm:text-[1.2rem] text-center  ">Follow</h6></div>:
+    <h6 className="px-4 py-3 mont-medium  text-[1rem] sm:text-[1.2rem] text-center  ">Follow
+    </h6></div>:
    <div
    onClick={deleteFollow}
    className={"bg-emerald-500 text-white w-40 px-4 sm:ml-4 min-h-12 max-h-14 rounded-full flex text-[1rem] "} >
-       <h6 className="mx-auto mont-medium my-auto text-[1rem]"> {role.role}</h6>
-   </div>}
-   <div
-    className="flex flex-row   "
-   >
+       <h6 className="mx-auto mont-medium my-auto text-[1rem]"> {role.role}</h6></div>}
+    
+  
    {canUserAdd?
     <img onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))
    }className="rounded-full bg-emerald-800 p-2 mx-2 my-auto"src={add}/>:null}
    {canUserEdit?
-   
    <img 
    onClick={()=>navigate(Paths.editCollection.createRoute(collection.id))}
-   className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}</div>:
+   className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}</div>
+      <span 
+      
+       onClick={()=>{
+        if(currentProfile){navigate(Paths.addStoryToCollection.collection(collection.id))}else{
+            setError("Please sign in first!")
+        }}}
+       className="bg-emerald-800 max-h-14 min-w-12 min-h-12 max-h-14 rounded-full flex">  
+        <img  className="  mx-auto my-auto"src={bookmarkOutline}/>
+</span>
+   </div>
+ </div>
 
-
-
-
-   
-   </div></div></div>)}
+  )
+    }
 const bookList=()=>{
     return(<div>
         <h3 className="text-2xl lora-bold text-emerald-800 font-bold text-center">Anthologies</h3>:

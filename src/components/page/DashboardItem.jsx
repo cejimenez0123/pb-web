@@ -137,7 +137,7 @@ return <Button onClick={()=>{
         
     }
     const ClickAddStoryToCollection=()=>{
-        navigate(Paths.addStoryToCollection.createRoute(page.id))
+        navigate(Paths.addStoryToCollection.story(page.id))
     }
     if(book){
         
