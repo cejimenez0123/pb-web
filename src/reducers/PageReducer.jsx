@@ -180,7 +180,7 @@ const pageSlice = createSlice({
           state.loading = false
       }).addCase(fetchArrayOfPages.pending,(state)=>{
           state.loading = true
-      }).addCase(setPagesInView.type,(state,{payload})=>{
+      }).addCase(setPagesInView,(state,{payload})=>{
     
           state.pagesInView = payload
       

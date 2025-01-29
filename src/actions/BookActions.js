@@ -7,8 +7,7 @@ import {  where,
           arrayUnion,
           collection,
           getDocs,
-          getDoc,
-          doc,
+        
           updateDoc} from "firebase/firestore"
 import { db,auth,client} from "../core/di"
 import Contributors from "../domain/models/contributor"
