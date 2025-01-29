@@ -139,7 +139,7 @@ state.loading = true
         )
     })
     const filtered = payload.collections.filter(col=>{
-       return !state.collections.find(colx=>col.id==colx.id)
+       return !state.collections.filter(colx=>colx&&colx.id).find(colx=>col.id==colx.id)
     })
     state.collections =[...list,...filtered]
     state.loading =false
