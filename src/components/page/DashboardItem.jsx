@@ -248,7 +248,7 @@ className='  bg-emerald-700 flex rounded-br-lg grow flex-1/3 '> <img  className=
                 <div className='relative shrink my-2 h-fit'>
         <div onClick={()=>{
             isGrid?navigate(Paths.page.createRoute(page.id)):null
-        }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-fit min-h-56   ":"bg-emerald-50 max-w-[96vw]"} mx-auto  shadow-sm   `}>
+        }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-fit min-h-56   ":"bg-emerald-50 w-[96vw]"} mx-auto  shadow-sm   `}>
                {!isGrid&&page?header():null}
         {page.description && page.description && takingFeedback?<div className='min-h-24 pt-16 p-2'>
             <label className='text-emerald-800'>Feedback Request:</label>

@@ -1,17 +1,14 @@
-import React ,{useEffect, useState} from 'react'
+import React ,{useContext, useEffect, useState} from 'react'
 import "../../App.css"
 import { logIn} from '../../actions/UserActions';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import {
-        TextField ,
- 
-        Button, 
-        FormGroup, 
+        
         Dialog,
-        Typography} from "@mui/material"
-
+        } from "@mui/material"
+import loadingGif from "../../images/loading.gif"
 import theme from '../../theme';
 import { Clear } from '@mui/icons-material';
 import { auth } from '../../core/di';
@@ -20,10 +17,11 @@ import Paths from '../../core/paths';
 import { useLocation } from 'react-router-dom';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
+import Context from '../../context';
 
 function LogInContainer(props) {
     const location = useLocation()
-
+    const {setError}=useContext(Context)
   
   
     const [logInError,setLogInError] = useState(null)
@@ -35,26 +33,9 @@ function LogInContainer(props) {
   
     return (
         <div id="" className='sm:mx-2'>
-             <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
-   {logInError?
-  <div role="alert" className={`alert    
-  ${"alert-warning"} animate-fade-out`}>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-6 w-6 shrink-0 stroke-current"
-    fill="none"
-    viewBox="0 0 24 24">
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-  <span>{logInError}</span>
-</div>:null}</div>
-            <LogInCard  setError={setLogInError}
-                        error={logInError}
-            setLogInError={setLogInError}
+            <LogInCard  
+                       
+            setLogInError={setError}
                         handleSubmit={(e)=>handleLogIn(e)}
             
                         setPassword={(str)=>setLiPassword(str)}/>
@@ -79,7 +60,7 @@ function LogInCard({setLogInError}){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [pending,setPending]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("")
     const [open,setOpen] = useState(false);
@@ -92,10 +73,12 @@ function LogInCard({setLogInError}){
 
     const handleLogIn = (event)=>{
         event.preventDefault()
+        setPending(true)
         if(email.length>3 && password.length){
             const params ={email:email.toLowerCase(),password:password}
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
+                    setPending(false)
                         console.log(payload)
                     if(payload.error){
                         setLogInError("Error with Username or Password")
@@ -103,11 +86,14 @@ function LogInCard({setLogInError}){
                         navigate(Paths.myProfile())
                     }
                 },err=>{
+                    console.log(err)
                     setLogInError(err.message)
+                    setPending(false)
                 })
             })       
         }else{
-            setLogInError("Error")
+            setPending(false)
+            setLogInError("Values can't be empty")
         }
     }
     useEffect(()=>{
@@ -164,9 +150,10 @@ function LogInCard({setLogInError}){
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}className='text-emerald-800 text-xl open-sans-medium hover:text-green-400  '>Click here if this your first time?</a>
         </div>
-        <div>
-        
-        </div>
+        {pending? <div className='flex'>
+       <img  
+        className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
+        </div>:null}
         </form>
         <Dialog
        

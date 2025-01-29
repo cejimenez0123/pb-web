@@ -49,7 +49,7 @@ export default function CollectionContainer(props){
         dispatch(appendToPagesInView({pages:[Enviroment.blankPage]}))
         if(collection && collection.id ){
 
-          dispatch(getRecommendedCollectionStory({collection:collection})).then(res=>{
+          dispatch(getRecommendedCollectionStory({colId:collection.id})).then(res=>{
             checkResult(res,payload=>{
                 let stories = payload.pages
                 let recommended =stories.map(story=>{
@@ -73,7 +73,7 @@ export default function CollectionContainer(props){
             for(let i = 0;i<collections.length;i+=1){
           if(collections[i] && collections[i].id){ 
 
-        dispatch(getRecommendedCollectionStory({collection:collections[i]})).then(res=>{
+        dispatch(getRecommendedCollectionStory({colId:collections[i].id})).then(res=>{
             checkResult(res,payload=>{
                 let stories = payload.pages
                 let recommended =stories.map(story=>{
@@ -97,7 +97,7 @@ export default function CollectionContainer(props){
     
     if(currentProfile && collection&&collection.id){
    
-        dispatch(getRecommendedCollectionStory({collection:collection})).then(res=>{
+        dispatch(getRecommendedCollectionStory({colId:collection.id})).then(res=>{
             checkResult(res,payload=>{
                 let stories = payload.pages
                 setHasMore(false)
@@ -142,7 +142,7 @@ export default function CollectionContainer(props){
         soUserCanAdd()
         soUserCanEdit()
         getContent()
-        getRecommendations()
+     
         dispatch(getRecommendedCollectionsProfile())  
      }
      useLayoutEffect(()=>{
@@ -151,11 +151,7 @@ export default function CollectionContainer(props){
         }
         
      },[collection,currentProfile])
-    //  useEffect(()=>{
-    //     soUserCanSee()
-    //     soUserCanAdd()
-    //     soUserCanEdit()
-    //  },[currentProfile])
+
     useLayoutEffect(()=>{
      getCol() 
     },[location.pathname])
@@ -227,7 +223,7 @@ if(currentProfile){
         dispatch(postCollectionRole({type:type,profileId:currentProfile.id,collectionId:collection.id}))
         .then(res=>{
             checkResult(res,payload=>{
-           
+           getCol()
        
             },err=>{
                 setError(err.message)
@@ -323,12 +319,13 @@ if(currentProfile){
 }
     const soUserCanAdd = ()=>{
         if(!currentProfile){
+
             setCanUserAdd(false)
             return
         }
         if(currentProfile&&collection){
         if(collection.profileId==currentProfile.id){
-      
+         getRecommendations()
             setCanUserAdd(true)
             return
         }
@@ -337,7 +334,7 @@ if(currentProfile){
                 return colRole && colRole.profileId == currentProfile.id
             })
             if(collection.isOpenCollaboration||(found && writeArr.includes(found.role))||collection.profileId==currentProfile.id){
-             
+                getRecommendations()
                 setCanUserAdd(true)
                 return
             }else{

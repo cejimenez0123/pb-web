@@ -28,11 +28,11 @@ const getPublicBooks = createAsyncThunk(
 
 const getRecommendedCollectionStory = createAsyncThunk(
     'collections/recommendatedCollectionStory',
-    async (params,thunkApi) => {
+    async ({colId},thunkApi) => {
     
    
         try{
-           let data = await  collectionRepo.recommendedStories({colId:params.collection.id})
+           let data = await  collectionRepo.recommendedStories({colId:colId})
 
 return {pages:data.pages}
 }catch (error) {
