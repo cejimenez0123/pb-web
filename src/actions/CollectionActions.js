@@ -49,8 +49,8 @@ const getRecommendedCollections = createAsyncThunk(
     async (params,thunkApi) => {
     
         try{
-       if(params.collection){
-          const {collections}= await collectionRepo.recommendedColCollections({colId:params.collection.id})
+       if(params.colId){
+          const {collections}= await collectionRepo.recommendedColCollections({colId:colId})
           return {collections:collections}
         }else{
             return{

@@ -154,11 +154,9 @@ const pageSlice = createSlice({
       .addCase(clearEditingPage,(state)=>{
         state.editingPage =null
       }).addCase(setPageInView,(state,{payload})=>{
-     if(payload && payload.page){
-      state.pageInView = payload.page
-     }else{
-      state.pageInView=null
-     }
+     
+      state.pageInView = payload
+   
       
       }).addCase(setEditingPage.type,(state,{payload})=>{
         state.editingPage = payload

@@ -47,8 +47,7 @@ export default function CollectionContainer(props){
     const getRecommendations =()=>{
         setHasMore(true)
         dispatch(appendToPagesInView({pages:[Enviroment.blankPage]}))
-        if(collection && collection.id ){
-
+        if(collection && collection.id&&collection.type!="feedback" ){
           dispatch(getRecommendedCollectionStory({colId:collection.id})).then(res=>{
             checkResult(res,payload=>{
                 let stories = payload.pages
@@ -58,8 +57,6 @@ export default function CollectionContainer(props){
                         return page
                 })
                 setHasMore(false)
-           
-                 
                   dispatch(appendToPagesInView({pages:recommended}))
               
                 
@@ -69,7 +66,7 @@ export default function CollectionContainer(props){
             })
         })
         
-        if(collections && collections.length>0){
+        if(collections && collections.length>0&&collection.type!="feedback" ){
             for(let i = 0;i<collections.length;i+=1){
           if(collections[i] && collections[i].id){ 
 
@@ -95,7 +92,7 @@ export default function CollectionContainer(props){
         }
     }
     
-    if(currentProfile && collection&&collection.id){
+    if(currentProfile && collection&&collection.id&&collection.type!="feedback" ){
    
         dispatch(getRecommendedCollectionStory({colId:collection.id})).then(res=>{
             checkResult(res,payload=>{
@@ -115,7 +112,10 @@ export default function CollectionContainer(props){
             },err=>{
                 setHasMore(false)
             })})
-    }}}}
+    }else{
+        setLoading(false)
+    }}}
+}
 
          
         
@@ -126,14 +126,17 @@ export default function CollectionContainer(props){
     
         if(collection&&collection.storyIdList&&collection.childCollections){
             dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
-           
+     
             let list = collection.childCollections.map(ctc=>ctc.childCollection)
             for(let i = 0;i<list.length;i+=1){
                 if(list[i]&&list[i].storyIdList){
                     let stories= list[i].storyIdList.map(sTc=>sTc.story)
                     dispatch(appendToPagesInView({pages:stories}))
+                
             }   
+            
         }
+        setHasMore(false)
         }}
      const checkPermissions=()=>{
       
@@ -154,11 +157,12 @@ export default function CollectionContainer(props){
 
     useLayoutEffect(()=>{
      getCol() 
+     dispatch(getRecommendedCollectionsProfile())
     },[location.pathname])
     const getMore = ()=>{
       
-       
-        dispatch(getRecommendedCollections({collection})).then(res=>{
+       if(collection){
+        dispatch(getRecommendedCollections({colId:collection.id})).then(res=>{
             checkResult(res,payload=>{
        
                 if(payload.collections){
@@ -174,15 +178,18 @@ export default function CollectionContainer(props){
                 }
 
             },err=>{
-             
+             setLoading(false)
             })
     })
+}else{
+    setLoading(false)
+}
     }    
     useLayoutEffect(()=>{
-       
-            dispatch(getRecommendedCollectionsProfile())
+        getCol()
+    
         
-    },[])
+    },[currentProfile])
 
  
      useLayoutEffect(()=>{
@@ -223,7 +230,7 @@ if(currentProfile){
         dispatch(postCollectionRole({type:type,profileId:currentProfile.id,collectionId:collection.id}))
         .then(res=>{
             checkResult(res,payload=>{
-           getCol()
+        
        
             },err=>{
                 setError(err.message)
@@ -234,24 +241,27 @@ if(currentProfile){
     }
     }
     const getCol=()=>{
+       setLoading(true)
         dispatch(setPagesInView({pages:[]}))
         dispatch(setCollections({collections:[]}))
        currentProfile?dispatch(fetchCollectionProtected(params)).then(res=>{
             checkResult(res,payload=>{
              dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
              dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
-           
+             setLoading(false)
             },err=>{
-
+                setError(er.meesage)
+                setLoading(false)
             })
         }):dispatch(fetchCollection(params)).then(res=>{
             checkResult(res,payload=>{
            
                 dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
                 dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-            
+                setLoading(false)
             },err=>{
-
+                setError(er.meesage)
+                setLoading(false)
             })
         })
     }
@@ -325,7 +335,8 @@ if(currentProfile){
         }
         if(currentProfile&&collection){
         if(collection.profileId==currentProfile.id){
-         getRecommendations()
+            
+            getRecommendations()
             setCanUserAdd(true)
             return
         }
@@ -395,7 +406,7 @@ if(currentProfile){
 
    
     const CollectionInfo=({collection})=>{  
-        if(!collection){
+        if(!collection&&collection.id){
             return(<div className="lg:w-info h-info  w-[96vw] skeleton bg-slate-200"></div>)
         }
        

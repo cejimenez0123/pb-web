@@ -18,7 +18,7 @@ const WorkshopContainer = (props) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const page = useSelector(state=>state.pages.pageInView)
-  const [loading,setLoading]=useState(true)
+  const [loading,setLoading]=useState(false)
   const {error,setError,setSuccess}=useContext(Context)
 
   const [radius,setRadius]=useState(50)

@@ -78,6 +78,7 @@ function NavbarContainer({profile}){
       }else if(page===PageName.about){
         navigate(Paths.about())
       }else if(page==PageName.workshop){
+        dispatch(setPageInView({page:null}))
         navigate(Paths.workshop.reader())
       }else if(page==PageName.home){
         navigate(Paths.home())
