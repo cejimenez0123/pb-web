@@ -86,7 +86,7 @@ export default function NotificationContainer(props){
 
     return(<div className="flex flex-col justify-center md:py-8">
         <div  className=" w-[96vw] border-b-2 border-emerald-600 mx-auto md:w-page">
-<p className="lora-medium text-emerald-800 text-opacity-70">Today</p>
+<h1 className="lora-bold text-xl text-emerald-800  mb-4 mt-8 text-opacity-70">Today</h1>
 <InfiniteScroll
  className=" w-[96vw] border-b-2 border-emerald-600 mx-auto md:w-page"
  dataLength={items.length}
@@ -106,8 +106,8 @@ export default function NotificationContainer(props){
            
         const collection = item.collection
         
-            return(<div onClick={()=>navigate(Paths.collection.createRoute(collection.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem] border-opacity-60 md:border-2 rounded-full p-2">
-            <div className="px-12" ><span    className="flex justify-between flex-row ">
+            return(<div onClick={()=>navigate(Paths.collection.createRoute(collection.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem] border-opacity-60 md:border-2 md:rounded-full p-2">
+            <div className="md:px-12" ><span    className="flex justify-between flex-row ">
         
             <ProfileCircle profile={collection.profile}/>
             <h4 className="text-emerald-700 mx-4 my-2 text-[0.7rem] open-sans-medium">Published to {collection.title}</h4>
@@ -120,8 +120,8 @@ export default function NotificationContainer(props){
         }
         case "story":{
             const story = item.item
-            return(<div onClick={()=>navigate(Paths.page.createRoute(story.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem]   border-opacity-60 md:border-2 rounded-full p-2">
-            <div className="px-12" ><span    className="flex justify-between flex-row ">
+            return(<div onClick={()=>navigate(Paths.page.createRoute(story.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem]   border-opacity-60 md:border-2 md:rounded-full p-2">
+            <div className="md:px-12" ><span    className="flex justify-between flex-row ">
         
             <ProfileCircle profile={item.profile}/>
             <h4 className="text-emerald-700 mx-4 my-2 text-[0.7rem] open-sans-medium">{lastNotified<new Date(story.created)?"New Story":null}</h4>
@@ -135,7 +135,7 @@ export default function NotificationContainer(props){
             const comment = item.item
         
             return(<div onClick={()=>navigate(Paths.page.createRoute(comment.story.id))}
-            className="border-emerald-600 min-h-[8rem] max-h-[10rem] border-t-2 md:my-2  border-opacity-60 md:border-2 rounded-full p-4">
+            className="border-emerald-600 min-h-[8rem] max-h-[10rem] border-t-2 md:my-2  border-opacity-60 md:border-2 md:rounded-full p-4">
             <div className="px-6" ><span    className="flex flex-row justify-between"><span
             className="flex flex-row ">
             <ProfileCircle profile={comment.profile}/>
