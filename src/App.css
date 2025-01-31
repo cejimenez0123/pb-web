@@ -72,7 +72,12 @@
 .isGrid .ql-size-normal,p{
   font-size: 1.3rem !important;
 }
-
+.ql-size-normal,p{
+  font-size: 1rem !important;
+}
+.ql-editor h3{
+  font-size: 1.2rem !important;
+}
 #editor .ql-size-large{
   font-size: 1.5rem !important;
 }

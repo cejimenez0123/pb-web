@@ -22,7 +22,7 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(this.url+"/profile/private",{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem(this.token),
-                'Access-Control-Allow-Origin': "*"
+            
             }
         })
     

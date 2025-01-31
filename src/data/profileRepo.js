@@ -32,7 +32,7 @@ class ProfileRepo {
     async notifications({token,profile}){
     
 
-const params = new URLSearchParams({profileId:profile.id})
+
 
         let res = await axios.get(this.url+"/"+profile.id+"/alert",{headers:{
             Authorization:"Bearer "+token

@@ -3,13 +3,11 @@ import { createSlice} from "@reduxjs/toolkit"
                 saveRoleToCollection
         ,addCollectionListToCollection,
         addStoryListToCollection,
-        // getSubCollectionsProtected,
-        // getSubCollectionsPublic,
         deleteCollectionFromCollection,
         deleteStoryFromCollection,
         clearCollections,
         getRecommendedCollectionsProfile,
-        // getRecommendedCollectionsProfile,
+       
       
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
@@ -123,7 +121,7 @@ state.loading = true
     state.loading = false
     state.collections= payload.books
 
-}).addCase(setCollections,(state,{payload})=>{
+}).addCase(setCollections.type,(state,{payload})=>{
  
     state.collections = payload
  
@@ -133,6 +131,9 @@ state.loading = true
     state.error = "Error Saving Role"
 }).addCase(getMyCollections.fulfilled,(state,{payload})=>{
     let cols = state.collections
+  
+
+
     const list = cols.map(col=>{
         return payload.collections.find(colx=>{
            return col.id==colx.id}
@@ -143,6 +144,7 @@ state.loading = true
     })
     state.collections =[...list,...filtered]
     state.loading =false
+
 }).addCase(getMyCollections.pending,)
 .addCase(getMyCollections.rejected,(state,{payload})=>{
     console.log(payload.error)

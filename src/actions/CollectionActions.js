@@ -264,6 +264,8 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
         if(!isPrivate){
             
               client.initIndex("collection").partialUpdateObject({objectID:id,title:title,type:"collection"},{createIfNotExists:true}).wait()
+            }else{
+                client.initIndex("collection").deleteObject(id).wait()
             }  
         return {collection:data.collection}
     }

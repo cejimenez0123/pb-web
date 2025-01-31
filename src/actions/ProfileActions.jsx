@@ -22,18 +22,14 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
     return data
  })
  const fetchNotifcations = createAsyncThunk("users/fetchNotifications",async (params,thunkApi)=>{
-    // try{
+ 
         const {profile}=params
        const token = localStorage.getItem("token")
 
              let data =   await profileRepo.notifications({token,profile})
 
           return data
-    // }catch(err){
-    //     console.log(error)
-    //     return {error:err}
-
-    // }
+  
  })
  const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async (params,thunkApi)=>{
     try {

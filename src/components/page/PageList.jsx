@@ -1,12 +1,11 @@
 import { useSelector } from "react-redux"
 import { useMediaQuery } from "react-responsive"
 import InfiniteScroll from "react-infinite-scroll-component"
-import uuidv4 from "../../core/uuidv4"
 import DashboardItem from "./DashboardItem"
 import ErrorBoundary from "../../ErrorBoundary"
 import Enviroment from "../../core/Enviroment"
 import loadingGif from "../../images/loading.gif"
-import { useEffect, useState } from "react"
+
 
 const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
     let more=true

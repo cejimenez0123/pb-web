@@ -33,8 +33,7 @@ const PrivateRoute = ({loggedIn, children }) => {
     },[location.pathname])
     useLayoutEffect(()=>{
       setPending(true)
-  
-      
+
         dispatch(getCurrentProfile()).then(res=>{
           checkResult(res,payload=>{
     

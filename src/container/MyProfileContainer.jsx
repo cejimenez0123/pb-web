@@ -1,36 +1,36 @@
 import React,{ useLayoutEffect,useEffect, useState }  from 'react';
 import { useLocation, useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
-import workshop from "../images/icons/workshop.svg"
 import {useDispatch,useSelector} from "react-redux"
 import { createStory, getMyStories } from '../actions/StoryActions';
 import { getMyCollections } from '../actions/CollectionActions';
 import notifications from "../images/icons/notifications.svg"
 import settings from "../images/icons/settings.svg"
 import IndexList from '../components/page/IndexList';
+
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
 import { setPageInView, setPagesInView } from '../actions/PageActions';
 import ReactGA from "react-ga4"
+
 import {Dialog} from "@mui/material"
 import { setEditingPage } from '../actions/PageActions';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
-
 import ReferralForm from '../components/auth/ReferralForm';
 import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
-const MediaType = {
-    stories:"stories",
-    books:"books",
-    libraries:"libraries"
-}
+import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCollectionCache';
 function MyProfileContainer(props){
     const navigate = useNavigate()
-    const [search,setSearch]=useState("")
+    const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const collections = useSelector(state=>state.books.collections).filter(col=>{
+    const [search,setSearch]=useState("")
+  
+
+    const collections=useSelector(state=>state.books.collections).filter(col=>{
+     if(col){
       if(search.toLowerCase()=="feedback"){
         return col.type=="feedback"
       }
@@ -39,8 +39,12 @@ function MyProfileContainer(props){
       }else{
        return true
       }
+    }else{
+      return true
+    }
   
      })
+
     const [books,setBooks]=useState(collections)
     const [libraries,setLibraries]=useState([])
     const pages = useSelector(state=>state.pages.pagesInView).filter(page=>{
@@ -66,14 +70,14 @@ function MyProfileContainer(props){
     const location =useLocation()
    
     const [openRefferal,setOpenRefferal]=useState(false)
-  
+      
    
     useLayoutEffect(()=>{
         location.pathname=Paths.myProfile()
     },[])
 
    
-    const dispatch = useDispatch()
+
 
     const ClickWriteAStory = debounce(()=>{
       if(currentProfile){
@@ -108,12 +112,19 @@ function MyProfileContainer(props){
           });
           setOpenDialog(true)
     }
-   
+    // useLayoutEffect(()=>{
+    //   console.log(cols)
+    //   setCollections(cols)
+    //     // if(cols&&cols.length){
+    //     //   dispatch(setCollections(cols))
+    //     // }
+    // },[cols])
 
     useLayoutEffect(()=>{
       dispatch(setPagesInView({pages:[]}))
 
       dispatch(getMyStories({profile:currentProfile}))
+    
       dispatch(getMyCollections({profile:currentProfile}))
     
     },[currentProfile])

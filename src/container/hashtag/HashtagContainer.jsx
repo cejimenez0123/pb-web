@@ -18,14 +18,27 @@ import { appendToPagesInView, setPagesInView } from '../../actions/PageActions'
 export default function HashtagContainer(props){
     const location = useLocation()
     const params = useParams()
+    const {id}=params
+    const collections = useSelector(state=>state.books.collections)
     const [hash,setHashtag]=useState(null)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+   
+    const pagesInView = useSelector((state)=>state.pages.pagesInView)
+    const [books,setBooks]=useState(collections.filter(col=>col.childCollections.length==0))
+    const [libraries,setLibraries]=useState(collections.filter(col=>col.childCollections.length>0))
+
     const [hasMoreLibraries,setHasMoreLibraries]=useState(true)
     const [hasMoreBooks,setHasMoreBooks]=useState(true)
     const [hasMorePages,setHasMorePages]=useState(true)
     useEffect(()=>{
         ReactGA.send({ hitType: "pageview", page: location.pathname+window.location.search, title: "About Page" })
     },[])
-
+    useLayoutEffect(()=>{
+        setBooks(collections.filter(col=>col.childCollections.length==0))
+        setLibraries(collections.filter(col=>col.childCollections.length>0))
+    },[collections])
   
     const [isGrid,setIsGrid] = useState(false)
     const isNotPhone = useMediaQuery({
@@ -43,13 +56,14 @@ export default function HashtagContainer(props){
         dispatch(setPagesInView({pages:[]}))
         dispatch(fetchHashtag({id})).then(res=>{
             checkResult(res,payload=>{
-               console.log("gethash",payload)
+        
                 const {hashtag}=payload
                 setHashtag(hashtag)
-                if(hashtag.collections.length>0){
-                    dispatch(setCollections({collections:hashtag.collections.map(co=>co.collection)}))
-                    addPages(hashtag.collections)
-                }
+            
+                    
+                dispatch(setCollections({collections:hashtag.collections.map(co=>co.collection)}))
+                addPages(hashtag.collections)
+              
 
                 setHasMoreBooks(false)
                 setHasMoreLibraries(false)
@@ -64,8 +78,9 @@ export default function HashtagContainer(props){
         })
       }
       useLayoutEffect(()=>{
+       
            getHashtag()
-      },[location.pathname])
+      },[location.pathname,id])
     useEffect(
         ()=>{
             if(!isNotPhone){
@@ -73,18 +88,11 @@ export default function HashtagContainer(props){
             }
         },[isNotPhone]
     )
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-
-    let collections = useSelector(state=>state.books.collections)
-    const pagesInView = useSelector((state)=>state.pages.pagesInView)
-    const [books,setBooks]=useState(collections.filter(col=>col.childCollections.length==0))
-    const [libraries,setLibraries]=useState(collections.filter(col=>col.childCollections.length>0))
 
     
 
     const libraryForums = ()=>{
-        if(libraries!=null){
+    
             return (<InfiniteScroll
             className='min-h-[12rem] flex max-w-[100vw] flex-row justify-center'
             dataLength={libraries.length}
@@ -99,10 +107,10 @@ export default function HashtagContainer(props){
            
                 })}
             </InfiniteScroll>)
-        }
+       
     }
     const bookList = ()=>{
-        if(books.length>0){
+        
             return(
         
     <div className='w-[100vw]'> <h3 className=' text-emerald-900
@@ -124,6 +132,7 @@ export default function HashtagContainer(props){
             >
 
                 {books.map((book,i)=>{
+                    console.log("Bxok-",book)
                     let id = `${book.id}_${i}`
                     return(
                         <div key={id} >
@@ -133,7 +142,7 @@ export default function HashtagContainer(props){
 </InfiniteScroll>
 </div>)
 
-        }
+        
     }
     const pageList = ()=>{
         
@@ -157,15 +166,9 @@ export default function HashtagContainer(props){
                 >
                
 <div 
-// className={`${isGrid && isNotPhone ? 'flex flex-wrap flex-row flex-col items-top' : ''}`}
-// className={`max-w-screen mx-auto ${
-//     isGrid && isNotPhone ? 'flex flex-wrap ' : ''
-//   }`}
-// className={` ${
-//     isGrid && isNotPhone ? 'grid gap-1 grid-cols-2 auto-rows-auto max-w-[52em] items-start break-inside-avoid  grid-flow-row  ' : 'max-w-screen '
-//   }`}
+
 className={`${
-    isGrid && isNotPhone ? 'grid-cols-2 grid gap-2 ' : ''
+    isGrid ? 'grid-cols-2 grid gap-2 ' : ''
   }`}
 
 >
@@ -224,7 +227,7 @@ className={`${
                 {libraryForums()}
                 </div></> :null}
                 <div className='mb-12'>
-                {bookList()} 
+                {books.length>0?bookList() :null}
                 </div>
                 <div className='flex max-w-[96vw] md:w-page mx-auto flex-col '>
                     
@@ -237,7 +240,7 @@ className={`${
                                         lora-bold
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
-                        {isNotPhone?<div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
+                        {isNotPhone?<div className='flex flex-row pb-8'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
                                             ml-2 mr-0 px-1 border-none py-0'>
                                 <img src={grid}/>

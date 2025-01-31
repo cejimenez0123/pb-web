@@ -90,9 +90,10 @@ const fetchData = async (url) => {
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      <div  className={"spotify"+isGrid?" rounded-lg   mx-auto   ":""} 
+      // +isGrid?" rounded-lg   mx-auto   ":
+      <div  className={isGrid?"spotify max-w-[100%]":"spotify w-[96vw] md:w-page"} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"} style={{minHeight:"27.5em",borderRadius:"2em",overflow:"hidden"}} className="bg-emerald-200 max-h-[20em]"
+        <Spotify width={"100%"} style={{minHeight:"27.5em"}} className="bg-emerald-200 max-h-[20em]"
          link={url}/>
       </div>)
   }
@@ -121,8 +122,8 @@ const fetchData = async (url) => {
     </div>)
     }else{
        return (
-        <div className='spotify rounded-lg w-[100%]'>
-        <Spotify width={"100%"}  height={"140"}link={url}/>
+        <div className='spotify rounded-lg w-[96vw] md:w-page'>
+        <Spotify  height={"140"}link={url}/>
         </div>
       )
     }
@@ -143,7 +144,7 @@ const fetchData = async (url) => {
   }
 
   return (
-    <div className={isGrid?" text-white w-fit  p-2 w-[100%] mx-auto":"h-fit bg-emerald-200 text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className={isGrid?" text-white w-fit  p-2 w-[100%] mx-auto":"h-fit bg-emerald-200 w-[96vw] md:w-page text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       <div className='text-left open-sans-medium'>
    {previewDescription()}

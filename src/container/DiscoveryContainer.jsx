@@ -5,18 +5,16 @@ import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
-import {getPublicStories, setPageInView, setPagesInView } from '../actions/PageActions'
+import {getPublicStories, setPagesInView } from '../actions/PageActions'
 import { getPublicBooks } from '../actions/CollectionActions'
 import { getPublicLibraries, setLibraryInView } from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
 import { useMediaQuery } from "react-responsive"
 import BookListItem from '../components/BookListItem'
 import Paths from '../core/paths'
-import uuidv4 from '../core/uuidv4'
 import ReactGA from "react-ga4"
 import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
-import InfoTooltip from '../components/InfoTooltip'
 import { setCollections } from '../actions/BookActions'
 function DiscoveryContainer(props){
     
@@ -24,7 +22,7 @@ function DiscoveryContainer(props){
         ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
     },[])
 
-    const [errorMessage,setErrorMessage]=useState(null)
+
     const [isGrid,setIsGrid] = useState(false)
     const isNotPhone = useMediaQuery({
         query: '(min-width: 999px)'
@@ -40,14 +38,15 @@ function DiscoveryContainer(props){
     const dispatch = useDispatch()
     let booksInView = []
     let bookCol = useSelector(state=>state.books.collections)
-    if(bookCol){
-  booksInView =[...bookCol].sort(
-            (a,b)=>{
-            
-                return new Date(b.created)- new Date(a.created)
-            }   
-        )  
-    }
+        
+  
+
+  booksInView =[...bookCol].sort((a,b)=>{
+    if(a.updated&&b.updated){
+        return new Date(a.updated).getTime() < new Date(b.updated).getTime()
+    }else{
+        return false
+    }})
    
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
     const [hasMoreLibraries,setHasMoreLibraries] =useState(false)
@@ -121,7 +120,7 @@ const navigateToLibrary = (library)=>{
     const pageList = ()=>{
         if(pagesInView!=null){
             return(<div 
-            className=' w-[96vw] md:w-page mx-auto '
+            className={`${isGrid?"":"w-[96vw] md:w-page"}  mx-auto `}
             >
                <InfiniteScroll
             dataLength={pagesInView.length}
@@ -131,31 +130,24 @@ const navigateToLibrary = (library)=>{
                 >
                
 <div 
-// className={`${isGrid && isNotPhone ? 'flex flex-wrap flex-row flex-col items-top' : ''}`}
-// className={`max-w-screen mx-auto ${
-//     isGrid && isNotPhone ? 'flex flex-wrap ' : ''
-//   }`}
-// className={` ${
-//     isGrid && isNotPhone ? 'grid gap-1 grid-cols-2 auto-rows-auto max-w-[52em] items-start break-inside-avoid  grid-flow-row  ' : 'max-w-screen '
-//   }`}
+// grid-cols-3 px-8 grid gap-2
 className={`${
-    isGrid && isNotPhone ? 'grid-cols-2 grid gap-2 ' : ''
+    isGrid && isNotPhone ? ' grid-container' : ''
   }`}
 
 >
  
-                {pagesInView.filter(page=>page).map(page=>{
+                {pagesInView.filter(page=>page).map((page,i)=>{
 
-                    const id = `${page.id}_${uuidv4()}`
+                    const id = `${page.id}_${i}`
                     return(<div 
-                        // className={isGrid?"max-w-[22em]":"m-1  h-fit "}
+                        className={isGrid?"grid-item ":"m-1 w-[96vw] md:w-page rounded-lg h-fit "}
                         key={id}
-                        // className=" mb-4 "
-                        className="break-inside-avoid mb-4  auto-cols-min"
+                     
      
                     >
                         
-                        <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
+                        <DashboardItem isGrid={isGrid} key={id} page={page}/>
                     </div>)
                 })}
                 </div>
@@ -224,7 +216,7 @@ className={`${
                                         lora-bold
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
-                        {isNotPhone?<div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
+                        {isNotPhone?<div className='flex flex-row pb-8'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
                                             ml-2 mr-0 px-1 border-none py-0'>
                                 <img src={grid}/>

@@ -78,11 +78,15 @@ const hanldeClickComment=()=>{
 
 const header=()=>{
 
-   return <span className={"flex-row flex justify-between px-1 rounded-t-lg lex pt-2 pb-1"}>   <span className='flex justify-start flex-row'><ProfileCircle profile={page.author}/>
-   </span>
+   return isGrid?null:<span className={"flex-row flex justify-between w-[96vw] md:w-page px-1 rounded-t-lg  pt-2 pb-1"}>  
+<ProfileCircle isGrid={isGrid} profile={page.author}/>
+
 
              
-    <h6 className="text-emerald-700 mx-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]  " onClick={()=>{
+    <h6 className={`text-emerald-800
+     ml-1 pr-2 
+      no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
+    onClick={()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
 
@@ -154,16 +158,21 @@ return <Button onClick={()=>{
         }><p>{title} {">"}</p></a>)
     }
     const bookmarkBtn =()=>{
-        return isGrid ?<div className='max-w-[100%]  my-auto  h-fit text-white '>
-        <div className='bg-transparent '><img className='text-white' src={bookmarkadd}/></div>
+        return isGrid ?<div className='w-[100%]  py-2 my-auto flex flex-row justify-between  text-white '>
+            <ProfileCircle isGrid={isGrid} profile={page.author}/>
+        <span className='bg-transparent flex flex-row '><h6 className={`text-white max-w-[15em] min-w-[10em] text-right ml-1 pr-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}onClick={()=>{
+        dispatch(setPageInView({page}))
+        navigate(Paths.page.createRoute(page.id))
+
+    }} >{` `+page.title.length>0?page.title:"Untitled"}</h6><img className='text-white' src={bookmarkadd}/></span>
     
     </div>:null
     }
     const buttonRow = ( )=>{
         return isGrid?null:
-        <div className='  flex flex-row rounded-b-lg justify-center justify-evenly sm:max-w-[100%]  '>
+        <div className='  flex flex-row w-[96vw] rounded-b-lg md:w-page rounded-b-lg rounded-b-lg overflow-clip justify-evenly   '>
             
-         <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center rounded-bl-lg grow flex-1/3`}>
+         <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow flex-1/3`}>
          <div
          
          onClick={handleApprovalClick}
@@ -188,11 +197,11 @@ return <Button onClick={()=>{
           <h6 className='text-[1.2rem]'> Review</h6>
          </div>
          </div>
-         {!page.recommended?<div className="dropdown    text-center   bg-emerald-700  py-2 rounded-br-lg  grow flex-1/3 dropdown-top">
+         {!page.recommended?<div className="dropdown    text-center   bg-emerald-700  py-2   grow flex-1/3 dropdown-top">
 <div tabIndex={0} role="button" 
 className="             
       text-white
-
+    
       text-center mx-auto
       bg-transparent
        
@@ -235,7 +244,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
      </button></li>
 </ul>
 </div>:<div onClick={addStoryToCollection} 
-className='  bg-emerald-700 flex rounded-br-lg grow flex-1/3 '> <img  className="mx-auto my-auto" src={addCircle}/></div>}
+className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-auto" src={addCircle}/></div>}
 
 </div>
 
@@ -245,10 +254,10 @@ className='  bg-emerald-700 flex rounded-br-lg grow flex-1/3 '> <img  className=
     
         return(
         <ErrorBoundary>
-                <div className='relative shrink my-2 h-fit'>
+                <div className={isGrid?"":'relative w-[96vw] rounded-lg overflow-clip md:w-page shrink my-2 h-fit'}>
         <div onClick={()=>{
             isGrid?navigate(Paths.page.createRoute(page.id)):null
-        }} className={`rounded-lg   ${isGrid?"bg-emerald-700 h-fit min-h-56   ":"bg-emerald-50 w-[96vw]"} mx-auto  shadow-sm   `}>
+        }} className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&page?header():null}
         {page.description && page.description && takingFeedback?<div className='min-h-24 pt-16 p-2'>
             <label className='text-emerald-800'>Feedback Request:</label>
@@ -258,11 +267,11 @@ className='  bg-emerald-700 flex rounded-br-lg grow flex-1/3 '> <img  className=
         </div>:null}
        
              
-          <div className={isGrid?' rounded-lg flex justify-between flex-col h-[100%]  pt-1':""}>
+          <div className={isGrid?' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
          
-          <PageDataElement page={page}/>
+          <PageDataElement isGrid={isGrid} page={page}/>
                 {buttonRow()}
-                {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1 w-52 rounded-b-lg bottom-0'>
+                {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1  rounded-b-lg bottom-0'>
                 {header()}
             
                 {bookmarkBtn()} </div>   :null}
