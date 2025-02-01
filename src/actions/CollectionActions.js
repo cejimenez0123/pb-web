@@ -199,7 +199,14 @@ const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProte
      collection:data.collection
     }
  })
+ const setCollections = createAction("cols/setCollections", (params)=> {
 
+    const {collections} = params
+    return  {payload:
+      collections}
+      
+    
+  })
 
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
     params,thunkApi
@@ -297,5 +304,6 @@ export {
     clearCollections,
     getRecommendedCollections,
     getRecommendedCollectionStory,
-    getRecommendedCollectionsProfile
+    getRecommendedCollectionsProfile,
+    setCollections
 }

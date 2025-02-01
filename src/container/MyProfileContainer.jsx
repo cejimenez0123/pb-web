@@ -1,9 +1,9 @@
-import React,{ useLayoutEffect,useEffect, useState }  from 'react';
+import React,{ useLayoutEffect,useEffect, useState, useContext }  from 'react';
 import { useLocation, useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
 import {useDispatch,useSelector} from "react-redux"
 import { createStory, getMyStories } from '../actions/StoryActions';
-import { getMyCollections } from '../actions/CollectionActions';
+import { getMyCollections,setCollections } from '../actions/CollectionActions';
 import notifications from "../images/icons/notifications.svg"
 import settings from "../images/icons/settings.svg"
 import IndexList from '../components/page/IndexList';
@@ -22,12 +22,14 @@ import ReferralForm from '../components/auth/ReferralForm';
 import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCollectionCache';
+import Context from '../context';
+
 function MyProfileContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const currentProfile = useSelector(state=>state.users.currentProfile)
+    const {currentProfile}=useContext(Context)
     const [search,setSearch]=useState("")
-  
+    usePersistentMyCollectionCache((()=>dispatch(getMyCollections())))
 
     const collections=useSelector(state=>state.books.collections).filter(col=>{
      if(col){
@@ -112,20 +114,15 @@ function MyProfileContainer(props){
           });
           setOpenDialog(true)
     }
-    // useLayoutEffect(()=>{
-    //   console.log(cols)
-    //   setCollections(cols)
-    //     // if(cols&&cols.length){
-    //     //   dispatch(setCollections(cols))
-    //     // }
-    // },[cols])
+
+
 
     useLayoutEffect(()=>{
       dispatch(setPagesInView({pages:[]}))
 
       dispatch(getMyStories({profile:currentProfile}))
-    
-      dispatch(getMyCollections({profile:currentProfile}))
+     
+ 
     
     },[currentProfile])
     useLayoutEffect(()=>{

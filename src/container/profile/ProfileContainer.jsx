@@ -147,7 +147,7 @@ getContent()
         setSearch(value)
     }
     const checkIfFollowing =()=>{
-        if(currentProfile){
+        if(currentProfile&&profile){
         if(currentProfile.id==profile.id){
             setFollowing(true)
             return

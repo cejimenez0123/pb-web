@@ -16,7 +16,6 @@ import ApplyContainer from './container/auth/ApplyContainer';
 import SearchDialog from './components/SearchDialog';
 import {  getPublicLibraries } from './actions/LibraryActions';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
-import checkResult from './core/checkResult';
 import {  getCurrentProfile,
           fetchHomeCollection,
           setSignedInTrue,
@@ -34,28 +33,32 @@ import CollectionContainer from './container/collection/CollectionContainer';
 import AddToCollectionContainer from './container/collection/AddToCollection';
 import EditCollectionContainer from './container/collection/EditCollectionContainer.jsx';
 import SignUpContainer from './container/auth/SignUpContainer.jsx';
-import { getHashtags, getProfileHashtagCommentUse } from './actions/HashtagActions.js';
+import { getHashtags } from './actions/HashtagActions.js';
 import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
 import ResetPasswordContainer from './container/auth/ResetPassword.jsx';
 import Alert from './components/Alert.jsx';
 import NotificationContainer from './container/profile/NotificationContainer.jsx';
 import HashtagContainer from './container/hashtag/HashtagContainer.jsx';
+import usePersistentCurrentProfile from './domain/usecases/useCurrentProfileCache.jsx';
+import { useSelector } from 'react-redux';
 function App(props) {
 
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
+  usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+  const [currentProfile,setCurrentProfile]=useState(null)
+  const profile = useSelector(state=>state.users.currentProfile)
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
+  
   useEffect(()=>{
-  if(localStorage.getItem("token")){
-    props.getCurrentProfile()
-  }
+    if(profile){
+      fetchData()
+      setCurrentProfile(profile)
+    }
 
-  },[localStorage.getItem("token")])
-  useEffect(()=>{
-    fetchData()
-  },[props.currentProfile])
+  },[profile])
   const fetchData = ()=>{
     const {currentProfile}=props
     if(currentProfile){
@@ -66,7 +69,7 @@ function App(props) {
   }
 
   return (
-      <Context.Provider value={{formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+      <Context.Provider value={{currentProfile,setCurrentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
                 <Router>
       
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
