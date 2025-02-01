@@ -108,6 +108,8 @@ function NavbarContainer({profile}){
                                         dispatch(signOutAction())
                                     }else if(setting== SettingName.account){
                                         navigate("/profile/edit")
+                                    }else if(setting == SettingName.notifications){
+                                      navigate(Paths.notifications())
                                     }
                                 
                       }}><a className='text-emerald-800'>{setting}</a></li>
@@ -131,11 +133,14 @@ function NavbarContainer({profile}){
     const SettingName = {
         profile: "Profile",
         account: "Account",
-        logout: "Log Out"
+        logout: "Log Out",
+        notifications:"Notifications"
     }
     const settings = [SettingName.profile,
                       SettingName.account,
-                      SettingName.logout]; 
+                      SettingName.notifications,
+                      SettingName.logout,
+                      ]; 
    
 
       const menuDropdown=()=>{
@@ -340,6 +345,8 @@ function NavbarContainer({profile}){
                                       dispatch(signOutAction())
                                   }else if(setting== SettingName.account){
                                       navigate("/profile/edit")
+                                  }else if(setting==SettingName.notifications){
+                                    navigate(Paths.notifications())
                                   }
                               
                     }}><a className='text-emerald-800'>{setting}</a></li>
