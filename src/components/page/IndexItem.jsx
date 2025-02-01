@@ -11,7 +11,7 @@ import Paths from "../../core/paths";
 import ReactGA from "react-ga4"
 import { setEditingPage } from '../../actions/PageActions'
 import { setCollectionInView } from "../../actions/CollectionActions";
-function IndexItem({item}) {
+function IndexItem({item,handleFeedback}) {
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
@@ -134,13 +134,13 @@ function IndexItem({item}) {
   
                 <div className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full w-[96%] min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
                 
-         <div className=" h-fit my-auto lg:w-[26em] w-fit text-ellipsis overflow-hidden ">
+         <div className=" h-fit my-auto md:w-[30em]  text-ellipsis overflow-hidden ">
               
               
                    {item.title && item.title.length>0? 
                      <span className={`   text-emerald-700 my-auto`}>
                    <h6   onClick={handleNavigate}
-         className={`text-[0.9rem] lg:text-[1.3rem ] max-w-[45vw]  text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
+         className={`text-[0.9rem] md:text-[1.3rem ] md:w-[20em]   text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
        {item.title}</h6></span>:
  <span className={`  whitespace-nowrap max-w-[45vw]  text-emerald-700 no-underline text-ellipsis my-auto`}>
                    <h6  onClick={handleNavigate}  className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
@@ -158,7 +158,7 @@ function IndexItem({item}) {
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
         handleEditClick}><a className="text-green-600 ">Edit</a></li>
-       {!item.storyIdList?<li className="text-green-600 " onClick={()=>navigate(Paths.workshop.createRoute(item.id))}>Get Feedback</li>:null}
+       {!item.storyIdList?<li className="text-green-600 " onClick={handleFeedback}>Get Feedback</li>:null}
        {canUserAdd?<li className="text-green-600 no-underline" onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>:null}
   </ul>
   </div>

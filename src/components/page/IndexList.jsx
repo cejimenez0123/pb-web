@@ -3,7 +3,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import IndexItem from "./IndexItem"
 import { useLayoutEffect, useState } from "react"
 
-const IndexList = ({items})=>{
+const IndexList = ({items,handleFeedback})=>{
 
     const [list,setList]=useState(items)
     useLayoutEffect(()=>{setList(items)},[items])
@@ -24,7 +24,7 @@ const IndexList = ({items})=>{
                   >
                       {items.filter(item=>item).map((item,i)=>{
                       
-                        return <IndexItem key={ i+item.id} page={item} item={item} />
+                        return <IndexItem key={ i+item.id} page={item} item={item} handleFeedback={()=>handleFeedback(item)} />
                       })}  
                    </InfiniteScroll>)
 
