@@ -109,10 +109,9 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
     client.initIndex("story").partialUpdateObject(
       {objectID:data.story.id,title:data.story.title,type:"story"},{createIfNotExists:true}).wait()
    }else{
-    console.log("x",data)
-      if(data.story.isPrivate){
+
         client.initIndex("story").deleteObject(data.story.id)
-      }
+      
    }
   return {
     story: data.story

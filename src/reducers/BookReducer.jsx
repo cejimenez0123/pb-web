@@ -158,7 +158,7 @@ state.loading = true
 
 }).addCase(getMyCollections.pending,)
 .addCase(getMyCollections.rejected,(state,{payload})=>{
-    console.log(payload.error)
+
     state.loading = true
 }).addCase(saveRoleToCollection.fulfilled,(state,{payload})=>{
     state.role = payload.role
