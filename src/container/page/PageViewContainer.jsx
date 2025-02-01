@@ -31,8 +31,12 @@ export default function PageViewContainer(props){
                 dispatch(getProfileHashtagCommentUse({profileId:currentProfile.id}))
             }
     },[])
+    useEffect(()=>{
+        soCanUserSee()
+    },[page])
     useLayoutEffect(()=>{
         dispatch(getStory(pathParams)).then(res=>checkResult(res,payload=>{
+         
 
         },err=>{
            
@@ -46,6 +50,10 @@ export default function PageViewContainer(props){
 
      const soCanUserSee=()=>{
         if(page){
+            if(!page.isPrivate){
+                setCanUserSee(true)
+                return
+            }
             if(!page.isPrivate||(currentProfile && page && page.authorId==currentProfile.id)){
                 setCanUserSee(true)
                 return

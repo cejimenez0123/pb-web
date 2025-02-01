@@ -42,10 +42,8 @@ export default function EditCollectionContainer(props){
       })
       const [pending,setPending]=useState(true)
     const location = useLocation()
-    // const loading = useSelector(state=>state.books.loading)
-    const storyToCols = useSelector(state=>state.pages.storyToCollectionList)
-    const colToCols = useSelector(state=>state.books.collectionToCollectionsList)
-    const [isOpen,setIsOpen]=useState(false)
+
+     const [isOpen,setIsOpen]=useState(false)
     const [openDelete,setOpenDelete]=useState(false)
     const [followersAre,setFollowersAre]=useState(RoleType.commenter)
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -92,6 +90,7 @@ export default function EditCollectionContainer(props){
               dispatch(fetchCollectionProtected(params)).then(res=>{
                 checkResult(res,payload=>{
                   soCanUserEdit(payload.collection)
+                  
                   setItems()
                 },err=>{
                 setPending(false)
@@ -137,25 +136,25 @@ export default function EditCollectionContainer(props){
 
                    
     },[colInView])
-    const setContent=()=>{
-      if(colInView){
-        if(colInView.storyIdList){
+    // const setContent=()=>{
+    //   if(colInView){
+    //     if(colInView.storyIdList){
 
         
-      let stcList = colInView.storyIdList.map(stc=>{
+    //   let stcList = colInView.storyIdList.map(stc=>{
                            
-        return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
-    })
-        setNewPages(stcList)
-        }
-        if(colInView.childCollections){
-        let newList = colInView.childCollections.map(stc=>{
-            return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
-    })
+    //     return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
+    // })
+    //     setNewPages(stcList)
+    //     }
+    //     if(colInView.childCollections){
+    //     let newList = colInView.childCollections.map(stc=>{
+    //         return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
+    // })
 
-        setNewCollections(newList)
-      }
-    }  } 
+    //     setNewCollections(newList)
+    //   }
+    // }  } 
   
     const soCanUserEdit=(collection)=>{
       if(collection && currentProfile && collection.profileId==currentProfile.id){

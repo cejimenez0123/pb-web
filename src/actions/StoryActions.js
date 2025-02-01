@@ -6,11 +6,8 @@ import hashtagRepo from "../data/hashtagRepo";
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
   try{
     let token = localStorage.getItem("token")
-
     if(token){
-  
      let data = await storyRepo.getStoryProtected({id:params.id})
-   
      return {story:data.story}
 
     }else{

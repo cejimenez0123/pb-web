@@ -48,9 +48,9 @@ function DiscoveryContainer(props){
     const libraryForums = ()=>{
         if(libraries!=null){
             return (<> 
-            <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':''} pb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
+            <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':'ml-16'} mb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
             <div className='mb-12'><InfiniteScroll
-            className='min-h-24 flex flex-row min-h-60 max-w-[100vw] '
+            className=' flex flex-row min-h-50 md:min-h-6 max-w-[100vw] '
             dataLength={libraries.length}
             next={fetchLibraries}
             // style={{display:"flex",flexDirections:"row"}}
@@ -72,9 +72,9 @@ function DiscoveryContainer(props){
     <div className=''> <h3 className=' text-emerald-900
     text-left 
     font-extrabold 
-    pl-4 ml-16 lora-bold text-2xl'>Collections</h3>
+  ml-16 lora-bold mb-4 text-2xl'>Collections</h3>
                 <InfiniteScroll
-            className={`   min-h-60 flex-row flex`}
+            className={`  min-h-50 md:min-h-60 flex-row flex`}
             dataLength={books.length}
             next={fetchContentItems}
             hasMore={false}

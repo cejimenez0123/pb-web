@@ -94,7 +94,7 @@ export default function HashtagContainer(props){
     const libraryForums = ()=>{
     
             return (<InfiniteScroll
-            className='min-h-[12rem] flex max-w-[100vw] flex-row justify-center'
+            className='min-h-[12rem] flex max-w-[100vw] flex-row'
             dataLength={libraries.length}
     
          
@@ -118,7 +118,7 @@ export default function HashtagContainer(props){
     font-extrabold 
      lora-bold text-2xl ml-4 md:ml-24'>Collections</h3>
                 <InfiniteScroll
-            className={`  max-w-[100vw] my-2 min-h-[12rem] md:justify-center flex-row flex`}
+            className={`  max-w-[100vw] my-2 min-h-[12rem]  flex-row flex`}
             dataLength={books.length}
           
             hasMore={hasMoreBooks}

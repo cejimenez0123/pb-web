@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import dragHandle from "../images/icons/drag_handle.svg"
+import { useNavigate } from "react-router-dom";
+import Paths from "../core/paths";
 export default function SortableList({ items, onOrderChange, }) {
-  
+  const navigate = useNavigate()
     const [listItems,setListItems]=useState(items)
     useEffect(()=>{
       setListItems(items)
@@ -29,6 +31,15 @@ export default function SortableList({ items, onOrderChange, }) {
       setListItems(newList);
       onOrderChange(newList);
     };
+    const handleNavigate=(item)=>{
+      console.log(item)
+      if(item.childCollection){
+          navigate(Paths.collection.createRoute(item.childCollection.id))
+      }else{
+        
+          navigate(Paths.page.createRoute(item.story.id))
+      }
+    }
   if(listItems.length>0){
     return (
       <div className=" py-4 mx-auto w-[96vw] md:w-page">
@@ -55,7 +66,7 @@ export default function SortableList({ items, onOrderChange, }) {
                         <div className=" flex justify-between mr-3">
                         <img src={dragHandle} className="my-auto ml-4"/>
                         <div className="justify-between  flex-grow flex flex-row mr-4">
-                        <h6 className=" text-emerald-800 text-nowrap text-left my-auto max-w-[13em] overflow-hidden text-ellipsis sm:text-[1.2rem]">
+                        <h6 onClick={()=>handleNavigate(item)} className=" text-emerald-800 text-nowrap text-left my-auto max-w-[13em] overflow-hidden text-ellipsis sm:text-[1.2rem]">
                           {item.story?item.story.title:item.childCollection?item.childCollection.title:"Not found"}</h6>
                         <button
                           onClick={(e) => handleDelete(e,index)}
