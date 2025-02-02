@@ -7,16 +7,19 @@ import { createSlice} from "@reduxjs/toolkit"
         deleteStoryFromCollection,
         clearCollections,
         getRecommendedCollectionsProfile,
-       
+       setCollections,
       
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
 import { createWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActions"
 import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
-import { setCollections } from "../actions/BookActions"
+
+import { getPublicLibraries } from "../actions/LibraryActions"
 const initialState = {
     groups:[],
     collections:[],
+    books:[],
+    libraries:[],
     collectionToCollectionsList:[],
     collectionInView:[],
     recommendedCols:[],
@@ -108,6 +111,14 @@ state.loading = true
     state.loading = true
 }).addCase(createCollection.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
+}).addCase(getPublicLibraries.pending,(state)=>{
+    state.pending = true
+}).addCase(getPublicLibraries.fulfilled,(state,{payload})=>{
+    state.libraries = payload.libraries
+    state.loading = false
+}).addCase(getPublicLibraries.rejected,(state,{payload})=>{
+    state.loading = false
+    state.error = payload
 })
 .addCase(getPublicBooks.pending, (state,{payload})=>{
     state.loading = true
@@ -119,7 +130,7 @@ state.loading = true
 })
 .addCase(getPublicBooks.fulfilled,(state,{payload})=>{
     state.loading = false
-    state.collections= payload.books
+    state.books= payload.books
 
 }).addCase(setCollections.type,(state,{payload})=>{
  
@@ -147,7 +158,7 @@ state.loading = true
 
 }).addCase(getMyCollections.pending,)
 .addCase(getMyCollections.rejected,(state,{payload})=>{
-    console.log(payload.error)
+
     state.loading = true
 }).addCase(saveRoleToCollection.fulfilled,(state,{payload})=>{
     state.role = payload.role

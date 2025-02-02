@@ -1,29 +1,33 @@
 import { useSelector,useDispatch} from 'react-redux'
 import DashboardItem from '../components/page/DashboardItem'
 import { useState,useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
 import {getPublicStories, setPagesInView } from '../actions/PageActions'
 import { getPublicBooks } from '../actions/CollectionActions'
-import { getPublicLibraries, setLibraryInView } from '../actions/LibraryActions'
+import { getPublicLibraries} from '../actions/LibraryActions'
 import checkResult from '../core/checkResult'
 import { useMediaQuery } from "react-responsive"
 import BookListItem from '../components/BookListItem'
-import Paths from '../core/paths'
 import ReactGA from "react-ga4"
 import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
-import { setCollections } from '../actions/BookActions'
 function DiscoveryContainer(props){
     
     useEffect(()=>{
         ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
     },[])
 
-
+    const books = useSelector(state=>state.books.books)
+    const libraries = useSelector(state=>state.books.libraries)
     const [isGrid,setIsGrid] = useState(false)
+
+    const dispatch = useDispatch()
+   
+  
+    const pagesInView = useSelector((state)=>state.pages.pagesInView)
+    const [hasMoreLibraries,setHasMoreLibraries] =useState(false)
     const isNotPhone = useMediaQuery({
         query: '(min-width: 999px)'
       })
@@ -34,66 +38,44 @@ function DiscoveryContainer(props){
             }
         },[isNotPhone]
     )
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    let booksInView = []
-    let bookCol = useSelector(state=>state.books.collections)??[]
-        
-  
 
-  booksInView =[...bookCol].sort((a,b)=>{
-    if(a.updated&&b.updated){
-        return new Date(a.updated).getTime() < new Date(b.updated).getTime()
-    }else{
-        return false
-    }})
-   
-    const pagesInView = useSelector((state)=>state.pages.pagesInView)
-    const [hasMoreLibraries,setHasMoreLibraries] =useState(false)
-    const [librariesInView,setLibraries]=useState([])
-    const libCollection = useSelector(state=>state.libraries.librariesInView)
- 
-    useEffect(()=>{
-   
-   setLibraries(libCollection)
-    },[libCollection])
+
     useEffect(()=>{
         fetchContentItems()
         fetchLibraries()
     },[])
-const navigateToLibrary = (library)=>{
-    dispatch(setLibraryInView({library:library}))
-    navigate(Paths.library.createRoute(library.id))
-}
+
     const libraryForums = ()=>{
-        if(librariesInView!=null){
-            return (<InfiniteScroll
-            className='min-h-24'
-            dataLength={librariesInView.length}
+        if(libraries!=null){
+            return (<> 
+            <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':'ml-16'} mb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
+            <div className='mb-12'><InfiniteScroll
+            className=' flex flex-row min-h-50 md:min-h-6 max-w-[100vw] '
+            dataLength={libraries.length}
             next={fetchLibraries}
-            style={{display:"flex",flexDirections:"row"}}
+            // style={{display:"flex",flexDirections:"row"}}
             hasMore={hasMoreLibraries}
             endMessage={<div className='flex min-w-72 mont-medium'><span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '><h6 className=''>Join the community. <br/>Apply to join today.</h6><h6>Share your own work.</h6><h6> This is what we have for now.</h6></span></div>}
             >
-                {librariesInView.map(library=>{
+                {libraries.map(library=>{
                     return     <div key={library.id}>
                   <BookListItem book={library}/></div>
            
                 })}
-            </InfiniteScroll>)
+            </InfiniteScroll></div></>)
         }
     }
     const bookList = ()=>{
-        if(booksInView!=null){
+        if(books!=null){
             return(
         
-    <div className='md:ml-12'> <h3 className=' text-emerald-900
+    <div className=''> <h3 className=' text-emerald-900
     text-left 
     font-extrabold 
-    pl-4   mx-4 lora-bold text-2xl'>Collections</h3>
+  ml-16 lora-bold mb-4 text-2xl'>Collections</h3>
                 <InfiniteScroll
-            className={`   min-h-[12rem] flex-row flex`}
-            dataLength={booksInView.length}
+            className={`  min-h-50 md:min-h-60 flex-row flex`}
+            dataLength={books.length}
             next={fetchContentItems}
             hasMore={false}
             endMessage={<div className='flex min-w-72 mont-medium'>
@@ -105,7 +87,7 @@ const navigateToLibrary = (library)=>{
                         </span></div>}
             >
 
-                {booksInView.map((book,i)=>{
+                {books.map((book,i)=>{
                     let id = `${book.id}_${i}`
                     return(
                         <div key={id} className='my-auto'>
@@ -130,7 +112,6 @@ const navigateToLibrary = (library)=>{
                 >
                
 <div 
-// grid-cols-3 px-8 grid gap-2
 className={`${
     isGrid && isNotPhone ? ' grid-container' : ''
   }`}
@@ -143,10 +124,7 @@ className={`${
                     return(<div 
                         className={isGrid?"grid-item ":"m-1 w-[96vw] md:w-page rounded-lg h-fit "}
                         key={id}
-                     
-     
-                    >
-                        
+                    >               
                         <DashboardItem isGrid={isGrid} key={id} page={page}/>
                     </div>)
                 })}
@@ -156,18 +134,17 @@ className={`${
     }
     const fetchContentItems = ()=>{
             dispatch(setPagesInView({pages:[]}))
-            dispatch(setCollections({collections:[]}))
             dispatch(getPublicStories())
-            
             dispatch(getPublicBooks())  
-        }
-        const fetchLibraries = ()=>{
+    }
+    const fetchLibraries = ()=>{
             setHasMoreLibraries(true)
-            dispatch(getPublicLibraries()).then(result=>checkResult(result,payload=>{
+            dispatch(getPublicLibraries())
+            .then(result=>checkResult(result,payload=>{
             
                 setHasMoreLibraries(false)
             },err=>{
-
+                setHasMoreLibraries(false)
             }))
         }
         const onClickForGrid =(bool)=>{
@@ -198,8 +175,7 @@ className={`${
 
               <div className=' text-left ' >
                
-                <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} pb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
-                <div className='mb-12'>
+               
                 {libraryForums()}
                 </div>
                 <div className='mb-12'>
@@ -243,7 +219,7 @@ className={`${
                  
            
                     </div>
-                    </div>
+           
              
             </ErrorBoundary>
         )

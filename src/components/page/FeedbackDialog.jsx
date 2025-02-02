@@ -2,11 +2,11 @@ import { useMediaQuery } from "react-responsive"
 import {Dialog,DialogTitle,DialogActions,DialogContent} from "@mui/material"
 import { useState } from "react"
 
-export default function DescriptionDialog({open,isFeedback,handleClose,handleChange,handlePostPublic,handleFeedback}){
+export default function DescriptionDialog({open,page,isFeedback,handleClose,handleChange,handlePostPublic,handleFeedback}){
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
-    const [feedback,setFeedback]=useState("")
+    const [feedback,setFeedback]=useState(!page || isFeedback?"":page.description)
     return( <Dialog
         open={open}
         fullScreen={isPhone}
@@ -14,17 +14,17 @@ export default function DescriptionDialog({open,isFeedback,handleClose,handleCha
         className=""
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-      >    <DialogTitle id="alert-dialog-title">
+      >   <div className=""> <DialogTitle id="alert-dialog-title">
       {!isFeedback?"Add a description for context":"What kind of feedback do you want?"}
     </DialogTitle>
-    <DialogContent className="">
+    {/* <DialogContent className="w-[100%]"> */}
             <textarea 
             value={feedback}
             onChange={e=>{
                 setFeedback(e.target.value)
                 handleChange(e.target.value)
               }}
-            className="textarea w-[100%] min-h-[7rem] rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600"/>
+            className="textarea mx-2 md:w-[30em] min-h-[7rem] rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600"/>
                    <DialogActions className="mt-8">
           <h2 className="mont-medium text-emerald-700" onClick={handleClose}>Continue Working</h2>
              {isFeedback? <h2 className="mont-medium text-emerald-700" onClick={()=>handleFeedback()}>
@@ -33,7 +33,7 @@ export default function DescriptionDialog({open,isFeedback,handleClose,handleCha
   Publish
           </h2>}
         </DialogActions>
-    </DialogContent>
-   
+    {/* </DialogContent> */}
+    </div>
       </Dialog>)
 }

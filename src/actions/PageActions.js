@@ -37,48 +37,48 @@ const setHtmlContent = createAction(
   }
 )
 
-const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>{
+// const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>{
       
-  try{
-    const { page,
-      title,
-      data,
-      commentable,
-      privacy,
+//   try{
+//     const { page,
+//       title,
+//       data,
+//       commentable,
+//       privacy,
     
-    } =params
+//     } =params
      
-      let ref = doc(db,"page",page.id)
-      await updateDoc(ref,{
-        title,
-        data,
-        privacy,
-        approvalScore: page.approvalScore,
-      })
-      if(!privacy){
-        client.initIndex("page").partialUpdateObject({objectID: page.id,title:title},{createIfNotExists:true}).wait()
-      }
-      const contributors= new Contributors(page.commenters,
-        page.readers,page.writers,page.editors)
-      let newPage= new Page(page.id,
-                          title,
-                          data,
-                          page.profileId,
-                          page.userId,
-                          page.approvalScore,
-                          privacy,
-                          commentable,
-                          page.type,
-                          contributors,
-                          page.created)
+//       let ref = doc(db,"page",page.id)
+//       await updateDoc(ref,{
+//         title,
+//         data,
+//         privacy,
+//         approvalScore: page.approvalScore,
+//       })
+//       if(!privacy){
+//         client.initIndex("page").partialUpdateObject({objectID: page.id,title:title},{createIfNotExists:true}).wait()
+//       }
+//       const contributors= new Contributors(page.commenters,
+//         page.readers,page.writers,page.editors)
+//       let newPage= new Page(page.id,
+//                           title,
+//                           data,
+//                           page.profileId,
+//                           page.userId,
+//                           page.approvalScore,
+//                           privacy,
+//                           commentable,
+//                           page.type,
+//                           contributors,
+//                           page.created)
     
-      return {
-        page: newPage
-      }
-    }catch(e){
-    return {error: new Error("Error: UDATE PAGE-" + e.message)}
-  }
-})
+//       return {
+//         page: newPage
+//       }
+//     }catch(e){
+//     return {error: new Error("Error: UDATE PAGE-" + e.message)}
+//   }
+// })
 
 const getPublicProfilePages= createAsyncThunk(
   'pages/getPublicProfilePages',
@@ -145,64 +145,64 @@ const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async functi
     }
   }
 })
-const saveRolesForPage = createAsyncThunk("books/saveRolesForPage",async (params,thunkApi)=>{
+// const saveRolesForPage = createAsyncThunk("books/saveRolesForPage",async (params,thunkApi)=>{
     
-  try {
-   const {page,
-         readers,
-         commenters,
-         editors,
-         writers} = params
+//   try {
+//    const {page,
+//          readers,
+//          commenters,
+//          editors,
+//          writers} = params
   
-     let ref = doc(db,'page',page.id)
-     await updateDoc(ref,{ editors: editors,
-       commenters:commenters,
-       writers: writers,
-       readers: readers,
-     })
-     const contributors= new Contributors(commenters,readers,writers,editors)
+//      let ref = doc(db,'page',page.id)
+//      await updateDoc(ref,{ editors: editors,
+//        commenters:commenters,
+//        writers: writers,
+//        readers: readers,
+//      })
+//      const contributors= new Contributors(commenters,readers,writers,editors)
            
-     return {page: new Page(  page.id,
-                              page.title,
-                              page.data,
-                              page.profileId,
-                              auth.currentUser.uid,
-                              page.approvalScore,
-                              page.privacy,
-                              page.commentable,
-                              page.type,
-                              contributors,
-                              page.created
-)}
+//      return {page: new Page(  page.id,
+//                               page.title,
+//                               page.data,
+//                               page.profileId,
+//                               auth.currentUser.uid,
+//                               page.approvalScore,
+//                               page.privacy,
+//                               page.commentable,
+//                               page.type,
+//                               contributors,
+//                               page.created
+// )}
 
 
-   }catch(e){
-     const error = e??new Error("Error: CREATE PAGE ROLES")
-     return {error }
-   }                
-})
-const appendSaveRolesForPage = createAsyncThunk("pages/appendSaveRolesForPages",async (params,thunkApi)=>{
-  try {
-    const { pageIdList,
-            readers,
+//    }catch(e){
+//      const error = e??new Error("Error: CREATE PAGE ROLES")
+//      return {error }
+//    }                
+// })
+// const appendSaveRolesForPage = createAsyncThunk("pages/appendSaveRolesForPages",async (params,thunkApi)=>{
+//   try {
+//     const { pageIdList,
+//             readers,
            
-            } = params
-        pageIdList.forEach(id=>{
-            let ref =doc(db,'page',id)
-            updateDoc(ref,{
-              readers: arrayUnion(...readers),
-            })
+//             } = params
+//         pageIdList.forEach(id=>{
+//             let ref =doc(db,'page',id)
+//             updateDoc(ref,{
+//               readers: arrayUnion(...readers),
+//             })
 
-        }
+//         }
 
-        )
-        return{readers: readers}
-  }catch(e){
-    return {
-      error: new Error(`Error:APPEND SAVE PAGE ROLES ${e.message}`)
-    }
-  }
-})
+//         )
+//         return{readers: readers}
+//   }catch(e){
+//     return {
+//       error: new Error(`Error:APPEND SAVE PAGE ROLES ${e.message}`)
+//     }
+//   }
+// })
 const appendToPagesInView = createAction("pages/appendToPagesInView", (params)=> {
 
   const {pages} = params
@@ -630,10 +630,10 @@ try{
           setPagesToBeAdded,
           fetchArrayOfPagesAppened,
           clearPagesInView,
-          saveRolesForPage,
-          updatePage,
+          // saveRolesForPage,
+          // updatePage,
           fetchEditingPage,
-          appendSaveRolesForPage,
+          // appendSaveRolesForPage,
           createComment,
           fetchCommentsOfPage,
           deleteComment,

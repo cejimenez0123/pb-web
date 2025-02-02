@@ -6,11 +6,8 @@ import hashtagRepo from "../data/hashtagRepo";
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
   try{
     let token = localStorage.getItem("token")
-
     if(token){
-  
      let data = await storyRepo.getStoryProtected({id:params.id})
-   
      return {story:data.story}
 
     }else{
@@ -109,10 +106,9 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
     client.initIndex("story").partialUpdateObject(
       {objectID:data.story.id,title:data.story.title,type:"story"},{createIfNotExists:true}).wait()
    }else{
-    console.log("x",data)
-      if(data.story.isPrivate){
+
         client.initIndex("story").deleteObject(data.story.id)
-      }
+      
    }
   return {
     story: data.story

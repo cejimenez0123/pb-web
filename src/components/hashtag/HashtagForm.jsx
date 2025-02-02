@@ -133,7 +133,7 @@ export function HashtagForm({item}){
     };
   
     return (
-      <form className="w-[100%]  ">
+      <form className="w-[100%] px-2 pt-2 ">
       <div >
         <textarea
           value={inputValue}
@@ -141,7 +141,7 @@ export function HashtagForm({item}){
           onKeyDown={handleKeyDown}
           placeholder="Type a hashtag and press Enter"
           rows="3"
-        className="textarea  my-1 w-[100%] mx-auto border-2 border-emerald-600 bg-transparent text-emerald-800"
+        className="textarea   my-1 w-[100%] mx-auto border-2 border-emerald-600 bg-transparent text-emerald-800"
         />
       <button type="submit" className="hidden">Submit</button>
       <div className="text-left mx-2 my-1">

@@ -261,8 +261,10 @@ setError(err.message)
       <ul tabIndex={0} className="dropdown-content text-center menu bg-white rounded-box z-[1] shadow">
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
-        <li onClick={()=>{setFeedbackDialog(true)
+        <li onClick={()=>{
           setOpenDescription(false)
+          setFeedbackDialog(true)
+        
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {isPrivate?<li onClick={()=>{
@@ -272,6 +274,10 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
 <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
   handlePostPublicly(true)
   }}>Make Private</li>}
+  {!isPrivate?<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
+       setFeedbackDialog(false) 
+ setOpenDescription(true)
+  }}>Edit Description</li>:null}
         <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
         {fetchedPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpenRoles(!openRoles)}>Share</li>:null}
         <li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpen(true)}>Delete</li>
@@ -282,10 +288,12 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   <div>
     
   </div>
-    </div>
 
-    {openHashtag?
-    <HashtagForm item={parameters.page}/>:null}
+  
+    </div>
+    {openHashtag?<div className="bg-emerald-50">
+    <HashtagForm item={parameters.page}/>
+  </div>:null}
     </div>)
    }
    const handleFeedback=()=>{
@@ -346,6 +354,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   
       </Dialog>
 <DescriptionDialog 
+
 page={editPage}
 open={feedbackDialog||openDescription} 
 isFeedback={feedbackDialog}

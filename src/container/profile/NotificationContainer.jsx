@@ -16,9 +16,9 @@ import Enviroment from "../../core/Enviroment"
 export default function NotificationContainer(props){
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const payload = usePersistentNotifications( dispatch(fetchNotifcations({profile:currentProfile})))
+    const payload = usePersistentNotifications(()=>dispatch(fetchNotifcations({profile:currentProfile})))
     var today= new Date();
-   
+   console.log(payload)
     let oneDayOld = today.setDate(today.getDate() - 1)
     let lastNotified =  oneDayOld
     const navigate = useNavigate()
@@ -30,7 +30,8 @@ export default function NotificationContainer(props){
        
             if(payload){
                 let seen = []
-                const{collections, comments,following}=payload
+                const{collections, comments,following,followers}=payload
+                let newFollowers = followers.map(follow=>{return{type:"follower",item:follow}})
                 let newComs = comments.map(com=>{return{type:"comment",item:com}})
                 let newFollowContent = following.map(fol=>{
                     
@@ -46,7 +47,7 @@ export default function NotificationContainer(props){
                     })[0].story
                     return {type:"collection",item:latest,collection:col}
                 })
-                let list = [...newComs,...newFollowContent,...newCols].filter(item => {
+                let list = [...newComs,...newFollowContent,...newCols,...newFollowers].filter(item => {
                     
                     let found = seen.find(i=>i.item.id==item.item.id)
                    
@@ -66,7 +67,7 @@ export default function NotificationContainer(props){
                   
                     return new Date(item.item.created) < yesterday
                 });
-                console.log("inde",index)
+            
                 const before = sorted.slice(0, index);
                 const after = sorted.slice(index); 
                 const newItemArray = [Enviroment.blankPage]; 
@@ -98,14 +99,43 @@ export default function NotificationContainer(props){
 <div className="w-[96vw] mx-auto md:w-page">
 {items.map(item=>{
     if(item==Enviroment.blankPage){
-        return<div><p className="lora-medium text-emerald-800 text-opacity-60">Older than today</p></div>
+        return<div><p className="lora-bold text-emerald-800 text-opacity-60">Older than today</p></div>
     }
     switch(item.type){
-
+        case "follower":{
+            console.log(item.item)
+            const follow = item.item
+            const profile = follow.follower
+            return(<div onClick={()=>navigate(Paths.profile.createRoute(profile.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem] border-opacity-60 md:border-2 md:rounded-full p-2">
+            <div className="md:px-12" ><span    className="flex justify-between flex-row ">
+        
+            <ProfileCircle profile={profile}/>
+           
+ 
+            <h4 className="my-auto">{getTimePast(follow.created)}</h4>
+            </span>
+            <h5 className="open-sans-medium
+             my-2 text-[0.8rem] px-2 text-emerald-800">New Follower {profile.username}</h5>
+      
+            </div></div>)
+        }
         case "collection":{
            
         const collection = item.collection
-        
+        let latestCol = collection.childCollections.sort((a,b)=>new Date(a.created)-new Date(b.created))[0]
+        let latestStory = collection.storyIdList.sort((a,b)=>new Date(a.created)-new Date(b.created))[0]
+        let latest = "New Collection"
+        if(latestCol && latestStory && latestCol.created>latestStory.created){
+            latest = "New Addition "+latestCol.childCollection.title
+        }else if(latestStory && !latestCol){
+          
+                latest = "New Story "+latestStory.story.title
+      
+        }else if(!latestStory && latestCol){
+
+            latest = "New Collection"+latestCol.childCollection.title
+        }
+        console.log(collection)
             return(<div onClick={()=>navigate(Paths.collection.createRoute(collection.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem] border-opacity-60 md:border-2 md:rounded-full p-2">
             <div className="md:px-12" ><span    className="flex justify-between flex-row ">
         
@@ -115,7 +145,7 @@ export default function NotificationContainer(props){
             <h4 className="my-auto">{getTimePast(collection.created)}</h4>
             </span>
             <h5 className="open-sans-medium
-             my-2 text-[0.8rem] px-2 text-emerald-800">{latest.title}</h5>
+             my-2 text-[0.8rem] px-2 text-emerald-800">{latest}</h5>
             </div></div>)
         }
         case "story":{

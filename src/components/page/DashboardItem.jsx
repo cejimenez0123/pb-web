@@ -3,7 +3,6 @@ import "../../Dashboard.css"
 import { deletePageApproval,   setEditingPage,   setPageInView, setPagesInView, } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
 import {useDispatch, useSelector} from 'react-redux'
-import { IconButton} from '@mui/joy'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@mui/material'
 import addCircle from "../../images/icons/add_circle.svg"
@@ -23,7 +22,7 @@ function DashboardItem({page,forFeedback=false, book,isGrid}) {
     
     const pathParams = useParams()
     const location = useLocation()
-    const [takingFeedback,setTakingFeedback]=useState(forFeedback)
+
     const {setSuccess,setError}=useContext(Context)
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -90,7 +89,7 @@ const header=()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
 
-    }} >{` `+page.title.length>0?page.title:"Untitled"}</h6></span>
+    }} >{` `+page.title.length>0?page.title:""}</h6></span>
 }
 const handleApprovalClick = ()=>{
     if(currentProfile){
@@ -170,9 +169,9 @@ return <Button onClick={()=>{
     }
     const buttonRow = ( )=>{
         return isGrid?null:
-        <div className='  flex flex-row w-[96vw] rounded-b-lg md:w-page rounded-b-lg rounded-b-lg overflow-clip justify-evenly   '>
+        <div className='  flex flex-row w-[96vw] rounded-b-lg md:w-page rounded-b-lg  justify-evenly   '>
             
-         <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow flex-1/3`}>
+         <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow w-1/3`}>
          <div
          
          onClick={handleApprovalClick}
@@ -184,7 +183,7 @@ return <Button onClick={()=>{
             <h6 className=' text-[1.2rem] mont-medium my-auto mx-auto'>Yea{likeFound?"h!":""}</h6> 
          </div>
          </div>
-         <div className={" bg-emerald-700 mont-medium  border-white border-x-2 border-y-0  text-center border-white grow flex-1/3"}>
+         <div className={" bg-emerald-700 mont-medium  border-white border-x-2 border-y-0  text-center border-white grow w-1/3"}>
          <div
              className='
              text-white
@@ -197,15 +196,14 @@ return <Button onClick={()=>{
           <h6 className='text-[1.2rem]'> Review</h6>
          </div>
          </div>
-         {!page.recommended?<div className="dropdown    text-center   bg-emerald-700  py-2   grow flex-1/3 dropdown-top">
+         {!page.recommended?<div className="dropdown    text-center   bg-emerald-700  py-2   grow w-1/3 dropdown-top">
 <div tabIndex={0} role="button" 
-className="             
-      text-white
-    
-      text-center mx-auto
-      bg-transparent
-       
-        border-none mont-medium 
+    className="             
+        text-white
+        text-center mx-auto
+        bg-transparent
+        border-none 
+        mont-medium 
      
          ">
 <h6 className=' text-[1.2rem]'>Share</h6></div>
@@ -259,9 +257,9 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
             isGrid?navigate(Paths.page.createRoute(page.id)):null
         }} className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&page?header():null}
-        {page.description && page.description && takingFeedback?<div className='min-h-24 pt-16 p-2'>
-            <label className='text-emerald-800'>Feedback Request:</label>
-            <h6 className='p-2 open-sans-medium text-left text-emerald-800'>
+        {page.description && page.description.length>0?<div className='min-h-12 pt-4 p-2'>
+            {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
+            <h6 className={`${isGrid?"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
                 {page.description}
             </h6>
         </div>:null}

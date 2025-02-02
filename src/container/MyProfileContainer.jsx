@@ -1,9 +1,9 @@
-import React,{ useLayoutEffect,useEffect, useState }  from 'react';
+import React,{ useLayoutEffect,useEffect, useState, useContext }  from 'react';
 import { useLocation, useNavigate} from 'react-router-dom';
 import "../styles/MyProfile.css"
 import {useDispatch,useSelector} from "react-redux"
-import { createStory, getMyStories } from '../actions/StoryActions';
-import { getMyCollections } from '../actions/CollectionActions';
+import { createStory, getMyStories,updateStory } from '../actions/StoryActions';
+import { getMyCollections,setCollections } from '../actions/CollectionActions';
 import notifications from "../images/icons/notifications.svg"
 import settings from "../images/icons/settings.svg"
 import IndexList from '../components/page/IndexList';
@@ -22,13 +22,16 @@ import ReferralForm from '../components/auth/ReferralForm';
 import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCollectionCache';
+import Context from '../context';
+import DescriptionDialog from '../components/page/FeedbackDialog';
+
 function MyProfileContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const currentProfile = useSelector(state=>state.users.currentProfile)
+    const {currentProfile}=useContext(Context)
     const [search,setSearch]=useState("")
-  
-
+    const [description,setFeedback]=useState("")
+    usePersistentMyCollectionCache((()=>dispatch(getMyCollections())))
     const collections=useSelector(state=>state.books.collections).filter(col=>{
      if(col){
       if(search.toLowerCase()=="feedback"){
@@ -44,7 +47,7 @@ function MyProfileContainer(props){
     }
   
      })
-
+     const [feedbackPage,setFeedbackPage]=useState(null)
     const [books,setBooks]=useState(collections)
     const [libraries,setLibraries]=useState([])
     const pages = useSelector(state=>state.pages.pagesInView).filter(page=>{
@@ -75,7 +78,23 @@ function MyProfileContainer(props){
     useLayoutEffect(()=>{
         location.pathname=Paths.myProfile()
     },[])
+  const handleFeedback=()=>{
+   
+  let params= structuredClone(feedbackPage,{description:description,needsFeedback:true})
+    //  parameters.description = description
+params.page = feedbackPage
+   
+     dispatch(updateStory(params)).then(res=>{
+      checkResult(res,payload=>{
+          const {story}=payload
+        if(payload.story){
+        
+            navigate(Paths.workshop.createRoute(story.id))
+           }
 
+    
+
+ })})}
    
 
 
@@ -112,20 +131,15 @@ function MyProfileContainer(props){
           });
           setOpenDialog(true)
     }
-    // useLayoutEffect(()=>{
-    //   console.log(cols)
-    //   setCollections(cols)
-    //     // if(cols&&cols.length){
-    //     //   dispatch(setCollections(cols))
-    //     // }
-    // },[cols])
+
+
 
     useLayoutEffect(()=>{
       dispatch(setPagesInView({pages:[]}))
 
       dispatch(getMyStories({profile:currentProfile}))
-    
-      dispatch(getMyCollections({profile:currentProfile}))
+     
+ 
     
     },[currentProfile])
     useLayoutEffect(()=>{
@@ -218,7 +232,10 @@ function MyProfileContainer(props){
                             <div role="tablist" className="tabs border-emerald-300 md:w-page mx-auto border-b-4 border-emerald-500  rounded-lg w-[96vw] mx-auto  tabs-lifted">
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab mont-medium text-emerald-800 border-3 border-3 w-[96vw] mx-auto md:w-page [--tab-border-color:emerald] [--tab-bg:transparent] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
   <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto border-l-4 border-t-3 border-t-emerald-500 border-b-4 border-r-4 w-[96vw] mx-auto md:w-page border-emerald-300 ">
-  <IndexList items={pages}/>
+  <IndexList items={pages} handleFeedback={item=>{
+    setFeedbackPage(item)
+    dispatch(setPageInView({page:item}))
+  }}/>
   </div>
 
   <input
@@ -243,6 +260,18 @@ function MyProfileContainer(props){
 
 </div>
 </div>
+<DescriptionDialog
+
+page={feedbackPage}
+open={!!feedbackPage} 
+isFeedback={true}
+
+handleChange={setFeedback} 
+handleFeedback={handleFeedback}
+handlePostPublic={()=>{}}
+handleClose={()=>{
+  navigate(Paths.workshop.createRoute(feedbackPage.id))
+}}/>
 <Dialog className={
                 "bg-emerald-400 bg-opacity-30 "
               }

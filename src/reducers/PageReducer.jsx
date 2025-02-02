@@ -11,8 +11,7 @@ import {
           clearPagesInView,
           fetchEditingPage,
           clearEditingPage,
-          saveRolesForPage,
-          updatePage,
+      
           setEditingPage,
           getPublicStories,
           setPagesInView,
@@ -22,7 +21,6 @@ import {
 import { createSlice} from "@reduxjs/toolkit"
 import { getMyStories, getStory,createStory, fetchRecommendedStories,
   updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
-import { getRecommendedCollectionStory } from "../actions/CollectionActions"
 
 
 const initialState = {pagesInView:[],
@@ -160,12 +158,14 @@ const pageSlice = createSlice({
       
       }).addCase(setEditingPage.type,(state,{payload})=>{
         state.editingPage = payload
-      }).addCase(saveRolesForPage.fulfilled,(state,{payload})=>{
-        if(payload.page){
-        state.editingPage = payload.page
-      }}).addCase(saveRolesForPage.rejected,(state,{payload})=>{
-        state.error = payload.error
-      }).addCase(fetchPage.pending,(state)=>{
+      })
+      // .addCase(saveRolesForPage.fulfilled,(state,{payload})=>{
+      //   if(payload.page){
+      //   state.editingPage = payload.page
+      // }}).addCase(saveRolesForPage.rejected,(state,{payload})=>{
+      //   state.error = payload.error
+      // })
+      .addCase(fetchPage.pending,(state)=>{
         state.loading = true
       }).addCase(fetchPage.rejected,(state,{payload})=>{
         state.error = payload.error
@@ -197,13 +197,14 @@ const pageSlice = createSlice({
       if(payload.page){
       state.editingPage = payload.page
       }
-    }).addCase(updatePage.fulfilled,(state,{payload})=>{
-        if(payload.page){
-        state.editingPage = payload.page
-        }
-      }).addCase(updatePage.rejected,(state,{payload})=>{
-       state.error = payload.error
-      })
+    })
+    // .addCase(updatePage.fulfilled,(state,{payload})=>{
+    //     if(payload.page){
+    //     state.editingPage = payload.page
+    //     }
+    //   }).addCase(updatePage.rejected,(state,{payload})=>{
+    //    state.error = payload.error
+    //   })
     }
   })
     

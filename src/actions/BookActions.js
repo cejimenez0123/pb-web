@@ -13,14 +13,7 @@ import { db,auth,client} from "../core/di"
 import Contributors from "../domain/models/contributor"
 import collectionRepo from "../data/collectionRepo"
 
-const setCollections = createAction("cols/setCollections", (params)=> {
 
-  const {collections} = params
-  return  {payload:
-    collections}
-    
-  
-})
 const fetchBook = createAsyncThunk("books/fetchBook", async function(params,thunkApi){
     try{
       const data = await collectionRepo.fetchCollection(params)
@@ -236,7 +229,7 @@ function unpackBookDoc(doc){
                         )
     return book
 }
-  export { setCollections, 
+  export { 
             getProfileBooks,
             fetchArrayOfBooksAppened,
             appendSaveRolesFoBook,

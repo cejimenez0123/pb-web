@@ -11,7 +11,7 @@ import { getRecommendedCollectionsProfile } from '../actions/CollectionActions'
 import Context from '../context'
 import { useLocation } from 'react-router-dom'
 import {  setPagesInView } from '../actions/PageActions'
-import { setCollections } from '../actions/BookActions'
+import { setCollections } from '../actions/CollectionActions'
 
 function DashboardContainer(props){
     const location = useLocation()
