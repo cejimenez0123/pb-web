@@ -33,7 +33,7 @@ export default function AddStoryToCollectionContainer(props){
     const [openDialog,setOpenDialog]=useState(false)
     const [search,setSearch]=useState("")
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const collections = useSelector(state=>state.books.collections).filter(col=>col || (col.type && col.type!="feedback")).filter(col=>{
+    const collections = useSelector(state=>state.books.collections).filter(col=>col || (col && col.type && col.type!="feedback")).filter(col=>{
       if(item && item.id==col.id){
         return false
       }

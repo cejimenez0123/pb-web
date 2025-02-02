@@ -12,17 +12,17 @@ import Role from "../../domain/models/role"
 import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions"
 import { RoleType } from "../../core/constants"
 import checkResult from "../../core/checkResult"
-import { appendToPagesInView, clearPagesInView, setPagesInView } from "../../actions/PageActions"
+import { appendToPagesInView, setPagesInView } from "../../actions/PageActions"
 import { postCollectionHistory } from "../../actions/HistoryActions"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import Context from "../../context"
 import Enviroment from "../../core/Enviroment"
 import ExploreList from "../../components/collection/ExploreList"
 import { setCollections } from "../../actions/BookActions"
-import { Checkroom } from "@mui/icons-material"
 import { getCurrentProfile } from "../../actions/UserActions"
 import bookmarkOutline from "../../images/bookmarkoutline.svg"
 import bookmarkFill from "../../images/bookmarkfill.svg"
+import ErrorBoundary from "../../ErrorBoundary"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
@@ -41,7 +41,7 @@ export default function CollectionContainer(props){
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(false)
     const params = useParams()
-  
+    const [isPrivate,setIsPrivate]=useState(false)
     
 
     const getRecommendations =()=>{
@@ -250,17 +250,22 @@ if(currentProfile){
              dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
              setLoading(false)
             },err=>{
-                setError(er.meesage)
+                setError(err.meesage)
                 setLoading(false)
             })
         }):dispatch(fetchCollection(params)).then(res=>{
             checkResult(res,payload=>{
-           
+                if(payload.collection){
+
+                
                 dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
                 dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-                setLoading(false)
+                setLoading(false)}else{
+                    setIsPrivate(true)
+                }
             },err=>{
-                setError(er.meesage)
+                setIsPrivate(true)
+                setError(err.meesage)
                 setLoading(false)
             })
         })
@@ -271,21 +276,21 @@ if(currentProfile){
     const soUserCanSee=()=>{
         
        if(collection){
-       
-            if( !collection.isPrivate){
+        if( !collection.isPrivate){
             
-                setCanUserSee(true)
-        
-                    return 
-             }
-             
-            if(currentProfile){
-                if(currentProfile.id==collection.profileId){
+            setCanUserSee(true)
+    
+                return 
+         }
+          if(currentProfile){
+             if(currentProfile.id==collection.profileId){
                     
-                    setCanUserSee(true)
-                 
-                    return
-                }
+                setCanUserSee(true)
+             
+                return
+            }
+            if(currentProfile&&collection && collection.roles){
+             
             let found =  collection.roles.find(colRole=>{
                 return colRole && colRole.profileId == currentProfile.id
             })
@@ -297,6 +302,7 @@ if(currentProfile){
                 setCanUserSee(false)
                 return
             }
+        }
         }
         if(!canUserSee){
             if(collection.parentCollections){
@@ -482,12 +488,14 @@ const bookList=()=>{
     </div>
     </div>)
 }
-if(collection&&canUserSee){
+if(collection&&canUserSee&&!isPrivate){
   
 
     return(<>
-
+      <ErrorBoundary>
+    
 <div className=" flex flex-col ">   
+<div>Log In becuase you'll
 <div>
   <CollectionInfo collection={collection}/>
 </div>
@@ -502,9 +510,16 @@ if(collection&&canUserSee){
     <ExploreList />
          
          </div>
-      
+         
+         </div>
+      </ErrorBoundary>
     </>)
 }else{
+    if(isPrivate){
+        return(<div>
+            Made a wrong turn
+        </div>)
+    }
     if(loading){
      
         return(<div>
