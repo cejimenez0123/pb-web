@@ -13,7 +13,7 @@ import stream from "../../images/stream.svg"
 import InfoTooltip from '../../components/InfoTooltip'
 import loadingGif from "../../images/loading.gif"
 import { fetchHashtag } from '../../actions/HashtagActions'
-import { setCollections } from '../../actions/BookActions'
+import { setCollections } from '../../actions/CollectionActions'
 import { appendToPagesInView, setPagesInView } from '../../actions/PageActions'
 export default function HashtagContainer(props){
     const location = useLocation()

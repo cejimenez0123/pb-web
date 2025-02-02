@@ -41,6 +41,8 @@ import NotificationContainer from './container/profile/NotificationContainer.jsx
 import HashtagContainer from './container/hashtag/HashtagContainer.jsx';
 import usePersistentCurrentProfile from './domain/usecases/useCurrentProfileCache.jsx';
 import { useSelector } from 'react-redux';
+import NotFound from './container/NotFound.jsx';
+import EmailPreferences from './container/EmailPreferences.jsx';
 function App(props) {
 
   const dispatch = useDispatch()
@@ -197,7 +199,9 @@ function App(props) {
     <Route path="/profile/:id" element={
       <ProfileContainer profile={props.profileInView}/>
       }/>
-  
+    <Route path="/subscribe" 
+    element={<EmailPreferences/>}/>
+    <Route path="*" element={<NotFound/>}/>
     
 
     <Route  

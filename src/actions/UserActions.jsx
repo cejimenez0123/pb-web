@@ -188,6 +188,11 @@ const setSignedInFalse = createAction("users/setSignedInFalse", async(params)=>{
   return
  }
  )
+const updateSubscription= createAsyncThunk("users/updateSubscription", async (params,thunkApi)=>{
+  const data = await authRepo.updateSubscription(params)
+
+  return data
+})
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
   try{
@@ -391,78 +396,8 @@ const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunk
     console.error('Error deleting file:', error);
   }
 })
-const deleteFollowBook= createAsyncThunk("users/deleteFollowBook", async (params,thunkApi)=>{
-            // try{
-            //   const {followBook,book,profile}=params
-            //   if(followBook){
-            //     await deleteDoc(doc(db,"follow_book",followBook.id));
-            //   }else{
-            //     await deleteDoc(doc(db,"follow_book",`${profile.id}_${book.id}`));
-            
-            //   }
-            //   return {
-            //     followBook
-            //   }
-            // }catch(e){
-            //   return {error: new Error("Error: Delete Follow Book"+e.message)};
-            // }
-          })
-const deleteFollowLibrary= createAsyncThunk("users/deleteFollowLibrary", async (params,thunkApi)=>{
-            // try{
-            //   const {followLibrary,library,profile}=params
-            //   if(followLibrary){
-            //     await deleteDoc(doc(db, "follow_library",followLibrary.id));
-            //   }else{
-            //     await deleteDoc(doc(db, "follow_library",`${profile.id}_${library.id}`));
-            
-            //   }
-            //   return {
-            //     followLibrary: followLibrary
-            //   }
-            // }catch(e){
-            //   return {error: new Error("Error: Delete Follow Library"+e.message)};
-            // }
-          })
-const deleteFollowProfile= createAsyncThunk("users/deleteFollowProfile", async (params,thunkApi)=>{
-            try{
-              // const {followProfile,follower,following}=params
-              // if(followProfile){
-              //   await deleteDoc(doc(db,"follow_profile",followProfile.id));
-              // }else{
-              //   await deleteDoc(doc(db,"follow_profile",`${follower.id}_${following.id}`));
-            
-              // }
-              return {
-                followProfile
-              }
-            }catch(e){
-              return {error: new Error("Error: Delete Follow Profile"+e.message)};
-            }
-})
-const createFollowProfile = createAsyncThunk("users/createFollowProfile", async function(params,thunkApi){
-            try{
-                const {
-                    follower,
-                    following
-                }=params
-                // const id = `${follower.id}_${following.id}`
-                // const created = Timestamp.now()
-                //     await setDoc(doc(db,"follow_profile",id), { 
-                //         id:id,
-                //         followerId: follower.id,
-                //         followingId: following.id,
-                //         created: created
-                //     })
-                //     const lb = new FollowProfile(id,follower.id,following.id,created);
-                return { 
-                    followProfile:lb
-                }
-            }catch(error){
-                return {
-                    error: new Error(`Error: Follow Profile ${error.message}`)
-                }
-            }
-})
+
+
 const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfilesForProfile",async (params,thunkApi)=>{
                     try{
                         const {profile} = params
@@ -529,51 +464,12 @@ const getPageApprovals = createAsyncThunk("users/getPageApprovals",async (params
   }
 }
 })
-// const fetchArrayOfProfiles = createAsyncThunk("pages/fetchArrayOfProfiles",async (params,thunkApi)=>{
-//   try{ 
-//     const profileIdList = params["profileIdList"]
-//     const profilePromises = profileIdList.map((profileId) => {
-//       const profileRef = doc(db, "profile", profileId);
-//       return getDoc(profileRef);
-//     });
-//     let snapshots = await Promise.all(profilePromises)
-//     let profileList = snapshots.map(snapshot => unpackProfileDoc(snapshot))
-  
-//     return {profileList:profileList}
-//   }catch(err){
-//     const error = err??new Error("Error: Fetch Array of Profiles")
-//     return {error }
-//     }
-//   }
-// )
+
 const  searchDialogToggle = createAction("users/searchDialogToggle",(params,thunkApi)=>{
   const {open} = params
   return {payload: open}
 })
-// const unpackProfileDoc = (doc)=>{
-//   const pack =  doc.data() 
 
-//   if(pack!=null){  
-//       const id = pack["id"]
-//       const username = pack["username"]??""
-//       const profilePicture = pack["profilePicture"]??""
-//       const selfStatement = pack["selfStatement"]
-//       const homeLibraryId = pack["homeLibraryId"]
-//       const bookmarkLibraryId = pack["bookmarkLibraryId"]
-//       const userId = pack["userId"]
-//       const privacy = pack["privacy"]
-//       const created = pack["created"]
-//       const profile = new Profile(id,
-//                                   username,
-//                                   profilePicture,
-//                                   selfStatement,
-//                                   bookmarkLibraryId,
-//                                   homeLibraryId,
-//                                   userId,
-//                                   privacy,
-//                                   created)
-//     return profile
-// }}
 
 const unpackUserApprovalDoc = (doc)=>{
   const pack = doc.data();
@@ -590,8 +486,7 @@ export {logIn,
         signUp,
         getCurrentProfile,
         updateProfile,
-        // fetchAllProfiles,
-        // uploadProfilePicture,
+    
         fetchProfile,
         setProfileInView,
         createFollowBook,
@@ -599,7 +494,7 @@ export {logIn,
         fetchFollowBooksForProfile,
         fetchFollowLibraryForProfile,
      
-        deleteFollowProfile,
+       
   
         fetchFollowProfilesForProfile,
         signOutAction,
@@ -613,6 +508,6 @@ export {logIn,
         getPageApprovals,
         searchDialogToggle,
         searchMultipleIndexes,
-        deletePicture
-        // fetchArrayOfProfiles
+        deletePicture,
+        updateSubscription
     }

@@ -26,17 +26,17 @@ name: 'libraries',
 initialState,
 extraReducers(builder) {
 builder
-    .addCase(getProfileLibraries.rejected,(state,{payload})=>{
-        return {...state,error: payload.error}
-    })
-    .addCase(getProfileLibraries.fulfilled,(state,{payload})=>{
-        return {...state,
-                librariesInView: payload.libList}
-    })
-    .addCase(getProfileLibraries.pending,(state,)=>{
-        return {...state,
-                loading: true}
-    })
+    // .addCase(getProfileLibraries.rejected,(state,{payload})=>{
+    //     return {...state,error: payload.error}
+    // })
+    // .addCase(getProfileLibraries.fulfilled,(state,{payload})=>{
+    //     return {...state,
+    //             librariesInView: payload.libList}
+    // })
+    // .addCase(getProfileLibraries.pending,(state,)=>{
+    //     return {...state,
+    //             loading: true}
+    // })
     // .addCase(fetchLibrary.pending,(state)=>{
     //     return {...state,loading: true}
     // })

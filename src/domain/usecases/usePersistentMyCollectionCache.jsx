@@ -14,9 +14,8 @@ export default function usePersistentMyCollectionCache(fetchData) {
     
       fetchData().then((res) => {
         checkResult(res,payload=>{
-          console.log(payload)
+
             dispatch(setCollections({collections:payload.collections}))
-           
             setCols(payload.collections);
             localStorage.setItem(key, JSON.stringify(payload.collections));
         })

@@ -4,7 +4,7 @@ import ReactGA from "react-ga4"
 import { clearPagesInView } from "../actions/PageActions"
 import { useDispatch } from "react-redux"
 import { setCollectionInView } from "../actions/CollectionActions"
-import { setCollections } from "../actions/BookActions"
+import { setCollections } from "../actions/CollectionActions"
 function BookListItem({book}){
     const dispatch = useDispatch()
     const navigate = useNavigate()

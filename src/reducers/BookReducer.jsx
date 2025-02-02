@@ -7,13 +7,13 @@ import { createSlice} from "@reduxjs/toolkit"
         deleteStoryFromCollection,
         clearCollections,
         getRecommendedCollectionsProfile,
-       
+       setCollections,
       
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
 import { createWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActions"
 import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
-import { setCollections } from "../actions/BookActions"
+
 import { getPublicLibraries } from "../actions/LibraryActions"
 const initialState = {
     groups:[],

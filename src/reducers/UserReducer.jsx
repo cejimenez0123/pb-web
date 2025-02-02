@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import {    logIn ,
             signUp,
             getCurrentProfile,
-            // fetchAllProfiles,
+    
             fetchProfile,
             setProfileInView,
             fetchFollowBooksForProfile,
@@ -19,7 +19,7 @@ import {    logIn ,
             searchDialogToggle,
             searchMultipleIndexes,
             updateProfile,
-            // fetchArrayOfProfiles,
+        
         } from "../actions/UserActions"
 import { createProfile, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions"

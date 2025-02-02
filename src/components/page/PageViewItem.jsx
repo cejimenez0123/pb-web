@@ -37,7 +37,7 @@ export default function PageViewItem({page}) {
              dispatch(setPageInView({page}))
              navigate(Paths.page.createRoute(page.id))
      
-         }} >{` `+page.title.length>0?page.title:"Untitled"}</h6>
+         }} >{` `+page.title.length>0?page.title:""}</h6>
         
     
          </span>   {page.description && page.description.length>0?<div className='min-h-24 pt-4 p-2'>

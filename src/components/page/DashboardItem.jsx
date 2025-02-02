@@ -89,7 +89,7 @@ const header=()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
 
-    }} >{` `+page.title.length>0?page.title:"Untitled"}</h6></span>
+    }} >{` `+page.title.length>0?page.title:""}</h6></span>
 }
 const handleApprovalClick = ()=>{
     if(currentProfile){

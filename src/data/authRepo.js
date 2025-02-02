@@ -45,6 +45,15 @@ class AuthRepo{
        console.log("Token",res)
         return res.data
     }
+    async updateSubscription({token,frequency}){
+      
+        const res = await axios.put(Enviroment.url+"/auth/subscription",{
+            token,frequency
+        })
+        return res.data
+    }
+
+  
     }
 
 export default new AuthRepo()

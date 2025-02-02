@@ -7,7 +7,6 @@ import { Provider } from 'react-redux'
 import {pageSlice} from './reducers/PageReducer';
 import userSlice from './reducers/UserReducer';
 import bookSlice from './reducers/BookReducer.jsx';
-import libSlice from './reducers/LibraryReducer';
 import rolesSlice from './reducers/RoleReducer.jsx';
 import logger from "redux-logger"
 import commentSlice from './reducers/CommentReducer';
@@ -18,7 +17,6 @@ const reducer = combineReducers({
   pages: pageSlice.reducer,
   users: userSlice.reducer,
   books: bookSlice.reducer,
- libraries: libSlice.reducer,
   comments: commentSlice.reducer,
   roles: rolesSlice.reducer
 })

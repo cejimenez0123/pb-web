@@ -27,7 +27,7 @@ const critiqueTipsByGenre = {
       "Ensure subtext is present, not just overt explanation.",
       "Read dialogue aloud—make it sound natural and character-driven."
     ],
-    flashFiction: [
+    flashfiction: [
       "Check if the opening line immediately engages or sets the tone.",
       "Reduce unnecessary repetition to keep the prose dynamic and engaging.",
       "Eliminate filter words like 'I saw' and 'I felt' for immediacy.",

@@ -18,7 +18,7 @@ const IndexList = ({items,handleFeedback})=>{
                    hasMore={false}
                     endMessage={
                       <div className="p-12 flex" >
-                        <h3 className="text-emerald-600 lora-bold text-center text-xl tracking-wide mx-auto">There's always room. Breate to let in creativity.</h3>
+                        <h3 className="text-emerald-600 lora-bold text-center text-xl tracking-wide mx-auto">There's always room. Breathe to let in creativity.</h3>
                       </div>
                     }
                   >
