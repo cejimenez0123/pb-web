@@ -86,10 +86,10 @@ export default function SearchDialog(props){
 
         return(<div
         key={i}
-        className="py-3 border-2 px-4 my-2 w-[94%] mx-auto border-emerald-200 rounded-full"
+        className="border-2 px-4 w-[94%] my-2 mx-auto h-[3em] flex border-emerald-200 rounded-full"
         onClick={()=>handleOnClick(content)}>
-         {content.title?content.title:content.username?content.username:content.name}
-        </div>)
+         <h6 className="my-auto mont-medium text-nowrap max-w-[90%] text-ellipsis overflow-hidden">{content.title?content.title.trim().length==0?"Untitled":content.title:content.username?content.username:content.name?content.name:"Untitled"
+         }   </h6>     </div>)
    
            
         })}
