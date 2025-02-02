@@ -95,7 +95,7 @@ state.loading = true
     state.loading = false
 }).addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
    
-   let list = state.collections
+   let list = state.collections.filter(col=>col)
   
     const index = list.findIndex(col=>col.id==payload.collection.id)
     if(index>0){

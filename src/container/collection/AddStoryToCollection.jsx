@@ -13,6 +13,7 @@ import checkResult from "../../core/checkResult"
 import loadingGif from "../../images/loading.gif"
 import Context from "../../context"
 import Paths from "../../core/paths"
+import { setCollections } from "../../actions/BookActions"
 function toTitleCase(str) {
   return str.toLowerCase().replace(/(?:^|\s)\w/g, function(match) {
     return match.toUpperCase();
@@ -29,7 +30,7 @@ export default function AddStoryToCollectionContainer(props){
     const dispatch = useDispatch()
     const [item,setItem]=useState(null)
  const navigate = useNavigate()
-    const [hasMoreCol,setHasMoreCol]=useState(true)
+    const [hasMoreCol,setHasMoreCol]=useState(false)
     const [openDialog,setOpenDialog]=useState(false)
     const [search,setSearch]=useState("")
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -99,6 +100,7 @@ getContent()
    
     },[])
     useLayoutEffect(()=>{
+      dispatch(setCollections({collections:[]}))
       getCollections()
     },[item])
     const getContent=()=>{
@@ -124,6 +126,7 @@ getContent()
   }
    
     const getCollections=()=>{
+      setHasMoreCol(true)
        dispatch(getMyCollections()).then(()=>{
         setHasMoreCol(false)
     })

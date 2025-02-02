@@ -495,8 +495,7 @@ if(collection&&canUserSee&&!isPrivate){
       <ErrorBoundary>
     
 <div className=" flex flex-col ">   
-<div>Log In becuase you'll
-<div>
+
   <CollectionInfo collection={collection}/>
 </div>
 <div>
