@@ -59,7 +59,7 @@ function App(props) {
   const fetchData = ()=>{
     const {currentProfile}=props
     if(currentProfile){
-      dispatch(getHashtags())
+      // dispatch(getHashtags())
       // dispatch(getProfileHashtagCommentUse({profileId:currentProfile.id}))
     }
  

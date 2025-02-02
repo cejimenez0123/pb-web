@@ -1,6 +1,6 @@
 import { useSelector,useDispatch} from 'react-redux'
 import DashboardItem from '../../components/page/DashboardItem'
-import { useState,useEffect, useLayoutEffect } from 'react'
+import { useState,useEffect, useLayoutEffect, useContext } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import ErrorBoundary from '../../ErrorBoundary'
@@ -15,10 +15,12 @@ import loadingGif from "../../images/loading.gif"
 import { fetchHashtag } from '../../actions/HashtagActions'
 import { setCollections } from '../../actions/BookActions'
 import { appendToPagesInView, setPagesInView } from '../../actions/PageActions'
+import Context from '../../context'
 export default function HashtagContainer(props){
     const location = useLocation()
     const params = useParams()
     const {id}=params
+    const {setError}=useContext(Context)
     const collections = useSelector(state=>state.books.collections)
     const [hash,setHashtag]=useState(null)
     const navigate = useNavigate()
@@ -58,6 +60,7 @@ export default function HashtagContainer(props){
             checkResult(res,payload=>{
         
                 const {hashtag}=payload
+                if(hashtag){
                 setHashtag(hashtag)
             
                     
@@ -68,7 +71,9 @@ export default function HashtagContainer(props){
                 setHasMoreBooks(false)
                 setHasMoreLibraries(false)
                 setHasMorePages(false)
-
+                }else{
+                    setError("No hashtag")
+                }
             },err=>{
 
                 setHasMoreBooks(false)
@@ -80,7 +85,7 @@ export default function HashtagContainer(props){
       useLayoutEffect(()=>{
        
            getHashtag()
-      },[location.pathname,id])
+      },[id])
     useEffect(
         ()=>{
             if(!isNotPhone){

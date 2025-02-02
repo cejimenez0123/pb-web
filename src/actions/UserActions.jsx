@@ -582,9 +582,6 @@ const unpackUserApprovalDoc = (doc)=>{
         let userApproval = new UserApproval(id,pageId,profileId,score)
       return userApproval
 }
-let clickMe = createAsyncThunk("Sf",async (params,thunkApi)=>{
-
-})
 
 export {logIn,
         signUp,
@@ -603,7 +600,7 @@ export {logIn,
   
         fetchFollowProfilesForProfile,
         signOutAction,
-        clickMe,
+
         uploadPicture,
         deleteUserAccounts,
         fetchHomeCollection,

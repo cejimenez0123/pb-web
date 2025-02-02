@@ -5,6 +5,7 @@ import Hashtag from "../domain/models/hashtag"
 import HashtagComment from "../domain/models/hashtag_comment"
 import HashtagPage from "../domain/models/hashtag_page"
 import hashtagRepo from "../data/hashtagRepo"
+import axios from "axios"
 const getProfileHashtagCommentUse = createAsyncThunk("hashtag/fetchProfileHashtagComments",
 async ({profileId},thunkApi) => {
    let data = await hashtagRepo.fetchUserHashtagCommentUse({profileId})
@@ -50,7 +51,7 @@ const getHashtags = createAsyncThunk("hashtag/getHashtags",async (params,thunkAp
   
     let data = await hashtagRepo.all()
  
-
+   
     return {
         hashtags: data.hashtags
     }
@@ -113,10 +114,21 @@ async ({hashId},thunkApi) => {
 })
 const fetchHashtag = createAsyncThunk("hashtag/fetchHashtag",async (params,thunkApi)=>{
     const {id}=params
-   const data = await hashtagRepo.fetch({id})
+   
+
+    try{
+
+    const data = await hashtagRepo.fetch({id})
    return{
     hashtag:data.hashtag
    }
+
+    }catch(err){
+   
+        return err
+    }
+// }
+// send().then()
 })
 
 const clearHashComments = createAction("hashtags/clearHashComments")
@@ -162,16 +174,6 @@ const unpackHashtagDoc = (doc)=>{
     return hashtag
 }
 
-const unpackHashtagCommentDoc = (doc)=>{
-    const id = doc.id
-    const pack = doc.pack()
-    const {commentId,hashtagId,created}=pack
-    const hashtag = new HashtagPage(id,
-                                    hashtagId,
-                                    commentId,
-                                    created)
-    return hashtag
-}
 
 
 export {unpackHashtagDoc,
