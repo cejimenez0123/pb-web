@@ -497,7 +497,7 @@ if(collection&&canUserSee&&!isPrivate){
 <div className=" flex flex-col ">   
 
   <CollectionInfo collection={collection}/>
-</div>
+
 <div>
             {collections && collections.length>0?bookList() :null}
             </div>
@@ -507,10 +507,10 @@ if(collection&&canUserSee&&!isPrivate){
         <PageList  isGrid={false} hasMore={hasMore}  forFeedback={collection&&collection.type=="feedback"}/>
         </div>
     <ExploreList />
+    </div> 
+        
          
-         </div>
-         
-         </div>
+       
       </ErrorBoundary>
     </>)
 }else{
