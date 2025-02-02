@@ -1,61 +1,87 @@
 import { useContext, useEffect, useRef } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useParams ,useSearchParams} from "react-router-dom";
+import { useLocation, useNavigate, useParams ,useSearchParams} from "react-router-dom";
 import { updateSubscription } from "../actions/UserActions";
 import checkResult from "../core/checkResult";
 import Context from "../context";
+import axios from "axios";
+import Enviroment from "../core/Enviroment";
 
 export default function EmailPreferences() {
   const {setSuccess,setError}=useContext(Context)
   const selectRef = useRef()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
+  const domain = window.location.hostname;
   const [searchParams] = useSearchParams()
   let tokenstr = searchParams.get("token")
- 
+  const location = useLocation()
   const [token,setToken]=useState(tokenstr)
   const [unsubscribed,setUnsubscribed]=useState(false)
   const [frequency, setFrequency] = useState(1);
-  useEffect(()=>{
-
-      save()
-
-  },[frequency])
 
   
   useEffect(() => {
-    if (searchParams.get("unsubscribed") === "true") {
+    if (searchParams.get("unsubscribe") === "true") {
+
       setUnsubscribed(true);
+      let token = searchParams.get("token")
+      setToken(token)
     }else{
       let token = searchParams.get("token")
       setToken(token)
+      setUnsubscribed(false)
     }
   },[searchParams])
 
   const save=()=>{
-      dispatch(updateSubscription({token,frequency:new Number(frequency)})).then(res=>{
+      dispatch(updateSubscription({token,frequency:new Number(selectRef.current.value)})).then(res=>{
         checkResult(res,payload=>{
 setSuccess(payload.message)
         },err=>{
-            setError(err.message)
+           if(!err.message.includes("Network")){
+setError(err.message)
+           }
         })
       })
   }
+  const unsubscribe=()=>{
+    dispatch(updateSubscription({token,frequency:0})).then(res=>{
+      checkResult(res,payload=>{
+        let pars = new URLSearchParams({unsubscribe:"true",token})
+        navigate("/subscribe?"+pars.toString())
+      },err=>{
+         if(!err.message.includes("Network")){
+setError(err.message)
+         }
+      })
+    })
+  }
+  const resubscribe=()=>{
+    let pars = new URLSearchParams({token})
+    setUnsubscribed(false)
+    navigate("/subscribe?"+pars.toString())
+  }
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
       {unsubscribed ? (
           <>
+          <div className="card mx-auto my-12">
             <h2 className="text-2xl font-bold text-center text-red-600 mb-4">
               You have been unsubscribed
             </h2>
             <p className="text-gray-600 text-center mb-6">
               You will no longer receive updates from Plumbum. If this was a mistake, you can resubscribe below.
             </p>
-            <button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg">
-              Resubscribe
-            </button>
+            <a onClick={
+              ()=>resubscribe()
+            }className="w-full flex max-w-[100vw] md:w-[36em] h-[4em] mx-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-full">
+              <h6 className="mx-auto mont-medium text-xl my-auto">Resubscribe</h6>
+            </a>
+            </div>
           </>
-        ) :( <div className="card my-8 w-full max-w-md p-6 bg-white shadow-lg rounded-2xl">
+        ) :( <div className="card my-4 md:my-8  max-h-[40em] mx-2 md:mx-auto w-full max-w-md p-6 bg-white shadow-lg rounded-2xl">
         <h2 className="text-2xl font-bold text-center text-emerald-700 mb-4">
           Manage Email Preferences
         </h2>
@@ -84,17 +110,15 @@ setSuccess(payload.message)
           By unsubscribing, you may miss important updates on new features, upcoming events, and exclusive content from the Plumbum community.
         </p>
         <a  onClick={()=>{
-          setFrequency(selectRef.current.value)
+     save()
 //  setFrequency(selectRef.current.value)
-        }} className="btn w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg">
+        }} className="btn w-full bg-gradient-to-r  my-auto border-0 from-emerald-500 to-emerald-700 text-white font-bold py-2 px-4 rounded-full">
           Save Preferences
         </a>
         <p className="text-center text-sm text-gray-500 mt-4">
           Want to stop receiving emails? 
-          <a onClick={()=>{
-            setFrequency("0")
-       
-          }} className="text-emerald-600 mx-2 font-semibold hover:underline">Unsubscribe</a>
+          <a onClick={()=>unsubscribe()}
+          className="text-emerald-600 mx-2 font-semibold hover:underline">Unsubscribe</a>
         </p>
       </div>)}
     </div>
