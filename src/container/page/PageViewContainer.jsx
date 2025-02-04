@@ -104,7 +104,7 @@ export default function PageViewContainer(props){
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
     <>{title()}
-    {pageDiv()}</>:<div className="skeleton  max-w-[96vw] mx-auto md:w-page h-page"/>}
+    {pageDiv()}</>:<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>}
     
     <CommentThread page={page} comments={rootComments}/>
     </div> 

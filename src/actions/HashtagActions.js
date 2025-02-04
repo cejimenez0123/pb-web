@@ -51,6 +51,7 @@ const getHashtags = createAsyncThunk("hashtag/getHashtags",async (params,thunkAp
   
     let data = await hashtagRepo.all()
  
+  
    
     return {
         hashtags: data.hashtags
@@ -61,8 +62,7 @@ const createHashtagComment = createAsyncThunk("hashtag/createHashtagComment",
     async ({name,commentId,profileId},thunkApi) => {
        let data = await hashtagRepo.comment({name,commentId,profileId})
        let hashtag = data.hashtag
-       client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:name,type:"hashtag"},{createIfNotExists:true}).wait()
-    
+       
        return {
         hashtag:data.hashtag
        }
@@ -75,8 +75,7 @@ async ({name,storyId,profile},thunkApi) => {
 
             const {hashtag}=data
 
-             client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:name,type:"hashtag"},{createIfNotExists:true}).wait()
-             return {
+                   return {
                 hashtag:data.hashtag
                 }
             
@@ -95,9 +94,7 @@ async ({name,colId,profile},thunkApi) => {
         let data = await hashtagRepo.collection({name,colId,profile})
       if(data.hashtag){
         const {hashtag}=data
-        if(hashtag.id){
-            client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:name,type:"hashtag"},{createIfNotExists:true}).wait()
-         }
+        
         return {
         hashtag:data.hashtag
        }

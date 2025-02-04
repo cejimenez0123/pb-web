@@ -24,7 +24,6 @@ import ProfileInfo from '../components/profile/ProfileInfo';
 import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCollectionCache';
 import Context from '../context';
 import DescriptionDialog from '../components/page/FeedbackDialog';
-import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache';
 
 function MyProfileContainer(props){
     const navigate = useNavigate()
@@ -36,7 +35,7 @@ function MyProfileContainer(props){
     setCollections({collections:[]})
     return dispatch(getMyCollections())
   })
-    const collections=useSelector(state=>state.books.collections).filter(col=>{
+    const collections=useSelector(state=>state.books.collections??cols).filter(col=>{
      if(col){
       if(search.toLowerCase()=="feedback"){
         return col.type=="feedback"

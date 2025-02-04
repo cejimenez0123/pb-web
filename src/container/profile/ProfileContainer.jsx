@@ -127,16 +127,16 @@ function ProfileContainer(props){
   
  
     const getContent=()=>{
-        dispatch(setPagesInView({pages:[]}))
-            dispatch(setCollections({collections:[]}))
-            currentProfile?dispatch(getProtectedProfilePages({profile:profile})):dispatch(getPublicProfilePages({profile:profile}))
-           currentProfile?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile:profile}))
+        // dispatch(setPagesInView({pages:[]}))
+        //     dispatch(setCollections({collections:[]}))
+        //     currentProfile?dispatch(getProtectedProfilePages({profile:profile})):dispatch(getPublicProfilePages({profile:profile}))
+        //    currentProfile?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile:profile}))
      
     }
     useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
-            
+                    
                     checkIfFollowing()
                     getContent()
                 },(err)=>{
