@@ -25,10 +25,10 @@ function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const [loading,setLoading]=useState(false)
     const pathParams = useParams()
     const location = useLocation()
-    const currentprof=usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
-    const {setSuccess,setError}=useContext(Context)
+    const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
-    const currentProfile = useSelector(state=>state.users.currentProfile??currentprof)
+    const [canUserEdit,setCanUserEdit]=useState(false)
+    // const currentProfile = useSelector(state=>state.users.currentProfile)
    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const [expanded,setExpanded]=useState(false)
     const colInView = useSelector(state=>state.books.collectionInView)
@@ -61,6 +61,15 @@ return !stories.find(story=>story && page && story.id==page.id)
     })}
     }
 
+    const soCanUserEdit=()=>{
+
+        if(currentProfile&&page){
+            if(page.authorId==currentProfile.id){
+                setCanUserEdit(true)
+                return
+            }
+        }
+    }
     useEffect(()=>{
         if(currentProfile && page){
             let found = currentProfile.likedStories.find(like=>like && like.storyId==page.id)??[]
@@ -151,7 +160,9 @@ return <Button onClick={()=>{
    }
 }
 
-
+    useLayoutEffect(()=>{
+        soCanUserEdit()
+    },[page])
     const onBookmarkPage = ()=>{
             if(currentProfile&&currentProfile.profileToCollections){
                 setLoading(true)
@@ -269,7 +280,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
              >
                     Share Link
                  </a></li>
-                 {(currentProfile && currentProfile.id == page.authorId )
+                 {canUserEdit
                 ? <li className=' text-emerald-700'> 
               
      <a onClick={()=>{

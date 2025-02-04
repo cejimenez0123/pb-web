@@ -40,7 +40,15 @@ export default function PageViewContainer(props){
     useLayoutEffect(()=>{
         setRootComments(comments?comments.filter(com=>com.parentId==null):[])
      },[comments])
+     const soCanUserEdit=()=>{
+        if(page&&currentProfile){
+            if(page.authorId==currentProfile.id){
+                setCanUserEdit(true)
+                return
+            }
 
+        }
+     }
 
      const soCanUserSee=()=>{
         if(page){
@@ -60,6 +68,7 @@ export default function PageViewContainer(props){
      }
     useEffect(()=>{
         soCanUserSee()
+      
     },[currentProfile,page])
     const pageDiv = ()=>{
         if(canUserSee){

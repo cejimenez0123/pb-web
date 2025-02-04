@@ -13,13 +13,13 @@ import Context from "../../context"
 import usePersistentCurrentProfile from "../../domain/usecases/useCurrentProfileCache"
 import { getCurrentProfile } from "../../actions/UserActions"
 import { debounce } from "lodash"
+import { RoleType } from "../../core/constants"
 export default function PageViewButtonRow({page,profile,setCommenting}){
-    const {setSuccess}=useContext(Context)
+    const {setSuccess,currentProfile}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
-    const currentprof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
-    const currentProfile = useSelector(state=>state.users.currentProfile??currentprof)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [canUserComment,setCanUserComment]=useState(false)
     const [loading,setLoading]=useState(false)
     const [bookmarked,setBookmarked]= useState(null)
     const [comment,setComment]=useState(false)
@@ -29,7 +29,7 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
             let marked =currentProfile.profileToCollections.find(ptc=>{
                 return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
           
-                setBookmarked(marked)
+            setBookmarked(marked)
             setLikeFound(found)
         }else{
             setLikeFound(null)
@@ -85,6 +85,20 @@ setBookmarked(null)
                                     alert('Text copied to clipboard');
                                   })
     }
+    const soCanUserComment=()=>{
+        let roles = [RoleType.commenter,RoleType.editor,RoleType.writer]
+        if(currentProfile){
+        if(page.commentable){
+            setCanUserComment(true)
+            return
+        }
+        if(page.betaReaders){
+           let found = page.betaReaders.find(rTc=>rTc.profileId==currentProfile.id&&roles.includes(rTc.role))
+            setCanUserComment(found)
+            return
+        }
+    }
+    }
     const handleApprovalClick = ()=>{
         if(currentProfile){
             if(likeFound ){
@@ -110,6 +124,9 @@ setBookmarked(null)
         window.alert("Please Sign Up")
         }
     }
+    useLayoutEffect(()=>{
+        soCanUserComment()
+    },[page])
     const handleBookmark=debounce((e)=>{
         (e)=>{
             e.preventDefault()
@@ -140,7 +157,7 @@ setBookmarked(null)
      <div className="flex-1/3 grow bg-emerald-700  border-white border-l-2 border-r-2 border-t-0 border-b-0  text-center ">
     <div
     className="  text-white  py-2 border-none bg-transparent rounded-none  "
-       disabled={!profile} 
+       disabled={!canUserComment} 
         onClick={()=>{setComment(!comment)}}>
     <h6 className="text-xl">
         Discuss</h6>
