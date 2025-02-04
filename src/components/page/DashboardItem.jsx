@@ -7,9 +7,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@mui/material'
 import addCircle from "../../images/icons/add_circle.svg"
 import bookmarkFillGreen from "../../images/bookmark_fill_green.svg"
+import bookmarkfill from "../../images/bookmarkfill.svg"
 import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
 import loadingGif from "../../images/loading.gif"
+import bookmarkoutline from "../../images/bookmarkadd.svg"
 import bookmarkadd from "../../images/bookmark_add.svg"
 import PageDataElement from './PageDataElement'
 import ProfileCircle from '../profile/ProfileCircle'
@@ -204,11 +206,9 @@ return <Button onClick={()=>{
     const bookmarkBtn =()=>{
         return isGrid ?<div className='w-[100%]  py-2 my-auto flex flex-row justify-between  text-white '>
             <ProfileCircle isGrid={isGrid} profile={page.author}/>
-        <span className='bg-transparent flex flex-row '><h6 className={`text-white max-w-[15em] min-w-[10em] text-right ml-1 pr-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}onClick={()=>{
-        dispatch(setPageInView({page}))
-        navigate(Paths.page.createRoute(page.id))
-
-    }} >{` `+page.title.length>0?page.title:"Untitled"}</h6><img className='text-white' src={bookmarkadd}/></span>
+        <span className='bg-transparent flex flex-row '>
+            <h6 className={`text-white max-w-[15em] min-w-[10em] text-right ml-1 pr-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
+>{` `+page.title.length>0?page.title:""}</h6><img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
     
     </div>:null
     }
@@ -307,10 +307,8 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
         return(
         <ErrorBoundary>
-                <div className={isGrid?"":'relative w-[96vw] rounded-lg overflow-clip md:w-page shrink my-2 h-fit'}>
-        <div onClick={()=>{
-            isGrid?navigate(Paths.page.createRoute(page.id)):null
-        }} className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
+                <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page shrink my-2 h-fit'}>
+        <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&page?header():null}
         {page.description && page.description.length>0?<div className='min-h-12 pt-4 p-2'>
             {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
@@ -321,8 +319,11 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
        
              
           <div className={isGrid?' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
-         
-          <PageDataElement isGrid={isGrid} page={page}/>
+      <div onClick={()=>{
+         navigate(Paths.page.createRoute(page.id))
+        }} >
+          <PageDataElement  isGrid={isGrid} page={page}/>
+          </div>
                 {buttonRow()}
                 {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1  rounded-b-lg bottom-0'>
                 {header()}

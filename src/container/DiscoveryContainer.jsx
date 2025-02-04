@@ -123,7 +123,7 @@ className={`${
 
                     const id = `${page.id}_${i}`
                     return(<div 
-                        className={isGrid?"grid-item ":"m-1 w-[96vw] md:w-page rounded-lg h-fit "}
+                        className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
                         key={id}
                     >               
                         <DashboardItem isGrid={isGrid} key={id} page={page}/>

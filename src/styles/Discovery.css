@@ -319,23 +319,7 @@
   .break-inside-avoid {
     break-inside: avoid;
   }
-  /* .grid-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;  Allows items to stack naturally 
-    gap: 10px;
-    padding: 10px;
-  }
-  .grid-item {
-    width: 30%; /* Adjust as needed 
-    margin-bottom: 10px;
-    padding: 20px;
-    /* background: lightgray; */
-    /* text-align: center; */
-    /* border-radius: 8px; */
-    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
-  } */
+  
   .grid-container {
     column-count: 3;
     column-gap: 10px;
