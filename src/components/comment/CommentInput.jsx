@@ -13,7 +13,7 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
     const {setError}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
    const [defaultContent,setDefaultContent]=useState(state=>{
-        if(page){
+        if(page&&page.hashtags){
         let tips = null
         page.hashtags.find(hashtag=>{
             tips = critiqueTipsByGenre[hashtag.hashtag.name]
