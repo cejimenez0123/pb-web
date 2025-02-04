@@ -16,7 +16,7 @@ export default function PageViewContainer(props){
     const location = useLocation()
     const page = useSelector(state=>state.pages.pageInView)
     const pathParams = useParams()
-   
+   const {id}=pathParams
     const dispatch = useDispatch()
 
     const [canUserSee,setCanUserSee]=useState(false)
@@ -43,7 +43,7 @@ export default function PageViewContainer(props){
     useLayoutEffect(()=>{
         dispatch(getStory(pathParams))
         dispatch(fetchCommentsOfPage(pathParams))
-    },[location.pathname])
+    },[id])
     useLayoutEffect(()=>{
         setRootComments(comments?comments.filter(com=>com.parentId==null):[])
      },[comments])
