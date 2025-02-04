@@ -173,6 +173,7 @@ export default function CollectionContainer(props){
                 }
 
             },err=>{
+                setError(err.message)
              setLoading(false)
             })
     })

@@ -4,7 +4,6 @@ import {  useState ,useLayoutEffect, useEffect} from "react";
 import "../../styles/PageView.css"
 import { fetchCommentsOfPage } from "../../actions/PageActions";
 import PageViewItem from "../../components/page/PageViewItem";
-import checkResult from "../../core/checkResult";
 import {Helmet} from "react-helmet"
 import { getStory } from "../../actions/StoryActions";
 import CommentThread from "../../components/comment/CommentThread";
@@ -35,12 +34,7 @@ export default function PageViewContainer(props){
         soCanUserSee()
     },[page])
     useLayoutEffect(()=>{
-        dispatch(getStory(pathParams)).then(res=>checkResult(res,payload=>{
-         
-
-        },err=>{
-           
-        }))
+        dispatch(getStory(pathParams))
         dispatch(fetchCommentsOfPage(pathParams))
     },[location.pathname])
     useLayoutEffect(()=>{
