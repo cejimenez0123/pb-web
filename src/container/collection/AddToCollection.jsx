@@ -117,7 +117,7 @@ export default function AddToCollectionContainer(props){
             .filter(story=>
                 colInView && colInView.storyIdList && !colInView.storyIdList.find(storyJoint=>
                     storyJoint.storyId==story.id)).map(story=>{
-                return(<div className="text-left mx-auto   md:w-[96%]  flex flex-row justify-between border-3
+                return(<div className="text-left mx-auto  w-[96%]  flex flex-row justify-between border-3
                 border-emerald-400 rounded-full py-4  my-2">
                     <h2 className="text-l my-auto max-w-[15em] text-nowrap text-md md:text-lg ml-8  mont-medium overflow-hidden text-ellipsis">
                         {story.title && story.title.trim().length>0?story.title:"Untitled"}</h2>

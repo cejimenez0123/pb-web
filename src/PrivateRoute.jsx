@@ -6,11 +6,12 @@ import {  useEffect, useLayoutEffect, useState } from 'react';
 import { getCurrentProfile } from './actions/UserActions';
 import checkResult from './core/checkResult';
 import loading from "./images/loading.gif"
+import usePersistentCurrentProfile from './domain/usecases/useCurrentProfileCache';
 const PrivateRoute = ({loggedIn, children }) => {
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [pending,setPending]=useState(true)
     const location = useLocation();
-
+    usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
     const [formerPage,setFormerPage]=useState(null)
     const navigate = useNavigate()
     const dispatch = useDispatch()

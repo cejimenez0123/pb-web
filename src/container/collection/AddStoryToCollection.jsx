@@ -142,8 +142,8 @@ if(!item){
         return(<div className="text-emerald-800 w-[100vw]">
            
             <div className="border-2 mt-16 w-[96vw] h-info mx-auto md:w-info  text-left border-emerald-600 p-8   rounded-lg">
-            <h6 className="text-xl font-bold pb-2 lora-medium  font-bold">Add {toTitleCase(type)} to Collection</h6>
-              <h6 className="text-xl mont-medium pb-8">{item.title}</h6>
+            <h6 className="text-xl font-bold pb-2 lora-medium  font-bold">Add <strong>{item.title} </strong>to Collection</h6>
+
             
               <button  
               onClick={()=>setOpenDialog(true)}

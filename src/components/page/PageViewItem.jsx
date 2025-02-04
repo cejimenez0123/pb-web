@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import React,{useEffect, useLayoutEffect,useState} from "react"
+import React,{useState} from "react"
 import PageViewButtonRow  from "./PageViewButtonRow"
 import CommentInput from "../comment/CommentInput"
 import "../../styles/PageView.css"

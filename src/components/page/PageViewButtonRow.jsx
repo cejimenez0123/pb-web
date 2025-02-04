@@ -1,15 +1,21 @@
-import { useState,useLayoutEffect,useEffect } from "react"
+import { useState,useLayoutEffect,useEffect, useContext } from "react"
 import { useSelector,useDispatch} from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { IconButton } from "@mui/material"
-import { BookmarkBorder as BookmarkBorderIcon } from "@mui/icons-material"
+import bookmarkFill from "../../images/bookmark_fill_green.svg"
+import bookmarkAdd from "../../images/bookmark_add.svg"
 import ReactGA from "react-ga4"
+import { addStoryListToCollection,deleteStoryFromCollection } from "../../actions/CollectionActions"
 import { setEditingPage } from "../../actions/PageActions"
 import Paths from "../../core/paths"
+import checkResult from "../../core/checkResult"
+import Context from "../../context"
+import usePersistentCurrentProfile from "../../domain/usecases/useCurrentProfileCache"
+import { getCurrentProfile } from "../../actions/UserActions"
 export default function PageViewButtonRow({page,profile,setCommenting}){
-
+    const {setSuccess}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
+    const currentprof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+    const currentProfile = useSelector(state=>state.users.currentProfile??currentprof)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [bookmarked,setBookmarked]= useState(false)
@@ -17,12 +23,41 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
     useLayoutEffect(()=>{
         if(currentProfile && page){
             let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
+            let marked =currentProfile.profileToCollections.find(ptc=>{
+                return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
+            setBookmarked(marked)
             setLikeFound(found)
         }else{
             setLikeFound(null)
         }
             
     },[currentProfile,page])
+    const onBookmarkPage = ()=>{
+        if(currentProfile&&currentProfile.profileToCollections){
+            let ptc = currentProfile.profileToCollections.find(ptc=>ptc.type=="archive")
+            if(ptc&&ptc.collectionId&&page&&page.id){{
+                dispatch(addStoryListToCollection({id:ptc.collectionId,list:[page],profile:currentProfile})).then(res=>{
+                    checkResult(res,payload=>{
+                        setBookmarked({collectionId:payload.id})
+                        setSuccess("Added Successfully")
+                    },err=>{
+                        setError("Error")
+                    })
+                })
+       
+            }
+             }
+
+}}
+const deleteStc=()=>{
+
+    if(bookmarked&&bookmarked.collectionId){
+dispatch( deleteStoryFromCollection({id:bookmarked.collectionId,storyId:page.id})).then((res)=>{
+checkResult(res,payload=>{
+setBookmarked(null)
+},err=>{})
+})
+}}
     const copyShareLink=()=>{
         ReactGA.event({
             category: "Page View",
@@ -88,10 +123,10 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
     </div>
     <div className="dropdown  flex-1/3 grow bg-emerald-700  text-center dropdown-top">
 <div tabIndex={0} role="button" className="         text-white  text-center mx-auto py-2 bg-transparent  border-none  "> <h6 className="text-xl   border-none bg-transparent text-white mx-auto my-auto">Share</h6></div>
-<ul tabIndex={0} className="dropdown-content bg-white text-emerald-700 menu bg rounded-box z-[1] w-52  shadow">
+<ul tabIndex={0} className="dropdown-content bg-white text-emerald-800 menu bg rounded-box z-[1] w-52  shadow">
 <li>
 <a disabled={!profile} 
-className=' text-green-600 '
+className=' text-emerald-800 '
 
 onClick={()=>{
 navigate(Paths.addStoryToCollection.story(page.id))
@@ -101,7 +136,7 @@ navigate(Paths.addStoryToCollection.story(page.id))
 
 </a></li>
  {currentProfile && currentProfile.id == page.authorId? <li> <a
-            className=' text-green-600 '
+            className=' text-emerald-800 '
            onClick={()=> {
             dispatch(setEditingPage({page}))
             navigate(Paths.editPage.createRoute(page.id))
@@ -110,7 +145,7 @@ navigate(Paths.addStoryToCollection.story(page.id))
              Edit
             </a></li>:null}           
            <li> <a
-            className=' text-green-600 '
+            className=' text-emerald-800 '
            onClick={()=>copyShareLink()}
         >
               Copy Share Link
@@ -121,11 +156,20 @@ navigate(Paths.addStoryToCollection.story(page.id))
     dispatch(setEditingPage({page}))
     navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
 </li>
-<li> <IconButton onClick={()=>{}}
-className=" text-green-600 "
+<li> <button
+onClick={(e)=>{
+   e.preventDefault()
+    if(bookmarked){
+        deleteStc()
+    }else{
+        onBookmarkPage()
+
+    }
+}}
+className=" text-emerald-800  flex bg-transparent"
 disabled={!currentProfile}> 
-{bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
-</IconButton></li>
+{bookmarked?<img className="mx-auto" src={bookmarkFill}/>:<img className="mx-auto" src={bookmarkAdd}/>}
+</button></li>
 </ul>
 </div>
 </div>)

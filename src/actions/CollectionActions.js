@@ -287,15 +287,13 @@ export {
     getProtectedProfileCollections,
     getPublicProfileCollections,
     getProtectCollectionStories,
-    // getPublicCollectionStories,
+
 
     fetchCollection,
     fetchCollectionProtected,
     setCollectionInView,
     addCollectionListToCollection,
     addStoryListToCollection,
-    // getSubCollectionsProtected,
-    // getSubCollectionsPublic,
     deleteCollection,
     deleteCollectionFromCollection,
     deleteStoryFromCollection,

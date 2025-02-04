@@ -6,23 +6,26 @@ import {useDispatch, useSelector} from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@mui/material'
 import addCircle from "../../images/icons/add_circle.svg"
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
+import bookmarkfill from "../../images/bookmarkfill.svg"
+import bookmarkFillGreen from "../../images/bookmark_fill_green.svg"
 import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
-import bookmarkadd from "../../images/bookmarkadd.svg"
+import bookmarkadd from "../../images/bookmark_add.svg"
 import PageDataElement from './PageDataElement'
 import ProfileCircle from '../profile/ProfileCircle'
-import { addStoryListToCollection } from '../../actions/CollectionActions'
+import { addStoryListToCollection, deleteStoryFromCollection } from '../../actions/CollectionActions'
 import Context from '../../context'
 import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
+import { current } from '@reduxjs/toolkit'
+import usePersistentCurrentProfile from '../../domain/usecases/useCurrentProfileCache'
+import { getCurrentProfile } from '../../actions/UserActions'
 function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const dispatch = useDispatch()
     
     const pathParams = useParams()
     const location = useLocation()
-
+    usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
     const {setSuccess,setError}=useContext(Context)
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -31,7 +34,7 @@ function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const colInView = useSelector(state=>state.books.collectionInView)
    const [likeFound,setLikeFound]=useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
-    const [bookmarked,setBookmarked]=useState(null)
+    const [bookmarked,setBookmarked]=useState(false)
     const addStoryToCollection = ()=>{
       if(page){
        const list= [page]
@@ -59,15 +62,24 @@ return !stories.find(story=>story && page && story.id==page.id)
     }
 
     useLayoutEffect(()=>{
-        if(currentProfile && page){
-            let found =currentProfile &&currentProfile.likedStories? currentProfile.likedStories.find(like=>like && like.storyId==page.id):null
-            setLikeFound(found)
-        }else{
-            setLikeFound(null)
-        }
-            
+        if(currentProfile && page&&currentProfile.likedStories&&currentProfile.profileToCollections){
+            let found = currentProfile.likedStories.find(like=>like && like.storyId==page.id)??[]
+            let marked =currentProfile.profileToCollections.find(ptc=>{
+                return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
+       
+                setLikeFound(found)
+            setBookmarked(marked)
+        }          
     },[currentProfile,page])
+const deleteStc=()=>{
 
+        if(bookmarked&&bookmarked.collectionId){
+   dispatch( deleteStoryFromCollection({id:bookmarked.collectionId,storyId:page.id})).then((res)=>{
+   checkResult(res,payload=>{
+    setBookmarked(null)
+   },err=>{})
+   })
+}}
 
 const hanldeClickComment=()=>{   
   if(page){ 
@@ -136,9 +148,22 @@ return <Button onClick={()=>{
 
 
     const onBookmarkPage = ()=>{
-
-        
-    }
+            if(currentProfile&&currentProfile.profileToCollections){
+                let ptc = currentProfile.profileToCollections.find(ptc=>ptc.type=="archive")
+                if(ptc&&ptc.collectionId&&page&&page.id){{
+                    dispatch(addStoryListToCollection({id:ptc.collectionId,list:[page],profile:currentProfile})).then(res=>{
+                        checkResult(res,payload=>{
+                            setBookmarked({collectionId:payload.id})
+                            setSuccess("Added Successfully")
+                        },err=>{
+                            setError("Error")
+                        })
+                    })
+           
+                }
+                 }
+   
+    }}
     const ClickAddStoryToCollection=()=>{
         navigate(Paths.addStoryToCollection.story(page.id))
     }
@@ -236,9 +261,16 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
         navigate(Paths.editPage.createRoute(page.id))}}
         className='text-emerald-700'>Edit</a>
      </li>:null}
-    <li> <button className="my-auto w-fit mx-auto bg-transparent"onClick={onBookmarkPage}
+    <li> <button className="my-auto w-fit mx-auto bg-transparent"onClick={()=>{
+        if(bookmarked&&bookmarked.collectionId){
+                deleteStc()
+        }else{
+            onBookmarkPage()
+        }
+          }}
     disabled={!currentProfile}> 
-     {bookmarked?<BookmarkIcon/>:<BookmarkBorderIcon/>}
+     {bookmarked?<img src={bookmarkFillGreen}
+     className='text-emerald-800'/>:<img src={bookmarkadd}/>}
      </button></li>
 </ul>
 </div>:<div onClick={addStoryToCollection} 

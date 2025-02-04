@@ -58,11 +58,11 @@ export default function EditCollectionContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [openAccess,setOpenAccess]=useState(false)
-    const setItems=()=>{
+    const setItems=(col)=>{
       if(currentProfile){
-        if(colInView ){
-        if(colInView.storyIdList){
-          let stcList = colInView.storyIdList.map((stc,i)=>{
+        if(col ){
+        if(col.storyIdList){
+          let stcList = col.storyIdList.map((stc,i)=>{
                          let index = i
                          if(stc.index){
                           index= stc.index
@@ -71,8 +71,8 @@ export default function EditCollectionContainer(props){
         })
             setNewPages(stcList)
       }
-      if(colInView.childCollections){
-            let newList = colInView.childCollections.map(stc=>{
+      if(col.childCollections){
+            let newList = col.childCollections.map(stc=>{
                 return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
         })
     
@@ -83,6 +83,11 @@ export default function EditCollectionContainer(props){
       }
     }
     useLayoutEffect(()=>{
+      if(colInView && colInView.id){
+        setItems(colInView)
+      }
+    },[colInView])
+    useLayoutEffect(()=>{
       soCanUserEdit(colInView)
     },[currentProfile,colInView])
     useLayoutEffect(()=>{
@@ -90,8 +95,8 @@ export default function EditCollectionContainer(props){
               dispatch(fetchCollectionProtected(params)).then(res=>{
                 checkResult(res,payload=>{
                   soCanUserEdit(payload.collection)
-                  
-                  setItems()
+                  setItems(payload.collection)
+                
                 },err=>{
                 setPending(false)
                 })

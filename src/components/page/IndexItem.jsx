@@ -120,7 +120,7 @@ function IndexItem({item,handleFeedback}) {
 
     const handleAddToClick = ()=>{
       if(item && item.storyIdList){
-       navigate(Paths.addStoryToCollection.collection(item.id))
+   navigate(Paths.addToCollection.createRoute(item.id))
       }else{
        navigate(Paths.addStoryToCollection.story(item.id))
       }
@@ -134,7 +134,7 @@ function IndexItem({item,handleFeedback}) {
   
                 <div className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full w-[96%] min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
                 
-         <div className=" h-fit my-auto md:w-[30em]  text-ellipsis overflow-hidden ">
+         <div className=" h-fit my-auto md:w-[30em] w-[15em] text-nowrap text-ellipsis overflow-hidden ">
               
               
                    {item.title && item.title.length>0? 

@@ -45,9 +45,11 @@ export default function CollectionContainer(props){
     
 
     const getRecommendations =()=>{
-        setHasMore(true)
-        dispatch(appendToPagesInView({pages:[Enviroment.blankPage]}))
+
+      
+    
         if(collection && collection.id&&collection.type!="feedback" ){
+            setHasMore(true)
           dispatch(getRecommendedCollectionStory({colId:collection.id})).then(res=>{
             checkResult(res,payload=>{
                 let stories = payload.pages
@@ -57,7 +59,7 @@ export default function CollectionContainer(props){
                         return page
                 })
                 setHasMore(false)
-                  dispatch(appendToPagesInView({pages:recommended}))
+                  dispatch(appendToPagesInView({pages:[Enviroment.blankPage,...recommended]}))
               
                 
 
@@ -81,7 +83,7 @@ export default function CollectionContainer(props){
              
              
                 
-                  dispatch(appendToPagesInView({pages:recommended}))
+                  dispatch(appendToPagesInView({pages:[Enviroment.blankPage,...recommended]}))
               
                 
 
@@ -193,11 +195,15 @@ export default function CollectionContainer(props){
 
  
      useLayoutEffect(()=>{
+
+        return()=>{
+
+        
         if(import.meta.env.VITE_NOTE_ENV!="dev"){ 
         if(currentProfile && collection){
             dispatch(postCollectionHistory({profile:currentProfile,collection}))
         }
-    }
+    }}
     },[])
     useLayoutEffect(()=>{
         dispatch(getCurrentProfile())

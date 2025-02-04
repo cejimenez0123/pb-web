@@ -24,6 +24,7 @@ import ProfileInfo from '../components/profile/ProfileInfo';
 import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCollectionCache';
 import Context from '../context';
 import DescriptionDialog from '../components/page/FeedbackDialog';
+import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache';
 
 function MyProfileContainer(props){
     const navigate = useNavigate()
@@ -31,6 +32,14 @@ function MyProfileContainer(props){
     const {currentProfile}=useContext(Context)
     const [search,setSearch]=useState("")
     const [description,setFeedback]=useState("")
+    const stories = usePersistentMyStoriesCache(()=>{
+      if(currentProfile){
+       return dispatch(getMyStories({profile:currentProfile}))
+      }else{
+        return []
+      }
+      
+    })
     usePersistentMyCollectionCache((()=>dispatch(getMyCollections())))
     const collections=useSelector(state=>state.books.collections).filter(col=>{
      if(col){
@@ -50,7 +59,7 @@ function MyProfileContainer(props){
      const [feedbackPage,setFeedbackPage]=useState(null)
     const [books,setBooks]=useState(collections)
     const [libraries,setLibraries]=useState([])
-    const pages = useSelector(state=>state.pages.pagesInView).filter(page=>{
+    const pages = useSelector(state=>state.pages.pagesInView??stories).filter(page=>{
      if(search.length>0){
       return page.title.toLowerCase().includes(search.toLowerCase())
      }else{

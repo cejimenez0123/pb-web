@@ -3,12 +3,10 @@ import "../App.css"
 import { useSelector, useDispatch } from 'react-redux'
 import{ getCurrentProfile } from '../actions/UserActions'
 import { fetchRecommendedStories } from '../actions/StoryActions'
-import checkResult from '../core/checkResult'
 import ReactGA from "react-ga4"
 import PageList from '../components/page/PageList'
 import ExploreList from '../components/collection/ExploreList'
 import { getRecommendedCollectionsProfile } from '../actions/CollectionActions'
-import Context from '../context'
 import { useLocation } from 'react-router-dom'
 import {  setPagesInView } from '../actions/PageActions'
 import { setCollections } from '../actions/CollectionActions'
@@ -16,10 +14,7 @@ import { setCollections } from '../actions/CollectionActions'
 function DashboardContainer(props){
     const location = useLocation()
     ReactGA.send({ hitType: "pageview", page: location.pathname+window.location.search, title: "About Page" })
-    // const {setError}=useContext(Context)
     const dispatch = useDispatch()
-    const currentProfile = useSelector((state)=>state.users.currentProfile)
-   const hashtags=useSelector(state=>state.hashtags.hashtags)
     const collections = useSelector(state=>state.books.collections)
    
     const [hasMore,setHasMore] = useState(true)
@@ -31,17 +26,12 @@ function DashboardContainer(props){
             dispatch(fetchRecommendedStories()).then(res=>{
                 setHasMore(false)
             })
-        
-    
-        
             dispatch(getRecommendedCollectionsProfile())
-           
-        
     }
 
 useEffect(()=>{
     setHasMore(true)
-getContent()
+    getContent()
    
 },[])
 
