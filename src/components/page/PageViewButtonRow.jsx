@@ -1,6 +1,6 @@
 import { useState,useLayoutEffect,useEffect, useContext } from "react"
 import { useSelector,useDispatch} from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import bookmarkFill from "../../images/bookmark_fill_green.svg"
 import bookmarkAdd from "../../images/bookmark_add.svg"
 import ReactGA from "react-ga4"
@@ -15,8 +15,9 @@ import { getCurrentProfile } from "../../actions/UserActions"
 import { debounce } from "lodash"
 import { RoleType } from "../../core/constants"
 export default function PageViewButtonRow({page,profile,setCommenting}){
-    const {setSuccess,currentProfile}=useContext(Context)
+    const {setSuccess,currentProfile,setError}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
+    const {id}=useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [canUserComment,setCanUserComment]=useState(false)
@@ -31,12 +32,14 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
           
             setBookmarked(marked)
             setLikeFound(found)
+            setLoading(false)
         }else{
             setLikeFound(null)
             setBookmarked(null)
+            setLoading(false)
         }
             
-    },[currentProfile,page])
+    },[])
     const onBookmarkPage = ()=>{
         setLoading(true)
         if(currentProfile&&currentProfile.profileToCollections){
@@ -44,7 +47,7 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
             if(ptc&&ptc.collectionId&&page&&page.id){{
                 dispatch(addStoryListToCollection({id:ptc.collectionId,list:[page],profile:currentProfile})).then(res=>{
                     checkResult(res,payload=>{
-                        setBookmarked({collectionId:payload.id})
+                        setBookmarked({collectionId:ptc.collectionId})
                         setLoading(false)
                         setSuccess("Added Successfully")
                     },err=>{
@@ -60,16 +63,18 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
     setLoading(false)
 }}
 const deleteStc=()=>{
-setLoading(true)
+    setLoading(true)
     if(bookmarked&&bookmarked.collectionId){
-dispatch( deleteStoryFromCollection({id:bookmarked.collectionId,storyId:page.id})).then((res)=>{
+dispatch(deleteStoryFromCollection({id:bookmarked.collectionId,storyId:page.id})).then((res)=>{
 checkResult(res,payload=>{
     setLoading(false)
-setBookmarked(null)
+    setBookmarked(null)
 },err=>{
     setLoading(false)
 })
 })
+}else{
+    setLoading(false)
 }}
     const copyShareLink=()=>{
         ReactGA.event({
@@ -88,6 +93,10 @@ setBookmarked(null)
     const soCanUserComment=()=>{
         let roles = [RoleType.commenter,RoleType.editor,RoleType.writer]
         if(currentProfile){
+            if(currentProfile.id==page.authorId){
+                setCanUserComment(true)
+                return
+            }
         if(page.commentable){
             setCanUserComment(true)
             return
@@ -121,14 +130,14 @@ setBookmarked(null)
             }
         }
      }else{
-        window.alert("Please Sign Up")
+        setError("Please Sign Up")
         }
     }
     useLayoutEffect(()=>{
         soCanUserComment()
     },[page])
     const handleBookmark=debounce((e)=>{
-        (e)=>{
+      
             e.preventDefault()
              if(bookmarked){
                  deleteStc()
@@ -136,8 +145,8 @@ setBookmarked(null)
                  onBookmarkPage()
          
              }
-         }
-    },15)
+         
+    },10)
    useEffect(()=>{
 
     setCommenting(comment)
@@ -200,9 +209,11 @@ navigate(Paths.addStoryToCollection.story(page.id))
 </li>
 <li> <button
 onClick={handleBookmark}
-className=" text-emerald-800  flex bg-transparent"
+className=" text-emerald-800 border-none flex bg-transparent"
 disabled={!currentProfile}> 
-{!loading?(bookmarked?<img className="mx-auto" src={bookmarkFill}/>:<img className="mx-auto" src={bookmarkAdd}/> ):<img src={loadingGif}/>}
+{!loading?(bookmarked?
+<img className="mx-auto" src={bookmarkFill}/>:<img className="mx-auto" src={bookmarkAdd}/> ):
+<img className="max-h-6 mx-auto" src={loadingGif}/>}
 </button></li>
 </ul>
 </div>
