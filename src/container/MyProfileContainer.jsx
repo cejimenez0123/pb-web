@@ -32,7 +32,10 @@ function MyProfileContainer(props){
     const {currentProfile}=useContext(Context)
     const [search,setSearch]=useState("")
     const [description,setFeedback]=useState("")
-  
+  const cols = usePersistentMyCollectionCache(()=>{
+    setCollections({collections:[]})
+    return dispatch(getMyCollections())
+  })
     const collections=useSelector(state=>state.books.collections).filter(col=>{
      if(col){
       if(search.toLowerCase()=="feedback"){
@@ -139,7 +142,7 @@ params.page = feedbackPage
     useLayoutEffect(()=>{
 if(currentProfile){
       dispatch(setPagesInView({pages:currentProfile.stories}))
-      dispatch(setCollections({collections:currentProfile.collections}))
+      // dispatch(setCollections({collections:currentProfile.collections}))
 }
     },[currentProfile])
     useLayoutEffect(()=>{

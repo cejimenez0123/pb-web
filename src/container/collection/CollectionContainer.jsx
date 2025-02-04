@@ -190,10 +190,7 @@ export default function CollectionContainer(props){
         }
     }}
     },[])
-    // useLayoutEffect(()=>{
-    //     dispatch(getCurrentProfile())
 
-    // },[])
 
     const deleteFollow=()=>{
         if(currentProfile){
