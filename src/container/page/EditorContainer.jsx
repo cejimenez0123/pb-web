@@ -62,6 +62,7 @@ function EditorContainer(props){
           needsFeedback:needsFeedback,
           description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:description
           ,
+          type:editPage?editPage.type:pageInView?pageInView.type:last,
           privacy:isPrivate,
           commentable:commentable
         })
