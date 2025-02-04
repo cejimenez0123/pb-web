@@ -1,7 +1,6 @@
 import React ,{useState,useEffect,useLayoutEffect, useContext}from 'react'
 import "../App.css"
 import { useSelector, useDispatch } from 'react-redux'
-import{ getCurrentProfile } from '../actions/UserActions'
 import { fetchRecommendedStories } from '../actions/StoryActions'
 import ReactGA from "react-ga4"
 import PageList from '../components/page/PageList'
@@ -17,15 +16,13 @@ function DashboardContainer(props){
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)
    
-    const [hasMore,setHasMore] = useState(true)
+    const [hasMore,setHasMore] = useState(false)
     const getContent=()=>{
 
         dispatch(setPagesInView({pages:[]}))
         dispatch(setCollections({collections:[]}))
   
-            dispatch(fetchRecommendedStories()).then(res=>{
-                setHasMore(false)
-            })
+            dispatch(fetchRecommendedStories())
             dispatch(getRecommendedCollectionsProfile())
     }
 

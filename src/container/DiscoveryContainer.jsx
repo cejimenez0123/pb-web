@@ -41,6 +41,7 @@ function DiscoveryContainer(props){
 
 
     useEffect(()=>{
+        dispatch(setPagesInView({pages:[]}))
         fetchContentItems()
         fetchLibraries()
     },[])

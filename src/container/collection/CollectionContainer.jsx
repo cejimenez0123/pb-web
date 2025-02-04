@@ -23,6 +23,7 @@ import { getCurrentProfile } from "../../actions/UserActions"
 import bookmarkOutline from "../../images/bookmarkoutline.svg"
 import bookmarkFill from "../../images/bookmarkfill.svg"
 import ErrorBoundary from "../../ErrorBoundary"
+import _ from "lodash"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
@@ -40,14 +41,11 @@ export default function CollectionContainer(props){
     const [canUserSee,setCanUserSee]=useState(false)
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(false)
-    const params = useParams()
+    const {id} = useParams()
     const [isPrivate,setIsPrivate]=useState(false)
     
 
     const getRecommendations =()=>{
-
-      
-    
         if(collection && collection.id&&collection.type!="feedback" ){
             setHasMore(true)
           dispatch(getRecommendedCollectionStory({colId:collection.id})).then(res=>{
@@ -60,9 +58,7 @@ export default function CollectionContainer(props){
                 })
                 setHasMore(false)
                   dispatch(appendToPagesInView({pages:[Enviroment.blankPage,...recommended]}))
-              
-                
-
+            
             },err=>{
                 setHasMore(false)
             })
@@ -155,12 +151,9 @@ export default function CollectionContainer(props){
             checkPermissions()
         }
         
-     },[collection,currentProfile])
+     },[currentProfile])
+   
 
-    useLayoutEffect(()=>{
-     getCol() 
-     dispatch(getRecommendedCollectionsProfile())
-    },[location.pathname])
     const getMore = ()=>{
       
        if(collection){
@@ -187,11 +180,7 @@ export default function CollectionContainer(props){
     setLoading(false)
 }
     }    
-    useLayoutEffect(()=>{
-        getCol()
-    
-        
-    },[currentProfile])
+   
 
  
      useLayoutEffect(()=>{
@@ -207,8 +196,9 @@ export default function CollectionContainer(props){
     },[])
     useLayoutEffect(()=>{
         dispatch(getCurrentProfile())
-        getMore()
+
     },[])
+
     const deleteFollow=()=>{
         if(currentProfile){
             dispatch(deleteCollectionRole({role})).then(res=>{
@@ -246,26 +236,39 @@ if(currentProfile){
         setError("Please Sign In")
     }
     }
+    useLayoutEffect(()=>{
+        if(currentProfile&&collection&&collection.storyIdList&&collection.profileId&&currentProfile.id){
+        
+        dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
+        dispatch(setCollections({collections:collection.childCollections.map(ctc=>ctc.childCollection)}))
+        if(canUserAdd){
+            getRecommendations()
+            getMore()
+        }
+        }else{
+            getCol()
+        }
+    },[location.pathname,currentProfile])
     const getCol=()=>{
        setLoading(true)
         dispatch(setPagesInView({pages:[]}))
         dispatch(setCollections({collections:[]}))
-       currentProfile?dispatch(fetchCollectionProtected(params)).then(res=>{
+       currentProfile?dispatch(fetchCollectionProtected({id})).then(res=>{
             checkResult(res,payload=>{
-             dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
+             dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
              dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
              setLoading(false)
             },err=>{
                 setError(err.meesage)
                 setLoading(false)
             })
-        }):dispatch(fetchCollection(params)).then(res=>{
+        }):dispatch(fetchCollection({id})).then(res=>{
             checkResult(res,payload=>{
                 if(payload.collection){
 
                 
                 dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
-                dispatch(appendToPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
+                dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
                 setLoading(false)}else{
                     setIsPrivate(true)
                 }
@@ -348,7 +351,7 @@ if(currentProfile){
         if(currentProfile&&collection){
         if(collection.profileId==currentProfile.id){
             
-            getRecommendations()
+          
             setCanUserAdd(true)
             return
         }
@@ -357,7 +360,7 @@ if(currentProfile){
                 return colRole && colRole.profileId == currentProfile.id
             })
             if(collection.isOpenCollaboration||(found && writeArr.includes(found.role))||collection.profileId==currentProfile.id){
-                getRecommendations()
+               
                 setCanUserAdd(true)
                 return
             }else{

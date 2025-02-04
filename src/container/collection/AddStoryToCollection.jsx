@@ -32,11 +32,12 @@ export default function AddStoryToCollectionContainer(props){
     const dispatch = useDispatch()
     const [item,setItem]=useState(null)
  const navigate = useNavigate()
+    const cols=usePersistentMyCollectionCache(()=>dispatch(getMyCollections()))
     const [hasMoreCol,setHasMoreCol]=useState(false)
     const [openDialog,setOpenDialog]=useState(false)
     const [search,setSearch]=useState("")
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const collections = useSelector(state=>state.books.collections).filter(col=>col || (col && col.type && col.type!="feedback")).filter(col=>{
+    const collections = useSelector(state=>state.books.collections??cols).filter(col=>col || (col && col.type && col.type!="feedback")).filter(col=>{
       if(item && item.id==col.id){
         return false
       }
@@ -84,7 +85,7 @@ export default function AddStoryToCollectionContainer(props){
           checkResult(res,payload=>{
             console.log(payload)
             const{collection}=payload
-            dispatch(getMyCollections())
+       
             if(collection){
               setItem(collection)
             }
@@ -97,34 +98,33 @@ export default function AddStoryToCollectionContainer(props){
       }
     }
     useLayoutEffect(()=>{
-
 getContent()
-   
     },[])
-    // useLayoutEffect(()=>{
-    //   getCollections()
-    // },[item])
+
     const getContent=()=>{
-      if(type=="story"){
-        dispatch(getStory({id:pathParams.id})).then(res=>{
+      switch(type){
+        case"story":      dispatch(getStory({id:pathParams.id})).then(res=>{
           checkResult(res,payload=>{
             setItem(payload.story)
          
           },err=>{
-      
+      setError(err.message)
           })
         })
+      case"collection":dispatch(fetchCollectionProtected({id:id})).then(res=>{
+        checkResult(res,payload=>{
+          setItem(payload.collection)
+        },err=>{
+          setError(err.message)
+        })
+      })
       }
-      if(type=="collection"){
-        dispatch(fetchCollectionProtected({id:id})).then(res=>{
-          checkResult(res,payload=>{
-           
-            setItem(payload.collection)
-          })
-        })
+  
+     
+   
     }
    
-  }
+  
    
     // const getCollections=()=>{
     //    dispatch(getMyCollections()).then(()=>{
@@ -139,7 +139,7 @@ if(!item){
     <di className="w-[96vw] skeleton mx-auto md:w-page h-page"/>
   </div>
 }
-        return(<div className="text-emerald-800 w-[100vw]">
+return(<div className="text-emerald-800 w-[100vw]">
            
             <div className="border-2 mt-16 w-[96vw] h-info mx-auto md:w-info  text-left border-emerald-600 p-8   rounded-lg">
             <h6 className="text-xl font-bold pb-2 lora-medium  font-bold">Add <strong>{item.title} </strong>to Collection</h6>

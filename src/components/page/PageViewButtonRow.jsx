@@ -8,9 +8,11 @@ import { addStoryListToCollection,deleteStoryFromCollection } from "../../action
 import { setEditingPage } from "../../actions/PageActions"
 import Paths from "../../core/paths"
 import checkResult from "../../core/checkResult"
+import loadingGif from "../../images/loading.gif"
 import Context from "../../context"
 import usePersistentCurrentProfile from "../../domain/usecases/useCurrentProfileCache"
 import { getCurrentProfile } from "../../actions/UserActions"
+import { debounce } from "lodash"
 export default function PageViewButtonRow({page,profile,setCommenting}){
     const {setSuccess}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
@@ -18,44 +20,55 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
     const currentProfile = useSelector(state=>state.users.currentProfile??currentprof)
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [bookmarked,setBookmarked]= useState(false)
+    const [loading,setLoading]=useState(false)
+    const [bookmarked,setBookmarked]= useState(null)
     const [comment,setComment]=useState(false)
     useLayoutEffect(()=>{
         if(currentProfile && page){
             let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
             let marked =currentProfile.profileToCollections.find(ptc=>{
                 return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
-            setBookmarked(marked)
+          
+                setBookmarked(marked)
             setLikeFound(found)
         }else{
             setLikeFound(null)
+            setBookmarked(null)
         }
             
     },[currentProfile,page])
     const onBookmarkPage = ()=>{
+        setLoading(true)
         if(currentProfile&&currentProfile.profileToCollections){
             let ptc = currentProfile.profileToCollections.find(ptc=>ptc.type=="archive")
             if(ptc&&ptc.collectionId&&page&&page.id){{
                 dispatch(addStoryListToCollection({id:ptc.collectionId,list:[page],profile:currentProfile})).then(res=>{
                     checkResult(res,payload=>{
                         setBookmarked({collectionId:payload.id})
+                        setLoading(false)
                         setSuccess("Added Successfully")
                     },err=>{
                         setError("Error")
+                        setLoading(false)
                     })
                 })
        
             }
              }
 
+}else{
+    setLoading(false)
 }}
 const deleteStc=()=>{
-
+setLoading(true)
     if(bookmarked&&bookmarked.collectionId){
 dispatch( deleteStoryFromCollection({id:bookmarked.collectionId,storyId:page.id})).then((res)=>{
 checkResult(res,payload=>{
+    setLoading(false)
 setBookmarked(null)
-},err=>{})
+},err=>{
+    setLoading(false)
+})
 })
 }}
     const copyShareLink=()=>{
@@ -77,9 +90,10 @@ setBookmarked(null)
             if(likeFound ){
              dispatch(deletePageApproval({id:likeFound.id})).then(res=>{
                 checkResult(res,payload=>{
+                    setLoading(false)
                     setLikeFound(null)
                 },err=>{
-    
+                    setLoading(false)
                 })
             })
         }else{
@@ -96,6 +110,17 @@ setBookmarked(null)
         window.alert("Please Sign Up")
         }
     }
+    const handleBookmark=debounce((e)=>{
+        (e)=>{
+            e.preventDefault()
+             if(bookmarked){
+                 deleteStc()
+             }else{
+                 onBookmarkPage()
+         
+             }
+         }
+    },15)
    useEffect(()=>{
 
     setCommenting(comment)
@@ -157,18 +182,10 @@ navigate(Paths.addStoryToCollection.story(page.id))
     navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
 </li>
 <li> <button
-onClick={(e)=>{
-   e.preventDefault()
-    if(bookmarked){
-        deleteStc()
-    }else{
-        onBookmarkPage()
-
-    }
-}}
+onClick={handleBookmark}
 className=" text-emerald-800  flex bg-transparent"
 disabled={!currentProfile}> 
-{bookmarked?<img className="mx-auto" src={bookmarkFill}/>:<img className="mx-auto" src={bookmarkAdd}/>}
+{!loading?(bookmarked?<img className="mx-auto" src={bookmarkFill}/>:<img className="mx-auto" src={bookmarkAdd}/> ):<img src={loadingGif}/>}
 </button></li>
 </ul>
 </div>

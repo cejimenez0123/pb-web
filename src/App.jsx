@@ -37,6 +37,7 @@ import { getHashtags } from './actions/HashtagActions.js';
 import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
 import ResetPasswordContainer from './container/auth/ResetPassword.jsx';
 import Alert from './components/Alert.jsx';
+import { getRecommendedCollectionsProfile } from './actions/CollectionActions.js';
 import NotificationContainer from './container/profile/NotificationContainer.jsx';
 import HashtagContainer from './container/hashtag/HashtagContainer.jsx';
 import usePersistentCurrentProfile from './domain/usecases/useCurrentProfileCache.jsx';
@@ -48,30 +49,24 @@ function App(props) {
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
-  usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
-  const [currentProfile,setCurrentProfile]=useState(null)
-  const profile = useSelector(state=>state.users.currentProfile)
+  let prof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+  
+  const currentProfile= useSelector(state=>state.users.currentProfile??prof)
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
-  
   useEffect(()=>{
-    if(profile){
-      fetchData()
-      setCurrentProfile(profile)
+    if(currentProfile){
+    
     }
 
-  },[profile])
-  const fetchData = ()=>{
-    const {currentProfile}=props
-    if(currentProfile){
-      // dispatch(getHashtags())
-      // dispatch(getProfileHashtagCommentUse({profileId:currentProfile.id}))
-    }
- 
-  }
+  },[currentProfile])
+  useEffect(()=>{
+    if(currentProfile){}
+    dispatch(getRecommendedCollectionsProfile())
+  },[])
 
   return (
-      <Context.Provider value={{currentProfile,setCurrentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+      <Context.Provider value={{currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
                 <Router>
       
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
@@ -119,8 +114,8 @@ function App(props) {
                         element={
                           <PrivateRoute>
                           <DashboardContainer 
-                            getPublicStories={props.getPublicStories} 
-                            pagesInView={props.pagesInView}
+                        
+
                           /></PrivateRoute>
                         }
             />
