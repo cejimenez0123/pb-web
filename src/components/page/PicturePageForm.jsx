@@ -164,8 +164,9 @@ function PicturePageForm(props){
 
                  
     
-    return(<div className='mx-auto  bg-emerald-200 rounded-b-lg w-full p-8'>
-      {uploadBtn()}
+    return(<div className='  bg-emerald-200  pb-8 rounded-b-lg w-full '>
+      
+      <div className='p-8'>{uploadBtn()}</div>
       {!image? <label className='my-2 border-emerald-600 border-2 max-w-[30em] mx-auto py-4 flex pl-2 pr-3 rounded-full  bg-transparent  text-emerald-800 '>
             <h6 className='mont-medium my-auto'>URL</h6>
             <input 
@@ -176,9 +177,10 @@ function PicturePageForm(props){
                     onChange={(e)=>handleLocalContent(e)}
                 />
             </label>:null}
+            <div className='md:w-page'>
                         {contentDiv()}
          
-       
+                        </div>
         <p>{errorMessage}</p>
         
 </div>)

@@ -110,7 +110,7 @@ const fetchData = async (url) => {
   if (previewData.videoId) {
     return (
     
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className="w-full
+        <img onClick={handleClick} style={{ cursor: 'pointer' }} className="w-[96vw] md:w-page 
        "src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
@@ -118,7 +118,7 @@ const fetchData = async (url) => {
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image && <img  className={isGrid?"rounded-lg pt-8 w-fit max-h-36 w-[100%] overflow-hidden mx-auto max-w-[96%] ":"  w-[100%] rounded-t-lg  "}src={previewData.image}  alt="Link Preview" />}
+      {previewData.image && <img  className={isGrid?"rounded-lg pt-8 w-fit max-h-36 w-[100%] overflow-hidden mx-auto max-w-[96%] ":"  rounded-t-lg w-[100%] "}src={previewData.image}  alt="Link Preview" />}
     </div>)
     }else{
        return (
@@ -144,7 +144,7 @@ const fetchData = async (url) => {
   }
 
   return (
-    <div className={isGrid?" text-white w-fit  p-2 w-[100%] mx-auto":"h-fit bg-emerald-200 w-[96vw] md:w-page text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className={isGrid?" text-white w-fit  p-2 w-[100%] mx-auto":"h-fit bg-emerald-200 w-[96vw] md:w-[50em] text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       <div className='text-left open-sans-medium'>
    {previewDescription()}

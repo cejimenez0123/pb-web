@@ -50,20 +50,16 @@ function App(props) {
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
   let prof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
-  
+  const pages = useSelector(state=>state.pages.pagesInView)
+  const collections = useSelector(state=>state.books.collections)
   const currentProfile= useSelector(state=>state.users.currentProfile??prof)
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
-  useEffect(()=>{
-    if(currentProfile){
-    
-    }
 
-  },[currentProfile])
   useEffect(()=>{
     if(currentProfile){}
     dispatch(getRecommendedCollectionsProfile())
-  },[])
+  },[pages,collections])
 
   return (
       <Context.Provider value={{currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
@@ -255,7 +251,7 @@ function App(props) {
 
 function mapDispatchToProps(dispatch){
   return{ 
-    getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
+    // getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
     
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicStories:()=>dispatch(getPublicStories()),

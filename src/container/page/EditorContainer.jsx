@@ -84,7 +84,7 @@ function EditorContainer(props){
             return false
           })}
         
-      )}},200)
+      )}},20)
       useEffect(()=>{
         if(!fetchedPage){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
@@ -93,15 +93,15 @@ function EditorContainer(props){
 
               params.type = last 
               setParameters(params)
-            
-        if(parameters.page && parameters.page.id){
+          }   
+          }
+          if(parameters.page && parameters.page.id){
             handleUpdate(parameters)
         }else{
       
           createPageAction(parameters)
         }
-          }
-        }
+        
       },[parameters.data])
      
       const dispatchContent=(content)=>{

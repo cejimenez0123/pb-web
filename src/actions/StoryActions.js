@@ -3,6 +3,9 @@ import storyRepo from "../data/storyRepo";
 import { client } from "../core/di";
 import { PageType } from "../core/constants";
 import hashtagRepo from "../data/hashtagRepo";
+import {storage} from "../core/di"
+import {  ref,deleteObject   } from "firebase/storage";
+
 const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
   try{
     let token = localStorage.getItem("token")

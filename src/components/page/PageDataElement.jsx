@@ -52,7 +52,7 @@ switch(page.type){
 }
 case PageType.link:{
     return(<div 
-        className={`w-[100%] ${isGrid?"mx-auto mx-auto w-fit px-2":"w-[96vw] md:w-page"}`}>
+        className={` ${isGrid?"mx-auto mx-auto w-fit px-2":"w-[96vw] md:w-page"}`}>
         <LinkPreview
         isGrid={isGrid}
                 url={page.data}
