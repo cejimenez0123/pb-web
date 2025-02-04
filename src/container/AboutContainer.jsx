@@ -182,6 +182,6 @@ src={groupJpg} alt="group pic"
 <h6>Any request for more feautures, problems, encoragement, send to plumbumapp@gmail.com.
 
 </h6>
-<h6 className="text-emerald-700 mt-12">Plumbum©</h6>
+<h6 className="text-emerald-700 mt-12">Plumbum©2025</h6>
 </div></div> </div>)
 }
