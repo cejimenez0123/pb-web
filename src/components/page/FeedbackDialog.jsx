@@ -24,12 +24,12 @@ export default function DescriptionDialog({open,page,isFeedback,handleClose,hand
                 setFeedback(e.target.value)
                 handleChange(e.target.value)
               }}
-            className="textarea mx-2 md:w-[30em] min-h-[7rem] rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600"/>
+            className="textarea mx-2 md:w-[30em] w-[96%] min-h-[7rem] rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600"/>
                    <DialogActions className="mt-8">
-          <h2 className="mont-medium text-emerald-700" onClick={handleClose}>Continue Working</h2>
-             {isFeedback? <h2 className="mont-medium text-emerald-700" onClick={()=>handleFeedback()}>
+          <h2 className="mont-medium text-[1rem] text-emerald-700" onClick={handleClose}>Continue Working</h2>
+             {isFeedback? <h2 className="mont-medium mx-1 text-[1rem] text-emerald-700" onClick={()=>handleFeedback()}>
      Get feedback
-          </h2>:<h2 className="mont-medium text-emerald-700" onClick={()=>handlePostPublic()}>
+          </h2>:<h2 className="mont-medium text-[1rem]  text-emerald-700" onClick={()=>handlePostPublic()}>
   Publish
           </h2>}
         </DialogActions>

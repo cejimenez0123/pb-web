@@ -26,6 +26,7 @@ function PicturePageForm(props){
     const [image,setImage]=useState(null)
     const handleLocalContent=(e)=>{
     if(last==PageType.picture){
+        setLocalContent(e.target.value)
         if(isValidUrl(e.target.value)){
             
             setImage(e.target.value)
@@ -121,7 +122,9 @@ function PicturePageForm(props){
             case PageType.link:{  
                 if(isValidUrl(localContent)){        
                     return(
+                        <div className='mx-auto'>
                     <LinkPreview url={localContent} />
+                    </div>
                     )
                  }else if(localContent.length>0){
                     return (<div className={"text-emerald-800 p-4"}>
@@ -164,9 +167,9 @@ function PicturePageForm(props){
 
                  
     
-    return(<div className='  bg-emerald-200  pb-8 rounded-b-lg w-full '>
+    return(<div className='  bg-emerald-200  flex flex-col pb-8 rounded-b-lg w-full '>
       
-      <div className='p-8'>{uploadBtn()}</div>
+      <div className='p-8 mx-auto'>{uploadBtn()}</div>
       {!image? <label className='my-2 border-emerald-600 border-2 max-w-[30em] mx-auto py-4 flex pl-2 pr-3 rounded-full  bg-transparent  text-emerald-800 '>
             <h6 className='mont-medium my-auto'>URL</h6>
             <input 

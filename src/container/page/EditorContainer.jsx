@@ -26,6 +26,7 @@ import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
 import Alert from "../../components/Alert"
 import DescriptionDialog from "../../components/page/FeedbackDialog"
+import Page from "../../domain/models/page"
 
 
 function EditorContainer(props){
@@ -99,11 +100,19 @@ function EditorContainer(props){
           if(parameters.page && parameters.page.id){
             handleUpdate(parameters)
         }else{
-      
-          createPageAction(parameters)
+          if(last==PageType.picture||last==PageType.link){
+            if(isValidUrl(htmlContent)){
+             let params = parameters
+              params.data= htmlContent
+              setParameters(parameters)
+              createPageAction(params)
+            }
+     
+          }
+    
         }
         
-      },[parameters.data])
+      },[htmlContent])
      
       const dispatchContent=(content)=>{
             let params = parameters
