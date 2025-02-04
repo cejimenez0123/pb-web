@@ -11,7 +11,7 @@ class ProfileRepo {
     async getMyProfiles({token}){
       
     
-        let res = await axios.get(this.url+"/user/protected",{ headers:{
+        let res = await axios.get(this.url+"/user/private",{ headers:{
                 Authorization:"Bearer "+token
             }}
         )
@@ -51,6 +51,14 @@ class ProfileRepo {
 
        return res.data
     
+    }
+    async getProfileProtected(params){
+        const token = localStorage.getItem("token")
+        const {id}=params
+        let res = await axios.get(this.url+"/"+id+"/protected",{headers:{
+            Authorization:"Bearer "+token
+        }})
+        return res.data
     }
     async getProfile(params){
         const {id}=params

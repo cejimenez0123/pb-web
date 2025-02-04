@@ -34,12 +34,12 @@ export default function ProfileCard({profile,onClickFollow,following}){
         <div className="text-left p-4">
             <div className="flex flex-row">
               <div>  
-              <img src={profilePic} className="max-w-36 object-fit max-h-36 mb-2 rounded-lg" alt=""/>
+              <img src={profilePic} className="max-w-36 object-fit max-h-36  mb-2 rounded-lg" alt=""/>
               <div className="h-fit px-2 pb-2"><h5 className="text-emerald-800 text-[1.2rem] open-sans-medium font-bold">{profile.username}</h5></div>
         
               </div> <div>
             <div className="px-3 pt-3 flex flex-col justify-between  h-48">
-           <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem]  h-40 overflow-y-scroll flex-wrap flex text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
+           <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem] max-h-40 overflow-y-scroll flex-wrap flex text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
            </div> 
             
         </div>

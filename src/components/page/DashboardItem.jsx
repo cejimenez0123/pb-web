@@ -19,8 +19,6 @@ import { addStoryListToCollection, deleteStoryFromCollection } from '../../actio
 import Context from '../../context'
 import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
-import usePersistentCurrentProfile from '../../domain/usecases/useCurrentProfileCache'
-import { getCurrentProfile } from '../../actions/UserActions'
 import { debounce } from 'lodash'
 function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const dispatch = useDispatch()

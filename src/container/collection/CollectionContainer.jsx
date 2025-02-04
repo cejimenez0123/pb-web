@@ -19,17 +19,14 @@ import Context from "../../context"
 import Enviroment from "../../core/Enviroment"
 import ExploreList from "../../components/collection/ExploreList"
 import { setCollections } from "../../actions/CollectionActions"
-import { getCurrentProfile } from "../../actions/UserActions"
 import bookmarkOutline from "../../images/bookmarkoutline.svg"
-import bookmarkFill from "../../images/bookmarkfill.svg"
 import ErrorBoundary from "../../ErrorBoundary"
-import _ from "lodash"
+import debounce from "lodash"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
-    const {setError}=useContext(Context)
+    const {setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
-    const currentProfile = useSelector(state=>state.users.currentProfile)
     const collection = useSelector(state=>state.books.collectionInView)
     const collections = useSelector(state=>state.books.collections)
     const [loading,setLoading]=useState(true)
@@ -193,10 +190,10 @@ export default function CollectionContainer(props){
         }
     }}
     },[])
-    useLayoutEffect(()=>{
-        dispatch(getCurrentProfile())
+    // useLayoutEffect(()=>{
+    //     dispatch(getCurrentProfile())
 
-    },[])
+    // },[])
 
     const deleteFollow=()=>{
         if(currentProfile){

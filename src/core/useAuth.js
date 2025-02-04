@@ -2,8 +2,7 @@ import { auth} from "./di"
 import { useEffect, useState } from "react"
 import { useSelector ,useDispatch } from "react-redux"
 import { onAuthStateChanged } from "firebase/auth"
-import { getCurrentProfile,fetchHomeCollection} from "../actions/UserActions"
-import { fetchBookmarkLibrary } from "../actions/LibraryActions"
+import { getCurrentProfile} from "../actions/UserActions"
 import checkResult from "./checkResult"
 
 export default function useAuth(shareAuthState) {

@@ -58,6 +58,7 @@ const logIn = createAsyncThunk(
         return{
           profile: profile
        } }catch(error){
+        console.log(error)
 return{error}
         }
     }}
@@ -254,11 +255,19 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
 const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
   
     try {
-      let data = await profileRepo.getProfile(params)
+      const token = localStorage.getItem("token")
+      if(token){
+        let data = await profileRepo.getProfileProtected(params)
+        return{
+          profile:data.profile
+        }
+      }else{
+        let data = await profileRepo.getProfile(params)
 
 
-      return{
-        profile:data.profile
+        return{
+          profile:data.profile
+        }
       }
     }catch(e){
       return {

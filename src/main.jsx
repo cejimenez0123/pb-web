@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { combineReducers, configureStore} from '@reduxjs/toolkit';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux'
 import {pageSlice} from './reducers/PageReducer';
 import userSlice from './reducers/UserReducer';
@@ -33,10 +34,10 @@ const store = configureStore({reducer:reducer,
 ReactDOM.createRoot(document.getElementById('root')).render(
 
   <Provider store={store} >
-
+  <Router>
     {/* <React.StrictMode> */}
     <App />
-       
+    </Router>
     {/* </React.StrictMode> */}
 
   </Provider>

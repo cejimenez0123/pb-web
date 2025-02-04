@@ -56,13 +56,13 @@ function App(props) {
   const [error,setError]=useState(null)
 
   useEffect(()=>{
-    if(currentProfile){}
-    dispatch(getRecommendedCollectionsProfile())
-  },[currentProfile])
+    if(currentProfile){
+    dispatch(getRecommendedCollectionsProfile())}
+  },[])
 
   return (
       <Context.Provider value={{currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
-                <Router>
+              
       
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
@@ -243,15 +243,14 @@ function App(props) {
     </div>
     </div>
     </div>
-    </Router>
+
     </Context.Provider>
   );
 }
 
 function mapDispatchToProps(dispatch){
   return{ 
-    // getCurrentProfile:(params)=>dispatch(getCurrentProfile(params)),
-    
+
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicStories:()=>dispatch(getPublicStories()),
     fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),

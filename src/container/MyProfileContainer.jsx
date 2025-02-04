@@ -141,9 +141,6 @@ if(currentProfile){
       dispatch(setPagesInView({pages:currentProfile.stories}))
       dispatch(setCollections({collections:currentProfile.collections}))
 }
-     
- 
-    
     },[currentProfile])
     useLayoutEffect(()=>{
        debounce(()=>{ if(collections && collections.length>0){

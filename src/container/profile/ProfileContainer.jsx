@@ -4,6 +4,7 @@ import { useContext, useEffect, useLayoutEffect,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { 
             fetchProfile,
+            setProfileInView,
         } from "../../actions/UserActions" 
 import ProfileCard from "../../components/ProfileCard"
 import "../../styles/Profile.css"
@@ -27,12 +28,17 @@ function ProfileContainer(props){
         query: '(max-width: 600px)'
       })
       const [search,setSearch]=useState("")
+          const dispatch = useDispatch()
+      
     const pathname = useLocation().pathname
     const pathParams = useParams()
+    const {id}=pathParams
     const [sortAlpha,setSortAlpha]=useState(true)
     const [sortTime,setSortTime]=useState(true)
-    const [pending,setPending]=useState(true)
+    const [canUserSee,setCanUserSee]=useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
+    const profile = useSelector(state=>state.users.profileInView)
+  
 
     const collections = useSelector(state=>state.books.collections)
     .filter(col=>col).filter(col=>{
@@ -112,51 +118,61 @@ function ProfileContainer(props){
 
       dispatch(setPagesInView({pages:arr}))
     },10)
-    const profile = useSelector(state=>state.users.profileInView)
-    const dispatch = useDispatch()
+
 
   
     const [following,setFollowing]=useState(null)
 
-    useLayoutEffect(()=>{
-        dispatch(fetchProfile(pathParams)).then(result=>{
-                checkResult(result,payload=>{
-                const {profile}=payload
-                    if(profile){
-                        getContent()
-                    }
-                
-                },()=>{
-                })
-        })
-    },[pathname])
    
+  
  
     const getContent=()=>{
         dispatch(setPagesInView({pages:[]}))
             dispatch(setCollections({collections:[]}))
-            localStorage.getItem("token")?dispatch(getProtectedProfilePages({profile:profile})):dispatch(getPublicProfilePages({profile:profile}))
-            localStorage.getItem("token")?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile:profile}))
-        setPending(false)
+            currentProfile?dispatch(getProtectedProfilePages({profile:profile})):dispatch(getPublicProfilePages({profile:profile}))
+           currentProfile?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile:profile}))
+     
     }
+    useLayoutEffect(()=>{
+        dispatch(fetchProfile(pathParams)).then(result=>{
+                checkResult(result,payload=>{
+            
+                    checkIfFollowing()
+                    getContent()
+                },(err)=>{
+                    setError(err.message)
+                })
+        })
+    },[id,currentProfile])
     useEffect(()=>{
-checkIfFollowing()
-getContent()
-    },[profile,currentProfile])
+        if(profile){
+            checkIfFollowing()
+            getContent()
+        }
+    },[profile])
+  
     const handleSearch = (value)=>{
         setSearch(value)
     }
     const checkIfFollowing =()=>{
+        
         if(currentProfile&&profile){
+            if(!profile.isPrivate){
+                setCanUserSee(true)
+            }
         if(currentProfile.id==profile.id){
+            setCanUserSee(true)
             setFollowing(true)
             return
         }
     if( profile && profile.followers){
         let found = profile.followers.find(follow=>follow.followerId==currentProfile.id)
-         setFollowing(found)
+        setCanUserSee(true) 
+        setFollowing(found)
+        return
      }else{
         setFollowing( null)
+        return
      }
     }
     }
@@ -223,7 +239,7 @@ getContent()
   <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
   </label>:null}
 
-                   
+{!canUserSee ?<div className="skeleton bg-slate-100 mx-auto h-page md:w-page"/>:                  
 <div role="tablist" className="tabs   shadow-md mb-36 rounded-lg w-[96vw] mx-auto  md:w-page tabs-lifted">
     <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab [--tab-bg:transparent] [--tab-border-color:emerald] bg-transparent focus:bg-emerald-200 text-emerald-800 text-xl" aria-label="Pages" />
     <div role="tabpanel" className="tab-content w-[96vw]  mx-auto md:w-page  border-emerald-400 border-3  rounded-lg border-3 border-emerald-400 ">
@@ -260,7 +276,7 @@ onClick={handleTimeClick}> <img src={sortTime?clockArrowDown:clockArrowUp}/></a>
   
 </div>
 
-
+}
 </div>    
 
             )

@@ -10,8 +10,6 @@ import Paths from "../../core/paths"
 import checkResult from "../../core/checkResult"
 import loadingGif from "../../images/loading.gif"
 import Context from "../../context"
-import usePersistentCurrentProfile from "../../domain/usecases/useCurrentProfileCache"
-import { getCurrentProfile } from "../../actions/UserActions"
 import { debounce } from "lodash"
 import { RoleType } from "../../core/constants"
 export default function PageViewButtonRow({page,profile,setCommenting}){
