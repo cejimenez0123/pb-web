@@ -33,12 +33,14 @@ export default function AddStoryToCollectionContainer(props){
     const dispatch = useDispatch()
     const [item,setItem]=useState(null)
  const navigate = useNavigate()
-    // const cols=usePersistentMyCollectionCache(()=>dispatch(getMyCollections()))
+    const cols=usePersistentMyCollectionCache(()=>dispatch(getMyCollections()))
     const [hasMoreCol,setHasMoreCol]=useState(false)
     const [openDialog,setOpenDialog]=useState(false)
     const [search,setSearch]=useState("")
     
-    const collections = useSelector(state=>state.books.collections??cols).filter(col=>col || (col && col.type && col.type!="feedback")).filter(col=>{
+    const collections = useSelector(state=>state.books.collections??cols).
+    filter(col=>col )
+    .filter(col=>{return col && col.type && col.type!="feedback"}).filter(col=>{
       if(item && item.id==col.id){
         return false
       }
@@ -110,7 +112,8 @@ getContent()
 
     const getContent=()=>{
       switch(type){
-        case"story":      dispatch(getStory({id:pathParams.id})).then(res=>{
+        case"story":      
+        dispatch(getStory({id:pathParams.id})).then(res=>{
           checkResult(res,payload=>{
             setItem(payload.story)
          
@@ -171,7 +174,7 @@ return(<div className="text-emerald-800 w-[100vw]">
              {collections.map((col,i)=>{
 
   let found =null
-  if(type=="story"){
+  if(type=="story"&&col.storyIdList){
     found= col.storyIdList.find((sTc,i)=>{
   
    return sTc.storyId == item.id

@@ -146,6 +146,7 @@ import Enviroment from "../core/Enviroment";
         const res = await axios.get(this.url+"/"+id+"/protected",{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")
         }})
+        console.log(res)
         return res.data
     }
     async getProfileBooks({profile}){
