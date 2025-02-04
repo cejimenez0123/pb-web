@@ -289,7 +289,7 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
         navigate(Paths.editPage.createRoute(page.id))}}
         className='text-emerald-700'>Edit</a>
      </li>:null}
-    <li> <button className="my-auto w-fit mx-auto bg-transparent"onClick={handleBookmark}
+    <li> <button className="my-auto w-fit mx-auto border-none bg-transparent"onClick={handleBookmark}
     disabled={!currentProfile}> 
     {loading?<img className="max-h-6"src={loadingGif}/>:
     bookmarked?<img src={bookmarkFillGreen}
