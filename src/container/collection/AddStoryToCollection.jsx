@@ -106,7 +106,7 @@ export default function AddStoryToCollectionContainer(props){
     }
     useLayoutEffect(()=>{
 getContent()
-    },[])
+    },[id])
 
     const getContent=()=>{
       switch(type){

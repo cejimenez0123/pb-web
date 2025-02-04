@@ -1,4 +1,4 @@
-function checkResult(result,fn,err){
+function checkResult(result,fn,err=(err)=>{}){
     if(result && result.error==null){
         const {payload} = result
         if(payload && payload.error==null){
