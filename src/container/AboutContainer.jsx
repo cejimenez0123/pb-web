@@ -77,7 +77,7 @@ const howItWorks=()=>{
      <h2 className="lora-bold text-center text-emerald-800 text-emerald-800 text-4xl  mt-4  py-4">  How It Works</h2> 
 <ul className="px-4 md:w-page open-sans-medium mx-auto">
 <li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Share Your Writing – </strong>Upload your work and shape it with thoughtful feedback.</h6></li>
-<li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Give & Get Feedback – </strong>Support others and grow through collaboration.</h6></li>
+<li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Give & Get Feedback – </strong>Support others and grow through collaborating in workshops.</h6></li>
 <li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Discover & Connect – </strong>Find new voices, build your audience, and improve your craft</h6></li>
 </ul>       {/* <h2 className="lora-medium text-center text-emerald-800 lg:text-white text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
