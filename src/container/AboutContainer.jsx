@@ -76,9 +76,9 @@ const howItWorks=()=>{
     return (<div className={` py-2  leading-loose lg:text-white text-emerald-700 flex flex-col max-w-[100vw]`}>
      <h2 className="lora-bold text-center text-emerald-800 text-emerald-800 text-4xl  mt-4  py-4">  How It Works</h2> 
 <ul className="px-4 md:w-page open-sans-medium mx-auto">
-<li className="text-[1rem]"><h6 className="text-emerald-800">Share Your Writing – Upload your work and shape it with thoughtful feedback.</h6></li>
-<li className="text-[1rem]"><h6 className="text-emerald-800">Give & Get Feedback – Support others and grow through collaboration.</h6></li>
-<li className="text-[1rem]"><h6 className="text-emerald-800">Discover & Connect – Find new voices, build your audience, and improve your craft</h6></li>
+<li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Share Your Writing – </strong>Upload your work and shape it with thoughtful feedback.</h6></li>
+<li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Give & Get Feedback – </strong>Support others and grow through collaboration.</h6></li>
+<li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Discover & Connect – </strong>Find new voices, build your audience, and improve your craft</h6></li>
 </ul>       {/* <h2 className="lora-medium text-center text-emerald-800 lg:text-white text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
         <div className="">
         <h3 className={`lora-medium font-bold  text-2xl font-bold text-left `}>What is a Writers' Workshop?</h3>
@@ -140,16 +140,16 @@ const userTestimonial=()=>{
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,300&family=Roboto:wght@500&display=swap" rel="stylesheet"/>
 <div>
    
-    <div  className="grid md:grid-cols-2 gap-8 mb-8">
+    <div  className="grid md:grid-cols-2  grid-cols-1 gap-8 mx-4 mb-8">
    {/* //  */}
-    <div className="pt-8 pb-4 min-w-1/2 px-8 mx-auto text-center ">
+    <div className="pt-8 pb-4 min-w-1/2 md:px-8 mx-auto text-center ">
         <h2 className=" text-[4rem]  mx-atuo lora-bold text-emerald-700 pt-8 pb-4">Plumbum</h2>
         <br/>
         <h2 className="lora-medium text-[2rem]  mx-auto text-emerald-700 text-[2rem]">Where Writers Connect & Create</h2>
         </div> 
 {/*  */}
 
-  <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
+  <div className={`  ${md?"":"hidden"} relative  overflow-hidden h-[15rem] md:h-[20rem]   rounded-lg`}>
 <img  className=" absolute top-[-8em] sm:top-[-15em] md:top-[-35%] lg:top-[-75%] rounded-lg" 
 src={groupJpg} alt="group pic"
  />
