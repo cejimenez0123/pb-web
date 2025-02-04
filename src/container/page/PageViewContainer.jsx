@@ -68,14 +68,17 @@ export default function PageViewContainer(props){
      }
     useEffect(()=>{
         soCanUserSee()
+        soCanUserEdit()
       
     },[currentProfile,page])
     const pageDiv = ()=>{
-        if(canUserSee){
+     if(page){
+
+     
             return(<PageViewItem page={page} currentProfile={currentProfile} />)
-        }else{
-            return(<div className="empty"><h6>This page doesn't exist</h6></div>)
-        }
+     }else{
+        return null
+     }
     }
     let description =""
     if(page){
@@ -94,14 +97,13 @@ export default function PageViewContainer(props){
         />
             </Helmet>
         }else{
-           return(<div>
-        
-           </div>) 
+           return null
         }
     }
     return(<div className="  mx-auto">
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
-    {canUserSee?<>{title()}
+    {canUserSee?
+    <>{title()}
     {pageDiv()}</>:<div className="skeleton  max-w-[96vw] mx-auto md:w-page h-page"/>}
     
     <CommentThread page={page} comments={rootComments}/>
@@ -109,8 +111,4 @@ export default function PageViewContainer(props){
    
 </div>)
 
-  
-
-  
-    
 }
