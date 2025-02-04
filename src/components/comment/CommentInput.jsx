@@ -75,10 +75,10 @@ const clickUpdateComment = ()=>{
 }
     const input = ()=>{
         
-    return(<div style={{display: show?"":"none"}}className="bg-emerald-500 rounded-b-lg p-2">
+    return(<div style={{display: show?"":"none"}}className="bg-emerald-100 rounded-b-lg p-2">
 <textarea
   
-  className="textarea  mb-2 mx-auto min-h-30 open-sans-medium p-2 bg-transparent border-white border-2  text-white w-[100%] mx-auto textarea-bordered "
+  className="textarea  mb-2 mx-auto min-h-30 open-sans-medium p-2 bg-transparent border-emerald-700 border-opacity-60 border-2  text-emerald-800 w-[100%] mx-auto textarea-bordered "
   
 
   value={commentInput}
@@ -96,7 +96,7 @@ const clickUpdateComment = ()=>{
        :
        
        <button  
-       onClick={(e)=>saveComment(e)}   className="bg-emerald-800 rounded-full text-white  mont-medium sm:mx-4 hover:border-green-100 hover:bg-green-500"> {parentComment?"Reply":"Save Comment"}</button>:
+       onClick={(e)=>saveComment(e)}   className="bg-emerald-800 rounded-full text-white mont-medium sm:mx-4 hover:border-0 text-[1rem] hover:bg-gradient-to-r hover:to-emerald-400 hover:from-emerald-800"> {parentComment?"Reply":"Save Comment"}</button>:
        <button className="bg-emerald-200 text-white-800" 
        disabled={!currentProfile} onClick={saveComment}>
             Disabled
