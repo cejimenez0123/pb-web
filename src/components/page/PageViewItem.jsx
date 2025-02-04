@@ -52,7 +52,7 @@ if(page){
 
         return(
         
-        <div className="page rounded-lg overflow-clip">
+        <div className="page shadow-md rounded-lg overflow-clip">
       <div>
         <div>
         
