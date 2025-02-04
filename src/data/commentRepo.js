@@ -12,7 +12,10 @@ class CommentRepo{
        {headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
        return res.data
     }
-    
+    async helpful(){
+        let res = await axios.get(Enviroment.url+"/comment/helpful")
+        return res.data
+    }
     async delete({id}){
        let token= localStorage.getItem("token")
     

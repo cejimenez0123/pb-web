@@ -1,15 +1,35 @@
 
 import { useSelector,useDispatch} from "react-redux"
 import { appendComment, createComment,updateComment } from "../../actions/PageActions"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import checkResult from "../../core/checkResult"
 import { debounce } from "lodash"
-
+import critiqueTipsByGenre from "../../core/writingTips"
+import Context from "../../context"
 
 export default function CommentInput({parentComment,page,defaultComment,handleClose}){
     const dispatch = useDispatch()
+    
+    const {setError}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const [commentInput,setComment] = useState(defaultComment?defaultComment.content:"Remember the sandwich method.\n Compliment.Critique.Compliment")
+   const [defaultContent,setDefaultContent]=useState(state=>{
+        if(page){
+        let tips = null
+        page.hashtags.find(hashtag=>{
+            tips = critiqueTipsByGenre[hashtag.hashtag.name]
+           return tips
+        })
+
+        if(tips && tips.length>0){
+            let index = Math.floor(Math.random() * tips.length)
+            if(tips){
+               return tips[index]
+                
+            }
+        }}
+        return defaultComment?defaultComment.content:""
+})
+    const [commentInput,setComment] = useState(defaultContent)
     const [show,setShow]=useState(true)
     const saveComment=debounce((e)=>{
         e.preventDefault()
@@ -39,9 +59,11 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
     
         })
     }}else{
-        window.alert("Comment must be at least 7 characters")
+        setError("Comment must be at least 7 characters")
     }},10)
-
+useLayoutEffect(()=>{
+  
+},[])
 const clickUpdateComment = ()=>{
     const params =  {
         newText:commentInput,

@@ -25,10 +25,10 @@ function DashboardItem({page,forFeedback=false, book,isGrid}) {
     const [loading,setLoading]=useState(false)
     const pathParams = useParams()
     const location = useLocation()
-    const currentprof=usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+
     const {setSuccess,setError}=useContext(Context)
     const navigate = useNavigate()
-    const currentProfile = useSelector(state=>state.users.currentProfile??currentprof)
+    const currentProfile = useSelector(state=>state.users.currentProfile)
    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const [expanded,setExpanded]=useState(false)
     const colInView = useSelector(state=>state.books.collectionInView)

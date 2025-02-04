@@ -28,7 +28,7 @@ export default function Comment({page,comment,level}){
         
        setIsHelpful(hs)
     },[hashtags])
-   
+
     const navigate = useNavigate()
     const handleIfHelpful = ()=>{
         if(currentProfile){
