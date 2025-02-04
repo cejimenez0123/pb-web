@@ -2,7 +2,7 @@ import { useContext, useEffect, useLayoutEffect,useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { getStory } from "../../actions/StoryActions"
-import { addCollectionListToCollection, addStoryListToCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollection, fetchCollectionProtected, getMyCollections } from "../../actions/CollectionActions"
+import { addCollectionListToCollection, addStoryListToCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollection, fetchCollectionProtected, getMyCollections, setCollections } from "../../actions/CollectionActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import CreateCollectionForm from "../../components/collection/CreateCollectionForm"
 import {Dialog} from "@mui/material"
@@ -25,18 +25,19 @@ export default function AddStoryToCollectionContainer(props){
   const isPhone =  useMediaQuery({
     query: '(max-width: 600px)'
   })
-  const{setError}=useContext(Context)
+  const{setError,currentProfile}=useContext(Context)
     const pathParams = useParams()
     const {id,type}=pathParams 
-    usePersistentMyCollectionCache((()=>dispatch(getMyCollections())))   
+
+    // let prof = usePersistentMyCollectionCache((()=>dispatch(getMyCollections())))   
     const dispatch = useDispatch()
     const [item,setItem]=useState(null)
  const navigate = useNavigate()
-    const cols=usePersistentMyCollectionCache(()=>dispatch(getMyCollections()))
+    // const cols=usePersistentMyCollectionCache(()=>dispatch(getMyCollections()))
     const [hasMoreCol,setHasMoreCol]=useState(false)
     const [openDialog,setOpenDialog]=useState(false)
     const [search,setSearch]=useState("")
-    const currentProfile = useSelector(state=>state.users.currentProfile)
+    
     const collections = useSelector(state=>state.books.collections??cols).filter(col=>col || (col && col.type && col.type!="feedback")).filter(col=>{
       if(item && item.id==col.id){
         return false
@@ -48,6 +49,12 @@ export default function AddStoryToCollectionContainer(props){
       }
   
      })
+    useLayoutEffect(()=>{
+      if(currentProfile){
+        dispatch(setCollections({collections: currentProfile.collections}))
+  
+      }
+   },[currentProfile,id])
     const addStory = (e,collection)=>{
         e.preventDefault()
         if(item.storyIdList&&type==="collection"){
@@ -123,20 +130,11 @@ getContent()
      
    
     }
-   
-  
-   
-    // const getCollections=()=>{
-    //    dispatch(getMyCollections()).then(()=>{
-    //     setHasMoreCol(false)
-    // })
-    // }
-
     
 if(!item){
   return<div>
-    <div className="w-[96vw] skeleton mx-auto md:w-info h-info"/>
-    <di className="w-[96vw] skeleton mx-auto md:w-page h-page"/>
+    <div className="w-[96vw] bg-slate-100 skeleton mx-auto md:w-info m-2 h-info"/>
+    <di className="w-[96vw] bg-slate-100 skeleton mx-auto md:w-page h-page"/>
   </div>
 }
 return(<div className="text-emerald-800 w-[100vw]">
@@ -190,7 +188,7 @@ return(<div className="text-emerald-800 w-[100vw]">
 
                   <h6  
                   onClick={()=>navigate(Paths.collection.createRoute(col.id))}
-                  className="text-md lg:text-xl my-auto  overflow-hidden text-ellipsis max-w-[12rem] whitespace-nowrap " >
+                  className="text-md lg:text-xl my-auto  overflow-hidden text-ellipsis max-w-[12rem] md:max-w-[25rem] whitespace-nowrap " >
                     {col.title}
                     </h6>
                     {!found?<img onClick={(e)=>addStory(e,col)}className="bg-emerald-600 p-2 w-12 h-12 rounded-full" src={addBox}/>:<img onClick={(e)=>deleteStory(e,col,found)}className="bg-emerald-600 p-2 w-12 h-12 rounded-full" src={clear}/>}</div>)

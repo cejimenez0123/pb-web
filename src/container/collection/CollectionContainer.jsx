@@ -42,8 +42,6 @@ export default function CollectionContainer(props){
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(false)
     const {id} = useParams()
-    const [isPrivate,setIsPrivate]=useState(false)
-    
 
     const getRecommendations =()=>{
         if(collection && collection.id&&collection.type!="feedback" ){
@@ -247,9 +245,15 @@ if(currentProfile){
             getMore()
         }
         }else{
-            getCol()
+            
         }
-    },[location.pathname,currentProfile])
+    },[,currentProfile])
+    useLayoutEffect(()=>{
+        getCol()
+    },[location.pathname])
+    useLayoutEffect(()=>{
+        getContent()
+    },[collection])
     const getCol=()=>{
        setLoading(true)
         dispatch(setPagesInView({pages:[]}))
@@ -268,13 +272,13 @@ if(currentProfile){
                 if(payload.collection){
 
                 
-                dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
-                dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-                setLoading(false)}else{
-                    setIsPrivate(true)
+                    dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
+                    dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
+                     setLoading(false)}
+                     else{
+                  setLoading(false)
                 }
             },err=>{
-                setIsPrivate(true)
                 setError(err.meesage)
                 setLoading(false)
             })
@@ -422,8 +426,8 @@ if(currentProfile){
 
    
     const CollectionInfo=({collection})=>{  
-        if(!collection&&collection.id){
-            return(<div className="lg:w-info h-info  w-[96vw] skeleton bg-slate-200"></div>)
+        if((!collection||(collection&&collection.id&&collection.id!=id))){
+            return(<div className="lg:w-info h-info mx-auto  w-[96vw] skeleton bg-slate-200"></div>)
         }
        
         return(<div className=" w-[96vw] mx-auto lg:w-info h-fit lg:h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600 flex flex-col jusify-between  rounded-lg mb-8 text-left">
@@ -498,7 +502,7 @@ const bookList=()=>{
     </div>
     </div>)
 }
-if(collection&&canUserSee&&!isPrivate){
+if(collection&&canUserSee){
   
 
     return(<>
@@ -524,21 +528,21 @@ if(collection&&canUserSee&&!isPrivate){
       </ErrorBoundary>
     </>)
 }else{
-    if(isPrivate){
-        return(<div>
-            Made a wrong turn
-        </div>)
-    }
     if(loading){
      
         return(<div>
             <div className="skeleton h-fit w-[96vw] mx-auto lg:w-[50em] lg:h-[25em] bg-slate-100 mx-auto mt-4 sm:pb-8 p-4  bg-slate-50 rounded-lg mb-8 text-left"/>
         <div className=" max-w-[100vw] skeleton px-2 sm:max-w-[40em] bg-slate-100 mx-auto  h-40"/></div>)
+    }
+    if(!canUserSee){
+        return(<div>
+            Made a wrong turn
+        </div>)
     }else{
-
             return(<div className="mx-auto my-36 flex"><h6 className=" lora-bold text-xl  mx-auto text-emerald-800">Collection does not exist</h6></div>)
     
     }
+    
 }
 
 }
