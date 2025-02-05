@@ -142,17 +142,15 @@ export default function CollectionContainer(props){
         dispatch(getRecommendedCollectionsProfile())  
      }
      useLayoutEffect(()=>{
-        if(collection){
-            checkPermissions()
-        }
-        
-     },[currentProfile])
+      
+        checkPermissions()
+     },[currentProfile,collection])
    
 
     const getMore = ()=>{
       
        if(collection){
-        dispatch(getRecommendedCollections({colId:collection.id})).then(res=>{
+        dispatch(getRecommendedCollections({colId:id})).then(res=>{
             checkResult(res,payload=>{
        
                 if(payload.collections){
@@ -420,9 +418,7 @@ if(currentProfile){
 
    
     const CollectionInfo=({collection})=>{  
-        if((!collection||(collection&&collection.id&&collection.id!=id))){
-            return(<div className="lg:w-info h-info mx-auto  w-[96vw] skeleton bg-slate-200"></div>)
-        }
+  
        
         return(<div className=" w-[96vw] mx-auto lg:w-info h-fit lg:h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600 flex flex-col jusify-between  rounded-lg mb-8 text-left">
     
@@ -495,6 +491,11 @@ const bookList=()=>{
         </InfiniteScroll>
     </div>
     </div>)
+}
+if(!collection||collection.id!==id){
+    return(<div className=" flex flex-col ">  
+    <div className="skeleton w-[96vw] mx-auto lg:w-info h-fit lg:h-info mx-auto mt-4 mb-4 border-3 p-4 rounded-lg mb-8 "/>
+    <div className="skeleton bg-emerald-100  md:w-page h-page w-[96vw] mx-auto"/> </div>)
 }
 if(collection&&canUserSee){
   
