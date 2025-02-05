@@ -72,12 +72,20 @@ return !stories.find(story=>story && page && story.id==page.id)
     }
     useEffect(()=>{
         if(currentProfile && page){
-            let found = currentProfile.likedStories.find(like=>like && like.storyId==page.id)??[]
-            let marked =currentProfile.profileToCollections.find(ptc=>{
+            let found = null
+           if(currentProfile.likedStories){
+
+        let  found= currentProfile.likedStories.find(like=>like && like.storyId==page.id)
+          setLikeFound(found)
+        }
+         
+            if(currentProfile.profileToCollections){
+            let marked = currentProfile.profileToCollections.find(ptc=>{
                 return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
-       
-                setLikeFound(found)
                 setBookmarked(marked)
+            }
+               
+               
         }          
     },[currentProfile,page])
 const deleteStc=()=>{

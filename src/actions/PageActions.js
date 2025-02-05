@@ -579,7 +579,7 @@ try{
       let profileData = await profileRepo.getMyProfiles({token:token})
         
       return {
-      profile: profileData.profiles[0]
+      profile: profileData.profile
       }
     }catch(e){
       return {

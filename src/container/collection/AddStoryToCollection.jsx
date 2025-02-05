@@ -14,6 +14,7 @@ import checkResult from "../../core/checkResult"
 import loadingGif from "../../images/loading.gif"
 import Context from "../../context"
 import Paths from "../../core/paths"
+import ErrorBoundary from "../../ErrorBoundary"
 
 function toTitleCase(str) {
   return str.toLowerCase().replace(/(?:^|\s)\w/g, function(match) {
@@ -140,7 +141,7 @@ if(!item){
     <di className="w-[96vw] bg-slate-100 skeleton mx-auto md:w-page h-page"/>
   </div>
 }
-return(<div className="text-emerald-800 w-[100vw]">
+return(<ErrorBoundary><div className="text-emerald-800 w-[100vw]">
            
             <div className="border-2 mt-16 w-[96vw] h-info mx-auto md:w-info  text-left border-emerald-600 p-8   rounded-lg">
             <h6 className="text-xl font-bold pb-2 lora-medium  font-bold">Add <strong>{item.title} </strong>to Collection</h6>
@@ -222,7 +223,8 @@ return(<div className="text-emerald-800 w-[100vw]">
 
                 </div>
           
-        </div>)
+        </div>
+        </ErrorBoundary>)
     
     
 }
