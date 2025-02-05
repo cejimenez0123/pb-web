@@ -11,6 +11,9 @@ import IndexList from '../components/page/IndexList';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
+import sortAlphabet from "../images/icons/sort_by_alpha.svg"
+import clockArrowUp from "../images/icons/clock_arrow_up.svg"
+import clockArrowDown from "../images/icons/clock_arrow_down.svg"
 import { setPageInView, setPagesInView, setEditingPage  } from '../actions/PageActions.jsx';
 import ReactGA from "react-ga4"
 
@@ -29,11 +32,59 @@ function MyProfileContainer(props){
     const dispatch = useDispatch()
     const {currentProfile}=useContext(Context)
     const [search,setSearch]=useState("")
+    const [sortAlpha,setSortAlpha]=useState(true)
+    const [sortTime,setSortTime]=useState(true)
     const [description,setFeedback]=useState("")
   const cols = usePersistentMyCollectionCache(()=>{
     setCollections({collections:[]})
     return dispatch(getMyCollections())
   })
+  const handleSortAlpha=debounce(()=>{
+     
+   
+    let list =collections
+  let newList = list.sort((a,b)=>{
+       
+        if(sortAlpha){
+            return a.title.toLowerCase() < b.title.toLowerCase()
+            
+        }else{
+               return a.title.toLowerCase() > b.title.toLowerCase()
+            }
+               
+    })
+ 
+    dispatch(setCollections({collections:newList}))
+
+    let arr = pages
+  arr = arr.sort((a,b)=>{
+        if(sortAlpha){
+    
+         return   a.title.toLowerCase() < b.title.toLowerCase()
+   
+        }else{
+            return (a.title.toLowerCase() > b.title.toLowerCase()) 
+        }
+    
+    })
+
+  dispatch(setPagesInView({pages:arr}))
+},10)
+  const handleSortTime=debounce(()=>{
+    
+    setSortTime(!sortTime)
+    let list = collections
+  list = list.sort((a,b)=>{
+ 
+        if(sortTime){
+            return new Date(a.created)< new Date(b.created)
+             
+              
+            }else{
+             return new Date(a.created) > new Date(b.created)
+                    }
+    })
+dispatch(setCollections({collections:list}))})
     const collections=useSelector(state=>state.books.collections??cols).filter(col=>{
      if(col){
       if(search.toLowerCase()=="feedback"){
@@ -156,7 +207,13 @@ if(currentProfile){
         }},20)()
     },[collections])
 
-   
+    const handleAlphaClick=()=>{
+        
+      let newValue = !sortAlpha
+      setSortAlpha(newValue)
+      handleSortAlpha()
+
+}
     
             return(
             <div className='md:pb-72 pt-4 md:pt-8'>
@@ -230,9 +287,12 @@ if(currentProfile){
   </label>:null}
                             <div className='w-[96vw] md:mt-8 mx-auto md:w-page'>
 
-                            <div role="tablist" className="tabs border-emerald-300 md:w-page mx-auto border-b-4 border-emerald-500  rounded-lg w-[96vw] mx-auto  tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab mont-medium text-emerald-800 border-3 border-3 w-[96vw] mx-auto md:w-page [--tab-border-color:emerald] [--tab-bg:transparent] bg-transparent   border-l-4 border-r-4 border-t-4 text-xl" aria-label="Pages" />
-  <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto md:border-l-4 md:border-t-3 md:border-t-emerald-500 md:border-b-4 md:border-r-4 w-[96vw] mx-auto md:w-page md:border-emerald-300 ">
+                            {/* tabs-lifted */}
+                            <div role="tablist" className="tabs    bg-transparent  md:w-page mx-auto  rounded-lg w-[96vw] mx-auto  ">
+                              {/*  border-l-4 border-r-4 border-t-4  [--tab-bg:transparent] [--tab-border-color:emerald] */}
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  mx-auto md:w-page   text-xl" aria-label="Pages" />
+  {/* md:border-l-4 md:border-t-3 md:border-t-emerald-500 md:border-b-4 md:border-r-4 md:border-emerald-300 */}
+  <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto  w-[96vw] mx-auto md:w-page  ">
   <IndexList items={pages} handleFeedback={item=>{
     setFeedbackPage(item)
     dispatch(setPageInView({page:item}))
@@ -243,14 +303,14 @@ if(currentProfile){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800 mont-medium  [--tab-border-color:emerald] [--tab-bg:transparent]   border-3 text-xl" aria-label="Books"
+    className="tab text-emerald-800 mont-medium rounded-full   bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 text-xl" aria-label="Books"
     />
   <div role="tabpanel" 
-   className="tab-content  pt-1 lg:py-4 rounded-lg  max-w-[96vw] md:w-page mx-auto border-l-4 md:border-t-3 md:border-t-emerald-500 md:border-b-4 md:border-r-4 w-[96vw] mx-auto md:w-page md:border-emerald-300 ">
+   className="tab-content  pt-1 lg:py-4 rounded-lg  max-w-[96vw] md:w-page mx-auto border-l-4  rounded-full   w-[96vw] mx-auto md:w-page ">
   <IndexList items={books}/>
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab border-3 mont-medium text-emerald-800  [--tab-bg:transparent] [--tab-border-color:emerald] bg-transparent border-l-4 border-r-4 border-t-4 text-xl" aria-label="Libraries" />
-  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg max-w-[96vw] md:w-page mx-auto md:border-l-4 md:border-t-3 md:border-t-emerald-500 md:border-b-4 md:border-r-4 w-[96vw] mx-auto md:w-page md:border-emerald-300 ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab   bg-transparent  border-3 [--tab-bg:emerald] mont-medium text-emerald-800  rounded-full  [--tab-border-color:emerald] border-2  text-xl" aria-label="Libraries" />
+  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg max-w-[96vw] md:w-page mx-auto w-[96vw] mx-auto md:w-page ">
     <IndexList items={libraries}/>
   </div>
   {isNotPhone?  <label className='flex border-emerald-600 border-2 rounded-full my-1 flex-row mx-4 '>

@@ -9,6 +9,7 @@ import Clear from "../images/icons/clear.svg"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { useMediaQuery } from "react-responsive"
 import { useParams } from "react-router-dom"
+import FollowerCard from "./profile/FollowerCard"
 export default function ProfileCard({profile,onClickFollow,following}){
     const [profilePic,setProfilePic]=useState("")
     const [pending,setPending]=useState(false)
@@ -77,15 +78,7 @@ onClose={()=>{
        <div div className="px-4 ">
         <img onClick={()=>setFollowersDialog(false)}src={Clear}/>
        </div>
-      {profile&&profile.followers?  <InfiniteScroll
-      className=" px-4 " 
-            dataLength={profile.followers.length}
-        
-        >
-                {profile.followers.map(follow=>{
-                    return <div className="my-2 px-4 pt-3 pb-3 border-2 border-opacity-60 rounded-full border-emerald-600 "><ProfileCircle profile={follow.follower}/></div>
-                })}
-        </InfiniteScroll>:null}
+      {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
         </div>
         </Dialog>
         </div>)

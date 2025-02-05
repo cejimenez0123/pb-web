@@ -21,9 +21,7 @@ import Context from "../../context"
 import sortAlphabet from "../../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../../images/icons/clock_arrow_down.svg"
-import { Dialog } from "@mui/material"
-import InfiniteScroll from "react-infinite-scroll-component"
-import ProfileCircle from "../../components/profile/ProfileCircle"
+
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
     const {setError,setSuccess,currentProfile}=useContext(Context)
@@ -239,23 +237,23 @@ function ProfileContainer(props){
             </div>
             {isPhone? <label className='flex   my-1 border-emerald-400 border-2 rounded-full mt-8 flex-row mx-2'>
 <span className='my-auto text-emerald-800 ml-3 mr-1 w-full mont-medium'> Search:</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-3 text-emerald-800' />
   </label>:null}
 
                
-<div role="tablist" className="tabs   shadow-md mb-36 rounded-lg w-[96vw] mx-auto  md:w-page tabs-lifted">
-    <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab [--tab-bg:transparent] [--tab-border-color:emerald] bg-transparent focus:bg-emerald-200 text-emerald-800 text-xl" aria-label="Pages" />
-    <div role="tabpanel" className="tab-content w-[96vw]  mx-auto md:w-page  border-emerald-400 border-3  rounded-lg border-3 border-emerald-400 ">
+<div role="tablist" className="tabs   mb-36 rounded-lg w-[96vw] mx-auto  md:w-page tabs-boxed bg-transparent">
+    <input type="radio" name="my_tabs_2" role="tab"  defaultChecked     className="tab  hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  mx-auto md:w-page   text-xl" aria-label="Pages" />
+    <div role="tabpanel" className="tab-content w-[96vw]  mx-auto md:w-page   rounded-lg border-3 ">
         <IndexList items={pages} />
     </div>
     <input
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab  [--tab-border-color:emerald] [--tab-bg:transparent] active:bg-emerald-200  text-emerald-800 text-xl"
+    className="tab  hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  mx-auto md:w-page   text-xl"
     aria-label="Collections"
     />  
-    <div role="tabpanel"  className="tab-content w-[96vw]  md:w-page mx-auto border-emerald-400 border-3 h-[100%] rounded-lg  border-3 border-emerald-400 ">
+    <div role="tabpanel"  className="tab-content w-[96vw]  md:w-page mx-auto  [--tab-bg:transparent] border-3 bg-transparent ">
   <IndexList items={collections} />
 
     </div> 

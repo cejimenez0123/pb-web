@@ -9,7 +9,23 @@
   
     font-family: Roboto,sans-serif;
 }
-
+.tab {
+    background: transparent;
+    border-radius: 2em !important;
+    width: 4rem;
+    height: 2.5rem;
+    margin-left: 0.2em;
+    border-color: oklch(0.696 0.17 162.48)!important;
+ 
+}
+  
+  .tab:hover {
+    height: 3rem !important;
+    background-color: transparent; /* Similar to hover:bg-gray-300 */
+  }
+.transparent{
+    background-color: transparent!important;
+  }
 @media (max-width: 800px) {
 
 

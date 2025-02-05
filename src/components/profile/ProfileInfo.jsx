@@ -1,13 +1,13 @@
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { useState,useEffect } from "react"
 import "../../App.css"
-import InfiniteScroll from "react-infinite-scroll-component"
-import ProfileCircle from "./ProfileCircle"
+
 import { useMediaQuery } from "react-responsive"
 import clear from "../../images/icons/clear.svg"
-import usePagination from "@mui/material/usePagination/usePagination"
+
 import { useParams } from "react-router-dom"
 import { Dialog } from "@mui/material"
+import FollowerCard from "./FollowerCard"
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [followersDialog,setFollowersDialog]=useState(false)
@@ -61,19 +61,11 @@ const ProfileInfo = ({profile})=>{
         onClose={()=>{
     setFollowersDialog(false)
 }}>
-    <div className="card bg-emerald-200 min-h-[20em] min-w-[30em] py-6 rounded-lg">
+    <div className="card  min-h-[20em] min-w-[30em] py-6 rounded-lg">
        <div className="mx-4">
-        <img src={clear}/>
+        <img  onClick={()=>{setFollowersDialog(false)}}src={clear}/>
        </div>
-      {profile&&profile.followers?  <InfiniteScroll
-      className=" px-4 " 
-            dataLength={profile.followers.length}
-        
-        >
-                {profile.followers.map(follow=>{
-                    return <div className="my-2 pt-2 pb-3 border-b-2 border-emerald-600 "><ProfileCircle profile={follow.follower}/></div>
-                })}
-        </InfiniteScroll>:null}
+      {profile&&profile.followers?  <FollowerCard followers={profile.followers}/>:null}
     </div>
 </Dialog>
         </div>  )
