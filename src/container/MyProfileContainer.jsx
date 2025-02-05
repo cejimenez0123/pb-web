@@ -202,17 +202,17 @@ if(currentProfile){
                             <div className='   grid grid-cols-2  gap-1  '>
                                 <div>
                                     <div                    onClick={()=>navigate(Paths.workshop.reader())} 
-                                        className='bg-emerald-700 rounded-full mont-medium text-white flex w-[9rem] h-[4rem]  '>
+                                        className='bg-emerald-700 rounded-full mont-medium text-white flex w-[10rem] h-[4rem]  '>
                                     <h6 className='mx-auto lg:text-[0.8rem] px-2 my-auto'> Join a Workshop</h6>
                                         </div>
                                 </div> 
                                 <div>
-                            <div onClick={ClickWriteAStory} className='bg-emerald-600 rounded-full flex text-white w-[12rem] mont-medium lg:w-[12rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
+                            <div onClick={ClickWriteAStory} className='bg-emerald-600 rounded-full flex text-white w-[10rem] mont-medium lg:w-[10rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
                             <h6 className='text-center text-[0.8rem] mx-auto mont-medium my-auto'>Write a Story</h6>
                             </div>
                             </div>
                             <div>
-                            <div onClick={ClickCreateACollection} className='bg-emerald-500 btn mont-medium rounded-full flex text-white w-[12rem] lg:w-[12rem]  border-emerald-500 border-1 h-[4rem] py-3  text-bold'>
+                            <div onClick={ClickCreateACollection} className='bg-emerald-500 btn mont-medium rounded-full flex text-white w-[10rem] lg:w-[10rem]  border-emerald-500 border-1 h-[4rem] py-3  text-bold'>
                          <h6 className='text-[0.8rem]'>Create Collection</h6>
                             </div>
                             </div>

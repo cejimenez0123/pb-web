@@ -1,9 +1,20 @@
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { useState,useEffect } from "react"
 import "../../App.css"
+import InfiniteScroll from "react-infinite-scroll-component"
+import ProfileCircle from "./ProfileCircle"
+import { useMediaQuery } from "react-responsive"
+import clear from "../../images/icons/clear.svg"
+import usePagination from "@mui/material/usePagination/usePagination"
+import { useParams } from "react-router-dom"
+import { Dialog } from "@mui/material"
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    
+    const [followersDialog,setFollowersDialog]=useState(false)
+    const {id}=useParams()
+    const isPhone =  useMediaQuery({
+        query: '(max-width: 600px)'
+      })
     useEffect( ()=>{
 
         if(!profile.profilePic.includes("http")){
@@ -17,6 +28,9 @@ const ProfileInfo = ({profile})=>{
         
         
     },[])
+    useEffect(()=>{
+        setFollowersDialog(false)
+    },{id})
     return (  
         <div className="flex h-[100%] flex-col justify-between">                       
     <div className='flex-row    mx-auto   flex  '>
@@ -34,11 +48,34 @@ const ProfileInfo = ({profile})=>{
         </div>
         </div>
         <div className="text-emerald-800 flex flex-row justify-start px-4">
-            {profile.followers && profile.followers.length>0?<div className="text-center open-sans-bold ">
+            {profile.followers && profile.followers.length>0?<div  
+            onClick={()=>setFollowersDialog(true)}
+            className="text-center open-sans-bold ">
                 <h5 className="text-[1rem]">Followers</h5>
                 <h6 className="text-[1.2rem]">{profile.followers.length}</h6>
             </div>:null}
         </div>
+        <Dialog 
+        
+        open={followersDialog}
+        onClose={()=>{
+    setFollowersDialog(false)
+}}>
+    <div className="card bg-emerald-200 min-h-[20em] min-w-[30em] py-6 rounded-lg">
+       <div className="mx-4">
+        <img src={clear}/>
+       </div>
+      {profile&&profile.followers?  <InfiniteScroll
+      className=" px-4 " 
+            dataLength={profile.followers.length}
+        
+        >
+                {profile.followers.map(follow=>{
+                    return <div className="my-2 pt-2 pb-3 border-b-2 border-emerald-600 "><ProfileCircle profile={follow.follower}/></div>
+                })}
+        </InfiniteScroll>:null}
+    </div>
+</Dialog>
         </div>  )
 }
 

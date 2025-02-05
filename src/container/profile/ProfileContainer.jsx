@@ -4,7 +4,7 @@ import { useContext, useEffect, useLayoutEffect,useState} from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { 
             fetchProfile,
-            setProfileInView,
+        
         } from "../../actions/UserActions" 
 import ProfileCard from "../../components/ProfileCard"
 import "../../styles/Profile.css"
@@ -21,9 +21,13 @@ import Context from "../../context"
 import sortAlphabet from "../../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../../images/icons/clock_arrow_down.svg"
+import { Dialog } from "@mui/material"
+import InfiniteScroll from "react-infinite-scroll-component"
+import ProfileCircle from "../../components/profile/ProfileCircle"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-    const {setError,setSuccess}=useContext(Context)
+    const {setError,setSuccess,currentProfile}=useContext(Context)
+    const [followersDialog,setFollowersDialog]=useState(false)
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
@@ -36,7 +40,7 @@ function ProfileContainer(props){
     const [sortAlpha,setSortAlpha]=useState(true)
     const [sortTime,setSortTime]=useState(true)
     const [canUserSee,setCanUserSee]=useState(false)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
+ 
     const profile = useSelector(state=>state.users.profileInView)
   
 
@@ -127,22 +131,22 @@ function ProfileContainer(props){
   
  
     const getContent=()=>{
-        // dispatch(setPagesInView({pages:[]}))
-        //     dispatch(setCollections({collections:[]}))
-        //     currentProfile?dispatch(getProtectedProfilePages({profile:profile})):dispatch(getPublicProfilePages({profile:profile}))
-        //    currentProfile?dispatch(getProtectedProfileCollections({profile:profile})):dispatch(getPublicProfileCollections({profile:profile}))
+        dispatch(setPagesInView({pages:[]}))
+            dispatch(setCollections({collections:[]}))
+            currentProfile?dispatch(getProtectedProfilePages({profile:{id}})):dispatch(getPublicProfilePages({profile:{id}}))
+           currentProfile?dispatch(getProtectedProfileCollections({profile:{id}})):dispatch(getPublicProfileCollections({profile:{id}}))
      
     }
     useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
-                    
                     checkIfFollowing()
-                    getContent()
+                
                 },(err)=>{
                     setError(err.message)
                 })
         })
+        getContent()
     },[id,currentProfile])
     useEffect(()=>{
         if(profile){
@@ -159,6 +163,7 @@ function ProfileContainer(props){
         if(currentProfile&&profile){
             if(!profile.isPrivate){
                 setCanUserSee(true)
+                return
             }
         if(currentProfile.id==profile.id){
             setCanUserSee(true)
@@ -171,6 +176,7 @@ function ProfileContainer(props){
         setFollowing(found)
         return
      }else{
+
         setFollowing( null)
         return
      }
@@ -181,11 +187,8 @@ function ProfileContainer(props){
         if(currentProfile){
         if(profile && currentProfile.id !=profile.id){
             if(following){    
-
               dispatch(deleteFollow({follow:following})).then(res=>
                 checkResult(res,payload=>{
-                  
-        
                 },err=>{
 
                 })
@@ -239,7 +242,7 @@ function ProfileContainer(props){
   <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
   </label>:null}
 
-{!canUserSee ?<div className="skeleton bg-slate-100 mx-auto h-page md:w-page"/>:                  
+               
 <div role="tablist" className="tabs   shadow-md mb-36 rounded-lg w-[96vw] mx-auto  md:w-page tabs-lifted">
     <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab [--tab-bg:transparent] [--tab-border-color:emerald] bg-transparent focus:bg-emerald-200 text-emerald-800 text-xl" aria-label="Pages" />
     <div role="tabpanel" className="tab-content w-[96vw]  mx-auto md:w-page  border-emerald-400 border-3  rounded-lg border-3 border-emerald-400 ">
@@ -275,8 +278,24 @@ function ProfileContainer(props){
 onClick={handleTimeClick}> <img src={sortTime?clockArrowDown:clockArrowUp}/></a></div>}
   
 </div>
+<Dialog open={followersDialog}
+onClose={()=>{
+    setFollowersDialog(false)
+}}>
+    <div className="card bg-emerald-200 min-h-[20em] min-w-[30em] py-6 rounded-lg">
+       
+      {profile&&profile.followers?  <InfiniteScroll
+      className=" px-4 " 
+            dataLength={profile.followers.length}
+        
+        >
+                {profile.followers.map(follow=>{
+                    return <div className="my-2 pt-2 pb-3 border-b-2 border-emerald-600 "><ProfileCircle profile={follow.follower}/></div>
+                })}
+        </InfiniteScroll>:null}
+    </div>
+</Dialog>
 
-}
 </div>    
 
             )

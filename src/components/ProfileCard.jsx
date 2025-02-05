@@ -1,11 +1,22 @@
 import React from "react"
 import {useSelector} from 'react-redux'
 import { useState ,useEffect} from "react"
+import { Dialog } from "@mui/material"
 import getDownloadPicture from "../domain/usecases/getDownloadPicture"
 import isValidUrl from "../core/isValidUrl"
+import ProfileCircle from "./profile/ProfileCircle"
+import Clear from "../images/icons/clear.svg"
+import InfiniteScroll from "react-infinite-scroll-component"
+import { useMediaQuery } from "react-responsive"
+import { useParams } from "react-router-dom"
 export default function ProfileCard({profile,onClickFollow,following}){
     const [profilePic,setProfilePic]=useState("")
     const [pending,setPending]=useState(false)
+    const {id}=useParams()
+    const isPhone =  useMediaQuery({
+        query: '(max-width: 600px)'
+      })
+    const [followersDialog,setFollowersDialog]=useState(false)
     const FollowDiv=({following,onClickFollow})=>{
 
       return following?
@@ -29,6 +40,9 @@ export default function ProfileCard({profile,onClickFollow,following}){
               setPending(false) } )
           }}
   },[profile])
+    useEffect(()=>{
+        setFollowersDialog(false)
+    },[id])
         if(profile!=null){
       return(<div className="pb-8 border-3 rounded-lg  w-[96vw] lg:h-info mx-auto lg:w-info border-emerald-400">
         <div className="text-left p-4">
@@ -48,13 +62,32 @@ export default function ProfileCard({profile,onClickFollow,following}){
         </div>
             <div className="mt-3 flex flex-row">
                 <FollowDiv following={following} onClickFollow={onClickFollow}/>
-                <div className="text-emerald-800 text-center mx-4">
+                <div onClick={()=>setFollowersDialog(true)} className="text-emerald-800 text-center mx-4">
                     <h5 className="open-sans-bold text-[1rem] ">Followers</h5>
                 <h6>{profile.followers.length}</h6>
                 </div>
             </div>
         </div>
-      
+        <Dialog open={followersDialog}
+        fullScreen={isPhone}
+onClose={()=>{
+    setFollowersDialog(false)
+}}>
+    <div className="card  min-h-[20em] min-w-[30em] py-6 rounded-lg">
+       <div div className="px-4 ">
+        <img onClick={()=>setFollowersDialog(false)}src={Clear}/>
+       </div>
+      {profile&&profile.followers?  <InfiniteScroll
+      className=" px-4 " 
+            dataLength={profile.followers.length}
+        
+        >
+                {profile.followers.map(follow=>{
+                    return <div className="my-2 px-4 pt-3 pb-3 border-2 border-opacity-60 rounded-full border-emerald-600 "><ProfileCircle profile={follow.follower}/></div>
+                })}
+        </InfiniteScroll>:null}
+        </div>
+        </Dialog>
         </div>)
     }else{
        return <div className=" skeleton profile-card"/>
