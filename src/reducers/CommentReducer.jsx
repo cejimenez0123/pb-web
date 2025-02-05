@@ -1,7 +1,7 @@
 import { createSlice} from "@reduxjs/toolkit"
-import { fetchCommentsOfPage } from "../actions/PageActions"
+import { fetchCommentsOfPage } from "../actions/PageActions.jsx"
 
-import { createComment,appendComment,updateComment,deleteComment } from "../actions/PageActions"
+import { createComment,appendComment,updateComment,deleteComment } from "../actions/PageActions.jsx"
 
 const initialState = {
     comments:[],

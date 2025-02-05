@@ -11,7 +11,7 @@ import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
 import ReactGA from 'react-ga4'
 import IndexList from "../../components/page/IndexList"
-import { getProtectedProfilePages,getPublicProfilePages, setPagesInView } from "../../actions/PageActions"
+import { getProtectedProfilePages,getPublicProfilePages, setPagesInView } from "../../actions/PageActions.jsx"
 import { createFollow, deleteFollow } from "../../actions/FollowAction"
 import { getProtectedProfileCollections, getPublicProfileCollections } from "../../actions/CollectionActions"
 import { debounce } from "lodash"
@@ -27,7 +27,7 @@ import ProfileCircle from "../../components/profile/ProfileCircle"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
     const {setError,setSuccess,currentProfile}=useContext(Context)
-    const [followersDialog,setFollowersDialog]=useState(false)
+    
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
@@ -278,23 +278,7 @@ function ProfileContainer(props){
 onClick={handleTimeClick}> <img src={sortTime?clockArrowDown:clockArrowUp}/></a></div>}
   
 </div>
-<Dialog open={followersDialog}
-onClose={()=>{
-    setFollowersDialog(false)
-}}>
-    <div className="card bg-emerald-200 min-h-[20em] min-w-[30em] py-6 rounded-lg">
-       
-      {profile&&profile.followers?  <InfiniteScroll
-      className=" px-4 " 
-            dataLength={profile.followers.length}
-        
-        >
-                {profile.followers.map(follow=>{
-                    return <div className="my-2 pt-2 pb-3 border-b-2 border-emerald-600 "><ProfileCircle profile={follow.follower}/></div>
-                })}
-        </InfiniteScroll>:null}
-    </div>
-</Dialog>
+
 
 </div>    
 

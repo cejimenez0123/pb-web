@@ -11,11 +11,10 @@ import IndexList from '../components/page/IndexList';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
-import { setPageInView, setPagesInView } from '../actions/PageActions';
+import { setPageInView, setPagesInView, setEditingPage  } from '../actions/PageActions.jsx';
 import ReactGA from "react-ga4"
 
 import {Dialog} from "@mui/material"
-import { setEditingPage } from '../actions/PageActions';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
 import ReferralForm from '../components/auth/ReferralForm';

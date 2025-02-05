@@ -154,8 +154,8 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(this.url+"/profile/"+profile.id+"/book")
         return res.data
     }
-    async deleteCollectionToCollection({parentId,id,}){
-        let res = await axios.delete(this.url+"/"+parentId+"/collection/"+id,
+    async deleteCollectionToCollection({tcId}){
+        let res = await axios.delete(this.url+"/colToCol/"+tcId,
             {headers:{
                 Authorization: "Bearer "+localStorage.getItem("token")
             }}

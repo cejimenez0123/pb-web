@@ -9,7 +9,7 @@ import "../styles/CreateBook.css"
 import "../styles/CreateLibrary.css"
 import { textareaStyle } from "../styles/styles"
 import Paths from "../core/paths"
-import { setHtmlContent, setPageInView } from "../actions/PageActions"
+import { setHtmlContent, setPageInView } from "../actions/PageActions.jsx"
 const inputStyle = {
     width: "100%",
 }

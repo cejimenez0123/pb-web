@@ -7,7 +7,7 @@ import checkResult from '../../core/checkResult';
 import isValidUrl from '../../core/isValidUrl';
 import "../../App.css"
 import LinkPreview from '../LinkPreview';
-import { setHtmlContent } from '../../actions/PageActions';
+import { setHtmlContent } from '../../actions/PageActions.jsx';
 import getDownloadPicture from '../../domain/usecases/getDownloadPicture';
 import { PageType } from '../../core/constants';
 import { useLocation } from 'react-router-dom';
@@ -122,9 +122,9 @@ function PicturePageForm(props){
             case PageType.link:{  
                 if(isValidUrl(localContent)){        
                     return(
-                        <div className='mx-auto'>
+              
                     <LinkPreview url={localContent} />
-                    </div>
+                
                     )
                  }else if(localContent.length>0){
                     return (<div className={"text-emerald-800 p-4"}>

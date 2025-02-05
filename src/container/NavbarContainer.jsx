@@ -18,11 +18,9 @@ import checkResult from '../core/checkResult'
 import Dialog from '@mui/material/Dialog';
 import ReactGA from 'react-ga4'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
-import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions'
+import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions.jsx'
 import { useMediaQuery } from 'react-responsive'
 import isValidUrl from '../core/isValidUrl'
-import ProfileCircle from '../components/profile/ProfileCircle'
-import Collection from '../domain/models/collection'
 import Enviroment from '../core/Enviroment'
 const PageName = {
   home: "Home",

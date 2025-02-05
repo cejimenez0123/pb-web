@@ -136,7 +136,7 @@ try{
 
     let data = await collectionRepo.addStoryListToCollection({id,list,profile})
    
-    return {collection:data.collection}
+    return data
 }catch(error){
     return {error}
 }
@@ -177,19 +177,17 @@ const fetchCollection = createAsyncThunk("collection/getCollectionPublic",async(
 })
 const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCollection",async({id,storyId},thunkApi)=>{
     let data = await collectionRepo.deleteStoryToCollection({id,storyId})
-    return {
-     collection:data.collection
-    }
+    return data
  })
- const deleteCollectionFromCollection = createAsyncThunk("collection/deleteCollectionFromCollection",async({id,parentId},thunkApi)=>{
+ const deleteCollectionFromCollection = createAsyncThunk("collection/deleteCollectionFromCollection",async({tcId},thunkApi)=>{
    try{
-    let data = await collectionRepo.deleteCollectionToCollection({id:id,parentId:parentId})
-    console.log("XS",data)
+    let data = await collectionRepo.deleteCollectionToCollection({tcId:tcId})
+
 
     return data
     
 }catch(error){
-    console.log("ES",error)
+   
     return{error,collection:null}
 }
  })

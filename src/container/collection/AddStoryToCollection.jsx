@@ -2,19 +2,18 @@ import { useContext, useEffect, useLayoutEffect,useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { getStory } from "../../actions/StoryActions"
-import { addCollectionListToCollection, addStoryListToCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollection, fetchCollectionProtected, getMyCollections, setCollections } from "../../actions/CollectionActions"
+import {   fetchCollectionProtected, getMyCollections, setCollections } from "../../actions/CollectionActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import CreateCollectionForm from "../../components/collection/CreateCollectionForm"
 import {Dialog} from "@mui/material"
 import usePersistentMyCollectionCache from "../../domain/usecases/usePersistentMyCollectionCache"
-import addBox from "../../images/icons/add_circle.svg"
-import clear from "../../images/icons/close.svg"
+
 import { useMediaQuery } from "react-responsive"
 import checkResult from "../../core/checkResult"
 import loadingGif from "../../images/loading.gif"
 import Context from "../../context"
-import Paths from "../../core/paths"
 import ErrorBoundary from "../../ErrorBoundary"
+import AddToItem from "../../components/collection/AddToItem"
 
 function toTitleCase(str) {
   return str.toLowerCase().replace(/(?:^|\s)\w/g, function(match) {
@@ -30,15 +29,17 @@ export default function AddStoryToCollectionContainer(props){
     const pathParams = useParams()
     const {id,type}=pathParams 
 
-    // let prof = usePersistentMyCollectionCache((()=>dispatch(getMyCollections())))   
+   
     const dispatch = useDispatch()
-    const [item,setItem]=useState(null)
+   
  const navigate = useNavigate()
     const cols=usePersistentMyCollectionCache(()=>dispatch(getMyCollections()))
     const [hasMoreCol,setHasMoreCol]=useState(false)
     const [openDialog,setOpenDialog]=useState(false)
     const [search,setSearch]=useState("")
-    
+    const collectionInView = useSelector(state=>state.books.collectionInView)
+    const pageInView = useSelector(state=>state.pages.pageInView)
+    const [item,setItem]=useState(type=="collection"?collectionInView:pageInView)
     const collections = useSelector(state=>state.books.collections??cols).
     filter(col=>col )
     .filter(col=>{return col && col.type && col.type!="feedback"}).filter(col=>{
@@ -58,55 +59,12 @@ export default function AddStoryToCollectionContainer(props){
   
       }
    },[currentProfile,id])
-    const addStory = (e,collection)=>{
-        e.preventDefault()
-        if(item.storyIdList&&type==="collection"){
-
-          dispatch(addCollectionListToCollection({id:collection.id,list:[item.id],profile:currentProfile})).then(res=>
-            checkResult(res,payload=>{
-              const {collection}=payload
-            setItem(collection)
-           
-            },err=>{setError(err.message)})
-          )
-                  }
-        if(item && type==="story"){
-      dispatch(addStoryListToCollection({id:collection.id,list:[item],profile:currentProfile})).then(res=>{
-        checkResult(res,payload=>{
-          
-        
-        },err=>{
-          setError(err.message)
-        })
-      })
-        }
-     
-      
-      }
+    
         
     const handleSearch = (value)=>{
       setSearch(value)
   }
-    const deleteStory = (e,collection,tc)=>{
-  
-      e.preventDefault()
-      if(item&&type=="collection"&&item.childCollections&&item.storyIdList&&item.id&&tc.id){
-        dispatch(deleteCollectionFromCollection({id:tc.id,parentId:item.id})).then(res=>{
-          checkResult(res,payload=>{
-            console.log(payload)
-            const{collection}=payload
-       
-            if(collection){
-              setItem(collection)
-            }
-          })
-        })
-      }else if(item&&type=="story"){
-      dispatch(deleteStoryFromCollection({id:collection.id,storyId:item.id}))
-      }else{
-        setError("Something messy")
-      }
-    }
+   
     useLayoutEffect(()=>{
 getContent()
     },[id])
@@ -173,32 +131,38 @@ return(<ErrorBoundary><div className="text-emerald-800 w-[100vw]">
                 }
             >
              {collections.map((col,i)=>{
-
-  let found =null
-  if(type=="story"&&col.storyIdList){
-    found= col.storyIdList.find((sTc,i)=>{
+return <AddToItem key={i} item={item} col={col}/>
+//   let found =null
+//   if(type=="story"&&col.storyIdList){
+//     found= col.storyIdList.find((sTc,i)=>{
   
-   return sTc.storyId == item.id
-  })}
-  if(type=="collection"&& col.childCollections){
-   found = col.childCollections.find(ctc=>{
-    return ctc.childCollectionId == item.id
-   })
-    }
+//    return sTc.storyId == item.id
+//   })}
+//   if(type=="collection"&& col.childCollections&&item.parentCollections){
+//    found = item.parentCollections.find(ptc=>ptc.parentCollectionId==col.id)
+//     }
 
-              if(col){
-                return(<div key={`${col.id}_${i}`} 
-                 className="border-emerald-600 border-2 mx-auto w-[96%] flex flex-row justify-between rounded-full px-6 py-4 my-3">
+//               if(col){
+//                 return(<div key={`${col.id}_${i}`} 
+//                  className="border-emerald-600 border-2 mx-auto w-[96%] flex flex-row justify-between rounded-full px-6 py-4 my-3">
 
-                  <h6  
-                  onClick={()=>navigate(Paths.collection.createRoute(col.id))}
-                  className="text-md lg:text-xl my-auto  overflow-hidden text-ellipsis max-w-[12rem] md:max-w-[25rem] whitespace-nowrap " >
-                    {col.title}
-                    </h6>
-                    {!found?<img onClick={(e)=>addStory(e,col)}className="bg-emerald-600 p-2 w-12 h-12 rounded-full" src={addBox}/>:<img onClick={(e)=>deleteStory(e,col,found)}className="bg-emerald-600 p-2 w-12 h-12 rounded-full" src={clear}/>}</div>)
-}else{
-  return <div className="skeleton w-[100%]"></div>
-}})}</InfiniteScroll>
+//                   <h6  
+//                   onClick={()=>navigate(Paths.collection.createRoute(col.id))}
+//                   className="text-md lg:text-xl my-auto  overflow-hidden text-ellipsis max-w-[12rem] md:max-w-[25rem] whitespace-nowrap " >
+//                     {col.title}
+//                     </h6>
+//                     {!found?<img onClick={(e)=>addStory(e,col)}className="bg-emerald-600 p-2 w-12 h-12 rounded-full" src={addBox}/>:<img onClick={(e)=>deleteStory(e,col,found)}className="bg-emerald-600 p-2 w-12 h-12 rounded-full" src={clear}/>}</div>)
+// }else{
+//   return <div className="skeleton w-[100%]"></div>
+// }
+
+
+})
+
+
+}
+
+</InfiniteScroll>
 
                 </div>
                 <div>

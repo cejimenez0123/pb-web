@@ -16,7 +16,7 @@ import {
           getPublicStories,
           setPagesInView,
        
-        } from "../actions/PageActions"
+        } from "../actions/PageActions.jsx"
         
 import { createSlice} from "@reduxjs/toolkit"
 import { getMyStories, getStory,createStory, fetchRecommendedStories,

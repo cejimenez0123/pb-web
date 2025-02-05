@@ -14,7 +14,7 @@ import InfoTooltip from '../../components/InfoTooltip'
 import loadingGif from "../../images/loading.gif"
 import { fetchHashtag } from '../../actions/HashtagActions'
 import { setCollections } from '../../actions/CollectionActions'
-import { appendToPagesInView, setPagesInView } from '../../actions/PageActions'
+import { appendToPagesInView, setPagesInView } from '../../actions/PageActions.jsx'
 import Context from '../../context'
 export default function HashtagContainer(props){
     const location = useLocation()

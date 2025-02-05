@@ -1,6 +1,6 @@
 
 import { useSelector,useDispatch} from "react-redux"
-import { appendComment, createComment,updateComment } from "../../actions/PageActions"
+import { appendComment, createComment,updateComment } from "../../actions/PageActions.jsx"
 import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import checkResult from "../../core/checkResult"
 import { debounce } from "lodash"

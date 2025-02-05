@@ -1,10 +1,10 @@
-import React ,{useState,useEffect,useLayoutEffect, useContext}from 'react'
+import React ,{useState,useEffect}from 'react'
 import "../App.css"
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchRecommendedStories } from '../actions/StoryActions'
 import ReactGA from "react-ga4"
 import PageList from '../components/page/PageList'
-import ExploreList from '../components/collection/ExploreList'
+import ExploreList from '../components/collection/ExploreList.jsx'
 import { getRecommendedCollectionsProfile } from '../actions/CollectionActions'
 import { useLocation } from 'react-router-dom'
 import {  setPagesInView } from '../actions/PageActions'

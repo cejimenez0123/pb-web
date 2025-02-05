@@ -69,7 +69,11 @@ const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
  })
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
     localStorage.clear()
+    try{
    await signOut(auth)
+    }catch(err){
+      
+    }
    return {
         profile:null
    }

@@ -14,7 +14,7 @@ import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions
 import { createWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActions"
 import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
 
-import { getPublicLibraries } from "../actions/LibraryActions"
+import { getPublicLibraries } from "../actions/LibraryActions.jsx"
 const initialState = {
     groups:[],
     collections:[],

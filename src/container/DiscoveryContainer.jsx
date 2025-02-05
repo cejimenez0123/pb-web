@@ -6,7 +6,7 @@ import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
 import {getPublicStories, setPagesInView } from '../actions/PageActions'
 import { getPublicBooks } from '../actions/CollectionActions'
-import { getPublicLibraries} from '../actions/LibraryActions'
+import { getPublicLibraries} from '../actions/LibraryActions.jsx'
 import checkResult from '../core/checkResult'
 import { useMediaQuery } from "react-responsive"
 import BookListItem from '../components/BookListItem'

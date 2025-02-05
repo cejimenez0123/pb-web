@@ -5,7 +5,7 @@ import { createCollection, setCollectionInView } from "../../actions/CollectionA
 import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import "../../App.css"
-import { clearPagesInView } from "../../actions/PageActions"
+import { clearPagesInView } from "../../actions/PageActions.jsx"
 import InfoTooltip from "../InfoTooltip"
 export default function CreateCollectionForm({onClose}){
     const currentProfile = useSelector(state=>state.users.currentProfile)

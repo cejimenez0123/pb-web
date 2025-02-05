@@ -2,7 +2,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {  useState ,useLayoutEffect, useEffect, useContext} from "react";
 import "../../styles/PageView.css"
-import { fetchCommentsOfPage } from "../../actions/PageActions";
+import { fetchCommentsOfPage } from "../../actions/PageActions.jsx";
 import PageViewItem from "../../components/page/PageViewItem";
 import {Helmet} from "react-helmet"
 import { getStory } from "../../actions/StoryActions";

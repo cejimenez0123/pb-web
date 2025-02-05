@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import {  setHtmlContent, setPageInView } from "../../actions/PageActions";
+import {  setHtmlContent, setPageInView,setEditingPage } from "../../actions/PageActions.jsx";
 import {  RoleType } from "../../core/constants";
 import {useNavigate} from 'react-router-dom'
 import addBox from "../../images/icons/add_circle.svg"
@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 import Paths from "../../core/paths";
 import ReactGA from "react-ga4"
-import { setEditingPage } from '../../actions/PageActions'
 import { setCollectionInView } from "../../actions/CollectionActions";
 function IndexItem({item,handleFeedback}) {
     const isPhone =  useMediaQuery({

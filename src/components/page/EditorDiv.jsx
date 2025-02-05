@@ -6,7 +6,7 @@ import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import PicturePageForm from "./PicturePageForm"
 import EditorContext from "../../container/page/EditorContext"
 import { useLocation } from "react-router-dom"
-import { setHtmlContent } from "../../actions/PageActions"
+import { setHtmlContent } from "../../actions/PageActions.jsx"
 import { useDispatch } from "react-redux"
 
  export default function EditorDiv({handleChange,createPage}){

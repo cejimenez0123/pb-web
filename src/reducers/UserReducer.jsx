@@ -22,7 +22,7 @@ import {    logIn ,
         
         } from "../actions/UserActions"
 import { createProfile, fetchProfiles } from "../actions/ProfileActions"
-import { createPageApproval, deletePageApproval } from "../actions/PageActions"
+import { createPageApproval, deletePageApproval } from "../actions/PageActions.jsx" 
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
 import { postActiveUser } from "../actions/WorkshopActions"

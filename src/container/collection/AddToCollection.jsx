@@ -9,7 +9,7 @@ import emptyBox from "../../images/icons/empty_circle.svg"
 import "../../App.css"
 import { useMediaQuery } from "react-responsive"
 import Paths from "../../core/paths"
-import { clearPagesInView } from "../../actions/PageActions"
+import { clearPagesInView } from "../../actions/PageActions.jsx"
 let colStr = "collection"
 export default function AddToCollectionContainer(props){
     const pathParams = useParams()

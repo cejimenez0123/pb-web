@@ -5,7 +5,7 @@ import {  useContext, useEffect, useLayoutEffect, useState } from 'react';
 import loading from "./images/loading.gif"
 import Context from './context';
 const PrivateRoute = ({loggedIn, children }) => {
-    const currentProfile = useContext(Context)
+    const {currentProfile}= useContext(Context)
     const [pending,setPending]=useState(true)
     const location = useLocation();
     // usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
@@ -15,13 +15,14 @@ const PrivateRoute = ({loggedIn, children }) => {
    
     useLayoutEffect(() => {
     if(currentProfile&&currentProfile.id){
-        setPending(false)
+       
     }else{
-      if(!pending){
+  
         navigate(Paths.login())
-      }
+     
     
     }
+  
     }, [currentProfile]);
     useEffect(()=>{
      if(location.pathname){
@@ -33,7 +34,8 @@ const PrivateRoute = ({loggedIn, children }) => {
 
    
     if(!currentProfile){
-      return <div className='flex '><img className='mx-auto my-24 max-h-36 max-w-36' src={loading}/></div>
+      return <div className='flex '>
+        <img className='mx-auto my-24 max-h-36 max-w-36' src={loading}/></div>
     }
 
       

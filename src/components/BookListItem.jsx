@@ -1,7 +1,7 @@
 import {useNavigate} from "react-router-dom"
 import Paths from "../core/paths"
 import ReactGA from "react-ga4"
-import { clearPagesInView } from "../actions/PageActions"
+import { clearPagesInView } from "../actions/PageActions.jsx"
 import { useDispatch } from "react-redux"
 import { setCollectionInView } from "../actions/CollectionActions"
 import { setCollections } from "../actions/CollectionActions"

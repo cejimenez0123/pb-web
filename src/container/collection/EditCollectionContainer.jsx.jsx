@@ -20,8 +20,7 @@ import Role from "../../domain/models/role"
 import Alert from "../../components/Alert"
 import Context from "../../context"
 import HashtagForm from "../../components/hashtag/HashtagForm"
-import { current } from "@reduxjs/toolkit"
-import { setPagesInView } from "../../actions/PageActions"
+
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{

@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux"
 import { deleteHashtagComment, createHashtagComment } from "../../actions/HashtagActions"
 import checkResult from "../../core/checkResult"
 import horiz from "../../images/icons/more_horiz.svg"
-import { deleteComment } from "../../actions/PageActions"
+import { deleteComment } from "../../actions/PageActions.jsx"
 export default function Comment({page,comment,level}){
     const comments = useSelector(state=>state.comments.comments)
     const dispatch = useDispatch()

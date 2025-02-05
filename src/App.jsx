@@ -2,7 +2,7 @@ import './App.css';
 import { useDispatch,connect} from "react-redux"
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import {  getPublicStories } from './actions/PageActions';
+import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
@@ -14,7 +14,6 @@ import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/profile/ProfileContainer.jsx';
 import ApplyContainer from './container/auth/ApplyContainer';
 import SearchDialog from './components/SearchDialog';
-import {  getPublicLibraries } from './actions/LibraryActions';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import {  getCurrentProfile,
           fetchHomeCollection,
