@@ -11,7 +11,7 @@ class ProfileRepo {
     async getMyProfiles({token}){
       
     
-        let res = await axios.get(this.url+"/user/private",{ headers:{
+        let res = await axios.get(this.url+"/user/protected",{ headers:{
                 Authorization:"Bearer "+token
             }}
         )

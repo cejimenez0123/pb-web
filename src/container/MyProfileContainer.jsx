@@ -285,14 +285,13 @@ if(currentProfile){
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search:</span>
   <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
   </label>:null}
-                            <div className='w-[96vw] md:mt-8 mx-auto md:w-page'>
+                            <div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>
 
-                            {/* tabs-lifted */}
-                            <div role="tablist" className="tabs    bg-transparent  md:w-page mx-auto  rounded-lg w-[96vw] mx-auto  ">
-                              {/*  border-l-4 border-r-4 border-t-4  [--tab-bg:transparent] [--tab-border-color:emerald] */}
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab  hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  mx-auto md:w-page   text-xl" aria-label="Pages" />
-  {/* md:border-l-4 md:border-t-3 md:border-t-emerald-500 md:border-b-4 md:border-r-4 md:border-emerald-300 */}
-  <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg  mx-auto  w-[96vw] mx-auto md:w-page  ">
+                         
+                            <div role="tablist" className="tabs   grid ">
+                            
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Pages" />
+   <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
   <IndexList items={pages} handleFeedback={item=>{
     setFeedbackPage(item)
     dispatch(setPageInView({page:item}))
@@ -303,14 +302,14 @@ if(currentProfile){
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800 mont-medium rounded-full   bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 text-xl" aria-label="Books"
+    className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 text-xl" aria-label="Books"
     />
   <div role="tabpanel" 
-   className="tab-content  pt-1 lg:py-4 rounded-lg  max-w-[96vw] md:w-page mx-auto border-l-4  rounded-full   w-[96vw] mx-auto md:w-page ">
+   className="tab-content  pt-1 lg:py-4 rounded-lg  max-w-[96vw] md:w-page md:mx-auto border-l-4  rounded-full   w-[96vw]  md:w-page ">
   <IndexList items={books}/>
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab   bg-transparent  border-3 [--tab-bg:emerald] mont-medium text-emerald-800  rounded-full  [--tab-border-color:emerald] border-2  text-xl" aria-label="Libraries" />
-  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg max-w-[96vw] md:w-page mx-auto w-[96vw] mx-auto md:w-page ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab   bg-transparent  border-3 mx-auto [--tab-bg:emerald] mont-medium text-emerald-800  rounded-full  [--tab-border-color:emerald] border-2  text-xl" aria-label="Libraries" />
+  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  w-[96vw] mx-auto md:w-page ">
     <IndexList items={libraries}/>
   </div>
   {isNotPhone?  <label className='flex border-emerald-600 border-2 rounded-full my-1 flex-row mx-4 '>

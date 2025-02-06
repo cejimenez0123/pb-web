@@ -79,7 +79,7 @@ function LogInCard({setLogInError}){
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                        console.log(payload)
+                        
                     if(payload.error){
                         setLogInError("Error with Username or Password")
                     }else{

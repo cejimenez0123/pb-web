@@ -149,7 +149,7 @@ export default function CollectionContainer(props){
 
     const getMore = ()=>{
       
-       if(collection){
+
         dispatch(getRecommendedCollections({colId:id})).then(res=>{
             checkResult(res,payload=>{
        
@@ -170,9 +170,7 @@ export default function CollectionContainer(props){
              setLoading(false)
             })
     })
-}else{
-    setLoading(false)
-}
+
     }    
    
 
@@ -228,10 +226,10 @@ if(currentProfile){
     }
     }
     useLayoutEffect(()=>{
-        if(currentProfile&&collection&&collection.storyIdList&&collection.profileId&&currentProfile.id){
+        if(currentProfile&&collection&& collection.profileId&&currentProfile.id){
         
-        dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
-        dispatch(setCollections({collections:collection.childCollections.map(ctc=>ctc.childCollection)}))
+       if(collection.storyIdList)dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
+       if(collection.childCollection)dispatch(setCollections({collections:collection.childCollections.map(ctc=>ctc.childCollection)}))
         if(canUserAdd){
             getRecommendations()
             getMore()

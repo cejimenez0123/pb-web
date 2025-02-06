@@ -45,14 +45,14 @@ const logIn = createAsyncThunk(
           throw new Error("Check")
         }
     }catch(error){
+      console.log(error)
   try{
 
         const authData = await authRepo.startSession({uId:null,email:email,password})
-        console.log(authData)
         const {token}=authData
         localStorage.setItem("token",token)
         const profileRes = await profileRepo.getMyProfiles({token:authData.token})
-        console.log(profileRes)
+    
         const profile = profileRes.profile
         
         return{
