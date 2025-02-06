@@ -11,6 +11,8 @@ import { postStoryHistory } from "../../actions/HistoryActions";
 import { getProfileHashtagCommentUse } from "../../actions/HashtagActions";
 import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
+import Enviroment from "../../core/Enviroment.js";
+import Paths from "../../core/paths.js";
 export default function PageViewContainer(props){
     const {currentProfile}=useContext(Context)
     const location = useLocation()
@@ -89,11 +91,16 @@ export default function PageViewContainer(props){
     const title = ()=>{
         if(page){
             return<Helmet>
-            <title>{page.title}</title>
-            <meta
-          name="description"
-          content={description}
-        />
+                <title>{page.title} | Plumbum</title>
+        <meta name="description" content={page.description || "Read this amazing story on Plumbum."} />
+        <meta name="keywords" content={page.hashtags?page.hashtags.map((tag) => tag.name).join(", "):page.title} />
+        <meta property="og:title" content={page.title} />
+        <meta property="og:description" content={page.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={Enviroment.domain+Paths.page.createRoute(page.id)} />
+        {/* <meta name="twitter:card" content="summary_large_image" /> */}
+           
+           
             </Helmet>
         }else{
            return null

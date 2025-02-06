@@ -21,6 +21,7 @@ import Context from "../../context"
 import sortAlphabet from "../../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../../images/icons/clock_arrow_down.svg"
+import Paths from "../../core/paths.js"
 
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
@@ -230,8 +231,27 @@ function ProfileContainer(props){
         handleSortTime()
 
 },10)
+const meta = ()=>{
+    if(profile){
+        return<Helmet>
+            <title>{profile.username} | Plumbum</title>
+    <meta name="description" content={profile.selfStatement || "Read this amazing story on Plumbum."} />
+    {/* <meta name="keywords" content={page.hashtags.map((tag) => tag.name).join(", ")} />
+    <meta property="og:title" content={page.title} />
+    <meta property="og:description" content={page.description} /> */}
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content={Enviroment.domain+Paths.profile.createRoute(page.id)} />
+    <meta name="twitter:card" content="summary_large_image" />
+       
+       
+        </Helmet>
+    }else{
+       return null
+    }
+}
     return(
         <div className="">
+            {meta()}
             <div className="pt-2 md:pt-8 mb-8 mx-2">
                 <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow}/>
             </div>

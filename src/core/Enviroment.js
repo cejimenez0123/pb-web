@@ -9,6 +9,7 @@ if(import.meta.env.VITE_NODE_ENV=="dev"){
 const Enviroment = {
     proxyUrl:import.meta.env.VITE_PROXY_URL,
     url:url,
+    domain:"https://plumbum.app",
     blankPage: new Story("","recommedations","recommendations"),
     blankProfile:"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
 
