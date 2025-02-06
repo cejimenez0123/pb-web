@@ -53,7 +53,8 @@ class StoryRepo{
       
         return res.data
     }
-    async getMyStories({draft=""}){
+    async getMyStories(params){
+        let draft = ""
         let res = await axios.get(this.url+"/profile/protected/"+draft,{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem(this.token)

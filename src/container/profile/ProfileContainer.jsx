@@ -216,31 +216,32 @@ function ProfileContainer(props){
     },[10])
 
  
-    const handleAlphaClick=()=>{
+    const handleAlphaClick=debounce(()=>{
         
             let newValue = !sortAlpha
             setSortAlpha(newValue)
             handleSortAlpha()
    
-    }
-    const handleTimeClick=()=>{
+    },10)
+    const handleTimeClick=debounce(()=>{
         
         let newValue = !sortTime
         setSortTime(newValue)
         handleSortTime()
 
-}
+},10)
     return(
         <div className="">
             <div className="pt-2 md:pt-8 mb-8 mx-2">
                 <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow}/>
             </div>
-            {isPhone? <label className='flex   my-1 border-emerald-400 border-2 rounded-full mt-8 flex-row mx-2'>
-<span className='my-auto text-emerald-800 ml-3 mr-1 w-full mont-medium'> Search:</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-3 text-emerald-800' />
-  </label>:null}
+            {isPhone?<span className="flex flex-row">
+                 <label className='flex   my-1 border-emerald-400 border-2 border-opacity-70 w-[100%] rounded-full mt-8 flex-row mx-2'>
 
-               
+<span className='my-auto text-emerald-800 ml-3 mr-1 w-full mont-medium'> Search:</span>
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full text-emerald-800' />
+  </label></span>:null}
+
 <div role="tablist" className="tabs   mb-36 rounded-lg w-[96vw] mx-auto  md:w-page tabs-boxed bg-transparent">
     <input type="radio" name="my_tabs_2" role="tab"  defaultChecked     className="tab  hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  mx-auto md:w-page   text-xl" aria-label="Pages" />
     <div role="tabpanel" className="tab-content w-[96vw]  mx-auto md:w-page   rounded-lg border-3 ">
@@ -256,30 +257,17 @@ function ProfileContainer(props){
     <div role="tabpanel"  className="tab-content w-[96vw]  md:w-page mx-auto  [--tab-bg:transparent] border-3 bg-transparent ">
   <IndexList items={collections} />
 
-    </div> 
+    </div>
+    {isPhone?<><div className=" my-auto  mx-1  flex  justify-between flex-row">
 
-{!isPhone? <div className=" min-w-[27em] mx-1 sm:min-w-[22rem] flex 0 h-fit justify-between flex-row">
-
-    <label className='flex  mx-2 my-1 border-emerald-400 border-2 rounded-full  flex-row mx-2'>
-<span className='my-auto text-emerald-800 ml-3 mr-1 w-full mont-medium'> Search:</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
-  </label>  
-
- {!isPhone? <div className="flex-row flex w-fit ">  
- <img src={sortAlphabet} onClick={handleAlphaClick}
- className="my-auto text-emerald-800  mx-2 h-8"/>
-    <img src={sortTime?clockArrowUp:clockArrowDown} onClick={handleTimeClick} className="my-auto text-emerald-800 h-8"/></div>:null}</div>
-    :  <div className=" min-w-20 min-h-10 max-w-[96vw] mx-8 md:max-w-page flex flex-row">
-       <a  onClick={handleAlphaClick} className="btn  border-none max-h-8 bg-transparent"> <img src={sortAlphabet} 
-   /></a>
-<a className={"my-auto mx-2 btn max-h-8 border-none bg-transparent"}
-onClick={handleTimeClick}> <img src={sortTime?clockArrowDown:clockArrowUp}/></a></div>}
-  
+ <img src={sortAlphabet} onClick={handleAlphaClick} height={"50px"} width={"50px"}
+ className="my-auto text-emerald-800 mx-2 "/>
+    <img src={sortTime?clockArrowUp:clockArrowDown} onClick={handleTimeClick} 
+    className="my-auto text-emerald-800"/>
+    </div></> :null}
+               </div>
 </div>
-
-
-</div>    
-
+  
             )
 }
 export default ProfileContainer

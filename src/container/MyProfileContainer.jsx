@@ -40,18 +40,49 @@ function MyProfileContainer(props){
       dispatch(setPagesInView({pages:[]}))
       return dispatch(getMyStories())
     })
+   
+    const pages = useSelector(state=>state.pages.pagesInView.length==0?state.pages.pagesInView:stories).filter(page=>{
+      if(search.length>0){
+       return page.title.toLowerCase().includes(search.toLowerCase())
+      }else{
+       return true
+      }
+  
+     })
   const cols = usePersistentMyCollectionCache(()=>{
     dispatch(setCollections({collections:[]}))
     return dispatch(getMyCollections())
   })
+  const collections=useSelector(state=>state.books.collections??cols).filter(col=>{
+    if(col){
+     if(search.toLowerCase()=="feedback"){
+       return col.type=="feedback"
+     }
+     if(search.length>0){
+      return col.title.toLowerCase().includes(search.toLowerCase())
+     }else{
+      return true
+     }
+   }else{
+     return true
+   }
+ 
+    })
+ 
+    const handleTimeClick=debounce(()=>{
+        
+        let newValue = !sortTime
+        setSortTime(newValue)
+        handleSortTime()
 
-  const handleSortAlpha=debounce(()=>{
+},10)
+  const handleSortAlpha=debounce((newValue)=>{
      
    
     let list =collections
   let newList = list.sort((a,b)=>{
        
-        if(sortAlpha){
+        if(newValue){
             return a.title.toLowerCase() < b.title.toLowerCase()
             
         }else{
@@ -64,7 +95,7 @@ function MyProfileContainer(props){
 
     let arr = pages
   arr = arr.sort((a,b)=>{
-        if(sortAlpha){
+        if(newValue){
     
          return   a.title.toLowerCase() < b.title.toLowerCase()
    
@@ -91,33 +122,12 @@ function MyProfileContainer(props){
                     }
     })
 dispatch(setCollections({collections:list}))})
-    const collections=useSelector(state=>state.books.collections??cols).filter(col=>{
-     if(col){
-      if(search.toLowerCase()=="feedback"){
-        return col.type=="feedback"
-      }
-      if(search.length>0){
-       return col.title.toLowerCase().includes(search.toLowerCase())
-      }else{
-       return true
-      }
-    }else{
-      return true
-    }
-  
-     })
+
      
      const [feedbackPage,setFeedbackPage]=useState(null)
     const [books,setBooks]=useState(collections)
     const [libraries,setLibraries]=useState([])
-    const pages = useSelector(state=>state.pages.pagesInView??stories).filter(page=>{
-     if(search.length>0){
-      return page.title.toLowerCase().includes(search.toLowerCase())
-     }else{
-      return true
-     }
- 
-    })
+
     const handleSearch = (value)=>{
         setSearch(value)
     }
@@ -217,7 +227,7 @@ if(currentProfile){
         
       let newValue = !sortAlpha
       setSortAlpha(newValue)
-      handleSortAlpha()
+      handleSortAlpha(newValue)
 
 }
     
@@ -286,11 +296,21 @@ if(currentProfile){
                          </div>
                           </div>
                 </div>
-                <div className='md:w-page mx-auto'> 
-                {isPhone?<span> <label className='flex border-emerald-600  border-opacity-70 border-2 min-h-10 rounded-full mb-1 mt-8 flex-row mx-2'>
+                <div>
+                              {isPhone?<span className="flex   mb-2 flex-row"> 
+                <label className='flex my-auto border-emerald-600  w-[70%] border-opacity-70 border-2 min-h-10 rounded-full  mt-8 flex-row mx-2'>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search:</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
-  </label></span>:null}
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 w-full py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
+  </label><span className=" mx-1  w-24 flex  items-end pb-2 justify-evenly flex-row">
+
+<img src={sortAlphabet} onClick={handleAlphaClick} height={"30px"} width={"30px"}
+className=" text-emerald-800 mx-2  "/>
+   <img src={sortTime?clockArrowUp:clockArrowDown}  height={"30px"} width={"30px"} onClick={handleTimeClick} 
+   className="text-emerald-800 mx-2 "/>
+   </span></span>:null}
+ <br/>
+                <div className='md:w-page w-[96vw] mx-auto'> 
+  
                             <div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>
 
                          
@@ -318,10 +338,16 @@ if(currentProfile){
   <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  w-[96vw] mx-auto md:w-page ">
     <IndexList items={libraries}/>
   </div>
-  {isNotPhone?  <label className='flex border-emerald-600 border-2 rounded-full my-1 flex-row mx-4 '>
+  {isNotPhone? <span className='flex flex-row '> <label className='flex border-emerald-600 border-2 rounded-full my-1 max-w-[14em] flex-row mx-4 '>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2   w-full min-w-58 py-1 text-sm bg-transparent my-1  text-emerald-800' />
-  </label>:null}
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2   w-full  py-1 text-sm bg-transparent my-1  text-emerald-800' />
+  </label><span className=" mx-1  w-24 flex  items-end pb-4 justify-evenly flex-row">
+
+<img src={sortAlphabet} onClick={handleAlphaClick} height={"30px"} width={"30px"}
+className=" text-emerald-800 mx-2  "/>
+   <img src={sortTime?clockArrowUp:clockArrowDown}  height={"30px"} width={"30px"} onClick={handleTimeClick} 
+   className="text-emerald-800 mx-2 "/>
+   </span></span>:null}
 </div>
 
 </div>
@@ -368,7 +394,7 @@ handleClose={()=>{
           }}/>
               </Dialog>
 </div>
-             
+</div>      
 
         )
      

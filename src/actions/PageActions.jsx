@@ -92,7 +92,7 @@ const getPublicProfilePages= createAsyncThunk(
   }
   }catch(e){
 
-  return {error:`Page Query Where Error: ${e.message}`}
+  return {error:`public pages${e.message}`}
 }})
 const getProtectedProfilePages= createAsyncThunk(
   'pages/getProtectedProfilePages',
