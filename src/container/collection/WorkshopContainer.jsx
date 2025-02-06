@@ -162,7 +162,7 @@ setTimeout(()=>{
     <div>
 
       {currentProfile?(
-        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4    rounded-lg ">
+        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4    rounded-lg ">
        <div>
      <h2 className='text-xl my-8 font-bold '> {currentProfile.username}</h2></div>
      <div className='flex flex-row justify-start'>

@@ -341,22 +341,24 @@ const deleteStory = (storyId)=>{
             {canUserEdit?!pending?collectionInfo():<div className="w-[96vw] mx-auto md:w-info h-info flex">
               <h6 className="mx-auto my-auto text-emerald-700 text-2xl">You sure you're in the right place</h6>
               </div>:<div className="skeleton w-[96vw] mx-auto md:w-info h-info "/>}
-            {canUserEdit?!pending?<>     <div className="max-w-[96vw] md:w-page mx-auto"><div >
-                            <div role="tablist" className="tabs mt-8 max-w-[96vw] mb-2 lg:mb-48 lg::w-page mx-auto rounded-lg sm:mx-6 tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab shadow-sm [--tab-bg:transparent]  border-l-2 border-r-2 border-t-2 bg-transparent text-emerald-900 text-xl" aria-label="Stories" />
-  <div role="tabpanel" className="tab-content w-[96vw] mx-auto pt-1  md:min-h-page border-emerald-600 md:h-page md:w-page rounded-lg border-2">
+            {canUserEdit?!pending?<>                  <div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>
+
+                         
+<div role="tablist" className="tabs   grid ">
+
+<input type="radio" name="my_tabs_2" role="tab"  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Pages" />
+<div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
     {newPages.length==0?<div><h6 className="text-emerald-700 py-24 text-center bg-opacity-20 bg-emerald-400 rounded-lg m-4  text-xl">Room for who you are</h6></div>:<SortableList items={newPages} onOrderChange={handleStoryOrderChange}
   onDelete={deleteStory}/>}
 
   </div>
-<input type="radio" name="my_tabs_2" role="tab" className="tab text-emerald-900 bg-transparent border-emerald-900 max-w-[96vw] md:w-page [--tab-bg:transparent] border-l-2 border-r-2 border-t-2  text-xl" aria-label="Collections" />
-  <div role="tabpanel" className="tab-content w-[96vw] md:w-page pt-1 mx-auto  md:h-page border-emerald-600 md::w-page rounded-lg border-2">
+  <input type="radio" name="my_tabs_2" role="tab"  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Collections" />
+  <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
      <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20 mx-4"><h6 className="text-emerald-800 py-24 text-center 
    m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:
    <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={(colId)=>deleteSubCollection(colId)}/>}
  </div> 
   </div>
-</div>
 </div>
 </div></>:null:null}
 <Dialog 

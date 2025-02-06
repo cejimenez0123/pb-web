@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 export default function usePersistentCurrentProfile(fetchData) {
     const key = "cachedMyProfile"
     const location = useLocation()
+    const collection = useSelector(state=>state.books.collectionInView)
     const [profile, setProfile] = useState(() => {
       const saved =localStorage.getItem(key);
       return saved ? JSON.parse(saved) :null;
@@ -16,7 +17,7 @@ export default function usePersistentCurrentProfile(fetchData) {
         setProfile(payload.profile)
         localStorage.setItem(key, JSON.stringify(payload.profile));
       }))}
-,[location.pathname]);
+,[location.pathname,collection]);
 
     return profile;
   }

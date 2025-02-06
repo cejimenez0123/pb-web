@@ -1,7 +1,7 @@
-import { useContext, useEffect ,useLayoutEffect, useState} from "react"
+import { useContext, useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {  useLocation, useNavigate, useParams } from "react-router-dom"
-import { fetchCollection, fetchCollectionProtected, getRecommendedCollections, getRecommendedCollectionsProfile, getRecommendedCollectionStory } from "../../actions/CollectionActions"
+import { addCollectionListToCollection,deleteCollectionFromCollection,fetchCollection, fetchCollectionProtected, getRecommendedCollections, getRecommendedCollectionsProfile, getRecommendedCollectionStory } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import PageList from "../../components/page/PageList"
 import edit from "../../images/icons/edit.svg"
@@ -20,26 +20,32 @@ import Enviroment from "../../core/Enviroment"
 import ExploreList from "../../components/collection/ExploreList.jsx"
 import { setCollections } from "../../actions/CollectionActions"
 import bookmarkOutline from "../../images/bookmarkoutline.svg"
+import bookmarkfill from "../../images/bookmarkfill.svg"
+import loadingGif from "../../images/loading.gif"
 import ErrorBoundary from "../../ErrorBoundary"
 import debounce from "lodash"
+
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
-    const {setError,currentProfile}=useContext(Context)
+    const {setError,currentProfile,setSuccess}=useContext(Context)
     const navigate = useNavigate()
     const collection = useSelector(state=>state.books.collectionInView)
     const collections = useSelector(state=>state.books.collections)
     const [loading,setLoading]=useState(true)
     const location = useLocation()
+    const [isBookmarked,setIsBookmarked]=useState(false)
     const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
     const writeArr = [RoleType.editor,RoleType.writer]
+    // const [found,setFound]=useState(false)
     const [canUserAdd,setCanUserAdd]=useState(false)
     const [canUserEdit,setCanUserEdit]=useState(false)
     const [canUserSee,setCanUserSee]=useState(false)
+    const [homeCol,setHomeCol]=useState(null)
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(false)
     const {id} = useParams()
-
+    const [bookmarkLoading,setBookmarkLoading]=useState(false)
     const getRecommendations =()=>{
         if(collection && collection.id&&collection.type!="feedback" ){
             setHasMore(true)
@@ -111,12 +117,43 @@ export default function CollectionContainer(props){
 }
 
          
-        
-    
+  
+    const onBookmark=()=>{
+        console.log("delete",isBookmarked)
+        setBookmarkLoading(true)
+    if(!isBookmarked){
+        if(collection&&currentProfile){
+      
+            
+            if(homeCol){
+            let params = {id:homeCol.id,list:[collection.id],profile:currentProfile}
+            dispatch(addCollectionListToCollection(params)).then(res=>{
+                checkResult(res,payload=>{
+                    checkFound()
+                    setSuccess("Saved to Home")
+                },err=>{
+                    setBookmarkLoading(false)
+                })
+            })
+        }}
+    }else{
+
+            dispatch(deleteCollectionFromCollection({tcId:isBookmarked.id})).then(res=>{
+                checkResult(res,payload=>{
+                    if(payload.message.includes("Already")){
+                        setIsBookmarked(null)
+                        setSuccess("Removed from Home")
+                    }
+                    checkFound()
+                    setBookmarkLoading(false)
+                   
+        },err=>{
+            setBookmarkLoading(false)
+        })})
+    }
+    }
  
     const getContent=()=>{
-   
-    
         if(collection&&collection.storyIdList&&collection.childCollections){
             dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
      
@@ -132,27 +169,31 @@ export default function CollectionContainer(props){
         setHasMore(false)
         }}
      const checkPermissions=()=>{
-      
         findRole()
         soUserCanSee()
         soUserCanAdd()
         soUserCanEdit()
         getContent()
-     
         dispatch(getRecommendedCollectionsProfile())  
      }
      useLayoutEffect(()=>{
       
         checkPermissions()
-     },[currentProfile,collection])
+        if(currentProfile&& currentProfile.profileToCollections){
+            let col = currentProfile.profileToCollections.find(pTc=>pTc.type=="home").collection
+     
+     if(col){
+                setHomeCol(col)
+            }
+  
+        }
+    },[currentProfile,collection])
    
 
     const getMore = ()=>{
-      
-
+    if(id){
         dispatch(getRecommendedCollections({colId:id})).then(res=>{
             checkResult(res,payload=>{
-       
                 if(payload.collections){
                     let newRecommendations = payload.collections.filter(col=>{
                         let found = collection.childCollections.find(cTc=>cTc.childCollectionId ==col.id)
@@ -170,7 +211,7 @@ export default function CollectionContainer(props){
              setLoading(false)
             })
     })
-
+    }
     }    
    
 
@@ -243,7 +284,25 @@ if(currentProfile){
     },[location.pathname])
     useLayoutEffect(()=>{
         getContent()
+ 
+       
     },[collection])
+  
+    const checkFound=()=>{
+        if(collection&&homeCol&&collection.parentCollections){
+    
+             let isfound = collection.parentCollections.find(ptc=>ptc.parentCollectionId==homeCol.id)
+            console.log("isfound",isfound)
+                setIsBookmarked(isfound)
+              
+            }
+            setBookmarkLoading(false)
+        }
+ 
+   
+    useLayoutEffect(()=>{
+        checkFound()
+    },[currentProfile])
     const getCol=()=>{
        setLoading(true)
         dispatch(setPagesInView({pages:[]}))
@@ -418,23 +477,28 @@ if(currentProfile){
     const CollectionInfo=({collection})=>{  
   
        
-        return(<div className=" w-[96vw] mx-auto lg:w-info h-fit lg:h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600 flex flex-col jusify-between  rounded-lg mb-8 text-left">
+        return(<div className=" w-[96vw] mx-auto lg:w-info h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600 flex flex-col jusify-between  rounded-lg mb-8 text-left">
     
-        <div>
+       
+           <span>
                 {collection.profile?
                 <div className="flex flex-row">
+
                 <div className="min-w-8 min-h-8  my-auto text-emerald-800">
                     <ProfileCircle profile={collection.profile}/>
                     </div></div>:null}
                 <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
-    <h3 className="mt-8 mb-2  text-emerald-800 lora-medium text-xl sm:text-3xl">{collection.title}</h3>
+    <h3 className="mt-8 mb-2  text-emerald-800 lora-medium text-xl sm:text-3xl">
+        {collection.title}</h3>
 
         <h6 className="text-emerald-800  open-sans-medium rounded-lg py-4 px-2">{collection.purpose}</h6>
 </div>
-</div>
-{/* // */}
-        <div className=" w-[100%]  mx-auto flex justify-between flex-row">
-   <div className="flex flex-row">
+</span>
+
+
+   <span>
+   <div className="flex flex-row  justify-between">
+    <div className="flex flex-row  ">
    {!role?<div
    onClick={handleFollow}
    className={"border-emerald-600 bg-transparent border-2 sm:ml-4 text-emerald-600  mont-medium w-40 min-h-12 max-h-14 px-4 rounded-full text-[1rem] sm:text-[1.2rem] mx-4 sm:mx-6"}>
@@ -447,24 +511,26 @@ if(currentProfile){
     
   
    {canUserAdd?
-    <img onClick={()=>navigate(Paths.addToCollection.createRoute(collection.id))
+    <img onClick={()=>navigate(Paths.addToCollection.createRoute(id))
    }className="rounded-full bg-emerald-800 p-2 mx-2 my-auto"src={add}/>:null}
    {canUserEdit?
    <img 
-   onClick={()=>navigate(Paths.editCollection.createRoute(collection.id))}
-   className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}</div>
-      <span 
+   onClick={()=>navigate(Paths.editCollection.createRoute(id))}
+   className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}
+        </div>
+        <span 
       
-       onClick={()=>{
-        if(currentProfile){navigate(Paths.addStoryToCollection.collection(collection.id))}else{
-            setError("Please sign in first!")
-        }}}
-       className="bg-emerald-800 max-h-14 min-w-12 min-h-12 max-h-14 rounded-full flex">  
-        <img  className="  mx-auto my-auto"src={bookmarkOutline}/>
+      onClick={()=>{
+       onBookmark()
+       
+   }}
+      className="bg-emerald-800 max-h-14 min-w-12 min-h-12 max-h-14 rounded-full flex">  
+       <img  className="  max-h-14 p-2 min-w-12 min-h-12 max-h-14  mx-auto my-auto"src={bookmarkLoading?loadingGif:isBookmarked?bookmarkfill:bookmarkOutline}/>
 </span>
-   </div>
- </div>
+</div>
 
+</span>
+  </div>
   )
     }
 const bookList=()=>{
@@ -492,14 +558,14 @@ const bookList=()=>{
 }
 if(!collection||collection.id!==id){
     return(<div className=" flex flex-col ">  
-    <div className="skeleton w-[96vw] mx-auto lg:w-info h-fit lg:h-info mx-auto mt-4 mb-4 border-3 p-4 rounded-lg mb-8 "/>
+    <div className="skeleton w-[96vw] mx-auto  bg-emerald-100  lg:w-info h-fit h-info mx-auto mt-4 mb-4 border-3 p-4 rounded-lg mb-8 "/>
     <div className="skeleton bg-emerald-100  md:w-page h-page w-[96vw] mx-auto"/> </div>)
 }
 if(collection&&canUserSee){
   
 
     return(<>
-      <ErrorBoundary>
+      {/* <ErrorBoundary> */}
     
 <div className=" flex flex-col ">   
 
@@ -518,7 +584,7 @@ if(collection&&canUserSee){
         
          
        
-      </ErrorBoundary>
+      {/* </ErrorBoundary> */}
     </>)
 }else{
     if(loading){

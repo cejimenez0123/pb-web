@@ -20,7 +20,7 @@ import Context from '../../context'
 import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
 import { debounce } from 'lodash'
-function DashboardItem({page,forFeedback=false, book,isGrid}) {
+function DashboardItem({page, book,isGrid}) {
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
     const pathParams = useParams()
@@ -111,7 +111,7 @@ const hanldeClickComment=()=>{
 
 const header=()=>{
 
-   return isGrid?null:<span className={"flex-row flex justify-between w-[96vw] md:w-page px-1 rounded-t-lg  pt-2 pb-1"}>  
+   return isGrid?null:<span className={"flex-row flex justify-between w-[96vw]  md:w-page px-1 rounded-t-lg  pt-2 pb-1"}>  
 <ProfileCircle isGrid={isGrid} profile={page.author}/>
 
 
@@ -313,7 +313,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
         return(
         <ErrorBoundary>
-                <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page shrink my-2 h-fit'}>
+                <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page  shrink my-2 h-fit'}>
         <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&page?header():null}
         {page.description && page.description.length>0?<div className='min-h-12 pt-4 p-2'>

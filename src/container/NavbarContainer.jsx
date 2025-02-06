@@ -103,7 +103,11 @@ function NavbarContainer({profile}){
                                     if(setting== SettingName.profile){
                                         navigate(Paths.myProfile())
                                     }else if(setting== SettingName.logout){
-                                        dispatch(signOutAction())
+                                        dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
+                                          navigate("/")
+                                        },err=>{
+                                          
+                                        }))
                                     }else if(setting== SettingName.account){
                                         navigate("/profile/edit")
                                     }else if(setting == SettingName.notifications){
@@ -340,7 +344,11 @@ function NavbarContainer({profile}){
                                   if(setting== SettingName.profile){
                                       navigate(Paths.myProfile())
                                   }else if(setting== SettingName.logout){
-                                      dispatch(signOutAction())
+                                      dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
+                                        navigate("/")
+                                      },err=>{
+                                        
+                                      }))
                                   }else if(setting== SettingName.account){
                                       navigate("/profile/edit")
                                   }else if(setting==SettingName.notifications){

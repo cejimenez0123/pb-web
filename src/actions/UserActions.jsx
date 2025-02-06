@@ -25,43 +25,46 @@ import collectionRepo from "../data/collectionRepo";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
-      const {email,password}=params
-     
-      try{
-      const userCred = await signInWithEmailAndPassword(auth,email,password)
-      if(userCred.user){
-        
-      const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
-        const {token}=authData
-        localStorage.setItem("token",token)
-        const profileRes = await profileRepo.getMyProfiles({token:token})
-        console.log(profileRes)
-        const profile = profileRes.profile
-     
    
-        return{
-          profile:profile
-        }}else{
-          throw new Error("Check")
-        }
-    }catch(error){
-      console.log(error)
-  try{
+     
+      // try{
+        const {email,password}=params
+    //   const userCred = await signInWithEmailAndPassword(auth,email,password)
+      
+        
+    //   const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
+    
+    //     if(authData.token){
+    //       const {token}=authData
+    //       const data = await profileRepo.getMyProfiles({token:token})
+    
+    //       const profile = data.profile
+    //       return{
+    //         profile:profile
+    //       }
+        
+    //     }else{
+    //       throw new Error("Check")
+    //     }
+    // }catch(error){
+    //   console.log(error)
+  // try{
 
         const authData = await authRepo.startSession({uId:null,email:email,password})
+   
+        
         const {token}=authData
         localStorage.setItem("token",token)
-        const profileRes = await profileRepo.getMyProfiles({token:authData.token})
-    
-        const profile = profileRes.profile
+        const data= await profileRepo.getMyProfiles({token:token})
+        const profile = data.profile
         
         return{
           profile: profile
-       } }catch(error){
-        console.log(error)
-return{error}
-        }
-    }}
+       } 
+     
+  
+      
+    }
 )
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
@@ -204,16 +207,19 @@ async (params,thunkApi) => {
 
   let token = localStorage.getItem("token")
   if(token){
-    let data = await profileRepo.getMyProfiles({token:token})
+    const data = await profileRepo.getMyProfiles({token:token})
+if(data.profile){
+
 
     return {
     profile: data.profile
-   } 
-  }else{
-    throw new Error("No Token")
+   } }
   }
+    throw new Error("No Token")
+  
     
     }catch(error){
+      console.log({error})
       return {error}
     }});
 

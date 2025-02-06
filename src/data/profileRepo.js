@@ -10,12 +10,12 @@ class ProfileRepo {
     }
     async getMyProfiles({token}){
       
-    
-        let res = await axios.get(this.url+"/user/protected",{ headers:{
+        console.log("Touch",token)
+        let res = await axios.get(this.url+"/protected",{ headers:{
                 Authorization:"Bearer "+token
             }}
         )
-
+console.log("Touch",res.data)
         return res.data
   
     }
@@ -62,7 +62,7 @@ class ProfileRepo {
     }
     async getProfile(params){
         const {id}=params
-        let res = await axios.get(this.url+"/"+id)
+        let res = await axios.get(this.url+"/"+id+"/public")
         return res.data
     }
     async updateProfile(params){

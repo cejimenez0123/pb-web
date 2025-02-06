@@ -141,7 +141,7 @@ dispatch(setCollections({collections:list}))})
   const handleFeedback=()=>{
    
   let params= structuredClone(feedbackPage,{description:description,needsFeedback:true})
-    //  parameters.description = description
+   
 params.page = feedbackPage
    
      dispatch(updateStory(params)).then(res=>{
@@ -287,10 +287,10 @@ if(currentProfile){
                           </div>
                 </div>
                 <div className='md:w-page mx-auto'> 
-                {isPhone? <label className='flex border-emerald-700 border-2 rounded-full mb-1 mt-8 flex-row mx-2'>
+                {isPhone?<span> <label className='flex border-emerald-600  border-opacity-70 border-2 min-h-10 rounded-full mb-1 mt-8 flex-row mx-2'>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search:</span>
   <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
-  </label>:null}
+  </label></span>:null}
                             <div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>
 
                          

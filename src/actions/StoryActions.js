@@ -65,10 +65,10 @@ try{
   })
 const getMyStories= createAsyncThunk(
     'pages/getMyStories',
-    async ({profile,draft},thunkApi) => {
+    async ({draft=""},thunkApi) => {
       try{
-      let data = await storyRepo.getMyStories({profileId:profile.id,draft})
-  console.log(data)
+      let data = await storyRepo.getMyStories({draft})
+  
     return {
       pageList:data.stories
     }

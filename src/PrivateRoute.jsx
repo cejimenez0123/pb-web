@@ -6,24 +6,26 @@ import loading from "./images/loading.gif"
 import Context from './context';
 const PrivateRoute = ({loggedIn, children }) => {
     const {currentProfile}= useContext(Context)
-    const [pending,setPending]=useState(true)
     const location = useLocation();
-    // usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+    let token =localStorage.getItem("token")
+
     const [formerPage,setFormerPage]=useState(null)
     const navigate = useNavigate()
     const dispatch = useDispatch()
    
     useLayoutEffect(() => {
-    if(currentProfile&&currentProfile.id){
-       
+     token = localStorage.getItem("token")
+     console.log(token)
+    if(token||currentProfile&&currentProfile.id){
+      if(formerPage){
+       navigate(formerPage)
+      }
     }else{
   
         navigate(Paths.login())
-     
-    
     }
   
-    }, [currentProfile]);
+    }, [token,currentProfile]);
     useEffect(()=>{
      if(location.pathname){
       setFormerPage(location.pathname)

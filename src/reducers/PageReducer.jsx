@@ -25,6 +25,7 @@ import { getMyStories, getStory,createStory, fetchRecommendedStories,
 
 const initialState = {pagesInView:[],
                       storyToCollectionList:[],
+                      recommendedStories:[],
                       editingPage:null,
                       loading:true,
                       editorHtmlContent:"",
@@ -52,7 +53,7 @@ const pageSlice = createSlice({
       }
     }).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
      state.loading=false
-      state.pagesInView = payload.stories
+      state.recommendedStories = payload.stories
     }).addCase(appendToPagesInView.type,(state,{payload})=>{
 
       if(payload.length>0){
@@ -111,8 +112,11 @@ const pageSlice = createSlice({
           }
           state.loading = false
         }).addCase(getPublicStories.fulfilled,(state,{payload})=>{
+          if(payload.stories){
+            state.pagesInView = payload.stories
+          }
           state.loading = false
-          state.pagesInView = payload.stories
+
         }   
         )
       .addCase(getPublicStories.rejected,(state,{payload})=>{

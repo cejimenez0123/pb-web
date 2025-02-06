@@ -7,7 +7,7 @@ import Enviroment from "../../core/Enviroment"
 import loadingGif from "../../images/loading.gif"
 
 
-const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
+const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
     let more=true
  
     if(!hasMore){
@@ -15,7 +15,7 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
     }else{
         more=hasMore
     }
-    const pagesInView = useSelector(state=>state.pages.pagesInView)
+    const pagesInView = items??useSelector(state=>state.pages.pagesInView)
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
       })
@@ -33,13 +33,13 @@ const PageList = ({forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})
         loader={<div className=" flex ">
             <img className="mx-auto my-auto w-[4em] h-[4em] " src={loadingGif}/>
         </div>}
-        className={isGrid?"":"w-fit"}
+        className={isGrid?"":" mx-auto w-[96vw] md:w-page h-page w-fit"}
 
         endMessage={<div className="min-h-72 flex w-full">
             <h2 className="mx-auto my-auto text-xl  text-emerald-600 py-2 lora-medium  text-center mx-auto w-12">Sharing you work!<br/> Encourages others to share!<br/>This is what we have now!<br/>Check in later</h2>
         </div>}
         >
-<div className={`max-w-[96vw] mx-auto ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>
+<div className={` ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>
 
 
           {pagesInView.length?pagesInView.map((page,i)=>{

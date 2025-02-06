@@ -12,13 +12,13 @@ export default function usePersistentMyStoriesCache(fetchData) {
     useEffect(() => {
       fetchData().then((res) => {
         checkResult(res,payload=>{
-          console.log(payload)
-            // if(payload.pageList){
-            // const {pageList} =payload
-            // console.log(pageList)
-            // localStorage.setItem(key,JSON.stringify(pageList))
-            // setStories(pageList)
-            // }
+        
+            if(payload.pageList){
+            const {pageList} =payload
+        
+            localStorage.setItem(key,JSON.stringify(pageList))
+            setStories(pageList)
+            }
         },err=>{
 
         })

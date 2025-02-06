@@ -28,11 +28,7 @@ export default function AddStoryToCollectionContainer(props){
   const{setError,currentProfile}=useContext(Context)
     const pathParams = useParams()
     const {id,type}=pathParams 
-
-   
     const dispatch = useDispatch()
-   
- const navigate = useNavigate()
     const cols=usePersistentMyCollectionCache(()=>dispatch(getMyCollections()))
     const [hasMoreCol,setHasMoreCol]=useState(false)
     const [openDialog,setOpenDialog]=useState(false)
@@ -132,29 +128,6 @@ return(<ErrorBoundary><div className="text-emerald-800 w-[100vw]">
             >
              {collections.map((col,i)=>{
 return <AddToItem key={i} item={item} col={col}/>
-//   let found =null
-//   if(type=="story"&&col.storyIdList){
-//     found= col.storyIdList.find((sTc,i)=>{
-  
-//    return sTc.storyId == item.id
-//   })}
-//   if(type=="collection"&& col.childCollections&&item.parentCollections){
-//    found = item.parentCollections.find(ptc=>ptc.parentCollectionId==col.id)
-//     }
-
-//               if(col){
-//                 return(<div key={`${col.id}_${i}`} 
-//                  className="border-emerald-600 border-2 mx-auto w-[96%] flex flex-row justify-between rounded-full px-6 py-4 my-3">
-
-//                   <h6  
-//                   onClick={()=>navigate(Paths.collection.createRoute(col.id))}
-//                   className="text-md lg:text-xl my-auto  overflow-hidden text-ellipsis max-w-[12rem] md:max-w-[25rem] whitespace-nowrap " >
-//                     {col.title}
-//                     </h6>
-//                     {!found?<img onClick={(e)=>addStory(e,col)}className="bg-emerald-600 p-2 w-12 h-12 rounded-full" src={addBox}/>:<img onClick={(e)=>deleteStory(e,col,found)}className="bg-emerald-600 p-2 w-12 h-12 rounded-full" src={clear}/>}</div>)
-// }else{
-//   return <div className="skeleton w-[100%]"></div>
-// }
 
 
 })

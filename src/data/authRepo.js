@@ -42,7 +42,7 @@ class AuthRepo{
     async startSession({uId,email,password}){
 
         const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password})
-       console.log("Token",res)
+       
         return res.data
     }
     async updateSubscription({token,frequency}){

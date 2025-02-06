@@ -201,23 +201,25 @@ onClick={()=>removeNewCollection(col)}src={checked}/>
   </label>:null}
 <div className=" sm:flex max-w-[96vw] rounded-t-lg  overflow-hidden md:w-page mx-auto sm:flex-row">
 
+<div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>
 
-<div role="tablist" className="tabs mt-8 shadow-md rounded-lg    max-w-[96vw] md:w-page rounded-t-lg  mx-auto  sm:tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked={tab=="page"} onClick={()=>setTab("page")}className={`tab     [--tab-border:emerald] rounded-t-lg max-w-[96vw] md:w-page border-l-2  border-r-2 border-t-2 text-emerald-800 mont-medium text-xl ${tab=="page"?" h-[2.4rem] border-emerald-800 border-2  ":"  bg-emerald-800 bg-opacity-10 border-emerald-800 "}`}aria-label="Stories" />
-  <div role="tabpanel" className="tab-content  overflow-scroll border-3  border-l-1 border-emerald-600 border-2  rounded-b-lg rounded-tr-lg bg-emerald-50 h-[100%]  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
+                         
+<div role="tablist" className="tabs   grid ">
+
+<input type="radio" name="my_tabs_2" role="tab"  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Stories" />
+<div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
+   
+
   {storyList()}
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" defaultChecked={tab==colStr} 
-  onClick={()=>setTab(colStr)}
-  className={`tab ${tab==colStr?"border-2 h-[2.4rem] border-emerald-800":"  bg-emerald-800 bg-opacity-10 border-emerald-800"} border-b-emerald-50 border-b-2 border-2 [--tab-border:emerald] max-w-[96vw] text-emerald-800 md:w-page rounded-t-lg border-l-2 border-r-2 border-t-2   mont-medium text-emerald-800  text-xl`} aria-label="Collections" />
-  <div role="tabpanel"className="tab-content border-3 bg-emerald-50 h-[100%] border-l-1 border-emerald-600  px-1  max-w-[96vw] md:w-page  pt-1 mx-auto md:p-6">
-  {colList()}
-   </div>
-</div>
-        </div>
 
- 
-</div>
+<input type="radio" name="my_tabs_2" role="tab"  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Collections" />
+<div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
+   
+   {colList()}
+   </div>
+   </div>   </div>   </div>   </div>   
+
 
 
     </div>)
