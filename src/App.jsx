@@ -218,7 +218,7 @@ function App(props) {
        <Route
       path={Paths.editPage.route()}
       element={
-        <PrivateRoute loading={props.userLoading} loggedIn={!!props.currentProfile}>
+        <PrivateRoute >
             <EditorContainer 
               htmlContent={props.htmlContent} 
               currentProfile={props.currentProfile} 

@@ -106,9 +106,12 @@ function PicturePageForm(props){
                     const fileName =payload.ref
                     setLocalContent(href)
                     setImage(href)
+                   
                     params.data = fileName
                     dispatch(setHtmlContent(fileName))
+                    props.createPage(params)
                     setParameters(params)
+                    
                 },err=>{}))
             }
         }

@@ -22,6 +22,7 @@ import Collection from "../domain/models/collection";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import collectionRepo from "../data/collectionRepo";
+import uuidv4 from "../core/uuidv4";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -243,7 +244,8 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
   if(file){
 
 
-  const fileName = `image/picture-${file.name}.jpg`
+  const fileName = `image/${uuidv4()}/picture-${file.name}+${uuidv4()}.jpg`
+
   const storageRef = ref(storage, fileName);
   const blob = new Blob([file])
   await uploadBytes(storageRef, blob)
