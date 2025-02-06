@@ -158,12 +158,12 @@ export default function CollectionContainer(props){
             dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
      
             let list = collection.childCollections.map(ctc=>ctc.childCollection)
-            for(let i = 0;i<list.length;i+=1){
-                if(list[i]&&list[i].storyIdList){
+            for(let i = 0;i<list.length;i++){
+            
                     let stories= list[i].storyIdList.map(sTc=>sTc.story)
                     dispatch(appendToPagesInView({pages:stories}))
                 
-            }   
+            
             
         }
         setHasMore(false)
@@ -281,7 +281,7 @@ if(currentProfile){
     },[,currentProfile])
     useLayoutEffect(()=>{
         getCol()
-    },[location.pathname])
+    },[])
     useLayoutEffect(()=>{
         getContent()
  
@@ -307,10 +307,20 @@ if(currentProfile){
        setLoading(true)
         dispatch(setPagesInView({pages:[]}))
         dispatch(setCollections({collections:[]}))
-       currentProfile?dispatch(fetchCollectionProtected({id})).then(res=>{
+        const token = localStorage.getItem("token")
+       token?dispatch(fetchCollectionProtected({id})).then(res=>{
             checkResult(res,payload=>{
              dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-             dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
+            let list= payload.collection.childCollections
+       
+
+             let sorted = [...list].sort((a,b)=>
+            
+         b.index<a.index
+    
+            )
+  
+             dispatch(setCollections({collections:sorted.map(ctc=>ctc.childCollection)}))
              setLoading(false)
             },err=>{
                 setError(err.meesage)

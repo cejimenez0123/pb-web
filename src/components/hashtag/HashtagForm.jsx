@@ -7,9 +7,11 @@ import checkResult from "../../core/checkResult";
 import clear from "../../images/icons/close.svg"
 import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
+import { useParams } from "react-router-dom";
 export function HashtagForm({item}){
     const storyHashtags = useSelector(state=>state.hashtags.storyHashtags)
     const {setError}=useContext(Context)
+    const {id}=useParams()
     const [inputValue, setInputValue] = useState('');
     const dispatch = useDispatch()
     const [hashtags, setHashtags] = useState([]);
@@ -30,10 +32,10 @@ export function HashtagForm({item}){
     useLayoutEffect(()=>{
       if(item){
         if(item.storyIdList){
-          dispatch(fetchCollectionHashtags({profile:currentProfile,colId:item.id}))
+          dispatch(fetchCollectionHashtags({profile:currentProfile,colId:id}))
 
         }else{
-          dispatch(fetchStoryHashtags({profile:currentProfile,storyId:item.id})).then(res=>{
+          dispatch(fetchStoryHashtags({profile:currentProfile,storyId:id})).then(res=>{
             checkResult(res,payload=>{
               setHashtags(payload.hashtags)
             },err=>{
@@ -42,7 +44,7 @@ export function HashtagForm({item}){
           })
         }
       }
-    },[item])
+    },[id])
 
     const deleteHashtag =  (hash) =>{
       if(item.storyIdList){

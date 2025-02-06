@@ -57,9 +57,7 @@ state.loading = true
     state.collections=[]
 }).addCase(deleteCollectionFromCollection.fulfilled,(state,{payload})=>{
     const {collection}=payload
-    if(collection){
-        state.collectionInView = collection
-    }
+
   
 }).addCase(deleteCollectionFromCollection.rejected,(state,{payload})=>{
     state.error=payload.error

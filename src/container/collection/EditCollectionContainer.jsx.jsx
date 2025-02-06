@@ -2,7 +2,7 @@ import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Paths from "../../core/paths"
-import { deleteCollection, patchCollectionContent } from "../../actions/CollectionActions"
+import { deleteCollection, deleteCollectionFromCollection, patchCollectionContent } from "../../actions/CollectionActions"
 import deleteIcon from "../../images/icons/delete.svg"
 import arrowDown from "../../images/icons/arrow_down.svg"
 import {  deleteStoryFromCollection,  fetchCollectionProtected,  } from "../../actions/CollectionActions"
@@ -16,11 +16,10 @@ import { Dialog,DialogActions,DialogTitle,DialogContent,DialogContentText ,Butto
 import RoleForm from "../../components/role/RoleForm"
 import { useMediaQuery } from "react-responsive"
 import { RoleType } from "../../core/constants"
-import Role from "../../domain/models/role"
-import Alert from "../../components/Alert"
+
 import Context from "../../context"
 import HashtagForm from "../../components/hashtag/HashtagForm"
-
+import { debounce } from "lodash"
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{
@@ -36,16 +35,18 @@ function getUniqueValues(array) {
 export default function EditCollectionContainer(props){
     const colInView = useSelector(state=>state.books.collectionInView)
     const params = useParams()
+    const {id}=params
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
+      
       const [pending,setPending]=useState(true)
     const location = useLocation()
 
      const [isOpen,setIsOpen]=useState(false)
     const [openDelete,setOpenDelete]=useState(false)
     const [followersAre,setFollowersAre]=useState(RoleType.commenter)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
+    const {currentProfile} = useContext(Context)
     const [canUserEdit,setCanUserEdit]=useState(false)
     const {setError,setSuccess}=useContext(Context)
   
@@ -71,8 +72,8 @@ export default function EditCollectionContainer(props){
             setNewPages(stcList)
       }
       if(col.childCollections){
-            let newList = col.childCollections.map(stc=>{
-                return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
+            let newList = col.childCollections.map((stc,i)=>{
+                return new CollectionToCollection(stc.id,i,stc.childCollection,colInView,currentProfile)
         })
     
             setNewCollections(newList)
@@ -81,33 +82,32 @@ export default function EditCollectionContainer(props){
           
       }
     }
-    useLayoutEffect(()=>{
-      if(colInView && colInView.id){
-        setItems(colInView)
-      }
-    },[colInView])
-    useLayoutEffect(()=>{
-      soCanUserEdit(colInView)
-    },[currentProfile,colInView])
-    useLayoutEffect(()=>{
-            if(currentProfile){
-              dispatch(fetchCollectionProtected(params)).then(res=>{
-                checkResult(res,payload=>{
-                  soCanUserEdit(payload.collection)
-                  setItems(payload.collection)
-                
-                },err=>{
-                setPending(false)
-                })
-          
-            })
-          }else{
-              setCanUserEdit(false)
-              setPending(false)
-            }
-    },[location.pathname,currentProfile])
- 
+  
 
+    useLayoutEffect(()=>{
+      soCanUserEdit()
+      setItems(colInView)
+    },[colInView])
+ 
+    const getCol =()=>{
+     let token = localStorage.getItem("token")
+      if(token&&colInView&&colInView.id!=id){
+        dispatch(fetchCollectionProtected(params)).then(res=>{
+          checkResult(res,payload=>{
+        
+            // setItems(payload.collection)
+          
+          },err=>{
+          setPending(false)
+          setCanUserEdit(false)
+          })
+    
+      })
+    
+    }}
+    useLayoutEffect(()=>{
+      getCol()
+    },[])
     useEffect(()=>{
     if(colInView){
         setTitle(colInView.title)
@@ -117,57 +117,18 @@ export default function EditCollectionContainer(props){
         handleSetOpen(colInView.isOpenCollaboration) 
     }
     },[colInView])
-    useLayoutEffect(()=>{
 
-        if(currentProfile&&canUserEdit){
-        
-          if(colInView&&colInView.storyIdList){
-          
-            let stcList = colInView.storyIdList.map(stc=>{
-                           
-              return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
-          })
-              setNewPages(stcList)
-              let newList = colInView.childCollections.map(stc=>{
-                  return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
-          })
-      
-              setNewCollections(newList)
-
-          }
-            
-        }
-
-                   
-    },[colInView])
-    // const setContent=()=>{
-    //   if(colInView){
-    //     if(colInView.storyIdList){
-
-        
-    //   let stcList = colInView.storyIdList.map(stc=>{
-                           
-    //     return new StoryToCollection(stc.id,stc.index,stc.collection,stc.story,currentProfile)
-    // })
-    //     setNewPages(stcList)
-    //     }
-    //     if(colInView.childCollections){
-    //     let newList = colInView.childCollections.map(stc=>{
-    //         return new CollectionToCollection(stc.id,stc.index,stc.childCollection,stc.parentCollection,currentProfile)
-    // })
-
-    //     setNewCollections(newList)
-    //   }
-    // }  } 
   
-    const soCanUserEdit=(collection)=>{
-      if(collection && currentProfile && collection.profileId==currentProfile.id){
+  
+    const soCanUserEdit=()=>{
+      if(colInView&&currentProfile&&colInView.profileId && currentProfile.id){
         setCanUserEdit(true)
         setPending(false)
         return
       }
       
     }
+
     const handleDeleteCollection = ()=>{
      
 
@@ -308,16 +269,21 @@ const handleStoryOrderChange = (newOrder) => {
         return new StoryToCollection(stc.id,i,stc.collection,stc.story,currentProfile)
     })
 
+
     setNewPages(list)
   };
   const handleColOrderChange = (newOrder) => {
     let list = newOrder.map((stc,i)=>{
-     
-        return new CollectionToCollection(stc.id,i,stc.childCollection,stc.parentCollection,currentProfile)
-    })
+    
+      return new CollectionToCollection(stc.id,i,stc.childCollection,colInView,currentProfile)
+  })
+console.log("neworder",list)
     setNewCollections(list)
   };
+  const deleteChildFromCollection=(tc)=>{
 
+    if(tc){dispatch(deleteCollectionFromCollection({tcId:tc.id}))}
+  }
 const deleteStory = (storyId)=>{
         dispatch(deleteStoryFromCollection({id:colInView.id,storyId:storyId}))
 }
@@ -334,14 +300,16 @@ const deleteStory = (storyId)=>{
     }
     }
 
-    if(colInView){
+    if(colInView&&canUserEdit){
         return(<div>
       
      
-            {canUserEdit?!pending?collectionInfo():<div className="w-[96vw] mx-auto md:w-info h-info flex">
+            {!pending?collectionInfo():<div className="w-[96vw] mx-auto md:w-info h-info flex">
               <h6 className="mx-auto my-auto text-emerald-700 text-2xl">You sure you're in the right place</h6>
-              </div>:<div className="skeleton w-[96vw] mx-auto md:w-info h-info "/>}
-            {canUserEdit?!pending?<>                  <div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>
+              </div>
+    }
+            
+                         <div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>
 
                          
 <div role="tablist" className="tabs   grid ">
@@ -354,13 +322,12 @@ const deleteStory = (storyId)=>{
   </div>
   <input type="radio" name="my_tabs_2" role="tab"  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Collections" />
   <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
-     <div className="min-h-24">{newCollections.length==0?<div><div className="bg-emerald-400 rounded-lg bg-opacity-20 mx-4"><h6 className="text-emerald-800 py-24 text-center 
-   m-4 opacity-100 text-xl">A place filled with possibility</h6></div></div>:
-   <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={(colId)=>deleteSubCollection(colId)}/>}
- </div> 
+
+   <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteChildFromCollection}/>
+
   </div>
 </div>
-</div></>:null:null}
+</div>
 <Dialog 
 fullScreen={isPhone}
 open={openAccess}

@@ -4,9 +4,9 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import dragHandle from "../images/icons/drag_handle.svg"
 import { useNavigate } from "react-router-dom";
 import Paths from "../core/paths";
-export default function SortableList({ items, onOrderChange, }) {
+export default function SortableList({ items, onOrderChange,onDelete }) {
   const navigate = useNavigate()
-    const [listItems,setListItems]=useState(items)
+    const [listItems,setListItems]=useState([])
     useEffect(()=>{
       setListItems(items)
     },[items])
@@ -18,21 +18,24 @@ export default function SortableList({ items, onOrderChange, }) {
       const newList = Array.from(items);
       const [movedItem] = newList.splice(result.source.index, 1);
       newList.splice(result.destination.index, 0, movedItem);
-  
-      setListItems(newList);
       onOrderChange(newList);
+      setListItems(newList);
+      
     };
-  
-    // Handle delete item
+    // useEffect(()=>{
+
+    // },[])
+ 
     const handleDelete = (e,index) => {
       e.preventDefault()
+      onDelete(listItems[index])
       const newList = listItems.filter((_, i) => i !== index);
-
+  
       setListItems(newList);
       onOrderChange(newList);
     };
     const handleNavigate=(item)=>{
-      console.log(item)
+
       if(item.childCollection){
           navigate(Paths.collection.createRoute(item.childCollection.id))
       }else{
