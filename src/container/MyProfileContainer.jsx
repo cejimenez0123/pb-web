@@ -26,6 +26,7 @@ import ProfileInfo from '../components/profile/ProfileInfo';
 import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCollectionCache';
 import Context from '../context';
 import DescriptionDialog from '../components/page/FeedbackDialog';
+import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache.jsx';
 
 function MyProfileContainer(props){
     const navigate = useNavigate()
@@ -35,10 +36,15 @@ function MyProfileContainer(props){
     const [sortAlpha,setSortAlpha]=useState(true)
     const [sortTime,setSortTime]=useState(true)
     const [description,setFeedback]=useState("")
+    const stories = usePersistentMyStoriesCache(()=>{
+      dispatch(setPagesInView({pages:[]}))
+      return dispatch(getMyStories())
+    })
   const cols = usePersistentMyCollectionCache(()=>{
-    setCollections({collections:[]})
+    dispatch(setCollections({collections:[]}))
     return dispatch(getMyCollections())
   })
+
   const handleSortAlpha=debounce(()=>{
      
    

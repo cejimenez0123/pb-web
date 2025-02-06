@@ -105,7 +105,10 @@ const pageSlice = createSlice({
         }).addCase(getMyStories.pending,(state)=>{
           state.loading=true
         }).addCase(getMyStories.rejected,(state,{payload})=>{
-          state.error= payload.error
+          if(payload&&payload.error){
+            state.error= payload.error
+       
+          }
           state.loading = false
         }).addCase(getPublicStories.fulfilled,(state,{payload})=>{
           state.loading = false

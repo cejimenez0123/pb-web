@@ -68,13 +68,7 @@ const getMyStories= createAsyncThunk(
     async ({profile,draft},thunkApi) => {
       try{
       let data = await storyRepo.getMyStories({profileId:profile.id,draft})
-      const uploadAlgolia=async ()=>{
-        let data = await hashtagRepo.all()
-        console.log(data)
-       
-    
-    }
-    uploadAlgolia()
+  console.log(data)
     return {
       pageList:data.stories
     }
