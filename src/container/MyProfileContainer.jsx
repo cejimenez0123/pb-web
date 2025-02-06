@@ -309,12 +309,12 @@ className=" text-emerald-800 mx-2  "/>
    className="text-emerald-800 mx-2 "/>
    </span></span>:null}
  <br/>
-                <div className='md:w-page w-[96vw] mx-auto'> 
+                {/* <div className='md:w-page w-[96vw] '>  */}
   
-                            <div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>
+                            <div className='w-[96vw] md:mt-8  flex flex-col mx-auto md:w-page'>
 
                          
-                            <div role="tablist" className="tabs   grid ">
+                            <div role="tablist" className="tabs  w-[96vw] mx-auto md:w-page items-start ">
                             
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Pages" />
    <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
@@ -335,10 +335,10 @@ className=" text-emerald-800 mx-2  "/>
   <IndexList items={books}/>
   </div>
   <input type="radio" name="my_tabs_2" role="tab" className="tab   bg-transparent  border-3 mx-auto [--tab-bg:emerald] mont-medium text-emerald-800  rounded-full  [--tab-border-color:emerald] border-2  text-xl" aria-label="Libraries" />
-  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  w-[96vw] mx-auto md:w-page ">
+  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  w-[100%] md:w-page ">
     <IndexList items={libraries}/>
   </div>
-  {isNotPhone? <span className='flex flex-row '> <label className='flex border-emerald-600 border-2 rounded-full my-1 max-w-[14em] flex-row mx-4 '>
+  {isNotPhone? <span className='flex flex-row'> <label className='flex border-emerald-600 border-2 rounded-full my-1 max-w-[14em] flex-row mx-4 '>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>
   <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2   w-full  py-1 text-sm bg-transparent my-1  text-emerald-800' />
   </label><span className=" mx-1  w-24 flex  items-end pb-4 justify-evenly flex-row">
@@ -351,7 +351,7 @@ className=" text-emerald-800 mx-2  "/>
 </div>
 
 </div>
-</div>
+{/* </div> */}
 <DescriptionDialog
 
 page={feedbackPage}
