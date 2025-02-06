@@ -1,4 +1,4 @@
-import { useLayoutEffect,useState } from "react";
+import { useContext, useLayoutEffect,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import { updateProfile,deleteUserAccounts, fetchHomeCollection, updateHomeCollection, deletePicture} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
@@ -23,15 +23,16 @@ import Paths from "../core/paths";
 import { Clear } from "@mui/icons-material";
 
 import uuidv4 from "../core/uuidv4";
+import Context from "../context";
 
 function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
     const [errorMessage, setErrorMessage] = useState('');
-    const currentProfile=useSelector(state=>state.users.currentProfile)
-    const [newUsername,setNewUsername] = useState(currentProfile.username)
+    const {currentProfile}=useContext(Context)
+    const [newUsername,setNewUsername] = useState("")
     const homeCollection = useSelector(state=>state.users.homeCollection)
-    const [selfStatement,setSelfStatement] = useState(currentProfile.selfStatement)
+    const [selfStatement,setSelfStatement] = useState(currentProfile&&currentProfile.selfStatement?currentProfile.selfStatement:"")
     const [isPrivate,setPrivacy] = useState(false)
     const [homeItems,setHomeItems] = useState([])
     const [hasMoreHome,setHasMoreHome]=useState(false)
@@ -41,40 +42,26 @@ function SettingsContainer(props) {
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     let [pending,setPending] = useState(false)
     const [deleteDialog,setDeleteDialog] = useState(false);
-    const [homePages,setHomePages] = useState([])
-    const [homeBooks,setHomeBooks]=useState([])
-    const [homeLibraries,setHomeLibraries]=useState([])
-    const [homeProfiles,setHomeProfiles]=useState([])
-   
+  
     useLayoutEffect( ()=>{
-        if(!currentProfile.profilePic.includes("http")){
+        if(currentProfile){
+            setProfile(currentProfile)
+        }
+        if(currentProfile&& currentProfile.profilePic){
+            
+            if(!currentProfile.profilePic.includes("http")){
             getDownloadPicture(currentProfile.profilePic).then(url=>{
                
                 setPictureUrl(url)
             })
         }else{
+            setSelectedImage(currentProfile.profilePic)
             setPictureUrl(currentProfile.profilePic)
         }
+    }
         
-        
-    },[])
-   
-    const setUserInfo = () => {
-        
-        if(currentProfile){
+    },[currentProfile])
 
-        
-        setProfile(currentProfile)
-        }else{
-            navigate(
-            Paths.login()
-            )
-        }
-    }
-    
-    const fetchCollectionInfo =()=>{
-       
-    }
 
   
     const handleClickOpen = () => {
@@ -93,9 +80,9 @@ function SettingsContainer(props) {
     
     const setProfile = (profile)=>{
         setPending(true)
-        if(newUsername.length<=0){
-            setNewUsername(profile.username)
-        }
+console.log(profile)
+        setNewUsername(profile.username)
+    
    
         setSelectedImage(profile.profilePic)
         setSelfStatement(profile.selfStatement)
@@ -158,16 +145,16 @@ function SettingsContainer(props) {
             
     
     }   
-        dispatch(updateHomeCollection({
-            profile:currentProfile,
-            pages:homePages,
-            books:homeBooks,
-            libraries:homeLibraries,
-            profiles:homeProfiles})).then(result=>checkResult(result,payload=>{
-                window.alert("Updated Collection")
-            },err=>{
+        // dispatch(updateHomeCollection({
+        //     profile:currentProfile,
+        //     pages:homePages,
+        //     books:homeBooks,
+        //     libraries:homeLibraries,
+        //     profiles:homeProfiles})).then(result=>checkResult(result,payload=>{
+        //         window.alert("Updated Collection")
+        //     },err=>{
                 
-            }))
+        //     }))
     } 
     const DeleteDialog = ()=> <Dialog
     open={deleteDialog}
@@ -267,29 +254,11 @@ function SettingsContainer(props) {
         }
  
     }
-    const collectionList = ()=>{
-        return (
-            <div className="collection">
-                <InfiniteScroll
-                    dataLength={homeItems.length}
-                    hasMore={hasMoreHome}
-                    next={()=>fetchCollectionInfo(homeCollection)}
-                    loader={<p>Loading...</p>}
-                    endMessage={<p>No more data to load.</p>}
-                    scrollableTarget="scrollableDiv"
-          >
-            {homeItems.map((item)=>{
-            return <div key={item.id+`_${uuidv4()}`}>{homeItem(item)}</div>
-            })}
-          </InfiniteScroll>
-           
-            </div>
-        )
-    }
+   
      if(!pending){
             return(<div >
-                    <div  className="my-4 text-emerald-800 max-w-96 mx-auto p-3">
-                      <label className="text-left flex flex-col lora-medium"><h4 className="text-2xl">Username:</h4>
+                    <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
+                      <label className="text-left flex flex-col lora-medium"><h4 className="text-l">Username:</h4>
                             <input type="text"   
                                         className={" text-xl px-4 py-2 rounded-full  open-sans-medium text-emerald-800 bg-transparent border-2 border-emerald-800 border-2  "}
                                         value={newUsername}
@@ -299,12 +268,12 @@ function SettingsContainer(props) {
                                           <div className='file'>
                    
                         <input
-    className="file-input my-8 mx-auto max-w-48"
+    className="file-input my-8 mx-auto "
         type="file"
         accept="image/*"
         onInput={(e)=>handleProfilePicture(e)}/>
              
-        <div style={{ marginTop: '20px' }}>
+     
           
           <img
           className="mx-auto"
@@ -312,14 +281,14 @@ function SettingsContainer(props) {
             alt="Selected"
             style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }}
           />
-        </div>
+        
         
       
     
                     </div>
                     
                             <label className="text-left mt-4 " id="" >
-                                <h6 className="lora-medium text-2xl">Self Statement:</h6>
+                                <h6 className="lora-medium text-xl">Self Statement:</h6>
                                
                                     <textarea
                                     onChange={(e)=>{setSelfStatement(e.target.value)}}
@@ -329,15 +298,19 @@ function SettingsContainer(props) {
                                     placeholder="Self Statement"/>
                             </label>
                             <div className="text-left">
-                            {isPrivate?<button onClick={()=>setPrivacy(false)}className=" text-emerald-800 bg-transparent mont-medium rounded-full border-emerald-800 border-1 text-bold">You are Private</button>:
+                            {isPrivate?<button onClick={(e)=>{
+                                e.preventDefault()
+                                setPrivacy(false)}}className=" text-emerald-800 bg-emerald-50 hover:bg-green-100 mont-medium rounded-full border-emerald-700 border-2 text-xl text-emerald-800 text-bold">You are Private</button>:
                             <button 
-                            onClick={()=>setPrivacy(true)}
-                            className="btn  text-bold border-emerald-800 border-1 rounded-full bg-transparent mont-medium">You are Public</button>}
+                            onClick={(e)=>{
+                                e.preventDefault()
+                                setPrivacy(true)}}
+                            className=" text-bold border-emerald-500  h-18 w-24 border-2 rounded-full text-emerald-800 bg-emerald-50 hover:bg-green-10 text-xl mont-medium">You are Public</button>}
    </div>
   <div className="mt-8">
 
                             <button
-                               className="bg-emerald-800 text-white px-4 py-2 mont-medium rounded-full text-2xl"
+                               className="bg-emerald-800 text-white h-18 w-24 mont-medium rounded-full text-2xl"
                                 variant="outlined" 
                                 onClick={(e)=>handleOnSubmit(e)}
                             >
