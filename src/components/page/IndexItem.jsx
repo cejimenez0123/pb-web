@@ -23,7 +23,7 @@ function IndexItem({item,handleFeedback}) {
     useLayoutEffect(()=>{
       soCanUserEdit()
       soCanUserAdd()
-    },[])
+    },[item])
     const copyShareLink=()=>{
       if(item && item.storyIdList){
         ReactGA.event({

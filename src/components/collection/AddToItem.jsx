@@ -105,8 +105,9 @@ export default function AddToItem({col}){
                     setPending(false)
                 })
               })
-            }else if(item&&type=="story"){
-            dispatch(deleteStoryFromCollection({id:col.id,storyId:item.id})).then(res=>{
+            }else if(item&&type=="story"&&found&&found.id){
+            
+            dispatch(deleteStoryFromCollection({stId:found.id})).then(res=>{
                 checkResult(res,payload=>{
                    setPending(false)
                if(payload.story){
