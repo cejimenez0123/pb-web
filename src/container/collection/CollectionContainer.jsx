@@ -168,8 +168,10 @@ export default function CollectionContainer(props){
             let list = collection.childCollections.map(ctc=>ctc.childCollection)
             for(let i = 0;i<list.length;i++){
 
-                    let stories= list[i].storyIdList.map(sTc=>sTc.story)
+                    if(list[i]){
+                    let stories=  list[i].storyIdList.map(sTc=>sTc.story)
                     dispatch(appendToPagesInView({pages:stories}))
+                    }
         }}
     
         }
