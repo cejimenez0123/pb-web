@@ -140,11 +140,11 @@ export default function CollectionContainer(props){
 
             dispatch(deleteCollectionFromCollection({tcId:isBookmarked.id})).then(res=>{
                 checkResult(res,payload=>{
-                    if(payload.message.includes("Already")){
+                    if(payload.message.includes("Already")||payload.message.includes("Deleted")){
                         setIsBookmarked(null)
                         setSuccess("Removed from Home")
                     }
-                    checkFound()
+                    
                     setBookmarkLoading(false)
                    
         },err=>{
@@ -168,7 +168,7 @@ export default function CollectionContainer(props){
             let list = collection.childCollections.map(ctc=>ctc.childCollection)
             for(let i = 0;i<list.length;i++){
 
-                    if(list[i]){
+                    if(list[i]&&list[i].storyIdList){
                     let stories=  list[i].storyIdList.map(sTc=>sTc.story)
                     dispatch(appendToPagesInView({pages:stories}))
                     }
