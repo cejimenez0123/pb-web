@@ -94,8 +94,6 @@ export default function EditCollectionContainer(props){
       if(token&&colInView&&colInView.id!=id){
         dispatch(fetchCollectionProtected(params)).then(res=>{
           checkResult(res,payload=>{
-        
-            // setItems(payload.collection)
           
           },err=>{
           setPending(false)
@@ -277,15 +275,15 @@ const handleStoryOrderChange = (newOrder) => {
     
       return new CollectionToCollection(stc.id,i,stc.childCollection,colInView,currentProfile)
   })
-console.log("neworder",list)
     setNewCollections(list)
   };
   const deleteChildFromCollection=(tc)=>{
 
     if(tc){dispatch(deleteCollectionFromCollection({tcId:tc.id}))}
   }
-const deleteStory = (storyId)=>{
-        dispatch(deleteStoryFromCollection({id:colInView.id,storyId:storyId}))
+const deleteStory = (stc)=>{
+ 
+        dispatch(deleteStoryFromCollection({stId:stc.id}))
 }
 
     if(!colInView){
@@ -314,10 +312,10 @@ const deleteStory = (storyId)=>{
                          
 <div role="tablist" className="tabs   grid ">
 
-<input type="radio" name="my_tabs_2" role="tab"  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Pages" />
-<div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
-    {newPages.length==0?<div><h6 className="text-emerald-700 py-24 text-center bg-opacity-20 bg-emerald-400 rounded-lg m-4  text-xl">Room for who you are</h6></div>:<SortableList items={newPages} onOrderChange={handleStoryOrderChange}
-  onDelete={deleteStory}/>}
+<input type="radio" name="my_tabs_2" role="tab" defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Pages" />
+<div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg wmd:mx-auto   ">
+<SortableList items={newPages} onOrderChange={handleStoryOrderChange}
+  onDelete={deleteStory}/>
 
   </div>
   <input type="radio" name="my_tabs_2" role="tab"  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Collections" />

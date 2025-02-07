@@ -66,13 +66,16 @@ state.loading = true
 }).addCase(deleteCollectionRole.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
 }).addCase(deleteStoryFromCollection.fulfilled,(state,{payload})=>{
-
+    
     let list = state.collections
+    if(payload.collection&&payload.collection.id){
+
+    
     const index = list.findIndex(col=>col.id==payload.collection.id)
     if(index>0&&payload.collection){
             list[index]=payload.collection
             state.collections = list
-    }})
+    }}})
   
 
 .addCase(addCollectionListToCollection.pending,(state,{payload})=>{

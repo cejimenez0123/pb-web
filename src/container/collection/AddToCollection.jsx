@@ -206,7 +206,7 @@ onClick={()=>removeNewCollection(col)}src={checked}/>
                          
 <div role="tablist" className="tabs   grid ">
 
-<input type="radio" name="my_tabs_2" role="tab"  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Stories" />
+<input type="radio" name="my_tabs_2" role="tab" defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Stories" />
 <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
    
 

@@ -163,8 +163,9 @@ import Enviroment from "../core/Enviroment";
         console.log(res)
         return res.data
     }
-    async deleteStoryToCollection({id,storyId}){
-       let res=  await axios.delete(this.url+"/"+id+"/story/"+storyId,
+    async deleteStoryToCollection({stId}){
+
+       let res=  await axios.delete(this.url+"/storyToCol/"+stId,
             {headers:{
                 Authorization: "Bearer "+localStorage.getItem("token")
             }}

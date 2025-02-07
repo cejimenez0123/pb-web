@@ -43,7 +43,13 @@ export default function SortableList({ items, onOrderChange,onDelete }) {
           navigate(Paths.page.createRoute(item.story.id))
       }
     }
-  if(listItems.length>0){
+    if(listItems.length==0){
+
+        return(<div className="my-4 h-page w-[96vw] md:w-page mx-auto text-emerald-800">
+         <h6 className="text-emerald-800"> You can do so much with this space</h6>
+        </div>)
+      
+    }
     return (
       <div className=" py-4 mx-auto w-[96vw] md:w-page">
         <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -90,11 +96,7 @@ export default function SortableList({ items, onOrderChange,onDelete }) {
         </DragDropContext>
       </div>
     );
-  }else{
-    <div className="my-4 min-h-24 text-emerald-800">
-     <h6> You can do so much with this space</h6>
-    </div>
-  }
+  
   };
   
 

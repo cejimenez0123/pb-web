@@ -39,7 +39,6 @@ if(currentProfile&&currentProfile.profileToCollections){
     if(ptc){
         dispatch(fetchCollectionProtected({id:ptc.collectionId})).then(res=>{
             checkResult(res,payload=>{
-console.log("PPPPO",payload)
                     if(payload.collection){
                         const{collection}=payload
                         let stories = []
