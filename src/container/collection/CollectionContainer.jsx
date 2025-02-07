@@ -154,26 +154,32 @@ export default function CollectionContainer(props){
     }
  
     const getContent=()=>{
-        if(collection&&collection.storyIdList&&collection.childCollections){
+        if(collection){
+        if(collection.storyIdList){
             dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
      
-            let list = collection.childCollections.map(ctc=>ctc.childCollection)
-            for(let i = 0;i<list.length;i++){
-            
-                    let stories= list[i].storyIdList.map(sTc=>sTc.story)
-                    dispatch(appendToPagesInView({pages:stories}))
+          
                 
             
             
         }
-        setHasMore(false)
+        console.log(collection)
+        if(collection.childCollections){
+            let list = collection.childCollections.map(ctc=>ctc.childCollection)
+            for(let i = 0;i<list.length;i++){
+
+                    let stories= list[i].storyIdList.map(sTc=>sTc.story)
+                    dispatch(appendToPagesInView({pages:stories}))
         }}
+    
+        }
+        setHasMore(false)}
      const checkPermissions=()=>{
         findRole()
         soUserCanSee()
         soUserCanAdd()
         soUserCanEdit()
-        getContent()
+       
         dispatch(getRecommendedCollectionsProfile())  
      }
      useLayoutEffect(()=>{
@@ -267,25 +273,18 @@ if(currentProfile){
     }
     }
     useLayoutEffect(()=>{
-        if(currentProfile&&collection&& collection.profileId&&currentProfile.id){
-        
-       if(collection.storyIdList)dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
-       if(collection.childCollection)dispatch(setCollections({collections:collection.childCollections.map(ctc=>ctc.childCollection)}))
+       
         if(canUserAdd){
             getRecommendations()
             getMore()
         }
-        }else{
-            
-        }
-    },[,currentProfile])
+        
+    },[canUserAdd])
     useLayoutEffect(()=>{
         getCol()
-    },[])
+    },[id])
     useLayoutEffect(()=>{
         getContent()
- 
-       
     },[collection])
   
     const checkFound=()=>{
@@ -321,6 +320,7 @@ if(currentProfile){
             )
   
              dispatch(setCollections({collections:sorted.map(ctc=>ctc.childCollection)}))
+             getContent()
              setLoading(false)
             },err=>{
                 setError(err.meesage)
