@@ -41,7 +41,8 @@ function MyProfileContainer(props){
       return dispatch(getMyStories())
     })
    
-    const pages = useSelector(state=>state.pages.pagesInView.length==0?state.pages.pagesInView:stories).filter(page=>{
+    const pages =useSelector(state=>[...state.pages.pagesInView]
+    ).filter(page=>{
       if(search.length>0){
        return page.title.toLowerCase().includes(search.toLowerCase())
       }else{
@@ -73,47 +74,48 @@ function MyProfileContainer(props){
         
         let newValue = !sortTime
         setSortTime(newValue)
-        handleSortTime()
+        handleSortTime(newValue)
 
 },10)
-  const handleSortAlpha=debounce((newValue)=>{
+const handleSortAlpha = debounce((sorted)=>{
      
    
-    let list =collections
-  let newList = list.sort((a,b)=>{
-       
-        if(newValue){
-            return a.title.toLowerCase() < b.title.toLowerCase()
-            
-        }else{
-               return a.title.toLowerCase() > b.title.toLowerCase()
-            }
-               
-    })
+  let list =collections
+let newList = list.sort((a,b)=>{
+     
+      if(sorted){
+          return a.title.toLowerCase() < b.title.toLowerCase()
+          
+      }else{
+             return a.title.toLowerCase() > b.title.toLowerCase()
+          }
+             
+  })
+
+  dispatch(setCollections({collections:newList}))
+
+  let arr = pages
+arr = arr.sort((a,b)=>{
+      if(sorted){
+  
+       return   a.title.toLowerCase() < b.title.toLowerCase()
  
-    dispatch(setCollections({collections:newList}))
+      }else{
+          return (a.title.toLowerCase() > b.title.toLowerCase()) 
+      }
+  
+  })
 
-    let arr = pages
-  arr = arr.sort((a,b)=>{
-        if(newValue){
-    
-         return   a.title.toLowerCase() < b.title.toLowerCase()
-   
-        }else{
-            return (a.title.toLowerCase() > b.title.toLowerCase()) 
-        }
-    
-    })
-
-  dispatch(setPagesInView({pages:arr}))
+dispatch(setPagesInView({pages:arr}))
 },10)
-  const handleSortTime=debounce(()=>{
+
+  const handleSortTime=debounce((sorted)=>{
     
-    setSortTime(!sortTime)
+    
     let list = collections
   list = list.sort((a,b)=>{
  
-        if(sortTime){
+        if(sorted){
             return new Date(a.created)< new Date(b.created)
              
               
@@ -121,7 +123,22 @@ function MyProfileContainer(props){
              return new Date(a.created) > new Date(b.created)
                     }
     })
-dispatch(setCollections({collections:list}))})
+dispatch(setCollections({collections:list}))
+
+    let newPages = pages
+newPages = [...newPages].sort((a,b)=>{
+
+      if(sorted){
+          return new Date(a.updated)< new Date(b.updated)
+           
+            
+          }else{
+           return new Date(a.updated) > new Date(b.updated)
+                  }
+  })
+  dispatch(setPagesInView({pages:newPages}))
+  
+})
 
      
      const [feedbackPage,setFeedbackPage]=useState(null)

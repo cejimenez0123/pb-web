@@ -82,6 +82,7 @@ return !stories.find(story=>story && page && story.id==page.id)
             if(currentProfile.profileToCollections){
             let marked = currentProfile.profileToCollections.find(ptc=>{
                 return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
+              console.log(marked)
                 setBookmarked(marked)
             }
                
@@ -89,10 +90,10 @@ return !stories.find(story=>story && page && story.id==page.id)
         }          
     },[currentProfile,page])
 const deleteStc=()=>{
-
+console.log(bookmarked)
         if(bookmarked){
             setLoading(true)
-   dispatch( deleteStoryFromCollection({id:bookmarked.collectionId,storyId:page.id})).then((res)=>{
+   dispatch( deleteStoryFromCollection({stId:bookmarked.id})).then((res)=>{
    checkResult(res,payload=>{
     setBookmarked(null)
     setLoading(false)

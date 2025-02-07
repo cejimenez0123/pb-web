@@ -19,12 +19,12 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
       })
-// if(pagesInView && pagesInView.length){
+
   
   
         return(<div 
         >
-             <ErrorBoundary fallback={<div><h1 className="text-emerald-800">Error</h1></div>}>
+             {/* <ErrorBoundary fallback={<div><h1 className="text-emerald-800">Error</h1></div>}> */}
            <InfiniteScroll
         dataLength={pagesInView.length?pagesInView.length:0}
         next={getMore}
@@ -72,7 +72,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
             }}):null}
             </div>
         </InfiniteScroll> 
-        </ErrorBoundary>
+        {/* </ErrorBoundary> */}
         </div>)
 
         
