@@ -60,28 +60,37 @@ export default function EditCollectionContainer(props){
     const [openAccess,setOpenAccess]=useState(false)
     const setItems=(col)=>{
       if(currentProfile){
-        if(col ){
+   
         if(col.storyIdList){
+        
           let stcList = col.storyIdList.map((stc,i)=>{
                          let index = i
                          if(stc.index){
                           index= stc.index
                          }
             return new StoryToCollection(stc.id,index,stc.collection,stc.story,currentProfile)
-        })
+        }).sort((a,b)=>
+            
+          b.index>a.index
+     
+             )
             setNewPages(stcList)
       }
       if(col.childCollections){
             let newList = col.childCollections.map((stc,i)=>{
                 return new CollectionToCollection(stc.id,i,stc.childCollection,colInView,currentProfile)
-        })
+        }).sort((a,b)=>
+            
+          b.index>a.index
+     
+             )
     
             setNewCollections(newList)
       }
         }
           
       }
-    }
+    
   
 
     useLayoutEffect(()=>{

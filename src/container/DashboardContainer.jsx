@@ -11,6 +11,7 @@ import {  appendToPagesInView, setPagesInView } from '../actions/PageActions'
 import { setCollections } from '../actions/CollectionActions'
 import Context from '../context.jsx'
 import checkResult from '../core/checkResult.js'
+import ErrorBoundary from '../ErrorBoundary.jsx'
 
 function DashboardContainer(props){
     const location = useLocation()
@@ -63,6 +64,7 @@ useLayoutEffect(()=>{
 
 
         return(
+            <ErrorBoundary>
             <div id="dashboard" >
                 <div className='py-8'>
                
@@ -93,6 +95,7 @@ useLayoutEffect(()=>{
                 </div>
                 <ExploreList items={collections}/>
             </div>
+            </ErrorBoundary>
         )
         
 }

@@ -45,8 +45,8 @@ export default function SortableList({ items, onOrderChange,onDelete }) {
     }
     if(listItems.length==0){
 
-        return(<div className="my-4 h-page w-[96vw] md:w-page mx-auto text-emerald-800">
-         <h6 className="text-emerald-800"> You can do so much with this space</h6>
+        return(<div className="my-4 h-page w-[96vw] flex bg-emerald-100 rounded-lg bg-opacity-80 md:w-page mx-auto text-emerald-800">
+         <h6 className="text-emerald-800 text-center lora-medium mx-auto mt-16 text-2xl"> You can do so much with this space</h6>
         </div>)
       
     }

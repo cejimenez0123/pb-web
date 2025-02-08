@@ -37,7 +37,6 @@ export default function CollectionContainer(props){
     const [isBookmarked,setIsBookmarked]=useState(false)
     const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
     const writeArr = [RoleType.editor,RoleType.writer]
-    // const [found,setFound]=useState(false)
     const [canUserAdd,setCanUserAdd]=useState(false)
     const [canUserEdit,setCanUserEdit]=useState(false)
     const [canUserSee,setCanUserSee]=useState(false)
@@ -154,27 +153,32 @@ export default function CollectionContainer(props){
     }
  
     const getContent=()=>{
+      
         if(collection){
         if(collection.storyIdList){
-            dispatch(setPagesInView({pages:collection.storyIdList.map(stc=>stc.story)}))
      
+        const sorted = [...collection.storyIdList].sort((a,b)=>
+            
+                a.index && b.index && b.index<a.index
+           
+                   ).map(stc=>stc.story)
+         dispatch(setPagesInView({pages:sorted}))
+         const children = [...collection.childCollections].sort((a,b)=>
+            
+            b.index<a.index
+       
+               ).map(ctc=>ctc.childCollection)
+
+
+         dispatch(setCollections({collections:children}))
+        
+  
           
                 
-            
-            
-        }
-        console.log(collection)
-        if(collection.childCollections){
-            let list = collection.childCollections.map(ctc=>ctc.childCollection)
-            for(let i = 0;i<list.length;i++){
-
-                    if(list[i]&&list[i].storyIdList){
-                    let stories=  list[i].storyIdList.map(sTc=>sTc.story)
-                    dispatch(appendToPagesInView({pages:stories}))
-                    }
-        }}
+  
     
         }
+    }
         setHasMore(false)}
      const checkPermissions=()=>{
         findRole()
@@ -283,6 +287,7 @@ if(currentProfile){
         
     },[canUserAdd])
     useLayoutEffect(()=>{
+
         getCol()
     },[id])
     useLayoutEffect(()=>{
@@ -306,23 +311,11 @@ if(currentProfile){
     },[currentProfile])
     const getCol=()=>{
        setLoading(true)
-        dispatch(setPagesInView({pages:[]}))
-        dispatch(setCollections({collections:[]}))
+
         const token = localStorage.getItem("token")
        token?dispatch(fetchCollectionProtected({id})).then(res=>{
             checkResult(res,payload=>{
-             dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-            let list= payload.collection.childCollections
-       
-
-             let sorted = [...list].sort((a,b)=>
-            
-         b.index<a.index
-    
-            )
-  
-             dispatch(setCollections({collections:sorted.map(ctc=>ctc.childCollection)}))
-             getContent()
+ getContent()
              setLoading(false)
             },err=>{
                 setError(err.meesage)
@@ -333,8 +326,7 @@ if(currentProfile){
                 if(payload.collection){
 
                 
-                    dispatch(setPagesInView({pages:payload.collection.storyIdList.map(stc=>stc.story)}))
-                    dispatch(setCollections({collections:payload.collection.childCollections.map(ctc=>ctc.childCollection)}))
+                   
                      setLoading(false)}
                      else{
                   setLoading(false)
@@ -421,11 +413,15 @@ if(currentProfile){
             setCanUserAdd(true)
             return
         }
+        if(collection&&currentProfile&&collection.isOpenCollaboration){
+            setCanUserAdd(collection.isOpenCollaboration)
+            return
+        }
         if(collection&&currentProfile&& collection.roles){    
             let found =  collection.roles.find(colRole=>{
                 return colRole && colRole.profileId == currentProfile.id
             })
-            if(collection.isOpenCollaboration||(found && writeArr.includes(found.role))||collection.profileId==currentProfile.id){
+            if(found && writeArr.includes(found.role)||collection.profileId==currentProfile.id){
                
                 setCanUserAdd(true)
                 return
@@ -577,7 +573,7 @@ if(collection&&canUserSee){
   
 
     return(<>
-      {/* <ErrorBoundary> */}
+      <ErrorBoundary>
     
 <div className=" flex flex-col ">   
 
@@ -596,7 +592,7 @@ if(collection&&canUserSee){
         
          
        
-      {/* </ErrorBoundary> */}
+      </ErrorBoundary>
     </>)
 }else{
     if(loading){
