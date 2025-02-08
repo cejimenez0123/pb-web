@@ -42,6 +42,8 @@ import usePersistentCurrentProfile from './domain/usecases/useCurrentProfileCach
 import { useSelector } from 'react-redux';
 import NotFound from './container/NotFound.jsx';
 import EmailPreferences from './container/EmailPreferences.jsx';
+import FeedbackContainer from './container/FeedbackContainer.jsx';
+import NewsletterContainer from './container/NewsletterContainer.jsx';
 function App(props) {
 
   const dispatch = useDispatch()
@@ -56,7 +58,8 @@ function App(props) {
   useEffect(()=>{
     
     if(currentProfile){
-    dispatch(getRecommendedCollectionsProfile())}
+    dispatch(getRecommendedCollectionsProfile())
+  }
   },[])
 
   return (
@@ -134,12 +137,16 @@ function App(props) {
           
        }
      />
+          <Route path={Paths.newsletter() }
+     element={<NewsletterContainer/>}/>
      <Route path={'/reset-password' }
      element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
      element={<CollectionContainer/>}/>
      <Route path={'/signup'}
      element={<LoggedRoute><SignUpContainer/></LoggedRoute>}/>
+       <Route path={Paths.feedback()}
+     element={<FeedbackContainer/>}/>
      <Route path={Paths.addToCollection.route}
      element={        <PrivateRoute
     

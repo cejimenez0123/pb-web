@@ -1,13 +1,12 @@
-import { useContext, useState } from "react"
-import authRepo from "../../data/authRepo"
-import validateEmail from "../../core/validateEmail"
+import { useContext, useRef, useState } from "react"
+import authRepo from "../data/authRepo"
+import validateEmail from "../core/validateEmail"
 import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/material"
 import { useMediaQuery } from "react-responsive"
 import { useNavigate } from "react-router-dom"
-import Paths from "../../core/paths"
-import Alert from "../../components/Alert"
-import Context from "../../context"
-function ApplyContainer(props){
+import Paths from "../core/paths"
+import Context from "../context"
+function NewsletterContainer(props){
   const isNotPhone = useMediaQuery({
     query: '(min-width: 600px)'
   })
@@ -32,26 +31,18 @@ function ApplyContainer(props){
         "Satire/Humor",
         "Experimental/Hybrid Forms",
         "Other"
-      ]; const [igHandle,setIgHandle]=useState("")
+      ]; 
+    const [igHandle,setIgHandle]=useState("")
     const [fullName,setFullName]=useState("")
     const [email,setEmail]=useState("")
     const [whyApply,setWhyApply]=useState("")
     const [howFindOut,setHowFindOut]=useState("")
-    const [otherGenre, setOtherGenre] = useState("");
-    const [communityNeeds,setCommunityNeeds]=useState("")
-    const [workshopPreference,setWorkshopPreference]=useState("")
-    const [feedbackFrequency,setFeedbackFrequency]=useState("")
-    const [selectedGenres, setSelectedGenres] = useState([]);
-    const [comfortLevel,setComfortLevel]=useState(0)
-    const [platformFeatures,setPlatformFeatures]=useState("")
+    const [frequency,setFrequency]=useState(1)
     const [user,setUser]=useState(null)
-    const {error,setError}=useContext(Context)
-    const [betaTest,setBetaTester]=useState([])
-    const [igError,setIgError]=useState(false)
-    const [nameError,setNameError]=useState(false)
-    const [emailError,setEmailError]=useState(false)
-    const [whyApplyError,setWhyApplyError]=useState(false)
-    const [howFindError,setHowFindError]=useState(false)
+      const selectRef = useRef()
+    const {setError}=useContext(Context)
+ 
+
     
 
     const handleGenreSelection = (genre) => {
@@ -141,7 +132,7 @@ return (
           </div>
           
           {/* Preferred Name */}
-          <label className="input text-[0.8rem] rounded-full mont-medium mt-4 text-white py-8 font-bold mb-4 lg:py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
+          <label className="input text-[0.8rem] rounded-full lora-bold mt-4 text-white py-8 font-bold mb-4 lg:py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
             Preferred Name
             <input
               type="text"
@@ -154,161 +145,54 @@ return (
 
           {/* Email */}
           <label className="input mt-4 mb-2 rounded-full font-bold py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
-            *<h6 className="font-bold mont-medium  text-[0.8rem]"> Email</h6>
+            <h6 className="font-bold lora-bold text-[0.8rem]">* E-mail</h6>
             <input
               type="text"
-              className="grow text-white mont-medium pl-4 w-[100%]"
+              className="grow text-white lora-bold pl-4 w-[100%]"
               value={email}
               onChange={(e) => handleChangeEmail(e.target.value.trim())}
               placeholder=""
             />
           </label>
           {email.length>0 && !validateEmail(email) ?
-            (<h6 className="text-[0.8rem] mont-medium text-red-500">Please use a valid email</h6>
+            (<h6 className="text-[0.8rem] lora-bold text-red-500">Please use a valid email</h6>
           ):null}
 
           {/* IG Handle */}
           <label className="input mt-4 rounded-full mb-8 font-bold py-8 w-[100%] bg-transparent text-white border border-green-100 text-white flex items-center ">
-            <h6 className="font-bold mont-medium text-[0.8rem]">IG Handle </h6>
+            <h6 className="font-bold  lora-bold text-[0.8rem]">IG Handle </h6>
             <input
               type="text"
-              className="grow  mont-medium text-white mx-2 "
+              className="grow  lora-bold text-white mx-2 "
               value={igHandle}
               onChange={(e) => handleChangeIgHandle(e.target.value.trim())}
               placeholder="*****"
             />
           </label>
 
-          {/* Why do you write? */}
-          <label className="text-xl font-bold mont-medium text-white">Artist Statement</label>
-          <label className="text-white  mont-mediums text-l mb-2 pb-1 font-bold mt-4">
-             Why are you applying?
-          </label>
-          <textarea
-            value={whyApply}
-            onChange={(e) => setWhyApply(e.target.value)}
-            className="textarea bg-transparent open-sans-medium w-[100%] text-l h-min-24 border border-green-100 text-white"
-          />
-
-          {/* Community Needs */}
-          <label className="text-white mont-medium text-l mb-2 pb-1 font-bold mt-4">
-            What do you look for in a writing community?
-          </label>
-          <textarea
-            value={communityNeeds}
-            onChange={(e) => setCommunityNeeds(e.target.value)}
-            className="textarea bg-transparent open-sans-medium w-[100%] text-l sm:text-xl h-min-24 border border-green-100 text-white"
-          />
-<label className="text-white text-l mont-medium mb-2 pb-1 font-bold mt-4">
-  What genres do you write in?
- </label>
-<div className="flex flex-wrap gap-3">
-   {genres.map((genre, index) => (
-    <label key={index} className="flex items-center ">
-      <input
-        type="checkbox"
-        value={genre}
-        onChange={(e) => handleGenreSelection(e.target.value)}
-        className="checkbox mx-1 border-white   border-1"
-      />
-      <span className="text-white open-sans-medium">{genre}</span>
-    </label>
-  ))}
-</div>
-{selectedGenres.includes("Other") && (
-  <input
-    type="text"
-    placeholder="Please specify"
-    value={otherGenre}
-    onChange={(e) => setOtherGenre(e.target.value)}
-    className="bg-transparent border border-green-100 open-sans-medium py-2 text-white text-[1rem] sm:text-xl input mt-4"
-  />
-)}
-<label className="text-white text-l mont-medium mb-2 pb-1 font-bold mt-4">
-   How comfortable are you sharing your work with others?
-</label>
-<div className="flex flex-col items-center gap-4">
-  {/* Slider */}
-  <input
-    type="range"
-    min="1"
-    max="5"
-    step="1"
-    value={comfortLevel}
-    onChange={(e) => setComfortLevel(e.target.value)}
-    className="range bg-emerald-50  [--range-shdw:orange] w-full"
-  />
-
-  {/* Dashes */}
-  <div className="flex justify-between w-[100%] text-sm text-white">
-    <span>|</span>
-    <span>|</span>
-    <span>|</span>
-    <span>|</span>
-    <span>|</span>
-  </div>
-
-  {/* Text Labels */}
-  <div className="flex justify-between w-[100%] text-sm text-white mt-2">
-    <span className="w-[20%] open-sans-medium text-left">Very Uncomfortable</span>
-    
-    <span className="w-[35%] open-sans-medium text-right">Very Comfortable</span>
-  </div>
-</div>
-
-
-   
-      <label className="text-white text-l mont-medium mb-2 pb-1 font-bold mt-4">
-   How often do you seek feedback on your writing?
- </label> <select
-  value={feedbackFrequency}
-  onChange={(e) => setFeedbackFrequency(e.target.value)}
-  className="select bg-transparent border rounded-full  border-green-100 text-white w-full text-l sm:text-xl"
->
-  <option value="" className="open-sans-medium   "disabled>
-    Select an option
-  </option>
-  <option value="daily">Daily</option>
-  <option value="weekly">Weekly</option>
-  <option value="monthly">Monthly</option>
-  <option value="occasionally">Occasionally</option>
-  <option value="rarely">Rarely</option>
-</select>
-          {/* In-person or Online Preference */}
-          <label className="text-white mont-medium text-l mb-2 pb-1 mt-4">
-            Would you prefer in-person workshops, online, or both?
+          <div className="mb-4 flex flex-row justify-between">
+          <label className="block text-white mont-medium text-[1.5rem] font-semibold mb-2">
+            Email Frequency
           </label>
           <select
-            value={workshopPreference}
-            onChange={(e) => setWorkshopPreference(e.target.value)}
-            className="select rounded-full  open-sans-medium bg-transparent border border-green-100 text-white w-full text-l sm:text-xl"
+            className="w-full bg-white select text-emerald-700 mont-medium select-bordered "
+            value={frequency}
+            ref={selectRef}
+            onChange={(e) => setFrequency(e.target.value)}
           >
-            <option value="in-person">In-person</option>
-            <option value="online">Online</option>
-            <option value="both">Both</option>
+            <option className="text-emerald-700" value={1}>daily</option>
+            <option  className="text-emerald-700" value={2}>Every 3 days</option>
+            <option  className="text-emerald-700" value={3}>Weekly</option>
+            <option  className="text-emerald-700" value={14}>Every 2 Weeks</option>
+            <option  className="text-emerald-700" value={30}>Monthly</option>
+
           </select>
+        </div>
 
-          {/* How did you find out? */}
-          <label className="text-white text-l mont-medium mb-2 pb-1 font-bold mt-4">
-            How did you find out?
-          </label>
-          <input
-            value={howFindOut}
-            onChange={(e) => handleChangeHowFindOut(e.target.value)}
-            className="bg-transparent border open-sans-medium border-green-100 py-8 text-white text-l sm:text-xl input"
-          />
-          <label className="text-white text-l  mont-medium mb-2 pb-1 font-bold mt-4">
-   What features would make a writing platform most valuable to you?
-</label>
-<textarea
-  value={platformFeatures}
-  onChange={(e) => setPlatformFeatures(e.target.value)}
-  className="textarea bg-transparent w-[100%] open-sans-medium text-l sm:text-xl h-min-24 border border-green-100 text-white"
-/>
-
-          <button
+    
+        <button 
             type="submit"
-            className="mont-medium my-8 py-4 text-2xl text-white mont-medium px-20  mx-auto rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 hover:bg-green-400 font-bold border-none shadow-sm"
+            className="mont-medium my-8 py-4 text-2xl text-white text-emerald-800  mont-medium px-20  mx-auto rounded-full bg-gradient-to-r from-emerald-300 to-emerald-500 hover:bg-green-400 font-bold border-none shadow-sm"
           >
             Apply
           </button>
@@ -381,4 +265,4 @@ Founder of Plumbum</h6>
 
 
 }
-export default ApplyContainer
+export default NewsletterContainer
