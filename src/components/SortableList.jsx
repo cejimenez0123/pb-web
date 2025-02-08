@@ -75,7 +75,7 @@ export default function SortableList({ items, onOrderChange,onDelete }) {
                         <div className=" flex justify-between mr-3">
                         <img src={dragHandle} className="my-auto ml-4"/>
                         <div className="justify-between  flex-grow flex flex-row mr-4">
-                        <h6 onClick={()=>handleNavigate(item)} className=" text-emerald-800 text-nowrap text-left my-auto max-w-[13em] overflow-hidden text-ellipsis sm:text-[1.2rem]">
+                        <h6 onClick={()=>handleNavigate(item)} className=" text-emerald-800 text-nowrap text-left my-auto max-w-[13em] min-w-[10em] min-h-[1.5rem] overflow-hidden text-ellipsis sm:text-[1.2rem]">
                           {item.story?item.story.title:item.childCollection?item.childCollection.title:"Not found"}</h6>
                         <button
                           onClick={(e) => handleDelete(e,index)}

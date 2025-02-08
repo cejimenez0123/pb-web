@@ -56,7 +56,7 @@ const pageSlice = createSlice({
       state.recommendedStories = payload.stories
     }).addCase(appendToPagesInView.type,(state,{payload})=>{
 
-      if(payload.length>0){
+      if(payload.length>0&&state.pagesInView){
         payload.forEach(page=>{
        let found = state.pagesInView.find(p=>p&&page&& p.id==page.id)
        if(!found){

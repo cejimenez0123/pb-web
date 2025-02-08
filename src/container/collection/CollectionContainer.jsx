@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useState} from "react"
+import { useContext, useEffect,useLayoutEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {  useLocation, useNavigate, useParams } from "react-router-dom"
 import { addCollectionListToCollection,deleteCollectionFromCollection,fetchCollection, fetchCollectionProtected, getRecommendedCollections, getRecommendedCollectionsProfile, getRecommendedCollectionStory } from "../../actions/CollectionActions"
@@ -46,24 +46,28 @@ export default function CollectionContainer(props){
     const {id} = useParams()
     const [bookmarkLoading,setBookmarkLoading]=useState(false)
     const getRecommendations =()=>{
-        if(collection && collection.id&&collection.type!="feedback" ){
-            setHasMore(true)
-          dispatch(getRecommendedCollectionStory({colId:collection.id})).then(res=>{
-            checkResult(res,payload=>{
-                let stories = payload.pages
-                let recommended =stories.map(story=>{
-                       let page = story
-                        page["recommended"] = true
-                        return page
+        if(collection&&collection.type!="feedback"){
+            dispatch(getRecommendedCollectionStory({colId:collection.id})).then(res=>{
+                checkResult(res,payload=>{
+                    let stories = payload.pages
+                    let recommended =stories.map(story=>{
+                           let page = story
+                            page["recommended"] = true
+                            return page
+                    })
+                 
+                 
+                    
+                      dispatch(appendToPagesInView({pages:[Enviroment.blankPage,...recommended]}))
+                  
+                    
+    
+                },err=>{
+                    setHasMore(false)
                 })
-                setHasMore(false)
-                  dispatch(appendToPagesInView({pages:[Enviroment.blankPage,...recommended]}))
-            
-            },err=>{
-                setHasMore(false)
             })
-        })
-        
+            
+     
         if(collections && collections.length>0&&collection.type!="feedback" ){
             for(let i = 0;i<collections.length;i+=1){
           if(collections[i] && collections[i].id){ 
@@ -88,37 +92,18 @@ export default function CollectionContainer(props){
             })
         })
         }
-    }
     
-    if(currentProfile && collection&&collection.id&&collection.type!="feedback" ){
-   
-        dispatch(getRecommendedCollectionStory({colId:collection.id})).then(res=>{
-            checkResult(res,payload=>{
-                let stories = payload.pages
-                setHasMore(false)
-                let recommended =stories.map(story=>{
-                       let page = story
-                        page["recommended"] = true
-                        return page
-                })
-                if(recommended){
-                  
-                  dispatch(appendToPagesInView({pages:recommended}))
-              
-                }
-
-            },err=>{
-                setHasMore(false)
-            })})
+setHasMore(false)
+            }
     }else{
         setLoading(false)
-    }}}
-}
+    }
+}}
 
          
   
     const onBookmark=()=>{
-        console.log("delete",isBookmarked)
+       
         setBookmarkLoading(true)
     if(!isBookmarked){
         if(collection&&currentProfile){
@@ -151,10 +136,41 @@ export default function CollectionContainer(props){
         })})
     }
     }
+
+    const getSubColContent=()=>{
+        let contentArr = []
+    
+        if(collection.childCollections){
+            let cols = collection.childCollections
+            for(let i=0;i<cols.length;i+=1){
+                if(cols[i]){
+               let col =cols[i].childCollection
+               if(col && col.storyIdList){
+         
+                   contentArr= [...contentArr,...col.storyIdList]
+                
+               }
+                
+               }
+            }
+        }
  
+    const sorted = [...contentArr].sort((a,b)=>
+            
+            a.updated && b.updated && b.updated>a.updated
+       
+               ).map(stc=>stc.story)
+            
+     dispatch(appendToPagesInView({pages:sorted}))
+  
+    setHasMore(false)
+    }
+     useEffect(()=>{
+       
+     },[collections])
     const getContent=()=>{
-      
         if(collection){
+            setHasMore(true)
         if(collection.storyIdList){
      
         const sorted = [...collection.storyIdList].sort((a,b)=>
@@ -163,6 +179,8 @@ export default function CollectionContainer(props){
            
                    ).map(stc=>stc.story)
          dispatch(setPagesInView({pages:sorted}))
+                }
+        if(collection.childCollections){
          const children = [...collection.childCollections].sort((a,b)=>
             
             b.index<a.index
@@ -171,15 +189,14 @@ export default function CollectionContainer(props){
 
 
          dispatch(setCollections({collections:children}))
+         getSubColContent()
+            }
         
-  
-          
-                
-  
-    
-        }
+      
     }
-        setHasMore(false)}
+
+
+    }
      const checkPermissions=()=>{
         findRole()
         soUserCanSee()
@@ -203,6 +220,7 @@ export default function CollectionContainer(props){
    
 
     const getMore = ()=>{
+
     if(id){
         dispatch(getRecommendedCollections({colId:id})).then(res=>{
             checkResult(res,payload=>{
@@ -278,33 +296,37 @@ if(currentProfile){
         setError("Please Sign In")
     }
     }
+    
     useLayoutEffect(()=>{
        
-        if(canUserAdd){
-            getRecommendations()
-            getMore()
-        }
-        
-    },[canUserAdd])
+      getSubColContent()
+      if(canUserAdd){
+        getRecommendations()
+    
+}
+      
+    },[canUserAdd,collection])
     useLayoutEffect(()=>{
-
+        dispatch(setCollections({collections:[]}))
+        dispatch(setPagesInView({pages:[]}))
         getCol()
     },[id])
-    useLayoutEffect(()=>{
-        getContent()
-    },[collection])
+
   
     const checkFound=()=>{
         if(collection&&homeCol&&collection.parentCollections){
     
              let isfound = collection.parentCollections.find(ptc=>ptc.parentCollectionId==homeCol.id)
-            console.log("isfound",isfound)
+           
                 setIsBookmarked(isfound)
               
             }
             setBookmarkLoading(false)
         }
- 
+        useLayoutEffect(()=>{
+            
+            getContent()
+        },[collection])
    
     useLayoutEffect(()=>{
         checkFound()
@@ -315,7 +337,6 @@ if(currentProfile){
         const token = localStorage.getItem("token")
        token?dispatch(fetchCollectionProtected({id})).then(res=>{
             checkResult(res,payload=>{
- getContent()
              setLoading(false)
             },err=>{
                 setError(err.meesage)
@@ -485,7 +506,7 @@ if(currentProfile){
     const CollectionInfo=({collection})=>{  
   
        
-        return(<div className=" w-[96vw] mx-auto lg:w-info h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600 flex flex-col jusify-between  rounded-lg mb-8 text-left">
+        return(<div className=" w-[96vw] mx-auto lg:w-info min-h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600 flex flex-col jusify-between  rounded-lg mb-8 text-left">
     
        
            <span>
@@ -585,7 +606,7 @@ if(collection&&canUserSee){
             <div className=" mx-auto  max-w-[96vw] md:w-page  min-h-[20em]">     
             <h6 className="text-2xl mb-8 w-fit text-center  lora-bold text-emerald-800 font-bold pl-4">Pages</h6>
 
-        <PageList  isGrid={false} hasMore={hasMore}  forFeedback={collection&&collection.type=="feedback"}/>
+        <PageList  isGrid={false} hasMore={hasMore} getMore={getMore} forFeedback={collection&&collection.type=="feedback"}/>
         </div>
     <ExploreList />
     </div> 

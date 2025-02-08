@@ -122,7 +122,7 @@ const stayInLoop=()=>{
 <h2 className="mx-4 my-2 open-sans-medium  text-l">Follow the Journey</h2>
 <div className="flex open-sans-medium   text-l texg-left leading-loose tracking-loose">
 <a href="https://www.instagram.com/plumbumapp">@plumbumapp</a> |<a href="https://www.instagram.com/bxwriters"> @bxwriters</a></div>
-<a className="text-l" onClick={()=>navigate(Paths.newsletter())}>[→ Subscribe to Our Newsletter]</a>
+<a className="text-l" onClick={()=>navigate(Paths.apply())}>[→ Subscribe to Our Newsletter and be a beta user]</a>
         </div>)
 }
 const userTestimonial=()=>{

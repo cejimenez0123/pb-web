@@ -20,7 +20,9 @@ export default function AddToCollectionContainer(props){
     const profile = useSelector(state=>state.users.currentProfile)
     const [search,setSearch]=useState("")
     const colInView = useSelector(state=>state.books.collectionInView)
-    const pagesInView = useSelector(state=>state.pages.pagesInView).filter(col=>col).filter(col=>{
+    const pagesInView = useSelector(state=>state.pages.pagesInView).filter(page=>page).filter(col=>{
+        
+        
         if(search.length>0){
          return col.title.toLowerCase().includes(search.toLowerCase())
         }else{
@@ -28,7 +30,7 @@ export default function AddToCollectionContainer(props){
         }
     
        })
-    const collections = useSelector(state=>state.books.collections) .filter(col=>col).filter(col=>{
+    const collections = useSelector(state=>state.books.collections).filter(col=>{
         if(search.length>0){
          return col.title.toLowerCase().includes(search.toLowerCase())
         }else{
@@ -146,6 +148,9 @@ export default function AddToCollectionContainer(props){
         className="  "
         dataLength={list.length}>
 {list.map(col=>{
+            if(col&&colInView&&col.id&&colInView.id&&col.id==colInView.id){
+                return null
+            }
             return(<div className="text-left mx-auto w-[92vw] md:w-[96%] sm:mx-auto flex flex-row justify-between border-3
             border-emerald-400 rounded-full py-4  my-2">
                 <h2 className="text-l my-auto  max-w-[15em]  overflow-hidden text-nowrap text-md md:text-lg ml-8  mont-medium ">
@@ -195,10 +200,10 @@ onClick={()=>removeNewCollection(col)}src={checked}/>
 
             
             </div>
-            {isPhone? <label className='flex border-emerald-700 border-2 rounded-full mb-1 mt-8 flex-row mx-2'>
+            <label className='flex w-page mx-auto border-emerald-700 border-2 rounded-full mb-1 mt-8 flex-row mx-2'>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search:</span>
   <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
-  </label>:null}
+  </label>
 <div className=" sm:flex max-w-[96vw] rounded-t-lg  overflow-hidden md:w-page mx-auto sm:flex-row">
 
 <div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>

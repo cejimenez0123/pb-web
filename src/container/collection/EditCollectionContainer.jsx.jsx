@@ -2,7 +2,7 @@ import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Paths from "../../core/paths"
-import { deleteCollection, deleteCollectionFromCollection, patchCollectionContent } from "../../actions/CollectionActions"
+import { deleteCollection, deleteCollectionFromCollection, patchCollectionContent, } from "../../actions/CollectionActions"
 import deleteIcon from "../../images/icons/delete.svg"
 import arrowDown from "../../images/icons/arrow_down.svg"
 import {  deleteStoryFromCollection,  fetchCollectionProtected,  } from "../../actions/CollectionActions"
@@ -20,6 +20,7 @@ import { RoleType } from "../../core/constants"
 import Context from "../../context"
 import HashtagForm from "../../components/hashtag/HashtagForm"
 import { debounce } from "lodash"
+import { setPagesInView } from "../../actions/PageActions"
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{
@@ -39,7 +40,7 @@ export default function EditCollectionContainer(props){
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
-      
+    
       const [pending,setPending]=useState(true)
     const location = useLocation()
 
@@ -59,51 +60,51 @@ export default function EditCollectionContainer(props){
     const dispatch = useDispatch()
     const [openAccess,setOpenAccess]=useState(false)
     const setItems=(col)=>{
-      if(currentProfile){
-   
-        if(col.storyIdList){
-        
-          let stcList = col.storyIdList.map((stc,i)=>{
+
+if(col){
+      if(col.storyIdList){
+         let stcList = [...col.storyIdList].map((stc,i)=>{
                          let index = i
                          if(stc.index){
                           index= stc.index
                          }
             return new StoryToCollection(stc.id,index,stc.collection,stc.story,currentProfile)
-        }).sort((a,b)=>
+        })
+        let list = [...stcList].sort((a,b)=>
             
-          b.index>a.index
+        b.index&&a.index&&b.index>a.index
      
              )
-            setNewPages(stcList)
-      }
-      if(col.childCollections){
-            let newList = col.childCollections.map((stc,i)=>{
-                return new CollectionToCollection(stc.id,i,stc.childCollection,colInView,currentProfile)
-        }).sort((a,b)=>
+     console.log("X",list)
+            setNewPages(list)
+            }
+            if(col.childCollections){ 
+            const newList = [...col.childCollections].sort((a,b)=>
             
-          b.index>a.index
-     
-             )
+             a.index&&b.index&& b.index>a.index
+         
+                 ).map((stc,i)=>{
+                return new CollectionToCollection(stc.id,i,stc.childCollection,colInView,currentProfile)})
     
-            setNewCollections(newList)
-      }
-        }
+        setNewCollections(newList)
+      
+        
           
-      }
+      }}}
     
   
 
-    useLayoutEffect(()=>{
-      soCanUserEdit()
-      setItems(colInView)
-    },[colInView])
+
  
     const getCol =()=>{
      let token = localStorage.getItem("token")
+   setNewPages([])
+   setNewCollections([])
       if(token&&colInView&&colInView.id!=id){
         dispatch(fetchCollectionProtected(params)).then(res=>{
           checkResult(res,payload=>{
-          
+    
+            setItems(payload.collection)
           },err=>{
           setPending(false)
           setCanUserEdit(false)
@@ -112,20 +113,32 @@ export default function EditCollectionContainer(props){
       })
     
     }}
+    // useLayoutEffect(()=>{
+    //   if(canUserEdit)
+     
+    // },[canUserEdit])
     useLayoutEffect(()=>{
       getCol()
-    },[])
+    },[location.pathname,id])
+    useLayoutEffect(()=>{
+      if(colInView&&currentProfile &&currentProfile.id){
+        soCanUserEdit()
+
+    }},[currentProfile])
     useEffect(()=>{
-    if(colInView){
-        setTitle(colInView.title)
-        setPurpose(colInView.purpose)
-        setIsPrivate(colInView.isPrivate)
-        setFollowersAre(colInView.followersAre??RoleType.commenter)
-        handleSetOpen(colInView.isOpenCollaboration) 
-    }
+setInfo(colInView)
+setItems(colInView)
     },[colInView])
 
-  
+    const setInfo=(col)=>{
+      if(col){
+        setTitle(col.title)
+        setPurpose(col.purpose)
+        setIsPrivate(col.isPrivate)
+        setFollowersAre(col.followersAre??RoleType.commenter)
+        handleSetOpen(col.isOpenCollaboration) 
+    }
+    }
   
     const soCanUserEdit=()=>{
       if(colInView&&currentProfile&&colInView.profileId && currentProfile.id){

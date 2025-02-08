@@ -44,14 +44,14 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
 
           {pagesInView.length?pagesInView.map((page,i)=>{
             if(page==Enviroment.blankPage&&i==0){
-                return(<div className="mx-auto text-emerald-800 text-xl py-12 lora-medium text-center">
+                return(<div key={i}className="mx-auto text-emerald-800 text-xl py-12 lora-medium text-center">
                    <p> Refer your local friends for local feedback</p> <p>or</p><p> refer others so there's more to read</p>
                    <h5 className="mx-auto text-emerald-800 text-2xl py-12 lora-bold text-center">Recommendations</h5>
                    
                     </div>)
             }
             if(page==Enviroment.blankPage){
-                return <div className="text-center">
+                return <div key={i} className="text-center">
 <h5 className="mx-auto text-emerald-800 text-xl py-12 lora-bold text-center">Recommendations</h5>
                    
                  </div>
@@ -64,7 +64,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
 
   className={`${isGrid && isNotPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
 >
-                    <DashboardItem forFeedback={forFeedback} isGrid={isGrid} key={page.id} page={page}/>
+                    <DashboardItem  forFeedback={forFeedback} isGrid={isGrid} key={page.id} page={page}/>
                 </div>)
             }else{
                 return null

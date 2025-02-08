@@ -128,11 +128,11 @@ return (
         >
           <h6 className="text-white lora-bold text-sm">* Required</h6>
           <div className="w-full text-center">
-            <h3 className="mx-auto text-2xl text-white lora-bold my-8 w-fit">Interest Form</h3>
+            <h3 className="mx-auto text-2xl text-white mont-medium my-8 w-fit">Interest Form</h3>
           </div>
           
           {/* Preferred Name */}
-          <label className="input text-[0.8rem] rounded-full lora-bold mt-4 text-white py-8 font-bold mb-4 lg:py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
+          <label className="input text-[0.8rem] rounded-full mont-medium  mt-4 text-white py-8 font-bold mb-4 lg:py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
             Preferred Name
             <input
               type="text"
@@ -145,25 +145,25 @@ return (
 
           {/* Email */}
           <label className="input mt-4 mb-2 rounded-full font-bold py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
-            <h6 className="font-bold lora-bold text-[0.8rem]">* E-mail</h6>
+            <h6 className="font-bold mont-medium  text-[0.8rem]">* Email</h6>
             <input
               type="text"
-              className="grow text-white lora-bold pl-4 w-[100%]"
+              className="grow text-white mont-medium  pl-4 w-[100%]"
               value={email}
               onChange={(e) => handleChangeEmail(e.target.value.trim())}
               placeholder=""
             />
           </label>
           {email.length>0 && !validateEmail(email) ?
-            (<h6 className="text-[0.8rem] lora-bold text-red-500">Please use a valid email</h6>
+            (<h6 className="text-[0.8rem] mont-medium  text-red-500">Please use a valid email</h6>
           ):null}
 
           {/* IG Handle */}
           <label className="input mt-4 rounded-full mb-8 font-bold py-8 w-[100%] bg-transparent text-white border border-green-100 text-white flex items-center ">
-            <h6 className="font-bold  lora-bold text-[0.8rem]">IG Handle </h6>
+            <h6 className="font-bold  mont-medium text-[0.8rem]">IG Handle </h6>
             <input
               type="text"
-              className="grow  lora-bold text-white mx-2 "
+              className="grow  mont-medium  text-white mx-2 "
               value={igHandle}
               onChange={(e) => handleChangeIgHandle(e.target.value.trim())}
               placeholder="*****"

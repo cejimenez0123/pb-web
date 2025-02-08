@@ -40,7 +40,7 @@ export default function PageViewContainer(props){
                 }
             }}
     },[])
- 
+    useLayoutEffect(()=>{   soCanUserSee() },[currentProfile,page])
     useLayoutEffect(()=>{
         dispatch(getStory(pathParams)).then(res=>{
             checkResult(res,payload=>{
@@ -58,23 +58,24 @@ export default function PageViewContainer(props){
 
      const soCanUserSee=()=>{
         if(page){
+            console.log(page)
             if(!page.isPrivate){
                 setCanUserSee(true)
                 return
             }
-            if(!page.isPrivate||(currentProfile && page && page.authorId==currentProfile.id)){
+            if(currentProfile){
+                
+                if(page.authorId==currentProfile.id){
                 setCanUserSee(true)
                 return
-            }
+                }
             if(page.betaReaders){
                 console.log(page.betaReaders)
                 return
-            }
+            }}
         }
      }
-    useEffect(()=>{
-        soCanUserSee()
-    },[currentProfile])
+
     const pageDiv = ()=>{
      if(page){
 

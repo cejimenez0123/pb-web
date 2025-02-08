@@ -60,7 +60,7 @@ export default function SearchDialog(props){
    }
     return<Dialog  fullScreen={mediaQuery} 
                    open={searchDialogOpen} >
-                    <div className="pt-3">
+                    <div className="pt-3 md:min-h-[30em] md:min-w-[40em]">
     <div className='header py-3 px-3'>
       <ClearIcon onClick={closeDialog}/>
     </div>
@@ -80,7 +80,7 @@ export default function SearchDialog(props){
      next={()=>{}}
      hasMore={false}
      loader={<p>Loading...</p>}
-     endMessage={<div className="no-more-data"><p>Nothing Found</p></div>}
+   
   > 
        {searchContent.map((content,i)=>{
 

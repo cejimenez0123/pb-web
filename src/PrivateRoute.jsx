@@ -15,7 +15,7 @@ const PrivateRoute = ({loggedIn, children }) => {
    
     useLayoutEffect(() => {
      token = localStorage.getItem("token")
-     console.log(token)
+
     if(token||currentProfile&&currentProfile.id){
       if(formerPage){
        navigate(formerPage)
