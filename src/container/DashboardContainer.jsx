@@ -59,7 +59,7 @@ useLayoutEffect(()=>{
     setHasMore(true)
     getContent()
     getHomeCollectionContent()
-},[currentProfile])
+},[location.pathname])
 
 
         return(
