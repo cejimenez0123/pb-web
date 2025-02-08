@@ -13,6 +13,7 @@ import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
 import Enviroment from "../../core/Enviroment.js";
 import Paths from "../../core/paths.js";
+import checkResult from "../../core/checkResult.js";
 export default function PageViewContainer(props){
     const {currentProfile}=useContext(Context)
     const location = useLocation()
@@ -39,11 +40,15 @@ export default function PageViewContainer(props){
                 }
             }}
     },[])
-    useEffect(()=>{
-        soCanUserSee()
-    },[page])
+ 
     useLayoutEffect(()=>{
-        dispatch(getStory(pathParams))
+        dispatch(getStory(pathParams)).then(res=>{
+            checkResult(res,payload=>{
+                soCanUserSee()
+            },err=>{
+
+            })
+        })
         dispatch(fetchCommentsOfPage(pathParams))
     },[id])
     useLayoutEffect(()=>{
@@ -69,16 +74,14 @@ export default function PageViewContainer(props){
      }
     useEffect(()=>{
         soCanUserSee()
-      
-      
-    },[currentProfile,page])
+    },[currentProfile])
     const pageDiv = ()=>{
      if(page){
 
      
             return(<PageViewItem page={page} currentProfile={currentProfile} />)
      }else{
-        return null
+        return (<div><dib className="skeleton w-[96vw] mx-auto md:w-page bg-emerald-50 h-page"/></div>)
      }
     }
     let description =""
@@ -107,7 +110,7 @@ export default function PageViewContainer(props){
         }
     }
     return(<div className="  mx-auto">
-        <ErrorBoundary>
+        <ErrorBoundary >
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
     <>{title()}

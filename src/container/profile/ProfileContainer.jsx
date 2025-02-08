@@ -22,7 +22,9 @@ import sortAlphabet from "../../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../../images/icons/clock_arrow_down.svg"
 import Paths from "../../core/paths.js"
-
+import { Helmet } from "react-helmet"
+import Enviroment from "../../core/Enviroment.js"
+import ErrorBoundary from "../../ErrorBoundary.jsx"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
     const {setError,setSuccess,currentProfile}=useContext(Context)
@@ -240,7 +242,7 @@ const meta = ()=>{
     <meta property="og:title" content={page.title} />
     <meta property="og:description" content={page.description} /> */}
     <meta property="og:type" content="profile" />
-    <meta property="og:url" content={Enviroment.domain+Paths.profile.createRoute(page.id)} />
+    <meta property="og:url" content={Enviroment.domain+Paths.profile.createRoute(profile.id)} />
     <meta name="twitter:card" content="summary_large_image" />
        
        
@@ -250,6 +252,7 @@ const meta = ()=>{
     }
 }
     return(
+        <ErrorBoundary>
         <div className="">
             {meta()}
             <div className="pt-2 md:pt-8 mb-8 mx-2">
@@ -287,7 +290,7 @@ const meta = ()=>{
     </div></> :null}
                </div>
 </div>
-  
+</ErrorBoundary>
             )
 }
 export default ProfileContainer
