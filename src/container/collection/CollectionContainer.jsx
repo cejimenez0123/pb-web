@@ -41,6 +41,7 @@ export default function CollectionContainer(props){
     const [canUserEdit,setCanUserEdit]=useState(false)
     const [canUserSee,setCanUserSee]=useState(false)
     const [homeCol,setHomeCol]=useState(null)
+    const [archiveCol,setArchiveCol]=useState(null)
     const [role,setRole]=useState(null)
     const [hasMore,setHasMore]=useState(false)
     const {id} = useParams()
@@ -102,8 +103,12 @@ setHasMore(false)
 
          
   
-    const onBookmark=()=>{
-       
+    const onBookmark=(type)=>{
+     
+    switch(type){
+       case "home":{
+            
+     
         setBookmarkLoading(true)
     if(!isBookmarked){
         if(collection&&currentProfile){
@@ -136,6 +141,40 @@ setHasMore(false)
         })})
     }
     }
+case "archive":{
+    setBookmarkLoading(true)
+    if(!isBookmarked){
+        if(collection&&currentProfile){
+      
+            
+            if(archiveCol){
+            let params = {id:archiveCol.id,list:[collection.id],profile:currentProfile}
+            dispatch(addCollectionListToCollection(params)).then(res=>{
+                checkResult(res,payload=>{
+                    checkFound()
+                    setSuccess("Saved to Home")
+                },err=>{
+                    setBookmarkLoading(false)
+                })
+            })
+        }}
+    }else{
+
+            dispatch(deleteCollectionFromCollection({tcId:isBookmarked.id})).then(res=>{
+                checkResult(res,payload=>{
+                    if(payload.message.includes("Already")||payload.message.includes("Deleted")){
+                        setIsBookmarked(null)
+                        setSuccess("Removed from Home")
+                    }
+                    
+                    setBookmarkLoading(false)
+                   
+        },err=>{
+            setBookmarkLoading(false)
+        })})
+    }
+}   }
+}
 
     const getSubColContent=()=>{
         let contentArr = []
@@ -213,6 +252,14 @@ setHasMore(false)
      
      if(col){
                 setHomeCol(col)
+            }
+  
+        }
+        if(currentProfile&& currentProfile.profileToCollections){
+            let col = currentProfile.profileToCollections.find(pTc=>pTc.type=="archive").collection
+     
+     if(col){
+                setArchiveCol(col)
             }
   
         }
@@ -547,15 +594,20 @@ if(currentProfile){
    onClick={()=>navigate(Paths.editCollection.createRoute(id))}
    className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}
         </div>
-        <span 
-      
-      onClick={()=>{
-       onBookmark()
-       
-   }}
+        
+        <div className="dropdown">
+  <div tabIndex={0} role="button" className=" m-1"> <span 
+    
       className="bg-emerald-800 max-h-14 min-w-12 min-h-12 max-h-14 rounded-full flex">  
-       <img  className="  max-h-14 p-2 min-w-12 min-h-12 max-h-14  mx-auto my-auto"src={bookmarkLoading?loadingGif:isBookmarked?bookmarkfill:bookmarkOutline}/>
+       <img  className="  max-h-14 p-2 min-w-12 min-h-12 max-h-14  mx-auto my-auto"
+       src={bookmarkLoading?loadingGif:isBookmarked?bookmarkfill:bookmarkOutline}/>
 </span>
+</div>
+  <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-[1] w-52 p-2 shadow">
+    <li onClick={()=>onBookmark("home")}><a className="mont-medium"> home</a></li>
+    <li onClick={()=>onBookmark("archive")}><a className="mont-medium">archive</a></li>
+  </ul> 
+</div>
 </div>
 
 </span>

@@ -118,7 +118,7 @@ export default function AddToCollectionContainer(props){
             {pagesInView.filter(str=>str)
             .filter(story=>
                 colInView && colInView.storyIdList && !colInView.storyIdList.find(storyJoint=>
-                    storyJoint.storyId==story.id)).map(story=>{
+                    storyJoint.story.id==story.id)).map(story=>{
                 return(<div className="text-left mx-auto  w-[96%]  flex flex-row justify-between border-3
                 border-emerald-400 rounded-full py-4  my-2">
                     <h2 className="text-l my-auto max-w-[15em] text-nowrap text-md md:text-lg ml-8  mont-medium overflow-hidden text-ellipsis">
@@ -184,7 +184,7 @@ onClick={()=>removeNewCollection(col)}src={checked}/>
     
     return(<div className='max-h-[100vh] overflow-scroll'>
         <div className="static">
-<div className="border-3 border-emerald-600 w-[96vw]  lg:w-info h-info mx-auto  rounded-lg  my-2  p-8 text-left">
+<div className="border-3 border-emerald-600 w-[96vw]  lg:w-info min-h-info mx-auto  rounded-lg  my-2  p-8 text-left">
             <h2 className="text-2xl whitespace-nowrap  overflow-hidden md:max-w-[30em]  text-nowrap text-emerald-800 mb-2">{colInView.title && colInView.title.trim().length>0?colInView.title:"Untitled"}</h2>
             <h6 className="sm:my-4 text-emerald-800 sm:mx-8 p-4 min-h-24 text-lg sm:max-w-[35rem]">{colInView?colInView.purpose:null}</h6>
         
@@ -200,7 +200,7 @@ onClick={()=>removeNewCollection(col)}src={checked}/>
 
             
             </div>
-            <label className='flex w-page mx-auto border-emerald-700 border-2 rounded-full mb-1 mt-8 flex-row mx-2'>
+            <label className='flex max-w-[96vw] md:w-page mx-auto border-emerald-700 border-2 rounded-full mb-1 mt-8 flex-row mx-2'>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search:</span>
   <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 min-w-[19em] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
   </label>
