@@ -35,6 +35,7 @@ export default function CollectionContainer(props){
     const [loading,setLoading]=useState(true)
     const location = useLocation()
     const [isBookmarked,setIsBookmarked]=useState(false)
+    const [isArchived,setIsArchived]=useState(false)
     const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
     const writeArr = [RoleType.editor,RoleType.writer]
     const [canUserAdd,setCanUserAdd]=useState(false)
@@ -142,31 +143,32 @@ setHasMore(false)
     }
     }
 case "archive":{
-    setBookmarkLoading(true)
-    if(!isBookmarked){
+if(!isArchived){
+
         if(collection&&currentProfile){
       
             
-            if(archiveCol){
+          
             let params = {id:archiveCol.id,list:[collection.id],profile:currentProfile}
             dispatch(addCollectionListToCollection(params)).then(res=>{
                 checkResult(res,payload=>{
                     checkFound()
-                    setSuccess("Saved to Home")
+                   
+                    setSuccess("Saved to Archive")
                 },err=>{
                     setBookmarkLoading(false)
                 })
             })
-        }}
+        }
     }else{
 
-            dispatch(deleteCollectionFromCollection({tcId:isBookmarked.id})).then(res=>{
+            dispatch(deleteCollectionFromCollection({tcId:isArchived.id})).then(res=>{
                 checkResult(res,payload=>{
                     if(payload.message.includes("Already")||payload.message.includes("Deleted")){
-                        setIsBookmarked(null)
+                        setIsArchived(null)  
                         setSuccess("Removed from Home")
                     }
-                    
+                  
                     setBookmarkLoading(false)
                    
         },err=>{
@@ -366,8 +368,18 @@ if(currentProfile){
              let isfound = collection.parentCollections.find(ptc=>ptc.parentCollectionId==homeCol.id)
            
                 setIsBookmarked(isfound)
-              
-            }
+             let found = collection.parentCollections.find(ptc=>ptc.parentCollectionId==archiveCol.id)
+           
+            
+                // let found = currentProfile.profileToCollections.find(ptc=>{
+                //     return ptc && ptc.type=="archive"&&ptc.collection.childCollections.find(stc=>stc.childCollectionId==collection.id)})
+           
+                    
+                
+        //         let found = collection.parentCollections.find(ptc=>ptc.parentCollectionId==archiveCol.id)
+           console.log("Founc",found)
+                setIsArchived(found)
+                }
             setBookmarkLoading(false)
         }
         useLayoutEffect(()=>{
@@ -595,7 +607,7 @@ if(currentProfile){
    className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}
         </div>
         
-        <div className="dropdown">
+        <div className="dropdown dropdown-left">
   <div tabIndex={0} role="button" className=" m-1"> <span 
     
       className="bg-emerald-800 max-h-14 min-w-12 min-h-12 max-h-14 rounded-full flex">  
@@ -604,8 +616,8 @@ if(currentProfile){
 </span>
 </div>
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-[1] w-52 p-2 shadow">
-    <li onClick={()=>onBookmark("home")}><a className="mont-medium"> home</a></li>
-    <li onClick={()=>onBookmark("archive")}><a className="mont-medium">archive</a></li>
+    <li  className={isBookmarked?`bg-emerald-700 mb-1 rounded-lg text-white`:`bg-emerald-50 text-emerald-800`}onClick={()=>onBookmark("home")}><a className={`mont-medium ${isBookmarked?"text-white":"text-emerald-700"}`}> home</a></li>
+    <li  className={isArchived?`bg-emerald-700 rounded-lg text-white`:`bg-emerald-50 text-emerald-800`}onClick={()=>onBookmark("archive")}><a className={`mont-medium ${isArchived?"text-white":"text-emerald-700"}`}>archive</a></li>
   </ul> 
 </div>
 </div>

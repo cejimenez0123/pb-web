@@ -50,7 +50,7 @@ export default function PageViewContainer(props){
             })
         })
         dispatch(fetchCommentsOfPage(pathParams))
-    },[id])
+    },[id,currentProfile])
     useLayoutEffect(()=>{
         setRootComments(comments?comments.filter(com=>com.parentId==null):[])
      },[comments])
@@ -58,7 +58,7 @@ export default function PageViewContainer(props){
 
      const soCanUserSee=()=>{
         if(page){
-            console.log(page)
+  
             if(!page.isPrivate){
                 setCanUserSee(true)
                 return
@@ -111,7 +111,7 @@ export default function PageViewContainer(props){
         }
     }
     return(<div className="  mx-auto">
-        <ErrorBoundary >
+        {/* <ErrorBoundary > */}
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
     <>{title()}
@@ -119,7 +119,7 @@ export default function PageViewContainer(props){
     
     <CommentThread page={page} comments={rootComments}/>
     </div> 
-    </ErrorBoundary>
+    {/* </ErrorBoundary> */}
 </div>)
 
 }

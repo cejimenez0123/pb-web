@@ -45,7 +45,7 @@ function DashboardItem({page, book,isGrid}) {
         let index = pages.findIndex(page=>page==Enviroment.blankPage)
         let stories = payload.collection.storyIdList.map(sTc=>sTc.story)
        let back = pages.slice(index,pages.length).filter(page=>{
-return !stories.find(story=>story && page && story.id==page.id)
+return !stories.find(story=>story && page &&story.id && page.id&& story.id==page.id)
        })
 
         
@@ -82,7 +82,7 @@ return !stories.find(story=>story && page && story.id==page.id)
             if(currentProfile.profileToCollections){
             let marked = currentProfile.profileToCollections.find(ptc=>{
                 return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
-              console.log(marked)
+       
                 setBookmarked(marked)
             }
                
