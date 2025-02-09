@@ -136,14 +136,12 @@ function EditorContainer(props){
 return ()=>{
   const {page}=parameters
             if(page){
-             if(parameters.data && parameters.data.length==0 && parameters.title.length==0){
+             if(parameters.data &&parameters.title && parameters.data.length==0 && parameters.title.length==0){
          
               dispatch(deleteStory({page:page}))}
-             }else{
-              handleUpdate(parameters)
              }
           }
-    },[location.pathname])
+    },[])
     useEffect(()=>{
         if(last==PageType.picture&&htmlContent.length>5&&parameters.page && !parameters.page.id){
            let params = parameters
@@ -258,7 +256,9 @@ setError(err.message)
        
         {isSaved?<h6 className=" text-left p-1 mx-1 text-sm  ">Saved</h6>:
       <h6 className="text-left mx-1 p-1 text-sm">Draft</h6>}
-      <input type="text " className="p-2  w-[90%]  text-emerald-8  text-xl  bg-transparent font-bold" value={titleLocal} onChange={(e)=>handleTitle(e.target.value)}
+      <input type="text " 
+      className="p-2  w-[90%]  text-emerald-8  text-xl  bg-transparent font-bold"
+       value={titleLocal} onChange={(e)=>handleTitle(e.target.value)}
       
       placeholder="Untitled"/>
 

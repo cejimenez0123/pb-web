@@ -29,6 +29,7 @@ export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
     const {setError,currentProfile,setSuccess}=useContext(Context)
+    console.log(currentProfile)
     const navigate = useNavigate()
     const collection = useSelector(state=>state.books.collectionInView)
     const collections = useSelector(state=>state.books.collections)
@@ -105,7 +106,7 @@ setHasMore(false)
          
   
     const onBookmark=(type)=>{
-     
+if(currentProfile){
     switch(type){
        case "home":{
             
@@ -176,7 +177,7 @@ if(!isArchived){
         })})
     }
 }   }
-}
+}}
 
     const getSubColContent=()=>{
         let contentArr = []
@@ -607,7 +608,7 @@ if(currentProfile){
    className="rounded-full bg-emerald-800 p-2  my-auto"src={edit}/>:null}
         </div>
         
-        <div className="dropdown dropdown-left">
+    {currentProfile&&currentProfile.id?    <div className="dropdown dropdown-left">
   <div tabIndex={0} role="button" className=" m-1"> <span 
     
       className="bg-emerald-800 max-h-14 min-w-12 min-h-12 max-h-14 rounded-full flex">  
@@ -619,7 +620,7 @@ if(currentProfile){
     <li  className={isBookmarked?`bg-emerald-700 mb-1 rounded-lg text-white`:`bg-emerald-50 text-emerald-800`}onClick={()=>onBookmark("home")}><a className={`mont-medium ${isBookmarked?"text-white":"text-emerald-700"}`}> home</a></li>
     <li  className={isArchived?`bg-emerald-700 rounded-lg text-white`:`bg-emerald-50 text-emerald-800`}onClick={()=>onBookmark("archive")}><a className={`mont-medium ${isArchived?"text-white":"text-emerald-700"}`}>archive</a></li>
   </ul> 
-</div>
+</div>:null}
 </div>
 
 </span>

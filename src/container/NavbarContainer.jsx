@@ -1,4 +1,4 @@
-import React ,{ useEffect, useLayoutEffect,useState } from 'react'
+import React ,{ useContext, useEffect, useLayoutEffect,useState } from 'react'
 import { useSelector,useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
@@ -22,6 +22,7 @@ import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageAc
 import { useMediaQuery } from 'react-responsive'
 import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
+import Context from '../context.jsx'
 const PageName = {
   home: "Home",
   about:"About",
@@ -41,15 +42,15 @@ const pages = [
                 PageName.login,
                
                 ]
-function NavbarContainer({profile}){
+function NavbarContainer(props){
   const isPhone =  useMediaQuery({
     query: '(max-width: 600px)'
   })
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
-    const currentProfile= useSelector((state)=>state.users.currentProfile);
-  
+    const {currentProfile}=useContext(Context)
+   
 
 
   const [openDialog,setOpenDialog]=useState(false)
@@ -104,6 +105,7 @@ function NavbarContainer({profile}){
                                         navigate(Paths.myProfile())
                                     }else if(setting== SettingName.logout){
                                         dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
+                                          localStorage.clear()
                                           navigate("/")
                                         },err=>{
                                           
@@ -173,7 +175,7 @@ function NavbarContainer({profile}){
          
          className="z-[2]  w-52">
         
-         <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline' tabindex="0">Create</a>
+         <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline'  tabndex="0">Create</a>
            <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
              <li onClick={ClickWriteAStory}><a  >  <CreateIcon className='text-emerald-800'/></a></li>
              <li    onClick={(e)=>{
@@ -345,6 +347,7 @@ function NavbarContainer({profile}){
                                       navigate(Paths.myProfile())
                                   }else if(setting== SettingName.logout){
                                       dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
+                                        localStorage.clear()
                                         navigate("/")
                                       },err=>{
                                         

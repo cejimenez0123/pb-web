@@ -6,6 +6,7 @@ import {
             fetchProfile,
         
         } from "../../actions/UserActions" 
+import stream from "../../images/stream.svg"
 import ProfileCard from "../../components/ProfileCard"
 import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
@@ -25,6 +26,7 @@ import Paths from "../../core/paths.js"
 import { Helmet } from "react-helmet"
 import Enviroment from "../../core/Enviroment.js"
 import ErrorBoundary from "../../ErrorBoundary.jsx"
+import PageList from "../../components/page/PageList.jsx"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
     const {setError,setSuccess,currentProfile}=useContext(Context)
@@ -34,7 +36,7 @@ function ProfileContainer(props){
       })
       const [search,setSearch]=useState("")
           const dispatch = useDispatch()
-      
+    const [showPageList,setShowPageList]=useState(true)
     const pathname = useLocation().pathname
     const pathParams = useParams()
     const {id}=pathParams
@@ -134,28 +136,31 @@ function ProfileContainer(props){
     const getContent=()=>{
         dispatch(setPagesInView({pages:[]}))
             dispatch(setCollections({collections:[]}))
-            currentProfile?dispatch(getProtectedProfilePages({profile:{id}})):dispatch(getPublicProfilePages({profile:{id}}))
-           currentProfile?dispatch(getProtectedProfileCollections({profile:{id}})):dispatch(getPublicProfileCollections({profile:{id}}))
+            let token = localStorage.getItem("token")
+            token?dispatch(getProtectedProfilePages({profile:{id}})):dispatch(getPublicProfilePages({profile:{id}}))
+           token?dispatch(getProtectedProfileCollections({profile:{id}})):dispatch(getPublicProfileCollections({profile:{id}}))
      
     }
     useLayoutEffect(()=>{
         dispatch(fetchProfile(pathParams)).then(result=>{
                 checkResult(result,payload=>{
                     checkIfFollowing()
-                
+                    getContent()
                 },(err)=>{
                     setError(err.message)
                 })
         })
-        getContent()
-    },[id,currentProfile])
+      
+    },[id])
     useEffect(()=>{
         if(profile){
-            checkIfFollowing()
+           
             getContent()
         }
     },[profile])
-  
+    useLayoutEffect(()=>{
+        checkIfFollowing()
+    },[currentProfile,profile])
     const handleSearch = (value)=>{
         setSearch(value)
     }
@@ -266,9 +271,9 @@ const meta = ()=>{
   </label></span>:null}
 
 <div role="tablist" className="tabs   mb-36 rounded-lg w-[96vw] mx-auto  md:w-page tabs-boxed bg-transparent">
-    <input type="radio" name="my_tabs_2" role="tab"  defaultChecked     className="tab  hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  mx-auto md:w-page   text-xl" aria-label="Pages" />
+    <input type="radio" name="my_tabs_2" role="tab"  defaultChecked     className="tab  hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium  text-emerald-800  border-3 w-[96vw]  mx-auto md:w-page   text-xl" aria-label="Pages" />
     <div role="tabpanel" className="tab-content w-[96vw]  mx-auto md:w-page   rounded-lg border-3 ">
-        <IndexList items={pages} />
+       {showPageList?<PageList items={pages}/>: <IndexList items={pages} />}
     </div>
     <input
     type="radio"
@@ -281,13 +286,14 @@ const meta = ()=>{
   <IndexList items={collections} />
 
     </div>
-    {isPhone?<><div className=" my-auto  mx-1  flex  justify-between flex-row">
+    <><div className=" my-auto  icon mx-1  flex  justify-between flex-row">
+<img onClick={()=>setShowPageList(!showPageList)} src={stream}/>
 
- <img src={sortAlphabet} onClick={handleAlphaClick} height={"50px"} width={"50px"}
- className="my-auto text-emerald-800 mx-2 "/>
+ <img src={sortAlphabet} onClick={handleAlphaClick} 
+ className="my-auto text-emerald-800 icon mx-2 "/>
     <img src={sortTime?clockArrowUp:clockArrowDown} onClick={handleTimeClick} 
-    className="my-auto text-emerald-800"/>
-    </div></> :null}
+    className="my-auto icon text-emerald-800"/>
+    </div></> 
                </div>
 </div>
 </ErrorBoundary>

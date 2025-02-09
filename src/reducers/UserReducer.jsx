@@ -171,16 +171,13 @@ const userSlice = createSlice({
         state.followedProfiles = payload.followList
         }
     })
-    // .addCase(createFollowProfile.rejected,(state,{payload})=>{
-    //     state.error = payload.error
-    // }).addCase(createFollowProfile.fulfilled,(state,{payload})=>{
-    //     state.followedProfiles = [...state.followedProfiles,payload.followProfile]
-    // })
+
     .addCase(signOutAction.fulfilled,(state,{payload})=>{
+
         state.currentProfile = null
-        localStorage.clear()
         state.loading = false
         state.signedIn = false
+        
       
     }).addCase(signOutAction.rejected,(state,{payload})=>{
         state.error = payload.error

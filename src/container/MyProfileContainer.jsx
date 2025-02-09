@@ -27,6 +27,7 @@ import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCo
 import Context from '../context';
 import DescriptionDialog from '../components/page/FeedbackDialog';
 import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache.jsx';
+import ErrorBoundary from '../ErrorBoundary.jsx';
 
 function MyProfileContainer(props){
     const navigate = useNavigate()
@@ -43,6 +44,9 @@ function MyProfileContainer(props){
    
     const pages =useSelector(state=>[...state.pages.pagesInView]
     ).filter(page=>{
+      if(search.toLowerCase()=="untitled"){
+        return page.title.length==0
+      }
       if(search.length>0){
        return page.title.toLowerCase().includes(search.toLowerCase())
       }else{
@@ -70,7 +74,7 @@ function MyProfileContainer(props){
  
     })
  
-    const handleTimeClick=debounce(()=>{
+const handleTimeClick=debounce(()=>{
         
         let newValue = !sortTime
         setSortTime(newValue)
@@ -249,6 +253,7 @@ if(currentProfile){
 }
     
             return(
+              <ErrorBoundary fallback={"error"}>
             <div className='md:pb-72 pt-4 md:pt-8'>
      
                     <div className=' flex flex-col relative  justify-start md:flex-row md:justify-between border-4 border-emerald-300  pb-4 max-w-[94vw] mx-auto sm:h-info sm:w-info  sm::mx-auto mt-2  rounded-lg'>
@@ -266,7 +271,7 @@ if(currentProfile){
                            <div className='max-h-[100%] flex'>
                            <div className='p-4' >
                             <div className='my-4 h-[15em]'>
-                           {currentProfile? <ProfileInfo profile={currentProfile}/>:null}
+                           <ProfileInfo profile={currentProfile}/>
                            </div>
                         <MediaQuery maxWidth={'600px'}>
 
@@ -326,15 +331,15 @@ className=" text-emerald-800 mx-2  "/>
    className="text-emerald-800 mx-2 "/>
    </span></span>:null}
  <br/>
-                {/* <div className='md:w-page w-[96vw] '>  */}
+             
   
                             <div className='w-[96vw] md:mt-8  flex flex-col mx-auto md:w-page'>
 
                          
-                            <div role="tablist" className="tabs  w-[96vw] mx-auto md:w-page items-start ">
+                            <div role="tablist" className="tabs mx-auto w-[100%] items-start ">
                             
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Pages" />
-   <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
+   <div role="tabpanel" className="tab-content  pt-1 lg:py-4  md:w-page w-[96vw]  rounded-lg md:mx-auto  ">
   <IndexList items={pages} handleFeedback={item=>{
     setFeedbackPage(item)
     dispatch(setPageInView({page:item}))
@@ -348,17 +353,18 @@ className=" text-emerald-800 mx-2  "/>
     className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 text-xl" aria-label="Books"
     />
   <div role="tabpanel" 
-   className="tab-content  pt-1 lg:py-4 rounded-lg  max-w-[96vw] md:w-page md:mx-auto border-l-4  rounded-full   w-[96vw]  md:w-page ">
+   className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page w-[96vw]  md:w-page mx-auto rounded-full">
   <IndexList items={books}/>
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab   bg-transparent  border-3 mx-auto [--tab-bg:emerald] mont-medium text-emerald-800  rounded-full  [--tab-border-color:emerald] border-2  text-xl" aria-label="Libraries" />
-  <div role="tabpanel"  className="tab-content  pt-1 lg:py-4 rounded-lg  w-[100%] md:w-page ">
+  <input type="radio" name="my_tabs_2" role="tab" className="tab   bg-transparent border-3 mx-auto [--tab-bg:emerald] mont-medium text-emerald-800  rounded-full  [--tab-border-color:emerald] border-2  text-xl" aria-label="Libraries" />
+  <div role="tabpanel"  className="tab-content md:w-page w-[96vw] pt-1 lg:py-4  ">
     <IndexList items={libraries}/>
   </div>
-  {isNotPhone? <span className='flex flex-row'> <label className='flex border-emerald-600 border-2 rounded-full my-1 max-w-[14em] flex-row mx-4 '>
+  {isNotPhone? <span className='flex flex-row'> <label className={`flex border-emerald-600 border-2 rounded-full my-1 ${search.length==0?"w-[14em]":"w-[20em]"} flex-row mx-4 `}>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2   w-full  py-1 text-sm bg-transparent my-1  text-emerald-800' />
-  </label><span className=" mx-1  w-24 flex  items-end pb-4 justify-evenly flex-row">
+  <input type='text' value={search}  onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 rounded-full text-sm bg-transparent my-1  text-emerald-800' />
+  </label>
+  <span className={`${search.length==0?"":"hidden"} mx-1  w-24 flex  items-end pb-4 justify-evenly flex-row`}>
 
 <img src={sortAlphabet} onClick={handleAlphaClick} height={"30px"} width={"30px"}
 className=" text-emerald-800 mx-2  "/>
@@ -412,7 +418,7 @@ handleClose={()=>{
               </Dialog>
 </div>
 </div>      
-
+</ErrorBoundary>
         )
      
         

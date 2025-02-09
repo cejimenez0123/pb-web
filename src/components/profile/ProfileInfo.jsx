@@ -8,6 +8,7 @@ import clear from "../../images/icons/clear.svg"
 import { useParams } from "react-router-dom"
 import { Dialog } from "@mui/material"
 import FollowerCard from "./FollowerCard"
+import isValidUrl from "../../core/isValidUrl"
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [followersDialog,setFollowersDialog]=useState(false)
@@ -17,12 +18,13 @@ const ProfileInfo = ({profile})=>{
       })
     useEffect( ()=>{
 
-        if(!profile.profilePic.includes("http")){
+        if(profile && !isValidUrl(profile.profilePic)){
             getDownloadPicture(profile.profilePic).then(url=>{
                
                 setPictureUrl(url)
             })
-        }else{
+        }else if(profile){
+          
             setPictureUrl(profile.profilePic)
         }
         
@@ -31,6 +33,9 @@ const ProfileInfo = ({profile})=>{
     useEffect(()=>{
         setFollowersDialog(false)
     },{id})
+    if(!profile){
+        return <div className="skeleton h-[100%] w-24"/>
+    }
     return (  
         <div className="flex h-[100%] flex-col justify-between">                       
     <div className='flex-row    mx-auto   flex  '>
