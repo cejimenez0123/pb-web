@@ -619,6 +619,7 @@ if(currentProfile){
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-[1] w-52 p-2 shadow">
     <li  className={isBookmarked?`bg-emerald-700 mb-1 rounded-lg text-white`:`bg-emerald-50 text-emerald-800`}onClick={()=>onBookmark("home")}><a className={`mont-medium ${isBookmarked?"text-white":"text-emerald-700"}`}> home</a></li>
     <li  className={isArchived?`bg-emerald-700 rounded-lg text-white`:`bg-emerald-50 text-emerald-800`}onClick={()=>onBookmark("archive")}><a className={`mont-medium ${isArchived?"text-white":"text-emerald-700"}`}>archive</a></li>
+    <li  className={`bg-emerald-50 text-emerald-800`}onClick={()=>navigate(Paths.addStoryToCollection.collection(collection.id))}><a className={`mont-medium text-emerald-700 `}>other</a></li>
   </ul> 
 </div>:null}
 </div>

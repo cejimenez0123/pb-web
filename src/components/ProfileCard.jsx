@@ -44,8 +44,13 @@ export default function ProfileCard({profile,onClickFollow,following}){
     useEffect(()=>{
         setFollowersDialog(false)
     },[id])
-        if(profile!=null){
-      return(<div className="pb-8 border-3 rounded-lg  w-[96vw] lg:h-info mx-auto lg:w-info border-emerald-400">
+    if(!profile||!profile.id){
+    
+            return <div className=" skeleton  w-[96vw] auto mx-auto md:w-info h-info"/>
+         
+    }
+    if(profile){
+      return(<div className="pb-8 border-3 rounded-lg  w-[96vw] md:h-info mx-auto md:w-info border-emerald-400">
         <div className="text-left p-4">
             <div className="flex flex-row">
               <div>  
@@ -82,8 +87,6 @@ onClose={()=>{
         </div>
         </Dialog>
         </div>)
-    }else{
-       return <div className=" skeleton profile-card"/>
     }
     
     
