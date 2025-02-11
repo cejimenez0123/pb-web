@@ -10,6 +10,10 @@ class AuthRepo{
        let res = await axios.post(Enviroment.url+"/auth/apply",form,{headers:this.headers})
        return res.data
     }
+    async newsletter(form){
+        let res = await axios.post(Enviroment.url+"/auth/newsletter",form)
+        return res.data
+     }
     async user({token}){
         let res = await axios.get(Enviroment.url+"/auth/user",{
             headers:{

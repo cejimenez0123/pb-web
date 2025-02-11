@@ -1,5 +1,5 @@
-import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useState,useEffect, useContext } from "react";
+import { useLocation, useNavigate,  useSearchParams } from "react-router-dom";
+import { useState,useEffect, useContext,useRef } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture} from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
@@ -8,16 +8,15 @@ import info from "../../images/icons/info.svg"
 import "../../App.css"
 import { signUp } from "../../actions/UserActions";
 import Context from "../../context";
-export default function SignUpContainer(props){
+export default function UserReferralContainer(props){
     const location = useLocation();
-  
-    
-    const [token, setToken] = useState('');
+    const query = new URLSearchParams(location.search);
+    const selectRef = useRef()
+    const [token, setToken] = useState(query.get("token"));
     const [password,setPassword]=useState("")
     const navigate = useNavigate()
     const [username,setUsername]=useState("")
     const searchParams = useSearchParams()
-    const selectRef = useRef()
     const [confirmPassword,setConfirmPassword]=useState("")
     const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
     const [selfStatement,setSelfStatement]=useState("")
@@ -119,7 +118,15 @@ setToken(token)
         <h2 className='text-green-100 lora-medium text-4xl text-center mx-auto pt-8  px-4 md:pt-24 md:pb-8'>Complete Sign Up</h2>
         </div>
         <div className='pb-4 mx-auto'>
-   
+      
+        <label className="input lora-medium text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
+Email
+  <input className="grow text-white mx-2 " 
+         value={username}
+         placeholder="example@ex.com"
+         onChange={(e) => setUsername(e.target.value.trim())}
+         />
+</label>
             <label className="input lora-medium text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
   Username
   <input className="grow text-white mx-2 " 

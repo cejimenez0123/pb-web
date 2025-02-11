@@ -120,16 +120,17 @@ const stayInLoop=()=>{
 
 <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
 <h2 className="mx-4 my-2 open-sans-medium  text-l">Follow the Journey</h2>
-<div className="flex open-sans-medium   text-l texg-left leading-loose tracking-loose">
+<div className="flex open-sans-medium  mx-auto text-l texg-left leading-loose tracking-loose">
 <a href="https://www.instagram.com/plumbumapp">@plumbumapp</a> |<a href="https://www.instagram.com/bxwriters"> @bxwriters</a></div>
-<a className="text-l" onClick={()=>navigate(Paths.apply())}>[→ Subscribe to Our Newsletter and be a beta user]</a>
+<a className="text-l" onClick={()=>navigate(Paths.newsletter())}>[→ Subscribe to Our Newsletter]</a>
         </div>)
 }
 const userTestimonial=()=>{
     return(<div><h6 className="text-[2rem] lora-bold">Real Writers, Real Growth</h6>
+    
 <div className="px-4 my-4">
-        <h6 className="lora-medium text-[1.2rem]"><em>"Accepts people just as they are"</em></h6>
-        — [Nate ]</div></div>)
+        <h6 className="lora-medium text-[1.2rem]"><em>"Plumbum.app Workshops have been impactful in helping me to build community and network with poets from across the New York City and the Tri-State area. I walk away from these workshops with quality feedback and so many new ways to think about my work. Plumbum’s goal of supporting writers with their craft is clear and quite effective with the supportive environment to match."</em></h6>
+        — [Rob P. ]</div></div>)
 }
 
     return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
@@ -173,12 +174,15 @@ src={groupJpg} alt="group pic"
     {writingJourney()}
 </div>
 <div className="text-emerald-700">
-    {stayInLoop()}
-    {/* {userTestimonial()} */}
+  
+    {userTestimonial()}
 </div>
 
    
 </div>   <div className="text-[1rem] mx-auto text-center mt-12 text-emerald-700  ">
+    <div className="text-center">
+    {stayInLoop()}
+    </div>
 <div className="text-2xl flex text-white max-w-[30em] mx-auto my-12   bg-gradient-to-r from-emerald-400 to-emerald-600  rounded-full  px-5 py-4" onClick={()=>{navigate(Paths.apply())}} >
      <h5 className="mx-auto mont-medium text-xl tracking-wide my-auto">Apply to Join Today</h5>
      </div>

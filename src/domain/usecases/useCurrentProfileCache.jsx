@@ -8,14 +8,17 @@ export default function usePersistentCurrentProfile(fetchData) {
       return saved ? JSON.parse(saved) :null;
     });
   
+    let token = localStorage.getItem("token")
 
     useEffect(() => {
-      let token = localStorage.getItem("token")
+      
       if(token){fetchData().then(res=>checkResult(res,payload=>{
         setProfile(payload.profile)
         localStorage.setItem(key, JSON.stringify(payload.profile));
-      }))} }
-    ,[location.pathname]);
+      }))}else{
+        setProfile(null)
+      }}
+    ,[token]);
 
     return profile;
   }

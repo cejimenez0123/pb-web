@@ -15,7 +15,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
     }else{
         more=hasMore
     }
-    const pagesInView = items??useSelector(state=>state.pages.pagesInView)
+    const pagesInView = items??useSelector(state=>state  && state.pages && state.pages.pagesInView? state.pages.pagesInView:[])
     const isNotPhone = useMediaQuery({
         query: '(min-width: 768px)'
       })

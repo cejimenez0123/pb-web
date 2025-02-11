@@ -86,12 +86,12 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
-      const{email,token,password,username,profilePicture,selfStatement,privacy}=params
+      const{email,token,frequency,password,username,profilePicture,selfStatement,privacy}=params
 
       try {
         
           const userCred = await  createUserWithEmailAndPassword(auth, email, password)
-          let data = await profileRepo.register({uId:userCred.user.uid,token,email,password,username,profilePicture,selfStatement,privacy})
+          let data = await profileRepo.register({uId:userCred.user.uid,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
            
         
             if(!privacy){
@@ -107,7 +107,7 @@ const signUp = createAsyncThunk(
       }
     } catch (error){
         try{
-          let data = await profileRepo.register({token,password,username,profilePicture,selfStatement,privacy})
+          let data = await profileRepo.register({token,frequency,password,username,profilePicture,selfStatement,privacy})
           localStorage.setItem("token",data.token)
           client.initIndex("profile").saveObject({ objectID:data.profile.id,
             username:username,

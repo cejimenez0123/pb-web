@@ -43,7 +43,8 @@ import { useSelector } from 'react-redux';
 import NotFound from './container/NotFound.jsx';
 import EmailPreferences from './container/EmailPreferences.jsx';
 import FeedbackContainer from './container/FeedbackContainer.jsx';
-import NewsletterContainer from './container/NewsletterContainer.jsx';
+import NewsletterContainer from './container/auth/NewsletterContainer.jsx';
+import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 function App(props) {
 
   const dispatch = useDispatch()
@@ -145,6 +146,8 @@ function App(props) {
      element={<CollectionContainer/>}/>
      <Route path={'/signup'}
      element={<LoggedRoute><SignUpContainer/></LoggedRoute>}/>
+       <Route path={'/register'}
+     element={<LoggedRoute><UserReferralContainer/></LoggedRoute>}/>
        <Route path={Paths.feedback()}
      element={<FeedbackContainer/>}/>
      <Route path={Paths.addToCollection.route}

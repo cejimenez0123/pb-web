@@ -154,7 +154,6 @@ function ProfileContainer(props){
     },[id])
     useEffect(()=>{
         if(profile){
-           
             getContent()
         }
     },[profile])

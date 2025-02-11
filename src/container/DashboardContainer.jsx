@@ -7,7 +7,7 @@ import PageList from '../components/page/PageList'
 import ExploreList from '../components/collection/ExploreList.jsx'
 import { fetchCollectionProtected, getRecommendedCollectionsProfile } from '../actions/CollectionActions'
 import { useLocation } from 'react-router-dom'
-import {  appendToPagesInView, setPagesInView } from '../actions/PageActions'
+import {  appendToPagesInView, setPageInView, setPagesInView, } from '../actions/PageActions'
 import { setCollections } from '../actions/CollectionActions'
 import Context from '../context.jsx'
 import checkResult from '../core/checkResult.js'
@@ -19,7 +19,8 @@ function DashboardContainer(props){
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)
     const homeCol = useSelector(state=>state.books.collectionInView)
-    const stories = useSelector(state=>state.pages.pagesInView)
+    const stories = useSelector(state=>state.pages.pagesInView??[])
+
     const recommendedStories = useSelector(state=>state.pages.recommendedStories)
     const {currentProfile}=useContext(Context)
     const [hasMore,setHasMore] = useState(false)
@@ -34,7 +35,7 @@ function DashboardContainer(props){
 
     }
     const getHomeCollectionContent=()=>{
-   
+   dispatch(setPagesInView({pages:[]}))
 if(currentProfile&&currentProfile.profileToCollections){
     let ptc= currentProfile.profileToCollections.find(ptc=>ptc.type=="home")
     if(ptc){
@@ -42,11 +43,39 @@ if(currentProfile&&currentProfile.profileToCollections){
             checkResult(res,payload=>{
                     if(payload.collection){
                         const{collection}=payload
-                        let stories = []
+                        let pages = []
                         if(collection && collection.storyIdList){
-                            stories = collection.storyIdList.map(stc=>stc.story)
+                           pages = collection.storyIdList.map(stc=>stc.story)
+
                         }
-                        dispatch(appendToPagesInView({pages:stories}))
+                        if(collection && collection.childCollections){
+                            let contentArr = []
+    
+                                let cols = collection.childCollections
+                                for(let i=0;i<cols.length;i+=1){
+                                    if(cols[i]){
+                                   let col =cols[i].childCollection
+                                   if(col && col.storyIdList){
+                             
+                                       contentArr= [...contentArr,...col.storyIdList]
+                                    
+                                   }
+                                    
+                                   }
+                                
+                            }
+                     
+                        const sorted = [...pages,...contentArr].sort((a,b)=>
+                                
+                                a.updated && b.updated && b.updated>a.updated
+                           
+                                   ).map(stc=>stc.story)
+                                
+                         dispatch(appendToPagesInView({pages:sorted}))
+                      
+                        }
+                        // console.log(stories)
+                        // dispatch(appendToPagesInView({pages:stories}))
                     }
             },err=>{
 
