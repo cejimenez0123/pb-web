@@ -68,9 +68,9 @@ setToken(token)
                 dispatch(signUp(params))
 
                 .then(res=>checkResult(res,payload=>{
-             
+                  
                    if(payload.profile){navigate(Paths.myProfile())}else{
-                   
+                   localStoage.setItem("firstTime",payload.firstTime)
                     setSuccess(null)
                    }
                    if(payload.error){
@@ -93,8 +93,10 @@ setToken(token)
       dispatch(signUp(params))
         .then(res=>checkResult(res,payload=>{
             const {profile}=payload
-           
-           if(profile){navigate(Paths.myProfile())}
+            localStorage.setItem("firstTime",payload.firstTime)
+           if(profile){
+            
+            navigate(Paths.myProfile())}
            else{
             setSuccess(null)
             setError("Try reusing the link")

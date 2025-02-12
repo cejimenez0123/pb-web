@@ -7,7 +7,7 @@ import { getMyCollections,setCollections } from '../actions/CollectionActions';
 import notifications from "../images/icons/notifications.svg"
 import settings from "../images/icons/settings.svg"
 import IndexList from '../components/page/IndexList';
-
+import authRepo from '../data/authRepo.js';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
@@ -16,8 +16,7 @@ import clockArrowUp from "../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../images/icons/clock_arrow_down.svg"
 import { setPageInView, setPagesInView, setEditingPage  } from '../actions/PageActions.jsx';
 import ReactGA from "react-ga4"
-
-import {Dialog} from "@mui/material"
+import {Dialog,DialogActions,Button} from "@mui/material"
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
 import ReferralForm from '../components/auth/ReferralForm';
@@ -28,7 +27,7 @@ import Context from '../context';
 import DescriptionDialog from '../components/page/FeedbackDialog';
 import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-
+import copyContent from "../images/icons/content_copy.svg"
 function MyProfileContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -37,11 +36,20 @@ function MyProfileContainer(props){
     const [sortAlpha,setSortAlpha]=useState(true)
     const [sortTime,setSortTime]=useState(true)
     const [description,setFeedback]=useState("")
+    const [referralLink,setReferralLink]=useState(null)
+   
+    const [firstLogin,setFirstLogin]=useState(localStorage.getItem("firstTime")=="true")
     const stories = usePersistentMyStoriesCache(()=>{
       dispatch(setPagesInView({pages:[]}))
       return dispatch(getMyStories())
     })
-   
+       const generateReferral=()=>{
+        authRepo.generateReferral().then(data=>{
+          
+            if(data.referralLink){
+            setReferralLink(data.referralLink)
+            }
+        })}
     const pages =useSelector(state=>[...state.pages.pagesInView]
     ).filter(page=>{
       if(search.toLowerCase()=="untitled"){
@@ -187,7 +195,14 @@ params.page = feedbackPage
 
  })})}
    
+ const copyToClipboard=()=>{
+  navigator.clipboard.writeText(referralLink)
+  .then(() => {
+      onClose()
+      setSuccess('Link Copied to clipboard');
 
+    })
+}
 
     const ClickWriteAStory = debounce(()=>{
       if(currentProfile){
@@ -415,6 +430,39 @@ handleClose={()=>{
           <ReferralForm onClose={()=>{
             setOpenRefferal(false)
           }}/>
+              </Dialog>
+              <Dialog
+               fullScreen={isPhone}
+               open={firstLogin}
+               onClose={()=>{
+                setFirstLogin(false)
+               }}
+              >
+                <div className='card  bg-emerald-50 px-4 py-4 h-[100%] md:min-w-72 md:min-h-72'>
+                <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Welcome to Plumbum! 🎉</h1>
+        <p class="text-lg text-gray-600 mb-4">You’ve just joined a community built for writers like you—a space to share, connect, and grow with fellow creatives.</p>
+        <p class="text-lg text-gray-600 mb-4">To get the best experience, invite your friends so they can keep up with your work and be part of your creative journey.</p>
+        
+        <div class="text-center">
+        <span className="rounded-full btn flex mb-4 text-center border-none text-lg mont-medium text-white px-4  bg-gradient-to-r 
+from-emerald-400 to-emerald-600 "
+onClick={generateReferral}>
+    <h6 >Create Referral Link</h6></span>    
+            {referralLink?
+            <h6 className='flex-row  min-h-12 flex'><a onClick={copyToClipboard} className='text-nowrap  my-auto overflow-hidden text-ellipsis '>{referralLink}</a>
+            <img onClick={copyToClipboard} src={copyContent}  className="my-auto icon "/></h6>
+            :null}
+        </div>
+        
+        <p class="text-center text-sm text-gray-500 mt-4">Share it with the people who inspire and support your writing! ✨</p>
+               <DialogActions>
+         
+        <Button onClick={()=>{
+          localStorage.getItem("firstTime",false)
+          setFirstLogin(false)}} ><span className="mont-medium">Close</span></Button>
+     
+               </DialogActions>
+                </div>
               </Dialog>
 </div>
 </div>      

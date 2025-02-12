@@ -268,7 +268,7 @@ console.log(profile)
      if(!pending){
             return(<div >
                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
-                      <label className="text-left flex flex-col lora-medium"><h4 className="text-l">Username:</h4>
+                      <label className="text-left flex flex-col mont-medium"><h4 className="text-xl">Username:</h4>
                             <input type="text"   
                                         className={" text-xl px-4 py-2 rounded-full  open-sans-medium text-emerald-800 bg-transparent border-2 border-emerald-800 border-2  "}
                                         value={newUsername}
@@ -278,7 +278,7 @@ console.log(profile)
                                           <div className='file'>
                    
                         <input
-    className="file-input my-8 mx-auto "
+    className="file-input max-w-72 my-8 mx-auto "
         type="file"
         accept="image/*"
         onInput={(e)=>handleProfilePicture(e)}/>
@@ -298,7 +298,7 @@ console.log(profile)
                     </div>
                     
                             <label className="text-left mt-4 " id="" >
-                                <h6 className="lora-medium text-xl">Self Statement:</h6>
+                                <h6 className="mont-medium text-xl">Self Statement:</h6>
                                
                                     <textarea
                                     onChange={(e)=>{setSelfStatement(e.target.value)}}

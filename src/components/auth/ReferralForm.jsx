@@ -1,10 +1,9 @@
 import { useContext, useState } from "react"
 import authRepo from "../../data/authRepo"
 import Context from "../../context"
-
+import close from "../../images/icons/clear.svg"
 import copyContent from "../../images/icons/content_copy.svg"
-
-
+import {DialogActions,Button} from "@mui/material"
 export default function ReferralForm({onClose}){
     const [name,setName]=useState("")
     const [email,setEmail]=useState("")
@@ -34,16 +33,17 @@ export default function ReferralForm({onClose}){
           })
     }
     return(   <div className="flex flex-col md:min-w-[30em] md:min-h-[40em] m-1 px-3 py-4">
-<h1 className="mx-auto lora-bold text-xl">Refer Someone Today</h1>
+        
+<h1 className="mx-auto mont-bold text-emerald-800 mb-8 text-xl">Refer Someone Today</h1>
 <span className="rounded-full btn flex text-center border-none text-lg mont-medium text-white px-4  bg-gradient-to-r 
 from-emerald-400 to-emerald-600  "
 onClick={generateReferral}>
-    <h6 className="">Create Referral Link</h6></span>
+    <h6 className="text-xl">Create Referral Link</h6></span>
     
         {pending?<img src={loadingGif} className="icon"/>:referralLink.trim().length>0?
         <span className="flex my-6"><input type="text" 
-         value={referralLink} disabled className="bg-transparent border-2 border-emerald-800 py-4 px-4 rounded-full text-lg md:text-xl "/><img src={copyContent} onClick={copyToClipboard} className="icon"/></span>:<div className="icon"/>}
-          <h3 className="text-emerald-800 mont-medium text-l  py-4 mt-3 mx-auto text-opacity-70">OR</h3>
+         value={referralLink} disabled className="bg-transparent w-[100%] border-2 border-emerald-800 py-4 px-4 rounded-full text-lg md:text-xl "/><img src={copyContent} onClick={copyToClipboard} className="icon"/></span>:<div className="icon"/>}
+          <h3 className="text-emerald-800 mont-medium text-xl  py-4 mt-3 mx-auto text-opacity-70">OR</h3>
           <label className="text-emerald-800 mx-4 text-lg mont-medium mt-3">
             Name
         </label>
@@ -57,8 +57,10 @@ onClick={generateReferral}>
         <input 
         value={email}
         onChange={(e)=>setEmail(e.target.value.toLocaleLowerCase().trim())}
-        className='text-xl my-4 rounded-full px-2 py-4 open-sans-medium bg-transparent border-2 bordr-emerald-800 text-emerald-800 w-[100%]' type='text'/>
-        <div className=" rounded-full mont-medium  h-12 mx-auto  py-2 flex bg-gradient-to-r md:w-[20em] from-emerald-600 to-emerald-500 text-emerald-800 " onClick={handleClick}><h6 className="text-emerald-800 mx-auto text-xl mx-auto  py-4 text-white my-auto">Submit</h6></div>
-     
+        className='text-xl my-4 rounded-full px-2 py-4 open-sans-medium bg-transparent border-2 border-emerald-800 text-emerald-800 w-[100%]' type='text'/>
+        <div className=" rounded-full mont-medium  h-12 mx-auto  py-2 flex bg-gradient-to-r w-[20em] from-emerald-600 to-emerald-500 text-emerald-800 " onClick={handleClick}><h6 className="text-emerald-800 mx-auto text-[1.2rem] mx-auto  py-4 text-white my-auto">Submit</h6></div>
+     <DialogActions>
+        <Button onClick={onClose}>Close</Button>
+     </DialogActions>
      </div>)
 }
