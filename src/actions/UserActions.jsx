@@ -82,12 +82,14 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
         profile:null
    }
 })
-// https://plumbum.app/register?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWZlcnJhbElkIjoiNjdhYzEyZGMwZjE0ZTIxZTc0YTg5YTA0IiwiaWF0IjoxNzM5MzMwMjY4fQ.41sGfrPmpa0BRoAeChd_h5lzfQyBSJUH-BcmIL0A8Eg
 const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=>{
     let data = await authRepo.useReferral(params)
+    if(data.profile&&!data.profile.isPrivate){
+      const {profile}=data
+      client.initIndex("profile").partialUpdateObject({objectID: profile.id,usernamename:profile.username,type:"profile"},{createIfNotExists:true}).wait()
+    }
     return data
 })
-// https://plumbum.app/register?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWZlcnJhbElkIjoiNjdhYzFhZGEzYTc4YTNjNTEwZDM3OTc3IiwiaWF0IjoxNzM5MzMyMzE0fQ.lnNvT0VD_Th7oh-Id4AiqaXNThUtohkH2jbI808t2js
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
