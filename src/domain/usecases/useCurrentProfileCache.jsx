@@ -12,7 +12,8 @@ export default function usePersistentCurrentProfile(fetchData) {
 
     useEffect(() => {
       
-      if(token){fetchData().then(res=>checkResult(res,payload=>{
+      if(token){
+        fetchData().then(res=>checkResult(res,payload=>{
         setProfile(payload.profile)
         localStorage.setItem(key, JSON.stringify(payload.profile));
       }))}else{

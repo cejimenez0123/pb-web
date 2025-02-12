@@ -139,7 +139,7 @@ function App(props) {
        }
      />
           <Route path={Paths.newsletter() }
-     element={<NewsletterContainer/>}/>
+     element={<LoggedRoute><NewsletterContainer/></LoggedRoute>}/>
      <Route path={'/reset-password' }
      element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
@@ -238,7 +238,7 @@ function App(props) {
 
       <Route path="/profile/edit" element={
         
-        <PrivateRoute loading={props.userLoading} loggedIn={props.currentProfile}>
+        <PrivateRoute >
         <SettingsContainer />
         </PrivateRoute>
       }/>

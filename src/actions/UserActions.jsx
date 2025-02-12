@@ -82,7 +82,12 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
         profile:null
    }
 })
-
+// https://plumbum.app/register?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWZlcnJhbElkIjoiNjdhYzEyZGMwZjE0ZTIxZTc0YTg5YTA0IiwiaWF0IjoxNzM5MzMwMjY4fQ.41sGfrPmpa0BRoAeChd_h5lzfQyBSJUH-BcmIL0A8Eg
+const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=>{
+    let data = await authRepo.useReferral(params)
+    return data
+})
+// https://plumbum.app/register?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWZlcnJhbElkIjoiNjdhYzFhZGEzYTc4YTNjNTEwZDM3OTc3IiwiaWF0IjoxNzM5MzMyMzE0fQ.lnNvT0VD_Th7oh-Id4AiqaXNThUtohkH2jbI808t2js
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
@@ -447,15 +452,8 @@ const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfiles
 const deleteUserAccounts = createAsyncThunk("users/deleteUserAccounts",async (params,thunkApi)=>{
 
   try{
-    const uId =auth.currentUser.uid
-   let snapshot = await getDocs(
-      query(collection(db, "profile"),
-      where("userId", "==",uId)))    
-      const pack =  snapshot.docs[0].data() 
-      let id = pack["id"]
-      deleteDoc(doc(db,"profile",id))
-      client.initIndex("profile").deleteObject(id).wait()
-      auth.currentUser.delete()
+    await authRepo.deleteUser()
+
     return {
       code: 200
     }
@@ -516,7 +514,7 @@ export {logIn,
   
         fetchFollowProfilesForProfile,
         signOutAction,
-
+        useReferral,
         uploadPicture,
         deleteUserAccounts,
         fetchHomeCollection,

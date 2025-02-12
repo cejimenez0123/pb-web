@@ -19,6 +19,8 @@ import {    logIn ,
             searchDialogToggle,
             searchMultipleIndexes,
             updateProfile,
+            useReferral,
+            deleteUserAccounts,
         
         } from "../actions/UserActions"
 import { createProfile, fetchProfiles } from "../actions/ProfileActions"
@@ -54,6 +56,13 @@ const userSlice = createSlice({
             state.loading=false
         }).addCase(fetchProfiles.pending,(state,{payload})=>{
             state.loading = true
+        }).addCase(useReferral.fulfilled,(state,{payload})=>{
+            if(payload.profile){
+                state.currentProfile = payload.profile
+            }
+        }).addCase(deleteUserAccounts.fulfilled,(state,{payload})=>{
+            state.currentProfile = null
+            localStorage.clear()
         }).addCase(postActiveUser.fulfilled,(state,{payload})=>{
             state.profilesInView = payload.profiles
     

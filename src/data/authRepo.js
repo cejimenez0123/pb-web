@@ -23,10 +23,10 @@ class AuthRepo{
         console.log(res)
         return res.data
     }
-    async referral({email,name}){
+    async generateReferral(){
 
       
-        let res = await axios.post(Enviroment.url+"/auth/referral",{email,name},{
+        let res = await axios.post(Enviroment.url+"/auth/generate-referral",{},{
             headers:{
                 Authorization:"Bearer "+localStorage.getItem("token")
             }
@@ -57,7 +57,22 @@ class AuthRepo{
         return res.data
     }
 
-  
+       async useReferral({token, email, password ,username,profilePicture,selfStatement,isPrivate}){
+       let res = await axios.post(Enviroment.url+"/auth/use-referral",{token, email, password ,username,profilePicture,selfStatement,isPrivate})
+        return res.data    
+    }
+    async deleteUser(){
+        let res = await axios.delete(Enviroment.url+"/auth/",{headers:{
+            Authorization:"Bearer "+localStorage.getItem("token")
+        }})
+         return res.data    
+     }
+     async checkUsername(query){
+        let parms = new URLSearchParams({username:query})
+        let res = await axios.get(Enviroment.url+"/auth/check-username?"+parms.toString())
+     
+        return res.data
+    }
     }
 
 export default new AuthRepo()

@@ -6,15 +6,18 @@ import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
 import info from "../../images/icons/info.svg"
 import "../../App.css"
-import { signUp } from "../../actions/UserActions";
+import {  useReferral } from "../../actions/UserActions";
 import Context from "../../context";
-export default function UserReferralContainer(props){
+import authRepo from "../../data/authRepo";
+import { debounce } from "lodash";
+export default function UseReferralContainer(props){
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const selectRef = useRef()
     const [token, setToken] = useState(query.get("token"));
     const [password,setPassword]=useState("")
     const navigate = useNavigate()
+    const [email,setEmail]=useState("")
     const [username,setUsername]=useState("")
     const searchParams = useSearchParams()
     const [confirmPassword,setConfirmPassword]=useState("")
@@ -24,7 +27,37 @@ export default function UserReferralContainer(props){
     const {error,setError,setSuccess,success}=useContext(Context)
     const [frequency,setFrequency]=useState(1)
     const [isPrivate,setIsPrivate]=useState(false)
-    const [email,setEmail]=useState("")
+    const [usernameUnique,setUsernameUnique]=useState(true)
+    const [canUser,setCanUser]=useState(false)
+    const handleUsername=(e)=>{
+      setUsername(e.target.value.trim())
+    
+    }
+    useEffect(()=>{
+      if(confirmPassword==password){
+        if(username.length>4){
+        setCanUser(usernameUnique)
+        }else{
+          setCanUser(false)
+        }
+      }else{
+        setCanUser(false)
+      }
+    },[usernameUnique,password,confirmPassword])
+    useEffect(()=>{
+     debounce(()=>{
+      if(username.length>0){
+      authRepo.checkUsername(username).then(data=>{
+   
+        if(data){
+      setUsernameUnique(data.available)
+        }else{
+          setUsernameUnique(false)
+        }
+      })}
+    }
+      ,[10])()
+    },[username])
     const handleFileInput = (e) => {
     const img = e.target.files[0];
 
@@ -59,15 +92,20 @@ setToken(token)
      if(!toke){
       toke = token
      }
+
     if( password.length>6&&username.length>3){
+
         if(file){
         dispatch(uploadProfilePicture({file:file})).then(res=>checkResult(res,payload=>{
                 const{fileName}=payload
-                const params = {email,token:toke,password,username,frequency,profilePicture:fileName,selfStatement,privacy:isPrivate}
-                dispatch(signUp(params))
+                const params = {email:email,token:toke,password:password,username:username,frequency:frequency,profilePicture:fileName,selfStatement:selfStatement,isPrivate:isPrivate}
+      
 
+                        dispatch(useReferral(params))
+                    
                 .then(res=>checkResult(res,payload=>{
-             
+       
+                    localStorage.setItem("token",payload.token)
                    if(payload.profile){navigate(Paths.myProfile())}else{
                    
                     setSuccess(null)
@@ -88,23 +126,43 @@ setToken(token)
         })
       )
       }else{
-        const params = {email,token:toke,password,username,profilePicture:selectedImage,selfStatement,privacy:isPrivate}
-      dispatch(signUp(params))
-        .then(res=>checkResult(res,payload=>{
-            const {profile}=payload
-           
-           if(profile){navigate(Paths.myProfile())}
-           else{
-            setSuccess(null)
-            setError("Try reusing the link")
-           }
-          
-        },err=>{
+        // const params = {email,token:toke,password,username,profilePicture:selectedImage,selfStatement,privacy:isPrivate}
+        
 
-              setError(err.mesage)
+      const params = {email:email,
+        token:toke,
+        password:password,username:username,
+        frequency:frequency,
+        profilePicture:selectedImage,selfStatement:selfStatement,isPrivate:isPrivate}
+      
+      dispatch(useReferral(params))
+
+
+      .then(res=>checkResult(res,payload=>{
+        localStorage.setItem("token",payload.token)
+         if(payload.profile){navigate(Paths.myProfile())}else{
+         
+          setSuccess(null)
+         }
+         if(payload.error){
+          setError(payload.error)
+         }
+      },err=>{
+          setSuccess(null)
+          if(err.message){
+            setError(err.mesage)
+          }else{
+            setError(err)
+          }
+      }))
+        // },err=>{
+
+        //       setError(err.mesage)
           
     
-        }))}}else{
+        // }))
+      }
+      }else{
           setError("Password and Username can't be empty")
         }
       
@@ -115,29 +173,32 @@ setToken(token)
 
         <div className=" px-4 my-2  bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
           <div className="flex">
-        <h2 className='text-green-100 lora-medium text-4xl text-center mx-auto pt-8  px-4 md:pt-24 md:pb-8'>Complete Sign Up</h2>
+        <h2 className='text-green-100 mont-medium text-4xl text-center mx-auto pt-8  px-4 md:pt-24 md:pb-8'>Complete Sign Up</h2>
         </div>
         <div className='pb-4 mx-auto'>
       
-        <label className="input lora-medium text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
+        <label className="input mont-medium text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
 Email
   <input className="grow text-white mx-2 " 
-         value={username}
-         placeholder="example@ex.com"
-         onChange={(e) => setUsername(e.target.value.trim())}
+         value={email}
+         placeholder="example@x.com"
+         onChange={(e) => setEmail(e.target.value.trim())}
          />
 </label>
-            <label className="input lora-medium text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
+            <label className="input mont-medium text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
   Username
   <input className="grow text-white mx-2 " 
          value={username}
          placeholder="username"
-         onChange={(e) => setUsername(e.target.value.trim())}
+         onChange={(e) => handleUsername(e)}
          />
 </label>
-{username.length!=0 && username.length<4?<h6>Minimum username length is 4 characters</h6>:null}    
+<span className="flex flex-col">
+{ username.length!=0 && username.length<4?<h6 className="text-white mx-4 my-1 open-sans-medium">Minimum username length is 4 characters</h6>:null}    
+{usernameUnique?null:<h6 className="text-white mx-4 my-1 open-sans-medium">Username is alredy taken</h6>}
+</span>
 <div className='pb-4'>
-            <label className="input lora-medium text-white border bg-transparent  rounded-full h-[4em] border-white  mt-4 flex items-center">
+            <label className="input mont-medium text-white border bg-transparent  rounded-full h-[4em] border-white  mt-4 flex items-center">
   Password
   <input type="password" className="grow  mx-2  my-2 text-white " 
          value={password}
@@ -145,9 +206,9 @@ Email
          onChange={(e) => setPassword(e.target.value.trim())}
         placeholder='*****' />
 </label>
-{password.length==0 || password.length>6?null:<h6>Minimum Password Length is 6 characters</h6>}  
+{password.length==0 || password.length>6?null:<h6 className="text-white mx-4 my-1 open-sans-medium">Minimum Password Length is 6 characters</h6>}  
 
-<label className="input lora-medium text-white border bg-transparent border-white  rounded-full h-[4em] mt-4 flex items-center ">
+<label className="input mont-medium text-white border bg-transparent border-white  rounded-full h-[4em] mt-4 flex items-center ">
   Confirm Password
   <input type="password" className="grow  p-2 mx-2 text-white " 
          value={confirmPassword}
@@ -155,7 +216,7 @@ Email
          onChange={(e) => setConfirmPassword(e.target.value.trim())}
         placeholder='*****' />
 </label>  
-{password==confirmPassword?null:<h6>Passwords need to match</h6>}  
+{password==confirmPassword?null:<h6 className="text-white mx-4 my-1 open-sans-medium">Passwords need to match</h6>}  
 <label className="w-full mt-8 flex flex-row justify-between  text-left">
 <div className="flex  flex-row">
   <div className='has-tooltip mx-2'>
@@ -174,7 +235,7 @@ Email
 
     </div>
     <div className="mb-8 flex flex-col mx-auto">
-      <label className="flex font-bold text-white lora-medium text-xl text-left pb-2 flex-col">
+      <label className="flex font-bold text-white mont-medium text-xl text-left pb-2 flex-col">
         Add a Profile Picture
         </label>
     <input
@@ -219,13 +280,13 @@ Email
           </select>
         </div>
       </div>
-      <label className="text-left  min-w-[100%] mx-auto lora-medium text-xl font-bold  mb-2">Self Statement </label> 
+      <label className="text-left  min-w-[100%] mx-auto mont-medium text-xl font-bold  mb-2">Self Statement </label> 
       <textarea 
       placeholder="What are you about?"
       className="textarea bg-transparent border w-[100%]  border-white text-md lg:text-l" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>
          <div
-            disabled={confirmPassword!==password&&username.length>4}
-            className='bg-green-600 mont-medium text-white max-w-[18em] mx-auto mb-12 flex border hover:bg-emerald-400 bg-gradient-to-r from-emerald-300  to-emerald-500  border-0 text-white py-2 rounded-full px-4 mt-8 min-h-14 '
+            disabled={!canUser}
+            className={`${canUser?"bg-gradient-to-r from-emerald-500  to-emerald-700  ":"bg-gradient-to-r from-slate-300  to-emerald-500"}  mont-medium text-white max-w-[18em] mx-auto mb-12 flex border hover:bg-emerald-400  border-0 text-white py-2 rounded-full px-4 mt-8 min-h-14 `}
                onClick={completeSignUp}
                 
                  ><h6 className="mx-auto my-auto py-4 px-1 text-xl">Join Plumbum!</h6></div>

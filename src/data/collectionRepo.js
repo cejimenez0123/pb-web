@@ -128,7 +128,7 @@ import Enviroment from "../core/Enviroment";
                 Authorization:"Bearer "+localStorage.getItem("token")
             }}
         )
-        console.log("POP",res)
+
         return res.data
     }
     async getProfileLibraries({profile}){

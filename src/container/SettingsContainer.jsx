@@ -28,8 +28,8 @@ import Context from "../context";
 function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
-    const [errorMessage, setErrorMessage] = useState('');
-    const {currentProfile}=useContext(Context)
+    const{setError,currentProfile,setSuccess}=useContext(Context)
+
     const [newUsername,setNewUsername] = useState("")
     const homeCollection = useSelector(state=>state.users.homeCollection)
     const [selfStatement,setSelfStatement] = useState(currentProfile&&currentProfile.selfStatement?currentProfile.selfStatement:"")
@@ -68,15 +68,25 @@ function SettingsContainer(props) {
         setDeleteDialog(true);
     };
     const handleAgree = () => {
-        dispatch(deleteUserAccounts()).then(()=>{
-            navigate("/")
+        dispatch(deleteUserAccounts()).then((res)=>{
+            checkResult(res,payload=>{
+                
+              if(payload.message){
+                setSuccess(payload.message)
+                navigate("/")
+              }
+           
+            },err=>{
+                setError(err.message)
+            })
+       
         })
     }
     const handleClose = () => {
         setDeleteDialog(false);
     };
 
-   
+  
     
     const setProfile = (profile)=>{
         setPending(true)

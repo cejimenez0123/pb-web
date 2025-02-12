@@ -82,7 +82,14 @@ if(data.user){
     }
 
   }
-
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+  
+  
 
 const handleClose= ()=>{
   setUser(null)

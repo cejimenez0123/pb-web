@@ -86,8 +86,13 @@ function LogInCard({setLogInError}){
                         navigate(Paths.myProfile())
                     }
                 },err=>{
-                    console.log(err)
-                    setLogInError(err.message)
+                    if(err.message=="Request failed with status code 401"){
+setLogInError("User Not Found. Apply Below")
+                    }else{
+                        setLogInError(err.message)
+                    }
+             
+                    
                     setPending(false)
                 })
             })       
