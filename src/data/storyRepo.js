@@ -12,7 +12,7 @@ class StoryRepo{
     
     token = "token"
     async getPublicStories(){
-        let res = await  axios.get(this.url,{headers:{'Access-Control-Allow-Origin': "*",
+        let res = await  axios.get(this.url+"/",{headers:{'Access-Control-Allow-Origin': "*",
         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}})
         return res.data
 
