@@ -11,6 +11,7 @@ import authRepo from '../data/authRepo.js';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
+import loadingGif from "../images/loading.gif"
 import sortAlphabet from "../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../images/icons/clock_arrow_down.svg"
@@ -28,6 +29,7 @@ import DescriptionDialog from '../components/page/FeedbackDialog';
 import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg"
+import { generate } from 'random-words';
 function MyProfileContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -37,19 +39,18 @@ function MyProfileContainer(props){
     const [sortTime,setSortTime]=useState(true)
     const [description,setFeedback]=useState("")
     const [referralLink,setReferralLink]=useState(null)
-   
+    const [genPending,setGenPending]=useState(false)
     const [firstLogin,setFirstLogin]=useState(localStorage.getItem("firstTime")=="true")
+    const [openDialog,setOpenDialog]=useState(false)
+  
+    const location =useLocation()
+   
+    const [openReferral,setOpenReferral]=useState(false)
     const stories = usePersistentMyStoriesCache(()=>{
       dispatch(setPagesInView({pages:[]}))
       return dispatch(getMyStories())
     })
-       const generateReferral=()=>{
-        authRepo.generateReferral().then(data=>{
-          
-            if(data.referralLink){
-            setReferralLink(data.referralLink)
-            }
-        })}
+    
     const pages =useSelector(state=>[...state.pages.pagesInView]
     ).filter(page=>{
       if(search.toLowerCase()=="untitled"){
@@ -167,11 +168,7 @@ newPages = [...newPages].sort((a,b)=>{
         query: '(max-width: 600px)'
       })
 
-    const [openDialog,setOpenDialog]=useState(false)
-  
-    const location =useLocation()
    
-    const [openRefferal,setOpenRefferal]=useState(false)
       
    
     useLayoutEffect(()=>{
@@ -238,7 +235,13 @@ params.page = feedbackPage
           setOpenDialog(true)
     }
 
-
+    const generateReferral=()=>{
+      authRepo.generateReferral().then(data=>{
+        
+          if(data.referralLink){
+          setReferralLink(data.referralLink)
+          }
+      })}
 
     useLayoutEffect(()=>{
 if(currentProfile){
@@ -299,7 +302,7 @@ if(currentProfile){
                               <div className='mx-auto text-[0.8rem] md:text-md my-auto mont-medium  flex-col flex md:flex-row'><h6 className='text-center' >Create Collection</h6> </div> 
                             </div>
                             <div className='w-[10em] h-[3em] mx-auto flex'>
-                            <h6 onClick={()=>setOpenRefferal(true)}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
+                            <h6 onClick={()=>setOpenReferral(true)}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
                             </div>
                             </div>
                             </MediaQuery>
@@ -326,7 +329,7 @@ if(currentProfile){
                             </div>
                             </div>
                             <div className=' mt-6'> 
-                            <h6 onClick={()=>setOpenRefferal(true)} className='text-sm mx-4 mont-medium text-emerald-800'>Refer Someone?</h6>
+                            <h6 onClick={()=>setOpenReferral(true)} className='text-sm mx-4 mont-medium text-emerald-800'>Refer Someone?</h6>
                             </div>
                             </div> 
                          :null}
@@ -425,10 +428,10 @@ handleClose={()=>{
               <Dialog
       
               fullScreen={isPhone}
-              open={openRefferal}
-              onClose={()=>setOpenRefferal(false)}>
+              open={openReferral}
+              onClose={()=>setOpenReferral(false)}>
           <ReferralForm onClose={()=>{
-            setOpenRefferal(false)
+            setOpenReferral(false)
           }}/>
               </Dialog>
               <Dialog
@@ -444,9 +447,10 @@ handleClose={()=>{
         <p class="text-lg text-gray-600 mb-4">To get the best experience, invite your friends so they can keep up with your work and be part of your creative journey.</p>
         
         <div class="text-center">
+          <img src={loadingGif} className='icon'/>
         <span className="rounded-full btn flex mb-4 text-center border-none text-lg mont-medium text-white px-4  bg-gradient-to-r 
 from-emerald-400 to-emerald-600 "
-onClick={generateReferral}>
+onClick={()=>generateReferral()}>
     <h6 >Create Referral Link</h6></span>    
             {referralLink?
             <h6 className='flex-row  min-h-12 flex'><a onClick={copyToClipboard} className='text-nowrap  my-auto overflow-hidden text-ellipsis '>{referralLink}</a>

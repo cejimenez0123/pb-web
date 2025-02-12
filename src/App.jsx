@@ -237,7 +237,7 @@ function App(props) {
       }/>
 
       <Route path="/profile/edit" element={
-        
+ 
         <PrivateRoute >
         <SettingsContainer />
         </PrivateRoute>
