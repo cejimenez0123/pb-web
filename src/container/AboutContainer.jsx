@@ -146,7 +146,7 @@ const userTestimonial=()=>{
     <div className="pt-8 pb-4 min-w-1/2 md:px-8 mx-auto text-center ">
         <h2 className=" text-[4rem]  mx-atuo lora-bold text-emerald-700 pt-8 pb-4">Plumbum</h2>
         <br/>
-        <h2 className="lora-medium text-[2rem]  mx-auto text-emerald-700 text-[2rem]">Where Writers Connect & Create</h2>
+        <h2 className="lora-medium text-[2rem]  mx-auto text-emerald-700 text-[2rem]">Your Writing, Your Community</h2>
         </div> 
 {/*  */}
 

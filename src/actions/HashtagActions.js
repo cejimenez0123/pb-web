@@ -74,7 +74,7 @@ async ({name,storyId,profile},thunkApi) => {
         let data = await hashtagRepo.story({name,storyId,profile})
 
             const {hashtag}=data
-
+console.log(hashtag)
                    return {
                 hashtag:data.hashtag
                 }
