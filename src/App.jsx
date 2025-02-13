@@ -57,7 +57,6 @@ function App(props) {
   const [error,setError]=useState(null)
 
   useEffect(()=>{
-    
     if(currentProfile){
     dispatch(getRecommendedCollectionsProfile())
   }

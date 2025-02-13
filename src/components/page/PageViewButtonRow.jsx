@@ -12,6 +12,7 @@ import loadingGif from "../../images/loading.gif"
 import Context from "../../context"
 import { debounce } from "lodash"
 import { RoleType } from "../../core/constants"
+import Enviroment from "../../core/Enviroment.js"
 export default function PageViewButtonRow({page,profile,setCommenting}){
     const {setSuccess,currentProfile,setError}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
@@ -82,7 +83,7 @@ checkResult(res,payload=>{
             value: page.id,
             nonInteraction: false
           });
-        navigator.clipboard.writeText(`https://plumbum.app/page/${page.id}`)
+        navigator.clipboard.writeText(Enviroment.domain+Paths.page.createRoute(page.id))
                                 .then(() => {
                                     // Successfully copied to clipboard
                                     alert('Text copied to clipboard');
