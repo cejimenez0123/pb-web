@@ -13,14 +13,21 @@ export default function ReferralForm({onClose}){
     const [pending,setPending]=useState(false)
     const {setSuccess}=useContext(Context)
     const [message,setMessage]=useState("")
+    const [referral,setReferral]=useState(null)
     useLayoutEffect(()=>{
 
         setPending(true)
         authRepo.generateReferral().then(data=>{
-          
+          console.log(data)
             if(data.referralLink){
             setReferralLink(data.referralLink)
             }
+            if(data.message){
+                setMessage(data.message)
+            }
+            // if(data.referral){
+            //     setReferral(data.referral)
+            // }
             setPending(false)
         })},[])
     const handleClick = ()=>{
@@ -30,13 +37,13 @@ export default function ReferralForm({onClose}){
                 onClose()
             }
         })}
-    const generateReferral=()=>{
-        authRepo.generateReferral().then(data=>{
+    // const generateReferral=()=>{
+    //     authRepo.generateReferral().then(data=>{
           
-            if(data.referralLink){
-            setReferralLink(data.referralLink)
-            }
-        })}
+    //         if(data.referralLink){
+    //         setReferralLink(data.referralLink)
+    //         }
+    //     })}
     const copyToClipboard=()=>{
         navigator.clipboard.writeText(referralLink)
         .then(() => {
@@ -55,10 +62,10 @@ export default function ReferralForm({onClose}){
 from-emerald-400 to-emerald-600  "
 onClick={generateReferral}>
     <h6 className="text-xl">Create Referral Link</h6></span> */}
-
+            {referral&&   referral.usageCount?<h2 className="text-emerald-800">{referral.usageCount}</h2>:null}
         {pending?<img src={loadingGif} className="icon"/>:referralLink.trim().length>0?
         <span className="flex mt-6"><input type="text" 
-         value={referralLink} disabled className="bg-transparent w-[100%] border-2 border-emerald-800 py-3 px-4 rounded-full text-[0.8rem] md:text-xl "/><img src={copyContent} onClick={copyToClipboard} className="icon"/></span>:<div className="icon"/>}
+         value={referralLink} disabled className="bg-transparent w-[100%] border-2 border-emerald-800 py-2 px-4 rounded-full text-[0.8rem] md:text-l "/><img src={copyContent} onClick={copyToClipboard} className="icon"/></span>:<div className="icon"/>}
          <div className="text-center"><h6 className="mont-medium  mb-6 mx-8">{message}</h6></div>
           <h3 className="text-emerald-800 mont-medium text-xl  py-4 mt-3 mx-auto text-opacity-70">OR</h3>
           <label className="text-emerald-800 mx-4 text-lg mont-medium mt-3">

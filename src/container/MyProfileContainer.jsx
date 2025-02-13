@@ -39,6 +39,7 @@ function MyProfileContainer(props){
     const [sortTime,setSortTime]=useState(true)
     const [description,setFeedback]=useState("")
     const [referralLink,setReferralLink]=useState(null)
+    const [referral,setReferral]=useState(null)
     const [genPending,setGenPending]=useState(false)
     const [firstLogin,setFirstLogin]=useState(localStorage.getItem("firstTime")=="true")
     const [openDialog,setOpenDialog]=useState(false)
@@ -193,12 +194,18 @@ params.page = feedbackPage
  })})}
    
  const copyToClipboard=()=>{
-  navigator.clipboard.writeText(referralLink)
-  .then(() => {
-      onClose()
-      setSuccess('Link Copied to clipboard');
+  navigator.clipboard.writeText(referralLink).then(res=>{
 
-    })
+    localStorage.setItem("firstTime",null)
+    setOpenReferral(false)
+    setFirstLogin(false)
+    setSuccess('Link Copied to clipboard');
+  })
+  
+    
+  
+
+ 
 }
 
     const ClickWriteAStory = debounce(()=>{
@@ -241,12 +248,15 @@ params.page = feedbackPage
           if(data.referralLink){
           setReferralLink(data.referralLink)
           }
+          if(data.referral){
+            setReferral(data.referral)
+          }
       })}
 
     useLayoutEffect(()=>{
 if(currentProfile){
       dispatch(setPagesInView({pages:currentProfile.stories}))
-      // dispatch(setCollections({collections:currentProfile.collections}))
+     
 }
     },[currentProfile])
     useLayoutEffect(()=>{
@@ -441,20 +451,20 @@ handleClose={()=>{
                 setFirstLogin(false)
                }}
               >
-                <div className='card  bg-emerald-50 px-4 py-4 h-[100%] md:min-w-72 md:min-h-72'>
+                <div className='card  bg-emerald-50 px-4 py-8 overflow-x-hidden h-[100%] md:min-w-72 md:min-h-72'>
                 <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Welcome to Plumbum! 🎉</h1>
         <p class="text-lg text-gray-600 mb-4">You’ve just joined a community built for writers like you—a space to share, connect, and grow with fellow creatives.</p>
         <p class="text-lg text-gray-600 mb-4">To get the best experience, invite your friends so they can keep up with your work and be part of your creative journey.</p>
         
         <div class="text-center">
-          <img src={loadingGif} className='icon'/>
+          
         <span className="rounded-full btn flex mb-4 text-center border-none text-lg mont-medium text-white px-4  bg-gradient-to-r 
 from-emerald-400 to-emerald-600 "
 onClick={()=>generateReferral()}>
     <h6 >Create Referral Link</h6></span>    
             {referralLink?
             <h6 className='flex-row  min-h-12 flex'><a onClick={copyToClipboard} className='text-nowrap  my-auto overflow-hidden text-ellipsis '>{referralLink}</a>
-            <img onClick={copyToClipboard} src={copyContent}  className="my-auto icon "/></h6>
+            <img onClick={copyToClipboard} src={copyContent}  className="btn bg-transparent border-none my-auto icon "/></h6>
             :null}
         </div>
         

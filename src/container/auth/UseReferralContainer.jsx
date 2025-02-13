@@ -101,7 +101,17 @@ setToken(token)
                 const params = {email:email,token:toke,password:password,username:username,frequency:frequency,profilePicture:fileName,selfStatement:selfStatement,isPrivate:isPrivate}
       
 
-                        dispatch(useReferral(params))
+                        dispatch(useReferral(params)).then(res=>checkResult(res,payload=>{
+                          
+                          if(payload.message){
+                            setError(err.message.includes("400")?"This link has already been put to use.":err.message)
+    
+                          }
+                        
+                        },err=>{
+                          setError(err.message.includes("400")?"This link has already been put to use.":err.message)
+    
+                        }))
                     
                 .then(res=>checkResult(res,payload=>{
        localStorage.setItem("firstTime",true)
@@ -116,9 +126,11 @@ setToken(token)
                 },err=>{
                     setSuccess(null)
                     if(err.message){
-                      setError(err.mesage)
+                      setError(err.message.includes("400")?"This link has already been put to use.":err.message)
+    
                     }else{
-                      setError(err)
+                      setError(err.message.includes("400")?"This link has already been put to use.":err.message)
+    
                     }
                 }))
      
@@ -137,19 +149,31 @@ setToken(token)
       
       dispatch(useReferral(params))
       .then(res=>checkResult(res,payload=>{
-        localStorage.setItem("firstTime",true)
+        if(payload.message){
+          
+          setError(payload.message.includes("400")?"This link has already been put to use.":payload.message)
+    
+        }else{
+
+      if(payload.token){
         localStorage.setItem("token",payload.token)
-         if(payload.profile){navigate(Paths.myProfile())}else{
+      }
+       
+         if(payload.profile){
+          localStorage.setItem("firstTime",true)
+          navigate(Paths.myProfile())}else{
          
           setSuccess(null)
          }
          if(payload.error){
-          setError(payload.error)
-         }
+          setError(payload.message.includes("400")?"This link has already been put to use.":payload.message)
+    
+       
+         }}
       },err=>{
           setSuccess(null)
           if(err.message){
-            setError(err.mesage)
+            setError(err.message.includes("400")?"This link has already been put to use.":payload.message)
           }else{
             setError(err)
           }
@@ -285,10 +309,10 @@ Email
       className="textarea bg-transparent border w-[100%]  border-white text-md lg:text-l" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>
          <div
             disabled={!canUser}
-            className={`${canUser?"bg-gradient-to-r from-emerald-500  to-emerald-700  ":"bg-gradient-to-r from-slate-300  to-emerald-500"}  mont-medium text-white max-w-[18em] mx-auto mb-12 flex border hover:bg-emerald-400  border-0 text-white py-2 rounded-full px-4 mt-8 min-h-14 `}
+            className={`${canUser?"bg-gradient-to-r from-emerald-500  to-emerald-700  ":"bg-gradient-to-r from-slate-300  to-emerald-500"} btn bg-transparent border-none mont-medium text-white max-w-[18em] mx-auto mb-12 flex border hover:bg-emerald-400  border-0 text-white py-2 rounded-full px-4 mt-8 min-h-14 `}
                onClick={completeSignUp}
                 
-                 ><h6 className="mx-auto my-auto py-4 px-1 text-xl">Join Plumbum!</h6></div>
+                 ><h6 className="px-1 text-xl">Join Plumbum!</h6></div>
             </div>
             
             </div>   

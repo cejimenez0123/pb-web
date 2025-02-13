@@ -83,12 +83,16 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
    }
 })
 const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=>{
-    let data = await authRepo.useReferral(params)
+  try{ 
+  let data = await authRepo.useReferral(params)
     if(data.profile&&!data.profile.isPrivate){
       const {profile}=data
       client.initIndex("profile").partialUpdateObject({objectID: profile.id,usernamename:profile.username,type:"profile"},{createIfNotExists:true}).wait()
     }
     return data
+  }catch(err){
+    return err
+  }
 })
 const signUp = createAsyncThunk(
     'users/signUp',
