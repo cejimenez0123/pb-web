@@ -115,11 +115,13 @@ const fetchData = async (url) => {
 
     );
   }
-  const imageViewClass="w-[10em] "
+  const imageViewClass=" "
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image && <img  className={imageViewClass}src={previewData.image}  alt="Link Preview" />}
+      {previewData.image &&  <div className="w-[8em] overflow-hidden h-[10em]  ">
+    <img className={"object-fit h-[100%] w-[100%] "} src={previewData.image}  alt="Link Preview" />
+    </div>}
     </div>)
     }else{
        return (
@@ -131,9 +133,12 @@ const fetchData = async (url) => {
   }
 
   return (
-    <div className={`rounded-full overflow-hidden my-4 min-h-[8em] h-[10em] md:h-[10em]  w-[100%] shadow-md flex flex-row  bg-emerald-100 `} 
+    <div className={`rounded-full overflow-hidden my-4 min-h-[8em] h-[9em] md:h-[9em]  w-[100%] shadow-md flex flex-row  bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
-      {image?<img className={imageViewClass}src={image}/>:imageView()}
+      {image?  <div className="max-w-[8em] overflow-hidden max-h-[10em]  ">
+    <img className={"object-fit h-[100%] w-[100%]  "}src={image}/>
+   
+    </div>:imageView()}
       <div className=' text-emerald-800  text-left py-4 px-4 open-sans-medium'>
       <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
    <h6 className='  text-[0.8rem] md:text-md '> {description}</h6>
