@@ -27,7 +27,7 @@ export default function LinksContainer(props){
                     <LinkNode url={"https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"}
                     title={"Join our slack community"}
                     image={"https://www.svgrepo.com/show/315526/slack.svg"}
-                    description={"Our slack community, our middle ground - space for feedback, while we work on devleopment."}/>
+                    description={"Our slack community, our middle ground. A space for feedback, while we work on devleopment."}/>
                </li>
        
                <li>
