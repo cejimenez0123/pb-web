@@ -107,7 +107,7 @@ const fetchData = async (url) => {
 
  
 
-  if (previewData.videoId) {
+  if (previewData && previewData.videoId) {
     return (
     
         <img onClick={handleClick} style={{ cursor: 'pointer' }} className="w-[96vw] md:w-page 
