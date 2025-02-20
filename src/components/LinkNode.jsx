@@ -98,7 +98,7 @@ const fetchData = async (url) => {
       </div>)
   }
   if (loading) {
-    return <Skeleton height={"20em"}width={"100%"}/>
+    return <div className='skeleton min-h-[8em] w-[96vw] md:min-w-[30em] md:w-[100%] my-8 bg-emerald-50 h-[10em] md:h-[10em] rounded-full'/>
   }
 
   if (!previewData&&!url.includes("plumbum")) {
