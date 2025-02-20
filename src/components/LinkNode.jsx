@@ -119,8 +119,8 @@ const fetchData = async (url) => {
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image &&  <div className="w-[100px] h-[100%] overflow-hidden  ">
-    <img className={"object-fit w-full min-w-[90px] h-[100%]"} src={previewData.image}  alt="Link Preview" />
+      {previewData.image &&  <div className="w-[100px] flex h-[100%] overflow-hidden  ">
+    <img className={"object-fit w-full my-auto mx-auto min-w-[90px] h-[100%]"} src={previewData.image}  alt="Link Preview" />
     </div>}
     </div>)
     }else{

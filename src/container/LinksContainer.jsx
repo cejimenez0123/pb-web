@@ -13,7 +13,7 @@ export default function LinksContainer(props){
 
     return(<div className="flex py-8">
         <div className="card  mx-auto">
-            <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8">Keep up! Support how you can!</h2>
+            <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
             <ul className="md:mx-auto mx-4">
             <li>
                     <LinkNode url={"https://partiful.com/e/OGTscKDoU4VPRIRSfnAp"}
