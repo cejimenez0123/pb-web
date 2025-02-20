@@ -119,7 +119,7 @@ const fetchData = async (url) => {
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image &&  <div className="w-[8em] overflow-hidden h-[10em]  ">
+      {previewData.image &&  <div className="w-[100px] overflow-hidden h-[10em]  ">
     <img className={"object-fit h-[100%] w-[100%] "} src={previewData.image}  alt="Link Preview" />
     </div>}
     </div>)
@@ -135,7 +135,7 @@ const fetchData = async (url) => {
   return (
     <div className={`rounded-full overflow-hidden my-4 min-h-[8em] h-[9em] md:h-[9em]  w-[100%] shadow-md flex flex-row  bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
-      {image?  <div className="max-w-[8em] overflow-hidden max-h-[10em]  ">
+      {image?  <div className="max-w-[100px] overflow-hidden max-h-[10em]  ">
     <img className={"object-fit h-[100%] w-[100%]  "}src={image}/>
    
     </div>:imageView()}
