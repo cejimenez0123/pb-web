@@ -120,7 +120,7 @@ const fetchData = async (url) => {
     if(previewData.title!=="Spotify"){
     return(<div>
       {previewData.image &&  <div className="w-[100px] overflow-hidden h-[10em]  ">
-    <img className={"object-fit h-[100%] w-[100%] "} src={previewData.image}  alt="Link Preview" />
+    <img className={"object-fit"} src={previewData.image}  alt="Link Preview" />
     </div>}
     </div>)
     }else{
@@ -136,7 +136,7 @@ const fetchData = async (url) => {
     <div className={`rounded-full overflow-hidden my-4 min-h-[8em] h-[9em] md:h-[9em]  w-[100%] shadow-md flex flex-row  bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
       {image?  <div className="max-w-[100px] overflow-hidden max-h-[10em]  ">
-    <img className={"object-fit h-[100%] w-[100%]  "}src={image}/>
+    <img className={"object-fit    "}src={image}/>
    
     </div>:imageView()}
       <div className=' text-emerald-800  text-left py-4 px-4 open-sans-medium'>
