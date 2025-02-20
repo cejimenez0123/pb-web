@@ -2,6 +2,7 @@
 const Paths ={
     newsletter:()=>`/newsletter`,
     feedback:()=>`/feedback`,
+    links:()=>`/links`,
     library: {
         route: ()=>`/library/:id`,
         createRoute:(id)=>{return `/library/${id}`;}},

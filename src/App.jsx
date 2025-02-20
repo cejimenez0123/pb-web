@@ -45,6 +45,7 @@ import EmailPreferences from './container/EmailPreferences.jsx';
 import FeedbackContainer from './container/FeedbackContainer.jsx';
 import NewsletterContainer from './container/auth/NewsletterContainer.jsx';
 import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
+import LinksContainer from './container/LinksContainer.jsx';
 function App(props) {
 
   const dispatch = useDispatch()
@@ -166,7 +167,8 @@ function App(props) {
       }/>
        <Route path={Paths.hashtag.route()}
       element={<HashtagContainer/>}/>
-     
+     <Route path={Paths.links()}
+     element={<LinksContainer/>}/>
        <Route exact path={"/about"} element={
    <AboutContainer/>
       }/>

@@ -7,7 +7,7 @@ import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
 export default function AboutContainer(props){
     const md = useMediaQuery({
-        query: '(min-width: 800px)'
+        query: '(min-width: 750px)'
       })
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -120,16 +120,18 @@ const stayInLoop=()=>{
 
 <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
 <h2 className="mx-4 my-2 open-sans-medium  text-l">Follow the Journey</h2>
+<a href="https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ">Join our slack</a>
 <div className="flex open-sans-medium  mx-auto text-l texg-left leading-loose tracking-loose">
+
 <a href="https://www.instagram.com/plumbumapp">@plumbumapp</a> |<a href="https://www.instagram.com/bxwriters"> @bxwriters</a></div>
 <a className="text-l" onClick={()=>navigate(Paths.newsletter())}>[→ Subscribe to Our Newsletter]</a>
         </div>)
 }
 const userTestimonial=()=>{
-    return(<div><h6 className="text-[2rem] lora-bold">Real Writers, Real Growth</h6>
+    return(<div><h6 className="text-[1.8rem] lg:text-[2rem] lora-bold">Real Writers, <br/>Real Growth</h6>
     
 <div className="px-4 my-4">
-        <h6 className="lora-medium text-[1.2rem]"><em>"Plumbum.app Workshops have been impactful in helping me to build community and network with poets from across the New York City and the Tri-State area. I walk away from these workshops with quality feedback and so many new ways to think about my work. Plumbum’s goal of supporting writers with their craft is clear and quite effective with the supportive environment to match."</em></h6>
+        <h6 className="lora-medium text-[1rem] lg:text-[1.2rem]"><em>"Plumbum.app Workshops have been impactful in helping me to build community and network with poets from across the New York City and the Tri-State area. I walk away from these workshops with quality feedback and so many new ways to think about my work. Plumbum’s goal of supporting writers with their craft is clear and quite effective with the supportive environment to match."</em></h6>
         — [Rob P. ]</div></div>)
 }
 
@@ -187,7 +189,7 @@ src={groupJpg} alt="group pic"
      <h5 className="mx-auto mont-medium text-xl tracking-wide my-auto">Apply to Join Today</h5>
      </div>
 
-<h6>Any request for more feautures, problems, encoragement, send to plumbumapp@gmail.com.
+<h6>Any requests for features, feedback, or encouragement <a onClick={()=>navigate(Paths.feedback())}>click here</a>
 
 </h6>
 <h6 className="text-emerald-700 mt-12">Plumbum©2025</h6>

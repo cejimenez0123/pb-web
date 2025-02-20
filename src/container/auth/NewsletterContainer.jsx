@@ -63,15 +63,7 @@ function NewsletterContainer(props){
       console.log(formData)
     }
 
-  // const handleOtherBlur = (category) => {
-  //   if (formData.otherInputs[category].trim()) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       [category]: [...prev[category], prev.otherInputs[category].trim()],
-  //       otherInputs: { ...prev.otherInputs, [category]: "" } // Reset input
-  //     }));
-  //   }
-  // };
+
   
     const [user,setUser]=useState(null)
       const selectRef = useRef()
@@ -155,9 +147,11 @@ return (
             className="form-data shadow-sm sm:my-8 md:rounded-lg pb-30 bg-emerald-800 bg-opacity-70 flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] text-left mx-auto lg:mt-24"
           >
             <h6 className="text-white lora-bold text-sm">* Required</h6>
-            <div className="w-full text-center">
+            <div className="w-full text-center text-white mb-8">
               <h3 className="mx-auto text-2xl text-white mont-medium my-8 w-fit">Newsletter Sign Up</h3>
-              <p className="open-sans-medium text-white mb-8">Keep up with our events, workshops, growth, and website development. </p>
+              <h5 className="open-sans-medium  ">Keep up with our events, workshops, growth, and website development. </h5>
+              <p className="open-sans-medium  ">Joining newsletter will not make you a user</p>
+
             </div>
 
             {/* Preferred Name */}

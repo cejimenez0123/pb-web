@@ -23,6 +23,20 @@ class AuthRepo{
         console.log(res)
         return res.data
     }
+    async feedback({ preferredName,
+        email,
+        subject,
+        purpose,
+        message}){
+        const res = await axios.post(Enviroment.url+"/auth/feedback",{ preferredName,
+                email,
+                subject,
+                purpose,
+                message})
+
+
+        return res.data
+        }
     async generateReferral(){
 
       
