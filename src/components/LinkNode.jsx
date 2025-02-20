@@ -115,7 +115,7 @@ const fetchData = async (url) => {
 
     );
   }
-  const imageViewClass="min-h-[8em] md:h-[10em] "
+  const imageViewClass="w-[10em] "
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
@@ -133,7 +133,7 @@ const fetchData = async (url) => {
   return (
     <div className={`rounded-full overflow-hidden my-4 min-h-[8em] h-[10em] md:h-[10em]  w-[100%] shadow-md flex flex-row  bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
-      {image?<img className={"p-4"+imageViewClass}src={image}/>:imageView()}
+      {image?<img className={imageViewClass}src={image}/>:imageView()}
       <div className=' text-emerald-800  text-left py-4 px-4 open-sans-medium'>
       <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
    <h6 className='  text-[0.8rem] md:text-md '> {description}</h6>
