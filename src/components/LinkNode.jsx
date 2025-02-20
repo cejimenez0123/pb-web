@@ -101,7 +101,7 @@ const fetchData = async (url) => {
     return <Skeleton height={"20em"}width={"100%"}/>
   }
 
-  if (!previewData) {
+  if (!previewData&&!url.includes("plumbum")) {
     return <p>Failed to fetch link preview.</p>;
   }
 

@@ -21,6 +21,7 @@ export default function LinksContainer(props){
                     image={"https://www.svgrepo.com/show/315526/slack.svg"}
                     description={"Our slack community, our middle ground - space for feedback, while we work on devleopment."}/>
                </li>
+       
                <li>
                <LinkNode url={"https://plumbum.app"+Paths.newsletter()}
                image={logo}
@@ -40,6 +41,19 @@ image={"https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229b
                     title={"Donate. Support Development with Kofi."}
                     description={"Holding data costs money. Any support is appreicated at any amount."}/>
                </li>
+               <li>
+               <LinkNode url={"https://plumbum.app"+Paths.discovery()}
+               image={logo}
+                    title={"Discover Plumbum"}
+                    description={"Check some recent shared work"}/>
+                    </li>
+         
+               <li>
+               <LinkNode url={"https://plumbum.app"}
+               image={logo}
+                    title={"About Plumbum"}
+                    description={"Why Plumbum? Why now?"}/>
+                    </li>
                <li>
                <LinkNode url={"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}
                     title={"Purchase literature written by the founder."}
