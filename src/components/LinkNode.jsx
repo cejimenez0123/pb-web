@@ -1,7 +1,6 @@
 import { useState, useLayoutEffect,useEffect } from 'react';
 import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
-import { Skeleton } from '@mui/material';
 import "../App.css"
 import ErrorBoundary from '../ErrorBoundary';
 function LinkNode({ url,image,description,title,isGrid}) {
@@ -120,7 +119,7 @@ const fetchData = async (url) => {
   }
 
   const imageView = ()=>{
-    let frame = "  flex shadow-sm max-h-[70pt] max-w-[70pt] overflow-hidden rounded-full  "
+    let frame = "  flex shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "
     let imgClass = "object-fit my-auto mx-auto  "
     if(previewData && previewData.title=="Spotify"){
       return (
@@ -135,8 +134,8 @@ const fetchData = async (url) => {
 </div>)
 
       }else if(previewData&& previewData.image) {
-    return(     <div className={" flex  text-center shadow-sm max-h-[70pt] max-w-[70pt] overflow-hidden rounded-full  "}>
-    <img className={"object-fit  min-w-[70pt]  "} src={previewData.image}  alt="Link Preview" />
+    return(     <div className={" flex  text-center shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "}>
+    <img className={"object-fit    "} src={previewData.image}  alt="Link Preview" />
     </div>
     )
     }else{
@@ -149,7 +148,7 @@ const fetchData = async (url) => {
     <div className={`rounded-[2em] overflow-hidden my-4   w-[100%] shadow-md flex flex-row p-4 bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
-      <div className=' text-emerald-800 overflow-scroll text-left py-4 px-4 open-sans-medium'>
+      <div className=' text-emerald-800 overflow-scroll text-left  px-4 open-sans-medium'>
       <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
    <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>
       </div>
