@@ -10,11 +10,13 @@ function LinkNode({ url,image,description,title,isGrid}) {
 
   useLayoutEffect(() => {
 
-    if(!url.includes('https://open.spotify.com/')){  
+    if(!url.includes("plumbum")&&!url.includes('https://open.spotify.com/')){  
     fetchData(url).then(data=>{
 
     })
     return 
+}else{
+  setLoading(false);
 }}, [url]);
 
 const fetchData = async (url) => {
@@ -120,7 +122,7 @@ const fetchData = async (url) => {
   const imageView = ()=>{
     let frame = "  flex mx-auto shadow-sm max-h-[6em] max-w-[6em] overflow-hidden rounded-full  "
     let imgClass = "object-fit my-auto mx-auto  "
-    if(previewData.title=="Spotify"){
+    if(previewData && previewData.title=="Spotify"){
       return (
         <div className='spotify rounded-lg w-[96vw] md:w-page'>
         <Spotify  height={"140"}link={url}/>
@@ -132,7 +134,7 @@ const fetchData = async (url) => {
 
 </div>)
 
-      }else if(previewData.image) {
+      }else if(previewData&& previewData.image) {
     return(     <div className={" flex  shadow-sm max-h-[6em] max-w-[6em] overflow-hidden rounded-full  "}>
     <img className={"object-fit  min-w-[5.5em]  "} src={previewData.image}  alt="Link Preview" />
     </div>
