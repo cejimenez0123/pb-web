@@ -93,7 +93,7 @@ const fetchData = async (url) => {
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      // +isGrid?" rounded-lg   mx-auto   ":
+
       <div  className={isGrid?"spotify max-w-[100%]":"spotify w-[96vw] md:w-page"} 
             style={{ cursor: 'pointer' }}>
         <Spotify width={"100%"} style={{minHeight:"27.5em"}} className="bg-emerald-200 max-h-[20em]"
@@ -120,7 +120,7 @@ const fetchData = async (url) => {
   }
 
   const imageView = ()=>{
-    let frame = "  flex mx-auto shadow-sm max-h-[6em] max-w-[6em] overflow-hidden rounded-full  "
+    let frame = "  flex shadow-sm max-h-[70pt] max-w-[70pt] overflow-hidden rounded-full  "
     let imgClass = "object-fit my-auto mx-auto  "
     if(previewData && previewData.title=="Spotify"){
       return (
@@ -135,8 +135,8 @@ const fetchData = async (url) => {
 </div>)
 
       }else if(previewData&& previewData.image) {
-    return(     <div className={" flex  shadow-sm max-h-[6em] max-w-[6em] overflow-hidden rounded-full  "}>
-    <img className={"object-fit  min-w-[5.5em]  "} src={previewData.image}  alt="Link Preview" />
+    return(     <div className={" flex  text-center shadow-sm max-h-[70pt] max-w-[70pt] overflow-hidden rounded-full  "}>
+    <img className={"object-fit  min-w-[70pt]  "} src={previewData.image}  alt="Link Preview" />
     </div>
     )
     }else{
