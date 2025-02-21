@@ -54,7 +54,7 @@ function DiscoveryContainer(props){
             className=' flex flex-row min-h-50 md:min-h-6 max-w-[100vw] '
             dataLength={libraries.length}
             next={fetchLibraries}
-            // style={{display:"flex",flexDirections:"row"}}
+          
             hasMore={hasMoreLibraries}
             endMessage={<div className='flex min-w-72 mont-medium'><span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '><h6 className=''>Join the community. <br/>Apply to join today.</h6><h6>Share your own work.</h6><h6> This is what we have for now.</h6></span></div>}
             >

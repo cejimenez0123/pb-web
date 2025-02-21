@@ -23,7 +23,7 @@ const WorkshopContainer = (props) => {
 
   const [radius,setRadius]=useState(50)
   const [location,setLocation]=useState(null)
-  const currentProfile = useSelector(state=>state.users.currentProfile)
+  const {currentProfile} = useContext(Context)
   const [isGlobal,setIsGlobal]=useState(true)
   
   useEffect(()=>{
@@ -90,7 +90,7 @@ setTimeout(()=>{
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
-        if(currentProfile){
+        if(currentProfile&&currentProfile.id){
           registerUser(currentProfile.id,location)
         }
     

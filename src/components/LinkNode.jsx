@@ -3,6 +3,7 @@ import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
 import "../App.css"
+import ErrorBoundary from '../ErrorBoundary';
 function LinkNode({ url,image,description,title,isGrid}) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -142,6 +143,7 @@ const fetchData = async (url) => {
   }
 
   return (
+    <ErrorBoundary>
     <div className={`rounded-[2em] overflow-hidden my-4   w-[100%] shadow-md flex flex-row p-4 bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
@@ -150,6 +152,7 @@ const fetchData = async (url) => {
    <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>
       </div>
     </div>
+    </ErrorBoundary>
   );
 }
 
