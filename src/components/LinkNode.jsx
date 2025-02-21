@@ -115,33 +115,39 @@ const fetchData = async (url) => {
 
     );
   }
-  const imageViewClass=" "
+
   const imageView = ()=>{
-    if(previewData.title!=="Spotify"){
-    return(<div>
-      {previewData.image &&  <div className="w-[100px] flex h-[100%] overflow-hidden  ">
-    <img className={"object-fit w-full my-auto mx-auto min-w-[90px] h-[100%]"} src={previewData.image}  alt="Link Preview" />
-    </div>}
-    </div>)
-    }else{
-       return (
+    let frame = "  flex mx-auto shadow-sm max-h-[6em] max-w-[6em] overflow-hidden rounded-full  "
+    let imgClass = "object-fit my-auto mx-auto  "
+    if(previewData.title=="Spotify"){
+      return (
         <div className='spotify rounded-lg w-[96vw] md:w-page'>
         <Spotify  height={"140"}link={url}/>
         </div>
-      )
+      )}else if(image){
+        return(<div className={frame}>
+    <img className={imgClass} 
+    src={image}/>
+
+</div>)
+
+      }else if(previewData.image) {
+    return(     <div className={" flex  shadow-sm max-h-[6em] max-w-[6em] overflow-hidden rounded-full  "}>
+    <img className={"object-fit  min-w-[5.5em]  "} src={previewData.image}  alt="Link Preview" />
+    </div>
+    )
+    }else{
+      return null
     }
   }
 
   return (
-    <div className={`rounded-full overflow-hidden my-4 min-h-[8em] h-[9em] md:h-[9em]  w-[100%] shadow-md flex flex-row  bg-emerald-100 `} 
+    <div className={`rounded-[2em] overflow-hidden my-4   w-[100%] shadow-md flex flex-row p-4 bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
-      {image?  <div className="max-w-[100px] overflow-hidden max-h-[10em]  ">
-    <img className={"object-fit    "}src={image}/>
-   
-    </div>:imageView()}
-      <div className=' text-emerald-800  text-left py-4 px-4 open-sans-medium'>
+      {imageView()}
+      <div className=' text-emerald-800 overflow-scroll text-left py-4 px-4 open-sans-medium'>
       <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
-   <h6 className='  text-[0.8rem] md:text-md '> {description}</h6>
+   <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>
       </div>
     </div>
   );
