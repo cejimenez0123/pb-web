@@ -135,7 +135,7 @@ const fetchData = async (url) => {
 
       }else if(previewData&& previewData.image) {
     return(     <div className={" flex  text-center shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "}>
-    <img className={"object-fit    "} src={previewData.image}  alt="Link Preview" />
+    <img className={"object-fit  w-[100%]  min-w-[70px] "} src={previewData.image}  alt="Link Preview" />
     </div>
     )
     }else{
