@@ -147,8 +147,8 @@ const fetchData = async (url) => {
     <ErrorBoundary>
     <div className={`rounded-[2em] overflow-hidden my-4   w-[100%] shadow-md flex flex-row p-4 bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
-      {imageView()}
-      <div className=' text-emerald-800 overflow-scroll text-left  px-4 open-sans-medium'>
+      <div className='min-w-[6.4em] max-w-[6.4em]'>{imageView()}</div>
+      <div className=' px-2 text-emerald-800 overflow-scroll text-left  open-sans-medium'>
       <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
    <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>
       </div>
