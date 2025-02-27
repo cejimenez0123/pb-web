@@ -5,6 +5,7 @@ import { useMediaQuery } from "react-responsive"
 import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
+import slack from "../images/icons/slack.svg"
 export default function AboutContainer(props){
     const md = useMediaQuery({
         query: '(min-width: 750px)'
@@ -120,11 +121,11 @@ const stayInLoop=()=>{
 
 <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
 <h2 className="mx-4 my-2 open-sans-medium  text-l">Follow the Journey</h2>
-<a href="https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ">Join our slack</a>
-<div className="flex open-sans-medium  mx-auto text-l texg-left leading-loose tracking-loose">
+<a className="max-w-48 my-4 mx-auto text-center" href="https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"><p className="open-sans-medium">Join the discussion on our slack</p><img  className="mx-auto" src={slack}/></a>
+<div className="flex my-4 open-sans-medium  mx-auto text-l texg-left leading-loose tracking-loose">
 
-<a href="https://www.instagram.com/plumbumapp">@plumbumapp</a> |<a href="https://www.instagram.com/bxwriters"> @bxwriters</a></div>
-<a className="text-l" onClick={()=>navigate(Paths.newsletter())}>[→ Subscribe to Our Newsletter]</a>
+<p><a href="https://www.instagram.com/plumbumapp">@plumbumapp</a> |<a href="https://www.instagram.com/bxwriters"> @bxwriters</a></p></div>
+<a className="text-l" onClick={()=>navigate(Paths.newsletter())}><p>[→ Subscribe to Our Newsletter]</p></a>
         </div>)
 }
 const userTestimonial=()=>{
@@ -146,9 +147,9 @@ const userTestimonial=()=>{
     <div  className="grid md:grid-cols-2  grid-cols-1 gap-8 mx-4 mb-8">
    {/* //  */}
     <div className="pt-8 pb-4 min-w-1/2 md:px-8 mx-auto text-center ">
-        <h2 className=" text-[4rem]  mx-atuo lora-bold text-emerald-700 pt-8 pb-4">Plumbum</h2>
+        <h2 className=" text-[2.5rem] md:text-[4rem]  mx-atuo lora-bold text-emerald-700 pt-8 pb-4">Plumbum</h2>
         <br/>
-        <h2 className="lora-medium text-[2rem]  mx-auto text-emerald-700 text-[2rem]">Your Writing</h2> <h2 className="lora-medium text-[2rem]  mx-auto text-emerald-700 text-[2rem]">Your Community</h2>
+        <h2 className="lora-medium text-[1.5rem] md:text-[2rem]  mx-auto text-emerald-700 ">Your Writing</h2> <h2 className="lora-medium text-[1.5rem] md:text-[2rem]   mx-auto text-emerald-700 ">Your Community</h2>
         </div> 
 {/*  */}
 
@@ -164,7 +165,7 @@ src={groupJpg} alt="group pic"
 
 </div><div>
 <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
-<img className="absolute top-[-52%] sm:top-[-20%] md:top-[-30%] lg:top-[-80%] rounded-lg" src={firstGroup}/>
+<img className="absolute top-[-7em] sm:top-[-13em] md:top-[-12rem] rounded-lg" src={firstGroup}/>
 </div>
 </div>
 <div className=" text-emerald-700  ">
@@ -189,9 +190,9 @@ src={groupJpg} alt="group pic"
      <h5 className="mx-auto mont-medium text-xl tracking-wide my-auto">Apply to Join Today</h5>
      </div>
 
-<h6>Any requests for features, feedback, or encouragement <a onClick={()=>navigate(Paths.feedback())}>click here</a>
+<h6>Any requests for features, feedback, or encouragement<br/><a onClick={()=>navigate(Paths.feedback())}>click here</a>
 
 </h6>
-<h6 className="text-emerald-700 mt-12">Plumbum©2025</h6>
+<h6 className="text-emerald-700 pb-8 mt-12">Plumbum©2025</h6>
 </div></div> </div>)
 }
