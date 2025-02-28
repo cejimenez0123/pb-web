@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useState,useEffect, useContext } from "react";
+import { useState,useEffect,useRef, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture} from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
