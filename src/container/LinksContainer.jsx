@@ -16,12 +16,15 @@ export default function LinksContainer(props){
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
             <ul className="md:mx-auto mx-4">
             <li>
-                    <LinkNode url={"https://partiful.com/e/OGTscKDoU4VPRIRSfnAp"}
-                    // image={logo}
-                    title={"Creative Mixer RSVP Now"}
-                    description={"We're launching the website! Poetry, Performances, and Community! It's the start."}/>
-                    
-                </li>
+            <li>
+               <LinkNode url={"https://partiful.com/e/Q3VhybwsrmLldD1bhRZD"}
+      
+                    title={"The Bronx Circle of Thought RSVP March 8"}
+                    description={"A philosophical discusson to help center ourselves in a chaotic world."}/>
+                    </li>
+         
+
+         
                 
                 <li className="">
                     <LinkNode url={"https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"}
@@ -50,15 +53,7 @@ image={"https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229b
                     description={"Holding data costs money. Any support is appreicated at any amount."}/>
                </li>
            
-               <li>
-               <LinkNode url={"https://partiful.com/e/Q3VhybwsrmLldD1bhRZD"}
-      
-                    title={"The Bronx Circle of Thought RSVP March 8"}
-                    description={"A philosophical discusson to help center ourselves in a chaotic world."}/>
-                    </li>
-         
-
-               <li>
+             
                <LinkNode url={"https://plumbum.app"+Paths.discovery()}
                image={logo}
                     title={"Discover Plumbum"}

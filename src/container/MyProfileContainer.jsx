@@ -378,16 +378,16 @@ className=" text-emerald-800 mx-2  "/>
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 text-xl" aria-label="Books"
+    className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 text-xl" aria-label="Collections"
     />
   <div role="tabpanel" 
    className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page w-[96vw]  md:w-page mx-auto rounded-full">
-  <IndexList items={books}/>
+  <IndexList items={collections}/>
   </div>
-  <input type="radio" name="my_tabs_2" role="tab" className="tab   bg-transparent border-3 mx-auto [--tab-bg:emerald] mont-medium text-emerald-800  rounded-full  [--tab-border-color:emerald] border-2  text-xl" aria-label="Libraries" />
+  {/* <input type="radio" name="my_tabs_2" role="tab" className="tab   bg-transparent border-3 mx-auto [--tab-bg:emerald] mont-medium text-emerald-800  rounded-full  [--tab-border-color:emerald] border-2  text-xl" aria-label="Libraries" />
   <div role="tabpanel"  className="tab-content md:w-page w-[96vw] pt-1 lg:py-4  ">
     <IndexList items={libraries}/>
-  </div>
+  </div> */}
   {isNotPhone? <span className='flex flex-row'> <label className={`flex border-emerald-600 border-2 rounded-full my-1 ${search.length==0?"w-[14em]":"w-[20em]"} flex-row mx-4 `}>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>
   <input type='text' value={search}  onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 rounded-full text-sm bg-transparent my-1  text-emerald-800' />

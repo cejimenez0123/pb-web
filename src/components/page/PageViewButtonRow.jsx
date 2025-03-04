@@ -26,10 +26,12 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
     useLayoutEffect(()=>{
         if(currentProfile && page){
             let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
-            let marked =currentProfile.profileToCollections.find(ptc=>{
+            if(currentProfile.profileToCollections){
+            let marked  = currentProfile.profileToCollections.find(ptc=>{
                 return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
-          
-            setBookmarked(marked)
+                setBookmarked(marked)
+            }
+           
             setLikeFound(found)
             setLoading(false)
         }else{
