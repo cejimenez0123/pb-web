@@ -46,6 +46,7 @@ import FeedbackContainer from './container/FeedbackContainer.jsx';
 import NewsletterContainer from './container/auth/NewsletterContainer.jsx';
 import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
+import CalendarContainer from './container/CalendarContainer.jsx';
 function App(props) {
 
   const dispatch = useDispatch()
@@ -138,6 +139,8 @@ function App(props) {
           
        }
      />
+      <Route path={Paths.calendar()}
+     element={<CalendarContainer/>}/>
           <Route path={Paths.newsletter() }
      element={<LoggedRoute><NewsletterContainer/></LoggedRoute>}/>
      <Route path={'/reset-password' }

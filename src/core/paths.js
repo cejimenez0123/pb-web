@@ -1,8 +1,10 @@
+import { CalendarMonth } from "@mui/icons-material";
 
 const Paths ={
     newsletter:()=>`/newsletter`,
     feedback:()=>`/feedback`,
     links:()=>`/links`,
+    calendar:()=>"/calendar",
     library: {
         route: ()=>`/library/:id`,
         createRoute:(id)=>{return `/library/${id}`;}},

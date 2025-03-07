@@ -15,17 +15,16 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
     }else{
         more=hasMore
     }
-    const pagesInView = items??useSelector(state=>state  && state.pages && state.pages.pagesInView? state.pages.pagesInView:[])
-    const isNotPhone = useMediaQuery({
-        query: '(min-width: 768px)'
+    const pagesInView = items??useSelector(state=>state.pages.pagesInView)
+    const isPhone =  useMediaQuery({
+        query: '(max-width: 700px)'
       })
 
   
   
         return(<div 
         >
-             {/* <ErrorBoundary fallback={<div><h1 className="text-emerald-800">Error</h1></div>}> */}
-           <InfiniteScroll
+                  <InfiniteScroll
         dataLength={pagesInView.length?pagesInView.length:0}
         next={getMore}
         scrollThreshold={1}
@@ -39,7 +38,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
             <h2 className="mx-auto my-auto text-xl  text-emerald-600 py-2 lora-medium  text-center mx-auto w-12">Sharing you work!<br/> Encourages others to share!<br/>This is what we have now!<br/>Check in later</h2>
         </div>}
         >
-<div className={` ${isGrid && isNotPhone ? 'flex flex-wrap' : ''}`}>
+<div className={` ${isGrid && !isPhone ? 'flex flex-wrap' : ''}`}>
 
 
           {pagesInView.length?pagesInView.map((page,i)=>{
@@ -62,7 +61,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
                 const id = `${page.id}_${i}`
                 return(<div  key={id}
 
-  className={`${isGrid && isNotPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
+  className={`${isGrid && !isPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
 >
                     <DashboardItem  forFeedback={forFeedback} isGrid={isGrid} key={page.id} page={page}/>
                 </div>)
@@ -72,7 +71,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
             }}):null}
             </div>
         </InfiniteScroll> 
-        {/* </ErrorBoundary> */}
+
         </div>)
 
         

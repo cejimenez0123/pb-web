@@ -93,7 +93,7 @@ useLayoutEffect(()=>{
 
 
         return(
-            <ErrorBoundary>
+            // <ErrorBoundary>
             <div id="dashboard" >
                 <div className='py-8'>
                
@@ -102,7 +102,7 @@ useLayoutEffect(()=>{
                          
 <div role="tablist" className="tabs   grid ">
 
-<input type="radio" name="my_tabs_2" role="tab"   defaultChecked  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Recommendations" />
+<input type="radio" name="my_tabs_2" role="tab"   defaultChecked  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3    text-md md:text-xl" aria-label="Recommendations" />
 <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
 
                     <PageList items={recommendedStories} hasMore={hasMore} getMore={getContent}/>
@@ -113,7 +113,7 @@ useLayoutEffect(()=>{
     name="my_tabs_2"
     role="tab"
   
-    className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 text-xl" aria-label="Home"
+    className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 t text-md md:text-xl" aria-label="Home"
     />
   <div role="tabpanel" 
    className="tab-content  pt-1 lg:py-4 rounded-lg  max-w-[96vw] md:w-page md:mx-auto border-l-4  rounded-full   w-[96vw]  md:w-page ">
@@ -124,7 +124,7 @@ useLayoutEffect(()=>{
                 </div>
                 <ExploreList items={collections}/>
             </div>
-            </ErrorBoundary>
+            // </ErrorBoundary>
         )
         
 }

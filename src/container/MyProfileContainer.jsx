@@ -366,7 +366,7 @@ className=" text-emerald-800 mx-2  "/>
                          
                             <div role="tablist" className="tabs mx-auto w-[100%] items-start ">
                             
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page   text-xl" aria-label="Pages" />
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page    text-md md:text-xl" aria-label="Pages" />
    <div role="tabpanel" className="tab-content  pt-1 lg:py-4  md:w-page w-[96vw]  rounded-lg md:mx-auto  ">
   <IndexList items={pages} handleFeedback={item=>{
     setFeedbackPage(item)
@@ -378,7 +378,7 @@ className=" text-emerald-800 mx-2  "/>
     type="radio"
     name="my_tabs_2"
     role="tab"
-    className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 text-xl" aria-label="Collections"
+    className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3  text-md md:text-xl" aria-label="Collections"
     />
   <div role="tabpanel" 
    className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page w-[96vw]  md:w-page mx-auto rounded-full">

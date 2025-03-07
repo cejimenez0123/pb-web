@@ -2,6 +2,7 @@
 import LinkNode from "../components/LinkNode";
 import Paths from "../core/paths";
 import logo from "../images/icon.ico"
+import events from "../images/icons/event.svg"
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -22,18 +23,13 @@ export default function LinksContainer(props){
                     title={"The Bronx Circle of Thought RSVP March 8"}
                     description={"A philosophical discusson to help center ourselves in a chaotic world."}/>
                     </li>
-         
-
-         
-                
-                <li className="">
-                    <LinkNode url={"https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"}
-                    title={"Join our slack community"}
-                    image={"https://www.svgrepo.com/show/315526/slack.svg"}
-                    description={"Our slack community, our middle ground. A space for feedback, while we work on devleopment."}/>
-               </li>
-       
-               <li>
+                    <li>
+               <LinkNode image={events}
+       url={"https://plumbum.app"+Paths.calendar()}
+                    title={"NYC Writing Calendar"}
+                    description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
+                    </li>
+                    <li>
                <LinkNode url={"https://plumbum.app"+Paths.newsletter()}
                image={logo}
                     title={"Join the newsletter"}
@@ -46,6 +42,21 @@ export default function LinksContainer(props){
                     description={"Become a user and support us from the ground."}/>
                     
                 </li>
+         
+                    <li className="">
+                    <LinkNode url={"https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"}
+                    title={"Join our slack community"}
+                    image={"https://www.svgrepo.com/show/315526/slack.svg"}
+                    description={"Our slack community, our middle ground. A space for feedback, while we work on devleopment."}/>
+               </li>
+                <li className="">
+                    <LinkNode url={"https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"}
+                    title={"Join our slack community"}
+                    image={"https://www.svgrepo.com/show/315526/slack.svg"}
+                    description={"Our slack community, our middle ground. A space for feedback, while we work on devleopment."}/>
+               </li>
+       
+           
                <li>
                <LinkNode url={"https://ko-fi.com/plumbumwriters"}
 image={"https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229bf8a18f97a3c1_favion-p-500.png"}

@@ -232,6 +232,7 @@ if(data.profile){
     
     }catch(error){
       console.log({error})
+      localStorage.clear()
       return {error}
     }});
 
