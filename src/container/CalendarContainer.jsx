@@ -1,11 +1,22 @@
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import validateEmail from "../core/validateEmail";
 import authRepo from "../data/authRepo";
+import ReactGA from "react-ga4"
 import { Dialog,DialogTitle,DialogContent,DialogActions,Button } from "@mui/material";
 export default function CalendarContainer(){
+    useEffect(()=>{
+        ReactGA.event({
+            category: "Calendar",
+            action: "Page View Calendar",
+            label:"Page View Calendar",
+          
+            nonInteraction: false
+          });
+     
+    },[])
 return(<div>
     <div className="mx-auto m-4 w-fit text-center">
         <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>

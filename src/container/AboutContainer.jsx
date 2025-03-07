@@ -121,7 +121,8 @@ const stayInLoop=()=>{
 
 <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
 <h2 className="mx-4 my-2 open-sans-medium  text-l">Follow the Journey</h2>
-<a className="max-w-48 my-4 mx-auto text-center" href="https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"><p className="open-sans-medium">Join the discussion on our slack</p><img  className="mx-auto" src={slack}/></a>
+<a className="flex flex-row  my-4 mx-auto text-center" href="https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"><p className="open-sans-medium mx-4">Join the discussion on our slack</p><img  className="mx-auto" src={slack}/></a>
+<a className="flex flex-row text-emerald-800 active:text-cyan-800 my-4 mx-auto text-center" onClick={()=>navigate(Paths.calendar())}><p className="open-sans-medium mx-4">Check out the Calendar for NYC Writing Scene</p></a>
 <div className="flex my-4 open-sans-medium  mx-auto text-l texg-left leading-loose tracking-loose">
 
 <p><a href="https://www.instagram.com/plumbumapp">@plumbumapp</a> |<a href="https://www.instagram.com/bxwriters"> @bxwriters</a></p></div>
