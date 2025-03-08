@@ -3,6 +3,7 @@ import LinkNode from "../components/LinkNode";
 import Paths from "../core/paths";
 import logo from "../images/icon.ico"
 import events from "../images/icons/event.svg"
+import workshop from "../images/writerswork.png"
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -17,13 +18,18 @@ export default function LinksContainer(props){
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
             <ul className="md:mx-auto mx-4">
             <li>
+               <LinkNode url={"https://partiful.com/e/jLzoS5nNZsdhoQV2uZva"}
+               image={workshop}
+                    title={"Writers Workshop March 15"}
+                    description={"Get feedback, build community, enjoy cafe vibes"}/>
+                    </li>
             <li>
                <LinkNode url={"https://partiful.com/e/Q3VhybwsrmLldD1bhRZD"}
       
                     title={"The Bronx Circle of Thought RSVP March 8"}
                     description={"A philosophical discusson to help center ourselves in a chaotic world."}/>
                     </li>
-                    <li>
+                    <li>  
                <LinkNode image={events}
        url={"https://plumbum.app"+Paths.calendar()}
                     title={"NYC Writing Calendar"}
@@ -64,7 +70,7 @@ image={"https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229b
                     description={"Holding data costs money. Any support is appreicated at any amount."}/>
                </li>
            
-             
+               <li>
                <LinkNode url={"https://plumbum.app"+Paths.discovery()}
                image={logo}
                     title={"Discover Plumbum"}
