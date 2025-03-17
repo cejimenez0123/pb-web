@@ -10,17 +10,21 @@ import BookCarousel from "../components/collection/BookCarousel"
 import al from "../images/workshop/al-1.jpg"
 import duo from "../images/workshop/Duo-1.jpg"
 import vemilo from "../images/workshop/vemilo-1.jpg"
+import vemilo2 from "../images/workshop/vemilo.jpg"
 import khaos from "../images/workshop/khaos-1.jpg"
 import out from "../images/workshop/out-1.jpg"
 import out2 from "../images/workshop/out-2.jpg"
 import table1  from "../images/workshop/table-1.jpg"
 import table2  from "../images/workshop/table-2.jpg"
 import table3  from "../images/workshop/table-3.jpg"
+import table4 from "../images/workshop/table-4.jpg"
+import table5 from "../images/workshop/table-5.jpg"
+import table7 from "../images/workshop/table-7.jpg"
 import books1 from "../images/workshop/books-1.jpg"
 import { Helmet } from "react-helmet"
-let firstImages = [out,al,duo,vemilo,khaos
+let firstImages = [out,al,table3,duo,vemilo,khaos,,table7
 ]
-let secImages = [out2,table1,books1,table2]
+let secImages = [out2,table1,vemilo2,table2]
 export default function AboutContainer(props){
 
     const md = useMediaQuery({

@@ -137,14 +137,14 @@ const fetchData = async (url) => {
   }
   const previewDescription=()=>{
     if(previewData.title!=="Spotify"){
-      return(<h6 className={isGrid?"max-h-24 p-1 mx-auto":'text-slate-800 pt-8  p-3 bg-emerald-200  text-[0.8rem]'} >{previewData.description}</h6>)
+      return(<h6 className={isGrid?" overflow-scroll pt-2  px-1 mx-auto":'text-slate-800 pt-8  p-3 bg-emerald-200  text-[0.8rem]'} >{previewData.description}</h6>)
       }else{
         return(<h6 className={'text-slate-800 py-4  top-1 p-3 bg-emerald-200  text-[0.8rem]'}>{previewData.description}</h6>)
       }
   }
 
   return (
-    <div className={isGrid?" text-white w-fit  w-[100%] mx-auto":"h-fit bg-emerald-200  text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className={isGrid?" text-white w-fit mont-medium w-[100%] mx-auto":"h-fit bg-emerald-200  text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       <div className='text-left open-sans-medium'>
    {previewDescription()}

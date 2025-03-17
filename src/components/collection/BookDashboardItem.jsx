@@ -190,12 +190,12 @@ const Carousel = ({book})=>{
 
       
         return(
-        <div  className={`carousel-item min-w-[100%] flex flex-col justify-center ${isGrid?"max-w-[100%]":" max-w-[95vw]  md:w-[49.5em] "}`}id={stc.id} key={stc.id}
+        <div  className={`carousel-item min-w-[100%] h-[100%] flex flex-col justify-center ${isGrid?"max-w-[100%]":" max-w-[95vw]  md:w-[49.5em] "}`}id={stc.id} key={stc.id}
 
 >
-<h6 onClick={()=>{
+<h5  onClick={()=>{
     navigate(Paths.page.createRoute(stc.story.id))
-}} className='text-white  mx-2 text-left'>{stc.story.title}</h6>
+}} className='text-white mont-medium bottom-0 mx-2 text-left'>{stc.story.title}</h5>
 
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
 

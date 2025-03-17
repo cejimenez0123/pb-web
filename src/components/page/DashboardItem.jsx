@@ -318,8 +318,8 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
         return(
         <ErrorBoundary>
-                <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page  shrink my-2 h-fit'}>
-        <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
+                <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}>
+        <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&page?header():null}
         {page.description && page.description.length>0?<div className='min-h-12 pt-4 p-2'>
             {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
