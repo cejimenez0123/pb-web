@@ -143,7 +143,7 @@ function DiscoveryContainer(props){
                     {viewItems.map((item,i)=>{
                         const id = `${item.id}_${i}`
                        
-                        if(item.storyIdList&&item.storyIdList.length>1&&!item.data){
+                        if(item.storyIdList&&item.storyIdList.length>0&&!item.data){
                             console.log("Touch"+JSON.stringify(item))
                             return(<div 
                                 className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
@@ -151,7 +151,7 @@ function DiscoveryContainer(props){
                             >               
                                 <BookDashboardItem isGrid={isGrid} book={item}/>
                             </div>)
-                        }else{
+                        }else if(item.data){
                       
                         return(<div 
                             className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
@@ -159,8 +159,10 @@ function DiscoveryContainer(props){
                         >               
                             <DashboardItem isGrid={isGrid} key={id} page={item}/>
                         </div>)
-                        }
-                    })}
+                        }else{
+                            return (null)
+                    
+                    }})}
                     </div>
                 </InfiniteScroll> </div>)
         }

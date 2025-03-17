@@ -30,9 +30,7 @@ export default function AboutContainer(props){
    
     const findCreatives=() =>{
         return(<div className="grid sm:grid-cols-2 gap-8">
-    {/* <div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
-<img  className=" absolute top-[-52%] sm:top-[-20%] md:top-[-30%] lg:top-[-80%] rounded-lg" src={firstGroup}  alt="first group"/>
- </div> */}
+   
            
             <div className="  text-emerald-800 h-[100%] rounded-lg p-4" >
           <div className="text-center" >

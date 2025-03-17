@@ -91,7 +91,7 @@ const fetchData = async (url) => {
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
       // +isGrid?" rounded-lg   mx-auto   ":
-      <div  className={isGrid?"spotify max-w-[100%]":"spotify w-[96vw] md:w-page"} 
+      <div  className={isGrid?"spotify rounded-box max-w-[100%]":"spotify w-[96vw] md:w-page"} 
             style={{ cursor: 'pointer' }}>
         <Spotify width={"100%"} style={{minHeight:"27.5em"}} className="bg-emerald-200 max-h-[20em]"
          link={url}/>
@@ -118,12 +118,12 @@ const fetchData = async (url) => {
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image && <img  className={isGrid?"rounded-lg pt-8 w-fit max-h-36  overflow-hidden mx-auto":"  rounded-t-lg w-[100%] "}src={previewData.image}  alt="Link Preview" />}
+      {previewData.image && <img  className={isGrid?"rounded-lg pt-8 w-fit  overflow-hidden mx-auto":"  rounded-t-lg w-[100%] "}src={previewData.image}  alt="Link Preview" />}
     </div>)
     }else{
        return (
-        <div className='spotify rounded-lg w-[96vw] md:w-page'>
-        <Spotify  height={"140"}link={url}/>
+        <div className='spotify rounded-box w-[96vw] md:w-page'>
+        <Spotify  height={"140"} width={"100%"} link={url}/>
         </div>
       )
     }
@@ -137,18 +137,18 @@ const fetchData = async (url) => {
   }
   const previewDescription=()=>{
     if(previewData.title!=="Spotify"){
-      return(<h6 className={isGrid?"max-h-24 p-1 mx-auto":'text-slate-800 py-8  p-3 bg-emerald-200  text-[0.8rem]'} >{previewData.description}</h6>)
+      return(<h6 className={isGrid?"max-h-24 p-1 mx-auto":'text-slate-800 pt-8  p-3 bg-emerald-200  text-[0.8rem]'} >{previewData.description}</h6>)
       }else{
         return(<h6 className={'text-slate-800 py-4  top-1 p-3 bg-emerald-200  text-[0.8rem]'}>{previewData.description}</h6>)
       }
   }
 
   return (
-    <div className={isGrid?" text-white w-fit  p-2 w-[100%] mx-auto":"h-fit bg-emerald-200  text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className={isGrid?" text-white w-fit  w-[100%] mx-auto":"h-fit bg-emerald-200  text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       <div className='text-left open-sans-medium'>
    {previewDescription()}
-      {previewTitle()}
+      {isGrid?null:previewTitle()}
       </div>
     </div>
   );

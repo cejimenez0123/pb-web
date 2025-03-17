@@ -215,6 +215,10 @@ return <Button onClick={()=>{
             <ProfileCircle isGrid={isGrid} profile={page.author}/>
         <span className='bg-transparent flex flex-row '>
             <h6 className={`text-white max-w-[15em] min-w-[10em] text-right ml-1 pr-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
+    onClick={()=>{
+        navigate(Paths.page.createRoute(page.id))
+    }}
+
 >{` `+page.title.length>0?page.title:""}</h6><img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
     
     </div>:null

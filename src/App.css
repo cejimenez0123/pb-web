@@ -64,7 +64,7 @@
   font-style: normal;
 }
 .spotify body{
-  max-height: 10em !important;
+  max-height: 15em !important;
 }
 @media (min-width:768px) {
   
@@ -804,8 +804,9 @@ iframe[title="Spotify Web Player"]{
   }
     
   .spotify .TrackListWidget_widgetContainer__VVETD{
-    border-radius: 0.5rem !important;
-    padding-top: 4em !important;
+    border-radius:1rem !important;
+    overflow: hidden !important;
+   
   }
 
    

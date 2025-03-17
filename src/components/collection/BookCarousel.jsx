@@ -15,7 +15,7 @@ export default function BookCarousel({images=[]}){
             return(  <div className="carousel-item  max-w-100% md:max-w-[100%]  w-full">
             <img
               src={imgSrc}
-              className=" max-h-[24em] md:max-h-[33em] "
+              className=" max-h-[15.5em] sm:max-h-[24em] md:max-h-[33em] "
         />
           </div>)})}
       </div>)

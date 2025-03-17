@@ -28,38 +28,13 @@ function BookDashboardItem({book,isGrid}) {
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
-    // const currentProfile = useSelector(state=>state.users.currentProfile)
-   const pagesInView = useSelector(state=>state.pages.pagesInView)
+   
+
     const [expanded,setExpanded]=useState(false)
-    const colInView = useSelector(state=>state.books.collectionInView)
+
    const [likeFound,setLikeFound]=useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
-//     const addStoryToCollection = ()=>{
-//       if(page){
-//        const list= [page]
-//        if(location.pathname.includes("collection")&&pathParams.id&&colInView.id==pathParams.id)
-//         dispatch(addStoryListToCollection({id:colInView.id,list:list,profile:currentProfile})).then(res=>{
-//     checkResult(res,payload=>{
-//         let pages = pagesInView
-//         let index = pages.findIndex(page=>page==Enviroment.blankPage)
-//         let stories = payload.collection.storyIdList.map(sTc=>sTc.story)
-//        let back = pages.slice(index,pages.length).filter(page=>{
-// return !stories.find(story=>story && page &&story.id && page.id&& story.id==page.id)
-//        })
-
-        
-       
-//         dispatch(setPagesInView({pages:[...stories,...back]}))
-//         setSuccess("Added")
-//     },err=>{
-//         setError(err)
-//     })
-  
-          
-        
-//     })}
-//     }
 
     const soCanUserEdit=()=>{
 
@@ -104,11 +79,7 @@ const deleteStc=()=>{
    })
 }}
 
-const hanldeClickComment=()=>{   
-  if(page){ 
-    navigate(Paths.page.createRoute(page.id))
-}
-}   
+  
 
 const header=()=>{
 
@@ -121,9 +92,7 @@ const header=()=>{
      ml-1 pr-2 
       no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
     onClick={()=>{
-        // dispatch(setPageInView({page}))
-        navigate(Paths.book.createRoute(book.id))
-
+        navigate(Paths.collection.createRoute(book.id))
     }} >{` `+book.title.length>0?book.title:""}</h6></span>
 }
 const handleApprovalClick = ()=>{
@@ -188,7 +157,11 @@ return <Button onClick={()=>{
         return isGrid ?<div className='w-[100%]  py-2 my-auto flex flex-row justify-between  text-white '>
             <ProfileCircle isGrid={isGrid} profile={book.profile}/>
         <span className='bg-transparent flex flex-row '>
-            <h6 className={`text-white max-w-[15em] min-w-[10em] text-right ml-1 pr-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
+            <h6 
+            onClick={()=>{
+                navigate(Paths.collection.createRoute(book.id))
+            }}
+            className={`text-white max-w-[15em] min-w-[10em] text-right ml-1 pr-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
 >{` `+book.title.length>0?book.title:""}</h6><img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
     
     </div>:null
@@ -201,95 +174,14 @@ return <Button onClick={()=>{
             onBookmarkPage()
         }
           },10)
-//     const buttonRow = ( )=>{
-//         return isGrid?null:
-//         <div className='  flex flex-row w-[96vw] rounded-b-lg md:w-page rounded-b-lg  justify-evenly   '>
-            
-//          <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow w-1/3`}>
-//          <div
-         
-//          onClick={handleApprovalClick}
-            
-//           className={`
-//             py-2   flex mont-medium  mx-auto text-white border-none h-[100%]  border-none  `}
-        
-//          >
-//             <h6 className=' text-[1.2rem] mont-medium my-auto mx-auto'>Yea{likeFound?"h!":""}</h6> 
-//          </div>
-//          </div>
-//          <div className={" bg-emerald-700 mont-medium  border-white border-x-2 border-y-0  text-center border-white grow w-1/3"}>
-//          <div
-//              className='
-//              text-white
-//         text-center mx-auto
-//        bg-transparent py-2
-//        border-none mont-medium 
-//          '
-//              onClick={()=>hanldeClickComment()}
-//                  >
-//           <h6 className='text-[1.2rem]'> Review</h6>
-//          </div>
-//          </div>
-//          {!page.recommended?<div className="dropdown    text-center   bg-emerald-700  py-2   grow w-1/3 dropdown-top">
-// <div tabIndex={0} role="button" 
-//     className="             
-//         text-white
-//         text-center mx-auto
-//         bg-transparent
-//         border-none 
-//         mont-medium 
-     
-//          ">
-// <h6 className=' text-[1.2rem]'>Share</h6></div>
-// <ul tabIndex={0} className="dropdown-content  text-center    text-emerald-800  z-50 menu bg-emerald-100 rounded-box  w-60 p-1 shadow">
 
-//     <li 
-// className=' text-emerald-700'
 
-// onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
-//                      Add to a Collection
-//      </a></li>
-
-//                 <li> <a
-//                  className=' text-emerald-700'
-//                 onClick={()=>{
-//                      navigator.clipboard.writeText("https://plumbum.app/page"+Paths.page.createRoute(page.id))
-//                      .then(() => {
-//                          setSuccess('Text copied to clipboard');
-//                        })
-//                  }}
-//              >
-//                     Share Link
-//                  </a></li>
-//                  {canUserEdit
-//                 ? <li className=' text-emerald-700'> 
-              
-//      <a onClick={()=>{
-//         dispatch(setEditingPage({page}))
-//         dispatch(setPageInView({page:null}))
-//         navigate(Paths.editPage.createRoute(page.id))}}
-//         className='text-emerald-700'>Edit</a>
-//      </li>:null}
-//     <li> <button className="my-auto w-fit mx-auto border-none bg-transparent"onClick={handleBookmark}
-//     disabled={!currentProfile}> 
-//     {loading?<img className="max-h-6"src={loadingGif}/>:
-//     bookmarked?<img src={bookmarkFillGreen}
-//      className='text-emerald-800'/>:<img src={bookmarkadd}/>}
-//      </button></li>
-// </ul>
-// </div>:<div onClick={addStoryToCollection} 
-// className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-auto" src={addCircle}/></div>}
-
-// </div>
-
-                
-//     }
 const Carousel = ({book})=>{
 
     if(book){
       
         return(
-            <div className={`${isGrid?"grid-item":""}`}>
+            
                 
         <div className={isGrid?"carousel  ":" max-w-[94.5vw] carousel md:w-page "}>
      
@@ -298,11 +190,18 @@ const Carousel = ({book})=>{
 
       
         return(
-        <div id={stc.id} key={stc.id}
- className={`carousel-item ${isGrid?"w-[100%]":" max-w-[95vw]  md:w-[49.5em] "}`}>
-       <PageDataElement isGrid={isGrid} page={stc.story}/>  </div>)})}
+        <div  className={`carousel-item min-w-[100%] flex flex-col justify-center ${isGrid?"max-w-[100%]":" max-w-[95vw]  md:w-[49.5em] "}`}id={stc.id} key={stc.id}
 
-       </div>
+>
+<h6 onClick={()=>{
+    navigate(Paths.page.createRoute(stc.story.id))
+}} className='text-white  mx-2 text-left'>{stc.story.title}</h6>
+
+       <PageDataElement isGrid={isGrid} page={stc.story} /> 
+
+        </div>)})}
+
+    
        <span className='flex flex-row justify-center'>
 
 
@@ -317,7 +216,7 @@ const Carousel = ({book})=>{
     
         return(
         // <ErrorBoundary>
-  
+        <div className={`${isGrid?"grid-item":""}`}>
                 <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page  shrink my-2 h-fit'}>
            
         <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
@@ -331,13 +230,10 @@ const Carousel = ({book})=>{
        
              
           <div className={isGrid?' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
-      <div onClick={()=>{
-         navigate(Paths.book.createRoute(book.id))
-        }} >
+     
             <Carousel book={book}/>
         
-          </div>
-                {/* {buttonRow()} */}
+        
                 {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1  rounded-b-lg bottom-0'>
                 {header()}
             
@@ -352,7 +248,7 @@ const Carousel = ({book})=>{
                
   </div>
   </div>
- 
+  </div>
 //  </ErrorBoundary>
      )}else{
         return null
