@@ -17,50 +17,40 @@ export default function LinksContainer(props){
         <div className="card  mx-auto">
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
             <ul className="md:mx-auto mx-4">
-            <li>
-               <LinkNode url={"https://partiful.com/e/jLzoS5nNZsdhoQV2uZva"}
-               image={workshop}
-                    title={"Writers Workshop March 15"}
-                    description={"Get feedback, build community, enjoy cafe vibes"}/>
-                    </li>
-            <li>
-               <LinkNode url={"https://partiful.com/e/Q3VhybwsrmLldD1bhRZD"}
-      
-                    title={"The Bronx Circle of Thought RSVP March 8"}
-                    description={"A philosophical discusson to help center ourselves in a chaotic world."}/>
-                    </li>
-                    <li>  
-               <LinkNode image={events}
-       url={"https://plumbum.app"+Paths.calendar()}
-                    title={"NYC Writing Calendar"}
-                    description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
-                    </li>
-                    <li>
-               <LinkNode url={"https://plumbum.app"+Paths.newsletter()}
+           <li>
+               <LinkNode url={"https://plumbum.app"}
                image={logo}
-                    title={"Join the newsletter"}
-                    description={"Keep up with events, before you apply."}/>
+                    title={"About Plumbum"}
+                    description={"Why Plumbum? Why now?"}/>
                     </li>
-                <li>
+             <li>
                     <LinkNode url={"https://plumbum.app"+Paths.apply()}
                     image={logo}
                     title={"Apply to be a user today"}
                     description={"Become a user and support us from the ground."}/>
                     
                 </li>
-         
+                   
+                    <li>
+               <LinkNode url={"https://plumbum.app"+Paths.newsletter()}
+               image={logo}
+                    title={"Join the newsletter"}
+                    description={"Keep up with events, before you apply."}/>
+                    </li>
+              
+          <li>  
+               <LinkNode image={events}
+       url={"https://plumbum.app"+Paths.calendar()}
+                    title={"NYC Writing Calendar"}
+                    description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
+                    </li>
                     <li className="">
                     <LinkNode url={"https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"}
                     title={"Join our slack community"}
                     image={"https://www.svgrepo.com/show/315526/slack.svg"}
                     description={"Our slack community, our middle ground. A space for feedback, while we work on devleopment."}/>
                </li>
-                <li className="">
-                    <LinkNode url={"https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"}
-                    title={"Join our slack community"}
-                    image={"https://www.svgrepo.com/show/315526/slack.svg"}
-                    description={"Our slack community, our middle ground. A space for feedback, while we work on devleopment."}/>
-               </li>
+            
        
            
                <li>
@@ -77,12 +67,7 @@ image={"https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229b
                     description={"Check some recent shared work"}/>
                     </li>
          
-               <li>
-               <LinkNode url={"https://plumbum.app"}
-               image={logo}
-                    title={"About Plumbum"}
-                    description={"Why Plumbum? Why now?"}/>
-                    </li>
+               
                <li>
                <LinkNode url={"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}
                     title={"Purchase literature written by the founder."}
