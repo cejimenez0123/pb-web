@@ -287,18 +287,27 @@ return <Button onClick={()=>{
 const Carousel = ({book})=>{
 
     if(book){
-
+      
         return(
             <div className={`${isGrid?"grid-item":""}`}>
+                
         <div className={isGrid?"carousel  ":" max-w-[94.5vw] carousel md:w-page "}>
      
-       {book.storyIdList.map(stc=>{return(
-        <div key={stc.id}
+       {book.storyIdList.map((stc,i)=>{
+        
+
+      
+        return(
+        <div id={stc.id} key={stc.id}
  className={`carousel-item ${isGrid?"w-[100%]":" max-w-[95vw]  md:w-[49.5em] "}`}>
        <PageDataElement isGrid={isGrid} page={stc.story}/>  </div>)})}
-       
+
        </div>
-    </div>)
+       <span className='flex flex-row justify-center'>
+
+
+      </span>
+      </div>)
     }else{
         return(<div className='skeleton rounded-box'/>)
     }
