@@ -1,6 +1,6 @@
 import { useSelector,useDispatch} from 'react-redux'
 import DashboardItem from '../components/page/DashboardItem'
-import { useState,useEffect } from 'react'
+import { useState,useEffect, useLayoutEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
@@ -13,6 +13,7 @@ import BookListItem from '../components/BookListItem'
 import ReactGA from "react-ga4"
 import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
+import BookDashboardItem from '../components/collection/BookDashboardItem.jsx'
 function DiscoveryContainer(props){
     
     useEffect(()=>{
@@ -31,6 +32,26 @@ function DiscoveryContainer(props){
     const isNotPhone = useMediaQuery({
         query: '(min-width: 999px)'
       })
+    const [viewItems,setViewItems]=useState([...pagesInView,...books]).sort((a,b)=>{
+           
+   
+        return a.updated - b.updated
+        
+
+           
+})
+    useLayoutEffect(()=>{
+
+       let list = [...pagesInView,...books].sort((a,b)=>{
+           
+   
+            return a.updated - b.updated
+            
+    
+               
+    })
+    setViewItems(list)
+    },[pagesInView,books])
     useEffect(
         ()=>{
             if(!isNotPhone){
@@ -98,6 +119,50 @@ function DiscoveryContainer(props){
 </InfiniteScroll>
 </div>)
 
+        }
+    }
+    const listView = ()=>{
+        if(viewItems){
+            return(<div 
+                className={`${isGrid?"":"w-[96vw] md:w-page"}  mx-auto `}
+                >
+                   <InfiniteScroll
+                dataLength={viewItems.length}
+                next={fetchContentItems}
+                scrollThreshold={1}
+                hasMore={false}
+                    >
+                   
+    <div 
+    className={`${
+        isGrid && isNotPhone ? ' grid-container' : ''
+      }`}
+    
+    >
+     
+                    {viewItems.map((item,i)=>{
+                        const id = `${item.id}_${i}`
+                       
+                        if(item.storyIdList&&item.storyIdList.length>1&&!item.data){
+                            console.log("Touch"+JSON.stringify(item))
+                            return(<div 
+                                className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
+                                key={id}
+                            >               
+                                <BookDashboardItem isGrid={isGrid} book={item}/>
+                            </div>)
+                        }else{
+                      
+                        return(<div 
+                            className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
+                            key={id}
+                        >               
+                            <DashboardItem isGrid={isGrid} key={id} page={item}/>
+                        </div>)
+                        }
+                    })}
+                    </div>
+                </InfiniteScroll> </div>)
         }
     }
     const pageList = ()=>{
@@ -204,8 +269,8 @@ className={`${
                         </button></div>:null}
                         </div>
 <div className='max-w-screen'>
-    
-                    {pageList()}
+    {listView()}
+                    {/* {pageList()} */}
                   
                     </div>
                     </div>

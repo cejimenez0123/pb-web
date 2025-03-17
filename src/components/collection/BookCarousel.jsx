@@ -1,10 +1,12 @@
+import { useLocation } from "react-router-dom"
 
 
 
 
 export default function BookCarousel({images=[]}){
+    let location = useLocation()
 
-
+    let isAbout = location.pathname=="/"
     if(images.length>0){
         return(
             // <div className="carousel carousel-center bg-neutral rounded-box max-w-md space-x-4 p-4">
