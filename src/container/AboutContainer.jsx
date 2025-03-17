@@ -17,6 +17,7 @@ import table1  from "../images/workshop/table-1.jpg"
 import table2  from "../images/workshop/table-2.jpg"
 import table3  from "../images/workshop/table-3.jpg"
 import books1 from "../images/workshop/books-1.jpg"
+import { Helmet } from "react-helmet"
 let firstImages = [out,al,duo,vemilo,khaos
 ]
 let secImages = [out2,table1,books1,table2]
@@ -109,7 +110,11 @@ const userTestimonial=()=>{
 }
 
     return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
-        
+        <Helmet>
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="A place for writers to connect and workshop together" />
+        </Helmet>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300;400;700&display=swap" />
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
