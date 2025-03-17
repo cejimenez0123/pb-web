@@ -6,7 +6,22 @@ import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
 import {useDispatch} from 'react-redux'
 import slack from "../images/icons/slack.svg"
+import BookCarousel from "../components/collection/BookCarousel"
+import al from "../images/workshop/al-1.jpg"
+import duo from "../images/workshop/Duo-1.jpg"
+import vemilo from "../images/workshop/vemilo-1.jpg"
+import khaos from "../images/workshop/khaos-1.jpg"
+import out from "../images/workshop/out-1.jpg"
+import out2 from "../images/workshop/out-2.jpg"
+import table1  from "../images/workshop/table-1.jpg"
+import table2  from "../images/workshop/table-2.jpg"
+import table3  from "../images/workshop/table-3.jpg"
+import books1 from "../images/workshop/books-1.jpg"
+let firstImages = [out,al,duo,vemilo,khaos
+]
+let secImages = [out2,table1,books1,table2]
 export default function AboutContainer(props){
+
     const md = useMediaQuery({
         query: '(min-width: 750px)'
       })
@@ -60,17 +75,7 @@ const writingJourney = ()=>{
 <a onClick={()=>navigate(Paths.discovery())}className="text-[1rem]">[→ Explore More]</a>
 </div>
 </div>
-{/*     
-<div  className="text-emerald-800 mt-8 leading-relaxed open-sans-medium text-center lg:text-white">
-<h5 className="text-[1.2rem] mx-auto text-emerald-800 text-center w-fit  open-sans-medium my-4">If you're a writer or enjoy reading, stay engaged with people with shared goals.
-</h5>
-<h5 className="text-[1.2rem] text-emerald-800 open-sans-medium my-4">We are taking applications for beta users for our release in February.
-</h5>
-<h3 className="text-[1.4rem] text-emerald-800 open-sans-medium  my-4 font-bold">Get started now!!</h3>
-</div>
-<div className="text-2xl flex text-emerald-800 max-w-[30em] mx-auto my-12  rounded-full  px-5 py-4" onClick={()=>{navigate(Paths.apply())}}  
-   > <h5 className="mx-auto mont-medium text-xl tracking-wide my-auto">Apply to Join Today</h5></div> */}
-{/* </div> */}
+
     </div>)
 }
 const howItWorks=()=>{
@@ -80,39 +85,7 @@ const howItWorks=()=>{
 <li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Share Your Writing – </strong>Upload your work and shape it with thoughtful feedback.</h6></li>
 <li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Give & Get Feedback – </strong>Support others and grow through collaborating in global and local online workshops.</h6></li>
 <li className="text-[1rem]"><h6 className="text-emerald-800"><strong>Discover & Connect – </strong>Find new voices, build your audience, and improve your craft</h6></li>
-</ul>       {/* <h2 className="lora-medium text-center text-emerald-800 lg:text-white text-4xl font-bold mt-4  py-4">From Writers Workshop to Plumbum</h2>
-        <div className="">
-        <h3 className={`lora-medium font-bold  text-2xl font-bold text-left `}>What is a Writers' Workshop?</h3>
-      
-<h6 className="py-4 text-left open-sans-medium text-[1rem]">
-Peer critiques by like-minded writers
-       </h6>
-
-        <h3 className="lora-medium text-2xl text-left font-bold py-4">What is a Plumbum?</h3>
-        <h6 className="text-left pb-4 pt-2 px-2 text-[1rem] open-sans-medium">Plumbum is the Latin word for lead, like a lead anvil or pipe. It's the root word for plumber. It's also a fun word we'd like to mean creativity and resilience. It's place to find support in your writing goals.
-</h6>
-        <ul className="text-left  px-4">
-
-
-
-
-
-
-
-    <li className="py-3 open-sans-medium text-[1rem]"><h6> 📝 Worried about publishing publicly, but still need people to read your stuff? 
-        Plumbum lets you control visibility and share how you want.
-    
-    </h6></li >
-<li className="py-3 open-sans-medium   text-[1rem]"><h6>💬 Looking for constructive feedback?
-Be part of a community of writers who are eager to share their insights and support you.
-</h6></li>
-<li className="py-3 open-sans-medium text-[1rem]"><h6>📘 Make collections to organize and reorganize everything you find, so you can tell the story you want. </h6></li>
-<li className="py-3 open-sans-medium text-[1rem]"><h6>
-📚 Whether you're a seasoned novelist or just starting out. It's a great place to get started and get support.
-</h6></li>
-
-</ul>
-</div> */}
+</ul>       
     </div>)
 }
 const stayInLoop=()=>{
@@ -145,29 +118,26 @@ const userTestimonial=()=>{
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,300&family=Roboto:wght@500&display=swap" rel="stylesheet"/>
 <div>
    
-    <div  className="grid md:grid-cols-2  grid-cols-1 gap-8 mx-4 mb-8">
-   {/* //  */}
+    <div  className="grid md:grid-cols-2  grid-cols-1 lg:gap-8 lg:mx-4 mb-8">
+
     <div className="pt-8 pb-4 min-w-1/2 md:px-8 mx-auto text-center ">
         <h2 className=" text-[2.5rem] md:text-[4rem]  mx-atuo lora-bold text-emerald-700 pt-8 pb-4">Plumbum</h2>
         <br/>
         <h2 className="lora-medium text-[1.5rem] md:text-[2rem]  mx-auto text-emerald-700 ">Your Writing</h2> <h2 className="lora-medium text-[1.5rem] md:text-[2rem]   mx-auto text-emerald-700 ">Your Community</h2>
         </div> 
-{/*  */}
 
-  <div className={`  ${md?"":"hidden"} relative  overflow-hidden h-[15rem] md:h-[20rem]   rounded-lg`}>
-<img  className=" absolute top-[-8em] sm:top-[-15em] md:top-[-35%] lg:top-[-75%] rounded-lg" 
-src={groupJpg} alt="group pic"
- />
 
-{/*  */}
+  <div className={`  ${md?"":"hidden"}   overflow-hidden max-h-[20rem]   rounded-lg`}>
+
+<BookCarousel images={secImages}/>
+
 
     {findCreatives()}
   
 
-</div><div>
-<div className="  relative overflow-hidden h-[15rem] sm:h-[20rem]  w-48 rounded-lg">
-<img className="absolute top-[-7em] sm:top-[-13em] md:top-[-12rem] rounded-lg" src={firstGroup}/>
 </div>
+<div className="  ">
+    <BookCarousel images={firstImages}/>
 </div>
 <div className=" text-emerald-700  ">
 
