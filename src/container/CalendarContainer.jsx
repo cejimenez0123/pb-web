@@ -62,27 +62,12 @@ const [email,setEmail]=useState("")
             console.log(err)
         }
     },10)
+    useEffect(()=>{
+        setSeo({title:"Plumbum",url:Enviroment.domain+Paths.calendar(), description:"An event calendar for the events a budding writer needs for inspiration.", name:"Plumbum Calendar", type:"",image:events})
+    },[])
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
     return(<div>
-               <Helmet>
-               <title>Plumbum Calendar -FOR NYC WRITERS</title>
-<meta name="title" content="Plumbum Calendar -FOR NYC WRITERS" />
 
-
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Plumbum Calendar" />
-      <meta property="og:description" content="An event calendar for the events a budding writer needs for inspiration." />
-      <meta property="og:image" content={events}/>
-      <meta property="og:url" content={Enviroment.domain+Paths.calendar()} />
-
-<meta property="twitter:card" content={events}/>
-<meta property="twitter:url" content={Enviroment.domain+Paths.calendar()}  />
-<meta property="twitter:title" content="Plumbum Calendar-Events for Writers" />
-<meta property="twitter:description" content="An event calendar for the events a budding writer needs for inspiration." />
-<meta property="twitter:image" content={events}/>
-
-
-        </Helmet>
     
         <form className="my-8 mx-2">
         <div className="card lg:max-w-[40rem] mx-auto lg:p-8">

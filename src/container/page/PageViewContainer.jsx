@@ -16,7 +16,7 @@ import Paths from "../../core/paths.js";
 import checkResult from "../../core/checkResult.js";
 
 export default function PageViewContainer(props){
-    const {currentProfile}=useContext(Context)
+    const {setSeo,seo,currentProfile}=useContext(Context)
     const location = useLocation()
     const page = useSelector(state=>state.pages.pageInView)
     const pathParams = useParams()
@@ -93,32 +93,20 @@ export default function PageViewContainer(props){
         description = page.data.slice(0,200)
     }
 }
+useEffect(()=>{
+   
+},[])
     const title = ()=>{
         if(page){
-            return<Helmet>
-                <title>{page.title} | Plumbum</title>
-
-        <meta name="description" content={page.description || "Read this amazing story on Plumbum."} />
-        <meta name="keywords" content={page.hashtags?page.hashtags.map((tag) => tag.name).join(", "):page.title} />
-        <meta property="og:title" content={page.title} />
-        <meta property="og:description" content={page.description} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={Enviroment.domain+Paths.page.createRoute(page.id)} />
-        
-           
-           
-            </Helmet>
+            let SOO = seo
+            SOO.title = page.title
+            SOO.description = page.description
+            
+            setSeo(SOO)
+  
         }else{
-           return ( <Helmet>
+            setSeo({title:"Plumbum", description:"Your writing, your community", name:"Plumbum", type:""})
 
-                  <title>Plumbum</title>
-           <meta name="description" content={
-            "Your Writing, Your community"
-           } />
-          
-           <meta property="og:url" content={Enviroment.domain+Paths.page.createRoute(page.id)} />
-           </Helmet>  
-              )
         }
     }
     return(<div className="  mx-auto">

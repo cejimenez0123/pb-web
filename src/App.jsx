@@ -47,11 +47,13 @@ import NewsletterContainer from './container/auth/NewsletterContainer.jsx';
 import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
+import SEO from './components/seo.jsx';
 function App(props) {
 
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
+  const [seo,setSeo]=useState({title:"Plumbum",image:"/src/images/icon.ico",description:"Your writing, Your community", name:"Plumbum", type:""})
   let prof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
 
   const currentProfile= useSelector(state=>state.users.currentProfile??prof)
@@ -65,9 +67,10 @@ function App(props) {
   },[])
 
   return (
-      <Context.Provider value={{currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
-        <Helmet>
-        <link rel="icon" type="image/png" sizes="16x16" href="/src/images/icon.ico"/> </Helmet>      
+      <Context.Provider value={{setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+    
+          <SEO title={seo.title} type={seo.type} image={seo.image}description={seo.description} name={seo.description}/>
+        <link rel="icon" type="image/png" sizes="16x16" />     
       
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
@@ -98,6 +101,7 @@ function App(props) {
        <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/>
+        
         <SearchDialog  />
         <div className='screen'>
 <Alert />

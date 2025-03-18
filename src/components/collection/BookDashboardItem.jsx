@@ -148,7 +148,7 @@ return <Button onClick={()=>{
         if(bookmarked){
                 deleteStc()
         }else{
-            onBookmarkPage()
+           
         }
           },10)
 

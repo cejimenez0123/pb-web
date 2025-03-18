@@ -21,12 +21,14 @@ import table3  from "../images/workshop/table-3.jpg"
 // import table5 from "../images/workshop/table-5.jpg"
 import table7 from "../images/workshop/table-7.jpg"
 // import books1 from "../images/workshop/books-1.jpg"
+import { useContext, useEffect } from "react"
 import { Helmet } from 'react-helmet-async';
+import Context from "../context"
 let firstImages = [out,al,table3,duo,vemilo,khaos,,table7
 ]
 let secImages = [out2,table1,vemilo2,table2]
 export default function AboutContainer(props){
-
+    const {setSeo}=useContext(Context)
     const md = useMediaQuery({
         query: '(min-width: 750px)'
       })
@@ -63,6 +65,9 @@ There's not one kind of look for a writer. Creatives need a place to test their 
 {/* </div> */}
         </div> </div>)
     }
+useEffect(()=>{
+    setSeo({title:"Plumbum", description:"Your writing, your community", name:"Plumbum", type:""})
+},[])
 const writingJourney = ()=>{
     return(<div className="text-center">
         <div  >
@@ -114,10 +119,7 @@ const userTestimonial=()=>{
 }
 
     return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
-        <Helmet>
-           <meta name="description"
-      content="A place for writers to connect and workshop together" />
-        </Helmet>
+     
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300;400;700&display=swap" />
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>

@@ -29,7 +29,7 @@ import ErrorBoundary from "../../ErrorBoundary.jsx"
 import PageList from "../../components/page/PageList.jsx"
 function ProfileContainer(props){
     ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-    const {setError,setSuccess,currentProfile}=useContext(Context)
+    const {seo,setSeo,setError,setSuccess,currentProfile}=useContext(Context)
     
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
@@ -239,26 +239,24 @@ function ProfileContainer(props){
 },10)
 const meta = ()=>{
     if(profile){
-        return<Helmet>
-            <title>{profile.username} | Plumbum</title>
-    <meta name="description" content={profile.selfStatement || "Read this amazing story on Plumbum."} />
-    {/* <meta name="keywords" content={page.hashtags.map((tag) => tag.name).join(", ")} />
-    <meta property="og:title" content={page.title} />
-    <meta property="og:description" content={page.description} /> */}
-    <meta property="og:type" content="profile" />
-    <meta property="og:url" content={Enviroment.domain+Paths.profile.createRoute(profile.id)} />
-    <meta name="twitter:card" content="summary_large_image" />
-       
-       
-        </Helmet>
+        let soo = seo
+        soo.title = profile.username
+        // soo.keywords =page.hashtags.map((tag) => tag.name).join(", ")
+        soo.description = profile.selfStatement
+        soo.url =Enviroment.domain+Paths.profile.createRoute(profile.id)
+        setSeo(soo)
+
     }else{
-       return null
+   
     }
 }
+useEffect(()=>{
+meta()
+},[])
     return(
         <ErrorBoundary>
         <div className="">
-            {meta()}
+          
             <div className="pt-2 md:pt-8 mb-8 mx-2">
                 <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow}/>
             </div>
