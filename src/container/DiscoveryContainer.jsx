@@ -144,7 +144,7 @@ function DiscoveryContainer(props){
                         const id = `${item.id}_${i}`
                        
                         if(item.storyIdList&&item.storyIdList.length>0&&!item.data){
-                            console.log("Touch"+JSON.stringify(item))
+                        
                             return(<div 
                                 className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
                                 key={id}

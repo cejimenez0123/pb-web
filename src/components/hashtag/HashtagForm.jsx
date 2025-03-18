@@ -69,7 +69,7 @@ export function HashtagForm({item}){
 
         dispatch(deleteHashtagStory({hashtagStoryId:hash.id})).then(res=>{
           checkResult(res,payload=>{
-            console.log(hashtags)
+          
               dispatch(fetchStoryHashtags({profile:currentProfile,storyId:item.id})).then(res=>{
                checkResult(res,payload=>{
                 setHashtags(payload.hashtags)
@@ -94,7 +94,7 @@ export function HashtagForm({item}){
         if(item.storyIdList){
           dispatch(createHashtagCollection({name:inputValue.trim().toLocaleLowerCase(),colId:item.id,profile:currentProfile})
         ).then(res=>checkResult(res,(payload)=>{
-          console.log(payload)
+      
           dispatch(fetchCollectionHashtags({profile:currentProfile,colId:item.id}))
           
         },err=>{

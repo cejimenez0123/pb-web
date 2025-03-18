@@ -12,7 +12,7 @@ import rolesSlice from './reducers/RoleReducer.jsx';
 import logger from "redux-logger"
 import commentSlice from './reducers/CommentReducer';
 import hashSlice from './reducers/HashtagReducer.jsx';
-
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 const reducer = combineReducers({
   hashtags:hashSlice.reducer,
   pages: pageSlice.reducer,
@@ -31,8 +31,10 @@ const store = configureStore({reducer:reducer,
    .concat(logger)
 
 })
+const helmetContext = {};
 ReactDOM.createRoot(document.getElementById('root')).render(
-
+  <HelmetProvider context={helmetContext}>
+  
   <Provider store={store} >
   <Router>
     {/* <React.StrictMode> */}
@@ -41,6 +43,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     {/* </React.StrictMode> */}
 
   </Provider>
+
+  </HelmetProvider>
   
   ,
 );

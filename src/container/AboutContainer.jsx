@@ -21,7 +21,7 @@ import table4 from "../images/workshop/table-4.jpg"
 import table5 from "../images/workshop/table-5.jpg"
 import table7 from "../images/workshop/table-7.jpg"
 import books1 from "../images/workshop/books-1.jpg"
-import { Helmet } from "react-helmet"
+import { Helmet } from 'react-helmet-async';
 let firstImages = [out,al,table3,duo,vemilo,khaos,,table7
 ]
 let secImages = [out2,table1,vemilo2,table2]

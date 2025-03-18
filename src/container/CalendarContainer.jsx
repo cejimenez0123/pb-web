@@ -8,7 +8,7 @@ import ReactGA from "react-ga4"
 import events from "../images/icons/event.svg"
 import { Dialog,DialogTitle,DialogContent,DialogActions,Button } from "@mui/material";
 import Enviroment from "../core/Enviroment";
-import { Helmet } from "react-helmet";
+import { Helmet } from 'react-helmet-async';
 import Paths from "../core/paths";
 export default function CalendarContainer(){
     useEffect(()=>{

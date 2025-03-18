@@ -226,7 +226,7 @@ const getPublicProfileCollections = createAsyncThunk("collection/getPublicProfil
 )=>{
 
      let data = await collectionRepo.getPublicProfileCollections({id:params["profile"].id})
-console.log(data)
+
       return {
       collections:data.collections
       }
@@ -236,7 +236,7 @@ const getProtectedProfileCollections = createAsyncThunk("collection/getProtected
 )=>{
 
      let data = await collectionRepo.getProtectedProfileCollections({id:params["profile"].id})
-console.log(data)
+
       return {
         collections:data.collections
       }

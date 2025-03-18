@@ -18,7 +18,7 @@ export default function NotificationContainer(props){
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const payload = usePersistentNotifications(()=>dispatch(fetchNotifcations({profile:currentProfile})))
     var today= new Date();
-   console.log(payload)
+  
     let oneDayOld = today.setDate(today.getDate() - 1)
     let lastNotified =  oneDayOld
     const navigate = useNavigate()
@@ -103,7 +103,7 @@ export default function NotificationContainer(props){
     }
     switch(item.type){
         case "follower":{
-            console.log(item.item)
+       
             const follow = item.item
             const profile = follow.follower
             return(<div onClick={()=>navigate(Paths.profile.createRoute(profile.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem] border-opacity-60 md:border-2 md:rounded-full p-2">

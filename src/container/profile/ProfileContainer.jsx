@@ -23,7 +23,7 @@ import sortAlphabet from "../../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../../images/icons/clock_arrow_down.svg"
 import Paths from "../../core/paths.js"
-import { Helmet } from "react-helmet"
+import { Helmet } from 'react-helmet-async';
 import Enviroment from "../../core/Enviroment.js"
 import ErrorBoundary from "../../ErrorBoundary.jsx"
 import PageList from "../../components/page/PageList.jsx"

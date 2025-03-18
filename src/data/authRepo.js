@@ -20,7 +20,7 @@ class AuthRepo{
                 Authorization:"Bearer "+token
             }
         })
-        console.log(res)
+      
         return res.data
     }
     async feedback({ preferredName,
@@ -49,7 +49,7 @@ class AuthRepo{
     }
     async resetPassword({username,password,token}){
          let res =   await axios.post(Enviroment.url+"/auth/reset-password",{username,password,token})
-         console.log(res)
+    
          return res.data
     }
     async forgotPassword({username,email}){

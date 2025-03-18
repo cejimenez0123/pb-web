@@ -25,7 +25,7 @@ import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
-import {Helmet} from "react-helmet";
+import { Helmet} from 'react-helmet-async';
 import  Context from "./context"
 import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';
 import CollectionContainer from './container/collection/CollectionContainer';

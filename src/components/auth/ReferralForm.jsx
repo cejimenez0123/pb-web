@@ -18,7 +18,7 @@ export default function ReferralForm({onClose}){
 
         setPending(true)
         authRepo.generateReferral().then(data=>{
-          console.log(data)
+        
             if(data.referralLink){
             setReferralLink(data.referralLink)
             }

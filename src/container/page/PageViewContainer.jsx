@@ -4,7 +4,7 @@ import {  useState ,useLayoutEffect, useEffect, useContext} from "react";
 import "../../styles/PageView.css"
 import { fetchCommentsOfPage } from "../../actions/PageActions.jsx";
 import PageViewItem from "../../components/page/PageViewItem";
-import {Helmet} from "react-helmet"
+import { Helmet } from 'react-helmet-async';
 import { getStory } from "../../actions/StoryActions";
 import CommentThread from "../../components/comment/CommentThread";
 import { postStoryHistory } from "../../actions/HistoryActions";
