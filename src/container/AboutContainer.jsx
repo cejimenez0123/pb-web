@@ -115,8 +115,7 @@ const userTestimonial=()=>{
 
     return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
         <Helmet>
-        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
-    <meta name="description"
+           <meta name="description"
       content="A place for writers to connect and workshop together" />
         </Helmet>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300;400;700&display=swap" />

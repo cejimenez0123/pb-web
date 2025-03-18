@@ -66,16 +66,13 @@ function App(props) {
 
   return (
       <Context.Provider value={{currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
-              
+        <Helmet>
+        <link rel="icon" type="image/png" sizes="16x16" href="/src/images/icon.ico"/> </Helmet>      
       
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
-       <Helmet>
-                <meta charSet="utf-8" />
-                <title>Plumbum</title>
-                <meta name="description" content="The place for writers to connect" />
-        </Helmet>
+  
     
 
   <link

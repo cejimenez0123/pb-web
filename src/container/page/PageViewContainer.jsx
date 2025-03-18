@@ -14,6 +14,7 @@ import Context from "../../context";
 import Enviroment from "../../core/Enviroment.js";
 import Paths from "../../core/paths.js";
 import checkResult from "../../core/checkResult.js";
+
 export default function PageViewContainer(props){
     const {currentProfile}=useContext(Context)
     const location = useLocation()
@@ -96,22 +97,33 @@ export default function PageViewContainer(props){
         if(page){
             return<Helmet>
                 <title>{page.title} | Plumbum</title>
+
         <meta name="description" content={page.description || "Read this amazing story on Plumbum."} />
         <meta name="keywords" content={page.hashtags?page.hashtags.map((tag) => tag.name).join(", "):page.title} />
         <meta property="og:title" content={page.title} />
         <meta property="og:description" content={page.description} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={Enviroment.domain+Paths.page.createRoute(page.id)} />
-        {/* <meta name="twitter:card" content="summary_large_image" /> */}
+        
            
            
             </Helmet>
         }else{
-           return null
+           return ( <Helmet>
+
+                  <title>Plumbum</title>
+           <meta name="description" content={
+            "Your Writing, Your community"
+           } />
+          
+           <meta property="og:url" content={Enviroment.domain+Paths.page.createRoute(page.id)} />
+           </Helmet>  
+              )
         }
     }
     return(<div className="  mx-auto">
-        {/* <ErrorBoundary > */}
+     
+        <ErrorBoundary >
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
     <>{title()}
@@ -119,7 +131,7 @@ export default function PageViewContainer(props){
     
     <CommentThread page={page} comments={rootComments}/>
     </div> 
-    {/* </ErrorBoundary> */}
+    </ErrorBoundary>
 </div>)
 
 }
