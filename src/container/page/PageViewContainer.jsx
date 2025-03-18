@@ -98,15 +98,12 @@ useEffect(()=>{
 },[])
     const title = ()=>{
         if(page){
-            let SOO = seo
-            SOO.title = page.title
-            SOO.description = page.description
+            let soo = seo
+            soo.title = page.title
+            soo.description = page.description
             
-            setSeo(SOO)
+            setSeo(soo)
   
-        }else{
-            setSeo({title:"Plumbum", description:"Your writing, your community", name:"Plumbum", type:""})
-
         }
     }
     return(<div className="  mx-auto">

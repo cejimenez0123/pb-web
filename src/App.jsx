@@ -67,7 +67,7 @@ function App(props) {
   },[])
 
   return (
-      <Context.Provider value={{setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+      <Context.Provider value={{setSeo,seo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
     
           <SEO title={seo.title} type={seo.type} image={seo.image}description={seo.description} name={seo.description}/>
         <link rel="icon" type="image/png" sizes="16x16" />     
