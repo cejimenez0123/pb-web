@@ -36,33 +36,10 @@ function BookDashboardItem({book,isGrid}) {
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
 
-    const soCanUserEdit=()=>{
+    const soCanUserEdit=()=>{}
 
-        if(currentProfile&&page){
-            if(page.authorId==currentProfile.id){
-                setCanUserEdit(true)
-                return
-            }
-        }
-    }
     useEffect(()=>{
-        if(currentProfile && page){
-            let found = null
-           if(currentProfile.likedStories){
-
-        let  found= currentProfile.likedStories.find(like=>like && like.storyId==page.id)
-          setLikeFound(found)
-        }
-         
-            if(currentProfile.profileToCollections){
-            let marked = currentProfile.profileToCollections.find(ptc=>{
-                return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
-       
-                setBookmarked(marked)
-            }
-               
-               
-        }          
+        
     },[currentProfile,book])
 const deleteStc=()=>{
 
