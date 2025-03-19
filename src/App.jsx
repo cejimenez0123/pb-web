@@ -72,7 +72,7 @@ function App(props) {
     <HelmetProvider context={helmetContext}>
       <Context.Provider value={{seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
     <Helmet>
-    <title>{seo.title}</title>
+    <title>{seo.title.length>0? seo.title.toLowerCase()=="plumbum"?"Plumbum | Your Writing, Your Community":`${seo.title}| Plumbum`:"Plumbum"}</title>
   <meta name="description" content={seo.description} />
   <meta property="og:title" content={seo.title} />
          <meta property="og:description" content={seo.description}  />
