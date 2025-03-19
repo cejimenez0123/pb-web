@@ -318,7 +318,7 @@ function NavbarContainer(props){
       </div>
       }
   // }
-  return(<div className="navbar bg-emerald-800">
+  return(<div className="navbar max-w-[100vw] bg-emerald-800">
      <div className='navbar-start '>
     {isPhone?menuDropdown():
     <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
