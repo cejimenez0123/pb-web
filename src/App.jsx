@@ -48,13 +48,10 @@ import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
 import SEO from './components/seo.jsx';
-function App({helmet}) {
+function App(props) {
   let helmetContext = {};
-  let { helmet } = helmetContext;
-  // useLayoutEffect(()=>{
-  //   helmet.title="Plumbum",
-  //   helmet.t
-  // })
+
+
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
