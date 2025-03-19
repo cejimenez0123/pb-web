@@ -30,9 +30,9 @@ const fetchData = async (url) => {
     }
     )
     ;
-    
-    const data = await response.text();
-    
+    let data = await response.text()
+
+
     const isYouTubeVideo = isYouTubeURL(url);
     if (isYouTubeVideo) {
       const videoId = extractYouTubeVideoId(url);
@@ -45,9 +45,9 @@ const fetchData = async (url) => {
       setLoading(false);
     } else {
       const parser = new DOMParser();
-      
+  
       const doc = parser.parseFromString(data, 'text/html');
-      
+      console.log("VBORD",doc.head)
       let title = doc.querySelector('title')?.textContent || '';
       const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
       let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';

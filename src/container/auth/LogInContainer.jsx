@@ -26,13 +26,6 @@ function LogInContainer(props) {
     useEffect(()=>{
         sendGAEvent("Log In","Page View","Log In","Log In",0,true)
     },[])
-  
-    const [logInError,setLogInError] = useState(null)
-
- 
-
-
-  
     return (
         <div id="" className='sm:mx-2'>
             <LogInCard  
@@ -45,16 +38,6 @@ function LogInContainer(props) {
         </div>
     )
 }
-
-const inputStyle = {
-    width: '95%',
-    backgroundColor:theme.palette.primary.contrastText,
-    marginTop:"1em",
-    marginBottom:"1em",
-    marginLeft:"1em"
-}
-
-
 
 function LogInCard({setLogInError}){
     const dispatch = useDispatch()

@@ -14,6 +14,7 @@ import Paths from "../core/paths";
 import { useMediaQuery } from "react-responsive"
 import { useLayoutEffect } from "react"
 export default function CalendarContainer(){
+
   useEffect(()=>{
     initGA()
   },[])
@@ -73,7 +74,12 @@ const [email,setEmail]=useState("")
     },10)
     const {seo,setSeo}=useContext(Context)
     useLayoutEffect(()=>{
-        setSeo({title:"Plumbum",url:Enviroment.domain+Paths.calendar(), description:"An event calendar for the events a budding writer needs for inspiration.", name:"Plumbum Calendar", type:"",image:events})
+      let soo = seo
+      soo.url = Enviroment.domain+Paths.calendar()
+      soo.description ="An event calendar for the events a budding writer needs for inspiration.", 
+      soo.name = "Plumbum Calendar"
+      soo.image =events
+      setSeo(soo)
     },[])
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
     return(<div className="max-w-[100vw]">
