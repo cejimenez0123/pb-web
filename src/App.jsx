@@ -72,23 +72,22 @@ function App(props) {
     <HelmetProvider context={helmetContext}>
       <Context.Provider value={{seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
     <Helmet>
-    <title>{seo.title.length>0? seo.title.toLowerCase()=="plumbum"?"Plumbum | Your Writing, Your Community":`${seo.title}| Plumbum`:"Plumbum"}</title>
-  <meta name="description" content={seo.description} />
-  <meta property="og:title" content={seo.title} />
-         <meta name="description" content={seo.description}  />
-      <meta name="image" content={seo.image} />
-     <meta name="url" content={Enviroment.domain+location.pathname}/>
+    <title>{seo.title||'Plumbum'}</title>
+      <meta name="description" content={seo.description || 'Your community for writers to share and grow.'} />
 
-       <meta name="twitter:card" content="summary_large_image" />
-       <meta name="twitter:title" content={seo.title} />
-       <meta name="twitter:description"content={seo.description} />
-      <meta name="twitter:image" content={seo.image}/>
-  
+      {/* Open Graph Meta Tags */}
+      <meta property="og:title" content={seo.title || 'Plumbum'} />
+      <meta property="og:description" content={seo?.description || 'Your Writing, Your Community.'} />
+      <meta property="og:image" content={seo.image || 'https://example.com/default-image.jpg'} />
+      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
 
-    </Helmet>
-          {/* <SEO title={seo.title} type={seo.type} image={seo.image}description={seo.description} name={seo.description}/> */}
-        <link rel="icon" type="image/png" sizes="16x16" />     
-      
+      {/* Twitter Card Meta Tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={seo.title || 'Plumbum'} />
+      <meta name="twitter:description" content={seo.description || 'Your Writing, Your Community.'} />
+      <meta name="twitter:image" content={seo.image || 'https://example.com/default-image.jpg'} />
+    <link rel="icon" type="image/png" sizes="16x16" />     
+        </Helmet> 
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
