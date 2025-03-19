@@ -28,6 +28,7 @@ import ErrorBoundary from "../../ErrorBoundary.jsx"
 import PageList from "../../components/page/PageList.jsx"
 function ProfileContainer(props){
     const {seo,setSeo,setError,setSuccess,currentProfile}=useContext(Context)
+    const pathParams = useParams()
     const {id}=pathParams
     const profile = useSelector(state=>state.users.profileInView)
     useLayoutEffect(()=>{
@@ -44,7 +45,7 @@ function ProfileContainer(props){
           const dispatch = useDispatch()
     const [showPageList,setShowPageList]=useState(true)
     const pathname = useLocation().pathname
-    const pathParams = useParams()
+
 
     const [sortAlpha,setSortAlpha]=useState(true)
     const [sortTime,setSortTime]=useState(true)
