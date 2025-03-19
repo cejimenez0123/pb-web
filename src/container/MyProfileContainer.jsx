@@ -16,7 +16,7 @@ import sortAlphabet from "../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../images/icons/clock_arrow_down.svg"
 import { setPageInView, setPagesInView, setEditingPage  } from '../actions/PageActions.jsx';
-import ReactGA from "react-ga4"
+import { initGA,sendGAEvent } from '../core/ga4.js';
 import {Dialog,DialogActions,Button} from "@mui/material"
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
@@ -33,6 +33,9 @@ import { generate } from 'random-words';
 function MyProfileContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    useLayoutEffect(()=>{
+      initGA()
+    },[])
     const {currentProfile}=useContext(Context)
     const [search,setSearch]=useState("")
     const [sortAlpha,setSortAlpha]=useState(true)
@@ -210,14 +213,7 @@ params.page = feedbackPage
 
     const ClickWriteAStory = debounce(()=>{
       if(currentProfile){
-        ReactGA.event({
-            category: "Page",
-            action: "Navigate To Editor",
-            label: "Write a Story", 
-            value: currentProfile.id,
-            nonInteraction: false
-          });
-          
+        sendGAEvent("Create","Write a Story","Click Write Story",0)        
           dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
           title:"",commentable:true
         })).then(res=>checkResult(res,payload=>{
@@ -232,13 +228,8 @@ params.page = feedbackPage
     
         
     const ClickCreateACollection = ()=>{
-        ReactGA.event({
-            category: "Collection",
-            action: "Navigate to Create Collection",
-            label: "Create A Collection", 
-            value: currentProfile.id,
-            nonInteraction: false
-          });
+      sendGAEvent("Create","Create Collection","Create A Collection")
+
           setOpenDialog(true)
     }
 

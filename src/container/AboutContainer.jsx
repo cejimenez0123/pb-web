@@ -20,10 +20,11 @@ import table3  from "../images/workshop/table-3.jpg"
 import { useLayoutEffect } from "react"
 // import table4 from "../images/workshop/table-4.jpg"
 // import table5 from "../images/workshop/table-5.jpg"
+import { useEffect } from "react"
 import table7 from "../images/workshop/table-7.jpg"
 // import books1 from "../images/workshop/books-1.jpg"
-import { useContext, useEffect } from "react"
-import { Helmet } from 'react-helmet-async';
+import { useContext } from "react"
+import { initGA,sendGAEvent } from "../core/ga4" 
 import Context from "../context"
 let firstImages = [out,al,table3,duo,vemilo,khaos,,table7
 ]
@@ -35,7 +36,12 @@ export default function AboutContainer(props){
       })
     const dispatch = useDispatch()
     const navigate = useNavigate()
-   
+    useLayoutEffect(()=>{
+        initGA()
+    },[])
+    useEffect(()=>{
+        sendGAEvent("About","Page View","About",0,true)
+    },[])
     const findCreatives=() =>{
         return(<div className="grid sm:grid-cols-2 gap-8">
    

@@ -1,9 +1,10 @@
-import ReactGA from "react-ga4";
 import { useState,useEffect } from "react";
+import { initGA,sendGAEvent } from "./ga4";
 const useScrollTracking = () => {
     const [scrollDepth, setScrollDepth] = useState(0);
   
     useEffect(() => {
+      initGA()
       const handleScroll = () => {
         const scrollTop = window.scrollY;
         const windowHeight = window.innerHeight;
@@ -13,32 +14,21 @@ const useScrollTracking = () => {
   
         // Trigger events at specific scroll depths
         if (scrollPercent >= 25 && scrollDepth < 25) {
-          ReactGA.event({
-            category: 'Scroll '+window.location.pathname+window.location.search,
-            action: 'Scrolled 25%',
-            label: 'Scroll Depth'
-          });
+        sendGAEvent( 'Scroll '+window.location.pathname+window.location.search, 'Scrolled 25%', 'Scroll Depth');
           setScrollDepth(25);
         } else if (scrollPercent >= 50 && scrollDepth < 50) {
-          ReactGA.event({
-            category: 'Scroll '+window.location.pathname+window.location.search,
-            action: 'Scrolled 50%',
-            label: 'Scroll Depth'
-          });
+    
+          sendGAEvent( 'Scroll '+window.location.pathname+window.location.search, 'Scrolled 50%', 'Scroll Depth');
+
           setScrollDepth(50);
         } else if (scrollPercent >= 75 && scrollDepth < 75) {
-          ReactGA.event({
-            category: 'Scroll '+window.location.pathname+window.location.search,
-            action: 'Scrolled 75%',
-            label: 'Scroll Depth'
-          });
+          sendGAEvent( 'Scroll '+window.location.pathname+window.location.search, 'Scrolled 75%', 'Scroll Depth');
+       
+     
           setScrollDepth(75);
         } else if (scrollPercent >= 100 && scrollDepth < 100) {
-          ReactGA.event({
-            category: 'Scroll '+window.location.pathname+window.location.search,
-            action: 'Scrolled 100%',
-            label: 'Scroll Depth'
-          });
+          sendGAEvent( 'Scroll '+window.location.pathname+window.location.search, 'Scrolled 100%', 'Scroll Depth');
+      
           setScrollDepth(100);
         }
       };

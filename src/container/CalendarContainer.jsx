@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import validateEmail from "../core/validateEmail";
 import authRepo from "../data/authRepo";
-import ReactGA from "react-ga4"
+import { initGA,sendGAEvent } from "../core/ga4";
 import events from "../images/icons/event.svg"
 import { Dialog,DialogTitle,DialogContent,DialogActions,Button } from "@mui/material";
 import Enviroment from "../core/Enviroment";
@@ -14,16 +14,11 @@ import Paths from "../core/paths";
 import { useMediaQuery } from "react-responsive"
 import { useLayoutEffect } from "react"
 export default function CalendarContainer(){
- 
+  useEffect(()=>{
+    initGA()
+  },[])
     useEffect(()=>{
-        ReactGA.event({
-            category: "Calendar",
-            action: "Page View Calendar",
-            label:"Page View Calendar",
-          
-            nonInteraction: false
-          });
-     
+      sendGAEvent("PageView","View Calendar","Calendar",0,true) 
     },[])
 return(<div className="mx-auto m-4 w-fit text-center">
      <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>

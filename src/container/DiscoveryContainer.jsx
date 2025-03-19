@@ -10,15 +10,16 @@ import { getPublicLibraries} from '../actions/LibraryActions.jsx'
 import checkResult from '../core/checkResult'
 import { useMediaQuery } from "react-responsive"
 import BookListItem from '../components/BookListItem'
-import ReactGA from "react-ga4"
 import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
+import { initGA,sendGAEvent } from '../core/ga4.js'
 import BookDashboardItem from '../components/collection/BookDashboardItem.jsx'
 function DiscoveryContainer(props){
     
     useEffect(()=>{
-        ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-    },[])
+        initGA()
+        sendGAEvent("Page View","Page View","Discovery",0,true)
+   },[])
 
     const books = useSelector(state=>state.books.books)
     const libraries = useSelector(state=>state.books.libraries)
@@ -220,19 +221,10 @@ className={`${
 
             setIsGrid(bool)
             if(bool){
-                ReactGA.event({
-                    category: "Discovery",
-                    action: "Click for Grid View",
-                    label: "GRID ICON", 
-                    nonInteraction: false
-                  });
+                sendGAEvent("Click","Click Grid View Discovery","Grid Icon",0)
+             
             }else{
-                ReactGA.event({
-                    category: "Discovery",
-                    action: "Click for Stream",
-                    label: "STREAM ICON", 
-                    nonInteraction: false
-                  });
+                sendGAEvent("Click","Click Stream View Discovery","Stream Icon",0)
             }
         }
         return(

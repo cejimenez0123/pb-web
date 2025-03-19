@@ -1,2 +1,15 @@
 import ReactGA from "react-ga4";
-export default ReactGA.initialize(import.meta.env.VITE_GA_MEASUREMENT_ID);
+
+export const initGA = () => {
+  ReactGA.initialize(import.meta.env.VITE_GA_MEASUREMENT_ID);
+};
+
+export const sendGAEvent = (eventCategory, eventAction, eventLabel = "", value = 0,nonInteraction=false) => {
+  ReactGA.event({
+    category: eventCategory,
+    action: eventAction,
+    label: eventLabel,
+    value: value,
+    nonInteraction:nonInteraction
+  });
+};

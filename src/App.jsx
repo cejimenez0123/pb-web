@@ -25,8 +25,8 @@ import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
-import { Helmet} from 'react-helmet-async';
 import  Context from "./context"
+import Enviroment from './core/Enviroment.js';
 import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';
 import CollectionContainer from './container/collection/CollectionContainer';
 import AddToCollectionContainer from './container/collection/AddToCollection';
@@ -47,7 +47,7 @@ import NewsletterContainer from './container/auth/NewsletterContainer.jsx';
 import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
-import SEO from './components/seo.jsx';
+import { Helmet,HelmetProvider } from 'react-helmet-async';
 function App(props) {
   let helmetContext = {};
 
@@ -70,9 +70,9 @@ function App(props) {
 
   return (
     <HelmetProvider context={helmetContext}>
-      <Context.Provider value={{currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+      <Context.Provider value={{seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
     <Helmet>
-    <title>{seo.title+"| Plumbum"??`Plumbum`}</title>
+    <title>{seo.title}</title>
   <meta name="description" content={seo.description} />
   <meta property="og:title" content={seo.title} />
          <meta property="og:description" content={seo.description}  />

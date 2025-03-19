@@ -1,25 +1,25 @@
 import {useNavigate} from "react-router-dom"
 import Paths from "../core/paths"
-import ReactGA from "react-ga4"
+
 import { clearPagesInView } from "../actions/PageActions.jsx"
 import { useDispatch } from "react-redux"
 import { setCollectionInView } from "../actions/CollectionActions"
 import { setCollections } from "../actions/CollectionActions"
+import { useLayoutEffect } from "react"
+import { initGA, sendGAEvent } from "../core/ga4.js"
 function BookListItem({book}){
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    useLayoutEffect(()=>{
+        initGA()
+    })
     const navigateToBook = ()=>{  
         dispatch(clearPagesInView())
         dispatch(setCollections({collections:[]}))
         dispatch(setCollectionInView({collection:book}))
         navigate(Paths.collection.createRoute(book.id))
-        ReactGA.event({
-            category: "Collection",
-            action: "Navigate to Collection",
-            label: book.title, 
-            value: book.id,
-            nonInteraction: false
-          });
+        sendGAEvent("Collection","Navigate to Collection:"+book.id,book.title,0,false)
+  
     }
     return (
 

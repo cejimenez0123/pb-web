@@ -10,7 +10,6 @@ import stream from "../../images/stream.svg"
 import ProfileCard from "../../components/ProfileCard"
 import "../../styles/Profile.css"
 import checkResult from "../../core/checkResult"
-import ReactGA from 'react-ga4'
 import IndexList from "../../components/page/IndexList"
 import { getProtectedProfilePages,getPublicProfilePages, setPagesInView } from "../../actions/PageActions.jsx"
 import { createFollow, deleteFollow } from "../../actions/FollowAction"
@@ -23,14 +22,21 @@ import sortAlphabet from "../../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../../images/icons/clock_arrow_down.svg"
 import Paths from "../../core/paths.js"
-import { Helmet } from 'react-helmet-async';
+import { initGA,sendGAEvent } from "../../core/ga4.js"
 import Enviroment from "../../core/Enviroment.js"
 import ErrorBoundary from "../../ErrorBoundary.jsx"
 import PageList from "../../components/page/PageList.jsx"
 function ProfileContainer(props){
-    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
     const {seo,setSeo,setError,setSuccess,currentProfile}=useContext(Context)
-    
+    const {id}=pathParams
+    const profile = useSelector(state=>state.users.profileInView)
+    useLayoutEffect(()=>{
+        initGA()
+        if(profile){
+            sendGAEvent("Page View",`View Profile - ${id}`,profile.username)
+        }
+     
+    })
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
@@ -39,12 +45,12 @@ function ProfileContainer(props){
     const [showPageList,setShowPageList]=useState(true)
     const pathname = useLocation().pathname
     const pathParams = useParams()
-    const {id}=pathParams
+
     const [sortAlpha,setSortAlpha]=useState(true)
     const [sortTime,setSortTime]=useState(true)
     const [canUserSee,setCanUserSee]=useState(false)
  
-    const profile = useSelector(state=>state.users.profileInView)
+
   
 
     const collections = useSelector(state=>state.books.collections)

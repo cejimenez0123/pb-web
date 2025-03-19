@@ -7,7 +7,7 @@ import ErrorBoundary from '../../ErrorBoundary'
 import checkResult from '../../core/checkResult'
 import { useMediaQuery } from "react-responsive"
 import BookListItem from '../../components/BookListItem'
-import ReactGA from "react-ga4"
+import { initGA,sendGAEvent } from '../../core/ga4.js'
 import grid from "../../images/grid.svg"
 import stream from "../../images/stream.svg"
 import InfoTooltip from '../../components/InfoTooltip'
@@ -34,9 +34,14 @@ export default function HashtagContainer(props){
     const [hasMoreLibraries,setHasMoreLibraries]=useState(true)
     const [hasMoreBooks,setHasMoreBooks]=useState(true)
     const [hasMorePages,setHasMorePages]=useState(true)
-    useEffect(()=>{
-        ReactGA.send({ hitType: "pageview", page: location.pathname+window.location.search, title: "About Page" })
-    },[])
+    useLayoutEffect(()=>{
+        initGA()
+        if(hash){
+
+        
+        sendGAEvent("Page View",`View Hashtag Page - ${id}`,hash.name)
+        }
+ },[])
     useLayoutEffect(()=>{
         setBooks(collections.filter(col=>col.childCollections.length==0))
         setLibraries(collections.filter(col=>col.childCollections.length>0))
@@ -202,19 +207,12 @@ className={`${
 
             setIsGrid(bool)
             if(bool){
-                ReactGA.event({
-                    category: "Hashtag",
-                    action: "Click for Grid View",
-                    label: "GRID ICON", 
-                    nonInteraction: false
-                  });
+                sendGAEvent("Click","Click for Grid View on Hashtag Page","Grid Icon")
+
             }else{
-                ReactGA.event({
-                    category: "Discovery",
-                    action: "Click for Stream",
-                    label: "STREAM ICON", 
-                    nonInteraction: false
-                  });
+                sendGAEvent("Click","Click for Stream View on Hashtag Page","Stream Icon")
+
+            
             }
         }
         return(
