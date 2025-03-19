@@ -14,7 +14,6 @@ import Context from "../../context";
 import Enviroment from "../../core/Enviroment.js";
 import Paths from "../../core/paths.js";
 import checkResult from "../../core/checkResult.js";
-
 export default function PageViewContainer(props){
     const {setSeo,seo,currentProfile}=useContext(Context)
     const location = useLocation()
@@ -93,8 +92,8 @@ export default function PageViewContainer(props){
         description = page.data.slice(0,200)
     }
 }
-useEffect(()=>{
-   
+useLayoutEffect(()=>{
+   title()
 },[])
     const title = ()=>{
         if(page){

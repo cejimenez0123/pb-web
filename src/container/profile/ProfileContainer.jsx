@@ -250,7 +250,7 @@ const meta = ()=>{
    
     }
 }
-useEffect(()=>{
+useLayoutEffect(()=>{
 meta()
 },[])
     return(

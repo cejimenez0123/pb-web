@@ -17,6 +17,7 @@ import out2 from "../images/workshop/out-2.jpg"
 import table1  from "../images/workshop/table-1.jpg"
 import table2  from "../images/workshop/table-2.jpg"
 import table3  from "../images/workshop/table-3.jpg"
+import { useLayoutEffect } from "react"
 // import table4 from "../images/workshop/table-4.jpg"
 // import table5 from "../images/workshop/table-5.jpg"
 import table7 from "../images/workshop/table-7.jpg"
@@ -65,7 +66,7 @@ There's not one kind of look for a writer. Creatives need a place to test their 
 {/* </div> */}
         </div> </div>)
     }
-useEffect(()=>{
+useLayoutEffect(()=>{
     setSeo({title:"Plumbum", description:"Your writing, your community", name:"Plumbum", type:""})
 },[])
 const writingJourney = ()=>{
