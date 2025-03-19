@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch,connect} from "react-redux"
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
@@ -48,8 +48,13 @@ import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
 import SEO from './components/seo.jsx';
-function App(props) {
-
+function App({helmet}) {
+  let helmetContext = {};
+  let { helmet } = helmetContext;
+  // useLayoutEffect(()=>{
+  //   helmet.title="Plumbum",
+  //   helmet.t
+  // })
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
@@ -67,9 +72,22 @@ function App(props) {
   },[])
 
   return (
-      <Context.Provider value={{setSeo,seo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
-    
-          <SEO title={seo.title} type={seo.type} image={seo.image}description={seo.description} name={seo.description}/>
+    <HelmetProvider context={helmetContext}>
+      <Context.Provider value={{currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+    <Helmet>
+    <title>{seo.title+"| Plumbum"??`Plumbum`}</title>
+  <meta name="description" content={seo.description} />
+  <meta property="og:title" content={seo.title} />
+         <meta property="og:description" content={seo.description}  />
+      <meta property="og:image" content={seo.image} />
+     <meta property="og:url" content={Enviroment.domain+location.pathname}/>
+
+       <meta name="twitter:card" content="summary_large_image" />
+       <meta name="twitter:title" content={seo.title} />
+       <meta name="twitter:description"content={seo.description} />
+      <meta name="twitter:image" content={seo.image}/>
+    </Helmet>
+          {/* <SEO title={seo.title} type={seo.type} image={seo.image}description={seo.description} name={seo.description}/> */}
         <link rel="icon" type="image/png" sizes="16x16" />     
       
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
@@ -255,6 +273,7 @@ function App(props) {
     </div>
 
     </Context.Provider>
+    </HelmetProvider>
   );
 }
 

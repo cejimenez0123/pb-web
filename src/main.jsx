@@ -31,20 +31,18 @@ const store = configureStore({reducer:reducer,
    .concat(logger)
 
 })
-const helmetContext = {};
+
+const app =   (
+  
+<Provider store={store} >
+<Router>
+  {/* <React.StrictMode> */}
+  <App />
+  </Router>
+  {/* </React.StrictMode> */}
+
+</Provider>
+)
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <HelmetProvider context={helmetContext}>
-  
-  <Provider store={store} >
-  <Router>
-    {/* <React.StrictMode> */}
-    <App />
-    </Router>
-    {/* </React.StrictMode> */}
-
-  </Provider>
-
-  </HelmetProvider>
-  
-  ,
-);
+  app
+  );
