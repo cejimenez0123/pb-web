@@ -12,10 +12,11 @@ import { getProfileHashtagCommentUse } from "../../actions/HashtagActions";
 import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
 import Enviroment from "../../core/Enviroment.js";
+import { initGA,sendGAEvent } from "../../core/ga4.js";
 import Paths from "../../core/paths.js";
 import checkResult from "../../core/checkResult.js";
 export default function PageViewContainer(props){
-    const {setSeo,seo,currentProfile}=useContext(Context)
+    const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
     const location = useLocation()
     const page = useSelector(state=>state.pages.pageInView)
     const pathParams = useParams()
@@ -25,6 +26,13 @@ export default function PageViewContainer(props){
     const [canUserSee,setCanUserSee]=useState(false)
     const comments = useSelector(state=>state.comments.comments)
     const [rootComments,setRootComments]=useState([])
+    useLayoutEffect(()=>{
+        initGA()
+        if(page){
+            sendGAEvent("Page View",`View Story-${id} `,"View Page",0,true)
+
+        }
+           },[])
     useLayoutEffect(()=>{
         if(currentProfile){
             dispatch(getProfileHashtagCommentUse({profileId:currentProfile.id}))
@@ -70,7 +78,7 @@ export default function PageViewContainer(props){
                 return
                 }
             if(page.betaReaders){
-                console.log(page.betaReaders)
+         
                 return
             }}
         }
@@ -93,24 +101,20 @@ export default function PageViewContainer(props){
     }
 }
 useLayoutEffect(()=>{
-   title()
-},[])
-    const title = ()=>{
-        if(page){
-            let soo = seo
-            soo.title = page.title
-            soo.description = page.description
-            
-            setSeo(soo)
-  
-        }
+    if(page){
+        let soo = seo
+        soo.title = page.title
+        soo.description = page.description
+        setSeo(soo)
     }
+},[])
+
     return(<div className="  mx-auto">
      
         <ErrorBoundary >
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
-    <>{title()}
+    <>
     {pageDiv()}</>:<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>}
     
     <CommentThread page={page} comments={rootComments}/>

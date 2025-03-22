@@ -167,13 +167,20 @@ const Carousel = ({book})=>{
 
       
         return(
-        <div  className={`carousel-item min-w-[100%] h-[100%] flex flex-col justify-center ${isGrid?"max-w-[100%]":" max-w-[95vw]  md:w-[49.5em] "}`}id={stc.id} key={stc.id}
+        <div  className={`carousel-item min-w-[100%] h-[100%] flex flex-col justify-center
+         ${isGrid?"max-w-[100%]":" max-w-[95vw]  md:w-[49.5em] "}`}
+         id={stc.id} key={stc.id}
 
 >
 <h5  onClick={()=>{
     navigate(Paths.page.createRoute(stc.story.id))
-}} className='text-white mont-medium bottom-0 mx-2 text-left'>{stc.story.title}</h5>
-
+}} className=' mont-medium text-emerald-800 bottom-0 mx-2 text-left'>{stc.story.title}</h5>
+    {stc.story.description && stc.story.description.length>0?<div className='min-h-12 pt-4 p-2'>
+            {stc.story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
+            <h6 className={`${isGrid?"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
+                {stc.story.description}
+            </h6>
+        </div>:null}
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
 
         </div>)})}

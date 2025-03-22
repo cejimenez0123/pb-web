@@ -48,6 +48,8 @@ import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
 import { Helmet,HelmetProvider } from 'react-helmet-async';
+import icon from "../src/images/icon.ico"
+
 function App(props) {
   let helmetContext = {};
 
@@ -76,16 +78,16 @@ function App(props) {
       <meta name="description" content={seo.description || 'Your community for writers to share and grow.'} />
 
       {/* Open Graph Meta Tags */}
-      <meta property="og:title" content={seo.title || 'Plumbum'} />
-      <meta property="og:description" content={seo?.description || 'Your Writing, Your Community.'} />
-      <meta property="og:image" content={seo.image || 'https://example.com/default-image.jpg'} />
+      <meta property="og:title" content={seo.title??"Plumbum"} />
+      <meta property="og:description" content={seo.description??'Your Writing, Your Community!'} />
+      <meta property="og:image" content={seo.image??icon} />
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
 
       {/* Twitter Card Meta Tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={seo.title || 'Plumbum'} />
-      <meta name="twitter:description" content={seo.description || 'Your Writing, Your Community.'} />
-      <meta name="twitter:image" content={seo.image || 'https://example.com/default-image.jpg'} />
+      <meta name="twitter:title" content={seo.title?? 'Plumbum'} />
+      <meta name="twitter:description" content={seo.description??'Your Writing, Your Community!'} />
+      <meta name="twitter:image" content={seo.image?? icon} />
     <link rel="icon" type="image/png" sizes="16x16" />     
         </Helmet> 
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>

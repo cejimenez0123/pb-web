@@ -253,8 +253,6 @@ const meta = ()=>{
         soo.url =Enviroment.domain+Paths.profile.createRoute(profile.id)
         setSeo(soo)
 
-    }else{
-   
     }
 }
 useLayoutEffect(()=>{
