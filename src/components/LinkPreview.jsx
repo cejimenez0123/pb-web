@@ -38,6 +38,7 @@ const fetchData = async (url) => {
     
       },
     }).then(data=>{
+      console.log("Touch")
       console.log(data)
    
          setPreviewData({
