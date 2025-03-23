@@ -84,7 +84,10 @@ const [email,setEmail]=useState("")
       setSeo(soo)
     },[])
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
-    return(<div className="max-w-[100vw]">
+   
+   return(<div className="max-w-[100vw]">
+
+
 
     
         <form className="my-8 mx-2">

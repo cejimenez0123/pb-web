@@ -47,7 +47,7 @@ const fetchData = async (url) => {
     
       },
     }).then(data=>{
-   
+   console.log(data)
          setPreviewData({
           title:data.title,
           description:data.description,

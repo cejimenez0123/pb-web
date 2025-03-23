@@ -126,7 +126,15 @@ const userTestimonial=()=>{
 }
 
     return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
-     
+<head>
+  <meta charset="UTF-8" />
+  <title>Plumbum - Your Writing, Your Community</title>
+  <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
+  <meta property="og:title" content="Plumbum Events - Connect and Grow" />
+  <meta property="og:description" content="Explore events, workshops, and writer meetups on Plumbum." />
+  <meta property="og:image" content="https://i.ibb.co/39cmPfnx/Plumnum-Logo.png" />
+  <meta property="og:url" content="https://plumbum.app/events" />
+</head>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300;400;700&display=swap" />
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
