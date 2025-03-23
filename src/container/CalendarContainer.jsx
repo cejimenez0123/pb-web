@@ -13,14 +13,13 @@ import { useContext } from "react";
 import Paths from "../core/paths";
 import { useMediaQuery } from "react-responsive"
 import { useLayoutEffect } from "react"
+import { Helmet } from "react-helmet";
 export default function CalendarContainer(){
 
   useEffect(()=>{
     initGA()
+    sendGAEvent("View Page - Calendar","View Calendar","Calendar",0,true) 
   },[])
-    useEffect(()=>{
-      sendGAEvent("PageView","View Calendar","Calendar",0,true) 
-    },[])
 return(<div className="mx-auto m-4 w-fit text-center">
      <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
     <div className="">
@@ -88,7 +87,15 @@ const [email,setEmail]=useState("")
    
    return(<div className="max-w-[100vw]">
 
+<Helmet>
+      {/* Title and Description */}
+      <title>{"Plumbum NYC CALENDAR"}</title>
+       <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
+      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
 
+      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} />
+    </Helmet>
+  
 
     
         <form className="my-8 mx-2">
