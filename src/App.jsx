@@ -92,7 +92,7 @@ function App(props) {
     seo?.title?.length > 0
       ? seo.title.toLowerCase() === 'plumbum'
         ? 'Plumbum | Your Writing, Your Community'
-        : `${seo.title} | Plumbum`
+        : `Plumbum | ${seo.title} `
       : 'Plumbum';
   return (
     <HelmetProvider context={helmetContext}>
