@@ -30,7 +30,7 @@ const navigate = useNavigate()
 
 const fetchData = async (url) => {
   try {
-    getLinkPreview(`${Enviroment.proxyUrl}${url}`, {
+    getLinkPreview(`${url}`, {
       resolveDNSHost: async (xurl) => {
         return new Promise((resolve, reject) => {
           const hostname = new URL(url).hostname;
