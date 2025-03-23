@@ -65,7 +65,7 @@ const header=()=>{
 
 
              
-    <h6 className={`text-emerald-800
+    <h6 className={`${isGrid?"text-white":"text-emerald-800"}
      ml-1 pr-2 
       no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
     onClick={()=>{
@@ -174,7 +174,7 @@ const Carousel = ({book})=>{
 >
 <h5  onClick={()=>{
     navigate(Paths.page.createRoute(stc.story.id))
-}} className=' mont-medium text-emerald-800 bottom-0 mx-2 text-left'>{stc.story.title}</h5>
+}} className={ `${isGrid?"text-white":"text-emerald-800"} mont-medium text-emerald-800 bottom-0 mx-2 text-left`}>{stc.story.title}</h5>
     {stc.story.description && stc.story.description.length>0?<div className='min-h-12 pt-4 p-2'>
             {stc.story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
             <h6 className={`${isGrid?"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
@@ -205,7 +205,7 @@ const Carousel = ({book})=>{
         <div className={`${isGrid?"grid-item":""}`}>
                 <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page  shrink my-2 h-fit'}>
            
-        <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
+        <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg text-white h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&book?header():null}
         {book.description && book.description.length>0?<div className='min-h-12 pt-4 p-2'>
             {/* {book.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null} */}

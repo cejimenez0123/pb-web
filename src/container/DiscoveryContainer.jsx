@@ -35,11 +35,11 @@ function DiscoveryContainer(props){
       })
     const [viewItems,setViewItems]=useState([])
     useLayoutEffect(()=>{
-        console.log(books)
+
        let list = [...pagesInView,...cols].filter(item=>item).sort((a,b)=>{
            
    
-            return new Date(a.updated) < new Date(b.updated)
+            return ((a.priority*900005) + new Date(a.updated).getTime()) < ((b.priority*9000005) + new Date(b.updated).getTime())
             
     
                

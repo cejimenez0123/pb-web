@@ -75,18 +75,15 @@
 .isGrid .ql-size-normal,p{
   font-size: 1.3rem !important;
 }
-.ql-size-normal,p{
+.ql-editor .ql-size-normal,p{
   font-size: 1rem !important;
 }
 
-.ql-editor h3{
-  font-size: 1.2rem !important;
+.ql-editor .ql-size-large{
+  font-size: 1.4rem !important;
 }
-#editor .ql-size-large{
-  font-size: 1.5rem !important;
-}
-#editor .ql-size-huge{
-  font-size: 1.7rem !important;
+.ql-editor .ql-size-huge{
+  font-size: 1.6rem !important;
 } 
 
 
@@ -104,29 +101,16 @@
   .isGrid .ql-size-normal,p{
     font-size: 1.1rem !important;
   }
-  
-  #editor .ql-size-large{
+  .ql-editor .ql-size-normal,p{
+    font-size: 1.1rem !important;
+  }
+.ql-editor .ql-size-large{
     font-size: 1.3rem !important;
   }
-  #editor .ql-size-huge{
+.ql-editor .ql-size-huge{
     font-size: 1.5em !important;
   } 
-  .page .ql-size-small{
-    font-size: 0.6rem !important;
-  } 
-  .page .isGrid .ql-size-normal,p{
-    font-size: 0.85rem !important;
-  }
-  .page .ql-size-normal{
-    font-size: 0.85rem !important;
-  }
-  
-  .page .ql-size-large{
-    font-size: 1.15rem !important;
-  }
-  .page .ql-size-huge{
-    font-size: 1.35em !important;
-  } 
+
   
   }
 
