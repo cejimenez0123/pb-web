@@ -26,11 +26,11 @@ import { initGA,sendGAEvent } from "../../core/ga4.js"
 import Enviroment from "../../core/Enviroment.js"
 import ErrorBoundary from "../../ErrorBoundary.jsx"
 import PageList from "../../components/page/PageList.jsx"
-function ProfileContainer(props){
+function ProfileContainer({profile}){
     const {seo,setSeo,setError,setSuccess,currentProfile}=useContext(Context)
     const pathParams = useParams()
     const {id}=pathParams
-    const profile = useSelector(state=>state.users.profileInView)
+
     useLayoutEffect(()=>{
         initGA()
         if(profile){
@@ -175,7 +175,7 @@ function ProfileContainer(props){
         if(currentProfile&&profile){
             if(!profile.isPrivate){
                 setCanUserSee(true)
-                return
+            
             }
         if(currentProfile.id==profile.id){
             setCanUserSee(true)
@@ -183,6 +183,7 @@ function ProfileContainer(props){
             return
         }
     if( profile && profile.followers){
+        console.log(profile.followers)
         let found = profile.followers.find(follow=>follow.followerId==currentProfile.id)
         setCanUserSee(true) 
         setFollowing(found)
@@ -248,7 +249,6 @@ const meta = ()=>{
     if(profile){
         let soo = seo
         soo.title = profile.username
-        // soo.keywords =page.hashtags.map((tag) => tag.name).join(", ")
         soo.description = profile.selfStatement
         soo.url =Enviroment.domain+Paths.profile.createRoute(profile.id)
         setSeo(soo)
@@ -257,7 +257,7 @@ const meta = ()=>{
 }
 useLayoutEffect(()=>{
 meta()
-},[])
+},[profile])
     return(
         <ErrorBoundary>
         <div className="">

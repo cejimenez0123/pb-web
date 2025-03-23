@@ -23,13 +23,12 @@ import bookmarkOutline from "../../images/bookmarkoutline.svg"
 import bookmarkfill from "../../images/bookmarkfill.svg"
 import loadingGif from "../../images/loading.gif"
 import ErrorBoundary from "../../ErrorBoundary"
-import debounce from "lodash"
+import { initGA,sendGAEvent } from "../../core/ga4.js"
 
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
-    const {setError,currentProfile,setSuccess}=useContext(Context)
-    console.log(currentProfile)
+    const {setSeo,seo,setError,currentProfile,setSuccess}=useContext(Context)
     const navigate = useNavigate()
     const collection = useSelector(state=>state.books.collectionInView)
     const collections = useSelector(state=>state.books.collections)
@@ -102,8 +101,22 @@ setHasMore(false)
         setLoading(false)
     }
 }}
+useLayoutEffect(()=>{
+    if(collection){
+        let soo = seo
+        soo.title = collection.title
+        soo.description = collection.description
+        setSeo(soo)
+    }
+   
+},[collection])
+       useEffect(()=>{
+            initGA()
+            if(collection){
+                sendGAEvent("View Collection",`View Collection ${id}`,collection.title,0,true)
+            }
 
-         
+       },[])  
   
     const onBookmark=(type)=>{
 if(currentProfile){
@@ -370,15 +383,7 @@ if(currentProfile){
            
                 setIsBookmarked(isfound)
              let found = collection.parentCollections.find(ptc=>ptc.parentCollectionId==archiveCol.id)
-           
-            
-                // let found = currentProfile.profileToCollections.find(ptc=>{
-                //     return ptc && ptc.type=="archive"&&ptc.collection.childCollections.find(stc=>stc.childCollectionId==collection.id)})
-           
-                    
-                
-        //         let found = collection.parentCollections.find(ptc=>ptc.parentCollectionId==archiveCol.id)
-           console.log("Founc",found)
+  
                 setIsArchived(found)
                 }
             setBookmarkLoading(false)

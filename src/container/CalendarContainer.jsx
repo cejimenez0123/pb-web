@@ -80,7 +80,7 @@ const [email,setEmail]=useState("")
       soo.url = Enviroment.domain+Paths.calendar()
       soo.description ="An event calendar for the events a budding writer needs for inspiration.", 
       soo.name = "Plumbum Calendar"
-      soo.image =events
+      soo.image ="https://media-hosting.imagekit.io//8e28b7cf9fa0455d/event_24dp_314D1C_FILL0_wght400_GRAD0_opsz24.png?Expires=1837336370&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=01MpzsJ8oudd~qVh3DuWJbmXKh61ZxaEGaa-U4J2Aq6VgFV5n9qSMbA~wn-oOvslfeFJjQ3-FW2MdZRrlfd2mZuYQJq3H~JriWvqeA4GcIl0wvmymTPNDP3CepVkl4c4TObgZY4Hyf5dKZjuqO7d-ou39tMZYU7Ah1CMgSXwDqv-K0GL3k8mtpNX2i2UrYTZbfe5NsfQTQNBXCrurlRygwVviAPjIKXDb6fnMJ~J5bJo6ebLfc4EubDVZYxUXEMxjuhnag7YaNyIvOn2SQ~p9LSuS2qvlB4SyFZBGD4SXvQKADOTRHhWaPOQnJNM1wP0F89-hDkXZP9s1suTs7R1Gg__"
       setSeo(soo)
     },[])
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"

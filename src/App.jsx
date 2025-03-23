@@ -58,7 +58,8 @@ function App(props) {
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
-  const [seo,setSeo]=useState({title:"Plumbum",image:"/src/images/icon.ico",description:"Your writing, Your community", name:"Plumbum", type:""})
+  const profile = useSelector(state=>state.users.profileInView)
+  const [seo,setSeo]=useState({title:"Plumbum",image:"https://i.ibb.co/39cmPfnx/Plumnum-Logo.png",description:"Your writing, Your community", name:"Plumbum", type:"website"})
   let prof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
 
   const currentProfile= useSelector(state=>state.users.currentProfile??prof)
@@ -216,7 +217,7 @@ function App(props) {
     path={Paths.workshop.route()}
     element={<PrivateRoute><WorkshopContainer/></PrivateRoute>}/>
     <Route path="/profile/:id" element={
-      <ProfileContainer profile={props.profileInView}/>
+      <ProfileContainer profile={profile}/>
       }/>
     <Route path="/subscribe" 
     element={<EmailPreferences/>}/>

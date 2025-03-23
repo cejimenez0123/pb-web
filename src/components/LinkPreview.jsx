@@ -6,7 +6,15 @@ import "../App.css"
 import axios from 'axios';
 import { getLinkPreview, getPreviewFromContent } from "link-preview-js";
 import { useNavigate } from 'react-router-dom';
-
+async function fetchLinkPreview(url) {
+  try {
+    const data = await getLinkPreview(url);
+    return data;
+  } catch (error) {
+    console.error('Error fetching link preview:', error);
+    return null;
+  }
+}
 function LinkPreview({ url,isGrid}) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,18 +36,17 @@ const fetchData = async (url) => {
           const hostname = new URL(url).hostname;
           axios(`https://dns.google/resolve?name=${hostname}`)
           .then(response =>{ 
+            console.log(response)
           resolve(response.data)
           })
           .catch(err=>{
-            console.log(err)
+       
             if (err) {reject(err)}
           })
              });
     
       },
     }).then(data=>{
-      console.log("Touch")
-      console.log(data)
    
          setPreviewData({
           title:data.title,

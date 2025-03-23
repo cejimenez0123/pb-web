@@ -28,28 +28,9 @@ const logIn = createAsyncThunk(
     async (params,thunkApi) => {
    
      
-      // try{
+
         const {email,password}=params
-    //   const userCred = await signInWithEmailAndPassword(auth,email,password)
-      
-        
-    //   const authData = await authRepo.startSession({uId:userCred.user.uid,email:email,password})
-    
-    //     if(authData.token){
-    //       const {token}=authData
-    //       const data = await profileRepo.getMyProfiles({token:token})
-    
-    //       const profile = data.profile
-    //       return{
-    //         profile:profile
-    //       }
-        
-    //     }else{
-    //       throw new Error("Check")
-    //     }
-    // }catch(error){
-    //   console.log(error)
-  // try{
+
 
         const authData = await authRepo.startSession({uId:null,email:email,password})
    
