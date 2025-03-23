@@ -52,7 +52,7 @@ import { Helmet,HelmetProvider } from 'react-helmet-async';
 
 
 function App(props) {
-  let helmetContext = {};
+
 
 
   const dispatch = useDispatch()
@@ -95,24 +95,24 @@ function App(props) {
         : `Plumbum | ${seo.title} `
       : 'Plumbum';
   return (
-    <HelmetProvider context={helmetContext}>
+
       <Context.Provider value={{seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
       <Helmet>
       {/* Title and Description */}
       <title>{seoTitle}</title>
-      <meta name="description" content={seo?.description || 'Your community for writers to share and grow.'} />
+      <meta name="description" content={seo && seo.description? seo.description :'Your community for writers to share and grow.'} />
 
       {/* Open Graph Meta Tags */}
-      <meta property="og:title" content={seo?.title || 'Plumbum'} />
-      <meta property="og:description" content={seo?.description || 'Your Writing, Your Community.'} />
-      <meta property="og:image" content={seo?.image || 'https://i.ibb.co/39cmPfnx/Plumnum-Logo.png'} />
+      <meta property="og:title" content={seo && seo.title?seo.title:'Plumbum'} />
+      <meta property="og:description" content={seo && seo.description? seo.description:'Your Writing, Your Community.'} />
+      <meta property="og:image" content={seo && seo.image?seo.image :'https://i.ibb.co/39cmPfnx/Plumnum-Logo.png'} />
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
 
       {/* Twitter Card Meta Tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={seo?.title || 'Plumbum'} />
-      <meta name="twitter:description" content={seo?.description || 'Your Writing, Your Community.'} />
-      <meta name="twitter:image" content={seo?.image || 'https://i.ibb.co/39cmPfnx/Plumnum-Logo.png'} />
+      <meta name="twitter:title" content={seo && seo.title ? seo.title : 'Plumbum'} />
+      <meta name="twitter:description" content={seo && seo.description?seo.description: 'Your Writing, Your Community.'} />
+      <meta name="twitter:image" content={seo && seo.image ?seo.image:'https://i.ibb.co/39cmPfnx/Plumnum-Logo.png'} />
     </Helmet>
   
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
@@ -298,7 +298,7 @@ function App(props) {
     </div>
 
     </Context.Provider>
-  </HelmetProvider>
+
   );
 }
 
