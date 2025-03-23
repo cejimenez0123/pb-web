@@ -4,7 +4,7 @@ import { useLayoutEffect, useState } from "react"
 
 export default function DescriptionDialog({open,page,isFeedback,handleClose,handleChange,handlePostPublic,handleFeedback}){
     const isPhone =  useMediaQuery({
-        query: '(max-width: 600px)'
+        query: '(max-width: 800px)'
       })
     useLayoutEffect(()=>{
       if(page && page.description){
@@ -16,7 +16,7 @@ export default function DescriptionDialog({open,page,isFeedback,handleClose,hand
         open={open}
         fullScreen={isPhone}
         onClose={handleClose}
-        className=""
+        className="max-w-[100vw]"
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >   <div className=""> <DialogTitle id="alert-dialog-title">

@@ -47,7 +47,7 @@ const fetchData = async (url) => {
       const parser = new DOMParser();
       
       const doc = parser.parseFromString(data, 'text/html');
-      
+      console.log(doc)
       let title = doc.querySelector('title')?.textContent || '';
       const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
       let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
