@@ -33,7 +33,7 @@ function DiscoveryContainer(props){
     const isNotPhone = useMediaQuery({
         query: '(min-width: 999px)'
       })
-    const [viewItems,setViewItems]=useState([...pagesInView,...books])
+    const [viewItems,setViewItems]=useState([])
     useLayoutEffect(()=>{
         console.log(books)
        let list = [...pagesInView,...cols].filter(item=>item).sort((a,b)=>{

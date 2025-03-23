@@ -72,8 +72,10 @@ const [email,setEmail]=useState("")
             console.log(err)
         }
     },10)
+ 
     const {seo,setSeo}=useContext(Context)
     useLayoutEffect(()=>{
+ 
       let soo = seo
       soo.url = Enviroment.domain+Paths.calendar()
       soo.description ="An event calendar for the events a budding writer needs for inspiration.", 

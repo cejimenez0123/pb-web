@@ -24,9 +24,7 @@ import EditorDiv from "../../components/page/EditorDiv"
 import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions/PageActions.jsx"
 import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
-import Alert from "../../components/Alert"
 import DescriptionDialog from "../../components/page/FeedbackDialog"
-import Page from "../../domain/models/page"
 
 
 function EditorContainer(props){

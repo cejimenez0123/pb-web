@@ -3,10 +3,14 @@ import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
 import "../App.css"
+import axios from 'axios';
+import { getLinkPreview, getPreviewFromContent } from "link-preview-js";
+import { useNavigate } from 'react-router-dom';
+
 function LinkPreview({ url,isGrid}) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-
+const navigate = useNavigate()
   useLayoutEffect(() => {
 
     if(!url.includes('https://open.spotify.com/')){  
@@ -18,19 +22,47 @@ function LinkPreview({ url,isGrid}) {
 
 const fetchData = async (url) => {
   try {
-    const headers = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    };
+    getLinkPreview(`${Enviroment.proxyUrl}${url}`, {
+      resolveDNSHost: async (xurl) => {
+        return new Promise((resolve, reject) => {
+          const hostname = new URL(url).hostname;
+          axios(`https://dns.google/resolve?name=${hostname}`)
+          .then(response =>{ 
+          resolve(response.data)
+          })
+          .catch(err=>{
+            console.log(err)
+            if (err) {reject(err)}
+          })
+             });
+    
+      },
+    }).then(data=>{
+      console.log(data)
+   
+         setPreviewData({
+          title:data.title,
+          description:data.description,
+          image:data.images[0],
+      });
+      setLoading(false)
+    })
+    // .catch((e) => {
+      // will throw a detected redirection to localhost
+    // });
+    // const headers = {
+    //   "Access-Control-Allow-Origin": "*",
+    //   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    //   "Access-Control-Allow-Headers": "Content-Type",
+    // };
 
-    const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
-      headers: headers,
+    // const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
+    //   headers: headers,
 
-    }
-    )
-    ;
-    let data = await response.text()
+    // }
+    // )
+    // ;
+    // let data = await response.text()
 
 
     const isYouTubeVideo = isYouTubeURL(url);
@@ -43,39 +75,40 @@ const fetchData = async (url) => {
         videoThumbnail,
       });
       setLoading(false);
-    } else {
-      const parser = new DOMParser();
-  
-      const doc = parser.parseFromString(data, 'text/html');
-      console.log(doc)
-      let title = doc.querySelector('title')?.textContent || '';
-      const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-      let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
-     
-      if (!image) {
-        if(!image){
-        const imgElement = doc.querySelector('img');
-
-        if (imgElement) {
-          image = imgElement.getAttribute('src') || '';
-        }
-
-      }
-      }
     
-      setPreviewData({
-          title,
-          description,
-          image,
-      });
+    } else {
+      // const parser = new DOMParser();
+  
+      // const doc = parser.parseFromString(data, 'text/html');
+     
+      // let title = doc.querySelector('title')?.textContent || '';
+      // const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+      // let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+     
+      // if (!image) {
+      //   if(!image){
+      //   const imgElement = doc.querySelector('img');
+
+      //   if (imgElement) {
+      //     image = imgElement.getAttribute('src') || '';
+      //   }
+
+      // }
+      // }
+  
+      // setPreviewData({
+      //     title,
+      //     description,
+      //     image,
+      // });
  
     
-      setLoading(false);
+      // setLoading(false);
     }
   } catch (error) {
     setLoading(false);
   }
-};
+}
   const handleClick = () => {
     window.open(url, '_blank');
   };
@@ -118,7 +151,7 @@ const fetchData = async (url) => {
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
     return(<div>
-      {previewData.image && <img  className={isGrid?"rounded-lg pt-8 w-fit  overflow-hidden mx-auto":"  rounded-t-lg w-[100%] "}src={previewData.image}  alt="Link Preview" />}
+      {previewData.image && <a href={`${url}`}><img  className={isGrid?"rounded-lg pt-8 w-fit  overflow-hidden mx-auto":"  rounded-t-lg w-[100%] "}src={previewData.image}  alt="Link Preview" /></a>}
     </div>)
     }else{
        return (

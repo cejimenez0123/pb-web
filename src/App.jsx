@@ -47,7 +47,8 @@ import NewsletterContainer from './container/auth/NewsletterContainer.jsx';
 import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
-import { Helmet,HelmetProvider } from 'react-helmet-async';
+// import { Helmet,HelmetProvider } from 'react-helmet-async';
+import {Helmet} from 'react-helmet'
 import icon from "../src/images/icon.ico"
 
 function App(props) {
@@ -71,7 +72,7 @@ function App(props) {
   },[])
 
   return (
-    <HelmetProvider context={helmetContext}>
+    // <HelmetProvider context={helmetContext}>
       <Context.Provider value={{seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
     <Helmet>
     <title>{seo.title||'Plumbum'}</title>
@@ -273,7 +274,7 @@ function App(props) {
     </div>
 
     </Context.Provider>
-    </HelmetProvider>
+    // </HelmetProvider>
   );
 }
 

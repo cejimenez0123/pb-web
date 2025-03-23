@@ -163,7 +163,7 @@ const Carousel = ({book})=>{
         <div className={isGrid?"carousel  ":" max-w-[94.5vw] carousel md:w-page "}>
      
        {book.storyIdList.map((stc,i)=>{
-        
+        if(stc && stc.story){
 
       
         return(
@@ -183,7 +183,9 @@ const Carousel = ({book})=>{
         </div>:null}
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
 
-        </div>)})}
+        </div>)}else{
+            return null
+        }})}
 
     
        <span className='flex flex-row justify-center'>
