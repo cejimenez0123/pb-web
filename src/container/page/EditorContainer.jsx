@@ -24,7 +24,7 @@ import EditorDiv from "../../components/page/EditorDiv"
 import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions/PageActions.jsx"
 import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
-import DescriptionDialog from "../../components/page/FeedbackDialog"
+import FeedbackDialog from "../../components/page/FeedbackDialog"
 
 
 function EditorContainer(props){
@@ -364,7 +364,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
       
   
       </Dialog>
-<DescriptionDialog 
+<FeedbackDialog 
 
 page={editPage}
 open={feedbackDialog||openDescription} 

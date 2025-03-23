@@ -25,11 +25,10 @@ import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCollectionCache';
 import Context from '../context';
-import DescriptionDialog from '../components/page/FeedbackDialog';
+import FeedbackDialog from '../components/page/FeedbackDialog';
 import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg"
-import { generate } from 'random-words';
 function MyProfileContainer(props){
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -394,7 +393,7 @@ className=" text-emerald-800 mx-2  "/>
 
 </div>
 {/* </div> */}
-<DescriptionDialog
+<FeedbackDialog
 
 page={feedbackPage}
 open={!!feedbackPage} 

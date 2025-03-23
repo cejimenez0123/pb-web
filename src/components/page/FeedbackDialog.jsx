@@ -2,7 +2,7 @@ import { useMediaQuery } from "react-responsive"
 import {Dialog,DialogTitle,DialogActions,DialogContent} from "@mui/material"
 import { useLayoutEffect, useState } from "react"
 
-export default function DescriptionDialog({open,page,isFeedback,handleClose,handleChange,handlePostPublic,handleFeedback}){
+export default function FeedbackDialog({open,page,isFeedback,handleClose,handleChange,handlePostPublic,handleFeedback}){
     const isPhone =  useMediaQuery({
         query: '(max-width: 800px)'
       })
