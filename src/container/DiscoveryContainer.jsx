@@ -5,21 +5,22 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
 import {getPublicStories, setPagesInView } from '../actions/PageActions'
-import { getPublicBooks } from '../actions/CollectionActions'
+import { getPublicBooks, getPublicCollections, setCollections } from '../actions/CollectionActions'
 import { getPublicLibraries} from '../actions/LibraryActions.jsx'
 import checkResult from '../core/checkResult'
 import { useMediaQuery } from "react-responsive"
 import BookListItem from '../components/BookListItem'
-import ReactGA from "react-ga4"
 import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
+import { initGA,sendGAEvent } from '../core/ga4.js'
 import BookDashboardItem from '../components/collection/BookDashboardItem.jsx'
 function DiscoveryContainer(props){
     
     useEffect(()=>{
-        ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-    },[])
-
+        initGA()
+        sendGAEvent("Page View","Page View","Discovery",0,true)
+   },[])
+   const cols = useSelector(state=>state.books.collections)
     const books = useSelector(state=>state.books.books)
     const libraries = useSelector(state=>state.books.libraries)
     const [isGrid,setIsGrid] = useState(false)
@@ -32,24 +33,17 @@ function DiscoveryContainer(props){
     const isNotPhone = useMediaQuery({
         query: '(min-width: 999px)'
       })
-    const [viewItems,setViewItems]=useState([...pagesInView,...books]).sort((a,b)=>{
-           
-   
-        return a.updated - b.updated
-        
-
-           
-})
+    const [viewItems,setViewItems]=useState([...pagesInView,...books])
     useLayoutEffect(()=>{
-
-       let list = [...pagesInView,...books].sort((a,b)=>{
+        console.log(books)
+       let list = [...pagesInView,...cols].filter(item=>item).sort((a,b)=>{
            
    
-            return a.updated - b.updated
+            return new Date(a.updated) < new Date(b.updated)
             
     
                
-    })
+    },[pagesInView,books])
     setViewItems(list)
     },[pagesInView,books])
     useEffect(
@@ -140,7 +134,7 @@ function DiscoveryContainer(props){
     
     >
      
-                    {viewItems.map((item,i)=>{
+                    {viewItems.filter(item=>item).map((item,i)=>{
                         const id = `${item.id}_${i}`
                        
                         if(item.storyIdList&&item.storyIdList.length>0&&!item.data){
@@ -202,8 +196,11 @@ className={`${
     }
     const fetchContentItems = ()=>{
             dispatch(setPagesInView({pages:[]}))
+            dispatch(setCollections({collections:[]}))
             dispatch(getPublicStories())
+            dispatch(getPublicCollections())
             dispatch(getPublicBooks())  
+        
     }
     const fetchLibraries = ()=>{
             setHasMoreLibraries(true)
@@ -220,19 +217,10 @@ className={`${
 
             setIsGrid(bool)
             if(bool){
-                ReactGA.event({
-                    category: "Discovery",
-                    action: "Click for Grid View",
-                    label: "GRID ICON", 
-                    nonInteraction: false
-                  });
+                sendGAEvent("Click","Click Grid View Discovery","Grid Icon",0)
+             
             }else{
-                ReactGA.event({
-                    category: "Discovery",
-                    action: "Click for Stream",
-                    label: "STREAM ICON", 
-                    nonInteraction: false
-                  });
+                sendGAEvent("Click","Click Stream View Discovery","Stream Icon",0)
             }
         }
         return(
@@ -272,7 +260,7 @@ className={`${
                         </div>
 <div className='max-w-screen'>
     {listView()}
-                    {/* {pageList()} */}
+                   
                   
                     </div>
                     </div>
@@ -283,12 +271,7 @@ className={`${
                    
                     </div>
                     </div>
-            
-                 
-           
                     </div>
-           
-             
             </ErrorBoundary>
         )
 

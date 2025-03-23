@@ -1,5 +1,5 @@
 import React ,{ useContext, useEffect, useLayoutEffect,useState } from 'react'
-import { useSelector,useDispatch} from 'react-redux'
+import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
 import {signOutAction} from "../actions/UserActions"
@@ -12,17 +12,17 @@ import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import Paths from '../core/paths'
 import { searchDialogToggle } from '../actions/UserActions'
-import SearchDialog from '../components/SearchDialog'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
 import Dialog from '@mui/material/Dialog';
-import ReactGA from 'react-ga4'
+
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions.jsx'
 import { useMediaQuery } from 'react-responsive'
 import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
+import { initGA, sendGAEvent } from '../core/ga4.js'
 const PageName = {
   home: "Home",
   about:"About",
@@ -46,6 +46,9 @@ function NavbarContainer(props){
   const isPhone =  useMediaQuery({
     query: '(max-width: 600px)'
   })
+  useLayoutEffect(()=>{
+    initGA()
+  },[])
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
@@ -228,13 +231,7 @@ function NavbarContainer(props){
       }
 
     const ClickWriteAStory = debounce(()=>{
-      ReactGA.event({
-          category: "Page",
-          action: "Navigate To Editor",
-          label: "Write a Story", 
-          value: currentProfile.id,
-          nonInteraction: false
-        });
+      sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
         
         dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
         title:"",commentable:true
@@ -318,7 +315,7 @@ function NavbarContainer(props){
       </div>
       }
   // }
-  return(<div className="navbar bg-emerald-800">
+  return(<div className="navbar max-w-[100vw] bg-emerald-800">
      <div className='navbar-start '>
     {isPhone?menuDropdown():
     <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}

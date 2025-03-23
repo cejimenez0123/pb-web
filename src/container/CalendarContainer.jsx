@@ -4,26 +4,27 @@ import { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import validateEmail from "../core/validateEmail";
 import authRepo from "../data/authRepo";
-import ReactGA from "react-ga4"
+import { initGA,sendGAEvent } from "../core/ga4";
 import events from "../images/icons/event.svg"
 import { Dialog,DialogTitle,DialogContent,DialogActions,Button } from "@mui/material";
 import Enviroment from "../core/Enviroment";
-import { Helmet } from 'react-helmet-async';
+import Context from "../context";
+import { useContext } from "react";
 import Paths from "../core/paths";
+import { useMediaQuery } from "react-responsive"
+import { useLayoutEffect } from "react"
 export default function CalendarContainer(){
+
+  useEffect(()=>{
+    initGA()
+  },[])
     useEffect(()=>{
-        ReactGA.event({
-            category: "Calendar",
-            action: "Page View Calendar",
-            label:"Page View Calendar",
-          
-            nonInteraction: false
-          });
-     
+      sendGAEvent("PageView","View Calendar","Calendar",0,true) 
     },[])
-return(<div>
-    <div className="mx-auto m-4 w-fit text-center">
-        <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
+return(<div className="mx-auto m-4 w-fit text-center">
+     <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
+    <div className="">
+       
     <CalendarEmbed/>
     <SubmitEvent/>
     </div>
@@ -31,12 +32,21 @@ return(<div>
 )
 }
 const CalendarEmbed = () => {
+    let sm =useMediaQuery({
+        query: '(max-width: 400px)'
+      })
+      let md =useMediaQuery({
+        query: '(max-width: 700px)'
+      })
+      let lg =useMediaQuery({
+        query: '(max-width: 1000px)'
+      })
     return (
-      <div className="overflow-hidden rounded-lg shadow-lg mx-auto w-full max-w-[900px]">
+      <div className="flex overflow-hidden text-center rounded-lg  mx-auto ">
         <iframe
         src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=America%2FNew_York&showPrint=0&mode=AGENDA&title=Plumbum%20NYC&src=Zjg4OTA0YzYzYTQ3ZGViODAyMTYyMGIwYjA1ZDIzYzIzYWFlNThhZDI2YWQxZWQ1NTU3Yzk5ZGNmY2QyYzIyNEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=Mzc1ODY3OGRkYWJmNDY3YTZjYzVhYTFiOWRlMTljMjYzNjRmMzljOWUzZWIzMGU1NmE0ODMyNDZjOTIyZGViZEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=ZjU5Nzk3YmIwNTllMjczMzQ0OWI3Y2RmYzNhMDY3ZTcwYjNjMTEyZTIwZGQ3OGQ4Mjc3ZDJlNjMxZDM5ZThjOEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=YWY0ZGEwNDk1MzUxMjI1N2NlYzhlYWNlYjljMWNmMTk2MTMwM2IwZjk1MjljMTExNTUyNmJiMjRiYTY2MTg0NEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%234285F4&color=%23F09300&color=%2333B679&color=%23E4C441&color=%230B8043" 
-              className="w-full h-[600px]"
-          width={"100%"}
+              className="mx-auto shadow-lg h-[600px] "
+          width={lg?sm?"350":"500":"900"}
           
         ></iframe>
       </div>
@@ -62,27 +72,18 @@ const [email,setEmail]=useState("")
             console.log(err)
         }
     },10)
+    const {seo,setSeo}=useContext(Context)
+    useLayoutEffect(()=>{
+      let soo = seo
+      soo.url = Enviroment.domain+Paths.calendar()
+      soo.description ="An event calendar for the events a budding writer needs for inspiration.", 
+      soo.name = "Plumbum Calendar"
+      soo.image =events
+      setSeo(soo)
+    },[])
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
-    return(<div>
-               <Helmet>
-               <title>Plumbum Calendar -FOR NYC WRITERS</title>
-<meta name="title" content="Plumbum Calendar -FOR NYC WRITERS" />
+    return(<div className="max-w-[100vw]">
 
-
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Plumbum Calendar" />
-      <meta property="og:description" content="An event calendar for the events a budding writer needs for inspiration." />
-      <meta property="og:image" content={events}/>
-      <meta property="og:url" content={Enviroment.domain+Paths.calendar()} />
-
-<meta property="twitter:card" content={events}/>
-<meta property="twitter:url" content={Enviroment.domain+Paths.calendar()}  />
-<meta property="twitter:title" content="Plumbum Calendar-Events for Writers" />
-<meta property="twitter:description" content="An event calendar for the events a budding writer needs for inspiration." />
-<meta property="twitter:image" content={events}/>
-
-
-        </Helmet>
     
         <form className="my-8 mx-2">
         <div className="card lg:max-w-[40rem] mx-auto lg:p-8">

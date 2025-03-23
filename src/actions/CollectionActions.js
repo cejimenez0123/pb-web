@@ -26,6 +26,26 @@ const getPublicBooks = createAsyncThunk(
     }
 )
 
+const getPublicCollections = createAsyncThunk(
+    'books/getPublicCollections',
+    async (thunkApi) => {
+       
+   
+        try{
+                let res = await axios(Enviroment.url+"/collection")
+            
+    return {
+  
+       collections: res.data.data
+    }
+}catch (error) {
+    return{
+        error: new Error(`getPublic Collections ${error.message}`)
+    }
+}
+      
+    }
+)
 const getRecommendedCollectionStory = createAsyncThunk(
     'collections/recommendatedCollectionStory',
     async ({colId},thunkApi) => {
@@ -284,6 +304,7 @@ const clearCollections = createAction("collection/clearCollections")
 export {
     getPublicBooks,
     saveRoleToCollection,
+    getPublicCollections,
     isProfileMember,
     getMyCollections,
     createCollection,

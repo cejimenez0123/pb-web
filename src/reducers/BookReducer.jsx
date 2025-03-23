@@ -8,6 +8,7 @@ import { createSlice} from "@reduxjs/toolkit"
         clearCollections,
         getRecommendedCollectionsProfile,
        setCollections,
+       getPublicCollections,
       
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
@@ -77,7 +78,11 @@ state.loading = true
             state.collections = list
     }}})
   
-
+.addCase(getPublicCollections.fulfilled,(state,{payload})=>{
+    if(payload.collections){
+        state.collections=payload.collections
+    }
+})
 .addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
 })

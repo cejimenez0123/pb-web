@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch,connect} from "react-redux"
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
@@ -25,8 +25,8 @@ import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
-import { Helmet} from 'react-helmet-async';
 import  Context from "./context"
+import Enviroment from './core/Enviroment.js';
 import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';
 import CollectionContainer from './container/collection/CollectionContainer';
 import AddToCollectionContainer from './container/collection/AddToCollection';
@@ -47,11 +47,17 @@ import NewsletterContainer from './container/auth/NewsletterContainer.jsx';
 import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
+import { Helmet,HelmetProvider } from 'react-helmet-async';
+import icon from "../src/images/icon.ico"
+
 function App(props) {
+  let helmetContext = {};
+
 
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
+  const [seo,setSeo]=useState({title:"Plumbum",image:"/src/images/icon.ico",description:"Your writing, Your community", name:"Plumbum", type:""})
   let prof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
 
   const currentProfile= useSelector(state=>state.users.currentProfile??prof)
@@ -65,10 +71,25 @@ function App(props) {
   },[])
 
   return (
-      <Context.Provider value={{currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
-        <Helmet>
-        <link rel="icon" type="image/png" sizes="16x16" href="/src/images/icon.ico"/> </Helmet>      
-      
+    <HelmetProvider context={helmetContext}>
+      <Context.Provider value={{seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+    <Helmet>
+    <title>{seo.title||'Plumbum'}</title>
+      <meta name="description" content={seo.description || 'Your community for writers to share and grow.'} />
+
+      {/* Open Graph Meta Tags */}
+      <meta property="og:title" content={seo.title??"Plumbum"} />
+      <meta property="og:description" content={seo.description??'Your Writing, Your Community!'} />
+      <meta property="og:image" content={seo.image??icon} />
+      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
+
+      {/* Twitter Card Meta Tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={seo.title?? 'Plumbum'} />
+      <meta name="twitter:description" content={seo.description??'Your Writing, Your Community!'} />
+      <meta name="twitter:image" content={seo.image?? icon} />
+    <link rel="icon" type="image/png" sizes="16x16" />     
+        </Helmet> 
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
@@ -98,6 +119,7 @@ function App(props) {
        <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/>
+        
         <SearchDialog  />
         <div className='screen'>
 <Alert />
@@ -251,6 +273,7 @@ function App(props) {
     </div>
 
     </Context.Provider>
+    </HelmetProvider>
   );
 }
 

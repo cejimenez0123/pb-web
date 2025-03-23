@@ -3,7 +3,7 @@ import { useDispatch} from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import bookmarkFill from "../../images/bookmark_fill_green.svg"
 import bookmarkAdd from "../../images/bookmark_add.svg"
-import ReactGA from "react-ga4"
+
 import { addStoryListToCollection,deleteStoryFromCollection } from "../../actions/CollectionActions"
 import { setEditingPage } from "../../actions/PageActions.jsx"
 import Paths from "../../core/paths"
@@ -13,16 +13,20 @@ import Context from "../../context"
 import { debounce } from "lodash"
 import { RoleType } from "../../core/constants"
 import Enviroment from "../../core/Enviroment.js"
+import { initGA,sendGAEvent } from "../../core/ga4.js"
 export default function PageViewButtonRow({page,profile,setCommenting}){
     const {setSuccess,currentProfile,setError}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
-    const {id}=useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [canUserComment,setCanUserComment]=useState(false)
     const [loading,setLoading]=useState(false)
     const [bookmarked,setBookmarked]= useState(null)
     const [comment,setComment]=useState(false)
+    useLayoutEffect(()=>{
+        initGA()
+    },[])
+  
     useLayoutEffect(()=>{
         if(currentProfile && page){
             let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
@@ -78,13 +82,10 @@ checkResult(res,payload=>{
     setLoading(false)
 }}
     const copyShareLink=()=>{
-        ReactGA.event({
-            category: "Page View",
-            action: "Copy Share Link",
-            label: page.title, 
-            value: page.id,
-            nonInteraction: false
-          });
+      
+            sendGAEvent( "Copy Share Link","Share"+`+${page.id}`,"Share",0,false)
+ 
+   
         navigator.clipboard.writeText(Enviroment.domain+Paths.page.createRoute(page.id))
                                 .then(() => {
                                     // Successfully copied to clipboard

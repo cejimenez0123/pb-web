@@ -1,4 +1,4 @@
-import React ,{useContext, useEffect, useState} from 'react'
+import React ,{useContext, useLayoutEffect,useEffect, useState} from 'react'
 import "../../App.css"
 import { logIn} from '../../actions/UserActions';
 
@@ -11,26 +11,21 @@ import {
 import loadingGif from "../../images/loading.gif"
 import theme from '../../theme';
 import { Clear } from '@mui/icons-material';
-import { auth } from '../../core/di';
-import ReactGA from "react-ga4"
 import Paths from '../../core/paths';
 import { useLocation } from 'react-router-dom';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
-
+import { initGA,sendGAEvent } from '../../core/ga4';
 function LogInContainer(props) {
     const location = useLocation()
     const {setError}=useContext(Context)
-  
-  
-    const [logInError,setLogInError] = useState(null)
-
-    ReactGA.send({ hitType: "pageview", page: window.location.pathname+window.location.search, title: "About Page" })
-
-
-
-  
+    useLayoutEffect(()=>{
+        initGA()
+    },[])
+    useEffect(()=>{
+        sendGAEvent("Log In","Page View","Log In","Log In",0,true)
+    },[])
     return (
         <div id="" className='sm:mx-2'>
             <LogInCard  
@@ -43,16 +38,6 @@ function LogInContainer(props) {
         </div>
     )
 }
-
-const inputStyle = {
-    width: '95%',
-    backgroundColor:theme.palette.primary.contrastText,
-    marginTop:"1em",
-    marginBottom:"1em",
-    marginLeft:"1em"
-}
-
-
 
 function LogInCard({setLogInError}){
     const dispatch = useDispatch()

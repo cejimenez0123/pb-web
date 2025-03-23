@@ -20,6 +20,7 @@ import Context from '../../context'
 import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
 import { debounce } from 'lodash'
+import { initGA,sendGAEvent } from '../../core/ga4'
 function DashboardItem({page, book,isGrid}) {
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
@@ -28,7 +29,6 @@ function DashboardItem({page, book,isGrid}) {
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
-    // const currentProfile = useSelector(state=>state.users.currentProfile)
    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const [expanded,setExpanded]=useState(false)
     const colInView = useSelector(state=>state.books.collectionInView)
@@ -53,7 +53,10 @@ return !stories.find(story=>story && page &&story.id && page.id&& story.id==page
         dispatch(setPagesInView({pages:[...stories,...back]}))
         setSuccess("Added")
     },err=>{
-        setError(err)
+        if(err.message){
+            setError("Error Adding Story to Collection "+err.message)
+        }
+
     })
   
           
@@ -90,7 +93,7 @@ return !stories.find(story=>story && page &&story.id && page.id&& story.id==page
         }          
     },[currentProfile,page])
 const deleteStc=()=>{
-console.log(bookmarked)
+
         if(bookmarked){
             setLoading(true)
    dispatch( deleteStoryFromCollection({stId:bookmarked.id})).then((res)=>{
@@ -98,7 +101,8 @@ console.log(bookmarked)
     setBookmarked(null)
     setLoading(false)
    },err=>{
-    setError(err.message)
+    if(err.message){
+    setError("Error deleting bookmark "+err.message)}
    }
 )
    })
@@ -184,7 +188,7 @@ return <Button onClick={()=>{
                             setLoading(false)
                         },err=>{
                             setBookmarked(null)
-                            setError("Error")
+                            setError("Error Bookmarking")
                             setLoading(false)
                         })
                     })

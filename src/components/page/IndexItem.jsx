@@ -8,14 +8,18 @@ import edit from "../../images/icons/edit.svg"
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 import Paths from "../../core/paths";
-import ReactGA from "react-ga4"
+import { initGA,sendGAEvent } from "../../core/ga4.js";
 import { setCollectionInView } from "../../actions/CollectionActions";
+import Enviroment from "../../core/Enviroment.js";
 function IndexItem({item,handleFeedback}) {
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
+
     const [canUserAdd,setCanUserAdd]=useState(false)
-    const [showPreview,setShowPreview] = useState(false)
+    useLayoutEffect(()=>{
+      initGA()
+    })
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -26,28 +30,17 @@ function IndexItem({item,handleFeedback}) {
     },[item])
     const copyShareLink=()=>{
       if(item && item.storyIdList){
-        ReactGA.event({
-          category: "Page View",
-          action: "Copy Collection Share Link",
-          label: item.title, 
-          value: item.id,
-          nonInteraction: false
-        });
-      navigator.clipboard.writeText(`https://plumbum.app`+Paths.collection.createRoute(item.id))
+        sendGAEvent("Share","Copy Share Link = Collection-"+`${item.id}`,item.title,0,false)
+   
+      navigator.clipboard.writeText(Enviroment.domain+Paths.collection.createRoute(item.id))
                               .then(() => {
                                   // Successfully copied to clipboard
                                   alert('Text copied to clipboard');
                                 })
 
       }else{
-      ReactGA.event({
-          category: "Page View",
-          action: "Copy Story Share Link",
-          label: item.title, 
-          value: item.id,
-          nonInteraction: false
-        });
-      navigator.clipboard.writeText(`https://plumbum.app`+Paths.page.createRoute(item.id))
+        sendGAEvent("Share","Copy Share Link = Story-"+`${item.id}`,item.title,0,false)
+      navigator.clipboard.writeText(Enviroment.domain+Paths.page.createRoute(item.id))
                               .then(() => {
                                   // Successfully copied to clipboard
                                   alert('Text copied to clipboard');

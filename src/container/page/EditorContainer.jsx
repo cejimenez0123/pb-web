@@ -33,7 +33,7 @@ function EditorContainer(props){
        const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
-        const currentProfile = useSelector(state=>state.users.currentProfile)
+        const {currentProfile}=useContext(Context)
         const [feedbackDialog,setFeedbackDialog]=useState(false)
         const {setError,setSuccess}=useContext(Context)
   
@@ -101,7 +101,7 @@ function EditorContainer(props){
             handleUpdate(parameters)
         }else{
           if(last==PageType.picture||last==PageType.link){
-            if(isValidUrl(htmlContent)){
+            if(isValidUrl(htmlContent)&&currentProfile){
              let params = parameters
               params.data= htmlContent
               setParameters(parameters)
@@ -148,7 +148,9 @@ return ()=>{
            params.data = htmlContent
            params.type = PageType.picture
            setParameters(params)
+           if(currentProfile){
             createPageAction(parameters)
+           }
         }
     },[htmlContent])
   const setStoryData=(story)=>{
@@ -194,6 +196,7 @@ return ()=>{
           handleClose()
       },10)
       const createPageAction = (params)=>{
+        
         let pars = params
         pars.profileId = currentProfile.id
         pars.title = titleLocal

@@ -1,8 +1,7 @@
-import React ,{useState,useLayoutEffect, useContext}from 'react'
+import React ,{useState,useLayoutEffect, useContext, useEffect}from 'react'
 import "../App.css"
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchRecommendedStories } from '../actions/StoryActions'
-import ReactGA from "react-ga4"
 import PageList from '../components/page/PageList'
 import ExploreList from '../components/collection/ExploreList.jsx'
 import { fetchCollectionProtected, getRecommendedCollectionsProfile } from '../actions/CollectionActions'
@@ -12,10 +11,13 @@ import { setCollections } from '../actions/CollectionActions'
 import Context from '../context.jsx'
 import checkResult from '../core/checkResult.js'
 import ErrorBoundary from '../ErrorBoundary.jsx'
-
+import { initGA,sendGAEvent } from '../core/ga4.js'
 function DashboardContainer(props){
     const location = useLocation()
-    ReactGA.send({ hitType: "pageview", page: location.pathname+window.location.search, title: "About Page" })
+    useEffect(()=>{
+        initGA()
+        sendGAEvent("Page View","View Dashboard","Dashboard",0,true)   
+    },[])
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)
     const homeCol = useSelector(state=>state.books.collectionInView)
