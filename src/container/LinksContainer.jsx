@@ -6,6 +6,7 @@ import logo from "../images/icon.ico"
 import events from "../images/icons/event.svg"
 import workshop from "../images/writerswork.png"
 import { initGA, sendGAEvent } from "../core/ga4";
+import philosophy from "../images/philosophy.png"
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -26,10 +27,16 @@ export default function LinksContainer(props){
 
     <LinkNode url={"https://partiful.com/e/66swqidgRvXSDm7FH3sO"}
     image={workshop}
-         title={"Workshop Sat. April 19th:Poets being Human"}
-         description={"Let's look at the throughline that make characters feel alive."}/>
+         title={"Writers Workshop Sat. April 19th:Poets being Human"}
+         description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
          </li>
-  
+         <li>
+
+<LinkNode url={"https://partiful.com/e/r8u4FeGRvOCa12SNp6d6"}
+image={philosophy}
+     title={"The Bronx Philosophy Circle:Sat. April 12th"}
+     description={"Public PHilosophy for community building and well being."}/>
+     </li>
            <li>
 
 
