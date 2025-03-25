@@ -16,7 +16,7 @@ function DashboardContainer(props){
     const location = useLocation()
     useEffect(()=>{
         initGA()
-        sendGAEvent("Page View","View Dashboard","Dashboard",0,true)   
+        sendGAEvent("View-Dashboard","View Dashboard","Dashboard",0,true)   
     },[])
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)

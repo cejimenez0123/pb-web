@@ -36,7 +36,7 @@ export default function AboutContainer(props){
     const navigate = useNavigate()
     useLayoutEffect(()=>{
         initGA()
-        sendGAEvent("Page View","View About Page","About",0,true)
+        sendGAEvent("View-About","View About Page","About",0,true)
     },[])
   function apply(){
     sendGAEvent("Apply to be user","Click Apply","Apply to Join Today",0,false)

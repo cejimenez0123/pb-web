@@ -3,6 +3,7 @@ import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import "../App.css"
 import ErrorBoundary from '../ErrorBoundary';
+import { initGA,sendGAEvent } from '../core/ga4';
 function LinkNode({ url,image,description,title,isGrid}) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,7 +18,9 @@ function LinkNode({ url,image,description,title,isGrid}) {
 }else{
   setLoading(false);
 }}, [url]);
-
+useLayoutEffect(()=>{
+  initGA()
+},[])
 const fetchData = async (url) => {
   try {
     const headers = {
@@ -79,6 +82,7 @@ const fetchData = async (url) => {
   }
 };
   const handleClick = () => {
+    sendGAEvent("Click",`Click Link Node-${title}`,title,0,true)
     window.open(url, '_blank');
   };
   const isYouTubeURL = (url) => {

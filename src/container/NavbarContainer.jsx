@@ -30,16 +30,18 @@ const PageName = {
   discovery:"Discovery",
   login:"Log In",
   search:"Search",
-  workshop:"Workshop"
+  workshop:"Workshop",
+  apply:"Join Now"
 }
 const pages = [ 
-  PageName.home,
+                PageName.home,
                 PageName.about,
                 PageName.discovery,
                 PageName.workshop,
                 PageName.search,
                 PageName.create, 
                 PageName.login,
+                PageName.apply
                
                 ]
 function NavbarContainer(props){
@@ -73,6 +75,8 @@ function NavbarContainer(props){
       dispatch(searchDialogToggle({open:true}))
     }
     const handleCloseNavMenu = (page) => {
+
+      sendGAEvent("Click Nav","Click "+page,page,0,false)
       if(page==PageName.login){
           navigate(Paths.login())                    
       }else if(page===PageName.discovery){
@@ -84,6 +88,8 @@ function NavbarContainer(props){
         navigate(Paths.workshop.reader())
       }else if(page==PageName.home){
         navigate(Paths.home())
+      }else if(page==PageName.apply){
+        navigate(Paths.apply())
       }
 
     }  
@@ -166,7 +172,7 @@ function NavbarContainer(props){
       key={page} >
     <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
     </li>:null
-    }else if(page==PageName.about||page==PageName.login){
+    }else if(page==PageName.about||page==PageName.login||page==PageName.apply){
       return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
@@ -207,7 +213,14 @@ function NavbarContainer(props){
     <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
     </li>):null
     
-    }else if(page==PageName.search){
+    }else if(page == PageName.apply){
+      return currentProfile?
+      (<li onClick={()=>handleCloseNavMenu(page) } 
+          key={page} >
+      <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
+      </li>):null
+      
+      }else if(page==PageName.search){
     return (<li onClick={()=>openDialogAction()} 
             key={page} >
         <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
@@ -254,7 +267,7 @@ function NavbarContainer(props){
       key={page} >
     <a  className=' text-white no-underline' textAlign="center">{page}</a>
     </li>:null
-    }else if(page==PageName.about||page==PageName.login){
+    }else if(page==PageName.about||page==PageName.login||page==PageName.apply){
       return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-white no-underline' textAlign="center">{page}</a>
@@ -295,7 +308,14 @@ function NavbarContainer(props){
     <a className=' text-white no-underline' textAlign="center">{page}</a>
     </li>):null
     
-    }else if(page==PageName.search){
+    }else if(page == PageName.apply){
+      return currentProfile?
+      (<li onClick={()=>handleCloseNavMenu(page) } 
+          key={page} >
+      <a className=' text-white no-underline' textAlign="center">{page}</a>
+      </li>):null
+      
+      }else if(page==PageName.search){
     return (<li onClick={()=>openDialogAction()} 
             key={page} >
         <a className=' text-white no-underline' textAlign="center">{page}</a>

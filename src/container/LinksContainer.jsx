@@ -13,7 +13,7 @@ if(import.meta.env.VITE_NODE_ENV=="dev"){
 export default function LinksContainer(props){
      useLayoutEffect(()=>{
           initGA()
-          sendGAEvent("Page View","View Links Page","Link Page",0,true)
+          sendGAEvent("Page View","Page View Links","Link Page",0,true)
      },[])
     
 
