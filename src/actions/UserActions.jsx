@@ -23,6 +23,7 @@ import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import collectionRepo from "../data/collectionRepo";
 import uuidv4 from "../core/uuidv4";
+import usePersistentCurrentProfile from "../domain/usecases/useCurrentProfileCache";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -233,11 +234,11 @@ const updateProfile = createAsyncThunk("users/updateProfile",
 
 const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunkApi)=>{
   try {
-  const {file}= params
+  const {file,profile}= params
   if(file){
+    
 
-
-  const fileName = `image/${uuidv4()}/picture-${file.name}+${uuidv4()}.jpg`
+  const fileName = `/image/${profile.id}/${file.name}?!@@${uuidv4()}`
 
   const storageRef = ref(storage, fileName);
   const blob = new Blob([file])

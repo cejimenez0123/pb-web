@@ -13,9 +13,11 @@ import { PageType } from '../../core/constants';
 import { useLocation } from 'react-router-dom';
 import EditorContext from '../../container/page/EditorContext';
 import { debounce } from 'lodash';
+import Context from '../../context.jsx';
 function PicturePageForm(props){
     const dispatch = useDispatch()
-    const {page,parameters,setParameters} = useContext(EditorContext)
+    const {currentProfile}=useContext(Context)
+    const {page,parameters,setParameters,} = useContext(EditorContext)
     const [localContent,setLocalContent] = useState("")
     const ePage = useSelector(state=>state.pages.editingPage)
     const [file,setFile]=useState(null)
@@ -32,6 +34,7 @@ function PicturePageForm(props){
             setImage(e.target.value)
             dispatch(setHtmlContent(e.target.value))
             let params = parameters
+            params.profile = currentProfile
             params.data = e.target.value
             setParameters(params)
         }
@@ -41,6 +44,7 @@ function PicturePageForm(props){
         dispatch(setHtmlContent(e.target.value))
         let params = parameters
         params.data = e.target.value
+        params.profile = currentProfile
         setParameters(params)
     }}
     useEffect(()=>{
@@ -96,6 +100,7 @@ function PicturePageForm(props){
         
               let params = parameters
                  params.file = fil
+                 params.profile = currentProfile
                  setParameters(params)
                  if(localContent.length==0){
 
@@ -110,6 +115,7 @@ function PicturePageForm(props){
                     params.data = fileName
                     dispatch(setHtmlContent(fileName))
                     props.createPage(params)
+                params.profile = currentProfile
                     setParameters(params)
                     
                 },err=>{}))
