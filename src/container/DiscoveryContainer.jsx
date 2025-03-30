@@ -117,6 +117,7 @@ function DiscoveryContainer(props){
     }
     const listView = ()=>{
         if(viewItems){
+            const filteredItems = viewItems.filter(item => item);
             return(<div 
                 className={`${isGrid?"":"w-[96vw] md:w-page"}  mx-auto `}
                 >
@@ -133,8 +134,37 @@ function DiscoveryContainer(props){
       }`}
     
     >
+        { filteredItems.map((item, i) => {
+      const id = `${item.id}_${i}`;
+
      
-                    {viewItems.filter(item=>item).map((item,i)=>{
+      if (item && item.storyIdList && item.storyIdList.length > 0) {
+        return (
+          <div 
+            className={isGrid ? "grid-item" : "m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit"}
+            key={id}
+          >
+            <BookDashboardItem isGrid={isGrid} book={item} />
+          </div>
+        );
+      }
+
+   
+      if (item.data && !filteredItems.some(book => book && book.storyIdList && book.storyIdList.includes(stc=>stc.storyId==item.id))) {
+        return (
+          <div 
+            className={isGrid ? "grid-item" : "m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit"}
+            key={id}
+          >
+            <DashboardItem isGrid={isGrid} page={item} />
+          </div>
+        );
+      }
+
+      return null;
+    })}
+     
+                    {/* {viewItems.filter(item=>item).map((item,i)=>{
                         const id = `${item.id}_${i}`
                        
                         if(item.storyIdList&&item.storyIdList.length>0&&!item.data){
@@ -156,7 +186,8 @@ function DiscoveryContainer(props){
                         }else{
                             return (null)
                     
-                    }})}
+                    }})} */
+                    }
                     </div>
                 </InfiniteScroll> </div>)
         }
