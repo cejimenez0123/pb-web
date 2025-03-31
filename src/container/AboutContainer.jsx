@@ -16,6 +16,7 @@ import table1  from "../images/workshop/table-1.jpg"
 import table2  from "../images/workshop/table-2.jpg"
 import table3  from "../images/workshop/table-3.jpg"
 import { useLayoutEffect } from "react"
+import events from "../images/icons/event.svg"
 // import table4 from "../images/workshop/table-4.jpg"
 import table5 from "../images/workshop/table-5.jpg"
 import { useEffect } from "react"
@@ -109,8 +110,9 @@ const stayInLoop=()=>{
 
 <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
 <h2 className="mx-4 my-2 open-sans-medium  text-l">Follow the Journey</h2>
-<a className="flex flex-row  my-4 mx-auto text-center" href="https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"><p className="open-sans-medium mx-4">Join the discussion on our slack</p><img  className="mx-auto" src={slack}/></a>
-<a className="flex flex-row text-emerald-800 active:text-cyan-800 my-4 mx-auto text-center" onClick={()=>navigate(Paths.calendar())}><p className="open-sans-medium mx-4">Check out the Calendar for NYC Writing Scene</p></a>
+<a className="flex flex-row  my-4 mx-auto flex flex-col text-center" href="https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"><p className="open-sans-medium mx-4">Join the discussion on our slack</p><img  className="mx-auto w-[8em]" src={slack}/></a>
+<p className="flex open-sans-medium flex-row  my-4 mx-auto text-center" onClick={()=>navigate(Paths.calendar())}>Check out the Calendar for NYC Writing Scene</p>
+<img onClick={()=>navigate(Paths.calendar())} className="h-[8em] mx-auto w-[8em]"  src={events}/>
 <div className="flex my-4 open-sans-medium  mx-auto text-l texg-left leading-loose tracking-loose">
 
 <p><a href="https://www.instagram.com/plumbumapp">@plumbumapp</a> |<a href="https://www.instagram.com/bxwriters"> @bxwriters</a></p></div>

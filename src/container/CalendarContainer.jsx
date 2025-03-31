@@ -5,7 +5,6 @@ import { debounce } from "lodash";
 import validateEmail from "../core/validateEmail";
 import authRepo from "../data/authRepo";
 import { initGA,sendGAEvent } from "../core/ga4";
-import events from "../images/icons/event.svg"
 import { Dialog,DialogTitle,DialogContent,DialogActions,Button } from "@mui/material";
 import Enviroment from "../core/Enviroment";
 import Context from "../context";
