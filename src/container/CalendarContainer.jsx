@@ -14,6 +14,7 @@ import Paths from "../core/paths";
 import { useMediaQuery } from "react-responsive"
 import { useLayoutEffect } from "react"
 import { Helmet } from "react-helmet";
+import NewsletterContainer from "./auth/NewsletterContainer";
 export default function CalendarContainer(){
 
   useEffect(()=>{
@@ -25,7 +26,15 @@ return(<div className="mx-auto m-4 w-fit text-center">
     <div className="">
        
     <CalendarEmbed/>
-    <SubmitEvent/>
+    <Collapsible buttonText={"Sign up for newsletter!"}>
+  <NewsletterContainer/>
+  </Collapsible>
+<Collapsible buttonText={"Submit Event"}>
+ 
+  <SubmitEvent/>
+  </Collapsible>
+   
+  
     </div>
     </div>
 )
@@ -165,3 +174,27 @@ rounded-full border-none py-2 text-white my-12`}>
   
   
     
+
+const Collapsible = ({children,buttonText}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="w-full max-w-[100vw] lg:max-w-[50em] mx-auto">
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className=" text-white px-4 py-2 mont-medium text-emerald-800 mb-4 collapse-arrow rounded-lg mt-8 transition-transform duration-300 hover:bg-emerald-200"
+      >
+          <h3 className="text-lg collapse-title  mont-medium text-emerald-800   font-semibold">        {buttonText?buttonText:isOpen ? 'Hide Content' : 'Show Content'}</h3></div>
+
+
+      
+      <div
+        className={`overflow-hidden transition-max-h duration-500 ease-in-out ${isOpen ? 'h-full' : 'max-h-0'}`}
+      >
+        <div className="p-4 rounded-lg">
+          <p>{children}</p>
+        </div>
+      </div>
+    </div>
+  );
+};

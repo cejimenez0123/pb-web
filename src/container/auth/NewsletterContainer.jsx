@@ -193,7 +193,7 @@ return (
             />
           </label>
          
-            <label className="block text-xl  text-white mont-medium font-semibold mb-2">
+            <label className="block mt-4 lg:text-xl  text-white mont-medium font-semibold mb-2">
               What kinds of events help you grow as a writer or creative?
             </label>
             {eventOptions.map((option) => (
@@ -220,11 +220,11 @@ return (
         )}
 
             {/* Newsletter Content */}
-            <label className="block text-xl mont-medium text-white font-semibold mb-2">
+            <label className="block lg:text-xl mt-4  mb-4 mont-medium text-white font-semibold ">
               What type of content do you want from Plumbum’s newsletter?
             </label>
             {contentOptions.map((option) => (
-              <label key={option} className="flex text-[1.2rem] text-white open-sans-medium items-center mb-2">
+              <label key={option} className="flex lg:text-[1rem] mb-1 text-white open-sans-medium items-center mb-2">
                 <input
                   type="checkbox"
                   value={option}
@@ -248,11 +248,11 @@ return (
         )}
       
             {/* Writing Role */}
-            <label className="block text-xl mont-medium text-white font-semibold mb-2">
+            <label className="block mt-4 lg:text-xl  mb-4  mont-medium text-white font-semibold">
               What role does writing or storytelling play in your life?
             </label>
             {writingRoles.map((option) => (
-              <label key={option} className="flex text-[1.2rem] text-white items-center mb-2">
+              <label key={option} className="flex lg:text-[1rem] text-white items-center mb-2">
                 <input
                   type="checkbox"
                   value={option}
@@ -276,12 +276,12 @@ return (
         )}
             {/* Email Frequency */}
             <div className="mb-4 flex flex-row mt-8 justify-between">
-              <label className="block text-white mont-medium text-[1.5rem] font-semibold mb-2">
+              <label className="block text-white my-auto  mb-4  mont-medium lg:text-[1rem] font-semibold">
                 Email Frequency
               </label>
               <select
                 name="frequnecy"
-                className="w-full bg-white select text-emerald-700 mont-medium select-bordered "
+                className="w-full bg-white select text-[0.8rem] text-emerald-700 mont-medium select-bordered "
                 value={formData.frequency}
                 ref={selectRef}
                 onChange={(e) =>handleChange("frequency",e.target.value)}
@@ -311,151 +311,7 @@ return (
               Subscribe
             </button>
           </form>
-        {/* <form
-          onSubmit={(e) => onClickApply(e)}
-          className="form-data shadow-sm  sm:my-8 md:rounded-lg pb-30 bg-emerald-800 bg-opacity-70 flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] text-left mx-auto lg:mt-24"
-        >
-          <h6 className="text-white lora-bold text-sm">* Required</h6>
-          <div className="w-full text-center">
-            <h3 className="mx-auto text-2xl text-white mont-medium my-8 w-fit">Newsletter Sign Up</h3>
-            <p className="open-sans-medium text-white mb-8">Keep up with our events, workshops, growth, and website development. </p>
-          </div>
-          
-          {/* Preferred Name */}
-          {/* <label className="input text-[0.8rem] rounded-full mont-medium  mt-4 text-white py-8 font-bold mb-4 lg:py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
-            Preferred Name
-            <input
-              type="text"
-              className="grow pl-4 text-white  w-full"
-              value={formData.fullName}
-              onChange={(e) => handleChange("fullName",e.target.value)}
-              placeholder="Jon Doe"
-            />
-          </label>
-
-          {/* Email */}
-          {/* <label className="input mt-4 mb-2 rounded-full font-bold py-8 bg-transparent border border-green-100 text-white flex items-center gap-2">
-            <h6 className="font-bold mont-medium flex min-w-[3.8em] text-[0.8rem]">* Email</h6>
-            <input
-              type="text"
-              name="email"
-              className="grow text-white mont-medium  pl-4 w-[100%]"
-              value={formData.email}
-              onChange={(e) => handleChange("email",e.currentTarget.value.trim())}
-              placeholder=""
-            />
-          </label> */}
-          {/* {formData.email.length>0 && !validateEmail(formData.email) ?
-            (<h6 className="text-[0.8rem] mont-medium  text-red-500">Please use a valid email</h6>
-          ):null} */}
-
-          {/* IG Handle */}
-          {/* <label className="input mt-4 rounded-full mb-8 font-bold py-8 w-[100%] bg-transparent text-white border border-green-100 text-white flex items-center ">
-            <h6 className="font-bold  mont-medium text-[0.8rem]">IG Handle </h6> */}
-            {/* <input
-              type="text"
-              className="grow  mont-medium  text-white mx-2 "
-              value={formData.igHandle}
-              
-              onChange={(e) => handleChange("ighHandle",e.currentTarget.value.trim())}
-              placeholder="*****"
-            />
-          </label>
-          <label className="block text-white mont-medium text-xl font-semibold mb-2">
-        Where do you feel most creatively engaged?
-      </label>
-      <input
-        type="text"
-        name="thirdPlace"
-        value={formData.thirdPlace}
-        onChange={handleChange}
-        className="w-full p-2 border   text-[1.2rem] py-4 px-4 rounded-full bg-transparent border-white border-1 text-white mb-4"
-        placeholder="Example: coffee shops, libraries, online groups"
-      />
-         <label className="text-white mont-medium text-xl mb-2  pb-1 font-bold mt-4">
-        Is there a place you want us to collaborate with?
-      </label>
-      <input
-        type="text"
-        className="bg-transparent border mb-8 px-4 rounded-full py-4 text-[1.2rem] border-green-100  text-white tinput"
-        value={formData.thirdPlace}
-        name="thirdPlaceLocation"
-        onChange={(e) => handleChange("thirdPlace","")}
-        placeholder="(e.g., Bronx Library, Little Skips Café, Riverside Park)"
-      
-      />
-      <div>
-      <label className="block text-xl  text-white mont-medium font-semibold mb-2">
-        What kinds of events help you grow as a writer or creative?
-      </label>
-      {eventOptions.map((option) => (
-        <label key={option} className="flex open-sans=medium text-white items-center mb-2">
-          <input
-            type="checkbox"
-            checked={formData.eventInterests.includes(option)}
-            onChange={() => handleChange ("eventInterests", option)}
-            className="mr-2 checkbox border-white border-1 "
-          />
-          {option}
-        </label>
-      ))}
-</div>
-          
-        <label className="block text-xl mont-medium text-white font-semibold mb-2">
-        What type of content do you want from Plumbum’s newsletter?
-      </label>
-      {contentOptions.map((option) => (
-        <label key={option} className="flex  text-[1.2rem] text-white open-sans-medium items-center mb-2">
-          <input
-            type="checkbox"
-            checked={formData.newsletterContent.includes(option)}
-            onChange={() => handleCheckboxChange("newsletterContent", option)}
-            className="mr-2 checkbox border-white border-1"
-          />
-          {option}
-        </label>
-      ))}
-            <label className="block text-xl mont-medium text-white font-semibold mb-2">
-        What role does writing or storytelling play in your life?
-      </label>
-      {writingRoles.map((option) => (
-        <label key={option} className="flex text-[1.2rem] text-white items-center mb-2">
-          <input
-            type="checkbox"
-            checked={formData.writingRole.includes(option)}
-            onChange={() => handleCheckboxChange("writingRole", option)}
-            className="mr-2 checkbox border-white border-1"
-          />
-          {option}
-        </label>
-      ))}
-      
-      <div className="mb-4 flex flex-row mt-8 justify-between">
-          <label className="block text-white mont-medium text-[1.5rem] font-semibold mb-2">
-            Email Frequency
-          </label>
-          <select
-          name="frequnecy"
-            className="w-full bg-white select text-emerald-700 mont-medium select-bordered "
-            value={frequency}
-            ref={selectRef}
-            onChange={(e) => setFrequency(e.target.value)}
-          >
-            <option className="text-emerald-700" value={1}>daily</option>
-            <option  className="text-emerald-700" value={2}>Every 3 days</option>
-            <option  className="text-emerald-700" value={3}>Weekly</option>
-            <option  className="text-emerald-700" value={14}>Every 2 Weeks</option>
-            <option  className="text-emerald-700" value={30}>Monthly</option>
-
-          </select>
-        </div>
-        <button 
-            type="submit"
-            className="mont-medium my-8 py-4 text-2xl text-white text-emerald-800  shadow-md mont-medium px-20  mx-auto rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 hover:bg-green-400 font-bold border-none shadow-sm"
-          >
-            Subscribe
-          </button>
-        </form>  */}
+        
       </div>
      
               <Dialog className={
