@@ -191,8 +191,8 @@ const Collapsible = ({children,buttonText}) => {
       <div
         className={`overflow-hidden transition-max-h duration-500 ease-in-out ${isOpen ? 'h-full' : 'max-h-0'}`}
       >
-        <div className="p-4 rounded-lg">
-          <p>{children}</p>
+        <div className="p-2  overflow-hidden w-fit rounded-lg">
+         {children}
         </div>
       </div>
     </div>

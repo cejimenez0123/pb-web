@@ -33,6 +33,10 @@ function NewsletterContainer(props){
     "Open Mics & Readings",
     "Casual Writing Meetups",
     "Panel Discussions",
+    "Concerts",
+    "Film Screenings",
+    "Mixers",
+    "Dance Nights",
     "Other"
   ];
 
@@ -41,7 +45,7 @@ function NewsletterContainer(props){
     "Literary event announcements",
     "Interviews with writers",
     "Book/poetry recommendations",
-    "Opportunities (grants, fellowships, workshops)",
+    "Opportunities (grants, submissions, fellowships, workshops)",
     "Other"
   ];
 
