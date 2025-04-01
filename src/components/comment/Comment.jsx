@@ -72,9 +72,9 @@ export default function Comment({page,comment,level}){
 
         <div class=" text-left   sm:min-w-[30em] max-w-[100%] py-1 sm:my-4 " id={`comment-${comment.id}`}>
         <div className={replyInput||updateComment?"bg-emerald-500 rounded-t-lg rounded-b-lg":""}>
-<div className=" p-1 border-emerald-500 border-b-2 border-l-2 md:border-2 rounded-lg md:rounded-full ">
+{/* <div className=" p-1 border-emerald-500 border-b-2 border-l-2 rounded-lg md:border-2 sm:rounded-[20%]  "> */}
         
-           <div className=" sm:rounded-full bg-emerald-700 text-white rounded-lg sm:px-8 sm:rounded-full ">
+           <div className="  bg-emerald-700 shadow-md  text-white rounded-lg sm:px-8 sm:rounded-[18%] ">
           <div className="flex flex-row py-2 sm:pl-4 pr-4 sm:pr-12 justify-between"> 
           <a onClick={()=>navigate(Paths.profile.createRoute(comment.profile.id))}
            className=" text-[0.8rem] mx-4 open-sans-medium text-white my-auto mr-4">{comment.profile.username}</a>
@@ -107,7 +107,7 @@ export default function Comment({page,comment,level}){
                 <div>
                     <CommentThread page={page} comments={branches} level={level+1}/>
                     </div>
-          </div>        
+          {/* </div>         */}
             </div>  
 )
 }

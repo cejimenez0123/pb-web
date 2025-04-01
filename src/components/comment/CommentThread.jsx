@@ -30,7 +30,7 @@ if(comments.length>0){
                         {comments.map(com=>{
                             return(<div 
                                 key={com.id}
-                                className={`ml-1 sm:rounded-full  `}>
+                                className={`ml-1 sm:rounded-[15%]   `}>
                                     <Comment page={page} comment={com} level={level+1}/></div>)
                         })}
                       </InfiniteScroll>
