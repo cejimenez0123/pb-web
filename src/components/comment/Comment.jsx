@@ -71,7 +71,7 @@ export default function Comment({page,comment,level}){
 
 
         <div class=" text-left   sm:min-w-[30em] max-w-[100%] py-1 sm:my-4 " id={`comment-${comment.id}`}>
-        <div className={replyInput||updateComment?"bg-emerald-500 rounded-t-lg md:rounded-t-[5rem] rounded-b-lg":""}>
+        <div className={replyInput||updateComment?"bg-emerald-500 rounded-t-lg rounded-b-lg":""}>
 <div className=" p-1 border-emerald-500 border-b-2 border-l-2 md:border-2 rounded-lg md:rounded-full ">
         
            <div className=" sm:rounded-full bg-emerald-700 text-white rounded-lg sm:px-8 sm:rounded-full ">

@@ -172,9 +172,7 @@ const Carousel = ({book})=>{
          id={stc.id} key={stc.id}
 
 >
-<h5  onClick={()=>{
-    navigate(Paths.page.createRoute(stc.story.id))
-}} className={ `${isGrid?"text-white":"text-emerald-800"} mont-medium text-emerald-800 bottom-0 mx-2 text-left`}>{stc.story.title}</h5>
+<h5  className={ `${isGrid?"text-white":"text-emerald-800"} mont-medium text-emerald-800 bottom-0 mx-2 text-left`}>{stc.story.title}</h5>
     {stc.story.description && stc.story.description.length>0?<div className='min-h-12 pt-4 p-2'>
             {stc.story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
             <h6 className={`${isGrid?"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>

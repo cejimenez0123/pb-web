@@ -2,7 +2,6 @@ import { useSelector } from "react-redux"
 import { useMediaQuery } from "react-responsive"
 import InfiniteScroll from "react-infinite-scroll-component"
 import DashboardItem from "./DashboardItem"
-import ErrorBoundary from "../../ErrorBoundary"
 import Enviroment from "../../core/Enviroment"
 import loadingGif from "../../images/loading.gif"
 
@@ -15,7 +14,8 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
     }else{
         more=hasMore
     }
-    const pagesInView = items??useSelector(state=>state.pages.pagesInView)
+   let stories = items??useSelector(state=>state.pages.pagesInView)
+    const pagesInView = stories
     const isPhone =  useMediaQuery({
         query: '(max-width: 700px)'
       })

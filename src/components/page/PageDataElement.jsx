@@ -6,10 +6,11 @@ import isValidUrl from "../../core/isValidUrl"
 import loadingGif from "../../images/loading.gif"
 import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
+import { useLocation } from "react-router-dom"
 export default function PageDataElement({page,isGrid}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
-
-
+    const navigate = useNavigate()
+    const location = useLocation()
     useEffect(()=>{
         
         if(page && page.type==PageType.picture){
@@ -37,8 +38,10 @@ switch(page.type){
 
     return( 
         <div
-         
-    
+       
+         onClick={()=>{
+            navigate(Paths.page.createRoute(page.id))
+        }}
        className={isGrid?`h-[100%]  p-2 rounded-lg  w-[100%] mx-auto overflow-hidden text-ellipsis`:`rounded-t-lg   h-[100%] w-[96vw] md:w-page bg-emerald-200 `}
         >
         <div className={`  ${isGrid?"ql-editor mt-2  text-ellipsis rounded-lg bg-emerald-100 p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  md:w-page rounded-lg  ql-editor"}`}
@@ -46,8 +49,12 @@ switch(page.type){
     </div>
   )   }
   case PageType.picture:{
-
-    return(image?<div className={` ${isGrid?"  max-h-96  rounded-lg mx-auto pt-2 mb-8 w-[96%] ":"w-[96vw] rounded-t-lg overflow-hidden md:w-page "}`} >
+    console.log("XSS",location.pathname)
+    return(image?<div  onClick={()=>{
+   
+        if(location.pathname!=Paths.page.createRoute(page.id)){
+        navigate(Paths.page.createRoute(page.id))}
+    }} className={` ${isGrid?"  max-h-96  rounded-lg mx-auto pt-2 mb-8 w-[96%] ":"w-[96vw] rounded-t-lg overflow-hidden md:w-page "}`} >
         <div className={` ${isGrid?"h-[100%] justify-center overflow-hidden w-full rounded-lg ":""}`}>
         <img className={isGrid?"rounded-lg   ":'rounded-t-lg overflow-hidden w-[96vw] md:w-page'}
     
