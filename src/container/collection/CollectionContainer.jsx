@@ -38,6 +38,7 @@ export default function CollectionContainer(props){
     const [isArchived,setIsArchived]=useState(false)
     const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
     const writeArr = [RoleType.editor,RoleType.writer]
+    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const [canUserAdd,setCanUserAdd]=useState(false)
     const [canUserEdit,setCanUserEdit]=useState(false)
     const [canUserSee,setCanUserSee]=useState(false)
@@ -677,7 +678,7 @@ if(collection&&canUserSee){
             <div className=" mx-auto  max-w-[96vw] md:w-page  min-h-[20em]">     
             <h6 className="text-2xl mb-8 w-fit text-center  lora-bold text-emerald-800 font-bold pl-4">Pages</h6>
 
-        <PageList  isGrid={false} hasMore={hasMore} getMore={getMore} forFeedback={collection&&collection.type=="feedback"}/>
+        <PageList items={pagesInView}  isGrid={false} hasMore={hasMore} getMore={getMore} forFeedback={collection&&collection.type=="feedback"}/>
         </div>
     <ExploreList />
     </div> 
