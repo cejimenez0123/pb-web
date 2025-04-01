@@ -8,7 +8,7 @@ import { getLinkPreview, getPreviewFromContent } from "link-preview-js";
 import { useNavigate } from 'react-router-dom';
 async function fetchLinkPreview(url) {
   try {
-    const data = await getLinkPreview(url);
+    const data = await getLinkPreview(Enviroment.proxyUrl+url);
     return data;
   } catch (error) {
     console.error('Error fetching link preview:', error);
@@ -19,60 +19,58 @@ function LinkPreview({ url,isGrid}) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
 const navigate = useNavigate()
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
   useLayoutEffect(() => {
 
     if(!url.includes('https://open.spotify.com/')){  
-    fetchData(url).then(data=>{
-
-    })
+    fetchLinkPreview(url).then(res=>{})
     return 
 }}, [url]);
 
+const fetchLinkPreview = async (url) => {
+  try {
+    // getLinkPreview(`${url}`, {
+    //   resolveDNSHost: async (url) => {
+    //     return new Promise((resolve, reject) => {
+    //       const hostname = new URL(url).hostname;
+    //       axios(`https://dns.google/resolve?name=${hostname}`,{headers:headers})
+    //       .then(response =>{ 
+          
+    //       resolve(response.data)
+    //       })
+    //       .catch(err=>{
+       
+    //         if (err) {reject(err)}
+    //       })
+    //          });
+    
+    //   },
+    // }).then(response=>{
+    fetchData(url).then(res=>{
+
+    })
+    // })
+
+  }catch(e){
+console.log(e)
+    }  }
+
+
 const fetchData = async (url) => {
   try {
-    getLinkPreview(`${url}`, {
-      resolveDNSHost: async (xurl) => {
-        return new Promise((resolve, reject) => {
-          const hostname = new URL(url).hostname;
-          axios(`https://dns.google/resolve?name=${hostname}`)
-          .then(response =>{ 
-            console.log(response)
-          resolve(response.data)
-          })
-          .catch(err=>{
-       
-            if (err) {reject(err)}
-          })
-             });
+
+    const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
+      headers: headers,
+    }
+    )
+    ;
     
-      },
-    }).then(data=>{
-   console.log(data)
-         setPreviewData({
-          title:data.title,
-          description:data.description,
-          image:data.images[0],
-      });
-      setLoading(false)
-    })
-    // .catch((e) => {
-      // will throw a detected redirection to localhost
-    // });
-    // const headers = {
-    //   "Access-Control-Allow-Origin": "*",
-    //   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    //   "Access-Control-Allow-Headers": "Content-Type",
-    // };
-
-    // const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
-    //   headers: headers,
-
-    // }
-    // )
-    // ;
-    // let data = await response.text()
-
-
+    const data = await response.text();
+    
     const isYouTubeVideo = isYouTubeURL(url);
     if (isYouTubeVideo) {
       const videoId = extractYouTubeVideoId(url);
@@ -83,40 +81,39 @@ const fetchData = async (url) => {
         videoThumbnail,
       });
       setLoading(false);
-    
     } else {
-      // const parser = new DOMParser();
-  
-      // const doc = parser.parseFromString(data, 'text/html');
+      const parser = new DOMParser();
+      
+      const doc = parser.parseFromString(data, 'text/html');
+      
+      let title = doc.querySelector('title')?.textContent || '';
+      const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+      let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
      
-      // let title = doc.querySelector('title')?.textContent || '';
-      // const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-      // let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
      
-      // if (!image) {
-      //   if(!image){
-      //   const imgElement = doc.querySelector('img');
+        if(!image){
+        const imgElement = doc.querySelector('img');
 
-      //   if (imgElement) {
-      //     image = imgElement.getAttribute('src') || '';
-      //   }
+        if (imgElement) {
+          image = imgElement.getAttribute('src') || '';
+        }
 
-      // }
-      // }
-  
-      // setPreviewData({
-      //     title,
-      //     description,
-      //     image,
-      // });
+      }
+      
+    
+      setPreviewData({
+          title,
+          description,
+          image,
+      });
  
     
-      // setLoading(false);
+      setLoading(false);
     }
   } catch (error) {
     setLoading(false);
   }
-}
+};
   const handleClick = () => {
     window.open(url, '_blank');
   };

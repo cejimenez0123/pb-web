@@ -4,6 +4,7 @@ import { IconButton } from "@mui/material"
 import { PageType } from "../core/constants";
 import PropTypes from 'prop-types'
 import LinkPreview from "./LinkPreview";
+import Enviroment from "../core/Enviroment";
 function PageItem({page,setPageIdList}){
     const [show,setShow]=useState(false)
     PageItem.propTypes={
@@ -16,7 +17,7 @@ function PageItem({page,setPageIdList}){
             pageDataElement = <div className='dashboard-content pt-8 ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         break;
         case PageType.picture:
-            pageDataElement = <img className='dashborad-content' src={page.data} alt={page.title}/>
+            pageDataElement = <img className='dashborad-content' src={`${page.data}`} alt={page.title}/>
         break;
         case PageType.link:
             pageDataElement = <LinkPreview url={page.data}/>
