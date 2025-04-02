@@ -33,33 +33,46 @@ const headers = {
 
 const fetchLinkPreview = async (url) => {
   try {
-    // getLinkPreview(`${url}`, {
-    //   resolveDNSHost: async (url) => {
-    //     return new Promise((resolve, reject) => {
-    //       const hostname = new URL(url).hostname;
-    //       axios(`https://dns.google/resolve?name=${hostname}`,{headers:headers})
-    //       .then(response =>{ 
+    if(!url.includes("http")){
+    getLinkPreview(`${url}`, {
+      resolveDNSHost: async (url) => {
+        return new Promise((resolve, reject) => {
+          const hostname = new URL(url).hostname;
+          axios(`https://dns.google/resolve?name=${hostname}`,{headers:headers})
+          .then(response =>{ 
           
-    //       resolve(response.data)
-    //       })
-    //       .catch(err=>{
+          resolve(response.data)
+          })
+          .catch(err=>{
        
-    //         if (err) {reject(err)}
-    //       })
-    //          });
+            if (err) {reject(err)}
+          })
+             });
     
-    //   },
-    // }).then(response=>{
+      },
+    }).then(response=>{
+  
     fetchData(url).then(res=>{
 
+    }).catch(err=>{
+      console.log(err)
     })
-    // })
-
-  }catch(e){
-console.log(e)
-    }  }
+    })
 
 
+}else{
+      fetchData(url).then(res=>{
+
+      }).catch(err=>{
+        console.log(err)
+      })
+
+    }
+
+
+  }catch(err){
+    console.log(err)
+  }}
 const fetchData = async (url) => {
   try {
 
@@ -100,7 +113,7 @@ const fetchData = async (url) => {
 
       }
       
-    
+    console.log(image)
       setPreviewData({
           title,
           description,
