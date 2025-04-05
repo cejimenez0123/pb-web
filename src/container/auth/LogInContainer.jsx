@@ -24,7 +24,7 @@ function LogInContainer(props) {
         initGA()
     },[])
     useEffect(()=>{
-        sendGAEvent("Page View","Page View Log In","Log In","Log In",0,true)
+        sendGAEvent("View Login Page","View Login Page","Log In","Log In",0,true)
     },[])
     return (
         <div id="" className='sm:mx-2'>

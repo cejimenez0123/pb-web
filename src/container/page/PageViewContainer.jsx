@@ -29,7 +29,7 @@ export default function PageViewContainer(props){
     useLayoutEffect(()=>{
         initGA()
         if(page){
-            sendGAEvent("Page View",`View Story-${id} `,"View Page",0,true)
+            sendGAEvent(`View story -${page.title}-${page.id}`,`View Story-${id} `,"View Page",0,true)
 
         }
            },[])

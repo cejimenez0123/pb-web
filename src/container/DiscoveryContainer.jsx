@@ -18,7 +18,7 @@ function DiscoveryContainer(props){
     
     useEffect(()=>{
         initGA()
-        sendGAEvent("Page View","Page View Discovery","Discovery",0,true)
+        sendGAEvent("View Discovery Page","Page View Discovery","Discovery",0,true)
    },[])
    const cols = useSelector(state=>state.books.collections)
     const books = useSelector(state=>state.books.books)

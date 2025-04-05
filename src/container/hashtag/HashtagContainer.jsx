@@ -39,7 +39,7 @@ export default function HashtagContainer(props){
         if(hash){
 
         
-        sendGAEvent("Page View",`Page View-Hashtag - ${id}`,hash.name)
+        sendGAEvent(`Hashtag View-${hash.name} - ${id}`,`}`,hash.name)
         }
  },[])
     useLayoutEffect(()=>{

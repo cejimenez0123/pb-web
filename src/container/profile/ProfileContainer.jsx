@@ -34,7 +34,7 @@ function ProfileContainer({profile}){
     useLayoutEffect(()=>{
         initGA()
         if(profile){
-            sendGAEvent("Page View",`View Profile - ${id}`,profile.username)
+            sendGAEvent(`View Profile - ${profile.username}-${id}`,`Click`,profile.username)
         }
      
     })
