@@ -11,11 +11,7 @@ import bookmarkfill from "../../images/bookmarkfill.svg"
 import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
 import loadingGif from "../../images/loading.gif"
-<<<<<<< Updated upstream
 import bookmarkoutline from "../../images/bookmarkadd.svg"
-=======
-import bookmarkOutline from "../../images/bookmarkoutline.svg"
->>>>>>> Stashed changes
 import bookmarkadd from "../../images/bookmark_add.svg"
 import PageDataElement from './PageDataElement'
 import ProfileCircle from '../profile/ProfileCircle'
@@ -227,13 +223,7 @@ return <Button onClick={()=>{
         navigate(Paths.page.createRoute(page.id))
     }}
 
-<<<<<<< Updated upstream
 >{` `+page.title.length>0?page.title:""}</h6><img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
-=======
-    }} >{` `+page.title.length>0?page.title:"Untitled"}</h6><img className='text-white' src={bookmarkOutline
-        
-    }/></span>
->>>>>>> Stashed changes
     
     </div>:null
     }
