@@ -131,7 +131,7 @@ return (
 
     <form
     onSubmit={(e) => onClickApply(e)}
-    className="form-data shadow-sm sm:my-8 md:rounded-lg pb-30 bg-transparent text-emerald-700  border border-gray-700 flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] mx-auto lg:mt-24"
+    className="form-data shadow-sm sm:my-8 md:rounded-lg pb-30 bg-transparent text-emerald-700   flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] mx-auto lg:mt-24"
   >
     <h6 className="text-emerald-700 lora-bold text-sm">* Required</h6>
     <div className="w-full text-center">
@@ -195,7 +195,7 @@ return (
     <textarea
       value={communityNeeds}
       onChange={(e) => setCommunityNeeds(e.target.value)}
-      className="textarea  bg-transparent open-sans-medium w-full text-l sm:text-xl h-min-24 border border-emerald-700  text-emerald-700 "
+      className="textarea  bg-transparent open-sans-medium w-full text-l  h-min-24 border border-emerald-700  text-emerald-700 "
     />
   
     {/* Genres */}
