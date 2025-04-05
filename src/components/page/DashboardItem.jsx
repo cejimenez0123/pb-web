@@ -26,6 +26,9 @@ function DashboardItem({page, book,isGrid}) {
     const [loading,setLoading]=useState(false)
     const pathParams = useParams()
     const location = useLocation()
+    useLayoutEffect(()=>{
+        initGA()
+    },[])
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
@@ -110,6 +113,7 @@ const deleteStc=()=>{
 
 const hanldeClickComment=()=>{   
   if(page){ 
+    sendGAEvent(`Click to Review- ${page.title}-${page.id}`,"Click Review","Review",0,false)
     navigate(Paths.page.createRoute(page.id))
 }
 }   
@@ -131,7 +135,9 @@ const header=()=>{
     }} >{` `+page.title.length>0?page.title:""}</h6></span>
 }
 const handleApprovalClick = ()=>{
+    page?sendGAEvent(`Click to Yea- ${page.title}-${page.id}`,"Click Yea","Review",0,false):null
     if(currentProfile){
+
         if(likeFound ){
          dispatch(deletePageApproval({id:likeFound.id})).then(res=>{
             checkResult(res,payload=>{

@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react"
+import { useContext, useLayoutEffect, useRef, useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
 import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/material"
@@ -7,10 +7,15 @@ import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import Context from "../../context"
 import clear from "../../images/icons/clear.svg"
+import { initGA,sendGAEvent } from "../../core/ga4"
 function NewsletterContainer(props){
   const isNotPhone = useMediaQuery({
     query: '(min-width: 600px)'
   })
+  useLayoutEffect(()=>{
+    initGA()
+    sendGAEvent("View Newsletter Apply Page","View Newsletter Apply Page:","",0,false)
+  },[])
   const [formData, setFormData] = useState({
     fullName:"",
     igHandle:"",
@@ -79,7 +84,7 @@ function NewsletterContainer(props){
 
     const onClickApply = (e)=>{
         e.preventDefault()
-     
+     sendGAEvent("Apply for Newsletter","Apply for Newsletter","Subscribe",0,false)
         if(validateEmail(formData.email)){
 formData["frequency"]=parseInt(formData["frequency"])
         authRepo.newsletter(formData).then(data=>{

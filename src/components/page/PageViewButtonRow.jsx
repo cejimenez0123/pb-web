@@ -85,11 +85,12 @@ checkResult(res,payload=>{
       
             sendGAEvent( "Copy Share Link","Share"+`+${page.id}`,"Share",0,false)
  
-   
+
         navigator.clipboard.writeText(Enviroment.domain+Paths.page.createRoute(page.id))
                                 .then(() => {
+                                    setSuccess("Ready to share")
                                     // Successfully copied to clipboard
-                                    alert('Text copied to clipboard');
+                                    // alert('Text copied to clipboard');
                                   })
     }
     const soCanUserComment=()=>{
@@ -139,7 +140,8 @@ checkResult(res,payload=>{
         soCanUserComment()
     },[page])
     const handleBookmark=debounce((e)=>{
-      
+            if(currentProfile){
+               
             e.preventDefault()
              if(bookmarked){
                  deleteStc()
@@ -147,7 +149,7 @@ checkResult(res,payload=>{
                  onBookmarkPage()
          
              }
-         
+            }else{ setError("Please Sign Up")}
     },10)
    useEffect(()=>{
 
@@ -169,7 +171,7 @@ checkResult(res,payload=>{
     <div
     className="  text-white  py-2 border-none bg-transparent rounded-none  "
        disabled={!canUserComment} 
-        onClick={()=>{setComment(!comment)}}>
+        onClick={()=>{currentProfile?setComment(!comment):setError("Please Sign Up")}}>
     <h6 className="text-xl">
         Discuss</h6>
     </div>
@@ -178,11 +180,15 @@ checkResult(res,payload=>{
 <div tabIndex={0} role="button" className="         text-white  text-center mx-auto py-2 bg-transparent  border-none  "> <h6 className="text-xl   border-none bg-transparent text-white mx-auto my-auto">Share</h6></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-emerald-800 menu bg rounded-box z-[1] w-52  shadow">
 <li>
-<a disabled={!profile} 
+<a disabled={!currentProfile} 
 className=' text-emerald-800 '
 
 onClick={()=>{
-navigate(Paths.addStoryToCollection.story(page.id))
+if(currentProfile &&localStorage.getItem("token")){
+    navigate(Paths.addStoryToCollection.story(page.id))
+}else{
+    setError("Please Sign Up")
+}
 
 }}> 
                 Add to Collection
@@ -209,8 +215,8 @@ navigate(Paths.addStoryToCollection.story(page.id))
     dispatch(setEditingPage({page}))
     navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
 </li>
-<li> <button
-onClick={handleBookmark}
+<li > <button
+onClick={()=>handleBookmark()}
 className=" text-emerald-800 border-none flex bg-transparent"
 disabled={!currentProfile}> 
 {!loading?(bookmarked?
