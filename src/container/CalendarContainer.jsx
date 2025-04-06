@@ -14,29 +14,45 @@ import { useMediaQuery } from "react-responsive"
 import { useLayoutEffect } from "react"
 import { Helmet } from "react-helmet";
 import NewsletterContainer from "./auth/NewsletterContainer";
+import ApplyContainer from "./auth/ApplyContainer";
+import "../App.css"
+import ScrollDownButton from "../components/ScrollDownButton";
 export default function CalendarContainer(){
 
   useEffect(()=>{
     initGA()
     sendGAEvent("View Page - Calendar","View Calendar","Calendar",0,true) 
   },[])
-return(<div className="mx-auto m-4 w-fit text-center">
-     <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
-    <div className="">
-       
-    <CalendarEmbed/>
-    <Collapsible buttonText={"Sign up for newsletter!"}>
-  <NewsletterContainer/>
-  </Collapsible>
-<Collapsible buttonText={"Submit Event"}>
- 
-  <SubmitEvent/>
-  </Collapsible>
-   
+  return (
+    <div className="mx-auto m-4 w-fit text-center">
+      <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
+      <p className="mb-4 max-w-prose text-sm mont-medium text-emerald-600">
+        Get weekly writing events in your inbox, or go deeper: apply to become a user and share your own writing and feedback on our site.
+      </p>
+  
+      <CalendarEmbed />
+  
+      <div className="mt-6 space-y-4">
+        <Collapsible buttonText="📰 Join the weekly newsletter">
+          <NewsletterContainer />
+          <p className="text-xs mt-2 text-emerald-500">
+            We’ll send you a weekly list of events and updates.
+          </p>
+        </Collapsible>
+  
+        <Collapsible buttonText="✍️ Apply to post & get feedback">
+          <h6 className="text-sm mont-medium text-emerald-700 mb-2">
+          Join a rhythm of shared writing — post your work, receive feedback, and connect in small, supportive groups.
+          </h6>
+     <ApplyContainer/>
+        
+        </Collapsible>
+      </div>
+      <ScrollDownButton/>
     </div>
-    </div>
-)
+  );
+
 }
 const CalendarEmbed = () => {
     let sm =useMediaQuery({
@@ -174,14 +190,25 @@ rounded-full border-none py-2 text-white my-12`}>
   
     
 
-const Collapsible = ({children,buttonText}) => {
+const Collapsible = ({children,buttonText,sendGA=sendGAEvent}) => {
   const [isOpen, setIsOpen] = useState(false);
+  useEffect(()=>{
+    if(isOpen){
+      
+    }
+  },[isOpen])
+  const handleOpen=()=>{
+    sendGA(`${isOpen?"Closing":"Opening"} Collapsible ${buttonText}`,"View Collapse",buttonText,0,false) 
 
+    setIsOpen(!isOpen)
+      }
   return (
     <div className="w-full max-w-[100vw] lg:max-w-[50em] mx-auto">
       <div
-        onClick={() => setIsOpen(!isOpen)}
-        className=" text-white px-4 py-2 mont-medium text-emerald-800 mb-4 collapse-arrow rounded-lg mt-8 transition-transform duration-300 hover:bg-emerald-200"
+        onClick={() => {handleOpen()
+          
+          }}
+        className={` text-white px-4 py-2 mont-medium text-emerald-800 mb-4 collapse-arrow ${isOpen ? 'collapse-open' : ''}rounded-lg mt-8 transition-transform duration-300 hover:bg-emerald-200`}
       >
           <h3 className="text-lg collapse-title  mont-medium text-emerald-800   font-semibold">        {buttonText?buttonText:isOpen ? 'Hide Content' : 'Show Content'}</h3></div>
 

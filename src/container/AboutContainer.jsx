@@ -247,5 +247,5 @@ Your Writing, Your Community</h2>
 
 </h6>
 <h6 className="text-emerald-700 pb-8 mt-12">Plumbum©2025</h6>
-</div><ScrollDown text="↓ Apply Below" visible={true}/></div> </div>)
+</div>{!currentProfile?<ScrollDown text="↓Apply Below" visible={true}/>:null}</div> </div>)
 }

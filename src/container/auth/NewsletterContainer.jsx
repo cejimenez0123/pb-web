@@ -221,7 +221,7 @@ const handleCheckboxChange = (event, stateUpdater, field) => {
   let otherClassname ="input bg-transparent text-white border-white border-1 rounded-full mt-2 mb-4"
 return (
   <>
-      <div className="sm:pb-8">
+      <div className="sm:pb-8 ">
         
         <form
           onSubmit={(e) => onClickApply(e)}
@@ -230,8 +230,8 @@ return (
           <h6 className="text-emerald-700 lora-bold text-sm">* Required</h6>
           <div className="w-full text-center text-emerald-700 mb-8">
             <h3 className="mx-auto text-2xl text-emerald-700 mont-medium my-8 w-fit">Newsletter Sign Up</h3>
-            <h5 className="open-sans-medium text-emerald-700">Keep up with our events, workshops, growth, and website development.</h5>
-            <p className="open-sans-medium text-emerald-700">Joining the newsletter will not make you a user</p>
+            <h5 className="mont-medium text-emerald-700">Keep up with our events, workshops, growth, and website development.</h5>
+            <h6 className="mont-medium text-emerald-700">Joining the newsletter does not make you a user. You can join later. </h6>
           </div>
 
           {/* Preferred Name */}
