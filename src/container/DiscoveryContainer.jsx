@@ -1,6 +1,6 @@
 import { useSelector,useDispatch} from 'react-redux'
 import DashboardItem from '../components/page/DashboardItem'
-import { useState,useEffect, useLayoutEffect } from 'react'
+import { useState,useEffect, useLayoutEffect, useContext } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
@@ -14,13 +14,19 @@ import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
 import { initGA,sendGAEvent } from '../core/ga4.js'
 import BookDashboardItem from '../components/collection/BookDashboardItem.jsx'
+import ScrollDownButton from '../components/ScrollDownButton.jsx'
+import Context from '../context.jsx'
+import { useNavigate } from 'react-router-dom'
+import Paths from '../core/paths.js'
 function DiscoveryContainer(props){
     
     useEffect(()=>{
         initGA()
         sendGAEvent("View Discovery Page","Page View Discovery","Discovery",0,true)
    },[])
-   const cols = useSelector(state=>state.books.collections)
+    const {currentProfile}=useContext(Context)
+    const navigate = useNavigate()
+     const cols = useSelector(state=>state.books.collections)
     const books = useSelector(state=>state.books.books)
     const libraries = useSelector(state=>state.books.libraries)
     const [isGrid,setIsGrid] = useState(false)
@@ -163,31 +169,7 @@ function DiscoveryContainer(props){
 
       return null;
     })}
-     
-                    {/* {viewItems.filter(item=>item).map((item,i)=>{
-                        const id = `${item.id}_${i}`
-                       
-                        if(item.storyIdList&&item.storyIdList.length>0&&!item.data){
-                        
-                            return(<div 
-                                className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
-                                key={id}
-                            >               
-                                <BookDashboardItem isGrid={isGrid} book={item}/>
-                            </div>)
-                        }else if(item.data){
-                      
-                        return(<div 
-                            className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
-                            key={id}
-                        >               
-                            <DashboardItem isGrid={isGrid} key={id} page={item}/>
-                        </div>)
-                        }else{
-                            return (null)
-                    
-                    }})} */
-                    }
+
                     </div>
                 </InfiniteScroll> </div>)
         }
@@ -302,6 +284,10 @@ className={`${
                    
                     </div>
                     </div>
+                    {!currentProfile?<ScrollDownButton  text={"Join the community"} onClick={()=>{
+                        sendGAEvent("Navigate to Apply","Navigate to Apply","Join the community",0,false)
+                        navigate(Paths.apply())
+                    }}/>:null}
                     </div>
             </ErrorBoundary>
         )

@@ -134,8 +134,9 @@ return (
     className="form-data shadow-sm sm:my-8 md:rounded-lg pb-30 bg-transparent text-emerald-700   flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] mx-auto lg:mt-24"
   >
     <h6 className="text-emerald-700 lora-bold text-sm">* Required</h6>
-    <div className="w-full text-center">
-      <h3 className="mx-auto text-2xl text-emerald-700  lora-bold my-8 w-fit">Interest Form</h3>
+    <div className="w-full my-8 text-center">
+      <h3 className="mx-auto text-2xl text-emerald-700  lora-bold my-2 w-fit">Interest Form</h3>
+    <h6 className="text-md mont-medium">We’re building a space that’s nurturing, focused, and kind. This short application helps us make sure it’s the right fit — for you, and for the group.</h6>
     </div>
   
     {/* Preferred Name */}

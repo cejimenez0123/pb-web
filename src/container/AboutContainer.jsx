@@ -30,7 +30,7 @@ let firstImages = [out,al,table3,duo,vemilo,khaos,books1,table7
 ]
 let secImages = [out2,table1,vemilo2,table2,table5]
 export default function AboutContainer(props){
-    const {setSeo}=useContext(Context)
+    const {setSeo,currentProfile}=useContext(Context)
     const md = useMediaQuery({
         query: '(min-width: 750px)'
       })
@@ -60,18 +60,6 @@ export default function AboutContainer(props){
 <a onClick={()=>apply()}className="text-left text-[1rem]">[→ Join the Beta]</a>
 </div>
 </div>
-{/* <div className="text-center" >
-<h6 className="lora-medium font-bold text-center w-fit text-[2rem]">For Creatives</h6>
-<div >
-<h6 className="text-[1rem] leading-loose open-sans-medium pt-4 text-left" > 
-The idea for Plumbum came to me while I was walking to the gym during a university break.
-The encouragement I got from friends who supported my goals was missing at home.
-Finding mutual support in writing is challenging. 
-There's not one kind of look for a writer. Creatives need a place to test their skills and gain confidence in and that is what Plumbum is for. 
-</h6>
-</div> */}
-
-{/* </div> */}
         </div> </div>)
     }
 const whyMembership = ()=>{
@@ -259,5 +247,5 @@ Your Writing, Your Community</h2>
 
 </h6>
 <h6 className="text-emerald-700 pb-8 mt-12">Plumbum©2025</h6>
-</div></div><ScrollDown/> </div>)
+</div><ScrollDown text="↓ Apply Below" visible={true}/></div> </div>)
 }
