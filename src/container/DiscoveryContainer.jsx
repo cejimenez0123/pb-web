@@ -16,8 +16,10 @@ import { initGA,sendGAEvent } from '../core/ga4.js'
 import BookDashboardItem from '../components/collection/BookDashboardItem.jsx'
 import ScrollDownButton from '../components/ScrollDownButton.jsx'
 import Context from '../context.jsx'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Paths from '../core/paths.js'
+import { Helmet } from 'react-helmet'
+import Enviroment from '../core/Enviroment.js'
 function DiscoveryContainer(props){
     
     useEffect(()=>{
@@ -30,7 +32,7 @@ function DiscoveryContainer(props){
     const books = useSelector(state=>state.books.books)
     const libraries = useSelector(state=>state.books.libraries)
     const [isGrid,setIsGrid] = useState(false)
-
+   const location = useLocation()
     const dispatch = useDispatch()
    
   
@@ -230,14 +232,22 @@ className={`${
 
             setIsGrid(bool)
             if(bool){
-                sendGAEvent("Click","Click Grid View Discovery","Grid Icon",0)
+                sendGAEvent("Click Grid View Discovery","Click Grid View Discovery","Grid Icon",0)
              
             }else{
-                sendGAEvent("Click","Click Stream View Discovery","Stream Icon",0)
+                sendGAEvent("Click Stream View Discovery","Click Stream View Discovery","Stream Icon",0)
             }
         }
         return(
             <ErrorBoundary>
+                <Helmet>   
+      <title>{"Plumbum Writers"}</title>
+       <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
+      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
+      <meta property="og:description" content="Explore events, workshop projects together, and join other writers." />
+ 
+      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} />
+    </Helmet>
             <div 
 
             className=' max-w-[100vw] mt-4' >

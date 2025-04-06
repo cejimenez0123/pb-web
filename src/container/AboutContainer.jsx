@@ -26,6 +26,7 @@ import { useContext } from "react"
 import { initGA,sendGAEvent } from "../core/ga4" 
 import Context from "../context"
 import ScrollDown from "../components/ScrollDownButton"
+import { Helmet } from "react-helmet"
 let firstImages = [out,al,table3,duo,vemilo,khaos,books1,table7
 ]
 let secImages = [out2,table1,vemilo2,table2,table5]
@@ -177,12 +178,14 @@ const userTestimonial=()=>{
     return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
 <head>
   <meta charset="UTF-8" />
+  <Helmet>
   <title>Plumbum - Your Writing, Your Community</title>
   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
   <meta property="og:title" content="Plumbum Events - Connect and Grow" />
   <meta property="og:description" content="Explore events, workshops, and writer meetups on Plumbum." />
   <meta property="og:image" content="https://i.ibb.co/39cmPfnx/Plumnum-Logo.png" />
   <meta property="og:url" content="https://plumbum.app/events" />
+  </Helmet>
 </head>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>

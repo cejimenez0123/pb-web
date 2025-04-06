@@ -13,7 +13,6 @@ import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
 import Enviroment from "../../core/Enviroment.js";
 import { initGA,sendGAEvent } from "../../core/ga4.js";
-import Paths from "../../core/paths.js";
 import checkResult from "../../core/checkResult.js";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
@@ -112,6 +111,22 @@ useLayoutEffect(()=>{
     return(<div className="  mx-auto">
      
         <ErrorBoundary >
+
+
+        <Helmet>
+      {page?<><title>{"A Plumbum Story:"+page.title+" from "+page.author.username}</title>
+       <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
+      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
+      <meta property="og:description" content={page.description.length>0?page.description:"Explore events, workshops, and writer meetups on Plumbum."}/>
+      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} /></>:<>
+  <title>A Plumbum Writers Story</title>
+  <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
+  <meta property="og:title" content="Plumbum Writers - Check this story out" />
+  <meta property="og:description" content="Plumbum Writers the place for feedback and support." />
+  <meta property="og:image" content="https://i.ibb.co/39cmPfnx/Plumnum-Logo.png" />
+  <meta property="og:url" content="https://plumbum.app/events" /></>
+}  </Helmet>
+
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
     <>

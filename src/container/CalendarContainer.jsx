@@ -17,8 +17,9 @@ import NewsletterContainer from "./auth/NewsletterContainer";
 import ApplyContainer from "./auth/ApplyContainer";
 import "../App.css"
 import ScrollDownButton from "../components/ScrollDownButton";
+import { useLocation } from "react-router-dom";
 export default function CalendarContainer(){
-
+  const location = useLocation()
   useEffect(()=>{
     initGA()
     sendGAEvent("View Page - Calendar","View Calendar","Calendar",0,true) 
@@ -55,6 +56,7 @@ export default function CalendarContainer(){
 
 }
 const CalendarEmbed = () => {
+  const location = useLocation()
     let sm =useMediaQuery({
         query: '(max-width: 400px)'
       })
@@ -116,7 +118,8 @@ const [email,setEmail]=useState("")
       <title>{"Plumbum NYC CALENDAR"}</title>
        <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
-
+      <meta property="og:description" content="Explore events, workshop together, and join other writers." />
+ 
       <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} />
     </Helmet>
   
