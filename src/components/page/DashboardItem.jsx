@@ -111,7 +111,7 @@ const deleteStc=()=>{
    })
 }}
 
-const hanldeClickComment=()=>{   
+const handleClickComment=()=>{   
   if(page){ 
     sendGAEvent(`Click to Review- ${page.title}-${page.id}`,"Click Review","Review",0,false)
     navigate(Paths.page.createRoute(page.id))
@@ -265,7 +265,7 @@ return <Button onClick={()=>{
        bg-transparent py-2
        border-none mont-medium 
          '
-             onClick={()=>hanldeClickComment()}
+             onClick={()=>handleClickComment()}
                  >
           <h6 className='text-[1.2rem]'> Review</h6>
          </div>
