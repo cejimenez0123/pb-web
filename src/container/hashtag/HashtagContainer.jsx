@@ -67,10 +67,9 @@ export default function HashtagContainer(props){
                 const {hashtag}=payload
                 if(hashtag){
                 setHashtag(hashtag)
-            
-                    
-                dispatch(setCollections({collections:hashtag.collections.map(co=>co.collection)}))
-                addPages(hashtag.collections)
+                    dispatch(setPagesInView({pages:hashtag.stories.map(stc=>stc.story)}))
+                    dispatch(setCollections({collections:hashtag.collections.map(co=>co.collection)}))
+                    addPages(hashtag.collections)
               
 
                 setHasMoreBooks(false)
