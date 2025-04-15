@@ -27,8 +27,6 @@ export default function PageDataElement({page,isGrid}){
                 })
             }
     
-        }else{
-            // setLoading(false)
         }
     },[page])
     if(page){
@@ -49,7 +47,7 @@ switch(page.type){
     </div>
   )   }
   case PageType.picture:{
-    console.log("XSS",location.pathname)
+  
     return(image?<div  onClick={()=>{
    
         if(location.pathname!=Paths.page.createRoute(page.id)){

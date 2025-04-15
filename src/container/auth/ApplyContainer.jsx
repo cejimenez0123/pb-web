@@ -1,13 +1,13 @@
 import { useContext, useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
-import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/material"
+import {Dialog,DialogContent,DialogActions,Button} from "@mui/material"
 import { useMediaQuery } from "react-responsive"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
-import Alert from "../../components/Alert"
 import Context from "../../context"
 function ApplyContainer(props){
+  const location = useLocation()
   const isNotPhone = useMediaQuery({
     query: '(min-width: 600px)'
   })
@@ -47,11 +47,7 @@ function ApplyContainer(props){
     const [user,setUser]=useState(null)
     const {error,setError}=useContext(Context)
     const [betaTest,setBetaTester]=useState([])
-    const [igError,setIgError]=useState(false)
-    const [nameError,setNameError]=useState(false)
-    const [emailError,setEmailError]=useState(false)
-    const [whyApplyError,setWhyApplyError]=useState(false)
-    const [howFindError,setHowFindError]=useState(false)
+
     
 
     const handleGenreSelection = (genre) => {
@@ -94,26 +90,20 @@ function ApplyContainer(props){
               : selectedGenres,
          
           };
-        authRepo.apply(form).then(data=>{
+      
+        if(location.pathname.includes("newsletter")){
+          authRepo.applyFromNewsletter(form).then(data=>{
+          if(data.user){
+            setUser(data.user)
+          }
+        })}else{authRepo.apply(form).then(data=>{
         
 if(data.user){
   setUser(data.user)
-}
 
-        }).catch(e=>{
-
-          if(e.status==409){
-            setUser({message:"User has already applied"})
-          }else{
-            setError(e.message)
-          }
-        })
-    }else{
-      setError("Please use valid email")
-    }
-
-    }
-
+ 
+   
+        }})}}}
 const handleClose= ()=>{
   setUser(null)
   navigate(Paths.about())
@@ -128,7 +118,6 @@ setTimeout(()=>{
 return (
   <>
     <div className="sm:pb-8">
-
     <form
     onSubmit={(e) => onClickApply(e)}
     className="form-data shadow-sm sm:my-8 md:rounded-lg pb-30 bg-transparent text-emerald-700   flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] mx-auto lg:mt-24"
@@ -387,125 +376,3 @@ Founder of Plumbum</h6>
 }
 export default ApplyContainer
 
-// const ApplyForm=()=>{
-
-//     const isNotPhone = useMediaQuery({
-//       query: '(min-width: 600px)'
-//     })
-//     const navigate = useNavigate()
-//       const genres = [
-//           "Fiction",
-//           "Non-fiction",
-//           "Poetry",
-//           "Drama/Playwriting",
-//           "Screenwriting",
-//           "Flash Fiction",
-//           "Memoir",
-//           "Short Stories",
-//           "Fantasy",
-//           "Science Fiction",
-//           "Horror",
-//           "Mystery/Thriller",
-//           "Romance",
-//           "Young Adult",
-//           "Children's Literature",
-//           "Historical Fiction",
-//           "Satire/Humor",
-//           "Experimental/Hybrid Forms",
-//           "Other"
-//         ]; const [igHandle,setIgHandle]=useState("")
-//       const [fullName,setFullName]=useState("")
-//       const [email,setEmail]=useState("")
-//       const [whyApply,setWhyApply]=useState("")
-//       const [howFindOut,setHowFindOut]=useState("")
-//       const [otherGenre, setOtherGenre] = useState("");
-//       const [communityNeeds,setCommunityNeeds]=useState("")
-//       const [workshopPreference,setWorkshopPreference]=useState("")
-//       const [feedbackFrequency,setFeedbackFrequency]=useState("")
-//       const [selectedGenres, setSelectedGenres] = useState([]);
-//       const [comfortLevel,setComfortLevel]=useState(0)
-//       const [platformFeatures,setPlatformFeatures]=useState("")
-//       const [user,setUser]=useState(null)
-//       const {error,setError}=useContext(Context)
-//       const [betaTest,setBetaTester]=useState([])
-//       const [igError,setIgError]=useState(false)
-//       const [nameError,setNameError]=useState(false)
-//       const [emailError,setEmailError]=useState(false)
-//       const [whyApplyError,setWhyApplyError]=useState(false)
-//       const [howFindError,setHowFindError]=useState(false)
-      
-  
-//       const handleGenreSelection = (genre) => {
-//           setSelectedGenres((prev) =>
-//             prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-//           );
-//         };
-  
-//       const handleChangeIgHandle = (text)=>{
-//        setIgHandle(text)
-//       }
-//       const handleChangeFullName = (text)=>{
-//         setFullName(text)
-//       }
-//       const handleChangeEmail = (text)=>{
-//           setEmail(text.trim())
-//       }
-//       const handleChangeWhyApply =(text)=>{
-//         setWhyApply(text)
-//       }
-//       const handleChangeHowFindOut = (text)=>{
-//          setHowFindOut(text)
-//       }
-//       const onClickApply = (e)=>{
-//           e.preventDefault()
-//           if(validateEmail(email)){
-//           const form = {
-//               igHandle,
-//               fullName,
-//               email:email.toLowerCase(),
-//               whyApply,
-//               communityNeeds,
-//               workshopPreference,
-//               feedbackFrequency,
-//               howFindOut,
-//               comfortLevel,
-//               platformFeatures,
-//               genres: selectedGenres.includes("Other")
-//                 ? [...selectedGenres.filter((g) => g !== "Other"), otherGenre]
-//                 : selectedGenres,
-           
-//             };
-//           authRepo.apply(form).then(data=>{
-          
-//   if(data.user){
-//     setUser(data.user)
-//   }
-  
-//           }).catch(e=>{
-  
-//             if(e.status==409){
-//               setUser({message:"User has already applied"})
-//             }else{
-//               setError(e.message)
-//             }
-//           })
-//       }else{
-//         setError("Please use valid email")
-//       }
-  
-//       }
-  
-//   const handleClose= ()=>{
-//     setUser(null)
-//     navigate(Paths.about())
-//   }
-//   setTimeout(()=>{
-  
-//     setError(null)
-  
-  
-  
-//   },4001)
-//   return(
-//   )
-// }

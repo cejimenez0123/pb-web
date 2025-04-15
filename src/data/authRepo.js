@@ -10,6 +10,11 @@ class AuthRepo{
        let res = await axios.post(Enviroment.url+"/auth/apply",form,{headers:this.headers})
        return res.data
     }
+    async applyFromNewsletter(form){
+        let res = await axios.post(Enviroment.url+"/auth/newsletter/apply",form,{headers:this.headers})
+        return res.data
+     }
+   
     async newsletter(form){
         let res = await axios.post(Enviroment.url+"/auth/newsletter",form)
         return res.data
@@ -64,14 +69,14 @@ class AuthRepo{
         return res.data
     }
     async updateSubscription({token,frequency}){
-      
+        
         const res = await axios.put(Enviroment.url+"/auth/subscription",{
             token,frequency
         })
         return res.data
     }
 
-       async useReferral({token, email, password ,username,profilePicture,selfStatement,isPrivate}){
+    async useReferral({token, email, password ,username,profilePicture,selfStatement,isPrivate}){
        let res = await axios.post(Enviroment.url+"/auth/use-referral",{token, email, password ,username,profilePicture,selfStatement,isPrivate})
         return res.data    
     }

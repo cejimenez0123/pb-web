@@ -138,7 +138,7 @@ setLogInError("User Not Found. Apply Below")
                 
         </div>
         <div className='mt-4 p-4'>
-        <a  onClick={handleFirstTimeClick}className='text-emerald-800 text-xl open-sans-medium hover:text-green-400  '>Click here if this your first time?</a>
+        <a  onClick={handleFirstTimeClick}className='text-emerald-800 text-xl mont-medium hover:text-green-400  '>Click here if this your first time?</a>
         </div>
         {pending? <div className='flex'>
        <img  

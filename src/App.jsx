@@ -182,6 +182,8 @@ function App(props) {
  
         <Route path={Paths.apply()}
         element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
+         <Route path={Paths.apply()+"/newsletter"}
+        element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
       <Route
       path={Paths.myProfile()}
       element={

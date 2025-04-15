@@ -67,7 +67,7 @@ function DiscoveryContainer(props){
         dispatch(setPagesInView({pages:[]}))
         fetchContentItems()
         fetchLibraries()
-    },[])
+    },[currentProfile])
 
     const libraryForums = ()=>{
         if(libraries!=null){

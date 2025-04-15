@@ -98,6 +98,7 @@ if(data.user){
           if(e.status==409){
             setUser({message:"User has already applied"})
           }else{
+            console.log(e)
             setError(e.message)
           }
         })
@@ -424,11 +425,7 @@ return (
 This is more than just an app. Together, we’re building a space where writers like you can test ideas, share stories, and discover the confidence to take your work to the next level.
 </h6>
 <br/>
-{/* <h6>
-We’ll start onboarding beta users at the end of February, and we can’t wait to celebrate with you at our Launch Party! Details are on the way, so stay tuned through 
-our instagram <a href="https://www.instagram.com/plumbumapp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">@plumbumapp</a> or through our parnters  
-<a href="https://www.instagram.com/bxwriters?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="> @bxwriters.</a>
-</h6> */}
+
 <br/>
 <h6>Thank you for joining this exciting journey. Your insights and creativity will help shape Plumbum into a community where creativity thrives.
 </h6>
