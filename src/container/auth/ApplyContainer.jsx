@@ -93,17 +93,23 @@ function ApplyContainer(props){
       
         if(location.pathname.includes("newsletter")){
           authRepo.applyFromNewsletter(form).then(data=>{
+             console.log(data)
           if(data.user){
+
             setUser(data.user)
+          }else{
+            setUser(data)
           }
-        })}else{authRepo.apply(form).then(data=>{
-        
+        }).catch(err=>setUser(err))}else{authRepo.apply(form).then(data=>{
+        console.log(data)
 if(data.user){
   setUser(data.user)
-
- 
-   
-        }})}}}
+        }else{
+          
+          setUser(data)
+        }}).catch(err=>{
+          setUser(err)
+        })}}}
 const handleClose= ()=>{
   setUser(null)
   navigate(Paths.about())
