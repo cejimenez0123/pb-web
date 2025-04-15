@@ -214,7 +214,7 @@ setToken(token)
           </select>
         </div>
       </div>
-      <label className="text-left  min-w-[100%] mx-auto lora-medium text-xl font-bold  mb-2">Self Statement </label> 
+      <label className="text-left  min-w-[100%] text-white mx-auto lora-medium text-xl font-bold  mb-2">Self Statement </label> 
       <textarea 
       placeholder="What are you about?"
       className="textarea bg-transparent border w-[100%]  border-white text-md lg:text-l" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>

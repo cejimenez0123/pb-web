@@ -254,10 +254,10 @@ return (
       onChange={(e) => setFeedbackFrequency(e.target.value)}
       className="select  bg-transparent border rounded-full border-emerald-700  text-emerald-700  w-full text-l sm:text-xl"
     >
-      <option value="" className="open-sans-medium" disabled>
+      {/* <option value="" className="open-sans-medium" disabled>
         Select an option
-      </option>
-      <option value="daily">Daily</option>
+      </option> */}
+      <option defaultValue={true} value="daily">Daily</option>
       <option value="weekly">Weekly</option>
       <option value="monthly">Monthly</option>
       <option value="occasionally">Occasionally</option>
@@ -269,13 +269,14 @@ return (
       Would you prefer in-person workshops, online, or both?
     </label>
     <select
+  
       value={workshopPreference}
       onChange={(e) => setWorkshopPreference(e.target.value)}
       className="select rounded-full open-sans-medium  bg-transparent border border-emerald-700  text-emerald-700  w-full text-l sm:text-xl"
     >
       <option value="in-person">In-person</option>
       <option value="online">Online</option>
-      <option value="both">Both</option>
+      <option defaultValue={true} value="both">Both</option>
     </select>
   
     {/* How did you find out? */}
