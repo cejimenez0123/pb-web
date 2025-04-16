@@ -21,9 +21,7 @@ import FollowProfile from "../domain/models/follow_profile"
 import Collection from "../domain/models/collection";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
-import collectionRepo from "../data/collectionRepo";
 import uuidv4 from "../core/uuidv4";
-import usePersistentCurrentProfile from "../domain/usecases/useCurrentProfileCache";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {

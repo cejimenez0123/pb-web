@@ -81,6 +81,8 @@ state.loading = true
 .addCase(getPublicCollections.fulfilled,(state,{payload})=>{
     if(payload.collections){
         state.collections=payload.collections
+        state.books = payload.collections.filter(col=>col.storyIdList||!col.childCollections)
+        state.libraries = payload.collections.filter(col=>col.storyIdList.length>0||col.childCollections.length>0)
     }
 })
 .addCase(addCollectionListToCollection.pending,(state,{payload})=>{
