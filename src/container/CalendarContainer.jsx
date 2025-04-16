@@ -22,7 +22,7 @@ export default function CalendarContainer(){
   const location = useLocation()
   useEffect(()=>{
     initGA()
-    sendGAEvent("View Page - Calendar","View Calendar","Calendar",0,true) 
+    sendGAEvent("View Page","View Calendar","Calendar",0,true) 
   },[])
   return (
     <div className="mx-auto m-4 w-fit text-center">

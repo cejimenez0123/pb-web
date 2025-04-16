@@ -34,10 +34,10 @@ function ProfileContainer({profile}){
     useLayoutEffect(()=>{
         initGA()
         if(profile){
-            sendGAEvent(`View Profile - ${profile.username}-${id}`,`Click`,profile.username)
-        }
+            sendGAEvent("View Profile",`View Profile ${profile.username}`)
+               }
      
-    })
+    },[])
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })

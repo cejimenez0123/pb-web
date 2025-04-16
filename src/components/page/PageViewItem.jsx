@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import React,{useState} from "react"
+import React,{useLayoutEffect, useRef, useState} from "react"
 import PageViewButtonRow  from "./PageViewButtonRow"
 import CommentInput from "../comment/CommentInput"
 import "../../styles/PageView.css"
@@ -9,13 +9,19 @@ import PageSkeleton from "../PageSkeleton"
 import Paths from "../../core/paths"
 import ProfileCircle from "../profile/ProfileCircle"
 import PageDataElement from "./PageDataElement"
-
+import { logEvent } from "react-ga4";
+import { initGA, sendGAEvent } from "../../core/ga4"
 
 export default function PageViewItem({page}) {
+    const ref = useRef()
+
     PageViewItem.propTypes={
         page: PropTypes.object.isRequired
     }
- 
+    useLayoutEffect(()=>{
+        initGA()
+    },[])
+
     
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const navigate = useNavigate()
@@ -52,7 +58,7 @@ if(page){
 
         return(
         
-        <div className="page shadow-md rounded-lg overflow-clip">
+        <div  ref={ref} className="page shadow-md rounded-lg overflow-clip">
       <div>
         <div>
         
@@ -70,7 +76,7 @@ if(page){
   
         )
             }else{
-                <div>
+                <div ref={ref}>
                     <PageSkeleton/>
                 </div>
             } 

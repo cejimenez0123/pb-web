@@ -27,6 +27,7 @@ import { initGA,sendGAEvent } from "../core/ga4"
 import Context from "../context"
 import ScrollDown from "../components/ScrollDownButton"
 import { Helmet } from "react-helmet"
+import useScrollTracking from "../core/useScrollTracking"
 let firstImages = [out,al,table3,duo,vemilo,khaos,books1,table7
 ]
 let secImages = [out2,table1,vemilo2,table2,table5]
@@ -35,11 +36,12 @@ export default function AboutContainer(props){
     const md = useMediaQuery({
         query: '(min-width: 750px)'
       })
+    useScrollTracking()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     useLayoutEffect(()=>{
         initGA()
-        sendGAEvent("View-About","View About Page","About",0,true)
+        sendGAEvent("Page View","View About Page")
     },[])
   function apply(){
     sendGAEvent("Apply to be user","Click Apply","Apply to Join Today",0,false)

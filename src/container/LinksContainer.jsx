@@ -30,13 +30,13 @@ export default function LinksContainer(props){
          title={"Writers Workshop Sat. April 19th:Poets being Human"}
          description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
          </li>
-         <li>
+         {/* <li>
 
 <LinkNode url={"https://partiful.com/e/r8u4FeGRvOCa12SNp6d6"}
 image={philosophy}
      title={"The Bronx Philosophy Circle:Sat. April 12th"}
      description={"Public PHilosophy for community building and well being."}/>
-     </li>
+     </li> */}
            <li>
 
 

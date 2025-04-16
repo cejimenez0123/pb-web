@@ -22,11 +22,12 @@ import { Helmet } from 'react-helmet'
 import Enviroment from '../core/Enviroment.js'
 import useScrollTracking from '../core/useScrollTracking.jsx'
 function DiscoveryContainer(props){
-    useScrollTracking()
-    useEffect(()=>{
+   
+    useLayoutEffect(()=>{
         initGA()
-        sendGAEvent("View Discovery Page","Page View Discovery","Discovery",0,true)
+        sendGAEvent("Page View","Page View Discovery")
    },[])
+   useScrollTracking()
     const {currentProfile}=useContext(Context)
     const navigate = useNavigate()
      const cols = useSelector(state=>state.books.collections)
@@ -173,7 +174,7 @@ function DiscoveryContainer(props){
             className={isGrid ? "grid-item" : "m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit"}
             key={id}
           >
-            <DashboardItem isGrid={isGrid} page={item} />
+            <DashboardItem key={item.id} item={item} index={i} isGrid={isGrid} page={item} />
           </div>
         );
       }

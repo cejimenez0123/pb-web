@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import "../../Dashboard.css"
 import { deletePageApproval,   setEditingPage,   setPageInView, setPagesInView, } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
@@ -21,14 +21,41 @@ import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
 import { debounce } from 'lodash'
 import { initGA,sendGAEvent } from '../../core/ga4'
-function DashboardItem({page, book,isGrid}) {
+function DashboardItem({page,index, book,isGrid}) {
+    const ref = useRef()
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
     const pathParams = useParams()
     const location = useLocation()
+    const [hasBeenSeen, setHasBeenSeen] = useState(false);
     useLayoutEffect(()=>{
         initGA()
     },[])
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting && !hasBeenSeen) {
+              setHasBeenSeen(true);
+    
+        
+              sendGAEvent("story_view",{
+                id:page.id,
+                title:page.title
+              })
+      
+            }
+          },
+          {
+            threshold: 0.5, // 50% of the item must be visible
+          }
+        );
+    
+        if (ref.current) observer.observe(ref.current);
+    
+        return () => {
+          if (ref.current) observer.unobserve(ref.current);
+        };
+      }, [hasBeenSeen, page, index]);
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
@@ -328,7 +355,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
         return(
         <ErrorBoundary>
-                <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}>
+                <div  ref={ref}  className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}>
         <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&page?header():null}
         {page.description && page.description.length>0?<div className='min-h-12 pt-4 p-2'>
