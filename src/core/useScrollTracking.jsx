@@ -24,7 +24,6 @@ const useScrollTracking = () => {
         } else if (scrollPercent >= 75 && scrollDepth < 75) {
           sendGAEvent( 'Scroll '+window.location.pathname+window.location.search, 'Scrolled 75%', 'Scroll Depth');
        
-     
           setScrollDepth(75);
         } else if (scrollPercent >= 100 && scrollDepth < 100) {
           sendGAEvent( 'Scroll '+window.location.pathname+window.location.search, 'Scrolled 100%', 'Scroll Depth');

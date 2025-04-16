@@ -20,8 +20,9 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Paths from '../core/paths.js'
 import { Helmet } from 'react-helmet'
 import Enviroment from '../core/Enviroment.js'
+import useScrollTracking from '../core/useScrollTracking.jsx'
 function DiscoveryContainer(props){
-    
+    useScrollTracking()
     useEffect(()=>{
         initGA()
         sendGAEvent("View Discovery Page","Page View Discovery","Discovery",0,true)
@@ -74,7 +75,7 @@ function DiscoveryContainer(props){
     useEffect(()=>{
         dispatch(setPagesInView({pages:[]}))
         fetchContentItems()
-        fetchLibraries()
+      
     },[currentProfile])
 
     const libraryForums = ()=>{
@@ -84,7 +85,7 @@ function DiscoveryContainer(props){
             <div className='mb-12'><InfiniteScroll
             className=' flex flex-row min-h-50 md:min-h-6 max-w-[100vw] '
             dataLength={libraries.length}
-            next={fetchLibraries}
+            next={null}
           
             hasMore={hasMoreLibraries}
             endMessage={<div className='flex min-w-72 mont-medium'><span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '><h6 className=''>Join the community. <br/>Apply to join today.</h6><h6>Share your own work.</h6><h6> This is what we have for now.</h6></span></div>}
@@ -108,7 +109,7 @@ function DiscoveryContainer(props){
                 <InfiniteScroll
             className={`  min-h-50 md:min-h-60 flex-row flex`}
             dataLength={books.length}
-            next={fetchContentItems}
+            next={null}
             hasMore={false}
             endMessage={<div className='flex min-w-72 mont-medium'>
                 <span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '>
@@ -139,7 +140,7 @@ function DiscoveryContainer(props){
                 >
                    <InfiniteScroll
                 dataLength={viewItems.length}
-                next={()=>{}}
+                next={null}
                 scrollThreshold={1}
                 hasMore={false}
                     >
@@ -184,57 +185,23 @@ function DiscoveryContainer(props){
                 </InfiniteScroll> </div>)
         }
     }
-    const pageList = ()=>{
-        if(pagesInView!=null){
-            return(<div 
-            className={`${isGrid?"":"w-[96vw] md:w-page"}  mx-auto `}
-            >
-               <InfiniteScroll
-            dataLength={pagesInView.length}
-            next={()=>{}}
-            scrollThreshold={1}
-            hasMore={false}
-                >
-               
-<div 
-className={`${
-    isGrid && isNotPhone ? ' grid-container' : ''
-  }`}
 
->
- 
-                {pagesInView.filter(page=>page).map((page,i)=>{
-
-                    const id = `${page.id}_${i}`
-                    return(<div 
-                        className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
-                        key={id}
-                    >               
-                        <DashboardItem isGrid={isGrid} key={id} page={page}/>
-                    </div>)
-                })}
-                </div>
-            </InfiniteScroll> </div>)
-        }
-    }
     const fetchContentItems = ()=>{
             dispatch(setPagesInView({pages:[]}))
             dispatch(setCollections({collections:[]}))
             dispatch(getPublicStories())
             dispatch(getPublicCollections())
-            // dispatch(getPublicBooks())  
-        
     }
-    const fetchLibraries = ()=>{
-            setHasMoreLibraries(true)
-            dispatch(getPublicLibraries())
-            .then(result=>checkResult(result,payload=>{
+    // const fetchLibraries = ()=>{
+    //         setHasMoreLibraries(true)
+    //         dispatch(getPublicLibraries())
+    //         .then(result=>checkResult(result,payload=>{
             
-                setHasMoreLibraries(false)
-            },err=>{
-                setHasMoreLibraries(false)
-            }))
-        }
+    //             setHasMoreLibraries(false)
+    //         },err=>{
+    //             setHasMoreLibraries(false)
+    //         }))
+    //     }
         const onClickForGrid =(bool)=>{
 
 
