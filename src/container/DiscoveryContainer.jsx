@@ -139,7 +139,7 @@ function DiscoveryContainer(props){
                 >
                    <InfiniteScroll
                 dataLength={viewItems.length}
-                next={fetchContentItems}
+                next={()=>{}}
                 scrollThreshold={1}
                 hasMore={false}
                     >
