@@ -13,16 +13,18 @@ import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
 import Enviroment from "../../core/Enviroment.js";
 import { initGA,sendGAEvent } from "../../core/ga4.js";
+
 import checkResult from "../../core/checkResult.js";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
     const location = useLocation()
     const page = useSelector(state=>state.pages.pageInView)
     const pathParams = useParams()
-   const {id}=pathParams
+    const {id}=pathParams
     const dispatch = useDispatch()
-
+    const [pending,setPending]=useState(false)
     const [canUserSee,setCanUserSee]=useState(false)
+    const [canUserEdit,setCanUserEdit]=useState(false)
     const comments = useSelector(state=>state.comments.comments)
     const [rootComments,setRootComments]=useState([])
     useLayoutEffect(()=>{
@@ -47,7 +49,9 @@ export default function PageViewContainer(props){
                 }
             }}
     },[])
-    useLayoutEffect(()=>{   soCanUserSee() },[currentProfile,page])
+    useLayoutEffect(()=>{   soCanUserSee()
+        
+     },[currentProfile,page])
     useLayoutEffect(()=>{
         dispatch(getStory(pathParams)).then(res=>{
             checkResult(res,payload=>{
@@ -58,22 +62,44 @@ export default function PageViewContainer(props){
         })
         dispatch(fetchCommentsOfPage(pathParams))
     },[id,currentProfile])
+
     useLayoutEffect(()=>{
         setRootComments(comments?comments.filter(com=>com.parentId==null):[])
      },[comments])
 
 
      const soCanUserSee=()=>{
+        
+       
         if(page){
-  
             if(!page.isPrivate){
                 setCanUserSee(true)
+                setPending(false)
                 return
             }
             if(currentProfile){
                 
                 if(page.authorId==currentProfile.id){
                 setCanUserSee(true)
+                setPending(false)
+                return
+                }
+            if(page.betaReaders){
+                let found = page && page.betaReaders?page.betaReaders.find(role=>currentProfile && role.profileId==currentProfile.id):null
+                setCanUserSee(found)
+                setPending(false)
+                return
+            }}
+        }
+     }
+
+     const soCanUserEdit=()=>{
+        if(page){
+       
+            if(currentProfile){
+                
+                if(page.authorId==currentProfile.id){
+                setCanUserEdit(true)
                 return
                 }
             if(page.betaReaders){
@@ -82,8 +108,8 @@ export default function PageViewContainer(props){
             }}
         }
      }
-
     const pageDiv = ()=>{
+       
      if(page){
 
      
@@ -92,13 +118,9 @@ export default function PageViewContainer(props){
         return (<div><dib className="skeleton w-[96vw] mx-auto md:w-page bg-emerald-50 h-page"/></div>)
      }
     }
-    let description =""
-    if(page){
-     description = page.data
-    if(page.data.length>200){
-        description = page.data.slice(0,200)
-    }
-}
+
+ 
+
 useLayoutEffect(()=>{
     if(page){
         let soo = seo
@@ -130,7 +152,7 @@ useLayoutEffect(()=>{
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
     <>
-    {pageDiv()}</>:<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>}
+    {pageDiv()}</>:pending?<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex max-w-[96vw] max-w-[96vw] mx-auto md:w-page h-pag"><h1 className="mont-medium my-12 mx-auto">Took a Wrong turn</h1></div>}
     
     <CommentThread page={page} comments={rootComments}/>
     </div> 

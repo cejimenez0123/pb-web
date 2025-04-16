@@ -5,7 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
 import {getPublicStories, setPagesInView } from '../actions/PageActions'
-import { getPublicBooks, getPublicCollections, setCollections } from '../actions/CollectionActions'
+import { getPublicCollections, setCollections } from '../actions/CollectionActions'
 import { getPublicLibraries} from '../actions/LibraryActions.jsx'
 import checkResult from '../core/checkResult'
 import { useMediaQuery } from "react-responsive"
@@ -47,7 +47,7 @@ function DiscoveryContainer(props){
        let list = [...pagesInView,...cols].filter(item=>item).sort((a,b)=>{
            
    
-            return ((a.priority*900005) + new Date(a.updated).getTime()) < ((b.priority*9000005) + new Date(b.updated).getTime())
+            return ((a.priority*9000050) + new Date(a.updated).getTime()) < ((b.priority*90000050) + new Date(b.updated).getTime())
             
     
                
@@ -214,7 +214,7 @@ className={`${
             dispatch(setCollections({collections:[]}))
             dispatch(getPublicStories())
             dispatch(getPublicCollections())
-            dispatch(getPublicBooks())  
+            // dispatch(getPublicBooks())  
         
     }
     const fetchLibraries = ()=>{
