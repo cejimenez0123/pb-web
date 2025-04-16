@@ -220,9 +220,7 @@ const ListView = ({ items, isGrid }) => {
     
 
             return(
-            // <div 
-            // className={`${isGrid?"":"w-[96vw] md:w-page"}  mx-auto `}
-            // >
+          
                <InfiniteScroll
                className="mx-auto w-page"
             dataLength={filteredItems.length}
@@ -231,13 +229,6 @@ const ListView = ({ items, isGrid }) => {
                     loader={<h4 className="text-center my-4">Loading...</h4>}
                     scrollThreshold={0.9}
                 >
-               
-{/* <div 
-className={`${
-    isGrid && isNotPhone ? ' grid-container' : ''
-  }`}
-
-> */}
  
                 {filteredItems.filter(page=>page).map((item,i)=>{
     
