@@ -46,8 +46,16 @@ function DiscoveryContainer(props){
 
        let list = [...pagesInView,...cols].filter(item=>item).sort((a,b)=>{
            
-   
-            return ((a.priority*9000050) + new Date(a.updated).getTime()) < ((b.priority*90000050) + new Date(b.updated).getTime())
+            if(a.priority || b.priority){
+                if(!b.priority){
+                    return false
+                }
+                if(!a.priority){
+                    return true
+                }
+                return a.priority > b.priority
+            }
+            return new Date(a.updated).getTime()<  new Date(b.updated).getTime()
             
     
                

@@ -224,12 +224,7 @@ if(currentProfile &&localStorage.getItem("token")){
         >
               Copy Share Link
             </a></li>
-           {/* <li> {canUserEdit?
-<a onClick={()=>{
-    dispatch(setPageInView({page}))
-    dispatch(setEditingPage({page}))
-    navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>} */}
-{/* </li> */}
+
 <li > <button
 onClick={()=>handleBookmark()}
 className=" text-emerald-800 border-none flex bg-transparent"
