@@ -4,7 +4,7 @@ import { useLayoutEffect, useState } from "react"
 
 export default function FeedbackDialog({open,page,isFeedback,handleClose,handleChange,handlePostPublic,handleFeedback}){
     const isPhone =  useMediaQuery({
-        query: '(max-width: 800px)'
+        query: '(max-width: 768px)'
       })
     const isHeightPhone = useMediaQuery({query:'(max-height: 366px)'})
     console.log(isHeightPhone)

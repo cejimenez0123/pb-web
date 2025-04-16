@@ -181,7 +181,7 @@ const userTestimonial=()=>{
 <head>
   <meta charset="UTF-8" />
   <Helmet>
-  <title>Plumbum - Your Writing, Your Community</title>
+  <title>Plumbum (About) - Your Writing, Your Community</title>
   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
   <meta property="og:title" content="Plumbum Events - Connect and Grow" />
   <meta property="og:description" content="Explore events, workshops, and writer meetups on Plumbum." />

@@ -4,8 +4,9 @@ import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
 import "../App.css"
 import axios from 'axios';
-import { getLinkPreview, getPreviewFromContent } from "link-preview-js";
+import { getLinkPreview, } from "link-preview-js";
 import { useNavigate } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 async function fetchLinkPreview(url) {
   try {
     const data = await getLinkPreview(Enviroment.proxyUrl+url);
@@ -16,9 +17,12 @@ async function fetchLinkPreview(url) {
   }
 }
 function LinkPreview({ url,isGrid}) {
+  const isPhone =  useMediaQuery({
+    query: '(max-width: 768px)'
+  })
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-const navigate = useNavigate()
+
 const headers = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
@@ -141,10 +145,10 @@ const fetchData = async (url) => {
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      // +isGrid?" rounded-lg   mx-auto   ":
-      <div  className={isGrid?"spotify rounded-box max-w-[100%]":"spotify w-[96vw] md:w-page"} 
+    
+      <div  className={isGrid?"spotify rounded-box ":"spotify w-[96vw] md:w-page"} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"} style={{minHeight:"27.5em"}} className="bg-emerald-200 max-h-[20em]"
+        <Spotify width={"100%"} style={{minHeight:"27.5em"}} className="bg-emerald-200 max-h-[24em]"
          link={url}/>
       </div>)
   }
@@ -161,16 +165,16 @@ const fetchData = async (url) => {
   if (previewData.videoId) {
     return (
     
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className="w-[96vw] md:w-page 
-       "src={previewData.videoThumbnail} alt="Video Thumbnail" />
+        <img onClick={handleClick} style={{ cursor: 'pointer' }} className={isGrid?"":"w-[96vw] md:w-page"}src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
   }
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
-    return(<div>
-      {previewData.image && <a href={`${url}`}><img  className={isGrid?"rounded-lg pt-8 w-fit  overflow-hidden mx-auto":"  rounded-t-lg w-[100%] "}src={previewData.image}  alt="Link Preview" /></a>}
-    </div>)
+    return previewData.image && <a href={`${url}`} className={isGrid?'w-[36em]':""}><img  
+      className={isGrid?isPhone?"rounded-lg pt-4  overflow-hidden mx-auto":" ":" overflow-hidden h-[100%]] mx-auto rounded-lg"}
+
+      src={previewData.image}  alt={previewData.title} /></a>
     }else{
        return (
         <div className='spotify rounded-box w-[96vw] md:w-page'>
@@ -187,15 +191,18 @@ const fetchData = async (url) => {
     }
   }
   const previewDescription=()=>{
+    if(!isPhone&&!isGrid){
     if(previewData.title!=="Spotify"){
-      return(<h6 className={isGrid?" overflow-scroll pt-2  px-1 mx-auto":'text-slate-800 pt-8  p-3 bg-emerald-200  text-[0.8rem]'} >{previewData.description}</h6>)
+      return(<h6 
+       className={isGrid?" overflow-scroll pt-2  px-1 mx-auto":'text-slate-800 p-3 bg-emerald-200  text-[0.8rem]'}
+       >{previewData.description}</h6>)
       }else{
         return(<h6 className={'text-slate-800 py-4  top-1 p-3 bg-emerald-200  text-[0.8rem]'}>{previewData.description}</h6>)
       }
+    }
   }
-
   return (
-    <div className={isGrid?" text-white w-fit mont-medium w-[100%] mx-auto":"h-fit bg-emerald-200  text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className={" "+isPhone?"":isGrid?"w-fit text-white  mont-medium ":" bg-emerald-200  text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       <div className='text-left open-sans-medium'>
    {previewDescription()}

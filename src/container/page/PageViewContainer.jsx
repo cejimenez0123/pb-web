@@ -22,7 +22,7 @@ export default function PageViewContainer(props){
     const pathParams = useParams()
     const {id}=pathParams
     const dispatch = useDispatch()
-    const [pending,setPending]=useState(false)
+    const [pending,setPending]=useState(true)
     const [canUserSee,setCanUserSee]=useState(false)
     const [canUserEdit,setCanUserEdit]=useState(false)
     const comments = useSelector(state=>state.comments.comments)
@@ -49,8 +49,8 @@ export default function PageViewContainer(props){
                 }
             }}
     },[])
-    useLayoutEffect(()=>{   soCanUserSee()
-        
+    useLayoutEffect(()=>{   
+        soCanUserSee() 
      },[currentProfile,page])
     useLayoutEffect(()=>{
         dispatch(getStory(pathParams)).then(res=>{
@@ -69,8 +69,6 @@ export default function PageViewContainer(props){
 
 
      const soCanUserSee=()=>{
-        
-       
         if(page){
             if(!page.isPrivate){
                 setCanUserSee(true)
@@ -93,21 +91,6 @@ export default function PageViewContainer(props){
         }
      }
 
-     const soCanUserEdit=()=>{
-        if(page){
-       
-            if(currentProfile){
-                
-                if(page.authorId==currentProfile.id){
-                setCanUserEdit(true)
-                return
-                }
-            if(page.betaReaders){
-         
-                return
-            }}
-        }
-     }
     const pageDiv = ()=>{
        
      if(page){
@@ -130,18 +113,16 @@ useLayoutEffect(()=>{
     }
 },[])
 
-    return(<div className="  mx-auto">
-     
+    return(<div className="  mx-auto"> 
         <ErrorBoundary >
-
-
         <Helmet>
-      {page?<><title>{"A Plumbum Story:"+page.title+" from "+page.author.username}</title>
+      {page?<><title>{"A Plumbum+Story:"+page.title+" from "+page.author.username}</title>
        <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
       <meta property="og:description" content={page.description.length>0?page.description:"Explore events, workshops, and writer meetups on Plumbum."}/>
-      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} /></>:<>
-  <title>A Plumbum Writers Story</title>
+      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} /></>:
+      <>
+  <title>Plumbum Writers-Story:{id}</title>
   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
   <meta property="og:title" content="Plumbum Writers - Check this story out" />
   <meta property="og:description" content="Plumbum Writers the place for feedback and support." />

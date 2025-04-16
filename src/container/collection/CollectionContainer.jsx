@@ -657,12 +657,13 @@ const bookList=()=>{
     </div>
     </div>)
 }
-let header=()=>collection?<Helmet><title>{"A Plumbum Curation "+collection.title}</title>
+let header=()=>collection?<Helmet><title>{"A Plumbum Collection+ "+collection.title}</title>
 <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
 <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
 <meta property="og:description" content={collection.purpose.length>0?collection.purpose:"Explore events, workshops, and writer meetups on Plumbum."}/>
-<meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} /></Helmet>:<Helmet>
-<title>A Plumbum Writers Story</title>
+<meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} /></Helmet>:
+<Helmet>
+<title>Plumbum Writers Collection + {id}</title>
 <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
 <meta property="og:title" content="Plumbum Writers - Check this story out" />
 <meta property="og:description" content="Plumbum Writers the place for feedback and support." />

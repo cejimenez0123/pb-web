@@ -7,7 +7,7 @@ import { useMediaQuery } from "react-responsive"
 export default function CommentThread({page,comments,level=0}){
    
 let sm =useMediaQuery({
-    query: '(max-width: 900px)'
+    query: '(max-width: 768px)'
   })
 if(comments.length>0){
     return(

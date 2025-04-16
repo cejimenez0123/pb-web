@@ -60,10 +60,9 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
             if(page){
                 const id = `${page.id}_${i}`
                 return(<div  key={id}
-
   className={`${isGrid && !isPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
 >
-                    <DashboardItem  forFeedback={forFeedback} isGrid={isGrid} key={page.id} page={page}/>
+                    <DashboardItem  key={page.id} item={page} index={i} forFeedback={forFeedback} isGrid={isGrid} page={page}/>
                 </div>)
             }else{
                 return null

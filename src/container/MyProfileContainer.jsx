@@ -11,7 +11,6 @@ import authRepo from '../data/authRepo.js';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
-import loadingGif from "../images/loading.gif"
 import sortAlphabet from "../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../images/icons/clock_arrow_down.svg"
@@ -42,7 +41,6 @@ function MyProfileContainer(props){
     const [description,setFeedback]=useState("")
     const [referralLink,setReferralLink]=useState(null)
     const [referral,setReferral]=useState(null)
-    const [genPending,setGenPending]=useState(false)
     const [firstLogin,setFirstLogin]=useState(localStorage.getItem("firstTime")=="true")
     const [openDialog,setOpenDialog]=useState(false)
   
@@ -66,11 +64,11 @@ function MyProfileContainer(props){
       }
   
      })
-  const cols = usePersistentMyCollectionCache(()=>{
+   usePersistentMyCollectionCache(()=>{
     dispatch(setCollections({collections:[]}))
     return dispatch(getMyCollections())
   })
-  const collections=useSelector(state=>state.books.collections??cols).filter(col=>{
+  const collections=useSelector(state=>state.books.collections).filter(col=>{
     if(col){
      if(search.toLowerCase()=="feedback"){
        return col.type=="feedback"
@@ -85,6 +83,21 @@ function MyProfileContainer(props){
    }
  
     })
+  //:colp.filter(col=>{
+  //   if(col){
+  //    if(search.toLowerCase()=="feedback"){
+  //      return col.type=="feedback"
+  //    }
+  //    if(search.length>0){
+  //     return col.title.toLowerCase().includes(search.toLowerCase())
+  //    }else{
+  //     return true
+  //    }
+  //  }else{
+  //    return true
+  //  }
+ 
+  //   })
  
 const handleTimeClick=debounce(()=>{
         
@@ -94,8 +107,7 @@ const handleTimeClick=debounce(()=>{
 
 },10)
 const handleSortAlpha = debounce((sorted)=>{
-     
-   
+
   let list =collections
 let newList = list.sort((a,b)=>{
      
@@ -110,14 +122,14 @@ let newList = list.sort((a,b)=>{
 
   dispatch(setCollections({collections:newList}))
 
-  let arr = pages
-arr = arr.sort((a,b)=>{
+  
+const arr = pages.sort((a,b)=>{
       if(sorted){
   
-       return   a.title.toLowerCase() < b.title.toLowerCase()
+       return a.title.toLowerCase() < b.title.toLowerCase()
  
       }else{
-          return (a.title.toLowerCase() > b.title.toLowerCase()) 
+          return a.title.toLowerCase() > b.title.toLowerCase()
       }
   
   })
@@ -212,7 +224,7 @@ params.page = feedbackPage
 
     const ClickWriteAStory = debounce(()=>{
       if(currentProfile){
-        sendGAEvent("Create","Write a Story","Click Write Story",0)        
+        sendGAEvent("Create","Write a Story","Click Write Story")        
           dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
           title:"",commentable:true
         })).then(res=>checkResult(res,payload=>{

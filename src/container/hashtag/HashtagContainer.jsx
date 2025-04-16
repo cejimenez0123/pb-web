@@ -185,15 +185,12 @@ className={`${
                 {pagesInView.filter(page=>page).map((page,i)=>{
 
                     const id = `${page.id}_${i}`
-                    return(<div 
-                        // className={isGrid?"max-w-[22em]":"m-1  h-fit "}
+                    return(<div          
                         key={id}
-                        // className=" mb-4 "
+                    
                         className="break-inside-avoid mb-4  auto-cols-min"
-     
                     >
-                        
-                        <DashboardItem isGrid={isGrid} key={page.id} page={page}/>
+                        <DashboardItem  key={page.id} item={page} index={i} isGrid={isGrid} page={page}/>
                     </div>)
                 })}
                 </div>

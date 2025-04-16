@@ -36,7 +36,6 @@ function ProfileContainer({profile}){
         if(profile){
             sendGAEvent("View Profile",`View Profile ${profile.username}`)
                }
-     
     },[])
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
