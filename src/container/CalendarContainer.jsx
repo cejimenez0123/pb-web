@@ -29,8 +29,8 @@ export default function CalendarContainer(){
     <div className="mx-auto m-4 w-fit text-center">
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
-      <p className="mb-4 max-w-prose text-sm mont-medium text-emerald-600">
-        Get weekly writing events in your inbox, or go deeper: apply to become a user and share your own writing and feedback on our site.
+      <p className="mb-4 mx-auto max-w-page text-sm mont-medium text-emerald-600">
+        Get weekly writing events in your inbox, or go deeper:<br/> apply to become a user and share your own writing and feedback on our site.
       </p>
   
       <CalendarEmbed />
@@ -114,8 +114,9 @@ const [email,setEmail]=useState("")
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
    
    return(<div className="max-w-[100vw]">
+  
       <Helmet>
-<head>
+
   <meta charset="UTF-8" />
 
   <title>Plumbum (Calendar) - Your Writing, Your Community</title>
@@ -125,8 +126,9 @@ const [email,setEmail]=useState("")
   <meta property="og:image" content="https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O" />
   <meta property="og:url" content="https://plumbum.app/events" />
  
-</head>
+
 </Helmet>
+
 
     
         <form className="my-8 mx-2">

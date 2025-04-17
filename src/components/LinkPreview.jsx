@@ -7,15 +7,15 @@ import axios from 'axios';
 import { getLinkPreview, } from "link-preview-js";
 import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
-async function fetchLinkPreview(url) {
-  try {
-    const data = await getLinkPreview(Enviroment.proxyUrl+url);
-    return data;
-  } catch (error) {
-    console.error('Error fetching link preview:', error);
-    return null;
-  }
-}
+// async function fetchLinkPreview(url) {
+//   try {
+//     const data = await getLinkPreview(Enviroment.proxyUrl+url);
+//     return data;
+//   } catch (error) {
+//     console.error('Error fetching link preview:', error);
+//     return null;
+//   }
+// }
 function LinkPreview({ url,isGrid}) {
   const isPhone =  useMediaQuery({
     query: '(max-width: 768px)'
@@ -29,49 +29,46 @@ const headers = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
   useLayoutEffect(() => {
+    if(url.includes("plumubum.app")){
+      console.log(url)
+      fetchData(url).then(res=>res)
+    }else if(!url.includes('https://open.spotify.com/')){
+      fetchLinkPreview(url).then(res=>{})
+    }else{
 
-    if(!url.includes('https://open.spotify.com/')){  
-    fetchLinkPreview(url).then(res=>{})
-    return 
-}}, [url]);
+    }
+
+
+}, [url]);
 
 const fetchLinkPreview = async (url) => {
   try {
-    if(!url.includes("http")){
-    getLinkPreview(`${url}`, {
-      resolveDNSHost: async (url) => {
-        return new Promise((resolve, reject) => {
-          const hostname = new URL(url).hostname;
-          axios(`https://dns.google/resolve?name=${hostname}`,{headers:headers})
-          .then(response =>{ 
-          
-          resolve(response.data)
-          })
-          .catch(err=>{
+  //   getLinkPreview(`${url}`, {
+  //     headers:headers,
+  //     resolveDNSHost: async (url) => {
+  //       return new Promise((resolve, reject) => {
+  //         const hostname = new URL(url).hostname;
+  //         axios(`https://dns.google/resolve?name=${hostname}`,{headers:headers})
+  //         .then(response =>{ 
+  //         console.log("SXSXS")
+  //         resolve(response.data)
+  //         })
+  //         .catch(err=>{
        
-            if (err) {reject(err)}
-          })
-             });
+  //           if (err) {reject(err)}
+  //         })
+  //            });
     
-      },
-    }).then(response=>{
-  
+  //     },
+  //   }).then(response=>{
+  // console.log(23121)
     fetchData(url).then(res=>{
 
     }).catch(err=>{
       console.log(err)
     })
-    })
+    // })
 
-
-}else{
-      fetchData(url).then(res=>{
-
-      }).catch(err=>{
-        console.log(err)
-      })
-
-    }
 
 
   }catch(err){
@@ -79,15 +76,19 @@ const fetchLinkPreview = async (url) => {
   }}
 const fetchData = async (url) => {
   try {
-
+console.log("BBOOO")
     const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
-      headers: headers,
+      headers:{
+        "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+      }
     }
     )
     ;
     
     const data = await response.text();
-    
+    console.log(data)
     const isYouTubeVideo = isYouTubeURL(url);
     if (isYouTubeVideo) {
       const videoId = extractYouTubeVideoId(url);
@@ -117,7 +118,7 @@ const fetchData = async (url) => {
 
       }
       
-    console.log(image)
+
       setPreviewData({
           title,
           description,
