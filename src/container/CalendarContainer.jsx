@@ -18,11 +18,12 @@ import ApplyContainer from "./auth/ApplyContainer";
 import "../App.css"
 import ScrollDownButton from "../components/ScrollDownButton";
 import { useLocation } from "react-router-dom";
+import useScrollTracking from "../core/useScrollTracking";
 export default function CalendarContainer(){
   const location = useLocation()
   useEffect(()=>{
     initGA()
-    sendGAEvent("View Page","View Calendar","Calendar",0,true) 
+    // sendGAEvent("View Page","View Calendar","Calendar",0,true) 
   },[])
   return (
     <div className="mx-auto m-4 w-fit text-center">
@@ -56,6 +57,7 @@ export default function CalendarContainer(){
 
 }
 const CalendarEmbed = () => {
+  useScrollTracking({name:"Calendar"})
   const location = useLocation()
     let sm =useMediaQuery({
         query: '(max-width: 400px)'

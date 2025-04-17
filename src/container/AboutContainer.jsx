@@ -36,7 +36,7 @@ export default function AboutContainer(props){
     const md = useMediaQuery({
         query: '(min-width: 750px)'
       })
-    useScrollTracking()
+    useScrollTracking({name:"About"})
     const dispatch = useDispatch()
     const navigate = useNavigate()
     useLayoutEffect(()=>{

@@ -11,15 +11,17 @@ import ProfileCircle from "../profile/ProfileCircle"
 import PageDataElement from "./PageDataElement"
 import { logEvent } from "react-ga4";
 import { initGA, sendGAEvent } from "../../core/ga4"
+import useScrollTracking from "../../core/useScrollTracking"
 
 export default function PageViewItem({page}) {
     const ref = useRef()
-
+    page?useScrollTracking({name:JSON.stringify(page.title)}):null
     PageViewItem.propTypes={
         page: PropTypes.object.isRequired
     }
     useLayoutEffect(()=>{
         initGA()
+        sendGAEvent("View Story",JSON.stringify(page))
     },[])
 
     

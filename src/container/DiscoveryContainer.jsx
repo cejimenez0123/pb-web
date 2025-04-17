@@ -132,92 +132,7 @@ function DiscoveryContainer(props){
 
         }
     }
-    // const listView = ()=>{
-    //     if(viewItems){
-    //         const filteredItems = viewItems.filter(item => item);
-//             return(<div 
-//                 className={`${isGrid?"":"w-[96vw] md:w-page"}  mx-auto `}
-//                 >
-//                    <InfiniteScroll
-//                 dataLength={viewItems.length}
-//                 next={fetchContentItems}
-//                 scrollThreshold={1}
-//                 hasMore={false}
-//                     >
-                   
-//     <div 
-//     className={`${
-//         isGrid && isNotPhone ? ' grid-container' : ''
-//       }`}
-    
-//     >
-//         { filteredItems.map((item, i) => {
-//       const id = `${item.id}_${i}`;
 
-     
-//       if (item && item.storyIdList && item.storyIdList.length > 0) {
-//         return (
-//           <div 
-//             className={isGrid ? "grid-item" : "m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit"}
-//             key={id}
-//           >
-//             <BookDashboardItem isGrid={isGrid} book={item} />
-//           </div>
-//         );
-//       }
-
-   
-//       if (item.data && !filteredItems.some(book => book && book.storyIdList && book.storyIdList.includes(stc=>stc.storyId==item.id))) {
-//         return (
-//           <div 
-//             className={isGrid ? "grid-item" : "m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit"}
-//             key={id}
-//           >
-//             <DashboardItem isGrid={isGrid} page={item} />
-//           </div>
-//         );
-//       }
-
-//       return null;
-//     })}
-
-//                     </div>
-//                 </InfiniteScroll> </div>)
-//         }
-//     }
-//     const pageList = ()=>{
-//         if(pagesInView!=null){
-//             return(<div 
-//             className={`${isGrid?"":"w-[96vw] md:w-page"}  mx-auto `}
-//             >
-//                <InfiniteScroll
-//             dataLength={pagesInView.length}
-//             next={()=>{}}
-//             scrollThreshold={1}
-//             hasMore={false}
-//                 >
-               
-// <div 
-// className={`${
-//     isGrid && isNotPhone ? ' grid-container' : ''
-//   }`}
-
-// >
- 
-//                 {pagesInView.filter(page=>page).map((page,i)=>{
-
-//                     const id = `${page.id}_${i}`
-//                     return(<div 
-//                         className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
-//                         key={id}
-//                     >               
-//                         <DashboardItem isGrid={isGrid} key={id} page={page}/>
-//                     </div>)
-//                 })}
-//                 </div>
-//             </InfiniteScroll> </div>)
-//         }
-//     }
     const fetchContentItems = ()=>{
             dispatch(setPagesInView({pages:[]}))
             dispatch(setCollections({collections:[]}))
@@ -270,7 +185,7 @@ function DiscoveryContainer(props){
                 {bookList()} 
                 </div>
                 <div className='flex max-w-[96vw] md:w-page mx-auto flex-col '>
-                    
+                    <span className='flex flex-row'>
 
                         <h3 className=' text-emerald-900
                                         font-extrabold 
@@ -281,7 +196,7 @@ function DiscoveryContainer(props){
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
                         {/* {isNotPhone? */}
-                        <div className='flex flex-row pb-8'><button onClick={()=>onClickForGrid(true)}
+                        <div className='flex flex-row md:pb-8'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
                                             ml-2 mr-0 px-1 border-none py-0'>
                                 <img src={grid}/>
@@ -290,6 +205,7 @@ function DiscoveryContainer(props){
                                 className='bg-transparent border-none px-1 py-0'>
                                     <img src={stream}/>
                         </button></div>
+                        </span>
                         {/* :null} */}
                         </div>
 <div className='max-w-screen'>

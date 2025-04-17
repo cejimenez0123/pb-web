@@ -51,7 +51,7 @@ switch(page.type){
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
-        className={` ql-editor  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"   ":" mt-2  rounded-lg bg-emerald-100 p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  md:w-page rounded-lg"}`}
+        className={` ql-editor  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"  max-h-24 ":" mt-2  rounded-lg bg-emerald-100 p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  md:w-page rounded-lg"}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
     // </div>
   )   }

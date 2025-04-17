@@ -164,26 +164,29 @@ const Carousel = ({book})=>{
       
         return(
             
-               
-        <div className={`carousel ${isPhone?"max-h-full":""} ${isGrid?isPhone?`bg-emerald-700 `:`bg-emerald-700`:  ` max-w-[94.5vw]   md:w-page`}`}>
+          
+        <div className={`carousel  rounded-box overflow-x-auto pr-6
+
+         ${isPhone?"":""} ${isGrid?isPhone?`w-grid-mobile p-1 bg-emerald-700 `:`bg-emerald-700`:  ` max-w-[94.5vw]   md:w-page`}`}>
      
        {book.storyIdList.map((stc,i)=>{
         if(stc && stc.story){
 
       
         return(
-        <div  className={` carousel-item  mx-2 flex flex-col ${isPhone?"h-[36em] overflow-hidden":""} justify-center ${isGrid?isPhone?"max-w-[100%]":"":" max-w-[95vw]   md:w-[49.5em] "}`}
+            // carousel-item
+        <div  className={`  carousel-item  flex flex-col ${isPhone?"h-full  overflow-hidden":""}  ${isGrid?isPhone?"w-grid-mobile-content max-h-full px-2    ":"":" max-w-[95vw]   md:w-[49.5em] "}`}
          id={stc.id} key={stc.id}
 
 >
-<h5  id="desc"className={ `${isPhone?"top-0 h-12 ":" bottom-0 "} ${isGrid?isPhone?" text-white   ":"text-white":"text-emerald-800"} mont-medium  mx-2 text-left`}>{stc.story.title}</h5>
+<h5  id="desc"className={ `${isPhone?"top-0 h-12 ":" bottom-0 "} ${isGrid?isPhone?" text-white   ":"text-white":"text-emerald-800"} mont-medium   text-left`}>{stc.story.title}</h5>
     {stc.story.description && stc.story.description.length>0?<div className=' p-1 2 md:pt-4 p-2'>
             {stc.story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
             <h6 className={`${isGrid?isPhone?"max-h-8 m-1 p-1 overflow-scroll text-white":"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
                 {stc.story.description}
             </h6>
         </div>:null}
-        <span className={isPhone?'h-[31em] overflow-hidden':""}>
+        <span className={isPhone?'h-[20em] w-grid-mobile-content  overflow-hidden':""}>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
        </span>
         </div>)}else{
