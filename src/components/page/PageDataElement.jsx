@@ -39,17 +39,21 @@ switch(page.type){
     case PageType.text:{
 
     return( 
-        <div
+    //     <div
        
-         onClick={()=>{
-            navigate(Paths.page.createRoute(page.id))
-        }}
-    className={`  ${isGrid?isPhone?" rounded-lg  ":`  mx-auto  `:`rounded-lg    w-[96vw] md:w-page bg-emerald-200 `}`}
-        >
+    //      onClick={()=>{
+    //         navigate(Paths.page.createRoute(page.id))
+    //     }}
+    // className={`${isPhone?"":""} ${isGrid?isPhone?" rounded-lg  ":`  mx-auto  `:`rounded-lg    w-[96vw] md:w-page bg-emerald-200 `}`}
+    //     >
         
-        <div className={` ql-editor  rounded-lg  ${isPhone?"max-h-[30em] ":""} ${isGrid?isPhone?" h-36  ":" mt-2  rounded-lg bg-emerald-100 p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  md:w-page rounded-lg"}`}
+        <div 
+        onClick={()=>{
+                    navigate(Paths.page.createRoute(page.id))
+                }}
+        className={` ql-editor  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"   ":" mt-2  rounded-lg bg-emerald-100 p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  md:w-page rounded-lg"}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
-    </div>
+    // </div>
   )   }
   case PageType.picture:{
   

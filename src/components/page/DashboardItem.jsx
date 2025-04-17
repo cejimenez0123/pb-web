@@ -334,7 +334,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
         return(
         <ErrorBoundary>
                 <div className={isGrid?isPhone?"overall-hidden":"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}>
-        <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
+        <div className={`shadow-md  ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid?header():null}
         {page.description && page.description.length>0?<div className='h-16  md:p-2'>
             {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
@@ -344,11 +344,11 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
         </div>:null}
        
              
-          <div className={isGrid?isPhone?"h-40 rounded-lg overflow-clip":' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
+          <div className={isGrid?isPhone?" rounded-lg overflow-clip":' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
       <div onClick={()=>{
          navigate(Paths.page.createRoute(page.id))
         }} 
-        className={isPhone?"":""}>
+        className={isGrid?isPhone?"":"":isPhone?"":""}>
           <PageDataElement  isGrid={isGrid} page={page}/>
           </div>
                 {buttonRow()}
