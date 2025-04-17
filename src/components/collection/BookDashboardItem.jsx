@@ -184,7 +184,7 @@ const Carousel = ({book})=>{
                 {stc.story.description}
             </h6>
         </div>:null}
-        <span onClick={()=>navigate(Paths.page.createRoute(stc.storyId))}className={`max-h-[50rem] ${isPhone?isGrid?'w-grid-mobile-content  overflow-hidden':" h-[20em]":""}`}>
+        <span onClick={()=>navigate(Paths.page.createRoute(stc.storyId))}className={`max-h-[40em] ${isPhone?isGrid?'w-grid-mobile-content  overflow-hidden':" h-[20em]":""}`}>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
        </span>
         </div>)}else{

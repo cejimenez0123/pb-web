@@ -115,7 +115,7 @@ const [email,setEmail]=useState("")
    
    return(<div className="max-w-[100vw]">
   
-      <Helmet>
+      {/* <Helmet>
 
   <meta charset="UTF-8" />
 
@@ -123,11 +123,20 @@ const [email,setEmail]=useState("")
   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
   <meta property="og:title" content="Plumbum Events - Connect and Grow" />
   <meta property="og:description" content="Explore events, workshops, and writer meetups on Plumbum." />
-  <meta property="og:image" content="https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O" />
+
   <meta property="og:url" content="https://plumbum.app/events" />
  
 
-</Helmet>
+</Helmet> */}
+<Helmet>
+
+      <title>{"Plumbum NYC CALENDAR"}</title>
+       <meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
+      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
+      <meta property="og:description" content="Explore events, workshop together, and join other writers." />
+ 
+      <meta name="twitter:image" content={`"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O`} />
+    </Helmet>
 
 
     
