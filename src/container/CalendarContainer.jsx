@@ -34,7 +34,7 @@ export default function CalendarContainer(){
 <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
 <meta property="og:description" content="Explore events, workshop together, and join other writers." />
 
-<meta name="twitter:image" content={`"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O`} />
+<meta name="twitter:image" content={`https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O`} />
 </Helmet>
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
