@@ -27,6 +27,15 @@ export default function CalendarContainer(){
   },[])
   return (
     <div className="mx-auto m-4 w-fit text-center">
+      <Helmet>
+
+<title>{"Plumbum NYC CALENDAR"}</title>
+ <meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
+<meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
+<meta property="og:description" content="Explore events, workshop together, and join other writers." />
+
+<meta name="twitter:image" content={`"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O`} />
+</Helmet>
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
       <p className="mb-4 mx-auto max-w-page text-sm mont-medium text-emerald-600">
@@ -128,15 +137,7 @@ const [email,setEmail]=useState("")
  
 
 </Helmet> */}
-<Helmet>
 
-      <title>{"Plumbum NYC CALENDAR"}</title>
-       <meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
-      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
-      <meta property="og:description" content="Explore events, workshop together, and join other writers." />
- 
-      <meta name="twitter:image" content={`"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O`} />
-    </Helmet>
 
 
     
