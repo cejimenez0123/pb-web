@@ -196,7 +196,7 @@ function DiscoveryContainer(props){
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
                         {/* {isNotPhone? */}
-                        <div className='flex flex-row md:pb-8'><button onClick={()=>onClickForGrid(true)}
+                        <div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
                                             ml-2 mr-0 px-1 border-none py-0'>
                                 <img src={grid}/>

@@ -16,7 +16,7 @@ export default {
       'page':"48em",
       'info':"55rem",
       'grid':"36em",
-      'grid-content':"35.5em",
+      'grid-content':"35em",
       'grid-mobile':"13em",
        'grid-mobile-content':"12em"
 

@@ -226,15 +226,17 @@ return <Button onClick={()=>{
         }><p>{title} {">"}</p></a>)
     }
     const bookmarkBtn =()=>{
-        return isGrid ?<div className={`w-full  ${isPhone?"":"py-2"}  my-auto flex flex-row justify-between  text-white `}>
+        return isGrid ?<div className={`w-[100%]  ${isPhone?"":"py-2"}  my-auto flex flex-row justify-between  text-white `}>
             {isPhone?null:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
-        <span className='bg-transparent flex flex-row '>
-            <h6 className={`text-white ${isPhone?"":"  ml-1 pr-1"}  text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden max-w-full my-auto text-[0.9rem]`}
+        <span className='bg-transparent flex flex-row  w-[100%] justify-between '>
+            <h6 className={`text-white ${isPhone?"":"  ml-1 pr-1"}text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto text-[0.9rem]`}
     onClick={()=>{
         navigate(Paths.page.createRoute(page.id))
     }}
 
->{` `+page.title.length>0?page.title:""}</h6><img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
+>{` `+page.title.length>0?page.title:""}</h6>
+
+<img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
     
     </div>:null
     }
@@ -315,8 +317,12 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
         navigate(Paths.editPage.createRoute(page.id))}}
         className='text-emerald-700'>Edit</a>
      </li>:null}
-    <li> <button className="my-auto w-fit mx-auto border-none bg-transparent"onClick={handleBookmark}
+    <li> 
+        
+        <button className="my-auto w-fit mx-auto border-none bg-transparent"onClick={handleBookmark}
     disabled={!currentProfile}> 
+    
+    
     {loading?<img className="max-h-6"src={loadingGif}/>:
     bookmarked?<img src={bookmarkFillGreen}
      className='text-emerald-800'/>:<img src={bookmarkadd}/>}

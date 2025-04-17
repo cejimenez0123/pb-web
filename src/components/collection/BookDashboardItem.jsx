@@ -163,9 +163,9 @@ const Carousel = ({book})=>{
         return(
             
           
-        <div className={`carousel  rounded-box pt-2 overflow-x-auto pr-6
+        <div className={`carousel  rounded-box pt-2 
 
-         ${isPhone?"":""} ${isGrid?isPhone?`w-grid-mobile p-1 bg-emerald-700 `:`bg-emerald-700`:  ` max-w-[94.5vw]   md:w-page`}`}>
+         ${isPhone?"":""} ${isGrid?isPhone?`w-grid-mobile p-1 bg-emerald-700 `:`w-grid  bg-emerald-700`:  ` max-w-[94.5vw]   md:w-page`}`}>
      
        {book.storyIdList.map((stc,i)=>{
         if(stc && stc.story){
@@ -177,14 +177,14 @@ const Carousel = ({book})=>{
          id={stc.id} key={stc.id}
 
 >
-<h5  id="desc"className={ `${isPhone?"top-0 h-12 ml-2  ":" bottom-0 "} ${isGrid?isPhone?" text-white   ":"text-white":"text-emerald-800"} mont-medium   text-left`}><span className='px-2'>{stc.story.title}</span></h5>
+<h5  id="desc"className={ `${isPhone?"top-0 h-12 ml-2  ":" bottom-0 "} ${isGrid?isPhone?" text-white   ":"w-grid  no-underline text-ellipsis   pr-4 pl-2 text-right text-white":"text-emerald-800"} mont-medium   text-left`}><span className='px-2'>{stc.story.title}</span></h5>
     {stc.story.description && stc.story.description.length>0?<div className=' p-1 2 md:pt-4 p-2'>
             {stc.story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
-            <h6 className={`${isGrid?isPhone?"max-h-8 m-1 p-1 overflow-scroll text-white":"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
+            <h6 className={`${isGrid?isPhone?"max-h-8 m-1 p-1 overflow-scroll text-white":"text-white w-grid-content px-2":"text-emerald-800"} p-2 open-sans-medium text-left `}>
                 {stc.story.description}
             </h6>
         </div>:null}
-        <span onClick={()=>navigate(Paths.page.createRoute(stc.storyId))}className={`max-h-[40em] ${isPhone?isGrid?'w-grid-mobile-content  overflow-hidden':" h-[20em]":""}`}>
+        <span onClick={()=>navigate(Paths.page.createRoute(stc.storyId))}className={`max-h-[40em] ${isGrid?isPhone?'w-grid-mobile-content  overflow-hidden':" h-[20em] w-[36em]":""}`}>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
        </span>
         </div>)}else{

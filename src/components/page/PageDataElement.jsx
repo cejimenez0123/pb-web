@@ -39,21 +39,14 @@ switch(page.type){
     case PageType.text:{
 
     return( 
-    //     <div
-       
-    //      onClick={()=>{
-    //         navigate(Paths.page.createRoute(page.id))
-    //     }}
-    // className={`${isPhone?"":""} ${isGrid?isPhone?" rounded-lg  ":`  mx-auto  `:`rounded-lg    w-[96vw] md:w-page bg-emerald-200 `}`}
-    //     >
-        
+
         <div 
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
-        className={` ql-editor text-ellipsis  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"  max-h-24 ":" mt-2  rounded-lg bg-emerald-100 p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  sm:w-page rounded-lg"}`}
+        className={` ql-editor text-ellipsis  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"  max-h-24 ":" mt-2  rounded-lg bg-emerald-100 w-grid-content  p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  sm:w-page rounded-lg"}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
-    // </div>
+  
   )   }
   case PageType.picture:{
   
