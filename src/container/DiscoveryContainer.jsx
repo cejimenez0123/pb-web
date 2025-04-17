@@ -283,6 +283,7 @@ import Context from '../context.jsx'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Paths from '../core/paths.js'
 import { Helmet } from 'react-helmet'
+import GridView from './page/GridView.jsx'
 import Enviroment from '../core/Enviroment.js'
 function DiscoveryContainer(props){
     
@@ -543,7 +544,8 @@ function DiscoveryContainer(props){
                                         lora-bold
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
-                        {isNotPhone?<div className='flex flex-row pb-8'><button onClick={()=>onClickForGrid(true)}
+                        {/* {isNotPhone? */}
+                        <div className='flex flex-row pb-8'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
                                             ml-2 mr-0 px-1 border-none py-0'>
                                 <img src={grid}/>
@@ -551,11 +553,12 @@ function DiscoveryContainer(props){
                         <button onClick={()=>onClickForGrid(false)}
                                 className='bg-transparent border-none px-1 py-0'>
                                     <img src={stream}/>
-                        </button></div>:null}
+                        </button></div>
+                        {/* :null} */}
                         </div>
 <div className='max-w-screen'>
     {/* {listView()} */}
-                   <ListView items={viewItems}/>
+                   {!isGrid?<ListView items={viewItems}/>:<GridView items={viewItems}/>}
                   
                     </div>
                     </div>

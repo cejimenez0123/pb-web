@@ -5,7 +5,7 @@ import BookDashboardItem from "../../components/collection/BookDashboardItem";
 import { useMediaQuery } from "react-responsive";
 import { useEffect, useState } from "react";
 
-export default function GridView({ viewItems }) {
+export default function GridView({ items }) {
   const isPhone = useMediaQuery({ query: "(max-width: 768px)" });
      const isNotPhone = useMediaQuery({
         query: '(min-width:768px)'
@@ -15,15 +15,15 @@ export default function GridView({ viewItems }) {
   const [ hasMore,setHasMore]=useState(true)
   useEffect(() => {
     setPage(1);
-    setFilteredItems(viewItems.slice(0, 10).filter(Boolean));
-    setHasMore(filteredItems.length < viewItems.length)
-  }, [viewItems]);
+    setFilteredItems(items.slice(0, 10).filter(item=>item))
+    setHasMore(filteredItems.length < items.length)
+  }, [items]);
 
   useEffect(() => {
-    const newItems = viewItems.slice(0, page * 10).filter(Boolean);
+    const newItems = items.slice(0, page * 10).filter(item=>item);
     setFilteredItems(newItems);
-    setHasMore(filteredItems.length < viewItems.length)
-  }, [page, viewItems]);
+    setHasMore(filteredItems.length < items.length)
+  }, [page, items]);
 
 
   const nextPage = () => {
@@ -51,7 +51,7 @@ export default function GridView({ viewItems }) {
 
             if (item.storyIdList?.length > 0 && !item.data) {
               return (
-                <div className={isNotPhone?"grid-item max-h-[10em] rounded-lg oveflow-hidden h-fit":" max-h-[18em] rounded-b-lg overflow-hidden max-w-full"} key={id}>
+                <div className={isNotPhone?"grid-item rounded-lg oveflow-hidden ":" max-h-[18em] rounded-b-lg overflow-hidden max-w-full"} key={id}>
                   <BookDashboardItem isGrid={true} book={item} />
                 </div>
               );
@@ -64,7 +64,7 @@ export default function GridView({ viewItems }) {
               )
             ) {
               return (
-                <div className={isNotPhone?"grid-item   rounded-lg oveflow-hidden":"max-h-[18em] rounded-b-lg overflow-hidden max-w-full"} key={id}>
+                <div className={isNotPhone?"grid-item   rounded-lg oveflow-hidden":" rounded-b-lg overflow-hidden max-w-full"} key={id}>
                   <DashboardItem
                     item={item}
                     index={i}
