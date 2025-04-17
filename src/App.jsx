@@ -26,7 +26,6 @@ import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
 import  Context from "./context"
-import Enviroment from './core/Enviroment.js';
 import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';
 import CollectionContainer from './container/collection/CollectionContainer';
 import AddToCollectionContainer from './container/collection/AddToCollection';
@@ -47,7 +46,7 @@ import NewsletterContainer from './container/auth/NewsletterContainer.jsx';
 import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
-import { Helmet,HelmetProvider } from 'react-helmet-async';
+
 
 
 
@@ -71,29 +70,7 @@ function App(props) {
     dispatch(getRecommendedCollectionsProfile())
   }
   },[])
-    // {/* <Helmet>
-    // <title>{seo.title||'Plumbum'}</title>
-    //   <meta name="description" content={seo.description || 'Your community for writers to share and grow.'} />
 
-    //   {/* Open Graph Meta Tags */}
-    //   <meta property="og:title" content={seo.title||"Plumbum"} />
-    //   <meta property="og:description" content={seo.description||'Your Writing, Your Community!'} />
-    //   <meta property="og:image" content={seo.image||"https://i.ibb.co/39cmPfnx/Plumnum-Logo.png"} />
-    //   <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
-
-    //   {/* Twitter Card Meta Tags */}
-    //   <meta name="twitter:card" content="summary_large_image" />
-    //   <meta name="twitter:title" content={seo.title?? 'Plumbum'} />
-    //   <meta name="twitter:description" content={seo.description??'Your Writing, Your Community!'} />
-    //   <meta name="twitter:image" content={seo.image?? "https://i.ibb.co/39cmPfnx/Plumnum-Logo.png"} />
-    // <link rel="icon" type="image/png" sizes="16x16" />     
-    //     </Helmet>  */}
-    const seoTitle =
-    seo?.title?.length > 0
-      ? seo.title.toLowerCase() === 'plumbum'
-        ? 'Plumbum | Your Writing, Your Community'
-        : `Plumbum | ${seo.title} `
-      : 'Plumbum';
   return (
 
       <Context.Provider value={{seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
@@ -204,6 +181,8 @@ function App(props) {
       }/>
  
         <Route path={Paths.apply()}
+        element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
+         <Route path={Paths.apply()+"/newsletter"}
         element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
       <Route
       path={Paths.myProfile()}

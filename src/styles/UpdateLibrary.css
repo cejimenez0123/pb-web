@@ -13,11 +13,5 @@
 .library-update{
     margin-bottom: 1em;
 }
-@media (max-width: 900px){
-    .screen.reverse{
-        display: flex;
-      flex-direction: column-reverse ;
-    }
- 
-  }
+
 

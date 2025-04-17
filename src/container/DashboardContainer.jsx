@@ -14,10 +14,10 @@ import ErrorBoundary from '../ErrorBoundary.jsx'
 import { initGA,sendGAEvent } from '../core/ga4.js'
 function DashboardContainer(props){
     const location = useLocation()
-    useEffect(()=>{
-        initGA()
-        sendGAEvent("View-Dashboard","View Dashboard","Dashboard",0,true)   
-    },[])
+    // useEffect(()=>{
+    //     initGA()
+    //     sendGAEvent("View-Dashboard","View Dashboard","Dashboard",0,true)   
+    // },[])
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)
     const homeCol = useSelector(state=>state.books.collectionInView)

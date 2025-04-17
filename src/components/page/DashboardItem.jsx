@@ -21,11 +21,18 @@ import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
 import { debounce } from 'lodash'
 import { initGA,sendGAEvent } from '../../core/ga4'
+import { useMediaQuery } from 'react-responsive'
 function DashboardItem({page, book,isGrid}) {
+    const isPhone =  useMediaQuery({
+        query: '(max-width: 768px)'
+      })
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
     const pathParams = useParams()
     const location = useLocation()
+    useLayoutEffect(()=>{
+        initGA()
+    },[])
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
@@ -108,8 +115,9 @@ const deleteStc=()=>{
    })
 }}
 
-const hanldeClickComment=()=>{   
+const handleClickComment=()=>{   
   if(page){ 
+    sendGAEvent(`Click to Review- ${page.title}-${page.id}`,"Click Review","Review",0,false)
     navigate(Paths.page.createRoute(page.id))
 }
 }   
@@ -122,8 +130,9 @@ const header=()=>{
 
              
     <h6 className={`text-emerald-800
-     ml-1 pr-2 
-      no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
+    mx-2
+     
+      no-underline text-ellipsis  whitespace-nowrap overflow-hidden text-[0.9rem]`}
     onClick={()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
@@ -131,7 +140,9 @@ const header=()=>{
     }} >{` `+page.title.length>0?page.title:""}</h6></span>
 }
 const handleApprovalClick = ()=>{
+    page?sendGAEvent(`Click to Yea- ${page.title}-${page.id}`,"Click Yea","Review",0,false):null
     if(currentProfile){
+
         if(likeFound ){
          dispatch(deletePageApproval({id:likeFound.id})).then(res=>{
             checkResult(res,payload=>{
@@ -215,10 +226,10 @@ return <Button onClick={()=>{
         }><p>{title} {">"}</p></a>)
     }
     const bookmarkBtn =()=>{
-        return isGrid ?<div className='w-[100%]  py-2 my-auto flex flex-row justify-between  text-white '>
-            <ProfileCircle isGrid={isGrid} profile={page.author}/>
+        return isGrid ?<div className={`w-full  ${isPhone?"":"py-2"}  my-auto flex flex-row justify-between  text-white `}>
+            {isPhone?null:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
         <span className='bg-transparent flex flex-row '>
-            <h6 className={`text-white max-w-[15em] min-w-[10em] text-right ml-1 pr-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
+            <h6 className={`text-white ${isPhone?"":"  ml-1 pr-1"}  text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden max-w-full my-auto text-[0.9rem]`}
     onClick={()=>{
         navigate(Paths.page.createRoute(page.id))
     }}
@@ -259,7 +270,7 @@ return <Button onClick={()=>{
        bg-transparent py-2
        border-none mont-medium 
          '
-             onClick={()=>hanldeClickComment()}
+             onClick={()=>handleClickComment()}
                  >
           <h6 className='text-[1.2rem]'> Review</h6>
          </div>
@@ -322,21 +333,22 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
         return(
         <ErrorBoundary>
-                <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}>
-        <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
-               {!isGrid&&page?header():null}
-        {page.description && page.description.length>0?<div className='min-h-12 pt-4 p-2'>
+                <div className={isGrid?isPhone?"overall-hidden":"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}>
+        <div className={`shadow-md  ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
+               {!isGrid?header():null}
+        {page.description && page.description.length>0?<div className='h-16  md:p-2'>
             {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
-            <h6 className={`${isGrid?"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
+            <h6 className={`${!isGrid?"text-emerald-800":isPhone?"text-white overflow-scroll":"text-white "} p-2 mont-medium text-left `}>
                 {page.description}
             </h6>
         </div>:null}
        
              
-          <div className={isGrid?' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
+          <div className={isGrid?isPhone?" rounded-lg overflow-clip":' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
       <div onClick={()=>{
          navigate(Paths.page.createRoute(page.id))
-        }} >
+        }} 
+        className={isGrid?isPhone?"":"":isPhone?"":"max-h-[40em]"}>
           <PageDataElement  isGrid={isGrid} page={page}/>
           </div>
                 {buttonRow()}

@@ -1,6 +1,8 @@
 import { useState,useEffect} from "react";
 import checkResult from "../../core/checkResult";
+import { useLocation } from "react-router-dom";
 export default function usePersistentMyStoriesCache(fetchData) {
+    const pathname = useLocation().pathname
     const key = "cachedMyStories"
     const [stories, setStories] = useState(() => {
       const saved =localStorage.getItem(key);
@@ -24,7 +26,7 @@ export default function usePersistentMyStoriesCache(fetchData) {
        
         });
       
-    }, []);
+    }, [pathname]);
   
     return stories;
   }

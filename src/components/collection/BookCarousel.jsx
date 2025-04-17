@@ -57,13 +57,13 @@ export default function BookCarousel({images=[]}){
     <img
       src="https://img.daisyui.com/images/stock/photo-1559181567-c3190ca9959b.webp"
       className="w-full"
-      alt="Tailwind CSS Carousel component" />
+    />
   </div>
   <div className="carousel-item w-full">
     <img
       src="https://img.daisyui.com/images/stock/photo-1601004890684-d8cbf643f5f2.webp"
       className="w-full"
-      alt="Tailwind CSS Carousel component" />
+      />
   </div>
 </div>)
 }

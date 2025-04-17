@@ -7,7 +7,7 @@ import { useMediaQuery } from "react-responsive"
 export default function CommentThread({page,comments,level=0}){
    
 let sm =useMediaQuery({
-    query: '(max-width: 900px)'
+    query: '(max-width: 768px)'
   })
 if(comments.length>0){
     return(
@@ -30,7 +30,7 @@ if(comments.length>0){
                         {comments.map(com=>{
                             return(<div 
                                 key={com.id}
-                                className={`ml-1 sm:rounded-full  `}>
+                                className={`ml-1 sm:rounded-[15%]   `}>
                                     <Comment page={page} comment={com} level={level+1}/></div>)
                         })}
                       </InfiniteScroll>

@@ -13,7 +13,7 @@ export default function ProfileCard({profile,onClickFollow,following}){
     const [pending,setPending]=useState(false)
     const {id}=useParams()
     const isPhone =  useMediaQuery({
-        query: '(max-width: 600px)'
+        query: '(max-width: 768px)'
       })
     const [followersDialog,setFollowersDialog]=useState(false)
     const FollowDiv=({following,onClickFollow})=>{

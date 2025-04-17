@@ -75,7 +75,7 @@ if(col){
         b.index&&a.index&&b.index>a.index
      
              )
-     console.log("X",list)
+     
             setNewPages(list)
             }
             if(col.childCollections){ 
@@ -113,13 +113,10 @@ if(col){
       })
     
     }}
-    // useLayoutEffect(()=>{
-    //   if(canUserEdit)
-     
-    // },[canUserEdit])
+
     useLayoutEffect(()=>{
       getCol()
-    },[location.pathname,id])
+    },[location.pathname,id,currentProfile])
     useLayoutEffect(()=>{
       if(colInView&&currentProfile &&currentProfile.id){
         soCanUserEdit()

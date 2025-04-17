@@ -24,7 +24,7 @@ import bookmarkfill from "../../images/bookmarkfill.svg"
 import loadingGif from "../../images/loading.gif"
 import ErrorBoundary from "../../ErrorBoundary"
 import { initGA,sendGAEvent } from "../../core/ga4.js"
-
+import { Helmet } from "react-helmet"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
@@ -38,6 +38,7 @@ export default function CollectionContainer(props){
     const [isArchived,setIsArchived]=useState(false)
     const sightArr = [RoleType.commenter,RoleType.editor,RoleType.reader,RoleType.writer]
     const writeArr = [RoleType.editor,RoleType.writer]
+    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const [canUserAdd,setCanUserAdd]=useState(false)
     const [canUserEdit,setCanUserEdit]=useState(false)
     const [canUserSee,setCanUserSee]=useState(false)
@@ -656,6 +657,19 @@ const bookList=()=>{
     </div>
     </div>)
 }
+let header=()=>collection?<Helmet><title>{"A Plumbum Collection+ "+collection.title}</title>
+<meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
+<meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
+<meta property="og:description" content={collection.purpose.length>0?collection.purpose:"Explore events, workshops, and writer meetups on Plumbum."}/>
+<meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} /></Helmet>:
+<Helmet>
+<title>Plumbum Writers Collection + {id}</title>
+<meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
+<meta property="og:title" content="Plumbum Writers - Check this story out" />
+<meta property="og:description" content="Plumbum Writers the place for feedback and support." />
+<meta property="og:image" content="https://i.ibb.co/39cmPfnx/Plumnum-Logo.png" />
+<meta property="og:url" content={`${Enviroment.domain+location.pathname}`} /></Helmet>
+
 if(!collection||collection.id!==id){
     return(<div className=" flex flex-col ">  
     <div className="skeleton w-[96vw] mx-auto  bg-emerald-100  lg:w-info h-fit h-info mx-auto mt-4 mb-4 border-3 p-4 rounded-lg mb-8 "/>
@@ -666,7 +680,7 @@ if(collection&&canUserSee){
 
     return(<>
       <ErrorBoundary>
-    
+    {header()}
 <div className=" flex flex-col ">   
 
   <CollectionInfo collection={collection}/>
@@ -677,7 +691,7 @@ if(collection&&canUserSee){
             <div className=" mx-auto  max-w-[96vw] md:w-page  min-h-[20em]">     
             <h6 className="text-2xl mb-8 w-fit text-center  lora-bold text-emerald-800 font-bold pl-4">Pages</h6>
 
-        <PageList  isGrid={false} hasMore={hasMore} getMore={getMore} forFeedback={collection&&collection.type=="feedback"}/>
+        <PageList items={pagesInView}  isGrid={false} hasMore={hasMore} getMore={getMore} forFeedback={collection&&collection.type=="feedback"}/>
         </div>
     <ExploreList />
     </div> 
@@ -690,11 +704,13 @@ if(collection&&canUserSee){
     if(loading){
      
         return(<div>
+                {header()}
             <div className="skeleton h-fit w-[96vw] mx-auto lg:w-[50em] lg:h-[25em] bg-slate-100 mx-auto mt-4 sm:pb-8 p-4  bg-slate-50 rounded-lg mb-8 text-left"/>
         <div className=" max-w-[100vw] skeleton px-2 sm:max-w-[40em] bg-slate-100 mx-auto  h-40"/></div>)
     }
     if(!canUserSee){
         return(<div>
+                {header()}
             Made a wrong turn
         </div>)
     }else{

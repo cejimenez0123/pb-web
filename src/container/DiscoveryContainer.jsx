@@ -1,11 +1,11 @@
+
 import { useSelector,useDispatch} from 'react-redux'
-import DashboardItem from '../components/page/DashboardItem'
-import { useState,useEffect, useLayoutEffect } from 'react'
+import { useState,useEffect, useLayoutEffect, useContext } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
 import ErrorBoundary from '../ErrorBoundary'
 import {getPublicStories, setPagesInView } from '../actions/PageActions'
-import { getPublicBooks, getPublicCollections, setCollections } from '../actions/CollectionActions'
+import { getPublicCollections, setCollections } from '../actions/CollectionActions'
 import { getPublicLibraries} from '../actions/LibraryActions.jsx'
 import checkResult from '../core/checkResult'
 import { useMediaQuery } from "react-responsive"
@@ -13,18 +13,27 @@ import BookListItem from '../components/BookListItem'
 import grid from "../images/grid.svg"
 import stream from "../images/stream.svg"
 import { initGA,sendGAEvent } from '../core/ga4.js'
-import BookDashboardItem from '../components/collection/BookDashboardItem.jsx'
+import ListView from '../components/page/ListView.jsx'
+import ScrollDownButton from '../components/ScrollDownButton.jsx'
+import Context from '../context.jsx'
+import { useLocation, useNavigate } from 'react-router-dom'
+import Paths from '../core/paths.js'
+import { Helmet } from 'react-helmet'
+import GridView from '../components/page/GridView.jsx'
+import Enviroment from '../core/Enviroment.js'
 function DiscoveryContainer(props){
     
     useEffect(()=>{
         initGA()
-        sendGAEvent("Page View","Page View Discovery","Discovery",0,true)
+        sendGAEvent("View Discovery Page","Page View Discovery","Discovery",0,true)
    },[])
-   const cols = useSelector(state=>state.books.collections)
+    const {currentProfile}=useContext(Context)
+    const navigate = useNavigate()
+     const cols = useSelector(state=>state.books.collections)
     const books = useSelector(state=>state.books.books)
     const libraries = useSelector(state=>state.books.libraries)
     const [isGrid,setIsGrid] = useState(false)
-
+   const location = useLocation()
     const dispatch = useDispatch()
    
   
@@ -38,14 +47,22 @@ function DiscoveryContainer(props){
 
        let list = [...pagesInView,...cols].filter(item=>item).sort((a,b)=>{
            
-   
-            return ((a.priority*900005) + new Date(a.updated).getTime()) < ((b.priority*9000005) + new Date(b.updated).getTime())
+            if(a.priority || b.priority){
+                if(!b.priority){
+                    return false
+                }
+                if(!a.priority){
+                    return true
+                }
+                return a.priority > b.priority
+            }
+            return new Date(a.updated).getTime()<  new Date(b.updated).getTime()
             
-    
-               
+        })
+         setViewItems(list)       
     },[pagesInView,books])
-    setViewItems(list)
-    },[pagesInView,books])
+   
+    // },[pagesInView,books])
     useEffect(
         ()=>{
             if(!isNotPhone){
@@ -59,7 +76,7 @@ function DiscoveryContainer(props){
         dispatch(setPagesInView({pages:[]}))
         fetchContentItems()
         fetchLibraries()
-    },[])
+    },[currentProfile])
 
     const libraryForums = ()=>{
         if(libraries!=null){
@@ -115,122 +132,13 @@ function DiscoveryContainer(props){
 
         }
     }
-    const listView = ()=>{
-        if(viewItems){
-            const filteredItems = viewItems.filter(item => item);
-            return(<div 
-                className={`${isGrid?"":"w-[96vw] md:w-page"}  mx-auto `}
-                >
-                   <InfiniteScroll
-                dataLength={viewItems.length}
-                next={fetchContentItems}
-                scrollThreshold={1}
-                hasMore={false}
-                    >
-                   
-    <div 
-    className={`${
-        isGrid && isNotPhone ? ' grid-container' : ''
-      }`}
-    
-    >
-        { filteredItems.map((item, i) => {
-      const id = `${item.id}_${i}`;
 
-     
-      if (item && item.storyIdList && item.storyIdList.length > 0) {
-        return (
-          <div 
-            className={isGrid ? "grid-item" : "m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit"}
-            key={id}
-          >
-            <BookDashboardItem isGrid={isGrid} book={item} />
-          </div>
-        );
-      }
-
-   
-      if (item.data && !filteredItems.some(book => book && book.storyIdList && book.storyIdList.includes(stc=>stc.storyId==item.id))) {
-        return (
-          <div 
-            className={isGrid ? "grid-item" : "m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit"}
-            key={id}
-          >
-            <DashboardItem isGrid={isGrid} page={item} />
-          </div>
-        );
-      }
-
-      return null;
-    })}
-     
-                    {/* {viewItems.filter(item=>item).map((item,i)=>{
-                        const id = `${item.id}_${i}`
-                       
-                        if(item.storyIdList&&item.storyIdList.length>0&&!item.data){
-                        
-                            return(<div 
-                                className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
-                                key={id}
-                            >               
-                                <BookDashboardItem isGrid={isGrid} book={item}/>
-                            </div>)
-                        }else if(item.data){
-                      
-                        return(<div 
-                            className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
-                            key={id}
-                        >               
-                            <DashboardItem isGrid={isGrid} key={id} page={item}/>
-                        </div>)
-                        }else{
-                            return (null)
-                    
-                    }})} */
-                    }
-                    </div>
-                </InfiniteScroll> </div>)
-        }
-    }
-    const pageList = ()=>{
-        if(pagesInView!=null){
-            return(<div 
-            className={`${isGrid?"":"w-[96vw] md:w-page"}  mx-auto `}
-            >
-               <InfiniteScroll
-            dataLength={pagesInView.length}
-            next={fetchContentItems}
-            scrollThreshold={1}
-            hasMore={false}
-                >
-               
-<div 
-className={`${
-    isGrid && isNotPhone ? ' grid-container' : ''
-  }`}
-
->
- 
-                {pagesInView.filter(page=>page).map((page,i)=>{
-
-                    const id = `${page.id}_${i}`
-                    return(<div 
-                        className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
-                        key={id}
-                    >               
-                        <DashboardItem isGrid={isGrid} key={id} page={page}/>
-                    </div>)
-                })}
-                </div>
-            </InfiniteScroll> </div>)
-        }
-    }
     const fetchContentItems = ()=>{
             dispatch(setPagesInView({pages:[]}))
             dispatch(setCollections({collections:[]}))
             dispatch(getPublicStories())
             dispatch(getPublicCollections())
-            dispatch(getPublicBooks())  
+            // dispatch(getPublicBooks())  
         
     }
     const fetchLibraries = ()=>{
@@ -248,14 +156,22 @@ className={`${
 
             setIsGrid(bool)
             if(bool){
-                sendGAEvent("Click","Click Grid View Discovery","Grid Icon",0)
+                sendGAEvent("Click Grid View Discovery","Click Grid View Discovery","Grid Icon",0)
              
             }else{
-                sendGAEvent("Click","Click Stream View Discovery","Stream Icon",0)
+                sendGAEvent("Click Stream View Discovery","Click Stream View Discovery","Stream Icon",0)
             }
         }
         return(
             <ErrorBoundary>
+                <Helmet>   
+      <title>{"Plumbum Writers"}</title>
+       <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
+      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
+      <meta property="og:description" content="Explore events, workshop projects together, and join other writers." />
+ 
+      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} />
+    </Helmet>
             <div 
 
             className=' max-w-[100vw] mt-4' >
@@ -269,7 +185,7 @@ className={`${
                 {bookList()} 
                 </div>
                 <div className='flex max-w-[96vw] md:w-page mx-auto flex-col '>
-                    
+                    <span className='flex flex-row'>
 
                         <h3 className=' text-emerald-900
                                         font-extrabold 
@@ -279,7 +195,8 @@ className={`${
                                         lora-bold
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
-                        {isNotPhone?<div className='flex flex-row pb-8'><button onClick={()=>onClickForGrid(true)}
+                        {/* {isNotPhone? */}
+                        <div className='flex flex-row md:pb-8'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
                                             ml-2 mr-0 px-1 border-none py-0'>
                                 <img src={grid}/>
@@ -287,11 +204,13 @@ className={`${
                         <button onClick={()=>onClickForGrid(false)}
                                 className='bg-transparent border-none px-1 py-0'>
                                     <img src={stream}/>
-                        </button></div>:null}
+                        </button></div>
+                        </span>
+                        {/* :null} */}
                         </div>
 <div className='max-w-screen'>
-    {listView()}
-                   
+    {/* {listView()} */}
+                   {!isGrid?<ListView items={viewItems}/>:<GridView items={viewItems}/>}
                   
                     </div>
                     </div>
@@ -302,6 +221,10 @@ className={`${
                    
                     </div>
                     </div>
+                    {!currentProfile?<ScrollDownButton  text={"Join the community"} onClick={()=>{
+                        sendGAEvent("Navigate to Apply","Navigate to Apply","Join the community",0,false)
+                        navigate(Paths.apply())
+                    }}/>:null}
                     </div>
             </ErrorBoundary>
         )

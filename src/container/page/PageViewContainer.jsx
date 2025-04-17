@@ -13,23 +13,24 @@ import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
 import Enviroment from "../../core/Enviroment.js";
 import { initGA,sendGAEvent } from "../../core/ga4.js";
-import Paths from "../../core/paths.js";
+
 import checkResult from "../../core/checkResult.js";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
     const location = useLocation()
     const page = useSelector(state=>state.pages.pageInView)
     const pathParams = useParams()
-   const {id}=pathParams
+    const {id}=pathParams
     const dispatch = useDispatch()
-
+    const [pending,setPending]=useState(true)
     const [canUserSee,setCanUserSee]=useState(false)
+    const [canUserEdit,setCanUserEdit]=useState(false)
     const comments = useSelector(state=>state.comments.comments)
     const [rootComments,setRootComments]=useState([])
     useLayoutEffect(()=>{
         initGA()
         if(page){
-            sendGAEvent("Page View",`View Story-${id} `,"View Page",0,true)
+            sendGAEvent(`View story -${page.title}-${page.id}`,`View Story-${id} `,"View Page",0,true)
 
         }
            },[])
@@ -48,7 +49,9 @@ export default function PageViewContainer(props){
                 }
             }}
     },[])
-    useLayoutEffect(()=>{   soCanUserSee() },[currentProfile,page])
+    useLayoutEffect(()=>{   
+        soCanUserSee() 
+     },[currentProfile,page])
     useLayoutEffect(()=>{
         dispatch(getStory(pathParams)).then(res=>{
             checkResult(res,payload=>{
@@ -59,6 +62,7 @@ export default function PageViewContainer(props){
         })
         dispatch(fetchCommentsOfPage(pathParams))
     },[id,currentProfile])
+
     useLayoutEffect(()=>{
         setRootComments(comments?comments.filter(com=>com.parentId==null):[])
      },[comments])
@@ -66,25 +70,29 @@ export default function PageViewContainer(props){
 
      const soCanUserSee=()=>{
         if(page){
-  
             if(!page.isPrivate){
                 setCanUserSee(true)
+                setPending(false)
                 return
             }
             if(currentProfile){
                 
                 if(page.authorId==currentProfile.id){
                 setCanUserSee(true)
+                setPending(false)
                 return
                 }
             if(page.betaReaders){
-         
+                let found = page && page.betaReaders?page.betaReaders.find(role=>currentProfile && role.profileId==currentProfile.id):null
+                setCanUserSee(found)
+                setPending(false)
                 return
             }}
         }
      }
 
     const pageDiv = ()=>{
+       
      if(page){
 
      
@@ -93,13 +101,9 @@ export default function PageViewContainer(props){
         return (<div><dib className="skeleton w-[96vw] mx-auto md:w-page bg-emerald-50 h-page"/></div>)
      }
     }
-    let description =""
-    if(page){
-     description = page.data
-    if(page.data.length>200){
-        description = page.data.slice(0,200)
-    }
-}
+
+ 
+
 useLayoutEffect(()=>{
     if(page){
         let soo = seo
@@ -109,13 +113,27 @@ useLayoutEffect(()=>{
     }
 },[])
 
-    return(<div className="  mx-auto">
-     
+    return(<div className="  mx-auto"> 
         <ErrorBoundary >
+        <Helmet>
+      {page?<><title>{"A Plumbum+Story:"+page.title+" from "+page.author.username}</title>
+       <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
+      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
+      <meta property="og:description" content={page.description.length>0?page.description:"Explore events, workshops, and writer meetups on Plumbum."}/>
+      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} /></>:
+      <>
+  <title>Plumbum Writers-Story:{id}</title>
+  <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
+  <meta property="og:title" content="Plumbum Writers - Check this story out" />
+  <meta property="og:description" content="Plumbum Writers the place for feedback and support." />
+  <meta property="og:image" content="https://i.ibb.co/39cmPfnx/Plumnum-Logo.png" />
+  <meta property="og:url" content="https://plumbum.app/events" /></>
+}  </Helmet>
+
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
     <>
-    {pageDiv()}</>:<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>}
+    {pageDiv()}</>:pending?<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex max-w-[96vw] max-w-[96vw] mx-auto md:w-page h-pag"><h1 className="mont-medium my-12 mx-auto">Took a Wrong turn</h1></div>}
     
     <CommentThread page={page} comments={rootComments}/>
     </div> 

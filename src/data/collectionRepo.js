@@ -92,6 +92,7 @@ import Enviroment from "../core/Enviroment";
             {id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},{headers:{
                 Authorization:"Bearer "+localStorage.getItem("token")
             }})
+            console.log("SCC",res)
             return res.data
         }
 

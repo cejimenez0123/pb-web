@@ -1,9 +1,8 @@
 import { useState,useLayoutEffect,useEffect, useContext } from "react"
 import { useDispatch} from "react-redux"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import bookmarkFill from "../../images/bookmark_fill_green.svg"
 import bookmarkAdd from "../../images/bookmark_add.svg"
-
 import { addStoryListToCollection,deleteStoryFromCollection } from "../../actions/CollectionActions"
 import { setEditingPage } from "../../actions/PageActions.jsx"
 import Paths from "../../core/paths"
@@ -14,11 +13,13 @@ import { debounce } from "lodash"
 import { RoleType } from "../../core/constants"
 import Enviroment from "../../core/Enviroment.js"
 import { initGA,sendGAEvent } from "../../core/ga4.js"
-export default function PageViewButtonRow({page,profile,setCommenting}){
+import ErrorBoundary from "../../ErrorBoundary.jsx"
+export default function PageViewButtonRow({page,setCommenting}){
     const {setSuccess,currentProfile,setError}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [canUserEdit,setCanUserEdit]=useState(false)
     const [canUserComment,setCanUserComment]=useState(false)
     const [loading,setLoading]=useState(false)
     const [bookmarked,setBookmarked]= useState(null)
@@ -26,7 +27,13 @@ export default function PageViewButtonRow({page,profile,setCommenting}){
     useLayoutEffect(()=>{
         initGA()
     },[])
-  
+    useLayoutEffect(()=>{
+        soCanUserComment()
+        soCanUserEdit()
+    },[page,currentProfile])
+    useEffect(()=>{
+        setCommenting(comment)
+       },[comment])
     useLayoutEffect(()=>{
         if(currentProfile && page){
             let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
@@ -85,28 +92,42 @@ checkResult(res,payload=>{
       
             sendGAEvent( "Copy Share Link","Share"+`+${page.id}`,"Share",0,false)
  
-   
+
         navigator.clipboard.writeText(Enviroment.domain+Paths.page.createRoute(page.id))
                                 .then(() => {
-                                    // Successfully copied to clipboard
-                                    alert('Text copied to clipboard');
+                                    setSuccess("Ready to share")
+                                   
                                   })
     }
     const soCanUserComment=()=>{
-        let roles = [RoleType.commenter,RoleType.editor,RoleType.writer]
-        if(currentProfile){
+        const roles = [RoleType.commenter,RoleType.editor,RoleType.writer]
+        if(currentProfile&&page){
             if(currentProfile.id==page.authorId){
                 setCanUserComment(true)
-                return
+                return null
             }
         if(page.commentable){
             setCanUserComment(true)
-            return
+            return null
         }
         if(page.betaReaders){
-           let found = page.betaReaders.find(rTc=>rTc.profileId==currentProfile.id&&roles.includes(rTc.role))
+            const found = page.betaReaders.find(rTc=>rTc.profileId==currentProfile.id&&roles.includes(rTc.role))
             setCanUserComment(found)
-            return
+            return null
+        }
+    }}
+    function soCanUserEdit(){
+      const roles = [RoleType.editor]
+        if(currentProfile&&page){
+            console.log(page)
+            if(currentProfile.id==page.authorId){
+                setCanUserEdit(true)
+                return null
+            }
+            if(page.betaReaders){
+                let found = page.betaReaders.find(rTc=>rTc.profileId==currentProfile.id&&roles.includes(rTc.role))
+                setCanUserEdit(found)
+            return null
         }
     }
     }
@@ -135,11 +156,10 @@ checkResult(res,payload=>{
         setError("Please Sign Up")
         }
     }
-    useLayoutEffect(()=>{
-        soCanUserComment()
-    },[page])
+
     const handleBookmark=debounce((e)=>{
-      
+            if(currentProfile){
+               
             e.preventDefault()
              if(bookmarked){
                  deleteStc()
@@ -147,13 +167,10 @@ checkResult(res,payload=>{
                  onBookmarkPage()
          
              }
-         
+            }else{ setError("Please Sign Up")}
     },10)
-   useEffect(()=>{
-
-    setCommenting(comment)
-   },[comment])
-    return(<div className='flex-row flex text-white'>
+  
+    return(<ErrorBoundary><div className='flex-row flex text-white'>
     <div   onClick={handleApprovalClick} className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow flex-1/3`}>
      <div 
    
@@ -169,7 +186,7 @@ checkResult(res,payload=>{
     <div
     className="  text-white  py-2 border-none bg-transparent rounded-none  "
        disabled={!canUserComment} 
-        onClick={()=>{setComment(!comment)}}>
+        onClick={()=>{currentProfile?setComment(!comment):setError("Please Sign Up")}}>
     <h6 className="text-xl">
         Discuss</h6>
     </div>
@@ -178,17 +195,21 @@ checkResult(res,payload=>{
 <div tabIndex={0} role="button" className="         text-white  text-center mx-auto py-2 bg-transparent  border-none  "> <h6 className="text-xl   border-none bg-transparent text-white mx-auto my-auto">Share</h6></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-emerald-800 menu bg rounded-box z-[1] w-52  shadow">
 <li>
-<a disabled={!profile} 
+<a disabled={!currentProfile} 
 className=' text-emerald-800 '
 
 onClick={()=>{
-navigate(Paths.addStoryToCollection.story(page.id))
+if(currentProfile &&localStorage.getItem("token")){
+    navigate(Paths.addStoryToCollection.story(page.id))
+}else{
+    setError("Please Sign Up")
+}
 
 }}> 
                 Add to Collection
 
 </a></li>
- {currentProfile && currentProfile.id == page.authorId? <li> <a
+ {canUserEdit? <li> <a
             className=' text-emerald-800 '
            onClick={()=> {
             dispatch(setEditingPage({page}))
@@ -203,14 +224,9 @@ navigate(Paths.addStoryToCollection.story(page.id))
         >
               Copy Share Link
             </a></li>
-           <li> {(currentProfile && currentProfile.id == page.profileId )?
-<a onClick={()=>{
-    dispatch(setPageInView({page}))
-    dispatch(setEditingPage({page}))
-    navigate(Paths.editPage.createRoute(page.id))}}>Edit</a>:<div></div>}
-</li>
-<li> <button
-onClick={handleBookmark}
+
+<li > <button
+onClick={()=>handleBookmark()}
 className=" text-emerald-800 border-none flex bg-transparent"
 disabled={!currentProfile}> 
 {!loading?(bookmarked?
@@ -219,5 +235,5 @@ disabled={!currentProfile}>
 </button></li>
 </ul>
 </div>
-</div>)
+</div></ErrorBoundary>)
 }

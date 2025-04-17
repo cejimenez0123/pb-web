@@ -5,7 +5,6 @@ import { debounce } from "lodash";
 import validateEmail from "../core/validateEmail";
 import authRepo from "../data/authRepo";
 import { initGA,sendGAEvent } from "../core/ga4";
-import events from "../images/icons/event.svg"
 import { Dialog,DialogTitle,DialogContent,DialogActions,Button } from "@mui/material";
 import Enviroment from "../core/Enviroment";
 import Context from "../context";
@@ -15,31 +14,51 @@ import { useMediaQuery } from "react-responsive"
 import { useLayoutEffect } from "react"
 import { Helmet } from "react-helmet";
 import NewsletterContainer from "./auth/NewsletterContainer";
+import ApplyContainer from "./auth/ApplyContainer";
+import "../App.css"
+import ScrollDownButton from "../components/ScrollDownButton";
+import { useLocation } from "react-router-dom";
+import useScrollTracking from "../core/useScrollTracking";
 export default function CalendarContainer(){
-
+  const location = useLocation()
   useEffect(()=>{
     initGA()
-    sendGAEvent("View Page - Calendar","View Calendar","Calendar",0,true) 
+    // sendGAEvent("View Page","View Calendar","Calendar",0,true) 
   },[])
-return(<div className="mx-auto m-4 w-fit text-center">
-     <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
-    <div className="">
-       
-    <CalendarEmbed/>
-    <Collapsible buttonText={"Sign up for newsletter!"}>
-  <NewsletterContainer/>
-  </Collapsible>
-<Collapsible buttonText={"Submit Event"}>
- 
-  <SubmitEvent/>
-  </Collapsible>
-   
+  return (
+    <div className="mx-auto m-4 w-fit text-center">
+      <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
+      <p className="mb-4 max-w-prose text-sm mont-medium text-emerald-600">
+        Get weekly writing events in your inbox, or go deeper: apply to become a user and share your own writing and feedback on our site.
+      </p>
+  
+      <CalendarEmbed />
+  
+      <div className="mt-6 space-y-4">
+        <Collapsible buttonText="📰 Join the weekly newsletter">
+          <NewsletterContainer />
+          <p className="text-xs mt-2 text-emerald-500">
+            We’ll send you a weekly list of events and updates.
+          </p>
+        </Collapsible>
+  
+        <Collapsible buttonText="✍️ Apply to post & get feedback">
+          <h6 className="text-sm mont-medium text-emerald-700 mb-2">
+          Join a rhythm of shared writing — post your work, receive feedback, and connect in small, supportive groups.
+          </h6>
+     <ApplyContainer/>
+        
+        </Collapsible>
+      </div>
+      <ScrollDownButton/>
     </div>
-    </div>
-)
+  );
+
 }
 const CalendarEmbed = () => {
+  useScrollTracking({name:"Calendar"})
+  const location = useLocation()
     let sm =useMediaQuery({
         query: '(max-width: 400px)'
       })
@@ -95,16 +114,19 @@ const [email,setEmail]=useState("")
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
    
    return(<div className="max-w-[100vw]">
+      <Helmet>
+<head>
+  <meta charset="UTF-8" />
 
-<Helmet>
-      {/* Title and Description */}
-      <title>{"Plumbum NYC CALENDAR"}</title>
-       <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
-      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
-
-      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} />
-    </Helmet>
-  
+  <title>Plumbum (Calendar) - Your Writing, Your Community</title>
+  <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
+  <meta property="og:title" content="Plumbum Events - Connect and Grow" />
+  <meta property="og:description" content="Explore events, workshops, and writer meetups on Plumbum." />
+  <meta property="og:image" content="https://i.ibb.co/39cmPfnx/Plumnum-Logo.png" />
+  <meta property="og:url" content="https://plumbum.app/events" />
+ 
+</head>
+</Helmet>
 
     
         <form className="my-8 mx-2">
@@ -175,14 +197,25 @@ rounded-full border-none py-2 text-white my-12`}>
   
     
 
-const Collapsible = ({children,buttonText}) => {
+const Collapsible = ({children,buttonText,sendGA=sendGAEvent}) => {
   const [isOpen, setIsOpen] = useState(false);
+  useEffect(()=>{
+    if(isOpen){
+      
+    }
+  },[isOpen])
+  const handleOpen=()=>{
+    sendGA(`${isOpen?"Closing":"Opening"} Collapsible ${buttonText}`,"View Collapse",buttonText,0,false) 
 
+    setIsOpen(!isOpen)
+      }
   return (
     <div className="w-full max-w-[100vw] lg:max-w-[50em] mx-auto">
       <div
-        onClick={() => setIsOpen(!isOpen)}
-        className=" text-white px-4 py-2 mont-medium text-emerald-800 mb-4 collapse-arrow rounded-lg mt-8 transition-transform duration-300 hover:bg-emerald-200"
+        onClick={() => {handleOpen()
+          
+          }}
+        className={` text-white px-4 py-2 mont-medium text-emerald-800 mb-4 collapse-arrow ${isOpen ? 'collapse-open' : ''}rounded-lg mt-8 transition-transform duration-300 hover:bg-emerald-200`}
       >
           <h3 className="text-lg collapse-title  mont-medium text-emerald-800   font-semibold">        {buttonText?buttonText:isOpen ? 'Hide Content' : 'Show Content'}</h3></div>
 

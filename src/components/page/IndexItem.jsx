@@ -15,11 +15,11 @@ function IndexItem({item,handleFeedback}) {
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
-
+  
     const [canUserAdd,setCanUserAdd]=useState(false)
     useLayoutEffect(()=>{
       initGA()
-    })
+    },[])
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -30,19 +30,20 @@ function IndexItem({item,handleFeedback}) {
     },[item])
     const copyShareLink=()=>{
       if(item && item.storyIdList){
-        sendGAEvent("Share","Copy Share Link = Collection-"+`${item.id}`,item.title,0,false)
+        sendGAEvent("Copy Share Link",`Share Link Collection:${item.title}`)
    
       navigator.clipboard.writeText(Enviroment.domain+Paths.collection.createRoute(item.id))
                               .then(() => {
-                                  // Successfully copied to clipboard
+                      
                                   alert('Text copied to clipboard');
                                 })
 
       }else{
-        sendGAEvent("Share","Copy Share Link = Story-"+`${item.id}`,item.title,0,false)
+        sendGAEvent("Copy Share Link",`Share Link Story:${item.title}`)
+
       navigator.clipboard.writeText(Enviroment.domain+Paths.page.createRoute(item.id))
                               .then(() => {
-                                  // Successfully copied to clipboard
+                      
                                   alert('Text copied to clipboard');
                                 })
   }}

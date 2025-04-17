@@ -75,8 +75,8 @@ function NavbarContainer(props){
       dispatch(searchDialogToggle({open:true}))
     }
     const handleCloseNavMenu = (page) => {
-
-      sendGAEvent("Click Nav","Click "+page,page,0,false)
+      sendGAEvent("Click Nav Menu",`Click Horiz Nav ${page}`)
+    
       if(page==PageName.login){
           navigate(Paths.login())                    
       }else if(page===PageName.discovery){
@@ -159,7 +159,9 @@ function NavbarContainer(props){
       const menuDropdown=()=>{
         return(
         <div className="dropdown  lg:hidden">
-          <div tabIndex={0} role="button" className="btn btn-ghost ">
+          <div tabIndex={0} onTouchEnd={()=>{
+            sendGAEvent("Click Nav Menu","Click Mobile Nav Menu",null,null,false)
+          }}role="button" className="btn btn-ghost ">
             <img src={menu}/>
     
           </div>

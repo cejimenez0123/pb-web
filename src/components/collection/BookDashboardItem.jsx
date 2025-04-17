@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import "../../Dashboard.css"
-import { deletePageApproval,   setEditingPage,   setPageInView, setPagesInView, } from '../../actions/PageActions'
+import { deletePageApproval } from '../../actions/PageActions'
 import { createPageApproval } from '../../actions/PageActions'
 import {useDispatch, useSelector} from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -17,10 +17,12 @@ import PageDataElement from '../page/PageDataElement'
 import ProfileCircle from '../profile/ProfileCircle'
 import { addStoryListToCollection, deleteStoryFromCollection } from '../../actions/CollectionActions'
 import Context from '../../context'
-import Enviroment from '../../core/Enviroment'
-import ErrorBoundary from '../../ErrorBoundary'
 import { debounce } from 'lodash'
+import { useMediaQuery } from 'react-responsive'
 function BookDashboardItem({book,isGrid}) {
+      const isPhone =  useMediaQuery({
+    query: '(max-width: 768px)'
+  })
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
     const pathParams = useParams()
@@ -60,7 +62,7 @@ const deleteStc=()=>{
 
 const header=()=>{
 
-   return isGrid?null:<span className={"flex-row flex justify-between w-[96vw]  md:w-page px-1 rounded-t-lg  pt-2 pb-1"}>  
+   return isGrid?null:<span className={"flex-row flex justify-between w-[96vw]  md:w-page px-1   pt-2 pb-1"}>  
 <ProfileCircle isGrid={isGrid} profile={book.profile}/>
 
 
@@ -131,15 +133,16 @@ return <Button onClick={()=>{
    
     }
     const bookmarkBtn =()=>{
-        return isGrid ?<div className='w-[100%]  py-2 my-auto flex flex-row justify-between  text-white '>
-            <ProfileCircle isGrid={isGrid} profile={book.profile}/>
-        <span className='bg-transparent flex flex-row '>
+        return isGrid ?<div className='w-[100%]  md:py-2 my-auto flex flex-row justify-between text-white '>
+          {!isPhone?  <ProfileCircle isGrid={isGrid} profile={book.profile}/>:null}
+        {/* <span className='bg-transparent flex flex-row '> */}
             <h6 
             onClick={()=>{
                 navigate(Paths.collection.createRoute(book.id))
             }}
-            className={`text-white max-w-[15em] min-w-[10em] text-right ml-1 pr-1  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
->{` `+book.title.length>0?book.title:""}</h6><img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
+            className={`${isPhone?"flex justify-between w-[100%]":" ml-1 pr-1 "}  text-white w-full  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]`}
+>{` `+book.title.length>0?book.title:""}</h6><img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/>
+{/* </span> */}
     
     </div>:null
     }
@@ -159,30 +162,31 @@ const Carousel = ({book})=>{
       
         return(
             
-                
-        <div className={isGrid?"carousel  ":" max-w-[94.5vw] carousel md:w-page "}>
+          
+        <div className={`carousel  rounded-box pt-2 overflow-x-auto pr-6
+
+         ${isPhone?"":""} ${isGrid?isPhone?`w-grid-mobile p-1 bg-emerald-700 `:`bg-emerald-700`:  ` max-w-[94.5vw]   md:w-page`}`}>
      
        {book.storyIdList.map((stc,i)=>{
         if(stc && stc.story){
 
       
         return(
-        <div  className={`carousel-item min-w-[100%] h-[100%] flex flex-col justify-center
-         ${isGrid?"max-w-[100%]":" max-w-[95vw]  md:w-[49.5em] "}`}
+            // carousel-item
+        <div  className={`  carousel-item  flex flex-col ${isPhone?"h-full  overflow-hidden":""}  ${isGrid?isPhone?"w-grid-mobile-content max-h-full px-2    ":"":" max-w-[95vw]   md:w-[49.5em] "}`}
          id={stc.id} key={stc.id}
 
 >
-<h5  onClick={()=>{
-    navigate(Paths.page.createRoute(stc.story.id))
-}} className={ `${isGrid?"text-white":"text-emerald-800"} mont-medium text-emerald-800 bottom-0 mx-2 text-left`}>{stc.story.title}</h5>
-    {stc.story.description && stc.story.description.length>0?<div className='min-h-12 pt-4 p-2'>
+<h5  id="desc"className={ `${isPhone?"top-0 h-12 ml-2  ":" bottom-0 "} ${isGrid?isPhone?" text-white   ":"text-white":"text-emerald-800"} mont-medium   text-left`}><span className='px-2'>{stc.story.title}</span></h5>
+    {stc.story.description && stc.story.description.length>0?<div className=' p-1 2 md:pt-4 p-2'>
             {stc.story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
-            <h6 className={`${isGrid?"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
+            <h6 className={`${isGrid?isPhone?"max-h-8 m-1 p-1 overflow-scroll text-white":"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
                 {stc.story.description}
             </h6>
         </div>:null}
+        <span className={`max-h-[50rem] ${isPhone?isGrid?'w-grid-mobile-content  overflow-hidden':" h-[20em]":""}`}>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
-
+       </span>
         </div>)}else{
             return null
         }})}
@@ -202,10 +206,10 @@ const Carousel = ({book})=>{
     
         return(
         // <ErrorBoundary>
-        <div className={`${isGrid?"grid-item":""}`}>
-                <div className={isGrid?"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page  shrink my-2 h-fit'}>
+        <div className={` ${isGrid?isPhone?"overflow-y-hidden  m-1 ":'':``} ${isPhone?" overall-hidden":""} rounded-lg    flex justify-between flex-col   pt-1`}>
+                 <div className={isGrid?isPhone?" shadow-md ":"shadow-md bg-emerald-700  ":'relative w-[96vw]  overflow-clip shadow-md md:w-page  shrink my-2 '}>
            
-        <div className={`shadow-sm ${isGrid?"bg-emerald-700 rounded-lg text-white h-fit min-h-56   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
+        <div className={`shadow-sm ${isGrid?"overflow-hidden bg-emerald-700  text-white ":"bg-emerald-100 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&book?header():null}
         {book.description && book.description.length>0?<div className='min-h-12 pt-4 p-2'>
             {/* {book.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null} */}
@@ -214,9 +218,9 @@ const Carousel = ({book})=>{
             </h6>
         </div>:null}
        
-             
-          <div className={isGrid?' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
-     
+{/*              
+          
+      */}
             <Carousel book={book}/>
         
         
@@ -227,12 +231,9 @@ const Carousel = ({book})=>{
                 </div>
                 <div>
             
+        
+                      
                 </div>
-              
-          
-              
-               
-  </div>
   </div>
   </div>
 //  </ErrorBoundary>

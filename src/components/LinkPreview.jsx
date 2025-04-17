@@ -4,11 +4,12 @@ import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
 import "../App.css"
 import axios from 'axios';
-import { getLinkPreview, getPreviewFromContent } from "link-preview-js";
+import { getLinkPreview, } from "link-preview-js";
 import { useNavigate } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 async function fetchLinkPreview(url) {
   try {
-    const data = await getLinkPreview(url);
+    const data = await getLinkPreview(Enviroment.proxyUrl+url);
     return data;
   } catch (error) {
     console.error('Error fetching link preview:', error);
@@ -16,27 +17,34 @@ async function fetchLinkPreview(url) {
   }
 }
 function LinkPreview({ url,isGrid}) {
+  const isPhone =  useMediaQuery({
+    query: '(max-width: 768px)'
+  })
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-const navigate = useNavigate()
+
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
   useLayoutEffect(() => {
 
     if(!url.includes('https://open.spotify.com/')){  
-    fetchData(url).then(data=>{
-
-    })
+    fetchLinkPreview(url).then(res=>{})
     return 
 }}, [url]);
 
-const fetchData = async (url) => {
+const fetchLinkPreview = async (url) => {
   try {
+    if(!url.includes("http")){
     getLinkPreview(`${url}`, {
-      resolveDNSHost: async (xurl) => {
+      resolveDNSHost: async (url) => {
         return new Promise((resolve, reject) => {
           const hostname = new URL(url).hostname;
-          axios(`https://dns.google/resolve?name=${hostname}`)
+          axios(`https://dns.google/resolve?name=${hostname}`,{headers:headers})
           .then(response =>{ 
-            console.log(response)
+          
           resolve(response.data)
           })
           .catch(err=>{
@@ -46,33 +54,40 @@ const fetchData = async (url) => {
              });
     
       },
-    }).then(data=>{
-   console.log(data)
-         setPreviewData({
-          title:data.title,
-          description:data.description,
-          image:data.images[0],
-      });
-      setLoading(false)
+    }).then(response=>{
+  
+    fetchData(url).then(res=>{
+
+    }).catch(err=>{
+      console.log(err)
     })
-    // .catch((e) => {
-      // will throw a detected redirection to localhost
-    // });
-    // const headers = {
-    //   "Access-Control-Allow-Origin": "*",
-    //   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    //   "Access-Control-Allow-Headers": "Content-Type",
-    // };
-
-    // const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
-    //   headers: headers,
-
-    // }
-    // )
-    // ;
-    // let data = await response.text()
+    })
 
 
+}else{
+      fetchData(url).then(res=>{
+
+      }).catch(err=>{
+        console.log(err)
+      })
+
+    }
+
+
+  }catch(err){
+    console.log(err)
+  }}
+const fetchData = async (url) => {
+  try {
+
+    const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
+      headers: headers,
+    }
+    )
+    ;
+    
+    const data = await response.text();
+    
     const isYouTubeVideo = isYouTubeURL(url);
     if (isYouTubeVideo) {
       const videoId = extractYouTubeVideoId(url);
@@ -83,40 +98,39 @@ const fetchData = async (url) => {
         videoThumbnail,
       });
       setLoading(false);
-    
     } else {
-      // const parser = new DOMParser();
-  
-      // const doc = parser.parseFromString(data, 'text/html');
+      const parser = new DOMParser();
+      
+      const doc = parser.parseFromString(data, 'text/html');
+      
+      let title = doc.querySelector('title')?.textContent || '';
+      const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+      let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
      
-      // let title = doc.querySelector('title')?.textContent || '';
-      // const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-      // let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
      
-      // if (!image) {
-      //   if(!image){
-      //   const imgElement = doc.querySelector('img');
+        if(!image){
+        const imgElement = doc.querySelector('img');
 
-      //   if (imgElement) {
-      //     image = imgElement.getAttribute('src') || '';
-      //   }
+        if (imgElement) {
+          image = imgElement.getAttribute('src') || '';
+        }
 
-      // }
-      // }
-  
-      // setPreviewData({
-      //     title,
-      //     description,
-      //     image,
-      // });
+      }
+      
+    console.log(image)
+      setPreviewData({
+          title,
+          description,
+          image,
+      });
  
     
-      // setLoading(false);
+      setLoading(false);
     }
   } catch (error) {
     setLoading(false);
   }
-}
+};
   const handleClick = () => {
     window.open(url, '_blank');
   };
@@ -131,10 +145,10 @@ const fetchData = async (url) => {
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      // +isGrid?" rounded-lg   mx-auto   ":
-      <div  className={isGrid?"spotify rounded-box max-w-[100%]":"spotify w-[96vw] md:w-page"} 
+    
+      <div  className={isGrid?"spotify rounded-box ":"spotify mb-1 w-[96vw] md:w-page"} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"} style={{minHeight:"27.5em"}} className="bg-emerald-200 max-h-[20em]"
+        <Spotify width={"90%"} wide={isGrid&&isPhone} className="bg-emerald-200 "
          link={url}/>
       </div>)
   }
@@ -151,16 +165,16 @@ const fetchData = async (url) => {
   if (previewData.videoId) {
     return (
     
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className="w-[96vw] md:w-page 
-       "src={previewData.videoThumbnail} alt="Video Thumbnail" />
+        <img onClick={handleClick} style={{ cursor: 'pointer' }} className={isGrid?"":"w-[96vw] md:w-page"}src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
   }
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
-    return(<div>
-      {previewData.image && <a href={`${url}`}><img  className={isGrid?"rounded-lg pt-8 w-fit  overflow-hidden mx-auto":"  rounded-t-lg w-[100%] "}src={previewData.image}  alt="Link Preview" /></a>}
-    </div>)
+    return previewData.image && <a href={`${url}`} className={isGrid?'w-[36em]':""}><img  
+      className={isGrid?isPhone?"rounded-lg pt-4  overflow-hidden mx-auto":" ":" overflow-hidden h-[100%]] mx-auto rounded-lg"}
+
+      src={previewData.image}  alt={previewData.title} /></a>
     }else{
        return (
         <div className='spotify rounded-box w-[96vw] md:w-page'>
@@ -177,15 +191,18 @@ const fetchData = async (url) => {
     }
   }
   const previewDescription=()=>{
+    if(!isPhone&&!isGrid){
     if(previewData.title!=="Spotify"){
-      return(<h6 className={isGrid?" overflow-scroll pt-2  px-1 mx-auto":'text-slate-800 pt-8  p-3 bg-emerald-200  text-[0.8rem]'} >{previewData.description}</h6>)
+      return(<h6 
+       className={isGrid?" overflow-scroll pt-2  px-1 mx-auto":'text-slate-800 p-3 bg-emerald-200  text-[0.8rem]'}
+       >{previewData.description}</h6>)
       }else{
         return(<h6 className={'text-slate-800 py-4  top-1 p-3 bg-emerald-200  text-[0.8rem]'}>{previewData.description}</h6>)
       }
+    }
   }
-
   return (
-    <div className={isGrid?" text-white w-fit mont-medium w-[100%] mx-auto":"h-fit bg-emerald-200  text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className={" "+isPhone?"":isGrid?"w-fit text-white  mont-medium ":" bg-emerald-200  text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       <div className='text-left open-sans-medium'>
    {previewDescription()}

@@ -14,7 +14,7 @@ if(import.meta.env.VITE_NODE_ENV=="dev"){
 export default function LinksContainer(props){
      useLayoutEffect(()=>{
           initGA()
-          sendGAEvent("Page View","Page View Links","Link Page",0,true)
+          // sendGAEvent("View Links Page","Page View Links","Link Page",0,true)
      },[])
     
 
@@ -30,13 +30,13 @@ export default function LinksContainer(props){
          title={"Writers Workshop Sat. April 19th:Poets being Human"}
          description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
          </li>
-         <li>
+         {/* <li>
 
 <LinkNode url={"https://partiful.com/e/r8u4FeGRvOCa12SNp6d6"}
 image={philosophy}
      title={"The Bronx Philosophy Circle:Sat. April 12th"}
      description={"Public PHilosophy for community building and well being."}/>
-     </li>
+     </li> */}
            <li>
 
 
