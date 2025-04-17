@@ -58,7 +58,7 @@ export default function PageViewContainer(props){
                 soCanUserSee()
 
             },err=>{
-console.log(" XCZX",err)
+
             })
         })
         dispatch(fetchCommentsOfPage(pathParams))
