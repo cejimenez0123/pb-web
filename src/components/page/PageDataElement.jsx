@@ -44,9 +44,9 @@ switch(page.type){
          onClick={()=>{
             navigate(Paths.page.createRoute(page.id))
         }}
-    className={`  ${isGrid?isPhone?" rounded-lg overflow-hidden m-1":`  p-2   mx-auto overflow-hidden text-ellipsis`:`rounded-t-lg   h-[100%] w-[96vw] md:w-page bg-emerald-200 `}`}
+    className={`  ${isGrid?isPhone?" rounded-lg overflow-hidden ":`  mx-auto overflow-hidden text-ellipsis`:`rounded-t-lg    w-[96vw] md:w-page bg-emerald-200 `}`}
         >
-        <div className={` ql-editor text-ellipsis rounded-lg  ${isGrid?isPhone?" h-36 mb-2  overflow-hidden p-1":" mt-2  rounded-lg bg-emerald-100 p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  md:w-page rounded-lg"}`}
+        <div className={` ql-editor text-ellipsis rounded-lg  ${isGrid?isPhone?"  max-h-32 overflow-hidden ":" mt-2  rounded-lg bg-emerald-100 p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  md:w-page rounded-lg"}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
     </div>
   )   }

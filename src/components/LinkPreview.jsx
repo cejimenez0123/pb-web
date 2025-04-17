@@ -148,7 +148,7 @@ const fetchData = async (url) => {
     
       <div  className={isGrid?"spotify rounded-box ":"spotify w-[96vw] md:w-page"} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"} style={{minHeight:"27.5em"}} className="bg-emerald-200 max-h-[24em]"
+        <Spotify width={"100%"} wide={isPhone} className="bg-emerald-200 "
          link={url}/>
       </div>)
   }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import DashboardItem from "../../components/page/DashboardItem";
+import DashboardItem from "./DashboardItem";
 import GridView from "./GridView";
-import BookDashboardItem from "../../components/collection/BookDashboardItem";
+import BookDashboardItem from "../collection/BookDashboardItem";
 const ListView = ({ items, isGrid }) => {
     
   const [page, setPage] = useState(1);
