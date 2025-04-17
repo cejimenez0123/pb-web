@@ -173,7 +173,7 @@ const Carousel = ({book})=>{
       
         return(
             // carousel-item
-        <div  className={`  carousel-item  flex flex-col ${isPhone?"h-full  overflow-hidden":""}  ${isGrid?isPhone?"w-grid-mobile-content max-h-full px-2    ":"":" max-w-[95vw]   md:w-[49.5em] "}`}
+        <div  className={`  carousel-item  flex flex-col ${isPhone?"h-[17em] rounded-lg overflow-hidden":""}  ${isGrid?isPhone?"w-grid-mobile-content max-h-full px-2    ":"":" max-w-[95vw]   md:w-[49.5em] "}`}
          id={stc.id} key={stc.id}
 
 >
