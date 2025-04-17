@@ -186,7 +186,7 @@ const userTestimonial=()=>{
   <meta property="og:title" content="Plumbum Events - Connect and Grow" />
   <meta property="og:description" content="Explore events, workshops, and writer meetups on Plumbum." />
   <meta property="og:image" content="https://i.ibb.co/39cmPfnx/Plumnum-Logo.png" />
-  <meta property="og:url" content="https://plumbum.app/events" />
+  <meta property="og:url" content="https://plumbum.app/" />
   </Helmet>
 </head>
 
