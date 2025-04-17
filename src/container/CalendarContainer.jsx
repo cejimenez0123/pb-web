@@ -114,18 +114,19 @@ const [email,setEmail]=useState("")
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
    
    return(<div className="max-w-[100vw]">
+      <Helmet>
 <head>
   <meta charset="UTF-8" />
-  <Helmet>
+
   <title>Plumbum (Calendar) - Your Writing, Your Community</title>
   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
   <meta property="og:title" content="Plumbum Events - Connect and Grow" />
   <meta property="og:description" content="Explore events, workshops, and writer meetups on Plumbum." />
   <meta property="og:image" content="https://i.ibb.co/39cmPfnx/Plumnum-Logo.png" />
   <meta property="og:url" content="https://plumbum.app/events" />
-  </Helmet>
+ 
 </head>
-  
+</Helmet>
 
     
         <form className="my-8 mx-2">
