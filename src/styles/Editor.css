@@ -201,12 +201,13 @@
  .ql-editor em{
   font-style: italic!important;
  }
+
   .ql-editor{
     min-height:12rem;
-    
+    top:0;
+ overflow-y:hidden !important; 
     padding: 1em !important;
 
-   
     color: #052e16 !important;
     background: linear-gradient(#a7f3d0, #d1fae5)!important;
     border-bottom: 0.5em !important;

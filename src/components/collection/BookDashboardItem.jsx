@@ -165,14 +165,14 @@ const Carousel = ({book})=>{
         return(
             
                
-        <div className={`carousel carousel-start ${isGrid?isPhone?`bg-emerald-700 `:`bg-emerald-700`:  ` max-w-[94.5vw]   md:w-page`}`}>
+        <div className={`carousel  ${isGrid?isPhone?`bg-emerald-700 `:`bg-emerald-700`:  ` max-w-[94.5vw]   md:w-page`}`}>
      
        {book.storyIdList.map((stc,i)=>{
         if(stc && stc.story){
 
       
         return(
-        <div  className={` carousel-item  flex flex-col justify-center ${isGrid?isPhone?"max-w-[100%]":"":" max-w-[95vw]  md:w-[49.5em] "}`}
+        <div  className={` carousel-item overflow-y-scroll mx-2 flex flex-col justify-center ${isGrid?isPhone?"max-w-[100%]":"":" max-w-[95vw]  max-h-[30em] md:w-[49.5em] "}`}
          id={stc.id} key={stc.id}
 
 >
@@ -183,7 +183,7 @@ const Carousel = ({book})=>{
                 {stc.story.description}
             </h6>
         </div>:null}
-        <span className=''>
+        <span className=' '>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
        </span>
         </div>)}else{
@@ -205,7 +205,7 @@ const Carousel = ({book})=>{
     
         return(
         // <ErrorBoundary>
-                 <div className={isGrid?isPhone?" shadow-md min-h-72":"shadow-md bg-emerald-700  ":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page  shrink my-2 '}>
+                 <div className={isGrid?isPhone?" shadow-md ":"shadow-md bg-emerald-700  ":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page  shrink my-2 '}>
            
         <div className={`shadow-sm ${isGrid?"overflow-hidden bg-emerald-700 rounded-lg text-white ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&book?header():null}
@@ -217,7 +217,7 @@ const Carousel = ({book})=>{
         </div>:null}
        
              
-          <div className={` ${isGrid?isPhone?"overflow-y-hidden m-1 ":'':``} rounded-lg    flex justify-between flex-col   pt-1`}>
+          <div className={` ${isGrid?isPhone?"overflow-y-hidden  m-1 ":'':``} ${isPhone?" overall-hidden":""}rounded-lg    flex justify-between flex-col   pt-1`}>
      
             <Carousel book={book}/>
         

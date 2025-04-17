@@ -347,7 +347,8 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
           <div className={isGrid?isPhone?"h-40 rounded-lg overflow-clip":' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
       <div onClick={()=>{
          navigate(Paths.page.createRoute(page.id))
-        }} >
+        }} 
+        className={isPhone?"":""}>
           <PageDataElement  isGrid={isGrid} page={page}/>
           </div>
                 {buttonRow()}

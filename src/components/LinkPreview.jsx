@@ -146,9 +146,9 @@ const fetchData = async (url) => {
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
     
-      <div  className={isGrid?"spotify rounded-box ":"spotify w-[96vw] md:w-page"} 
+      <div  className={isGrid?"spotify rounded-box ":"spotify mb-1 w-[96vw] md:w-page"} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"} wide={isPhone} className="bg-emerald-200 "
+        <Spotify width={"90%"} wide={isPhone} className="bg-emerald-200 "
          link={url}/>
       </div>)
   }
