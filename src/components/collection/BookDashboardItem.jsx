@@ -17,8 +17,6 @@ import PageDataElement from '../page/PageDataElement'
 import ProfileCircle from '../profile/ProfileCircle'
 import { addStoryListToCollection, deleteStoryFromCollection } from '../../actions/CollectionActions'
 import Context from '../../context'
-import Enviroment from '../../core/Enviroment'
-import ErrorBoundary from '../../ErrorBoundary'
 import { debounce } from 'lodash'
 import { useMediaQuery } from 'react-responsive'
 function BookDashboardItem({book,isGrid}) {
@@ -64,7 +62,7 @@ const deleteStc=()=>{
 
 const header=()=>{
 
-   return isGrid?null:<span className={"flex-row flex justify-between w-[96vw]  md:w-page px-1 rounded-t-lg  pt-2 pb-1"}>  
+   return isGrid?null:<span className={"flex-row flex justify-between w-[96vw]  md:w-page px-1   pt-2 pb-1"}>  
 <ProfileCircle isGrid={isGrid} profile={book.profile}/>
 
 
@@ -165,7 +163,7 @@ const Carousel = ({book})=>{
         return(
             
           
-        <div className={`carousel  rounded-box overflow-x-auto pr-6
+        <div className={`carousel  rounded-box pt-2 overflow-x-auto pr-6
 
          ${isPhone?"":""} ${isGrid?isPhone?`w-grid-mobile p-1 bg-emerald-700 `:`bg-emerald-700`:  ` max-w-[94.5vw]   md:w-page`}`}>
      
@@ -179,14 +177,14 @@ const Carousel = ({book})=>{
          id={stc.id} key={stc.id}
 
 >
-<h5  id="desc"className={ `${isPhone?"top-0 h-12 ":" bottom-0 "} ${isGrid?isPhone?" text-white   ":"text-white":"text-emerald-800"} mont-medium   text-left`}>{stc.story.title}</h5>
+<h5  id="desc"className={ `${isPhone?"top-0 h-12 ml-2  ":" bottom-0 "} ${isGrid?isPhone?" text-white   ":"text-white":"text-emerald-800"} mont-medium   text-left`}><span className='px-2'>{stc.story.title}</span></h5>
     {stc.story.description && stc.story.description.length>0?<div className=' p-1 2 md:pt-4 p-2'>
             {stc.story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
             <h6 className={`${isGrid?isPhone?"max-h-8 m-1 p-1 overflow-scroll text-white":"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
                 {stc.story.description}
             </h6>
         </div>:null}
-        <span className={isPhone?'h-[20em] w-grid-mobile-content  overflow-hidden':""}>
+        <span className={`max-h-[50rem] ${isPhone?isGrid?'w-grid-mobile-content  overflow-hidden':" h-[20em]":""}`}>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
        </span>
         </div>)}else{
@@ -209,9 +207,9 @@ const Carousel = ({book})=>{
         return(
         // <ErrorBoundary>
         <div className={` ${isGrid?isPhone?"overflow-y-hidden  m-1 ":'':``} ${isPhone?" overall-hidden":""} rounded-lg    flex justify-between flex-col   pt-1`}>
-                 <div className={isGrid?isPhone?" shadow-md ":"shadow-md bg-emerald-700  ":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page  shrink my-2 '}>
+                 <div className={isGrid?isPhone?" shadow-md ":"shadow-md bg-emerald-700  ":'relative w-[96vw]  overflow-clip shadow-md md:w-page  shrink my-2 '}>
            
-        <div className={`shadow-sm ${isGrid?"overflow-hidden bg-emerald-700 rounded-lg text-white ":"bg-emerald-100 rounded-t-lg md:w-page w-[96vw]"}   `}>
+        <div className={`shadow-sm ${isGrid?"overflow-hidden bg-emerald-700  text-white ":"bg-emerald-100 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid&&book?header():null}
         {book.description && book.description.length>0?<div className='min-h-12 pt-4 p-2'>
             {/* {book.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null} */}
