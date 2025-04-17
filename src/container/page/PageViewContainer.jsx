@@ -13,14 +13,17 @@ import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
 import Enviroment from "../../core/Enviroment.js";
 import { initGA,sendGAEvent } from "../../core/ga4.js";
-
+import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
     const location = useLocation()
-    const page = useSelector(state=>state.pages.pageInView)
     const pathParams = useParams()
     const {id}=pathParams
+    const page = useSelector(state=>state.pages.pageInView)
+    useScrollTracking({name:page?JSON.stringify(page):id})
+
+
     const dispatch = useDispatch()
     const [pending,setPending]=useState(true)
     const [canUserSee,setCanUserSee]=useState(false)
@@ -29,10 +32,7 @@ export default function PageViewContainer(props){
     const [rootComments,setRootComments]=useState([])
     useLayoutEffect(()=>{
         initGA()
-        if(page){
-            sendGAEvent(`View story -${page.title}-${page.id}`,`View Story-${id} `,"View Page",0,true)
-
-        }
+    
            },[])
     useLayoutEffect(()=>{
         if(currentProfile){
@@ -56,12 +56,13 @@ export default function PageViewContainer(props){
         dispatch(getStory(pathParams)).then(res=>{
             checkResult(res,payload=>{
                 soCanUserSee()
-            },err=>{
 
+            },err=>{
+console.log(" XCZX",err)
             })
         })
         dispatch(fetchCommentsOfPage(pathParams))
-    },[id,currentProfile])
+    },[location.pathname,id,currentProfile])
 
     useLayoutEffect(()=>{
         setRootComments(comments?comments.filter(com=>com.parentId==null):[])
@@ -117,16 +118,16 @@ useLayoutEffect(()=>{
         <ErrorBoundary >
         <Helmet>
       {page?<><title>{"A Plumbum+Story:"+page.title+" from "+page.author.username}</title>
-       <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
+       <meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
       <meta property="og:description" content={page.description.length>0?page.description:"Explore events, workshops, and writer meetups on Plumbum."}/>
-      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} /></>:
+      <meta name="twitter:image" content={`https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O`} /></>:
       <>
   <title>Plumbum Writers-Story:{id}</title>
   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
   <meta property="og:title" content="Plumbum Writers - Check this story out" />
   <meta property="og:description" content="Plumbum Writers the place for feedback and support." />
-  <meta property="og:image" content="https://i.ibb.co/39cmPfnx/Plumnum-Logo.png" />
+  <meta property="og:image" content="https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O" />
   <meta property="og:url" content="https://plumbum.app/events" /></>
 }  </Helmet>
 

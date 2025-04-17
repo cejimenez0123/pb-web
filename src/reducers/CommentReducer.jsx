@@ -41,7 +41,10 @@ builder.addCase(createComment.fulfilled,(state,{payload})=>{
 }).addCase(createComment.rejected,(state,{payload})=>{
     state.error = payload.error
 }).addCase(fetchCommentsOfPage.rejected,(state,{payload})=>{
+  if(payload&&payload.error){
     state.error = payload.error
+  }
+ 
     state.loading =false
 }).addCase(fetchCommentsOfPage.pending,(state,{payload})=>{
     state.loading= true
