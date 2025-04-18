@@ -30,11 +30,11 @@ export default function CalendarContainer(){
       <Helmet>
 
 <title>{"Plumbum NYC CALENDAR"}</title>
- <meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
+ <meta property="og:image" content={Enviroment.logoChem} />
 <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
 <meta property="og:description" content="Explore events, workshop together, and join other writers." />
 
-<meta name="twitter:image" content={`https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O`} />
+<meta name="twitter:image" content={Enviroment.logoChem} />
 </Helmet>
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   

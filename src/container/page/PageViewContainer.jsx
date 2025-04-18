@@ -118,10 +118,10 @@ useLayoutEffect(()=>{
         <ErrorBoundary >
         <Helmet>
       {page?<><title>{"A Plumbum+Story:"+page.title+" from "+page.author.username}</title>
-       <meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
+       <meta property="og:image" content={Enviroment.logoChem} />
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
       <meta property="og:description" content={page.description.length>0?page.description:"Explore events, workshops, and writer meetups on Plumbum."}/>
-      <meta name="twitter:image" content={`https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O`} /></>:
+      <meta name="twitter:image" content={Enviroment.logoChem} /></>:
       <>
   <title>Plumbum Writers-Story:{id}</title>
   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />

@@ -131,7 +131,7 @@ const header=()=>{
              
     <h6 className={`text-emerald-800
     mx-2
-     
+     ${isGrid?isPhone?"":"":""}
       no-underline text-ellipsis  whitespace-nowrap overflow-hidden text-[0.9rem]`}
     onClick={()=>{
         dispatch(setPageInView({page}))
@@ -342,7 +342,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
                 <div className={isGrid?isPhone?"overall-hidden":"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}>
         <div className={`shadow-md  ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid?header():null}
-        {page.description && page.description.length>0?<div className='h-16  md:p-2'>
+        {page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>
             {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
             <h6 className={`${!isGrid?"text-emerald-800":isPhone?"text-white overflow-scroll":"text-white "} p-2 mont-medium text-left `}>
                 {page.description}
@@ -354,7 +354,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
       <div onClick={()=>{
          navigate(Paths.page.createRoute(page.id))
         }} 
-        className={isGrid?isPhone?"":"":isPhone?"":"max-h-[40em]"}>
+        className={isGrid?isPhone?"pt-2 rounded-lg overflow-hidden":"":isPhone?"":"max-h-[40em]"}>
           <PageDataElement  isGrid={isGrid} page={page}/>
           </div>
                 {buttonRow()}

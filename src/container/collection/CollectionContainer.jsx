@@ -107,6 +107,7 @@ useLayoutEffect(()=>{
         let soo = seo
         soo.title = collection.title
         soo.description = collection.description
+        
         setSeo(soo)
     }
    
@@ -658,16 +659,17 @@ const bookList=()=>{
     </div>)
 }
 let header=()=>collection?<Helmet><title>{"A Plumbum Collection+ "+collection.title}</title>
-<meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
+<meta property="og:image" content={Enviroment.logoChem} />
 <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
 <meta property="og:description" content={collection.purpose.length>0?collection.purpose:"Explore events, workshops, and writer meetups on Plumbum."}/>
-<meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} /></Helmet>:
+<meta name="twitter:image" content={Enviroment.logoChem} /></Helmet>:
 <Helmet>
 <title>Plumbum Writers Collection + {id}</title>
 <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
 <meta property="og:title" content="Plumbum Writers - Check this story out" />
 <meta property="og:description" content="Plumbum Writers the place for feedback and support." />
-<meta property="og:image" content="https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O" />
+<meta property="og:image" content={Enviroment.logoChem} />
+<meta name="twitter:image" content={Enviroment.logoChem} />
 <meta property="og:url" content={`${Enviroment.domain+location.pathname}`} /></Helmet>
 
 if(!collection||collection.id!==id){

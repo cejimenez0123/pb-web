@@ -44,7 +44,7 @@ switch(page.type){
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
-        className={` ql-editor text-ellipsis  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"  max-h-24 ":" mt-2  rounded-lg bg-emerald-100 w-grid-content  p-4 text-emerald-800 overflow-hidden":" pb-8  w-[96vw]  sm:w-page rounded-lg"}`}
+        className={` ql-editor text-ellipsis  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"max-h-24 ":" mt-2 min-h-[28em] rounded-lg bg-emerald-100 w-grid-content  p-4 text-emerald-800 overflow-hidden ":" pb-8  w-[96vw]  sm:w-page rounded-lg"}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
   
   )   }
@@ -54,9 +54,9 @@ switch(page.type){
    
         if(location.pathname!=Paths.page.createRoute(page.id)){
         navigate(Paths.page.createRoute(page.id))}
-    }} className={` ${isGrid?isPhone?"":"  max-h-96  rounded-lg mx-auto pt-2 mb-8 w-[96%] ":"w-[96vw] rounded-t-lg overflow-hidden md:w-page "}`} >
-        <div className={` ${isGrid?"h-[100%] justify-center overflow-hidden w-full rounded-lg ":""}`}>
-        <img className={`rounded-lg ${ isGrid?isPhone?"":"  ":``} overflow-hidden w-[96vw] md:w-page`}
+    }} className={` ${isGrid?isPhone?"max-h-[18em]":"  max-h-96  rounded-lg mx-auto pt-2 mb-8 w-[96%] ":"w-[96vw] rounded-t-lg overflow-hidden md:w-page "}`} >
+        <div className={` ${isGrid?isPhone?"justify-center overflow-hidden max-h-[18em] w-full rounded-lg":"justify-center overflow-hidden max-h-[26.2em] w-full rounded-lg ":""}`}>
+        <img className={`rounded-lg ${ isGrid?isPhone?"":" overflow-hidden  ":``}  w-[96vw] md:w-page`}
     
     src={image} alt={page.title}/>
     </div></div>:<div className='skeleton w-[100%] min-h-40'/>)

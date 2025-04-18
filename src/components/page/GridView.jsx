@@ -51,7 +51,7 @@ export default function GridView({ items }) {
 
             if (item.storyIdList?.length > 0 && !item.data) {
               return (
-                <div className={isNotPhone?"grid-item rounded-lg oveflow-hidden ":" max-h-[24em] rounded-b-lg overflow-hidden max-w-full"} key={id}>
+                <div className={isNotPhone?"grid-item rounded-lg oveflow-hidden ":" h-[24em] rounded-lg overflow-hidden max-w-full"} key={id}>
                   <BookDashboardItem isGrid={true} book={item} />
                 </div>
               );

@@ -15,8 +15,8 @@ export default {
       '128': '48rem',
       'page':"48em",
       'info':"55rem",
-      'grid':"36em",
-      'grid-content':"35em",
+      'grid':"35em",
+      'grid-content':"34.5em",
       'grid-mobile':"13em",
        'grid-mobile-content':"12em"
 

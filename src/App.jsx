@@ -46,6 +46,7 @@ import NewsletterContainer from './container/auth/NewsletterContainer.jsx';
 import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
+import Enviroment from './core/Enviroment.js';
 
 
 
@@ -58,7 +59,7 @@ function App(props) {
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
   const profile = useSelector(state=>state.users.profileInView)
-  const [seo,setSeo]=useState({title:"Plumbum",image:"https://i.ibb.co/39cmPfnx/Plumnum-Logo.png",description:"Your writing, Your community", name:"Plumbum", type:"website"})
+  const [seo,setSeo]=useState({title:"Plumbum",image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website"})
   let prof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
 
   const currentProfile= useSelector(state=>state.users.currentProfile??prof)

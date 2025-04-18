@@ -166,11 +166,11 @@ function DiscoveryContainer(props){
             <ErrorBoundary>
                 <Helmet>   
       <title>{"Plumbum Writers"}</title>
-       <meta property="og:image" content={"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"} />
+       <meta property="og:image" content={Enviroment.logoChem} />
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
       <meta property="og:description" content="Explore events, workshop projects together, and join other writers." />
  
-      <meta name="twitter:image" content={`${"https://i.ibb.co/zWNymxQd/event-24dp-314-D1-C-FILL0-wght400-GRAD0-opsz24.png"}`} />
+      <meta name="twitter:image" content={Enviroment.logoChem} />
     </Helmet>
             <div 
 
