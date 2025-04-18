@@ -30,7 +30,7 @@ export default function Carousel({book,isGrid}){
         return(
             
           
-        <div className={`carousel  ${isGrid?"h-[18em]":"h-[29rem]"} rounded-box pt-2 
+        <div className={`carousel  ${isGrid?"h-[18em] w-grid-mobile ":"w-[98%] h-[29rem]"} rounded-box pt-2 
 
          ${isPhone?"":""} ${isGrid?isPhone?` w-grid-mobile p-1 bg-emerald-700  `:`w-grid  bg-emerald-700 `:isPhone?"":  ` max-w-[94.5vw]   md:w-page`}`}>
      
