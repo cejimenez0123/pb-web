@@ -19,6 +19,7 @@ import { addStoryListToCollection, deleteStoryFromCollection } from '../../actio
 import Context from '../../context'
 import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
+
 import { debounce } from 'lodash'
 import { initGA,sendGAEvent } from '../../core/ga4'
 import { useMediaQuery } from 'react-responsive'
@@ -339,7 +340,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
         return(
         <ErrorBoundary>
-                <div className={isGrid?isPhone?"overall-hidden":"shadow-md":"relative"+(isPhone?"max-h-[29rem]":' w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 ')}>
+                <div className={`shadow-md ${isGrid ? (isPhone ? 'overall-hidden' : `relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page my-2`) : ''}`}>
         <div className={`shadow-md  ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid?header():null}
         {page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>

@@ -20,6 +20,7 @@ import Context from '../../context'
 import { debounce } from 'lodash'
 import { useMediaQuery } from 'react-responsive'
 import Carousel from './Carousel'
+import ErrorBoundary from '../../ErrorBoundary'
 function BookDashboardItem({book,isGrid}) {
       const isPhone =  useMediaQuery({
     query: '(max-width: 768px)'
@@ -154,11 +155,11 @@ return <Button onClick={()=>{
     if(book){
     
         return(
-        // <ErrorBoundary>
-        <div className={`rounded-lg overall-clip ${isGrid?isPhone?" overflow-y-hidden  m-1 ":'':``} ${isPhone?" ":""}   flex justify-between flex-col   pt-1`}>
-                 <div className={isGrid?isPhone?" shadow-md ":"shadow-md bg-emerald-700  rounded-lg overflow-hidden":'relative w-[96vw]  overflow-clip shadow-md md:w-page  shrink my-2 '}>
+        <ErrorBoundary>
+        <div className={`shadow-md  rounded-lg overall-clip ${isGrid?isPhone?" overflow-y-hidden  m-1 ":'':``} ${isPhone?" ":""}   flex justify-between flex-col   pt-1`}>
+                 <div className={isGrid?isPhone?" ":"bg-emerald-700  rounded-lg overflow-hidden":'relative w-[96vw]  overflow-clip  md:w-page  shrink my-2 '}>
            
-        <div className={`shadow-sm ${isGrid?"overflow-hidden bg-emerald-700  text-white ":"bg-emerald-100 rounded-t-lg md:w-page w-[96vw]"}   `}>
+        <div className={`${isGrid?"overflow-hidden bg-emerald-700  text-white ":"bg-emerald-100 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {isGrid&&!isPhone?null:header()}
         {book.description && book.description.length>0?<div className={`min-h-12 pt-4 p-2`}>
             {/* {book.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null} */}
@@ -183,7 +184,7 @@ return <Button onClick={()=>{
                 </div>
   </div>
   </div>
-//  </ErrorBoundary>
+ </ErrorBoundary>
      )}else{
         return null
      }
