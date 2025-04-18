@@ -45,7 +45,7 @@ export default function GridView({ items }) {
         }
       >
        
-        <div className={isNotPhone?"grid-container":" grid grid-cols-2 gap-2 mx-2"}>
+        <div className={isNotPhone?"grid-container":" grid grid-cols-2 gap-[0.4em] mx-1"}>
           {filteredItems.map((item, i) => {
             const id = `${item.id}_${i}`;
 

@@ -39,14 +39,14 @@ switch(page.type){
     case PageType.text:{
 
     return( 
-
+<span className={isGrid?"px-1":""}>
         <div 
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
-        className={` ql-editor text-ellipsis  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"max-h-24 ":" mt-2 min-h-[28em] rounded-lg bg-emerald-100 w-grid-content  p-4 text-emerald-800 overflow-hidden ":" pb-8  w-[96vw]  sm:w-page rounded-lg"}`}
+        className={` ql-editor text-ellipsis  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"max-h-24 mx-auto w-grid-mobile-content ":" mt-2 min-h-[28em] rounded-lg bg-emerald-100 w-grid-content  p-4 text-emerald-800 overflow-hidden ":" pb-8  w-[96vw]  sm:w-page rounded-lg"}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
-  
+  </span>
   )   }
   case PageType.picture:{
   

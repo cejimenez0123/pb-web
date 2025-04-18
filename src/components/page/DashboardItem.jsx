@@ -250,7 +250,7 @@ return <Button onClick={()=>{
           },10)
     const buttonRow = ( )=>{
         return isGrid?null:
-        <div className='  flex flex-row w-[96vw] rounded-b-lg md:w-page rounded-b-lg  justify-evenly   '>
+        <div className='  flex flex-row w-[96vw]  md:w-page rounded-b-lg  overflow-hidden justify-evenly   '>
             
          <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow w-1/3`}>
          <div
@@ -339,7 +339,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
         return(
         <ErrorBoundary>
-                <div className={isGrid?isPhone?"overall-hidden":"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}>
+                <div className={isGrid?isPhone?"overall-hidden":"shadow-md":"relative"+(isPhone?"max-h-[29rem]":' w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 ')}>
         <div className={`shadow-md  ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
                {!isGrid?header():null}
         {page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>
@@ -354,7 +354,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
       <div onClick={()=>{
          navigate(Paths.page.createRoute(page.id))
         }} 
-        className={isGrid?isPhone?"pt-2 rounded-lg overflow-hidden":"":isPhone?"":"max-h-[40em]"}>
+        className={isGrid?isPhone?"pt-2 rounded-lg overflow-hidden":"":isPhone?"h-[18em]  ":"h-[29rem"}>
           <PageDataElement  isGrid={isGrid} page={page}/>
           </div>
                 {buttonRow()}
@@ -375,7 +375,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
  
   </ErrorBoundary>
      )}else{
-        return null
+        return(<div className={isGrid?isPhone?"overall-hidden":"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}><span className='skeleton'/></div>)
      }
 
 }
