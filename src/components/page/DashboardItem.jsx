@@ -255,12 +255,9 @@ return <Button onClick={()=>{
             
          <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow w-1/3`}>
          <div
-         
-         onClick={handleApprovalClick}
-            
+         onClick={handleApprovalClick}   
           className={`
-            py-2   flex mont-medium  mx-auto text-white border-none h-[100%]  border-none  `}
-        
+            py-2   flex mont-medium  mx-auto text-white border-none h-[100%]  border-none `}
          >
             <h6 className=' text-[1.2rem] mont-medium my-auto mx-auto'>Yea{likeFound?"h!":""}</h6> 
          </div>
