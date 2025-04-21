@@ -255,9 +255,12 @@ return <Button onClick={()=>{
             
          <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow w-1/3`}>
          <div
-         onClick={handleApprovalClick}   
+         
+         onClick={handleApprovalClick}
+            
           className={`
-            py-2   flex mont-medium  mx-auto text-white border-none h-[100%]  border-none `}
+            py-2   flex mont-medium  mx-auto text-white border-none h-[100%]  border-none  `}
+        
          >
             <h6 className=' text-[1.2rem] mont-medium my-auto mx-auto'>Yea{likeFound?"h!":""}</h6> 
          </div>
@@ -343,14 +346,14 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
         return(
         <ErrorBoundary>
-                <div className={`shadow-md ${isGrid ?isPhone ? 'overall-clip w-grid-mobile' : `relative w-grid rounded-lg overflow-clip shadow-md  my-2` : isPhone?" w-[98vw] mx-auto":' w-page '}`}>
+                <div className={`shadow-md ${isGrid ?isPhone ? 'overall-clip w-grid-mobile' : `relative w-grid rounded-lg overflow-clip shadow-md  my-2` : isPhone?" w-[98vw] mx-auto overflow-hidden":' w-page '}`}>
         <div className={`shadow-md  ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
               {description()}
           <div className={isGrid?isPhone?" rounded-lg overflow-clip":' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
       <div onClick={()=>{
          navigate(Paths.page.createRoute(page.id))
         }} 
-        className={isGrid?isPhone?"pt-2 rounded-lg overflow-hidden":"":isPhone?"h-[18em]  ":" "}>
+        className={isGrid?isPhone?"pt-2 rounded-lg overflow-hidden":"":isPhone?"h-[26em]  ":" "}>
             {header()}
           <PageDataElement  isGrid={isGrid} page={page}/>
           </div>

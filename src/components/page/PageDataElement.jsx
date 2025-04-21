@@ -54,8 +54,8 @@ switch(page.type){
    
         if(location.pathname!=Paths.page.createRoute(page.id)){
         navigate(Paths.page.createRoute(page.id))}
-    }} className={` ${isGrid?isPhone?"max-h-[18em]":"  max-h-[38em]  rounded-lg mx-auto pt-2 mb-8 w-[96%] ":"w-[96vw] rounded-t-lg overflow-hidden md:w-page-content"}`} >
-        <div className={` ${isGrid?isPhone?"justify-center overflow-hidden max-h-[18em] w-full rounded-lg":"justify-center overflow-hidden max-h-[26.2em] w-full rounded-lg ":""}`}>
+    }} className={` ${isGrid?isPhone?"max-h-[18em]":"  max-h-[38em]  rounded-lg mx-auto pt-2 mb-8 w-[96%] ":isPhone?"w-[96vw] rounded-t-lg":"w-[96vw] rounded-t-lg overflow-hidden md:w-page-content"}`} >
+        <div className={` ${isGrid?isPhone?"justify-center overflow-hidden max-h-[18em] w-full rounded-lg":"justify-center overflow-hidden max-h-[30em] w-full rounded-lg ":""}`}>
         <img className={`rounded-lg ${ isGrid?isPhone?"":" overflow-hidden  ":``}  w-[96vw] md:w-page`}
     
     src={image} alt={page.title}/>
