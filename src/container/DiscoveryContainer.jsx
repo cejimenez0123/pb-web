@@ -72,11 +72,11 @@ function DiscoveryContainer(props){
     )
 
 
-    useEffect(()=>{
+    useLayoutEffect(()=>{
         dispatch(setPagesInView({pages:[]}))
         fetchContentItems()
         fetchLibraries()
-    },[currentProfile])
+    },[currentProfile,location.pathname])
 
     const libraryForums = ()=>{
         if(libraries!=null){
@@ -138,8 +138,7 @@ function DiscoveryContainer(props){
             dispatch(setCollections({collections:[]}))
             dispatch(getPublicStories())
             dispatch(getPublicCollections())
-            // dispatch(getPublicBooks())  
-        
+           
     }
     const fetchLibraries = ()=>{
             setHasMoreLibraries(true)
@@ -184,7 +183,7 @@ function DiscoveryContainer(props){
                 <div className='mb-12'>
                 {bookList()} 
                 </div>
-                <div className='flex max-w-[96vw] md:w-page mx-auto flex-col '>
+                <div className='flex max-w-[96vw] md:w-[50em] mx-auto flex-col '>
                     <span className='flex flex-row'>
 
                         <h3 className=' text-emerald-900
@@ -206,10 +205,10 @@ function DiscoveryContainer(props){
                                     <img src={stream}/>
                         </button></div>
                         </span>
-                        {/* :null} */}
+                     
                         </div>
 <div className='max-w-screen'>
-    {/* {listView()} */}
+
                    {!isGrid?<ListView items={viewItems}/>:<GridView items={viewItems}/>}
                   
                     </div>

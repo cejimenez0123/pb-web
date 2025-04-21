@@ -7,6 +7,7 @@ import axios from 'axios';
 import { getLinkPreview, } from "link-preview-js";
 import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import { initGA, sendGAEvent } from '../core/ga4';
 // async function fetchLinkPreview(url) {
 //   try {
 //     const data = await getLinkPreview(Enviroment.proxyUrl+url);
@@ -132,7 +133,11 @@ console.log("BBOOO")
     setLoading(false);
   }
 };
+useLayoutEffect(()=>{
+  initGA()
+})
   const handleClick = () => {
+    sendGAEvent("Click",`Navigate to ${url}`)
     window.open(url, '_blank');
   };
   const isYouTubeURL = (url) => {
@@ -166,7 +171,7 @@ console.log("BBOOO")
   if (previewData.videoId) {
     return (
     
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className={isGrid?"":"w-[96vw] md:w-page"}src={previewData.videoThumbnail} alt="Video Thumbnail" />
+        <img onClick={handleClick} style={{ cursor: 'pointer' }} className={isGrid?"min-h-30":"w-[96vw] md:w-page"}src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
   }

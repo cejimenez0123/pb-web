@@ -57,14 +57,14 @@ const deleteStc=()=>{
 
 const header=()=>{
 
-   return <span className={`flex-row flex justify-between w-[96vw] ${isGrid?isPhone?"w-grid-mobile":"w-grid":""}  md:w-page px-1   pt-2 pb-1`}>  
+   return <span className={`booker flex-row flex justify-between w-[96vw] ${isGrid?isPhone?" w-grid-mobile ":" w-grid ":""}  md:w-page px-1   pt-2 pb-1`}>  
 <span>{isGrid?null:<ProfileCircle isGrid={isGrid} profile={book.profile}/>}</span>
 
 
-             <span>
+             <span className='justify-end'>
     {!isPhone?<h6 className={`${isPhone?"text-emerald-800":""} ${isGrid?isPhone?"text-white":"text-emerald-800":""}
      ml-1 pr-2 
-     text-ellipsis   overflow-hidden max-w-[100%] my-auto ${isGrid?"text-[0.6rem]":"text-[0.9rem]"}`}
+     text-ellipsis   overflow-hidden max-w-[100%] my-auto ${isGrid?isPhone?" text-[0.8rem] ":null:isPhone?" text-[0.9rem]":""}`}
     onClick={()=>{
         navigate(Paths.collection.createRoute(book.id))
     }} >{` `+book.title.length>0?book.title:""}</h6>:null}</span></span>
@@ -128,17 +128,18 @@ return <Button onClick={()=>{
    
     }
     const bookmarkBtn =()=>{
-        return(<div className='w-[100%]  md:py-2 my-auto flex flex-row justify-between text-white '>
+        return(<div className={`w-[100%]  md:py-2 my-auto flex flex-row ${isGrid?"justify-end":"justify-between"} text-white `}>
 
          {isGrid?null: <ProfileCircle isGrid={isGrid} profile={book.profile}/>}
-     
+     <span className='flex flex-row'>
             <h6 
             onClick={()=>{
                 navigate(Paths.collection.createRoute(book.id))
             }}
-            className={`${isPhone?"flex justify-between w-[100%]":" ml-1 pr-1 "}  text-white w-full  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto ${isGrid?"text-[0.7em]":"text-[0.9rem]"}`}
+            className={`${isGrid?isPhone?" w-grid-mobile":" ml-1 pr-1 ":""}  text-white w-full  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto 
+            ${isGrid?"text-[0.8em]":"text-[0.9rem]"}`}
 >{` `+book.title.length>0?book.title:""}</h6><img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/>
-{/* </span> */}
+</span>
     
     </div>)
     }
@@ -150,23 +151,23 @@ return <Button onClick={()=>{
            
         }
           },10)
-
+          const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
+            <div className={`min-h-12 pt-4 p-2`}>
+                <h6 className={`${isGrid?"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
+                    {book.description}
+                </h6>
+            </div>:null:null}
 
     if(book){
     
         return(
         <ErrorBoundary>
-        <div className={`shadow-md  rounded-lg overall-clip ${isGrid?isPhone?" overflow-y-hidden  m-1 ":'':``} ${isPhone?" ":""}   flex justify-between flex-col   pt-1`}>
+        <div className={`shadow-md  rounded-lg overall-clip ${isGrid?isPhone?" overflow-y-hidden  m-1 ":'':``}   flex justify-between flex-col   pt-1`}>
                  <div className={isGrid?isPhone?" ":"bg-emerald-700  rounded-lg overflow-hidden":'relative w-[96vw]  overflow-clip  md:w-page  shrink my-2 '}>
            
         <div className={`${isGrid?"overflow-hidden bg-emerald-700  text-white ":"bg-emerald-100 rounded-t-lg md:w-page w-[96vw]"}   `}>
-               {isGrid&&!isPhone?null:header()}
-        {book.description && book.description.length>0?<div className={`min-h-12 pt-4 p-2`}>
-            {/* {book.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null} */}
-            <h6 className={`${isGrid?"text-white":"text-emerald-800"} p-2 open-sans-medium text-left `}>
-                {book.description}
-            </h6>
-        </div>:null}
+
+        {isGrid?isPhone?null:description(book):null}
        
 
             <Carousel book={book} isGrid={isGrid}/>
@@ -174,7 +175,7 @@ return <Button onClick={()=>{
                  <div  className='flex flex-row justify-between px-3 py-1  rounded-b-lg bottom-0'>
              
             
-                {isGrid||!isPhone?bookmarkBtn():null} </div>   
+                {isGrid?isPhone?bookmarkBtn():bookmarkBtn():null} </div>   
         
                 </div>
                 <div>

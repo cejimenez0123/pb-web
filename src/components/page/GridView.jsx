@@ -82,4 +82,3 @@ export default function GridView({ items }) {
     </span>
   );
 }
-

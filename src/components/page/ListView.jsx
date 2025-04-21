@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import DashboardItem from "./DashboardItem";
 import GridView from "./GridView";
+import { useMediaQuery } from "react-responsive";
 import BookDashboardItem from "../collection/BookDashboardItem";
 const ListView = ({ items, isGrid }) => {
-    
+  const isPhone =  useMediaQuery({
+    query: '(max-width: 768px)'
+  })
   const [page, setPage] = useState(1);
   const [filteredItems, setFilteredItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -36,7 +39,7 @@ const ListView = ({ items, isGrid }) => {
             return(
           
                <InfiniteScroll
-               className="mx-auto w-page"
+               className={`mx-auto ${isPhone?" w-[99.6vw] ":" w-[52em] "}`}
             dataLength={filteredItems.length}
             next={nextPage}
                     hasMore={hasMore}

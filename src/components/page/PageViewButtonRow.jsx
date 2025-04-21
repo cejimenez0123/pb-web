@@ -90,7 +90,7 @@ checkResult(res,payload=>{
 }}
     const copyShareLink=()=>{
       
-            sendGAEvent( "Copy Share Link","Share"+`+${page.id}`,"Share",0,false)
+            sendGAEvent( "Copy Share Link",`Share ${JSON.stringify({id:page.id,title:page.title})}`,0,false)
  
 
         navigator.clipboard.writeText(Enviroment.domain+Paths.page.createRoute(page.id))

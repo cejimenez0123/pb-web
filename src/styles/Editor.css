@@ -201,6 +201,8 @@
  .ql-editor em{
   font-style: italic!important;
  }
+ @media (min-width: 768px) {
+
 
   .ql-editor{
     min-height:12rem;
@@ -213,3 +215,22 @@
     border-bottom: 0.5em !important;
 
 }
+ }
+ @media (max-width: 768px) {
+
+
+  .ql-editor{
+    min-height:12rem;
+    top:0;
+ overflow-y:hidden !important; 
+   
+
+    color: #052e16 !important;
+    background: linear-gradient(#a7f3d0, #d1fae5)!important;
+    border-bottom: 0.5em !important;
+
+}
+.ql-editor div{
+  text-overflow: ellipsis;
+}
+ }

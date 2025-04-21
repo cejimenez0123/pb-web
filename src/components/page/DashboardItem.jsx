@@ -125,7 +125,7 @@ const handleClickComment=()=>{
 
 const header=()=>{
 
-   return isGrid?null:<span className={"flex-row flex justify-between w-[96vw]  md:w-page px-1 rounded-t-lg  pt-2 pb-1"}>  
+   return isGrid?null:<span className={`flex-row flex justify-between ${isPhone?" w-[96vw] ":" md:w-page  "}  px-1 rounded-t-lg  pt-2 pb-1`}>  
 <ProfileCircle isGrid={isGrid} profile={page.author}/>
 
 
@@ -336,33 +336,32 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
 
                 
     }
+    const description=()=>{page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>
+    {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
+    <h6 className={`${!isGrid?"text-emerald-800":isPhone?"text-white overflow-scroll":"text-white "} p-2 mont-medium text-left `}>
+        {page.description}
+    </h6>
+</div>:null}
     if(page){
     
         return(
         <ErrorBoundary>
-                <div className={`shadow-md ${isGrid ? (isPhone ? 'overall-hidden' : `relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page my-2`) : ''}`}>
+                <div className={`shadow-md ${isGrid ?isPhone ? 'overall-clip w-grid-mobile' : `relative w-grid rounded-lg overflow-clip shadow-md  my-2` : isPhone?" w-[98vw] mx-auto":' w-page '}`}>
         <div className={`shadow-md  ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
-               {!isGrid?header():null}
-        {page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>
-            {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
-            <h6 className={`${!isGrid?"text-emerald-800":isPhone?"text-white overflow-scroll":"text-white "} p-2 mont-medium text-left `}>
-                {page.description}
-            </h6>
-        </div>:null}
-       
-             
+              {description()}
           <div className={isGrid?isPhone?" rounded-lg overflow-clip":' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
       <div onClick={()=>{
          navigate(Paths.page.createRoute(page.id))
         }} 
-        className={isGrid?isPhone?"pt-2 rounded-lg overflow-hidden":"":isPhone?"h-[18em]  ":"h-[29rem"}>
+        className={isGrid?isPhone?"pt-2 rounded-lg overflow-hidden":"":isPhone?"h-[18em]  ":" "}>
+            {header()}
           <PageDataElement  isGrid={isGrid} page={page}/>
           </div>
-                {buttonRow()}
+              
                 {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1  rounded-b-lg bottom-0'>
                 {header()}
             
-                {bookmarkBtn()} </div>   :null}
+                {bookmarkBtn()} </div>   :  buttonRow()}
                 </div>
                 <div>
             

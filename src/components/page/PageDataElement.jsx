@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import { useLocation } from "react-router-dom"
 import { useMediaQuery } from "react-responsive"
-export default function PageDataElement({page,isGrid}){
+export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const navigate = useNavigate()
     const location = useLocation()
@@ -39,14 +39,14 @@ switch(page.type){
     case PageType.text:{
 
     return( 
-<span className={isGrid?"px-1":""}>
+
         <div 
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
-        className={` ql-editor text-ellipsis  rounded-lg  ${isPhone?" top-0":""} ${isGrid?isPhone?"max-h-24 mx-auto w-grid-mobile-content ":" mt-2 min-h-[28em] rounded-lg bg-emerald-100 w-grid-content  p-4 text-emerald-800 overflow-hidden ":" pb-8  w-[96vw]  sm:w-page rounded-lg"}`}
+        className={` ql-editor text-ellipsis  rounded-lg border-emerald-200 border-b-4    ${isGrid?isPhone?" min-h-24 max-h-[18em] rounded-lg mx-auto w-grid-mobile-content ":"lulmo mt-2 max-h-[30rem] rounded-lg bg-emerald-100 w-grid-content mx-auto  p-4 text-emerald-800 overflow-hidden ":`${isPhone?`  w-[96vw] pb-2 top-0`: ` pb-8 max-h-[34rem] p-2 overflow-clip max-auto mx-auto my-1 w-page-content rounded-lg  overflow-hidden `} ${book?`mx-2`:""}  `}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
-  </span>
+
   )   }
   case PageType.picture:{
   
@@ -54,7 +54,7 @@ switch(page.type){
    
         if(location.pathname!=Paths.page.createRoute(page.id)){
         navigate(Paths.page.createRoute(page.id))}
-    }} className={` ${isGrid?isPhone?"max-h-[18em]":"  max-h-96  rounded-lg mx-auto pt-2 mb-8 w-[96%] ":"w-[96vw] rounded-t-lg overflow-hidden md:w-page "}`} >
+    }} className={` ${isGrid?isPhone?"max-h-[18em]":"  max-h-[38em]  rounded-lg mx-auto pt-2 mb-8 w-[96%] ":"w-[96vw] rounded-t-lg overflow-hidden md:w-page-content"}`} >
         <div className={` ${isGrid?isPhone?"justify-center overflow-hidden max-h-[18em] w-full rounded-lg":"justify-center overflow-hidden max-h-[26.2em] w-full rounded-lg ":""}`}>
         <img className={`rounded-lg ${ isGrid?isPhone?"":" overflow-hidden  ":``}  w-[96vw] md:w-page`}
     
