@@ -108,18 +108,19 @@ return <Button onClick={()=>{
    
     }
     const bookmarkBtn =()=>{
-        return(<div id="bookmark-btn-item" className={`  md:py-2 my-auto flex flex-row xw ${isGrid?`justify-end`:`justify-between`} text-white `}>
+        return(<div id="bookmark-btn-item" 
+        className={`  md:py-2 my-auto flex flex-row  ${isGrid?` ${isPhone?` w-grid-mobile-content justify-end`:`w-grid-content justify-between`}`:isHorizPhone?"w-page":"w-page-mobile-content mx-auto"} text-white `}>
 
          {isGrid?<span/>: <ProfileCircle isGrid={isGrid} profile={book.profile}/>}
-     <span className='flex flex-row'>
+    
             <h6 
             onClick={()=>{
                 navigate(Paths.collection.createRoute(book.id))
             }}
-            className={`${isGrid?isPhone?`w-grid-mobile`:` ml-1 pr-1 ${isHor}`:""}  text-white w-full  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto 
+            className={`${isGrid?isPhone?`w-grid-mobile-content pl-2 mx-auto`:`w-grid-content ml-1 pr-1`:isHorizPhone?"w-page-content":"w-page-mobile-content"}  text-white w-full  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto 
             ${isGrid?"text-[0.8em]":"text-[0.9rem]"}`}
 >{` `+book.title.length>0?book.title:""}</h6><img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/>
-</span>
+
     
     </div>)
     }
@@ -142,27 +143,26 @@ return <Button onClick={()=>{
     
         return(
         <ErrorBoundary>
-        <div id="book-dashboard-item" className={`shadow-md  rounded-lg overall-clip ${isGrid?isPhone?" overflow-y-hidden  m-1 ":'':``}   flex justify-between flex-col   pt-1`}>
+        <div id="book-dashboard-item" className={`shadow-md  rounded-lg  overflow-hidden ${isGrid?isPhone?"  w-grid-mobile m-1 ":'mx-auto w-grid':`mx-auto`}   flex justify-between flex-col   pt-1`}>
                  <div className={isGrid?isPhone?" ":"bg-emerald-700  rounded-lg overflow-hidden":'relative w-[96vw]  overflow-clip  md:w-page  shrink my-2 '}>
            
-        <div className={`${isGrid?"overflow-hidden bg-emerald-700  text-white ":"bg-emerald-100 rounded-t-lg md:w-page w-[96vw]"}   `}>
+        <div className={`${isGrid?isPhone?
+        "overflow-hidden w-grid-mobile bg-emerald-700  text-white ":
+        "bg-emerald-100 rounded-t-lg  w-grid"
+        :isHorizPhone?"w-page":"w-page-mobile"}   `}>
 
         {isGrid?isPhone?null:description(book):null}
        
 
             <Carousel book={book} isGrid={isGrid}/>
      
-                 <div id="under-carousel" className='flex flex-row justify-between px-3 py-1  rounded-b-lg bottom-0'>
-             
+                 {/* <div id="under-carousel" className='flex flex-row justify-between px-3 py-1  rounded-b-lg bottom-0'>
+              */}
             
                 {isGrid?bookmarkBtn():null} </div>   
         
-                </div>
-                <div>
-            
-        
-                      
-                </div>
+                {/* </div> */}
+               
   </div>
   </div>
  </ErrorBoundary>

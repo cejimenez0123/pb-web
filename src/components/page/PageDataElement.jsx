@@ -23,13 +23,13 @@ export default function PageDataElement({page,isGrid,book=null}){
         if(page && page.type==PageType.picture){
             if(isValidUrl(page.data)){
                 setImage(page.data)
-                // setLoading(false)
+        
             }else{
                 getDownloadPicture(page.data).then(url=>{
                     setImage(url)
-                    // setLoading(false)
+             
                 }).catch(err=>{
-                    // setLoading(false)
+                
                 
                 })
             }
@@ -47,8 +47,8 @@ switch(page.type){
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
-        className={` ql-editor text-ellipsis  rounded-lg border-emerald-200 border-b-4    
-        ${isGrid?isPhone?" min-h-24  rounded-lg mx-auto w-grid-mobile-content ":"lulmo mt-2 rounded-lg bg-emerald-100 w-grid-content mx-auto  p-4 text-emerald-800 overflow-hidden ":`${isHorizPhone? ` pb-8 w-page-content h-page-content p-2 overflow-clip max-auto mx-auto my-1  rounded-lg  overflow-hidden `:`  w-page-mobile-content h-page-mobile-content pb-2 top-0`} ${book?`mx-2`:""}  `}`}
+        className={` ql-editor p-1 text-ellipsis  rounded-lg border-emerald-200 border-b-4    
+        ${isGrid?isPhone?" min-h-24  rounded-lg mx-auto w-grid-mobile-content max-h-grid-mobile-content ":"lulmo mt-2 rounded-lg bg-emerald-100 w-grid-content h-grid-content mx-auto  p-4 text-emerald-800 overflow-hidden ":`${isHorizPhone? ` pb-8 w-page-content h-page-content p-2 overflow-clip max-auto mx-auto my-1  rounded-lg  overflow-hidden `:`  w-page-mobile-content overflow-hidden max-h-page-mobile-content pb-2 top-0`} ${book?`mx-2`:""}  `}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
 
   )   }
@@ -58,17 +58,18 @@ switch(page.type){
    
         if(location.pathname!=Paths.page.createRoute(page.id)){
         navigate(Paths.page.createRoute(page.id))}
-        // isPhone?":"w-[96vw] rounded-t-lg overflow-hidden md:w-page-content"}
+
     }} className={` ${isGrid?isPhone?"h-grid-mobile-content w-grid-mobile-content":"  h-grid rounded-lg mx-auto pt-2 mb-8 w-grid  ":isHorizPhone?`w-page-content h-page-content`:`w-page-mobile-content h-page-content rounded-t-lg"`}`} >
         <div className={` ${isGrid?isPhone?"justify-center overflow-hidden max-h-[18em] w-full rounded-lg":"justify-center overflow-hidden max-h-[30em] w-full rounded-lg ":""}`}>
-        <img className={`rounded-lg ${ isGrid?isPhone?"":" overflow-hidden  ":``}  w-[96vw] md:w-page`}
+        <img className={`rounded-lg ${ isGrid?isPhone?"w-grid-mobile-content":" w-grid-cotent overflow-hidden  ":isHorizPhone?`w-page`:`w-page-mobile`}`}
     
     src={image} alt={page.title}/>
     </div></div>:<div className='skeleton w-[100%] min-h-40'/>)
 }
 case PageType.link:{
     return(<div 
-        className={` ${isGrid?"mx-auto mx-auto w-fit px-2":"w-[96vw] md:w-page"}`}>
+        className={isGrid?isPhone?`w-grid-mobile-content`:`w-grid-content `:isHorizPhone?`w-page-content`:`w-page-mobile-content`}>
+    
         <LinkPreview
             isGrid={isGrid}
             url={page.data}

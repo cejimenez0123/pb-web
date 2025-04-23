@@ -39,7 +39,7 @@ const ListView = ({ items, isGrid }) => {
             return(
           
                <InfiniteScroll
-             id={"list-view"}  className={`mx-auto ${isPhone?" w-[99.6vw] ":" w-[52em] "}`}
+             id={"list-view"}  className={`mx-auto ${isPhone?" w-page-mobile ":" w-page "}`}
             dataLength={filteredItems.length}
             next={nextPage}
                     hasMore={hasMore}
@@ -53,12 +53,9 @@ const ListView = ({ items, isGrid }) => {
 
                       if (item && item.storyIdList?.length > 0) {
                         return (
-                          <div
-                            key={item.id}
-                            className=""
-                          >
-                            <BookDashboardItem isGrid={isGrid} book={item} />
-                          </div>
+                      
+                            <BookDashboardItem        key={item.id} isGrid={isGrid} book={item} />
+                      
                         );
                       }
 if (
@@ -68,12 +65,9 @@ if (
                     book?.storyIdList?.some(stc => stc.storyId === item.id)
                 )
               ) {
-                    return(<div 
-                        
-                        key={item.id}
-                    >               
-                        <DashboardItem isGrid={isGrid} key={item.id} page={item}/>
-                    </div>)
+                    return(         
+                        <DashboardItem    key={item.id}  isGrid={isGrid}  page={item}/>
+                  )
                 }
             return null
         })}

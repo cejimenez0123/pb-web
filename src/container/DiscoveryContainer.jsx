@@ -171,9 +171,9 @@ function DiscoveryContainer(props){
  
       <meta name="twitter:image" content={Enviroment.logoChem} />
     </Helmet>
-            <div 
+            {/* <div 
 
-            className=' max-w-[100vw] mt-4' >
+            className=' w-screen mt-4' > */}
 
               <div className=' text-left ' >
                
@@ -207,12 +207,12 @@ function DiscoveryContainer(props){
                         </span>
                      
                         </div>
-<div className='max-w-screen'>
+
 
                    {!isGrid?<ListView items={viewItems}/>:<GridView items={viewItems}/>}
                   
-                    </div>
-                    </div>
+            
+                    {/* </div> */}
                     <div className=' lg:flex-1  lg:mx-4'>
                        <div className='w-24  mx-auto '>
                        

@@ -3,23 +3,15 @@ import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
 import "../App.css"
-import axios from 'axios';
-import { getLinkPreview, } from "link-preview-js";
-import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import { initGA, sendGAEvent } from '../core/ga4';
-// async function fetchLinkPreview(url) {
-//   try {
-//     const data = await getLinkPreview(Enviroment.proxyUrl+url);
-//     return data;
-//   } catch (error) {
-//     console.error('Error fetching link preview:', error);
-//     return null;
-//   }
-// }
+
 function LinkPreview({ url,isGrid}) {
   const isPhone =  useMediaQuery({
     query: '(max-width: 768px)'
+  })
+  const isHorizPhone =  useMediaQuery({
+    query: '(min-width: 768px)'
   })
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -44,31 +36,13 @@ const headers = {
 
 const fetchLinkPreview = async (url) => {
   try {
-  //   getLinkPreview(`${url}`, {
-  //     headers:headers,
-  //     resolveDNSHost: async (url) => {
-  //       return new Promise((resolve, reject) => {
-  //         const hostname = new URL(url).hostname;
-  //         axios(`https://dns.google/resolve?name=${hostname}`,{headers:headers})
-  //         .then(response =>{ 
-  //         console.log("SXSXS")
-  //         resolve(response.data)
-  //         })
-  //         .catch(err=>{
-       
-  //           if (err) {reject(err)}
-  //         })
-  //            });
-    
-  //     },
-  //   }).then(response=>{
-  // console.log(23121)
+
     fetchData(url).then(res=>{
 
     }).catch(err=>{
       console.log(err)
     })
-    // })
+
 
 
 
@@ -152,7 +126,7 @@ useLayoutEffect(()=>{
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
     
-      <div  className={isGrid?"spotify rounded-box ":"spotify mb-1 w-[96vw] md:w-page"} 
+      <div  className={`spotify ${isGrid?isPhone?" rounded-box w-grid-mobile-content p-1":" mb-1 w-grid p-1":isHorizPhone?" w-page p-1 ":" w-page-mobile p-1"}`} 
             style={{ cursor: 'pointer' }}>
         <Spotify width={"90%"} wide={isGrid&&isPhone} className="bg-emerald-200 "
          link={url}/>
@@ -171,14 +145,14 @@ useLayoutEffect(()=>{
   if (previewData.videoId) {
     return (
     
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className={isGrid?"min-h-30":"w-[96vw] md:w-page"}src={previewData.videoThumbnail} alt="Video Thumbnail" />
+        <img onClick={handleClick} style={{ cursor: 'pointer' }} className={`rounded-lg p-1 ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isHorizPhone?"w-page-content":"w-page-mobile-content "}`}src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
   }
   const imageView = ()=>{
     if(previewData.title!=="Spotify"){
-    return previewData.image && <a href={`${url}`} className={isGrid?'w-[36em]':""}><img  
-      className={isGrid?isPhone?"rounded-lg pt-4  overflow-hidden mx-auto":" ":" overflow-hidden h-[100%]] mx-auto rounded-lg"}
+    return previewData.image && <a href={`${url}`} className={`  ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isHorizPhone?"w-page-content":"w-page-mobile-content"}`}><img  
+      className={isGrid?isPhone?"rounded-lg pt-4 w-grid-mobile-content overflow-hidden mx-auto":" w-grid-content":isHorizPhone?" overflow-hidden mx-auto rounded-lg w-page-content":"w-page overflow-hidden mx-auto rounded-lg"}
 
       src={previewData.image}  alt={previewData.title} /></a>
     }else{
@@ -208,7 +182,15 @@ useLayoutEffect(()=>{
     }
   }
   return (
-    <div className={" "+isPhone?"":isGrid?"w-fit text-white  mont-medium ":" bg-emerald-200  text-slate-800 "} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div 
+    
+    
+    className={`${isGrid?
+      isPhone?`text-white w-grid-mobile-content mont-medium`:
+    `bg-emerald-200 w-grid-content text-white `:isHorizPhone?
+    `w-page-content`:`w-page-mobile-content`}`}
+    
+    onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       <div className='text-left open-sans-medium'>
    {previewDescription()}

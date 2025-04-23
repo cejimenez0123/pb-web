@@ -127,7 +127,7 @@ const handleClickComment=()=>{
 
 const header=()=>{
 
-   return isGrid?null:<span className={`flex-row flex justify-between ${isGrid?isPhone?"w-gird-mobile":" md:w-page  ":isPhone?"w-[96vw]":"w-page"}  px-1 rounded-t-lg  pt-2 pb-1`}>  
+   return isGrid?null:<span className={`flex-row flex justify-between ${isGrid?isPhone?"w-gird-mobile":" w-grid  ":isPhone?"w-page-mobile":"w-page"}  px-1 rounded-t-lg  pt-2 pb-1`}>  
 <ProfileCircle isGrid={isGrid} profile={page.author}/>
 
 
@@ -233,7 +233,7 @@ return <Button onClick={()=>{
          my-auto flex flex-row justify-between  text-white `:``}`}>
             {isPhone?<span/>:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
         <span className='bg-transparent flex flex-row  w-[100%] justify-between '>
-            <h6 className={`text-white ${isPhone?"":"  ml-1 pr-1"}text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto text-[0.9rem]`}
+            <h6 className={`text-white ${isPhone?"text-[0.6rem]":"text-[0.9rem]  ml-1 pr-1"} text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
     onClick={()=>{
         navigate(Paths.page.createRoute(page.id))
     }}
@@ -349,23 +349,20 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
         return(
         <ErrorBoundary>
-                <div className={`shadow-md ${isGrid ?isPhone ? 'overall-clip w-grid-mobile' : `relative w-grid rounded-lg overflow-clip shadow-md  my-2` : isPhone?" w-[98vw] mx-auto overflow-hidden":' w-page '}`}>
-        <div className={`shadow-md  ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-[96vw]"}   `}>
+                <div 
+                id="dashboard-item"
+                className={`shadow-md ${isGrid ?isPhone ? 'overall-clip w-grid-mobile h-grid-mobile' : `relative w-grid h-grid rounded-lg overflow-clip shadow-md  my-2` : isHorizPhone?" w-page h-page":' w-page-mobile max-h-page-mobile mx-auto overflow-hidden '}`}>
+        <div className={` ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-page-mobile"}   `}>
               {description()}
-          <div className={isGrid?isPhone?" rounded-lg overflow-clip":' rounded-lg flex justify-between flex-col h-[100%]  pt-1':"rounded-lg"}>
-      <div onClick={()=>{
-         navigate(Paths.page.createRoute(page.id))
-        }} 
-        className={isGrid?isPhone?"pt-2 rounded-lg h-grid-mobile-content  w-grid-mobile-content overflow-hidden":"w-grid-content h-grid-content":isHorizPhone?"h-page-content":" h-page-mobile-content "}>
-            {header()}
+              {header()} 
           <PageDataElement  isGrid={isGrid} page={page}/>
-          </div>
+   
               
                 {isGrid? <div className={`flex flex-row pt-2 justify-between px-1 py-1 ${isHorizPhone?"w-grid-content ":"w-grid-mobile-content"} rounded-b-lg bottom-0`}>
                 {header()}
             
                 {bookmarkBtn()} </div>   :  buttonRow()}
-                </div>
+           
                 <div>
             
                 </div>
