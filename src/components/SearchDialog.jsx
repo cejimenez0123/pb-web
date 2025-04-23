@@ -8,7 +8,6 @@ import { searchDialogToggle, searchMultipleIndexes } from "../actions/UserAction
 import checkResult from "../core/checkResult";
 import { useNavigate } from "react-router-dom";
 import AlgoliaIcon from "../images/algolia.svg"
-import ProfileCircle from "./profile/ProfileCircle";
 
 
 export default function SearchDialog(props){

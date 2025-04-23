@@ -39,7 +39,7 @@ const ListView = ({ items, isGrid }) => {
             return(
           
                <InfiniteScroll
-               className={`mx-auto ${isPhone?" w-[99.6vw] ":" w-[52em] "}`}
+             id={"list-view"}  className={`mx-auto ${isPhone?" w-[99.6vw] ":" w-[52em] "}`}
             dataLength={filteredItems.length}
             next={nextPage}
                     hasMore={hasMore}
@@ -55,7 +55,7 @@ const ListView = ({ items, isGrid }) => {
                         return (
                           <div
                             key={item.id}
-                            className="m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit"
+                            className=""
                           >
                             <BookDashboardItem isGrid={isGrid} book={item} />
                           </div>
@@ -69,7 +69,7 @@ if (
                 )
               ) {
                     return(<div 
-                        className={isGrid?"grid-item  ":"m-1 w-[96vw] md:w-page shadow-md rounded-lg h-fit "}
+                        
                         key={item.id}
                     >               
                         <DashboardItem isGrid={isGrid} key={item.id} page={item}/>

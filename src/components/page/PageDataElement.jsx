@@ -15,6 +15,9 @@ export default function PageDataElement({page,isGrid,book=null}){
         const isPhone =  useMediaQuery({
     query: '(max-width: 768px)'
   })
+  const isHorizPhone =  useMediaQuery({
+    query: '(min-width: 768px)'
+  })
     useEffect(()=>{
         
         if(page && page.type==PageType.picture){
@@ -44,7 +47,8 @@ switch(page.type){
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
-        className={` ql-editor text-ellipsis  rounded-lg border-emerald-200 border-b-4    ${isGrid?isPhone?" min-h-24 max-h-[18em] rounded-lg mx-auto w-grid-mobile-content ":"lulmo mt-2 max-h-[30rem] rounded-lg bg-emerald-100 w-grid-content mx-auto  p-4 text-emerald-800 overflow-hidden ":`${isPhone?`  w-[96vw] pb-2 top-0`: ` pb-8 max-h-[34rem] p-2 overflow-clip max-auto mx-auto my-1 w-page-content rounded-lg  overflow-hidden `} ${book?`mx-2`:""}  `}`}
+        className={` ql-editor text-ellipsis  rounded-lg border-emerald-200 border-b-4    
+        ${isGrid?isPhone?" min-h-24  rounded-lg mx-auto w-grid-mobile-content ":"lulmo mt-2 rounded-lg bg-emerald-100 w-grid-content mx-auto  p-4 text-emerald-800 overflow-hidden ":`${isHorizPhone? ` pb-8 w-page-content h-page-content p-2 overflow-clip max-auto mx-auto my-1  rounded-lg  overflow-hidden `:`  w-page-mobile-content h-page-mobile-content pb-2 top-0`} ${book?`mx-2`:""}  `}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
 
   )   }
@@ -54,7 +58,8 @@ switch(page.type){
    
         if(location.pathname!=Paths.page.createRoute(page.id)){
         navigate(Paths.page.createRoute(page.id))}
-    }} className={` ${isGrid?isPhone?"max-h-[18em]":"  max-h-[38em]  rounded-lg mx-auto pt-2 mb-8 w-[96%] ":isPhone?"w-[96vw] rounded-t-lg":"w-[96vw] rounded-t-lg overflow-hidden md:w-page-content"}`} >
+        // isPhone?":"w-[96vw] rounded-t-lg overflow-hidden md:w-page-content"}
+    }} className={` ${isGrid?isPhone?"h-grid-mobile-content w-grid-mobile-content":"  h-grid rounded-lg mx-auto pt-2 mb-8 w-grid  ":isHorizPhone?`w-page-content h-page-content`:`w-page-mobile-content h-page-content rounded-t-lg"`}`} >
         <div className={` ${isGrid?isPhone?"justify-center overflow-hidden max-h-[18em] w-full rounded-lg":"justify-center overflow-hidden max-h-[30em] w-full rounded-lg ":""}`}>
         <img className={`rounded-lg ${ isGrid?isPhone?"":" overflow-hidden  ":``}  w-[96vw] md:w-page`}
     

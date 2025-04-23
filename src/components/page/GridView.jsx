@@ -33,6 +33,7 @@ export default function GridView({ items }) {
   return (
     <span>
       <InfiniteScroll
+        id={"grid-view"}
         className={isNotPhone?"":""}
         dataLength={filteredItems.length}
         next={nextPage}
@@ -51,7 +52,7 @@ export default function GridView({ items }) {
 
             if (item.storyIdList?.length > 0 && !item.data) {
               return (
-                <div className={isNotPhone?"grid-item rounded-lg oveflow-hidden ":" h-[24em] rounded-lg overflow-hidden max-w-full"} key={id}>
+                <div className={isNotPhone?"grid-item w-grid h-grid rounded-lg oveflow-hidden ":" h-grid-mobile overflow-hidden w-grid-mobile"} key={id}>
                   <BookDashboardItem isGrid={true} book={item} />
                 </div>
               );

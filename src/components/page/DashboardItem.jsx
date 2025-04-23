@@ -19,13 +19,15 @@ import { addStoryListToCollection, deleteStoryFromCollection } from '../../actio
 import Context from '../../context'
 import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
-
 import { debounce } from 'lodash'
 import { initGA,sendGAEvent } from '../../core/ga4'
 import { useMediaQuery } from 'react-responsive'
 function DashboardItem({page, book,isGrid}) {
     const isPhone =  useMediaQuery({
         query: '(max-width: 768px)'
+      })
+    const isHorizPhone =  useMediaQuery({
+        query: '(min-width: 768px)'
       })
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
@@ -125,7 +127,7 @@ const handleClickComment=()=>{
 
 const header=()=>{
 
-   return isGrid?null:<span className={`flex-row flex justify-between ${isPhone?" w-[96vw] ":" md:w-page  "}  px-1 rounded-t-lg  pt-2 pb-1`}>  
+   return isGrid?null:<span className={`flex-row flex justify-between ${isGrid?isPhone?"w-gird-mobile":" md:w-page  ":isPhone?"w-[96vw]":"w-page"}  px-1 rounded-t-lg  pt-2 pb-1`}>  
 <ProfileCircle isGrid={isGrid} profile={page.author}/>
 
 
@@ -227,8 +229,9 @@ return <Button onClick={()=>{
         }><p>{title} {">"}</p></a>)
     }
     const bookmarkBtn =()=>{
-        return isGrid ?<div className={`w-[100%]  ${isPhone?"":"py-2"}  my-auto flex flex-row justify-between  text-white `}>
-            {isPhone?null:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
+        return isGrid ?<div className={`  ${isGrid?isPhone?"w-grid-mobile":`${isHorizPhone?`py-2 `:``} 
+         my-auto flex flex-row justify-between  text-white `:``}`}>
+            {isPhone?<span/>:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
         <span className='bg-transparent flex flex-row  w-[100%] justify-between '>
             <h6 className={`text-white ${isPhone?"":"  ml-1 pr-1"}text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto text-[0.9rem]`}
     onClick={()=>{
@@ -353,12 +356,12 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
       <div onClick={()=>{
          navigate(Paths.page.createRoute(page.id))
         }} 
-        className={isGrid?isPhone?"pt-2 rounded-lg overflow-hidden":"":isPhone?"h-[26em]  ":" "}>
+        className={isGrid?isPhone?"pt-2 rounded-lg h-grid-mobile-content  w-grid-mobile-content overflow-hidden":"w-grid-content h-grid-content":isHorizPhone?"h-page-content":" h-page-mobile-content "}>
             {header()}
           <PageDataElement  isGrid={isGrid} page={page}/>
           </div>
               
-                {isGrid? <div className='flex flex-row pt-2 justify-between px-3 py-1  rounded-b-lg bottom-0'>
+                {isGrid? <div className={`flex flex-row pt-2 justify-between px-1 py-1 ${isHorizPhone?"w-grid-content ":"w-grid-mobile-content"} rounded-b-lg bottom-0`}>
                 {header()}
             
                 {bookmarkBtn()} </div>   :  buttonRow()}

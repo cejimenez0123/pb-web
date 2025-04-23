@@ -15,17 +15,22 @@ export default {
       '128': '48rem',
       'page':"46em",
         'page-content':"45em",
+        'page-mobile':"97.6vw",
+        'page-mobile-content':"96vw",
       'info':"55rem",
-      'grid':"35em",
-      'grid-content':"34.5em",
-      'grid-mobile':"13em",
-       'grid-mobile-content':"12em"
+      'grid':"32.5vw",
+      'grid-content':"31.3vw",
+      'grid-mobile':"48vw",
+       'grid-mobile-content':"47vw"
 
     },
     height:{
       "info":"18rem",
       "item":"20rem",
-      "page":"55em"
+      "page":"55em",
+      "page-mobile":"38rem",
+      "grid-mobile-content":"18em",
+      "grid":"38em"
     },
     borderWidth: {
       DEFAULT: '1px',
