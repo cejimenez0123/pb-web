@@ -33,8 +33,13 @@ function CalendarEmbed(){
         let events = res.events.flatMap(event=>event.events)
   
       const eventList = events.filter(event => {
+        const today = new Date();
+        const threeMonthsLater = new Date();
+        threeMonthsLater.setMonth(today.getMonth() + 3);
+        // const isWithinThreeMonths = event.end.dateTime >= Date.now() && event.end.dateTime <= threeMonthsLater;
            const endDate = event.end?.dateTime || event.end?.date;
-           return new Date(endDate) >= Date.now();}).sort((a, b) => {
+           return new Date(endDate) >= Date.now() && new Date(endDate)<=threeMonthsLater
+        }).sort((a, b) => {
             const aStart = new Date(a.start?.dateTime || a.start?.date);
             const bStart = new Date(b.start?.dateTime || b.start?.date);
             return aStart - bStart;
@@ -94,7 +99,7 @@ function CalendarEmbed(){
         </select>
         </div>
           <InfiniteScroll 
-          className="w-fit mx-auto "
+          className="w-page-mobile shadow-sm md:w-page max-h-[30em] md:max-h-[40rem] mx-auto "
                 next={()=>{}}
                 hasMore={false}
                 loader={<p>Loading...</p>}
