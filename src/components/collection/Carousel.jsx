@@ -22,11 +22,10 @@ export default function Carousel({book,isGrid}){
     if(book){
       
         return(
-            
-       
-        <div className={`carousel  rounded-lg
-         ${isGrid?isPhone?` w-grid-mobile-content h-grid-mobile-content mx-auto rounded-lg  p-1 bg-emerald-700`:`w-grid-content bg-emerald-700`:isHorizPhone?`w-page-cotent  px-2`:`w-page-mobile-content h-page-mobile-content rounded-box pt-2`}`}
-         >
+        <div className={`   carousel  mx-2 rounded-box `+(isGrid?isPhone? ` w-grid-mobile-content max-h-grid-mobile-content  `:`w-grid-content max-h-grid-content`:isHorizPhone?`w-page-content max-h-page-content`:`w-page-mobile-content max-h-page-mobile-content`)}
+   
+    
+        >
 
        {book.storyIdList.map((stc,i)=>{
         if(stc && stc.story){
@@ -34,24 +33,17 @@ export default function Carousel({book,isGrid}){
       
         return(
         
-        <div  className={`  carousel-item  flex flex-col rounded-lg  
-         ${isGrid?isPhone?" mx-1 mx-2 overflow-hidden   ":
-         `overflow-hidden  `:
-         isHorizPhone?" mx-1  ":
-         "   overflow-hidden"}`}
+        <div   className={`  carousel-item  flex flex-col ${isGrid?isPhone?`w-grid-mobile-content max-h-[20rem]`:`w-grid-content h-grid-mobile`:isHorizPhone?`w-page-content h-page-content`:`w-page-mobile-content h-page-mobile-content`} rounded-lg  mx-2 h-fit
+        `}
          id={stc.id} key={stc.id}
 
 >
-<h5  id="desc"className={ `mx-1  min-h-6 ${isPhone?" top-0 ":" h-8 bottom-0 sm:max-h-24 "} ${isGrid?isPhone?" text-white text-ellipsis w-grid-mobile-content  ": `text-white   w-grid-content whitespace-nowrap no-underline text-ellipsis     text-right text-white`:isHorizPhone?" text-emerald-800 w-page-content ":"w-page-mobile-content    overflow-hidden text-emerald-800 "} mont-medium  no-underline text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+<h5  id="desc"className={ `mx-1  min-h-6 px-2 ${isPhone?" top-0 ":" h-8 bottom-0 sm:max-h-24 "} ${isGrid?isPhone?" text-white text-ellipsis w-grid-mobile-content  ": `text-white   w-grid-content whitespace-nowrap no-underline text-ellipsis     text-right text-white`:isHorizPhone?" text-emerald-800 w-page-content ":"w-page-mobile-content     text-emerald-800 "} mont-medium  no-underline text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
 
         {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}
-        {isGrid?(!isPhone?desription(stc.story):isPhone?null:null):null}
-        <span
-         onClick={()=>navigate(Paths.page.createRoute(stc.storyId))}
-          >
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
-       </span>
+      
         </div>)}else{
             return null
         }})}

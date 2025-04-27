@@ -1,4 +1,4 @@
-import React ,{useState,useLayoutEffect, useContext, useEffect}from 'react'
+import React ,{useState,useLayoutEffect, useContext}from 'react'
 import "../App.css"
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchRecommendedStories } from '../actions/StoryActions'
@@ -6,18 +6,16 @@ import PageList from '../components/page/PageList'
 import ExploreList from '../components/collection/ExploreList.jsx'
 import { fetchCollectionProtected, getRecommendedCollectionsProfile } from '../actions/CollectionActions'
 import { useLocation } from 'react-router-dom'
-import {  appendToPagesInView, setPageInView, setPagesInView, } from '../actions/PageActions'
+import {  appendToPagesInView,  setPagesInView, } from '../actions/PageActions'
 import { setCollections } from '../actions/CollectionActions'
 import Context from '../context.jsx'
 import checkResult from '../core/checkResult.js'
-import ErrorBoundary from '../ErrorBoundary.jsx'
-import { initGA,sendGAEvent } from '../core/ga4.js'
 function DashboardContainer(props){
     const location = useLocation()
-    // useEffect(()=>{
-    //     initGA()
-    //     sendGAEvent("View-Dashboard","View Dashboard","Dashboard",0,true)   
-    // },[])
+    useEffect(()=>{
+        initGA()
+        sendGAEvent("View","View Dashboard")   
+    },[])
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)
     const homeCol = useSelector(state=>state.books.collectionInView)
@@ -76,8 +74,7 @@ if(currentProfile&&currentProfile.profileToCollections){
                          dispatch(appendToPagesInView({pages:sorted}))
                       
                         }
-                        // console.log(stories)
-                        // dispatch(appendToPagesInView({pages:stories}))
+                
                     }
             },err=>{
 
@@ -95,7 +92,7 @@ useLayoutEffect(()=>{
 
 
         return(
-            // <ErrorBoundary>
+            <ErrorBoundary>
             <div id="dashboard" >
                 <div className='py-8'>
                
@@ -118,7 +115,7 @@ useLayoutEffect(()=>{
     className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3 t text-md md:text-xl" aria-label="Home"
     />
   <div role="tabpanel" 
-   className="tab-content  pt-1 lg:py-4 rounded-lg  max-w-[96vw] md:w-page md:mx-auto border-l-4  rounded-full   w-[96vw]  md:w-page ">
+   className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page md:mx-auto border-l-4  rounded-full      ">
   <PageList items={stories}/>
   </div>
                 </div>
@@ -126,7 +123,7 @@ useLayoutEffect(()=>{
                 </div>
                 <ExploreList items={collections}/>
             </div>
-            // </ErrorBoundary>
+            </ErrorBoundary>
         )
         
 }

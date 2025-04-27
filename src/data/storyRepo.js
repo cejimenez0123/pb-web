@@ -148,5 +148,10 @@ class StoryRepo{
 
         return res.data
     }
+    async fetchEvents({days=7}){
+        let res = await axios.get(this.url+"/events/"+days)
+
+        return res.data
+    }
 }
 export default new StoryRepo()

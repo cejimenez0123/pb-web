@@ -13,25 +13,27 @@ export default {
   theme: {
     width: {
       '128': '48rem',
-      'page':"46em",
+      'page':"45.6em",
         'page-content':"45em",
         'page-mobile':"97.6vw",
         'page-mobile-content':"96vw",
       'info':"55rem",
-      'grid':"32.5vw",
+      'grid':"32vw",
       'grid-content':"31.3vw",
       'grid-mobile':"48vw",
-       'grid-mobile-content':"46.6vw"
+      'grid-mobile-content':"46.6vw"
 
     },
     height:{
       "info":"18rem",
       "item":"20rem",
       "page":"55em",
-      "page-mobile":"38rem",
-      "page-mobile-content":"32em",
-      "grid-mobile-content":"18em",
-      "grid":"38em"
+      'page-content':"40rem",
+      "page-mobile":"30rem",
+      "page-mobile-content":"28rem",
+      "grid-mobile-content":"10rem",
+      "grid":"20rem",
+      "grid-content":"18rem",
     },
     borderWidth: {
       DEFAULT: '1px',

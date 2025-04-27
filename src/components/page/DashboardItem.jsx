@@ -128,7 +128,7 @@ const handleClickComment=()=>{
 const header=()=>{
 
    return isGrid?null:<span className={`flex-row flex justify-between ${isGrid?isPhone?"w-gird-mobile":" w-grid  ":isPhone?"w-page-mobile":"w-page"}  px-1 rounded-t-lg  pt-2 pb-1`}>  
-<ProfileCircle isGrid={isGrid} profile={page.author}/>
+<ProfileCircle isGrid={isGrid&&isPhone} profile={page.author}/>
 
 
              
@@ -229,12 +229,13 @@ return <Button onClick={()=>{
         }><p>{title} {">"}</p></a>)
     }
     const bookmarkBtn =()=>{
-        return isGrid ?<div className={`  ${isGrid?isPhone?"w-grid-mobile":`${isHorizPhone?`py-2 `:``} 
-         my-auto flex flex-row justify-between  text-white `:``}`}>
+        return isGrid ?<div className={`  ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content px-2":isHorizPhone?"w-page-content":"w-page-mobile-content"} 
+         my-auto flex flex-row justify-between  text-white`}>
             {isPhone?<span/>:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
-        <span className='bg-transparent flex flex-row  w-[100%] justify-between '>
-            <h6 className={`text-white ${isPhone?"text-[0.6rem]":"text-[0.9rem]  ml-1 pr-1"} text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
+        <span className='bg-transparent flex flex-row  flex-shrink justify-end '>
+            <h6 className={`text-white  ${isPhone?"text-[0.6rem] ":"text-[0.9rem]  w-[5rem] ml-1 pr-2"} text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
     onClick={()=>{
+        sendGAEvent("Navigate",`Navigate to ${JSON.stringify({id:page.id,title:page.title})}`)
         navigate(Paths.page.createRoute(page.id))
     }}
 
@@ -351,7 +352,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
         <ErrorBoundary>
                 <div 
                 id="dashboard-item"
-                className={`shadow-md ${isGrid ?isPhone ? 'overall-clip w-grid-mobile h-grid-mobile' : `relative w-grid h-grid rounded-lg overflow-clip shadow-md  my-2` : isHorizPhone?" w-page h-page":' w-page-mobile max-h-page-mobile mx-auto overflow-hidden '}`}>
+                className={`shadow-md  ${isGrid ?isPhone ? 'overall-clip w-grid-mobile-content max-h-grid-mobile-content' : `relative w-grid h-[20rem] rounded-lg  shadow-md  my-2` : isHorizPhone?" w-page-content mt-2 ":' w-page-mobile-content mt-2 max-h-page-mobile-content mx-auto overflow-hidden '}`}>
         <div className={` ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-page-mobile"}   `}>
               {description()}
               {header()} 
@@ -375,7 +376,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
  
   </ErrorBoundary>
      )}else{
-        return(<div className={isGrid?isPhone?"overall-hidden":"shadow-md":'relative w-[96vw] rounded-lg overflow-clip shadow-md md:w-page   my-2 '}><span className='skeleton'/></div>)
+        return(<div className={isGrid?isPhone?"overall-hidden w-grid-mobile h-grid-mobile":"shadow-md w-grid h-grid":isHorizPhone?`relative rounded-lg overflow-clip shadow-md w-page h-page my-2`:'relative rounded-lg overflow-clip shadow-md w-page-mobile h-page-mobile my-2 '}><span className='skeleton'/></div>)
      }
 
 }

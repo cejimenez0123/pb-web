@@ -287,7 +287,6 @@ const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",
         collection:data.collection??[]
     }
 })
-
 const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent",
     async ({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},thunkApi)=>{
         let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
@@ -299,6 +298,7 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
             }  
         return {collection:data.collection}
     }
+
 )
 const clearCollections = createAction("collection/clearCollections")
 export {
