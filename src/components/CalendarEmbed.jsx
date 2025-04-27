@@ -7,6 +7,7 @@ import storyRepo from "../data/storyRepo";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Context from "../context";
 import isValidUrl from "../core/isValidUrl";
+import { initGA,sendGAEvent } from "../core/ga4";
 function CalendarEmbed(){
     const {setError,currentProfile}=useContext(Context)
     const [selectedArea, setSelectedArea] = useState("");
@@ -21,6 +22,7 @@ function CalendarEmbed(){
 
      
         useLayoutEffect(()=>{
+            initGA()
             addEvents()
       },[])
       useEffect(()=>{
@@ -106,8 +108,12 @@ function CalendarEmbed(){
           dataLength={events.length}>
           {events.map((event,i)=>{
 
-            return(<div key={i} className={`my-1 shadow-md text-left flex flex-row justify-between px-6 px-4 mont-medium text-emerald-800 py-4 border border-emerald-600 rounded-full mx-auto ${isPhone?"w-mobile-page":"w-page"} `}>
-              <span>
+            return(<div key={i} onTouchStart={()=>{
+            
+                sendGAEvent("View Event","Clicked Event"+event.summary,event.summary,0,false)
+            }}
+            className={`my-1 shadow-md text-left flex flex-row justify-between px-6 px-4 mont-medium text-emerald-800 py-4 border border-emerald-600 rounded-full mx-auto ${isPhone?"w-mobile-page":"w-page"} `}>
+              <span >
                 
               <a href={event.googleLink}><h5 className="text-ellipsis text-green-600  flex flex-col  
             whitespace-nowrap no-underline max-w-[20em] overflow-hidden">
