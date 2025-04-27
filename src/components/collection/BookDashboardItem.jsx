@@ -110,7 +110,7 @@ return <Button onClick={()=>{
     const bookmarkBtn =()=>{
         return(
   
-        <span id="bookmark-btn-item"  className={`flex pt-2 pb-1 pl-2 pr-2  justify-between bg-emerald-600 h-[100%] flex-row ${isGrid?isPhone?`w-grid-mobile`:`w-grid`:isHorizPhone?`w-page`:`w-page-mobile`}`}>
+        <span id="bookmark-btn-item"  className={`flex pt-2 pb-1 pl-2 pr-2  justify-between bg-emerald-600 h-[100%] flex-row `}>
        {isPhone&&isGrid?null:
        <ProfileCircle isGrid={isGrid&&isPhone} profile={book.profile}/>}
   
@@ -137,7 +137,7 @@ return <Button onClick={()=>{
           },10)
           const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
             <div id="book-description" className={`min-h-12 pt-4 p-2`}>
-                <h6 className={`${isGrid?isPhone?" w-grid-mobile-content text-white":`${isHorizPhone?"w-grid-content":"w-grid-mobile-content"}`:isHorizPhone?"":""} p-2 open-sans-medium text-left `}>
+                <h6 className={`text-white ${isGrid?isPhone?" w-grid-mobile-content ":"w-grid":isHorizPhone?"w-page":"w-page-mobile"} p-2 open-sans-medium text-left `}>
                     {book.description}
                 </h6>
             </div>:null:null}
@@ -146,8 +146,8 @@ return <Button onClick={()=>{
     
         return(
         <ErrorBoundary>
-        <div id="book-dashboard-item" className={`shadow-md  bg-emerald-200 rounded-lg   overflow-hidden ${isGrid?isPhone?"  w-grid-mobile ":'mx-auto max-h-[20rem] w-grid':isHorizPhone?"w-page mt-4":` w-page-mobile mt-2`}   flex justify-between flex-col   pt-1`}>
-                 <div className={isGrid?isPhone?" ":"bg-emerald-700  rounded-lg overflow-hidden":'relative w-[96vw]  overflow-clip  md:w-page   '}>
+        <div id="book-dashboard-item" className={`shadow-md  bg-emerald-200 rounded-lg overflow-hidden  ${isGrid?isPhone?"  w-grid-mobile ":'mx-auto max-h-[20rem] w-grid':isHorizPhone?"w-page mt-4":` w-page-mobile mt-2`}   flex justify-between flex-col   pt-1`}>
+                 <div className={isGrid?isPhone?" w-grid-mobile":"bg-emerald-700  w-grid rounded-lg overflow-hidden":isHorizPhone?'relative overflow-clip  w-page   ':"w-page-mobile"}>
            
 
 
