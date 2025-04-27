@@ -14,8 +14,7 @@ if(import.meta.env.VITE_NODE_ENV=="dev"){
 export default function LinksContainer(props){
      useLayoutEffect(()=>{
           initGA()
-          // sendGAEvent("View Links Page","Page View Links","Link Page",0,true)
-     },[])
+         },[])
     
 
 
@@ -25,18 +24,18 @@ export default function LinksContainer(props){
             <ul className="md:mx-auto mx-4">
             <li>
 
-    <LinkNode url={"https://partiful.com/e/66swqidgRvXSDm7FH3sO"}
+    <LinkNode url={"https://partiful.com/e/AS9eMLY3etZYsnlVxAsY"}
     image={workshop}
-         title={"Writers Workshop Sat. April 19th:Poets being Human"}
+         title={"Writers Workshop Sat. May 31"}
          description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
          </li>
-         {/* <li>
+       <li>
 
-<LinkNode url={"https://partiful.com/e/r8u4FeGRvOCa12SNp6d6"}
+<LinkNode url={"https://partiful.com/e/E9TIyNUzOpNzwl0G0hYO"}
 image={philosophy}
-     title={"The Bronx Philosophy Circle:Sat. April 12th"}
-     description={"Public PHilosophy for community building and well being."}/>
-     </li> */}
+     title={"The Bronx Philosophy Circle: May 10th"}
+     description={"Public Philosophy for community building and well being."}/>
+     </li> 
            <li>
 
 

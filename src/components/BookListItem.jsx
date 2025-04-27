@@ -18,7 +18,7 @@ function BookListItem({book}){
         dispatch(setCollections({collections:[]}))
         dispatch(setCollectionInView({collection:book}))
         navigate(Paths.collection.createRoute(book.id))
-        sendGAEvent("Navigate",`Navigate to Collection:${book.title}`)
+        sendGAEvent("Navigate",`Navigate to Collection ${JSON.stringify({id:book.id,title:book.title})}`)
   
     }
     return (

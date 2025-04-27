@@ -82,7 +82,7 @@ const fetchData = async (url) => {
   }
 };
   const handleClick = () => {
-    sendGAEvent("Click",`Click Link Node-${title}`,title,0,true)
+    sendGAEvent("Click",`Click Link ${title}`,title,0,true)
     window.open(url, '_blank');
   };
   const isYouTubeURL = (url) => {
