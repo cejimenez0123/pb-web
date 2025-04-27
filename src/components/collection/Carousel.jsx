@@ -38,7 +38,7 @@ export default function Carousel({book,isGrid}){
          id={stc.id} key={stc.id}
 
 >
-<h5  id="desc"className={ `mx-1  min-h-6 px-2 ${isPhone?" top-0 ":" h-8 bottom-0 sm:max-h-24 "} ${isGrid?isPhone?" text-white text-ellipsis w-grid-mobile-content  ": `text-white   w-grid-content whitespace-nowrap no-underline text-ellipsis     text-right text-white`:isHorizPhone?" text-emerald-800 w-page-content ":"w-page-mobile-content     text-emerald-800 "} mont-medium  no-underline text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+<h5  id="desc"className={ `mx-1  min-h-6 px-2 ${isPhone?" top-0 ":" h-8 bottom-0 sm:max-h-24 "} ${isGrid?isPhone?" text-emerald-800 text-ellipsis w-grid-mobile-content  ": `text-emerald-800  w-grid-content whitespace-nowrap no-underline text-ellipsis     text-right `:isHorizPhone?" text-emerald-800 w-page-content ":"w-page-mobile-content     text-emerald-800 "} mont-medium  no-underline text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
 
         {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}

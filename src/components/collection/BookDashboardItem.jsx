@@ -16,10 +16,11 @@ import { useMediaQuery } from 'react-responsive'
 import Carousel from './Carousel'
 import ErrorBoundary from '../../ErrorBoundary'
 import { useNavigate } from 'react-router-dom'
+import adjustScreenSize from '../../core/adjustScreenSize'
 function BookDashboardItem({book,isGrid}) {
-      const isPhone =  useMediaQuery({
-    query: '(max-width: 768px)'
-  })
+    const isPhone =  useMediaQuery({
+        query: '(max-width: 768px)'
+      })
     const dispatch = useDispatch()
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
@@ -29,9 +30,7 @@ function BookDashboardItem({book,isGrid}) {
    const [likeFound,setLikeFound]=useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
-    const isHorizPhone =  useMediaQuery({
-        query: '(min-width: 768px)'
-      })
+ 
     const soCanUserEdit=()=>{}
 
    
@@ -108,9 +107,10 @@ return <Button onClick={()=>{
    
     }
     const bookmarkBtn =()=>{
+        let title =  book.title.length > 23 ? book.title.slice(0, 23) + '...' : book.title
         return(
   
-        <span id="bookmark-btn-item"  className={`flex pt-2 pb-1 pl-2 pr-2  justify-between bg-emerald-600 h-[100%] flex-row `}>
+        <span id="bookmark-btn-item"  className={`flex pt-2 ${adjustScreenSize(isGrid,"","","","")} pb-1 pl-2 pr-2  justify-between bg-emerald-600 h-[100%] flex-row `}>
        {isPhone&&isGrid?null:
        <ProfileCircle isGrid={isGrid&&isPhone} profile={book.profile}/>}
   
@@ -121,7 +121,7 @@ return <Button onClick={()=>{
                 navigate(Paths.collection.createRoute(book.id))
             }}
             
->{` `+book.title.length>0?book.title:""}</h6>
+>{` `+title}</h6>
 <img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
 </span>   
 
@@ -135,19 +135,21 @@ return <Button onClick={()=>{
            
         }
           },10)
-          const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
+    const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
             <div id="book-description" className={`min-h-12 pt-4 p-2`}>
                 <h6 className={`text-white ${isGrid?isPhone?" w-grid-mobile-content ":"w-grid":isHorizPhone?"w-page":"w-page-mobile"} p-2 open-sans-medium text-left `}>
                     {book.description}
                 </h6>
             </div>:null:null}
 
-    if(book){
+if(!book){
+    return<span className={`skeleton ${adjustScreenSize()}`}/>
+}
     
         return(
         <ErrorBoundary>
-        <div id="book-dashboard-item" className={`shadow-md  bg-emerald-200 rounded-lg overflow-hidden  ${isGrid?isPhone?"  w-grid-mobile ":'mx-auto max-h-[20rem] w-grid':isHorizPhone?"w-page mt-4":` w-page-mobile mt-2`}   flex justify-between flex-col   pt-1`}>
-                 <div className={isGrid?isPhone?" w-grid-mobile":"bg-emerald-700  w-grid rounded-lg overflow-hidden":isHorizPhone?'relative overflow-clip  w-page   ':"w-page-mobile"}>
+        <div id="book-dashboard-item" className={`shadow-md  bg-emerald-200 rounded-lg overflow-hidden ${adjustScreenSize(isGrid,"mx-auto max-h-[20rem] ","mt-2","mt-4")}  flex justify-between flex-col   pt-1`}>
+                 {/* <div className={isGrid?isPhone?" w-grid-mobile":"bg-emerald-700  w-grid rounded-lg overflow-hidden":isHorizPhone?'relative overflow-clip  w-page   ':"w-page-mobile"}> */}
            
 
 
@@ -161,13 +163,14 @@ return <Button onClick={()=>{
                 {bookmarkBtn()} </div>   
         
        
-  </div>
+  {/* </div> */}
  </ErrorBoundary>
-     )}else{
-        return null
-     }
+     )
 
 }
 
 
 export default BookDashboardItem
+
+
+
