@@ -110,9 +110,9 @@ return <Button onClick={()=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 23) + '...' : book.title
         return(
   
-        <span id="bookmark-btn-item"  className={`flex pt-2 ${adjustScreenSize(isGrid,"","","","")} pb-1 pl-2 pr-2  justify-between bg-emerald-600 h-[100%] flex-row `}>
-       {isPhone&&isGrid?null:
-       <ProfileCircle isGrid={isGrid&&isPhone} profile={book.profile}/>}
+        <span id="bookmark-btn-item"  className={`flex pt-2  pb-1 pl-2 pr-2  justify-between bg-emerald-600 h-[100%] flex-row `}>
+       <div className={"flex flex-row justify-between  "+adjustScreenSize(isGrid,true,"","","","")}>{isPhone&&isGrid?null:
+       <ProfileCircle isGrid={isGrid&&isPhone} color={"white"}profile={book.profile}/>}
   
   <span className='flex flex-row text-right text-white'>       <h6 
             className='my-auto text-ellipsis   
@@ -123,6 +123,7 @@ return <Button onClick={()=>{
             
 >{` `+title}</h6>
 <img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
+</div>
 </span>   
 
 )
@@ -143,15 +144,13 @@ return <Button onClick={()=>{
             </div>:null:null}
 
 if(!book){
-    return<span className={`skeleton ${adjustScreenSize()}`}/>
+    return<span className={`skeleton ${adjustScreenSize(isGrid)}`}/>
 }
     
         return(
         <ErrorBoundary>
-        <div id="book-dashboard-item" className={`shadow-md  bg-emerald-200 rounded-lg overflow-hidden ${adjustScreenSize(isGrid,"mx-auto max-h-[20rem] ","mt-2","mt-4")}  flex justify-between flex-col   pt-1`}>
-                 {/* <div className={isGrid?isPhone?" w-grid-mobile":"bg-emerald-700  w-grid rounded-lg overflow-hidden":isHorizPhone?'relative overflow-clip  w-page   ':"w-page-mobile"}> */}
-           
-
+        <div id="book-dashboard-item" className={`shadow-md  bg-emerald-200 rounded-lg overflow-hidden mt-2 ${adjustScreenSize(isGrid,"mx-auto max-h-[20rem] ","","")}  flex justify-between flex-col   pt-1`}>
+               
 
         {isGrid?isPhone?null:description(book):null}
        
@@ -161,9 +160,7 @@ if(!book){
            
             
                 {bookmarkBtn()} </div>   
-        
-       
-  {/* </div> */}
+
  </ErrorBoundary>
      )
 

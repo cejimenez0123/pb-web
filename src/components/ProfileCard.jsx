@@ -77,7 +77,7 @@ export default function ProfileCard({profile,onClickFollow,following}){
 onClose={()=>{
     setFollowersDialog(false)
 }}>
-    <div className="card  min-h-[20em] min-w-[30em] py-6 rounded-lg">
+    <div className="card   min-w-[30em] py-6 rounded-lg">
        <div div className="px-4 ">
         <img onClick={()=>setFollowersDialog(false)}src={Clear}/>
        </div>

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import { useLocation } from "react-router-dom"
 import { useMediaQuery } from "react-responsive"
+import adjustScreenSize from "../../core/adjustScreenSize"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const navigate = useNavigate()
@@ -47,7 +48,7 @@ switch(page.type){
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
-        className={` ql-editor p-1 text-ellipsis  rounded-lg lulmo overflow-hidden border-emerald-200 border-b-4    
+        className={` ql-editor p-1 text-ellipsis ${adjustScreenSize(isGrid,true,"","","","")} rounded-lg lulmo overflow-hidden border-emerald-200 border-b-4    
         ${isGrid?isPhone?" min-h-24  rounded-lg mx-auto w-grid-mobile-content ":"  p-1 mx-auto rounded-lg bg-emerald-100 w-grid-content ":`${isHorizPhone? ` pb-8 w-page-content p-2 overflow-y-hidden max-auto mx-auto my-1  rounded-lg  overflow-hidden `:`  w-page-mobile-content max-h-grid-mobile-content overflow-y-hidden pb-2 top-0`} ${book?`mx-2`:""}  `}`}
     dangerouslySetInnerHTML={{__html:page.data}}/>
  </span> 

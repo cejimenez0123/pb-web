@@ -2,9 +2,9 @@
 
 import React from 'react'
 import "../../Dashboard.css"
-import Paths from '../../core/paths'
 import PageDataElement from '../page/PageDataElement'
 import { useMediaQuery } from 'react-responsive'
+import adjustScreenSize from '../../core/adjustScreenSize'
 export default function Carousel({book,isGrid}){
     const isPhone =  useMediaQuery({
         query: '(max-width: 768px)'
@@ -22,7 +22,7 @@ export default function Carousel({book,isGrid}){
     if(book){
       
         return(
-        <div className={`   carousel  mx-2 rounded-box `+(isGrid?isPhone? ` w-grid-mobile-content max-h-grid-mobile-content  `:`w-grid-content max-h-grid-content`:isHorizPhone?`w-page-content max-h-page-content`:`w-page-mobile-content max-h-page-mobile-content`)}
+        <div className={`   carousel  mx-2 rounded-box `+adjustScreenSize(isGrid,true)}
    
     
         >
@@ -38,7 +38,7 @@ export default function Carousel({book,isGrid}){
          id={stc.id} key={stc.id}
 
 >
-<h5  id="desc"className={ `mx-1  min-h-6 px-2 ${isPhone?" top-0 ":" h-8 bottom-0 sm:max-h-24 "} ${isGrid?isPhone?" text-emerald-800 text-ellipsis w-grid-mobile-content  ": `text-emerald-800  w-grid-content whitespace-nowrap no-underline text-ellipsis     text-right `:isHorizPhone?" text-emerald-800 w-page-content ":"w-page-mobile-content     text-emerald-800 "} mont-medium  no-underline text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+<h5  id="desc"className={ `mx-1  min-h-6 px-2  ${isPhone?" top-0 ":" h-8 bottom-0 sm:max-h-24 "} ${adjustScreenSize(isGrid,true,"text-emerald-800 text-ellipsis  ",`text-emerald-800  w-grid-content whitespace-nowrap no-underline text-ellipsis     text-right `," text-emerald-800","text-emerald-800 ")} mont-medium  no-underline text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
 
         {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}

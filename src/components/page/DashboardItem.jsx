@@ -233,7 +233,7 @@ return <Button onClick={()=>{
          my-auto flex flex-row justify-between  text-white`}>
             {isPhone?<span/>:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
         <span className='bg-transparent flex flex-row  flex-shrink justify-end '>
-            <h6 className={`text-white  ${isPhone?"text-[0.6rem] ":"text-[0.9rem]  w-[5rem] ml-1 pr-2"} text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
+            <h6 className={`text-white  ${isPhone?"text-[0.6rem] ":"text-[0.9rem]  w-[10rem] ml-1 pr-2"} text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
     onClick={()=>{
         sendGAEvent("Navigate",`Navigate to ${JSON.stringify({id:page.id,title:page.title})}`)
         navigate(Paths.page.createRoute(page.id))
@@ -352,7 +352,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
         <ErrorBoundary>
                 <div 
                 id="dashboard-item"
-                className={`shadow-md  ${isGrid ?isPhone ? 'overall-clip w-grid-mobile-content max-h-grid-mobile-content' : `relative w-grid h-[20rem] rounded-lg  shadow-md  my-2` : isHorizPhone?" w-page-content mt-2 ":' w-page-mobile-content mt-2 max-h-page-mobile-content mx-auto overflow-hidden '}`}>
+                className={`shadow-md  ${isGrid ?isPhone ? 'overall-clip w-grid-mobile-content max-h-grid-mobile-content' : `relative w-grid  rounded-lg  shadow-md  my-2` : isHorizPhone?" w-page-content mt-2 ":' w-page-mobile-content mt-2 max-h-page-mobile-content mx-auto overflow-hidden '}`}>
         <div className={` ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-page-mobile"}   `}>
               {description()}
               {header()} 
