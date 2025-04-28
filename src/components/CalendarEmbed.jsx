@@ -50,12 +50,17 @@ function CalendarEmbed(){
             const startTimeFormatted = isAllDay ? "All Day" : formatDate(event.start.dateTime);
             let organizerLink = linkifyFirstUrl(event.description) || ''
         
-            let location = event.location? event.location.length > 24 ? event.location.slice(0, 24) + '...' : event.location:""
+            let location = event.location? event.location.length > 27 ? event.location.slice(0, 27) + '...' : event.location:""
             let summary = event.summary? event.summary.length > 23 ? event.summary.slice(0, 23) + '...' : event.summary:""
+            let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",
+                hashtags:[]}
+            console.log(JSON.stringify(obj))
             return {
             
               summary: event.summary,
               shortSummary:summary,
+              description:obj.cleanedDescription,
+              hashtags: obj.hashtags,
               startTime: startTimeFormatted,
               location: location||'',
               notes: event.description || '',
@@ -108,30 +113,36 @@ function CalendarEmbed(){
           dataLength={events.length}>
           {events.map((event,i)=>{
 
-            return(<div key={i} onTouchStart={()=>{
+            return(
+            <div key={i} 
+                className={`flex flex-col border-emerald-600  px-6 px-4 rounded-full  border my-1 shadow-md   py-4 mx-auto `}
+                onTouchStart={()=>{
             
                 sendGAEvent("View Event","Clicked Event"+event.summary,event.summary,0,false)
-            }}
-            className={`my-1 shadow-md text-left flex flex-row justify-between px-6 px-4 mont-medium text-emerald-800 py-4 border border-emerald-600 rounded-full mx-auto ${isPhone?"w-mobile-page":"w-page"} `}>
-              <span >
-                
-              <a href={event.googleLink}><h5 className="text-ellipsis text-green-600  flex flex-col  
+            }}>
+           <span className="flex flex-row justify-between text-left mont-medium text-emerald-800 ">
+                <span>
+             <a href={event.googleLink}><h5 className="text-ellipsis text-green-600  flex flex-col  
             whitespace-nowrap no-underline max-w-[20em] overflow-hidden">
-                + {isPhone?event.shortSummary:event.summary}</h5></a>
+            + {isPhone?event.shortSummary:event.summary}</h5></a>
                 {event.area==areas[2]&&event.organizerLink?<a href={event.organizerLink}><span className="text-green-600 text-sm">{event.area}</span></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
-                </span>
-              <span className="flex overflow-hidden flex-col text-right ">
-                <h5>{event.startTime??""}</h5>
-                {event.organizerLink&&isValidUrl(event.organizerLink)?
+             </span>
+            <span className="flex overflow-hidden flex-col text-right ">
+            <h5>{event.startTime??""}</h5>
+             {event.organizerLink&&isValidUrl(event.organizerLink)? 
               <a className="text-green-600 whitespace-nowrap no-underline max-w-[20em] " href={event.organizerLink}><h6 >{event.location}</h6></a>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
               </span>
-            </div>)
-          })}
+          </span>
+            <span className="text-left  mont-medium text-slate-600"><h5 className="text-[0.7rem]">{event.hashtags.join(" ")}</h5></span></div>)
+            
+            })
+          }
           </InfiniteScroll>
         
-          </div>
-      );
-    };
+</div>)}
+
+
+    
   export default CalendarEmbed
   function formatDate(dateStr) {
     const date = new Date(dateStr);
@@ -158,7 +169,29 @@ function CalendarEmbed(){
     if (!match) return text; // No URL found
   
     const url = match[0];
-    const linkedUrl = `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+
     return url
     // return text.replace(urlRegex, linkedUrl);
   }
+  function cleanDescriptionAndExtractHashtags(description) {
+    // Step 1: Remove URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const hashtagRegex = /#(\w+)/g;
+    const descriptionWithoutLinks = description.replace(urlRegex, '').trim();
+
+  const cleanDescription = descriptionWithoutLinks.replace(hashtagRegex, '').trim();
+    // Step 2: Find hashtags
+
+    const hashtags = [];
+    let match;
+    while ((match = hashtagRegex.exec(descriptionWithoutLinks)) !== null) {
+      hashtags.push(`#${match[1]}`);
+    }
+  
+    // Step 3: Return both
+    return {
+      cleanedDescription: cleanDescription,
+      hashtags: hashtags,
+    };
+  }
+  
