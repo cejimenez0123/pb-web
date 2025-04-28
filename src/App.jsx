@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch,connect} from "react-redux"
-import { useLayoutEffect, useState } from 'react';
+import { useContext, useLayoutEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
@@ -47,6 +47,7 @@ import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
 import Enviroment from './core/Enviroment.js';
+import { Helmet } from 'react-helmet';
 
 
 
@@ -59,7 +60,8 @@ function App(props) {
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
   const profile = useSelector(state=>state.users.profileInView)
-  const [seo,setSeo]=useState({title:"Plumbum",image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website"})
+
+  const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
   let prof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
 
   const currentProfile= useSelector(state=>state.users.currentProfile??prof)
@@ -79,7 +81,17 @@ function App(props) {
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
-  
+      <head>
+  <meta charset="UTF-8" />
+  <Helmet>
+  <title>{seo.title}</title>
+  <meta name="description" content={seo.description}/>
+  <meta property="og:title" content={seo.heading}/>
+  <meta property="og:description" content={seo.description}/>
+  <meta property="og:image" content={seo.logoChem} />
+  <meta property="og:url" content={seo.url} />
+  </Helmet>
+</head>
     
 
   <link
@@ -168,14 +180,13 @@ function App(props) {
       element={<PrivateRoute 
       ><EditCollectionContainer/></PrivateRoute>}/>
      
-      <Route exact path={Paths.about()} element={
-   <AboutContainer/>
-      }/>
+
        <Route path={Paths.hashtag.route()}
       element={<HashtagContainer/>}/>
      <Route path={Paths.links()}
      element={<LinksContainer/>}/>
-       <Route exact path={"/about"} element={
+
+            <Route exact path={Paths.about()} element={
    <AboutContainer/>
       }/>
  

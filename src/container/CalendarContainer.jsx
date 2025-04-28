@@ -18,28 +18,27 @@ import ApplyContainer from "./auth/ApplyContainer";
 import "../App.css"
 import ScrollDownButton from "../components/ScrollDownButton";
 import { useLocation } from "react-router-dom";
-import useScrollTracking from "../core/useScrollTracking";
-import storyRepo from "../data/storyRepo";
-import InfiniteScroll from "react-infinite-scroll-component";
+
 import Collapsible from "../components/Collapsible";
 import CalendarEmbed from "../components/CalendarEmbed";
 export default function CalendarContainer(){
   const location = useLocation()
+  const {seo,setSeo}=useContext(Context)
+  useLayoutEffect(()=>{
+    let soo = seo
+    soo.title = "Plumbum NYC CALENDAR"
+    soo.url = Enviroment.domain+location.pathname
+    soo.description = "Explore events, workshop together, and join other writers."
+    soo.image = Enviroment.logoChem
+    setSeo(soo)
+  },[])
   useEffect(()=>{
     initGA()
-    // sendGAEvent("View Page","View Calendar","Calendar",0,true) 
+  
   },[])
   return (
     <div className="mx-auto m-4 w-fit text-center">
-      <Helmet>
 
-<title>{"Plumbum NYC CALENDAR"}</title>
- <meta property="og:image" content={Enviroment.logoChem} />
-<meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
-<meta property="og:description" content="Explore events, workshop together, and join other writers." />
-
-<meta name="twitter:image" content={Enviroment.logoChem} />
-</Helmet>
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
       <p className="mb-4 mx-auto max-w-page text-sm mont-medium text-emerald-600">

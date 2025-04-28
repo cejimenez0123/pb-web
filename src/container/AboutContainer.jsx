@@ -93,7 +93,18 @@ const whyMembership = ()=>{
       )
 }
 useLayoutEffect(()=>{
-    setSeo({title:"Plumbum", description:"Your writing, your community", name:"Plumbum", type:""})
+//   <head>
+//   <meta charset="UTF-8" />
+//   <Helmet>
+//   <title></title>
+//   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
+//   <meta property="og:title" content="Plumbum Events - Connect and Grow" />
+//   <meta property="og:description" content="Explore events, workshops, and writer meetups on Plumbum." />
+//   <meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
+//   <meta property="og:url" content="https://plumbum.app/" />
+//   </Helmet>
+// </head>
+    setSeo({title:"Plumbum (About) - Your Writing, Your Community", description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
 },[])
 const applicationProcess=()=>{
     return(<div className="my-8">
@@ -178,7 +189,7 @@ const userTestimonial=()=>{
 
 
     return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
-<head>
+{/* <head>
   <meta charset="UTF-8" />
   <Helmet>
   <title>Plumbum (About) - Your Writing, Your Community</title>
@@ -188,7 +199,7 @@ const userTestimonial=()=>{
   <meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
   <meta property="og:url" content="https://plumbum.app/" />
   </Helmet>
-</head>
+</head> */}
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
