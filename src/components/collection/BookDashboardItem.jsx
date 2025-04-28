@@ -109,9 +109,9 @@ return <Button onClick={()=>{
     const bookmarkBtn =()=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 23) + '...' : book.title
         return(
-  
-        <span id="bookmark-btn-item"  className={`flex pt-2  pb-1 pl-2 pr-2  justify-between bg-emerald-600 h-[100%] flex-row `}>
-       <div className={"flex flex-row justify-between  "+adjustScreenSize(isGrid,true,"","","","")}>{isPhone&&isGrid?null:
+        //     className={`flex pt-2  pb-1  justify-between bg-emerald-600 h-[100%] flex-row `}>
+        // <span 
+       <div id="bookmark-btn-item"   className={"flex flex-row justify-between pl-2 pr-2 bg-emerald-700 pt-2  pb-1  "+adjustScreenSize(isGrid,true,"","","","")}>{isPhone&&isGrid?null:
        <ProfileCircle isGrid={isGrid&&isPhone} color={"white"}profile={book.profile}/>}
   
   <span className='flex flex-row text-right text-white'>       <h6 
@@ -124,7 +124,7 @@ return <Button onClick={()=>{
 >{` `+title}</h6>
 <img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
 </div>
-</span>   
+// </span>   
 
 )
     }
