@@ -8,6 +8,6 @@ function adjustScreenSize(isGrid=false,isContent,grid="",gridMobile="",horizPhon
       })
   
       
-    return +isGrid?(isPhone?`max-h-grid-mobile w-grid-mobile-${(isContent?"content":"")}`+gridMobile:`h-grid${(isContent??"-content")} w-grid${(isContent??"-content")}`+grid):isHorizPhone?`w-page${(isContent??"-content")} h-page-${(isContent??"-content")} `+fullScreen:`w-page-mobile${(isContent??"-content")} h-page-mobile${(isContent??"-content")} w`+horizPhone
+    return +isGrid?(isPhone?`max-h-grid-mobile w-grid-mobile-${isContent?"content":""}`+gridMobile:` h-grid${isContent?"-content":""} w-grid${isContent?"-content":""}`+grid):isHorizPhone?`w-page${isContent?"-content":""} h-page-${isContent?"-content":""} `+fullScreen:`w-page-mobile${isContent?"-content":""} h-page-mobile${isContent?"-content":""} `+horizPhone
 }
 export default adjustScreenSize

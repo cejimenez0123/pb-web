@@ -109,9 +109,8 @@ return <Button onClick={()=>{
     const bookmarkBtn =()=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 23) + '...' : book.title
         return(
-        //     className={`flex pt-2  pb-1  justify-between bg-emerald-600 h-[100%] flex-row `}>
-        // <span 
-       <div id="bookmark-btn-item"   className={"flex flex-row justify-between pl-2 pr-2 bg-emerald-700 pt-2  pb-1  "+adjustScreenSize(isGrid,true,"","","","")}>{isPhone&&isGrid?null:
+       
+       <div id="bookmark-btn-item"   className={"flex flex-row justify-between pl-2 pr-2 bg-emerald-700 pt-2  pb-1  "}>{isPhone&&isGrid?null:
        <ProfileCircle isGrid={isGrid&&isPhone} color={"white"}profile={book.profile}/>}
   
   <span className='flex flex-row text-right text-white'>       <h6 
@@ -124,16 +123,20 @@ return <Button onClick={()=>{
 >{` `+title}</h6>
 <img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
 </div>
-// </span>   
+  
 
 )
     }
+    let size = adjustScreenSize(isGrid,false,"","","","")
     const handleBookmark =debounce((e)=>{
+        if(currentProfile){
         e.preventDefault()
         if(bookmarked){
                 deleteStc()
         }else{
            
+        }}else{
+            setError("Pleas Login")
         }
           },10)
     const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
@@ -144,12 +147,12 @@ return <Button onClick={()=>{
             </div>:null:null}
 
 if(!book){
-    return<span className={`skeleton ${adjustScreenSize(isGrid)}`}/>
+    return<span className={`skeleton ${size}`}/>
 }
     
         return(
         <ErrorBoundary>
-        <div id="book-dashboard-item" className={`shadow-md  bg-emerald-200 rounded-lg overflow-hidden mt-2 ${adjustScreenSize(isGrid,"mx-auto max-h-[20rem] ","","")}  flex justify-between flex-col   pt-1`}>
+        <div id="book-dashboard-item" className={`shadow-md  bg-emerald-200 rounded-lg mt-2 ${size}  flex justify-between flex-col   pt-1`}>
                
 
         {isGrid?isPhone?null:description(book):null}

@@ -246,11 +246,14 @@ return <Button onClick={()=>{
     </div>:null
     }
     const handleBookmark =debounce((e)=>{
+        if(currentProfile){
         e.preventDefault()
         if(bookmarked){
                 deleteStc()
         }else{
             onBookmarkPage()
+        }}else{
+            setError("Please Sign Up")
         }
           },10)
     const buttonRow = ( )=>{

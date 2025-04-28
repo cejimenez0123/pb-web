@@ -34,7 +34,7 @@ function ProfileContainer({profile}){
     useLayoutEffect(()=>{
         initGA()
         if(profile){
-            sendGAEvent("View Profile",`View Profile ${profile.username}`)
+            sendGAEvent("View Profile",`View Profile ${JSON.stringify({id:profile.id,username:profile.username})}`)
                }
     },[])
     const isPhone =  useMediaQuery({

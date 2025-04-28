@@ -16,10 +16,12 @@ import { fetchHashtag } from '../../actions/HashtagActions'
 import { setCollections } from '../../actions/CollectionActions'
 import { appendToPagesInView, setPagesInView } from '../../actions/PageActions.jsx'
 import Context from '../../context'
+import useScrollTracking from '../../core/useScrollTracking.jsx'
 export default function HashtagContainer(props){
     const location = useLocation()
     const params = useParams()
     const {id}=params
+     useScrollTracking()
     const {setError}=useContext(Context)
     const collections = useSelector(state=>state.books.collections)
     const [hash,setHashtag]=useState(null)
@@ -37,9 +39,7 @@ export default function HashtagContainer(props){
     useLayoutEffect(()=>{
         initGA()
         if(hash){
-
-        
-        sendGAEvent(`Hashtag View-${hash.name} - ${id}`,`}`,hash.name)
+        sendGAEvent(`View Page`,`View Hashtaf ${JSON.stringify({id:hash.id,name:hash.name})}`,hash.name,0,false)
         }
  },[])
     useLayoutEffect(()=>{

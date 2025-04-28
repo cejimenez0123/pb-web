@@ -115,7 +115,7 @@ useLayoutEffect(()=>{
        useEffect(()=>{
             initGA()
             if(collection){
-                sendGAEvent("View Collection",`View Collection ${id}`,collection.title,0,true)
+                sendGAEvent("View Collection",`View Collection ${JSON.stringify({id:collection.id,title:collection.title})}`,collection.title,0,true)
             }
 
        },[])  
