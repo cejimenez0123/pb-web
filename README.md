@@ -26,7 +26,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<h4>[Plumbum](https://plumbum.app/about)</h4>
+<h4>[Plumbum](https://plumbum.app/)</h4>
 <br/>
 This project is part of finding a solution for my needs of having a resource manager for my writing and inpiration. Inspired by the enviroment of writers' workshops. The app uses pages,books, and libraries, as a metaphor of instances of work, projects, and community for projects. 
 

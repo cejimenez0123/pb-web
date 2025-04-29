@@ -20,8 +20,8 @@ export default {
       'info':"55rem",
       'grid':"31.6vw",
       'grid-content':"31.5vw",
-      'grid-mobile':"48vw",
-      'grid-mobile-content':"46.6vw"
+      'grid-mobile':"48.6vw",
+      'grid-mobile-content':"45.8vw"
 
     },
     height:{
@@ -32,7 +32,7 @@ export default {
       "page-mobile":"33em",
       'grid-mobile':"22rem",
       "page-mobile-content":"32.6em",
-      "grid-mobile-content":"20rem",
+      "grid-mobile-content":"24rem",
       'grid':"33rem",
       'grid-content':"32rem",
     },

@@ -47,7 +47,7 @@ switch(page.type){
                 }}
         
         className={` ql-editor 
-         ${sizeInner}
+       
         ${book?`mx-2`:""}  `}
    
    dangerouslySetInnerHTML={{__html:page.data}}/>

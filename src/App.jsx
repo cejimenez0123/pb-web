@@ -139,7 +139,7 @@ function App(props) {
                       getPublicStories={props.getPublicStories} 
                       
                       pagesInView={props.pagesInView}
-                      // fetchAllProfiles={props.fetchAllProfiles}
+                      
                     />
                   }
             />

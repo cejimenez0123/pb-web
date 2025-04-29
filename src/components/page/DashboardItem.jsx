@@ -46,6 +46,7 @@ function DashboardItem({page, book,isGrid}) {
    const [likeFound,setLikeFound]=useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
+    let contentSize = adjustScreenSize(isGrid,true,"","","",""," h-[100%] ")
     const addStoryToCollection = ()=>{
       if(page){
        const list= [page]
@@ -144,7 +145,7 @@ const header=()=>{
     }} >{` `+page.title.length>0?page.title:""}</h6>:null}</span>
 }
 const handleApprovalClick = ()=>{
-    page?sendGAEvent(`Click to Yea- ${page.title}-${page.id}`,"Click Yea","Review",0,false):null
+    page?sendGAEvent(`Click to Yea ${JSON.stringify({id:page.id,title:page.title})}`,`Click Yea`,"Review",0,false):null
     if(currentProfile){
 
         if(likeFound ){
@@ -360,11 +361,11 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
         <ErrorBoundary>
                 <div 
                 id="dashboard-item"
-                className={'mt-3 rounded-lg bg-emerald-700 flex flex-col justify-between '+sizeOuter}
+                className={'mt-3 rounded-lg bg-emerald-700  px-1 flex flex-col justify-between '+sizeOuter}
                 >
               {description()}
               {header()} 
-       <div className='p-1 rounded-lg overflow-hidden'>
+       <div id="holder-page-element" className={`bg-emerald-100 h-[100%] rounded-lg overflow-hidden`}>
           <PageDataElement  isGrid={isGrid} page={page}/>
           </div>
   

@@ -20,12 +20,12 @@ export default function Carousel({book,isGrid}){
             {story.description}
               </h6>
     </div>:null }  
-    let size = adjustScreenSize(isGrid,false,"","","","","  ") 
+  
     
      if(book){
       
         return(
-        <div className={`   carousel px-1 mx-auto rounded-box `+adjustScreenSize(isGrid,false,"","","",""," ")}
+        <div className={`   carousel px-1 mx-auto rounded-box  `+adjustScreenSize(isGrid,true,""," ","",""," h-[100%] ")}
    
     
         >
@@ -35,7 +35,7 @@ export default function Carousel({book,isGrid}){
 
       
         return(
-        
+       
         <div  onTouchStartCapture={()=>{
           sendGAEvent("Opened Page from Book",`Saw ${JSON.stringify({id:stc.story.id,title:stc.story.title})}`,"",0,false)
         }} className={` carousel-item flex-col flex
@@ -48,13 +48,15 @@ export default function Carousel({book,isGrid}){
 
 >
 
-<h5  id="desc"className={ ` min-h-8  pt-2 px-2 top-0 mont-medium  no-underline text-slate-100 text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+<h5  id="desc"className={ ` min-h-8  pt-2 px-2 bg-emerald-700 top-0 mont-medium  no-underline text-slate-100 text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
-
+ 
         {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}
+        
        <div className='rounded-lg overflow-hidden'>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
       </div>
+  
         </div>)}else{
             return null
         }})}
