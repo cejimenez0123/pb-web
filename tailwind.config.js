@@ -18,8 +18,8 @@ export default {
         'page-mobile':"97.6vw",
         'page-mobile-content':"96vw",
       'info':"55rem",
-      'grid':"32vw",
-      'grid-content':"31.3vw",
+      'grid':"31.6vw",
+      'grid-content':"31.5vw",
       'grid-mobile':"48vw",
       'grid-mobile-content':"46.6vw"
 
@@ -27,13 +27,14 @@ export default {
     height:{
       "info":"18rem",
       "item":"20rem",
-      "page":"55em",
-      'page-content':"40rem",
+      "page":"44.5rem",
+      'page-content':"43.5rem",
       "page-mobile":"33em",
+      'grid-mobile':"10em",
       "page-mobile-content":"32.6em",
       "grid-mobile-content":"10rem",
-      "grid":"20rem",
-      "grid-content":"18rem",
+      'grid':"3rem",
+      'grid-content':"30rem",
     },
     borderWidth: {
       DEFAULT: '1px',

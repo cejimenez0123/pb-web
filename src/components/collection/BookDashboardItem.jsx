@@ -24,7 +24,7 @@ function BookDashboardItem({book,isGrid}) {
     const dispatch = useDispatch()
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
-    const [canUserEdit,setCanUserEdit]=useState(false)
+
     const [expanded,setExpanded]=useState(false)
 
    const [likeFound,setLikeFound]=useState(null)
@@ -110,12 +110,12 @@ return <Button onClick={()=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 23) + '...' : book.title
         return(
        
-       <div id="bookmark-btn-item"   className={"flex flex-row justify-between pl-2 pr-2 bg-emerald-700 pt-2  pb-1  "}>{isPhone&&isGrid?null:
-       <ProfileCircle isGrid={isGrid&&isPhone} color={"white"}profile={book.profile}/>}
+       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg bg-emerald-700 pt-2 mx-auto pb-1  ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isPhone?"w-page-mobile":"w-page"} `}>{isPhone&&isGrid?null:
+       <ProfileCircle isGrid={isGrid} color={"white"}profile={book.profile}/>}
   
-  <span className='flex flex-row text-right text-white'>       <h6 
+  <span className={`${isGrid?isPhone?"w-grid-mobile justify-between":"w-grid":isPhone?"":""} flex flex-row text-right text-white`}>       <h6 
             className='my-auto text-ellipsis   
-            whitespace-nowrap no-underline'
+            whitespace-nowrap no-underline text-[0.7rem]'
             onClick={()=>{
                 navigate(Paths.collection.createRoute(book.id))
             }}
@@ -127,7 +127,7 @@ return <Button onClick={()=>{
 
 )
     }
-    let size = adjustScreenSize(isGrid,false,"","","","")
+    let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," overflow-hidden rounded-lg ","","","h-fit")
     const handleBookmark =debounce((e)=>{
         if(currentProfile){
         e.preventDefault()
@@ -140,7 +140,7 @@ return <Button onClick={()=>{
         }
           },10)
     const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
-            <div id="book-description" className={`min-h-12 pt-4 p-2`}>
+            <div id="book-description" className={`min-h-12 pt-4 px-3 rounded-t-lg`}>
                 <h6 className={`text-white ${isGrid?isPhone?" w-grid-mobile-content ":"w-grid":isHorizPhone?"w-page":"w-page-mobile"} p-2 open-sans-medium text-left `}>
                     {book.description}
                 </h6>
@@ -151,8 +151,8 @@ if(!book){
 }
     
         return(
-        <ErrorBoundary>
-        <div id="book-dashboard-item" className={`shadow-md  bg-emerald-200 rounded-lg mt-2 ${size}  flex justify-between flex-col   pt-1`}>
+        <ErrorBoundary >
+        <div id="book-dashboard-item" className={`mt-2 shadow-md rounded-lg bg-emerald-700 ${size}  flex flex-col `}>
                
 
         {isGrid?isPhone?null:description(book):null}

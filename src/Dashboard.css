@@ -144,3 +144,13 @@
 }
  
 
+
+
+#dashboard-item .ql-editor{
+  max-height: 22rem !important;
+  text-overflow: ellipsis;
+}
+#book-dashboard-item .ql-editor{
+  max-height: 20rem !important;
+  text-overflow: ellipsis;
+}

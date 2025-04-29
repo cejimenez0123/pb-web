@@ -4,6 +4,7 @@ import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
 import { useMediaQuery } from "react-responsive";
 import { useEffect, useState } from "react";
+import adjustScreenSize from "../../core/adjustScreenSize";
 
 export default function GridView({ items }) {
   const isPhone = useMediaQuery({ query: "(max-width: 768px)" });
@@ -29,8 +30,8 @@ export default function GridView({ items }) {
   const nextPage = () => {
     setPage(prev => prev + 1);
   };
-
-  return (
+  let sizeDashOuter = adjustScreenSize(true,false," rounded-b-lg overflow-hidden"," grid-item rounded-lg oveflow-hidden ","","")
+    return (
     <span>
       <InfiniteScroll
         id={"grid-view"}
@@ -52,9 +53,9 @@ export default function GridView({ items }) {
 
             if (item.storyIdList?.length > 0 && !item.data) {
               return (
-                <div className={isNotPhone?"grid-item w-fit h-fit rounded-lg oveflow-hidden ":" h-fit overflow-hidden w-fit"} key={id}>
-                  <BookDashboardItem isGrid={true} book={item} />
-                </div>
+                
+                  <BookDashboardItem id={i} isGrid={true} book={item} />
+           
               );
             }
 
@@ -64,15 +65,16 @@ export default function GridView({ items }) {
                 book?.storyIdList?.some(storyId => storyId === item.id)
               )
             ) {
+              
               return (
-                <div className={isNotPhone?"grid-item   rounded-lg oveflow-hidden":" rounded-b-lg overflow-hidden max-w-full"} key={id}>
+                // <div className={sizeDashOuter} key={id}>
                   <DashboardItem
                     item={item}
                     index={i}
                     isGrid={true}
                     page={item}
                   />
-                </div>
+                // </div>
               );
             }
 

@@ -9,16 +9,13 @@ import Paths from "../../core/paths"
 import { useLocation } from "react-router-dom"
 import { useMediaQuery } from "react-responsive"
 import adjustScreenSize from "../../core/adjustScreenSize"
+import { size } from "lodash"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const navigate = useNavigate()
     const location = useLocation()
-        const isPhone =  useMediaQuery({
-    query: '(max-width: 768px)'
-  })
-  const isHorizPhone =  useMediaQuery({
-    query: '(min-width: 768px)'
-  })
+   
+  let sizeInner = adjustScreenSize(isGrid,true,"rounded-lg overflow-clip"," rounded-lg overflow-clip ","","","","","max-h-grid-content")
     useEffect(()=>{
         
         if(page && page.type==PageType.picture){
@@ -43,15 +40,18 @@ switch(page.type){
     case PageType.text:{
 
     return( 
-<span className={`overflow-hidden ${isGrid?isPhone?`max-h-grid-mobile-content `:`max-h-[16rem]`:isHorizPhone?`max-h-page-content`:`max-h-[100%]`}`}>
+
         <div 
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
-        className={` ql-editor p-1 text-ellipsis ${adjustScreenSize(isGrid,true,"","","","")} rounded-lg lulmo overflow-hidden border-emerald-200 border-b-4    
-        ${isGrid?isPhone?" min-h-24  rounded-lg mx-auto w-grid-mobile-content ":"  p-1 mx-auto rounded-lg bg-emerald-100 w-grid-content ":`${isHorizPhone? ` pb-8 w-page-content p-2 overflow-y-hidden max-auto mx-auto my-1  rounded-lg  overflow-hidden `:`  w-page-mobile-content max-h-grid-mobile-content overflow-y-hidden pb-2 top-0`} ${book?`mx-2`:""}  `}`}
-    dangerouslySetInnerHTML={{__html:page.data}}/>
- </span> 
+        
+        className={` ql-editor 
+         ${sizeInner}
+        ${book?`mx-2`:""}  `}
+   
+   dangerouslySetInnerHTML={{__html:page.data}}/>
+
   ) }
   case PageType.picture:{
   
@@ -61,25 +61,24 @@ switch(page.type){
    if(location.pathname!=Paths.page.createRoute(page.id)){
    navigate(Paths.page.createRoute(page.id))}
 
-}} className={`rounded-lg ${ isGrid?isPhone?"w-grid-mobile-content ":" w-grid-content overflow-hidden  ":isHorizPhone?`w-page`:`w-page-mobile`}`}
+}} className={`rounded-lg `}
     
     src={image} alt={page.title}/>
     
     :
-    <div className='skeleton w-[100%] min-h-40'/>)
+    <div className={`skeleton ${sizeInner}`}/>)
 }
 case PageType.link:{
-    return(<div 
-        className={isGrid?isPhone?`w-grid-mobile-content`:`w-grid-content `:isHorizPhone?`w-page-content`:`w-page-mobile-content`}>
+    return(
     
         <LinkPreview
             isGrid={isGrid}
             url={page.data}
         />
-        </div>)
+       )
 }
 default:
-    return(<div className='skeleton min-h-24'>
+    return(<div className={`skeleton ${sizeInner}`}>
    <img src={loadingGif}/>
 </div>)
 }

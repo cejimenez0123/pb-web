@@ -5,6 +5,7 @@ import { Skeleton } from '@mui/material';
 import "../App.css"
 import { useMediaQuery } from 'react-responsive';
 import { initGA, sendGAEvent } from '../core/ga4';
+import adjustScreenSize from '../core/adjustScreenSize';
 
 function LinkPreview({ url,isGrid}) {
   const isPhone =  useMediaQuery({
@@ -21,6 +22,8 @@ const headers = {
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
+
+
   useLayoutEffect(() => {
     if(url.includes("plumubum.app")){
       console.log(url)
@@ -34,6 +37,7 @@ const headers = {
 
 }, [url]);
 
+let size = adjustScreenSize(isGrid,true,"bg-emerald-200 rounded-lg overflow-hidden"," rounded-lg pt-4 overflow-hidden mx-auto "," rounded-lg "," rounded-lg ")
 const fetchLinkPreview = async (url) => {
   try {
 
@@ -51,7 +55,7 @@ const fetchLinkPreview = async (url) => {
   }}
 const fetchData = async (url) => {
   try {
-console.log("BBOOO")
+
     const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
       headers:{
         "Access-Control-Allow-Origin": "*",
@@ -149,16 +153,18 @@ useLayoutEffect(()=>{
 
     );
   }
+  
   const imageView = ()=>{
+  
     if(previewData.title!=="Spotify"){
-    return previewData.image && <a href={`${url}`} className={`  ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isHorizPhone?"w-page-content":"w-page-mobile-content"}`}><img  
-      className={isGrid?isPhone?"rounded-lg pt-4 w-grid-mobile-content overflow-hidden mx-auto":" w-grid-content":isHorizPhone?" overflow-hidden mx-auto rounded-lg w-page-content":"w-page overflow-hidden mx-auto rounded-lg"}
-
+    return previewData.image && <a href={`${url}`} className={"w-[100%]"}><img  
+ 
+      // isGrid?isPhone?"rounded-lg pt-4 w-grid-mobile-content overflow-hidden mx-auto":" w-grid-content":isHorizPhone?" overflow-hidden mx-auto rounded-lg w-page-content":"w-page overflow-hidden mx-auto rounded-lg"
       src={previewData.image}  alt={previewData.title} /></a>
     }else{
        return (
-        <div className='spotify rounded-box w-[96vw] md:w-page'>
-        <Spotify  height={"140"} width={"100%"} link={url}/>
+        <div className={`spotify  ${size}`}>
+        <Spotify  height={"100%"} width={"100%"} link={url}/>
         </div>
       )
     }
@@ -185,10 +191,10 @@ useLayoutEffect(()=>{
     <div 
     
     
-    className={`${isGrid?
-      isPhone?`text-white w-grid-mobile-content mont-medium`:
-    `bg-emerald-200 w-grid-content text-white `:isHorizPhone?
-    `w-page-content`:`w-page-mobile-content`}`}
+    className={`
+    ${size}
+    
+`}
     
     onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}

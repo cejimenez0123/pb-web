@@ -323,17 +323,16 @@
 
   .grid-container {
     column-count: 3;
-    column-gap: 5px;
+    column-gap: 0.8em;
     padding: 10px;
   }
   
   .grid-item {
     display: inline-block; /* Needed to work properly inside columns */
-    width: 100%;
     
     text-align: center;
-  
+    
  
-    padding: 1em;
-    margin-bottom: 1em;
+    /* padding: 0.8em; */
+    
   }

@@ -19,9 +19,10 @@ import { addStoryListToCollection, deleteStoryFromCollection } from '../../actio
 import Context from '../../context'
 import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
-import { debounce } from 'lodash'
+import { debounce, size } from 'lodash'
 import { initGA,sendGAEvent } from '../../core/ga4'
 import { useMediaQuery } from 'react-responsive'
+import adjustScreenSize from '../../core/adjustScreenSize'
 function DashboardItem({page, book,isGrid}) {
     const isPhone =  useMediaQuery({
         query: '(max-width: 768px)'
@@ -120,7 +121,7 @@ const deleteStc=()=>{
 
 const handleClickComment=()=>{   
   if(page){ 
-    sendGAEvent(`Click to Review- ${page.title}-${page.id}`,"Click Review","Review",0,false)
+    sendGAEvent(`Click to Review`,`Click Review ${JSON.stringify({id:page.id,title:page.title})}`,"Review",0,false)
     navigate(Paths.page.createRoute(page.id))
 }
 }   
@@ -128,7 +129,7 @@ const handleClickComment=()=>{
 const header=()=>{
 
    return isGrid?null:<span className={`flex-row flex justify-between ${isGrid?isPhone?"w-gird-mobile":" w-grid  ":isPhone?"w-page-mobile":"w-page"}  px-1 rounded-t-lg  pt-2 pb-1`}>  
-<ProfileCircle isGrid={isGrid&&isPhone} profile={page.author}/>
+<ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author}/>
 
 
              
@@ -186,7 +187,8 @@ return <Button onClick={()=>{
     return <div></div>
    }
 }
-
+let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative my-2 "," overflow-clip ","mt-2 max-h-page-mobile-content mx-auto overflow-hidden","mt-2","h-fit") 
+let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","","","")
     useLayoutEffect(()=>{
         soCanUserEdit()
     },[page])
@@ -214,6 +216,7 @@ return <Button onClick={()=>{
     const ClickAddStoryToCollection=()=>{
         navigate(Paths.addStoryToCollection.story(page.id))
     }
+   
     if(book){
         
         let title = ""
@@ -228,11 +231,12 @@ return <Button onClick={()=>{
             }
         }><p>{title} {">"}</p></a>)
     }
+    
     const bookmarkBtn =()=>{
-        return isGrid ?<div className={`  ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content px-2":isHorizPhone?"w-page-content":"w-page-mobile-content"} 
+        return isGrid ?<div className={` bg-emerald-700  ${isGrid?isPhone?"w-grid-mobile ":"w-grid":isHorizPhone?"w-page ":"w-page-mobile"} 
          my-auto flex flex-row justify-between  text-white`}>
             {isPhone?<span/>:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
-        <span className='bg-transparent flex flex-row  flex-shrink justify-end '>
+        <span className={`bg-transparent ${isGrid?isPhone?"w-grid-mobile-content justify-between ":"w-grid-content":isHorizPhone?"justify-end":"justify-end"} flex flex-row  flex-shrink  `}>
             <h6 className={`text-white  ${isPhone?"text-[0.6rem] ":"text-[0.9rem]  w-[10rem] ml-1 pr-2"} text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
     onClick={()=>{
         sendGAEvent("Navigate",`Navigate to ${JSON.stringify({id:page.id,title:page.title})}`)
@@ -343,7 +347,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
 
                 
     }
-    const description=()=>{page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>
+      const description=()=>{page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>
     {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
     <h6 className={`${!isGrid?"text-emerald-800":isPhone?"text-white overflow-scroll":"text-white "} p-2 mont-medium text-left `}>
         {page.description}
@@ -355,31 +359,32 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
         <ErrorBoundary>
                 <div 
                 id="dashboard-item"
-                className={`shadow-md  ${isGrid ?isPhone ? 'overall-clip w-grid-mobile-content max-h-grid-mobile-content' : `relative w-grid  rounded-lg  shadow-md  my-2` : isHorizPhone?" w-page-content mt-2 ":' w-page-mobile-content mt-2 max-h-page-mobile-content mx-auto overflow-hidden '}`}>
-        <div className={` ${isGrid?"bg-emerald-700 rounded-lg   ":"bg-emerald-50 rounded-t-lg md:w-page w-page-mobile"}   `}>
+                className={'mt-3 rounded-lg '+sizeOuter}
+                >
               {description()}
               {header()} 
+              {/* <div className={sizeInner}> */}
           <PageDataElement  isGrid={isGrid} page={page}/>
    
-              
-                {isGrid? <div className={`flex flex-row pt-2 justify-between px-1 py-1 ${isHorizPhone?"w-grid-content ":"w-grid-mobile-content"} rounded-b-lg bottom-0`}>
+          {/* </div> */}
+                {isGrid? 
+         
+                <div className={`flex flex-row pt-2 bg-emerald-700 justify-between px-1 py-1 rounded-b-lg bottom-0`}>
                 {header()}
             
-                {bookmarkBtn()} </div>   :  buttonRow()}
+                {bookmarkBtn()}
+               </div>   
+                 :  buttonRow()}
            
                 <div>
             
                 </div>
               
-          
-              
-               
-  </div>
   </div>
  
   </ErrorBoundary>
      )}else{
-        return(<div className={isGrid?isPhone?"overall-hidden w-grid-mobile h-grid-mobile":"shadow-md w-grid h-grid":isHorizPhone?`relative rounded-lg overflow-clip shadow-md w-page h-page my-2`:'relative rounded-lg overflow-clip shadow-md w-page-mobile h-page-mobile my-2 '}><span className='skeleton'/></div>)
+        return(<div className={isGrid?isPhone?"overall-hidden w-grid-mobile h-grid-mobile":"shadow-md w-grid h-grid":isHorizPhone?` relative rounded-lg overflow-clip shadow-md w-page h-page my-2`:' relative rounded-lg overflow-clip shadow-md w-page-mobile h-page-mobile my-2 '}><span className='skeleton'/></div>)
      }
 
 }

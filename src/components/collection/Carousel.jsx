@@ -5,6 +5,7 @@ import "../../Dashboard.css"
 import PageDataElement from '../page/PageDataElement'
 import { useMediaQuery } from 'react-responsive'
 import adjustScreenSize from '../../core/adjustScreenSize'
+import { sendGAEvent } from '../../core/ga4'
 export default function Carousel({book,isGrid}){
       const isPhone =  useMediaQuery({
         query: '(max-width: 768px)'
@@ -19,13 +20,12 @@ export default function Carousel({book,isGrid}){
             {story.description}
               </h6>
     </div>:null }  
-    let size = adjustScreenSize(isGrid,true,"","","","") 
-    // let desciptSize= adjustScreenSize(isGrid,true,"text-emerald-800 text-ellipsis  ",`text-emerald-800  w-grid-content whitespace-nowrap no-underline text-ellipsis     text-right `," overflow-hidden text-emerald-800","text-emerald-800 ")
-    console.log(size)
-    if(book){
+    let size = adjustScreenSize(isGrid,false,"","","","","  ") 
+    
+     if(book){
       
         return(
-        <div className={`   carousel  mx-2 rounded-box `+adjustScreenSize(isGrid,true)}
+        <div className={`   carousel px-1 mx-auto rounded-box `+adjustScreenSize(isGrid,false,"","","",""," ")}
    
     
         >
@@ -36,19 +36,25 @@ export default function Carousel({book,isGrid}){
       
         return(
         
-        <div   className={`  carousel-item  flex flex-col 
-        ${size} overflow-hidden
-             rounded-lg  mx-2 
+        <div  onTouchStartCapture={()=>{
+          sendGAEvent("Opened Page from Book",`Saw ${JSON.stringify({id:stc.story.id,title:stc.story.title})}`,"",0,false)
+        }} className={` carousel-item flex-col flex
+
+        ${adjustScreenSize(isGrid,true," px-2 "," ","","","  ")} 
+         overflow-hidden
+              mx-2 
         `}
          id={stc.id} key={stc.id}
 
 >
-<h5  id="desc"className={ `mx-1  min-h-6 px-2  ${isPhone?" top-0 ":" h-8 bottom-0 sm:max-h-24 "}  mont-medium  no-underline text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+{/* ${isPhone?" ":" h-10 bottom-0 sm:max-h-24 "} */}
+<h5  id="desc"className={ ` min-h-8  pt-2 px-2 top-0 mont-medium  no-underline text-slate-100 text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
 
         {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}
+       <div className='rounded-lg overflow-hidden'>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
-      
+      </div>
         </div>)}else{
             return null
         }})}

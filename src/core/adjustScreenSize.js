@@ -1,5 +1,6 @@
+import { Fullscreen } from "@mui/icons-material"
 import { useMediaQuery } from "react-responsive"
-function adjustScreenSize(isGrid=false,isContent,grid="",gridMobile="",horizPhone="",fullScreen=""){
+export default function adjustScreenSize(isGrid=false,isContent,grid="",gridMobile="",horizPhone="",fullScreen="",height=""){
     const isPhone =  useMediaQuery({
         query: '(max-width: 768px)'
       })
@@ -7,7 +8,9 @@ function adjustScreenSize(isGrid=false,isContent,grid="",gridMobile="",horizPhon
         query: '(min-width: 768px)'
       })
   
-      
-    return +isGrid?(isPhone?`max-h-grid-mobile w-grid-mobile-${isContent?"content":""}`+gridMobile:` h-grid${isContent?"-content":""} w-grid${isContent?"-content":""}`+grid):isHorizPhone?`w-page${isContent?"-content":""} h-page-${isContent?"-content":""} `+fullScreen:`w-page-mobile${isContent?"-content":""} h-page-mobile${isContent?"-content":""} `+horizPhone
-}
-export default adjustScreenSize
+      return isGrid?isPhone?
+      (gridMobile+`w-grid-mobile${isContent?"-content":""} ${height.length<1?`h-grid-mobile${isContent?`-content`:""}`:""}`):
+      (grid+`   w-grid${isContent?"-content":""} ${height.length<1?"h-grid":""}${isContent?"-content":""}`):
+      (isHorizPhone?(`${horizPhone} w-page${isContent?"-content":""} ${height.length<1? ` h-page${isContent?`-content`:""}`:""}`)
+      :(`${fullScreen} w-page-mobile${isContent?`-content`:""}  max-h-page-mobile${isContent?`-content`:``}`))
+    }

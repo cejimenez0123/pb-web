@@ -124,11 +124,7 @@
         }
          
     }
-    @media (min-width: 600px){
-        .ql-editor{min-height: 60vh;
-         border-bottom: 0.5em !important;
-        }
-    } 
+
 
     /* Change the stroke color of Quill icons */
 .ql-stroke {
@@ -205,7 +201,7 @@
 
 
   .ql-editor{
-    min-height:12rem;
+
     top:0;
    overflow-y:hidden !important;
     padding: 1em !important;
@@ -218,9 +214,8 @@
  }
  @media (max-width: 768px) {
 
-
+  
   .ql-editor{
-    min-height:12rem;
     top:0;
     overflow: hidden!important;
     color: #052e16 !important;
@@ -232,3 +227,6 @@
   text-overflow: ellipsis;
 }
  }
+ /* .grid-item .ql-editor{
+  max-height: 12rem !important;
+} */
