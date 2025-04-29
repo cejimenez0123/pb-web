@@ -187,7 +187,7 @@ return <Button onClick={()=>{
     return <div></div>
    }
 }
-let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative my-2 "," overflow-clip ","mt-2 max-h-page-mobile-content mx-auto overflow-hidden","mt-2","h-fit") 
+let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative my-2 "," overflow-clip ","mt-2  mx-auto overflow-hidden","mt-2","  ") 
 let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","","","")
     useLayoutEffect(()=>{
         soCanUserEdit()
@@ -231,13 +231,13 @@ let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","",
             }
         }><p>{title} {">"}</p></a>)
     }
-    
+    // let sizeS = adjustScreenSize(isGrid,true," flex flex-row ","","","","  ")
     const bookmarkBtn =()=>{
-        return isGrid ?<div className={` bg-emerald-700  ${isGrid?isPhone?"w-grid-mobile ":"w-grid":isHorizPhone?"w-page ":"w-page-mobile"} 
+        return isGrid ?<div className={` bg-emerald-700  ${isGrid?isPhone?" w-grid-mobile ":" w-grid ":isHorizPhone?" w-page ":"w-page-mobile"} 
          my-auto flex flex-row justify-between  text-white`}>
-            {isPhone?<span/>:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
-        <span className={`bg-transparent ${isGrid?isPhone?"w-grid-mobile-content justify-between ":"w-grid-content":isHorizPhone?"justify-end":"justify-end"} flex flex-row  flex-shrink  `}>
-            <h6 className={`text-white  ${isPhone?"text-[0.6rem] ":"text-[0.9rem]  w-[10rem] ml-1 pr-2"} text-right  whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
+            {isPhone?null:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
+          
+           <span className={`${isGrid?isPhone?" w-grid-mobile-content flex flex-row justify-between":" flex justify-end ":isHorizPhone?"":""}`}><h6 className={`text-white  ${isGrid?isPhone?"":" text-right ":isHorizPhone?"":""}${isPhone?" text-[0.6rem] ":"text-[0.9rem]  w-[10rem]  ml-1 pr-2"}   whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
     onClick={()=>{
         sendGAEvent("Navigate",`Navigate to ${JSON.stringify({id:page.id,title:page.title})}`)
         navigate(Paths.page.createRoute(page.id))
@@ -245,7 +245,8 @@ let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","",
 
 >{` `+page.title.length>0?page.title:""}</h6>
 
-<img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
+<img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span> 
+
     
     </div>:null
     }
@@ -363,13 +364,13 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
                 >
               {description()}
               {header()} 
-              {/* <div className={sizeInner}> */}
+       
           <PageDataElement  isGrid={isGrid} page={page}/>
    
-          {/* </div> */}
+  
                 {isGrid? 
          
-                <div className={`flex flex-row pt-2 bg-emerald-700 justify-between px-1 py-1 rounded-b-lg bottom-0`}>
+                <div id="bottom-dash" className={`flex flex-row pt-2 bg-emerald-700 justify-between px-1 py-1 rounded-b-lg bottom-0`}>
                 {header()}
             
                 {bookmarkBtn()}

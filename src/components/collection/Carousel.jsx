@@ -40,14 +40,14 @@ export default function Carousel({book,isGrid}){
           sendGAEvent("Opened Page from Book",`Saw ${JSON.stringify({id:stc.story.id,title:stc.story.title})}`,"",0,false)
         }} className={` carousel-item flex-col flex
 
-        ${adjustScreenSize(isGrid,true," px-2 "," ","","","  ")} 
+        ${adjustScreenSize(isGrid,true," px-2 "," ","","","")} 
          overflow-hidden
               mx-2 
         `}
          id={stc.id} key={stc.id}
 
 >
-{/* ${isPhone?" ":" h-10 bottom-0 sm:max-h-24 "} */}
+
 <h5  id="desc"className={ ` min-h-8  pt-2 px-2 top-0 mont-medium  no-underline text-slate-100 text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
 

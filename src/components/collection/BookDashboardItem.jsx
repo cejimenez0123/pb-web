@@ -110,10 +110,11 @@ return <Button onClick={()=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 23) + '...' : book.title
         return(
        
-       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg bg-emerald-700 pt-2 mx-auto pb-1  ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isPhone?"w-page-mobile":"w-page"} `}>{isPhone&&isGrid?null:
-       <ProfileCircle isGrid={isGrid} color={"white"}profile={book.profile}/>}
+       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg bg-emerald-700 pt-2 mx-auto pb-1  ${isGrid?isPhone?"w-grid-mobile-content":" w-grid-content px-2":isPhone?"w-page-mobile":"w-page"} `}>{isPhone&&isGrid?null:
+       <ProfileCircle isGrid={isGrid} color={"white"}
+       profile={book.profile}/>}
   
-  <span className={`${isGrid?isPhone?"w-grid-mobile justify-between":"w-grid":isPhone?"":""} flex flex-row text-right text-white`}>       <h6 
+  <span className={`${isGrid?isPhone?"w-grid-mobile justify-between":" px-2 ":isPhone?"":""} flex flex-row text-right text-white`}>       <h6 
             className='my-auto text-ellipsis   
             whitespace-nowrap no-underline text-[0.7rem]'
             onClick={()=>{

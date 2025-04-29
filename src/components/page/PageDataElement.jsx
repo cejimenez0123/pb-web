@@ -15,7 +15,7 @@ export default function PageDataElement({page,isGrid,book=null}){
     const navigate = useNavigate()
     const location = useLocation()
    
-  let sizeInner = adjustScreenSize(isGrid,true,"rounded-lg overflow-clip"," rounded-lg overflow-clip ","","","","","max-h-grid-content")
+  let sizeInner = adjustScreenSize(isGrid,true,"rounded-lg overflow-clip"," rounded-lg overflow-clip ","","","","","")
     useEffect(()=>{
         
         if(page && page.type==PageType.picture){
