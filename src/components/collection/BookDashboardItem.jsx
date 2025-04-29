@@ -21,6 +21,9 @@ function BookDashboardItem({book,isGrid}) {
     const isPhone =  useMediaQuery({
         query: '(max-width: 768px)'
       })
+      const isHorizPhone =  useMediaQuery({
+        query: '(min-width: 768px)'
+      })
     const dispatch = useDispatch()
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
@@ -111,7 +114,7 @@ return <Button onClick={()=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 20) + '...' : book.title
         return(
        
-       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg bg-emerald-700 pt-2 mx-auto pb-1  ${isGrid?isPhone?" w-grid-mobile px-2 ":" w-grid px-2":isPhone?" w-page-mobile px-2 ":" w-page "} `}>{isPhone&&isGrid?null:
+       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg bg-emerald-700 pt-2 px-2 mx-auto pb-1  ${isGrid?isPhone?" w-grid-mobile-content px-4 ":" w-grid px-4":isPhone?" w-page-mobile-contnet px-2 ":isHorizPhone?" w-page-content ":"w-page-mobile-content px-4"} `}>{isPhone&&isGrid?null:
        <ProfileCircle isGrid={isGrid} color={"white"}
        profile={book.profile}/>}
   
@@ -143,7 +146,7 @@ return <Button onClick={()=>{
           },10)
     const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
             <div id="book-description" className={`bg-emerald-700 min-h-12 pt-4 px-3 rounded-t-lg`}>
-                <h6 className={`text-white ${isGrid?isPhone?" w-grid-mobile-content ":"w-grid":isHorizPhone?"w-page":"w-page-mobile"} p-2 open-sans-medium text-left `}>
+                <h6 className={`text-white ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid ":isHorizPhone?" w-page-content ":" w-page-mobile-content px-4 "} open-sans-medium text-left `}>
                     {book.description}
                 </h6>
             </div>:null:null}
@@ -154,7 +157,7 @@ if(!book){
     
         return(
         <ErrorBoundary >
-        <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip  rounded-box  flex flex-col `}>
+        <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip  rounded-box flex flex-col `}>
                
 
         {isGrid?isPhone?null:description(book):null}

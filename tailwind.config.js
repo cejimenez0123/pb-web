@@ -14,7 +14,7 @@ export default {
     width: {
       '128': '48rem',
       'page':"45.6em",
-        'page-content':"45em",
+        'page-content':"44.8em",
         'page-mobile':"97.6vw",
         'page-mobile-content':"96vw",
       'info':"55rem",
@@ -28,7 +28,7 @@ export default {
       "info":"18rem",
       "item":"20rem",
       "page":"44.5rem",
-      'page-content':"43.5rem",
+      'page-content':"25rem",
       "page-mobile":"33em",
       'grid-mobile':"22rem",
       "page-mobile-content":"32.6em",
