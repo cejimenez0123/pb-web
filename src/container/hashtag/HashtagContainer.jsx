@@ -21,7 +21,7 @@ export default function HashtagContainer(props){
     const location = useLocation()
     const params = useParams()
     const {id}=params
-     useScrollTracking()
+     useScrollTracking({name:id})
     const {setError}=useContext(Context)
     const collections = useSelector(state=>state.books.collections)
     const [hash,setHashtag]=useState(null)

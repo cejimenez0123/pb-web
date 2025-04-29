@@ -54,7 +54,7 @@ export default function GridView({ items }) {
             if (item.storyIdList?.length > 0 && !item.data) {
               return (
                 
-                  <BookDashboardItem id={i} isGrid={true} book={item} />
+                  <BookDashboardItem  id={i} isGrid={true} book={item} />
            
               );
             }
