@@ -110,7 +110,7 @@ return <Button onClick={()=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 23) + '...' : book.title
         return(
        
-       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg bg-emerald-700 pt-2 mx-auto pb-1  ${isGrid?isPhone?"w-grid-mobile-content":" w-grid-content px-2":isPhone?"w-page-mobile":"w-page"} `}>{isPhone&&isGrid?null:
+       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg bg-emerald-700 pt-2 mx-auto pb-1  ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid-content px-2":isPhone?"w-page-mobile-content px-2":"w-page-content"} `}>{isPhone&&isGrid?null:
        <ProfileCircle isGrid={isGrid} color={"white"}
        profile={book.profile}/>}
   

@@ -158,9 +158,12 @@
 .grid #book-dashboard-item .carousel {
   max-height: 14rem !important;
 }
-.grid #dashboard-item .carousel {
-  max-height: 14rem !important;
+.grid #dashboard-item .ql-editor {
+  max-height: 20rem !important;
+  border-radius:  0.5rem !important;
+  overflow:  hidden!important;
+  padding:0.2em !important;
 }
-.ql-editor .h-grid-mobile-content{
+.h-grid-mobile-content .ql-editor{
   max-height: 8rem!important;
 }

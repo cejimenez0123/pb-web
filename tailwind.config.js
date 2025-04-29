@@ -32,9 +32,9 @@ export default {
       "page-mobile":"33em",
       'grid-mobile':"22rem",
       "page-mobile-content":"32.6em",
-      "grid-mobile-content":"8rem",
-      'grid':"3rem",
-      'grid-content':"30rem",
+      "grid-mobile-content":"20rem",
+      'grid':"33rem",
+      'grid-content':"32rem",
     },
     borderWidth: {
       DEFAULT: '1px',

@@ -128,20 +128,20 @@ const handleClickComment=()=>{
 
 const header=()=>{
 
-   return isGrid?null:<span className={`flex-row flex justify-between ${isGrid?isPhone?"w-gird-mobile":" w-grid  ":isPhone?"w-page-mobile":"w-page"}  px-1 rounded-t-lg  pt-2 pb-1`}>  
-<ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author}/>
+   return <span className={`flex-row flex justify-between ${isGrid?isPhone?"w-gird-mobile":" w-grid  ":isPhone?"w-page-mobile":"w-page"}  px-1 rounded-t-lg  pt-2 pb-1`}>  
+<ProfileCircle isGrid={isGrid} color={isPhone?"white":"emerald-700"} profile={page.author}/>
 
 
              
-    <h6 className={`text-emerald-800
+   {!isGrid? <h6 className={`text-emerald-800
     mx-2
      ${isGrid?isPhone?"":"":""}
-      no-underline text-ellipsis  whitespace-nowrap overflow-hidden text-[0.9rem]`}
+      no-underline text-ellipsis text-white whitespace-nowrap overflow-hidden ${isGrid?"text-[0.7rem] ":"text-[0.9rem]"}`}
     onClick={()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
 
-    }} >{` `+page.title.length>0?page.title:""}</h6></span>
+    }} >{` `+page.title.length>0?page.title:""}</h6>:null}</span>
 }
 const handleApprovalClick = ()=>{
     page?sendGAEvent(`Click to Yea- ${page.title}-${page.id}`,"Click Yea","Review",0,false):null
@@ -233,7 +233,7 @@ let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","",
     }
     // let sizeS = adjustScreenSize(isGrid,true," flex flex-row ","","","","  ")
     const bookmarkBtn =()=>{
-        return isGrid ?<div className={` bg-emerald-700  ${isGrid?isPhone?" w-grid-mobile ":" w-grid ":isHorizPhone?" w-page ":"w-page-mobile"} 
+        return isGrid ?<div className={` bg-emerald-700  ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid-content ":isHorizPhone?" w-page-content ":"w-page-mobile-content"} 
          my-auto flex flex-row justify-between  text-white`}>
             {isPhone?null:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
           
@@ -360,18 +360,18 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
         <ErrorBoundary>
                 <div 
                 id="dashboard-item"
-                className={'mt-3 rounded-lg '+sizeOuter}
+                className={'mt-3 rounded-lg bg-emerald-700 flex flex-col justify-between '+sizeOuter}
                 >
               {description()}
               {header()} 
-       
+       <div className='p-1 rounded-lg overflow-hidden'>
           <PageDataElement  isGrid={isGrid} page={page}/>
-   
+          </div>
   
                 {isGrid? 
          
                 <div id="bottom-dash" className={`flex flex-row pt-2 bg-emerald-700 justify-between px-1 py-1 rounded-b-lg bottom-0`}>
-                {header()}
+                {isGrid?null:header()}
             
                 {bookmarkBtn()}
                </div>   
