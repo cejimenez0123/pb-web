@@ -53,7 +53,7 @@ export default function Carousel({book,isGrid}){
  
         {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}
         
-       <div className={`rounded-lg overflow-hidden ${adjustScreenSize(isGrid,true)}`}>
+       <div className={`rounded-lg overflow-hidden `}>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
       </div>
   
