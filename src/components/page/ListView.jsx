@@ -44,7 +44,7 @@ const ListView = ({ items, isGrid }) => {
             next={nextPage}
                     hasMore={hasMore}
                     loader={<h4 className="text-center my-4">Loading...</h4>}
-                    scrollThreshold={0.9}
+                    scrollThreshold={0.6}
                 >
  
                 {filteredItems.filter(page=>page).map((item,i)=>{

@@ -130,14 +130,14 @@ const handleClickComment=()=>{
 const header=()=>{
 
    return <span className={`flex-row flex justify-between ${isGrid?isPhone?"w-gird-mobile":" w-grid  ":isPhone?"w-page-mobile":"w-page"}  px-1 rounded-t-lg  pt-2 pb-1`}>  
-<ProfileCircle isGrid={isGrid} color={isPhone?"white":"emerald-700"} profile={page.author}/>
+<ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author}/>
 
 
              
    {!isGrid? <h6 className={`text-emerald-800
     mx-2
      ${isGrid?isPhone?"":"":""}
-      no-underline text-ellipsis text-white whitespace-nowrap overflow-hidden ${isGrid?"text-[0.7rem] ":"text-[0.9rem]"}`}
+      no-underline text-ellipsis text-emerald-700 whitespace-nowrap overflow-hidden ${isGrid?"text-[0.7rem] ":"text-[0.9rem]"}`}
     onClick={()=>{
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
@@ -234,11 +234,11 @@ let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","",
     }
     // let sizeS = adjustScreenSize(isGrid,true," flex flex-row ","","","","  ")
     const bookmarkBtn =()=>{
-        return isGrid ?<div className={` bg-emerald-700  ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid-content ":isHorizPhone?" w-page-content ":"w-page-mobile-content"} 
-         my-auto flex flex-row justify-between  text-white`}>
-            {isPhone?null:<ProfileCircle isGrid={isGrid} profile={page.author}/>}
+        return isGrid ?<div className={` bg-emerald-100 ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid-content ":isHorizPhone?" w-page-content ":"w-page-mobile-content"} 
+         my-auto flex flex-row justify-between  text-emerald-700`}>
+            {isPhone?null:<ProfileCircle isGrid={isGrid} profile={page.author} color='emerald-700'/>}
           
-           <span className={`${isGrid?isPhone?" w-grid-mobile-content flex flex-row justify-between":" flex justify-end ":isHorizPhone?"":""}`}><h6 className={`text-white  ${isGrid?isPhone?"":" text-right ":isHorizPhone?"":""}${isPhone?" text-[0.6rem] ":"text-[0.9rem]  w-[10rem]  ml-1 pr-2"}   whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
+           <span className={`${isGrid?isPhone?" w-grid-mobile-content flex flex-row justify-between":" flex justify-end ":isHorizPhone?"":""}`}><h6 className={`text-emerald-700 ${isGrid?isPhone?"":" text-right ":isHorizPhone?"":""}${isPhone?" text-[0.6rem] ":"text-[0.9rem]  w-[10rem]  ml-1 pr-2"}   whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
     onClick={()=>{
         sendGAEvent("Navigate",`Navigate to ${JSON.stringify({id:page.id,title:page.title})}`)
         navigate(Paths.page.createRoute(page.id))
@@ -361,7 +361,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
         <ErrorBoundary>
                 <div 
                 id="dashboard-item"
-                className={'mt-3 rounded-lg bg-emerald-700  px-1 flex flex-col justify-between '+sizeOuter}
+                className={'mt-3 rounded-lg bg-emerald-100  px-1 flex flex-col justify-between '+sizeOuter}
                 >
               {description()}
               {header()} 
@@ -371,7 +371,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
   
                 {isGrid? 
          
-                <div id="bottom-dash" className={`flex flex-row pt-2 bg-emerald-700 justify-between px-1 py-1 rounded-b-lg bottom-0`}>
+                <div id="bottom-dash" className={`flex flex-row pt-2  justify-between px-1 py-1 rounded-b-lg bottom-0`}>
                 {isGrid?null:header()}
             
                 {bookmarkBtn()}

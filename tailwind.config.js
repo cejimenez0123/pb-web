@@ -13,7 +13,7 @@ export default {
   theme: {
     width: {
       '128': '48rem',
-      'page':"45.6em",
+      'page':"45em",
         'page-content':"44.8em",
         'page-mobile':"97.6vw",
         'page-mobile-content':"96vw",
@@ -28,7 +28,7 @@ export default {
       "info":"18rem",
       "item":"20rem",
       "page":"44.5rem",
-      'page-content':"25rem",
+      'page-content':"30rem",
       "page-mobile":"33em",
       'grid-mobile':"22rem",
       "page-mobile-content":"32.6em",

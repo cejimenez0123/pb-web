@@ -11,6 +11,6 @@ export default function adjustScreenSize(isGrid=false,isContent,grid="",gridMobi
       return isGrid?isPhone?
       (gridMobile+`w-grid-mobile${isContent?"-content":""} ${height.length<1?`h-grid-mobile${isContent?`-content`:""}`:""}`):
       (grid+`   w-grid${isContent?"-content":""} ${height.length<1?"h-grid":""}${isContent?"-content":""}`):
-      (isHorizPhone?(`${horizPhone} w-page${isContent?"-content":""} ${height.length<1? ` h-page${isContent?`-content`:""}`:""}`)
+      (isHorizPhone?(`${horizPhone} w-page${isContent?"-content":""} ${height.length<1? ` max-h-page${isContent?`-content`:""}`:""}`)
       :(`${fullScreen} w-page-mobile${isContent?`-content`:""}  max-h-page-mobile${isContent?`-content`:``}`))
     }

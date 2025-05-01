@@ -132,7 +132,7 @@ useLayoutEffect(()=>{
     
       <div  className={`spotify ${isGrid?isPhone?" rounded-box w-grid-mobile-content p-1":" mb-1 w-grid p-1":isHorizPhone?" w-page p-1 ":" w-page-mobile p-1"}`} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"90%"} wide={isGrid&&isPhone} className="bg-emerald-200 "
+        <Spotify width={"90%"}  className="bg-emerald-200 "
          link={url}/>
       </div>)
   }
@@ -163,9 +163,9 @@ useLayoutEffect(()=>{
       src={previewData.image}  alt={previewData.title} /></a>
     }else{
        return (
-        <div className={`spotify  ${size}`}>
+  
         <Spotify  height={"100%"} width={"100%"} link={url}/>
-        </div>
+      
       )
     }
   }

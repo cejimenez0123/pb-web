@@ -16,7 +16,7 @@ export default function Carousel({book,isGrid}){
       const desription=(story)=>{
         return story.description && story.description.length>0?<div className='  md:pt-4 p-1'>
         {story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
-        <h6 className={`overflow-hidden ${isGrid?isPhone?`max-h-20 m-1 p-1 w-grid-mobile-content text-white  `:`${isHorizPhone?`w-grid-mobile-content`:`w-grid-content text-emerald-700`} text-white `:isHorizPhone?"  text-emerald-800 ": ``}`}>
+        <h6 className={`overflow-hidden ${isGrid?isPhone?`max-h-20 m-1 p-1 w-grid-mobile-content text-white  `:`${isHorizPhone?`w-page-mobile-content`:`w-page-content text-emerald-700`} text-white `:isHorizPhone?"  text-emerald-800 ": ``}`}>
             {story.description}
               </h6>
     </div>:null }  
@@ -25,7 +25,7 @@ export default function Carousel({book,isGrid}){
      if(book){
       
         return(
-        <div className={`   carousel px-1 mx-auto rounded-box  `+adjustScreenSize(isGrid,true,""," ","",""," h-[100%] md:h-fit ")}
+        <div className={`   carousel px-1 mx-auto rounded-box  `+adjustScreenSize(isGrid,false,"","","","","")}
    
     
         >
@@ -39,8 +39,8 @@ export default function Carousel({book,isGrid}){
         <div  onTouchStartCapture={()=>{
           sendGAEvent("Opened Page from Book",`Saw ${JSON.stringify({id:stc.story.id,title:stc.story.title})}`,"",0,false)
         }} className={` carousel-item flex-col flex
-
-        ${adjustScreenSize(isGrid,true," px-2 "," ","","","")} 
+        ${adjustScreenSize(isGrid,true,"","",""," ","" ,"  ")}
+  
          overflow-hidden
               mx-2 
         `}
@@ -48,7 +48,7 @@ export default function Carousel({book,isGrid}){
 
 >
 
-<h5  id="desc"className={ ` min-h-8  pt-2 px-2 bg-emerald-700 top-0 mont-medium  no-underline text-slate-100 text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+<h5  id="desc"className={ ` min-h-8  pt-2 px-2 bg-trasnparent text-emerald-700 top-0 mont-medium  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
  
         {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}

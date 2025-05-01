@@ -33,7 +33,7 @@ function BookDashboardItem({book,isGrid}) {
    const [likeFound,setLikeFound]=useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
-    const contentSize = adjustScreenSize(isGrid,false,""," bg-emerald-700 px-1  ","","","  ")
+    const contentSize = adjustScreenSize(isGrid,false,""," text-emerald-700 px-1  ","","","  ")
     let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," overflow-hidden rounded-lg ","","","h-fit")
     const soCanUserEdit=()=>{}
 
@@ -114,11 +114,11 @@ return <Button onClick={()=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 20) + '...' : book.title
         return(
        
-       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg bg-emerald-700 pt-2 px-2 mx-auto pb-1  ${isGrid?isPhone?" w-grid-mobile px-4 ":" w-grid px-4":isPhone?" w-page-mobile px-2 ":isHorizPhone?" w-page-content ":"w-page-mobile-content px-4"} `}>{isPhone&&isGrid?null:
-       <ProfileCircle isGrid={isGrid} color={"white"}
+       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg text-emerald-700 pt-2 px-2 mx-auto pb-1  ${isGrid?isPhone?" w-grid-mobile px-4 ":" w-grid px-4":isPhone?" w-page-mobile px-2 ":isHorizPhone?" w-page-content ":"w-page-mobile-content px-4"} `}>{isPhone&&isGrid?null:
+       <ProfileCircle isGrid={isGrid} color={"emerald-700"}
        profile={book.profile}/>}
   
-  <span className={`${isGrid?isPhone?"w-grid-mobile justify-between":" px-2 ":isPhone?"":""} flex flex-row text-right text-white`}>       <h6 
+  <span className={`${isGrid?isPhone?"w-grid-mobile justify-between":" px-2 ":isPhone?"":""} flex flex-row text-right open-sans-medium text-emerald-700`}>       <h6 
             className='my-auto text-ellipsis   
             whitespace-nowrap no-underline text-[0.7rem]'
             onClick={()=>{
@@ -126,7 +126,7 @@ return <Button onClick={()=>{
             }}
             
 >{` `+title}</h6>
-<img onClick={handleBookmark}className='text-white' src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
+<img onClick={handleBookmark} src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
 </div>
   
 
@@ -145,8 +145,8 @@ return <Button onClick={()=>{
         }
           },10)
     const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
-            <div id="book-description" className={`bg-emerald-700 min-h-12 pt-4 px-3 rounded-t-lg`}>
-                <h6 className={`text-white ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid ":isHorizPhone?" w-page-content ":" w-page-mobile-content px-4 "} open-sans-medium text-left `}>
+            <div id="book-description" className={`text-emerald-700 min-h-12 pt-4 px-3 rounded-t-lg`}>
+                <h6 className={`text-emerald-700 ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid ":isHorizPhone?" w-page-content ":" w-page-mobile-content px-4 "} open-sans-medium text-left `}>
                     {book.description}
                 </h6>
             </div>:null:null}
@@ -157,15 +157,13 @@ if(!book){
     
         return(
         <ErrorBoundary >
-        <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip  rounded-box flex flex-col `}>
+        <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100  `}>
                
 
-        {isGrid?isPhone?null:description(book):null}
+        {isGrid?isPhone?<span/>:description(book):null}
        
-<div className={` ${contentSize} `}>
             <Carousel book={book} isGrid={isGrid}/>
-            </div>    
-            
+
                 {bookmarkBtn()} </div>   
 
  </ErrorBoundary>
