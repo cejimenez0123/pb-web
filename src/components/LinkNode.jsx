@@ -1,13 +1,18 @@
-import { useState, useLayoutEffect,useEffect } from 'react';
+import { useState, useLayoutEffect,useEffect, useContext } from 'react';
 import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import "../App.css"
 import ErrorBoundary from '../ErrorBoundary';
 import { initGA,sendGAEvent } from '../core/ga4';
+import Context from '../context';
+import adjustScreenSize from '../core/adjustScreenSize';
 function LinkNode({ url,image,description,title,isGrid}) {
+  const {isPhone,isHorizPhone}=useContext(Context)
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const size = adjustScreenSize(isGrid,true,"","","","","")
+  let spotifySize = isGrid?isPhone?"45.vw":"31.5vw":isHorizPhone?"44.8em":"95vw"
+  let spotifyHeight = "16rem"
   useLayoutEffect(() => {
 
     if(!url.includes("plumbum")&&!url.includes('https://open.spotify.com/')){  
@@ -97,9 +102,9 @@ const fetchData = async (url) => {
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
 
-      <div  className={isGrid?"spotify max-w-[100%]":"spotify w-[96vw] md:w-page"} 
+      <div  className={size} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"} style={{minHeight:"27.5em"}} className="bg-emerald-200 max-h-[20em]"
+        <Spotify width={spotifySize} style={{minHeight:spotifyHeight}} height={spotifyHeight} className="bg-emerald-100"
          link={url}/>
       </div>)
   }
@@ -126,10 +131,11 @@ const fetchData = async (url) => {
     let frame = "  flex shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "
     let imgClass = "object-fit my-auto mx-auto  "
     if(previewData && previewData.title=="Spotify"){
+
       return (
-        <div className='spotify rounded-lg w-[96vw] md:w-page'>
-        <Spotify  height={"140"}link={url}/>
-        </div>
+        // <div className='spotify rounded-lg w-[96vw] md:w-page'>
+        <Spotify width={spotifySize} style={{minHeight:spotifyHeight}}  height={spotifyHeight} ink={url}/>
+        // </div>
       )}else if(image){
         return(<div className={frame}>
     <img className={imgClass} 

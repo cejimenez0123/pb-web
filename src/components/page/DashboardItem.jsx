@@ -24,7 +24,8 @@ import { initGA,sendGAEvent } from '../../core/ga4'
 import adjustScreenSize from '../../core/adjustScreenSize'
 function DashboardItem({page, book,isGrid}) {
     const {isPhone,isHorizPhone}=useContext(Context)
-    const size = adjustScreenSize(isGrid,true,""," max-h-[24rem] mb-2 overflow-hidden rounded-lg ","",""," ")
+    const size = adjustScreenSize(isGrid,true,""," overflow-hidden min-h-[17.6rem] rounded-lg max-h-[20rem] ","","min-h-[30rem]","  ")
+
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
     const pathParams = useParams()
@@ -32,7 +33,9 @@ function DashboardItem({page, book,isGrid}) {
     useLayoutEffect(()=>{
         initGA()
     },[])
-    const widthSize = adjustScreenSize(isGrid,true,""," pt-1 pb-2 ","","",""," ")
+    const widthSize = adjustScreenSize(isGrid,true,""," pt-1 pb-2 ","","","","")
+    let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative my-2 "," overflow-clip justify-between flex ","mt-2  mx-auto overflow-hidden","mt-2","") 
+
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
@@ -42,7 +45,7 @@ function DashboardItem({page, book,isGrid}) {
    const [likeFound,setLikeFound]=useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
-    let contentSize = adjustScreenSize(isGrid,true,"","","",""," h-[100%] ")
+  
     const addStoryToCollection = ()=>{
       if(page){
        const list= [page]
@@ -184,7 +187,6 @@ return <Button onClick={()=>{
     return <div></div>
    }
 }
-let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative my-2 "," overflow-clip justify-between flex","mt-2  mx-auto overflow-hidden","mt-2","") 
 
     useLayoutEffect(()=>{
         soCanUserEdit()

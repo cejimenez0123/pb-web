@@ -12,7 +12,7 @@ function LinkPreview({ url,isGrid}) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
   let size = adjustScreenSize(isGrid,true," bg-emerald-200 rounded-lg overflow-hidden"," rounded-lg pt-4 overflow-hidden mx-auto "," rounded-lg "," rounded-lg "," h-[100%] ")
-  let content = adjustScreenSize(isGrid,true)
+  let content = adjustScreenSize(isGrid,true,"","","","","  ")
 const headers = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
@@ -158,7 +158,7 @@ useLayoutEffect(()=>{
     }else{
        return (
   
-        <Spotify  height={"100%"} width={"100%"} link={url}/>
+        <Spotify width={"100%"} className={`${content} bg-emerald-100`} id="spotify-block" link={url}/>
       
       )
     }

@@ -162,7 +162,7 @@
     max-height: 26.5rem !important;
   }
   #dashboard-item{
-    max-height: 26.5rem !important;
+    height: 26.5rem !important;
   }
 }
 @media (min-width: 800px) {

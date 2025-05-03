@@ -15,7 +15,7 @@ export default function PageDataElement({page,isGrid,book=null}){
     const {isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
-    let size =  adjustScreenSize(isGrid,true)
+    let size =  adjustScreenSize(isGrid,true,"","","",""," max-h-[20rem] ")
 
     useEffect(()=>{
         
