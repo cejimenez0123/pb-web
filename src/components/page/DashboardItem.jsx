@@ -21,15 +21,10 @@ import Enviroment from '../../core/Enviroment'
 import ErrorBoundary from '../../ErrorBoundary'
 import { debounce, size } from 'lodash'
 import { initGA,sendGAEvent } from '../../core/ga4'
-import { useMediaQuery } from 'react-responsive'
 import adjustScreenSize from '../../core/adjustScreenSize'
 function DashboardItem({page, book,isGrid}) {
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 768px)'
-      })
-    const isHorizPhone =  useMediaQuery({
-        query: '(min-width: 768px)'
-      })
+    const {isPhone,isHorizPhone}=useContext(Context)
+    const size = adjustScreenSize(isGrid,true,""," max-h-[24rem] mb-2 overflow-hidden rounded-lg ","",""," ")
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
     const pathParams = useParams()
@@ -37,6 +32,7 @@ function DashboardItem({page, book,isGrid}) {
     useLayoutEffect(()=>{
         initGA()
     },[])
+    const widthSize = adjustScreenSize(isGrid,true,""," pt-1 pb-2 ","","",""," ")
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
@@ -188,8 +184,8 @@ return <Button onClick={()=>{
     return <div></div>
    }
 }
-let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative my-2 "," overflow-clip ","mt-2  mx-auto overflow-hidden","mt-2","  ") 
-let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","","","")
+let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative my-2 "," overflow-clip justify-between flex","mt-2  mx-auto overflow-hidden","mt-2","") 
+
     useLayoutEffect(()=>{
         soCanUserEdit()
     },[page])
@@ -232,9 +228,9 @@ let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","",
             }
         }><p>{title} {">"}</p></a>)
     }
-    // let sizeS = adjustScreenSize(isGrid,true," flex flex-row ","","","","  ")
+   
     const bookmarkBtn =()=>{
-        return isGrid ?<div className={` bg-emerald-100 ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid-content ":isHorizPhone?" w-page-content ":"w-page-mobile-content"} 
+        return isGrid ?<div className={` bg-emerald-100 ${widthSize} 
          my-auto flex flex-row justify-between  text-emerald-700`}>
             {isPhone?null:<ProfileCircle isGrid={isGrid} profile={page.author} color='emerald-700'/>}
           
@@ -266,7 +262,7 @@ let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","",
         return isGrid?null:
         <div className='  flex flex-row w-[96vw]  md:w-page rounded-b-lg  overflow-hidden justify-evenly   '>
             
-         <div className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow w-1/3`}>
+         <div className={`${likeFound?"bg-emerald-400":"bg-emerald-200"} text-center  grow w-1/3`}>
          <div
          
          onClick={handleApprovalClick}
@@ -275,15 +271,15 @@ let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","",
             py-2   flex mont-medium  mx-auto text-white border-none h-[100%]  border-none  `}
         
          >
-            <h6 className=' text-[1.2rem] mont-medium my-auto mx-auto'>Yea{likeFound?"h!":""}</h6> 
+            <h6 className=' text-[1.2rem] mont-medium text-emerald-700 my-auto mx-auto'>Yea{likeFound?"":""}</h6> 
          </div>
          </div>
-         <div className={" bg-emerald-700 mont-medium  border-white border-x-2 border-y-0  text-center border-white grow w-1/3"}>
+         <div className={" bg-emerald-200 mont-medium  border-white border-x-2 border-y-0  text-center border-white grow w-1/3"}>
          <div
              className='
-             text-white
+             text-emerald-700
         text-center mx-auto
-       bg-transparent py-2
+       bg-emerald-200 py-2
        border-none mont-medium 
          '
              onClick={()=>handleClickComment()}
@@ -291,18 +287,18 @@ let sizeInner = adjustScreenSize(isGrid,true," rounded-lg overflow-clip ","","",
           <h6 className='text-[1.2rem]'> Review</h6>
          </div>
          </div>
-         {!page.recommended?<div className="dropdown    text-center   bg-emerald-700  py-2   grow w-1/3 dropdown-top">
+         {!page.recommended?<div className="dropdown    text-center   bg-emerald-200  py-2   grow w-1/3 dropdown-top">
 <div tabIndex={0} role="button" 
     className="             
-        text-white
+        text-emerald-800
         text-center mx-auto
-        bg-transparent
+        bg-emerald-200
         border-none 
         mont-medium 
      
          ">
 <h6 className=' text-[1.2rem]'>Share</h6></div>
-<ul tabIndex={0} className="dropdown-content  text-center    text-emerald-800  z-50 menu bg-emerald-100 rounded-box  w-60 p-1 shadow">
+<ul tabIndex={0} className="dropdown-content  text-center    text-emerald-800  z-50 menu  rounded-box  w-60 p-1 shadow">
 
     <li 
 className=' text-emerald-700'
@@ -361,13 +357,13 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
         <ErrorBoundary>
                 <div 
                 id="dashboard-item"
-                className={'mt-3 rounded-lg bg-emerald-100  px-1 flex flex-col justify-between '+sizeOuter}
+                className={'mt-3 rounded-lg bg-emerald-100  shadow-md px-1 flex flex-col  '+sizeOuter}
                 >
               {description()}
               {header()} 
-       <div id="holder-page-element" className={`bg-emerald-100 h-[100%] rounded-lg overflow-hidden`}>
+<span className={`${size}`}>
           <PageDataElement  isGrid={isGrid} page={page}/>
-          </div>
+          </span>    
   
                 {isGrid? 
          

@@ -1,22 +1,18 @@
-import { useState, useLayoutEffect,useEffect } from 'react';
+import { useState, useLayoutEffect,useEffect, useContext } from 'react';
 import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
 import { Skeleton } from '@mui/material';
 import "../App.css"
-import { useMediaQuery } from 'react-responsive';
 import { initGA, sendGAEvent } from '../core/ga4';
 import adjustScreenSize from '../core/adjustScreenSize';
+import Context from '../context';
 
 function LinkPreview({ url,isGrid}) {
-  const isPhone =  useMediaQuery({
-    query: '(max-width: 768px)'
-  })
-  const isHorizPhone =  useMediaQuery({
-    query: '(min-width: 768px)'
-  })
+  const {isPhone,isHorizPhone}=useContext(Context)
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  let size = adjustScreenSize(isGrid,true," bg-emerald-200 rounded-lg overflow-hidden"," rounded-lg pt-4 overflow-hidden mx-auto "," rounded-lg "," rounded-lg "," h-[100%] ")
+  let content = adjustScreenSize(isGrid,true)
 const headers = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
@@ -26,7 +22,7 @@ const headers = {
 
   useLayoutEffect(() => {
     if(url.includes("plumubum.app")){
-      console.log(url)
+
       fetchData(url).then(res=>res)
     }else if(!url.includes('https://open.spotify.com/')){
       fetchLinkPreview(url).then(res=>{})
@@ -37,7 +33,6 @@ const headers = {
 
 }, [url]);
 
-let size = adjustScreenSize(isGrid,true,"bg-emerald-200 rounded-lg overflow-hidden"," rounded-lg pt-4 overflow-hidden mx-auto "," rounded-lg "," rounded-lg ")
 const fetchLinkPreview = async (url) => {
   try {
 
@@ -67,7 +62,7 @@ const fetchData = async (url) => {
     ;
     
     const data = await response.text();
-    console.log(data)
+
     const isYouTubeVideo = isYouTubeURL(url);
     if (isYouTubeVideo) {
       const videoId = extractYouTubeVideoId(url);
@@ -130,11 +125,12 @@ useLayoutEffect(()=>{
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
     
-      <div  className={`spotify ${isGrid?isPhone?" rounded-box w-grid-mobile-content p-1":" mb-1 w-grid p-1":isHorizPhone?" w-page p-1 ":" w-page-mobile p-1"}`} 
-            style={{ cursor: 'pointer' }}>
-        <Spotify width={"90%"}  className="bg-emerald-200 "
+    
+        <Spotify width={"100%"}  className={`${content}`} id="spotify-blink"
          link={url}/>
-      </div>)
+   
+    )
+
   }
   if (loading) {
     return <Skeleton height={"20em"}width={"100%"}/>
@@ -148,8 +144,7 @@ useLayoutEffect(()=>{
 
   if (previewData.videoId) {
     return (
-    
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className={`rounded-lg p-1 ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isHorizPhone?"w-page-content":"w-page-mobile-content "}`}src={previewData.videoThumbnail} alt="Video Thumbnail" />
+        <img onClick={handleClick} style={{ cursor: 'pointer' }} className={`rounded-lg p-1 ${size}`}src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
   }
@@ -157,10 +152,9 @@ useLayoutEffect(()=>{
   const imageView = ()=>{
   
     if(previewData.title!=="Spotify"){
-    return previewData.image && <a href={`${url}`} className={"w-[100%]"}><img  
+    return previewData.image && <a href={`${url}`} className={size}><img  
  
-      // isGrid?isPhone?"rounded-lg pt-4 w-grid-mobile-content overflow-hidden mx-auto":" w-grid-content":isHorizPhone?" overflow-hidden mx-auto rounded-lg w-page-content":"w-page overflow-hidden mx-auto rounded-lg"
-      src={previewData.image}  alt={previewData.title} /></a>
+          src={previewData.image}  alt={previewData.title} /></a>
     }else{
        return (
   
@@ -192,7 +186,7 @@ useLayoutEffect(()=>{
     
     
     className={`
-    ${size}
+    ${content}
     
 `}
     

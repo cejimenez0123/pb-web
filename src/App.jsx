@@ -48,13 +48,19 @@ import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
 import Enviroment from './core/Enviroment.js';
 import { Helmet } from 'react-helmet';
+import { useMediaQuery } from 'react-responsive';
 
 
 
 
 function App(props) {
 
-
+  const isPhone =  useMediaQuery({
+    query: '(max-width: 768px)'
+  })
+  const isHorizPhone =  useMediaQuery({
+    query: '(min-width: 768px)'
+  })
 
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
@@ -76,7 +82,7 @@ function App(props) {
 
   return (
 
-      <Context.Provider value={{seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+      <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
       <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>

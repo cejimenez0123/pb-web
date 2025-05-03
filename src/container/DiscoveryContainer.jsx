@@ -3,6 +3,7 @@ import { useSelector,useDispatch} from 'react-redux'
 import { useState,useEffect, useLayoutEffect, useContext } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "../styles/Discovery.css"
+import "../Dashboard.css"
 import ErrorBoundary from '../ErrorBoundary'
 import {getPublicStories, setPagesInView } from '../actions/PageActions'
 import { getPublicCollections, setCollections } from '../actions/CollectionActions'
@@ -21,13 +22,15 @@ import Paths from '../core/paths.js'
 import { Helmet } from 'react-helmet'
 import GridView from '../components/page/GridView.jsx'
 import Enviroment from '../core/Enviroment.js'
+import useScrollTracking from '../core/useScrollTracking.jsx'
 function DiscoveryContainer(props){
-    
-    useEffect(()=>{
+    const {currentProfile,setSeo}=useContext(Context)
+    useLayoutEffect(()=>{
         initGA()
-        sendGAEvent("View Discovery Page","Page View Discovery","Discovery",0,true)
+     
+        
    },[])
-    const {currentProfile}=useContext(Context)
+    
     const navigate = useNavigate()
      const cols = useSelector(state=>state.books.collections)
     const books = useSelector(state=>state.books.books)
@@ -35,7 +38,7 @@ function DiscoveryContainer(props){
     const [isGrid,setIsGrid] = useState(false)
    const location = useLocation()
     const dispatch = useDispatch()
-   
+   useScrollTracking({name:"discovery"})
   
     const pagesInView = useSelector((state)=>state.pages.pagesInView)
     const [hasMoreLibraries,setHasMoreLibraries] =useState(false)

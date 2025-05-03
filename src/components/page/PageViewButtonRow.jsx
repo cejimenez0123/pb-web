@@ -170,19 +170,19 @@ checkResult(res,payload=>{
             }else{ setError("Please Sign Up")}
     },10)
   
-    return(<ErrorBoundary><div className='flex-row flex text-white'>
-    <div   onClick={handleApprovalClick} className={`${likeFound?"bg-emerald-400":"bg-emerald-700"} text-center  grow flex-1/3`}>
+    return(<ErrorBoundary><div className='flex-row bg-emerald-200 flex text-white'>
+    <div   onClick={handleApprovalClick} className={`${likeFound?"bg-emerald-400":"bg-emerald-200"} text-center  grow flex-1/3`}>
      <div 
    
         
       className={`
-      text-xl    text-white  text-center mx-auto py-2 bg-transparent  border-none  `}
+      text-xl    text-emerald-700  text-center mx-auto py-2 bg-transparent  border-none  `}
     
      >
-        <h6 className="text-xl"> Yea{likeFound?"h!":""}</h6>
+        <h6 className="text-xl"> Yea{likeFound?"":""}</h6>
      </div>
      </div>
-     <div className="flex-1/3 grow bg-emerald-700  border-white border-l-2 border-r-2 border-t-0 border-b-0  text-center ">
+     <div className="flex-1/3 grow bg-emerald-200  border-white border-l-2 border-r-2 border-t-0 border-b-0  text-center ">
     <div
     className="  text-white  py-2 border-none bg-transparent rounded-none  "
        disabled={!canUserComment} 
@@ -191,7 +191,7 @@ checkResult(res,payload=>{
         Discuss</h6>
     </div>
     </div>
-    <div className="dropdown  flex-1/3 grow bg-emerald-700  text-center dropdown-top">
+    <div className="dropdown  flex-1/3 grow bg-emerald-200  text-center dropdown-top">
 <div tabIndex={0} role="button" className="         text-white  text-center mx-auto py-2 bg-transparent  border-none  "> <h6 className="text-xl   border-none bg-transparent text-white mx-auto my-auto">Share</h6></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-emerald-800 menu bg rounded-box z-[1] w-52  shadow">
 <li>

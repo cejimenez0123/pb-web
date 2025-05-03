@@ -33,8 +33,8 @@ function BookDashboardItem({book,isGrid}) {
    const [likeFound,setLikeFound]=useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
-    const contentSize = adjustScreenSize(isGrid,false,""," text-emerald-700 px-1  ","","","  ")
-    let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," overflow-hidden rounded-lg ","","","h-fit")
+   
+    let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," overflow-hidden rounded-lg max-h-[25em]","","","h-fit min-h-[24rem]")
     const soCanUserEdit=()=>{}
 
    
@@ -157,10 +157,10 @@ if(!book){
     
         return(
         <ErrorBoundary >
-        <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100  `}>
+        <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip ${size} rounded-box flex flex-col bg-emerald-100  `}>
                
 
-        {isGrid?isPhone?<span/>:description(book):null}
+        {isGrid?isPhone?null:description(book):null}
        
             <Carousel book={book} isGrid={isGrid}/>
 

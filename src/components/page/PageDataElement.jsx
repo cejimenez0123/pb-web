@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react"
+import { useContext, useEffect,useState } from "react"
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { PageType } from "../../core/constants"
 import LinkPreview from "../LinkPreview"
@@ -7,15 +7,16 @@ import loadingGif from "../../images/loading.gif"
 import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import { useLocation } from "react-router-dom"
-import { useMediaQuery } from "react-responsive"
 import adjustScreenSize from "../../core/adjustScreenSize"
 import { size } from "lodash"
+import Context from "../../context"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
+    const {isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
-   
-  let sizeInner = adjustScreenSize(isGrid,true,"rounded-lg overflow-clip"," rounded-lg overflow-clip ","","","","","")
+    let size =  adjustScreenSize(isGrid,true)
+
     useEffect(()=>{
         
         if(page && page.type==PageType.picture){
@@ -27,26 +28,27 @@ export default function PageDataElement({page,isGrid,book=null}){
                     setImage(url)
              
                 }).catch(err=>{
-                
+                console.log(error)
                 
                 })
             }
     
         }
     },[page])
-    if(page){
-    
+
+ function Element({page}){   
 switch(page.type){
     case PageType.text:{
 
     return( 
 
         <div 
+        id="page-data-text"
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
         
-        className={` ql-editor 
+        className={`  ql-editor 
        
         ${book?`mx-2`:""}  `}
    
@@ -56,31 +58,41 @@ switch(page.type){
   case PageType.picture:{
   
     return(image?
-    <img  onClick={()=>{
+    <img        id="page-data-pic"
+    className={`${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isHorizPhone?"w-page-content":"w-page-mobile-content "} rounded-lg overflow-clip`}
+    onClick={()=>{
    
    if(location.pathname!=Paths.page.createRoute(page.id)){
    navigate(Paths.page.createRoute(page.id))}
 
-}} className={`rounded-lg `}
+}} 
     
     src={image} alt={page.title}/>
     
     :
-    <div className={`skeleton ${sizeInner}`}/>)
+    <div className={`skeleton ${size}`}/>)
 }
 case PageType.link:{
     return(
     
         <LinkPreview
+        id="page-data-link"
             isGrid={isGrid}
             url={page.data}
         />
        )
 }
 default:
-    return(<div className={`skeleton ${sizeInner}`}>
+    return(<div        id="page-data-skeleton "className={`skeleton ${size}`}>
    <img src={loadingGif}/>
 </div>)
 }
 }
+if(!page){
+    return(<div        id="page-data-skeleton "className={`skeleton ${size}`}>
+    <img src={loadingGif}/>
+ </div>) 
+}
+
+return (<span className={size}><Element page={page}/></span>)
 }

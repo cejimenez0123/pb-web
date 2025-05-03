@@ -1,18 +1,18 @@
 
 
-import React from 'react'
+import React, { useContext } from 'react'
 import "../../Dashboard.css"
 import PageDataElement from '../page/PageDataElement'
-import { useMediaQuery } from 'react-responsive'
-import adjustScreenSize from '../../core/adjustScreenSize'
+
 import { sendGAEvent } from '../../core/ga4'
+import adjustScreenSize from '../../core/adjustScreenSize'
+import Context from '../../context'
+import ProfileCircle from '../profile/ProfileCircle'
+import { useNavigate } from 'react-router-dom'
+import Paths from '../../core/paths'
 export default function Carousel({book,isGrid}){
-      const isPhone =  useMediaQuery({
-        query: '(max-width: 768px)'
-      })
-      const isHorizPhone =  useMediaQuery({
-        query: '(min-width: 768px)'
-      })
+      const {isPhone,isHorizPhone}=useContext(Context)
+      const navigate = useNavigate()
       const desription=(story)=>{
         return story.description && story.description.length>0?<div className='  md:pt-4 p-1'>
         {story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
@@ -20,12 +20,13 @@ export default function Carousel({book,isGrid}){
             {story.description}
               </h6>
     </div>:null }  
-  
+    let descSize = adjustScreenSize(isGrid,false,""," max-h-[4em] ","","","","  ")
+  let size = adjustScreenSize(isGrid,false,""," min-h-[25rem] ","","min-h-[30rem]","")
     
      if(book){
       
         return(
-        <div className={`   carousel px-1 mx-auto rounded-box  `+adjustScreenSize(isGrid,false,"","","","","")}
+        <div id="Carousel" className={`   carousel px-1 mx-auto    ${size} rounded-lg carousel-start overflow-y-hidden pb-2 `}
    
     
         >
@@ -37,28 +38,31 @@ export default function Carousel({book,isGrid}){
         return(
        
         <div  onTouchStartCapture={()=>{
-          sendGAEvent("Opened Page from Book",`Saw ${JSON.stringify({id:stc.story.id,title:stc.story.title})}`,"",0,false)
+          sendGAEvent("Opened Page from Book",`Saw  ${JSON.stringify({id:stc.story.id,title:stc.story.title})} in book ${JSON.stringify({id:book.id,title:book.title})}`,"",0,false)
         }} className={` carousel-item flex-col flex
-        ${adjustScreenSize(isGrid,true,"","",""," ","" ,"  ")}
-  
-         overflow-hidden
-              mx-2 
+           rounded-lg overflow-hidden 
+           ${book?" ":""}
         `}
          id={stc.id} key={stc.id}
 
 >
 
-<h5  id="desc"className={ ` min-h-8  pt-2 px-2 bg-trasnparent text-emerald-700 top-0 mont-medium  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+<h5  id="desc"
+onClick={()=>{
+  navigate(Paths.page.createRoute(stc.story.id))
+  sendGAEvent("Opened Page from Book",`Navigated to ${JSON.stringify({id:stc.story.id,title:stc.story.title})} from book ${JSON.stringify({id:book.id,title:book.title})}`,"",0,false)
+       
+}}
+className={ ` min-h-12  ${descSize} pt-6 px-2   text-emerald-700 top-0 mont-medium  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
  
         {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}
-        
-       <div className={`rounded-lg overflow-hidden `}>
+    
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
-      </div>
+      
   
         </div>)}else{
-            return null
+            return <span className='skeleton'/>
         }})}
 
     

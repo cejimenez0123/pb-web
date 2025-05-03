@@ -30,7 +30,6 @@ export default function GridView({ items }) {
   const nextPage = () => {
     setPage(prev => prev + 1);
   };
-  let sizeDashOuter = adjustScreenSize(true,false," rounded-b-lg overflow-hidden"," grid-item rounded-lg oveflow-hidden ","","")
     return (
     <span>
       <InfiniteScroll
@@ -54,7 +53,7 @@ export default function GridView({ items }) {
             if (item.storyIdList?.length > 0 && !item.data) {
               return (
                 
-                  <BookDashboardItem  id={i} isGrid={true} book={item} />
+                  <BookDashboardItem key={item.id} id={i} isGrid={true} book={item} />
            
               );
             }
@@ -67,14 +66,15 @@ export default function GridView({ items }) {
             ) {
               
               return (
-                // <div className={sizeDashOuter} key={id}>
+                
                   <DashboardItem
+                  key={item.id}
                     item={item}
                     index={i}
                     isGrid={true}
                     page={item}
                   />
-                // </div>
+             
               );
             }
 
