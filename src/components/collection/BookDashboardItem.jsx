@@ -141,7 +141,7 @@ return <Button onClick={()=>{
         }else{
            
         }}else{
-            setError("Pleas Login")
+            setError("Please Login")
         }
           },10)
     const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?

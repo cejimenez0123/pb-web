@@ -159,10 +159,10 @@
 }
 @media (max-width: 800px) {
   #book-dashboard-item {
-    max-height: 26rem !important;
+    max-height: 26.5rem !important;
   }
   #dashboard-item{
-    max-height: 26rem !important;
+    max-height: 26.5rem !important;
   }
 }
 @media (min-width: 800px) {
