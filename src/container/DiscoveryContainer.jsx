@@ -197,7 +197,7 @@ function DiscoveryContainer(props){
                                         lora-bold
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
-                        {/* {isNotPhone? */}
+                        
                         <div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
                                             ml-2 mr-0 px-1 border-none py-0'>
@@ -212,10 +212,10 @@ function DiscoveryContainer(props){
                         </div>
 
 
-                   {!isGrid?<ListView items={viewItems}/>:<GridView items={viewItems}/>}
+                   {isGrid?<GridView items={viewItems}/>:<ListView items={viewItems}/>}
                   
             
-                    {/* </div> */}
+                 
                     <div className=' lg:flex-1  lg:mx-4'>
                        <div className='w-24  mx-auto '>
                        

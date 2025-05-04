@@ -15,7 +15,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
         more=hasMore
     }
    let stories = items??useSelector(state=>state.pages.pagesInView)
-    const pagesInView = stories
+    const pagesInView = stories.filter(story=>story)
     const isPhone =  useMediaQuery({
         query: '(max-width: 700px)'
       })
@@ -25,7 +25,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
         return(<div 
         >
                   <InfiniteScroll
-        dataLength={pagesInView.length?pagesInView.length:0}
+        dataLength={pagesInView.length}
         next={getMore}
         scrollThreshold={1}
         hasMore={more}
@@ -41,33 +41,18 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
 <div className={` ${isGrid && !isPhone ? 'flex flex-wrap' : ''}`}>
 
 
-          {pagesInView.length?pagesInView.map((page,i)=>{
-            if(page==Enviroment.blankPage&&i==0){
-                return(<div key={i}className="mx-auto text-emerald-800 text-xl py-12 lora-medium text-center">
-                   <p> Refer your local friends for local feedback</p> <p>or</p><p> refer others so there's more to read</p>
-                   <h5 className="mx-auto text-emerald-800 text-2xl py-12 lora-bold text-center">Recommendations</h5>
-                   
-                    </div>)
-            }
-            if(page==Enviroment.blankPage){
-                return <div key={i} className="text-center">
-<h5 className="mx-auto text-emerald-800 text-xl py-12 lora-bold text-center">Recommendations</h5>
-                   
-                 </div>
-
-            }else{
+     {pagesInView.map((page,i)=>{
+          
             
-            if(page){
+    
                 const id = `${page.id}_${i}`
                 return(<div  key={id}
   className={`${isGrid && !isPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
 >
                     <DashboardItem  key={page.id} item={page} index={i} forFeedback={forFeedback} isGrid={isGrid} page={page}/>
                 </div>)
-            }else{
-                return null
-            }
-            }}):null}
+          
+})}
             </div>
         </InfiniteScroll> 
 

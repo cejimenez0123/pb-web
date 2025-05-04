@@ -1,4 +1,4 @@
-import React ,{useState,useLayoutEffect, useContext}from 'react'
+import React ,{useState,useLayoutEffect, useContext, useEffect}from 'react'
 import "../App.css"
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchRecommendedStories } from '../actions/StoryActions'
@@ -10,11 +10,14 @@ import {  appendToPagesInView,  setPagesInView, } from '../actions/PageActions'
 import { setCollections } from '../actions/CollectionActions'
 import Context from '../context.jsx'
 import checkResult from '../core/checkResult.js'
+import ErrorBoundary from '../ErrorBoundary.jsx'
+import { initGA, sendGAEvent } from '../core/ga4.js'
+import ListView from '../components/page/ListView.jsx'
 function DashboardContainer(props){
     const location = useLocation()
-    useEffect(()=>{
+    useLayoutEffect(()=>{
         initGA()
-        sendGAEvent("View","View Dashboard")   
+        
     },[])
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)
@@ -104,8 +107,8 @@ useLayoutEffect(()=>{
 <input type="radio" name="my_tabs_2" role="tab"   defaultChecked  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3    text-md md:text-xl" aria-label="Recommendations" />
 <div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
 
-                    <PageList items={recommendedStories} hasMore={hasMore} getMore={getContent}/>
-          
+                    {/* <PageList items={recommendedStories} hasMore={hasMore} getMore={getContent}/> */}
+          <ListView items={recommendedStories} hasMore={hasMore} getMore={getContent}/>
                 </div>
                 <input
     type="radio"
@@ -116,7 +119,8 @@ useLayoutEffect(()=>{
     />
   <div role="tabpanel" 
    className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page md:mx-auto border-l-4  rounded-full      ">
-  <PageList items={stories}/>
+  <ListView items={stories} hasMore={hasMore} getMore={getContent}/>
+
   </div>
                 </div>
                 </div>

@@ -51,7 +51,7 @@ export default function PageViewContainer(props){
     },[])
     useLayoutEffect(()=>{   
         soCanUserSee() 
-     },[currentProfile,page])
+     },[currentProfile,page,location.pathname])
     useLayoutEffect(()=>{
         dispatch(getStory(pathParams)).then(res=>{
             checkResult(res,payload=>{
