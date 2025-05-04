@@ -343,29 +343,36 @@ const appendComment = createAction("pages/appendComment", (params)=> {
     
   
 })
-const fetchCommentsOfPage = createAsyncThunk("comments/fetchCommentsOfPages",async (params,thunkApi)=>{
+const fetchCommentsOfPagePublic = createAsyncThunk("comments/fetchCommentsOfPagePublic",async (params,thunkApi)=>{
   try{
-    let token = localStorage.getItem("token")
-    if(token){
-      let data = await storyRepo.fetchCommentsOfPageProtected({pageId:params.id})
-      return {
-
-        comments: data.comments
-      }
-    }else{
+  
       let data = await storyRepo.fetchCommentsOfPagePublic({pageId:params.id})
       return {
 
         comments: data.comments
       }
-    }
-
-
-
 
 }catch(err){
 
-throw err
+return err
+
+}}
+
+)
+const fetchCommentsOfPageProtected = createAsyncThunk("comments/fetchCommentsOfPages",async (params,thunkApi)=>{
+  try{
+   
+   
+
+      let data = await storyRepo.fetchCommentsOfPageProtected({pageId:params.id})
+      return {
+
+        comments: data.comments
+      }
+
+}catch(err){
+
+return err
 
 }}
 
@@ -635,7 +642,8 @@ try{
           fetchEditingPage,
           // appendSaveRolesForPage,
           createComment,
-          fetchCommentsOfPage,
+          fetchCommentsOfPageProtected,
+          fetchCommentsOfPagePublic,
           deleteComment,
           clearEditingPage,
           appendComment,

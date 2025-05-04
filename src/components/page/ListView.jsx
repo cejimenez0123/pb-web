@@ -18,10 +18,10 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
 
   useEffect(() => {
    
-    const booksWithContent = items.filter(
+    const booksWithContent = items.filter(item=>item).filter(
       (item) => item.purpose && item.storyIdList && item.storyIdList.length > 0
     );
-    const otherItemsWithContent = items.filter(
+    const otherItemsWithContent = items.filter(item=>item).filter(
       (item) => item.data 
     );
 

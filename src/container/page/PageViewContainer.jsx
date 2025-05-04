@@ -2,7 +2,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {  useState ,useLayoutEffect, useEffect, useContext} from "react";
 import "../../styles/PageView.css"
-import { fetchCommentsOfPage } from "../../actions/PageActions.jsx";
+// import { fetchCommentsOfPageProtected, fetchCommentsOfPagePublic } from "../../actions/PageActions.jsx";
 import PageViewItem from "../../components/page/PageViewItem";
 import { Helmet } from 'react-helmet-async';
 import { getStory } from "../../actions/StoryActions";
@@ -28,8 +28,9 @@ export default function PageViewContainer(props){
     const [pending,setPending]=useState(true)
     const [canUserSee,setCanUserSee]=useState(false)
     const [canUserEdit,setCanUserEdit]=useState(false)
-    const comments = useSelector(state=>state.comments.comments)
+    const [comments,setComments]=useState([])
     const [rootComments,setRootComments]=useState([])
+   
     useLayoutEffect(()=>{
         initGA()
     
@@ -49,24 +50,33 @@ export default function PageViewContainer(props){
                 }
             }}
     },[])
-    useLayoutEffect(()=>{   
-        soCanUserSee() 
-     },[currentProfile,page,location.pathname])
-    useLayoutEffect(()=>{
+    useEffect(()=>{ 
+        if(page){  
+        soCanUserSee()
+        setComments(!!page?page.comments:[])
+        setRootComments(!!page?page.comments.filter(com=>com.parentId==null):[])
+        }
+     },[currentProfile,page])
+    useEffect(()=>{
         dispatch(getStory(pathParams)).then(res=>{
             checkResult(res,payload=>{
+                const {page}=payload
                 soCanUserSee()
-
+             
             },err=>{
-
+                setError(err.message)
             })
         })
-        dispatch(fetchCommentsOfPage(pathParams))
-    },[location.pathname,id,currentProfile])
+  
+    },[id])
+    
 
-    useLayoutEffect(()=>{
-        setRootComments(comments?comments.filter(com=>com.parentId==null):[])
-     },[comments])
+    // useLayoutEffect(()=>{
+    //     if(story){
+        
+    //     }
+    //  },[story])
+
 
 
      const soCanUserSee=()=>{
@@ -117,7 +127,7 @@ useLayoutEffect(()=>{
     return(<div className="  mx-auto"> 
         <ErrorBoundary >
         <Helmet>
-      {page?<><title>{"A Plumbum+Story:"+page.title+" from "+page.author.username}</title>
+      {page?<><title>{"A Plumbum Story:"+page.title+" from "+page.author.username}</title>
        <meta property="og:image" content={Enviroment.logoChem} />
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
       <meta property="og:description" content={page.description.length>0?page.description:"Explore events, workshops, and writer meetups on Plumbum."}/>

@@ -136,7 +136,7 @@ class StoryRepo{
         return res.data
     }
     async fetchCommentsOfPageProtected({pageId}){
-        let res = await axios.get(this.url+"/"+pageId+"/comment/public",{headers:{
+        let res = await axios.get(this.url+"/"+pageId+"/comment/protected",{headers:{
             Authorization: "Bearer "+localStorage.getItem(this.token)
         }})
         

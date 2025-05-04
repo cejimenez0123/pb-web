@@ -6,15 +6,16 @@ import hashtagRepo from "../data/hashtagRepo";
 import {storage} from "../core/di"
 import {  ref,deleteObject   } from "firebase/storage";
 
-const getStory = createAsyncThunk("story/getStory",async (params,thunkApi)=>{
+const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
   try{
+    console.log(id)
     let token = localStorage.getItem("token")
     if(token){
-     let data = await storyRepo.getStoryProtected({id:params.id})
+     let data = await storyRepo.getStoryProtected({id:id})
      return {story:data.story}
 
     }else{
-          let data = await storyRepo.getStoryPublic({id:params.id})
+          let data = await storyRepo.getStoryPublic({id:id})
         return {story:data.story}
 
     }

@@ -39,7 +39,7 @@ export default function PageViewItem({page}) {
     }
     const header=()=>{
 
-        return <div ><span className={"flex-row flex justify-between px-1 rounded-t-lg lex pt-2 pb-1"}>   <ProfileCircle profile={page.author}/> 
+        return <div ><span className={"flex-row flex justify-between px-1 rounded-t-lg lex pt-2 pb-1"}>   <ProfileCircle profile={page.author} color={"emerald-700"}/> 
                   
          <h6 className="text-emerald-700 mx-2  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]  " onClick={()=>{
              dispatch(setPageInView({page}))
