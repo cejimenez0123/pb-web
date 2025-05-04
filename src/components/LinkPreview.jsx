@@ -11,13 +11,9 @@ function LinkPreview({ url,isGrid}) {
   const {isPhone,isHorizPhone}=useContext(Context)
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-  let size = adjustScreenSize(isGrid,true," bg-emerald-200 rounded-lg overflow-hidden"," rounded-lg pt-4 overflow-hidden mx-auto "," rounded-lg "," rounded-lg "," h-[100%] ")
-  let content = adjustScreenSize(isGrid,true,"","","","","  ")
-const headers = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+  let size = adjustScreenSize(isGrid,true," bg-emerald-200 rounded-lg "," rounded-lg pt-4 overflow-hidden mx-auto "," rounded-lg "," rounded-lg "," h-[100%] ")
+  let content = adjustScreenSize(isGrid,true, " min-h-[37em] mb-2","","","","  ")
+
 
 
   useLayoutEffect(() => {
@@ -126,7 +122,7 @@ useLayoutEffect(()=>{
     return(
     
     
-        <Spotify width={"100%"}  className={`${content}`} id="spotify-blink"
+        <Spotify width={"100%"}  className={`${content}`}  id="spotify-blink"
          link={url}/>
    
     )

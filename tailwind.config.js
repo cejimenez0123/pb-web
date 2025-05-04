@@ -33,7 +33,7 @@ export default {
       'grid-mobile':"15rem",
       "page-mobile-content":"26.56em",
       "grid-mobile-content":"15rem",
-      'grid':"33rem",
+      'grid':"35rem",
       'grid-content':"30rem",
     },
     borderWidth: {

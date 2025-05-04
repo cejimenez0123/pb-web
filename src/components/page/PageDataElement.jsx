@@ -8,14 +8,13 @@ import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import { useLocation } from "react-router-dom"
 import adjustScreenSize from "../../core/adjustScreenSize"
-import { size } from "lodash"
 import Context from "../../context"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const {isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
-    let size =  adjustScreenSize(isGrid,true,"","","",""," max-h-[20rem] ")
+    let size =  adjustScreenSize(isGrid,true,"  overflow-hidden  "," max-h-[10em] overflow-hidden ","",""," ")
 
     useEffect(()=>{
         
@@ -28,7 +27,7 @@ export default function PageDataElement({page,isGrid,book=null}){
                     setImage(url)
              
                 }).catch(err=>{
-                console.log(error)
+                console.log(err)
                 
                 })
             }
@@ -49,7 +48,7 @@ switch(page.type){
                 }}
         
         className={`  ql-editor 
-       
+     ${size}
         ${book?`mx-2`:""}  `}
    
    dangerouslySetInnerHTML={{__html:page.data}}/>
@@ -89,9 +88,9 @@ default:
 }
 }
 if(!page){
-    return(<div        id="page-data-skeleton "className={`skeleton ${size}`}>
+    return(
     <img src={loadingGif}/>
- </div>) 
+) 
 }
 
 return (<span className={size}><Element page={page}/></span>)

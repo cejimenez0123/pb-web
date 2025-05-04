@@ -40,7 +40,7 @@ const ListView = ({ items, isGrid }) => {
           
                <InfiniteScroll
              id={"list-view"}  className={`mx-auto ${isPhone?" w-page-mobile ":" w-page "}`}
-            dataLength={filteredItems.length}
+            dataLength={filteredItems.filter(page=>page).length}
             next={nextPage}
                     hasMore={hasMore}
                     loader={<h4 className="text-center my-4">Loading...</h4>}

@@ -20,8 +20,8 @@ export default function Carousel({book,isGrid}){
             {story.description}
               </h6>
     </div>:null }  
-    let descSize = adjustScreenSize(isGrid,false,""," max-h-[4em] ","","","","  ")
-  let size = adjustScreenSize(isGrid,false,""," min-h-[24rem]  max-h-[30rem] ",""," min-h-[30rem] ","")
+    let descSize = adjustScreenSize(isGrid,false," max-h-[4em] "," max-h-[4em] ","","","","  ")
+  let size = adjustScreenSize(isGrid,false,""," min-h-[24rem]  max-h-[30rem] ",""," py-2 rounded-lg ","")
     
      if(book){
       
@@ -41,6 +41,7 @@ export default function Carousel({book,isGrid}){
           sendGAEvent("Opened Page from Book",`Saw  ${JSON.stringify({id:stc.story.id,title:stc.story.title})} in book ${JSON.stringify({id:book.id,title:book.title})}`,"",0,false)
         }} className={` carousel-item flex-col flex
            rounded-lg overflow-hidden 
+           ${size}
            ${book?" ":""}
         `}
          id={stc.id} key={stc.id}
@@ -57,19 +58,15 @@ className={ ` min-h-12  ${descSize} pt-6 px-2   text-emerald-700 top-0 mont-medi
  {stc.story.title}</h5>
  
         {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}
-    
+  
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
-      
   
         </div>)}else{
             return <span className='skeleton'/>
         }})}
 
     
-       <span className='flex flex-row justify-center'>
-
-
-      </span>
+    
       </div>)
     }else{
         return(<div className='skeleton rounded-box'/>)

@@ -184,7 +184,7 @@ checkResult(res,payload=>{
      </div>
      <div className="flex-1/3 grow bg-emerald-200  border-white border-l-2 border-r-2 border-t-0 border-b-0  text-center ">
     <div
-    className="  text-white  py-2 border-none bg-transparent rounded-none  "
+    className="  text-emerald-700 py-2 border-none bg-transparent rounded-none  "
        disabled={!canUserComment} 
         onClick={()=>{currentProfile?setComment(!comment):setError("Please Sign Up")}}>
     <h6 className="text-xl">
@@ -192,7 +192,7 @@ checkResult(res,payload=>{
     </div>
     </div>
     <div className="dropdown  flex-1/3 grow bg-emerald-200  text-center dropdown-top">
-<div tabIndex={0} role="button" className="         text-white  text-center mx-auto py-2 bg-transparent  border-none  "> <h6 className="text-xl   border-none bg-transparent text-white mx-auto my-auto">Share</h6></div>
+<div tabIndex={0} role="button" className="  text-center mx-auto py-2 bg-transparent  border-none  "> <h6 className="text-xl   border-none bg-transparent text-emerald-700 mx-auto my-auto">Share</h6></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-emerald-800 menu bg rounded-box z-[1] w-52  shadow">
 <li>
 <a disabled={!currentProfile} 

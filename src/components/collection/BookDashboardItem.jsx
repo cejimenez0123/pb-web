@@ -34,7 +34,7 @@ function BookDashboardItem({book,isGrid}) {
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
    
-    let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," overflow-hidden rounded-lg max-h-[25em]","","","h-fit min-h-[24rem]")
+    let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," overflow-hidden rounded-lg max-h-[25em]",""," min-h-[25rem] ","  ")
     const soCanUserEdit=()=>{}
 
    

@@ -24,7 +24,7 @@ import { initGA,sendGAEvent } from '../../core/ga4'
 import adjustScreenSize from '../../core/adjustScreenSize'
 function DashboardItem({page, book,isGrid}) {
     const {isPhone,isHorizPhone}=useContext(Context)
-    const size = adjustScreenSize(isGrid,true,""," overflow-hidden min-h-[17.6rem] rounded-lg max-h-[20rem] ","","min-h-[30rem]","  ")
+    const size = adjustScreenSize(isGrid,true," overflow-hidden  "," overflow-hidden min-h-[17.6rem] rounded-lg max-h-[20rem] ","","","  ")
 
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
@@ -34,7 +34,7 @@ function DashboardItem({page, book,isGrid}) {
         initGA()
     },[])
     const widthSize = adjustScreenSize(isGrid,true,""," pt-1 pb-2 ","","","","")
-    let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative my-2 "," overflow-clip justify-between flex ","mt-2  mx-auto overflow-hidden","mt-2","") 
+    let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative h-fit "," overflow-clip justify-between flex ","mt-2  mx-auto overflow-hidden","mt-2","  ") 
 
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()
@@ -233,7 +233,7 @@ return <Button onClick={()=>{
    
     const bookmarkBtn =()=>{
         return isGrid ?<div className={` bg-emerald-100 ${widthSize} 
-         my-auto flex flex-row justify-between  text-emerald-700`}>
+        flex flex-row justify-between  text-emerald-700`}>
             {isPhone?null:<ProfileCircle isGrid={isGrid} profile={page.author} color='emerald-700'/>}
           
            <span className={`${isGrid?isPhone?" w-grid-mobile-content flex flex-row justify-between":" flex justify-end ":isHorizPhone?"":""}`}><h6 className={`text-emerald-700 ${isGrid?isPhone?"":" text-right ":isHorizPhone?"":""}${isPhone?" text-[0.6rem] ":"text-[0.9rem]  w-[10rem]  ml-1 pr-2"}   whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
@@ -356,20 +356,19 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     if(page){
     
         return(
-        <ErrorBoundary>
+    
                 <div 
                 id="dashboard-item"
                 className={'mt-3 rounded-lg bg-emerald-100  shadow-md px-1 flex flex-col  '+sizeOuter}
                 >
               {description()}
               {header()} 
-<span className={`${size}`}>
           <PageDataElement  isGrid={isGrid} page={page}/>
-          </span>    
+          
   
                 {isGrid? 
          
-                <div id="bottom-dash" className={`flex flex-row pt-2  justify-between px-1 py-1 rounded-b-lg bottom-0`}>
+                <div id="bottom-dash" className={`flex flex-row  justify-between px-1 rounded-b-lg bottom-0`}>
                 {isGrid?null:header()}
             
                 {bookmarkBtn()}
@@ -381,10 +380,9 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
                 </div>
               
   </div>
- 
-  </ErrorBoundary>
+
      )}else{
-        return(<div className={isGrid?isPhone?"overall-hidden w-grid-mobile h-grid-mobile":"shadow-md w-grid h-grid":isHorizPhone?` relative rounded-lg overflow-clip shadow-md w-page h-page my-2`:' relative rounded-lg overflow-clip shadow-md w-page-mobile h-page-mobile my-2 '}><span className='skeleton'/></div>)
+        return(<span  className={sizeOuter+" skeleton"} />)
      }
 
 }
