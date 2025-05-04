@@ -162,7 +162,7 @@
     max-height: 26.5rem !important;
   }
   #dashboard-item{
-    height: 26.5rem !important;
+    max-height: 26.5rem !important;
   }
   
  .grid #dashboard-item iframe[title="Spotify Web Player"]{

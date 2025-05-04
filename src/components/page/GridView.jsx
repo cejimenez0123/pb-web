@@ -28,7 +28,7 @@ export default function GridView({ items }) {
 
 
   const nextPage = () => {
-    setPage(prev => prev + 1);
+    // setPage(prev => prev + 1);
   };
     return (
     <span>
