@@ -14,7 +14,7 @@ export default function PageDataElement({page,isGrid,book=null}){
     const {isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
-    let size =  adjustScreenSize(isGrid,true,"  overflow-hidden  "," py-2 overflow-hidden ","",""," ")
+    let size =  adjustScreenSize(isGrid,true,"  overflow-hidden  "," py-2 overflow-hidden "," overflow-hidden ","overflow-hidden "," ")
 
     useEffect(()=>{
         

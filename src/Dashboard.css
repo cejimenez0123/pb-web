@@ -148,7 +148,7 @@
 @media (max-width: 800px) {
 #dashboard-item .ql-editor{
   padding: 0.8em!important;
-  max-height: 100% !important;
+  max-height: 26.5rem !important;
   text-overflow: ellipsis !important;
   
 }

@@ -1,64 +1,4 @@
-// import { useContext, useEffect, useLayoutEffect, useState } from "react";
-// import InfiniteScroll from "react-infinite-scroll-component";
-// import DashboardItem from "./DashboardItem";
-// import { useMediaQuery } from "react-responsive";
-// import BookDashboardItem from "../collection/BookDashboardItem";
-// import { uniq } from "lodash";
-// import Context from "../../context";
-// const ListView = ({ items, isGrid, forFeedback,getMore=()=>{} }) => {
-//   const {isPhone,isHorizPhone}=useContext(Context)
-//   const [page, setPage] = useState(1);
-//   const [filteredItems, setFilteredItems] = useState(items);
-//   const [hasMore, setHasMore] = useState(true);
 
-  
-//   const loadMore = async () => {
-//     setHasMore(true)
-//     let end = 10*page>items.length?items.length:10*page
-  
-//     const uniqueData = items.filter(item=>{return item.storyIdList && !item.storyIdList==0||item.data.length>0})
-//     .filter(newItem =>newItem && !filteredItems.some(item => item.id === newItem.id));
-    
-//      setFilteredItems(prevItems => [...prevItems, ...uniqueData]);
-//      setHasMore(false)
-//   };
-//   useLayoutEffect(()=>{
-//     let end = items.length<10?items.length:10
-//     items.slice(0,end)
-//     setFilteredItems(items)
-//   },[])
-//   useEffect(() => {
-//    loadMore()
-//   }, [page]);
-//   return(
-//                <InfiniteScroll
-//              id={"list-view"}  
-//              className={`mx-auto ${isPhone?" w-page-mobile ":" w-page "}`}
-//             dataLength={filteredItems.length
-//             }
-            
-//             next={()=>{
-//               setPage(i=>i+1)
-//             }}
-//                     hasMore={hasMore}
-//                     loader={<h4 className="text-center my-4">Loading...</h4>}
-//                     scrollThreshold={0.6}
-//                 >
- 
-//                 {filteredItems.map((item,i)=>{
-    
-//  return item && item.purpose?<BookDashboardItem        key={ i} isGrid={isGrid} book={item} />
-//                       :<DashboardItem    key={ i}  isGrid={isGrid}  page={item} forFeedback={false}/>
-      
-//                 })
-        
-//         }
-            
-//             </InfiniteScroll>)
-//         }
-//     // }
-//     // }
-// export default ListView;
 import { useContext, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import DashboardItem from "./DashboardItem";
@@ -77,7 +17,7 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    // Separate books with content from other items
+   
     const booksWithContent = items.filter(
       (item) => item.purpose && item.storyIdList && item.storyIdList.length > 0
     );
@@ -135,14 +75,18 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
     >
       {filteredItems.map((item, i) => {
         return item && item.purpose ? (
-          <BookDashboardItem key={item.id || i} isGrid={isGrid} book={item} />
+          <span key={ i}>
+          <BookDashboardItem key={ i} isGrid={isGrid} book={item} />
+          </span>
         ) : (
+          <span key={i}>
           <DashboardItem
-            key={item.id || i}
+            key={i}
             isGrid={isGrid}
             page={item}
             forFeedback={false}
           />
+          </span>
         );
       })}
     </InfiniteScroll>
