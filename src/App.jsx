@@ -16,7 +16,7 @@ import ApplyContainer from './container/auth/ApplyContainer';
 import SearchDialog from './components/SearchDialog';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import {  getCurrentProfile,
-          fetchHomeCollection,
+  
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
@@ -285,7 +285,7 @@ function mapDispatchToProps(dispatch){
 
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicStories:()=>dispatch(getPublicStories()),
-    fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),
+    // fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),
     setSignedInTrue:()=>dispatch(setSignedInTrue()),
     setSignedInFalse:()=>dispatch(setSignedInFalse()),
   }

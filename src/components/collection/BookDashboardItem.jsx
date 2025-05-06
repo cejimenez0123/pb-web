@@ -9,12 +9,11 @@ import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
 import bookmarkoutline from "../../images/bookmarkadd.svg"
 import ProfileCircle from '../profile/ProfileCircle'
-import {  deleteStoryFromCollection } from '../../actions/CollectionActions'
+import {  addCollectionListToCollection, deleteStoryFromCollection } from '../../actions/CollectionActions'
 import Context from '../../context'
 import { debounce } from 'lodash'
 import { useMediaQuery } from 'react-responsive'
 import Carousel from './Carousel'
-import ErrorBoundary from '../../ErrorBoundary'
 import { useNavigate } from 'react-router-dom'
 import adjustScreenSize from '../../core/adjustScreenSize'
 function BookDashboardItem({book,isGrid}) {
@@ -33,25 +32,26 @@ function BookDashboardItem({book,isGrid}) {
    const [likeFound,setLikeFound]=useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
-   
+    const [isArchived,setIsArchived]=useState()
+   const [title,setTitle]=useState("")
     let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," overflow-hidden rounded-lg max-h-[25em]",""," min-h-[25rem] ","  ")
     const soCanUserEdit=()=>{}
 
    
 const deleteStc=()=>{
 
-        if(bookmarked){
-            setLoading(true)
-   dispatch( deleteStoryFromCollection({stId:bookmarked.id})).then((res)=>{
-   checkResult(res,payload=>{
-    setBookmarked(null)
-    setLoading(false)
-   },err=>{
-    setError(err.message)
-   }
-)
-   })
-}}
+//         if(bookmarked){
+//             setLoading(true)
+//    dispatch( deleteStoryFromCollection({stId:bookmarked.id})).then((res)=>{
+//    checkResult(res,payload=>{
+//     setBookmarked(null)
+//     setLoading(false)
+//    },err=>{
+//     setError(err.message)
+//    }
+// )
+//    })
+}
 const handleApprovalClick = ()=>{
     if(currentProfile){
         if(likeFound ){
@@ -94,22 +94,53 @@ return <Button onClick={()=>{
     return <div></div>
    }
 }
+const checkFound=()=>{
+    console.log(currentProfile)
+    if(currentProfile && currentProfile.profileToCollections){
+   let archive = currentProfile.profileToCollections[0]
+   let home = currentProfile.profileToCollections[1]
+    if(archive&&book.parentCollections){
+
+         let isfound = book.parentCollections.find(ptc=>ptc.parentCollectionId==home.id)
+       
+            setBookmarked(isfound)
+            
+         let found = book.parentCollections.find(ptc=>ptc.parentCollectionId==archive.id)
+
+            setIsArchived(found)
+            }
+ 
+    }}
+ 
+
+useLayoutEffect(()=>{
+    checkFound()
+},[currentProfile])
+const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
+    <div id="book-description" className={`text-emerald-700 min-h-12 pt-4 px-3 rounded-t-lg`}>
+        <h6 className={`text-emerald-700 ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid ":isHorizPhone?" w-page-content ":" w-page-mobile-content px-4 "} open-sans-medium text-left `}>
+            {book.description}
+        </h6>
+    </div>:null:null}
 
     useLayoutEffect(()=>{
         soCanUserEdit()
-    },[book])
-    let title = ""
- 
-    if(book){
+        let tit = ""
+        if(book){
         
         
-        if(book.title.length>30){
-        title = book.title.slice(0,30)+"..."
-        }else{
-            title = book.title
+            if(book.title.length>30){
+            tit = book.title.slice(0,30)+"..."
+            setTitle(tit)
+            }else{
+               setTitle(book.title)
+            }
+       
         }
-   
-    }
+    },[book])
+  
+ 
+  
     const bookmarkBtn =()=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 20) + '...' : book.title
         return(
@@ -139,17 +170,23 @@ return <Button onClick={()=>{
         if(bookmarked){
                 deleteStc()
         }else{
-           
+            if(currentProfile.profileToCollections[0].id){
+           dispatch(addCollectionListToCollection({id:currentProfile.profileToCollections[0].id,list:[book.id],profile:currentProfile})).then(res=>{
+            checkResult(res,payload=>{
+                    
+            },err=>{
+
+            })
+           })
+            }else{
+                setError("Error with Archive Collection")
+            }
         }}else{
+            
             setError("Please Login")
         }
           },10)
-    const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
-            <div id="book-description" className={`text-emerald-700 min-h-12 pt-4 px-3 rounded-t-lg`}>
-                <h6 className={`text-emerald-700 ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid ":isHorizPhone?" w-page-content ":" w-page-mobile-content px-4 "} open-sans-medium text-left `}>
-                    {book.description}
-                </h6>
-            </div>:null:null}
+
 
 if(!book){
     return<span className={`skeleton ${size}`}/>

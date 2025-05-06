@@ -163,23 +163,23 @@ const updateHomeCollection = createAsyncThunk("users/updatecollection",async (pa
 
 
 )
-const fetchHomeCollection = createAsyncThunk("users/fetchHomeCollection", async(params,thunkApi)=>{
-  try{
+// const fetchHomeCollection = createAsyncThunk("users/fetchHomeCollection", async(params,thunkApi)=>{
+//   try{
 
 
-  const {profile}= params
-  const snapshot = await getDoc(doc(db,"profile",profile.id,"collection","home"))
-  const pack = snapshot.data()
-  const {pages,books,libraries,profiles} = pack
-  const collection = new Collection(pages,books,libraries,profiles)
-  return {
-    collection:collection
-  }
-}catch(e) {
+//   const {profile}= params
+//   const snapshot = await getDoc(doc(db,"profile",profile.id,"collection","home"))
+//   const pack = snapshot.data()
+//   const {pages,books,libraries,profiles} = pack
+//   const collection = new Collection(pages,books,libraries,profiles)
+//   return {
+//     collection:collection
+//   }
+// }catch(e) {
 
-return {error: new Error(`Fetch home Error: ${e.message}`)}
-}
-})
+// return {error: new Error(`Fetch home Error: ${e.message}`)}
+// }
+// })
 const setSignedInTrue = createAction("users/setSignedInTrue", async(params)=>{
  return
 }
@@ -504,7 +504,7 @@ export {logIn,
         useReferral,
         uploadPicture,
         deleteUserAccounts,
-        fetchHomeCollection,
+        // fetchHomeCollection,
         updateHomeCollection,
         setSignedInTrue,
         setSignedInFalse,

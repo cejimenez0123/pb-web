@@ -10,7 +10,7 @@ import {    logIn ,
             fetchFollowProfilesForProfile,
          
             signOutAction,
-            fetchHomeCollection,
+            // fetchHomeCollection,
             updateHomeCollection,
             
             setSignedInTrue,
@@ -189,10 +189,6 @@ const userSlice = createSlice({
         
       
     }).addCase(signOutAction.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(fetchHomeCollection.fulfilled,(state,{payload})=>{
-        state.homeCollection = payload.collection
-    }).addCase(fetchHomeCollection.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(updateHomeCollection.fulfilled,(state,{payload})=>{
         state.homeCollection = payload.collection

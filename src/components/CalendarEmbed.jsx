@@ -122,10 +122,19 @@ function CalendarEmbed(){
             }}>
            <span className="flex flex-row justify-between text-left mont-medium text-emerald-800 ">
                 <span>
-             <a href={event.googleLink}><h5 className="text-ellipsis text-green-600  flex flex-col  
+             <a onClick={()=>{
+              window.location.href = event.googleLink
+              sendGAEvent("Click",`Event Click for name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
+             }}><h5 className="text-ellipsis text-green-600  flex flex-col  
             whitespace-nowrap no-underline max-w-[20em] overflow-hidden">
             + {isPhone?event.shortSummary:event.summary}</h5></a>
-                {event.area==areas[2]&&event.organizerLink?<a href={event.organizerLink}><span className="text-green-600 text-sm">{event.area}</span></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
+                {event.area==areas[2]&&event.organizerLink?<a 
+                onClick={()=>{
+                  sendGAEvent("Click",`Event Click for Location ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
+          
+                    window.location.href = event.organizerLink
+               
+                }}><span className="text-green-600 text-sm">{event.area}</span></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
              </span>
             <span className="flex overflow-hidden flex-col text-right ">
             <h5>{event.startTime??""}</h5>

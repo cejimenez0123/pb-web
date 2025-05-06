@@ -21,10 +21,9 @@ function DashboardContainer(props){
     },[])
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)
-    const homeCol = useSelector(state=>state.books.collectionInView)
     const stories = useSelector(state=>state.pages.pagesInView??[])
 
-    const recommendedStories = useSelector(state=>state.pages.recommendedStories)
+    const recommendedStories = useSelector(state=>state.pages.recommendedStories??[])
     const {currentProfile}=useContext(Context)
     const [hasMore,setHasMore] = useState(false)
     const getContent=()=>{

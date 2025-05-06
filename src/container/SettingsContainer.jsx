@@ -1,6 +1,6 @@
 import { useContext, useLayoutEffect,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { updateProfile,deleteUserAccounts, fetchHomeCollection, updateHomeCollection, deletePicture} from "../actions/UserActions";
+import { updateProfile,deleteUserAccounts, deletePicture} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
 import getDownloadPicture from "../domain/usecases/getDownloadPicture";
 import InfiniteScroll from "react-infinite-scroll-component";
