@@ -58,9 +58,7 @@ export default function PageViewContainer(props){
     useEffect(()=>{
         dispatch(getStory({id})).then(res=>{
             checkResult(res,payload=>{
-            
                 soCanUserSee()
-             
             },err=>{
                 setError(err.message)
             })
@@ -73,7 +71,7 @@ export default function PageViewContainer(props){
 
      const soCanUserSee=()=>{
         if(page){
-            if(!page.isPrivate){
+            if(!page.isPrivate||page.collections.find(col=>col.collection.isPrivate==false)){
                 setCanUserSee(true)
                 setPending(false)
                 return
@@ -94,7 +92,7 @@ export default function PageViewContainer(props){
         }
      }
 
-    const pageDiv = ()=>{
+    const PageDiv = ({page})=>{
        
      if(page){
 
@@ -136,7 +134,7 @@ useLayoutEffect(()=>{
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
     <>
-    {pageDiv()}</>:pending?<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex max-w-[96vw] max-w-[96vw] mx-auto md:w-page h-pag"><h1 className="mont-medium my-12 mx-auto">Took a Wrong turn</h1></div>}
+    <PageDiv page={page}/></>:pending?<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex max-w-[96vw] max-w-[96vw] mx-auto md:w-page h-pag"><h1 className="mont-medium my-12 mx-auto">Took a Wrong turn</h1></div>}
     
     <CommentThread page={page} comments={rootComments}/>
     </div> 

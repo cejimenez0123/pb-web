@@ -8,7 +8,7 @@ import {  ref,deleteObject   } from "firebase/storage";
 
 const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
   try{
-    console.log(id)
+
     let token = localStorage.getItem("token")
     if(token){
      let data = await storyRepo.getStoryProtected({id:id})
@@ -20,10 +20,8 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 
     }
   }catch(error){
-
-    let data = await storyRepo.getStoryPublic({id:params.id})
-  
-    return {story:data.story}
+console.log("bocx",error)
+    return {error}
   }
 })
 const deleteStory = createAsyncThunk("pages/deleteStory",async (params,thunkApi)=>{
