@@ -2,7 +2,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {  useState ,useLayoutEffect, useEffect, useContext} from "react";
 import "../../styles/PageView.css"
-// import { fetchCommentsOfPageProtected, fetchCommentsOfPagePublic } from "../../actions/PageActions.jsx";
 import PageViewItem from "../../components/page/PageViewItem";
 import { Helmet } from 'react-helmet-async';
 import { getStory } from "../../actions/StoryActions";
@@ -18,8 +17,8 @@ import checkResult from "../../core/checkResult.js";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
     const location = useLocation()
-    const pathParams = useParams()
-    const {id}=pathParams
+    const {id} = useParams()
+ 
     const page = useSelector(state=>state.pages.pageInView)
     useScrollTracking({name:page?JSON.stringify(page):id})
 
@@ -27,7 +26,6 @@ export default function PageViewContainer(props){
     const dispatch = useDispatch()
     const [pending,setPending]=useState(true)
     const [canUserSee,setCanUserSee]=useState(false)
-    const [canUserEdit,setCanUserEdit]=useState(false)
     const [comments,setComments]=useState([])
     const [rootComments,setRootComments]=useState([])
    
@@ -58,9 +56,9 @@ export default function PageViewContainer(props){
         }
      },[currentProfile,page])
     useEffect(()=>{
-        dispatch(getStory(pathParams)).then(res=>{
+        dispatch(getStory({id})).then(res=>{
             checkResult(res,payload=>{
-                const {page}=payload
+            
                 soCanUserSee()
              
             },err=>{
@@ -70,12 +68,6 @@ export default function PageViewContainer(props){
   
     },[id])
     
-
-    // useLayoutEffect(()=>{
-    //     if(story){
-        
-    //     }
-    //  },[story])
 
 
 
@@ -133,12 +125,12 @@ useLayoutEffect(()=>{
       <meta property="og:description" content={page.description.length>0?page.description:"Explore events, workshops, and writer meetups on Plumbum."}/>
       <meta name="twitter:image" content={Enviroment.logoChem} /></>:
       <>
-  <title>Plumbum Writers-Story:{id}</title>
+ 
   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
   <meta property="og:title" content="Plumbum Writers - Check this story out" />
   <meta property="og:description" content="Plumbum Writers the place for feedback and support." />
   <meta property="og:image" content="https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O" />
-  <meta property="og:url" content="https://plumbum.app/events" /></>
+  <meta property="og:url" content="https://plumbum.app/" /></>
 }  </Helmet>
 
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
