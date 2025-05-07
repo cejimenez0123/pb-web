@@ -159,10 +159,10 @@
 }
 @media (max-width: 800px) {
   #book-dashboard-item {
-    max-height: 26.5rem !important;
+    max-height: 25rem !important;
   }
   #dashboard-item{
-    max-height: 26.5rem !important;
+    max-height: 25rem !important;
   }
   
  .grid #dashboard-item iframe[title="Spotify Web Player"]{
