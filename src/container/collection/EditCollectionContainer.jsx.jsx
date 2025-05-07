@@ -300,9 +300,9 @@ const handleStoryOrderChange = (newOrder) => {
 
     if(tc){dispatch(deleteCollectionFromCollection({tcId:tc.id}))}
   }
-const deleteStory = (stc)=>{
+  const deleteStory = (stc)=>{
  
-        dispatch(deleteStoryFromCollection({stId:stc.id}))
+    dispatch(deleteStoryFromCollection({stId:stc.id}))
 }
 
     if(!colInView){

@@ -9,7 +9,7 @@ import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
 import bookmarkoutline from "../../images/bookmarkadd.svg"
 import ProfileCircle from '../profile/ProfileCircle'
-import {  addCollectionListToCollection, deleteStoryFromCollection } from '../../actions/CollectionActions'
+import {  addCollectionListToCollection, deleteCollectionFromCollection,  } from '../../actions/CollectionActions'
 import Context from '../../context'
 import { debounce } from 'lodash'
 import { useMediaQuery } from 'react-responsive'
@@ -17,18 +17,12 @@ import Carousel from './Carousel'
 import { useNavigate } from 'react-router-dom'
 import adjustScreenSize from '../../core/adjustScreenSize'
 function BookDashboardItem({book,isGrid}) {
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 768px)'
-      })
-      const isHorizPhone =  useMediaQuery({
-        query: '(min-width: 768px)'
-      })
+ 
     const dispatch = useDispatch()
-    const {setSuccess,setError,currentProfile}=useContext(Context)
+    const {setSuccess,setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
 
     const [expanded,setExpanded]=useState(false)
-
    const [likeFound,setLikeFound]=useState(null)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
@@ -38,20 +32,20 @@ function BookDashboardItem({book,isGrid}) {
     const soCanUserEdit=()=>{}
 
    
-const deleteStc=()=>{
+const deleteBtc=()=>{
 
-//         if(bookmarked){
-//             setLoading(true)
-//    dispatch( deleteStoryFromCollection({stId:bookmarked.id})).then((res)=>{
-//    checkResult(res,payload=>{
-//     setBookmarked(null)
-//     setLoading(false)
-//    },err=>{
-//     setError(err.message)
-//    }
-// )
-//    })
+        if(bookmarked){
+            console.log("masx",bookmarked)
+          dispatch(deleteCollectionFromCollection({tcId:bookmarked.id})).then(res=>checkResult(res,payload=>{
+    setBookmarked(null)
+
+   },err=>{
+    setError(err.message)
+   })
+)
 }
+}
+
 const handleApprovalClick = ()=>{
     if(currentProfile){
         if(likeFound ){
@@ -95,12 +89,13 @@ return <Button onClick={()=>{
    }
 }
 const checkFound=()=>{
-    console.log(currentProfile)
+    
     if(currentProfile && currentProfile.profileToCollections){
-   let archive = currentProfile.profileToCollections[0]
-   let home = currentProfile.profileToCollections[1]
-    if(archive&&book.parentCollections){
+   let archive = currentProfile.profileToCollections[0].collection
+   let home = currentProfile.profileToCollections[1].collection
 
+    if(book&&book.parentCollections){
+        console.log(book.parentCollections)
          let isfound = book.parentCollections.find(ptc=>ptc.parentCollectionId==home.id)
        
             setBookmarked(isfound)
@@ -108,6 +103,7 @@ const checkFound=()=>{
          let found = book.parentCollections.find(ptc=>ptc.parentCollectionId==archive.id)
 
             setIsArchived(found)
+            setBookmarked(found)
             }
  
     }}
@@ -115,7 +111,7 @@ const checkFound=()=>{
 
 useLayoutEffect(()=>{
     checkFound()
-},[currentProfile])
+},[book])
 const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
     <div id="book-description" className={`text-emerald-700 min-h-12 pt-4 px-3 rounded-t-lg`}>
         <h6 className={`text-emerald-700 ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid ":isHorizPhone?" w-page-content ":" w-page-mobile-content px-4 "} open-sans-medium text-left `}>
@@ -168,13 +164,19 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
         if(currentProfile){
         e.preventDefault()
         if(bookmarked){
-                deleteStc()
+                deleteBtc()
         }else{
-            if(currentProfile.profileToCollections[0].id){
-           dispatch(addCollectionListToCollection({id:currentProfile.profileToCollections[0].id,list:[book.id],profile:currentProfile})).then(res=>{
+         let archive =   currentProfile.profileToCollections.find(col=>col.collection.title.toLowerCase()=="archive").collection
+       
+         if(archive.id&&book.id){
+           
+           dispatch(addCollectionListToCollection({id:archive.id,list:[book.id],profile:currentProfile})).then(res=>{
             checkResult(res,payload=>{
-                    
-            },err=>{
+                    const {collection}=payload
+                    const marked = collection.parentCollections.find(col=>col.parentCollectionId==archive.id)
+                  console.log(marked)
+                    setBookmarked(marked)
+                },err=>{
 
             })
            })

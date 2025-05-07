@@ -28,9 +28,6 @@ import FeedbackDialog from "../../components/page/FeedbackDialog"
 
 
 function EditorContainer(props){
-       const isPhone =  useMediaQuery({
-        query: '(max-width: 768px)'
-      })
         const {currentProfile}=useContext(Context)
         const [feedbackDialog,setFeedbackDialog]=useState(false)
         const {setError,setSuccess}=useContext(Context)

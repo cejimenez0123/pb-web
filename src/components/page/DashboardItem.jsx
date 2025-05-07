@@ -1,3 +1,5 @@
+
+
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import "../../Dashboard.css"
 import { deletePageApproval,   setEditingPage,   setPageInView, setPagesInView, } from '../../actions/PageActions'
@@ -22,7 +24,7 @@ import ErrorBoundary from '../../ErrorBoundary'
 import { debounce, size } from 'lodash'
 import { initGA,sendGAEvent } from '../../core/ga4'
 import adjustScreenSize from '../../core/adjustScreenSize'
-function DashboardItem({page, book,isGrid}) {
+export default function DashboardItem({page, book,isGrid}) {
     const {isPhone,isHorizPhone}=useContext(Context)
     const size = adjustScreenSize(isGrid,true," overflow-hidden  "," overflow-hidden min-h-[17.6rem] rounded-lg max-h-[20rem] ","","","  ")
 
@@ -105,7 +107,7 @@ return !stories.find(story=>story && page &&story.id && page.id&& story.id==page
     },[currentProfile,page])
 const deleteStc=()=>{
 
-        if(bookmarked){
+        if(bookmarked&&bookmarked.id){
             setLoading(true)
    dispatch( deleteStoryFromCollection({stId:bookmarked.id})).then((res)=>{
    checkResult(res,payload=>{
@@ -198,7 +200,11 @@ return <Button onClick={()=>{
                 if(ptc&&ptc.collectionId&&page&&page.id){{
                     dispatch(addStoryListToCollection({id:ptc.collectionId,list:[page],profile:currentProfile})).then(res=>{
                         checkResult(res,payload=>{
-                            setBookmarked({collectionId:payload.id})
+                          const {collection}=payload
+                          let stc =collection.storyIdList.find(stc=>stc.storyId==page.id)
+                    
+                            
+                          setBookmarked(stc)
                             setSuccess("Added Successfully")
                             setLoading(false)
                         },err=>{
@@ -262,7 +268,7 @@ return <Button onClick={()=>{
           },10)
     const buttonRow = ( )=>{
         return isGrid?null:
-        <div className='  flex flex-row w-[96vw]  md:w-page rounded-b-lg  overflow-hidden justify-evenly   '>
+        <div className='  flex flex-row w-[96vw]  md:w-page rounded-b-lg  justify-evenly   '>
             
          <div className={`${likeFound?"bg-emerald-400":"bg-emerald-200"} text-center  grow w-1/3`}>
          <div
@@ -300,7 +306,7 @@ return <Button onClick={()=>{
      
          ">
 <h6 className=' text-[1.2rem]'>Share</h6></div>
-<ul tabIndex={0} className="dropdown-content  text-center    text-emerald-800  z-50 menu  rounded-box  w-60 p-1 shadow">
+<ul tabIndex={0} className="dropdown-content  text-center   bg-emerald-100 text-emerald-800  z-50 menu  rounded-box  w-60 p-1 shadow">
 
     <li 
 className=' text-emerald-700'
@@ -386,6 +392,3 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
      }
 
 }
-
-
-export default DashboardItem

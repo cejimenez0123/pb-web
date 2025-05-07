@@ -11,7 +11,7 @@ function LinkNode({ url,image,description,title,isGrid}) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
   const size = adjustScreenSize(isGrid,true,"","","","","")
-  let spotifySize = isGrid?isPhone?"45.vw":"31.5vw":isHorizPhone?"44.8em":"95vw"
+  let spotifySize = isGrid?isPhone?"46vw":"31.5vw":isHorizPhone?"44.8em":"95vw"
   let spotifyHeight = "16rem"
   useLayoutEffect(() => {
 
@@ -104,7 +104,7 @@ const fetchData = async (url) => {
 
       <div  className={size} 
             style={{ cursor: 'pointer' }}>
-        <Spotify width={spotifySize} style={{minHeight:spotifyHeight}} height={spotifyHeight} className="bg-emerald-100"
+        <Spotify width={"100%"} style={{minHeight:spotifyHeight}} height={spotifyHeight} className="bg-emerald-100"
          link={url}/>
       </div>)
   }
@@ -134,7 +134,7 @@ const fetchData = async (url) => {
 
       return (
         // <div className='spotify rounded-lg w-[96vw] md:w-page'>
-        <Spotify width={spotifySize} style={{minHeight:spotifyHeight}}  height={spotifyHeight} ink={url}/>
+        <Spotify width={"100%"} style={{minHeight:spotifyHeight}}  height={spotifyHeight} ink={url}/>
         // </div>
       )}else if(image){
         return(<div className={frame}>
@@ -157,7 +157,8 @@ const fetchData = async (url) => {
     <ErrorBoundary>
     <div className={`rounded-[2em] overflow-hidden my-4   w-[100%] shadow-md flex flex-row p-4 bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
-      <div className='min-w-[6.4em] max-w-[6.4em]'>{imageView()}</div>
+      {/* min-w-[6.4em] max-w-[6.4em] */}
+      <div className={`${size}`}>{imageView()}</div>
       <div className=' px-2 text-emerald-800 overflow-scroll text-left  open-sans-medium'>
       <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
    <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>

@@ -166,14 +166,14 @@ import Enviroment from "../core/Enviroment";
     }
     async deleteStoryToCollection({stId}){
 
-       let res=  await axios.delete(this.url+"/storyToCol/"+stId,
-            {headers:{
-                Authorization: "Bearer "+localStorage.getItem("token")
-            }}
-        )
-
-        return res.data
-    }
+        let res=  await axios.delete(this.url+"/storyToCol/"+stId,
+             {headers:{
+                 Authorization: "Bearer "+localStorage.getItem("token")
+             }}
+         )
+ 
+         return res.data
+     }
     async fetchSubCollectionsProtected({id}){
         const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:{
             Authorization:"Bearer "+localStorage.getItem("token")
