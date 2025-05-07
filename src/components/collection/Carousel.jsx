@@ -21,7 +21,7 @@ export default function Carousel({book,isGrid}){
               </h6>
     </div>:null }  
     let descSize = adjustScreenSize(isGrid,false," max-h-[4em] "," max-h-[4em] ","","","","  ")
-  let size = adjustScreenSize(isGrid,true,"","    "," "," py-2 rounded-lg "," ")
+  let size = adjustScreenSize(isGrid,true," h-[100%] ","   "," "," py-2  overflow-hidden rounded-lg ","")
     
      if(book){
       

@@ -14,7 +14,8 @@ export default function PageDataElement({page,isGrid,book=null}){
     const {isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
-    const size = adjustScreenSize(isGrid,true," overflow-hidden  "," h-[100%] overflow-hidden rounded-lg  "," max-h-[20em] "," py-2 rounded-lg ","  ")
+    const size = adjustScreenSize(isGrid,true," overflow-hidden  "," h-[100%]  rounded-lg  "," "," py-2 rounded-lg "," ")
+    const conSize = adjustScreenSize(isGrid,true," overflow-hidden ","h-[100%] overflow-hidden "," overflow-hidden ",""," ")
    
     useEffect(()=>{
         
@@ -48,7 +49,7 @@ switch(page.type){
                 }}
         
         className={`  ql-editor 
-     ${size}
+
         ${book?`mx-2`:""}  `}
    
    dangerouslySetInnerHTML={{__html:page.data}}/>
@@ -93,5 +94,5 @@ if(!page){
 ) 
 }
 
-return (<span className={size}><Element page={page}/></span>)
+return (<span className={conSize}><Element page={page}/></span>)
 }

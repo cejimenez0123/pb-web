@@ -95,7 +95,14 @@
 
  
 }
-
+.grid #dashboard-item iframe[title="Spotify Web Player"]{
+  width: 10rem !important;
+  border-radius:  8px !important;
+  overflow: hidden;
+}
+.dashboard-item{
+  max-height: 20em !important;
+}
 
 .content-item .btn-row{
   text-align: center;
@@ -147,35 +154,66 @@
 
 @media (max-width: 800px) {
 #dashboard-item .ql-editor{
-  padding: 0.8em!important;
-  max-height: 26.5rem !important;
+  padding: 1em!important;
+  height: 100% !important;
+  max-height: 40em !important;
   text-overflow: ellipsis !important;
   
 }
 #book-dashboard-item .ql-editor{
-  
+  max-height: 36em !important;
   text-overflow: ellipsis !important;;
 }
 }
+.full iframe[title="Spotify Web Player"]{
+  width: 47em;
+}
+.grid-full iframe[title="Spotify Web Player"]{
+  width: 30vw;
+}
+.full-mobile iframe[title="Spotify Web Player"]{
+  width: 95vw;
+}
+.grid-mobile iframe[title="Spotify Web Player"]{
+  width: 20vw !important;
+  /* height: 100%!important; */
+}
+
+
 @media (max-width: 800px) {
-  #book-dashboard-item {
+  .horiz #book-dashboard-item {
     max-height: 25rem !important;
   }
-  #dashboard-item{
+ .horiz #dashboard-item{
     max-height: 25rem !important;
   }
   
  .grid #dashboard-item iframe[title="Spotify Web Player"]{
-    width: 13em !important;
+    width:  44vw !important;
+    /* height: 100%!important; */
   }
-  .grid #book-dashboard-item iframe[title="Spotify Web Player"]{
-    width: 13em !important;
+  
+
+
+  .grid #book-dashboard-item iframe[title="Spotify Web Player"] {
+    width: 44vw !important;
+    /* height: 100%!important; */
   }
 }
-@media (min-width: 800px) {
+@media (min-width: 768px) {
+  .grid-item iframe{
+    max-width: 31vw !important;
+  }
   #book-dashboard-item .ql-editor{
     max-height: 40rem !important;
     text-overflow: ellipsis !important;;
+  }
+    #dashboard-item iframe[title="Spotify Web Player"]{
+    width: 44.8em !important;
+  }
+  #book-dashboard-item iframe[title="Spotify Web Player"]{
+    width:44.6em !important;
+    padding: "0.5em 0";
   }
   #dashboard-item .ql-editor{
     padding: 1rem!important;
@@ -183,25 +221,17 @@
     text-overflow: ellipsis !important;
     
   }
-  /* .grid-item #dashboard-item #page-data-text{
+  #book-dashboard-item .ql-editor{
     padding: 1rem!important;
-    max-height:  10rem !important;
+    max-height: 34.5rem !important;
     text-overflow: ellipsis !important;
-    overflow-y:hidden
     
-  } */
-  
-  /* #book-dashboard-item {
-    max-height: 38rem !important;
   }
-  #dashboard-item{
-    max-height: 38rem !important;
-  } */
+
+ 
 
 }
-.grid #book-dashboard-item .carousel {
-  /* max-height: 14rem !important; */
-}
+
 .grid #dashboard-item .ql-editor {
   /* max-height: 20rem !important; */
   border-radius:  0.5rem !important;

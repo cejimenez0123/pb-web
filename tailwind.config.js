@@ -19,7 +19,7 @@ export default {
         'page-mobile-content':"95vw",
       'info':"55rem",
       'grid':"31.6vw",
-      'grid-content':"31.5vw",
+      'grid-content':"31vw",
       'grid-mobile':"48.6vw",
       'grid-mobile-content':"45.8vw"
 

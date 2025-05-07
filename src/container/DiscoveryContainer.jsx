@@ -198,7 +198,7 @@ function DiscoveryContainer(props){
                                         my-4 l
                                         lg:mb-4'>Pages</h3>
                         
-                        <div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
+                       {isNotPhone? <div className='flex flex-row'><button onClick={()=>onClickForGrid(true)}
                                 className=' bg-transparent 
                                             ml-2 mr-0 px-1 border-none py-0'>
                                 <img src={grid}/>
@@ -206,11 +206,11 @@ function DiscoveryContainer(props){
                         <button onClick={()=>onClickForGrid(false)}
                                 className='bg-transparent border-none px-1 py-0'>
                                     <img src={stream}/>
-                        </button></div>
+                        </button></div>:null}
+
                         </span>
                      
                         </div>
-
 
                    {isGrid?<GridView items={viewItems}/>:<ListView items={viewItems}/>}
                   

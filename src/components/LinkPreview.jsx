@@ -1,3 +1,4 @@
+
 import { useState, useLayoutEffect,useEffect, useContext } from 'react';
 import Enviroment from '../core/Enviroment';
 import { Spotify } from 'react-spotify-embed';
@@ -11,10 +12,14 @@ function LinkPreview({ url,isGrid}) {
   const {isPhone,isHorizPhone}=useContext(Context)
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-  let size = adjustScreenSize(isGrid,true," bg-emerald-200 rounded-lg "," rounded-lg pt-4 overflow-hidden mx-auto "," rounded-lg "," rounded-lg "," h-[100%] ")
-  let content = adjustScreenSize(isGrid,true, " min-h-[37em] mb-2","","","","  ")
-  let spotifySize = isGrid?isPhone?"46vw":"31.5vw":isHorizPhone?"44.8em":"95vw"
-  let spotifyHeight = "16rem"
+ const size = adjustScreenSize(isGrid,true," bg-emerald-200 rounded-lg overflow-hidden"," rounded-lg pt-4 overflow-hidden mx-auto "," rounded-lg "," rounded-lg "," h-[100%] ")
+  let content = adjustScreenSize(isGrid,true," mobile "," mobile "," horiz "," phone","  ")
+  const spotifySize = isGrid?isPhone?"15rem":"20em":isHorizPhone?"44.8em":" 44em"
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
 
 
   useLayoutEffect(() => {
@@ -121,16 +126,14 @@ useLayoutEffect(()=>{
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-    
-    
-        <Spotify width={spotifySize}  className={""}  id="spotify-blink"
+        <Spotify id="spotify-blink"
          link={url}/>
    
     )
 
   }
   if (loading) {
-    return <Skeleton height={"20em"}width={"100%"}/>
+    return <Skeleton className={size}/>
   }
 
   if (!previewData) {
@@ -155,7 +158,7 @@ useLayoutEffect(()=>{
     }else{
        return (
   
-        <Spotify width={"100%"} className={`${content} bg-emerald-100`} id="spotify-block" link={url}/>
+        <Spotify id="spotify-block"  link={url}/>
       
       )
     }
