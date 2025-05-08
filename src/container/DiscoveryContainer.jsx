@@ -212,7 +212,7 @@ function DiscoveryContainer(props){
                      
                         </div>
 <span className='flex justify-center'>
-                   {isGrid?<GridView items={viewItems}/>:<ListView items={viewItems}/>}
+                   <ListView items={viewItems}/>
                    </span>           
             
                  

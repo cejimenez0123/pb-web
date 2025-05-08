@@ -7,17 +7,53 @@ import storyRepo from "../data/storyRepo";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Context from "../context";
 import isValidUrl from "../core/isValidUrl";
+import debounce from "../core/debounce"
 import { initGA,sendGAEvent } from "../core/ga4";
 function CalendarEmbed(){
+  const {isPhone}=useContext(Context)
     const {setError,currentProfile}=useContext(Context)
     const [selectedArea, setSelectedArea] = useState("");
-    useScrollTracking({name:"Calendar"})
+    useScrollTracking({name:"Calendar Embed"})
     const [list,setList]=useState([])
     const [events,setEvents]=useState(
   [])
-  const isPhone =  useMediaQuery({
-    query: '(max-width: 768px)'
-  })
+  const [hashtagSuggestions,setSuggestions]=useState(["poetry","experiment","free"])
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  function handleSearchInputChange(e) {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setShowSuggestions(true);
+  
+    // Filter suggestions
+    const filtered = hashtagSuggestions.filter(tag =>
+      tag.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredSuggestions(filtered);
+  
+    sendGAEvent("Search", "User Searched for Hashtags", value);
+  }
+  
+  
+  const [selectedHashtag, setSelectedHashtag] = useState("");
+  useEffect(() => {
+    let filtered = list;
+  
+    if (selectedArea) {
+      filtered = filtered.filter(event => 
+        event.area.trim().toLowerCase() === selectedArea.toLowerCase()
+      );
+    }
+  
+    if (selectedHashtag) {
+      filtered = filtered.filter(event => 
+        event.hashtags.includes(selectedHashtag)
+      );
+    }
+  
+    setEvents(filtered);
+  }, [selectedArea, selectedHashtag, list]);
   const areas = ["Downtown", "Uptown", "Virtual", "Queens"];
 
      
@@ -52,9 +88,10 @@ function CalendarEmbed(){
         
             let location = event.location? event.location.length > 27 ? event.location.slice(0, 27) + '...' : event.location:""
             let summary = event.summary? event.summary.length > 23 ? event.summary.slice(0, 23) + '...' : event.summary:""
-            let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",
+            let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
                 hashtags:[]}
-            console.log(JSON.stringify(obj))
+           
+            setSuggestions((prevState)=>[...new Set([...prevState,...obj.suggestions])])
             return {
             
               summary: event.summary,
@@ -87,13 +124,38 @@ function CalendarEmbed(){
    
         setEvents(filteredEvents)
       },[selectedArea])
+      useEffect(() => {
+        let filtered = list;
       
-
+        if (selectedArea.length > 0) {
+          filtered = filtered.filter(event =>
+            event.area.trim().toLowerCase() === selectedArea.toLowerCase()
+          );
+        }
+        
+        if (searchTerm.trim().length > 0) {
+          const lower = searchTerm.toLowerCase();
+          filtered = filtered.filter(event =>
+            event.hashtags.some(tag => tag.toLowerCase().includes(lower))||event.summary.toLowerCase().includes(lower)
+          );
+        }
+        debounce(handleSearchInputChange,5)
+        setEvents(filtered);
+      }, [selectedArea, searchTerm, list]);
+      
+      function handleSuggestionClick(suggestion) {
+        setSearchTerm(suggestion);
+        setShowSuggestions(false);
+      
+        sendGAEvent("Search", "User Clicked Suggested Hashtag", suggestion);
+      }
+      
       return (
         <div className="w-[100%]">
-        <div className="flex w-page mx-auto text-left flex-row">
+        <div className={`flex w-page mx-auto text-left ${isPhone?"flex-col":`flex-row`}`}>
+        <span className="flex flex-row"> 
             <h2 className="my-auto mont-medium mx-4 text-emerald-700">Filter by Area:</h2>
-             
+
         <select
           className="border w-fit  p-2 text-emerald-700 rounded-full bg-transparent px-2 text-l"
           value={selectedArea}
@@ -104,7 +166,37 @@ function CalendarEmbed(){
             <option key={area} value={area}>{area}</option>
           ))}
         </select>
-        </div>
+        </span> 
+        {/*  */}
+      <span className={`flex flex-row`}>
+          <h5 className="my-auto ml-4 mr-2 mont-medium text-emerald-800"> Search</h5>
+          <div className="relative w-[14em] ">
+  <input
+    type="text"
+    className="border p-2 rounded-full bg-transparent text-emerald-800 w-full"
+    value={searchTerm}
+    onChange={handleSearchInputChange}
+    onFocus={() => setShowSuggestions(true)}
+    placeholder="#writing, #workshop..."
+  />
+  
+  {showSuggestions && filteredSuggestions.length > 0 && (
+    <ul className="absolute z-10 mt-1 bg-white border border-emerald-300 rounded-md shadow-lg w-full max-h-[10em] overflow-auto">
+      {filteredSuggestions.map((suggestion, index) => (
+        <li
+          key={index}
+          className="px-4 py-2 hover:bg-emerald-100 cursor-pointer text-emerald-700"
+          onClick={() => handleSuggestionClick(suggestion)}
+        >
+          {suggestion}
+        </li>
+      ))}
+    </ul>
+  )}
+  </div>
+  </span>
+</div>
+  
           <InfiniteScroll 
           className="w-page-mobile shadow-sm md:w-page max-h-[30em] md:max-h-[40rem] mx-auto "
                 next={()=>{}}
@@ -124,7 +216,7 @@ function CalendarEmbed(){
                 <span>
              <a onClick={()=>{
               window.location.href = event.googleLink
-              sendGAEvent("Click",`Event Click for name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
+              sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
              }}><h5 className="text-ellipsis text-green-600  flex flex-col  
             whitespace-nowrap no-underline max-w-[20em] overflow-hidden">
             + {isPhone?event.shortSummary:event.summary}</h5></a>
@@ -187,7 +279,7 @@ function CalendarEmbed(){
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const hashtagRegex = /#(\w+)/g;
     const descriptionWithoutLinks = description.replace(urlRegex, '').trim();
-
+let suggestions = []
   const cleanDescription = descriptionWithoutLinks.replace(hashtagRegex, '').trim();
     // Step 2: Find hashtags
 
@@ -195,11 +287,13 @@ function CalendarEmbed(){
     let match;
     while ((match = hashtagRegex.exec(descriptionWithoutLinks)) !== null) {
       hashtags.push(`#${match[1]}`);
+        suggestions.push(match[1])
     }
   
     // Step 3: Return both
     return {
       cleanedDescription: cleanDescription,
+      suggestions:suggestions,
       hashtags: hashtags,
     };
   }

@@ -4,6 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
 import Context from "../../context";
+import adjustScreenSize from "../../core/adjustScreenSize";
 
 const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
   const { isPhone } = useContext(Context);
@@ -62,7 +63,22 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
 
     setPage((prevPage) => prevPage + 1);
   };
+  let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative  "," overflow-clip justify-between flex ","mt-2  mx-auto overflow-hidden"," mt-2 ","  ") 
 
+  if(filteredItems.length==0 && hasMore){
+    <InfiniteScroll
+
+    className={`mx-auto ${isPhone ? " 97vw " : " 47em "}`}
+    dataLength={3}
+    next={loadMore}
+    hasMore={hasMore}
+    loader={<h4 className="text-center my-4">Loading...</h4>}
+    scrollThreshold={0.8}>
+        {[1,2,3].map(skeleton=>{
+          return (<div  className={"skeleton "+sizeOuter}/>)
+        })}
+    </InfiniteScroll>
+  }
   return (
     <InfiniteScroll
       id={"list-view"}

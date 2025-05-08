@@ -98,15 +98,15 @@ useLayoutEffect(()=>{
             <div id="dashboard" >
                 <div className='py-8'>
                
-                    <div className='w-[96vw] md:mt-8 mx-auto flex flex-col md:w-page'>
+                    <div className='w-[98vw] md:mt-8 mx-auto flex flex-col md:w-page'>
 
                          
 <div role="tablist" className="tabs   grid ">
 
 <input type="radio" name="my_tabs_2" role="tab"   defaultChecked  className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3    text-md md:text-xl" aria-label="Recommendations" />
-<div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto  w-[96vw] md:w-page  ">
+<div role="tabpanel" className="tab-content  pt-1 lg:py-4 rounded-lg md:mx-auto   md:w-page  ">
 
-                    {/* <PageList items={recommendedStories} hasMore={hasMore} getMore={getContent}/> */}
+                  
           <ListView items={recommendedStories} hasMore={hasMore} getMore={getContent}/>
                 </div>
                 <input
