@@ -66,7 +66,7 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
   return (
     <InfiniteScroll
       id={"list-view"}
-      className={`mx-auto ${isPhone ? " w-page-mobile " : " w-page "}`}
+      className={`mx-auto ${isPhone ? " 97vw " : " 47em "}`}
       dataLength={filteredItems.length}
       next={loadMore}
       hasMore={hasMore}

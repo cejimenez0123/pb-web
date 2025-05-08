@@ -211,9 +211,9 @@ function DiscoveryContainer(props){
                         </span>
                      
                         </div>
-
+<span className='flex justify-center'>
                    {isGrid?<GridView items={viewItems}/>:<ListView items={viewItems}/>}
-                  
+                   </span>           
             
                  
                     <div className=' lg:flex-1  lg:mx-4'>

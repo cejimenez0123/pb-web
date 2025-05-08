@@ -49,7 +49,7 @@ switch(page.type){
                 }}
         
         className={`  ql-editor 
-
+rounded-lg
         ${book?`mx-2`:""}  `}
    
    dangerouslySetInnerHTML={{__html:page.data}}/>
@@ -59,7 +59,7 @@ switch(page.type){
   
     return(image?
     <img        id="page-data-pic"
-    className={`${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isHorizPhone?"w-page-content":"w-page-mobile-content "} rounded-lg overflow-clip`}
+    className={` rounded-lg ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isHorizPhone?"w-page-content":"w-page-mobile-content "} rounded-lg overflow-clip`}
     onClick={()=>{
    
    if(location.pathname!=Paths.page.createRoute(page.id)){
@@ -77,6 +77,7 @@ case PageType.link:{
     
         <LinkPreview
         id="page-data-link"
+    
             isGrid={isGrid}
             url={page.data}
         />
@@ -94,5 +95,5 @@ if(!page){
 ) 
 }
 
-return (<span className={conSize}><Element page={page}/></span>)
+return (<span className={""+conSize}><Element page={page}/></span>)
 }

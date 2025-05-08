@@ -15,7 +15,7 @@ export default {
       '128': '48rem',
       'page':"45em",
         'page-content':"44.8em",
-        'page-mobile':"97.6vw",
+        'page-mobile':"97vw",
         'page-mobile-content':"95vw",
       'info':"55rem",
       'grid':"31.6vw",

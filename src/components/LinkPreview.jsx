@@ -152,8 +152,8 @@ useLayoutEffect(()=>{
   const imageView = ()=>{
   
     if(previewData.title!=="Spotify"){
-    return previewData.image && <a href={`${url}`} className={size}><img  
- 
+    return previewData.image && <a href={`${url}`} className={size+""}><img  
+ className=' rounded-t-lg'
           src={previewData.image}  alt={previewData.title} /></a>
     }else{
        return (
@@ -192,7 +192,7 @@ useLayoutEffect(()=>{
     
     onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
-      <div className='text-left open-sans-medium'>
+      <div className='text-left rounded-b-lg overflow-clip open-sans-medium'>
    {previewDescription()}
       {isGrid?null:previewTitle()}
       </div>
