@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useLayoutEffect,useEffect } from "react";
 import useScrollTracking from "../core/useScrollTracking";
 import { useMediaQuery } from "react-responsive";
@@ -21,19 +21,31 @@ function CalendarEmbed(){
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef(null)
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    }
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   function handleSearchInputChange(e) {
     const value = e.target.value;
     setSearchTerm(value);
-    setShowSuggestions(true);
-  
-    // Filter suggestions
     const filtered = hashtagSuggestions.filter(tag =>
       tag.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredSuggestions(filtered);
-  
-    sendGAEvent("Search", "User Searched for Hashtags", value);
+    setShowSuggestions(true);
+  sendGAEvent("Search", "User Searched for Hashtags", searchTerm);
+
   }
+
   
   
   const [selectedHashtag, setSelectedHashtag] = useState("");
@@ -170,7 +182,7 @@ function CalendarEmbed(){
         {/*  */}
       <span className={`flex flex-row`}>
           <h5 className="my-auto ml-4 mr-2 mont-medium text-emerald-800"> Search</h5>
-          <div className="relative w-[14em] ">
+          <div ref={searchRef} className="relative w-[14em] ">
   <input
     type="text"
     className="border p-2 rounded-full bg-transparent text-emerald-800 w-full"

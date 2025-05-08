@@ -17,13 +17,14 @@ import NewsletterContainer from "./auth/NewsletterContainer";
 import ApplyContainer from "./auth/ApplyContainer";
 import "../App.css"
 import ScrollDownButton from "../components/ScrollDownButton";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Collapsible from "../components/Collapsible";
 import CalendarEmbed from "../components/CalendarEmbed";
 export default function CalendarContainer(){
   const location = useLocation()
   const {seo,setSeo}=useContext(Context)
+  const navigate = useNavigate()
   useLayoutEffect(()=>{
     let soo = seo
     soo.title = "Plumbum NYC CALENDAR"
@@ -63,6 +64,7 @@ export default function CalendarContainer(){
         
         </Collapsible>
       </div>
+      <h1 className="btn mont-medium border  border-emerald-600 bg-emerald-600 hover:bg-green-500 hover:border-blue-600 text-2xl py-2 px-8 text-white rounded-full" onClick={()=>navigate(Paths.feedback())}>Submit an Event</h1>
       <ScrollDownButton/>
     </div>
   );

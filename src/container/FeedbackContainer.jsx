@@ -14,8 +14,7 @@ export default function FeedbackContainer(props){
     const [open,setOpen]=useState(false)
     const handleFeedback=debounce((e)=>{
         e.preventDefault()
-        console.log(JSON.stringify({preferredName,email,subject,purpose,message}))
-        try{
+          try{
         authRepo.feedback({preferredName,email,subject,purpose,message}).then(data=>{
                 
                setOpen(data.message && data.message=="Success")
@@ -46,6 +45,7 @@ className="w-[80%] bg-transparent rounded-full text-xl select text-emerald-800 m
     <option value={"bug"}>Issue/Bug</option>
     <option value={"request"}>Feature Request</option>
     <option value={"encouragement"}>Encouragement</option>
+    <option value={"event"}>Collaboration/Media</option>
     <option value={"collab/media"}>Collaboration/Media</option>
 </select></label>
 <label 
