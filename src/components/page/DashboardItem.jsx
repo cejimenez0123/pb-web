@@ -104,7 +104,7 @@ return !stories.find(story=>story && page &&story.id && page.id&& story.id==page
                
                
         }          
-    },[currentProfile,page])
+    },[currentProfile,page,likeFound])
 const deleteStc=()=>{
 
         if(bookmarked&&bookmarked.id){
@@ -149,7 +149,7 @@ const handleApprovalClick = ()=>{
     page?sendGAEvent(`Click to Yea ${JSON.stringify({id:page.id,title:page.title})}`,`Click Yea`,"Review",0,false):null
     if(currentProfile){
 
-        if(likeFound ){
+        if(likeFound && likeFound.id){
          dispatch(deletePageApproval({id:likeFound.id})).then(res=>{
             checkResult(res,payload=>{
                 setLikeFound(null)
@@ -164,6 +164,7 @@ const handleApprovalClick = ()=>{
         const params = {story:page,
             profile:currentProfile,
                         }
+                        setLikeFound(true)
         dispatch(createPageApproval(params))
         }else{
             setError("Sign Up so you can show support")
@@ -268,7 +269,7 @@ return <Button onClick={()=>{
           },10)
     const buttonRow = ( )=>{
         return isGrid?null:
-        <div className='  flex flex-row w-[96vw]  md:w-page rounded-b-lg  justify-evenly   '>
+        <div className='  flex flex-row w-full rounded-b-lg  justify-evenly   '>
             
          <div className={`${likeFound?"bg-emerald-400":"bg-emerald-200"} text-center  grow w-1/3`}>
          <div
@@ -365,7 +366,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
     
                 <div 
                 id="dashboard-item"
-                className={'mt-3 rounded-lg bg-emerald-100  shadow-md px-1 flex flex-col  '+sizeOuter}
+                className={'mt-3 rounded-lg bg-emerald-100 shadow-md flex flex-col  '+sizeOuter}
                 >
               {description()}
               {header()} 
@@ -374,7 +375,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
   
                 {isGrid? 
          
-                <div id="bottom-dash" className={`flex flex-row  justify-between px-1 rounded-b-lg bottom-0`}>
+                <div id="bottom-dash" className={`flex flex-row  justify-between  rounded-b-lg bottom-0`}>
                 {isGrid?null:header()}
             
                 {bookmarkBtn()}

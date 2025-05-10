@@ -95,5 +95,5 @@ if(!page){
 ) 
 }
 
-return (<span className={""+conSize}><Element page={page}/></span>)
+return (<span className={"pb-1  "+conSize}><Element page={page}/></span>)
 }
