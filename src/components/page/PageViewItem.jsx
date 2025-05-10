@@ -60,7 +60,7 @@ if(page){
 
         return(
         
-        <div  ref={ref} className="page shadow-md rounded-lg overflow-clip">
+        <div id="page-view-item" ref={ref} className="page shadow-md rounded-lg overflow-clip">
       <div>
         <div>
         

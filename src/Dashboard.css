@@ -25,8 +25,6 @@
   width: 100%;
   text-align: center;
   background-color: black;
-
- 
 }
 .content-item .dashboard-header{
   background-color: #F6F6F3;
@@ -80,8 +78,11 @@
 .content-item .titles{
   overflow: scroll;
   width: 70%;
-}}
-
+}
+#page-view-item iframe[title="Spotify Web Player"]{
+  max-width: 44em !important;
+}
+}
 
 @media (max-width: 800px) {
   /* On screens with a width of 768px or more (desktop), set the width to 50% */
@@ -168,6 +169,7 @@
 .full iframe[title="Spotify Web Player"]{
   width: 47em;
 }
+
 .grid-full iframe[title="Spotify Web Player"]{
   width: 30vw;
 }
