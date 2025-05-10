@@ -42,7 +42,7 @@ function CalendarEmbed(){
     );
     setFilteredSuggestions(filtered);
     setShowSuggestions(true);
-  sendGAEvent("Search", "User Searched for Hashtags", searchTerm);
+  sendGAEvent("Search", "User Searched for Hashtags "+searchTerm, searchTerm);
 
   }
 

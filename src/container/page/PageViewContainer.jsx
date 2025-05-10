@@ -71,7 +71,7 @@ export default function PageViewContainer(props){
 
      const soCanUserSee=()=>{
         if(page){
-            if(!page.isPrivate||page.collections.find(col=>col.collection.isPrivate==false)){
+            if(page.authorId == currentProfile.id||!page.isPrivate||(page.collections && page.collections.find(col=>col.collection.isPrivate==false))){
                 setCanUserSee(true)
                 setPending(false)
                 return

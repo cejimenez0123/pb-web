@@ -184,22 +184,11 @@ const userTestimonial=()=>{
         <h6 className="lora-medium text-[1rem] lg:text-[1.2rem]"><em>"Plumbum.app Workshops have been impactful in helping me to build community and network with poets from across the New York City and the Tri-State area. I walk away from these workshops with quality feedback and so many new ways to think about my work. Plumbum’s goal of supporting writers with their craft is clear and quite effective with the supportive environment to match."</em></h6>
         — [Rob P. ]</div></div>)
 }
-// "Go participate. Go see every movie, the bad ones, the good ones. Watch movies with the sound off, then you can see how a movie is made. If you ever think a movie you're making is too long, it is. If you ever wonder, "Should I cut this?" the answer is "yes." And somebody has to like [the movie] beside the person you're fucking and your mother."
 
 
 
     return(<div id="about" className="px-8 text-emerald-700 sm:text-white pt-8 py-24">
-{/* <head>
-  <meta charset="UTF-8" />
-  <Helmet>
-  <title>Plumbum (About) - Your Writing, Your Community</title>
-  <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
-  <meta property="og:title" content="Plumbum Events - Connect and Grow" />
-  <meta property="og:description" content="Explore events, workshops, and writer meetups on Plumbum." />
-  <meta property="og:image" content={"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O"} />
-  <meta property="og:url" content="https://plumbum.app/" />
-  </Helmet>
-</head> */}
+
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>

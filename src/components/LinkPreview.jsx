@@ -126,8 +126,11 @@ useLayoutEffect(()=>{
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
+      
         <Spotify id="spotify-blink"
+        className='mx-auto pt-2 '
          link={url}/>
+     
    
     )
 

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
 import {Dialog,DialogContent,DialogActions,Button} from "@mui/material"
@@ -8,6 +8,7 @@ import Paths from "../../core/paths"
 import Context from "../../context"
 function ApplyContainer(props){
   const location = useLocation()
+  const {seo,setSeo}=useContext(Context)
   const isNotPhone = useMediaQuery({
     query: '(min-width: 600px)'
   })
@@ -47,7 +48,11 @@ function ApplyContainer(props){
     const [user,setUser]=useState(null)
     const {error,setError}=useContext(Context)
     const [betaTest,setBetaTester]=useState([])
-
+      useEffect(()=>{
+          let soo = seo
+          soo.title= "Plumbum (Apply)"
+          setSeo(soo.title)
+      },[])
     
 
     const handleGenreSelection = (genre) => {
@@ -121,6 +126,7 @@ setTimeout(()=>{
 
 
 },4001)
+console.log(user)
 return (
   <>
     <div className="sm:pb-8">
@@ -334,7 +340,7 @@ return (
       <DialogContent>
    
 
-  {user && !user.message?
+  {user?
         <div id="welcome"className=" p-8 lora-medium leading-[1.5em] overflow-scroll">
            <p>Thank You {user.preferredName}! You’re In—Welcome to the Journey! </p>
 <br/>
