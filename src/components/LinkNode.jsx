@@ -99,15 +99,15 @@ const fetchData = async (url) => {
     const match = url.match(videoIdRegex);
     return match ? match[1] : '';
   };
-  if(url!=null && url.includes('https://open.spotify.com/')){
-    return(
+  // if(url!=null && url.includes('https://open.spotify.com/')){
+  //   return(
 
-      <div  className={size} 
-            style={{ cursor: 'pointer' }}>
-        <Spotify width={"100%"} style={{minHeight:spotifyHeight}} height={spotifyHeight} className="bg-emerald-100"
-         link={url}/>
-      </div>)
-  }
+  //     <div  className={size} 
+  //           style={{ cursor: 'pointer' }}>
+  //       <Spotify width={"100%"} style={{minHeight:spotifyHeight}} height={spotifyHeight} className="bg-emerald-100"
+  //        link={url}/>
+  //     </div>)
+  // }
   if (loading) {
     return <div className='skeleton min-h-[8em] w-[96vw] md:min-w-[30em] md:w-[100%] my-8 bg-emerald-50 h-[10em] md:h-[10em] rounded-full'/>
   }
@@ -121,7 +121,7 @@ const fetchData = async (url) => {
   if (previewData && previewData.videoId) {
     return (
     
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className="w-[96vw] md:w-page 
+        <img onClick={handleClick} style={{ cursor: 'pointer' }} className=" md:w-[20em]
        "src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
@@ -158,7 +158,7 @@ const fetchData = async (url) => {
     <div className={`rounded-[2em] overflow-hidden my-4   w-[100%] shadow-md flex flex-row p-4 bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
       {/* min-w-[6.4em] max-w-[6.4em] */}
-      <div className={`${size}`}>{imageView()}</div>
+      <div className={`md:max-w-[30em]`}>{imageView()}</div>
       <div className=' px-2 text-emerald-800 overflow-scroll text-left  open-sans-medium'>
       <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
    <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>

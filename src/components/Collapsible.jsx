@@ -9,7 +9,7 @@ export default function Collapsible({children,buttonText,sendGA=sendGAEvent}){
     },[isOpen])
     const handleOpen=()=>{
     initGA()
-      sendGA(`${isOpen?"Closing":"Opening"} Collapsible ${buttonText}`,"View Collapse",buttonText,0,false) 
+      sendGA("View Collapse",`${isOpen?"Closing":"Opening"} Collapsible ${buttonText}`,buttonText,0,false) 
   
       setIsOpen(!isOpen)
         }

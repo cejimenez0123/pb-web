@@ -15,16 +15,18 @@ import { initGA, sendGAEvent } from '../core/ga4.js'
 import ListView from '../components/page/ListView.jsx'
 function DashboardContainer(props){
     const location = useLocation()
+    const {currentProfile,setSeo}=useContext(Context)
     useLayoutEffect(()=>{
         initGA()
-        
+        setSeo({title:"Plumbum (Dashboard) - Your Writing, Your Community", description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
+
     },[])
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)
     const stories = useSelector(state=>state.pages.pagesInView??[])
 
     const recommendedStories = useSelector(state=>state.pages.recommendedStories??[])
-    const {currentProfile}=useContext(Context)
+
     const [hasMore,setHasMore] = useState(false)
     const getContent=()=>{
 

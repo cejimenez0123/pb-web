@@ -1,41 +1,45 @@
 
-import { useLayoutEffect } from "react";
+import { useContext, useLayoutEffect } from "react";
 import LinkNode from "../components/LinkNode";
 import Paths from "../core/paths";
 import logo from "../images/icon.ico"
 import events from "../images/icons/event.svg"
-import workshop from "../images/writerswork.png"
+import june9 from "../images/events/writerswork.png"
+import may31 from "../images/events/may31.png"
 import { initGA, sendGAEvent } from "../core/ga4";
-import philosophy from "../images/philosophy.png"
+import Context from "../context";
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
 }
 export default function LinksContainer(props){
+     const {seo,setSeo}=useContext(Context)
      useLayoutEffect(()=>{
           initGA()
+
+          setSeo({title:"Plumbum (Links) - Your Writing, Your Community", description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
+
          },[])
     
 
 
-    return(<div className="flex py-8">
-        <div className="card  mx-auto">
+    return(<div className="flex flex-col py-8">
+     
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
-            <ul className="md:mx-auto mx-4">
+            <ul className="md:mx-auto w-page-mobile-content md:w-page-content  mx-4">
             <li>
 
     <LinkNode url={"https://partiful.com/e/AS9eMLY3etZYsnlVxAsY"}
-    image={workshop}
+    image={may31}
          title={"Writers Workshop Sat. May 31"}
          description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
          </li>
-       <li>
-
-<LinkNode url={"https://partiful.com/e/E9TIyNUzOpNzwl0G0hYO"}
-image={philosophy}
-     title={"The Bronx Philosophy Circle: May 10th"}
-     description={"Public Philosophy for community building and well being."}/>
-     </li> 
+         <li>
+         <LinkNode url={"https://partiful.com/e/FYxUn8VtOO4ZooKi4ayI"}
+    image={june9}
+         title={"Writers Workshop Mon. June 9th"}
+         description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
+         </li>
            <li>
 
 
@@ -106,6 +110,6 @@ image={"https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229b
                
        
             </ul>
-        </div>
+    
     </div>)
 }

@@ -14,6 +14,7 @@ import Enviroment from "../../core/Enviroment.js";
 import { initGA,sendGAEvent } from "../../core/ga4.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
+import Paths from "../../core/paths.js";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
     const location = useLocation()
@@ -125,10 +126,10 @@ useLayoutEffect(()=>{
       <>
  
   <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
-  <meta property="og:title" content="Plumbum Writers - Check this story out" />
-  <meta property="og:description" content="Plumbum Writers the place for feedback and support." />
+  <meta property="og:title" content={`A Plumbum Writers (Story:${id}) - Check this story out `} />
+  <meta property="og:description" content={`Plumbum Writers the place for feedback and support`} />
   <meta property="og:image" content="https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O" />
-  <meta property="og:url" content="https://plumbum.app/" /></>
+  <meta property="og:url" content={`https://plumbum.app/${Paths.page.createRoute(id)}`} /></>
 }  </Helmet>
 
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     

@@ -104,11 +104,7 @@ setHasMore(false)
 }}
 useLayoutEffect(()=>{
     if(collection){
-        let soo = seo
-        soo.title = collection.title
-        soo.description = collection.description
-        
-        setSeo(soo)
+        setSeo({title:`A Plumbum (Collection) - ${collection.title}`, description:collection.description??"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
     }
    
 },[collection])
@@ -658,7 +654,7 @@ const bookList=()=>{
     </div>
     </div>)
 }
-let header=()=>collection?<Helmet><title>{"A Plumbum Collection+ "+collection.title}</title>
+let header=()=>collection?<Helmet><title>{"A Plumbum Collection:"+collection.title+"from "+collection.profile.username}</title>
 <meta property="og:image" content={Enviroment.logoChem} />
 <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
 <meta property="og:description" content={collection.purpose.length>0?collection.purpose:"Explore events, workshops, and writer meetups on Plumbum."}/>

@@ -20,11 +20,10 @@ import Context from '../context.jsx'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Paths from '../core/paths.js'
 import { Helmet } from 'react-helmet'
-import GridView from '../components/page/GridView.jsx'
 import Enviroment from '../core/Enviroment.js'
 import useScrollTracking from '../core/useScrollTracking.jsx'
 function DiscoveryContainer(props){
-    const {currentProfile,setSeo}=useContext(Context)
+    const {currentProfile,setSeo,seo}=useContext(Context)
     useLayoutEffect(()=>{
         initGA()
      
@@ -79,6 +78,8 @@ function DiscoveryContainer(props){
         dispatch(setPagesInView({pages:[]}))
         fetchContentItems()
         fetchLibraries()
+        setSeo({title:"Plumbum (Discovery) - Read Fresh Writing", description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
+
     },[currentProfile,location.pathname])
 
     const libraryForums = ()=>{
@@ -167,8 +168,8 @@ function DiscoveryContainer(props){
         return(
             <ErrorBoundary>
                 <Helmet>   
-      <title>{"Plumbum Writers"}</title>
-       <meta property="og:image" content={Enviroment.logoChem} />
+      {/* <title>{seo?seo.title:"Plumbum Writers"}</title>
+       <meta property="og:image" content={Enviroment.logoChem} /> */}
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
       <meta property="og:description" content="Explore events, workshop projects together, and join other writers." />
  

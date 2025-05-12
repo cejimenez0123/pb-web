@@ -19,7 +19,7 @@ const WorkshopContainer = (props) => {
   const navigate = useNavigate()
   const page = useSelector(state=>state.pages.pageInView)
   const [loading,setLoading]=useState(false)
-  const {error,setError,setSuccess}=useContext(Context)
+  const {error,setError,setSuccess,setSeo}=useContext(Context)
 
   const [radius,setRadius]=useState(50)
   const [location,setLocation]=useState(null)
@@ -74,7 +74,8 @@ setTimeout(()=>{
     if(pageId){
       dispatch(getStory({id:pageId}))
     }
-  
+      setSeo({title:"Plumbum (Workshop) - Your Writing, Your Community", description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
+
   },[pathParams.pageId])
 
   useEffect(()=>{

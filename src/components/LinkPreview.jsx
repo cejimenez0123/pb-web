@@ -112,7 +112,7 @@ useLayoutEffect(()=>{
   initGA()
 })
   const handleClick = () => {
-    sendGAEvent("Click",`Navigate to ${url}`)
+    sendGAEvent("Click Link Preview",`Navigate to ${previewData?previewData.title:""}:${url}`)
     window.open(url, '_blank');
   };
   const isYouTubeURL = (url) => {

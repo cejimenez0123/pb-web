@@ -1,11 +1,8 @@
 
 
 import { useEffect, useState } from "react";
-import { debounce } from "lodash";
-import validateEmail from "../core/validateEmail";
-import authRepo from "../data/authRepo";
+
 import { initGA,sendGAEvent } from "../core/ga4";
-import { Dialog,DialogTitle,DialogContent,DialogActions,Button } from "@mui/material";
 import Enviroment from "../core/Enviroment";
 import Context from "../context";
 import { useContext } from "react";
@@ -26,12 +23,11 @@ export default function CalendarContainer(){
   const {seo,setSeo}=useContext(Context)
   const navigate = useNavigate()
   useLayoutEffect(()=>{
-    let soo = seo
-    soo.title = "Plumbum NYC CALENDAR"
-    soo.url = Enviroment.domain+location.pathname
-    soo.description = "Explore events, workshop together, and join other writers."
-    soo.image = Enviroment.logoChem
-    setSeo(soo)
+
+    setSeo({title:"Plumbum (NYC CALENDAR) - Your Writing, Your Community",url:Enviroment.domain+location.pathname, description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
+
+  
+  
   },[])
   useEffect(()=>{
     initGA()
