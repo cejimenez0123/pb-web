@@ -50,13 +50,20 @@ export default function PageViewContainer(props){
             }}
     },[])
     useEffect(()=>{ 
-        if(page){  
+        if(page && page.comments){  
         soCanUserSee()
         setComments(!!page?page.comments:[])
         setRootComments(!!page?page.comments.filter(com=>com.parentId==null):[])
+        }else{
+            fetchStory()
         }
      },[currentProfile,page])
     useEffect(()=>{
+    fetchStory()
+  
+    },[id])
+    
+    const fetchStory = ()=>{
         dispatch(getStory({id})).then(res=>{
             checkResult(res,payload=>{
                 soCanUserSee()
@@ -64,10 +71,7 @@ export default function PageViewContainer(props){
                 setError(err.message)
             })
         })
-  
-    },[id])
-    
-
+    }
 
 
      const soCanUserSee=()=>{
