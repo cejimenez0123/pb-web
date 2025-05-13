@@ -194,7 +194,9 @@ function CalendarEmbed(){
   
   {showSuggestions && filteredSuggestions.length > 0 && (
     <ul className="absolute z-10 mt-1 bg-white border border-emerald-300 rounded-md shadow-lg w-full max-h-[10em] overflow-auto">
-      {filteredSuggestions.map((suggestion, index) => (
+      {filteredSuggestions.map((suggestion, index) =>{
+ 
+        return (
         <li
           key={index}
           className="px-4 py-2 hover:bg-emerald-100 cursor-pointer text-emerald-700"
@@ -202,7 +204,7 @@ function CalendarEmbed(){
         >
           {suggestion}
         </li>
-      ))}
+      )})}
     </ul>
   )}
   </div>
@@ -216,9 +218,9 @@ function CalendarEmbed(){
                 loader={<p>Loading...</p>}
           dataLength={events.length}>
           {events.map((event,i)=>{
-
+        let eId= event.googleLink.split("?eid=")[0]
             return(
-            <div key={i} 
+            <div key={eId} 
                 className={`flex flex-col border-emerald-600  px-6 px-4 rounded-full  border my-1 shadow-md   py-4 mx-auto `}
                 onTouchStart={()=>{
             
@@ -227,9 +229,10 @@ function CalendarEmbed(){
            <span className="flex flex-row justify-between text-left mont-medium text-emerald-800 ">
                 <span>
              <a onClick={()=>{
-              window.location.href = event.googleLink
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
-             }}><h5 className="text-ellipsis text-green-600  flex flex-col  
+         
+              window.location.href = event.googleLink
+                  }}><h5 className="text-ellipsis text-green-600  flex flex-col  
             whitespace-nowrap no-underline max-w-[20em] overflow-hidden">
             + {isPhone?event.shortSummary:event.summary}</h5></a>
                 {event.area==areas[2]&&event.organizerLink?<a 

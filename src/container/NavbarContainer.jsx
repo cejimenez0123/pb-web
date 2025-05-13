@@ -31,7 +31,8 @@ const PageName = {
   login:"Log In",
   search:"Search",
   workshop:"Workshop",
-  apply:"Join Now"
+  apply:"Join Now",
+  feedback:"Feedback"
 }
 const pages = [ 
                 PageName.home,
@@ -41,13 +42,12 @@ const pages = [
                 PageName.search,
                 PageName.create, 
                 PageName.login,
-                PageName.apply
-               
+                PageName.apply,
+                PageName.feedback
                 ]
 function NavbarContainer(props){
-  const isPhone =  useMediaQuery({
-    query: '(max-width: 600px)'
-  })
+  
+  const {isPhone}=useContext(Context)
   useLayoutEffect(()=>{
     initGA()
   },[])
@@ -90,6 +90,8 @@ function NavbarContainer(props){
         navigate(Paths.home())
       }else if(page==PageName.apply){
         navigate(Paths.apply())
+      }else if(page==PageName.feedback){
+        navigate(Paths.feedback())
       }
 
     }  

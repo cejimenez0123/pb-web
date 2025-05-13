@@ -9,7 +9,7 @@ import axios from "axios";
 import Enviroment from "../core/Enviroment";
 
 export default function EmailPreferences() {
-  const {setSuccess,setError}=useContext(Context)
+  const {setSuccess,setError,setSeo}=useContext(Context)
   const selectRef = useRef()
   const navigate = useNavigate()
   const dispatch = useDispatch()
