@@ -64,24 +64,7 @@ function EditorContainer(props){
         })
         
   
-      const handleUpdate=debounce((params)=>{
-        setIsSaved(false)
-        if(params.data.length>0){ 
-       dispatch(updateStory(params)).then(res=>{
-          checkResult(res,payload=>{
-              
-            if(payload.story){
-            
-    setIsSaved(true)
-    return true 
-            }
-        
-          },err=>{
-            setError(err.message)
-            return false
-          })}
-        
-      )}},20)
+
       useEffect(()=>{
         if(!fetchedPage){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
@@ -92,9 +75,8 @@ function EditorContainer(props){
               setParameters(params)
           }   
           }
-          if(parameters.page && parameters.page.id){
-            handleUpdate(parameters)
-        }else{
+
+   
           if(last==PageType.picture||last==PageType.link){
             if(isValidUrl(htmlContent)&&currentProfile){
              let params = parameters
@@ -105,7 +87,7 @@ function EditorContainer(props){
      
           }
     
-        }
+    
         
       },[htmlContent])
      
@@ -113,14 +95,8 @@ function EditorContainer(props){
             let params = parameters
             params.data = content
             setParameters(params)
-            handleUpdate(params)
-
       }
-    useEffect(()=>{
-      if(fetchedPage){
-        handleUpdate(parameters)
-      }
-    },[parameters.data,parameters.title,parameters.isPrivate,parameters.commentable])
+   
     useLayoutEffect(()=>{
       if(currentProfile){
         fetchStory()
@@ -146,6 +122,11 @@ return ()=>{
            if(currentProfile){
             createPageAction(parameters)
            }
+        }else{
+          let params = parameters
+          params.data = htmlContent
+          params.type = PageType.text
+          setParameters(params)
         }
     },[htmlContent])
   const setStoryData=(story)=>{
@@ -223,7 +204,7 @@ setError(err.message)
           params.needsFeedback = false
        
           setParameters(params)
-       handleUpdate(params)
+      
          setFeedbackDialog(false)
     setOpenDescription(false)
          
@@ -309,9 +290,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
     let params = parameters
        params.description = feedback
        params.needsFeedback = true
-       console.log(feedback)
        setParameters(params)
-       handleUpdate(params)
        if(params.page.id){
         navigate(Paths.workshop.createRoute(params.page.id))
        }
@@ -326,6 +305,28 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   
  
 },4001)
+const dispatchUpdate =debounce((content)=>{
+  setIsSaved(false)
+  console.log(content)
+  let params = parameters
+  params.data = content
+  setParameters(params)
+  if(params.data.length>0){ 
+ dispatch(updateStory(params)).then(res=>{
+    checkResult(res,payload=>{
+      if(payload.story){
+      
+setIsSaved(true)
+return true 
+      }
+  
+    },err=>{
+      setError(err.message)
+      return false
+    })}
+,10)
+
+}})
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
           <div  className=" mx-auto md:p-8  "> 
@@ -338,7 +339,9 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
           createPage={createPageAction}
     
             
-              handleChange={(content)=>dispatchContent(content)}/>
+              handleChange={(content)=>{
+                dispatchUpdate(content)
+                dispatchContent(content)}}/>
                 </ErrorBoundary>
                 </div>
                     <div>
