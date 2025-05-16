@@ -80,6 +80,7 @@ export default function PageViewContainer(props){
         if(page){
             if(!page.isPrivate){
             setCanUserSee(true)
+            return
             }
             if((currentProfile && page.authorId == currentProfile.id)||(page.collections && page.collections.find(col=>col.collection.isPrivate==false))){
              
