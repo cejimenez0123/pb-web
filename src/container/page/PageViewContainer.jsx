@@ -64,9 +64,11 @@ export default function PageViewContainer(props){
     },[id])
     
     const fetchStory = ()=>{
+        setPending(true)
         dispatch(getStory({id})).then(res=>{
             checkResult(res,payload=>{
                 soCanUserSee()
+                setPending(false)
             },err=>{
                 setError(err.message)
             })
@@ -76,8 +78,11 @@ export default function PageViewContainer(props){
 
      const soCanUserSee=()=>{
         if(page){
-            if(page.authorId == currentProfile.id||!page.isPrivate||(page.collections && page.collections.find(col=>col.collection.isPrivate==false))){
-                setCanUserSee(true)
+            if(!page.isPrivate){
+            setCanUserSee(true)
+            }
+            if((currentProfile && page.authorId == currentProfile.id)||(page.collections && page.collections.find(col=>col.collection.isPrivate==false))){
+             
                 setPending(false)
                 return
             }

@@ -40,8 +40,11 @@ export default function EmailPreferences() {
         checkResult(res,payload=>{
 setSuccess(payload.message)
         },err=>{
-           if(!err.message.includes("Network")){
+          console.log(err)
+           if(err && !err.message.includes("Network")){
 setError(err.message)
+           }else if(err){
+            setError(err.message)
            }
         })
       })
