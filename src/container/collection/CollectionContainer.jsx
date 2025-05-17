@@ -577,7 +577,7 @@ if(currentProfile){
                 <div className="flex flex-row">
 
                 <div className="min-w-8 min-h-8  my-auto text-emerald-800">
-                    <ProfileCircle profile={collection.profile}/>
+                    <ProfileCircle profile={collection.profile} color="emerald-700"/>
                     </div></div>:null}
                 <div className="mx-1 mt-4 md:mx-8 md:mt-8 ">
     <h3 className="mt-8 mb-2  text-emerald-800 lora-medium text-xl sm:text-3xl">

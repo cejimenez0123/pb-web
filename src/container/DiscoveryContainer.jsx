@@ -49,27 +49,29 @@ function DiscoveryContainer(props){
 
        let list = [...pagesInView,...cols].filter(item=>item).sort((a,b)=>{
            let date = 1000*60*60*24
-           let k = 1;
-            if(a.priority || b.priority){
-                if (a.priority && b.priority) {
-                    let ageA = (Date.now() - a.created) / date;
-                    let ageB = (Date.now() - b.created) / date;
-                
-                    let scoreA = a.priority / (ageA + k);
-                    let scoreB = b.priority / (ageB + k);
-                
-                    if (scoreA > scoreB) return 1;
-                    if (scoreA < scoreB) return -1;
-                    return 0;
-                  }
-                
-                if(!b.priority){
-                    return 1
-                }
-                if(!a.priority){
-                    return 1
-                }
-                return a.priority - b.priority
+           let k = 4;
+           if (a.priority || b.priority) {
+            if (a.priority && b.priority) {
+              let ageA = (Date.now() - a.updated) / date;
+              let ageB = (Date.now() - b.updated) / date;
+        
+              let scoreA = a.priority / (ageA + k);
+              let scoreB = b.priority / (ageB + k);
+        
+              if (scoreA > scoreB) return 1; // higher score first
+              if (scoreA < scoreB) return -1;
+              return 0;
+            }
+        
+            // Only one has priority — show it first
+            if(a.priority){
+            return a.priority ? -1 : 1;
+            }
+        
+          // No priority on either — fallback to created date
+          return b.created - a.created; // recent first
+        
+           
             }
             return new Date(a.updated).getTime() - new Date(b.updated).getTime()
             
