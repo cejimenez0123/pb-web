@@ -46,8 +46,23 @@ function DiscoveryContainer(props){
       })
     const [viewItems,setViewItems]=useState([])
     useLayoutEffect(()=>{
-
-       let list = [...pagesInView,...cols].filter(item=>item).sort((a,b)=>{
+               
+                let stories = cols.filter(item=>item).map(col=>col.storyIdList).flat()
+                console.log(stories)
+       let list = [...pagesInView,...cols].filter(item=>{
+        if(!item){
+            return false
+        }else{
+          const found =  stories.find(story=>story.storyId==item.id)
+           if(found){
+            return false
+           }else{
+            return true
+           }
+        }
+       
+    
+ }   ).sort((a,b)=>{
            let date = 1000*60*60*24
            let k = 4;
            if (a.priority || b.priority) {
