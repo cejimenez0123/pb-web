@@ -48,17 +48,30 @@ function DiscoveryContainer(props){
     useLayoutEffect(()=>{
 
        let list = [...pagesInView,...cols].filter(item=>item).sort((a,b)=>{
-           
+           let date = 1000*60*60*24
+           let k = 1;
             if(a.priority || b.priority){
+                if (a.priority && b.priority) {
+                    let ageA = (Date.now() - a.created) / date;
+                    let ageB = (Date.now() - b.created) / date;
+                
+                    let scoreA = a.priority / (ageA + k);
+                    let scoreB = b.priority / (ageB + k);
+                
+                    if (scoreA > scoreB) return 1;
+                    if (scoreA < scoreB) return -1;
+                    return 0;
+                  }
+                
                 if(!b.priority){
-                    return false
+                    return 1
                 }
                 if(!a.priority){
-                    return true
+                    return 1
                 }
-                return a.priority > b.priority
+                return a.priority - b.priority
             }
-            return new Date(a.updated).getTime()<  new Date(b.updated).getTime()
+            return new Date(a.updated).getTime() - new Date(b.updated).getTime()
             
         })
          setViewItems(list)       

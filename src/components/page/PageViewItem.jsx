@@ -49,7 +49,7 @@ export default function PageViewItem({page}) {
         
     
          </span>   {page.description && page.description.length>0?<div className='min-h-24 pt-4 p-2'>
-            {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
+            {page.needsFeedback||page.description.length>0?<label className='text-emerald-800'>Feedback Request:</label>:null}
             <h6 className='p-2 open-sans-medium text-left lg:w-[36em]   text-emerald-800'>
                 {page.description}
             </h6>

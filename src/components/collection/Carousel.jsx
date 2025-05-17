@@ -13,13 +13,41 @@ import Paths from '../../core/paths'
 export default function Carousel({book,isGrid}){
       const {isPhone,isHorizPhone}=useContext(Context)
       const navigate = useNavigate()
-      const desription=(story)=>{
-        return story.description && story.description.length>0?<div className='  md:pt-4 p-1'>
-        {story.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
-        <h6 className={`overflow-hidden ${isGrid?isPhone?`max-h-20 m-1 p-1 w-grid-mobile-content text-white  `:`${isHorizPhone?`w-page-mobile-content`:`w-page-content text-emerald-700`} text-white `:isHorizPhone?"  text-emerald-800 ": ``}`}>
+    //   const desription=(story)=>{
+    //     return story.description && story.description.length>0?<div className='  md:pt-4 p-1'>
+    //     {story.needsFeedback||story.description.length>0?<>
+    //     (!story.needsFeedback?(<label className='text-emerald-800'>Feedback Request:</label>):null)
+    //     <h6 className={`overflow-hidden ${isGrid?isPhone?`max-h-20 m-1 p-1 w-grid-mobile-content text-white  `:`${isHorizPhone?`w-page-mobile-content`:`w-page-content text-emerald-700`} text-white `:isHorizPhone?"  text-emerald-800 ": ``}`}>
+    //         {story.description}
+    //           </h6>
+    // </div>}
+    const description = (story) => {
+      if (!story.description || story.description.length === 0) return null;
+    
+      return (
+        <div className="md:pt-4 p-1">
+          {story.needsFeedback? (
+            <label className="text-emerald-800">Feedback Request:</label>
+          ):null}
+          <h6
+            className={`overflow-hidden ${
+              isGrid
+                ? isPhone
+                  ? "max-h-20 m-1 p-1 w-grid-mobile-content text-white"
+                  : isHorizPhone
+                  ? "w-page-mobile-content text-white"
+                  : "w-page-content text-emerald-700 text-white"
+                : isHorizPhone
+                ? "text-emerald-800"
+                : ""
+            }`}
+          >
             {story.description}
-              </h6>
-    </div>:null }  
+          </h6>
+        </div>
+      );}
+    
+    
     let descSize = adjustScreenSize(isGrid,false," max-h-[4em] "," max-h-[4em] ","","","","  ")
   let size = adjustScreenSize(isGrid,true," ","   "," "," py-2  overflow-hidden rounded-lg max-h-[30em]"," ")
     
@@ -57,7 +85,7 @@ onClick={()=>{
 className={ ` min-h-10  ${descSize} pt-3 px-2   text-emerald-700 top-0 mont-medium  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
  
-        {isGrid?isPhone?null:isHorizPhone?null:desription(stc.story):isPhone?null:desription(stc.story)}
+        {isGrid?isPhone?null:isHorizPhone?null:description(stc.story):isPhone?null:description(stc.story)}
   
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
   

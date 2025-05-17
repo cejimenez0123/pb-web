@@ -267,6 +267,33 @@ return <Button onClick={()=>{
             setError("Please Sign Up")
         }
           },10)
+
+const description = (story) => {
+    if (!story.description || story.description.length === 0) return null;
+  
+    return (
+      <div className="md:pt-4 p-1">
+        {story.needsFeedback? (
+          <label className="text-emerald-800">Feedback Request:</label>
+        ):null}
+        <h6
+          className={`overflow-hidden ${
+            isGrid
+              ? isPhone
+                ? "max-h-20 m-1 p-1 w-grid-mobile-content text-white"
+                : isHorizPhone
+                ? "w-page-mobile-content text-white"
+                : "w-page-content text-emerald-700 text-white"
+              : isHorizPhone
+              ? "text-emerald-800"
+              : ""
+          }`}
+        >
+          {story.description}
+        </h6>
+      </div>
+    );}
+
     const buttonRow = ( )=>{
         return isGrid?null:
         <div className='  flex flex-row w-full rounded-b-lg  justify-evenly   '>
@@ -351,15 +378,15 @@ onClick={()=>ClickAddStoryToCollection()}><a className='text-emerald-800'>
 className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-auto" src={addCircle}/></div>}
 
 </div>
-
-                
     }
-      const description=()=>{page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>
-    {page.needsFeedback?<label className='text-emerald-800'>Feedback Request:</label>:null}
-    <h6 className={`${!isGrid?"text-emerald-800":isPhone?"text-white overflow-scroll":"text-white "} p-2 mont-medium text-left `}>
-        {page.description}
-    </h6>
-</div>:null}
+                
+//     }
+//       const description=()=>{page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>
+//     {page.needsFeedback||page.description.length>0?<label className='text-emerald-800'>Feedback Request:</label>:null}
+//     <h6 className={`${!isGrid?"text-emerald-800":isPhone?"text-white overflow-scroll":"text-white "} p-2 mont-medium text-left `}>
+//         {page.description}
+//     </h6>
+// </div>:null}
     if(page){
     
         return(
@@ -368,7 +395,7 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
                 id="dashboard-item"
                 className={'mt-3 rounded-lg bg-emerald-100 shadow-md flex flex-col  '+sizeOuter}
                 >
-              {description()}
+              {description(page)}
               {header()} 
           <PageDataElement  isGrid={isGrid} page={page}/>
           
