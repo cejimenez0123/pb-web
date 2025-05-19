@@ -47,7 +47,7 @@ const pages = [
                 ]
 function NavbarContainer(props){
   
-  const {isPhone}=useContext(Context)
+  const {isPhone,isHorizPhone}=useContext(Context)
   useLayoutEffect(()=>{
     initGA()
   },[])
@@ -160,7 +160,7 @@ function NavbarContainer(props){
 
       const menuDropdown=()=>{
         return(
-        <div className="dropdown  lg:hidden">
+        <div className={`dropdown ${isPhone?"dropdown-top":""} lg:hidden`}>
           <div tabIndex={0} onTouchEnd={()=>{
             sendGAEvent("Click Nav Menu","Click Mobile Nav Menu",null,null,false)
           }}role="button" className="btn btn-ghost ">

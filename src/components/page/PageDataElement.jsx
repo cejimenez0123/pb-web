@@ -9,6 +9,7 @@ import Paths from "../../core/paths"
 import { useLocation } from "react-router-dom"
 import adjustScreenSize from "../../core/adjustScreenSize"
 import Context from "../../context"
+import { IonImg } from '@ionic/react';
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const {isPhone,isHorizPhone}=useContext(Context)
@@ -57,17 +58,35 @@ rounded-lg
   ) }
   case PageType.picture:{
   
-    return(image?
+    return(image?!isHorizPhone?<IonImg  id="page-data-pic"  
+    className={` rounded-lg ${isGrid?
+        isPhone?
+        "w-grid-mobile-content":
+        "w-grid-content":
+        isHorizPhone?"w-page-content":
+        "w-page-mobile-content "} rounded-lg overflow-clip`} onClick={()=>{
+   
+        if(location.pathname!=Paths.page.createRoute(page.id)){
+        navigate(Paths.page.createRoute(page.id))}
+     
+     }} 
+     alt={page.title} src={image}
+    />:
     <img        id="page-data-pic"
-    className={` rounded-lg ${isGrid?isPhone?"w-grid-mobile-content":"w-grid-content":isHorizPhone?"w-page-content":"w-page-mobile-content "} rounded-lg overflow-clip`}
+    className={` rounded-lg ${isGrid?
+        isPhone?
+        "w-grid-mobile-content":
+        "w-grid-content":
+        isHorizPhone?"w-page-content":
+        "w-page-mobile-content "} rounded-lg overflow-clip`}
     onClick={()=>{
    
    if(location.pathname!=Paths.page.createRoute(page.id)){
    navigate(Paths.page.createRoute(page.id))}
 
 }} 
-    
-    src={image} alt={page.title}/>
+alt={page.title}
+    src={image}/>
     
     :
     <div className={`skeleton ${size}`}/>)

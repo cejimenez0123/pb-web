@@ -4,7 +4,9 @@
 
   width: 100vw;
 }
-
+.screen{
+  padding-top: 1.5em;
+}
 .lora-medium{
   font-family: "Lora", serif;
   font-optical-sizing: auto;

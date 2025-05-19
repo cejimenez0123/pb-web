@@ -125,7 +125,7 @@ useLayoutEffect(()=>{
     }
 },[])
 
-    return(<div className="  mx-auto"> 
+    return(<div className=" my-8 mx-auto"> 
         <ErrorBoundary >
         <Helmet>
       {page?<><title>{"A Plumbum Story("+page.title+"): from "+page.author.username}</title>

@@ -569,7 +569,7 @@ if(currentProfile){
     const CollectionInfo=({collection})=>{  
   
        
-        return(<div className=" w-[96vw] mx-auto lg:w-info min-h-info mx-auto mt-4 sm:pb-8 border-3 p-4 border-emerald-600 flex flex-col jusify-between  rounded-lg mb-8 text-left">
+        return(<div className=" w-[96vw] mx-auto lg:w-info min-h-info mx-auto mt-8 sm:pb-8 md:border-3 px-4  py-8 md:border-emerald-600 flex flex-col jusify-between  rounded-lg mb-8 text-left">
     
        
            <span>
@@ -679,7 +679,7 @@ if(collection&&canUserSee){
     return(<>
       <ErrorBoundary>
     {header()}
-<div className=" flex flex-col ">   
+<div className=" flex  mt-16  flex-col ">   
 
   <CollectionInfo collection={collection}/>
 

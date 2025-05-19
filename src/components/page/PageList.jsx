@@ -4,11 +4,13 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import DashboardItem from "./DashboardItem"
 import Enviroment from "../../core/Enviroment"
 import loadingGif from "../../images/loading.gif"
+import { useContext } from "react"
+import Context from "../../context"
 
 
 const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
     let more=true
- 
+ const {isPhone}=useContext(Context)
     if(!hasMore){
   more=false
     }else{
@@ -16,15 +18,14 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
     }
    let stories = items??useSelector(state=>state.pages.pagesInView)
     const pagesInView = stories.filter(story=>story)
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 700px)'
-      })
-
+ 
   
   
         return(<div 
+          className="w-[98vw] mx-auto flex"
         >
                   <InfiniteScroll
+                  className={isGrid?"":" mx-auto w-[100%] md:w-page h-page w-fit"}
         dataLength={pagesInView.length}
         next={getMore}
         scrollThreshold={1}
@@ -32,7 +33,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
         loader={<div className=" flex ">
             <img className="mx-auto my-auto w-[4em] h-[4em] " src={loadingGif}/>
         </div>}
-        className={isGrid?"":" mx-auto w-[96vw] md:w-page h-page w-fit"}
+        
 
         endMessage={<div className="min-h-72 flex w-full">
             <h2 className="mx-auto my-auto text-xl  text-emerald-600 py-2 lora-medium  text-center mx-auto w-12">Sharing you work!<br/> Encourages others to share!<br/>This is what we have now!<br/>Check in later</h2>

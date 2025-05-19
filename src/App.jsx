@@ -1,7 +1,7 @@
 import './App.css';
 import { useDispatch,connect} from "react-redux"
-import { useContext, useLayoutEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route,Navigate } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/auth/LogInContainer';
@@ -21,7 +21,6 @@ import {  getCurrentProfile,
           setSignedInFalse,
       } from './actions/UserActions'
 import PrivateRoute from './PrivateRoute';
-import { useEffect} from 'react';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
@@ -49,6 +48,8 @@ import CalendarContainer from './container/CalendarContainer.jsx';
 import Enviroment from './core/Enviroment.js';
 import { Helmet } from 'react-helmet';
 import { useMediaQuery } from 'react-responsive';
+import { Preferences } from '@capacitor/preferences';
+import OnboardingContainer from './container/OnboardingContainer.jsx';
 
 
 
@@ -61,7 +62,7 @@ function App(props) {
   const isHorizPhone =  useMediaQuery({
     query: '(min-width: 768px)'
   })
-
+  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
@@ -79,7 +80,19 @@ function App(props) {
     dispatch(getRecommendedCollectionsProfile())
   }
   },[])
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
+      if (value === null) {
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    };
 
+    checkFirstLaunch();
+  }, []);
+ 
   return (
 
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
@@ -120,14 +133,21 @@ function App(props) {
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
         <script src="https://kit.fontawesome.com/08dbe310f1.js" crossorigin="anonymous"></script>
          <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
-       <NavbarContainer 
+      
+      {isHorizPhone? <NavbarContainer 
         loggedIn={props.currentProfile}
-        profile={props.currentProfile}/>
+        profile={props.currentProfile}/>:null}
         
         <SearchDialog  />
         <div className='screen'>
 <Alert />
       <Routes >
+      {isFirstLaunch?
+          <Route path="/" element={<Navigate to="/onboarding" replace />} />
+        :         <Route exact path={"/"} element={
+          <AboutContainer/>
+             }/>}
+        <Route exact path="/onboarding" element={<OnboardingContainer />} />
           <Route path={Paths.home()} 
                         element={
                           <PrivateRoute>
@@ -135,10 +155,10 @@ function App(props) {
                           /></PrivateRoute>
                         }
             />
-            <Route path={Paths.notifications()}
+            <Route exact path={Paths.notifications()}
             element={<PrivateRoute><NotificationContainer/></PrivateRoute>}/>
     
-          <Route  path="/discovery" 
+          <Route exact path="/discovery" 
                   element={
                     <DiscoveryContainer 
                       getPublicLibraries={props.getPublicLibraries}
@@ -149,10 +169,10 @@ function App(props) {
                     />
                   }
             />
-          <Route path={"/privacy"}
+          <Route exact path={"/privacy"}
                   element={<PrivacyNoticeContrainer/>}
                   />
-          <Route  path="/login"  
+          <Route exact path="/login"  
                   element={ 
         <LoggedRoute>
             <LogInContainer logIn={props.logIn}/>
@@ -160,11 +180,11 @@ function App(props) {
           
        }
      />
-      <Route path={Paths.calendar()}
+      <Route exact path={Paths.calendar()}
      element={<CalendarContainer/>}/>
-          <Route path={Paths.newsletter() }
+          <Route exact path={Paths.newsletter() }
      element={<LoggedRoute><NewsletterContainer/></LoggedRoute>}/>
-     <Route path={'/reset-password' }
+     <Route exact path={'/reset-password' }
      element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
      element={<CollectionContainer/>}/>
@@ -192,9 +212,7 @@ function App(props) {
      <Route path={Paths.links()}
      element={<LinksContainer/>}/>
 
-            <Route exact path={Paths.about()} element={
-   <AboutContainer/>
-      }/>
+   
  
         <Route path={Paths.apply()}
         element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
@@ -270,7 +288,10 @@ function App(props) {
       }/>
       
     </Routes>
-
+    {!isHorizPhone?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
+    <NavbarContainer 
+        loggedIn={props.currentProfile}
+        profile={props.currentProfile}/></div>:null}
     </div>
     </div>
     </div>
