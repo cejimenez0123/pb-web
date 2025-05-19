@@ -147,7 +147,7 @@ setUser(data.user)
    
 
     return (
-      <div>
+      <div >
         <h6 className="text-emerald-700 lora-bold text-sm">* Required</h6>
         <div className="w-full my-8 text-center">
           <h3 className="mx-auto text-2xl text-emerald-700  lora-bold my-2 w-fit">Interest Form</h3>
@@ -416,6 +416,12 @@ setUser(data.user)
     return (
       <>
         <div className="tabs  flex justify-around max-w-[100vw]">
+        <button
+            className={`tab ${activeTab === 'tab0' ? 'tab-active' : ''}`}
+            onClick={() => handleTabChange('tab0')}
+          >
+            
+          </button>
           <button
             className={`tab ${activeTab === 'tab1' ? 'tab-active' : ''}`}
             onClick={() => handleTabChange('tab1')}
@@ -474,7 +480,7 @@ setUser(data.user)
   };
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex pt-16 flex-col'>
       {user?<ThankYou user={user} />:<MyTabs />}
     </div>
   );

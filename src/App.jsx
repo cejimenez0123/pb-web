@@ -50,12 +50,13 @@ import { Helmet } from 'react-helmet';
 import { useMediaQuery } from 'react-responsive';
 import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
+import DeviceCheck from './components/DeviceCheck.jsx';
 
 
 
 
 function App(props) {
-
+  const isNative = DeviceCheck()
   const isPhone =  useMediaQuery({
     query: '(max-width: 768px)'
   })
@@ -92,7 +93,7 @@ function App(props) {
 
     checkFirstLaunch();
   }, []);
- 
+ console.log("CSCFIRST",isFirstLaunch)
   return (
 
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
@@ -142,11 +143,10 @@ function App(props) {
         <div className='screen'>
 <Alert />
       <Routes >
-      {isFirstLaunch?
-          <Route path="/" element={<Navigate to="/onboarding" replace />} />
-        :         <Route exact path={"/"} element={
-          <AboutContainer/>
-             }/>}
+{/*     
+          <Route path="/" element={isNative?<Navigate to="/onboarding"/>:<Navigate to="/about"/>} />
+<Route exact path="/about" element={<AboutContainer/>}/> */}
+<Route path='/' element={<AboutContainer/>}/>
         <Route exact path="/onboarding" element={<OnboardingContainer />} />
           <Route path={Paths.home()} 
                         element={
