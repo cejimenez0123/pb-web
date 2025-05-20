@@ -72,7 +72,7 @@ rounded-lg
      }} 
      alt={page.title} src={image}
     />:
-    <img        id="page-data-pic"
+    <IonImg        id="page-data-pic"
     className={` rounded-lg ${isGrid?
         isPhone?
         "w-grid-mobile-content":
@@ -104,13 +104,13 @@ case PageType.link:{
 }
 default:
     return(<div        id="page-data-skeleton "className={`skeleton ${size}`}>
-   <img src={loadingGif}/>
+   <IonImg src={loadingGif}/>
 </div>)
 }
 }
 if(!page){
     return(
-    <img src={loadingGif}/>
+    <IonImg src={loadingGif}/>
 ) 
 }
 

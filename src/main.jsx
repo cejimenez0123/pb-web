@@ -13,6 +13,7 @@ import logger from "redux-logger"
 import commentSlice from './reducers/CommentReducer';
 import hashSlice from './reducers/HashtagReducer.jsx';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { LoadScript } from '@react-google-maps/api';
 const reducer = combineReducers({
   hashtags:hashSlice.reducer,
   pages: pageSlice.reducer,
@@ -32,8 +33,13 @@ const store = configureStore({reducer:reducer,
 
 })
 let helmetContext = {};
+const libraries = ['places'];
 const app =   (
   <HelmetProvider context={helmetContext}>
+        {/* <LoadScript
+      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+      libraries={libraries}
+    > */}
 <Provider store={store} >
 <Router>
   {/* <React.StrictMode> */}
@@ -42,6 +48,7 @@ const app =   (
   {/* </React.StrictMode> */}
 
 </Provider>
+{/* </LoadScript> */}
 </HelmetProvider>
 )
 ReactDOM.createRoot(document.getElementById('root')).render(

@@ -11,8 +11,13 @@ import { getStory } from '../../actions/StoryActions';
 import PageWorkshopItem from '../page/PageWorkshopItem';
 import loadingAnimation from "../../images/loading.gif"
 import InfoTooltip from '../../components/InfoTooltip';
-
+import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete"
 import Context from '../../context';
+import GoogleMapSearch from './GoogleMapSearch';
+import { LoadScript } from '@react-google-maps/api';
+
+
+
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
   const dispatch = useDispatch()
@@ -25,6 +30,8 @@ const WorkshopContainer = (props) => {
   const [location,setLocation]=useState(null)
   const {currentProfile} = useContext(Context)
   const [isGlobal,setIsGlobal]=useState(true)
+ 
+  
   
   useEffect(()=>{
    if(isGlobal){
@@ -41,9 +48,7 @@ setTimeout(()=>{
  
 },4001)
   },[error])
-  useEffect(()=>{
 
-  })
   useEffect(()=>{
     if(currentProfile){
       
@@ -155,13 +160,73 @@ setTimeout(()=>{
         setSuccess(null)
       })
     })
-  }
+  }}
   
-  }
-
+const locationAuto=()=>{
+  return <GoogleMapSearch/>
+  return!isGlobal && (
+    <div className="my-4">
+      <label className="text-lg font-medium text-emerald-800">Search Location:</label>
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        disabled={!ready}
+        placeholder="Enter a city or address"
+        className="input input-bordered w-full mt-1"
+      />
+      {status === "OK" && (
+        <ul className="bg-white border border-gray-300 rounded shadow mt-1">
+          {data.map(({ place_id, description }) => (
+            <li
+              key={place_id}
+              onClick={() => handleSelect(description)}
+              className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+            >
+              {description}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )}
+  
+const localCheck=()=>{
+  return(<label className='border-1 mb-4 mt-8 border-2 border-emerald-800 flex flex-row p-2 number border-emerald-600 rounded-full   '>
+        
+          <h6 className='text-xl my-auto ml-4'>Radius:</h6>
+     
+    
+        <input type={"number"} 
+        value={radius}
+        onChange={(e)=>{
+          setRadius(e.target.value)
+        }}
+        className="input my-auto max-w-36 text-xl text-emerald-800 bg-transparent "/>km</label>)
+}
+// const localSearch = ()=>{
+//   return<>
+//   <div className="mb-4 mt-4">
+//     {/* Address autocomplete input goes here */}
+//   </div>
+//   <label className='border-1 mb-4 border-2 border-emerald-800 flex flex-row p-2 number rounded-full'>
+//     <h6 className='text-xl my-auto ml-4'>Radius:</h6>
+//     <input
+//       type="number"
+//       value={radius}
+//       onChange={(e) => setRadius(e.target.value)}
+//       className="input my-auto max-w-36 text-xl text-emerald-800 bg-transparent"
+//     />
+//     km
+//   </label>
+// </>
+// }
   return (
-    <div>
-
+    <LoadScript
+    googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+    libraries={['places']}
+  >
+    {/* // <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} libraries={["places"]}> */}
+<>
       {currentProfile?(
         <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4    rounded-lg ">
        <div>
@@ -173,16 +238,7 @@ setTimeout(()=>{
 </div>
 
 
-        {!isGlobal?<label className='border-1 mb-4 mt-8 border-2 border-emerald-800 flex flex-row p-2 number border-emerald-600 rounded-full   '>
-          <h6 className='text-xl my-auto ml-4'>Radius:</h6>
-     
-       
-        <input type={"number"} 
-        value={radius}
-        onChange={(e)=>{
-          setRadius(e.target.value)
-        }}
-        className="input my-auto max-w-36 text-xl text-emerald-800 bg-transparent "/>km</label>:null}
+        {!isGlobal?<>  <GoogleMapSearch/>{localCheck()}</>:null}
   {page?<PageWorkshopItem page={page}/>:null}
   
    
@@ -195,7 +251,10 @@ setTimeout(()=>{
 
 ):<div className='text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4  skeleton bg-slate-100  rounded-lg '/>}
 
-    </div>
+    
+   
+    </>
+    </LoadScript>
   );
 };
 export default WorkshopContainer

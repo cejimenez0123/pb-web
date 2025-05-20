@@ -83,9 +83,9 @@ function App(props) {
   }
   },[])
   useEffect(() => {
-    console.log("isFirstLaunch:", isFirstLaunch);
-    console.log("isNative:", isNative);
-    console.log("CurrentProfile",currentProfile)
+    // console.log("isFirstLaunch:", isFirstLaunch);
+    // console.log("isNative:", isNative);
+    // console.log("CurrentProfile",currentProfile)
     if(currentProfile){
    
       navigate("/profile/home")
@@ -110,8 +110,7 @@ function App(props) {
 
     checkFirstLaunch().then( );
   }, []);
- console.log("CSCFIRST",isNative)
- console.log("CSCFIRS",isFirstLaunch)
+
   return (
 
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
@@ -137,6 +136,9 @@ function App(props) {
   href="https://unpkg.com/react-quill@1.3.3/dist/quill.snow.css"
 />
 <script src="/socket.io/socket.io.js"></script>
+{/* <script async
+    src={`https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&loading=async&libraries=places&callback=initMap`}>
+</script> */}
 
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 

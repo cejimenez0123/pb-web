@@ -7,6 +7,15 @@ import DeviceCheck from "../../components/DeviceCheck";
 export default function usePersistentCurrentProfile(fetchData) {
     const key = "cachedMyProfile"
     const isNative = DeviceCheck()
+      const getUserFromPref= async ()=>{
+        if(isNative&&Preferences){
+      let profile = await Preferences.get({key:key})
+      setProfile(JSON.parse(profile))
+      return JSON.parse(profile)
+        }else{
+          return null
+        }
+    }
     const [profile, setProfile] = useState(async () => {
    
       if(isNative){
@@ -18,11 +27,7 @@ export default function usePersistentCurrentProfile(fetchData) {
       }
 
     });
-  const getUserFromPref= async ()=>{
-      let profile = await Preferences.get({key:key})
-      setProfile(JSON.parse(profile))
-      return JSON.parse(profile)
-    }
+
 
   
     let token = localStorage.getItem("token")
