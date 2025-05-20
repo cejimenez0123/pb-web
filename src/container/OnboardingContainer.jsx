@@ -9,8 +9,10 @@ import { useEffect } from 'react';
 import { debounce } from 'lodash';
 import authRepo from '../data/authRepo'
 import ThankYou from './auth/ThankYou'
+import logo from "../images/logo/logo-green.png"
 export default function OnboardingContainer(props) {
   const navigate = useNavigate();
+  
   const finishOnboarding = async () => {
     onClickApply(async ()=>{
        await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
@@ -19,7 +21,7 @@ export default function OnboardingContainer(props) {
    
   };
 
-  const [activeTab, setActiveTab] = useState('tab1');
+  const [activeTab, setActiveTab] = useState('tab0');
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
   };
@@ -58,16 +60,7 @@ export default function OnboardingContainer(props) {
       comfortLevel: 0,
       platformFeatures: "",
     });
- 
-  // const [whyApply, setWhyApply] = useState("");
-  // const [howFindOut, setHowFindOut] = useState("");
-  // const [otherGenre, setOtherGenre] = useState("");
-  // const [communityNeeds, setCommunityNeeds] = useState("");
-  // const [workshopPreference, setWorkshopPreference] = useState("");
-  // const [feedbackFrequency, setFeedbackFrequency] = useState("");
-  // const [selectedGenres, setSelectedGenres] = useState([]);
-  // const [comfortLevel, setComfortLevel] = useState(0);
-  // const [platformFeatures, setPlatformFeatures] = useState("");
+
   const [user, setUser] = useState(null);
   const { error, setError } = useContext(Context);
   const [betaTest, setBetaTester] = useState([]);
@@ -89,8 +82,8 @@ export default function OnboardingContainer(props) {
         } else {
           data = await authRepo.apply(form);
         }
-        console.log(data)
-        setUser(data.user || data);
+        await Preferences.set({ key: 'hasSeenOnboarding',value:true });
+        setUser(data?data.user:data );
       } catch (err) {
         setUser(err);
       }
@@ -107,13 +100,7 @@ setUser(data.user)
     }}).catch(err=>{
       setUser(err)
     })},[200])
-  const handleGenreSelection = (genre) => {
-    setSelectedGenres((prevGenres) =>
-      prevGenres.includes(genre)
-        ? prevGenres.filter((g) => g !== genre)
-        : [...prevGenres, genre]
-    );
-  };
+ 
   const updateFormData = (newData) => {
     setFormData((prevData) => ({ ...prevData, ...newData }));
   };
@@ -122,14 +109,12 @@ setUser(data.user)
 
 
   const validateEmail = (email) => {
-    // Basic email validation
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  const handleChangeIgHandle = (handle) => {
-    setIgHandle(handle);
-  };
+
   const Step1 = ({ handleTab, onSave,formData }) => {
      const [igHandle, setIgHandle] = useState(formData.igHandle??"");
   const [fullName, setFullName] = useState(formData.fullName??"");
@@ -216,7 +201,7 @@ setUser(data.user)
     };
 
     return (
-      <div className='flex flex-col max-h-[70vh] overflow-scroll'>
+      <div className='flex flex-col max-h-[70vh] '>
         <label className="text-xl font-bold mont-medium text-emerald-700 ">Artist Statement</label>
         <label className="text-emerald-700  mont-medium text-l mb-2 pb-1 font-bold mt-4">
           What would make a writing space meaningful for you?
@@ -344,6 +329,7 @@ setUser(data.user)
     const [platformFeatures, setPlatformFeatures] = useState(data.platformFeatures ?? "");
 
     const handleSubmit = () => {
+      
       onSave({
         workshopPreference: workshopPreference,
         howFindOut: howFindOut,
@@ -388,7 +374,10 @@ setUser(data.user)
           className="textarea  bg-transparent w-full open-sans-medium text-l sm:text-xl h-min-24 border border-emerald-700  text-emerald-700 "
         />
         <div className='flex '>
-          <div className='flex-1' /><button type="submit" className={`mont-medium my-8 py-4 text-2xl text-white mont-medium px-20 mx-auto rounded-full ${validateEmail(formData.email) ? "bg-gradient-to-r from-emerald-400 to-emerald-500" : "bg-gradient-to-r from-purple-400 to-gray-500"} hover:bg-green-400 font-bold border-none shadow-sm`} onClick={handleSubmit}>Apply</button>
+          <div className='flex-1' />
+          <button type="submit"
+           className={`mont-medium my-8 py-4 text-2xl text-white mont-medium px-20 mx-auto rounded-full ${validateEmail(formData.email) ? "bg-gradient-to-r from-emerald-400 to-emerald-500" : "bg-gradient-to-r from-purple-400 to-gray-500"} hover:bg-green-400 font-bold border-none shadow-sm`} 
+           onClick={handleSubmit}>Apply</button>
         </div>
       </div>
     );
@@ -411,17 +400,55 @@ setUser(data.user)
       </div>
     );
   };
-
+  const Why=({handleTab})=>{
+    return(< ><div className=' pb-36'><section className="p-4 lora-medium text-emerald-800  text-left">
+      <img className="max-h-[10em] mx-auto mb-8 rounded-lg "src={logo}/>
+    <h2 className="text-xl font-bold mb-3 text-center">What is Plumbum?</h2>
+    <ul className="list-disc pl-6 space-y-2 text-base">
+      <li>
+        <strong>Writer-Focused:</strong> A space made for writers to grow, get feedback, and share their work — all in one place.
+      </li>
+      <li>
+        <strong>Community First:</strong> Built from live workshops and honest conversations, not algorithms.
+      </li>
+      <li>
+        <strong>Discovery Through People:</strong> Find new stories and voices through trust and interaction, not trends.
+      </li>
+      <li>
+        <strong>Hybrid by Design:</strong> We mix feedback, self-promotion, and curation — because writers need all three.
+      </li>
+    </ul>
+  </section>
+  
+  <section className="p-4  lora-medium text-emerald-800 text-left">
+    <h2 className="text-xl font-bold mb-3 text-center">Why Join?</h2>
+    <ul className="list-disc pl-6 space-y-2 text-base">
+      <li>
+        <strong>Real Feedback:</strong> Thoughtful input from people who care about craft, not clout.
+      </li>
+      <li>
+        <strong>Creative Momentum:</strong> Stay in motion with events, prompts, and people who show up.
+      </li>
+      <li>
+        <strong>Supportive Culture:</strong> Built slow and small on purpose, so we protect the vibe.
+      </li>
+      <li>
+        <strong>Self & Story Promotion:</strong> A space where sharing your work doesn’t feel awkward — it’s expected.
+      </li>
+    </ul>
+  </section>
+  <div className='flex'>
+  <div className='flex-1' /><button className="max-w-[20em]   bg-emerald-900 text-white text-xl rounded-full" onClick={handleTab}>Next Step</button>
+  </div>
+  </div>
+  </>)
+  }
   const MyTabs = () => {
     return (
       <>
-        <div className="tabs  flex justify-around max-w-[100vw]">
-        <button
-            className={`tab ${activeTab === 'tab0' ? 'tab-active' : ''}`}
-            onClick={() => handleTabChange('tab0')}
-          >
-            
-          </button>
+      <div className='absolute '>
+        <div className="tabs relative top-0 flex justify-around max-w-[100vw]">
+       
           <button
             className={`tab ${activeTab === 'tab1' ? 'tab-active' : ''}`}
             onClick={() => handleTabChange('tab1')}
@@ -454,8 +481,12 @@ setUser(data.user)
           </button>
         </div>
 
-        <div className="mt-4">
-          {activeTab === 'tab1' && <div className='px-4'><Step1 formData={formData}onSave={(data) => updateFormData(data)} 
+        <div className="mt-4 ">
+        {activeTab === 'tab0' && <div className='px-4'><Why  handleTab={() => handleTabChange('tab1')}  />
+          
+        </div>}
+          {activeTab === 'tab1' && <div className='px-4'><Step1 formData={formData}
+          onSave={(data) => updateFormData(data)} 
           
           handleTab={() => handleTabChange('tab2')} /></div>}
           {activeTab === 'tab2' && <div className='px-4'>
@@ -475,12 +506,13 @@ setUser(data.user)
               }} handleTab={() => handleTabChange('tab5')} /></div>}
           {activeTab === 'tab5'&& user && <div className='px-4'><ThankYou user={user} /></div>}
         </div>
+        </div>
       </>
     );
   };
 
   return (
-    <div className='flex pt-16 flex-col'>
+    <div className='flex mt-6 flex-col items-center max-w-[100vw]'>
       {user?<ThankYou user={user} />:<MyTabs />}
     </div>
   );

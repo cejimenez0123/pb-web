@@ -286,7 +286,7 @@ if(currentProfile){
               <ErrorBoundary fallback={"error"}>
             <div className='md:pb-72 pt-4 md:pt-8'>
      
-                    <div className=' flex flex-col relative  justify-start md:flex-row md:justify-between border-4 border-emerald-300  pb-4 max-w-[94vw] mx-auto sm:h-info sm:w-info  sm::mx-auto mt-2  rounded-lg'>
+                    <div className=' flex flex-col relative  justify-start md:flex-row md:justify-between md:border-4 md:border-emerald-300  pb-4 max-w-[94vw] mx-auto sm:h-info sm:w-info  sm::mx-auto mt-2  rounded-lg'>
                            <div className='absolute top-1   right-1'>
                            {isNotPhone?
                        <span className=' m-3 pr-4 flex-row flex w-36  justify-evenly'>     

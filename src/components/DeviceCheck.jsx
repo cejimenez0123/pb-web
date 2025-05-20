@@ -21,7 +21,7 @@ const [capacitor,setCap]=useState("desktop")
       }
     }
   }, []);
-  console.log("CSCs,",capacitor)
+
   return capacitor
 };
 

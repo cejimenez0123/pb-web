@@ -27,14 +27,12 @@ function LogInContainer(props) {
         sendGAEvent("View Login Page","View Login Page","Log In","Log In",0,true)
     },[])
     return (
-        <div id="" className='sm:mx-2'>
+        <div id="" className='sm:mx-2 py-16'>
             <LogInCard  
                        
             setLogInError={setError}
-                        handleSubmit={(e)=>handleLogIn(e)}
-            
-                        setPassword={(str)=>setLiPassword(str)}/>
-         
+            handleSubmit={(e)=>handleLogIn(e)}
+            setPassword={(str)=>setLiPassword(str)}/>
         </div>
     )
 }
@@ -49,11 +47,9 @@ function LogInCard({setLogInError}){
     const [showPassword, setShowPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("")
     const [open,setOpen] = useState(false);
-    const handleTogglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-      };
+
     const handleFirstTimeClick=()=>{
-        navigate("/apply")
+        navigate("/onboarding")
     }
 
     const handleLogIn = (event)=>{
@@ -93,7 +89,7 @@ setLogInError("User Not Found. Apply Below")
     },[location,currentProfile])
     
     return(
-    <div className='sm:border-4  md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+    <div className='sm:border-4  mt-16 md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
             <form className='max-w-[100vw] sm:max-w-82 text-center pt-4'>
@@ -149,8 +145,7 @@ setLogInError("User Not Found. Apply Below")
        
         open={open}
         onClose={()=>{setOpen(false)}}
-      x
-                >
+                      >
                 <div>
                     <Clear onClick={
                         ()=>setOpen(false)

@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "fireTest": "npm run build && firebase hosting:channel:deploy michael-que",
     "build": "npx vite build",
-    "run-ios": "npx vite build && npx cap copy ios && npx cap open ios && npx cap run ios"
+    "run-ios": "npx vite build && npx cap copy ios && npx cap run ios"
   },
   "dependencies": {
     "@capacitor/android": "^7.2.0",

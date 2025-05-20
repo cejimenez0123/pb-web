@@ -23,6 +23,7 @@ import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
+import { IonImg } from '@ionic/react'
 const PageName = {
   home: "Home",
   about:"About",
@@ -101,7 +102,7 @@ function NavbarContainer(props){
         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
           <div className="w-5 rounded-full">
             {profilePic!=Enviroment.blankProfile?<div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
-      <img className="object-fit  " src={profilePic}/></div>:null}
+      <IonImg className="object-fit  " src={profilePic}/></div>:null}
       
           </div> 
         </div>

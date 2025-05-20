@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom"
 import { Dialog } from "@mui/material"
 import FollowerCard from "./FollowerCard"
 import isValidUrl from "../../core/isValidUrl"
+import { IonImg } from "@ionic/react"
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [followersDialog,setFollowersDialog]=useState(false)
@@ -40,7 +41,7 @@ const ProfileInfo = ({profile})=>{
         <div className="flex h-[100%] flex-col justify-between">                       
     <div className='flex-row    mx-auto   flex  '>
         <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mr-6 rounded-full overflow-hidden">
-    <img className={"object-fit "}src={pictureUrl}/>
+    <IonImg className={"object-fit "}src={pictureUrl}/>
    
     </div>
 

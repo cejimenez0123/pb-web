@@ -8,6 +8,7 @@ import Clear from "../images/icons/clear.svg"
 import { useMediaQuery } from "react-responsive"
 import { useParams } from "react-router-dom"
 import FollowerCard from "./profile/FollowerCard"
+import { IonImg } from "@ionic/react"
 export default function ProfileCard({profile,onClickFollow,following}){
     const [profilePic,setProfilePic]=useState("")
     const [pending,setPending]=useState(false)
@@ -52,7 +53,7 @@ export default function ProfileCard({profile,onClickFollow,following}){
         <div className="text-left p-4">
             <div className="flex flex-row">
               <div>  
-              <img src={profilePic} className="max-w-36 object-fit max-h-36  mb-2 rounded-lg" alt=""/>
+            <IonImg src={profilePic} className="max-w-36 object-fit max-h-36  mb-2 rounded-lg" alt=""/>
               <div className="h-fit px-2 pb-2"><h5 className="text-emerald-800 text-[1.2rem] open-sans-medium font-bold">{profile.username}</h5></div>
         
               </div> <div>
@@ -79,7 +80,7 @@ onClose={()=>{
 }}>
     <div className="card   min-w-[30em] py-6 rounded-lg">
        <div div className="px-4 ">
-        <img onClick={()=>setFollowersDialog(false)}src={Clear}/>
+        <IonImg onClick={()=>setFollowersDialog(false)}src={Clear}/>
        </div>
       {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
         </div>

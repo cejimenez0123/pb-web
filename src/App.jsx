@@ -1,7 +1,7 @@
 import './App.css';
 import { useDispatch,connect} from "react-redux"
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route,Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route,Navigate, useNavigate } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/auth/LogInContainer';
@@ -56,6 +56,7 @@ import DeviceCheck from './components/DeviceCheck.jsx';
 
 
 function App(props) {
+  const navigate = useNavigate()
   const isNative = DeviceCheck()
   const isPhone =  useMediaQuery({
     query: '(max-width: 768px)'
@@ -82,23 +83,40 @@ function App(props) {
   }
   },[])
   useEffect(() => {
+    console.log("isFirstLaunch:", isFirstLaunch);
+    console.log("isNative:", isNative);
+    console.log("CurrentProfile",currentProfile)
+    if(currentProfile){
+   
+      navigate("/profile/home")
+    }else if (isFirstLaunch&&isNative) {
+         navigate('/onboard');
+     } else if (isNative) {
+         navigate('/login');
+     } else {
+         navigate('/');
+     }
+  }, [isFirstLaunch,currentProfile, isNative]);
+  useEffect(() => {
     const checkFirstLaunch = async () => {
+    
       const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
       if (value === null) {
-        setIsFirstLaunch(true);
+        setIsFirstLaunch(false);
       } else {
         setIsFirstLaunch(false);
       }
     };
 
-    checkFirstLaunch();
+    checkFirstLaunch().then( );
   }, []);
- console.log("CSCFIRST",isFirstLaunch)
+ console.log("CSCFIRST",isNative)
+ console.log("CSCFIRS",isFirstLaunch)
   return (
 
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-      <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+      <div  className='App background-blur pt-30 overflow-y-scroll bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
       <head>
@@ -135,19 +153,18 @@ function App(props) {
         <script src="https://kit.fontawesome.com/08dbe310f1.js" crossorigin="anonymous"></script>
          <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
       
-      {isHorizPhone? <NavbarContainer 
+      {isHorizPhone&&(!isFirstLaunch||currentProfile)? <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/>:null}
         
         <SearchDialog  />
-        <div className='screen'>
+        <div className='screen   mt-4'>
 <Alert />
       <Routes >
-{/*     
-          <Route path="/" element={isNative?<Navigate to="/onboarding"/>:<Navigate to="/about"/>} />
-<Route exact path="/about" element={<AboutContainer/>}/> */}
-<Route path='/' element={<AboutContainer/>}/>
-        <Route exact path="/onboarding" element={<OnboardingContainer />} />
+     <Route path='/' element={<AboutContainer/>}/>
+      <Route path={"/login"} element={<LogInContainer/>}/> 
+      <Route path={"/onboard"} element={<OnboardingContainer/>}/>
+
           <Route path={Paths.home()} 
                         element={
                           <PrivateRoute>
@@ -288,7 +305,7 @@ function App(props) {
       }/>
       
     </Routes>
-    {!isHorizPhone?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
+    {!isHorizPhone&&(isFirstLaunch||currentProfile)?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/></div>:null}
