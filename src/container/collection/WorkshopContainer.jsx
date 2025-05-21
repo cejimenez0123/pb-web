@@ -238,7 +238,7 @@ const localCheck=()=>{
 </div>
 
 
-        {!isGlobal?<>  <GoogleMapSearch/>{localCheck()}</>:null}
+        {/* {!isGlobal?<>  <GoogleMapSearch/>{localCheck()}</>:null} */}
   {page?<PageWorkshopItem page={page}/>:null}
   
    
