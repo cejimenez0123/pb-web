@@ -74,6 +74,7 @@ function App(props) {
   let prof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
 
   const currentProfile= useSelector(state=>state.users.currentProfile??prof)
+  console.log(currentProfile)
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
 
@@ -115,7 +116,7 @@ function App(props) {
 
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-      <div  className='App background-blur pt-30 overflow-y-scroll bg-gradient-to-br from-slate-100 to-emerald-100'>
+      <div  className='App pb-12 pt-12 background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
       <head>
@@ -241,8 +242,9 @@ function App(props) {
       path={Paths.myProfile()}
       element={
         <PrivateRoute >
-          <MyProfileContainer currentProfile={props.currentProfile} 
-                              pagesInView={props.pagesInView} 
+          <MyProfileContainer profile={props.currentProfile} 
+                             
+                             pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
                           
                               />

@@ -49,11 +49,12 @@ export default function ProfileCard({profile,onClickFollow,following}){
          
     }
     if(profile){
-      return(<div className="pb-8 border-3 rounded-lg  w-[96vw] md:h-info mx-auto md:w-info border-emerald-400">
+        
+      return(<div className="pb-8 md:border-3 rounded-lg  w-[96vw] md:h-info mx-auto md:w-info md:border-emerald-400">
         <div className="text-left p-4">
             <div className="flex flex-row">
               <div>  
-            <IonImg src={profilePic} className="max-w-36 object-fit max-h-36  mb-2 rounded-lg" alt=""/>
+            {profilePic.length>0?<IonImg src={profilePic} className="max-w-36 object-fit max-h-36  mb-2 rounded-lg" alt=""/>:<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
               <div className="h-fit px-2 pb-2"><h5 className="text-emerald-800 text-[1.2rem] open-sans-medium font-bold">{profile.username}</h5></div>
         
               </div> <div>

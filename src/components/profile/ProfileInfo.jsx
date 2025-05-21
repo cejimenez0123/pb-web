@@ -24,7 +24,7 @@ const ProfileInfo = ({profile})=>{
                
                 setPictureUrl(url)
             })
-        }else if(profile){
+        }else if(profile&&isValidUrl(profile.profilePic)){
           
             setPictureUrl(profile.profilePic)
         }
@@ -41,7 +41,8 @@ const ProfileInfo = ({profile})=>{
         <div className="flex h-[100%] flex-col justify-between">                       
     <div className='flex-row    mx-auto   flex  '>
         <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mr-6 rounded-full overflow-hidden">
-    <IonImg className={"object-fit "}src={pictureUrl}/>
+    <IonImg className={"object-fit "}
+    src={pictureUrl}/>
    
     </div>
 
