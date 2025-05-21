@@ -86,16 +86,19 @@ function EditorContainer(props){
             }
      
           }
-    
-    
+          let params = parameters
+          params.data =htmlContent
+    setParameters(params)
         
       },[htmlContent])
      
-      const dispatchContent=(content)=>{
-            let params = parameters
-            params.data = content
-            setParameters(params)
-      }
+      // const dispatchContent=(content)=>{
+      //       let params = parameters
+      //       params.data = content
+      //       console.log("Content",content)
+      //       setParameters(params)
+      //       dispatch(setHtmlContent({html:content}))
+      // }
    
     useLayoutEffect(()=>{
       if(currentProfile){
@@ -124,7 +127,7 @@ return ()=>{
            }
         }else{
           let params = parameters
-          params.data = htmlContent
+          params.data = htmlContent.html
           params.type = PageType.text
           setParameters(params)
         }
@@ -207,7 +210,7 @@ setError(err.message)
       
          setFeedbackDialog(false)
     setOpenDescription(false)
-        //  dispatchUpdate(params)
+  
     if(!truthy){
       navigate(Paths.page.createRoute(id))
    }
@@ -288,7 +291,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
    }
    useEffect(()=>{
     dispatchUpdate(parameters)
-   },[parameters.data,parameters.description,parameters.title])
+   },[htmlContent,parameters.data,parameters.description,parameters.title])
    const handleFeedback=()=>{
    
     let params = parameters
@@ -313,14 +316,12 @@ const dispatchUpdate =debounce((content)=>{
   setIsSaved(false)
   
   let params = parameters
-  // params.data = content
-  // setParameters(params)
-  // if(params.data.length>0){ 
+
  dispatch(updateStory(params)).then(res=>{
     checkResult(res,payload=>{
       console.log(JSON.stringify(payload))
       if(payload.story){
-    console.log(payload.story)
+
 setIsSaved(true)
 return true 
       }
@@ -344,9 +345,7 @@ return true
           createPage={createPageAction}
     
             
-              handleChange={(content)=>{
-                // dispatchUpdate(content)
-                dispatchContent(content)}}/>
+              handleChange={()=>{}}/>
                 </ErrorBoundary>
                 </div>
                     <div>

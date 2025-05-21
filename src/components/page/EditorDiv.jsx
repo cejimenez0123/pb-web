@@ -81,6 +81,7 @@ import { useDispatch } from "react-redux"
               }
           case PageType.text:{
                 return(<RichEditor initContent={parameters.data} handleChange={(content)=>{
+                  dispatch(setHtmlContent(content))
                   handleChange(content)}}/>)
               }
           default:{
