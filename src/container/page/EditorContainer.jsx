@@ -197,19 +197,19 @@ setError(err.message)
         
           navigate(Paths.addStoryToCollection.story(id))
         }
-        const handlePostPublicly=debounce((truthy)=>{
+  const handlePostPublicly=debounce((truthy)=>{
   
           let params = parameters
-          params.description = description
-          setNeedFeedback(false)
+
           setIsPrivate(truthy)
-          params.isPrivate = truthy
+          params.isPrivate = !truthy
+          params.privacy = truthy
           params.needsFeedback = false
        
           setParameters(params)
       
          setFeedbackDialog(false)
-    setOpenDescription(false)
+        setOpenDescription(false)
   
     if(!truthy){
       navigate(Paths.page.createRoute(id))
@@ -265,6 +265,7 @@ setError(err.message)
     setOpenDescription(true)} }
 className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
 <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
+
   handlePostPublicly(true)
   }}>Make Private</li>}
   {!isPrivate?<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
@@ -291,7 +292,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
    }
    useEffect(()=>{
     dispatchUpdate(parameters)
-   },[htmlContent,parameters.data,parameters.description,parameters.title])
+   },[htmlContent,parameters.privacy,parameters.data,parameters.description,parameters.title])
    const handleFeedback=()=>{
    
     let params = parameters
@@ -316,7 +317,7 @@ const dispatchUpdate =debounce((content)=>{
   setIsSaved(false)
   
   let params = parameters
-
+console.log(params)
  dispatch(updateStory(params)).then(res=>{
     checkResult(res,payload=>{
       console.log(JSON.stringify(payload))
@@ -376,9 +377,10 @@ isFeedback={feedbackDialog}
 
 handleChange={setDescription} 
 handleFeedback={handleFeedback}
-handlePostPublic={()=>handlePostPublicly(false)}
+handlePostPublic={()=>handlePostPublicly(true)}
 handleClose={()=>{
-    setIsPrivate(true)
+
+  
     setOpenDescription(false)
     setFeedbackDialog(false)
 }} />

@@ -349,12 +349,12 @@ function NavbarContainer(props){
       {!isPhone?menuHoriz():  <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
   </div>
 
-  {currentProfile?<div className="navbar-end">
+  {isPhone?<div className="navbar-end">
   <div className="dropdown dropdown-top dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
           {profilePic?<div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
-    <img className="object-fit  " src={profilePic}/></div>:null}
+    <IonImg className="object-fit  " src={profilePic}/></div>:null}
     
         </div> 
       </div>

@@ -5,6 +5,7 @@ import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
 import Context from "../../context";
 import adjustScreenSize from "../../core/adjustScreenSize";
+import sortItems from "../../core/sortItems";
 
 const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
   const { isPhone } = useContext(Context);
@@ -14,28 +15,26 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
   const [loadedItems, setLoadedItems] = useState([]);
   const [contentfulBooks, setContentfulBooks] = useState([]);
   const [contentfulOtherItems, setContentfulOtherItems] = useState([]);
-
+  const pathName = location.pathname
   const itemsPerPage = 10;
 
   useEffect(() => {
-   
+   if(pathName.includes("discovery")||pathName.includes("collection")){
+ 
+    setFilteredItems([...items])
+   }else{
     const booksWithContent = items.filter(item=>item).filter(
-      (item) => item.purpose && item.storyIdList && item.storyIdList.length > 0
+      (item) => item && item.storyIdList && item.storyIdList.length > 0
     );
     const otherItemsWithContent = items.filter(item=>item).filter(
-      (item) => item.data 
+      (item) => item && item.data.length>0
     );
-
-    setContentfulBooks(booksWithContent);
-    setContentfulOtherItems(otherItemsWithContent);
-
-    // Initialize filteredItems with the first page of combined contentful data
-    const initialItems = [...booksWithContent.slice(0, itemsPerPage), ...otherItemsWithContent.slice(0, itemsPerPage)].slice(0, itemsPerPage);
+    let list = sortItems(otherItemsWithContent,booksWithContent)
+    const initialItems = [...list.slice(0, itemsPerPage), ...otherItemsWithContent.slice(0, itemsPerPage)].slice(0, itemsPerPage);
     setFilteredItems(initialItems);
-    setLoadedItems(initialItems.map(item => item.id || Math.random())); // Use a fallback for items without IDs
     setHasMore(booksWithContent.length + otherItemsWithContent.length > itemsPerPage);
     setPage(2); // Start loading from the second page
-  }, [items, itemsPerPage]);
+  }}, [items, itemsPerPage]);
 
   const loadMore = async () => {
     if (!hasMore) return;
@@ -43,7 +42,7 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
     const startIndex = (page - 1) * itemsPerPage;
     const nextBooks = contentfulBooks.slice(startIndex, startIndex + itemsPerPage);
     const nextOtherItems = contentfulOtherItems.slice(startIndex, startIndex + itemsPerPage);
-    const nextItems = [...nextBooks, ...nextOtherItems].sort((a, b) => (a.priority || 0) > (b.priority || 0));;
+    const nextItems = [...nextBooks, ...nextOtherItems]
 
     const newUniqueItems = nextItems.filter(
       (newItem) => !loadedItems.includes(newItem.id || Math.random())

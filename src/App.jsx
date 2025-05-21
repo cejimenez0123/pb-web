@@ -71,10 +71,10 @@ function App(props) {
   const profile = useSelector(state=>state.users.profileInView)
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-  let prof = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+  const currentProfile = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
 
-  const currentProfile= useSelector(state=>state.users.currentProfile??prof)
-  console.log(currentProfile)
+  // const currentProfile= useSelector(state=>state.users.currentProfile??prof)
+  // console.log(currentProfile)
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
 
@@ -116,7 +116,7 @@ function App(props) {
 
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-      <div  className='App pb-12 pt-12 background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+      <div  className='App pb-12  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
       <head>
@@ -156,12 +156,14 @@ function App(props) {
         <script src="https://kit.fontawesome.com/08dbe310f1.js" crossorigin="anonymous"></script>
          <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
       
-      {isHorizPhone&&(!isFirstLaunch||currentProfile)? <NavbarContainer 
-        loggedIn={props.currentProfile}
-        profile={props.currentProfile}/>:null}
+   
         
         <SearchDialog  />
-        <div className='screen   mt-4'>
+     
+        {!isPhone&&(!isFirstLaunch||currentProfile)? <NavbarContainer 
+        loggedIn={props.currentProfile}
+        profile={props.currentProfile}/>:null}
+           <div className='pt-4 '>
 <Alert />
       <Routes >
      <Route path='/' element={<AboutContainer/>}/>
@@ -309,7 +311,7 @@ function App(props) {
       }/>
       
     </Routes>
-    {!isHorizPhone&&(isFirstLaunch||currentProfile)?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
+    {isPhone&&!isFirstLaunch?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/></div>:null}

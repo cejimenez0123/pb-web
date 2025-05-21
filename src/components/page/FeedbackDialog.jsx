@@ -7,7 +7,7 @@ export default function FeedbackDialog({open,page,isFeedback,handleClose,handleC
         query: '(max-width: 768px)'
       })
     const isHeightPhone = useMediaQuery({query:'(max-height: 366px)'})
-    console.log(isHeightPhone)
+ 
     useLayoutEffect(()=>{
       if(page && page.description){
 
