@@ -93,12 +93,12 @@ function App(props) {
 
     checkFirstLaunch();
   }, []);
- console.log("CSCFIRST",isFirstLaunch)
+
   return (
 
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-      <div  className='App background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+      <div  className='App pb-12 background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
       <div/>
       <div style={{position:"relative"}} >
       <head>

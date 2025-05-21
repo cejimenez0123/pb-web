@@ -25,22 +25,23 @@ export default function FeedbackContainer(props){
     },10)
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
     return(<div>
-        <form className="my-8">
+        <form className="my-8 px-4">
         <div className="card lg:max-w-[40rem] mx-auto lg:p-8">
 
 <h2 className="mx-auto lora-bold text-[2rem] mb-8 text-emerald-800">Feedback</h2>
-<label className="border border-2 rounded-full text-xl mont-medium text-emerald-800 border-emerald-800 mb-4 px-4"> 
- Name:
+<label className="border border-2 flex  rounded-full text-xl mont-medium text-emerald-800 border-emerald-800 mb-4 px-4"> 
+ <span className="my-auto">Name:</span>
 <input value={preferredName}onChange={(e) => setPreferredName(e.target.value)} type="text" className={input}/></label>
 <label className="border border-2 rounded-full text-xl mont-medium text-emerald-800 border-emerald-800 mb-4 px-4"> 
- Email:
+ <span className="my-auto">Email:</span>
 <input value={email}onChange={(e) => setEmail(e.target.value)} type="text" className={input}/></label>
-<label className="border border-2 rounded-full mont-medium text-xl text-emerald-800 border-emerald-800 mb-4 px-4"> Purpose:
+<label className="border border-2 rounded-full mont-medium text-xl text-emerald-800 border-emerald-800 mb-4 px-4"> 
+<span className="my-auto">Purpose:</span>
 <select
 value={purpose}
 
 onChange={(e) => setPurpose(e.target.value)}
-className="w-[80%] bg-transparent rounded-full text-xl select text-emerald-800 mont-medium ">
+className="w-[80%] bg-transparent rounded-full text-l select text-emerald-800 mont-medium ">
     <option value={"feedback"}>Feedback</option>
     <option value={"bug"}>Issue/Bug</option>
     <option value={"request"}>Feature Request</option>
@@ -51,10 +52,10 @@ className="w-[80%] bg-transparent rounded-full text-xl select text-emerald-800 m
 <label 
 value={subject}
 
-onChange={(e) => setSubject(e.target.value)}className="border border-2 mont-medium rounded-full border-emerald-800 text-xl mb-4 text-emerald-800 px-4">
-    Subject:
+onChange={(e) => setSubject(e.target.value)}className="border flex border-2 mont-medium rounded-full border-emerald-800 text-xl mb-4 text-emerald-800 px-4">
+   <span className="my-auto">Subject:</span> 
 <input type="text" value={subject} className={input}/></label>
-<label className="text-xl open-sans-medium text-emerald-800 mont-medium">Message:</label>
+<label className="text-l open-sans-medium text-emerald-800 mont-medium">Message:</label>
 <textarea value={message} onChange={(e) => setMessage(e.target.value)}className="textarea bg-transparent mt-4 text-emerald-800 border-emerald-800 border-2" />
 <span
 onClick={validateEmail(email)?handleFeedback:()=>{}}
