@@ -259,7 +259,7 @@ meta()
 },[profile])
     return(
         <ErrorBoundary>
-        <div className="pt-8">
+        <div className="">
           
             <div className="pt-2 md:pt-8 mb-8 mx-2">
                 <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow}/>

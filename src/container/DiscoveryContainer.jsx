@@ -47,51 +47,96 @@ function DiscoveryContainer(props){
     const [viewItems,setViewItems]=useState([])
     useLayoutEffect(()=>{
                
-                let stories = cols.filter(item=>item).map(col=>col.storyIdList).flat()
-                console.log(stories)
-       let list = [...pagesInView,...cols].filter(item=>{
-        if(!item){
-            return false
-        }else{
-          const found =  stories.find(story=>story.storyId==item.id)
-           if(found){
-            return false
-           }else{
-            return true
-           }
-        }
+//                 let stories = cols.filter(item=>item).map(col=>col.storyIdList).flat()
+//                 console.log(stories)
+//        let list = [...pagesInView,...cols].filter(item=>{
+//         if(!item){
+//             return false
+//         }else{
+//           const found =  stories.find(story=>story.storyId==item.id)
+//            if(found){
+//             return false
+//            }else{
+//             return true
+//            }
+//         }
        
     
- }   ).sort((a,b)=>{
-           let date = 1000*60*60*24
-           let k = 4;
-           if (a.priority || b.priority) {
-            if (a.priority && b.priority) {
-              let ageA = (Date.now() - a.updated) / date;
-              let ageB = (Date.now() - b.updated) / date;
+//  }   ).sort((a,b)=>{
+//            let date = 1000*60*60*24
+//            let k = 4;
+//            if (a.priority || b.priority) {
+//             if (a.priority && b.priority) {
+//               let ageA = (Date.now() - a.updated) / date;
+//               let ageB = (Date.now() - b.updated) / date;
         
-              let scoreA = a.priority / (ageA + k);
-              let scoreB = b.priority / (ageB + k);
+//               let scoreA = a.priority / (ageA + k);
+//               let scoreB = b.priority / (ageB + k);
         
-              if (scoreA > scoreB) return 1; // higher score first
-              if (scoreA < scoreB) return -1;
-              return 0;
-            }
+//               if (scoreA > scoreB) return 1; // higher score first
+//               if (scoreA < scoreB) return -1;
+//               return 0;
+//             }
         
-            // Only one has priority — show it first
-            if(a.priority){
-            return a.priority ? -1 : 1;
-            }
+//             // Only one has priority — show it first
+//             if(a.priority){
+//             return a.priority ? -1 : 1;
+//             }
         
-          // No priority on either — fallback to created date
-          return b.created - a.created; // recent first
+//           // No priority on either — fallback to created date
+//           return b.created - a.created; // recent first
         
            
-            }
-            return new Date(a.updated).getTime() - new Date(b.updated).getTime()
+//             }
+//             return new Date(a.updated).getTime() - new Date(b.updated).getTime()
             
-        })
-         setViewItems(list)       
+//         })
+//          setViewItems(list)    
+let date = 1000 * 60 * 60 * 24; // 1 day in ms
+let k = 4;
+
+// Get all stories inside collections
+let stories = cols.filter(item => item).map(col => col.storyIdList).flat();
+
+// Find the most recently updated story
+let allItems = [...pagesInView, ...cols].filter(Boolean);
+let mostRecentItem = allItems.reduce((latest, item) => {
+  return !latest || item.updated > latest.updated ? item : latest;
+}, null);
+ console.log(JSON.stringify(mostRecentItem))
+// Build list excluding stories already in collections
+let list = allItems.filter(item => {
+  return !stories.find(story => story.storyId == item.id);
+});
+
+// Sort the list by score
+list.sort((a, b) => {
+  if (a.id === mostRecentItem.id) return -1; // always put most recent first
+  if (b.id === mostRecentItem.id) return 1;
+
+  // If either has priority
+  if (a.priority || b.priority) {
+    if (a.priority && b.priority) {
+      let ageA = (Date.now() - a.updated) / date;
+      let ageB = (Date.now() - b.updated) / date;
+
+      let scoreA = a.priority / (ageA + k);
+      let scoreB = b.priority / (ageB + k);
+
+      if (scoreA > scoreB) return -1;
+      if (scoreA < scoreB) return 1;
+      return 0;
+    }
+
+    // Only one has priority — show it first
+    return a.priority ? -1 : 1;
+  }
+
+  // Neither has priority — more recent first
+  return b.updated - a.updated;
+});
+
+setViewItems(list);   
     },[pagesInView,books])
    
     // },[pagesInView,books])
@@ -110,7 +155,7 @@ function DiscoveryContainer(props){
         fetchLibraries()
         setSeo({title:"Plumbum (Discovery) - Read Fresh Writing", description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
 
-    },[currentProfile,location.pathname])
+    },[])
 
     const libraryForums = ()=>{
         if(libraries!=null){

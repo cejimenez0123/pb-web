@@ -47,6 +47,8 @@ console.log(data)
     try {
       const results = await getGeocode({ address: description,placeId:data.placeId });
       const { lat, lng } = await getLatLng(results[0]);
+      const locale = {lat,lng}
+      console.log(JSON.stringify(locale))
       const location = { lat, lng, address: description };
 console.log("GLGL",JSON.stringify(results))
 console.log("GLGD",JSON.stringify({ lat, lng }))

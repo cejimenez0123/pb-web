@@ -190,9 +190,9 @@ const userTestimonial=()=>{
     <div className="pt-8 pb-4 min-w-1/2 md:px-8 mx-auto text-center ">
         <h2 className=" text-[3rem] md:text-[4rem]  mx-atuo lora-bold text-emerald-700 pt-8 pb-4">Plumbum</h2>
         <h2 className="lora-medium text-[1.3rem] md:text-[2rem]   mx-auto text-emerald-700 ">
-Your Writing, Your Community</h2>
+        Share your Weirdness</h2>
         <br/>
-        <h4 className="lora-medium     mx-auto text-emerald-700 ">Get thoughtful feedback. Grow through workshops. Share your weirdness.</h4>
+        <h4 className="lora-medium     mx-auto text-emerald-700 ">Get thoughtful feedback • Grow through workshops </h4>
         </div> 
 
 

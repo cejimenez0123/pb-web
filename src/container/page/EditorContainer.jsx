@@ -150,7 +150,7 @@ return ()=>{
           let params = parameters
           params.page = story
           setParameters(params)
-        
+          setTitleLocal(story.title)
       },err=>{
 
        setSuccess(null)
@@ -207,7 +207,7 @@ setError(err.message)
       
          setFeedbackDialog(false)
     setOpenDescription(false)
-         
+        //  dispatchUpdate(params)
     if(!truthy){
       navigate(Paths.page.createRoute(id))
    }
@@ -222,7 +222,8 @@ setError(err.message)
           let params = parameters
           params.title = title
           setParameters(params)
-       
+          
+          
 
       }
   
@@ -285,6 +286,9 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   </div>:null}
     </div>)
    }
+   useEffect(()=>{
+    dispatchUpdate(parameters)
+   },[parameters.data,parameters.description,parameters.title])
    const handleFeedback=()=>{
    
     let params = parameters
@@ -307,15 +311,16 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
 },4001)
 const dispatchUpdate =debounce((content)=>{
   setIsSaved(false)
-  console.log(content)
+  
   let params = parameters
-  params.data = content
-  setParameters(params)
-  if(params.data.length>0){ 
+  // params.data = content
+  // setParameters(params)
+  // if(params.data.length>0){ 
  dispatch(updateStory(params)).then(res=>{
     checkResult(res,payload=>{
+      console.log(JSON.stringify(payload))
       if(payload.story){
-      
+    console.log(payload.story)
 setIsSaved(true)
 return true 
       }
@@ -326,7 +331,7 @@ return true
     })}
 ,10)
 
-}})
+})
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
           <div  className=" mx-auto md:p-8  "> 
@@ -340,7 +345,7 @@ return true
     
             
               handleChange={(content)=>{
-                dispatchUpdate(content)
+                // dispatchUpdate(content)
                 dispatchContent(content)}}/>
                 </ErrorBoundary>
                 </div>
