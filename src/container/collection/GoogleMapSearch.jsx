@@ -45,7 +45,7 @@ console.log(data)
     clearSuggestions();
 
     try {
-      const results = await getGeocode({ address: description });
+      const results = await getGeocode({ address: description,placeId:data.placeId });
       const { lat, lng } = await getLatLng(results[0]);
       const location = { lat, lng, address: description };
 console.log("GLGL",JSON.stringify(results))
