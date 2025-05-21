@@ -1,9 +1,4 @@
 import React, { useState } from 'react';
-import {
-  GoogleMap,
-  LoadScript,
-  Marker
-} from '@react-google-maps/api';
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng
@@ -22,8 +17,8 @@ const center = {
 };
 
 export default function PlacesSearchMap({ onLocationSelected }) {
-  const [marker, setMarker] = useState(null);
-  const [mapCenter, setMapCenter] = useState(center);
+  // const [marker, setMarker] = useState(null);
+  // const [mapCenter, setMapCenter] = useState(center);
 
   const {
     ready,
@@ -40,20 +35,23 @@ console.log(data)
   };
 
   const handleSelect = async (data) => {
-    let description = data.description
+    console.log(JSON.stringify(data[0]))
+     const description = data[0].description
     setValue(data.description, false);
     clearSuggestions();
 
     try {
-      const results = await getGeocode({ address: description,placeId:data.placeId });
-      const { lat, lng } = await getLatLng(results[0]);
-      const locale = {lat,lng}
-      console.log(JSON.stringify(locale))
-      const location = { lat, lng, address: description };
-console.log("GLGL",JSON.stringify(results))
-console.log("GLGD",JSON.stringify({ lat, lng }))
-      setMapCenter({ lat, lng });
-      setMarker({ lat, lng });
+      getGeocode({ address: description }).then((results) => {
+        const { lat, lng } = getLatLng(results[0]);
+        console.log("📍 Coordinates: ", { lat, lng });
+    
+           onLocationSelected({ latitude:lat,longitude:lng})
+
+    
+        setMapCenter({ lat, lng });
+        setMarker({ lat, lng });
+      }).catch(err=>console.log(err))
+  
 
       if (onLocationSelected) onLocationSelected(location);
     } catch (error) {
