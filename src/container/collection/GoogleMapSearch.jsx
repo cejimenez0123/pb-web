@@ -64,28 +64,30 @@ export default function PlacesSearchMap({ onLocationSelected }) {
         <div>
           <label className='mx-4'>{desc}</label>
         </div>
-        <input
-            value={value || ""}
-          onChange={handleInput}
-          disabled={!ready}
-          placeholder="Search a place"
-          className="w-full  bg-transparent p-2 text-lg rounded-full border border-gray-300 rounded"
-        />
-        {status === 'OK' && (
-          <ul className="border border-gray-200 mt-1 rounded shadow">
-            {data.map(({ place_id, description }) => (
+        <div className="relative w-full">
+  <input
+    value={value || ""}
+    onChange={handleInput}
+    disabled={!ready}
+    placeholder="Search a place"
+    className="w-full bg-transparent p-2 text-lg rounded-full border border-gray-300"
+  />
 
-              <li
-                key={place_id}
-                className="p-2 cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSelect(data)}
-              >
-                {description}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+  {status === 'OK' && (
+    <ul className="absolute z-20 bg-white w-full border border-gray-200 mt-1 rounded shadow max-h-60 overflow-auto">
+      {data.map(({ place_id, description }) => (
+        <li
+          key={place_id}
+          className="p-2 cursor-pointer hover:bg-gray-100"
+          onClick={() => handleSelect(data)}
+        >
+          {description}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+</div>
     
   );
 }
