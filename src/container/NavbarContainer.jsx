@@ -306,7 +306,7 @@ function NavbarContainer(props){
   </div>
 
   <div className="navbar-end">
-  <div className="dropdown dropdown-top dropdown-end">
+  <div className={`dropdown ${isPhone?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
         <div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">

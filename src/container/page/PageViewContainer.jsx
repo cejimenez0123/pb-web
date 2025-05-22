@@ -128,7 +128,7 @@ useLayoutEffect(()=>{
     return(<div className=" my-8 mx-auto"> 
         <ErrorBoundary >
         <Helmet>
-      {page?<><title>{"A Plumbum Story("+page.title+"): from "+page.author.username}</title>
+      {page && page.author?<><title>{"A Plumbum Story("+page.title+"): from "+page.author.username}</title>
        <meta property="og:image" content={Enviroment.logoChem} />
       <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
       <meta property="og:description" content={page.description.length>0?page.description:"Explore events, workshops, and writer meetups on Plumbum."}/>

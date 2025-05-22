@@ -1,7 +1,7 @@
 import './App.css';
 import { useDispatch,connect} from "react-redux"
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route,Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route,Navigate, useNavigate, useLocation } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
 import LogInContainer from './container/auth/LogInContainer';
@@ -72,26 +72,36 @@ function App(props) {
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
   const currentProfile = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
-
-  // const currentProfile= useSelector(state=>state.users.currentProfile??prof)
-  // console.log(currentProfile)
+  const [olderPath,setOlderPath]=useState(null)
+  const location = useLocation()
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
-
+console.log(location.pathname)
   useEffect(()=>{
     if(currentProfile){
-    dispatch(getRecommendedCollectionsProfile())
+      dispatch(getRecommendedCollectionsProfile())
   }
   },[])
+  useEffect(()=>{
+  
+      setOlderPath(location.pathname)
+  
+  },[location.pathname])
   useEffect(() => {
 
     if(currentProfile){
-   
-      navigate("/profile/home")
+      if(olderPath){
+        navigate(olderPath)
+      }else{
+        navigate("/profile/home")
+      }
+      
     }else if (isFirstLaunch&&isNative) {
          navigate('/onboard');
      } else if (isNative) {
          navigate('/login');
+     }else{
+      navigate(olderPath)
      }
   }, [isFirstLaunch,currentProfile, isNative]);
   useEffect(() => {

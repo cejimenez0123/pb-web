@@ -377,7 +377,7 @@ isFeedback={feedbackDialog}
 
 handleChange={setDescription} 
 handleFeedback={handleFeedback}
-handlePostPublic={()=>handlePostPublicly(true)}
+handlePostPublic={()=>handlePostPublicly(false)}
 handleClose={()=>{
 
   
