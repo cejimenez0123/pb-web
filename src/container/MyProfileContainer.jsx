@@ -311,7 +311,7 @@ if(currentProfile){
                                <h6 className='my-auto text-[0.8rem] mont-medium md:text-md mx-auto '> Write a Story</h6>
                             </div>
                             <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5em] w-[10em]   md:h-[3em] text-white   text-bold'>
-                              <div className='mx-auto text-[0.8rem] md:text-md my-auto mont-medium  flex-col flex md:flex-row'><h6 className='text-center' >Create Collection</h6> </div> 
+                              <div className='mx-auto text-[0.8rem] md:text-md my-auto mont-medium  flex-col flex md:flex-row'><h6 className='text-center' >Create a Collection</h6> </div> 
                             </div>
                             <div className='w-[10em] h-[3em] mx-auto flex'>
                             <h6 onClick={()=>setOpenReferral(true)}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
@@ -337,7 +337,7 @@ if(currentProfile){
                             </div>
                             <div>
                             <div onClick={ClickCreateACollection} className='bg-emerald-500 btn mont-medium rounded-full flex text-white w-[10rem] lg:w-[10rem]  border-emerald-500 border-1 h-[4rem] py-3  text-bold'>
-                         <h6 className='text-[0.8rem]'>Create Collection</h6>
+                         <h6 className='text-[0.8rem]'>Create a Collection</h6>
                             </div>
                             </div>
                             <div className=' mt-6'> 

@@ -3,7 +3,7 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng
 } from 'use-places-autocomplete';
-
+import check from "../../images/icons/check.svg"
 const libraries = ['places'];
 
 const containerStyle = {
@@ -17,9 +17,7 @@ const center = {
 };
 
 export default function PlacesSearchMap({ onLocationSelected }) {
-  // const [marker, setMarker] = useState(null);
-  // const [mapCenter, setMapCenter] = useState(center);
-
+  const [desc,setDesc]=useState("")
   const {
     ready,
     value,
@@ -29,21 +27,22 @@ export default function PlacesSearchMap({ onLocationSelected }) {
   } = usePlacesAutocomplete({
     debounce: 300
   });
-console.log(data)
+
   const handleInput = (e) => {
     setValue(e.target.value);
   };
 
   const handleSelect = async (data) => {
-    console.log(JSON.stringify(data[0]))
+
      const description = data[0].description
+     setDesc(description)
     setValue(data.description, false);
     clearSuggestions();
 
     try {
       getGeocode({ address: description }).then((results) => {
         const { lat, lng } = getLatLng(results[0]);
-        console.log("📍 Coordinates: ", { lat, lng });
+      
     
            onLocationSelected({ latitude:lat,longitude:lng})
 
@@ -62,12 +61,15 @@ console.log(data)
   return (
  
       <div className="mb-4">
+        <div>
+          <label className='mx-4'>{desc}</label>
+        </div>
         <input
             value={value || ""}
           onChange={handleInput}
           disabled={!ready}
           placeholder="Search a place"
-          className="w-full  bg-transparent p-2 text-lg border border-gray-300 rounded"
+          className="w-full  bg-transparent p-2 text-lg rounded-full border border-gray-300 rounded"
         />
         {status === 'OK' && (
           <ul className="border border-gray-200 mt-1 rounded shadow">

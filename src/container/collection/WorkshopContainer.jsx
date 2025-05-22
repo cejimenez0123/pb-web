@@ -15,7 +15,7 @@ import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocom
 import Context from '../../context';
 import GoogleMapSearch from './GoogleMapSearch';
 import { LoadScript } from '@react-google-maps/api';
-
+import check from "../../images/icons/check.svg"
 
 
 const WorkshopContainer = (props) => {
@@ -121,7 +121,7 @@ setTimeout(()=>{
     setLoading(true)
     setError(null)
     setSuccess(null)
-    
+    if(currentProfile){
     if(pathParams.pageId && page){
         dispatch(createWorkshopGroup({profile:currentProfile,story:page,isGlobal,location})).then(res=>{
       checkResult(res,payload=>{
@@ -160,12 +160,14 @@ setTimeout(()=>{
         setSuccess(null)
       })
     })
+  }}else{
+    setError("No Author logged in")
   }}
   
 
   
 const localCheck=()=>{
-  return(<label className='border-1 mb-4 mt-8 border-2 border-emerald-800 flex flex-row p-2 number border-emerald-600 rounded-full   '>
+  return(<label className=' mb-4 mt-8 border-2 border-emerald-800 flex flex-row p-2 number border-emerald-600 rounded-full   '>
         
           <h6 className='text-xl my-auto ml-4'>Radius:</h6>
      
@@ -183,21 +185,23 @@ const localCheck=()=>{
     googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
     libraries={['places']}
   >
-    {/* // <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} libraries={["places"]}> */}
-<>
+   <>
       {currentProfile?(
-        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4    rounded-lg ">
+        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] mt-20 flex flex-col  md:border-2 text-left sm:w-[20rem] md:border-emerald-600 p-4    rounded-lg ">
        <div>
-     <h2 className='text-xl my-8 font-bold '> {currentProfile.username}</h2></div>
-     <div className='flex flex-row justify-start'>
+        <span className='flex my-8 flex-row'>
+     <h2 className='text-xl  font-bold ml-2 mr-10'> {currentProfile.username}</h2>{!isGlobal?<span className={`${location&& location.longitude && location.latitude?"bg-emerald-600":"bg-yellow-500" } rounded-full w-8 max-h-6 flex`}><img  className="mx-auto my-auto" src={check}/></span>:null}</span></div>
+     <div className='flex flex-row mb-8  justify-start'>
      <InfoTooltip text="Do you want to find users local to your area or around the world?" />
-     <label className='flex w-[100%] flex-row justify-between'><h6 className='mont-medium text-xl'> Go Global</h6> <input checked={isGlobal} type="checkbox"  onChange={handleGlobal}  className='toggle bg-white bg-slate-400'/></label>
+     <label className='flex w-[100%] flex-row justify-between'>
+      <h6 className='mont-medium text-xl'> Go {!isGlobal?"Global":"Local"}</h6>
+      <input checked={isGlobal} type="checkbox"  onChange={handleGlobal}  className='toggle bg-white bg-slate-400'/></label>
 
 </div>
 
 
         {!isGlobal?<>  <GoogleMapSearch onLocationSelected={(coordinates)=>{
-          setLocation()
+          setLocation(coordinates)
         }}/>{localCheck()}</>:null}
   {page?<PageWorkshopItem page={page}/>:null}
   

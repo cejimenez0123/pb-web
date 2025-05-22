@@ -84,9 +84,7 @@ function App(props) {
   }
   },[])
   useEffect(() => {
-    // console.log("isFirstLaunch:", isFirstLaunch);
-    // console.log("isNative:", isNative);
-    // console.log("CurrentProfile",currentProfile)
+
     if(currentProfile){
    
       navigate("/profile/home")
@@ -137,9 +135,7 @@ function App(props) {
   href="https://unpkg.com/react-quill@1.3.3/dist/quill.snow.css"
 />
 <script src="/socket.io/socket.io.js"></script>
-{/* <script async
-    src={`https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&loading=async&libraries=places&callback=initMap`}>
-</script> */}
+
 
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
@@ -163,7 +159,7 @@ function App(props) {
         {!isPhone&&(!isFirstLaunch||currentProfile)? <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/>:null}
-           <div className='pt-4 '>
+           {/* <div className='pt-4 '> */}
 <Alert />
       <Routes >
      <Route path='/' element={<AboutContainer/>}/>
@@ -317,7 +313,7 @@ function App(props) {
         profile={props.currentProfile}/></div>:null}
     </div>
     </div>
-    </div>
+    {/* </div> */}
 
     </Context.Provider>
 
