@@ -20,7 +20,7 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
 
   useEffect(() => {
    if(pathName.includes("discovery")||pathName.includes("collection")){
- 
+    
     setFilteredItems([...items])
    }else{
     const booksWithContent = items.filter(item=>item).filter(

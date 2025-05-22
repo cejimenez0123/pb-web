@@ -3,7 +3,7 @@ import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
 import {signOutAction} from "../actions/UserActions"
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import menu from "../images/icons/menu.svg"
 import getDownloadPicture from '../domain/usecases/getDownloadPicture'
 import { debounce } from 'lodash'
@@ -56,7 +56,7 @@ function NavbarContainer(props){
     const navigate = useNavigate()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const {currentProfile}=useContext(Context)
-   
+   const pathName = useLocation().pathname
 
 
   const [openDialog,setOpenDialog]=useState(false)
@@ -70,7 +70,7 @@ function NavbarContainer(props){
               setProfilePic(image)
            } )
           }}
-  },[currentProfile])
+  },[currentProfile,pathName])
 
     const openDialogAction = ()=>{
       dispatch(searchDialogToggle({open:true}))
@@ -96,50 +96,6 @@ function NavbarContainer(props){
       }
 
     }  
-  const navbarEnd=()=>{
-    return  currentProfile?<div className="navbar-end">
-    <div className="dropdown dropdown-end">
-        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-          <div className="w-5 rounded-full">
-            {profilePic!=Enviroment.blankProfile?<div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
-      <IonImg className="object-fit  " src={profilePic}/></div>:null}
-      
-          </div> 
-        </div>
-        <ul
-          tabIndex={0}
-          className="menu menu-sm dropdown-content bg-emerald-50 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-        {settings.map((setting) => (
-                      
-                      <li key={setting} 
-                                onClick={()=>{
-                                    if(setting== SettingName.profile){
-                                        navigate(Paths.myProfile())
-                                    }else if(setting== SettingName.logout){
-                                        dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
-                                          localStorage.clear()
-                                          navigate("/")
-                                        },err=>{
-                                          
-                                        }))
-                                    }else if(setting== SettingName.account){
-                                        navigate("/profile/edit")
-                                    }else if(setting == SettingName.notifications){
-                                      navigate(Paths.notifications())
-                                    }
-                                
-                      }}><a className='text-emerald-800'>{setting}</a></li>
-                    ))}
-                         </ul>
-  
-      </div>
-      </div>:null
-      
-      
-      
-      
-      
-      }
  
     const [openCreate,setOpenCreate] = useState(false)
 
@@ -349,12 +305,12 @@ function NavbarContainer(props){
       {!isPhone?menuHoriz():  <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
   </div>
 
-  {isPhone?<div className="navbar-end">
+  <div className="navbar-end">
   <div className="dropdown dropdown-top dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
-          {profilePic?<div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
-    <IonImg className="object-fit  " src={profilePic}/></div>:null}
+        <div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
+    <IonImg className="object-fit  " src={profilePic}/></div>
     
         </div> 
       </div>
@@ -385,7 +341,7 @@ function NavbarContainer(props){
                        </ul>
 
     </div>
-    </div>:<div className="navbar-end"></div>}
+    </div>
     
     
     

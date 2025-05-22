@@ -92,8 +92,6 @@ function App(props) {
          navigate('/onboard');
      } else if (isNative) {
          navigate('/login');
-     } else {
-         navigate('/');
      }
   }, [isFirstLaunch,currentProfile, isNative]);
   useEffect(() => {
