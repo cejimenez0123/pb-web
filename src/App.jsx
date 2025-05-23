@@ -76,7 +76,7 @@ function App(props) {
   const location = useLocation()
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
-console.log(location.pathname)
+
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())

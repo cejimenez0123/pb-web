@@ -350,15 +350,11 @@ if(currentProfile){
                 </div>
                 <div>
                               {isPhone?<span className="flex   mb-2 flex-row"> 
-                <label className='flex my-auto border-emerald-600  w-[70%] border-opacity-70 border-2 min-h-10 rounded-full  mt-8 flex-row mx-2'>
+                <label className='flex my-auto border-emerald-600  w-[100%] border-opacity-70 border-2 min-h-10 rounded-full  mt-8 flex-row mx-2'>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search:</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 w-full py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
   </label><span className=" mx-1  w-24 flex  items-end pb-2 justify-evenly flex-row">
 
-<img src={sortAlphabet} onClick={handleAlphaClick} height={"30px"} width={"30px"}
-className=" text-emerald-800 mx-2  "/>
-   <img src={sortTime?clockArrowUp:clockArrowDown}  height={"30px"} width={"30px"} onClick={handleTimeClick} 
-   className="text-emerald-800 mx-2 "/>
    </span></span>:null}
  <br/>
              
@@ -386,10 +382,12 @@ className=" text-emerald-800 mx-2  "/>
    className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page w-[96vw]  md:w-page mx-auto rounded-full">
   <IndexList items={collections}/>
   </div>
-  {/* <input type="radio" name="my_tabs_2" role="tab" className="tab   bg-transparent border-3 mx-auto [--tab-bg:emerald] mont-medium text-emerald-800  rounded-full  [--tab-border-color:emerald] border-2  text-xl" aria-label="Libraries" />
-  <div role="tabpanel"  className="tab-content md:w-page w-[96vw] pt-1 lg:py-4  ">
-    <IndexList items={libraries}/>
-  </div> */}
+ {isPhone? <><img src={sortAlphabet} onClick={handleAlphaClick}
+className="my-auto tab text-emerald-800 mx-2  " height={"30px"} width={"30px"}/>
+   <img src={sortTime?clockArrowUp:clockArrowDown} 
+   height={"30px"} width={"30px"}  onClick={handleTimeClick} 
+   className="my-auto tab text-emerald-800 mx-2"/></>:null}
+
   {isNotPhone? <span className='flex flex-row'> <label className={`flex border-emerald-600 border-2 rounded-full my-1 ${search.length==0?"w-[14em]":"w-[20em]"} flex-row mx-4 `}>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>
   <input type='text' value={search}  onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 rounded-full text-sm bg-transparent my-1  text-emerald-800' />

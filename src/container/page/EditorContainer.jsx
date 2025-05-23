@@ -92,13 +92,7 @@ function EditorContainer(props){
         
       },[htmlContent])
      
-      // const dispatchContent=(content)=>{
-      //       let params = parameters
-      //       params.data = content
-      //       console.log("Content",content)
-      //       setParameters(params)
-      //       dispatch(setHtmlContent({html:content}))
-      // }
+
    
     useLayoutEffect(()=>{
       if(currentProfile){
@@ -197,21 +191,19 @@ setError(err.message)
         
           navigate(Paths.addStoryToCollection.story(id))
         }
-  const handlePostPublicly=debounce((truthy)=>{
-  
-          let params = parameters
-
+  const handleisPrviate=debounce((truthy)=>{
+ 
+setOpenDescription(false)
           setIsPrivate(truthy)
-          params.isPrivate = !truthy
-          params.privacy = truthy
-          params.needsFeedback = false
+        
+          setNeedFeedback(false)
        
-          setParameters(params)
+          setParameters({...params,isPrivate:truthy})
       
          setFeedbackDialog(false)
         setOpenDescription(false)
   
-    if(!truthy){
+    if(!isPrivate){
       navigate(Paths.page.createRoute(id))
    }
        
@@ -266,7 +258,7 @@ setError(err.message)
 className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
 <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
 
-  handlePostPublicly(true)
+  handleisPrviate(true)
   }}>Make Private</li>}
   {!isPrivate?<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
        setFeedbackDialog(false) 
@@ -291,10 +283,12 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
     </div>)
    }
    useEffect(()=>{
-    dispatchUpdate(parameters)
-   },[htmlContent,parameters.privacy,parameters.data,parameters.description,parameters.title])
+   let params= {...parameters,data:htmlContent,isPrivate,needsFeedback}
+
+    dispatchUpdate(params)
+   },[htmlContent,isPrivate,parameters.privacy,parameters,parameters.data,parameters.description,parameters.title])
    const handleFeedback=()=>{
-   
+
     let params = parameters
        params.description = feedback
        params.needsFeedback = true
@@ -313,14 +307,12 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   
  
 },4001)
-const dispatchUpdate =debounce((content)=>{
-  setIsSaved(false)
-  
-  let params = parameters
-console.log(params)
+const dispatchUpdate =debounce((params)=>{
+  setIsSaved(false) 
+  console.log(params)
  dispatch(updateStory(params)).then(res=>{
     checkResult(res,payload=>{
-      console.log(JSON.stringify(payload))
+    
       if(payload.story){
 
 setIsSaved(true)
@@ -377,7 +369,8 @@ isFeedback={feedbackDialog}
 
 handleChange={setDescription} 
 handleFeedback={handleFeedback}
-handlePostPublic={()=>handlePostPublicly(false)}
+handlePostPublic={()=>{
+  handleisPrviate(false)}}
 handleClose={()=>{
 
   

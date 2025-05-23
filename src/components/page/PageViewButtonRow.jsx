@@ -119,7 +119,7 @@ checkResult(res,payload=>{
     function soCanUserEdit(){
       const roles = [RoleType.editor]
         if(currentProfile&&page){
-            console.log(page)
+        
             if(currentProfile.id==page.authorId){
                 setCanUserEdit(true)
                 return null

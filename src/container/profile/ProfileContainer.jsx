@@ -143,8 +143,9 @@ function ProfileContainer({profile}){
         dispatch(setPagesInView({pages:[]}))
             dispatch(setCollections({collections:[]}))
             let token = localStorage.getItem("token")
-            token?dispatch(getProtectedProfilePages({profile:{id}})):dispatch(getPublicProfilePages({profile:{id}}))
-           token?dispatch(getProtectedProfileCollections({profile:{id}})):dispatch(getPublicProfileCollections({profile:{id}}))
+            
+            token&&currentProfile.id==id?dispatch(getProtectedProfilePages({profile:{id}})):dispatch(getPublicProfilePages({profile:{id}}))
+            token&&currentProfile.id==id?dispatch(getProtectedProfileCollections({profile:{id}})):dispatch(getPublicProfileCollections({profile:{id}}))
      
     }
     useLayoutEffect(()=>{
