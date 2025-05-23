@@ -18,9 +18,9 @@ let list = allItems.filter(item => {
 
   // Sort "today" items by creation time (newest first)
 
-  todayItems = allItems.filter(item=>now - new Date(item.created) < date).sort((a, b) => b.created - a.created);
+  todayItems = allItems.filter(item=>now - new Date(item.updated) < date).sort((a, b) => b.updated - a.updated);
   console.log(todayItems)
-  otherItems = allItems.filter(item=>now - new Date(item.created) > date)
+  otherItems = allItems.filter(item=>now - new Date(item.updated) > date)
   // Sort remaining items using priority/recency score
   otherItems.sort((a, b) => {
     if (a.priority || b.priority) {
