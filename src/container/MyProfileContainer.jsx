@@ -382,11 +382,13 @@ if(currentProfile){
    className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page w-[96vw]  md:w-page mx-auto rounded-full">
   <IndexList items={collections}/>
   </div>
- {isPhone? <><img src={sortAlphabet} onClick={handleAlphaClick}
-className="my-auto tab text-emerald-800 mx-2  " height={"30px"} width={"30px"}/>
+ {isPhone? <><div className=' tab '><span className='flex w-[15em] flex-row'>
+  <img src={sortAlphabet} onClick={handleAlphaClick}
+className="my-auto text-emerald-800 mx-2  " height={"30px"} width={"30px"}/>
    <img src={sortTime?clockArrowUp:clockArrowDown} 
    height={"30px"} width={"30px"}  onClick={handleTimeClick} 
-   className="my-auto tab text-emerald-800 mx-2"/></>:null}
+   className="my-auto text-emerald-800 mx-2"/>
+   </span></div></>:null}
 
   {isNotPhone? <span className='flex flex-row'> <label className={`flex border-emerald-600 border-2 rounded-full my-1 ${search.length==0?"w-[14em]":"w-[20em]"} flex-row mx-4 `}>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>
