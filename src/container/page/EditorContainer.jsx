@@ -289,8 +289,8 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
    },[htmlContent,isPrivate,parameters.privacy,parameters,parameters.data,parameters.description,parameters.title])
    const handleFeedback=()=>{
 
-    let params = parameters
-       params.description = feedback
+      let params = parameters
+       params.description = description
        params.needsFeedback = true
        setParameters(params)
        if(params.page.id){
