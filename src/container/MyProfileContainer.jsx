@@ -452,10 +452,16 @@ switch (filterType) {
   </label>
   <span className={`${search.length==0?"":"hidden"} mx-1  w-24 flex  items-end pb-4 justify-evenly flex-row`}>
 
-<img src={sortAlphabet} onClick={handleAlphaClick} height={"30px"} width={"30px"}
-className=" text-emerald-800 mx-2  "/>
-   <img src={sortTime?clockArrowUp:clockArrowDown}  height={"30px"} width={"30px"} onClick={handleTimeClick} 
-   className="text-emerald-800 mx-2 "/>
+  <select  onChange={(e)=>{
+    setFilterType(e.target.value)
+  }} defaultValue={filterType} className="select bg-transparent  text-emerald-800 border-2 border-emerald-600 rounded-full mx-3">
+    <option value={filterTypes.filter}>Filter</option>
+    <option value={filterTypes.recent}>Most Recent</option>
+    <option value={filterTypes.oldest}>Oldest</option>
+    <option value={filterTypes.feedback}>Feeback</option>
+    <option value={filterTypes.AZ}>A-Z</option>
+    <option value={filterTypes.ZA}>Z-A</option>
+  </select>
    </span></span>:null}
 </div>
 
