@@ -79,27 +79,27 @@ function RoleForm({item,onClose}){
        setRoles([...newRoles,roleI])
      
     }
-    return(<div className="background-blur lg:p-2 h-screen w-[100%] overflow-scroll h-[100%] bg-emerald-100 px-4">
+    return(<div className="background-blur lg:p-2 h-screen w-[100%] h-[100%] bg-emerald-100 px-4">
                           <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
          {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>{error?error:success}</div>:null}
        
-         </div> <div className="pt-4">
+         </div> <div className="pt-4 px-4">
             
            <div className=" flex text-emerald-900 flex-row justify-between">
-            <div className="lora-medium"><h1 className="text-[2rem]">Share</h1></div><img onClick={onClose} src={close}/>
+            <div className="mont-medium"><h1 className="text-[2rem]">Share</h1></div><img onClick={onClose} src={close}/>
         </div>
         <div className=" py-4 ">
             <p className="text-sm text-emerald-900">{item.title}</p>
         </div>
         <div>
             <div className="
-            text-white  botder rounded-full flex text-l lg:text-xl w-[8rem] h-[4rem] mont-medium shadow-sm border-white mb-8 bg-emerald-800"
+            text-white  border rounded-full flex text-l lg:text-xl w-[8rem] h-[4rem] mont-medium shadow-sm border-white mb-8 bg-emerald-800"
             onClick={handlePatchRoles}
             >
                 <h6 className="mx-auto text-[1.2rem] mx-auto my-auto">Save</h6></div>
         </div>
         <InfiniteScroll
-        className="scroll max-h-full sm:max-h-[25em] overflow-y-scroll overflow-x-hidden rounded-lg"
+        className="scroll max-h-full sm:max-h-[25em] overflow-x-hidden rounded-lg"
         dataLength={profiles.length}
         next={()=>{
 
@@ -107,7 +107,7 @@ function RoleForm({item,onClose}){
         hasMore={pending} 
       loader={<p>Loading...</p>}
         endMessage={
-            <div className="no-more-data">
+            <div className="">
                 <h6 className="mx-auto w-24 text-center text-2xl text-bold text-emerald-800">Fin</h6>
             </div>
         }>
@@ -122,10 +122,11 @@ function RoleForm({item,onClose}){
                 return(<div> 
 
              <div key={i}className=" shadow-sm flex flex-row h-[4em] rounded-full justify-between px-4 bg-opacity-60 bg-transparent border-emerald-600 border-2  my-4 ">
-                    <span className="my-auto"><ProfileCircle  profile={profile}/></span>
+                    <span className="my-auto"><ProfileCircle  profile={profile} color="text-emerald-700"/></span>
                         <div className="my-auto w-fit">
-                        <div className="dropdown   dropdown-left">
-  <div tabIndex={0}  role="button" className=" bg-green-800 bg-opeacity-90 py-2 w-[9em] px-4 mont-medium rounded-full flex text-white "><h6 className="mx-auto my-auto">{role?role.role:"Role"}</h6></div>
+                        <div className={`dropdown  ${i>profiles.length/2?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
+  <div tabIndex={0}  role="button" className=" bg-opeacity-90 py-2 w-[9em]  px-4 mont-medium text-emerald-600 flex  ">
+    <h6 className="mx-auto underline my-auto">{role?role.role:"Role"}</h6></div>
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-[1] w-52 p-2 shadow">
   <li onClick={()=>handleUpdateRole({role:RoleType.role,profile:profile})}>
     <a className="label text-emerald-600">{RoleType.role}</a></li>
