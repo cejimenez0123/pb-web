@@ -51,7 +51,7 @@ function ApplyContainer(props){
       useEffect(()=>{
           let soo = seo
           soo.title= "Plumbum (Apply)"
-          setSeo(soo.title)
+          setSeo(soo)
       },[])
     
 
