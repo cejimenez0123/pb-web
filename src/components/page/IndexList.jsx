@@ -5,8 +5,8 @@ import { useLayoutEffect, useState } from "react"
 
 const IndexList = ({items,handleFeedback})=>{
 
-    const [list,setList]=useState(items)
-    useLayoutEffect(()=>{setList(items)},[items])
+    // const [list,setList]=useState(items)
+    // useLayoutEffect(()=>{setList(items)},[items])
 
 
     if(items){

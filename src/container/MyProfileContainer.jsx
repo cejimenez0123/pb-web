@@ -43,9 +43,18 @@ function MyProfileContainer(props){
     const [referral,setReferral]=useState(null)
     const [firstLogin,setFirstLogin]=useState(localStorage.getItem("firstTime")=="true")
     const [openDialog,setOpenDialog]=useState(false)
-  
+    const [filterType,setFilterType]=useState("Filter")
     const location =useLocation()
-   
+    const filterTypes = {
+      filter: "Filter",
+      recent:"Recent",
+      oldest:"Oldest",
+      feedback:"Feedback",
+        AZ:"A-Z",
+        ZA:"Z-A"
+    }
+    
+ 
     const [openReferral,setOpenReferral]=useState(false)
     const stories = usePersistentMyStoriesCache(()=>{
       dispatch(setPagesInView({pages:[]}))
@@ -64,15 +73,13 @@ function MyProfileContainer(props){
       }
   
      })
-   usePersistentMyCollectionCache(()=>{
+  let cols = usePersistentMyCollectionCache(()=>{
     dispatch(setCollections({collections:[]}))
     return dispatch(getMyCollections())
   })
-  const collections=useSelector(state=>state.books.collections).filter(col=>{
+  const collections=useSelector(state=>state.books.collections??cols).filter(col=>{
     if(col){
-     if(search.toLowerCase()=="feedback"){
-       return col.type=="feedback"
-     }
+
      if(search.length>0){
       return col.title.toLowerCase().includes(search.toLowerCase())
      }else{
@@ -99,9 +106,9 @@ function MyProfileContainer(props){
  
   //   })
  
-const handleTimeClick=debounce(()=>{
+const handleTimeClick=debounce((truthy)=>{
         
-        let newValue = !sortTime
+        let newValue = truthy
         setSortTime(newValue)
         handleSortTime(newValue)
 
@@ -137,9 +144,9 @@ const arr = pages.sort((a,b)=>{
 dispatch(setPagesInView({pages:arr}))
 },10)
 
-  const handleSortTime=debounce((sorted)=>{
+  const handleSortTime=(sorted)=>{
     
-    
+   
     let list = collections
   list = list.sort((a,b)=>{
  
@@ -166,7 +173,7 @@ newPages = [...newPages].sort((a,b)=>{
   })
   dispatch(setPagesInView({pages:newPages}))
   
-})
+}
 
      
      const [feedbackPage,setFeedbackPage]=useState(null)
@@ -262,7 +269,8 @@ if(currentProfile){
 }
     },[currentProfile])
     useLayoutEffect(()=>{
-       debounce(()=>{ if(collections && collections.length>0){
+       debounce(()=>{
+         if(collections && collections.length>0){
             let libs=collections.filter(col=>{
                 return col && col.childCollections && col.childCollections.length>0
             })
@@ -274,13 +282,45 @@ if(currentProfile){
         }},20)()
     },[collections])
 
-    const handleAlphaClick=()=>{
-        
-      let newValue = !sortAlpha
-      setSortAlpha(newValue)
-      handleSortAlpha(newValue)
+    const handleAlphaClick=(truthy)=>{
+      
+      setSortAlpha(truthy)
+      handleSortAlpha(truthy)
 
 }
+const handleSortFeedback=()=>{
+  let libs=collections.filter(col=>{
+    return col.type=="feedback"
+})
+dispatch(setCollections({collections:libs}))
+}
+useEffect(()=>{
+
+switch (filterType) {
+  case filterType.filter:{
+    dispatch(setCollections({collections:cols}))
+  }
+  case filterTypes.recent:
+      handleSortTime(true);
+      break;
+  case filterTypes.oldest:
+      handleSortTime(false);
+      break;
+  case filterTypes.feedback:
+      handleSortFeedback();
+      break;
+      case filterTypes.AZ:
+        handleSortAlpha(false)
+        break;
+        case filterTypes.ZA:
+          handleSortAlpha(true)
+          break;
+  default:
+      // Optional: handle unexpected filter types
+      break;
+}
+
+},[filterType])
     
             return(
               <ErrorBoundary fallback={"error"}>
@@ -382,13 +422,23 @@ if(currentProfile){
    className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page w-[96vw]  md:w-page mx-auto rounded-full">
   <IndexList items={collections}/>
   </div>
- {isPhone? <><div className=' tab '><span className='flex w-[15em] flex-row'>
-  <img src={sortAlphabet} onClick={handleAlphaClick}
-className="my-auto text-emerald-800 mx-2  " height={"30px"} width={"30px"}/>
-   <img src={sortTime?clockArrowUp:clockArrowDown} 
-   height={"30px"} width={"30px"}  onClick={handleTimeClick} 
-   className="my-auto text-emerald-800 mx-2"/>
-   </span></div></>:null}
+ {isPhone?<div className=''>
+
+  <select  onChange={(e)=>{
+    setFilterType(e.target.value)
+  }} defaultValue={filterType} className="select bg-transparent  text-emerald-800 border-2 border-emerald-600 rounded-full mx-3">
+    <option value={filterTypes.filter}>Filter</option>
+    <option value={filterTypes.recent}>Most Recent</option>
+    <option value={filterTypes.oldest}>Oldest</option>
+    <option value={filterTypes.feedback}>Feeback</option>
+    <option value={filterTypes.AZ}>A-Z</option>
+    <option value={filterTypes.ZA}>Z-A</option>
+  </select>
+
+{/* </fieldset>   */}
+<div></div>
+{/* </span> */}
+</div>:null}
 
   {isNotPhone? <span className='flex flex-row'> <label className={`flex border-emerald-600 border-2 rounded-full my-1 ${search.length==0?"w-[14em]":"w-[20em]"} flex-row mx-4 `}>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>

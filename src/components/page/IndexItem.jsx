@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {  setHtmlContent, setPageInView,setEditingPage } from "../../actions/PageActions.jsx";
 import {  RoleType } from "../../core/constants";
@@ -11,23 +11,21 @@ import Paths from "../../core/paths";
 import { initGA,sendGAEvent } from "../../core/ga4.js";
 import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
+import Context from "../../context.jsx";
 function IndexItem({item,handleFeedback}) {
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 600px)'
-      })
-  
+ 
     const [canUserAdd,setCanUserAdd]=useState(false)
     useLayoutEffect(()=>{
       initGA()
     },[])
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    const dispatch = useDispatch()
+    const {currentProfile} = useContext(Context)
+     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
     useLayoutEffect(()=>{
       soCanUserEdit()
       soCanUserAdd()
-    },[item])
+    },[item,currentProfile])
     const copyShareLink=()=>{
       if(item && item.storyIdList){
         sendGAEvent("Copy Share Link",`Share Link Collection:${item.title}`)

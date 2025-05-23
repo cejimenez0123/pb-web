@@ -82,7 +82,7 @@ export default function PageViewContainer(props){
             setCanUserSee(true)
             return
             }
-            if((currentProfile && page.authorId == currentProfile.id)||(page.collections && page.collections.find(col=>col && col.collection && col.collection.isPrivate==false))){
+            if((currentProfile && page.authorId == currentProfile.id)||(page.collections && page.collections.find(col=>col && col.collection && col.collection.isPrivate==false||col.collection.roles.find(role=>role.profileId==currentProfile.id)))){
                setCanUserSee(true)
                 setPending(false)
                 return
