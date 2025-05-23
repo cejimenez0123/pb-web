@@ -53,7 +53,8 @@ function MyProfileContainer(props){
         AZ:"A-Z",
         ZA:"Z-A"
     }
-    
+  
+    const [ogCols,setOgCols]=useState([])
  
     const [openReferral,setOpenReferral]=useState(false)
     const stories = usePersistentMyStoriesCache(()=>{
@@ -61,8 +62,7 @@ function MyProfileContainer(props){
       return dispatch(getMyStories())
     })
     
-    const pages =useSelector(state=>[...state.pages.pagesInView]
-    ).filter(page=>{
+    const pages =useSelector(state=>[...state.pages.pagesInView] ).filter(page=>{
       if(search.toLowerCase()=="untitled"){
         return page.title.length==0
       }
@@ -77,7 +77,7 @@ function MyProfileContainer(props){
     dispatch(setCollections({collections:[]}))
     return dispatch(getMyCollections())
   })
-  const collections=useSelector(state=>state.books.collections??cols).filter(col=>{
+  const collections = useSelector(state=>state.books.collections).filter(col=>{
     if(col){
 
      if(search.length>0){
@@ -90,6 +90,9 @@ function MyProfileContainer(props){
    }
  
     })
+    useEffect(()=>{
+      setOgCols(cols)
+    },[cols])
   //:colp.filter(col=>{
   //   if(col){
   //    if(search.toLowerCase()=="feedback"){
@@ -270,6 +273,7 @@ if(currentProfile){
     },[currentProfile])
     useLayoutEffect(()=>{
        debounce(()=>{
+      
          if(collections && collections.length>0){
             let libs=collections.filter(col=>{
                 return col && col.childCollections && col.childCollections.length>0
@@ -295,11 +299,12 @@ const handleSortFeedback=()=>{
 dispatch(setCollections({collections:libs}))
 }
 useEffect(()=>{
-
+ console.log(ogCols)
+ console.log(filterType==filterType.filter)
 switch (filterType) {
-  case filterType.filter:{
-    dispatch(setCollections({collections:cols}))
-  }
+  case filterType.filter:
+      dispatch(setCollections({collections:ogCols}));
+      break;
   case filterTypes.recent:
       handleSortTime(true);
       break;
@@ -316,11 +321,12 @@ switch (filterType) {
           handleSortAlpha(true)
           break;
   default:
-      // Optional: handle unexpected filter types
+    dispatch(setCollections({collections:ogCols}));
       break;
 }
 
 },[filterType])
+
     
             return(
               <ErrorBoundary fallback={"error"}>
