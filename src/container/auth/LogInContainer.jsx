@@ -19,13 +19,15 @@ import Context from '../../context';
 import { initGA,sendGAEvent } from '../../core/ga4';
 function LogInContainer(props) {
     const location = useLocation()
-    const {setError}=useContext(Context)
+    const {setError,seo,setSeo}=useContext(Context)
     useLayoutEffect(()=>{
         initGA()
     },[])
-    useEffect(()=>{
-        sendGAEvent("View Login Page","View Login Page","Log In","Log In",0,true)
-    },[])
+    useLayoutEffect(()=>{
+        let soo = seo
+        soo.title = "Plumbum (LogIn) - Share Your Weirdness"
+        setSeo(soo)
+   },[])
     return (
         <div id="" className='sm:mx-2 py-16'>
             <LogInCard  

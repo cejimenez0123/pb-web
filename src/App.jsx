@@ -88,7 +88,9 @@ function App(props) {
   
   },[location.pathname])
   useEffect(() => {
-
+    if(olderPath){
+      navigate(olderPath)
+    }
     if(currentProfile){
       if(olderPath){
         navigate(olderPath)
@@ -103,6 +105,7 @@ function App(props) {
      }else{
       navigate(olderPath)
      }
+     
   }, [isFirstLaunch,currentProfile, isNative]);
   useEffect(() => {
     const checkFirstLaunch = async () => {

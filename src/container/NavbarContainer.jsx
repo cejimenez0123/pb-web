@@ -305,7 +305,9 @@ function NavbarContainer(props){
       {!isPhone?menuHoriz():  <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
   </div>
 
+ 
   <div className="navbar-end">
+  {currentProfile&&localStorage.getItem("token")? 
   <div className={`dropdown ${isPhone?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
@@ -340,7 +342,7 @@ function NavbarContainer(props){
                   ))}
                        </ul>
 
-    </div>
+    </div>:<div className=''/>}
     </div>
     
     
