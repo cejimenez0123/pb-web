@@ -34,7 +34,7 @@ function MyProfileContainer(props){
     useLayoutEffect(()=>{
       initGA()
     },[])
-    const {currentProfile}=useContext(Context)
+    const {currentProfile,seo,setSeo}=useContext(Context)
     const [search,setSearch]=useState("")
     const [sortAlpha,setSortAlpha]=useState(true)
     const [sortTime,setSortTime]=useState(true)
@@ -195,10 +195,17 @@ newPages = [...newPages].sort((a,b)=>{
 
    
       
-   
-    useLayoutEffect(()=>{
-        location.pathname=Paths.myProfile()
-    },[])
+      useLayoutEffect(()=>{
+        if(currentProfile){
+          let soo = seo
+          soo.title = `Plumbum (${currentProfile.username}) Home`
+          setSeo(soo)
+        }
+          
+      },[currentProfile])
+    // useLayoutEffect(()=>{
+    //     location.pathname=Paths.myProfile()
+    // },[])
   const handleFeedback=()=>{
    
   let params= structuredClone(feedbackPage,{description:description,needsFeedback:true})
