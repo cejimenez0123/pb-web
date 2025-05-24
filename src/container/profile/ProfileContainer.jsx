@@ -26,6 +26,7 @@ import { initGA,sendGAEvent } from "../../core/ga4.js"
 import Enviroment from "../../core/Enviroment.js"
 import ErrorBoundary from "../../ErrorBoundary.jsx"
 import PageList from "../../components/page/PageList.jsx"
+import sortItems from "../../core/sortItems.js"
 function ProfileContainer({profile}){
     const {seo,setSeo,setError,setSuccess,currentProfile}=useContext(Context)
     const pathParams = useParams()
@@ -53,7 +54,7 @@ function ProfileContainer({profile}){
 
   
 
-    const collections = useSelector(state=>state.books.collections)
+    const collections = sortItems([],useSelector(state=>state.books.collections)
     .filter(col=>col).filter(col=>{
         if(search.length>0){
          return col.title.toLowerCase().includes(search.toLowerCase())
@@ -61,16 +62,16 @@ function ProfileContainer({profile}){
          return true
         }
     
-       })
+       }))
  
-    const pages = useSelector(state=>state.pages.pagesInView).filter(page=>page).filter(page=>{
+    const pages = sortItems(useSelector(state=>state.pages.pagesInView).filter(page=>page).filter(page=>{
         if(search.length>0){
          return page.title.toLowerCase().includes(search.toLowerCase())
         }else{
          return true
         }
     
-       })
+       }),[])
    
     const handleSortTime=debounce(()=>{
     
@@ -248,7 +249,7 @@ function ProfileContainer({profile}){
 const meta = ()=>{
     if(profile){
         let soo = seo
-        soo.title = profile.username
+        soo.title =     `Plumbum Writer Check Out(${profile.username})`
         soo.description = profile.selfStatement
         soo.url =Enviroment.domain+Paths.profile.createRoute(profile.id)
         setSeo(soo)
@@ -288,14 +289,14 @@ meta()
   <IndexList items={collections} />
 
     </div>
-    <><div className=" my-auto  icon mx-1  flex  justify-between flex-row">
+    {/* <><div className=" my-auto  icon mx-1  flex  justify-between flex-row">
 <img onClick={()=>setShowPageList(!showPageList)} src={stream}/>
 
  <img src={sortAlphabet} onClick={handleAlphaClick} 
  className="my-auto text-emerald-800 icon mx-2 "/>
     <img src={sortTime?clockArrowUp:clockArrowDown} onClick={handleTimeClick} 
     className="my-auto icon text-emerald-800"/>
-    </div></> 
+    </div></>  */}
                </div>
 </div>
 </ErrorBoundary>

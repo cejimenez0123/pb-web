@@ -86,11 +86,11 @@ function SettingsContainer(props) {
         setDeleteDialog(false);
     };
 
-  
+    
     
     const setProfile = (profile)=>{
         setPending(true)
-console.log(profile)
+
         setNewUsername(profile.username)
     
    

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams ,useSearchParams} from "react-router-dom";
@@ -9,7 +9,7 @@ import axios from "axios";
 import Enviroment from "../core/Enviroment";
 
 export default function EmailPreferences() {
-  const {setSuccess,setError,setSeo}=useContext(Context)
+  const {setSuccess,setError,setSeo,seo}=useContext(Context)
   const selectRef = useRef()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -21,7 +21,11 @@ export default function EmailPreferences() {
   const [unsubscribed,setUnsubscribed]=useState(false)
   const [frequency, setFrequency] = useState(1);
 
-  
+  useLayoutEffect(()=>{
+    let soo = seo
+    soo.title="Plumbum (Email Preferences)"
+    setSeo(soo)
+  },[])
   useEffect(() => {
     if (searchParams.get("unsubscribe") === "true") {
 
