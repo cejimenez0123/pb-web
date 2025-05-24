@@ -88,7 +88,7 @@ function App(props) {
   
   },[location.pathname])
   useEffect(() => {
-    if(location.pathname.includes("/links")){
+    if(location.pathname.includes("/links")||location.pathname.includes("/event")){
 
     }else{
     if(olderPath){
@@ -97,8 +97,6 @@ function App(props) {
     if(currentProfile){
       if(olderPath){
         navigate(olderPath)
-      }else{
-        navigate("/profile/home")
       }
       
     }else if (isFirstLaunch&&isNative) {
