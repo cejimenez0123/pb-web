@@ -88,9 +88,12 @@ function App(props) {
   
   },[location.pathname])
   useEffect(() => {
+    if(location.pathname.includes("/links")){
+
+    }else{
     if(olderPath){
       navigate(olderPath)
-    }
+    }else{
     if(currentProfile){
       if(olderPath){
         navigate(olderPath)
@@ -100,12 +103,11 @@ function App(props) {
       
     }else if (isFirstLaunch&&isNative) {
          navigate('/onboard');
-     } else if (isNative) {
-         navigate('/login');
+     
      }else{
       navigate(olderPath)
      }
-     
+    }}
   }, [isFirstLaunch,currentProfile, isNative]);
   useEffect(() => {
     const checkFirstLaunch = async () => {
