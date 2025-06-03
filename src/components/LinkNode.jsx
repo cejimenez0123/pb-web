@@ -6,6 +6,7 @@ import ErrorBoundary from '../ErrorBoundary';
 import { initGA,sendGAEvent } from '../core/ga4';
 import Context from '../context';
 import adjustScreenSize from '../core/adjustScreenSize';
+import SpotifyEmbed from './SpotifyEmbed';
 function LinkNode({ url,image,description,title,isGrid}) {
   const {isPhone,isHorizPhone}=useContext(Context)
   const [previewData, setPreviewData] = useState(null);
@@ -99,15 +100,8 @@ const fetchData = async (url) => {
     const match = url.match(videoIdRegex);
     return match ? match[1] : '';
   };
-  // if(url!=null && url.includes('https://open.spotify.com/')){
-  //   return(
 
-  //     <div  className={size} 
-  //           style={{ cursor: 'pointer' }}>
-  //       <Spotify width={"100%"} style={{minHeight:spotifyHeight}} height={spotifyHeight} className="bg-emerald-100"
-  //        link={url}/>
-  //     </div>)
-  // }
+ 
   if (loading) {
     return <div className='skeleton min-h-[8em] w-[96vw] md:min-w-[30em] md:w-[100%] my-8 bg-emerald-50 h-[10em] md:h-[10em] rounded-full'/>
   }
@@ -133,9 +127,8 @@ const fetchData = async (url) => {
     if(previewData && previewData.title=="Spotify"){
 
       return (
-        // <div className='spotify rounded-lg w-[96vw] md:w-page'>
-        <Spotify width={"100%"} style={{minHeight:spotifyHeight}}  height={spotifyHeight} ink={url}/>
-        // </div>
+        <SpotifyEmbed url={url}/>
+      
       )}else if(image){
         return(<div className={frame}>
     <img className={imgClass} 
