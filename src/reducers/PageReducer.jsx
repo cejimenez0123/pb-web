@@ -150,10 +150,11 @@ const pageSlice = createSlice({
       })
       .addCase(createStory.fulfilled,(state,{payload})=>{
         let {story}=payload
-  
+  if(story&&story.id){
         state.loading = false
         state.pageInView = story
         state.editorHtmlContent = story.data
+  }
       })
 
       .addCase(clearEditingPage,(state)=>{

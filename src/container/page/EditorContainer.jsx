@@ -44,6 +44,7 @@ function EditorContainer(props){
         const location = useLocation()
         let href =location.pathname.split("/")
         const last = href[href.length-1]
+        const [pageType,setPageType]=useState(editPage?editPage.type:last==PageType.link||last==PageType.picture?last:editPage?editPage.type:PageType.text)
       const [description,setDescription]=useState("")
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
@@ -58,7 +59,7 @@ function EditorContainer(props){
           needsFeedback:needsFeedback,
           description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:description
           ,
-          type:editPage?editPage.type:pageInView?pageInView.type:last,
+          type:pageType,
           privacy:isPrivate,
           commentable:commentable
         })
@@ -66,19 +67,21 @@ function EditorContainer(props){
   
 
       useEffect(()=>{
-        if(!fetchedPage){
+        if(fetchedPage){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
               let params = parameters
               params.data = htmlContent
 
               params.type = last 
+
               setParameters(params)
+             
           }   
-          }
+          }else{
 
    
           if(last==PageType.picture||last==PageType.link){
-            if(isValidUrl(htmlContent)&&currentProfile){
+            if(isValidUrl(htmlContent)){
              let params = parameters
               params.data= htmlContent
               params.type = last
@@ -86,10 +89,9 @@ function EditorContainer(props){
               createPageAction(params)
             }
      
-          }
-          let params = parameters
-          params.data =htmlContent
-    setParameters(params)
+          }}
+      
+    
         
       },[htmlContent])
      
@@ -115,15 +117,20 @@ return ()=>{
         if(last==PageType.picture&&htmlContent.length>5&&parameters.page && !parameters.page.id){
            let params = parameters
            params.data = htmlContent
-           params.type = PageType.picture
+          
            setParameters(params)
-           if(currentProfile){
             createPageAction(parameters)
-           }
+       
+        }else if(last==PageType.link){
+          let params = parameters
+          params.data = htmlContent
+      
+          setParameters(params)
+           createPageAction(parameters)
         }else{
           let params = parameters
           params.data = htmlContent.html
-          params.type = PageType.text
+       
           setParameters(params)
         }
     },[htmlContent])
@@ -178,7 +185,8 @@ return ()=>{
         pars.profileId = currentProfile.id
         pars.isPrivate = isPrivate
         pars.commentable = commentable
-    
+     
+       setParameters(pars)
         dispatch(createStory(pars)).then(res=>checkResult(res,payload=>{
           const {story}=payload
           dispatch(setEditingPage({page:story}))
@@ -198,8 +206,9 @@ setOpenDescription(false)
           setIsPrivate(truthy)
         
           setNeedFeedback(false)
-       
-          setParameters({...params,isPrivate:truthy})
+      let params = parameters
+         params.isPrivate = truthy
+          setParameters(params)
       
          setFeedbackDialog(false)
         setOpenDescription(false)
@@ -284,10 +293,14 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
     </div>)
    }
    useEffect(()=>{
-   let params= {...parameters,data:htmlContent,isPrivate,needsFeedback}
-
+    let params = parameters
+  params.data=htmlContent
+ 
+   params.isPrivate=isPrivate
+   params.needsFeedback = needsFeedback
+setParameters(params)
     dispatchUpdate(params)
-   },[htmlContent,isPrivate,parameters.privacy,parameters,parameters.data,parameters.description,parameters.title])
+   },[htmlContent,isPrivate,parameters.privacy,parameters.type,parameters,parameters.data,parameters.description,parameters.title])
    const handleFeedback=()=>{
 
       let params = parameters
@@ -310,7 +323,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
 },4001)
 const dispatchUpdate =debounce((params)=>{
   setIsSaved(false) 
-  console.log(params)
+
  dispatch(updateStory(params)).then(res=>{
     checkResult(res,payload=>{
     
@@ -324,7 +337,7 @@ return true
       setError(err.message)
       return false
     })}
-,10)
+,100)
 
 })
         return(
