@@ -35,6 +35,7 @@ function ApplyContainer(props){
         "Experimental/Hybrid Forms",
         "Other"
       ]; const [igHandle,setIgHandle]=useState("")
+
     const [fullName,setFullName]=useState("")
     const [email,setEmail]=useState("")
     const [whyApply,setWhyApply]=useState("")
@@ -50,9 +51,12 @@ function ApplyContainer(props){
 
     const [betaTest,setBetaTester]=useState([])
       useEffect(()=>{
+        if(location.pathname.includes("apply")){
           let soo = seo
           soo.title= "Plumbum (Apply)"
           setSeo(soo)
+        }
+       
       },[])
     
 

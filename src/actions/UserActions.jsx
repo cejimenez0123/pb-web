@@ -476,7 +476,15 @@ const  searchDialogToggle = createAction("users/searchDialogToggle",(params,thun
   return {payload: open}
 })
 
+const setEvents = createAction("users/addEVents", (params)=> {
 
+  const {events} = params
+  
+  return  {payload:
+    events}
+    
+  
+})
 const unpackUserApprovalDoc = (doc)=>{
   const pack = doc.data();
             const { id } = doc;
@@ -504,7 +512,7 @@ export {logIn,
         useReferral,
         uploadPicture,
         deleteUserAccounts,
-        // fetchHomeCollection,
+        setEvents,
         updateHomeCollection,
         setSignedInTrue,
         setSignedInFalse,

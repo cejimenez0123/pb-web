@@ -21,6 +21,7 @@ import {    logIn ,
             updateProfile,
             useReferral,
             deleteUserAccounts,
+            setEvents,
         
         } from "../actions/UserActions"
 import { createProfile, fetchProfiles } from "../actions/ProfileActions"
@@ -34,6 +35,7 @@ const initialState = {
     currentProfile: null,
     homeCollection: null,
     loading:true,
+    events:[],
     userApprovals:[],
     followedBooks: [],
     followedProfiles:[],
@@ -56,7 +58,12 @@ const userSlice = createSlice({
             state.loading=false
         }).addCase(fetchProfiles.pending,(state,{payload})=>{
             state.loading = true
-        }).addCase(useReferral.fulfilled,(state,{payload})=>{
+        }).addCase(setEvents.type,(state,{payload})=>{
+            if(payload.events&&payload.events.length){
+                state.events = payload.events
+            }
+        })
+        .addCase(useReferral.fulfilled,(state,{payload})=>{
             if(payload.profile){
                 state.currentProfile = payload.profile
             }
@@ -163,16 +170,7 @@ const userSlice = createSlice({
             state.followedLibraries = payload.followList
         }
     })
-    // .addCase(createFollowBook.rejected,(state,{payload})=>{
-    //     state.error = payload.error
-    // }).addCase(createFollowBook.fulfilled,(state,{payload})=>{
-    //     state.followedBooks = [...state.followedBooks,payload.followBook]
-    // }).addCase(createFollowLibrary.fulfilled,(state,{payload})=>{
-    //     state.followedLibraries = [...state.followedLibraries,payload.followLibrary]
-    // }).addCase(createFollowLibrary.rejected,(state,{payload})=>{
-        
-        // state.error = payload.error
-    // })
+
     .addCase(fetchFollowProfilesForProfile.rejected,(state,{payload})=>{
         state.error = payload.error
     }).addCase(fetchFollowProfilesForProfile.fulfilled,(state,{payload})=>{

@@ -1,22 +1,26 @@
-import { useLocation } from "react-router-dom";
 import { useContext, useRef, useState } from "react";
 import { useLayoutEffect,useEffect } from "react";
 import useScrollTracking from "../core/useScrollTracking";
-import { useMediaQuery } from "react-responsive";
 import storyRepo from "../data/storyRepo";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Context from "../context";
 import isValidUrl from "../core/isValidUrl";
 import debounce from "../core/debounce"
 import { initGA,sendGAEvent } from "../core/ga4";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import calendar from "../images/icons/calendar_add.svg"
+import insta from "../images/icons/instagram.svg"
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
     const {setError,currentProfile}=useContext(Context)
     const [selectedArea, setSelectedArea] = useState("");
     useScrollTracking({name:"Calendar Embed"})
-    const [list,setList]=useState([])
+    const ogEvents = useSelector(state=>state.users.events)
+    const [list,setList]=useState(ogEvents??[])
     const [events,setEvents]=useState(
   [])
+  const dispatch = useDispatch()
   const [hashtagSuggestions,setSuggestions]=useState(["poetry","experiment","free"])
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -70,23 +74,19 @@ function CalendarEmbed(){
 
      
         useLayoutEffect(()=>{
-            initGA()
             addEvents()
-      },[])
-      useEffect(()=>{
-        setEvents(list)
-      },[list])
+      },[currentProfile,location.pathname])
+ 
       const addEvents= ()=>{
-        try{
+        try{ 
       storyRepo.fetchEvents({days:30}).then(res=>{
-    
+        
         let events = res.events.flatMap(event=>event.events)
   
       const eventList = events.filter(event => {
         const today = new Date();
         const threeMonthsLater = new Date();
         threeMonthsLater.setMonth(today.getMonth() + 3);
-        // const isWithinThreeMonths = event.end.dateTime >= Date.now() && event.end.dateTime <= threeMonthsLater;
            const endDate = event.end?.dateTime || event.end?.date;
            return new Date(endDate) >= Date.now() && new Date(endDate)<=threeMonthsLater
         }).sort((a, b) => {
@@ -98,7 +98,7 @@ function CalendarEmbed(){
             const startTimeFormatted = isAllDay ? "All Day" : formatDate(event.start.dateTime);
             let organizerLink = linkifyFirstUrl(event.description) || ''
         
-            let location = event.location? event.location.length > 27 ? event.location.slice(0, 27) + '...' : event.location:""
+            let location = event.location? event.location.length > 27 ? event.location.slice(0, 40) + '...' : event.location:""
             let summary = event.summary? event.summary.length > 23 ? event.summary.slice(0, 23) + '...' : event.summary:""
             let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
                 hashtags:[]}
@@ -118,9 +118,8 @@ function CalendarEmbed(){
               area: event.organizer.displayName||''
             };
           });
-
-        setList(eventList)
       
+      setList(eventList)
         })
    
         }catch(err){
@@ -128,6 +127,9 @@ function CalendarEmbed(){
             setError(err)
         }
       }
+      useEffect(()=>{
+        setList(ogEvents)
+      },[ogEvents])
       useEffect(()=>{ 
         const filteredEvents = selectedArea.length>0?list.filter(event => {
         
@@ -217,7 +219,7 @@ function CalendarEmbed(){
                 hasMore={false}
                 loader={<p>Loading...</p>}
           dataLength={events.length}>
-          {events.map((event,i)=>{
+          {events&&events.length?events.map((event,i)=>{
         let eId= event.googleLink.split("?eid=")[0]
             return(
             <div key={eId} 
@@ -228,30 +230,32 @@ function CalendarEmbed(){
             }}>
            <span className="flex flex-row justify-between text-left mont-medium text-emerald-800 ">
                 <span>
-             <a onClick={()=>{
+             <a  className="flex-row flex "onClick={()=>{
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
-         
-              window.location.href = event.googleLink
-                  }}><h5 className="text-ellipsis text-green-600  flex flex-col  
+              window.location.href = event.organizerLink
+  
+                  }}><h5 className="text-ellipsis text-green-600  flex flex-row 
             whitespace-nowrap no-underline max-w-[20em] overflow-hidden">
-            + {isPhone?event.shortSummary:event.summary}</h5></a>
+              
+       <span className="my-auto mr-2">{isPhone?event.shortSummary:event.summary}</span>      </h5><img className="max-h-6 max-w-6 ml-2" src={insta}/></a>
                 {event.area==areas[2]&&event.organizerLink?<a 
                 onClick={()=>{
                   sendGAEvent("Click",`Event Click for Location ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
-          
-                    window.location.href = event.organizerLink
+                  window.location.href = event.googleLink
+                  
                
-                }}><span className="text-green-600 text-sm">{event.area}</span></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
+                }}><span className="text-green-600 text-sm flex flex-row"><span>{event.area}</span></span></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
              </span>
             <span className="flex overflow-hidden flex-col text-right ">
+            
             <h5>{event.startTime??""}</h5>
              {event.organizerLink&&isValidUrl(event.organizerLink)? 
-              <a className="text-green-600 whitespace-nowrap no-underline max-w-[20em] " href={event.organizerLink}><h6 >{event.location}</h6></a>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
+             <span className="flex flex-row">  <img className="max-w-6 max-h-6" src={calendar} /> <a className="text-green-600 whitespace-nowrap no-underline max-w-[20em] my-auto" href={event.organizerLink}><h6 >{event.location}</h6></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
               </span>
           </span>
             <span className="text-left  mont-medium text-slate-600"><h5 className="text-[0.7rem]">{event.hashtags.join(" ")}</h5></span></div>)
             
-            })
+            }):null
           }
           </InfiniteScroll>
         

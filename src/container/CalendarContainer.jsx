@@ -7,15 +7,12 @@ import Enviroment from "../core/Enviroment";
 import Context from "../context";
 import { useContext } from "react";
 import Paths from "../core/paths";
-import { useMediaQuery } from "react-responsive"
 import { useLayoutEffect } from "react"
-import { Helmet } from "react-helmet";
 import NewsletterContainer from "./auth/NewsletterContainer";
 import ApplyContainer from "./auth/ApplyContainer";
 import "../App.css"
 import ScrollDownButton from "../components/ScrollDownButton";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import Collapsible from "../components/Collapsible";
 import CalendarEmbed from "../components/CalendarEmbed";
 export default function CalendarContainer(){
@@ -24,11 +21,16 @@ export default function CalendarContainer(){
   const navigate = useNavigate()
   useLayoutEffect(()=>{
 
-    setSeo({title:"Plumbum (NYC CALENDAR) - Your Writing, Your Community",url:Enviroment.domain+location.pathname, description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
+      let soo = seo
+      soo.title= "Plumbum (NYC CALENDAR) - Your Writing, Your Community"
+      soo.description="Explore events, workshops, and writer meetups on Plumbum."
+      setSeo(soo)
+    
+   
 
   
   
-  },[])
+  },[location.pathname])
   useEffect(()=>{
     initGA()
   

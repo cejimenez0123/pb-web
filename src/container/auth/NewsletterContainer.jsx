@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useRef, useState } from "react"
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
 import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/material"
@@ -107,7 +107,14 @@ if(data.user){
     }
 
   }
-
+useEffect(()=>{
+  if(location.pathname.includes("newsletter")){
+    let soo = seo
+    soo.title= "Plumbum (Newsletter Apply)"
+    setSeo(soo)
+  }
+ 
+})
   
   
 
@@ -202,23 +209,7 @@ const handleCheckboxChange = (event, stateUpdater, field) => {
     return { ...prev, [field]: updatedArray };  // Update the state with the new array
   });
 };
-// const handleCheckboxChange = (event, stateUpdater, field) => {
-//   const value = event.target.value;
-//   stateUpdater((prev) =>{
-//     console.log(prev)
- 
-//   if(prev[field].includes(value)){
-//   prev[field]  =prev[field].filter((item) => item !== value)
-//   }else{
-//    prev[field]  = [...prev[field], value]
 
-//   }
-//   return prev
-
-
-  
-//   })  
-//   handleChange(field, [...formData[field], value]);}
   let otherClassname ="input bg-transparent text-white border-white border-1 rounded-full mt-2 mb-4"
 return (
   <>
