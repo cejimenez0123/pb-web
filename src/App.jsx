@@ -88,7 +88,7 @@ function App(props) {
   
   },[location.pathname])
   useEffect(() => {
-    if(location.pathname.includes("/links")||location.pathname.includes("/event")){
+    if(location.pathname.includes("/signup")||location.pathname.includes("/links")||location.pathname.includes("/event")){
 
     }else{
     if(olderPath){
