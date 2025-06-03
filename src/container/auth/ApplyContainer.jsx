@@ -6,6 +6,7 @@ import { useMediaQuery } from "react-responsive"
 import { useLocation, useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import Context from "../../context"
+import ThankYou from "./ThankYou"
 function ApplyContainer(props){
   const location = useLocation()
   const {seo,setSeo}=useContext(Context)
