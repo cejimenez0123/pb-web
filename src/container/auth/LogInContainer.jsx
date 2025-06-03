@@ -17,6 +17,7 @@ import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
 import { initGA,sendGAEvent } from '../../core/ga4';
+import DeviceCheck from '../../components/DeviceCheck';
 function LogInContainer(props) {
     const location = useLocation()
     const {setError,seo,setSeo}=useContext(Context)
@@ -44,6 +45,7 @@ function LogInCard({setLogInError}){
     const navigate = useNavigate()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [email, setEmail] = useState('');
+    const isNative = DeviceCheck()
     const [password, setPassword] = useState('');
     const [pending,setPending]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
@@ -51,7 +53,11 @@ function LogInCard({setLogInError}){
     const [open,setOpen] = useState(false);
 
     const handleFirstTimeClick=()=>{
+    if(isNative){
         navigate("/onboarding")
+    }else{
+        navigate("/apply")
+    }
     }
 
     const handleLogIn = (event)=>{

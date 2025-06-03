@@ -7,6 +7,7 @@ import "../App.css"
 import { initGA, sendGAEvent } from '../core/ga4';
 import adjustScreenSize from '../core/adjustScreenSize';
 import Context from '../context';
+import SpotifyEmbed from './SpotifyEmbed';
 
 function LinkPreview({ url,isGrid}) {
   const {isPhone,isHorizPhone}=useContext(Context)
@@ -126,11 +127,8 @@ useLayoutEffect(()=>{
   };
   if(url!=null && url.includes('https://open.spotify.com/')){
     return(
-      
-        <Spotify id="spotify-blink"
-        className='mx-auto pt-2 '
-         link={url}/>
-     
+      <SpotifyEmbed url={url}/>
+   
    
     )
 
@@ -160,8 +158,8 @@ useLayoutEffect(()=>{
           src={previewData.image}  alt={previewData.title} /></a>
     }else{
        return (
-  
-        <Spotify id="spotify-block"  link={url}/>
+  <SpotifyEmbed url={url}/>
+      
       
       )
     }
