@@ -81,7 +81,8 @@ function EditorContainer(props){
             if(isValidUrl(htmlContent)&&currentProfile){
              let params = parameters
               params.data= htmlContent
-              setParameters(parameters)
+              params.type = last
+              setParameters(params)
               createPageAction(params)
             }
      
