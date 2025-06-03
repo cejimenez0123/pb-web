@@ -9,7 +9,7 @@ import Context from "../../context"
 import ThankYou from "./ThankYou"
 function ApplyContainer(props){
   const location = useLocation()
-  const {seo,setSeo}=useContext(Context)
+  const {seo,setSeo,setError}=useContext(Context)
   const isNotPhone = useMediaQuery({
     query: '(min-width: 600px)'
   })
@@ -47,7 +47,7 @@ function ApplyContainer(props){
     const [comfortLevel,setComfortLevel]=useState(0)
     const [platformFeatures,setPlatformFeatures]=useState("")
     const [user,setUser]=useState(null)
-    const {error,setError}=useContext(Context)
+
     const [betaTest,setBetaTester]=useState([])
       useEffect(()=>{
           let soo = seo
@@ -103,10 +103,15 @@ function ApplyContainer(props){
           if(data.user){
 
             setUser(data.user)
-          }else{
-            setUser(data)
           }
-        }).catch(err=>setUser(err))}else{authRepo.apply(form).then(data=>{
+        }).catch(err=>{
+      if(err.message.includes("403")){
+          setError("User Already Exists")
+      }else{
+          setError(err.message)
+      }
+       }
+        )}else{authRepo.apply(form).then(data=>{
         console.log(data)
 if(data.user){
   setUser(data.user)
@@ -114,7 +119,11 @@ if(data.user){
           
           setUser(data)
         }}).catch(err=>{
-          setUser(err)
+          if(err.message.includes("403")){
+            setError("User Already Exists")
+        }else{
+            setError(err.message)
+        }
         })}}}
 const handleClose= ()=>{
   setUser(null)
@@ -127,7 +136,7 @@ setTimeout(()=>{
 
 
 },4001)
-console.log(user)
+
 return (
   <>
     <div className="sm:pb-8">
