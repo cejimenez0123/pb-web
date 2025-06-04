@@ -234,7 +234,7 @@ function CalendarEmbed(){
                   
                
                 }} className="flex-row flex "><h5 className="text-ellipsis  text-green-600  flex flex-row 
-            whitespace-nowrap no-underline max-w-[17.2em] sm:max-w-[25rem] ">
+            whitespace-nowrap no-underline max-w-[15em] sm:max-w-[25rem] ">
               <img onClick={()=>{
                   sendGAEvent("Click",`Event Click Organizer ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
                   window.location.href = event.organizerLink
@@ -245,7 +245,7 @@ function CalendarEmbed(){
                 {event.area==areas[2]&&event.googleLink?<a 
              ><h6 className="text-green-600 text-sm flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
              </span>
-            <span className="flex overflow-hidden flex-col text-right ">
+            <span className="flex w-fit overflow-hidden flex-col text-right ">
             
             <h5 className="flex flex-row justify-end"><img  onClick={()=>{
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
