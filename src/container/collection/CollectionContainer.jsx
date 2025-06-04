@@ -104,8 +104,11 @@ setHasMore(false)
 }}
 useLayoutEffect(()=>{
     if(collection){
-        setSeo({title:`A Plumbum (Collection) - ${collection.title}`, description:collection.description??"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
-    }
+        let soo = seo
+          soo.title=`Plumbum Collection (${collection.title}) `
+          soo.description="Explore events, workshops, and writer meetups on Plumbum."
+          setSeo(soo)
+     }
    
 },[collection])
        useEffect(()=>{

@@ -1,17 +1,25 @@
-import { useState } from "react"
+import { useContext, useLayoutEffect, useState } from "react"
 import authRepo from "../data/authRepo"
 import { debounce } from "lodash"
 import validateEmail from "../core/validateEmail"
 import { Dialog, DialogActions, DialogContent, Button,DialogTitle } from "@mui/material"
+import Context from "../context"
 
 export default function FeedbackContainer(props){
-
+    const {seo,setSeo}=useContext(Context)
     const [email,setEmail]=useState("")
     const [preferredName,setPreferredName]=useState("")
     const [subject,setSubject]=useState("")
     const [purpose,setPurpose]=useState("feedback")
     const [message,setMessage]=useState("")
     const [open,setOpen]=useState(false)
+    useLayoutEffect(()=>{
+        let soo = seo
+        soo.title= "Plumbum (Feedback) - Your Writing, Your Community"
+        soo.description="Explore events, workshops, and writer meetups on Plumbum."
+        setSeo(soo)
+      
+    },[])
     const handleFeedback=debounce((e)=>{
         e.preventDefault()
           try{

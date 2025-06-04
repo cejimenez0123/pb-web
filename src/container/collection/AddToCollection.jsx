@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react"
+import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { addCollectionListToCollection,fetchCollectionProtected, addStoryListToCollection, fetchCollection, getMyCollections } from "../../actions/CollectionActions"
@@ -10,11 +10,13 @@ import "../../App.css"
 import { useMediaQuery } from "react-responsive"
 import Paths from "../../core/paths"
 import { clearPagesInView } from "../../actions/PageActions.jsx"
+import Context from "../../context.jsx"
 let colStr = "collection"
 export default function AddToCollectionContainer(props){
     const pathParams = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const {seo,setSeo}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const pending = useSelector(state=>state.books.loading)
     const profile = useSelector(state=>state.users.currentProfile)
@@ -81,6 +83,7 @@ export default function AddToCollectionContainer(props){
     useEffect(()=>{
         dispatch(getMyCollections({profile}))
         dispatch(getMyStories({profile}))
+        
     },[])
     const addNewCollection =(col)=>{
         setNewCollections(state=>{

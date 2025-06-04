@@ -25,7 +25,8 @@ export default function AddStoryToCollectionContainer(props){
   const isPhone =  useMediaQuery({
     query: '(max-width: 600px)'
   })
-  const{setError,currentProfile}=useContext(Context)
+  const{setError,currentProfile,seo,setSeo}=useContext(Context)
+ 
     const pathParams = useParams()
     const {id,type}=pathParams 
     const dispatch = useDispatch()
@@ -49,6 +50,14 @@ export default function AddStoryToCollectionContainer(props){
       }
   
      })
+     useEffect(()=>{
+      if(pageInView){
+        let soo = seo
+          soo.title=`Plumbum Add (${pageInView.title}) to Collection `
+          soo.description="Explore events, workshops, and writer meetups on Plumbum."
+          setSeo(soo)
+     }
+     },[])
     useLayoutEffect(()=>{
       if(currentProfile){
         dispatch(setCollections({collections: currentProfile.collections}))
