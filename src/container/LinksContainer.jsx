@@ -9,6 +9,7 @@ import may31 from "../images/events/may31.png"
 import { initGA, sendGAEvent } from "../core/ga4";
 import Context from "../context";
 import philosophy from "../images/icons/philosophy.svg"
+import pen from "../images/icons/pen.svg"
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -40,7 +41,7 @@ export default function LinksContainer(props){
          </li> 
         <li> 
          <LinkNode url={"https://partiful.com/e/FYxUn8VtOO4ZooKi4ayI"}
-    image={june9}
+    image={pen}
          title={"Writers Workshop Mon. June 9th"}
          description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
          </li>
