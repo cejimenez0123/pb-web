@@ -40,7 +40,7 @@ export default function OnboardingContainer(props) {
   
     useEffect(() => {
       let soo = seo;
-      soo.title = "Plumbum (Apply)";
+      soo.title = "Plumbum (Onboarding)";
       setSeo(soo);
     }, [seo, setSeo]);
   

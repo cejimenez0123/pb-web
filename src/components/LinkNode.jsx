@@ -122,19 +122,19 @@ const fetchData = async (url) => {
   }
 
   const imageView = ()=>{
-    let frame = "  flex shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "
-    let imgClass = "object-fit my-auto mx-auto  "
+    
+    let imgClass = "object-fit my-auto mx-auto  max-h-20 max-w-24 min-h-12 min-w-16 rounded-full overflow-hidden "
     if(previewData && previewData.title=="Spotify"){
 
       return (
         <SpotifyEmbed url={url}/>
       
       )}else if(image){
-        return(<div className={frame}>
+        return(
     <img className={imgClass} 
     src={image}/>
 
-</div>)
+)
 
       }else if(previewData&& previewData.image) {
     return(     <div className={" flex  text-center shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "}>

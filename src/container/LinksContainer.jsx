@@ -8,6 +8,7 @@ import june9 from "../images/events/writerswork.png"
 import may31 from "../images/events/may31.png"
 import { initGA, sendGAEvent } from "../core/ga4";
 import Context from "../context";
+import philosophy from "../images/icons/philosophy.svg"
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -16,8 +17,11 @@ export default function LinksContainer(props){
      const {seo,setSeo}=useContext(Context)
      useLayoutEffect(()=>{
           initGA()
+          let soo = seo
+          soo.title= "Plumbum (Links) - Your Writing, Your Community"
+          soo.description="Explore events, workshops, and writer meetups on Plumbum."
+          setSeo(soo)
 
-          setSeo({title:"Plumbum (Links) - Your Writing, Your Community", description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
 
          },[])
     
@@ -29,25 +33,18 @@ export default function LinksContainer(props){
             <ul className="md:mx-auto w-page-mobile-content md:w-page-content  mx-4">
             <li>
 
-    <LinkNode url={"https://partiful.com/e/AS9eMLY3etZYsnlVxAsY"}
-    image={may31}
-         title={"Writers Workshop Sat. May 31"}
-         description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
-         </li>
-         <li>
+    <LinkNode url={"https://partiful.com/e/mHgpm4s9PwRuVp1GfMbQ"}
+    image={philosophy}
+         title={"The Bronx Philsophy Circle Sat. June 14"}
+         description={"Philosphy circle we disucss idea,  learn to heal from a system that stresses us out."}/>
+         </li> 
+        <li> 
          <LinkNode url={"https://partiful.com/e/FYxUn8VtOO4ZooKi4ayI"}
     image={june9}
          title={"Writers Workshop Mon. June 9th"}
          description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
          </li>
-           <li>
-
-
-               <LinkNode url={"https://plumbum.app"}
-               image={logo}
-                    title={"About Plumbum"}
-                    description={"Why Plumbum? Why now?"}/>
-                    </li>
+    
           
                 <li>  
                <LinkNode image={events}
@@ -70,12 +67,12 @@ export default function LinksContainer(props){
                     </li>
               
           
-                    <li className="">
+                    {/* <li className="">
                     <LinkNode url={"https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"}
                     title={"Join our slack community"}
                     image={"https://www.svgrepo.com/show/315526/slack.svg"}
                     description={"Our slack community, our middle ground. A space for feedback, while we work on devleopment."}/>
-               </li>
+               </li> */}
                <li>
                <LinkNode url={"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}
                     title={"Purchase literature written by the founder."}
