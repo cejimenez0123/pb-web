@@ -23,6 +23,7 @@ export default function CalendarContainer(){
       let soo = seo
       soo.title= "Plumbum (NYC CALENDAR) - Your Writing, Your Community"
       soo.description="Explore events, workshops, and writer meetups on Plumbum."
+      soo.url =Enviroment.domain+"/events"
       setSeo(soo)
     
    

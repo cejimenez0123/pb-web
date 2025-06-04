@@ -201,10 +201,10 @@
 
 
   .ql-editor{
-
+text-overflow: ellipsis !important;
     top:0;
    overflow-y:hidden !important;
-    padding: 1em !important;
+    /* padding: 1em !important; */
 
     color: #052e16 !important;
     background: linear-gradient(#a7f3d0, #d1fae5)!important;
@@ -214,9 +214,14 @@
  }
  @media (max-width: 768px) {
 
-  
+  #page-data-text{
+    background: linear-gradient(#a7f3d0, #d1fae5)!important;
+    padding: 1.5em 0.3em !important;
+  }
   .ql-editor{
     top:0;
+    text-overflow: ellipsis !important;
+    margin-left: 2em;
     overflow: hidden!important;
     color: #052e16 !important;
     background: linear-gradient(#a7f3d0, #d1fae5)!important;

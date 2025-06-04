@@ -26,7 +26,6 @@ import { initGA,sendGAEvent } from '../../core/ga4'
 import adjustScreenSize from '../../core/adjustScreenSize'
 export default function DashboardItem({page, book,isGrid}) {
     const {isPhone,isHorizPhone}=useContext(Context)
-    const size = adjustScreenSize(isGrid,true," overflow-hidden  "," overflow-hidden min-h-[17.6rem] rounded-lg max-h-[20rem] ","","","  ")
 
     const dispatch = useDispatch()
     const [loading,setLoading]=useState(false)
@@ -36,7 +35,7 @@ export default function DashboardItem({page, book,isGrid}) {
         initGA()
     },[])
     const widthSize = adjustScreenSize(isGrid,true,""," pt-1 pb-2 ","","","","")
-    let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative  "," overflow-clip justify-between flex ","mt-2  mx-auto overflow-hidden"," mt-2 ","  ") 
+    let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative  ","  justify-between flex ","mt-2  mx-auto "," mt-2 ","  ") 
 
     const {setSuccess,setError,currentProfile}=useContext(Context)
     const navigate = useNavigate()

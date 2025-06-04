@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useState,useEffect,useRef, useContext } from "react";
+import { useState,useEffect,useRef, useContext, useLayoutEffect } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture} from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
@@ -22,10 +22,16 @@ export default function SignUpContainer(props){
     const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
     const [selfStatement,setSelfStatement]=useState("")
     const [file,setFile]=useState(null)
-    const {error,setError,setSuccess,success}=useContext(Context)
+    const {setError,setSuccess,success,seo,setSeo}=useContext(Context)
     const [frequency,setFrequency]=useState(1)
     const [isPrivate,setIsPrivate]=useState(false)
     const [email,setEmail]=useState("")
+    useLayoutEffect(()=>{
+      let soo = seo
+      soo.title= "Plumbum (Sign Up) - Your Writing, Your Community"
+      setSeo(soo)
+    
+    },[])
     const handleFileInput = (e) => {
     const img = e.target.files[0];
 

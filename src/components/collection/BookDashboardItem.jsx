@@ -12,7 +12,6 @@ import ProfileCircle from '../profile/ProfileCircle'
 import {  addCollectionListToCollection, deleteCollectionFromCollection,  } from '../../actions/CollectionActions'
 import Context from '../../context'
 import { debounce } from 'lodash'
-import { useMediaQuery } from 'react-responsive'
 import Carousel from './Carousel'
 import { useNavigate } from 'react-router-dom'
 import adjustScreenSize from '../../core/adjustScreenSize'
@@ -28,7 +27,7 @@ function BookDashboardItem({book,isGrid}) {
     const [bookmarked,setBookmarked]=useState()
     const [isArchived,setIsArchived]=useState()
    const [title,setTitle]=useState("")
-    let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," max-h-[34em] overflow-hidden rounded-lg "," ","  ","  ")
+    let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," max-h-[34em]  rounded-lg "," ","  ","  ")
     const soCanUserEdit=()=>{}
 
    
@@ -137,7 +136,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
   
  
   
-    const bookmarkBtn =()=>{
+    const BookmarkBtn =({book})=>{
         let title =  book.title.length > 23 ? book.title.slice(0, 20) + '...' : book.title
         return(
        
@@ -203,7 +202,7 @@ if(!book){
        
             <Carousel book={book} isGrid={isGrid}/>
 
-                {bookmarkBtn()} </div>   
+                <BookmarkBtn book={book}/> </div>   
 
 //  </ErrorBoundary>
      )

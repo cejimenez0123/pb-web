@@ -45,15 +45,16 @@ switch(page.type){
 
         <div 
         id="page-data-text"
+    
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
         
-        className={`  ql-editor 
-rounded-lg
-        ${book?`mx-2`:""}  `}
-   
-   dangerouslySetInnerHTML={{__html:page.data}}/>
+        ><div className={` ql-editor 
+        rounded-lg 
+                ${book?`mx-2`:""}  `}
+           
+           dangerouslySetInnerHTML={{__html:page.data}}/></div>
 
   ) }
   case PageType.picture:{
@@ -114,5 +115,5 @@ if(!page){
 ) 
 }
 
-return (<span className={"pb-1  "+conSize}><Element page={page}/></span>)
+return (<span className={"pb-1   "+conSize}><Element page={page}/></span>)
 }

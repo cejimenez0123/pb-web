@@ -13,13 +13,19 @@ import checkResult from '../core/checkResult.js'
 import ErrorBoundary from '../ErrorBoundary.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
 import ListView from '../components/page/ListView.jsx'
+import Enviroment from '../core/Enviroment.js'
 function DashboardContainer(props){
     const location = useLocation()
-    const {currentProfile,setSeo}=useContext(Context)
+    const {currentProfile,setSeo,seo}=useContext(Context)
     useLayoutEffect(()=>{
         initGA()
-        setSeo({title:"Plumbum (Dashboard) - Your Writing, Your Community", description:"Explore events, workshops, and writer meetups on Plumbum.", name:"Plumbum", type:""})
-
+        let soo = seo
+        soo.title= "Plumbum (Dashboard) - Your Writing, Your Community"
+        soo.description="Explore events, workshops, and writer meetups on Plumbum."
+        soo.url =Enviroment.domain+location.pathname
+        console.log(soo.url)
+        setSeo(soo)
+      
     },[])
     const dispatch = useDispatch()
     const collections = useSelector(state=>state.books.collections)

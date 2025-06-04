@@ -22,7 +22,7 @@ export default function HashtagContainer(props){
     const params = useParams()
     const {id}=params
      useScrollTracking({name:id})
-    const {setError}=useContext(Context)
+    const {setError,seo,setSeo}=useContext(Context)
     const collections = useSelector(state=>state.books.collections)
     const [hash,setHashtag]=useState(null)
     const navigate = useNavigate()
@@ -40,7 +40,13 @@ export default function HashtagContainer(props){
         initGA()
         if(hash){
         sendGAEvent(`View Page`,`View Hashtaf ${JSON.stringify({id:hash.id,name:hash.name})}`,hash.name,0,false)
-        }
+       
+            let soo = seo
+            soo.title= `Plumbum Hashtag (${hash.name}) - Your Writing, Your Community`
+            setSeo(soo)
+          
+          
+    }
  },[])
     useLayoutEffect(()=>{
         setBooks(collections.filter(col=>col.childCollections.length==0))

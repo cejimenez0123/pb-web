@@ -154,8 +154,9 @@
 
 
 @media (max-width: 800px) {
+
 #dashboard-item .ql-editor{
-  padding: 1em!important;
+  
   height: 100% !important;
   max-height: 40em !important;
   text-overflow: ellipsis !important;
@@ -219,13 +220,13 @@
   }
 
   #dashboard-item .ql-editor{
-    padding: 1rem!important;
+   
     max-height: 34.5rem !important;
     text-overflow: ellipsis !important;
     
   }
   #book-dashboard-item .ql-editor{
-    padding: 1rem!important;
+   
     max-height: 34.5rem !important;
     text-overflow: ellipsis !important;
     
