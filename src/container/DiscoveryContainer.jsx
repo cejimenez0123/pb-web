@@ -74,7 +74,7 @@ let finalList = sortItems(pagesInView,cols.filter(item=>item && item.storyIdList
     const libraryForums = ()=>{
         if(libraries!=null){
             return (<> 
-            <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':'ml-16'} mb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
+            <h3 className={`text-emerald-900 pt-16 ${isNotPhone?'ml-16 pl-6 ':'ml-16'} mb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
             <div className='mb-12'><InfiniteScroll
             className=' flex flex-row min-h-50 md:min-h-6 max-w-[100vw] '
             dataLength={libraries.length}

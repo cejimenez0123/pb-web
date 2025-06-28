@@ -10,8 +10,13 @@ export default function usePersistentCurrentProfile(fetchData) {
       const getUser= async ()=>{
         if(isNative&&Preferences){
       let profile = await Preferences.get({key:key})
-      setProfile(JSON.parse(profile))
-      return JSON.parse(profile)
+      if(profile){
+        console.log(profile)
+       let json = JSON.parse(profile)
+        setProfile(json)
+        return json
+      }
+  
         }else{
           const saved =localStorage.getItem(key);
           return saved ? JSON.parse(saved) :null;

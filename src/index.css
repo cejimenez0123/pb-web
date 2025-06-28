@@ -72,3 +72,6 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.btn-clear {
+  @apply bg-opacity-0;
+}

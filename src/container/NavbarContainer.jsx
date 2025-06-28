@@ -7,9 +7,9 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import menu from "../images/icons/menu.svg"
 import getDownloadPicture from '../domain/usecases/getDownloadPicture'
 import { debounce } from 'lodash'
-import LinkIcon from '@mui/icons-material/Link';
-import CreateIcon from '@mui/icons-material/Create';
-import ImageIcon from '@mui/icons-material/Image';
+import LinkIcon from '../images/icons/add_link.svg';
+import CreateIcon from '../images/icons/stylus_pen.svg';
+import ImageIcon from '../images/icons/add_photo.svg';
 import Paths from '../core/paths'
 import { searchDialogToggle } from '../actions/UserActions'
 import { createStory } from '../actions/StoryActions'
@@ -147,25 +147,28 @@ function NavbarContainer(props){
         
          <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline'  tabndex="0">Create</a>
            <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
-             <li onClick={ClickWriteAStory}><a  >  <CreateIcon className='text-emerald-800'/></a></li>
+             <li onClick={ClickWriteAStory}><a  >  <IonImg src={CreateIcon} className='text-emerald-800'/></a></li>
              <li    onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
      
           dispatch(setHtmlContent(""))
-          navigate(Paths.editor.image())}}><a>     <ImageIcon className='text-emerald-800'/></a></li>
+          navigate(Paths.editor.image())}}><a>     <IonImg src={ImageIcon} className='text-emerald-800'/></a></li>
              <li><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
 
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}}>
-    <LinkIcon className='text-emerald-800'/></a></li>
-           <li  onClick={()=>{ 
+ <IonImg src={LinkIcon}/></a></li>
+           <li  
+            onClick={()=>document.getElementById('create_Collection').showModal()}
+        //    onClick={()=>{ 
              
-                 setOpenDialog(true)
+        //          setOpenDialog(true)
                  
-         } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
+        //  } }
+         ><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
     
     }else if(page == PageName.login){
     return !currentProfile?
@@ -242,25 +245,28 @@ function NavbarContainer(props){
         
          <a      tabIndex={1} role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
            <ul      tabIndex={1} className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
-             <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <CreateIcon className='text-emerald-800'/></a></li>
+             <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <IonImg src={CreateIcon} className='text-emerald-800'/></a></li>
              <li    onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
     
           dispatch(setHtmlContent(""))
-          navigate(Paths.editor.image())}}><a className='mx-auto'>     <ImageIcon className='text-emerald-800'/></a></li>
+          navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} className='text-emerald-800'/></a></li>
              <li><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
 
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}} className='mx-auto'>
-    <LinkIcon className='text-emerald-800'/></a></li>
-           <li  onClick={()=>{ 
+    <IonImg src={LinkIcon} className='text-emerald-800'/></a></li>
+           <li  
+            onClick={()=>document.getElementById('create_Collection').showModal()}
+        //    onClick={()=>{ 
 
-                 setOpenDialog(true)
+        //          setOpenDialog(true)
                  
-         } }><a className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
+        //  } }
+         ><a className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
     
     }else if(page == PageName.login){
     return !currentProfile?
@@ -348,11 +354,22 @@ function NavbarContainer(props){
     
     
     
-    
+    {/* <button className="btn">open modal</button> */}
+<dialog id="create_Collection" className="modal">
+  <div className="modal-box bg-gradient-to-br from-emerald-700 to-emerald-500">
+  <form method="dialog" className="modal-backdrop">
+  <button className="btn btn-sm btn-outline btn-success btn-circle  absolute right-2 top-2">✕</button>
+  </form>
+    <CreateCollectionForm  />
   
-    <Dialog open={openDialog}>
-<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>
-    </Dialog>
+
+  </div>
+  
+</dialog>
+  
+    {/* <Dialog open={openDialog}>
+
+    </Dialog> */}
 </div>)
 
 }

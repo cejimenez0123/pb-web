@@ -32,16 +32,14 @@ export default function CreateCollectionForm({onClose}){
             onClose()
         })
     }
-    return(<form className=" lg:w-[100%]   py-12 rounded-lg bg-gradient-to-br from-emerald-700 to-emerald-500 pt-2 ">
+    return(
+<>
 
-        <div className="mb-3 mx-4 pt-4" >
-
-            <img  onClick={onClose} src={close}/>
 
         <div className="px-4 pb-8">
         <div class="mb-4 flex flex-col">
         </div>
-        <h2 className="text-white mx-auto lora-medium text-2xl font-bold mb-4">Create Collection</h2>
+        <h2 className="text-white mx-auto mont-medium text-2xl font-bold mb-4">Create Collection</h2>
         <label className="text-white open-sans-medium text-xl mb-2">
             Name of Collection
         </label>
@@ -83,6 +81,5 @@ export default function CreateCollectionForm({onClose}){
     Submit
 </button>
 </div>
-</div>
-  </form>)
+  </>)
 }
