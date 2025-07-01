@@ -173,8 +173,6 @@ checkResult(res,payload=>{
     return(<ErrorBoundary><div className='flex-row bg-emerald-200 flex text-white'>
     <div   onClick={handleApprovalClick} className={`${likeFound?"bg-emerald-400":"bg-emerald-200"} text-center  grow flex-1/3`}>
      <div 
-   
-        
       className={`
       text-xl    text-emerald-700  text-center mx-auto py-2 bg-transparent  border-none  `}
     
@@ -189,7 +187,7 @@ checkResult(res,payload=>{
         onClick={()=>{currentProfile?setComment(!comment):setError("Please Sign Up")}}>
     <h6 className="text-xl">
         Discuss</h6>
-    </div>
+    </div> 
     </div>
     <div className="dropdown  flex-1/3 grow bg-emerald-200  text-center dropdown-top">
 <div tabIndex={0} role="button" className="  text-center mx-auto py-2 bg-transparent  border-none  "> <h6 className="text-xl   border-none bg-transparent text-emerald-700 mx-auto my-auto">Share</h6></div>
