@@ -10,7 +10,7 @@ import IndexList from '../components/page/IndexList';
 import authRepo from '../data/authRepo.js';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
-import { debounce } from 'lodash';
+import { debounce, } from 'lodash';
 import sortAlphabet from "../images/icons/sort_by_alpha.svg"
 import clockArrowUp from "../images/icons/clock_arrow_up.svg"
 import clockArrowDown from "../images/icons/clock_arrow_down.svg"
@@ -28,7 +28,11 @@ import FeedbackDialog from '../components/page/FeedbackDialog';
 import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg"
+import DeviceCheck from '../components/DeviceCheck.jsx';
+import { IonButton } from '@ionic/react';
+import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 function MyProfileContainer(props){
+  const isNative = DeviceCheck()
     const navigate = useNavigate()
     const dispatch = useDispatch()
     useLayoutEffect(()=>{
@@ -93,21 +97,7 @@ function MyProfileContainer(props){
     useEffect(()=>{
       setOgCols(cols)
     },[cols])
-  //:colp.filter(col=>{
-  //   if(col){
-  //    if(search.toLowerCase()=="feedback"){
-  //      return col.type=="feedback"
-  //    }
-  //    if(search.length>0){
-  //     return col.title.toLowerCase().includes(search.toLowerCase())
-  //    }else{
-  //     return true
-  //    }
-  //  }else{
-  //    return true
-  //  }
- 
-  //   })
+
  
 const handleTimeClick=debounce((truthy)=>{
         
@@ -353,23 +343,42 @@ switch (filterType) {
                            </div>
                            <div className='max-h-[100%] flex'>
                            <div className='p-4' >
+                         
                             <div className='my-4 h-[15em]'>
                            <ProfileInfo profile={currentProfile}/>
                            </div>
                         <MediaQuery maxWidth={'600px'}>
-
+                        <div>
                             <div className=' w-[100%] items-center mx-auto grid grid-cols-2 gap-2 '>
                                 <div onClick={ClickWriteAStory} 
                                 className='bg-emerald-600  flex rounded-full text-white md:mt-2  h-[5em] w-[10em]  md:h-[3em]  text-bold'>
                                <h6 className='my-auto text-[0.8rem] mont-medium md:text-md mx-auto '> Write a Story</h6>
                             </div>
                             <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5em] w-[10em]   md:h-[3em] text-white   text-bold'>
-                              <div className='mx-auto text-[0.8rem] md:text-md my-auto mont-medium  flex-col flex md:flex-row'><h6 className='text-center' >Create a Collection</h6> </div> 
-                            </div>
-                            <div className='w-[10em] h-[3em] mx-auto flex'>
-                            <h6 onClick={()=>setOpenReferral(true)}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
+                              <div className='mx-auto text-[0.8rem] md:text-md  mont-medium   mt-8  mx-auto flex-col flex md:flex-row'><h6 className='text-center' >Create a Collection</h6> </div> 
+                            
                             </div>
                             </div>
+                            {isNative?<div><IonButton                  onClick={()=>navigate(Paths.workshop.reader())} 
+                                        className='bg-emerald-700 rounded-full mont-medium  text-center w-[90%] h-[5rem]   '>
+                                    Join a Workshop
+                                        </IonButton>
+                                        <GoogleDrivePicker/></div>:<><IonButton
+            // onClick={navigateToWorkshop}
+            onClick={()=>navigate(Paths.workshop.reader())} 
+            className="bg-emerald-700 flex rounded-full mont-medium my-8 h-[5rem]"
+            style={{ width: '90%' }} // Adjusting width to match the original
+        >
+            <h6 className="mx-auto lg:text-[1rem] text-white font-bold my-auto">Join a Workshop</h6>
+        </IonButton>
+                                        
+                                        {/* <div                   
+                                        className='bg-emerald-700 flex rounded-full mont-medium my-8 -[90%] h-[5rem]  '>
+                                    <h6 className='mx-auto lg:text-[1rem] text-white text-bold my-auto'> Join a Workshop</h6>
+                                        </div> */}
+                                        </>}
+                            </div>
+                  
                             </MediaQuery>
                       
                             </div>
@@ -382,20 +391,19 @@ switch (filterType) {
                                         className='bg-emerald-700 rounded-full mont-medium text-white flex w-[10rem] h-[4rem]  '>
                                     <h6 className='mx-auto lg:text-[0.8rem] px-2 my-auto'> Join a Workshop</h6>
                                         </div>
+                                        <GoogleDrivePicker/>
                                 </div> 
                                 <div>
-                            <div onClick={ClickWriteAStory} className='bg-emerald-600 rounded-full flex text-white w-[10rem] mont-medium lg:w-[10rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
-                            <h6 className='text-center text-[0.8rem] mx-auto mont-medium my-auto'>Write a Story</h6>
+                            <div onClick={ClickWriteAStory} className='bg-emerald-600 btn rounded-full flex text-white w-[10rem] mont-medium lg:w-[11rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
+                            <h6 className='text-center text-[0.8rem] mx-auto mont-medium my-auto'>Write <br/>a<br/> Story</h6>
                             </div>
                             </div>
                             <div>
                             <div onClick={ClickCreateACollection} className='bg-emerald-500 btn mont-medium rounded-full flex text-white w-[10rem] lg:w-[10rem]  border-emerald-500 border-1 h-[4rem] py-3  text-bold'>
-                         <h6 className='text-[0.8rem]'>Create a Collection</h6>
+                         <h6 className='text-[0.8rem]'>Create <br/>a<br/> Collection</h6>
                             </div>
                             </div>
-                            <div className=' mt-6'> 
-                            <h6 onClick={()=>setOpenReferral(true)} className='text-sm mx-4 mont-medium text-emerald-800'>Refer Someone?</h6>
-                            </div>
+                          
                             </div> 
                          :null}
                          </div>
@@ -506,15 +514,7 @@ handleClose={()=>{
                     setOpenDialog(false)
                 }}/>
               </Dialog>
-              <Dialog
-      
-              fullScreen={isPhone}
-              open={openReferral}
-              onClose={()=>setOpenReferral(false)}>
-          <ReferralForm onClose={()=>{
-            setOpenReferral(false)
-          }}/>
-              </Dialog>
+        
               <Dialog
                fullScreen={isPhone}
                open={firstLogin}

@@ -58,10 +58,7 @@ export default function ReferralForm({onClose}){
     return(   <div className="flex flex-col md:min-w-[30em] md:min-h-[40em] m-1 px-3 py-4">
         
 <h1 className="mx-auto mont-bold text-emerald-800 mb-8 text-xl">Refer Someone Today</h1>
-{/* <span className="rounded-full btn flex text-center border-none text-lg mont-medium text-white px-4  bg-gradient-to-r 
-from-emerald-400 to-emerald-600  "
-onClick={generateReferral}>
-    <h6 className="text-xl">Create Referral Link</h6></span> */}
+
             {referral&&   referral.usageCount?<h2 className="text-emerald-800">{referral.usageCount}</h2>:null}
         {pending?<img src={loadingGif} className="icon"/>:referralLink.trim().length>0?
         <span className="flex mt-6"><input type="text" 

@@ -1,22 +1,41 @@
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
-import { useState,useEffect } from "react"
+import { useState,useEffect, useRef } from "react"
 import "../../App.css"
 
 import { useMediaQuery } from "react-responsive"
 import clear from "../../images/icons/clear.svg"
-
+import {
+    IonButtons,
+    IonButton,
+    IonModal,
+    IonHeader,
+    IonContent,
+    IonToolbar,
+    IonTitle,
+    IonPage,
+    IonImg,
+ 
+    IonItem,
+    IonInput,
+  } from '@ionic/react';
 import { useParams } from "react-router-dom"
 import { Dialog } from "@mui/material"
 import FollowerCard from "./FollowerCard"
 import isValidUrl from "../../core/isValidUrl"
-import { IonImg } from "@ionic/react"
+import ReferralForm from "../auth/ReferralForm"
+import DeviceCheck from "../DeviceCheck"
+
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [followersDialog,setFollowersDialog]=useState(false)
+    const [openReferral,setOpenReferral]=useState(false)
     const {id}=useParams()
+    const isNative = DeviceCheck()
     const isPhone =  useMediaQuery({
         query: '(max-width: 600px)'
       })
+      const modal = useRef(null)
+      const input = useRef(null)
     useEffect( ()=>{
 
         if(profile && !isValidUrl(profile.profilePic)){
@@ -75,7 +94,70 @@ const ProfileInfo = ({profile})=>{
       {profile&&profile.followers?  <FollowerCard followers={profile.followers}/>:null}
     </div>
 </Dialog>
-        </div>  )
+<div className='w-[10em] h-[3em] mx-auto flex'>
+{!isNative?<h6 onClick={()=>setOpenReferral(true)}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
+                            :   <IonButton id="open-modal" expand="block">
+                            Refer Someone?
+        </IonButton>}</div>
+                         
+                          
+                            {isNative?<><IonModal ref={modal} trigger="open-modal" >
+                            <IonHeader>
+            <IonToolbar>
+           <IonButtons slot="start">
+                 <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
+              </IonButtons>
+              <IonTitle>Referral</IonTitle>
+              <IonButtons slot="end">
+              <IonButton strong={true} onClick={() => confirm()}>
+                   Confirm
+               </IonButton>
+             </IonButtons>
+          </IonToolbar>
+         </IonHeader>
+         <IonContent className="ion-padding">
+                  <ReferralForm onClose={()=>{
+    setOpenReferral(false)
+  }}/>
+          </IonContent>
+                                </IonModal></>:<Dialog  
+                                              
+      open={openReferral}
+      onClose={()=>setOpenReferral(false)}
+      ><ReferralForm onClose={()=>setOpenReferral(false)}/>
+ </Dialog>}
+                            
+                            </div>  )
+//                               {isNative?<><IonModal ref={modal} trigger="open-modal" 
+                                
+//                                 >
+//           <IonHeader>
+//             <IonToolbar>
+//               <IonButtons slot="start">
+//                 <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
+//               </IonButtons>
+//               <IonTitle>Referral</IonTitle>
+//               <IonButtons slot="end">
+//                 <IonButton strong={true} onClick={() => confirm()}>
+//                   Confirm
+//                 </IonButton>
+//               </IonButtons>
+//             </IonToolbar>
+//           </IonHeader>
+//           <IonContent className="ion-padding">
+//           <ReferralForm onClose={()=>{
+//     setOpenReferral(false)
+//   }}/>
+//           </IonContent>
+//         </IonModal></>:
+//                             <Dialog
+      
+//       fullScreen={isPhone}
+//       open={openReferral}
+//       onClose={()=>setOpenReferral(false)}>
+ 
+//       </Dialog>}
+      
 }
 
 export default ProfileInfo

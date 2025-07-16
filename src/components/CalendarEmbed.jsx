@@ -98,8 +98,8 @@ function CalendarEmbed(){
             const startTimeFormatted = isAllDay ? "All Day" : formatDate(event.start.dateTime);
             let organizerLink = linkifyFirstUrl(event.description) || ''
         
-            let location = event.location? event.location.length > 27 ? event.location.slice(0, 40) + '...' : event.location:""
-            let summary = event.summary? event.summary.length > 28 ? event.summary.slice(0, 28) + '...' : event.summary:""
+            let location = event.location? event.location.length > 24 ? event.location.slice(0, 24) + '...' : event.location:""
+            let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 22) + '...' : event.summary:""
             let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
                 hashtags:[]}
            
@@ -224,7 +224,7 @@ function CalendarEmbed(){
         let eId= event.googleLink.split("?eid=")[0]
             return(
             <div key={eId} 
-                className={`flex flex-col border-emerald-600  px-6 px-4 rounded-full  border my-1 shadow-md   py-4 mx-auto `}
+                className={`flex flex-col border-emerald-600  px-6 px-4 rounded-full  border my-1 shadow-md min-h-24  py-4 mx-auto `}
            >
            <span className="flex flex-row justify-between text-left mont-medium text-emerald-800 ">
                 <span>
@@ -234,7 +234,7 @@ function CalendarEmbed(){
                   
                
                 }} className="flex-row flex "><h5 className="text-ellipsis  text-green-600  flex flex-row 
-            whitespace-nowrap no-underline max-w-[15em] sm:max-w-[25rem] ">
+            whitespace-nowrap no-underline max-w-[14em] sm:max-w-[25rem] ">
               <img onClick={()=>{
                   sendGAEvent("Click",`Event Click Organizer ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
                   window.location.href = event.organizerLink
@@ -251,7 +251,7 @@ function CalendarEmbed(){
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
               window.location.href = event.googleLink
   
-                  }} className="max-w-6 max-h-6 mx-2" src={calendar} />{event.startTime??""}</h5>
+                  }} className="max-w-6 max-h-6" src={calendar} /><h6 className="ml-1">{event.startTime??""}</h6></h5>
              {event.organizerLink&&isValidUrl(event.googleLink)? 
              <span   onClick={()=>{
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)

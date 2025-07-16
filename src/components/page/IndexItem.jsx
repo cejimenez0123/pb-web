@@ -117,7 +117,7 @@ function IndexItem({item,handleFeedback}) {
       }
     }
 
-   
+   let updated= formatDate(item.updated)
    
 
 
@@ -132,11 +132,11 @@ function IndexItem({item,handleFeedback}) {
                      <span className={`   text-emerald-700 my-auto`}>
                    <h6   onClick={handleNavigate}
          className={`text-[0.9rem] md:text-[1.3rem ] md:w-[20em]   text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
-       {item.title}</h6></span>:
+       {item.title}</h6>         {updated}</span>:
  <span className={`  whitespace-nowrap max-w-[45vw]  text-emerald-700 no-underline text-ellipsis my-auto`}>
                    <h6  onClick={handleNavigate}  className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
                    whitespace-nowrap text-emerald-700 no-underline  my-auto`}
-                   >Untitled</h6></span>}
+                   >Untitled</h6>         {updated}</span>}
                    
 
 </div>
@@ -162,6 +162,7 @@ function IndexItem({item,handleFeedback}) {
    <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10  w-52 p-2 shadow">
   
          <li className="no-underline text-emerald-600"  onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>
+         {updated}
          <li  onClick={copyShareLink}><a className="text-emerald-600 no-underline" >Share</a></li>
          </ul>
   
@@ -179,5 +180,16 @@ function IndexItem({item,handleFeedback}) {
     
     }
     
-  
+  function formatDate(dateString){
+    const date = new Date(dateString);
+
+// Get the month, day, and year
+const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+const day = String(date.getDate()).padStart(2, '0');
+const year = date.getFullYear();
+
+// Format the date as mm/dd/yyyy
+const formattedDate = `${month}/${day}/${year}`;
+return formattedDate
+  }
     export default IndexItem

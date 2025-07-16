@@ -40,9 +40,9 @@ export default function LinksContainer(props){
          description={"Philosphy circle we disucss idea,  learn to heal from a system that stresses us out."}/>
          </li> 
         <li> 
-         <LinkNode url={"https://partiful.com/e/FYxUn8VtOO4ZooKi4ayI"}
+         <LinkNode url={"https://partiful.com/e/gYuWsA79C5bvCjieuAok"}
     image={pen}
-         title={"Writers Workshop Mon. June 9th"}
+         title={"Writers Workshop Mon. June 21st"}
          description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
          </li>
     

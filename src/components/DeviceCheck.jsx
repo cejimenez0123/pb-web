@@ -1,8 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { isPlatform } from '@ionic/react';
-
+import React, { useEffect, useState } from 'react'
+import { isPlatform } from '@ionic/react'
+import {
+  IonButtons,
+  IonButton,
+  IonModal,
+  IonHeader,
+  IonContent,
+  IonToolbar,
+  IonTitle,
+  IonPage,
+  IonItem,
+  IonInput,
+} from '@ionic/react';
 const DeviceCheck = () => {
-  const [deviceType, setDeviceType] = useState('desktop');
+  const [deviceType, setDeviceType] = useState('desktop')
 const [capacitor,setCap]=useState("desktop")
   useEffect(() => {
     const userAgent = window.navigator.userAgent || window.navigator.vendor || (window).opera;
