@@ -24,8 +24,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
     const navigate = useNavigate();
 
     const CLIENT_ID = process.env.OAUTH2_CLIENT_ID;
-    // const DEVELOPER_KEY = import.meta.env.VITE_DEV_KEY; // Uncomment if you truly need a Developer Key for specific Picker configs
-
+    
     // Helper to check if the stored token is expired
     const isTokenExpired = useCallback(() => {
         const storedToken = localStorage.getItem(TOKEN_KEY);

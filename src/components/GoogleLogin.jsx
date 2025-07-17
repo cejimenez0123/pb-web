@@ -18,7 +18,7 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
     const dispatch = useDispatch(); // Initialize useDispatch hook
 
     // Replace with your actual Client ID
-    const CLIENT_ID = process.env.OAUTH2_CLIENT_ID;
+    const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
 
     // Combined scopes: basic user info + Drive access
     const LOGIN_SCOPES = 'email profile openid https://www.googleapis.com/auth/drive.readonly';
