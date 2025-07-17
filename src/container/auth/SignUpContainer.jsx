@@ -8,6 +8,7 @@ import info from "../../images/icons/info.svg"
 import "../../App.css"
 import { signUp } from "../../actions/UserActions";
 import Context from "../../context";
+import GoogleLogin from "../../components/GoogleLogin";
 export default function SignUpContainer(props){
     const location = useLocation();
   
@@ -25,6 +26,7 @@ export default function SignUpContainer(props){
     const {setError,setSuccess,success,seo,setSeo}=useContext(Context)
     const [frequency,setFrequency]=useState(1)
     const [isPrivate,setIsPrivate]=useState(false)
+    const [googleID,setGoogleID]=useState(null)
     const [email,setEmail]=useState("")
     useLayoutEffect(()=>{
       let soo = seo
@@ -66,11 +68,11 @@ setToken(token)
      if(!toke){
       toke = token
      }
-    if( password.length>6&&username.length>3){
+    if( localStorage.getItem("googledrivetoken")||password.length>6&&username.length>3){
         if(file){
         dispatch(uploadProfilePicture({file:file})).then(res=>checkResult(res,payload=>{
                 const{fileName}=payload
-                const params = {email,token:toke,password,username,frequency,profilePicture:fileName,selfStatement,privacy:isPrivate}
+                const params = {email,googleId:googleID, token:toke,password,username,frequency,profilePicture:fileName,selfStatement,privacy:isPrivate}
                 dispatch(signUp(params))
 
                 .then(res=>checkResult(res,payload=>{
@@ -95,7 +97,7 @@ setToken(token)
         })
       )
       }else{
-        const params = {email,token:toke,password,username,profilePicture:selectedImage,selfStatement,privacy:isPrivate}
+        const params = {email,googleId:googleID,token:toke,password,username,profilePicture:selectedImage,selfStatement,privacy:isPrivate}
       dispatch(signUp(params))
         .then(res=>checkResult(res,payload=>{
             const {profile}=payload
@@ -126,6 +128,7 @@ setToken(token)
           <div className="flex">
         <h2 className='text-green-100 lora-medium text-4xl text-center mx-auto pt-8  px-4 md:pt-24 md:pb-8'>Complete Sign Up</h2>
         </div>
+    
         <div className='pb-4 mx-auto'>
    
             <label className="input lora-medium text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
@@ -136,8 +139,17 @@ setToken(token)
          onChange={(e) => setUsername(e.target.value.trim())}
          />
 </label>
+<GoogleLogin signIn={true} onUserSignIn={({       email,
+                                name,
+                                googleId,
+                                driveAccessToken})=>{
+                                  setEmail(email)
+                                  setGoogleID(googleId)
+                                  
+                                }}/>
 {username.length!=0 && username.length<4?<h6>Minimum username length is 4 characters</h6>:null}    
-<div className='pb-4'>
+{localStorage.getItem("googledrivetoken")?null:<span>
+
             <label className="input lora-medium text-white border bg-transparent  rounded-full h-[4em] border-white  mt-4 flex items-center">
   Password
   <input type="password" className="grow  mx-2  my-2 text-white " 
@@ -146,7 +158,7 @@ setToken(token)
          onChange={(e) => setPassword(e.target.value.trim())}
         placeholder='*****' />
 </label>
-{password.length==0 || password.length>6?null:<h6>Minimum Password Length is 6 characters</h6>}  
+{localStorage.getItem("googledrivetoken")||password.length==0 || password.length>6?null:<h6>Minimum Password Length is 6 characters</h6>}  
 
 <label className="input lora-medium text-white border bg-transparent border-white  rounded-full h-[4em] mt-4 flex items-center ">
   Confirm Password
@@ -156,7 +168,8 @@ setToken(token)
          onChange={(e) => setConfirmPassword(e.target.value.trim())}
         placeholder='*****' />
 </label>  
-{password==confirmPassword?null:<h6>Passwords need to match</h6>}  
+{password==confirmPassword?null:<h6>Passwords need to match</h6>}
+</span>  } 
 <label className="w-full mt-8 flex flex-row justify-between  text-left">
 <div className="flex  flex-row">
   <div className='has-tooltip mx-2'>
@@ -233,5 +246,5 @@ setToken(token)
             </div>
             
             </div>   
-        </div>)
+     )
 }

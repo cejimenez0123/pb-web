@@ -18,7 +18,9 @@ import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
 import { initGA,sendGAEvent } from '../../core/ga4';
 import DeviceCheck from '../../components/DeviceCheck';
-function LogInContainer(props) {
+import { IonText,IonButton} from '@ionic/react';
+import GoogleLogin from '../../components/GoogleLogin';
+export default function LogInContainer(props) {
     const location = useLocation()
     const {setError,seo,setSeo}=useContext(Context)
     useLayoutEffect(()=>{
@@ -29,6 +31,7 @@ function LogInContainer(props) {
         soo.title = "Plumbum (LogIn) - Share Your Weirdness"
         setSeo(soo)
    },[])
+
     return (
         <div id="" className='sm:mx-2 py-16'>
             <LogInCard  
@@ -51,7 +54,12 @@ function LogInCard({setLogInError}){
     const [showPassword, setShowPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("")
     const [open,setOpen] = useState(false);
-
+ 
+  
+   
+     
+    
+       
     const handleFirstTimeClick=()=>{
     if(isNative){
         navigate("/onboarding")
@@ -59,7 +67,12 @@ function LogInCard({setLogInError}){
         navigate("/apply")
     }
     }
+    const handleGoogleLogin=(googleId)=>{
+        if(googleId &&googleId.length>3){
+            dispatch()
+        }
 
+    }
     const handleLogIn = (event)=>{
         event.preventDefault()
         setPending(true)
@@ -68,7 +81,7 @@ function LogInCard({setLogInError}){
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                        console.log("STORX",payload)
+                    
                     if(payload.error){
                         setLogInError("Error with Username or Password")
                     }else{
@@ -95,7 +108,29 @@ setLogInError("User Not Found. Apply Below")
             navigate(-1)
         }
     },[location,currentProfile])
-    
+    const dispatchLogin=(email,googleId)=>{
+        dispatch(logIn({email,uId:googleId})).then(res=>{
+            checkResult(res,payload=>{
+                setPending(false)
+                console.log(payload.error)
+                if(payload.error){
+                    setLogInError("Error with Username or Password")
+                }else{
+                    navigate(Paths.myProfile())
+                }
+            },err=>{
+                console.log(payload.error)
+                if(err.message=="Request failed with status code 401"){
+setLogInError("User Not Found. Apply Below")
+                }else{
+                    setLogInError(err.message)
+                }
+         
+                
+                setPending(false)
+            })
+        })   
+    }
     return(
     <div className='sm:border-4  mt-16 md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
@@ -148,7 +183,13 @@ setLogInError("User Not Found. Apply Below")
        <img  
         className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
         </div>:null}
+     <GoogleLogin 
+     onUserSignIn={({email, name,googleId})=>{
+dispatchLogin(email,googleId)
+            
+     }}/>
         </form>
+
         <Dialog
        
         open={open}
@@ -157,7 +198,8 @@ setLogInError("User Not Found. Apply Below")
                 <div>
                     <Clear onClick={
                         ()=>setOpen(false)
-                    }/>    
+                    }/>  
+                  
                 </div>  
                 <ForgotPasswordForm/>
 
@@ -167,5 +209,3 @@ setLogInError("User Not Found. Apply Below")
     </div>)
 }
 
-
-export default LogInContainer

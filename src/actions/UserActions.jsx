@@ -28,10 +28,10 @@ const logIn = createAsyncThunk(
    
      
 
-        const {email,password}=params
+        const {uId,email,password}=params
 
 
-        const authData = await authRepo.startSession({uId:null,email:email,password})
+        const authData = await authRepo.startSession({uId:uId,email:email,password})
    
         
         const {token}=authData
@@ -47,6 +47,7 @@ const logIn = createAsyncThunk(
       
     }
 )
+
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
   return data
@@ -77,7 +78,7 @@ const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
-      const{email,token,frequency,password,username,profilePicture,selfStatement,privacy}=params
+      const{email,token,googleId,frequency,password,username,profilePicture,selfStatement,privacy}=params
 
       try {
         
@@ -98,7 +99,7 @@ const signUp = createAsyncThunk(
       }
     } catch (error){
         try{
-          let data = await profileRepo.register({token,frequency,password,username,profilePicture,selfStatement,privacy})
+          let data = await profileRepo.register({token,frequency,googleId,password,username,profilePicture,selfStatement,googleId,privacy})
           localStorage.setItem("token",data.token)
           client.initIndex("profile").saveObject({ objectID:data.profile.id,
             username:username,
