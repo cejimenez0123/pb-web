@@ -29,7 +29,7 @@ import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStori
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg"
 import DeviceCheck from '../components/DeviceCheck.jsx';
-import { IonButton } from '@ionic/react';
+import { IonButton, IonText } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 function MyProfileContainer(props){
   const isNative = DeviceCheck()
@@ -327,8 +327,8 @@ switch (filterType) {
     
             return(
               <ErrorBoundary fallback={"error"}>
-            <div className='md:pb-72 pt-4 md:pt-8'>
-     
+            
+     <div>
                     <div className=' flex flex-col relative  justify-start md:flex-row md:justify-between md:border-4 md:border-emerald-300  pb-4 max-w-[94vw] mx-auto sm:h-info sm:w-info  sm::mx-auto mt-2  rounded-lg'>
                            <div className='absolute top-1   right-1'>
                            {isNotPhone?
@@ -360,7 +360,7 @@ switch (filterType) {
                             </div>
                             </div>
                             {isNative?<div><IonButton                  onClick={()=>navigate(Paths.workshop.reader())} 
-                                        className='bg-emerald-700 rounded-full mont-medium  text-center w-[90%] h-[5rem]   '>
+                                        className='bg-emerald-700  text-white border-emerald-600  rounded-full mont-medium  text-center w-[90%] h-[3rem]   '>
                                     Join a Workshop
                                         </IonButton>
                                         <GoogleDrivePicker/></div>:<><IonButton
@@ -372,43 +372,45 @@ switch (filterType) {
             <h6 className="mx-auto lg:text-[1rem] text-white font-bold my-auto">Join a Workshop</h6>
         </IonButton>
                                         
-                                        {/* <div                   
+                                        <div                   
                                         className='bg-emerald-700 flex rounded-full mont-medium my-8 -[90%] h-[5rem]  '>
                                     <h6 className='mx-auto lg:text-[1rem] text-white text-bold my-auto'> Join a Workshop</h6>
-                                        </div> */}
+                                        </div>
                                         </>}
                             </div>
                   
                             </MediaQuery>
                       
                             </div>
-                            <div className='absolute bottom-[2em] right-[3em] '>
+                            <div className='absolute bottom-[2em] right-[2em] '>
 
                           {isNotPhone?
-                            <div className='   grid grid-cols-2  gap-1  '>
-                                <div>
-                                    <div                    onClick={()=>navigate(Paths.workshop.reader())} 
-                                        className='bg-emerald-700 rounded-full mont-medium text-white flex w-[10rem] h-[4rem]  '>
-                                    <h6 className='mx-auto lg:text-[0.8rem] px-2 my-auto'> Join a Workshop</h6>
+                          <div className='flex flex-col'>
+                            <span className="mb-4">
+                              <div
+                              className='bg-emerald-200 btn mb-4 w-[100%] rounded-full mont-medium  text-center w-[90%] h-[3rem]   '                                       
+                               >
+
+                            <IonText   className='text-[1rem] text-emerald-900' onClick={()=>navigate(Paths.workshop.reader())} 
+>
+                                    Join a Workshop
+                                        </IonText>
                                         </div>
-                                        <GoogleDrivePicker/>
-                                </div> 
-                                <div>
-                            <div onClick={ClickWriteAStory} className='bg-emerald-600 btn rounded-full flex text-white w-[10rem] mont-medium lg:w-[11rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
+                            <GoogleDrivePicker/>
+                            </span>
+                            <div className='   grid grid-cols-2  gap-1  '>
+                          
+                              <div onClick={ClickWriteAStory} className='bg-emerald-600 btn rounded-full flex text-white w-[10rem] mont-medium lg:w-[11rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
                             <h6 className='text-center text-[0.8rem] mx-auto mont-medium my-auto'>Write <br/>a<br/> Story</h6>
+                            
                             </div>
-                            </div>
-                            <div>
+                        
+                      
                             <div onClick={ClickCreateACollection} className='bg-emerald-500 btn mont-medium rounded-full flex text-white w-[10rem] lg:w-[10rem]  border-emerald-500 border-1 h-[4rem] py-3  text-bold'>
                          <h6 className='text-[0.8rem]'>Create <br/>a<br/> Collection</h6>
                             </div>
-                            </div>
-                          
-                            </div> 
-                         :null}
-                         </div>
-                          </div>
-                </div>
+                          </div></div>:null}
+               </div>
                 <div>
                               {isPhone?<span className="flex   mb-2 flex-row"> 
                 <label className='flex my-auto border-emerald-600  w-[100%] border-opacity-70 border-2 min-h-10 rounded-full  mt-8 flex-row mx-2'>
@@ -418,8 +420,9 @@ switch (filterType) {
 
    </span></span>:null}
  <br/>
-             
-  
+          </div>   
+  </div>
+  </div>
                             <div className='w-[96vw] md:mt-8  flex flex-col mx-auto md:w-page'>
 
                          
@@ -550,7 +553,7 @@ onClick={()=>generateReferral()}>
                 </div>
               </Dialog>
 </div>
-</div>      
+
 </ErrorBoundary>
         )
      
