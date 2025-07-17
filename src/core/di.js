@@ -20,11 +20,11 @@ import algoliasearch from "algoliasearch";
 const client = algoliasearch(import.meta.env.VITE_ALGOLIA_APP_ID,
   import.meta.env.VITE_ALGOLIA_API)
   
-const config = { apiKey:import.meta.env.VITE_FIREBASE_API_KEY,
+const config = { apiKey:process.env.FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-  databaseURL: import.meta.env.VITE_DATABASE_URL,
+  databaseURL: process.env.DATABASE_URL,
   projectId: import.meta.env.VITE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  storageBucket: process.env.STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_APP_ID,
   measurementId: import.meta.env.VITE_MEASUREMENT_ID}
