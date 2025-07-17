@@ -18,7 +18,7 @@ import algoliasearch from "algoliasearch";
 // }
 
 const client = algoliasearch(import.meta.env.VITE_ALGOLIA_APP_ID,
-  import.meta.env.VITE_ALGOLIA_API)
+  process.env.ALGOLIA_API)
   
 const config = { apiKey:process.env.FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
