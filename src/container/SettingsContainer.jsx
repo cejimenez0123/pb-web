@@ -253,12 +253,12 @@ function SettingsContainer(props) {
         if (file) {
           // Check file type
           if (!file.type.startsWith('image/')) {
-            setErrorMessage('Please upload a valid image file.');
+            setError('Please upload a valid image file.');
            
             return;
           }
           setFile(file)
-          setErrorMessage('');
+          setError('');
           setPictureUrl(URL.createObjectURL(file))
           
         }
