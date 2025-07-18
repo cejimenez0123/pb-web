@@ -2,7 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux'; // Import useDispatch
 import { useNavigate } from 'react-router-dom';
 
-export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' prop, as GoogleLogin manages its own state
+export default function GoogleLogin({ onUserSignIn }) { 
     const [gisLoaded, setGisLoaded] = useState(false);
 
     const [signedIn, setSignedIn] = useState(false); // Internal state for this component's UI
@@ -22,6 +22,7 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
         script.src = 'https://accounts.google.com/gsi/client';
         script.async = true;
         script.defer = true;
+
         script.onload = () => {
             setGisLoaded(true);
             console.log("Google Identity Services script loaded for login.");
@@ -126,9 +127,7 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
 
                 if (decodedToken) {
                     // Update internal state immediately after ID Token processing
-                    // setUserEmail(decodedToken.email);
-                    // setUserName(decodedToken.name || decodedToken.given_name || 'User');
-                    // setGoogleId(decodedToken.sub);
+                   
                     setSignedIn(true); // Update UI state to show logged-in view
 
                     // Store basic user info in localStorage
@@ -220,9 +219,7 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
         localStorage.removeItem('googledrivetoken_expiry');
 
         // Reset component's internal state
-        // setUserEmail('');
-        // setUserName('');
-        // setGoogleId('');
+        
         setSignedIn(false);
 
         // Notify parent component about sign out
@@ -238,7 +235,7 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
 
             {!signedIn ? (
                 // This div will be replaced by the Google Sign-In button
-                <div id="google-sign-in-button"  style={{borderRadius:"10em", display: gisLoaded ? 'block' : 'none' }}></div>
+                <div id="google-sign-in-button"  style={{ display: gisLoaded ? 'block' : 'none' }}></div>
             ) : null}
         </div>
     );

@@ -4,10 +4,6 @@ import { logIn} from '../../actions/UserActions';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
-// import {
-        
-//         Dialog,
-//         } from "@mui/material"
 import loadingGif from "../../images/loading.gif"
 
 import { Clear } from '@mui/icons-material';
@@ -33,7 +29,7 @@ export default function LogInContainer(props) {
    },[])
 
     return (
-        <div id="" className='sm:mx-2 py-16'>
+        <div id="" className='sm:mx-2 py-16 md:py-4'>
             <LogInCard  
                        
             setLogInError={setError}
@@ -67,12 +63,7 @@ function LogInCard({setLogInError}){
         navigate("/apply")
     }
     }
-    const handleGoogleLogin=(googleId)=>{
-        if(googleId &&googleId.length>3){
-            dispatch()
-        }
 
-    }
     const handleLogIn = (event)=>{
         event.preventDefault()
         setPending(true)
@@ -132,11 +123,11 @@ setLogInError("User Not Found. Apply Below")
         })   
     }
     return(
-    <div className='sm:border-4  mt-16 md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+    <div className=' md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
             <form className='max-w-[100vw] sm:max-w-82 text-center pt-4'>
-        <h1 className='text-emerald-800 lora-medium pb-4'> Log In</h1>
+        <h1 className='text-emerald-800 mont-medium pb-4'> Log In</h1>
         <div >
          <div className='max-w-[91vw]'>
         <label className="input  open-sans-medium text-emerald-800 pl-6 w-52 overflow-hidden pl-2  rounded-full border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
@@ -194,22 +185,6 @@ dispatchLogin(email,googleId)
 <Dialog isOpen={open} onClose={()=>setOpen(false)}
 title={"Forgot Password"}
 text={<ForgotPasswordForm/>}/>
-    
-        {/* <Dialog
-       
-        open={open}
-        onClose={()=>{setOpen(false)}}
-                      >
-                <div>
-                    <Clear onClick={
-                        ()=>setOpen(false)
-                    }/>  
-                  
-                </div>  
-                <ForgotPasswordForm/>
-
-            
-                </Dialog> */}
                 </div></div>
     </div>)
 }

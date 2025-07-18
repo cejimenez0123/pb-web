@@ -296,6 +296,25 @@ function NavbarContainer(props){
       </div>
       }
   // }
+  const handleSignOut = () => {
+    window.google.accounts.id.disableAutoSelect(); // Clears GIS cookie for auto-login
+    // Clear all stored items related to login and drive token
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('googleId');
+    localStorage.removeItem(driveTokenKey);
+    localStorage.removeItem('googledrivetoken_expiry');
+
+    // Reset component's internal state
+    
+    setSignedIn(false);
+
+    // Notify parent component about sign out
+    if (onUserSignIn) {
+        onUserSignIn(null); // Indicate user signed out
+    }
+    console.log("User signed out.");
+};
   return(<div className="navbar max-w-[100vw] bg-emerald-800">
      <div className='navbar-start '>
     {isPhone?menuDropdown():
@@ -326,6 +345,7 @@ function NavbarContainer(props){
                                   if(setting== SettingName.profile){
                                       navigate(Paths.myProfile())
                                   }else if(setting== SettingName.logout){
+                                    handleSignOut()
                                       dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
                                         localStorage.clear()
                                         navigate("/")

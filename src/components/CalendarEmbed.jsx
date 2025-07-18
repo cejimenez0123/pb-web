@@ -6,21 +6,30 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Context from "../context";
 import isValidUrl from "../core/isValidUrl";
 import debounce from "../core/debounce"
-import { initGA,sendGAEvent } from "../core/ga4";
+import {sendGAEvent } from "../core/ga4";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
 import insta from "../images/icons/instagram.svg"
+import Dialog from "./Dialog";
+
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
+  
     const {setError,currentProfile}=useContext(Context)
-    const [selectedArea, setSelectedArea] = useState("");
+    
+    const [selectedArea, setSelectedArea] = useState("")
+    const [chosenEvent,setChoice]=useState(null);
     useScrollTracking({name:"Calendar Embed"})
     const ogEvents = useSelector(state=>state.users.events)
     const [list,setList]=useState(ogEvents??[])
     const [events,setEvents]=useState(
   [])
-  const dispatch = useDispatch()
+  useEffect(()=>{
+    if(chosenEvent){
+      sendGAEvent("Looked at Event", `Chose to look at ${chosenEvent.summary} `+searchTerm, searchTerm);
+    }
+  },[chosenEvent])
   const [hashtagSuggestions,setSuggestions]=useState(["poetry","experiment","free"])
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -98,8 +107,8 @@ function CalendarEmbed(){
             const startTimeFormatted = isAllDay ? "All Day" : formatDate(event.start.dateTime);
             let organizerLink = linkifyFirstUrl(event.description) || ''
         
-            let location = event.location? event.location.length > 24 ? event.location.slice(0, 24) + '...' : event.location:""
-            let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 22) + '...' : event.summary:""
+            let location = event.location? event.location.length > 24 ? event.location.slice(0, 40) + '...' : event.location:""
+            let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 40) + '...' : event.summary:""
             let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
                 hashtags:[]}
            
@@ -212,7 +221,7 @@ function CalendarEmbed(){
   </div>
   </span>
 </div>
-  
+{chosenEvent&& <Dialog isOpen={chosenEvent} text={<div dangerouslySetInnerHTML={{__html:chosenEvent.description}} />} title={chosenEvent.summary}/>}
           <InfiniteScroll 
           className="w-page-mobile shadow-sm md:w-page max-h-[30em] md:max-h-[40rem] mx-auto "
                 next={()=>{}}
@@ -224,9 +233,12 @@ function CalendarEmbed(){
         let eId= event.googleLink.split("?eid=")[0]
             return(
             <div key={eId} 
-                className={`flex flex-col border-emerald-600  px-6 px-4 rounded-full  border my-1 shadow-md min-h-24  py-4 mx-auto `}
+            onClick={()=>{
+              setChoice(event)
+            }}
+                className={`flex flex-col border-emerald-600  px-6 px-4 rounded-[50px]  border my-1 shadow-md min-h-42  py-4 mx-auto `}
            >
-           <span className="flex flex-row justify-between text-left mont-medium text-emerald-800 ">
+           <span className="flex flex-col justify-between text-left mont-medium text-emerald-800 ">
                 <span>
              <a onClick={()=>{
                   sendGAEvent("Click",`Event Click for Location ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
@@ -240,18 +252,18 @@ function CalendarEmbed(){
                   window.location.href = event.organizerLink
                   
                
-                }}  className="max-h-6 max-w-6 " src={insta}/>
+                }}  className="max-h-6 max-w-6 mt-2 " src={insta}/>
        <span    className="my-auto mr-2">{isPhone?event.shortSummary:event.summary}</span>      </h5></a>
                 {event.area==areas[2]&&event.googleLink?<a 
              ><h6 className="text-green-600 text-sm flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
              </span>
             <span className="flex w-fit overflow-hidden flex-col text-right ">
             
-            <h5 className="flex flex-row justify-end"><img  onClick={()=>{
+            <h5 className="flex flex-row mt-2"><img  onClick={()=>{
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
               window.location.href = event.googleLink
   
-                  }} className="max-w-6 max-h-6" src={calendar} /><h6 className="ml-1">{event.startTime??""}</h6></h5>
+                  }} className="max-w-6 max-h-6 mt-2" src={calendar} /><h6 className="ml-1">{event.startTime??""}</h6></h5>
              {event.organizerLink&&isValidUrl(event.googleLink)? 
              <span   onClick={()=>{
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
@@ -265,6 +277,7 @@ function CalendarEmbed(){
             }):null
           }
           </InfiniteScroll>
+         
         
 </div>)}
 
