@@ -162,13 +162,8 @@ setLogInError("User Not Found. Apply Below")
 </label> 
     
     </div>
-            <div 
-                className='  '
-                onClick={()=>{
-                    setOpen(true)
-                }}>
-                <a className='text-[1rem] mont-medium hover:text-green-400 text-emerald-800'>Forgot Password?</a>
-            </div>
+         
+            
             <button
             className='bg-green-600   text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
                onClick={handleLogIn}
@@ -176,6 +171,11 @@ setLogInError("User Not Found. Apply Below")
                 variant="contained" ><h6 className='mont-medium text-xl tracking-wide'>Log In</h6></button>
                 
         </div>
+        <span className='flex mt-4 justify-center '>  <GoogleLogin 
+     onUserSignIn={({email, name,googleId})=>{
+dispatchLogin(email,googleId)
+            
+     }}/></span>
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}className='text-emerald-800 text-xl mont-medium hover:text-green-400  '>Click here if this your first time?</a>
         </div>
@@ -183,11 +183,13 @@ setLogInError("User Not Found. Apply Below")
        <img  
         className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
         </div>:null}
-     <GoogleLogin 
-     onUserSignIn={({email, name,googleId})=>{
-dispatchLogin(email,googleId)
-            
-     }}/>
+        <div 
+                className='  '
+                onClick={()=>{
+                    setOpen(true)
+                }}>
+                <a className='text-[1rem] mont-medium hover:text-green-400 text-emerald-800'>Forgot Password?</a>
+            </div>
         </form>
 <Dialog isOpen={open} onClose={()=>setOpen(false)}
 title={"Forgot Password"}

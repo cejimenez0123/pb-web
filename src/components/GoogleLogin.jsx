@@ -1,17 +1,10 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux'; // Import useDispatch
-import { logIn } from '../actions/UserActions';
 import { useNavigate } from 'react-router-dom';
-import Paths from '../core/paths';
-
-// Assume you have an action for logging in a user, e.g., 'loginUser'
-// import { loginUser } from '../actions/AuthActions'; // Replace with your actual auth action path
 
 export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' prop, as GoogleLogin manages its own state
     const [gisLoaded, setGisLoaded] = useState(false);
-    const [userEmail, setUserEmail] = useState('');
-    const [userName, setUserName] = useState('');
-    const [googleId, setGoogleId] = useState('');
+
     const [signedIn, setSignedIn] = useState(false); // Internal state for this component's UI
     const driveTokenKey = "googledrivetoken"; // Consistent key for Drive access token
     const navigate = useNavigate()
