@@ -58,6 +58,7 @@ const Paths ={
     discovery:()=>"/discovery",
     home:()=>{return `/home`},
     about:()=>{return `/`},
+    editProfile:{route:()=>{return `/profile/edit`}},
     profile:{route:()=>{return `/profile/:id`},
             createRoute:(id)=>{return `/profile/${id}`}},
     myProfile:()=>{return `/profile/home`},

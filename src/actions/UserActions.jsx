@@ -99,7 +99,7 @@ const signUp = createAsyncThunk(
       }
     } catch (error){
         try{
-          let data = await profileRepo.register({token,frequency,googleId,password,username,profilePicture,selfStatement,googleId,privacy})
+          let data = await profileRepo.register({token,frequency,googleId,password,username,profilePicture,selfStatement,privacy})
           localStorage.setItem("token",data.token)
           client.initIndex("profile").saveObject({ objectID:data.profile.id,
             username:username,

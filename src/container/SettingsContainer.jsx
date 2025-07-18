@@ -155,16 +155,7 @@ function SettingsContainer(props) {
             
     
     }   
-        // dispatch(updateHomeCollection({
-        //     profile:currentProfile,
-        //     pages:homePages,
-        //     books:homeBooks,
-        //     libraries:homeLibraries,
-        //     profiles:homeProfiles})).then(result=>checkResult(result,payload=>{
-        //         window.alert("Updated Collection")
-        //     },err=>{
-                
-        //     }))
+
     } 
     const DeleteDialog = ()=> <Dialog
     open={deleteDialog}
@@ -253,13 +244,14 @@ function SettingsContainer(props) {
         if (file) {
           // Check file type
           if (!file.type.startsWith('image/')) {
-            setErrorMessage('Please upload a valid image file.');
+            setError('Please upload a valid image file.');
            
             return;
           }
           setFile(file)
-          setErrorMessage('');
+          setError('');
           setPictureUrl(URL.createObjectURL(file))
+          console.log(pictureUrl)
           
         }
  

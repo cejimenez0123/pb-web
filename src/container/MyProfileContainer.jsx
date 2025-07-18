@@ -333,7 +333,7 @@ switch (filterType) {
                            <div className='absolute top-1   right-1'>
                            {isNotPhone?
                        <span className=' m-3 pr-4 flex-row flex w-36  justify-evenly'>     
-                       <img className='bg-emerald-500 rounded-full p-1 mx-3 min-w-8 h-8' src={settings}/>
+                       <img onClick={()=>navigate(Paths.editProfile.route())}className='bg-emerald-500 rounded-full p-1 mx-3 min-w-8 h-8' src={settings}/>
                    
                     <img   onClick={()=>navigate(Paths.notifications())}   className=' bg-emerald-500  rounded-full p-1 min-w-8 h-8'
                             src={notifications}/>
