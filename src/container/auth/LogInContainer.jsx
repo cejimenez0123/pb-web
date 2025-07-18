@@ -4,12 +4,12 @@ import { logIn} from '../../actions/UserActions';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
-import {
+// import {
         
-        Dialog,
-        } from "@mui/material"
+//         Dialog,
+//         } from "@mui/material"
 import loadingGif from "../../images/loading.gif"
-import theme from '../../theme';
+
 import { Clear } from '@mui/icons-material';
 import Paths from '../../core/paths';
 import { useLocation } from 'react-router-dom';
@@ -18,8 +18,8 @@ import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
 import { initGA,sendGAEvent } from '../../core/ga4';
 import DeviceCheck from '../../components/DeviceCheck';
-import { IonText,IonButton} from '@ionic/react';
 import GoogleLogin from '../../components/GoogleLogin';
+import Dialog from '../../components/Dialog';
 export default function LogInContainer(props) {
     const location = useLocation()
     const {setError,seo,setSeo}=useContext(Context)
@@ -189,8 +189,11 @@ dispatchLogin(email,googleId)
             
      }}/>
         </form>
-
-        <Dialog
+<Dialog isOpen={open} onClose={()=>setOpen(false)}
+title={"Forgot Password"}
+text={<ForgotPasswordForm/>}/>
+    
+        {/* <Dialog
        
         open={open}
         onClose={()=>{setOpen(false)}}
@@ -204,7 +207,7 @@ dispatchLogin(email,googleId)
                 <ForgotPasswordForm/>
 
             
-                </Dialog>
+                </Dialog> */}
                 </div></div>
     </div>)
 }

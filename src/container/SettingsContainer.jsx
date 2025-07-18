@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect,useState } from "react";
+import { useContext, useLayoutEffect,useRef,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import { updateProfile,deleteUserAccounts, deletePicture} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
@@ -7,15 +7,21 @@ import "../App.css"
 import { useNavigate } from "react-router-dom";
 import {    Button,
     
-            Dialog,
+            // Dialog,
             DialogActions,
             DialogContent,
     
             DialogContentText,
             DialogTitle,
             IconButton} from "@mui/material";
+        
 import "../styles/Setting.css"
-import theme from "../theme"
+import { IonModal,IonHeader,
+  IonToolbar,
+    IonButtons,
+    IonTitle,
+    IonContent,IonInput, IonItem,IonButton 
+    } from "@ionic/react"
 
 import checkResult from "../core/checkResult";
 import { checkmarkStyle } from "../styles/styles";
@@ -24,12 +30,13 @@ import { Clear } from "@mui/icons-material";
 
 import uuidv4 from "../core/uuidv4";
 import Context from "../context";
-import { IonContent,IonInput, IonItem, IonModal } from "@ionic/react";
+
 import DeviceCheck from "../components/DeviceCheck";
 
 function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
+    const modal = useRef(null)
     const{setError,currentProfile,setSuccess}=useContext(Context)
     const isNative = DeviceCheck()
     const [newUsername,setNewUsername] = useState("")
@@ -159,55 +166,8 @@ function SettingsContainer(props) {
     }   
 
     } 
-    const DeleteDialog = ()=> !isNative?<Dialog
-    open={deleteDialog}
-    onClose={handleClose}
-    aria-labelledby="alert-dialog-title"
-    aria-describedby="alert-dialog-description"
-  >
-    <DialogTitle id="alert-dialog-title">
-      {"Are you sure you want to delete your account?"}
-    </DialogTitle>
-    <DialogContent>
-      <DialogContentText id="alert-dialog-description">
-        Deleting your account can't be reversed
-      </DialogContentText>
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={handleClose}>Disagree</Button>
-      <Button onClick={handleAgree} autoFocus>
-        Agree
-      </Button>
-    </DialogActions>
-  </Dialog>:  <IonModal ref={modal} trigger="open-modal" onWillDismiss={(event) => onWillDismiss(event)}>
-          <IonHeader>
-            <IonToolbar>
-              <IonButtons slot="start">
-                <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
-              </IonButtons>
-              <IonTitle>Welcome</IonTitle>
-              <IonButtons slot="end">
-                <IonButton strong={true} onClick={() => confirm()}>
-                  Agree
-                </IonButton>
-                <IonButton strong={true} onClick={() => confirm()}>
-                  Disagree
-                </IonButton>
-              </IonButtons>
-            </IonToolbar>
-          </IonHeader>
-          <IonContent className="ion-padding">
-            <IonItem>
-              <IonInput
-                label="Enter your name"
-                labelPlacement="stacked"
-                ref={input}
-                type="text"
-                placeholder="Your name"
-              />
-            </IonItem>
-          </IonContent>
-        </IonModal>
+   
+
     const deleteHomeItem  = (item)=>{
         switch(item.type){
             case "page":{
@@ -292,23 +252,22 @@ function SettingsContainer(props) {
                 // <IonContent>
             <div >
                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
-                      {/* <label className="text-left flex flex-col mont-medium"><h4 className="text-xl">Username:</h4> */}
-                      <IonItem lines="none" className="custom-input-item">
-                        
-                      <IonInput   
-                       className="custom-input"
+                      <label className="text-left flex flex-col mont-medium"><h4 className="text-xl">Username:</h4>
+                   
+                      {/* <IonInput   
+                    
                                         value={newUsername}
-                                        fill="outline"
+                                     
                                         onChange={(e)=>setNewUsername(e.target.value)}
                                              label="Username"/>
-                                             </IonItem>
-                            {/* <input type="text"   
+                                             </IonItem> */}
+                            <input type="text"   
                                         className={" text-xl px-4 py-2 rounded-full  open-sans-medium text-emerald-800 bg-transparent border-2 border-emerald-800 border-2  "}
                                         value={newUsername}
                                         onChange={(e)=>setNewUsername(e.target.value)
                                         }
-                                         label="Username"/> */}
-                                         {/* </label> */}
+                                         label="Username"/>
+                                         </label>
                                           <div className='file'>
                    
                         <input
@@ -361,12 +320,16 @@ function SettingsContainer(props) {
                                 Update
                             </button>
                             </div>
-                        <button className="rounded-full py-2 w-[10rem] mt-24 text-2xl mont-medium bg-orange-800 text-white"
+                        <button 
+                        className="rounded-full py-2 w-[10rem] mt-24 text-2xl mont-medium bg-orange-800 text-white"
                                 onClick={handleClickOpen}
-                            
+                                id="open-modal" expand="block"
                         > Delete</button>
-                        <DeleteDialog/>
-        
+                        <Dialog agree={handleAgree} 
+                        onClose={handleClose}title={"Are you sure you want to delete your account?"}
+                        text={"Deleting your account can't be reversed"}isOpen={deleteDialog}/>
+                        {/* <DeleteDialog/>
+         */}
                         </div>
             </div>
         //   </IonContent>
@@ -382,6 +345,22 @@ function SettingsContainer(props) {
 
 
 
-
+const Dialog = ({ text,title, isOpen, onClose,agree}) => {
+    if (!isOpen) return null;
+  
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
+        <div className="bg-white rounded-lg shadow-lg p-6 z-10">
+          <h2 className="text-lg font-bold">{title}</h2>
+          <p className="mt-2">{text}</p>
+          <div className="mt-4">
+            <button className="btn rounded-full mx-3 bg-gray-300 text-green-900 border-none   " onClick={agree}>Agree</button>
+            <button className="btn rounded-full bg-emerald-600 text-white border-emerald-500" onClick={onClose}>Disagree</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
 export default SettingsContainer

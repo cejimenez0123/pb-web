@@ -4,6 +4,7 @@ import {
    
     Typography} from "@mui/material"
 import authRepo from "../../data/authRepo"
+import { IonInput } from "@ionic/react"
     
 
 
@@ -50,14 +51,15 @@ setLoading(false)
                          <Typography 
                     id="modal-modal-title" className="text-emerald-700" variant="h6" component="h2"
                     >
-      Forgot Password
+      Enter Email for Password
     </Typography>
 
 <div className=" py-8 ">
-<label  className="flex-row flex border-emerald-600 rounded-full border-1 px-4">
-    <h6 className="my-auto text-l text-emerald-800 lora-medium">Email</h6>
-<input  placeholder="email" className="input bg-transparent w-[100%] text-emerald-800" value={email} onChange={(e)=>setEmail(e.target.value.trim())}/>
+<label  className="flex-row flex border-emerald-400 rounded-full border-2 px-4">
+    <h6 className="my-auto text-[1rem] text-emerald-800 mont-medium">Email</h6>
+<input  placeholder="email" className="input bg-transparent w-[100%] text-[1rem] text-emerald-800" value={email} onChange={(e)=>setEmail(e.target.value.trim())}/>
 </label>         
+{/* <IonInput label="email" shape="round" fill="outline"/> */}
                         <a
                         onClick={handleClick}
                             className="my-8 bg-emerald-600 text-white flex rounded-full py-3"

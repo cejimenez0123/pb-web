@@ -109,7 +109,8 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
                     theme: "outline",
                     size: "large",
                     text: "signin_with",
-                    shape: "rectangular",
+                    borderRadius:"10%",
+                    // shape: "rectangular",
                     width: "250",
                     logo_alignment: "left"
                 }
@@ -238,26 +239,14 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
         console.log("User signed out.");
     };
 
-    // The 'signedIn' prop you passed was likely intended for App.js to control this component.
-    // However, GoogleLogin should manage its own internal signed-in state for rendering.
-    // The previous 'useEffect' that used 'signnedIn' prop is removed as it's redundant/misplaced here.
-    // This component's UI is now driven by its internal 'signedIn' state.
-
     return (
         <div>
             {!gisLoaded && <p>Loading Google Sign-In...</p>}
 
             {!signedIn ? (
                 // This div will be replaced by the Google Sign-In button
-                <div id="google-sign-in-button" style={{ display: gisLoaded ? 'block' : 'none' }}></div>
-            ) : (
-                <div>
-                    <h2>Welcome, {userName}!</h2>
-                    <p>You are logged in with: {userEmail}</p>
-                    <p>Your Google ID: {googleId}</p>
-                    <button onClick={handleSignOut}>Sign Out</button>
-                </div>
-            )}
+                <div id="google-sign-in-button"  style={{borderRadius:"10em", display: gisLoaded ? 'block' : 'none' }}></div>
+            ) : null}
         </div>
     );
 }
