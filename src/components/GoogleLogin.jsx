@@ -63,9 +63,9 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
             // --- Handle already signed-in user ---
             if (storedEmail && storedGoogleId && isTokenValid) {
                 // Update component's internal state
-                setUserEmail(storedEmail);
-                setUserName(storedName);
-                setGoogleId(storedGoogleId);
+                // setUserEmail(storedEmail);
+                // setUserName(storedName);
+                // setGoogleId(storedGoogleId);
                 setSignedIn(true);
 
                 console.log("User found in localStorage. Dispatching login action...");
@@ -126,9 +126,9 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
 
                 if (decodedToken) {
                     // Update internal state immediately after ID Token processing
-                    setUserEmail(decodedToken.email);
-                    setUserName(decodedToken.name || decodedToken.given_name || 'User');
-                    setGoogleId(decodedToken.sub);
+                    // setUserEmail(decodedToken.email);
+                    // setUserName(decodedToken.name || decodedToken.given_name || 'User');
+                    // setGoogleId(decodedToken.sub);
                     setSignedIn(true); // Update UI state to show logged-in view
 
                     // Store basic user info in localStorage
@@ -220,9 +220,9 @@ export default function GoogleLogin({ onUserSignIn }) { // Removed 'signedIn' pr
         localStorage.removeItem('googledrivetoken_expiry');
 
         // Reset component's internal state
-        setUserEmail('');
-        setUserName('');
-        setGoogleId('');
+        // setUserEmail('');
+        // setUserName('');
+        // setGoogleId('');
         setSignedIn(false);
 
         // Notify parent component about sign out
