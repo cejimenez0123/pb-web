@@ -352,31 +352,35 @@ switch (filterType) {
                             <div className=' w-[100%] items-center mx-auto grid grid-cols-2 gap-2 '>
                                 <div onClick={ClickWriteAStory} 
                                 className='bg-emerald-600  flex rounded-full text-white md:mt-2  h-[5em] w-[10em]  md:h-[3em]  text-bold'>
-                               <h6 className='my-auto text-[0.8rem] mont-medium md:text-md mx-auto '> Write a Story</h6>
+                               <h6 className='my-auto text-[0.8rem] mont-medium md:text-md mx-auto text-center'> Write <br/>a<br/> Story</h6>
                             </div>
-                            <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5em] w-[10em]   md:h-[3em] text-white   text-bold'>
-                              <div className='mx-auto text-[0.8rem] md:text-md  mont-medium   mt-8  mx-auto flex-col flex md:flex-row'><h6 className='text-center' >Create a Collection</h6> </div> 
+                            <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5em] w-[10em]   text-white   text-bold'>
+                              <div className='mx-auto my-auto'><IonText className='text-center mx-auto my-auto text-[0.8rem]' >Create Collection</IonText> </div> 
                             
                             </div>
                             </div>
-                            {isNative?<div><IonButton                  onClick={()=>navigate(Paths.workshop.reader())} 
-                                        className='bg-emerald-700  text-white border-emerald-600  rounded-full mont-medium  text-center w-[90%] h-[3rem]   '>
+                            {isPhone?<div>
+                              <div className='btn bg-emerald-700 rounded-full  border-emerald-600 mont-medium flex mb-4 mt-2 text-center w-[90%] h-[3rem]'>
+                   <IonText  className='mx-auto my-auto text-white'           onClick={()=>navigate(Paths.workshop.reader())} 
+                                        >
                                     Join a Workshop
-                                        </IonButton>
-                                        <GoogleDrivePicker/></div>:<><IonButton
-            // onClick={navigateToWorkshop}
-            onClick={()=>navigate(Paths.workshop.reader())} 
-            className="bg-emerald-700 flex rounded-full mont-medium my-8 h-[5rem]"
-            style={{ width: '90%' }} // Adjusting width to match the original
-        >
-            <h6 className="mx-auto lg:text-[1rem] text-white font-bold my-auto">Join a Workshop</h6>
-        </IonButton>
+                                        </IonText></div>
+                                        <GoogleDrivePicker/></div>:null
+        //                                 <><IonButton
+        //     // onClick={navigateToWorkshop}
+        //     onClick={()=>navigate(Paths.workshop.reader())} 
+        //     className="bg-emerald-700 flex rounded-full mont-medium my-8 h-[5rem]"
+        //     style={{ width: '90%' }} // Adjusting width to match the original
+        // >
+        //     <h6 className="mx-auto lg:text-[1rem] text-white font-bold my-auto">Join a Workshop</h6>
+        // </IonButton>
                                         
-                                        <div                   
-                                        className='bg-emerald-700 flex rounded-full mont-medium my-8 -[90%] h-[5rem]  '>
-                                    <h6 className='mx-auto lg:text-[1rem] text-white text-bold my-auto'> Join a Workshop</h6>
-                                        </div>
-                                        </>}
+        //                                 <div                   
+        //                                 className='bg-emerald-700 flex rounded-full mont-medium my-8 -[90%] h-[5rem]  '>
+        //                             <h6 className='mx-auto lg:text-[1rem] text-white text-bold my-auto'> Join a Workshop</h6>
+        //                                 </div>
+        //                                 </>
+                                        }
                             </div>
                   
                             </MediaQuery>
@@ -412,19 +416,19 @@ switch (filterType) {
                           </div></div>:null}
                </div>
                 <div>
-                              {isPhone?<span className="flex   mb-2 flex-row"> 
+                   
+ <br/>
+          </div>   
+  </div>
+  </div>
+                            <div className='w-[96vw] md:mt-8  flex flex-col mx-auto md:w-page'>
+           {isPhone?<span className="flex   mb-2 flex-row"> 
                 <label className='flex my-auto border-emerald-600  w-[100%] border-opacity-70 border-2 min-h-10 rounded-full  mt-8 flex-row mx-2'>
 <span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search:</span>
   <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
   </label><span className=" mx-1  w-24 flex  items-end pb-2 justify-evenly flex-row">
 
    </span></span>:null}
- <br/>
-          </div>   
-  </div>
-  </div>
-                            <div className='w-[96vw] md:mt-8  flex flex-col mx-auto md:w-page'>
-
                          
                             <div role="tablist" className="tabs mx-auto w-[100%] items-start ">
                             

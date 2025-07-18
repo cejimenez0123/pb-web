@@ -814,4 +814,73 @@
    
 
 
-  
+ /* MyStyledInput.css */
+
+/* Styles for the IonItem wrapper to remove default Ionic padding/lines */
+.custom-input-item {
+  --padding-start: 0;        /* Remove default item padding */
+  --padding-end: 0;          /* Remove default item padding */
+  --inner-padding-end: 0;    /* Important for removing space on the right */
+  --min-height: auto;        /* Allow input to define its own height */
+  --highlight-background: transparent; /* No background change on focus */
+  --border-width: 0;         /* Remove default item border */
+  --inner-border-width: 0;   /* Remove internal border lines (e.g., bottom border) */
+  background: transparent;   /* Ensure item background doesn't interfere */
+}
+
+
+/* Styles for the IonInput component itself */
+.custom-input {
+  /* Text styling: text-xl */
+  font-size: 1.25rem; /* 20px if base font-size is 16px */
+  line-height: 1.75rem; /* Optional, standard for text-xl */
+
+  /* Padding: px-4 py-2 */
+  --padding-start: 1rem;   /* 16px horizontal padding */
+  --padding-end: 1rem;     /* 16px horizontal padding */
+  --padding-top: 0.5rem;   /* 8px vertical padding */
+  --padding-bottom: 0.5rem;/* 8px vertical padding */
+
+  /* Border styling: border-2 border-emerald-800 */
+  --border-color: #047857; /* Equivalent to emerald-800 (check your specific Tailwind config if unsure) */
+  --border-width: 2px;     /* Equivalent to border-2 */
+  --border-style: solid;   /* Ensure border is solid */
+
+  /* Rounded corners: rounded-full */
+  --border-radius: 9999px; /* Makes it fully rounded */
+
+  /* Text color: text-emerald-800 */
+  --color: #047857; /* Equivalent to emerald-800 for the input text */
+
+  /* Background color: bg-transparent */
+  --background: transparent; /* Ensures the input background is clear */
+
+  /* Font Family: open-sans-medium */
+  /* This assumes you have 'Open Sans Medium' loaded and available. */
+  /* You might need to import it globally or specify a font stack. */
+  font-family: 'Open Sans', sans-serif; /* Fallback to sans-serif */
+  font-weight: 500; /* Medium weight for Open Sans */
+
+  /* Important: Remove any default outline from Ionic on focus */
+  outline: none;
+}
+
+/* Optional: To ensure font-size and font-family applies correctly within Shadow DOM */
+.custom-input::part(native) {
+  font-size: 1.25rem;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500;
+  color: #047857; /* Apply text color directly to native input for consistency */
+}
+
+/* Optional: Placeholder styling */
+.custom-input::part(placeholder) {
+  color: rgba(4, 120, 87, 0.7); /* Slightly transparent emerald for placeholder */
+  opacity: 1; /* Override default browser opacity */
+}
+
+/* Optional: Focus state styling - ensures the border color remains the same on focus */
+.custom-input.ion-focused {
+  --border-color: #047857; /* Keep emerald-800 on focus */
+  box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.3); /* Optional: subtle outer glow on focus */
+}

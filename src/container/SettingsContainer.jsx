@@ -3,7 +3,7 @@ import { useDispatch,useSelector } from "react-redux";
 import { updateProfile,deleteUserAccounts, deletePicture} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
 import getDownloadPicture from "../domain/usecases/getDownloadPicture";
-import InfiniteScroll from "react-infinite-scroll-component";
+import "../App.css"
 import { useNavigate } from "react-router-dom";
 import {    Button,
     
@@ -24,12 +24,14 @@ import { Clear } from "@mui/icons-material";
 
 import uuidv4 from "../core/uuidv4";
 import Context from "../context";
+import { IonContent,IonInput, IonItem, IonModal } from "@ionic/react";
+import DeviceCheck from "../components/DeviceCheck";
 
 function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
     const{setError,currentProfile,setSuccess}=useContext(Context)
-
+    const isNative = DeviceCheck()
     const [newUsername,setNewUsername] = useState("")
     const homeCollection = useSelector(state=>state.users.homeCollection)
     const [selfStatement,setSelfStatement] = useState(currentProfile&&currentProfile.selfStatement?currentProfile.selfStatement:"")
@@ -157,7 +159,7 @@ function SettingsContainer(props) {
     }   
 
     } 
-    const DeleteDialog = ()=> <Dialog
+    const DeleteDialog = ()=> !isNative?<Dialog
     open={deleteDialog}
     onClose={handleClose}
     aria-labelledby="alert-dialog-title"
@@ -177,7 +179,35 @@ function SettingsContainer(props) {
         Agree
       </Button>
     </DialogActions>
-  </Dialog>  
+  </Dialog>:  <IonModal ref={modal} trigger="open-modal" onWillDismiss={(event) => onWillDismiss(event)}>
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
+              </IonButtons>
+              <IonTitle>Welcome</IonTitle>
+              <IonButtons slot="end">
+                <IonButton strong={true} onClick={() => confirm()}>
+                  Agree
+                </IonButton>
+                <IonButton strong={true} onClick={() => confirm()}>
+                  Disagree
+                </IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+            <IonItem>
+              <IonInput
+                label="Enter your name"
+                labelPlacement="stacked"
+                ref={input}
+                type="text"
+                placeholder="Your name"
+              />
+            </IonItem>
+          </IonContent>
+        </IonModal>
     const deleteHomeItem  = (item)=>{
         switch(item.type){
             case "page":{
@@ -258,15 +288,27 @@ function SettingsContainer(props) {
     }
    
      if(!pending){
-            return(<div >
+            return(
+                // <IonContent>
+            <div >
                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
-                      <label className="text-left flex flex-col mont-medium"><h4 className="text-xl">Username:</h4>
-                            <input type="text"   
+                      {/* <label className="text-left flex flex-col mont-medium"><h4 className="text-xl">Username:</h4> */}
+                      <IonItem lines="none" className="custom-input-item">
+                        
+                      <IonInput   
+                       className="custom-input"
+                                        value={newUsername}
+                                        fill="outline"
+                                        onChange={(e)=>setNewUsername(e.target.value)}
+                                             label="Username"/>
+                                             </IonItem>
+                            {/* <input type="text"   
                                         className={" text-xl px-4 py-2 rounded-full  open-sans-medium text-emerald-800 bg-transparent border-2 border-emerald-800 border-2  "}
                                         value={newUsername}
                                         onChange={(e)=>setNewUsername(e.target.value)
                                         }
-                                         label="Username"/></label>
+                                         label="Username"/> */}
+                                         {/* </label> */}
                                           <div className='file'>
                    
                         <input
@@ -281,7 +323,7 @@ function SettingsContainer(props) {
           className="mx-auto"
             src={pictureUrl}
             alt="Selected"
-            style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }}
+            style={{ maxWidth: '10em', maxHeight: '300px', borderRadius: '10px' }}
           />
         
         
@@ -326,7 +368,9 @@ function SettingsContainer(props) {
                         <DeleteDialog/>
         
                         </div>
-            </div>)
+            </div>
+        //   </IonContent>
+        )
     }else{
         return(<div>
             Something's wrong
