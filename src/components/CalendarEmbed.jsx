@@ -225,7 +225,7 @@ function CalendarEmbed(){
     // console.log(JSON.stringify(chosenEvent.organizerLink))
     chosenEvent?window.location.href=chosenEvent.organizerLink:null
 }:null}text={
-  <div>
+  <div className="text-left text-emerald-800">
     <span>{chosenEvent.location}</span>
 <span dangerouslySetInnerHTML={{__html:"<div>"+chosenEvent.description+"</div>"}} /></div>} title={chosenEvent.summary}/>:null}
           <InfiniteScroll 
@@ -240,46 +240,60 @@ function CalendarEmbed(){
             return(
             <div key={eId} 
             onClick={()=>{
-              console.log("X",event)
+         
               setChoice(event)
             }}
-                className={`flex flex-col border-emerald-600  px-6 px-4 rounded-[50px]  border my-1 shadow-md min-h-42  py-4 mx-auto `}
+                className={`flex flex-row justify-between border-emerald-600  px-6 px-4 rounded-[50px]  border my-1 shadow-md min-h-42  py-4 mx-auto `}
            >
            <span className="flex flex-col justify-between text-left mont-medium text-emerald-800 ">
-                <span>
-             <a onClick={()=>{
+           <span    className="my-auto mr-2">{isPhone?event.shortSummary:event.summary}</span>     
+           {event.organizerLink&&isValidUrl(event.googleLink)? 
+             <span   onClick={()=>{
+              sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
+              window.location.href = event.googleLink
+  f
+                  }} className="flex flex-col"> 
+
+                   <a className="text-green-600 whitespace-nowrap no-underline max-w-[25em] my-auto" >
+                    <h6 >{event.location}</h6></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
+                {/* <span> */}
+             {/* <a onClick={()=>{
                   sendGAEvent("Click",`Event Click for Location ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
                   window.location.href = event.organizerLink
                   
                
-                }} className="flex-row flex "><h5 className="text-ellipsis  text-green-600  flex flex-row 
+                }} > </a> */}
+                  {/* <h5 className="text-ellipsis  text-green-600  flex flex-row 
             whitespace-nowrap no-underline max-w-[14em] sm:max-w-[25rem] ">
-              <img onClick={()=>{
+               */}
+        
+          
+              {/* <img onClick={()=>{
                   sendGAEvent("Click",`Event Click Organizer ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
                   window.location.href = event.organizerLink
                   
                
-                }}  className="max-h-6 max-w-6 mt-2 " src={insta}/>
-       <span    className="my-auto mr-2">{isPhone?event.shortSummary:event.summary}</span>      </h5></a>
+                }}  className="max-h-6 max-w-6 mt-2 " src={insta}/> */}
+                
+    
                 {event.area==areas[2]&&event.googleLink?<a 
              ><h6 className="text-green-600 text-sm flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
+            <h5 className="text-[0.7rem]">{event.hashtags.join(" ")}</h5>
              </span>
-            <span className="flex w-fit overflow-hidden flex-col text-right ">
-            
-            <h5 className="flex flex-row mt-2"><img  onClick={()=>{
+            {/* <span className="flex w-fit overflow-hidden flex-col text-right "> */}
+            {/* </h6> */}
+           
+                 {/* </span> */}
+                 <span className="flex flex-row">
+                 {/* <h5 className="flex flex-row mt-2"> */}
+                  <h6 className="my-auto text-[1.2rem] text-emerald-800 ml-4">{event.startTime??""}</h6>
+    <img  onClick={()=>{
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
               window.location.href = event.googleLink
   
-                  }} className="max-w-6 max-h-6 mt-2" src={calendar} /><h6 className="ml-1">{event.startTime??""}</h6></h5>
-             {event.organizerLink&&isValidUrl(event.googleLink)? 
-             <span   onClick={()=>{
-              sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
-              window.location.href = event.googleLink
-  
-                  }} className="flex flex-row">  <a className="text-green-600 whitespace-nowrap no-underline max-w-[25em] my-auto" ><h6 >{event.location}</h6></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
-              </span>
-          </span>
-            <span className="text-left  mont-medium text-slate-600"><h5 className="text-[0.7rem]">{event.hashtags.join(" ")}</h5></span></div>)
+                  }} className="w-12 h-12 mx-3 my-auto" src={calendar} /></span>
+                  
+                  </div>)
             
             }):null
           }
