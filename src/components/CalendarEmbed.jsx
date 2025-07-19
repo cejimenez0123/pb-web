@@ -243,7 +243,7 @@ function CalendarEmbed(){
          
               setChoice(event)
             }}
-                className={`flex flex-row justify-between border-emerald-600  px-6 px-4 rounded-[50px]  border my-1 shadow-md min-h-42  py-4 mx-auto `}
+                className={`flex flex-row justify-between border-emerald-600  px-6  rounded-[50px]  border my-1 shadow-md min-h-42  py-4 mx-auto `}
            >
            <span className="flex flex-col justify-between text-left mont-medium text-emerald-800 ">
            <span    className="my-auto mr-2">{isPhone?event.shortSummary:event.summary}</span>     
