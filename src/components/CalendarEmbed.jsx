@@ -107,7 +107,7 @@ function CalendarEmbed(){
             const startTimeFormatted = isAllDay ? "All Day" : formatDate(event.start.dateTime);
             let organizerLink = linkifyFirstUrl(event.description) 
         
-            let location = event.location? event.location.length > 24 ? event.location.slice(0, 40) + '...' : event.location:""
+            let location = event.location? event.location.length > (isPhone?30: 40) ? event.location.slice(0,isPhone?30: 40) + '...' : event.location:""
             let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 40) + '...' : event.summary:""
             let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
                 hashtags:[]}
@@ -277,7 +277,7 @@ function CalendarEmbed(){
                 
     
                 {event.area==areas[2]&&event.googleLink?<a 
-             ><h6 className="text-green-600 text-sm flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
+             ><h6 className="text-green-600 text-[0.6rem] flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
             <h5 className="text-[0.7rem]">{event.hashtags.join(" ")}</h5>
              </span>
             {/* <span className="flex w-fit overflow-hidden flex-col text-right "> */}
@@ -286,7 +286,7 @@ function CalendarEmbed(){
                  {/* </span> */}
                  <span className="flex flex-row">
                  {/* <h5 className="flex flex-row mt-2"> */}
-                  <h6 className="my-auto text-[1.2rem] text-emerald-800 ml-4">{event.startTime??""}</h6>
+                  <h5 className="my-auto text-[1rem] text-emerald-800 ml-4">{event.startTime??""}</h5>
     <img  onClick={()=>{
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
               window.location.href = event.googleLink
