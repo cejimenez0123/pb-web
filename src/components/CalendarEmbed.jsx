@@ -84,11 +84,11 @@ function CalendarEmbed(){
      
         useLayoutEffect(()=>{
             addEvents()
-      },[currentProfile,location.pathname])
+      },[currentProfile])
  
       const addEvents= ()=>{
         try{ 
-      storyRepo.fetchEvents({days:30}).then(res=>{
+      storyRepo.fetchEvents({days:28}).then(res=>{
         
         let events = res.events.flatMap(event=>event.events)
   
@@ -102,10 +102,10 @@ function CalendarEmbed(){
             const aStart = new Date(a.start?.dateTime || a.start?.date);
             const bStart = new Date(b.start?.dateTime || b.start?.date);
             return aStart - bStart;
-          })  .map(event => {
+          }) .map(event => {
             const isAllDay = !event.start.dateTime;
             const startTimeFormatted = isAllDay ? "All Day" : formatDate(event.start.dateTime);
-            let organizerLink = linkifyFirstUrl(event.description) || ''
+            let organizerLink = linkifyFirstUrl(event.description) 
         
             let location = event.location? event.location.length > 24 ? event.location.slice(0, 40) + '...' : event.location:""
             let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 40) + '...' : event.summary:""
@@ -113,8 +113,8 @@ function CalendarEmbed(){
                 hashtags:[]}
            
             setSuggestions((prevState)=>[...new Set([...prevState,...obj.suggestions])])
+           console.log(organizerLink)
             return {
-            
               summary: event.summary,
               shortSummary:summary,
               description:obj.cleanedDescription,
@@ -123,7 +123,7 @@ function CalendarEmbed(){
               location: location||'',
               notes: event.description || '',
               googleLink:event.htmlLink||"",
-            organizerLink:organizerLink||"",
+              organizerLink:organizerLink||"",
               area: event.organizer.displayName||''
             };
           });
@@ -211,8 +211,7 @@ function CalendarEmbed(){
         <li
           key={index}
           className="px-4 py-2 hover:bg-emerald-100 cursor-pointer text-emerald-700"
-          onClick={() => handleSuggestionClick(suggestion)}
-        >
+          onClick={() => handleSuggestionClick(suggestion)}>
           {suggestion}
         </li>
       )})}
@@ -221,7 +220,14 @@ function CalendarEmbed(){
   </div>
   </span>
 </div>
-{chosenEvent&& <Dialog isOpen={chosenEvent} text={<div dangerouslySetInnerHTML={{__html:chosenEvent.description}} />} title={chosenEvent.summary}/>}
+{chosenEvent? <Dialog isOpen={chosenEvent}onClose={()=>setChoice(null)}
+  agree={chosenEvent&&chosenEvent.organizerLink?()=>{
+    // console.log(JSON.stringify(chosenEvent.organizerLink))
+    chosenEvent?window.location.href=chosenEvent.organizerLink:null
+}:null}text={
+  <div>
+    <span>{chosenEvent.location}</span>
+<span dangerouslySetInnerHTML={{__html:"<div>"+chosenEvent.description+"</div>"}} /></div>} title={chosenEvent.summary}/>:null}
           <InfiniteScroll 
           className="w-page-mobile shadow-sm md:w-page max-h-[30em] md:max-h-[40rem] mx-auto "
                 next={()=>{}}
@@ -234,6 +240,7 @@ function CalendarEmbed(){
             return(
             <div key={eId} 
             onClick={()=>{
+              console.log("X",event)
               setChoice(event)
             }}
                 className={`flex flex-col border-emerald-600  px-6 px-4 rounded-[50px]  border my-1 shadow-md min-h-42  py-4 mx-auto `}
@@ -300,19 +307,49 @@ function CalendarEmbed(){
   
     return `${month}/${day} ${formattedHours}:${minutes} ${ampm}`;
   }
-  function linkifyFirstUrl(text) {
-    if (!text) return '';
+  //  function linkifyFirstUrl(text) {
+  //   if (!text) return '';
   
-    const urlRegex = /(https?:\/\/[^\s]+)/;
-    const match = text.match(urlRegex);
+  //   const urlRegex = /(https?:\/\/[^\s]+)/;
+  //   const match = text.match(urlRegex);
   
-    if (!match) return text; // No URL found
+  //   if (!match) return text; // No URL found
   
-    const url = match[0];
+  //   const url = match[0];
+  //   console.log(url)
+  //   return url
+  //   // return text.replace(urlRegex, linkedUrl);
+  // }
 
-    return url
-    // return text.replace(urlRegex, linkedUrl);
-  }
+const linkifyFirstUrl=(text) =>{
+  if (!text) return '';
+
+  // Remove HTML tags
+  const strippedText = text.replace(/<[^>]*>/g, '');
+
+  // Match the first URL in plain text
+  const urlRegex = /(https?:\/\/[^\s]+)/;
+  const match = strippedText.match(urlRegex);
+
+  if (!match) return ''; // No URL found
+
+  const url = match[0];
+  console.log(url);
+  return url;
+}
+  // function linkifyFirstUrl(text) {
+  //   if (!text) return '';
+  
+  //   const urlRegex = /(https?:\/\/[^\s]+)/;
+  //   const match = text.match(urlRegex);
+  
+  //   if (!match) return text; // No URL found
+  
+  //   const url = match[0];
+  //   console.log(url)
+  //   return url
+  //   // return text.replace(urlRegex, linkedUrl);
+  // }
   function cleanDescriptionAndExtractHashtags(description) {
     // Step 1: Remove URLs
     const urlRegex = /(https?:\/\/[^\s]+)/g;
