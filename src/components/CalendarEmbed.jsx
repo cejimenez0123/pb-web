@@ -284,14 +284,14 @@ function CalendarEmbed(){
             {/* </h6> */}
            
                  {/* </span> */}
-                 <span className="flex flex-row">
+                 <span className="flex flex-row justify-between w-24 ml-3">
                  {/* <h5 className="flex flex-row mt-2"> */}
-                  <h5 className="my-auto text-[1rem] text-emerald-800 ml-4">{event.startTime??""}</h5>
+                  <h5 className="my-auto text-[1rem] max-w-12 text-emerald-800 ">{event.startTime??""}</h5>
     <img  onClick={()=>{
               sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
               window.location.href = event.googleLink
   
-                  }} className="w-12 h-12 mx-3 my-auto" src={calendar} /></span>
+                  }} className="w-12 h-12  my-auto" src={calendar} /></span>
                   
                   </div>)
             
