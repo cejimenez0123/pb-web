@@ -4,14 +4,8 @@ import {useDispatch, useSelector} from "react-redux"
 import { useParams,useNavigate, useLocation} from "react-router-dom"
 import menu from "../../images/icons/menu.svg"
 import React,{ useContext, useEffect, useLayoutEffect, useState } from "react"
-import {  Button,} from "@mui/material"
 import checkResult from "../../core/checkResult"
 import { useMediaQuery } from "react-responsive"
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import { PageType } from "../../core/constants"
 import Paths from "../../core/paths"
 import {createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions"
@@ -25,6 +19,7 @@ import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions
 import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
+import Dialog from "../../components/Dialog.jsx"
 
 
 function EditorContainer(props){
@@ -391,6 +386,10 @@ handleClose={()=>{
     setOpenDescription(false)
     setFeedbackDialog(false)
 }} />
+<Dialog title={"Are you sure you want to delete this page?"}
+onClose={handleClose}
+
+text=""agree={handleDelete}/>
 
       <Dialog
 
@@ -403,11 +402,11 @@ handleClose={()=>{
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this page?
+            
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={e}>Disagree</Button>
           <Button onClick={handleDelete}>
             Agree
           </Button>

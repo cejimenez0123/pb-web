@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux'; // Import useDispatch
 import { useNavigate } from 'react-router-dom';
+import { logIn } from '../actions/UserActions';
 
 export default function GoogleLogin({ onUserSignIn }) { 
     const [gisLoaded, setGisLoaded] = useState(false);
@@ -63,22 +64,33 @@ export default function GoogleLogin({ onUserSignIn }) {
 
             // --- Handle already signed-in user ---
             if (storedEmail && storedGoogleId && isTokenValid) {
+                dispatch(logIn({email:storedEmail,uId:storedGoogleId})).then(res=>{ checkResult(res,payload=>{
+                    setPending(false)
+                    setSignedIn(true);
+                    if(payload.error){
+                        setLogInError("Error with Username or Password")
+                    }else{
+                        navigate(Paths.myProfile())
+                    }
+                },err=>{
+                    if(err.message=="Request failed with status code 401"){
+setLogInError("User Not Found. Apply Below")
+                    }else{
+                        setLogInError(err.message)
+                    }
+                    setPending(false)
+                })
+            })  
                 // Update component's internal state
                 // setUserEmail(storedEmail);
                 // setUserName(storedName);
                 // setGoogleId(storedGoogleId);
-                setSignedIn(true);
+         
 
                 console.log("User found in localStorage. Dispatching login action...");
-                                // Dispatch Redux login action
-                // You'll need to define `loginUser` action in your Redux setup
-                // Example: dispatch(loginUser({ googleId: storedGoogleId, accessToken: storedDriveToken }));
-                // Consider what data your `loginUser` action expects.
-                // For this example, I'll console.log it, replace with your actual dispatch:
+               
                 console.log("Dispatching login with:", { googleId: storedGoogleId, accessToken: storedDriveToken });
-                // Placeholder for your actual dispatch call:
-                // dispatch(loginUser({ googleId: storedGoogleId, accessToken: storedDriveToken, email: storedEmail, name: storedName }));
-
+       
 
                 // Notify parent component about the user's status
                 if (onUserSignIn) {

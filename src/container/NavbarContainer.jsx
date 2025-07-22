@@ -7,9 +7,9 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import menu from "../images/icons/menu.svg"
 import getDownloadPicture from '../domain/usecases/getDownloadPicture'
 import { debounce } from 'lodash'
-import LinkIcon from '@mui/icons-material/Link';
-import CreateIcon from '@mui/icons-material/Create';
-import ImageIcon from '@mui/icons-material/Image';
+import LinkIcon from '../images/icons/link.svg';
+import CreateIcon from '../images/icons/ink_pen.svg'
+import ImageIcon from '../images/icons/image.svg'
 import Paths from '../core/paths'
 import { searchDialogToggle } from '../actions/UserActions'
 import { createStory } from '../actions/StoryActions'
@@ -147,13 +147,13 @@ function NavbarContainer(props){
         
          <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline'  tabndex="0">Create</a>
            <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
-             <li onClick={ClickWriteAStory}><a  >  <CreateIcon className='text-emerald-800'/></a></li>
+             <li onClick={ClickWriteAStory}><a  >  <IonImg src={CreateIcon}/></a></li>
              <li    onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
      
           dispatch(setHtmlContent(""))
-          navigate(Paths.editor.image())}}><a>     <ImageIcon className='text-emerald-800'/></a></li>
+          navigate(Paths.editor.image())}}><a>     <IonImg src={ImageIcon}/></a></li>
              <li><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
@@ -255,7 +255,7 @@ function NavbarContainer(props){
 
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}} className='mx-auto'>
-    <LinkIcon className='text-emerald-800'/></a></li>
+   <IonImg src={LinkIcon}/></a></li>
            <li  onClick={()=>{ 
 
                  setOpenDialog(true)

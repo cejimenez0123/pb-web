@@ -5,26 +5,24 @@ import { logIn} from '../../actions/UserActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import loadingGif from "../../images/loading.gif"
-
-import { Clear } from '@mui/icons-material';
 import Paths from '../../core/paths';
 import { useLocation } from 'react-router-dom';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
-import { initGA,sendGAEvent } from '../../core/ga4';
+import { sendGAEvent } from '../../core/ga4';
 import DeviceCheck from '../../components/DeviceCheck';
 import GoogleLogin from '../../components/GoogleLogin';
 import Dialog from '../../components/Dialog';
 export default function LogInContainer(props) {
     const location = useLocation()
     const {setError,seo,setSeo}=useContext(Context)
-    useLayoutEffect(()=>{
-        initGA()
-    },[])
+    // useLayoutEffect(()=>{
+    //     initGA()
+    // },[])
     useLayoutEffect(()=>{
         let soo = seo
-        soo.title = "Plumbum (LogIn) - Share Your Weirdness"
+        soo.title = "Plumbum (Log In) - Share Your Weirdness"
         setSeo(soo)
    },[])
 
@@ -50,7 +48,7 @@ function LogInCard({setLogInError}){
     const [showPassword, setShowPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("")
     const [open,setOpen] = useState(false);
- 
+    
   
    
      

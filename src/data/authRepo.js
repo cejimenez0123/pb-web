@@ -92,6 +92,10 @@ class AuthRepo{
      
         return res.data
     }
+    async googleSignIn({email,googleId}){
+       let res =await axios.post(Enviroment.url+"/auth/google",{email,googleId})
+       return res.data
+    }
     }
 
 export default new AuthRepo()
