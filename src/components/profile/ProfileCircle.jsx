@@ -9,9 +9,6 @@ import { initGA, sendGAEvent } from "../../core/ga4";
 import { IonImg } from "@ionic/react";
 
 function ProfileCircle({profile,color="white",isGrid=false}){
-       const isPhone = useMediaQuery({
-        query: '(max-width: 768px)'
-      })
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const navigate = useNavigate()
     useLayoutEffect(()=>{

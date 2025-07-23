@@ -54,7 +54,7 @@ export default function ProfileCard({profile,onClickFollow,following}){
         <div className="text-left p-4">
             <div className="flex flex-row">
               <div>  
-            {profilePic.length>0?<IonImg src={profilePic} className="max-w-36 object-fit max-h-36  mb-2 rounded-lg" alt=""/>:<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
+            {profilePic.length>0?<span className="max-h-28  "><IonImg src={profilePic} className="max-w-36 object-fit mb-2 rounded-lg" alt=""/></span>:<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
               <div className="h-fit px-2 pb-2"><h5 className="text-emerald-800 text-[1.2rem] open-sans-medium font-bold">{profile.username}</h5></div>
         
               </div> <div>

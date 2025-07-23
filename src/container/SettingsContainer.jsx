@@ -24,16 +24,14 @@ import { IonModal,IonHeader,
     } from "@ionic/react"
 
 import checkResult from "../core/checkResult";
-import { checkmarkStyle } from "../styles/styles";
-import Paths from "../core/paths";
+
 import { Clear } from "@mui/icons-material";
 
-import uuidv4 from "../core/uuidv4";
 import Context from "../context";
 
 import DeviceCheck from "../components/DeviceCheck";
 
-function SettingsContainer(props) {  
+export default function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
     const modal = useRef(null)

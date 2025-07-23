@@ -14,11 +14,9 @@ import Paths from '../core/paths'
 import { searchDialogToggle } from '../actions/UserActions'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
-import Dialog from '@mui/material/Dialog';
-
+import Dialog from '../components/Dialog.jsx'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions.jsx'
-import { useMediaQuery } from 'react-responsive'
 import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
@@ -242,13 +240,13 @@ function NavbarContainer(props){
         
          <a      tabIndex={1} role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
            <ul      tabIndex={1} className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
-             <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <CreateIcon className='text-emerald-800'/></a></li>
+             <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <IonImg src={CreateIcon}/></a></li>
              <li    onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
     
           dispatch(setHtmlContent(""))
-          navigate(Paths.editor.image())}}><a className='mx-auto'>     <ImageIcon className='text-emerald-800'/></a></li>
+          navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
              <li><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
@@ -299,21 +297,20 @@ function NavbarContainer(props){
   const handleSignOut = () => {
     window.google.accounts.id.disableAutoSelect(); // Clears GIS cookie for auto-login
     // Clear all stored items related to login and drive token
+    
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
     localStorage.removeItem('googleId');
     localStorage.removeItem(driveTokenKey);
     localStorage.removeItem('googledrivetoken_expiry');
+    dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
+      localStorage.clear()
+      navigate("/")
+    },err=>{
+      
+    }))
 
-    // Reset component's internal state
-    
-    setSignedIn(false);
-
-    // Notify parent component about sign out
-    if (onUserSignIn) {
-        onUserSignIn(null); // Indicate user signed out
-    }
-    console.log("User signed out.");
+   
 };
   return(<div className="navbar max-w-[100vw] bg-emerald-800">
      <div className='navbar-start '>
@@ -346,12 +343,7 @@ function NavbarContainer(props){
                                       navigate(Paths.myProfile())
                                   }else if(setting== SettingName.logout){
                                     handleSignOut()
-                                      dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
-                                        localStorage.clear()
-                                        navigate("/")
-                                      },err=>{
-                                        
-                                      }))
+                                     
                                   }else if(setting== SettingName.account){
                                       navigate("/profile/edit")
                                   }else if(setting==SettingName.notifications){
@@ -370,8 +362,9 @@ function NavbarContainer(props){
     
     
   
-    <Dialog open={openDialog}>
-<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>
+    <Dialog isOpen={openDialog} text={<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>}
+    onClose={()=>setOpenDialog(false)}>
+
     </Dialog>
 </div>)
 

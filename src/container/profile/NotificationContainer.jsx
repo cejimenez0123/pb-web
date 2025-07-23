@@ -11,20 +11,18 @@ import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import usePersistentNotifications from "../../domain/usecases/usePersistentNotifications"
 import Enviroment from "../../core/Enviroment"
-
+import { useLocation } from "react-router-dom"
 
 export default function NotificationContainer(props){
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const payload = usePersistentNotifications(()=>dispatch(fetchNotifcations({profile:currentProfile})))
     var today= new Date();
-  
+    var location = useLocation()
     let oneDayOld = today.setDate(today.getDate() - 1)
     let lastNotified =  oneDayOld
     const navigate = useNavigate()
-
     const [items,setItems]=useState([])
-
     const fetchIt =()=>{
        
        
@@ -79,11 +77,11 @@ export default function NotificationContainer(props){
         
          
     }}
-   
+   color="emerald-700"
     useLayoutEffect(()=>{
       
- fetchIt(payload)
-    },[currentProfile])
+        fetchIt(payload)
+    },[location.pathname])
 
     return(<div className="flex flex-col justify-center md:py-8">
         <div  className=" w-[96vw] border-b-2 border-emerald-600 mx-auto md:w-page">
@@ -109,7 +107,7 @@ export default function NotificationContainer(props){
             return(<div onClick={()=>navigate(Paths.profile.createRoute(profile.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem] border-opacity-60 md:border-2 md:rounded-full p-2">
             <div className="md:px-12" ><span    className="flex justify-between flex-row ">
         
-            <ProfileCircle profile={profile}/>
+            <ProfileCircle profile={profile} color="emerald-700"/>
            
  
             <h4 className="my-auto">{getTimePast(follow.created)}</h4>
@@ -139,7 +137,7 @@ export default function NotificationContainer(props){
             return(<div onClick={()=>navigate(Paths.collection.createRoute(collection.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem] border-opacity-60 md:border-2 md:rounded-full p-2">
             <div className="md:px-12" ><span    className="flex justify-between flex-row ">
         
-            <ProfileCircle profile={collection.profile}/>
+            <ProfileCircle profile={collection.profile} color="emerald-700"/>
             <h4 className="text-emerald-700 mx-4 my-2 text-[0.7rem] open-sans-medium">Published to {collection.title}</h4>
  
             <h4 className="my-auto">{getTimePast(collection.created)}</h4>
@@ -153,7 +151,7 @@ export default function NotificationContainer(props){
             return(<div onClick={()=>navigate(Paths.page.createRoute(story.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem]   border-opacity-60 md:border-2 md:rounded-full p-2">
             <div className="md:px-12" ><span    className="flex justify-between flex-row ">
         
-            <ProfileCircle profile={item.profile}/>
+            <ProfileCircle profile={item.profile} color="emerald-700"/>
             <h4 className="text-emerald-700 mx-4 my-2 text-[0.7rem] open-sans-medium">{lastNotified<new Date(story.created)?"New Story":null}</h4>
  
             <h4 className="my-auto">{getTimePast(story.created)}</h4>
@@ -168,7 +166,7 @@ export default function NotificationContainer(props){
             className="border-emerald-600 min-h-[8rem] max-h-[10rem] border-t-2 md:my-2  border-opacity-60 md:border-2 md:rounded-full p-4">
             <div className="px-6" ><span    className="flex flex-row justify-between"><span
             className="flex flex-row ">
-            <ProfileCircle profile={comment.profile}/>
+            <ProfileCircle profile={comment.profile} color="emerald-700"/>
             <h4 className="text-emerald-700 mx-4 my-2 text-[0.7rem] md:max-w-[12em] text-nowrap text-ellipsis my-auto open-sans-medium">Commented on {comment.story.title}</h4></span>
             <h4 className="my-auto">{getTimePast(comment.created)}</h4>
             </span>

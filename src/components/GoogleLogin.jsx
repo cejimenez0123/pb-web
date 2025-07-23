@@ -2,6 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux'; // Import useDispatch
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../actions/UserActions';
+import Paths from '../core/paths';
 
 export default function GoogleLogin({ onUserSignIn }) { 
     const [gisLoaded, setGisLoaded] = useState(false);
@@ -94,6 +95,22 @@ setLogInError("User Not Found. Apply Below")
 
                 // Notify parent component about the user's status
                 if (onUserSignIn) {
+                    dispatch(logIn({email:storedEmail,uId:storedGoogleId})).then(res=>{ checkResult(res,payload=>{
+                        setPending(false)
+                        setSignedIn(true);
+                        if(payload.error){
+                            setLogInError("Error with Username or Password")
+                        }else{
+                            navigate(Paths.myProfile())
+                        }
+                    },err=>{
+                        if(err.message=="Request failed with status code 401"){
+    setLogInError("User Not Found. Apply Below")
+                        }else{
+                            setLogInError(err.message)
+                        }
+                        setPending(false)
+                    })})
                     onUserSignIn({ email: storedEmail, name: storedName, googleId: storedGoogleId, driveAccessToken: storedDriveToken });
                 }
                 return; // Exit as user is already logged in
@@ -150,7 +167,7 @@ setLogInError("User Not Found. Apply Below")
                     console.log("User signed in (ID Token processed). Now requesting access token for Drive...");
                     // Proceed to request access token with Drive scopes
                     requestDriveAccessToken(decodedToken.sub, decodedToken.email, decodedToken.name || decodedToken.given_name);
-
+                  
                 }
             } catch (error) {
                 console.error("Error decoding ID token or processing sign-in:", error);
