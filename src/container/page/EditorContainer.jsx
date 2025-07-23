@@ -391,28 +391,7 @@ onClose={handleClose}
 
 text=""agree={handleDelete}/>
 
-      <Dialog
-
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-      open={open}>
-        <div className="rounded-lg">
-        <DialogTitle id="alert-dialog-title">
-          {"Deleting?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={e}>Disagree</Button>
-          <Button onClick={handleDelete}>
-            Agree
-          </Button>
-        </DialogActions>
-        </div>
-      </Dialog>
+      
     </div>
       </div>
       </EditorContext.Provider>
