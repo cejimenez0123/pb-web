@@ -301,7 +301,7 @@ function NavbarContainer(props){
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
     localStorage.removeItem('googleId');
-    localStorage.removeItem(driveTokenKey);
+    localStorage.removeItem("driveTokenKey");
     localStorage.removeItem('googledrivetoken_expiry');
     dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
       localStorage.clear()
