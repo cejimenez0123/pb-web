@@ -386,10 +386,10 @@ handleClose={()=>{
     setOpenDescription(false)
     setFeedbackDialog(false)
 }} />
-<Dialog title={"Are you sure you want to delete this page?"}
+<Dialog isOpen={open} title={"Are you sure you want to delete this page?"}
 onClose={handleClose}
 
-text=""agree={handleDelete}/>
+text=""agree={handleDelete} agreeText="Delete" disagreeText="Close"/>
 
       
     </div>

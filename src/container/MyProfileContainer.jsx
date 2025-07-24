@@ -11,15 +11,12 @@ import authRepo from '../data/authRepo.js';
 import MediaQuery, { useMediaQuery } from 'react-responsive';
 import Paths from '../core/paths';
 import { debounce, } from 'lodash';
-import sortAlphabet from "../images/icons/sort_by_alpha.svg"
-import clockArrowUp from "../images/icons/clock_arrow_up.svg"
-import clockArrowDown from "../images/icons/clock_arrow_down.svg"
 import { setPageInView, setPagesInView, setEditingPage  } from '../actions/PageActions.jsx';
 import { initGA,sendGAEvent } from '../core/ga4.js';
-import {Dialog,DialogActions,Button} from "@mui/material"
+// import {Dialog,DialogActions,Button} from "@mui/material"
+import Dialog from '../components/Dialog.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
-import ReferralForm from '../components/auth/ReferralForm';
 import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCollectionCache';
@@ -29,7 +26,7 @@ import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStori
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg"
 import DeviceCheck from '../components/DeviceCheck.jsx';
-import { IonButton, IonText } from '@ionic/react';
+import {  IonText } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 function MyProfileContainer(props){
   const isNative = DeviceCheck()
@@ -360,26 +357,13 @@ switch (filterType) {
                             </div>
                             </div>
                             {isPhone?<div>
-                              <div className='btn bg-emerald-700 rounded-full  border-emerald-600 mont-medium flex mb-4 mt-2 text-center w-[90%] h-[3rem]'>
-                   <IonText  className='mx-auto my-auto text-white'           onClick={()=>navigate(Paths.workshop.reader())} 
+                              <div className='btn bg-transparent rounded-full  border-emerald-600 mont-medium flex mb-4 mt-2 text-center w-[90%] h-[3rem]'>
+                   <IonText  className='mx-auto my-auto text-emerald-900 '           onClick={()=>navigate(Paths.workshop.reader())} 
                                         >
                                     Join a Workshop
                                         </IonText></div>
                                         <GoogleDrivePicker/></div>:null
-        //                                 <><IonButton
-        //     // onClick={navigateToWorkshop}
-        //     onClick={()=>navigate(Paths.workshop.reader())} 
-        //     className="bg-emerald-700 flex rounded-full mont-medium my-8 h-[5rem]"
-        //     style={{ width: '90%' }} // Adjusting width to match the original
-        // >
-        //     <h6 className="mx-auto lg:text-[1rem] text-white font-bold my-auto">Join a Workshop</h6>
-        // </IonButton>
-                                        
-        //                                 <div                   
-        //                                 className='bg-emerald-700 flex rounded-full mont-medium my-8 -[90%] h-[5rem]  '>
-        //                             <h6 className='mx-auto lg:text-[1rem] text-white text-bold my-auto'> Join a Workshop</h6>
-        //                                 </div>
-        //                                 </>
+  
                                         }
                             </div>
                   
@@ -392,7 +376,7 @@ switch (filterType) {
                           <div className='flex flex-col'>
                             <span className="mb-4">
                               <div
-                              className='bg-emerald-200 btn mb-4 w-[100%] rounded-full mont-medium  text-center w-[90%] h-[3rem]   '                                       
+                              className='bg-transparent border-3 border-green-400 btn mb-4 w-[100%] rounded-full mont-medium  text-center w-[90%] h-[3rem]   '                                       
                                >
 
                             <IonText   className='text-[1rem] text-emerald-900' onClick={()=>navigate(Paths.workshop.reader())} 
@@ -422,13 +406,11 @@ switch (filterType) {
   </div>
   </div>
                             <div className='w-[96vw] md:mt-8  flex flex-col mx-auto md:w-page'>
-           {isPhone?<span className="flex   mb-2 flex-row"> 
-                <label className='flex my-auto border-emerald-600  w-[100%] border-opacity-70 border-2 min-h-10 rounded-full  mt-8 flex-row mx-2'>
-<span className='my-auto text-emerald-800 mx-2 w-full mont-medium'> Search:</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' rounded-full  open-sans-medium px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full border-emerald-700 border-1 text-emerald-800' />
-  </label><span className=" mx-1  w-24 flex  items-end pb-2 justify-evenly flex-row">
-
-   </span></span>:null}
+           {isPhone?
+                <span className='flex mb-4 mx-aauto  h-9 border-emerald-700  min-h-10 w-[90vw] border-opacity-70 border-2 rounded-full flex-row '>
+<span className=' text-emerald-800 w-full mont-medium my-auto mx-2'> Search:</span>
+  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' h-9 rounded-full  open-sans-medium px-2  w-full text-sm bg-transparent rounded-full border-emerald-700 border-1 text-emerald-800' />
+  </span>:null}
                          
                             <div role="tablist" className="tabs mx-auto w-[100%] items-start ">
                             
@@ -450,41 +432,52 @@ switch (filterType) {
    className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page w-[96vw]  md:w-page mx-auto rounded-full">
   <IndexList items={collections}/>
   </div>
- {isPhone?<div className=''>
+ {isPhone?
 
   <select  onChange={(e)=>{
     setFilterType(e.target.value)
-  }} defaultValue={filterType} className="select bg-transparent  text-emerald-800 border-2 border-emerald-600 rounded-full mx-3">
+  }} defaultValue={filterType} className="select bg-transparent  text-emerald-800 border-2 h-8 border-emerald-600 rounded-full mx-3">
     <option value={filterTypes.filter}>Filter</option>
     <option value={filterTypes.recent}>Most Recent</option>
     <option value={filterTypes.oldest}>Oldest</option>
     <option value={filterTypes.feedback}>Feeback</option>
     <option value={filterTypes.AZ}>A-Z</option>
     <option value={filterTypes.ZA}>Z-A</option>
-  </select>
+  </select>:null}
 
-{/* </fieldset>   */}
-<div></div>
-{/* </span> */}
-</div>:null}
-
-  {isNotPhone? <span className='flex flex-row'> <label className={`flex border-emerald-600 border-2 rounded-full my-1 ${search.length==0?"w-[14em]":"w-[20em]"} flex-row mx-4 `}>
-<span className='my-auto text-emerald-800 mx-2 w-full mont-medium '> Search</span>
-  <input type='text' value={search}  onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 rounded-full text-sm bg-transparent my-1  text-emerald-800' />
+  {isNotPhone?
+  <span className="flex flex-row  items-center gap-1">
+  <label
+    className={`flex items-center border-2 border-emerald-600 rounded-full px-3 py-1 ${
+      search.length === 0 ? 'w-[19em]' : 'w-[20em]'
+    }`}
+  >
+    <span className="text-emerald-800 mr-2 whitespace-nowrap mont-medium">Search:</span>
+    <input
+      type="text"
+      value={search}
+      onChange={(e) => handleSearch(e.target.value)}
+      className=" w-[9em] overflow-ellipsis bg-transparent rounded-full text-lg text-emerald-800 outline-none"
+    />
   </label>
-  <span className={`${search.length==0?"":"hidden"} mx-1  w-24 flex  items-end pb-4 justify-evenly flex-row`}>
 
-  <select  onChange={(e)=>{
-    setFilterType(e.target.value)
-  }} defaultValue={filterType} className="select bg-transparent  text-emerald-800 border-2 border-emerald-600 rounded-full mx-3">
-    <option value={filterTypes.filter}>Filter</option>
-    <option value={filterTypes.recent}>Most Recent</option>
-    <option value={filterTypes.oldest}>Oldest</option>
-    <option value={filterTypes.feedback}>Feeback</option>
-    <option value={filterTypes.AZ}>A-Z</option>
-    <option value={filterTypes.ZA}>Z-A</option>
-  </select>
-   </span></span>:null}
+  {/* Only show filters if search is empty */}
+  <span className={`${search.length === 0 ? '' : 'hidden'} w-[10em]`}>
+    <select
+      onChange={(e) => setFilterType(e.target.value)}
+      defaultValue={filterType}
+      className="w-full px-3 py-2 border-2 border-emerald-600 text-emerald-800 bg-transparent rounded-full text-sm"
+    >
+      <option value={filterTypes.filter}>Filter</option>
+      <option value={filterTypes.recent}>Most Recent</option>
+      <option value={filterTypes.oldest}>Oldest</option>
+      <option value={filterTypes.feedback}>Feedback</option>
+      <option value={filterTypes.AZ}>A-Z</option>
+      <option value={filterTypes.ZA}>Z-A</option>
+    </select>
+  </span>
+</span>
+:null}
 </div>
 
 </div>
@@ -501,36 +494,24 @@ handlePostPublic={()=>{}}
 handleClose={()=>{
   navigate(Paths.workshop.createRoute(feedbackPage.id))
 }}/>
-<Dialog className={
-                "bg-emerald-400 bg-opacity-30 "
-              }
-              PaperProps={{
-                style: {
-                  backgroundColor: 'transparent',
-                  boxShadow: 'none',
-                 overflow:"hidden",
-                 height:"100%",
-                 width:"100%",
-                
-                },
-              }}
-            fullScreen={isPhone}
-              open={openDialog}
-              onClose={()=>setOpenDialog(false)}>
-                <CreateCollectionForm onClose={()=>{
+<Dialog 
+          
+              isOpen={openDialog}
+              onClose={()=>setOpenDialog(false)}
+              text={<CreateCollectionForm onClose={()=>{
                     setOpenDialog(false)
-                }}/>
-              </Dialog>
+                }}/>}/>
         
               <Dialog
-               fullScreen={isPhone}
-               open={firstLogin}
+               isOpen={firstLogin}
                onClose={()=>{
+                localStorage.getItem("firstTime",false)
                 setFirstLogin(false)
-               }}
-              >
-                <div className='card  bg-emerald-50 px-4 py-8 overflow-x-hidden h-[100%] md:min-w-72 md:min-h-72'>
-                <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Welcome to Plumbum! 🎉</h1>
+                setFirstLogin(false)}}
+                disagreeText={"Close"}
+               title={"Welcome to Plumbum! 🎉"}
+              text={<>
+              <div className='card  bg-emerald-50 px-4 py-8 overflow-x-hidden h-[100%] md:min-w-72 md:min-h-72'>
         <p class="text-lg text-gray-600 mb-4">You’ve just joined a community built for writers like you—a space to share, connect, and grow with fellow creatives.</p>
         <p class="text-lg text-gray-600 mb-4">To get the best experience, invite your friends so they can keep up with your work and be part of your creative journey.</p>
         
@@ -542,20 +523,14 @@ onClick={()=>generateReferral()}>
     <h6 >Create Referral Link</h6></span>    
             {referralLink?
             <h6 className='flex-row  min-h-12 flex'><a onClick={copyToClipboard} className='text-nowrap  my-auto overflow-hidden text-ellipsis '>{referralLink}</a>
-            <img onClick={copyToClipboard} src={copyContent}  className="btn bg-transparent border-none my-auto icon "/></h6>
-            :null}
+            <img onClick={copyToClipboard} src={copyContent}  className="btn bg-transparent border-none my-auto icon "/></h6>:null
+            }
         </div>
         
         <p class="text-center text-sm text-gray-500 mt-4">Share it with the people who inspire and support your writing! ✨</p>
-               <DialogActions>
+        </div>
+        </>}/>
          
-        <Button onClick={()=>{
-          localStorage.getItem("firstTime",false)
-          setFirstLogin(false)}} ><span className="mont-medium">Close</span></Button>
-     
-               </DialogActions>
-                </div>
-              </Dialog>
 </div>
 
 </ErrorBoundary>

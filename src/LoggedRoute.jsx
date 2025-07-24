@@ -7,16 +7,16 @@ import Paths from "./core/paths";
 const LoggedRoute = ({ loggedOut, children }) => {
   
   const navigate = useNavigate()
-  const location = useLocation();
-  const currentProfile = useSelector(state=>state.users.currentProfile)
-
-  const {formerPage,setFormerPage}=useContext(Context)
+  const location = useLocation()
+  const {currentProfile ,formerPage,setFormerPage}=useContext(Context)
   useEffect(()=>{
    
     if(currentProfile){     
-      if(formerPage){
+      if (location.pathname.includes("login")){
+        navigate(Paths.discovery())
+      }else if(formerPage){
         navigate(formerPage)
-      }else{
+      } else{
         navigate(Paths.myProfile())
       }
     }

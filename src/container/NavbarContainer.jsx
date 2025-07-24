@@ -158,7 +158,7 @@ function NavbarContainer(props){
 
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}}>
-    <LinkIcon className='text-emerald-800'/></a></li>
+    <IonImg src={LinkIcon}/></a></li>
            <li  onClick={()=>{ 
              
                  setOpenDialog(true)
@@ -315,10 +315,10 @@ function NavbarContainer(props){
   return(<div className="navbar max-w-[100vw] bg-emerald-800">
      <div className='navbar-start '>
     {isPhone?menuDropdown():
-    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
+    <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
   </div>
   <div className='navbar-center'>
-      {!isPhone?menuHoriz():  <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
+      {!isPhone?menuHoriz():  <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
   </div>
 
  
@@ -363,9 +363,9 @@ function NavbarContainer(props){
     
   
     <Dialog isOpen={openDialog} text={<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>}
-    onClose={()=>setOpenDialog(false)}>
+    onClose={()=>setOpenDialog(false)} disagreeText={"Close"}/>
 
-    </Dialog>
+ 
 </div>)
 
 }

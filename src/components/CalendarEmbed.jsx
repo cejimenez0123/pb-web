@@ -15,7 +15,25 @@ import Dialog from "./Dialog";
 
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
+  function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    const options = { weekday: 'short', month: '2-digit', day: '2-digit' };
+    const formattedDate = date.toLocaleDateString('en-US', options); // e.g., "Mon, 07/21"
   
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+  
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 should be 12
+  
+    const formattedHours = hours.toString().padStart(2, '0');
+  
+    // Split the formattedDate to get the weekday and the MM/DD part
+    const [weekday, mmdd] = formattedDate.split(', '); 
+  
+    return `<span>${weekday}<br/> ${mmdd} <br/>${formattedHours}:${minutes} ${ampm}</span>`;
+  }
     const {setError,currentProfile}=useContext(Context)
     
     const [selectedArea, setSelectedArea] = useState("")
@@ -220,10 +238,10 @@ function CalendarEmbed(){
   </div>
   </span>
 </div>
-{chosenEvent? <Dialog isOpen={chosenEvent}onClose={()=>setChoice(null)}
+{chosenEvent? <Dialog agreeText={"Organizer"} disagreeText={"Close"} isOpen={chosenEvent}onClose={()=>setChoice(null)}
   agree={chosenEvent&&chosenEvent.organizerLink?()=>{
-    // console.log(JSON.stringify(chosenEvent.organizerLink))
-    chosenEvent?window.location.href=chosenEvent.organizerLink:null
+
+    chosenEvent?window.open(chosenEvent.organizerLink):null
 }:null}text={
   <div>
     <span>{chosenEvent.location}</span>
@@ -236,53 +254,50 @@ function CalendarEmbed(){
           dataLength={events.length}>
           {events&&events.length?events.map((event,i)=>{
                         
-        let eId= event.googleLink.split("?eid=")[0]
-            return(
-            <div key={eId} 
-            onClick={()=>{
-              console.log("X",event)
-              setChoice(event)
-            }}
-                className={`flex flex-col border-emerald-600  px-6 px-4 rounded-[50px]  border my-1 shadow-md min-h-42  py-4 mx-auto `}
-           >
-           <span className="flex flex-col justify-between text-left mont-medium text-emerald-800 ">
-                <span>
-             <a onClick={()=>{
-                  sendGAEvent("Click",`Event Click for Location ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
-                  window.location.href = event.organizerLink
+                        let eId= event.googleLink.split("?eid=")[0]
+                            return(
+                            <div key={eId} 
+                            onClick={()=>{
+                         
+                              setChoice(event)
+                            }}
+                                className={`flex flex-row justify-between border-emerald-600  px-6  rounded-[50px]  border my-1 shadow-md min-h-42  py-4 mx-auto `}
+                           >
+                           <span className="flex flex-col justify-between text-left mont-medium text-emerald-800 ">
+                           <span    className="my-auto mr-2">{isPhone?event.shortSummary:event.summary}</span>     
+                           {event.organizerLink&&isValidUrl(event.googleLink)? 
+                             <span   onClick={()=>{
+                              sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
+                              window.open(event.googleLink)
+                  f
+                                  }} className="flex flex-col"> 
+                
+                                   <a className="text-green-600 whitespace-nowrap no-underline max-w-[25em] my-auto" >
+                                    <h6 >{event.location}</h6></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
+                                
+                                
+                    
+                                {event.area==areas[2]&&event.googleLink?<a 
+                             ><h6 className="text-green-600 text-[0.6rem] flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
+                            <h5 className="text-[0.7rem] min-h-6">{event.hashtags.join(" ")}</h5>
+                             </span>
+                            {/* <span className="flex w-fit overflow-hidden flex-col text-right "> */}
+                            {/* </h6> */}
+                           
+                                 {/* </span> */}
+                                 <span className="flex flex-row justify-between w-24 ml-3">
+                                 {/* <h5 className="flex flex-row mt-2"> */}
+                                  <h5 className="my-auto text-[0.8rem] w-12 text-emerald-800 "><div dangerouslySetInnerHTML={{__html:event.startTime}}/></h5>
+                    <img  onClick={()=>{
+                              sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
+                              window.open(event.googleLink)
                   
-               
-                }} className="flex-row flex "><h5 className="text-ellipsis  text-green-600  flex flex-row 
-            whitespace-nowrap no-underline max-w-[14em] sm:max-w-[25rem] ">
-              <img onClick={()=>{
-                  sendGAEvent("Click",`Event Click Organizer ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
-                  window.location.href = event.organizerLink
-                  
-               
-                }}  className="max-h-6 max-w-6 mt-2 " src={insta}/>
-       <span    className="my-auto mr-2">{isPhone?event.shortSummary:event.summary}</span>      </h5></a>
-                {event.area==areas[2]&&event.googleLink?<a 
-             ><h6 className="text-green-600 text-sm flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
-             </span>
-            <span className="flex w-fit overflow-hidden flex-col text-right ">
-            
-            <h5 className="flex flex-row mt-2"><img  onClick={()=>{
-              sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
-              window.location.href = event.googleLink
-  
-                  }} className="max-w-6 max-h-6 mt-2" src={calendar} /><h6 className="ml-1">{event.startTime??""}</h6></h5>
-             {event.organizerLink&&isValidUrl(event.googleLink)? 
-             <span   onClick={()=>{
-              sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
-              window.location.href = event.googleLink
-  
-                  }} className="flex flex-row">  <a className="text-green-600 whitespace-nowrap no-underline max-w-[25em] my-auto" ><h6 >{event.location}</h6></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
-              </span>
-          </span>
-            <span className="text-left  mont-medium text-slate-600"><h5 className="text-[0.7rem]">{event.hashtags.join(" ")}</h5></span></div>)
-            
-            }):null
-          }
+                                  }} className="w-12 h-12  my-auto" src={calendar} /></span>
+                                  
+                                  </div>)
+                            
+                            }):null
+                          }
           </InfiniteScroll>
          
         
@@ -291,35 +306,7 @@ function CalendarEmbed(){
 
     
   export default CalendarEmbed
-  function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    
-    let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
   
-    hours = hours % 12;
-    hours = hours ? hours : 12; // 0 should be 12
-  
-    const formattedHours = hours.toString().padStart(2, '0');
-  
-    return `${month}/${day} ${formattedHours}:${minutes} ${ampm}`;
-  }
-  //  function linkifyFirstUrl(text) {
-  //   if (!text) return '';
-  
-  //   const urlRegex = /(https?:\/\/[^\s]+)/;
-  //   const match = text.match(urlRegex);
-  
-  //   if (!match) return text; // No URL found
-  
-  //   const url = match[0];
-  //   console.log(url)
-  //   return url
-  //   // return text.replace(urlRegex, linkedUrl);
-  // }
 
 const linkifyFirstUrl=(text) =>{
   if (!text) return '';
@@ -328,7 +315,7 @@ const linkifyFirstUrl=(text) =>{
   const strippedText = text.replace(/<[^>]*>/g, '');
 
   // Match the first URL in plain text
-  const urlRegex = /(https?:\/\/[^\s]+)/;
+  const urlRegex = /(https?:\/\/[^\s]+)/i;
   const match = strippedText.match(urlRegex);
 
   if (!match) return ''; // No URL found
@@ -337,22 +324,10 @@ const linkifyFirstUrl=(text) =>{
   console.log(url);
   return url;
 }
-  // function linkifyFirstUrl(text) {
-  //   if (!text) return '';
   
-  //   const urlRegex = /(https?:\/\/[^\s]+)/;
-  //   const match = text.match(urlRegex);
-  
-  //   if (!match) return text; // No URL found
-  
-  //   const url = match[0];
-  //   console.log(url)
-  //   return url
-  //   // return text.replace(urlRegex, linkedUrl);
-  // }
   function cleanDescriptionAndExtractHashtags(description) {
     // Step 1: Remove URLs
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urlRegex = /(https?:\/\/[^\s]+)/i;
     const hashtagRegex = /#(\w+)/g;
     const descriptionWithoutLinks = description.replace(urlRegex, '').trim();
 let suggestions = []

@@ -50,42 +50,38 @@ export default function GoogleLogin({ onUserSignIn }) {
     },[])
     // Main useEffect for managing GIS loading and login state
     useEffect(() => {
-        // Load GIS script if not already loaded
         
-
-        // This block runs once GIS is loaded
-        if (gisLoaded && window.google && window.google.accounts && window.google.accounts.id) {
-            const storedEmail = localStorage.getItem('userEmail');
-            const storedName = localStorage.getItem('userName');
-            const storedGoogleId = localStorage.getItem('googleId');
-            const storedDriveToken = localStorage.getItem(driveTokenKey);
-            const storedDriveTokenExpiry = localStorage.getItem('googledrivetoken_expiry');
-
-            const isTokenValid = storedDriveToken && storedDriveTokenExpiry && Date.now() < parseInt(storedDriveTokenExpiry, 10);
-
-            // --- Handle already signed-in user ---
-            if (storedEmail && storedGoogleId && isTokenValid) {
-                dispatch(logIn({email:storedEmail,uId:storedGoogleId})).then(res=>{ checkResult(res,payload=>{
-                    setPending(false)
-                    setSignedIn(true);
-                    if(payload.error){
-                        setLogInError("Error with Username or Password")
-                    }else{
-                        navigate(Paths.myProfile())
-                    }
-                },err=>{
-                    if(err.message=="Request failed with status code 401"){
+        const storedEmail = localStorage.getItem('userEmail');
+        const storedName = localStorage.getItem('userName');
+        const storedGoogleId = localStorage.getItem('googleId');
+        const storedDriveToken = localStorage.getItem(driveTokenKey);
+        const storedDriveTokenExpiry = localStorage.getItem('googledrivetoken_expiry');
+        const isTokenValid = storedDriveToken && storedDriveTokenExpiry && Date.now() < parseInt(storedDriveTokenExpiry, 10);
+        if (storedEmail && storedGoogleId && isTokenValid) {
+            dispatch(logIn({email:storedEmail,uId:storedGoogleId})).then(res=>{ checkResult(res,payload=>{
+                setPending(false)
+                setSignedIn(true);
+                setGisLoaded(true)
+                if(payload.error){
+                    setLogInError("Error with Username or Password")
+                }else{
+                    navigate(Paths.myProfile())
+                }
+            },err=>{
+                if(err.message=="Request failed with status code 401"){
 setLogInError("User Not Found. Apply Below")
-                    }else{
-                        setLogInError(err.message)
-                    }
-                    setPending(false)
-                })
-            })  
-                // Update component's internal state
-                // setUserEmail(storedEmail);
-                // setUserName(storedName);
-                // setGoogleId(storedGoogleId);
+                }else{
+                    setLogInError(err.message)
+                }
+                setPending(false)
+            })
+        }) }else if (gisLoaded && window.google && window.google.accounts && window.google.accounts.id) {
+           
+
+            
+            // --- Handle already signed-in user ---
+            
+           
          
 
                 console.log("User found in localStorage. Dispatching login action...");
@@ -116,8 +112,6 @@ setLogInError("User Not Found. Apply Below")
                 return; // Exit as user is already logged in
             }
 
-            // --- If not signed in via localStorage, render the Google Sign-In button ---
-            // Initialize the Google Identity Services client for the visible button (ID Token)
             window.google.accounts.id.initialize({
                 client_id: CLIENT_ID,
                 callback: handleCredentialResponse, // Callback for ID Token
@@ -145,8 +139,9 @@ setLogInError("User Not Found. Apply Below")
                 localStorage.removeItem(driveTokenKey);
                 localStorage.removeItem('googledrivetoken_expiry');
             }
-        }
-    }, [gisLoaded]); // Added dispatch to dependency array
+        
+        // gisLoaded
+    }, []); // Added dispatch to dependency array
 
     // Callback for the Google Sign-In button (ID Token)
     const handleCredentialResponse = (response) => {
