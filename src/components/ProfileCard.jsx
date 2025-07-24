@@ -1,7 +1,8 @@
 import React from "react"
 import {useSelector} from 'react-redux'
 import { useState ,useEffect} from "react"
-import { Dialog } from "@mui/material"
+// import { Dialog } from "@mui/material"
+import Dialog from "./Dialog"
 import getDownloadPicture from "../domain/usecases/getDownloadPicture"
 import isValidUrl from "../core/isValidUrl"
 import Clear from "../images/icons/clear.svg"
@@ -74,18 +75,17 @@ export default function ProfileCard({profile,onClickFollow,following}){
                 </div>
             </div>
         </div>
-        <Dialog open={followersDialog}
-        fullScreen={isPhone}
-onClose={()=>{
-    setFollowersDialog(false)
-}}>
-    <div className="card   min-w-[30em] py-6 rounded-lg">
-       <div div className="px-4 ">
-        <IonImg onClick={()=>setFollowersDialog(false)}src={Clear}/>
-       </div>
-      {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
-        </div>
-        </Dialog>
+        <Dialog isOpen={followersDialog}
+        onClose={()=>{
+          setFollowersDialog(false)
+      }}
+      title={"Followers"}
+      disagreeText={"Close"}
+      text={ <div className="card   min-w-[30em] p-6 rounded-lg">
+  
+     {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
+       </div>}
+/>
         </div>)
     }
     

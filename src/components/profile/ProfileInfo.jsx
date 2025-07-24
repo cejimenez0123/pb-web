@@ -87,7 +87,7 @@ const ProfileInfo = ({profile})=>{
         onClose={()=>{
     setFollowersDialog(false)
 }}>
-    <div className="card  min-h-[20em] min-w-[30em] py-6 rounded-lg">
+    <div className="card  min-h-[20em] min-w-[30em] p-6 rounded-lg">
        <div className="mx-4">
         <img  onClick={()=>{setFollowersDialog(false)}}src={clear}/>
        </div>

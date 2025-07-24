@@ -88,9 +88,9 @@ setLogInError("User Not Found. Apply Below")
                
                 console.log("Dispatching login with:", { googleId: storedGoogleId, accessToken: storedDriveToken });
        
-
+if(!signedIn){
                 // Notify parent component about the user's status
-                if (onUserSignIn) {
+                // if (onUserSignIn) {
                     dispatch(logIn({email:storedEmail,uId:storedGoogleId})).then(res=>{ checkResult(res,payload=>{
                         setPending(false)
                         setSignedIn(true);
@@ -108,7 +108,8 @@ setLogInError("User Not Found. Apply Below")
                         setPending(false)
                     })})
                     onUserSignIn({ email: storedEmail, name: storedName, googleId: storedGoogleId, driveAccessToken: storedDriveToken });
-                }
+                // }
+}
                 return; // Exit as user is already logged in
             }
 
