@@ -125,8 +125,8 @@ function CalendarEmbed(){
             const startTimeFormatted = isAllDay ? "All Day" : formatDate(event.start.dateTime);
             let organizerLink = linkifyFirstUrl(event.description) 
         
-            let location = event.location? event.location.length > 24 ? event.location.slice(0, 40) + '...' : event.location:""
-            let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 40) + '...' : event.summary:""
+            let location = event.location? event.location.length > 24 ? event.location.slice(0, 31) + '...' : event.location:""
+            let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 31) + '...' : event.summary:""
             let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
                 hashtags:[]}
            
