@@ -2,9 +2,7 @@ import { useLayoutEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { fetchNotifcations } from "../../actions/ProfileActions"
 import { useSelector } from "react-redux"
-import checkResult from "../../core/checkResult"
 import InfiniteScroll from "react-infinite-scroll-component"
-
 import loadingGif from "../../images/loading.gif"
 import ProfileCircle from "../../components/profile/ProfileCircle"
 import { useNavigate } from "react-router-dom"
@@ -24,8 +22,6 @@ export default function NotificationContainer(props){
     const navigate = useNavigate()
     const [items,setItems]=useState([])
     const fetchIt =()=>{
-       
-       
             if(payload){
                 let seen = []
                 const{collections, comments,following,followers}=payload

@@ -17,9 +17,7 @@ import Dialog from '../../components/Dialog';
 export default function LogInContainer(props) {
     const location = useLocation()
     const {setError,seo,setSeo}=useContext(Context)
-    // useLayoutEffect(()=>{
-    //     initGA()
-    // },[])
+ 
     useLayoutEffect(()=>{
         let soo = seo
         soo.title = "Plumbum (Log In) - Share Your Weirdness"
@@ -92,11 +90,7 @@ setLogInError("User Not Found. Apply Below")
             setLogInError("Values can't be empty")
         }
     }
-    useEffect(()=>{
-        if(currentProfile){
-            navigate(-1)
-        }
-    },[location,currentProfile])
+  
     const dispatchLogin=(email,googleId)=>{
         dispatch(logIn({email,uId:googleId})).then(res=>{
             checkResult(res,payload=>{

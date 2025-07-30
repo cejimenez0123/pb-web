@@ -12,6 +12,8 @@ const LoggedRoute = ({ loggedOut, children }) => {
   useEffect(()=>{
    
     if(currentProfile){     
+      console.log(currentProfile)
+      console.log(location.pathname)
       if (location.pathname.includes("login")){
         navigate(Paths.discovery())
       }else if(formerPage){
