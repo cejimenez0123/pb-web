@@ -1,7 +1,8 @@
 import { useState,useEffect } from "react";
 import {useSelector,useDispatch} from "react-redux";
-import {Dialog,TextField,useMediaQuery} from "@mui/material"
-import ClearIcon from '@mui/icons-material/Clear';
+// import {Dialog,TextField,useMediaQuery} from "@mui/material"
+// import ClearIcon from '@mui/icons-material/Clear';
+import Dialog from "./Dialog";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import debounce from "../core/debounce";
 import { searchDialogToggle, searchMultipleIndexes } from "../actions/UserActions";
@@ -18,7 +19,7 @@ export default function SearchDialog(props){
     const dispatch = useDispatch()
     const [searchContent,setSearchContent] = useState([]);
     const pagesInView = useSelector(state=>state.pages.pagesInView)
-    const mediaQuery = useMediaQuery('(max-width:850px)')
+   
  
     useEffect(()=>{
       setSearchContent(pagesInView)
@@ -57,14 +58,16 @@ export default function SearchDialog(props){
    const closeDialog = ()=>{
         dispatch(searchDialogToggle({open:false}))
    }
-    return<Dialog  fullScreen={mediaQuery} 
-                   open={searchDialogOpen} >
+    return<Dialog  
+    onClose={closeDialog}
+                   isOpen={searchDialogOpen} 
+                   text={
                     <div className="pt-3 md:min-h-[30em] md:min-w-[40em]">
     <div className='header py-3 px-3'>
-      <ClearIcon onClick={closeDialog}/>
+    
     </div>
     <div className="flex flex-row px-3">
-    <TextField  value={searchQuery}
+    <input value={searchQuery}
                 style={{flex:"auto"}}
                 onChange={(e)=>debounce(setSearchQuery(e.currentTarget.value),10)}
                 placeholder='Search...'
@@ -93,8 +96,9 @@ export default function SearchDialog(props){
            
         })}
     </InfiniteScroll>
+  
     <div style={{height:"100%"}}>
     </div>
     </div>
-  </Dialog>
+  }/>
 }

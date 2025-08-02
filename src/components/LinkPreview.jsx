@@ -1,8 +1,6 @@
 
 import { useState, useLayoutEffect,useEffect, useContext } from 'react';
 import Enviroment from '../core/Enviroment';
-import { Spotify } from 'react-spotify-embed';
-import { Skeleton } from '@mui/material';
 import "../App.css"
 import { initGA, sendGAEvent } from '../core/ga4';
 import adjustScreenSize from '../core/adjustScreenSize';
@@ -134,7 +132,7 @@ useLayoutEffect(()=>{
 
   }
   if (loading) {
-    return <Skeleton className={size}/>
+    return <div className={"skeleton "+size}/>
   }
 
   if (!previewData) {

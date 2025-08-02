@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
-import {Dialog,DialogContent,DialogActions,Button} from "@mui/material"
+import Dialog from "../../components/Dialog"
 import { useMediaQuery } from "react-responsive"
 import { useLocation, useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
@@ -333,25 +333,13 @@ return (
     </button>
   </form>
 
-              <Dialog className={
-                "bg-emerald-50  w-[100%] mx-auto overscroll-none"
-              }
-              fullScreen={!isNotPhone&&user && user.preferredName}
-              PaperProps={{
-                style: {
-            
-      
-                
-                },
-              }}
-            
-              open={user}
-              onClose={()=>handleClose()}>
+              <Dialog 
+              text={
         <div>
         
         {user?<div>
      
-      <DialogContent>
+  
    
 
   {user?
@@ -364,13 +352,9 @@ return (
          <br/>
          <p>We may add you on early.</p>
           </div></div>}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} ><span className="mont-medium">Until Later</span></Button>
-     
-      </DialogActions></div>
-        :<DialogContent><div className="flex"><p className="mx-auto my-auto">Error. Try again later</p></div></DialogContent>}</div>
-              </Dialog>
+   </div>
+        :<div className="flex"><p className="mx-auto my-auto">Error. Try again later</p></div>}</div>
+        }/>
     </div>
     
   </>

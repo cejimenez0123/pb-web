@@ -58,10 +58,10 @@ function MyProfileContainer(props){
     const [ogCols,setOgCols]=useState([])
  
     const [openReferral,setOpenReferral]=useState(false)
-    const stories = usePersistentMyStoriesCache(()=>{
-      dispatch(setPagesInView({pages:[]}))
-      return dispatch(getMyStories())
-    })
+    // const stories = usePersistentMyStoriesCache(()=>{
+    //   dispatch(setPagesInView({pages:[]}))
+    //   return dispatch(getMyStories())
+    // })
     
     const pages =useSelector(state=>[...state.pages.pagesInView] ).filter(page=>{
       if(search.toLowerCase()=="untitled"){
@@ -115,7 +115,7 @@ let newList = list.sort((a,b)=>{
              return a.title.toLowerCase() > b.title.toLowerCase()
           }
              
-  })
+  },5)
 
   dispatch(setCollections({collections:newList}))
 
@@ -141,12 +141,10 @@ dispatch(setPagesInView({pages:arr}))
   list = list.sort((a,b)=>{
  
         if(sorted){
-            return new Date(a.created)< new Date(b.created)
-             
-              
+            return new Date(a.updated)< new Date(b.updated)  
             }else{
-             return new Date(a.created) > new Date(b.created)
-                    }
+             return new Date(a.updated) > new Date(b.updated)
+        }
     })
 dispatch(setCollections({collections:list}))
 
@@ -239,7 +237,7 @@ params.page = feedbackPage
 
         }))
             
-      }},20)
+      }},5)
     
         
     const ClickCreateACollection = ()=>{
@@ -313,7 +311,7 @@ switch (filterType) {
         break;
         case filterTypes.ZA:
           handleSortAlpha(true)
-          break;
+     break;
   default:
     dispatch(setCollections({collections:ogCols}));
       break;
@@ -406,11 +404,35 @@ switch (filterType) {
   </div>
   </div>
                             <div className='w-[96vw] md:mt-8  flex flex-col mx-auto md:w-page'>
-           {isPhone?
-                <span className='flex mb-4 mx-aauto  h-9 border-emerald-700  min-h-10 w-[90vw] border-opacity-70 border-2 rounded-full flex-row '>
-<span className=' text-emerald-800 w-full mont-medium my-auto mx-2'> Search:</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' h-9 rounded-full  open-sans-medium px-2  w-full text-sm bg-transparent rounded-full border-emerald-700 border-1 text-emerald-800' />
-  </span>:null}
+                            {isPhone && (
+  <div className="flex flex-nowrap items-center mb-4 mx-auto h-9 max-w-[100vw] pr-4 rounded-full overflow-visible bg-transparent">
+    <span className="text-emerald-800 mont-medium mx-2 flex-shrink-0">Search:</span>
+    <input
+      type="text"
+      value={search}
+      onChange={e => handleSearch(e.target.value)}
+      className="h-9 open-sans-medium px-2 text-sm bg-transparent border-none text-emerald-800 flex-grow min-w-0"
+      placeholder="Search..."
+    />
+    <div className='w-fit'>
+    <select
+      onChange={e => setFilterType(e.target.value)}
+      value={filterType}
+      className="select  w-24 text-emerald-800 rounded-full bg-transparent"
+    >
+      <option value={filterTypes.filter}>Filter</option>
+      <option value={filterTypes.recent}>Most Recent</option>
+      <option value={filterTypes.oldest}>Oldest</option>
+      <option value={filterTypes.feedback}>Feedback</option>
+      <option value={filterTypes.AZ}>A-Z</option>
+      <option value={filterTypes.ZA}>Z-A</option>
+    </select>
+    </div>
+  </div>
+)}
+
+
+
                          
                             <div role="tablist" className="tabs mx-auto w-[100%] items-start ">
                             
@@ -432,18 +454,7 @@ switch (filterType) {
    className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page w-[96vw]  md:w-page mx-auto rounded-full">
   <IndexList items={collections}/>
   </div>
- {isPhone?
 
-  <select  onChange={(e)=>{
-    setFilterType(e.target.value)
-  }} defaultValue={filterType} className="select bg-transparent  text-emerald-800 border-2 h-8 border-emerald-600 rounded-full mx-3">
-    <option value={filterTypes.filter}>Filter</option>
-    <option value={filterTypes.recent}>Most Recent</option>
-    <option value={filterTypes.oldest}>Oldest</option>
-    <option value={filterTypes.feedback}>Feeback</option>
-    <option value={filterTypes.AZ}>A-Z</option>
-    <option value={filterTypes.ZA}>Z-A</option>
-  </select>:null}
 
   {isNotPhone?
   <span className="flex flex-row  items-center gap-1">

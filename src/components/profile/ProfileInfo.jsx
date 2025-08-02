@@ -19,7 +19,7 @@ import {
     IonInput,
   } from '@ionic/react';
 import { useParams } from "react-router-dom"
-import { Dialog } from "@mui/material"
+import Dialog from "../Dialog"
 import FollowerCard from "./FollowerCard"
 import isValidUrl from "../../core/isValidUrl"
 import ReferralForm from "../auth/ReferralForm"
@@ -83,17 +83,17 @@ const ProfileInfo = ({profile})=>{
         </div>
         <Dialog 
         
-        open={followersDialog}
+        isOpen={followersDialog}
         onClose={()=>{
     setFollowersDialog(false)
-}}>
+}} text={
     <div className="card  min-h-[20em] min-w-[30em] p-6 rounded-lg">
        <div className="mx-4">
         <img  onClick={()=>{setFollowersDialog(false)}}src={clear}/>
        </div>
       {profile&&profile.followers?  <FollowerCard followers={profile.followers}/>:null}
-    </div>
-</Dialog>
+    </div>}
+/>
 <div className='w-[10em] h-[3em] mx-auto flex'>
 {!isNative?<h6 onClick={()=>setOpenReferral(true)}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
                             :   <IonButton id="open-modal" expand="block">

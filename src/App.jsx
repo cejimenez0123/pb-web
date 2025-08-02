@@ -261,7 +261,7 @@ function App(props) {
       }
     />
       <Route path={Paths.workshop.reader()}
-    element={<WorkshopContainer/>}/>
+    element={<PrivateRoute><WorkshopContainer/></PrivateRoute>}/>
     <Route 
     path={Paths.workshop.route()}
     element={<PrivateRoute><WorkshopContainer/></PrivateRoute>}/>

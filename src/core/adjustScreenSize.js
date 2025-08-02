@@ -1,4 +1,4 @@
-import { Fullscreen } from "@mui/icons-material"
+
 import { useMediaQuery } from "react-responsive"
 export default function adjustScreenSize(isGrid=false,isContent,grid="",gridMobile="",horizPhone="",fullScreen="",height=""){
     const isPhone =  useMediaQuery({

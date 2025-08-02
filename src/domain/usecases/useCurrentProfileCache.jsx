@@ -1,7 +1,5 @@
 import { useState,useEffect} from "react";
 import checkResult from "../../core/checkResult";
-import { useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { Preferences } from "@capacitor/preferences";
 import DeviceCheck from "../../components/DeviceCheck";
 export default function usePersistentCurrentProfile(fetchData) {
@@ -13,8 +11,15 @@ export default function usePersistentCurrentProfile(fetchData) {
       setProfile(JSON.parse(profile))
       return JSON.parse(profile)
         }else{
-          const saved =localStorage.getItem(key);
-          return saved ? JSON.parse(saved) :null;
+          try {
+            const saved =localStorage.getItem(key);
+            return JSON.parse(saved)
+          } catch (e) {
+            console.log(e)
+            return null
+          }
+    
+          
         }
     }
     const [profile, setProfile] = useState(async () => {
@@ -42,7 +47,9 @@ export default function usePersistentCurrentProfile(fetchData) {
         setProfile(payload.profile)
         setPrefences(payload.profile)
         localStorage.setItem(key, JSON.stringify(payload.profile));
-      }))}else{
+      }))
+    }
+      else{
         setProfile(null)
       }}
     ,[token]);

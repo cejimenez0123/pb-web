@@ -2,7 +2,6 @@ import React ,{useState,useLayoutEffect, useContext, useEffect}from 'react'
 import "../App.css"
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchRecommendedStories } from '../actions/StoryActions'
-import PageList from '../components/page/PageList'
 import ExploreList from '../components/collection/ExploreList.jsx'
 import { fetchCollectionProtected, getRecommendedCollectionsProfile } from '../actions/CollectionActions'
 import { useLocation } from 'react-router-dom'

@@ -64,7 +64,7 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
   };
   let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative  "," overflow-clip justify-between flex ","mt-2  mx-auto overflow-hidden"," mt-2 ","  ") 
 
-  if(filteredItems.length==0 && hasMore){
+  if(!filteredItems){
     <InfiniteScroll
 
     className={`mx-auto ${isPhone ? " 97vw " : " 47em "}`}

@@ -6,7 +6,6 @@ import { deletePageApproval,   setEditingPage,   setPageInView, setPagesInView, 
 import { createPageApproval } from '../../actions/PageActions'
 import {useDispatch, useSelector} from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { Button } from '@mui/material'
 import addCircle from "../../images/icons/add_circle.svg"
 import bookmarkFillGreen from "../../images/bookmark_fill_green.svg"
 import bookmarkfill from "../../images/bookmarkfill.svg"
@@ -43,7 +42,7 @@ export default function DashboardItem({page, book,isGrid}) {
    const pagesInView = useSelector(state=>state.pages.pagesInView)
     const [expanded,setExpanded]=useState(false)
     const colInView = useSelector(state=>state.books.collectionInView)
-   const [likeFound,setLikeFound]=useState(null)
+   const [likeFound,setLikeFound]=useState(false)
     const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
   
@@ -87,14 +86,14 @@ return !stories.find(story=>story && page &&story.id && page.id&& story.id==page
     }
     useEffect(()=>{
         if(currentProfile && page){
-            let found = null
+         
            if(currentProfile.likedStories){
 
         let  found= currentProfile.likedStories.find(like=>like && like.storyId==page.id)
           setLikeFound(found)
         }
          
-            if(currentProfile.profileToCollections){
+        if(currentProfile.profileToCollections){
             let marked = currentProfile.profileToCollections.find(ptc=>{
                 return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
        
@@ -103,7 +102,7 @@ return !stories.find(story=>story && page &&story.id && page.id&& story.id==page
                
                
         }          
-    },[currentProfile,page,likeFound])
+    },[currentProfile])
 const deleteStc=()=>{
 
         if(bookmarked&&bookmarked.id){
@@ -158,7 +157,7 @@ const handleApprovalClick = ()=>{
         })
     }else{
         if(page&&currentProfile ){
-
+setLikeFound(true)
         
         const params = {story:page,
             profile:currentProfile,

@@ -1,5 +1,5 @@
 
-const Dialog = ({ text,title, isOpen, onClose,agree,agreeText,disagreeText}) => {
+const Dialog = ({ text,title, isOpen, onClose,agree,agreeText="Agree",disagreeText="Disagree"}) => {
     if (!isOpen) return null;
   
     return (

@@ -115,12 +115,12 @@ if(!signedIn){
                 return; // Exit as user is already logged in
             }
 
-            window.google.accounts.id.initialize({
+          if(window.google&&window.google.accounts){window.google.accounts.id.initialize({
                 client_id: CLIENT_ID,
                 callback: handleCredentialResponse, // Callback for ID Token
                 auto_select: false, // Prevents auto-login on every page load unless explicitly configured
                 cancel_on_tap_outside: true,
-            });
+            })
 
             // Render the Google Sign-In button
             window.google.accounts.id.renderButton(
@@ -134,7 +134,7 @@ if(!signedIn){
                     width: "250",
                     logo_alignment: "left"
                 }
-            );
+            )}
 
             // Important: If a token exists but is expired, clear it
             if (storedDriveToken && storedDriveTokenExpiry && !isTokenValid) {

@@ -1,7 +1,6 @@
 import React ,{useContext, useLayoutEffect,useEffect, useState} from 'react'
 import "../../App.css"
 import { logIn} from '../../actions/UserActions';
-
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import loadingGif from "../../images/loading.gif"
@@ -10,10 +9,14 @@ import { useLocation } from 'react-router-dom';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
-import { sendGAEvent } from '../../core/ga4';
 import DeviceCheck from '../../components/DeviceCheck';
 import GoogleLogin from '../../components/GoogleLogin';
 import Dialog from '../../components/Dialog';
+// import {
+//     SignInWithApple,
+//     SignInWithAppleResponse,
+//     SignInWithAppleOptions,
+//   } from '@capacitor-community/apple-sign-in';
 export default function LogInContainer(props) {
     const location = useLocation()
     const {setError,seo,setSeo}=useContext(Context)
@@ -176,6 +179,7 @@ dispatchLogin(email,googleId)
         </form>
 <Dialog isOpen={open} onClose={()=>setOpen(false)}
 title={"Forgot Password"}
+disagreeText={"Close"}
 text={<ForgotPasswordForm/>}/>
                 </div></div>
     </div>)

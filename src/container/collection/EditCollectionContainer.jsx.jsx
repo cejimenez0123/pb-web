@@ -1,6 +1,7 @@
 import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
+import Dialog from "../../components/Dialog"
 import Paths from "../../core/paths"
 import { deleteCollection, deleteCollectionFromCollection, patchCollectionContent, } from "../../actions/CollectionActions"
 import deleteIcon from "../../images/icons/delete.svg"
@@ -12,15 +13,11 @@ import SortableList from "../../components/SortableList"
 import checkResult from "../../core/checkResult"
 import StoryToCollection from "../../domain/models/storyToColleciton"
 import CollectionToCollection from "../../domain/models/ColllectionToCollection"
-import { Dialog,DialogActions,DialogTitle,DialogContent,DialogContentText ,Button} from "@mui/material"
 import RoleForm from "../../components/role/RoleForm"
 import { useMediaQuery } from "react-responsive"
 import { RoleType } from "../../core/constants"
-
 import Context from "../../context"
 import HashtagForm from "../../components/hashtag/HashtagForm"
-import { debounce } from "lodash"
-import { setPagesInView } from "../../actions/PageActions"
 function getUniqueValues(array) {
     let unique = []
     return array.filter(item=>{
@@ -37,9 +34,7 @@ export default function EditCollectionContainer(props){
     const colInView = useSelector(state=>state.books.collectionInView)
     const params = useParams()
     const {id}=params
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 600px)'
-      })
+   const {isPhone}=useContext(Context)
     
       const [pending,setPending]=useState(true)
     const location = useLocation()
@@ -306,16 +301,12 @@ const handleStoryOrderChange = (newOrder) => {
 }
 
     if(!colInView){
-        if(pending){
-        return(<div className="skeleton w-96 bg-emerald-50 max-w-[96vw]  m-2 h-96"/>
        
-        )
-    }else{
-        return(<div className="w-[100%] h-[100%]" >
-            <h6 className="text-emerald-800 mx-auto my-24">Collection Not Found </h6>
-        </div>)
+        return(<div className="skeleton w-96 bg-emerald-50 max-w-[96vw]  m-2 h-96"/>)
+       
+        
     }
-    }
+    
 
     if(colInView&&canUserEdit){
         return(<div>
@@ -346,40 +337,31 @@ const handleStoryOrderChange = (newOrder) => {
 </div>
 </div>
 <Dialog 
-fullScreen={isPhone}
-open={openAccess}
+
+isOpen={openAccess}
 onClose={()=>{
     setOpenAccess(false)
-}}>
+}}
+title={"Roles"}
+text={
     
     <div className="overflow-y-scroll  h-[100%] overflow-x-hidden">
     <RoleForm item={colInView} onClose={()=>setOpenAccess(false)}/>
-    </div>
-</Dialog>
-<Dialog
+    </div>}/>
+  <Dialog title={"Deleting?"}
+ isOpen={openDelete}
+agree={handleDeleteCollection}
+agreeText={"Delete"}
+ onClose={()=>setOpenDelete(false)}
 
-aria-labelledby="alert-dialog-title"
-aria-describedby="alert-dialog-description"
-open={openDelete}
-onClose={()=>setOpenDelete(false)}>
-  <div className="rounded-lg">
-  <DialogTitle id="alert-dialog-title">
-    {"Deleting?"}
-  </DialogTitle>
-  <DialogContent>
-    <DialogContentText id="alert-dialog-description" className="open-sans-medium">
-      Are you sure you want to delete this <strong>{colInView.title}</strong>?
-    </DialogContentText>
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={()=>setOpenDelete(false)}>Disagree</Button>
-    <Button onClick={handleDeleteCollection}>
-      Agree
-    </Button>
-  </DialogActions>
-  </div>
-</Dialog>
-        </div>)
-    }
+text={
+    <p> Are you sure you want to delete this <strong>{colInView.title}</strong>?
+    </p> 
+  }
+  
+/>
+</div>
+    )
     
+  } 
 }

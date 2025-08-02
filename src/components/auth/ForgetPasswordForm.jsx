@@ -1,10 +1,7 @@
 import { useState } from "react"
 
-import {
-   
-    Typography} from "@mui/material"
 import authRepo from "../../data/authRepo"
-import { IonInput } from "@ionic/react"
+import { IonInput, IonText } from "@ionic/react"
     
 
 
@@ -48,11 +45,11 @@ setLoading(false)
   <span>{error?error:success}</span>
 </div>:null}</div>
                    <div className="flex flex-col">
-                         <Typography 
+                         <IonText
                     id="modal-modal-title" className="text-emerald-700" variant="h6" component="h2"
                     >
       Enter Email for Password
-    </Typography>
+    </IonText>
 
 <div className=" py-8 ">
 <label  className="flex-row flex border-emerald-400 rounded-full border-2 px-4">

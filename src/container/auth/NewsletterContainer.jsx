@@ -1,8 +1,9 @@
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
-import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/material"
+//import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/material"
 import { useMediaQuery } from "react-responsive"
+import Dialog from "../../components/Dialog"
 import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import Context from "../../context"
@@ -384,65 +385,59 @@ return (
           </button>
         </form>
 
-   
-     
-              <Dialog className={
-                "bg-emerald-50  w-[100%] mx-auto overscroll-none"
-              }
-              fullScreen={!isNotPhone&&user && user.preferredName}
-              PaperProps={{
-                style: {
-            
-      
-                
-                },
-              }}
-            
-              open={user}
-              onClose={()=>handleClose()}>
-        <div>
-        {user?<div>
-     
-      <DialogContent>
-   
-
-  {user && !user.message?
-        <div id="welcome"className=" p-8 lora-medium leading-[1.5em] overflow-scroll">
-           <p>Thank You {user.preferredName}! You’re In—Welcome to the Journey! </p>
-<br/>
-<h6  >Congratulations! You’re officially on board as a beta user for Plumbum, where we’re redefining what it means to create, connect, and grow as a writer.</h6>
-<br/>
-<h6>
-This is more than just an app. Together, we’re building a space where writers like you can test ideas, share stories, and discover the confidence to take your work to the next level.
-</h6>
-<br/>
-
-<br/>
-<h6>Thank you for joining this exciting journey. Your insights and creativity will help shape Plumbum into a community where creativity thrives.
-</h6>
-<br/>
-<h6>Let’s make our story, together!</h6>
-<br/>
-<h6>-Sol Emilio Christian, <br/>
-Founder of Plumbum</h6>
-
-        </div>:<div className="min-h-40 lora-medium min-w-36 flex"><div className="mx-auto my-auto"><p className=" ">User already applied</p>
-        <br/>
-        <p>Message  <a href="https://www.instagram.com/plumbumapp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">@plumbumapp </a>
-         or email plumbumapp@gmail.com with:</p>
-         <br/>
-         <p>Subject:I want to be an alpha user!</p>
-         <br/>
-         <p>We may add you on early.</p>
-          </div></div>}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} ><span className="mont-medium">Until Later</span></Button>
-     
-      </DialogActions></div>
-        :<DialogContent><div className="flex"><p className="mx-auto my-auto">Error. Try again later</p></div></DialogContent>}</div>
-              </Dialog>
+        <Dialog 
+  open={user}
+  onClose={handleClose}
+  text={
+    <div>
+      {user ? (
+        !user.message ? (
+          <div id="welcome" className="p-8 lora-medium leading-[1.5em] overflow-scroll">
+            <p>Thank You {user.preferredName}! You’re In—Welcome to the Journey!</p>
+            <br />
+            <h6>Congratulations! You’re officially on board as a beta user for Plumbum, where we’re redefining what it means to create, connect, and grow as a writer.</h6>
+            <br />
+            <h6>
+              This is more than just an app. Together, we’re building a space where writers like you can test ideas, share stories, and discover the confidence to take your work to the next level.
+            </h6>
+            <br />
+            <h6>
+              Thank you for joining this exciting journey. Your insights and creativity will help shape Plumbum into a community where creativity thrives.
+            </h6>
+            <br />
+            <h6>Let’s make our story, together!</h6>
+            <br />
+            <h6>
+              - Sol Emilio Christian,<br />
+              Founder of Plumbum
+            </h6>
+          </div>
+        ) : (
+          <div className="min-h-40 lora-medium min-w-36 flex">
+            <div className="mx-auto my-auto">
+              <p>User already applied</p>
+              <br />
+              <p>
+                Message <a href="https://www.instagram.com/plumbumapp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">@plumbumapp</a>
+                {' '}or email plumbumapp@gmail.com with:
+              </p>
+              <br />
+              <p>Subject: I want to be an alpha user!</p>
+              <br />
+              <p>We may add you on early.</p>
+            </div>
+          </div>
+        )
+      ) : (
+        <div className="flex">
+          <p className="mx-auto my-auto">Error. Try again later</p>
+        </div>
+      )}
     </div>
+  }
+/>
+
+</div>
   </>
 )
 

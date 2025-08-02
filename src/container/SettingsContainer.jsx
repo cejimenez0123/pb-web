@@ -5,15 +5,15 @@ import {uploadProfilePicture} from "../actions/ProfileActions"
 import getDownloadPicture from "../domain/usecases/getDownloadPicture";
 import "../App.css"
 import { useNavigate } from "react-router-dom";
-import {    Button,
+// import {    Button,
     
-            // Dialog,
-            DialogActions,
-            DialogContent,
+//             // Dialog,
+//             DialogActions,
+//             DialogContent,
     
-            DialogContentText,
-            DialogTitle,
-            IconButton} from "@mui/material";
+//             DialogContentText,
+//             DialogTitle,
+//             IconButton} from "@mui/material";
         
 import "../styles/Setting.css"
 import { IonModal,IonHeader,
@@ -25,7 +25,7 @@ import { IonModal,IonHeader,
 
 import checkResult from "../core/checkResult";
 
-import { Clear } from "@mui/icons-material";
+// import { Clear } from "@mui/icons-material";
 
 import Context from "../context";
 

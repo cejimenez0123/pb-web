@@ -14,6 +14,7 @@ import { RoleType } from "../../core/constants"
 import Enviroment from "../../core/Enviroment.js"
 import { initGA,sendGAEvent } from "../../core/ga4.js"
 import ErrorBoundary from "../../ErrorBoundary.jsx"
+import { createPageApproval } from "../../actions/PageActions"
 export default function PageViewButtonRow({page,setCommenting}){
     const {setSuccess,currentProfile,setError}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
@@ -34,8 +35,8 @@ export default function PageViewButtonRow({page,setCommenting}){
     useEffect(()=>{
         setCommenting(comment)
        },[comment])
-    useLayoutEffect(()=>{
-        if(currentProfile && page){
+    useEffect(()=>{
+        if(currentProfile && page && currentProfile.likedStories){
             let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
             if(currentProfile.profileToCollections){
             let marked  = currentProfile.profileToCollections.find(ptc=>{
@@ -51,7 +52,7 @@ export default function PageViewButtonRow({page,setCommenting}){
             setLoading(false)
         }
             
-    },[])
+    },[likeFound])
     const onBookmarkPage = ()=>{
         setLoading(true)
         if(currentProfile&&currentProfile.profileToCollections){
