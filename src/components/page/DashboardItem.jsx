@@ -84,25 +84,26 @@ return !stories.find(story=>story && page &&story.id && page.id&& story.id==page
             }
         }
     }
-    useEffect(()=>{
-        if(currentProfile && page){
+    // useEffect(()=>{
+    //     checkLike()
+    // },[currentProfile])
+    const checkLike=()=>{if(currentProfile && page){
          
-           if(currentProfile.likedStories){
+        if(currentProfile.likedStories){
 
-        let  found= currentProfile.likedStories.find(like=>like && like.storyId==page.id)
-          setLikeFound(found)
-        }
-         
-        if(currentProfile.profileToCollections){
-            let marked = currentProfile.profileToCollections.find(ptc=>{
-                return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
-       
-                setBookmarked(marked)
-            }
-               
-               
-        }          
-    },[currentProfile])
+     let  found= currentProfile.likedStories.find(like=>like && like.storyId==page.id)
+       setLikeFound(found)
+     }
+      
+     if(currentProfile.profileToCollections){
+         let marked = currentProfile.profileToCollections.find(ptc=>{
+             return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
+    
+             setBookmarked(marked)
+         }
+            
+            
+     }          }
 const deleteStc=()=>{
 
         if(bookmarked&&bookmarked.id){
@@ -147,23 +148,29 @@ const handleApprovalClick = ()=>{
     page?sendGAEvent(`Click to Yea ${JSON.stringify({id:page.id,title:page.title})}`,`Click Yea`,"Review",0,false):null
     if(currentProfile){
 
-        if(likeFound && likeFound.id){
+        if(likeFound){
+           checkLike()
          dispatch(deletePageApproval({id:likeFound.id})).then(res=>{
             checkResult(res,payload=>{
-                setLikeFound(null)
+              
             },err=>{
 
             })
         })
+        setLikeFound(false)
     }else{
-        if(page&&currentProfile ){
-setLikeFound(true)
-        
+        if(page&&currentProfile ){ 
         const params = {story:page,
             profile:currentProfile,
                         }
-                        setLikeFound(true)
-        dispatch(createPageApproval(params))
+                     setLikeFound(true)
+        dispatch(createPageApproval(params)).then(res=>{
+            checkResult(res,payload=>{
+              checkLike()
+            },err=>{
+
+            })
+        })
         }else{
             setError("Sign Up so you can show support")
         }
