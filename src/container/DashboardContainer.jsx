@@ -13,6 +13,7 @@ import ErrorBoundary from '../ErrorBoundary.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
 import ListView from '../components/page/ListView.jsx'
 import Enviroment from '../core/Enviroment.js'
+import { IonPage } from '@ionic/react'
 function DashboardContainer(props){
     const location = useLocation()
     const {currentProfile,setSeo,seo}=useContext(Context)
@@ -101,6 +102,7 @@ useLayoutEffect(()=>{
 
 
         return(
+            <IonPage>
             <ErrorBoundary>
             <div id="dashboard" >
                 <div className='py-8'>
@@ -134,6 +136,7 @@ useLayoutEffect(()=>{
                 <ExploreList items={collections}/>
             </div>
             </ErrorBoundary>
+            </IonPage>
         )
         
 }

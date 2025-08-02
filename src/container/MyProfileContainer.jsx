@@ -26,7 +26,7 @@ import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStori
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg"
 import DeviceCheck from '../components/DeviceCheck.jsx';
-import {  IonText } from '@ionic/react';
+import {  IonPage, IonText } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 function MyProfileContainer(props){
   const isNative = DeviceCheck()
@@ -321,6 +321,7 @@ switch (filterType) {
 
     
             return(
+              <IonPage>
               <ErrorBoundary fallback={"error"}>
             
      <div>
@@ -346,16 +347,16 @@ switch (filterType) {
                         <div>
                             <div className=' w-[100%] items-center mx-auto grid grid-cols-2 gap-2 '>
                                 <div onClick={ClickWriteAStory} 
-                                className='bg-emerald-600  flex rounded-full text-white md:mt-2  h-[5em] w-[10em]  md:h-[3em]  text-bold'>
-                               <h6 className='my-auto text-[0.8rem] mont-medium md:text-md mx-auto text-center'> Write <br/>a<br/> Story</h6>
+                                className='bg-emerald-600  flex rounded-full text-white md:mt-2  h-[5rem] w-[10rem]  md:h-[3em]  text-bold'>
+                               <IonText className='my-auto text-[0.8rem] mont-medium md:text-md mx-auto text-center'> Write a Story</IonText>
                             </div>
-                            <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5em] w-[10em]   text-white   text-bold'>
+                            <div onClick={ClickCreateACollection} className='bg-emerald-700 flex  rounded-full  h-[5rem] w-[10rem]   text-white   text-bold'>
                               <div className='mx-auto my-auto'><IonText className='text-center mx-auto my-auto text-[0.8rem]' >Create Collection</IonText> </div> 
                             
                             </div>
                             </div>
                             {isPhone?<div>
-                              <div className='btn bg-transparent rounded-full  border-emerald-600 mont-medium flex mb-4 mt-2 text-center w-[90%] h-[3rem]'>
+                              <div className='btn bg-transparent rounded-full  border-emerald-600 mont-medium flex mb-4 mt-2 text-center w-[21rem] h-[3rem]'>
                    <IonText  className='mx-auto my-auto text-emerald-900 '           onClick={()=>navigate(Paths.workshop.reader())} 
                                         >
                                     Join a Workshop
@@ -387,7 +388,7 @@ switch (filterType) {
                             <div className='   grid grid-cols-2  gap-1  '>
                           
                               <div onClick={ClickWriteAStory} className='bg-emerald-600 btn rounded-full flex text-white w-[10rem] mont-medium lg:w-[11rem]  lg:h-[4rem] py-3 text-center lg:text-[0.8rem] text-bold'>
-                            <h6 className='text-center text-[0.8rem] mx-auto mont-medium my-auto'>Write <br/>a<br/> Story</h6>
+                            <IonText className='text-center text-[0.8rem] mx-auto mont-medium my-auto'>Write a Story</IonText>
                             
                             </div>
                         
@@ -403,7 +404,7 @@ switch (filterType) {
           </div>   
   </div>
   </div>
-                            <div className='max-w-[95w] pr-1 mx-auto bg-red-100  md:mt-8  flex flex-col  md:w-page'>
+                            <div className='max-w-[95w] pr-1 mx-auto  md:mt-8  flex flex-col  md:w-page'>
                             {isPhone && (
   <div className="flex flex-nowrap items-center mb-4 mx-auto h-9 max-w-[85vw] pr-4 rounded-full overflow-visible bg-transparent">
     <span className="text-emerald-800 mont-medium mx-2 flex-shrink-0">Search:</span>
@@ -545,6 +546,7 @@ onClick={()=>generateReferral()}>
 </div>
 
 </ErrorBoundary>
+</IonPage>
         )
      
         

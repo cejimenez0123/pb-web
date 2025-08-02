@@ -23,6 +23,7 @@ import { Helmet } from 'react-helmet'
 import Enviroment from '../core/Enviroment.js'
 import useScrollTracking from '../core/useScrollTracking.jsx'
 import sortItems from "../core/sortItems.js"
+import { IonPage } from '@ionic/react'
 function DiscoveryContainer(props){
     const {currentProfile,setSeo,seo}=useContext(Context)
     useLayoutEffect(()=>{
@@ -155,20 +156,21 @@ let finalList = sortItems(pagesInView,cols.filter(item=>item && item.storyIdList
             }
         }
         return(
+            <IonPage>
             <ErrorBoundary>
-                <Helmet>   
+                {/* <Helmet>   
       {/* <title>{seo?seo.title:"Plumbum Writers"}</title>
        <meta property="og:image" content={Enviroment.logoChem} /> */}
-      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
+      {/* <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
       <meta property="og:description" content="Explore events, workshop projects together, and join other writers." />
  
       <meta name="twitter:image" content={Enviroment.logoChem} />
-    </Helmet>
+    </Helmet> */} 
             {/* <div 
 
             className=' w-screen mt-4' > */}
 
-              <div className=' text-left ' >
+              <div className=' text-left pt-12' >
                
                
                 {libraryForums()}
@@ -219,6 +221,7 @@ let finalList = sortItems(pagesInView,cols.filter(item=>item && item.storyIdList
                     }}/>:null}
                     </div>
             </ErrorBoundary>
+            </IonPage>
         )
 
 }

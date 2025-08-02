@@ -1,11 +1,11 @@
 
 import { useContext, useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
 import Context from "../../context";
 import adjustScreenSize from "../../core/adjustScreenSize";
 import sortItems from "../../core/sortItems";
+import { IonItem,IonList} from "@ionic/react";
 
 const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
   const { isPhone } = useContext(Context);
@@ -64,48 +64,26 @@ const ListView = ({ items, isGrid, forFeedback, getMore = () => {} }) => {
   };
   let sizeOuter = adjustScreenSize(isGrid,false,"   rounded-lg  shadow-md grid-item relative  "," overflow-clip justify-between flex ","mt-2  mx-auto overflow-hidden"," mt-2 ","  ") 
 
-  if(!filteredItems){
-    <InfiniteScroll
-
-    className={`mx-auto ${isPhone ? " 97vw " : " 47em "}`}
-    dataLength={3}
-    next={loadMore}
-    hasMore={hasMore}
-    loader={<h4 className="text-center my-4">Loading...</h4>}
-    scrollThreshold={0.8}>
-        {[1,2,3].map(skeleton=>{
-          return (<div  className={"skeleton "+sizeOuter}/>)
-        })}
-    </InfiniteScroll>
-  }
-  return (
-    <InfiniteScroll
-      id={"list-view"}
-      className={`mx-auto ${isPhone ? " 97vw " : " 47em "}`}
-      dataLength={filteredItems.length}
-      next={loadMore}
-      hasMore={hasMore}
-      loader={<h4 className="text-center my-4">Loading...</h4>}
-      scrollThreshold={0.8}
-    >
+  // if(!filteredItems){
+    return(<><IonList>
       {filteredItems.map((item, i) => {
-        return item && item.purpose ? (
-          <span key={ i}>
+        return item && item.purpose ? (<IonItem key={i}>
+     
           <BookDashboardItem key={ i} isGrid={isGrid} book={item} />
-          </span>
-        ) : (
-          <span key={i}>
+         </IonItem>
+        ) : (<IonItem key={i}>
+      
           <DashboardItem
             key={i}
             isGrid={isGrid}
             page={item}
             forFeedback={false}
           />
-          </span>
+         </IonItem>
         );
       })}
-    </InfiniteScroll>
-  );
+      </IonList>
+      </>)  
 };
 
 export default ListView;

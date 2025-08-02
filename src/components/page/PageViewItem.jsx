@@ -2,7 +2,7 @@ import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import React,{useLayoutEffect, useRef, useState} from "react"
 import PageViewButtonRow  from "./PageViewButtonRow"
-import { createPageApproval } from "../../actions/PageActions"
+
 import CommentInput from "../comment/CommentInput"
 import "../../styles/PageView.css"
 import PropTypes from 'prop-types'
