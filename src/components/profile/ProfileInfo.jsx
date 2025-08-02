@@ -1,5 +1,5 @@
 import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
-import { useState,useEffect, useRef } from "react"
+import { useState,useEffect, useRef, useContext } from "react"
 import "../../App.css"
 
 import { useMediaQuery } from "react-responsive"
@@ -24,16 +24,16 @@ import FollowerCard from "./FollowerCard"
 import isValidUrl from "../../core/isValidUrl"
 import ReferralForm from "../auth/ReferralForm"
 import DeviceCheck from "../DeviceCheck"
+import Context from "../../context"
 
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [followersDialog,setFollowersDialog]=useState(false)
     const [openReferral,setOpenReferral]=useState(false)
     const {id}=useParams()
-    const isNative = DeviceCheck()
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 600px)'
-      })
+    const {isNative}=useContext(Context)
+    
+
       const modal = useRef(null)
       const input = useRef(null)
     useEffect( ()=>{

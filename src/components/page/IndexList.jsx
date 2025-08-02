@@ -5,8 +5,7 @@ import { useLayoutEffect, useState } from "react"
 
 const IndexList = ({items,handleFeedback})=>{
 
-    // const [list,setList]=useState(items)
-    // useLayoutEffect(()=>{setList(items)},[items])
+   
 
 
     if(items){
@@ -17,15 +16,17 @@ const IndexList = ({items,handleFeedback})=>{
                    scrollThreshold={1}
                    hasMore={false}
                     endMessage={
-                      <div className="p-12 flex" >
-                        <h3 className="text-emerald-600 lora-bold text-center text-xl tracking-wide mx-auto">There's always room. Breathe to let in creativity.</h3>
+                      <div className=" flex max-w-[100vw]" >
+                        <h3 className="text-emerald-600 lora-bold text-center text-xl tracking-wide mx-auto">There's always room. <br/>
+                        Breathe to let in creativity.</h3>
                       </div>
                     }
-                  >
+                  ><div className="max-w-[100vw]">
                       {items.filter(item=>item).map((item,i)=>{
                       
                         return <IndexItem key={ i+item.id} page={item} item={item} handleFeedback={()=>handleFeedback(item)} />
-                      })}  
+                      })} 
+                      </div> 
                    </InfiniteScroll>)
 
                     }else{

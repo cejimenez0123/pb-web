@@ -5,8 +5,6 @@ import {  RoleType } from "../../core/constants";
 import {useNavigate} from 'react-router-dom'
 import addBox from "../../images/icons/add_circle.svg"
 import edit from "../../images/icons/edit.svg"
-import { useSelector } from "react-redux";
-import { useMediaQuery } from "react-responsive";
 import Paths from "../../core/paths";
 import { initGA,sendGAEvent } from "../../core/ga4.js";
 import { setCollectionInView } from "../../actions/CollectionActions";
@@ -122,16 +120,16 @@ function IndexItem({item,handleFeedback}) {
 
 
     return(
-  
-                <div className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full w-[96%] min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
+  <div className="max-w-[40rem]">
+                <div className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full  min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
                 
-         <div className=" h-fit my-auto md:w-[30em] w-[15em] text-nowrap text-ellipsis overflow-hidden ">
+         <div className=" h-fit my-auto md:w-[30em]  max-w-[100vw] text-nowrap text-ellipsis  ">
               
               
                    {item.title && item.title.length>0? 
                      <span className={`   text-emerald-700 my-auto`}>
                    <h6   onClick={handleNavigate}
-         className={`text-[0.9rem] md:text-[1.3rem ] md:w-[20em]   text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
+         className={`text-[0.9rem] md:text-[1.3rem ] md:w-[20em]  max-w-[50vw] overflow-hidden text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
        {item.title}</h6>         {updated}</span>:
  <span className={`  whitespace-nowrap max-w-[45vw]  text-emerald-700 no-underline text-ellipsis my-auto`}>
                    <h6  onClick={handleNavigate}  className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
@@ -174,7 +172,7 @@ function IndexItem({item,handleFeedback}) {
 
 </div>
                
-                
+</div>        
                )
            
     

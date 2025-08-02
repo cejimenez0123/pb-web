@@ -35,7 +35,7 @@ function MyProfileContainer(props){
     useLayoutEffect(()=>{
       initGA()
     },[])
-    const {currentProfile,seo,setSeo}=useContext(Context)
+    const {currentProfile,seo,setSeo,isPhone,isNotPhone}=useContext(Context)
     const [search,setSearch]=useState("")
     const [sortAlpha,setSortAlpha]=useState(true)
     const [sortTime,setSortTime]=useState(true)
@@ -58,12 +58,12 @@ function MyProfileContainer(props){
     const [ogCols,setOgCols]=useState([])
  
     const [openReferral,setOpenReferral]=useState(false)
-    // const stories = usePersistentMyStoriesCache(()=>{
-    //   dispatch(setPagesInView({pages:[]}))
-    //   return dispatch(getMyStories())
-    // })
+    const stories = usePersistentMyStoriesCache(()=>{
+      dispatch(setPagesInView({pages:[]}))
+      return dispatch(getMyStories())
+    })
     
-    const pages =useSelector(state=>[...state.pages.pagesInView] ).filter(page=>{
+    const pages =useSelector(state=>state?[...state.pages.pagesInView]:stories ).filter(page=>{
       if(search.toLowerCase()=="untitled"){
         return page.title.length==0
       }
@@ -167,16 +167,16 @@ newPages = [...newPages].sort((a,b)=>{
      const [feedbackPage,setFeedbackPage]=useState(null)
     const [books,setBooks]=useState(collections)
     const [libraries,setLibraries]=useState([])
-
+    
     const handleSearch = (value)=>{
         setSearch(value)
     }
-    const isNotPhone = useMediaQuery({
-        query: '(min-width: 600px)'
-      })
-      const isPhone =  useMediaQuery({
-        query: '(max-width: 600px)'
-      })
+    // const isNotPhone = useMediaQuery({
+    //     query: '(min-width: 600px)'
+    //   })
+    //   const isPhone =  useMediaQuery({
+    //     query: '(max-width: 600px)'
+    //   })
 
    
       
@@ -324,7 +324,7 @@ switch (filterType) {
               <ErrorBoundary fallback={"error"}>
             
      <div>
-                    <div className=' flex flex-col relative  justify-start md:flex-row md:justify-between md:border-4 md:border-emerald-300  pb-4 max-w-[94vw] mx-auto sm:h-info sm:w-info  sm::mx-auto mt-2  rounded-lg'>
+                    <div className=' flex flex-col max-w-[100vw] relative overflow-x-clip justify-start md:flex-row md:justify-between md:border-4 md:border-emerald-300  pb-4 max-w-[94vw] mx-auto sm:h-info sm:w-info  sm::mx-auto mt-2  rounded-lg'>
                            <div className='absolute top-1   right-1'>
                            {isNotPhone?
                        <span className=' m-3 pr-4 flex-row flex w-36  justify-evenly'>     
@@ -403,9 +403,9 @@ switch (filterType) {
           </div>   
   </div>
   </div>
-                            <div className='w-[96vw] md:mt-8  flex flex-col mx-auto md:w-page'>
+                            <div className='max-w-[95w] pr-1 mx-auto bg-red-100  md:mt-8  flex flex-col  md:w-page'>
                             {isPhone && (
-  <div className="flex flex-nowrap items-center mb-4 mx-auto h-9 max-w-[100vw] pr-4 rounded-full overflow-visible bg-transparent">
+  <div className="flex flex-nowrap items-center mb-4 mx-auto h-9 max-w-[85vw] pr-4 rounded-full overflow-visible bg-transparent">
     <span className="text-emerald-800 mont-medium mx-2 flex-shrink-0">Search:</span>
     <input
       type="text"
@@ -434,10 +434,10 @@ switch (filterType) {
 
 
                          
-                            <div role="tablist" className="tabs mx-auto w-[100%] items-start ">
+                            <div role="tablist" className="tabs mx-auto w-[30em] max-w-[100vw] items-start ">
                             
-  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  md:w-page    text-md md:text-xl" aria-label="Pages" />
-   <div role="tabpanel" className="tab-content  pt-1 lg:py-4  md:w-page w-[96vw]  rounded-lg md:mx-auto  ">
+  <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[90vw]  md:w-page    text-md md:text-xl" aria-label="Pages" />
+   <div role="tabpanel" className="tab-content  pt-1 lg:py-4  md:w-page rounded-lg md:mx-auto  ">
   <IndexList items={pages} handleFeedback={item=>{
     setFeedbackPage(item)
     dispatch(setPageInView({page:item}))

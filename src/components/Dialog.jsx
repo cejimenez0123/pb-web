@@ -3,7 +3,7 @@ const Dialog = ({ text,title, isOpen, onClose,agree,agreeText="Agree",disagreeTe
     if (!isOpen) return null;
   
     return (
-      <div className="fixed inset-0 flex md:max-w-[30em] mx-auto items-center justify-center z-50">
+      <div className="fixed inset-0 flex md:max-w-[30em] mx-3 mx-auto items-center justify-center z-50">
         <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
         <div className="bg-white rounded-lg shadow-lg p-6 z-10">
           <h2 className="text-lg text-emerald-800 font-bold">{title}</h2>

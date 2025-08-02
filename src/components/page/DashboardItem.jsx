@@ -84,9 +84,7 @@ return !stories.find(story=>story && page &&story.id && page.id&& story.id==page
             }
         }
     }
-    // useEffect(()=>{
-    //     checkLike()
-    // },[currentProfile])
+   
     const checkLike=()=>{if(currentProfile && page){
          
         if(currentProfile.likedStories){
@@ -282,7 +280,7 @@ const description = (story) => {
           <label className="text-emerald-800">Feedback Request:</label>
         ):null}
         <h6
-          className={`overflow-hidden ${
+          className={`overflow-hidden text-emerald-800  ${
             isGrid
               ? isPhone
                 ? "max-h-20 m-1 p-1 w-grid-mobile-content text-white"
@@ -385,13 +383,6 @@ className='  bg-emerald-700 flex grow flex-1/3 '> <img  className="mx-auto my-au
 </div>
     }
                 
-//     }
-//       const description=()=>{page.description && page.description.length>0?<div className='max-h-16 mb-2 overflow-hidden text-ellipsis md:p-2'>
-//     {page.needsFeedback||page.description.length>0?<label className='text-emerald-800'>Feedback Request:</label>:null}
-//     <h6 className={`${!isGrid?"text-emerald-800":isPhone?"text-white overflow-scroll":"text-white "} p-2 mont-medium text-left `}>
-//         {page.description}
-//     </h6>
-// </div>:null}
     if(page){
     
         return(

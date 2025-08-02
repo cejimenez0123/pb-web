@@ -321,7 +321,7 @@ const linkifyFirstUrl=(text) =>{
   if (!match) return ''; // No URL found
 
   const url = match[0];
-  console.log(url);
+ 
   return url;
 }
   
