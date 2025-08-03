@@ -479,7 +479,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
                 )
             ) : (
                 // Show loading message until all APIs are ready
-                <p className='skeleton  bg-gray-100 w-[21rem] h-[3rem] rounded-full'>Loading Google Drive services...</p>
+                <span className='skeleton flex bg-gray-100 w-[21rem] h-[3rem] rounded-full'><p className='mx-auto my-auto'>Loading Google Drive services...</p></span>
             )}
         </div>
     );

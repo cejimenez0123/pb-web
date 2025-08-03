@@ -438,7 +438,7 @@ switch (filterType) {
                             <div role="tablist" className="tabs mx-auto w-[30em] max-w-[100vw] items-start ">
                             
   <input type="radio" name="my_tabs_2" role="tab"  defaultChecked className="tab hover:min-h-10  [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[90vw]  md:w-page    text-md md:text-xl" aria-label="Pages" />
-   <div role="tabpanel" className="tab-content  pt-1 lg:py-4  md:w-page rounded-lg md:mx-auto  ">
+   <div role="tabpanel"    className="tab-content  pt-1 lg:py-4 rounded-lg    w-[96vw]  md:w-page mx-auto rounded-full">
   <IndexList items={pages} handleFeedback={item=>{
     setFeedbackPage(item)
     dispatch(setPageInView({page:item}))
@@ -452,7 +452,7 @@ switch (filterType) {
     className="tab text-emerald-800 mont-medium rounded-full  mx-auto bg-transparent   [--tab-border-color:emerald]   aria-selected:[--tab-bg:transparent] [--tab-bg:transparent]   border-3  text-md md:text-xl" aria-label="Collections"
     />
   <div role="tabpanel" 
-   className="tab-content  pt-1 lg:py-4 rounded-lg   md:w-page w-[96vw]  md:w-page mx-auto rounded-full">
+   className="tab-content  pt-1 lg:py-4 rounded-lg    w-[96vw]  md:w-page mx-auto rounded-full">
   <IndexList items={collections}/>
   </div>
 

@@ -5,30 +5,10 @@ import {uploadProfilePicture} from "../actions/ProfileActions"
 import getDownloadPicture from "../domain/usecases/getDownloadPicture";
 import "../App.css"
 import { useNavigate } from "react-router-dom";
-// import {    Button,
-    
-//             // Dialog,
-//             DialogActions,
-//             DialogContent,
-    
-//             DialogContentText,
-//             DialogTitle,
-//             IconButton} from "@mui/material";
-        
 import "../styles/Setting.css"
-import { IonModal,IonHeader,
-  IonToolbar,
-    IonButtons,
-    IonTitle,
-    IonContent,IonInput, IonItem,IonButton 
-    } from "@ionic/react"
-
 import checkResult from "../core/checkResult";
-
-// import { Clear } from "@mui/icons-material";
-
+import Dialog from "../components/Dialog";
 import Context from "../context";
-
 import DeviceCheck from "../components/DeviceCheck";
 
 export default function SettingsContainer(props) {  

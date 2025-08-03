@@ -3,13 +3,10 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import IndexItem from "./IndexItem"
 import React, { useState, useEffect } from 'react';
 import {
-  IonContent,
-  IonInfiniteScroll,
-  IonInfiniteScrollContent,
+
   IonList,
   IonItem,
-  IonAvatar,
-  IonLabel,
+
 } from '@ionic/react';
 const IndexList = ({ items, handleFeedback }) => {
   if (!items) {
