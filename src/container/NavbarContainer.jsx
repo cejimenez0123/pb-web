@@ -7,18 +7,16 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import menu from "../images/icons/menu.svg"
 import getDownloadPicture from '../domain/usecases/getDownloadPicture'
 import { debounce } from 'lodash'
-import LinkIcon from '@mui/icons-material/Link';
-import CreateIcon from '@mui/icons-material/Create';
-import ImageIcon from '@mui/icons-material/Image';
+import LinkIcon from '../images/icons/link.svg';
+import CreateIcon from '../images/icons/ink_pen.svg'
+import ImageIcon from '../images/icons/image.svg'
 import Paths from '../core/paths'
 import { searchDialogToggle } from '../actions/UserActions'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
-import Dialog from '@mui/material/Dialog';
-
+import Dialog from '../components/Dialog.jsx'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions.jsx'
-import { useMediaQuery } from 'react-responsive'
 import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
@@ -147,20 +145,20 @@ function NavbarContainer(props){
         
          <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline'  tabndex="0">Create</a>
            <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
-             <li onClick={ClickWriteAStory}><a  >  <CreateIcon className='text-emerald-800'/></a></li>
+             <li onClick={ClickWriteAStory}><a  >  <IonImg src={CreateIcon}/></a></li>
              <li    onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
      
           dispatch(setHtmlContent(""))
-          navigate(Paths.editor.image())}}><a>     <ImageIcon className='text-emerald-800'/></a></li>
+          navigate(Paths.editor.image())}}><a>     <IonImg src={ImageIcon}/></a></li>
              <li><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
 
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}}>
-    <LinkIcon className='text-emerald-800'/></a></li>
+    <IonImg src={LinkIcon}/></a></li>
            <li  onClick={()=>{ 
              
                  setOpenDialog(true)
@@ -242,20 +240,20 @@ function NavbarContainer(props){
         
          <a      tabIndex={1} role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
            <ul      tabIndex={1} className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
-             <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <CreateIcon className='text-emerald-800'/></a></li>
+             <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <IonImg src={CreateIcon}/></a></li>
              <li    onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
     
           dispatch(setHtmlContent(""))
-          navigate(Paths.editor.image())}}><a className='mx-auto'>     <ImageIcon className='text-emerald-800'/></a></li>
+          navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
              <li><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
 
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}} className='mx-auto'>
-    <LinkIcon className='text-emerald-800'/></a></li>
+   <IonImg src={LinkIcon}/></a></li>
            <li  onClick={()=>{ 
 
                  setOpenDialog(true)
@@ -296,13 +294,31 @@ function NavbarContainer(props){
       </div>
       }
   // }
+  const handleSignOut = () => {
+    window.google.accounts.id.disableAutoSelect(); // Clears GIS cookie for auto-login
+    // Clear all stored items related to login and drive token
+    
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('googleId');
+    localStorage.removeItem("googledrivetoken");
+    localStorage.removeItem('googledrivetoken_expiry');
+    dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
+      localStorage.clear()
+      navigate("/")
+    },err=>{
+      
+    }))
+
+   
+};
   return(<div className="navbar max-w-[100vw] bg-emerald-800">
      <div className='navbar-start '>
     {isPhone?menuDropdown():
-    <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
+    <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
   </div>
   <div className='navbar-center'>
-      {!isPhone?menuHoriz():  <a  onClick={()=>navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
+      {!isPhone?menuHoriz():  <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
   </div>
 
  
@@ -326,12 +342,8 @@ function NavbarContainer(props){
                                   if(setting== SettingName.profile){
                                       navigate(Paths.myProfile())
                                   }else if(setting== SettingName.logout){
-                                      dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
-                                        localStorage.clear()
-                                        navigate("/")
-                                      },err=>{
-                                        
-                                      }))
+                                    handleSignOut()
+                                     
                                   }else if(setting== SettingName.account){
                                       navigate("/profile/edit")
                                   }else if(setting==SettingName.notifications){
@@ -350,12 +362,12 @@ function NavbarContainer(props){
     
     
   
-    <Dialog open={openDialog}>
-<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>
-    </Dialog>
+    <Dialog isOpen={openDialog} text={<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>}
+    onClose={()=>setOpenDialog(false)} disagreeText={"Close"}/>
+
+ 
 </div>)
 
 }
 
 export default NavbarContainer
-

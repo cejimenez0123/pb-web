@@ -5,9 +5,9 @@ import { getStory } from "../../actions/StoryActions"
 import {   fetchCollectionProtected, getMyCollections, setCollections } from "../../actions/CollectionActions"
 import InfiniteScroll from "react-infinite-scroll-component"
 import CreateCollectionForm from "../../components/collection/CreateCollectionForm"
-import {Dialog} from "@mui/material"
+// import {Dialog} from "@mui/material"
+import Dialog from "../../components/Dialog"
 import usePersistentMyCollectionCache from "../../domain/usecases/usePersistentMyCollectionCache"
-
 import { useMediaQuery } from "react-responsive"
 import checkResult from "../../core/checkResult"
 import loadingGif from "../../images/loading.gif"
@@ -22,11 +22,7 @@ function toTitleCase(str) {
 }
 
 export default function AddStoryToCollectionContainer(props){
-  const isPhone =  useMediaQuery({
-    query: '(max-width: 600px)'
-  })
-  const{setError,currentProfile,seo,setSeo}=useContext(Context)
- 
+    const{isPhone,setError,currentProfile,seo,setSeo}=useContext(Context)
     const pathParams = useParams()
     const {id,type}=pathParams 
     const dispatch = useDispatch()
@@ -148,23 +144,14 @@ return <AddToItem key={i} item={item} col={col}/>
 
                 </div>
                 <div>
-              <Dialog className={
-                "bg-emerald-400"
-              }
-              fullScreen={isPhone}
-              PaperProps={{
-                style: {
-                  backgroundColor: 'transparent',
-                  boxShadow: 'none',
-                },
-              }}
-            
-              open={openDialog}
-              onClose={()=>setOpenDialog(false)}>
+       
+              <Dialog isOpen={openDialog}
+              
+              text={
                 <CreateCollectionForm onClose={()=>{
                   setOpenDialog(false)
-                }}/>
-              </Dialog>
+                }}/>}/>
+            
 
 
                 </div>

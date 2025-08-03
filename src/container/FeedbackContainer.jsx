@@ -2,7 +2,7 @@ import { useContext, useLayoutEffect, useState } from "react"
 import authRepo from "../data/authRepo"
 import { debounce } from "lodash"
 import validateEmail from "../core/validateEmail"
-import { Dialog, DialogActions, DialogContent, Button,DialogTitle } from "@mui/material"
+import Dialog from "../components/Dialog"
 import Context from "../context"
 
 export default function FeedbackContainer(props){
@@ -76,26 +76,21 @@ rounded-full border-none py-2 text-white my-12`}>
         </form>
         <Dialog
         
-        open={open}
+        isOpen={open}
         onClose={()=>{
             setOpen(false)
-        }}>
-            <div className="card bg-emerald-50">
-                <DialogTitle >
-                        Message Sent Successfully
-                </DialogTitle>
-                <DialogContent> <p className="text-xl lora-medium">Thank you for sending us your {purpose.toLowerCase()}.
+        }}
+ 
+               title={"Message Sent Successfully"}
+                text={
+               <div> <p className="text-xl lora-medium">Thank you for sending us your {purpose.toLowerCase()}.
                 We will respond if it is relavent.
                 <p>Best regards,</p>
                 <p>Plumbum</p>
-                </p>
-                <DialogActions>
-                    <Button onClick={()=>{
-                        setOpen(false)
-                    }}>Close</Button>
-                </DialogActions>
-    </DialogContent>
-                       </div>
-        </Dialog>
+                </p></div>
+              
+  }
+                
+        />
     </div>)
 }

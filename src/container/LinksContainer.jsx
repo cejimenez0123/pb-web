@@ -4,11 +4,9 @@ import LinkNode from "../components/LinkNode";
 import Paths from "../core/paths";
 import logo from "../images/icon.ico"
 import events from "../images/icons/event.svg"
-import june9 from "../images/events/writerswork.png"
-import may31 from "../images/events/may31.png"
 import { initGA, sendGAEvent } from "../core/ga4";
 import Context from "../context";
-import philosophy from "../images/icons/philosophy.svg"
+import flare from "../images/icons/flare.svg"
 import pen from "../images/icons/pen.svg"
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
@@ -34,16 +32,22 @@ export default function LinksContainer(props){
             <ul className="md:mx-auto w-page-mobile-content md:w-page-content  mx-4">
             <li>
 
-    <LinkNode url={"https://partiful.com/e/mHgpm4s9PwRuVp1GfMbQ"}
-    image={philosophy}
-         title={"The Bronx Philsophy Circle Sat. June 14"}
-         description={"Philosphy circle we disucss idea,  learn to heal from a system that stresses us out."}/>
+    <LinkNode url={"https://partiful.com/e/4xLnLRiDC2QDvs1PUId8"}
+    image={flare}
+         title={"Spark Open Mic Sat. Aug 16th"}
+         description={"Open Mic"}/>
          </li> 
         <li> 
-         <LinkNode url={"https://partiful.com/e/FYxUn8VtOO4ZooKi4ayI"}
+         <LinkNode url={"https://partiful.com/e/hCkUYQlaHLrbg36xMLmH"}
     image={pen}
-         title={"Writers Workshop Mon. June 9th"}
+         title={"Writers Workshop Mon. Aug 11th"}
          description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
+         </li>
+         <li> 
+         <LinkNode url={"https://www.gofundme.com/f/black-august-community-cookout?lang=en_US"}
+    image={pen}
+         title={"Fundraiser for Black August"}
+         description={"We're celebrating Black August by giving back. We're raising funds for school supplies."}/>
          </li>
     
           

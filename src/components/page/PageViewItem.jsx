@@ -5,7 +5,6 @@ import PageViewButtonRow  from "./PageViewButtonRow"
 import CommentInput from "../comment/CommentInput"
 import "../../styles/PageView.css"
 import PropTypes from 'prop-types'
-import PageSkeleton from "../PageSkeleton"
 import Paths from "../../core/paths"
 import ProfileCircle from "../profile/ProfileCircle"
 import PageDataElement from "./PageDataElement"
@@ -78,8 +77,8 @@ if(page){
   
         )
             }else{
-                <div ref={ref}>
-                    <PageSkeleton/>
+                <div className="skeleton" ref={ref}>
+                 
                 </div>
             } 
 }

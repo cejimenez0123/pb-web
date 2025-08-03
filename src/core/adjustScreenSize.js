@@ -1,12 +1,8 @@
-import { Fullscreen } from "@mui/icons-material"
-import { useMediaQuery } from "react-responsive"
+
+import { useContext } from "react"
+import Context from "../context"
 export default function adjustScreenSize(isGrid=false,isContent,grid="",gridMobile="",horizPhone="",fullScreen="",height=""){
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 768px)'
-      })
-      const isHorizPhone =  useMediaQuery({
-        query: '(min-width: 768px)'
-      })
+      const {isHorizPhone}=useContext(Context)
   
       return isGrid?isPhone?
       (gridMobile+`grid-mobile w-grid-mobile${isContent?"-content":""} ${height.length<1?`h-grid-mobile${isContent?`-content`:""}`:""}`):

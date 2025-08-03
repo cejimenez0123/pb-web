@@ -5,10 +5,14 @@ import "../App.css"
 import ErrorBoundary from '../ErrorBoundary';
 import { initGA,sendGAEvent } from '../core/ga4';
 import Context from '../context';
+import { useMediaQuery } from 'react-responsive';
 import adjustScreenSize from '../core/adjustScreenSize';
 import SpotifyEmbed from './SpotifyEmbed';
 function LinkNode({ url,image,description,title,isGrid}) {
-  const {isPhone,isHorizPhone}=useContext(Context)
+  const {isPhone}=useContext(Context)
+  const isHorizPhone =  useMediaQuery({
+    query: '(min-width: 768px)'
+  })
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
   const size = adjustScreenSize(isGrid,true,"","","","","")

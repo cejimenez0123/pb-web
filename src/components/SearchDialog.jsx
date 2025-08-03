@@ -1,16 +1,17 @@
 import { useState,useEffect } from "react";
 import {useSelector,useDispatch} from "react-redux";
-import {Dialog,TextField,useMediaQuery} from "@mui/material"
-import ClearIcon from '@mui/icons-material/Clear';
+import Dialog from "./Dialog";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import debounce from "../core/debounce";
 import { searchDialogToggle, searchMultipleIndexes } from "../actions/UserActions";
 import checkResult from "../core/checkResult";
 import { useNavigate } from "react-router-dom";
-import AlgoliaIcon from "../images/algolia.svg"
-
+import AlgoliaIcon from "../images/icons/algolia.png"
+import DeviceCheck from "./DeviceCheck";
+import { IonInput } from "@ionic/react";
 
 export default function SearchDialog(props){
+  const isNative = DeviceCheck()
     const navigate = useNavigate()
     const searchDialogOpen = useSelector(state=>state.users.searchDialogOpen)
     const searchResults = useSelector(state=>state.users.searchResults)
@@ -18,7 +19,7 @@ export default function SearchDialog(props){
     const dispatch = useDispatch()
     const [searchContent,setSearchContent] = useState([]);
     const pagesInView = useSelector(state=>state.pages.pagesInView)
-    const mediaQuery = useMediaQuery('(max-width:850px)')
+   
  
     useEffect(()=>{
       setSearchContent(pagesInView)
@@ -57,24 +58,31 @@ export default function SearchDialog(props){
    const closeDialog = ()=>{
         dispatch(searchDialogToggle({open:false}))
    }
-    return<Dialog  fullScreen={mediaQuery} 
-                   open={searchDialogOpen} >
-                    <div className="pt-3 md:min-h-[30em] md:min-w-[40em]">
-    <div className='header py-3 px-3'>
-      <ClearIcon onClick={closeDialog}/>
-    </div>
-    <div className="flex flex-row px-3">
-    <TextField  value={searchQuery}
+    return<Dialog  
+    onClose={closeDialog}
+                   isOpen={searchDialogOpen} 
+                   text={
+                    <div className="pt-3  ">
+   
+    <div className="flex flex-row mb-8 px-3 mt-8">
+    {isNative?<IonInput value={searchQuery}
+                style={{flex:"auto",backgroundColor:"transparent"}}
+                onChange={(e)=>debounce(setSearchQuery(e.currentTarget.value),10)}
+                placeholder='Search...'
+               
+             
+                />:
+    <input value={searchQuery}
                 style={{flex:"auto"}}
                 onChange={(e)=>debounce(setSearchQuery(e.currentTarget.value),10)}
                 placeholder='Search...'
                
               
-                />
+                />}
             <img className="my-auto max-h-8" src={AlgoliaIcon}/>
        </div>         
     <InfiniteScroll
-        className="scroll max-w-[100%] overflow-hidden"
+        className="scroll max-w-[100%] max-h-[24em] overflow-hidden"
      dataLength={searchContent.length}
      next={()=>{}}
      hasMore={false}
@@ -93,8 +101,9 @@ export default function SearchDialog(props){
            
         })}
     </InfiniteScroll>
+  
     <div style={{height:"100%"}}>
     </div>
     </div>
-  </Dialog>
+  }/>
 }

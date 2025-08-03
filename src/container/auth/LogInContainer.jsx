@@ -1,36 +1,34 @@
 import React ,{useContext, useLayoutEffect,useEffect, useState} from 'react'
 import "../../App.css"
 import { logIn} from '../../actions/UserActions';
-
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
-import {
-        
-        Dialog,
-        } from "@mui/material"
 import loadingGif from "../../images/loading.gif"
-import theme from '../../theme';
-import { Clear } from '@mui/icons-material';
 import Paths from '../../core/paths';
 import { useLocation } from 'react-router-dom';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
-import { initGA,sendGAEvent } from '../../core/ga4';
 import DeviceCheck from '../../components/DeviceCheck';
-function LogInContainer(props) {
+import GoogleLogin from '../../components/GoogleLogin';
+import Dialog from '../../components/Dialog';
+// import {
+//     SignInWithApple,
+//     SignInWithAppleResponse,
+//     SignInWithAppleOptions,
+//   } from '@capacitor-community/apple-sign-in';
+export default function LogInContainer(props) {
     const location = useLocation()
     const {setError,seo,setSeo}=useContext(Context)
-    useLayoutEffect(()=>{
-        initGA()
-    },[])
+ 
     useLayoutEffect(()=>{
         let soo = seo
-        soo.title = "Plumbum (LogIn) - Share Your Weirdness"
+        soo.title = "Plumbum (Log In) - Share Your Weirdness"
         setSeo(soo)
    },[])
+
     return (
-        <div id="" className='sm:mx-2 py-16'>
+        <div id="" className='sm:mx-2 py-16 md:py-4'>
             <LogInCard  
                        
             setLogInError={setError}
@@ -51,7 +49,12 @@ function LogInCard({setLogInError}){
     const [showPassword, setShowPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("")
     const [open,setOpen] = useState(false);
-
+    
+  
+   
+     
+    
+       
     const handleFirstTimeClick=()=>{
     if(isNative){
         navigate("/onboarding")
@@ -68,7 +71,7 @@ function LogInCard({setLogInError}){
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                        console.log("STORX",payload)
+                    
                     if(payload.error){
                         setLogInError("Error with Username or Password")
                     }else{
@@ -90,18 +93,36 @@ setLogInError("User Not Found. Apply Below")
             setLogInError("Values can't be empty")
         }
     }
-    useEffect(()=>{
-        if(currentProfile){
-            navigate(-1)
-        }
-    },[location,currentProfile])
-    
+  
+    const dispatchLogin=(email,googleId)=>{
+        dispatch(logIn({email,uId:googleId})).then(res=>{
+            checkResult(res,payload=>{
+                setPending(false)
+                console.log(payload.error)
+                if(payload.error){
+                    setLogInError("Error with Username or Password")
+                }else{
+                    navigate(Paths.myProfile())
+                }
+            },err=>{
+                console.log(payload.error)
+                if(err.message=="Request failed with status code 401"){
+setLogInError("User Not Found. Apply Below")
+                }else{
+                    setLogInError(err.message)
+                }
+         
+                
+                setPending(false)
+            })
+        })   
+    }
     return(
-    <div className='sm:border-4  mt-16 md:max-w-[42rem]  border-emerald-600 lg:mt-36 mb-16 rounded-lg  sm:mt-12  mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+    <div className=' md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
             <form className='max-w-[100vw] sm:max-w-82 text-center pt-4'>
-        <h1 className='text-emerald-800 lora-medium pb-4'> Log In</h1>
+        <h1 className='text-emerald-800 mont-medium pb-4'> Log In</h1>
         <div >
          <div className='max-w-[91vw]'>
         <label className="input  open-sans-medium text-emerald-800 pl-6 w-52 overflow-hidden pl-2  rounded-full border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
@@ -127,13 +148,8 @@ setLogInError("User Not Found. Apply Below")
 </label> 
     
     </div>
-            <div 
-                className='  '
-                onClick={()=>{
-                    setOpen(true)
-                }}>
-                <a className='text-[1rem] mont-medium hover:text-green-400 text-emerald-800'>Forgot Password?</a>
-            </div>
+         
+            
             <button
             className='bg-green-600   text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
                onClick={handleLogIn}
@@ -141,6 +157,11 @@ setLogInError("User Not Found. Apply Below")
                 variant="contained" ><h6 className='mont-medium text-xl tracking-wide'>Log In</h6></button>
                 
         </div>
+        <span className='flex mt-4 justify-center '>  <GoogleLogin 
+     onUserSignIn={({email, name,googleId})=>{
+dispatchLogin(email,googleId)
+            
+     }}/></span>
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}className='text-emerald-800 text-xl mont-medium hover:text-green-400  '>Click here if this your first time?</a>
         </div>
@@ -148,24 +169,18 @@ setLogInError("User Not Found. Apply Below")
        <img  
         className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
         </div>:null}
+        <div 
+                className='  '
+                onClick={()=>{
+                    setOpen(true)
+                }}>
+                <a className='text-[1rem] mont-medium hover:text-green-400 text-emerald-800'>Forgot Password?</a>
+            </div>
         </form>
-        <Dialog
-       
-        open={open}
-        onClose={()=>{setOpen(false)}}
-                      >
-                <div>
-                    <Clear onClick={
-                        ()=>setOpen(false)
-                    }/>    
-                </div>  
-                <ForgotPasswordForm/>
-
-            
-                </Dialog>
+<Dialog isOpen={open} onClose={()=>setOpen(false)}
+title={"Forgot Password"}
+disagreeText={"Close"}
+text={<ForgotPasswordForm/>}/>
                 </div></div>
     </div>)
 }
-
-
-export default LogInContainer

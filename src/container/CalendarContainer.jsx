@@ -36,7 +36,7 @@ export default function CalendarContainer(){
   
   },[])
   return (
-    <div className="mx-auto m-4 w-fit text-center">
+    <div className="mx-auto mx-4   mt-10 w-fit text-center">
 
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
