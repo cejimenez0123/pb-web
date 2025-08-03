@@ -2,15 +2,12 @@ import { useLayoutEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { fetchNotifcations } from "../../actions/ProfileActions"
 import { useSelector } from "react-redux"
-import InfiniteScroll from "react-infinite-scroll-component"
-import loadingGif from "../../images/loading.gif"
-import ProfileCircle from "../../components/profile/ProfileCircle"
+import NotificationItem from "../../components/profile/NotificationItem"
 import { useNavigate } from "react-router-dom"
-import Paths from "../../core/paths"
 import usePersistentNotifications from "../../domain/usecases/usePersistentNotifications"
 import Enviroment from "../../core/Enviroment"
 import { useLocation } from "react-router-dom"
-
+import { IonList,IonItem } from "@ionic/react"
 export default function NotificationContainer(props){
     const dispatch = useDispatch()
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -19,7 +16,6 @@ export default function NotificationContainer(props){
     var location = useLocation()
     let oneDayOld = today.setDate(today.getDate() - 1)
     let lastNotified =  oneDayOld
-    const navigate = useNavigate()
     const [items,setItems]=useState([])
     const fetchIt =()=>{
             if(payload){
@@ -73,7 +69,7 @@ export default function NotificationContainer(props){
         
          
     }}
-   color="emerald-700"
+  
     useLayoutEffect(()=>{
       
         fetchIt(payload)
@@ -82,125 +78,14 @@ export default function NotificationContainer(props){
     return(<div className="flex flex-col justify-center md:py-8">
         <div  className=" w-[96vw] border-b-2 border-emerald-600 mx-auto md:w-page">
 <h1 className="lora-bold text-xl text-emerald-800  mb-4 mt-8 text-opacity-70">Today</h1>
-<InfiniteScroll
- className=" w-[96vw] border-b-2 border-emerald-600 mx-auto md:w-page"
- dataLength={items.length}
- next={()=>{}}
- hasMore={false}
- loader={<p><img src={loadingGif}/></p>}
- endMessage={<div className=" flex p-12"><p className="text-emerald-800 lora-medium mx-auto my-auto">That's it for now</p></div>}
->
-<div className="w-[96vw] mx-auto md:w-page">
-{items.map(item=>{
-    if(item==Enviroment.blankPage){
-        return<div><p className="lora-bold text-emerald-800 text-opacity-60">Older than today</p></div>
-    }
-    switch(item.type){
-        case "follower":{
-       
-            const follow = item.item
-            const profile = follow.follower
-            return(<div onClick={()=>navigate(Paths.profile.createRoute(profile.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem] border-opacity-60 md:border-2 md:rounded-full p-2">
-            <div className="md:px-12" ><span    className="flex justify-between flex-row ">
-        
-            <ProfileCircle profile={profile} color="emerald-700"/>
-           
- 
-            <h4 className="my-auto">{getTimePast(follow.created)}</h4>
-            </span>
-            <h5 className="open-sans-medium
-             my-2 text-[0.8rem] px-2 text-emerald-800">New Follower {profile.username}</h5>
-      
-            </div></div>)
-        }
-        case "collection":{
-           
-        const collection = item.collection
-        let latestCol = collection.childCollections.sort((a,b)=>new Date(a.created)-new Date(b.created))[0]
-        let latestStory = collection.storyIdList.sort((a,b)=>new Date(a.created)-new Date(b.created))[0]
-        let latest = "New Collection"
-        if(latestCol && latestStory && latestCol.created>latestStory.created){
-            latest = "New Addition "+latestCol.childCollection.title
-        }else if(latestStory && !latestCol){
-          
-                latest = "New Story "+latestStory.story.title
-      
-        }else if(!latestStory && latestCol){
-
-            latest = "New Collection"+latestCol.childCollection.title
-        }
-        console.log(collection)
-            return(<div onClick={()=>navigate(Paths.collection.createRoute(collection.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem] border-opacity-60 md:border-2 md:rounded-full p-2">
-            <div className="md:px-12" ><span    className="flex justify-between flex-row ">
-        
-            <ProfileCircle profile={collection.profile} color="emerald-700"/>
-            <h4 className="text-emerald-700 mx-4 my-2 text-[0.7rem] open-sans-medium">Published to {collection.title}</h4>
- 
-            <h4 className="my-auto">{getTimePast(collection.created)}</h4>
-            </span>
-            <h5 className="open-sans-medium
-             my-2 text-[0.8rem] px-2 text-emerald-800">{latest}</h5>
-            </div></div>)
-        }
-        case "story":{
-            const story = item.item
-            return(<div onClick={()=>navigate(Paths.page.createRoute(story.id))}className="border-emerald-600 border-t-2 md:my-2  min-h-[8rem] max-h-[10rem]   border-opacity-60 md:border-2 md:rounded-full p-2">
-            <div className="md:px-12" ><span    className="flex justify-between flex-row ">
-        
-            <ProfileCircle profile={item.profile} color="emerald-700"/>
-            <h4 className="text-emerald-700 mx-4 my-2 text-[0.7rem] open-sans-medium">{lastNotified<new Date(story.created)?"New Story":null}</h4>
- 
-            <h4 className="my-auto">{getTimePast(story.created)}</h4>
-            </span>
-            <h5 className="open-sans-medium my-2 text-[0.8rem] px-2 text-emerald-800">{story.title}</h5>
-            </div></div>)
-        }
-        case "comment":{
-            const comment = item.item
-        
-            return(<div onClick={()=>navigate(Paths.page.createRoute(comment.story.id))}
-            className="border-emerald-600 min-h-[8rem] max-h-[10rem] border-t-2 md:my-2  border-opacity-60 md:border-2 md:rounded-full p-4">
-            <div className="px-6" ><span    className="flex flex-row justify-between"><span
-            className="flex flex-row ">
-            <ProfileCircle profile={comment.profile} color="emerald-700"/>
-            <h4 className="text-emerald-700 mx-4 my-2 text-[0.7rem] md:max-w-[12em] text-nowrap text-ellipsis my-auto open-sans-medium">Commented on {comment.story.title}</h4></span>
-            <h4 className="my-auto">{getTimePast(comment.created)}</h4>
-            </span>
-            <h5 className="open-sans-medium my-2 px-2 text-[0.8rem] text-emerald-800">{comment.content}</h5>
-            </div></div>)
-        }
-    }
-
+<IonList>
+{items.map((item,i)=>{
+    return(<IonItem key={i}>
+      <NotificationItem item={item} lastNotified={lastNotified}/>
+        </IonItem>)
 })}
-</div>
-</InfiniteScroll>
+</IonList>
 </div>
     </div>)
 
-}
-
-function getTimePast(created){
-    const then = new Date(created); // Replace with your past time
-    const now = new Date();
-    
-    const diffMs = now - then; // Difference in milliseconds
-    const diffSec = Math.floor(diffMs / 1000); // Convert to seconds
-    const diffMin = Math.floor(diffSec / 60); // Convert to minutes
-    const diffHours = Math.floor(diffMin / 60); // Convert to hours
-    const diffDays = Math.floor(diffHours / 24); // Convert to days
-    
-    // console.log(`Difference: ${diffDays} days, ${diffHours % 24} hours, ${diffMin % 60} minutes, ${diffSec % 60} seconds`);
-               
-    
-    let time = `${diffMin} mins ago`
-   if(diffHours>24) {
-        time = `${diffDays} days ago`
-    }else if(diffMin>59){
-        time = `${diffHours} hours ago`
-      
-    }else{
-        time = `${diffMin} mins ago`
-    }
-    return time
-            
 }

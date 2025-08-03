@@ -35,7 +35,7 @@ function ProfileCircle({profile,color="white",isGrid=false}){
       sendGAEvent("Navigate",`Navigate to profile:${{id:profile.id,userrname:profile.username}}`,profile.username,0,false)
       navigate(Paths.profile.createRoute(profile.id))
     }
-  return(<span className="flex flex-row">{profile?<span className="flex flex-row"><div  onClick={handleNavigate}className="overflow-hidden rounded-full max-w-8 min-w-8  min-h-8 max-h-8  border-2 border-white ">
+  return(<span className="flex flex-row">{profile?<span className="flex flex-row"><div  onClick={handleNavigate}className="overflow-hidden bg-emerald-700 rounded-full max-w-8 min-w-8  min-h-8 max-h-8  border-2 border-white ">
   <IonImg className="object-fit max-h-9 max-w-10 " src={profilePic}/></div> <h6 className={`my-auto  px-2 ${isGrid?"text-[0.6rem]":""} ${"text-"+color}`}>{profile.username}</h6><span/></span>:<div className=" max-w-8 min-w-8  bg-slate-100 skeleton"/>}</span>)
 
 

@@ -464,14 +464,14 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
                 // Only render buttons if all necessary Google APIs are loaded
                 !driveTokenAvailable ? (
                     // Show "Login to Google Drive" button if no valid token
-                    <div className='btn bg-emerald-700 rounded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]'>
+                    <div className='btn bg-emerald-700 rounded-full border-emerald-600 mont-medium flex text-center w-[21rem] h-[3rem]'>
                         <IonText class="mx-auto text-white my-auto text-[1rem]" onClick={requestDriveAccessToken}>
                             Login to Google Drive
                         </IonText>
                     </div>
                 ) : (
                     // Show "Open Google Drive" button if a valid token is available
-                    <div className='btn bg-emerald-700 rounded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]'>
+                    <div className='btn bg-emerald-700 rounded-full border-emerald-600 mont-medium flex text-center w-[21rem] h-[3rem]'>
                         <IonText class="mx-auto text-white my-auto text-[1rem]" onClick={createPicker}>
                             Open Google Drive
                         </IonText>
@@ -479,7 +479,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
                 )
             ) : (
                 // Show loading message until all APIs are ready
-                <p>Loading Google Drive services...</p>
+                <p className='skeleton  bg-gray-100 w-[21rem] h-[3rem] rounded-full'>Loading Google Drive services...</p>
             )}
         </div>
     );
