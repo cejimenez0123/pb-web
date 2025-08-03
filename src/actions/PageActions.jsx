@@ -37,48 +37,7 @@ const setHtmlContent = createAction(
   }
 )
 
-// const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>{
-      
-//   try{
-//     const { page,
-//       title,
-//       data,
-//       commentable,
-//       privacy,
-    
-//     } =params
-     
-//       let ref = doc(db,"page",page.id)
-//       await updateDoc(ref,{
-//         title,
-//         data,
-//         privacy,
-//         approvalScore: page.approvalScore,
-//       })
-//       if(!privacy){
-//         client.initIndex("page").partialUpdateObject({objectID: page.id,title:title},{createIfNotExists:true}).wait()
-//       }
-//       const contributors= new Contributors(page.commenters,
-//         page.readers,page.writers,page.editors)
-//       let newPage= new Page(page.id,
-//                           title,
-//                           data,
-//                           page.profileId,
-//                           page.userId,
-//                           page.approvalScore,
-//                           privacy,
-//                           commentable,
-//                           page.type,
-//                           contributors,
-//                           page.created)
-    
-//       return {
-//         page: newPage
-//       }
-//     }catch(e){
-//     return {error: new Error("Error: UDATE PAGE-" + e.message)}
-//   }
-// })
+
 
 const getPublicProfilePages= createAsyncThunk(
   'pages/getPublicProfilePages',
