@@ -20,6 +20,7 @@ import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
+      import { IonApp } from '@ionic/react';
 import PrivateRoute from './PrivateRoute';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
@@ -126,8 +127,8 @@ function App(props) {
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
       <div  className='App pb-12  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
-      <div/>
-      <div style={{position:"relative"}} >
+    
+      {/* <div style={{position:"relative"}} > */}
       <head>
   <meta charset="UTF-8" />
   <Helmet>
@@ -164,7 +165,7 @@ function App(props) {
          <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
       
    
-        
+         <IonApp>      
         <SearchDialog  />
      
         {!isPhone&&(!isFirstLaunch||currentProfile)? <NavbarContainer 
@@ -322,10 +323,12 @@ function App(props) {
     <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/></div>:null}
+         </IonApp>
     </div>
-    </div>
+    
     {/* </div> */}
-
+    {/* </div> */}
+   
     </Context.Provider>
 
   );
