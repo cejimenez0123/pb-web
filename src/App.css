@@ -238,6 +238,8 @@
  
 
 }
+/* plumbum-input.css */
+
 
 /* .sign-card h1{
   margin-top: 3em;
@@ -907,4 +909,50 @@
 .custom-input.ion-focused {
   --border-color: #047857; /* Keep emerald-800 on focus */
   box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.3); /* Optional: subtle outer glow on focus */
+}
+
+.plumbum-input-wrapper {
+  width: 100%;
+  border-radius: 9999px;
+  border: 2px solid #059669;        /* emerald-600 */
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;          /* py-3 px-6 */
+  transition: border-color 0.2s;
+}
+
+.plumbum-input-wrapper:focus-within {
+  border-color: #065f46;            /* emerald-800 on focus */
+}
+textarea.sc-ion-textarea {
+  width: 100%;
+  border-radius: 9999px;
+  border: 2px solid #059669;     /* emerald-600 */
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;       /* py-3 px-6 */
+  transition: border-color 0.2s;
+  margin-bottom: 1.25rem;
+}
+
+.plumbum-textarea-wrapper:focus-within {
+  border-color: #065f46;         /* emerald-800 on focus */
+}
+
+
+.sc-ion-input {
+  width: 100%;
+  
+  border: none;
+  outline: none;
+  background: transparent !important;         /* ensure transparent regardless of ionic/inherited */
+  font-size: 1.125rem;              /* text-lg */
+  font-family: inherit;
+  font-weight: 600;
+  color: inherit;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 1em;
 }

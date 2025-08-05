@@ -14,6 +14,7 @@ import {
   IonText,
   IonItem
 } from '@ionic/react';
+import "../App.css"
 import { useState, useContext, useEffect } from 'react';
 import { debounce } from 'lodash';
 
@@ -22,6 +23,21 @@ import Paths from '../core/paths';
 import authRepo from '../data/authRepo';
 import ThankYou from './auth/ThankYou';
 import logo from "../images/logo/logo-green.png";
+const inputStyle = {
+  "--width": '100%',
+  border: 'none',
+  outline: 'none',
+  background: 'transparent',
+  fontSize: '1.125rem',
+  fontFamily: 'inherit',
+  fontWeight: 600,
+  // color: 'inherit',
+  "--color":"inherit",
+  "--boxShadow": 'none',
+  "--padding": 0,
+
+  '--background': 'transparent',
+};
 
 export default function OnboardingContainer(props) {
   const navigate = useNavigate();
@@ -101,58 +117,80 @@ export default function OnboardingContainer(props) {
     return (
       <IonGrid>
         <IonRow>
-          <IonCol>
+          <IonList className='text-left'>
+            <div className=''>
             <IonText color="success" className="lora-bold">* Required</IonText>
-            <IonText className="ion-text-center" color="success" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+            </div>
+            <div>
+            <IonText className="ion-text-left"  style={{ textAlign:"left" ,fontSize: '1.5rem', fontWeight: 'bold' }}>
               Interest Form
             </IonText>
-            <IonText className="ion-text-center" color="success">
+            </div>
+            <div>
+            <IonText className="ion-text-left" >
               We’re building a space that’s nurturing, focused, and kind. This short application helps us make sure it’s the right fit — for you, and for the group.
             </IonText>
-
-            <IonItem fill="outline" color="success" className="my-4">
-              <IonLabel position="floating" className="mont-medium">Preferred Name</IonLabel>
+            </div>
+            <IonList className='mt-4'>
+            <IonItem fill="outline" color="success" className="my-8">
+              {/* <IonLabel position="floating" className="mont-medium">Preferred Name</IonLabel> */}
               <IonInput
+              label='Preferred Name'
+              // style={inputStyle}
+              type='text'
                 value={formData.fullName}
                 onIonChange={e => updateFormData({ fullName: e.detail.value })}
                 placeholder="Jon Doe"
-                clearInput
+                
               />
             </IonItem>
+            {/* <IonLabel className="mont-medium mb-1 text-left" color="success">
+  * Email
+</IonLabel> */}
+            {/* <div className="w-full rounded-full border-2 border-emerald-600 bg-white flex items-center px-6 py-3 focus-within:border-emerald-800 transition-all"> */}
+     <IonItem>  
+  <IonInput
+  label='*Email'
+    type="email"
+    value={formData.email}
+    onIonChange={e => updateFormData({ email: e.detail.value })}
+    placeholder="email@example.com"
+    // style={inputStyle}
+    class='ion-plumbum-input'
+    // className="w-[100%] bg-transparent outline-none text-lg mont-medium"
+    style={inputStyle}
+  />
+  </IonItem>
 
-            <IonItem fill="outline" color="success" className="my-4">
-              <IonLabel position="floating" className="mont-medium">* Email</IonLabel>
-              <IonInput
-                type="email"
-                value={formData.email}
-                onIonChange={e => updateFormData({ email: e.detail.value })}
-                placeholder="email@example.com"
-                clearInput
-              />
-            </IonItem>
-
+          <IonItem>
             {formData.email && !validateEmail(formData.email) && (
               <IonText color="danger" style={{ fontSize: '0.8rem' }}>
                 Please use a valid email
               </IonText>
-            )}
+            )}  </IonItem>
 
             <IonItem fill="outline" color="success" className="my-4">
+             {/* <div>
               <IonLabel position="floating" className="mont-medium">IG Handle</IonLabel>
-              <IonInput
+              </div> */}
+             <IonInput
+             label='IG Handle'
                 value={formData.igHandle}
                 onIonChange={e => updateFormData({ igHandle: e.detail.value })}
                 placeholder="*****"
-                clearInput
+              
               />
             </IonItem>
-
-            <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+            </IonList>
+            <div className='h-[18rem]'/>
+            <div className='text-right'>
+            <div className="btn-container btn  bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
               <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
                 Next Step
               </IonText>
             </div>
-          </IonCol>
+            </div>
+          </IonList>
         </IonRow>
       </IonGrid>
     );
@@ -198,6 +236,7 @@ export default function OnboardingContainer(props) {
               className="open-sans-medium"
             />
 </div>
+<div className='h-[19.5rem]'/>
 <div className='text-right'>
             <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
               <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
@@ -282,11 +321,12 @@ export default function OnboardingContainer(props) {
               feedbackFrequency={feedbackFrequency}
               setFeedbackFrequency={val => updateFormData({ feedbackFrequency: val })}
             />
-
+<div className='text-right'>
             <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0', textAlign: 'right' }}>
               <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
                 Next Step
               </IonText>
+            </div>
             </div>
           </IonCol>
         </IonRow>
@@ -305,17 +345,22 @@ export default function OnboardingContainer(props) {
 
     return (
       <IonGrid>
-        <IonCol>
+        <IonCol className='text-left'>
+          <IonItem>
           <WorkshopPreferenceSelector
             workshopPreference={formData.workshopPreference}
             setWorkshopPreference={val => updateFormData({ workshopPreference: val })}
           />
+          </IonItem>
+          <IonItem>
           <IonRow>
+            
             <IonLabel className="mont-medium" color="success" style={{ marginTop: '1rem' }}>
               How did you find out about Plumbum?
             </IonLabel>
             <IonTextarea
               rows={4}
+              cols={48}
               value={formData.howFindOut}
               onIonChange={e => updateFormData({ howFindOut: e.detail.value })}
               color="success"
@@ -324,7 +369,8 @@ export default function OnboardingContainer(props) {
               style={{ lineHeight: '4rem' }}
             />
           </IonRow>
-
+          </IonItem>
+<IonItem>
           <IonLabel className="mont-medium" color="success" style={{ marginTop: '1rem' }}>
             What features would make a writing platform most valuable to you?
           </IonLabel>
@@ -336,8 +382,9 @@ export default function OnboardingContainer(props) {
             className="border-1 border-emerald-600"
             style={{ '--border-color': 'var(--ion-color-emerald-600)' }}
             rows={4}
+            cols={48}
           />
-
+</IonItem>
           <div className="btn-container text-right">
             <IonText
               onClick={handleSubmit}
@@ -360,17 +407,17 @@ export default function OnboardingContainer(props) {
       <IonRow>
         <IonCol>
           <img src={logo} alt="Plumbum Logo" style={{ maxHeight: '10em', display: 'block', margin: '0 auto', borderRadius: '0.5em' }} />
-          <IonText className="lora-medium" color="success">
-            <h2 style={{ textAlign: 'center' }}>What is Plumbum?</h2>
-            <ul style={{ paddingLeft: '1.5em', marginTop: '1em' }}>
+          <IonText className="lora-medium" >
+            <h2 style={{ textAlign: 'left' }}>What is Plumbum?</h2>
+            <ul style={{ textAlign: 'left', paddingLeft: '1.5em', marginTop: '1em' }}>
               <li><strong>Writer-Focused:</strong> A space made for writers to grow, get feedback, and share their work — all in one place.</li>
               <li><strong>Community First:</strong> Built from live workshops and honest conversations, not algorithms.</li>
               <li><strong>Discovery Through People:</strong> Find new stories and voices through trust and interaction, not trends.</li>
               <li><strong>Hybrid by Design:</strong> We mix feedback, self-promotion, and curation — because writers need all three.</li>
             </ul>
 
-            <h2 style={{ textAlign: 'center', marginTop: '2em' }}>Why Join?</h2>
-            <ul style={{ paddingLeft: '1.5em', marginTop: '1em' }}>
+            <h2 style={{ textAlign: 'left', marginTop: '2em' }}>Why Join?</h2>
+            <ul style={{ textAlign: 'left', paddingLeft: '1.5em', marginTop: '1em' }}>
               <li><strong>Real Feedback:</strong> Thoughtful input from people who care about craft, not clout.</li>
               <li><strong>Creative Momentum:</strong> Stay in motion with events, prompts, and people who show up.</li>
               <li><strong>Supportive Culture:</strong> Built slow and small on purpose, so we protect the vibe.</li>
@@ -449,7 +496,7 @@ function ComfortLevelSelector({ comfortLevel, setComfortLevel }) {
       >
         How comfortable are you sharing your work with others?
       </IonLabel>
-
+<div>
       <IonGrid style={{ marginTop: '1rem' }}>
         <IonRow className="ion-justify-content-center" style={{ gap: '0.5rem' }}>
           {levels.map((level) => (
@@ -476,6 +523,7 @@ function ComfortLevelSelector({ comfortLevel, setComfortLevel }) {
           ))}
         </IonRow>
       </IonGrid>
+      </div>
     </IonCol>
   );
 }
