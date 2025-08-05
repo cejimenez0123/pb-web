@@ -956,3 +956,25 @@ textarea.sc-ion-textarea {
   padding: 0;
   margin-bottom: 1em;
 }
+/* Add this CSS somewhere your app loads it (e.g., global.css or injected into component) */
+
+ion-modal {
+  --background: white;          /* solid white background */
+  --border-radius: 12px;        /* rounded corners */
+  --box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* subtle shadow */
+  position: relative;
+  max-height: 90vh;
+  margin: auto;
+  overflow: auto;
+}
+ion-modal ion-content {
+  --background: #fff !important; /* solid white background inside modal */
+  color: #065f46; /* emerald dark text */
+  padding: 1rem;
+}
+
+
+.custom-modal ion-content {
+  --background: transparent; /* making ion-content transparent to allow modal background */
+  padding: 1rem 1.5rem;       /* better padding */
+}

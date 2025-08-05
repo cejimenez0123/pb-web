@@ -59,11 +59,9 @@ import DeviceCheck from './components/DeviceCheck.jsx';
 function App(props) {
   const navigate = useNavigate()
   const isNative = DeviceCheck()
-  const isPhone =  useMediaQuery({
-    query: '(max-width: 768px)'
-  })
+  const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
   const isHorizPhone =  useMediaQuery({
-    query: '(min-width: 768px)'
+    query: '(min-width: 750px)'
   })
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
@@ -121,7 +119,7 @@ function App(props) {
 
     checkFirstLaunch().then( );
   }, []);
-
+console.log(isPhone)
   return (
 
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
@@ -165,13 +163,13 @@ function App(props) {
          <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
       
    
-         <IonApp>      
+         <IonApp >      
         <SearchDialog  />
      
-        {!isPhone&&(!isFirstLaunch||currentProfile)? <NavbarContainer 
+        {!isPhone?<div className='fixed top-0 w-[100vw] shadow-lg z-50'> <NavbarContainer 
         loggedIn={props.currentProfile}
-        profile={props.currentProfile}/>:null}
-           {/* <div className='pt-4 '> */}
+        profile={props.currentProfile}/></div>:null}
+         <div className='h-[10rem]'/>
 <Alert />
       <Routes >
      <Route path='/' element={<AboutContainer/>}/>
@@ -319,7 +317,8 @@ function App(props) {
       }/>
       
     </Routes>
-    {isPhone&&!isFirstLaunch?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
+
+    {isPhone?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/></div>:null}

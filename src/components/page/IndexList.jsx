@@ -16,7 +16,8 @@ const IndexList = ({ items, handleFeedback }) => {
       </div>
     );
   }
-  return<IonList>
+  return<IonList 
+  style={{minHeight:"30rem"}}>
   {items.filter(item=>item).map((item, i) => (
     <IonItem key={i + item.id}>
       <IndexItem page={item} item={item} handleFeedback={() => handleFeedback(item)} />
