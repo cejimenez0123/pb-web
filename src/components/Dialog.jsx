@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   IonModal,
   IonHeader,
@@ -12,59 +12,70 @@ import {
   IonIcon,
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
+import Context from '../context';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setDialog } from '../actions/UserActions';
 
 const Dialog = ({
-  text,
-  title,
-  isOpen,
-  onClose,
-  agree,
-  agreeText = 'Agree',
-  disagreeText = 'Disagree',
+  dialog,
+  presentingElement,
 }) => {
+  const dispatch = useDispatch()
+  const onClose=()=>{
+    dispatch(setDialog({isOpen:false}))
+  }
+  if(dialog){
   return (
-    <IonModal 
-    className='modal-fullscreen   bg-white'
-    isOpen={isOpen} backdropDismiss={true} onDidDismiss={onClose}>
-      <IonHeader>
+    <IonModal
+  isOpen={((dialog && dialog.isOpen)??false)} 
+  title={dialog.title}
+  onDidDismiss={()=>onClose()}
+  cssClass="modal-fullscreen ion-padding"
+  presentingElement={presentingElement}
+  style={{backgroundColor:"white",height:"100vh",overflowY:"scroll"}}
+  swipeToClose={true}
+><IonHeader>
         <IonToolbar color="success">
-          <IonTitle className="ion-text-emerald-900">{title}</IonTitle>
+          <IonTitle className="ion-text-emerald-900">{dialog.title}</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={onClose} aria-label="Close dialog">
+            <IonButton onClick={dialog.onClose} aria-label="Close dialog">
               <IonIcon icon={close} />
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-
-      <IonContent className="ion-padding">
+{/* 
+      {/* <IonContent className="ion-padding">
         <IonText className="ion-text-emerald-900" style={{ fontWeight: 'bold' }}>
           {title}
         </IonText>
         <p style={{ marginTop: '1rem', color: '#065f46' }}>{text}</p>
-      </IonContent>
-
-      <IonFooter className="ion-padding-horizontal ion-padding-vertical" style={{ display: 'flex', justifyContent: agree ? 'space-between' : 'flex-end' }}>
-        {agree && (
+      </IonContent> */} 
+{dialog.text}
+      <IonFooter className="ion-padding-horizontal ion-padding-vertical" style={{ display: 'flex', justifyContent: dialog.agree ? 'space-between' : 'flex-end' }}>
+        {dialog.agree && (
           <IonButton
             fill="outline"
             color="success"
             className="rounded-full"
-            onClick={agree}
+            onClick={dialog.agree}
           >
-            {agreeText}
+            {dialog.agreeText}
           </IonButton>
         )}
         <IonButton
           color="success"
           className="rounded-full"
-          onClick={onClose}
+          onClick={dialog.onClose}
         >
-          {disagreeText}
+          {dialog.reeText}
         </IonButton>
       </IonFooter>
     </IonModal>
-  );
+  )
+};
+return null
 };
 
 export default Dialog;

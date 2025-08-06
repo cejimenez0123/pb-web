@@ -12,7 +12,7 @@ import {    logIn ,
             signOutAction,
             // fetchHomeCollection,
             updateHomeCollection,
-            
+            setDialog,
             setSignedInTrue,
             setSignedInFalse,
             getPageApprovals,
@@ -44,7 +44,8 @@ const initialState = {
     profilesInView: [],
     searchResults:[],
     searchDialogOpen:false,
-    error:""
+    error:"",
+    dialog:{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"disagree"}
 }
 const userSlice = createSlice({
     name: 'users',
@@ -192,6 +193,12 @@ const userSlice = createSlice({
         state.homeCollection = payload.collection
     }).addCase(updateHomeCollection.rejected,(state,{payload})=>{
         state.error = payload.error
+    }).addCase(setDialog.type,(state,{payload})=>{
+        if(payload){ if(payload.isOpen==false){
+state.dialog.isOpen = false
+        }else{
+    state.dialog = payload}
+}
     }).addCase(setSignedInTrue.type,(state,{payload})=>{
         state.signedIn = true
     }).addCase(setSignedInFalse.type,(state,{payload})=>{

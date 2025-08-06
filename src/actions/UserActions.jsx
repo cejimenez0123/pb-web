@@ -164,6 +164,14 @@ const updateHomeCollection = createAsyncThunk("users/updatecollection",async (pa
 
 
 )
+const setDialog = createAction("user/setDialog", (params)=> {
+
+
+  return  {payload:
+     params}
+    
+  
+})
 // const fetchHomeCollection = createAsyncThunk("users/fetchHomeCollection", async(params,thunkApi)=>{
 //   try{
 
@@ -517,6 +525,7 @@ export {logIn,
         updateHomeCollection,
         setSignedInTrue,
         setSignedInFalse,
+        setDialog,
         getPageApprovals,
         searchDialogToggle,
         searchMultipleIndexes,

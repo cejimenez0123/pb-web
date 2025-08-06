@@ -20,7 +20,7 @@ import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
-      import { IonApp ,IonPage} from '@ionic/react';
+      import { IonApp, IonPage } from '@ionic/react';
 import PrivateRoute from './PrivateRoute';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
@@ -52,7 +52,7 @@ import { useMediaQuery } from 'react-responsive';
 import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
 import DeviceCheck from './components/DeviceCheck.jsx';
-
+import Dialog from './components/Dialog.jsx';
 
 
 
@@ -76,7 +76,7 @@ function App(props) {
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
   const page = useRef(null);
- 
+  const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"disagree"})
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
@@ -125,9 +125,9 @@ console.log(isPhone)
     <IonApp >   
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-      <IonPage ref={page} className="App pb-12 background-blur bg-gradient-to-br from-slate-100 to-emerald-100">
-        <SearchDialog presentingElement={page.current} />
-    
+      <IonPage  ref={page} className=' App pb-12  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+     
+
       <head>
   <meta charset="UTF-8" />
   <Helmet>
@@ -167,11 +167,12 @@ console.log(isPhone)
       
        
      
-        {!isPhone?<div className='fixed top-0 w-[100vw] shadow-lg z-50'>
+        {!isPhone?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/></div>:null}
-      
+       <SearchDialog presentingElement={page} />
+       <Dialog dialog={dialog} presentingElement={page} />
 <Alert />
 
       <Routes >

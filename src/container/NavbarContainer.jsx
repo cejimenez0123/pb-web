@@ -2,7 +2,7 @@ import React ,{ useContext, useEffect, useLayoutEffect,useState } from 'react'
 import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
-import {signOutAction} from "../actions/UserActions"
+import {signOutAction,setDialog} from "../actions/UserActions"
 import { useLocation, useNavigate } from 'react-router-dom'
 import menu from "../images/icons/menu.svg"
 import getDownloadPicture from '../domain/usecases/getDownloadPicture'
@@ -14,7 +14,6 @@ import Paths from '../core/paths'
 import { searchDialogToggle } from '../actions/UserActions'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
-import Dialog from '../components/Dialog.jsx'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions.jsx'
 import isValidUrl from '../core/isValidUrl'
@@ -22,6 +21,7 @@ import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
 import { IonImg } from '@ionic/react'
+import { useSelector } from 'react-redux'
 const PageName = {
   home: "Home",
   about:"About",
@@ -47,6 +47,7 @@ const pages = [
 function NavbarContainer(props){
   
   const {isPhone,isHorizPhone}=useContext(Context)
+  const dialog =useSelector(state=>state.users.dialog)
   useLayoutEffect(()=>{
     initGA()
   },[])
@@ -57,7 +58,7 @@ function NavbarContainer(props){
    const pathName = useLocation().pathname
 
 
-  const [openDialog,setOpenDialog]=useState(false)
+
     useEffect(()=>{
       if(currentProfile){
           if(isValidUrl(currentProfile.profilePic)){
@@ -70,6 +71,23 @@ function NavbarContainer(props){
           }}
   },[currentProfile,pathName])
 
+const openDialog=()=>{
+  let dia = {...dialog}
+  dia.title = "Create Collection"
+  dia.isOpen = true
+  dia.onClose= ()=>{
+    let dia = {...dialog}
+    dia.isOpen = false
+    dispatch(setDialog(dia))
+  }
+  dia.text=<CreateCollectionForm onClose={()=>{
+
+    let dia = {...dialog}
+    dia.isOpen = false
+    dispatch(setDialog(dia))
+  }}/>
+  dispatch(setDialog(dia))
+}
     const openDialogAction = ()=>{
       dispatch(searchDialogToggle({open:true}))
     }
@@ -161,7 +179,7 @@ function NavbarContainer(props){
     <IonImg src={LinkIcon}/></a></li>
            <li  onClick={()=>{ 
              
-                 setOpenDialog(true)
+                 openDialog()
                  
          } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
     
@@ -256,7 +274,7 @@ function NavbarContainer(props){
    <IonImg src={LinkIcon}/></a></li>
            <li  onClick={()=>{ 
 
-                 setOpenDialog(true)
+openDialog()
                  
          } }><a className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
     
@@ -362,8 +380,8 @@ function NavbarContainer(props){
     
     
   
-    <Dialog isOpen={openDialog} text={<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>}
-    onClose={()=>setOpenDialog(false)} disagreeText={"Close"}/>
+    {/* <Dialog isOpen={openDialog} text={<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>}
+    onClose={()=>setOpenDialog(false)} disagreeText={"Close"}/> */}
 
  
 </div>)

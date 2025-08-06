@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom"
 import FollowerCard from "./profile/FollowerCard"
 import { IonImg } from "@ionic/react"
 export default function ProfileCard({profile,onClickFollow,following}){
+    
     const [profilePic,setProfilePic]=useState("")
     const [pending,setPending]=useState(false)
     const {id}=useParams()

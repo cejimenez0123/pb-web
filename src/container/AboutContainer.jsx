@@ -224,7 +224,7 @@ export default function AboutContainer() {
   );
 
   return (
-    <IonPage id="about" className="w-full h-full">
+    // <IonPage id="about" className="w-full h-full">
       <IonContent color="light" className="ion-padding">
         <IonGrid>
           <IonRow className="my-10">
@@ -331,128 +331,9 @@ export default function AboutContainer() {
         </IonGrid>
         {!currentProfile && <ScrollDown text="↓Apply Below" visible={true} />}
       </IonContent>
-    </IonPage>
+    // </IonPage>
   )
 }
-
-// import "../styles/About.css"
-// import { useMediaQuery } from "react-responsive"
-// import { useNavigate } from "react-router-dom"
-// import Paths from "../core/paths"
-// import { useDispatch } from 'react-redux'
-// import slack from "../images/icons/slack.svg"
-// import BookCarousel from "../components/collection/BookCarousel"
-// import al from "../images/workshop/al-1.jpg"
-// import duo from "../images/workshop/Duo-1.jpg"
-// import vemilo from "../images/workshop/vemilo-1.jpg"
-// import vemilo2 from "../images/workshop/vemilo.jpg"
-// import khaos from "../images/workshop/khaos-1.jpg"
-// import out from "../images/workshop/out-1.jpg"
-// import out2 from "../images/workshop/out-2.jpg"
-// import table1 from "../images/workshop/table-1.jpg"
-// import table2 from "../images/workshop/table-2.jpg"
-// import table3 from "../images/workshop/table-3.jpg"
-// import { useLayoutEffect } from "react"
-// import events from "../images/icons/event.svg"
-// import table5 from "../images/workshop/table-5.jpg"
-// import { useEffect } from "react"
-// import table7 from "../images/workshop/table-7.jpg"
-// import books1 from "../images/workshop/books-1.jpg"
-// import { useContext } from "react"
-// import { initGA, sendGAEvent } from "../core/ga4"
-// import Context from "../context"
-// import ScrollDown from "../components/ScrollDownButton"
-// import useScrollTracking from "../core/useScrollTracking"
-
-// import {
-//   IonPage,
-//   IonContent,
-//   IonGrid,
-//   IonRow,
-//   IonCol,
-//   IonCard,
-//   IonCardHeader,
-//   IonCardTitle,
-//   IonCardContent,
-//   IonButton,
-//   IonText,
-//   IonTitle,
-//   IonItem
-// } from '@ionic/react';
-
-// let firstImages = [out, al, table3, duo, vemilo, khaos, books1, table7];
-// let secImages = [out2, table1, vemilo2, table2, table5];
-
-// export default function AboutContainer(props){
-//     const {setSeo, currentProfile} = useContext(Context)
-//     const md = useMediaQuery({ query: '(min-width: 750px)' })
-//     useScrollTracking({name:"About"})
-//     const dispatch = useDispatch()
-//     const navigate = useNavigate()
-//     useLayoutEffect(()=>{
-//         initGA()
-//         sendGAEvent("Page View","View About Page")
-//     },[])
-//     function apply(){
-//         sendGAEvent("Apply to be user","Click Apply","Apply to Join Today",0,false)
-//         navigate(Paths.apply())
-//     }
-//     const whyMembership = ()=>{
-//           return(<div>
-//               <h1 className="lora-bold">Why Membership?</h1>
-//               <p>
-//                 Too many places call themselves “the public square,” but they feel more like oceans—vast, anonymous, and impossible to hold. We’re building a teacup: something small enough to share, strong enough to hold heat, and made for real connection.
-//               </p>
-//               <br />
-//               <ul className="text-left">
-//                 <li className="text-[1rem] my-1">
-//                   <h6 className="open-sans-medium">
-//                     <strong>People Who Care Only –</strong> No trolls. Just writers who give thoughtful feedback that builds you up.
-//                   </h6>
-//                 </li>
-//                 <li className="text-[1rem] my-1">
-//                   <h6 className="open-sans-medium">
-//                     <strong>Compassionate Community –</strong> Writers can be passionate, but we also lead with compassion.
-//                   </h6>
-//                 </li>
-//                 <li className="text-[1rem] my-1">
-//                   <h6 className="open-sans-medium">
-//                     <strong>NYC + Beyond –</strong> We’re rooted in the Bronx—a place that doesn’t fake it. We keep it real, and we want you to do the same.
-//                   </h6>
-//                 </li>
-//               </ul>
-//             </div>
-//             )
-//       }
-//     const applicationProcess=()=>{
-//           return(<div className="my-8">
-//           <h1 className="lora-bold  mb-4">How the Application Works</h1>
-//           <p>We’re building a space with intention. Here’s how to join.</p>
-//           <ol className="list-decimal list-inside open-sans-regular space-y-3 text-[1rem]">
-//             <li>
-//               <strong>Apply Online –</strong> Fill out a short form to tell us about your writing and what you're looking for.
-//             </li>
-//             <li>
-//               <strong>We Review –</strong> Our team reads every application. We’ll either invite you in now or let you know we’re keeping your application on file for the next round.
-//             </li>
-//             <li>
-//               <strong>You're In –</strong> If accepted, you'll get an email with a link to complete your registration and join the community.
-//             </li>
-//           </ol>
-//         </div>
-//         )
-//       }
-//       const findCreatives=() =>{
-//                 return(<div className="grid sm:grid-cols-2 gap-8">
-           
-                   
-//                     <div className="  text-emerald-800 h-[100%] rounded-lg p-4" >
-//                   <div className="text-center" >
-//                     <h2 className="lora-medium font-bold text-center w-fit text-[2rem]">Find Your Creative Community</h2>
-//         <div className="text-left">
-//         <h2 className="text-left text-[1rem] leading-loose  open-sans-medium">Plumbum is a space for writers to share work, 
-//             get feedback, and connect with like-minded creatives. 
-//             Whether you're refining your next piece or just starting out, 
 //             you'll find support, inspiration, and the right audience here.</h2>
         
 //         <a onClick={()=>apply()}className="text-left text-[1rem]">[→ Join the Beta]</a>
