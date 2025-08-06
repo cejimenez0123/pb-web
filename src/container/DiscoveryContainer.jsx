@@ -182,11 +182,11 @@ function DiscoveryContainer() {
   };
 
   return (
-    <IonPage>
+    // <IonPage>
       <ErrorBoundary>
         {/* Header could be added here if desired */}
         <IonContent fullscreen>
-          <div className="text-left pt-12">
+          <div className="text-left mt-24">
             {libraryForums()}
           </div>
 
@@ -238,7 +238,7 @@ function DiscoveryContainer() {
           ) : null}
         </IonContent>
       </ErrorBoundary>
-    </IonPage>
+    // </IonPage>
   );
 }
 

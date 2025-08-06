@@ -1,305 +1,265 @@
+import { IonPage,IonBackButton,IonButtons, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
+import { useLocation, useParams } from 'react-router-dom';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProfile } from '../../actions/UserActions';
+import ProfileCard from '../../components/ProfileCard';
+import checkResult from '../../core/checkResult';
+import IndexList from '../../components/page/IndexList';
+import {
+  getProtectedProfilePages,
+  getPublicProfilePages,
+  setPagesInView,
+} from '../../actions/PageActions.jsx';
+import { createFollow, deleteFollow } from '../../actions/FollowAction';
+import {
+  getProtectedProfileCollections,
+  getPublicProfileCollections,
+} from '../../actions/CollectionActions';
+import { debounce } from 'lodash';
+import { setCollections } from '../../actions/CollectionActions';
+import { useMediaQuery } from 'react-responsive';
+import Context from '../../context';
+import { initGA, sendGAEvent } from '../../core/ga4.js';
+import Enviroment from '../../core/Enviroment.js';
+import ErrorBoundary from '../../ErrorBoundary.jsx';
+import PageList from '../../components/page/PageList.jsx';
+import sortItems from '../../core/sortItems.js';
 
-import { useLocation, useParams } from "react-router-dom"
-import { useContext, useEffect, useLayoutEffect,useState} from "react"
-import { useDispatch,useSelector } from "react-redux"
-import { 
-            fetchProfile,
-        
-        } from "../../actions/UserActions" 
-import stream from "../../images/stream.svg"
-import ProfileCard from "../../components/ProfileCard"
-import "../../styles/Profile.css"
-import checkResult from "../../core/checkResult"
-import IndexList from "../../components/page/IndexList"
-import { getProtectedProfilePages,getPublicProfilePages, setPagesInView } from "../../actions/PageActions.jsx"
-import { createFollow, deleteFollow } from "../../actions/FollowAction"
-import { getProtectedProfileCollections, getPublicProfileCollections } from "../../actions/CollectionActions"
-import { debounce } from "lodash"
-import { setCollections } from "../../actions/CollectionActions"
-import { useMediaQuery } from "react-responsive"
-import Context from "../../context"
-import sortAlphabet from "../../images/icons/sort_by_alpha.svg"
-import clockArrowUp from "../../images/icons/clock_arrow_up.svg"
-import clockArrowDown from "../../images/icons/clock_arrow_down.svg"
-import Paths from "../../core/paths.js"
-import { initGA,sendGAEvent } from "../../core/ga4.js"
-import Enviroment from "../../core/Enviroment.js"
-import ErrorBoundary from "../../ErrorBoundary.jsx"
-import PageList from "../../components/page/PageList.jsx"
-import sortItems from "../../core/sortItems.js"
-function ProfileContainer({profile}){
-    const {seo,setSeo,setError,setSuccess,currentProfile}=useContext(Context)
-    const pathParams = useParams()
-    const {id}=pathParams
+function ProfileContainer({ profile }) {
+  const { seo, setSeo, setError, setSuccess, currentProfile } = useContext(Context);
+  const { id } = useParams();
 
-    useLayoutEffect(()=>{
-        initGA()
-        if(profile){
-            sendGAEvent("View Profile",`View Profile ${JSON.stringify({id:profile.id,username:profile.username})}`)
-               }
-    },[])
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 600px)'
-      })
-      const [search,setSearch]=useState("")
-          const dispatch = useDispatch()
-    const [showPageList,setShowPageList]=useState(true)
-    const pathname = useLocation().pathname
+  const dispatch = useDispatch();
+  const isPhone = useMediaQuery({ query: '(max-width: 600px)' });
 
+  const [search, setSearch] = useState('');
+  const [sortAlpha, setSortAlpha] = useState(true);
+  const [sortTime, setSortTime] = useState(true);
+  const [following, setFollowing] = useState(null);
+  const [canUserSee, setCanUserSee] = useState(false);
+  const [activeTab, setActiveTab] = useState('pages'); // "pages" or "collections"
 
-    const [sortAlpha,setSortAlpha]=useState(true)
-    const [sortTime,setSortTime]=useState(true)
-    const [canUserSee,setCanUserSee]=useState(false)
- 
+  useLayoutEffect(() => {
+    initGA();
+    if (profile) {
+      sendGAEvent(
+        'View Profile',
+        `View Profile ${JSON.stringify({ id: profile.id, username: profile.username })}`
+      );
+    }
+  }, [profile]);
 
-  
+  const collections = sortItems(
+    [],
+    useSelector((state) =>
+      state.books.collections
+        .filter((col) => col)
+        .filter((col) => (search.length > 0 ? col.title.toLowerCase().includes(search.toLowerCase()) : true))
+    )
+  );
 
-    const collections = sortItems([],useSelector(state=>state.books.collections)
-    .filter(col=>col).filter(col=>{
-        if(search.length>0){
-         return col.title.toLowerCase().includes(search.toLowerCase())
-        }else{
-         return true
+  const pages = sortItems(
+    useSelector((state) =>
+      state.pages.pagesInView
+        .filter((page) => page)
+        .filter((page) => (search.length > 0 ? page.title.toLowerCase().includes(search.toLowerCase()) : true))
+    ),
+    []
+  );
+
+  const debounceDelay = 10;
+
+  const handleSortTime = debounce(() => {
+    setSortTime((prev) => {
+      const newSortTime = !prev;
+      let sortedCollections = [...collections].sort((a, b) =>
+        newSortTime
+          ? new Date(a.created) - new Date(b.created)
+          : new Date(b.created) - new Date(a.created)
+      );
+      dispatch(setCollections({ collections: sortedCollections }));
+
+      let sortedPages = [...pages].sort((a, b) =>
+        newSortTime
+          ? new Date(a.created) - new Date(b.created)
+          : new Date(b.created) - new Date(a.created)
+      );
+      dispatch(setPagesInView({ pages: sortedPages }));
+
+      return newSortTime;
+    });
+  }, debounceDelay);
+
+  const handleSortAlpha = debounce(() => {
+    setSortAlpha((prev) => {
+      const newSortAlpha = !prev;
+      let sortedCollections = [...collections].sort((a, b) => {
+        const aTitle = a.title.toLowerCase();
+        const bTitle = b.title.toLowerCase();
+        if (aTitle < bTitle) return newSortAlpha ? -1 : 1;
+        if (aTitle > bTitle) return newSortAlpha ? 1 : -1;
+        return 0;
+      });
+      dispatch(setCollections({ collections: sortedCollections }));
+
+      let sortedPages = [...pages].sort((a, b) => {
+        const aTitle = a.title.toLowerCase();
+        const bTitle = b.title.toLowerCase();
+        if (aTitle < bTitle) return newSortAlpha ? -1 : 1;
+        if (aTitle > bTitle) return newSortAlpha ? 1 : -1;
+        return 0;
+      });
+      dispatch(setPagesInView({ pages: sortedPages }));
+
+      return newSortAlpha;
+    });
+  }, debounceDelay);
+
+  const getContent = () => {
+    dispatch(setPagesInView({ pages: [] }));
+    dispatch(setCollections({ collections: [] }));
+
+    const token = localStorage.getItem('token');
+    if (token && currentProfile?.id === id) {
+      dispatch(getProtectedProfilePages({ profile: { id } }));
+      dispatch(getProtectedProfileCollections({ profile: { id } }));
+    } else {
+      dispatch(getPublicProfilePages({ profile: { id } }));
+      dispatch(getPublicProfileCollections({ profile: { id } }));
+    }
+  };
+
+  useLayoutEffect(() => {
+    dispatch(fetchProfile({ id })).then((result) => {
+      checkResult(
+        result,
+        () => {
+          checkIfFollowing();
+          getContent();
+        },
+        (err) => {
+          setError(err.message);
         }
-    
-       }))
- 
-    const pages = sortItems(useSelector(state=>state.pages.pagesInView).filter(page=>page).filter(page=>{
-        if(search.length>0){
-         return page.title.toLowerCase().includes(search.toLowerCase())
-        }else{
-         return true
-        }
-    
-       }),[])
-   
-    const handleSortTime=debounce(()=>{
-    
-            setSortTime(!sortTime)
-            let list = collections
-          list = list.sort((a,b)=>{
-         
-                if(sortTime){
-                    return new Date(a.created)< new Date(b.created)
-                     
-                      
-                    }else{
-                     return new Date(a.created) > new Date(b.created)
-                            }
-            })
-        dispatch(setCollections({collections:list}))
-        let arr = pages
-     let newArr = arr.sort((a,b)=>{
-         
-                if(sortTime){
-            return new Date(a.created)< new Date(b.created)
-          
-            }else{
-                  return new Date(a.created)> new Date(b.created)
-                                     
-                    }
-            })
-        dispatch(setPagesInView({pages:newArr}))
-    },10)
-    const handleSortAlpha=debounce(()=>{
-     
-   
-        let list =collections
-      let newList = list.sort((a,b)=>{
+      );
+    });
+  }, [id]);
+
+  useEffect(() => {
+    if (profile) getContent();
+  }, [profile]);
+
+  useLayoutEffect(() => {
+    checkIfFollowing();
+  }, [currentProfile, profile]);
+
+  const handleSearch = (value) => {
+    setSearch(value);
+  };
+
+  const checkIfFollowing = () => {
+    if (!currentProfile || !profile) return;
+    if (!profile.isPrivate) {
+      setCanUserSee(true);
+    }
+    if (currentProfile.id === profile.id) {
+      setCanUserSee(true);
+      setFollowing(true);
+      return;
+    }
+    if (profile.followers) {
+      const found = profile.followers.find((f) => f.followerId === currentProfile.id);
+      setCanUserSee(true);
+      setFollowing(found);
+    } else {
+      setFollowing(null);
+    }
+  };
+
+  const onClickFollow = debounce(() => {
+    if (!currentProfile) {
+      setSuccess(null);
+      setError('Please login first!');
+      return;
+    }
+    if (profile && currentProfile.id !== profile.id) {
+      if (following) {
+        dispatch(deleteFollow({ follow: following })).then(() => {
+          // follow deleted
+        });
+      } else {
+        const params = { follower: currentProfile, following: profile };
+        dispatch(createFollow(params));
+      }
+    } else {
+      setSuccess(null);
+      setError('This is you silly');
+    }
+  }, debounceDelay);
+
+  useLayoutEffect(() => {
+    if (!profile) return;
+    const newSeo = { ...seo };
+    newSeo.title = `Plumbum Writer Check Out(${profile.username})`;
+    newSeo.description = profile.selfStatement;
+    newSeo.url = Enviroment.domain + `/profile/${profile.id}`;
+    setSeo(newSeo);
+  }, [profile]);
+
+  return (
+    <ErrorBoundary>
+      <IonPage>
+      <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              {/* defaultHref is the fallback if no navigation history */}
+              <IonBackButton defaultHref="/" />
+            </IonButtons>
+            <IonTitle>{profile ? `${profile.username}'s Profile` : 'Profile'}</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent fullscreen>
+          <div className="pt-2 md:pt-8 mb-8 mx-2">
+            <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
+          </div>
+
+          {isPhone && (
+            <span className="flex flex-row">
+              <label className="flex my-1 border-emerald-400 border-2 border-opacity-70 w-[100%] rounded-full mt-8 flex-row mx-2">
+                <span className="my-auto text-emerald-800 ml-3 mr-1 w-full mont-medium"> Search:</span>
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className="px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full text-emerald-800"
+                />
+              </label>
+            </span>
+          )}
+
+          {/* Tabs container with original Tailwind styling */}
+          <div role="tablist" className="tabs mb-36 rounded-lg w-[100vw] mx-auto md:w-page tabs-boxed bg-transparent">
+            <input type="radio" name="my_tabs_2" role="tab" defaultChecked
+              className="tab hover:min-h-10 mb-4 rounded-full mont-medium text-emerald-800 border-3 w-[90vw] md:w-page text-md md:text-xl"
+              aria-label="Pages" />
+            <div role="tabpanel" className="tab-content h-[100%] overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
            
-            if(sortAlpha){
-                return a.title.toLowerCase() < b.title.toLowerCase()
-                
-            }else{
-                   return a.title.toLowerCase() > b.title.toLowerCase()
-                }
-                   
-        })
-     
-        dispatch(setCollections({collections:newList}))
-
-        let arr = pages
-      arr = arr.sort((a,b)=>{
-            if(sortAlpha){
-        
-             return   a.title.toLowerCase() < b.title.toLowerCase()
-       
-            }else{
-                return (a.title.toLowerCase() > b.title.toLowerCase()) 
-            }
-        
-        })
-
-      dispatch(setPagesInView({pages:arr}))
-    },10)
-
-
-  
-    const [following,setFollowing]=useState(null)
-
-   
-  
- 
-    const getContent=()=>{
-        dispatch(setPagesInView({pages:[]}))
-            dispatch(setCollections({collections:[]}))
-            let token = localStorage.getItem("token")
-            
-            token&&currentProfile.id==id?dispatch(getProtectedProfilePages({profile:{id}})):dispatch(getPublicProfilePages({profile:{id}}))
-            token&&currentProfile.id==id?dispatch(getProtectedProfileCollections({profile:{id}})):dispatch(getPublicProfileCollections({profile:{id}}))
-     
-    }
-    useLayoutEffect(()=>{
-        dispatch(fetchProfile(pathParams)).then(result=>{
-                checkResult(result,payload=>{
-                    checkIfFollowing()
-                    getContent()
-                },(err)=>{
-                    setError(err.message)
-                })
-        })
-      
-    },[id])
-    useEffect(()=>{
-        if(profile){
-            getContent()
-        }
-    },[profile])
-    useLayoutEffect(()=>{
-        checkIfFollowing()
-    },[currentProfile,profile])
-    const handleSearch = (value)=>{
-        setSearch(value)
-    }
-    const checkIfFollowing =()=>{
-        
-        if(currentProfile&&profile){
-            if(!profile.isPrivate){
-                setCanUserSee(true)
-            
-            }
-        if(currentProfile.id==profile.id){
-            setCanUserSee(true)
-            setFollowing(true)
-            return
-        }
-    if( profile && profile.followers){
-        console.log(profile.followers)
-        let found = profile.followers.find(follow=>follow.followerId==currentProfile.id)
-        setCanUserSee(true) 
-        setFollowing(found)
-        return
-     }else{
-
-        setFollowing( null)
-        return
-     }
-    }
-    }
-   
-    const onClickFollow = debounce(()=>{
-        if(currentProfile){
-        if(profile && currentProfile.id !=profile.id){
-            if(following){    
-              dispatch(deleteFollow({follow:following})).then(res=>
-                checkResult(res,payload=>{
-                },err=>{
-
-                })
-              )
-              
-                }else{
-                if(profile){
-                    const params = {
-                        follower:currentProfile,
-                        following:profile
-                    }
-                    dispatch(createFollow(params)).then(res=>{
-                     
-                    })
-                }
-               
-            }}else{
-                setSuccess(null)
-                setError("This is you silly")
-                
-            }
-        }else{
-            setSuccess(null)
-            setError("Please login first!")
-            
-        }
-    },[10])
-
- 
-    const handleAlphaClick=debounce(()=>{
-        
-            let newValue = !sortAlpha
-            setSortAlpha(newValue)
-            handleSortAlpha()
-   
-    },10)
-    const handleTimeClick=debounce(()=>{
-        
-        let newValue = !sortTime
-        setSortTime(newValue)
-        handleSortTime()
-
-},10)
-const meta = ()=>{
-    if(profile){
-        let soo = seo
-        soo.title =     `Plumbum Writer Check Out(${profile.username})`
-        soo.description = profile.selfStatement
-        soo.url =Enviroment.domain+Paths.profile.createRoute(profile.id)
-        setSeo(soo)
-
-    }
-}
-useLayoutEffect(()=>{
-meta()
-},[profile])
-    return(
-        <ErrorBoundary>
-        <div className="">
-          
-            <div className="pt-2 md:pt-8 mb-8 mx-2">
-                <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow}/>
+              <PageList items={pages} />
             </div>
-            {isPhone?<span className="flex flex-row">
-                 <label className='flex   my-1 border-emerald-400 border-2 border-opacity-70 w-[100%] rounded-full mt-8 flex-row mx-2'>
-
-<span className='my-auto text-emerald-800 ml-3 mr-1 w-full mont-medium'> Search:</span>
-  <input type='text' value={search} onChange={(e)=>handleSearch(e.target.value)} className=' px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full text-emerald-800' />
-  </label></span>:null}
-
-<div role="tablist" className="tabs   mb-36 rounded-lg w-[96vw] mx-auto  md:w-page tabs-boxed bg-transparent">
-    <input type="radio" name="my_tabs_2" role="tab"  defaultChecked     className="tab  hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium  text-emerald-800  border-3 w-[96vw]  mx-auto md:w-page   text-xl" aria-label="Pages" />
-    <div role="tabpanel" className="tab-content w-[96vw]  mx-auto md:w-page   rounded-lg border-3 ">
-       {showPageList?<PageList items={pages}/>: <IndexList items={pages} />}
-    </div>
-    <input
-    type="radio"
-    name="my_tabs_2"
-    role="tab"
-    className="tab  hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 w-[96vw]  mx-auto md:w-page   text-xl"
-    aria-label="Collections"
-    />  
-    <div role="tabpanel"  className="tab-content w-[96vw]  md:w-page mx-auto  [--tab-bg:transparent] border-3 bg-transparent ">
-  <IndexList items={collections} />
-
-    </div>
-    {/* <><div className=" my-auto  icon mx-1  flex  justify-between flex-row">
-<img onClick={()=>setShowPageList(!showPageList)} src={stream}/>
-
- <img src={sortAlphabet} onClick={handleAlphaClick} 
- className="my-auto text-emerald-800 icon mx-2 "/>
-    <img src={sortTime?clockArrowUp:clockArrowDown} onClick={handleTimeClick} 
-    className="my-auto icon text-emerald-800"/>
-    </div></>  */}
-               </div>
-</div>
-</ErrorBoundary>
-            )
+            <input type="radio" name="my_tabs_2" role="tab"
+              className="tab text-emerald-800 mb-4   mont-medium rounded-full mx-auto bg-transparent  border-3 text-md md:text-xl"
+              aria-label="Collections" />
+            <div role="tabpanel" className="tab-content h-[30rem] overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
+              <IndexList items={useSelector(state => state.books.collections)} />
+            </div>
+          </div>
+        
+          
+        </IonContent>
+      </IonPage>
+    </ErrorBoundary>
+  );
 }
-export default ProfileContainer
+
+export default ProfileContainer;
+

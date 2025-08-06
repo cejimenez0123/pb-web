@@ -23,7 +23,9 @@ const Dialog = ({
   disagreeText = 'Disagree',
 }) => {
   return (
-    <IonModal isOpen={isOpen} backdropDismiss={true} onDidDismiss={onClose}>
+    <IonModal 
+    className='modal-fullscreen   bg-white'
+    isOpen={isOpen} backdropDismiss={true} onDidDismiss={onClose}>
       <IonHeader>
         <IonToolbar color="success">
           <IonTitle className="ion-text-emerald-900">{title}</IonTitle>

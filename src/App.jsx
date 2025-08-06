@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch,connect} from "react-redux"
-import { useEffect, useState } from 'react';
+import { useEffect, useState ,useRef} from 'react';
 import { BrowserRouter as Router, Routes, Route,Navigate, useNavigate, useLocation } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
@@ -20,7 +20,7 @@ import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
-      import { IonApp } from '@ionic/react';
+      import { IonApp ,IonPage} from '@ionic/react';
 import PrivateRoute from './PrivateRoute';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
@@ -75,7 +75,8 @@ function App(props) {
   const location = useLocation()
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
-
+  const page = useRef(null);
+ 
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
@@ -121,12 +122,12 @@ function App(props) {
   }, []);
 console.log(isPhone)
   return (
-
+    <IonApp >   
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-      <div  className='App pb-12  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+      <IonPage ref={page} className="App pb-12 background-blur bg-gradient-to-br from-slate-100 to-emerald-100">
+        <SearchDialog presentingElement={page.current} />
     
-      {/* <div style={{position:"relative"}} > */}
       <head>
   <meta charset="UTF-8" />
   <Helmet>
@@ -163,14 +164,16 @@ console.log(isPhone)
          <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
       
    
-         <IonApp >      
-        <SearchDialog  />
+      
+       
      
-        {!isPhone?<div className='fixed top-0 w-[100vw] shadow-lg z-50'> <NavbarContainer 
+        {!isPhone?<div className='fixed top-0 w-[100vw] shadow-lg z-50'>
+           <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/></div>:null}
-         <div className='h-[10rem]'/>
+      
 <Alert />
+
       <Routes >
      <Route path='/' element={<AboutContainer/>}/>
       <Route path={"/login"} element={<LogInContainer/>}/> 
@@ -322,14 +325,14 @@ console.log(isPhone)
     <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/></div>:null}
-         </IonApp>
-    </div>
+       
+    </IonPage>
     
     {/* </div> */}
     {/* </div> */}
    
     </Context.Provider>
-
+    </IonApp>
   );
 }
 
@@ -358,5 +361,3 @@ function mapStateToProps(state){
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)
-
-
