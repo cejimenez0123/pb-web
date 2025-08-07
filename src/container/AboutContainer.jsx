@@ -224,8 +224,8 @@ export default function AboutContainer() {
   );
 
   return (
-    // <IonPage id="about" className="w-full h-full">
-      <IonContent color="light" className="ion-padding">
+    
+      <IonContent color="light" fullscreen={true} className="ion-padding">
         <IonGrid>
           <IonRow className="my-10">
             <IonCol size="12" className="ion-text-center">

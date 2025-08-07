@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
 import insta from "../images/icons/instagram.svg"
 import Dialog from "./Dialog";
-import { IonItem, IonList } from "@ionic/react";
+import { IonItem, IonList, IonText } from "@ionic/react";
 import { setDialog } from "../actions/UserActions";
 import DeviceCheck from "./DeviceCheck";
 
@@ -287,7 +287,7 @@ function CalendarEmbed(){
                  }} className=" flex-col text-left flex"
                      >
                    
-                     <span    className="mr-2">{isPhone?event.shortSummary:event.summary}</span>     
+                     <span    className="mr-2 max-w-[15rem] text-overflow-ellipsis overflow-clip">{isPhone?event.shortSummary:event.summary}</span>     
                      {event.organizerLink&&isValidUrl(event.googleLink)? 
                        <span   onClick={()=>{
                         sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
@@ -295,8 +295,8 @@ function CalendarEmbed(){
             
                             }} className="flex flex-col"> 
           
-                             <a className="text-green-600 whitespace-nowrap no-underline max-w-[25em] my-auto" >
-                              <h6 >{event.location}</h6></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
+                             <a className="text-green-600 overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
+                              <IonText>{event.location}</IonText></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
                           
                           
               
