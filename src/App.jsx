@@ -76,7 +76,7 @@ function App(props) {
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
   const page = useRef(null);
-  const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"disagree"})
+  const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"Close"})
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
@@ -174,7 +174,7 @@ console.log(isPhone)
        <SearchDialog presentingElement={page} />
        <Dialog dialog={dialog} presentingElement={page} />
 <Alert />
-
+<div className='pt-8'>
       <Routes >
      <Route path='/' element={<AboutContainer/>}/>
       <Route path={"/login"} element={<LogInContainer/>}/> 
@@ -321,7 +321,7 @@ console.log(isPhone)
       }/>
       
     </Routes>
-
+    </div>
     {isPhone?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
         loggedIn={props.currentProfile}

@@ -25,6 +25,7 @@ import loadingGif from "../../images/loading.gif"
 import ErrorBoundary from "../../ErrorBoundary"
 import { initGA,sendGAEvent } from "../../core/ga4.js"
 import { Helmet } from "react-helmet"
+import { IonContent } from "@ionic/react"
 export default function CollectionContainer(props){
     const dispatch = useDispatch()
 
@@ -672,14 +673,14 @@ let header=()=>collection?<Helmet><title>{"A Plumbum Collection:"+collection.tit
 <meta property="og:url" content={`${Enviroment.domain+location.pathname}`} /></Helmet>
 
 if(!collection||collection.id!==id){
-    return(<div className=" flex flex-col ">  
+    return(<IonContent fullscreen={true}><div className=" flex flex-col ">  
     <div className="skeleton w-[96vw] mx-auto  bg-emerald-100  lg:w-info h-fit h-info mx-auto mt-4 mb-4 border-3 p-4 rounded-lg mb-8 "/>
-    <div className="skeleton bg-emerald-100  md:w-page h-page w-[96vw] mx-auto"/> </div>)
+    <div className="skeleton bg-emerald-100  md:w-page h-page w-[96vw] mx-auto"/> </div></IonContent>)
 }
 if(collection&&canUserSee){
   
 
-    return(<>
+    return(<IonContent fullscreen={true}>
       <ErrorBoundary>
     {header()}
 <div className=" flex  mt-16  flex-col ">   
@@ -700,7 +701,8 @@ if(collection&&canUserSee){
          
        
       </ErrorBoundary>
-    </>)
+      
+</IonContent>)
 }else{
     if(loading){
      

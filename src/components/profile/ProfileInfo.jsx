@@ -25,14 +25,29 @@ import isValidUrl from "../../core/isValidUrl"
 import ReferralForm from "../auth/ReferralForm"
 import DeviceCheck from "../DeviceCheck"
 import Context from "../../context"
+import { useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
+import { setDialog } from "../../actions/UserActions"
 
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [followersDialog,setFollowersDialog]=useState(false)
-    const [openReferral,setOpenReferral]=useState(false)
+    const dialog = useSelector(state=>state.users.dialog)
+    // const [openReferral,setOpenReferral]=useState(false)
     const {id}=useParams()
     const {isNative}=useContext(Context)
-    
+    const dispatch = useDispatch()
+    const handleDialogOpen=()=>{
+        let dia = {...dialog}
+        dia.isOpen = true
+        dia.title = "Referral"
+        dia.text = <ReferralForm onClose={()=>dispatch(setDialog({open:false}))}/>
+        dia.onClose=()=>{
+            dispatch(setDialog({open:false}))
+        }
+        dispatch(setDialog(dia))
+
+    }
 
       const modal = useRef(null)
       const input = useRef(null)
@@ -95,13 +110,13 @@ const ProfileInfo = ({profile})=>{
     </div>}
 />
 <div className='w-[10em] h-[3em] mx-auto flex'>
-{!isNative?<h6 onClick={()=>setOpenReferral(true)}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
+{!isNative?<h6 onClick={()=>handleDialogOpen()}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
                             :   <IonButton id="open-modal" expand="block">
                             Refer Someone?
         </IonButton>}</div>
                          
                           
-                            {isNative?<><IonModal ref={modal} trigger="open-modal" >
+                            {/* {isNative?<><IonModal ref={modal} trigger="open-modal" >
                             <IonHeader>
             <IonToolbar>
            <IonButtons slot="start">
@@ -115,8 +130,8 @@ const ProfileInfo = ({profile})=>{
              </IonButtons>
           </IonToolbar>
          </IonHeader>
-         <IonContent className="ion-padding">
-                  <ReferralForm onClose={()=>{
+         <IonContent className="ion-padding"> */}
+                  {/* <ReferralForm onClose={()=>{
     setOpenReferral(false)
   }}/>
           </IonContent>
@@ -124,8 +139,8 @@ const ProfileInfo = ({profile})=>{
                                               
       open={openReferral}
       onClose={()=>setOpenReferral(false)}
-      ><ReferralForm onClose={()=>setOpenReferral(false)}/>
- </Dialog>}
+      ><ReferralForm onClose={()=>setOpenReferral(false)}/> */}
+ {/* </Dialog>} */}
                             
                             </div>  )
 //                               {isNative?<><IonModal ref={modal} trigger="open-modal" 

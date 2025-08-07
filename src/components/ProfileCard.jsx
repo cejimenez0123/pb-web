@@ -1,17 +1,19 @@
 import React from "react"
-import {useSelector} from 'react-redux'
+
 import { useState ,useEffect} from "react"
 // import { Dialog } from "@mui/material"
 import Dialog from "./Dialog"
 import getDownloadPicture from "../domain/usecases/getDownloadPicture"
 import isValidUrl from "../core/isValidUrl"
 import Clear from "../images/icons/clear.svg"
+import { setDialog } from "../actions/UserActions"
+import { useSelector } from "react-redux"
 import { useMediaQuery } from "react-responsive"
 import { useParams } from "react-router-dom"
 import FollowerCard from "./profile/FollowerCard"
 import { IonImg } from "@ionic/react"
 export default function ProfileCard({profile,onClickFollow,following}){
-    
+    const dialog = useSelector(state=>state.users.dialog)
     const [profilePic,setProfilePic]=useState("")
     const [pending,setPending]=useState(false)
     const {id}=useParams()
@@ -42,6 +44,17 @@ export default function ProfileCard({profile,onClickFollow,following}){
               setPending(false) } )
           }}
   },[profile])
+  const openDialog=()=>{
+    let dia = dialog
+    dia.isOpen = true
+    dia.disagreeText="Close"
+    dia.title = "Followers"
+    dia.text =(<div className="card   min-w-[30em] p-6 rounded-lg">
+
+    {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
+      </div>)
+      dispatch(setDialog(dia))
+  }
     useEffect(()=>{
         setFollowersDialog(false)
     },[id])
@@ -70,13 +83,13 @@ export default function ProfileCard({profile,onClickFollow,following}){
         </div>
             <div className="mt-3 flex flex-row">
                 <FollowDiv following={following} onClickFollow={onClickFollow}/>
-                <div onClick={()=>setFollowersDialog(true)} className="text-emerald-800 text-center mx-4">
+                <div onClick={openDialog} className="text-emerald-800 text-center mx-4">
                     <h5 className="open-sans-bold text-[1rem] ">Followers</h5>
                 <h6>{profile.followers.length}</h6>
                 </div>
             </div>
         </div>
-        <Dialog isOpen={followersDialog}
+        {/* <Dialog isOpen={followersDialog}
         onClose={()=>{
           setFollowersDialog(false)
       }}
@@ -86,7 +99,7 @@ export default function ProfileCard({profile,onClickFollow,following}){
   
      {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
        </div>}
-/>
+/> */}
         </div>)
     }
     

@@ -38,13 +38,7 @@ export default function ReferralForm({onClose}){
                 onClose()
             }
         })}
-    // const generateReferral=()=>{
-    //     authRepo.generateReferral().then(data=>{
-          
-    //         if(data.referralLink){
-    //         setReferralLink(data.referralLink)
-    //         }
-    //     })}
+   
     const copyToClipboard=()=>{
         navigator.clipboard.writeText(referralLink)
         .then(() => {
@@ -56,7 +50,11 @@ export default function ReferralForm({onClose}){
             setMessage("")
           },2000)
     }
-    return(  <Dialog isOpen={open}onClose={onClose}text={ <div className="flex flex-col md:min-w-[30em] md:min-h-[40em] m-1 px-3 py-4">
+    return( 
+    //      <Dialog isOpen={open}onClose={onClose}
+    
+    // text={ 
+    <div className="flex flex-col md:min-w-[30em] md:min-h-[40em] m-1 px-3 py-4">
         
 <h1 className="mx-auto mont-bold text-emerald-800 mb-8 text-xl">Refer Someone Today</h1>
 
@@ -83,5 +81,8 @@ export default function ReferralForm({onClose}){
         <div className=" rounded-full mont-medium  h-12 mx-auto  py-2 flex bg-gradient-to-r w-[20em] from-emerald-600 to-emerald-500 text-emerald-800 " onClick={handleClick}><h6 className="text-emerald-800 mx-auto text-lg mx-auto  py-3 text-white my-auto">Submit</h6></div>
 
 
-     </div>}/>)
+     </div>
+     
+    //  />
+    )
 }

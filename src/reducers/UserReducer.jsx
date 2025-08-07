@@ -45,7 +45,7 @@ const initialState = {
     searchResults:[],
     searchDialogOpen:false,
     error:"",
-    dialog:{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"disagree"}
+    dialog:{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"Close"}
 }
 const userSlice = createSlice({
     name: 'users',

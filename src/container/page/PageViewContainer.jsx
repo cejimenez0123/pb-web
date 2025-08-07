@@ -15,6 +15,7 @@ import { initGA,sendGAEvent } from "../../core/ga4.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 import Paths from "../../core/paths.js";
+import { IonContent } from "@ionic/react";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
     const location = useLocation()
@@ -125,22 +126,9 @@ useLayoutEffect(()=>{
     }
 },[])
 
-    return(<div className=" my-8 mx-auto"> 
+    return(<IonContent className="ion-padding" fullscreen={true}><div className=" my-8 mx-auto"> 
         <ErrorBoundary >
-        <Helmet>
-      {page && page.author?<><title>{"A Plumbum Story("+page.title+"): from "+page.author.username}</title>
-       <meta property="og:image" content={Enviroment.logoChem} />
-      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
-      <meta property="og:description" content={page.description.length>0?page.description:"Explore events, workshops, and writer meetups on Plumbum."}/>
-      <meta name="twitter:image" content={Enviroment.logoChem} /></>:
-      <>
- 
-  <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
-  <meta property="og:title" content={`A Plumbum Writers (Story) - Check this story out `} />
-  <meta property="og:description" content={`Plumbum Writers the place for feedback and support`} />
-  <meta property="og:image" content="https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O" />
-  <meta property="og:url" content={`https://plumbum.app/`} /></>
-}  </Helmet>
+      
 
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
     {canUserSee?
@@ -150,6 +138,6 @@ useLayoutEffect(()=>{
     <CommentThread page={page} comments={rootComments}/>
     </div> 
     </ErrorBoundary>
-</div>)
+</div></IonContent>)
 
 }
