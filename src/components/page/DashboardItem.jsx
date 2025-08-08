@@ -392,6 +392,7 @@ export default function DashboardItem({ page, book, isGrid }) {
   }
 
   return (
+    
     <ErrorBoundary >
     <IonCard
       id="dashboard-item"

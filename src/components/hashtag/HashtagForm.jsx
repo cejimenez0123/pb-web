@@ -8,6 +8,7 @@ import clear from "../../images/icons/close.svg"
 import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
 import { useParams } from "react-router-dom";
+import { IonLabel, IonTextarea } from "@ionic/react";
 export function HashtagForm({item}){
     const storyHashtags = useSelector(state=>state.hashtags.storyHashtags)
     const {setError}=useContext(Context)
@@ -135,32 +136,35 @@ export function HashtagForm({item}){
     };
   
     return (
-      <form className="w-[100%] px-2 pt-2 ">
-      <div >
-        <textarea
+      // <ErrorBoundary>
+      <form className="  mt-2 ">
+     
+        <IonTextarea
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Type a hashtag and press Enter"
-          rows="3"
-        className="textarea   my-1 w-[100%] mx-auto border-2 border-emerald-600 bg-transparent text-emerald-800"
+          rows={4}
+          cols={12}
+          className=" my-1  mx-auto border-1 border-emerald-600 bg-transparent text-emerald-800"
         />
-      <button type="submit" className="hidden">Submit</button>
-      <div className="text-left mx-2 my-1">
-        <h4 className="text-emerald-800">Hashtags:</h4>
+      <button type="submit"  className="hidden">Submit</button>
+      <div className="text-left my-1">
+        <IonLabel className="text-emerald-800">Hashtags:</IonLabel>
         <ul className="flex flex-wrap p-4">
           {hashtags.map((hash, index) => (
-            <ErrorBoundary>
+  
             <li  className=" p-1 flex flex-row m-1 text-sm rounded-lg text-white bg-emerald-800 "key={index}>
               <h6 className="my-auto mx-2">#{hash.hashtag.name}</h6><img 
             className=" my-auto" 
             onClick={()=>deleteHashtag(hash)}
             src={clear}/></li>
-         </ErrorBoundary> ))}
+          ))}
         </ul>
       </div>
-    </div>
+   
     </form>
+  
   );
 };
 
