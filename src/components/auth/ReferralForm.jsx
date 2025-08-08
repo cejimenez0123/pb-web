@@ -51,9 +51,7 @@ export default function ReferralForm({onClose}){
           },2000)
     }
     return( 
-    //      <Dialog isOpen={open}onClose={onClose}
-    
-    // text={ 
+
     <div className="flex flex-col md:min-w-[30em] md:min-h-[40em] m-1 px-3 py-4">
         
 <h1 className="mx-auto mont-bold text-emerald-800 mb-8 text-xl">Refer Someone Today</h1>
@@ -83,6 +81,6 @@ export default function ReferralForm({onClose}){
 
      </div>
      
-    //  />
+
     )
 }

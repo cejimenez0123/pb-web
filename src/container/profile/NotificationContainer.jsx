@@ -3,15 +3,13 @@ import { useDispatch } from "react-redux"
 import { fetchNotifcations } from "../../actions/ProfileActions"
 import { useSelector } from "react-redux"
 import NotificationItem from "../../components/profile/NotificationItem"
-import { useNavigate } from "react-router-dom"
 import usePersistentNotifications from "../../domain/usecases/usePersistentNotifications"
 import Enviroment from "../../core/Enviroment"
 import { useLocation } from "react-router-dom"
-import { IonList,IonItem } from "@ionic/react"
-export default function NotificationContainer(props){
+import { IonList,IonItem, IonContent } from "@ionic/react"
+export default function NotificationContainer({currentProfile}){
     const dispatch = useDispatch()
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    const payload = usePersistentNotifications(()=>dispatch(fetchNotifcations({profile:currentProfile})))
+     const payload = usePersistentNotifications(()=>dispatch(fetchNotifcations({profile:currentProfile})))
     var today= new Date();
     var location = useLocation()
     let oneDayOld = today.setDate(today.getDate() - 1)
@@ -75,7 +73,7 @@ export default function NotificationContainer(props){
         fetchIt(payload)
     },[location.pathname])
 
-    return(<div className="flex flex-col justify-center md:py-8">
+    return(<IonContent fullscreen className="flex flex-col justify-center md:py-8">
         <div  className=" w-[96vw] border-b-2 border-emerald-600 mx-auto md:w-page">
 <h1 className="lora-bold text-xl text-emerald-800  mb-4 mt-8 text-opacity-70">Today</h1>
 <IonList>
@@ -86,6 +84,6 @@ export default function NotificationContainer(props){
 })}
 </IonList>
 </div>
-    </div>)
+    </IonContent>)
 
 }

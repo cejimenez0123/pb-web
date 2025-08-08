@@ -24,7 +24,7 @@ export default function FeedbackDialog({open,page,isFeedback,handleClose,handleC
         !isFeedback?"Add a description for context":"What kind of feedback do you want?"}
     
       text={  <div className={`${isHeightPhone?"":""}`}>
-    {/* <DialogContent className="w-[100%]"> */}
+   
     <div className={`${isHeightPhone?" mx-auto w-[80%]  ":""}`}> 
             <textarea 
             value={feedback}
@@ -41,7 +41,7 @@ export default function FeedbackDialog({open,page,isFeedback,handleClose,handleC
   Publish
           </h2>}
         </div>
-    {/* </DialogContent> */}
+
     </div>
     </div>
 }/>)

@@ -69,7 +69,6 @@ export default function CollectionContainer() {
   const collections = useSelector(state => state.books.collections);
   const pagesInView = useSelector(state => state.pages.pagesInView);
 
-  // State
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isArchived, setIsArchived] = useState(false);
@@ -259,6 +258,7 @@ export default function CollectionContainer() {
       if (currentProfile.id === collection.profileId) {
         type = RoleType.editor;
       }
+      setRole({role:"commenter"})
       dispatch(postCollectionRole({
         type: type,
         profileId: currentProfile.id,
@@ -266,7 +266,7 @@ export default function CollectionContainer() {
       })).then(res => {
         checkResult(res, payload => {
           setSuccess("You are now following this collection");
-          checkPermissions();
+          findRole()
         }, err => {
           setError(err.message);
         });
@@ -310,11 +310,12 @@ const getCol=()=>{
 
   const deleteFollow = () => {
     if (currentProfile && role) {
+      setRole(null);
       dispatch(deleteCollectionRole({ role })).then(res => {
         checkResult(res, payload => {
           setSuccess("Unfollowed collection");
-          setRole(null);
-          checkPermissions();
+      
+        
         }, err => {
           setError(err.message);
         });
@@ -450,19 +451,7 @@ const getCol=()=>{
   };
 
   // Metadata
-  const header = collection ? (
-    <Helmet>
-      <title>{`A Plumbum Collection: ${collection.title} from ${collection.profile?.username || ""}`}</title>
-      <meta property="og:image" content={Enviroment.logoChem} />
-      <meta property="og:url" content={`${Enviroment.domain}${location.pathname}`} />
-      <meta property="og:description" content={collection.purpose || "Explore events, workshops, and writer meetups on Plumbum."} />
-    </Helmet>
-  ) : (
-    <Helmet>
-      <title>Plumbum Writers Collection + {id}</title>
-      <meta name="description" content="Explore other peoples writing, get feedback, add your weirdness so we can find you." />
-    </Helmet>
-  );
+ 
 
   // Loading & permission fallbacks
   if (!collection) {
@@ -514,30 +503,32 @@ const getCol=()=>{
     <IonContent fullscreen={true} >
   
       <IonHeader>
-      <IonToolbar>
+     
+      <IonToolbar >
+  <IonButtons slot="start">
+    <IonBackButton defaultHref="/discovery"  />
+  </IonButtons>
 
-      <IonButtons className=" ">
-        <IonButton slot="start" 
-        onClick={()=>navigate(-1)}>
+  <IonTitle>{collection?.title || "Collection"}</IonTitle>
 
-      <IonBackButton   />
-      </IonButton>
-  <IonTitle slot="center">{collection.title || "Collection"}</IonTitle>
-
-  {canUserEdit? 
-      <div
-        className="max-h-[2rem] btn bg-emerald-400 cursor-pointer flex items-center border-0 justify-center px-2 rounded"
+  {canUserEdit ? (
+    <IonButtons slot="end">
+      <div 
+        className="max-h-[2rem] btn bg-emerald-400 cursor-pointer max-w-[3rem] flex items-center border-0 justify-center px-2 rounded"
         onClick={() => navigate(Paths.editCollection.createRoute(id))}
         role="button"
         tabIndex={0}
-        slot="end"
-         >
-        <IonImg src={edit} style={{ height: '1.5rem' }} />
+        // onKeyPress={e => { if (e.key === "Enter") navigate(Paths.editCollection.createRoute(id)); }}
+      >
+        <IonImg src={edit} style={{ height: '1.5rem' }}/>
       </div>
-
-  :<div/>}
-      </IonButtons>
+    </IonButtons>
+  ) : (
+    <IonButtons slot="end" />
+  )}
 </IonToolbar>
+
+
 
 
       </IonHeader>

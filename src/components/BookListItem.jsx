@@ -38,7 +38,7 @@ export default function BookListItem({ book }) {
       onClick={navigateToBook}
       className="h-[10rem] btn hover:h-[12rem] transition-all duration-300 min-w-[14rem] max-w-[16rem] border-0 bg-emerald-700 text-white rounded-lg shadow-md overflow-hidden group"
     >
-      <IonCardHeader className="px-3 py-3 bg-transparent">
+      <IonCardHeader className="px-3 py-1 bg-transparent">
         <IonCardTitle
           className="font-bold  mb-2 truncate"
           

@@ -188,7 +188,7 @@ console.log(isPhone)
                         }
             />
             <Route exact path={Paths.notifications()}
-            element={<PrivateRoute><NotificationContainer/></PrivateRoute>}/>
+            element={<PrivateRoute><NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>
     
           <Route exact path="/discovery" 
                   element={

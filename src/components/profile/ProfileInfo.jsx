@@ -31,9 +31,9 @@ import { setDialog } from "../../actions/UserActions"
 
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    const [followersDialog,setFollowersDialog]=useState(false)
+
     const dialog = useSelector(state=>state.users.dialog)
-    // const [openReferral,setOpenReferral]=useState(false)
+    
     const {id}=useParams()
     const {isNative}=useContext(Context)
     const dispatch = useDispatch()
@@ -65,9 +65,41 @@ const ProfileInfo = ({profile})=>{
         
         
     },[])
-    useEffect(()=>{
-        setFollowersDialog(false)
-    },{id})
+    const openFollowersDialog = () => {
+        let dia = {};
+        dia.isOpen = true;
+        dia.disagreeText = "Close";
+        dia.title = "Followers";
+        dia.text = (
+          <div className="card min-h-[20em] min-w-[30em] p-6 rounded-lg">
+            <div className="mx-4">
+              <img
+                onClick={() => {
+                  // also close dialog from X icon in top right
+                  dispatch(setDialog({ isOpen: false }));
+                }}
+                src={clear}
+                alt="close"
+                className="cursor-pointer"
+              />
+            </div>
+            {profile?.followers ? <FollowerCard followers={profile.followers} /> : null}
+          </div>
+        );
+        dia.onClose = () => {
+          dispatch(setDialog({ isOpen: false }));
+        };
+        // No agree button for this one, so we leave dia.agree null
+        dia.agreeText = null;
+        dia.agree = null;
+      
+        dispatch(setDialog(dia));
+      };
+ const closeFollowersDialog=()=>{
+    let dia = {...dialog}
+    dia.isOpen=false
+    dispatch(setDialog(dia))
+ }
     if(!profile){
         return <div className="skeleton h-[100%] w-24"/>
     }
@@ -90,7 +122,7 @@ const ProfileInfo = ({profile})=>{
         </div>
         <div className="text-emerald-800 flex flex-row justify-start px-4">
             {profile.followers && profile.followers.length>0?<div  
-            onClick={()=>setFollowersDialog(true)}
+            onClick={()=>openFollowersDialog()}
             className="text-center open-sans-bold ">
                 <h5 className="text-[1rem]">Followers</h5>
                 <h6 className="text-[1.2rem]">{profile.followers.length}</h6>
@@ -100,11 +132,11 @@ const ProfileInfo = ({profile})=>{
         
         isOpen={followersDialog}
         onClose={()=>{
-    setFollowersDialog(false)
+    closeFollowersDialog()
 }} text={
     <div className="card  min-h-[20em] min-w-[30em] p-6 rounded-lg">
        <div className="mx-4">
-        <img  onClick={()=>{setFollowersDialog(false)}}src={clear}/>
+        <img  onClick={followersDialog}src={clear}/>
        </div>
       {profile&&profile.followers?  <FollowerCard followers={profile.followers}/>:null}
     </div>}
@@ -114,64 +146,10 @@ const ProfileInfo = ({profile})=>{
                             :   <IonButton id="open-modal" expand="block">
                             Refer Someone?
         </IonButton>}</div>
-                         
-                          
-                            {/* {isNative?<><IonModal ref={modal} trigger="open-modal" >
-                            <IonHeader>
-            <IonToolbar>
-           <IonButtons slot="start">
-                 <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
-              </IonButtons>
-              <IonTitle>Referral</IonTitle>
-              <IonButtons slot="end">
-              <IonButton strong={true} onClick={() => confirm()}>
-                   Confirm
-               </IonButton>
-             </IonButtons>
-          </IonToolbar>
-         </IonHeader>
-         <IonContent className="ion-padding"> */}
-                  {/* <ReferralForm onClose={()=>{
-    setOpenReferral(false)
-  }}/>
-          </IonContent>
-                                </IonModal></>:<Dialog  
-                                              
-      open={openReferral}
-      onClose={()=>setOpenReferral(false)}
-      ><ReferralForm onClose={()=>setOpenReferral(false)}/> */}
- {/* </Dialog>} */}
+          
                             
                             </div>  )
-//                               {isNative?<><IonModal ref={modal} trigger="open-modal" 
-                                
-//                                 >
-//           <IonHeader>
-//             <IonToolbar>
-//               <IonButtons slot="start">
-//                 <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
-//               </IonButtons>
-//               <IonTitle>Referral</IonTitle>
-//               <IonButtons slot="end">
-//                 <IonButton strong={true} onClick={() => confirm()}>
-//                   Confirm
-//                 </IonButton>
-//               </IonButtons>
-//             </IonToolbar>
-//           </IonHeader>
-//           <IonContent className="ion-padding">
-//           <ReferralForm onClose={()=>{
-//     setOpenReferral(false)
-//   }}/>
-//           </IonContent>
-//         </IonModal></>:
-//                             <Dialog
-      
-//       fullScreen={isPhone}
-//       open={openReferral}
-//       onClose={()=>setOpenReferral(false)}>
- 
-//       </Dialog>}
+                            
       
 }
 

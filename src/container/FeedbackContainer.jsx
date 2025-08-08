@@ -20,16 +20,72 @@ export default function FeedbackContainer(props){
         setSeo(soo)
       
     },[])
+    const openMessageSentDialog = (purpose) => {
+        let dia = {};
+        dia.isOpen = true;
+    
+        // Optional: separate title if your global dialog renders it in a header
+        dia.title = "Message Sent Successfully";
+    
+        // Dialog body content using Ionic components
+        dia.text = (
+          <div className="card bg-emerald-50 rounded-lg overflow-hidden">
+            <IonHeader translucent={true}>
+              <IonToolbar color="light">
+                <IonTitle className="ion-text-center">
+                  Message Sent Successfully
+                </IonTitle>
+              </IonToolbar>
+            </IonHeader>
+    
+            {/* <IonContent className="ion-padding"> */}
+              <IonText className="text-xl lora-medium block text-center text-emerald-800">
+                Thank you for sending us your {purpose.toLowerCase()}.<br />
+                We will respond if it is relevant.
+              </IonText>
+              <div className="ion-text-center ion-margin-top">
+                <IonText>Best regards,</IonText>
+                <br />
+                <IonText>Plumbum</IonText>
+              </div>
+            {/* </IonContent> */}
+    
+            <IonFooter className="ion-padding">
+              <div
+                className="bg-emerald-600 cursor-pointer rounded-full text-white text-center w-full py-2 mont-medium"
+                onClick={() => dispatch(setDialog({ isOpen: false }))}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") dispatch(setDialog({ isOpen: false }));
+                }}
+              >
+                <IonText>Close</IonText>
+              </div>
+            </IonFooter>
+          </div>
+        );
+    
+        dia.onClose = () => {
+          dispatch(setDialog({ isOpen: false }));
+        };
+        dia.disagreeText = null;
+        dia.agreeText = null;
+        dia.agree = null;
+    
+        dispatch(setDialog(dia));
+      }
     const handleFeedback=debounce((e)=>{
         e.preventDefault()
           try{
         authRepo.feedback({preferredName,email,subject,purpose,message}).then(data=>{
                 
-               setOpen(data.message && data.message=="Success")
+            openMessageSentDialog()
             })
         }catch(err){
             console.log(err)
         }
+    
     },10)
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
     return(<div>
@@ -74,28 +130,6 @@ rounded-full border-none py-2 text-white my-12`}>
     <h2 className="text-2xl text-white">Send</h2></span>
         </div>
         </form>
-        <Dialog
-        
-        open={open}
-        onClose={()=>{
-            setOpen(false)
-        }}>
-            <div className="card bg-emerald-50">
-                <DialogTitle >
-                        Message Sent Successfully
-                </DialogTitle>
-                <DialogContent> <p className="text-xl lora-medium">Thank you for sending us your {purpose.toLowerCase()}.
-                We will respond if it is relavent.
-                <p>Best regards,</p>
-                <p>Plumbum</p>
-                </p>
-                <DialogActions>
-                    <Button onClick={()=>{
-                        setOpen(false)
-                    }}>Close</Button>
-                </DialogActions>
-    </DialogContent>
-                       </div>
-        </Dialog>
+  
     </div>)
 }

@@ -20,7 +20,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonImg } from '@ionic/react';
+import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonImg, IonList, IonItem } from '@ionic/react';
 
 function DiscoveryContainer() {
   const { currentProfile, setSeo } = useContext(Context);
@@ -111,27 +111,14 @@ function DiscoveryContainer() {
           Communities
         </h3>
         <div className="mb-12">
-          <InfiniteScroll
-            className="flex flex-row min-h-50 md:min-h-6 max-w-[100vw]"
-            dataLength={libraries.length}
-            next={fetchLibraries}
-            hasMore={hasMoreLibraries}
-            endMessage={
-              <div className="flex min-w-72 mont-medium">
-                <span className="mx-auto my-auto text-center rounded-full p-3 text-emerald-400">
-                  <h6>Join the community. <br />Apply to join today.</h6>
-                  <h6>Share your own work.</h6>
-                  <h6>This is what we have for now.</h6>
-                </span>
-              </div>
-            }
-          >
+     
+          <IonList className='flex flex-row overflow-x-scroll'>
             {libraries.map(library => (
-              <div key={library.id}>
+              <IonItem key={library.id} className='mx-3'>
                 <BookListItem book={library} />
-              </div>
+              </IonItem>
             ))}
-          </InfiniteScroll>
+    </IonList>
         </div>
       </>
     );
@@ -144,7 +131,7 @@ function DiscoveryContainer() {
         <h3 className="text-emerald-900 text-left font-extrabold ml-16 lora-bold mb-4 text-2xl">
           Collections
         </h3>
-        <InfiniteScroll
+        {/* <InfiniteScroll
           className="min-h-50 md:min-h-60 flex-row flex"
           dataLength={books.length}
           next={fetchContentItems}
@@ -158,16 +145,17 @@ function DiscoveryContainer() {
               </span>
             </div>
           }
-        >
+        > */}
+        <IonList className='flex flex-row overflow-x-scroll'>
           {books.map((book, i) => {
             const id = `${book.id}_${i}`;
             return (
-              <div key={id} className="my-auto">
+              <IonItem key={id} className="mx-3">
                 <BookListItem book={book} />
-              </div>
+              </IonItem>
             );
           })}
-        </InfiniteScroll>
+    </IonList>
       </div>
     );
   };

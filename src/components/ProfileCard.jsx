@@ -89,17 +89,7 @@ export default function ProfileCard({profile,onClickFollow,following}){
                 </div>
             </div>
         </div>
-        {/* <Dialog isOpen={followersDialog}
-        onClose={()=>{
-          setFollowersDialog(false)
-      }}
-      title={"Followers"}
-      disagreeText={"Close"}
-      text={ <div className="card   min-w-[30em] p-6 rounded-lg">
   
-     {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
-       </div>}
-/> */}
         </div>)
     }
     
