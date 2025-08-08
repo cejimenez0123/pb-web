@@ -112,8 +112,8 @@ export default function AddToCollectionContainer(props) {
   useEffect(() => {
     dispatch(getMyCollections({ profile }));
     dispatch(getMyStories({ profile }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+   
+  }, [colInView]);
 
   const addNewCollection = (col) => {
     setNewCollections((state) => {
