@@ -174,7 +174,7 @@ console.log(isPhone)
        <SearchDialog presentingElement={page} />
        <Dialog dialog={dialog} presentingElement={page} />
 <Alert />
-<div className='pt-8'>
+<div >
       <Routes >
      <Route path='/' element={<AboutContainer/>}/>
       <Route path={"/login"} element={<LogInContainer/>}/> 

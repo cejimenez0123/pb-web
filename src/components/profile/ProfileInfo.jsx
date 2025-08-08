@@ -5,18 +5,11 @@ import "../../App.css"
 import { useMediaQuery } from "react-responsive"
 import clear from "../../images/icons/clear.svg"
 import {
-    IonButtons,
+
     IonButton,
-    IonModal,
-    IonHeader,
-    IonContent,
-    IonToolbar,
-    IonTitle,
-    IonPage,
+  
     IonImg,
  
-    IonItem,
-    IonInput,
   } from '@ionic/react';
 import { useParams } from "react-router-dom"
 import Dialog from "../Dialog"

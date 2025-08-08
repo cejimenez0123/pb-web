@@ -11,7 +11,6 @@ import {
 
   IonBackButton,
 } from '@ionic/react';
-
 import { useDispatch } from 'react-redux';
 import { setDialog } from '../actions/UserActions';
 

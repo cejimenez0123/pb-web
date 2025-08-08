@@ -18,6 +18,7 @@ import {
   IonImg,
   IonBackButton,
   IonItem,
+  IonRow,
 } from "@ionic/react";
 import add from "../../images/icons/add_circle.svg"
 // import PageList from "../../components/page/PageList"
@@ -56,9 +57,10 @@ import { RoleType } from "../../core/constants";
 import checkResult from "../../core/checkResult";
 import { postCollectionHistory } from "../../actions/HistoryActions";
 import Paths from "../../core/paths.js";
+import DeviceCheck from "../../components/DeviceCheck.jsx";
 
 export default function CollectionContainer() {
-  const { setSeo, seo, setError, currentProfile, setSuccess } = useContext(Context);
+  const {  setError, currentProfile, setSuccess } = useContext(Context);
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -68,7 +70,7 @@ export default function CollectionContainer() {
   const collection = useSelector(state => state.books.collectionInView);
   const collections = useSelector(state => state.books.collections);
   const pagesInView = useSelector(state => state.pages.pagesInView);
-
+const isNative = DeviceCheck()
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isArchived, setIsArchived] = useState(false);
@@ -453,7 +455,7 @@ const getCol=()=>{
   // Metadata
  
 
-  // Loading & permission fallbacks
+
   if (!collection) {
     return (
       <IonContent fullscreen>
@@ -500,32 +502,33 @@ const getCol=()=>{
 
   // Main content UI
   return (
-    <IonContent fullscreen={true} >
+    <IonContent 
+    fullscreen={true} >
   
-      <IonHeader>
-     
-      <IonToolbar >
+      <IonHeader >
+  
+<IonToolbar  >
   <IonButtons slot="start">
-    <IonBackButton defaultHref="/discovery"  />
+    <IonBackButton defaultHref="/" />
+
   </IonButtons>
 
-  <IonTitle>{collection?.title || "Collection"}</IonTitle>
+  <IonTitle>Collection</IonTitle>
 
-  {canUserEdit ? (
-    <IonButtons slot="end">
-      <div 
-        className="max-h-[2rem] btn bg-emerald-400 cursor-pointer max-w-[3rem] flex items-center border-0 justify-center px-2 rounded"
-        onClick={() => navigate(Paths.editCollection.createRoute(id))}
-        role="button"
-        tabIndex={0}
-        // onKeyPress={e => { if (e.key === "Enter") navigate(Paths.editCollection.createRoute(id)); }}
-      >
-        <IonImg src={edit} style={{ height: '1.5rem' }}/>
-      </div>
-    </IonButtons>
-  ) : (
-    <IonButtons slot="end" />
-  )}
+  <IonButtons slot="end">
+    {/* Action buttons or icons */}
+
+    {canUserEdit ? ( 
+     <IonButton slot="end"> 
+   <IonImg slot="end"
+   className="btn max-h-[2rem] btn bg-emerald-400 cursor-pointer max-w-[3rem] flex items-center border-0 justify-center px-2 rounded"
+    
+onClick={() => navigate(Paths.editCollection.createRoute(id))}
+   src={edit} />
+    </IonButton> 
+ ):null}
+    
+  </IonButtons>
 </IonToolbar>
 
 
