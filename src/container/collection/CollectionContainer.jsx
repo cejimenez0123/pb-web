@@ -15,6 +15,8 @@ import {
   IonList,
   IonText,
   IonSkeletonText,
+  IonImg,
+  IonBackButton,
 } from "@ionic/react";
 import add from "../../images/icons/add_circle.svg"
 // import PageList from "../../components/page/PageList"
@@ -140,7 +142,7 @@ export default function CollectionContainer() {
         }
       }
     }
-    setCanUserSee(false);
+    // setCanUserSee(false);
   }
   useEffect(()=>{
     canUserSee?getContent():null
@@ -154,22 +156,19 @@ export default function CollectionContainer() {
       setCanUserAdd(false);
       return;
     }
-    if (collection.profileId === currentProfile.id) {
-      setCanUserAdd(true);
-      return;
-    }
+ 
     if (collection.isOpenCollaboration) {
       setCanUserAdd(true);
-      return;
+   
     }
     if (collection.roles) {
       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
       if (found && writeArr.includes(found.role)) {
         setCanUserAdd(true);
-        return;
+      
       }
     }
-    setCanUserAdd(false);
+  
   }
 
   function soUserCanEdit() {
@@ -181,10 +180,7 @@ export default function CollectionContainer() {
       setCanUserEdit(false);
       return;
     }
-    if (collection.profileId === currentProfile.id) {
-      setCanUserEdit(true);
-      return;
-    }
+   
     if (collection.roles) {
       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
       if (found && found.role === RoleType.editor) {
@@ -192,22 +188,30 @@ export default function CollectionContainer() {
         return;
       }
     }
-    setCanUserEdit(false);
+    // setCanUserEdit(false);
   }
 
 
   function checkPermissions() {
-    findRole();
-    getCol()
-    
-    soUserCanSee();
-    soUserCanAdd();
-    soUserCanEdit();
-    
-    dispatch(getRecommendedCollectionsProfile());
-  }
 
-  // Load collections to determine home and archive for bookmarking
+    if (collection.profileId === currentProfile.id) {
+      setCanUserEdit(true);
+      setCanUserAdd(true)
+      setCanUserSee(true)
+   
+    }else if(!currentProfile){
+      setCanUserEdit(false);
+      setCanUserAdd(false)
+      setCanUserSee(false)
+    }else{
+      soUserCanSee();
+      soUserCanAdd();
+      soUserCanEdit();
+    }
+   
+    dispatch(getRecommendedCollectionsProfile());
+  
+  }
   useLayoutEffect(() => {
     if (currentProfile?.profileToCollections) {
       let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
@@ -216,9 +220,15 @@ export default function CollectionContainer() {
       let archive = currentProfile.profileToCollections.find(pTc => pTc.type === "archive")?.collection || null;
       setArchiveCol(archive);
     }
-    checkPermissions();
-  }, [currentProfile, collection]);
 
+  }, [currentProfile]);
+  useLayoutEffect(()=>{
+  getCol()
+  findRole();
+  },[])
+  useEffect(()=>{
+    checkPermissions()
+  },[currentProfile,collection])
   // Check bookmark and archive status
   function checkFound() {
     if (collection && homeCol && collection.parentCollections) {
@@ -492,63 +502,85 @@ const getCol=()=>{
 
   // Main content UI
   return (
-    <IonContent fullscreen>
+    <IonContent fullscreen >
       {header}
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>{collection.title || "Collection"}</IonTitle>
-          {canUserEdit && (
-            <IonButtons slot="end">
-              <IonButton onClick={() => navigate(Paths.editCollection.createRoute(id))}>
-               <img src={edit}/> 
-              </IonButton>
-            </IonButtons>
-          )}
-        </IonToolbar>
+      <IonToolbar>
+
+      <IonButtons className="flex flex-row justify-around">
+      <IonBackButton slot="start"  />
+  <IonTitle>{collection.title || "Collection"}</IonTitle>
+
+  {canUserEdit && (
+     
+      <div
+        className="max-h-[2rem] btn bg-emerald-400 cursor-pointer flex items-center border-0 justify-center px-2 rounded"
+        onClick={() => navigate(Paths.editCollection.createRoute(id))}
+        role="button"
+        tabIndex={0}
+        slot="end"
+        // onKeyPress={e => { if (e.key === "Enter") navigate(Paths.editCollection.createRoute(id)); }}
+      >
+        <IonImg src={edit} style={{ height: '1.5rem' }} />
+      </div>
+
+  )}
+      </IonButtons>
+</IonToolbar>
+
+
       </IonHeader>
 
       <ErrorBoundary>
-        <IonCard className="ion-margin-bottom">
+        <IonCard className="ion-margin-bottom ion-padding">
           <IonCardHeader>
             <div className="flex items-center gap-2">
               {collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
               <IonCardTitle className="ion-text-wrap">{collection.title}</IonCardTitle>
             </div>
           </IonCardHeader>
-          <IonCardContent>
+          <IonCardContent class="">
             <IonText color="medium">
               <h6>{collection.purpose}</h6>
             </IonText>
-            <div className="ion-margin-top flex gap-2">
+            <div className="ion-margin-top w-[90%] mx-auto py-4 flex items-center justify-around flex gap-2">
               {!role ? (
-                <IonButton color="light" fill="outline" onClick={handleFollow}>
+                <div onClick={handleFollow} className="btn bg-transparent rounded-full border-2 px-4 px-2 border-emerald-300">
+                <IonText  fill="outline" >
                   Follow
-                </IonButton>
+                </IonText>
+                </div>
               ) : (
-                <IonButton color="success" fill="solid" onClick={deleteFollow}>
+                <div
+                onClick={deleteFollow}
+                className="btn rounded-full bg-transparent  border-3 border-emerald-600">
+                <IonText fill="solid" >
                   {role.role}
-                </IonButton>
+                </IonText>
+                </div>
               )}
               {canUserAdd && (
-                <IonButton color="primary" onClick={() => navigate(`/collections/${id}/add`)}>
-                  <img src={add}/>
-                </IonButton>
+                // <IonButton color="primary" >
+                <div onClick={() => navigate(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full p-1">
+                <IonImg src={add}/>
+                </div>
+                // </IonButton>
               )}
-              <IonButton
-                onClick={() => onBookmark("home")}
+              <div
+                onClick={() => onBookmark("archive")}
                 color={isBookmarked ? "warning" : "medium"}
                 disabled={bookmarkLoading}
               >
-                <IonIcon icon={isBookmarked ? bookmarkFill : bookmarkOutline} slot="icon-only" />
+                <IonImg  src={isBookmarked ? bookmarkFill : bookmarkOutline} slot="icon-only" />
                 {bookmarkLoading && <IonSpinner name="dots" />}
-              </IonButton>
-              <IonButton
+              </div>
+              {/* <IonButton
                 onClick={() => onBookmark("archive")}
                 color={isArchived ? "warning" : "medium"}
                 disabled={bookmarkLoading}
               >
                 Archive
-              </IonButton>
+              </IonButton> */}
             </div>
           </IonCardContent>
         </IonCard>
