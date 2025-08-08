@@ -157,7 +157,7 @@ console.log(item)
         </div>
 
         <div className="py-4">
-          <IonText className="text-sm text-emerald-900 block">{item.title ||item.title.length>0?item.title: "Untitled"}</IonText>
+          <IonText className="text-sm text-emerald-900 block">{item.title ||(item.title && item.title.length>0)?item.title: "Untitled"}</IonText>
         </div>
 
         <div

@@ -255,7 +255,7 @@ console.log(isPhone)
       element={
         <PrivateRoute >
           <MyProfileContainer profile={props.currentProfile} 
-                             
+                             presentingElement={page}
                              pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
                           

@@ -49,7 +49,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
   );
 }
 
-function MyProfileContainer() {
+function MyProfileContainer({presentingElement}) {
   const isNative = DeviceCheck();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -334,7 +334,7 @@ function MyProfileContainer() {
         </div>
 
         {/* Feedback & dialogs */}
-        <FeedbackDialog page={feedbackPage} open={!!feedbackPage} isFeedback={true}
+        <FeedbackDialog presentingElement={presentingElement} page={feedbackPage} open={!!feedbackPage} isFeedback={true}
           handleChange={setFeedback} handleFeedback={handleFeedback} handlePostPublic={() => { }}
           handleClose={() => navigate(Paths.workshop.createRoute(feedbackPage?.id))} />
         <Dialog isOpen={openDialog} onClose={() => setOpenDialog(false)}
