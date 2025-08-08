@@ -41,9 +41,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
 })}
 </IonList>
             </div>
-        // </InfiniteScroll> 
-
-        // </div>
+       
       )
 
         
