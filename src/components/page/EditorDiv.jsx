@@ -29,7 +29,9 @@ import { useDispatch } from "react-redux"
         },[page])
     
           let types = [PageType.link,PageType.picture,PageType.text]
-    
+        if(!parameters){
+          return <div>Loading</div>
+        }
           if(types.includes(last)){
          
           switch(last){

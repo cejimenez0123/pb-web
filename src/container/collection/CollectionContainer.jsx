@@ -231,8 +231,7 @@ const isNative = DeviceCheck()
   }, [currentProfile]);
   useEffect(()=>{
   getCol()
-
-  },[id])
+  },[location.pathname])
   useEffect(()=>{
     checkPermissions()
   },[currentProfile,collection])
@@ -284,7 +283,7 @@ const getCol=()=>{
        token?dispatch(fetchCollectionProtected({id})).then(res=>{
             checkResult(res,payload=>{
              setLoading(false)
-            //  getContent()
+         
              findRole()
             },err=>{
                 setError(err.meesage)
@@ -293,7 +292,7 @@ const getCol=()=>{
         }):dispatch(fetchCollection({id})).then(res=>{
             checkResult(res,payload=>{
                 if(payload.collection){
-                  // getContent()
+                
                 
                    
                      setLoading(false)}
@@ -508,8 +507,8 @@ const getCol=()=>{
       <IonHeader >
   
 <IonToolbar  >
-  <IonButtons slot="start">
-    <IonBackButton defaultHref="/" />
+  <IonButtons  slot="start">
+    <IonBackButton defaultHref="/discovery" />
 
   </IonButtons>
 

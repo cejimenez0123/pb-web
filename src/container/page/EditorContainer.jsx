@@ -20,7 +20,7 @@ import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
 import Dialog from "../../components/Dialog.jsx"
-import { IonContent, IonHeader } from "@ionic/react"
+import { IonBackButton, IonButtons, IonContent, IonHeader } from "@ionic/react"
 import { setDialog } from "../../actions/UserActions.jsx"
 
 
@@ -383,7 +383,9 @@ const openRoleFormDialog = (fetchedPage) => {
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
           <IonContent fullscreen className="ion-padding pt-8">
             <IonHeader>
-            {topBar()}
+              <IonButtons >
+                <IonBackButton  defaultHref={Paths.myProfile()}/></IonButtons>
+            <IonButtons>{topBar()}</IonButtons>
             </IonHeader>
           <div  className=" mx-auto md:p-8  "> 
      

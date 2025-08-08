@@ -8,6 +8,8 @@ import {
   IonSkeletonText,
   IonImg,
   IonList,
+  IonButtons,
+  IonBackButton,
 } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,6 +28,7 @@ import {
   setCollections,
 } from "../../actions/CollectionActions";
 import usePersistentMyCollectionCache from "../../domain/usecases/usePersistentMyCollectionCache";
+import Paths from "../../core/paths";
 
 function toTitleCase(str) {
   return str.toLowerCase().replace(/(?:^|\s)\w/g, function (match) {
@@ -35,7 +38,7 @@ function toTitleCase(str) {
 
 export default function AddStoryToCollectionContainer(props) {
   const { setError, currentProfile, seo, setSeo } = useContext(Context);
-
+  const dialog = useSelector(state=>state.users.dialog)
   const pathParams = useParams();
   const { id, type } = pathParams;
   const dispatch = useDispatch();
@@ -75,7 +78,16 @@ export default function AddStoryToCollectionContainer(props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const openNewCollectionForm=()=>{
+let dia = {...dialog}
+  dia.text = <CreateCollectionForm onClose={()=>{
+                      setOpenDialog(false)
+                    }}/>  
+                    dia.title="Create Collecition"
+                
+  
+    //               
+  }
   // Update redux collections when profile or id changes
   useLayoutEffect(() => {
     if (currentProfile) {
@@ -143,17 +155,18 @@ export default function AddStoryToCollectionContainer(props) {
       <IonContent fullscreen className="ion-padding ion-text-emerald-800" style={{ minWidth: "320px" }}>
         <IonHeader translucent>
           <IonToolbar>
+            <IonButtons>
+              <IonBackButton defaultHref={Paths.collection.createRoute(id)}/>
+            </IonButtons>
             <IonTitle className="ion-text-center">
               Add <strong>{item.title}</strong> to Collection
             </IonTitle>
           </IonToolbar>
         </IonHeader>
-
-        <div className="border-2 border-emerald-600 rounded-lg p-6 mt-4 mx-auto" style={{ maxWidth: "1024px", width: "96vw", minHeight: "10rem" }}>
-          {/* New Collection Button (custom styled div with IonText) */}
-          <div
-            className="cursor-pointer rounded-full bg-emerald-900 px-6 py-3 text-white text-center w-max select-none transition hover:bg-emerald-800"
-            onClick={() => setOpenDialog(true)}
+      <div className="">
+           <div
+            className="btn cursor-pointer rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
+            onClick={() => openNewCollectionForm()}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpenDialog(true); }}
@@ -161,8 +174,7 @@ export default function AddStoryToCollectionContainer(props) {
           >
             <IonText>New Collection</IonText>
           </div>
-        </div>
-
+          </div>
         <div
           className="border-b-2 border-emerald-600 rounded-lg mx-auto max-w-[1024px] md:w-page mt-8 mb-4 px-2"
           style={{ width: "96vw" }}
@@ -182,35 +194,12 @@ export default function AddStoryToCollectionContainer(props) {
             </label>
           </div>
 
-          {/* <InfiniteScroll
-            className="scroll"
-            dataLength={collections ? collections.length : 0}
-            hasMore={hasMoreCol}
-            loader={
-              <div className="flex items-center justify-center my-4">
-                <IonImg src={loadingGif} alt="Loading" style={{ width: 48, height: 48 }} />
-              </div>
-            }
-            endMessage={
-              <div className="flex justify-center py-12">
-                <IonText className="text-emerald-800 md:text-xl lora-medium">Fin</IonText>
-              </div>
-            }
-          > */}
           <IonList>
             {collections.map((col, i) => (
               <AddToItem key={col.id || i} item={item} col={col} />
             ))}
     </IonList>
         </div>
-
-        {/* New Collection Dialog */}
-        {/* <Dialog
-          isOpen={openDialog}
-          text={<CreateCollectionForm onClose={() => setOpenDialog(false)} />}
-          onClose={() => setOpenDialog(false)}
-          title="Create New Collection"
-        /> */}
       </IonContent>
     </ErrorBoundary>
   );

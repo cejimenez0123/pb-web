@@ -8,9 +8,11 @@ import {
   IonImg,
   IonSkeletonText,
   IonList,
+  IonButtons,
+  IonBackButton,
 } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Paths from "../../core/paths";
 import checkResult from "../../core/checkResult";
@@ -63,15 +65,15 @@ export default function AddToCollectionContainer(props) {
   const [newStories, setNewStories] = useState([]);
   const [newCollection, setNewCollections] = useState([]);
   const [tab, setTab] = useState("page");
-
+  const location = useLocation()
   useLayoutEffect(() => {
     if (profile) {
       dispatch(fetchCollectionProtected(pathParams));
     } else {
       dispatch(fetchCollection(pathParams));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathParams.id]);
+   
+  }, [location.pathname]);
 
   const save = () => {
     let storyIdList = newStories.filter((stor) => stor);
@@ -136,7 +138,7 @@ export default function AddToCollectionContainer(props) {
   const storyList = () => {
     return (
       <div className="my-4   text-emerald-800  text-left mb-2">
-        <IonText><h6 className="text-xl mt-4 mb-2 ml-2 lora-medium">Add Stories to Collection</h6></IonText>
+        {/* <IonText><h6 className="text-xl mt-4 mb-2 ml-2 lora-medium">Add Stories to Collection</h6></IonText> */}
         <IonList
     
         >
@@ -146,11 +148,11 @@ export default function AddToCollectionContainer(props) {
               (story) =>
                 colInView &&
                 colInView.storyIdList &&
-                !colInView.storyIdList.find((storyJoint) => storyJoint.story.id === story.id)
+                !colInView.storyIdList.find((storyJoint) => storyJoint && storyJoint.story && (storyJoint.story.id === story.id))
             )
             .map((story) => {
               const addedToCollection =
-                colInView?.storyIdList?.some((sj) => sj.story.id === story.id) ||
+                colInView?.storyIdList?.some((sj) => sj && sj.story && (sj.story.id === story.id)) ||
                 newStories.includes(story);
               return (
                 <div
@@ -278,8 +280,19 @@ export default function AddToCollectionContainer(props) {
   }
 
   return (
+    <ErrorBoundary>
     <IonContent fullscreen={true} className="ion-padding" >
-      <ErrorBoundary>
+     <IonHeader>
+        <IonToolbar>
+        <IonButtons slot="start">
+            <IonBackButton defaultHref={Paths.myProfile()}/>
+        </IonButtons>
+        <IonTitle >Add to Collection</IonTitle>
+        <IonButtons>
+            <div/>
+        </IonButtons>
+        </IonToolbar>
+     </IonHeader>
         {/* <div className="border-3 border-emerald-600 w-[96vw] lg:w-info min-h-info mx-auto rounded-lg my-2 p-8 text-left"> */}
           <h2 className="text-2xl truncate md:max-w-[30em] text-emerald-800 mb-2">{colInView.title?.trim() || "Untitled"}</h2>
           <h6 className="sm:my-4 text-emerald-800 sm:mx-8 p-4 min-h-24 text-lg sm:max-w-[35rem]">
@@ -359,8 +372,9 @@ export default function AddToCollectionContainer(props) {
             </div>
           </div>
         </div>
-      </ErrorBoundary>
+     
     </IonContent>
+    </ErrorBoundary>
   );
 }
 
