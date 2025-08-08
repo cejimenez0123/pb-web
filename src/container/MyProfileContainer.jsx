@@ -24,9 +24,10 @@ import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStori
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg";
 import DeviceCheck from '../components/DeviceCheck.jsx';
-import { IonPage, IonText, IonIcon, IonInput } from '@ionic/react';
+import { IonPage, IonText, IonIcon, IonInput,IonContent } from '@ionic/react';
 import { settings as settingsIcon, notifications as notificationsIcon } from 'ionicons/icons';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
+import { getCurrentProfile } from '../actions/UserActions.jsx';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -77,7 +78,9 @@ function MyProfileContainer() {
     dispatch(setPagesInView({ pages: [] }));
     return dispatch(getMyStories());
   });
-
+  useEffect(()=>{
+    dispatch(getCurrentProfile())
+  },[currentProfile])
   const collections = usePersistentMyCollectionCache(() => {
     dispatch(setCollections({ collections: [] }));
     return dispatch(getMyCollections());
@@ -225,7 +228,7 @@ function MyProfileContainer() {
   }, [currentProfile, setSeo, dispatch]);
 
   return (
-    <IonPage className='py-12 overflow-y-auto'>
+    <IonContent fullscreen={true}>
       <ErrorBoundary fallback={"error"}>
         {/* Top-right icons */}
         <div className='absolute top-1 right-1 flex flex-row m-3 pr-4 w-36 justify-evenly'>
@@ -359,7 +362,7 @@ function MyProfileContainer() {
             </div>
           } />
       </ErrorBoundary>
-    </IonPage>
+    </IonContent>
   );
 }
 

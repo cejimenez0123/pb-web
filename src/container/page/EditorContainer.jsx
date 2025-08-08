@@ -272,7 +272,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   }}>Edit Description</li>:null}
         <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
         {fetchedPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpenRoles(!openRoles)}>Manage Access</li>:null}
-        <li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpen(true)}>Delete</li>
+        <li className="text-emerald-600 pt-3 pb-2" onClick={openConfirmDeleteDialog}>Delete</li>
       </ul>
     </div>
       
@@ -317,6 +317,26 @@ setParameters(params)
   
  
 },4001)
+const openConfirmDeleteDialog = () => {
+  let dia = {};
+  dia.isOpen = true;
+  dia.title = "Are you sure you want to delete this page?";
+  dia.text = ""; // No additional text
+  dia.onClose = () => {
+    dispatch(setDialog({ isOpen: false }));
+  };
+  dia.agreeText = "Delete";
+  dia.agree = () => {
+    handleDelete();
+    dispatch(setDialog({ isOpen: false }));
+  };
+  dia.disagreeText = "Close";
+  dia.disagree = () => {
+    dispatch(setDialog({ isOpen: false }));
+  };
+
+  dispatch(setDialog(dia));
+};
 const dispatchUpdate =debounce((params)=>{
   setIsSaved(false) 
 
@@ -353,7 +373,7 @@ const openRoleFormDialog = (fetchedPage) => {
   dia.onClose = () => {
     dispatch(setDialog({ isOpen: false }));
   };
-  // No extra agree button, disable it:
+
   dia.agreeText = null;
   dia.agree = null;
 
@@ -361,7 +381,7 @@ const openRoleFormDialog = (fetchedPage) => {
 };
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
-          <IonContent fullscreen className="ion-padding">
+          <IonContent fullscreen className="ion-padding pt-8">
             <IonHeader>
             {topBar()}
             </IonHeader>
@@ -414,10 +434,10 @@ handleClose={()=>{
     setOpenDescription(false)
     setFeedbackDialog(false)
 }} />
-<Dialog isOpen={open} title={"Are you sure you want to delete this page?"}
+{/* <Dialog isOpen={open} title={"Are you sure you want to delete this page?"}
 onClose={handleClose}
 
-text=""agree={handleDelete} agreeText="Delete" disagreeText="Close"/>
+text=""agree={handleDelete} agreeText="Delete" disagreeText="Close"/> */}
 
       
     </div>

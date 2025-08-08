@@ -121,7 +121,7 @@ const ProfileInfo = ({profile})=>{
                 <h6 className="text-[1.2rem]">{profile.followers.length}</h6>
             </div>:null}
         </div>
-        <Dialog 
+        {/* <Dialog 
         
         isOpen={followersDialog}
         onClose={()=>{
@@ -133,7 +133,7 @@ const ProfileInfo = ({profile})=>{
        </div>
       {profile&&profile.followers?  <FollowerCard followers={profile.followers}/>:null}
     </div>}
-/>
+/> */}
 <div className='w-[10em] h-[3em] mx-auto flex'>
 {!isNative?<h6 onClick={()=>handleDialogOpen()}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
                             :   <IonButton id="open-modal" expand="block">
