@@ -54,9 +54,8 @@ export default function RichEditor({ initContent,handleChange}){
 
   
     return( 
-     
       <ReactQuill 
-      className="bg-green-600   rounded-lg text-white stroke-white"
+      className=" rounded-lg text-white stroke-white"
       modules={modules}
       formats={formats} value={html} onChange={(content)=>handleTextChange(content)}
         

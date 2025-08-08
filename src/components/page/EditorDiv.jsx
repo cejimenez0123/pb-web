@@ -63,7 +63,7 @@ import { useDispatch } from "react-redux"
       switch(page.type){
               case PageType.picture:{
                 if(!page){
-                  return(<div><PicturePageForm createPage={createPage}/></div>)
+                  return(<div ><PicturePageForm createPage={createPage}/></div>)
                 }
                 return (<div  className="mx-auto  bg-emerald-200 rounded-b-lg  w-full p-8">
 

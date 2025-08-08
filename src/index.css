@@ -74,7 +74,8 @@ button:focus-visible {
 }
 
 ion-toolbar::part(container) {
-  padding: 1rem 1rem !important;
+  /* margin-top: !important; */
+  padding: 2rem  1rem !important;
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;

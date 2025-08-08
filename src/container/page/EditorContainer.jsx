@@ -20,13 +20,15 @@ import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
 import Dialog from "../../components/Dialog.jsx"
+import { IonContent, IonHeader } from "@ionic/react"
+import { setDialog } from "../../actions/UserActions.jsx"
 
 
 function EditorContainer(props){
         const {currentProfile}=useContext(Context)
         const [feedbackDialog,setFeedbackDialog]=useState(false)
         const {setError,setSuccess}=useContext(Context)
-  
+        const dialog = useSelector(state=>state.users.dialog)
         const [fetchedPage,setFetchedPage]=useState(null)
         const editPage = useSelector(state=>state.pages.editingPage)
         const pageInView = useSelector(state=>state.pages.pageInView)
@@ -252,8 +254,7 @@ setOpenDescription(false)
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
         <li onClick={()=>{
-          setOpenDescription(false)
-          setFeedbackDialog(true)
+        openRoleFormDialog(parameters.page)
         
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
@@ -335,12 +336,39 @@ return true
 ,100)
 
 })
+const openRoleFormDialog = (fetchedPage) => {
+  const dia = {...dialog};
+  dia.isOpen = true;
+  dia.fullScreen = !md; // replicate your fullscreen condition from the prop
+  dia.title = "Manage Roles"; // optionally add a title
+  dia.text = <div>
+      <RoleForm
+        item={fetchedPage}
+        onClose={() => {
+          dispatch(setDialog({ isOpen: false }));
+        }}
+      />
+    </div>
+  
+  dia.onClose = () => {
+    dispatch(setDialog({ isOpen: false }));
+  };
+  // No extra agree button, disable it:
+  dia.agreeText = null;
+  dia.agree = null;
+
+  dispatch(setDialog(dia));
+};
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
+          <IonContent fullscreen className="ion-padding">
+            <IonHeader>
+            {topBar()}
+            </IonHeader>
           <div  className=" mx-auto md:p-8  "> 
      
                 <div className= "mx-2 md:w-page pt-8 mb-12 mx-auto">
-                {topBar()}
+            
                   <ErrorBoundary>
            
           <EditorDiv  
@@ -351,7 +379,7 @@ return true
                 </ErrorBoundary>
                 </div>
                     <div>
-                    <Dialog
+                    {/* <Dialog
                     fullScreen={!md}
         open={openRoles}
         onClose={()=>{
@@ -369,7 +397,7 @@ return true
           </div>
       
   
-      </Dialog>
+      </Dialog> */}
 <FeedbackDialog 
 
 page={editPage}
@@ -394,6 +422,7 @@ text=""agree={handleDelete} agreeText="Delete" disagreeText="Close"/>
       
     </div>
       </div>
+      </IonContent>
       </EditorContext.Provider>
   )    
 
