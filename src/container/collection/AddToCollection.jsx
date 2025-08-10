@@ -10,7 +10,9 @@ import {
   IonList,
   IonButtons,
   IonBackButton,
+  IonItem,
 } from "@ionic/react";
+import { clearPagesInView } from "../../actions/PageActions.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -137,8 +139,9 @@ export default function AddToCollectionContainer(props) {
 
   const storyList = () => {
     return (
-      <div className="my-4   text-emerald-800  text-left mb-2">
-        {/* <IonText><h6 className="text-xl mt-4 mb-2 ml-2 lora-medium">Add Stories to Collection</h6></IonText> */}
+        <div className="my-4 max-h-96 mx-auto text-emerald-800 overflow-scroll text-left mb-2">
+      
+       
         <IonList
     
         >
@@ -150,11 +153,12 @@ export default function AddToCollectionContainer(props) {
                 colInView.storyIdList &&
                 !colInView.storyIdList.find((storyJoint) => storyJoint && storyJoint.story && (storyJoint.story.id === story.id))
             )
-            .map((story) => {
+            .map((story,i) => {
               const addedToCollection =
                 colInView?.storyIdList?.some((sj) => sj && sj.story && (sj.story.id === story.id)) ||
                 newStories.includes(story);
               return (
+                <IonItem key={i}>
                 <div
                   key={story.id}
                   className="text-left mx-auto  flex flex-row justify-between border-3 border-emerald-400 rounded-full py-4 my-2"
@@ -182,7 +186,7 @@ export default function AddToCollectionContainer(props) {
                       </div>
                     )}
                   </div>
-                </div>
+                </div></IonItem>
               );
             })}
         </IonList>
@@ -202,8 +206,8 @@ export default function AddToCollectionContainer(props) {
     }
     return (
       <div className="my-4 max-h-96 mx-auto text-emerald-800 overflow-scroll text-left mb-2">
-        <h6 className="text-xl lora-medium mt-4 mb-2 ml-2 font-bold">Add Collections to Collection</h6>
-        <InfiniteScroll dataLength={list.length}>
+       
+        <IonList>
           {list.map((col) => {
             if (col && colInView && col.id && colInView.id && col.id === colInView.id) {
               return null;
@@ -212,9 +216,10 @@ export default function AddToCollectionContainer(props) {
               colInView?.childCollections?.some((colJoint) => colJoint.childCollectionId === col.id) ||
               newCollection.includes(col);
             return (
+                <IonItem>
               <div
                 key={col.id}
-                className="text-left mx-auto w-[92vw] md:w-[96%] sm:mx-auto flex flex-row justify-between border-3 border-emerald-400 rounded-full py-4 my-2"
+                className="text-left mx-auto w-[92vw] md:w-[96%]  flex flex-row justify-between border-3 border-emerald-400 rounded-full py-4 my-2"
               >
                 <h2 className="text-l my-auto max-w-[15em] truncate text-md md:text-lg ml-8 mont-medium">
                   {col.title && col.title.trim().length > 0 ? col.title : "Untitled"}
@@ -249,9 +254,10 @@ export default function AddToCollectionContainer(props) {
                   )}
                 </div>
               </div>
+              </IonItem>
             );
           })}
-        </InfiniteScroll>
+        </IonList>
       </div>
     );
   };
@@ -293,8 +299,7 @@ export default function AddToCollectionContainer(props) {
         </IonButtons>
         </IonToolbar>
      </IonHeader>
-        {/* <div className="border-3 border-emerald-600 w-[96vw] lg:w-info min-h-info mx-auto rounded-lg my-2 p-8 text-left"> */}
-          <h2 className="text-2xl truncate md:max-w-[30em] text-emerald-800 mb-2">{colInView.title?.trim() || "Untitled"}</h2>
+            <h2 className="text-2xl truncate md:max-w-[30em] text-emerald-800 mb-2">{colInView.title?.trim() || "Untitled"}</h2>
           <h6 className="sm:my-4 text-emerald-800 sm:mx-8 p-4 min-h-24 text-lg sm:max-w-[35rem]">
             {colInView ? colInView.purpose : null}
           </h6>
@@ -349,7 +354,7 @@ export default function AddToCollectionContainer(props) {
               />
               <div
                 role="tabpanel"
-                className="tab-content pt-1 lg:py-4 rounded-lg   "
+                className="tab-content pt-1    "
               >
                 {tab === "page" && storyList()}
               </div>
@@ -365,7 +370,7 @@ export default function AddToCollectionContainer(props) {
               />
               <div
                 role="tabpanel"
-                className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto w-[96vw] md:w-page"
+                className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto "
               >
                 {tab === "collection" && colList()}
               </div>

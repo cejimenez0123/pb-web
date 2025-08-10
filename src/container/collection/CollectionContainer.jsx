@@ -21,22 +21,17 @@ import {
   IonRow,
 } from "@ionic/react";
 import add from "../../images/icons/add_circle.svg"
-// import PageList from "../../components/page/PageList"
 import edit from "../../images/icons/edit.svg"
-import bookmarkOutline from "../../images/bookmarkoutline.svg"
-import bookmarkFill from "../../images/bookmarkfill.svg"
-// import { addOutline, pencilOutline, bookmarkOutline, bookmark } from "ionicons/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Context from "../../context";
 import PageList from "../../components/page/PageList";
 import ErrorBoundary from "../../ErrorBoundary";
-import InfiniteScroll from "react-infinite-scroll-component";
 import BookListItem from "../../components/BookListItem";
 import ExploreList from "../../components/collection/ExploreList.jsx";
 import ProfileCircle from "../../components/profile/ProfileCircle";
-import Enviroment from "../../core/Enviroment";
-import { Helmet } from "react-helmet";
+import bookmarkOutline from "../../images/bookmark_add.svg"
+import bookmarkFill from "../../images/bookmark_fill_green.svg"
 import {
   appendToPagesInView,
   setPagesInView,
@@ -55,7 +50,7 @@ import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActi
 import Role from "../../domain/models/role";
 import { RoleType } from "../../core/constants";
 import checkResult from "../../core/checkResult";
-import { postCollectionHistory } from "../../actions/HistoryActions";
+
 import Paths from "../../core/paths.js";
 import DeviceCheck from "../../components/DeviceCheck.jsx";
 
@@ -246,12 +241,9 @@ const isNative = DeviceCheck()
     setBookmarkLoading(false);
   }
 
-  useLayoutEffect(() => {
-    checkFound();
-  }, [currentProfile, collection, homeCol, archiveCol]);
 
 
-  // Follow / Unfollow handlers
+
 
   const handleFollow = () => {
     if (currentProfile && collection) {
@@ -364,6 +356,8 @@ const getCol=()=>{
 
     if (type === "home") {
       if (!isBookmarked) {
+
+        setIsBookmarked(true)
         if (collection && homeCol) {
           let params = { id: homeCol.id, list: [collection.id], profile: currentProfile };
           dispatch(addCollectionListToCollection(params)).then(res => {
@@ -376,6 +370,7 @@ const getCol=()=>{
           });
         }
       } else {
+        setIsBookmarked(false)
         dispatch(deleteCollectionFromCollection({ tcId: isBookmarked.id })).then(res => {
           checkResult(res, payload => {
             if (payload.message?.includes("Already") || payload.message?.includes("Deleted")) {
@@ -391,10 +386,13 @@ const getCol=()=>{
     } else if (type === "archive") {
       if (!isArchived) {
         if (collection && archiveCol) {
+  
+          setIsArchived(true)
           let params = { id: archiveCol.id, list: [collection.id], profile: currentProfile };
           dispatch(addCollectionListToCollection(params)).then(res => {
             checkResult(res, payload => {
-              checkFound();
+              setBookmarkLoading(false)
+              
               setSuccess("Saved to Archive");
             }, err => {
               setBookmarkLoading(false);
@@ -402,10 +400,11 @@ const getCol=()=>{
           });
         }
       } else {
+        setIsArchived(null)
         dispatch(deleteCollectionFromCollection({ tcId: isArchived.id })).then(res => {
           checkResult(res, payload => {
             if (payload.message?.includes("Already") || payload.message?.includes("Deleted")) {
-              setIsArchived(null);
+              setBookmarkLoading(false)
               setSuccess("Removed from Archive");
             }
             setBookmarkLoading(false);
@@ -569,15 +568,15 @@ onClick={() => navigate(Paths.editCollection.createRoute(id))}
                 <div onClick={() => navigate(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full p-1">
                 <IonImg src={add}/>
                 </div>
-                // </IonButton>
+            
               )}
               <div
-              className="bg-emerald-200"
+              className=""
                 onClick={() => onBookmark("archive")}
-                color={isBookmarked ? "warning" : "medium"}
+                color={isArchived ? "warning" : "medium"}
                 disabled={bookmarkLoading}
               >
-                <IonImg  src={isBookmarked ? bookmarkFill : bookmarkOutline} />
+                <IonImg  src={isArchived ? bookmarkFill : bookmarkOutline} />
                 {bookmarkLoading && <IonSpinner name="dots" />}
               </div>
               {/* <IonButton
