@@ -21,6 +21,7 @@
     "@capacitor/splash-screen": "^7.0.1",
     "@ionic/react": "^8.5.7",
     "@react-google-maps/api": "^2.20.6",
+    "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.7.9",
     "daisyui": "^4.12.20",
     "firebase-tools": "^13.1.0",

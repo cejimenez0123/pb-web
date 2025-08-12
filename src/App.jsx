@@ -169,8 +169,8 @@ console.log(isPhone)
      
         {!isPhone?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
-        loggedIn={props.currentProfile}
-        profile={props.currentProfile}/></div>:null}
+        loggedIn={currentProfile}
+        currentProfile={currentProfile}/></div>:null}
        <SearchDialog presentingElement={page} />
        <Dialog dialog={dialog} presentingElement={page} />
 <Alert />

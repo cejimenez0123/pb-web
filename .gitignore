@@ -17,6 +17,7 @@ dist-ssr
 *.local
 credentials.json
 .env
+AppleAuthKey
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

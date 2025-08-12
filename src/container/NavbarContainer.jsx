@@ -4,6 +4,8 @@ import '../App.css'
 import "../styles/Navbar.css"
 import {signOutAction,setDialog} from "../actions/UserActions"
 import { useLocation, useNavigate } from 'react-router-dom'
+
+import { Preferences } from "@capacitor/preferences";
 import menu from "../images/icons/menu.svg"
 import getDownloadPicture from '../domain/usecases/getDownloadPicture'
 import { debounce } from 'lodash'
@@ -44,7 +46,7 @@ const pages = [
                 PageName.apply,
                 PageName.feedback
                 ]
-function NavbarContainer(props){
+function NavbarContainer({currentProfile}){
   
   const {isPhone,isHorizPhone}=useContext(Context)
   const dialog =useSelector(state=>state.users.dialog)
@@ -54,7 +56,7 @@ function NavbarContainer(props){
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
-    const {currentProfile}=useContext(Context)
+
    const pathName = useLocation().pathname
 
 
@@ -312,15 +314,17 @@ openDialog()
       </div>
       }
   // }
-  const handleSignOut = () => {
+  const handleSignOut =async () => {
     window.google.accounts.id.disableAutoSelect(); // Clears GIS cookie for auto-login
     // Clear all stored items related to login and drive token
-    
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('googleId');
-    localStorage.removeItem("googledrivetoken");
-    localStorage.removeItem('googledrivetoken_expiry');
+    await Preferences.clear()
+    localStorage.clear()
+    // localStorage.removeItem('userEmail');
+    // localStorage.removeItem('userName');
+    // localStorage.removeItem('googleId');
+    // localStorage.removeItem("googledrivetoken");
+    // localStorage.removeItem('googledrivetoken_expiry');
+
     dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
       localStorage.clear()
       navigate("/")

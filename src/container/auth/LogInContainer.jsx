@@ -1,4 +1,4 @@
-import React ,{useContext, useLayoutEffect,useEffect, useState} from 'react'
+import React ,{useContext,useLayoutEffect,useState} from 'react'
 import "../../App.css"
 import { logIn} from '../../actions/UserActions';
 import {useDispatch, useSelector} from 'react-redux';
@@ -12,9 +12,9 @@ import Context from '../../context';
 import DeviceCheck from '../../components/DeviceCheck';
 import GoogleLogin from '../../components/GoogleLogin';
 import Dialog from '../../components/Dialog';
+import AppleSignInButton from '../../components/auth/AppleSignInButton';
 
 export default function LogInContainer(props) {
-    const location = useLocation()
     const {setError,seo,setSeo}=useContext(Context)
  
     useLayoutEffect(()=>{
@@ -153,7 +153,10 @@ setLogInError("User Not Found. Apply Below")
                 variant="contained" ><h6 className='mont-medium text-xl tracking-wide'>Log In</h6></button>
                 
         </div>
-        <span className='flex mt-4 justify-center '>  <GoogleLogin 
+        <span className='flex flex-col mt-4 justify-center '> 
+        <AppleSignInButton
+        />
+         <GoogleLogin 
      onUserSignIn={({email, name,googleId})=>{
 dispatchLogin(email,googleId)
             
