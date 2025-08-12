@@ -221,7 +221,8 @@ function CalendarEmbed(){
   </span>
 </div>
 {chosenEvent? <Dialog isOpen={chosenEvent}onClose={()=>setChoice(null)} 
-agreeText="Organizer"
+agreeText={"Organizer"}
+disagreeText={"Close"}
   agree={chosenEvent&&chosenEvent.organizerLink?()=>{
     // console.log(JSON.stringify(chosenEvent.organizerLink))
     chosenEvent?window.location.href=chosenEvent.organizerLink:null
