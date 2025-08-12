@@ -1,11 +1,12 @@
 import React from 'react';
 import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { IonButton, IonIcon } from '@ionic/react';
+import Enviroment from '../../core/Enviroment';
 
 function AppleSignInButton() {
   const options = {
     clientId: import.meta.env.VITE_APPLE_CLIENT_ID, // TODO: Replace with your Apple Service ID
-    redirectURI: 'https://plumbum.app/login', // TODO: Replace with your redirect URI
+    redirectURI: Enviroment.redirectUrl, // TODO: Replace with your redirect URI
     scopes: 'email name',
     state: '12345',
     nonce: 'nonce',
