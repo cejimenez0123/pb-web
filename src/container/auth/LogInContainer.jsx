@@ -90,7 +90,32 @@ setLogInError("User Not Found. Apply Below")
         }
     }
   
-    const dispatchLogin=(email,googleId)=>{
+    const dispatchLogin=({email,googleId,idToken})=>{
+        if(idToken){
+            dispatch(logIn({email,idToken:idToken})).then(res=>{
+                checkResult(res,payload=>{
+                    setPending(false)
+                    console.log(payload.error)
+                    if(payload.error){
+                        setLogInError("Error with Username or Password")
+                    }else{
+                        navigate(Paths.myProfile())
+                    }
+                },err=>{
+                    console.log(payload.error)
+                    if(err.message=="Request failed with status code 401"){
+    setLogInError("User Not Found. Apply Below")
+                    }else{
+                        setLogInError(err.message)
+                    }
+             
+                    
+                    setPending(false)
+                })
+            })   
+        }else if(googleId){
+
+        
         dispatch(logIn({email,uId:googleId})).then(res=>{
             checkResult(res,payload=>{
                 setPending(false)
@@ -112,6 +137,7 @@ setLogInError("User Not Found. Apply Below")
                 setPending(false)
             })
         })   
+    }
     }
     return(
     <div className=' md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
@@ -155,10 +181,13 @@ setLogInError("User Not Found. Apply Below")
         </div>
         <span className='flex flex-col mt-4 justify-center '> 
         <AppleSignInButton
+        onUserSignIn={({idToken,email})=>{
+            dispatchLogin({email,idToken})
+        }}
         />
          <GoogleLogin 
      onUserSignIn={({email, name,googleId})=>{
-dispatchLogin(email,googleId)
+dispatchLogin({email,googleId})
             
      }}/></span>
         <div className='mt-4 p-4'>
