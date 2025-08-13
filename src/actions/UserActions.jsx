@@ -17,7 +17,7 @@ const logIn = createAsyncThunk(
    
         
         const {token}=authData
-        localStorage.setItem("token",token)
+      
         const data= await profileRepo.getMyProfiles({token:token})
         const profile = data.profile
         
@@ -61,12 +61,12 @@ const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
-      const{email,token,googleId,frequency,password,username,profilePicture,selfStatement,privacy}=params
+      const{email,token,idToken,googleId,frequency,password,username,profilePicture,selfStatement,privacy}=params
 
       try {
         
           // const userCred = await  createUserWithEmailAndPassword(auth, email, password)
-          let data = await profileRepo.register({uId:"",frequency,token,email,password,username,profilePicture,selfStatement,privacy})
+          let data = await profileRepo.register({uId:"",idToken,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
            
         
             if(!privacy){

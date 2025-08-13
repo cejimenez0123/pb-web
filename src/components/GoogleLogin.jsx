@@ -255,12 +255,12 @@ if(!signedIn){
         }
         console.log("User signed out.");
     };
-
+    const idToken = localStorage.getItem("idToken")
     return (
         <div>
             {!gisLoaded && <p>Loading Google Sign-In...</p>}
 
-            {!signedIn ? (
+            {!signedIn&&!idToken ? (
                 // This div will be replaced by the Google Sign-In button
                 <div id="google-sign-in-button"  style={{ display: gisLoaded ? 'block' : 'none' }}></div>
             ) : null}

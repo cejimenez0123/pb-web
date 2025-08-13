@@ -23,6 +23,10 @@ import Paths from '../core/paths';
 import authRepo from '../data/authRepo';
 import ThankYou from './auth/ThankYou';
 import logo from "../images/logo/logo-green.png";
+import GoogleLogin from '../components/GoogleLogin';
+import AppleSignInButton from '../components/auth/AppleSignInButton';
+import { useDispatch } from 'react-redux';
+import { signUp } from '../actions/UserActions';
 const inputStyle = {
   "--width": '100%',
   border: 'none',
@@ -42,7 +46,8 @@ const inputStyle = {
 export default function OnboardingContainer(props) {
   const navigate = useNavigate();
   const { seo, setSeo, error, setError } = useContext(Context);
-
+  const dispatch = useDispatch()
+  const [idToken,setIdToken]=useState("")
   const genres = [
     "Fiction", "Non-fiction", "Poetry", "Drama/Playwriting", "Screenwriting",
     "Flash Fiction", "Memoir", "Short Stories", "Fantasy", "Science Fiction",
@@ -106,7 +111,9 @@ export default function OnboardingContainer(props) {
   const updateFormData = (newData) => {
     setFormData(prev => ({ ...prev, ...newData }));
   };
-
+const dispatchSignUp=(email, name,googleId,idToken)=>{
+  dispatch(signUp({email,name,googleId,idToken}))
+}
   // Components
 
   const Step1 = ({ formData, updateFormData, handleTab }) => {
@@ -144,10 +151,7 @@ export default function OnboardingContainer(props) {
                 
               />
             </IonItem>
-            {/* <IonLabel className="mont-medium mb-1 text-left" color="success">
-  * Email
-</IonLabel> */}
-            {/* <div className="w-full rounded-full border-2 border-emerald-600 bg-white flex items-center px-6 py-3 focus-within:border-emerald-800 transition-all"> */}
+           
      <IonItem>  
   <IonInput
   label='*Email'
@@ -181,6 +185,15 @@ export default function OnboardingContainer(props) {
               
               />
             </IonItem>
+            <GoogleLogin onUserSignIn={({email, name,googleId})=>{
+                dispatchSignUp(email,name,googleId,"")
+            }} />
+            <AppleSignInButton onUserSignIn={idToken=>{
+              localStorage.setItem("idToken",idToken)
+              
+              handleNext()
+            
+            }}/>
             </IonList>
             <div className='h-[18rem]'/>
             <div className='text-right'>
@@ -583,6 +596,7 @@ const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference 
   ];
 
   return (
+    <IonContent>
     <>
       <IonLabel
         className="mont-medium"
@@ -617,5 +631,6 @@ const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference 
         })}
       </div>
     </>
+    </IonContent>
   );
 };
