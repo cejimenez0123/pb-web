@@ -27,6 +27,7 @@ import GoogleLogin from '../components/GoogleLogin';
 import AppleSignInButton from '../components/auth/AppleSignInButton';
 import { useDispatch } from 'react-redux';
 import { signUp } from '../actions/UserActions';
+import checkResult from '../core/checkResult';
 const inputStyle = {
   "--width": '100%',
   border: 'none',
@@ -47,7 +48,7 @@ export default function OnboardingContainer(props) {
   const navigate = useNavigate();
   const { seo, setSeo, error, setError } = useContext(Context);
   const dispatch = useDispatch()
-  const [idToken,setIdToken]=useState("")
+  
   const genres = [
     "Fiction", "Non-fiction", "Poetry", "Drama/Playwriting", "Screenwriting",
     "Flash Fiction", "Memoir", "Short Stories", "Fantasy", "Science Fiction",
@@ -57,6 +58,7 @@ export default function OnboardingContainer(props) {
 
   const [activeTab, setActiveTab] = useState('tab0');
   const [formData, setFormData] = useState({
+    idToken:"",
     igHandle: "",
     fullName: "",
     email: "",
@@ -77,7 +79,7 @@ export default function OnboardingContainer(props) {
     setSeo(prev => ({ ...prev, title: "Plumbum (Onboarding)" }));
   }, [setSeo]);
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||formData.idToken.length>10;
 
   const finishOnboarding = async () => {
     await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
@@ -85,6 +87,33 @@ export default function OnboardingContainer(props) {
   };
 
   const onClickApply = debounce(async () => {
+    if(idToken){
+      dispatchSignUp(null,formData.fullName,null,idToken).then(res=>{
+        checkResult(res,async payload=>{
+          const {profile}=payload
+            setUser(profile)
+            const form = {
+              ...formData,
+              email: formData.email.toLowerCase(),
+              genres: formData.selectedGenres.includes("Other")
+                ? [...formData.selectedGenres.filter(g => g !== "Other"), formData.otherGenre]
+                : formData.selectedGenres,
+            };
+            try {
+            if (window.location.pathname.includes("newsletter")) {
+              data = await authRepo.applyFromNewsletter(form);
+            } else {
+              data = await authRepo.apply(form);
+            }
+            await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
+            setUser(data?.user ?? data);
+        },err=>{
+          
+        })
+      })
+      return
+    }
+
     if (validateEmail(formData.email)) {
       const form = {
         ...formData,
@@ -112,7 +141,7 @@ export default function OnboardingContainer(props) {
     setFormData(prev => ({ ...prev, ...newData }));
   };
 const dispatchSignUp=(email, name,googleId,idToken)=>{
-  dispatch(signUp({email,name,googleId,idToken}))
+  return dispatch(signUp({email,name,googleId,idToken}))
 }
   // Components
 
@@ -188,9 +217,9 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
             <GoogleLogin onUserSignIn={({email, name,googleId})=>{
                 dispatchSignUp(email,name,googleId,"")
             }} />
-            <AppleSignInButton onUserSignIn={idToken=>{
-              localStorage.setItem("idToken",idToken)
-              
+            <AppleSignInButton onUserSignIn={({idToken,email})=>{
+              updateFormData({email:email})
+              updateFormData({idToken: idToken })
               handleNext()
             
             }}/>
@@ -354,6 +383,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
         howFindOut: formData.howFindOut,
         platformFeatures: formData.platformFeatures,
       });
+   
     };
 
     return (

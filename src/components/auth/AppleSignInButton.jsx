@@ -18,7 +18,7 @@ function AppleSignInButton({onUserSignIn}) {
   const handleAppleSignIn = () => {
     SignInWithApple.authorize(options)
       .then(result => {
-        onUserSignIn(result.response.identityToken)
+        onUserSignIn({idToken:result.response.identityToken,email:result.response.email})
 
       },err=>{
 //       
