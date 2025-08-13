@@ -17,7 +17,7 @@ const logIn = createAsyncThunk(
    
         
         const {token}=authData
-      
+        localStorage.setItem("token",token)
         const data= await profileRepo.getMyProfiles({token:token})
         const profile = data.profile
         
@@ -151,6 +151,7 @@ async (params,thunkApi) => {
   try{
 
   let token = localStorage.getItem("token")
+  let idToken = localStorage.getItem("idToken")
   if(token){
     const data = await profileRepo.getMyProfiles({token:token})
 if(data.profile){
@@ -159,6 +160,8 @@ if(data.profile){
     return {
     profile: data.profile
    } }
+  }else if(idToken){
+
   }
     throw new Error("No Token")
   
