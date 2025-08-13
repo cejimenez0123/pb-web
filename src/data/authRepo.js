@@ -98,6 +98,7 @@ class AuthRepo{
     }
     async appleSignIn({identityToken}){
         let res =await axios.post(Enviroment.url+"/auth/ios",{idToken:identityToken})
+        console.log("Res",res.data)
         return res.data
     }
     }

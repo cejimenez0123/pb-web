@@ -18,8 +18,10 @@ function AppleSignInButton() {
   const handleAppleSignIn = () => {
     SignInWithApple.authorize(options)
       .then(result => {
-        // console.log('Apple sign-in success:', result);
-       dispatch(getIosInfo({identityToken:result.response.identityToken}))
+        console.log('Apple sign-in success:', result);
+       dispatch(getIosInfo({identityToken:result.response.identityToken})).then(res=>
+        console.log("DISPAtch")
+       )
         // TODO: Handle user info, validate token with your backend, create session
       })
       .catch(error => {
