@@ -105,8 +105,12 @@ export default function OnboardingContainer(props) {
             } else {
               data = await authRepo.apply(form);
             }
+
             await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
             setUser(data?.user ?? data);
+          }catch(e){
+            setError(e.message)
+          }
         },err=>{
           
         })
