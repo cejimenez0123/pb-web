@@ -45,9 +45,7 @@ class ProfileRepo {
 
        const res = await axios.post(Enviroment.url+"/auth/register",{googleId,identityToken:idToken,token,password,username,
         profilePicture,selfStatement,privacy
-       },{headers:{
-        Authorization:"Bearer "+token
-       }}) 
+       }) 
 
        return res.data
     
