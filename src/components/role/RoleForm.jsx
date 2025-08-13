@@ -4,8 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchProfiles } from "../../actions/ProfileActions";
 import { patchRoles } from "../../actions/RoleActions";
 import { RoleType } from "../../core/constants";
-import Role from "../../domain/models/role";
-import close from "../../images/icons/clear.svg";
+
 import checkResult from "../../core/checkResult";
 import { patchCollectionRoles } from "../../actions/CollectionActions";
 import Context from "../../context";

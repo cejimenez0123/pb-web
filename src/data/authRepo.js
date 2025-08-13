@@ -96,6 +96,10 @@ class AuthRepo{
        let res =await axios.post(Enviroment.url+"/auth/google",{email,googleId})
        return res.data
     }
+    async appleSignIn({identityToken}){
+        let res =await axios.post(Enviroment.url+"/auth/ios",{idToken:identityToken})
+        return res.data
+    }
     }
 
 export default new AuthRepo()

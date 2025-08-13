@@ -2,8 +2,11 @@ import React from 'react';
 import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { IonButton, IonIcon } from '@ionic/react';
 import Enviroment from '../../core/Enviroment';
+import { getIosInfo } from '../../actions/UserActions';
+import { useDispatch } from 'react-redux';
 
 function AppleSignInButton() {
+  const dispatch = useDispatch()
   const options = {
     clientId: import.meta.env.VITE_APPLE_CLIENT_ID, // TODO: Replace with your Apple Service ID
     redirectURI: Enviroment.redirectUrl, // TODO: Replace with your redirect URI
@@ -15,7 +18,8 @@ function AppleSignInButton() {
   const handleAppleSignIn = () => {
     SignInWithApple.authorize(options)
       .then(result => {
-        console.log('Apple sign-in success:', result);
+        // console.log('Apple sign-in success:', result);
+       dispatch(getIosInfo({identityToken:result.response.identityToken}))
         // TODO: Handle user info, validate token with your backend, create session
       })
       .catch(error => {

@@ -1,8 +1,5 @@
-import {db,auth,client} from "../core/di"
-import {where,query,and,or,collection,getDocs,getDoc,doc} from "firebase/firestore"
-import Page from "../domain/models/page"
+import {client} from "../core/di"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
-import Contributors from "../domain/models/contributor"
 import {storage} from "../core/di"
 import storyRepo from "../data/storyRepo"
 import commentRepo from "../data/commentRepo"
@@ -37,48 +34,7 @@ const setHtmlContent = createAction(
   }
 )
 
-// const updatePage = createAsyncThunk("pages/updatePage",async (params,thunkApi)=>{
-      
-//   try{
-//     const { page,
-//       title,
-//       data,
-//       commentable,
-//       privacy,
-    
-//     } =params
-     
-//       let ref = doc(db,"page",page.id)
-//       await updateDoc(ref,{
-//         title,
-//         data,
-//         privacy,
-//         approvalScore: page.approvalScore,
-//       })
-//       if(!privacy){
-//         client.initIndex("page").partialUpdateObject({objectID: page.id,title:title},{createIfNotExists:true}).wait()
-//       }
-//       const contributors= new Contributors(page.commenters,
-//         page.readers,page.writers,page.editors)
-//       let newPage= new Page(page.id,
-//                           title,
-//                           data,
-//                           page.profileId,
-//                           page.userId,
-//                           page.approvalScore,
-//                           privacy,
-//                           commentable,
-//                           page.type,
-//                           contributors,
-//                           page.created)
-    
-//       return {
-//         page: newPage
-//       }
-//     }catch(e){
-//     return {error: new Error("Error: UDATE PAGE-" + e.message)}
-//   }
-// })
+
 
 const getPublicProfilePages= createAsyncThunk(
   'pages/getPublicProfilePages',
@@ -109,42 +65,7 @@ const getProtectedProfilePages= createAsyncThunk(
 }})
 
 
-const fetchPage=createAsyncThunk("pages/fetchPage", async function(params,thunkApi){
-  let id = params["id"]
 
- 
-
-  try {
-  const snapshot = await getDoc(doc(db, "page", id))
-  const page = unpackPageDoc(snapshot)
-  
-  return {
-    page
-  }
-  }catch(e){
-    return {
-      error: e
-    }
-
-  }
-
-
-})
-const fetchEditingPage = createAsyncThunk("pages/fetchEditingPage", async function(params,thunkApi){
-  let id = params["id"]
-  try {
-    storyRepo.get
-    // const docSnap = await getDoc(doc(db, "page", id))
-    // const page = unpackPageDoc(docSnap)
-    return {
-      page
-    }
-  }catch(e){
-    return {
-      error: e
-    }
-  }
-})
 
 
 
@@ -155,27 +76,6 @@ const appendToPagesInView = createAction("pages/appendToPagesInView", (params)=>
   return  {payload:
     pages}})
 
-const fetchArrayOfPages = createAsyncThunk("pages/fetchArrayOfPages",async (params,thunkApi)=>{
-try{ 
-  const pageIdList = params["pageIdList"]
-    const profile = params["profile"]
-  const pagePromises = pageIdList.map((pageId) => {
-    const pageRef = doc(db, "page", pageId);
-    return getDoc(pageRef);
-  });
-  // Use Promise.all to resolve all promises concurrently
-  let snapshots = await Promise.all(pagePromises)
-  let pageList = snapshots.map(snapshot => unpackPageDoc(snapshot))
-
-return {pageList:pageList}
-
-
-}catch(err){
-const error = err??new Error("Error: Fetch Array of Pages")
-return {error }
-}}
-
-)
 const setPageInView = createAction("pages/setPageInView", (params)=> {
 
   const {page} = params
@@ -219,46 +119,6 @@ const setPagesToBeAdded = createAction("pages/setPagesToBeAdded",(params)=>{
 
 const clearPagesInView = createAction("pages/clearPagesInView")
 
-const fetchArrayOfPagesAppened = createAsyncThunk("pages/fetchArrayOfPagesAppend",async (params,thunkApi)=>{
-  try{
-  const ref = collection(db,"page")
-  const pageIdList = params["pageIdList"]
-  
-  if(0==pageIdList.length){
-    return {
-      pageList: []
-    }
-  }else{
-    let queryReq =query(ref,
-      and(where("id", "in", pageIdList),where("privacy","==",false)))
-    if(auth.currentUser){
-    queryReq = query(ref,
-      and(where("id", "in", pageIdList),
-                   or(where("privacy","==",false),
-                      where('commenters', 'array-contains', auth.currentUser.uid),
-                      where('readers','array-contains', auth.currentUser.uid),
-                      where('editors', 'array-contains', auth.currentUser.uid),
-                      where('writers', 'array-contains',auth.currentUser.uid),
-                      where("privacy","==",false))))
-   }
-  const snapshot =await getDocs(queryReq)
-
- let pageList = []
-  snapshot.docs.forEach(doc => {
-      const page = unpackPageDoc(doc)  
-      pageList = [...pageList, page]
-    })
-    return {
-      pageList
-    }
-  }
-
-    }catch(err){
-    const error = err??new Error("Error: Fetch Array of Pages")
-    return {error }
-    }
-  }
-)
 const createComment = createAsyncThunk("pages/createComment", async function({
   profile,
   text,
@@ -370,148 +230,8 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
         comment:data.comment
       }
   })
-  const fetchPagesWhereProfileWriter = createAction("books/fetchBooksWhereProfileEditor",(params,thunkApi)=>{
-    try{
-    const ref = collection(db,"page")
-    let snapshot = query(ref,
-         where('writers', 'array-contains', auth.currentUser.uid),
-    )
-    let pageList = []
-      snapshot.docs.forEach(doc => {
-        const page = unpackPageDoc(doc)
-              pageList = [...pageList, page]
-            })
-    return {
-      pageList: pageList,
-    }
-  }catch(e){
-    return {
-      error: e
-    }
-  }
-  })
-  const fetchPagesWhereProfileEditor = createAsyncThunk("pages/fetchBooksWhereProfileEditor",(params,thunkApi)=>{
-    try{
-    const ref = collection(db,"page")
-    let snapshot = query(ref,
-         where('editors', 'array-contains', auth.currentUser.uid),
-    )
-    let pageList = []
-      snapshot.docs.forEach(doc => {
-                const pack = doc.data();
-                const { id } = doc;
-                const title =pack["title"]
-                const data = pack["data"]
-                const profileId = pack["profileId"]
-                const approvalScore = pack["approvalScore"]
-                const privacy = pack["privacy"]
-                const type = pack["type"]
-                const created = pack["created"]
-                let commentable = pack["commentable"]
-                let commenters = pack["commenters"]
-                let editors = pack["editors"]
-                let readers = pack["readers"]
-                let writers = pack["writers"]
-              if(!editors){
-                editors = []
-              }
-              if(!commenters){
-                commenters = []
-              }
-              if(!readers){
-                  readers=[]
-              }
-              if(!writers){
-                writers=[]
-              }
-              if(commentable==null){
-                commentable=true
-              }
-              const contributors= new Contributors(commenters,
-                readers,writers,editors)
-                const page = new Page(  id,
-                                        title,
-                                        data,
-                                        profileId,
-                                        auth.currentUser.uid,
-                                        approvalScore,
-                                        privacy,
-                                        commentable,
-                                        type,
-                                        contributors, 
-                                        created)
-              pageList = [...pageList, page]
-            })
-    return {
-      pageList: pageList,
-    }
-  }catch(e){
-    return {
-      error: e
-    }
-  }
-  })
-  const fetchPagesWhereProfileCommenters= createAsyncThunk("pages/fetchPagesWhereProfileEditor",(params,thunkApi)=>{
-    try{
-    const ref = collection(db,"page")
-    let snapshot = query(ref,
-         where('commenters', 'array-contains', auth.currentUser.uid),
-    )
-    let pageList = []
-      snapshot.docs.forEach(doc => {
-                const pack = doc.data();
-                const { id } = doc;
-                const title =pack["title"]
-                const data = pack["data"]
-                const profileId = pack["profileId"]
-                const approvalScore = pack["approvalScore"]
-                const privacy = pack["privacy"]
-                const type = pack["type"]
-                const created = pack["created"]
-                let commentable = pack["commentable"]
-                let commenters = pack["commenters"]
-                let editors = pack["editors"]
-                let readers = pack["readers"]
-                let writers = pack["writers"]
-              if(!editors){
-                editors = []
-              }
-              if(!commenters){
-                commenters = []
-              }
-              if(!readers){
-                  readers=[]
-              }
-              if(!writers){
-                writers=[]
-              }
-              if(commentable==null){
-                commentable=true
-              }
-              const contributors= new Contributors(commenters,
-                readers,writers,editors)
-                const page = new Page(  id,
-                                        title,
-                                        data,
-                                        profileId,
-                                        auth.currentUser.uid,
-                                        approvalScore,
-                                        privacy,
-                                        commentable,
-                                        type,
-                                        contributors, 
-                                        created)
-              pageList = [...pageList, page]
-            })
-    return {
-      pageList: pageList,
-    }
-  }catch(e){
-    return {
-      error: e
-    }
-  }
-  })
+  
+  
  
   const createPageApproval = createAsyncThunk("users/createPageApproval",async (params,thunkApi)=>{
    try{
@@ -540,37 +260,6 @@ try{
       }
     }
   })
-  const unpackPageDoc = (doc)=>{
-    const pack = doc.data();
-              const { id } = doc;
-              const title =pack["title"]
-              const data = pack["data"]
-              const profileId = pack["profileId"]
-              const privacy = pack["privacy"]
-              const approvalScore = pack["approvalScore"]
-              const type = pack["type"]
-              const created = pack["created"]
-              const userId = pack["userId"]
-              let commentable = pack["commentable"]
-              let commenters = pack["commenters"]
-              let editors = pack["editors"]
-              let readers = pack["readers"]
-              let writers = pack["writers"]
-    const contributors= new Contributors(commenters,
-      readers,writers,editors)
-      const page =  new Page( id,
-                              title,
-                              data,
-                              profileId,
-                              userId,
-                              approvalScore,
-                              privacy,
-                              commentable,
-                              type,
-                              contributors,
-                              created)
-                              return page
-  }
 
   export {
           pagesLoading,
@@ -578,15 +267,10 @@ try{
           getProtectedProfilePages,
           getPublicProfilePages,        
           setPageInView,
-          fetchPage,
-          fetchArrayOfPages,
+         
           setPagesToBeAdded,
-          fetchArrayOfPagesAppened,
           clearPagesInView,
-          // saveRolesForPage,
-          // updatePage,
-          fetchEditingPage,
-          // appendSaveRolesForPage,
+       
           createComment,
           fetchCommentsOfPageProtected,
           fetchCommentsOfPagePublic,
@@ -594,14 +278,12 @@ try{
           clearEditingPage,
           appendComment,
           updateComment,
-          fetchPagesWhereProfileCommenters,
-          fetchPagesWhereProfileEditor,
-          fetchPagesWhereProfileWriter,
+       
           setEditingPage,
           setPagesInView,
           createPageApproval,
           deletePageApproval,
-          unpackPageDoc,
+       
           getPublicStories,
          appendToPagesInView
         } 

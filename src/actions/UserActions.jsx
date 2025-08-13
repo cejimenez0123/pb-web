@@ -1,24 +1,6 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
-import { auth,db, client ,storage} from  "../core/di"
-import {  signInWithEmailAndPassword,
-          signOut,
-          createUserWithEmailAndPassword,
-       } from "firebase/auth"
-import {  where,
-          query,
-          deleteDoc,
-          collection,
-          getDocs,
-          setDoc,
-          getDoc,
-          doc,
-          Timestamp} from "firebase/firestore"
-import UserApproval from "../domain/models/user_approval";
+import { auth, client ,storage} from  "../core/di"
 import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
-import FollowBook from "../domain/models/follow_book"
-import FollowLibrary from "../domain/models/follow_library"
-import FollowProfile from "../domain/models/follow_profile"
-import Collection from "../domain/models/collection";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
@@ -55,6 +37,7 @@ const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
     localStorage.clear()
     try{
+      
    await signOut(auth)
     }catch(err){
       
@@ -82,8 +65,8 @@ const signUp = createAsyncThunk(
 
       try {
         
-          const userCred = await  createUserWithEmailAndPassword(auth, email, password)
-          let data = await profileRepo.register({uId:userCred.user.uid,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
+          // const userCred = await  createUserWithEmailAndPassword(auth, email, password)
+          let data = await profileRepo.register({uId:"",frequency,token,email,password,username,profilePicture,selfStatement,privacy})
            
         
             if(!privacy){
@@ -133,37 +116,6 @@ const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
   return {results}
 })
 
-const createCollection = createAsyncThunk("ds",async (params,thunkApi)=>{
-  const {profile} = params
- 
-  await setDoc(doc(db,"profile",profile.Id,"collection","home"),
-  { books:[],
-    libraries:[],
-    pages:[],
-    profiles:[]})
-})
-const updateHomeCollection = createAsyncThunk("users/updatecollection",async (params,thunkApi)=>{
-  // try{
-  // const {profile,books,libraries,pages,profiles} = params
- 
-  // await updateDoc(doc(db,"profile",profile.id,"collection","home"),
-  // { books:books,
-  //   libraries:libraries,
-  //   pages:pages,
-  //   profiles:profiles})
-  //   let collection =new Collection(pages,books,libraries,profiles)
-  //   return {
-  //     collection:collection
-  //   }
-  // }catch(e){
-  //   return {
-  //     error: new Error(`Update Home Collection Error: ${e.message}`)
-  //   }
-  // }
-  }
-
-
-)
 const setDialog = createAction("user/setDialog", (params)=> {
 
 
@@ -172,23 +124,15 @@ const setDialog = createAction("user/setDialog", (params)=> {
     
   
 })
-// const fetchHomeCollection = createAsyncThunk("users/fetchHomeCollection", async(params,thunkApi)=>{
-//   try{
+const getIosInfo = createAsyncThunk("user/iOSinfo",async (params)=> {
 
+let data =await authRepo.appleSignIn(params)
+  return  {profile:
+     data.profile}
+    
+  
+})
 
-//   const {profile}= params
-//   const snapshot = await getDoc(doc(db,"profile",profile.id,"collection","home"))
-//   const pack = snapshot.data()
-//   const {pages,books,libraries,profiles} = pack
-//   const collection = new Collection(pages,books,libraries,profiles)
-//   return {
-//     collection:collection
-//   }
-// }catch(e) {
-
-// return {error: new Error(`Fetch home Error: ${e.message}`)}
-// }
-// })
 const setSignedInTrue = createAction("users/setSignedInTrue", async(params)=>{
  return
 }
@@ -300,113 +244,8 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
       
     
   })
-  const createFollowBook = createAsyncThunk("users/createFollowBook", async function(params,thunkApi){
 
-        try{
-        const {
-            profile,
-            book
-            }=params
-            
-        const id =  `${profile.id}_${book.id}`
-        const created = Timestamp.now()
-        await setDoc(doc(db,"follow_book",id), { 
-            id:id,
-            bookId: book.id,
-            profileId: profile.id,
-            created: created
-        })
-        const fb = new FollowBook(id,book.id,profile.id,created);
-        return {
-                followBook:fb 
-            }
-      }catch(error){
-        return {
-            error: new Error(`Error:Create Follow Book ${error.message}`)
-        }
-      }
-    
-    
-    })
-const createFollowLibrary = createAsyncThunk("users/createFollowLibrary", async function(params,thunkApi){
-    try{
-        const {
-            profile,
-            library
-        }=params
-        const id = `${profile.id}_${library.id}`
-        const created = Timestamp.now()
-            await setDoc(doc(db,"follow_library",id), { 
-                id:id,
-                libraryId: library.id,
-                profileId: profile.id,
-                created: created
-            })
-            const lb = new FollowLibrary(id,profile.id,library.id,created);
-        return { 
-            followLibrary:lb
-        }
-    }catch(error){
-           
-        return {
-            error: new Error(`Error: Create Follow Library ${error.message}`)
-        }
-    }
-})
-const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForProfile",async (params,thunkApi)=>{
-            try{
-              const {profile} = params
-            const ref = collection(db,"follow_book")
-          
-            const snapshot =await getDocs(ref,where("profileId","==",profile.id))
-          
-            let followList = []
-            snapshot.docs.forEach(doc => {
-                  const pack = doc.data();
-                  const { id,
-                          profileId,
-                          bookId,
-                          created
-                        }=pack
-                const fb = new FollowBook(id,bookId,profileId,profile,created)
-                
-                followList = [...followList, fb]
-              })
-          return {
-          
-            followList: followList,
-          }}catch(err) {
-                return {
-                    error: new Error(`Error: Fetch Follow Books: ${err.message}`)
-  }
-}})
-const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryForProfile",async (params,thunkApi)=>{
-            try{
-              const {profile} = params
-            const ref = collection(db,"follow_library")
-          
-            const snapshot =await getDocs(ref,where("profileId","==",profile.id))
-          
-            let followList = []
-            snapshot.docs.forEach(doc => {
-                  const pack = doc.data();
-                  const { id,
-                profileId,
-                libraryId,
-                created
-               }=pack
-               const fl = new FollowLibrary(id,profileId,libraryId,created)
-                
-                followList = [...followList, fl]
-              })
-          return {
-          
-            followList: followList,
-          }}catch(err) {
-                return {
-                    error: new Error(`Error: Fetch Follow books: ${err.message}`)
-                }
-          }})
+
 const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunkApi)=>{
   try {
     const {fileName}=params
@@ -420,31 +259,6 @@ const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunk
 })
 
 
-const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfilesForProfile",async (params,thunkApi)=>{
-                    try{
-                        const {profile} = params
-                        const ref = collection(db,"follow_profile")
-                        const snapshot =await getDocs(ref,where("followerId","==",profile.id))
-                        let followList = []
-                    snapshot.docs.forEach(doc => {
-                            const pack = doc.data();
-                            const { id,
-                                    followerId,
-                                    followingId ,
-                                    created
-                                }=pack
-                    const fb = new FollowProfile(id,followerId,followingId,created) 
-                    followList = [...followList, fb]
-                    })
-            return {
-                followList: followList,
-            }
-        }catch(err) {
-            return {
-                error: new Error(`Error: Fetch Follow Profile: ${err.message}`)
-            }
-    }
-})
 const deleteUserAccounts = createAsyncThunk("users/deleteUserAccounts",async (params,thunkApi)=>{
 
   try{
@@ -460,26 +274,6 @@ return {error: new Error("Error: Deleting useer account"+err.message)
 }})
 
 
-
-const getPageApprovals = createAsyncThunk("users/getPageApprovals",async (params,thunkApi)=>{
-  try{
-  const {profile}=params
-  const snapshot = await getDocs(query(collection(db, UserApproval.className), where("profileId", "==", profile.id)))
-  let userApprovals = []
-  snapshot.docs.forEach(doc => {
-    let userApproval = unpackUserApprovalDoc(doc)
-    userApproval.push(userApproval)
-  })
-  return {
-    userApprovals
-  }
-}catch(e){
-  return {
-    error: e
-  }
-}
-})
-
 const  searchDialogToggle = createAction("users/searchDialogToggle",(params,thunkApi)=>{
   const {open} = params
   return {payload: open}
@@ -494,13 +288,7 @@ const setEvents = createAction("users/addEVents", (params)=> {
     
   
 })
-const unpackUserApprovalDoc = (doc)=>{
-  const pack = doc.data();
-            const { id } = doc;
-            const {score,pageId,profileId}=pack
-        let userApproval = new UserApproval(id,pageId,profileId,score)
-      return userApproval
-}
+
 
 export {logIn,
         signUp,
@@ -509,26 +297,18 @@ export {logIn,
     
         fetchProfile,
         setProfileInView,
-        createFollowBook,
-        createFollowLibrary,
-        fetchFollowBooksForProfile,
-        fetchFollowLibraryForProfile,
-     
-       
-  
-        fetchFollowProfilesForProfile,
+    
         signOutAction,
         useReferral,
         uploadPicture,
         deleteUserAccounts,
         setEvents,
-        updateHomeCollection,
         setSignedInTrue,
         setSignedInFalse,
         setDialog,
-        getPageApprovals,
         searchDialogToggle,
         searchMultipleIndexes,
         deletePicture,
-        updateSubscription
+        updateSubscription,
+        getIosInfo,
     }

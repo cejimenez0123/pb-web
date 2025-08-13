@@ -1,18 +1,4 @@
-// import Library from "../domain/models/library"
-// import {    getProfileLibraries,
-//             // fetchLibrary,
-//             // createLibrary,
-//             fetchBookmarkLibrary,
-//             updateLibrary,
-//             setLibraryInView,
-//             getPublicLibraries,
-//             fetchArrayOfLibraries,
-//             fetchArrayOfLibrariesAppend,
-//             clearLibrariesInView,
-//             setBookmarkLibrary,
-//             saveRolesForLibrary,
 
-//     } from "../actions/LibraryActions"
 import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
     librariesInView:[],

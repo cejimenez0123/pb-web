@@ -5,17 +5,14 @@ import {    logIn ,
     
             fetchProfile,
             setProfileInView,
-            fetchFollowBooksForProfile,
-            fetchFollowLibraryForProfile,
-            fetchFollowProfilesForProfile,
-         
+        
             signOutAction,
-            // fetchHomeCollection,
-            updateHomeCollection,
+        
+     
             setDialog,
             setSignedInTrue,
             setSignedInFalse,
-            getPageApprovals,
+      
             searchDialogToggle,
             searchMultipleIndexes,
             updateProfile,
@@ -158,27 +155,9 @@ const userSlice = createSlice({
         state.loading = false
     }).addCase(setProfileInView,(state,{payload})=>{
         state.profileInView = payload.profile
-    }).addCase(fetchFollowBooksForProfile.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(fetchFollowBooksForProfile.fulfilled,(state,{payload})=>{
-        if(Array.isArray(payload.followList)){
-        state.followedBooks = payload.followList
-        }
-    }).addCase(fetchFollowLibraryForProfile.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(fetchFollowLibraryForProfile.fulfilled,(state,{payload})=>{
-        if(Array.isArray(payload.followList)){
-            state.followedLibraries = payload.followList
-        }
-    })
+    }
+)
 
-    .addCase(fetchFollowProfilesForProfile.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(fetchFollowProfilesForProfile.fulfilled,(state,{payload})=>{
-        if(Array.isArray(payload.followList)){
-        state.followedProfiles = payload.followList
-        }
-    })
 
     .addCase(signOutAction.fulfilled,(state,{payload})=>{
 
@@ -189,11 +168,9 @@ const userSlice = createSlice({
       
     }).addCase(signOutAction.rejected,(state,{payload})=>{
         state.error = payload.error
-    }).addCase(updateHomeCollection.fulfilled,(state,{payload})=>{
-        state.homeCollection = payload.collection
-    }).addCase(updateHomeCollection.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(setDialog.type,(state,{payload})=>{
+    })
+
+    .addCase(setDialog.type,(state,{payload})=>{
         if(payload){ if(payload.isOpen==false){
 state.dialog.isOpen = false
         }else{
@@ -203,13 +180,8 @@ state.dialog.isOpen = false
         state.signedIn = true
     }).addCase(setSignedInFalse.type,(state,{payload})=>{
         state.signedIn=false
-    }).addCase(getPageApprovals.fulfilled,(state,{payload})=>{
-        if(payload.userApprovals!==null){
-            state.userApprovals = payload.userApprovals
-        }
-    }).addCase(getPageApprovals.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(createPageApproval.fulfilled,(state,{payload})=>{
+    })
+   .addCase(createPageApproval.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
     }).addCase(deletePageApproval.fulfilled,(state,{payload})=>{
         const list = state.userApprovals.filter(ua=> ua!=null &&payload.userApproval && ua.id != payload.userApproval.id)

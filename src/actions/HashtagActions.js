@@ -1,11 +1,6 @@
-import {db,auth, client} from "../core/di"
-import {where,query,collection,getDocs,doc,setDoc, Timestamp, } from "firebase/firestore"
+import { client} from "../core/di"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
-import Hashtag from "../domain/models/hashtag"
-import HashtagComment from "../domain/models/hashtag_comment"
-import HashtagPage from "../domain/models/hashtag_page"
 import hashtagRepo from "../data/hashtagRepo"
-import axios from "axios"
 const getProfileHashtagCommentUse = createAsyncThunk("hashtag/fetchProfileHashtagComments",
 async ({profileId},thunkApi) => {
    let data = await hashtagRepo.fetchUserHashtagCommentUse({profileId})
@@ -87,7 +82,7 @@ async ({name,storyId,profile},thunkApi) => {
             ,error:err
         }
     }
-   
+     
 })
 const createHashtagCollection = createAsyncThunk("hashtag/createHashtagCollection", 
 async ({name,colId,profile},thunkApi) => {
@@ -159,21 +154,7 @@ const fetchStoryHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",async 
 }   
 
 })
-const unpackHashtagDoc = (doc)=>{
-    const id = doc.id
-    const pack = doc.pack()
-    const {name,created,popularityScore,profileId}=pack
-    const hashtag = new Hashtag(id,
-                                name,
-                                profileId,
-                                popularityScore,
-                                created)
-    return hashtag
-}
-
-
-
-export {unpackHashtagDoc,
+export {
         createHashtag,
         createHashtagComment,
         createHashtagPage,

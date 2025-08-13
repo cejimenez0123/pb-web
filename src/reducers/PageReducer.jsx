@@ -5,11 +5,10 @@ import {
           getPublicProfilePages,
           appendToPagesInView,
           setPageInView,
-          fetchPage,
-          fetchArrayOfPages,
+        
           setPagesToBeAdded,
           clearPagesInView,
-          fetchEditingPage,
+          // fetchEditingPage,
           clearEditingPage,
       
           setEditingPage,
@@ -167,28 +166,7 @@ const pageSlice = createSlice({
       }).addCase(setEditingPage.type,(state,{payload})=>{
         state.editingPage = payload
       })
-      // .addCase(saveRolesForPage.fulfilled,(state,{payload})=>{
-      //   if(payload.page){
-      //   state.editingPage = payload.page
-      // }}).addCase(saveRolesForPage.rejected,(state,{payload})=>{
-      //   state.error = payload.error
-      // })
-      .addCase(fetchPage.pending,(state)=>{
-        state.loading = true
-      }).addCase(fetchPage.rejected,(state,{payload})=>{
-        state.error = payload.error
-      }).addCase(fetchPage.fulfilled,(state,{payload})=>{
-        state.loading = false
-        state.pageInView = payload.page
-      }).addCase(fetchArrayOfPages.fulfilled,(state,{payload})=>{
-          state.pagesInView = payload.pageList
-          state.loading = false
-      }).addCase(fetchArrayOfPages.rejected,(state,{payload})=>{
-          state.error = payload.error
-          state.loading = false
-      }).addCase(fetchArrayOfPages.pending,(state)=>{
-          state.loading = true
-      }).addCase(setPagesInView,(state,{payload})=>{
+.addCase(setPagesInView,(state,{payload})=>{
     
           state.pagesInView = payload
       
@@ -201,18 +179,8 @@ const pageSlice = createSlice({
         state.pageInView = null
       }).addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []
-    }).addCase(fetchEditingPage.fulfilled,(state,{payload})=>{
-      if(payload.page){
-      state.editingPage = payload.page
-      }
     })
-    // .addCase(updatePage.fulfilled,(state,{payload})=>{
-    //     if(payload.page){
-    //     state.editingPage = payload.page
-    //     }
-    //   }).addCase(updatePage.rejected,(state,{payload})=>{
-    //    state.error = payload.error
-    //   })
+
     }
   })
     
