@@ -87,7 +87,7 @@ export default function OnboardingContainer(props) {
   };
 
   const onClickApply = debounce(async () => {
-    if(idToken){
+    if(formData.idToken){
       dispatchSignUp(null,formData.fullName,null,idToken).then(res=>{
         checkResult(res,async payload=>{
           const {profile}=payload

@@ -150,8 +150,8 @@ const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
   try{
 
-  let token = localStorage.getItem("token")
-  let idToken = localStorage.getItem("idToken")
+  const token = localStorage.getItem("token")
+  const idToken = localStorage.getItem("idToken")
   if(token){
     const data = await profileRepo.getMyProfiles({token:token})
 if(data.profile){

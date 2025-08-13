@@ -28,8 +28,8 @@ function AppleSignInButton({onUserSignIn}) {
         // TODO: Handle error (show message to user, etc.)
       });
   };
-  let idToken = localStorage.getItem("token")
- console.log("idToken",idToken)
+  const idToken = localStorage.getItem("token")
+
    return !idToken?<IonButton onClick={handleAppleSignIn} expand="block" color="dark">
       <IonIcon slot="start" name="logo-apple" />
       Sign in with Apple
