@@ -89,7 +89,7 @@ export default function OnboardingContainer(props) {
   const onClickApply = debounce(async () => {
     const idToken =formData.idToken
     if(idToken){
-    let  data = await authRepo.apply(form)
+    let  data = await authRepo.apply(formData)
     console.log(data)
     await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
     setUser(data?.user ?? data);
