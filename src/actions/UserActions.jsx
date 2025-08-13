@@ -10,10 +10,10 @@ const logIn = createAsyncThunk(
    
      
 
-        const {uId,email,password}=params
+        const {uId,email,password,idToken}=params
 
 
-        const authData = await authRepo.startSession({uId:uId,email:email,password})
+        const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
    
         
         const {token}=authData
