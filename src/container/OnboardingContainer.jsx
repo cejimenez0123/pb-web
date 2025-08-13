@@ -89,34 +89,38 @@ export default function OnboardingContainer(props) {
   const onClickApply = debounce(async () => {
     const idToken =formData.idToken
     if(idToken){
-      dispatchSignUp(null,formData.fullName,null,idToken).then(res=>{
-        checkResult(res,async payload=>{
-          const {profile}=payload
-            setUser(profile)
-            const form = {
-              ...formData,
-              email: formData.email.toLowerCase(),
-              genres: formData.selectedGenres.includes("Other")
-                ? [...formData.selectedGenres.filter(g => g !== "Other"), formData.otherGenre]
-                : formData.selectedGenres,
-            };
-            try {
-            if (window.location.pathname.includes("newsletter")) {
-              data = await authRepo.applyFromNewsletter(form);
-            } else {
-              data = await authRepo.apply(form);
-            }
+    let  data = await authRepo.apply(form)
+    console.log(data)
+    await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
+    setUser(data?.user ?? data);
+    //   dispatchSignUp(null,formData.fullName,null,idToken).then(res=>{
+    //     checkResult(res,async payload=>{
+    //       const {profile}=payload
+    //         setUser(profile)
+    //         const form = {
+    //           ...formData,
+    //           email: formData.email.toLowerCase(),
+    //           genres: formData.selectedGenres.includes("Other")
+    //             ? [...formData.selectedGenres.filter(g => g !== "Other"), formData.otherGenre]
+    //             : formData.selectedGenres,
+    //         };
+    //         try {
+    //         if (window.location.pathname.includes("newsletter")) {
+    //           data = await authRepo.applyFromNewsletter(form);
+    //         } else {
+    //           data = await authRepo.apply(form);
+    //         }
 
-            await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
-            setUser(data?.user ?? data);
-          }catch(e){
-            setError(e.message)
-          }
-        },err=>{
+    //         await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
+    //         setUser(data?.user ?? data);
+    //       }catch(e){
+    //         setError(e.message)
+    //       }
+    //     },err=>{
           
-        })
-      })
-      return
+    //     })
+    //   })
+    //   return
     }
 
     if (validateEmail(formData.email)) {
