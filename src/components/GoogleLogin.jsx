@@ -255,7 +255,8 @@ if(!signedIn){
         }
         console.log("User signed out.");
     };
-    const idToken = localStorage.getItem("idToken")
+    const idToken = localStorage.getItem("token")
+
     return (
         <div>
             {!gisLoaded && <p>Loading Google Sign-In...</p>}
