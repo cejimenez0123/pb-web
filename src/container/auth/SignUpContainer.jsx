@@ -54,7 +54,9 @@ export default function SignUpContainer(props) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const idToken = getLocalStore("idToken")
+   getLocalStore("idToken").then(token=>{
+    setIdentityToken(token)
+   })
   const { setError, setSuccess, setSeo, seo } = useContext(Context);
 
   useEffect(() => {
@@ -153,7 +155,7 @@ export default function SignUpContainer(props) {
               </IonText>
             )}
                
-           {googleID||idToken? null:
+           {googleID||identityToken? null:
            <div className='mx-auto w-fit'><GoogleLogin onUserSignIn={({email,
                                 googleId,
                                 driveAccessToken})=>{
