@@ -170,7 +170,7 @@ setEmail(email)
                <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
                
                    <IonInput
-                label='username'
+                label='Password'
                 labelPlacement='stacked'
                 className="text-emerald-800 border rounded-full border-emerald-100 "
                 value={password}

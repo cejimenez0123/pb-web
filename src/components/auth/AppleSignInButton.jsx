@@ -1,8 +1,7 @@
 import React from 'react';
 import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { IonButton, IonIcon } from '@ionic/react';
-import Enviroment from '../../core/Enviroment';
-import { getIosInfo, logIn, signUp } from '../../actions/UserActions';
+import Enviroment from '../../core/Enviroment';xw
 import { useDispatch } from 'react-redux';
 
 function AppleSignInButton({onUserSignIn}) {
