@@ -156,7 +156,10 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
 
   const Step1 = ({ formData, updateFormData, handleTab }) => {
     const handleNext = () => {
-      handleTab();
+      handleTab('tab2');
+    };
+    const handleBack = () => {
+      handleTab('tab0');
     };
 
     return (
@@ -212,9 +215,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
             )}  </IonItem>
 
             <IonItem fill="outline" color="success" className="my-4">
-             {/* <div>
-              <IonLabel position="floating" className="mont-medium">IG Handle</IonLabel>
-              </div> */}
+            
              <IonInput
              label='IG Handle'
                 value={formData.igHandle}
@@ -234,13 +235,18 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
             }}/>
             </IonList>
             <div className='h-[18rem]'/>
-            <div className='text-right'>
+            <IonRow className='flex justify-between'>
+            <div className="btn-container btn  bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+              <IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+                 Back
+              </IonText>
+            </div>
             <div className="btn-container btn  bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
               <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
                 Next Step
               </IonText>
             </div>
-            </div>
+            </IonRow>
           </IonList>
         </IonRow>
       </IonGrid>
@@ -249,8 +255,11 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
 
   const Step2 = ({ formData, updateFormData, handleTab }) => {
     const handleNext = () => {
-      handleTab();
+      handleTab('tab3');
     };
+    const handleBack=()=>{
+      handleTab("tab1")
+    }
 
     return (
       <IonGrid>
@@ -288,13 +297,18 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
             />
 </div>
 <div className='h-[19.5rem]'/>
-<div className='text-right'>
+<IonRow>
+<div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+              <IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+                Back
+              </IonText>
+            </div>
             <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
               <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
                 Next Step
               </IonText>
             </div>
-            </div>
+            </IonRow>
           </IonCol>
         </IonRow>
       </IonGrid>
@@ -311,9 +325,12 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
       }
       updateFormData({ selectedGenres: newSelectedGenres });
     };
+    const handleBack = () => {
+      handleTab("tab2");
+    };
 
     const handleNext = () => {
-      handleTab();
+      handleTab("tab4");
     };
 
     const selectedGenres = formData.selectedGenres || [];
@@ -372,13 +389,21 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
               feedbackFrequency={feedbackFrequency}
               setFeedbackFrequency={val => updateFormData({ feedbackFrequency: val })}
             />
-<div className='text-right'>
+<IonRow>
+<div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0', textAlign: 'right' }}>
+            
+<IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+               Back
+              </IonText>
+            </div>
             <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0', textAlign: 'right' }}>
+  
               <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
                 Next Step
               </IonText>
-            </div>
-            </div>
+              </div>
+              </IonRow>
+      
           </IonCol>
         </IonRow>
       </IonGrid>
@@ -513,10 +538,10 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
       </div>
 
       <div className="ion-padding-horizontal">
-        {activeTab === 'tab0' && <Why handleTab={() => setActiveTab('tab1')} />}
-        {activeTab === 'tab1' && <Step1 formData={formData} updateFormData={updateFormData} handleTab={() => setActiveTab('tab2')} />}
-        {activeTab === 'tab2' && <Step2 formData={formData} updateFormData={updateFormData} handleTab={() => setActiveTab('tab3')} />}
-        {activeTab === 'tab3' && <Step3 formData={formData} updateFormData={updateFormData} handleTab={() => setActiveTab('tab4')} />}
+        {activeTab === 'tab0' && <Why handleTab={(tab) => setActiveTab('tab1')} />}
+        {activeTab === 'tab1' && <Step1 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
+        {activeTab === 'tab2' && <Step2 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
+        {activeTab === 'tab3' && <Step3 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
         {activeTab === 'tab4' && <Step4 formData={formData} updateFormData={updateFormData} onSave={onClickApply} handleTab={() => setActiveTab('tab5')} />}
         {activeTab === 'tab5' && user && <ThankYou user={user} />}
       </div>
