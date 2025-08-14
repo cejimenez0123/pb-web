@@ -3,9 +3,12 @@ import { useDispatch } from 'react-redux'; // Import useDispatch
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../actions/UserActions';
 import Paths from '../core/paths';
+import getLocalStore from '../core/getLocalStore';
+import DeviceCheck from './DeviceCheck';
 
 export default function GoogleLogin({ onUserSignIn }) { 
     const [gisLoaded, setGisLoaded] = useState(false);
+    const isNative = DeviceCheck()
 
     const [signedIn, setSignedIn] = useState(false); // Internal state for this component's UI
     const driveTokenKey = "googledrivetoken"; // Consistent key for Drive access token
@@ -255,15 +258,15 @@ if(!signedIn){
         }
         console.log("User signed out.");
     };
-    const idToken = localStorage.getItem("token")
+    const idToken = getLocalStore("token",isNative)
 
     return (
         <div>
             {!gisLoaded && <p>Loading Google Sign-In...</p>}
 
-            {!signedIn&&!idToken ? (
+            {!signedIn||!idToken ? (
                 // This div will be replaced by the Google Sign-In button
-                <div id="google-sign-in-button"  style={{ display: gisLoaded ? 'block' : 'none' }}></div>
+                <div id="google-sign-in-button"  className="mx-auto" style={{ display: gisLoaded ? 'block' : 'none' }}></div>
             ) : null}
         </div>
     );

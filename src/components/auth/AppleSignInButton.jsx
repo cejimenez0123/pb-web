@@ -30,7 +30,7 @@ function AppleSignInButton({onUserSignIn}) {
   };
   const idToken = localStorage.getItem("token")
 
-   return !idToken?<IonButton onClick={handleAppleSignIn} expand="block" color="dark">
+   return !idToken?<IonButton onClick={handleAppleSignIn} expand="block" color="dark" className='rounded-full'>
       <IonIcon slot="start" name="logo-apple" />
       Sign in with Apple
     </IonButton>:null

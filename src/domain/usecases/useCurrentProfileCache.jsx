@@ -36,7 +36,7 @@ export default function usePersistentCurrentProfile(fetchData) {
 
   
     let token = localStorage.getItem("token")
-    const setPrefences = async (profile)=>{
+    const setPrefernces = async (profile)=>{
       await Preferences.set({key:key,value:JSON.stringify(profile)})
     }
     useEffect(() => {
@@ -45,7 +45,7 @@ export default function usePersistentCurrentProfile(fetchData) {
         
         fetchData().then(res=>checkResult(res,payload=>{
         setProfile(payload.profile)
-        setPrefences(payload.profile)
+        setPrefernces(payload.profile)
         localStorage.setItem(key, JSON.stringify(payload.profile));
       }))
     }

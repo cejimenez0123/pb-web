@@ -31,8 +31,13 @@ import Context from "../../context";
 import "../../App.css";
 import GoogleLogin from "../../components/GoogleLogin";
 import InfoTooltip from '../../components/InfoTooltip';
+import setLocalStore from '../../core/setLocalStore';
+import getLocalStore from '../../core/getLocalStore';
+import DeviceCheck from '../../components/DeviceCheck';
+import AppleSignInButton from '../../components/auth/AppleSignInButton';
 
 export default function SignUpContainer(props) {
+  const isNative = DeviceCheck()
   const selectRef = useRef()
   const [token, setToken] = useState('');
   const [password, setPassword] = useState("");
@@ -44,6 +49,7 @@ export default function SignUpContainer(props) {
   const [frequency, setFrequency] = useState(1);
   const [isPrivate, setIsPrivate] = useState(false);
   const [googleID, setGoogleID] = useState(null);
+  const [identityToken,setIdentityToken]=useState(null)
   const [email, setEmail] = useState("");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -59,6 +65,7 @@ export default function SignUpContainer(props) {
 
   useEffect(() => {
     setToken(token);
+    setLocalStore(token,isNative)
   }, [searchParams, token]);
 
   const handleFileInput = (e) => {
@@ -78,10 +85,11 @@ export default function SignUpContainer(props) {
 
   const completeSignUp = () => {
     let toke = searchParams.get("token") || token;
-    if (localStorage.getItem("googledrivetoken") || (password.length > 6 && username.length > 3)) {
+    if (getLocalStore("googledrivetoken") || (password.length > 6 && username.length > 3)) {
       const pictureParams = file ? { file } : { profilePicture: selectedImage };
       const params = {
         email,
+        idToken:identityToken,
         googleId: googleID,
         token: toke,
         password,
@@ -99,7 +107,8 @@ export default function SignUpContainer(props) {
         : dispatch(signUp(params));
 
       uploadAction.then(res => checkResult(res, payload => {
-        localStorage.setItem("firstTime", payload.firstTime);
+        setLocalStore("firstTime", payload.firstTime,isNative)
+   
         if (payload.profile) {
           navigate(Paths.myProfile());
         } else {
@@ -116,7 +125,7 @@ export default function SignUpContainer(props) {
   };
 
   return (
-    // <IonPage>
+    
       
       <IonContent fullscreen className="ion-padding pt-8">
         <IonHeader className="bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
@@ -126,6 +135,7 @@ export default function SignUpContainer(props) {
       </IonHeader>
         <IonCard style={{maxWidth:"30rem"}} className="mx-auto shadow-none bg-transparent">
           <IonCardContent>
+         
             <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
                 <IonInput
                 label='username'
@@ -141,18 +151,33 @@ export default function SignUpContainer(props) {
                 <h6>Minimum username length is 4 characters</h6>
               </IonText>
             )}
-            {!localStorage.getItem("googledrivetoken") && (
+               <div className='mx-auto w-fit'>
+           {!googleID||!identityToken? <><GoogleLogin onUserSignIn={({email,
+                                googleId,
+                                driveAccessToken})=>{
+setGoogleID(googleId)
+setEmail(email)
+
+                                }}
+                                  />
+            <AppleSignInButton onUserSignIn={({idToken,email})=>{
+              setEmail(email)
+              setIdentityToken(idToken)
+            }}/></>:null}</div>
+      
+            {/* {!getLocalStore("googledrivetoken") && ( */}
               <>
                <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
+               
                    <IonInput
-                   labelPlacement='stacked'
-                    label='Password'
-                    type="password"
-                    className="text-white"
-                    value={password}
-                    onIonInput={e => setPassword(e.detail.value.trim())}
-                    placeholder="password"
-                  />
+                label='username'
+                labelPlacement='stacked'
+                className="text-emerald-800 border rounded-full border-emerald-100 "
+                value={password}
+                onIonInput={e => setPassword(e.detail.value.trim())}
+                placeholder="password"
+              />
+              
                 </IonItem>
                 {(password.length > 0 && password.length <= 6) && (
                   <IonText color="danger">
@@ -160,12 +185,11 @@ export default function SignUpContainer(props) {
                   </IonText>
                 )}
                   <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
-             {/* <IonLabel position="stacked" className="text-white">Confirm Password</IonLabel> */}
                   <IonInput
                     label='Confirm Password'
                     type="password"
                     labelPlacement='stacked'
-                    className="text-white"
+                  
                     value={confirmPassword}
                     onIonInput={e => setConfirmPassword(e.detail.value.trim())}
                     placeholder="password"
@@ -177,7 +201,7 @@ export default function SignUpContainer(props) {
                   </IonText>
                 )}
               </>
-            )}
+            {/* )} */}
             <IonItem
   lines="none"
   className="w-full mt-8 ion-align-items-center"
@@ -193,7 +217,7 @@ export default function SignUpContainer(props) {
     <IonText className="my-auto">Is Private?</IonText>
     
     {/* Yes/No status */}
-    <IonText className="my-auto ml-4">
+    <IonText className="my-auto min-w-10 ml-4">
       {isPrivate ? "Yes" : "No"}
     </IonText>
     <input
@@ -202,7 +226,7 @@ export default function SignUpContainer(props) {
       // slot="start"
 type='checkbox'
      
-      className='my-auto mx-6'
+      className='my-auto rounded-full bg-white border-emerald-500  mx-6'
       checked={isPrivate}
       onChangeCapture={() => setIsPrivate(!isPrivate)}
       color="success"
@@ -215,11 +239,11 @@ type='checkbox'
 
             
             <IonItem lines="none" className="flex i flex-col w-[100vw] mx-auto mt-8">
-              <IonLabel className="font-bold  text-xl text-left pb-2">
+              <IonLabel className=" text-xl text-left pb-2">
                 Add a Profile Picture
               </IonLabel>
               <input
-                className="file-input mt-4 text-center text-white mx-auto w-[20em] sm:w-72"
+                className="file-input mt-4 text-center  mx-auto w-[20em] sm:w-72"
                 type="file"
                 accept="image/*"
                 onInput={handleFileInput}
@@ -254,7 +278,7 @@ type='checkbox'
               
 
             </IonItem>
-            <IonLabel className="text-left w-full text-xl font-bold mb-2">
+            <IonLabel className="text-left w-full text-xl mb-2">
               Self Statement
             </IonLabel>
             <IonTextarea
@@ -263,15 +287,10 @@ type='checkbox'
               value={selfStatement}
               onIonInput={e => setSelfStatement(e.detail.value)}
             />
-            {/* <IonButton
-              className="bg-green-600 mont-medium max-w-[18em] mx-auto mb-12 border hover:bg-emerald-400 bg-gradient-to-r from-emerald-300 to-emerald-500 border-0 text-white py-2 rounded-full px-4 mt-8 min-h-14"
-              expand="block"
-              disabled={confirmPassword !== password || username.length < 4}
-              onClick={completeSignUp}
-            > */}
-<div className='bg-green-700 btn  flex flex-row mx-auto mb-12 border border-emerald-600 rounded-full hover:bg-emerald-400'>
+           
+<div onClick={completeSignUp} className='bg-green-700 btn  flex flex-row mx-auto mb-12 border border-emerald-600 rounded-full hover:bg-emerald-400'>
               <IonText className="text-white mx-auto my-auto text-xl">Join Plumbum!</IonText>
-            {/* </IonButton> */}
+          
             </div>
           </IonCardContent>
         </IonCard>

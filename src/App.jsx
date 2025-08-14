@@ -167,7 +167,7 @@ console.log(isPhone)
       
        
      
-        {!isPhone&&!location.pathname.includes("/onboard")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
+        {!isPhone&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
         loggedIn={currentProfile}
         currentProfile={currentProfile}/></div>:null}
@@ -322,7 +322,7 @@ console.log(isPhone)
       
     </Routes>
     </div>
-    {isPhone&&!location.pathname.includes("/onboard")?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
+    {isPhone&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
         loggedIn={props.currentProfile}
         profile={props.currentProfile}/></div>:null}
