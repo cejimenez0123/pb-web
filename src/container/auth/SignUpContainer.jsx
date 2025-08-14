@@ -280,8 +280,6 @@ type='checkbox'
             <option  className="text-emerald-700" value={30}>Monthly</option>
 
           </select>
-              
-
             </IonItem>
             <IonLabel className="text-left w-full text-xl mb-2">
               Self Statement
