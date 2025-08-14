@@ -126,7 +126,7 @@ setLogInError("User Not Found. Apply Below")
                     navigate(Paths.myProfile())
                 }
             },err=>{
-                console.log(payload.error)
+               
                 if(err.message=="Request failed with status code 401"){
 setLogInError("User Not Found. Apply Below")
                 }else{
