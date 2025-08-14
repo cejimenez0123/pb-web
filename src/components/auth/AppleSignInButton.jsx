@@ -1,7 +1,7 @@
 import React from 'react';
 import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { IonButton, IonIcon } from '@ionic/react';
-import Enviroment from '../../core/Enviroment';xw
+import Enviroment from '../../core/Enviroment';
 import { useDispatch } from 'react-redux';
 import getLocalStore from '../../core/getLocalStore';
 
