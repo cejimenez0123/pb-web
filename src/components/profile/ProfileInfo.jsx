@@ -121,19 +121,7 @@ const ProfileInfo = ({profile})=>{
                 <h6 className="text-[1.2rem]">{profile.followers.length}</h6>
             </div>:null}
         </div>
-        {/* <Dialog 
-        
-        isOpen={followersDialog}
-        onClose={()=>{
-    closeFollowersDialog()
-}} text={
-    <div className="card  min-h-[20em] min-w-[30em] p-6 rounded-lg">
-       <div className="mx-4">
-        <img  onClick={followersDialog}src={clear}/>
-       </div>
-      {profile&&profile.followers?  <FollowerCard followers={profile.followers}/>:null}
-    </div>}
-/> */}
+
 <div className='w-[10em] h-[3em] mx-auto flex'>
 {!isNative?<h6 onClick={()=>handleDialogOpen()}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
                             :   <IonButton id="open-modal" expand="block">

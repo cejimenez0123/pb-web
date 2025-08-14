@@ -4,6 +4,10 @@
 
   width: 100vw;
 }
+ion-checkbox .checkbox-icon {
+  display: none !important;
+}
+
 .screen{
   padding-top: 1.5em;
 }
@@ -957,11 +961,12 @@ textarea.sc-ion-textarea {
   margin-bottom: 1em;
 }
 
-ion-toolbar::part(container) {
-  padding: ".5rem .5rem"!important;
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-}
 
+
+/* .checkbox-icon{
+  display: none !important;
+} */
+/* ion-checkbox {
+  --checkmark-color: transparent; 
+  --background-checked: var(--ion-color-success, green);
+} */

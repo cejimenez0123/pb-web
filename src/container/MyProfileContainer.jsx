@@ -53,7 +53,7 @@ function MyProfileContainer({presentingElement}) {
   const isNative = DeviceCheck();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const dialog = useSelector(state=>state.users.dialog)
   const { currentProfile, seo, setSeo, isPhone, isNotPhone } = useContext(Context);
   const [search, setSearch] = useState("");
   // const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -142,7 +142,11 @@ function MyProfileContainer({presentingElement}) {
     dispatch(setCollections({ collections: filteredCols }));
     dispatch(setPagesInView({ pages: filteredPgs }));
   }, [search]);
-
+  const handleOpenDialog=()=>{
+    // let dia = {...dialog}
+    // <Dialog isOpen={openDialog} onClose={() => setOpenDialog(false)}
+    // text={<CreateCollectionForm onClose={() => setOpenDialog(false)} />} />
+  }
   // Sort handlers (called only from filterType effect)
   const handleSortAlpha = (sortedAsc) => {
     const sorted = [...collections].sort((a, b) =>
@@ -337,8 +341,7 @@ function MyProfileContainer({presentingElement}) {
         <FeedbackDialog presentingElement={presentingElement} page={feedbackPage} open={!!feedbackPage} isFeedback={true}
           handleChange={setFeedback} handleFeedback={handleFeedback} handlePostPublic={() => { }}
           handleClose={() => navigate(Paths.workshop.createRoute(feedbackPage?.id))} />
-        <Dialog isOpen={openDialog} onClose={() => setOpenDialog(false)}
-          text={<CreateCollectionForm onClose={() => setOpenDialog(false)} />} />
+
         <Dialog isOpen={firstLogin} onClose={() => {
           localStorage.setItem("firstTime", "false");
           setFirstLogin(false);

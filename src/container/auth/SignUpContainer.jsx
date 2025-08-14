@@ -16,9 +16,11 @@ import {
   IonCard,
   IonCardContent,
   IonSpinner,
+  IonRow,
+  IonCol,
 } from '@ionic/react';
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture } from "../../actions/ProfileActions";
 import { signUp } from "../../actions/UserActions";
@@ -28,8 +30,10 @@ import info from "../../images/icons/info.svg";
 import Context from "../../context";
 import "../../App.css";
 import GoogleLogin from "../../components/GoogleLogin";
+import InfoTooltip from '../../components/InfoTooltip';
 
 export default function SignUpContainer(props) {
+  const selectRef = useRef()
   const [token, setToken] = useState('');
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -114,21 +118,22 @@ export default function SignUpContainer(props) {
   return (
     // <IonPage>
       
-      <IonContent fullscreen className="ion-padding">
+      <IonContent fullscreen className="ion-padding pt-8">
         <IonHeader className="bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
-        <IonTitle className="text-green-100 lora-medium text-4xl text-center pt-8 px-4 md:pt-24 md:pb-8">
+        <IonTitle className="text-green-800 text-center ">
           Complete Sign Up
         </IonTitle>
       </IonHeader>
-        <IonCard className="mx-auto shadow-none bg-transparent">
+        <IonCard style={{maxWidth:"30rem"}} className="mx-auto shadow-none bg-transparent">
           <IonCardContent>
-            <IonItem className="input lora-medium border bg-transparent rounded-full border-white mt-4 flex items-center">
-              <IonLabel position="stacked" className="text-white">Username</IonLabel>
-              <IonInput
-                className="text-white"
+            <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
+                <IonInput
+                label='username'
+                labelPlacement='stacked'
+                className="text-emerald-800 border  rounded-full border-emerald-100 "
                 value={username}
                 placeholder="username"
-                onIonChange={e => setUsername(e.detail.value.trim())}
+                onIonInput={e => setUsername(e.detail.value.trim())}
               />
             </IonItem>
             {username.length !== 0 && username.length < 4 && (
@@ -138,14 +143,15 @@ export default function SignUpContainer(props) {
             )}
             {!localStorage.getItem("googledrivetoken") && (
               <>
-                <IonItem className="input lora-medium border bg-transparent rounded-full border-white mt-4 flex items-center">
-                  <IonLabel position="stacked" className="text-white">Password</IonLabel>
-                  <IonInput
+               <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
+                   <IonInput
+                   labelPlacement='stacked'
+                    label='Password'
                     type="password"
                     className="text-white"
                     value={password}
-                    onIonChange={e => setPassword(e.detail.value.trim())}
-                    placeholder="*****"
+                    onIonInput={e => setPassword(e.detail.value.trim())}
+                    placeholder="password"
                   />
                 </IonItem>
                 {(password.length > 0 && password.length <= 6) && (
@@ -153,14 +159,16 @@ export default function SignUpContainer(props) {
                     <h6>Minimum Password Length is 6 characters</h6>
                   </IonText>
                 )}
-                <IonItem className="input lora-medium border bg-transparent border-white rounded-full mt-4 flex items-center">
-                  <IonLabel position="stacked" className="text-white">Confirm Password</IonLabel>
+                  <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
+             {/* <IonLabel position="stacked" className="text-white">Confirm Password</IonLabel> */}
                   <IonInput
+                    label='Confirm Password'
                     type="password"
+                    labelPlacement='stacked'
                     className="text-white"
                     value={confirmPassword}
-                    onIonChange={e => setConfirmPassword(e.detail.value.trim())}
-                    placeholder="*****"
+                    onIonInput={e => setConfirmPassword(e.detail.value.trim())}
+                    placeholder="password"
                   />
                 </IonItem>
                 {password !== confirmPassword && (
@@ -170,27 +178,48 @@ export default function SignUpContainer(props) {
                 )}
               </>
             )}
-            <IonItem lines="none" className="w-full mt-8 flex flex-row justify-between text-left">
-              <div className="flex flex-row">
-                <IonImg src={info} style={{ width: 16, marginLeft: 8, marginRight: 8 }} />
-                <span className="text-white text-l open-sans-medium">Will your account be private?</span>
-              </div>
-              <div className="flex flex-row">
-                <IonText color="light">{isPrivate ? "Yes" : "No"}</IonText>
-                <IonCheckbox
-                  checked={isPrivate}
-                  onIonChange={e => setIsPrivate(e.detail.checked)}
-                  color="success"
-                  style={{ marginLeft: 12 }}
-                />
-              </div>
-            </IonItem>
-            <IonItem lines="none" className="flex flex-col mx-auto mt-8">
-              <IonLabel className="font-bold text-white lora-medium text-xl text-left pb-2">
+            <IonItem
+  lines="none"
+  className="w-full mt-8 ion-align-items-center"
+>
+  <div className="flex flex-row pt-8 items-center gap-3"> 
+  
+    <InfoTooltip text="Will your account be private?" />
+
+    
+
+  
+    <div className='flex flex-row'>
+    <IonText className="my-auto">Is Private?</IonText>
+    
+    {/* Yes/No status */}
+    <IonText className="my-auto ml-4">
+      {isPrivate ? "Yes" : "No"}
+    </IonText>
+    <input
+
+    id="ion-cb-1"
+      // slot="start"
+type='checkbox'
+     
+      className='my-auto mx-6'
+      checked={isPrivate}
+      onChangeCapture={() => setIsPrivate(!isPrivate)}
+      color="success"
+    />
+   
+    </div>
+  </div>
+</IonItem>
+
+
+            
+            <IonItem lines="none" className="flex i flex-col w-[100vw] mx-auto mt-8">
+              <IonLabel className="font-bold  text-xl text-left pb-2">
                 Add a Profile Picture
               </IonLabel>
               <input
-                className="file-input mt-4 text-left max-w-[90%] lg:w-72"
+                className="file-input mt-4 text-center text-white mx-auto w-[20em] sm:w-72"
                 type="file"
                 accept="image/*"
                 onInput={handleFileInput}
@@ -200,44 +229,50 @@ export default function SignUpContainer(props) {
                   <IonImg
                     src={selectedImage}
                     alt="Selected"
-                    style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }}
+                    style={{ maxWidth: '10em', maxHeight: '300px', borderRadius: '10px',margin:"auto" }}
                   />
                 </div>
               )}
             </IonItem>
             <IonItem className="mb-4 flex flex-row justify-between">
-              <IonLabel className="block text-white mont-medium text-[1.5rem] font-semibold mb-2">
+              <IonLabel className="block  mont-medium text-[1.2rem] font-semibold mb-2">
                 Email Frequency
               </IonLabel>
-              <IonSelect
-                className="bg-white text-emerald-700 mont-medium select-bordered"
-                value={frequency}
-                onIonChange={e => setFrequency(Number(e.detail.value))}
-              >
-                <IonSelectOption value={1}>Daily</IonSelectOption>
-                <IonSelectOption value={2}>Every 3 days</IonSelectOption>
-                <IonSelectOption value={3}>Weekly</IonSelectOption>
-                <IonSelectOption value={14}>Every 2 Weeks</IonSelectOption>
-                <IonSelectOption value={30}>Monthly</IonSelectOption>
-              </IonSelect>
+                       <select
+            className="w-full bg-white select text-emerald-700 mont-medium select-bordered "
+            value={frequency}
+            ref={selectRef}
+            onChange={(e) => setFrequency(e.target.value)}
+          >
+            <option className="text-emerald-700" value={1}>daily</option>
+            <option  className="text-emerald-700" value={2}>Every 3 days</option>
+            <option  className="text-emerald-700" value={3}>Weekly</option>
+            <option  className="text-emerald-700" value={14}>Every 2 Weeks</option>
+            <option  className="text-emerald-700" value={30}>Monthly</option>
+
+          </select>
+              
+
             </IonItem>
-            <IonLabel className="text-left w-full text-white lora-medium text-xl font-bold mb-2">
+            <IonLabel className="text-left w-full text-xl font-bold mb-2">
               Self Statement
             </IonLabel>
             <IonTextarea
               placeholder="What are you about?"
               className="textarea bg-transparent border w-full border-white text-md lg:text-l"
               value={selfStatement}
-              onIonChange={e => setSelfStatement(e.detail.value)}
+              onIonInput={e => setSelfStatement(e.detail.value)}
             />
-            <IonButton
+            {/* <IonButton
               className="bg-green-600 mont-medium max-w-[18em] mx-auto mb-12 border hover:bg-emerald-400 bg-gradient-to-r from-emerald-300 to-emerald-500 border-0 text-white py-2 rounded-full px-4 mt-8 min-h-14"
               expand="block"
               disabled={confirmPassword !== password || username.length < 4}
               onClick={completeSignUp}
-            >
-              <h6 className="mx-auto my-auto py-4 px-1 text-xl">Join Plumbum!</h6>
-            </IonButton>
+            > */}
+<div className='bg-green-700 btn  flex flex-row mx-auto mb-12 border border-emerald-600 rounded-full hover:bg-emerald-400'>
+              <IonText className="text-white mx-auto my-auto text-xl">Join Plumbum!</IonText>
+            {/* </IonButton> */}
+            </div>
           </IonCardContent>
         </IonCard>
       </IonContent>
