@@ -233,7 +233,7 @@ type='checkbox'
      
       className='my-auto rounded-full bg-white border-emerald-500  mx-6'
       checked={isPrivate}
-    onInput={() => setIsPrivate(!isPrivate)}
+    onClick={() => setIsPrivate(!isPrivate)}
       color="success"
     />
    
