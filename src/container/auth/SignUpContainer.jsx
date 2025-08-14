@@ -166,7 +166,7 @@ setEmail(email)
             }}/></>}</div>
       
             {/* {!getLocalStore("googledrivetoken") && ( */}
-              <>
+              {getLocalStore("googleId")&&getLocalStore("idToken")?<>
                <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
                
                    <IonInput
@@ -200,7 +200,7 @@ setEmail(email)
                     <h6>Passwords need to match</h6>
                   </IonText>
                 )}
-              </>
+              </>:null}
             {/* )} */}
             <IonItem
   lines="none"

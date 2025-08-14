@@ -3,6 +3,7 @@ import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { IonButton, IonIcon } from '@ionic/react';
 import Enviroment from '../../core/Enviroment';xw
 import { useDispatch } from 'react-redux';
+import getLocalStore from '../../core/getLocalStore';
 
 function AppleSignInButton({onUserSignIn}) {
   const dispatch = useDispatch()
@@ -27,7 +28,7 @@ function AppleSignInButton({onUserSignIn}) {
         // TODO: Handle error (show message to user, etc.)
       });
   };
-  const idToken = localStorage.getItem("token")
+  const idToken = getLocalStore("idToken")
 
    return !idToken?<IonButton onClick={handleAppleSignIn} expand="block" color="dark" className='rounded-full'>
       <IonIcon slot="start" name="logo-apple" />
