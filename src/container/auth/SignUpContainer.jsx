@@ -171,7 +171,7 @@ setEmail(email)
             }}/></div>}
       
             {/* {!getLocalStore("googledrivetoken") && ( */}
-              {getLocalStore("googleId")&&getLocalStore("idToken")?<>
+              {!googleID||!identityToken?<>
                <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
                
                    <IonInput
