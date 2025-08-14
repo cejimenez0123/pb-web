@@ -69,15 +69,15 @@ function LogInCard({setLogInError}){
                     setPending(false)
                     
                     if(payload && payload.error){
-                        setLogInError("Error with Username or Password")
+                        setError("Error with Username or Password")
                     }else{
                         navigate(Paths.myProfile())
                     }
                 },err=>{
                     if(err.message=="Request failed with status code 401"){
-setLogInError("User Not Found. Apply Below")
+setError("User Not Found. Apply Below")
                     }else{
-                        setLogInError(err.message)
+                        setError(err.message)
                     }
              
                     
@@ -86,7 +86,7 @@ setLogInError("User Not Found. Apply Below")
             })       
         }else{
             setPending(false)
-            setLogInError("Values can't be empty")
+            setError("Values can't be empty")
         }
     }
   
@@ -97,16 +97,16 @@ setLogInError("User Not Found. Apply Below")
                     setPending(false)
                 
                     if(payload &&payload.error){
-                        setLogInError("Error with Username or Password")
+                    setError("Error with Username or Password")
                     }else{
                         navigate(Paths.myProfile())
                     }
                 },err=>{
 
                     if(err.message=="Request failed with status code 401"){
-    setLogInError("User Not Found. Apply Below")
+    setError("User Not Found. Apply Below")
                     }else{
-                        setLogInError(err.message)
+                        setError(err.message)
                     }
              
                     
@@ -121,16 +121,16 @@ setLogInError("User Not Found. Apply Below")
                 setPending(false)
                console.log(payload)
                 if(payload && payload.error){
-                    setLogInError("Error with Username or Password")
+                    setError("Error with Username or Password")
                 }else{
                     navigate(Paths.myProfile())
                 }
             },err=>{
                
                 if(err.message=="Request failed with status code 401"){
-setLogInError("User Not Found. Apply Below")
+setError("User Not Found. Apply Below")
                 }else{
-                    setLogInError(err.message)
+                    setError(err.message)
                 }
          
                 
