@@ -9,7 +9,7 @@ import checkResult from '../core/checkResult';
 export default function GoogleLogin({ onUserSignIn }) { 
     const [gisLoaded, setGisLoaded] = useState(false);
     const isNative = DeviceCheck()
-
+    const [loginError,setLogInError]=useState(null)
     const [signedIn, setSignedIn] = useState(false); // Internal state for this component's UI
     const driveTokenKey = "googledrivetoken"; // Consistent key for Drive access token
     const navigate = useNavigate()
