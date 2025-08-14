@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import getLocalStore from '../../core/getLocalStore';
 
 function AppleSignInButton({onUserSignIn}) {
-  const dispatch = useDispatch()
+
   const options = {
     clientId: import.meta.env.VITE_APPLE_CLIENT_ID, // TODO: Replace with your Apple Service ID
     redirectURI: Enviroment.redirectUrl, // TODO: Replace with your redirect URI
@@ -28,12 +28,12 @@ function AppleSignInButton({onUserSignIn}) {
         // TODO: Handle error (show message to user, etc.)
       });
   };
-  const idToken = getLocalStore("token")
+  const idToken = getLocalStore("idToken")
 
-   return !idToken?<IonButton onClick={handleAppleSignIn} expand="block" color="dark" className='rounded-full'>
+   return <IonButton onClick={handleAppleSignIn} expand="block" color="dark" className='rounded-full'>
       <IonIcon slot="start" name="logo-apple" />
       Sign in with Apple
-    </IonButton>:null
+    </IonButton>
 
 }
 

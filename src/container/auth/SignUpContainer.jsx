@@ -54,6 +54,7 @@ export default function SignUpContainer(props) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const idToken = getLocalStore("idToken")
   const { setError, setSuccess, setSeo, seo } = useContext(Context);
 
   useEffect(() => {
@@ -65,7 +66,7 @@ export default function SignUpContainer(props) {
 
   useEffect(() => {
     setToken(token);
-    setLocalStore(token,isNative)
+    setLocalStore("token",token,isNative)
   }, [searchParams, token]);
 
   const handleFileInput = (e) => {
@@ -85,7 +86,7 @@ export default function SignUpContainer(props) {
 
   const completeSignUp = () => {
     let toke = searchParams.get("token") || token;
-    if (getLocalStore("googledrivetoken") || (password.length > 6 && username.length > 3)) {
+    if (getLocalStore("googledrivetoken",isNative)||getLocalStore("idToken",isNative) || (password.length > 6 && username.length > 3)) {
       const pictureParams = file ? { file } : { profilePicture: selectedImage };
       const params = {
         email,
@@ -152,7 +153,8 @@ export default function SignUpContainer(props) {
               </IonText>
             )}
                
-           {googleID||identityToken? null:<div className='mx-auto w-fit'><GoogleLogin onUserSignIn={({email,
+           {googleID||idToken? null:
+           <div className='mx-auto w-fit'><GoogleLogin onUserSignIn={({email,
                                 googleId,
                                 driveAccessToken})=>{
 setGoogleID(googleId)
@@ -162,7 +164,8 @@ setEmail(email)
                                   />
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               setEmail(email)
-              setIdentityToken(idToken)
+              setLocalStore("idToken",idToken,isNative)
+            
             }}/></div>}
       
             {/* {!getLocalStore("googledrivetoken") && ( */}
