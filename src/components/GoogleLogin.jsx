@@ -5,7 +5,7 @@ import { logIn } from '../actions/UserActions';
 import Paths from '../core/paths';
 import getLocalStore from '../core/getLocalStore';
 import DeviceCheck from './DeviceCheck';
-
+import checkResult from '../core/checkResult';
 export default function GoogleLogin({ onUserSignIn }) { 
     const [gisLoaded, setGisLoaded] = useState(false);
     const isNative = DeviceCheck()
