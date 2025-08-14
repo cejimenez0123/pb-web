@@ -2,17 +2,19 @@ import { useState,useEffect} from "react";
 import checkResult from "../../core/checkResult";
 import { Preferences } from "@capacitor/preferences";
 import DeviceCheck from "../../components/DeviceCheck";
+import getLocalStore from "../../core/getLocalStore";
+import setLocalStore from "../../core/setLocalStore";
 export default function usePersistentCurrentProfile(fetchData) {
     const key = "cachedMyProfile"
     const isNative = DeviceCheck()
       const getUser= async ()=>{
         if(isNative&&Preferences){
-      let profile = await Preferences.get({key:key})
+      let profile = await getLocalStore(key,isNative)
       setProfile(JSON.parse(profile))
       return JSON.parse(profile)
         }else{
           try {
-            const saved =localStorage.getItem(key);
+            const saved =getLocalStore(key,isNative);
             return JSON.parse(saved)
           } catch (e) {
             console.log(e)
@@ -35,7 +37,7 @@ export default function usePersistentCurrentProfile(fetchData) {
 
 
   
-    let token = localStorage.getItem("token")
+    let token = getLocalStore("token",isNative)
     const setPrefernces = async (profile)=>{
       await Preferences.set({key:key,value:JSON.stringify(profile)})
     }
@@ -45,8 +47,8 @@ export default function usePersistentCurrentProfile(fetchData) {
         
         fetchData().then(res=>checkResult(res,payload=>{
         setProfile(payload.profile)
-        setPrefernces(payload.profile)
-        localStorage.setItem(key, JSON.stringify(payload.profile));
+        // setPrefernces(payload.profile)
+        setLocalStore(key, JSON.stringify(payload.profile),isNative);
       }))
     }
       else{

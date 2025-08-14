@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux'; // Import useDispatch
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../actions/UserActions';
@@ -6,7 +6,9 @@ import Paths from '../core/paths';
 import getLocalStore from '../core/getLocalStore';
 import DeviceCheck from './DeviceCheck';
 import checkResult from '../core/checkResult';
+import Context from '../context';
 export default function GoogleLogin({ onUserSignIn }) { 
+    const {isError}=useContext(Context)
     const [gisLoaded, setGisLoaded] = useState(false);
     const isNative = DeviceCheck()
     const [loginError,setLogInError]=useState(null)
