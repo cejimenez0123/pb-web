@@ -151,8 +151,8 @@ export default function SignUpContainer(props) {
                 <h6>Minimum username length is 4 characters</h6>
               </IonText>
             )}
-               <div className='mx-auto w-fit'>
-           {googleID||identityToken? null:<><GoogleLogin onUserSignIn={({email,
+               
+           {googleID||identityToken? null:<div className='mx-auto w-fit'><GoogleLogin onUserSignIn={({email,
                                 googleId,
                                 driveAccessToken})=>{
 setGoogleID(googleId)
@@ -163,7 +163,7 @@ setEmail(email)
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               setEmail(email)
               setIdentityToken(idToken)
-            }}/></>}</div>
+            }}/></div>}
       
             {/* {!getLocalStore("googledrivetoken") && ( */}
               {getLocalStore("googleId")&&getLocalStore("idToken")?<>
