@@ -152,7 +152,7 @@ export default function SignUpContainer(props) {
               </IonText>
             )}
                <div className='mx-auto w-fit'>
-           {!googleID||!identityToken? <><GoogleLogin onUserSignIn={({email,
+           {googleID||identityToken? null:<><GoogleLogin onUserSignIn={({email,
                                 googleId,
                                 driveAccessToken})=>{
 setGoogleID(googleId)
@@ -163,7 +163,7 @@ setEmail(email)
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               setEmail(email)
               setIdentityToken(idToken)
-            }}/></>:null}</div>
+            }}/></>}</div>
       
             {/* {!getLocalStore("googledrivetoken") && ( */}
               <>
