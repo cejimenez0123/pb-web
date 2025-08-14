@@ -68,7 +68,7 @@ function LogInCard({setLogInError}){
                 checkResult(res,payload=>{
                     setPending(false)
                     
-                    if(payload.error){
+                    if(payload && payload.error){
                         setLogInError("Error with Username or Password")
                     }else{
                         navigate(Paths.myProfile())
@@ -95,14 +95,14 @@ setLogInError("User Not Found. Apply Below")
             dispatch(logIn({email,idToken:idToken})).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                    console.log(payload.error)
-                    if(payload.error){
+                
+                    if(payload &&payload.error){
                         setLogInError("Error with Username or Password")
                     }else{
                         navigate(Paths.myProfile())
                     }
                 },err=>{
-                    console.log(payload.error)
+
                     if(err.message=="Request failed with status code 401"){
     setLogInError("User Not Found. Apply Below")
                     }else{
@@ -119,8 +119,8 @@ setLogInError("User Not Found. Apply Below")
         dispatch(logIn({email,uId:googleId})).then(res=>{
             checkResult(res,payload=>{
                 setPending(false)
-                console.log(payload.error)
-                if(payload.error){
+               console.log(payload)
+                if(payload && payload.error){
                     setLogInError("Error with Username or Password")
                 }else{
                     navigate(Paths.myProfile())
