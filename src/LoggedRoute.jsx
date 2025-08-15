@@ -12,7 +12,7 @@ const LoggedRoute = ({ loggedOut,currentProfile, children }) => {
   useLayoutEffect(()=>{
    
     if(currentProfile){  
-      console.log("ocl",location.pathname)  
+        
       if (location.pathname.includes("login")){
         navigate(Paths.myProfile())
       }else if(!formerPage.includes("login")&&!formerPage.includes("onboard")){

@@ -62,18 +62,18 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const [firstLogin, setFirstLogin] = useState(localStorage.getItem("firstTime") === "true");
   const [openDialog, setOpenDialog] = useState(false);
   const [feedbackPage, setFeedbackPage] = useState(null);
-  // const stories = usePersistentMyStoriesCache(async() => {
+  const stories = usePersistentMyStoriesCache(async() => {
 
-  //   const token = await getLocalStore("token",isNative)
-  //    return ()=>{dispatch(getMyStories({profile:currentProfile,token:token}))}
-  //  });
+    const token = await getLocalStore("token",isNative)
+     return ()=>{dispatch(getMyStories({profile:currentProfile,token:token}))}
+   });
    
  
-  //  const collections = usePersistentMyCollectionCache(async() => {
-  //    const token = await getLocalStore("token",isNative)
-  //    console.log("Toke",token)
-  //    return ()=>{ dispatch(getMyCollections({token}));}
-  //  });
+   const collections = usePersistentMyCollectionCache(async() => {
+     const token = await getLocalStore("token",isNative)
+     console.log("Toke",token)
+     return ()=>{ dispatch(getMyCollections({token}));}
+   });
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
