@@ -501,13 +501,18 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
               <li><strong>Self & Story Promotion:</strong> A space where sharing your work doesn’t feel awkward — it’s expected.</li>
             </ul>
           </IonText>
-          <div className="text-right">
+          <IonRow> <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+              <IonText onClick={()=>navigate(Paths.login)} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+                Log In
+              </IonText>
+            </div>
             <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
               <IonText onClick={handleTab} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
                 Next Step
               </IonText>
-            </div>
-          </div>
+            </div></IonRow>
+           
+        
         </IonCol>
       </IonRow>
     </IonGrid>

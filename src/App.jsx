@@ -101,7 +101,7 @@ useEffect(()=>{
       navigate("/onboard")
      return
     }
-  }, [isFirstLaunch,currentProfile, isNative]);
+  }, [currentProfile, isNative]);
   useEffect(() => {
     const checkFirstLaunch = async () => {
     
