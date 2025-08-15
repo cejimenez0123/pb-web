@@ -119,8 +119,9 @@ if(token&&!currentProfile){
         setLocalStore("hasSeenOnboarding",true,isNative)
     
         setIsFirstLaunch(true);
-        navigate("/onboard")
+     
       } else {
+        navigate("/onboard")
         setIsFirstLaunch(false);
       }
     };
