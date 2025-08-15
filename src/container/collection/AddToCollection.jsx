@@ -15,7 +15,6 @@ import {
 import { clearPagesInView } from "../../actions/PageActions.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import InfiniteScroll from "react-infinite-scroll-component";
 import Paths from "../../core/paths";
 import checkResult from "../../core/checkResult";
 import Context from "../../context.jsx";
@@ -31,6 +30,7 @@ import { getMyStories } from "../../actions/StoryActions";
 import loadingGif from "../../images/loading.gif";
 import checked from "../../images/icons/check.svg";
 import emptyBox from "../../images/icons/empty_circle.svg";
+import getLocalStore from "../../core/getLocalStore.jsx";
 
 let colStr = "collection";
 
@@ -43,6 +43,7 @@ export default function AddToCollectionContainer(props) {
   const pending = useSelector((state) => state.books.loading);
   const profile = useSelector((state) => state.users.currentProfile);
   const [search, setSearch] = useState("");
+  const [token,setToken]=useState(null)
   const colInView = useSelector((state) => state.books.collectionInView);
   const pagesInView = useSelector((state) =>
     state.pages.pagesInView
@@ -54,6 +55,15 @@ export default function AddToCollectionContainer(props) {
         return true;
       })
   );
+  useEffect(()=>{
+    getLocalStore("token").then(tok=>setToken(tok))
+  },[])
+  useEffect(()=>{
+    if(token){
+    dispatch(getMyCollections({ profile,token }));
+    dispatch(getMyStories({ profile ,token}));
+    }
+  },[token])
   const collections = useSelector((state) =>
     state.books.collections.filter((col) => {
       if (search.length > 0) {
@@ -111,11 +121,7 @@ export default function AddToCollectionContainer(props) {
       });
   };
 
-  useEffect(() => {
-    dispatch(getMyCollections({ profile }));
-    dispatch(getMyStories({ profile }));
-   
-  }, [colInView]);
+  
 
   const addNewCollection = (col) => {
     setNewCollections((state) => {
@@ -139,7 +145,7 @@ export default function AddToCollectionContainer(props) {
 
   const storyList = () => {
     return (
-        <div className="my-4 max-h-96 mx-auto text-emerald-800 overflow-scroll text-left mb-2">
+        <div className="my-4  mx-auto text-emerald-800 overflow-scroll text-left mb-2">
       
        
         <IonList
@@ -205,7 +211,7 @@ export default function AddToCollectionContainer(props) {
       );
     }
     return (
-      <div className="my-4 max-h-96 mx-auto text-emerald-800 overflow-scroll text-left mb-2">
+      <div className="my-4 mx-auto text-emerald-800 overflow-scroll text-left mb-2">
        
         <IonList>
           {list.map((col) => {

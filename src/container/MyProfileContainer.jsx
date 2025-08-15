@@ -58,17 +58,18 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const {  seo, setSeo, isPhone, isNotPhone } = useContext(Context);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
-  // const stories = usePersistentMyStoriesCache(()=>{dispatch(getMyStories({profile:currentProfile,token:token}))
+  const pages = usePersistentMyStoriesCache(()=>dispatch(getMyStories({profile:currentProfile,token:token})))
    
  
-  // const cols = usePersistentMyCollectionCache(()=>dispatch(getMyCollections({token})))});
+  const cols = usePersistentMyCollectionCache(()=>dispatch(getMyCollections({token})));
   const [description, setFeedback] = useState("");
   const [referralLink, setReferralLink] = useState(null);
   const [firstLogin, setFirstLogin] = useState(localStorage.getItem("firstTime") === "true");
   const [openDialog, setOpenDialog] = useState(false);
   const [token,setToken]=useState(null) 
   const collections = useSelector(state => state.books.collections)
-  
+  const [ogStories, setOgStories] = useState([]);
+  const [ogCols, setOgCols] = useState([]);
   getLocalStore("token",isNative).then(value=>setToken(value))
   const [feedbackPage, setFeedbackPage] = useState(null);
  
@@ -82,10 +83,15 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   };
 
   // Load stories and collections
-
+  useEffect(()=>{
+      dispatch(getMyCollections({token,isNative}))
+      dispatch(getMyStories({token,isNative}))
+  },[token ])
 
   // Save original collections for filter resets
-  const [ogCols, setOgCols] = useState([]);
+  useEffect(() => {
+    setOgStories(stories);
+  }, [stories]);
   useEffect(() => {
     setOgCols(collections);
   }, [collections]);
@@ -94,12 +100,13 @@ function MyProfileContainer({currentProfile,presentingElement}) {
       dispatch(getMyCollections({token}))
       dispatch(getMyStories({profile:currentProfile,token}))
     }
-  })
+  },[])
  
   useEffect(() => {
     switch (filterType) {
       case filterTypes.filter:
         dispatch(setCollections({ collections: ogCols }));
+        dispatch(setPagesInView({ pages: ogStories }));
         break;
       case filterTypes.recent:
         handleSortTime(true);
@@ -280,7 +287,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
         {/* Search and filter inputs */}
         <div className='mx-auto md:mt-8 flex flex-col md:w-page'>
           {isPhone ? (
-            <div className="flex items-center mb-4 mx-auto h-9 max-w-[85vw] pr-4 rounded-full bg-transparent">
+            <div className="flex items-center mb-8 mx-auto h-9 max-w-[85vw] pr-4 rounded-full bg-transparent">
               <IonInput value={search} label="Search" labelPlacement="floating" placeholder="Search..."
                 onIonChange={e => setSearch(e.detail.value ?? '')}
                 className="h-9 open-sans-medium px-2 text-sm bg-transparent border-none text-emerald-800 flex-grow min-w-0" />
@@ -294,7 +301,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
               </div>
             </div>
           ) : (
-            <span className="flex flex-row items-center gap-1">
+            <span className="flex flex-row items-center mb-4 gap-1">
               <label className={`flex items-center border-2 border-emerald-600 rounded-full px-3 py-1 ${search.length === 0 ? 'w-[19rem]' : 'w-[20rem]'}`}>
                 <span className="text-emerald-800 mr-2 whitespace-nowrap mont-medium">Search:</span>
                 <input type="text" value={search} onChange={e => setSearch(e.target.value)}
@@ -317,7 +324,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
             <input type="radio" name="my_tabs_2" role="tab" defaultChecked
               className="tab hover:min-h-10 rounded-full mont-medium text-emerald-800 border-3 w-[90vw] md:w-page text-md md:text-xl"
               aria-label="Pages" />
-            <div role="tabpanel" className="tab-content h-[30rem] overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
+            <div role="tabpanel" className="tab-content pt-8 overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
               <IndexList items={stories} handleFeedback={item => {
                 setFeedbackPage(item);
                 dispatch(setPageInView({ page: item }));
@@ -326,7 +333,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
             <input type="radio" name="my_tabs_2" role="tab"
               className="tab text-emerald-800 mont-medium rounded-full mx-auto bg-transparent border-3 text-md md:text-xl"
               aria-label="Collections" />
-            <div role="tabpanel" className="tab-content h-[30rem] overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
+            <div role="tabpanel" className="tab-content   pt-8 overflow-y-auto  lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
               <IndexList items={collections} />
             </div>
           </div>

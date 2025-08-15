@@ -29,6 +29,7 @@ import {
 } from "../../actions/CollectionActions";
 import usePersistentMyCollectionCache from "../../domain/usecases/usePersistentMyCollectionCache";
 import Paths from "../../core/paths";
+import getLocalStore from "../../core/getLocalStore";
 
 function toTitleCase(str) {
   return str.toLowerCase().replace(/(?:^|\s)\w/g, function (match) {
@@ -43,9 +44,9 @@ export default function AddStoryToCollectionContainer(props) {
   const { id, type } = pathParams;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [token,setToken]=useState(null)
   // Load cached collections persistently to avoid flicker
-  const cachedCols = usePersistentMyCollectionCache(() => dispatch(getMyCollections()));
+  const cachedCols = usePersistentMyCollectionCache(() => dispatch(getMyCollections({token})));
 
   // Redux selectors
   const collectionInView = useSelector((state) => state.books.collectionInView);
@@ -65,7 +66,9 @@ export default function AddStoryToCollectionContainer(props) {
       if (search.length > 0) return col.title.toLowerCase().includes(search.toLowerCase());
       return true;
     });
-
+    useLayoutEffect(()=>{
+        getLocalStore("token").then(tok=>setToken(tok))
+    },[])
   // Update SEO for page
   useEffect(() => {
     if (pageInView) {
@@ -163,7 +166,8 @@ let dia = {...dialog}
             </IonTitle>
           </IonToolbar>
         </IonHeader>
-      <div className="">
+      <div className="flex flex-row">
+            <div>{collectionInView.purpose}</div>
            <div
             className="btn cursor-pointer rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
             onClick={() => openNewCollectionForm()}
@@ -173,6 +177,16 @@ let dia = {...dialog}
             style={{ userSelect: "none" }}
           >
             <IonText>New Collection</IonText>
+          </div>
+          <div
+            className="btn mx-4 cursor-pointer rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
+            onClick={() => navigate(Paths.collection.createRoute(id))}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpenDialog(true); }}
+            style={{ userSelect: "none" }}
+          >
+            <IonText>View</IonText>
           </div>
           </div>
         <div
