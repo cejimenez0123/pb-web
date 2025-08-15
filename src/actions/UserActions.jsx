@@ -153,9 +153,8 @@ async ({isNative},thunkApi) => {
   try{
 
     const token = await getLocalStore("token",isNative)
-  
 
-    const data = await profileRepo.getMyProfiles({token:token&&token.value?token.value:null})
+    const data = await profileRepo.getMyProfiles({token:token})
     console.log("vdd",data)
 
     const key = "cachedMyProfile"

@@ -15,15 +15,20 @@ import Dialog from '../../components/Dialog';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import setLocalStore from '../../core/setLocalStore';
 
-export default function LogInContainer({currentProfile}) {
-    const {setError,seo,setSeo}=useContext(Context)
- 
+export default function LogInContainer() {
+    const {setError,seo,setSeo,currentProfile}=useContext(Context)
+ const navigate = useNavigate()
     useLayoutEffect(()=>{
         let soo = seo
         soo.title = "Plumbum (Log In) - Share Your Weirdness"
         setSeo(soo)
+       
    },[])
-   
+   useEffect(()=>{
+    if(currentProfile){
+        navigate(Paths.myProfile())
+    }
+   },[currentProfile])
 
     return (
         <div id="" className='sm:mx-2 py-16 md:py-4'>
@@ -189,7 +194,8 @@ dispatchLogin({email,googleId,isNative})
             
      }}/></span>
         <div className='mt-4 p-4'>
-        <a  onClick={handleFirstTimeClick}className='text-emerald-800 text-xl mont-medium hover:text-green-400  '>Click here if this your first time?</a>
+        <a  onClick={handleFirstTimeClick}
+        className='text-emerald-800 text-xl mont-medium hover:text-green-400  '>Click here if this your first time?</a>
         </div>
         {pending? <div className='flex'>
        <img  

@@ -27,7 +27,7 @@ import DeviceCheck from '../components/DeviceCheck.jsx';
 import { IonPage, IonText, IonIcon, IonInput,IonContent } from '@ionic/react';
 import { settings as settingsIcon, notifications as notificationsIcon } from 'ionicons/icons';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
-import { getCurrentProfile } from '../actions/UserActions.jsx';
+import getLocalStore from '../core/getLocalStore.jsx';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -74,9 +74,10 @@ function MyProfileContainer({presentingElement}) {
   };
 
   // Load stories and collections
-  const stories = usePersistentMyStoriesCache(() => {
+  const stories = usePersistentMyStoriesCache(async() => {
     dispatch(setPagesInView({ pages: [] }));
-    return dispatch(getMyStories());
+   const token = await getLocalStore("token",isNative)
+    return dispatch(getMyStories({profile:currentProfile,token:token}));
   });
   
 
@@ -224,10 +225,10 @@ function MyProfileContainer({presentingElement}) {
   };
 
   useLayoutEffect(() => {
-    if (currentProfile) {
+   return ()=>{ if (currentProfile) {
       setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
       dispatch(setPagesInView({ pages: currentProfile.stories }));
-    }
+    }}
   }, [currentProfile, setSeo, dispatch]);
 
   return (

@@ -10,7 +10,7 @@ export default  async function getLocalStore(key,isNative){
        
       }
     if(isNative){
-     return  getPrefernces(key)
+     return  (await getPrefernces(key)).value
     }else{
      return  getLocalStorage(key)
     }

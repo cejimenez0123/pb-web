@@ -79,26 +79,27 @@ function App(props) {
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
-  }else{
-   dispatch(getCurrentProfile({isNative})).then(result=>console.log("Res",result))
+    }}
+  ,[])
+useEffect(()=>{
+  if(!currentProfile){
+    dispatch(getCurrentProfile({isNative}))
   }
-  },[])
-
+  },[currentProfile])
   useEffect(()=>{
   
       setOlderPath(location.pathname)
   
   },[location.pathname])
   useEffect(() => {
-    if(location.pathname.includes("/signup")||location.pathname.includes("/links")||location.pathname.includes("/event")){
-
-    }else{
+    if(currentProfile){
+      navigate(Paths.myProfile())
+      return
+    }
     
-    if (isFirstLaunch&&isNative) {
-         navigate('/onboard');
-     }else{
-      navigate(olderPath)
-     }
+    if (isFirstLaunch&&!currentProfile&&isNative) {
+      navigate("/onboard")
+     return
     }
   }, [isFirstLaunch,currentProfile, isNative]);
   useEffect(() => {
@@ -201,8 +202,10 @@ console.log(isPhone)
                   />
           <Route exact path="/login"  
                   element={ 
-        <LoggedRoute>
-            <LogInContainer logIn={props.logIn}/>
+        <LoggedRoute loggedOut={!currentProfile}
+        currentProfile={currentProfile}
+        >
+            <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
             </LoggedRoute>
           
        }
@@ -210,15 +213,21 @@ console.log(isPhone)
       <Route exact path={Paths.calendar()}
      element={<CalendarContainer/>}/>
           <Route exact path={Paths.newsletter() }
-     element={<LoggedRoute currentProfile={currentProfile}><NewsletterContainer/></LoggedRoute>}/>
+     element={<LoggedRoute 
+      loggedOut={!currentProfile}
+     currentProfile={currentProfile}><NewsletterContainer/></LoggedRoute>}/>
      <Route exact path={'/reset-password' }
      element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
      element={<CollectionContainer/>}/>
      <Route path={'/signup'}
-     element={<LoggedRoute currentProfile={currentProfile}><SignUpContainer/></LoggedRoute>}/>
+     element={<LoggedRoute 
+      loggedOut={!currentProfile}
+      currentProfile={currentProfile}><SignUpContainer/></LoggedRoute>}/>
        <Route path={'/register'}
-     element={<LoggedRoute currentProfile={currentProfile}><UserReferralContainer/></LoggedRoute>}/>
+     element={<LoggedRoute 
+      loggedOut={!currentProfile}
+      currentProfile={currentProfile}><UserReferralContainer/></LoggedRoute>}/>
        <Route path={Paths.feedback()}
      element={<FeedbackContainer/>}/>
      <Route path={Paths.addToCollection.route}
@@ -242,9 +251,14 @@ console.log(isPhone)
    
  
         <Route path={Paths.apply()}
-        element={<LoggedRoute currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
+        element={<LoggedRoute
+          loggedOut={!currentProfile}
+           currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
          <Route path={Paths.apply()+"/newsletter"}
-        element={<LoggedRoute currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
+        element={<LoggedRoute 
+          loggedOut={!currentProfile}
+        currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
+
       <Route
       path={Paths.myProfile()}
       element={
