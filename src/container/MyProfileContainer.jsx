@@ -53,27 +53,25 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const isNative = DeviceCheck();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const stories = useSelector(state => state.pages.pagesInView)
   const dialog = useSelector(state=>state.users.dialog)
   const {  seo, setSeo, isPhone, isNotPhone } = useContext(Context);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
+  // const stories = usePersistentMyStoriesCache(()=>{dispatch(getMyStories({profile:currentProfile,token:token}))
+   
+ 
+  // const cols = usePersistentMyCollectionCache(()=>dispatch(getMyCollections({token})))});
   const [description, setFeedback] = useState("");
   const [referralLink, setReferralLink] = useState(null);
   const [firstLogin, setFirstLogin] = useState(localStorage.getItem("firstTime") === "true");
   const [openDialog, setOpenDialog] = useState(false);
+  const [token,setToken]=useState(null) 
+  const collections = useSelector(state => state.books.collections)
+  
+  getLocalStore("token",isNative).then(value=>setToken(value))
   const [feedbackPage, setFeedbackPage] = useState(null);
-  const stories = usePersistentMyStoriesCache(async() => {
-
-    const token = await getLocalStore("token",isNative)
-     return ()=>{dispatch(getMyStories({profile:currentProfile,token:token}))}
-   });
-   
  
-   const collections = usePersistentMyCollectionCache(async() => {
-     const token = await getLocalStore("token",isNative)
-     console.log("Toke",token)
-     return ()=>{ dispatch(getMyCollections({token}));}
-   });
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -91,7 +89,12 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   useEffect(() => {
     setOgCols(collections);
   }, [collections]);
-
+  useLayoutEffect(()=>{
+    if(token){
+      dispatch(getMyCollections({token}))
+      dispatch(getMyStories({profile:currentProfile,token}))
+    }
+  })
  
   useEffect(() => {
     switch (filterType) {
@@ -315,7 +318,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
               className="tab hover:min-h-10 rounded-full mont-medium text-emerald-800 border-3 w-[90vw] md:w-page text-md md:text-xl"
               aria-label="Pages" />
             <div role="tabpanel" className="tab-content h-[30rem] overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
-              <IndexList items={useSelector(state => state.pages.pagesInView)} handleFeedback={item => {
+              <IndexList items={stories} handleFeedback={item => {
                 setFeedbackPage(item);
                 dispatch(setPageInView({ page: item }));
               }} />
@@ -324,7 +327,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
               className="tab text-emerald-800 mont-medium rounded-full mx-auto bg-transparent border-3 text-md md:text-xl"
               aria-label="Collections" />
             <div role="tabpanel" className="tab-content h-[30rem] overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
-              <IndexList items={useSelector(state => state.books.collections)} />
+              <IndexList items={collections} />
             </div>
           </div>
         </div>

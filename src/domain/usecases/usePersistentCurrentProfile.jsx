@@ -7,7 +7,7 @@ import setLocalStore from "../../core/setLocalStore";
 export default function usePersistentCurrentProfile(fetchData) {
     const key = "cachedMyProfile"
     const isNative = DeviceCheck()
-    
+    const [profile, setProfile] = useState(null);
    
       const getUser= async ()=>{
         if(isNative&&Preferences){
@@ -33,7 +33,7 @@ export default function usePersistentCurrentProfile(fetchData) {
     useEffect(()=>{
     getUser().then(()=>{})
     },[])
-    const [profile, setProfile] = useState(null);
+  
 
     return profile;
   }

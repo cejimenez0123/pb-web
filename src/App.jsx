@@ -53,8 +53,8 @@ import DeviceCheck from './components/DeviceCheck.jsx';
 import Dialog from './components/Dialog.jsx';
 import getLocalStore from './core/getLocalStore.jsx';
 import setLocalStore from './core/setLocalStore.jsx';
-
-
+import { current } from '@reduxjs/toolkit';
+import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 
 function App(props) {
   const navigate = useNavigate()
@@ -70,7 +70,8 @@ function App(props) {
   const [isSaved,setIsSaved]=useState(true)
   const profile = useSelector(state=>state.users.profileInView)
   const [token,setToken]=useState(null)
- 
+  let profiles = usePersistentCurrentProfile(()=>token?dispatch(getCurrentProfile({token,isNative})):null)
+  console.log("proflerids",profiles)
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
    const currentProfile = useSelector(state=>state.users.currentProfile)
   const [olderPath,setOlderPath]=useState(null)
@@ -89,12 +90,18 @@ function App(props) {
   ,[])
 useEffect(()=>{
  
-  
-
 if(token&&!currentProfile){
     dispatch(getCurrentProfile({token,isNative}))
 }
   },[token])
+  useEffect(()=>{
+ 
+  
+
+    if(token){
+        dispatch(getCurrentProfile({token,isNative}))
+    }
+      },[])
   useEffect(()=>{
   
       setOlderPath(location.pathname)
@@ -121,7 +128,7 @@ if(token&&!currentProfile){
         setIsFirstLaunch(true);
      
       } else {
-        navigate("/onboard")
+     
         setIsFirstLaunch(false);
       }
     };

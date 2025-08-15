@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Preferences } from "@capacitor/preferences";
 import DeviceCheck from "../../components/DeviceCheck";
-export default function usePersistentCurrentProfile(fetchData) {
+export default function useGoogleAccessToken(fetchData) {
     const key = "googledrivetoken"
     const isNative = DeviceCheck()
     const [gtoken,setToken]=useState(null)
