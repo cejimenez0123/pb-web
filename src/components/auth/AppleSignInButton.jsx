@@ -31,7 +31,7 @@ function AppleSignInButton({onUserSignIn}) {
 
 
    return <IonButton onClick={handleAppleSignIn} expand="block" color="dark" className='rounded-full'>
-      <IonIcon slot="start" name="logo-apple" />
+      {/* <IonIcon slot="start" name="logo-apple" /> */}
       Sign in with Apple
     </IonButton>
 

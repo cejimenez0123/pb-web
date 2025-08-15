@@ -502,7 +502,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
             </ul>
           </IonText>
           <IonRow> <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
-              <IonText onClick={()=>navigate(Paths.login)} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+              <IonText onClick={()=>navigate(Paths.login())} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
                 Log In
               </IonText>
             </div>

@@ -138,7 +138,7 @@ if(!signedIn){
                     size: "large",
                     text: "signin_with",
                     borderRadius:"10%",
-                    // shape: "rectangular",
+                    shape: "rectangular",
                     width: "250",
                     logo_alignment: "left"
                 }

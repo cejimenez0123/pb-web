@@ -17,11 +17,11 @@ import Enviroment from "../core/Enviroment";
         let res = await axios.get(this.url+"/public/library",this.headers)
         return res.data
     }
-    async getMyCollections(){
+    async getMyCollections({token}){
 
         let res = await axios.get(this.url+"/profile/private",{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token),
+                Authorization:"Bearer "+token,
             
             }
         })

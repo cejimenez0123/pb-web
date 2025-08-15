@@ -61,7 +61,7 @@ function LogInCard({setLogInError}){
        
     const handleFirstTimeClick=()=>{
     if(isNative){
-        navigate("/onboard")
+     
     }else{
         navigate("/apply")
     }
@@ -188,11 +188,12 @@ setError("User Not Found. Apply Below")
             dispatchLogin({email,idToken,isNative})
         }}
         />
-         <GoogleLogin 
+         {/* <GoogleLogin 
      onUserSignIn={({email, name,googleId})=>{
 dispatchLogin({email,googleId,isNative})
             
-     }}/></span>
+     }}/> */}
+     </span>
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}
         className='text-emerald-800 text-xl mont-medium hover:text-green-400  '>Click here if this your first time?</a>

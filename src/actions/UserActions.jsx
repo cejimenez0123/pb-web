@@ -149,21 +149,21 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
   return data
 })
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
-async ({isNative},thunkApi) => {
+async ({token,isNative},thunkApi) => {
   try{
 
-    const token = await getLocalStore("token",isNative)
+    // const token = await getLocalStore("token",isNative)
 
     const data = await profileRepo.getMyProfiles({token:token})
-    console.log("vdd",data)
-
+  
+console.log("rproe",data)
     const key = "cachedMyProfile"
     setLocalStore(key,JSON.stringify(data.profile),isNative)
     return data
 
     
     }catch(error){
-      console.log("currentPRof",{error})
+      console.log("currentPRof",error)
      
       return {error}
     }});

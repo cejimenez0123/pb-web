@@ -24,7 +24,6 @@ import Context from '../context.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
 import { IonImg } from '@ionic/react'
 import { useSelector } from 'react-redux'
-import getLocalStore from '../core/getLocalStore.jsx'
 import DeviceCheck from '../components/DeviceCheck.jsx'
 const PageName = {
   home: "Home",
@@ -98,7 +97,7 @@ const openDialog=()=>{
     }
     const handleCloseNavMenu = (page) => {
       sendGAEvent("Click Nav Menu",`Click Horiz Nav ${page}`)
-    
+    console.log("PPDSs",page)
       if(page==PageName.login){
           navigate(Paths.login())                    
       }else if(page===PageName.discovery){
@@ -155,7 +154,7 @@ const openDialog=()=>{
     <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
     </li>:null
     }else if(page==PageName.about||page==PageName.login||page==PageName.apply){
-      return currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
+      return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
     </li>:null
@@ -245,12 +244,12 @@ const openDialog=()=>{
         <ul className="menu menu-horizontal px-1">
         {pages.map((page) => {
     if(page==PageName.workshop||page==PageName.home){
-      return currentProfile&&currentProfile.id?<li   onClick={()=>handleCloseNavMenu(page) } 
+      return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-white no-underline' textAlign="center">{page}</a>
     </li>:null
     }else if(page==PageName.about||page==PageName.login||page==PageName.apply){
-      return !(currentProfile&&currentProfile.id)?<li onClick={()=>handleCloseNavMenu(page) } 
+      return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-white no-underline' textAlign="center">{page}</a>
     </li>:null
@@ -318,8 +317,7 @@ openDialog()
       }
   // }
   const handleSignOut =async () => {
-    window.google.accounts.id.disableAutoSelect(); // Clears GIS cookie for auto-login
-    // Clear all stored items related to login and drive token
+    window.google.accounts.id.disableAutoSelect(); 
  
 
     await Preferences.clear()

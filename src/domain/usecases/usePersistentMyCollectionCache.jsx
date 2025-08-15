@@ -2,22 +2,26 @@ import { useState,useEffect} from "react";
 import checkResult from "../../core/checkResult";
 import { useDispatch } from "react-redux";
 import { setCollections } from "../../actions/CollectionActions";
+import getLocalStore from "../../core/getLocalStore";
+import DeviceCheck from "../../components/DeviceCheck";
+import setLocalStore from "../../core/setLocalStore";
 export default function usePersistentMyCollectionCache(fetchData) {
     const key = "cachedMyCols"
-    const [collections, setCols] = useState(() => {
-      const saved =localStorage.getItem(key);
-      return saved ? JSON.parse(saved) : [];
+    const isNative = DeviceCheck()
+    const [collections, setCols] = useState(async () => {
+     let value = await getLocalStore(key,isNative)
+      return value ? JSON.parse(value) : [];
     });
     const dispatch = useDispatch()
   
     useEffect(() => {
-    
+    console.log(fetchData)
       fetchData().then((res) => {
         checkResult(res,payload=>{
-
+          console.log(payload)
             dispatch(setCollections({collections:payload.collections}))
             setCols(payload.collections);
-            localStorage.setItem(key, JSON.stringify(payload.collections));
+            setLocalStore(key, JSON.stringify(payload.collections),isNative)
         })
        
         });

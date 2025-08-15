@@ -22,14 +22,13 @@ const PrivateRoute = ({loggedIn, children }) => {
       setToken(tok)
     }
    },[])
-    useLayoutEffect(async () => {
-    
-if(token){
+    useLayoutEffect( () => {
+ if(token){
     if(currentProfile&&currentProfile.id){
       if(formerPage){
        navigate(formerPage)
-      }}
-    }
+      }}}
+   
   
     }, [token,currentProfile]);
     useEffect(()=>{

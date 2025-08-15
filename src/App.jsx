@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch,connect,useSelector} from "react-redux"
-import { useEffect, useState ,useRef} from 'react';
+import { useEffect, useState ,useRef,useLayoutEffect} from 'react';
 import { BrowserRouter as Router, Routes, Route,Navigate, useNavigate, useLocation } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
@@ -37,7 +37,6 @@ import Alert from './components/Alert.jsx';
 import { getRecommendedCollectionsProfile } from './actions/CollectionActions.js';
 import NotificationContainer from './container/profile/NotificationContainer.jsx';
 import HashtagContainer from './container/hashtag/HashtagContainer.jsx';
-import usePersistentCurrentProfile from './domain/usecases/useCurrentProfileCache.jsx';
 import NotFound from './container/NotFound.jsx';
 import EmailPreferences from './container/EmailPreferences.jsx';
 import FeedbackContainer from './container/FeedbackContainer.jsx';
@@ -52,6 +51,8 @@ import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
 import DeviceCheck from './components/DeviceCheck.jsx';
 import Dialog from './components/Dialog.jsx';
+import getLocalStore from './core/getLocalStore.jsx';
+import setLocalStore from './core/setLocalStore.jsx';
 
 
 
@@ -62,14 +63,16 @@ function App(props) {
   const isHorizPhone =  useMediaQuery({
     query: '(min-width: 750px)'
   })
+
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
   const profile = useSelector(state=>state.users.profileInView)
-
+  const [token,setToken]=useState(null)
+ 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-  const currentProfile = useSelector(state=>state.users.currentProfile)
+   const currentProfile = useSelector(state=>state.users.currentProfile)
   const [olderPath,setOlderPath]=useState(null)
   const location = useLocation()
   const [success,setSuccess]=useState(null)
@@ -79,13 +82,19 @@ function App(props) {
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
-    }}
+    }
+    getLocalStore("token",isNative).then(toke=>setToken(toke))
+  }
+    
   ,[])
 useEffect(()=>{
-  if(!currentProfile){
-    dispatch(getCurrentProfile({isNative}))
-  }
-  },[currentProfile])
+ 
+  
+
+if(token&&!currentProfile){
+    dispatch(getCurrentProfile({token,isNative}))
+}
+  },[token])
   useEffect(()=>{
   
       setOlderPath(location.pathname)
@@ -98,30 +107,32 @@ useEffect(()=>{
     }
     
     if (isFirstLaunch&&!currentProfile&&isNative) {
-      navigate("/onboard")
+    
      return
     }
-  }, [currentProfile, isNative]);
+  }, [currentProfile]);
   useEffect(() => {
     const checkFirstLaunch = async () => {
     
-      const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
+      let value = await getLocalStore('hasSeenOnboarding',isNative)
       if (value === null) {
-        setIsFirstLaunch(false);
+        setLocalStore("hasSeenOnboarding",true,isNative)
+    
+        setIsFirstLaunch(true);
+        navigate("/onboarding")
       } else {
         setIsFirstLaunch(false);
       }
     };
 
-    checkFirstLaunch().then( );
+   return ()=>{checkFirstLaunch()}
   }, []);
-  console.log("prof",currentProfile)
-console.log(isPhone)
+  
   return (
     <IonApp >   
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-      <IonPage  ref={page} className=' App pb-12  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+      <IonPage  ref={page} className=' App pb-8 pt-12 background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
      
 
       <head>
@@ -165,7 +176,7 @@ console.log(isPhone)
      
         {!isPhone&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
-        loggedIn={currentProfile}
+    
         currentProfile={currentProfile}/></div>:null}
        <SearchDialog presentingElement={page} />
        <Dialog dialog={dialog} presentingElement={page} />
@@ -264,6 +275,7 @@ console.log(isPhone)
       element={
         <PrivateRoute >
           <MyProfileContainer profile={props.currentProfile} 
+          currentProfile={currentProfile}
                              presentingElement={page}
                              pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
@@ -333,7 +345,7 @@ console.log(isPhone)
     </div>
     {isPhone&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
-        loggedIn={currentProfile}
+        // loggedIn={currentProfile}
         currentProfile={currentProfile}/></div>:null}
        
     </IonPage>

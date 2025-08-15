@@ -11,7 +11,7 @@ import authRepo from '../data/authRepo.js';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
 import { setPageInView, setPagesInView, setEditingPage } from '../actions/PageActions.jsx';
-import { initGA, sendGAEvent } from '../core/ga4.js';
+import {  sendGAEvent } from '../core/ga4.js';
 import Dialog from '../components/Dialog.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
@@ -49,21 +49,31 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
   );
 }
 
-function MyProfileContainer({presentingElement}) {
+function MyProfileContainer({currentProfile,presentingElement}) {
   const isNative = DeviceCheck();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const dialog = useSelector(state=>state.users.dialog)
-  const { currentProfile, seo, setSeo, isPhone, isNotPhone } = useContext(Context);
+  const {  seo, setSeo, isPhone, isNotPhone } = useContext(Context);
   const [search, setSearch] = useState("");
-  // const [debouncedSearch, setDebouncedSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
   const [description, setFeedback] = useState("");
   const [referralLink, setReferralLink] = useState(null);
   const [firstLogin, setFirstLogin] = useState(localStorage.getItem("firstTime") === "true");
   const [openDialog, setOpenDialog] = useState(false);
   const [feedbackPage, setFeedbackPage] = useState(null);
+  // const stories = usePersistentMyStoriesCache(async() => {
 
+  //   const token = await getLocalStore("token",isNative)
+  //    return ()=>{dispatch(getMyStories({profile:currentProfile,token:token}))}
+  //  });
+   
+ 
+  //  const collections = usePersistentMyCollectionCache(async() => {
+  //    const token = await getLocalStore("token",isNative)
+  //    console.log("Toke",token)
+  //    return ()=>{ dispatch(getMyCollections({token}));}
+  //  });
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -74,17 +84,7 @@ function MyProfileContainer({presentingElement}) {
   };
 
   // Load stories and collections
-  const stories = usePersistentMyStoriesCache(async() => {
-    dispatch(setPagesInView({ pages: [] }));
-   const token = await getLocalStore("token",isNative)
-    return dispatch(getMyStories({profile:currentProfile,token:token}));
-  });
-  
 
-  const collections = usePersistentMyCollectionCache(() => {
-    dispatch(setCollections({ collections: [] }));
-    return dispatch(getMyCollections());
-  });
 
   // Save original collections for filter resets
   const [ogCols, setOgCols] = useState([]);
@@ -92,15 +92,7 @@ function MyProfileContainer({presentingElement}) {
     setOgCols(collections);
   }, [collections]);
 
-  // Debounce the search input
-  // useEffect(() => {
-  //   const handler = setTimeout(() => {
-  //     setDebouncedSearch(search.trim());
-  //   }, 10);
-  //   return () => clearTimeout(handler);
-  // }, [search]);
-
-  // Apply original filterType method on collections
+ 
   useEffect(() => {
     switch (filterType) {
       case filterTypes.filter:
@@ -178,7 +170,7 @@ function MyProfileContainer({presentingElement}) {
 
 
   const copyToClipboard = () => {
-    if (!referralLink) return;
+    if (!referralLink) return
     navigator.clipboard.writeText(referralLink).then(() => {
       localStorage.setItem("firstTime", null);
       setOpenReferral(false);
@@ -232,7 +224,7 @@ function MyProfileContainer({presentingElement}) {
   }, [currentProfile, setSeo, dispatch]);
 
   return (
-    <IonContent fullscreen={true}>
+    <IonContent className="ion-padding" fullscreen={true}>
       <ErrorBoundary fallback={"error"}>
         {/* Top-right icons */}
         <div className='absolute top-1 right-1 flex flex-row m-3 pr-4 w-36 justify-evenly'>
@@ -240,11 +232,11 @@ function MyProfileContainer({presentingElement}) {
             <>
               <ButtonWrapper aria-label="Edit Profile" onClick={() => navigate(Paths.editProfile.route())}
                 className="bg-emerald-500 p-1 rounded-full mx-1">
-                <IonIcon icon={settingsIcon} className="text-white" />
+                {/* <IonIcon icon={settingsIcon} className="text-white" /> */}
               </ButtonWrapper>
               <ButtonWrapper aria-label="Notifications" onClick={() => navigate(Paths.notifications())}
                 className="bg-emerald-500 p-1 rounded-full mx-1">
-                <IonIcon icon={notificationsIcon} className="text-white" />
+                {/* <IonIcon icon={notificationsIcon} className="text-white" /> */}
               </ButtonWrapper>
             </>
           )}

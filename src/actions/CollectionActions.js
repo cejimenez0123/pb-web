@@ -234,9 +234,8 @@ const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProte
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
     params,thunkApi
 )=>{
-
-     let data = await collectionRepo.getMyCollections()
-
+     let data = await collectionRepo.getMyCollections(params)
+     console.log("CDcd",data)
       return {
         collections: data.collections
       }

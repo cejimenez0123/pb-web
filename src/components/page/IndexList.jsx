@@ -18,11 +18,11 @@ const IndexList = ({ items, handleFeedback }) => {
   }
   return<IonList 
   style={{minHeight:"30rem"}}>
-  {items.filter(item=>item).map((item, i) => (
+  {items && items.length? items.filter(item=>item).map((item, i) => (
     <IonItem key={i + item.id}>
       <IndexItem page={item} item={item} handleFeedback={() => handleFeedback(item)} />
     </IonItem>
-  ))}
+  )):[]}
 </IonList>
  
                   }
