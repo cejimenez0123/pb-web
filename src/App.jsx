@@ -119,7 +119,7 @@ if(token&&!currentProfile){
         setLocalStore("hasSeenOnboarding",true,isNative)
     
         setIsFirstLaunch(true);
-        navigate("/onboarding")
+        navigate("/onboard")
       } else {
         setIsFirstLaunch(false);
       }

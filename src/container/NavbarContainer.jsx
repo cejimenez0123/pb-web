@@ -97,7 +97,7 @@ const openDialog=()=>{
     }
     const handleCloseNavMenu = (page) => {
       sendGAEvent("Click Nav Menu",`Click Horiz Nav ${page}`)
-    console.log("PPDSs",page)
+   
       if(page==PageName.login){
           navigate(Paths.login())                    
       }else if(page===PageName.discovery){
