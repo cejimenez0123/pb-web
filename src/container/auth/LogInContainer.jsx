@@ -1,4 +1,4 @@
-import React ,{useContext,useLayoutEffect,useState} from 'react'
+import React ,{useContext,useEffect,useLayoutEffect,useState} from 'react'
 import "../../App.css"
 import { logIn} from '../../actions/UserActions';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,8 +13,9 @@ import DeviceCheck from '../../components/DeviceCheck';
 import GoogleLogin from '../../components/GoogleLogin';
 import Dialog from '../../components/Dialog';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
+import setLocalStore from '../../core/setLocalStore';
 
-export default function LogInContainer(props) {
+export default function LogInContainer({currentProfile}) {
     const {setError,seo,setSeo}=useContext(Context)
  
     useLayoutEffect(()=>{
@@ -22,6 +23,7 @@ export default function LogInContainer(props) {
         soo.title = "Plumbum (Log In) - Share Your Weirdness"
         setSeo(soo)
    },[])
+   
 
     return (
         <div id="" className='sm:mx-2 py-16 md:py-4'>
@@ -37,6 +39,7 @@ export default function LogInContainer(props) {
 function LogInCard({setLogInError}){
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const {setError}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [email, setEmail] = useState('');
     const isNative = DeviceCheck()
@@ -53,7 +56,7 @@ function LogInCard({setLogInError}){
        
     const handleFirstTimeClick=()=>{
     if(isNative){
-        navigate("/onboarding")
+        navigate("/onboard")
     }else{
         navigate("/apply")
     }
@@ -63,14 +66,14 @@ function LogInCard({setLogInError}){
         event.preventDefault()
         setPending(true)
         if(email.length>3 && password.length){
-            const params ={email:email.toLowerCase(),password:password}
+            const params ={email:email.toLowerCase(),password:password,isNative}
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                    
                     if(payload && payload.error){
                         setError("Error with Username or Password")
                     }else{
+                        setLocalStore("cachedMyProfile",payload.profile,isNative)
                         navigate(Paths.myProfile())
                     }
                 },err=>{
@@ -92,15 +95,13 @@ setError("User Not Found. Apply Below")
   
     const dispatchLogin=({email,googleId,idToken})=>{
         if(idToken){
-            dispatch(logIn({email,idToken:idToken})).then(res=>{
+            dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,payload=>{
+               
+              
+                    setLocalStore("cachedMyProfile",payload.profile,isNative)
+                    navigate(Paths.myProfile())
                     setPending(false)
-                
-                    if(payload &&payload.error){
-                    setError("Error with Username or Password")
-                    }else{
-                        navigate(Paths.myProfile())
-                    }
                 },err=>{
 
                     if(err.message=="Request failed with status code 401"){
@@ -116,15 +117,12 @@ setError("User Not Found. Apply Below")
         }else if(googleId){
 
         
-        dispatch(logIn({email,uId:googleId})).then(res=>{
+        dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
+              
+                setLocalStore("cachedMyProfile",payload.profile,isNative)
+                navigate(Paths.myProfile())
                 setPending(false)
-               console.log(payload)
-                if(payload && payload.error){
-                    setError("Error with Username or Password")
-                }else{
-                    navigate(Paths.myProfile())
-                }
             },err=>{
                
                 if(err.message=="Request failed with status code 401"){
@@ -182,12 +180,12 @@ setError("User Not Found. Apply Below")
         <span className='flex flex-col mt-4 justify-center '> 
         <AppleSignInButton
         onUserSignIn={({idToken,email})=>{
-            dispatchLogin({email,idToken})
+            dispatchLogin({email,idToken,isNative})
         }}
         />
          <GoogleLogin 
      onUserSignIn={({email, name,googleId})=>{
-dispatchLogin({email,googleId})
+dispatchLogin({email,googleId,isNative})
             
      }}/></span>
         <div className='mt-4 p-4'>

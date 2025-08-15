@@ -287,16 +287,3 @@ try{
           getPublicStories,
          appendToPagesInView
         } 
-// async function doThis(){
-
-//     let data= await storyRepo.getPublicStories()
-//     data.stories.map(story=>{
-
-// let names = story.hashtags.map(hs=>hs.hashtag.name)
-//     client.initIndex("story").partialUpdateObject(
-//       {objectID:story.id,title:story.title,hashtags:names,type:"story"},{createIfNotExists:true}).wait()
-
-//     })
-// }  
-
-// doThis().then()

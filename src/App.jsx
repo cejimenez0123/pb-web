@@ -1,5 +1,5 @@
 import './App.css';
-import { useDispatch,connect} from "react-redux"
+import { useDispatch,connect,useSelector} from "react-redux"
 import { useEffect, useState ,useRef} from 'react';
 import { BrowserRouter as Router, Routes, Route,Navigate, useNavigate, useLocation } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
@@ -38,7 +38,6 @@ import { getRecommendedCollectionsProfile } from './actions/CollectionActions.js
 import NotificationContainer from './container/profile/NotificationContainer.jsx';
 import HashtagContainer from './container/hashtag/HashtagContainer.jsx';
 import usePersistentCurrentProfile from './domain/usecases/useCurrentProfileCache.jsx';
-import { useSelector } from 'react-redux';
 import NotFound from './container/NotFound.jsx';
 import EmailPreferences from './container/EmailPreferences.jsx';
 import FeedbackContainer from './container/FeedbackContainer.jsx';
@@ -70,7 +69,7 @@ function App(props) {
   const profile = useSelector(state=>state.users.profileInView)
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-  const currentProfile = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+  const currentProfile = useSelector(state=>state.users.currentProfile)
   const [olderPath,setOlderPath]=useState(null)
   const location = useLocation()
   const [success,setSuccess]=useState(null)
@@ -80,8 +79,11 @@ function App(props) {
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
+  }else{
+   dispatch(getCurrentProfile({isNative})).then(result=>console.log("Res",result))
   }
   },[])
+
   useEffect(()=>{
   
       setOlderPath(location.pathname)
@@ -91,21 +93,13 @@ function App(props) {
     if(location.pathname.includes("/signup")||location.pathname.includes("/links")||location.pathname.includes("/event")){
 
     }else{
-    if(olderPath){
-      navigate(olderPath)
-    }else{
-    if(currentProfile){
-      if(olderPath){
-        navigate(olderPath)
-      }
-      
-    }else if (isFirstLaunch&&isNative) {
+    
+    if (isFirstLaunch&&isNative) {
          navigate('/onboard');
-     
      }else{
       navigate(olderPath)
      }
-    }}
+    }
   }, [isFirstLaunch,currentProfile, isNative]);
   useEffect(() => {
     const checkFirstLaunch = async () => {
@@ -120,6 +114,7 @@ function App(props) {
 
     checkFirstLaunch().then( );
   }, []);
+  console.log("prof",currentProfile)
 console.log(isPhone)
   return (
     <IonApp >   
@@ -215,15 +210,15 @@ console.log(isPhone)
       <Route exact path={Paths.calendar()}
      element={<CalendarContainer/>}/>
           <Route exact path={Paths.newsletter() }
-     element={<LoggedRoute><NewsletterContainer/></LoggedRoute>}/>
+     element={<LoggedRoute currentProfile={currentProfile}><NewsletterContainer/></LoggedRoute>}/>
      <Route exact path={'/reset-password' }
      element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
      element={<CollectionContainer/>}/>
      <Route path={'/signup'}
-     element={<LoggedRoute><SignUpContainer/></LoggedRoute>}/>
+     element={<LoggedRoute currentProfile={currentProfile}><SignUpContainer/></LoggedRoute>}/>
        <Route path={'/register'}
-     element={<LoggedRoute><UserReferralContainer/></LoggedRoute>}/>
+     element={<LoggedRoute currentProfile={currentProfile}><UserReferralContainer/></LoggedRoute>}/>
        <Route path={Paths.feedback()}
      element={<FeedbackContainer/>}/>
      <Route path={Paths.addToCollection.route}
@@ -247,9 +242,9 @@ console.log(isPhone)
    
  
         <Route path={Paths.apply()}
-        element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
+        element={<LoggedRoute currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
          <Route path={Paths.apply()+"/newsletter"}
-        element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
+        element={<LoggedRoute currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
       <Route
       path={Paths.myProfile()}
       element={
@@ -324,8 +319,8 @@ console.log(isPhone)
     </div>
     {isPhone&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
-        loggedIn={props.currentProfile}
-        profile={props.currentProfile}/></div>:null}
+        loggedIn={currentProfile}
+        currentProfile={currentProfile}/></div>:null}
        
     </IonPage>
     

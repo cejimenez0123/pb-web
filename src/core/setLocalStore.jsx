@@ -16,5 +16,5 @@ export default function setLocalStore(key,value,isNative){
     }else{
         setLocalStorage(key,value)
     }
-    return <></>
+return <></>
 }

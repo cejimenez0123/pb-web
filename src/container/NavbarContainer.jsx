@@ -24,6 +24,8 @@ import Context from '../context.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
 import { IonImg } from '@ionic/react'
 import { useSelector } from 'react-redux'
+import getLocalStore from '../core/getLocalStore.jsx'
+import DeviceCheck from '../components/DeviceCheck.jsx'
 const PageName = {
   home: "Home",
   about:"About",
@@ -47,12 +49,13 @@ const pages = [
                 PageName.feedback
                 ]
 function NavbarContainer({currentProfile}){
-  
+  const isNative = DeviceCheck()
   const {isPhone,isHorizPhone}=useContext(Context)
   const dialog =useSelector(state=>state.users.dialog)
   useLayoutEffect(()=>{
     initGA()
   },[])
+  
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
@@ -152,7 +155,7 @@ const openDialog=()=>{
     <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
     </li>:null
     }else if(page==PageName.about||page==PageName.login||page==PageName.apply){
-      return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
+      return currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
     </li>:null
@@ -242,18 +245,18 @@ const openDialog=()=>{
         <ul className="menu menu-horizontal px-1">
         {pages.map((page) => {
     if(page==PageName.workshop||page==PageName.home){
-      return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
+      return currentProfile&&currentProfile.id?<li   onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-white no-underline' textAlign="center">{page}</a>
     </li>:null
     }else if(page==PageName.about||page==PageName.login||page==PageName.apply){
-      return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
+      return !(currentProfile&&currentProfile.id)?<li onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-white no-underline' textAlign="center">{page}</a>
     </li>:null
     }else if( page==PageName.create){
     
-        return(currentProfile?  
+        return(currentProfile&&currentProfile.id?  
             <li  
          
          className="z-[2] dropdown w-52">
@@ -288,7 +291,7 @@ openDialog()
     </li>):null
     
     }else if(page == PageName.apply){
-      return currentProfile?
+      return currentProfile&&currentProfile.id?
       (<li onClick={()=>handleCloseNavMenu(page) } 
           key={page} >
       <a className=' text-white no-underline' textAlign="center">{page}</a>
@@ -317,14 +320,10 @@ openDialog()
   const handleSignOut =async () => {
     window.google.accounts.id.disableAutoSelect(); // Clears GIS cookie for auto-login
     // Clear all stored items related to login and drive token
+ 
+
     await Preferences.clear()
     localStorage.clear()
-    // localStorage.removeItem('userEmail');
-    // localStorage.removeItem('userName');
-    // localStorage.removeItem('googleId');
-    // localStorage.removeItem("googledrivetoken");
-    // localStorage.removeItem('googledrivetoken_expiry');
-
     dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
       localStorage.clear()
       navigate("/")
@@ -345,7 +344,7 @@ openDialog()
 
  
   <div className="navbar-end">
-  {currentProfile&&localStorage.getItem("token")? 
+  {(currentProfile&&currentProfile.id)? 
   <div className={`dropdown ${isPhone?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">

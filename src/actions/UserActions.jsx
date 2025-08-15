@@ -4,28 +4,30 @@ import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
+import getLocalStore from "../core/getLocalStore";
+import setLocalStore from "../core/setLocalStore";
+
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
    
      
-
-        const {uId,email,password,idToken}=params
+try{        const {uId,email,password,idToken,isNative}=params
 
 
         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
    
         
         const {token}=authData
-        localStorage.setItem("token",token)
+       
+        setLocalStore("token",token,isNative)
+    
         const data= await profileRepo.getMyProfiles({token:token})
-        const profile = data.profile
-        
-        return{
-          profile: profile
-       } 
-     
-      
+       
+        return data
+}catch(error){
+  console.log(error)
+}
       
     }
 )
@@ -147,28 +149,23 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
   return data
 })
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
-async (params,thunkApi) => {
+async ({isNative},thunkApi) => {
   try{
 
-  const token = localStorage.getItem("token")
-  const idToken = localStorage.getItem("idToken")
-  if(token){
-    const data = await profileRepo.getMyProfiles({token:token})
-if(data.profile){
-
-
-    return {
-    profile: data.profile
-   } }
-  }else if(idToken){
-
-  }
-    throw new Error("No Token")
+    const token = await getLocalStore("token",isNative)
   
+
+    const data = await profileRepo.getMyProfiles({token:token&&token.value?token.value:null})
+    console.log("vdd",data)
+
+    const key = "cachedMyProfile"
+    setLocalStore(key,JSON.stringify(data.profile),isNative)
+    return data
+
     
     }catch(error){
-      console.log({error})
-      localStorage.clear()
+      console.log("currentPRof",{error})
+     
       return {error}
     }});
 

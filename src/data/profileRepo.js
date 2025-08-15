@@ -10,14 +10,17 @@ class ProfileRepo {
     }
     async getMyProfiles({token}){
       
-  
+//   try{
         let res = await axios.get(this.url+"/protected",{ headers:{
                 Authorization:"Bearer "+token
             }}
         )
+        console.log("VDVD",res)
 
         return res.data
-  
+    // }catch(e){
+    //     console.log(e)
+    // }
     }
     async create({email,token,password,username,profilePicture,selfStatement,privacy}){
         let res = await axios.post(this.url,

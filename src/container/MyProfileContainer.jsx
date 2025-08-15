@@ -78,9 +78,8 @@ function MyProfileContainer({presentingElement}) {
     dispatch(setPagesInView({ pages: [] }));
     return dispatch(getMyStories());
   });
-  useEffect(()=>{
-    dispatch(getCurrentProfile())
-  },[currentProfile])
+  
+
   const collections = usePersistentMyCollectionCache(() => {
     dispatch(setCollections({ collections: [] }));
     return dispatch(getMyCollections());

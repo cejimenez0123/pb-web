@@ -86,9 +86,9 @@ export default function SignUpContainer(props) {
     }
   };
 
-  const completeSignUp = () => {
+  const completeSignUp = async () => {
     let toke = searchParams.get("token") || token;
-    if (getLocalStore("googledrivetoken",isNative)||getLocalStore("idToken",isNative) || (password.length > 6 && username.length > 3)) {
+    if (await getLocalStore("googledrivetoken",isNative)||await getLocalStore("idToken",isNative) || (password.length > 6 && username.length > 3)) {
       const pictureParams = file ? { file } : { profilePicture: selectedImage };
       const params = {
         email,
@@ -170,7 +170,7 @@ setEmail(email)
             
             }}/></div>}
       
-            {/* {!getLocalStore("googledrivetoken") && ( */}
+         
               {googleID||identityToken?null:<>
                <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
                

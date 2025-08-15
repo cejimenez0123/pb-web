@@ -7,11 +7,14 @@ import getLocalStore from '../core/getLocalStore';
 import DeviceCheck from './DeviceCheck';
 import checkResult from '../core/checkResult';
 import Context from '../context';
+import setLocalStore from '../core/setLocalStore';
 export default function GoogleLogin({ onUserSignIn }) { 
     const {isError}=useContext(Context)
     const [gisLoaded, setGisLoaded] = useState(false);
     const isNative = DeviceCheck()
+    const [pending,setPending]=useState(true)
     const [loginError,setLogInError]=useState(null)
+    const [idToken,setIdToken]=useState(null)
     const [signedIn, setSignedIn] = useState(false); // Internal state for this component's UI
     const driveTokenKey = "googledrivetoken"; // Consistent key for Drive access token
     const navigate = useNavigate()
@@ -63,7 +66,7 @@ export default function GoogleLogin({ onUserSignIn }) {
         const storedDriveTokenExpiry = localStorage.getItem('googledrivetoken_expiry');
         const isTokenValid = storedDriveToken && storedDriveTokenExpiry && Date.now() < parseInt(storedDriveTokenExpiry, 10);
         if (storedEmail && storedGoogleId && isTokenValid) {
-            dispatch(logIn({email:storedEmail,uId:storedGoogleId})).then(res=>{ checkResult(res,payload=>{
+            dispatch(logIn({email:storedEmail,uId:storedGoogleId,isNative})).then(res=>{ checkResult(res,payload=>{
                 setPending(false)
                 setSignedIn(true);
                 setGisLoaded(true)
@@ -95,7 +98,7 @@ setLogInError("User Not Found. Apply Below")
        
 if(!signedIn){
             
-                    dispatch(logIn({email:storedEmail,uId:storedGoogleId})).then(res=>{ checkResult(res,payload=>{
+                    dispatch(logIn({email:storedEmail,uId:storedGoogleId,isNative})).then(res=>{ checkResult(res,payload=>{
                         setPending(false)
                         setSignedIn(true);
                         if(payload.error){
@@ -152,7 +155,7 @@ if(!signedIn){
     }, []); // Added dispatch to dependency array
 
     // Callback for the Google Sign-In button (ID Token)
-    const handleCredentialResponse = (response) => {
+    const handleCredentialResponse = async (response) => {
         if (response.credential) {
             try {
                 const decodedToken = parseJwt(response.credential);
@@ -163,9 +166,9 @@ if(!signedIn){
                     setSignedIn(true); // Update UI state to show logged-in view
 
                     // Store basic user info in localStorage
-                    localStorage.setItem('userEmail', decodedToken.email);
-                    localStorage.setItem('userName', decodedToken.name || decodedToken.given_name);
-                    localStorage.setItem('googleId', decodedToken.sub);
+                  setLocalStore('userEmail', decodedToken.email,isNative);
+              setLocalStore('userName', decodedToken.name || decodedToken.given_name,isNative);
+                  setLocalStore('googleId', decodedToken.sub,isNative);
 
                     console.log("User signed in (ID Token processed). Now requesting access token for Drive...");
                     // Proceed to request access token with Drive scopes
@@ -192,8 +195,8 @@ if(!signedIn){
                         const expiryMs = Date.now() + (parseInt(tokenResponse.expires_in, 10) * 1000);
 
                         // Store Drive access token and expiry in localStorage
-                        localStorage.setItem(driveTokenKey, driveAccessToken);
-                        localStorage.setItem("googledrivetoken_expiry", expiryMs.toString());
+                        setLocalStore(driveTokenKey, driveAccessToken,isNative);
+                        setLocalStore("googledrivetoken_expiry", expiryMs.toString(),isNative);
                         console.log("Drive-scoped access token obtained and stored.");
 
                         // Dispatch Redux login action after getting all necessary info
@@ -260,7 +263,7 @@ if(!signedIn){
         }
         console.log("User signed out.");
     };
-    const idToken = getLocalStore("token",isNative)
+  getLocalStore("token",isNative).then(token=>setIdToken(token))
 
     return (
         <div>

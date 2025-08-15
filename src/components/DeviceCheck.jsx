@@ -8,6 +8,7 @@ const [capacitor,setCap]=useState("desktop")
     const userAgent = window.navigator.userAgent || window.navigator.vendor || (window).opera;
 
     const isCapacitor = isPlatform('capacitor'); // If it's running in a native app
+ 
     const isMobileWeb = isPlatform('mobileweb'); // If it's in a mobile browser
     setCap(isCapacitor)
     if (!isCapacitor) {
@@ -22,7 +23,7 @@ const [capacitor,setCap]=useState("desktop")
     }
   }, []);
 
-  return capacitor
+  return capacitor=="desktop"
 };
 
 export default DeviceCheck;
