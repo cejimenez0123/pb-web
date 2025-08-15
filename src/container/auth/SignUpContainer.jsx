@@ -130,7 +130,7 @@ export default function SignUpContainer(props) {
   const handlePrivate=debounce(()=>{
 
   setIsPrivate(!isPrivate)
-  },10)
+  },100)
   return (
     
       
@@ -158,9 +158,9 @@ export default function SignUpContainer(props) {
                 <h6>Minimum username length is 4 characters</h6>
               </IonText>
             )}
-               
-           {googleID||identityToken? null:
-           <div className='mx-auto w-fit'><GoogleLogin onUserSignIn={({email,
+               <div className='w-[12rem] flex-col flex justify-center mx-auto'>
+           {googleID||identityToken? null:<>
+           <GoogleLogin onUserSignIn={({email,
                                 googleId,
                                 driveAccessToken})=>{
 setGoogleID(googleId)
@@ -168,12 +168,13 @@ setEmail(email)
 
                                 }}
                                   />
+                             
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               setEmail(email)
               setLocalStore("idToken",idToken,isNative)
             
-            }}/></div>}
-      
+            }}/></>}
+      </div>
          
               {googleID||identityToken?null:<>
                <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">

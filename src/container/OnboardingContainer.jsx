@@ -224,15 +224,25 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
               
               />
             </IonItem>
+            <IonItem className='ion-text-center flex'>
+           
             <GoogleLogin onUserSignIn={({email, name,googleId})=>{
-                dispatchSignUp(email,name,googleId,"")
+                updateFormData({email:email})
+                updateFormData({fullName:name})
+                updateFormData({googleId:googleId})
             }} />
+     
+            </IonItem>
+            <IonItem className='ion-text-center' >
+            
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               updateFormData({email:email})
               updateFormData({idToken: idToken })
               handleNext()
             
             }}/>
+         
+            </IonItem>
             </IonList>
             <div className='h-[18rem]'/>
             <IonRow className='flex justify-between'>

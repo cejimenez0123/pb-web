@@ -1,6 +1,6 @@
 import React from 'react';
 import { SignInWithApple } from '@capacitor-community/apple-sign-in';
-import { IonButton, IonIcon } from '@ionic/react';
+import { IonButton, IonIcon, IonText } from '@ionic/react';
 import Enviroment from '../../core/Enviroment';
 import { useDispatch } from 'react-redux';
 import getLocalStore from '../../core/getLocalStore';
@@ -30,10 +30,11 @@ function AppleSignInButton({onUserSignIn}) {
   };
 
 
-   return <IonButton onClick={handleAppleSignIn} expand="block" color="dark" className='rounded-full'>
+   return <div onClick={handleAppleSignIn} expand="block" color="dark" 
+className='bg-black rounded-full flex h-[4rem] text-white w-[10rem] mt-8'>
       {/* <IonIcon slot="start" name="logo-apple" /> */}
-      Sign in with Apple
-    </IonButton>
+      <IonText className='mx-auto my-auto'>Sign in with Apple</IonText>
+    </div>
 
 }
 

@@ -136,10 +136,11 @@ if(!signedIn){
                 {
                     theme: "outline",
                     size: "large",
+                    
                     text: "signin_with",
-                    borderRadius:"10%",
+                    borderRadius:"20%",
                     shape: "rectangular",
-                    width: "250",
+                    width: "14rem",
                     logo_alignment: "left"
                 }
             )}
@@ -271,7 +272,7 @@ if(!signedIn){
 
             {!signedIn||!idToken ? (
                 // This div will be replaced by the Google Sign-In button
-                <div id="google-sign-in-button"  className="mx-auto" style={{ display: gisLoaded ? 'block' : 'none' }}></div>
+                <div id="google-sign-in-button"  style={{ display: gisLoaded ? 'block' : 'none'}}></div>
             ) : null}
         </div>
     );
