@@ -70,8 +70,7 @@ function App(props) {
   const [isSaved,setIsSaved]=useState(true)
   const profile = useSelector(state=>state.users.profileInView)
   const [token,setToken]=useState(null)
-  let profiles = usePersistentCurrentProfile(()=>token?dispatch(getCurrentProfile({token,isNative})):null)
-  console.log("proflerids",profiles)
+  usePersistentCurrentProfile(()=>token?dispatch(getCurrentProfile({token,isNative})):null)
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
    const currentProfile = useSelector(state=>state.users.currentProfile)
   const [olderPath,setOlderPath]=useState(null)
@@ -84,28 +83,16 @@ function App(props) {
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
     }
-    getLocalStore("token",isNative).then(toke=>setToken(toke))
-  }
-    
-  ,[])
-useEffect(()=>{
- 
-if(token&&!currentProfile){
-    dispatch(getCurrentProfile({token,isNative}))
-}
-  },[token])
-  useEffect(()=>{
- 
-  
+    getLocalStore("token",isNative).then(toke=>setToken(toke))  
+},[])
 
-    if(token){
+  useEffect(()=>{
+    if(token&&!currentProfile){
         dispatch(getCurrentProfile({token,isNative}))
     }
-      },[])
+  },[token])
   useEffect(()=>{
-  
-      setOlderPath(location.pathname)
-  
+      setOlderPath(location.pathname) 
   },[location.pathname])
   useEffect(() => {
     if(currentProfile){
@@ -113,10 +100,6 @@ if(token&&!currentProfile){
       return
     }
     
-    if (isFirstLaunch&&!currentProfile&&isNative) {
-    
-     return
-    }
   }, [currentProfile]);
   useEffect(() => {
     const checkFirstLaunch = async () => {
@@ -358,8 +341,7 @@ if(token&&!currentProfile){
        
     </IonPage>
     
-    {/* </div> */}
-    {/* </div> */}
+  
    
     </Context.Provider>
     </IonApp>
@@ -371,8 +353,7 @@ function mapDispatchToProps(dispatch){
 
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicStories:()=>dispatch(getPublicStories()),
-    // fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),
-    setSignedInTrue:()=>dispatch(setSignedInTrue()),
+     setSignedInTrue:()=>dispatch(setSignedInTrue()),
     setSignedInFalse:()=>dispatch(setSignedInFalse()),
   }
 }
@@ -380,8 +361,6 @@ function mapStateToProps(state){
   return{
     profile: state.users.profileInView,
     signedIn: state.users.signedIn,
-    // bookInView: state.books.bookInView,
-    // booksInView: state.books.booksInView,
     currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,
     pagesInView: state.pages.pagesInView,

@@ -5,7 +5,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import loadingGif from "../../images/loading.gif"
 import Paths from '../../core/paths';
-import { useLocation } from 'react-router-dom';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
@@ -28,7 +27,7 @@ export default function LogInContainer() {
     if(currentProfile){
         navigate(Paths.myProfile())
     }
-   },[currentProfile])
+   },[])
 
     return (
         <div id="" className='sm:mx-2 py-16 md:py-4'>
@@ -45,7 +44,6 @@ function LogInCard({setLogInError}){
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const {setError}=useContext(Context)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
     const [email, setEmail] = useState('');
     const isNative = DeviceCheck()
     const [password, setPassword] = useState('');
@@ -60,11 +58,9 @@ function LogInCard({setLogInError}){
     
        
     const handleFirstTimeClick=()=>{
-    if(isNative){
-     
-    }else{
+  
         navigate("/apply")
-    }
+    
     }
 
     const handleLogIn = (event)=>{
@@ -188,11 +184,11 @@ setError("User Not Found. Apply Below")
             dispatchLogin({email,idToken,isNative})
         }}
         />
-         <GoogleLogin 
+         {/* <GoogleLogin 
      onUserSignIn={({email, name,googleId})=>{
 dispatchLogin({email,googleId,isNative})
             
-     }}/>
+     }}/> */}
      </span>
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}
