@@ -5,6 +5,7 @@ import close from "../../images/icons/clear.svg"
 import loadingGif from "../../images/loading.gif"
 import copyContent from "../../images/icons/content_copy.svg"
 import Dialog from "../Dialog"
+import { IonImg } from "@ionic/react"
 // import {DialogActions,Button} from "@mui/material"
 
 export default function ReferralForm({onClose}){
@@ -57,9 +58,9 @@ export default function ReferralForm({onClose}){
 <h1 className="mx-auto mont-bold text-emerald-800 mb-8 text-xl">Refer Someone Today</h1>
 
             {referral&&   referral.usageCount?<h2 className="text-emerald-800">{referral.usageCount}</h2>:null}
-        {pending?<img src={loadingGif} className="icon"/>:referralLink.trim().length>0?
+        {pending?<IonImg src={loadingGif} className="icon"/>:referralLink.trim().length>0?
         <span className="flex mt-6"><input type="text" 
-         value={referralLink} disabled className="bg-transparent w-[100%] border-2 border-emerald-800 py-2 px-4 rounded-full text-[0.8rem] md:text-l "/><img src={copyContent} onClick={copyToClipboard} className="icon"/></span>:<div className="icon"/>}
+         value={referralLink} disabled className="bg-transparent w-[100%] border-2 border-emerald-800 py-2 px-4 rounded-full text-[0.8rem] md:text-l "/><IonImg src={copyContent} onClick={copyToClipboard} className="icon"/></span>:<div className="icon"/>}
          <div className="text-center"><h6 className="mont-medium  mb-6 mx-8">{message}</h6></div>
           <h3 className="text-emerald-800 mont-medium text-xl  py-4 mt-3 mx-auto text-opacity-70">OR</h3>
           <label className="text-emerald-800 mx-4 text-lg mont-medium mt-3">

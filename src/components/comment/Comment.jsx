@@ -80,7 +80,7 @@ export default function Comment({page,comment,level}){
            className=" text-[0.8rem] mx-4 open-sans-medium text-white my-auto mr-4">{comment.profile.username}</a>
           
           {currentProfile && currentProfile.id == comment.profileId?     <div className="dropdown dropdown-left">
-<div tabIndex={0} role="button" className="my-auto"><img src={horiz}/></div>
+<div tabIndex={0} role="button" className="my-auto"><IonImg src={horiz}/></div>
   <ul tabIndex={0} className="dropdown-content mont-medium menu bg-slate-100  text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
     <li onClick={()=>setUpdateComment(comment)}><a>Update</a></li>
     <li className="my-2" onClick={handleDeleteComment}><a>Delete</a></li>

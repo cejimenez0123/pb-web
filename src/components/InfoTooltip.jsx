@@ -1,6 +1,7 @@
 
 import { useState,useEffect } from "react"
 import info from "../images/icons/info.svg"
+import { IonImg } from "@ionic/react";
 
 function InfoTooltip({text=" This is a tooltip"}){
     const [focus,setFocus]=useState(false)
@@ -24,7 +25,7 @@ function InfoTooltip({text=" This is a tooltip"}){
           onFocusCapture={handleToggle}
      className="relative h-fit my-auto w-fit mx-2 group" >
 
-    <img className="  text-white "
+    <IonImg className="  text-white "
     alt="info"
     src={info}
     />

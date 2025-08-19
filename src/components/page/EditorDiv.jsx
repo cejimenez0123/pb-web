@@ -8,6 +8,7 @@ import EditorContext from "../../container/page/EditorContext"
 import { useLocation } from "react-router-dom"
 import { setHtmlContent } from "../../actions/PageActions.jsx"
 import { useDispatch } from "react-redux"
+import { IonImg } from "@ionic/react"
 
  export default function EditorDiv({handleChange,createPage}){
         const location = useLocation()
@@ -69,7 +70,7 @@ import { useDispatch } from "react-redux"
                 }
                 return (<div  className="mx-auto  bg-emerald-200 rounded-b-lg  w-full p-8">
 
-                <img  className="rounded-lg my-4 mx-auto"
+                <IonImg  className="rounded-lg my-4 mx-auto"
                 src={image} alt={page.title}/>
                 </div>)
               }

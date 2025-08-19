@@ -1,7 +1,7 @@
 import React ,{useContext,useEffect,useLayoutEffect,useState} from 'react'
 import "../../App.css"
 import { logIn} from '../../actions/UserActions';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import loadingGif from "../../images/loading.gif"
 import Paths from '../../core/paths';
@@ -12,7 +12,6 @@ import DeviceCheck from '../../components/DeviceCheck';
 import GoogleLogin from '../../components/GoogleLogin';
 import Dialog from '../../components/Dialog';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
-import setLocalStore from '../../core/setLocalStore';
 import { IonInput } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
 
@@ -98,13 +97,13 @@ setError("User Not Found. Apply Below")
         }
     }
   
-    const dispatchLogin=({email,googleId,idToken})=>{
+    const dispatchLogin=  ({email,googleId,idToken})=>{
         if(idToken){
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
-                checkResult(res,payload=>{
+                checkResult(res,async payload=>{
                
               
-                    Preferences.set("cachedMyProfile",payload.profile).then(()=>{})
+                   await Preferences.set("cachedMyProfile",JSON.stringify(payload.profile))
                     navigate(Paths.myProfile())
                     setPending(false)
                 },err=>{
@@ -154,7 +153,7 @@ setError("User Not Found. Apply Below")
   Email
   <IonInput type="text" className="shrink overflow-hidden  my-auto text-[1rem] w-[100%] sm:max-w-[100%]  open-sans-medium  bg-transparent text-emerald-800" 
          value={email} 
-         onIonInput={(e) => setEmail(e.target.value.trim())}
+         onIonInput={(e) => setEmail(e.target.value)}
         placeholder='example@email.com' />
 </label>
 </div>   
@@ -164,7 +163,7 @@ setError("User Not Found. Apply Below")
   <IonInput type={showPassword?"text":`password`} className="shrink my-auto max-w-36 open-sans-medium sm:max-w-52  shrink text-emerald-800 " 
          value={password}
          
-         onIonInput={(e) => setPassword(e.target.value.trim())}
+         onIonInput={(e) => setPassword(e.target.value)}
         placeholder='*****' />
          
          <label onClick={()=>setShowPassword(!showPassword)}

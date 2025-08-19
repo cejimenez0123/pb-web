@@ -62,19 +62,15 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const {  seo, setSeo, isPhone, isNotPhone } = useContext(Context);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
-  const pages = usePersistentMyStoriesCache(()=>dispatch(getMyStories({profile:currentProfile,token:token})))
-   
- 
-  const cols = usePersistentMyCollectionCache(()=>dispatch(getMyCollections({token})));
+;
   const [description, setFeedback] = useState("");
-  const [referralLink, setReferralLink] = useState(null);
-  const [firstLogin, setFirstLogin] = useState(localStorage.getItem("firstTime") === "true");
+
   const [openDialog, setOpenDialog] = useState(false);
-  const [token,setToken]=useState(null) 
+  // const [token,setToken]=useState(null) 
   const collections = useSelector(state => state.books.collections)
   const [ogStories, setOgStories] = useState([]);
   const [ogCols, setOgCols] = useState([]);
-  Preferences.get("token").then(value=>setToken(value.value))
+  // Preferences.get("token").then(value=>setToken(value.value))
   const [feedbackPage, setFeedbackPage] = useState(null);
  
   const filterTypes = {
@@ -86,11 +82,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     ZA: "Z-A"
   };
 
-  // Load stories and collections
-  useEffect(()=>{
-      dispatch(getMyCollections({token,isNative}))
-      dispatch(getMyStories({token,isNative}))
-  },[token ])
+
 
   // Save original collections for filter resets
   useEffect(() => {
@@ -100,11 +92,16 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     setOgCols(collections);
   }, [collections]);
   useLayoutEffect(()=>{
-    if(token){
-      dispatch(getMyCollections({token}))
-      dispatch(getMyStories({profile:currentProfile,token}))
-    }
-  },[])
+
+    Preferences.get("token").then(({value})=>{
+      let token = value
+      console.log("dsffs",token)
+      dispatch(getMyCollections({token,isNative}))
+      dispatch(getMyStories({token,isNative}))
+    })
+
+    
+  },[navigate])
  
   useEffect(() => {
     switch (filterType) {
@@ -179,47 +176,6 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     dispatch(setCollections({ collections: filtered }));
   };
 
-
-
-  // const copyToClipboard = () => {
-  //   if (!referralLink) return
-  //   navigator.clipboard.writeText(referralLink).then(() => {
-  //     Preferences.set("firstTime",null).then(()=>{
-
-  //     })
-  //     setOpenReferral(false);
-  //     setFirstLogin(false);
-  //   });
-  // };
-  // const clickOpenReferral=()=>{
-  //   let dia = {...dialog}
-  //   dia.isOpen = openRefferal
-  //   dia.onClose = () => {
-  //     Preferences.set("firstTime", false);
-  //     setFirstLogin(false);
-  //   }
-  //   dia.disagreeText="Close" 
-  //   dia.title="Welcome to Plumbum! 🎉"
-  //   dia.text=(
-
-  //       <div className='card bg-emerald-50 px-4 py-8 overflow-x-hidden h-full md:min-w-72 md:min-h-72'>
-  //         <p className="text-lg text-gray-600 mb-4">You’ve just joined a community built for writers like you—a space to share, connect, and grow with fellow creatives.</p>
-  //         <p className="text-lg text-gray-600 mb-4">To get the best experience, invite your friends so they can keep up with your work and be part of your creative journey.</p>
-  //         <div className="text-center">
-  //           <ButtonWrapper onClick={generateReferral} className="mont-medium bg-gradient-to-r from-emerald-400 to-emerald-600 text-white rounded-full px-6 py-3 cursor-pointer inline-block" tabIndex={0} role="button">
-  //             Create Referral Link
-  //           </ButtonWrapper>
-  //           {referralLink && (
-  //             <div className='flex flex-row min-h-12 items-center mt-4'>
-  //               <a onClick={copyToClipboard} className='text-nowrap my-auto overflow-hidden text-ellipsis cursor-pointer' title={referralLink}>{referralLink}</a>
-  //               <img src={copyContent} alt="copy" onClick={copyToClipboard} className="btn bg-transparent border-none my-auto icon cursor-pointer" />
-  //             </div>
-  //           )}
-  //         </div>
-  //         <p className="text-center text-sm text-gray-500 mt-4">Share it with the people who inspire and support your writing! ✨</p>
-  //       </div>
-  //   )
-  // }
   const handleFeedback = () => {
     const params = { ...feedbackPage, description, needsFeedback: true, page: feedbackPage };
     dispatch(updateStory(params)).then(res => {
@@ -272,7 +228,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   }, [currentProfile, setSeo, dispatch]);
 
   return (
-    <IonContent className="ion-padding" fullscreen={true}>
+    <IonContent className="ion-padding" fullscreen={true} scrollY>
       <ErrorBoundary fallback={"error"}>
         {/* Top-right icons */}
         <div className='absolute top-1 right-1 flex flex-row m-3 pr-4 w-36 justify-evenly'>

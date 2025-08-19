@@ -120,7 +120,7 @@ const fetchHashtag = createAsyncThunk("hashtag/fetchHashtag",async (params,thunk
         return err
     }
 // }
-// send().then()
+
 })
 
 const clearHashComments = createAction("hashtags/clearHashComments")

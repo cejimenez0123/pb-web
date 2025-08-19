@@ -160,6 +160,7 @@
   height: 100% !important;
   max-height: 40em !important;
   text-overflow: ellipsis !important;
+  overflow-y: hidden;
   
 }
 #book-dashboard-item .ql-editor{

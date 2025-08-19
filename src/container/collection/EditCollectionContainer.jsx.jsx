@@ -84,8 +84,8 @@ export default function EditCollectionContainer(props) {
  
   }
   // --- Fetch the collection ---
-  const getCol = () => {
-    let token = localStorage.getItem("token");
+  const getCol = async () => {
+    let token = (await Preferences.get("token")).value
     setNewPages([]);
     setNewCollections([]);
     if (token && (!colInView || colInView.id !== id)) {
@@ -243,7 +243,7 @@ dispatch(setDialog(dia))
 
   if (colInView && canUserEdit) {
     return (
-      <IonContent fullscreen>
+      <IonContent fullscreen scrollY>
         <IonHeader>
           <IonToolbar>
             <IonTitle className="ion-text-center">Edit Collection: {colInView.title}</IonTitle>

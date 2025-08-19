@@ -15,6 +15,7 @@ import { debounce } from 'lodash'
 import Carousel from './Carousel'
 import { useNavigate } from 'react-router-dom'
 import adjustScreenSize from '../../core/adjustScreenSize'
+import { IonImg } from '@ionic/react'
 function BookDashboardItem({book,isGrid}) {
  
     const dispatch = useDispatch()
@@ -152,7 +153,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
             }}
             
 >{` `+title}</h6>
-<img onClick={handleBookmark} src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
+<IonImg  onClick={handleBookmark} src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
 </div>
   
 

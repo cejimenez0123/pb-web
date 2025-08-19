@@ -5,6 +5,7 @@ import uuidv4 from "../core/uuidv4";
 import {storage} from  "../core/di"
 import { client } from "../core/di";
 import {  ref, uploadBytes,getDownloadURL,deleteObject   } from "firebase/storage";
+import { Preferences } from "@capacitor/preferences";
 
 const createProfile= createAsyncThunk("users/createProfile",async (params,thunkApi)=>{
 
@@ -12,7 +13,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 
     if(data.token){
     
-       localStorage.setItem("token",data.token)
+       await Preferences.set("token",data.token)
     }
     if(data.profile){
         const {profile}=data
@@ -24,9 +25,9 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
  const fetchNotifcations = createAsyncThunk("users/fetchNotifications",async (params,thunkApi)=>{
  
         const {profile}=params
-       const token = localStorage.getItem("token")
+       const token =(await Preferences.get("token")).value
 
-             let data =   await profileRepo.notifications({token,profile})
+             let data = await profileRepo.notifications({token,profile})
 
           return data
   

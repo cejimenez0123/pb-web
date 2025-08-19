@@ -8,7 +8,7 @@ import clear from "../../images/icons/close.svg"
 import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
 import { useParams } from "react-router-dom";
-import { IonLabel, IonTextarea } from "@ionic/react";
+import { IonImg, IonLabel, IonTextarea } from "@ionic/react";
 export function HashtagForm({item}){
     const storyHashtags = useSelector(state=>state.hashtags.storyHashtags)
     const {setError}=useContext(Context)
@@ -155,7 +155,7 @@ export function HashtagForm({item}){
           {hashtags.map((hash, index) => (
   
             <li  className=" p-1 flex flex-row m-1 text-sm rounded-lg text-white bg-emerald-800 "key={index}>
-              <h6 className="my-auto mx-2">#{hash.hashtag.name}</h6><img 
+              <h6 className="my-auto mx-2">#{hash.hashtag.name}</h6><IonImg 
             className=" my-auto" 
             onClick={()=>deleteHashtag(hash)}
             src={clear}/></li>

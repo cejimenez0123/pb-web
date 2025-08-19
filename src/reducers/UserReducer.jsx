@@ -26,6 +26,7 @@ import { createPageApproval, deletePageApproval } from "../actions/PageActions.j
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
 import { postActiveUser } from "../actions/WorkshopActions"
+import { Preferences } from "@capacitor/preferences"
 
 const initialState = {
     signedIn: false,
@@ -67,7 +68,7 @@ const userSlice = createSlice({
             }
         }).addCase(deleteUserAccounts.fulfilled,(state,{payload})=>{
             state.currentProfile = null
-            localStorage.clear()
+            Preferences.clear()
         }).addCase(postActiveUser.fulfilled,(state,{payload})=>{
             state.profilesInView = payload.profiles
     
@@ -117,7 +118,7 @@ const userSlice = createSlice({
 
         state.loading = true
     }).addCase(signUp.fulfilled,(state,{payload})=>{
-        localStorage.setItem("loggedIn",true)
+        
         state.currentProfile = payload.profile
         state.signedIn= true
         state.loading = false

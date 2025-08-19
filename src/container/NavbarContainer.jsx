@@ -321,9 +321,9 @@ openDialog()
  
 
     await Preferences.clear()
-    localStorage.clear()
+  
     dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
-      localStorage.clear()
+ 
       navigate("/")
     },err=>{
       

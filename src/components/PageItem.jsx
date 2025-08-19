@@ -4,6 +4,7 @@ import Add from "@mui/icons-material/Add"
 import { PageType } from "../core/constants";
 import PropTypes from 'prop-types'
 import LinkPreview from "./LinkPreview";
+import { IonImg } from "@ionic/react";
 function PageItem({page,setPageIdList}){
     const [show,setShow]=useState(false)
     PageItem.propTypes={
@@ -16,7 +17,7 @@ function PageItem({page,setPageIdList}){
             pageDataElement = <div id="page-data-element-text" className='dashboard-content px-2 mx-1 pt-8 ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         break;
         case PageType.picture:
-            pageDataElement = <img id="page-data-element-img"className='dashborad-content' src={`${page.data}`} alt={page.title}/>
+            pageDataElement = <IonImg id="page-data-element-img"className='dashborad-content' src={`${page.data}`} alt={page.title}/>
         break;
         case PageType.link:
             pageDataElement = <LinkPreview id="page-data-element-link" url={page.data}/>

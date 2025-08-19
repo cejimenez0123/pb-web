@@ -28,7 +28,7 @@ function AppleSignInButton({onUserSignIn}) {
 
 
    return <div onClick={handleAppleSignIn} expand="block" color="dark" 
-className='bg-black rounded-full flex h-[4rem] text-white w-[10rem] mt-8'>
+className='bg-black btn rounded-full flex h-[4rem] text-white w-[10rem] mt-8'>
       {/* <IonIcon slot="start" name="logo-apple" /> */}
       <IonText className='mx-auto my-auto'>Sign in with Apple</IonText>
     </div>

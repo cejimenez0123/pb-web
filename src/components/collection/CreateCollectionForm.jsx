@@ -35,8 +35,6 @@ export default function CreateCollectionForm({onClose}){
     return(<form className=" lg:w-[100%]   rounded-lg text-emerald-700 ">
 
         <div className="mb-3 mx-4 pt-4" >
-{/* 
-            <img  onClick={onClose} src={close}/> */}
 
         <div className="px-4 pb-8">
         <div class="mb-4 flex flex-col">

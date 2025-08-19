@@ -1,6 +1,6 @@
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
-
+import {Preferences} from  "@capacitor/preferences"
 
 class AuthRepo{
     headers= {
@@ -47,7 +47,7 @@ class AuthRepo{
       
         let res = await axios.post(Enviroment.url+"/auth/generate-referral",{},{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem("token")
+                Authorization:"Bearer "+(await Preferences.get("token")).value
             }
         })
         return res.data
@@ -82,7 +82,7 @@ class AuthRepo{
     }
     async deleteUser(){
         let res = await axios.delete(Enviroment.url+"/auth/",{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
          return res.data    
      }

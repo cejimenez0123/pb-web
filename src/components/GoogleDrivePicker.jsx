@@ -101,8 +101,9 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
                 setDriveTokenAvailable(false);
                 console.log("Drive Picker: No valid token found in localStorage.");
                 // Clear any expired token to ensure a fresh request next time
-                localStorage.removeItem(TOKEN_KEY);
-                localStorage.removeItem(TOKEN_EXPIRY_KEY);
+              return async ()=>{  await Preferences.remove(TOKEN_KEY);
+                await Preferences.remove(TOKEN_EXPIRY_KEY);
+              }
             }
         }
     }, [gapiLoaded, driveClientLoaded, gisLoadedForPicker, isTokenExpired]);
@@ -151,8 +152,8 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
     }, [CLIENT_ID, DRIVE_SCOPES, gisLoadedForPicker, isTokenExpired, onReauthenticateNeeded]); // Added CLIENT_ID and DRIVE_SCOPES to deps
 
 
-    const createPicker = () => {
-        const storedToken = localStorage.getItem(TOKEN_KEY);
+    const createPicker = async () => {
+        const storedToken = (await Preferences.get(TOKEN_KEY)).value;
 
         // Ensure all APIs are ready and a valid token exists
         if (!gapiLoaded || !driveClientLoaded || !gisLoadedForPicker || !storedToken || isTokenExpired()) {
@@ -201,7 +202,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
 
     const fetchGoogleDocContent = async (file) => {
         try {
-            const storedToken = localStorage.getItem(TOKEN_KEY);
+            const storedToken =(await Preferences.get(TOKEN_KEY)).value;
             if (!storedToken || isTokenExpired()) {
                 console.error("Drive access token expired or not available. Cannot fetch content. Requesting re-authentication.");
                 requestDriveAccessToken(); // Attempt to get a new token

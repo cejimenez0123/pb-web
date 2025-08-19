@@ -53,6 +53,7 @@ import checkResult from "../../core/checkResult";
 
 import Paths from "../../core/paths.js";
 import DeviceCheck from "../../components/DeviceCheck.jsx";
+import { Preferences } from "@capacitor/preferences";
 
 export default function CollectionContainer() {
   const {  setError, currentProfile, setSuccess } = useContext(Context);
@@ -188,7 +189,7 @@ const isNative = DeviceCheck()
 
   function checkPermissions() {
 
-    if (collection.profileId === currentProfile.id) {
+    if (currentProfile && collection.profileId === currentProfile.id) {
       setCanUserEdit(true);
       setCanUserAdd(true)
       setCanUserSee(true)
@@ -268,10 +269,10 @@ const isNative = DeviceCheck()
       setError("Please Sign In");
     }
   };
-const getCol=()=>{
+const getCol=async ()=>{
        setLoading(true)
 
-        const token = localStorage.getItem("token")
+        const token =await Preferences.get("token")
        token?dispatch(fetchCollectionProtected({id})).then(res=>{
             checkResult(res,payload=>{
              setLoading(false)
@@ -456,7 +457,7 @@ const getCol=()=>{
 
   if (!collection) {
     return (
-      <IonContent fullscreen>
+      <IonContent fullscreen scrollY>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Loading collection...</IonTitle>
@@ -473,7 +474,7 @@ const getCol=()=>{
   if (!canUserSee) {
     if (loading) {
       return (
-        <IonContent fullscreen={true}>
+        <IonContent fullscreen={true} >
           <IonHeader>
             <IonToolbar>
               <IonTitle>Loading collection...</IonTitle>
@@ -501,7 +502,7 @@ const getCol=()=>{
   // Main content UI
   return (
     <IonContent 
-    fullscreen={true} >
+    fullscreen={true}  scrollY>
   
       <IonHeader >
   

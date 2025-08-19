@@ -19,7 +19,6 @@ import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions
 import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
-import Dialog from "../../components/Dialog.jsx"
 import { IonBackButton, IonButtons, IonContent, IonHeader } from "@ionic/react"
 import { setDialog } from "../../actions/UserActions.jsx"
 
@@ -381,7 +380,7 @@ const openRoleFormDialog = (fetchedPage) => {
 };
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
-          <IonContent fullscreen className="ion-padding pt-8">
+          <IonContent fullscreen scrollY className="ion-padding pt-8">
             <IonHeader>
               <IonButtons >
                 <IonBackButton  defaultHref={Paths.myProfile()}/></IonButtons>

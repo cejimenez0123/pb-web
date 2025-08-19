@@ -39,7 +39,7 @@ const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   return data
  })
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
-    localStorage.clear()
+    Preferences.clear()
     try{
       
    await signOut(auth)
@@ -78,7 +78,7 @@ const signUp = createAsyncThunk(
                                               username:username,
                                              }).wait()  
                                             }                                    
-                
+                                         await Preferences.set("loggedIn",true)   
       return {
       
             profile:data.profile
@@ -87,7 +87,7 @@ const signUp = createAsyncThunk(
     } catch (error){
         try{
           let data = await profileRepo.register({token,frequency,googleId,password,username,profilePicture,selfStatement,privacy})
-          localStorage.setItem("token",data.token)
+         await Preferences.set("token",data.token)
           client.initIndex("profile").saveObject({ objectID:data.profile.id,
             username:username,
            }).wait()       
@@ -151,17 +151,17 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
   return data
 })
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
-async ({token,isNative},thunkApi) => {
+async (thunkApi) => {
   try{
 
-
+    let token = (await Preferences.get("token")).value
 
     const data = await profileRepo.getMyProfiles({token:token})
-  
+   await Preferences.set("token",data.token)
    
     const key = "cachedMyProfile"
    await Preferences.set(key,JSON.stringify(data.profile))
-    console.log("colsC",data)
+  
     return data 
     }catch(error){     
       return {error}
@@ -210,7 +210,7 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
 const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
   
     try {
-      const token = localStorage.getItem("token")
+      const token =(await Preferences.get("token")).value
       if(token){
         let data = await profileRepo.getProfileProtected(params)
         return{

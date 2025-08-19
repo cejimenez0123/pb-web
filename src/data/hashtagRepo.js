@@ -1,5 +1,6 @@
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
+import { Preferences } from "@capacitor/preferences"
 
 
 class HashtagRepo{
@@ -22,20 +23,20 @@ class HashtagRepo{
             name,profileId
         },{
             headers:{
-                Authorization: "Bearer "+localStorage.getItem(this.token)
+                Authorization: "Bearer "+(await Preferences.get("token")).value
             }
         })
         return res.data
     }
     async fetchStoryHashtag({storyId,profileId}){
      let res=  await axios.get(this.url+"/profile/"+profileId+"/story/"+storyId,{headers:{
-            Authorization:"Bearer "+localStorage.getItem(this.token)
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
         return res.data
     }
     async fetchUserHashtagCommentUse({profileId}){
        let res = await axios.get(this.url+"/profile/"+profileId+"/comment",{headers:{
-            Authorization:"Bearer "+localStorage.getItem(this.token)
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
         return res.data
     }
@@ -43,7 +44,7 @@ class HashtagRepo{
         console.log(commentId)
         let res = await axios.post(this.url+"/comment/"+commentId,{name,profileId:profileId.id},{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
+                Authorization:"Bearer "+(await Preferences.get("token")).value
             }
         })
         return res.data
@@ -51,7 +52,7 @@ class HashtagRepo{
     async story({name,storyId,profile}){
         let res = await axios.post(this.url+"/story/"+storyId,{name,profile},{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
+                Authorization:"Bearer "+(await Preferences.get("token")).value
             }})
         return res.data
     }
@@ -59,7 +60,7 @@ class HashtagRepo{
       
             let res = await axios.delete(this.url+"/comment/"+hashtagCommentId,{
                 headers:{
-                    Authorization:"Bearer "+localStorage.getItem(this.token)
+                    Authorization:"Bearer "+(await Preferences.get("token")).value
                 
             }})
             return res.data
@@ -69,7 +70,7 @@ class HashtagRepo{
       
         let res = await axios.delete(this.url+"/story/"+id,{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
+                Authorization:"Bearer "+(await Preferences.get("token")).value
             
         }})
         return res.data
@@ -78,7 +79,7 @@ class HashtagRepo{
 async fetchStoryHashtagsProtected(params){
     let res = await axios.get(this.url+"/story/"+params.id+"/protected",{
         headers:{
-            Authorization:"Bearer "+localStorage.getItem(this.token)
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         
     }})
 
@@ -88,7 +89,7 @@ async fetchStoryHashtagsProtected(params){
 async fetchCollectionHashtagsProtected({id}){
     let res = await axios.get(this.url+"/collection/"+id+"/protected",{
         headers:{
-            Authorization:"Bearer "+localStorage.getItem(this.token)
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         
     }})
 
@@ -106,13 +107,13 @@ async fetchStoryHashtagsPublic({id}){
     async collection({name,colId,profile}){
         let res = await axios.post(this.url+"/collection/"+colId,{name,profile},{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
+                Authorization:"Bearer "+(await Preferences.get("token")).value
             }})
         return res.data
     }
     async deleteCollection({hashId}){
         let res = await axios.delete(this.url+"/collection/"+hashId,{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
         return res.data
     }

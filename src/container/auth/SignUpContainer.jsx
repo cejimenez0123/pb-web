@@ -135,7 +135,7 @@ export default function SignUpContainer(props) {
   return (
     
       
-      <IonContent fullscreen className="ion-padding pt-8">
+      <IonContent fullscreen className="ion-padding pt-8" scrollY>
         <IonHeader className="bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
         <IonTitle className="text-green-800 text-center ">
           Complete Sign Up

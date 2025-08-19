@@ -11,7 +11,7 @@ export default function usePersistentMyCollectionCache(fetchData) {
     const isNative = DeviceCheck()
     const [collections, setCols] = useState(async () => {
      let {value} = await Preferences.get(key)
-         return value ? JSON.parse(value) : [];
+         return value
     });
     const dispatch = useDispatch()
   

@@ -51,9 +51,6 @@ import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
 import DeviceCheck from './components/DeviceCheck.jsx';
 import Dialog from './components/Dialog.jsx';
-import getLocalStore from './core/getLocalStore.jsx';
-import setLocalStore from './core/setLocalStore.jsx';
-import { current } from '@reduxjs/toolkit';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 
 function App(props) {
@@ -70,10 +67,9 @@ function App(props) {
   const [isSaved,setIsSaved]=useState(true)
   const profileInView = useSelector(state=>state.users.profileInView)
   const [token,setToken]=useState(null)
-  let profile = usePersistentCurrentProfile(()=>token?dispatch(getCurrentProfile({token,isNative})):null)
+  usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-   const currentProfile = props.currentProfile??profile
-  //  useSelector(state=>state.users.currentProfile)
+   const currentProfile = props.currentProfile
   const [olderPath,setOlderPath]=useState(null)
   const location = useLocation()
   const [success,setSuccess]=useState(null)
@@ -84,10 +80,7 @@ function App(props) {
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
     }
-    return async()=>{
-     let token = await Preferences.get("token")
-     setToken(token.value)
-    }
+   
 },[])
 
 

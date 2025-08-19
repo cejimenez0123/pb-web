@@ -271,7 +271,7 @@ export default function AddToCollectionContainer(props) {
 
   if (!colInView) {
     return pending ? (
-      <IonContent fullscreen={true}>
+      <IonContent fullscreen={true} scrollY>
         <IonSkeletonText
           animated
           style={{ width: "96vw", height: 150, margin: "2rem auto", borderRadius: 18 }}
@@ -282,7 +282,7 @@ export default function AddToCollectionContainer(props) {
         />
       </IonContent>
     ) : (
-      <IonContent fullscreen>
+      <IonContent fullscreen scrollY>
         <div className="ion-text-center ion-padding">
           <IonText color="medium">
             <h5>Collection Not Found</h5>
@@ -294,7 +294,7 @@ export default function AddToCollectionContainer(props) {
 
   return (
     <ErrorBoundary>
-    <IonContent fullscreen={true} className="ion-padding" >
+    <IonContent fullscreen={true}scrollY className="ion-padding" >
      <IonHeader>
         <IonToolbar>
         <IonButtons slot="start">

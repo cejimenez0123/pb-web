@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
 import insta from "../images/icons/instagram.svg"
 import Dialog from "./Dialog";
-import { IonInput, IonItem, IonList, IonText } from "@ionic/react";
+import { IonImg, IonInput, IonItem, IonList, IonText } from "@ionic/react";
 import { setDialog } from "../actions/UserActions";
 import DeviceCheck from "./DeviceCheck";
 
@@ -308,7 +308,7 @@ function CalendarEmbed(){
                            <span className="flex flex-row justify-between min-w-20 w-20 ml-3">
                          
                             <h5 className="my-auto text-[0.8rem] w-[2.6rem] text-emerald-800 "><div dangerouslySetInnerHTML={{__html:event.startTime}}/></h5>
-              <img  onClick={()=>{
+              <IonImg onClick={()=>{
                         sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
                         window.open(event.googleLink)
             

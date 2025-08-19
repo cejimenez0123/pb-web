@@ -15,7 +15,7 @@ setToken(token)
     //   setProfile(JSON.parse(profile))
       return JSON.parse(profile)
         }else{
-          const saved =localStorage.getItem(key);
+          const saved =(await Preferences.get(key)).value;
           return saved ? JSON.parse(saved) :null;
         }
     }

@@ -10,6 +10,7 @@ import { initGA,sendGAEvent } from "../../core/ga4.js";
 import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
 import Context from "../../context.jsx";
+import { IonImg } from "@ionic/react";
 function IndexItem({item,handleFeedback}) {
  
     const [canUserAdd,setCanUserAdd]=useState(false)
@@ -143,7 +144,7 @@ function IndexItem({item,handleFeedback}) {
               { canUserEdit?(
        
        <div className="dropdown  my-auto w-fit dropdown-left">
-  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <img className="  my-auto mx-auto  " src={edit}/></div>
+  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg className="  my-auto mx-auto  " src={edit}/></div>
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
         handleEditClick}><a className="text-green-600 ">Edit</a></li>
@@ -156,7 +157,7 @@ function IndexItem({item,handleFeedback}) {
   : canUserAdd&&!canUserEdit?(
   
    <div className="dropdown my-auto w-fit dropdown-left">
-   <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <img classname="my-auto mx-auto  " src={addBox}/></div>
+   <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg classname="my-auto mx-auto  " src={addBox}/></div>
    <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10  w-52 p-2 shadow">
   
          <li className="no-underline text-emerald-600"  onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>

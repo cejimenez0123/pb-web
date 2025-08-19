@@ -1,6 +1,6 @@
 
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { IonCard, IonCardHeader, IonCardContent } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardContent, IonImg } from '@ionic/react';
 import "../../Dashboard.css";
 import {
   deletePageApproval,
@@ -260,7 +260,7 @@ export default function DashboardItem({ page, book, isGrid }) {
             }}>
             {` ` + (page.title?.length > 0 ? page.title : "")}
           </h6>
-          <img onClick={handleBookmark} className='text-white' src={bookmarked ? bookmarkfill : bookmarkoutline} />
+          <IonImg onClick={handleBookmark} className='text-white' src={bookmarked ? bookmarkfill : bookmarkoutline} />
         </span>
       </div>
     ) : null;
@@ -366,10 +366,10 @@ export default function DashboardItem({ page, book, isGrid }) {
                     onClick={handleBookmark}
                     disabled={!currentProfile}>
                     {loading
-                      ? <img className="max-h-6" src={loadingGif} />
+                      ? <IonImg className="max-h-6" src={loadingGif} />
                       : bookmarked
-                        ? <img src={bookmarkFillGreen} className='text-emerald-800' />
-                        : <img src={bookmarkadd} />}
+                        ? <IonImg src={bookmarkFillGreen} className='text-emerald-800' />
+                        : <IonImg src={bookmarkadd} />}
                   </button>
                 </li>
               </ul>

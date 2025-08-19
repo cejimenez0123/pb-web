@@ -1,5 +1,6 @@
 import axios from "axios";
 import Enviroment from "../core/Enviroment";
+import { Preferences } from "@capacitor/preferences";
 
 
 
@@ -34,7 +35,7 @@ import Enviroment from "../core/Enviroment";
     }
     async getProtectedProfileCollections({id}){
         let res = await axios.get(this.url+`/profile/${id}/protected`,{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
         return res.data
     }
@@ -58,7 +59,7 @@ import Enviroment from "../core/Enviroment";
             location,
             isOpenCollaboration:isOpenCollaboration
         },{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
 
         return res.data
@@ -73,7 +74,7 @@ import Enviroment from "../core/Enviroment";
             isPrivate,
             isOpenCollaboration
         },{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
         return res.data
     }
@@ -82,7 +83,7 @@ import Enviroment from "../core/Enviroment";
                     roles,
                     profileId
                 },{headers:{
-                    Authorization:"Bearer "+localStorage.getItem("token")
+                    Authorization:"Bearer "+(await Preferences.get("token")).value
                 }})
 
         return res.data
@@ -90,7 +91,7 @@ import Enviroment from "../core/Enviroment";
     async updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile}){
             let res = await axios.patch(this.url+"/"+id,
             {id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},{headers:{
-                Authorization:"Bearer "+localStorage.getItem("token")
+                Authorization:"Bearer "+(await Preferences.get("token")).value
             }})
             console.log("SCC",res)
             return res.data
@@ -101,7 +102,7 @@ import Enviroment from "../core/Enviroment";
             list:list,
             profile
         },{headers:{
-            Authorization:"Bearer "+localStorage.getItem(this.token)
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
 
         return res.data
@@ -112,7 +113,7 @@ import Enviroment from "../core/Enviroment";
             list,
             profile
         },{headers:{
-            Authorization:"Bearer "+localStorage.getItem(this.token)
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
         return res.data
     }
@@ -126,7 +127,7 @@ import Enviroment from "../core/Enviroment";
       
         let res = await axios.delete(this.url+"/"+id,
             {headers:{
-                Authorization:"Bearer "+localStorage.getItem("token")
+                Authorization:"Bearer "+(await Preferences.get("token")).value
             }}
         )
 
@@ -145,7 +146,7 @@ import Enviroment from "../core/Enviroment";
     }
     async fetchCollectionProtected({id}){
         const res = await axios.get(this.url+"/"+id+"/protected",{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
         console.log(res)
         return res.data
@@ -158,7 +159,7 @@ import Enviroment from "../core/Enviroment";
     async deleteCollectionToCollection({tcId}){
         let res = await axios.delete(this.url+"/colToCol/"+tcId,
             {headers:{
-                Authorization: "Bearer "+localStorage.getItem("token")
+                Authorization: "Bearer "+(await Preferences.get("token")).value
             }}
         )
         console.log(res)
@@ -168,7 +169,7 @@ import Enviroment from "../core/Enviroment";
 
         let res=  await axios.delete(this.url+"/storyToCol/"+stId,
              {headers:{
-                 Authorization: "Bearer "+localStorage.getItem("token")
+                 Authorization: "Bearer "+(await Preferences.get("token")).value
              }}
          )
  
@@ -176,7 +177,7 @@ import Enviroment from "../core/Enviroment";
      }
     async fetchSubCollectionsProtected({id}){
         const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
       
         return res.data
@@ -198,14 +199,14 @@ import Enviroment from "../core/Enviroment";
     }
     async recommendations(){
         const res = await axios.get(this.url+"/recommendations",{headers:{
-            Authorization:"Bearer "+localStorage.getItem(this.token)
+            Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
 
         return res.data
     }
     async recommendedStories({colId}){
         const res = await axios.get(this.url+"/"+colId+"/story/recommendations",{headers:{
-         Authorization:"Bearer "+localStorage.getItem(this.token)
+         Authorization:"Bearer "+(await Preferences.get("token")).value
         }})
    
         return res.data

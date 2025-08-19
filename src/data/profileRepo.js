@@ -53,7 +53,7 @@ class ProfileRepo {
     
     }
     async getProfileProtected(params){
-        const token = localStorage.getItem("token")
+        const token = (await Preferences.get("token")).value
         const {id}=params
         let res = await axios.get(this.url+"/"+id+"/protected",{headers:{
             Authorization:"Bearer "+token

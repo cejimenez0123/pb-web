@@ -15,6 +15,8 @@ import Enviroment from "../../core/Enviroment.js"
 import { initGA,sendGAEvent } from "../../core/ga4.js"
 import ErrorBoundary from "../../ErrorBoundary.jsx"
 import { createPageApproval } from "../../actions/PageActions"
+import { Preferences } from "@capacitor/preferences"
+import { IonImg } from "@ionic/react"
 export default function PageViewButtonRow({page,setCommenting}){
     const {setSuccess,currentProfile,setError}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
@@ -199,8 +201,8 @@ checkResult(res,payload=>{
 <a disabled={!currentProfile} 
 className=' text-emerald-800 '
 
-onClick={()=>{
-if(currentProfile &&localStorage.getItem("token")){
+onClick={async ()=>{
+if(currentProfile & (await Preferences.get("token")).value){
     navigate(Paths.addStoryToCollection.story(page.id))
 }else{
     setError("Please Sign Up")
@@ -231,8 +233,8 @@ onClick={()=>handleBookmark()}
 className=" text-emerald-800 border-none flex bg-transparent"
 disabled={!currentProfile}> 
 {!loading?(bookmarked?
-<img className="mx-auto" src={bookmarkFill}/>:<img className="mx-auto" src={bookmarkAdd}/> ):
-<img className="max-h-6 mx-auto" src={loadingGif}/>}
+<IonImg className="mx-auto" src={bookmarkFill}/>:<img className="mx-auto" src={bookmarkAdd}/> ):
+<IonImg className="max-h-6 mx-auto" src={loadingGif}/>}
 </button></li>
 </ul>
 </div>

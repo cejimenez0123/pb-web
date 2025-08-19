@@ -173,7 +173,7 @@ function DiscoveryContainer() {
     // <IonPage>
       <ErrorBoundary>
         {/* Header could be added here if desired */}
-        <IonContent fullscreen>
+        <IonContent fullscreen scrollY>
           <div className="text-left mt-24">
             {libraryForums()}
           </div>

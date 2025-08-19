@@ -17,7 +17,7 @@ class CommentRepo{
         return res.data
     }
     async delete({id}){
-       let token= localStorage.getItem("token")
+       let token= (await Preferences.get("token")).value
     
         let res = await axios.delete(Enviroment.url+"/comment/"+id,
         {headers:

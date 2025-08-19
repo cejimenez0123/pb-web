@@ -25,6 +25,7 @@ import Enviroment from '../../core/Enviroment.js';
 import ErrorBoundary from '../../ErrorBoundary.jsx';
 import PageList from '../../components/page/PageList.jsx';
 import sortItems from '../../core/sortItems.js';
+import { Preferences } from '@capacitor/preferences';
 
 function ProfileContainer({ profile }) {
   const { seo, setSeo, setError, setSuccess, currentProfile } = useContext(Context);
@@ -116,11 +117,11 @@ function ProfileContainer({ profile }) {
     });
   }, debounceDelay);
 
-  const getContent = () => {
+  const getContent = async () => {
     dispatch(setPagesInView({ pages: [] }));
     dispatch(setCollections({ collections: [] }));
 
-    const token = localStorage.getItem('token');
+    const token = (await Preferences.get('token')).value
     if (token && currentProfile?.id === id) {
       dispatch(getProtectedProfilePages({ profile: { id } }));
       dispatch(getProtectedProfileCollections({ profile: { id } }));
@@ -218,7 +219,7 @@ function ProfileContainer({ profile }) {
             <IonTitle>{profile ? `${profile.username}'s Profile` : 'Profile'}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent fullscreen>
+        <IonContent fullscreen scrollY>
           <div className="pt-2 md:pt-8 mb-8 mx-2">
             <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
           </div>

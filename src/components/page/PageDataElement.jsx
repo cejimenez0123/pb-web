@@ -50,7 +50,7 @@ switch(page.type){
                     navigate(Paths.page.createRoute(page.id))
                 }}
         
-        ><div className={` ql-editor 
+        ><div className={` ql-editor overflow-clip
         rounded-lg 
                 ${book?`mx-2`:""}  `}
            

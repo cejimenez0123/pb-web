@@ -8,6 +8,7 @@ import Context from '../context';
 import { useMediaQuery } from 'react-responsive';
 import adjustScreenSize from '../core/adjustScreenSize';
 import SpotifyEmbed from './SpotifyEmbed';
+import { IonImg } from '@ionic/react';
 function LinkNode({ url,image,description,title,isGrid}) {
   const {isPhone,isHorizPhone}=useContext(Context)
 
@@ -117,7 +118,7 @@ const fetchData = async (url) => {
   if (previewData && previewData.videoId) {
     return (
     
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className=" md:w-[20em]
+        <IonImgmg onClick={handleClick} style={{ cursor: 'pointer' }} className=" md:w-[20em]
        "src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
@@ -133,14 +134,14 @@ const fetchData = async (url) => {
       
       )}else if(image){
         return(
-    <img className={imgClass} 
+  <IonImg className={imgClass} 
     src={image}/>
 
 )
 
       }else if(previewData&& previewData.image) {
     return(     <div className={" flex  text-center shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "}>
-    <img className={"object-fit  w-[100%]  min-w-[70px] "} src={previewData.image}  alt="Link Preview" />
+    <IonImg className={"object-fit  w-[100%]  min-w-[70px] "} src={previewData.image}  alt="Link Preview" />
     </div>
     )
     }else{

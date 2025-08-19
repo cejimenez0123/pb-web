@@ -59,12 +59,12 @@ export default function GoogleLogin({ onUserSignIn }) {
     },[])
     // Main useEffect for managing GIS loading and login state
     useEffect(() => {
-        
-        const storedEmail = localStorage.getItem('userEmail');
-        const storedName = localStorage.getItem('userName');
-        const storedGoogleId = localStorage.getItem('googleId');
-        const storedDriveToken = localStorage.getItem(driveTokenKey);
-        const storedDriveTokenExpiry = localStorage.getItem('googledrivetoken_expiry');
+       return async ()=>{ 
+        const storedEmail =(await Preferences.get('userEmail')).value;
+        const storedName = (await Preferences.get('userName')).value;
+        const storedGoogleId = (await Preferences.get('googleId')).value;
+        const storedDriveToken = (await Preferences.get(driveTokenKey)).value;
+        const storedDriveTokenExpiry = (await Preferences.get('googledrivetoken_expiry')).value;
         const isTokenValid = storedDriveToken && storedDriveTokenExpiry && Date.now() < parseInt(storedDriveTokenExpiry, 10);
         if (storedEmail && storedGoogleId && isTokenValid) {
             dispatch(logIn({email:storedEmail,uId:storedGoogleId,isNative})).then(res=>{ checkResult(res,payload=>{
@@ -148,11 +148,11 @@ if(!signedIn){
             // Important: If a token exists but is expired, clear it
             if (storedDriveToken && storedDriveTokenExpiry && !isTokenValid) {
                 console.log("Stored Drive token expired. Clearing from localStorage.");
-                localStorage.removeItem(driveTokenKey);
-                localStorage.removeItem('googledrivetoken_expiry');
+                await Preferences.remove(driveTokenKey);
+                await Preferences.remove('googledrivetoken_expiry');
             }
         
-        // gisLoaded
+            }    // gisLoaded
     }, []); // Added dispatch to dependency array
 
     // Callback for the Google Sign-In button (ID Token)
@@ -245,25 +245,7 @@ if(!signedIn){
         }
     };
 
-    const handleSignOut = () => {
-        window.google.accounts.id.disableAutoSelect(); // Clears GIS cookie for auto-login
-        // Clear all stored items related to login and drive token
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('userName');
-        localStorage.removeItem('googleId');
-        localStorage.removeItem(driveTokenKey);
-        localStorage.removeItem('googledrivetoken_expiry');
-
-        // Reset component's internal state
-        
-        setSignedIn(false);
-
-        // Notify parent component about sign out
-        if (onUserSignIn) {
-            onUserSignIn(null); // Indicate user signed out
-        }
-        console.log("User signed out.");
-    };
+ 
   Preferences.get("token").then(token=>setIdToken(token.value))
 
     return (

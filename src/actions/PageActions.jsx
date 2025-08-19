@@ -7,6 +7,7 @@ import likeRepo from "../data/likeRepo"
 import profileRepo from "../data/profileRepo"
 import { PageType } from "../core/constants"
 import { deleteObject } from "firebase/storage"
+import { Preferences } from "@capacitor/preferences"
 
 const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
   
@@ -248,7 +249,7 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
    
 try{
       const data = await likeRepo.storyDelete(params)
-      const token = localStorage.getItem("token")
+      const token = (await Preferences.get("token")).value
       let profileData = await profileRepo.getMyProfiles({token:token})
         
       return {
