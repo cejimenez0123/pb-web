@@ -36,6 +36,7 @@ import getLocalStore from '../../core/getLocalStore';
 import DeviceCheck from '../../components/DeviceCheck';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { debounce } from 'lodash';
+import { Preferences } from '@capacitor/preferences';
 
 export default function SignUpContainer(props) {
   const isNative = DeviceCheck()
@@ -55,8 +56,8 @@ export default function SignUpContainer(props) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-   getLocalStore("idToken").then(token=>{
-    setIdentityToken(token)
+  Preferences.get("idToken").then(token=>{
+    setIdentityToken(token.value)
    })
   const { setError, setSuccess, setSeo, seo } = useContext(Context);
 
@@ -69,7 +70,7 @@ export default function SignUpContainer(props) {
 
   useEffect(() => {
     setToken(token);
-    setLocalStore("token",token,isNative)
+    return async ()=>await Preferences.set("token",token)
   }, [searchParams, token]);
 
   const handleFileInput = (e) => {
@@ -89,7 +90,7 @@ export default function SignUpContainer(props) {
 
   const completeSignUp = async () => {
     let toke = searchParams.get("token") || token;
-    if (await getLocalStore("googledrivetoken",isNative)||await getLocalStore("idToken",isNative) || (password.length > 6 && username.length > 3)) {
+    if (((await Preferences.get(("googledrivetoken"))).value||(await Preferences.get("idToken")).value || (password.length > 6 && username.length > 3))) {
       const pictureParams = file ? { file } : { profilePicture: selectedImage };
       const params = {
         email,
@@ -111,7 +112,7 @@ export default function SignUpContainer(props) {
         : dispatch(signUp(params));
 
       uploadAction.then(res => checkResult(res, payload => {
-        setLocalStore("firstTime", payload.firstTime,isNative)
+        Preferences.set("firstTime", payload.firstTime).then(()=>{})
    
         if (payload.profile) {
           navigate(Paths.myProfile());
@@ -171,7 +172,7 @@ setEmail(email)
                              
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               setEmail(email)
-              setLocalStore("idToken",idToken,isNative)
+              Preferences.set("idToken",idToken).then(()=>{})
             
             }}/></>}
       </div>

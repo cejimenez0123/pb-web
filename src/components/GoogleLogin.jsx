@@ -8,6 +8,7 @@ import DeviceCheck from './DeviceCheck';
 import checkResult from '../core/checkResult';
 import Context from '../context';
 import setLocalStore from '../core/setLocalStore';
+import { Preferences } from '@capacitor/preferences';
 export default function GoogleLogin({ onUserSignIn }) { 
     const {isError}=useContext(Context)
     const [gisLoaded, setGisLoaded] = useState(false);
@@ -166,9 +167,9 @@ if(!signedIn){
                     setSignedIn(true); // Update UI state to show logged-in view
 
                     // Store basic user info in localStorage
-                  setLocalStore('userEmail', decodedToken.email,isNative);
-              setLocalStore('userName', decodedToken.name || decodedToken.given_name,isNative);
-                  setLocalStore('googleId', decodedToken.sub,isNative);
+                  await Preferences.set('userEmail', decodedToken.email);
+             await Preferences.set('userName', decodedToken.name || decodedToken.given_name);
+               await  Preferences.set('googleId', decodedToken.sub);
 
                     console.log("User signed in (ID Token processed). Now requesting access token for Drive...");
                     // Proceed to request access token with Drive scopes
@@ -195,8 +196,8 @@ if(!signedIn){
                         const expiryMs = Date.now() + (parseInt(tokenResponse.expires_in, 10) * 1000);
 
                         // Store Drive access token and expiry in localStorage
-                        setLocalStore(driveTokenKey, driveAccessToken,isNative);
-                        setLocalStore("googledrivetoken_expiry", expiryMs.toString(),isNative);
+                       Preferences.set(driveTokenKey, driveAccessToken).then(()=>{});
+                       Preferences.set("googledrivetoken_expiry", expiryMs.toString()).then(()=>{})
                         console.log("Drive-scoped access token obtained and stored.");
 
                         // Dispatch Redux login action after getting all necessary info
@@ -263,7 +264,7 @@ if(!signedIn){
         }
         console.log("User signed out.");
     };
-  getLocalStore("token",isNative).then(token=>setIdToken(token))
+  Preferences.get("token").then(token=>setIdToken(token.value))
 
     return (
         <div>

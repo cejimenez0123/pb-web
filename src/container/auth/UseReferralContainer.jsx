@@ -12,6 +12,7 @@ import authRepo from "../../data/authRepo";
 import { debounce } from "lodash";
 import setLocalStore from "../../core/setLocalStore";
 import DeviceCheck from "../../components/DeviceCheck";
+import { Preferences } from "@capacitor/preferences";
 export default function UseReferralContainer(props){
     const location = useLocation();
     const isNative = DeviceCheck()
@@ -117,8 +118,8 @@ setToken(token)
                         }))
                     
                 .then(res=>checkResult(res,payload=>{
-       setLocalStore("firstTime",true,isNative)
-                    localStorage.setItem("token",payload.token)
+     Preferences.set("firstTime",true).then(()=>{})
+                    Preferences.set("token",payload.token).then(()=>{})
                    if(payload.profile){navigate(Paths.myProfile())}else{
                    
                     setSuccess(null)
@@ -159,11 +160,11 @@ setToken(token)
         }else{
 
       if(payload.token){
-        setLocalStore("token",payload.token,isNative)
+        Preferences.set("token",payload.token)
       }
        
          if(payload.profile){
-          setLocalStore("firstTime",true,isNative)
+          Preferences.set("firstTime",true)
           navigate(Paths.myProfile())}else{
          
           setSuccess(null)

@@ -33,8 +33,8 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
     // Helper to check if the stored token is expired
     const isTokenExpired = useCallback(async () => {
      
-        const storedToken =  await  Preferences.get(TOKEN_KEY);
-        const storedExpiry = await Preferences.get(TOKEN_EXPIRY_KEY);
+        const storedToken =  (await  Preferences.get(TOKEN_KEY)).value;
+        const storedExpiry = (await Preferences.get(TOKEN_EXPIRY_KEY)).value;
 
         if (!storedToken || !storedExpiry) {
             return true; // No token or expiry means it's "expired" for practical purposes

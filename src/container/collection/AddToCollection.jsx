@@ -31,6 +31,7 @@ import loadingGif from "../../images/loading.gif";
 import checked from "../../images/icons/check.svg";
 import emptyBox from "../../images/icons/empty_circle.svg";
 import getLocalStore from "../../core/getLocalStore.jsx";
+import { Preferences } from "@capacitor/preferences";
 
 let colStr = "collection";
 
@@ -56,7 +57,7 @@ export default function AddToCollectionContainer(props) {
       })
   );
   useEffect(()=>{
-    getLocalStore("token").then(tok=>setToken(tok))
+    Preferences.get("token").then(tok=>setToken(tok.value))
   },[])
   useEffect(()=>{
     if(token){

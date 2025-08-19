@@ -6,6 +6,7 @@ import loading from "./images/loading.gif"
 import Context from './context';
 import getLocalStore from './core/getLocalStore';
 import DeviceCheck from './components/DeviceCheck';
+import { Preferences } from '@capacitor/preferences';
 const PrivateRoute = ({loggedIn, children }) => {
     const {currentProfile}= useContext(Context)
     const location = useLocation();
@@ -18,8 +19,8 @@ const PrivateRoute = ({loggedIn, children }) => {
    useLayoutEffect(()=>{
 
     return async ()=>{
-      let tok = await getLocalStore("token",isNative)
-      setToken(tok)
+      let tok = await Preferences.get("token")
+      setToken(tok.value)
     }
    },[])
     useLayoutEffect( () => {

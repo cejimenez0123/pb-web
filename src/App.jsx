@@ -86,7 +86,7 @@ function App(props) {
     }
     return async()=>{
      let token = await Preferences.get("token")
-     setToken(token)
+     setToken(token.value)
     }
 },[])
 
@@ -104,9 +104,9 @@ function App(props) {
   useEffect(() => {
     const checkFirstLaunch = async () => {
     
-      let value = await getLocalStore('hasSeenOnboarding',isNative)
+      let value = (await Preferences.get('hasSeenOnboarding')).value
       if (value === null) {
-        setLocalStore("hasSeenOnboarding",true,isNative)
+        Preferences.set("hasSeenOnboarding",true)
     
         setIsFirstLaunch(true);
      

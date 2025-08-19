@@ -14,6 +14,7 @@ import Dialog from '../../components/Dialog';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import setLocalStore from '../../core/setLocalStore';
 import { IonInput } from '@ionic/react';
+import { Preferences } from '@capacitor/preferences';
 
 export default function LogInContainer() {
     const {setError,seo,setSeo,currentProfile}=useContext(Context)
@@ -77,7 +78,7 @@ function LogInCard({setLogInError}){
                     if(payload && payload.error){
                         setError("Error with Username or Password")
                     }else{
-                        setLocalStore("cachedMyProfile",payload.profile,isNative)
+                       Preferences.set("cachedMyProfile",payload.profile)
                         navigate(Paths.myProfile())
                     }
                 },err=>{
@@ -103,7 +104,7 @@ setError("User Not Found. Apply Below")
                 checkResult(res,payload=>{
                
               
-                    setLocalStore("cachedMyProfile",payload.profile,isNative)
+                    Preferences.set("cachedMyProfile",payload.profile).then(()=>{})
                     navigate(Paths.myProfile())
                     setPending(false)
                 },err=>{
@@ -124,7 +125,7 @@ setError("User Not Found. Apply Below")
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
               
-                setLocalStore("cachedMyProfile",payload.profile,isNative)
+                Preferences.set("cachedMyProfile",payload.profile)
                 navigate(Paths.myProfile())
                 setPending(false)
             },err=>{

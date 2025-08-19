@@ -30,6 +30,7 @@ import {
 import usePersistentMyCollectionCache from "../../domain/usecases/usePersistentMyCollectionCache";
 import Paths from "../../core/paths";
 import getLocalStore from "../../core/getLocalStore";
+import { Preferences } from "@capacitor/preferences";
 
 function toTitleCase(str) {
   return str.toLowerCase().replace(/(?:^|\s)\w/g, function (match) {
@@ -67,7 +68,7 @@ export default function AddStoryToCollectionContainer(props) {
       return true;
     });
     useLayoutEffect(()=>{
-        getLocalStore("token").then(tok=>setToken(tok))
+        Preferences.get("token").then(tok=>setToken(tok.value))
     },[])
   // Update SEO for page
   useEffect(() => {

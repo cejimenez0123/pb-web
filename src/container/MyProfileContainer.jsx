@@ -30,6 +30,7 @@ import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 import getLocalStore from '../core/getLocalStore.jsx';
 import setLocalStore from '../core/setLocalStore.jsx';
 import { setDialog } from '../actions/UserActions.jsx';
+import { Preferences } from '@capacitor/preferences';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -52,6 +53,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 }
 
 function MyProfileContainer({currentProfile,presentingElement}) {
+  // const [openRefferal,setOpenReferral]=useState(false)
   const isNative = DeviceCheck();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -72,7 +74,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const collections = useSelector(state => state.books.collections)
   const [ogStories, setOgStories] = useState([]);
   const [ogCols, setOgCols] = useState([]);
-  getLocalStore("token",isNative).then(value=>setToken(value))
+  Preferences.get("token").then(value=>setToken(value.value))
   const [feedbackPage, setFeedbackPage] = useState(null);
  
   const filterTypes = {
@@ -179,43 +181,45 @@ function MyProfileContainer({currentProfile,presentingElement}) {
 
 
 
-  const copyToClipboard = () => {
-    if (!referralLink) return
-    navigator.clipboard.writeText(referralLink).then(() => {
-      setLocalStore("firstTime",null,isNative)
-      setOpenReferral(false);
-      setFirstLogin(false);
-    });
-  };
-  const openReferral=()=>{
-    let dia = {...dialog}
-    dia.isOpen = firstLogin
-    dia.onClose = () => {
-      setLocalStore("firstTime", false,isNative);
-      setFirstLogin(false);
-    }
-    dia.disagreeText="Close" 
-    dia.title="Welcome to Plumbum! 🎉"
-    dia.text=(
+  // const copyToClipboard = () => {
+  //   if (!referralLink) return
+  //   navigator.clipboard.writeText(referralLink).then(() => {
+  //     Preferences.set("firstTime",null).then(()=>{
 
-        <div className='card bg-emerald-50 px-4 py-8 overflow-x-hidden h-full md:min-w-72 md:min-h-72'>
-          <p className="text-lg text-gray-600 mb-4">You’ve just joined a community built for writers like you—a space to share, connect, and grow with fellow creatives.</p>
-          <p className="text-lg text-gray-600 mb-4">To get the best experience, invite your friends so they can keep up with your work and be part of your creative journey.</p>
-          <div className="text-center">
-            <ButtonWrapper onClick={generateReferral} className="mont-medium bg-gradient-to-r from-emerald-400 to-emerald-600 text-white rounded-full px-6 py-3 cursor-pointer inline-block" tabIndex={0} role="button">
-              Create Referral Link
-            </ButtonWrapper>
-            {referralLink && (
-              <div className='flex flex-row min-h-12 items-center mt-4'>
-                <a onClick={copyToClipboard} className='text-nowrap my-auto overflow-hidden text-ellipsis cursor-pointer' title={referralLink}>{referralLink}</a>
-                <img src={copyContent} alt="copy" onClick={copyToClipboard} className="btn bg-transparent border-none my-auto icon cursor-pointer" />
-              </div>
-            )}
-          </div>
-          <p className="text-center text-sm text-gray-500 mt-4">Share it with the people who inspire and support your writing! ✨</p>
-        </div>
-    )
-  }
+  //     })
+  //     setOpenReferral(false);
+  //     setFirstLogin(false);
+  //   });
+  // };
+  // const clickOpenReferral=()=>{
+  //   let dia = {...dialog}
+  //   dia.isOpen = openRefferal
+  //   dia.onClose = () => {
+  //     Preferences.set("firstTime", false);
+  //     setFirstLogin(false);
+  //   }
+  //   dia.disagreeText="Close" 
+  //   dia.title="Welcome to Plumbum! 🎉"
+  //   dia.text=(
+
+  //       <div className='card bg-emerald-50 px-4 py-8 overflow-x-hidden h-full md:min-w-72 md:min-h-72'>
+  //         <p className="text-lg text-gray-600 mb-4">You’ve just joined a community built for writers like you—a space to share, connect, and grow with fellow creatives.</p>
+  //         <p className="text-lg text-gray-600 mb-4">To get the best experience, invite your friends so they can keep up with your work and be part of your creative journey.</p>
+  //         <div className="text-center">
+  //           <ButtonWrapper onClick={generateReferral} className="mont-medium bg-gradient-to-r from-emerald-400 to-emerald-600 text-white rounded-full px-6 py-3 cursor-pointer inline-block" tabIndex={0} role="button">
+  //             Create Referral Link
+  //           </ButtonWrapper>
+  //           {referralLink && (
+  //             <div className='flex flex-row min-h-12 items-center mt-4'>
+  //               <a onClick={copyToClipboard} className='text-nowrap my-auto overflow-hidden text-ellipsis cursor-pointer' title={referralLink}>{referralLink}</a>
+  //               <img src={copyContent} alt="copy" onClick={copyToClipboard} className="btn bg-transparent border-none my-auto icon cursor-pointer" />
+  //             </div>
+  //           )}
+  //         </div>
+  //         <p className="text-center text-sm text-gray-500 mt-4">Share it with the people who inspire and support your writing! ✨</p>
+  //       </div>
+  //   )
+  // }
   const handleFeedback = () => {
     const params = { ...feedbackPage, description, needsFeedback: true, page: feedbackPage };
     dispatch(updateStory(params)).then(res => {
