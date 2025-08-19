@@ -385,7 +385,7 @@ return (
         </form>
 
         <Dialog 
-  open={user}
+  isOpen={!!user}
   onClose={handleClose}
   text={
     <div>

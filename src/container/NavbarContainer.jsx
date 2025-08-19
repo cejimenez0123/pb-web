@@ -295,7 +295,9 @@ function NavbarContainer(props){
       }
   // }
   const handleSignOut = () => {
-    window.google.accounts.id.disableAutoSelect(); // Clears GIS cookie for auto-login
+   if(window && window.google && window.google.accounts){
+    window.google.accounts.id.disableAutoSelect()
+   } ; // Clears GIS cookie for auto-login
     // Clear all stored items related to login and drive token
     
     localStorage.removeItem('userEmail');

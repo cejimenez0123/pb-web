@@ -117,7 +117,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
         }
 
         // Proceed to request a new token if APIs are ready
-        if (gisLoadedForPicker && window.google?.accounts?.oauth2) {
+        if (gisLoadedForPicker && window && window.google && window.google?.accounts?.oauth2) {
             const client = window.google.accounts.oauth2.initTokenClient({
                 client_id: CLIENT_ID,
                 scope: DRIVE_SCOPES, // Request only Drive scope here
