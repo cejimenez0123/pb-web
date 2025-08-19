@@ -68,11 +68,12 @@ function App(props) {
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
-  const profile = useSelector(state=>state.users.profileInView)
+  const profileInView = useSelector(state=>state.users.profileInView)
   const [token,setToken]=useState(null)
-  usePersistentCurrentProfile(()=>token?dispatch(getCurrentProfile({token,isNative})):null)
+  let profile = usePersistentCurrentProfile(()=>token?dispatch(getCurrentProfile({token,isNative})):null)
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-   const currentProfile = useSelector(state=>state.users.currentProfile)
+   const currentProfile = props.currentProfile??profile
+  //  useSelector(state=>state.users.currentProfile)
   const [olderPath,setOlderPath]=useState(null)
   const location = useLocation()
   const [success,setSuccess]=useState(null)
@@ -83,14 +84,13 @@ function App(props) {
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
     }
-    getLocalStore("token",isNative).then(toke=>setToken(toke))  
+    return async()=>{
+     let token = await Preferences.get("token")
+     setToken(token)
+    }
 },[])
 
-  useEffect(()=>{
-    if(token&&!currentProfile){
-        dispatch(getCurrentProfile({token,isNative}))
-    }
-  },[token])
+
   useEffect(()=>{
       setOlderPath(location.pathname) 
   },[location.pathname])
@@ -281,7 +281,7 @@ function App(props) {
     path={Paths.workshop.route()}
     element={<PrivateRoute><WorkshopContainer/></PrivateRoute>}/>
     <Route path="/profile/:id" element={
-      <ProfileContainer profile={profile}/>
+      <ProfileContainer profile={profileInView}/>
       }/>
     <Route path="/subscribe" 
     element={<EmailPreferences/>}/>
@@ -295,7 +295,7 @@ function App(props) {
             
           <EditorContainer 
           
-
+presentingElement={page}
             />
       </PrivateRoute>
         }/>

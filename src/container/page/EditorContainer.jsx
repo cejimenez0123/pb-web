@@ -24,7 +24,7 @@ import { IonBackButton, IonButtons, IonContent, IonHeader } from "@ionic/react"
 import { setDialog } from "../../actions/UserActions.jsx"
 
 
-function EditorContainer(props){
+function EditorContainer({presentingElement}){
         const {currentProfile}=useContext(Context)
         const [feedbackDialog,setFeedbackDialog]=useState(false)
         const {setError,setSuccess}=useContext(Context)
@@ -425,7 +425,7 @@ const openRoleFormDialog = (fetchedPage) => {
 page={editPage}
 open={feedbackDialog||openDescription} 
 isFeedback={feedbackDialog}
-
+presentingElement={presentingElement}
 handleChange={setDescription} 
 handleFeedback={handleFeedback}
 handlePostPublic={()=>{

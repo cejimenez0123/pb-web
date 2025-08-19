@@ -4,14 +4,14 @@ PODS:
   - CapacitorCommunityAppleSignIn (7.0.1):
     - Capacitor
   - CapacitorCordova (7.4.2)
-  - CapacitorGeolocation (7.1.4):
+  - CapacitorGeolocation (7.1.5):
     - Capacitor
-    - IONGeolocationLib (~> 1.0)
-  - CapacitorPreferences (7.0.1):
+    - IONGeolocationLib (= 1.0.1)
+  - CapacitorPreferences (7.0.2):
     - Capacitor
-  - CapacitorSplashScreen (7.0.1):
+  - CapacitorSplashScreen (7.0.2):
     - Capacitor
-  - IONGeolocationLib (1.0.0)
+  - IONGeolocationLib (1.0.1)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
@@ -43,10 +43,10 @@ SPEC CHECKSUMS:
   Capacitor: 156d98aba46ec01dde72c4bbb92fa626837cad29
   CapacitorCommunityAppleSignIn: b95415441e6c4223783a543f3a736ea4eabf8524
   CapacitorCordova: 5e58d04631bc5094894ac106e2bf1da18a9e6151
-  CapacitorGeolocation: 5583eb25815522c4b4cb38936ac7fea8a34996d9
-  CapacitorPreferences: cbf154e5e5519b7f5ab33817a334dda1e98387f9
-  CapacitorSplashScreen: 19cd3573e57507e02d6f34597a8c421e00931487
-  IONGeolocationLib: 81f33f88d025846946de2cf63b0c7628e7c6bc9d
+  CapacitorGeolocation: b96474c3259dd4a294227ea8ec19140b1837cceb
+  CapacitorPreferences: b583b5deb74e564c35968189d25d32c0fd41200d
+  CapacitorSplashScreen: 8d6c8cb0542a8e81585c593815db8785ed8ce454
+  IONGeolocationLib: 20f9d0248a0b5264511fb57a37e25dd2badf797a
 
 PODFILE CHECKSUM: 899d6897cf91878c5be44a725c4d39c844eb3ca6
 

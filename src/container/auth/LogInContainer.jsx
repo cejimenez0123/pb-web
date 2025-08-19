@@ -13,6 +13,7 @@ import GoogleLogin from '../../components/GoogleLogin';
 import Dialog from '../../components/Dialog';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import setLocalStore from '../../core/setLocalStore';
+import { IonInput } from '@ionic/react';
 
 export default function LogInContainer() {
     const {setError,seo,setSeo,currentProfile}=useContext(Context)
@@ -66,6 +67,8 @@ function LogInCard({setLogInError}){
     const handleLogIn = (event)=>{
         event.preventDefault()
         setPending(true)
+        console.log(email)
+        console.log(password)
         if(email.length>3 && password.length){
             const params ={email:email.toLowerCase(),password:password,isNative}
             dispatch(logIn(params)).then(res=>{
@@ -148,19 +151,19 @@ setError("User Not Found. Apply Below")
          <div className='max-w-[91vw]'>
         <label className="input  open-sans-medium text-emerald-800 pl-6 w-52 overflow-hidden pl-2  rounded-full border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
   Email
-  <input type="text" className="shrink overflow-hidden  text-[1rem] w-[100%] sm:max-w-[100%]  open-sans-medium py-2 bg-transparent text-emerald-800" 
+  <IonInput type="text" className="shrink overflow-hidden  my-auto text-[1rem] w-[100%] sm:max-w-[100%]  open-sans-medium  bg-transparent text-emerald-800" 
          value={email} 
-         onChange={(e) => setEmail(e.target.value.trim())}
+         onIonInput={(e) => setEmail(e.target.value.trim())}
         placeholder='example@email.com' />
 </label>
 </div>   
 <div className='mb-8 max-w-[91vw] '>
     <label className="input open-sans-medium pl-6 inline-block flex rounded-full flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
   Password
-  <input type={showPassword?"text":`password`} className="shrink max-w-36 open-sans-medium sm:max-w-52  shrink text-emerald-800 " 
+  <IonInput type={showPassword?"text":`password`} className="shrink my-auto max-w-36 open-sans-medium sm:max-w-52  shrink text-emerald-800 " 
          value={password}
          
-         onChange={(e) => setPassword(e.target.value.trim())}
+         onIonInput={(e) => setPassword(e.target.value.trim())}
         placeholder='*****' />
          
          <label onClick={()=>setShowPassword(!showPassword)}

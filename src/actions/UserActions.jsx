@@ -6,6 +6,7 @@ import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
 import getLocalStore from "../core/getLocalStore";
 import setLocalStore from "../core/setLocalStore";
+import { Preferences } from "@capacitor/preferences";
 
 const logIn = createAsyncThunk(
     'users/logIn',
@@ -19,11 +20,12 @@ try{        const {uId,email,password,idToken,isNative}=params
    
         
         const {token}=authData
+      await Preferences.set("token",token)
        
-        setLocalStore("token",token,isNative)
     
         const data= await profileRepo.getMyProfiles({token:token})
-       
+        const key = "cachedMyProfile"
+        await Preferences.set(key,data.profile)
         return data
 }catch(error){
   console.log(error)
@@ -152,19 +154,16 @@ const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async ({token,isNative},thunkApi) => {
   try{
 
-    // const token = await getLocalStore("token",isNative)
+
 
     const data = await profileRepo.getMyProfiles({token:token})
   
-console.log("rproe",data)
+   
     const key = "cachedMyProfile"
-    setLocalStore(key,JSON.stringify(data.profile),isNative)
-    return data
-
-    
-    }catch(error){
-      console.log("currentPRof",error)
-     
+   await Preferences.set(key,JSON.stringify(data.profile))
+    console.log("colsC",data)
+    return data 
+    }catch(error){     
       return {error}
     }});
 

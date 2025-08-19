@@ -10,8 +10,11 @@ import {  useReferral } from "../../actions/UserActions";
 import Context from "../../context";
 import authRepo from "../../data/authRepo";
 import { debounce } from "lodash";
+import setLocalStore from "../../core/setLocalStore";
+import DeviceCheck from "../../components/DeviceCheck";
 export default function UseReferralContainer(props){
     const location = useLocation();
+    const isNative = DeviceCheck()
     const query = new URLSearchParams(location.search);
     const selectRef = useRef()
     const [token, setToken] = useState(query.get("token"));
@@ -114,7 +117,7 @@ setToken(token)
                         }))
                     
                 .then(res=>checkResult(res,payload=>{
-       localStorage.setItem("firstTime",true)
+       setLocalStore("firstTime",true,isNative)
                     localStorage.setItem("token",payload.token)
                    if(payload.profile){navigate(Paths.myProfile())}else{
                    
@@ -156,11 +159,11 @@ setToken(token)
         }else{
 
       if(payload.token){
-        localStorage.setItem("token",payload.token)
+        setLocalStore("token",payload.token,isNative)
       }
        
          if(payload.profile){
-          localStorage.setItem("firstTime",true)
+          setLocalStore("firstTime",true,isNative)
           navigate(Paths.myProfile())}else{
          
           setSuccess(null)

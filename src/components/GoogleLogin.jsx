@@ -86,8 +86,7 @@ setLogInError("User Not Found. Apply Below")
         }) }else if (gisLoaded && window.google && window.google.accounts && window.google.accounts.id) {
            
 
-            
-                navigate(Paths.myProfile())
+         
             
            
          
@@ -140,7 +139,7 @@ if(!signedIn){
                     text: "signin_with",
                     borderRadius:"20%",
                     shape: "rectangular",
-                    width: "14rem",
+                    width: "200",
                     logo_alignment: "left"
                 }
             )}

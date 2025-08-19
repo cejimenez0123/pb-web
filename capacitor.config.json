@@ -2,6 +2,7 @@
   "appId": "com.plumbum.app",
   "appName": "Plumbum",
   "webDir": "dist",
+  
   "plugins": {
       "PushNotifications": {
         "presentationOptions": ["badge", "sound", "alert"]

@@ -1,7 +1,7 @@
 import { useMediaQuery } from "react-responsive"
 import { useLayoutEffect, useState } from "react"
-import { IonModal } from "@ionic/react"
-export default function FeedbackDialog({open,page,isFeedback,handleClose,handleChange,handlePostPublic,handleFeedback}){
+import { IonModal,IonHeader,IonToolbar,IonButtons,IonBackButton,IonTitle } from "@ionic/react"
+export default function FeedbackDialog({open,page,isFeedback,handleClose,handleChange,presentingElement,handlePostPublic,handleFeedback}){
     const isPhone =  useMediaQuery({
         query: '(max-width: 768px)'
       })

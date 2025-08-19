@@ -10,6 +10,7 @@ import Context from "../context";
 import Paths from '../core/paths';
 import { PageType } from '../core/constants';
 import { IonText } from '@ionic/react'; // Assuming this is for your UI button text
+import { Preferences } from '@capacitor/preferences';
 
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
     const TOKEN_KEY = "googledrivetoken"; // Consistent key for localStorage
@@ -30,9 +31,10 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
     const DRIVE_SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
 
     // Helper to check if the stored token is expired
-    const isTokenExpired = useCallback(() => {
-        const storedToken = localStorage.getItem(TOKEN_KEY);
-        const storedExpiry = localStorage.getItem(TOKEN_EXPIRY_KEY);
+    const isTokenExpired = useCallback(async () => {
+     
+        const storedToken =  await  Preferences.get(TOKEN_KEY);
+        const storedExpiry = await Preferences.get(TOKEN_EXPIRY_KEY);
 
         if (!storedToken || !storedExpiry) {
             return true; // No token or expiry means it's "expired" for practical purposes
@@ -125,8 +127,8 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
                         const driveAccessToken = tokenResponse.access_token;
                         const expiryMs = Date.now() + (parseInt(tokenResponse.expires_in, 10) * 1000);
 
-                        localStorage.setItem(TOKEN_KEY, driveAccessToken);
-                        localStorage.setItem(TOKEN_EXPIRY_KEY, expiryMs.toString());
+                        Preferences.set(TOKEN_KEY, driveAccessToken).then(()=>{})
+                        Preferences.set(TOKEN_EXPIRY_KEY, expiryMs.toString()).then(()=>{});
                         setDriveTokenAvailable(true); // Update state to true
                         console.log("Drive Picker: New access token obtained and stored.");
                         createPicker(); // Open picker after getting new token

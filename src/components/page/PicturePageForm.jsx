@@ -1,7 +1,6 @@
 import {
-    IonInput,
     IonLabel,
-    IonButton,
+    IonHeader,
     IonImg,
     IonText,
   } from "@ionic/react";

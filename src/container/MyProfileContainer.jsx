@@ -28,6 +28,8 @@ import { IonPage, IonText, IonIcon, IonInput,IonContent } from '@ionic/react';
 import { settings as settingsIcon, notifications as notificationsIcon } from 'ionicons/icons';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 import getLocalStore from '../core/getLocalStore.jsx';
+import setLocalStore from '../core/setLocalStore.jsx';
+import { setDialog } from '../actions/UserActions.jsx';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -145,9 +147,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     dispatch(setPagesInView({ pages: filteredPgs }));
   }, [search]);
   const handleOpenDialog=()=>{
-    // let dia = {...dialog}
-    // <Dialog isOpen={openDialog} onClose={() => setOpenDialog(false)}
-    // text={<CreateCollectionForm onClose={() => setOpenDialog(false)} />} />
+ 
   }
   // Sort handlers (called only from filterType effect)
   const handleSortAlpha = (sortedAsc) => {
@@ -182,12 +182,40 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const copyToClipboard = () => {
     if (!referralLink) return
     navigator.clipboard.writeText(referralLink).then(() => {
-      localStorage.setItem("firstTime", null);
+      setLocalStore("firstTime",null,isNative)
       setOpenReferral(false);
       setFirstLogin(false);
     });
   };
+  const openReferral=()=>{
+    let dia = {...dialog}
+    dia.isOpen = firstLogin
+    dia.onClose = () => {
+      setLocalStore("firstTime", false,isNative);
+      setFirstLogin(false);
+    }
+    dia.disagreeText="Close" 
+    dia.title="Welcome to Plumbum! 🎉"
+    dia.text=(
 
+        <div className='card bg-emerald-50 px-4 py-8 overflow-x-hidden h-full md:min-w-72 md:min-h-72'>
+          <p className="text-lg text-gray-600 mb-4">You’ve just joined a community built for writers like you—a space to share, connect, and grow with fellow creatives.</p>
+          <p className="text-lg text-gray-600 mb-4">To get the best experience, invite your friends so they can keep up with your work and be part of your creative journey.</p>
+          <div className="text-center">
+            <ButtonWrapper onClick={generateReferral} className="mont-medium bg-gradient-to-r from-emerald-400 to-emerald-600 text-white rounded-full px-6 py-3 cursor-pointer inline-block" tabIndex={0} role="button">
+              Create Referral Link
+            </ButtonWrapper>
+            {referralLink && (
+              <div className='flex flex-row min-h-12 items-center mt-4'>
+                <a onClick={copyToClipboard} className='text-nowrap my-auto overflow-hidden text-ellipsis cursor-pointer' title={referralLink}>{referralLink}</a>
+                <img src={copyContent} alt="copy" onClick={copyToClipboard} className="btn bg-transparent border-none my-auto icon cursor-pointer" />
+              </div>
+            )}
+          </div>
+          <p className="text-center text-sm text-gray-500 mt-4">Share it with the people who inspire and support your writing! ✨</p>
+        </div>
+    )
+  }
   const handleFeedback = () => {
     const params = { ...feedbackPage, description, needsFeedback: true, page: feedbackPage };
     dispatch(updateStory(params)).then(res => {
@@ -217,6 +245,12 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const ClickCreateACollection = () => {
     sendGAEvent("Create", "Create Collection", "Create A Collection");
     setOpenDialog(true);
+       let dia = {...dialog}
+      dia.isOpen = openDialog
+     dia.onClose = () => setOpenDialog(false)
+    dia.text=<CreateCollectionForm onClose={() => setOpenDialog(false)} />
+    dia.title = "Create Collection"
+    setDialog(dia)
   };
 
   const generateReferral = () => {
@@ -344,28 +378,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
           handleChange={setFeedback} handleFeedback={handleFeedback} handlePostPublic={() => { }}
           handleClose={() => navigate(Paths.workshop.createRoute(feedbackPage?.id))} />
 
-        <Dialog isOpen={firstLogin} onClose={() => {
-          localStorage.setItem("firstTime", "false");
-          setFirstLogin(false);
-        }} disagreeText={"Close"} title={"Welcome to Plumbum! 🎉"}
-          text={
-            <div className='card bg-emerald-50 px-4 py-8 overflow-x-hidden h-full md:min-w-72 md:min-h-72'>
-              <p className="text-lg text-gray-600 mb-4">You’ve just joined a community built for writers like you—a space to share, connect, and grow with fellow creatives.</p>
-              <p className="text-lg text-gray-600 mb-4">To get the best experience, invite your friends so they can keep up with your work and be part of your creative journey.</p>
-              <div className="text-center">
-                <ButtonWrapper onClick={generateReferral} className="mont-medium bg-gradient-to-r from-emerald-400 to-emerald-600 text-white rounded-full px-6 py-3 cursor-pointer inline-block" tabIndex={0} role="button">
-                  Create Referral Link
-                </ButtonWrapper>
-                {referralLink && (
-                  <div className='flex flex-row min-h-12 items-center mt-4'>
-                    <a onClick={copyToClipboard} className='text-nowrap my-auto overflow-hidden text-ellipsis cursor-pointer' title={referralLink}>{referralLink}</a>
-                    <img src={copyContent} alt="copy" onClick={copyToClipboard} className="btn bg-transparent border-none my-auto icon cursor-pointer" />
-                  </div>
-                )}
-              </div>
-              <p className="text-center text-sm text-gray-500 mt-4">Share it with the people who inspire and support your writing! ✨</p>
-            </div>
-          } />
+        
       </ErrorBoundary>
     </IonContent>
   );

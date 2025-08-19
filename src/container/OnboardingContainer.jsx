@@ -22,7 +22,7 @@ import Context from '../context';
 import Paths from '../core/paths';
 import authRepo from '../data/authRepo';
 import ThankYou from './auth/ThankYou';
-import logo from "../images/logo/logo-green.png";
+import logo from "../images/logo/icon.png";
 import GoogleLogin from '../components/GoogleLogin';
 import AppleSignInButton from '../components/auth/AppleSignInButton';
 import { useDispatch } from 'react-redux';

@@ -1,10 +1,7 @@
 import React from 'react';
 import { SignInWithApple } from '@capacitor-community/apple-sign-in';
-import { IonButton, IonIcon, IonText } from '@ionic/react';
+import { IonText } from '@ionic/react';
 import Enviroment from '../../core/Enviroment';
-import { useDispatch } from 'react-redux';
-import getLocalStore from '../../core/getLocalStore';
-
 function AppleSignInButton({onUserSignIn}) {
 
   const options = {

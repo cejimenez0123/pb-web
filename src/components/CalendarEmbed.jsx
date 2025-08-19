@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
 import insta from "../images/icons/instagram.svg"
 import Dialog from "./Dialog";
-import { IonItem, IonList, IonText } from "@ionic/react";
+import { IonInput, IonItem, IonList, IonText } from "@ionic/react";
 import { setDialog } from "../actions/UserActions";
 import DeviceCheck from "./DeviceCheck";
 
@@ -238,12 +238,12 @@ function CalendarEmbed(){
       <span className={`flex flex-row`}>
           <h5 className="my-auto ml-4 mr-2 mont-medium text-emerald-800"> Search</h5>
           <div ref={searchRef} className="relative w-[14em] ">
-  <input
+  <IonInput
     type="text"
     className="border p-2 rounded-full bg-transparent text-emerald-800 w-full"
     value={searchTerm}
-    onChange={handleSearchInputChange}
-    onFocus={() => setShowSuggestions(true)}
+    onIonInput={handleSearchInputChange}
+    onIonFocus={() => setShowSuggestions(true)}
     placeholder="#writing, #workshop..."
   />
   
