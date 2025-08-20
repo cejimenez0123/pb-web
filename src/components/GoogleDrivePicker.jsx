@@ -437,7 +437,7 @@ export default function GoogleDrivePicker({ onFilePicked }) {
   const [signedIn, setSignedIn] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
   const isNative = DeviceCheck();
-
+    const [showFiles,setShowFiles]=useState(true)
   const googleButtonRef = useRef(null);
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const driveTokenKey = 'googledrivetoken';
@@ -484,7 +484,7 @@ console.log("SDF",token)
 
   // Callback when GoogleLogin successfully signs in and provides token
   const handleUserSignIn = ({ driveAccessToken }) => {
-    console.log("SDfds",driveAccessToken)
+
     if (driveAccessToken) {
       setAccessToken(driveAccessToken);
       setSignedIn(true);
@@ -506,7 +506,7 @@ console.log("SDF",token)
     return <p>No Google Docs found in your Drive.</p>;
   }
 
-  return (
+  return showFiles?<button onClick={()=>{setShowFiles(!showFiles)}}>Open Files</button>:(
     <IonList>
       {files.map((file) => (
         <IonItem button key={file.id} onClick={() => onFilePicked(file)}>
