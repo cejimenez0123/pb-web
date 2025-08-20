@@ -215,7 +215,7 @@ function App(props) {
      <Route exact path={'/reset-password' }
      element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
-     element={<CollectionContainer/>}/>
+     element={<CollectionContainer currentProfile={currentProfile}/>}/>
      <Route path={'/signup'}
      element={<LoggedRoute 
       loggedOut={!currentProfile}

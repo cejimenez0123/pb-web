@@ -21,7 +21,7 @@ import {    logIn ,
             setEvents,
         
         } from "../actions/UserActions"
-import { createProfile, fetchProfiles } from "../actions/ProfileActions"
+import { createProfile, fetchNotifcations, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions.jsx" 
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
@@ -33,6 +33,7 @@ const initialState = {
     currentProfile: null,
     homeCollection: null,
     loading:true,
+    notifications:[],
     events:[],
     userApprovals:[],
     followedBooks: [],
@@ -89,6 +90,8 @@ const userSlice = createSlice({
         })
         .addCase(logIn.pending,(state) => {
         state.loading = true
+    }).addCase(fetchNotifcations.fulfilled,(state,{payload})=>{
+state.notifications = payload
     }).addCase(createProfile.rejected, (state, { payload })=>{
        state.loading=false
     

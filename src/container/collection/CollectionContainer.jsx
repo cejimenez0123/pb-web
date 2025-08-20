@@ -55,8 +55,8 @@ import Paths from "../../core/paths.js";
 import DeviceCheck from "../../components/DeviceCheck.jsx";
 import { Preferences } from "@capacitor/preferences";
 
-export default function CollectionContainer() {
-  const {  setError, currentProfile, setSuccess } = useContext(Context);
+export default function CollectionContainer({currentProfile}) {
+  const {  setError, setSuccess } = useContext(Context);
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -82,8 +82,6 @@ const isNative = DeviceCheck()
   const sightArr = [RoleType.commenter, RoleType.editor, RoleType.reader, RoleType.writer];
   const writeArr = [RoleType.editor, RoleType.writer];
 
-  // --- Permission and role checking functions ---
-
   function findRole() {
     if (collection && currentProfile && collection.profileId === currentProfile.id) {
       setRole(new Role("owner", currentProfile, collection, RoleType.editor, new Date()));
@@ -93,6 +91,7 @@ const isNative = DeviceCheck()
       let foundRole = collection.roles.find(role => role.profileId === currentProfile.id);
       if (foundRole) {
         setRole(new Role(foundRole.id, currentProfile, collection, foundRole.role, foundRole.created));
+        setCanUserSee(true);
       } else {
         setRole(null);
       }
@@ -100,7 +99,7 @@ const isNative = DeviceCheck()
       setRole(null);
     }
   }
-
+  
   function soUserCanSee() {
     if (!collection) {
       setCanUserSee(false);
@@ -123,7 +122,6 @@ const isNative = DeviceCheck()
         }
       }
     }
-    // Check parent collections if user can see via inheritance
     if (collection.parentCollections) {
       for (let cTc of collection.parentCollections) {
         const col = cTc.parentCollection;
@@ -133,50 +131,44 @@ const isNative = DeviceCheck()
         }
         if (col && col.roles) {
           let found = col.roles.find(colRole => colRole && colRole.profileId === currentProfile?.id);
-          if (found || sightArr.includes(found?.role) || collection.profileId === currentProfile?.id) {
+          if (found && sightArr.includes(found.role)) {
+            setCanUserSee(true);
+            return;
+          }
+          if (col && col.profileId === currentProfile?.id) {
             setCanUserSee(true);
             return;
           }
         }
       }
     }
-    // setCanUserSee(false);
+    setCanUserSee(false);
   }
- 
+  
   function soUserCanAdd() {
-    if (!currentProfile) {
+    if (!currentProfile || !collection) {
       setCanUserAdd(false);
       return;
     }
-    if (!collection) {
-      setCanUserAdd(false);
-      return;
-    }
- 
     if (collection.isOpenCollaboration) {
       setCanUserAdd(true);
-   
+      return;
     }
     if (collection.roles) {
       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
       if (found && writeArr.includes(found.role)) {
         setCanUserAdd(true);
-      
+        return;
       }
     }
-  
+    setCanUserAdd(false);
   }
-
+  
   function soUserCanEdit() {
-    if (!currentProfile) {
+    if (!currentProfile || !collection) {
       setCanUserEdit(false);
       return;
     }
-    if (!collection) {
-      setCanUserEdit(false);
-      return;
-    }
-   
     if (collection.roles) {
       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
       if (found && found.role === RoleType.editor) {
@@ -184,37 +176,175 @@ const isNative = DeviceCheck()
         return;
       }
     }
+    setCanUserEdit(false);
   }
-
-
+  
   function checkPermissions() {
-
     if (currentProfile && collection.profileId === currentProfile.id) {
       setCanUserEdit(true);
-      setCanUserAdd(true)
-      setCanUserSee(true)
+      setCanUserAdd(true);
+      setCanUserSee(true);
       dispatch(getRecommendedCollectionsProfile());
-      return
-    }else if(!currentProfile){
+      return;
+    } else if (!currentProfile && collection.isPrivate) {
       setCanUserEdit(false);
-      setCanUserAdd(false)
-      setCanUserSee(false)
-      return
-    }else if(currentProfile&&collection){
+      setCanUserAdd(false);
+      setCanUserSee(false);
+      return;
+    } else if (currentProfile && collection) {
       soUserCanSee();
       soUserCanAdd();
       soUserCanEdit();
       dispatch(getRecommendedCollectionsProfile());
-      return
-    }else{
+      return;
+    } else {
       setCanUserEdit(false);
-      setCanUserAdd(false)
-      setCanUserSee(false)
+      setCanUserAdd(false);
+      setCanUserSee(false);
     }
+  }
+  
+
+//   function findRole() {
+//     if (collection && currentProfile && collection.profileId === currentProfile.id) {
+//       setRole(new Role("owner", currentProfile, collection, RoleType.editor, new Date()));
+//       return;
+//     }
+//     if (collection && currentProfile && collection.roles) {
+//       let foundRole = collection.roles.find(role => role.profileId === currentProfile.id);
+//       if (foundRole) {
+//         setRole(new Role(foundRole.id, currentProfile, collection, foundRole.role, foundRole.created));
+//         setCanUserSee(true)
+//       } else {
+//         setRole(null);
+//       }
+//     } else {
+//       setRole(null);
+//     }
+//   }
+
+//   function soUserCanSee() {
+//     if (!collection) {
+//       setCanUserSee(false);
+//       return;
+//     }
+//     if (!collection.isPrivate) {
+//       setCanUserSee(true);
+//       return;
+//     }
+//     if (currentProfile) {
+//       if (currentProfile.id === collection.profileId) {
+//         setCanUserSee(true);
+//         return;
+//       }
+//       if (collection.roles) {
+//         let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
+//         if (found && sightArr.includes(found.role)) {
+//           setCanUserSee(true);
+//           return;
+//         }
+//       }
+//     }
+//     // Check parent collections if user can see via inheritance
+//     if (collection.parentCollections) {
+//       for (let cTc of collection.parentCollections) {
+//         const col = cTc.parentCollection;
+//         if (col && !col.isPrivate) {
+//           setCanUserSee(true);
+//           return;
+//         }
+//         if (found && sightArr.includes(found.role)) {
+//   setCanUserSee(true);
+//   return;
+// }
+// if (collection.profileId === currentProfile?.id) {
+//   setCanUserSee(true);col
+//   return;
+// }
+
+//         // if (col && col.roles) {
+//         //   let found = col.roles.find(colRole => colRole && colRole.profileId === currentProfile?.id);
+//         //   if (found || sightArr.includes(found?.role) || collection.profileId === currentProfile?.id) {
+//         //     setCanUserSee(true);
+//         //     return;
+//         //   }
+//         // }
+//       }
+//     }
+//   }
+ 
+//   function soUserCanAdd() {
+//     if (!currentProfile) {
+//       setCanUserAdd(false);
+//       return;
+//     }
+//     if (!collection) {
+//       setCanUserAdd(false);
+//       return;
+//     }
+ 
+//     if (currentProfile && collection.isOpenCollaboration) {
+//       setCanUserAdd(true);
+//    return
+//     }
+//     if (collection.roles) {
+//       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
+//       if (found && writeArr.includes(found.role)) {
+//         setCanUserAdd(true);
+      
+//       }
+//     }
+  
+//   }
+
+//   function soUserCanEdit() {
+//     if (!currentProfile) {
+//       setCanUserEdit(false);
+//       return;
+//     }
+//     if (!collection) {
+//       setCanUserEdit(false);
+//       return;
+//     }
+   
+//     if (collection.roles) {
+//       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
+//       if (found && found.role === RoleType.editor) {
+//         setCanUserEdit(true);
+//         return;
+//       }
+//     }
+//   }
+
+
+//   function checkPermissions() {
+
+//     if (currentProfile && collection.profileId === currentProfile.id) {
+//       setCanUserEdit(true);
+//       setCanUserAdd(true)
+//       setCanUserSee(true)
+//       dispatch(getRecommendedCollectionsProfile());
+//       return
+//     }else if(!currentProfile && collection.isPrivate){
+//       setCanUserEdit(false);
+//       setCanUserAdd(false)
+//       setCanUserSee(false)
+//       return
+//     }else if(currentProfile&&collection){
+//       soUserCanSee();
+//       soUserCanAdd();
+//       soUserCanEdit();
+//       dispatch(getRecommendedCollectionsProfile());
+//       return
+//     }else{
+//       setCanUserEdit(false);
+//       setCanUserAdd(false)
+//       setCanUserSee(false)
+//     }
    
 
   
-  }
+//   }
   useLayoutEffect(() => {
     if (currentProfile?.profileToCollections) {
       let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
@@ -272,8 +402,8 @@ const isNative = DeviceCheck()
 const getCol=async ()=>{
        setLoading(true)
 
-        const token =await Preferences.get({key:"token"})
-       token?dispatch(fetchCollectionProtected({id})).then(res=>{
+        const token =(await Preferences.get({key:"token"})).value
+       token!="undefined"?dispatch(fetchCollectionProtected({id})).then(res=>{
             checkResult(res,payload=>{
              setLoading(false)
          

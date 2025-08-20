@@ -113,9 +113,7 @@ setTimeout(()=>{
   }
   const handleGlobal = () => {
    setIsGlobal(!isGlobal)
-   if(isGlobal){
-    requestLocation()
-   }
+  
   };
   const handleGroupClick=()=>{
     setLoading(true)
@@ -163,7 +161,11 @@ setTimeout(()=>{
   }}else{
     setError("No Author logged in")
   }}
-  
+ useEffect(()=>{
+  if(!isGlobal){
+    requestLocation()
+   }
+ },[isGlobal]) 
 
   
 const localCheck=()=>{

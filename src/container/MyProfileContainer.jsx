@@ -91,18 +91,17 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     setOgCols(collections);
   }, [collections]);
   useLayoutEffect(()=>{
-
-   return async ()=>{
-     let value = await Preferences.get({key:"token"})
-      let token = value.value
-      console.log("dsffs",token)
-      dispatch(getMyCollections({token}))
-      dispatch(getMyStories({token}))
-   } 
+   const getItems=async ()=> {
+      let value = await Preferences.get({key:"token"})
+       let token = value.value
+       dispatch(getMyCollections({token}))
+       dispatch(getMyStories({token}))
+    } 
+getItems()
  
 
     
-  },[navigate])
+  },[])
  
   useEffect(() => {
     switch (filterType) {

@@ -44,12 +44,13 @@ export default function NotificationItem({ item, lastNotified }) {
     }
     case "collection": {
       const collection = item.collection;
-      let latestCol = collection.childCollections.sort(
+      let latestCol = [...collection.childCollections].sort(
         (a, b) => new Date(b.created) - new Date(a.created)
-      )[0];
-      let latestStory = collection.storyIdList.sort(
+      )
+
+      let latestStory = [...collection.storyIdList].sort(
         (a, b) => new Date(b.created) - new Date(a.created)
-      )[0];
+      )
 
       let latest = "New Collection";
       if (latestCol && latestStory && latestCol.created > latestStory.created) {

@@ -10,7 +10,7 @@ import checkResult from "../core/checkResult";
 import Dialog from "../components/Dialog";
 import Context from "../context";
 import DeviceCheck from "../components/DeviceCheck";
-
+import { IonContent } from "@ionic/react";
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
@@ -227,7 +227,7 @@ export default function SettingsContainer(props) {
    
      if(!pending){
             return(
-                <IonContent>
+                <IonContent fullscreen={true}>
             <div >
                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
                       <label className="text-left flex flex-col mont-medium"><h4 className="text-xl">Username:</h4>
