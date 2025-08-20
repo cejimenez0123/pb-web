@@ -85,7 +85,7 @@ export default function EditCollectionContainer(props) {
   }
   // --- Fetch the collection ---
   const getCol = async () => {
-    let token = (await Preferences.get("token")).value
+    let token = (await Preferences.get({key:"token"})).value
     setNewPages([]);
     setNewCollections([]);
     if (token && (!colInView || colInView.id !== id)) {

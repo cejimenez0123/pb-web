@@ -8,39 +8,43 @@ import getLocalStore from './core/getLocalStore';
 import DeviceCheck from './components/DeviceCheck';
 import { Preferences } from '@capacitor/preferences';
 import { IonImg } from '@ionic/react';
-const PrivateRoute = ({loggedIn, children }) => {
-    const {currentProfile}= useContext(Context)
+const PrivateRoute = ({loggedIn,currentProfile, children }) => {
+    
     const location = useLocation();
     const [token,setToken]=useState(null)
-
+    const dispatch = useDispatch()
     const [formerPage,setFormerPage]=useState(null)
     const navigate = useNavigate()
-    const dispatch = useDispatch()
-   const isNative = DeviceCheck()
+
+   useEffect(()=>{
+    let getToken=async ()=>{
+      let tok = (await Preferences.get({key:"token"})).value
+      console.log("private",tok)
+      setToken(tok)
+      }
+   getToken().then()
+   },[])
+  
    useLayoutEffect(()=>{
 
     return async ()=>{
-      let tok = (await Preferences.get("token")).value
-      setToken(tok)
-      console.log("DFDd",tok)
-      if(!!token){
-        if(currentProfile&&currentProfile.id){
+      if(token!="undefined"){
+       
           if(formerPage){
            navigate(formerPage)
-          }}}else{
+          }}else{
             navigate(Paths.login())
-          }}},[currentProfile,navigate])
+          }}},[token])
    
     useEffect(()=>{
      if(location.pathname){
       setFormerPage(location.pathname)
      }
-
     },[location.pathname])
   
 
    
-    if(!currentProfile){
+    if(!token){
       return <div className='flex '>
         <IonImg className='mx-auto my-24 max-h-36 max-w-36' src={loading}/></div>
     }
@@ -49,4 +53,5 @@ const PrivateRoute = ({loggedIn, children }) => {
     return children
     
   };
+  
 export default PrivateRoute;

@@ -70,7 +70,6 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const collections = useSelector(state => state.books.collections)
   const [ogStories, setOgStories] = useState([]);
   const [ogCols, setOgCols] = useState([]);
-  // Preferences.get("token").then(value=>setToken(value.value))
   const [feedbackPage, setFeedbackPage] = useState(null);
  
   const filterTypes = {
@@ -93,12 +92,14 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   }, [collections]);
   useLayoutEffect(()=>{
 
-    Preferences.get("token").then(({value})=>{
-      let token = value
+   return async ()=>{
+     let value = await Preferences.get({key:"token"})
+      let token = value.value
       console.log("dsffs",token)
-      dispatch(getMyCollections({token,isNative}))
-      dispatch(getMyStories({token,isNative}))
-    })
+      dispatch(getMyCollections({token}))
+      dispatch(getMyStories({token}))
+   } 
+ 
 
     
   },[navigate])

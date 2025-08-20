@@ -227,7 +227,7 @@ export default function SettingsContainer(props) {
    
      if(!pending){
             return(
-                // <IonContent>
+                <IonContent>
             <div >
                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
                       <label className="text-left flex flex-col mont-medium"><h4 className="text-xl">Username:</h4>
@@ -310,7 +310,7 @@ export default function SettingsContainer(props) {
          */}
                         </div>
             </div>
-        //   </IonContent>
+          </IonContent>
         )
     }else{
         return(<div>

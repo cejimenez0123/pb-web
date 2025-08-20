@@ -23,7 +23,7 @@ export default function usePersistentCurrentProfile(fetchData) {
   };
 
   // Set or update the profile to Preferences storage
-  const saveUser = async (newProfile) => {
+  const saveProfile = async (newProfile) => {
     try {
       await Preferences.set({
         key,
@@ -38,16 +38,21 @@ export default function usePersistentCurrentProfile(fetchData) {
   // On component mount, fetch from remote and update profile + prefs
   useEffect(() => {
     const fetchAndSave = async () => {
-      const remoteProfile = await fetchData();
+      let token = (await Preferences.get({key:"token"})).value
+      const remoteProfile = await fetchData({token});
+      console.log(remoteProfile)
       if(remoteProfile) {
-        saveUser(remoteProfile);
+        saveProfile(remoteProfile);
       }
+  
     };
-
-    fetchAndSave();
+if(!profile){
+  fetchAndSave();
+}
+ 
   }, [fetchData]);
 
-  // Load local profile from storage when component mounts
+
   useEffect(() => {
     getUser();
   }, []);

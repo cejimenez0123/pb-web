@@ -121,7 +121,7 @@ function ProfileContainer({ profile }) {
     dispatch(setPagesInView({ pages: [] }));
     dispatch(setCollections({ collections: [] }));
 
-    const token = (await Preferences.get('token')).value
+    const token = (await Preferences.get({key:'token'})).value
     if (token && currentProfile?.id === id) {
       dispatch(getProtectedProfilePages({ profile: { id } }));
       dispatch(getProtectedProfileCollections({ profile: { id } }));

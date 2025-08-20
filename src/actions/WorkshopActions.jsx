@@ -108,7 +108,7 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
     try {
         const response = await axios.get(Enviroment.url+`/workshop/groups?radius=${radius}`,{
           headers:{
-            Authorization:"Bearer "+(await Preferences.get("token")).value
+            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
           }
         });
     

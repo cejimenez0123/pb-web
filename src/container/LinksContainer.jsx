@@ -10,6 +10,7 @@ import { initGA, sendGAEvent } from "../core/ga4";
 import Context from "../context";
 import philosophy from "../images/icons/philosophy.svg"
 import pen from "../images/icons/pen.svg"
+import { IonContent } from "@ionic/react";
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -28,7 +29,7 @@ export default function LinksContainer(props){
     
 
 
-    return(<div className="flex flex-col py-8">
+    return(<IonContent className="flex flex-col py-8">
      
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
             <ul className="md:mx-auto w-page-mobile-content md:w-page-content  mx-4">
@@ -109,5 +110,5 @@ image={"https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229b
        
             </ul>
     
-    </div>)
+    </IonContent>)
 }

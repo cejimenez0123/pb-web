@@ -249,9 +249,9 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
    
 try{
       const data = await likeRepo.storyDelete(params)
-      const token = (await Preferences.get("token")).value
+      const token = (await Preferences.get({key:"token"})).value
       let profileData = await profileRepo.getMyProfiles({token:token})
-        
+       await Preferences.set({key:"token",value:profileData.token})
       return {
       profile: profileData.profile
       }

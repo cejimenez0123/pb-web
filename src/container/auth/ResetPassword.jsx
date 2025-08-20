@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams,useLocation, useNavigate } from "react-router-dom";
 import authRepo from "../../data/authRepo";
 import Paths from "../../core/paths";
+import { IonContent } from "@ionic/react";
 
 
 
@@ -36,7 +37,7 @@ function ResetPasswordContainer(props){
     }
     }
     }
-    return(<div className="flex">
+    return(<IonContent fullscreen={true} className="flex">
                   <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
          {error? <div role="alert" className={`alert    ${"alert-warning"} animate-fade-out`}>{error}</div>:null}
          </div> 
@@ -62,7 +63,7 @@ function ResetPasswordContainer(props){
           onClick={handleSubmit}> <h6 className="text-white py-2 px-4">Reset Password</h6></a>
            </div>
            </div>
-    </div>)
+    </IonContent>)
 }
 
 export default ResetPasswordContainer

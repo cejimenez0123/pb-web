@@ -8,13 +8,13 @@ class HistoryRepo{
 
     async storyCreate({profile,story}){
         let res= await axios.post(this.url+"/story",{profile,story},{headers:{
-                Authorization:"Bearer "+(await Preferences.get("token")).value
+                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
             }})
     return res.data
     }
     async collectionCreate({profile,collection}){
         let res= await axios.post(this.url+"/collection",{profile,collection},{headers:{
-            Authorization:"Bearer "+(await Preferences.get("token")).value
+            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
         return res.data
     }

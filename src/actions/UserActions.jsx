@@ -4,8 +4,6 @@ import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
-import getLocalStore from "../core/getLocalStore";
-import setLocalStore from "../core/setLocalStore";
 import { Preferences } from "@capacitor/preferences";
 
 const logIn = createAsyncThunk(
@@ -19,13 +17,13 @@ try{        const {uId,email,password,idToken,isNative}=params
         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
    
         
-        const {token}=authData
-      await Preferences.set("token",token)
-       
-    
-        const data= await profileRepo.getMyProfiles({token:token})
+        const {token}=authData  
+       const data= await profileRepo.getMyProfiles({token:token})
         const key = "cachedMyProfile"
-        await Preferences.set(key,data.profile)
+
+     await Preferences.set({key:"token",value:data.token})
+        await Preferences.set({key,value:JSON.stringify(data.profile)})
+
         return data
 }catch(error){
   console.log(error)
@@ -78,7 +76,7 @@ const signUp = createAsyncThunk(
                                               username:username,
                                              }).wait()  
                                             }                                    
-                                         await Preferences.set("loggedIn",true)   
+                                         await Preferences.set({key:"loggedIn",value:true})   
       return {
       
             profile:data.profile
@@ -87,7 +85,7 @@ const signUp = createAsyncThunk(
     } catch (error){
         try{
           let data = await profileRepo.register({token,frequency,googleId,password,username,profilePicture,selfStatement,privacy})
-         await Preferences.set("token",data.token)
+         await Preferences.set({key:"token",value:data.token})
           client.initIndex("profile").saveObject({ objectID:data.profile.id,
             username:username,
            }).wait()       
@@ -151,18 +149,22 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
   return data
 })
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
-async (thunkApi) => {
+async (params,thunkApi) => {
   try{
-
-    let token = (await Preferences.get("token")).value
-
+  let token = (await Preferences.get({key:"token"})).value
+  console.log("Ttoke",token)
     const data = await profileRepo.getMyProfiles({token:token})
-   await Preferences.set("token",data.token)
-   
-    const key = "cachedMyProfile"
-   await Preferences.set(key,JSON.stringify(data.profile))
   
-    return data 
+   if(data && data.token){
+    await Preferences.set({key:"token",value:data.token})
+   }
+
+console.log("data",data)
+   return data
+  
+  
+  
+    
     }catch(error){     
       return {error}
     }});
@@ -210,7 +212,7 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
 const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
   
     try {
-      const token =(await Preferences.get("token")).value
+      const token =(await Preferences.get({key:"token"})).value
       if(token){
         let data = await profileRepo.getProfileProtected(params)
         return{

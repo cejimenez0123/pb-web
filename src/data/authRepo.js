@@ -47,7 +47,7 @@ class AuthRepo{
       
         let res = await axios.post(Enviroment.url+"/auth/generate-referral",{},{
             headers:{
-                Authorization:"Bearer "+(await Preferences.get("token")).value
+                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
             }
         })
         return res.data
@@ -82,7 +82,7 @@ class AuthRepo{
     }
     async deleteUser(){
         let res = await axios.delete(Enviroment.url+"/auth/",{headers:{
-            Authorization:"Bearer "+(await Preferences.get("token")).value
+            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
          return res.data    
      }

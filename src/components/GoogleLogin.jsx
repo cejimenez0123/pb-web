@@ -60,11 +60,11 @@ export default function GoogleLogin({ onUserSignIn }) {
     // Main useEffect for managing GIS loading and login state
     useEffect(() => {
        return async ()=>{ 
-        const storedEmail =(await Preferences.get('userEmail')).value;
-        const storedName = (await Preferences.get('userName')).value;
-        const storedGoogleId = (await Preferences.get('googleId')).value;
-        const storedDriveToken = (await Preferences.get(driveTokenKey)).value;
-        const storedDriveTokenExpiry = (await Preferences.get('googledrivetoken_expiry')).value;
+        const storedEmail =(await Preferences.get({key:'userEmail'})).value;
+        const storedName = (await Preferences.get({key:'userName'})).value;
+        const storedGoogleId = (await Preferences.get({key:'googleId'})).value
+        const storedDriveToken = (await Preferences.get({key:driveTokenKey})).value
+        const storedDriveTokenExpiry = (await Preferences.get({key:'googledrivetoken_expiry'})).value;
         const isTokenValid = storedDriveToken && storedDriveTokenExpiry && Date.now() < parseInt(storedDriveTokenExpiry, 10);
         if (storedEmail && storedGoogleId && isTokenValid) {
             dispatch(logIn({email:storedEmail,uId:storedGoogleId,isNative})).then(res=>{ checkResult(res,payload=>{
@@ -167,9 +167,9 @@ if(!signedIn){
                     setSignedIn(true); // Update UI state to show logged-in view
 
                     // Store basic user info in localStorage
-                  await Preferences.set('userEmail', decodedToken.email);
-             await Preferences.set('userName', decodedToken.name || decodedToken.given_name);
-               await  Preferences.set('googleId', decodedToken.sub);
+                  await Preferences.set({key:'userEmail', value:decodedToken.email});
+             await Preferences.set({key:'userName',value:decodedToken.name || decodedToken.given_name});
+               await  Preferences.set({key:'googleId',value:decodedToken.sub});
 
                     console.log("User signed in (ID Token processed). Now requesting access token for Drive...");
                     // Proceed to request access token with Drive scopes
@@ -196,8 +196,8 @@ if(!signedIn){
                         const expiryMs = Date.now() + (parseInt(tokenResponse.expires_in, 10) * 1000);
 
                         // Store Drive access token and expiry in localStorage
-                       Preferences.set(driveTokenKey, driveAccessToken).then(()=>{});
-                       Preferences.set("googledrivetoken_expiry", expiryMs.toString()).then(()=>{})
+                       Preferences.set({key:driveTokenKey, value:driveAccessToken});
+                       Preferences.set({key:"googledrivetoken_expiry", value:expiryMs.toString()})
                         console.log("Drive-scoped access token obtained and stored.");
 
                         // Dispatch Redux login action after getting all necessary info
@@ -246,7 +246,7 @@ if(!signedIn){
     };
 
  
-  Preferences.get("token").then(token=>setIdToken(token.value))
+  Preferences.get({key:"token"}).then(token=>setIdToken(token.value))
 
     return (
         <div>

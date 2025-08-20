@@ -1,5 +1,6 @@
 import Enviroment from "../core/Enviroment"
 import axios from "axios"
+import { Preferences } from "@capacitor/preferences";
 class WorkshopRepo{
     headers= {
         'Access-Control-Allow-Origin': "*"

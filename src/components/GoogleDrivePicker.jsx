@@ -128,8 +128,8 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
                         const driveAccessToken = tokenResponse.access_token;
                         const expiryMs = Date.now() + (parseInt(tokenResponse.expires_in, 10) * 1000);
 
-                        Preferences.set(TOKEN_KEY, driveAccessToken).then(()=>{})
-                        Preferences.set(TOKEN_EXPIRY_KEY, expiryMs.toString()).then(()=>{});
+                        Preferences.set({key:TOKEN_KEY,value: driveAccessToken}).then(()=>{})
+                        Preferences.set({key:TOKEN_EXPIRY_KEY,value: expiryMs.toString()}).then(()=>{});
                         setDriveTokenAvailable(true); // Update state to true
                         console.log("Drive Picker: New access token obtained and stored.");
                         createPicker(); // Open picker after getting new token
@@ -202,7 +202,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
 
     const fetchGoogleDocContent = async (file) => {
         try {
-            const storedToken =(await Preferences.get(TOKEN_KEY)).value;
+            const storedToken =(await Preferences.get({key:TOKEN_KEY})).value;
             if (!storedToken || isTokenExpired()) {
                 console.error("Drive access token expired or not available. Cannot fetch content. Requesting re-authentication.");
                 requestDriveAccessToken(); // Attempt to get a new token

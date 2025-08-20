@@ -31,8 +31,6 @@ import Context from "../../context";
 import "../../App.css";
 import GoogleLogin from "../../components/GoogleLogin";
 import InfoTooltip from '../../components/InfoTooltip';
-import setLocalStore from '../../core/setLocalStore';
-import getLocalStore from '../../core/getLocalStore';
 import DeviceCheck from '../../components/DeviceCheck';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { debounce } from 'lodash';
@@ -56,7 +54,7 @@ export default function SignUpContainer(props) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  Preferences.get("idToken").then(token=>{
+  Preferences.get({key:"idToken"}).then(token=>{
     setIdentityToken(token.value)
    })
   const { setError, setSuccess, setSeo, seo } = useContext(Context);
@@ -70,7 +68,7 @@ export default function SignUpContainer(props) {
 
   useEffect(() => {
     setToken(token);
-    return async ()=>await Preferences.set("token",token)
+    return async ()=>await Preferences.set({key:"token",value:token})
   }, [searchParams, token]);
 
   const handleFileInput = (e) => {
@@ -90,7 +88,7 @@ export default function SignUpContainer(props) {
 
   const completeSignUp = async () => {
     let toke = searchParams.get("token") || token;
-    if (((await Preferences.get(("googledrivetoken"))).value||(await Preferences.get("idToken")).value || (password.length > 6 && username.length > 3))) {
+    if (((await Preferences.get(({key:"googledrivetoken"}))).value||(await Preferences.get({key:"idToken"})).value || (password.length > 6 && username.length > 3))) {
       const pictureParams = file ? { file } : { profilePicture: selectedImage };
       const params = {
         email,
@@ -112,7 +110,7 @@ export default function SignUpContainer(props) {
         : dispatch(signUp(params));
 
       uploadAction.then(res => checkResult(res, payload => {
-        Preferences.set("firstTime", payload.firstTime).then(()=>{})
+        Preferences.set({key:"firstTime",value: payload.firstTime}).then(()=>{})
    
         if (payload.profile) {
           navigate(Paths.myProfile());
@@ -135,7 +133,7 @@ export default function SignUpContainer(props) {
   return (
     
       
-      <IonContent fullscreen className="ion-padding pt-8" scrollY>
+      <IonContent fullscreen={true}className="ion-padding pt-8" scrollY>
         <IonHeader className="bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
         <IonTitle className="text-green-800 text-center ">
           Complete Sign Up
@@ -172,7 +170,7 @@ setEmail(email)
                              
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               setEmail(email)
-              Preferences.set("idToken",idToken).then(()=>{})
+              Preferences.set({key:"idToken",value:idToken}).then(()=>{})
             
             }}/></>}
       </div>

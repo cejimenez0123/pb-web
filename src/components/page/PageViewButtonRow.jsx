@@ -202,7 +202,7 @@ checkResult(res,payload=>{
 className=' text-emerald-800 '
 
 onClick={async ()=>{
-if(currentProfile & (await Preferences.get("token")).value){
+if(currentProfile & (await Preferences.get({key:"token"})).value){
     navigate(Paths.addStoryToCollection.story(page.id))
 }else{
     setError("Please Sign Up")

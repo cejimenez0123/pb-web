@@ -10,12 +10,10 @@ import {  useReferral } from "../../actions/UserActions";
 import Context from "../../context";
 import authRepo from "../../data/authRepo";
 import { debounce } from "lodash";
-import setLocalStore from "../../core/setLocalStore";
-import DeviceCheck from "../../components/DeviceCheck";
 import { Preferences } from "@capacitor/preferences";
+import { IonContent } from "@ionic/react";
 export default function UseReferralContainer(props){
-    const location = useLocation();
-    const isNative = DeviceCheck()
+    const location = useLocation()
     const query = new URLSearchParams(location.search);
     const selectRef = useRef()
     const [token, setToken] = useState(query.get("token"));
@@ -91,7 +89,7 @@ setToken(token)
   },[searchParams])
      const dispatch = useDispatch()
 
-    const completeSignUp=()=>{
+    const completeSignUp=async ()=>{
      let toke = searchParams[0].get("token")
      if(!toke){
       toke = token
@@ -117,9 +115,9 @@ setToken(token)
     
                         }))
                     
-                .then(res=>checkResult(res,payload=>{
-     Preferences.set("firstTime",true).then(()=>{})
-                    Preferences.set("token",payload.token).then(()=>{})
+                .then(res=>checkResult(res,async payload=>{
+     await Preferences.set({key:"firstTime",value:true})
+                  await  Preferences.set({key:"token",value:payload.token})
                    if(payload.profile){navigate(Paths.myProfile())}else{
                    
                     setSuccess(null)
@@ -160,11 +158,11 @@ setToken(token)
         }else{
 
       if(payload.token){
-        Preferences.set("token",payload.token)
+        Preferences.set({key:"token",value:payload.token}).then()
       }
        
          if(payload.profile){
-          Preferences.set("firstTime",true)
+          Preferences.set({key:"firstTime",value:true})
           navigate(Paths.myProfile())}else{
          
           setSuccess(null)
@@ -195,7 +193,7 @@ setToken(token)
       
     }
     return(
-                <div  className=" ">
+                <IonContent fullscreen={true} className=" ">
 
 
         <div className=" px-4 my-2  bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
@@ -320,5 +318,5 @@ Email
             </div>
             
             </div>   
-        </div>)
+        </IonContent>)
 }

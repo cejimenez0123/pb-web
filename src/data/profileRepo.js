@@ -11,14 +11,15 @@ class ProfileRepo {
     async getMyProfiles({token}){
       
   try{
-        let res = await axios.get(this.url+"/protected",{ headers:{
+       const res = await axios.get(this.url+"/protected",{ headers:{
                 Authorization:"Bearer "+token
             }}
         )
-
+console.log("DCdc",res)
         return res.data
     }catch(e){
         console.log(e)
+        return e
     }
     }
     async create({email,token,password,username,profilePicture,selfStatement,privacy}){
@@ -53,7 +54,7 @@ class ProfileRepo {
     
     }
     async getProfileProtected(params){
-        const token = (await Preferences.get("token")).value
+        const token = (await Preferences.get({key:"token"})).value
         const {id}=params
         let res = await axios.get(this.url+"/"+id+"/protected",{headers:{
             Authorization:"Bearer "+token

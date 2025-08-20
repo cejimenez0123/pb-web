@@ -4,6 +4,7 @@ import { debounce } from "lodash"
 import validateEmail from "../core/validateEmail"
 //import { Dialog, DialogActions, DialogContent, Button,DialogTitle } from "@mui/material"
 import Context from "../context"
+import { IonContent } from "@ionic/react"
 
 export default function FeedbackContainer(props){
     const {seo,setSeo}=useContext(Context)
@@ -88,7 +89,7 @@ export default function FeedbackContainer(props){
     
     },10)
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
-    return(<div>
+    return(<IonContent>
         <form className="my-8 px-4">
         <div className="card lg:max-w-[40rem] mx-auto lg:p-8">
 
@@ -131,5 +132,5 @@ rounded-full border-none py-2 text-white my-12`}>
         </div>
         </form>
   
-    </div>)
+    </IonContent>)
 }

@@ -12,7 +12,7 @@ import DeviceCheck from '../../components/DeviceCheck';
 import GoogleLogin from '../../components/GoogleLogin';
 import Dialog from '../../components/Dialog';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
-import { IonInput } from '@ionic/react';
+import { IonContent, IonInput } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
 
 export default function LogInContainer() {
@@ -31,13 +31,15 @@ export default function LogInContainer() {
    },[])
 
     return (
-        <div id="" className='sm:mx-2 py-16 md:py-4'>
+        <IonContent fullscreen={true}>
+        <div  fullscreen={true} className='sm:mx-2 overflow-y-scroll py-10 md:py-4'>
             <LogInCard  
                        
             setLogInError={setError}
             handleSubmit={(e)=>handleLogIn(e)}
             setPassword={(str)=>setLiPassword(str)}/>
         </div>
+        </IonContent>
     )
 }
 
@@ -66,10 +68,9 @@ function LogInCard({setLogInError}){
 
     const handleLogIn = (event)=>{
         event.preventDefault()
-        setPending(true)
-        console.log(email)
-        console.log(password)
+   
         if(email.length>3 && password.length){
+            setPending(true)
             const params ={email:email.toLowerCase(),password:password,isNative}
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
@@ -77,7 +78,7 @@ function LogInCard({setLogInError}){
                     if(payload && payload.error){
                         setError("Error with Username or Password")
                     }else{
-                       Preferences.set("cachedMyProfile",payload.profile)
+                       Preferences.set({key:"cachedMyProfile",value:payload.profile})
                         navigate(Paths.myProfile())
                     }
                 },err=>{
@@ -103,7 +104,7 @@ setError("User Not Found. Apply Below")
                 checkResult(res,async payload=>{
                
               
-                   await Preferences.set("cachedMyProfile",JSON.stringify(payload.profile))
+                   await Preferences.set({key:"cachedMyProfile",value:JSON.stringify(payload.profile)})
                     navigate(Paths.myProfile())
                     setPending(false)
                 },err=>{
@@ -124,7 +125,7 @@ setError("User Not Found. Apply Below")
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
               
-                Preferences.set("cachedMyProfile",payload.profile)
+                Preferences.set({key:"cachedMyProfile",value:payload.profile})
                 navigate(Paths.myProfile())
                 setPending(false)
             },err=>{
@@ -142,7 +143,7 @@ setError("User Not Found. Apply Below")
     }
     }
     return(
-    <div className=' md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+    <div  className=' md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
             <form className='max-w-[100vw] sm:max-w-82 text-center pt-4'>
@@ -182,11 +183,13 @@ setError("User Not Found. Apply Below")
                 
         </div>
         <span className='flex flex-col mt-4 justify-center '> 
+        <div className='w-fit mx-auto'>
         <AppleSignInButton
         onUserSignIn={({idToken,email})=>{
             dispatchLogin({email,idToken,isNative})
         }}
         />
+        </div>
          {/* <GoogleLogin 
      onUserSignIn={({email, name,googleId})=>{
 dispatchLogin({email,googleId,isNative})

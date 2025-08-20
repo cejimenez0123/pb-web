@@ -57,7 +57,7 @@ export default function AddToCollectionContainer(props) {
       })
   );
   useEffect(()=>{
-    Preferences.get("token").then(tok=>setToken(tok.value))
+    Preferences.get({key:"token"}).then(tok=>setToken(tok.value))
   },[])
   useEffect(()=>{
     if(token){

@@ -13,7 +13,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 
     if(data.token){
     
-       await Preferences.set("token",data.token)
+       await Preferences.set({key:"token",value:data.token})
     }
     if(data.profile){
         const {profile}=data
@@ -25,7 +25,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
  const fetchNotifcations = createAsyncThunk("users/fetchNotifications",async (params,thunkApi)=>{
  
         const {profile}=params
-       const token =(await Preferences.get("token")).value
+       const token =(await Preferences.get({key:"token"})).value
 
              let data = await profileRepo.notifications({token,profile})
 

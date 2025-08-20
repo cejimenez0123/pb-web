@@ -1,5 +1,6 @@
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
+import { Preferences } from "@capacitor/preferences";
 class FollowRepo{
     headers= {
         'Access-Control-Allow-Origin': "*"

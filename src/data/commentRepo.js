@@ -1,6 +1,6 @@
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
-
+import { Preferences } from "@capacitor/preferences";
 
 class CommentRepo{
     headers= {
@@ -17,7 +17,7 @@ class CommentRepo{
         return res.data
     }
     async delete({id}){
-       let token= (await Preferences.get("token")).value
+       let token= (await Preferences.get({key:"token"})).value
     
         let res = await axios.delete(Enviroment.url+"/comment/"+id,
         {headers:

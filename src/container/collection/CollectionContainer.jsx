@@ -272,7 +272,7 @@ const isNative = DeviceCheck()
 const getCol=async ()=>{
        setLoading(true)
 
-        const token =await Preferences.get("token")
+        const token =await Preferences.get({key:"token"})
        token?dispatch(fetchCollectionProtected({id})).then(res=>{
             checkResult(res,payload=>{
              setLoading(false)

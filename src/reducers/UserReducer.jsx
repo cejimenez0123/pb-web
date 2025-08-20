@@ -127,22 +127,28 @@ const userSlice = createSlice({
         state.error = payload.error
       }
  
-    }).addCase(getCurrentProfile.rejected,(state,{payload})=>{ 
+    }).addCase(getCurrentProfile.rejected,(state,data)=>{ 
+        if(data){
+            let {payload}=data
+        
         if(payload && payload.error){
             state.loading = false
             state.signedIn = false
             state.currentProfile = null
            
-        }  
+        }  }
     }).addCase(postStoryHistory.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
     }).addCase(postCollectionHistory.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
     }).addCase(getCurrentProfile.pending,(state)=>{
         state.loading = true
-    }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
-       state.currentProfile = payload.profile
+    }).addCase(getCurrentProfile.fulfilled,(state, data) => {
+
+if(data && data.payload && data.payload.profile){
+       state.currentProfile = data.payload.profile
        state.loading = false
+}
     })
  
     .addCase(fetchProfile.pending,(state)=>{

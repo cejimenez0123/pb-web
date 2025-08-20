@@ -67,7 +67,7 @@ function App(props) {
   const [isSaved,setIsSaved]=useState(true)
   const profileInView = useSelector(state=>state.users.profileInView)
   const [token,setToken]=useState(null)
-  usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+  usePersistentCurrentProfile((params)=>dispatch(getCurrentProfile(params)))
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
    const currentProfile = props.currentProfile
   const [olderPath,setOlderPath]=useState(null)
@@ -80,6 +80,7 @@ function App(props) {
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
     }
+
    
 },[])
 
@@ -173,13 +174,13 @@ function App(props) {
 
           <Route path={Paths.home()} 
                         element={
-                          <PrivateRoute>
+                          <PrivateRoute currentProfile={currentProfile}>
                           <DashboardContainer 
                           /></PrivateRoute>
                         }
             />
             <Route exact path={Paths.notifications()}
-            element={<PrivateRoute><NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>
+            element={<PrivateRoute currentProfile={currentProfile}><NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>
     
           <Route exact path="/discovery" 
                   element={
@@ -227,14 +228,15 @@ function App(props) {
      element={<FeedbackContainer/>}/>
      <Route path={Paths.addToCollection.route}
      element={        <PrivateRoute
-    
+      currentProfile={currentProfile}
       ><AddToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.addStoryToCollection.route}
      element={<PrivateRoute 
-     
+      currentProfile={currentProfile}
      ><AddStoryToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.editCollection.route()}
       element={<PrivateRoute 
+        currentProfile={currentProfile}
       ><EditCollectionContainer/></PrivateRoute>}/>
      
 
@@ -257,7 +259,7 @@ function App(props) {
       <Route
       path={Paths.myProfile()}
       element={
-        <PrivateRoute >
+        <PrivateRoute       currentProfile={currentProfile} >
           <MyProfileContainer profile={props.currentProfile} 
           currentProfile={currentProfile}
                              presentingElement={page}
@@ -269,10 +271,12 @@ function App(props) {
       }
     />
       <Route path={Paths.workshop.reader()}
-    element={<PrivateRoute><WorkshopContainer/></PrivateRoute>}/>
+    element={<PrivateRoute       currentProfile={currentProfile}><WorkshopContainer/></PrivateRoute>}/>
     <Route 
     path={Paths.workshop.route()}
-    element={<PrivateRoute><WorkshopContainer/></PrivateRoute>}/>
+    element={<PrivateRoute
+      currentProfile={currentProfile}
+    ><WorkshopContainer/></PrivateRoute>}/>
     <Route path="/profile/:id" element={
       <ProfileContainer profile={profileInView}/>
       }/>
@@ -284,7 +288,7 @@ function App(props) {
     <Route  
         path={Paths.editor.image()}
         element={ 
-          <PrivateRoute >
+          <PrivateRoute currentProfile={currentProfile}>
             
           <EditorContainer 
           
@@ -297,7 +301,7 @@ presentingElement={page}
       exact path={Paths.editor.link()}
       element={
         <PrivateRoute 
-      
+        currentProfile={currentProfile}
         >
             <EditorContainer 
          
@@ -310,7 +314,7 @@ presentingElement={page}
        <Route
       path={Paths.editPage.route()}
       element={
-        <PrivateRoute >
+        <PrivateRoute currentProfile={currentProfile} >
             <EditorContainer 
               htmlContent={props.htmlContent} 
               currentProfile={props.currentProfile} 
@@ -320,7 +324,7 @@ presentingElement={page}
 
       <Route path="/profile/edit" element={
  
-        <PrivateRoute >
+        <PrivateRoute currentProfile={currentProfile} >
         <SettingsContainer />
         </PrivateRoute>
       }/>
