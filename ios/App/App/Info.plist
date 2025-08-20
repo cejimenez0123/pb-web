@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string></string>
+	<string>We need your location to connect you with workshops in your area.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need your location to connect you with workshops in your area.</string>
 	<key>CFBundleDevelopmentRegion</key>

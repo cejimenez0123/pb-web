@@ -2,14 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import storyRepo from "../data/storyRepo";
 import { client } from "../core/di";
 import { PageType } from "../core/constants";
-import hashtagRepo from "../data/hashtagRepo";
 import {storage} from "../core/di"
 import {  ref,deleteObject   } from "firebase/storage";
+import { Preferences } from "@capacitor/preferences";
 
 const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
   try{
 
-    let token =await Performance.get("token")
+    let token =(await Preferences.get({key:"token"})).value
     if(token){
      let data = await storyRepo.getStoryProtected({id:id})
      return {story:data.story}
@@ -20,7 +20,6 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 
     }
   }catch(error){
-console.log("bocx",error)
     return {error}
   }
 })

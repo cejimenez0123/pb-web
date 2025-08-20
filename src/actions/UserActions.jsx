@@ -152,7 +152,7 @@ const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
   try{
   let token = (await Preferences.get({key:"token"})).value
-  console.log("Ttoke",token)
+ if(token){
     const data = await profileRepo.getMyProfiles({token:token})
   
    if(data && data.token){
@@ -161,7 +161,9 @@ async (params,thunkApi) => {
 
 console.log("data",data)
    return data
-  
+  }else{
+    throw new Error("No Token")
+  } 
   
   
     

@@ -1,4 +1,4 @@
-import React ,{ useContext, useEffect, useLayoutEffect,useState } from 'react'
+import React ,{ useContext,useRef, useEffect, useLayoutEffect,useState } from 'react'
 import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
@@ -22,7 +22,8 @@ import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
-import { IonImg } from '@ionic/react'
+import {IonImg, IonButton, IonPopover, IonList, IonItem } from '@ionic/react';
+import { useIonPopover } from '@ionic/react';
 import { useSelector } from 'react-redux'
 import DeviceCheck from '../components/DeviceCheck.jsx'
 const PageName = {
@@ -134,7 +135,143 @@ const openDialog=()=>{
                       SettingName.logout,
                       ]; 
    
-
+               
+//                       const menuDropdown = () => {
+//                         const [showPopover, setShowPopover] = useState(false);
+//                         const [event, setEvent] = useState(null);
+//                         const buttonRef = useRef(null)
+//                         const openPopover = (e) => {
+//                           setEvent(e.nativeEvent);
+//                           setShowPopover(true);
+//                         };
+//                         const closePopover = () => setShowPopover(false);
+                      
+//                         return (
+//                           <>
+//                             <IonButton
+//                               fill="clear"
+// ref={buttonRef}
+// id="click-trigger"
+//                               onClick={openPopover}
+//                               className="btn btn-ghost shrink my-auto max-w-36 sm:max-w-52 z-[50]"
+//                             >
+//                               <img src={menu} alt="menu" />
+//                             </IonButton>
+                      
+//                             <IonPopover
+//                               isOpen={showPopover}
+//                               event={event}
+//                               trigger="click-trigger"
+//                               onDidDismiss={closePopover}
+//                               // pick side that fits your UI
+//                               side="bottom"
+//                               alignment="start"
+//                               className="rounded-box p-0"
+//                             >
+                              
+//                                    <IonList className="bg-emerald-100 rounded-box mt-3 w-52 shadow">
+//                                 {pages.map((page) => {
+//                                   if ((page === PageName.workshop || page === PageName.home) && currentProfile) {
+//                                     return (
+//                                       <IonItem
+//                                         button
+//                                         key={page}
+//                                         className="text-emerald-800"
+//                                         onClick={() => { handleCloseNavMenu(page); closePopover(); }}
+//                                       >
+//                                         {page}
+//                                       </IonItem>
+//                                     );
+//                                   } else if (
+//                                     (page === PageName.about ||
+//                                       page === PageName.login ||
+//                                       page === PageName.apply) &&
+//                                     !currentProfile
+//                                   ) {
+//                                     return (
+//                                       <IonItem
+//                                         button
+//                                         key={page}
+//                                         className="text-emerald-800"
+//                                         onClick={() => { handleCloseNavMenu(page); closePopover(); }}
+//                                       >
+//                                         {page}
+//                                       </IonItem>
+//                                     );
+//                                   } else if (page === PageName.create && currentProfile) {
+//                                     return (
+//                                       <IonItem key={page} className="dropdown">
+//                                         <span className="text-emerald-800 text-center">Create</span>
+//                                         <IonList className="p-2 rounded-box bg-emerald-100">
+//                                           <IonItem onClick={ClickWriteAStory}>
+//                                             <IonImg src={CreateIcon} alt="Create Story" />
+//                                           </IonItem>
+//                                           <IonItem
+//                                             onClick={() => {
+//                                               dispatch(setPageInView({ page: null }));
+//                                               dispatch(setEditingPage({ page: null }));
+//                                               dispatch(setHtmlContent(""));
+//                                               navigate(Paths.editor.image());
+//                                               closePopover();
+//                                             }}
+//                                           >
+//                                             <IonImg src={ImageIcon} alt="Create Image" />
+//                                           </IonItem>
+//                                           <IonItem
+//                                             onClick={() => {
+//                                               dispatch(setPageInView({ page: null }));
+//                                               dispatch(setEditingPage({ page: null }));
+//                                               dispatch(setHtmlContent(""));
+//                                               navigate(Paths.editor.link());
+//                                               closePopover();
+//                                             }}
+//                                           >
+//                                             <IonImg src={LinkIcon} alt="Create Link" />
+//                                           </IonItem>
+//                                           <IonItem
+//                                             className="text-emerald-800"
+//                                             onClick={() => {
+//                                               openDialog();
+//                                               closePopover();
+//                                             }}
+//                                           >
+//                                             Collection
+//                                           </IonItem>
+//                                         </IonList>
+//                                       </IonItem>
+//                                     );
+//                                   } else if (page === PageName.search) {
+//                                     return (
+//                                       <IonItem
+//                                         button
+//                                         key={page}
+//                                         className="text-emerald-800"
+//                                         onClick={() => { openDialogAction(); closePopover(); }}
+//                                       >
+//                                         {page}
+//                                       </IonItem>
+//                                     );
+//                                   } else {
+//                                     return (
+//                                       <IonItem
+//                                         button
+//                                         key={page}
+//                                         className="text-emerald-800"
+//                                         onClick={() => { handleCloseNavMenu(page); closePopover(); }}
+//                                       >
+//                                         {page}
+//                                       </IonItem>
+//                                     );
+//                                   }
+//                                 })}
+//                               </IonList>
+//                             </IonPopover>
+//                           </>
+//                         );
+//                       };
+                       
+   
+                      
       const menuDropdown=()=>{
         return(
         <div className={`dropdown ${isPhone?"dropdown-top":""} lg:hidden`}>
@@ -144,7 +281,7 @@ const openDialog=()=>{
             <img src={menu}/>
     
           </div>
-          <ul
+          <IonList
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-emerald-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               {pages.map((page) => {
@@ -216,7 +353,7 @@ const openDialog=()=>{
     } })
             }
           
-          </ul>
+          </IonList>
         </div>
       
     
@@ -331,7 +468,7 @@ openDialog()
 
    
 };
-  return(<div className="navbar max-w-[100vw] bg-emerald-800">
+  return(<div className="navbar flex items-start  max-w-[100vw] h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isPhone?menuDropdown():
     <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
