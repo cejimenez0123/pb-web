@@ -269,46 +269,246 @@
 //         </div>
 //     );
 // }
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonList, IonItem, IonLabel, IonThumbnail, IonImg } from '@ionic/react';
-import GoogleLogin from './GoogleLogin';
+// import React, { useState,useRef, useEffect } from 'react';
+// import { IonButton, IonList, IonItem, IonLabel, IonThumbnail, IonImg } from '@ionic/react';
+// import GoogleLogin from './GoogleLogin';
+// import DeviceCheck from './DeviceCheck';
 
-export default function GoogleDrivePicker({ accessToken,getToken, onFilePicked }) {
+// export default function GoogleDrivePicker({ accessToken,getToken, onFilePicked }) {
+//   const [files, setFiles] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const isNative = DeviceCheck()
+//   const [gisLoaded,setGisLoaded]=useState(false)
+//   const [signedIn,setSignedIn]=useState(false)
+//      const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
+//     const googleButtonRef = useRef(null)
+//   useEffect(() => {
+   
+//     if (accessToken) {
+//       setLoading(true);
+//       fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
+//         headers: {
+//           'Authorization': `Bearer ${accessToken}`,
+//           'Accept': 'application/json'
+//         }
+//       })      
+//         .then(res => res.json())
+//         .then(data => {
+//           setFiles(data.files || []);
+//           setLoading(false);
+//         })
+//         .catch(err => {
+//           console.error('Google Drive API error:', err);
+//           setLoading(false);
+//         });
+//     }
+//   }, [accessToken]);
+//   //   const driveTokenKey = "googledrivetoken";
+//    const nativeGoogleSignIn = async () => {
+//     setPending(true);
+//     setLoginError(null);
+//     try {
+//       const socialUser = await SocialLogin.signIn({ provider: 'google' });
+//       if (!socialUser) throw new Error('No user data from native Google login.');
+
+//       await Preferences.set({ key: 'userEmail', value: socialUser.email });
+//       await Preferences.set({ key: 'userName', value: socialUser.name });
+//       await Preferences.set({ key: 'googleId', value: socialUser.id });
+
+//       if (socialUser.accessToken) {
+//         const expiryMs = Date.now() + 3600 * 1000;
+//         await Preferences.set({ key: driveTokenKey, value: socialUser.accessToken });
+//         await Preferences.set({ key: 'googledrivetoken_expiry', value: expiryMs.toString() });
+//       }
+
+//       setUserInfo(socialUser);
+//       setSignedIn(true);
+
+//       if (onUserSignIn) {
+//         onUserSignIn({
+//           email: socialUser.email,
+//           name: socialUser.name,
+//           googleId: socialUser.id,
+//           driveAccessToken: socialUser.accessToken,
+//         });
+//       }
+//       dispatch(logIn({ email: socialUser.email, uId: socialUser.id, isNative })).then((res) => {
+//         checkResult(res, () => navigate(Paths.myProfile()));
+//       });
+//     } catch (error) {
+//       console.error('Native Google Sign-In error:', error);
+//       setLoginError('Google Sign-In failed. Please try again.');
+//     } finally {
+//       setPending(false);
+//     }
+//   }
+//   ;
+//   const handleCredentialResponse = async (response) => {
+//     if (!response.credential) {
+//       setLoginError('No credential received from Google.');
+//       return;
+//     }
+//     try {
+//       const decoded = JSON.parse(atob(response.credential.split('.')[1]));
+//       await Preferences.set({ key: 'userEmail', value: decoded.email });
+//       await Preferences.set({ key: 'userName', value: decoded.name || decoded.given_name });
+//       await Preferences.set({ key: 'googleId', value: decoded.sub });
+
+//       setUserInfo({
+//         email: decoded.email,
+//         name: decoded.name || decoded.given_name,
+//         googleId: decoded.sub,
+//       });
+//       setSignedIn(true);
+
+//       if (onUserSignIn) {
+//         onUserSignIn({
+//           email: decoded.email,
+//           name: decoded.name || decoded.given_name,
+//           googleId: decoded.sub,
+//         });
+//       }
+//       dispatch(logIn({ email: decoded.email, uId: decoded.sub, isNative })).then((res) => {
+//         checkResult(res, () => {
+//           navigate(Paths.myProfile());
+//         });
+//       });
+//     } catch (error) {
+//       console.error('Invalid ID token:', error);
+//       setLoginError('Invalid ID token received.');
+//     }
+//   };
+//   useEffect(() => {
+//     getToken()
+//     if (!isNative && gisLoaded && window.google && window.google.accounts && !signedIn) {
+//       window.google.accounts.id.initialize({
+//         client_id: CLIENT_ID,
+//         callback: handleCredentialResponse,
+//         auto_select: false,
+//         cancel_on_tap_outside: true,
+//       });}
+   
+  
+//   }, [gisLoaded, CLIENT_ID, signedIn, isNative]);
+//   useEffect(()=>{
+//        if (googleButtonRef.current) {
+//         window.google.accounts.id.renderButton(
+//           googleButtonRef.current,
+//           {
+//             theme: 'outline',
+//             size: 'large',
+//             text: 'signin_with',
+//             shape: 'rectangular',
+//             width: 200,
+//             logo_alignment: 'left',
+//             type: 'standard',
+//           }
+//         );
+//       }
+//   },[accessToken,googleButtonRef])
+//   console.log(accessToken)
+//   if (loading) return <p>Loading files...</p>;
+//   if (!!!accessToken){ return <div className='min-h-24'><p>Please sign in to Google Drive.  </p>
+// <div ref={googleButtonRef} role="button" aria-label="Google Sign-In Button"></div>
+// </div>
+//   }else{
+//   return (
+//     <IonList>
+//       {files.map(file => (
+//         <IonItem button key={file.id} onClick={() => onFilePicked(file)}>
+//           <IonThumbnail slot="start" style={{ width: 40, height: 40 }}>
+//             <IonImg src={file.iconLink} alt={file.name} />
+//           </IonThumbnail>
+//           <IonLabel>{file.name}</IonLabel>
+//         </IonItem>
+//       ))}
+//     </IonList>
+//   );}
+// }
+import React, { useState, useEffect, useRef } from 'react';
+import { IonButton, IonList, IonItem, IonLabel, IonThumbnail, IonImg, IonText } from '@ionic/react';
+import GoogleLogin from './GoogleLogin';
+import DeviceCheck from './DeviceCheck';
+import { Preferences } from '@capacitor/preferences';
+
+export default function GoogleDrivePicker({ onFilePicked }) {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
+  const isNative = DeviceCheck();
 
+  const googleButtonRef = useRef(null);
+  const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
+  const driveTokenKey = 'googledrivetoken';
+
+  // Check stored access token and user sign-in on mount
   useEffect(() => {
-   
-    if (accessToken) {
-      setLoading(true);
-      fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Accept': 'application/json'
-        }
-      })      
-        .then(res => res.json())
-        .then(data => {
-          setFiles(data.files || []);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error('Google Drive API error:', err);
-          setLoading(false);
-        });
+    async function checkAccessToken() {
+      const token = (await Preferences.get({ key: driveTokenKey })).value;
+      const tokenExpiry = (await Preferences.get({ key: 'googledrivetoken_expiry' })).value;
+      const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
+console.log("SDF",token)
+      if (tokenValid) {
+        setAccessToken(token);
+        setSignedIn(true);
+      }
     }
+    checkAccessToken();
+  }, []);
+
+  // Fetch files from Google Drive when access token changes or user is signed in
+  useEffect(() => {
+    if (!accessToken) return;
+
+    setLoading(true);
+    fetch(
+      'https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)',
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setFiles(data.files || []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Google Drive API error:', err);
+        setLoading(false);
+      });
   }, [accessToken]);
 
+  // Callback when GoogleLogin successfully signs in and provides token
+  const handleUserSignIn = ({ driveAccessToken }) => {
+    console.log("SDfds",driveAccessToken)
+    if (driveAccessToken) {
+      setAccessToken(driveAccessToken);
+      setSignedIn(true);
+    }
+  };
+
   if (loading) return <p>Loading files...</p>;
-  if (!accessToken) return <div className='min-h-24'><p>Please sign in to Google Drive.  </p>
-    <GoogleLogin onUserSignIn={()=>{
-        getToken()
-    }}/>
-</div>
+
+  if (!accessToken) {
+    return (
+      <div className="min-h-24 p-4">
+        <IonText>Please sign in to Google Drive to import your documents.</IonText>
+        <GoogleLogin onUserSignIn={()=>{handleUserSignIn({})}} />
+      </div>
+    );
+  }
+
+  if (files.length === 0) {
+    return <p>No Google Docs found in your Drive.</p>;
+  }
 
   return (
     <IonList>
-      {files.map(file => (
+      {files.map((file) => (
         <IonItem button key={file.id} onClick={() => onFilePicked(file)}>
           <IonThumbnail slot="start" style={{ width: 40, height: 40 }}>
             <IonImg src={file.iconLink} alt={file.name} />
@@ -319,3 +519,4 @@ export default function GoogleDrivePicker({ accessToken,getToken, onFilePicked }
     </IonList>
   );
 }
+ 

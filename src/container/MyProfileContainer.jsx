@@ -58,12 +58,9 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const {  seo, setSeo, isPhone, isNotPhone } = useContext(Context);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
-;
-const [driveToken,setDriveToken]=useState(null)
-  const [description, setFeedback] = useState("");
-
+  const [driveToken,setDriveToken]=useState(null)
+  const [description, setFeedback] = useState("")
   const [openDialog, setOpenDialog] = useState(false);
-  // const [token,setToken]=useState(null) 
   const collections = useSelector(state => state.books.collections)
   const [ogStories, setOgStories] = useState([]);
   const [ogCols, setOgCols] = useState([]);
@@ -158,10 +155,11 @@ getItems()
   };
   useEffect(()=>{
  getDriveToken()
-},[])
+},[currentProfile])
   const getDriveToken=async ()=>{
     const driveTokenKey = "googledrivetoken";
     const accessToken = (await Preferences.get({key:driveTokenKey})).value
+    console.log("vdvd",accessToken)
      setDriveToken(accessToken)
    }
   
@@ -265,9 +263,7 @@ try{
       dispatch(setPagesInView({ pages: currentProfile.stories }));
     }}
   }, [currentProfile, setSeo, dispatch]);
-const getToken=()=>{
-  Preferences.get()
-}
+
   return (
     <IonContent className="ion-padding" fullscreen={true} scrollY>
       <ErrorBoundary fallback={"error"}>
