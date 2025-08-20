@@ -459,13 +459,8 @@ openDialog()
 
     await Preferences.clear()
   
-    dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
- 
-      navigate("/")
-    },err=>{
-      
-    }))
-
+    dispatch(signOutAction())
+    navigate("/login")
    
 };
   return(<div className="navbar flex items-start  max-w-[100vw] h-54 bg-emerald-800">

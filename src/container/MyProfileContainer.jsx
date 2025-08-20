@@ -17,7 +17,6 @@ import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import checkResult from '../core/checkResult';
 import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
-import usePersistentMyCollectionCache from '../domain/usecases/usePersistentMyCollectionCache';
 import Context from '../context';
 import FeedbackDialog from '../components/page/FeedbackDialog';
 import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache.jsx';
@@ -25,10 +24,7 @@ import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg";
 import DeviceCheck from '../components/DeviceCheck.jsx';
 import { IonPage, IonText, IonIcon, IonInput,IonContent } from '@ionic/react';
-import { settings as settingsIcon, notifications as notificationsIcon } from 'ionicons/icons';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
-import getLocalStore from '../core/getLocalStore.jsx';
-import setLocalStore from '../core/setLocalStore.jsx';
 import { setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
 
@@ -63,6 +59,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
 ;
+const [driveToken,setDriveToken]=useState(null)
   const [description, setFeedback] = useState("");
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -159,7 +156,15 @@ getItems()
     dispatch(setPagesInView({pages:storiesSorted}));
     dispatch(setCollections({ collections: sorted }));
   };
-
+  useEffect(()=>{
+ getDriveToken()
+},[])
+  const getDriveToken=async ()=>{
+    const driveTokenKey = "googledrivetoken";
+    const accessToken = (await Preferences.get({key:driveTokenKey})).value
+     setDriveToken(accessToken)
+   }
+  
   const handleSortTime = (sortedRecentFirst) => {
     const sorted = [...collections].sort((a, b) =>
       sortedRecentFirst ? new Date(b.updated) - new Date(a.updated) : new Date(a.updated) - new Date(b.updated)
@@ -219,14 +224,50 @@ getItems()
       if (data.referral) setReferral(data.referral);
     });
   };
+async function getFile(file){
 
+      
+try{
+        
+
+            const response = await window.gapi.client.drive.files.export({
+                fileId: file.id,
+                mimeType: 'text/html',
+                access_token: driveToken
+            });
+
+            const htmlContent = response.body;
+            console.log('Google Doc HTML Content:', htmlContent);
+
+            dispatch(createStory({
+                profileId: currentProfile.id,
+                data: htmlContent,
+                isPrivate: true,
+                approvalScore: 0,
+                type: PageType.text,
+                title: file.name,
+                commentable: false
+            })).then(res => checkResult(res, ({ story }) => {
+                navigate(Paths.page.createRoute(story.id));
+            }, err => {
+                console.error("Error creating story:", err);
+            }));
+
+        } catch (error) {
+            console.error('Error fetching Google Doc content:', error);
+            if (error.result && error.result.error) {
+                console.error('API Error details:', error.result.error.message);
+            }
+        }}
   useLayoutEffect(() => {
    return ()=>{ if (currentProfile) {
       setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
       dispatch(setPagesInView({ pages: currentProfile.stories }));
     }}
   }, [currentProfile, setSeo, dispatch]);
-
+const getToken=()=>{
+  Preferences.get()
+}
   return (
     <IonContent className="ion-padding" fullscreen={true} scrollY>
       <ErrorBoundary fallback={"error"}>
@@ -272,7 +313,11 @@ getItems()
                 <IonText className='my-auto'>Join a Workshop</IonText>
               </ButtonWrapper>
               <div className='flex-shrink-0'>
-                <GoogleDrivePicker />
+       <GoogleDrivePicker getToken={()=>{
+getDriveToken()
+       }
+
+       }accessToken={driveToken} onFilePicked={getFile} />
               </div>
             </div>
           </div>

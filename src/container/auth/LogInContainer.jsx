@@ -190,11 +190,11 @@ setError("User Not Found. Apply Below")
         }}
         />
         </div>
-         {/* <GoogleLogin 
+         <GoogleLogin 
      onUserSignIn={({email, name,googleId})=>{
 dispatchLogin({email,googleId,isNative})
             
-     }}/> */}
+     }}/>
      </span>
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}
