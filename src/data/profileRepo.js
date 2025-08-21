@@ -15,7 +15,7 @@ class ProfileRepo {
                 Authorization:"Bearer "+token
             }}
         )
-console.log("DCdc",res)
+
         return res.data
     }catch(e){
         console.log(e)

@@ -199,6 +199,9 @@ const thirdPlacesInput=()=>{
 </div>
 </>
 )}
+const openDialog=()=>{
+    let dia = {...dialog}
+}
 const handleCheckboxChange = (event, stateUpdater, field) => {
   const value = event.target.value;
   

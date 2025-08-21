@@ -4,8 +4,6 @@ import "../styles/MyProfile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createStory, updateStory ,getMyStories} from '../actions/StoryActions';
 import { getMyCollections, setCollections } from '../actions/CollectionActions';
-import notifications from "../images/icons/notifications.svg";
-import settings from "../images/icons/settings.svg";
 import IndexList from '../components/page/IndexList';
 import authRepo from '../data/authRepo.js';
 import Paths from '../core/paths';
@@ -159,7 +157,7 @@ getItems()
   const getDriveToken=async ()=>{
     const driveTokenKey = "googledrivetoken";
     const accessToken = (await Preferences.get({key:driveTokenKey})).value
-    console.log("vdvd",accessToken)
+  
      setDriveToken(accessToken)
    }
   
