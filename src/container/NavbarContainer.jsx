@@ -454,13 +454,13 @@ openDialog()
       }
   // }
   const handleSignOut =async () => {
-    window.google.accounts.id.disableAutoSelect(); 
+   window && window.google && window.google.accounts.id.disableAutoSelect(); 
  
 
     await Preferences.clear()
-  
+    navigate(Paths.login())
     dispatch(signOutAction())
-    navigate("/login")
+  
    
 };
   return(<div className="navbar flex items-start  max-w-[100vw] h-54 bg-emerald-800">

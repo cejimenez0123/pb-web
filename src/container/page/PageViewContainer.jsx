@@ -10,8 +10,7 @@ import { postStoryHistory } from "../../actions/HistoryActions";
 import { getProfileHashtagCommentUse } from "../../actions/HashtagActions";
 import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
-import Enviroment from "../../core/Enviroment.js";
-import { initGA,sendGAEvent } from "../../core/ga4.js";
+import { initGA} from "../../core/ga4.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 import Paths from "../../core/paths.js";
@@ -126,8 +125,8 @@ useLayoutEffect(()=>{
     }
 },[])
 
-    return(<IonContent className="ion-padding" fullscreen={true}><div className=" my-8 mx-auto"> 
-        <ErrorBoundary >
+    return( <ErrorBoundary><IonContent className="ion-padding" fullscreen={true}><div className=" my-8 mx-auto"> 
+       
       
 
   <div className=" max-w-[96vw]  my-8 md:w-page mx-auto">     
@@ -137,7 +136,7 @@ useLayoutEffect(()=>{
     
     <CommentThread page={page} comments={rootComments}/>
     </div> 
-    </ErrorBoundary>
-</div></IonContent>)
+    
+</div></IonContent> </ErrorBoundary>)
 
 }

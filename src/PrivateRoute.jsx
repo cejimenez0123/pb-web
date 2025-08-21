@@ -17,24 +17,24 @@ const PrivateRoute = ({loggedIn,currentProfile, children }) => {
     const navigate = useNavigate()
 
    useEffect(()=>{
+  
+  
+   },[navigate])
+  
+   useEffect(()=>{
     let getToken=async ()=>{
       let tok = (await Preferences.get({key:"token"})).value
-      console.log("private",tok)
       setToken(tok)
+      return tok??null
       }
-   getToken().then()
-   },[])
-  
-   useLayoutEffect(()=>{
-
-    return async ()=>{
-      if(token!="undefined"){
-       
-          if(formerPage){
-           navigate(formerPage)
-          }}else{
-            navigate(Paths.login())
-          }}},[token])
+    const check=async ()=>{
+     let tok = await getToken()
+      if(!tok){
+        navigate(Paths.login())
+      }
+           
+          }
+        check()},[])
    
     useEffect(()=>{
      if(location.pathname){
