@@ -241,6 +241,7 @@ const userTestimonial=()=>{
 <h6>Any requests for features, feedback, or encouragement<br/><a onClick={()=>navigate(Paths.feedback())}>click here</a>
 
 </h6>
+<a href="/privacy.html">Privacy Policy</a>
 <h6 className="text-emerald-700 pb-8 mt-12">Plumbum©2025</h6>
 </div>{!currentProfile?<ScrollDown text="↓Apply Below" visible={true}/>:null}</div> </div>)
 }
