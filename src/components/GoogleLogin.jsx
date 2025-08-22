@@ -122,10 +122,14 @@ export default function GoogleLogin({ onUserSignIn }) {
     try {
     await SocialLogin.initialize({google:{
         webClientId:CLIENT_ID,
-        iOSClientId:IOS_CLIENT_ID
+        iOSClientId:IOS_CLIENT_ID,
+        iOSServerClientId:CLIENT_ID,
+        redirectUrl:"com.plumbum.app:/oauth2redirect/google",
+        mode: 'online'
     }})
 
       const user = await SocialLogin.login({provider:"google",options:{
+      
         scopes: ['email', 'profile', 'https://www.googleapis.com/auth/drive.readonly'],
  
       }})
