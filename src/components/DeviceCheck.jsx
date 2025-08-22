@@ -9,7 +9,7 @@ const [capacitor,setCap]=useState("desktop")
 
     const isCapacitor = isPlatform('capacitor'); // If it's running in a native app
  
-    const isMobileWeb = isPlatform('mobileweb'); // If it's in a mobile browser
+    // const isMobileWeb = ; // If it's in a mobile browser
     setCap(isCapacitor)
     if (!isCapacitor) {
       // In browser, not in the full native app
@@ -20,10 +20,12 @@ const [capacitor,setCap]=useState("desktop")
       } else {
         setDeviceType('desktop');
       }
+    }else{
+
     }
   }, []);
 
-  return capacitor=="desktop"
+  return isPlatform("capacitor")
 };
 
 export default DeviceCheck;
