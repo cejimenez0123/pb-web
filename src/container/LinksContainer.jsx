@@ -32,23 +32,12 @@ export default function LinksContainer(props){
             <ul className="md:mx-auto w-page-mobile-content md:w-page-content  mx-4">
             <li>
 
-    <LinkNode url={"https://partiful.com/e/4xLnLRiDC2QDvs1PUId8"}
+    <LinkNode url={"https://partiful.com/e/tMPilbVLft4gveSDg37M"}
     image={flare}
-         title={"Spark Open Mic Sat. Aug 16th"}
-         description={"Open Mic"}/>
+         title={"Plumbum x BXWriters Mixer Thursday Aug. 28th"}
+         description={"Mixer to bring the heart to tech, and the impact to art. Everyone is welcomed to form new connections."}/>
          </li> 
-        <li> 
-         <LinkNode url={"https://partiful.com/e/hCkUYQlaHLrbg36xMLmH"}
-    image={pen}
-         title={"Writers Workshop Mon. Aug 11th"}
-         description={"Feedback focused writers' workshop. Every frustration has a character of truth."}/>
-         </li>
-         <li> 
-         <LinkNode url={"https://www.gofundme.com/f/black-august-community-cookout?lang=en_US"}
-    image={pen}
-         title={"Fundraiser for Black August"}
-         description={"We're celebrating Black August by giving back. We're raising funds for school supplies."}/>
-         </li>
+      
     
           
                 <li>  
