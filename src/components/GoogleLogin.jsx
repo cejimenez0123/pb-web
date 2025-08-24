@@ -119,7 +119,6 @@ export default function GoogleLogin({ onUserSignIn }) {
       webClientId:CLIENT_ID,
       iOSClientId:IOS_CLIENT_ID,
       iOSServerClientId:CLIENT_ID,
-      // redirectUrl:"com.plumbum.app:/oauth2redirect/google",
       mode: 'online'
   }})
   },[])
