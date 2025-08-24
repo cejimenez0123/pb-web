@@ -55,7 +55,6 @@ import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentP
 
 function App(props) {
   const navigate = useNavigate()
-  const isNative = DeviceCheck()
   const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
   const isHorizPhone =  useMediaQuery({
     query: '(min-width: 750px)'
