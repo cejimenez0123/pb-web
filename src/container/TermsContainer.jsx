@@ -1,8 +1,5 @@
-
-const PrivacyNoticeContrainer = ()=>{
-    return(<div className="p-8" dangerouslySetInnerHTML={{__html:`<!doctype html>
-    <html lang="en">
-        <style>
+const TermsNoticeContrainer = ()=>{
+    return(<div className="p-8" dangerouslySetInnerHTML={{__html:`<style>
         [data-custom-class='body'], [data-custom-class='body'] * {
                 background: transparent !important;
               }
@@ -56,6 +53,6 @@ const PrivacyNoticeContrainer = ()=>{
             }
           </style>
             </div>
-            </html>`}}/>)
-}
-export default PrivacyNoticeContrainer
+      `}}/>)
+    
+    }   

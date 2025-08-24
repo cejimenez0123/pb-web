@@ -316,7 +316,9 @@ function App(props) {
         <SettingsContainer />
         </PrivateRoute>
       }/>
-      
+       <Route path={"/terms"} element={
+          <TermsNoticeContrainer />}
+    /> 
     </Routes>
     {isPhone&&!isFirstLaunch?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 

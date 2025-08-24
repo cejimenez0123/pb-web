@@ -242,6 +242,7 @@ const userTestimonial=()=>{
 
 </h6>
 <a href="/privacy">Privacy Policy</a>
+<a href="/terms">Terms and Condiations</a>
 <h6 className="text-emerald-700 pb-8 mt-12">Plumbum©2025</h6>
 </div>{!currentProfile?<ScrollDown text="↓Apply Below" visible={true}/>:null}</div> </div>)
 }
