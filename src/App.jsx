@@ -25,7 +25,7 @@ import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
 import  Context from "./context"
-import TermsNoticeContrainer from "./container/TermsContainer.jsx"
+import TermsContainer from './container/TermsContainer.jsx';
 import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';
 import CollectionContainer from './container/collection/CollectionContainer';
 import AddToCollectionContainer from './container/collection/AddToCollection';
@@ -318,7 +318,7 @@ function App(props) {
         </PrivateRoute>
       }/>
        <Route path={"/terms"} element={
-          <TermsNoticeContrainer />}
+          <TermsContainer />}
     /> 
     </Routes>
     {isPhone&&!isFirstLaunch?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 

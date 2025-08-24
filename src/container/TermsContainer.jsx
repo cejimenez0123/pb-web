@@ -1,5 +1,5 @@
-const TermsNoticeContrainer = ()=>{
-    return(<div className="p-8" dangerouslySetInnerHTML={{__html:`<style>
+ const TermsContainer =()=>{
+        return(<div className="p-8" dangerouslySetInnerHTML={{__html:`<style>
         [data-custom-class='body'], [data-custom-class='body'] * {
                 background: transparent !important;
               }
@@ -56,3 +56,4 @@ const TermsNoticeContrainer = ()=>{
       `}}/>)
     
     }   
+    export default TermsContainer
