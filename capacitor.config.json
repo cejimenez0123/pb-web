@@ -1,12 +1,14 @@
 {
   "appId": "com.plumbum.app",
-  "appName": "Plumbum",
+  "appName": "ios",
   "webDir": "dist",
-  
   "plugins": {
-      "PushNotifications": {
-        "presentationOptions": ["badge", "sound", "alert"]
-      }
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
     }
-  
+  }
 }

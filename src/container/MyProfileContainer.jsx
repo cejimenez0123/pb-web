@@ -307,11 +307,11 @@ try{
                 <IonText className='my-auto'>Join a Workshop</IonText>
               </ButtonWrapper>
               <div className='flex-shrink-0'>
-       <GoogleDrivePicker getToken={()=>{
+       {/* <GoogleDrivePicker getToken={()=>{
 getDriveToken()
        }
 
-       }accessToken={driveToken} onFilePicked={getFile} />
+       }accessToken={driveToken} onFilePicked={getFile} /> */}
               </div>
             </div>
           </div>

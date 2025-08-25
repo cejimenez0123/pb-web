@@ -25,11 +25,11 @@ export default function GoogleLogin({ onUserSignIn }) {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
-  const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
+
   const googleButtonRef = useRef(null);
   const driveTokenKey = 'googledrivetoken';
-
+  const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
+  const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
   // Load GIS script only on web
   useLayoutEffect(() => {
     if (!isNative) {
@@ -46,7 +46,15 @@ export default function GoogleLogin({ onUserSignIn }) {
       }
     }
   }, [isNative]);
-
+  useEffect(()=>{
+    let initialize = async ()=>await SocialLogin.initialize({google:{
+      webClientId:CLIENT_ID,
+      iOSClientId:IOS_CLIENT_ID,
+      iOSServerClientId:CLIENT_ID,
+      mode: 'online'
+  }})
+  initialize()
+  },[])
   // Initialize GIS web button (only if browser)
   useEffect(() => {
     if (!isNative && gisLoaded && window.google && window.google.accounts && !signedIn) {
@@ -114,14 +122,7 @@ export default function GoogleLogin({ onUserSignIn }) {
     };
     loadStoredUser();
   }, [location, navigate, onUserSignIn]);
-  useLayoutEffect(()=>{
-    return async()=>await SocialLogin.initialize({google:{
-      webClientId:CLIENT_ID,
-      iOSClientId:IOS_CLIENT_ID,
-      iOSServerClientId:CLIENT_ID,
-      mode: 'online'
-  }})
-  },[])
+
   // Native Google sign-in
   const nativeGoogleSignIn = async () => {
     setPending(true);
@@ -131,7 +132,7 @@ export default function GoogleLogin({ onUserSignIn }) {
 
       const user = await SocialLogin.login({provider:"google",options:{
       
-        scopes: ['email', 'profile', 'https://www.googleapis.com/auth/drive.readonly'],
+        scopes: ['email','name', 'profile', 'https://www.googleapis.com/auth/drive.readonly'],
  
       }})
       if (!user) throw new Error('No user data returned from native login.');

@@ -159,14 +159,14 @@ export default function SignUpContainer(props) {
             )}
                <div className='w-[12rem] flex-col flex justify-center mx-auto'>
            {googleID||identityToken? null:<>
-           <GoogleLogin onUserSignIn={({email,
+           {/* <GoogleLogin onUserSignIn={({email,
                                 googleId,
                                 driveAccessToken})=>{
 setGoogleID(googleId)
 setEmail(email)
 
                                 }}
-                                  />
+                                  /> */}
                              
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               setEmail(email)

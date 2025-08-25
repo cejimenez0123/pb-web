@@ -49,17 +49,27 @@ import { Helmet } from 'react-helmet';
 import { useMediaQuery } from 'react-responsive';
 import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
-import DeviceCheck from './components/DeviceCheck.jsx';
 import Dialog from './components/Dialog.jsx';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
-
+import { SocialLogin } from '@capgo/capacitor-social-login';
+import { Capacitor } from '@capacitor/core';
 function App(props) {
   const navigate = useNavigate()
   const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
   const isHorizPhone =  useMediaQuery({
     query: '(min-width: 750px)'
   })
-
+  const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
+  const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
+  useEffect(()=>{
+    let initialize = async ()=>await SocialLogin.initialize({google:{
+      webClientId:CLIENT_ID,
+      iOSClientId:IOS_CLIENT_ID,
+      iOSServerClientId:CLIENT_ID,
+      mode: 'online'
+  }})
+  initialize()
+  },[])
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
