@@ -53,23 +53,17 @@ import Dialog from './components/Dialog.jsx';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 import { SocialLogin } from '@capgo/capacitor-social-login';
 import { Capacitor } from '@capacitor/core';
+import DeviceCheck from './components/DeviceCheck.jsx';
 function App(props) {
   const navigate = useNavigate()
   const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
   const isHorizPhone =  useMediaQuery({
     query: '(min-width: 750px)'
   })
+  const isNative = DeviceCheck()
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
-  useEffect(()=>{
-    let initialize = async ()=>await SocialLogin.initialize({google:{
-      webClientId:CLIENT_ID,
-      iOSClientId:IOS_CLIENT_ID,
-      iOSServerClientId:CLIENT_ID,
-      mode: 'online'
-  }})
-  initialize()
-  },[])
+
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
@@ -177,7 +171,7 @@ function App(props) {
 <Alert />
 <div >
       <Routes >
-     <Route path='/' element={<AboutContainer/>}/>
+     <Route path='/' element={isFirstLaunch?<OnboardingContainer/>:isNative?<LogInContainer/>:<AboutContainer/>}/>
       <Route path={"/login"} element={<LogInContainer/>}/> 
       <Route path={"/onboard"} element={<OnboardingContainer/>}/>
 

@@ -253,7 +253,7 @@ setOpenDescription(false)
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
         <li onClick={()=>{
-        openRoleFormDialog(parameters.page)
+        // 
         
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
@@ -270,7 +270,8 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
  setOpenDescription(true)
   }}>Edit Description</li>:null}
         <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
-        {fetchedPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpenRoles(!openRoles)}>Manage Access</li>:null}
+        {fetchedPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>{
+          openRoleFormDialog(parameters.page);setOpenRoles(!openRoles)}}>Manage Access</li>:null}
         <li className="text-emerald-600 pt-3 pb-2" onClick={openConfirmDeleteDialog}>Delete</li>
       </ul>
     </div>
@@ -435,10 +436,7 @@ handleClose={()=>{
     setOpenDescription(false)
     setFeedbackDialog(false)
 }} />
-{/* <Dialog isOpen={open} title={"Are you sure you want to delete this page?"}
-onClose={handleClose}
 
-text=""agree={handleDelete} agreeText="Delete" disagreeText="Close"/> */}
 
       
     </div>

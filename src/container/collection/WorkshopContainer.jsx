@@ -16,7 +16,7 @@ import Context from '../../context';
 import GoogleMapSearch from './GoogleMapSearch';
 import { LoadScript } from '@react-google-maps/api';
 import check from "../../images/icons/check.svg"
-
+import { Geolocation } from '@capacitor/geolocation';
 
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
@@ -89,28 +89,51 @@ setTimeout(()=>{
     }
 
   },[currentProfile,location])
-  const requestLocation=()=>{
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        if(currentProfile&&currentProfile.id){
-          registerUser(currentProfile.id,location)
-        }
-    
-        setError(null);
-        setLoading(false);
-      },
-      (err) => {
-        console.log("location error")
-        setError("We use location to conect with you fellow writers. Reload for access.");
-        setLoading(false);
-  
-      }
-    );
+
+
+const requestLocation = async () => {
+  setLoading(true);
+  try {
+    const position = await Geolocation.getCurrentPosition();
+    setLocation({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+    });
+    if (currentProfile && currentProfile.id) {
+      registerUser(currentProfile.id, {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    }
+    setError(null);
+  } catch (err) {
+    setError("We use location to connect with fellow writers. Reload for access.");
   }
+  setLoading(false);
+};
+
+  // const requestLocation=()=>{
+  //   navigator.geolocation.getCurrentPosition(
+  //     (position) => {
+  //       setLocation({
+  //         latitude: position.coords.latitude,
+  //         longitude: position.coords.longitude,
+  //       });
+  //       if(currentProfile&&currentProfile.id){
+  //         registerUser(currentProfile.id,location)
+  //       }
+    
+  //       setError(null);
+  //       setLoading(false);
+  //     },
+  //     (err) => {
+  //       console.log("location error")
+  //       setError("We use location to conect with you fellow writers. Reload for access.");
+  //       setLoading(false);
+  
+  //     }
+  //   );
+  // }
   const handleGlobal = () => {
    setIsGlobal(!isGlobal)
   

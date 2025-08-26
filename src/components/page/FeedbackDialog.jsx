@@ -1,6 +1,6 @@
 import { useMediaQuery } from "react-responsive"
 import { useLayoutEffect, useState } from "react"
-import { IonModal,IonHeader,IonToolbar,IonButtons,IonBackButton,IonTitle } from "@ionic/react"
+import { IonModal,IonHeader,IonToolbar,IonButtons,IonBackButton,IonTitle, IonRow } from "@ionic/react"
 export default function FeedbackDialog({open,page,isFeedback,handleClose,handleChange,presentingElement,handlePostPublic,handleFeedback}){
     const isPhone =  useMediaQuery({
         query: '(max-width: 768px)'
@@ -33,6 +33,29 @@ export default function FeedbackDialog({open,page,isFeedback,handleClose,handleC
     </IonTitle>
   </IonToolbar>
 </IonHeader>
+<div className={`${isHeightPhone?"":""}`}>
+    {/* <DialogContent className="w-[100%]"> */}
+    <div className={`${isHeightPhone?" mx-auto w-[80%]  ":""}`}> 
+            <textarea 
+            value={feedback}
+            onChange={e=>{
+                setFeedback(e.target.value)
+                handleChange(e.target.value)
+              }}
+            className={`textarea mx-2 ${isHeightPhone?"w-[80vw]":"md:w-[30em]"} w-[96%]  min-h-[7rem] rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600`}/>
+                   <div className="mt-8">
+                    <IonRow>
+          <h2 className="mont-medium text-[1rem] text-emerald-700" onClick={handleClose}>Continue Working</h2>
+             {isFeedback? <h2 className="mont-medium mx-1 text-[1rem] text-emerald-700" onClick={()=>handleFeedback()}>
+     Get feedback
+          </h2>:<h2 className="mont-medium text-[1rem]  text-emerald-700" onClick={()=>handlePostPublic()}>
+  Publish
+          </h2>}
+          </IonRow>
+        </div>
+    {/* </DialogContent> */}
+    </div>
+    </div>
   </IonModal>)
    }
   }

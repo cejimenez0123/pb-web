@@ -195,7 +195,7 @@ checkResult(res,payload=>{
     </div>
     </div>
     <div className="dropdown  flex-1/3 grow bg-emerald-200  text-center dropdown-top">
-<div tabIndex={0} role="button" className="  text-center mx-auto py-2 bg-transparent  border-none  "> <h6 className="text-xl   border-none bg-transparent text-emerald-700 mx-auto my-auto">Share</h6></div>
+<div tabIndex={0} role="button" className="  text-center mx-auto py-2 bg-transparent  flex border-none  "> <h6 className="text-xl   border-none bg-transparent text-emerald-700 mx-auto my-auto">Share</h6></div>
 <ul tabIndex={0} className="dropdown-content bg-white text-emerald-800 menu bg rounded-box z-[1] w-52  shadow">
 <li>
 <a disabled={!currentProfile} 
