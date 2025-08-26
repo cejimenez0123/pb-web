@@ -13,13 +13,13 @@ function PageItem({page,setPageIdList}){
     }
     let pageDataElement = (<div></div>)
     switch(page.type){
-        case PageType.text:
+        case page.type == PageType.text:
             pageDataElement = <div id="page-data-element-text" className='dashboard-content px-2 mx-1 pt-8 ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         break;
-        case PageType.picture:
+        case page.type == PageType.picture:
             pageDataElement = <IonImg id="page-data-element-img"className='dashborad-content' src={`${page.data}`} alt={page.title}/>
         break;
-        case PageType.link:
+        case page.type == PageType.link:
             pageDataElement = <LinkPreview id="page-data-element-link" url={page.data}/>
         break; 
         default:

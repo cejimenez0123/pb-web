@@ -93,34 +93,7 @@ export default function OnboardingContainer(props) {
     console.log(data)
     await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
     setUser(data?.user ?? data);
-    //   dispatchSignUp(null,formData.fullName,null,idToken).then(res=>{
-    //     checkResult(res,async payload=>{
-    //       const {profile}=payload
-    //         setUser(profile)
-    //         const form = {
-    //           ...formData,
-    //           email: formData.email.toLowerCase(),
-    //           genres: formData.selectedGenres.includes("Other")
-    //             ? [...formData.selectedGenres.filter(g => g !== "Other"), formData.otherGenre]
-    //             : formData.selectedGenres,
-    //         };
-    //         try {
-    //         if (window.location.pathname.includes("newsletter")) {
-    //           data = await authRepo.applyFromNewsletter(form);
-    //         } else {
-    //           data = await authRepo.apply(form);
-    //         }
 
-    //         await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
-    //         setUser(data?.user ?? data);
-    //       }catch(e){
-    //         setError(e.message)
-    //       }
-    //     },err=>{
-          
-    //     })
-    //   })
-    //   return
     }
 
     if (validateEmail(formData.email)) {
@@ -225,13 +198,13 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
               />
             </IonItem>
             <IonItem className='ion-text-center flex'>
-           
+{/*            
             <GoogleLogin onUserSignIn={({email, name,googleId})=>{
                 updateFormData({email:email})
                 updateFormData({fullName:name})
                 updateFormData({googleId:googleId})
             }} />
-     
+      */}
             </IonItem>
             <IonItem className='ion-text-center' >
             
@@ -675,7 +648,7 @@ const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference 
   ];
 
   return (
-    <IonContent>
+    <IonContent className='ion-padding pb-12'>
     <>
       <IonLabel
         className="mont-medium"

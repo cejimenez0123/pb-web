@@ -395,31 +395,13 @@ const openRoleFormDialog = (fetchedPage) => {
            
           <EditorDiv  
           createPage={createPageAction}
-    
+    page={editPage}
             
               handleChange={()=>{}}/>
                 </ErrorBoundary>
                 </div>
                     <div>
-                    {/* <Dialog
-                    fullScreen={!md}
-        open={openRoles}
-        onClose={()=>{
-          setOpenRoles(false)
-        }}
-        className=""
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-          <div>
-            <RoleForm item={fetchedPage}
-            onClose={()=>{
-              setOpenRoles(false)
-            }}/>
-          </div>
-      
-  
-      </Dialog> */}
+       
 <FeedbackDialog 
 
 page={editPage}

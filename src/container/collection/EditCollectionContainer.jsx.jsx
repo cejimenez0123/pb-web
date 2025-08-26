@@ -14,19 +14,14 @@ import {
   IonTextarea,
 } from "@ionic/react";
 import deleteIcon from "../../images/icons/delete.svg"
+import { Preferences } from "@capacitor/preferences";
 import arrowDown from "../../images/icons/arrow_down.svg"
-// import {  deleteStoryFromCollection,  fetchCollectionProtected,  } from "../../actions/CollectionActions"
 import add from "../../images/icons/add_circle.svg"
 import view from "../../images/icons/view.svg"
 import { trashOutline, addCircleOutline, eyeOutline } from "ionicons/icons";
-import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Dialog from "../../components/Dialog";
 import Paths from "../../core/paths";
 import { deleteCollection, deleteStoryFromCollection,deleteCollectionFromCollection, patchCollectionContent,  fetchCollectionProtected } from "../../actions/CollectionActions";
-// import arrowDown from "../../images/icons/arrow_down.svg";
-// import add from "../../images/icons/add_circle.svg";
-// import view from "../../images/icons/view.svg";
 import SortableList from "../../components/SortableList";
 import checkResult from "../../core/checkResult";
 import StoryToCollection from "../../domain/models/storyToColleciton";
@@ -34,6 +29,7 @@ import CollectionToCollection from "../../domain/models/ColllectionToCollection"
 import RoleForm from "../../components/role/RoleForm";
 import { RoleType } from "../../core/constants";
 import Context from "../../context";
+import { useSelector,useDispatch } from "react-redux";
 import HashtagForm from "../../components/hashtag/HashtagForm";
 import { setDialog } from "../../actions/UserActions";
 
@@ -224,7 +220,10 @@ export default function EditCollectionContainer(props) {
     let dia = {...dialog}
 dia.title = "Deleting?"
 dia.isOpen=true
-dia.agree=handleDeleteCollection
+dia.agree=()=>{handleDeleteCollection()
+  navigate(Paths.myProfile())
+  dispatch(setDialog({isOpen:false}))
+}
 dia.agreeText ="Delete"
 dia.onClose=()=>{
   dispatch(setDialog({isOpen:false}))
@@ -436,16 +435,7 @@ dispatch(setDialog(dia))
             </div>
           </div>
         </div>
-        {/* <Dialog
-          isOpen={openAccess}
-          onClose={() => setOpenAccess(false)}
-          title={"Roles"}
-          text={
-            <div className="overflow-y-scroll h-[100%] overflow-x-hidden">
-              <RoleForm item={colInView} onClose={() => setOpenAccess(false)} />
-            </div>
-          }
-        /> */}
+    
         {/* <Dialog
           title={"Deleting?"}
           isOpen={openDelete}

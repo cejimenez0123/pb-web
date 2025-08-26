@@ -17,6 +17,7 @@ import GoogleMapSearch from './GoogleMapSearch';
 import { LoadScript } from '@react-google-maps/api';
 import check from "../../images/icons/check.svg"
 import { Geolocation } from '@capacitor/geolocation';
+import DeviceCheck from '../../components/DeviceCheck';
 
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
@@ -25,7 +26,7 @@ const WorkshopContainer = (props) => {
   const page = useSelector(state=>state.pages.pageInView)
   const [loading,setLoading]=useState(false)
   const {error,setError,setSuccess,setSeo}=useContext(Context)
-
+  const isNative = DeviceCheck()
   const [radius,setRadius]=useState(50)
   const [location,setLocation]=useState(null)
   const {currentProfile} = useContext(Context)
@@ -90,10 +91,32 @@ setTimeout(()=>{
 
   },[currentProfile,location])
 
-
+  const webRequestLocation=()=>{
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        if(currentProfile&&currentProfile.id){
+          registerUser(currentProfile.id,location)
+        }
+    
+        setError(null);
+        setLoading(false);
+      },
+      (err) => {
+        console.log("location error")
+        setError("We use location to conect with you fellow writers. Reload for access.");
+        setLoading(false);
+  
+      }
+    );
+  }
 const requestLocation = async () => {
   setLoading(true);
   try {
+   if(await Geolocation.checkPermissions()){np
     const position = await Geolocation.getCurrentPosition();
     setLocation({
       latitude: position.coords.latitude,
@@ -106,34 +129,13 @@ const requestLocation = async () => {
       });
     }
     setError(null);
-  } catch (err) {
+  }} catch (err) {
+    await Geolocation.requestPermissions()
     setError("We use location to connect with fellow writers. Reload for access.");
   }
   setLoading(false);
 };
 
-  // const requestLocation=()=>{
-  //   navigator.geolocation.getCurrentPosition(
-  //     (position) => {
-  //       setLocation({
-  //         latitude: position.coords.latitude,
-  //         longitude: position.coords.longitude,
-  //       });
-  //       if(currentProfile&&currentProfile.id){
-  //         registerUser(currentProfile.id,location)
-  //       }
-    
-  //       setError(null);
-  //       setLoading(false);
-  //     },
-  //     (err) => {
-  //       console.log("location error")
-  //       setError("We use location to conect with you fellow writers. Reload for access.");
-  //       setLoading(false);
-  
-  //     }
-  //   );
-  // }
   const handleGlobal = () => {
    setIsGlobal(!isGlobal)
   
@@ -186,7 +188,7 @@ const requestLocation = async () => {
   }}
  useEffect(()=>{
   if(!isGlobal){
-    requestLocation()
+    isNative?requestLocation():webRequestLocation()
    }
  },[isGlobal]) 
 
