@@ -141,7 +141,7 @@ setTimeout(()=>{
 
 return (
   <>
-    <IonContent className="sm:pb-8">
+     <IonContent fullscreen={true} className="ion-padding">
     <form
     onSubmit={(e) => onClickApply(e)}
     className="form-data shadow-sm sm:my-8 md:rounded-lg pb-30 bg-transparent text-emerald-700   flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] mx-auto lg:mt-24"
