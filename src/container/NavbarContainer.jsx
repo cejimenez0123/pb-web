@@ -452,11 +452,8 @@ openDialog()
         </ul>
       </div>
       }
-  // }
   const handleSignOut =async () => {
-   window && window.google && window.google.accounts.id.disableAutoSelect(); 
- 
-
+    window && window.google && window.google.accounts && window.google.accounts.id && window.google.accounts.id.disableAutoSelect(); 
     await Preferences.clear()
     navigate(Paths.login())
     dispatch(signOutAction())
@@ -507,14 +504,6 @@ openDialog()
 
     </div>:<div className=''/>}
     </div>
-    
-    
-    
-    
-    
-  
-    {/* <Dialog isOpen={openDialog} text={<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>}
-    onClose={()=>setOpenDialog(false)} disagreeText={"Close"}/> */}
 
  
 </div>)

@@ -9,13 +9,13 @@ class WorkshopRepo{
     token = "token"
     async joinWorkshop({profile,story,location}){
         let res = await axios.post(Enviroment.url+'/workshop/groups',{profile,story,location},{headers:{
-            Authorization:"Bearer "+localStorage.getItem(this.token)
+            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
        return res.data
     }
     async joinGlobalWorkshop({profile,story}){
       let res = await axios.post(Enviroment.url+'/workshop/groups/global',{profile,story},{headers:{
-          Authorization:"Bearer "+localStorage.getItem(this.token)
+          Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
       }})
      return res.data
   }
@@ -26,7 +26,7 @@ class WorkshopRepo{
         story:story,
         profile:profile
       },{headers:{
-        Authorization:"Bearer "+localStorage.getItem(this.token)
+        Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
       }}); 
       return response.data
     }

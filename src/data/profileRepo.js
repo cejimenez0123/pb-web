@@ -1,6 +1,6 @@
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
-
+import { Preferences } from "@capacitor/preferences"
 class ProfileRepo {
     url = Enviroment.url+"/profile"
     token="token"
@@ -70,8 +70,7 @@ class ProfileRepo {
         let res = await axios.put(this.url+"/"+params.profile.id,{
             ...params
         },{headers:{
-            Authorization:"Bearer "+localStorage.getItem(this.token)
-        }})
+            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value}})
         return res.data
     }
     async getProfileBookmarkCollection({profileId}){

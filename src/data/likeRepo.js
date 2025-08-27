@@ -11,7 +11,7 @@ class LikeRepo{
     async storyCreate({story,profile}){
           let res =  await axios.post(this.url+"/story",{story,profile},{
                 headers:{
-                    Authorization:"Bearer "+localStorage.getItem(this.token)
+                    Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
                 }
             })
             console.log(res.data)
@@ -20,7 +20,7 @@ class LikeRepo{
     async storyDelete({id}){
         let res =  await axios.delete(this.url+"/story/like/"+id,{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
+                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
             }
             
         })

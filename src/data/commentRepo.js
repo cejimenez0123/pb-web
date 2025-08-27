@@ -9,7 +9,7 @@ class CommentRepo{
     token = "token"
     async create({profile,storyId,text,parentId}){
        let res = await axios.post(Enviroment.url+"/comment",{profileId:profile.id,storyId,text,parentId},
-       {headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
+       {headers:{Authorization:"Bearer "+(await Preferences.get({key:"token"})).value}})
        return res.data
     }
     async helpful(){
@@ -26,7 +26,7 @@ class CommentRepo{
         return res.data
     }
    async update({id,text}){
-    let res = await axios.patch(Enviroment.url+"/comment/"+id,{text},{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
+    let res = await axios.patch(Enviroment.url+"/comment/"+id,{text},{headers:{Authorization:"Bearer "(+(await Preferences.get({key:"token"})).value)}})
     return res.data
    }
 

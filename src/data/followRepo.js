@@ -8,14 +8,14 @@ class FollowRepo{
     token = "token"
     async create({follower,following}){
        let res = await axios.post(Enviroment.url+"/follow",{follower,following},
-       {headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
+       {headers:{Authorization:"Bearer "+await Preferences.get({key:"token"})}})
        console.log(res)
        return res.data
     }
     
     async delete({id}){
         let res = await axios.delete(Enviroment.url+"/follow/"+id,{headers:
-            {Authorization:"Bearer "+localStorage.getItem(this.token)}})
+            {Authorization:"Bearer "+await Preferences.get({key:"token"})}})
         return res.data
     }
 
