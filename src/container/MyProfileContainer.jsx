@@ -4,20 +4,19 @@ import "../styles/MyProfile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createStory, updateStory ,getMyStories} from '../actions/StoryActions';
 import { getMyCollections, setCollections } from '../actions/CollectionActions';
+import { useMemo } from 'react';
 import IndexList from '../components/page/IndexList';
 import authRepo from '../data/authRepo.js';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
 import { setPageInView, setPagesInView, setEditingPage } from '../actions/PageActions.jsx';
 import {  sendGAEvent } from '../core/ga4.js';
-import Dialog from '../components/Dialog.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
 import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import Context from '../context';
 import FeedbackDialog from '../components/page/FeedbackDialog';
-import usePersistentMyStoriesCache from '../domain/usecases/usePersistentMyStoriesCache.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg";
 import DeviceCheck from '../components/DeviceCheck.jsx';
@@ -47,7 +46,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 }
 
 function MyProfileContainer({currentProfile,presentingElement}) {
-  // const [openRefferal,setOpenReferral]=useState(false)
+
   const isNative = DeviceCheck();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,8 +59,8 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const [description, setFeedback] = useState("")
   const [openDialog, setOpenDialog] = useState(false);
   const collections = useSelector(state => state.books.collections)
-  const [ogStories, setOgStories] = useState([]);
-  const [ogCols, setOgCols] = useState([]);
+  // const [ogStories, setOgStories] = useState();
+  // const [ogCols, setOgCols] = useState([]);
   const [feedbackPage, setFeedbackPage] = useState(null);
  
   const filterTypes = {
@@ -72,16 +71,72 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     AZ: "A-Z",
     ZA: "Z-A"
   };
+  const filteredSortedStories = useMemo(() => {
+    let result = stories;
+  
+    // Apply feedback filter first if selected
+    if (filterType === filterTypes.feedback) {
+      result = result.filter(s => s.needsFeedback); // adjust condition to your logic
+    }else{
+  
+    // Apply sorts for other filterTypes
+    switch (filterType) {
+      case filterTypes.recent:
+        result = [...result].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      case filterTypes.oldest:
+        result = [...result].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        break;
+      case filterTypes.AZ:
+        result = [...result].sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case filterTypes.ZA:
+        result = [...result].sort((a, b) => b.title.localeCompare(a.title));
+        break;
+    
+      // filter type and default: show unsorted
+      default:
+        break;
+    }}
+  
+    // Apply search on top of filtering/sorting
+    if (search.trim().length > 0) {
+      const lowerSearch = search.toLowerCase();
+      result = result.filter(s => s.title && s.title.toLowerCase().includes(lowerSearch));
+    }
+    
+    return result;
+  }, [stories, filterType, search]);
+  
+  const filteredSortedCollections = useMemo(() => {
+    let result = collections;
 
-
-
-  // Save original collections for filter resets
-  useEffect(() => {
-    setOgStories(stories);
-  }, [stories]);
-  useEffect(() => {
-    setOgCols(collections);
-  }, [collections]);
+  
+    switch (filterType) {
+      case filterTypes.AZ:
+        result = [...result].sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case filterTypes.ZA:
+        result = [...result].sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case filterTypes.recent:
+          result = [...result].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          break;
+      case filterTypes.oldest:
+          result = [...result].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+          break;
+      // other sorts as needed
+      default:
+        break;
+    }
+  
+    if (search.trim().length > 0) {
+      const lowerSearch = search.toLowerCase();
+      result = result.filter(c => c.title && c.title.toLowerCase().includes(lowerSearch));
+    }
+    return result;
+  }, [collections, filterType, search]);
+  
   useLayoutEffect(()=>{
    const getItems=async ()=> {
       let value = await Preferences.get({key:"token"})
@@ -95,62 +150,7 @@ getItems()
     
   },[])
  
-  useEffect(() => {
-    switch (filterType) {
-      case filterTypes.filter:
-        dispatch(setCollections({ collections: ogCols }));
-        dispatch(setPagesInView({ pages: ogStories }));
-        break;
-      case filterTypes.recent:
-        handleSortTime(true);
-        break;
-      case filterTypes.oldest:
-        handleSortTime(false);
-        break;
-      case filterTypes.feedback:
-        handleSortFeedback();
-        break;
-      case filterTypes.AZ:
-        handleSortAlpha(false);
-        break;
-      case filterTypes.ZA:
-        handleSortAlpha(true);
-        break;
-      default:
-        dispatch(setCollections({ collections: ogCols }));
-        break;
-    }
-  }, [filterType, ogCols, dispatch]);
 
-  // Filter pages and collections based on debounced search and update redux directly
-  useEffect(() => {
-    let filteredCols = ogCols;
-    let filteredPgs = stories;
-    let debouncedSearch = search
-    if (debouncedSearch.toLowerCase() === "untitled") {
-      filteredPgs = filteredPgs.filter(p => !p.title || p.title.length === 0);
-    } else if (debouncedSearch.length > 0) {
-      const lowerSearch = debouncedSearch.toLowerCase();
-      filteredPgs = filteredPgs.filter(p => p.title.toLowerCase().includes(lowerSearch));
-      filteredCols = filteredCols.filter(col => col && col.title.toLowerCase().includes(lowerSearch));
-    }
-    dispatch(setCollections({ collections: filteredCols }));
-    dispatch(setPagesInView({ pages: filteredPgs }));
-  }, [search]);
-  const handleOpenDialog=()=>{
- 
-  }
-  // Sort handlers (called only from filterType effect)
-  const handleSortAlpha = (sortedAsc) => {
-    const sorted = [...collections].sort((a, b) =>
-      sortedAsc ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)
-    );
-    const storiesSorted = [...stories].sort((a, b) =>
-      sortedAsc ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)
-    );
-    dispatch(setPagesInView({pages:storiesSorted}));
-    dispatch(setCollections({ collections: sorted }));
-  };
   useEffect(()=>{
  getDriveToken()
 },[currentProfile])
@@ -358,7 +358,7 @@ getDriveToken()
               className="tab hover:min-h-10 rounded-full mont-medium text-emerald-800 border-3 w-[90vw] md:w-page text-md md:text-xl"
               aria-label="Pages" />
             <div role="tabpanel" className="tab-content pt-8 overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
-              <IndexList items={stories} handleFeedback={item => {
+              <IndexList items={filteredSortedStories} handleFeedback={item => {
                 setFeedbackPage(item);
                 dispatch(setPageInView({ page: item }));
               }} />
@@ -367,7 +367,7 @@ getDriveToken()
               className="tab text-emerald-800 mont-medium rounded-full mx-auto bg-transparent border-3 text-md md:text-xl"
               aria-label="Collections" />
             <div role="tabpanel" className="tab-content   pt-8 overflow-y-auto  lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
-              <IndexList items={collections} />
+              <IndexList items={filteredSortedCollections} />
             </div>
           </div>
         </div>

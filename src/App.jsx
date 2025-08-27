@@ -100,19 +100,21 @@ function App(props) {
   }, [currentProfile]);
   useEffect(() => {
     const checkFirstLaunch = async () => {
-    
+    if(isNative){
       let value = (await Preferences.get('hasSeenOnboarding')).value
       if (value === null) {
         Preferences.set("hasSeenOnboarding",true)
-    
+        
         setIsFirstLaunch(true);
-     
+        navigate("/onboard")
       } else {
-     
+        navigate("/login")
         setIsFirstLaunch(false);
+      }}else{
+          navigate("/")
       }
     };
-
+    
    return ()=>{checkFirstLaunch()}
   }, []);
   
@@ -171,7 +173,8 @@ function App(props) {
 <Alert />
 <div >
       <Routes >
-     <Route path='/' element={isFirstLaunch?<OnboardingContainer/>:isNative?<LogInContainer/>:<AboutContainer/>}/>
+ 
+     <Route path={'/'} element={<AboutContainer/>} />
       <Route path={"/login"} element={<LogInContainer/>}/> 
       <Route path={"/onboard"} element={<OnboardingContainer/>}/>
 

@@ -18,6 +18,7 @@ import { LoadScript } from '@react-google-maps/api';
 import check from "../../images/icons/check.svg"
 import { Geolocation } from '@capacitor/geolocation';
 import DeviceCheck from '../../components/DeviceCheck';
+import { IonContent } from '@ionic/react';
 
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
@@ -208,6 +209,7 @@ const localCheck=()=>{
 }
 
   return (
+    <IonContent fullscreen={true} className='ion-padding'>
     <LoadScript
     googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
     libraries={['places']}
@@ -246,6 +248,7 @@ const localCheck=()=>{
    
     </>
     </LoadScript>
+    </IonContent>
   );
 };
 export default WorkshopContainer
