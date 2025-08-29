@@ -114,28 +114,90 @@ setTimeout(()=>{
       }
     );
   }
-const requestLocation = async () => {
+
+
+    useEffect(() => {
+      if(!isGlobal){
+      if (isNative) {
+        requestLocation();
+      } else {
+        webRequestLocation();
+      }}
+    }, [isGlobal]);
+   
+
+
+ const requestLocation = async () => {
   setLoading(true);
   try {
-   if(await Geolocation.checkPermissions()){np
-    const position = await Geolocation.getCurrentPosition();
-    setLocation({
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-    });
-    if (currentProfile && currentProfile.id) {
-      registerUser(currentProfile.id, {
+    // Check current geolocation permission state
+    const permStatus = await Geolocation.checkPermissions();
+
+    if (permStatus.location === 'granted') {
+      // Permission already granted, get location
+      const position = await Geolocation.getCurrentPosition();
+      setLocation({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       });
+      if (currentProfile && currentProfile.id) {
+        registerUser(currentProfile.id, {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      }
+      setError(null);
+    } else if (permStatus.location === 'prompt' || permStatus.location === 'denied') {
+      // Request permission explicitly, triggers iOS popup if needed
+      const requestResult = await Geolocation.requestPermissions();
+      if (requestResult.location === 'granted') {
+        const position = await Geolocation.getCurrentPosition();
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        if (currentProfile && currentProfile.id) {
+          registerUser(currentProfile.id, {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        }
+        setError(null);
+      } else {
+        setError("Location permission denied. Please enable location permissions in your device settings.");
+      }
+    } else {
+      setError("Unable to determine location permission state.");
     }
-    setError(null);
-  }} catch (err) {
-    await Geolocation.requestPermissions()
-    setError("We use location to connect with fellow writers. Reload for access.");
+  } catch (err) {
+    console.error("Error requesting location or getting position:", err);
+    setError("Could not get location. Please try again.");
+  } finally {
+    setLoading(false);
   }
-  setLoading(false);
 };
+// const requestLocation = async () => {
+//   setLoading(true);
+//   try {
+//    if(await Geolocation.checkPermissions()){np
+//     const position = await Geolocation.getCurrentPosition();
+//     setLocation({
+//       latitude: position.coords.latitude,
+//       longitude: position.coords.longitude,
+//     });
+//     if (currentProfile && currentProfile.id) {
+//       registerUser(currentProfile.id, {
+//         latitude: position.coords.latitude,
+//         longitude: position.coords.longitude,
+//       });
+//     }
+//     setError(null);
+//   }} catch (err) {
+//     await Geolocation.requestPermissions()
+//     setError("We use location to connect with fellow writers. Reload for access.");
+//   }
+//   setLoading(false);
+// };
 
   const handleGlobal = () => {
    setIsGlobal(!isGlobal)
@@ -187,11 +249,7 @@ const requestLocation = async () => {
   }}else{
     setError("No Author logged in")
   }}
- useEffect(()=>{
-  if(!isGlobal){
-    isNative?requestLocation():webRequestLocation()
-   }
- },[isGlobal]) 
+
 
   
 const localCheck=()=>{

@@ -79,7 +79,7 @@ function NewsletterContainer(props){
   
     const [user,setUser]=useState(null)
       const selectRef = useRef()
-    const {setError}=useContext(Context)
+    const {setErrorm,seo,setSeo}=useContext(Context)
 
   
 
