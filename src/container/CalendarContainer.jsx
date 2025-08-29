@@ -14,8 +14,10 @@ import ScrollDownButton from "../components/ScrollDownButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import Collapsible from "../components/Collapsible";
 import CalendarEmbed from "../components/CalendarEmbed";
+import { useSelector } from "react-redux";
 export default function CalendarContainer(){
   const location = useLocation()
+  const currentProfile = useSelector(state=>state.users.currentProfile)
   const {seo,setSeo}=useContext(Context)
   const navigate = useNavigate()
   useLayoutEffect(()=>{
@@ -45,7 +47,8 @@ export default function CalendarContainer(){
       </p>
   
       <CalendarEmbed />
-  
+  {!currentProfile?
+  <div>
       <div className="mt-6 space-y-4">
         <Collapsible buttonText="📰 Join the weekly newsletter">
           <NewsletterContainer />
@@ -65,6 +68,8 @@ export default function CalendarContainer(){
       <h1 className="btn mont-medium border  border-emerald-600 bg-emerald-600 hover:bg-green-500 hover:border-blue-600 text-2xl py-2 px-8 text-white rounded-full" onClick={()=>navigate(Paths.feedback())}>Submit an Event</h1>
       <ScrollDownButton/>
     </div>
+  :null}
+  </div>
   );
 
 }

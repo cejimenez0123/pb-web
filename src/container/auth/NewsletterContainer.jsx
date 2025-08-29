@@ -88,15 +88,49 @@ function NewsletterContainer(props){
         if(validateEmail(formData.email)){
 formData["frequency"]=parseInt(formData["frequency"])
         authRepo.newsletter(formData).then(data=>{
-            
+      
 if(data.user){
   setUser(data.user)
 }
+setFormData({
+  fullName:"",
+  igHandle:"",
+  email:"",
+  frequency:1,
+  thirdPlaces: [],
+  thirdPlace:"",
+  eventInterests: [],
+  newsletterContent: [],
+  writingRole: [],
+  otherInputs:{
+    eventInterests: "",
+  newsletterContent: "",
+  writingRole: "",
+  }
+
+});
 
         }).catch(e=>{
-
+          console.log(e)
           if(e.status==409){
             setUser({message:"User has already applied"})
+            setFormData({
+              fullName:"",
+              igHandle:"",
+              email:"",
+              frequency:1,
+              thirdPlaces: [],
+              thirdPlace:"",
+              eventInterests: [],
+              newsletterContent: [],
+              writingRole: [],
+              otherInputs:{
+                eventInterests: "",
+              newsletterContent: "",
+              writingRole: "",
+              }
+          
+            });
           }else{
             console.log(e)
             setError(e.message)
@@ -120,7 +154,7 @@ useEffect(()=>{
 
 const handleClose= ()=>{
   setUser(null)
-  navigate(Paths.about())
+  // navigate(Paths.about())
 }
 setTimeout(()=>{
 
@@ -387,6 +421,7 @@ return (
         <Dialog 
   isOpen={!!user}
   onClose={handleClose}
+  disagreeText="Close"
   text={
     <div>
       {user ? (
