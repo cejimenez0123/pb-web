@@ -12,11 +12,7 @@ import Context from '../../context';
 import DeviceCheck from '../../components/DeviceCheck';
 import GoogleLogin from '../../components/GoogleLogin';
 import Dialog from '../../components/Dialog';
-// import {
-//     SignInWithApple,
-//     SignInWithAppleResponse,
-//     SignInWithAppleOptions,
-//   } from '@capacitor-community/apple-sign-in';
+
 export default function LogInContainer(props) {
     const location = useLocation()
     const {setError,seo,setSeo}=useContext(Context)
