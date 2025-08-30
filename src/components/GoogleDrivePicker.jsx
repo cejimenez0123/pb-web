@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { IonButton,IonGrid, IonList, IonItem, IonLabel, IonThumbnail, IonImg, IonText } from '@ionic/react';
+import { IonList, IonItem, IonLabel, IonImg, IonText } from '@ionic/react';
 import GoogleLogin from './GoogleLogin';
 import DeviceCheck from './DeviceCheck';
 import { Preferences } from '@capacitor/preferences';
@@ -113,7 +113,7 @@ console.log("SDF",token)
     return <p>No Google Docs found in your Drive.</p>;
   }
 
-  return <button onClick={()=>{openDialog()}}>Open Files</button>
+  return <button className="text-white bg-emerald-600 w-[20rem] h-12 rounded-full"onClick={()=>{openDialog()}}>Open Files</button>
 
 }
  

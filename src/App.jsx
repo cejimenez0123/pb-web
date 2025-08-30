@@ -16,7 +16,6 @@ import ApplyContainer from './container/auth/ApplyContainer';
 import SearchDialog from './components/SearchDialog';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import {  getCurrentProfile,
-  
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
@@ -51,8 +50,6 @@ import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
 import Dialog from './components/Dialog.jsx';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
-import { SocialLogin } from '@capgo/capacitor-social-login';
-import { Capacitor } from '@capacitor/core';
 import DeviceCheck from './components/DeviceCheck.jsx';
 function App(props) {
   const navigate = useNavigate()
@@ -61,8 +58,6 @@ function App(props) {
     query: '(min-width: 750px)'
   })
   const isNative = DeviceCheck()
-  const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
-  const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
 
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()

@@ -224,8 +224,7 @@ async function getFile(file){
 
       
 try{
-        
-
+        if(window && window.gapi && window.gapi.client && window.gapi.client.files){
             const response = await window.gapi.client.drive.files.export({
                 fileId: file.id,
                 mimeType: 'text/html',
@@ -248,7 +247,9 @@ try{
             }, err => {
                 console.error("Error creating story:", err);
             }));
-
+          }else{
+            throw new Error("Missing Gapi")
+          }
         } catch (error) {
             console.error('Error fetching Google Doc content:', error);
             if (error.result && error.result.error) {
@@ -307,11 +308,11 @@ try{
                 <IonText className='my-auto'>Join a Workshop</IonText>
               </ButtonWrapper>
               <div className='flex-shrink-0'>
-       {/* <GoogleDrivePicker getToken={()=>{
+       <GoogleDrivePicker getToken={()=>{
 getDriveToken()
        }
 
-       }accessToken={driveToken} onFilePicked={getFile} /> */}
+       }accessToken={driveToken} onFilePicked={getFile} />
               </div>
             </div>
           </div>
