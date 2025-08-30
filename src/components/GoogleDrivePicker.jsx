@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useLayoutEffect,useEffect, useRef, useContext } from 'react';
 import { IonList, IonItem, IonLabel, IonImg, IonText } from '@ionic/react';
 import GoogleLogin from './GoogleLogin';
 import DeviceCheck from './DeviceCheck';
@@ -7,8 +7,10 @@ import { Preferences } from '@capacitor/preferences';
 import Context from '../context';
 import { setDialog } from '../actions/UserActions';
 import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 export default function GoogleDrivePicker({ onFilePicked }) {
     const {dialog} = useContext(Context)
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,17 +23,24 @@ export default function GoogleDrivePicker({ onFilePicked }) {
   const driveTokenKey = 'googledrivetoken';
 
   // Check stored access token and user sign-in on mount
-  useEffect(() => {
-  
+  useLayoutEffect(() => 
+    {
+   
     checkAccessToken();
-  }, []);
+    return async ()=>{
+      const token = (await Preferences.get({ key: driveTokenKey })).value;
+      const tokenExpiry = (await Preferences.get({ key: 'googledrivetoken_expiry' })).value;
+      const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
+      
+      tokenValid?setAccessToken(token):null
+    }
+  }, [currentProfile]);
   async function checkAccessToken() {
     const token = (await Preferences.get({ key: driveTokenKey })).value;
     const tokenExpiry = (await Preferences.get({ key: 'googledrivetoken_expiry' })).value;
     const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
-console.log("SDF",token)
-console.log("SDFX",tokenValid)
-    if (tokenValid) {
+
+    if (tokenValid&&!accessToken) {
       setAccessToken(token);
       setSignedIn(true);
     }
@@ -79,30 +88,27 @@ console.log("SDFX",tokenValid)
 
     dia.onClose=()=>{setShowFiles(false)}
     dia.title="Google Drive"
-     dia.text=<IonList className='drive-grid-container'>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+     dia.text=<IonList >
+        
       {files.map((file) => (
-        <IonItem  className="flex flex-col items-center bg-emerald-100 rounded-box shadow-md hover:bg-base-200 transition min-h-[140px]"
-        lines="none"
-        style={{ minWidth: 0 }}
-        button key={file.id} onClick={() =>{
+        <IonItem  className="flex btn flex-col my-4 items-center rounded-full rounded-box max-w-[20rem] bg-transparent text-emerald-800 shadow-md hover:bg-purple-200 transition "
+
+        
+        key={file.id} onClick={() =>{
             setShowFiles(true); 
             onFilePicked(file)}}
             >
              
-          {/* <IonThumbnail slot="start" className=' bg-emerald-100 border-none mx-auto my-3' > */}
-            <IonImg className="mx-auto w-full h-full min-h-[110px]" src={file.iconLink} alt={file.name} />
-          {/* </IonThumbnail> */}
-          <IonLabel style={{height:"10em"}} className="text-center text-sm  max-w-18" >{file.name}</IonLabel>
+          <h5 className="text-center text-sm" >{file.name}</h5>
    
         </IonItem>
       ))}
-      </div>
+
     </IonList>
     dispatch(setDialog(dia))
   }
   if (loading) return <p>Loading files...</p>;
-
+console.log("Access",accessToken)
   if (!accessToken) {
     return (
       <div className="min-h-24 p-4">

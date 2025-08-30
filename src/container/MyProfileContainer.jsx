@@ -264,8 +264,9 @@ console.log(response)
                 commentable: false
             })).then(res => checkResult(res, ({ story }) => {
                 navigate(Paths.editPage.createRoute(story.id));
-                dispatch(setDialog({isOpen:false}))
+          
                 dispatch(setEditingPage({page:story}))
+                      dispatch(setDialog({isOpen:false}))
             }, err => {
                 console.error("Error creating story:", err);
             }));
