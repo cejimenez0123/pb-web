@@ -17,7 +17,7 @@ export default function GoogleDrivePicker({ onFilePicked }) {
   const isNative = DeviceCheck();
     const [showFiles,setShowFiles]=useState(true)
   const googleButtonRef = useRef(null);
-  const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
+  
   const driveTokenKey = 'googledrivetoken';
 
   // Check stored access token and user sign-in on mount
@@ -30,10 +30,12 @@ export default function GoogleDrivePicker({ onFilePicked }) {
     const tokenExpiry = (await Preferences.get({ key: 'googledrivetoken_expiry' })).value;
     const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
 console.log("SDF",token)
+console.log("SDFX",tokenValid)
     if (tokenValid) {
       setAccessToken(token);
       setSignedIn(true);
     }
+    setLoading(false)
   }
   // Fetch files from Google Drive when access token changes or user is signed in
   useEffect(() => {
@@ -66,6 +68,7 @@ console.log("SDF",token)
     if (driveAccessToken) {
       setAccessToken(driveAccessToken);
       setSignedIn(true);
+      setLoading(false)
     }
   };
   const openDialog=()=>{

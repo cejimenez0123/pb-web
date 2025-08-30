@@ -105,7 +105,7 @@ setError("User Not Found. Apply Below")
                
               
                    await Preferences.set({key:"cachedMyProfile",value:JSON.stringify(payload.profile)})
-                    navigate(Paths.myProfile())
+                   
                     setPending(false)
                 },err=>{
 
@@ -190,11 +190,11 @@ setError("User Not Found. Apply Below")
         }}
         />
         </div>
-         {/* <GoogleLogin 
+         <GoogleLogin 
      onUserSignIn={({email, name,googleId})=>{
 dispatchLogin({email,googleId,isNative})
             
-     }}/> */}
+     }}/>
      </span>
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}

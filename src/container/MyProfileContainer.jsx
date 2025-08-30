@@ -24,7 +24,7 @@ import { IonPage, IonText, IonIcon, IonInput,IonContent } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 import { setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
-
+import axios from "axios"
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <div
@@ -220,18 +220,38 @@ getItems()
       if (data.referral) setReferral(data.referral);
     });
   };
+ 
 async function getFile(file){
 
       
 try{
-        if(window && window.gapi && window.gapi.client && window.gapi.client.files){
-            const response = await window.gapi.client.drive.files.export({
-                fileId: file.id,
-                mimeType: 'text/html',
-                access_token: driveToken
-            });
+  console.log("FDd",file)
+    const driveTokenKey = "googledrivetoken";
+    const accessToken = (await Preferences.get({key:driveTokenKey})).value
+        // if(window && window.gapi && window.gapi.client && window.gapi.client.files){
+          const url = `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=text/html`;
 
-            const htmlContent = response.body;
+    const response = await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      responseType: 'text', // Get the response as plain text
+    });
+
+ 
+          // await window.gapi.client.init({
+          //   apiKey: import.meta.env.VITE_GOOGLE_DEV_KEY, // 🔑 Your API Key
+          //   clientId:import.meta.env.VITE_IOS_CLIENT_ID, // 🆔 Your Client ID
+          //   discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'], // 🔎 Discover the Drive API
+          //   scope: 'https://www.googleapis.com/auth/drive.readonly',}) // 🔐 Define the required scope
+         
+          //   const response = await window.gapi.client.drive.files.export({
+          //       fileId: file.id,
+          //       mimeType: 'text/html',
+          //       access_token: accessToken
+          //   });
+console.log(response)
+            const htmlContent = response.data;
             console.log('Google Doc HTML Content:', htmlContent);
 
             dispatch(createStory({
@@ -243,19 +263,20 @@ try{
                 title: file.name,
                 commentable: false
             })).then(res => checkResult(res, ({ story }) => {
-                navigate(Paths.page.createRoute(story.id));
+                navigate(Paths.editPage.createRoute(story.id));
+                dispatch(setDialog({isOpen:false}))
+                dispatch(setEditingPage({page:story}))
             }, err => {
                 console.error("Error creating story:", err);
             }));
-          }else{
-            throw new Error("Missing Gapi")
-          }
+
         } catch (error) {
             console.error('Error fetching Google Doc content:', error);
             if (error.result && error.result.error) {
                 console.error('API Error details:', error.result.error.message);
             }
         }}
+    
   useLayoutEffect(() => {
    return ()=>{ if (currentProfile) {
       setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
