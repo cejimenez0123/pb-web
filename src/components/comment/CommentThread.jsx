@@ -7,7 +7,7 @@ import { IonList } from "@ionic/react"
 
 export default function CommentThread({page,comments,level=0}){
    
-if(comments.length>0){
+
     return(
         <ErrorBoundary>
                      <IonList>
@@ -20,7 +20,5 @@ if(comments.length>0){
              </IonList>
         </ErrorBoundary>)
 
-                            }else{
-                                return null
-                            }
+                            
                         }

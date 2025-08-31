@@ -63,8 +63,7 @@ export default function Comment({page,comment,level}){
         setReplyInput(false)
     }
     useLayoutEffect(()=>{
-       let branches = comments.filter(com=>{return com.parentId==comment.id})
-     
+       let branches = comments.length?comments.filter(com=>{return com.parentId && com.parentId==comment.id}):[]
        setBranches(branches)
     },[comments])
     
@@ -72,15 +71,15 @@ export default function Comment({page,comment,level}){
 
 
         <div class=" text-left   sm:min-w-[30em] max-w-[100%] py-1 sm:my-4 " id={`comment-${comment.id}`}>
-        <div className={replyInput||updateComment?"bg-emerald-500 rounded-t-lg rounded-b-lg":""}>
+        <div className={replyInput||updateComment?" rounded-t-lg rounded-b-lg":""}>
 
-           <div className="  bg-emerald-700 shadow-md  text-white rounded-lg sm:px-8 sm:rounded-[18%] ">
+           <div className="  shadow-md  text-emerald-800 rounded-lg sm:px-8 sm:rounded-[18%] ">
           <div className="flex flex-row py-2 sm:pl-4 pr-4 sm:pr-12 justify-between"> 
-          <a onClick={()=>navigate(Paths.profile.createRoute(comment.profile.id))}
-           className=" text-[0.8rem] mx-4 open-sans-medium text-white my-auto mr-4">{comment.profile.username}</a>
+          <a onClick={()=>commnet.profile?navigate(Paths.profile.createRoute(comment.profile.id)):null}
+           className=" text-[0.8rem] mx-4 open-sans-medium text-emerald-800 my-auto mr-4">{comment&&comment.profile?comment.profile.username:""}</a>
           
           {currentProfile && currentProfile.id == comment.profileId?     <div className="dropdown dropdown-left">
-<div tabIndex={0} role="button" className="my-auto"><IonImg src={horiz}/></div>
+<div tabIndex={0} role="button" className="my-auto bg-emerald-800 h-fit w-10 rounded-full"><IonImg src={horiz}/></div>
   <ul tabIndex={0} className="dropdown-content mont-medium menu bg-slate-100  text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
     <li onClick={()=>setUpdateComment(comment)}><a>Update</a></li>
     <li className="my-2" onClick={handleDeleteComment}><a>Delete</a></li>
@@ -89,13 +88,13 @@ export default function Comment({page,comment,level}){
           </div> <h6 className="text-[0.8rem] md:text-[0.9rem] open-sans-medium mx-3 py-3 pl-[1.7em] my-1">{comment.content}</h6>
            <div class=" flex flex-row py-2 sm:pl-2 pr-6 items-end justify-between">
                     
-                    {isHelpful?<a onClick={handleDeleteHelpful} className="text-[0.8rem] mont-medium text-emerald-300 sm:text-sm mont-bold  mt-2 mb-2 ml-6">Glad it helped!</a>:<a onClick={handleIfHelpful}className="text-[0.8rem] sm:text-sm mont-medium text-white mt-4 ml-8"> Was comment helpful?</a>}
+                    {isHelpful?<a onClick={handleDeleteHelpful} className="text-[0.8rem] mont-medium text-emerald-300 sm:text-sm mont-bold  mt-2 mb-2 ml-6">Glad it helped!</a>:<a onClick={handleIfHelpful}className="text-[0.8rem] sm:text-sm mont-medium text-emerald-800 mt-4 ml-8"> Was comment helpful?</a>}
                   
                     <h6 
                    onClick={()=>setReplyInput(!replyInput) }
                 
                   
-                    className="  place-self-end bottom-0  mt-8 sm:flex sm:flex-row text-[0.9rem] mont-medium md:px-4   font-bold sm:text-[1rem] mr-2 rounded-full sm:bg-emerald-600 py-2  text-white sm:mx-2 sm:text-center   sm:my-auto  no-underline  mont-medium ">
+                    className="  place-self-end bottom-0  mt-8 sm:flex sm:flex-row text-[0.9rem] mont-medium md:px-4   font-bold sm:text-[1rem] mr-2 rounded-full sm:bg-emerald-600 py-2  text-emerald-800 sm:mx-2 sm:text-center   sm:my-auto  no-underline  mont-medium ">
                         {!replyInput?"Reply":"Close"}</h6>
       
                 </div>

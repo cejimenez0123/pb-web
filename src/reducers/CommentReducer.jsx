@@ -15,21 +15,17 @@ name: 'comments',
 initialState,
 extraReducers(builder) {
 builder.addCase(createComment.fulfilled,(state,{payload})=>{
-    let list = state.comments
+    let list = [...state.comments]
     if(payload.comment){
    let index = list.findIndex(com=>com.id==payload.comment.id)
    if(index>-1){
     list[i]=payload.comment
-    // let arr = list.map(com=>{
-    //   if(com.id==payload.comment.id){
-    //     return payload.comment
-    //   }
-    // })
+  
     state.comments = list
   }else{
- 
-    list.push(payload.comment)
-    state.comments = list
+    
+    list.unshift(payload.comment)
+    state.comments = [...list]
   
     
   
@@ -41,28 +37,27 @@ builder.addCase(createComment.fulfilled,(state,{payload})=>{
 }).addCase(createComment.rejected,(state,{payload})=>{
     state.error = payload.error
 }).addCase(appendComment.type,(state,{payload})=>{
-  let list = state.comments
-  if(Array.isArray(state.comments)){
+  let list = [...state.comments]
   
-  if(payload){
+  if(payload&&!payload.length){ 
  let index = list.findIndex(com=>com.id==payload.id)
  if(index>-1){
   list[i]=payload
-
+  console.log(list)
   state.comments = list
+ }else{
+  console.log(list)
+  list.unshift(payload)
+  state.comments = [...list]
+ }
 }else{
-
-  list.push(payload.comment)
-  state.comments = list
-
-  
-
+  console.log(list)
+ if(state.comments.length==0){
+  state.comments = [...payload]
+ }else{
+  state.comments = [...new Set([...list,...payload])]
  }
 }
-   
-    }else{
-      state.comments = [payload.comment]
-    }
     
   }).addCase(updateComment.rejected,(state,{payload})=>{
     state.error = payload.error
@@ -82,8 +77,8 @@ builder.addCase(createComment.fulfilled,(state,{payload})=>{
   }).addCase(deleteComment.rejected,(state,{payload})=>{
     state.error = payload.error
   }).addCase(deleteComment.fulfilled,(state,{payload})=>{
-    let list = state.comments
-     let comments= list.filter(com=>com.id !== payload.comment.id)
+    let list = [...state.comments]
+     let comments= list.filter(com=>com.id != payload.comment.id)
     state.comments = comments
     })}})
 export default commentSlice

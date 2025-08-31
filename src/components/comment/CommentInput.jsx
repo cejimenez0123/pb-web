@@ -52,7 +52,7 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
                 handleClose()
                 const comment = payload
                 const params = {comment}
-                dispatch(appendComment(params))
+              
             },(err)=>{
                 window.alert(err)
             })
@@ -61,9 +61,7 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
     }}else{
         setError("Comment must be at least 7 characters")
     }},10)
-useLayoutEffect(()=>{
-  
-},[])
+
 const clickUpdateComment = ()=>{
     const params =  {
         newText:commentInput,

@@ -13,19 +13,21 @@ import { initGA} from "../../core/ga4.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 import { IonContent } from "@ionic/react";
+import { appendComment } from "../../actions/PageActions.jsx";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
 
     const {id} = useParams()
  
     const page = useSelector(state=>state.pages.pageInView)
+    const comments = useSelector(state=>state.comments.comments)
     useScrollTracking({name:page?JSON.stringify(page):id})
 
 
     const dispatch = useDispatch()
     const [pending,setPending]=useState(true)
     const [canUserSee,setCanUserSee]=useState(false)
-    const [comments,setComments]=useState([])
+    
     const [rootComments,setRootComments]=useState([])
    
     useLayoutEffect(()=>{
@@ -38,8 +40,6 @@ export default function PageViewContainer(props){
         }
 
         return()=>{
-
-        
             if(currentProfile && page){
                 if(import.meta.env.VITE_NODE_ENV!="dev"){
                     dispatch(postStoryHistory({profile:currentProfile,story:page}))
@@ -47,15 +47,11 @@ export default function PageViewContainer(props){
                 }
             }}
     },[])
-    useEffect(()=>{ 
-        if(page && page.comments){  
-        soCanUserSee()
-        setComments(!!page?page.comments:[])
-        setRootComments(!!page?page.comments.filter(com=>com.parentId==null):[])
-        }else{
-            fetchStory()
-        }
-     },[currentProfile,page])
+    useEffect(()=>{
+        console.log(comments)
+        setRootComments(comments.length?comments.filter(com=>com && com.parentId==null):[])
+       
+     },[comments])
     useEffect(()=>{
     fetchStory()
   
@@ -64,8 +60,10 @@ export default function PageViewContainer(props){
     const fetchStory = ()=>{
         setPending(true)
         dispatch(getStory({id})).then(res=>{
-            checkResult(res,payload=>{
+            checkResult(res,(payload)=>{
                 soCanUserSee()
+                console.log(payload)
+                dispatch(appendComment({comment:payload.story.comments}))
                 setPending(false)
             },err=>{
                 setError(err.message)
