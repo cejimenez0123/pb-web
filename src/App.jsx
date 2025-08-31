@@ -169,7 +169,7 @@ function App(props) {
 <div >
       <Routes >
  
-     <Route path={'/'} element={<AboutContainer/>} />
+     <Route path={'/'} element={isFirstLaunch&&isNative?<Navigate to="/onboard"/>:<AboutContainer/>} />
       <Route path={"/login"} element={<LogInContainer/>}/> 
       <Route path={"/onboard"} element={<OnboardingContainer/>}/>
 

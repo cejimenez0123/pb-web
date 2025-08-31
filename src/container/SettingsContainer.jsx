@@ -1,6 +1,6 @@
 import { useContext, useLayoutEffect,useRef,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { updateProfile,deleteUserAccounts, deletePicture} from "../actions/UserActions";
+import { updateProfile,deleteUserAccounts, deletePicture, setDialog} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
 import getDownloadPicture from "../domain/usecases/getDownloadPicture";
 import "../App.css"
@@ -14,8 +14,9 @@ import { IonContent } from "@ionic/react";
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
     const [openModal, setOpenModal]= useState([false,"bookmark"])
+
     const modal = useRef(null)
-    const{setError,currentProfile,setSuccess}=useContext(Context)
+    const{setError,currentProfile,setSuccess,dialog}=useContext(Context)
     const isNative = DeviceCheck()
     const [newUsername,setNewUsername] = useState("")
     const homeCollection = useSelector(state=>state.users.homeCollection)
@@ -70,7 +71,8 @@ export default function SettingsContainer(props) {
         })
     }
     const handleClose = () => {
-        setDeleteDialog(false);
+   
+        dispatch(setDialog({isOpen:false}))
     };
 
     
@@ -98,7 +100,7 @@ export default function SettingsContainer(props) {
         dispatch(deletePicture({fileName:currentProfile.profilePic}))
         dispatch(uploadProfilePicture(fileParams)).then((result) => {
             checkResult(result,(payload)=>{
-     
+     console.log(payload)
                 const params = {
                     profile: currentProfile,
                     username: newUsername,
@@ -145,7 +147,16 @@ export default function SettingsContainer(props) {
 
     } 
    
+    const handleDeleteDialog=()=>{
+        let dia = {...dialog}
+        dia.agree={handleAgree} 
+        dia.onClose={handleClose}
+        dia.title=("Are you sure you want to delete your account?")
+                        dia.text=("Deleting your account can't be reversed")
+                        dia.agreeText ="Delete"
+    
 
+    }
     const deleteHomeItem  = (item)=>{
         switch(item.type){
             case "page":{
@@ -300,14 +311,10 @@ export default function SettingsContainer(props) {
                             </div>
                         <button 
                         className="rounded-full py-2 w-[10rem] mt-24 text-2xl mont-medium bg-orange-800 text-white"
-                                onClick={handleClickOpen}
+                                onClick={handleDeleteDialog}
                                 id="open-modal" expand="block"
                         > Delete</button>
-                        <Dialog agree={handleAgree} 
-                        onClose={handleClose}title={"Are you sure you want to delete your account?"}
-                        text={"Deleting your account can't be reversed"}isOpen={deleteDialog}/>
-                        {/* <DeleteDialog/>
-         */}
+        
                         </div>
             </div>
           </IonContent>

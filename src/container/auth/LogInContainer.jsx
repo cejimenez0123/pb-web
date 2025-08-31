@@ -1,6 +1,6 @@
 import React ,{useContext,useEffect,useLayoutEffect,useState} from 'react'
 import "../../App.css"
-import { logIn} from '../../actions/UserActions';
+import { logIn, setDialog} from '../../actions/UserActions';
 import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import loadingGif from "../../images/loading.gif"
@@ -9,14 +9,14 @@ import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
 import DeviceCheck from '../../components/DeviceCheck';
-import GoogleLogin from '../../components/GoogleLogin';
-import Dialog from '../../components/Dialog';
-import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { IonContent, IonInput } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
+import AppleSignInButton from '../../components/auth/AppleSignInButton';
+import { useSelector } from 'react-redux';
 
 export default function LogInContainer() {
     const {setError,seo,setSeo,currentProfile}=useContext(Context)
+  
  const navigate = useNavigate()
     useLayoutEffect(()=>{
         let soo = seo
@@ -56,13 +56,13 @@ function LogInCard({setLogInError}){
     const [open,setOpen] = useState(false);
     
   
-   
+    const dialog = useSelector(state=>state.users.dialog)
      
     
        
     const handleFirstTimeClick=()=>{
   
-        navigate("/apply")
+       isNative?navigate("/onboard"):navigate("/apply")
     
     }
 
@@ -142,6 +142,18 @@ setError("User Not Found. Apply Below")
         })   
     }
     }
+    const handleForgotPasswordDialog=()=>{
+        let dia = {...dialog}
+        
+    dia.
+    dia.onClose=()=>{
+        dispatch(setDialog({isOpen:false}))
+    }
+dia.title=("Forgot Password")
+dia.disagreeText=("Close")
+dia.text=(<ForgotPasswordForm/>)
+dispatch(setDialog(dia))
+    }
     return(
     <div  className=' md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
@@ -190,11 +202,11 @@ setError("User Not Found. Apply Below")
         }}
         />
         </div>
-         <GoogleLogin 
+         {/* <GoogleLogin 
      onUserSignIn={({email, name,googleId})=>{
 dispatchLogin({email,googleId,isNative})
             
-     }}/>
+     }}/> */}
      </span>
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}
@@ -205,17 +217,14 @@ dispatchLogin({email,googleId,isNative})
         className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
         </div>:null}
         <div 
-                className='  '
-                onClick={()=>{
-                    setOpen(true)
-                }}>
-                <a className='text-[1rem] mont-medium hover:text-green-400 text-emerald-800'>Forgot Password?</a>
+              >
+                
+                <h5 onClick={()=>{
+                    handleForgotPasswordDialog()
+                 }} className='text-[1rem] mont-medium hover:text-green-400 text-emerald-800'>Forgot Password?</h5>
             </div>
         </form>
-<Dialog isOpen={open} onClose={()=>setOpen(false)}
-title={"Forgot Password"}
-disagreeText={"Close"}
-text={<ForgotPasswordForm/>}/>
+
                 </div></div>
     </div>)
 }

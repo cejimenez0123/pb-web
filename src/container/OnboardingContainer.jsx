@@ -463,7 +463,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
   };
 
   const Why = ({ handleTab }) => (
-    <IonGrid className="ion-padding-bottom">
+    <IonGrid className="ion-padding-bottom ">
       <IonRow>
         <IonCol>
           <img src={logo} alt="Plumbum Logo" style={{ maxHeight: '10em', display: 'block', margin: '0 auto', borderRadius: '0.5em' }} />
@@ -484,13 +484,14 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
               <li><strong>Self & Story Promotion:</strong> A space where sharing your work doesn’t feel awkward — it’s expected.</li>
             </ul>
           </IonText>
-          <IonRow> <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
-              <IonText onClick={()=>navigate(Paths.login())} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+          <IonRow className='flex justify-between'> 
+            {/* <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}> */}
+              <div className='btn my-auto bg-transparent mt-4 border-none mont-medium'><IonText onClick={()=>navigate(Paths.login())} className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
                 Log In
-              </IonText>
-            </div>
-            <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
-              <IonText onClick={handleTab} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+              </IonText></div>
+            {/* </div> */}
+            <div className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+              <IonText onClick={handleTab} className="emerald-gradient-text-btn mont-medium text-white text-[1.3rem]" style={{ width: '100%' }}>
                 Next Step
               </IonText>
             </div></IonRow>
@@ -537,13 +538,13 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
   );
 
   return (
-    <IonPage className='w-[100%] h-[100%]'>
-      <IonContent fullscreen className="ion-padding-top ion-padding-horizontal">
+
+      <IonContent fullscreen={true} className="">
         <div className="ion-text-center ion-margin-top" style={{ maxWidth: '600px', margin: 'auto' }}>
           {user ? <ThankYou user={user} /> : <MyTabs />}
         </div>
       </IonContent>
-    </IonPage>
+  
   );
 }
 
@@ -648,7 +649,7 @@ const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference 
   ];
 
   return (
-    <IonContent className='ion-padding pb-12'>
+    <IonContent className='ion-padding overflow-scroll '>
     <>
       <IonLabel
         className="mont-medium"

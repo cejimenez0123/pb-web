@@ -24,10 +24,7 @@ import { setDialog } from "../../actions/UserActions"
 
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-
     const dialog = useSelector(state=>state.users.dialog)
-    
-    const {id}=useParams()
     const {isNative}=useContext(Context)
     const dispatch = useDispatch()
     const handleDialogOpen=()=>{
@@ -41,9 +38,6 @@ const ProfileInfo = ({profile})=>{
         dispatch(setDialog(dia))
 
     }
-
-      const modal = useRef(null)
-      const input = useRef(null)
     useEffect( ()=>{
 
         if(profile && !isValidUrl(profile.profilePic)){
@@ -57,7 +51,7 @@ const ProfileInfo = ({profile})=>{
         }
         
         
-    },[])
+    },[profile])
     const openFollowersDialog = () => {
         let dia = {};
         dia.isOpen = true;

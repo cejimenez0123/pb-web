@@ -34,7 +34,7 @@ export default function FeedbackDialog({open,page,isFeedback,handleClose,handleC
   </IonToolbar>
 </IonHeader>
 <div className={`${isHeightPhone?"":""}`}>
-    {/* <DialogContent className="w-[100%]"> */}
+
     <div className={`${isHeightPhone?" mx-auto w-[80%]  ":""}`}> 
             <textarea 
             value={feedback}
@@ -53,7 +53,7 @@ export default function FeedbackDialog({open,page,isFeedback,handleClose,handleC
           </h2>}
           </IonRow>
         </div>
-    {/* </DialogContent> */}
+ 
     </div>
     </div>
   </IonModal>)
