@@ -17,6 +17,7 @@ import ErrorBoundary from "../../ErrorBoundary.jsx"
 import { createPageApproval } from "../../actions/PageActions"
 import { Preferences } from "@capacitor/preferences"
 import { IonImg } from "@ionic/react"
+import { getCurrentProfile } from "../../actions/UserActions.jsx"
 export default function PageViewButtonRow({page,setCommenting}){
     const {setSuccess,currentProfile,setError}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)
@@ -24,6 +25,7 @@ export default function PageViewButtonRow({page,setCommenting}){
     const navigate = useNavigate()
     const [canUserEdit,setCanUserEdit]=useState(false)
     const [canUserComment,setCanUserComment]=useState(false)
+    const [archiveCol,setArchive]=useState(null)
     const [loading,setLoading]=useState(false)
     const [bookmarked,setBookmarked]= useState(null)
     const [comment,setComment]=useState(false)
@@ -41,9 +43,11 @@ export default function PageViewButtonRow({page,setCommenting}){
         if(currentProfile && page && currentProfile.likedStories){
             let found = currentProfile.likedStories.find(like=>like.storyId==page.id)
             if(currentProfile.profileToCollections){
+          
             let marked  = currentProfile.profileToCollections.find(ptc=>{
-                return ptc && ptc.type=="archive"&&ptc.collection.storyIdList.find(stc=>stc.storyId==page.id)})
-                setBookmarked(marked)
+                return ptc && ptc.type=="archive"})
+            
+                setArchive(marked.collection)
             }
            
             setLikeFound(found)
@@ -61,8 +65,14 @@ export default function PageViewButtonRow({page,setCommenting}){
             let ptc = currentProfile.profileToCollections.find(ptc=>ptc.type=="archive")
             if(ptc&&ptc.collectionId&&page&&page.id){{
                 dispatch(addStoryListToCollection({id:ptc.collectionId,list:[page],profile:currentProfile})).then(res=>{
-                    checkResult(res,payload=>{
-                        setBookmarked({collectionId:ptc.collectionId})
+                    checkResult(res,({collection})=>{
+                        let bookmark = collection.storyIdList.find(stc=>{
+                            return stc.storyId == page.id
+                        })
+                        console.log("x",collection)
+                        setArchive(collection)
+                        console.log("x",bookmark)
+                        setBookmarked(bookmark)
                         setLoading(false)
                         setSuccess("Added Successfully")
                     },err=>{
@@ -77,20 +87,53 @@ export default function PageViewButtonRow({page,setCommenting}){
 }else{
     setLoading(false)
 }}
+const getArchive=()=>{
+    let ptc = currentProfile.profileToCollections.find(ptc=>ptc.type=="archive")
+    setArchive(ptc.collection)
+}
+useEffect(()=>{
+    getArchive()
+},[])
+useEffect(()=>{
+    
+     isBookmarked()
+},[page,archiveCol])
+
+const isBookmarked=()=>{
+    if(currentProfile){
+        if( archiveCol){
+                    let bookmark = archiveCol.storyIdList.find(stc=>{
+                        return stc.storyId == page.id
+                    })
+                    console.log(archiveCol)
+   console.log(bookmark)
+                    setBookmarked(bookmark)
+                }     else{
+            getArchive()
+        }
+}}
 const deleteStc=()=>{
     setLoading(true)
-    if(bookmarked&&bookmarked.collectionId){
-dispatch(deleteStoryFromCollection({id:bookmarked.collectionId,storyId:page.id})).then((res)=>{
-checkResult(res,payload=>{
-    setLoading(false)
+    if(bookmarked){
+           
+dispatch(deleteStoryFromCollection({stId:bookmarked.id})).then((res)=>{
+checkResult(res,({collection})=>{
+    console.log("fdvtr",collection)
+    setArchive(collection[0])
     setBookmarked(null)
+     isBookmarked()
+  
+    setLoading(false)
+   
+
+    
 },err=>{
+    setBookmarked(null)
     setLoading(false)
+    isBookmarked()
 })
 })
-}else{
-    setLoading(false)
-}}
+    }}
     const copyShareLink=()=>{
       
             sendGAEvent( "Copy Share Link",`Share ${JSON.stringify({id:page.id,title:page.title})}`,0,false)
@@ -161,8 +204,7 @@ checkResult(res,payload=>{
     }
 
     const handleBookmark=debounce((e)=>{
-            if(currentProfile){
-               
+         console.log(bookmarked)
             e.preventDefault()
              if(bookmarked){
                  deleteStc()
@@ -170,7 +212,7 @@ checkResult(res,payload=>{
                  onBookmarkPage()
          
              }
-            }else{ setError("Please Sign Up")}
+    
     },10)
   
     return(<ErrorBoundary><div className='flex-row w-page-mobile mx-auto bg-emerald-200 flex text-white'>
@@ -229,7 +271,7 @@ if(currentProfile & (await Preferences.get({key:"token"})).value){
             </a></li>
 
 <li > <button
-onClick={()=>handleBookmark()}
+onClick={(e)=>currentProfile?handleBookmark(e):setError("Please sign in")}
 className=" text-emerald-800 border-none flex bg-transparent"
 disabled={!currentProfile}> 
 {!loading?(bookmarked?

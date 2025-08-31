@@ -66,7 +66,7 @@ const getMyStories= createAsyncThunk(
     async (params,thunkApi) => {
       try{
       let data = await storyRepo.getMyStories(params)
-  console.log("Fdff",data)
+ 
     return {
       pageList:data.stories
     }
