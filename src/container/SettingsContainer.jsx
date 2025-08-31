@@ -7,29 +7,21 @@ import "../App.css"
 import { useNavigate } from "react-router-dom";
 import "../styles/Setting.css"
 import checkResult from "../core/checkResult";
-import Dialog from "../components/Dialog";
 import Context from "../context";
 import DeviceCheck from "../components/DeviceCheck";
 import { IonContent } from "@ionic/react";
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
-    const [openModal, setOpenModal]= useState([false,"bookmark"])
-
-    const modal = useRef(null)
     const{setError,currentProfile,setSuccess,dialog}=useContext(Context)
-    const isNative = DeviceCheck()
     const [newUsername,setNewUsername] = useState("")
-    const homeCollection = useSelector(state=>state.users.homeCollection)
     const [selfStatement,setSelfStatement] = useState(currentProfile&&currentProfile.selfStatement?currentProfile.selfStatement:"")
     const [isPrivate,setPrivacy] = useState(false)
     const [homeItems,setHomeItems] = useState([])
-    const [hasMoreHome,setHasMoreHome]=useState(false)
     const dispatch = useDispatch()
     const [file,setFile]=useState(null)
     const [selectedImage,setSelectedImage]=useState()
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     let [pending,setPending] = useState(false)
-    const [deleteDialog,setDeleteDialog] = useState(false);
   
     useLayoutEffect( ()=>{
         if(currentProfile){
@@ -52,9 +44,7 @@ export default function SettingsContainer(props) {
 
 
   
-    const handleClickOpen = () => {
-        setDeleteDialog(true);
-    };
+ 
     const handleAgree = () => {
         dispatch(deleteUserAccounts()).then((res)=>{
             checkResult(res,payload=>{
@@ -302,7 +292,7 @@ export default function SettingsContainer(props) {
   <div className="mt-8">
 
                             <button
-                               className="bg-emerald-800 text-white h-18 w-24 mont-medium rounded-full text-2xl"
+                               className="bg-emerald-800 btn text-white px-2 py-2 mont-medium rounded-full text-2xl"
                                 variant="outlined" 
                                 onClick={(e)=>handleOnSubmit(e)}
                             >

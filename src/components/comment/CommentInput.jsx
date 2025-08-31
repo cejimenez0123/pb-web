@@ -96,7 +96,7 @@ const clickUpdateComment = ()=>{
        :
        
        <button  
-       onClick={(e)=>saveComment(e)}   className="bg-emerald-800 rounded-full text-white mont-medium sm:mx-4 hover:border-0 text-[1rem] hover:bg-gradient-to-r hover:to-emerald-400 hover:from-emerald-800"> {parentComment?"Reply":"Save Comment"}</button>:
+       onClick={(e)=>saveComment(e)}   className="bg-emerald-800 rounded-full text-white mont-medium sm:mx-4 hover:border-0 text-[1rem] hover:bg-gradient-to-r hover:to-emerald-400 hover:from-emerald-800"> {parentComment?"Reply":"Save"}</button>:
        <button className="bg-emerald-200 text-white-800" 
        disabled={!currentProfile} onClick={saveComment}>
             Disabled

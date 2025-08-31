@@ -11,14 +11,9 @@ function LinkPreview({ url,isGrid}) {
   const {isPhone,isHorizPhone}=useContext(Context)
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
- const size = adjustScreenSize(isGrid,true," bg-emerald-200 rounded-lg overflow-hidden"," rounded-lg pt-4 overflow-hidden mx-auto "," rounded-lg "," rounded-lg "," h-[100%] ")
-  let content = adjustScreenSize(isGrid,true," mobile "," mobile "," horiz "," phone","  ")
-  const spotifySize = isGrid?isPhone?"15rem":"20em":isHorizPhone?"44.8em":" 44em"
-const headers = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+ const size = adjustScreenSize(isGrid,true," bg-emerald-200 rounded-t-lg overflow-hidden"," rounded-t-lg pt-4 overflow-hidden mx-auto "," rounded-t-lg "," rounded-t-lg "," h-[100%] ")
+  // let content = adjustScreenSize(isGrid,true," mobile "," mobile "," horiz "," phone","  ")
+  // const spotifySize = isGrid?isPhone?"15rem":"20em":isHorizPhone?"44.8em":" 44em"
 
 
   useLayoutEffect(() => {
@@ -185,13 +180,13 @@ useLayoutEffect(()=>{
     
     
     className={`
-    ${content}
-    
+   w-page-mobile
+    mx-auto
 `}
     
     onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
-      <div className='text-left rounded-b-lg overflow-clip open-sans-medium'>
+      <div className='text-left  overflow-clip open-sans-medium'>
    {previewDescription()}
       {isGrid?null:previewTitle()}
       </div>

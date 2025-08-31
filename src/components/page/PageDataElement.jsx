@@ -15,8 +15,8 @@ export default function PageDataElement({page,isGrid,book=null}){
     const {isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
-    const size = adjustScreenSize(isGrid,true," overflow-hidden  "," h-[100%]  rounded-lg  "," "," py-2 rounded-lg "," ")
-    const conSize = adjustScreenSize(isGrid,true," overflow-hidden ","h-[100%] overflow-hidden "," overflow-hidden ",""," ")
+    // const size = adjustScreenSize(isGrid,true," overflow-hidden  "," h-[100%]  rounded-lg  "," "," py-2 rounded-lg "," ")
+    // const conSize = adjustScreenSize(isGrid,true," overflow-hidden ","h-[100%] overflow-hidden "," overflow-hidden ",""," ")
    
     useEffect(()=>{
         
@@ -50,8 +50,9 @@ switch(page.type){
                     navigate(Paths.page.createRoute(page.id))
                 }}
         
-        ><div className={` ql-editor overflow-clip
-        rounded-lg 
+        ><div 
+        
+        className={` ql-editor 
                 ${book?`mx-2`:""}  `}
            
            dangerouslySetInnerHTML={{__html:page.data}}/></div>
@@ -60,12 +61,14 @@ switch(page.type){
   case PageType.picture:{
   
     return(image?!isHorizPhone?<IonImg  id="page-data-pic"  
-    className={` rounded-lg ${isGrid?
-        isPhone?
-        "w-grid-mobile-content":
-        "w-grid-content":
-        isHorizPhone?"w-page-content":
-        "w-page-mobile-content "} rounded-lg overflow-clip`} onClick={()=>{
+    // className={` rounded-lg ${isGrid?
+    //     isPhone?
+    //     "w-grid-mobile-content":
+    //     "w-grid-content":
+    //     isHorizPhone?"w-page-content":
+    //     "w-page-mobile-content "} rounded-lg overflow-clip`} 
+        className="w-page-mobile"
+        onClick={()=>{
    
         if(location.pathname!=Paths.page.createRoute(page.id)){
         navigate(Paths.page.createRoute(page.id))}
@@ -74,12 +77,13 @@ switch(page.type){
      alt={page.title} src={image}
     />:
     <IonImg        id="page-data-pic"
-    className={` rounded-lg ${isGrid?
-        isPhone?
-        "w-grid-mobile-content":
-        "w-grid-content":
-        isHorizPhone?"w-page-content":
-        "w-page-mobile-content "} rounded-lg overflow-clip`}
+    className="w-page-mobile"
+    // className={` rounded-lg ${isGrid?
+    //     isPhone?
+    //     "w-grid-mobile-content":
+    //     "w-grid-content":
+    //     isHorizPhone?"w-page-content":
+    //     "w-page-mobile-content "} rounded-lg overflow-clip`}
     onClick={()=>{
    
    if(location.pathname!=Paths.page.createRoute(page.id)){
@@ -90,7 +94,7 @@ alt={page.title}
     src={image}/>
     
     :
-    <div className={`skeleton ${size}`}/>)
+    <div className={`skeleton w-page-mobile`}/>)
 }
 case PageType.link:{
     return(
@@ -104,7 +108,7 @@ case PageType.link:{
        )
 }
 default:
-    return(<div        id="page-data-skeleton "className={`skeleton ${size}`}>
+    return(<div        id="page-data-skeleton "className={`skeleton w-page-mobile`}>
    <IonImg src={loadingGif}/>
 </div>)
 }
@@ -115,5 +119,5 @@ if(!page){
 ) 
 }
 
-return (<span className={"pb-1   "+conSize}><Element page={page}/></span>)
+return (<span className={"pb-1   "}><Element page={page}/></span>)
 }

@@ -173,7 +173,7 @@ checkResult(res,payload=>{
             }else{ setError("Please Sign Up")}
     },10)
   
-    return(<ErrorBoundary><div className='flex-row bg-emerald-200 flex text-white'>
+    return(<ErrorBoundary><div className='flex-row w-page-mobile mx-auto bg-emerald-200 flex text-white'>
     <div   onClick={handleApprovalClick} className={`${likeFound?"bg-emerald-400":"bg-emerald-200"} text-center  grow flex-1/3`}>
      <div 
    

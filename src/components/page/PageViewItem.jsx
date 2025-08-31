@@ -61,22 +61,20 @@ if(page){
     
 
         return(
-        
-        <IonItem id="page-view-item" ref={ref} className="page shadow-md rounded-lg overflow-clip">
-      <div>
+  
         <div>
         
                 {header()}
               
        
                 <PageDataElement page={page} isGrid={false}/>
-                </div>
+            
             
             <PageViewButtonRow page={page} profile={currentProfile} setCommenting={truthy=>setCommenting(truthy)}/>
             
                 {commentBox()}   
-        </div>
-        </IonItem>
+   </div>
+     
   
         )
             }else{
