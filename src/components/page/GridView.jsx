@@ -9,20 +9,10 @@ import Context from "../../context";
 
 export default function GridView({ items }) {
   const {isNotPhone}=useContext(Context)
-  const [page, setPage] = useState(1);
+
   const [filteredItems, setFilteredItems] = useState([]);
   const [ hasMore,setHasMore]=useState(true)
 
-
-  // const loadMore = async () => {
-  //   setHasMore(true)
-  //   let end = 10*page>items.length?items.length:10*page
-  
-  //   const uniqueData = items.filter(item=>item.storyIdList>0||item.data).filter(newItem =>newItem && !filteredItems.some(item => item.id === newItem.id));
-  //   // const newData =   page==0?items.slice(0,10):items.slice(1*page,end)
-  //    setFilteredItems(prevItems => [...prevItems, ...uniqueData]);
-  //    setHasMore(false)
-  // };
   useLayoutEffect(()=>{
     let end = items.length<10?items.length:10
     items.slice(0,end)

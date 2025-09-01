@@ -44,7 +44,7 @@ export default function FeedbackDialog({open,page,isFeedback,handleClose,handleC
               }}
             className={`textarea mx-2 ${isHeightPhone?"w-[80vw]":"md:w-[30em]"} w-[96%]  min-h-[7rem] rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600`}/>
                    <div className="mt-8">
-                    <IonRow>
+                    <IonRow className="justify-between flex">
           <h2 className="mont-medium text-[1rem] text-emerald-700" onClick={handleClose}>Continue Working</h2>
              {isFeedback? <h2 className="mont-medium mx-1 text-[1rem] text-emerald-700" onClick={()=>handleFeedback()}>
      Get feedback

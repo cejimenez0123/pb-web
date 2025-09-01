@@ -181,7 +181,7 @@ let dia = {...dialog}
           </div>
           <div
             className="btn mx-4 cursor-pointer rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
-            onClick={() => navigate(Paths.collection.createRoute(id))}
+            onClick={() => navigate(Paths.page.createRoute(id))}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpenDialog(true); }}

@@ -15,8 +15,6 @@ export default function PageDataElement({page,isGrid,book=null}){
     const {isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
-    // const size = adjustScreenSize(isGrid,true," overflow-hidden  "," h-[100%]  rounded-lg  "," "," py-2 rounded-lg "," ")
-    // const conSize = adjustScreenSize(isGrid,true," overflow-hidden ","h-[100%] overflow-hidden "," overflow-hidden ",""," ")
    
     useEffect(()=>{
         
@@ -44,7 +42,7 @@ switch(page.type){
     return( 
 
         <div 
-        id="page-data-text"
+        id="page-data-text "
     
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
@@ -52,7 +50,7 @@ switch(page.type){
         
         ><div 
         
-        className={` ql-editor 
+        className={` ql-editor
                 ${book?`mx-2`:""}  `}
            
            dangerouslySetInnerHTML={{__html:page.data}}/></div>
@@ -61,12 +59,7 @@ switch(page.type){
   case PageType.picture:{
   
     return(image?!isHorizPhone?<IonImg  id="page-data-pic"  
-    // className={` rounded-lg ${isGrid?
-    //     isPhone?
-    //     "w-grid-mobile-content":
-    //     "w-grid-content":
-    //     isHorizPhone?"w-page-content":
-    //     "w-page-mobile-content "} rounded-lg overflow-clip`} 
+
         className="w-page-mobile"
         onClick={()=>{
    
@@ -78,12 +71,7 @@ switch(page.type){
     />:
     <IonImg        id="page-data-pic"
     className="w-page-mobile"
-    // className={` rounded-lg ${isGrid?
-    //     isPhone?
-    //     "w-grid-mobile-content":
-    //     "w-grid-content":
-    //     isHorizPhone?"w-page-content":
-    //     "w-page-mobile-content "} rounded-lg overflow-clip`}
+
     onClick={()=>{
    
    if(location.pathname!=Paths.page.createRoute(page.id)){
