@@ -395,10 +395,12 @@ getDriveToken()
           </div>
         </div>
 
-        {/* Feedback & dialogs */}
+   
         <FeedbackDialog presentingElement={presentingElement} page={feedbackPage} open={!!feedbackPage} isFeedback={true}
           handleChange={setFeedback} handleFeedback={handleFeedback} handlePostPublic={() => { }}
-          handleClose={() => navigate(Paths.workshop.createRoute(feedbackPage?.id))} />
+          handleClose={() => {
+          setFeedbackPage(null)
+          }}/>
 
         
       </ErrorBoundary>
