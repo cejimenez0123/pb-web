@@ -53,7 +53,9 @@ export default function PageViewContainer(props){
     fetchStory()
   
     },[id])
-    
+    useEffect(()=>{
+        soCanUserSee()
+    },[page])
     const fetchStory = ()=>{
         setPending(true)
         dispatch(getStory({id})).then(res=>{
@@ -74,7 +76,7 @@ export default function PageViewContainer(props){
             if(!page.isPrivate){
                 setCanUserSee(true)
                 setPending(false)
-            return
+                return
             }
             if(currentProfile){
 
