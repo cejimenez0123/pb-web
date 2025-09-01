@@ -253,8 +253,8 @@ setOpenDescription(false)
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
         <li onClick={()=>{
-        // 
-        
+        setOpenDescription(false)
+          setFeedbackDialog(true)
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {isPrivate?<li onClick={()=>{

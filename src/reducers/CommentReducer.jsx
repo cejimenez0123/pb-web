@@ -42,7 +42,7 @@ builder.addCase(createComment.fulfilled,(state,{payload})=>{
   if(payload&&!payload.length){ 
  let index = list.findIndex(com=>com.id==payload.id)
  if(index>-1){
-  list[i]=payload
+  list[index]=payload
   console.log(list)
   state.comments = list
  }else{

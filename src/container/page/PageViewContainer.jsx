@@ -16,14 +16,11 @@ import { IonContent } from "@ionic/react";
 import { appendComment } from "../../actions/PageActions.jsx";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
-
     const {id} = useParams()
  
     const page = useSelector(state=>state.pages.pageInView)
     const comments = useSelector(state=>state.comments.comments)
     useScrollTracking({name:page?JSON.stringify(page):id})
-
-
     const dispatch = useDispatch()
     const [pending,setPending]=useState(true)
     const [canUserSee,setCanUserSee]=useState(false)
@@ -75,29 +72,40 @@ export default function PageViewContainer(props){
      const soCanUserSee=()=>{
         if(page){
             if(!page.isPrivate){
-            setCanUserSee(true)
-            return
-            }
-            if((currentProfile && page.authorId == currentProfile.id)||(page.collections && page.collections.find(col=>col && col.collection && col.collection.isPrivate==false||col.collection.roles.find(role=>role.profileId==currentProfile.id)))){
-               setCanUserSee(true)
-                setPending(false)
-                return
-            }
-            if(currentProfile){
-                
-                if(page.authorId==currentProfile.id){
                 setCanUserSee(true)
                 setPending(false)
+            return
+            }
+            if(currentProfile){
+
+            if(page.authorId == currentProfile.id){
+               setCanUserSee(true)
+               setPending(false)
                 return
+            }
+            if(page.collections){
+                let col = page.collections.find(col=>col.collection.isPrivate==false)
+                console.log(col)
+                if(col){
+                    setCanUserSee(true)
+                    setPending(false)
+                    return
                 }
+               let role =  page.collections.find(col=>col.collection.roles.find(role=>role.profileId==currentProfile.id))
+                if(role){
+                    setCanUserSee(true)
+                    setPending(false)
+                    return
+                }
+            }
+       
+                
             if(page.betaReaders){
                 let found = page && page.betaReaders?page.betaReaders.find(role=>currentProfile && role.profileId==currentProfile.id):null
                 setCanUserSee(found)
                 setPending(false)
                 return
-            }}
-        }
-     }
+            }}}}
 
     const PageDiv = ({page})=>{
        
@@ -126,9 +134,9 @@ useLayoutEffect(()=>{
     
     {canUserSee?
     <>
-    <PageDiv page={page}/></>:pending?<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex max-w-[96vw] max-w-[96vw] mx-auto md:w-page h-pag"><h1 className="mont-medium my-12 mx-auto">Took a Wrong turn</h1></div>}
+    <PageDiv page={page}/><CommentThread page={page} comments={rootComments}/></>:pending?<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex max-w-[96vw] max-w-[96vw] mx-auto md:w-page h-pag"><h1 className="mont-medium my-12 mx-auto">Took a Wrong turn</h1></div>}
     
-    <CommentThread page={page} comments={rootComments}/>
+    
 
     
 </IonContent> </ErrorBoundary>)
