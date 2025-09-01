@@ -31,9 +31,9 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
              let data = await profileRepo.notifications({token,profile})
           
              const payload = data
-             console.log(payload)
+           
              if(payload){
-                console.log("Cvs")
+              
                 let seen = []
                 const{collections, comments,following,followers}=payload
                 let newFollowers = followers?followers.map(follow=>{return{type:"follower",item:follow}}):[]

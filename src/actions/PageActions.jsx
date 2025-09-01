@@ -150,6 +150,14 @@ const appendComment = createAction("pages/appendComment", (params)=> {
     
   
 })
+const setComments = createAction("pages/setComments", (params)=> {
+
+  const {comments} = params
+  return  {payload:
+    comments}
+    
+  
+})
 const fetchCommentsOfPagePublic = createAsyncThunk("comments/fetchCommentsOfPagePublic",async (params,thunkApi)=>{
   try{
   
@@ -187,7 +195,6 @@ return err
 const deleteComment = createAsyncThunk("pages/deleteComment",async (params,thunkApi)=>{
   const { comment}= params
 
-  try{
   
      let data = await commentRepo.delete({id:comment.id})
 
@@ -195,9 +202,7 @@ const deleteComment = createAsyncThunk("pages/deleteComment",async (params,thunk
     comment:data.comment,
     message:data.message
   }
-  }catch(e){
-    return{ error: new Error("Error Deleteing comment"+e.message)}
-  }
+
 })
 const pagesLoading = createAction("PAGES_LOADING", function prepare(){
     return {
@@ -286,5 +291,6 @@ try{
           deletePageApproval,
        
           getPublicStories,
-         appendToPagesInView
+         appendToPagesInView,
+         setComments
         } 

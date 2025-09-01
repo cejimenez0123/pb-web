@@ -69,9 +69,9 @@ export default function PageViewButtonRow({page,setCommenting}){
                         let bookmark = collection.storyIdList.find(stc=>{
                             return stc.storyId == page.id
                         })
-                        console.log("x",collection)
+                     
                         setArchive(collection)
-                        console.log("x",bookmark)
+                    
                         setBookmarked(bookmark)
                         setLoading(false)
                         setSuccess("Added Successfully")
@@ -118,7 +118,7 @@ const deleteStc=()=>{
            
 dispatch(deleteStoryFromCollection({stId:bookmarked.id})).then((res)=>{
 checkResult(res,({collection})=>{
-    console.log("fdvtr",collection)
+   
     setArchive(collection[0])
     setBookmarked(null)
      isBookmarked()

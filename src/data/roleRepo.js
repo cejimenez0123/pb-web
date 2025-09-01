@@ -24,14 +24,14 @@ class RoleRepo{
        let res = await axios.post(this.url+"/collection",{type,profileId,collectionId},{headers:{
             Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
-        console.log("rsult",res)
+       
         return res.data
     }
     async deleteCollectionRole({role}){
         let res = await axios.delete(this.url+"/collection/"+role.id,{headers:{
             Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
-        console.log("rsultd",res)
+       
         return res.data
     }
     async patchCollectionRoles({roles,profile,collection}){

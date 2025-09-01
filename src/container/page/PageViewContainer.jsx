@@ -13,7 +13,7 @@ import { initGA} from "../../core/ga4.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 import { IonContent } from "@ionic/react";
-import { appendComment } from "../../actions/PageActions.jsx";
+import { appendComment, setComments } from "../../actions/PageActions.jsx";
 export default function PageViewContainer(props){
     const {setSeo,seo,setSuccess,setError,currentProfile}=useContext(Context)
     const {id} = useParams()
@@ -46,8 +46,9 @@ export default function PageViewContainer(props){
     },[])
     useEffect(()=>{
         console.log(comments)
+        if(comments&&comments.length){
         setRootComments(comments.length?comments.filter(com=>com && com.parentId==null):[])
-       
+        }
      },[comments])
     useEffect(()=>{
     fetchStory()
@@ -60,9 +61,11 @@ export default function PageViewContainer(props){
         setPending(true)
         dispatch(getStory({id})).then(res=>{
             checkResult(res,(payload)=>{
-                soCanUserSee()
-                console.log(payload)
-                dispatch(appendComment({comment:payload.story.comments}))
+                
+                if(payload.story.comments.length>0){
+                dispatch(setComments({comments:payload.story.comments}))
+               
+                }
                 setPending(false)
             },err=>{
                 setError(err.message)

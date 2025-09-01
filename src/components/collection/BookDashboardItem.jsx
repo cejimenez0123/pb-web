@@ -35,7 +35,7 @@ function BookDashboardItem({book,isGrid}) {
 const deleteBtc=()=>{
 
         if(bookmarked){
-            console.log("masx",bookmarked)
+          
           dispatch(deleteCollectionFromCollection({tcId:bookmarked.id})).then(res=>checkResult(res,payload=>{
     setBookmarked(null)
 

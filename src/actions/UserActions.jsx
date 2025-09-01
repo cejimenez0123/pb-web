@@ -159,7 +159,7 @@ async (params,thunkApi) => {
     await Preferences.set({key:"token",value:data.token})
    }
 
-console.log("data",data)
+
    return data
   }else{
     throw new Error("No Token")

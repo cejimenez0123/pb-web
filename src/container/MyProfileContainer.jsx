@@ -225,7 +225,7 @@ async function getFile(file){
 
       
 try{
-  console.log("FDd",file)
+
     const driveTokenKey = "googledrivetoken";
     const accessToken = (await Preferences.get({key:driveTokenKey})).value
         // if(window && window.gapi && window.gapi.client && window.gapi.client.files){

@@ -1,5 +1,5 @@
 import { createSlice} from "@reduxjs/toolkit"
-import { fetchCommentsOfPageProtected,fetchCommentsOfPagePublic } from "../actions/PageActions.jsx"
+import { fetchCommentsOfPageProtected,fetchCommentsOfPagePublic, setComments } from "../actions/PageActions.jsx"
 
 import { createComment,appendComment,updateComment,deleteComment } from "../actions/PageActions.jsx"
 
@@ -36,6 +36,9 @@ builder.addCase(createComment.fulfilled,(state,{payload})=>{
     state.loading=true
 }).addCase(createComment.rejected,(state,{payload})=>{
     state.error = payload.error
+}).addCase(setComments.type,(state,{payload})=>{
+
+  state.comments = payload
 }).addCase(appendComment.type,(state,{payload})=>{
   let list = [...state.comments]
   
@@ -75,9 +78,11 @@ builder.addCase(createComment.fulfilled,(state,{payload})=>{
 
     state.comments = newList
   }).addCase(deleteComment.rejected,(state,{payload})=>{
+    console.log(payload.error)
     state.error = payload.error
   }).addCase(deleteComment.fulfilled,(state,{payload})=>{
     let list = [...state.comments]
+    console.log(payload)
      let comments= list.filter(com=>com.id != payload.comment.id)
     state.comments = comments
     })}})
