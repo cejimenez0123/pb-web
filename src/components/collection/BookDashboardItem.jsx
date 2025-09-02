@@ -46,67 +46,25 @@ const deleteBtc=()=>{
 }
 }
 
-const handleApprovalClick = ()=>{
-    if(currentProfile){
-        if(likeFound ){
-         dispatch(deletePageApproval({id:likeFound.id})).then(res=>{
-            checkResult(res,payload=>{
-                setLikeFound(null)
-            },err=>{
 
-            })
-        })
-    }else{
-        if(page&&currentProfile ){
 
-        
-        const params = {story:page,
-            profile:currentProfile,
-                        }
-        dispatch(createPageApproval(params))
-        }else{
-            setError("Sign Up so you can show support")
-        }
-    }
-}else{
-    setError("Please Sign Up")
-}
-}
-const expandedBtn =()=>{
-    if(overflowActive && !expanded){
-    
-    return <Button onClick={()=>setExpanded(true)}>See More</Button>
-    }
-    else if(expanded){
-return <Button onClick={()=>{
-    setExpanded(false)
-}}>See Less</Button>
-        }else if(overflowActive){
-            return <Button onClick={()=>setExpanded(true)}>See More</Button>
-        }
-   else{
-    return <div></div>
-   }
-}
 const checkFound=()=>{
     
     if(currentProfile && currentProfile.profileToCollections){
-   let archive = currentProfile.profileToCollections[0].collection
-   let home = currentProfile.profileToCollections[1].collection
+   let archive = currentProfile.profileToCollections.find(col=>col.type=="archive")
 
     if(book&&book.parentCollections){
-        console.log(book.parentCollections)
-         let isfound = book.parentCollections.find(ptc=>ptc.parentCollectionId==home.id)
-       
-            setBookmarked(isfound)
+ 
+           
             
-         let found = book.parentCollections.find(ptc=>ptc.parentCollectionId==archive.id)
+         let found = book.parentCollections.find(ptc=>ptc.parentCollectionId==archive.collection.id)
 
             setIsArchived(found)
             setBookmarked(found)
             }
  
-    }}
+    }
+}
  
 
 useLayoutEffect(()=>{
@@ -174,7 +132,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
             checkResult(res,payload=>{
                     const {collection}=payload
                     const marked = collection.parentCollections.find(col=>col.parentCollectionId==archive.id)
-                  console.log(marked)
+            
                     setBookmarked(marked)
                 },err=>{
 

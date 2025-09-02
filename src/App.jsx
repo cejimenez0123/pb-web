@@ -74,25 +74,13 @@ function App(props) {
   const [error,setError]=useState(null)
   const page = useRef(null);
   const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"Close"})
-  useEffect(()=>{
-    if(currentProfile){
-      dispatch(getRecommendedCollectionsProfile())
-    }
 
-   
-},[])
 
 
   useEffect(()=>{
       setOlderPath(location.pathname) 
   },[location.pathname])
-  useEffect(() => {
-    if(currentProfile){
-      navigate(Paths.myProfile())
-      return
-    }
-    
-  }, [currentProfile]);
+ 
   useEffect(() => {
     const checkFirstLaunch = async () => {
     if(isNative){

@@ -160,7 +160,9 @@ export default function DashboardItem({ page, book, isGrid }) {
       </span>
     );
   };
-
+  useEffect(()=>{
+      checkLike()
+  },[page])
   const handleApprovalClick = () => {
     if (page) sendGAEvent(`Click to Yea ${JSON.stringify({ id: page.id, title: page.title })}`, `Click Yea`, "Review", 0, false);
     if (currentProfile) {

@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useContext } from 'react';
+import React, { useState, useLayoutEffect, useContext,useEffect } from 'react';
 import '../App.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchRecommendedStories } from '../actions/StoryActions';
@@ -12,19 +12,25 @@ import ErrorBoundary from '../ErrorBoundary.jsx';
 import { initGA } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import Enviroment from '../core/Enviroment.js';
-import { IonPage, IonContent } from '@ionic/react';
+import {  IonContent } from '@ionic/react';
 
 function DashboardContainer() {
   const location = useLocation();
   const { currentProfile, setSeo, seo } = useContext(Context);
 
   const dispatch = useDispatch();
-  const collections = useSelector(state => state.books.collections);
+  const collections = useSelector(state => state.books.recommendedCols);
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
 
   const [hasMore, setHasMore] = useState(false);
+  useEffect(()=>{
+    if(currentProfile){
+      dispatch(getRecommendedCollectionsProfile())
+    }
 
+   
+},[])
   useLayoutEffect(() => {
     initGA();
     let soo = { ...seo };
@@ -35,7 +41,6 @@ function DashboardContainer() {
   }, []);
 
   const getContent = () => {
-    dispatch(setCollections({ collections: [] }));
     dispatch(fetchRecommendedStories());
     dispatch(getRecommendedCollectionsProfile());
   };
@@ -85,7 +90,7 @@ function DashboardContainer() {
     setHasMore(true);
     getContent();
     getHomeCollectionContent();
-  }, [location.pathname]);
+  }, []);
 
   return (
     // <IonPage>

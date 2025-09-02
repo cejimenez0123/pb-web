@@ -41,7 +41,7 @@ let list = allItems.filter(item => {
     // Neither has priority — fallback to updated date (more recent first)
     return b.updated - a.updated;
   });
-  console.log("today",todayItems[0])
+
   // Combine both groups
   let finalList = [...todayItems, ...otherItems];
   
