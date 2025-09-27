@@ -31,6 +31,13 @@ export default function LinksContainer(props){
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
             <ul className="md:mx-auto w-page-mobile-content md:w-page-content  mx-4">
                 <li>  
+                      <LinkNode image={pen}
+       url={" https://partiful.com/e/n8VWgBo7jUDbcUFXKgYO"}
+                    title={"Oct 18th Writers Workshop"}
+                    description={"On Writing through Khalil Gibran, writing is an endurance sport. How do we continue writing and get to the center of tough topics."}/>
+                    </li>
+                    <li>
+                   
                <LinkNode image={events}
        url={"https://plumbum.app"+Paths.calendar()}
                     title={"NYC Writing Calendar"}
