@@ -33,16 +33,12 @@ export default function LinksContainer(props){
             <ul className="md:mx-auto w-page-mobile-content md:w-page-content  mx-4">
                    <li>  
                       <LinkNode image={pumpkin}
-       url={"https://partiful.com/e/4Voy3Hg0YEaMxNOABLql"}
+       url={" https://partiful.com/e/4Voy3Hg0YEaMxNOABLql"}
                     title={"Plumbum Halloween Social"}
                     description={"Join our Halloween Crash Social—where writers meet New York’s creative vibe. Dress as your favorite author or your future best self!"}/>
                     </li>
-                      <li>  
-                      <LinkNode image={pen}
-       url={" https://partiful.com/e/n8VWgBo7jUDbcUFXKgYO"}
-                    title={"Oct 18th Writers Workshop"}
-                    description={"On Writing through Khalil Gibran, writing is an endurance sport. How do we continue writing and get to the center of tough topics."}/>
-                    </li>
+                
+       
                 <li>  
                       <LinkNode image={pen}
        url={" https://partiful.com/e/n8VWgBo7jUDbcUFXKgYO"}
