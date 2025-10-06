@@ -8,6 +8,7 @@ const LoggedRoute = ({ loggedOut, children }) => {
   
   const navigate = useNavigate()
   const location = useLocation()
+  // const {currentProfile}=useSelector(state=>state.user.currentProfile)
   const {currentProfile ,formerPage,setFormerPage}=useContext(Context)
   useEffect(()=>{
    

@@ -19,7 +19,7 @@ const createHashtag = createAsyncThunk("hashtag/createHashtag",
      let data =  await hashtagRepo.create({name,profileId})
     const {hashtag}=data
      if(hashtag){
-        client.initIndex("hashtag").partialUpdateObject({objectID: hashtag.id,name:name,type:"hashtag"},{createIfNotExists:true}).wait()
+        client.partialUpdateObject({objectID: hashtag.id,name:name,type:"hashtag"},{createIfNotExists:true}).wait()
     
         return {hashtag:data.hashtag
         } 

@@ -67,7 +67,7 @@ const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=
   let data = await authRepo.useReferral(params)
     if(data.profile&&!data.profile.isPrivate){
       const {profile}=data
-      client.initIndex("profile").partialUpdateObject({objectID: profile.id,usernamename:profile.username,type:"profile"},{createIfNotExists:true}).wait()
+      client.partialUpdateObject({objectID: profile.id,usernamename:profile.username,type:"profile"},{createIfNotExists:true}).wait()
     }
     return data
   }catch(err){
@@ -80,16 +80,18 @@ const signUp = createAsyncThunk(
       const{email,token,frequency,password,username,profilePicture,selfStatement,privacy}=params
 
       try {
-        
+         
           const userCred = await  createUserWithEmailAndPassword(auth, email, password)
           let data = await profileRepo.register({uId:userCred.user.uid,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
            
         
             if(!privacy){
-         client.initIndex("profile").saveObject({ objectID:data.profile.id,
+         client.saveObject({ objectID:data.profile.id,
                                               username:username,
                                              }).wait()  
-                                            }                                    
+            }
+         
+                                      
                 
       return {
       
@@ -100,7 +102,7 @@ const signUp = createAsyncThunk(
         try{
           let data = await profileRepo.register({token,frequency,password,username,profilePicture,selfStatement,privacy})
           localStorage.setItem("token",data.token)
-          client.initIndex("profile").saveObject({ objectID:data.profile.id,
+          client.saveObject({ objectID:data.profile.id,
             username:username,
            }).wait()       
           return {profile:data.profile}
@@ -222,7 +224,7 @@ const updateProfile = createAsyncThunk("users/updateProfile",
           let data = await  profileRepo.updateProfile(params)
           if(data.profile){
             const {profile}=data
-            client.initIndex("profile").saveObject(
+            client.saveObject(
                 {objectID:profile.id,username:profile.username,type:"profile"}).wait()
         }
           return {profile:data.profile}

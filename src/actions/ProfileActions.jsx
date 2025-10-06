@@ -16,7 +16,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
     }
     if(data.profile){
         const {profile}=data
-        client.initIndex("profile").saveObject(
+        client.saveObject(
             {objectID:profile.id,username:profile.username,type:"profile"}).wait()
     }
     return data

@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useState,useEffect,useRef, useContext, useLayoutEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { uploadProfilePicture} from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
@@ -10,8 +10,12 @@ import { signUp } from "../../actions/UserActions";
 import Context from "../../context";
 export default function SignUpContainer(props){
     const location = useLocation();
-  
-    
+    const {currentProfile}=useSelector(state=>state.user.currentProfile)
+    useLayoutEffect(()=>{
+      if(currentProfile){
+        navigate(Paths.myProfile())
+      }
+    },[currentProfile])
     const [token, setToken] = useState('');
     const [password,setPassword]=useState("")
     const navigate = useNavigate()
@@ -50,22 +54,26 @@ export default function SignUpContainer(props){
       setSelectedImage(URL.createObjectURL(img));
     }
   };
-  useEffect(()=>{
+  useLayoutEffect(()=>{
 
+let toke = searchParams[0].get("token")
+if(toke&&toke.length>0){
+setToken(toke)
 
-setToken(token)
-
-
+localStorage.setItem("token",toke)
+}
     return
 
   },[searchParams])
      const dispatch = useDispatch()
 
     const completeSignUp=()=>{
-     let toke = searchParams[0].get("token")
+     let toke = searchParams[0].get("token") &&searchParams[0].get("token").length>0?searchParams[0].get("token"):localStorage.getItem("token")
      if(!toke){
       toke = token
+      return setError("Try reusing the link")
      }
+     
     if( password.length>6&&username.length>3){
         if(file){
         dispatch(uploadProfilePicture({file:file})).then(res=>checkResult(res,payload=>{

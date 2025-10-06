@@ -4,7 +4,7 @@ import { getAuth, browserLocalPersistence } from "firebase/auth"
 import "firebase/compat/firestore"
 import {  getFirestore} from "firebase/firestore";
 import { getStorage } from "firebase/storage"
-import algoliasearch from "algoliasearch";
+import {algoliasearch }from "algoliasearch";
 
 // const testConfig = {
 //   apiKey: `${process.env.TEST_FIREBASE_API_KEY}`,

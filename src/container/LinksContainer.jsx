@@ -8,6 +8,7 @@ import { initGA, sendGAEvent } from "../core/ga4";
 import Context from "../context";
 import flare from "../images/icons/flare.svg"
 import pen from "../images/icons/pen.svg"
+import pumpkin from "../images/events/Pumpkin.png"
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -30,6 +31,18 @@ export default function LinksContainer(props){
      
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
             <ul className="md:mx-auto w-page-mobile-content md:w-page-content  mx-4">
+                   <li>  
+                      <LinkNode image={pumpkin}
+       url={"https://partiful.com/e/4Voy3Hg0YEaMxNOABLql"}
+                    title={"Plumbum Halloween Social"}
+                    description={"Join our Halloween Crash Social—where writers meet New York’s creative vibe. Dress as your favorite author or your future best self!"}/>
+                    </li>
+                      <li>  
+                      <LinkNode image={pen}
+       url={" https://partiful.com/e/n8VWgBo7jUDbcUFXKgYO"}
+                    title={"Oct 18th Writers Workshop"}
+                    description={"On Writing through Khalil Gibran, writing is an endurance sport. How do we continue writing and get to the center of tough topics."}/>
+                    </li>
                 <li>  
                       <LinkNode image={pen}
        url={" https://partiful.com/e/n8VWgBo7jUDbcUFXKgYO"}
