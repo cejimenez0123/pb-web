@@ -60,6 +60,7 @@ export default function SearchDialog(props){
    }
     return<Dialog  
     onClose={closeDialog}
+    disagreeText="close"
                    isOpen={searchDialogOpen} 
                    text={
                     <div className="pt-3  ">

@@ -1,16 +1,14 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
-import { auth,db, client ,storage} from  "../core/di"
-import {  signInWithEmailAndPassword,
+import { auth,db,storage,client} from  "../core/di"
+import {
           signOut,
           createUserWithEmailAndPassword,
        } from "firebase/auth"
 import {  where,
           query,
-          deleteDoc,
           collection,
           getDocs,
           setDoc,
-          getDoc,
           doc,
           Timestamp} from "firebase/firestore"
 import UserApproval from "../domain/models/user_approval";
@@ -18,10 +16,10 @@ import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
 import FollowBook from "../domain/models/follow_book"
 import FollowLibrary from "../domain/models/follow_library"
 import FollowProfile from "../domain/models/follow_profile"
-import Collection from "../domain/models/collection";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
+
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -128,7 +126,7 @@ const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
   query: query,
   
 },{indexName:"hashtag",query:query}];
-
+  client 
   let {results}= await client.multipleQueries(queries)
 
   return {results}
