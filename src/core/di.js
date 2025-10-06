@@ -4,11 +4,12 @@ import { getAuth, browserLocalPersistence } from "firebase/auth"
 import "firebase/compat/firestore"
 import {  getFirestore} from "firebase/firestore";
 import { getStorage } from "firebase/storage"
-import algoliasearch from "algoliasearch";
+import {algoliasearch}from "algoliasearch";
 
-
-
-const client = algoliasearch(import.meta.env.VITE_ALGOLIA_APP_ID,
+console.log( import.meta.env.VITE_ALGOLIA_APP_ID,
+  import.meta.env.VITE_ALGOLIA_API)
+const client = algoliasearch(
+  import.meta.env.VITE_ALGOLIA_APP_ID,
   import.meta.env.VITE_ALGOLIA_API)
   
 const config = { apiKey:import.meta.env.VITE_FIREBASE_API_KEY,
@@ -26,4 +27,4 @@ const auth = getAuth(app,{setPersistence: browserLocalPersistence})
 const storage = getStorage(app)
 const db =getFirestore(app)
 
-  export {db,app,auth,storage,client}
+export {db,app,auth,storage,client}

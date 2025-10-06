@@ -20,9 +20,9 @@ PODS:
     - IONGeolocationLib (= 1.0.1)
   - CapacitorPreferences (7.0.2):
     - Capacitor
-  - CapacitorSplashScreen (7.0.2):
+  - CapacitorSplashScreen (7.0.3):
     - Capacitor
-  - CapgoCapacitorSocialLogin (7.11.0):
+  - CapgoCapacitorSocialLogin (7.11.8):
     - Alamofire (~> 5.10.2)
     - Capacitor
     - FBSDKCoreKit (= 18.0.0)
@@ -102,13 +102,13 @@ SPEC CHECKSUMS:
   Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
-  Capacitor: b4741ca7affb32c1b70debd03df92cbf522d8a80
-  CapacitorCommunityAppleSignIn: b95415441e6c4223783a543f3a736ea4eabf8524
+  Capacitor: 28d6c01026a9a3f7156529498ec1f389a2a28dbc
+  CapacitorCommunityAppleSignIn: 9a69d5f1d9c0a071da3a35a42f90da85c7ea054e
   CapacitorCordova: 435121e81a2df4d0034f0fb11fcefab5104cfdb5
-  CapacitorGeolocation: b96474c3259dd4a294227ea8ec19140b1837cceb
-  CapacitorPreferences: b583b5deb74e564c35968189d25d32c0fd41200d
-  CapacitorSplashScreen: 8d6c8cb0542a8e81585c593815db8785ed8ce454
-  CapgoCapacitorSocialLogin: 5b9e9a2e686c3f020750c632282337772d3792eb
+  CapacitorGeolocation: 84f868bea4c2499aebc3bb3a88fd0a508f87ab87
+  CapacitorPreferences: 65107ed7437d96ee72583df5763985e3c0ff2bc2
+  CapacitorSplashScreen: e388b8e0ed0e982a9d3a40417f478e7a018a8763
+  CapgoCapacitorSocialLogin: 7b115bc6aaa627b012175956410ed3e99a23a5f8
   FBAEMKit: e34530df538b8eb8aeb53c35867715ba6c63ef0c
   FBSDKCoreKit: d3f479a69127acebb1c6aad91c1a33907bcf6c2f
   FBSDKCoreKit_Basics: 017b6dc2a1862024815a8229e75661e627ac1e29

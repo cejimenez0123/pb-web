@@ -2,7 +2,8 @@
 
 let url = import.meta.env.VITE_URL
 let redirectUrl = import.meta.env.VITE_REDIRECT_URL
-// import Story from "../domain/models/page"
+console.log("URL:",url)
+console.log("Vite_dEV_URL:",import.meta.env.VITE_DEV_URL)
 if(import.meta.env.VITE_NODE_ENV=="dev"){
     url = import.meta.env.VITE_DEV_URL
     redirectUrl = import.meta.env.VITE_DEV_REDIRECT_URL

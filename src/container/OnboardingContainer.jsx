@@ -17,7 +17,6 @@ import {
 import "../App.css"
 import { useState, useContext, useEffect } from 'react';
 import { debounce } from 'lodash';
-
 import Context from '../context';
 import Paths from '../core/paths';
 import authRepo from '../data/authRepo';
@@ -27,7 +26,6 @@ import GoogleLogin from '../components/GoogleLogin';
 import AppleSignInButton from '../components/auth/AppleSignInButton';
 import { useDispatch } from 'react-redux';
 import { signUp } from '../actions/UserActions';
-import checkResult from '../core/checkResult';
 const inputStyle = {
   "--width": '100%',
   border: 'none',
