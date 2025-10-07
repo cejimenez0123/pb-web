@@ -250,7 +250,7 @@ try{
           //       mimeType: 'text/html',
           //       access_token: accessToken
           //   });
-console.log(response)
+
             const htmlContent = response.data;
             console.log('Google Doc HTML Content:', htmlContent);
 
@@ -330,11 +330,11 @@ console.log(response)
                 <IonText className='my-auto'>Join a Workshop</IonText>
               </ButtonWrapper>
               <div className='flex-shrink-0'>
-       {/* <GoogleDrivePicker getToken={()=>{
+       <GoogleDrivePicker getToken={()=>{
 getDriveToken()
        }
 
-       }accessToken={driveToken} onFilePicked={getFile} /> */}
+       }accessToken={driveToken} onFilePicked={getFile} />
               </div>
             </div>
           </div>

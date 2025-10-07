@@ -13,6 +13,7 @@ import { IonContent, IonInput } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { useSelector } from 'react-redux';
+import GoogleLogin from '../../components/GoogleLogin';
 
 export default function LogInContainer() {
     const {setError,seo,setSeo,currentProfile}=useContext(Context)
@@ -202,11 +203,11 @@ dispatch(setDialog(dia))
         }}
         />
         </div>
-         {/* <GoogleLogin 
+         <GoogleLogin
      onUserSignIn={({email, name,googleId})=>{
 dispatchLogin({email,googleId,isNative})
             
-     }}/> */}
+     }}/>
      </span>
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}

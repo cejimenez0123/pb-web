@@ -254,6 +254,7 @@ export default function GoogleLogin({ onUserSignIn }) {
 
   return (
     <div className="flex flex-col justify-center items-center w-full min-h-full">
+      
       {pending && <IonSpinner name="crescent" color="primary" />}
       {!pending && !accessToken && (
         <>
