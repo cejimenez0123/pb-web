@@ -10,7 +10,7 @@ import { signUp } from "../../actions/UserActions";
 import Context from "../../context";
 export default function SignUpContainer(props){
     const location = useLocation();
-    const {currentProfile}=useSelector(state=>state.user.currentProfile)
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     useLayoutEffect(()=>{
       if(currentProfile){
         navigate(Paths.myProfile())
