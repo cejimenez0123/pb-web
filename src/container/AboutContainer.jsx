@@ -25,6 +25,7 @@ import books1 from "../images/workshop/books-1.jpg"
 import { useContext } from "react"
 import { initGA,sendGAEvent } from "../core/ga4" 
 import Context from "../context"
+import instagram from "../images/icons/instagram.svg"
 import ScrollDown from "../components/ScrollDownButton"
 import { Helmet } from "react-helmet"
 import useScrollTracking from "../core/useScrollTracking"
@@ -158,7 +159,7 @@ const stayInLoop=()=>{
 
 <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
 <h2 className="mx-4 my-2 open-sans-medium  text-l">Follow the Journey</h2>
-<a className="flex flex-row  my-4 mx-auto flex flex-col text-center" href="https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"><p className="open-sans-medium mx-4">Join the discussion on our slack</p><img  className="mx-auto w-[8em]" src={slack}/></a>
+<a className="flex flex-row  my-4 mx-auto flex flex-col text-center" href="https://www.instagram.com/channel/AbaI9yaoN4KfPze_/?igsh=MTJrbzQyaDliaDdscw=="><p className="open-sans-medium mx-4">Join the discussion on the instagram channel</p><img  className="mx-auto w-[8em]" src={instagram}/></a>
 <p className="flex open-sans-medium flex-row  my-4 mx-auto text-center" onClick={()=>navigate(Paths.calendar())}>Check out the Calendar for NYC Writing Scene</p>
 <img onClick={()=>navigate(Paths.calendar())} className="h-[8em] mx-auto w-[8em]"  src={events}/>
 <div className="flex my-4 open-sans-medium  mx-auto text-l texg-left leading-loose tracking-loose">
