@@ -9,12 +9,16 @@ import Context from "../context";
 import flare from "../images/icons/flare.svg"
 import pen from "../images/icons/pen.svg"
 import pumpkin from "../images/events/Pumpkin.png"
+import etsy from "../images/icons/ETSYLOGO.png"
+import { useMediaQuery } from "react-responsive";
+
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
 }
 export default function LinksContainer(props){
      const {seo,setSeo}=useContext(Context)
+     const md = useMediaQuery({ query: '(max-width: 768px)' })
      useLayoutEffect(()=>{
           initGA()
           let soo = seo
@@ -30,7 +34,7 @@ export default function LinksContainer(props){
     return(<div className="flex flex-col py-8">
      
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
-            <ul className="md:mx-auto w-page-mobile-content md:w-page-content  mx-4">
+            <ul className={`md:mx-auto  w-page-mobile-content grid gap-2 grid-cols-2 md:flex md:flex-col lg:w-page-content mx-auto md:mx-4`}>
                    <li>  
                       <LinkNode image={pumpkin}
        url={" https://partiful.com/e/4Voy3Hg0YEaMxNOABLql"}
@@ -53,6 +57,12 @@ export default function LinksContainer(props){
                     description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
                     </li>
                     <li>
+                     <LinkNode image={etsy}
+       url={" https://www.etsy.com/shop/PlumbumWriters?ref=dashboard-header"}
+                    title={"Plumbum Merch on Etsy"}
+                    description={"Support development, events, and cups of coffee by purchasing merch inspired by the founder, Sol Emilio."}/>
+                    </li>
+                    <li>
                <LinkNode url={"https://plumbum.app"+Paths.discovery()}
                image={logo}
                     title={"Discover Plumbum"}
@@ -66,28 +76,17 @@ export default function LinksContainer(props){
                     
                 </li>
                <li>
-               <LinkNode url={"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}
+               <LinkNode url={" https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}
+                    image={"https://assets.lulu.com/cover_thumbs/4/5/45q8j8v-front-shortedge-384.jpg"}
                     title={"Purchase literature written by the founder."}
                     description={"Paperback of Good Hell: An Young Aritst's Survival and Coming of Age in New York. "}
 
 />
                </li>
-              
-               <li>
-               <LinkNode url={"https://www.lulu.com/shop/sol-emilio/good-hell/ebook/product-v8j5pk5.html?q=good+hell&page=1&pageSize=4"}
-                    title={"Purchase literature written by the founder."}
-                    description={"Ebook of Good Hell: An Young Aritst's Survival and Coming of Age in New York. "}
-
-/>
-               </li> 
+        
        
            
-               <li>
-               <LinkNode url={"https://ko-fi.com/plumbumwriters"}
-image={"https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229bf8a18f97a3c1_favion-p-500.png"}
-                    title={"Donate. Support Development with Kofi."}
-                    description={"Holding data costs money. Any support is appreicated at any amount."}/>
-               </li>
+             
            
               
          

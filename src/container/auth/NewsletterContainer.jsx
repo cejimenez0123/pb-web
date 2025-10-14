@@ -429,7 +429,8 @@ return (
           <div id="welcome" className="p-8 lora-medium leading-[1.5em] overflow-scroll">
             <p>Thank You {user.preferredName}! You’re In—Welcome to the Journey!</p>
             <br />
-            <h6>Congratulations! You’re officially on board as a beta user for Plumbum, where we’re redefining what it means to create, connect, and grow as a writer.</h6>
+
+            <h6>Congratulations! You’re officially on board as a beta user for Plumbum, we mailed you at {user.email}. We're redefining what it means to create, connect, and grow as a writer.</h6>
             <br />
             <h6>
               This is more than just an app. Together, we’re building a space where writers like you can test ideas, share stories, and discover the confidence to take your work to the next level.
