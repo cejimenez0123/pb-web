@@ -152,7 +152,7 @@ const fetchData = async (url) => {
 
   return (
     <ErrorBoundary>
-    <div className={`rounded-[2em] overflow-hidden my-4  h-[20em] ovesm:max-h-30 w-[100%] shadow-md flex flex-col sm:flex-row p-4 bg-emerald-100 `} 
+    <div className={`rounded-[2em] overflow-hidden my-4  h-[20em] md:h-[10em] ove sm:max-h-30 w-[100%] shadow-md flex flex-col sm:flex-row p-4 bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
      
       <div className={`md:max-w-[30em]`}>{imageView()}</div>
