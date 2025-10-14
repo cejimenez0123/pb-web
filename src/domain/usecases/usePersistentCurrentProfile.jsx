@@ -37,19 +37,23 @@ export default function usePersistentCurrentProfile(fetchData) {
 
   // On component mount, fetch from remote and update profile + prefs
   useEffect(() => {
+  
     const fetchAndSave = async () => {
       let token = (await Preferences.get({key:"token"})).value
-      const remoteProfile = await fetchData({token});
+       console.log("remote toke",token)
+      if(token!="undefined"){
+       const remoteProfile = await fetchData({token});
+      console.log("REMOTE PROFILE",remoteProfile)
       if(remoteProfile) {
         saveProfile(remoteProfile);
-      }
+      }}
   
     };
-if(!profile){
-  fetchAndSave();
-}
+  if(!profile){
+    fetchAndSave();
+  }
  
-  }, [fetchData]);
+  }, [fetchData, profile]);
 
 
   useEffect(() => {

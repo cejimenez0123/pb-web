@@ -68,6 +68,7 @@ function App(props) {
   usePersistentCurrentProfile((params)=>dispatch(getCurrentProfile(params)))
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
    const currentProfile = props.currentProfile
+   console.log("CURRENT PROFILE",currentProfile)
   const [olderPath,setOlderPath]=useState(null)
   const location = useLocation()
   const [success,setSuccess]=useState(null)

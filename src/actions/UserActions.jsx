@@ -18,10 +18,11 @@ try{        const {uId,email,password,idToken,isNative}=params
    
         
         const {token}=authData  
+        console.log("DATAAAT",token)
        const data= await profileRepo.getMyProfiles({token:token})
         const key = "cachedMyProfile"
-
-     await Preferences.set({key:"token",value:data.token})
+        console.log("DATAAAT",data)
+        await Preferences.set({key:"token",value:token})
         await Preferences.set({key,value:JSON.stringify(data.profile)})
 
         return data

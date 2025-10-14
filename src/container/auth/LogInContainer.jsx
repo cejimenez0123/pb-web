@@ -79,7 +79,7 @@ function LogInCard({setLogInError}){
                     if(payload && payload.error){
                         setError("Error with Username or Password")
                     }else{
-                       Preferences.set({key:"cachedMyProfile",value:payload.profile})
+                    Preferences.set({key:"cachedMyProfile",value:payload.profile}).then(()=>{})
                         navigate(Paths.myProfile())
                     }
                 },err=>{
@@ -105,7 +105,7 @@ setError("User Not Found. Apply Below")
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
                
-              
+                    console.log("PAYLOAD",payload)
                    await Preferences.set({key:"cachedMyProfile",value:JSON.stringify(payload.profile)})
                    
                     setPending(false)
@@ -127,7 +127,7 @@ setError("User Not Found. Apply Below")
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
               
-                Preferences.set({key:"cachedMyProfile",value:payload.profile})
+                Preferences.set({key:"cachedMyProfile",value:payload.profile}).then(()=>{})
                 navigate(Paths.myProfile())
                 setPending(false)
             },err=>{
@@ -234,4 +234,3 @@ dispatchLogin({email,googleId:googleId,idToken:idToken,isNative})
                 </div></div>
     </div>)
 }
-

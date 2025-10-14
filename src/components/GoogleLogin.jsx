@@ -176,7 +176,36 @@
 //       setPending(false);
 //     }
 //   };
+// const loadGisScript = () => {
+//         const script = document.createElement('script');
+//         script.src = 'https://accounts.google.com/gsi/client';
+//         script.async = true;
+//         script.defer = true;
 
+//         script.onload = () => {
+//             setGisLoaded(true);
+//             console.log("Google Identity Services script loaded for login.");
+//         };
+//         script.onerror = (error) => {
+//             console.error("Failed to load Google Identity Services script:", error);
+//         };
+//         document.body.appendChild(script);
+
+//         // Cleanup function for the effect
+//         return () => {
+//             if (document.body.contains(script)) {
+//                 document.body.removeChild(script);
+//             }
+//         };
+//     };
+//     useLayoutEffect(()=>{
+//         if (!window.google || !window.google.accounts) {
+//             loadGisScript();
+//         } else {
+//             setGisLoaded(true); // GIS already loaded by another component or previous run
+//         }
+//     },[])
+//     // Main useEffect for managing GIS loading and login state
 //   // Web sign-in callback with Drive token request if needed
 //   const handleCredentialResponse = async (response) => {
 //     if (!response.credential) {
@@ -247,14 +276,14 @@
 //         tokenClient.requestAccessToken();
 //       }
 //     } catch (error) {
-//       console.error('Invalid ID token:', error);
+      
 //       setLoginError('Invalid ID token received.');
 //     }
 //   };
 
 //   return (
 //     <div className="flex flex-col justify-center items-center w-full min-h-full">
-//       HERE
+
 //       {pending && <IonSpinner name="crescent" color="primary" />}
 //       {!pending && !accessToken && (
 //         <>
@@ -280,15 +309,19 @@
 //     </div>
 //   );
 // }
+
+
+
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux'; // Import useDispatch
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../actions/UserActions';
 import Paths from '../core/paths';
 import checkResult from '../core/checkResult';
+import { Preferences } from '@capacitor/preferences';
 export default function GoogleLogin({ onUserSignIn,setLogInError}) { 
     const [gisLoaded, setGisLoaded] = useState(false);
-
+  const [pending, setPending] = useState(false);
     const [signedIn, setSignedIn] = useState(false); // Internal state for this component's UI
     const driveTokenKey = "googledrivetoken"; // Consistent key for Drive access token
     const navigate = useNavigate()
@@ -347,6 +380,7 @@ export default function GoogleLogin({ onUserSignIn,setLogInError}) {
                 if(payload.error){
                     setLogInError("Error with Username or Password")
                 }else{
+                    console.log("cvghvg/",payload)
                     navigate(Paths.myProfile())
                 }
             },err=>{
@@ -375,6 +409,7 @@ if(!signedIn){
                     dispatch(logIn({email:storedEmail,uId:storedGoogleId})).then(res=>{ checkResult(res,payload=>{
                         setPending(false)
                         setSignedIn(true);
+                        console.log("cvghvg/",payload)
                         if(payload.error){
                             // setLogInError("Error with Username or Password")
                         }else{
@@ -469,15 +504,16 @@ if(!signedIn){
                         const expiryMs = Date.now() + (parseInt(tokenResponse.expires_in, 10) * 1000);
 
                         // Store Drive access token and expiry in localStorage
-                        localStorage.setItem(driveTokenKey, driveAccessToken);
-                        localStorage.setItem("googledrivetoken_expiry", expiryMs.toString());
+                        Preferences.set({key:driveTokenKey, value:driveAccessToken}).then(()=>{});
+                       Preferences.set({key:"googledrivetoken_expiry",value: expiryMs.toString()}).then(()=>{});;
                         console.log("Drive-scoped access token obtained and stored.");
 
                         // Dispatch Redux login action after getting all necessary info
                         // Replace with your actual dispatch call:
+                   
                         console.log("Dispatching login after new access token:", { googleId: id, accessToken: driveAccessToken });
                         // dispatch(loginUser({ googleId: id, accessToken: driveAccessToken, email: email, name: name }));
-
+                        
                         // Notify parent component of complete login
                         if (onUserSignIn) {
                             onUserSignIn({
