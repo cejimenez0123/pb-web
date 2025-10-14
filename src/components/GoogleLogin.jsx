@@ -6,7 +6,7 @@ import Paths from '../core/paths';
 
 export default function GoogleLogin({ onUserSignIn }) { 
     const [gisLoaded, setGisLoaded] = useState(false);
-
+    const [idToken, setIdToken] = useState(null); // ID Token from Google Sign-In
     const [signedIn, setSignedIn] = useState(false); // Internal state for this component's UI
     const driveTokenKey = "googledrivetoken"; // Consistent key for Drive access token
     const navigate = useNavigate()
@@ -149,6 +149,7 @@ if(!signedIn){
     // Callback for the Google Sign-In button (ID Token)
     const handleCredentialResponse = (response) => {
         if (response.credential) {
+            setIdToken(response)
             try {
                 const decodedToken = parseJwt(response.credential);
 
@@ -201,6 +202,7 @@ if(!signedIn){
                             onUserSignIn({
                                 email: email,
                                 name: name,
+                                idToken,
                                 googleId: id,
                                 driveAccessToken: driveAccessToken,
                             });
@@ -214,6 +216,7 @@ if(!signedIn){
                                 email: email,
                                 name: name,
                                 googleId: id,
+                                idToken,
                                 driveAccessToken: null, // Explicitly null if permission denied
                             });
                         }
