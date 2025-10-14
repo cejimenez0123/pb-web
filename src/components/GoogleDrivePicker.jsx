@@ -1,6 +1,6 @@
 
 import React, { useState, useLayoutEffect,useEffect, useRef, useContext } from 'react';
-import { IonList, IonItem, IonLabel, IonImg, IonText } from '@ionic/react';
+import { IonList, IonItem, IonLabel, IonImg, IonText, IonGrid } from '@ionic/react';
 import GoogleLogin from './GoogleLogin';
 import DeviceCheck from './DeviceCheck';
 import { Preferences } from '@capacitor/preferences';
@@ -9,7 +9,7 @@ import { setDialog } from '../actions/UserActions';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 export default function GoogleDrivePicker({ onFilePicked }) {
-    const {dialog} = useContext(Context)
+    const {dialog,isPhone} = useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dispatch = useDispatch()
   const [files, setFiles] = useState([]);
@@ -88,7 +88,17 @@ export default function GoogleDrivePicker({ onFilePicked }) {
 
     dia.onClose=()=>{setShowFiles(false)}
     dia.title="Google Drive"
-     dia.text=<IonList >
+     dia.text=isNative||isPhone?
+
+
+     <IonList className="grid grid-cols-2 gap-2  ">
+            {files.map((file) => (<IonItem class="col " ng-repeat="letter in letters" className="rounded-box  p-3 shadow-md hover:border hover:border-purple-200">
+          
+          <h5 className="text-center text-sm" >{file.name}</h5>
+      </IonItem>))}
+    </IonList>
+
+:<IonList >
         
       {files.map((file) => (
         <IonItem  className="flex btn flex-col my-4 items-center rounded-full rounded-box max-w-[20rem] bg-transparent text-emerald-800 shadow-md hover:bg-purple-200 transition "

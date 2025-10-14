@@ -100,6 +100,7 @@ setError("User Not Found. Apply Below")
     }
   
     const dispatchLogin=  ({email,googleId,idToken})=>{
+        console.log("DISPATCHING LOGIN HITCX")
         if(idToken){
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
@@ -204,10 +205,14 @@ dispatch(setDialog(dia))
         />
         </div>
          <GoogleLogin
-     onUserSignIn={({email, name,googleId})=>{
-dispatchLogin({email,googleId,isNative})
+         onUserSignIn={({email, idToken, googleId, driveAccessToken})=>{
+dispatchLogin({email,googleId:googleId,idToken:idToken,isNative})
+         }}
+     
             
-     }}/>
+
+    
+     />
      </span>
         <div className='mt-4 p-4'>
         <a  onClick={handleFirstTimeClick}
