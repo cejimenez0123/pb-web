@@ -285,8 +285,8 @@ import { useDispatch } from 'react-redux'; // Import useDispatch
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../actions/UserActions';
 import Paths from '../core/paths';
-
-export default function GoogleLogin({ onUserSignIn }) { 
+import checkResult from '../core/checkResult';
+export default function GoogleLogin({ onUserSignIn,setLogInError}) { 
     const [gisLoaded, setGisLoaded] = useState(false);
 
     const [signedIn, setSignedIn] = useState(false); // Internal state for this component's UI
@@ -376,15 +376,15 @@ if(!signedIn){
                         setPending(false)
                         setSignedIn(true);
                         if(payload.error){
-                            setLogInError("Error with Username or Password")
+                            // setLogInError("Error with Username or Password")
                         }else{
                             navigate(Paths.myProfile())
                         }
                     },err=>{
                         if(err.message=="Request failed with status code 401"){
-    setLogInError("User Not Found. Apply Below")
+    // setLogInError("User Not Found. Apply Below")
                         }else{
-                            setLogInError(err.message)
+                            // setLogInError(err.message)
                         }
                         setPending(false)
                     })})
