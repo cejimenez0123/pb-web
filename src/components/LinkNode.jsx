@@ -127,7 +127,7 @@ const fetchData = async (url) => {
 
   const imageView = ()=>{
     
-    let imgClass = "object-fit my-auto mx-auto  max-h-20 max-w-24 min-h-12 min-w-16 rounded-full overflow-hidden "
+    let imgClass = "object-fit my-auto mx-auto  max-h-20 max-w-24 min-h-20 min-w-16 rounded-full overflow-hidden "
     if(previewData && previewData.title=="Spotify"){
 
       return (
