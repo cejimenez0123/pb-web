@@ -18,9 +18,11 @@ function AppleSignInButton({onUserSignIn}) {
         onUserSignIn({idToken:result.response.identityToken,email:result.response.email})
 
       },err=>{
+        prompt("1"+JSON.stringify(err))
         console.error('Apple sign-in error1:', err);
       })
       .catch(error => {
+        prompt("2"+JSON.stringify(error))
         console.error('Apple sign-in error:', error);
         // TODO: Handle error (show message to user, etc.)
       });

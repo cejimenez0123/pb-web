@@ -11,7 +11,7 @@ if(import.meta.env.VITE_NODE_ENV=="dev"){
 }
 const Enviroment = {
     proxyUrl:import.meta.env.VITE_PROXY_URL,
-    redirectUrl:redirectUrl,
+    redirectUrl:import.meta.env.VITE_REDIRECT_URI,
     url:url,
     domain:"https://plumbum.app",
     logoChem:"https://drive.usercontent.google.com/download?id=14zH7qNt2xRFE45nukc3NIhLgtMtaSC0O",

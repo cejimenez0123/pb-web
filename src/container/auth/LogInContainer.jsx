@@ -14,9 +14,11 @@ import { Preferences } from '@capacitor/preferences';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { useSelector } from 'react-redux';
 import GoogleLogin from '../../components/GoogleLogin';
+import { current } from '@reduxjs/toolkit';
 
 export default function LogInContainer() {
-    const {setError,seo,setSeo,currentProfile}=useContext(Context)
+    const {setError,seo,setSeo}=useContext(Context)
+    const currentProfile = useSelector(state=>state.users.currentProfile)
   
  const navigate = useNavigate()
     useLayoutEffect(()=>{
@@ -29,7 +31,7 @@ export default function LogInContainer() {
     if(currentProfile){
         navigate(Paths.myProfile())
     }
-   },[])
+   },[currentProfile])
 
     return (
         <IonContent fullscreen={true}>
