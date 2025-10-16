@@ -90,7 +90,7 @@ export default function SettingsContainer(props) {
         dispatch(deletePicture({fileName:currentProfile.profilePic}))
         dispatch(uploadProfilePicture(fileParams)).then((result) => {
             checkResult(result,(payload)=>{
-     console.log(payload)
+
                 const params = {
                     profile: currentProfile,
                     username: newUsername,
@@ -220,7 +220,7 @@ export default function SettingsContainer(props) {
           setFile(file)
           setError('');
           setPictureUrl(URL.createObjectURL(file))
-          console.log(pictureUrl)
+
           
         }
  

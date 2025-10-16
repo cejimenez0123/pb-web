@@ -134,7 +134,7 @@ function CalendarEmbed(){
                 hashtags:[]}
            
             setSuggestions((prevState)=>[...new Set([...prevState,...obj.suggestions])])
-           console.log(organizerLink)
+
             return {
               summary: event.summary,
               shortSummary:summary,

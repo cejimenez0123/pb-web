@@ -15,7 +15,7 @@ import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { useSelector } from 'react-redux';
 import GoogleLogin from '../../components/GoogleLogin';
 import { current } from '@reduxjs/toolkit';
-
+import ErrorBoundary from "../../ErrorBoundary.jsx"
 export default function LogInContainer() {
     const {setError,seo,setSeo}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -82,7 +82,7 @@ function LogInCard({setLogInError}){
                         setError("Error with Username or Password")
                     }else{
                     Preferences.set({key:"cachedMyProfile",value:payload.profile}).then(()=>{})
-                        navigate(Paths.myProfile())
+                       
                     }
                 },err=>{
                     if(err.message=="Request failed with status code 401"){
@@ -102,12 +102,12 @@ setError("User Not Found. Apply Below")
     }
   
     const dispatchLogin=  ({email,googleId,idToken})=>{
-        console.log("DISPATCHING LOGIN HITCX")
+   
         if(idToken){
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
                
-                    console.log("PAYLOAD",payload)
+                 
                    await Preferences.set({key:"cachedMyProfile",value:JSON.stringify(payload.profile)})
                    
                     setPending(false)
@@ -130,7 +130,7 @@ setError("User Not Found. Apply Below")
             checkResult(res,payload=>{
               
                 Preferences.set({key:"cachedMyProfile",value:payload.profile}).then(()=>{})
-                navigate(Paths.myProfile())
+            
                 setPending(false)
             },err=>{
                
@@ -159,6 +159,7 @@ dia.text=(<ForgotPasswordForm/>)
 dispatch(setDialog(dia))
     }
     return(
+        <ErrorBoundary>
     <div  className=' md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
@@ -208,7 +209,7 @@ dispatch(setDialog(dia))
         </div>
          <GoogleLogin
          onUserSignIn={({email, idToken, googleId, driveAccessToken})=>{
-dispatchLogin({email,googleId:googleId,idToken:idToken,isNative})
+// dispatchLogin({email,googleId:googleId,idToken:idToken,isNative})
          }}
      
             
@@ -234,5 +235,5 @@ dispatchLogin({email,googleId:googleId,idToken:idToken,isNative})
         </form>
 
                 </div></div>
-    </div>)
+    </div></ErrorBoundary>)
 }

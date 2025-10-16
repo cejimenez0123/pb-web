@@ -13,6 +13,7 @@ function NewsletterContainer(props){
   const isNotPhone = useMediaQuery({
     query: '(min-width: 600px)'
   })
+  const {setError}=useContext(Context)
   useLayoutEffect(()=>{
     initGA()
     sendGAEvent("View Newsletter Apply Page","View Newsletter Apply Page:","",0,false)
@@ -72,7 +73,7 @@ function NewsletterContainer(props){
         ...prev,
         otherInputs: { ...prev.otherInputs, [category]: e.target.value }
       }));
-      console.log(formData)
+   
     }
 
 
@@ -99,7 +100,7 @@ if(data.user){
           if(e.status==409){
             setUser({message:"User has already applied"})
           }else{
-            console.log(e)
+     
             setError(e.message)
           }
         })
@@ -135,7 +136,7 @@ const handleChange = (field, value) => {
     ...prev,
     [field]: value,
   }));
-  console.log(formData)
+
 };{/* Third Place */}
 const thirdPlacesInput=()=>{
   return(<>

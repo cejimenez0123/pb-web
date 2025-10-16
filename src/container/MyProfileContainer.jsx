@@ -139,12 +139,11 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   
   useLayoutEffect(()=>{
    const getItems=async ()=> {
-      let value = await Preferences.get({key:"token"})
-       let token = value.value
+      let token = (await Preferences.get({key:"token"})).value
        dispatch(getMyCollections({token}))
        dispatch(getMyStories({token}))
     } 
-getItems()
+      return ()=>getItems()
  
 
     
