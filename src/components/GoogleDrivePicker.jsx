@@ -38,7 +38,40 @@ const [files, setFiles] = useState([]);
 
     // Drive-specific scope for the picker
     const DRIVE_SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
+const nativeGoogleSignIn = async () => {
+    setPending(true);
+    setLoginError(null);
+    try {
+      const user = await SocialLogin.login({
+        provider: 'google',
+        options: { scopes: ['email', 'profile', 'https://www.googleapis.com/auth/drive.readonly'] },
+      });
+      if (!user) throw new Error('No user data returned.');
+      let {accessToken,idToken,profile}=user.result
 
+      const expiry = Date.now() + 3600 * 1000;
+      await Promise.all([
+       
+        Preferences.set({ key: driveTokenKey, value:accessToken || '' }),
+        Preferences.set({ key: 'googledrivetoken_expiry', value: expiry.toString() }),
+      ]);
+
+  
+     
+      setUserInfo(info);
+      setAccessToken(accessToken);
+
+      setSignedIn(true);
+
+     
+      // checkResult(res, () => navigate(Paths.myProfile()));
+    } catch (err) {
+      console.error('Native sign-in error', err);
+      setLoginError('Google Sign-In failed. ' + JSON.stringify(err));
+    } finally {
+      setPending(false);
+    }
+  };
     // Helper to check if the stored token is expired
     const isTokenExpired = useCallback(() => {
         const storedToken = localStorage.getItem(TOKEN_KEY);
@@ -141,7 +174,7 @@ const [files, setFiles] = useState([]);
   const fetchFiles= async ()=>{
         if (!accessToken) return;
   const token = (await Preferences.get({ key: driveTokenKey })).value
-  console.log("TOKEN EFFECT",token)
+
     setLoading(true);
     fetch(
       'https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)',
@@ -369,8 +402,8 @@ const openDialog=()=>{
                 // Only render buttons if all necessary Google APIs are loaded
                 !accessToken ? (
                     // Show "Login to Google Drive" button if no valid token
-                    <div className='btn bg-emerald-700 rounded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]'>
-                        <GoogleLogin drive={true}/>
+                    <div onClick={nativeGoogleSignIn}className='btn bg-emerald-700 rofunded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]'>
+                        Log in to Google Drive
                     </div>
                 ) : (
                     // Show "Open Google Drive" button if a valid token is available
