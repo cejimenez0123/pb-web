@@ -224,7 +224,7 @@ function CalendarEmbed(){
             <h2 className="my-auto mont-medium mx-2 text-emerald-700">Filter by Area:</h2>
 
         <select
-          className="border w-fit  p-2 text-emerald-700 rounded-full bg-transparent px-2 text-l"
+          className="border w-fit  text-emerald-700 rounded-lg bg-transparent px-2 text-l"
           value={selectedArea}
           onChange={(e) => setSelectedArea(e.target.value)}
         >
@@ -235,17 +235,22 @@ function CalendarEmbed(){
         </select>
         </span> 
         {/*  */}
-      <span className={`flex flex-row`}>
-          <h5 className="my-auto ml-4 mr-2 mont-medium text-emerald-800"> Search</h5>
-          <div ref={searchRef} className="relative w-[14em] ">
-  <IonInput
-    type="text"
-    className="border p-2 rounded-full bg-transparent text-emerald-800 w-full"
-    value={searchTerm}
-    onIonInput={handleSearchInputChange}
-    onIonFocus={() => setShowSuggestions(true)}
-    placeholder="#writing, #workshop..."
-  />
+      <span className={`flex flex-rown w-full min-w-30`}>
+          <h5 className="my-auto ml-4 mr-4 mont-medium mx-4 text-emerald-800"> Search</h5>
+          <div ref={searchRef} className="relative w-[25em] p-4">
+
+<IonInput
+  type="text"
+  className="rounded-lg bg-emerald1-100 text-emerald-800"
+  value={searchTerm}
+
+         
+  onIonInput={handleSearchInputChange}
+  onIonFocus={() => setShowSuggestions(true)}
+  placeholder="#writing, #workshop..."
+/>
+
+
   
   {showSuggestions && filteredSuggestions.length > 0 && (
     <ul className="absolute z-10 mt-1 bg-white border border-emerald-300 rounded-md shadow-lg w-full max-h-[10em] overflow-auto">

@@ -379,7 +379,7 @@ export default function DashboardItem({ page, book, isGrid }) {
           ) : (
             <div onClick={addStoryToCollection}
               className='bg-emerald-700 flex grow flex-1/3'>
-              <img className="mx-auto my-auto" src={addCircle} />
+              <IonImg className="mx-auto my-auto" src={addCircle} />
             </div>
           )}
         </div>

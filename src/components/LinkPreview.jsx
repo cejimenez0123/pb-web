@@ -6,6 +6,7 @@ import { initGA, sendGAEvent } from '../core/ga4';
 import adjustScreenSize from '../core/adjustScreenSize';
 import Context from '../context';
 import SpotifyEmbed from './SpotifyEmbed';
+import { IonImg } from '@ionic/react';
 
 function LinkPreview({ url,isGrid}) {
   const {isPhone,isHorizPhone}=useContext(Context)
@@ -138,7 +139,7 @@ useLayoutEffect(()=>{
 
   if (previewData.videoId) {
     return (
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className={`rounded-lg p-1 ${size}`}src={previewData.videoThumbnail} alt="Video Thumbnail" />
+        <IonImg onClick={handleClick} style={{ cursor: 'pointer' }} className={`rounded-lg p-1 ${size}`}src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
   }

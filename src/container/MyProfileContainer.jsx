@@ -147,7 +147,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
  
 
     
-  },[])
+  },[currentProfile])
  
 
   useEffect(()=>{

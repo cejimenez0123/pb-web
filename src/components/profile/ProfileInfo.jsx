@@ -60,7 +60,7 @@ const ProfileInfo = ({profile})=>{
         dia.text = (
           <div className="card min-h-[20em] min-w-[30em] p-6 rounded-lg">
             <div className="mx-4">
-              <img
+              <IonImg
                 onClick={() => {
                   // also close dialog from X icon in top right
                   dispatch(setDialog({ isOpen: false }));
