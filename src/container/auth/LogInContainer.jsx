@@ -209,7 +209,7 @@ dispatch(setDialog(dia))
         </div>
          <GoogleLogin
          onUserSignIn={({email, idToken, googleId, driveAccessToken})=>{
-// dispatchLogin({email,googleId:googleId,idToken:idToken,isNative})
+
          }}
      
             

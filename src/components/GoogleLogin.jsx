@@ -108,6 +108,7 @@ console.log(googleId)
   // 4️⃣ Native (mobile) login
   // ---------------------------
   const nativeGoogleSignIn = async () => {
+     await SocialLogin.logout({ provider: 'google' });
     setPending(true);
     setLoginError(null);
     try {
@@ -232,25 +233,19 @@ console.log(googleId)
   // ---------------------------
   return (
     <div className="flex flex-col justify-center items-center w-full min-h-full">
-      {pending && <IonSpinner name="crescent" color="primary" />}
-      {!pending && !accessToken && (
-        <>
+   
+             <>
           
-            <div className="text-white" expand="block" onClick={nativeGoogleSignIn}>
+            <IonButton className="text-white" expand="block" onClick={nativeGoogleSignIn}>
              {drive?"Access your google drive":"Sign in with Google"}
-            </div>
+            </IonButton>
           
         </>
-      )}
+
       {loginError && (
         <IonText color="danger" className="mt-3">
           {loginError}
         </IonText>
-      )}
-      {accessToken && userInfo && (
-        <div className="mt-4 text-center">
-          <IonText>Welcome, {userInfo.name}</IonText>
-        </div>
       )}
     </div>
   );
