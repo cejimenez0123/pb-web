@@ -3,10 +3,10 @@ import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { IonText } from '@ionic/react';
 import Enviroment from '../../core/Enviroment';
 function AppleSignInButton({onUserSignIn}) {
-
+console.log("APPLE SIGN IN BUTTON RENDERED",import.meta.env.VITE_REDIRECT_URI)
   const options = {
     clientId: import.meta.env.VITE_APPLE_CLIENT_ID, 
-    redirectURI: Enviroment.redirectUrl, 
+    redirectURI: import.meta.env.VITE_REDIRECT_URI, 
     scopes: 'email name',
     state: '12345',
     nonce: 'nonce',

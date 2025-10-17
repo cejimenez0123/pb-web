@@ -29,9 +29,9 @@ export default function GoogleLogin({ drive,onUserSignIn }) {
   const googleButtonRef = useRef(null);
 
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
-  console.log(CLIENT_ID)
+
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
-  console.log(IOS_CLIENT_ID)
+
   const driveTokenKey = 'googledrivetoken';
 
   // ---------------------------
