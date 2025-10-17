@@ -119,19 +119,19 @@ console.log(googleId)
       if (!user) throw new Error('No user data returned.');
       let {accessToken,idToken,profile}=user.result
       console.log("VDFF",user.result)
-      console.log("VDFF",profile.id)
+      console.log("VDFF",accessToken)
       const expiry = Date.now() + 3600 * 1000;
       await Promise.all([
         Preferences.set({ key: 'userEmail', value: profile.email }),
         Preferences.set({ key: 'userName', value:profile.name }),
         Preferences.set({ key: 'googleId', value: profile.id }),
         Preferences.set({ key: 'googleIdToken', value:idToken || '' }),
-        Preferences.set({ key: driveTokenKey, value:accessToken || '' }),
+        Preferences.set({ key: driveTokenKey, value:accessToken.token || '' }),
         Preferences.set({ key: 'googledrivetoken_expiry', value: expiry.toString() }),
       ]);
 
       const info = { email: profile.email, name: profile.name, googleId: profile.id };
-      console.log("DDF",idToken)
+   
       setUserInfo(info);
       setAccessToken(accessToken);
       setIdToken(idToken);
@@ -238,7 +238,7 @@ console.log(googleId)
          
           <div  onClick={nativeGoogleSignIn} color="dark" 
           className='bg-gray-200 btn rounded-full flex h-[4rem] text-white w-[10rem] mt-8'>
-             <IonRow><IonImg src={Googlelogo} className='max-h-5 max-w-5' /><IonText className='text-black'> {drive?"Access your google drive":"Sign in"}</IonText></IonRow>
+             <IonRow><IonImg src={Googlelogo} className='max-h-5 max-w-5 mx-3 my-auto'  /><IonText className='text-black my-auto'> {drive?"Access your google drive":"Sign in"}</IonText></IonRow>
               </div>
         </>
 

@@ -586,14 +586,15 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
 
   // --- Fetch Files from Google Drive ---
   const fetchFiles = async () => {
-    const token =(await Preferences.get({ key: TOKEN_KEY})).value;
-    console.log(token)
+    const token =await Preferences.get({ key: TOKEN_KEY})
+    console.log("Fetched token for fetchFiles:", token);
+    try{
     if (!token) return;
-
+console.log("Using token to fetch files:", token);
     setLoading(true);
     fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token.value}`,
         Accept: 'application/json',
       },
     })
@@ -610,6 +611,9 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
         console.error('Google Drive API error:', err);
         setLoading(false);
       });
+    }catch(err){
+        console.error("Error in fetchFiles:", err);
+        }
   };
 
   useEffect(() => {
