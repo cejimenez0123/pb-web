@@ -1,7 +1,7 @@
 
 
 import React, { useState, useEffect, useLayoutEffect, useContext, useRef } from 'react';
-import { IonText, IonSpinner, IonButton } from '@ionic/react';
+import { IonText, IonSpinner, IonButton, IonImg, IonRow } from '@ionic/react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { SocialLogin } from '@capgo/capacitor-social-login';
@@ -11,7 +11,7 @@ import DeviceCheck from './DeviceCheck';
 import checkResult from '../core/checkResult';
 import Context from '../context';
 import { Preferences } from '@capacitor/preferences';
-
+import Googlelogo from "../images/logo/googlelogo.png"
 export default function GoogleLogin({ drive,onUserSignIn }) {
   const { isError } = useContext(Context);
   const [pending, setPending] = useState(false);
@@ -235,11 +235,11 @@ console.log(googleId)
     <div className="flex flex-col justify-center items-center w-full min-h-full">
    
              <>
-          
-            <IonButton className="text-white" expand="block" onClick={nativeGoogleSignIn}>
-             {drive?"Access your google drive":"Sign in with Google"}
-            </IonButton>
-          
+         
+          <div  onClick={nativeGoogleSignIn} color="dark" 
+          className='bg-gray-200 btn rounded-full flex h-[4rem] text-white w-[10rem] mt-8'>
+             <IonRow><IonImg src={Googlelogo} className='max-h-5 max-w-5' /><IonText className='text-black'> {drive?"Access your google drive":"Sign in"}</IonText></IonRow>
+              </div>
         </>
 
       {loginError && (

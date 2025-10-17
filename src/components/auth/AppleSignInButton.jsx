@@ -1,7 +1,8 @@
 import React from 'react';
 import { SignInWithApple } from '@capacitor-community/apple-sign-in';
-import { IonText } from '@ionic/react';
+import { IonImg, IonText } from '@ionic/react';
 import Enviroment from '../../core/Enviroment';
+import applelogo from "../../images/logo/applelogo.png"
 function AppleSignInButton({onUserSignIn}) {
 console.log("APPLE SIGN IN BUTTON RENDERED",import.meta.env.VITE_REDIRECT_URI)
   const options = {
@@ -30,8 +31,8 @@ console.log("APPLE SIGN IN BUTTON RENDERED",import.meta.env.VITE_REDIRECT_URI)
 
 
    return <div onClick={handleAppleSignIn}  color="dark" 
-className='bg-black btn rounded-full flex h-[4rem] text-white w-[10rem] mt-8'>
-      <IonText className='mx-auto my-auto'>Sign in with Apple</IonText>
+className='bg-black btn flex flex-row rounded-full flex h-[4rem] text-white w-[10rem] mt-8'>
+     <IonImg src={applelogo} className='max-h-5 max-w-5'/> <IonText class='text-small'>Sign in</IonText>
     </div>
 
 }
