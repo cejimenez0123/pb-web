@@ -2,7 +2,7 @@ import React from 'react';
 import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { IonImg, IonText } from '@ionic/react';
 import Enviroment from '../../core/Enviroment';
-import applelogo from "../../images/logo/applelogo.png"
+import applelogo from "../../images/logo/Applelogo.png"
 function AppleSignInButton({onUserSignIn}) {
 console.log("APPLE SIGN IN BUTTON RENDERED",import.meta.env.VITE_REDIRECT_URI)
   const options = {
