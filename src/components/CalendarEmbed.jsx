@@ -218,7 +218,7 @@ function CalendarEmbed(){
       }
       
       return (
-        <div className="max-w-[40rem]  mx-auto">
+        <div id="cal-embed" className="max-w-[40rem]  mx-auto">
         <div className={`flex  mx-auto text-left ${isPhone?"flex-col":`flex-row`}`}>
         <span className="flex flex-row"> 
             <h2 className="my-auto mont-medium mx-2 text-emerald-700">Filter by Area:</h2>

@@ -47,7 +47,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 
 function MyProfileContainer({currentProfile,presentingElement}) {
 
-  const isNative = DeviceCheck();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const stories = useSelector(state => state.pages.pagesInView)
@@ -59,8 +59,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const [description, setFeedback] = useState("")
   const [openDialog, setOpenDialog] = useState(false);
   const collections = useSelector(state => state.books.collections)
-  // const [ogStories, setOgStories] = useState();
-  // const [ogCols, setOgCols] = useState([]);
+
   const [feedbackPage, setFeedbackPage] = useState(null);
  
   const filterTypes = {
@@ -136,14 +135,15 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     }
     return result;
   }, [collections, filterType, search]);
-  
-  useLayoutEffect(()=>{
-   const getItems=async ()=> {
+  const getItems=async ()=> {
       let token = (await Preferences.get({key:"token"})).value
+      console.log("CURRENT PROFILE CHANGED - FETCH ITEMS",token)
        dispatch(getMyCollections({token}))
        dispatch(getMyStories({token}))
     } 
-      return ()=>getItems()
+  useEffect(()=>{
+   
+      return ()=>getItems().catch(err=>{console.log(err)})
  
 
     

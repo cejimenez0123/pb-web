@@ -9,7 +9,7 @@ import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
 import DeviceCheck from '../../components/DeviceCheck';
-import { IonContent, IonInput } from '@ionic/react';
+import { IonContent, IonIcon, IonInput, IonText } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { useSelector } from 'react-redux';
@@ -160,45 +160,53 @@ dispatch(setDialog(dia))
     }
     return(
         <ErrorBoundary>
-    <div  className=' md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+    <div id="cal-embed" className=' flex md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
-            <form className='max-w-[100vw] sm:max-w-82 text-center pt-4'>
-        <h1 className='text-emerald-800 mont-medium pb-4'> Log In</h1>
+            <form className='max-w-[100vw] sm:max-w-82 pt-4'>
+        <h1 className='text-emerald-800 mont-medium mx-auto text-center pb-4'> Log In</h1>
         <div >
-         <div className='max-w-[91vw]'>
-        <label className="input  open-sans-medium text-emerald-800 pl-6 w-52 overflow-hidden pl-2  rounded-full border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
-  Email
-  <IonInput type="text" className="shrink overflow-hidden  my-auto text-[1rem] w-[100%] sm:max-w-[100%]  open-sans-medium  bg-transparent text-emerald-800" 
+         {/* <div className='max-w-[91vw]'> */}
+        {/* <label className="input  open-sans-medium text-emerald-800 pl-6 w-52 overflow-hidden pl-2  rounded-full border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
+  Email */}
+  <IonInput type="text" className="shrink overflow-hidden  my-auto text-[1rem] sm:max-w-72   open-sans-medium  bg-transparent text-emerald-800" 
          value={email} 
+         labelPlacement='stacked'
+         label='Email'
          onIonInput={(e) => setEmail(e.target.value)}
         placeholder='example@email.com' />
-</label>
+{/* </label> */}
 </div>   
-<div className='mb-8 max-w-[91vw] '>
-    <label className="input open-sans-medium pl-6 inline-block flex rounded-full flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
-  Password
-  <IonInput type={showPassword?"text":`password`} className="shrink my-auto max-w-36 open-sans-medium sm:max-w-52  shrink text-emerald-800 " 
+{/* <div className='mb-8 max-w-[91vw] '> */}
+    {/* <label className="input open-sans-medium pl-6 inline-block flex rounded-full flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
+  Password */}
+  <span className='flex flex-row '>
+  <IonInput type={showPassword?"text":`password`} className="shrink my-auto max-w-36 open-sans-medium sm:max-w-96  shrink text-emerald-800 " 
          value={password}
-         
+         label='Password'
+         labelPlacement='stacked'
          onIonInput={(e) => setPassword(e.target.value)}
-        placeholder='*****' />
+        placeholder='*****' 
+        >
+            {/* <IonIcon slot='end'> */}
+         <h5 slot='end' onClick={()=>setShowPassword(!showPassword)}
+                className={`text-[0.7rem] open-sans-medium ${showPassword?"":"" } my-auto`}>
+                    {showPassword?"Hide":"Show"}</h5>
+                    {/* </IonIcon> */}
+        </IonInput>
          
-         <label onClick={()=>setShowPassword(!showPassword)}
-                className={`text-[0.7rem] min-w-[5em] w-64 open-sans-medium p-2 ${showPassword?"":"" }ml-1 my-auto`}>
-                    {showPassword?"Hide":"Show"}</label>
-</label> 
-    
-    </div>
+</span>
+
          
             
-            <button
-            className='bg-green-600   text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
+            <div
+            // style={{margin:"0 auto",width:"fit-content"}}
+            className='bg-green-600  w-[100%] rounded-full btn hover:bg-green-400  font-bold py-3 px-12 mt-4 '
                onClick={handleLogIn}
                 
-                variant="contained" ><h6 className='mont-medium text-xl tracking-wide'>Log In</h6></button>
+                variant="contained" ><IonText className='  text-white text-xl text-center '>Log In</IonText></div>
                 
-        </div>
+        {/* </div> */}
         <span className='flex flex-col mt-4 justify-center '> 
         <div className='w-fit mx-auto'>
         <AppleSignInButton
