@@ -198,9 +198,11 @@ function MyProfileContainer({currentProfile,presentingElement}) {
         title: "",
         commentable: true
       })).then(res => checkResult(res, payload => {
+        if(payload.story){
         dispatch(setEditingPage({ page: payload.story }));
         dispatch(setPageInView({ page: payload.story }));
         navigate(Paths.editPage.createRoute(payload.story.id));
+        }
       }));
     }
   }, 5);
@@ -227,10 +229,10 @@ async function getFile(file){
 
       
 try{
-
+if(file&&currentProfile){
     const driveTokenKey = "googledrivetoken";
     const accessToken = (await Preferences.get({key:driveTokenKey})).value
-        // if(window && window.gapi && window.gapi.client && window.gapi.client.files){
+        
           const url = `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=text/html`;
 
     const response = await axios.get(url, {
@@ -241,20 +243,9 @@ try{
     });
 
  
-          // await window.gapi.client.init({
-          //   apiKey: import.meta.env.VITE_GOOGLE_DEV_KEY, // 🔑 Your API Key
-          //   clientId:import.meta.env.VITE_IOS_CLIENT_ID, // 🆔 Your Client ID
-          //   discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'], // 🔎 Discover the Drive API
-          //   scope: 'https://www.googleapis.com/auth/drive.readonly',}) // 🔐 Define the required scope
-         
-          //   const response = await window.gapi.client.drive.files.export({
-          //       fileId: file.id,
-          //       mimeType: 'text/html',
-          //       access_token: accessToken
-          //   });
 
             const htmlContent = response.data;
-            console.log('Google Doc HTML Content:', htmlContent);
+        
 
             dispatch(createStory({
                 profileId: currentProfile.id,
@@ -265,14 +256,14 @@ try{
                 title: file.name,
                 commentable: false
             })).then(res => checkResult(res, ({ story }) => {
-                navigate(Paths.editPage.createRoute(story.id));
+                if (story)navigate(Paths.editPage.createRoute(story.id));
           
                 dispatch(setEditingPage({page:story}))
                       dispatch(setDialog({isOpen:false}))
             }, err => {
                 console.error("Error creating story:", err);
             }));
-
+          }
         } catch (error) {
             console.error('Error fetching Google Doc content:', error);
             setErrorLocal(error.message)
