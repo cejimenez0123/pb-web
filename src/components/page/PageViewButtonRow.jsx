@@ -17,7 +17,6 @@ import ErrorBoundary from "../../ErrorBoundary.jsx"
 import { createPageApproval } from "../../actions/PageActions"
 import { Preferences } from "@capacitor/preferences"
 import { IonImg } from "@ionic/react"
-import { getCurrentProfile } from "../../actions/UserActions.jsx"
 export default function PageViewButtonRow({page,setCommenting}){
     const {setSuccess,currentProfile,setError}=useContext(Context)
     const [likeFound,setLikeFound]=useState(null)

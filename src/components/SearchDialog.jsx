@@ -73,7 +73,7 @@ const SearchDialog = ({presentingElement}) => {
 
   // Your click handler for search results
   const handleOnClick = (searchItem)=>{
-    console.log(searchItem)
+ 
                 dispatch(searchDialogToggle({open:false}))
                 navigate(`/${searchItem.type}/${searchItem.objectID}`)
                 

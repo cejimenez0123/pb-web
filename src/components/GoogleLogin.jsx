@@ -83,8 +83,7 @@ export default function GoogleLogin({ drive,onUserSignIn }) {
           Preferences.get({ key: 'googledrivetoken_expiry' }),
           Preferences.get({ key: 'googleIdToken' }),
         ]);
-console.log(email)
-console.log(googleId)
+
         const valid = driveToken.value && expiry.value && Date.now() < parseInt(expiry.value, 10);
         if (email.value!="undefined" && googleId.value !="undefined"&& valid!="undefined") {
           setAccessToken(driveToken.value);
@@ -118,8 +117,7 @@ console.log(googleId)
       });
       if (!user) throw new Error('No user data returned.');
       let {accessToken,idToken,profile}=user.result
-      console.log("VDFF",user.result)
-      console.log("VDFF",accessToken)
+     
       const expiry = Date.now() + 3600 * 1000;
       await Promise.all([
         Preferences.set({ key: 'userEmail', value: profile.email }),

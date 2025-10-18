@@ -40,10 +40,10 @@ export default function usePersistentCurrentProfile(fetchData) {
   
     const fetchAndSave = async () => {
       let token = (await Preferences.get({key:"token"})).value
-       console.log("remote toke",token)
+      
       if(token!="undefined"){
        const remoteProfile = await fetchData({token});
-      console.log("REMOTE PROFILE",remoteProfile)
+     
       if(remoteProfile) {
         saveProfile(remoteProfile);
       }}

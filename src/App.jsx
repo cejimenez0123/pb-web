@@ -65,7 +65,7 @@ function App(props) {
   const [isSaved,setIsSaved]=useState(true)
   const profileInView = useSelector(state=>state.users.profileInView)
   
-  usePersistentCurrentProfile((params)=>dispatch(getCurrentProfile(params)))
+  usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
    const currentProfile = props.currentProfile
   
