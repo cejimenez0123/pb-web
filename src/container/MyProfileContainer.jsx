@@ -138,7 +138,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const getItems=async ()=> {
     try{
       let token = (await Preferences.get({key:"token"})).value
-      console.log("CURRENT PROFILE CHANGED - FETCH ITEMS",token)
+      
        dispatch(getMyCollections({token}))
        dispatch(getMyStories({token}))
   } catch(error){
