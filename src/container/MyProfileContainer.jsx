@@ -59,7 +59,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
   const [description, setFeedback] = useState("")
   const [openDialog, setOpenDialog] = useState(false);
   const collections = useSelector(state => state.books.collections)
-
+  const [errorLocal,setErrorLocal]=useState("Error")
   const [feedbackPage, setFeedbackPage] = useState(null);
  
   const filterTypes = {
@@ -136,18 +136,21 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     return result;
   }, [collections, filterType, search]);
   const getItems=async ()=> {
+    try{
       let token = (await Preferences.get({key:"token"})).value
       console.log("CURRENT PROFILE CHANGED - FETCH ITEMS",token)
        dispatch(getMyCollections({token}))
        dispatch(getMyStories({token}))
+  } catch(error){
+    setErrorLocal(error.message)
+  }
     } 
-  useEffect(()=>{
-   
-      return ()=>getItems().catch(err=>{console.log(err)})
- 
-
-    
-  },[currentProfile])
+  useEffect(() => {
+  getItems().catch(err => {
+    setErrorLocal(err.message);
+    console.error(err);
+  });
+}, [currentProfile]);
  
 
   useEffect(()=>{
@@ -272,6 +275,7 @@ try{
 
         } catch (error) {
             console.error('Error fetching Google Doc content:', error);
+            setErrorLocal(error.message)
             if (error.result && error.result.error) {
                 console.error('API Error details:', error.result.error.message);
             }
@@ -286,7 +290,7 @@ try{
 
   return (
     <IonContent className="ion-padding" fullscreen={true} scrollY>
-      <ErrorBoundary fallback={"error"}>
+      <ErrorBoundary fallback={errorLocal}>
         {/* Top-right icons */}
         <div className='absolute top-1 right-1 flex flex-row m-3 pr-4 w-36 justify-evenly'>
           {isNotPhone && (
