@@ -183,13 +183,13 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     const params = { ...feedbackPage, description, needsFeedback: true, page: feedbackPage };
     dispatch(updateStory(params)).then(res => {
       checkResult(res, payload => {
-        if (payload.story) navigate(Paths.workshop.createRoute(payload.story.id));
+        if (payload.story&&payload.story.id) navigate(Paths.workshop.createRoute(payload.story.id));
       });
     });
   };
 
   const ClickWriteAStory = debounce(() => {
-    if (currentProfile) {
+    if (currentProfile&& currentProfile.id) {
       sendGAEvent("Create", "Write a Story", "Click Write Story");
       dispatch(createStory({
         profileId: currentProfile.id,
@@ -201,7 +201,7 @@ function MyProfileContainer({currentProfile,presentingElement}) {
         if(payload.story){
         dispatch(setEditingPage({ page: payload.story }));
         dispatch(setPageInView({ page: payload.story }));
-        navigate(Paths.editPage.createRoute(payload.story.id));
+      if(payload.story&&payload.story.id)  navigate(Paths.editPage.createRoute(payload.story.id));
         }
       }));
     }
@@ -229,9 +229,10 @@ async function getFile(file){
 
       
 try{
-if(file&&currentProfile){
     const driveTokenKey = "googledrivetoken";
     const accessToken = (await Preferences.get({key:driveTokenKey})).value
+if(file&&currentProfile&&file.id&&accessToken){
+  
         
           const url = `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=text/html`;
 
