@@ -13,7 +13,10 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
 
   const { dialog, isPhone, currentProfile } = useContext(Context);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const [showFiles, setShowFiles] = useState(false);
 
   const [gapiLoaded, setGapiLoaded] = useState(false);
   const [driveClientLoaded, setDriveClientLoaded] = useState(false);
@@ -21,10 +24,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
   const [driveTokenAvailable, setDriveTokenAvailable] = useState(false);
   const [files, setFiles] = useState([]);
   const [accessToken, setAccessToken] = useState(null);
-  const [signedIn, setSignedIn] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [showFiles, setShowFiles] = useState(false);
-  const [pending, setPending] = useState(false);
+
  const TOKEN_KEY = "googledrivetoken"; // Consistent key for localStorage
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // Key for expiry time
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
@@ -58,9 +58,6 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
 
       if (!user) throw new Error('No user data returned.');
       const { accessToken, idToken, profile } = user.result;
-
-      console.log("Access token:", accessToken);
-      console.log("ID token:", idToken);
 
       // Verify scopes on token
       fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`)
@@ -174,8 +171,8 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
         }
   };
 
-  useEffect(() => {
-    if (accessToken) fetchFiles();
+  useLayoutEffect(() => {
+    if (accessToken) fetchFiles();else checkAccessToken()
   }, [accessToken]);
 
   // --- File Dialog ---

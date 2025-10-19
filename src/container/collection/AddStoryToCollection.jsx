@@ -147,7 +147,7 @@ let dia = {...dialog}
   // Render loading skeleton if no item available
   if (!item) {
     return (
-      <IonContent fullscreen className="ion-padding" scrollY>
+      <IonContent fullscreen={true} className="ion-padding" scrollY>
         <IonSkeletonText animated style={{ width: "96vw", height: 150, margin: "2rem auto", borderRadius: 18 }} />
         <IonSkeletonText animated style={{ width: "96vw", height: 400, margin: "2rem auto", borderRadius: 18 }} />
       </IonContent>

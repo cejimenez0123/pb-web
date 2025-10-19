@@ -108,7 +108,6 @@ title='Search'
     </IonToolbar>
   
     </IonHeader>
-  {/* <IonContent> */}
       
           <IonList style={{overflowY:"scroll"}}className='flex flex-col l'>
             {searchContent.length > 0 ? (

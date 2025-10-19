@@ -381,7 +381,7 @@ const openRoleFormDialog = (fetchedPage) => {
 };
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
-          <IonContent fullscreen scrollY className="ion-padding pt-8">
+          <IonContent fullscreen={true} scrollY className="ion-padding pt-8">
             <IonHeader>
               <IonButtons >
                 <IonBackButton  defaultHref={Paths.myProfile()}/></IonButtons>

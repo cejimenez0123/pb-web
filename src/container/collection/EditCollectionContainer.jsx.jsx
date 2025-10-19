@@ -234,7 +234,7 @@ dispatch(setDialog(dia))
   }
   if (!colInView) {
     return (
-      <IonContent fullscreen>
+      <IonContent fullscreen={true}>
         <div className="skeleton w-96 bg-emerald-50 max-w-[96vw]  m-2 h-96" />
       </IonContent>
     );
@@ -242,7 +242,7 @@ dispatch(setDialog(dia))
 
   if (colInView && canUserEdit) {
     return (
-      <IonContent fullscreen scrollY>
+      <IonContent fullscreen={true} scrollY>
         <IonHeader>
           <IonToolbar>
             <IonTitle className="ion-text-center">Edit Collection: {colInView.title}</IonTitle>
@@ -451,7 +451,7 @@ dispatch(setDialog(dia))
   }
 
   return (
-    <IonContent fullscreen>
+    <IonContent fullscreen={true}>
       <IonHeader>
         <IonToolbar>
           <IonTitle className="ion-text-center">Loading...</IonTitle>

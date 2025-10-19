@@ -155,7 +155,7 @@ state.loading = true
 
     const list = cols.map(col=>{
         return payload.collections.find(colx=>{
-           return col.id==colx.id}
+           return col && col.id && colx && colx.id && col.id==colx.id}
         )
     })
     const filtered = payload.collections.filter(col=>{
