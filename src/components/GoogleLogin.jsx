@@ -55,6 +55,7 @@ export default function GoogleLogin({ drive,onUserSignIn }) {
   // 2️⃣ Load GIS script (for web)
   // ---------------------------
   useLayoutEffect(() => {
+    try{
     if (!isNative && !window.google?.accounts) {
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
@@ -66,6 +67,8 @@ export default function GoogleLogin({ drive,onUserSignIn }) {
     } else if (!isNative) {
       setGisLoaded(true);
     }
+  }catch(err){
+    console.error("Error loading GIS script:",err)  }
   }, [isNative]);
 
   // ---------------------------
@@ -75,14 +78,14 @@ export default function GoogleLogin({ drive,onUserSignIn }) {
     const loadStoredUser = async () => {
       setPending(true);
       try {
-        const [email, name, googleId, driveToken, expiry, idToken] = await Promise.all([
-          Preferences.get({ key: 'userEmail' }),
-          Preferences.get({ key: 'userName' }),
-          Preferences.get({ key: 'googleId' }),
-          Preferences.get({ key: driveTokenKey }),
-          Preferences.get({ key: 'googledrivetoken_expiry' }),
-          Preferences.get({ key: 'googleIdToken' }),
-        ]);
+        // const [email, name, googleId, driveToken, expiry, idToken] = await Promise.all([
+        let email = await  Preferences.get({ key: 'userEmail' })
+       let name = await Preferences.get({ key: 'userName' })
+         let googleId = await Preferences.get({ key: 'googleId' })
+          let driveToken = await Preferences.get({ key: driveTokenKey })
+        let expiry = await  Preferences.get({ key: 'googledrivetoken_expiry' })
+         let idToken = await Preferences.get({ key: 'googleIdToken' })
+        // ]);
 
         const valid = driveToken.value && expiry.value && Date.now() < parseInt(expiry.value, 10);
         if (email.value!="undefined" && googleId.value !="undefined"&& valid!="undefined") {
@@ -107,10 +110,11 @@ export default function GoogleLogin({ drive,onUserSignIn }) {
   // 4️⃣ Native (mobile) login
   // ---------------------------
   const nativeGoogleSignIn = async () => {
-     await SocialLogin.logout({ provider: 'google' });
+   
+    try {
+        await SocialLogin.logout({ provider: 'google' });
     setPending(true);
     setLoginError(null);
-    try {
       const user = await SocialLogin.login({
         provider: 'google',
         options: { scopes: ['email', 'profile', 'https://www.googleapis.com/auth/drive.readonly'] },

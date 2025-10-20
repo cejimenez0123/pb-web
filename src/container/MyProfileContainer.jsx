@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import IndexList from '../components/page/IndexList';
 import authRepo from '../data/authRepo.js';
 import Paths from '../core/paths';
-import { debounce } from 'lodash';
+import { debounce, isNative } from 'lodash';
 import { setPageInView, setPagesInView, setEditingPage } from '../actions/PageActions.jsx';
 import {  sendGAEvent } from '../core/ga4.js';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
@@ -20,7 +20,7 @@ import FeedbackDialog from '../components/page/FeedbackDialog';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import copyContent from "../images/icons/content_copy.svg";
 import DeviceCheck from '../components/DeviceCheck.jsx';
-import { IonPage, IonText, IonIcon, IonInput,IonContent } from '@ionic/react';
+import { IonPage, IonText, IonIcon, IonInput,IonContent, IonSpinner } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 import { setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
@@ -47,7 +47,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 
 function MyProfileContainer({currentProfile,presentingElement}) {
 
-
+  const isNative = DeviceCheck()
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const stories = useSelector(state => state.pages.pagesInView)
@@ -145,12 +145,16 @@ function MyProfileContainer({currentProfile,presentingElement}) {
     setErrorLocal(error.message)
   }
     } 
-  useEffect(() => {
-  getItems().catch(err => {
-    setErrorLocal(err.message);
-    console.error(err);
-  });
+  
+    useEffect(() => {
+  if (isNative) {
+    setTimeout(() => getItems().catch(console.error), 300);
+  } else {
+    getItems().catch(console.error);
+  }
 }, [currentProfile]);
+
+
  
 
   useEffect(()=>{
@@ -273,16 +277,28 @@ if(file&&currentProfile&&file.id&&accessToken){
             }
         }}
     
-  useLayoutEffect(() => {
-   return ()=>{ if (currentProfile) {
+  // useLayoutEffect(() => {
+  //  return ()=>{ if (currentProfile) {
+  //     setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
+  //     dispatch(setPagesInView({ pages: currentProfile.stories }));
+  //   }}
+  // }, [currentProfile, setSeo, dispatch]);
+  useEffect(() => {
+  return () => {
+    if (currentProfile) {
       setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
       dispatch(setPagesInView({ pages: currentProfile.stories }));
-    }}
-  }, [currentProfile, setSeo, dispatch]);
+    }
+  };
+}, [currentProfile, setSeo, dispatch]);
+  if(!currentProfile){
+    return <IonContent><IonSpinner/></IonContent>
+  }
 
   return (
     <IonContent className="ion-padding" fullscreen={true} scrollY>
-      <ErrorBoundary fallback={errorLocal}>
+       <div style={{ paddingBottom: "5rem" }}> 
+      {/* <ErrorBoundary fallback={errorLocal}> */}
         {/* Top-right icons */}
         <div className='absolute top-1 right-1 flex flex-row m-3 pr-4 w-36 justify-evenly'>
           {isNotPhone && (
@@ -397,8 +413,8 @@ getDriveToken()
           setFeedbackPage(null)
           }}/>
 
-        
-      </ErrorBoundary>
+        </div>
+      {/* </ErrorBoundary> */}
     </IonContent>
   );
 }

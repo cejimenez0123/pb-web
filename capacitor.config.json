@@ -3,6 +3,10 @@
   "appName": "ios",
   "webDir": "dist",
   "plugins": {
+    "Keyboard": {
+    "resize": "none", 
+   "style": "default"
+  },
     "PushNotifications": {
       "presentationOptions": [
         "badge",
@@ -12,3 +16,4 @@
     }
   }
 }
+

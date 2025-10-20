@@ -58,8 +58,11 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
 
       if (!user) throw new Error('No user data returned.');
       const { accessToken, idToken, profile } = user.result;
-
+      if(!accessToken){
+        throw new Error("No access token returned from Google.");
+      }
       // Verify scopes on token
+      try{
       fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`)
         .then(r => r.json())
         .then(info => {
@@ -68,7 +71,9 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
             console.warn("⚠️ Token missing Drive scope — Drive access may fail.");
           }
         });
- 
+      }catch(err){
+        console.error("Error verifying token scopes:", err);
+      }
       // Save token
       const expiry = Date.now() + 3600 * 1000;
       await Preferences.set({ key: TOKEN_KEY, value: accessToken.token });

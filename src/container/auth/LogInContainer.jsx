@@ -21,16 +21,18 @@ export default function LogInContainer() {
     const currentProfile = useSelector(state=>state.users.currentProfile)
   
  const navigate = useNavigate()
-    useLayoutEffect(()=>{
+    useEffect(()=>{
         let soo = seo
         soo.title = "Plumbum (Log In) - Share Your Weirdness"
         setSeo(soo)
        
    },[])
    useEffect(()=>{
-    if(currentProfile){
-        navigate(Paths.myProfile())
-    }
+    Preferences.get({key:"token"}).then(res=>{
+        if(res && res.value && res.value.length>10 && currentProfile){
+            navigate(Paths.myProfile())
+        }
+    })
    },[currentProfile])
 
     return (
