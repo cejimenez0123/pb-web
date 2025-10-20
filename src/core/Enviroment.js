@@ -9,6 +9,7 @@ if(import.meta.env.VITE_NODE_ENV=="dev"){
     redirectUrl = import.meta.env.VITE_DEV_REDIRECT_URL
     console.log("NODE_ENV:",import.meta.env.VITE_NODE_ENV)
 }
+console.log(import.meta.env.VITE_PROXY_URL)
 const Enviroment = {
     proxyUrl:import.meta.env.VITE_PROXY_URL,
     redirectUrl:import.meta.env.VITE_REDIRECT_URI,

@@ -62,7 +62,7 @@ export default function PageViewContainer(props){
         dispatch(getStory({id})).then(res=>{
             checkResult(res,(payload)=>{
                 
-                if(payload.story.comments.length>0){
+                if(payload && payload.story && payload.story.comments && payload.story.comments.length>0){
                 dispatch(setComments({comments:payload.story.comments}))
                
                 }
@@ -134,13 +134,14 @@ useLayoutEffect(()=>{
     }
 },[])
 
-    return( <ErrorBoundary><IonContent fullscreen={true}>
+    return( <ErrorBoundary>
+        <IonContent fullscreen={true}>
        
-    
+    <div className="ion-padding" style={{paddingTop:"6rem",paddingBottom:"5rem"}}>
     {canUserSee?
     <>
     <PageDiv page={page}/><CommentThread page={page} comments={rootComments}/></>:pending?<div className="skeleton bg-slate-50  max-w-[96vw] mx-auto md:w-page h-page"/>:<div className="flex max-w-[96vw] max-w-[96vw] mx-auto md:w-page h-pag"><h1 className="mont-medium my-12 mx-auto">Took a Wrong turn</h1></div>}
-    
+    </div>
     
 
     

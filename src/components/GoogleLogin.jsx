@@ -41,7 +41,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   // 1️⃣ Initialize for mobile
   // ---------------------------
   useLayoutEffect(() => {
-    if (!isNative) return;
+    // if (!isNative) return;
 
     try {
       SocialLogin.initialize({
@@ -315,7 +315,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
         </IonRow>
       </div>
 
-      <div ref={googleButtonRef} className="mt-4"></div>
+      {/* <div ref={googleButtonRef} className="mt-4"></div> */}
 
       {loginError && (
         <IonText color="danger" className="mt-3">

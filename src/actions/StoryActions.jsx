@@ -20,6 +20,7 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 
     }
   }catch(error){
+    console.log("Error in getStory:", error);
     return {error}
   }
 })
@@ -78,11 +79,13 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
   try{
 
       let data = await storyRepo.postStory(params)
+       const {story}=data
       if(!data.story.isPrivate){
-        const {story}=data
-          client.initIndex("story").partialUpdateObject(
-            {objectID:story.id,title:story.title,type:"story"},{createIfNotExists:true}).wait()
-        }  
+       
+        await client.partialUpdateObject(
+  { objectID: story.id, title: story.title, type: "story" },
+  { createIfNotExists: true }
+);}
       return {
         story:data.story
       }

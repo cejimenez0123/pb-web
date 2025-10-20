@@ -17,7 +17,17 @@ function PageItem({page,setPageIdList}){
             pageDataElement = <div id="page-data-element-text" className='dashboard-content px-2 mx-1 pt-8 ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         break;
         case page.type == PageType.picture:
-            pageDataElement = <IonImg id="page-data-element-img"className='dashborad-content' src={`${page.data}`} alt={page.title}/>
+            pageDataElement = <IonImg
+ 
+  src={previewData.image}
+  style={{
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain', // or 'cover' to fill and crop
+  }}
+  className="w-full ion-image-fit h-auto object-contain rounded-lg"
+/>
+
         break;
         case page.type == PageType.link:
             pageDataElement = <LinkPreview id="page-data-element-link" url={page.data}/>

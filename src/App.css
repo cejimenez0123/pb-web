@@ -11,7 +11,12 @@ ion-checkbox .checkbox-icon {
 .screen{
   padding-top: 1.5em;
 }
-
+.ion-img-fit {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* fits image inside container without cropping */
+  display: block; /* remove default inline spacing */
+}
 #cal-embed .native-input{
   border-radius: 10em;
    background-color: rgb(196, 222, 216) !important;

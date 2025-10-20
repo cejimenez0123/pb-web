@@ -2,6 +2,7 @@ import {
     IonLabel,
     IonHeader,
     IonImg,
+    IonInput,
     IonText,
   } from "@ionic/react";
   import { useContext, useEffect, useState } from "react";
@@ -181,7 +182,7 @@ import {
         <IonLabel className=" border-emerald-600 border-2 max-w-[30em] mx-auto  flex rounded-full bg-transparent text-emerald-800">
           <div className="flex h-fit px-2 py-1 my-auto ">
           <IonText className=" my-auto">URL:</IonText>
-          <input
+          {/* <input
             type="text"
             value={localContent}
             
@@ -189,7 +190,17 @@ import {
             onIonChange={handleLocalContent}
             clearInput={false}
             aria-label="URL input"
+          /> */}
+          <IonInput
+             type="text"
+            value={localContent}
+            
+            className="text-emerald-800 text-[1.5rem] w-[90%] bg-transparent"
+            onIonChange={handleLocalContent}
+            clearInput={false}
+            aria-label="URL input"
           />
+          
           </div>
         </IonLabel>
   

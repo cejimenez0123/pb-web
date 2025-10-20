@@ -58,7 +58,7 @@ switch(page.type){
   ) }
   case PageType.picture:{
   
-    return(image?!isHorizPhone?<IonImg  id="page-data-pic"  
+    return(image?!isHorizPhone?<img  id="page-data-pic"  
 
         className="w-page-mobile"
         onClick={()=>{
@@ -70,7 +70,7 @@ switch(page.type){
      alt={page.title} src={image}
     />:
     <IonImg        id="page-data-pic"
-    className="w-page-mobile"
+    className="w-full h-full object-contain"
 
     onClick={()=>{
    

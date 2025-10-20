@@ -87,8 +87,10 @@ export default function PageViewButtonRow({page,setCommenting}){
     setLoading(false)
 }}
 const getArchive=()=>{
+if(currentProfile && currentProfile.profileToCollections){
     let ptc = currentProfile.profileToCollections.find(ptc=>ptc.type=="archive")
     setArchive(ptc.collection)
+}
 }
 useEffect(()=>{
     getArchive()

@@ -54,11 +54,11 @@
   color:black;
 }
 
-.content-item img{ 
+/* .content-item img{ 
   max-width: 100%;    
   height:auto;
   margin: 0 auto;
-} 
+}  */
 .dashboard-content.text{
   background-color:var(--slightly-yellow);
   word-wrap: break-word;
@@ -108,12 +108,15 @@
   background-color: black;
  
 }
-
-.content-item img{ 
+.page-data-pic img{
+  max-width: 30em !important;
+ 
+}
+/* .content-item img{ 
     width: 100%;    
     height:auto;
-    margin: 0 auto;
-  } 
+    margin: 0 auto; */
+  /* }  */
 .content-item .text{
  
   background-color: var(--slightly-yellow);
