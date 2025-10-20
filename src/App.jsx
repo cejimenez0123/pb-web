@@ -65,7 +65,7 @@ function App(props) {
   const [isSaved,setIsSaved]=useState(true)
   const profileInView = useSelector(state=>state.users.profileInView)
   
-  usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+  let oldProfile = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
    const currentProfile = props.currentProfile
   
@@ -102,7 +102,7 @@ function App(props) {
   
   return (
     <IonApp >   
-      <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+      <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile??oldProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
       <IonPage  ref={page} className=' App pb-8 pt-12 background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
      

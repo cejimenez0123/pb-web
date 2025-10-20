@@ -106,43 +106,71 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
   }, [currentProfile]);
 
   // --- Load GAPI and GIS Scripts ---
-  useEffect(() => {
-    const loadGapiAndDriveClient = () => {
-      window.gapi.load('client:picker', () => {
-        window.gapi.client.load('drive', 'v3')
-          .then(() => {
-            setDriveClientLoaded(true);
-            console.log("GAPI client for Drive (v3) loaded.");
-          })
-          .catch(err => console.error("Error loading gapi.client.drive:", err));
-
-        setGapiLoaded(true);
-      });
-    };
-
-    const loadGisForPicker = () => {
-      setGisLoadedForPicker(true);
-      console.log("GIS OAuth2 client loaded.");
-    };
-
+// --- Load GAPI and GIS Scripts ---
+useEffect(() => {
+  const initGapi = async () => {
     if (!window.gapi) {
-      const scriptGapi = document.createElement('script');
-      scriptGapi.src = 'https://apis.google.com/js/api.js';
-      scriptGapi.onload = loadGapiAndDriveClient;
-      document.body.appendChild(scriptGapi);
-    } else {
-      loadGapiAndDriveClient();
+      console.warn("⏳ GAPI script not found yet, retrying...");
+      return;
     }
 
-    if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
-      const scriptGis = document.createElement('script');
-      scriptGis.src = 'https://accounts.google.com/gsi/client';
-      scriptGis.onload = loadGisForPicker;
-      document.body.appendChild(scriptGis);
-    } else {
-      loadGisForPicker();
+    try {
+      await new Promise((resolve, reject) => {
+        window.gapi.load('client:picker', {
+          callback: resolve,
+          onerror: () => reject(new Error("Failed to load gapi client modules")),
+          timeout: 5000,
+          ontimeout: () => reject(new Error("Timed out loading gapi")),
+        });
+      });
+
+      await window.gapi.client.load('drive', 'v3');
+      console.log("✅ GAPI Drive client loaded");
+      setGapiLoaded(true);
+      setDriveClientLoaded(true);
+    } catch (err) {
+      console.error("❌ Error initializing GAPI:", err);
     }
-  }, []);
+  };
+
+  const loadGapiScript = () => {
+    if (window.gapi) {
+      initGapi();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://apis.google.com/js/api.js';
+    script.async = true;
+    script.defer = true;
+    script.onload = initGapi;
+    script.onerror = () => console.error("❌ Failed to load gapi script");
+    document.body.appendChild(script);
+  };
+
+  const loadGisScript = () => {
+    if (window.google?.accounts?.oauth2) {
+      setGisLoadedForPicker(true);
+      console.log("✅ GIS (Google Identity Services) already loaded");
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      setGisLoadedForPicker(true);
+      console.log("✅ GIS OAuth2 client loaded");
+    };
+    script.onerror = () => console.error("❌ Failed to load GIS script");
+    document.body.appendChild(script);
+  };
+
+  loadGapiScript();
+  loadGisScript();
+}, []);
+
 
   // --- Fetch Files from Google Drive ---
   const fetchFiles = async () => {

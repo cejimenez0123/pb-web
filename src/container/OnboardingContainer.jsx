@@ -196,13 +196,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
               />
             </IonItem>
             <IonItem className='ion-text-center flex'>
-{/*            
-            <GoogleLogin onUserSignIn={({email, name,googleId})=>{
-                updateFormData({email:email})
-                updateFormData({fullName:name})
-                updateFormData({googleId:googleId})
-            }} />
-      */}
+
             </IonItem>
             <IonItem className='ion-text-center' >
             

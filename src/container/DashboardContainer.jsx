@@ -94,7 +94,7 @@ function DashboardContainer() {
 
   return (
     // <IonPage>
-      <IonContent fullscreen scrollY>
+      <IonContent fullscreen={true} scrollY>
         <ErrorBoundary>
           <div id="dashboard">
             <div className="py-8">
