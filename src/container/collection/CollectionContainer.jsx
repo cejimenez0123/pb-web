@@ -100,51 +100,6 @@ const isNative = DeviceCheck()
     }
   }
   
-  function soUserCanSee() {
-    if (!collection) {
-      setCanUserSee(false);
-      return;
-    }
-    if (!collection.isPrivate) {
-      setCanUserSee(true);
-      return;
-    }
-    if (currentProfile) {
-      if (currentProfile.id === collection.profileId) {
-        setCanUserSee(true);
-        return;
-      }
-      if (collection.roles) {
-        let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-        if (found && sightArr.includes(found.role)) {
-          setCanUserSee(true);
-          return;
-        }
-      }
-    }
-    if (collection.parentCollections) {
-      for (let cTc of collection.parentCollections) {
-        const col = cTc.parentCollection;
-        if (col && !col.isPrivate) {
-          setCanUserSee(true);
-          return;
-        }
-        if (col && col.roles) {
-          let found = col.roles.find(colRole => colRole && colRole.profileId === currentProfile?.id);
-          if (found && sightArr.includes(found.role)) {
-            setCanUserSee(true);
-            return;
-          }
-          if (col && col.profileId === currentProfile?.id) {
-            setCanUserSee(true);
-            return;
-          }
-        }
-      }
-    }
-    setCanUserSee(false);
-  }
-  
   function soUserCanAdd() {
     if (!currentProfile || !collection) {
       setCanUserAdd(false);
@@ -192,7 +147,7 @@ const isNative = DeviceCheck()
       setCanUserSee(false);
       return;
     } else if (currentProfile && collection) {
-      soUserCanSee();
+ 
       soUserCanAdd();
       soUserCanEdit();
       dispatch(getRecommendedCollectionsProfile());
@@ -259,35 +214,101 @@ const isNative = DeviceCheck()
       setError("Please Sign In");
     }
   };
-const getCol=async ()=>{
-       setLoading(true)
+// const getCol=async ()=>{
+//        setLoading(true)
 
-        const token =(await Preferences.get({key:"token"})).value
-       token!="undefined"?dispatch(fetchCollectionProtected({id})).then(res=>{
-            checkResult(res,payload=>{
-             setLoading(false)
+//         const token =(await Preferences.get({key:"token"})).value
+//        token!="undefined"?dispatch(fetchCollectionProtected({id})).then(res=>{
+//             checkResult(res,payload=>{
+//              setLoading(false)
          
-             findRole()
-            },err=>{
-                setError(err.meesage)
-                setLoading(false)
-            })
-        }):dispatch(fetchCollection({id})).then(res=>{
-            checkResult(res,payload=>{
-                if(payload.collection){
+//              findRole()
+//             },err=>{
+//                 setError(err.meesage)
+//                 setLoading(false)
+//             })
+//         }):dispatch(fetchCollection({id})).then(res=>{
+//             checkResult(res,payload=>{
+//                 if(payload.collection){
                 
                 
                    
-                     setLoading(false)}
-                     else{
-                  setLoading(false)
-                }
-            },err=>{
-                setError(err.meesage)
-                setLoading(false)
-            })
+//                      setLoading(false)}
+//                      else{
+//                   setLoading(false)
+//                 }
+//             },err=>{
+//                 setError(err.meesage)
+//                 setLoading(false)
+//             })
+//         })
+//     }
+const getCol = async () => {
+  setLoading(true);
+  try {
+    const token = (await Preferences.get({ key: "token" })).value;
+
+    if (token && token !== "undefined") {
+      dispatch(fetchCollectionProtected({ id }))
+        .then((res) => {
+          checkResult(
+            res,
+            (payload) => {
+              setLoading(false);
+              findRole();
+            },
+            (err) => {
+              if (err.status === 403) {
+                setError("Access Denied: You do not have permission to view this collection.");
+                setCanUserSee(false);
+              } else {
+                setError(err.message || "Failed to load collection.");
+              }
+              setLoading(false);
+            }
+          );
         })
+        .catch((e) => {
+          setError("An unexpected error occurred.");
+          setLoading(false);
+        });
+    } else {
+      dispatch(fetchCollection({ id }))
+        .then((res) => {
+          checkResult(
+            res,
+            (payload) => {
+              if (payload.collection) {
+                setLoading(false);
+              } else {
+                setError("Collection not found.");
+                setLoading(false);
+              }
+            },
+            (err) => {
+              if (err.status === 403) {
+                setError("Access Denied: You do not have permission to view this collection.");
+                setCanUserSee(false);
+              } else {
+                setError(err.message || "Failed to load collection.");
+              }
+              setLoading(false);
+            }
+          );
+        })
+        .catch((e) => {
+          setError("An unexpected error occurred.");
+          setLoading(false);
+        });
     }
+  } catch (error) {
+    console.error(error);
+    setError("Unexpected error occurred while fetching the collection.");
+    setLoading(false);
+  }
+};
+
+
     useEffect(()=>{
       canUserSee?getContent():null
     },[canUserSee,collection])
@@ -481,10 +502,12 @@ const getCol=async ()=>{
             <IonTitle>Collection Access</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonText color="danger" className="ion-padding">
-          <h3>Private Collection or insufficient permissions. 🤷‍♂️</h3>
-          <p>If you think this is an error, contact the owner.</p>
-        </IonText>
+       <IonText color="danger" className="ion-padding">
+  <h3>403 — Access Denied</h3>
+  <p>You don’t have permission to view this collection.</p>
+  <p>If you believe this is a mistake, please contact the collection owner.</p>
+</IonText>
+
       </IonContent>
     );
   }
