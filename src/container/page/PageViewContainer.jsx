@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
 import "../../styles/PageView.css";
@@ -20,6 +20,7 @@ export default function PageViewContainer() {
   const { setSeo, seo, setError, currentProfile } = useContext(Context);
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
 
