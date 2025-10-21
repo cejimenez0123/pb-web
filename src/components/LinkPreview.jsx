@@ -43,15 +43,31 @@ function LinkPreview({ url, isGrid }) {
     }
   }, [url]);
 
-const fetchPreview = async (url) => {
-  try {
-   const response = await axios.get(
-  `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`
-);
-console.log(response.data);
-const data = await response.json();
+// const fetchPreview = async (url) => {
+//   try {
+//    const response = await axios.get(
+//   `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`
+// );
+// console.log(response.data);
+// const data = await response.json();
 
    
+//     console.log("Fetched preview data:", data);
+//     setPreviewData(data);
+//   } catch (error) {
+//     console.error('Failed to fetch link preview:', error);
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+const fetchPreview = async (url) => {
+  try {
+    const response = await axios.get(
+      `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`
+    );
+
+    const data = response.data; // ✅ axios already gives JSON
+
     console.log("Fetched preview data:", data);
     setPreviewData(data);
   } catch (error) {
@@ -60,6 +76,7 @@ const data = await response.json();
     setLoading(false);
   }
 };
+
 
 
   const handleClick = () => {

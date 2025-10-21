@@ -456,6 +456,14 @@ const getCol = async () => {
     
     
         }
+          const handleBack = (e) => {
+    e.preventDefault();
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(Paths.discovery());
+    }
+  };
   // Example getMore for infinite scrolling (to be filled with your pagination logic)
   const getMore = () => {
     // Example: dispatch get more pages/stories for pagination
@@ -486,8 +494,17 @@ const getCol = async () => {
     if (loading) {
       return (
         <IonContent fullscreen={true} >
-          <IonHeader>
-            <IonToolbar>
+              <IonHeader> 
+      <IonToolbar>
+        <IonButtons>
+                       <IonBackButton
+                       
+      defaultHref={Paths.discovery()}
+      onClick={handleBack}
+    /> 
+
+        </IonButtons>
+      
               <IonTitle>Loading collection...</IonTitle>
             </IonToolbar>
           </IonHeader>
@@ -497,11 +514,23 @@ const getCol = async () => {
     }
     return (
       <IonContent fullscreen={true}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Collection Access</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+            <IonHeader> 
+      <IonToolbar>
+        <IonButtons>
+                       <IonBackButton
+                       
+      defaultHref={Paths.discovery()}
+      onClick={handleBack}
+    /> 
+
+        </IonButtons>
+        </IonToolbar>      
+
+
+
+
+
+      </IonHeader>
        <IonText color="danger" className="ion-padding">
   <h3>403 — Access Denied</h3>
   <p>You don’t have permission to view this collection.</p>
@@ -517,36 +546,30 @@ const getCol = async () => {
     <IonContent 
     fullscreen={true}  scrollY>
   
-      <IonHeader >
-  
-<IonToolbar  >
-  <IonButtons  slot="start">
-    <IonBackButton defaultHref="/discovery" />
+  <IonHeader>
+  <IonToolbar>
 
-  </IonButtons>
+    {/* Left-aligned back button */}
+    <IonButtons slot="start">
+      <IonBackButton
+        defaultHref={Paths.discovery()}
+        onClick={handleBack}
+      />
+    </IonButtons>
 
-  <IonTitle>Collection</IonTitle>
+    {/* Right-aligned edit button */}
+    {canUserEdit && (
+      <IonButtons slot="end">
+        <IonImg
+          className="btn max-h-[2rem] bg-emerald-400 cursor-pointer max-w-[3rem] flex items-center border-0 justify-center px-2 rounded"
+          onClick={() => navigate(Paths.editCollection.createRoute(id))}
+          src={edit}
+        />
+      </IonButtons>
+    )}
 
-  <IonButtons slot="end">
-    {/* Action buttons or icons */}
-
-    {canUserEdit ? ( 
-     <IonButton slot="end"> 
-   <IonImg slot="end"
-   className="btn max-h-[2rem] btn bg-emerald-400 cursor-pointer max-w-[3rem] flex items-center border-0 justify-center px-2 rounded"
-    
-onClick={() => navigate(Paths.editCollection.createRoute(id))}
-   src={edit} />
-    </IonButton> 
- ):null}
-    
-  </IonButtons>
-</IonToolbar>
-
-
-
-
-      </IonHeader>
+  </IonToolbar>
+</IonHeader>
 
       <ErrorBoundary>
         <IonCard className="ion-margin-bottom ion-padding">

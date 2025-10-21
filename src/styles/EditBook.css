@@ -3,6 +3,26 @@
     list-style-position:inside;
     margin:0;
     padding:0; }
+.icon-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.ion-padding {
+  padding-bottom: 4rem !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bg-gray-50 {
+    background-color: #111827 !important;
+  }
+  .bg-white {
+    background-color: #1f2937 !important;
+  }
+  .text-emerald-700 {
+    color: #34d399 !important;
+  }
+}
 
 @media (min-width: 768px) {
     #sort-list{
