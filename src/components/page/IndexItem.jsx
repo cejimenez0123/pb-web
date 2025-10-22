@@ -121,7 +121,7 @@ function IndexItem({item,handleFeedback}) {
 
 
     return(
-  <div className="max-w-[40rem]">
+  <div className="w-[90vw] sm:w-[40rem]">
                 <div className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full  min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
                 
          <div className=" h-fit my-auto md:w-[30em]  max-w-[100vw] text-nowrap text-ellipsis  ">

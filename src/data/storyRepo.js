@@ -87,6 +87,7 @@ class StoryRepo{
     }
     async updateStory(params){
         const { 
+            id,
             page,
             data,
             isPrivate,
@@ -97,7 +98,7 @@ class StoryRepo{
             commentable,
             type
            }=params
-       const res = await axios.put(this.url+"/"+page.id,{
+       const res = await axios.put(this.url+"/"+id,{
             data: data,
             isPrivate:isPrivate,
             description,

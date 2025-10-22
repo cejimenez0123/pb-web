@@ -264,17 +264,17 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
 
             <div className='md:w-2/3 flex flex-col gap-4'>
               <div className='flex flex-row gap-4 justify-center md:justify-start'>
-                <ButtonWrapper onClick={ClickWriteAStory} className='bg-emerald-600 text-white rounded-full h-[5rem] w-[10rem]'>
+                <ButtonWrapper onClick={ClickWriteAStory} className='bg-emerald-600 text-white rounded-full h-[3rem] w-[10rem]'>
                   <IonText>Write a Story</IonText>
                 </ButtonWrapper>
-                <ButtonWrapper onClick={ClickCreateACollection} className='bg-emerald-700 text-white rounded-full h-[5rem] w-[10rem]'>
+                <ButtonWrapper onClick={ClickCreateACollection} className='bg-emerald-700 text-white rounded-full  h-[3rem] w-[10rem]'>
                   <IonText>Create Collection</IonText>
                 </ButtonWrapper>
               </div>
 
               <div className='flex flex-col gap-4 items-center'>
                 <ButtonWrapper onClick={() => navigate(Paths.workshop.reader())}
-                  className='border-2 border-emerald-600 rounded-full text-emerald-900 h-[3rem] w-[21rem]'>
+                  className='border-2 border-emerald-600 mx-4 rounded-full text-emerald-900 h-[3rem] w-[90vw] sm:w-[21rem]'>
                   <IonText>Join a Workshop</IonText>
                 </ButtonWrapper>
                 <GoogleDrivePicker getToken={getDriveToken} accessToken={driveToken} onFilePicked={getFile} />
@@ -310,6 +310,7 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
                 <IndexList items={filteredSortedStories} handleFeedback={item => {
                   setFeedbackPage(item);
                   dispatch(setPageInView({ page: item }));
+        
                 }} />
               </div>
 
@@ -327,10 +328,12 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
             isFeedback
             handleChange={setFeedback}
             handleFeedback={() => {
+              console.log("Submitting feedback for page:", feedbackPage);
               if (!feedbackPage) return;
-              const params = { ...feedbackPage, description, needsFeedback: true };
+              const params = { ...feedbackPage, description, id:feedbackPage.id,needsFeedback: true };
               dispatch(updateStory(params)).then(res => {
                 checkResult(res, payload => {
+                  console.log("Feedback sent for page:", payload);
                   if (payload.story) navigate(Paths.workshop.createRoute(payload.story.id));
                 });
               });
