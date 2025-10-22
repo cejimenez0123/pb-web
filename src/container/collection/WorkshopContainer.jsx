@@ -176,28 +176,7 @@ setTimeout(()=>{
     setLoading(false);
   }
 };
-// const requestLocation = async () => {
-//   setLoading(true);
-//   try {
-//    if(await Geolocation.checkPermissions()){np
-//     const position = await Geolocation.getCurrentPosition();
-//     setLocation({
-//       latitude: position.coords.latitude,
-//       longitude: position.coords.longitude,
-//     });
-//     if (currentProfile && currentProfile.id) {
-//       registerUser(currentProfile.id, {
-//         latitude: position.coords.latitude,
-//         longitude: position.coords.longitude,
-//       });
-//     }
-//     setError(null);
-//   }} catch (err) {
-//     await Geolocation.requestPermissions()
-//     setError("We use location to connect with fellow writers. Reload for access.");
-//   }
-//   setLoading(false);
-// };
+
 
   const handleGlobal = () => {
    setIsGlobal(!isGlobal)
@@ -267,14 +246,14 @@ const localCheck=()=>{
 }
 
   return (
-    <IonContent fullscreen={true} className='ion-padding'>
+    <IonContent fullscreen={true} scrollY={false} className='ion-padding  max-h-screen '>
     <LoadScript
     googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
     libraries={['places']}
   >
-   <>
+   <div className='h-[100vh] overflow-hidden'>
       {currentProfile?(
-        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] mt-20 flex flex-col  md:border-2 text-left sm:w-[20rem] md:border-emerald-600 p-4    rounded-lg ">
+        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] flex flex-col  md:border-2 text-left sm:w-[20rem] md:border-emerald-600 p-4    rounded-lg ">
        <div>
         <span className='flex my-8 flex-row'>
      <h2 className='text-xl  font-bold ml-2 mr-10'> {currentProfile.username}</h2>{!isGlobal?<span className={`${location&& location.longitude && location.latitude?"bg-emerald-600":"bg-yellow-500" } rounded-full w-8 max-h-6 flex`}><img  className="mx-auto my-auto" src={check}/></span>:null}</span></div>
@@ -304,7 +283,7 @@ const localCheck=()=>{
 
     
    
-    </>
+    </div>
     </LoadScript>
     </IonContent>
   );

@@ -134,30 +134,30 @@ const isNative = DeviceCheck()
     setCanUserEdit(false);
   }
   
-  function checkPermissions() {
-    if (currentProfile && collection.profileId === currentProfile.id) {
-      setCanUserEdit(true);
-      setCanUserAdd(true);
-      setCanUserSee(true);
-      dispatch(getRecommendedCollectionsProfile());
-      return;
-    } else if (!currentProfile && collection.isPrivate) {
-      setCanUserEdit(false);
-      setCanUserAdd(false);
-      setCanUserSee(false);
-      return;
-    } else if (currentProfile && collection) {
+  // function checkPermissions() {
+  //   if (currentProfile && collection.profileId === currentProfile.id) {
+  //     setCanUserEdit(true);
+  //     setCanUserAdd(true);
+  //     setCanUserSee(true);
+  //     dispatch(getRecommendedCollectionsProfile());
+  //     return;
+  //   } else if (!currentProfile && collection.isPrivate) {
+  //     setCanUserEdit(false);
+  //     setCanUserAdd(false);
+  //     setCanUserSee(false);
+  //     return;
+  //   } else if (currentProfile && collection) {
  
-      soUserCanAdd();
-      soUserCanEdit();
-      dispatch(getRecommendedCollectionsProfile());
-      return;
-    } else {
-      setCanUserEdit(false);
-      setCanUserAdd(false);
-      setCanUserSee(false);
-    }
-  }
+  //     soUserCanAdd();
+  //     soUserCanEdit();
+  //     dispatch(getRecommendedCollectionsProfile());
+  //     return;
+  //   } else {
+  //     setCanUserEdit(false);
+  //     setCanUserAdd(false);
+  //     setCanUserSee(false);
+  //   }
+  // }
   
 
   useLayoutEffect(() => {
@@ -174,7 +174,7 @@ const isNative = DeviceCheck()
   getCol()
   },[location.pathname])
   useEffect(()=>{
-    checkPermissions()
+    // checkPermissions()
   },[currentProfile,collection])
   
   function checkFound() {
@@ -214,35 +214,7 @@ const isNative = DeviceCheck()
       setError("Please Sign In");
     }
   };
-// const getCol=async ()=>{
-//        setLoading(true)
 
-//         const token =(await Preferences.get({key:"token"})).value
-//        token!="undefined"?dispatch(fetchCollectionProtected({id})).then(res=>{
-//             checkResult(res,payload=>{
-//              setLoading(false)
-         
-//              findRole()
-//             },err=>{
-//                 setError(err.meesage)
-//                 setLoading(false)
-//             })
-//         }):dispatch(fetchCollection({id})).then(res=>{
-//             checkResult(res,payload=>{
-//                 if(payload.collection){
-                
-                
-                   
-//                      setLoading(false)}
-//                      else{
-//                   setLoading(false)
-//                 }
-//             },err=>{
-//                 setError(err.meesage)
-//                 setLoading(false)
-//             })
-//         })
-//     }
 const getCol = async () => {
   setLoading(true);
   try {
@@ -256,8 +228,10 @@ const getCol = async () => {
             (payload) => {
               setLoading(false);
               findRole();
+              setCanUserSee(true)
             },
             (err) => {
+            
               if (err.status === 403) {
                 setError("Access Denied: You do not have permission to view this collection.");
                 setCanUserSee(false);
@@ -472,25 +446,6 @@ const getCol = async () => {
 
   // Metadata
  
-
-
-  if (!collection) {
-    return (
-      <IonContent fullscreen scrollY>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Loading collection...</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <div className="ion-padding">
-          <IonSkeletonText animated style={{ width: '96vw', height: 150, margin: "2rem auto", borderRadius: 18 }} />
-          <IonSkeletonText animated style={{ width: '96vw', height: 400, margin: "2rem auto", borderRadius: 18 }} />
-        </div>
-      </IonContent>
-    );
-  }
-
-  if (!canUserSee) {
     if (loading) {
       return (
         <IonContent fullscreen={true} >
@@ -512,6 +467,25 @@ const getCol = async () => {
         </IonContent>
       );
     }
+
+  if (!collection) {
+    return (
+      <IonContent fullscreen scrollY>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Loading collection...</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <div className="ion-padding">
+          <IonSkeletonText animated style={{ width: '96vw', height: 150, margin: "2rem auto", borderRadius: 18 }} />
+          <IonSkeletonText animated style={{ width: '96vw', height: 400, margin: "2rem auto", borderRadius: 18 }} />
+        </div>
+      </IonContent>
+    );
+  }
+
+  if (!canUserSee) {
+
     return (
       <IonContent fullscreen={true}>
             <IonHeader> 
