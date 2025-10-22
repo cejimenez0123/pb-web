@@ -26,16 +26,16 @@ const postCollectionRole=createAsyncThunk("books/postCollectionRoles",async ({ty
 
     let data = await roleRepo.postCollectionRole({type,profileId,collectionId})
     return {
-     collection: data.collection
+     message: "Success"
     }
 })
 const deleteCollectionRole=createAsyncThunk("books/deleteCollectionRoles",async ({role},thunkApi)=>{
 
-    let data = await roleRepo.deleteCollectionRole({role})
-    let colData = await collectionRepo.fetchCollection({id:role.item.id})
-    return {
-     collection: colData.collection
-    }
+    let data = await roleRepo.deleteCollectionRole({id,role})
+    let colData = await collectionRepo.fetchCollection({id})
+    // return {
+    //  collection: colData.collection
+    // }
 })
 
 const fetchCollectionRoles=createAsyncThunk("roles/fetchCollectionRoles",async ({collection},thunkApi)=>{

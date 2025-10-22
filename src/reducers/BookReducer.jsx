@@ -65,8 +65,9 @@ state.loading = true
 }).addCase(getRecommendedCollectionsProfile.fulfilled,(state,{payload})=>{
     state.recommendedCols = payload.collections
 }).addCase(deleteCollectionRole.fulfilled,(state,{payload})=>{
+    if(payload.collection){
     state.collectionInView = payload.collection
-}).addCase(deleteStoryFromCollection.fulfilled,(state,{payload})=>{
+}}).addCase(deleteStoryFromCollection.fulfilled,(state,{payload})=>{
     
     let list = state.collections
     if(payload.collection&&payload.collection.id){
@@ -114,7 +115,10 @@ state.loading = true
         state.collections = list
     }
 }).addCase(postCollectionRole.fulfilled,(state,{payload})=>{
-    state.collectionInView = payload.collection
+    if(payload.collection){
+state.collectionInView = payload.collection
+    }
+    
 }).addCase(createCollection.pending,(state)=>{
     state.loading = true
 }).addCase(createCollection.fulfilled,(state,{payload})=>{

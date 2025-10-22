@@ -228,6 +228,7 @@ const getCol = async () => {
             (payload) => {
               setLoading(false);
               findRole();
+              getContent()
               setCanUserSee(true)
             },
             (err) => {
@@ -235,6 +236,8 @@ const getCol = async () => {
               if (err.status === 403) {
                 setError("Access Denied: You do not have permission to view this collection.");
                 setCanUserSee(false);
+                soUserCanAdd()
+                soUserCanEdit()
               } else {
                 setError(err.message || "Failed to load collection.");
               }
@@ -332,6 +335,7 @@ const getCol = async () => {
       
         setHasMore(false)
         }
+       
   const onBookmark = (type) => {
     if (!currentProfile) {
       setError("Please sign in");
@@ -410,7 +414,7 @@ const getCol = async () => {
                 
                     a.index && b.index && b.index<a.index
                
-                       ).map(stc=>stc.story)
+                      ).map(stc=>stc.story)
              dispatch(setPagesInView({pages:sorted}))
                     }
             if(collection.childCollections){
@@ -590,13 +594,7 @@ const getCol = async () => {
                 <IonImg  src={isArchived ? bookmarkFill : bookmarkOutline} />
                 {bookmarkLoading && <IonSpinner name="dots" />}
               </div>
-              {/* <IonButton
-                onClick={() => onBookmark("archive")}
-                color={isArchived ? "warning" : "medium"}
-                disabled={bookmarkLoading}
-              >
-                Archive
-              </IonButton> */}
+              
             </div>
           </IonCardContent>
           </div>
@@ -609,9 +607,9 @@ const getCol = async () => {
             </IonCardHeader>
             <IonCardContent>
               <IonList className="flex flex-row min-h-[14rem] overflow-x-scroll">
-                  {collections.map((col, i) => (
+                  {collections.filter(col=>col).map((col, i) => (
                     <IonItem key={i} className="mx-3">
-                    <BookListItem key={col.id + i} book={col} />
+                    <BookListItem key={i} book={col} />
                     </IonItem>
                   ))}
               </IonList>
