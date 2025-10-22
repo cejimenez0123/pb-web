@@ -31,7 +31,7 @@ class RoleRepo{
         let res = await axios.delete(this.url+"/collection/"+role.id,{headers:{
             Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
-       
+       console.log(res)
         return res.data
     }
     async patchCollectionRoles({roles,profile,collection}){

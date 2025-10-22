@@ -172,7 +172,7 @@ const isNative = DeviceCheck()
   }, [currentProfile]);
   useEffect(()=>{
   getCol()
-  },[location.pathname])
+  },[])
   useEffect(()=>{
     // checkPermissions()
   },[currentProfile,collection])
@@ -197,15 +197,16 @@ const isNative = DeviceCheck()
       if (currentProfile.id === collection.profileId) {
         type = RoleType.editor;
       }
-      setRole({role:"commenter"})
+    
       dispatch(postCollectionRole({
         type: type,
         profileId: currentProfile.id,
         collectionId: collection.id,
       })).then(res => {
         checkResult(res, payload => {
+            setRole({role:"commenter"})
           setSuccess("You are now following this collection");
-          findRole()
+          // findRole()
         }, err => {
           setError(err.message);
         });
@@ -214,7 +215,10 @@ const isNative = DeviceCheck()
       setError("Please Sign In");
     }
   };
-
+useEffect(()=>{
+ getContent()
+   findRole();
+},[collection])
 const getCol = async () => {
   setLoading(true);
   try {
@@ -227,8 +231,8 @@ const getCol = async () => {
             res,
             (payload) => {
               setLoading(false);
-              findRole();
-              getContent()
+            
+              
               setCanUserSee(true)
             },
             (err) => {
@@ -293,7 +297,7 @@ const getCol = async () => {
   const deleteFollow = () => {
     if (currentProfile && role) {
       setRole(null);
-      dispatch(deleteCollectionRole({ role })).then(res => {
+      dispatch(deleteCollectionRole({id, role })).then(res => {
         checkResult(res, payload => {
           setSuccess("Unfollowed collection");
       
@@ -408,6 +412,7 @@ const getCol = async () => {
   const getContent=()=>{
             if(collection){
                 setHasMore(true)
+                
             if(collection.storyIdList){
          
             const sorted = [...collection.storyIdList].sort((a,b)=>
@@ -417,18 +422,7 @@ const getCol = async () => {
                       ).map(stc=>stc.story)
              dispatch(setPagesInView({pages:sorted}))
                     }
-            if(collection.childCollections){
-             const children = [...collection.childCollections].sort((a,b)=>
-                
-                b.index<a.index
-           
-                   ).map(ctc=>ctc.childCollection)
-    
-    
-             dispatch(setCollections({collections:children}))
-             getSubColContent()
-                }
-            
+      
           
         }
     
@@ -450,7 +444,7 @@ const getCol = async () => {
 
   // Metadata
  
-    if (loading) {
+    if (loading||!collection) {
       return (
         <IonContent fullscreen={true} >
               <IonHeader> 
