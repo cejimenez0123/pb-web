@@ -54,6 +54,7 @@ import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths.js";
 import DeviceCheck from "../../components/DeviceCheck.jsx";
 import { Preferences } from "@capacitor/preferences";
+import { filter } from "lodash";
 
 export default function CollectionContainer({currentProfile}) {
   const {  setError, setSuccess } = useContext(Context);
@@ -290,9 +291,7 @@ const getCol = async () => {
 };
 
 
-    useEffect(()=>{
-      canUserSee?getContent():null
-    },[canUserSee,collection])
+
 
   const deleteFollow = () => {
     if (currentProfile && role) {
@@ -410,24 +409,30 @@ const getCol = async () => {
     }
   };
   const getContent=()=>{
-            if(collection){
+          
                 setHasMore(true)
                 
-            if(collection.storyIdList){
-         
-            const sorted = [...collection.storyIdList].sort((a,b)=>
+        
+         if(collection.storyIdList&&collection.storyIdList.length){
+console.log("STORYLIST",collection.storyIdList)
+
+            const sorted = [...collection.storyIdList].filter(s=>s.story).sort((a,b)=>
                 
                     a.index && b.index && b.index<a.index
                
                       ).map(stc=>stc.story)
+                      console.log("SORTED",sorted)
+                      if(sorted.length===collection.storyIdList.length){
              dispatch(setPagesInView({pages:sorted}))
-                    }
-      
+                      }       
+            
+            }
+          }
           
-        }
+        
     
     
-        }
+        
           const handleBack = (e) => {
     e.preventDefault();
     if (window.history.length > 1) {
