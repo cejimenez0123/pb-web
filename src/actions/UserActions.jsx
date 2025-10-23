@@ -65,7 +65,7 @@ const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=
   let data = await authRepo.useReferral(params)
     if(data.profile&&!data.profile.isPrivate){
       const {profile}=data
-      client.partialUpdateObject({objectID: profile.id,usernamename:profile.username,type:"profile"},{createIfNotExists:true}).wait()
+      client.partialUpdateObject({objectID: profile.id,usernamename:profile.username,indexName:"profile"},{createIfNotExists:true}).wait()
     }
     return data
   }catch(err){
@@ -85,8 +85,11 @@ const signUp = createAsyncThunk(
         
             if(!privacy){
          client.saveObject({ objectID:data.profile.id,
-                                              username:username,
-                                             }).wait()  
+          body:{
+            username:username
+          }
+          ,indexName:"profile"
+                                             }) 
             }
          
                                       
@@ -101,8 +104,8 @@ const signUp = createAsyncThunk(
           let data = await profileRepo.register({token,frequency,password,username,profilePicture,selfStatement,privacy})
           localStorage.setItem("token",data.token)
           client.saveObject({ objectID:data.profile.id,
-            username:username,
-           }).wait()       
+            body:{username:username},indexName:"profile"
+           })     
           return {profile:data.profile}
         }catch(error){
           return {error}
@@ -113,23 +116,32 @@ const signUp = createAsyncThunk(
 )
 const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
   async (params,thunkApi)=>{
+    try{
     	  const {query} = params
-        const queries = [{
-          indexName: 'profile',
-          query: query,
-        }, {
-          indexName: 'story',
-  query: query,
+//         const queries = [{
+//           indexName: 'profile',
+//           query: query,
+//         }, {
+//           indexName: 'story',
+//   query: query,
 
-}, {
-  indexName: 'collection',
-  query: query,
+// }, {
+//   indexName: 'collection',
+//   query: query,
   
-},{indexName:"hashtag",query:query}];
-  client 
-  let {results}= await client.multipleQueries(queries)
-
+// },{indexName:"hashtag",query:query}];
+//   client 
+//   let {results}= await client.initQuerySuggestions.multipleQueries(queries)
+    const results = await client.search([
+      { indexName: 'profile', query },
+      { indexName: 'story', query },
+      { indexName: 'collection', query },
+      { indexName: 'hashtag', query }
+    ]);
   return {results}
+}catch(e){
+  return {error:e}
+}
 })
 
 const createCollection = createAsyncThunk("ds",async (params,thunkApi)=>{

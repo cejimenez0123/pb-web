@@ -178,7 +178,7 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
         if(!data.collection.isPrivate){
         const {collection}=data
           client.saveObject(
-            {objectID:collection.id,title:collection.title,type:"collection"}).wait()
+            {objectID:collection.id,title:collection.title,indexName:"collection"}).wait()
         }   
         return {collection: data.collection}
 
@@ -273,7 +273,7 @@ const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
     params,thunkApi
 )=>{
    let data = await collectionRepo.deleteCollection(params)
-   client.deleteObject(params.id).wait()
+   client.deleteObject({objectID:params.id,indexName:"collection"}).wait()
    return data
 })
 
@@ -292,10 +292,10 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
         let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
         if(!isPrivate){
             
-              client.partialUpdateObject({objectID:id,title:title,type:"collection"},{createIfNotExists:true}).wait()
+              client.partialUpdateObject({objectID:id,title:title,indexName:"collection"},{createIfNotExists:true}).wait()
             }else{
                 
-                client.deleteObject(id).wait()
+                client.deleteObject({objectID:id,indexName:"collection"}).wait()
             }  
         return {collection:data.collection}
     }
