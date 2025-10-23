@@ -255,7 +255,7 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
    <ErrorBoundary>
 
       <IonContent className="ion-padding" fullscreen >
-        <div style={{ paddingBottom: "5rem" }}>
+        <div className="sm:pt-16 "style={{ paddingBottom: "5rem" }}>
           {/* Top Section */}
           <div className='flex flex-col md:flex-row justify-between sm:border-4 sm:border-emerald-300 p-4 mt-2 rounded-lg gap-4'>
             <div className='my-4 py-4 h-[16em] md:w-1/3'>

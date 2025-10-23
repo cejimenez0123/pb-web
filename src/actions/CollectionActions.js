@@ -178,7 +178,7 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
         if(!data.collection.isPrivate){
         const {collection}=data
           client.saveObject(
-            {objectID:collection.id,title:collection.title,type:"collection"})
+            {objectID:collection.id,title:collection.title,indexName:"collection"})
         }   
         return {collection: data.collection}
 
@@ -290,9 +290,9 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
         let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
         if(!isPrivate){
             
-              client.initIndex("collection").partialUpdateObject({objectID:id,title:title,type:"collection"},{createIfNotExists:true})
+              client.partialUpdateObject({objectID:id,title:title,indexName:"collection"},{createIfNotExists:true})
             }else{
-                client.initIndex("collection").deleteObject(id)
+                client.deleteObject({indexName:"collection",objectID:id})
             }  
         return {collection:data.collection}
     }

@@ -17,9 +17,6 @@ export default function ProfileCard({profile,onClickFollow,following}){
     const [profilePic,setProfilePic]=useState("")
     const [pending,setPending]=useState(false)
     const {id}=useParams()
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 768px)'
-      })
     const [followersDialog,setFollowersDialog]=useState(false)
     const FollowDiv=({following,onClickFollow})=>{
 
@@ -36,10 +33,13 @@ export default function ProfileCard({profile,onClickFollow,following}){
   
       if(profile){
           if(isValidUrl(profile.profilePic)){
+              console.log("ppokef",profile.profilePic)
               setProfilePic(profile.profilePic)
               setPending(false)
           }else{
+                  console.log("ppoke",profile.profilePic)
            getDownloadPicture(profile.profilePic).then(image=>{
+            console.log("ppoke",image)
               setProfilePic(image)
               setPending(false) } )
           }}
@@ -55,9 +55,7 @@ export default function ProfileCard({profile,onClickFollow,following}){
       </div>)
       dispatch(setDialog(dia))
   }
-    useEffect(()=>{
-        setFollowersDialog(false)
-    },[id])
+    
     if(!profile||!profile.id){
     
             return <div className=" skeleton  w-[96vw] auto mx-auto md:w-info h-info"/>

@@ -12,21 +12,21 @@ function ProfileCircle({profile,color="white",isGrid=false}){
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const navigate = useNavigate()
     useLayoutEffect(()=>{
-        if(profile){
+        // if(profile){
             if(isValidUrl(profile.profilePic)){
-
+console.log("ppokef",profile.profilePic)
                 setProfilePic(profile.profilePic)
          
             }else{
              getDownloadPicture(profile.profilePic).then(image=>{
-                if(image){
+            console.log("ppoke",image)
                     setProfilePic(image)
            
-                }
+              
             } ).catch(err=>{
-                
+                 console.log("ppoke",err)
             })
-            }}
+            }
     },[])
     useEffect(()=>{
       initGA()

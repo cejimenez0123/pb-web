@@ -32,7 +32,7 @@ try{
     deleteObject(refer)
   }
   let data = await storyRepo.deleteStory({id:page.id})
-  client.initIndex("story").deleteObject(page.id).wait()
+  client.deleteObject({indexName:"story",objectID:page.id})
 
     return data
 
@@ -83,7 +83,7 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
       if(!data.story.isPrivate){
        
         await client.partialUpdateObject(
-  { objectID: story.id, title: story.title, type: "story" },
+  { objectID: story.id, title: story.title, indexName: "story" },
   { createIfNotExists: true }
 );}
       return {
@@ -103,7 +103,7 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
   if(data.story&& params && !data.story.isPrivate&&data.story.id){
   
     client.partialUpdateObject(
-      {objectID:data.story.id,title:data.story.title,type:"story"},{createIfNotExists:true})
+      {objectID:data.story.id,title:data.story.title,indexName:"story"},{createIfNotExists:true})
    }else{
 
         client.deleteObject({indexName:"story",objectID:data.story.id})

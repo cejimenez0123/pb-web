@@ -54,7 +54,7 @@ const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=
   let data = await authRepo.useReferral(params)
     if(data.profile&&!data.profile.isPrivate){
       const {profile}=data
-      client.initIndex("profile").partialUpdateObject({objectID: profile.id,usernamename:profile.username,type:"profile"},{createIfNotExists:true}).wait()
+      client.partialUpdateObject({objectID: profile.id,usernamename:profile.username,indexName:"profile"},{createIfNotExists:true}).wait()
     }
     return data
   }catch(err){
@@ -73,7 +73,7 @@ const signUp = createAsyncThunk(
            
         
             if(!privacy){
-         client.initIndex("profile").saveObject({ objectID:data.profile.id,
+         client.saveObject({ indexName:"profile",objectID:data.profile.id,
                                               username:username,
                                              }).wait()  
                                             }                                    
@@ -87,8 +87,8 @@ const signUp = createAsyncThunk(
         try{
           let data = await profileRepo.register({token,frequency,googleId,password,username,profilePicture,selfStatement,privacy})
          await Preferences.set({key:"token",value:data.token})
-          client.initIndex("profile").saveObject({ objectID:data.profile.id,
-            username:username,
+          client.saveObject({ objectID:data.profile.id,
+            username:username,indexName:"profile"
            }).wait()       
           return {profile:data.profile}
         }catch(error){
@@ -179,8 +179,8 @@ const updateProfile = createAsyncThunk("users/updateProfile",
           let data = await  profileRepo.updateProfile(params)
           if(data.profile){
             const {profile}=data
-            client.initIndex("profile").saveObject(
-                {objectID:profile.id,username:profile.username,type:"profile"}).wait()
+            await client.partialUpdateObject(
+                {objectID:profile.id,attributesToUpdate:{username:profile.username},indexName:"profile"})
         }
           return {profile:data.profile}
   

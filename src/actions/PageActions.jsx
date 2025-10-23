@@ -218,7 +218,7 @@ const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>
       let refer = ref(storage,page.data)
       deleteObject(refer)
     }
-    client.indexExists("page").initIndex("page").deleteObject(page.id).wait()
+    client.deleteObject({indexName:"page",objectID:page.id})
     return {
       page:data
     }

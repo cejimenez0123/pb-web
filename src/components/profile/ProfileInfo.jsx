@@ -38,20 +38,44 @@ const ProfileInfo = ({profile})=>{
         dispatch(setDialog(dia))
 
     }
-    useEffect( ()=>{
+     useEffect(() => {
+    let isMounted = true;
+    async function fetchImage() {
 
-        if(profile && !isValidUrl(profile.profilePic)){
-            getDownloadPicture(profile.profilePic).then(url=>{
-               
-                setPictureUrl(url)
+            if(isValidUrl(profile.profilePic)){
+                setPictureUrl(profile.profilePic)
+         
+            }else{
+             getDownloadPicture(profile.profilePic).then(image=>{
+            
+                    setPictureUrl(image)
+           
+              
+            } ).catch(err=>{
+              
             })
-        }else if(profile&&isValidUrl(profile.profilePic)){
+
+      const url = await getDownloadPicture(profile.profilePic);
+    
+      if (isMounted) setPictureUrl(url);
+    }}
+    fetchImage();
+    return () => (isMounted = false);
+  }, [profile]);
+    // useEffect( ()=>{
+
+    //     if(!isValidUrl(profile.profilePic)){
+    //         getDownloadPicture(profile.profilePic).then(url=>{
+    //            console.log("ppoke",url)
+    //             setPictureUrl(url)
+    //         })
+    //     }else if(profile&&isValidUrl(profile.profilePic)){
           
-            setPictureUrl(profile.profilePic)
-        }
+    //         setPictureUrl(profile.profilePic)
+    //     }
         
         
-    },[profile])
+    // },[profile])
     const openFollowersDialog = () => {
         let dia = {};
         dia.isOpen = true;
