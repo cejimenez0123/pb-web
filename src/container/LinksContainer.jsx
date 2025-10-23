@@ -33,21 +33,17 @@ export default function LinksContainer(props){
 
     return(<div className="flex flex-col py-8">
      
-            <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Support how you can!</p></h2>
+            <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Click links below to discover more!</p></h2>
             <ul className={`md:mx-auto  w-page-mobile-content grid gap-2 grid-cols-2 md:flex md:flex-col lg:w-page-content mx-auto md:mx-4`}>
-                   <li>  
-                      <LinkNode image={pumpkin}
-       url={" https://partiful.com/e/4Voy3Hg0YEaMxNOABLql"}
-                    title={"Plumbum Halloween Social"}
-                    description={"Join our Halloween Crash Social—where writers meet New York’s creative vibe. Dress as your favorite author or your future best self!"}/>
-                    </li>
+                
                 
        
                 <li>  
                       <LinkNode image={pen}
-       url={" https://partiful.com/e/n8VWgBo7jUDbcUFXKgYO"}
-                    title={"Oct 18th Writers Workshop"}
-                    description={"On Writing through Khalil Gibran, writing is an endurance sport. How do we continue writing and get to the center of tough topics."}/>
+       url={" https://partiful.com/e/rkVamwUP7jw3IfOHuWcg"}
+                    title={"Nov 15th Writers Workshop"}
+                    description={`This month, we’re diving into Ngũgĩ wa Thiong’o’s The Upright Revolution, a short story that turns our very bodies into a lesson on unity and transformation.
+Come read, reflect, and connect with writers, thinkers, and neighbors who crave more than small talk.`}/>
                     </li>
                     <li>
                    
@@ -58,7 +54,7 @@ export default function LinksContainer(props){
                     </li>
                     <li>
                      <LinkNode image={etsy}
-       url={" https://www.etsy.com/shop/PlumbumWriters?ref=dashboard-header"}
+       url={"https://www.etsy.com/shop/PlumbumWriters?ref=dashboard-header"}
                     title={"Plumbum Merch on Etsy"}
                     description={"Support development, events, and cups of coffee by purchasing merch inspired by the founder, Sol Emilio."}/>
                     </li>

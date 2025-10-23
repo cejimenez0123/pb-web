@@ -110,7 +110,7 @@ const fetchData = async (url) => {
     return <div className='skeleton min-h-[8em] w-[96vw] md:min-w-[30em] md:w-[100%] my-8 bg-emerald-50 h-[10em] md:h-[10em] rounded-full'/>
   }
 
-  if (!previewData&&!url.includes("plumbum")) {
+  if (!previewData&&!url.includes("plumbum")&&!url.lengths==0) {
     return <p>Failed to fetch link preview.</p>;
   }
 
