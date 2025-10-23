@@ -35,7 +35,7 @@ export default function usePersistentCurrentProfile(fetchData) {
       await Preferences.set({key:key,value:JSON.stringify(profile)})
     }
     useEffect(() => {
-      
+      try{
       if(token){
         
         fetchData().then(res=>checkResult(res,payload=>{
@@ -44,7 +44,10 @@ export default function usePersistentCurrentProfile(fetchData) {
         localStorage.setItem(key, JSON.stringify(payload.profile));
       }))}else{
         setProfile(null)
-      }}
+      }
+    }catch(error){
+      console.log("error fetching profile cache",error)
+    }}
     ,[token]);
 
     return profile;
