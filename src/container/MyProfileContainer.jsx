@@ -328,12 +328,13 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
             isFeedback
             handleChange={setFeedback}
             handleFeedback={() => {
-              console.log("Submitting feedback for page:", feedbackPage);
+              
               if (!feedbackPage) return;
-              const params = { ...feedbackPage, description, id:feedbackPage.id,needsFeedback: true };
+              const params = { ...feedbackPage, description, page:feedbackPage,id:feedbackPage.id,needsFeedback: true };
+            
               dispatch(updateStory(params)).then(res => {
                 checkResult(res, payload => {
-                  console.log("Feedback sent for page:", payload);
+                  console.log("Submitting feedback for page:", feedbackPage);
                   if (payload.story) navigate(Paths.workshop.createRoute(payload.story.id));
                 });
               });

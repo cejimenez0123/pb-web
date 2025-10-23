@@ -25,7 +25,6 @@ import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonIco
 function DiscoveryContainer() {
   const { currentProfile, setSeo } = useContext(Context);
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
 
   const cols = useSelector(state => state.books.collections);

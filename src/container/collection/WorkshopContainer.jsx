@@ -72,7 +72,6 @@ setTimeout(()=>{
     }
   },[page,currentProfile])
   useEffect(()=>{
-  
     const {pageId}=pathParams
     if(pageId){
       dispatch(getStory({id:pageId}))
@@ -183,7 +182,7 @@ setTimeout(()=>{
     setError(null)
     setSuccess(null)
     if(currentProfile){
-    if(pathParams.pageId && page){
+    if( page){
         dispatch(createWorkshopGroup({profile:currentProfile,story:page,isGlobal,location})).then(res=>{
       checkResult(res,payload=>{
         if(payload && payload.collection){
