@@ -61,7 +61,7 @@ export default function PageViewContainer() {
     setErrorStatus(null);
 
     try {
-      const res = await dispatch(getStory({ id }));
+       dispatch(getStory({ id })).then((res) => {
 
       checkResult(
         res,
@@ -71,7 +71,7 @@ export default function PageViewContainer() {
               dispatch(setComments({ comments: payload.story.comments }));
             }
             setCanUserSee(true);
-            setPending(false);
+           
           } else {
             throw new Error("Story not found");
           }
@@ -87,7 +87,8 @@ export default function PageViewContainer() {
           }
           setPending(false);
         }
-      );
+           )});
+         setPending(false);
     } catch (error) {
       if (error?.response?.status === 403) {
         setErrorStatus(403);
@@ -126,13 +127,14 @@ export default function PageViewContainer() {
 
   return (
     <ErrorBoundary>
-      <IonContent fullscreen>
+      <IonContent fullscreen={true} className="ion-padding-top">
         <IonHeader>
              <IonBackButton
+             className="ion-padding-start"
       defaultHref={Paths.discovery()}
       onClick={handleBack}
     />  </IonHeader>
-        <div className="ion-padding text-center max-w-[30em] mx-auto" style={{ paddingTop: "6rem", paddingBottom: "5rem" }}>
+        <div className="ion-padding text-center max-w-[30em] mx-auto" style={{paddingBottom: "5rem" }}>
           {pending ? (
             <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
           ) : errorStatus === 403 ? (

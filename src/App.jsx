@@ -104,7 +104,7 @@ function App(props) {
     <IonApp >   
       <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile??oldProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-      <IonPage  ref={page} className=' App pb-8 pt-12 background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+      <IonPage  ref={page} className=' App pb-8  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
      
 
       <head>

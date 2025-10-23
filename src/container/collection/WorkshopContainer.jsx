@@ -53,8 +53,7 @@ setTimeout(()=>{
 
   useEffect(()=>{
     if(currentProfile){
-      
-      
+
       dispatch(postActiveUser({story:page,profile:currentProfile})).then(res=>{
           checkResult(res,payload=>{
             if(payload.profiles){
@@ -73,9 +72,6 @@ setTimeout(()=>{
     }
   },[page,currentProfile])
   useEffect(()=>{
-  
-},[isGlobal])
-  useLayoutEffect(()=>{
   
     const {pageId}=pathParams
     if(pageId){

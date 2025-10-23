@@ -399,7 +399,7 @@ export default function DashboardItem({ page, book, isGrid }) {
     <IonCard
       id="dashboard-item"
       className={
-        'mt-3 rounded-lg bg-emerald-100 shadow-md flex flex-col ' +
+        'mt-3 rounded-lg min-h-50 bg-emerald-100 shadow-md flex flex-col ' +
         sizeOuter +
         (isGrid ? ' overflow-hidden' : '')
       }
