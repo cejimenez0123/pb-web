@@ -132,12 +132,13 @@ const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
 // },{indexName:"hashtag",query:query}];
 //   client 
 //   let {results}= await client.initQuerySuggestions.multipleQueries(queries)
-    const results = await client.search([
+    const {results }= await client.search([
       { indexName: 'profile', query },
       { indexName: 'story', query },
       { indexName: 'collection', query },
       { indexName: 'hashtag', query }
     ]);
+    
   return {results}
 }catch(e){
   return {error:e}
