@@ -38,7 +38,7 @@ switch(page.type){
     return( 
 
         <div 
-        id="page-data-text "
+        className=" w-full sm:w-[50em]"
     
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
@@ -84,7 +84,7 @@ case PageType.link:{
     return(
     
         <LinkPreview
-        id="page-data-link"
+        // id="page-data-link"
     
             isGrid={isGrid}
             url={page.data}
@@ -103,5 +103,5 @@ if(!page){
 ) 
 }
 
-return (<span className={"pb-1   "}><Element page={page}/></span>)
+return (<span ><Element page={page}/></span>)
 }

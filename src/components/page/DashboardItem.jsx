@@ -329,12 +329,17 @@ export default function DashboardItem({ page, book, isGrid }) {
             </div>
           </div>
           {!page.recommended ? (
-            <div className="dropdown text-center bg-emerald-200 py-2 grow w-1/3 dropdown-top">
+            <div className="dropdown text-center bg-emerald-200 py-2  grow w-1/3 dropdown-top">
               <div tabIndex={0} role="button"
               className="text-emerald-800 text-center mx-auto bg-emerald-200 border-none mont-medium">
                 <h6 className='text-[1.2rem]'>Share</h6>
               </div>
-              <ul tabIndex={0} className="dropdown-content text-center bg-emerald-100 text-emerald-800 z-50 menu rounded-box w-60 p-1 shadow">
+              <ul tabIndex={0} className="dropdown-content text-center bg-emerald-100 text-emerald-800  menu rounded-box w-60 p-1 shadow">
+                {currentProfile.id == page.authorId?<li className='text-emerald-700'
+                  onClick={() => navigate(Paths.editPage.createRoute(page.id))}>
+                  <a className='text-emerald-800'>
+                    Edit
+                  </a></li>:null}
                 <li className='text-emerald-700'
                   onClick={() => ClickAddStoryToCollection()}>
                   <a className='text-emerald-800'>
@@ -399,7 +404,7 @@ export default function DashboardItem({ page, book, isGrid }) {
     <IonCard
       id="dashboard-item"
       className={
-        'mt-3 rounded-lg min-h-50 bg-emerald-100 shadow-md flex flex-col ' +
+        'mt-3 rounded-lg min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col ' +
         sizeOuter +
         (isGrid ? ' overflow-hidden' : '')
       }

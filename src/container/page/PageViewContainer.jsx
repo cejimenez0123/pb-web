@@ -127,8 +127,8 @@ export default function PageViewContainer() {
 
   return (
     <ErrorBoundary>
-      <IonContent fullscreen={true} className="ion-padding-top">
-        <IonHeader>
+      <IonContent fullscreen={true} className="ion-padding-top pt-12">
+        <IonHeader className="pt-12">
              <IonBackButton
              className="ion-padding-start"
       defaultHref={Paths.discovery()}

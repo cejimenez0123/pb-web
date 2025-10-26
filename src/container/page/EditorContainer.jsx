@@ -144,7 +144,8 @@ return ()=>{
         checkResult(res,payload=>{
         
           const {story}=payload
-          dispatch(setHtmlContent(story.data))
+
+          story.data && dispatch(setHtmlContent(story.data))
           dispatch(setEditingPage({page:story}))
           dispatch(setPageInView({page:story}))
           setStoryData(story)

@@ -19,7 +19,7 @@ import DeviceCheck from "./DeviceCheck";
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
   const dialog = useSelector(state=>state.users.dialog)
-  const isNative = DeviceCheck()
+
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const options = { weekday: 'short', month: '2-digit', day: '2-digit' };
@@ -224,7 +224,7 @@ function CalendarEmbed(){
             <h2 className="my-auto mont-medium mx-2 text-emerald-700">Filter by Area:</h2>
 
         <select
-          className="border w-fit  text-emerald-700 rounded-lg bg-transparent px-2 text-l"
+          className="border w-fit  text-emerald-700 h-[3rem] rounded-lg bg-transparent px-2 text-l"
           value={selectedArea}
           onChange={(e) => setSelectedArea(e.target.value)}
         >
@@ -235,25 +235,25 @@ function CalendarEmbed(){
         </select>
         </span> 
         {/*  */}
-      <span className={`flex flex-rown w-full min-w-30`}>
-          <h5 className="my-auto ml-4 mr-4 mont-medium mx-4 text-emerald-800"> Search</h5>
-          <div ref={searchRef} className="relative w-[25em] p-4">
+      <span className={`flex flex-col mt-4 w-full text-left min-w-30`}>
+          <IonText className="my-auto mx-4 text-emerald-800"> Search</IonText>
+          <div ref={searchRef} className="relative w-[90vw] mx-auto">
 
 <IonInput
   type="text"
-  className="rounded-lg bg-emerald1-100 text-emerald-800"
+  className="rounded-lg bg-emerald1-100 text-[0.8rem] text-emerald-800"
   value={searchTerm}
 
          
   onIonInput={handleSearchInputChange}
   onIonFocus={() => setShowSuggestions(true)}
-  placeholder="#writing, #workshop..."
+  placeholder="#writing, #workshop...)"
 />
 
 
   
   {showSuggestions && filteredSuggestions.length > 0 && (
-    <ul className="absolute z-10 mt-1 bg-white border border-emerald-300 rounded-md shadow-lg w-full max-h-[10em] overflow-auto">
+    <ul className="absolute z-10 mt-1 bg-white w-[15em] sborder border-emerald-300 rounded-md shadow-lg w-full max-h-[10em] overflow-auto">
       {filteredSuggestions.map((suggestion, index) =>{
  
         return (

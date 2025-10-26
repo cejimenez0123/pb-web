@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom"
 import { setHtmlContent } from "../../actions/PageActions.jsx"
 import { useDispatch } from "react-redux"
 import { IonImg } from "@ionic/react"
-
+import Enviroment from "../../core/Enviroment.js"
  export default function EditorDiv({handleChange,createPage,page}){
         const location = useLocation()
         const dispatch = useDispatch()

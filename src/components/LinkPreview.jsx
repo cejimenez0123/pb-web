@@ -27,6 +27,7 @@ function LinkPreview({ url, isGrid }) {
   }, []);
 
   useEffect(() => {
+    console.log(url)
     if (!url) return;
 
     const isSpotify = url.includes('https://open.spotify.com/');
@@ -83,7 +84,7 @@ const fetchPreview = async (url) => {
 
   if (loading) return <div className={"skeleton " + size} />;
 
-  if (!previewData) return <p>Failed to fetch link preview.</p>;
+  if (!previewData) return <p onClick={handleClick}>Failed to fetch link preview.</p>;
 
   if (isYouTubeURL(url)) {
     const videoId = extractYouTubeVideoId(url);
@@ -117,7 +118,7 @@ const fetchPreview = async (url) => {
   };
 
   return (
-    <div className=" w-[90vw] sm:w-page mx-auto" onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className=" w-[90vw] sm:w-[50em] sm:w-page mx-auto" onClick={handleClick} style={{ cursor: 'pointer' }}>
       {imageView()}
       <div className='text-left overflow-clip open-sans-medium'>
         {previewDescription()}
