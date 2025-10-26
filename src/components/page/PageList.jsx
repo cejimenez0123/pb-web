@@ -26,7 +26,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
           className="w-[98vw] mx-auto flex"
         >
                  
-<IonList>
+<IonList className="no scroll">
      {pagesInView.map((page,i)=>{
           
             

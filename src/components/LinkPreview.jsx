@@ -43,23 +43,7 @@ function LinkPreview({ url, isGrid }) {
     }
   }, [url]);
 
-// const fetchPreview = async (url) => {
-//   try {
-//    const response = await axios.get(
-//   `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`
-// );
-// console.log(response.data);
-// const data = await response.json();
 
-   
-//     console.log("Fetched preview data:", data);
-//     setPreviewData(data);
-//   } catch (error) {
-//     console.error('Failed to fetch link preview:', error);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
 const fetchPreview = async (url) => {
   try {
     const response = await axios.get(
@@ -71,7 +55,7 @@ const fetchPreview = async (url) => {
     console.log("Fetched preview data:", data);
     setPreviewData(data);
   } catch (error) {
-    console.error('Failed to fetch link preview:', error);
+    // console.error('Failed to fetch link preview:', error);
   } finally {
     setLoading(false);
   }
@@ -104,7 +88,7 @@ const fetchPreview = async (url) => {
   if (isYouTubeURL(url)) {
     const videoId = extractYouTubeVideoId(url);
     const videoThumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-    return <IonImg onClick={handleClick} style={{ cursor: 'pointer' }} className={`rounded-lg p-1 ${size}`} src={videoThumbnail} alt="Video Thumbnail" />;
+    return <img onClick={handleClick} style={{ cursor: 'pointer' }} className={`rounded-lg p-1 ${size}`} src={videoThumbnail} alt="Video Thumbnail" />;
   }
 
   const imageView = () => {

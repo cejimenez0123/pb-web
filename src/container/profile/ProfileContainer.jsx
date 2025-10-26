@@ -39,7 +39,7 @@ function ProfileContainer({ profile }) {
   const [sortTime, setSortTime] = useState(true);
   const [following, setFollowing] = useState(null);
   const [activeTab, setActiveTab] = useState('pages'); // "pages" or "collections"
-
+const [canUserSee, setCanUserSee] = useState(false);
   useLayoutEffect(() => {
     initGA();
     if (profile) {
@@ -208,7 +208,7 @@ function ProfileContainer({ profile }) {
 
   return (
     <ErrorBoundary>
-      <IonPage>
+    
       <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
@@ -218,7 +218,7 @@ function ProfileContainer({ profile }) {
             <IonTitle>{profile ? `${profile.username}'s Profile` : 'Profile'}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent fullscreen={true} scrollY>
+        <IonContent fullscreen={true} className='pt-8'scrollY>
           <div className="pt-2 md:pt-8 mb-8 mx-2">
             <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
           </div>
@@ -256,7 +256,6 @@ function ProfileContainer({ profile }) {
         
           
         </IonContent>
-      </IonPage>
     </ErrorBoundary>
   );
 }

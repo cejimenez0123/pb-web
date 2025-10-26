@@ -21,10 +21,6 @@ function BookDashboardItem({book,isGrid}) {
     const dispatch = useDispatch()
     const {setSuccess,setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
-
-    const [expanded,setExpanded]=useState(false)
-   const [likeFound,setLikeFound]=useState(null)
-    const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
     const [isArchived,setIsArchived]=useState()
    const [title,setTitle]=useState("")

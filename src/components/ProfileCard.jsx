@@ -12,9 +12,11 @@ import { useMediaQuery } from "react-responsive"
 import { useParams } from "react-router-dom"
 import FollowerCard from "./profile/FollowerCard"
 import { IonImg } from "@ionic/react"
+import { getDisplayableImage } from "../core/getDisplayableImage"
+import Enviroment from "../core/Enviroment"
 export default function ProfileCard({profile,onClickFollow,following}){
     const dialog = useSelector(state=>state.users.dialog)
-    const [profilePic,setProfilePic]=useState("")
+    const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const [pending,setPending]=useState(false)
     const {id}=useParams()
     const [followersDialog,setFollowersDialog]=useState(false)
@@ -33,16 +35,17 @@ export default function ProfileCard({profile,onClickFollow,following}){
   
       if(profile){
           if(isValidUrl(profile.profilePic)){
-              console.log("ppokef",profile.profilePic)
+        
               setProfilePic(profile.profilePic)
               setPending(false)
           }else{
-                  console.log("ppoke",profile.profilePic)
-           getDownloadPicture(profile.profilePic).then(image=>{
-            console.log("ppoke",image)
-              setProfilePic(image)
-              setPending(false) } )
-          }}
+             const src = Enviroment.imageProxy(profile.profilePic);
+setProfilePic(src)
+   
+
+        }
+        }
+          
   },[profile])
   const openDialog=()=>{
     let dia = dialog

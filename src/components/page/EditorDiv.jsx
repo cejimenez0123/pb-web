@@ -21,9 +21,11 @@ import { IonImg } from "@ionic/react"
         
         useEffect(()=>{
           if(page && page.type==PageType.picture){
-            getDownloadPicture(page.data).then(url=>{
-              setImage(url)
-            })
+            // getDownloadPicture(page.data).then(url=>{
+              // setImage(url)
+               const src = `${Enviroment.url}/image?path=${encodeURIComponent(profile.profilePic)}`;
+setImage(src)
+            // })
           }else if(page){
             dispatch(setHtmlContent(page.data))
           }

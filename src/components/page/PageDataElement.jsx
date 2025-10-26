@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom"
 import adjustScreenSize from "../../core/adjustScreenSize"
 import Context from "../../context"
 import { IonImg } from '@ionic/react';
+import Enviroment from "../../core/Enviroment"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const {isPhone,isHorizPhone}=useContext(Context)
@@ -23,13 +24,8 @@ export default function PageDataElement({page,isGrid,book=null}){
                 setImage(page.data)
         
             }else{
-                getDownloadPicture(page.data).then(url=>{
-                    setImage(url)
-             
-                }).catch(err=>{
-                console.log(err)
-                
-                })
+                setImage(Enviroment.imageProxy(page.data))
+            
             }
     
         }

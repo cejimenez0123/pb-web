@@ -21,10 +21,11 @@ import Context from "../../context"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { setDialog } from "../../actions/UserActions"
+import Enviroment from "../../core/Enviroment"
 
 const ProfileInfo = ({profile})=>{
-    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    const dialog = useSelector(state=>state.users.dialog)
+    const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
+        const dialog = useSelector(state=>state.users.dialog)
     const {isNative}=useContext(Context)
     const dispatch = useDispatch()
     const handleDialogOpen=()=>{
@@ -46,36 +47,20 @@ const ProfileInfo = ({profile})=>{
                 setPictureUrl(profile.profilePic)
          
             }else{
-             getDownloadPicture(profile.profilePic).then(image=>{
-            
-                    setPictureUrl(image)
-           
-              
-            } ).catch(err=>{
-              
-            })
+             const src = Enviroment.imageProxy(profile.profilePic)
 
-      const url = await getDownloadPicture(profile.profilePic);
+                    setPictureUrl(src)
+            }
+              
+            }
+
+    //   const url = await getDownloadPicture(profile.profilePic);
     
-      if (isMounted) setPictureUrl(url);
-    }}
+    //   if (isMounted) setPictureUrl(url);
+    // }}
     fetchImage();
     return () => (isMounted = false);
   }, [profile]);
-    // useEffect( ()=>{
-
-    //     if(!isValidUrl(profile.profilePic)){
-    //         getDownloadPicture(profile.profilePic).then(url=>{
-    //            console.log("ppoke",url)
-    //             setPictureUrl(url)
-    //         })
-    //     }else if(profile&&isValidUrl(profile.profilePic)){
-          
-    //         setPictureUrl(profile.profilePic)
-    //     }
-        
-        
-    // },[profile])
     const openFollowersDialog = () => {
         let dia = {};
         dia.isOpen = true;
@@ -114,14 +99,20 @@ const ProfileInfo = ({profile})=>{
     if(!profile){
         return <div className="skeleton h-[100%] w-24"/>
     }
+    const ProfilePic = ({url})=>    <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mr-6 rounded-full overflow-hidden">
+    <IonImg className={"object-fit "}
+    src={url}/>
+   
+    </div>
     return (  
         <div className="flex h-[100%] flex-col justify-between">                       
     <div className='flex-row    mx-auto   flex  '>
-        <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mr-6 rounded-full overflow-hidden">
+        {/* <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mr-6 rounded-full overflow-hidden">
     <IonImg className={"object-fit "}
     src={pictureUrl}/>
    
-    </div>
+    </div> */}
+    <ProfilePic url={pictureUrl}/>
 
         <div className='text-left sm:mx-3 mb-2 h-48 flex flex-col '>
         <h5 className='text-xl mb-3  mt-2 lora-bold  text-emerald-900 font-bold'>{profile.username}</h5>

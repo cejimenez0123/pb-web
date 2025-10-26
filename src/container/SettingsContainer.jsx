@@ -10,6 +10,7 @@ import checkResult from "../core/checkResult";
 import Context from "../context";
 import DeviceCheck from "../components/DeviceCheck";
 import { IonContent } from "@ionic/react";
+import Enviroment from "../core/Enviroment";
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
     const{setError,currentProfile,setSuccess,dialog}=useContext(Context)
@@ -30,10 +31,11 @@ export default function SettingsContainer(props) {
         if(currentProfile&& currentProfile.profilePic){
             
             if(!currentProfile.profilePic.includes("http")){
-            getDownloadPicture(currentProfile.profilePic).then(url=>{
+                setPictureUrl(Enviroment.imageProxy(currentProfile.profilePic))
+            // getDownloadPicture(currentProfile.profilePic).then(url=>{
                
-                setPictureUrl(url)
-            })
+            //     setPictureUrl(url.full)
+            // })
         }else{
             setSelectedImage(currentProfile.profilePic)
             setPictureUrl(currentProfile.profilePic)

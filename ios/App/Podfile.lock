@@ -10,11 +10,11 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
-  - Capacitor (7.4.3):
+  - Capacitor (7.4.4):
     - CapacitorCordova
   - CapacitorCommunityAppleSignIn (7.1.0):
     - Capacitor
-  - CapacitorCordova (7.4.3)
+  - CapacitorCordova (7.4.4)
   - CapacitorFilesystem (7.1.4):
     - Capacitor
     - IONFilesystemLib (~> 1.0.1)
@@ -25,7 +25,7 @@ PODS:
     - Capacitor
   - CapacitorSplashScreen (7.0.3):
     - Capacitor
-  - CapgoCapacitorSocialLogin (7.13.0):
+  - CapgoCapacitorSocialLogin (7.14.2):
     - Alamofire (~> 5.10.2)
     - Capacitor
     - FBSDKCoreKit (= 18.0.0)
@@ -110,14 +110,14 @@ SPEC CHECKSUMS:
   Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
-  Capacitor: 28d6c01026a9a3f7156529498ec1f389a2a28dbc
+  Capacitor: 358dd1c3fdd71d969547b17e159fd8a7736cb45f
   CapacitorCommunityAppleSignIn: 271cb2860576fd2961508bbfa7a82117d93eadca
-  CapacitorCordova: 435121e81a2df4d0034f0fb11fcefab5104cfdb5
+  CapacitorCordova: bf648a636f3c153f652d312ae145fb508b6ffced
   CapacitorFilesystem: f9bd850c41e048180e5dc0cbb90f2033ede9d2cc
   CapacitorGeolocation: 84f868bea4c2499aebc3bb3a88fd0a508f87ab87
   CapacitorPreferences: 65107ed7437d96ee72583df5763985e3c0ff2bc2
   CapacitorSplashScreen: e388b8e0ed0e982a9d3a40417f478e7a018a8763
-  CapgoCapacitorSocialLogin: 69da761a79fedeff6583fcf0bf7543e9c10ad622
+  CapgoCapacitorSocialLogin: 3c519453a56ce8b8628c9bd754136eed03407f80
   FBAEMKit: e34530df538b8eb8aeb53c35867715ba6c63ef0c
   FBSDKCoreKit: d3f479a69127acebb1c6aad91c1a33907bcf6c2f
   FBSDKCoreKit_Basics: 017b6dc2a1862024815a8229e75661e627ac1e29

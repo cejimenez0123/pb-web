@@ -70,10 +70,13 @@ import {
               setImage(ePage.data);
               setLocalContent(ePage.data);
             } else {
-              getDownloadPicture(ePage.data).then((url) => {
-                setImage(url);
-                setLocalContent(url);
-              });
+
+               const src = `${Enviroment.url}/image?path=${encodeURIComponent(ePage.data)}`;
+              setImage(url);
+              // getDownloadPicture(ePage.data).then((url) => {
+              //   setImage(url);
+              //   setLocalContent(url);
+              // });
             }
             break;
           }

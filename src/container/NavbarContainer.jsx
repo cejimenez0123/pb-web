@@ -70,10 +70,10 @@ function NavbarContainer({currentProfile}){
               setProfilePic(currentProfile.profilePic)
         
           }else{
-           getDownloadPicture(currentProfile.profilePic).then(image=>{
-              setProfilePic(image)
-           } )
-          }}
+           setProfilePic(Enviroment.imageProxy(currentProfile.profilePic))
+         
+          }
+        }
   },[currentProfile,pathName])
 
 const openDialog=()=>{
