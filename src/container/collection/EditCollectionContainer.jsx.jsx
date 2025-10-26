@@ -17,10 +17,10 @@ import {
 } from "@ionic/react";
 // import view from "../../images/icons/"
 import CollectionToCollection from "../../domain/models/CollectionToCollection";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollectionProtected } from "../../actions/CollectionActions";
+import { deleteCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollectionProtected, patchCollectionContent } from "../../actions/CollectionActions";
 import Paths from "../../core/paths";
 import addIcon from "../../images/icons/add_circle.svg";
 import deleteIcon from "../../images/icons/delete.svg";
@@ -31,9 +31,12 @@ import StoryToCollection from "../../domain/models/storyToColleciton";
 import { Preferences } from "@capacitor/preferences";
 import { RoleType } from "../../core/constants";
 import arrowDown from "../../images/icons/arrow_down.svg"
+import Context from "../../context";
+
 const EditCollectionContainer = () => {
    const params = useParams();
   const { id } = params;
+  const {setError}=useContext(Context)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [pending,setPending]=useState(true)
@@ -43,6 +46,7 @@ const EditCollectionContainer = () => {
  const [followersAre,setFollowersAre]=useState(RoleType.commenter)
  const [title,setTitle]=useState("")
  const [purpose,setPurpose]=useState("")
+
     // <li onClick={() => setFollowersAre(RoleType.commenter)}>Commenter</li>
 //                       <li onClick={() => setFollowersAre(RoleType.reader)}>Reader</li>
 //                       <li onClick={() => setFollowersAre(RoleType.writer)}>Writer</li>
@@ -79,7 +83,7 @@ const dialog = useSelector(state=>state.users.dialog)
     if (tc) dispatch(deleteCollectionFromCollection({ tcId: tc.id }));
   };
   const setItems = (col) => {
-    console.log("Vvd",col)
+    
     if (!col) return;
  if (col.storyIdList) {
   console.log(col.storyIdList)
@@ -120,6 +124,7 @@ if (col.childCollections) {
     }
   };
      const setInfo = (col) => {
+      console.log(col)
     if (!col) return;
     setTitle(col.title);
     setPurpose(col.purpose);
@@ -127,8 +132,20 @@ if (col.childCollections) {
     setIsOpen(col.isOpenCollaboration);
     setFollowersAre(col.followersAre ?? RoleType.commenter);
   };
-  const handleSave = () =>  (e) => {
-    e.preventDefault();
+  const handleSave = () => {
+
+    let log = {
+        id: params.id,
+        isPrivate,
+        isOpenCollaboration: isOpen,
+        title,
+        purpose,
+        storyToCol: newPages,
+        colToCol: newCollections,
+        col: colInView,
+        profile: currentProfile,
+      }
+    console.log("FS",log)
     dispatch(
       patchCollectionContent({
         id: params.id,
@@ -234,11 +251,12 @@ if (col.childCollections) {
                   Title
                 </IonLabel>
                 <IonInput
-                  value={collection?.title}
+                  value={title}
                   placeholder="Enter collection title"
-                  onIonChange={(e) =>
+                  onIonChange={(e) =>{
                     setCollection({ ...collection, title: e.detail.value })
-                  }
+                    setTitle(e.detail.value)
+                  }}
                   className="p-2"
                 />
               </IonItem>
@@ -251,14 +269,15 @@ if (col.childCollections) {
                 <IonTextarea
                   autoGrow={true}
                   placeholder="Describe your collection"
-                  value={collection?.description}
+                  value={purpose}
                   rows={5}
-                  onIonChange={(e) =>
+                  onIonChange={(e) =>{
                     setCollection({
                       ...collection,
                       description: e.detail.value,
                     })
-                  }
+                    setPurpose(e.detail.value)
+                  }}
                   className="p-2 "
                 />
               {/* </IonItem> */}
@@ -350,7 +369,7 @@ if (col.childCollections) {
   </div>           
   <IonText
                 onClick={handleSave}
-                className="text-white bg-emerald-700 w-[90vw] my-auto  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
+                className="text-white btn bg-emerald-700 w-[90vw] my-auto  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
               >
                 Save
               </IonText>
