@@ -79,7 +79,7 @@ const dialog = useSelector(state=>state.users.dialog)
     if (tc) dispatch(deleteCollectionFromCollection({ tcId: tc.id }));
   };
   const setItems = (col) => {
-    console.log("Vvd")
+    console.log("Vvd",col)
     if (!col) return;
  if (col.storyIdList) {
   console.log(col.storyIdList)
@@ -154,24 +154,19 @@ if (col.childCollections) {
   }, [colInView]);
     const getCol = async () => {
     const token = (await Preferences.get({ key: "token" })).value;
-    setNewPages([]);
-    setNewCollections([]);
+
+    console.log("VD",token)
     // if (token && (!colInView || colInView.id !== id)) {
-      token && dispatch(fetchCollectionProtected(params)).then((res) => {
+      token &&id&& dispatch(fetchCollectionProtected(params)).then((res) => {
         console.log(res)
-        setInfo(res.payload.collection)
-        setItems(res.payload.collection)
+       
         setPending(false);
       });
     // }
   };
-//   useEffect(()=>{
-
-//  if(colInView) setItems(colInView);
-//   },[colInView])
   useEffect(()=>{
-    return async ()=> getCol();
-  },[[location.pathname, id, currentProfile]])
+     getCol(id).then()
+  },[id])
   const handleAddStory = () => navigate(Paths.addToCollection.createRoute(id));
   const handleDelete = () => {
     let dia = { ...dialog };
