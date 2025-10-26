@@ -9,23 +9,7 @@ import { IonImg } from "@ionic/react";
 function ProfileCircle({profile,color="white",isGrid=false}){
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const navigate = useNavigate()
-          // const fetchPreview = async (url) => {
-  // try {
-//     console.log("DXX",url)
-//     const response = await axios.get(
-//       `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`
-//     );
 
-//     const data = response.data; // ✅ axios already gives JSON
-// console.log("Fdfdf",data)
-//     console.log("Fetched preview data:", data);
-//     setProfilePic(data.url)
-//   } catch (error) {
-//     console.error('Failed to fetch link preview:', error);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
   
     useLayoutEffect(()=>{
   

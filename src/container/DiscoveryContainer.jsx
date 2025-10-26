@@ -169,7 +169,7 @@ function DiscoveryContainer() {
   };
 
   return (
-    // <IonPage>
+  
       <ErrorBoundary>
         {/* Header could be added here if desired */}
         <IonContent fullscreen={true} scrollY>
@@ -225,7 +225,7 @@ function DiscoveryContainer() {
           ) : null}
         </IonContent>
       </ErrorBoundary>
-    // </IonPage>
+
   );
 }
 

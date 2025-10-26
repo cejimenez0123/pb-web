@@ -147,7 +147,7 @@ const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()
   return (
 
 
-    //   <IonContent fullscreen={true} className="ion-padding">
+    
         <form  className="space-y-6 flex flex-col">
             <IonItem lines="none" className="ion-padding-vertical">
   <IonLabel position="stacked">Collection Name</IonLabel>
@@ -166,24 +166,6 @@ const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()
   />
 </IonItem>
 
-          {/* <IonItem lines="none">
-            <IonLabel position="stacked" className="text-emerald-700 font-medium">
-              Name of Collection
-            </IonLabel>
-            <IonInput
-              value={name}
-              style={{maxWidth:"90vw",backgroundColor:"emerald"}}
-
-              placeholder="Enter collection name"
-              onIonChange={(e) => setName(e.detail.value)}
-              className="bg-emerald-100  rounded-lg  py-2"
-              required
-            />
-          </IonItem> */}
-{/* <IonItem
-  lines="none"
-  className="rounded-lg border-2 border-emerald-800 my-2 bg-transparent"
-> */}
   <IonLabel
     position="stacked"
     className="text-emerald-700 font-medium text-lg mb-1"
@@ -260,17 +242,9 @@ onClick={handleSubmit}
             Create
           </IonText>
           </div>
-          {/* <div className="text-right">
-            <IonButton
-              type="submit"
-              expand="block"
-              className="bg-emerald-800 text-white rounded-full"
-            >
-              Create
-            </IonButton> */}
-          {/* </div> */}
+    
         </form>
-    //   </IonContent>
+
    
   );
 }

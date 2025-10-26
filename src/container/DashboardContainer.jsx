@@ -93,7 +93,7 @@ function DashboardContainer() {
   }, []);
 
   return (
-    // <IonPage>
+
       <IonContent fullscreen={true} scrollY>
         <ErrorBoundary>
           <div id="dashboard">
@@ -136,7 +136,7 @@ function DashboardContainer() {
           </div>
         </ErrorBoundary>
       </IonContent>
-    // </IonPage>
+ 
   );
 }
 
