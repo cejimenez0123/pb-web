@@ -240,9 +240,9 @@ if (col.childCollections) {
         ) : (
           // className="max-w-2xl mx-auto bg-white rounded-2xl shadow-md border border-emerald-100 p-6"
           <div >
-            <h2 className="text-xl font-semibold text-emerald-700 mb-4">
+            {/* <h2 className="text-xl font-semibold text-emerald-700 mb-4">
               {collection?.title || "Untitled Collection"}
-            </h2>
+            </h2> */}
 
             <IonList lines="none">
               {/* Title */}
