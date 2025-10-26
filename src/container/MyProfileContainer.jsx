@@ -9,6 +9,7 @@ import IndexList from '../components/page/IndexList';
 import authRepo from '../data/authRepo.js';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
+import StoryToCollection from '../domain/models/storyToColleciton.jsx';
 import { setPageInView, setPagesInView, setEditingPage } from '../actions/PageActions.jsx';
 import { sendGAEvent } from '../core/ga4.js';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
@@ -126,7 +127,7 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
 
     if (search.trim().length > 0) {
       const lowerSearch = search.toLowerCase();
-      result = result.filter(c => c.title && c.title.toLowerCase().includes(lowerSearch));
+      result = result.filter(c => c && c.title && c.title.toLowerCase().includes(lowerSearch));
     }
 
     return result;

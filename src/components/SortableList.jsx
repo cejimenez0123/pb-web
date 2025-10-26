@@ -114,7 +114,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import dragHandle from "../images/icons/drag_handle.svg";
 import { useNavigate } from "react-router-dom";
 import Paths from "../core/paths";
-import { IonImg } from "@ionic/react";
+import { IonImg, IonText } from "@ionic/react";
 
 export default function SortableList({ items, type, onOrderChange, onDelete }) {
   const navigate = useNavigate();
@@ -168,16 +168,16 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
 
   if (!listItems.length) {
     return (
-      <div className="my-4 h-page w-[96vw] flex bg-emerald-100 rounded-lg bg-opacity-80 md:w-page mx-auto text-emerald-800">
-        <h6 className="text-emerald-800 text-center lora-medium mx-auto mt-16 text-2xl">
-          You can do so much with this space
-        </h6>
+      <div className="my-4 h-[20em]  px-2 sm:h-page w-[90vw] flex bg-emerald-100 rounded-lg bg-opacity-80 sm:w-page mx-auto text-emerald-800">
+        <IonText className="text-emerald-800 text-center mx-auto mt-16 text-2xl">
+          Add something
+        </IonText>
       </div>
     );
   }
 
   return (
-    <div className="py-4 mx-auto w-[96vw] md:w-page">
+    <div className="py-4 mx-auto">
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="sortableList">
           {(provided) => (

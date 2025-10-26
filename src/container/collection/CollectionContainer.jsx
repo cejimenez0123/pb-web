@@ -54,7 +54,6 @@ import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths.js";
 import DeviceCheck from "../../components/DeviceCheck.jsx";
 import { Preferences } from "@capacitor/preferences";
-import { filter } from "lodash";
 
 export default function CollectionContainer({currentProfile}) {
   const {  setError, setSuccess } = useContext(Context);
@@ -127,38 +126,16 @@ const isNative = DeviceCheck()
     }
     if (collection.roles) {
       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-      if (found && found.role === RoleType.editor) {
+      console.log(found)
+      if (found && found.role === RoleType.editor||collection.profileId==currentProfile.id) {
         setCanUserEdit(true);
         return;
       }
     }
-    setCanUserEdit(false);
+
   }
   
-  // function checkPermissions() {
-  //   if (currentProfile && collection.profileId === currentProfile.id) {
-  //     setCanUserEdit(true);
-  //     setCanUserAdd(true);
-  //     setCanUserSee(true);
-  //     dispatch(getRecommendedCollectionsProfile());
-  //     return;
-  //   } else if (!currentProfile && collection.isPrivate) {
-  //     setCanUserEdit(false);
-  //     setCanUserAdd(false);
-  //     setCanUserSee(false);
-  //     return;
-  //   } else if (currentProfile && collection) {
  
-  //     soUserCanAdd();
-  //     soUserCanEdit();
-  //     dispatch(getRecommendedCollectionsProfile());
-  //     return;
-  //   } else {
-  //     setCanUserEdit(false);
-  //     setCanUserAdd(false);
-  //     setCanUserSee(false);
-  //   }
-  // }
   
 
   useLayoutEffect(() => {
@@ -175,6 +152,7 @@ const isNative = DeviceCheck()
   getCol()
   },[])
   useEffect(()=>{
+    soUserCanEdit()
     // checkPermissions()
   },[currentProfile,collection])
   
@@ -207,7 +185,7 @@ const isNative = DeviceCheck()
         checkResult(res, payload => {
             setRole({role:"commenter"})
           setSuccess("You are now following this collection");
-          // findRole()
+          findRole()
         }, err => {
           setError(err.message);
         });
@@ -232,7 +210,7 @@ const getCol = async () => {
             res,
             (payload) => {
               setLoading(false);
-            
+            soUserCanEdit()
               
               setCanUserSee(true)
             },
@@ -261,7 +239,9 @@ const getCol = async () => {
             res,
             (payload) => {
               if (payload.collection) {
+                
                 setLoading(false);
+                  soUserCanEdit()
               } else {
                 setError("Collection not found.");
                 setLoading(false);
@@ -271,6 +251,7 @@ const getCol = async () => {
               if (err.status === 403) {
                 setError("Access Denied: You do not have permission to view this collection.");
                 setCanUserSee(false);
+                
               } else {
                 setError(err.message || "Failed to load collection.");
               }
@@ -520,6 +501,7 @@ console.log("STORYLIST",collection.storyIdList)
 
   // Main content UI
   return (
+         <ErrorBoundary>
     <IonContent 
     fullscreen={true}  scrollY>
   
@@ -535,7 +517,7 @@ console.log("STORYLIST",collection.storyIdList)
     </IonButtons>
 
     {/* Right-aligned edit button */}
-    {canUserEdit && (
+    {canUserEdit && isNative && (
       <IonButtons slot="end">
         <IonImg
           className="btn max-h-[2rem] bg-emerald-400 cursor-pointer max-w-[3rem] flex items-center border-0 justify-center px-2 rounded"
@@ -548,19 +530,24 @@ console.log("STORYLIST",collection.storyIdList)
   </IonToolbar>
 </IonHeader>
 
-      <ErrorBoundary>
+ 
         <IonCard className="ion-margin-bottom ion-padding">
           <IonCardHeader className="mx-auto bg-red-100">
-            <div className="flex items-center px-4 gap-2">
-              {collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
-              <IonCardTitle className="ion-text-wrap">{collection.title}</IonCardTitle>
-            </div>
+            <div className="flex items-center justify-between px-4 gap-2">
+              <div>{collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
+              <IonCardTitle className="ion-text-wrap">{collection.title}</IonCardTitle></div>
+                 {canUserEdit &&<div><IonImg
+                 onClick={() => navigate(Paths.editCollection.createRoute(id))}
+                  src={edit} className="bg-emerald-400 max-w-12 max-h-12 rounded-full p-2 btn"/>
+            </div>}
+           </div>
           </IonCardHeader>
           <div className="mx-auto px-6">
           <IonCardContent  class="  ion-padding">
             <IonText color="medium w-full bg-emerald-100 min-h-6 bg-red-200">
               <h6>{collection.purpose}</h6>
             </IonText>
+
             <div className="ion-margin-top w-[90%] mx-auto py-4 flex items-center justify-around flex gap-2">
               {!role ? (
                 <div onClick={handleFollow} className="btn bg-transparent rounded-full border-2 px-4 px-2 border-emerald-300">
@@ -600,7 +587,7 @@ console.log("STORYLIST",collection.storyIdList)
         </IonCard>
 
         {collections && collections.length > 0 && (
-          <IonCard className="ion-padding">
+          <IonCard className="ion-padding pt-12">
             <IonCardHeader>
               <IonCardTitle>Anthologies</IonCardTitle>
             </IonCardHeader>
@@ -632,7 +619,8 @@ console.log("STORYLIST",collection.storyIdList)
         </IonCard>
 
         <ExploreList />
-      </ErrorBoundary>
+  
     </IonContent>
+        </ErrorBoundary>
   );
 }

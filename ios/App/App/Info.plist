@@ -74,20 +74,5 @@
       <key>NSAllowsArbitraryLoads</key>
       <true/>
     </dict>
-<!--    <key>NSAppTransportSecurity</key>-->
-<!--    <dict>-->
-<!--      <key>NSAllowsArbitraryLoads</key>-->
-<!--      <false/>-->
-<!--      <key>NSExceptionDomains</key>-->
-<!--      <dict>-->
-<!--        <key>cocoacasts.com</key>-->
-<!--        <dict>-->
-<!--          <key>NSIncludesSubdomains</key>-->
-<!--          <true/>-->
-<!--          <key>NSExceptionAllowsInsecureHTTPLoads</key>-->
-<!--          <true/>-->
-<!--        </dict>-->
-<!--      </dict>-->
-<!--    </dict>-->
 </dict>
 </plist>

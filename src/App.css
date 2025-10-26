@@ -8,6 +8,21 @@ ion-checkbox .checkbox-icon {
   display: none !important;
 }
 
+/* makes the textarea flow evenly with input fields */
+.ion-textarea-custom {
+  --background: transparent;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-size: 1rem;
+  color: #065f46; /* emerald-800 */
+  line-height: 1.4;
+}
+
+ion-textarea textarea {
+  border-radius: 0.5rem;
+}
 
 .ion-img-fit {
   width: 100%;

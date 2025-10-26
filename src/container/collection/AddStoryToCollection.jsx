@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   IonContent,
   IonHeader,
@@ -23,14 +23,18 @@ import Context from "../../context";
 import ErrorBoundary from "../../ErrorBoundary";
 import { getStory } from "../../actions/StoryActions";
 import {
+  createCollection,
   fetchCollectionProtected,
   getMyCollections,
+  setCollectionInView,
   setCollections,
 } from "../../actions/CollectionActions";
 import usePersistentMyCollectionCache from "../../domain/usecases/usePersistentMyCollectionCache";
 import Paths from "../../core/paths";
 import getLocalStore from "../../core/getLocalStore";
 import { Preferences } from "@capacitor/preferences";
+import { setDialog } from "../../actions/UserActions";
+import { clearPagesInView } from "../../actions/PageActions";
 
 function toTitleCase(str) {
   return str.toLowerCase().replace(/(?:^|\s)\w/g, function (match) {
@@ -52,21 +56,25 @@ export default function AddStoryToCollectionContainer(props) {
   // Redux selectors
   const collectionInView = useSelector((state) => state.books.collectionInView);
   const pageInView = useSelector((state) => state.pages.pageInView);
-
-  // Local state
-  const [hasMoreCol, setHasMoreCol] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [search, setSearch] = useState("");
   const [item, setItem] = useState(type === "collection" ? collectionInView : pageInView);
 
-  // Filtered collections excluding feedback and current item
-  const collections = (useSelector((state) => state.books.collections) ?? cachedCols)
-    .filter((col) => col && col.type && col.type !== "feedback")
-    .filter((col) => {
-      if (item && item.id === col.id) return false; // exclude current item
-      if (search.length > 0) return col.title.toLowerCase().includes(search.toLowerCase());
-      return true;
-    });
+
+  const rawCollections = useSelector((state) => state.books.collections) || [];
+
+  const collections = useMemo(() => {
+    return rawCollections
+      .filter((col) => col && col.type && col.type !== "feedback")
+      .filter((col) => {
+        if (!col) return false;
+        if (item && item.id === col.id) return false; // exclude current item
+        if (search && search.length > 0)
+          return col.title.toLowerCase().includes(search.toLowerCase());
+        return true;
+      });
+  }, [rawCollections, item, search]);
+
     useLayoutEffect(()=>{
         Preferences.get({key:"token"}).then(tok=>setToken(tok.value))
     },[])
@@ -84,12 +92,30 @@ export default function AddStoryToCollectionContainer(props) {
   }, []);
   const openNewCollectionForm=()=>{
 let dia = {...dialog}
-  dia.text = <CreateCollectionForm onClose={()=>{
+//  dia.agree=(params)=>{
+//     console.log("CDC",params)
+//       dispatch(createCollection(params)).then(res=>{
+        
+//  if (res?.payload?.collection) {
+//       dispatch(clearPagesInView());
+//       dispatch(setCollectionInView({ collection: res.payload.collection }));
+//       navigate(Paths.collection.createRoute(res.payload.collection.id));
+     
+//     }
+  
+  
+  // })}
+  dia.text = <CreateCollectionForm 
+  onClose={()=>{
                       setOpenDialog(false)
                     }}/>  
                     dia.title="Create Collecition"
-                
+   dia.isOpen = true
   
+   dia.agree=null
+   dia.agreeText=null
+   dia.disagreeText = "Close"             
+  dispatch(setDialog(dia))
     //               
   }
   // Update redux collections when profile or id changes
@@ -153,16 +179,32 @@ let dia = {...dialog}
       </IonContent>
     );
   }
-
+          const handleBack = (e) => {
+    e.preventDefault();
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(Paths.discovery());
+    }
+  };
+  // Example getMore for infinite scrolling (to be filled with your pagination logic)
+  // const getMore = () => {
+  //   // Example: dispatch get more pages/stories for pagination
+  //   setHasMore(false); // Or change based on actual load
+  // };
+  
   return (
     <ErrorBoundary>
-      <IonContent fullscreen={true}className="ion-padding ion-text-emerald-800" scrollY style={{ minWidth: "320px" }}>
+      <IonContent fullscreen={true}className="ion-padding pt-12 ion-text-emerald-800" scrollY >
         <IonHeader translucent>
-          <IonToolbar>
+          <IonToolbar className="flex flex-row">
             <IonButtons>
-              <IonBackButton defaultHref={Paths.collection.createRoute(id)}/>
+              <IonBackButton 
+              onClick={handleBack}
+              defaultHref={Paths.collection.createRoute(id)}
+      />
             </IonButtons>
-            <IonTitle className="ion-text-center">
+            <IonTitle slot="end" className="ml-8 ion-text-center">
               Add <strong>{item.title}</strong> to Collection
             </IonTitle>
           </IonToolbar>
@@ -187,7 +229,8 @@ let dia = {...dialog}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpenDialog(true); }}
             style={{ userSelect: "none" }}
           >
-            <IonText>View</IonText>
+            <IonText>View Story</IonText>
+            
           </div>
           </div>
         <div

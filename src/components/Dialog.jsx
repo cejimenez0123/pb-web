@@ -47,7 +47,7 @@ const Dialog = ({
 {dialog.text}
 </div>
       <IonFooter className="ion-padding-horizontal ion-padding-vertical" style={{ display: 'flex', justifyContent: dialog.agree ? 'space-between' : 'flex-end' }}>
-        {dialog.agree && (
+        {dialog.agree?(
           <div className='rounded-full flex  px-4   w-fit h-[3rem] text-[1rem] border-emerald-400 border-2'>
           <IonText
             fill="outline"
@@ -58,7 +58,7 @@ const Dialog = ({
             {dialog.agreeText}
           </IonText>
           </div>
-        )}
+        ):null}
           <div className='rounded-full w-[6rem] h-[3rem] flex  border-emerald-600 border-2'>
         <IonText   className='text-[1rem] my-auto mx-auto' onClick={dialog.onClose} >
           {dialog.disagreeText}
