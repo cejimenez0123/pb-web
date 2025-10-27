@@ -72,34 +72,48 @@ export default function SignUpContainer(props) {
 const fileInputRef = useRef(null);
 const prevObjectUrlRef = useRef(null);
 
+  const handleFileInput = (e) => {
+    console.log("touch")
+    const img = e.target.files[0];
+    if (img) {
+      if (!img.type.startsWith('image/')) {
+        setError('Please upload a valid image file.');
+        setSuccess(null);
+        setSelectedImage(null);
+        return;
+      }
+      setFile(img);
+      setError(null);
+      setSelectedImage(URL.createObjectURL(img));
+    }
+  };
 
+// const handleFileInput = (e) => {
+//   // prefer e.currentTarget.files (reliable in React)
+//   const file = (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) || (e.target && e.target.files && e.target.files[0]);
+//   if (!file) return;
+//   console.log(file)
+// console.log("tocuh")
+//   if (!file.type.startsWith("image/")) {
+//     setError("Please upload a valid image file.");
+//     setSuccess(null);
+//     setSelectedImage(null);
+//     setFile(null);
+//     return;
+//   }
 
-const handleFileInput = (e) => {
-  // prefer e.currentTarget.files (reliable in React)
-  const file = (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) || (e.target && e.target.files && e.target.files[0]);
-  if (!file) return;
-  console.log(file)
-console.log("tocuh")
-  if (!file.type.startsWith("image/")) {
-    setError("Please upload a valid image file.");
-    setSuccess(null);
-    setSelectedImage(null);
-    setFile(null);
-    return;
-  }
+//   // revoke previous object URL if any
+//   if (prevObjectUrlRef.current) {
+//     URL.revokeObjectURL(prevObjectUrlRef.current);
+//     prevObjectUrlRef.current = null;
+//   }
 
-  // revoke previous object URL if any
-  if (prevObjectUrlRef.current) {
-    URL.revokeObjectURL(prevObjectUrlRef.current);
-    prevObjectUrlRef.current = null;
-  }
+//   const objectUrl = URL.createObjectURL(file);
+//   prevObjectUrlRef.current = objectUrl;
 
-  const objectUrl = URL.createObjectURL(file);
-  prevObjectUrlRef.current = objectUrl;
-
-  setFile(file);
-  setSelectedImage(objectUrl);
-};
+//   setFile(file);
+//   setSelectedImage(objectUrl);
+// };
 
 // cleanup on unmount: revoke object URL
 useEffect(() => {
@@ -114,21 +128,7 @@ useEffect(() => {
 
 // cleanup on unmount: revoke object URL
 
-  // const handleFileInput = (e) => {
-  //   console.log("touch")
-  //   const img = e.target.files[0];
-  //   if (img) {
-  //     if (!img.type.startsWith('image/')) {
-  //       setError('Please upload a valid image file.');
-  //       setSuccess(null);
-  //       setSelectedImage(null);
-  //       return;
-  //     }
-  //     setFile(img);
-  //     setError(null);
-  //     setSelectedImage(URL.createObjectURL(img));
-  //   }
-  // };
+
 
   const completeSignUp = async () => {
     let toke = searchParams.get("token") || token;
