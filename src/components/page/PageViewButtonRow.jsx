@@ -73,6 +73,8 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
     dia.onClose=()=>{
         dispatch(setDialog({...dialog,isOpen:false}))
     }
+    dia.agreeText=null
+    dia.agree=null
     dia.disagreeText="Close"
     dispatch(setDialog(dia))
   }
