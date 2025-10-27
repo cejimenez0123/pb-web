@@ -9,7 +9,7 @@ import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
 import DeviceCheck from '../../components/DeviceCheck';
-import { IonContent, IonIcon, IonInput, IonText } from '@ionic/react';
+import { IonContent, IonIcon, IonInput, IonPage, IonText } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { useSelector } from 'react-redux';
@@ -162,16 +162,17 @@ dispatch(setDialog(dia))
     }
     return(
         <ErrorBoundary>
-    <div id="cal-embed" className=' flex md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+            <IonPage>
+            <IonContent fullscreen={true}>
+    <div id="cal-embed" className=' py-0 scroll-auto flex md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
             <form className='max-w-[100vw] sm:max-w-82 pt-4'>
         <h1 className='text-emerald-800 mont-medium mx-auto text-center pb-4'> Log In</h1>
-        <div >
-         {/* <div className='max-w-[91vw]'> */}
-        {/* <label className="input  open-sans-medium text-emerald-800 pl-6 w-52 overflow-hidden pl-2  rounded-full border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
-  Email */}
-  <IonInput type="text" className="shrink overflow-hidden  my-auto text-[1rem] sm:max-w-72   open-sans-medium  bg-transparent text-emerald-800" 
+        <div className='w-[90vw] '>
+       
+  <IonInput type="text" 
+//   className="grow overflow-hidden w-full my-auto text-[1rem] sm:max-w-72   open-sans-medium  bg-transparent text-emerald-800" 
          value={email} 
          labelPlacement='stacked'
          label='Email'
@@ -179,11 +180,10 @@ dispatch(setDialog(dia))
         placeholder='example@email.com' />
 {/* </label> */}
 </div>   
-{/* <div className='mb-8 max-w-[91vw] '> */}
-    {/* <label className="input open-sans-medium pl-6 inline-block flex rounded-full flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
-  Password */}
-  <span className='flex flex-row '>
-  <IonInput type={showPassword?"text":`password`} className="shrink my-auto max-w-36 open-sans-medium sm:max-w-96  shrink text-emerald-800 " 
+
+  <span className='flex flex-row w-[90vw] '>
+  <IonInput type={showPassword?"text":`password`}
+//    className="grow my-auto max-w-46 open-sans-medium sm:max-w-96  text-emerald-800 " 
          value={password}
          label='Password'
          labelPlacement='stacked'
@@ -227,23 +227,24 @@ dispatch(setDialog(dia))
     
      />
      </span>
-        <div className='mt-4 p-4'>
+        <div className='mt-4 text-center p-4'>
         <a  onClick={handleFirstTimeClick}
-        className='text-emerald-800 text-xl mont-medium hover:text-green-400  '>Click here if this your first time?</a>
-        </div>
+        className='text-emerald-800 text-xl hover:text-green-400  '>Click here if this your first time?</a>
+      
         {pending? <div className='flex'>
        <img  
         className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
         </div>:null}
-        <div 
-              >
+        {/* <div  */}
+              {/* > */}
                 
                 <h5 onClick={()=>{
                     handleForgotPasswordDialog()
-                 }} className='text-[1rem] mont-medium hover:text-green-400 text-emerald-800'>Forgot Password?</h5>
-            </div>
+                 }} className='text-[1rem] pt-8 w-fit hover:text-green-400 mx-auto text-emerald-800'>Forgot Password?</h5>
+            {/* </div> */}
+              </div>
         </form>
 
                 </div></div>
-    </div></ErrorBoundary>)
+    </div></IonContent></IonPage></ErrorBoundary>)
 }

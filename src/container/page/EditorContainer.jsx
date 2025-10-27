@@ -90,7 +90,14 @@ function EditorContainer({presentingElement}){
     
         
       },[htmlContent])
-     
+               const handleBack = (e) => {
+    e.preventDefault();
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(Paths.discovery());
+    }
+  };
 
    
     useLayoutEffect(()=>{
@@ -294,10 +301,11 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   params.data=htmlContent
     params.id = id
    params.isPrivate=isPrivate
+   params.description = description
    params.needsFeedback = needsFeedback
 setParameters(params)
     dispatchUpdate(params)
-   },[htmlContent,isPrivate,parameters.privacy,parameters.type,parameters,parameters.data,parameters.description,parameters.title])
+   },[htmlContent,isPrivate,parameters.privacy,description,parameters.type,parameters,parameters.data,parameters.description,parameters.title])
    const handleFeedback=()=>{
 
       let params = parameters
@@ -382,10 +390,12 @@ const openRoleFormDialog = (fetchedPage) => {
 };
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
-          <IonContent fullscreen={true} scrollY className="ion-padding pt-8">
-            <IonHeader>
-              <IonButtons >
-                <IonBackButton  defaultHref={Paths.myProfile()}/></IonButtons>
+          <IonContent fullscreen={true} scrollY >
+            <IonHeader className=" ion-padding py-8 ">
+              <IonButtons className="ion-padding" >
+                <div className="pt-4 pl-4">
+                <IonBackButton  defaultHref={Paths.myProfile()} onClick={handleBack}/></div></IonButtons>
+
             <IonButtons>{topBar()}</IonButtons>
             </IonHeader>
           <div  className=" mx-auto md:p-8  "> 

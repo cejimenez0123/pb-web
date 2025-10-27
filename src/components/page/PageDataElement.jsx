@@ -38,7 +38,7 @@ switch(page.type){
     return( 
 
         <div 
-        className=" w-full sm:w-[50em]"
+        className=" w-full ql-editor  w-[95vw] sm:w-[50em]"
     
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
@@ -47,7 +47,7 @@ switch(page.type){
         ><div 
         
         className={` ql-editor
-                ${book?`mx-2`:""}  `}
+               `}
            
            dangerouslySetInnerHTML={{__html:page.data}}/></div>
 

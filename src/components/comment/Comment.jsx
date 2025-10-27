@@ -66,7 +66,7 @@ export default function Comment({page,comment,level}){
        let branches = comments.length?comments.filter(com=>{return com.parentId && com.parentId==comment.id}):[]
        setBranches(branches)
     },[comments])
-    
+    if(!comment)return null
     return(<div className="max-w-[99%] ml-1">
 
 
@@ -75,7 +75,7 @@ export default function Comment({page,comment,level}){
 
            <div className="  shadow-md  text-emerald-800 rounded-lg sm:px-8 sm:rounded-[18%] ">
           <div className="flex flex-row py-2 sm:pl-4 pr-4 sm:pr-12 justify-between"> 
-          <a onClick={()=>commnet.profile?navigate(Paths.profile.createRoute(comment.profile.id)):null}
+          <a onClick={()=>comment.profile?navigate(Paths.profile.createRoute(comment.profile.id)):null}
            className=" text-[0.8rem] mx-4 open-sans-medium text-emerald-800 my-auto mr-4">{comment&&comment.profile?comment.profile.username:""}</a>
           
           {currentProfile && currentProfile.id == comment.profileId?     <div className="dropdown dropdown-left">
@@ -94,7 +94,7 @@ export default function Comment({page,comment,level}){
                    onClick={()=>setReplyInput(!replyInput) }
                 
                   
-                    className="  place-self-end bottom-0  mt-8 sm:flex sm:flex-row text-[0.9rem] mont-medium md:px-4   font-bold sm:text-[1rem] mr-2 rounded-full sm:bg-emerald-600 py-2  text-emerald-800 sm:mx-2 sm:text-center   sm:my-auto  no-underline  mont-medium ">
+                    className="  place-self-end bottom-0  mt-8 sm:flex sm:flex-row text-[0.8rem] sm:text-[1rem] md:px-4   font-bold  mr-2 rounded-full  py-2  text-emerald-800 sm:mx-2 sm:text-center   sm:my-auto  no-underline  mont-medium ">
                         {!replyInput?"Reply":"Close"}</h6>
       
                 </div>

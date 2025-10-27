@@ -101,9 +101,12 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
   let data = await storyRepo.updateStory(params)
  
   if(data.story&& params && !data.story.isPrivate&&data.story.id){
-  
+  try{
     client.partialUpdateObject(
       {objectID:data.story.id,title:data.story.title,indexName:"story"},{createIfNotExists:true})
+    }catch(err){
+      console.log(err)
+    }
    }else{
 try{
         client.deleteObject({indexName:"story",objectID:data.story.id})

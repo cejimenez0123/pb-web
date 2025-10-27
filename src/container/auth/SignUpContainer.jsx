@@ -33,6 +33,7 @@ import DeviceCheck from '../../components/DeviceCheck';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { debounce } from 'lodash';
 import { Preferences } from '@capacitor/preferences';
+import GoogleLogin from '../../components/GoogleLogin';
 
 export default function SignUpContainer(props) {
   const isNative = DeviceCheck()
@@ -62,27 +63,72 @@ export default function SignUpContainer(props) {
       ...seo,
       title: "Plumbum (Sign Up) - Your Writing, Your Community"
     });
-  }, [setSeo, seo]);
+  }, []);
 
   useEffect(() => {
     setToken(token);
     return async ()=>await Preferences.set({key:"token",value:token})
-  }, [searchParams, token]);
+  }, []);
+const fileInputRef = useRef(null);
+const prevObjectUrlRef = useRef(null);
 
-  const handleFileInput = (e) => {
-    const img = e.target.files[0];
-    if (img) {
-      if (!img.type.startsWith('image/')) {
-        setError('Please upload a valid image file.');
-        setSuccess(null);
-        setSelectedImage(null);
-        return;
-      }
-      setFile(img);
-      setError(null);
-      setSelectedImage(URL.createObjectURL(img));
+
+
+const handleFileInput = (e) => {
+  // prefer e.currentTarget.files (reliable in React)
+  const file = (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) || (e.target && e.target.files && e.target.files[0]);
+  if (!file) return;
+  console.log(file)
+console.log("tocuh")
+  if (!file.type.startsWith("image/")) {
+    setError("Please upload a valid image file.");
+    setSuccess(null);
+    setSelectedImage(null);
+    setFile(null);
+    return;
+  }
+
+  // revoke previous object URL if any
+  if (prevObjectUrlRef.current) {
+    URL.revokeObjectURL(prevObjectUrlRef.current);
+    prevObjectUrlRef.current = null;
+  }
+
+  const objectUrl = URL.createObjectURL(file);
+  prevObjectUrlRef.current = objectUrl;
+
+  setFile(file);
+  setSelectedImage(objectUrl);
+};
+
+// cleanup on unmount: revoke object URL
+useEffect(() => {
+  return () => {
+    if (prevObjectUrlRef.current) {
+      URL.revokeObjectURL(prevObjectUrlRef.current);
+      prevObjectUrlRef.current = null;
     }
   };
+}, []);
+
+
+// cleanup on unmount: revoke object URL
+
+  // const handleFileInput = (e) => {
+  //   console.log("touch")
+  //   const img = e.target.files[0];
+  //   if (img) {
+  //     if (!img.type.startsWith('image/')) {
+  //       setError('Please upload a valid image file.');
+  //       setSuccess(null);
+  //       setSelectedImage(null);
+  //       return;
+  //     }
+  //     setFile(img);
+  //     setError(null);
+  //     setSelectedImage(URL.createObjectURL(img));
+  //   }
+  // };
 
   const completeSignUp = async () => {
     let toke = searchParams.get("token") || token;
@@ -130,68 +176,66 @@ export default function SignUpContainer(props) {
   },100)
   return (
     
-      
-      <IonContent fullscreen={true}className="ion-padding pt-8" scrollY>
+      <IonPage>
+      <IonContent fullscreen={true}
+     >
         <IonHeader className="bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
-        <IonTitle className="text-green-800 text-center ">
+        <IonTitle className="text-green-800 text-center text-[2rem] ">
           Complete Sign Up
         </IonTitle>
       </IonHeader>
-        <IonCard style={{maxWidth:"30rem"}} className="mx-auto shadow-none bg-transparent">
+        <IonCard style={{maxWidth:"30rem"}} className="px-4 mx-auto shadow-none bg-transparent">
           <IonCardContent>
-         
-            <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
+         <div className='px-4'>
+            {/* <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center"> */}
+                {/* <div className='rounded-full bg-emerald-200 h-fit'> */}
                 <IonInput
                 label='username'
                 labelPlacement='stacked'
-                className="text-emerald-800 border  rounded-full border-emerald-100 "
+                className="text-emerald-800 border-b rounded-full  "
                 value={username}
                 placeholder="username"
                 onIonInput={e => setUsername(e.detail.value.trim())}
               />
-            </IonItem>
+           
             {username.length !== 0 && username.length < 4 && (
               <IonText color="danger">
                 <h6>Minimum username length is 4 characters</h6>
               </IonText>
             )}
                <div className='w-[12rem] flex-col flex justify-center mx-auto'>
-           {googleID||identityToken? null:<>
-           {/* <GoogleLogin onUserSignIn={({email,
-                                googleId,
-                                driveAccessToken})=>{
-setGoogleID(googleId)
-setEmail(email)
-
-                                }}
-                                  /> */}
+           {/* {googleID||identityToken? <GoogleLogin onUserSignIn={(
+            {email,idToken})=>{        setEmail(email)
+              Preferences.set({key:"idToken",value:idToken}).then(()=>{})}}/>:<>
+         
                              
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               setEmail(email)
               Preferences.set({key:"idToken",value:idToken}).then(()=>{})
             
-            }}/></>}
+            }}/></>} */}
       </div>
          
               {googleID||identityToken?null:<>
-               <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
+               {/* <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center"> */}
                
                    <IonInput
                 label='Password'
                 labelPlacement='stacked'
-                className="text-emerald-800 border rounded-full border-emerald-100 "
+                type='password'
+                className="text-emerald-800  "
                 value={password}
                 onIonInput={e => setPassword(e.detail.value.trim())}
                 placeholder="password"
               />
               
-                </IonItem>
+                {/* </IonItem> */}
                 {(password.length > 0 && password.length <= 6) && (
                   <IonText color="danger">
                     <h6>Minimum Password Length is 6 characters</h6>
                   </IonText>
                 )}
-                  <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center">
+                  {/* <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center"> */}
                   <IonInput
                     label='Confirm Password'
                     type="password"
@@ -201,7 +245,7 @@ setEmail(email)
                     onIonInput={e => setConfirmPassword(e.detail.value.trim())}
                     placeholder="password"
                   />
-                </IonItem>
+                {/* </IonItem> */}
                 {password !== confirmPassword && (
                   <IonText color="danger">
                     <h6>Passwords need to match</h6>
@@ -244,12 +288,13 @@ type='checkbox'
     /> 
    
     </div>
+
   </div>
 </IonItem>
 
 
             
-            <IonItem lines="none" className="flex i flex-col w-[100vw] mx-auto mt-8">
+            {/* <IonItem lines="none" className="flex i flex-col w-[100vw] mx-auto mt-8">
               <IonLabel className=" text-xl text-left pb-2">
                 Add a Profile Picture
               </IonLabel>
@@ -268,7 +313,33 @@ type='checkbox'
                   />
                 </div>
               )}
-            </IonItem>
+            </IonItem> */}
+            {/* JSX: */}
+<IonItem lines="none" className="flex flex-col w-full mx-auto mt-8">
+  <IonLabel className="text-xl text-left pb-2">
+    Add a Profile Picture
+  </IonLabel>
+
+  <input
+    ref={fileInputRef}
+    className="file-input mt-4 mx-auto w-[20rem] sm:w-72"
+    type="file"
+    accept="image/*"
+    onChange={handleFileInput}   // <-- changed to onChange
+    aria-label="Upload profile picture"
+  />
+
+  {selectedImage && (
+    <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
+      <IonImg
+        src={selectedImage}
+        alt="Selected"
+        style={{ maxWidth: "10rem", maxHeight: "10rem", borderRadius: 10 }}
+      />
+    </div>
+  )}
+</IonItem>
+
             <IonItem className="mb-4 flex flex-row justify-between">
               <IonLabel className="block  mont-medium text-[1.2rem] font-semibold mb-2">
                 Email Frequency
@@ -301,10 +372,11 @@ type='checkbox'
               <IonText className="text-white mx-auto my-auto text-xl">Join Plumbum!</IonText>
           
             </div>
+            </div>
           </IonCardContent>
         </IonCard>
       </IonContent>
- 
+ </IonPage>
   );
 }
 

@@ -186,6 +186,7 @@
   font-style: italic!important;
  }
  .ql-editor{
+  
   text-overflow: ellipsis !important;
       top:0;
       min-height: 22rem !important;}

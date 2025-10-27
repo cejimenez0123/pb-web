@@ -185,85 +185,6 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
   };
 
 
-
-//   const isBookmarked = () => {
-//     if (profile) {
-//       if (archive) {
-//         let bookmark = archive.storyIdList.find((stc) => stc.storyId == page.id);
-//         setBookmarked(bookmark);
-//       } else {
-//         getArchive();
-//       }
-//     }
-//   };
-   
-
-// function ShareList({page,profile,archive,bookmark,setBookmarked}){
-// useEffect(() => {
-//   isBookmarked();
-// }, [page, archive]);
-//     return(
-//               <IonList className="flex flex-col">
-//                 {/* <div className="flex flex-col"> */}
-//                <li className="py-3 border-b"> <IonItem
-                
-//                   onClick={async () => {
-                    
-//                     if (currentProfile && (await Preferences.get({ key: "token" })).value) {
-//                       navigate(Paths.addStoryToCollection.story(page.id));
-//                     } else {
-//                       setError("Please Sign Up");
-//                     }
-//                     dispatch(setDialog({...dialog,isOpen:false}))
-//                   }}
-//                 >
-//                   <IonText className="text-[1rem]">Add to Collection</IonText>
-//                 </IonItem>
-// </li>
-//                 {canUserEdit && (
-//                      <li className="py-3 border-b">
-//                   <IonItem
-                    
-//                     onClick={() => {
-//                         dispatch(setDialog({...dialog,isOpen:false}))
-//                       dispatch(setEditingPage({ page }));
-//                       dispatch(setHtmlContent(page.data))
-//                       navigate(Paths.editPage.createRoute(page.id));
-//                     }}
-//                   >
-//                     <IonText className="text-[1rem]">Edit</IonText>
-//                   </IonItem>
-//                   </li>
-//                 )}
-//  <li className="py-3 border-b">
-//                 <IonItem  onClick={copyShareLink}>
-//                   <IonText className="text-[1rem]">Copy Share Link</IonText>
-//                 </IonItem>
-//                 </li>
-//  <li className="py-3 border-b">
-//                 <IonItem
-           
-//                   onClick={(e) => {
-//                     profile ? handleBookmark(e) : setError("Please Sign In");
-//                   }}
-//                 >
-//                     <div className="text-left w-full">
-//                   {/* {!loading ? ( */}
-//                     {bookmark ? (
-//                       <IonImg src={bookmarkFill} className="mx-auto max-h-10 max-w-10" />
-//                     ) : (
-//                       <IonImg src={bookmarkAdd} className="mx-auto max-h-10 max-w-10" />
-//                     )}
-                
-//                   {/* ://   )  (
-//                     <IonImg src={loadingGif} className="max-h-6 mx-auto" />
-//                   )} */}
-//                   </div>
-//                 </IonItem>
-//                 </li>
-//                 {/* </div> */}
-//               </IonList>
-//             )
 // }
 function ShareList({ page, profile, archive,setArchive, bookmark, setBookmarked }) {
   const [localBookmark, setLocalBookmark] = useState(bookmark);
@@ -396,7 +317,7 @@ function ShareList({ page, profile, archive,setArchive, bookmark, setBookmarked 
 
   return (
     <ErrorBoundary>
-      <div className="flex-row w-[90vw] rounded-b-lg overflow-clip sm:w-page mx-auto bg-emerald-200 flex text-white">
+      <div className="flex-row w-[95vw] rounded-b-lg overflow-clip sm:w-page mx-auto bg-emerald-200 flex text-white">
         {/* Approve / Yea */}
         <div
           onClick={handleApprovalClick}

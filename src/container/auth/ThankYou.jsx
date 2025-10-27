@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { IonInput, IonText, IonLabel } from '@ionic/react';
 import Paths from '../../core/paths';
+import { isNative } from 'lodash';
+import DeviceCheck from '../../components/DeviceCheck';
+import { Capacitor } from '@capacitor/core';
 
 export default function ThankYou({ user }) {
   const navigate = useNavigate();
-
-  // Styles for input container (pill-shaped emerald outline)
+  const isNative = DeviceCheck()
   const inputWrapperStyle = {
     width: '100%',
     borderRadius: '9999px',
@@ -42,7 +44,63 @@ export default function ThankYou({ user }) {
       id="welcome"
       className="p-8 text-left leading-[1.5em] text-emerald-600 overflow-scroll max-w-xl mx-auto"
     >
-      <p className='text-[1.4rem]'>
+      <div
+  id="welcome"
+  className="p-8 text-left leading-relaxed text-emerald-700 max-w-xl mx-auto rounded-2xl shadow-md bg-white/70 backdrop-blur-sm"
+>
+  <p className="text-2xl font-semibold mb-4">
+    Welcome aboard, {user.preferredName}! 🌿
+  </p>
+
+  <p className="text-lg mb-6">
+    You’re officially part of the <span className="font-medium text-emerald-800">Plumbum beta</span> — a growing community of writers who believe in creating with honesty, sharing with courage, and growing together.
+  </p>
+
+  <p className="text-lg mb-6">
+    Plumbum isn’t just an app — it’s a shared space for discovery. Here, you’ll help us shape what writing can feel like when connection, curiosity, and care come first.
+  </p>
+
+  
+
+  <p className="text-lg mb-6">
+    Stay tuned for updates through our Instagram
+    {' '}
+    <a
+      href="https://www.instagram.com/plumbumapp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+      target="_blank"
+      rel="noopener noreferrer"
+      className="underline text-emerald-800 hover:text-emerald-600"
+    >
+      @plumbumapp
+    </a>
+    {' '}
+    or our partners at
+    {' '}
+    <a
+      href="https://www.instagram.com/bxwriters?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+      target="_blank"
+      rel="noopener noreferrer"
+      className="underline text-emerald-800 hover:text-emerald-600"
+    >
+      @bxwriters
+    </a>.
+  </p>
+
+  <p className="text-lg mb-6">
+    We’re so grateful you’re here — your ideas, feedback, and voice will help us build something that truly belongs to its writers.
+  </p>
+
+  <p className="text-lg font-medium mb-8">
+    Let’s take our time, build something lasting, and make our story — together.
+  </p>
+
+  <div className="text-right mt-8 border-t border-emerald-200 pt-4">
+    <p className="font-semibold text-emerald-800">— Sol Emilio Christian</p>
+    <p className="text-sm text-emerald-600">Founder, Plumbum</p>
+  </div>
+</div>
+
+      {/* <p className='text-[1.4rem]'>
         Thank You {user.preferredName}! You’re In—Welcome to the Journey!
       </p>
       <br />
@@ -82,22 +140,22 @@ export default function ThankYou({ user }) {
         -Sol Emilio Christian,
         <br />
         Founder of Plumbum
-      </h6>
+      </h6> */}
 
 
     
       <div className="flex flex-row justify-between mt-6 gap-4">
-        <IonText
+        {!Capacitor.isNativePlatform()? <IonText
           onClick={() => navigate(Paths.about())}
           className={buttonClassNames}
-          style={{ width: '48%', textAlign: 'center', color: 'white', userSelect: 'none' }}
+          style={{ width: '8em', margin:"auto",textAlign:"center", color: 'white', userSelect: 'none' }}
         >
           Go to About
-        </IonText>
+        </IonText>:null}
         <IonText
           onClick={() => navigate(Paths.discovery())}
           className={buttonClassNames}
-          style={{ width: '48%', textAlign: 'center', color: 'white', userSelect: 'none' }}
+          style={{ width: '8em', textAlign: 'center', color: 'white', userSelect: 'none' }}
         >
           Go to Discover
         </IonText>

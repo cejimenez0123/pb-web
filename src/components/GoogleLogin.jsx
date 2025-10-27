@@ -301,7 +301,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full min-h-full">
+    <div className="flex flex-col  justify-center items-center w-full min-h-full">
       <div
         onClick={nativeGoogleSignIn}
         color="dark"

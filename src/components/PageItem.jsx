@@ -14,7 +14,7 @@ function PageItem({page,setPageIdList}){
     let pageDataElement = (<div></div>)
     switch(page.type){
         case page.type == PageType.text:
-            pageDataElement = <div id="page-data-element-text" className='dashboard-content px-2 mx-1 pt-8 ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
+            pageDataElement = <div id="page-data-element-text" className=' no-scroll dashboard-content px-2 mx-1 pt-8 ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         break;
         case page.type == PageType.picture:
             pageDataElement = <IonImg

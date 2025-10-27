@@ -242,14 +242,14 @@ const [canUserSee, setCanUserSee] = useState(false);
             <input type="radio" name="my_tabs_2" role="tab" defaultChecked
               className="tab hover:min-h-10 mb-4 rounded-full mont-medium text-emerald-800 border-3 w-[90vw] md:w-page text-md md:text-xl"
               aria-label="Pages" />
-            <div role="tabpanel" className="tab-content h-[100%] overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
+            <div role="tabpanel" className="tab-content h-[100%]  pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
            
               <PageList items={pages} />
             </div>
             <input type="radio" name="my_tabs_2" role="tab"
               className="tab text-emerald-800 mb-4   mont-medium rounded-full mx-auto bg-transparent  border-3 text-md md:text-xl"
               aria-label="Collections" />
-            <div role="tabpanel" className="tab-content h-[30rem] overflow-y-auto pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
+            <div role="tabpanel" className="tab-content h-[30rem] pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
               <IndexList items={useSelector(state => state.books.collections)} />
             </div>
           </div>

@@ -122,19 +122,20 @@ export default function PageViewContainer() {
     page ? (
       <PageViewItem page={page} currentProfile={currentProfile} />
     ) : (
-      <div className="skeleton w-[96vw] mx-auto md:w-page bg-emerald-50 h-page" />
+      <div className="skeleton w-[95vw] mx-auto md:w-page bg-emerald-50 h-page" />
     );
 
   return (
     <ErrorBoundary>
-      <IonContent fullscreen={true} className="ion-padding-top pt-16">
-        <IonHeader className="pt-16 ion-padding-top">
+      <IonContent fullscreen={true} className="ion-padding-top  ">
+        <IonHeader className="pt-16 ion-padding-top ion-padding">
+          <div className=" pt-4 sm:pt-8">
              <IonBackButton
              className="ion-padding-start"
       defaultHref={Paths.discovery()}
       onClick={handleBack}
-    />  </IonHeader>
-        <div className="ion-padding text-center max-w-[30em] mx-auto" style={{paddingBottom: "5rem" }}>
+    /> </div> </IonHeader>
+        <div className=" text-center w-[95vw] sm:max-w-[30em] mx-auto" style={{margin:"auto auto",paddingBottom: "5rem" }}>
           {pending ? (
             <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
           ) : errorStatus === 403 ? (
@@ -144,12 +145,12 @@ export default function PageViewContainer() {
               </h1>
             </div>
           ) : canUserSee ? (
-            <>
+            <div >
               <PageDiv page={page} />
               <CommentThread page={page} comments={rootComments} />
-            </>
+           </div>
           ) : (
-            <div className="flex max-w-[96vw] mx-auto md:w-page h-page">
+            <div className="flex max-w-[96vw] mx-auto sm:w-page h-page">
               <h1 className="mont-medium my-12 mx-auto">Took a wrong turn</h1>
             </div>
           )}

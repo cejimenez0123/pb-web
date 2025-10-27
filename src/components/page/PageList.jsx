@@ -6,7 +6,7 @@ import Enviroment from "../../core/Enviroment"
 import loadingGif from "../../images/loading.gif"
 import { useContext } from "react"
 import Context from "../../context"
-import { IonItem, IonList } from "@ionic/react"
+import { IonInfiniteScroll, IonItem, IonList } from "@ionic/react"
 
 
 const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentItems})=>{
@@ -22,25 +22,23 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
  
   
   
-        return(<div 
-          className="w-[98vw] mx-auto flex"
-        >
+        return(
                  
-<IonList className="no scroll">
+<IonInfiniteScroll  className="no-scroll ">
      {pagesInView.map((page,i)=>{
           
             
     
                 const id = `${page.id}_${i}`
                 return(<IonItem key={id}
-  className={`${isGrid && !isPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
+  className={`${isGrid && !isPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""} rounded-b-lg`}
 >
                     <DashboardItem  key={page.id} item={page} index={i} forFeedback={forFeedback} isGrid={isGrid} page={page}/>
                 </IonItem>)
           
 })}
-</IonList>
-            </div>
+</IonInfiniteScroll>
+            
        
       )
 

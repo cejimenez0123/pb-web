@@ -6,13 +6,13 @@ export default function FeedbackDialog({open,page,isFeedback,handleClose,handleC
         query: '(max-width: 768px)'
       })
     const isHeightPhone = useMediaQuery({query:'(max-height: 366px)'})
- 
+ const [feedback,setFeedback]=useState(!page || isFeedback?"":page.description)
     useLayoutEffect(()=>{
-      if(page && page.description){
+      
 
-      handleChange(page.description)
-    }},[])
-    const [feedback,setFeedback]=useState(!page || isFeedback?"":page.description)
+      handleChange(feedback)
+    },[feedback])
+    
    if(page){
     return(  <IonModal
     isOpen={open} 

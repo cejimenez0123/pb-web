@@ -143,12 +143,12 @@ export default function DashboardItem({ page, book, isGrid }) {
   const header = () => {
     return (
       <span
-        className={`flex-row flex justify-between ${isGrid ? (isPhone ? "w-gird-mobile" : " w-grid  "): isPhone ? "w-page-mobile" : "w-page"}  px-1 rounded-t-lg pt-2 pb-1`}>
+        className={`flex-row flex justify-between w-[95vw] sm:w-[50em]  px-1 rounded-t-lg pt-2 pb-1`}>
         <ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author} />
         {!isGrid ?
           <h6
             className={
-              `text-emerald-800 mx-2 no-underline text-ellipsis text-emerald-700 whitespace-nowrap overflow-hidden ${isGrid ? "text-[0.7rem] " : "text-[0.9rem]"}`
+              `text-emerald-800 mx-2 no-underline pt-2 text-ellipsis text-emerald-700 whitespace-nowrap overflow-hidden ${isGrid ? "text-[0.7rem] " : "text-[0.9rem]"}`
             }
             onClick={() => {
               dispatch(setPageInView({ page }));
@@ -188,19 +188,19 @@ export default function DashboardItem({ page, book, isGrid }) {
     }
   };
 
-  const expandedBtn = () => {
-    if (overflowActive && !expanded) {
-      return <Button onClick={() => setExpanded(true)}>See More</Button>;
-    } else if (expanded) {
-      return (
-        <Button onClick={() => setExpanded(false)}>See Less</Button>
-      );
-    } else if (overflowActive) {
-      return <Button onClick={() => setExpanded(true)}>See More</Button>;
-    } else {
-      return <div></div>;
-    }
-  };
+  // const expandedBtn = () => {
+  //   if (overflowActive && !expanded) {
+  //     return <Button onClick={() => setExpanded(true)}>See More</Button>;
+  //   } else if (expanded) {
+  //     return (
+  //       <Button onClick={() => setExpanded(false)}>See Less</Button>
+  //     );
+  //   } else if (overflowActive) {
+  //     return <Button onClick={() => setExpanded(true)}>See More</Button>;
+  //   } else {
+  //     return <div></div>;
+  //   }
+  // };
 
   useLayoutEffect(() => {
     soCanUserEdit();
@@ -292,14 +292,14 @@ export default function DashboardItem({ page, book, isGrid }) {
         <h6
           className={`overflow-hidden text-emerald-800  ${
             isGrid
-              ? isPhone
-                ? "max-h-20 m-1 p-1 w-grid-mobile-content text-white"
-                : isHorizPhone
-                ? "w-page-mobile-content text-white"
-                : "w-page-content text-emerald-700 text-white"
-              : isHorizPhone
-              ? "text-emerald-800"
-              : ""
+              // ? isPhone
+              //   ? "max-h-20 m-1 p-1 w-grid-mobile-content text-white"
+              //   : isHorizPhone
+              //   ? "w-page-mobile-content text-white"
+              //   : "w-page-content text-emerald-700 text-white"
+              // : isHorizPhone
+              // ? "text-emerald-800"
+              // : ""
             }`}
         >
           {story.description}
@@ -312,18 +312,18 @@ export default function DashboardItem({ page, book, isGrid }) {
     return isGrid
       ? null
       : (
-        <div className='flex flex-row w-full rounded-b-lg justify-evenly'>
+        <div className='flex w-[95vw] rflex-row w-full rounded-b-lg overflow-hidden justify-evenly'>
           <div className={`${likeFound ? "bg-emerald-400" : "bg-emerald-200"} text-center grow w-1/3`}>
             <div
               onClick={handleApprovalClick}
               className={`py-2 flex mont-medium mx-auto text-white border-none h-[100%] border-none`}
             >
-              <h6 className='text-[1.2rem] mont-medium text-emerald-700 my-auto mx-auto'>Yea{likeFound ? "" : ""}</h6>
+              <h6 className='text-[1.2rem] text-emerald-700 my-auto mx-auto'>Yea{likeFound ? "" : ""}</h6>
             </div>
           </div>
-          <div className={" bg-emerald-200 mont-medium border-white border-x-2 border-y-0 text-center border-white grow w-1/3"}>
+          <div className={" bg-emerald-200  border-white border-x-2 border-y-0 text-center border-white grow w-1/3"}>
             <div
-              className='text-emerald-700 text-center mx-auto bg-emerald-200 py-2 border-none mont-medium'
+              className='text-emerald-700 text-center mx-auto bg-emerald-200 py-2 border-none'
               onClick={() => handleClickComment()}>
               <h6 className='text-[1.2rem]'> Review</h6>
             </div>
@@ -331,7 +331,7 @@ export default function DashboardItem({ page, book, isGrid }) {
           {!page.recommended ? (
             <div className="dropdown text-center bg-emerald-200 py-2  grow w-1/3 dropdown-top">
               <div tabIndex={0} role="button"
-              className="text-emerald-800 text-center mx-auto bg-emerald-200 border-none mont-medium">
+              className="text-emerald-800 text-center mx-auto rounded-b-lg bg-emerald-200 border-none ">
                 <h6 className='text-[1.2rem]'>Share</h6>
               </div>
               <ul tabIndex={0} className="dropdown-content text-center bg-emerald-100 text-emerald-800  menu rounded-box w-60 p-1 shadow">
@@ -404,7 +404,7 @@ export default function DashboardItem({ page, book, isGrid }) {
     <IonCard
       id="dashboard-item"
       className={
-        'mt-3 rounded-lg min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col ' +
+        'mt-3 rounded-lg rounded-b-lg w-[95vw] sm:w-[50em] min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col ' +
         sizeOuter +
         (isGrid ? ' overflow-hidden' : '')
       }
@@ -418,14 +418,14 @@ export default function DashboardItem({ page, book, isGrid }) {
         {bookTitleDiv}
       </IonCardHeader>
 
-      <IonCardContent className="p-0 m-0 bg-transparent">
+      <IonCardContent className="pb-4 m-0 bg-transparent">
         {description(page)}
         <PageDataElement isGrid={isGrid} page={page} />
       </IonCardContent>
 
-      {/* KEEP BOTTOM BUTTONS INSIDE THE CARD CONTAINER */}
+  
       {isGrid ? (
-        <div id="bottom-dash" className={`flex flex-row justify-between rounded-b-lg bottom-0 w-full`}>
+        <div id="bottom-dash" className={`flex flex-row  sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
           {bookmarkBtn()}
         </div>
       ) : buttonRow()}

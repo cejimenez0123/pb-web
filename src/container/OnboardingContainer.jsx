@@ -12,7 +12,8 @@ import {
   IonCheckbox,
   IonList,
   IonText,
-  IonItem
+  IonItem,
+  IonButton
 } from '@ionic/react';
 import "../App.css"
 import { useState, useContext, useEffect } from 'react';
@@ -134,9 +135,11 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
     };
 
     return (
-      <IonGrid>
+      <IonGrid className='max-h-[100vh]' >
+      
         <IonRow>
-          <IonList className='text-left'>
+         
+          <IonList className='text-left '>
             <div className=''>
             <IonText color="success" className="lora-bold">* Required</IonText>
             </div>
@@ -198,8 +201,20 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
             <IonItem className='ion-text-center flex'>
 
             </IonItem>
-            <IonItem className='ion-text-center' >
-            
+            <IonItem className='text-center' >
+            <GoogleLogin onUserSignIn={({
+            email,
+            name,
+            googleId,
+            driveAccessToken,
+            idToken,
+             })=>{
+updateFormData({email:email})
+              updateFormData({idToken: idToken })
+              updateFormData({fullName:name})
+              updateFormData({googleId: googleId})
+              handleNext()
+            }}/>
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               updateFormData({email:email})
               updateFormData({idToken: idToken })
@@ -209,7 +224,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
          
             </IonItem>
             </IonList>
-            <div className='h-[18rem]'/>
+            {/* <div className='h-[18rem]'/> */}
             <IonRow className='flex justify-between'>
             <div className="btn-container btn  bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
               <IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
@@ -237,7 +252,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
     }
 
     return (
-      <IonGrid>
+      <IonGrid className='max-h-[100vh]'>
         <IonRow>
           <IonCol>
             <div>
@@ -397,17 +412,19 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
 
     return (
       <IonGrid>
-        <IonCol className='text-left'>
-          <IonItem>
+        <IonCol className='text-left ion-padding'>
+          {/* <IonItem> */}
+          <IonRow>
           <WorkshopPreferenceSelector
             workshopPreference={formData.workshopPreference}
             setWorkshopPreference={val => updateFormData({ workshopPreference: val })}
           />
-          </IonItem>
-          <IonItem>
+          </IonRow>
+          {/* </IonItem> */}
+          {/* <IonItem> */}
           <IonRow>
             
-            <IonLabel className="mont-medium" color="success" style={{ marginTop: '1rem' }}>
+            <IonLabel  className='pb-8'>
               How did you find out about Plumbum?
             </IonLabel>
             <IonTextarea
@@ -421,11 +438,12 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
               style={{ lineHeight: '4rem' }}
             />
           </IonRow>
-          </IonItem>
+          {/* </IonItem> */}
 <IonItem>
-          <IonLabel className="mont-medium" color="success" style={{ marginTop: '1rem' }}>
+          <IonLabel  color="success" className='ion-padding pb-8'>
             What features would make a writing platform most valuable to you?
           </IonLabel>
+          <div className='mt-4'> 
           <IonTextarea
             value={formData.platformFeatures}
             onIonChange={e => updateFormData({ platformFeatures: e.detail.value })}
@@ -436,6 +454,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
             rows={4}
             cols={48}
           />
+          </div>
 </IonItem>
           <div className="btn-container text-right">
             <IonText
@@ -454,56 +473,132 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
     );
   };
 
-  const Why = ({ handleTab }) => (
-    <IonGrid className="ion-padding-bottom ">
-      <IonRow>
-        <IonCol>
-          <img src={logo} alt="Plumbum Logo" style={{ maxHeight: '10em', display: 'block', margin: '0 auto', borderRadius: '0.5em' }} />
-          <IonText className="lora-medium" >
-            <h2 style={{ textAlign: 'left' }}>What is Plumbum?</h2>
-            <ul style={{ textAlign: 'left', paddingLeft: '1.5em', marginTop: '1em' }}>
-              <li><strong>Writer-Focused:</strong> A space made for writers to grow, get feedback, and share their work — all in one place.</li>
-              <li><strong>Community First:</strong> Built from live workshops and honest conversations, not algorithms.</li>
-              <li><strong>Discovery Through People:</strong> Find new stories and voices through trust and interaction, not trends.</li>
-              <li><strong>Hybrid by Design:</strong> We mix feedback, self-promotion, and curation — because writers need all three.</li>
+const Why = ({ handleTab, navigate }) => {
+  return (
+    <div className='text-center py-8'>
+    <IonGrid  className="fade-in">
+      <IonRow className="justify-center">
+        <IonCol size="12" sizeMd="8" className="text-left">
+          <div className="flex justify-center mb-4">
+            <img
+              src={logo}
+              alt="Plumbum Logo"
+              className="rounded-lg"
+              style={{ maxHeight: "10em" }}
+            />
+          </div>
+
+          <IonText className="lora-medium block">
+            <h2 className="text-2xl font-bold mb-2">What is Plumbum?</h2>
+            <ul className="list-disc pl-6 space-y-2 text-[1rem]">
+              <li>
+                <strong>Writer-Focused:</strong> A space made for writers to
+                grow, get feedback, and share their work — all in one place.
+              </li>
+              <li>
+                <strong>Community First:</strong> Built from live workshops and
+                honest conversations, not algorithms.
+              </li>
+              <li>
+                <strong>Discovery Through People:</strong> Find new stories and
+                voices through trust and interaction, not trends.
+              </li>
+              <li>
+                <strong>Hybrid by Design:</strong> We mix feedback,
+                self-promotion, and curation — because writers need all three.
+              </li>
             </ul>
 
-            <h2 style={{ textAlign: 'left', marginTop: '2em' }}>Why Join?</h2>
-            <ul style={{ textAlign: 'left', paddingLeft: '1.5em', marginTop: '1em' }}>
-              <li><strong>Real Feedback:</strong> Thoughtful input from people who care about craft, not clout.</li>
-              <li><strong>Creative Momentum:</strong> Stay in motion with events, prompts, and people who show up.</li>
-              <li><strong>Supportive Culture:</strong> Built slow and small on purpose, so we protect the vibe.</li>
-              <li><strong>Self & Story Promotion:</strong> A space where sharing your work doesn’t feel awkward — it’s expected.</li>
+            <h2 className="text-2xl font-bold mt-8 mb-2">Why Join?</h2>
+            <ul className="list-disc pl-6 space-y-2 text-[1rem]">
+              <li>
+                <strong>Real Feedback:</strong> Thoughtful input from people who
+                care about craft, not clout.
+              </li>
+              <li>
+                <strong>Creative Momentum:</strong> Stay in motion with events,
+                prompts, and people who show up.
+              </li>
+              <li>
+                <strong>Supportive Culture:</strong> Built slow and small on
+                purpose, so we protect the vibe.
+              </li>
+              <li>
+                <strong>Self & Story Promotion:</strong> A space where sharing
+                your work doesn’t feel awkward — it’s expected.
+              </li>
             </ul>
           </IonText>
-          <IonRow className='flex justify-between'> 
-            {/* <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}> */}
-              <div className='btn my-auto bg-transparent mt-4 border-none mont-medium'><IonText onClick={()=>navigate(Paths.login())} className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
-                Log In
-              </IonText></div>
-            {/* </div> */}
-            <div className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
-              <IonText onClick={handleTab} className="emerald-gradient-text-btn mont-medium text-white text-[1.3rem]" style={{ width: '100%' }}>
-                Next Step
-              </IonText>
-            </div></IonRow>
-           
+         <IonRow className='flex mx-auto w-[86vw] mx-auto justify-between'> 
+            <div className='btn my-auto bg-transparent mt-4 border-none '><IonText onClick={()=>navigate(Paths.login())} className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
+                 Log In
+             </IonText></div>
+      
+        <div className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" >
+            <IonText onClick={handleTab} className="emerald-gradient-text-btn text-white text-[0.8rem] text-[1rem]" style={{ width: '100%' }}>
+              Next Step
+             </IonText>
+          </div></IonRow>
         
         </IonCol>
       </IonRow>
     </IonGrid>
+    </div>
   );
+};
+
+
+
+  // const Why = ({ handleTab }) => (
+  //   <IonGrid className="ion-padding-bottom ">
+  //     <IonRow>
+  //       <IonCol>
+  //         <img src={logo} alt="Plumbum Logo" style={{ maxHeight: '10em', display: 'block', margin: '0 auto', borderRadius: '0.5em' }} />
+  //         <IonText className="lora-medium" >
+  //           <h2 style={{ textAlign: 'left' }}>What is Plumbum?</h2>
+  //           <ul style={{ textAlign: 'left', paddingLeft: '1.5em', marginTop: '1em' }}>
+  //             <li><strong>Writer-Focused:</strong> A space made for writers to grow, get feedback, and share their work — all in one place.</li>
+  //             <li><strong>Community First:</strong> Built from live workshops and honest conversations, not algorithms.</li>
+  //             <li><strong>Discovery Through People:</strong> Find new stories and voices through trust and interaction, not trends.</li>
+  //             <li><strong>Hybrid by Design:</strong> We mix feedback, self-promotion, and curation — because writers need all three.</li>
+  //           </ul>
+
+  //           <h2 style={{ textAlign: 'left', marginTop: '2em' }}>Why Join?</h2>
+  //           <ul style={{ textAlign: 'left', paddingLeft: '1.5em', marginTop: '1em' }}>
+  //             <li><strong>Real Feedback:</strong> Thoughtful input from people who care about craft, not clout.</li>
+  //             <li><strong>Creative Momentum:</strong> Stay in motion with events, prompts, and people who show up.</li>
+  //             <li><strong>Supportive Culture:</strong> Built slow and small on purpose, so we protect the vibe.</li>
+  //             <li><strong>Self & Story Promotion:</strong> A space where sharing your work doesn’t feel awkward — it’s expected.</li>
+  //           </ul>
+  //         </IonText>
+  //         <IonRow className='flex justify-between'> 
+  //           {/* <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}> */}
+  //             <div className='btn my-auto bg-transparent mt-4 border-none mont-medium'><IonText onClick={()=>navigate(Paths.login())} className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
+  //               Log In
+  //             </IonText></div>
+  //           {/* </div> */}
+  //           <div className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+  //             <IonText onClick={handleTab} className="emerald-gradient-text-btn mont-medium text-white text-[1.3rem]" style={{ width: '100%' }}>
+  //               Next Step
+  //             </IonText>
+  //           </div></IonRow>
+           
+        
+  //       </IonCol>
+  //     </IonRow>
+  //   </IonGrid>
+  // );
 
   const MyTabs = () => (
     <>
-      <div className="ion-margin-vertical text-center ion-text-center">
-        {[1, 2, 3, 4, 5].map((tabNum) => (
+      <div className=" text-center ">
+        {[1, 2, 3, 4].map((tabNum) => (
           <IonText
             key={tabNum}
             className={`tab-btn ${activeTab === `tab${tabNum}` ? 'tab-active' : ''} emerald-gradient-text-btn`}
             style={{
               margin: '0 0.2em',
-              cursor: 'pointer',
+              // cursor: 'pointer',
               padding: '0.5rem 0.75rem',
               userSelect: 'none',
               borderRadius: '9999px',
@@ -518,7 +613,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
         ))}
       </div>
 
-      <div className="ion-padding-horizontal">
+      <div className="">
         {activeTab === 'tab0' && <Why handleTab={(tab) => setActiveTab('tab1')} />}
         {activeTab === 'tab1' && <Step1 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
         {activeTab === 'tab2' && <Step2 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
@@ -530,13 +625,13 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
   );
 
   return (
-
-      <IonContent fullscreen={true} className="">
-        <div className="ion-text-center ion-margin-top" style={{ maxWidth: '600px', margin: 'auto' }}>
+<IonPage>
+      <IonContent fullscreen={true}  className="ion-padding ion-padding-top ">
+        {/* <div > */}
           {user ? <ThankYou user={user} /> : <MyTabs />}
-        </div>
+        {/* </div> */}
       </IonContent>
-  
+  </IonPage>
   );
 }
 
@@ -641,12 +736,12 @@ const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference 
   ];
 
   return (
-    <IonContent className='ion-padding overflow-scroll '>
+    <IonContent className='ion-padding min-h-40'>
     <>
       <IonLabel
-        className="mont-medium"
+        // className="mont-medium"
         color="success"
-        style={{ fontWeight: 'bold', marginTop: '1rem' }}
+        // style={{ fontWeight: 'bold', marginTop: '1rem' }}
       >
         Would you prefer in-person workshops, online, or both?
       </IonLabel>

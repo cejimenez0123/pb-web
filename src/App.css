@@ -19,7 +19,11 @@ ion-checkbox .checkbox-icon {
   color: #065f46; /* emerald-800 */
   line-height: 1.4;
 }
-
+.no-scroll {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: none !important;
+}
 ion-textarea textarea {
   border-radius: 0.5rem;
 }
@@ -981,7 +985,7 @@ textarea.sc-ion-textarea {
   border: none;
   outline: none;
   background: transparent !important;         /* ensure transparent regardless of ionic/inherited */
-  font-size: 1.125rem;              /* text-lg */
+  font-size: 1rem;              /* text-lg */
   font-family: inherit;
   font-weight: 600;
   color: inherit;

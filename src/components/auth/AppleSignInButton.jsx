@@ -31,7 +31,7 @@ function AppleSignInButton({onUserSignIn}) {
 
 
    return <div onClick={handleAppleSignIn}  color="dark" 
-className='bg-black btn flex flex-row rounded-full flex h-[4rem] text-white w-[10rem] mt-8'>
+className='bg-black btn flex flex-row rounded-full flex mx-auto h-[4rem] text-white w-[10rem] mt-8'>
      <IonImg src={applelogo} className='max-h-5 max-w-5'/> <IonText class='text-small'>Sign in</IonText>
     </div>
 
