@@ -104,6 +104,7 @@ const prevObjectUrlRef = useRef(null);
 //   };
 const handleFileInput = (e) => {
   const img = e.target.files[0];
+  console.log(img)
   if (img) {
     if (!img.type.startsWith('image/')) {
       setError('Please upload a valid image file.');
@@ -204,6 +205,21 @@ useEffect(() => {
       setError("Password and Username can't be empty");
     }
   };
+  const ProfilePicture=({image})=>{
+    return    (
+    <IonImg
+      src={image}
+      alt="Selected"
+      style={{
+        maxWidth: '10rem',
+        maxHeight: '10rem',
+        borderRadius: '10px',
+        marginTop: '1rem',
+        marginInline: 'auto',
+      }}
+    />
+  )}
+  
   const handlePrivate=debounce(()=>{
 
   setIsPrivate(!isPrivate)
@@ -349,7 +365,7 @@ type='checkbox'
               )}
             </IonItem> */}
             {/* JSX: */}
-            <IonItem lines="none" className="flex flex-col w-full mx-auto mt-8">
+            {/* <IonItem lines="none" className="flex flex-col w-full mx-auto mt-8"> */}
   <IonLabel className="text-xl text-left pb-2">
     Add a Profile Picture
   </IonLabel>
@@ -370,8 +386,8 @@ type='checkbox'
   >
     Choose Image
   </IonButton>
-
-  {selectedImage && (
+<ProfilePicture image={selectedImage}/>
+  {/* {selectedImage && (
     <IonImg
       src={selectedImage}
       alt="Selected"
@@ -383,8 +399,8 @@ type='checkbox'
         marginInline: 'auto',
       }}
     />
-  )}
-</IonItem>
+  )} */}
+{/* </IonItem> */}
 
 {/* <IonItem lines="none" className="flex flex-col w-full mx-auto mt-8">
   <IonLabel className="text-xl text-left pb-2">
