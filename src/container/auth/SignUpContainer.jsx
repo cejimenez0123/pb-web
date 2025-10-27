@@ -71,26 +71,56 @@ export default function SignUpContainer(props) {
   }, []);
 const fileInputRef = useRef(null);
 const prevObjectUrlRef = useRef(null);
-
-  const handleFileInput = (e) => {
-    console.log("touch")
-    try{
-    const img = e.target.files[0];
-    if (img) {
-      if (!img.type.startsWith('image/')) {
-        setError('Please upload a valid image file.');
-        setSuccess(null);
-        setSelectedImage(null);
-        return;
-      }
-      setFile(img);
-      setError(null);
-      setSelectedImage(URL.createObjectURL(img));
+// useEffect(() => {
+//   return () => {
+//     if (selectedImage) {
+//       URL.revokeObjectURL(selectedImage);
+//     }
+//   };
+// }, [selectedImage]);
+//   const handleFileInput = (e) => {
+// const img = (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) || (e.target && e.target.files && e.target.files[0]);
+// //   
+//     try{
+//     // const img = e.cutarget.files[0];
+//    console.log(img)
+//     if (img&&img.type.startsWith('image/'))  {
+      
+//        setFile(img);
+//       setError(null);
+//       setSelectedImage(URL.createObjectURL(img));
+      
+     
+//     }
+//     if (!img.type.startsWith('image/')) {
+//         setError('Please upload a valid image file.');
+//         setSuccess(null);
+//         setSelectedImage(null);
+//         return;
+//       }
+//   }catch(err){
+//     console.log(err)
+//   }
+//   };
+const handleFileInput = (e) => {
+  const img = e.target.files[0];
+  if (img) {
+    if (!img.type.startsWith('image/')) {
+      setError('Please upload a valid image file.');
+      setSelectedImage(null);
+      return;
     }
-  }catch(err){
-    console.log(err)
+
+    // Clean up any previous preview URL
+    if (selectedImage) {
+      URL.revokeObjectURL(selectedImage);
+    }
+
+    setFile(img);
+    setError(null);
+    setSelectedImage(URL.createObjectURL(img)); // File works fine here
   }
-  };
+};
 
 // const handleFileInput = (e) => {
 //   // prefer e.currentTarget.files (reliable in React)
@@ -319,12 +349,49 @@ type='checkbox'
               )}
             </IonItem> */}
             {/* JSX: */}
-<IonItem lines="none" className="flex flex-col w-full mx-auto mt-8">
+            <IonItem lines="none" className="flex flex-col w-full mx-auto mt-8">
   <IonLabel className="text-xl text-left pb-2">
     Add a Profile Picture
   </IonLabel>
 
   <input
+    ref={fileInputRef}
+    type="file"
+    accept="image/*"
+    onChange={handleFileInput}
+    style={{ display: 'none' }}
+  />
+
+  <IonButton
+    expand="block"
+    color="success"
+    fill="outline"
+    onClick={() => fileInputRef.current?.click()}
+  >
+    Choose Image
+  </IonButton>
+
+  {selectedImage && (
+    <IonImg
+      src={selectedImage}
+      alt="Selected"
+      style={{
+        maxWidth: '10rem',
+        maxHeight: '10rem',
+        borderRadius: '10px',
+        marginTop: '1rem',
+        marginInline: 'auto',
+      }}
+    />
+  )}
+</IonItem>
+
+{/* <IonItem lines="none" className="flex flex-col w-full mx-auto mt-8">
+  <IonLabel className="text-xl text-left pb-2">
+    Add a Profile Picture
+  </IonLabel>
+
+  <Ion
     ref={fileInputRef}
     className="file-input mt-4 mx-auto w-[20rem] sm:w-72"
     type="file"
@@ -342,7 +409,7 @@ type='checkbox'
       />
     </div>
   )}
-</IonItem>
+</IonItem> */}
 
             <IonItem className="mb-4 flex flex-row justify-between">
               <IonLabel className="block  mont-medium text-[1.2rem] font-semibold mb-2">
