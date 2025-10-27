@@ -74,6 +74,7 @@ const prevObjectUrlRef = useRef(null);
 
   const handleFileInput = (e) => {
     console.log("touch")
+    try{
     const img = e.target.files[0];
     if (img) {
       if (!img.type.startsWith('image/')) {
@@ -86,6 +87,9 @@ const prevObjectUrlRef = useRef(null);
       setError(null);
       setSelectedImage(URL.createObjectURL(img));
     }
+  }catch(err){
+    console.log(err)
+  }
   };
 
 // const handleFileInput = (e) => {
