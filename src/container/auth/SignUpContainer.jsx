@@ -391,7 +391,7 @@ useEffect(() => {
                     placeholder="password"
                   />
                 {/* </IonItem> */}
-                {password !== confirmPassword && (
+                {password != confirmPassword && (
                   <IonText color="danger">
                     <h6>Passwords need to match</h6>
                   </IonText>
@@ -496,22 +496,7 @@ type='checkbox'
 
 
             <IonItem className="mb-4 flex flex-row justify-between">
-              {/* <IonLabel className="block  mont-medium text-[1.2rem] font-semibold mb-2">
-                Email Frequency
-              </IonLabel>
-                       <select
-            className="w-full bg-white select text-emerald-700 mont-medium select-bordered "
-            value={frequency}
-            ref={selectRef}
-            onChange={(e) => setFrequency(e.target.value)}
-          >
-            <option className="text-emerald-700" value={1}>daily</option>
-            <option  className="text-emerald-700" value={2}>Every 3 days</option>
-            <option  className="text-emerald-700" value={3}>Weekly</option>
-            <option  className="text-emerald-700" value={14}>Every 2 Weeks</option>
-            <option  className="text-emerald-700" value={30}>Monthly</option>
-
-          </select> */}
+      
              <div>
             <IonLabel className="text-xl  mt-4 text-emerald-800 font-medium mb-2 block">
               Email Frequency
