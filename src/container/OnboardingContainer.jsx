@@ -473,7 +473,7 @@ updateFormData({email:email})
     );
   };
 
-const Why = ({ handleTab, navigate }) => {
+const Why = ({ handleTab, nav }) => {
   return (
     <div className='text-center py-8'>
     <IonGrid  className="fade-in">
@@ -529,7 +529,7 @@ const Why = ({ handleTab, navigate }) => {
               </li>
             </ul>
           </IonText>
-         <IonRow className='flex mx-auto w-[86vw] mx-auto justify-between'> 
+         <IonRow className='flex mx-auto w-[100%] mx-auto justify-between'> 
             <div className='btn my-auto bg-transparent mt-4 border-none '><IonText onClick={()=>navigate(Paths.login())} className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
                  Log In
              </IonText></div>
@@ -549,49 +549,9 @@ const Why = ({ handleTab, navigate }) => {
 
 
 
-  // const Why = ({ handleTab }) => (
-  //   <IonGrid className="ion-padding-bottom ">
-  //     <IonRow>
-  //       <IonCol>
-  //         <img src={logo} alt="Plumbum Logo" style={{ maxHeight: '10em', display: 'block', margin: '0 auto', borderRadius: '0.5em' }} />
-  //         <IonText className="lora-medium" >
-  //           <h2 style={{ textAlign: 'left' }}>What is Plumbum?</h2>
-  //           <ul style={{ textAlign: 'left', paddingLeft: '1.5em', marginTop: '1em' }}>
-  //             <li><strong>Writer-Focused:</strong> A space made for writers to grow, get feedback, and share their work — all in one place.</li>
-  //             <li><strong>Community First:</strong> Built from live workshops and honest conversations, not algorithms.</li>
-  //             <li><strong>Discovery Through People:</strong> Find new stories and voices through trust and interaction, not trends.</li>
-  //             <li><strong>Hybrid by Design:</strong> We mix feedback, self-promotion, and curation — because writers need all three.</li>
-  //           </ul>
-
-  //           <h2 style={{ textAlign: 'left', marginTop: '2em' }}>Why Join?</h2>
-  //           <ul style={{ textAlign: 'left', paddingLeft: '1.5em', marginTop: '1em' }}>
-  //             <li><strong>Real Feedback:</strong> Thoughtful input from people who care about craft, not clout.</li>
-  //             <li><strong>Creative Momentum:</strong> Stay in motion with events, prompts, and people who show up.</li>
-  //             <li><strong>Supportive Culture:</strong> Built slow and small on purpose, so we protect the vibe.</li>
-  //             <li><strong>Self & Story Promotion:</strong> A space where sharing your work doesn’t feel awkward — it’s expected.</li>
-  //           </ul>
-  //         </IonText>
-  //         <IonRow className='flex justify-between'> 
-  //           {/* <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}> */}
-  //             <div className='btn my-auto bg-transparent mt-4 border-none mont-medium'><IonText onClick={()=>navigate(Paths.login())} className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
-  //               Log In
-  //             </IonText></div>
-  //           {/* </div> */}
-  //           <div className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
-  //             <IonText onClick={handleTab} className="emerald-gradient-text-btn mont-medium text-white text-[1.3rem]" style={{ width: '100%' }}>
-  //               Next Step
-  //             </IonText>
-  //           </div></IonRow>
-           
-        
-  //       </IonCol>
-  //     </IonRow>
-  //   </IonGrid>
-  // );
-
   const MyTabs = () => (
     <>
-      <div className=" text-center ">
+      <div className=" text-center mx-auto sm:w-[40em]">
         {[1, 2, 3, 4].map((tabNum) => (
           <IonText
             key={tabNum}
@@ -613,7 +573,7 @@ const Why = ({ handleTab, navigate }) => {
         ))}
       </div>
 
-      <div className="">
+      <div className="text-center mx-auto sm:w-[50rem]">
         {activeTab === 'tab0' && <Why handleTab={(tab) => setActiveTab('tab1')} />}
         {activeTab === 'tab1' && <Step1 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
         {activeTab === 'tab2' && <Step2 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}

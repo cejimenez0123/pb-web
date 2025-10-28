@@ -26,6 +26,7 @@ import {IonImg, IonButton, IonPopover, IonList, IonItem } from '@ionic/react';
 import { useIonPopover } from '@ionic/react';
 import { useSelector } from 'react-redux'
 import DeviceCheck from '../components/DeviceCheck.jsx'
+import { Capacitor } from '@capacitor/core'
 const PageName = {
   home: "Home",
   about:"About",
@@ -37,9 +38,18 @@ const PageName = {
   apply:"Join Now",
   feedback:"Feedback"
 }
-const pages = [ 
-                PageName.home,
-                PageName.about,
+
+
+function NavbarContainer({currentProfile}){
+
+  const {isPhone}=useContext(Context)
+  const dialog =useSelector(state=>state.users.dialog)
+  useLayoutEffect(()=>{
+    initGA()
+  },[])
+  const pages = [...[ 
+                Capacitor.isNativePlatform()||currentProfile? PageName.home:PageName.about,
+                
                 PageName.discovery,
                 PageName.workshop,
                 PageName.search,
@@ -47,15 +57,7 @@ const pages = [
                 PageName.login,
                 PageName.apply,
                 PageName.feedback
-                ]
-function NavbarContainer({currentProfile}){
-  const isNative = DeviceCheck()
-  const {isPhone,isHorizPhone}=useContext(Context)
-  const dialog =useSelector(state=>state.users.dialog)
-  useLayoutEffect(()=>{
-    initGA()
-  },[])
-  
+                ]]
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
