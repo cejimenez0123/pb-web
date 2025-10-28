@@ -9,8 +9,7 @@ import {
   IonButton,
   IonText,
   IonTextarea,
-  IonSelect,
-  IonSelectOption,
+
   IonImg,
   IonCheckbox,
   IonCard,
@@ -323,14 +322,14 @@ useEffect(() => {
       <IonPage>
       <IonContent fullscreen={true}
      >
-        <IonHeader className="bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
+        <IonHeader className=" bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
         <IonTitle className="text-green-800 text-center text-[2rem] ">
           Complete Sign Up
         </IonTitle>
       </IonHeader>
         <IonCard style={{maxWidth:"30rem"}} className="px-4 mx-auto shadow-none bg-transparent">
           <IonCardContent>
-         <div className='px-4'>
+         <div className='px-4 sm:w-[50em] w-[95vw] mx-auto'>
             {/* <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center"> */}
                 {/* <div className='rounded-full bg-emerald-200 h-fit'> */}
                 <IonInput
@@ -348,7 +347,7 @@ useEffect(() => {
               </IonText>
             )}
                <div className='w-[12rem] flex-col flex justify-center mx-auto'>
-           {!(identityToken)? <><GoogleLogin onUserSignIn={(
+            <><GoogleLogin onUserSignIn={(
             {email,idToken})=>{        setEmail(email)
               Preferences.set({key:"idToken",value:idToken}).then(()=>{})}}/>
          
@@ -357,7 +356,7 @@ useEffect(() => {
               setEmail(email)
               Preferences.set({key:"idToken",value:idToken}).then(()=>{})
             
-            }}/></>:null}
+            }}/></>
       </div>
          
               {identityToken?null:<>
@@ -367,10 +366,12 @@ useEffect(() => {
                 label='Password'
                 labelPlacement='stacked'
                 type='password'
-                className="text-emerald-800  "
+               
+               className="rounded-lg bg-emerald1-100 text-[0.8rem] text-emerald-800"
                 value={password}
                 onIonInput={e => setPassword(e.detail.value.trim())}
                 placeholder="password"
+ 
               />
               
                 {/* </IonItem> */}
@@ -384,7 +385,7 @@ useEffect(() => {
                     label='Confirm Password'
                     type="password"
                     labelPlacement='stacked'
-                  
+ className="rounded-lg bg-emerald1-100 text-[0.8rem] text-emerald-800"
                     value={confirmPassword}
                     onIonInput={e => setConfirmPassword(e.detail.value.trim())}
                     placeholder="password"
@@ -403,16 +404,16 @@ useEffect(() => {
 >
   <div className="flex flex-row pt-8 items-center gap-3"> 
   
-    <InfoTooltip text="Will your account be private?" />
+    {/* <InfoTooltip text="Will your account be private?" /> */}
 
     
 
   
-    <div className='flex flex-row'  >
+    {/* <div className='flex flex-row'  >
     <IonText className="my-auto">Is Private?</IonText>
-    
+     */}
     {/* Yes/No status */}
-    <div >
+    {/* <div >
     <IonText 
     onClick={handlePrivate}
     className="my-auto min-w-10 ml-4">
@@ -431,58 +432,71 @@ type='checkbox'
    
     /> 
    
-    </div>
-
+    </div> */}
+  <IonItem lines="none" className="flex flex-col items-start mt-4 space-y-2">
+            <div className="flex flex-row items-center gap-3">
+              <InfoTooltip text="Will your account be private?" />
+              <IonText className="text-emerald-800 font-medium">Is Private?</IonText>
+              <IonText
+                onClick={handlePrivate}
+                className="ml-4 cursor-pointer text-emerald-700 font-semibold"
+              >
+                {isPrivate ? "Yes" : "No"}
+              </IonText>
+              <input
+                id="ion-cb-1"
+                type="checkbox"
+                className="mx-3 accent-emerald-600 cursor-pointer"
+                checked={isPrivate}
+                onClick={handlePrivate}
+              />
+            </div>
+          </IonItem>
   </div>
 </IonItem>
-
-
-            
-            {/* <IonItem lines="none" className="flex i flex-col w-[100vw] mx-auto mt-8">
-              <IonLabel className=" text-xl text-left pb-2">
-                Add a Profile Picture
-              </IonLabel>
-              <input
-                className="file-input mt-4 text-center  mx-auto w-[20em] sm:w-72"
-                type="file"
-                accept="image/*"
-                onInput={handleFileInput}
-              />
-              {selectedImage && (
-                <div style={{ marginTop: '20px' }}>
-                  <IonImg
-                    src={selectedImage}
-                    alt="Selected"
-                    style={{ maxWidth: '10em', maxHeight: '300px', borderRadius: '10px',margin:"auto" }}
-                  />
-                </div>
-              )}
-            </IonItem> */}
-            {/* JSX: */}
-            {/* <IonItem lines="none" className="flex flex-col w-full mx-auto mt-8"> */}
-  <IonLabel className="text-xl text-left pb-2">
+      <div className="mt-6">
+            <IonLabel className="text-xl text-emerald-800 font-medium mb-2 block">
+              Add a Profile Picture
+            </IonLabel>
+            <input
+              type="file"
+              accept="image/*"
+              className="block file-input mx-auto my-4 text-emerald-700"
+              onChange={(e)=>handleProfilePicture(e)}
+            />
+            <ProfilePicture key={pictureUrl} image={pictureUrl} />
+          </div>
+  {/* <IonLabel className="text-xl text-left pb-2">
     Add a Profile Picture
   </IonLabel>
-
-  {/* <input
-    ref={fileInputRef}
-    type="file"
-    accept="image/*"
-    onChange={handleFileInput}
-    style={{ display: 'none' }} */}
-  {/* /> */}
   
              <input
     className="file-input max-w-72 my-8 mx-auto "
-        type="file"
+        type="file"   <div>
+            <IonLabel className="text-xl text-emerald-800 font-medium mb-2 block">
+              Email Frequency
+            </IonLabel>
+            <select
+              className="w-full rounded-full bg-emerald-50 text-emerald-700 px-4 py-2 border border-emerald-200"
+              value={frequency}
+              ref={selectRef}
+              onChange={(e) => setFrequency(e.target.value)}
+            >
+              <option value={1}>Daily</option>
+              <option value={2}>Every 3 days</option>
+              <option value={3}>Weekly</option>
+              <option value={14}>Every 2 Weeks</option>
+              <option value={30}>Monthly</option>
+            </select>
+          </div>
         accept="image/*"
         onChange={(e)=>handleProfilePicture(e)}/>
  
-<ProfilePicture key={pictureUrl} image={pictureUrl}/>
+<ProfilePicture key={pictureUrl} image={pictureUrl}/> */}
 
 
             <IonItem className="mb-4 flex flex-row justify-between">
-              <IonLabel className="block  mont-medium text-[1.2rem] font-semibold mb-2">
+              {/* <IonLabel className="block  mont-medium text-[1.2rem] font-semibold mb-2">
                 Email Frequency
               </IonLabel>
                        <select
@@ -497,15 +511,36 @@ type='checkbox'
             <option  className="text-emerald-700" value={14}>Every 2 Weeks</option>
             <option  className="text-emerald-700" value={30}>Monthly</option>
 
-          </select>
+          </select> */}
+             <div>
+            <IonLabel className="text-xl  mt-4 text-emerald-800 font-medium mb-2 block">
+              Email Frequency
+            </IonLabel>
+            <select
+              className="w-full rounded-full bg-emerald-50 text-emerald-700 px-4 py-2 border border-emerald-200"
+              value={frequency}
+              ref={selectRef}
+              onChange={(e) => setFrequency(e.target.value)}
+            >
+              <option value={1}>Daily</option>
+              <option value={2}>Every 3 days</option>
+              <option value={3}>Weekly</option>
+              <option value={14}>Every 2 Weeks</option>
+              <option value={30}>Monthly</option>
+            </select>
+          </div>
             </IonItem>
-            <IonLabel className="text-left w-full text-xl mb-2">
+                   
+            <IonLabel className="text-xl text-emerald-800 font-medium mb-2 block">
               Self Statement
             </IonLabel>
             <IonTextarea
               placeholder="What are you about?"
-              className="textarea bg-transparent border w-full border-white text-md lg:text-l"
+              rows={5}
+              autoGrow={true}
+              className="textarea bg-transparent bg-emerald-100 p-1  w-full text-emerald-800 text-md lg:text-l"
               value={selfStatement}
+              maxlength={250}
               onIonInput={e => setSelfStatement(e.detail.value)}
             />
            
