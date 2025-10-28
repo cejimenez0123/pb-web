@@ -24,7 +24,7 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
   
         return(
                  
-<IonInfiniteScroll  className="no-scroll ">
+<IonInfiniteScroll  className="no-scroll max-w-[50rem] mx-1 ">
      {pagesInView.map((page,i)=>{
           
             

@@ -312,7 +312,7 @@ export default function DashboardItem({ page, book, isGrid }) {
     return isGrid
       ? null
       : (
-        <div className='flex w-[95vw] rflex-row w-full rounded-b-lg overflow-hidden justify-evenly'>
+        <div className='flex w-[95vw] sm:w-[50em] rflex-row w-full rounded-b-lg overflow-hidden justify-evenly'>
           <div className={`${likeFound ? "bg-emerald-400" : "bg-emerald-200"} text-center grow w-1/3`}>
             <div
               onClick={handleApprovalClick}

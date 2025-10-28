@@ -37,13 +37,15 @@ export default function LogInContainer() {
 
     return (
         <IonContent fullscreen={true}>
-        <div  fullscreen={true} className='sm:mx-2 overflow-y-scroll py-10 md:py-4'>
+            <div className='py-10'>
+        {/* className='sm:mx-2 overflow-y-scroll py-10 md:py-4'> */}
             <LogInCard  
                        
             setLogInError={setError}
             handleSubmit={(e)=>handleLogIn(e)}
             setPassword={(str)=>setLiPassword(str)}/>
-        </div>
+            </div>
+        {/* </div> */}
         </IonContent>
     )
 }
@@ -162,26 +164,27 @@ dispatch(setDialog(dia))
     }
     return(
         <ErrorBoundary>
-            <IonPage>
-            <IonContent fullscreen={true}>
-    <div id="cal-embed" className=' py-0 scroll-auto flex md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+    <div  className=' py-0 scroll-auto flex md:mt-8  mx-auto sm:max-w-[50em]  lg:mt-36 mb-16 rounded-lg   text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
-            <form className='max-w-[100vw] sm:max-w-82 pt-4'>
+            <form className=' sm:max-w-[40em] overflow-auto pt-4'>
         <h1 className='text-emerald-800 mont-medium mx-auto text-center pb-4'> Log In</h1>
-        <div className='w-[90vw] '>
-       
+        <div className='w-[90vw] text-center sm:w-[40em] '>
+  <div className='text-left'>
   <IonInput type="text" 
 //   className="grow overflow-hidden w-full my-auto text-[1rem] sm:max-w-72   open-sans-medium  bg-transparent text-emerald-800" 
          value={email} 
+         className=' bg-transparent text-emerald-800 mx-auto'
          labelPlacement='stacked'
          label='Email'
+         style={{"--ion-max-width":"50em"}}
          onIonInput={(e) => setEmail(e.target.value)}
         placeholder='example@email.com' />
+    </div>
 {/* </label> */}
 </div>   
 
-  <span className='flex flex-row w-[90vw] '>
+
   <IonInput type={showPassword?"text":`password`}
 //    className="grow my-auto max-w-46 open-sans-medium sm:max-w-96  text-emerald-800 " 
          value={password}
@@ -197,13 +200,13 @@ dispatch(setDialog(dia))
                     {/* </IonIcon> */}
         </IonInput>
          
-</span>
+
 
          
             
             <div
             // style={{margin:"0 auto",width:"fit-content"}}
-            className='bg-green-600  w-[100%] rounded-full btn hover:bg-green-400  font-bold py-3 px-12 mt-4 '
+            className='bg-green-600  rounded-full btn w-[100%] mx-4 mx-auto sm:w-[40em] mx-auto hover:bg-green-400  font-bold py-3 px-12 mt-4 '
                onClick={handleLogIn}
                 
                 variant="contained" ><IonText className='  text-white text-xl text-center '>Log In</IonText></div>
@@ -246,5 +249,5 @@ dispatch(setDialog(dia))
         </form>
 
                 </div></div>
-    </div></IonContent></IonPage></ErrorBoundary>)
+    </div></ErrorBoundary>)
 }

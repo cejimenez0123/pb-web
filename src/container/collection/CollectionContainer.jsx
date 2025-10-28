@@ -530,8 +530,8 @@ console.log("STORYLIST",collection.storyIdList)
   </IonToolbar>
 </IonHeader>
 
- 
-        <IonCard className="ion-margin-bottom ion-padding">
+ <div className="sm:border sm:border-2 sm:rounded-xl mx-auto mb-8 sm:border-emerald-300 px-4  px-3 00 sm:max-w-[80%]">
+        <IonCard className="ion-margin-bottom   ion-padding">
           <IonCardHeader className="mx-auto bg-red-100">
             <div className="flex items-center justify-between px-4 gap-2">
               <div>{collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
@@ -585,7 +585,7 @@ console.log("STORYLIST",collection.storyIdList)
           </IonCardContent>
           </div>
         </IonCard>
-
+</div>
         {collections && collections.length > 0 && (
           <IonCard className="ion-padding pt-12">
             <IonCardHeader>
@@ -602,7 +602,7 @@ console.log("STORYLIST",collection.storyIdList)
             </IonCardContent>
           </IonCard>
         )}
-
+<div className="sm:w-[50rem] mx-auto">
         <IonCard className="ion-margin">
           <IonCardHeader>
             <IonCardTitle>Pages</IonCardTitle>
@@ -617,7 +617,7 @@ console.log("STORYLIST",collection.storyIdList)
             />
           </IonCardContent>
         </IonCard>
-
+</div>
         <ExploreList />
   
     </IonContent>
