@@ -2,13 +2,11 @@ import { useContext, useLayoutEffect,useRef,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import { updateProfile,deleteUserAccounts, deletePicture, setDialog} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
-import getDownloadPicture from "../domain/usecases/getDownloadPicture";
 import "../App.css"
 import { useNavigate } from "react-router-dom";
 import "../styles/Setting.css"
 import checkResult from "../core/checkResult";
 import Context from "../context";
-import DeviceCheck from "../components/DeviceCheck";
 import { IonContent } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
 export default function SettingsContainer(props) {  

@@ -34,6 +34,7 @@ import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { debounce } from 'lodash';
 import { Preferences } from '@capacitor/preferences';
 import GoogleLogin from '../../components/GoogleLogin';
+import { Capacitor } from '@capacitor/core';
 
 export default function SignUpContainer(props) {
   const isNative = DeviceCheck()
@@ -45,9 +46,11 @@ export default function SignUpContainer(props) {
   const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
   const [selfStatement, setSelfStatement] = useState("");
   const [file, setFile] = useState(null);
+  const [pictureUrl,setPictureUrl]=useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
+
   const [frequency, setFrequency] = useState(1);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [googleID, setGoogleID] = useState(null);
+  // const [googleID, setGoogleID] = useState(null);
   const [identityToken,setIdentityToken]=useState(null)
   const [email, setEmail] = useState("");
   const [searchParams] = useSearchParams();
@@ -71,6 +74,7 @@ export default function SignUpContainer(props) {
   }, []);
 const fileInputRef = useRef(null);
 const prevObjectUrlRef = useRef(null);
+
 // useEffect(() => {
 //   return () => {
 //     if (selectedImage) {
@@ -102,26 +106,98 @@ const prevObjectUrlRef = useRef(null);
 //     console.log(err)
 //   }
 //   };
-const handleFileInput = (e) => {
-  const img = e.target.files[0];
-  console.log(img)
-  if (img) {
-    if (!img.type.startsWith('image/')) {
-      setError('Please upload a valid image file.');
-      setSelectedImage(null);
-      return;
-    }
+// const handleFileInput = (e) => {
+//   const img = e.target.files[0];
+//   console.log(img)
+//   // if (img) {
+//     if (!img.type.startsWith('image/')) {
+//       console.log("COX")
+//       setError('Please upload a valid image file.');
+//       setSelectedImage(null);
+//       return;
+//     }
 
-    // Clean up any previous preview URL
-    if (selectedImage) {
-      URL.revokeObjectURL(selectedImage);
-    }
+//     // Clean up any previous preview URL
+//     if (selectedImage) {
+//       URL.revokeObjectURL(selectedImage);
+//     }
+//     console.log("Tocuh")
+// let url = URL.createObjectURL(img)
+// console.log(url)
+//     setFile(img);
+//     setError(null);
+//   setPictureUrl(url) // File works fine here
+//   // }
+// };
+const handleProfilePicture = (e) => {
+  const file = e.target.files[0];
+  if(Capacitor.isNativePlatform()){
+  if (!file) return;
 
-    setFile(img);
-    setError(null);
-    setSelectedImage(URL.createObjectURL(img)); // File works fine here
+  if (!file.type.startsWith('image/')) {
+    console.log("PLEASE")
+    setError('Please upload a valid image file.');
+    return;
   }
+
+  // // revoke previous blob URL if it exists
+  if (pictureUrl?.startsWith('blob:')) {
+    URL.revokeObjectURL(pictureUrl);
+  }
+
+  const newUrl = URL.createObjectURL(file) + `#${Date.now()}`;
+  console.log('Preview URL:', newUrl);
+
+  setFile(file);
+  setPictureUrl(newUrl);
+  setError('');
+}else{
+  const reader = new FileReader();
+reader.onloadend = () => {
+  setPictureUrl(reader.result);
+  console.log(reader.result)
 };
+
+reader.readAsDataURL(file);
+}
+};
+
+//     const handleProfilePicture =(e)=>{
+        
+//         const file = e.target.files[0];
+// console.log(file)
+//         if (file) {
+//           // Check file type
+//           if (!file.type.startsWith('image/')) {
+//             console.log("X")
+//             setError('Please upload a valid image file.');
+           
+//             return;
+//           }
+//           console.log("B")
+//           setFile(file)
+//           setError('');
+//           setPictureUrl(URL.createObjectURL(file))
+
+          
+//         }
+ 
+    // }
+//     const handleProfilePicture = (e) => {
+//   const file = e.target.files[0];
+//   if (!file) return;
+
+//   if (!file.type.startsWith("image/")) {
+//     setError("Please upload a valid image file.");
+//     return;
+//   }
+
+//   const url = URL.createObjectURL(file) + `#${Date.now()}`; // 👈 force unique URL
+//   console.log(url);
+//   setPictureUrl(url);
+//   setFile(file);
+//   setError('');
+// };
 
 // const handleFileInput = (e) => {
 //   // prefer e.currentTarget.files (reliable in React)
@@ -152,12 +228,10 @@ const handleFileInput = (e) => {
 
 // cleanup on unmount: revoke object URL
 useEffect(() => {
-  return () => {
-    if (prevObjectUrlRef.current) {
-      URL.revokeObjectURL(prevObjectUrlRef.current);
-      prevObjectUrlRef.current = null;
-    }
-  };
+  if (selectedImage?.startsWith('blob:')) {
+  URL.revokeObjectURL(selectedImage);
+}
+  
 }, []);
 
 
@@ -168,11 +242,12 @@ useEffect(() => {
   const completeSignUp = async () => {
     let toke = searchParams.get("token") || token;
     if (((await Preferences.get(({key:"googledrivetoken"}))).value||(await Preferences.get({key:"idToken"})).value || (password.length > 6 && username.length > 3))) {
+    const googleId= (await Preferences.get({key:"googleId"})).value
       const pictureParams = file ? { file } : { profilePicture: selectedImage };
       const params = {
         email,
         idToken:identityToken,
-        googleId: googleID,
+        googleId: googleId,
         token: toke,
         password,
         username,
@@ -206,19 +281,38 @@ useEffect(() => {
     }
   };
   const ProfilePicture=({image})=>{
-    return    (
-    <IonImg
-      src={image}
-      alt="Selected"
-      style={{
-        maxWidth: '10rem',
-        maxHeight: '10rem',
-        borderRadius: '10px',
-        marginTop: '1rem',
-        marginInline: 'auto',
-      }}
-    />
-  )}
+    return image? (
+
+  <IonImg
+    src={pictureUrl}
+    alt="Profile preview"
+    style={{ width: '150px', height: '150px', borderRadius: '50%' }}
+  />
+
+
+):(<img src={"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"}
+
+    alt="Profile preview"
+    style={{
+      width: '150px',
+      height: '150px',
+      objectFit: 'cover',
+      borderRadius: '50%',
+    }}/>)}
+
+  //   return    (
+  //   <img
+  //     src={image}
+  //     alt="Selected"
+  //     style={{
+  //       maxWidth: '10rem',
+  //       maxHeight: '10rem',
+  //       borderRadius: '10px',
+  //       marginTop: '1rem',
+  //       marginInline: 'auto',
+  //     }}
+  //   />
+  // )}
   
   const handlePrivate=debounce(()=>{
 
@@ -254,19 +348,19 @@ useEffect(() => {
               </IonText>
             )}
                <div className='w-[12rem] flex-col flex justify-center mx-auto'>
-           {/* {googleID||identityToken? <GoogleLogin onUserSignIn={(
+           {!(identityToken)? <><GoogleLogin onUserSignIn={(
             {email,idToken})=>{        setEmail(email)
-              Preferences.set({key:"idToken",value:idToken}).then(()=>{})}}/>:<>
+              Preferences.set({key:"idToken",value:idToken}).then(()=>{})}}/>
          
                              
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               setEmail(email)
               Preferences.set({key:"idToken",value:idToken}).then(()=>{})
             
-            }}/></>} */}
+            }}/></>:null}
       </div>
          
-              {googleID||identityToken?null:<>
+              {identityToken?null:<>
                {/* <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center"> */}
                
                    <IonInput
@@ -370,62 +464,22 @@ type='checkbox'
     Add a Profile Picture
   </IonLabel>
 
-  <input
+  {/* <input
     ref={fileInputRef}
     type="file"
     accept="image/*"
     onChange={handleFileInput}
-    style={{ display: 'none' }}
-  />
+    style={{ display: 'none' }} */}
+  {/* /> */}
+  
+             <input
+    className="file-input max-w-72 my-8 mx-auto "
+        type="file"
+        accept="image/*"
+        onChange={(e)=>handleProfilePicture(e)}/>
+ 
+<ProfilePicture key={pictureUrl} image={pictureUrl}/>
 
-  <IonButton
-    expand="block"
-    color="success"
-    fill="outline"
-    onClick={() => fileInputRef.current?.click()}
-  >
-    Choose Image
-  </IonButton>
-<ProfilePicture image={selectedImage}/>
-  {/* {selectedImage && (
-    <IonImg
-      src={selectedImage}
-      alt="Selected"
-      style={{
-        maxWidth: '10rem',
-        maxHeight: '10rem',
-        borderRadius: '10px',
-        marginTop: '1rem',
-        marginInline: 'auto',
-      }}
-    />
-  )} */}
-{/* </IonItem> */}
-
-{/* <IonItem lines="none" className="flex flex-col w-full mx-auto mt-8">
-  <IonLabel className="text-xl text-left pb-2">
-    Add a Profile Picture
-  </IonLabel>
-
-  <Ion
-    ref={fileInputRef}
-    className="file-input mt-4 mx-auto w-[20rem] sm:w-72"
-    type="file"
-    accept="image/*"
-    onChange={handleFileInput}   // <-- changed to onChange
-    aria-label="Upload profile picture"
-  />
-
-  {selectedImage && (
-    <div style={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
-      <IonImg
-        src={selectedImage}
-        alt="Selected"
-        style={{ maxWidth: "10rem", maxHeight: "10rem", borderRadius: 10 }}
-      />
-    </div>
-  )}
-</IonItem> */}
 
             <IonItem className="mb-4 flex flex-row justify-between">
               <IonLabel className="block  mont-medium text-[1.2rem] font-semibold mb-2">
