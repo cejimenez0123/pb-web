@@ -177,9 +177,11 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
 
         if(!data.collection.isPrivate){
         const {collection}=data
-          client.saveObject(
-            {objectID:collection.id,title:collection.title,indexName:"collection"})
-        }   
+        client.saveObject({indexName:"collection",body:{
+            objectID:collection.id,
+            title:collection.title
+        }})
+        }
         return {collection: data.collection}
 
       }catch(error){

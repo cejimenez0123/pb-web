@@ -5,29 +5,27 @@ import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
 import { Preferences } from "@capacitor/preferences";
+import algoliaRepo from "../data/algoliaRepo";
 
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
    
-     
+     await Preferences.clear()
 try{        const {uId,email,password,idToken,isNative}=params
 
 
         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
    
         
-        const {token}=authData  
-
-       const data= await profileRepo.getMyProfiles({token:token})
-        const key = "cachedMyProfile"
-
-        await Preferences.set({key:"token",value:token})
-        await Preferences.set({key,value:JSON.stringify(data.profile)})
-
-        return data
+        const {token}=authData 
+        Preferences.set({key:"token",value:token})
+      console.log(authData)
+        return {token:authData,profile:authData.user.profiles[0]}
 }catch(error){
-  console.log(error)
+    console.log(error)
+  return {error:error.message}
+
 }
       
     }
@@ -52,10 +50,23 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
 const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=>{
   try{ 
   let data = await authRepo.useReferral(params)
-    if(data.profile&&!data.profile.isPrivate){
-      const {profile}=data
-      client.partialUpdateObject({objectID: profile.id,usernamename:profile.username,indexName:"profile"},{createIfNotExists:true}).wait()
-    }
+ if (data.profile && !data.profile.isPrivate) {
+  const { profile } = data;
+
+  try {
+    await algoliaRepo.partialUpdateObject(
+      "profile", // ✅ index name
+      profile.id, // ✅ objectID
+      {
+        username: profile.username, // ✅ field(s) to update
+      }
+    );
+
+    console.log("✅ Profile updated in Algolia via API");
+  } catch (err) {
+    console.error("⚠️ Failed to update profile in Algolia:", err);
+  }
+}
     return data
   }catch(err){
     return err
@@ -71,29 +82,31 @@ const signUp = createAsyncThunk(
           // const userCred = await  createUserWithEmailAndPassword(auth, email, password)
           let data = await profileRepo.register({uId:"",idToken,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
            
-        console.log()
-            if(!privacy){
-         client.saveObject({ indexName:"profile",body:{objectID:data.profile.id,
-                                              username:username,}
-                                             }).wait()  
-                                            }                                    
-                                         await Preferences.set({key:"loggedIn",value:true})   
+
+           
+          if (!privacy) {
+            const {profile}= data
+    try {
+      await algoliaRepo.saveObject("profile", {
+        objectID: profile.id,
+        username: profile.username,
+        selfStatement: profile.selfStatement,
+        profilePic: profile.profilePic,
+      });
+      console.log("✅ Profile indexed in Algolia");
+    } catch (err) {
+      console.error("⚠️ Failed to save to Algolia:", err);
+    }
+  }
+            
       return {
       
             profile:data.profile
             
       }
     } catch (error){
-        try{
-          let data = await profileRepo.register({token,frequency,googleId,password,username,profilePicture,selfStatement,privacy})
-         await Preferences.set({key:"token",value:data.token})
-          client.saveObject({ objectID:data.profile.id,
-            username:username,indexName:"profile"
-           }).wait()       
-          return {profile:data.profile}
-        }catch(error){
-          return {error}
-        }
+       
+          console.error("⚠️", err);
        
     }
     }
@@ -156,10 +169,10 @@ async (params,thunkApi) => {
 
  if(token){
     const data = await profileRepo.getMyProfiles({token:token})
-  console.log("CURRENT PROFILE xDATA",data)
-   if(data && data.token){
-    await Preferences.set({key:"token",value:data.token})
-   }
+  // console.log("CURRENT PROFILE xDATA",data)
+  //  if(data && data.token){
+  //   await Preferences.set({key:"token",value:data.token})
+  //  }
 
 
    return data

@@ -40,7 +40,7 @@ export default function SignUpContainer(props) {
   const [username, setUsername] = useState("");
   const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
   const [selfStatement, setSelfStatement] = useState("");
-  const [file, setFile] = useState(null);
+  const [fileFind, setFile] = useState(null);
   const [pictureUrl,setPictureUrl]=useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
   const [frequency, setFrequency] = useState(1);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -70,60 +70,6 @@ export default function SignUpContainer(props) {
 const fileInputRef = useRef(null);
 const prevObjectUrlRef = useRef(null);
 
-// useEffect(() => {
-//   return () => {
-//     if (selectedImage) {
-//       URL.revokeObjectURL(selectedImage);
-//     }
-//   };
-// }, [selectedImage]);
-//   const handleFileInput = (e) => {
-// const img = (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) || (e.target && e.target.files && e.target.files[0]);
-// //   
-//     try{
-//     // const img = e.cutarget.files[0];
-//    console.log(img)
-//     if (img&&img.type.startsWith('image/'))  {
-      
-//        setFile(img);
-//       setError(null);
-//       setSelectedImage(URL.createObjectURL(img));
-      
-     
-//     }
-//     if (!img.type.startsWith('image/')) {
-//         setError('Please upload a valid image file.');
-//         setSuccess(null);
-//         setSelectedImage(null);
-//         return;
-//       }
-//   }catch(err){
-//     console.log(err)
-//   }
-//   };
-// const handleFileInput = (e) => {
-//   const img = e.target.files[0];
-//   console.log(img)
-//   // if (img) {
-//     if (!img.type.startsWith('image/')) {
-//       console.log("COX")
-//       setError('Please upload a valid image file.');
-//       setSelectedImage(null);
-//       return;
-//     }
-
-//     // Clean up any previous preview URL
-//     if (selectedImage) {
-//       URL.revokeObjectURL(selectedImage);
-//     }
-//     console.log("Tocuh")
-// let url = URL.createObjectURL(img)
-// console.log(url)
-//     setFile(img);
-//     setError(null);
-//   setPictureUrl(url) // File works fine here
-//   // }
-// };
 const handleProfilePicture = (e) => {
   const file = e.target.files[0];
   if(Capacitor.isNativePlatform()){
@@ -150,6 +96,7 @@ const handleProfilePicture = (e) => {
   const reader = new FileReader();
 reader.onloadend = () => {
   setPictureUrl(reader.result);
+  setFile(file)
   console.log(reader.result)
 };
 
@@ -157,69 +104,7 @@ reader.readAsDataURL(file);
 }
 };
 
-//     const handleProfilePicture =(e)=>{
-        
-//         const file = e.target.files[0];
-// console.log(file)
-//         if (file) {
-//           // Check file type
-//           if (!file.type.startsWith('image/')) {
-//             console.log("X")
-//             setError('Please upload a valid image file.');
-           
-//             return;
-//           }
-//           console.log("B")
-//           setFile(file)
-//           setError('');
-//           setPictureUrl(URL.createObjectURL(file))
 
-          
-//         }
- 
-    // }
-//     const handleProfilePicture = (e) => {
-//   const file = e.target.files[0];
-//   if (!file) return;
-
-//   if (!file.type.startsWith("image/")) {
-//     setError("Please upload a valid image file.");
-//     return;
-//   }
-
-//   const url = URL.createObjectURL(file) + `#${Date.now()}`; // 👈 force unique URL
-//   console.log(url);
-//   setPictureUrl(url);
-//   setFile(file);
-//   setError('');
-// };
-
-// const handleFileInput = (e) => {
-//   // prefer e.currentTarget.files (reliable in React)
-//   const file = (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) || (e.target && e.target.files && e.target.files[0]);
-//   if (!file) return;
-//   console.log(file)
-// console.log("tocuh")
-//   if (!file.type.startsWith("image/")) {
-//     setError("Please upload a valid image file.");
-//     setSuccess(null);
-//     setSelectedImage(null);
-//     setFile(null);
-//     return;
-//   }
-
-//   // revoke previous object URL if any
-//   if (prevObjectUrlRef.current) {
-//     URL.revokeObjectURL(prevObjectUrlRef.current);
-//     prevObjectUrlRef.current = null;
-//   }
-
-//   const objectUrl = URL.createObjectURL(file);
-//   prevObjectUrlRef.current = objectUrl;
-
-//   setFile(file);
-//   setSelectedImage(objectUrl);
-// };
 
 // cleanup on unmount: revoke object URL
 useEffect(() => {
@@ -241,7 +126,7 @@ await Preferences.get(({key:"googledrivetoken"})).value
 const googleId= (await Preferences.get({key:"googleId"})).value
     // if (((||(|| (password.length > 6 && username.length > 3))) {
     // 
-      const pictureParams = file ? { file } : { profilePicture: selectedImage };
+      const pictureParams = fileFind ? { file:fileFind } : { profilePicture: selectedImage };
       const params = {
         email,
         idToken:identityToken,
@@ -254,30 +139,44 @@ const googleId= (await Preferences.get({key:"googleId"})).value
         privacy: isPrivate,
         ...pictureParams
       };
-      const uploadAction = file
-        ? dispatch(uploadProfilePicture({ file })).then(res => checkResult(res, payload => {
-          params.profilePicture = payload.fileName;
-          return dispatch(signUp(params));
-        }))
-        : dispatch(signUp(params));
+    
+      if(fileFind){
+dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, payload => {
+          params.profilePicture = payload.fileName
+           dispatch(signUp(params)).then(res => checkResult(res, payload => {
 
-      uploadAction.then(res => checkResult(res, payload => {
-        Preferences.set({key:"firstTime",value: payload.firstTime}).then(()=>{})
-   
         if (payload.profile) {
-          navigate(Paths.myProfile());
+          navigate(Paths.login());
         } else {
           setSuccess(null);
           setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
         }
-      }, err => {
-        setSuccess(null);
+
+           },err=>{
+             setSuccess(null);
       setError(err.status==409?"Username is not unique":err.message || "Try reusing the link");
-      }));
-    // } else {
-    //   setError("Password and Username can't be empty");
-    // }
+           }))
+        Preferences.set({key:"firstTime",value: payload.firstTime}).then(()=>{})
+   },err=>{}))
+      }else{
+       dispatch(signUp(params)).then(res => checkResult(res, payload => {
+
+        if (payload.profile) {
+          navigate(Paths.login());
+        } else {
+          setSuccess(null);
+          setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
+        }
+        Preferences.set({key:"firstTime",value: payload.firstTime}).then(()=>{})
+   
+      }),err=>{
+         setSuccess(null);
+      setError(err.status==409?"Username is not unique":err.message || "Try reusing the link");
+      })}
+    
+  
   };
+  
   const ProfilePicture=({image})=>{
     return image? (
 

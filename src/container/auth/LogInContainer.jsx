@@ -38,7 +38,7 @@ export default function LogInContainer() {
     return (
         <IonContent fullscreen={true}>
             <div className='py-10'>
-        {/* className='sm:mx-2 overflow-y-scroll py-10 md:py-4'> */}
+     
             <LogInCard  
                        
             setLogInError={setError}
@@ -82,12 +82,13 @@ function LogInCard({setLogInError}){
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                    if(payload && payload.error){
-                        setError("Error with Username or Password")
-                    }else{
-                    Preferences.set({key:"cachedMyProfile",value:payload.profile}).then(()=>{})
-                       
-                    }
+                    if(payload && payload && payload.profile.id){
+
+                   
+                    navigate(Paths.profile.createRoute(payload.profile.id))
+                     }else{
+                        setError("Error with Profile")
+                     }
                 },err=>{
                     if(err.message=="Request failed with status code 401"){
 setError("User Not Found. Apply Below")

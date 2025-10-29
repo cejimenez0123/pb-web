@@ -123,7 +123,7 @@ state.notifications = payload
         state.signedIn= true
         state.loading = false
     }).addCase(signUp.rejected,(state,{payload})=>{   
-      if(payload.error){
+      if(payload && payload.error){
         state.error = payload.error
       }
  

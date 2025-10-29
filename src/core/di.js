@@ -9,7 +9,7 @@ import {algoliasearch }from "algoliasearch";
 
 const client = algoliasearch(
   import.meta.env.VITE_ALGOLIA_APP_ID,
-  import.meta.env.VITE_ALGOLIA_API)
+  import.meta.env.VITE_SEARCH_API)
   
 const config = { apiKey:import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
