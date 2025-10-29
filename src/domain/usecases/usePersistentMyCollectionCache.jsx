@@ -6,6 +6,7 @@ import getLocalStore from "../../core/getLocalStore";
 import DeviceCheck from "../../components/DeviceCheck";
 import setLocalStore from "../../core/setLocalStore";
 import { Preferences } from "@capacitor/preferences";
+import { Capacitor } from "@capacitor/core";
 export default function usePersistentMyCollectionCache(fetchData) {
     const key = "cachedMyCols"
     const isNative = DeviceCheck()
@@ -22,7 +23,7 @@ export default function usePersistentMyCollectionCache(fetchData) {
           console.log(payload)
             dispatch(setCollections({collections:payload.collections}))
             setCols(payload.collections);
-            setLocalStore(key, JSON.stringify(payload.collections),isNative)
+            setLocalStore(key, JSON.stringify(payload.collections),Capacitor.isNativePlatform())
         })
        
         });

@@ -202,7 +202,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
 
             </IonItem>
             <IonItem className='text-center' >
-            <GoogleLogin onUserSignIn={({
+            {/* {formData.email.includes("@")?<><GoogleLogin onUserSignIn={({
             email,
             name,
             googleId,
@@ -213,15 +213,15 @@ updateFormData({email:email})
               updateFormData({idToken: idToken })
               updateFormData({fullName:name})
               updateFormData({googleId: googleId})
-              handleNext()
+              // handleNext()
             }}/>
             <AppleSignInButton onUserSignIn={({idToken,email})=>{
               updateFormData({email:email})
               updateFormData({idToken: idToken })
               handleNext()
             
-            }}/>
-         
+            }}/></>:null}
+          */}
             </IonItem>
             </IonList>
             {/* <div className='h-[18rem]'/> */}
@@ -255,7 +255,7 @@ updateFormData({email:email})
       <IonGrid className='max-h-[100vh]'>
         <IonRow>
           <IonCol>
-            <div>
+            <div className='mb-4'>
             <IonLabel className="mont-medium" color="success" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
               Artist Statement
             </IonLabel>
@@ -534,8 +534,8 @@ const Why = ({ handleTab, nav }) => {
                  Log In
              </IonText></div>
       
-        <div className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" >
-            <IonText onClick={handleTab} className="emerald-gradient-text-btn text-white text-[0.8rem] text-[1rem]" style={{ width: '100%' }}>
+        <div onClick={handleTab} className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" >
+            <IonText  className="emerald-gradient-text-btn text-white text-[0.8rem] text-[1rem]" style={{ width: '100%' }}>
               Next Step
              </IonText>
           </div></IonRow>

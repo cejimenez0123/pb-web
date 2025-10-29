@@ -117,9 +117,6 @@ state.notifications = payload
         }
 
         state.loading = false
-    }).addCase(signUp.pending, (state)=>{
-
-        state.loading = true
     }).addCase(signUp.fulfilled,(state,{payload})=>{
         
         state.currentProfile = payload.profile

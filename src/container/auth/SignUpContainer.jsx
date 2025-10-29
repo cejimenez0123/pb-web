@@ -28,17 +28,13 @@ import Paths from "../../core/paths";
 import Context from "../../context";
 import "../../App.css";
 import InfoTooltip from '../../components/InfoTooltip';
-import DeviceCheck from '../../components/DeviceCheck';
-import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { debounce } from 'lodash';
 import { Preferences } from '@capacitor/preferences';
-import GoogleLogin from '../../components/GoogleLogin';
 import { Capacitor } from '@capacitor/core';
 
 export default function SignUpContainer(props) {
-  const isNative = DeviceCheck()
   const selectRef = useRef()
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -46,10 +42,8 @@ export default function SignUpContainer(props) {
   const [selfStatement, setSelfStatement] = useState("");
   const [file, setFile] = useState(null);
   const [pictureUrl,setPictureUrl]=useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
-
   const [frequency, setFrequency] = useState(1);
   const [isPrivate, setIsPrivate] = useState(false);
-  // const [googleID, setGoogleID] = useState(null);
   const [identityToken,setIdentityToken]=useState(null)
   const [email, setEmail] = useState("");
   const [searchParams] = useSearchParams();
@@ -68,8 +62,10 @@ export default function SignUpContainer(props) {
   }, []);
 
   useEffect(() => {
-    setToken(token);
-    return async ()=>await Preferences.set({key:"token",value:token})
+    let toke = searchParams.get("token")
+    console.log("Tokenef",toke)
+    if(!token&&toke)setToken(toke)
+    return async ()=>await Preferences.set({key:"token",value:toke})
   }, []);
 const fileInputRef = useRef(null);
 const prevObjectUrlRef = useRef(null);
@@ -134,7 +130,7 @@ const handleProfilePicture = (e) => {
   if (!file) return;
 
   if (!file.type.startsWith('image/')) {
-    console.log("PLEASE")
+
     setError('Please upload a valid image file.');
     return;
   }
@@ -239,15 +235,18 @@ useEffect(() => {
 
 
   const completeSignUp = async () => {
-    let toke = searchParams.get("token") || token;
-    if (((await Preferences.get(({key:"googledrivetoken"}))).value||(await Preferences.get({key:"idToken"})).value || (password.length > 6 && username.length > 3))) {
-    const googleId= (await Preferences.get({key:"googleId"})).value
+    // let toke = searchParams.get("token")
+const identityToken = await Preferences.get({key:"idToken"}).value 
+await Preferences.get(({key:"googledrivetoken"})).value
+const googleId= (await Preferences.get({key:"googleId"})).value
+    // if (((||(|| (password.length > 6 && username.length > 3))) {
+    // 
       const pictureParams = file ? { file } : { profilePicture: selectedImage };
       const params = {
         email,
         idToken:identityToken,
         googleId: googleId,
-        token: toke,
+        token: token,
         password,
         username,
         frequency,
@@ -269,15 +268,15 @@ useEffect(() => {
           navigate(Paths.myProfile());
         } else {
           setSuccess(null);
-          setError(payload.error || "Try reusing the link");
+          setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
         }
       }, err => {
         setSuccess(null);
-        setError(err.message || err);
+      setError(err.status==409?"Username is not unique":err.message || "Try reusing the link");
       }));
-    } else {
-      setError("Password and Username can't be empty");
-    }
+    // } else {
+    //   setError("Password and Username can't be empty");
+    // }
   };
   const ProfilePicture=({image})=>{
     return image? (
@@ -299,22 +298,9 @@ useEffect(() => {
       borderRadius: '50%',
     }}/>)}
 
-  //   return    (
-  //   <img
-  //     src={image}
-  //     alt="Selected"
-  //     style={{
-  //       maxWidth: '10rem',
-  //       maxHeight: '10rem',
-  //       borderRadius: '10px',
-  //       marginTop: '1rem',
-  //       marginInline: 'auto',
-  //     }}
-  //   />
-  // )}
+
   
   const handlePrivate=debounce(()=>{
-
   setIsPrivate(!isPrivate)
   },100)
   return (
@@ -330,8 +316,7 @@ useEffect(() => {
         <IonCard style={{maxWidth:"30rem"}} className="px-4 mx-auto shadow-none bg-transparent">
           <IonCardContent>
          <div className='px-4 sm:w-[50em] w-[95vw] mx-auto'>
-            {/* <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center"> */}
-                {/* <div className='rounded-full bg-emerald-200 h-fit'> */}
+         
                 <IonInput
                 label='username'
                 labelPlacement='stacked'
@@ -347,19 +332,10 @@ useEffect(() => {
               </IonText>
             )}
                <div className='w-[12rem] flex-col flex justify-center mx-auto'>
-            <><GoogleLogin onUserSignIn={(
-            {email,idToken})=>{        setEmail(email)
-              Preferences.set({key:"idToken",value:idToken}).then(()=>{})}}/>
-         
-                             
-            <AppleSignInButton onUserSignIn={({idToken,email})=>{
-              setEmail(email)
-              Preferences.set({key:"idToken",value:idToken}).then(()=>{})
-            
-            }}/></>
+       
       </div>
          
-              {identityToken?null:<>
+             {/* <> */}
                {/* <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center"> */}
                
                    <IonInput
@@ -396,7 +372,7 @@ useEffect(() => {
                     <h6>Passwords need to match</h6>
                   </IonText>
                 )}
-              </>}
+              {/* </>} */}
             {/* )} */}
             <IonItem
   lines="none"

@@ -71,10 +71,10 @@ const signUp = createAsyncThunk(
           // const userCred = await  createUserWithEmailAndPassword(auth, email, password)
           let data = await profileRepo.register({uId:"",idToken,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
            
-        
+        console.log()
             if(!privacy){
-         client.saveObject({ indexName:"profile",objectID:data.profile.id,
-                                              username:username,
+         client.saveObject({ indexName:"profile",body:{objectID:data.profile.id,
+                                              username:username,}
                                              }).wait()  
                                             }                                    
                                          await Preferences.set({key:"loggedIn",value:true})   
