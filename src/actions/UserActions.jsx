@@ -6,22 +6,24 @@ import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
+import setLocalStore from "../core/setLocalStore";
 
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
    
-     await Preferences.clear()
-try{        const {uId,email,password,idToken,isNative}=params
-
-
+    
+try{     
+     const {uId,email,password,idToken}=params
         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
-   
-        
         const {token}=authData 
-        Preferences.set({key:"token",value:token})
-      console.log(authData)
-        return {token:authData,profile:authData.user.profiles[0]}
+        try{
+          setLocalStore("token",JSON.stringify(token))
+      //  await Preferences.set({key:"token",value:JSON.stringify(token)})
+        }catch(err){
+          console.log("PREF",err)
+        }
+        return {token:token,profile:authData.user.profiles[0]}
 }catch(error){
     console.log(error)
   return {error:error.message}
@@ -36,6 +38,7 @@ const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   return data
  })
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
+  localStorage.clear()
    await Preferences.clear()
     try{
       
@@ -111,26 +114,46 @@ const signUp = createAsyncThunk(
     }
     }
 )
-const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
-  async (params,thunkApi)=>{
-    	  const {query} = params
-        const queries = [{
-          indexName: 'profile',
-          query: query,
-        }, {
-          indexName: 'story',
-  query: query,
 
-}, {
-  indexName: 'collection',
-  query: query,
-  
-},{indexName:"hashtag",query:query}];
 
-  let {results}= await client.multipleQueries(queries)
 
-  return {results}
-})
+ const searchMultipleIndexes = createAsyncThunk(
+  "users/searchMultipleIndexes",
+  async (params, thunkApi) => {
+    const { query } = params;
+
+    try {
+      // Call server-side search via the repo
+      const data = await algoliaRepo.search(query);
+console.log(data)
+      // data should be { results: [...] } as returned by the server
+      return { results: data.results };
+    } catch (error) {
+      console.error("Search failed:", error);
+      return thunkApi.rejectWithValue({ error: "Search failed" });
+    }
+  }
+);
+//  const searchMultipleIndexes = createAsyncThunk(
+//   "users/searchMultipleIndexes",
+//   async (params, thunkApi) => {
+//     const { query } = params;
+
+//     const indexes = ["profile", "story", "collection", "hashtag"];
+//     const queries = indexes.map((indexName) => ({
+//       indexName,
+//       query,
+//     }));
+
+//     try {
+//       const { results } = await client.multipleQueries(queries);
+//       return { results };
+//     } catch (error) {
+//       console.error("Algolia search error:", error);
+//       return thunkApi.rejectWithValue({ error: "Search failed" });
+//     }
+//   }
+// );
 
 const setDialog = createAction("user/setDialog", (params)=> {
 
@@ -163,18 +186,13 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
   return data
 })
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
-async (params,thunkApi) => {
+async ({token},thunkApi) => {
   try{
   let token = (await Preferences.get({key:"token"})).value
 
  if(token){
     const data = await profileRepo.getMyProfiles({token:token})
-  // console.log("CURRENT PROFILE xDATA",data)
-  //  if(data && data.token){
-  //   await Preferences.set({key:"token",value:data.token})
-  //  }
-
-
+    console.log(data)
    return data
   }else{
     throw new Error("No Token")

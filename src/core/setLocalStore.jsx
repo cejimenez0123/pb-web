@@ -1,12 +1,16 @@
 import { Preferences } from "@capacitor/preferences";
 
 export default async function setLocalStore(key, value) {
+  if(key == "token"){
+   await Preferences.clear()
+  }
   try {
     // Preferences.set works both on native platforms and web
     await Preferences.set({
       key,
       value: typeof value === "string" ? value : JSON.stringify(value),
     });
+
   } catch (error) {
     console.error("Error setting local store:", error);
     // On web fallback, you could also try localStorage manually

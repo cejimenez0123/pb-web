@@ -69,7 +69,7 @@ const userSlice = createSlice({
             }
         }).addCase(deleteUserAccounts.fulfilled,(state,{payload})=>{
             state.currentProfile = null
-            Preferences.clear()
+ 
         }).addCase(postActiveUser.fulfilled,(state,{payload})=>{
             state.profilesInView = payload.profiles
     
@@ -107,9 +107,11 @@ state.notifications = payload
     }).addCase(logIn.fulfilled, (state, { payload }) => {
         if(payload&&payload.profile){
             state.currentProfile = payload.profile
-            }
-        state.loading = false
+             state.loading = false
         state.signedIn = true
+            }
+        // state.token = payload.token
+       
        
     }).addCase(logIn.rejected, (state,{payload}) => {
         if(payload && payload.error){
@@ -196,7 +198,7 @@ state.dialog.isOpen = false
     }).addCase(searchDialogToggle.type,(state,{payload})=>{
         state.searchDialogOpen = payload
     }).addCase(searchMultipleIndexes.fulfilled,(state,{payload})=>{
-        state.searchResults = payload.searchResults
+        state.searchResults = payload.results
     }).addCase(searchMultipleIndexes.rejected,(state,{payload})=>{
         state.error =payload
     })

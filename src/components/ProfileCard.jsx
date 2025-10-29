@@ -61,12 +61,12 @@ setProfilePic(src)
     
     if(!profile||!profile.id){
     
-            return <div className=" skeleton  w-[96vw] auto mx-auto md:w-info h-info"/>
+            return <div className=" skeleton  w-[96vw] sm:w-[50em]  min-h-40"/>
          
     }
     if(profile){
         
-      return(<div className="pb-8 md:border-3 rounded-lg  w-[96vw] md:h-info mx-auto md:w-info md:border-emerald-400">
+      return(<div className="pb-8 sm:border-3 rounded-lg  w-[96vw] sm:w-[50em] sm:min-h-40 mx-auto md:w-info sm:border-emerald-400">
         <div className="text-left p-4">
             <div className="flex flex-row">
               <div>  

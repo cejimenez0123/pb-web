@@ -18,11 +18,11 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
     console.log(params)
 
     if(params.privacy){
-       
-      await client.saveObject({indexName:"profile",body:{
+         await algoliaRepo.saveObject("profile",{
         objectID:profile.id,
         username:profile.username
-    }})
+    });
+
     }
     return data
  })

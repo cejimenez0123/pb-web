@@ -141,6 +141,8 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   // ---------------------------
   const nativeGoogleSignIn = async () => {
     try {
+      localStorage.clear()
+      await Preferences.clear()
       await SocialLogin.logout({ provider: "google" });
       setPending(true);
       setLoginError(null);

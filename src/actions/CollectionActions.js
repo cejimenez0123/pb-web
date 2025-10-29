@@ -5,6 +5,7 @@ import Enviroment from "../core/Enviroment"
 import storyRepo from "../data/storyRepo"
 import { client } from "../core/di"
 import roleRepo from "../data/roleRepo"
+import algoliaRepo from "../data/algoliaRepo"
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
     async (thunkApi) => {
@@ -174,14 +175,14 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
     try{
         let data = await collectionRepo.createCollection(params)
      
-
+  const {collection}=data
         if(!data.collection.isPrivate){
-        const {collection}=data
-        client.saveObject({indexName:"collection",body:{
+      
+        await algoliaRepo.saveObject("collection", {
             objectID:collection.id,
             title:collection.title
-        }})
         }
+        )}
         return {collection: data.collection}
 
       }catch(error){

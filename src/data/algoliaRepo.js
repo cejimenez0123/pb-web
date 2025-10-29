@@ -15,12 +15,19 @@ class AlgoliaRepo {
       Authorization: `Bearer ${token}`,
     };
   }
-
+  async search(query) {
+    const headers = await this.getAuthHeaders();
+    const res = await axios.get(`${Enviroment.url}/api/algolia/search`, {
+      headers,
+      params: { q: query },
+    });
+    return res.data; // { results: [...] }
+  }
   // ✅ Save or create object in Algolia
   async saveObject(indexName, object) {
     const headers = await this.getAuthHeaders();
     const res = await axios.post(
-      `${Enviroment.url}/algolia/save`,
+      `${Enviroment.url}/api/algolia/save`,
       { indexName, object },
       { headers }
     );
@@ -30,7 +37,7 @@ class AlgoliaRepo {
   // 🗑️ Delete object from Algolia
   async deleteObject(indexName, objectID) {
     const headers = await this.getAuthHeaders();
-    const res = await axios.delete(`${Enviroment.url}/algolia/delete`, {
+    const res = await axios.delete(`${Enviroment.url}/api/algolia/delete`, {
       headers,
       data: { indexName, objectID },
     });
@@ -41,7 +48,7 @@ class AlgoliaRepo {
   async partialUpdateObject(indexName, objectID, fields) {
     const headers = await this.getAuthHeaders();
     const res = await axios.patch(
-      `${Enviroment.url}/algolia/update`,
+      `${Enviroment.url}/api/algolia/update`,
       { indexName, objectID, fields },
       { headers }
     );

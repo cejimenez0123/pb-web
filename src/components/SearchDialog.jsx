@@ -46,20 +46,19 @@ const SearchDialog = ({presentingElement}) => {
 
   
       const {results}=payload
-                          let items = results.map(element => {
-                              let index = element.index
-                             return element.hits.map(hit=>{
-                                 let searchItem = {type:index}        
-                                   Object.keys(hit).forEach(key=>{
-                                      searchItem[key] = hit[key]
-                                   })
+                          // let items = results.map(element => {
+                          //     let index = element.index
+                          //    return element.hits.map(hit=>{
+                          //        let searchItem = {type:index}        
+                          //          Object.keys(hit).forEach(key=>{
+                          //             searchItem[key] = hit[key]
+                          //          })
                               
-                                  return searchItem
-                              })
+                          //         return searchItem
+                          //     })
                           
-                          })
-                          setSearchContent(items.flat())
-                          ;
+                          // })
+                          setSearchContent(results)
                         },err=>{
                           
                         })});

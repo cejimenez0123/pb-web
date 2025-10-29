@@ -8,11 +8,11 @@ class ProfileRepo {
         let res = await axios.get(this.url+"/")
         return res.data
     }
-    async getMyProfiles({token}){
-      
+    async getMyProfiles({toke}){
+
   try{
        const res = await axios.get(this.url+"/protected",{ headers:{
-                Authorization:"Bearer "+token
+                Authorization:"Bearer "+toke
             }}
         )
 

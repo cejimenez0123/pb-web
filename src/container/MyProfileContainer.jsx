@@ -46,21 +46,20 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
   );
 }
 
-function MyProfileContainer({ currentProfile, presentingElement }) {
-  const isNative = DeviceCheck();
+function MyProfileContainer({ presentingElement }) {
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const currentProfile = useSelector(state=>state.users.currentProfile)
   const stories = useSelector(state => state.pages.pagesInView);
   const dialog = useSelector(state => state.users.dialog);
-  const { seo, setSeo, isPhone, isNotPhone } = useContext(Context);
+  const { seo, setSeo } = useContext(Context);
   const collections = useSelector(state => state.books.collections);
-
+console.log("VFFdLF",currentProfile)
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
   const [driveToken, setDriveToken] = useState(null);
   const [description, setFeedback] = useState("");
-  const [openDialog, setOpenDialog] = useState(false);
   const [errorLocal, setErrorLocal] = useState(null);
   const [feedbackPage, setFeedbackPage] = useState(null);
 
@@ -160,7 +159,7 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
   useEffect(() => {
     const init = async () => {
       try {
-        if (isNative) Capacitor.isPluginAvailable('Preferences');
+        // if (isNative) Capacitor.isPluginAvailable('Preferences');
         await getItems();
         await getDriveToken();
       } catch (err) {
@@ -169,7 +168,7 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
       }
     };
     init();
-  }, [currentProfile]);
+  }, []);
 
   const ClickWriteAStory = debounce(() => {
     if (currentProfile?.id) {
@@ -192,12 +191,12 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
 
   const ClickCreateACollection = () => {
     sendGAEvent("Create", "Create Collection", "Create A Collection");
-    setOpenDialog(true);
+    // setOpenDialog(true);
     const newDialog = {
       ...dialog,
       isOpen: true,
-      onClose: () => setOpenDialog(false),
-      text: <CreateCollectionForm onClose={() => setOpenDialog(false)} />,
+      onClose: () => dispatch(setDialog({...dialog,isOpen:false})),
+      text: <CreateCollectionForm onClose={() => dispatch(setDialog({...dialog,isOpen:false}))} />,
       title: "Create Collection"
     };
     dispatch(setDialog(newDialog));
@@ -235,14 +234,15 @@ function MyProfileContainer({ currentProfile, presentingElement }) {
   };
 
   useEffect(() => {
-    return () => {
+    let seSeo = () => {
       if (currentProfile) {
         setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
         dispatch(setPagesInView({ pages: currentProfile.stories }));
       }
     };
-  }, [currentProfile, setSeo, dispatch]);
-
+    return seSeo()
+  }, [currentProfile]);
+console.log("VFFVF",currentProfile)
   if (!currentProfile) {
     return (
       <IonContent>

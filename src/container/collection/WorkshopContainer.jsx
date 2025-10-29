@@ -248,7 +248,7 @@ const localCheck=()=>{
   >
    <div className='h-[100vh] overflow-hidden'>
       {currentProfile?(
-        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] flex flex-col  md:border-2 text-left sm:w-[20rem] md:border-emerald-600 p-4    rounded-lg ">
+        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] mt-12 flex flex-col  md:border-2 text-left sm:w-[20rem] md:border-emerald-600 p-4    rounded-lg ">
        <div>
         <span className='flex my-8 flex-row'>
      <h2 className='text-xl  font-bold ml-2 mr-10'> {currentProfile.username}</h2>{!isGlobal?<span className={`${location&& location.longitude && location.latitude?"bg-emerald-600":"bg-yellow-500" } rounded-full w-8 max-h-6 flex`}><img  className="mx-auto my-auto" src={check}/></span>:null}</span></div>

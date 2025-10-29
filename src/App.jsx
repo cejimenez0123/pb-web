@@ -52,6 +52,7 @@ import Dialog from './components/Dialog.jsx';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 import DeviceCheck from './components/DeviceCheck.jsx';
 function App(props) {
+  const {currentProfile} = props
   const navigate = useNavigate()
   const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
   const isHorizPhone =  useMediaQuery({
@@ -65,9 +66,9 @@ function App(props) {
   const [isSaved,setIsSaved]=useState(true)
   const profileInView = useSelector(state=>state.users.profileInView)
   
-  // let oldProfile = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+  // let oldProfile = usePersistentCurrentProfile(()=>)
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-   const currentProfile = props.currentProfile
+  //  const currentProfile = props.currentProfile
   
   const [olderPath,setOlderPath]=useState(null)
   const location = useLocation()
@@ -77,7 +78,13 @@ function App(props) {
   const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"Close"})
 
 
-
+  useEffect(()=>{
+    Preferences.get({key:"token"}).then(res=>{
+      console.log(res)
+      res.value &&  dispatch(getCurrentProfile({token:res.value}))
+    })
+   
+  },[])
   useEffect(()=>{
       setOlderPath(location.pathname) 
   },[location.pathname])
@@ -87,7 +94,7 @@ function App(props) {
     if(isNative){
       let value = (await Preferences.get('hasSeenOnboarding')).value
       if (value === null) {
-        Preferences.set("hasSeenOnboarding",true)
+        Preferences.set({key:"hasSeenOnboarding",value:true})
         
         setIsFirstLaunch(true);
         navigate("/onboard")
@@ -150,10 +157,11 @@ function App(props) {
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
+        <div>
        <SearchDialog presentingElement={page} />
        <Dialog dialog={dialog} presentingElement={page} />
 <Alert />
-<div >
+<div className='pt-8'>
       <Routes >
  
      <Route path={'/'} element={isFirstLaunch&&isNative?<Navigate to="/onboard"/>:<AboutContainer/>} />
@@ -237,19 +245,19 @@ function App(props) {
  
         <Route path={Paths.apply()}
         element={<LoggedRoute
-          loggedOut={!currentProfile}
-           currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
+          loggedOut={!props.currentProfile}
+           currentProfile={props.currentProfile}><ApplyContainer/></LoggedRoute>}/>
          <Route path={Paths.apply()+"/newsletter"}
         element={<LoggedRoute 
-          loggedOut={!currentProfile}
-        currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
+          loggedOut={!props.currentProfile}
+        currentProfile={props.currentProfile}><ApplyContainer/></LoggedRoute>}/>
 
       <Route
       path={Paths.myProfile()}
       element={
-        <PrivateRoute       currentProfile={currentProfile} >
-          <MyProfileContainer profile={props.currentProfile} 
-          currentProfile={currentProfile}
+        <PrivateRoute       currentProfile={props.currentProfile} >
+          <MyProfileContainer
+          currentProfile={props.currentProfile}
                              presentingElement={page}
                              pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
@@ -259,11 +267,11 @@ function App(props) {
       }
     />
       <Route path={Paths.workshop.reader()}
-    element={<PrivateRoute       currentProfile={currentProfile}><WorkshopContainer/></PrivateRoute>}/>
+    element={<PrivateRoute       currentProfile={props.currentProfile}><WorkshopContainer/></PrivateRoute>}/>
     <Route 
     path={Paths.workshop.route()}
     element={<PrivateRoute
-      currentProfile={currentProfile}
+      currentProfile={props.currentProfile}
     ><WorkshopContainer/></PrivateRoute>}/>
     <Route path="/profile/:id" element={
       <ProfileContainer profile={profileInView}/>
@@ -276,7 +284,7 @@ function App(props) {
     <Route  
         path={Paths.editor.image()}
         element={ 
-          <PrivateRoute currentProfile={currentProfile}>
+          <PrivateRoute currentProfile={props.currentProfile}>
             
           <EditorContainer 
           
@@ -289,7 +297,7 @@ presentingElement={page}
       exact path={Paths.editor.link()}
       element={
         <PrivateRoute 
-        currentProfile={currentProfile}
+        currentProfile={props.currentProfile}
         >
             <EditorContainer 
          
@@ -302,7 +310,7 @@ presentingElement={page}
        <Route
       path={Paths.editPage.route()}
       element={
-        <PrivateRoute currentProfile={currentProfile} >
+        <PrivateRoute currentProfile={props.currentProfile} >
             <EditorContainer 
               htmlContent={props.htmlContent} 
               currentProfile={props.currentProfile} 
@@ -312,7 +320,7 @@ presentingElement={page}
 
       <Route path="/profile/edit" element={
  
-        <PrivateRoute currentProfile={currentProfile} >
+        <PrivateRoute currentProfile={props.currentProfile} >
         <SettingsContainer />
         </PrivateRoute>
       }/>
@@ -323,7 +331,7 @@ presentingElement={page}
     <NavbarContainer 
         // loggedIn={currentProfile}
         currentProfile={currentProfile}/></div>:null}
-       
+       </div>
     </IonPage>
     
   
