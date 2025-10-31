@@ -1,4 +1,3 @@
-import { client} from "../core/di"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import hashtagRepo from "../data/hashtagRepo"
 import algoliaRepo from "../data/algoliaRepo"

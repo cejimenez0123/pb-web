@@ -35,8 +35,8 @@ export default function BookCarousel({ images = [] }) {
             src={imgSrc}
             alt={`Book Carousel item ${idx + 1}`}
             style={{
-              maxHeight: "24em", // adjust as needed
-              width: "100%",
+              maxHeight: "50em", 
+              width: "90em",
               objectFit: "cover",
               borderRadius: "1em",
             }}

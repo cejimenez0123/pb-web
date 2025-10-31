@@ -3,8 +3,7 @@ import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
 import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
 import {storage} from  "../core/di"
-import { client } from "../core/di";
-import {  ref, uploadBytes,getDownloadURL,deleteObject   } from "firebase/storage";
+import {  ref, uploadBytes,getDownloadURL   } from "firebase/storage";
 import { Preferences } from "@capacitor/preferences";
 import Enviroment from "../core/Enviroment";
 const createProfile= createAsyncThunk("users/createProfile",async (params,thunkApi)=>{

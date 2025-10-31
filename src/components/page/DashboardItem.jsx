@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import{ useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { IonCard, IonCardHeader, IonCardContent, IonImg } from '@ionic/react';
 import "../../Dashboard.css";
 import {
@@ -27,9 +27,8 @@ import Context from '../../context';
 import Enviroment from '../../core/Enviroment';
 import ErrorBoundary from '../../ErrorBoundary';
 import { debounce } from 'lodash';
-import { initGA, sendGAEvent } from '../../core/ga4';
+import { sendGAEvent } from '../../core/ga4';
 import adjustScreenSize from '../../core/adjustScreenSize';
-
 export default function DashboardItem({ page, book, isGrid }) {
   const { isPhone, isHorizPhone, setSuccess, setError, currentProfile } = useContext(Context);
   const dispatch = useDispatch();
@@ -39,14 +38,10 @@ export default function DashboardItem({ page, book, isGrid }) {
   const navigate = useNavigate();
   const [canUserEdit, setCanUserEdit] = useState(false);
   const pagesInView = useSelector((state) => state.pages.pagesInView);
-  const [expanded, setExpanded] = useState(false);
   const colInView = useSelector((state) => state.books.collectionInView);
   const [likeFound, setLikeFound] = useState(false);
-  const [overflowActive, setOverflowActive] = useState(null);
   const [bookmarked, setBookmarked] = useState();
-  useLayoutEffect(() => {
-    initGA();
-  }, []);
+
 
   const widthSize = adjustScreenSize(isGrid, true, "", " pt-1 pb-2 ", "", "", "", "");
   let sizeOuter = adjustScreenSize(isGrid, false, "rounded-lg shadow-md grid-item relative ", "justify-between flex ", "mt-2 mx-auto ", " mt-2 ", "  ");

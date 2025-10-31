@@ -42,26 +42,32 @@ if(book){
     <IonCard
     
       onClick={navigateToBook}
-      className="h-[10rem] btn hover:h-[12rem] transition-all duration-300 min-w-[14rem] max-w-[16rem] border-0 bg-emerald-700 text-white rounded-lg shadow-md overflow-hidden group"
+      className="h-[10rem] group-hover:h-[10rem] relative btn hover:h-[12rem] transition-all duration-300 w-[16rem]  bg-emerald-700 text-white rounded-lg shadow-md text-ellipsis group"
     >
-      <IonCardHeader className="px-3 py-1 bg-transparent">
+      <div className="h-16"> 
+    <div className="absolute top-0 pt-2 left-3 right-3 z-10">
+        <IonCardHeader className="p-0">
+
         <IonCardTitle
-          className="font-bold  mb-2 truncate"
+          className="font-bold truncate"
           
     >{book.title}</IonCardTitle>
-      </IonCardHeader>
-
-      <IonCardContent className="px-3 py-1 bg-transparent">
-        {/* Purpose text: clipped until hover */}
+    </IonCardHeader>
+    </div>
+      {/* </IonCardHeader> */}
+      </div>
+      <div className="  bottom-0 mt-8 min-h-[10rem]">
+      <IonCardContent className="">  
         <div
-          className="overflow-hidden max-h-[6rem] group-hover:max-h-[10rem] transition-all duration-300"
+          className=" transition-all h-[5rem] duration-300"
           style={{ textOverflow: "ellipsis" }}
         >
-          <IonText className="open-sans-medium text-sm block text-left text-white p-1">
+          <IonText        style={{ textOverflow: "ellipsis" }} className="open-sans-medium text-sm block text-left text-white p-1">
             {book.purpose}
           </IonText>
         </div>
       </IonCardContent>
+      </div>
     </IonCard>
   );
 }}

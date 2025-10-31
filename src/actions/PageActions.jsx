@@ -1,4 +1,3 @@
-import {client} from "../core/di"
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
 import {storage} from "../core/di"
 import storyRepo from "../data/storyRepo"
@@ -7,7 +6,6 @@ import likeRepo from "../data/likeRepo"
 import profileRepo from "../data/profileRepo"
 import { PageType } from "../core/constants"
 import { deleteObject } from "firebase/storage"
-import { Preferences } from "@capacitor/preferences"
 import algoliaRepo from "../data/algoliaRepo"
 
 const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{

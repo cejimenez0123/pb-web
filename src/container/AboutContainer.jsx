@@ -121,8 +121,8 @@ export default function AboutContainer() {
   );
 
   const writingJourney = () => (
-    <div className="text-center leading-loose">
-      <h1 className="lora-bold">Why Plumbum Works?</h1>
+    <div className="text-center py-9  text-emerald-800 leading-loose">
+      <h1 className="lora-bold text-left">Why Plumbum Works?</h1>
       <br/>
       <ul className="text-left">
         <li className="text-[1rem] my-1">
@@ -219,19 +219,19 @@ export default function AboutContainer() {
   );
 
   return (
-    
       <IonContent color="light" fullscreen={true} className="ion-padding">
+        <div className="pt-8 max-w-[100vw]">
         <IonGrid>
           <IonRow className="my-10">
-            <IonCol size="12" className="ion-text-center">
-              <IonTitle color="primary" className="lora-bold" style={{ fontSize: '3rem', margin: "auto", paddingTop: '2rem' }}>
+            <IonCol  className="ion-text-center">
+              <IonTitle color="primary" className="lora-bold text-emerald-800" style={{ fontSize: '3rem', margin: "auto", paddingTop: '2rem' }}>
                 Plumbum
               </IonTitle>
-              <IonText className="lora-medium mx-auto" color="primary" style={{ fontSize: '1.3rem', margin: "auto" }}>
+              <IonText className="mx-auto text-emerald-600" color="primary" style={{ fontSize: '1.3rem', margin: "auto" }}>
                 Share your Weirdness
               </IonText>
               <br />
-              <IonText className="lora-medium mx-auto" color="primary">
+              <IonText className=" mx-auto text-emerald-600" color="primary">
                 Get thoughtful feedback • Grow through workshops
               </IonText>
             </IonCol>
@@ -239,13 +239,13 @@ export default function AboutContainer() {
 
           <IonRow>
             {md && (
-              <IonCol size="12">
-                <BookCarousel images={secImages} />
+              <IonCol >
+                <div className="sm:w-[90em] mx-auto"><BookCarousel images={secImages} /></div>
                 {findCreatives()}
               </IonCol>
             )}
-            <IonCol size="12">
-              <BookCarousel images={firstImages} />
+            <IonCol >
+             <div className="sm:w-[90em] mx-auto"><BookCarousel images={firstImages} /></div> 
             </IonCol>
           </IonRow>
 
@@ -325,7 +325,8 @@ export default function AboutContainer() {
           </IonRow>
         </IonGrid>
         {!currentProfile && <ScrollDown text="↓Apply Below" visible={true} />}
+             </div>
       </IonContent>
-    // </IonPage>
+
   )
 }

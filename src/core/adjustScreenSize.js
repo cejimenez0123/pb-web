@@ -1,4 +1,5 @@
-
+import { useContext } from "react"
+import Context from "../context"
 export default function adjustScreenSize(isGrid=false,isContent,grid="",gridMobile="",horizPhone="",fullScreen="",height=""){
       const {isHorizPhone}=useContext(Context)
   

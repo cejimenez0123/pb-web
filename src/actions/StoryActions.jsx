@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import storyRepo from "../data/storyRepo";
-import { client } from "../core/di";
 import { PageType } from "../core/constants";
 import {storage} from "../core/di"
 import {  ref,deleteObject   } from "firebase/storage";

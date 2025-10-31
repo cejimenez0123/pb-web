@@ -113,7 +113,7 @@ function App(props) {
       <Context.Provider value={{isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
       <IonPage  ref={page} className=' App pb-8  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
-     
+     <div className='pt-8'>
 
       <head>
   <meta charset="UTF-8" />
@@ -334,6 +334,7 @@ presentingElement={page}
     <NavbarContainer 
         // loggedIn={currentProfile}
         currentProfile={currentProfile}/></div>:null}
+       </div>
        </div>
     </IonPage>
     

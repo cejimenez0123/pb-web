@@ -1,5 +1,5 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
-import { auth, client ,storage} from  "../core/di"
+import { auth ,storage} from  "../core/di"
 import {  ref, uploadBytes,getDownloadURL,deleteObject } from "firebase/storage";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
