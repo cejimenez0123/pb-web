@@ -250,7 +250,7 @@ const [canUserSee, setCanUserSee] = useState(false);
               className="tab text-emerald-800 mb-4   mont-medium rounded-full mx-auto bg-transparent  border-3 text-md md:text-xl"
               aria-label="Collections" />
             <div role="tabpanel" className="tab-content h-[30rem] pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
-              <IndexList items={useSelector(state => state.books.collections)} />
+              <IndexList type="collection" items={useSelector(state => state.books.collections)} />
             </div>
           </div>
         

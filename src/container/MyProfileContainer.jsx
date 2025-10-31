@@ -302,7 +302,7 @@ function MyProfileContainer({ presentingElement }) {
             <div role="tablist" className="tabs mx-auto w-full">
               <input type="radio" name="my_tabs" role="tab" defaultChecked className="tab text-emerald-800" aria-label="Pages" />
               <div role="tabpanel" className="tab-content w-[96vw] sm:w-[50em] pt-4">
-                <IndexList items={filteredSortedStories} handleFeedback={item => {
+                <IndexList type="story" items={filteredSortedStories} handleFeedback={item => {
                   setFeedbackPage(item);
                   dispatch(setPageInView({ page: item }));
         
@@ -311,7 +311,7 @@ function MyProfileContainer({ presentingElement }) {
 
               <input type="radio" name="my_tabs" role="tab" className="tab text-emerald-800" aria-label="Collections" />
               <div role="tabpanel" className="tab-content w-[96vw] sm:w-[50em] pt-4">
-                <IndexList items={filteredSortedCollections} />
+                <IndexList type="collection" items={filteredSortedCollections} />
               </div>
             </div>
           </div>

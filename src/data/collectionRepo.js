@@ -18,7 +18,7 @@ import { Preferences } from "@capacitor/preferences";
     };
 
   }
-  url=Enviroment.url
+  url=Enviroment.url+"/collection"
     async getPublicBooks(){
         let res = await axios.get(this.url+"/public/book",this.headers)
         return res.data
@@ -151,9 +151,9 @@ import { Preferences } from "@capacitor/preferences";
         return res.data
     }
     async fetchCollectionProtected({id}){
-        const res = await axios.get(this.url+"/col/"+id+"/protected",{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+        let headers = await this.getAuthHeaders()
+        const res = await axios.get(this.url+"/col/"+id+"/protected",{headers:headers
+        })
         console.log(res)
         return res.data
     }

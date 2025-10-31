@@ -41,7 +41,7 @@ class HashtagRepo{
         return res.data
     }
     async comment({name,commentId,profileId}){
-        console.log(commentId)
+  
         let res = await axios.post(this.url+"/comment/"+commentId,{name,profileId:profileId.id},{
             headers:{
                 Authorization:"Bearer "+(await Preferences.get({key:"token"})).value

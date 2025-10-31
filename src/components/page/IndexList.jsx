@@ -8,7 +8,7 @@ import {
   IonItem,
 
 } from '@ionic/react';
-const IndexList = ({ items, handleFeedback }) => {
+const IndexList = ({ items, handleFeedback ,type}) => {
   if (!items) {
     return (
       <div className="flex min-h-36">
@@ -21,7 +21,7 @@ const IndexList = ({ items, handleFeedback }) => {
   style={{minHeight:"40rem"}}>
   {items && items.length? items.filter(item=>item).map((item, i) => (
     <IonItem key={i + item.id}>
-      <IndexItem page={item} item={item} handleFeedback={() => handleFeedback(item)} />
+      <IndexItem page={item} item={item} type={type} typehandleFeedback={() => handleFeedback(item)} />
     </IonItem>
   )):[]}
 </IonList>

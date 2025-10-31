@@ -44,7 +44,7 @@ export default function PageViewContainer() {
         dispatch(postStoryHistory({ profile: currentProfile, story: page }));
       }
     };
-  }, [currentProfile, page]);
+  }, []);
 
   useEffect(() => {
     if (comments?.length) {

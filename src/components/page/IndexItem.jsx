@@ -11,7 +11,7 @@ import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
 import Context from "../../context.jsx";
 import { IonImg } from "@ionic/react";
-function IndexItem({item,handleFeedback}) {
+function IndexItem({item,handleFeedback,type}) {
  
     const [canUserAdd,setCanUserAdd]=useState(false)
     useLayoutEffect(()=>{
@@ -57,8 +57,8 @@ function IndexItem({item,handleFeedback}) {
     }
 
     const handleNavigate=()=>{
-      console.log(item)
-        if(item &&item.storyIdList){
+      // console.log(item)
+    if(type!="story"){
               dispatch(setCollectionInView({collection:item}))
               navigate(Paths.collection.createRoute(item.id))
         }else{
@@ -109,7 +109,7 @@ function IndexItem({item,handleFeedback}) {
    }
 
     const handleAddToClick = ()=>{
-      if(item && item.storyIdList){
+      if(type!="story"){
    navigate(Paths.addToCollection.createRoute(item.id))
       }else{
        navigate(Paths.addStoryToCollection.story(item.id))
@@ -122,18 +122,18 @@ function IndexItem({item,handleFeedback}) {
 
     return(
   <div className="w-[90vw] sm:w-[40rem]">
-                <div className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full  min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
+                <div  onClick={handleNavigate} className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full  min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
                 
          <div className=" h-fit my-auto md:w-[30em]  max-w-[100vw] text-nowrap text-ellipsis  ">
               
               
                    {item.title && item.title.length>0? 
                      <span className={`   text-emerald-700 my-auto`}>
-                   <h6   onClick={handleNavigate}
+                   <h6  
          className={`text-[0.9rem] md:text-[1.3rem ] md:w-[20em]  max-w-[50vw] overflow-hidden text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
        {item.title}</h6>         {updated}</span>:
  <span className={`  whitespace-nowrap max-w-[45vw]  text-emerald-700 no-underline text-ellipsis my-auto`}>
-                   <h6  onClick={handleNavigate}  className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
+                   <h6   className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
                    whitespace-nowrap text-emerald-700 no-underline  my-auto`}
                    >Untitled</h6>         {updated}</span>}
                    
