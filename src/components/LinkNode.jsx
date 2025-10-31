@@ -117,7 +117,7 @@ const fetchData = async (url) => {
     );
   }
 const imageView = () => {
-  const wrapperClass = "flex items-center bg-transparent justify-center sm:mx-4 w-[6em] h-[6em] rounded-full overflow-hidden bg-emerald-50";
+  const wrapperClass = "flex items-center mx-auto bg-transparent justify-center mb-2 sm:mx-4 w-[6em] h-[6em] rounded-full overflow-hidden bg-emerald-50";
   const imgClass = "object-cover min-h-[4em] min-w-[4em] w-full h-full";
 
   if (previewData && previewData.title === "Spotify") {
