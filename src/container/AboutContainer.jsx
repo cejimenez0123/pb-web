@@ -224,8 +224,8 @@ export default function AboutContainer() {
 
   return (
       <IonContent color="light" fullscreen={true} className="ion-padding">
-        <div className="pt-8 max-w-[100vw]">
-        <IonGrid>
+        <div className="pt-8 w-[94vw] mx-auto">
+        {/* <IonGrid> */}
           <IonRow className="my-10">
             <IonCol  className="ion-text-center">
               <IonTitle color="primary" className="lora-bold text-emerald-800" style={{ fontSize: '3rem', margin: "auto", paddingTop: '2rem' }}>
@@ -241,15 +241,17 @@ export default function AboutContainer() {
             </IonCol>
           </IonRow>
 
-          <IonRow>
+          <IonRow className="items-center"> 
             {md && (
-              <IonCol >
-                <div className="w-[98vw] mx-auto"><BookCarousel images={secImages} /></div>
+              <>
+               <IonCol>
+                <div ><BookCarousel images={secImages} /></div>
                 {findCreatives()}
-              </IonCol>
+               </IonCol>
+              </>
             )}
             <IonCol >
-             <div className=" w-[98vw] mx-auto"><BookCarousel images={firstImages} /></div> 
+             <div ><BookCarousel images={firstImages} /></div> 
             </IonCol>
           </IonRow>
 
@@ -327,7 +329,7 @@ export default function AboutContainer() {
               </IonText>
             </IonCol>
           </IonRow>
-        </IonGrid>
+        {/* </IonGrid> */}
         {!currentProfile && <ScrollDown text="↓Apply Below" visible={true} />}
              </div>
       </IonContent>
