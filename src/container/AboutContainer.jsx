@@ -8,8 +8,11 @@ import BookCarousel from "../components/collection/BookCarousel"
 import al from "../images/workshop/al-1.jpg"
 import duo from "../images/workshop/Duo-1.jpg"
 import vemilo from "../images/workshop/vemilo-1.jpg"
-import vemilo2 from "../images/workshop/vemilo.jpg"
-import khaos from "../images/workshop/khaos-1.jpg"
+import vemilo2 from "../images/workshop/speak.png"
+import mixer from "../images/workshop/crowd-mixer.png"
+import balcony from "../images/workshop/mixer-balcony.png"
+import crowd from "../images/workshop/openmic-crowd.jpg"
+import evolution from "../images/workshop/grouptable.png"
 import out from "../images/workshop/out-1.jpg"
 import out2 from "../images/workshop/out-2.jpg"
 import table1 from "../images/workshop/table-1.jpg"
@@ -34,10 +37,11 @@ import {
   IonTitle,
 } from '@ionic/react';
 
-let firstImages = [out, al, table3, duo, vemilo, khaos, books1, table7];
-let secImages = [out2, table1, vemilo2, table2, table5];
+let firstImages = [out, al, crowd, duo,balcony, vemilo,  table7];
+let secImages = [table3,out2,evolution,  vemilo2, table2, table5];
 
 export default function AboutContainer() {
+
   const { setSeo, currentProfile } = useContext(Context);
   const md = useMediaQuery({ query: '(min-width: 750px)' });
   const navigate = useNavigate();
@@ -240,12 +244,12 @@ export default function AboutContainer() {
           <IonRow>
             {md && (
               <IonCol >
-                <div className="sm:w-[90em] mx-auto"><BookCarousel images={secImages} /></div>
+                <div className="w-[98vw] mx-auto"><BookCarousel images={secImages} /></div>
                 {findCreatives()}
               </IonCol>
             )}
             <IonCol >
-             <div className="sm:w-[90em] mx-auto"><BookCarousel images={firstImages} /></div> 
+             <div className=" w-[98vw] mx-auto"><BookCarousel images={firstImages} /></div> 
             </IonCol>
           </IonRow>
 
