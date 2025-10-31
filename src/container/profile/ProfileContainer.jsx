@@ -225,7 +225,7 @@ const [canUserSee, setCanUserSee] = useState(false);
 
           {isPhone && (
             <span className="flex flex-row">
-              <label className="flex my-1 border-emerald-400 border-2 border-opacity-70 w-[100%] rounded-full mt-8 flex-row mx-2">
+              <label className="flex my-1  w-[100%] rounded-full mt-8 flex-row mx-2">
                 <span className="my-auto text-emerald-800 ml-3 mr-1 w-full mont-medium"> Search:</span>
                 <input
                   type="text"

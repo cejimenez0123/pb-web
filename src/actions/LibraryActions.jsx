@@ -95,45 +95,6 @@ const fetchLibrary = createAsyncThunk("libraries/fetchLibrary", async function (
       }
     }
   )
-//   const saveRolesForLibrary = createAsyncThunk("libraries/saveRolesForLibrary",async (params,thunkApi)=>{
-    
-//     try {
-//       const {library,
-//             readers,
-//             commenters,
-//             editors,
-//             writers} = params
-     
-        
-//         let ref = doc(db,'library',library.id)
-//        await updateDoc(ref,{ editors: editors,
-//           commenters:commenters,
-//           writers: writers,
-//           readers: readers,
-//         })
-//         const contributors = new Contributors(commenters,readers,writers,editors)
-//         const lib = new Library(  library.id,
-//                                   library.name,
-//                                   library.profileId,
-//                                   library.purpose,
-//                                   library.pageIdList,
-//                                   library.bookIdList,
-//                                   library.writingIsOpen,
-//                                   library.privacy,
-//                                   contributors,
-//                                   library.updatedAt,
-//                                   library.created
-//                      )
-        
-//         return {
-//           library:lib
-//         }
-     
-//      }catch(e){
-//        const error = e??new Error("Error: SAVE LIBRARY ROLES")
-//        return {error }
-//      }                
-//  })
 
  const getPublicLibraries = createAsyncThunk(
   'libraries/getPublicLibraries',

@@ -588,9 +588,9 @@ const Why = ({ handleTab, nav }) => {
   return (
 <IonPage>
       <IonContent fullscreen={true}  className="ion-padding ion-padding-top ">
-        {/* <div > */}
+  <div className='pt-8'>
           {user ? <ThankYou user={user} /> : <MyTabs />}
-        {/* </div> */}
+    </div>
       </IonContent>
   </IonPage>
   );

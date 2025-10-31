@@ -96,9 +96,7 @@ const clickUpdateComment = ()=>{
        <a
        onClick={(e)=>saveComment(e)} 
        href="#" 
-        // className="bg-transparent hover:bg-blue-700 p-2 rounded-full
-        //  sm:mx-4 text-[0.8rem] sm:text-[1rem]
-        //  text-emerald-600 border border-emerald-800  "
+     
          > 
        {parentComment?"Reply":"Save"}</a>:
        <button className="text-emerald-800" 

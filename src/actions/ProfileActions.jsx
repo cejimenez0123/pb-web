@@ -92,28 +92,6 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
           return data
   
  })
-//  const uploadProfilePicture = createAsyncThunk("users/uploadProfilePicture",async (params,thunkApi)=>{
-//     try {
-//     const {file }= params
-//     const fileName = `profile/${file.name??uuidv4()}-${uuidv4()}.jpg`
-//     const storageRef = ref(storage, fileName);
-//     const blob = new Blob([file])
-//     await uploadBytes(storageRef, blob)
-  
-//     const url = await getDownloadURL(storageRef)
-//         return{ 
-//             url: url,
-//             fileName
-//         }
-//     }catch(err){
-//         return{ error: new Error("Error: UPLOAD Profile Picture" + err.message) }
-//     }
-
-// // })
-// import { createAsyncThunk } from "@reduxjs/toolkit";
-// import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-// import { storage } from "../firebase";
-// import { v4 as uuidv4 } from "uuid";
 
 const uploadProfilePicture = createAsyncThunk(
   "users/uploadProfilePicture",
@@ -123,13 +101,11 @@ const uploadProfilePicture = createAsyncThunk(
 
       if (!file) throw new Error("No file provided");
 
-      // ✅ Keep original name if possible, fallback to UUID
+     
       const extension = file.name?.split(".").pop() || "jpg";
       const fileName = `profile/${file.name?.split(".")[0] ?? uuidv4()}-${uuidv4()}.${extension}`;
 
       const storageRef = ref(storage, fileName);
-
-      // ✅ Upload file directly (no need to wrap in Blob)
       await uploadBytes(storageRef, file);
 
       const url = await getDownloadURL(storageRef);

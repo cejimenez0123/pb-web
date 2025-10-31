@@ -149,7 +149,7 @@ if(!book){
 }
     
         return(
-        // <ErrorBoundary >
+         <ErrorBoundary >
         <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip ${size} rounded-box flex flex-col bg-emerald-100  `}>
                
 
@@ -159,7 +159,7 @@ if(!book){
 
                 <BookmarkBtn book={book}/> </div>   
 
-//  </ErrorBoundary>
+ </ErrorBoundary>
      )
 
 }

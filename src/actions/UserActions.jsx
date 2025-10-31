@@ -12,26 +12,26 @@ const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
    
-    
-try{     
-     const {uId,email,password,idToken}=params
+     
+try{        const {uId,email,password,idToken,isNative}=params
+
+
         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
-        const {token}=authData 
-        try{
-          setLocalStore("token",JSON.stringify(token))
-      //  await Preferences.set({key:"token",value:JSON.stringify(token)})
-        }catch(err){
-          console.log("PREF",err)
-        }
+   
+        
+        const {token}=authData  
+
+  
+         await Preferences.set({key:"token",value:JSON.stringify(token)})
+  
         return {token:token,profile:authData.user.profiles[0]}
 }catch(error){
-    console.log(error)
-  return {error:error.message}
-
+  console.log(error)
 }
       
     }
 )
+
 
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
@@ -134,26 +134,6 @@ console.log(data)
     }
   }
 );
-//  const searchMultipleIndexes = createAsyncThunk(
-//   "users/searchMultipleIndexes",
-//   async (params, thunkApi) => {
-//     const { query } = params;
-
-//     const indexes = ["profile", "story", "collection", "hashtag"];
-//     const queries = indexes.map((indexName) => ({
-//       indexName,
-//       query,
-//     }));
-
-//     try {
-//       const { results } = await client.multipleQueries(queries);
-//       return { results };
-//     } catch (error) {
-//       console.error("Algolia search error:", error);
-//       return thunkApi.rejectWithValue({ error: "Search failed" });
-//     }
-//   }
-// );
 
 const setDialog = createAction("user/setDialog", (params)=> {
 

@@ -113,29 +113,7 @@ const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()
       color="success"
     />
   </IonItem>
-          {/* <IonItem lines="none" className="flex items-center justify-between">
-            <IonLabel className="text-emerald-700">
-              Private
-              <InfoTooltip text="Collection will only be visible to you and those with roles" />
-            </IonLabel>
-            <IonToggle
-              checked={isPrivate}
-              onIonChange={(e) => setIsPrivate(e.detail.checked)}
-              color="success"
-            />
-          </IonItem>
-
-          <IonItem lines="none" className="flex items-center justify-between">
-            <IonLabel className="text-emerald-700">
-              Open Collaboration
-              <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
-            </IonLabel>
-            <IonToggle
-              checked={isOpenCollaboration}
-              onIonChange={(e) => setIsOpenCollaboration(e.detail.checked)}
-              color="success"
-            />
-          </IonItem> */}
+         
           <div type="submit"
               expand="block"
 onClick={handleSubmit}
