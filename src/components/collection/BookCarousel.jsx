@@ -25,7 +25,7 @@ export default function BookCarousel({ images = [] }) {
     <Swiper
       modules={[Navigation, Pagination, Autoplay]}
       spaceBetween={4}
-      slidesPerView={2}
+      slidesPerView={isPhone?1:2}
       centeredSlides
       navigation
       pagination={{ clickable: true }}
@@ -41,8 +41,9 @@ export default function BookCarousel({ images = [] }) {
           {/* > */}
             <IonImg
               src={imgSrc}
+              style={{height:"30em"}}
               alt={`Book Carousel item ${idx + 1}`}
-              className="sm:w-full min-w-[24em] h-[20rem] mx-auto sm:h-[36em] object-fit object-[30%_10%] rounded-2xl"
+              className="w-full   mx-auto  object-fit object-[30%_10%] rounded-2xl"
             />
           {/* </div> */}
         </SwiperSlide>
