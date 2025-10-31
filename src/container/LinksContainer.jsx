@@ -18,7 +18,6 @@ if(import.meta.env.VITE_NODE_ENV=="dev"){
 }
 export default function LinksContainer(props){
      const {seo,setSeo}=useContext(Context)
-     const md = useMediaQuery({ query: '(max-width: 768px)' })
      useLayoutEffect(()=>{
           initGA()
           let soo = seo
@@ -44,6 +43,14 @@ export default function LinksContainer(props){
                     title={"Nov 15th Writers Workshop"}
                     description={`This month, we’re diving into Ngũgĩ wa Thiong’o’s The Upright Revolution, a short story that turns our very bodies into a lesson on unity and transformation.
 Come read, reflect, and connect with writers, thinkers, and neighbors who crave more than small talk.`}/>
+                    </li>
+                     <li>  
+                      <LinkNode image={flare}
+       url={" https://groups.ccny.cuny.edu/UMAAN/rsvp_boot?id=1934546"}
+                    title={"Dec. 3rd Open Mic"}
+                    description={`Spark Open Mic @ CCNY
+For City College students, the community, and first-time performers.\n
+Step up, express yourself, and share your creativity in a space where you can truly be you.`}/>
                     </li>
                     <li>
                    
