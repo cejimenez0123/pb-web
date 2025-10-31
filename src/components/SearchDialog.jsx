@@ -1,18 +1,13 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import {
-  IonPage,
   IonModal,
   IonText,
   IonHeader,
   IonToolbar,
-  IonTitle,
   IonButtons,
-  IonButton,
-  IonContent,
   IonList,
   IonItem,
   IonLabel,
-  IonSearchbar,
   IonBackButton,
 } from '@ionic/react';
 import { searchMultipleIndexes } from '../actions/UserActions';
@@ -102,7 +97,7 @@ title='Search'
               </IonItem>
             )}
           </IonList>
-        {/* </IonContent> */}
+      
       </IonModal>
 
   );

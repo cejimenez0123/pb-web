@@ -243,7 +243,7 @@ text-[1rem]">
   if (!colInView) {
     return (
       <IonPage>
-        <IonContent fullscreen>
+        <IonContent fullscreen={true}>
           {pending ? (
             <>
               <IonSkeletonText
@@ -291,7 +291,7 @@ text-[1rem]">
           </IonToolbar>
         </IonHeader>
 
-        <IonContent fullscreen className="ion-padding">
+        <IonContent fullscreen={true} className="ion-padding">
           <h2 className="text-xl font-semibold text-emerald-800 mb-1">
             {colInView.title?.trim() || "Untitled"}
           </h2>
