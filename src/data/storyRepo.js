@@ -5,12 +5,18 @@ import { Preferences } from "@capacitor/preferences";
 
 
 class StoryRepo{
-    headers= {
-        'Access-Control-Allow-Origin': "*"
-    }
+    // headers= {
+    //     'Access-Control-Allow-Origin': "*"
+    // }
     url= Enviroment.url+"/story"
     
-    token = "token"
+  async getAuthHeaders() {
+    const { value: token } = await Preferences.get({ key: "token" });
+    return {
+    //   ...this.headers,
+      Authorization: `Bearer ${token}`,
+    };
+  }
     async getPublicStories(){
         let res = await  axios.get(this.url+"/",{headers:{'Access-Control-Allow-Origin': "*",
         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}})
@@ -24,11 +30,9 @@ class StoryRepo{
         return res.data
     }
     async getProtectedProfileStories({profileId}){
-
+        let headers = this.getAuthHeaders()
         let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
-            headers:{
-                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-            }
+            headers:headers
         })
   
         return res.data
@@ -40,9 +44,10 @@ class StoryRepo{
         return res.data
     }
     async getStoryProtected({id}){
+         let headers = this.getAuthHeaders()
         let res = await axios.get(this.url+"/"+id+"/protected",{
             headers:{
-                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
+                Authorization:headers
             }
         })
        
@@ -53,13 +58,11 @@ class StoryRepo{
       
         return res.data
     }
-    async getMyStories({token}){
-        let draft = ""
-        let res = await axios.get(this.url+"/profile/protected/"+draft,{
-            headers:{
-                Authorization:"Bearer "+token
-                
-            }
+    async getMyStories(){
+         let headers = this.getAuthHeaders()
+   
+        let res = await axios.get(this.url+"/profile/protected/",{
+            headers:headers
         })
      
         return res.data

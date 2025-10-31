@@ -5,11 +5,18 @@ import { Preferences } from "@capacitor/preferences";
 
 
  class CollectionRepo{
-    headers= {
-        'Access-Control-Allow-Origin': "*"
-    }
+    // headers= {
+    //     'Access-Control-Allow-Origin': "*"
+    // }
     url = Enviroment.url+"/collection"
-    token = "token"
+    async getAuthHeaders() {
+    const { value } = await Preferences.get({ key: "token" });
+    console.log("XX",value)
+    return {
+    //   ...this.headers,
+      Authorization: `Bearer ${value}`,
+    };
+  }
     async getPublicBooks(){
         let res = await axios.get(this.url+"/public/book",this.headers)
         return res.data
@@ -18,13 +25,10 @@ import { Preferences } from "@capacitor/preferences";
         let res = await axios.get(this.url+"/public/library",this.headers)
         return res.data
     }
-    async getMyCollections({token}){
-
-        let res = await axios.get(this.url+"/profile/private",{
-            headers:{
-                Authorization:"Bearer "+token,
-            
-            }
+    async getMyCollections(){
+         const headers = await this.getAuthHeaders();
+        let res = await axios.get(this.url+"/profile/protected/",{
+            headers
         })
     
         return res.data
@@ -34,7 +38,7 @@ import { Preferences } from "@capacitor/preferences";
         return res.data
     }
     async getProtectedProfileCollections({id}){
-        let res = await axios.get(this.url+`/profile/${id}/protected`,{headers:{
+        let res = await axios.get(this.url+`/profile/${id}/private`,{headers:{
             Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
         return res.data
@@ -145,7 +149,7 @@ import { Preferences } from "@capacitor/preferences";
         return res.data
     }
     async fetchCollectionProtected({id}){
-        const res = await axios.get(this.url+"/"+id+"/protected",{headers:{
+        const res = await axios.get(this.url+"/col/"+id+"/protected",{headers:{
             Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
         console.log(res)

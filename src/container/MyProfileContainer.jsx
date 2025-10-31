@@ -55,7 +55,6 @@ function MyProfileContainer({ presentingElement }) {
   const dialog = useSelector(state => state.users.dialog);
   const { seo, setSeo } = useContext(Context);
   const collections = useSelector(state => state.books.collections);
-console.log("VFFdLF",currentProfile)
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
   const [driveToken, setDriveToken] = useState(null);
@@ -242,7 +241,6 @@ console.log("VFFdLF",currentProfile)
     };
     return seSeo()
   }, [currentProfile]);
-console.log("VFFVF",currentProfile)
   if (!currentProfile) {
     return (
       <IonContent>
@@ -307,7 +305,7 @@ console.log("VFFVF",currentProfile)
 
             <div role="tablist" className="tabs mx-auto w-full">
               <input type="radio" name="my_tabs" role="tab" defaultChecked className="tab text-emerald-800" aria-label="Pages" />
-              <div role="tabpanel" className="tab-content pt-4">
+              <div role="tabpanel" className="tab-content w-[96vw] sm:w-[50em] pt-4">
                 <IndexList items={filteredSortedStories} handleFeedback={item => {
                   setFeedbackPage(item);
                   dispatch(setPageInView({ page: item }));
@@ -316,7 +314,7 @@ console.log("VFFVF",currentProfile)
               </div>
 
               <input type="radio" name="my_tabs" role="tab" className="tab text-emerald-800" aria-label="Collections" />
-              <div role="tabpanel" className="tab-content pt-4">
+              <div role="tabpanel" className="tab-content w-[96vw] sm:w-[50em] pt-4">
                 <IndexList items={filteredSortedCollections} />
               </div>
             </div>

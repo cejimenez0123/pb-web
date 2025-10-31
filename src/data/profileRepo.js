@@ -3,17 +3,25 @@ import Enviroment from "../core/Enviroment"
 import { Preferences } from "@capacitor/preferences"
 class ProfileRepo {
     url = Enviroment.url+"/profile"
-    token="token"
+
     async all(){
         let res = await axios.get(this.url+"/")
         return res.data
     }
-    async getMyProfiles({toke}){
+    async getAuthHeaders() {
+    const { value } = await Preferences.get({ key: "token" });
+    if (!value) throw new Error("No token found");
+  
+    return {
+    //   ...this.headers,
+      Authorization: `Bearer ${value}`,
+    };
+  }
+    async getMyProfiles(){
+        let headers = await this.getAuthHeaders()
 
   try{
-       const res = await axios.get(this.url+"/protected",{ headers:{
-                Authorization:"Bearer "+toke
-            }}
+       const res = await axios.get(this.url+"/protected",{ headers:headers}
         )
 
         return res.data
@@ -23,23 +31,22 @@ class ProfileRepo {
     }
     }
     async create({email,token,password,username,profilePicture,selfStatement,privacy}){
+        let headers = await this.getAuthHeaders()
+
         let res = await axios.post(this.url,
         {email,token,password,username,profilePicture,selfStatement,privacy},{
-            headers:{
-                Authorization:"Bearer "+token
-            }
+            headers:headers
         })
 
         return res.data
     }
     async notifications({token,profile}){
-    
+    let headers = await this.getAuthHeaders()
 
 
 
-        let res = await axios.get(this.url+"/"+profile.id+"/alert",{headers:{
-            Authorization:"Bearer "+token
-        }})
+
+        let res = await axios.get(this.url+"/"+profile.id+"/alert",{headers:headers})
         console.log(res)
      return res.data
 
@@ -54,11 +61,10 @@ class ProfileRepo {
     
     }
     async getProfileProtected(params){
-        const token = (await Preferences.get({key:"token"})).value
+let headers = await this.getAuthHeaders()
+
         const {id}=params
-        let res = await axios.get(this.url+"/"+id+"/protected",{headers:{
-            Authorization:"Bearer "+token
-        }})
+        let res = await axios.get(this.url+"/"+id+"/protected",{headers:headers})
         return res.data
     }
     async getProfile(params){
@@ -67,10 +73,11 @@ class ProfileRepo {
         return res.data
     }
     async updateProfile(params){
+        let headers = await this.getAuthHeaders()
+
         let res = await axios.put(this.url+"/"+params.profile.id,{
             ...params
-        },{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value}})
+        },{headers:headers})
         return res.data
     }
     async getProfileBookmarkCollection({profileId}){

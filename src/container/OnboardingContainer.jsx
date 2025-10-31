@@ -86,7 +86,7 @@ export default function OnboardingContainer(props) {
   };
 
   const onClickApply = debounce(async () => {
-    await Preferences.clear()
+    
     const idToken =formData.idToken
     if(idToken){
     let  data = await authRepo.apply(formData)

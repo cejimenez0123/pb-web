@@ -16,6 +16,7 @@ import Carousel from './Carousel'
 import { useNavigate } from 'react-router-dom'
 import adjustScreenSize from '../../core/adjustScreenSize'
 import { IonImg } from '@ionic/react'
+import ErrorBoundary from '../../ErrorBoundary'
 function BookDashboardItem({book,isGrid}) {
  
     const dispatch = useDispatch()

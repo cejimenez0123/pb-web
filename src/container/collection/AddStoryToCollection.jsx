@@ -23,18 +23,15 @@ import Context from "../../context";
 import ErrorBoundary from "../../ErrorBoundary";
 import { getStory } from "../../actions/StoryActions";
 import {
-  createCollection,
   fetchCollectionProtected,
   getMyCollections,
-  setCollectionInView,
   setCollections,
 } from "../../actions/CollectionActions";
 import usePersistentMyCollectionCache from "../../domain/usecases/usePersistentMyCollectionCache";
 import Paths from "../../core/paths";
-import getLocalStore from "../../core/getLocalStore";
 import { Preferences } from "@capacitor/preferences";
 import { setDialog } from "../../actions/UserActions";
-import { clearPagesInView } from "../../actions/PageActions";
+
 
 function toTitleCase(str) {
   return str.toLowerCase().replace(/(?:^|\s)\w/g, function (match) {
@@ -50,10 +47,6 @@ export default function AddStoryToCollectionContainer(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [token,setToken]=useState(null)
-  // Load cached collections persistently to avoid flicker
-  const cachedCols = usePersistentMyCollectionCache(() => dispatch(getMyCollections({token})));
-
-  // Redux selectors
   const collectionInView = useSelector((state) => state.books.collectionInView);
   const pageInView = useSelector((state) => state.pages.pageInView);
   const [openDialog, setOpenDialog] = useState(false);

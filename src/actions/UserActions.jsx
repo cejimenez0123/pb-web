@@ -6,8 +6,6 @@ import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
-import setLocalStore from "../core/setLocalStore";
-
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -22,7 +20,7 @@ try{        const {uId,email,password,idToken,isNative}=params
         const {token}=authData  
 
   
-         await Preferences.set({key:"token",value:JSON.stringify(token)})
+         await Preferences.set({key:"token",value:token})
   
         return {token:token,profile:authData.user.profiles[0]}
 }catch(error){
@@ -38,10 +36,8 @@ const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   return data
  })
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
-  localStorage.clear()
-   await Preferences.clear()
     try{
-      
+       await Preferences.clear()
    await signOut(auth)
     }catch(err){
       
@@ -166,17 +162,17 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
   return data
 })
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
-async ({token},thunkApi) => {
+async (params,thunkApi) => {
   try{
-  let token = (await Preferences.get({key:"token"})).value
 
- if(token){
-    const data = await profileRepo.getMyProfiles({token:token})
-    console.log(data)
+// let token =
+//  if(token){
+    const data = await profileRepo.getMyProfiles()
+    
    return data
-  }else{
-    throw new Error("No Token")
-  } 
+  // }else{
+  //   throw new Error("No Token")
+  // } 
   
   
     
