@@ -38,8 +38,7 @@ export default function LinksContainer(props){
                       <LinkNode image={pen}
        url={"https://partiful.com/e/rkVamwUP7jw3IfOHuWcg"}
                     title={"Nov 15th Writers Workshop"}
-                    description={`This month, we’re diving into Ngũgĩ wa Thiong’o’s The Upright Revolution, a short story that turns our very bodies into a lesson on unity and transformation.
-Come read, reflect, and connect with writers, thinkers, and neighbors who crave more than small talk.`}/>
+                    description={`Join us for Ngũgĩ wa Thiong’o’s The Upright Revolution, a story of unity and transformation. Read, reflect, and connect with writers and thinkers.`}/>
                     </li>
                      <li>  
                       <LinkNode image={flare}

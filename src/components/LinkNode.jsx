@@ -139,32 +139,6 @@ const imageView = () => {
   }
 };
 
-//   const imageView = ()=>{
-    
-//     let imgClass = "object-fit  h-[5rem] w-[6rem] left-3 rounded-full overflow-hidden "
-//     if(previewData && previewData.title=="Spotify"){
-
-//       return (
-//         <SpotifyEmbed url={url}/>
-      
-//       )}else if(image){
-//         return(
-//            <div className={`w-[5em] h-[5em] overflow-clip rounded-full`}>
-//   <IonImg className={imgClass} 
-//     src={image}/>
-//     </div>
-
-// )
-
-//       }else if(previewData&& previewData.image) {
-//     return(     <div className={" flex  text-center shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "}>
-//     <IonImg className={"object-fit  w-[100%]  min-w-[70px] "} src={previewData.image}  alt="Link Preview" />
-//     </div>
-//     )
-//     }else{
-//       return null
-//     }
-//   }
 
   return (
     <ErrorBoundary>
