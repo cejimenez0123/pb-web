@@ -1,6 +1,6 @@
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
-
+import { Preferences } from "@capacitor/preferences";
 
 class CommentRepo{
     headers= {
@@ -9,7 +9,7 @@ class CommentRepo{
     token = "token"
     async create({profile,storyId,text,parentId}){
        let res = await axios.post(Enviroment.url+"/comment",{profileId:profile.id,storyId,text,parentId},
-       {headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
+       {headers:{Authorization:"Bearer "+(await Preferences.get({key:"token"})).value}})
        return res.data
     }
     async helpful(){
@@ -17,7 +17,7 @@ class CommentRepo{
         return res.data
     }
     async delete({id}){
-       let token= localStorage.getItem("token")
+       let token= (await Preferences.get({key:"token"})).value
     
         let res = await axios.delete(Enviroment.url+"/comment/"+id,
         {headers:
@@ -26,7 +26,7 @@ class CommentRepo{
         return res.data
     }
    async update({id,text}){
-    let res = await axios.patch(Enviroment.url+"/comment/"+id,{text},{headers:{Authorization:"Bearer "+localStorage.getItem(this.token)}})
+    let res = await axios.patch(Enviroment.url+"/comment/"+id,{text},{headers:{Authorization:"Bearer "(+(await Preferences.get({key:"token"})).value)}})
     return res.data
    }
 

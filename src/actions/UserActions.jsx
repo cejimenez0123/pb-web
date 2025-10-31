@@ -1,57 +1,43 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
-import { auth,db,storage,client} from  "../core/di"
-import {
-          signOut,
-          createUserWithEmailAndPassword,
-       } from "firebase/auth"
-import {  where,
-          query,
-          collection,
-          getDocs,
-          setDoc,
-          doc,
-          Timestamp} from "firebase/firestore"
-import UserApproval from "../domain/models/user_approval";
-import {  ref, uploadBytes,getDownloadURL  } from "firebase/storage";
-import FollowBook from "../domain/models/follow_book"
-import FollowLibrary from "../domain/models/follow_library"
-import FollowProfile from "../domain/models/follow_profile"
+import { auth, client ,storage} from  "../core/di"
+import {  ref, uploadBytes,getDownloadURL,deleteObject } from "firebase/storage";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
-
+import { Preferences } from "@capacitor/preferences";
+import algoliaRepo from "../data/algoliaRepo";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
    
      
+try{        const {uId,email,password,idToken,isNative}=params
 
-        const {email,password}=params
 
-
-        const authData = await authRepo.startSession({uId:null,email:email,password})
+        const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
    
         
-        const {token}=authData
-        localStorage.setItem("token",token)
-        const data= await profileRepo.getMyProfiles({token:token})
-        const profile = data.profile
-        
-        return{
-          profile: profile
-       } 
-     
+        const {token}=authData  
+
   
+         await Preferences.set({key:"token",value:token})
+  
+        return {token:token,profile:authData.user.profiles[0]}
+}catch(error){
+  console.log(error)
+}
       
     }
 )
+
+
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
   return data
  })
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
-    localStorage.clear()
     try{
+       await Preferences.clear()
    await signOut(auth)
     }catch(err){
       
@@ -63,10 +49,23 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
 const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=>{
   try{ 
   let data = await authRepo.useReferral(params)
-    if(data.profile&&!data.profile.isPrivate){
-      const {profile}=data
-      client.partialUpdateObject({objectID: profile.id,usernamename:profile.username,indexName:"profile"},{createIfNotExists:true}).wait()
-    }
+ if (data.profile && !data.profile.isPrivate) {
+  const { profile } = data;
+
+  try {
+    await algoliaRepo.partialUpdateObject(
+      "profile", // ✅ index name
+      profile.id, // ✅ objectID
+      {
+        username: profile.username, // ✅ field(s) to update
+      }
+    );
+
+    console.log("✅ Profile updated in Algolia via API");
+  } catch (err) {
+    console.error("⚠️ Failed to update profile in Algolia:", err);
+  }
+}
     return data
   }catch(err){
     return err
@@ -75,124 +74,80 @@ const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
-      const{email,token,frequency,password,username,profilePicture,selfStatement,privacy}=params
+      const{email,token,idToken,googleId,frequency,password,username,profilePicture,selfStatement,privacy}=params
 
       try {
-         
-          const userCred = await  createUserWithEmailAndPassword(auth, email, password)
-          let data = await profileRepo.register({uId:userCred.user.uid,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
-           
         
-            if(!privacy){
-         client.saveObject({ objectID:data.profile.id,
-          body:{
-            username:username
-          }
-          ,indexName:"profile"
-                                             }) 
-            }
-         
-                                      
-                
+          // const userCred = await  createUserWithEmailAndPassword(auth, email, password)
+          let data = await profileRepo.register({uId:"",idToken,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
+           
+
+           
+          if (!privacy) {
+            const {profile}= data
+    try {
+      await algoliaRepo.saveObject("profile", {
+        objectID: profile.id,
+        username: profile.username,
+        selfStatement: profile.selfStatement,
+        profilePic: profile.profilePic,
+      });
+      console.log("✅ Profile indexed in Algolia");
+    } catch (err) {
+      console.error("⚠️ Failed to save to Algolia:", err);
+    }
+  }
+            
       return {
       
             profile:data.profile
             
       }
     } catch (error){
-        try{
-          let data = await profileRepo.register({token,frequency,password,username,profilePicture,selfStatement,privacy})
-          localStorage.setItem("token",data.token)
-          client.saveObject({ objectID:data.profile.id,
-            body:{username:username},indexName:"profile"
-           })     
-          return {profile:data.profile}
-        }catch(error){
-          return {error}
-        }
+       
+          console.error("⚠️", err);
        
     }
     }
 )
-const searchMultipleIndexes = createAsyncThunk("users/seachMultipleIndexes",
-  async (params,thunkApi)=>{
-    try{
-    	  const {query} = params
-//         const queries = [{
-//           indexName: 'profile',
-//           query: query,
-//         }, {
-//           indexName: 'story',
-//   query: query,
 
-// }, {
-//   indexName: 'collection',
-//   query: query,
-  
-// },{indexName:"hashtag",query:query}];
-//   client 
-//   let {results}= await client.initQuerySuggestions.multipleQueries(queries)
-    const {results }= await client.search([
-      { indexName: 'profile', query },
-      { indexName: 'story', query },
-      { indexName: 'collection', query },
-      { indexName: 'hashtag', query }
-    ]);
-    
-  return {results}
-}catch(e){
-  return {error:e}
-}
-})
 
-const createCollection = createAsyncThunk("ds",async (params,thunkApi)=>{
-  const {profile} = params
- 
-  await setDoc(doc(db,"profile",profile.Id,"collection","home"),
-  { books:[],
-    libraries:[],
-    pages:[],
-    profiles:[]})
-})
-const updateHomeCollection = createAsyncThunk("users/updatecollection",async (params,thunkApi)=>{
-  // try{
-  // const {profile,books,libraries,pages,profiles} = params
- 
-  // await updateDoc(doc(db,"profile",profile.id,"collection","home"),
-  // { books:books,
-  //   libraries:libraries,
-  //   pages:pages,
-  //   profiles:profiles})
-  //   let collection =new Collection(pages,books,libraries,profiles)
-  //   return {
-  //     collection:collection
-  //   }
-  // }catch(e){
-  //   return {
-  //     error: new Error(`Update Home Collection Error: ${e.message}`)
-  //   }
-  // }
+
+ const searchMultipleIndexes = createAsyncThunk(
+  "users/searchMultipleIndexes",
+  async (params, thunkApi) => {
+    const { query } = params;
+
+    try {
+      // Call server-side search via the repo
+      const data = await algoliaRepo.search(query);
+console.log(data)
+      // data should be { results: [...] } as returned by the server
+      return { results: data.results };
+    } catch (error) {
+      console.error("Search failed:", error);
+      return thunkApi.rejectWithValue({ error: "Search failed" });
+    }
   }
+);
+
+const setDialog = createAction("user/setDialog", (params)=> {
 
 
-)
-// const fetchHomeCollection = createAsyncThunk("users/fetchHomeCollection", async(params,thunkApi)=>{
-//   try{
+  return  {payload:
+     params}
+    
+  
+})
+const getIosInfo = createAsyncThunk("user/iOSinfo",async (params)=> {
 
+let data =await authRepo.appleSignIn(params)
+  return  {profile:
+     data.profile}
+    
+  
+})
 
-//   const {profile}= params
-//   const snapshot = await getDoc(doc(db,"profile",profile.id,"collection","home"))
-//   const pack = snapshot.data()
-//   const {pages,books,libraries,profiles} = pack
-//   const collection = new Collection(pages,books,libraries,profiles)
-//   return {
-//     collection:collection
-//   }
-// }catch(e) {
-
-// return {error: new Error(`Fetch home Error: ${e.message}`)}
-// }
-// })
 const setSignedInTrue = createAction("users/setSignedInTrue", async(params)=>{
  return
 }
@@ -209,37 +164,28 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
   try{
-
-  let token = localStorage.getItem("token")
-  if(token){
-    const data = await profileRepo.getMyProfiles({token:token})
-if(data.profile){
-
-
-    return {
-    profile: data.profile
-   } }
-  }
-    throw new Error("No Token")
-  
+    const data = await profileRepo.getMyProfiles()
     
-    }catch(error){
-      console.log({error})
-      localStorage.clear()
+   return data
+ 
+    }catch(error){     
       return {error}
     }});
 
 const updateProfile = createAsyncThunk("users/updateProfile",
                     async (params,thunkApi)=>{
-
+try{
           let data = await  profileRepo.updateProfile(params)
           if(data.profile){
             const {profile}=data
-            client.saveObject(
-                {objectID:profile.id,username:profile.username,type:"profile"}).wait()
-        }
+           
+        
+        await algoliaRepo.partialUpdateObject("profile",profile.id,{username:profile.username})
+          }
           return {profile:data.profile}
-  
+        }catch(err){
+          return err
+        }
 })
 
 
@@ -272,7 +218,7 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
 const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
   
     try {
-      const token = localStorage.getItem("token")
+      const token =(await Preferences.get({key:"token"})).value
       if(token){
         let data = await profileRepo.getProfileProtected(params)
         return{
@@ -304,113 +250,8 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
       
     
   })
-  const createFollowBook = createAsyncThunk("users/createFollowBook", async function(params,thunkApi){
 
-        try{
-        const {
-            profile,
-            book
-            }=params
-            
-        const id =  `${profile.id}_${book.id}`
-        const created = Timestamp.now()
-        await setDoc(doc(db,"follow_book",id), { 
-            id:id,
-            bookId: book.id,
-            profileId: profile.id,
-            created: created
-        })
-        const fb = new FollowBook(id,book.id,profile.id,created);
-        return {
-                followBook:fb 
-            }
-      }catch(error){
-        return {
-            error: new Error(`Error:Create Follow Book ${error.message}`)
-        }
-      }
-    
-    
-    })
-const createFollowLibrary = createAsyncThunk("users/createFollowLibrary", async function(params,thunkApi){
-    try{
-        const {
-            profile,
-            library
-        }=params
-        const id = `${profile.id}_${library.id}`
-        const created = Timestamp.now()
-            await setDoc(doc(db,"follow_library",id), { 
-                id:id,
-                libraryId: library.id,
-                profileId: profile.id,
-                created: created
-            })
-            const lb = new FollowLibrary(id,profile.id,library.id,created);
-        return { 
-            followLibrary:lb
-        }
-    }catch(error){
-           
-        return {
-            error: new Error(`Error: Create Follow Library ${error.message}`)
-        }
-    }
-})
-const fetchFollowBooksForProfile= createAsyncThunk("users/fetchFollowBooksForProfile",async (params,thunkApi)=>{
-            try{
-              const {profile} = params
-            const ref = collection(db,"follow_book")
-          
-            const snapshot =await getDocs(ref,where("profileId","==",profile.id))
-          
-            let followList = []
-            snapshot.docs.forEach(doc => {
-                  const pack = doc.data();
-                  const { id,
-                          profileId,
-                          bookId,
-                          created
-                        }=pack
-                const fb = new FollowBook(id,bookId,profileId,profile,created)
-                
-                followList = [...followList, fb]
-              })
-          return {
-          
-            followList: followList,
-          }}catch(err) {
-                return {
-                    error: new Error(`Error: Fetch Follow Books: ${err.message}`)
-  }
-}})
-const fetchFollowLibraryForProfile= createAsyncThunk("users/fetchFollowlibraryForProfile",async (params,thunkApi)=>{
-            try{
-              const {profile} = params
-            const ref = collection(db,"follow_library")
-          
-            const snapshot =await getDocs(ref,where("profileId","==",profile.id))
-          
-            let followList = []
-            snapshot.docs.forEach(doc => {
-                  const pack = doc.data();
-                  const { id,
-                profileId,
-                libraryId,
-                created
-               }=pack
-               const fl = new FollowLibrary(id,profileId,libraryId,created)
-                
-                followList = [...followList, fl]
-              })
-          return {
-          
-            followList: followList,
-          }}catch(err) {
-                return {
-                    error: new Error(`Error: Fetch Follow books: ${err.message}`)
-                }
-          }})
+
 const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunkApi)=>{
   try {
     const {fileName}=params
@@ -424,31 +265,6 @@ const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunk
 })
 
 
-const fetchFollowProfilesForProfile= createAsyncThunk("users/fetchFollowProfilesForProfile",async (params,thunkApi)=>{
-                    try{
-                        const {profile} = params
-                        const ref = collection(db,"follow_profile")
-                        const snapshot =await getDocs(ref,where("followerId","==",profile.id))
-                        let followList = []
-                    snapshot.docs.forEach(doc => {
-                            const pack = doc.data();
-                            const { id,
-                                    followerId,
-                                    followingId ,
-                                    created
-                                }=pack
-                    const fb = new FollowProfile(id,followerId,followingId,created) 
-                    followList = [...followList, fb]
-                    })
-            return {
-                followList: followList,
-            }
-        }catch(err) {
-            return {
-                error: new Error(`Error: Fetch Follow Profile: ${err.message}`)
-            }
-    }
-})
 const deleteUserAccounts = createAsyncThunk("users/deleteUserAccounts",async (params,thunkApi)=>{
 
   try{
@@ -464,26 +280,6 @@ return {error: new Error("Error: Deleting useer account"+err.message)
 }})
 
 
-
-const getPageApprovals = createAsyncThunk("users/getPageApprovals",async (params,thunkApi)=>{
-  try{
-  const {profile}=params
-  const snapshot = await getDocs(query(collection(db, UserApproval.className), where("profileId", "==", profile.id)))
-  let userApprovals = []
-  snapshot.docs.forEach(doc => {
-    let userApproval = unpackUserApprovalDoc(doc)
-    userApproval.push(userApproval)
-  })
-  return {
-    userApprovals
-  }
-}catch(e){
-  return {
-    error: e
-  }
-}
-})
-
 const  searchDialogToggle = createAction("users/searchDialogToggle",(params,thunkApi)=>{
   const {open} = params
   return {payload: open}
@@ -498,13 +294,7 @@ const setEvents = createAction("users/addEVents", (params)=> {
     
   
 })
-const unpackUserApprovalDoc = (doc)=>{
-  const pack = doc.data();
-            const { id } = doc;
-            const {score,pageId,profileId}=pack
-        let userApproval = new UserApproval(id,pageId,profileId,score)
-      return userApproval
-}
+
 
 export {logIn,
         signUp,
@@ -513,25 +303,18 @@ export {logIn,
     
         fetchProfile,
         setProfileInView,
-        createFollowBook,
-        createFollowLibrary,
-        fetchFollowBooksForProfile,
-        fetchFollowLibraryForProfile,
-     
-       
-  
-        fetchFollowProfilesForProfile,
+    
         signOutAction,
         useReferral,
         uploadPicture,
         deleteUserAccounts,
         setEvents,
-        updateHomeCollection,
         setSignedInTrue,
         setSignedInFalse,
-        getPageApprovals,
+        setDialog,
         searchDialogToggle,
         searchMultipleIndexes,
         deletePicture,
-        updateSubscription
+        updateSubscription,
+        getIosInfo,
     }

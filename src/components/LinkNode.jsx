@@ -1,23 +1,15 @@
-import { useState, useLayoutEffect,useEffect, useContext } from 'react';
+import { useState, useLayoutEffect,useContext } from 'react';
 import Enviroment from '../core/Enviroment';
-import { Spotify } from 'react-spotify-embed';
 import "../App.css"
 import ErrorBoundary from '../ErrorBoundary';
 import { initGA,sendGAEvent } from '../core/ga4';
-import Context from '../context';
-import { useMediaQuery } from 'react-responsive';
-import adjustScreenSize from '../core/adjustScreenSize';
 import SpotifyEmbed from './SpotifyEmbed';
+import { IonImg } from '@ionic/react';
 function LinkNode({ url,image,description,title,isGrid}) {
-  const {isPhone}=useContext(Context)
-  const isHorizPhone =  useMediaQuery({
-    query: '(min-width: 768px)'
-  })
+
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const size = adjustScreenSize(isGrid,true,"","","","","")
-  let spotifySize = isGrid?isPhone?"46vw":"31.5vw":isHorizPhone?"44.8em":"95vw"
-  let spotifyHeight = "16rem"
+
   useLayoutEffect(() => {
 
     if(!url.includes("plumbum")&&!url.includes('https://open.spotify.com/')){  
@@ -119,7 +111,7 @@ const fetchData = async (url) => {
   if (previewData && previewData.videoId) {
     return (
     
-        <img onClick={handleClick} style={{ cursor: 'pointer' }} className=" md:w-[20em]
+        <IonImgmg onClick={handleClick} style={{ cursor: 'pointer' }} className=" md:w-[20em]
        "src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
@@ -135,14 +127,14 @@ const fetchData = async (url) => {
       
       )}else if(image){
         return(
-    <img className={imgClass} 
+  <IonImg className={imgClass} 
     src={image}/>
 
 )
 
       }else if(previewData&& previewData.image) {
     return(     <div className={" flex  text-center shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "}>
-    <img className={"object-fit  w-[100%]  min-w-[70px] "} src={previewData.image}  alt="Link Preview" />
+    <IonImg className={"object-fit  w-[100%]  min-w-[70px] "} src={previewData.image}  alt="Link Preview" />
     </div>
     )
     }else{

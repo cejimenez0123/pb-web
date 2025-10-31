@@ -5,17 +5,14 @@ import {    logIn ,
     
             fetchProfile,
             setProfileInView,
-            fetchFollowBooksForProfile,
-            fetchFollowLibraryForProfile,
-            fetchFollowProfilesForProfile,
-         
+        
             signOutAction,
-            // fetchHomeCollection,
-            updateHomeCollection,
-            
+        
+     
+            setDialog,
             setSignedInTrue,
             setSignedInFalse,
-            getPageApprovals,
+      
             searchDialogToggle,
             searchMultipleIndexes,
             updateProfile,
@@ -24,17 +21,19 @@ import {    logIn ,
             setEvents,
         
         } from "../actions/UserActions"
-import { createProfile, fetchProfiles } from "../actions/ProfileActions"
+import { createProfile, fetchNotifcations, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions.jsx" 
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
 import { postActiveUser } from "../actions/WorkshopActions"
+import { Preferences } from "@capacitor/preferences"
 
 const initialState = {
     signedIn: false,
     currentProfile: null,
     homeCollection: null,
     loading:true,
+    notifications:[],
     events:[],
     userApprovals:[],
     followedBooks: [],
@@ -44,7 +43,8 @@ const initialState = {
     profilesInView: [],
     searchResults:[],
     searchDialogOpen:false,
-    error:""
+    error:"",
+    dialog:{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"Close"}
 }
 const userSlice = createSlice({
     name: 'users',
@@ -69,7 +69,7 @@ const userSlice = createSlice({
             }
         }).addCase(deleteUserAccounts.fulfilled,(state,{payload})=>{
             state.currentProfile = null
-            localStorage.clear()
+ 
         }).addCase(postActiveUser.fulfilled,(state,{payload})=>{
             state.profilesInView = payload.profiles
     
@@ -90,6 +90,8 @@ const userSlice = createSlice({
         })
         .addCase(logIn.pending,(state) => {
         state.loading = true
+    }).addCase(fetchNotifcations.fulfilled,(state,{payload})=>{
+state.notifications = payload
     }).addCase(createProfile.rejected, (state, { payload })=>{
        state.loading=false
     
@@ -105,9 +107,11 @@ const userSlice = createSlice({
     }).addCase(logIn.fulfilled, (state, { payload }) => {
         if(payload&&payload.profile){
             state.currentProfile = payload.profile
-            }
-        state.loading = false
+             state.loading = false
         state.signedIn = true
+            }
+        // state.token = payload.token
+       
        
     }).addCase(logIn.rejected, (state,{payload}) => {
         if(payload && payload.error){
@@ -115,35 +119,38 @@ const userSlice = createSlice({
         }
 
         state.loading = false
-    }).addCase(signUp.pending, (state)=>{
-
-        state.loading = true
     }).addCase(signUp.fulfilled,(state,{payload})=>{
-        localStorage.setItem("loggedIn",true)
+        
         state.currentProfile = payload.profile
         state.signedIn= true
         state.loading = false
     }).addCase(signUp.rejected,(state,{payload})=>{   
-      if(payload.error){
+      if(payload && payload.error){
         state.error = payload.error
       }
  
-    }).addCase(getCurrentProfile.rejected,(state,{payload})=>{ 
+    }).addCase(getCurrentProfile.rejected,(state,data)=>{ 
+        if(data){
+            let {payload}=data
+        
         if(payload && payload.error){
             state.loading = false
             state.signedIn = false
             state.currentProfile = null
            
-        }  
+        }  }
     }).addCase(postStoryHistory.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
     }).addCase(postCollectionHistory.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
     }).addCase(getCurrentProfile.pending,(state)=>{
         state.loading = true
-    }).addCase(getCurrentProfile.fulfilled,(state, { payload }) => {
-       state.currentProfile = payload.profile
+    }).addCase(getCurrentProfile.fulfilled,(state, data) => {
+
+if(data && data.payload && data.payload.profile){
+       state.currentProfile = data.payload.profile
        state.loading = false
+}
     })
  
     .addCase(fetchProfile.pending,(state)=>{
@@ -157,27 +164,9 @@ const userSlice = createSlice({
         state.loading = false
     }).addCase(setProfileInView,(state,{payload})=>{
         state.profileInView = payload.profile
-    }).addCase(fetchFollowBooksForProfile.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(fetchFollowBooksForProfile.fulfilled,(state,{payload})=>{
-        if(Array.isArray(payload.followList)){
-        state.followedBooks = payload.followList
-        }
-    }).addCase(fetchFollowLibraryForProfile.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(fetchFollowLibraryForProfile.fulfilled,(state,{payload})=>{
-        if(Array.isArray(payload.followList)){
-            state.followedLibraries = payload.followList
-        }
-    })
+    }
+)
 
-    .addCase(fetchFollowProfilesForProfile.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(fetchFollowProfilesForProfile.fulfilled,(state,{payload})=>{
-        if(Array.isArray(payload.followList)){
-        state.followedProfiles = payload.followList
-        }
-    })
 
     .addCase(signOutAction.fulfilled,(state,{payload})=>{
 
@@ -188,21 +177,21 @@ const userSlice = createSlice({
       
     }).addCase(signOutAction.rejected,(state,{payload})=>{
         state.error = payload.error
-    }).addCase(updateHomeCollection.fulfilled,(state,{payload})=>{
-        state.homeCollection = payload.collection
-    }).addCase(updateHomeCollection.rejected,(state,{payload})=>{
-        state.error = payload.error
+    })
+
+    .addCase(setDialog.type,(state,{payload})=>{
+        if(payload){ 
+            if(payload.isOpen==false){
+state.dialog.isOpen = false
+        }else{
+    state.dialog = payload??{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"Close"}}
+}
     }).addCase(setSignedInTrue.type,(state,{payload})=>{
         state.signedIn = true
     }).addCase(setSignedInFalse.type,(state,{payload})=>{
         state.signedIn=false
-    }).addCase(getPageApprovals.fulfilled,(state,{payload})=>{
-        if(payload.userApprovals!==null){
-            state.userApprovals = payload.userApprovals
-        }
-    }).addCase(getPageApprovals.rejected,(state,{payload})=>{
-        state.error = payload.error
-    }).addCase(createPageApproval.fulfilled,(state,{payload})=>{
+    })
+   .addCase(createPageApproval.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
     }).addCase(deletePageApproval.fulfilled,(state,{payload})=>{
         const list = state.userApprovals.filter(ua=> ua!=null &&payload.userApproval && ua.id != payload.userApproval.id)
@@ -210,7 +199,7 @@ const userSlice = createSlice({
     }).addCase(searchDialogToggle.type,(state,{payload})=>{
         state.searchDialogOpen = payload
     }).addCase(searchMultipleIndexes.fulfilled,(state,{payload})=>{
-        state.searchResults = payload.searchResults
+        state.searchResults = payload.results
     }).addCase(searchMultipleIndexes.rejected,(state,{payload})=>{
         state.error =payload
     })

@@ -1,20 +1,74 @@
+import React, { useContext } from 'react';
+import {
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
 
-const Dialog = ({ text,title, isOpen, onClose,agree,agreeText="Agree",disagreeText="Disagree"}) => {
-  if (!isOpen) return null;
+  IonFooter,
+  IonButtons,
+  IonText,
 
+  IonBackButton,
+} from '@ionic/react';
+import { useDispatch } from 'react-redux';
+import { setDialog } from '../actions/UserActions';
+
+const Dialog = ({
+  dialog,
+  presentingElement,
+}) => {
+  const dispatch = useDispatch()
+  const onClose=()=>{
+    dispatch(setDialog({isOpen:false}))
+  }
+  if(dialog){
   return (
-    <div className="fixed inset-0 flex md:max-w-[30em] mx-3 mx-auto items-center justify-center z-50">
-      <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-      <div className="bg-white rounded-lg shadow-lg p-6 z-10">
-        <h2 className="text-lg text-emerald-800 font-bold">{title}</h2>
-        <p className="mt-2 text-gray-800">{text}</p>
-        <div className="mt-4">
-          {agree?<button className="btn rounded-full mx-3 bg-gray-300 text-green-900 border-none   " onClick={agree}>{agreeText}</button>:null}
-          {onClose?<button className="btn rounded-full bg-emerald-600 text-white border-emerald-500" onClick={onClose}>{disagreeText}</button>:null}
-        </div>
-      </div>
-    </div>
-  );
+    <IonModal
+  isOpen={((dialog && dialog.isOpen)??false)} 
+  title={dialog.title}
+  onDidDismiss={()=>onClose()}
+  cssClass="modal-fullscreen pt-4 ion-padding"
+  presentingElement={presentingElement}
+  style={{backgroundColor:"white",height:"100vh",overflowY:"scroll"}}
+  swipeToClose={true}
+><IonHeader>
+  <IonToolbar color="success">
+    <IonButtons slot="start">
+      <IonBackButton  onClick={onClose} />
+    </IonButtons>
+    <IonTitle className="ion-text-emerald-900">
+      {dialog.title}
+    </IonTitle>
+  </IonToolbar>
+</IonHeader>
+
+<div className='ion-padding'>
+{dialog.text}
+</div>
+      <IonFooter className="ion-padding-horizontal ion-padding-vertical" style={{ display: 'flex', justifyContent: dialog.agree ? 'space-between' : 'flex-end' }}>
+        {dialog.agree?(
+          <div className='rounded-full flex  px-4   w-fit h-[3rem] text-[1rem] border-emerald-400 border-2'>
+          <IonText
+            fill="outline"
+            color="success"
+            className=" my-auto mx-autotext-emerrald-800 text-[1rem]"
+            onClick={dialog.agree}
+          >
+            {dialog.agreeText}
+          </IonText>
+          </div>
+        ):null}
+          <div className='rounded-full w-[6rem] h-[3rem] flex  border-emerald-600 border-2'>
+        <IonText   className='text-[1rem] my-auto mx-auto' onClick={dialog.onClose} >
+          {dialog.disagreeText}
+          </IonText>
+          </div>
+      </IonFooter>
+    </IonModal>
+  )
+};
+return null
 };
 
-export default Dialog
+export default Dialog;

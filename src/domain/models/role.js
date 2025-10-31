@@ -1,4 +1,3 @@
-import { Timestamp } from "firebase/firestore"
 
 export default class Role {
     id
@@ -11,7 +10,7 @@ export default class Role {
         profile,
         item,
         role,
-        created=Timestamp.now()
+        created=""
     ){
         this.id = id
         this.item=item

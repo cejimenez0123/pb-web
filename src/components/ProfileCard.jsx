@@ -1,23 +1,15 @@
-import React from "react"
-import {useSelector} from 'react-redux'
 import { useState ,useEffect} from "react"
-// import { Dialog } from "@mui/material"
-import Dialog from "./Dialog"
-import getDownloadPicture from "../domain/usecases/getDownloadPicture"
 import isValidUrl from "../core/isValidUrl"
-import Clear from "../images/icons/clear.svg"
-import { useMediaQuery } from "react-responsive"
+import { setDialog } from "../actions/UserActions"
+import { useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import FollowerCard from "./profile/FollowerCard"
 import { IonImg } from "@ionic/react"
+import Enviroment from "../core/Enviroment"
 export default function ProfileCard({profile,onClickFollow,following}){
-    const [profilePic,setProfilePic]=useState("")
+    const dialog = useSelector(state=>state.users.dialog)
+    const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const [pending,setPending]=useState(false)
-    const {id}=useParams()
-    const isPhone =  useMediaQuery({
-        query: '(max-width: 768px)'
-      })
-    const [followersDialog,setFollowersDialog]=useState(false)
     const FollowDiv=({following,onClickFollow})=>{
 
       return following?
@@ -33,25 +25,38 @@ export default function ProfileCard({profile,onClickFollow,following}){
   
       if(profile){
           if(isValidUrl(profile.profilePic)){
+        
               setProfilePic(profile.profilePic)
               setPending(false)
           }else{
-           getDownloadPicture(profile.profilePic).then(image=>{
-              setProfilePic(image)
-              setPending(false) } )
-          }}
+             const src = Enviroment.imageProxy(profile.profilePic);
+setProfilePic(src)
+   
+
+        }
+        }
+          
   },[profile])
-    useEffect(()=>{
-        setFollowersDialog(false)
-    },[id])
+  const openDialog=()=>{
+    let dia = dialog
+    dia.isOpen = true
+    dia.disagreeText="Close"
+    dia.title = "Followers"
+    dia.text =(<div className="card   min-w-[30em] p-6 rounded-lg">
+
+    {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
+      </div>)
+      dispatch(setDialog(dia))
+  }
+    
     if(!profile||!profile.id){
     
-            return <div className=" skeleton  w-[96vw] auto mx-auto md:w-info h-info"/>
+            return <div className=" skeleton  w-[96vw] sm:w-[50em]  min-h-40"/>
          
     }
     if(profile){
         
-      return(<div className="pb-8 md:border-3 rounded-lg  w-[96vw] md:h-info mx-auto md:w-info md:border-emerald-400">
+      return(<div className="pb-8 sm:border-3 rounded-lg  w-[96vw] sm:w-[50em] sm:min-h-40 mx-auto md:w-info sm:border-emerald-400">
         <div className="text-left p-4">
             <div className="flex flex-row">
               <div>  
@@ -69,23 +74,13 @@ export default function ProfileCard({profile,onClickFollow,following}){
         </div>
             <div className="mt-3 flex flex-row">
                 <FollowDiv following={following} onClickFollow={onClickFollow}/>
-                <div onClick={()=>setFollowersDialog(true)} className="text-emerald-800 text-center mx-4">
+                <div onClick={openDialog} className="text-emerald-800 text-center mx-4">
                     <h5 className="open-sans-bold text-[1rem] ">Followers</h5>
                 <h6>{profile.followers.length}</h6>
                 </div>
             </div>
         </div>
-        <Dialog isOpen={followersDialog}
-        onClose={()=>{
-          setFollowersDialog(false)
-      }}
-      title={"Followers"}
-      disagreeText={"Close"}
-      text={ <div className="card   min-w-[30em] p-6 rounded-lg">
   
-     {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
-       </div>}
-/>
         </div>)
     }
     

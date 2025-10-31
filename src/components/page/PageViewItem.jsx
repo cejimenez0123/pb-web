@@ -2,6 +2,7 @@ import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import React,{useLayoutEffect, useRef, useState} from "react"
 import PageViewButtonRow  from "./PageViewButtonRow"
+
 import CommentInput from "../comment/CommentInput"
 import "../../styles/PageView.css"
 import PropTypes from 'prop-types'
@@ -11,6 +12,7 @@ import PageDataElement from "./PageDataElement"
 import { logEvent } from "react-ga4";
 import { initGA, sendGAEvent } from "../../core/ga4"
 import useScrollTracking from "../../core/useScrollTracking"
+import { IonItem } from "@ionic/react"
 
 export default function PageViewItem({page}) {
     const ref = useRef()
@@ -58,22 +60,20 @@ if(page){
     
 
         return(
-        
-        <div id="page-view-item" ref={ref} className="page shadow-md rounded-lg overflow-clip">
-      <div>
+  
         <div>
         
                 {header()}
               
        
                 <PageDataElement page={page} isGrid={false}/>
-                </div>
+            
             
             <PageViewButtonRow page={page} profile={currentProfile} setCommenting={truthy=>setCommenting(truthy)}/>
             
                 {commentBox()}   
-        </div>
-        </div>
+   </div>
+     
   
         )
             }else{

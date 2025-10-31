@@ -16,7 +16,9 @@ import Context from '../../context';
 import GoogleMapSearch from './GoogleMapSearch';
 import { LoadScript } from '@react-google-maps/api';
 import check from "../../images/icons/check.svg"
-
+import { Geolocation } from '@capacitor/geolocation';
+import DeviceCheck from '../../components/DeviceCheck';
+import { IonContent } from '@ionic/react';
 
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
@@ -25,7 +27,7 @@ const WorkshopContainer = (props) => {
   const page = useSelector(state=>state.pages.pageInView)
   const [loading,setLoading]=useState(false)
   const {error,setError,setSuccess,setSeo}=useContext(Context)
-
+  const isNative = DeviceCheck()
   const [radius,setRadius]=useState(50)
   const [location,setLocation]=useState(null)
   const {currentProfile} = useContext(Context)
@@ -51,8 +53,7 @@ setTimeout(()=>{
 
   useEffect(()=>{
     if(currentProfile){
-      
-      
+
       dispatch(postActiveUser({story:page,profile:currentProfile})).then(res=>{
           checkResult(res,payload=>{
             if(payload.profiles){
@@ -71,10 +72,6 @@ setTimeout(()=>{
     }
   },[page,currentProfile])
   useEffect(()=>{
-  
-},[isGlobal])
-  useLayoutEffect(()=>{
-  
     const {pageId}=pathParams
     if(pageId){
       dispatch(getStory({id:pageId}))
@@ -89,7 +86,8 @@ setTimeout(()=>{
     }
 
   },[currentProfile,location])
-  const requestLocation=()=>{
+
+  const webRequestLocation=()=>{
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocation({
@@ -111,18 +109,80 @@ setTimeout(()=>{
       }
     );
   }
+
+
+    useEffect(() => {
+      if(!isGlobal){
+      if (isNative) {
+        requestLocation();
+      } else {
+        webRequestLocation();
+      }}
+    }, [isGlobal]);
+   
+
+
+ const requestLocation = async () => {
+  setLoading(true);
+  try {
+    // Check current geolocation permission state
+    const permStatus = await Geolocation.checkPermissions();
+
+    if (permStatus.location === 'granted') {
+      // Permission already granted, get location
+      const position = await Geolocation.getCurrentPosition();
+      setLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+      if (currentProfile && currentProfile.id) {
+        registerUser(currentProfile.id, {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      }
+      setError(null);
+    } else if (permStatus.location === 'prompt' || permStatus.location === 'denied') {
+      // Request permission explicitly, triggers iOS popup if needed
+      const requestResult = await Geolocation.requestPermissions();
+      if (requestResult.location === 'granted') {
+        const position = await Geolocation.getCurrentPosition();
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        if (currentProfile && currentProfile.id) {
+          registerUser(currentProfile.id, {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        }
+        setError(null);
+      } else {
+        setError("Location permission denied. Please enable location permissions in your device settings.");
+      }
+    } else {
+      setError("Unable to determine location permission state.");
+    }
+  } catch (err) {
+    console.error("Error requesting location or getting position:", err);
+    setError("Could not get location. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   const handleGlobal = () => {
    setIsGlobal(!isGlobal)
-   if(isGlobal){
-    requestLocation()
-   }
+  
   };
   const handleGroupClick=()=>{
     setLoading(true)
     setError(null)
     setSuccess(null)
     if(currentProfile){
-    if(pathParams.pageId && page){
+    if( page){
         dispatch(createWorkshopGroup({profile:currentProfile,story:page,isGlobal,location})).then(res=>{
       checkResult(res,payload=>{
         if(payload && payload.collection){
@@ -163,7 +223,7 @@ setTimeout(()=>{
   }}else{
     setError("No Author logged in")
   }}
-  
+
 
   
 const localCheck=()=>{
@@ -181,13 +241,14 @@ const localCheck=()=>{
 }
 
   return (
+    <IonContent fullscreen={true} scrollY={false} className='ion-padding  max-h-screen '>
     <LoadScript
     googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
     libraries={['places']}
   >
-   <>
+   <div className='h-[100vh] overflow-hidden'>
       {currentProfile?(
-        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] mt-20 flex flex-col  md:border-2 text-left sm:w-[20rem] md:border-emerald-600 p-4    rounded-lg ">
+        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] mt-12 flex flex-col  md:border-2 text-left sm:w-[20rem] md:border-emerald-600 p-4    rounded-lg ">
        <div>
         <span className='flex my-8 flex-row'>
      <h2 className='text-xl  font-bold ml-2 mr-10'> {currentProfile.username}</h2>{!isGlobal?<span className={`${location&& location.longitude && location.latitude?"bg-emerald-600":"bg-yellow-500" } rounded-full w-8 max-h-6 flex`}><img  className="mx-auto my-auto" src={check}/></span>:null}</span></div>
@@ -217,8 +278,9 @@ const localCheck=()=>{
 
     
    
-    </>
+    </div>
     </LoadScript>
+    </IonContent>
   );
 };
 export default WorkshopContainer

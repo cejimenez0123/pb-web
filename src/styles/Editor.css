@@ -30,25 +30,13 @@
     margin-top: 4em;
 }
 
-/* #editor {
-    max-width: 45em;
-    margin:auto;
-    margin-top: 4em;
-    margin-bottom: 2em;
-    width: fit-content;
-    padding: 2em;
-    background-color: var(--tertiary);
-    border-radius: 25px;
-    box-shadow: var(--some-box-shadow);
-
-} */
-#EditorContainer{
+/* #EditorContainer{
     flex-direction: row;
     display: flex;
     justify-content: space-evenly;
     height: 100%;
     padding-bottom: 3em;
-}
+} */
 
 
 #EditorContainer .form input[type="text"]{
@@ -197,32 +185,37 @@
  .ql-editor em{
   font-style: italic!important;
  }
+ .ql-editor{
+  
+  text-overflow: ellipsis !important;
+      top:0;
+      min-height: 22rem !important;}
  @media (min-width: 768px) {
 
 
   .ql-editor{
 text-overflow: ellipsis !important;
     top:0;
-   overflow-y:hidden !important;
+   /* overflow-y:hidden !important; */
     /* padding: 1em !important; */
-
+    min-height: 20em !important;
     color: #052e16 !important;
     background: linear-gradient(#a7f3d0, #d1fae5)!important;
     border-bottom: 0.5em !important;
 
 }
+
  }
  @media (max-width: 768px) {
 
   #page-data-text{
     background: linear-gradient(#a7f3d0, #d1fae5)!important;
     padding: 1.5em 0.3em !important;
+   
   }
   .ql-editor{
     top:0;
     text-overflow: ellipsis !important;
-    margin-left: 2em;
-    overflow: hidden!important;
     color: #052e16 !important;
     background: linear-gradient(#a7f3d0, #d1fae5)!important;
     border-bottom: 0.5em !important;

@@ -5,9 +5,11 @@ export default function ScrollDownButton({text="↓ Scroll for more",onClick,onB
 
   useEffect(() => {
     const handleScroll = () => {
+      if(document && document.body){
       const nearBottom =
         window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
       setIsVisible(!nearBottom);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);

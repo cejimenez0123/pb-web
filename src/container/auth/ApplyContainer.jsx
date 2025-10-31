@@ -7,12 +7,10 @@ import { useLocation, useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import Context from "../../context"
 import ThankYou from "./ThankYou"
+import { IonContent } from "@ionic/react"
 function ApplyContainer(props){
   const location = useLocation()
   const {seo,setSeo,setError}=useContext(Context)
-  const isNotPhone = useMediaQuery({
-    query: '(min-width: 600px)'
-  })
   const navigate = useNavigate()
     const genres = [
         "Fiction",
@@ -143,7 +141,7 @@ setTimeout(()=>{
 
 return (
   <>
-    <div className="sm:pb-8">
+     <IonContent fullscreen={true} className="ion-padding">
     <form
     onSubmit={(e) => onClickApply(e)}
     className="form-data shadow-sm sm:my-8 md:rounded-lg pb-30 bg-transparent text-emerald-700   flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] mx-auto lg:mt-24"
@@ -334,7 +332,6 @@ return (
   </form>
 
               <Dialog 
-              isOpen={!!user}
               text={
         <div>
         
@@ -356,7 +353,7 @@ return (
    </div>
         :<div className="flex"><p className="mx-auto my-auto">Error. Try again later</p></div>}</div>
         }/>
-    </div>
+    </IonContent>
     
   </>
 );

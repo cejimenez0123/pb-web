@@ -1,11 +1,13 @@
-import React ,{ useContext, useEffect, useLayoutEffect,useState } from 'react'
+
+
+import { useContext, useEffect, useLayoutEffect,useState } from 'react'
 import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
-import {signOutAction} from "../actions/UserActions"
+import {signOutAction,setDialog} from "../actions/UserActions"
 import { useLocation, useNavigate } from 'react-router-dom'
+import { Preferences } from "@capacitor/preferences";
 import menu from "../images/icons/menu.svg"
-import getDownloadPicture from '../domain/usecases/getDownloadPicture'
 import { debounce } from 'lodash'
 import LinkIcon from '../images/icons/link.svg';
 import CreateIcon from '../images/icons/ink_pen.svg'
@@ -14,14 +16,15 @@ import Paths from '../core/paths'
 import { searchDialogToggle } from '../actions/UserActions'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
-import Dialog from '../components/Dialog.jsx'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions.jsx'
 import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
-import { IonImg } from '@ionic/react'
+import {IonImg, IonList,} from '@ionic/react';
+import { useSelector } from 'react-redux'
+import { Capacitor } from '@capacitor/core'
 const PageName = {
   home: "Home",
   about:"About",
@@ -33,9 +36,18 @@ const PageName = {
   apply:"Join Now",
   feedback:"Feedback"
 }
-const pages = [ 
-                PageName.home,
-                PageName.about,
+
+
+function NavbarContainer({currentProfile}){
+
+  const {isPhone}=useContext(Context)
+  const dialog =useSelector(state=>state.users.dialog)
+  useLayoutEffect(()=>{
+    initGA()
+  },[])
+  const pages = [...[ 
+                Capacitor.isNativePlatform()||currentProfile? PageName.home:PageName.about,
+                
                 PageName.discovery,
                 PageName.workshop,
                 PageName.search,
@@ -43,39 +55,50 @@ const pages = [
                 PageName.login,
                 PageName.apply,
                 PageName.feedback
-                ]
-function NavbarContainer(props){
-  
-  const {isPhone,isHorizPhone}=useContext(Context)
-  useLayoutEffect(()=>{
-    initGA()
-  },[])
+                ]]
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
-    const {currentProfile}=useContext(Context)
+
    const pathName = useLocation().pathname
 
 
-  const [openDialog,setOpenDialog]=useState(false)
+
     useEffect(()=>{
       if(currentProfile){
           if(isValidUrl(currentProfile.profilePic)){
               setProfilePic(currentProfile.profilePic)
         
           }else{
-           getDownloadPicture(currentProfile.profilePic).then(image=>{
-              setProfilePic(image)
-           } )
-          }}
+           setProfilePic(Enviroment.imageProxy(currentProfile.profilePic))
+         
+          }
+        }
   },[currentProfile,pathName])
 
+const openDialog=()=>{
+  let dia = {...dialog}
+  dia.title = "Create Collection"
+  dia.isOpen = true
+  dia.onClose= ()=>{
+    let dia = {...dialog}
+    dia.isOpen = false
+    dispatch(setDialog(dia))
+  }
+  dia.text=<CreateCollectionForm onClose={()=>{
+
+    let dia = {...dialog}
+    dia.isOpen = false
+    dispatch(setDialog(dia))
+  }}/>
+  dispatch(setDialog(dia))
+}
     const openDialogAction = ()=>{
       dispatch(searchDialogToggle({open:true}))
     }
     const handleCloseNavMenu = (page) => {
       sendGAEvent("Click Nav Menu",`Click Horiz Nav ${page}`)
-    
+   
       if(page==PageName.login){
           navigate(Paths.login())                    
       }else if(page===PageName.discovery){
@@ -112,7 +135,10 @@ function NavbarContainer(props){
                       SettingName.logout,
                       ]; 
    
-
+               
+             
+   
+                      
       const menuDropdown=()=>{
         return(
         <div className={`dropdown ${isPhone?"dropdown-top":""} lg:hidden`}>
@@ -122,7 +148,7 @@ function NavbarContainer(props){
             <img src={menu}/>
     
           </div>
-          <ul
+          <IonList
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-emerald-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               {pages.map((page) => {
@@ -161,7 +187,7 @@ function NavbarContainer(props){
     <IonImg src={LinkIcon}/></a></li>
            <li  onClick={()=>{ 
              
-                 setOpenDialog(true)
+                 openDialog()
                  
          } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
     
@@ -194,7 +220,7 @@ function NavbarContainer(props){
     } })
             }
           
-          </ul>
+          </IonList>
         </div>
       
     
@@ -222,7 +248,7 @@ function NavbarContainer(props){
         <ul className="menu menu-horizontal px-1">
         {pages.map((page) => {
     if(page==PageName.workshop||page==PageName.home){
-      return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
+      return currentProfile?<li  onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-white no-underline' textAlign="center">{page}</a>
     </li>:null
@@ -233,7 +259,7 @@ function NavbarContainer(props){
     </li>:null
     }else if( page==PageName.create){
     
-        return(currentProfile?  
+        return(currentProfile&&currentProfile.id?  
             <li  
          
          className="z-[2] dropdown w-52">
@@ -256,7 +282,7 @@ function NavbarContainer(props){
    <IonImg src={LinkIcon}/></a></li>
            <li  onClick={()=>{ 
 
-                 setOpenDialog(true)
+openDialog()
                  
          } }><a className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
     
@@ -268,7 +294,7 @@ function NavbarContainer(props){
     </li>):null
     
     }else if(page == PageName.apply){
-      return currentProfile?
+      return currentProfile&&currentProfile.id?
       (<li onClick={()=>handleCloseNavMenu(page) } 
           key={page} >
       <a className=' text-white no-underline' textAlign="center">{page}</a>
@@ -293,28 +319,15 @@ function NavbarContainer(props){
         </ul>
       </div>
       }
-  // }
-  const handleSignOut = () => {
-   if(window && window.google && window.google.accounts){
-    window.google.accounts.id.disableAutoSelect()
-   } ; // Clears GIS cookie for auto-login
-    // Clear all stored items related to login and drive token
-    
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('googleId');
-    localStorage.removeItem("googledrivetoken");
-    localStorage.removeItem('googledrivetoken_expiry');
-    dispatch(signOutAction()).then(res=>checkResult(res,payload=>{
-      localStorage.clear()
-      navigate("/")
-    },err=>{
-      
-    }))
-
+  const handleSignOut =async () => {
+ 
+    await Preferences.clear()
+    navigate(Paths.login())
+    dispatch(signOutAction())
+  
    
 };
-  return(<div className="navbar max-w-[100vw] bg-emerald-800">
+  return(<div className="navbar flex items-start  max-w-[100vw] h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isPhone?menuDropdown():
     <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
@@ -325,7 +338,7 @@ function NavbarContainer(props){
 
  
   <div className="navbar-end">
-  {currentProfile&&localStorage.getItem("token")? 
+  {(currentProfile&&currentProfile.id)? 
   <div className={`dropdown ${isPhone?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
@@ -339,7 +352,7 @@ function NavbarContainer(props){
         className="menu menu-sm dropdown-content bg-emerald-50 rounded-box z-[1] mt-3 w-52 p-2 shadow">
       {settings.map((setting) => (
                     
-                    <li key={setting} 
+                    <li  key={setting} 
                               onClick={()=>{
                                   if(setting== SettingName.profile){
                                       navigate(Paths.myProfile())
@@ -358,14 +371,6 @@ function NavbarContainer(props){
 
     </div>:<div className=''/>}
     </div>
-    
-    
-    
-    
-    
-  
-    <Dialog isOpen={openDialog} text={<CreateCollectionForm  onClose={()=>setOpenDialog(false)}/>}
-    onClose={()=>setOpenDialog(false)} disagreeText={"Close"}/>
 
  
 </div>)

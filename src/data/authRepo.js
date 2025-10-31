@@ -1,6 +1,6 @@
 import axios from "axios"
 import Enviroment from "../core/Enviroment"
-
+import {Preferences} from  "@capacitor/preferences"
 
 class AuthRepo{
     headers= {
@@ -47,7 +47,7 @@ class AuthRepo{
       
         let res = await axios.post(Enviroment.url+"/auth/generate-referral",{},{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem("token")
+                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
             }
         })
         return res.data
@@ -62,10 +62,10 @@ class AuthRepo{
      
       return res.data
     }
-    async startSession({uId,email,password}){
+    async startSession({uId,email,password,identityToken}){
 
-        const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password})
-       
+        const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password,identityToken})
+
         return res.data
     }
     async updateSubscription({token,frequency}){
@@ -82,7 +82,7 @@ class AuthRepo{
     }
     async deleteUser(){
         let res = await axios.delete(Enviroment.url+"/auth/",{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
+            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
          return res.data    
      }
@@ -90,6 +90,15 @@ class AuthRepo{
         let parms = new URLSearchParams({username:query})
         let res = await axios.get(Enviroment.url+"/auth/check-username?"+parms.toString())
      
+        return res.data
+    }
+    async googleSignIn({email,googleId}){
+       let res =await axios.post(Enviroment.url+"/auth/google",{email,googleId})
+       return res.data
+    }
+    async appleSignIn({identityToken}){
+        let res =await axios.post(Enviroment.url+"/auth/ios",{idToken:identityToken})
+        console.log("Res",res.data)
         return res.data
     }
     }

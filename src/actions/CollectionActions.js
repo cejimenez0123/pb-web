@@ -3,8 +3,8 @@ import axios from "axios"
 import collectionRepo from "../data/collectionRepo"
 import Enviroment from "../core/Enviroment"
 import storyRepo from "../data/storyRepo"
-import { client } from "../core/di"
 import roleRepo from "../data/roleRepo"
+import algoliaRepo from "../data/algoliaRepo"
 const getPublicBooks = createAsyncThunk(
     'books/getPublicBooks',
     async (thunkApi) => {
@@ -174,12 +174,14 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
     try{
         let data = await collectionRepo.createCollection(params)
      
-
+  const {collection}=data
         if(!data.collection.isPrivate){
-        const {collection}=data
-          client.saveObject(
-            {objectID:collection.id,title:collection.title,indexName:"collection"}).wait()
-        }   
+      
+        await algoliaRepo.saveObject("collection", {
+            objectID:collection.id,
+            title:collection.title
+        }
+        )}
         return {collection: data.collection}
 
       }catch(error){
@@ -234,12 +236,15 @@ const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProte
 const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
     params,thunkApi
 )=>{
-
+    try{
      let data = await collectionRepo.getMyCollections()
-
       return {
         collections: data.collections
       }
+    }catch(err){
+        console.log(err)
+        throw err
+    }
 })
 const getPublicProfileCollections = createAsyncThunk("collection/getPublicProfileCollections",async (
     params,thunkApi
@@ -272,9 +277,14 @@ const getProtectCollectionStories = createAsyncThunk("collection/getProtectColle
 const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
     params,thunkApi
 )=>{
-   let data = await collectionRepo.deleteCollection(params)
-   client.deleteObject({objectID:params.id,indexName:"collection"}).wait()
+    try{
+
+       let data = await collectionRepo.deleteCollection(params)
+   await algoliaRepo.deleteObject("collection",params.id)
    return data
+    }catch(err){
+        return err
+    }
 })
 
 const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",async({roles,profile,collection},thunkApi)=>{
@@ -291,11 +301,10 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
     async ({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},thunkApi)=>{
         let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
         if(!isPrivate){
-            
-              client.partialUpdateObject({objectID:id,title:title,indexName:"collection"},{createIfNotExists:true}).wait()
+           await algoliaRepo.partialUpdateObject("collection",id,{title:title})
             }else{
+            await algoliaRepo.deleteObject("collection",id)
                 
-                client.deleteObject({objectID:id,indexName:"collection"}).wait()
             }  
         return {collection:data.collection}
     }

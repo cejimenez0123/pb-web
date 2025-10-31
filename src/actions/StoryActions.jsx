@@ -2,14 +2,15 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import storyRepo from "../data/storyRepo";
 import { client } from "../core/di";
 import { PageType } from "../core/constants";
-import hashtagRepo from "../data/hashtagRepo";
 import {storage} from "../core/di"
 import {  ref,deleteObject   } from "firebase/storage";
+import { Preferences } from "@capacitor/preferences";
+import algoliaRepo from "../data/algoliaRepo";
 
 const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
   try{
 
-    let token = localStorage.getItem("token")
+    let token =(await Preferences.get({key:"token"})).value
     if(token){
      let data = await storyRepo.getStoryProtected({id:id})
      return {story:data.story}
@@ -20,7 +21,7 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 
     }
   }catch(error){
-console.log("bocx",error)
+    console.log("Error in getStory:", error);
     return {error}
   }
 })
@@ -32,8 +33,8 @@ try{
     deleteObject(refer)
   }
   let data = await storyRepo.deleteStory({id:page.id})
-  client.deleteObject({objectID:page.id,indexName:"story"}).wait()
-
+  
+    algoliaRepo.deleteObject("story",page.id)
     return data
 
 
@@ -67,7 +68,7 @@ const getMyStories= createAsyncThunk(
     async (params,thunkApi) => {
       try{
       let data = await storyRepo.getMyStories(params)
-  
+ 
     return {
       pageList:data.stories
     }
@@ -79,11 +80,11 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
   try{
 
       let data = await storyRepo.postStory(params)
+       const {story}=data
       if(!data.story.isPrivate){
-        const {story}=data
-          client.partialUpdateObject(
-            {objectID:story.id,title:story.title,indexName:"story"},{createIfNotExists:true}).wait()
-        }  
+       await algoliaRepo.partialUpdateObject("story",story.id,{title:story.title})
+      }
+ 
       return {
         story:data.story
       }
@@ -99,14 +100,24 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
   let data = await storyRepo.updateStory(params)
  
   if(data.story&& params && !data.story.isPrivate&&data.story.id){
-  
-    client.partialUpdateObject(
-      {objectID:data.story.id,title:data.story.title,indexName:"story"},{createIfNotExists:true}).wait()
-   }else{
+  try{
+    algoliaRepo.partialUpdateObject("story",data.story.id,{title:data.story.title})
 
-        client.deleteObject({objectID:data.story.id,indexName:"story"})
-      
+    }catch(err){
+      console.log(err)
+      return err
+    }
+   }else{
+try{
+        algoliaRepo.deleteObject("story",data.story.id)
+       
+}catch(err){
+   return{
+    error: err
+  }
+}
    }
+ 
   return {
     story: data.story
   }

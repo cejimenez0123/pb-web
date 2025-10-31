@@ -15,15 +15,13 @@ import { debounce } from 'lodash'
 import Carousel from './Carousel'
 import { useNavigate } from 'react-router-dom'
 import adjustScreenSize from '../../core/adjustScreenSize'
+import { IonImg } from '@ionic/react'
+import ErrorBoundary from '../../ErrorBoundary'
 function BookDashboardItem({book,isGrid}) {
  
     const dispatch = useDispatch()
     const {setSuccess,setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
-
-    const [expanded,setExpanded]=useState(false)
-   const [likeFound,setLikeFound]=useState(null)
-    const [overflowActive,setOverflowActive] =useState(null)
     const [bookmarked,setBookmarked]=useState()
     const [isArchived,setIsArchived]=useState()
    const [title,setTitle]=useState("")
@@ -34,7 +32,7 @@ function BookDashboardItem({book,isGrid}) {
 const deleteBtc=()=>{
 
         if(bookmarked){
-            console.log("masx",bookmarked)
+          
           dispatch(deleteCollectionFromCollection({tcId:bookmarked.id})).then(res=>checkResult(res,payload=>{
     setBookmarked(null)
 
@@ -45,67 +43,25 @@ const deleteBtc=()=>{
 }
 }
 
-const handleApprovalClick = ()=>{
-    if(currentProfile){
-        if(likeFound ){
-         dispatch(deletePageApproval({id:likeFound.id})).then(res=>{
-            checkResult(res,payload=>{
-                setLikeFound(null)
-            },err=>{
 
-            })
-        })
-    }else{
-        if(page&&currentProfile ){
 
-        
-        const params = {story:page,
-            profile:currentProfile,
-                        }
-        dispatch(createPageApproval(params))
-        }else{
-            setError("Sign Up so you can show support")
-        }
-    }
-}else{
-    setError("Please Sign Up")
-}
-}
-const expandedBtn =()=>{
-    if(overflowActive && !expanded){
-    
-    return <Button onClick={()=>setExpanded(true)}>See More</Button>
-    }
-    else if(expanded){
-return <Button onClick={()=>{
-    setExpanded(false)
-}}>See Less</Button>
-        }else if(overflowActive){
-            return <Button onClick={()=>setExpanded(true)}>See More</Button>
-        }
-   else{
-    return <div></div>
-   }
-}
 const checkFound=()=>{
     
     if(currentProfile && currentProfile.profileToCollections){
-   let archive = currentProfile.profileToCollections[0].collection
-   let home = currentProfile.profileToCollections[1].collection
+   let archive = currentProfile.profileToCollections.find(col=>col.type=="archive")
 
     if(book&&book.parentCollections){
-        console.log(book.parentCollections)
-         let isfound = book.parentCollections.find(ptc=>ptc.parentCollectionId==home.id)
-       
-            setBookmarked(isfound)
+ 
+           
             
-         let found = book.parentCollections.find(ptc=>ptc.parentCollectionId==archive.id)
+         let found = book.parentCollections.find(ptc=>ptc.parentCollectionId==archive.collection.id)
 
             setIsArchived(found)
             setBookmarked(found)
             }
  
-    }}
+    }
+}
  
 
 useLayoutEffect(()=>{
@@ -152,7 +108,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
             }}
             
 >{` `+title}</h6>
-<img onClick={handleBookmark} src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
+<IonImg  onClick={handleBookmark} src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
 </div>
   
 
@@ -173,7 +129,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
             checkResult(res,payload=>{
                     const {collection}=payload
                     const marked = collection.parentCollections.find(col=>col.parentCollectionId==archive.id)
-                  console.log(marked)
+            
                     setBookmarked(marked)
                 },err=>{
 
@@ -194,7 +150,7 @@ if(!book){
 }
     
         return(
-        // <ErrorBoundary >
+         <ErrorBoundary >
         <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip ${size} rounded-box flex flex-col bg-emerald-100  `}>
                
 
@@ -204,7 +160,7 @@ if(!book){
 
                 <BookmarkBtn book={book}/> </div>   
 
-//  </ErrorBoundary>
+ </ErrorBoundary>
      )
 
 }

@@ -1,6 +1,6 @@
 import './App.css';
-import { useDispatch,connect} from "react-redux"
-import { useEffect, useState } from 'react';
+import { useDispatch,connect,useSelector} from "react-redux"
+import { useEffect, useState ,useRef,useLayoutEffect} from 'react';
 import { BrowserRouter as Router, Routes, Route,Navigate, useNavigate, useLocation } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import DashboardContainer from './container/DashboardContainer';
@@ -16,10 +16,10 @@ import ApplyContainer from './container/auth/ApplyContainer';
 import SearchDialog from './components/SearchDialog';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import {  getCurrentProfile,
-  
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
+      import { IonApp, IonPage } from '@ionic/react';
 import PrivateRoute from './PrivateRoute';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
@@ -37,8 +37,6 @@ import Alert from './components/Alert.jsx';
 import { getRecommendedCollectionsProfile } from './actions/CollectionActions.js';
 import NotificationContainer from './container/profile/NotificationContainer.jsx';
 import HashtagContainer from './container/hashtag/HashtagContainer.jsx';
-import usePersistentCurrentProfile from './domain/usecases/useCurrentProfileCache.jsx';
-import { useSelector } from 'react-redux';
 import NotFound from './container/NotFound.jsx';
 import EmailPreferences from './container/EmailPreferences.jsx';
 import FeedbackContainer from './container/FeedbackContainer.jsx';
@@ -51,84 +49,72 @@ import { Helmet } from 'react-helmet';
 import { useMediaQuery } from 'react-responsive';
 import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
+import Dialog from './components/Dialog.jsx';
+import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 import DeviceCheck from './components/DeviceCheck.jsx';
-
-
-
-
 function App(props) {
+  const {currentProfile} = props
   const navigate = useNavigate()
-  const isNative = DeviceCheck()
-  const isPhone =  useMediaQuery({
-    query: '(max-width: 768px)'
-  })
+  const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
   const isHorizPhone =  useMediaQuery({
-    query: '(min-width: 768px)'
+    query: '(min-width: 750px)'
   })
+  const isNative = DeviceCheck()
+
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
-  const profile = useSelector(state=>state.users.profileInView)
-
+  const profileInView = useSelector(state=>state.users.profileInView)
+  
+  // let oldProfile = usePersistentCurrentProfile(()=>)
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-  const currentProfile = usePersistentCurrentProfile(()=>dispatch(getCurrentProfile()))
+  //  const currentProfile = props.currentProfile
+  
   const [olderPath,setOlderPath]=useState(null)
   const location = useLocation()
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
+  const page = useRef(null);
+  const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"Close"})
+
 
   useEffect(()=>{
-    if(currentProfile){
-      dispatch(getRecommendedCollectionsProfile())
-  }
+    Preferences.get({key:"token"}).then(res=>{
+      console.log(res)
+      res.value &&  dispatch(getCurrentProfile({token:res.value}))
+    })
+   
   },[])
   useEffect(()=>{
-  
-      setOlderPath(location.pathname)
-  
+      setOlderPath(location.pathname) 
   },[location.pathname])
-  useEffect(() => {
-    if(location.pathname.includes("/signup")||location.pathname.includes("/links")||location.pathname.includes("/event")){
-
-    }else{
-    if(olderPath){
-      navigate(olderPath)
-    }else{
-    if(currentProfile){
-      if(olderPath){
-        navigate(olderPath)
-      }
-      
-    }else if (isFirstLaunch&&isNative) {
-         navigate('/onboard');
-     
-     }else{
-      navigate(olderPath)
-     }
-    }}
-  }, [isFirstLaunch,currentProfile, isNative]);
+ 
   useEffect(() => {
     const checkFirstLaunch = async () => {
-    
-      const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
+    if(isNative){
+      let value = (await Preferences.get('hasSeenOnboarding')).value
       if (value === null) {
-        setIsFirstLaunch(false);
+        Preferences.set({key:"hasSeenOnboarding",value:true})
+        
+        setIsFirstLaunch(true);
+        navigate("/onboard")
       } else {
+        navigate("/login")
         setIsFirstLaunch(false);
-      }
+      }}
     };
-
-    checkFirstLaunch().then( );
+    
+   return ()=>{checkFirstLaunch()}
   }, []);
-
+  
   return (
+    <IonApp >   
+      <Context.Provider value={{isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-      <Context.Provider value={{isPhone,isHorizPhone,seo,setSeo,currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+      <IonPage  ref={page} className=' App pb-8  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+     
 
-      <div  className='App pb-12  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
-      <div/>
-      <div style={{position:"relative"}} >
       <head>
   <meta charset="UTF-8" />
   <Helmet>
@@ -165,28 +151,33 @@ function App(props) {
          <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
       
    
-        
-        <SearchDialog  />
+      
+       
      
-        {!isPhone&&(!isFirstLaunch||currentProfile)? <NavbarContainer 
-        loggedIn={props.currentProfile}
-        profile={props.currentProfile}/>:null}
-           {/* <div className='pt-4 '> */}
+        {!isPhone&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
+           <NavbarContainer 
+    
+        currentProfile={currentProfile}/></div>:null}
+        <div>
+       <SearchDialog presentingElement={page} />
+       <Dialog dialog={dialog} presentingElement={page} />
 <Alert />
+<div className='pt-8'>
       <Routes >
-     <Route path='/' element={<AboutContainer/>}/>
+ 
+     <Route path={'/'} element={isFirstLaunch&&isNative?<Navigate to="/onboard"/>:<AboutContainer/>} />
       <Route path={"/login"} element={<LogInContainer/>}/> 
       <Route path={"/onboard"} element={<OnboardingContainer/>}/>
 
           <Route path={Paths.home()} 
                         element={
-                          <PrivateRoute>
+                          <PrivateRoute currentProfile={currentProfile}>
                           <DashboardContainer 
                           /></PrivateRoute>
                         }
             />
             <Route exact path={Paths.notifications()}
-            element={<PrivateRoute><NotificationContainer/></PrivateRoute>}/>
+            element={<PrivateRoute currentProfile={currentProfile}><NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>
     
           <Route exact path="/discovery" 
                   element={
@@ -204,8 +195,10 @@ function App(props) {
                   />
           <Route exact path="/login"  
                   element={ 
-        <LoggedRoute>
-            <LogInContainer logIn={props.logIn}/>
+        <LoggedRoute loggedOut={!currentProfile}
+        currentProfile={currentProfile}
+        >
+            <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
             </LoggedRoute>
           
        }
@@ -213,27 +206,34 @@ function App(props) {
       <Route exact path={Paths.calendar()}
      element={<CalendarContainer/>}/>
           <Route exact path={Paths.newsletter() }
-     element={<LoggedRoute><NewsletterContainer/></LoggedRoute>}/>
+     element={<LoggedRoute 
+      loggedOut={!currentProfile}
+     currentProfile={currentProfile}><NewsletterContainer/></LoggedRoute>}/>
      <Route exact path={'/reset-password' }
      element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
-     element={<CollectionContainer/>}/>
+     element={<CollectionContainer currentProfile={currentProfile}/>}/>
      <Route path={'/signup'}
-     element={<LoggedRoute><SignUpContainer/></LoggedRoute>}/>
+     element={<LoggedRoute 
+      loggedOut={!currentProfile}
+      currentProfile={currentProfile}><SignUpContainer/></LoggedRoute>}/>
        <Route path={'/register'}
-     element={<LoggedRoute><UserReferralContainer/></LoggedRoute>}/>
+     element={<LoggedRoute 
+      loggedOut={!currentProfile}
+      currentProfile={currentProfile}><UserReferralContainer/></LoggedRoute>}/>
        <Route path={Paths.feedback()}
      element={<FeedbackContainer/>}/>
      <Route path={Paths.addToCollection.route}
      element={        <PrivateRoute
-    
+      currentProfile={currentProfile}
       ><AddToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.addStoryToCollection.route}
      element={<PrivateRoute 
-     
+      currentProfile={currentProfile}
      ><AddStoryToCollectionContainer/></PrivateRoute>}/>
      <Route path={Paths.editCollection.route()}
       element={<PrivateRoute 
+        currentProfile={currentProfile}
       ><EditCollectionContainer/></PrivateRoute>}/>
      
 
@@ -245,15 +245,21 @@ function App(props) {
    
  
         <Route path={Paths.apply()}
-        element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
+        element={<LoggedRoute
+          loggedOut={!props.currentProfile}
+           currentProfile={props.currentProfile}><ApplyContainer/></LoggedRoute>}/>
          <Route path={Paths.apply()+"/newsletter"}
-        element={<LoggedRoute><ApplyContainer/></LoggedRoute>}/>
+        element={<LoggedRoute 
+          loggedOut={!props.currentProfile}
+        currentProfile={props.currentProfile}><ApplyContainer/></LoggedRoute>}/>
+
       <Route
       path={Paths.myProfile()}
       element={
-        <PrivateRoute >
-          <MyProfileContainer profile={props.currentProfile} 
-                             
+        <PrivateRoute       currentProfile={props.currentProfile} >
+          <MyProfileContainer
+          currentProfile={props.currentProfile}
+                             presentingElement={page}
                              pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
                           
@@ -262,12 +268,14 @@ function App(props) {
       }
     />
       <Route path={Paths.workshop.reader()}
-    element={<WorkshopContainer/>}/>
+    element={<PrivateRoute       currentProfile={props.currentProfile}><WorkshopContainer/></PrivateRoute>}/>
     <Route 
     path={Paths.workshop.route()}
-    element={<PrivateRoute><WorkshopContainer/></PrivateRoute>}/>
+    element={<PrivateRoute
+      currentProfile={props.currentProfile}
+    ><WorkshopContainer/></PrivateRoute>}/>
     <Route path="/profile/:id" element={
-      <ProfileContainer profile={profile}/>
+      <ProfileContainer profile={profileInView}/>
       }/>
     <Route path="/subscribe" 
     element={<EmailPreferences/>}/>
@@ -277,11 +285,11 @@ function App(props) {
     <Route  
         path={Paths.editor.image()}
         element={ 
-          <PrivateRoute >
+          <PrivateRoute currentProfile={props.currentProfile}>
             
           <EditorContainer 
           
-
+presentingElement={page}
             />
       </PrivateRoute>
         }/>
@@ -290,7 +298,7 @@ function App(props) {
       exact path={Paths.editor.link()}
       element={
         <PrivateRoute 
-      
+        currentProfile={props.currentProfile}
         >
             <EditorContainer 
          
@@ -303,7 +311,7 @@ function App(props) {
        <Route
       path={Paths.editPage.route()}
       element={
-        <PrivateRoute >
+        <PrivateRoute currentProfile={props.currentProfile} >
             <EditorContainer 
               htmlContent={props.htmlContent} 
               currentProfile={props.currentProfile} 
@@ -313,7 +321,7 @@ function App(props) {
 
       <Route path="/profile/edit" element={
  
-        <PrivateRoute >
+        <PrivateRoute currentProfile={props.currentProfile} >
         <SettingsContainer />
         </PrivateRoute>
       }/>
@@ -321,16 +329,18 @@ function App(props) {
           <TermsContainer />}
     /> 
     </Routes>
-    {isPhone&&!isFirstLaunch?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
+    </div>
+    {isPhone&&!(location.pathname.includes("/onboard")||location.pathname.includes("/signup")||(isNative&&location.pathname.includes("/login")))?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
-        loggedIn={props.currentProfile}
-        profile={props.currentProfile}/></div>:null}
-    </div>
-    </div>
-    {/* </div> */}
-
+        // loggedIn={currentProfile}
+        currentProfile={currentProfile}/></div>:null}
+       </div>
+    </IonPage>
+    
+  
+   
     </Context.Provider>
-
+    </IonApp>
   );
 }
 
@@ -339,8 +349,7 @@ function mapDispatchToProps(dispatch){
 
     getPublicLibraries:()=>dispatch(getPublicLibraries()),
     getPublicStories:()=>dispatch(getPublicStories()),
-    // fetchHomeCollection:(params)=>dispatch(fetchHomeCollection(params)),
-    setSignedInTrue:()=>dispatch(setSignedInTrue()),
+     setSignedInTrue:()=>dispatch(setSignedInTrue()),
     setSignedInFalse:()=>dispatch(setSignedInFalse()),
   }
 }
@@ -348,8 +357,6 @@ function mapStateToProps(state){
   return{
     profile: state.users.profileInView,
     signedIn: state.users.signedIn,
-    // bookInView: state.books.bookInView,
-    // booksInView: state.books.booksInView,
     currentProfile: state.users.currentProfile,
     pageInView: state.pages.pageInView,
     pagesInView: state.pages.pagesInView,
@@ -359,5 +366,3 @@ function mapStateToProps(state){
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)
-
-

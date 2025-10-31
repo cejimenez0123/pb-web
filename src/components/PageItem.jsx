@@ -1,9 +1,10 @@
 import { useState } from "react";
 import Add from "@mui/icons-material/Add"
-import { IconButton } from "@mui/material"
+// import { IconButton } from "@mui/material"
 import { PageType } from "../core/constants";
 import PropTypes from 'prop-types'
 import LinkPreview from "./LinkPreview";
+import { IonImg } from "@ionic/react";
 function PageItem({page,setPageIdList}){
     const [show,setShow]=useState(false)
     PageItem.propTypes={
@@ -12,13 +13,23 @@ function PageItem({page,setPageIdList}){
     }
     let pageDataElement = (<div></div>)
     switch(page.type){
-        case PageType.text:
-            pageDataElement = <div id="page-data-element-text" className='dashboard-content px-2 mx-1 pt-8 ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
+        case page.type == PageType.text:
+            pageDataElement = <div id="page-data-element-text" className=' no-scroll dashboard-content px-2 mx-1 pt-8 ql-editor text' dangerouslySetInnerHTML={{__html:page.data}}></div>
         break;
-        case PageType.picture:
-            pageDataElement = <img id="page-data-element-img"className='dashborad-content' src={`${page.data}`} alt={page.title}/>
+        case page.type == PageType.picture:
+            pageDataElement = <IonImg
+ 
+  src={previewData.image}
+  style={{
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain', // or 'cover' to fill and crop
+  }}
+  className="w-full ion-image-fit h-auto object-contain rounded-lg"
+/>
+
         break;
-        case PageType.link:
+        case page.type == PageType.link:
             pageDataElement = <LinkPreview id="page-data-element-link" url={page.data}/>
         break; 
         default:

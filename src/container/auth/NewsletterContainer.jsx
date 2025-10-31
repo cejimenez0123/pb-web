@@ -1,6 +1,7 @@
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
+//import {Dialog,DialogTitle,DialogContent,DialogActions,Button} from "@mui/material"
 import { useMediaQuery } from "react-responsive"
 import Dialog from "../../components/Dialog"
 import { useNavigate } from "react-router-dom"
@@ -12,6 +13,7 @@ function NewsletterContainer(props){
   const isNotPhone = useMediaQuery({
     query: '(min-width: 600px)'
   })
+  const {setError}=useContext(Context)
   useLayoutEffect(()=>{
     initGA()
     sendGAEvent("View Newsletter Apply Page","View Newsletter Apply Page:","",0,false)
@@ -71,14 +73,14 @@ function NewsletterContainer(props){
         ...prev,
         otherInputs: { ...prev.otherInputs, [category]: e.target.value }
       }));
-      console.log(formData)
+   
     }
 
 
   
     const [user,setUser]=useState(null)
       const selectRef = useRef()
-    const {setError,seo,setSeo}=useContext(Context)
+    const {setErrorm,seo,setSeo}=useContext(Context)
 
   
 
@@ -132,7 +134,7 @@ setFormData({
           
             });
           }else{
-            console.log(e)
+     
             setError(e.message)
           }
         })
@@ -168,7 +170,7 @@ const handleChange = (field, value) => {
     ...prev,
     [field]: value,
   }));
-  console.log(formData)
+
 };{/* Third Place */}
 const thirdPlacesInput=()=>{
   return(<>
@@ -232,6 +234,9 @@ const thirdPlacesInput=()=>{
 </div>
 </>
 )}
+const openDialog=()=>{
+    let dia = {...dialog}
+}
 const handleCheckboxChange = (event, stateUpdater, field) => {
   const value = event.target.value;
   
@@ -419,9 +424,8 @@ return (
         </form>
 
         <Dialog 
-  isOpen={!!user}
+  open={user}
   onClose={handleClose}
-  disagreeText="Close"
   text={
     <div>
       {user ? (
@@ -429,8 +433,7 @@ return (
           <div id="welcome" className="p-8 lora-medium leading-[1.5em] overflow-scroll">
             <p>Thank You {user.preferredName}! You’re In—Welcome to the Journey!</p>
             <br />
-
-            <h6>Congratulations! You’re officially on board as a beta user for Plumbum, we mailed you at {user.email}. We're redefining what it means to create, connect, and grow as a writer.</h6>
+            <h6>Congratulations! You’re officially on board as a beta user for Plumbum, where we’re redefining what it means to create, connect, and grow as a writer.</h6>
             <br />
             <h6>
               This is more than just an app. Together, we’re building a space where writers like you can test ideas, share stories, and discover the confidence to take your work to the next level.

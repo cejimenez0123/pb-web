@@ -15,8 +15,10 @@ node_modules/
 dist
 dist-ssr
 *.local
+credentials.json
 .env
-AppleAuthKey 
+ios/App/Podfile.lock
+AppleAuthKey
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

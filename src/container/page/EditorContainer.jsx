@@ -3,7 +3,7 @@ import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
 import { useParams,useNavigate, useLocation} from "react-router-dom"
 import menu from "../../images/icons/menu.svg"
-import React,{ useContext, useEffect, useLayoutEffect, useState } from "react"
+import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import checkResult from "../../core/checkResult"
 import { useMediaQuery } from "react-responsive"
 import { PageType } from "../../core/constants"
@@ -19,14 +19,15 @@ import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions
 import { debounce } from "lodash"
 import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
-import Dialog from "../../components/Dialog.jsx"
+import { IonBackButton, IonButtons, IonContent, IonHeader } from "@ionic/react"
+import { setDialog } from "../../actions/UserActions.jsx"
 
 
-function EditorContainer(props){
+function EditorContainer({presentingElement}){
         const {currentProfile}=useContext(Context)
         const [feedbackDialog,setFeedbackDialog]=useState(false)
         const {setError,setSuccess}=useContext(Context)
-  
+        const dialog = useSelector(state=>state.users.dialog)
         const [fetchedPage,setFetchedPage]=useState(null)
         const editPage = useSelector(state=>state.pages.editingPage)
         const pageInView = useSelector(state=>state.pages.pageInView)
@@ -89,7 +90,14 @@ function EditorContainer(props){
     
         
       },[htmlContent])
-     
+               const handleBack = (e) => {
+    e.preventDefault();
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(Paths.discovery());
+    }
+  };
 
    
     useLayoutEffect(()=>{
@@ -143,7 +151,8 @@ return ()=>{
         checkResult(res,payload=>{
         
           const {story}=payload
-          dispatch(setHtmlContent(story.data))
+
+          story.data && dispatch(setHtmlContent(story.data))
           dispatch(setEditingPage({page:story}))
           dispatch(setPageInView({page:story}))
           setStoryData(story)
@@ -252,9 +261,8 @@ setOpenDescription(false)
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
         <li onClick={()=>{
-          setOpenDescription(false)
+        setOpenDescription(false)
           setFeedbackDialog(true)
-        
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {isPrivate?<li onClick={()=>{
@@ -270,8 +278,9 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
  setOpenDescription(true)
   }}>Edit Description</li>:null}
         <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
-        {fetchedPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpenRoles(!openRoles)}>Manage Access</li>:null}
-        <li className="text-emerald-600 pt-3 pb-2" onClick={()=>setOpen(true)}>Delete</li>
+        {fetchedPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>{
+          openRoleFormDialog(parameters.page);setOpenRoles(!openRoles)}}>Manage Access</li>:null}
+        <li className="text-emerald-600 pt-3 pb-2" onClick={openConfirmDeleteDialog}>Delete</li>
       </ul>
     </div>
       
@@ -290,12 +299,13 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
    useEffect(()=>{
     let params = parameters
   params.data=htmlContent
- 
+    params.id = id
    params.isPrivate=isPrivate
+   params.description = description
    params.needsFeedback = needsFeedback
 setParameters(params)
     dispatchUpdate(params)
-   },[htmlContent,isPrivate,parameters.privacy,parameters.type,parameters,parameters.data,parameters.description,parameters.title])
+   },[htmlContent,isPrivate,parameters.privacy,description,parameters.type,parameters,parameters.data,parameters.description,parameters.title])
    const handleFeedback=()=>{
 
       let params = parameters
@@ -316,6 +326,26 @@ setParameters(params)
   
  
 },4001)
+const openConfirmDeleteDialog = () => {
+  let dia = {};
+  dia.isOpen = true;
+  dia.title = "Are you sure you want to delete this page?";
+  dia.text = ""; // No additional text
+  dia.onClose = () => {
+    dispatch(setDialog({ isOpen: false }));
+  };
+  dia.agreeText = "Delete";
+  dia.agree = () => {
+    handleDelete();
+    dispatch(setDialog({ isOpen: false }));
+  };
+  dia.disagreeText = "Close";
+  dia.disagree = () => {
+    dispatch(setDialog({ isOpen: false }));
+  };
+
+  dispatch(setDialog(dia));
+};
 const dispatchUpdate =debounce((params)=>{
   setIsSaved(false) 
 
@@ -335,47 +365,60 @@ return true
 ,100)
 
 })
+const openRoleFormDialog = (fetchedPage) => {
+  const dia = {...dialog};
+  dia.isOpen = true;
+  dia.fullScreen = !md; // replicate your fullscreen condition from the prop
+  dia.title = "Manage Roles"; // optionally add a title
+  dia.text = <div>
+      <RoleForm
+        item={fetchedPage}
+        onClose={() => {
+          dispatch(setDialog({ isOpen: false }));
+        }}
+      />
+    </div>
+  
+  dia.onClose = () => {
+    dispatch(setDialog({ isOpen: false }));
+  };
+
+  dia.agreeText = null;
+  dia.agree = null;
+
+  dispatch(setDialog(dia));
+};
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
+          <IonContent fullscreen={true} scrollY >
+            <IonHeader className=" ion-padding py-8 ">
+              <IonButtons className="ion-padding" >
+                <div className="pt-4 pl-4">
+                <IonBackButton  defaultHref={Paths.myProfile()} onClick={handleBack}/></div></IonButtons>
+
+            <IonButtons>{topBar()}</IonButtons>
+            </IonHeader>
           <div  className=" mx-auto md:p-8  "> 
      
                 <div className= "mx-2 md:w-page pt-8 mb-12 mx-auto">
-                {topBar()}
+            
                   <ErrorBoundary>
            
           <EditorDiv  
           createPage={createPageAction}
-    
+    page={editPage}
             
               handleChange={()=>{}}/>
                 </ErrorBoundary>
                 </div>
                     <div>
-                    <Dialog
-                    fullScreen={!md}
-        open={openRoles}
-        onClose={()=>{
-          setOpenRoles(false)
-        }}
-        className=""
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-          <div>
-            <RoleForm item={fetchedPage}
-            onClose={()=>{
-              setOpenRoles(false)
-            }}/>
-          </div>
-      
-  
-      </Dialog>
+       
 <FeedbackDialog 
 
 page={editPage}
 open={feedbackDialog||openDescription} 
 isFeedback={feedbackDialog}
-
+presentingElement={presentingElement}
 handleChange={setDescription} 
 handleFeedback={handleFeedback}
 handlePostPublic={()=>{
@@ -386,14 +429,12 @@ handleClose={()=>{
     setOpenDescription(false)
     setFeedbackDialog(false)
 }} />
-<Dialog isOpen={open} title={"Are you sure you want to delete this page?"}
-onClose={handleClose}
 
-text=""agree={handleDelete} agreeText="Delete" disagreeText="Close"/>
 
       
     </div>
       </div>
+      </IonContent>
       </EditorContext.Provider>
   )    
 

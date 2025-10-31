@@ -1,16 +1,22 @@
 import axios from "axios";
 import Enviroment from "../core/Enviroment";
 
-
+import { Preferences } from "@capacitor/preferences";
 
 
 class StoryRepo{
-    headers= {
-        'Access-Control-Allow-Origin': "*"
-    }
+    // headers= {
+    //     'Access-Control-Allow-Origin': "*"
+    // }
     url= Enviroment.url+"/story"
     
-    token = "token"
+  async getAuthHeaders() {
+    const { value: token } = await Preferences.get({ key: "token" });
+    return {
+    //   ...this.headers,
+      Authorization: `Bearer ${token}`,
+    };
+  }
     async getPublicStories(){
         let res = await  axios.get(this.url+"/",{headers:{'Access-Control-Allow-Origin': "*",
         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}})
@@ -24,25 +30,24 @@ class StoryRepo{
         return res.data
     }
     async getProtectedProfileStories({profileId}){
-
+        let headers = this.getAuthHeaders()
         let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
-            headers:{
-                Authorization:"Bearer "+localStorage.getItem("token")
-            }
+            headers:headers
         })
   
         return res.data
     }
     async recommendations(){
         let res = await axios.get(this.url+"/recommendations",{headers:{
-            Authorization:"Bearer "+localStorage.getItem("token")
+            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
         }})
         return res.data
     }
     async getStoryProtected({id}){
+         let headers = this.getAuthHeaders()
         let res = await axios.get(this.url+"/"+id+"/protected",{
             headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
+                Authorization:headers
             }
         })
        
@@ -53,13 +58,11 @@ class StoryRepo{
       
         return res.data
     }
-    async getMyStories(params){
-        let draft = ""
-        let res = await axios.get(this.url+"/profile/protected/"+draft,{
-            headers:{
-                Authorization:"Bearer "+localStorage.getItem(this.token)
-                
-            }
+    async getMyStories(){
+         let headers = this.getAuthHeaders()
+   
+        let res = await axios.get(this.url+"/profile/protected/",{
+            headers:headers
         })
      
         return res.data
@@ -81,12 +84,13 @@ class StoryRepo{
             title,data,isPrivate,authorId:profileId,commentable:commentable,
             type
     },{headers:{
-        Authorization: "Bearer "+localStorage.getItem(this.token)
+        Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
     }})
         return res.data
     }
     async updateStory(params){
         const { 
+            id,
             page,
             data,
             isPrivate,
@@ -97,7 +101,7 @@ class StoryRepo{
             commentable,
             type
            }=params
-       const res = await axios.put(this.url+"/"+page.id,{
+       const res = await axios.put(this.url+"/"+id,{
             data: data,
             isPrivate:isPrivate,
             description,
@@ -107,7 +111,7 @@ class StoryRepo{
             commentable:commentable,
             type
          },{headers:{
-            Authorization: "Bearer "+localStorage.getItem(this.token)
+            Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
         }})
 
        
@@ -116,7 +120,7 @@ class StoryRepo{
     async deleteStory({id}){
         let res = await axios.delete(this.url+"/"+id,
         {headers:{
-            Authorization: "Bearer "+localStorage.getItem(this.token)
+            Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
     }})
         return res.data
         
@@ -124,7 +128,7 @@ class StoryRepo{
     async getCollectionStoriesProtected({id}){
         let res = await axios.get(this.url+"/collection/"+id+"/protected",{
             headers:{
-                Authorization: "Bearer "+localStorage.getItem(this.token)
+                Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
     }})
    
     return res.data
@@ -137,7 +141,7 @@ class StoryRepo{
     }
     async fetchCommentsOfPageProtected({pageId}){
         let res = await axios.get(this.url+"/"+pageId+"/comment/protected",{headers:{
-            Authorization: "Bearer "+localStorage.getItem(this.token)
+            Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
         }})
         
         

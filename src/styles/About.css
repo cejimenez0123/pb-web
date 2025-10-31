@@ -1,11 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,600&family=Roboto:wght@500&display=swap');
 
-#about {
-    color:#02120A;;
-    padding-bottom: 2em;
-   
-   
-}
+
 .poppins{
     font-family: 'Poppins', sans-serif;
     /* font-family: 'Roboto', sans-serif; */
@@ -22,11 +17,7 @@
         /* padding: 2em 2em;
          */
     }
-    #about{
-        display: flex;
-        flex-direction: column;
-        
-    }
+ 
     #for-creatives p{
         width: 85%;
         margin:auto
@@ -128,11 +119,7 @@
         
         width: fit-content;
     }
-    #about{
-        display: flex;
-        flex-direction: column;
-        
-    }
+  
     .welcome{
         display: grid;
         grid-template-columns: 40% 60%;

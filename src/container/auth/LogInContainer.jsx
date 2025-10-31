@@ -1,43 +1,64 @@
-import React ,{useContext, useLayoutEffect,useEffect, useState} from 'react'
+import {useContext,useEffect,useState} from 'react'
 import "../../App.css"
-import { logIn} from '../../actions/UserActions';
-import {useDispatch, useSelector} from 'react-redux';
+import { logIn, setDialog} from '../../actions/UserActions';
+import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 import loadingGif from "../../images/loading.gif"
 import Paths from '../../core/paths';
-import { useLocation } from 'react-router-dom';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
 import DeviceCheck from '../../components/DeviceCheck';
+import { IonContent,  IonInput, IonText } from '@ionic/react';
+import { Preferences } from '@capacitor/preferences';
+import AppleSignInButton from '../../components/auth/AppleSignInButton';
+import { useSelector } from 'react-redux';
 import GoogleLogin from '../../components/GoogleLogin';
-import Dialog from '../../components/Dialog';
-
-export default function LogInContainer(props) {
-    const location = useLocation()
+import ErrorBoundary from "../../ErrorBoundary.jsx"
+import { Capacitor } from '@capacitor/core';
+export default function LogInContainer() {
     const {setError,seo,setSeo}=useContext(Context)
- 
-    useLayoutEffect(()=>{
+    const currentProfile = useSelector(state=>state.users.currentProfile)
+  
+ const navigate = useNavigate()
+    useEffect(()=>{
         let soo = seo
         soo.title = "Plumbum (Log In) - Share Your Weirdness"
         setSeo(soo)
+       
    },[])
+   useEffect(()=>{
+    //.then(res=>{
+        // if(res && res.value && res.value.length>10 && currentProfile){
+    const checkAuth= async()=>{
+       const token = (await Preferences.get({key:"token"})).value
+       token&& currentProfile &&currentProfile.id&& navigate(Paths.myProfile())
+
+    }
+    checkAuth()
+        // }
+    // })
+   },[currentProfile])
 
     return (
-        <div id="" className='sm:mx-2 py-16 md:py-4'>
+        <IonContent fullscreen={true}>
+            <div className='py-10'>
+     
             <LogInCard  
                        
             setLogInError={setError}
             handleSubmit={(e)=>handleLogIn(e)}
             setPassword={(str)=>setLiPassword(str)}/>
-        </div>
+            </div>
+        {/* </div> */}
+        </IonContent>
     )
 }
 
 function LogInCard({setLogInError}){
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const currentProfile = useSelector(state=>state.users.currentProfile)
+    const {setError}=useContext(Context)
     const [email, setEmail] = useState('');
     const isNative = DeviceCheck()
     const [password, setPassword] = useState('');
@@ -47,37 +68,38 @@ function LogInCard({setLogInError}){
     const [open,setOpen] = useState(false);
     
   
-   
+    const dialog = useSelector(state=>state.users.dialog)
      
     
        
     const handleFirstTimeClick=()=>{
-    if(isNative){
-        navigate("/onboarding")
-    }else{
-        navigate("/apply")
-    }
+  
+       isNative?navigate("/onboard"):navigate("/apply")
+    
     }
 
     const handleLogIn = (event)=>{
         event.preventDefault()
-        setPending(true)
+   
         if(email.length>3 && password.length){
-            const params ={email:email.toLowerCase(),password:password}
+            setPending(true)
+            const params ={email:email.toLowerCase(),password:password,isNative:Capacitor.isNativePlatform()}
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                    
-                    if(payload.error){
-                        setLogInError("Error with Username or Password")
-                    }else{
-                        navigate(Paths.myProfile())
-                    }
+                  
+                    if(payload && payload && payload.profile.id){
+
+                   
+                    navigate(Paths.myProfile())
+                     }else{
+                        setError("Error with Profile")
+                     }
                 },err=>{
                     if(err.message=="Request failed with status code 401"){
-setLogInError("User Not Found. Apply Below")
+setError("User Not Found. Apply Below")
                     }else{
-                        setLogInError(err.message)
+                        setError(err.message)
                     }
              
                     
@@ -86,26 +108,47 @@ setLogInError("User Not Found. Apply Below")
             })       
         }else{
             setPending(false)
-            setLogInError("Values can't be empty")
+            setError("Values can't be empty")
         }
     }
   
-    const dispatchLogin=(email,googleId)=>{
-        dispatch(logIn({email,uId:googleId})).then(res=>{
+    const dispatchLogin=  ({email,googleId,idToken})=>{
+   
+        if(idToken){
+            dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
+                checkResult(res,async payload=>{
+               
+                 
+                //    await Preferences.set({key:"cachedMyProfile",value:JSON.stringify(payload.profile)})
+                   
+                    setPending(false)
+                },err=>{
+
+                    if(err.message=="Request failed with status code 401"){
+    setError("User Not Found. Apply Below")
+                    }else{
+                        setError(err.message)
+                    }
+             
+                    
+                    setPending(false)
+                })
+            })   
+        }else if(googleId){
+
+        
+        dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
+              
+                // Preferences.set({key:"cachedMyProfile",value:payload.profile}).then(()=>{})
+            
                 setPending(false)
-                console.log(payload.error)
-                if(payload.error){
-                    setLogInError("Error with Username or Password")
-                }else{
-                    navigate(Paths.myProfile())
-                }
             },err=>{
-                console.log(payload.error)
+               
                 if(err.message=="Request failed with status code 401"){
-setLogInError("User Not Found. Apply Below")
+setError("User Not Found. Apply Below")
                 }else{
-                    setLogInError(err.message)
+                    setError(err.message)
                 }
          
                 
@@ -113,70 +156,357 @@ setLogInError("User Not Found. Apply Below")
             })
         })   
     }
+    }
+    const handleForgotPasswordDialog=()=>{
+        let dia = {...dialog}
+        
+    dia.
+    dia.onClose=()=>{
+        dispatch(setDialog({isOpen:false}))
+    }
+dia.title=("Forgot Password")
+dia.disagreeText=("Close")
+dia.text=(<ForgotPasswordForm/>)
+dispatch(setDialog(dia))
+    }
     return(
-    <div className=' md:mt-8 md:max-w-[42rem]  lg:mt-36 mb-16 rounded-lg    mx-auto text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+        <ErrorBoundary>
+    <div  className=' py-0 scroll-auto flex md:mt-8  mx-auto sm:max-w-[50em]  lg:mt-36 mb-16 rounded-lg   text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
-            <form className='max-w-[100vw] sm:max-w-82 text-center pt-4'>
-        <h1 className='text-emerald-800 mont-medium pb-4'> Log In</h1>
-        <div >
-         <div className='max-w-[91vw]'>
-        <label className="input  open-sans-medium text-emerald-800 pl-6 w-52 overflow-hidden pl-2  rounded-full border-emerald-600 bg-transparent mt-4 flex items-center gap-2">
-  Email
-  <input type="text" className="shrink overflow-hidden  text-[1rem] w-[100%] sm:max-w-[100%]  open-sans-medium py-2 bg-transparent text-emerald-800" 
+            <form className=' sm:max-w-[40em] overflow-auto pt-4'>
+        <h1 className='text-emerald-800 mont-medium mx-auto text-center pb-4'> Log In</h1>
+        <div className='w-[90vw] text-center sm:w-[40em] '>
+  <div className='text-left'>
+  <IonInput type="text" 
+//   className="grow overflow-hidden w-full my-auto text-[1rem] sm:max-w-72   open-sans-medium  bg-transparent text-emerald-800" 
          value={email} 
-         onChange={(e) => setEmail(e.target.value.trim())}
+         className=' bg-transparent text-emerald-800 mx-auto'
+         labelPlacement='stacked'
+         label='Email'
+         style={{"--ion-max-width":"50em"}}
+         onIonInput={(e) => setEmail(e.target.value)}
         placeholder='example@email.com' />
-</label>
-</div>   
-<div className='mb-8 max-w-[91vw] '>
-    <label className="input open-sans-medium pl-6 inline-block flex rounded-full flex-row text-emerald-800 w-72 overflow-hidden border-emerald-600 bg-transparent mt-4 items-center gap-2">
-  Password
-  <input type={showPassword?"text":`password`} className="shrink max-w-36 open-sans-medium sm:max-w-52  shrink text-emerald-800 " 
-         value={password}
-         
-         onChange={(e) => setPassword(e.target.value.trim())}
-        placeholder='*****' />
-         
-         <label onClick={()=>setShowPassword(!showPassword)}
-                className={`text-[0.7rem] min-w-[5em] w-64 open-sans-medium p-2 ${showPassword?"":"" }ml-1 my-auto`}>
-                    {showPassword?"Hide":"Show"}</label>
-</label> 
-    
     </div>
+{/* </label> */}
+</div>   
+
+
+  <IonInput type={showPassword?"text":`password`}
+//    className="grow my-auto max-w-46 open-sans-medium sm:max-w-96  text-emerald-800 " 
+         value={password}
+         label='Password'
+         labelPlacement='stacked'
+         onIonInput={(e) => setPassword(e.target.value)}
+        placeholder='*****' 
+        >
+            {/* <IonIcon slot='end'> */}
+         <h5 slot='end' onClick={()=>setShowPassword(!showPassword)}
+                className={`text-[0.7rem] open-sans-medium ${showPassword?"":"" } my-auto`}>
+                    {showPassword?"Hide":"Show"}</h5>
+                    {/* </IonIcon> */}
+        </IonInput>
+         
+
+
          
             
-            <button
-            className='bg-green-600   text-white rounded-full hover:bg-green-400  font-bold py-3 px-12 mt-4 '
+            <div
+            // style={{margin:"0 auto",width:"fit-content"}}
+            className='bg-green-600  rounded-full btn w-[100%] mx-4 mx-auto sm:w-[40em] mx-auto hover:bg-green-400  font-bold py-3 px-12 mt-4 '
                onClick={handleLogIn}
                 
-                variant="contained" ><h6 className='mont-medium text-xl tracking-wide'>Log In</h6></button>
+                variant="contained" ><IonText className='  text-white text-xl text-center '>Log In</IonText></div>
                 
+        {/* </div> */}
+        <span className='flex flex-col mt-4 justify-center '> 
+        <div className='w-fit mx-auto'>
+        <AppleSignInButton
+        onUserSignIn={({idToken,email})=>{
+            dispatchLogin({email,idToken,isNative})
+        }}
+        />
         </div>
-        <span className='flex mt-4 justify-center '>  <GoogleLogin 
-     onUserSignIn={({email, name,googleId})=>{
-dispatchLogin(email,googleId)
+         <GoogleLogin
+         onUserSignIn={({email, idToken, googleId, driveAccessToken})=>{
+
+         }}
+     
             
-     }}/></span>
-        <div className='mt-4 p-4'>
-        <a  onClick={handleFirstTimeClick}className='text-emerald-800 text-xl mont-medium hover:text-green-400  '>Click here if this your first time?</a>
-        </div>
+
+    
+     />
+     </span>
+        <div className='mt-4 text-center p-4'>
+        <a  onClick={handleFirstTimeClick}
+        className='text-emerald-800 text-xl hover:text-green-400  '>Click here if this your first time?</a>
+      
         {pending? <div className='flex'>
        <img  
         className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
         </div>:null}
-        <div 
-                className='  '
-                onClick={()=>{
-                    setOpen(true)
-                }}>
-                <a className='text-[1rem] mont-medium hover:text-green-400 text-emerald-800'>Forgot Password?</a>
-            </div>
+        {/* <div  */}
+              {/* > */}
+                
+                <h5 onClick={()=>{
+                    handleForgotPasswordDialog()
+                 }} className='text-[1rem] pt-8 w-fit hover:text-green-400 mx-auto text-emerald-800'>Forgot Password?</h5>
+            {/* </div> */}
+              </div>
         </form>
-<Dialog isOpen={open} onClose={()=>setOpen(false)}
-title={"Forgot Password"}
-disagreeText={"Close"}
-text={<ForgotPasswordForm/>}/>
+
                 </div></div>
-    </div>)
+    </div></ErrorBoundary>)
 }
+// import React ,{useContext,useEffect,useLayoutEffect,useState} from 'react'
+// import "../../App.css"
+// import { logIn, setDialog} from '../../actions/UserActions';
+// import {useDispatch} from 'react-redux';
+// import {useNavigate} from 'react-router-dom'
+// import loadingGif from "../../images/loading.gif"
+// import Paths from '../../core/paths';
+// import checkResult from '../../core/checkResult';
+// import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
+// import Context from '../../context';
+// import DeviceCheck from '../../components/DeviceCheck';
+// import { IonContent,  IonInput, IonText } from '@ionic/react';
+// import { Preferences } from '@capacitor/preferences';
+// import AppleSignInButton from '../../components/auth/AppleSignInButton';
+// import { useSelector } from 'react-redux';
+// import GoogleLogin from '../../components/GoogleLogin';
+// import ErrorBoundary from "../../ErrorBoundary.jsx"
+// export default function LogInContainer() {
+//     const {setError,seo,setSeo}=useContext(Context)
+//     const currentProfile = useSelector(state=>state.users.currentProfile)
+
+//  const navigate = useNavigate()
+//     useEffect(()=>{
+//         let soo = seo
+//         soo.title = "Plumbum (Log In) - Share Your Weirdness"
+//         setSeo(soo)
+       
+//    },[])
+//   useEffect(() => {
+//   if (currentProfile && currentProfile.id) {
+//     // Run navigation safely after render cycle
+//     setTimeout(() => {
+//       navigate(Paths.myProfile(), { replace: true });
+//     }, 0);
+//   }
+// }, [currentProfile]);
+
+
+//     return (
+//         <IonContent fullscreen={true}>
+//             <div className='py-10'>
+     
+//             <LogInCard  
+                       
+//             setLogInError={setError}
+//             handleSubmit={(e)=>handleLogIn(e)}
+//             setPassword={(str)=>setLiPassword(str)}/>
+//             </div>
+//         {/* </div> */}
+//         </IonContent>
+//     )
+// }
+
+// function LogInCard({setLogInError}){
+//     const dispatch = useDispatch()
+//     const navigate = useNavigate()
+//     const {setError}=useContext(Context)
+//     const [email, setEmail] = useState('');
+//     const isNative = DeviceCheck()
+//     const [password, setPassword] = useState('');
+//     const [pending,setPending]=useState(false)
+//     const [showPassword, setShowPassword] = useState(false);
+//     const [forgotEmail, setForgotEmail] = useState("")
+//     const [open,setOpen] = useState(false);
+    
+  
+//     const dialog = useSelector(state=>state.users.dialog)
+     
+    
+       
+//     const handleFirstTimeClick=()=>{
+  
+//        isNative?navigate("/onboard"):navigate("/apply")
+    
+//     }
+//     const handleLogIn = (event)=>{
+//         event.preventDefault()
+   
+//         if(email.length>3 && password.length){
+//             setPending(true)
+            
+//             const params ={email:email.toLowerCase(),password:password,isNative}
+//             dispatch(logIn(params)).then(res=>{
+//                 checkResult(res,payload=>{
+//                     setPending(false)
+//                     console.log(payload.token)
+//                     Preferences.set({key:"token",value:payload.token}).then()
+//                     navigate(Paths.myProfile())
+                  
+//                 },err=>{
+//                     if(err.message=="Request failed with status code 401"){
+// setError("User Not Found. Apply Below")
+//                     }else{
+//                         setError(err.message)
+//                     }
+             
+                    
+//                     setPending(false)
+//                 })
+//             })       
+//         }else{
+//             setPending(false)
+//             setError("Values can't be empty")
+//         }
+//     }
+  
+//     const dispatchLogin=  ({email,googleId,idToken})=>{
+   
+//         if(idToken){
+//             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
+//                 checkResult(res,async payload=>{
+               
+                 
+//                    await Preferences.set({key:"cachedMyProfile",value:JSON.stringify(payload.profile)})
+                   
+//                     setPending(false)
+//                 },err=>{
+
+//                     if(err.message=="Request failed with status code 401"){
+//     setError("User Not Found. Apply Below")
+//                     }else{
+//                         setError(err.message)
+//                     }
+             
+                    
+//                     setPending(false)
+//                 })
+//             })   
+//         }else if(googleId){
+
+        
+//         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
+//             checkResult(res,payload=>{
+              
+//                 Preferences.set({key:"cachedMyProfile",value:payload.profile}).then(()=>{})
+            
+//                 setPending(false)
+//             },err=>{
+               
+//                 if(err.message=="Request failed with status code 401"){
+// setError("User Not Found. Apply Below")
+//                 }else{
+//                     setError(err.message)
+//                 }
+         
+                
+//                 setPending(false)
+//             })
+//         })   
+//     }
+//     }
+//     const handleForgotPasswordDialog=()=>{
+//         let dia = {...dialog}
+        
+//     dia.
+//     dia.onClose=()=>{
+//         dispatch(setDialog({isOpen:false}))
+//     }
+// dia.title=("Forgot Password")
+// dia.disagreeText=("Close")
+// dia.text=(<ForgotPasswordForm/>)
+// dispatch(setDialog(dia))
+//     }
+//     return(
+//         <ErrorBoundary>
+//     <div  className=' py-0 scroll-auto flex md:mt-8  mx-auto sm:max-w-[50em]  lg:mt-36 mb-16 rounded-lg   text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+        
+//         <div  className='mx-auto'>
+//             <form className=' sm:max-w-[40em] overflow-auto pt-4'>
+//         <h1 className='text-emerald-800 mont-medium mx-auto text-center pb-4'> Log In</h1>
+//         <div className='w-[90vw] text-center sm:w-[40em] '>
+//   <div className='text-left'>
+//   <IonInput type="text" 
+// //   className="grow overflow-hidden w-full my-auto text-[1rem] sm:max-w-72   open-sans-medium  bg-transparent text-emerald-800" 
+//          value={email} 
+//          className=' bg-transparent text-emerald-800 mx-auto'
+//          labelPlacement='stacked'
+//          label='Email'
+//          style={{"--ion-max-width":"50em"}}
+//          onIonInput={(e) => setEmail(e.target.value)}
+//         placeholder='example@email.com' />
+//     </div>
+// {/* </label> */}
+// </div>   
+
+
+//   <IonInput type={showPassword?"text":`password`}
+// //    className="grow my-auto max-w-46 open-sans-medium sm:max-w-96  text-emerald-800 " 
+//          value={password}
+//          label='Password'
+//          labelPlacement='stacked'
+//          onIonInput={(e) => setPassword(e.target.value)}
+//         placeholder='*****' 
+//         >
+//             {/* <IonIcon slot='end'> */}
+//          <h5 slot='end' onClick={()=>setShowPassword(!showPassword)}
+//                 className={`text-[0.7rem] open-sans-medium ${showPassword?"":"" } my-auto`}>
+//                     {showPassword?"Hide":"Show"}</h5>
+//                     {/* </IonIcon> */}
+//         </IonInput>
+         
+
+
+         
+            
+//             <div
+//             // style={{margin:"0 auto",width:"fit-content"}}
+//             className='bg-green-600  rounded-full btn w-[100%] mx-4 mx-auto sm:w-[40em] mx-auto hover:bg-green-400  font-bold py-3 px-12 mt-4 '
+//                onClick={handleLogIn}
+                
+//                 variant="contained" ><IonText className='  text-white text-xl text-center '>Log In</IonText></div>
+                
+//         {/* </div> */}
+//         <span className='flex flex-col mt-4 justify-center '> 
+//         <div className='w-fit mx-auto'>
+//         <AppleSignInButton
+//         onUserSignIn={({idToken,email})=>{
+//             dispatchLogin({email,idToken,isNative})
+//         }}
+//         />
+//         </div>
+//          <GoogleLogin
+//          onUserSignIn={({email, idToken, googleId, driveAccessToken})=>{
+
+//          }}
+     
+            
+
+    
+//      />
+//      </span>
+//         <div className='mt-4 text-center p-4'>
+//         <a  onClick={handleFirstTimeClick}
+//         className='text-emerald-800 text-xl hover:text-green-400  '>Click here if this your first time?</a>
+      
+//         {pending? <div className='flex'>
+//        <img  
+//         className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
+//         </div>:null}
+//         {/* <div  */}
+//               {/* > */}
+                
+//                 <h5 onClick={()=>{
+//                     handleForgotPasswordDialog()
+//                  }} className='text-[1rem] pt-8 w-fit hover:text-green-400 mx-auto text-emerald-800'>Forgot Password?</h5>
+//             {/* </div> */}
+//               </div>
+//         </form>
+
+//                 </div></div>
+//     </div></ErrorBoundary>)
+// }

@@ -2,8 +2,7 @@ import React, {  useEffect, useLayoutEffect, useState } from "react"
 import ReactQuill from "react-quill";
 import "../../styles/Editor.css"
 import { useSelector } from "react-redux";
-import { setHtmlContent } from "../../actions/PageActions.jsx";
-import { useDispatch } from "react-redux";
+
 const fonts = ["Arial","Courier New","Georgia"]
 export default function RichEditor({ initContent,handleChange}){
 
@@ -54,9 +53,8 @@ export default function RichEditor({ initContent,handleChange}){
 
   
     return( 
-     
       <ReactQuill 
-      className="bg-green-600   rounded-lg text-white stroke-white"
+      className=" rounded-lg text-white stroke-white"
       modules={modules}
       formats={formats} value={html} onChange={(content)=>handleTextChange(content)}
         

@@ -10,13 +10,12 @@ import { useLocation } from "react-router-dom"
 import adjustScreenSize from "../../core/adjustScreenSize"
 import Context from "../../context"
 import { IonImg } from '@ionic/react';
+import Enviroment from "../../core/Enviroment"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const {isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
-    const size = adjustScreenSize(isGrid,true," overflow-hidden  "," h-[100%]  rounded-lg  "," "," py-2 rounded-lg "," ")
-    const conSize = adjustScreenSize(isGrid,true," overflow-hidden ","h-[100%] overflow-hidden "," overflow-hidden ",""," ")
    
     useEffect(()=>{
         
@@ -25,13 +24,8 @@ export default function PageDataElement({page,isGrid,book=null}){
                 setImage(page.data)
         
             }else{
-                getDownloadPicture(page.data).then(url=>{
-                    setImage(url)
-             
-                }).catch(err=>{
-                console.log(err)
-                
-                })
+                setImage(Enviroment.imageProxy(page.data))
+            
             }
     
         }
@@ -44,28 +38,26 @@ switch(page.type){
     return( 
 
         <div 
-        id="page-data-text"
+        className=" w-full ql-editor  w-[95vw] sm:w-[50em]"
     
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
                 }}
         
-        ><div className={` ql-editor 
-        rounded-lg 
-                ${book?`mx-2`:""}  `}
+        ><div 
+        
+        className={` ql-editor
+               `}
            
            dangerouslySetInnerHTML={{__html:page.data}}/></div>
 
   ) }
   case PageType.picture:{
   
-    return(image?!isHorizPhone?<IonImg  id="page-data-pic"  
-    className={` rounded-lg ${isGrid?
-        isPhone?
-        "w-grid-mobile-content":
-        "w-grid-content":
-        isHorizPhone?"w-page-content":
-        "w-page-mobile-content "} rounded-lg overflow-clip`} onClick={()=>{
+    return(image?!isHorizPhone?<img  id="page-data-pic"  
+
+        className="w-page-mobile"
+        onClick={()=>{
    
         if(location.pathname!=Paths.page.createRoute(page.id)){
         navigate(Paths.page.createRoute(page.id))}
@@ -74,12 +66,8 @@ switch(page.type){
      alt={page.title} src={image}
     />:
     <IonImg        id="page-data-pic"
-    className={` rounded-lg ${isGrid?
-        isPhone?
-        "w-grid-mobile-content":
-        "w-grid-content":
-        isHorizPhone?"w-page-content":
-        "w-page-mobile-content "} rounded-lg overflow-clip`}
+    className="w-full h-full object-contain"
+
     onClick={()=>{
    
    if(location.pathname!=Paths.page.createRoute(page.id)){
@@ -90,13 +78,13 @@ alt={page.title}
     src={image}/>
     
     :
-    <div className={`skeleton ${size}`}/>)
+    <div className={`skeleton w-page-mobile`}/>)
 }
 case PageType.link:{
     return(
     
         <LinkPreview
-        id="page-data-link"
+        // id="page-data-link"
     
             isGrid={isGrid}
             url={page.data}
@@ -104,7 +92,7 @@ case PageType.link:{
        )
 }
 default:
-    return(<div        id="page-data-skeleton "className={`skeleton ${size}`}>
+    return(<div        id="page-data-skeleton "className={`skeleton w-page-mobile`}>
    <IonImg src={loadingGif}/>
 </div>)
 }
@@ -115,5 +103,5 @@ if(!page){
 ) 
 }
 
-return (<span className={"pb-1   "+conSize}><Element page={page}/></span>)
+return (<span ><Element page={page}/></span>)
 }

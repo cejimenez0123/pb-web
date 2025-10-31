@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { isPlatform } from '@ionic/react';
+import React, { useEffect, useState } from 'react'
+import { isPlatform } from '@ionic/react'
 
 const DeviceCheck = () => {
-  const [deviceType, setDeviceType] = useState('desktop');
+  const [deviceType, setDeviceType] = useState('desktop')
 const [capacitor,setCap]=useState("desktop")
   useEffect(() => {
     const userAgent = window.navigator.userAgent || window.navigator.vendor || (window).opera;
 
     const isCapacitor = isPlatform('capacitor'); // If it's running in a native app
-    const isMobileWeb = isPlatform('mobileweb'); // If it's in a mobile browser
+ 
+    // const isMobileWeb = ; // If it's in a mobile browser
     setCap(isCapacitor)
     if (!isCapacitor) {
       // In browser, not in the full native app
@@ -19,10 +20,12 @@ const [capacitor,setCap]=useState("desktop")
       } else {
         setDeviceType('desktop');
       }
+    }else{
+
     }
   }, []);
 
-  return capacitor
+  return isPlatform("capacitor")
 };
 
 export default DeviceCheck;

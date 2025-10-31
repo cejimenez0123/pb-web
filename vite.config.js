@@ -5,6 +5,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],assetsInclude:["**/privacy.html"],
   base: '/' ,
- 
+  optimizeDeps: {
+    include: ['@reduxjs/toolkit']
+  }
 
 })

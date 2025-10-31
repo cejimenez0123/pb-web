@@ -72,3 +72,12 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+ion-toolbar::part(container) {
+  /* margin-top: !important; */
+  padding: 2rem  1rem !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}

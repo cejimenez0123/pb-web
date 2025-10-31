@@ -2,8 +2,9 @@ import { useContext, useLayoutEffect, useState } from "react"
 import authRepo from "../data/authRepo"
 import { debounce } from "lodash"
 import validateEmail from "../core/validateEmail"
-import Dialog from "../components/Dialog"
+//import { Dialog, DialogActions, DialogContent, Button,DialogTitle } from "@mui/material"
 import Context from "../context"
+import { IonContent, IonText } from "@ionic/react"
 
 export default function FeedbackContainer(props){
     const {seo,setSeo}=useContext(Context)
@@ -20,19 +21,69 @@ export default function FeedbackContainer(props){
         setSeo(soo)
       
     },[])
+    const openMessageSentDialog = (purpose) => {
+        let dia = {};
+        dia.isOpen = true;
+        dia.title = "Message Sent Successfully";
+        dia.text = (
+          <div className="card bg-emerald-50 rounded-lg overflow-hidden">
+            <IonHeader translucent={true}>
+              <IonToolbar color="light">
+                <IonTitle className="ion-text-center">
+                  Message Sent Successfully
+                </IonTitle>
+              </IonToolbar>
+            </IonHeader>
+              <IonText className="text-xl lora-medium block text-center text-emerald-800">
+                Thank you for sending us your {purpose.toLowerCase()}.<br />
+                We will respond if it is relevant.
+              </IonText>
+              <div className="ion-text-center ion-margin-top">
+                <IonText>Best regards,</IonText>
+                <br />
+                <IonText>Plumbum</IonText>
+              </div>
+            {/* </IonContent> */}
+    
+            <IonFooter className="ion-padding">
+              <div
+                className="bg-emerald-600 cursor-pointer rounded-full text-white text-center w-full py-2 mont-medium"
+                onClick={() => dispatch(setDialog({ isOpen: false }))}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") dispatch(setDialog({ isOpen: false }));
+                }}
+              >
+                <IonText>Close</IonText>
+              </div>
+            </IonFooter>
+          </div>
+        );
+    
+        dia.onClose = () => {
+          dispatch(setDialog({ isOpen: false }));
+        };
+        dia.disagreeText = null;
+        dia.agreeText = null;
+        dia.agree = null;
+    
+        dispatch(setDialog(dia));
+      }
     const handleFeedback=debounce((e)=>{
         e.preventDefault()
           try{
         authRepo.feedback({preferredName,email,subject,purpose,message}).then(data=>{
                 
-               setOpen(data.message && data.message=="Success")
+            openMessageSentDialog()
             })
         }catch(err){
             console.log(err)
         }
+    
     },10)
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
-    return(<div>
+    return(<IonContent>
         <form className="my-8 px-4">
         <div className="card lg:max-w-[40rem] mx-auto lg:p-8">
 
@@ -74,23 +125,6 @@ rounded-full border-none py-2 text-white my-12`}>
     <h2 className="text-2xl text-white">Send</h2></span>
         </div>
         </form>
-        <Dialog
-        
-        isOpen={open}
-        onClose={()=>{
-            setOpen(false)
-        }}
- 
-               title={"Message Sent Successfully"}
-                text={
-               <div> <p className="text-xl lora-medium">Thank you for sending us your {purpose.toLowerCase()}.
-                We will respond if it is relavent.
-                <p>Best regards,</p>
-                <p>Plumbum</p>
-                </p></div>
-              
-  }
-                
-        />
-    </div>)
+  
+    </IonContent>)
 }

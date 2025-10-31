@@ -1,5 +1,19 @@
 {
   "appId": "com.plumbum.app",
-  "appName": "Plumbum",
-  "webDir": "dist"
+  "appName": "ios",
+  "webDir": "dist",
+  "plugins": {
+    "Keyboard": {
+    "resize": "none", 
+   "style": "default"
+  },
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
+    }
+  }
 }
+

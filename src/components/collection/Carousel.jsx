@@ -60,7 +60,7 @@ export default function Carousel({book,isGrid}){
        
         <div  onTouchStartCapture={()=>{
           sendGAEvent("Opened Page from Book",`Saw  ${JSON.stringify({id:stc.story.id,title:stc.story.title})} in book ${JSON.stringify({id:book.id,title:book.title})}`,"",0,false)
-        }} className={` carousel-item flex-col flex
+        }} className={` carousel-item max-w-[50em] flex-col flex
            rounded-lg overflow-hidden 
            ${size}
            ${book?" ":""}
@@ -75,7 +75,7 @@ onClick={()=>{
   sendGAEvent("Opened Page from Book",`Navigated to ${JSON.stringify({id:stc.story.id,title:stc.story.title})} from book ${JSON.stringify({id:book.id,title:book.title})}`,"",0,false)
        
 }}
-className={ ` min-h-10  ${descSize} pt-3 px-2   text-emerald-700 top-0 mont-medium  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+className={ `book-dashboard-item min-h-10  ${descSize} pt-3 px-2   text-emerald-700 top-0 mont-medium  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
  
         {isGrid?isPhone?null:isHorizPhone?null:description(stc.story):isPhone?null:description(stc.story)}
