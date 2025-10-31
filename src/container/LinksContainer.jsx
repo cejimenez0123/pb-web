@@ -4,11 +4,13 @@ import LinkNode from "../components/LinkNode";
 import Paths from "../core/paths";
 import logo from "../images/icon.ico"
 import events from "../images/icons/event.svg"
-import { initGA, sendGAEvent } from "../core/ga4";
+import { initGA} from "../core/ga4";
 import Context from "../context";
 import flare from "../images/icons/flare.svg"
 import pen from "../images/icons/pen.svg"
 import { IonContent } from "@ionic/react";
+import etsy from "../images/logo/ETSY.png"
+import ErrorBoundary from "../ErrorBoundary";
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -21,13 +23,11 @@ export default function LinksContainer(props){
           soo.title= "Plumbum (Links) - Your Writing, Your Community"
           soo.description="Explore events, workshops, and writer meetups on Plumbum."
           setSeo(soo)
-
-
-         },[])
+     },[])
     
 
 
-    return(<IonContent className="flex flex-col py-8">
+    return(<ErrorBoundary><IonContent fullscreen={true}>
      
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Click links below to discover more!</p></h2>
             <ul className={`md:mx-auto  w-page-mobile-content grid gap-2 grid-cols-2 md:flex md:flex-col lg:w-page-content mx-auto md:mx-4`}>
@@ -36,14 +36,14 @@ export default function LinksContainer(props){
        
                 <li>  
                       <LinkNode image={pen}
-       url={" https://partiful.com/e/rkVamwUP7jw3IfOHuWcg"}
+       url={"https://partiful.com/e/rkVamwUP7jw3IfOHuWcg"}
                     title={"Nov 15th Writers Workshop"}
                     description={`This month, we’re diving into Ngũgĩ wa Thiong’o’s The Upright Revolution, a short story that turns our very bodies into a lesson on unity and transformation.
 Come read, reflect, and connect with writers, thinkers, and neighbors who crave more than small talk.`}/>
                     </li>
                      <li>  
                       <LinkNode image={flare}
-       url={" https://groups.ccny.cuny.edu/UMAAN/rsvp_boot?id=1934546"}
+       url={"https://groups.ccny.cuny.edu/UMAAN/rsvp_boot?id=1934546"}
                     title={"Dec. 3rd Open Mic"}
                     description={`Spark Open Mic @ CCNY
 Step up, express yourself, and share your creativity in a space where you can truly be you.`}/>
@@ -61,7 +61,7 @@ Step up, express yourself, and share your creativity in a space where you can tr
                     title={"Plumbum Merch on Etsy"}
                     description={"Support development, events, and cups of coffee by purchasing merch inspired by the founder, Sol Emilio."}/>
                     </li>
-                    <li>
+                   <li>
                <LinkNode url={"https://plumbum.app"+Paths.discovery()}
                image={logo}
                     title={"Discover Plumbum"}
@@ -75,23 +75,14 @@ Step up, express yourself, and share your creativity in a space where you can tr
                     
                 </li>
                <li>
-               <LinkNode url={" https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}
+               <LinkNode url={"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}
                     image={"https://assets.lulu.com/cover_thumbs/4/5/45q8j8v-front-shortedge-384.jpg"}
                     title={"Purchase literature written by the founder."}
                     description={"Paperback of Good Hell: An Young Aritst's Survival and Coming of Age in New York. "}
 
 />
-               </li>
-        
-       
-           
-             
-           
-              
-         
-               
-       
+               </li> 
             </ul>
     
-    </IonContent>)
+    </IonContent></ErrorBoundary>)
 }

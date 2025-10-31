@@ -153,39 +153,38 @@ const openDialog=()=>{
             className="menu menu-sm dropdown-content bg-emerald-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               {pages.map((page) => {
     if(page==PageName.workshop||page==PageName.home){
-      return currentProfile?<li   onClick={()=>handleCloseNavMenu(page) } 
+      return currentProfile?<li  tabIndex={page} onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
     </li>:null
     }else if(page==PageName.about||page==PageName.login||page==PageName.apply){
-      return !currentProfile?<li onClick={()=>handleCloseNavMenu(page) } 
+      return !currentProfile?<li tabIndex={page}  onClick={()=>handleCloseNavMenu(page) } 
       key={page} >
     <a  className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
     </li>:null
     }else if( page==PageName.create){
-    
         return(currentProfile?  
             <li  
-         
+         tabIndex={page} 
          className="z-[2]  w-52">
         
          <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline'  tabndex="0">Create</a>
            <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
-             <li onClick={ClickWriteAStory}><a  >  <IonImg src={CreateIcon}/></a></li>
-             <li    onClick={(e)=>{
+             <li tabIndex={page}  onClick={ClickWriteAStory}><a  >  <IonImg src={CreateIcon}/></a></li>
+             <li  tabIndex={page}    onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
      
           dispatch(setHtmlContent(""))
           navigate(Paths.editor.image())}}><a>     <IonImg src={ImageIcon}/></a></li>
-             <li><a    onClick={()=>{
+             <li tabIndex={page} ><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
 
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}}>
     <IonImg src={LinkIcon}/></a></li>
-           <li  onClick={()=>{ 
+           <li  tabIndex={page}  onClick={()=>{ 
              
                  openDialog()
                  
@@ -193,14 +192,15 @@ const openDialog=()=>{
     
     }else if(page == PageName.login){
     return !currentProfile?
-    (<li onClick={()=>handleCloseNavMenu(page) } 
-        key={page} >
+    (<li tabIndex={page}  onClick={()=>handleCloseNavMenu(page) } 
+         >
     <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
     </li>):null
     
     }else if(page == PageName.apply){
       return currentProfile?
-      (<li onClick={()=>handleCloseNavMenu(page) } 
+      (<li tabIndex={page} 
+        onClick={()=>handleCloseNavMenu(page) } 
           key={page} >
       <a className=' text-emerald-800 no-underline' textAlign="center">{page}</a>
       </li>):null
@@ -264,23 +264,23 @@ const openDialog=()=>{
          
          className="z-[2] dropdown w-52">
         
-         <a      tabIndex={1} role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
-           <ul      tabIndex={1} className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
-             <li onClick={ClickWriteAStory}><a className='mx-auto '  >  <IonImg src={CreateIcon}/></a></li>
-             <li    onClick={(e)=>{
+         <a      role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
+           <ul     className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
+             <li tabIndex={1}  onClick={ClickWriteAStory}><a className='mx-auto '  >  <IonImg src={CreateIcon}/></a></li>
+             <li   tabIndex={2}   onClick={(e)=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
     
           dispatch(setHtmlContent(""))
           navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
-             <li><a    onClick={()=>{
+             <li tabIndex={3} ><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
 
     dispatch(setHtmlContent(""))
     navigate(Paths.editor.link())}} className='mx-auto'>
    <IonImg src={LinkIcon}/></a></li>
-           <li  onClick={()=>{ 
+           <li tabIndex={4}  onClick={()=>{ 
 
 openDialog()
                  

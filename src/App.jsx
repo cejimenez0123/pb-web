@@ -34,7 +34,6 @@ import SignUpContainer from './container/auth/SignUpContainer.jsx';
 import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
 import ResetPasswordContainer from './container/auth/ResetPassword.jsx';
 import Alert from './components/Alert.jsx';
-import { getRecommendedCollectionsProfile } from './actions/CollectionActions.js';
 import NotificationContainer from './container/profile/NotificationContainer.jsx';
 import HashtagContainer from './container/hashtag/HashtagContainer.jsx';
 import NotFound from './container/NotFound.jsx';
@@ -50,7 +49,6 @@ import { useMediaQuery } from 'react-responsive';
 import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
 import Dialog from './components/Dialog.jsx';
-import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 import DeviceCheck from './components/DeviceCheck.jsx';
 function App(props) {
   const {currentProfile} = props
@@ -81,7 +79,7 @@ function App(props) {
 
   useEffect(()=>{
     Preferences.get({key:"token"}).then(res=>{
-      console.log(res)
+  
       res.value &&  dispatch(getCurrentProfile({token:res.value}))
     })
    
@@ -109,13 +107,10 @@ function App(props) {
   }, []);
   
   return (
-    <IonApp >   
+    <IonApp >
+     
       <Context.Provider value={{isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
-
-      <IonPage  ref={page} className=' App pb-8  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
-     <div className='pt-8'>
-
-      <head>
+     {/* <head>
   <meta charset="UTF-8" />
   <Helmet>
   <title>{seo.title}</title>
@@ -125,7 +120,11 @@ function App(props) {
   <meta property="og:image" content={seo.logoChem} />
   <meta property="og:url" content={seo.url} />
   </Helmet>
-</head>
+</head>  */}
+      <IonPage  ref={page} className=' App pb-8  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+     <div className='pt-8'>
+
+    
     
 
   <link

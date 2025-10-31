@@ -111,43 +111,67 @@ const fetchData = async (url) => {
   if (previewData && previewData.videoId) {
     return (
     
-        <IonImgmg onClick={handleClick} style={{ cursor: 'pointer' }} className=" md:w-[20em]
+        <IonImg onClick={handleClick} style={{ cursor: 'pointer' }} className=" md:w-[20em]
        "src={previewData.videoThumbnail} alt="Video Thumbnail" />
 
     );
   }
+const imageView = () => {
+  const wrapperClass = "flex items-center bg-transparent justify-center sm:mx-4 w-[6em] h-[6em] rounded-full overflow-hidden bg-emerald-50";
+  const imgClass = "object-cover min-h-[4em] min-w-[4em] w-full h-full";
 
-  const imageView = ()=>{
-    
-    let imgClass = "object-fit my-auto mx-auto  max-h-20 max-w-24 min-h-20 min-w-16 rounded-full overflow-hidden "
-    if(previewData && previewData.title=="Spotify"){
-
-      return (
-        <SpotifyEmbed url={url}/>
-      
-      )}else if(image){
-        return(
-  <IonImg className={imgClass} 
-    src={image}/>
-
-)
-
-      }else if(previewData&& previewData.image) {
-    return(     <div className={" flex  text-center shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "}>
-    <IonImg className={"object-fit  w-[100%]  min-w-[70px] "} src={previewData.image}  alt="Link Preview" />
-    </div>
-    )
-    }else{
-      return null
-    }
+  if (previewData && previewData.title === "Spotify") {
+    return <SpotifyEmbed url={url} />;
+  } else if (image) {
+    return (
+      <div className={wrapperClass}>
+        <IonImg className={imgClass} src={image} />
+      </div>
+    );
+  } else if (previewData && previewData.image) {
+    return (
+      <div className={wrapperClass}>
+        <IonImg className={imgClass} src={previewData.image} alt="Link Preview" />
+      </div>
+    );
+  } else {
+    return null;
   }
+};
+
+//   const imageView = ()=>{
+    
+//     let imgClass = "object-fit  h-[5rem] w-[6rem] left-3 rounded-full overflow-hidden "
+//     if(previewData && previewData.title=="Spotify"){
+
+//       return (
+//         <SpotifyEmbed url={url}/>
+      
+//       )}else if(image){
+//         return(
+//            <div className={`w-[5em] h-[5em] overflow-clip rounded-full`}>
+//   <IonImg className={imgClass} 
+//     src={image}/>
+//     </div>
+
+// )
+
+//       }else if(previewData&& previewData.image) {
+//     return(     <div className={" flex  text-center shadow-sm max-h-[70px] max-w-[70px] overflow-hidden rounded-full  "}>
+//     <IonImg className={"object-fit  w-[100%]  min-w-[70px] "} src={previewData.image}  alt="Link Preview" />
+//     </div>
+//     )
+//     }else{
+//       return null
+//     }
+//   }
 
   return (
     <ErrorBoundary>
     <div className={`rounded-[2em] overflow-hidden my-4  h-[20em] md:h-[10em] ove sm:max-h-30 w-[100%] shadow-md flex flex-col sm:flex-row p-4 bg-emerald-100 `} 
     onClick={handleClick} style={{ cursor: 'pointer' }}>
      
-      <div className={`md:max-w-[30em]`}>{imageView()}</div>
+     {imageView()}
       <div className=' px-2 text-emerald-800 overflow-scroll text-left  open-sans-medium'>
       <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
    <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>
