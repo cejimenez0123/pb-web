@@ -23,6 +23,7 @@
     "@capgo/capacitor-social-login": "^7.11.8",
     "@ionic/react": "^8.5.7",
     "@react-google-maps/api": "^2.20.6",
+    "@sentry/react": "^10.22.0",
     "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.7.9",
     "daisyui": "^4.12.20",
