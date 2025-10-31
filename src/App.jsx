@@ -50,6 +50,7 @@ import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
 import Dialog from './components/Dialog.jsx';
 import DeviceCheck from './components/DeviceCheck.jsx';
+import { Capacitor } from '@capacitor/core';
 function App(props) {
   const {currentProfile} = props
   const navigate = useNavigate()
@@ -153,7 +154,7 @@ function App(props) {
       
        
      
-        {!isPhone&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
+        {!Capacitor.isNativePlatform()&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
@@ -329,7 +330,7 @@ presentingElement={page}
     /> 
     </Routes>
     </div>
-    {isPhone&&!(location.pathname.includes("/onboard")||location.pathname.includes("/signup")||(isNative&&location.pathname.includes("/login")))?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
+    {Capacitor.isNativePlatform()&&!(location.pathname.includes("/onboard")||location.pathname.includes("/signup")||(isNative&&location.pathname.includes("/login")))?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
         // loggedIn={currentProfile}
         currentProfile={currentProfile}/></div>:null}

@@ -28,24 +28,21 @@ export default function BookCarousel({ images = [] }) {
       slidesPerView={isPhone?1:2}
       centeredSlides
       navigation
+      loop={true}
       pagination={{ clickable: true }}
       autoplay={{ delay: 3500, disableOnInteraction: false }}
       className="w-[88vw] mx-auto sm:w-[90em] max-w-[1400px] "
     >
       {imagesToUse.map((imgSrc, idx) => (
         <SwiperSlide key={idx}>
-          {/* <div
-            className={`mx-auto overflow-hidden rounded-2xl ${
-              isPhone ? "h-[24rem]" : "h-[36rem]"
-            }`} */}
-          {/* > */}
+         
             <IonImg
               src={imgSrc}
               style={{height:"30em"}}
               alt={`Book Carousel item ${idx + 1}`}
               className="w-full   mx-auto  object-fit object-[30%_10%] rounded-2xl"
             />
-          {/* </div> */}
+     
         </SwiperSlide>
       ))}
     </Swiper>

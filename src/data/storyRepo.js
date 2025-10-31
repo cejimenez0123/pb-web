@@ -5,16 +5,16 @@ import { Preferences } from "@capacitor/preferences";
 
 
 class StoryRepo{
-    // headers= {
-    //     'Access-Control-Allow-Origin': "*"
-    // }
+    headers= {
+        'Access-Control-Allow-Origin': "*"
+    }
     url= Enviroment.url+"/story"
     
   async getAuthHeaders() {
-    const { value: token } = await Preferences.get({ key: "token" });
+    const { value } = await Preferences.get({ key: "token" });
     return {
-    //   ...this.headers,
-      Authorization: `Bearer ${token}`,
+      ...this.headers,
+      Authorization: `Bearer ${value}`,
     };
   }
     async getPublicStories(){
@@ -30,7 +30,7 @@ class StoryRepo{
         return res.data
     }
     async getProtectedProfileStories({profileId}){
-        let headers = this.getAuthHeaders()
+        let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
             headers:headers
         })
@@ -38,17 +38,16 @@ class StoryRepo{
         return res.data
     }
     async recommendations(){
-        let res = await axios.get(this.url+"/recommendations",{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+           let headers = await this.getAuthHeaders()
+        let res = await axios.get(this.url+"/recommendations",{headers
+     
+        })
         return res.data
     }
     async getStoryProtected({id}){
-         let headers = this.getAuthHeaders()
+         let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/"+id+"/protected",{
-            headers:{
-                Authorization:headers
-            }
+            headers:headers
         })
        
         return res.data
@@ -59,7 +58,7 @@ class StoryRepo{
         return res.data
     }
     async getMyStories(){
-         let headers = this.getAuthHeaders()
+         let headers =await this.getAuthHeaders()
    
         let res = await axios.get(this.url+"/profile/protected/",{
             headers:headers
@@ -79,13 +78,11 @@ class StoryRepo{
         type,
         title,
         commentable}){
-     
+       let headers = await this.getAuthHeaders()
         const res = await axios.post(this.url,{
             title,data,isPrivate,authorId:profileId,commentable:commentable,
             type
-    },{headers:{
-        Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
-    }})
+    },{headers})
         return res.data
     }
     async updateStory(params){
@@ -101,6 +98,7 @@ class StoryRepo{
             commentable,
             type
            }=params
+             let headers = await this.getAuthHeaders()
        const res = await axios.put(this.url+"/"+id,{
             data: data,
             isPrivate:isPrivate,
@@ -110,26 +108,25 @@ class StoryRepo{
             title:title,
             commentable:commentable,
             type
-         },{headers:{
-            Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+         },{headers
+        })
 
        
          return res.data
     }
     async deleteStory({id}){
+          let headers = await this.getAuthHeaders()
         let res = await axios.delete(this.url+"/"+id,
-        {headers:{
-            Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
-    }})
+        {headers:headers
+    })
         return res.data
         
     }
     async getCollectionStoriesProtected({id}){
+          let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/collection/"+id+"/protected",{
-            headers:{
-                Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
-    }})
+            headers:headers
+    })
    
     return res.data
     }
@@ -140,9 +137,8 @@ class StoryRepo{
         return res.data
     }
     async fetchCommentsOfPageProtected({pageId}){
-        let res = await axios.get(this.url+"/"+pageId+"/comment/protected",{headers:{
-            Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+          let headers = await this.getAuthHeaders()
+        let res = await axios.get(this.url+"/"+pageId+"/comment/protected",{headers:headers})
         
         
         return res.data

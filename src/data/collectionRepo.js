@@ -5,18 +5,20 @@ import { Preferences } from "@capacitor/preferences";
 
 
  class CollectionRepo{
-    // headers= {
-    //     'Access-Control-Allow-Origin': "*"
-    // }
-    url = Enviroment.url+"/collection"
-    async getAuthHeaders() {
+  headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  };
+
+  async getAuthHeaders() {
     const { value } = await Preferences.get({ key: "token" });
-    console.log("XX",value)
     return {
-    //   ...this.headers,
+      ...this.headers,
       Authorization: `Bearer ${value}`,
     };
+
   }
+  url=Enviroment.url
     async getPublicBooks(){
         let res = await axios.get(this.url+"/public/book",this.headers)
         return res.data
@@ -30,7 +32,7 @@ import { Preferences } from "@capacitor/preferences";
         let res = await axios.get(this.url+"/profile/protected/",{
             headers
         })
-    
+    console.log("GETMY",res)
         return res.data
     }
     async getPublicProfileCollections({id}){

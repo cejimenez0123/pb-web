@@ -83,8 +83,7 @@ I used VSCode as my IDE. You will need your own IDE.
     VITE_MESSAGING_SENDER_ID = "xxxxxxxxxxx"
     VITE_APP_ID="xxxxxxxxxxxxxxxxxxxxxxx"
     VITE_MEASUREMENT_ID = "G-XXXXXXXXXXXX"
-    VITE_ALGOLIA_APP_ID = "XXXXXXXXXXX"
-    VITE_ALGOLIA_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxx"
+  
    ```
 
 <!-- USAGE EXAMPLES -->
