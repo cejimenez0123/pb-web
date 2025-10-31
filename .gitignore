@@ -17,6 +17,7 @@ dist-ssr
 *.local
 credentials.json
 .env
+ios/App/Podfile.lock
 AppleAuthKey
 # Editor directories and files
 .vscode/*
