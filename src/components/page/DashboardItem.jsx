@@ -41,6 +41,7 @@ export default function DashboardItem({ page, book, isGrid }) {
   const colInView = useSelector((state) => state.books.collectionInView);
   const [likeFound, setLikeFound] = useState(false);
   const [bookmarked, setBookmarked] = useState();
+  const [archiveCol,setArchiveCol]=useState(null)
 
 
   const widthSize = adjustScreenSize(isGrid, true, "", " pt-1 pb-2 ", "", "", "", "");
@@ -182,7 +183,21 @@ export default function DashboardItem({ page, book, isGrid }) {
       setError("Please Sign Up");
     }
   };
-
+  const onClickShare=()=>{
+    let dia = {...dialog}
+    dia.text = <ShareList page={page} setArchive={setArchiveCol}profile={currentProfile} archive={archiveCol}
+      bookmark={bookmarked}
+    setBookmarked={setBookmarked}/>
+    dia.title="Share"
+    dia.isOpen=true
+    dia.onClose=()=>{
+        dispatch(setDialog({...dialog,isOpen:false}))
+    }
+    dia.agreeText=null
+    dia.agree=null
+    dia.disagreeText="Close"
+    dispatch(setDialog(dia))
+  }
 
   useLayoutEffect(() => {
     soCanUserEdit();
@@ -192,6 +207,7 @@ export default function DashboardItem({ page, book, isGrid }) {
     if (currentProfile && currentProfile.profileToCollections) {
       setLoading(true);
       let ptc = currentProfile.profileToCollections.find(ptc => ptc.type === "archive");
+      ptc && ptc.collection && setArchiveCol(ptc.collection)
       if (ptc && ptc.collectionId && page && page.id) {
         dispatch(addStoryListToCollection({
           id: ptc.collectionId,

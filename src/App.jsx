@@ -65,10 +65,8 @@ function App(props) {
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
   const profileInView = useSelector(state=>state.users.profileInView)
-  
-  // let oldProfile = usePersistentCurrentProfile(()=>)
+
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-  //  const currentProfile = props.currentProfile
   
   const [olderPath,setOlderPath]=useState(null)
   const location = useLocation()
@@ -154,7 +152,7 @@ function App(props) {
       
        
      
-        {(!Capacitor.isNativePlatform()
+        {(!isNative
     &&!isPhone)&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
@@ -331,13 +329,14 @@ presentingElement={page}
     /> 
     </Routes>
     </div>
-      {(currentProfile&&isPhone) ||(!Capacitor.isNativePlatform()&&location.pathname.includes("/login"))&&!(location.pathname.includes("/onboard")||location.pathname.includes("/signup"))?
-     
-<div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
+     {/* //  ||(!isNative)||!((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))||(currentProfile&&isPhone) */}
+
+      {!(isNative && location.pathname.includes("/login"))||(currentProfile&&isPhone)||(!isNative)&&!((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))?
+   <div className="fixed w-[100vw] bottom-1 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>
 
-      :null} 
+     :null}  
        </div>
        </div>
     </IonPage>
