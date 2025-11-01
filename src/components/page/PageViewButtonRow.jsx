@@ -76,34 +76,7 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
     dia.disagreeText="Close"
     dispatch(setDialog(dia))
   }
-  const onBookmarkPage = () => {
-    setLoading(true);
-    if (currentProfile && currentProfile.profileToCollections) {
-      let ptc = currentProfile.profileToCollections.find((ptc) => ptc.type === "archive");
-      if (ptc && ptc.collectionId && page && page.id) {
-        dispatch(addStoryListToCollection({ id: ptc.collectionId, list: [page], profile: currentProfile })).then(
-          (res) => {
-            checkResult(
-              res,
-              ({ collection }) => {
-                let bookmark = collection.storyIdList.find((stc) => stc.storyId == page.id);
-                setArchive(collection);
-                setBookmarked(bookmark);
-                setLoading(false);
-                setSuccess("Added Successfully");
-              },
-              () => {
-                setError("Error");
-                setLoading(false);
-              }
-            );
-          }
-        );
-      }
-    } else {
-      setLoading(false);
-    }
-  };
+
 
   const getArchive = () => {
     if (currentProfile && currentProfile.profileToCollections) {

@@ -20,7 +20,6 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const [canUserEdit,setCanUserEdit ]=useState(false)
   const [loading,setLoading]=useState(false)
-//    const [bookmarked, setBookmarked] = useState(null);
 
   function soCanUserEdit() {
     const roles = [RoleType.editor];
