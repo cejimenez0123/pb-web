@@ -117,7 +117,7 @@ const ProfileInfo = ({profile})=>{
 
 <div className='w-[10em] h-[3em] mx-auto flex'>
 {!isNative?<h6 onClick={()=>handleDialogOpen()}className='my-auto mx-auto text-sm  mont-medium text-emerald-800'>Refer Someone?</h6>
-                            :   <IonButton id="open-modal" expand="block">
+                            :   <IonButton onClick={()=>handleDialogOpen()} id="open-modal" expand="block">
                             Refer Someone?
         </IonButton>}</div>
           

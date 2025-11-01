@@ -56,6 +56,7 @@ export default function LogInContainer() {
 }
 
 function LogInCard({setLogInError}){
+    const {isPhone}=useContext(Context)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const {setError}=useContext(Context)
@@ -74,7 +75,7 @@ function LogInCard({setLogInError}){
        
     const handleFirstTimeClick=()=>{
   
-       isNative?navigate("/onboard"):navigate("/apply")
+       isPhone?navigate("/onboard"):navigate("/apply")
     
     }
 
