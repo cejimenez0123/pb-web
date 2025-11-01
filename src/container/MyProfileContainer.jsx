@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import "../styles/MyProfile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createStory, updateStory, getMyStories } from '../actions/StoryActions';
@@ -43,7 +43,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 }
 
 function MyProfileContainer({ presentingElement }) {
-
+  let location = useLocation()
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -163,7 +163,7 @@ function MyProfileContainer({ presentingElement }) {
       }
     };
     init();
-  }, []);
+  }, [location]);
 
   const ClickWriteAStory = debounce(() => {
     if (currentProfile?.id) {

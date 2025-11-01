@@ -42,7 +42,7 @@ function LinkPreview({ url, isGrid }) {
         setLoading(false);
       });
     }
-  }, [url]);
+  }, []);
 
 
 const fetchPreview = async (url) => {
@@ -53,7 +53,7 @@ const fetchPreview = async (url) => {
 
     const data = response.data; // ✅ axios already gives JSON
 
-    console.log("Fetched preview data:", data);
+    // console.log("Fetched preview data:", data);
     setPreviewData(data);
   } catch (error) {
     // console.error('Failed to fetch link preview:', error);

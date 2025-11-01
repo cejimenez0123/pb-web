@@ -84,7 +84,7 @@ function App(props) {
       res.value &&  dispatch(getCurrentProfile({token:res.value}))
     })
    
-  },[])
+  },[location])
   useEffect(()=>{
       setOlderPath(location.pathname) 
   },[location.pathname])
@@ -154,7 +154,8 @@ function App(props) {
       
        
      
-        {!Capacitor.isNativePlatform()&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
+        {(!Capacitor.isNativePlatform()
+    &&!isPhone)&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
@@ -330,7 +331,7 @@ presentingElement={page}
     /> 
     </Routes>
     </div>
-    {Capacitor.isNativePlatform()&&!(location.pathname.includes("/onboard")||location.pathname.includes("/signup")||(isNative&&location.pathname.includes("/login")))?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
+    {(Capacitor.isNativePlatform()||isPhone)&&!(location.pathname.includes("/onboard")||location.pathname.includes("/signup")||(isNative&&location.pathname.includes("/login")))?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
     <NavbarContainer 
         // loggedIn={currentProfile}
         currentProfile={currentProfile}/></div>:null}
