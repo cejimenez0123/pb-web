@@ -29,10 +29,13 @@ import ErrorBoundary from '../../ErrorBoundary';
 import { debounce } from 'lodash';
 import { sendGAEvent } from '../../core/ga4';
 import adjustScreenSize from '../../core/adjustScreenSize';
+import ShareList from './ShareList';
+import { setDialog } from '../../actions/UserActions';
 export default function DashboardItem({ page, book, isGrid }) {
   const { isPhone, isHorizPhone, setSuccess, setError, currentProfile } = useContext(Context);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const dialog = useSelector(state=>state.users.dialog)
   const pathParams = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -317,58 +320,58 @@ export default function DashboardItem({ page, book, isGrid }) {
             </div>
           </div>
           {!page.recommended ? (
-            <div className="dropdown text-center bg-emerald-200 py-2  grow w-1/3 dropdown-top">
-              <div tabIndex={0} role="button"
-              className="text-emerald-800 text-center mx-auto rounded-b-lg bg-emerald-200 border-none ">
-                <h6 className='text-[1.2rem]'>Share</h6>
+            // <div className="dropdown text-center bg-emerald-200 py-2  grow w-1/3 dropdown-top">
+              <div tabIndex={0} onClick={onClickShare} role="button"
+              className="text-emerald-800 text-center grow w-1/3  mx-auto rounded-b-lg bg-emerald-200 border-none ">
+                <h6 className='text-[1.2rem] mt-2'>Share</h6>
               </div>
-              <ul tabIndex={0} className="dropdown-content text-center bg-emerald-100 text-emerald-800  menu rounded-box w-60 p-1 shadow">
-                {currentProfile && currentProfile.id == page.authorId?<li className='text-emerald-700'
-                  onClick={() => navigate(Paths.editPage.createRoute(page.id))}>
-                  <a className='text-emerald-800'>
-                    Edit
-                  </a></li>:null}
-                <li className='text-emerald-700'
-                  onClick={() => ClickAddStoryToCollection()}>
-                  <a className='text-emerald-800'>
-                    Add to a Collection
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className='text-emerald-700'
-                    onClick={() => {
-                      navigator.clipboard.writeText("https://plumbum.app/page" + Paths.page.createRoute(page.id))
-                        .then(() => setSuccess('Text copied to clipboard'));
-                    }}>
-                    Share Link
-                  </a>
-                </li>
-                {canUserEdit ? (
-                  <li className='text-emerald-700'>
-                    <a onClick={() => {
-                      dispatch(setEditingPage({ page }));
-                      dispatch(setPageInView({ page: null }));
-                      navigate(Paths.editPage.createRoute(page.id));
-                    }}
-                      className='text-emerald-700'>
-                      Edit
-                    </a>
-                  </li>
-                ) : null}
-                <li>
-                  <button className="my-auto w-fit mx-auto border-none bg-transparent"
-                    onClick={handleBookmark}
-                    disabled={!currentProfile}>
-                    {loading
-                      ? <IonImg className="max-h-6" src={loadingGif} />
-                      : bookmarked
-                        ? <IonImg src={bookmarkFillGreen} className='text-emerald-800' />
-                        : <IonImg src={bookmarkadd} />}
-                  </button>
-                </li>
-              </ul>
-            </div>
+              // <ul tabIndex={0} className="dropdown-content text-center bg-emerald-100 text-emerald-800  menu rounded-box w-60 p-1 shadow">
+              //   {currentProfile && currentProfile.id == page.authorId?<li className='text-emerald-700'
+              //     onClick={() => navigate(Paths.editPage.createRoute(page.id))}>
+              //     <a className='text-emerald-800'>
+              //       Edit
+              //     </a></li>:null}
+              //   <li className='text-emerald-700'
+              //     onClick={() => ClickAddStoryToCollection()}>
+              //     <a className='text-emerald-800'>
+              //       Add to a Collection
+              //     </a>
+              //   </li>
+              //   <li>
+              //     <a
+              //       className='text-emerald-700'
+              //       onClick={() => {
+              //         navigator.clipboard.writeText("https://plumbum.app/page" + Paths.page.createRoute(page.id))
+              //           .then(() => setSuccess('Text copied to clipboard'));
+              //       }}>
+              //       Share Link
+              //     </a>
+              //   </li>
+              //   {canUserEdit ? (
+              //     <li className='text-emerald-700'>
+              //       <a onClick={() => {
+              //         dispatch(setEditingPage({ page }));
+              //         dispatch(setPageInView({ page: null }));
+              //         navigate(Paths.editPage.createRoute(page.id));
+              //       }}
+              //         className='text-emerald-700'>
+              //         Edit
+              //       </a>
+              //     </li>
+              //   ) : null}
+              //   <li>
+              //     <button className="my-auto w-fit mx-auto border-none bg-transparent"
+              //       onClick={handleBookmark}
+              //       disabled={!currentProfile}>
+              //       {loading
+              //         ? <IonImg className="max-h-6" src={loadingGif} />
+              //         : bookmarked
+              //           ? <IonImg src={bookmarkFillGreen} className='text-emerald-800' />
+              //           : <IonImg src={bookmarkadd} />}
+              //     </button>
+              //   </li>
+              // </ul>
+            // </div>
           ) : (
             <div onClick={addStoryToCollection}
               className='bg-emerald-700 flex grow flex-1/3'>

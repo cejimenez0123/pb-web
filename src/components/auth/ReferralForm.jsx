@@ -1,10 +1,8 @@
 import { useContext, useEffect,useLayoutEffect, useState } from "react"
 import authRepo from "../../data/authRepo"
 import Context from "../../context"
-import close from "../../images/icons/clear.svg"
 import loadingGif from "../../images/loading.gif"
 import copyContent from "../../images/icons/content_copy.svg"
-import Dialog from "../Dialog"
 import { IonImg } from "@ionic/react"
 // import {DialogActions,Button} from "@mui/material"
 

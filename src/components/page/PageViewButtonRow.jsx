@@ -40,10 +40,7 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
     initGA();
   }, []);
 
-  useLayoutEffect(() => {
-    soCanUserComment();
-    soCanUserEdit();
-  }, [page, currentProfile]);
+
 
   useEffect(() => {
     setCommenting(comment);
@@ -121,13 +118,7 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
 
  
 
-  const copyShareLink = () => {
-    dispatch(setDialog({...dialog,isOpen:false}))
-    sendGAEvent("Copy Share Link", `Share ${JSON.stringify({ id: page.id, title: page.title })}`, 0, false);
-    navigator.clipboard.writeText(Enviroment.domain + Paths.page.createRoute(page.id)).then(() => {
-      setSuccess("Ready to share");
-    });
-  };
+
 
   const soCanUserComment = () => {
     const roles = [RoleType.commenter, RoleType.editor, RoleType.writer];
@@ -146,7 +137,10 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
       }
     }
   };
-
+  useLayoutEffect(() => {
+    soCanUserComment();
+    soCanUserEdit();
+  }, [page, currentProfile]);
   function soCanUserEdit() {
     const roles = [RoleType.editor];
     if (currentProfile && page) {
