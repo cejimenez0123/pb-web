@@ -46,6 +46,7 @@ function MyProfileContainer({ presentingElement }) {
   let location = useLocation()
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  // const dialog = useSelector(state=>state.users.dialog)
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const stories = useSelector(state => state.pages.pagesInView);
   const dialog = useSelector(state => state.users.dialog);

@@ -122,7 +122,7 @@ function App(props) {
   <meta property="og:url" content={seo.url} />
   </Helmet>
 </head>  */}
-      <IonPage  ref={page} className=' App pb-8  background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+      <IonPage  ref={page} className=' App pb-8 h-[100vh] background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
      <div className='pt-8'>
 
     
@@ -331,10 +331,14 @@ presentingElement={page}
     /> 
     </Routes>
     </div>
-    {(Capacitor.isNativePlatform()||isPhone)&&!(location.pathname.includes("/onboard")||location.pathname.includes("/signup")||(isNative&&location.pathname.includes("/login")))?<div className='fixed bottom-0 w-[100vw] shadow-lg z-50'> 
-    <NavbarContainer 
-        // loggedIn={currentProfile}
-        currentProfile={currentProfile}/></div>:null}
+    {/* {isPhone||!(location.pathname.includes("/onboard")||location.pathname.includes("/signup")||(Capacitor.isNativePlatform()&&location.pathname.includes("/login")))? */}
+     {(Capacitor.isNativePlatform()&&!location.pathname.includes("/login"))&&isPhone&&!(location.pathname.includes("/onboard")||location.pathname.includes("/signup"))?
+     
+<div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
+  <NavbarContainer currentProfile={currentProfile} />
+</div>
+
+      :null} 
        </div>
        </div>
     </IonPage>
