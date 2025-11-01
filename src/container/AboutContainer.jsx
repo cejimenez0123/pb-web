@@ -36,7 +36,7 @@ import {
   IonText,
   IonTitle,
 } from '@ionic/react';
-
+import ig from "../images/icons/instagram icon.png"
 let firstImages = [out, al, crowd, duo,balcony, vemilo,  table7];
 let secImages = [table3,out2,evolution,  vemilo2, table2, table5];
 
@@ -178,11 +178,11 @@ export default function AboutContainer() {
       <h2 className="mx-4 my-2 open-sans-medium text-l">Follow the Journey</h2>
       <a
         className="flex flex-col text-center my-4 mx-auto cursor-pointer"
-        href="https://join.slack.com/t/plumbumwriters/shared_invite/zt-2zvkzyi02-dRlhqb0wvHAaU~~dUgh7hQ"
+        href="https://www.instagram.com/channel/AbaI9yaoN4KfPze_/"
         target="_blank" rel="noreferrer"
       >
-        <p className="open-sans-medium mx-4">Join the discussion on our Slack</p>
-        <img className="mx-auto w-[8em]" src={slack} alt="Slack invite" />
+        <p className="open-sans-medium mx-4 text-emerald-600">Join the Instagram Channel. Today!</p>
+        <img className="mx-auto w-[8em]" src={ig} alt="Slack invite" />
       </a>
       <p
         className="flex open-sans-medium my-4 mx-auto text-center cursor-pointer"
