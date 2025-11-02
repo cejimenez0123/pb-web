@@ -330,7 +330,7 @@ presentingElement={page}
     </Routes>
     </div>
    
-      { (!(Capacitor.isNativePlatform() &&(location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))?
+      { ((!(Capacitor.isNativePlatform()&&!isPhone) &&(location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))?
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>

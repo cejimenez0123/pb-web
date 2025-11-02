@@ -201,9 +201,10 @@ if (col.childCollections) {
   const canUserEdit = currentProfile?.id === collection?.profile?.id;
 
   return (
-    <>
-      {/* ===== HEADER ===== */}
-      <IonHeader translucent>
+  // <IonContent>
+    
+      <IonContent fullscreen className="bg-gray-50">
+            <IonHeader translucent>
         <IonToolbar className="bg-white border-b border-emerald-100">
           <IonButtons slot="start">
             <IonBackButton
@@ -224,16 +225,13 @@ if (col.childCollections) {
           {/* )} */}
         </IonToolbar>
       </IonHeader>
-
-      {/* ===== CONTENT ===== */}
-      <IonContent fullscreen className="ion-padding bg-gray-50">
         {loading ? (
           <div className="flex justify-center items-center h-[60vh]">
             <IonSpinner name="crescent" color="success" />
           </div>
         ) : (
         
-          <div >
+          <div className="ion-padding">
         
 
             <IonList lines="none">
@@ -350,8 +348,8 @@ if (col.childCollections) {
             </div>
           </div>
         )}
-      </IonContent>
-    </>
+      {/* </IonContent> */}
+ </IonContent>
   );
 };
 
