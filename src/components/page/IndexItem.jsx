@@ -110,7 +110,7 @@ function IndexItem({item,handleFeedback,type}) {
 
     const handleAddToClick = ()=>{
       if(type!="story"){
-   navigate(Paths.addToCollection.createRoute(item.id))
+        navigate(Paths.addToCollection.createRoute(item.id))
       }else{
        navigate(Paths.addStoryToCollection.story(item.id))
       }
@@ -122,9 +122,9 @@ function IndexItem({item,handleFeedback,type}) {
 
     return(
   <div className="w-[90vw] sm:w-[40rem]">
-                <div  onClick={handleNavigate} className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full  min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
+                <div   className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full  min-h-[6rem] w-full  py-[1.4em] border-emerald-300">
                 
-         <div className=" h-fit my-auto md:w-[30em]  max-w-[100vw] text-nowrap text-ellipsis  ">
+         <div onClick={handleNavigate} className=" h-fit my-auto md:w-[30em]  max-w-[100vw] text-nowrap text-ellipsis  ">
               
               
                    {item.title && item.title.length>0? 

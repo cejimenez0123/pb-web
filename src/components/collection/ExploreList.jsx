@@ -1,4 +1,3 @@
-import InfiniteScroll from "react-infinite-scroll-component"
 import BookListItem from "../BookListItem"
 import { useSelector } from "react-redux"
 import { IonItem, IonList } from "@ionic/react"

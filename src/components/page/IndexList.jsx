@@ -1,5 +1,3 @@
-
-import InfiniteScroll from "react-infinite-scroll-component"
 import IndexItem from "./IndexItem"
 import React, { useState, useEffect } from 'react';
 import {

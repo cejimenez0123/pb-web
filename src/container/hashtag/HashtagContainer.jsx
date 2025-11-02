@@ -2,7 +2,7 @@ import { useSelector,useDispatch} from 'react-redux'
 import DashboardItem from '../../components/page/DashboardItem'
 import { useState,useEffect, useLayoutEffect, useContext } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import InfiniteScroll from 'react-infinite-scroll-component'
+// import InfiniteScroll from 'react-infinite-scroll-component'
 import ErrorBoundary from '../../ErrorBoundary'
 import checkResult from '../../core/checkResult'
 import { useMediaQuery } from "react-responsive"
@@ -17,6 +17,7 @@ import { setCollections } from '../../actions/CollectionActions'
 import { appendToPagesInView, setPagesInView } from '../../actions/PageActions.jsx'
 import Context from '../../context'
 import useScrollTracking from '../../core/useScrollTracking.jsx'
+import { IonContent, IonInfiniteScroll } from '@ionic/react'
 export default function HashtagContainer(props){
     const location = useLocation()
     const params = useParams()
@@ -108,7 +109,7 @@ export default function HashtagContainer(props){
 
     const libraryForums = ()=>{
     
-            return (<InfiniteScroll
+            return (<IonInfiniteScroll
             className='min-h-[12rem] flex max-w-[100vw] flex-row'
             dataLength={libraries.length}
     
@@ -121,7 +122,7 @@ export default function HashtagContainer(props){
                   <BookListItem book={library}/></div>
            
                 })}
-            </InfiniteScroll>)
+            </IonInfiniteScroll>)
        
     }
     const bookList = ()=>{
@@ -132,7 +133,7 @@ export default function HashtagContainer(props){
     text-left 
     font-extrabold 
      lora-bold text-2xl ml-4 md:ml-24'>Collections</h3>
-                <InfiniteScroll
+                <IonInfiniteScroll
             className={`  max-w-[100vw] my-2 min-h-[12rem]  flex-row flex`}
             dataLength={books.length}
           
@@ -154,7 +155,7 @@ export default function HashtagContainer(props){
                             <BookListItem book={book}/>
                         </div>)
                 })}
-</InfiniteScroll>
+</IonInfiniteScroll>
 </div>)
 
         
@@ -165,7 +166,7 @@ export default function HashtagContainer(props){
             return(<div 
             className=' w-[96vw] md:w-page mx-auto '
             >
-               <InfiniteScroll
+               <IonInfiniteScroll
             dataLength={pagesInView.length}
             next={()=>{
 
@@ -200,7 +201,7 @@ className={`${
                     </div>)
                 })}
                 </div>
-            </InfiniteScroll> </div>)
+            </IonInfiniteScroll> </div>)
         }
     
 
@@ -219,6 +220,7 @@ className={`${
         }
         return(
             <ErrorBoundary>
+                <IonContent fullscreen={true}>
             <div 
 
             className=' max-w-[100vw] mt-4' >
@@ -273,7 +275,7 @@ className={`${
            
                     </div>
                     </div>
-             
+             </IonContent>
             </ErrorBoundary>
         )
     }

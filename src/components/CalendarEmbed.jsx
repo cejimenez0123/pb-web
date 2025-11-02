@@ -2,7 +2,6 @@ import { useContext, useRef, useState } from "react";
 import { useLayoutEffect,useEffect } from "react";
 import useScrollTracking from "../core/useScrollTracking";
 import storyRepo from "../data/storyRepo";
-import InfiniteScroll from "react-infinite-scroll-component";
 import Context from "../context";
 import isValidUrl from "../core/isValidUrl";
 import debounce from "../core/debounce"
@@ -10,11 +9,8 @@ import {sendGAEvent } from "../core/ga4";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
-import insta from "../images/icons/instagram.svg"
-import Dialog from "./Dialog";
 import { IonImg, IonInput, IonItem, IonList, IonText } from "@ionic/react";
 import { setDialog } from "../actions/UserActions";
-import DeviceCheck from "./DeviceCheck";
 
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
