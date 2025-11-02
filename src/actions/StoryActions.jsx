@@ -98,24 +98,14 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
  
   let data = await storyRepo.updateStory(params)
  
-  if(data.story&& params && !data.story.isPrivate&&data.story.id){
-  try{
-    algoliaRepo.partialUpdateObject("story",data.story.id,{title:data.story.title})
 
-    }catch(err){
-      console.log(err)
-      return err
-    }
-   }else{
-try{
-        algoliaRepo.deleteObject("story",data.story.id)
-       
-}catch(err){
-   return{
-    error: err
-  }
+if(data.story.isPrivate&&data.story.id){
+  algoliaRepo.deleteObject("story",data.story.id)
+}else{
+algoliaRepo.partialUpdateObject("story",data.story.id,{title:data.story.title})
 }
-   }
+ 
+
  
   return {
     story: data.story

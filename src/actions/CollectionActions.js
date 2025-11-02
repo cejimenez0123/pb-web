@@ -238,6 +238,7 @@ const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
 )=>{
     try{
      let data = await collectionRepo.getMyCollections()
+     console.log(data)
       return {
         collections: data.collections
       }

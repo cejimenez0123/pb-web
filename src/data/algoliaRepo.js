@@ -44,7 +44,6 @@ class AlgoliaRepo {
     return res.data;
   }
 
-  // ✏️ Partial update of existing object
   async partialUpdateObject(indexName, objectID, fields) {
     const headers = await this.getAuthHeaders();
     const res = await axios.patch(

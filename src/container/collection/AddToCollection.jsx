@@ -325,34 +325,9 @@ text-[1rem]">
             />
           </div>
 
-          {/* Tabs */}
+        
           <StoryCollectionTabs tab={tab} setTab={setTab}  storyList={storyList} colList={colList}/>
-          {/* <div className="flex justify-center mb-2">
-            <div className="flex rounded-full border border-emerald-600 overflow-hidden">
-              <button
-                className={`px-4 py-2 ${
-                  tab === "page"
-                    ? "bg-emerald-700 text-white"
-                    : "text-emerald-700 bg-transparent"
-                }`}
-                onClick={() => setTab("page")}
-              >
-                Stories
-              </button>
-              <button
-                className={`px-4 py-2 ${
-                  tab === "collection"
-                    ? "bg-emerald-700 text-white"
-                    : "text-emerald-700 bg-transparent"
-                }`}
-                onClick={() => setTab("collection")}
-              >
-                Collections
-              </button>
-            </div>
-          </div>
-
-          {tab === "page" ? storyList() : colList()} */}
+        
         </IonContent>
       {/* </IonPage> */}
     </ErrorBoundary>

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import "../styles/MyProfile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createStory, updateStory, getMyStories } from '../actions/StoryActions';
-import { getMyCollections} from '../actions/CollectionActions';
+import { getMyCollections, setCollections} from '../actions/CollectionActions';
 import IndexList from '../components/page/IndexList';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
@@ -128,17 +128,7 @@ function MyProfileContainer({ presentingElement }) {
     return result;
   }, [collections, filterType, search]);
 
-  const getItems = async () => {
-    try {
-      await Promise.all([
-        dispatch(getMyCollections()),
-        dispatch(getMyStories())
-      ]);
-    } catch (error) {
-      console.error("Error fetching items:", error);
-      setErrorLocal(error.message);
-    }
-  };
+
 
   const getDriveToken = async () => {
     try {
@@ -153,7 +143,7 @@ function MyProfileContainer({ presentingElement }) {
     useIonViewWillEnter(() => {
   const init = async () => {
     try {
-      await getItems();
+     
       await getDriveToken();
     } catch (err) {
       console.error("Initialization error:", err);
@@ -161,21 +151,8 @@ function MyProfileContainer({ presentingElement }) {
     }
   };
   init();
-// });
+
   },[navigate])
-  // useEffect(() => {
-  //   const init = async () => {
-  //     try {
-  //       // if (isNative) Capacitor.isPluginAvailable('Preferences');
-  //       await getItems();
-  //       await getDriveToken();
-  //     } catch (err) {
-  //       console.error("Initialization error:", err);
-  //       setErrorLocal(err.message);
-  //     }
-  //   };
-  //   init();
-  // }, []);
 
   const ClickWriteAStory = debounce(() => {
     if (currentProfile?.id) {
@@ -244,11 +221,12 @@ function MyProfileContainer({ presentingElement }) {
     let seSeo = () => {
       if (currentProfile) {
         setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
-        dispatch(setPagesInView({ pages: currentProfile.stories }));
+        dispatch(setPagesInView({ pages: currentProfile.stories }))
+        dispatch(setCollections({collections:currentProfile.collections}))
       }
     };
     return seSeo()
-  }, [currentProfile]);
+  }, [currentProfile])
   if (!currentProfile) {
     return (
       <IonContent>

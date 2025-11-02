@@ -17,7 +17,7 @@ export function HashtagForm({item}){
     const dispatch = useDispatch()
     const [hashtags, setHashtags] = useState([]);
      useLayoutEffect(()=>{
-    resetHashtags()
+        resetHashtags()
     },[storyHashtags])
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const resetHashtags= ()=>{
@@ -89,8 +89,9 @@ export function HashtagForm({item}){
       
     }
     const handleKeyDown = (e) => {
-
-        if(item && currentProfile){
+      console.log("HASG",e)
+try{
+        // if(item && currentProfile){
       if (e.key === 'Enter' && inputValue.trim()) {
         if(item.storyIdList){
           dispatch(createHashtagCollection({name:inputValue.trim().toLocaleLowerCase(),colId:item.id,profile:currentProfile})
@@ -130,23 +131,24 @@ export function HashtagForm({item}){
         setInputValue('');
         e.preventDefault(); 
       }
-    }else{
-        window.alert("No Page or Profile")
+    }catch(err){
+      setError(err)
     }
+   
     };
   
     return (
       // <ErrorBoundary>
-      <form className="  mt-2 ">
+      <form className="  w-full flex flex-col mt-2 ">
      
-        <IonTextarea
+        <textarea
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Type a hashtag and press Enter"
           rows={4}
           cols={12}
-          className=" my-1  mx-auto border-1 border-emerald-600 bg-transparent text-emerald-800"
+          className=" my-1 w-[96vw] md:w-[48em] mx-auto border-1 border-emerald-600 bg-transparent text-emerald-800"
         />
       <button type="submit"  className="hidden">Submit</button>
       <div className="text-left my-1">

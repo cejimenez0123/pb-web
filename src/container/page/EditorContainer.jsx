@@ -3,7 +3,7 @@ import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
 import { useParams,useNavigate, useLocation} from "react-router-dom"
 import menu from "../../images/icons/menu.svg"
-import { useContext, useEffect, useLayoutEffect, useState } from "react"
+import { useContext, useEffect, useLayoutEffect, useState,useRef } from "react"
 import checkResult from "../../core/checkResult"
 import { useMediaQuery } from "react-responsive"
 import { PageType } from "../../core/constants"
@@ -62,6 +62,29 @@ function EditorContainer({presentingElement}){
         
   
 
+
+// inside your component
+const hasInitialized = useRef(false);
+
+useEffect(() => {
+  // skip on initial load
+  if (!hasInitialized.current) {
+    hasInitialized.current = true;
+    return;
+  }
+
+  let params = { ...parameters };
+  params.data = htmlContent;
+  params.id = id;
+  params.isPrivate = isPrivate;
+  params.description = description;
+  params.needsFeedback = needsFeedback;
+
+  setParameters(params);
+  dispatchUpdate(params);
+
+}, [htmlContent, isPrivate, description, needsFeedback, parameters.title, parameters.type]);
+
       useEffect(()=>{
         if(fetchedPage){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
@@ -101,21 +124,11 @@ function EditorContainer({presentingElement}){
 
    
     useLayoutEffect(()=>{
-      if(currentProfile){
+      // if(currentProfile){
         fetchStory()
-      }
-    },[currentProfile,location.pathname])
+      // }
+    },[navigate])
 
-    useLayoutEffect(()=>{
-return ()=>{
-  const {page}=parameters
-            if(page){
-             if(parameters.data &&parameters.title && parameters.data.length==0 && parameters.title.length==0){
-         
-              dispatch(deleteStory({page:page}))}
-             }
-          }
-    },[])
     useEffect(()=>{
         if(last==PageType.picture&&htmlContent.length>5&&parameters.page && !parameters.page.id){
            let params = parameters
@@ -146,13 +159,14 @@ return ()=>{
              
   }
     const fetchStory = ()=>{
-  if(id){
+  // if(id){
+  try{
       dispatch(getStory({id:id})).then(res=>{
         checkResult(res,payload=>{
-        
+        console.log(payload)
           const {story}=payload
 
-          story.data && dispatch(setHtmlContent(story.data))
+          dispatch(setHtmlContent(story.data))
           dispatch(setEditingPage({page:story}))
           dispatch(setPageInView({page:story}))
           setStoryData(story)
@@ -163,7 +177,10 @@ return ()=>{
       },err=>{
 
        setSuccess(null)
-      })})}
+      })})
+    }catch(err){
+      setError(err.message)
+    }
     }
   
 
@@ -237,7 +254,7 @@ setOpenDescription(false)
       }
   
    const topBar=()=>{
-    return(<div className=" rounded-lg w-full  mx-auto ">
+    return(<div className=" rounded-lg  w-[98vw] sm:max-w-[50em] mx-auto ">
     <div className=" text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400   flex flex-row sm:rounded-t-lg border border-white   ">
         <div 
       className=" flex-1 text-left border-white border-r-2  "
@@ -291,7 +308,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
 
   
     </div>
-    {openHashtag?<div className="bg-emerald-50">
+    {openHashtag?<div className="bg-emerald-50 w-full">
     <HashtagForm item={parameters.page}/>
   </div>:null}
     </div>)
@@ -362,7 +379,7 @@ return true
       setError(err.message)
       return false
     })}
-,100)
+,200)
 
 })
 const openRoleFormDialog = (fetchedPage) => {
@@ -390,7 +407,7 @@ const openRoleFormDialog = (fetchedPage) => {
 };
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
-          <IonContent fullscreen={true} scrollY >
+          <IonContent fullscreen={true}  >
             <IonHeader className=" ion-padding py-8 ">
               <IonButtons className="ion-padding" >
                 <div className="pt-4 pl-4">
