@@ -13,6 +13,8 @@ import { sendGAEvent } from "../../core/ga4";
 import { addStoryListToCollection } from "../../actions/CollectionActions";
 import checkResult from "../../core/checkResult";
 import Enviroment from "../../core/Enviroment";
+import { useNavigate } from "react-router-dom";
+import Paths from "../../core/paths";
 export default function ShareList({ page, profile, archive,setArchive, bookmark, setBookmarked }) {
   const [localBookmark, setLocalBookmark] = useState(bookmark);
   const {setSuccess,setError}=useContext(Context)
@@ -20,7 +22,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const [canUserEdit,setCanUserEdit ]=useState(false)
   const [loading,setLoading]=useState(false)
-
+    const navigate = useNavigate()
   function soCanUserEdit() {
     const roles = [RoleType.editor];
     if (currentProfile && page) {
@@ -172,9 +174,9 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
           <IonItem
             onClick={() => {
               dispatch(setDialog({ ...dialog, isOpen: false }));
-              dispatch(setEditingPage({ page }));
-              dispatch(setHtmlContent(page.data));
-              navigate(Paths.editPage.createRoute(page.id));
+                navigate(Paths.editPage.createRoute(page.id));
+        
+     
             }}
           >
             <IonText className="text-[1rem]">Edit</IonText>
