@@ -181,7 +181,7 @@ export default function AboutContainer() {
         href="https://www.instagram.com/channel/AbaI9yaoN4KfPze_/"
         target="_blank" rel="noreferrer"
       >
-        <p className="open-sans-medium mx-4 text-emerald-600">Join the Instagram Channel. Today!</p>
+        <p className="open-sans-medium mx-4 my-4 text-emerald-600">Join the Instagram Channel. Today!</p>
         <img className="mx-auto w-[8em]" src={ig} alt="Slack invite" />
       </a>
       <p
@@ -324,9 +324,11 @@ export default function AboutContainer() {
                   click here
                 </IonText>
               </IonText>
+              <div>
               <IonText className="ion-padding-top" color="medium">
-                Plumbum©2025
+                © Plumbum 2025
               </IonText>
+              </div>
             </IonCol>
           </IonRow>
         {/* </IonGrid> */}

@@ -330,7 +330,7 @@ presentingElement={page}
     </Routes>
     </div>
    
-      {!(isNative && location.pathname.includes("/login"))||(currentProfile&&isPhone)||(!isNative)&&!((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))?
+      {isPhone && (!(isNative && location.pathname.includes("/login"))||(currentProfile&&isPhone)||(!isNative)&&!((location.pathname.includes("/onboard")||location.pathname.includes("/signup"))))?
    <div className="fixed w-[100vw] bottom-1 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>

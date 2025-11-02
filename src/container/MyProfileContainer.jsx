@@ -16,11 +16,12 @@ import ProfileInfo from '../components/profile/ProfileInfo';
 import Context from '../context';
 import FeedbackDialog from '../components/page/FeedbackDialog';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-import { IonText, IonInput, IonContent, IonSpinner, IonPage } from '@ionic/react';
+import { IonText, IonInput, IonContent, IonSpinner, IonPage, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 import { setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
 import axios from "axios";
+
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -43,10 +44,9 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 }
 
 function MyProfileContainer({ presentingElement }) {
-  let location = useLocation()
+  // let location = useLocation()
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const dialog = useSelector(state=>state.users.dialog)
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const stories = useSelector(state => state.pages.pagesInView);
   const dialog = useSelector(state => state.users.dialog);
@@ -130,11 +130,9 @@ function MyProfileContainer({ presentingElement }) {
 
   const getItems = async () => {
     try {
-      const token = (await Preferences.get({ key: "token" })).value;
-      if (!token) throw new Error("No auth token found");
       await Promise.all([
-        dispatch(getMyCollections({ token })),
-        dispatch(getMyStories({ token }))
+        dispatch(getMyCollections()),
+        dispatch(getMyStories())
       ]);
     } catch (error) {
       console.error("Error fetching items:", error);
@@ -151,20 +149,33 @@ function MyProfileContainer({ presentingElement }) {
       setErrorLocal(error.message);
     }
   };
-
-  useEffect(() => {
-    const init = async () => {
-      try {
-        // if (isNative) Capacitor.isPluginAvailable('Preferences');
-        await getItems();
-        await getDriveToken();
-      } catch (err) {
-        console.error("Initialization error:", err);
-        setErrorLocal(err.message);
-      }
-    };
-    init();
-  }, [location]);
+  // useIonViewDidEnter(()=>{
+    useIonViewWillEnter(() => {
+  const init = async () => {
+    try {
+      await getItems();
+      await getDriveToken();
+    } catch (err) {
+      console.error("Initialization error:", err);
+      setErrorLocal(err.message);
+    }
+  };
+  init();
+// });
+  },[navigate])
+  // useEffect(() => {
+  //   const init = async () => {
+  //     try {
+  //       // if (isNative) Capacitor.isPluginAvailable('Preferences');
+  //       await getItems();
+  //       await getDriveToken();
+  //     } catch (err) {
+  //       console.error("Initialization error:", err);
+  //       setErrorLocal(err.message);
+  //     }
+  //   };
+  //   init();
+  // }, []);
 
   const ClickWriteAStory = debounce(() => {
     if (currentProfile?.id) {

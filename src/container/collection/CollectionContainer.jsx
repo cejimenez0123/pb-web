@@ -517,7 +517,7 @@ console.log("STORYLIST",collection.storyIdList)
     </IonButtons>
 
     {/* Right-aligned edit button */}
-    {canUserEdit && isNative && (
+    {/* {canUserEdit && isNative && (
       <IonButtons slot="end">
         <IonImg
           className="btn max-h-[2rem] bg-emerald-400 cursor-pointer max-w-[3rem] flex items-center border-0 justify-center px-2 rounded"
@@ -525,7 +525,7 @@ console.log("STORYLIST",collection.storyIdList)
           src={edit}
         />
       </IonButtons>
-    )}
+    )} */}
 
   </IonToolbar>
 </IonHeader>
