@@ -19,7 +19,7 @@ import {  useNavigate } from 'react-router-dom';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import {  IonContent,IonButton,IonImg, IonList, IonItem } from '@ionic/react';
+import {  IonContent,IonButton,IonImg, IonList, IonItem, IonInfiniteScroll, IonText } from '@ionic/react';
 
 function DiscoveryContainer() {
   const { seo,setSeo } = useContext(Context);
@@ -96,49 +96,80 @@ function DiscoveryContainer() {
 
   // UI rendering helpers
 
-  const libraryForums = () => {
-    if (!libraries) return null;
-    return (
-      <>
-        <h3
-          className={`text-emerald-900 ${
-            isNotPhone ? 'ml-16 pl-6' : 'ml-16'
-          } mb-4 lora-bold font-extrabold text-2xl`}
-        >
-          Communities
-        </h3>
-        <div className="mb-12  h-[16rem]">
+  // const libraryForums = () => {
+  //   if (!libraries) return null;
+  //   return (
+  //     <div className=''>
+  //       <IonText
+  //         className={`text-emerald-900 ${
+  //           isNotPhone ? 'ml-16 pl-6' : 'ml-16'
+  //         } mb-4 lora-bold font-extrabold text-2xl`}
+  //       >
+  //         Communities
+  //       </IonText>
+  //       <div className="mb-12 h-[13em]">
      
-          <IonList className='flex flex-row  h-[16rem] overflow-x-scroll'>
-            {libraries.map(library => (
-              <IonItem key={library.id} className='mx-3'>
-                <BookListItem book={library} />
-              </IonItem>
-            ))}
-    </IonList>
+  //         <IonInfiniteScroll className='flex h-fit flex-row  overflow-x-scroll'>
+  //           {libraries.map(library => (
+  //             <IonItem key={library.id} className='mx-4'>
+  //               <BookListItem book={library} />
+  //             </IonItem>
+  //           ))}
+  // </IonInfiniteScroll>
+  //       </div>
+  //    </div>
+  //   );
+  // };
+const libraryForums = () => {
+  if (!libraries) return null;
+
+  return (
+    <div className="">
+      <IonText
+        className={`text-emerald-900 ${
+          isNotPhone ? 'ml-16 pl-6' : 'ml-16'
+        } mb-4 lora-bold font-extrabold text-2xl`}
+      >
+        Communities
+      </IonText>
+
+      {/* Horizontal scroll area */}
+      <div className="mb-4">
+        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
+          {libraries.map((library) => (
+            <IonItem
+              key={library.id}
+              className=" flex-shrink-0 border-none bg-transparent"
+            >
+              <BookListItem book={library} />
+            </IonItem>
+          ))}
         </div>
-      </>
-    );
-  };
+      </div>
+    </div>
+  );
+};
 
   const bookList = () => {
-    if (!books) return null;
+    // if (!books) return null;
     return (
-      <div>
+      <div className='h-[14rem]'>
         <h3 className="text-emerald-900 text-left font-extrabold ml-16 lora-bold mb-4 text-2xl">
           Collections
         </h3>
-
-        <IonList className='flex   h-[16rem] flex-row overflow-x-scroll'>
+<div className="mb-4">
+        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
+         
           {books.map((book, i) => {
             const id = `${book.id}_${i}`;
             return (
-              <IonItem key={id} className="mx-3">
+              <IonItem key={id} className="mx-3 h-[10rem]">
                 <BookListItem book={book} />
               </IonItem>
             );
           })}
-    </IonList>
+    </div>
+    </div>
       </div>
     );
   };
@@ -158,7 +189,7 @@ function DiscoveryContainer() {
    
         <IonContent fullscreen={true} scrollY>
       
-          <div className="text-left  h-[16rem] mt-24">
+          <div className="text-left  mt-12">
             {libraryForums()}
           </div>
 

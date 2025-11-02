@@ -85,6 +85,8 @@ const openDialog=()=>{
     dia.isOpen = false
     dispatch(setDialog(dia))
   }
+  dia.agree = null
+  dia.agreeText=null
   dia.text=<CreateCollectionForm onClose={()=>{
 
     let dia = {...dialog}

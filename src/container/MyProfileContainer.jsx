@@ -76,10 +76,10 @@ function MyProfileContainer({ presentingElement }) {
     } else {
       switch (filterType) {
         case filterTypes.recent:
-          result = [...result].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          result = [...result].sort((a, b) => new Date(b.updated) - new Date(a.updated));
           break;
         case filterTypes.oldest:
-          result = [...result].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+          result = [...result].sort((a, b) => new Date(a.updated) - new Date(b.updated));
           break;
         case filterTypes.AZ:
           result = [...result].sort((a, b) => a.title.localeCompare(b.title));
@@ -102,7 +102,9 @@ function MyProfileContainer({ presentingElement }) {
 
   const filteredSortedCollections = useMemo(() => {
     let result = collections || [];
-
+    if(filterType==filterTypes.feedback){
+      result = collections.filter(col=>col.type=="library"&&col.purpose.toLowerCase().includes("feedback"))
+    }
     switch (filterType) {
       case filterTypes.AZ:
         result = [...result].sort((a, b) => a.title.localeCompare(b.title));
@@ -111,10 +113,10 @@ function MyProfileContainer({ presentingElement }) {
         result = [...result].sort((a, b) => b.title.localeCompare(a.title));
         break;
       case filterTypes.recent:
-        result = [...result].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        result = [...result].sort((a, b) => new Date(b.updated) - new Date(a.updated));
         break;
       case filterTypes.oldest:
-        result = [...result].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        result = [...result].sort((a, b) => new Date(a.updated) - new Date(b.updated));
         break;
       default:
         break;

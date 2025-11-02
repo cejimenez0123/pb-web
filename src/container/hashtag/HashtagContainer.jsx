@@ -1,281 +1,264 @@
-import { useSelector,useDispatch} from 'react-redux'
-import DashboardItem from '../../components/page/DashboardItem'
-import { useState,useEffect, useLayoutEffect, useContext } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-// import InfiniteScroll from 'react-infinite-scroll-component'
-import ErrorBoundary from '../../ErrorBoundary'
-import checkResult from '../../core/checkResult'
-import { useMediaQuery } from "react-responsive"
-import BookListItem from '../../components/BookListItem'
-import { initGA,sendGAEvent } from '../../core/ga4.js'
-import grid from "../../images/grid.svg"
-import stream from "../../images/stream.svg"
-import InfoTooltip from '../../components/InfoTooltip'
-import loadingGif from "../../images/loading.gif"
-import { fetchHashtag } from '../../actions/HashtagActions'
-import { setCollections } from '../../actions/CollectionActions'
-import { appendToPagesInView, setPagesInView } from '../../actions/PageActions.jsx'
-import Context from '../../context'
-import useScrollTracking from '../../core/useScrollTracking.jsx'
-import { IonContent, IonInfiniteScroll } from '@ionic/react'
-export default function HashtagContainer(props){
-    const location = useLocation()
-    const params = useParams()
-    const {id}=params
-     useScrollTracking({name:id})
-    const {setError,seo,setSeo}=useContext(Context)
-    const collections = useSelector(state=>state.books.collections)
-    const [hash,setHashtag]=useState(null)
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect, useLayoutEffect, useContext, useMemo } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { IonContent, IonInfiniteScroll,IonHeader,IonToolbar,IonButtons,IonBackButton,IonItem, IonTitle } from "@ionic/react";
+import ErrorBoundary from "../../ErrorBoundary";
+import checkResult from "../../core/checkResult";
+import { useMediaQuery } from "react-responsive";
+import BookListItem from "../../components/BookListItem";
+import DashboardItem from "../../components/page/DashboardItem";
+import { initGA, sendGAEvent } from "../../core/ga4.js";
+import { fetchHashtag } from "../../actions/HashtagActions";
+import { setCollections } from "../../actions/CollectionActions";
+import { appendToPagesInView, setPagesInView } from "../../actions/PageActions.jsx";
+import Context from "../../context";
+import useScrollTracking from "../../core/useScrollTracking.jsx";
+import Paths from "../../core/paths.js";
+import grid from "../../images/grid.svg";
+import stream from "../../images/stream.svg";
+import loadingGif from "../../images/loading.gif";
 
+export default function HashtagContainer() {
+  const location = useLocation();
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { setError, seo, setSeo } = useContext(Context);
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(Paths.discovery());
+    }
+  };
+  const collections = useSelector((state) => state.books.collections);
+  const pagesInView = useSelector((state) => state.pages.pagesInView);
+
+  const [hash, setHashtag] = useState(null);
+  const [hasMoreLibraries, setHasMoreLibraries] = useState(true);
+  const [hasMoreBooks, setHasMoreBooks] = useState(true);
+  const [hasMorePages, setHasMorePages] = useState(true);
+  const [isGrid, setIsGrid] = useState(false);
+
+  const isNotPhone = useMediaQuery({ query: "(min-width: 999px)" });
+
+  useScrollTracking({ name: id });
+
+  /** Derived lists */
+  const books = useMemo(
+    () =>
+      collections.filter(
+        (col) => col && col.childCollections && col.childCollections.length === 0
+      ),
+    [collections]
+  );
+
+  const libraries = useMemo(
+    () =>
+      collections.filter(
+        (col) => col && col.childCollections && col.childCollections.length > 0
+      ),
+    [collections]
+  );
+
+  /** Initialize analytics & SEO */
+  useLayoutEffect(() => {
+    initGA();
+    if (hash) {
+      sendGAEvent(
+        "View Page",
+        `View Hashtag ${JSON.stringify({ id: hash.id, name: hash.name })}`,
+        hash.name
+      );
+      setSeo({
+        ...seo,
+        title: `Plumbum Hashtag (${hash.name}) - Your Writing, Your Community`,
+      });
+    }
+  }, [hash]);
+
+  /** Fetch hashtag data */
+  const getHashtag = async () => {
+    try {
+      dispatch(setCollections({ collections: [] }));
+      dispatch(setPagesInView({ pages: [] }));
+
+      const res = await dispatch(fetchHashtag({ id }));
+      checkResult(
+        res,
+        (payload) => {
+          const { hashtag } = payload;
+          if (!hashtag) return setError("No hashtag found");
+
+          setHashtag(hashtag);
+          dispatch(setPagesInView({ pages: hashtag.stories.map((s) => s.story) }));
+          dispatch(setCollections({ collections: hashtag.collections.map((c) => c.collection) }));
+
+          // Append nested story pages
+          hashtag.collections.forEach((c) => {
+            const stories = c.collection.storyIdList.map((sTc) => sTc.story);
+            dispatch(appendToPagesInView({ pages: stories }));
+          });
+
+          setHasMoreLibraries(false);
+          setHasMoreBooks(false);
+          setHasMorePages(false);
+        },
+        (err) => {
+          setError(err);
+          setHasMoreLibraries(false);
+          setHasMoreBooks(false);
+          setHasMorePages(false);
+        }
+      );
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  /** Load data on mount or ID change */
+  useLayoutEffect(() => {
+    getHashtag();
+  }, [id]);
+
+  /** Auto toggle grid view on screen resize */
+  useEffect(() => {
+    if (!isNotPhone) setIsGrid(false);
+  }, [isNotPhone]);
+
+  /** Grid toggle handler */
+  const onClickForGrid = (bool) => {
+    setIsGrid(bool);
+    sendGAEvent(
+      "Click",
+      `Click for ${bool ? "Grid" : "Stream"} View on Hashtag Page`,
+      bool ? "Grid Icon" : "Stream Icon"
+    );
+  };
+
+  /** Library (Community) section */
+  const renderLibraries = () => {
    
-    const pagesInView = useSelector((state)=>state.pages.pagesInView)
-    const [books,setBooks]=useState(collections.filter(col=>col.childCollections.length==0))
-    const [libraries,setLibraries]=useState(collections.filter(col=>col.childCollections.length>0))
+    return (
+  <div className="w-full  h-[14rem]">
+        <h3 className="text-emerald-900 font-extrabold lora-bold text-2xl ml-14 md:ml-16 mb-4">
+          Communities
+        </h3>
+       <div className="mb-4">
+        <div className="flex flex-row overflow-x-auto overflow-y-clip sh-[12rem] space-x-4 px-4 no-scrollbar">
+            {libraries.map((library) => (
+              <IonItem key={library.id} className="mx-3">
+                <BookListItem book={library} />
+              </IonItem>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
-    const [hasMoreLibraries,setHasMoreLibraries]=useState(true)
-    const [hasMoreBooks,setHasMoreBooks]=useState(true)
-    const [hasMorePages,setHasMorePages]=useState(true)
-    useLayoutEffect(()=>{
-        initGA()
-        if(hash){
-        sendGAEvent(`View Page`,`View Hashtaf ${JSON.stringify({id:hash.id,name:hash.name})}`,hash.name,0,false)
-       
-            let soo = seo
-            soo.title= `Plumbum Hashtag (${hash.name}) - Your Writing, Your Community`
-            setSeo(soo)
-          
-          
-    }
- },[])
-    useLayoutEffect(()=>{
-        setBooks(collections.filter(col=>col.childCollections.length==0))
-        setLibraries(collections.filter(col=>col.childCollections.length>0))
-    },[collections])
-  
-    const [isGrid,setIsGrid] = useState(false)
-    const isNotPhone = useMediaQuery({
-        query: '(min-width: 999px)'
-      })
-      const addPages=(cols)=>{
-        for(let i=0;i<cols.length;i++){
-          const stories = cols[i].collection.storyIdList.map(sTc=>sTc.story)
-          dispatch(appendToPagesInView({pages:stories}))
+  /** Books (Collections) section */
+  const renderBooks = () => (
+    <div className="w-full  h-[14rem]">
+        <h3 className="text-emerald-900 text-left font-extrabold ml-14 lora-bold mb-4 text-2xl">
+          Collections
+        </h3>
+      <div className="mb-12">
+        <div className="flex flex-row overflow-x-auto overflow-y-clip min-h-[14rem] space-x-4 px-4 no-scrollbar">
+        
+        {books.map((book, i) => (
+          <IonItem  className="my-auto mx-4  " key={`${book.id}_${i}`}>
+            <BookListItem book={book} />
+          </IonItem>
+        ))}
+        </div>
+        </div>
+
+    </div>
+  );
+
+  /** Individual story pages */
+  const renderPages = () => (
+    <div className="w-[96vw] md:w-page mx-auto">
+      <IonInfiniteScroll
+        dataLength={pagesInView.length}
+        hasMore={hasMorePages}
+        scrollThreshold={1}
+        endMessage={
+          <div className="flex">
+            <h2 className="mx-auto my-12 text-emerald-800 lora-medium">
+              You can write for this hashtag.<br />
+              Add a hashtag to your work.
+            </h2>
+          </div>
         }
-      }
-      const getHashtag=()=>{
-        const {id}=params
-        dispatch(setCollections({collections:[]}))
-        dispatch(setPagesInView({pages:[]}))
-        dispatch(fetchHashtag({id})).then(res=>{
-            checkResult(res,payload=>{
-        
-                const {hashtag}=payload
-                if(hashtag){
-                setHashtag(hashtag)
-                    dispatch(setPagesInView({pages:hashtag.stories.map(stc=>stc.story)}))
-                    dispatch(setCollections({collections:hashtag.collections.map(co=>co.collection)}))
-                    addPages(hashtag.collections)
-              
+        loader={
+          <div className="flex">
+            <img className="max-h-36 mx-auto my-12 max-w-36" src={loadingGif} />
+          </div>
+        }
+      >
+        <div className={`${isGrid ? "grid grid-cols-2 gap-2" : ""}`}>
+          {pagesInView.filter(Boolean).map((page, i) => (
+            <div key={`${page.id}_${i}`} className="break-inside-avoid mb-4 auto-cols-min">
+              <DashboardItem item={page} index={i} isGrid={isGrid} page={page} />
+            </div>
+          ))}
+        </div>
+      </IonInfiniteScroll>
+    </div>
+  );
 
-                setHasMoreBooks(false)
-                setHasMoreLibraries(false)
-                setHasMorePages(false)
-                }else{
-                    setError("No hashtag")
-                }
-            },err=>{
-
-                setHasMoreBooks(false)
-                setHasMoreLibraries(false)
-                setHasMorePages(false)
-            })
-        })
-      }
-      useLayoutEffect(()=>{
+  return (
+    <ErrorBoundary>
+      {/* <IonPage> */}
+        <IonContent fullscreen={true}>
+             <IonHeader translucent>
+          <IonToolbar className="flex flex-row">
+            <IonButtons>
+              <IonBackButton 
+              onClick={handleBack}
+              defaultHref={Paths.collection.createRoute(id)}
+      />
+            </IonButtons>
+            <IonTitle slot="end" className="ml-8 ion-text-center">
+              {hash?"#"+hash.name:"hashtag"}
+            </IonTitle>
+          </IonToolbar>
+        </IonHeader>
        
-           getHashtag()
-      },[id])
-    useEffect(
-        ()=>{
-            if(!isNotPhone){
-                setIsGrid(false)
-            }
-        },[isNotPhone]
-    )
 
-    
+            <div className="text-left">
+              { renderLibraries()}
+              {renderBooks()}
 
-    const libraryForums = ()=>{
-    
-            return (<IonInfiniteScroll
-            className='min-h-[12rem] flex max-w-[100vw] flex-row'
-            dataLength={libraries.length}
-    
-         
-            hasMore={hasMoreLibraries}
-            endMessage={<div className='flex  min-w-72 px-24 j mont-medium'><span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '><h6 className=''>Join the community. <br/>Apply to join today.</h6><h6>Share your own work.</h6><h6> This is what we have for now.</h6></span></div>}
-            >
-                {libraries.map(library=>{
-                    return     <div key={library.id}>
-                  <BookListItem book={library}/></div>
-           
-                })}
-            </IonInfiniteScroll>)
-       
-    }
-    const bookList = ()=>{
-        
-            return(
-        
-    <div className='w-[100vw]'> <h3 className=' text-emerald-900
-    text-left 
-    font-extrabold 
-     lora-bold text-2xl ml-4 md:ml-24'>Collections</h3>
-                <IonInfiniteScroll
-            className={`  max-w-[100vw] my-2 min-h-[12rem]  flex-row flex`}
-            dataLength={books.length}
-          
-            hasMore={hasMoreBooks}
-            endMessage={<div className='flex min-w-72 mont-medium'>
-                <span className='mx-auto my-auto text-center rounded-full p-3  text-emerald-400 '>
-                    <h6 className=''>
-                        Join the community. <br/>Apply to join today.
-                        </h6><h6>Share your own work.</h6>
-                        <h6> This is what we have for now.</h6>
-                        </span></div>}
-            >
-
-                {books.map((book,i)=>{
-                    console.log("Bxok-",book)
-                    let id = `${book.id}_${i}`
-                    return(
-                        <div key={id} >
-                            <BookListItem book={book}/>
-                        </div>)
-                })}
-</IonInfiniteScroll>
-</div>)
-
-        
-    }
-    const pageList = ()=>{
-        
-            
-            return(<div 
-            className=' w-[96vw] md:w-page mx-auto '
-            >
-               <IonInfiniteScroll
-            dataLength={pagesInView.length}
-            next={()=>{
-
-            }}
-        endMessage={<div className='flex'>
-            <h2  className='mx-auto my-12 text-emerald-800 lora-medium'>You can write for the hashtag<br/> Add a hashtag to your work.</h2>
-        </div>}
-            loader={<div className='flex'>
-                <img className="max-h-36 mx-auto my-12 max-w-36"src={loadingGif}/>
-            </div>}
-            scrollThreshold={1}
-            hasMore={hasMorePages}
-                >
-               
-<div 
-
-className={`${
-    isGrid ? 'grid-cols-2 grid gap-2 ' : ''
-  }`}
-
->
- 
-                {pagesInView.filter(page=>page).map((page,i)=>{
-
-                    const id = `${page.id}_${i}`
-                    return(<div          
-                        key={id}
-                    
-                        className="break-inside-avoid mb-4  auto-cols-min"
+              <div className="flex flex-col max-w-[96vw] md:w-page mx-auto">
+                <h3 className="text-emerald-900 font-extrabold text-2xl text-left lora-bold my-4">
+                  Pages
+                </h3>
+                {isNotPhone && (
+                  <div className="flex flex-row pb-8">
+                    <button
+                      onClick={() => onClickForGrid(true)}
+                      className="bg-transparent ml-2 px-1 border-none py-0"
                     >
-                        <DashboardItem  key={page.id} item={page} index={i} isGrid={isGrid} page={page}/>
-                    </div>)
-                })}
-                </div>
-            </IonInfiniteScroll> </div>)
-        }
-    
+                      <img src={grid} />
+                    </button>
+                    <button
+                      onClick={() => onClickForGrid(false)}
+                      className="bg-transparent border-none px-1 py-0"
+                    >
+                      <img src={stream} />
+                    </button>
+                  </div>
+                )}
+              </div>
 
-        const onClickForGrid =(bool)=>{
-
-
-            setIsGrid(bool)
-            if(bool){
-                sendGAEvent("Click","Click for Grid View on Hashtag Page","Grid Icon")
-
-            }else{
-                sendGAEvent("Click","Click for Stream View on Hashtag Page","Stream Icon")
-
-            
-            }
-        }
-        return(
-            <ErrorBoundary>
-                <IonContent fullscreen={true}>
-            <div 
-
-            className=' max-w-[100vw] mt-4' >
-               {hash? <div className='w-[100%] flex '>
-                    <h1 className='lora-bold mx-auto py-12 md:py-24'>#{hash.name}</h1>
-                </div>:null}
-              <div className=' text-left ' >
-              {libraries.length>0?<>
-             <h3 className={`text-emerald-900 ${isNotPhone?'ml-16 pl-6 ':'pl-4 ml-4'} pb-4 lora-bold font-extrabold text-2xl`}>Communities</h3>
-                <div className='mb-12'>
-                {libraryForums()}
-                </div></> :null}
-                <div className='mb-12'>
-                {books.length>0?bookList() :null}
-                </div>
-                <div className='flex max-w-[96vw] md:w-page mx-auto flex-col '>
-                    
-
-                        <h3 className=' text-emerald-900
-                                        font-extrabold 
-                                        text-2xl 
-                                        text-left 
-                                        mx-auto md:mx-4
-                                        lora-bold
-                                        my-4 l
-                                        lg:mb-4'>Pages</h3>
-                        {isNotPhone?<div className='flex flex-row pb-8'><button onClick={()=>onClickForGrid(true)}
-                                className=' bg-transparent 
-                                            ml-2 mr-0 px-1 border-none py-0'>
-                                <img src={grid}/>
-                        </button>
-                        <button onClick={()=>onClickForGrid(false)}
-                                className='bg-transparent border-none px-1 py-0'>
-                                    <img src={stream}/>
-                        </button></div>:null}
-                        </div>
-<div className='max-w-screen'>
-    
-                    {pageList()}
-                  
-                    </div>
-                    </div>
-                    <div className=' lg:flex-1  lg:mx-4'>
-                       <div className='w-24  mx-auto '>
-                       
-                                        <div className=''>
-                   
-                    </div>
-                    </div>
-            
-                 
-           
-                    </div>
-                    </div>
-             </IonContent>
-            </ErrorBoundary>
-        )
-    }
+              <div className="max-w-screen">{renderPages()}</div>
+            </div>
+          {/* </div> */}
+        </IonContent>
+      {/* </IonPage> */}
+    </ErrorBoundary>
+  );
+}

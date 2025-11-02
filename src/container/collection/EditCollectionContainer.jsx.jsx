@@ -34,7 +34,7 @@ import Context from "../../context";
 const EditCollectionContainer = () => {
    const params = useParams();
   const { id } = params;
-  const {setError}=useContext(Context)
+  const {setError,setSuccess}=useContext(Context)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [pending,setPending]=useState(true)

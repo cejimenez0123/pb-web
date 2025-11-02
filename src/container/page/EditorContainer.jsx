@@ -234,9 +234,9 @@ setOpenDescription(false)
          setFeedbackDialog(false)
         setOpenDescription(false)
   
-    if(!isPrivate){
-      navigate(Paths.page.createRoute(id))
-   }
+  //   if(!isPrivate){
+  //     navigate(Paths.page.createRoute(id))
+  //  }
        
           
        

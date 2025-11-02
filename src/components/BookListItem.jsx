@@ -42,7 +42,7 @@ if(book){
     <IonCard
     
       onClick={navigateToBook}
-      className="h-[10rem] group-hover:h-[10rem] relative btn hover:h-[12rem] transition-all duration-300 w-[16rem]  bg-emerald-700 text-white rounded-lg shadow-md text-ellipsis group"
+      className="min-h-[10em] group-hover:h-[11rem] relative btn hover:h-[11rem] transition-all duration-300 w-[16rem]  bg-emerald-700 text-white rounded-lg shadow-md text-ellipsis group"
     >
       <div className="h-16"> 
     <div className="absolute top-0 pt-2 left-3 right-3 z-10">
@@ -56,13 +56,13 @@ if(book){
     </div>
       {/* </IonCardHeader> */}
       </div>
-      <div className="  bottom-0 mt-8 min-h-[10rem]">
+      <div className="  bottom-0 mt-2">
       <IonCardContent className="">  
         <div
           className=" transition-all h-[5rem] duration-300"
           style={{ textOverflow: "ellipsis" }}
         >
-          <IonText        style={{ textOverflow: "ellipsis" }} className="open-sans-medium text-sm block text-left text-white p-1">
+          <IonText        style={{ textOverflow: "ellipsis" }} className="open-sans-medium text-sm block text-left text-white ">
             {book.purpose}
           </IonText>
         </div>
