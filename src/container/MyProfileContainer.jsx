@@ -21,6 +21,7 @@ import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 import { setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
 import axios from "axios";
+import StoryCollectionTabs from '../components/page/StoryCollectionTabs.jsx';
 
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
@@ -45,6 +46,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 
 function MyProfileContainer({ presentingElement }) {
   // let location = useLocation()
+  const [tab, setTab] = useState("page");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -283,30 +285,20 @@ function MyProfileContainer({ presentingElement }) {
                   ))}
                 </select>
               </div>
-            {/* ) : ( */}
-              {/* <label className="flex items-center border-2 border-emerald-600 rounded-full px-3 py-1 w-[20rem]">
-                <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-                  className="bg-transparent rounded-full text-lg text-emerald-800 outline-none"
-                  placeholder="Search..." />
-              </label>
-            )} */}
-
-            <div role="tablist" className="tabs mx-auto w-full">
-              <input type="radio" name="my_tabs" role="tab" defaultChecked className="tab text-emerald-800" aria-label="Pages" />
-              <div role="tabpanel" className="tab-content w-[96vw] sm:w-[50em] pt-4">
-                <IndexList type="story" items={filteredSortedStories} handleFeedback={item => {
+  
+            <StoryCollectionTabs 
+              tab={
+                tab
+              } 
+              setTab={
+setTab
+              }
+              colList={()=><IndexList type="collection" items={filteredSortedCollections} />}
+              storyList={()=><IndexList type="story" items={filteredSortedStories} handleFeedback={item => {
                   setFeedbackPage(item);
                   dispatch(setPageInView({ page: item }));
         
-                }} />
-              </div>
-
-              <input type="radio" name="my_tabs" role="tab" className="tab text-emerald-800" aria-label="Collections" />
-              <div role="tabpanel" className="tab-content w-[96vw] sm:w-[50em] pt-4">
-                <IndexList type="collection" items={filteredSortedCollections} />
-              </div>
-            </div>
-          </div>
+                }} />}/>
 
           <FeedbackDialog
             presentingElement={presentingElement}
@@ -329,6 +321,7 @@ function MyProfileContainer({ presentingElement }) {
             handlePostPublic={() => {}}
             handleClose={() => setFeedbackPage(null)}
           />
+        </div>
         </div>
       </IonContent>
     </ErrorBoundary>
