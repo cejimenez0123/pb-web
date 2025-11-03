@@ -105,7 +105,7 @@ function MyProfileContainer({ presentingElement }) {
   const filteredSortedCollections = useMemo(() => {
     let result = collections || [];
     if(filterType==filterTypes.feedback){
-      result = collections.filter(col=>col.type=="library"&&col.purpose.toLowerCase().includes("feedback"))
+      result = collections.filter(col=>col.type=="feedback"||col.purpose.toLowerCase().includes("feedback"))
     }
     switch (filterType) {
       case filterTypes.AZ:

@@ -121,7 +121,7 @@ function App(props) {
   </Helmet>
 </head>  */}
       <IonPage  ref={page} className=' App pb-8 h-[100vh] background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
-     <div className='pt-8'>
+     {/* <div className='pt-8'> */}
 
     
     
@@ -330,14 +330,14 @@ presentingElement={page}
     </Routes>
     </div>
    
-      { ((!(Capacitor.isNativePlatform()&&!isPhone) &&(location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))?
+      { ((((!(Capacitor.isNativePlatform()&&isPhone)||(Capacitor.isNativePlatform())))&&(((location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))))?
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>
 
      :null}  
        </div>
-       </div>
+       {/* </div> */}
     </IonPage>
     
   

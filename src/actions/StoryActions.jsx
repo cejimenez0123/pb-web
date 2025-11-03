@@ -80,7 +80,7 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
 
       let data = await storyRepo.postStory(params)
        const {story}=data
-      if(!data.story.isPrivate){
+      if(data && data.story && !data.story.isPrivate){
        await algoliaRepo.partialUpdateObject("story",story.id,{title:story.title})
       }
  
@@ -98,8 +98,8 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
  
   let data = await storyRepo.updateStory(params)
  
-
-if(data.story.isPrivate&&data.story.id){
+console.log("VVD",data)
+if(data && data.story && data.story.isPrivate&&data.story.id){
   algoliaRepo.deleteObject("story",data.story.id)
 }else{
 algoliaRepo.partialUpdateObject("story",data.story.id,{title:data.story.title})

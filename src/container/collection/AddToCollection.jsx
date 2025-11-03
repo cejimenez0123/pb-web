@@ -245,6 +245,7 @@ text-[1rem]">
     return (
       <IonPage>
         <IonContent fullscreen={true}>
+
           {pending ? (
             <>
               <IonSkeletonText
@@ -280,8 +281,11 @@ text-[1rem]">
 
   return (
     <ErrorBoundary>
-      {/* <IonPage> */}
-        <IonHeader translucent>
+
+    
+
+        <IonContent fullscreen={true} className="ion-padding">
+              <IonHeader translucent>
           <IonToolbar>
             <IonButtons slot="start">
               <IonBackButton defaultHref={Paths.discovery()} onClick={handleBack} />
@@ -291,8 +295,6 @@ text-[1rem]">
             </IonTitle>
           </IonToolbar>
         </IonHeader>
-
-        <IonContent fullscreen={true} className="ion-padding">
           <h2 className="text-xl font-semibold text-emerald-800 mb-1">
             {colInView.title?.trim() || "Untitled"}
           </h2>
@@ -306,11 +308,18 @@ text-[1rem]">
             >
               Save
             </div>
+            
             <div className="text-center text-emerald-800">
               <div className="text-lg font-medium">
                 {newCollection.length + newStories.length}
               </div>
               <div className="text-sm text-gray-600">New items</div>
+            </div>
+            <div
+              onClick={()=>navigate(Paths.collection.createRoute(colInView.id))}
+              className="bg-emerald-700 text-white px-5 py-2 rounded-full text-center text-lg cursor-pointer shadow-md"
+            >
+              View
             </div>
           </div>
 
@@ -330,94 +339,7 @@ text-[1rem]">
           <StoryCollectionTabs tab={tab} setTab={setTab}  storyList={storyList} colList={colList}/>
         
         </IonContent>
-      {/* </IonPage> */}
+    
     </ErrorBoundary>
   );
 }
-
-// import { AnimatePresence, motion } from "framer-motion";
-
-
-//  function StoryCollectionTabs({ tab, setTab, storyList, colList }) {
-//   const variants = {
-//     enter: (direction) => ({
-//       x: direction > 0 ? 20 : -20, // smaller distance for tighter slide
-//       opacity: 0,
-//       position: "absolute",
-//       width: "100%",
-//     }),
-//     center: {
-//       x: 0,
-//       opacity: 1,
-//       position: "relative",
-//       width: "100%",
-//     },
-//     exit: (direction) => ({
-//       x: direction > 0 ? -20 : 20,
-//       opacity: 0,
-//       position: "absolute",
-//       width: "100%",
-//     }),
-//   };
-
-//   const handleSwipe = (event, info) => {
-//     const swipe = info.offset.x;
-//     if (swipe < -50 && tab === "page") setTab("collection");
-//     if (swipe > 50 && tab === "collection") setTab("page");
-//   };
-
-//   return (
-//     <div className="flex flex-col w-full">
-//       {/* Tabs */}
-//       <div className="flex justify-center mb-2">
-//         <div className="flex rounded-full border border-emerald-600 overflow-hidden">
-//           <button
-//             className={`px-4 py-2 transition-colors ${
-//               tab === "page"
-//                 ? "bg-emerald-700 text-white"
-//                 : "text-emerald-700 bg-transparent"
-//             }`}
-//             onClick={() => setTab("page")}
-//           >
-//             Stories
-//           </button>
-//           <button
-//             className={`px-4 py-2 transition-colors ${
-//               tab === "collection"
-//                 ? "bg-emerald-700 text-white"
-//                 : "text-emerald-700 bg-transparent"
-//             }`}
-//             onClick={() => setTab("collection")}
-//           >
-//             Collections
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* Animated, Swipeable Content */}
-//       <div className="relative overflow-hidden w-full">
-//         <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
-//           <motion.div
-//             key={tab}
-//             custom={tab === "collection" ? 1 : -1}
-//             variants={variants}
-//             initial="enter"
-//             animate="center"
-//             exit="exit"
-//             transition={{
-//               duration: 0.26, // faster
-//               ease: "easeOut", // more responsive
-//             }}
-//             drag="x"
-//             dragConstraints={{ left: 0, right: 0 }}
-//             onDragEnd={handleSwipe}
-//             className="w-full"
-//           >
-//             {tab === "page" ? storyList() : colList()}
-//           </motion.div>
-//         </AnimatePresence>
-//       </div>
-//     </div>
-//   );
-// }
-

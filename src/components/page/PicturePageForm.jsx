@@ -43,10 +43,10 @@ function PicturePageForm(props) {
 
     if (last === PageType.picture && isValidUrl(value)) {
       setImage(value);
-      dispatch(setHtmlContent(value));
+      dispatch(setHtmlContent({html:value}));
     } else {
       setImage(null);
-      dispatch(setHtmlContent(value));
+      dispatch(setHtmlContent({html:value}));
     }
 
     setParameters(params);
@@ -65,7 +65,7 @@ function PicturePageForm(props) {
             setImage(ePage.data);
             setLocalContent(ePage.data);
           } else {
-            const src = `${Enviroment.url}/image?path=${encodeURIComponent(
+            const src = `${Enviroment.proyUrl}/image?path=${encodeURIComponent(
               ePage.data
             )}`;
             setImage(src);

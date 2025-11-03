@@ -74,7 +74,7 @@ useEffect(() => {
   }
 
   let params = { ...parameters };
-  params.data = htmlContent;
+  params.data = htmlContent.html;
   params.id = id;
   params.isPrivate = isPrivate;
   params.description = description;
@@ -89,7 +89,7 @@ useEffect(() => {
         if(fetchedPage){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
               let params = parameters
-              params.data = htmlContent
+              params.data = htmlContent.html
 
               params.type = last 
 
@@ -132,14 +132,14 @@ useEffect(() => {
     useEffect(()=>{
         if(last==PageType.picture&&htmlContent.length>5&&parameters.page && !parameters.page.id){
            let params = parameters
-           params.data = htmlContent
+           params.data = htmlContent.html
           
            setParameters(params)
             createPageAction(parameters)
        
         }else if(last==PageType.link){
           let params = parameters
-          params.data = htmlContent
+          params.data = htmlContent.html
       
           setParameters(params)
            createPageAction(parameters)
@@ -166,7 +166,7 @@ useEffect(() => {
         console.log(payload)
           const {story}=payload
 
-          dispatch(setHtmlContent(story.data))
+          dispatch(setHtmlContent({html:story.data}))
           dispatch(setEditingPage({page:story}))
           dispatch(setPageInView({page:story}))
           setStoryData(story)
