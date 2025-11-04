@@ -77,7 +77,12 @@ class AuthRepo{
     }
 
     async useReferral({token, email, password ,username,profilePicture,selfStatement,isPrivate}){
-       let res = await axios.post(Enviroment.url+"/auth/use-referral",{token, email, password ,username,profilePicture,selfStatement,isPrivate})
+        console.log(token)
+       let res = await axios.post(Enviroment.url+"/auth/use-referral",{token, email, password ,username,profilePicture,selfStatement,isPrivate}
+        ,{   headers:{
+            Authorization:"Bearer "+token
+          }}
+       )
         return res.data    
     }
     async deleteUser(){

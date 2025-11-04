@@ -12,7 +12,7 @@ import Enviroment from "../../core/Enviroment.js";
 import Context from "../../context.jsx";
 import { IonImg } from "@ionic/react";
 function IndexItem({item,handleFeedback,type}) {
- 
+  let collectionStr ="collection"
     const [canUserAdd,setCanUserAdd]=useState(false)
     useLayoutEffect(()=>{
       initGA()
@@ -118,7 +118,9 @@ function IndexItem({item,handleFeedback,type}) {
 
    let updated= formatDate(item.updated)
    
-
+const handleAddToLibrary=()=>{
+  navigate(Paths.addStoryToCollection.collection(item.id))
+}
 
     return(
   <div className="w-[90vw] sm:w-[40rem]">
@@ -148,20 +150,24 @@ function IndexItem({item,handleFeedback,type}) {
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
         handleEditClick}><a className="text-green-600 ">Edit</a></li>
-       {!item.storyIdList?<li className="text-green-600 " onClick={handleFeedback}>Get Feedback</li>:null}
+       {type!="collection"?<li className="text-green-600 " onClick={handleFeedback}><a className="text-green-600 ">Get Feedback</a></li>:null}
        {canUserAdd?<li className="text-green-600 no-underline" onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>:null}
-  </ul>
+               {/* {!item.storyIdList?<li className="text-green-600 " onClick={handleFeedback}>Get Feedback</li>:null} */}
+         </ul>
   </div>
        
   )
-  : canUserAdd&&!canUserEdit?(
+  : !canUserEdit?(
   
    <div className="dropdown my-auto w-fit dropdown-left">
    <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg classname="my-auto mx-auto  " src={addBox}/></div>
    <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10  w-52 p-2 shadow">
-  
-         <li className="no-underline text-emerald-600"  onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>
-         {updated}
+  {!item.isPrivate && type==collectionStr&&
+        <li className="no-underline text-emerald-600"  onClick={handleAddToLibrary}><a className="no-underline text-green-600"> Add Collection to Library</a></li>}
+       
+        {canUserAdd&&
+        <li className="no-underline text-emerald-600"  onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>}
+         {/* {updated} */}
          <li  onClick={copyShareLink}><a className="text-emerald-600 no-underline" >Share</a></li>
          </ul>
   

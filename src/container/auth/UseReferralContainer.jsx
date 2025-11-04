@@ -1,322 +1,380 @@
-import { useLocation, useNavigate,  useSearchParams } from "react-router-dom";
-import { useState,useEffect, useContext,useRef } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { uploadProfilePicture} from "../../actions/ProfileActions";
+import { uploadProfilePicture } from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
-import info from "../../images/icons/info.svg"
-import "../../App.css"
-import {  useReferral } from "../../actions/UserActions";
+import info from "../../images/icons/info.svg";
+import "../../App.css";
+import { useReferral } from "../../actions/UserActions";
 import Context from "../../context";
 import authRepo from "../../data/authRepo";
 import { debounce } from "lodash";
 import { Preferences } from "@capacitor/preferences";
-import { IonContent } from "@ionic/react";
-export default function UseReferralContainer(props){
-    const location = useLocation()
-    const query = new URLSearchParams(location.search);
-    const selectRef = useRef()
-    const [token, setToken] = useState(query.get("token"));
-    const [password,setPassword]=useState("")
-    const navigate = useNavigate()
-    const [email,setEmail]=useState("")
-    const [username,setUsername]=useState("")
-    const searchParams = useSearchParams()
-    const [confirmPassword,setConfirmPassword]=useState("")
-    const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
-    const [selfStatement,setSelfStatement]=useState("")
-    const [file,setFile]=useState(null)
-    const {error,setError,setSuccess,success}=useContext(Context)
-    const [frequency,setFrequency]=useState(1)
-    const [isPrivate,setIsPrivate]=useState(false)
-    const [usernameUnique,setUsernameUnique]=useState(true)
-    const [canUser,setCanUser]=useState(false)
-    const handleUsername=(e)=>{
-      setUsername(e.target.value.trim())
-    
-    }
-    useEffect(()=>{
-      if(confirmPassword==password){
-        if(username.length>4){
-        setCanUser(usernameUnique)
-        }else{
-          setCanUser(false)
-        }
-      }else{
-        setCanUser(false)
+import { IonContent, IonInput, IonTextarea, IonSelect, IonSelectOption, IonLabel, IonText, useIonViewWillEnter } from "@ionic/react";
+import { ErrorBoundary } from "@sentry/react";
+import { Capacitor } from "@capacitor/core";
+
+export default function UseReferralContainer() {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  // const selectRef = useRef();
+  const [token, setToken] = useState(query.get("token"));
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  console.log(username)
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
+  const [selfStatement, setSelfStatement] = useState("");
+  const [file, setFile] = useState(null);
+  const [frequency, setFrequency] = useState(1);
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [usernameUnique, setUsernameUnique] = useState(true);
+  const [canUser, setCanUser] = useState(false);
+  const [searchParams] = useSearchParams();
+console.log(searchParams)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { error, setError, setSuccess } = useContext(Context);
+  useEffect(() => {
+    let toke = searchParams.get("token")
+
+    if(!token&&toke)setToken(toke)
+    return async ()=>await Preferences.set({key:"token",value:toke})
+  }, []);
+  useEffect(() => {
+    if (confirmPassword === password) {
+      if (username.length > 4) {
+        setCanUser(usernameUnique);
+      } else setCanUser(false);
+    } else setCanUser(false);
+  }, [usernameUnique, password, confirmPassword]);
+
+  useEffect(() => {
+    debounce(() => {
+      if (username.length > 0) {
+        authRepo.checkUsername(username).then((data) => {
+          setUsernameUnique(data ? data.available : false);
+        });
       }
-    },[usernameUnique,password,confirmPassword])
-    useEffect(()=>{
-     debounce(()=>{
-      if(username.length>0){
-      authRepo.checkUsername(username).then(data=>{
-   
-        if(data){
-      setUsernameUnique(data.available)
-        }else{
-          setUsernameUnique(false)
-        }
-      })}
-    }
-      ,[10])()
-    },[username])
-    const handleFileInput = (e) => {
-    const img = e.target.files[0];
+    }, 300)();
+  }, [username]);
 
-    if (img) {
-   
-      if (!img.type.startsWith('image/')) {
-        setError('Please upload a valid image file.');
-        setSuccess(null)
-        setSelectedImage(null);
+  // const handleFileInput = (e) => {
+  //   const img = e.target.files[0];
+  //   if (img && img.type.startsWith("image/")) {
+  //     setFile(img);
+  //     setSelectedImage(URL.createObjectURL(img));
+  //     setError(null);
+  //   } else {
+  //     setError("Please upload a valid image file.");
+  //     setSelectedImage(null);
+  //   }
+  // };
+const handleProfilePicture = (e) => {
+  const file = e.target.files[0];
+  if(Capacitor.isNativePlatform()){
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+
+    setError('Please upload a valid image file.');
+    return;
+  }
+
+  // // revoke previous blob URL if it exists
+  if (selectedImage?.startsWith('blob:')) {
+    URL.revokeObjectURL(selectedImage);
+  }
+
+  const newUrl = URL.createObjectURL(file) + `#${Date.now()}`;
+  console.log('Preview URL:', newUrl);
+
+  setFile(file);
+  setSelectedImage(newUrl);
+  setError('');
+}else{
+  const reader = new FileReader();
+reader.onloadend = () => {
+  setSelectedImage(reader.result);
+  setFile(file)
+  
+};
+
+reader.readAsDataURL(file);
+}
+};
+
+  const completeSignUp = async () => {
+     const pictureParams = file ? { profilePicture:file } : { profilePicture: selectedImage };
+    // const toke = || token;
+    let tok = token?? (await Preferences.get({key:"token"})).value
+    
+    if (password.length && username.length && email) {
+          const params = {
+        email,
+        token: tok,
+        password,
+        username,
+        frequency,
+        // profilePicture: payload.fileName,
+        selfStatement,
+        isPrivate,
+        ...pictureParams
+      };
+  
+            if(file){
+dispatch(uploadProfilePicture({ file:file})).then(res => checkResult(res, payload => {
+          params.profilePicture = payload.fileName
+             handleUseRefferal(params)
+},err=>{})
+
+
+)}}}
+      // if(file){
+
       
-        return;
-      }
-      setFile(img)
-      setError(null);
-    
-      setSelectedImage(URL.createObjectURL(img));
-    }
-  };
-  useEffect(()=>{
+// },err=>{
 
+// })}else{
+//               const params = {
+//         email,
+//         token: tok,
+//         password,
+//         username,
+//         frequency,
+//         profilePicture: selectedImage,
+//         selfStatement,
+//         isPrivate,
+//       };
+//     handleUseRefferal(params)
+// }
 
-setToken(token)
-
-
-    return
-
-  },[searchParams])
-     const dispatch = useDispatch()
-
-    const completeSignUp=async ()=>{
-     let toke = searchParams[0].get("token")
-     if(!toke){
-      toke = token
-     }
-
-    if( password.length>6&&username.length>3){
-
-        if(file){
-        dispatch(uploadProfilePicture({file:file})).then(res=>checkResult(res,payload=>{
-                const{fileName}=payload
-                const params = {email:email,token:toke,password:password,username:username,frequency:frequency,profilePicture:fileName,selfStatement:selfStatement,isPrivate:isPrivate}
       
+  // };c
+const handleUseRefferal=(params)=>{
+     dispatch(useReferral(params)).then((res) =>
+        checkResult(
+          res,
+          (payload) => {
+            if (payload.token) Preferences.set({ key: "token", value: payload.token });
+            if (payload.profile) {
+              Preferences.set({ key: "firstTime", value: "true" });
+              navigate(Paths.myProfile());
+            }
+          },
+          (err) => setError(err.message)
+        )
+      );
+}
+  return (
+    <ErrorBoundary>
+    <IonContent fullscreen={true} className="p-4 flex justify-center  bg-gradient-to-b from-emerald-800 to-emerald-600">
+      <div className="bg-white/10 backdrop-blur-md rounded-3xl w-full max-w-xl p-6 mx-auto shadow-lg">
+        <h2 className="text-emerald-700 text-center text-3xl mont-medium mb-6">Complete Sign Up</h2>
 
-                        dispatch(useReferral(params)).then(res=>checkResult(res,payload=>{
-                          
-                          if(payload.message){
-                            setError(err.message.includes("400")?"This link has already been put to use.":err.message)
-    
-                          }
-                        
-                        },err=>{
-                          setError(err.message.includes("400")?"This link has already been put to use.":err.message)
-    
-                        }))
-                    
-                .then(res=>checkResult(res,async payload=>{
-     await Preferences.set({key:"firstTime",value:true})
-                  await  Preferences.set({key:"token",value:payload.token})
-                   if(payload.profile){navigate(Paths.myProfile())}else{
-                   
-                    setSuccess(null)
-                   }
-                   if(payload.error){
-                    setError(payload.error)
-                   }
-                },err=>{
-                    setSuccess(null)
-                    if(err.message){
-                      setError(err.message.includes("400")?"This link has already been put to use.":err.message)
-    
-                    }else{
-                      setError(err.message.includes("400")?"This link has already been put to use.":err.message)
-    
-                    }
-                }))
-     
-       
-        })
-      )
-      }else{
-        // const params = {email,token:toke,password,username,profilePicture:selectedImage,selfStatement,privacy:isPrivate}
-        
+        {/* Email */}
+        <IonInput
+          label="Email"
+          labelPlacement="stacked"
+          placeholder="example@x.com"
+          className="text-emerald-700 mb-4"
+          value={email}
+          onIonInput={(e) => setEmail(e.target.value)}
+        />
 
-      const params = {email:email,
-        token:toke,
-        password:password,username:username,
-        frequency:frequency,
-        profilePicture:selectedImage,selfStatement:selfStatement,isPrivate:isPrivate}
-      
-      dispatch(useReferral(params))
-      .then(res=>checkResult(res,payload=>{
-        if(payload.message){
-          
-          setError(payload.message.includes("400")?"This link has already been put to use.":payload.message)
-    
-        }else{
+        {/* Username */}
+        <IonInput
+          label="Username"
+          labelPlacement="stacked"
+          placeholder="username"
+          className="text-emerald-700 mb-2"
+          value={username}
+          onIonInput={(e) => setUsername(e.target.value.trim())}
+        />
+        {username && username.length < 4 && (
+          <p className="text-sm text-rose-400">Minimum username length is 4 characters</p>
+        )}
+        {!usernameUnique && <p className="text-sm text-rose-400">Username is already taken</p>}
 
-      if(payload.token){
-        Preferences.set({key:"token",value:payload.token}).then()
-      }
-       
-         if(payload.profile){
-          Preferences.set({key:"firstTime",value:true})
-          navigate(Paths.myProfile())}else{
-         
-          setSuccess(null)
-         }
-         if(payload.error){
-          setError(payload.message.includes("400")?"This link has already been put to use.":payload.message)
-    
-       
-         }}
-      },err=>{
-          setSuccess(null)
-          if(err.message){
-            setError(err.message.includes("400")?"This link has already been put to use.":payload.message)
-          }else{
-            setError(err)
-          }
-      }))
-        // },err=>{
+        {/* Passwords */}
+        <IonInput
+          label="Password"
+          type="password"
+          labelPlacement="stacked"
+          placeholder="*****"
+          className="text-emerald-700 mb-2"
+          value={password}
+          onIonInput={(e) => setPassword(e.target.value.trim())}
+        />
+        {password.length > 0 && password.length < 6 && (
+          <p className="text-sm text-rose-400">Minimum password length is 6 characters</p>
+        )}
 
-        //       setError(err.mesage)
-          
-    
-        // }))
-      }
-      }else{
-          setError("Password and Username can't be empty")
-        }
-      
-    }
-    return(
-                <IonContent fullscreen={true} className=" ">
+        <IonInput
+          label="Confirm Password"
+          type="password"
+          labelPlacement="stacked"
+          placeholder="*****"
+          className="text-emerald-700 mb-2"
+          value={confirmPassword}
+          onIonInput={(e) => setConfirmPassword(e.target.value.trim())}
+        />
+        {password !== confirmPassword && (
+          <p className="text-sm text-rose-400">Passwords must match</p>
+        )}
 
-
-        <div className=" px-4 my-2  bg-emerald-700 bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
-          <div className="flex">
-        <h2 className='text-green-100 mont-medium text-4xl text-center mx-auto pt-8  px-4 md:pt-24 md:pb-8'>Complete Sign Up</h2>
-        </div>
-        <div className='pb-4 mx-auto'>
-      
-        <label className="input mont-medium text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
-Email
-  <input className="grow text-white mx-2 " 
-         value={email}
-         placeholder="example@x.com"
-         onChange={(e) => setEmail(e.target.value.trim())}
-         />
-</label>
-            <label className="input mont-medium text-white border bg-transparent rounded-full h-[4em]  border-white  mt-4 flex items-center ">
-  Username
-  <input className="grow text-white mx-2 " 
-         value={username}
-         placeholder="username"
-         onChange={(e) => handleUsername(e)}
-         />
-</label>
-<span className="flex flex-col">
-{ username.length!=0 && username.length<4?<h6 className="text-white mx-4 my-1 open-sans-medium">Minimum username length is 4 characters</h6>:null}    
-{usernameUnique?null:<h6 className="text-white mx-4 my-1 open-sans-medium">Username is alredy taken</h6>}
-</span>
-<div className='pb-4'>
-            <label className="input mont-medium text-white border bg-transparent  rounded-full h-[4em] border-white  mt-4 flex items-center">
-  Password
-  <input type="password" className="grow  mx-2  my-2 text-white " 
-         value={password}
-         
-         onChange={(e) => setPassword(e.target.value.trim())}
-        placeholder='*****' />
-</label>
-{password.length==0 || password.length>6?null:<h6 className="text-white mx-4 my-1 open-sans-medium">Minimum Password Length is 6 characters</h6>}  
-
-<label className="input mont-medium text-white border bg-transparent border-white  rounded-full h-[4em] mt-4 flex items-center ">
-  Confirm Password
-  <input type="password" className="grow  p-2 mx-2 text-white " 
-         value={confirmPassword}
-         
-         onChange={(e) => setConfirmPassword(e.target.value.trim())}
-        placeholder='*****' />
-</label>  
-{password==confirmPassword?null:<h6 className="text-white mx-4 my-1 open-sans-medium">Passwords need to match</h6>}  
-<label className="w-full mt-8 flex flex-row justify-between  text-left">
-<div className="flex  flex-row">
-  <div className='has-tooltip mx-2'>
- <img src={info}/> <span className=' bg-slate-50 text-emerald-800 rounded-lg p-2 is-tooltip'>Would you like to be hidden from search?</span>
-</div>
-    <span className="text-white text-l open-sans-medium">Will your account be private?</span>    </div>
-    <div className="flex flex-row">
-<h6 className="mx-2  my-auto text-white ">{isPrivate?"Yes":"No"}</h6>
-<input value={isPrivate} onChange={(e)=>setIsPrivate(e.target.checked)}
-    type="checkbox" className="toggle my-auto toggle-success"  />
-
-</div>
-
-</label>
-
-
-    </div>
-    <div className="mb-8 flex flex-col mx-auto">
-      <label className="flex font-bold text-white mont-medium text-xl text-left pb-2 flex-col">
-        Add a Profile Picture
-        </label>
-    <input
-    className="file-input my-8 mx-auto text-left  max-w-[90%] lg:w-72 mx-auto"
-        type="file"
-        accept="image/*"
-        onInput={handleFileInput}
-      />
-   </div>   
-{/* </label> */}
-<div className="max-w-72 mx-auto mb-8">
-      {selectedImage && (
-        <div style={{ marginTop: '20px' }}>
-          
-          <img
-          className="mx-auto"
-            src={selectedImage}
-            alt="Selected"
-            style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }}
+        {/* Privacy Toggle */}
+        <div className="flex justify-between items-center mt-4 mb-4">
+          <div className="flex items-center gap-2 relative">
+            <img src={info} className="w-5 h-5 cursor-pointer" />
+            <span className="absolute -top-10 left-0 text-xs bg-white text-emerald-800 rounded-lg px-2 py-1 opacity-0 hover:opacity-100 transition">
+              Hidden from search?
+            </span>
+            <IonLabel className="text-emerald-700">Private account</IonLabel>
+          </div>
+          <input
+            type="checkbox"
+            checked={isPrivate}
+            onChange={(e) => setIsPrivate(e.target.checked)}
+            className="toggle toggle-success"
           />
         </div>
-        
-      )}
-      </div>
-      <div>
-      <div className="mb-4 flex flex-row justify-between">
-          <label className="block text-white mont-medium text-[1.5rem] font-semibold mb-2">
-            Email Frequency
-          </label>
-          <select
-            className="w-full bg-white select text-emerald-700 mont-medium select-bordered "
-            value={frequency}
-            ref={selectRef}
-            onChange={(e) => setFrequency(e.target.value)}
-          >
-            <option className="text-emerald-700" value={1}>daily</option>
-            <option  className="text-emerald-700" value={2}>Every 3 days</option>
-            <option  className="text-emerald-700" value={3}>Weekly</option>
-            <option  className="text-emerald-700" value={14}>Every 2 Weeks</option>
-            <option  className="text-emerald-700" value={30}>Monthly</option>
 
-          </select>
+        {/* Profile Picture */}
+        <IonLabel className="text-emerald-700 text-lg font-bold block mb-2">Profile Picture</IonLabel>
+        <input
+          type="file"
+          accept="image/*"
+          className="file-input file-input-bordered w-full mb-4"
+      onChange={(e)=>handleProfilePicture(e)}
+        />
+        {selectedImage && (
+          <img src={selectedImage} alt="Selected" className="rounded-xl mx-auto mb-4 max-h-40" />
+        )}
+
+        {/* Email Frequency */}
+        <EmailSettings setFrequency={setFrequency} frequency={frequency}/>
+        {/* <IonLabel className="text-white text-lg font-bold block mb-2">Email Frequency</IonLabel>
+        <IonSelect
+          interface="popover"
+          value={frequency}
+          onIonChange={(e) => setFrequency(Number(e.detail.value))}
+          className="bg-white text-emerald-700 rounded-xl mb-4"
+        >
+          <IonSelectOption value={1}>Daily</IonSelectOption>
+          <IonSelectOption value={2}>Every 3 days</IonSelectOption>
+          <IonSelectOption value={3}>Weekly</IonSelectOption>
+          <IonSelectOption value={14}>Every 2 weeks</IonSelectOption>
+          <IonSelectOption value={30}>Monthly</IonSelectOption>
+        </IonSelect> */}
+
+        {/* Self Statement */}
+        <IonTextarea
+          label="Self Statement"
+          labelPlacement="stacked"
+          placeholder="What are you about?"
+          value={selfStatement}
+          onIonInput={(e) => setSelfStatement(e.target.value)}
+          className="text-emerald-700 bg-transparent border border-white rounded-xl p-2 mb-8"
+        />
+
+        {/* Submit */}
+        <div
+          disabled={!canUser}
+          onClick={completeSignUp}
+          className={`btn w-full flex py-3 rounded-full text-lg ${
+            canUser
+              ? "bg-gradient-to-r from-emerald-500 to-emerald-700 text-white"
+              : "bg-gray-300 text-gray-500"
+          }`}
+        >
+          <IonText className="my-auto mx-auto text-lg">Join Plumbum!</IonText>
         </div>
       </div>
-      <label className="text-left  min-w-[100%] mx-auto mont-medium text-xl text-white my-1 font-bold  mb-2">Self Statement </label> 
-      <textarea 
-      placeholder="What are you about?"
-      className="textarea bg-transparent border w-[100%]  border-white text-md lg:text-l" value={selfStatement} onChange={(e)=>setSelfStatement(e.target.value)}/>
-         <div
-            disabled={!canUser}
-            className={`${canUser?"bg-gradient-to-r from-emerald-500  to-emerald-700  ":"bg-gradient-to-r from-slate-300  to-emerald-500"} btn bg-transparent border-none mont-medium text-white max-w-[18em] mx-auto mb-12 flex border hover:bg-emerald-400  border-0 text-white py-2 rounded-full px-4 mt-8 min-h-14 `}
-               onClick={completeSignUp}
-                
-                 ><h6 className="px-1 text-xl">Join Plumbum!</h6></div>
-            </div>
-            
-            </div>   
-        </IonContent>)
+    </IonContent>
+    </ErrorBoundary>
+  );
+}
+
+
+function EmailSettings({ frequency, setFrequency }) {
+  // Map numeric frequency values to display labels
+  const frequencyLabels = {
+    1: "Daily",
+    7: "Weekly",
+    30: "Monthly",
+    0: "Unsubscribe",
+  };
+
+  const handleSetFrequency = (value) => {
+    setFrequency(value);
+  };
+
+  return (
+    <div className="p-4 max-w-sm mx-auto space-y-4">
+      <h2 className="text-xl font-semibold text-emerald-700">
+        Email Preferences
+      </h2>
+
+      {/* Tooltip */}
+      <div
+        className="tooltip tooltip-bottom"
+        data-tip="Choose how often you receive emails"
+      >
+        <label className="block text-emerald-700 font-medium mb-2">
+          Email Frequency
+        </label>
+      </div>
+
+      {/* DaisyUI dropdown */}
+      <div className="dropdown w-full">
+        <label
+          tabIndex={0}
+          className="btn w-full bg-white text-emerald-700 border border-emerald-300 hover:bg-emerald-50"
+        >
+          {frequencyLabels[frequency] || "Select Frequency"}
+        </label>
+        <ul
+          tabIndex={0}
+          className="dropdown-content menu bg-white rounded-box w-full border border-emerald-200 shadow-md"
+        >
+          <li>
+            <button
+              onClick={() => handleSetFrequency(1)}
+              className="text-emerald-700 hover:bg-emerald-50"
+            >
+              Daily
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => handleSetFrequency(7)}
+              className="text-emerald-700 hover:bg-emerald-50"
+            >
+              Weekly
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => handleSetFrequency(30)}
+              className="text-emerald-700 hover:bg-emerald-50"
+            >
+              Monthly
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => handleSetFrequency(0)}
+              className="text-emerald-700 hover:bg-emerald-50"
+            >
+              Unsubscribe
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  );
 }

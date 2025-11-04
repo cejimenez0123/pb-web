@@ -77,12 +77,12 @@ function App(props) {
 
 
   useEffect(()=>{
-    Preferences.get({key:"token"}).then(res=>{
+    // Preferences.get({key:"token"}).then(res=>{
   
-      res.value &&  dispatch(getCurrentProfile({token:res.value}))
-    })
+      dispatch(getCurrentProfile())
+    // })
    
-  },[location])
+  },[])
   useEffect(()=>{
       setOlderPath(location.pathname) 
   },[location.pathname])
@@ -217,6 +217,7 @@ function App(props) {
       loggedOut={!currentProfile}
       currentProfile={currentProfile}><SignUpContainer/></LoggedRoute>}/>
        <Route path={'/register'}
+
      element={<LoggedRoute 
       loggedOut={!currentProfile}
       currentProfile={currentProfile}><UserReferralContainer/></LoggedRoute>}/>
@@ -330,7 +331,7 @@ presentingElement={page}
     </Routes>
     </div>
    
-      { ((((!(Capacitor.isNativePlatform()&&isPhone)||(Capacitor.isNativePlatform())))&&(((location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))))?
+      { (((!Capacitor.isNativePlatform()&&isPhone)||((((currentProfile&&isPhone))))&&!(((location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))))?
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>

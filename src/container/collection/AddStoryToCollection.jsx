@@ -177,8 +177,9 @@ let dia = {...dialog}
             </IonTitle>
           </IonToolbar>
         </IonHeader>
-      <div className="flex flex-row">
+      <div className="flex flex-col">
             <div>{collectionInView.purpose}</div>
+            <div className="flex flex-row">
            <div
             className="btn cursor-pointer rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
             onClick={() => openNewCollectionForm()}
@@ -191,14 +192,15 @@ let dia = {...dialog}
           </div>
           <div
             className="btn mx-4 cursor-pointer rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
-            onClick={() => navigate(Paths.page.createRoute(id))}
+            onClick={() => item.storyIdList?navigate(Paths.collection.createRoute(id)):navigate(Paths.page.createRoute(id))}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpenDialog(true); }}
             style={{ userSelect: "none" }}
           >
-            <IonText>View Story</IonText>
+            <IonText>View {item.storyIdList?item.title.slice(0,10):"Story"}</IonText>
             
+          </div>
           </div>
           </div>
         <div

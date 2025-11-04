@@ -10,7 +10,7 @@ import { RoleType } from "../../core/constants";
 import bookmarkadd from "../../images/bookmark_add.svg"
 import Context from "../../context";
 import { sendGAEvent } from "../../core/ga4";
-import { addStoryListToCollection } from "../../actions/CollectionActions";
+import { deleteStoryFromCollection,addStoryListToCollection } from "../../actions/CollectionActions";
 import checkResult from "../../core/checkResult";
 import Enviroment from "../../core/Enviroment";
 import { useNavigate } from "react-router-dom";
@@ -48,8 +48,9 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
               ({ collection }) => {
                 let bookmark = collection.storyIdList.find((stc) => stc.storyId == page.id);
                 setArchive(collection);
-                setBookmarked(bookmark);
+                setLocalBookmark(bookmark)
                 setLoading(false);
+
                 setSuccess("Added Successfully");
               },
               () => {
@@ -65,7 +66,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
     }
   };
     useLayoutEffect(() => {
-    // soCanUserComment();
+
     soCanUserEdit();
   }, [page, currentProfile]);
   const dispatch = useDispatch()
@@ -76,79 +77,75 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
       setSuccess("Ready to share");
     });
   };
-        const handleBookmark = debounce((e) => {
+//         const handleBookmark = debounce((e) => {
     
-    e.preventDefault();
-    if (bookmark) {
-      deleteStc();
-    } else {
-      onBookmarkPage();
-    }
-  }, 10);
-        useEffect(() => {
-    isBookmarked();
-  }, [page, archive]);
+//     e.preventDefault();
+//     if (bookmark) {
+//       deleteStc();
+//     } else {
+//       onBookmarkPage();
+//     }
+//   }, 10);
+
 
      const deleteStc = () => {
-    setLoading(true);
-    if (localBookmark) {
+ setLoading(true);
       dispatch(deleteStoryFromCollection({ stId: localBookmark.id })).then((res) => {
         checkResult(
           res,
           ({ collection }) => {
             setArchive(collection[0]);
             setBookmarked(null);
+            setLocalBookmark(null)
+            setLoading(false)
             isBookmarked();
      
           },
           () => {
+            // setBookmarked(null);
             setBookmarked(null);
-            // setLoading(false);
+            setLocalBookmark(null)
+            setLoading(false)
             isBookmarked();
           }
         );
       });
-    }
+    
   };
   useEffect(() => {
-    // sync whenever parent bookmark or archive changes
-    if (archive && page) {
-      const found = archive.storyIdList.find((stc) => stc.storyId == page.id);
-      setLocalBookmark(found || null);
-    } else {
-      setLocalBookmark(bookmark);
-    }
-  }, [archive, page, bookmark]);
+ 
+        isBookmarked();
+
+  }, [archive,currentProfile]);
   const isBookmarked = () => {
-    if (profile) {
-      if (archive) {
+    if (currentProfile&&archive) {
         let bookmark = archive.storyIdList.find((stc) => stc.storyId == page.id);
         setBookmarked(bookmark);
-      } else {
-        getArchive();
-      }
+        setLocalBookmark(bookmark)
+        setLoading(false)
+    }else{
+       setLoading(false)
+       setLocalBookmark(false)
     }
   };
     const getArchive = () => {
     if (currentProfile && currentProfile.profileToCollections) {
+        console.log("XC",currentProfile)
       let ptc = currentProfile.profileToCollections.find((ptc) => ptc.type === "archive");
+      console.log("XCL",ptc)
       setArchive(ptc.collection);
     }
   };
 
   useEffect(() => {
     getArchive();
-  }, []);
+  }, [currentProfile]);
   const handleLocalBookmark = async (e) => {
     e.preventDefault();
     if (localBookmark) {
-      await deleteStc(); // uses closure from parent
-      setLocalBookmark(null);
-      setBookmarked(null);
+        deleteStc(); // uses closure from parent
     } else {
-      await onBookmarkPage();
-      setLocalBookmark(true);
-      setBookmarked();
+      onBookmarkPage();
     }
   };
 
@@ -204,7 +201,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
                 <IonImg src={bookmarkadd} className="mx-auto max-h-10 max-w-10" />
               )
             ) : (
-              <IonImg src={loadingGif} className="max-h-6 mx-auto" />
+              <IonImg src={loadingGif} className="mx-auto max-h-10 max-w-10" />
             )}
           </div>
         </IonItem>

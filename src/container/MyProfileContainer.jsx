@@ -227,6 +227,8 @@ function MyProfileContainer({ presentingElement }) {
         setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
         dispatch(setPagesInView({ pages: currentProfile.stories }))
         dispatch(setCollections({collections:currentProfile.collections}))
+      }else{
+        navigate(Paths.login())
       }
     };
     return seSeo()
@@ -285,7 +287,7 @@ function MyProfileContainer({ presentingElement }) {
                   ))}
                 </select>
               </div>
-  
+  <div className='min-h-[30em]'>
             <StoryCollectionTabs 
               tab={
                 tab
@@ -299,7 +301,7 @@ setTab
                   dispatch(setPageInView({ page: item }));
         
                 }} />}/>
-
+</div>
           <FeedbackDialog
             presentingElement={presentingElement}
             page={feedbackPage}

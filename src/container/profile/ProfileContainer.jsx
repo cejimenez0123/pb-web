@@ -26,12 +26,14 @@ import ErrorBoundary from '../../ErrorBoundary.jsx';
 import PageList from '../../components/page/PageList.jsx';
 import sortItems from '../../core/sortItems.js';
 import { Preferences } from '@capacitor/preferences';
+import StoryCollectionTabs from '../../components/page/StoryCollectionTabs.jsx';
 
 function ProfileContainer({ profile }) {
   const { seo, setSeo, setError, setSuccess, currentProfile } = useContext(Context);
   const { id } = useParams();
 
   const dispatch = useDispatch();
+  const[tab,setTab]=useState("page")
   const isPhone = useMediaQuery({ query: '(max-width: 600px)' });
 
   const [search, setSearch] = useState('');
@@ -236,8 +238,15 @@ const [canUserSee, setCanUserSee] = useState(false);
               </label>
             </span>
           )}
-
-          {/* Tabs container with original Tailwind styling */}
+          <div className=" rounded-lg w-[100vw] justify-center flex mx-auto md:w-page bg-transparent">
+        <StoryCollectionTabs 
+        tab={tab}
+        setTab={setTab} 
+        colList={()=> <IndexList type="collection" items={useSelector(state => state.books.collections)} />
+           }
+        storyList={()=><PageList items={pages} />}/>
+        </div>
+          {/* Tabs container with original Tailwind styling
           <div role="tablist" className="tabs mb-36 rounded-lg w-[100vw] mx-auto md:w-page tabs-boxed bg-transparent">
             <input type="radio" name="my_tabs_2" role="tab" defaultChecked
               className="tab hover:min-h-10 mb-4 rounded-full mont-medium text-emerald-800 border-3 w-[90vw] md:w-page text-md md:text-xl"
@@ -252,7 +261,7 @@ const [canUserSee, setCanUserSee] = useState(false);
             <div role="tabpanel" className="tab-content h-[30rem] pt-1 lg:py-4 rounded-lg w-[96vw] md:w-page mx-auto rounded-full">
               <IndexList type="collection" items={useSelector(state => state.books.collections)} />
             </div>
-          </div>
+          </div> */}
         
           
         </IonContent>

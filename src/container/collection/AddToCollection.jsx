@@ -281,9 +281,6 @@ text-[1rem]">
 
   return (
     <ErrorBoundary>
-
-    
-
         <IonContent fullscreen={true} className="ion-padding">
               <IonHeader translucent>
           <IonToolbar>
@@ -299,8 +296,6 @@ text-[1rem]">
             {colInView.title?.trim() || "Untitled"}
           </h2>
           <p className="text-emerald-700 mb-4">{colInView.purpose || ""}</p>
-
-          {/* Save button */}
           <div className="flex justify-between items-center mb-4">
             <div
               onClick={save}
