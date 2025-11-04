@@ -44,7 +44,7 @@ export default function Carousel({book,isGrid}){
     let descSize = adjustScreenSize(isGrid,false," max-h-[4em] "," max-h-[4em] ","","","","  ")
   let size = adjustScreenSize(isGrid,true," ","   "," "," py-2  mx-1 rounded-lg max-h-[30em]"," ")
     
-     if(book){
+     if(book&&book.storyIdList){
       
         return(
         <div id="Carousel" className={`   carousel px-1 mx-auto    ${size} rounded-lg carousel-start overflow-y-hidden pb-2 `}

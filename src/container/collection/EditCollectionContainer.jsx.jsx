@@ -30,6 +30,7 @@ import { Preferences } from "@capacitor/preferences";
 import { RoleType } from "../../core/constants";
 import arrowDown from "../../images/icons/arrow_down.svg"
 import Context from "../../context";
+import RoleForm from "../../components/role/RoleForm";
 
 const EditCollectionContainer = () => {
    const params = useParams();
@@ -42,6 +43,7 @@ const EditCollectionContainer = () => {
    const colInView = useSelector((state) => state.books.collectionInView);
  const [newPages, setNewPages] = useState([]);
  const [followersAre,setFollowersAre]=useState(RoleType.commenter)
+const [canUserEdit,setCanUserEdit]=useState(false)
  const [title,setTitle]=useState("")
  const [purpose,setPurpose]=useState("")
   const [newCollections, setNewCollections] = useState([]);
@@ -62,7 +64,22 @@ const dialog = useSelector(state=>state.users.dialog)
  const handleStoryOrderChange = (newOrder) => {
     setNewPages(newOrder.map((stc, i) => new StoryToCollection(stc.id, i, stc.collection, stc.story, currentProfile)));
   };
+    function soUserCanEdit() {
+      if (!currentProfile || !colInView) {
+        setCanUserEdit(null);
+        return;
+      }
+         console.log("CDCD",colInView)
+      if (colInView.roles) {
+        let found = colInView.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
+        console.log("CDCD",found)
+        if (found && (found.role === RoleType.editor)||collection.profileId==currentProfile.id) {
+          setCanUserEdit(found);
+          return;
+        }
+      }
   
+    }
 
   const handleColOrderChange = (newOrder) => {
     setNewCollections(
@@ -156,6 +173,7 @@ if (col.childCollections) {
       .then(() => setSuccess("Successful Update"))
       .catch((err) => setError(err.message));
   };
+  useEffect(soUserCanEdit,[currentProfile,colInView])
   useEffect(() => {
     if (colInView) {
       setInfo(colInView);
@@ -197,8 +215,19 @@ if (col.childCollections) {
     );
     dispatch(setDialog(dia));
   };
+  const openRoleForm=()=>{
 
-  const canUserEdit = currentProfile?.id === collection?.profile?.id;
+    let dia = { ...dialog };
+    dia.title = "Change Roles";
+    dia.isOpen = true;
+    dia.agree =null
+  
+    dia.agreeText = null
+    dia.onClose = () => dispatch(setDialog({ isOpen: false }));
+    dia.text = <RoleForm item={colInView} onClose={()=>dispatch(setDialog({ isOpen: false }))}/>
+    dispatch(setDialog(dia));
+  
+  }
 
   return (
   // <IonContent>
@@ -249,11 +278,16 @@ if (col.childCollections) {
                   }}
                   className="p-2"
                 />
+              
+               {canUserEdit? currentProfile.id == colInView.profileId?"You're the owner":<IonText >You are {canUserEdit.role=="editor"?"an":"a"} {canUserEdit.role}</IonText>:null}
+            
               </IonItem>
-
-                <IonLabel position="stacked" className="text-emerald-700 text-[1rem] font-bold">
+  <div className="mt-4">
+    <div className="mb-1">
+                <IonLabel position="stacked" className="text-emerald-700  text-[1rem] font-bold">
                   Description
                 </IonLabel>
+                </div>
                 <IonTextarea
                   autoGrow={true}
                   placeholder="Describe your collection"
@@ -268,7 +302,7 @@ if (col.childCollections) {
                   }}
                   className="p-2 "
                 />
-
+</div>
             </IonList>
               <div className="mt-6 flex flex-col items-center gap-4 w-full max-w-lg mx-auto">
   {/* Open Collaboration Toggle */}
@@ -282,7 +316,14 @@ if (col.childCollections) {
   >
     {isOpen ? "Open Collaboration Enabled" : "Close Collaboration"}
   </button>
-
+  <button
+    onClick={() =>openRoleForm()}
+    className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 
+bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
+      }`}
+  >
+    Roles
+  </button>
   {/* Privacy Toggle */}
   <button
     onClick={() => setIsPrivate(!isPrivate)}

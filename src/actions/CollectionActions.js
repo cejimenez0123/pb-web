@@ -28,19 +28,19 @@ const getPublicBooks = createAsyncThunk(
 
 const getPublicCollections = createAsyncThunk(
     'books/getPublicCollections',
-    async (thunkApi) => {
+    async ({type},thunkApi) => {
        
    
         try{
-                let res = await axios(Enviroment.url+"/collection")
-            
+                let res = await axios(Enviroment.url+`/collection?type=${type}`)
+            console.log(res)
     return {
   
        collections: res.data.data
     }
 }catch (error) {
     return{
-        error: new Error(`getPublic Collections ${error.message}`)
+        error: new Error(`get Collections ${error.message}`)
     }
 }
       

@@ -3,7 +3,7 @@ import '../App.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchRecommendedStories } from '../actions/StoryActions';
 import ExploreList from '../components/collection/ExploreList.jsx';
-import { fetchCollectionProtected, getRecommendedCollectionsProfile, setCollections } from '../actions/CollectionActions';
+import { fetchCollectionProtected, getPublicCollections, getRecommendedCollectionsProfile, setCollections } from '../actions/CollectionActions';
 import { useLocation } from 'react-router-dom';
 import { appendToPagesInView, setPagesInView } from '../actions/PageActions';
 import Context from '../context.jsx';
@@ -19,7 +19,8 @@ function DashboardContainer() {
   const { currentProfile, setSeo, seo ,isNotPhone} = useContext(Context);
 
   const dispatch = useDispatch();
-   const collections = useSelector(state => state.books.collections)
+   const collections = [...(useSelector(state => state.books.collections) ?? [])]
+  .sort((a, b) => new Date(b.updated) - new Date(a.updated));
   const recommendedCols= useSelector(state => state.books.recommendedCols);
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
@@ -28,9 +29,17 @@ function DashboardContainer() {
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
-      let feedbackCols = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
-      console.log("XXS",)
+      dispatch(getPublicCollections({type:"feedback"})).then(res=>{
+        checkResult(res,payload=>{
+          console.log("LOX",payload)
+let feedbackCols = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
+      // console.log("XXS",)
       dispatch(setCollections({collections:feedbackCols}))
+        },err=>{
+
+        })
+      })
+      
     }
 
    
@@ -45,7 +54,7 @@ const libraryForums = () => {
           isNotPhone ? 'ml-16 pl-6' : 'ml-16'
         } mb-4 lora-bold font-extrabold text-2xl`}
       >
-        Feedback
+        Offer Your Insight
       </IonText>
 
       {/* Horizontal scroll area */}

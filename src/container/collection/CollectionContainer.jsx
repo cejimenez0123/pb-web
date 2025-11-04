@@ -126,8 +126,8 @@ const isNative = DeviceCheck()
     }
     if (collection.roles) {
       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-      console.log(found)
-      if (found && found.role === RoleType.editor||collection.profileId==currentProfile.id) {
+      console.log("CDCD",found)
+      if (found && (found.role === RoleType.editor)||collection.profileId==currentProfile.id) {
         setCanUserEdit(true);
         return;
       }
@@ -516,16 +516,7 @@ console.log("STORYLIST",collection.storyIdList)
       />
     </IonButtons>
 
-    {/* Right-aligned edit button */}
-    {/* {canUserEdit && isNative && (
-      <IonButtons slot="end">
-        <IonImg
-          className="btn max-h-[2rem] bg-emerald-400 cursor-pointer max-w-[3rem] flex items-center border-0 justify-center px-2 rounded"
-          onClick={() => navigate(Paths.editCollection.createRoute(id))}
-          src={edit}
-        />
-      </IonButtons>
-    )} */}
+  
 
   </IonToolbar>
 </IonHeader>

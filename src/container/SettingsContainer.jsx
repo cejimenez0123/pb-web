@@ -30,10 +30,7 @@ export default function SettingsContainer(props) {
             
             if(!currentProfile.profilePic.includes("http")){
                 setPictureUrl(Enviroment.imageProxy(currentProfile.profilePic))
-            // getDownloadPicture(currentProfile.profilePic).then(url=>{
-               
-            //     setPictureUrl(url.full)
-            // })
+     
         }else{
             setSelectedImage(currentProfile.profilePic)
             setPictureUrl(currentProfile.profilePic)

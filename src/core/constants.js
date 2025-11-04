@@ -6,7 +6,7 @@ const PageType  = {
 }
 
 const RoleType = {
-    role:"role",
+    role:"none",
     reader:"reader",
     writer:"writer",
     commenter:"commenter",
