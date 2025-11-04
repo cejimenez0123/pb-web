@@ -94,32 +94,7 @@ function DiscoveryContainer() {
       .catch(() => setHasMoreLibraries(false));
   };
 
-  // UI rendering helpers
 
-  // const libraryForums = () => {
-  //   if (!libraries) return null;
-  //   return (
-  //     <div className=''>
-  //       <IonText
-  //         className={`text-emerald-900 ${
-  //           isNotPhone ? 'ml-16 pl-6' : 'ml-16'
-  //         } mb-4 lora-bold font-extrabold text-2xl`}
-  //       >
-  //         Communities
-  //       </IonText>
-  //       <div className="mb-12 h-[13em]">
-     
-  //         <IonInfiniteScroll className='flex h-fit flex-row  overflow-x-scroll'>
-  //           {libraries.map(library => (
-  //             <IonItem key={library.id} className='mx-4'>
-  //               <BookListItem book={library} />
-  //             </IonItem>
-  //           ))}
-  // </IonInfiniteScroll>
-  //       </div>
-  //    </div>
-  //   );
-  // };
 const libraryForums = () => {
   if (!libraries) return null;
 

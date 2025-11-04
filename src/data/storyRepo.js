@@ -42,6 +42,7 @@ class StoryRepo{
         let res = await axios.get(this.url+"/recommendations",{headers
      
         })
+        console.log(res)
         return res.data
     }
     async getStoryProtected({id}){

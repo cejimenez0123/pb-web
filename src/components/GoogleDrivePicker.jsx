@@ -66,7 +66,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
       fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`)
         .then(r => r.json())
         .then(info => {
-          console.log("Token info:", info);
+          // console.log("Token info:", info);
           if (!info.scope?.includes('drive.readonly')) {
             console.warn("⚠️ Token missing Drive scope — Drive access may fail.");
           }
@@ -125,7 +125,7 @@ useEffect(() => {
       });
 
       await window.gapi.client.load('drive', 'v3');
-      console.log("✅ GAPI Drive client loaded");
+      // console.log("✅ GAPI Drive client loaded");
       setGapiLoaded(true);
       setDriveClientLoaded(true);
     } catch (err) {
@@ -191,7 +191,7 @@ useEffect(() => {
         return res.json();
       })
       .then(data => {
-        console.log("Drive files:", data);
+        // console.log("Drive files:", data);
         setFiles(data.files || []);
         setLoading(false);
       })

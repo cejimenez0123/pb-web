@@ -225,14 +225,18 @@ function MyProfileContainer({ presentingElement }) {
     let seSeo = () => {
       if (currentProfile) {
         setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
-        dispatch(setPagesInView({ pages: currentProfile.stories }))
-        dispatch(setCollections({collections:currentProfile.collections}))
+     
       }else{
         navigate(Paths.login())
       }
     };
     return seSeo()
-  }, [currentProfile])
+  }, [])
+  useEffect(()=>{
+    console.log(currentProfile)
+      currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: currentProfile.stories }))
+      currentProfile && currentProfile.collections &&  dispatch(setCollections({collections:currentProfile.collections}))
+  },[currentProfile])
   if (!currentProfile) {
     return (
       <IonContent>
@@ -287,7 +291,7 @@ function MyProfileContainer({ presentingElement }) {
                   ))}
                 </select>
               </div>
-  <div className='min-h-[30em]'>
+  <div className='h-fit min-h-[55rem] overflow-auto'>
             <StoryCollectionTabs 
               tab={
                 tab

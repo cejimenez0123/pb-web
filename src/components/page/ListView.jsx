@@ -14,7 +14,7 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   const { pathname } = useLocation();
 
   // Memoized sorted items
-  const sortedItems = useMemo(() => {
+  const sortedItems =location.pathname.includes("home")?items: useMemo(() => {
     if (!Array.isArray(items) || items.length === 0) return [];
 
     const validItems = items.filter(Boolean);
@@ -28,7 +28,7 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
 
     return sortItems(others, books) || [];
   }, [items, pathname]);
-
+// console.log("items",items)
   // Initialize displayed items when sortedItems changes
   useEffect(() => {
     setDisplayedItems(sortedItems.slice(0, itemsPerPage));

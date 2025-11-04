@@ -227,6 +227,7 @@ const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProte
  const setCollections = createAction("cols/setCollections", (params)=> {
 
     const {collections} = params
+    console.log("xxsl",collections)
     return  {payload:
       collections}
       
@@ -238,7 +239,7 @@ const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
 )=>{
     try{
      let data = await collectionRepo.getMyCollections()
-     console.log(data)
+  
       return {
         collections: data.collections
       }

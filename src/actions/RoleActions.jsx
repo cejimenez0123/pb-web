@@ -40,7 +40,7 @@ try{
     
     }
 }catch(error){
-    console.log("ERO",error)
+  
     return {
      error
     }}

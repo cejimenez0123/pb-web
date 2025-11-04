@@ -53,11 +53,10 @@ const fetchPreview = async (url) => {
 
     const data = response.data; // ✅ axios already gives JSON
 
-    // console.log("Fetched preview data:", data);
+    // 
     setPreviewData(data);
   } catch (error) {
-    // console.error('Failed to fetch link preview:', error);
-  } finally {
+   } finally {
     setLoading(false);
   }
 };

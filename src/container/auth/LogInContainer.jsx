@@ -88,8 +88,8 @@ function LogInCard({setLogInError}){
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                  
-                    if(payload && payload && payload.profile.id){
+                  console.log(payload)
+                    if(payload && payload.profile && payload.profile.id){
 
                    
                     navigate(Paths.myProfile())

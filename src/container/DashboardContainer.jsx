@@ -12,25 +12,58 @@ import ErrorBoundary from '../ErrorBoundary.jsx';
 import { initGA } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import Enviroment from '../core/Enviroment.js';
-import {  IonContent } from '@ionic/react';
-
+import {  IonContent,IonText, IonItem} from '@ionic/react';
+import BookListItem from '../components/BookListItem.jsx';
 function DashboardContainer() {
   const location = useLocation();
-  const { currentProfile, setSeo, seo } = useContext(Context);
+  const { currentProfile, setSeo, seo ,isNotPhone} = useContext(Context);
 
   const dispatch = useDispatch();
-  const collections = useSelector(state => state.books.recommendedCols);
+   const collections = useSelector(state => state.books.collections)
+  const recommendedCols= useSelector(state => state.books.recommendedCols);
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
-
+// console.log("recommendedStories",stories)
   const [hasMore, setHasMore] = useState(false);
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
+      let feedbackCols = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
+      console.log("XXS",)
+      dispatch(setCollections({collections:feedbackCols}))
     }
 
    
-},[])
+},[currentProfile])
+const libraryForums = () => {
+  if (!collections) return null;
+
+  return (
+    <div className="">
+      <IonText
+        className={`text-emerald-900 ${
+          isNotPhone ? 'ml-16 pl-6' : 'ml-16'
+        } mb-4 lora-bold font-extrabold text-2xl`}
+      >
+        Feedback
+      </IonText>
+
+      {/* Horizontal scroll area */}
+      <div className="mb-4">
+        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
+          {collections.map((library) => (
+            <IonItem
+              key={library.id}
+              className=" flex-shrink-0 border-none bg-transparent"
+            >
+              <BookListItem book={library} />
+            </IonItem>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
   useLayoutEffect(() => {
     initGA();
     let soo = { ...seo };
@@ -46,7 +79,7 @@ function DashboardContainer() {
   };
 
   const getHomeCollectionContent = () => {
-    dispatch(setPagesInView({ pages: [] }));
+    // dispatch(setPagesInView({ pages: [] }));
     if (currentProfile?.profileToCollections) {
       let ptc = currentProfile.profileToCollections.find(ptc => ptc.type === 'home');
       if (ptc) {
@@ -98,6 +131,7 @@ function DashboardContainer() {
         <ErrorBoundary>
           <div id="dashboard">
             <div className="py-8">
+              {libraryForums()}
               <div className="w-[98vw] md:mt-8 mx-auto flex flex-col md:w-page">
                 <div role="tablist" className="tabs grid">
                   {/* Recommendations Tab */}
@@ -110,7 +144,7 @@ function DashboardContainer() {
                     aria-label="Recommendations"
                   />
                   <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto md:w-page">
-                    <ListView items={recommendedStories} hasMore={hasMore} getMore={getContent} />
+                    <ListView items={[...recommendedStories,...recommendedCols]} hasMore={hasMore} getMore={getContent} />
                   </div>
 
                   {/* Home Tab */}
