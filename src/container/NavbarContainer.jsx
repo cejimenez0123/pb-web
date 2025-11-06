@@ -124,12 +124,12 @@ const openDialog=()=>{
     
     const SettingName = {
         profile: "Profile",
-        account: "Account",
+        // account: "Account",
         logout: "Log Out",
         notifications:"Notifications"
     }
     const settings = [SettingName.profile,
-                      SettingName.account,
+                      // SettingName.account,
                       SettingName.notifications,
                       SettingName.logout,
                       ]; 

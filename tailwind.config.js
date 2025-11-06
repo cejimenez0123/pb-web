@@ -28,7 +28,7 @@ export default {
       ...colors,
       "blueSea":"#0097b2",
       "soft":"#40906f",
-      "orange":"#f85e30"
+      "golden":"#f85e30"
     },
     height:{
       "info":"18rem",

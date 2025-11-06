@@ -13,10 +13,12 @@ import { useDispatch } from "react-redux"
 import { setDialog } from "../../actions/UserActions"
 import Enviroment from "../../core/Enviroment"
 import { Capacitor } from "@capacitor/core";
-
+import settings from "../../images/icons/settings.svg"
+import { useNavigate } from "react-router-dom";
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
         const dialog = useSelector(state=>state.users.dialog)
+        const navigate = useNavigate()
     const isNative = Capacitor.isNativePlatform()
     const dispatch = useDispatch()
     const handleDialogOpen=()=>{
@@ -94,18 +96,20 @@ const ProfileInfo = ({profile})=>{
     </div>
     return (  
         <div className="flex h-[100%] flex-col justify-between">                       
-    <div className='flex-row    mx-auto   flex  '>
-  
+    <div className='flex-row  mb-4  mx-auto justify-between w-[92vw]  flex  '>
+          <div className="flex flex-row ">
     <ProfilePic url={pictureUrl}/>
-
-        <div className='text-left sm:mx-3 mb-2 h-48 flex flex-col '>
-        <h5 className='text-xl mb-3  mt-2 lora-bold  text-emerald-900 font-bold'>{profile.username}</h5>
+     <h5 className='text-xl mb-3  mt-2 lora-bold  text-emerald-900 font-bold'>{profile.username}</h5>
+</div>    
+<IonImg  onClick={()=> navigate("/profile/edit")} className="bg-emerald-400 rounded-full w-8 max-h-8 mx-4" src={settings}/> 
+     </div>
+     <div>
        <div className='w-[100%] w-[15em]  md:max-w-[20em] text-left '>
-        <h6 className='sm:max-h-48  sm:w-60 text-[0.8rem] sm:text-[0.8rem]  text-emerald-900 '>
+        <h6 className='sm:max-h-48  mb-4 sm:w-60 text-[0.8rem] sm:text-[0.8rem]  text-emerald-900 '>
             {profile.selfStatement}</h6></div> 
           
         </div>
-        </div>
+   
         <div className="text-emerald-800 flex flex-row justify-start px-4">
             {profile.followers && profile.followers.length>0?<div  
             onClick={()=>openFollowersDialog()}
@@ -113,10 +117,10 @@ const ProfileInfo = ({profile})=>{
                 <h5 className="text-[1rem]">Followers</h5>
                 <h6 className="text-[1.2rem]">{profile.followers.length}</h6>
             </div>:null}
-        </div>
+        {/* </div> */}
 
-<div className='w-[10em] h-[3em] mx-auto flex'>
-<h6 onClick={()=>handleDialogOpen()}className='my-auto mx-auto text-sm  text-emerald-800'>Refer Someone?</h6></div>
+{/* <div className='w-[10em] h-[3em] mx-auto flex'> */}
+<h6 onClick={()=>handleDialogOpen()}className='my-auto mx-auto text-sm mb-4  text-emerald-800'>Refer Someone?</h6></div>
                             
                             </div>  )
                             

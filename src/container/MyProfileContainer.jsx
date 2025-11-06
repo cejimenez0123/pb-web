@@ -36,7 +36,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
           onClick();
         }
       }}
-      className={`cursor-pointer select-none rounded-full flex items-center justify-center ${className}`}
+      className={`rounded-full flex btn items-center justify-center ${className}`}
       style={style}
     >
       {children}
@@ -269,8 +269,8 @@ function MyProfileContainer({ presentingElement }) {
 
               <div className='flex flex-col gap-4 items-center'>
                 <ButtonWrapper onClick={() => navigate(Paths.workshop.reader())}
-                  className='border-2 border-emerald-600 mx-4 rounded-full text-emerald-900 h-[3rem] w-[90vw] sm:w-[21rem]'>
-                  <IonText>Join a Workshop</IonText>
+                  className='border-2 font-bold hover:bg-soft  bg-blueSea mx-4 rounded-full  h-[3rem] w-[90vw] sm:w-[21rem]'>
+                  <IonText className='text-white'>Join a Workshop</IonText>
                 </ButtonWrapper>
                 <GoogleDrivePicker getToken={getDriveToken} accessToken={driveToken} onFilePicked={getFile} />
               </div>

@@ -11,7 +11,8 @@ import { IonContent, IonText } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
-    const{setError,currentProfile,setSuccess,dialog}=useContext(Context)
+    const{setError,currentProfile,setSuccess}=useContext(Context)
+    const dialog = useSelector(state=>state.users.dialog)
     const [newUsername,setNewUsername] = useState("")
     const [selfStatement,setSelfStatement] = useState(currentProfile&&currentProfile.selfStatement?currentProfile.selfStatement:"")
     const [isPrivate,setPrivacy] = useState(false)
@@ -141,7 +142,7 @@ export default function SettingsContainer(props) {
         dia.title=("Are you sure you want to delete your account?")
                         dia.text=("Deleting your account can't be reversed")
                         dia.agreeText ="Delete"
-    
+        dispatch(setDialog(dia))
 
     }
     const deleteHomeItem  = (item)=>{
@@ -297,7 +298,7 @@ export default function SettingsContainer(props) {
                             </div>
                             </div>
                         <button 
-                        className="rounded-full py-2 w-[10rem] mt-24 text-2xl  bg-orange-800 text-white"
+                        className="rounded-full py-2 w-[10rem] mt-24 text-2xl  bg-golden text-white"
                                 onClick={handleDeleteDialog}
                                 id="open-modal" expand="block"
                         ><IonText>Delete</IonText> </button>
