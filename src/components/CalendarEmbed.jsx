@@ -97,10 +97,12 @@ function CalendarEmbed(){
   const areas = ["Downtown", "Uptown", "Virtual", "Queens"];
 
      
-      useIonViewWillEnter(()=>{
-            addEvents()
-      },[currentProfile])
- 
+      // useIonViewWillEnter(()=>{
+      //       addEvents()
+      // },[currentProfile])
+  useLayoutEffect(()=>{
+      addEvents()
+  },[])
       const addEvents= ()=>{
         try{ 
       storyRepo.fetchEvents({days:28}).then(res=>{
