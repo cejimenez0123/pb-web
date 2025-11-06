@@ -1,6 +1,6 @@
 
 import{ useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { IonCard, IonCardHeader, IonCardContent, IonImg } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardContent, IonText,IonImg } from '@ionic/react';
 import "../../Dashboard.css";
 import {
   deletePageApproval,
@@ -48,7 +48,7 @@ export default function DashboardItem({ page, book, isGrid }) {
 
 
   const widthSize = adjustScreenSize(isGrid, true, "", " pt-1 pb-2 ", "", "", "", "");
-  let sizeOuter = adjustScreenSize(isGrid, false, "rounded-lg shadow-md grid-item relative ", "justify-between flex ", "mt-2 mx-auto ", " mt-2 ", "  ");
+  // let sizeOuter = adjustScreenSize(isGrid, false, "rounded-lg shadow-md grid-item relative ", "justify-between flex ", "mt-2 mx-auto ", " mt-2 ", "  ");
 
   const addStoryToCollection = () => {
     if (page) {
@@ -303,75 +303,29 @@ export default function DashboardItem({ page, book, isGrid }) {
     return isGrid
       ? null
       : (
-        <div className='flex w-[95vw] sm:w-[50em] rflex-row w-full rounded-b-lg overflow-hidden justify-evenly'>
-          <div className={`${likeFound ? "bg-emerald-400" : "bg-emerald-200"} text-center grow w-1/3`}>
+         <div className="flex-row w-[95vw] h-16 rounded-b-lg overflow-clip sm:w-page mx-auto bg-emerald-200 flex text-white">
+       <div className={`${likeFound ? "bg-emerald-400" : "bg-emerald-200"} text-center grow w-1/3`}>
             <div
               onClick={handleApprovalClick}
               className={`py-2 flex mont-medium mx-auto text-white border-none h-[100%] border-none`}
             >
-              <h6 className='text-[1.2rem] text-emerald-700 my-auto mx-auto'>Yea{likeFound ? "" : ""}</h6>
+              <IonText className="text-xl text-emerald-700 m-auto p-0">Yea{likeFound ? "" : ""}</IonText>
             </div>
           </div>
           <div className={" bg-emerald-200  border-white border-x-2 border-y-0 text-center border-white grow w-1/3"}>
             <div
               className='text-emerald-700 text-center mx-auto bg-emerald-200 py-2 border-none'
               onClick={() => handleClickComment()}>
-              <h6 className='text-[1.2rem]'> Review</h6>
+              <IonText className="text-xl text-emerald-700 m-auto p-0">Review</IonText> 
             </div>
           </div>
+         
           {!page.recommended ? (
-            // <div className="dropdown text-center bg-emerald-200 py-2  grow w-1/3 dropdown-top">
-              <div tabIndex={0} onClick={onClickShare} role="button"
-              className="text-emerald-800 text-center grow w-1/3  mx-auto rounded-b-lg bg-emerald-200 border-none ">
-                <h6 className='text-[1.2rem] mt-2'>Share</h6>
-              </div>
-              // <ul tabIndex={0} className="dropdown-content text-center bg-emerald-100 text-emerald-800  menu rounded-box w-60 p-1 shadow">
-              //   {currentProfile && currentProfile.id == page.authorId?<li className='text-emerald-700'
-              //     onClick={() => navigate(Paths.editPage.createRoute(page.id))}>
-              //     <a className='text-emerald-800'>
-              //       Edit
-              //     </a></li>:null}
-              //   <li className='text-emerald-700'
-              //     onClick={() => ClickAddStoryToCollection()}>
-              //     <a className='text-emerald-800'>
-              //       Add to a Collection
-              //     </a>
-              //   </li>
-              //   <li>
-              //     <a
-              //       className='text-emerald-700'
-              //       onClick={() => {
-              //         navigator.clipboard.writeText("https://plumbum.app/page" + Paths.page.createRoute(page.id))
-              //           .then(() => setSuccess('Text copied to clipboard'));
-              //       }}>
-              //       Share Link
-              //     </a>
-              //   </li>
-              //   {canUserEdit ? (
-              //     <li className='text-emerald-700'>
-              //       <a onClick={() => {
-              //         dispatch(setEditingPage({ page }));
-              //         dispatch(setPageInView({ page: null }));
-              //         navigate(Paths.editPage.createRoute(page.id));
-              //       }}
-              //         className='text-emerald-700'>
-              //         Edit
-              //       </a>
-              //     </li>
-              //   ) : null}
-              //   <li>
-              //     <button className="my-auto w-fit mx-auto border-none bg-transparent"
-              //       onClick={handleBookmark}
-              //       disabled={!currentProfile}>
-              //       {loading
-              //         ? <IonImg className="max-h-6" src={loadingGif} />
-              //         : bookmarked
-              //           ? <IonImg src={bookmarkFillGreen} className='text-emerald-800' />
-              //           : <IonImg src={bookmarkadd} />}
-              //     </button>
-              //   </li>
-              // </ul>
-            // </div>
+               <div onClick={onClickShare} className="flex-1/3 grow bg-emerald-200 text-center flex justify-center items-center">
+                    {/* <IonButton  fill="clear" color="success"> */}
+                      <IonText className="text-xl text-emerald-700 m-auto p-0">Share</IonText>
+                      </div>
+             
           ) : (
             <div onClick={addStoryToCollection}
               className='bg-emerald-700 flex grow flex-1/3'>
@@ -385,7 +339,7 @@ export default function DashboardItem({ page, book, isGrid }) {
   // --- FINAL RENDER WITH IONIC CARD CONTAINMENT ---
   if (!page) {
     return (
-      <span className={sizeOuter + " skeleton"} />
+      <span className={ " skeleton"} />
     );
   }
 
@@ -395,9 +349,7 @@ export default function DashboardItem({ page, book, isGrid }) {
     <IonCard
       id="dashboard-item"
       className={
-        'mt-3 rounded-lg rounded-b-lg w-[95vw] sm:w-[50em] min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col ' +
-        sizeOuter +
-        (isGrid ? ' overflow-hidden' : '')
+        'mt-3 rounded-lg rounded-b-lg w-[95vw] sm:w-[50em] min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col '
       }
       style={{
         maxWidth: '100vw',
