@@ -45,11 +45,11 @@ function IndexItem({item,handleFeedback,type}) {
                                 })
   }}
     const handleEditClick = ()=>{
-       
-      if(item && item.storyIdList){
+       console.log("VVDX",item)
+      if(item && (item.storyIdList||item.type)){
         navigate(Paths.editCollection.createRoute(item.id))
       }else if(item){
-        dispatch(setHtmlContent(item.data))
+         dispatch(setHtmlContent({html:item.data}))
         dispatch(setEditingPage({page:item}))
         dispatch(setPageInView({page:item}))
         navigate(Paths.editPage.createRoute(item.id))
@@ -109,7 +109,7 @@ function IndexItem({item,handleFeedback,type}) {
    }
 
     const handleAddToClick = ()=>{
-      if(type!="story"){
+      if(item.storyIdList){
         navigate(Paths.addToCollection.createRoute(item.id))
       }else{
        navigate(Paths.addStoryToCollection.story(item.id))

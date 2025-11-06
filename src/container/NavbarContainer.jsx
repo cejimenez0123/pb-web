@@ -175,13 +175,13 @@ const openDialog=()=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
      
-          dispatch(setHtmlContent(""))
+          dispatch(setHtmlContent({html:""}))
           navigate(Paths.editor.image())}}><a>     <IonImg src={ImageIcon}/></a></li>
              <li tabIndex={page} ><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
 
-    dispatch(setHtmlContent(""))
+    dispatch(setHtmlContent({html:""}))
     navigate(Paths.editor.link())}}>
     <IonImg src={LinkIcon}/></a></li>
            <li  tabIndex={page}  onClick={()=>{ 
@@ -271,13 +271,13 @@ const openDialog=()=>{
             dispatch(setPageInView({page:null}))
             dispatch(setEditingPage({page:null}))
     
-          dispatch(setHtmlContent(""))
+          dispatch(setHtmlContent({html:""}))
           navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
              <li tabIndex={3} ><a    onClick={()=>{
     dispatch(setPageInView({page:null}))
     dispatch(setEditingPage({page:null}))
 
-    dispatch(setHtmlContent(""))
+    dispatch(setHtmlContent({html:""}))
     navigate(Paths.editor.link())}} className='mx-auto'>
    <IonImg src={LinkIcon}/></a></li>
            <li tabIndex={4}  onClick={()=>{ 

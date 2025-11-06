@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import colors, { emerald } from "tailwindcss/colors"
+import colors from "tailwindcss/colors"
 import daisyui from "daisyui"
 
 export default {
@@ -26,7 +26,9 @@ export default {
     },
     colors:{
       ...colors,
-      "softBlue":"#0097b2"
+      "blueSea":"#0097b2",
+      "soft":"#40906f",
+      "orange":"#f85e30"
     },
     height:{
       "info":"18rem",

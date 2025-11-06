@@ -26,7 +26,7 @@ import Enviroment from "../../core/Enviroment.js"
 setImage(src)
             // })
           }else if(page){
-            dispatch(setHtmlContent(page.data))
+            dispatch(setHtmlContent({html:page.data}))
           }
         },[page])
     
@@ -85,7 +85,7 @@ setImage(src)
             <RichEditor
               initContent={parameters.data}
               handleChange={content => {
-                dispatch(setHtmlContent(content));
+                dispatch(setHtmlContent({html:content}));
                 handleChange(content);
               }}
             />

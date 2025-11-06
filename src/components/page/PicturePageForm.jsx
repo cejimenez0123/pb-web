@@ -56,7 +56,7 @@ function PicturePageForm(props) {
     if (ePage) {
       switch (ePage.type) {
         case PageType.link:
-          dispatch(setHtmlContent(ePage.data));
+          dispatch(setHtmlContent({html:ePage.data}));
           setLocalContent(ePage.data);
           setImage(null);
           break;
@@ -132,7 +132,7 @@ function PicturePageForm(props) {
             setLocalContent(href);
             setImage(href);
             params.data = fileName;
-            dispatch(setHtmlContent(fileName));
+            dispatch(setHtmlContent({html:fileName}));
             props.createPage(params);
             setParameters(params);
           },

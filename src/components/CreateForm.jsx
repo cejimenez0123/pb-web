@@ -94,7 +94,7 @@ Save
 </Button>
 <List>
     {pagesToBeAdded.map(page =><ListItem key={page.id} onClick={()=>{
-        dispatch(setHtmlContent(page.data))
+        dispatch(setHtmlContent({html:page.data}))
         dispatch(setPageInView({page}))
         navigate(Paths.page.createRoute(page.id))
     }}>{page.title.length>0?page.title:"Untitled"}</ListItem>)}

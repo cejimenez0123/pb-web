@@ -277,7 +277,7 @@ function CalendarEmbed(){
                     
                       
                          className=" 
-                          border-softBlue border  rounded-[50px]  shadow-md min-h-42 my-1  py-4  "
+                          border-blueSea border  rounded-[50px]  shadow-md min-h-42 my-1  py-4  "
                      >
                       <div className={`flex
                       flex-row justify-between  px-6    `}>
