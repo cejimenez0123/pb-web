@@ -45,7 +45,7 @@ function IndexItem({item,handleFeedback,type}) {
                                 })
   }}
     const handleEditClick = ()=>{
-       console.log("VVDX",item)
+
       if(item && (item.storyIdList||item.type)){
         navigate(Paths.editCollection.createRoute(item.id))
       }else if(item){

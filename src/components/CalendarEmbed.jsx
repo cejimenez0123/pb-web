@@ -9,7 +9,7 @@ import {sendGAEvent } from "../core/ga4";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
-import { IonImg, IonInput, IonItem, IonList, IonText } from "@ionic/react";
+import { IonImg, IonInput, IonItem, IonList, IonText, useIonViewWillEnter } from "@ionic/react";
 import { setDialog } from "../actions/UserActions";
 
 function CalendarEmbed(){
@@ -97,7 +97,7 @@ function CalendarEmbed(){
   const areas = ["Downtown", "Uptown", "Virtual", "Queens"];
 
      
-        useLayoutEffect(()=>{
+      useIonViewWillEnter(()=>{
             addEvents()
       },[currentProfile])
  

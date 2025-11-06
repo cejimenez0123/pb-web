@@ -378,7 +378,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
             </div>
 
             {/* ===== DANGER ZONE ===== */}
-            <div className="mt-10 border-t border-gray-200 pt-4">
+           {colInView && currentProfile && colInView.profileId==currentProfile.id && <div className="mt-10 border-t border-gray-200 pt-4">
               <h4 className="text-sm font-semibold text-red-600 mb-2">
                 Danger Zone
               </h4>
@@ -386,7 +386,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
                 <IonImg   onClick={handleDelete} src={deleteIcon} alt="Delete" className="max-w-12 max-h-12 rounded-lg bg-red-400" />
                 <span>Delete Collection</span>
            
-            </div>
+            </div>}
           </div>
         )}
       {/* </IonContent> */}
