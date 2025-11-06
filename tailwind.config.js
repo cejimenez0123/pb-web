@@ -24,6 +24,10 @@ export default {
       'grid-mobile-content':"45.8vw"
 
     },
+    colors:{
+      ...colors,
+      "softBlue":"#0097b2"
+    },
     height:{
       "info":"18rem",
       "item":"20rem",

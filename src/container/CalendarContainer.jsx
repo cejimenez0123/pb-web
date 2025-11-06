@@ -16,9 +16,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Collapsible from "../components/Collapsible";
 import CalendarEmbed from "../components/CalendarEmbed";
 import { Capacitor } from "@capacitor/core";
+import { useSelector } from "react-redux";
 export default function CalendarContainer(){
   const location = useLocation()
   const {seo,setSeo}=useContext(Context)
+  const currentProfile = useSelector(state=>state.users.currentProfile)
   const navigate = useNavigate()
   const isNative = Capacitor.isNativePlatform()
   useLayoutEffect(()=>{
@@ -44,9 +46,9 @@ export default function CalendarContainer(){
 <div className=" w-[90%] sm:max-w-[30rem] mx-auto">
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
-      <p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
+     {!currentProfile &&<p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
         Get weekly writing events in your inbox, or go deeper:<br/> apply to become a user and share your own writing and feedback on our site.
-      </p>
+      </p> }
       </div>
 <div className="w-fit mx-auto">
       <CalendarEmbed  />

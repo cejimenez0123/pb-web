@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Setting.css"
 import checkResult from "../core/checkResult";
 import Context from "../context";
-import { IonContent } from "@ionic/react";
+import { IonContent, IonText } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
@@ -228,7 +228,7 @@ export default function SettingsContainer(props) {
                 <IonContent fullscreen={true}>
             <div >
                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
-                      <label className="text-left flex flex-col mont-medium"><h4 className="text-xl">Username:</h4>
+                      <label className="text-left flex flex-col "><h4 className="text-xl">Username:</h4>
                    
                       {/* <IonInput   
                     
@@ -284,23 +284,23 @@ export default function SettingsContainer(props) {
                             onClick={(e)=>{
                                 e.preventDefault()
                                 setPrivacy(true)}}
-                            className=" text-bold border-emerald-500  h-18 w-24 border-2 rounded-full text-emerald-800 bg-emerald-50 hover:bg-green-10 text-xl mont-medium">You are Public</button>}
+                            className=" text-bold border-emerald-500  h-18 w-24 border-2 rounded-full text-emerald-800 bg-emerald-50 hover:bg-green-10 text-xl ">You are Public</button>}
    </div>
   <div className="mt-8">
 
-                            <button
-                               className="bg-emerald-800 btn text-white px-2 py-2 mont-medium rounded-full text-2xl"
+                            <div
+                               className="bg-emerald-800 bg-opacity-[60%] flex btn text-white px-4 py-3 w-full   rounded-full "
                                 variant="outlined" 
                                 onClick={(e)=>handleOnSubmit(e)}
                             >
-                                Update
-                            </button>
+                                <IonText className="my-auto mx-auto text-2xl">Update</IonText>
+                            </div>
                             </div>
                         <button 
-                        className="rounded-full py-2 w-[10rem] mt-24 text-2xl mont-medium bg-orange-800 text-white"
+                        className="rounded-full py-2 w-[10rem] mt-24 text-2xl  bg-orange-800 text-white"
                                 onClick={handleDeleteDialog}
                                 id="open-modal" expand="block"
-                        > Delete</button>
+                        ><IonText>Delete</IonText> </button>
         
                         </div>
             </div>

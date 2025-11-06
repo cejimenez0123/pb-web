@@ -28,11 +28,15 @@ const getPublicBooks = createAsyncThunk(
 
 const getPublicCollections = createAsyncThunk(
     'books/getPublicCollections',
-    async ({type},thunkApi) => {
-       
+    async (params,thunkApi) => {
+
+        let query =""
+       if(params && params.type && params.type.length>2){
+        query = `?type=${params.type}`
+       }
    
         try{
-                let res = await axios(Enviroment.url+`/collection?type=${type}`)
+                let res = await axios(Enviroment.url+`/collection`+query)
             console.log(res)
     return {
   

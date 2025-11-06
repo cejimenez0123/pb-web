@@ -173,7 +173,7 @@ function CalendarEmbed(){
         dia.disagreeText= "Close"
        
         dia.title =chosenEvent.summary
-      dia.text=<div className="text-left text-emerald-800">
+      dia.text=<div className="text-left text-[#0097b2]">
         <span>{chosenEvent.location}</span>
     <span dangerouslySetInnerHTML={{__html:"<div>"+chosenEvent.description+"</div>"}} /></div>
         dia.onClose = ()=>{
@@ -215,12 +215,12 @@ function CalendarEmbed(){
       
       return (
         <div id="cal-embed" className="max-w-[40rem]  mx-auto">
-        <div className={`flex  mx-auto text-left ${isPhone?"flex-col":`flex-row`}`}>
-        <span className="flex flex-row"> 
+        <div className={`flex  mx-auto text-left ${isPhone?"flex-col":"flex-row"}`}>
+        <span className="flex flex-row my-auto max-h-12 w-16"> 
             <h2 className="my-auto mont-medium mx-2 text-emerald-700">Filter by Area:</h2>
 
         <select
-          className="border w-fit  text-emerald-700 h-[3rem] rounded-lg bg-transparent px-2 text-l"
+          className="border w-fit  my-auto text-emerald-700 h-[2em] rounded-lg bg-transparent px-2 text-l"
           value={selectedArea}
           onChange={(e) => setSelectedArea(e.target.value)}
         >
@@ -230,8 +230,8 @@ function CalendarEmbed(){
           ))}
         </select>
         </span> 
-        {/*  */}
-      <span className={`flex flex-col mt-4 w-full text-left min-w-30`}>
+       
+      <span className={`flex flex-row my-auto w-full text-left min-w-30`}>
           <IonText className="my-auto mx-4 text-emerald-800"> Search</IonText>
           <div ref={searchRef} className="relative w-[90vw] mx-auto">
 
@@ -277,7 +277,7 @@ function CalendarEmbed(){
                     
                       
                          className=" 
-                          border-emerald-600 border  rounded-[50px]  shadow-md min-h-42 my-1  py-4  "
+                          border-softBlue border  rounded-[50px]  shadow-md min-h-42 my-1  py-4  "
                      >
                       <div className={`flex
                       flex-row justify-between  px-6    `}>
@@ -296,19 +296,19 @@ function CalendarEmbed(){
             
                             }} className="flex flex-col"> 
           
-                             <a className="text-green-600 overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
+                             <a className="text-[#0097b2] overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
                               <IonText>{event.location}</IonText></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
                           
                           
               
                           {event.area==areas[2]&&event.googleLink?<a 
-                       ><h6 className="text-green-600 text-[0.6rem] flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
+                       ><h6 className="text-[#0097b2] text-[0.6rem] flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
                       <h5 className="text-[0.7rem] min-h-6">{event.hashtags.slice(0,4).join(" ")}</h5>
                        </span>
                      {/*  */}
                            <span className="flex flex-row justify-between min-w-20 w-20 ml-3">
                          
-                            <h5 className="my-auto text-[0.8rem] w-[2.6rem] text-emerald-800 "><div dangerouslySetInnerHTML={{__html:event.startTime}}/></h5>
+                            <h5 className="my-auto text-[0.8rem] w-[2.6rem] text-[#0097b2] "><div dangerouslySetInnerHTML={{__html:event.startTime}}/></h5>
               <IonImg onClick={()=>{
                         sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
                         window.open(event.googleLink)

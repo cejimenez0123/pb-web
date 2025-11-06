@@ -119,9 +119,6 @@ const openDialog=()=>{
       }
 
     }  
- 
-    const [openCreate,setOpenCreate] = useState(false)
-
   
  
     
@@ -167,6 +164,7 @@ const openDialog=()=>{
     }else if( page==PageName.create){
         return(currentProfile?  
             <li  
+            onClick={ClickWriteAStory}
          tabIndex={page} 
          className="z-[2]  w-52">
         
