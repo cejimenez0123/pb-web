@@ -248,12 +248,12 @@ return<IonPage><IonContent fullscreen={true}><div className="sm:pt-16 pb-20">
   {/* Top Section */}
   <div className="relative flex flex-col md:flex-row justify-between mx-auto sm:border-4 sm:border-emerald-300 p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 
-    <div className="md:w-1/3 max-w-[60em] flex justify-center md:justify-start">
+    <div className="md:w-1/3 max-w-[60em] h-[15em] mb-4 flex justify-center md:justify-start">
       <ProfileInfo profile={currentProfile} />
     </div>
 
     {/* Right: Buttons */}
-    <div className="flex flex-col items-center md:items-start gap-4 w-full md:w-2/3  ">
+    <div className="flex flex-col items-center h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  ">
 
       {/* Row 1: Write a Story + Create Collection */}
       <div className="flex flex-row flex-wrap sm:justify-center md:justify-start gap-4">
