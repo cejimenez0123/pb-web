@@ -46,7 +46,7 @@ function IndexItem({item,handleFeedback,type}) {
   }}
     const handleEditClick = ()=>{
 
-      if(item && (item.storyIdList||item.type)){
+      if(item && (item.storyIdList||item.type=="collection")){
         navigate(Paths.editCollection.createRoute(item.id))
       }else if(item){
          dispatch(setHtmlContent({html:item.data}))

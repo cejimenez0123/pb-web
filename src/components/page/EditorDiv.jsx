@@ -10,10 +10,12 @@ import { setHtmlContent } from "../../actions/PageActions.jsx"
 import { useDispatch } from "react-redux"
 import { IonImg } from "@ionic/react"
 import Enviroment from "../../core/Enviroment.js"
+import { useSelector } from "react-redux"
  export default function EditorDiv({handleChange,createPage,page}){
         const location = useLocation()
         const dispatch = useDispatch()
         const {parameters,setParameters} = useContext(EditorContext)
+       const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
         let href =location.pathname.split("/")
         let last = href[href.length-1]
         const [image,setImage]=useState(null)
@@ -53,7 +55,7 @@ setImage(src)
         } else if (last === PageType.text) {
           return (
             <RichEditor
-              initContent={parameters.data}
+              initContent={htmlContent.html}
               handleChange={content => handleChange(content)}
             />
           );
@@ -83,7 +85,7 @@ setImage(src)
         } else if (page.type === PageType.text) {
           return (
             <RichEditor
-              initContent={parameters.data}
+              initContent={htmlContent.html}
               handleChange={content => {
                 dispatch(setHtmlContent({html:content}));
                 handleChange(content);

@@ -244,7 +244,7 @@ function MyProfileContainer({ presentingElement }) {
       </IonContent>
     );
   }
-return<IonPage><IonContent fullscreen={true}><div className="sm:pt-16 pb-20">
+return<IonPage><IonContent fullscreen={true} className='ion-padding'><div className=" sm:pt-16 pb-20">
   {/* Top Section */}
   <div className="relative flex flex-col md:flex-row justify-between mx-auto sm:border-4 sm:border-emerald-300 p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 
@@ -259,13 +259,13 @@ return<IonPage><IonContent fullscreen={true}><div className="sm:pt-16 pb-20">
       <div className="flex flex-row flex-wrap sm:justify-center md:justify-start gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
-          className="bg-emerald-600 text-white rounded-full h-[3rem] w-[9rem]"
+          className="bg-emerald-600 text-white rounded-full h-[3rem] w-[8rem]"
         >
           <IonText>Write a Story</IonText>
         </ButtonWrapper>
         <ButtonWrapper
           onClick={ClickCreateACollection}
-          className="bg-emerald-700 text-white rounded-full h-[3rem] w-[9rem]"
+          className="bg-emerald-700 text-white rounded-full h-[3rem] w-[8rem]"
         >
           <IonText>Create Collection</IonText>
         </ButtonWrapper>

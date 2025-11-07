@@ -54,9 +54,9 @@ import { Capacitor } from '@capacitor/core';
 function App(props) {
   const {currentProfile} = props
   const navigate = useNavigate()
-  const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
+  const isPhone = useMediaQuery({ query: '(max-width: 800px)' });
   const isHorizPhone =  useMediaQuery({
-    query: '(min-width: 750px)'
+    query: '(min-width: 8000px)'
   })
   const isNative = DeviceCheck()
 

@@ -31,6 +31,7 @@ import { RoleType } from "../../core/constants";
 import arrowDown from "../../images/icons/arrow_down.svg"
 import Context from "../../context";
 import RoleForm from "../../components/role/RoleForm";
+import ErrorBoundary from "../../ErrorBoundary";
 
 const EditCollectionContainer = () => {
    const params = useParams();
@@ -411,6 +412,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
   };
 
   return (
+    <ErrorBoundary>
     <div className="w-full sm:w-60 text-center relative">
       {/* Button */}
       <div
@@ -446,6 +448,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
         ))}
       </ul>
     </div>
+    </ErrorBoundary>
   );
 }
 

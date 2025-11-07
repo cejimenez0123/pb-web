@@ -315,7 +315,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
    }
    useEffect(()=>{
     let params = parameters
-  params.data=htmlContent
+  params.data=htmlContent.html
     params.id = id
    params.isPrivate=isPrivate
    params.description = description

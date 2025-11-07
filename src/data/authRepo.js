@@ -3,9 +3,13 @@ import Enviroment from "../core/Enviroment"
 import {Preferences} from  "@capacitor/preferences"
 
 class AuthRepo{
-    headers= {
-        'Access-Control-Allow-Origin': "*"
-    }
+     async getAuthHeaders() {
+    const { value} = await Preferences.get({ key: "token" });
+    return {
+      ...this.headers,
+      Authorization: `Bearer ${value}`,
+    };
+  }
     async apply(form){
        let res = await axios.post(Enviroment.url+"/auth/apply",form,{headers:this.headers})
        return res.data
@@ -63,7 +67,7 @@ class AuthRepo{
       return res.data
     }
     async startSession({uId,email,password,identityToken}){
-let headers = await this.headers()
+let headers = await this.getAuthHeaders()
         const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password,identityToken},{headers:headers})
 
         return res.data
