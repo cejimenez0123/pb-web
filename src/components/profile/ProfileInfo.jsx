@@ -95,8 +95,8 @@ const ProfileInfo = ({profile})=>{
    
     </div>
     return (  
-        <div className="flex  h-[15nem] flex-col justify-between">                       
-    <div className='flex-row  mb-4  mx-auto justify-between w-[92vw]  flex  '>
+        <div className="flex  h-[15em]  max-w-[20em] flex-col  ">                       
+    <div className='flex-row  mb-4  mx-auto justify-between w-[80vw]  flex  '>
           <div className="flex flex-row ">
     <ProfilePic url={pictureUrl}/>
      <h5 className='text-xl mb-3  mt-2 lora-bold  text-emerald-900 font-bold'>{profile.username}</h5>
