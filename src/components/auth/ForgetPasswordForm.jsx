@@ -13,7 +13,7 @@ const ForgotPasswordForm = ({close})=>{
     const [loading,setLoading]=useState(false)
     const handleClick=()=>{
         setLoading(true)
-            authRepo.forgotPassword({username,email}).then(data=>{
+            authRepo.forgotPassword({username,email:email.trim()}).then(data=>{
                 setError(null)   
 setSuccess(data.message)
 setLoading(false)
