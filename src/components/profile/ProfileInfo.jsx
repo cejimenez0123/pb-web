@@ -101,7 +101,7 @@ const ProfileInfo = ({profile})=>{
     <ProfilePic url={pictureUrl}/>
      <h5 className='text-xl mb-3  mt-2 lora-bold  text-emerald-900 font-bold'>{profile.username}</h5>
 </div>    
-<IonImg  onClick={()=> navigate("/profile/edit")} className="bg-emerald-400 rounded-full p-2  max-h-5 w-5" src={settings}/> 
+<IonImg  onClick={()=> navigate("/profile/edit")} className="bg-emerald-400 rounded-full p-1 max-h-8 w-8 mx-2" src={settings}/> 
      </div>
      <div>
        <div className='w-[100%] w-[15em]  md:max-w-[20em] text-left '>
