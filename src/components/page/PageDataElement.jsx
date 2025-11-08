@@ -1,5 +1,4 @@
 import { useContext, useEffect,useState } from "react"
-import getDownloadPicture from "../../domain/usecases/getDownloadPicture"
 import { PageType } from "../../core/constants"
 import LinkPreview from "../LinkPreview"
 import isValidUrl from "../../core/isValidUrl"
@@ -7,7 +6,6 @@ import loadingGif from "../../images/loading.gif"
 import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
 import { useLocation } from "react-router-dom"
-import adjustScreenSize from "../../core/adjustScreenSize"
 import Context from "../../context"
 import { IonImg } from '@ionic/react';
 import Enviroment from "../../core/Enviroment"
@@ -22,8 +20,8 @@ export default function PageDataElement({page,isGrid,book=null}){
         if(page && page.type==PageType.picture){
             if(isValidUrl(page.data)){
                 setImage(page.data)
-        
             }else{
+                console.log("IMAGEPROXY",page)
                 setImage(Enviroment.imageProxy(page.data))
             
             }

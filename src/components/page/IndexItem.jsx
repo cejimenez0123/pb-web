@@ -44,15 +44,15 @@ function IndexItem({item,handleFeedback,type}) {
                                   alert('Text copied to clipboard');
                                 })
   }}
-    const handleEditClick = ()=>{
-
-      if(item && (item.storyIdList||item.type=="collection")){
-        navigate(Paths.editCollection.createRoute(item.id))
-      }else if(item){
-         dispatch(setHtmlContent({html:item.data}))
-        dispatch(setEditingPage({page:item}))
-        dispatch(setPageInView({page:item}))
-        navigate(Paths.editPage.createRoute(item.id))
+    const handleEditClick = (comp)=>{
+ 
+      if(comp && comp.purpose){
+        navigate(Paths.editCollection.createRoute(comp.id))
+      }else{
+         dispatch(setHtmlContent({html:comp.data}))
+        dispatch(setEditingPage({page:comp}))
+        dispatch(setPageInView({page:comp}))
+        navigate(Paths.editPage.createRoute(comp.id))
       }  
     }
 
@@ -149,7 +149,7 @@ const handleAddToLibrary=()=>{
   <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg className="  my-auto mx-auto  " src={edit}/></div>
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
-        handleEditClick}><a className="text-green-600 ">Edit</a></li>
+        ()=>handleEditClick(item)}><a className="text-green-600 ">Edit</a></li>
        {type!="collection"?<li className="text-green-600 " onClick={handleFeedback}><a className="text-green-600 ">Get Feedback</a></li>:null}
        {canUserAdd?<li className="text-green-600 no-underline" onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>:null}
                {/* {!item.storyIdList?<li className="text-green-600 " onClick={handleFeedback}>Get Feedback</li>:null} */}

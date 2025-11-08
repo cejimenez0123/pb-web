@@ -25,6 +25,7 @@ import { initGA, sendGAEvent } from '../core/ga4.js'
 import {IonImg, IonList,} from '@ionic/react';
 import { useSelector } from 'react-redux'
 import { Capacitor } from '@capacitor/core'
+import { PageType } from '../core/constants.js'
 const PageName = {
   home: "Home",
   about:"About",
@@ -164,25 +165,20 @@ const openDialog=()=>{
     }else if( page==PageName.create){
         return(currentProfile?  
             <li  
-            onClick={ClickWriteAStory}
+        
          tabIndex={page} 
          className="z-[2]  w-52">
         
-         <a      tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline'  tabndex="0">Create</a>
+         <a       onClick={ClickWriteAStory}   tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline'  tabndex="0">Create</a>
            <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
              <li tabIndex={page}  onClick={ClickWriteAStory}><a  >  <IonImg src={CreateIcon}/></a></li>
              <li  tabIndex={page}    onClick={(e)=>{
-            dispatch(setPageInView({page:null}))
-            dispatch(setEditingPage({page:null}))
-     
-          dispatch(setHtmlContent({html:""}))
-          navigate(Paths.editor.image())}}><a>     <IonImg src={ImageIcon}/></a></li>
+        
+          navigate(Paths.editor.image())}}><a>     
+            <IonImg src={ImageIcon}/></a></li>
              <li tabIndex={page} ><a    onClick={()=>{
-    dispatch(setPageInView({page:null}))
-    dispatch(setEditingPage({page:null}))
-
-    dispatch(setHtmlContent({html:""}))
-    navigate(Paths.editor.link())}}>
+    navigate(Paths.editor.link())}}
+    >
     <IonImg src={LinkIcon}/></a></li>
            <li  tabIndex={page}  onClick={()=>{ 
              
@@ -229,9 +225,10 @@ const openDialog=()=>{
       }
 
     const ClickWriteAStory = debounce(()=>{
+      console.log("VCXBOT")
       sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
-        
-        dispatch(createStory({profileId:currentProfile.id,privacy:true,type:"html",
+     
+        dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
         title:"",commentable:true
       })).then(res=>checkResult(res,data=>{
       
@@ -266,18 +263,15 @@ const openDialog=()=>{
         
          <a      role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
            <ul     className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
-             <li tabIndex={1}  onClick={ClickWriteAStory}><a className='mx-auto '  >  <IonImg src={CreateIcon}/></a></li>
+             <li tabIndex={1}  onClick={ClickWriteAStory}><a className='mx-auto '  > 
+              
+               <IonImg src={CreateIcon}/></a></li>
              <li   tabIndex={2}   onClick={(e)=>{
-            dispatch(setPageInView({page:null}))
-            dispatch(setEditingPage({page:null}))
-    
-          dispatch(setHtmlContent({html:""}))
+            
+  
+         
           navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
              <li tabIndex={3} ><a    onClick={()=>{
-    dispatch(setPageInView({page:null}))
-    dispatch(setEditingPage({page:null}))
-
-    dispatch(setHtmlContent({html:""}))
     navigate(Paths.editor.link())}} className='mx-auto'>
    <IonImg src={LinkIcon}/></a></li>
            <li tabIndex={4}  onClick={()=>{ 

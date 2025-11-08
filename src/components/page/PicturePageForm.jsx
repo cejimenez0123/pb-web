@@ -13,17 +13,17 @@ import checkResult from "../../core/checkResult";
 import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
 import { setHtmlContent } from "../../actions/PageActions.jsx";
-import getDownloadPicture from "../../domain/usecases/getDownloadPicture";
 import { PageType } from "../../core/constants";
 import { useLocation } from "react-router-dom";
 import EditorContext from "../../container/page/EditorContext";
 import Context from "../../context.jsx";
 import { imageOutline } from "ionicons/icons";
-
-function PicturePageForm(props) {
+import Enviroment from "../../core/Enviroment.js";
+import { Capacitor } from "@capacitor/core";
+function PicturePageForm({createPageAction}) {
   const dispatch = useDispatch();
-  const { currentProfile } = useContext(Context);
-  const { page, parameters, setParameters } = useContext(EditorContext);
+  const { currentProfile,setError } = useContext(Context);
+  const { parameters, setParameters } = useContext(EditorContext);
   const ePage = useSelector((state) => state.pages.editingPage);
   const location = useLocation();
 
@@ -36,24 +36,26 @@ function PicturePageForm(props) {
   const [image, setImage] = useState(null);
 
   const handleLocalContent = (e) => {
+    console.log(localContent)
     const value = e.detail?.value ?? e.target.value;
     setLocalContent(value);
-
     let params = { ...parameters, profile: currentProfile, data: value };
-
-    if (last === PageType.picture && isValidUrl(value)) {
+ setParameters(params);
+    if (last === PageType.picture&&isValidUrl(value)) {
       setImage(value);
       dispatch(setHtmlContent({html:value}));
     } else {
-      setImage(null);
       dispatch(setHtmlContent({html:value}));
     }
-
-    setParameters(params);
+if(last==PageType.link){
+  dispatch(setHtmlContent({html:value}));
+  createPageAction(parameters)
+}
+   
   };
 
   useEffect(() => {
-    if (ePage) {
+    if (ePage && ePage.data.length>4) {
       switch (ePage.type) {
         case PageType.link:
           dispatch(setHtmlContent({html:ePage.data}));
@@ -65,17 +67,14 @@ function PicturePageForm(props) {
             setImage(ePage.data);
             setLocalContent(ePage.data);
           } else {
-            const src = `${Enviroment.proyUrl}/image?path=${encodeURIComponent(
-              ePage.data
-            )}`;
-            setImage(src);
+              setImage(Enviroment.imageProxy(ePage.data))
           }
           break;
         default:
           break;
       }
     }
-  }, [ePage, dispatch]);
+  }, [ePage]);
 
   const checkContentTypeDiv = (type) => {
     switch (type) {
@@ -90,6 +89,7 @@ function PicturePageForm(props) {
         return null;
 
       case PageType.picture:
+    
         return (
           image && (
             <div className="flex justify-center mt-6">
@@ -108,40 +108,62 @@ function PicturePageForm(props) {
   };
 
   const handleFileInput = (e) => {
-    e.preventDefault();
-    const fil = e.target.files[0];
-    if (!fil) return;
+    e.preventDefault()
+  const file = e.target.files[0];
+  if(Capacitor.isNativePlatform()){
+  if (!file) return;
 
-    if (!fil.type.startsWith("image/")) {
-      setErrorMessage("Please upload a valid image file.");
-      setImage(null);
-      return;
-    }
+  if (!file.type.startsWith('image/')) {
 
-    setFile(fil);
-    let params = { ...parameters, file: fil, profile: currentProfile };
-    setParameters(params);
+    setError('Please upload a valid image file.');
+    return;
+  }
 
-    if (localContent.length === 0) {
-      dispatch(uploadPicture(params)).then((result) =>
+  
+  if (image.startsWith('blob:')) {
+    URL.revokeObjectURL(image);
+  }
+
+  const newUrl = URL.createObjectURL(file) + `#${Date.now()}`;
+  console.log('Preview URL:', newUrl);
+  console.log(file)
+  console.log(image)
+  setFile(file);
+  setImage(newUrl);
+  setError('');
+}else{
+  const reader = new FileReader();
+reader.onloadend = () => {
+  setImage(reader.result);
+  setFile(file)
+  console.log(reader.result)
+};
+
+reader.readAsDataURL(file);
+}
+
+};
+const create=()=>{
+  let params = {file:file,profile:currentProfile}
+  if(file){
+ dispatch(uploadPicture(params)).then((result) =>
         checkResult(
           result,
           (payload) => {
-            const href = payload["url"];
             const fileName = payload.ref;
-            setLocalContent(href);
-            setImage(href);
+          
+            params.type = PageType.picture
             params.data = fileName;
             dispatch(setHtmlContent({html:fileName}));
-            props.createPage(params);
-            setParameters(params);
+            
+            setParameters({...params,...parameters,data:fileName});
+       
+            createPageAction(parameters)
           },
           () => {}
         )
-      );
-    }
-  };
-
+      );}
+}
   const uploadBtn = () => {
     if (last.toUpperCase() === "IMAGE") {
       return (
@@ -189,10 +211,11 @@ function PicturePageForm(props) {
           placeholder="Paste or enter URL"
           clearInput={false}
         />
+        {last==PageType.link && <IonText>Press Enter</IonText>}
       </div>
-
+{last==PageType.picture && <IonButton onClick={create}>Save</IonButton>}
       {/* Preview Area */}
-      <div className=" mx-auto w-full">{checkContentTypeDiv(ePage ? ePage.type : last)}</div>
+      <div className=" mx-auto w-full">{checkContentTypeDiv(ePage?ePage.type:last)}</div>
 
       {/* Error */}
       {errorMessage && (

@@ -244,11 +244,11 @@ function MyProfileContainer({ presentingElement }) {
       </IonContent>
     );
   }
-return<IonPage><IonContent fullscreen={true} className='ion-padding'><div className=" sm:pt-16 pb-20">
+return<IonPage><IonContent fullscreen={true} className='ion-padding'><div className=" sm:pt-16 pt-12 pb-20">
   {/* Top Section */}
   <div className="relative flex flex-col md:flex-row justify-between mx-auto sm:border-4 sm:border-emerald-300 p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 
-    <div className="md:w-1/3 max-w-[60em] h-[15em] mb-4 flex justify-center md:justify-start">
+    <div className="md:w-1/3 max-w-[60em] h-[16em] mb-6 flex justify-center md:justify-start">
       <ProfileInfo profile={currentProfile} />
     </div>
 
@@ -358,146 +358,6 @@ return<IonPage><IonContent fullscreen={true} className='ion-padding'><div classN
 </div>
 </IonContent></IonPage>
 
-
-//   return (
-//     <IonPage>
-//    <ErrorBoundary>
-
-//       <IonContent className="ion-padding" fullscreen >
-//         {/* <div className="sm:pt-16 "style={{ paddingBottom: "5rem" }}>
-//           {/* Top Section */}
-//           {/* <div className='flex flex-col md:flex-row h-[20em] justify-between mx-auto sm:border-4 sm:border-emerald-300 p-4 mt-2 max-w-[60rem] rounded-lg gap-4'>
-//             <div className='my-4 py-4 h-[16em] md:w-1/3'>
-//               <ProfileInfo profile={currentProfile} />
-//           <div>
-
-//             <div className=' flex flex-col gap-4'>
-//               <div className='flex flex-row gap-4 justify-center md:justify-start'>
-//                 <ButtonWrapper onClick={ClickWriteAStory} className='bg-emerald-600 text-white rounded-full h-[3rem] w-[10rem]'>
-//                   <IonText>Write a Story</IonText>
-//                 </ButtonWrapper>
-//                 <ButtonWrapper onClick={ClickCreateACollection} className='bg-emerald-700 text-white rounded-full  h-[3rem] w-[10rem]'>
-//                   <IonText>Create Collection</IonText>
-//                 </ButtonWrapper>
-//               </div>
-
-//               <div className='flex flex-col gap-4 items-center'>
-//                 <ButtonWrapper onClick={() => navigate(Paths.workshop.reader())}
-//                   className='border-2 font-bold hover:bg-soft  bg-blueSea mx-4 rounded-full  h-[3rem] w-[90vw] sm:w-[21rem]'>
-//                   <IonText className='text-white'>Join a Workshop</IonText>
-//                 </ButtonWrapper>
-//                 <GoogleDrivePicker getToken={getDriveToken} accessToken={driveToken} onFilePicked={getFile} />
-//               </div>
-//             </div>
-//           </div>
-//           </div> 
-//  </div> */} 
-//  <div className="sm:pt-16 pb-20">
-//   {/* Top Section */}
-//   <div className="flex flex-col md:flex-row justify-between mx-auto sm:border-4 sm:border-emerald-300 p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
-    
-//     {/* Profile Info */}
-//     <div className="md:w-1/3 flex justify-center md:justify-start">
-//       <ProfileInfo profile={currentProfile} />
-//     </div>
-
-//     {/* Action Buttons */}
-//     <div className="flex flex-col items-center md:items-start gap-6 w-full md:w-2/3">
-
-//       {/* Row 1: Write a Story + Create Collection */}
-//       <div className="flex flex-row flex-wrap justify-center md:justify-start gap-4">
-//         <ButtonWrapper
-//           onClick={ClickWriteAStory}
-//           className="bg-emerald-600 text-white rounded-full h-[3rem] w-[10rem]"
-//         >
-//           <IonText>Write a Story</IonText>
-//         </ButtonWrapper>
-//         <ButtonWrapper
-//           onClick={ClickCreateACollection}
-//           className="bg-emerald-700 text-white rounded-full h-[3rem] w-[10rem]"
-//         >
-//           <IonText>Create Collection</IonText>
-//         </ButtonWrapper>
-//       </div>
-
-//       {/* Row 2: Join a Workshop */}
-//       <div className="flex justify-center md:justify-start w-full">
-//         <ButtonWrapper
-//           onClick={() => navigate(Paths.workshop.reader())}
-//           className="border-2 font-bold bg-blueSea hover:bg-soft mx-4 rounded-full h-[3rem] w-[90vw] sm:w-[21rem]"
-//         >
-//           <IonText className="text-white">Join a Workshop</IonText>
-//         </ButtonWrapper>
-//       </div>
-
-//       {/* Row 3: Google Drive Picker */}
-//       <div className="flex justify-center md:justify-start w-full">
-//         <GoogleDrivePicker
-//           getToken={getDriveToken}
-//           accessToken={driveToken}
-//           onFilePicked={getFile}
-//         />
-//       </div>
-//     </div>
-//   </div>
-
-
-//           {/* Search + Tabs */}
-//           <div className='mx-auto md:mt-8 flex flex-col md:w-page'>
-//             {/* {isPhone ? ( */}
-//               <div className="flex items-center mb-8 mx-auto h-9 max-w-[85vw] pr-4 rounded-full bg-transparent">
-//                 <IonInput value={search} label="Search" labelPlacement="floating" placeholder="Search..."
-//                   onIonChange={e => setSearch(e.detail.value ?? '')}
-//                   className="text-emerald-800 flex-grow" />
-//                 <select onChange={e => setFilterType(e.target.value)} value={filterType}
-//                   className="select w-24 text-emerald-800 rounded-full bg-transparent">
-//                   {Object.entries(filterTypes).map(([, val]) => (
-//                     <option key={val} value={val}>{val}</option>
-//                   ))}
-//                 </select>
-//               </div>
-//   <div className='h-fit min-h-[55rem] overflow-auto'>
-//             <StoryCollectionTabs 
-//               tab={
-//                 tab
-//               } 
-//               setTab={
-// setTab
-//               }
-//               colList={()=><IndexList type="collection" items={filteredSortedCollections} />}
-//               storyList={()=><IndexList type="story" items={filteredSortedStories} handleFeedback={item => {
-//                   setFeedbackPage(item);
-//                   dispatch(setPageInView({ page: item }));
-        
-//                 }} />}/>
-// </div>
-//           <FeedbackDialog
-//             presentingElement={presentingElement}
-//             page={feedbackPage}
-//             open={!!feedbackPage}
-//             isFeedback
-//             handleChange={setFeedback}
-//             handleFeedback={() => {
-              
-//               if (!feedbackPage) return;
-//               const params = { ...feedbackPage, description, page:feedbackPage,id:feedbackPage.id,needsFeedback: true };
-            
-//               dispatch(updateStory(params)).then(res => {
-//                 checkResult(res, payload => {
-//                   console.log("Submitting feedback for page:", feedbackPage);
-//                   if (payload.story) navigate(Paths.workshop.createRoute(payload.story.id));
-//                 });
-//               });
-//             }}
-//             handlePostPublic={() => {}}
-//             handleClose={() => setFeedbackPage(null)}
-//           />
-//         </div>
-//         </div>
-//       </IonContent>
-//     </ErrorBoundary>
-//     </IonPage>
-  // );
 }
 
 export default MyProfileContainer;

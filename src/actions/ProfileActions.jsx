@@ -121,7 +121,58 @@ const uploadProfilePicture = createAsyncThunk(
     }
   }
 );
+const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunkApi)=>{
+  try {
+  // const {file,profile}= params
+      try {
+      const { file } = params;
 
+      if (!file) throw new Error("No file provided");
+
+     
+      const extension = file.name?.split(".").pop() || "jpg";
+      const fileName = `image/${file.name?.split(".")[0] ?? uuidv4()}-${uuidv4()}.${extension}`;
+
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, file);
+
+      const url = await getDownloadURL(storageRef);
+
+      return {
+        url,
+        fileName,
+      };
+    } catch (err) {
+      console.error("Error uploading profile picture:", err);
+      return thunkApi.rejectWithValue({
+        message: "Error: UPLOAD Profile Picture " + err.message,
+      });
+    }
+  }catch(e){
+    console.log(e)
+    }
+  }
+  // if(file){
+    
+
+  // const fileName = `/image/${profile.id}/${file.name}?!@@${uuidv4()}`
+
+  // const storageRef = ref(storage, fileName);
+  // const blob = new Blob([file])
+  // await uploadBytes(storageRef, blob)
+
+  // const url = await getDownloadURL(storageRef)
+  //     return{ 
+  //         ref:fileName,
+  //         url: url
+  //     }
+  //   }else{
+  //       throw new Error("file not found")
+  //   }
+  // }catch(err){
+  //     return{ error: err }
+  // }
+)
 const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunkApi)=>{
 
   let data = await profileRepo.all()
@@ -132,6 +183,7 @@ const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunk
 })
  export {
     createProfile,
+    uploadPicture,
     uploadProfilePicture,
     fetchProfiles,
     fetchNotifcations

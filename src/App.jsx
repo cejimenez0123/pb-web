@@ -166,7 +166,7 @@ function App(props) {
  
      <Route path={'/'} element={isFirstLaunch&&isNative?<Navigate to="/onboard"/>:<AboutContainer/>} />
       <Route path={"/login"} element={<LogInContainer/>}/> 
-      <Route path={"/onboard"} element={<OnboardingContainer/>}/>
+      <Route path={"/onboard"} element={<LoggedRoute><OnboardingContainer/></LoggedRoute>}/>
 
           <Route path={Paths.home()} 
                         element={
@@ -295,7 +295,7 @@ presentingElement={page}
         }/>
 
        <Route
-      exact path={Paths.editor.link()}
+     path={Paths.editor.link()}
       element={
         <PrivateRoute 
         currentProfile={props.currentProfile}

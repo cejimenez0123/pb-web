@@ -33,32 +33,32 @@ function EditorContainer({presentingElement}){
         const pageInView = useSelector(state=>state.pages.pageInView)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
         const [openDescription,setOpenDescription]=useState(false)
-        const pathParams = useParams()
         const dispatch = useDispatch()
-        const md = useMediaQuery({ query: '(min-width:768px)'})
+        const md = useMediaQuery({ query: '(min-width:800px)'})
         const navigate = useNavigate()
         const location = useLocation()
         let href =location.pathname.split("/")
         const last = href[href.length-1]
-        const [pageType,setPageType]=useState(editPage?editPage.type:last==PageType.link||last==PageType.picture?last:editPage?editPage.type:PageType.text)
+       const id = href[href.length-2]
       const [description,setDescription]=useState("")
         const {isSaved,setIsSaved}=useContext(Context)
        const [openHashtag,setOpenHashtag]=useState(false)
        const [openRoles,setOpenRoles]=useState(false)
-       const [needsFeedback,setNeedFeedback]=useState(editPage?editPage.needsFeedback:pageInView?pageInView.needsFeedback:false)
-        const [isPrivate,setIsPrivate] = useState(editPage?editPage.isPrivate:pageInView?pageInView.isPrivate:true)
-        const [titleLocal,setTitleLocal]=useState(editPage?editPage.title:pageInView?pageInView.title:"")
-        const [commentable,setCommentable] = useState(editPage?editPage.commentable:pageInView?pageInView.commentable:true)
-        const {id }= pathParams
-        const [parameters,setParameters] = useState({page:editPage?editPage:pageInView?pageInView:pathParams,title:titleLocal,
-          data:editPage?editPage.data:pageInView?pageInView.data:"",
+       const [needsFeedback,setNeedFeedback]=useState(false)
+        const [isPrivate,setIsPrivate] = useState(true)
+        const [titleLocal,setTitleLocal]=useState("")
+        const [commentable,setCommentable] = useState(true)
+  
+        const [parameters,setParameters] = useState(editPage?{page:editPage,title:titleLocal,
+          data:editPage.data,
           needsFeedback:needsFeedback,
           description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:description
           ,
-          type:pageType,
+          type:id=="link"||id=="image"?id:editPage.type,
+          // type:pageType,
           privacy:isPrivate,
           commentable:commentable
-        })
+        }:{type:id})
         
   
 
@@ -74,45 +74,41 @@ useEffect(() => {
   }
 
   let params = { ...parameters };
-  params.data = htmlContent.html;
-  params.id = id;
+  params.data = htmlContent.html??"";
+  if(last!="edit"){params.type=last
+
+  };
+ if(last=="edit"){
+   params.id = id;
+ }
+
   params.isPrivate = isPrivate;
   params.description = description;
   params.needsFeedback = needsFeedback;
-
+  console.log(htmlContent)
+  params.data = htmlContent.html
   setParameters(params);
-  dispatchUpdate(params);
+  last=="edit"?dispatchUpdate(params):createPageAction(params);
 
-}, [htmlContent, isPrivate, description, needsFeedback, parameters.title, parameters.type]);
+}, [htmlContent, isPrivate, description, needsFeedback]);
 
       useEffect(()=>{
-        if(fetchedPage){
+        
+        if(fetchedPage&&currentProfile){
           if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
               let params = parameters
               params.data = htmlContent.html
 
               params.type = last 
-
+              params.profileId = currentProfile.id
               setParameters(params)
              
-          }   
-          }else{
-
-   
-          if(last==PageType.picture||last==PageType.link){
-            if(isValidUrl(htmlContent)){
-             let params = parameters
-              params.data= htmlContent
-              params.type = last
-              setParameters(params)
-              createPageAction(params)
-            }
-     
-          }}
+          } }  
+      
       
     
         
-      },[htmlContent])
+      },[])
                const handleBack = (e) => {
     e.preventDefault();
     if (window.history.length > 1) {
@@ -122,35 +118,10 @@ useEffect(() => {
     }
   };
 
-   
-    useLayoutEffect(()=>{
-      // if(currentProfile){
-        fetchStory()
-      // }
-    },[navigate])
-
-    useEffect(()=>{
-        if(last==PageType.picture&&htmlContent.length>5&&parameters.page && !parameters.page.id){
-           let params = parameters
-           params.data = htmlContent.html
-          
-           setParameters(params)
-            createPageAction(parameters)
-       
-        }else if(last==PageType.link){
-          let params = parameters
-          params.data = htmlContent.html
-      
-          setParameters(params)
-           createPageAction(parameters)
-        }else{
-          let params = parameters
-          params.data = htmlContent.html
-       
-          setParameters(params)
-        }
-    },[htmlContent])
-  const setStoryData=(story)=>{
+   useEffect(()=>{
+    last=="edit" && fetchStory()
+   },[])
+ const setStoryData=(story)=>{
         
              setFetchedPage(story)   
              setTitleLocal(story.title)
@@ -158,12 +129,15 @@ useEffect(() => {
              setIsPrivate(story.isPrivate)
              
   }
+ 
     const fetchStory = ()=>{
   // if(id){
+  
   try{
+  if(last=="edit"){
       dispatch(getStory({id:id})).then(res=>{
         checkResult(res,payload=>{
-        console.log(payload)
+     
           const {story}=payload
 
           dispatch(setHtmlContent({html:story.data}))
@@ -172,15 +146,39 @@ useEffect(() => {
           setStoryData(story)
           let params = parameters
           params.page = story
+          params.isPrivate = story.privacy
+          params.data = story.data
           setParameters(params)
           setTitleLocal(story.title)
       },err=>{
 
        setSuccess(null)
       })})
+    }else{
+       dispatch(getStory({id:id})).then(res=>{
+        checkResult(res,payload=>{
+     
+          const {story}=payload
+
+          dispatch(setHtmlContent({html:story.data}))
+                 dispatch(setEditingPage({page:story}))
+                        dispatch(setPageInView({page:story}))
+          setStoryData(story)
+          let params = parameters
+          params.page = story
+          params.isPrivate = story.privacy
+          params.data = story.data
+          setParameters(params)
+          setTitleLocal(story.title)
+      },err=>{
+
+       setSuccess(null)
+      })})
+    }
     }catch(err){
       setError(err.message)
     }
+    
     }
   
 
@@ -198,24 +196,28 @@ useEffect(() => {
           handleClose()
       },10)
       const createPageAction = (params)=>{
-        
-        let pars = params
+           let pars = params??parameters??{}
         pars.profileId = currentProfile.id
+        pars.description = description
         pars.title = titleLocal
-    
-        pars.profileId = currentProfile.id
         pars.isPrivate = isPrivate
+        pars.type = last=="edit"?editPage.type:last
         pars.commentable = commentable
-     
-       setParameters(pars)
-        dispatch(createStory(pars)).then(res=>checkResult(res,payload=>{
+        pars.data = htmlContent.html
+   setParameters({...parameters,...pars})
+      if(!editPage){
+ 
+        dispatch(createStory(parameters)).then(res=>checkResult(res,payload=>{
           const {story}=payload
-          dispatch(setEditingPage({page:story}))
-          navigate(Paths.editPage.createRoute(story.id))
+          navigate(Paths.page.createRoute(story.id))
+       
      },err=>{
 
 setError(err.message)
      }))
+    }else{
+      dispatchUpdate(parameters)
+    }
       }
         const handleClickAddToCollection=()=>{
         
@@ -223,38 +225,29 @@ setError(err.message)
         }
   const handleisPrviate=debounce((truthy)=>{
  
-setOpenDescription(false)
+          setOpenDescription(false)
           setIsPrivate(truthy)
-        
           setNeedFeedback(false)
-      let params = parameters
-         params.isPrivate = truthy
-          setParameters(params)
-      
-         setFeedbackDialog(false)
-        setOpenDescription(false)
-  
-  //   if(!isPrivate){
-  //     navigate(Paths.page.createRoute(id))
-  //  }
+          setParameters({...parameters,isPrivate:truthy})
+          setFeedbackDialog(false)
+          setOpenDescription(false)
+          dispatchUpdate(parameters)
        
           
        
         },10)
 
           
-        const handleTitle = (title)=>{
+      const handleTitle = (title)=>{
           setTitleLocal(title)
           let params = parameters
           params.title = title
           setParameters(params)
-          
-          
-
+          dispatchUpdate(parameters)
       }
   
    const topBar=()=>{
-    return(<div className=" rounded-lg  w-[98vw] sm:max-w-[50em] mx-auto ">
+    return(<div className=" rounded-lg  w-[100%] sm:max-w-[50em] mx-auto ">
     <div className=" text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400   flex flex-row sm:rounded-t-lg border border-white   ">
         <div 
       className=" flex-1 text-left border-white border-r-2  "
@@ -281,7 +274,7 @@ setOpenDescription(false)
         setOpenDescription(false)
           setFeedbackDialog(true)
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
-        {parameters.page && parameters.page.id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(parameters.page.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
+        {id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {isPrivate?<li onClick={()=>{
     setFeedbackDialog(false) 
     setOpenDescription(true)} }
@@ -313,16 +306,20 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   </div>:null}
     </div>)
    }
+  //  useEffect(()=>{
+  //   dispatchUpdate(parameters)
+  //  },parameters)
    useEffect(()=>{
     let params = parameters
+    console.log
   params.data=htmlContent.html
     params.id = id
    params.isPrivate=isPrivate
    params.description = description
    params.needsFeedback = needsFeedback
 setParameters(params)
-    dispatchUpdate(params)
-   },[htmlContent,isPrivate,parameters.privacy,description,parameters.type,parameters,parameters.data,parameters.description,parameters.title])
+    
+   },[htmlContent.html])
    const handleFeedback=()=>{
 
       let params = parameters
@@ -365,8 +362,8 @@ const openConfirmDeleteDialog = () => {
 };
 const dispatchUpdate =debounce((params)=>{
   setIsSaved(false) 
-
- dispatch(updateStory(params)).then(res=>{
+ 
+ dispatch(updateStory({...params,type:last=="edit"?editPage.type:last,data:htmlContent.html,description})).then(res=>{
     checkResult(res,payload=>{
     
       if(payload.story){
@@ -379,7 +376,7 @@ return true
       setError(err.message)
       return false
     })}
-,200)
+,300)
 
 })
 const openRoleFormDialog = (fetchedPage) => {
@@ -405,9 +402,14 @@ const openRoleFormDialog = (fetchedPage) => {
 
   dispatch(setDialog(dia));
 };
+const handleSetDescription=(e)=>{
+
+  setDescription(e)
+  dispatchUpdate({...parameters,description:e})
+}
         return(
           <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
-          <IonContent fullscreen={true}  >
+          <IonContent fullscreen={true} className="ion-padding"  >
             <IonHeader className=" ion-padding py-8 ">
               <IonButtons className="ion-padding" >
                 <div className="pt-4 pl-4">
@@ -422,10 +424,12 @@ const openRoleFormDialog = (fetchedPage) => {
                   <ErrorBoundary>
            
           <EditorDiv  
-          createPage={createPageAction}
+          createPageAction={createPageAction}
     page={editPage}
             
-              handleChange={()=>{}}/>
+              handleChange={(content)=>{
+                dispatch(setHtmlContent({html:content}))
+              }}/>
                 </ErrorBoundary>
                 </div>
                     <div>
@@ -436,7 +440,7 @@ page={editPage}
 open={feedbackDialog||openDescription} 
 isFeedback={feedbackDialog}
 presentingElement={presentingElement}
-handleChange={setDescription} 
+handleChange={handleSetDescription} 
 handleFeedback={handleFeedback}
 handlePostPublic={()=>{
   handleisPrviate(false)}}
