@@ -41,7 +41,7 @@ const PageName = {
 
 function NavbarContainer({currentProfile}){
 
-  const {isPhone}=useContext(Context)
+  const {isPhone,isTablet}=useContext(Context)
   const dialog =useSelector(state=>state.users.dialog)
   useLayoutEffect(()=>{
     initGA()
@@ -333,7 +333,7 @@ openDialog()
  
   <div className="navbar-end">
   {(currentProfile&&currentProfile.id)? 
-  <div className={`dropdown ${isPhone?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
+  <div className={`dropdown ${isTablet?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
         <div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">

@@ -113,7 +113,7 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
  return (
     <IonApp >
      
-      <Context.Provider value={{isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+      <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
      {/* <head>
   <meta charset="UTF-8" />
   <Helmet>
