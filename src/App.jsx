@@ -109,9 +109,7 @@ function App(props) {
   }, []);
 const navbarBot = ((Capacitor.isNativePlatform()||(isPhone||isTablet)))||(Capacitor.isNativePlatform()&&!(location.pathname.includes("/signup")||location.pathname.includes("/login"))||(location.pathname.includes("/onboard")))
 
-// (Capacitor.isNativePlatform()||!isPhone)&&(location.pathname.includes("/login"))||(location.pathname.includes("/onboard")||location.pathname.includes("/signup"))
-// (((!Capacitor.isNativePlatform()&&isPhone)||((((currentProfile&&isPhone))))&&!(((location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))))
-  return (
+return (
     <IonApp >
      
       <Context.Provider value={{isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
