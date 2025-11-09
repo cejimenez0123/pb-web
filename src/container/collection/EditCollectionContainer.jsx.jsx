@@ -32,6 +32,7 @@ import arrowDown from "../../images/icons/arrow_down.svg"
 import Context from "../../context";
 import RoleForm from "../../components/role/RoleForm";
 import ErrorBoundary from "../../ErrorBoundary";
+import { Capacitor } from "@capacitor/core";
 
 const EditCollectionContainer = () => {
    const params = useParams();
@@ -57,11 +58,12 @@ const dialog = useSelector(state=>state.users.dialog)
   useEffect(() => {
     async function loadData() {
       const col = await dispatch(fetchCollectionProtected(id));
+      console.log("BO",col)
       if (col) setCollection(col);
       setLoading(false);
     }
     loadData();
-  }, [id]);
+  }, [id,navigate]);
  const handleStoryOrderChange = (newOrder) => {
     setNewPages(newOrder.map((stc, i) => new StoryToCollection(stc.id, i, stc.collection, stc.story, currentProfile)));
   };
@@ -74,7 +76,7 @@ const dialog = useSelector(state=>state.users.dialog)
       if (colInView.roles) {
         let found = colInView.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
         console.log("CDCD",found)
-        if (found && (found.role === RoleType.editor)||collection.profileId==currentProfile.id) {
+        if (found && (found.role === RoleType.editor)||colInView.profileId==currentProfile.id) {
           setCanUserEdit(found);
           return;
         }
@@ -234,7 +236,7 @@ if (col.childCollections) {
   // <IonContent>
     
       <IonContent fullscreen className="bg-gray-50">
-            <IonHeader translucent>
+            {Capacitor.isNativePlatform()?<IonHeader translucent>
         <IonToolbar className="bg-white border-b border-emerald-100">
           <IonButtons slot="start">
             <IonBackButton
@@ -254,7 +256,7 @@ if (col.childCollections) {
             </IonButtons>
           {/* )} */}
         </IonToolbar>
-      </IonHeader>
+      </IonHeader>:<div className="pt-8"/>}
         {loading ? (
           <div className="flex justify-center items-center h-[60vh]">
             <IonSpinner name="crescent" color="success" />

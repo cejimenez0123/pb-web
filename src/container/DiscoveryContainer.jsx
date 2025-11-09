@@ -58,11 +58,11 @@ function DiscoveryContainer() {
     fetchLibraries();
   }, [currentProfile, dispatch]);
 
-  useEffect(() => {
-    if (!isNotPhone) {
-      setIsGrid(false);
-    }
-  }, [isNotPhone]);
+  // useEffect(() => {
+  //   if (!isNotPhone) {
+  //     setIsGrid(false);
+  //   }
+  // }, [isNotPhone]);
 
   useEffect(() => {
     let finalList = sortItems(
@@ -149,14 +149,14 @@ const libraryForums = () => {
     );
   };
 
-  const onClickForGrid = bool => {
-    setIsGrid(bool);
-    if (bool) {
-      sendGAEvent('Click Grid View Discovery', 'Click Grid View Discovery', 'Grid Icon', 0);
-    } else {
-      sendGAEvent('Click Stream View Discovery', 'Click Stream View Discovery', 'Stream Icon', 0);
-    }
-  };
+  // const onClickForGrid = bool => {
+  //   setIsGrid(bool);
+  //   if (bool) {
+  //     sendGAEvent('Click Grid View Discovery', 'Click Grid View Discovery', 'Grid Icon', 0);
+  //   } else {
+  //     sendGAEvent('Click Stream View Discovery', 'Click Stream View Discovery', 'Stream Icon', 0);
+  //   }
+  // };
 
   return (
   
@@ -176,7 +176,7 @@ const libraryForums = () => {
                 Pages
               </h3>
 
-              {isNotPhone ? (
+              {/* {isNotPhone ? (
                 <div className="flex flex-row">
                   <IonButton
                     fill="clear"
@@ -195,11 +195,11 @@ const libraryForums = () => {
                     <IonImg src={stream} style={{ width: '24px', height: '24px' }} />
                   </IonButton>
                 </div>
-              ) : null}
+              ) : null} */}
             </div>
           </div>
 
-          <span className="flex justify-center">
+          <span className="flex justify-center mx-auto sm:max-w-[50rem]">
             <ListView items={viewItems} />
           </span>
 

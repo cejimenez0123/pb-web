@@ -146,12 +146,12 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
 
 
 if(!book){
-    return<span className={`skeleton ${size}`}/>
+    return<span className={`skeleton mt-2 shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100`}/>
 }
     
         return(
          <ErrorBoundary >
-        <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip ${size} rounded-box flex flex-col bg-emerald-100  `}>
+        <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100  `}>
                
 
         {isGrid?isPhone?null:description(book):null}

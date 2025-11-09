@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchRecommendedStories } from '../actions/StoryActions';
 import ExploreList from '../components/collection/ExploreList.jsx';
 import { fetchCollectionProtected, getPublicCollections, getRecommendedCollectionsProfile, setCollections } from '../actions/CollectionActions';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { appendToPagesInView, setPagesInView } from '../actions/PageActions';
 import Context from '../context.jsx';
 import checkResult from '../core/checkResult.js';
@@ -17,7 +17,7 @@ import BookListItem from '../components/BookListItem.jsx';
 function DashboardContainer() {
   const location = useLocation();
   const { currentProfile, setSeo, seo ,isNotPhone} = useContext(Context);
-
+const navigate = useNavigate()
   const dispatch = useDispatch();
    const collections = [...(useSelector(state => state.books.collections) ?? [])]
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
@@ -43,7 +43,7 @@ let feedbackCols = currentProfile.rolesToCollection.map(col=>col.collection).fil
     }
 
    
-},[currentProfile])
+},[currentProfile,navigate])
 const libraryForums = () => {
   if (!collections) return null;
 

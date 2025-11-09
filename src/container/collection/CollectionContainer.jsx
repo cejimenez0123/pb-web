@@ -41,10 +41,6 @@ import {
   deleteCollectionFromCollection,
   fetchCollection,
   fetchCollectionProtected,
-  getRecommendedCollectionStory,
-  setCollections,
-  getRecommendedCollections,
-  getRecommendedCollectionsProfile,
 } from "../../actions/CollectionActions";
 import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions";
 import Role from "../../domain/models/role";
@@ -54,6 +50,7 @@ import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths.js";
 import DeviceCheck from "../../components/DeviceCheck.jsx";
 import { Preferences } from "@capacitor/preferences";
+import { Capacitor } from "@capacitor/core";
 
 export default function CollectionContainer({currentProfile}) {
   const {  setError, setSuccess } = useContext(Context);
@@ -150,7 +147,7 @@ const isNative = DeviceCheck()
   }, [currentProfile]);
   useEffect(()=>{
   getCol()
-  },[])
+  },[navigate])
   useEffect(()=>{
     soUserCanEdit()
     // checkPermissions()
@@ -436,11 +433,11 @@ console.log("STORYLIST",collection.storyIdList)
               <IonHeader> 
       <IonToolbar>
         <IonButtons>
-                       <IonBackButton
+                      {Capacitor.isNativePlatform()?<IonBackButton
                        
       defaultHref={Paths.discovery()}
       onClick={handleBack}
-    /> 
+    />:null }
 
         </IonButtons>
       
@@ -475,11 +472,12 @@ console.log("STORYLIST",collection.storyIdList)
             <IonHeader> 
       <IonToolbar>
         <IonButtons>
-                       <IonBackButton
+   
+              {Capacitor.isNativePlatform()?<IonBackButton
                        
       defaultHref={Paths.discovery()}
       onClick={handleBack}
-    /> 
+    />:null }
 
         </IonButtons>
         </IonToolbar>      
@@ -510,10 +508,11 @@ console.log("STORYLIST",collection.storyIdList)
 
     {/* Left-aligned back button */}
     <IonButtons slot="start">
-      <IonBackButton
-        defaultHref={Paths.discovery()}
-        onClick={handleBack}
-      />
+              {Capacitor.isNativePlatform()?<IonBackButton
+                       
+      defaultHref={Paths.discovery()}
+      onClick={handleBack}
+    />:null }
     </IonButtons>
 
   

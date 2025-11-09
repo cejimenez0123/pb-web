@@ -12,6 +12,7 @@ import {
 } from '@ionic/react';
 import { useDispatch } from 'react-redux';
 import { setDialog } from '../actions/UserActions';
+import { Capacitor } from '@capacitor/core';
 
 const Dialog = ({
   dialog,
@@ -34,7 +35,7 @@ const Dialog = ({
 ><IonHeader>
   <IonToolbar color="success">
     <IonButtons slot="start">
-      <IonBackButton  onClick={onClose} />
+     <IonBackButton  onClick={onClose} />
     </IonButtons>
     <IonTitle className="ion-text-emerald-900">
       {dialog.title}

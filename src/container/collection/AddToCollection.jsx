@@ -35,6 +35,7 @@ import { getMyStories } from "../../actions/StoryActions";
 import checked from "../../images/icons/check.svg";
 import emptyBox from "../../images/icons/empty_circle.svg";
 import StoryCollectionTabs from "../../components/page/StoryCollectionTabs.jsx";
+import { Capacitor } from "@capacitor/core";
 
 export default function AddToCollectionContainer() {
   const pathParams = useParams();
@@ -284,14 +285,15 @@ text-[1rem]">
         <IonContent fullscreen={true} className="ion-padding">
               <IonHeader translucent>
           <IonToolbar>
-            <IonButtons slot="start">
-              <IonBackButton defaultHref={Paths.discovery()} onClick={handleBack} />
+        <IonButtons slot="start">
+                  {Capacitor.isNativePlatform()?<IonBackButton defaultHref={Paths.discovery()} onClick={handleBack} />:null}
             </IonButtons>
             <IonTitle className="text-emerald-800 font-semibold">
               Add to Collection
             </IonTitle>
           </IonToolbar>
         </IonHeader>
+        <div className="sm:max-w-[50rem] mx-auto">
           <h2 className="text-xl font-semibold text-emerald-800 mb-1">
             {colInView.title?.trim() || "Untitled"}
           </h2>
@@ -299,7 +301,7 @@ text-[1rem]">
           <div className="flex justify-between items-center mb-4">
             <div
               onClick={save}
-              className="bg-emerald-700 text-white px-5 py-2 rounded-full text-center text-lg cursor-pointer shadow-md"
+              className="bg-soft text-white px-5 py-2 rounded-full text-center text-[1.4rem]  font-boldcursor-pointer shadow-md"
             >
               Save
             </div>
@@ -312,7 +314,7 @@ text-[1rem]">
             </div>
             <div
               onClick={()=>navigate(Paths.collection.createRoute(colInView.id))}
-              className="bg-emerald-700 text-white px-5 py-2 rounded-full text-center text-lg cursor-pointer shadow-md"
+              className="bg-soft text-white px-5 py-2 rounded-full text-center text-[1.4rem]  font-bold cursor-pointer shadow-md"
             >
               View
             </div>
@@ -332,7 +334,7 @@ text-[1rem]">
 
         
           <StoryCollectionTabs tab={tab} setTab={setTab}  storyList={storyList} colList={colList}/>
-        
+       </div> 
         </IonContent>
     
     </ErrorBoundary>

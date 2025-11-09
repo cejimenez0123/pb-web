@@ -58,6 +58,9 @@ function App(props) {
   const isHorizPhone =  useMediaQuery({
     query: '(min-width: 8000px)'
   })
+    const isTablet =  useMediaQuery({
+    query: '(max-width: 1100px)'
+  }) && !isPhone
   const isNative = DeviceCheck()
 
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
@@ -104,7 +107,10 @@ function App(props) {
     
    return ()=>{checkFirstLaunch()}
   }, []);
-  
+const navbarBot = ((Capacitor.isNativePlatform()||(isPhone||isTablet)))||(Capacitor.isNativePlatform()&&!(location.pathname.includes("/signup")||location.pathname.includes("/login"))||(location.pathname.includes("/onboard")))
+
+// (Capacitor.isNativePlatform()||!isPhone)&&(location.pathname.includes("/login"))||(location.pathname.includes("/onboard")||location.pathname.includes("/signup"))
+// (((!Capacitor.isNativePlatform()&&isPhone)||((((currentProfile&&isPhone))))&&!(((location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))))
   return (
     <IonApp >
      
@@ -152,8 +158,7 @@ function App(props) {
       
        
      
-        {!isPhone && (!isNative
-    )&&!location.pathname.includes("/onboard")&&!location.pathname.includes("/signup")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
+        {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
@@ -331,7 +336,7 @@ presentingElement={page}
     </Routes>
     </div>
    
-      { (((!Capacitor.isNativePlatform()&&isPhone)||((((currentProfile&&isPhone))))&&!(((location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))))?
+      {navbarBot?
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>

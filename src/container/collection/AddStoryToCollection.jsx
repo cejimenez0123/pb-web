@@ -102,7 +102,7 @@ let dia = {...dialog}
    useLayoutEffect(() => {
     getContent();
    
-  }, [id, type]);
+  }, [id, type,navigate]);
 
   const getContent = () => {
     switch (type) {
