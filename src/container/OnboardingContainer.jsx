@@ -27,6 +27,7 @@ import GoogleLogin from '../components/GoogleLogin';
 import AppleSignInButton from '../components/auth/AppleSignInButton';
 import { useDispatch } from 'react-redux';
 import { signUp } from '../actions/UserActions';
+import { useSelector } from 'react-redux';
 const inputStyle = {
   "--width": '100%',
   border: 'none',
@@ -47,14 +48,18 @@ export default function OnboardingContainer(props) {
   const navigate = useNavigate();
   const { seo, setSeo, error, setError } = useContext(Context);
   const dispatch = useDispatch()
-  
+  const currentProfile = useSelector(state=>state.users.currentProfile)
   const genres = [
     "Fiction", "Non-fiction", "Poetry", "Drama/Playwriting", "Screenwriting",
     "Flash Fiction", "Memoir", "Short Stories", "Fantasy", "Science Fiction",
     "Horror", "Mystery/Thriller", "Romance", "Young Adult", "Children's Literature",
     "Historical Fiction", "Satire/Humor", "Experimental/Hybrid Forms", "Other"
   ];
-
+  useEffect(()=>{
+    if(currentProfile && currentProfile.id){
+      navigate(Paths.myProfile())
+    }
+  },[currentProfile])
   const [activeTab, setActiveTab] = useState('tab0');
   const [formData, setFormData] = useState({
     idToken:"",

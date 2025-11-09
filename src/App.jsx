@@ -107,11 +107,10 @@ function App(props) {
     
    return ()=>{checkFirstLaunch()}
   }, []);
-const navbarBot = ((Capacitor.isNativePlatform()||(isPhone||isTablet)))||(Capacitor.isNativePlatform()&&!(location.pathname.includes("/signup")||location.pathname.includes("/login"))||(location.pathname.includes("/onboard")))
+  const showNav = !(Capacitor.isNativePlatform()&&(location.pathname.includes("/signup")||location.pathname.includes("/login"))||location.pathname.includes("/onboard"))
+const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
 
-// (Capacitor.isNativePlatform()||!isPhone)&&(location.pathname.includes("/login"))||(location.pathname.includes("/onboard")||location.pathname.includes("/signup"))
-// (((!Capacitor.isNativePlatform()&&isPhone)||((((currentProfile&&isPhone))))&&!(((location.pathname.includes("/login"))||((location.pathname.includes("/onboard")||location.pathname.includes("/signup")))))))
-  return (
+ return (
     <IonApp >
      
       <Context.Provider value={{isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
@@ -336,7 +335,7 @@ presentingElement={page}
     </Routes>
     </div>
    
-      {navbarBot?
+      {navbarBot&&showNav?
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>
