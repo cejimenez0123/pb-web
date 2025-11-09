@@ -56,7 +56,7 @@ setProfilePic(src)
     }
     if(profile){
         
-      return(<div className="pb-8 sm:border-3 rounded-lg  w-[96vw] sm:w-[50em] sm:min-h-40 mx-auto md:w-info sm:border-emerald-400">
+      return(<div className="pb-8 sm:border-3 rounded-lg  w-[96vw] sm:max-w-[60em] sm:min-h-40 mx-auto  sm:border-emerald-400">
         <div className="text-left p-4">
             <div className="flex flex-row">
               <div>  

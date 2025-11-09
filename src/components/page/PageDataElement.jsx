@@ -36,7 +36,7 @@ switch(page.type){
     return( 
 
         <div 
-        className=" w-full ql-editor  w-[95vw] sm:w-[50em]"
+        className="ql-editor sm:w-[50em]"
     
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
@@ -45,7 +45,7 @@ switch(page.type){
         ><div 
         
         className={` ql-editor
-               `}
+              sm:w-[50em] `}
            
            dangerouslySetInnerHTML={{__html:page.data}}/></div>
 
@@ -54,7 +54,7 @@ switch(page.type){
   
     return(image?!isHorizPhone?<img  id="page-data-pic"  
 
-        className="w-page-mobile"
+        className="w-page-mobile sm:w-[50em]"
         onClick={()=>{
    
         if(location.pathname!=Paths.page.createRoute(page.id)){
@@ -64,7 +64,7 @@ switch(page.type){
      alt={page.title} src={image}
     />:
     <IonImg        id="page-data-pic"
-    className="w-full h-full object-contain"
+    className="w-full h-full object-contain sm:w-[50em]"
 
     onClick={()=>{
    
@@ -82,8 +82,7 @@ case PageType.link:{
     return(
     
         <LinkPreview
-        // id="page-data-link"
-    
+      
             isGrid={isGrid}
             url={page.data}
         />
@@ -101,5 +100,5 @@ if(!page){
 ) 
 }
 
-return (<span ><Element page={page}/></span>)
+return (<Element page={page}/>)
 }

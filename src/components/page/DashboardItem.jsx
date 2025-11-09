@@ -143,7 +143,7 @@ export default function DashboardItem({ page, book, isGrid }) {
     return (
       <span
         className={`flex-row flex justify-between w-[95vw] sm:w-[50em]  px-1 rounded-t-lg pt-2 pb-1`}>
-        <ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author} />
+        <div onClick={()=>navigate(Paths.profile.createRoute(page.author.id))}><ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author} /></div>
         {!isGrid ?
           <h6
             className={
@@ -303,7 +303,7 @@ export default function DashboardItem({ page, book, isGrid }) {
     return isGrid
       ? null
       : (
-         <div className="flex-row w-[95vw] h-16 rounded-b-lg overflow-clip sm:w-page mx-auto bg-emerald-200 flex text-white">
+         <div className="flex-row w-[95vw] sm:w-[50em] h-16 rounded-b-lg overflow-clip mx-auto bg-emerald-200 flex text-white">
        <div className={`${likeFound ? "bg-emerald-400" : "bg-emerald-200"} text-center grow w-1/3`}>
             <div
               onClick={handleApprovalClick}
@@ -349,7 +349,7 @@ export default function DashboardItem({ page, book, isGrid }) {
     <IonCard
       id="dashboard-item"
       className={
-        'mt-3 rounded-lg rounded-b-lg w-[95vw] sm:w-[50em] min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col '
+        'mt-3 rounded-lg rounded-b-lg w-[95vw] sm:w-[50em] mx-auto min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col '
       }
       style={{
         maxWidth: '100vw',
@@ -361,7 +361,7 @@ export default function DashboardItem({ page, book, isGrid }) {
         {bookTitleDiv}
       </IonCardHeader>
 
-      <IonCardContent className="pb-4 m-0 bg-transparent">
+      <IonCardContent className="pb-4 mx-auto bg-transparent">
         {description(page)}
         <PageDataElement isGrid={isGrid} page={page} />
       </IonCardContent>
@@ -371,7 +371,8 @@ export default function DashboardItem({ page, book, isGrid }) {
         <div id="bottom-dash" className={`flex flex-row  sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
           {bookmarkBtn()}
         </div>
-      ) : buttonRow()}
+      ) : <div className={ `flex flex-row  sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
+        '{buttonRow()}</div>}
     </IonCard>
     </ErrorBoundary>
   );

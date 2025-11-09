@@ -15,6 +15,7 @@ import checkResult from "../../core/checkResult.js";
 import { IonBackButton, IonContent, IonHeader } from "@ionic/react";
 import { setComments } from "../../actions/PageActions.jsx";
 import Paths from "../../core/paths.js";
+import { Capacitor } from "@capacitor/core";
 
 export default function PageViewContainer() {
   const { setSeo, seo, setError, currentProfile } = useContext(Context);
@@ -122,7 +123,7 @@ export default function PageViewContainer() {
     page ? (
       <PageViewItem page={page} currentProfile={currentProfile} />
     ) : (
-      <div className="skeleton w-[95vw] mx-auto md:w-page bg-emerald-50 h-page" />
+      <div className="skeleton w-[95vw] mx-auto sm:w-[60em] mx-auto bg-emerald-50 h-page" />
     );
 
   return (
@@ -130,12 +131,12 @@ export default function PageViewContainer() {
       <IonContent fullscreen={true} className="ion-padding-top  ">
         <IonHeader className="pt-16 ion-padding-top ion-padding">
           <div className=" pt-4 sm:pt-8">
-             <IonBackButton
+             {Capacitor.isNativePlatform()?<IonBackButton
              className="ion-padding-start"
       defaultHref={Paths.discovery()}
       onClick={handleBack}
-    /> </div> </IonHeader>
-        <div className=" text-center w-[95vw] sm:max-w-[30em] mx-auto" style={{margin:"auto auto",paddingBottom: "5rem" }}>
+    />:null} </div> </IonHeader>
+        <div className=" text-center  mx-auto" style={{margin:"auto auto",paddingBottom: "5rem" }}>
           {pending ? (
             <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
           ) : errorStatus === 403 ? (
@@ -145,7 +146,7 @@ export default function PageViewContainer() {
               </h1>
             </div>
           ) : canUserSee ? (
-            <div >
+            <div className="w-fit mx-auto sm:max-w-[50em]">
               <PageDiv page={page} />
               <CommentThread page={page} comments={rootComments} />
            </div>
