@@ -150,14 +150,14 @@
 }
  
 
-
+#book-dashboard-item .ql-editor{
+  overflow-y: hidden!important;
+  max-height: 24em !important;
+}
 @media (max-width: 800px) {
 
 
-#book-dashboard-item .ql-editor{
-  overflow-y: hidden!important;
-  max-height: 20em !important;
-}
+
 #dashboard-item .ql-editor{
   overflow-y: hidden!important;
   max-height: 10em !important;

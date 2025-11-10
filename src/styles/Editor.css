@@ -180,14 +180,14 @@
  }
  .ql-editor{
   
-  text-overflow: ellipsis !important;
+  /* text-overflow: ellipsis !important; */
       top:0;
       min-height: 22rem !important;}
  @media (min-width: 768px) {
 
 
   .ql-editor{
-text-overflow: ellipsis !important;
+/* text-overflow: ellipsis !important; */
     top:0;
    /* overflow-y:hidden !important; */
     /* padding: 1em !important; */
@@ -208,15 +208,13 @@ text-overflow: ellipsis !important;
   }
   .ql-editor{
     top:0;
-    text-overflow: ellipsis !important;
+    /* text-overflow: ellipsis !important; */
     color: #052e16 !important;
     background: linear-gradient(#a7f3d0, #d1fae5)!important;
     border-bottom: 0.5em !important;
 
 }
-.ql-editor div{
-  text-overflow: ellipsis;
-}
+
  }
  /* .grid-item .ql-editor{
   max-height: 12rem !important;

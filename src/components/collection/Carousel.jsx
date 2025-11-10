@@ -47,7 +47,7 @@ export default function Carousel({book,isGrid}){
      if(book&&book.storyIdList){
       
         return(
-        <div id="Carousel" className={`   carousel px-1 mx-auto    ${size} rounded-lg carousel-start overflow-y-hidden pb-2 `}
+        <div id="Carousel" className={`   carousel px-1 mx-auto    ${size} rounded-lg carousel-start  pb-2 `}
    
     
         >
@@ -79,9 +79,9 @@ className={ `book-dashboard-item min-h-10  ${descSize} pt-3 px-2   text-emerald-
  {stc.story.title}</h5>
  
         {isGrid?isPhone?null:isHorizPhone?null:description(stc.story):isPhone?null:description(stc.story)}
-  
+  <div className=''>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
-  
+  </div>
         </div>)}else{
             return <span className='skeleton'/>
         }})}

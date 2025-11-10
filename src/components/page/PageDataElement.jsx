@@ -36,7 +36,7 @@ switch(page.type){
     return( 
 
         <div 
-        className="ql-editor sm:w-[50em]"
+        className="ql-editor sm:w-[50em] overflow-hidden"
     
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
@@ -45,7 +45,7 @@ switch(page.type){
         ><div 
         
         className={` ql-editor
-              sm:w-[50em] `}
+              sm:w-[50em] overflow-hidden" `}
            
            dangerouslySetInnerHTML={{__html:page.data}}/></div>
 
