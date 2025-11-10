@@ -60,7 +60,7 @@ function App(props) {
   })
     const isTablet =  useMediaQuery({
     query: '(max-width: 1100px)'
-  }) && !isPhone
+  })
   const isNative = DeviceCheck()
 
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);

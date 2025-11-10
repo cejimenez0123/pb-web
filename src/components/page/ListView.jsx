@@ -9,7 +9,7 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   const [page, setPage] = useState(1);
   const [displayedItems, setDisplayedItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
   const { pathname } = useLocation();
 

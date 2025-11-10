@@ -241,7 +241,7 @@ const localCheck=()=>{
 }
 
   return (
-    <IonContent fullscreen={true} scrollY={false} className='ion-padding  max-h-screen '>
+    <IonContent fullscreen={true} className='ion-padding  max-h-screen '>
     <LoadScript
     googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
     libraries={['places']}

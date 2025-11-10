@@ -16,7 +16,8 @@ import {  IonContent,IonText, IonItem} from '@ionic/react';
 import BookListItem from '../components/BookListItem.jsx';
 function DashboardContainer() {
   const location = useLocation();
-  const { currentProfile, setSeo, seo ,isNotPhone} = useContext(Context);
+  const currentProfile = useSelector(state=>state.users.currentProfile)
+  const { setSeo, seo ,isNotPhone} = useContext(Context);
 const navigate = useNavigate()
   const dispatch = useDispatch();
    const collections = [...(useSelector(state => state.books.collections) ?? [])]
@@ -31,18 +32,17 @@ const navigate = useNavigate()
       dispatch(getRecommendedCollectionsProfile())
       dispatch(getPublicCollections({type:"feedback"})).then(res=>{
         checkResult(res,payload=>{
-          console.log("LOX",payload)
-let feedbackCols = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
-      // console.log("XXS",)
+          if(currentProfile && currentProfile.rolesToCollection && currentProfile.rolesToCollection.length){
+          let feedbackCols = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
+
       dispatch(setCollections({collections:feedbackCols}))
+          }
         },err=>{
 
         })
       })
       
     }
-
-   
 },[currentProfile,navigate])
 const libraryForums = () => {
   if (!collections) return null;
@@ -89,7 +89,7 @@ const libraryForums = () => {
 
   const getHomeCollectionContent = () => {
     // dispatch(setPagesInView({ pages: [] }));
-    if (currentProfile?.profileToCollections) {
+    if (currentProfile && currentProfile?.profileToCollections) {
       let ptc = currentProfile.profileToCollections.find(ptc => ptc.type === 'home');
       if (ptc) {
         dispatch(fetchCollectionProtected({ id: ptc.collectionId })).then(res => {
@@ -135,9 +135,9 @@ const libraryForums = () => {
   }, []);
 
   return (
-
-      <IonContent fullscreen={true} scrollY>
         <ErrorBoundary>
+      <IonContent fullscreen={true} scrollY scrollX={false}>
+
           <div id="dashboard">
             <div className="py-8">
               {libraryForums()}
@@ -177,9 +177,9 @@ const libraryForums = () => {
             {/* Explore List */}
             <ExploreList items={collections} />
           </div>
-        </ErrorBoundary>
+   
       </IonContent>
- 
+      </ErrorBoundary>
   );
 }
 
