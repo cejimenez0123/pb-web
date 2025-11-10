@@ -41,7 +41,7 @@ export default function LogInContainer() {
    },[currentProfile])
 
     return (
-        <IonContent fullscreen={true} scrollY={false} >
+        <IonContent fullscreen={true}>
             <div className='py-10'>
      
             <LogInCard  
