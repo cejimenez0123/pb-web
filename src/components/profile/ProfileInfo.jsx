@@ -4,6 +4,7 @@ import clear from "../../images/icons/clear.svg"
 import {
     IonButton,
     IonImg,
+    IonText,
   } from '@ionic/react';
 import FollowerCard from "./FollowerCard"
 import isValidUrl from "../../core/isValidUrl"
@@ -96,12 +97,12 @@ const ProfileInfo = ({profile})=>{
     </div>
     return (  
         <div className="flex  h-[15em]  max-w-[20em] flex-col  ">                       
-    <div className='flex-row  mb-4  mx-auto justify-between w-[80vw]  flex  '>
+    <div className='flex-row  mb-4  mx-auto justify-between w-[90%]  flex  '>
           <div className="flex flex-row ">
     <ProfilePic url={pictureUrl}/>
-     <h5 className='text-xl mb-3  mt-2 lora-bold  text-emerald-900 font-bold'>{profile.username}</h5>
+     <IonText className='text-xl mb-3  mt-2   text-emerald-900 font-bold'>{profile.username}</IonText>
 </div>    
-<IonImg  onClick={()=> navigate("/profile/edit")} className="bg-emerald-400 rounded-full p-1 max-h-8 w-8 mx-2" src={settings}/> 
+<IonImg  onClick={()=> navigate("/profile/edit")} className="bg-soft rounded-full p-1 max-h-7 my-auto w-8 mx-2" src={settings}/> 
      </div>
      <div>
        <div className='w-[100%] w-[15em]  md:max-w-[20em] text-left '>
@@ -113,9 +114,9 @@ const ProfileInfo = ({profile})=>{
         <div className="text-emerald-800 flex flex-row justify-start px-4">
             {profile.followers && profile.followers.length>0?<div  
             onClick={()=>openFollowersDialog()}
-            className="text-center open-sans-bold ">
-                <h5 className="text-[1rem]">Followers</h5>
-                <h6 className="text-[1.2rem]">{profile.followers.length}</h6>
+            className="text-center flex-col flex ">
+                <IonText className="text-[1rem]">Followers</IonText>
+                <IonText className="text-[1.2rem]">{profile.followers.length}</IonText>
             </div>:null}
         {/* </div> */}
 

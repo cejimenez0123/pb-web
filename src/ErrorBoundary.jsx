@@ -1,3 +1,4 @@
+import { IonText } from "@ionic/react";
 import React from "react";
 
 export default class ErrorBoundary extends React.Component {
@@ -35,7 +36,7 @@ export default class ErrorBoundary extends React.Component {
             overflowY: "auto",
           }}
         >
-          <h3>Something went wrong 😞</h3>
+          <IonText>Something went wrong 😞</IonText>
           <p><strong>Error:</strong> {this.state.error?.toString()}</p>
           {this.state.errorInfo && (
             <details>

@@ -9,13 +9,13 @@ import {sendGAEvent } from "../core/ga4";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
-import { IonImg, IonInput, IonItem, IonList, IonText, useIonViewWillEnter } from "@ionic/react";
+import { IonImg, IonInput, IonItem, IonList, IonText,  } from "@ionic/react";
 import { setDialog } from "../actions/UserActions";
 
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
   const dialog = useSelector(state=>state.users.dialog)
-
+const [solEvents,setSolEvents]=useState([])
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const options = { weekday: 'short', month: '2-digit', day: '2-digit' };
@@ -50,6 +50,7 @@ function CalendarEmbed(){
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchRef = useRef(null)
+  console.log(solEvents)
   useEffect(() => {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -96,10 +97,6 @@ function CalendarEmbed(){
   }, [selectedArea, selectedHashtag, list]);
   const areas = ["Downtown", "Uptown", "Virtual", "Queens"];
 
-     
-      // useIonViewWillEnter(()=>{
-      //       addEvents()
-      // },[currentProfile])
   useLayoutEffect(()=>{
       addEvents()
   },[])
@@ -119,7 +116,8 @@ function CalendarEmbed(){
             const aStart = new Date(a.start?.dateTime || a.start?.date);
             const bStart = new Date(b.start?.dateTime || b.start?.date);
             return aStart - bStart;
-          }) .map(event => {
+          }) .map(
+            event => {
             const isAllDay = !event.start.dateTime;
             const startTimeFormatted = isAllDay ? "All Day" : formatDate(event.start.dateTime);
             let organizerLink = linkifyFirstUrl(event.description) 
@@ -130,7 +128,11 @@ function CalendarEmbed(){
          let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 31) + '...' : event.summary:""
             let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
                 hashtags:[]}
-           
+          
+          
+
+  
+
             setSuggestions((prevState)=>[...new Set([...prevState,...obj.suggestions])])
 
             return {
@@ -146,7 +148,15 @@ function CalendarEmbed(){
               area: event.organizer.displayName||''
             };
           });
-      
+       const sunRegex = /☀️/
+           const reg = /\u2600(\uFE0F)?/g
+
+          setSolEvents(eventList.filter(eve=>{
+           return sunRegex.test(eve.description)}))
+         
+                   
+        
+         
       setList(eventList)
         })
    
@@ -175,7 +185,7 @@ function CalendarEmbed(){
         dia.disagreeText= "Close"
        
         dia.title =chosenEvent.summary
-      dia.text=<div className="text-left text-[#0097b2]">
+      dia.text=<div className="text-left text-blueSea">
         <span>{chosenEvent.location}</span>
     <span dangerouslySetInnerHTML={{__html:"<div>"+chosenEvent.description+"</div>"}} /></div>
         dia.onClose = ()=>{
@@ -219,7 +229,7 @@ function CalendarEmbed(){
         <div id="cal-embed" className="max-w-[40rem]  mx-auto">
         <div className={`flex  mx-auto text-left ${isPhone?"flex-col":"flex-row"}`}>
         <span className="flex flex-row my-auto max-h-12 w-16"> 
-            <h2 className="my-auto mont-medium mx-2 text-emerald-700">Filter by Area:</h2>
+            <IonText className="my-auto mont-medium mx-2 text-emerald-700">Filter by Area:</IonText>
 
         <select
           className="border w-fit  my-auto text-emerald-700 h-[2em] rounded-lg bg-transparent px-2 text-l"
@@ -267,9 +277,14 @@ function CalendarEmbed(){
   </div>
   </span>
 </div>
+  {solEvents.length==0?null:<div className=" text-left">
 
-        <IonList className='flex  flex-col'>
-            
+<IonText className="font-bold text-[1.2rem] text-soft ">Events with Sol, Founder</IonText>
+<HorizontalEventList events={solEvents} handleDialogOpen={handleDialogOpen} sendGAEvent={sendGAEvent} isPhone={isPhone} areas={areas} calendar={calendar}  />
+   </div> }
+  
+       <IonList className='flex  flex-col'>
+             <IonText className="font-bold text-[1.2rem] text-soft" >NYC CALENDAR</IonText>
                 
                 {events&&events.length?events.map((event,i)=>{
                         
@@ -298,19 +313,19 @@ function CalendarEmbed(){
             
                             }} className="flex flex-col"> 
           
-                             <a className="text-[#0097b2] overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
+                             <a className="text-blueSea overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
                               <IonText>{event.location}</IonText></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
                           
                           
               
                           {event.area==areas[2]&&event.googleLink?<a 
-                       ><h6 className="text-[#0097b2] text-[0.6rem] flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
+                       ><h6 className="text-blueSea text-[0.6rem] flex flex-row"><span>{event.area}</span></h6></a> :<span className="text-slate-600 text-sm">{event.area}</span>}
                       <h5 className="text-[0.7rem] min-h-6">{event.hashtags.slice(0,4).join(" ")}</h5>
                        </span>
                      {/*  */}
                            <span className="flex flex-row justify-between min-w-20 w-20 ml-3">
                          
-                            <h5 className="my-auto text-[0.8rem] w-[2.6rem] text-[#0097b2] "><div dangerouslySetInnerHTML={{__html:event.startTime}}/></h5>
+                            <IonText className="my-auto text-[0.8rem] w-[2.6rem] text-blueSea "><div dangerouslySetInnerHTML={{__html:event.startTime}}/></IonText>
               <IonImg onClick={()=>{
                         sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
                         window.open(event.googleLink)
@@ -371,4 +386,106 @@ let suggestions = []
       hashtags: hashtags,
     };
   }
- 
+function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, areas, calendar }) {
+  return (
+    <IonList
+      className="
+        flex flex-row overflow-x-auto space-x-4 py-2 px-1 scrollbar-hide
+      "
+    >
+      {events && events.length
+        ? events.map((event, i) => {
+            const eId = event.googleLink.split("?eid=")[0];
+            return (
+              <IonItem
+                key={i}
+                className="
+                  border-blueSea border rounded-[30px] shadow-md
+                  min-w-[16rem] max-w-[18rem]
+                  flex-shrink-0 flex-col p-4
+                  bg-white
+                "
+              >
+                <div className="flex flex-col justify-between h-full">
+                  <span
+                    onClick={() => handleDialogOpen(event)}
+                    className="flex flex-col text-left cursor-pointer"
+                  >
+                    <span className="mr-2 max-w-[15rem] text-ellipsis overflow-hidden whitespace-nowrap">
+                      {isPhone ? event.shortSummary : event.summary}
+                    </span>
+
+                    {event.organizerLink && event.googleLink ? (
+                      <span
+                        onClick={() => {
+                          sendGAEvent(
+                            "Click",
+                            `Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,
+                            event.summary,
+                            "",
+                            false
+                          );
+                          window.open(event.googleLink);
+                        }}
+                        className="flex flex-col"
+                      >
+                        <a className="text-blueSea overflow-hidden text-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto">
+                          <IonText>{event.location}</IonText>
+                        </a>
+                      </span>
+                    ) : (
+                      <h6 className="whitespace-nowrap no-underline max-w-[20em]">
+                        {event.location}
+                      </h6>
+                    )}
+
+                    {event.area === areas[2] && event.googleLink ? (
+                      <a>
+                        <h6 className="text-blueSea text-[0.6rem] flex flex-row">
+                          <span>{event.area}</span>
+                        </h6>
+                      </a>
+                    ) : (
+                      <span className="text-slate-600 text-sm">{event.area}</span>
+                    )}
+
+                    <h5 className="text-[0.7rem] min-h-6">
+                      {event.hashtags.slice(0, 4).join(" ")}
+                    </h5>
+                  </span>
+
+                  <span className="flex flex-row justify-between mt-3">
+                    <IonText className="my-auto text-[0.8rem] text-blueSea">
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: event.startTime,
+                        }}
+                      />
+                    </IonText>
+                    <IonImg
+                      onClick={() => {
+                        sendGAEvent(
+                          "Click",
+                          `Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,
+                          event.summary,
+                          "",
+                          false
+                        );
+                        window.open(event.googleLink);
+                      }}
+                      className="w-10 h-10 my-auto"
+                      src={calendar}
+                    />
+                  </span>
+                </div>
+              </IonItem>
+            );
+          })
+        : null}
+    </IonList>
+  );
+}
+
+
+
+
