@@ -19,7 +19,7 @@ export default function NotificationItem({ item, lastNotified }) {
 
   // Common container classes for every notification item
   const containerClasses =
-    "border-emerald-600 border-t-2 md:my-2 max-h-[14rem] border-opacity-60 md:border-2 md:rounded-xl p-4 bg-white shadow flex flex-col justify-center";
+    "border-emerald-600 border-2 my-1 md:my-2 max-h-[14rem] border-opacity-50 md:border-2 rounded-xl p-4 bg-white shadow flex flex-col justify-center";
 
   switch (item.type) {
     case "follower": {

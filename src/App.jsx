@@ -19,7 +19,7 @@ import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
-      import { IonApp, IonPage } from '@ionic/react';
+      import { IonApp, IonContent, IonPage, IonText } from '@ionic/react';
 import PrivateRoute from './PrivateRoute';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
@@ -107,13 +107,36 @@ function App(props) {
     
    return ()=>{checkFirstLaunch()}
   }, []);
-  const showNav = !(Capacitor.isNativePlatform()&&(location.pathname.includes("/signup")||location.pathname.includes("/login"))||location.pathname.includes("/onboard"))
+  const showNav = !(Capacitor.isNativePlatform()&&(location.pathname.includes("/signup")||location.pathname.includes("/login"))||(Capacitor.isNativePlatform()&&location.pathname.includes("/onboard")))
 const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
+if(!navigator.onLine){
+  return (
+      <IonApp >
+        <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+    
+    <IonPage>
+      <IonContent fullscreen={true}>
+        {!navbarBot?  <NavbarContainer/>:null}
+    <div className='flex flex-col text-emerald-800 justify-between text-opacity-70 lora-bold w-[100%] h-[100%] flex'>
+        <div className='mx-auto my-24 text-center'>
+      <IonText className='text-xl'>No Internet</IonText>
+      {/* <p>The page you are looking for does not exist.</p> */}
+      </div>
+        {navbarBot&&showNav? <NavbarContainer/>:null}
+    </div>
+  
+    </IonContent>
+    </IonPage>
+    </Context.Provider>
+    </IonApp>
+  );
 
+}
  return (
     <IonApp >
-     
+
       <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+     {/* <div> */}
      {/* <head>
   <meta charset="UTF-8" />
   <Helmet>
@@ -125,8 +148,8 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
   <meta property="og:url" content={seo.url} />
   </Helmet>
 </head>  */}
-      <IonPage  ref={page} className=' App pb-8 h-[100vh] background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
-     {/* <div className='pt-8'> */}
+      <IonPage  ref={page} className=' App pb-8b h-[100vh] background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+
 
     
     
@@ -161,14 +184,16 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
-        <div>
+                <div className="pt-12"> 
+ 
        <SearchDialog presentingElement={page} />
        <Dialog dialog={dialog} presentingElement={page} />
 <Alert />
-<div className='pt-8'>
+       
+
       <Routes >
  
-     <Route path={'/'} element={isFirstLaunch&&isNative?<Navigate to="/onboard"/>:<AboutContainer/>} />
+     <Route path={'/'} element={isFirstLaunch&&Capacitor.isNativePlatform()?<Navigate to="/onboard"/>:<AboutContainer/>} />
       <Route path={"/login"} element={<LogInContainer/>}/> 
       <Route path={"/onboard"} element={<LoggedRoute><OnboardingContainer/></LoggedRoute>}/>
 
@@ -180,7 +205,8 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
                         }
             />
             <Route exact path={Paths.notifications()}
-            element={<PrivateRoute currentProfile={currentProfile}><NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>
+            element={<PrivateRoute currentProfile={currentProfile}>
+              <NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>
     
           <Route exact path="/discovery" 
                   element={
@@ -198,7 +224,7 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
                   />
           <Route exact path="/login"  
                   element={ 
-        <LoggedRoute loggedOut={!currentProfile}
+        <LoggedRoute 
         currentProfile={currentProfile}
         >
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
@@ -210,59 +236,64 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
      element={<CalendarContainer/>}/>
           <Route exact path={Paths.newsletter() }
      element={<LoggedRoute 
-      loggedOut={!currentProfile}
+ 
      currentProfile={currentProfile}><NewsletterContainer/></LoggedRoute>}/>
      <Route exact path={'/reset-password' }
      element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
      element={<CollectionContainer currentProfile={currentProfile}/>}/>
      <Route path={'/signup'}
-     element={<LoggedRoute 
-      loggedOut={!currentProfile}
-      currentProfile={currentProfile}><SignUpContainer/></LoggedRoute>}/>
-       <Route path={'/register'}
-
-     element={<LoggedRoute 
-      loggedOut={!currentProfile}
-      currentProfile={currentProfile}><UserReferralContainer/></LoggedRoute>}/>
+                element={<LoggedRoute 
+                            currentProfile={currentProfile}>
+                              <SignUpContainer/>
+                          </LoggedRoute>}/>
+      <Route path={'/register'}
+                element={<LoggedRoute 
+                    currentProfile={currentProfile}>
+                        <UserReferralContainer/></LoggedRoute>}/>
        <Route path={Paths.feedback()}
-     element={<FeedbackContainer/>}/>
+            element={<FeedbackContainer/>}/>
      <Route path={Paths.addToCollection.route}
-     element={        <PrivateRoute
+               element={ <PrivateRoute
       currentProfile={currentProfile}
-      ><AddToCollectionContainer/></PrivateRoute>}/>
-     <Route path={Paths.addStoryToCollection.route}
-     element={<PrivateRoute 
-      currentProfile={currentProfile}
-     ><AddStoryToCollectionContainer/></PrivateRoute>}/>
+      ><AddToCollectionContainer/>
+            </PrivateRoute>}/>
+     <Route 
+            path={Paths.addStoryToCollection.route}
+              element={<PrivateRoute 
+                 currentProfile={currentProfile}
+                    ><AddStoryToCollectionContainer/>
+                      </PrivateRoute>}/>
      <Route path={Paths.editCollection.route()}
-      element={<PrivateRoute 
+      element={
+      <PrivateRoute 
         currentProfile={currentProfile}
-      ><EditCollectionContainer/></PrivateRoute>}/>
+      >       <EditCollectionContainer/>
+      </PrivateRoute>}/>
      
 
        <Route path={Paths.hashtag.route()}
-      element={<HashtagContainer/>}/>
-     <Route path={Paths.links()}
-     element={<LinksContainer/>}/>
-
-   
- 
+            element={
+            <HashtagContainer/>
+          }/>
+        <Route path={Paths.links()}
+                 element={<LinksContainer/>}
+          />
         <Route path={Paths.apply()}
-        element={<LoggedRoute
-          loggedOut={!props.currentProfile}
-           currentProfile={props.currentProfile}><ApplyContainer/></LoggedRoute>}/>
+                  element={<LoggedRoute
+                    
+           currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
          <Route path={Paths.apply()+"/newsletter"}
         element={<LoggedRoute 
-          loggedOut={!props.currentProfile}
-        currentProfile={props.currentProfile}><ApplyContainer/></LoggedRoute>}/>
+          
+        currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
 
       <Route
       path={Paths.myProfile()}
       element={
         <PrivateRoute       currentProfile={props.currentProfile} >
           <MyProfileContainer
-          currentProfile={props.currentProfile}
+          currentProfile={currentProfile}
                              presentingElement={page}
                              pagesInView={props.pagesInView} 
                               booksInView={props.booksInView}
@@ -284,12 +315,10 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
     <Route path="/subscribe" 
     element={<EmailPreferences/>}/>
     <Route path="*" element={<NotFound/>}/>
-    
-
     <Route  
         path={Paths.editor.image()}
         element={ 
-          <PrivateRoute currentProfile={props.currentProfile}>
+          <PrivateRoute currentProfile={currentProfile}>
             
           <EditorContainer 
           
@@ -302,7 +331,7 @@ presentingElement={page}
      path={Paths.editor.link()}
       element={
         <PrivateRoute 
-        currentProfile={props.currentProfile}
+        currentProfile={currentProfile}
         >
             <EditorContainer 
          
@@ -315,17 +344,17 @@ presentingElement={page}
        <Route
       path={Paths.editPage.route()}
       element={
-        <PrivateRoute currentProfile={props.currentProfile} >
+        <PrivateRoute currentProfile={currentProfile} >
             <EditorContainer 
               htmlContent={props.htmlContent} 
-              currentProfile={props.currentProfile} 
+              currentProfile={currentProfile} 
               />
         </PrivateRoute>
       }/>
 
       <Route path="/profile/edit" element={
  
-        <PrivateRoute currentProfile={props.currentProfile} >
+        <PrivateRoute currentProfile={currentProfile} >
         <SettingsContainer />
         </PrivateRoute>
       }/>
@@ -341,13 +370,14 @@ presentingElement={page}
 </div>
 
      :null}  
-       </div>
        {/* </div> */}
+
     </IonPage>
     
   
    
     </Context.Provider>
+    {/* </div> */}
     </IonApp>
   );
 }

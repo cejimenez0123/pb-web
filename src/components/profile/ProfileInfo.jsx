@@ -100,9 +100,9 @@ const ProfileInfo = ({profile})=>{
     <div className='flex-row  mb-4  mx-auto justify-between w-[90%]  flex  '>
           <div className="flex flex-row ">
     <ProfilePic url={pictureUrl}/>
-     <IonText className='text-xl mb-3  mt-2   text-emerald-900 font-bold'>{profile.username}</IonText>
+     <IonText className='text-xl mb-3   text-emerald-900 font-bold'>{profile.username}</IonText>
 </div>    
-<IonImg  onClick={()=> navigate("/profile/edit")} className="bg-soft rounded-full p-1 max-h-7 my-auto w-8 mx-2" src={settings}/> 
+<IonImg  onClick={()=> navigate("/profile/edit")} className="bg-soft rounded-full  p-1  max-h-7 mb-4 w-8 mx-2" src={settings}/> 
      </div>
      <div>
        <div className='w-[100%] w-[15em]  md:max-w-[20em] text-left '>

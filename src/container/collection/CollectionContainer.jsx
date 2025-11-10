@@ -56,14 +56,12 @@ export default function CollectionContainer({currentProfile}) {
   const {  setError, setSuccess } = useContext(Context);
 
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
 
   const collection = useSelector(state => state.books.collectionInView);
   const collections = useSelector(state => state.books.collections);
   const pagesInView = useSelector(state => state.pages.pagesInView);
-const isNative = DeviceCheck()
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isArchived, setIsArchived] = useState(false);
@@ -75,8 +73,6 @@ const isNative = DeviceCheck()
   const [role, setRole] = useState(null);
   const [hasMore, setHasMore] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
-
-  const sightArr = [RoleType.commenter, RoleType.editor, RoleType.reader, RoleType.writer];
   const writeArr = [RoleType.editor, RoleType.writer];
 
   function findRole() {

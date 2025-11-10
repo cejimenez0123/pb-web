@@ -83,9 +83,9 @@ export default function FeedbackContainer(props){
     
     },10)
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
-    return(<IonContent>
+    return(<IonContent fullscreen={true} className="ion-padding">
         <form className="my-8 px-4">
-        <div className="card lg:max-w-[40rem] mx-auto lg:p-8">
+        <div className="card sm:max-w-[40rem] mx-auto lg:p-8">
 
 <h2 className="mx-auto lora-bold text-[2rem] mb-8 text-emerald-800">Feedback</h2>
 <label className="border border-2 flex  rounded-full text-xl mont-medium text-emerald-800 border-emerald-800 mb-4 px-4"> 

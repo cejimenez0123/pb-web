@@ -252,10 +252,10 @@ return<IonPage><IonContent fullscreen={true} className='ion-padding'><div classN
     </div>
 
     {/* Right: Buttons */}
-    <div className="flex flex-col items-center h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  ">
+    <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  ">
 
       {/* Row 1: Write a Story + Create Collection */}
-      <div className="flex flex-row flex-wrap sm:justify-center md:justify-start gap-4">
+      <div className="flex flex-row mx-auto flex-wrap sm:justify-center md:justify-start gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
           className="bg-emerald-600 text-white rounded-full h-[3rem] w-[8rem]"

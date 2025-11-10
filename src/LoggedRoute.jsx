@@ -1,33 +1,49 @@
-import {useNavigate,useLocation } from "react-router-dom";
-import {useSelector} from "react-redux"
-import { useEffect, useLayoutEffect,useState } from "react";
-import { useContext } from "react";
-import Context from "./context";
+import { useNavigate, } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { IonImg } from "@ionic/react";
+import { Preferences } from "@capacitor/preferences";
+import loading from "./images/loading.gif";
 import Paths from "./core/paths";
-const LoggedRoute = ({ loggedOut,currentProfile, children }) => {
+import Context from "./context";
+
+const LoggedRoute = ({ currentProfile,children }) => {
+  const navigate = useNavigate();
+  const { setError } = useContext(Context) || {};
+  const [token, setToken] = useState(undefined); 
+  useEffect(() => {
+    const checkAuth = async () => {
  
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { formerPage,setFormerPage}=useContext(Context)
-  useLayoutEffect(()=>{
-   
-    if(currentProfile){  
-        
-      if (location.pathname.includes("login")){
-        navigate(Paths.myProfile())
-      }else if(!formerPage.includes("login")&&!formerPage.includes("onboard")){
-        navigate(formerPage)
-      } else{
-        navigate(Paths.myProfile())
+        const stored = await Preferences.get({ key: "token" });
+        const tok = stored.value;
+
+        if (tok) {
+            try {   
+          navigate(Paths.myProfile(), { replace: true });
+          setToken(null);
+          return;
+
+      } catch (err) {
+        console.error("Error reading token:", err);
+        setError?.("Error checking login state");
+        navigate(Paths.login(), { replace: true });
+        setToken(null);
+      }}else{
+        setToken(tok)
       }
-    }
+    };
 
-  },[currentProfile])
-  useEffect(()=>{
-      setFormerPage(location.pathname)
-  },[location.pathname])
+    checkAuth();
+  }, [navigate]);
 
-  return children
-
+  // 🌀 Show loading indicator while verifying token
+  if (token === undefined) {
+    return (
+      <div className="flex">
+        <IonImg className="mx-auto my-24 max-h-36 max-w-36" src={loading} />
+      </div>
+    );
+  }
+  return children;
 };
-  export default LoggedRoute
+
+export default LoggedRoute

@@ -51,16 +51,10 @@ const store = configureStore({reducer:reducer,
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  // Setting this option to true will send default PII data to Sentry.
-  // For example, automatic IP address collection on events
+
   sendDefaultPii: true
 });
-
-// const container = document.getElementById(“app”);
-// const root = createRoot(container);
-// root.render(<App />);
 let helmetContext = {};
-const libraries = ['places'];
 const app =   (
   
   <HelmetProvider context={helmetContext}>

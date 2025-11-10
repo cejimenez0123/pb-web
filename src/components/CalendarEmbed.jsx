@@ -123,7 +123,7 @@ const [solEvents,setSolEvents]=useState([])
             let organizerLink = linkifyFirstUrl(event.description) 
           let location = ""
             if(event.location && event.location.length>0){
-         location = isPhone?event.location.split(",")[0]:event.location.length > 24 ? event.location.slice(0, 31) + '...' : event.location
+         location = isPhone?event.location.split(",")[0]:event.location.length > 24 ? event.location.slice(0, 25) + '...' : event.location
          }
          let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 31) + '...' : event.summary:""
             let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
@@ -226,8 +226,8 @@ const [solEvents,setSolEvents]=useState([])
       }
       
       return (
-        <div id="cal-embed" className="max-w-[40rem]  mx-auto">
-        <div className={`flex  mx-auto text-left ${isPhone?"flex-col":"flex-row"}`}>
+        <div id="cal-embed" className=" sm:max-w-[100vw]">
+        <div className={`flex  sm:w-[40em] mx-auto  text-left ${isPhone?"flex-col":"flex-row"}`}>
         <span className="flex flex-row my-auto max-h-12 w-16"> 
             <IonText className="my-auto mont-medium mx-2 text-emerald-700">Filter by Area:</IonText>
 
@@ -243,13 +243,13 @@ const [solEvents,setSolEvents]=useState([])
         </select>
         </span> 
        
-      <span className={`flex flex-row my-auto w-full text-left min-w-30`}>
+      <span className={`flex flex-row my-auto  w-full text-left min-w-30`}>
           <IonText className="my-auto mx-4 text-emerald-800"> Search</IonText>
           <div ref={searchRef} className="relative w-[90vw] mx-auto">
 
 <IonInput
   type="text"
-  className="rounded-lg bg-emerald1-100 text-[0.8rem] text-emerald-800"
+  className="rounded-lg bg-emerald1-100  text-[0.8rem] text-emerald-800"
   value={searchTerm}
 
          
@@ -283,7 +283,7 @@ const [solEvents,setSolEvents]=useState([])
 <HorizontalEventList events={solEvents} handleDialogOpen={handleDialogOpen} sendGAEvent={sendGAEvent} isPhone={isPhone} areas={areas} calendar={calendar}  />
    </div> }
   
-       <IonList className='flex  flex-col'>
+       <IonList className='flex sm:max-w-[50em] mx-auto flex-col'>
              <IonText className="font-bold text-[1.2rem] text-soft" >NYC CALENDAR</IonText>
                 
                 {events&&events.length?events.map((event,i)=>{

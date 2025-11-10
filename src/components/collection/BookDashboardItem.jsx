@@ -23,8 +23,7 @@ function BookDashboardItem({book,isGrid}) {
     const {setSuccess,setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const [bookmarked,setBookmarked]=useState()
-    const [isArchived,setIsArchived]=useState()
-   const [title,setTitle]=useState("")
+// const [isArchived,setIsArchived]=useState(null)
     let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," max-h-[34em]  rounded-lg "," ","  ","  ")
     const soCanUserEdit=()=>{}
 
@@ -56,7 +55,7 @@ const checkFound=()=>{
             
          let found = book.parentCollections.find(ptc=>ptc.parentCollectionId==archive.collection.id)
 
-            setIsArchived(found)
+            // setIsArchived(found)
             setBookmarked(found)
             }
  
@@ -76,18 +75,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
 
     useLayoutEffect(()=>{
         soCanUserEdit()
-        let tit = ""
-        if(book){
-        
-        
-            if(book.title.length>30){
-            tit = book.title.slice(0,30)+"..."
-            setTitle(tit)
-            }else{
-               setTitle(book.title)
-            }
-       
-        }
+
     },[book])
   
  
@@ -146,12 +134,12 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
 
 
 if(!book){
-    return<span className={`skeleton mt-2 shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100`}/>
+    return<span className={`skeleton mt-2shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100`}/>
 }
     
         return(
          <ErrorBoundary >
-        <div id="book-dashboard-item" className={`mt-2 shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100  `}>
+        <div id="book-dashboard-item" className={`mt-2 mx-3  hadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100  `}>
                
 
         {isGrid?isPhone?null:description(book):null}

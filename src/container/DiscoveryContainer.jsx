@@ -32,7 +32,6 @@ function DiscoveryContainer() {
   const libraries = useSelector(state => state.books.libraries);
   const pagesInView = useSelector(state => state.pages.pagesInView);
 
-  const [isGrid, setIsGrid] = useState(false);
   const [hasMoreLibraries, setHasMoreLibraries] = useState(false);
   const [viewItems, setViewItems] = useState([]);
 
@@ -58,11 +57,7 @@ function DiscoveryContainer() {
     fetchLibraries();
   }, [currentProfile, dispatch]);
 
-  // useEffect(() => {
-  //   if (!isNotPhone) {
-  //     setIsGrid(false);
-  //   }
-  // }, [isNotPhone]);
+
 
   useEffect(() => {
     let finalList = sortItems(
@@ -72,8 +67,7 @@ function DiscoveryContainer() {
     setViewItems(finalList);
   }, [pagesInView, cols]);
 
-  // Fetch functions
-
+ 
   const fetchContentItems = () => {
     dispatch(setPagesInView({ pages: [] }));
     dispatch(setCollections({ collections: [] }));
@@ -149,21 +143,14 @@ const libraryForums = () => {
     );
   };
 
-  // const onClickForGrid = bool => {
-  //   setIsGrid(bool);
-  //   if (bool) {
-  //     sendGAEvent('Click Grid View Discovery', 'Click Grid View Discovery', 'Grid Icon', 0);
-  //   } else {
-  //     sendGAEvent('Click Stream View Discovery', 'Click Stream View Discovery', 'Stream Icon', 0);
-  //   }
-  // };
+
 
   return (
   
       <ErrorBoundary>
-   
+
         <IonContent fullscreen={true} scrollY>
-      
+        
           <div className="text-left  mt-12">
             {libraryForums()}
           </div>
@@ -176,26 +163,7 @@ const libraryForums = () => {
                 Pages
               </h3>
 
-              {/* {isNotPhone ? (
-                <div className="flex flex-row">
-                  <IonButton
-                    fill="clear"
-                    onClick={() => onClickForGrid(true)}
-                    className="p-0 ml-2 mr-0"
-                    aria-label="Grid view"
-                  >
-                    <IonImg src={grid} style={{ width: '24px', height: '24px' }} />
-                  </IonButton>
-                  <IonButton
-                    fill="clear"
-                    onClick={() => onClickForGrid(false)}
-                    className="p-0"
-                    aria-label="Stream view"
-                  >
-                    <IonImg src={stream} style={{ width: '24px', height: '24px' }} />
-                  </IonButton>
-                </div>
-              ) : null} */}
+         
             </div>
           </div>
 
@@ -214,8 +182,9 @@ const libraryForums = () => {
               }}
             />
           ) : null}
-         
+         {/* </div> */}
         </IonContent>
+     
       </ErrorBoundary>
 
   );

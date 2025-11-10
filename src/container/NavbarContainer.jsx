@@ -263,7 +263,7 @@ const openDialog=()=>{
         return(currentProfile&&currentProfile.id?  
             <li  
          
-         className="z-[2] dropdown w-52">
+         className={`z-[2] dropdown ${isTablet?"dropdown-top":"dropdown-bottom"} w-52`}>
         
          <a      role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
            <ul     className="p-2 dropdown-content text-center bg-cream menu menu-sm rounded-box  ">

@@ -15,7 +15,7 @@ export default function NotificationContainer({currentProfile}){
     let lastNotified =  oneDayOld
     useEffect(()=>{
         dispatch(fetchNotifcations({profile:currentProfile}))
-    },[])
+    },[currentProfile])
     
 
     return(<IonContent fullscreen={true} className="flex flex-col justify-center md:py-8">
