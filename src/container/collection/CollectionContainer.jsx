@@ -468,6 +468,7 @@ console.log("STORYLIST",collection.storyIdList)
   if (!canUserSee) {
 
     return (
+      <ErrorBoundary>
       <IonContent fullscreen={true}>
             <IonHeader> 
       <IonToolbar>
@@ -494,6 +495,7 @@ console.log("STORYLIST",collection.storyIdList)
 </IonText>
 
       </IonContent>
+      </ErrorBoundary>
     );
   }
 

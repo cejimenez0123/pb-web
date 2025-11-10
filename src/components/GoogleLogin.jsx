@@ -294,13 +294,13 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   // ---------------------------
   // 7️⃣ UI
   // ---------------------------
-  if (pending) {
-    return (
-      <div className="flex flex-col justify-center items-center w-full min-h-full">
-        <IonSpinner name="crescent" />
-      </div>
-    );
-  }
+  // if (pending) {
+  //   return (
+  //     <div className="flex flex-col justify-center items-center w-full min-h-full">
+  //       <IonSpinner name="crescent" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex flex-col  justify-center items-center w-full min-h-full">

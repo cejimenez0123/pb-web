@@ -26,6 +26,7 @@ import {IonImg, IonList,} from '@ionic/react';
 import { useSelector } from 'react-redux'
 import { Capacitor } from '@capacitor/core'
 import { PageType } from '../core/constants.js'
+import { useMediaQuery } from 'react-responsive'
 const PageName = {
   home: "Home",
   about:"About",
@@ -41,11 +42,14 @@ const PageName = {
 
 function NavbarContainer({currentProfile}){
 
-  const {isPhone,isTablet}=useContext(Context)
+  const {isPhone}=useContext(Context)
   const dialog =useSelector(state=>state.users.dialog)
   useLayoutEffect(()=>{
     initGA()
   },[])
+    const isTablet =  useMediaQuery({
+    query: '(max-width: 1100px)'
+  }) 
   const pages = [...[ 
                 Capacitor.isNativePlatform()||currentProfile? PageName.home:PageName.about,
                 
@@ -150,7 +154,7 @@ const openDialog=()=>{
           </div>
           <IonList
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-emerald-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+            className="menu menu-sm dropdown-content bg-cream rounded-box z-[1] mt-3 w-52 p-2 shadow">
               {pages.map((page) => {
     if(page==PageName.workshop||page==PageName.home){
       return currentProfile?<li  tabIndex={page} onClick={()=>handleCloseNavMenu(page) } 
@@ -262,7 +266,7 @@ const openDialog=()=>{
          className="z-[2] dropdown w-52">
         
          <a      role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
-           <ul     className="p-2 dropdown-content text-center bg-emerald-50 menu menu-sm rounded-box  ">
+           <ul     className="p-2 dropdown-content text-center bg-cream menu menu-sm rounded-box  ">
              <li tabIndex={1}  onClick={ClickWriteAStory}><a className='mx-auto '  > 
               
                <IonImg src={CreateIcon}/></a></li>
@@ -343,7 +347,7 @@ openDialog()
       </div>
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content bg-emerald-50 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+        className="menu menu-sm dropdown-content bg-cream rounded-box z-[1] mt-3 w-52 p-2 shadow">
       {settings.map((setting) => (
                     
                     <li  key={setting} 
