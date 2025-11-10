@@ -107,12 +107,13 @@ function App(props) {
     
    return ()=>{checkFirstLaunch()}
   }, []);
-const navbarBot = ((Capacitor.isNativePlatform()||(isPhone||isTablet)))||(Capacitor.isNativePlatform()&&!(location.pathname.includes("/signup")||location.pathname.includes("/login"))||(location.pathname.includes("/onboard")))
+  const showNav = !(Capacitor.isNativePlatform()&&(location.pathname.includes("/signup")||location.pathname.includes("/login"))||location.pathname.includes("/onboard"))
+const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
 
-return (
+ return (
     <IonApp >
      
-      <Context.Provider value={{isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+      <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
      {/* <head>
   <meta charset="UTF-8" />
   <Helmet>
@@ -334,7 +335,7 @@ presentingElement={page}
     </Routes>
     </div>
    
-      {navbarBot?
+      {navbarBot&&showNav?
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>

@@ -54,8 +54,8 @@ function EditorContainer({presentingElement}){
           needsFeedback:needsFeedback,
           description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:description
           ,
-          type:id=="link"||id=="image"?id:editPage.type,
-          // type:pageType,
+          type:id=="link"||id=="image"?id:editPage.type??PageType.text,
+         
           privacy:isPrivate,
           commentable:commentable
         }:{type:id})
@@ -201,7 +201,7 @@ useEffect(() => {
         pars.description = description
         pars.title = titleLocal
         pars.isPrivate = isPrivate
-        pars.type = last=="edit"?editPage.type:last
+        pars.type = last=="edit"?editPage.type??PageType.text:last
         pars.commentable = commentable
         pars.data = htmlContent.html
    setParameters({...parameters,...pars})
@@ -363,7 +363,7 @@ const openConfirmDeleteDialog = () => {
 const dispatchUpdate =debounce((params)=>{
   setIsSaved(false) 
  
- dispatch(updateStory({...params,type:last=="edit"?editPage.type:last,data:htmlContent.html,description})).then(res=>{
+ dispatch(updateStory({...params,type:last=="edit"?editPage.type??PageType.text:last,data:htmlContent.html,description})).then(res=>{
     checkResult(res,payload=>{
     
       if(payload.story){

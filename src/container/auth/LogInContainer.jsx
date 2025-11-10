@@ -230,9 +230,7 @@ dispatch(setDialog(dia))
         />
         </div>
          <GoogleLogin
-         onUserSignIn={({email, idToken, googleId, driveAccessToken})=>{
-
-         }}
+     
      
             
 

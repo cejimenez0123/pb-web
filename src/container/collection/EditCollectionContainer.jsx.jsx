@@ -234,7 +234,7 @@ if (col.childCollections) {
 
   return (
   // <IonContent>
-    
+    <ErrorBoundary>
       <IonContent fullscreen className="bg-gray-50">
             {Capacitor.isNativePlatform()?<IonHeader translucent>
         <IonToolbar className="bg-white border-b border-emerald-100">
@@ -394,6 +394,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
         )}
       {/* </IonContent> */}
  </IonContent>
+ </ErrorBoundary>
   );
 };
 
@@ -451,6 +452,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
       </ul>
     </div>
     </ErrorBoundary>
+    
   );
 }
 
