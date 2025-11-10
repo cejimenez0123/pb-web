@@ -20,7 +20,7 @@ import ErrorBoundary from '../../ErrorBoundary'
 function BookDashboardItem({book,isGrid}) {
  
     const dispatch = useDispatch()
-    const {setSuccess,setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
+    const {setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const [bookmarked,setBookmarked]=useState()
 // const [isArchived,setIsArchived]=useState(null)
