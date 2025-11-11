@@ -18,12 +18,12 @@ import {
   IonImg,
   IonBackButton,
   IonItem,
-  IonRow,
+ 
 } from "@ionic/react";
 import add from "../../images/icons/add_circle.svg"
 import edit from "../../images/icons/edit.svg"
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Context from "../../context";
 import PageList from "../../components/page/PageList";
 import ErrorBoundary from "../../ErrorBoundary";
@@ -58,7 +58,7 @@ export default function CollectionContainer() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-
+  const isNative = Capacitor.isNativePlatform()
   const collection = useSelector(state => state.books.collectionInView);
   const collections = useSelector(state => state.books.collections);
   const pagesInView = useSelector(state => state.pages.pagesInView);
@@ -191,7 +191,7 @@ export default function CollectionContainer() {
 useEffect(()=>{
  getContent()
    currentProfile && collection && findRole(currentProfile,collection);
-},[navigate])
+},[navigate,location.pathname])
 const getCol = async () => {
   setLoading(true);
   try {
@@ -428,7 +428,7 @@ const getCol = async () => {
               <IonHeader> 
       <IonToolbar>
         <IonButtons>
-                      {Capacitor.isNativePlatform()?<IonBackButton
+                      {isNative?<IonBackButton
                        
       defaultHref={Paths.discovery()}
       onClick={handleBack}
@@ -469,7 +469,7 @@ const getCol = async () => {
       <IonToolbar>
         <IonButtons>
    
-              {Capacitor.isNativePlatform()?<IonBackButton
+              {isNative?<IonBackButton
                        
       defaultHref={Paths.discovery()}
       onClick={handleBack}
@@ -505,7 +505,7 @@ const getCol = async () => {
 
     {/* Left-aligned back button */}
     <IonButtons slot="start">
-              {Capacitor.isNativePlatform()?<IonBackButton
+              {isNative?<IonBackButton
                        
       defaultHref={Paths.discovery()}
       onClick={handleBack}

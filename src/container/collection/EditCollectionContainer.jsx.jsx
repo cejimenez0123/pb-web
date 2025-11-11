@@ -41,6 +41,7 @@ const EditCollectionContainer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [pending,setPending]=useState(true)
+  const isNative = Capacitor.isNativePlatform()
   const [isOpen, setIsOpen] = useState(false);
    const colInView = useSelector((state) => state.books.collectionInView);
  const [newPages, setNewPages] = useState([]);
@@ -54,11 +55,11 @@ const [canUserEdit,setCanUserEdit]=useState(false)
   const [loading, setLoading] = useState(true);
    const [isPrivate, setIsPrivate] = useState(true)
 const dialog = useSelector(state=>state.users.dialog)
-  // Load collection data
+
   useEffect(() => {
     async function loadData() {
       const col = await dispatch(fetchCollectionProtected(id));
-      console.log("BO",col)
+
       if (col) setCollection(col);
       setLoading(false);
     }
@@ -233,10 +234,10 @@ if (col.childCollections) {
   }
 
   return (
-  // <IonContent>
+
     <ErrorBoundary>
       <IonContent fullscreen className="bg-gray-50">
-            {Capacitor.isNativePlatform()?<IonHeader translucent>
+            {isNative?<IonHeader translucent>
         <IonToolbar className="bg-white border-b border-emerald-100">
           <IonButtons slot="start">
             <IonBackButton

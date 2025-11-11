@@ -93,8 +93,6 @@ export default function HashtagContainer() {
           setHashtag(hashtag);
           dispatch(setPagesInView({ pages: hashtag.stories.map((s) => s.story) }));
           dispatch(setCollections({ collections: hashtag.collections.map((c) => c.collection) }));
-
-          // Append nested story pages
           hashtag.collections.forEach((c) => {
             const stories = c.collection.storyIdList.map((sTc) => sTc.story);
             dispatch(appendToPagesInView({ pages: stories }));
@@ -211,7 +209,6 @@ export default function HashtagContainer() {
 
   return (
     <ErrorBoundary>
-      {/* <IonPage> */}
         <IonContent fullscreen={true}>
              <IonHeader translucent>
           <IonToolbar className="flex flex-row">
