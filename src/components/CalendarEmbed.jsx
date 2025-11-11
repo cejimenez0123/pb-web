@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
 import { IonImg, IonInput, IonItem, IonList, IonText,  } from "@ionic/react";
 import { setDialog } from "../actions/UserActions";
+import InfoTooltip from "./InfoTooltip";
 
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
@@ -278,8 +279,8 @@ const [solEvents,setSolEvents]=useState([])
   </span>
 </div>
   {solEvents.length==0?null:<div className=" text-left">
-
-<IonText className="font-bold text-[1.2rem] text-soft ">Events with Sol, Founder</IonText>
+<div className="flex flex-row">
+<IonText className="font-bold text-[1.2rem] text-soft ">Events with Sol, Founder</IonText><InfoTooltip text="Want to meet the founder. Want to meet someone there so you're not alone. Join Sol at an Event. IG:@decibao"/></div>
 <HorizontalEventList events={solEvents} handleDialogOpen={handleDialogOpen} sendGAEvent={sendGAEvent} isPhone={isPhone} areas={areas} calendar={calendar}  />
    </div> }
   
