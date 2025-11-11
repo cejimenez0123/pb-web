@@ -14,7 +14,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
     
        await Preferences.set({key:"token",value:JSON.stringify(data.token)})
     }
-    console.log(params)
+ 
 
     if(params.privacy){
          await algoliaRepo.saveObject("profile",{

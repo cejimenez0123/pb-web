@@ -28,16 +28,14 @@ export default function LogInContainer() {
        
    },[])
    useEffect(()=>{
-    //.then(res=>{
-        // if(res && res.value && res.value.length>10 && currentProfile){
+ 
     const checkAuth= async()=>{
        const token = (await Preferences.get({key:"token"})).value
-       token&& currentProfile &&currentProfile.id&& navigate(Paths.myProfile())
+       token&& currentProfile &&currentProfile.id&& navigate(Paths.myProfile)
 
     }
     checkAuth()
-        // }
-    // })
+ 
    },[currentProfile])
 
     return (
@@ -92,7 +90,7 @@ function LogInCard({setLogInError}){
                     if(payload && payload.profile && payload.profile.id){
 
                    
-                    navigate(Paths.myProfile())
+                    navigate(Paths.myProfile)
                      }else{
                         setError("Error with Profile")
                      }

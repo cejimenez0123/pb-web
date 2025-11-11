@@ -317,6 +317,24 @@ openDialog()
         </ul>
       </div>
       }
+      const handleSettingNav=(page)=>{  
+        console.log("SETTING NAV",page)    
+                         switch(page){
+                          case SettingName.profile:
+                            console.log("NAVIGATE TO PROFILE")
+                              navigate(Paths.myProfile)
+                              break;
+                          case SettingName.logout:
+                            handleSignOut()
+                              break;
+              
+                          case SettingName.notifications:
+                            navigate(Paths.notifications())
+                            break;
+                          default:
+                              break;
+                         }  }
+             
   const handleSignOut =async () => {
  
     await Preferences.clear()
@@ -352,16 +370,7 @@ openDialog()
                     
                     <li  key={setting} 
                               onClick={()=>{
-                                  if(setting== SettingName.profile){
-                                      navigate(Paths.myProfile())
-                                  }else if(setting== SettingName.logout){
-                                    handleSignOut()
-                                     
-                                  }else if(setting== SettingName.account){
-                                      navigate("/profile/edit")
-                                  }else if(setting==SettingName.notifications){
-                                    navigate(Paths.notifications())
-                                  }
+                          handleSettingNav(setting)
                               
                     }}><a className='text-emerald-800'>{setting}</a></li>
                   ))}

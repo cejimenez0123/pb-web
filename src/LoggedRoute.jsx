@@ -18,7 +18,7 @@ const LoggedRoute = ({ currentProfile,children }) => {
 
         if (tok) {
             try {   
-          navigate(Paths.myProfile(), { replace: true });
+          navigate(Paths.myProfile, { replace: true });
           setToken(null);
           return;
 

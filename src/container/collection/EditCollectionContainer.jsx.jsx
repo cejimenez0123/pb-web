@@ -207,7 +207,7 @@ if (col.childCollections) {
     dia.isOpen = true;
     dia.agree = () => {
       dispatch(deleteCollection(params));
-      navigate(Paths.myProfile());
+      navigate(Paths.myProfile);
       dispatch(setDialog({ isOpen: false }));
     };
     dia.agreeText = "Delete";

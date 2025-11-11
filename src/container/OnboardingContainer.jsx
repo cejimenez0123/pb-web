@@ -57,7 +57,7 @@ export default function OnboardingContainer(props) {
   ];
   useEffect(()=>{
     if(currentProfile && currentProfile.id){
-      navigate(Paths.myProfile())
+      navigate(Paths.myProfile)
     }
   },[currentProfile])
   const [activeTab, setActiveTab] = useState('tab0');
@@ -85,10 +85,7 @@ export default function OnboardingContainer(props) {
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||formData.idToken.length>10;
 
-  const finishOnboarding = async () => {
-    await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
-    navigate(Paths.myProfile(), { replace: true });
-  };
+
 
   const onClickApply = debounce(async () => {
     

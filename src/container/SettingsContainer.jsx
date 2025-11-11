@@ -285,7 +285,7 @@ export default function SettingsContainer(props) {
                             onClick={(e)=>{
                                 e.preventDefault()
                                 setPrivacy(true)}}
-                            className=" text-bold border-emerald-500  h-18 w-24 border-2 rounded-full text-emerald-800 bg-emerald-50 hover:bg-green-10 text-xl ">You are Public</button>}
+                            className=" text-bold border-emerald-500  px-3 py-2 border-2 rounded-full text-emerald-800 bg-emerald-50 hover:bg-green-10 text-xl "><IonText>You are Public</IonText></button>}
    </div>
   <div className="mt-8">
 

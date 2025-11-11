@@ -191,7 +191,7 @@ useEffect(() => {
       };
       const handleDelete =debounce(()=>{
           dispatch(deleteStory(parameters)).then(()=>{
-            navigate(Paths.myProfile())
+            navigate(Paths.myProfile)
           })
           handleClose()
       },10)
@@ -413,7 +413,7 @@ const handleSetDescription=(e)=>{
             <IonHeader className=" ion-padding py-8 ">
               <IonButtons className="ion-padding" >
                 <div className="pt-4 pl-4">
-                <IonBackButton  defaultHref={Paths.myProfile()} onClick={handleBack}/></div></IonButtons>
+                <IonBackButton  defaultHref={Paths.myProfile} onClick={handleBack}/></div></IonButtons>
 
             <IonButtons>{topBar()}</IonButtons>
             </IonHeader>

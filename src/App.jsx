@@ -289,7 +289,7 @@ if(!navigator.onLine){
         currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
 
       <Route
-      path={Paths.myProfile()}
+      path={Paths.myProfile}
       element={
         <PrivateRoute       currentProfile={props.currentProfile} >
           <MyProfileContainer

@@ -61,7 +61,7 @@ const Paths ={
     editProfile:{route:()=>{return `/profile/edit`}},
     profile:{route:()=>{return `/profile/:id`},
             createRoute:(id)=>{return `/profile/${id}`}},
-    myProfile:()=>{return `/profile/home`},
+    myProfile:`/profile/home`,
     notifications:()=>{return"/profile/alert"}
 }
 export default Paths
