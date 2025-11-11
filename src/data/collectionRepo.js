@@ -32,7 +32,7 @@ import { Preferences } from "@capacitor/preferences";
         let res = await axios.get(this.url+"/profile/protected/",{
             headers
         })
-    console.log("GETMY",res)
+   
         return res.data
     }
     async getPublicProfileCollections({id}){
@@ -40,9 +40,8 @@ import { Preferences } from "@capacitor/preferences";
         return res.data
     }
     async getProtectedProfileCollections({id}){
-        let res = await axios.get(this.url+`/profile/${id}/private`,{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+          const headers = await this.getAuthHeaders()
+        let res = await axios.get(this.url+`/profile/${id}/private`,{headers:headers})
         return res.data
     }
     async createCollection({
@@ -55,7 +54,7 @@ import { Preferences } from "@capacitor/preferences";
         isOpenCollaboration
     }){
        
-          
+            const headers = await this.getAuthHeaders()
         let res = await axios.post(Enviroment.url+"/collection",{
             title:title,
             purpose,
@@ -64,9 +63,7 @@ import { Preferences } from "@capacitor/preferences";
             type,
             location,
             isOpenCollaboration:isOpenCollaboration
-        },{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+        },{headers:headers})
 
         return res.data
     }
@@ -74,53 +71,48 @@ import { Preferences } from "@capacitor/preferences";
     purpose,
     isPrivate,
     isOpenCollaboration}){
+          const headers = await this.getAuthHeaders()
         let res = await axios.put(Enviroment.url+"/collection/"+id,{
             title,
             purpose,
             isPrivate,
             isOpenCollaboration
-        },{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+        },{headers:headers})
         return res.data
     }
     async patchCollectionRoles({roles,profileId,colId}){
+          const headers = await this.getAuthHeaders()
         let res = await axios.patch(this.url+"/"+colId+"/role",{
                     roles,
                     profileId
-                },{headers:{
-                    Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-                }})
+                },{headers:headers})
 
         return res.data
     }
     async updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile}){
+              const headers = await this.getAuthHeaders()    
             let res = await axios.patch(this.url+"/"+id,
-            {id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},{headers:{
-                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-            }})
+            {id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},
+            {headers:headers})
             console.log("SCC",res)
             return res.data
         }
 
     async addCollectionListToCollection({id,list,profile}){
+          const headers = await this.getAuthHeaders()
         let res = await axios.post(this.url+"/"+id+"/collection",{
             list:list,
             profile
-        },{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+        },{headers:headers})
 
         return res.data
     }
     async addStoryListToCollection({id,list,profile}){
-        
+          const headers = await this.getAuthHeaders()
         let res = await axios.post(this.url+"/"+id+"/story",{
             list,
             profile
-        },{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+        },{headers:headers})
         return res.data
     }
     async addCollectionToCollection({parentCollection,childCollection}){
@@ -130,11 +122,9 @@ import { Preferences } from "@capacitor/preferences";
     }
 
     async deleteCollection({id}){
-      
+        const headers = await this.getAuthHeaders()
         let res = await axios.delete(this.url+"/"+id,
-            {headers:{
-                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-            }}
+            {headers:headers}
         )
 
         return res.data
@@ -163,36 +153,31 @@ import { Preferences } from "@capacitor/preferences";
         return res.data
     }
     async deleteCollectionToCollection({tcId}){
+          const headers = await this.getAuthHeaders()
         let res = await axios.delete(this.url+"/colToCol/"+tcId,
-            {headers:{
-                Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
-            }}
+            {headers:headers}
         )
         console.log(res)
         return res.data
     }
     async deleteStoryToCollection({stId}){
-
+  const headers = await this.getAuthHeaders()
         let res=  await axios.delete(this.url+"/storyToCol/"+stId,
-             {headers:{
-                 Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
-             }}
+             {headers:headers}
          )
  
          return res.data
      }
     async fetchSubCollectionsProtected({id}){
-        const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+          const headers = await this.getAuthHeaders()
+        const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:headers})
       
         return res.data
     }
     async postProfileToCollection({collection,type,token}){
+          const headers = await this.getAuthHeaders()
         const res = await axios.post(this.url+"/home",{collection,type},{
-            headers:{
-                Authorization:"Bearer "+token
-            }
+            headers:headers
         })
         console.log(res)
         return res.data

@@ -16,7 +16,7 @@ class FollowRepo{
         let headers = await this.getAuthHeaders()
        let res = await axios.post(Enviroment.url+"/follow",{follower,following},
        {headers:headers})
-       console.log(res)
+ 
        return res.data
     }
     

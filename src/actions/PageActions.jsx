@@ -243,6 +243,7 @@ await algoliaRepo.deleteObject("page",page.id)
    try{
     const {story,profile,score}=params
     const data = await likeRepo.storyCreate({story,profile})
+    console.log("DATA FROM LIKE REPO",data)
     return {
       profile:data.profile
     }

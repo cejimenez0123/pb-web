@@ -8,17 +8,20 @@ class ProfileRepo {
         let res = await axios.get(this.url+"/")
         return res.data
     }
+     headers= {
+        'Access-Control-Allow-Origin': "*"
+    }
     async getAuthHeaders() {
     const { value } = await Preferences.get({ key: "token" });
     if (!value) throw new Error("No token found");
   
     return {
-    //   ...this.headers,
+      ...this.headers,
       Authorization: `Bearer ${value}`,
     };
   }
     async getMyProfiles(){
-        let headers = await this.getAuthHeaders()
+        const headers = await this.getAuthHeaders()
 
   try{
        const res = await axios.get(this.url+"/protected",{ headers:headers}

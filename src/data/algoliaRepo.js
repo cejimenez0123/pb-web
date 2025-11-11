@@ -21,9 +21,8 @@ class AlgoliaRepo {
       headers,
       params: { q: query },
     });
-    return res.data; // { results: [...] }
+    return res.data; 
   }
-  // ✅ Save or create object in Algolia
   async saveObject(indexName, object) {
     const headers = await this.getAuthHeaders();
     const res = await axios.post(

@@ -1,10 +1,9 @@
 
-import{ useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React,{ useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { IonCard, IonCardHeader, IonCardContent, IonText,IonImg } from '@ionic/react';
 import "../../Dashboard.css";
 import {
   deletePageApproval,
-  setEditingPage,
   setPageInView,
   setPagesInView,
   createPageApproval,
@@ -14,25 +13,23 @@ import { addStoryListToCollection, deleteStoryFromCollection } from '../../actio
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import addCircle from "../../images/icons/add_circle.svg";
-import bookmarkFillGreen from "../../images/bookmark_fill_green.svg";
 import bookmarkfill from "../../images/bookmarkfill.svg";
 import checkResult from '../../core/checkResult';
 import Paths from '../../core/paths';
-import loadingGif from "../../images/loading.gif";
 import bookmarkoutline from "../../images/bookmarkadd.svg";
-import bookmarkadd from "../../images/bookmark_add.svg";
 import PageDataElement from './PageDataElement';
 import ProfileCircle from '../profile/ProfileCircle';
 import Context from '../../context';
 import Enviroment from '../../core/Enviroment';
 import ErrorBoundary from '../../ErrorBoundary';
-import { debounce } from 'lodash';
+import { debounce, set } from 'lodash';
 import { sendGAEvent } from '../../core/ga4';
 import adjustScreenSize from '../../core/adjustScreenSize';
 import ShareList from './ShareList';
 import { setDialog } from '../../actions/UserActions';
-export default function DashboardItem({ page, book, isGrid }) {
-  const { isPhone, isHorizPhone, setSuccess, setError, currentProfile } = useContext(Context);
+function DashboardItem({ page, book, isGrid }) {
+  const { isPhone, isHorizPhone, setSuccess, setError} = useContext(Context);
+  const currentProfile = useSelector(state=>state.users.currentProfile)
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const dialog = useSelector(state=>state.users.dialog)
@@ -48,8 +45,7 @@ export default function DashboardItem({ page, book, isGrid }) {
 
 
   const widthSize = adjustScreenSize(isGrid, true, "", " pt-1 pb-2 ", "", "", "", "");
-  // let sizeOuter = adjustScreenSize(isGrid, false, "rounded-lg shadow-md grid-item relative ", "justify-between flex ", "mt-2 mx-auto ", " mt-2 ", "  ");
-
+ 
   const addStoryToCollection = () => {
     if (page) {
       const list = [page];
@@ -89,15 +85,14 @@ export default function DashboardItem({ page, book, isGrid }) {
     }
   };
 
-  const checkLike = () => {
-    if ( currentProfile &&currentProfile.id && page) {
-      if (currentProfile.likedStories) {
-        let found = currentProfile.likedStories.find(like => like && like.storyId === page.id);
+  const checkLike = (profile) => {
+    if ( profile &&profile.id && page) {
+      if (profile.likedStories) {
+        let found = profile.likedStories.find(like => like && like.storyId === page.id);
         setLikeFound(found);
       }
-      if (currentProfile.profileToCollections) {
-        // if(currentProfile && ptc.collection)
-        let marked = currentProfile.profileToCollections.find(
+      if (profile.profileToCollections) {
+        let marked = profile.profileToCollections.find(
           ptc => 
             ptc && ptc.type === "archive" && ptc.collection && ptc.collection.storyIdList && ptc.collection.storyIdList.find(stc => stc.storyId === page.id)
         );
@@ -159,33 +154,61 @@ export default function DashboardItem({ page, book, isGrid }) {
       </span>
     );
   };
-  useEffect(()=>{
-      checkLike()
-  },[page])
   const handleApprovalClick = () => {
-    if (page) sendGAEvent(`Click to Yea ${JSON.stringify({ id: page.id, title: page.title })}`, `Click Yea`, "Review", 0, false);
-    if (currentProfile) {
-      if (likeFound) {
-        checkLike();
-        dispatch(deletePageApproval({ id: likeFound.id })).then(res => {
-          checkResult(res, payload => { }, err => { });
-        });
-        setLikeFound(false);
-      } else {
-        if (page && currentProfile) {
-          const params = { story: page, profile: currentProfile };
-          setLikeFound(true);
-          dispatch(createPageApproval(params)).then(res => {
-            checkResult(res, payload => { checkLike(); }, err => { });
-          });
-        } else {
-          setError("Sign Up so you can show support");
-        }
-      }
-    } else {
-      setError("Please Sign Up");
-    }
-  };
+  if (!page || !currentProfile) {
+    setError("Please Sign Up");
+    return;
+  }
+
+  if (likeFound) {
+    setLikeFound(false); // update immediately
+    dispatch(deletePageApproval({ id: likeFound.id }))
+      .then(res => checkResult(res, () => {
+        setLikeFound(null);
+      }, err => console.error(err)));
+  } else {
+    setLikeFound(true); // update immediately
+    const params = { story: page, profile: currentProfile };
+    dispatch(createPageApproval(params))
+      .then(res => checkResult(res, (payload) => {
+
+        const {profile} = payload;
+        checkLike(profile);
+      }, err => console.error(err)));
+  }
+};
+useEffect(() => {
+    checkLike(currentProfile);
+}, []); // empty deps so it runs only once
+
+
+  // useEffect(()=>{
+  //     checkLike()
+  // },[page])
+  // const handleApprovalClick = () => {
+  //   if (page) sendGAEvent(`Click to Yea ${JSON.stringify({ id: page.id, title: page.title })}`, `Click Yea`, "Review", 0, false);
+  //   if (currentProfile) {
+  //     if (likeFound) {
+  //       checkLike();
+  //       dispatch(deletePageApproval({ id: likeFound.id })).then(res => {
+  //         checkResult(res, payload => { }, err => { });
+  //       });
+  //       setLikeFound(false);
+  //     } else {
+  //       if (page && currentProfile) {
+  //         const params = { story: page, profile: currentProfile };
+  //         setLikeFound(true);
+  //         dispatch(createPageApproval(params)).then(res => {
+  //           checkResult(res, payload => { checkLike(); }, err => { });
+  //         });
+  //       } else {
+  //         setError("Sign Up so you can show support");
+  //       }
+  //     }
+  //   } else {
+  //     setError("Please Sign Up");
+  //   }
+  // };
   const onClickShare=()=>{
     let dia = {...dialog}
     dia.text = <ShareList page={page} setArchive={setArchiveCol}profile={currentProfile} archive={archiveCol}
@@ -382,3 +405,5 @@ export default function DashboardItem({ page, book, isGrid }) {
 
 
 
+
+export default React.memo(DashboardItem);

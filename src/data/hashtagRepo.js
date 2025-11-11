@@ -7,8 +7,15 @@ class HashtagRepo{
     headers= {
         'Access-Control-Allow-Origin': "*"
     }
+    
     url=Enviroment.url+"/hashtag"
-    token="token"
+    async getAuthHeaders() {
+    const { value} = await Preferences.get({ key: "token" });
+    return {
+      ...this.headers,
+      Authorization: `Bearer ${value}`,
+    };
+  }
     async all(){
             let res = await axios.get(this.url+"/")
             return res.data
@@ -18,80 +25,63 @@ class HashtagRepo{
         return res.data
     }
     async create({name,profileId}){
-       
+        const headers = await this.getAuthHeaders()
    let res =    await axios.post(this.url,{
             name,profileId
         },{
-            headers:{
-                Authorization: "Bearer "+(await Preferences.get({key:"token"})).value
-            }
+            headers:headers
         })
         return res.data
     }
     async fetchStoryHashtag({storyId,profileId}){
-     let res=  await axios.get(this.url+"/profile/"+profileId+"/story/"+storyId,{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+          const headers = await this.getAuthHeaders()
+     let res=  await axios.get(this.url+"/profile/"+profileId+"/story/"+storyId,{headers:headers})
         return res.data
     }
     async fetchUserHashtagCommentUse({profileId}){
-       let res = await axios.get(this.url+"/profile/"+profileId+"/comment",{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+          const headers = await this.getAuthHeaders()
+       let res = await axios.get(this.url+"/profile/"+profileId+"/comment",{headers:headers})
         return res.data
     }
     async comment({name,commentId,profileId}){
-  
+    const headers = await this.getAuthHeaders()
         let res = await axios.post(this.url+"/comment/"+commentId,{name,profileId:profileId.id},{
-            headers:{
-                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-            }
+            headers:headers
         })
         return res.data
     }
     async story({name,storyId,profile}){
+          const headers = await this.getAuthHeaders()
         let res = await axios.post(this.url+"/story/"+storyId,{name,profile},{
-            headers:{
-                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-            }})
+            headers:headers})
         return res.data
     }
     async deleteComment({hashtagCommentId}){
-      
+        const headers = await this.getAuthHeaders()
             let res = await axios.delete(this.url+"/comment/"+hashtagCommentId,{
-                headers:{
-                    Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-                
-            }})
+                headers:headers})
             return res.data
         
     }
     async deleteStory({id}){
-      
+        const headers = await this.getAuthHeaders()
         let res = await axios.delete(this.url+"/story/"+id,{
-            headers:{
-                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-            
-        }})
+            headers:headers})
         return res.data
     
 }
 async fetchStoryHashtagsProtected(params){
+      const headers = await this.getAuthHeaders()
     let res = await axios.get(this.url+"/story/"+params.id+"/protected",{
-        headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        
-    }})
+        headers:headers})
 
     return res.data
 
 }
 async fetchCollectionHashtagsProtected({id}){
+      const headers = await this.getAuthHeaders()
     let res = await axios.get(this.url+"/collection/"+id+"/protected",{
-        headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        
-    }})
+        headers:headers})
 
     return res.data
 
@@ -105,16 +95,14 @@ async fetchStoryHashtagsPublic({id}){
             return res.data
     }
     async collection({name,colId,profile}){
+          const headers = await this.getAuthHeaders()
         let res = await axios.post(this.url+"/collection/"+colId,{name,profile},{
-            headers:{
-                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-            }})
+            headers:headers})
         return res.data
     }
     async deleteCollection({hashId}){
-        let res = await axios.delete(this.url+"/collection/"+hashId,{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+          const headers = await this.getAuthHeaders()
+        let res = await axios.delete(this.url+"/collection/"+hashId,{headers:headers})
         return res.data
     }
     }

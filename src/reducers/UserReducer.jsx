@@ -191,9 +191,10 @@ state.dialog.isOpen = false
     }).addCase(setSignedInFalse.type,(state,{payload})=>{
         state.signedIn=false
     })
-   .addCase(createPageApproval.fulfilled,(state,{payload})=>{
-        state.currentProfile = payload.profile
-    }).addCase(deletePageApproval.fulfilled,(state,{payload})=>{
+//    .addCase(createPageApproval.fulfilled,(state,{payload})=>{
+//         state.currentProfile = payload.profile
+//     })
+    .addCase(deletePageApproval.fulfilled,(state,{payload})=>{
         const list = state.userApprovals.filter(ua=> ua!=null &&payload.userApproval && ua.id != payload.userApproval.id)
         state.userApprovals = list
     }).addCase(searchDialogToggle.type,(state,{payload})=>{

@@ -6,7 +6,8 @@ import { Preferences } from "@capacitor/preferences";
 
 class StoryRepo{
     headers= {
-        'Access-Control-Allow-Origin': "*"
+        'Access-Control-Allow-Origin': "*",
+         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
     }
     url= Enviroment.url+"/story"
     
@@ -24,7 +25,7 @@ class StoryRepo{
 
     }
     async getPublicProfileStories({profileId}){
-        console.log("profileId",profileId)
+   
         let res = await axios.get(this.url+"/profile/"+profileId+"/public")
         
         return res.data
@@ -42,7 +43,7 @@ class StoryRepo{
         let res = await axios.get(this.url+"/recommendations",{headers
      
         })
-        console.log(res)
+
         return res.data
     }
     async getStoryProtected({id}){

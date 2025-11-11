@@ -47,12 +47,10 @@ class AuthRepo{
         return res.data
         }
     async generateReferral(){
-
+  const headers = await this.getAuthHeaders()
       
         let res = await axios.post(Enviroment.url+"/auth/generate-referral",{},{
-            headers:{
-                Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-            }
+            headers:headers
         })
         return res.data
     }
@@ -68,7 +66,8 @@ class AuthRepo{
     }
     async startSession({uId,email,password,identityToken}){
 let headers = await this.getAuthHeaders()
-        const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password,identityToken},{headers:headers})
+        const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password,identityToken},
+            {headers:headers})
 
         return res.data
     }
@@ -81,7 +80,7 @@ let headers = await this.getAuthHeaders()
     }
 
     async useReferral({token, email, password ,username,profilePicture,selfStatement,isPrivate}){
-        console.log(token)
+       
        let res = await axios.post(Enviroment.url+"/auth/use-referral",{token, email, password ,username,profilePicture,selfStatement,isPrivate}
         ,{   headers:{
             Authorization:"Bearer "+token
@@ -90,9 +89,8 @@ let headers = await this.getAuthHeaders()
         return res.data    
     }
     async deleteUser(){
-        let res = await axios.delete(Enviroment.url+"/auth/",{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+          const headers = await this.getAuthHeaders()
+        let res = await axios.delete(Enviroment.url+"/auth/",{headers:headers})
          return res.data    
      }
      async checkUsername(query){
@@ -107,7 +105,6 @@ let headers = await this.getAuthHeaders()
     }
     async appleSignIn({identityToken}){
         let res =await axios.post(Enviroment.url+"/auth/ios",{idToken:identityToken})
-        console.log("Res",res.data)
         return res.data
     }
     }
