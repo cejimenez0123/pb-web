@@ -1,11 +1,12 @@
 import { IonPage,IonBackButton,IonButtons, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfile } from '../../actions/UserActions';
 import ProfileCard from '../../components/ProfileCard';
 import checkResult from '../../core/checkResult';
 import IndexList from '../../components/page/IndexList';
+import { useMemo } from 'react';
 import {
   getProtectedProfilePages,
   getPublicProfilePages,
@@ -28,19 +29,18 @@ import sortItems from '../../core/sortItems.js';
 import { Preferences } from '@capacitor/preferences';
 import StoryCollectionTabs from '../../components/page/StoryCollectionTabs.jsx';
 
-function ProfileContainer({ profile }) {
+function ProfileContainer() {
   const { seo, setSeo, setError, setSuccess, currentProfile } = useContext(Context);
   const { id } = useParams();
-
+const profile = useSelector((state) => state.users.profileInView);
   const dispatch = useDispatch();
   const[tab,setTab]=useState("page")
   const isPhone = useMediaQuery({ query: '(max-width: 600px)' });
-
+  const navigate = useNavigate();
+  const location = useLocation()
   const [search, setSearch] = useState('');
-  // const [sortAlpha, setSortAlpha] = useState(true);
-  // const [sortTime, setSortTime] = useState(true);
+
   const [following, setFollowing] = useState(null);
-//   const [activeTab, setActiveTab] = useState('pages'); // "pages" or "collections"
 const [canUserSee, setCanUserSee] = useState(false);
   useLayoutEffect(() => {
     initGA();
@@ -52,23 +52,47 @@ const [canUserSee, setCanUserSee] = useState(false);
     }
   }, [profile]);
 
-  const collections = sortItems(
-    [],
-    useSelector((state) =>
-      state.books.collections
-        .filter((col) => col)
-        .filter((col) => (search.length > 0 ? col.title.toLowerCase().includes(search.toLowerCase()) : true))
-    )
-  );
+  // const collections = sortItems(
+  //   [],
+  //   useSelector((state) =>
+  //     state.books.collections
+  //       .filter((col) => col)
+  //       .filter((col) => (search.length > 0 ? col.title.toLowerCase().includes(search.toLowerCase()) : true))
+  //   )
+  // );
 
-  const pages = sortItems(
-    useSelector((state) =>
-      state.pages.pagesInView
-        .filter((page) => page)
-        .filter((page) => (search.length > 0 ? page.title.toLowerCase().includes(search.toLowerCase()) : true))
-    ),
-    []
-  );
+  // const pages = useMesortItems(
+  //   useSelector((state) =>
+  //     state.pages.pagesInView
+  //       .filter((page) => page)
+  //       .filter((page) => (search.length > 0 ? page.title.toLowerCase().includes(search.toLowerCase()) : true))
+  //   ),
+  //   []
+  // );
+const collectionsRaw = useSelector((state) => state.books.collections
+);
+const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
+const collections = useMemo(() => {
+  const filtered = collectionsRaw 
+    .filter((col) => col)
+    .filter((col) =>
+      search.length > 0
+        ? col.title.toLowerCase().includes(search.toLowerCase())
+        : true
+    );
+  return sortItems([], filtered);
+}, [collectionsRaw, search]);
+
+const pages = useMemo(() => {
+  const filtered = pagesRaw
+    .filter((page) => page)
+    .filter((page) =>
+      search.length > 0
+        ? page.title.toLowerCase().includes(search.toLowerCase())
+        : true
+    );
+  return sortItems(filtered, []);
+}, [pagesRaw, search]);
 
   const debounceDelay = 10;
 
@@ -138,18 +162,18 @@ const [canUserSee, setCanUserSee] = useState(false);
         result,
         () => {
           checkIfFollowing();
-          getContent();
+          // getContent();
         },
         (err) => {
           setError(err.message);
         }
       );
     });
-  }, [id]);
+  },[navigate,location.pathname]);
 
   useEffect(() => {
-    if (profile) getContent();
-  }, [profile]);
+   getContent();
+  }, []);
 
   useLayoutEffect(() => {
     checkIfFollowing();

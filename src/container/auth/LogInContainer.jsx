@@ -48,7 +48,7 @@ export default function LogInContainer() {
             handleSubmit={(e)=>handleLogIn(e)}
             setPassword={(str)=>setLiPassword(str)}/>
             </div>
-        {/* </div> */}
+  
         </IonContent>
     )
 }
@@ -63,8 +63,6 @@ function LogInCard({setLogInError}){
     const [password, setPassword] = useState('');
     const [pending,setPending]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
-    const [forgotEmail, setForgotEmail] = useState("")
-    const [open,setOpen] = useState(false);
     
   
     const dialog = useSelector(state=>state.users.dialog)
@@ -179,8 +177,7 @@ dispatch(setDialog(dia))
         <div className='w-[90vw] text-center sm:w-[40em] '>
   <div className='text-left'>
   <IonInput type="text" 
-//   className="grow overflow-hidden w-full my-auto text-[1rem] sm:max-w-72   open-sans-medium  bg-transparent text-emerald-800" 
-         value={email} 
+    value={email} 
          className=' bg-transparent text-emerald-800 mx-auto'
          labelPlacement='stacked'
          label='Email'
@@ -188,12 +185,10 @@ dispatch(setDialog(dia))
          onIonInput={(e) => setEmail(e.target.value)}
         placeholder='example@email.com' />
     </div>
-{/* </label> */}
 </div>   
 
 
   <IonInput type={showPassword?"text":`password`}
-//    className="grow my-auto max-w-46 open-sans-medium sm:max-w-96  text-emerald-800 " 
          value={password}
          label='Password'
          labelPlacement='stacked'
@@ -212,13 +207,11 @@ dispatch(setDialog(dia))
          
             
             <div
-            // style={{margin:"0 auto",width:"fit-content"}}
             className='bg-green-600  rounded-full btn w-[100%] mx-4 mx-auto sm:w-[40em] mx-auto hover:bg-green-400  font-bold py-3 px-12 mt-4 '
                onClick={handleLogIn}
                 
                 variant="contained" ><IonText className='  text-white text-xl text-center '>Log In</IonText></div>
                 
-        {/* </div> */}
         <span className='flex flex-col mt-4 justify-center '> 
         <div className='w-fit mx-auto'>
         <AppleSignInButton
@@ -243,13 +236,10 @@ dispatch(setDialog(dia))
        <img  
         className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
         </div>:null}
-        {/* <div  */}
-              {/* > */}
                 
                 <h5 onClick={()=>{
                     handleForgotPasswordDialog()
                  }} className='text-[1rem] pt-8 w-fit hover:text-green-400 mx-auto text-emerald-800'>Forgot Password?</h5>
-            {/* </div> */}
               </div>
         </form>
 
