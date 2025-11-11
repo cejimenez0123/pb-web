@@ -67,13 +67,13 @@ export default function Comment({page,comment,level}){
        setBranches(branches)
     },[comments])
     if(!comment)return null
-    return(<div className="max-w-[99%] ml-1">
+    return(<div className="max-w-[50em] ml-1">
 
 
         <div class=" text-left   sm:min-w-[30em] max-w-[100%] py-1 sm:my-4 " id={`comment-${comment.id}`}>
         <div className={replyInput||updateComment?" rounded-t-lg rounded-b-lg":""}>
 
-           <div className="  shadow-md  text-emerald-800 rounded-lg sm:px-8 sm:rounded-[18%] ">
+           <div className="  shadow-sm border-opacity-60 border-blueSea  border-2 rounded-xl text-emerald-800  sm:px-8  ">
           <div className="flex flex-row py-2 sm:pl-4 pr-4 sm:pr-12 justify-between"> 
           <a onClick={()=>comment.profile?navigate(Paths.profile.createRoute(comment.profile.id)):null}
            className=" text-[0.8rem] mx-4 open-sans-medium text-emerald-800 my-auto mr-4">{comment&&comment.profile?comment.profile.username:""}</a>

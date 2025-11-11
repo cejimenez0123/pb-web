@@ -72,9 +72,9 @@ const clickUpdateComment = ()=>{
 }
     const input = ()=>{
         
-    return(<div style={{display: show?"":"none"}}className="bg-emerald-100 rounded-b-lg p-2">
+    return(<div style={{display: show?"":"none"}}className="p-2">
 <textarea
-  
+  placeholder="Write your comment here..."
   className="textarea  mb-2 mx-auto min-h-30 open-sans-medium p-2 bg-transparent border-emerald-700 border-opacity-60 border-2  text-emerald-800 w-[100%] mx-auto textarea-bordered "
   
 

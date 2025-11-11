@@ -52,9 +52,9 @@ import DeviceCheck from "../../components/DeviceCheck.jsx";
 import { Preferences } from "@capacitor/preferences";
 import { Capacitor } from "@capacitor/core";
 
-export default function CollectionContainer({currentProfile}) {
+export default function CollectionContainer() {
   const {  setError, setSuccess } = useContext(Context);
-
+  const currentProfile = useSelector(state => state.users.currentProfile);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -75,15 +75,15 @@ export default function CollectionContainer({currentProfile}) {
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const writeArr = [RoleType.editor, RoleType.writer];
 
-  function findRole() {
-    if (collection && currentProfile && collection.profileId === currentProfile.id) {
-      setRole(new Role("owner", currentProfile, collection, RoleType.editor, new Date()));
+  function findRole(profile,col) {
+    if (col && profile && col.profileId === profile.id) {
+      setRole(new Role("owner", profile, col, RoleType.editor, new Date()));
       return;
     }
-    if (collection && currentProfile && collection.roles) {
-      let foundRole = collection.roles.find(role => role.profileId === currentProfile.id);
+    if (col && profile && col.roles) {
+      let foundRole = col.roles.find(role => role.profileId === profile.id);
       if (foundRole) {
-        setRole(new Role(foundRole.id, currentProfile, collection, foundRole.role, foundRole.created));
+        setRole(new Role(foundRole.id, profile, col, foundRole.role, foundRole.created));
         setCanUserSee(true);
       } else {
         setRole(null);
@@ -175,10 +175,11 @@ export default function CollectionContainer({currentProfile}) {
         profileId: currentProfile.id,
         collectionId: collection.id,
       })).then(res => {
-        checkResult(res, payload => {
+        checkResult(res,({collection} )=> {
+          
             setRole({role:"commenter"})
           setSuccess("You are now following this collection");
-          findRole()
+          findRole(currentProfile,collection)
         }, err => {
           setError(err.message);
         });
@@ -189,8 +190,8 @@ export default function CollectionContainer({currentProfile}) {
   };
 useEffect(()=>{
  getContent()
-   findRole();
-},[collection])
+   currentProfile && collection && findRole(currentProfile,collection);
+},[navigate])
 const getCol = async () => {
   setLoading(true);
   try {
@@ -388,8 +389,6 @@ const getCol = async () => {
                 
         
          if(collection.storyIdList&&collection.storyIdList.length){
-console.log("STORYLIST",collection.storyIdList)
-
             const sorted = [...collection.storyIdList].filter(s=>s.story).sort((a,b)=>
                 
                     a.index && b.index && b.index<a.index

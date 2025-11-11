@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import React,{useLayoutEffect, useRef, useState} from "react"
+import {useLayoutEffect, useRef, useState} from "react"
 import PageViewButtonRow  from "./PageViewButtonRow"
 
 import CommentInput from "../comment/CommentInput"
@@ -9,10 +9,8 @@ import PropTypes from 'prop-types'
 import Paths from "../../core/paths"
 import ProfileCircle from "../profile/ProfileCircle"
 import PageDataElement from "./PageDataElement"
-import { logEvent } from "react-ga4";
 import { initGA, sendGAEvent } from "../../core/ga4"
 import useScrollTracking from "../../core/useScrollTracking"
-import { IonItem } from "@ionic/react"
 
 export default function PageViewItem({page}) {
     const ref = useRef()
