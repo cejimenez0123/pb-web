@@ -102,7 +102,7 @@ let dia = {...dialog}
    useLayoutEffect(() => {
     getContent();
    
-  }, [id, type,navigate]);
+  }, [navigate]);
 
   const getContent = () => {
     switch (type) {
@@ -177,7 +177,7 @@ let dia = {...dialog}
             </IonTitle>
           </IonToolbar>
         </IonHeader>
-      <div className="flex flex-col">
+      <div className="flex flex-col sm:max-w-[50em] mx-auto ">
             <div>{collectionInView.purpose}</div>
             <div className="flex flex-row">
            <div
@@ -191,7 +191,7 @@ let dia = {...dialog}
             <IonText>New Collection</IonText>
           </div>
           <div
-            className="btn mx-4 cursor-pointer rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
+            className="btn mx-4 cursor-pointer max-w-[50em] rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
             onClick={() => item.storyIdList?navigate(Paths.collection.createRoute(id)):navigate(Paths.page.createRoute(id))}
             role="button"
             tabIndex={0}
@@ -204,12 +204,12 @@ let dia = {...dialog}
           </div>
           </div>
         <div
-          className="border-b-2 border-emerald-600 rounded-lg mx-auto max-w-[1024px] md:w-page mt-8 mb-4 px-2"
-          style={{ width: "96vw" }}
+          className="border-b-2 border-emerald-600 rounded-lg mx-auto  mt-8 mb-4 px-2"
+        
         >
-          <div className="flex flex-col w-full pb-6 pt-4">
-            <h6 className="text-xl font-bold my-auto ml-4 lora-medium font-bold">Your Collections</h6>
-            <label className="flex my-2 w-[90%] mx-auto border-2 border-emerald-600 rounded-full items-center px-3">
+          <div className="flex flex-col w-full pb-6 mx-auto w-[50em] pt-4">
+            <h6 className="text-xl font-bold my-auto  ml-4 lora-medium font-bold">Your Collections</h6>
+            <label className="flex my-2 sm:w-[50em] mx-auto border-2 border-emerald-600 rounded-full items-center px-3">
               <IonText className="text-emerald-800 mont-medium mr-2 flex-shrink-0">Search:</IonText>
               <input
                 type="text"
@@ -221,12 +221,13 @@ let dia = {...dialog}
               />
             </label>
           </div>
-
+<div className="sm:max-w-[50em] mx-auto sm:overflow-y-auto">
           <IonList>
             {collections.map((col, i) => (
               <AddToItem key={col.id || i} item={item} col={col} />
             ))}
     </IonList>
+    </div>
         </div>
       </IonContent>
     </ErrorBoundary>

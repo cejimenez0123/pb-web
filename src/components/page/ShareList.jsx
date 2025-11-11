@@ -15,6 +15,7 @@ import checkResult from "../../core/checkResult";
 import Enviroment from "../../core/Enviroment";
 import { useNavigate } from "react-router-dom";
 import Paths from "../../core/paths";
+import { Preferences } from "@capacitor/preferences";
 export default function ShareList({ page, profile, archive,setArchive, bookmark, setBookmarked }) {
   const [localBookmark, setLocalBookmark] = useState(bookmark);
   const {setSuccess,setError}=useContext(Context)

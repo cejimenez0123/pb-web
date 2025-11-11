@@ -332,8 +332,9 @@ text-[1rem]">
             />
           </div>
 
-        
+        <div className="sm:max-w-[50em] mx-auto">
           <StoryCollectionTabs tab={tab} setTab={setTab}  storyList={storyList} colList={colList}/>
+          </div>
        </div> 
         </IonContent>
     

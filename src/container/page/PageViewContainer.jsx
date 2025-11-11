@@ -123,7 +123,7 @@ export default function PageViewContainer() {
     page ? (
       <PageViewItem page={page} currentProfile={currentProfile} />
     ) : (
-      <div className="skeleton w-[95vw] mx-auto sm:w-[60em] mx-auto bg-emerald-50 h-page" />
+      <div className="skeleton w-[95vw] mx-auto sm:w-[50em] mx-auto bg-emerald-50 h-page" />
     );
 
   return (
@@ -136,7 +136,7 @@ export default function PageViewContainer() {
       defaultHref={Paths.discovery()}
       onClick={handleBack}
     />:null} </div> </IonHeader>
-        <div className=" text-center  mx-auto" style={{margin:"auto auto",paddingBottom: "5rem" }}>
+        <div className=" text-center  px-2 mx-auto" style={{margin:"auto auto",paddingBottom: "5rem" }}>
           {pending ? (
             <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
           ) : errorStatus === 403 ? (

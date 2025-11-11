@@ -33,7 +33,7 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
     const [show,setShow]=useState(true)
     const saveComment=debounce((e)=>{
         e.preventDefault()
-        if(commentInput.length>7){
+     
         if(currentProfile && page ){
             let id = ""
             if(parentComment){
@@ -58,8 +58,7 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
             })
     
         })
-    }}else{
-        setError("Comment must be at least 7 characters")
+    
     }},10)
 
 const clickUpdateComment = ()=>{

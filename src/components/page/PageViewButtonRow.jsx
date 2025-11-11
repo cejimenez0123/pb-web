@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import bookmarkFill from "../../images/bookmark_fill_green.svg";
 import bookmarkAdd from "../../images/bookmark_add.svg";
+import { deletePageApproval } from "../../actions/PageActions.jsx";
 import { addStoryListToCollection, deleteStoryFromCollection } from "../../actions/CollectionActions";
 import { setEditingPage, setHtmlContent } from "../../actions/PageActions.jsx";
 import Paths from "../../core/paths";
@@ -47,10 +48,13 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
   }, [comment]);
 
   useEffect(() => {
-    if (currentProfile && page && currentProfile.likedStories) {
-      let found = currentProfile.likedStories.find((like) => like.storyId == page.id);
-      if (currentProfile.profileToCollections) {
-        let marked = currentProfile.profileToCollections.find((ptc) => ptc && ptc.type === "archive");
+checkLike(currentProfile)
+  }, []);
+  const checkLike=(profile)=>{
+        if (profile && page && profile.likedStories) {
+      let found = profile.likedStories.find((like) => like.storyId == page.id);
+      if (profile.profileToCollections) {
+        let marked = profile.profileToCollections.find((ptc) => ptc && ptc.type === "archive");
         setArchive(marked.collection);
       }
       setLikeFound(found);
@@ -60,7 +64,7 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
       setBookmarked(null);
       setLoading(false);
     }
-  }, [likeFound]);
+  }
   const onClickShare=()=>{
     let dia = {...dialog}
     dia.text = <ShareList page={page} setArchive={setArchive}profile={currentProfile} archive={archiveCol}
@@ -134,7 +138,8 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
         dispatch(deletePageApproval({ id: likeFound.id })).then((res) => {
           checkResult(
             res,
-            () => {
+            ({profile}) => {
+              checkLike(profile)
               setLoading(false);
               setLikeFound(null);
             },
@@ -145,8 +150,11 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
         });
       } else if (page) {
         const params = { story: page, profile: currentProfile };
-        dispatch(createPageApproval(params));
-      }
+        dispatch(createPageApproval(params)).then((res) => {checkResult(res,({profile})=>{
+          checkLike(profile)
+        },err=>{
+
+        })})}
     } else {
       setError("Please Sign Up");
     }
