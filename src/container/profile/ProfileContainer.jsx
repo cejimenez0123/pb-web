@@ -37,10 +37,10 @@ function ProfileContainer({ profile }) {
   const isPhone = useMediaQuery({ query: '(max-width: 600px)' });
 
   const [search, setSearch] = useState('');
-  const [sortAlpha, setSortAlpha] = useState(true);
-  const [sortTime, setSortTime] = useState(true);
+  // const [sortAlpha, setSortAlpha] = useState(true);
+  // const [sortTime, setSortTime] = useState(true);
   const [following, setFollowing] = useState(null);
-  const [activeTab, setActiveTab] = useState('pages'); // "pages" or "collections"
+//   const [activeTab, setActiveTab] = useState('pages'); // "pages" or "collections"
 const [canUserSee, setCanUserSee] = useState(false);
   useLayoutEffect(() => {
     initGA();

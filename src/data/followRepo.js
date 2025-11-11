@@ -5,17 +5,25 @@ class FollowRepo{
     headers= {
         'Access-Control-Allow-Origin': "*"
     }
-    token = "token"
+  async getAuthHeaders() {
+    const { value} = await Preferences.get({ key: "token" });
+    return {
+      ...this.headers,
+      Authorization: `Bearer ${value}`,
+    };
+  }
     async create({follower,following}){
+        let headers = await this.getAuthHeaders()
        let res = await axios.post(Enviroment.url+"/follow",{follower,following},
-       {headers:{Authorization:"Bearer "+await Preferences.get({key:"token"})}})
+       {headers:headers})
        console.log(res)
        return res.data
     }
     
     async delete({id}){
+         let headers = await this.getAuthHeaders()
         let res = await axios.delete(Enviroment.url+"/follow/"+id,{headers:
-            {Authorization:"Bearer "+await Preferences.get({key:"token"})}})
+            headers})
         return res.data
     }
 

@@ -372,7 +372,7 @@ export default function DashboardItem({ page, book, isGrid }) {
           {bookmarkBtn()}
         </div>
       ) : <div className={ `flex flex-row  sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
-        '{buttonRow()}</div>}
+        {buttonRow()}</div>}
     </IonCard>
     </ErrorBoundary>
   );

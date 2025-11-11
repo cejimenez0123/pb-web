@@ -9,10 +9,10 @@ class AlgoliaRepo {
   };
 
   async getAuthHeaders() {
-    const { value: token } = await Preferences.get({ key: "token" });
+    const { value} = await Preferences.get({ key: "token" });
     return {
       ...this.headers,
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${value}`,
     };
   }
   async search(query) {

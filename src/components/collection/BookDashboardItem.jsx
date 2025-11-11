@@ -23,9 +23,11 @@ function BookDashboardItem({book,isGrid}) {
     const {setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const [bookmarked,setBookmarked]=useState()
-// const [isArchived,setIsArchived]=useState(null)
-    let size = adjustScreenSize(isGrid,false," grid-item rounded-lg "," max-h-[34em]  rounded-lg "," ","  ","  ")
-    const soCanUserEdit=()=>{}
+     const soCanUserEdit=()=>{
+
+
+        
+     }
 
    
 const deleteBtc=()=>{
