@@ -191,9 +191,6 @@ state.dialog.isOpen = false
     }).addCase(setSignedInFalse.type,(state,{payload})=>{
         state.signedIn=false
     })
-//    .addCase(createPageApproval.fulfilled,(state,{payload})=>{
-//         state.currentProfile = payload.profile
-//     })
     .addCase(deletePageApproval.fulfilled,(state,{payload})=>{
         const list = state.userApprovals.filter(ua=> ua!=null &&payload.userApproval && ua.id != payload.userApproval.id)
         state.userApprovals = list
@@ -204,9 +201,7 @@ state.dialog.isOpen = false
     }).addCase(searchMultipleIndexes.rejected,(state,{payload})=>{
         state.error =payload
     })
-    // .addCase(fetchArrayOfProfiles.fulfilled,(state,{payload})=>{
-    //     state.profilesInView = payload.profileList
-    // })
+
 }})
 
 

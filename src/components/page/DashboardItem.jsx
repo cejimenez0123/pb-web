@@ -179,36 +179,10 @@ function DashboardItem({ page, book, isGrid }) {
 };
 useEffect(() => {
     checkLike(currentProfile);
-}, []); // empty deps so it runs only once
+}, []); 
 
 
-  // useEffect(()=>{
-  //     checkLike()
-  // },[page])
-  // const handleApprovalClick = () => {
-  //   if (page) sendGAEvent(`Click to Yea ${JSON.stringify({ id: page.id, title: page.title })}`, `Click Yea`, "Review", 0, false);
-  //   if (currentProfile) {
-  //     if (likeFound) {
-  //       checkLike();
-  //       dispatch(deletePageApproval({ id: likeFound.id })).then(res => {
-  //         checkResult(res, payload => { }, err => { });
-  //       });
-  //       setLikeFound(false);
-  //     } else {
-  //       if (page && currentProfile) {
-  //         const params = { story: page, profile: currentProfile };
-  //         setLikeFound(true);
-  //         dispatch(createPageApproval(params)).then(res => {
-  //           checkResult(res, payload => { checkLike(); }, err => { });
-  //         });
-  //       } else {
-  //         setError("Sign Up so you can show support");
-  //       }
-  //     }
-  //   } else {
-  //     setError("Please Sign Up");
-  //   }
-  // };
+  
   const onClickShare=()=>{
     let dia = {...dialog}
     dia.text = <ShareList page={page} setArchive={setArchiveCol}profile={currentProfile} archive={archiveCol}
