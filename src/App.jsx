@@ -80,12 +80,11 @@ function App(props) {
 
 
   useEffect(()=>{
-    // Preferences.get({key:"token"}).then(res=>{
   
       dispatch(getCurrentProfile())
-    // })
+ 
    
-  },[])
+  },[navigate])
   useEffect(()=>{
       setOlderPath(location.pathname) 
   },[location.pathname])

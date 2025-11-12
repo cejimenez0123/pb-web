@@ -9,7 +9,7 @@ import {
 import { setEditingPage } from "../../actions/PageActions.jsx"
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadPicture } from "../../actions/UserActions";
+import { uploadPicture } from "../../actions/ProfileActions.jsx";
 import checkResult from "../../core/checkResult";
 import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
@@ -34,7 +34,7 @@ const {id,type}=useParams()
 
   const [pending,setPending]=useState(false)
   const [localContent, setLocalContent] = useState(htmlContent.html || "");
-  const [file, setFile] = useState(null);
+  // const [file, setFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [image, setImage] = useState(null);
   const handleLocalContent = (e) => {
@@ -127,7 +127,7 @@ const handleFileInput = (e) => {
     const newUrl = URL.createObjectURL(file);
     setImage(newUrl);
     handleChange("file",file)
-    setFile(file);
+
     setError('');
     console.log('Preview URL (web):', newUrl);
   } else {
@@ -135,7 +135,7 @@ const handleFileInput = (e) => {
     const reader = new FileReader();
     reader.onloadend = () => {
       setImage(reader.result);
-      setFile(file);
+      
       handleChange("file",file)
       setError('');
       console.log('Preview (native, base64):', reader.result?.slice(0, 50));
@@ -144,15 +144,16 @@ const handleFileInput = (e) => {
   }
 };
 const create=()=>{
-  handleChange("file",file)
+
   handleChange("profile",currentProfile)
 handleChange("profileId",currentProfile.id)
-  if(file){
+  if(parameters.file){
  dispatch(uploadPicture(parameters)).then((result) =>
         checkResult(
           result,
           (payload) => {
-            const fileName = payload.ref;
+            console.log("paff",payload)
+            const fileName = payload.fileName;
           handleChange("type",PageType.picture)
           handleChange("data",fileName)
             dispatch(setHtmlContent({html:fileName}));

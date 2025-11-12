@@ -115,9 +115,9 @@ const uploadProfilePicture = createAsyncThunk(
       };
     } catch (err) {
       console.error("Error uploading profile picture:", err);
-      return thunkApi.rejectWithValue({
-        message: "Error: UPLOAD Profile Picture " + err.message,
-      });
+      // return thunkApi.rejectWithValue({
+      //   message: "Error: UPLOAD Profile Picture " + err.message,
+      // });
     }
   }
 );

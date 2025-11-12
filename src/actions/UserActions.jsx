@@ -179,9 +179,13 @@ try{
           if(data.profile){
             const {profile}=data
            
-        
+        try{
         await algoliaRepo.partialUpdateObject("profile",profile.id,{username:profile.username})
+        }catch(err){
+          // console.log(err)
+        }
           }
+          console.log(data)
           return {profile:data.profile}
         }catch(err){
           return err
@@ -189,31 +193,7 @@ try{
 })
 
 
-const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunkApi)=>{
-  try {
-  const {file,profile}= params
-  if(file){
-    
 
-  const fileName = `/image/${profile.id}/${file.name}?!@@${uuidv4()}`
-
-  const storageRef = ref(storage, fileName);
-  const blob = new Blob([file])
-  await uploadBytes(storageRef, blob)
-
-  const url = await getDownloadURL(storageRef)
-      return{ 
-          ref:fileName,
-          url: url
-      }
-    }else{
-        throw new Error("file not found")
-    }
-  }catch(err){
-      return{ error: err }
-  }
-
-})
 
 const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
   
@@ -260,7 +240,9 @@ const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunk
     console.log('File deleted successfully!');
     return{message:"Success delete"}
   } catch (error) {
+    
     console.error('Error deleting file:', error);
+       return{message:error.message}
   }
 })
 
@@ -306,7 +288,7 @@ export {logIn,
     
         signOutAction,
         useReferral,
-        uploadPicture,
+       
         deleteUserAccounts,
         setEvents,
         setSignedInTrue,

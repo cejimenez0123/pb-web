@@ -127,7 +127,7 @@ const hasInitialized = useRef(false);
     }
   
     useEffect(()=>{
-      id && dispatch(updateStory({...parameters,profile:currentProfile,profileId:currentProfile.id}))
+      id && currentProfile && currentProfile.id && dispatch(updateStory({...parameters,profile:currentProfile,profileId:currentProfile.id}))
   if(type){
     createPageAction()
   }

@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect,useRef,useState } from "react";
+import { useContext, useEffect, useLayoutEffect,useRef,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import { updateProfile,deleteUserAccounts, deletePicture, setDialog} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
@@ -9,38 +9,44 @@ import checkResult from "../core/checkResult";
 import Context from "../context";
 import { IonContent, IonText } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
+import ErrorBoundary from "../ErrorBoundary";
+import { Capacitor } from "@capacitor/core";
+import isValidUrl from "../core/isValidUrl";
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
-    const{setError,currentProfile,setSuccess}=useContext(Context)
+    const{setError,setSuccess}=useContext(Context)
+    const currentProfile = useSelector(state=>state.users.currentProfile)
     const dialog = useSelector(state=>state.users.dialog)
-    const [newUsername,setNewUsername] = useState("")
-    const [selfStatement,setSelfStatement] = useState(currentProfile&&currentProfile.selfStatement?currentProfile.selfStatement:"")
-    const [isPrivate,setPrivacy] = useState(false)
+    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
+   
+    const [params,setParams]=useState({profile:currentProfile,profilePic:pictureUrl,profileId:currentProfile?currentProfile.id:"",isPrivate:false,selfStatement:"",username:""})
     const [homeItems,setHomeItems] = useState([])
     const dispatch = useDispatch()
-    const [file,setFile]=useState(null)
-    const [selectedImage,setSelectedImage]=useState()
-    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    let [pending,setPending] = useState(false)
-  
-    useLayoutEffect( ()=>{
+
+   const [image,setImage]=useState(null)
+
+     let [pending,setPending] = useState(false)
+     const handleChange = (key, value) => {
+    setParams((prev) => ({ ...prev, [key]: value }));
+  };
+    useEffect( ()=>{
         if(currentProfile){
             setProfile(currentProfile)
-        }
-        if(currentProfile&& currentProfile.profilePic){
+        }   
+    },[currentProfile])
+
+    useEffect(()=>{
+          if(currentProfile&& currentProfile.profilePic){
             
-            if(!currentProfile.profilePic.includes("http")){
+            if(!isValidUrl(currentProfile.profilePic)){
                 setPictureUrl(Enviroment.imageProxy(currentProfile.profilePic))
-     
+                setImage(currentProfile.profilePic)
         }else{
-            setSelectedImage(currentProfile.profilePic)
+            setImage(currentProfile.profilePic)
             setPictureUrl(currentProfile.profilePic)
         }
     }
-        
     },[currentProfile])
-
-
   
  
     const handleAgree = () => {
@@ -67,73 +73,75 @@ export default function SettingsContainer(props) {
     
     const setProfile = (profile)=>{
         setPending(true)
-
-        setNewUsername(profile.username)
-    
+        isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
+         isValidUrl(profile.profilePic)?setImage(profile.profilePic):setImage(Enviroment.imageProxy(profile.profilePic))
+                 isValidUrl(profile.profilePic)?handleChange("file",profile.profilePic):handleChange("file",(Enviroment.imageProxy(profile.profilePic)))
+         handleChange("selectedImage",profile.profilePic)
+        handleChange("profile",profile)
+        handleChange("username",profile.username)
+        handleChange("profileId",profile.id)
+        handleChange("privacy",profile.isPrivate)
+        handleChange("selfStatement",profile.selfStatement)
    
-        setSelectedImage(profile.profilePic)
-        setSelfStatement(profile.selfStatement)
-        setPrivacy(profile.privacy)
         setPending(false)
         // fetchCollection(profile)
     }
-    const handleOnSubmit =(e)=>{
+    const handleOnSubmit =async (e)=>{
         e.preventDefault();
-        if(currentProfile!=null){
-                   const fileParams = { file: file
-        }
+    //   console.log(file)
+       if(params.file){
+try{
+       currentProfile && !isValidUrl(currentProfile.profilePic)&&dispatch(deletePicture({fileName:currentProfile.profilePic}))
+}catch(err){
+    console.log(err)
+}
 
-       if(file){
+       try{
+    
+dispatch(uploadProfilePicture(params)).then(({payload})=>{
 
-        dispatch(deletePicture({fileName:currentProfile.profilePic}))
-        dispatch(uploadProfilePicture(fileParams)).then((result) => {
-            checkResult(result,(payload)=>{
-
-                const params = {
-                    profile: currentProfile,
-                    username: newUsername,
-                    profilePicture: payload.fileName,
-                    selfStatement: selfStatement,
-                    privacy: isPrivate
-                    
-                }
-                dispatch(updateProfile(params)).then((result) =>checkResult(result,
-                    payload=>{
-                        window.alert("Updated")
+    console.log("VVDD",payload)
+        
+        console.log("VVDDDC",payload.fileName)
+    
+         dispatch(updateProfile({...params,profilePicture:payload.fileName})).then((result) =>checkResult(result,
+                    (payload)=>{
+               console.log("VVDDXX",payload)             
+                        const {profile}=payload
+                     
+                        setProfile(profile)
+                        setSuccess("Updated")
+                      
                     },err=>{
                         window.alert(err.message)
                     }
         
                 ))
-            },(err)=>{
-                window.alert(err.message)
-                setSignUpError(true)
-            })
-    
-        })}else{
-            const params = {
-                profile: currentProfile,
-                username: newUsername,
-                profilePicture: currentProfile.fileName,
-                selfStatement: selfStatement,
-                privacy: isPrivate
-                
-            }
+    // })
+
+})
+
+       
+    }catch(err){
+        console.log(err)
+       }
+            }else{
+ 
             dispatch(updateProfile(params)).then((result) =>checkResult(result,
                 payload=>{
-                    window.alert("Updated")
+                       setSuccess("Updated")
                 },err=>{
                     window.alert(err.message)
                 }
     
             ))
         }
-       
+    }
             
     
-    }   
+      
 
-    } 
+     
    
     const handleDeleteDialog=()=>{
         let dia = {...dialog}
@@ -204,44 +212,60 @@ export default function SettingsContainer(props) {
             }
         }
     }
-    const handleProfilePicture =(e)=>{
-        
-        const file = e.target.files[0];
+const handleProfilePicture  = (e) => {
+  e.preventDefault();
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-        if (file) {
-          // Check file type
-          if (!file.type.startsWith('image/')) {
-            setError('Please upload a valid image file.');
-           
-            return;
-          }
-          setFile(file)
-          setError('');
-          setPictureUrl(URL.createObjectURL(file))
+  
 
-          
-        }
- 
-    }
+  // Validate type
+  if (!file.type.startsWith('image/')) {
+    setError('Please upload a valid image file.');
+    return;
+  }
+
+  // Clean up any old preview URL
+  if (image && (image.startsWith('blob:') || image.startsWith('data:'))) {
+    URL.revokeObjectURL(image);
+  }
+
+  // Web preview logic
+  if (!Capacitor.isNativePlatform()) {
+    const newUrl = URL.createObjectURL(file);
+    setImage(newUrl);
+    handleChange("file",file);
+    setPictureUrl(newUrl)
+    // setError('');
+    console.log('Preview URL (web):', newUrl);
+  } else {
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImage(reader.result);
+      setPictureUrl(reader.result)
+       handleChange("file",file);
+    
+      console.log('Preview (native, base64):', reader.result?.slice(0, 50));
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
    
      if(!pending){
             return(
+                <ErrorBoundary>
                 <IonContent fullscreen={true}>
             <div >
                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
                       <label className="text-left flex flex-col "><h4 className="text-xl">Username:</h4>
                    
-                      {/* <IonInput   
-                    
-                                        value={newUsername}
-                                     
-                                        onChange={(e)=>setNewUsername(e.target.value)}
-                                             label="Username"/>
-                                             </IonItem> */}
+            
                             <input type="text"   
                                         className={" text-xl px-4 py-2 rounded-full  open-sans-medium text-emerald-800 bg-transparent border-2 border-emerald-800 border-2  "}
-                                        value={newUsername}
-                                        onChange={(e)=>setNewUsername(e.target.value)
+                                        value={params.username}
+                                        onChange={(e)=>handleChange("username",e.target.value)
                                         }
                                          label="Username"/>
                                          </label>
@@ -271,20 +295,20 @@ export default function SettingsContainer(props) {
                                 <h6 className="mont-medium text-xl">Self Statement:</h6>
                                
                                     <textarea
-                                    onChange={(e)=>{setSelfStatement(e.target.value)}}
+                                    onChange={(e)=>{handleChange("selfStatement",e.target.value)}}
                                   
-                                    value={selfStatement}
+                                    value={params.selfStatement}
                                     className="textarea min-w-72 w-full  text-emerald-800 border-2 bg-transparent border-emerald-800 p-4 min-h-36 my-2"
                                     placeholder="Self Statement"/>
                             </label>
                             <div className="text-left">
-                            {isPrivate?<button onClick={(e)=>{
+                            {params.isPrivate?<button onClick={(e)=>{
                                 e.preventDefault()
-                                setPrivacy(false)}}className=" text-emerald-800 bg-emerald-50 hover:bg-green-100 mont-medium rounded-full border-emerald-700 border-2 text-xl text-emerald-800 text-bold">You are Private</button>:
+                                handleChange("isPrivate",false)}}className=" text-emerald-800 bg-emerald-50 hover:bg-green-100 mont-medium rounded-full border-emerald-700 border-2 text-xl text-emerald-800 text-bold">You are Private</button>:
                             <button 
                             onClick={(e)=>{
                                 e.preventDefault()
-                                setPrivacy(true)}}
+                                handleChange("isPrivate",true)}}
                             className=" text-bold border-emerald-500  px-3 py-2 border-2 rounded-full text-emerald-800 bg-emerald-50 hover:bg-green-10 text-xl "><IonText>You are Public</IonText></button>}
    </div>
   <div className="mt-8">
@@ -292,7 +316,7 @@ export default function SettingsContainer(props) {
                             <div
                                className="bg-emerald-800 bg-opacity-[60%] flex btn text-white px-4 py-3 w-full   rounded-full "
                                 variant="outlined" 
-                                onClick={(e)=>handleOnSubmit(e)}
+                                onClick={(e)=>handleOnSubmit(e).then(()=>{})}
                             >
                                 <IonText className="my-auto mx-auto text-2xl">Update</IonText>
                             </div>
@@ -306,6 +330,7 @@ export default function SettingsContainer(props) {
                         </div>
             </div>
           </IonContent>
+          </ErrorBoundary>
         )
     }else{
         return(<div>

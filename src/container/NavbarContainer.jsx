@@ -40,8 +40,8 @@ const PageName = {
 }
 
 
-function NavbarContainer({currentProfile}){
-
+function NavbarContainer(){
+const currentProfile=useSelector(state=>state.users.currentProfile)
   const {isPhone}=useContext(Context)
   const dialog =useSelector(state=>state.users.dialog)
   useLayoutEffect(()=>{
@@ -79,7 +79,7 @@ function NavbarContainer({currentProfile}){
          
           }
         }
-  },[currentProfile,pathName])
+  },[currentProfile])
 
 const openDialog=()=>{
   let dia = {...dialog}

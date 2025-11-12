@@ -61,17 +61,6 @@ console.log(searchParams)
     }, 300)();
   }, [username]);
 
-  // const handleFileInput = (e) => {
-  //   const img = e.target.files[0];
-  //   if (img && img.type.startsWith("image/")) {
-  //     setFile(img);
-  //     setSelectedImage(URL.createObjectURL(img));
-  //     setError(null);
-  //   } else {
-  //     setError("Please upload a valid image file.");
-  //     setSelectedImage(null);
-  //   }
-  // };
 const handleProfilePicture = (e) => {
   const file = e.target.files[0];
   if(Capacitor.isNativePlatform()){

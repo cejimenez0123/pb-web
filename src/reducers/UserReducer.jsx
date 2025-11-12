@@ -98,6 +98,7 @@ state.notifications = payload
     }).addCase(createProfile.pending, (state)=>{
         state.loading=true
     }).addCase(updateProfile.fulfilled,(state,{payload})=>{
+        console.log(payload)
         state.currentProfile = payload.profile
     })
     .addCase(createProfile.fulfilled, (state, { payload })=>{
