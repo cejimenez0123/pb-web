@@ -10,7 +10,7 @@ import { initGA,sendGAEvent } from "../../core/ga4.js";
 import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
 import Context from "../../context.jsx";
-import { IonImg } from "@ionic/react";
+import { IonImg, IonText } from "@ionic/react";
 function IndexItem({item,handleFeedback,type}) {
   let collectionStr ="collection"
     const [canUserAdd,setCanUserAdd]=useState(false)
@@ -109,7 +109,7 @@ function IndexItem({item,handleFeedback,type}) {
    }
 
     const handleAddToClick = ()=>{
-      if(item.storyIdList){
+       if(type!="story"){
         navigate(Paths.addToCollection.createRoute(item.id))
       }else{
        navigate(Paths.addStoryToCollection.story(item.id))
@@ -150,9 +150,8 @@ const handleAddToLibrary=()=>{
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
         ()=>handleEditClick(item)}><a className="text-green-600 ">Edit</a></li>
-       {type!="collection"?<li className="text-green-600 " onClick={handleFeedback}><a className="text-green-600 ">Get Feedback</a></li>:null}
-       {canUserAdd?<li className="text-green-600 no-underline" onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>:null}
-               {/* {!item.storyIdList?<li className="text-green-600 " onClick={handleFeedback}>Get Feedback</li>:null} */}
+       {type!="collection"?<li className="text-green-600 " onClick={handleFeedback}><a className="text-green-600 "><IonText>Get Feedback</IonText></a></li>:null}
+       {canUserAdd?<li className="text-green-600 no-underline" onClick={handleAddToClick}><a className="no-underline text-green-600"><IonText>{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</IonText></a></li>:null}
          </ul>
   </div>
        

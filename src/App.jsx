@@ -303,20 +303,21 @@ if(!navigator.onLine){
       }
     />
       <Route path={Paths.workshop.reader()}
-    element={<PrivateRoute       currentProfile={props.currentProfile}><WorkshopContainer/></PrivateRoute>}/>
+    element={<PrivateRoute      
+     currentProfile={props.currentProfile}><WorkshopContainer/></PrivateRoute>}/>
     <Route 
     path={Paths.workshop.route()}
     element={<PrivateRoute
       currentProfile={props.currentProfile}
     ><WorkshopContainer/></PrivateRoute>}/>
     <Route path="/profile/:id" element={
-      <ProfileContainer profile={profileInView}/>
+      <ProfileContainer/>
       }/>
     <Route path="/subscribe" 
     element={<EmailPreferences/>}/>
     <Route path="*" element={<NotFound/>}/>
     <Route  
-        path={Paths.editor.image()}
+        path={"/story/:type/edit"}
         element={ 
           <PrivateRoute currentProfile={currentProfile}>
             
@@ -327,17 +328,7 @@ presentingElement={page}
       </PrivateRoute>
         }/>
 
-       <Route
-     path={Paths.editor.link()}
-      element={
-        <PrivateRoute 
-        currentProfile={currentProfile}
-        >
-            <EditorContainer 
-         
-              />
-        </PrivateRoute>
-      }/>
+     
       <Route path={Paths.page.route()} element={
           <PageViewContainer page={props.pageInView}/>}
     /> 

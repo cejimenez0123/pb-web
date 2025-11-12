@@ -207,9 +207,9 @@ let dia = {...dialog}
           className="border-b-2 border-emerald-600 rounded-lg mx-auto  mt-8 mb-4 px-2"
         
         >
-          <div className="flex flex-col w-full pb-6 mx-auto w-[50em] pt-4">
+          <div className="flex flex-col w-full pb-6 mx-auto sm:w-[50em] pt-4">
             <h6 className="text-xl font-bold my-auto  ml-4 lora-medium font-bold">Your Collections</h6>
-            <label className="flex my-2 sm:w-[50em] mx-auto border-2 border-emerald-600 rounded-full items-center px-3">
+            <label className="flex my-2 sm:w-[50em] max-w-[90vw] mx-auto border-2 border-emerald-600 rounded-full items-center px-3">
               <IonText className="text-emerald-800 mont-medium mr-2 flex-shrink-0">Search:</IonText>
               <input
                 type="text"

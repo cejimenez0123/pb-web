@@ -177,10 +177,13 @@ const openDialog=()=>{
            <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
              <li tabIndex={page}  onClick={ClickWriteAStory}><a  >  <IonImg src={CreateIcon}/></a></li>
              <li  tabIndex={page}    onClick={(e)=>{
-        
+          dispatch(setHtmlContent({html:""}))
+            dispatch(setEditingPage({page:null}))
           navigate(Paths.editor.image())}}><a>     
             <IonImg src={ImageIcon}/></a></li>
              <li tabIndex={page} ><a    onClick={()=>{
+              dispatch(setHtmlContent({html:""}))
+                dispatch(setEditingPage({page:null}))
     navigate(Paths.editor.link())}}
     >
     <IonImg src={LinkIcon}/></a></li>
@@ -272,10 +275,12 @@ const openDialog=()=>{
                <IonImg src={CreateIcon}/></a></li>
              <li   tabIndex={2}   onClick={(e)=>{
             
-  
-         
+    dispatch(setHtmlContent({html:""}))
+           dispatch(setEditingPage({page:null}))
           navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
              <li tabIndex={3} ><a    onClick={()=>{
+                dispatch(setHtmlContent({html:""}))
+                dispatch(setEditingPage({page:null}))
     navigate(Paths.editor.link())}} className='mx-auto'>
    <IonImg src={LinkIcon}/></a></li>
            <li tabIndex={4}  onClick={()=>{ 

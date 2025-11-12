@@ -1,22 +1,23 @@
 import "../../styles/Editor.css"
 import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import { useParams,useNavigate, useLocation} from "react-router-dom"
+import { useNavigate, useLocation, useParams} from "react-router-dom"
 import menu from "../../images/icons/menu.svg"
-import { useContext, useEffect, useLayoutEffect, useState,useRef } from "react"
+import { useContext, useEffect, useState,useRef } from "react"
 import checkResult from "../../core/checkResult"
 import { useMediaQuery } from "react-responsive"
 import { PageType } from "../../core/constants"
 import Paths from "../../core/paths"
 import {createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions"
 import ErrorBoundary from "../../ErrorBoundary"
+
 import HashtagForm from "../../components/hashtag/HashtagForm"
 import RoleForm from "../../components/role/RoleForm"
 import isValidUrl from "../../core/isValidUrl"
 import Context from "../../context"
 import EditorDiv from "../../components/page/EditorDiv"
 import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions/PageActions.jsx"
-import { debounce } from "lodash"
+import { debounce, set } from "lodash"
 import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
 import { IonBackButton, IonButtons, IonContent, IonHeader } from "@ionic/react"
@@ -28,7 +29,6 @@ function EditorContainer({presentingElement}){
         const [feedbackDialog,setFeedbackDialog]=useState(false)
         const {setError,setSuccess}=useContext(Context)
         const dialog = useSelector(state=>state.users.dialog)
-        const [fetchedPage,setFetchedPage]=useState(null)
         const editPage = useSelector(state=>state.pages.editingPage)
         const pageInView = useSelector(state=>state.pages.pageInView)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
@@ -36,78 +36,25 @@ function EditorContainer({presentingElement}){
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:800px)'})
         const navigate = useNavigate()
-        const location = useLocation()
-        let href =location.pathname.split("/")
-        const last = href[href.length-1]
-       const id = href[href.length-2]
-      const [description,setDescription]=useState("")
+        const {id,type}= useParams()
+        const [openHashtag,setOpenHashtag]=useState(false)
+        console.log("EditorContainer type",type==PageType.picture)
+      // const [description,setDescription]=useState("")
         const {isSaved,setIsSaved}=useContext(Context)
-       const [openHashtag,setOpenHashtag]=useState(false)
-       const [openRoles,setOpenRoles]=useState(false)
-       const [needsFeedback,setNeedFeedback]=useState(false)
-        const [isPrivate,setIsPrivate] = useState(true)
-        const [titleLocal,setTitleLocal]=useState("")
-        const [commentable,setCommentable] = useState(true)
+   
   
-        const [parameters,setParameters] = useState(editPage?{page:editPage,title:titleLocal,
-          data:editPage.data,
-          needsFeedback:needsFeedback,
-          description:editPage && editPage.description?editPage.description:pageInView && pageInView.description?pageInView.description:description
-          ,
-          type:id=="link"||id=="image"?id:editPage.type??PageType.text,
-         
-          privacy:isPrivate,
-          commentable:commentable
-        }:{type:id})
-        
-  
-
-
-// inside your component
+      
+        const [parameters,setParameters] = useState({isPrivate:true,data:"",title:"",needsFeedback:false,description:"",commentable:true,profile:currentProfile,profileId:currentProfile?currentProfile.id:""})
+    
 const hasInitialized = useRef(false);
 
-useEffect(() => {
-  // skip on initial load
-  if (!hasInitialized.current) {
+
+      useEffect(()=>{
+          if (!hasInitialized.current) {
     hasInitialized.current = true;
     return;
   }
 
-  let params = { ...parameters };
-  params.data = htmlContent.html??"";
-  if(last!="edit"){params.type=last
-
-  };
- if(last=="edit"){
-   params.id = id;
- }
-
-  params.isPrivate = isPrivate;
-  params.description = description;
-  params.needsFeedback = needsFeedback;
-  console.log(htmlContent)
-  params.data = htmlContent.html
-  setParameters(params);
-  last=="edit"?dispatchUpdate(params):createPageAction(params);
-
-}, [htmlContent, isPrivate, description, needsFeedback]);
-
-      useEffect(()=>{
-        
-        if(fetchedPage&&currentProfile){
-          if((last==PageType.picture||last==PageType.link)&&isValidUrl(htmlContent)){
-              let params = parameters
-              params.data = htmlContent.html
-
-              params.type = last 
-              params.profileId = currentProfile.id
-              setParameters(params)
-             
-          } }  
-      
-      
-    
-        
       },[])
                const handleBack = (e) => {
     e.preventDefault();
@@ -119,22 +66,18 @@ useEffect(() => {
   };
 
    useEffect(()=>{
-    last=="edit" && fetchStory()
-   },[])
- const setStoryData=(story)=>{
-        
-             setFetchedPage(story)   
-             setTitleLocal(story.title)
-             setCommentable(story.commentable)
-             setIsPrivate(story.isPrivate)
-             
-  }
- 
+    id && fetchStory()
+    
+   },[navigate,id])
+
+   const handleChange = (key, value) => {
+    setParameters((prev) => ({ ...prev, [key]: value }));
+  };
     const fetchStory = ()=>{
-  // if(id){
+
   
   try{
-  if(last=="edit"){
+  if(id){
       dispatch(getStory({id:id})).then(res=>{
         checkResult(res,payload=>{
      
@@ -143,13 +86,14 @@ useEffect(() => {
           dispatch(setHtmlContent({html:story.data}))
           dispatch(setEditingPage({page:story}))
           dispatch(setPageInView({page:story}))
-          setStoryData(story)
-          let params = parameters
-          params.page = story
-          params.isPrivate = story.privacy
-          params.data = story.data
-          setParameters(params)
-          setTitleLocal(story.title)
+          handleChange("commentable",story.commentable)
+
+          handleChange("page",story)
+          handleChange("isPrivate",story.isPrivate)
+          handleChange("data",story.data)
+          handleChange("title",story.title)
+          handleChange("type",story.type)
+          
       },err=>{
 
        setSuccess(null)
@@ -163,13 +107,14 @@ useEffect(() => {
           dispatch(setHtmlContent({html:story.data}))
                  dispatch(setEditingPage({page:story}))
                         dispatch(setPageInView({page:story}))
-          setStoryData(story)
-          let params = parameters
-          params.page = story
-          params.isPrivate = story.privacy
-          params.data = story.data
-          setParameters(params)
-          setTitleLocal(story.title)
+   
+          handleChange("data",story.data)
+          handleChange("page",story)
+          handleChange("isPrivate",story.isPrivate)
+          handleChange("title",story.title)
+          handleChange("title",story.title)
+          handleChange("type",story.type)
+   
       },err=>{
 
        setSuccess(null)
@@ -181,42 +126,31 @@ useEffect(() => {
     
     }
   
+    useEffect(()=>{
+      id && dispatch(updateStory({...parameters,profile:currentProfile,profileId:currentProfile.id}))
+  if(type){
+    createPageAction()
+  }
+    },[parameters.data,parameters.title,parameters.commentable,parameters.needsFeedback,parameters.isPrivate])
 
-   
-      const [open, setOpen] = useState(false);
-
-    
-      const handleClose = () => {
-        setOpen(false);
-      };
       const handleDelete =debounce(()=>{
           dispatch(deleteStory(parameters)).then(()=>{
             navigate(Paths.myProfile)
           })
           handleClose()
       },10)
-      const createPageAction = (params)=>{
-           let pars = params??parameters??{}
-        pars.profileId = currentProfile.id
-        pars.description = description
-        pars.title = titleLocal
-        pars.isPrivate = isPrivate
-        pars.type = last=="edit"?editPage.type??PageType.text:last
-        pars.commentable = commentable
-        pars.data = htmlContent.html
-   setParameters({...parameters,...pars})
-      if(!editPage){
- 
-        dispatch(createStory(parameters)).then(res=>checkResult(res,payload=>{
+      const createPageAction = ()=>{
+      if(!id&&type&&currentProfile&&currentProfile.id&&parameters.data.length>0){
+       
+        dispatch(createStory({...parameters,type,profile:currentProfile,profileId:currentProfile.id})).then(res=>checkResult(res,payload=>{
           const {story}=payload
-          navigate(Paths.page.createRoute(story.id))
+          dispatch(setEditingPage({page:story}))
+          navigate(Paths.editPage.createRoute(story.id))
        
      },err=>{
 
 setError(err.message)
      }))
-    }else{
-      dispatchUpdate(parameters)
     }
       }
         const handleClickAddToCollection=()=>{
@@ -226,26 +160,18 @@ setError(err.message)
   const handleisPrviate=debounce((truthy)=>{
  
           setOpenDescription(false)
-          setIsPrivate(truthy)
-          setNeedFeedback(false)
-          setParameters({...parameters,isPrivate:truthy})
+          handleChange("needsFeedback",false)
+          handleChange("isPrivate",truthy)
+
           setFeedbackDialog(false)
           setOpenDescription(false)
-          dispatchUpdate(parameters)
+      
        
           
        
         },10)
 
-          
-      const handleTitle = (title)=>{
-          setTitleLocal(title)
-          let params = parameters
-          params.title = title
-          setParameters(params)
-          dispatchUpdate(parameters)
-      }
-  
+
    const topBar=()=>{
     return(<div className=" rounded-lg  w-[100%] sm:max-w-[50em] mx-auto ">
     <div className=" text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400   flex flex-row sm:rounded-t-lg border border-white   ">
@@ -257,7 +183,7 @@ setError(err.message)
       <h6 className="text-left mx-1 p-1 text-sm">Draft</h6>}
       <input type="text " 
       className="p-2  w-[90%]  text-emerald-8  text-xl  bg-transparent font-bold"
-       value={titleLocal} onChange={(e)=>handleTitle(e.target.value)}
+       value={parameters.title} onChange={(e)=>handleChange("title",e.target.value)}
       
       placeholder="Untitled"/>
 
@@ -275,20 +201,20 @@ setError(err.message)
           setFeedbackDialog(true)
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
-{isPrivate?<li onClick={()=>{
+{parameters.isPrivate?<li onClick={()=>{
     setFeedbackDialog(false) 
     setOpenDescription(true)} }
 className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
 <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
 
-  handleisPrviate(true)
+  handleChange("isPrivate",true)
   }}>Make Private</li>}
-  {!isPrivate?<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
+  {!parameters.isPrivate?<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
        setFeedbackDialog(false) 
  setOpenDescription(true)
   }}>Edit Description</li>:null}
         <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
-        {fetchedPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>{
+        {editPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>{
           openRoleFormDialog(parameters.page);setOpenRoles(!openRoles)}}>Manage Access</li>:null}
         <li className="text-emerald-600 pt-3 pb-2" onClick={openConfirmDeleteDialog}>Delete</li>
       </ul>
@@ -306,27 +232,25 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   </div>:null}
     </div>)
    }
-  //  useEffect(()=>{
-  //   dispatchUpdate(parameters)
-  //  },parameters)
+
    useEffect(()=>{
-    let params = parameters
-    console.log
-  params.data=htmlContent.html
-    params.id = id
-   params.isPrivate=isPrivate
-   params.description = description
-   params.needsFeedback = needsFeedback
-setParameters(params)
-    
-   },[htmlContent.html])
+    if(editPage&&currentProfile){
+ 
+      currentProfile &&  handleChange("profileId",currentProfile.id)
+      handleChange("profile",currentProfile)
+      handleChange("data",editPage.data)
+      handleChange("title",editPage.title)
+      handleChange("type",editPage.type??type)
+      handleChange("isPrivate",editPage.isPrivate)
+      handleChange("needsFeedback",editPage.needsFeedback)
+    id && handleChange("id",id)
+    type && handleChange("type",editPage.type)
+ 
+    }
+   },[editPage])
    const handleFeedback=()=>{
 
-      let params = parameters
-       params.description = description
-       params.needsFeedback = true
-       setParameters(params)
-       if(params.page.id){
+       if(parameters.page.id){
         navigate(Paths.workshop.createRoute(params.page.id))
        }
 
@@ -363,7 +287,7 @@ const openConfirmDeleteDialog = () => {
 const dispatchUpdate =debounce((params)=>{
   setIsSaved(false) 
  
- dispatch(updateStory({...params,type:last=="edit"?editPage.type??PageType.text:last,data:htmlContent.html,description})).then(res=>{
+ dispatch(updateStory({...params,data:htmlContent.html,description})).then(res=>{
     checkResult(res,payload=>{
     
       if(payload.story){
@@ -379,14 +303,14 @@ return true
 ,300)
 
 })
-const openRoleFormDialog = (fetchedPage) => {
+const openRoleFormDialog = () => {
   const dia = {...dialog};
   dia.isOpen = true;
   dia.fullScreen = !md; // replicate your fullscreen condition from the prop
   dia.title = "Manage Roles"; // optionally add a title
   dia.text = <div>
       <RoleForm
-        item={fetchedPage}
+        item={editPage}
         onClose={() => {
           dispatch(setDialog({ isOpen: false }));
         }}
@@ -402,13 +326,12 @@ const openRoleFormDialog = (fetchedPage) => {
 
   dispatch(setDialog(dia));
 };
-const handleSetDescription=(e)=>{
+      const handleClose = () => {
+        setOpen(false);
+      };
 
-  setDescription(e)
-  dispatchUpdate({...parameters,description:e})
-}
         return(
-          <EditorContext.Provider value={{page:fetchedPage,parameters,setParameters}}>
+          <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
           <IonContent fullscreen={true} className="ion-padding"  >
             <IonHeader className=" ion-padding py-8 ">
               <IonButtons className="ion-padding" >
@@ -424,11 +347,13 @@ const handleSetDescription=(e)=>{
                   <ErrorBoundary>
            
           <EditorDiv  
-          createPageAction={createPageAction}
+    
     page={editPage}
             
-              handleChange={(content)=>{
-                dispatch(setHtmlContent({html:content}))
+              handleChange={(key,value)=>{
+            
+          
+                handleChange(key,value)
               }}/>
                 </ErrorBoundary>
                 </div>
@@ -440,7 +365,7 @@ page={editPage}
 open={feedbackDialog||openDescription} 
 isFeedback={feedbackDialog}
 presentingElement={presentingElement}
-handleChange={handleSetDescription} 
+handleChange={e=>handleChange("description",e)} 
 handleFeedback={handleFeedback}
 handlePostPublic={()=>{
   handleisPrviate(false)}}

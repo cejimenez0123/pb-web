@@ -32,14 +32,15 @@ const Paths ={
         route: ()=>{return '/collection/:id'},
         createRoute:(id)=>{return "/collection/"+id}
     },
-    editor:{
-        text:()=>{return `/story/text`},
-        link:()=>{ return `/story/link`},
-        image:()=>{return `/page/image`}   
+    editor:
+    {
+        text:()=>{return `/story/text/edit`},
+        link:()=>{ return `/story/link/edit`},
+        image:()=>{return `/story/image/edit`}   
     },
     login:()=>{return `/login`},
-    editPage:{route:()=>{return `/story/:id/edit`},
-        createRoute:(id)=>{return `/story/${id}/edit`}},
+    editPage:{route:()=>{return `/story/:id/editor`},
+        createRoute:(id)=>{return `/story/${id}/editor`}},
 
     addToCollection:{
         route:'/collection/:id/add',

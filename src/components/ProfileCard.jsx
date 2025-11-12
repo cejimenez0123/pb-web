@@ -14,10 +14,10 @@ export default function ProfileCard({profile,onClickFollow,following}){
 
       return following?
       (<div 
-       className=" bg-emerald-600  w-[9rem] rounded-full text-white text-center"
+       className=" bg-emerald-600  w-[9rem] btn rounded-full text-white text-center"
                onClick={onClickFollow}>
             <h5 className="text-white py-3 font-bold"> Following</h5>   </div>):(
-        <div className="border-2 border-emerald-600 bg-transparent w-[9rem] rounded-full text-center"
+        <div className="border-2 border-emerald-600 btn bg-transparent w-[9rem] rounded-full text-center"
                    onClick={onClickFollow}
        ><h5 className="text-emerald-800 py-3 font-bold">Follow</h5></div>)
    }
