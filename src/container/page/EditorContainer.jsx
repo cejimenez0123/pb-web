@@ -140,7 +140,7 @@ const hasInitialized = useRef(false);
           handleClose()
       },10)
       const createPageAction = ()=>{
-      if(!id&&type&&currentProfile&&currentProfile.id&&parameters.data.length>0){
+      if(currentProfile && currentProfile.id && type){
        
         dispatch(createStory({...parameters,type,profile:currentProfile,profileId:currentProfile.id})).then(res=>checkResult(res,payload=>{
           const {story}=payload
@@ -200,7 +200,7 @@ setError(err.message)
         setOpenDescription(false)
           setFeedbackDialog(true)
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
-        {id?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
+        {editPage?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(editPage.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {parameters.isPrivate?<li onClick={()=>{
     setFeedbackDialog(false) 
     setOpenDescription(true)} }

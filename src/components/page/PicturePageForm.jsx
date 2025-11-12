@@ -18,10 +18,12 @@ import { PageType } from "../../core/constants";
 import { useLocation, useParams } from "react-router-dom";
 import EditorContext from "../../container/page/EditorContext";
 import Context from "../../context.jsx";
+import loadingGif from "../../images/loading.gif"
 import { imageOutline } from "ionicons/icons";
 import Enviroment from "../../core/Enviroment.js";
 import { Capacitor } from "@capacitor/core";
 import { createStory } from "../../actions/StoryActions.jsx";
+import Paths from "../../core/paths.js";
 function PicturePageForm({handleChange}) {
   const dispatch = useDispatch();
   const { currentProfile,setError } = useContext(Context);
@@ -30,7 +32,7 @@ const {parameters}=useContext(EditorContext)
     const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
 const {id,type}=useParams()
 
-
+  const [pending,setPending]=useState(false)
   const [localContent, setLocalContent] = useState(htmlContent.html || "");
   const [file, setFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -159,10 +161,15 @@ handleChange("profileId",currentProfile.id)
         dispatch(createStory(parameters)).then(res=>checkResult(res,payload=>{
           const {story}=payload
           dispatch(setEditingPage({page:story}))
-          navigate(Paths.editPage.createRoute(story.id))},err=>{}))}}))}}
+          navigate(Paths.editPage.createRoute(story.id))
+        
+        },err=>{
+
+        }))}}))}
+    }
       
   const uploadBtn = () => {
-    if (type.toUpperCase() === "IMAGE") {
+    if (type==PageType.picture) {
       return (
         <div className="flex flex-col items-center mb-6">
           <IonButton
@@ -219,7 +226,7 @@ handleChange("profileId",currentProfile.id)
       </div>
 {type==PageType.picture && <IonButton onClick={create}>Save</IonButton>}
       {/* Preview Area */}
-      <div className=" mx-auto w-full">{checkContentTypeDiv(ePage?ePage.type:type)}</div>
+      <div className=" mx-auto w-full">{pending?<IonImg src={loadingGif}/>:checkContentTypeDiv(ePage?ePage.type:type)}</div>
 
       {errorMessage && (
         <IonText color="danger" className="text-center mt-3 block">
