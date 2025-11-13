@@ -1,13 +1,13 @@
 import { useContext, useEffect, useLayoutEffect,useRef,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { updateProfile,deleteUserAccounts, deletePicture, setDialog} from "../actions/UserActions";
+import { updateProfile,deleteUserAccounts, deletePicture, setDialog, getCurrentProfile} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
 import "../App.css"
 import { useNavigate } from "react-router-dom";
 import "../styles/Setting.css"
 import checkResult from "../core/checkResult";
 import Context from "../context";
-import { IonContent, IonText } from "@ionic/react";
+import { IonContent, IonImg, IonText } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
 import ErrorBoundary from "../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
@@ -18,35 +18,31 @@ export default function SettingsContainer(props) {
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dialog = useSelector(state=>state.users.dialog)
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-   
-    const [params,setParams]=useState({profile:currentProfile,profilePic:pictureUrl,profileId:currentProfile?currentProfile.id:"",isPrivate:false,selfStatement:"",username:""})
+    const [fileFind,setFile]=useState(false)
+
+    const [params,setParams]=useState({profile:currentProfile,profilePicture:currentProfile?currentProfile.profilePic:pictureUrl,profileId:currentProfile?currentProfile.id:"",isPrivate:false,selfStatement:"",username:""})
     const [homeItems,setHomeItems] = useState([])
     const dispatch = useDispatch()
 
-   const [image,setImage]=useState(null)
 
-     let [pending,setPending] = useState(false)
+    const [pending,setPending] = useState(false)
      const handleChange = (key, value) => {
     setParams((prev) => ({ ...prev, [key]: value }));
   };
     useEffect( ()=>{
         if(currentProfile){
             setProfile(currentProfile)
-        }   
+        }else{
+            dispatch(getCurrentProfile())
+        } 
     },[currentProfile])
 
     useEffect(()=>{
           if(currentProfile&& currentProfile.profilePic){
-            
-            if(!isValidUrl(currentProfile.profilePic)){
-                setPictureUrl(Enviroment.imageProxy(currentProfile.profilePic))
-                setImage(currentProfile.profilePic)
-        }else{
-            setImage(currentProfile.profilePic)
-            setPictureUrl(currentProfile.profilePic)
+            !isValidUrl(currentProfile.profilePic)?setPictureUrl(Enviroment.imageProxy(currentProfile.profilePic)):setPictureUrl(currentProfile.profilePic)
         }
-    }
-    },[currentProfile])
+    
+    },[currentProfile && currentProfile.profilePic])
   
  
     const handleAgree = () => {
@@ -74,9 +70,8 @@ export default function SettingsContainer(props) {
     const setProfile = (profile)=>{
         setPending(true)
         isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
-         isValidUrl(profile.profilePic)?setImage(profile.profilePic):setImage(Enviroment.imageProxy(profile.profilePic))
-                 isValidUrl(profile.profilePic)?handleChange("file",profile.profilePic):handleChange("file",(Enviroment.imageProxy(profile.profilePic)))
-         handleChange("selectedImage",profile.profilePic)
+          handleChange("profilePicture",profile.profilePic)
+        handleChange("selectedImage",profile.profilePic)
         handleChange("profile",profile)
         handleChange("username",profile.username)
         handleChange("profileId",profile.id)
@@ -84,11 +79,11 @@ export default function SettingsContainer(props) {
         handleChange("selfStatement",profile.selfStatement)
    
         setPending(false)
-        // fetchCollection(profile)
+  
     }
     const handleOnSubmit =async (e)=>{
         e.preventDefault();
-    //   console.log(file)
+
        if(params.file){
 try{
        currentProfile && !isValidUrl(currentProfile.profilePic)&&dispatch(deletePicture({fileName:currentProfile.profilePic}))
@@ -98,16 +93,12 @@ try{
 
        try{
     
-dispatch(uploadProfilePicture(params)).then(({payload})=>{
-
-    console.log("VVDD",payload)
-        
-        console.log("VVDDDC",payload.fileName)
-    
-         dispatch(updateProfile({...params,profilePicture:payload.fileName})).then((result) =>checkResult(result,
+dispatch(uploadProfilePicture(params)).then(({payload:{fileName}})=>{
+         dispatch(updateProfile({...params,profilePicture:fileName})).then((result) =>checkResult(result,
                     (payload)=>{
-               console.log("VVDDXX",payload)             
+                         
                         const {profile}=payload
+                        isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
                      
                         setProfile(profile)
                         setSuccess("Updated")
@@ -117,7 +108,7 @@ dispatch(uploadProfilePicture(params)).then(({payload})=>{
                     }
         
                 ))
-    // })
+
 
 })
 
@@ -129,6 +120,10 @@ dispatch(uploadProfilePicture(params)).then(({payload})=>{
  
             dispatch(updateProfile(params)).then((result) =>checkResult(result,
                 payload=>{
+                    const {profile}=payload
+                    isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
+              
+                    setProfile(profile)
                        setSuccess("Updated")
                 },err=>{
                     window.alert(err.message)
@@ -181,75 +176,51 @@ dispatch(uploadProfilePicture(params)).then(({payload})=>{
                 let newItems= homeItems.filter(hash=>{return  hash!==item})
                 setHomeItems(newItems) 
                 let newProfiles = homeProfiles.filter(id=>{return id !== item.id})
-                setHomeProfiles(newProfiles)  
+                // setHomeProfiles(newProfiles)  
                 break;  
             }  
             default: break
     }
 }
-    const homeItem=(item)=>{
-        switch(item.type){
-            case "page":{
-                return (<div className="home-item">{item.page.title}
-                <IconButton onClick={()=>deleteHomeItem(item)}>
-                    <Clear/></IconButton></div>)
-            }
-            case "book":{
-                return (<div className="home-item">{item.book.title}
-                <IconButton onClick={()=>deleteHomeItem(item)}>
-                    <Clear/></IconButton></div>)
-            }
-            case "library":{
-                return (<div className="home-item">{item.library.name}
-                <IconButton onClick={()=>deleteHomeItem(item)}>
-                    <Clear/>
-                </IconButton></div>)
-            }
-            case "profile":{
-                return (<div className="home-item">{item.profile.username}
-                <IconButton onClick={()=>deleteHomeItem(item)}
-            ><Clear/></IconButton></div>)
-            }
-        }
-    }
+
 const handleProfilePicture  = (e) => {
-  e.preventDefault();
-  const file = e.target.files?.[0];
-  if (!file) return;
+
 
   
 
-  // Validate type
+ const file = e.target.files[0];
+  if(Capacitor.isNativePlatform()){
+  if (!file) return;
+
   if (!file.type.startsWith('image/')) {
+
     setError('Please upload a valid image file.');
     return;
   }
 
-  // Clean up any old preview URL
-  if (image && (image.startsWith('blob:') || image.startsWith('data:'))) {
-    URL.revokeObjectURL(image);
+  // // revoke previous blob URL if it exists
+  if (pictureUrl?.startsWith('blob:')) {
+    URL.revokeObjectURL(pictureUrl);
   }
 
-  // Web preview logic
-  if (!Capacitor.isNativePlatform()) {
-    const newUrl = URL.createObjectURL(file);
-    setImage(newUrl);
-    handleChange("file",file);
-    setPictureUrl(newUrl)
-    // setError('');
-    console.log('Preview URL (web):', newUrl);
-  } else {
+  const newUrl = URL.createObjectURL(file) + `#${Date.now()}`;
+  console.log('Preview URL:', newUrl);
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result);
-      setPictureUrl(reader.result)
-       handleChange("file",file);
-    
-      console.log('Preview (native, base64):', reader.result?.slice(0, 50));
-    };
-    reader.readAsDataURL(file);
-  }
+//   setFile(file);
+  handleChange("file",file)
+  setPictureUrl(newUrl);
+  setError('');
+}else{
+  const reader = new FileReader();
+reader.onloadend = () => {
+  setPictureUrl(reader.result);
+  handleChange("file",file)
+//   handleChange("file",file)
+
+};
+
+reader.readAsDataURL(file);
+}
 };
 
    
@@ -279,7 +250,7 @@ const handleProfilePicture  = (e) => {
              
      
           
-          <img
+          <IonImg
           className="mx-auto"
             src={pictureUrl}
             alt="Selected"
@@ -314,7 +285,7 @@ const handleProfilePicture  = (e) => {
   <div className="mt-8">
 
                             <div
-                               className="bg-emerald-800 bg-opacity-[60%] flex btn text-white px-4 py-3 w-full   rounded-full "
+                               className="bg-emerald-800 bg-opacity-[60%] flex btn text-white w-[9em] h-[5em] flex  rounded-full "
                                 variant="outlined" 
                                 onClick={(e)=>handleOnSubmit(e).then(()=>{})}
                             >

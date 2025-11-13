@@ -19,7 +19,7 @@ function ProfileCircle({profile,color="white",isGrid=false}){
                 setProfilePic(profile.profilePic)
          
             }else{
-          console.log(profilePic)
+          
                const src = Enviroment.imageProxy(profile.profilePic);
             
 setProfilePic(src)

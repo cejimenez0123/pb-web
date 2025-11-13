@@ -344,7 +344,7 @@ presentingElement={page}
 
       <Route path="/profile/edit" element={
  
-        <PrivateRoute currentProfile={currentProfile} >
+        <PrivateRoute  >
         <SettingsContainer />
         </PrivateRoute>
       }/>
