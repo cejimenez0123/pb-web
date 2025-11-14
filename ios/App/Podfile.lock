@@ -12,6 +12,8 @@ PODS:
     - PromisesObjC (~> 2.4)
   - Capacitor (7.4.4):
     - CapacitorCordova
+  - CapacitorCamera (7.0.2):
+    - Capacitor
   - CapacitorCommunityAppleSignIn (7.1.0):
     - Capacitor
   - CapacitorCordova (7.4.4)
@@ -25,7 +27,7 @@ PODS:
     - Capacitor
   - CapacitorSplashScreen (7.0.3):
     - Capacitor
-  - CapgoCapacitorSocialLogin (7.14.9):
+  - CapgoCapacitorSocialLogin (7.17.0):
     - Alamofire (~> 5.10.2)
     - Capacitor
     - FBSDKCoreKit (= 18.0.0)
@@ -63,6 +65,7 @@ PODS:
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCommunityAppleSignIn (from `../../node_modules/@capacitor-community/apple-sign-in`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
@@ -91,6 +94,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorCamera:
+    :path: "../../node_modules/@capacitor/camera"
   CapacitorCommunityAppleSignIn:
     :path: "../../node_modules/@capacitor-community/apple-sign-in"
   CapacitorCordova:
@@ -111,13 +116,14 @@ SPEC CHECKSUMS:
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   Capacitor: 358dd1c3fdd71d969547b17e159fd8a7736cb45f
+  CapacitorCamera: f9e54db0a18bb218a8dc360907d63aaefe9209ff
   CapacitorCommunityAppleSignIn: 271cb2860576fd2961508bbfa7a82117d93eadca
   CapacitorCordova: bf648a636f3c153f652d312ae145fb508b6ffced
   CapacitorFilesystem: f9bd850c41e048180e5dc0cbb90f2033ede9d2cc
   CapacitorGeolocation: 84f868bea4c2499aebc3bb3a88fd0a508f87ab87
   CapacitorPreferences: 65107ed7437d96ee72583df5763985e3c0ff2bc2
   CapacitorSplashScreen: e388b8e0ed0e982a9d3a40417f478e7a018a8763
-  CapgoCapacitorSocialLogin: a1a5b5810301942ed348c530ed9f9697b58cff98
+  CapgoCapacitorSocialLogin: 6d201a365008216d9bc5260d28e8b0ba12e57f7c
   FBAEMKit: e34530df538b8eb8aeb53c35867715ba6c63ef0c
   FBSDKCoreKit: d3f479a69127acebb1c6aad91c1a33907bcf6c2f
   FBSDKCoreKit_Basics: 017b6dc2a1862024815a8229e75661e627ac1e29
@@ -130,6 +136,6 @@ SPEC CHECKSUMS:
   IONGeolocationLib: 20f9d0248a0b5264511fb57a37e25dd2badf797a
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: c18274e08f86414aeebce91fa843ca73d53ee2c3
+PODFILE CHECKSUM: 7c0296fa54d07a000c7d90edb1dff5fe3d56ef40
 
 COCOAPODS: 1.16.2

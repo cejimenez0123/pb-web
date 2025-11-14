@@ -7,42 +7,52 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Setting.css"
 import checkResult from "../core/checkResult";
 import Context from "../context";
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Filesystem } from '@capacitor/filesystem'
 import { IonContent, IonImg, IonText } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
 import ErrorBoundary from "../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
 import isValidUrl from "../core/isValidUrl";
+// import NodeCache from "node-cache";
+// import axios from "axios";
+// import { ref, uploadBytes } from "firebase/storage";
+// import { storage } from "../core/di";
+
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
+    const [localError,setLocalError]=useState("")
     const{setError,setSuccess}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dialog = useSelector(state=>state.users.dialog)
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    const [fileFind,setFile]=useState(false)
-
-    const [params,setParams]=useState({profile:currentProfile,profilePicture:currentProfile?currentProfile.profilePic:pictureUrl,profileId:currentProfile?currentProfile.id:"",isPrivate:false,selfStatement:"",username:""})
+    const [params,setParams]=useState({profile:currentProfile,file:null,profilePicture:currentProfile?currentProfile.profilePic:pictureUrl,profileId:currentProfile?currentProfile.id:"",isPrivate:false,selfStatement:"",username:""})
     const [homeItems,setHomeItems] = useState([])
     const dispatch = useDispatch()
 
 
     const [pending,setPending] = useState(false)
      const handleChange = (key, value) => {
+
     setParams((prev) => ({ ...prev, [key]: value }));
+
+     
   };
+//   useEffect(()=>{
+//      if(params.file){
+//         setLocalError("!@@"+ 
+//             params.file? JSON.stringify(params.file):"file not found")
+//     }
+//   },[params.file])
     useEffect( ()=>{
         if(currentProfile){
             setProfile(currentProfile)
         }else{
             dispatch(getCurrentProfile())
         } 
-    },[currentProfile])
+    },[])
 
-    useEffect(()=>{
-          if(currentProfile&& currentProfile.profilePic){
-            !isValidUrl(currentProfile.profilePic)?setPictureUrl(Enviroment.imageProxy(currentProfile.profilePic)):setPictureUrl(currentProfile.profilePic)
-        }
-    
-    },[currentProfile && currentProfile.profilePic])
+
   
  
     const handleAgree = () => {
@@ -70,8 +80,9 @@ export default function SettingsContainer(props) {
     const setProfile = (profile)=>{
         setPending(true)
         isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
-          handleChange("profilePicture",profile.profilePic)
+        
         handleChange("selectedImage",profile.profilePic)
+        handleChange("profilePicture",profile.profilePic)
         handleChange("profile",profile)
         handleChange("username",profile.username)
         handleChange("profileId",profile.id)
@@ -84,56 +95,40 @@ export default function SettingsContainer(props) {
     const handleOnSubmit =async (e)=>{
         e.preventDefault();
 
-       if(params.file){
+    //    if(!Capacitor.isNativePlatform()){
 try{
        currentProfile && !isValidUrl(currentProfile.profilePic)&&dispatch(deletePicture({fileName:currentProfile.profilePic}))
 }catch(err){
+    setError(err.message)
     console.log(err)
 }
-
-       try{
-    
-dispatch(uploadProfilePicture(params)).then(({payload:{fileName}})=>{
-         dispatch(updateProfile({...params,profilePicture:fileName})).then((result) =>checkResult(result,
+ setLocalError("Uploaded Profile Picture"+JSON.stringify(params.file))
+      dispatch(uploadProfilePicture(params)).then(res=>{
+    checkResult(res,
+        payload=>{
+            setLocalError("Uploaded Profile Picture")
+            window.alert("Uploaded Profile Picture")
+         dispatch(updateProfile({...params})).then((result) =>checkResult(result,
                     (payload)=>{
                          
                         const {profile}=payload
                         isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
-                     
-                        setProfile(profile)
+                         setProfile(profile)
                         setSuccess("Updated")
-                      
+                    
                     },err=>{
-                        window.alert(err.message)
-                    }
-        
-                ))
-
-
-})
-
-       
-    }catch(err){
-        console.log(err)
-       }
-            }else{
- 
-            dispatch(updateProfile(params)).then((result) =>checkResult(result,
-                payload=>{
-                    const {profile}=payload
-                    isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
-              
-                    setProfile(profile)
-                       setSuccess("Updated")
-                },err=>{
-                    window.alert(err.message)
-                }
+                           window.alert(err.message)
+                        setError(err.message)
+                    
+        }))},err=>{
+            window.alert(err.message)
+setError(err.message)
+        })})
     
-            ))
-        }
+    
     }
             
-    
+
       
 
      
@@ -183,44 +178,68 @@ dispatch(uploadProfilePicture(params)).then(({payload:{fileName}})=>{
     }
 }
 
-const handleProfilePicture  = (e) => {
+
+// const imageCache = new NodeCache({ stdTTL: 60 * 60 }); 
+async function handleProfilePictureNative() {
+  try {
+
+const image = await Camera.getPhoto({
+      quality: 80,
+      allowEditing: true,
+      resultType: CameraResultType.Uri,
+      source: CameraSource.Prompt,
+    });
+
+    const blob = await getBlobFromImage(image);
+
+    // Upload-ready Blob
+    handleChange("file", blob);
+
+    // UI preview
+    setPictureUrl(image.webPath);
 
 
-  
 
- const file = e.target.files[0];
-  if(Capacitor.isNativePlatform()){
-  if (!file) return;
-
-  if (!file.type.startsWith('image/')) {
-
-    setError('Please upload a valid image file.');
-    return;
+  } catch (err) {
+    // console.error("Camera error:", err);
+    setLocalError("Camera error:"+err.message)
+    // setError("up"+err.message);
   }
-
-  // // revoke previous blob URL if it exists
-  if (pictureUrl?.startsWith('blob:')) {
-    URL.revokeObjectURL(pictureUrl);
-  }
-
-  const newUrl = URL.createObjectURL(file) + `#${Date.now()}`;
-  console.log('Preview URL:', newUrl);
-
-//   setFile(file);
-  handleChange("file",file)
-  setPictureUrl(newUrl);
-  setError('');
-}else{
-  const reader = new FileReader();
-reader.onloadend = () => {
-  setPictureUrl(reader.result);
-  handleChange("file",file)
-//   handleChange("file",file)
-
-};
-
-reader.readAsDataURL(file);
 }
+
+
+const handleProfilePicture = async (e) => {
+    
+  try {
+    let file, previewUrl;
+
+ 
+      file = e.target.files?.[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        setError('Please upload a valid image file.');
+        return;
+      }
+
+      // Clean up old blob URL
+      if (pictureUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(pictureUrl);
+      }
+
+      // Create a new blob preview
+      previewUrl = URL.createObjectURL(file) + `#${Date.now()}`;
+    // }
+
+    // ✅ Update state & dispatch handlers
+    handleChange("file", file);
+    setPictureUrl(previewUrl);
+    setError('');
+    
+  } catch (err) {
+    console.error('Error capturing or loading image:', err);
+    setError(err.message || 'Image upload failed');
+  }
 };
 
    
@@ -241,12 +260,13 @@ reader.readAsDataURL(file);
                                          label="Username"/>
                                          </label>
                                           <div className='file'>
-                   
-                        <input
-    className="file-input max-w-72 my-8 mx-auto "
-        type="file"
-        accept="image/*"
-        onInput={(e)=>handleProfilePicture(e)}/>
+                   {Capacitor.isNativePlatform() ? (
+  <button onClick={handleProfilePictureNative}>Choose Photo</button>
+) : (
+  <input type="file" className="file" accept="image/*" onChange={handleProfilePicture} />
+)} 
+
+                     
              
      
           
@@ -290,8 +310,11 @@ reader.readAsDataURL(file);
                                 onClick={(e)=>handleOnSubmit(e).then(()=>{})}
                             >
                                 <IonText className="my-auto mx-auto text-2xl">Update</IonText>
+                              
                             </div>
+                             
                             </div>
+                             {<p>{JSON.stringify(localError)}</p>}
                         <button 
                         className="rounded-full py-2 w-[10rem] mt-24 text-2xl  bg-golden text-white"
                                 onClick={handleDeleteDialog}
@@ -313,3 +336,64 @@ reader.readAsDataURL(file);
 }
 
 
+
+
+
+async function getFileFromCamera(image) {
+  let file;
+  let previewUrl = image.webPath;
+
+  if (Capacitor.isNativePlatform()) {
+    const fileData = await Filesystem.readFile({ path: image.webPath });
+    const byteCharacters = atob(fileData.data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: `image/${image.format}` });
+    file = new File([blob], `profile_${Date.now()}.${image.format}`, {
+      type: blob.type,
+    });
+  } else {
+    const response = await fetch(image.webPath);
+    const blob = await response.blob();
+    file = new File([blob], `profile_${Date.now()}.${image.format}`, {
+      type: blob.type,
+    });
+  }
+
+  return { file, previewUrl };
+}
+
+async function cameraImageToFile(image) {
+  // webPath ALWAYS exists on CameraResultType.Uri
+  const response = await fetch(image.webPath);
+  const blob = await response.blob();
+
+  const file = new File([blob], `profile_${Date.now()}.${image.format}`, {
+    type: blob.type,
+  });
+
+  return file;
+}
+
+
+async function getBlobFromImage(image) {
+  // Web platform
+  if (!Capacitor.isNativePlatform()) {
+    const response = await fetch(image.webPath);
+    return await response.blob();
+  }
+
+  // Native platform (iOS/Android)
+  const fileData = await Filesystem.readFile({ path: image.webPath });
+  const byteString = atob(fileData.data);
+  const byteArray = new Uint8Array(byteString.length);
+
+  for (let i = 0; i < byteString.length; i++) {
+    byteArray[i] = byteString.charCodeAt(i);
+  }
+
+  return new Blob([byteArray], { type: `image/${image.format}` });
+}

@@ -37,7 +37,7 @@ const getPublicCollections = createAsyncThunk(
    
         try{
                 let res = await axios(Enviroment.url+`/collection`+query)
-            console.log(res)
+
     return {
   
        collections: res.data.data
