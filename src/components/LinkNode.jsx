@@ -120,9 +120,9 @@ const imageView = () => {
   // const wrapperClass = "flex items-center mx-auto bg-transparent justify-center mb-2 sm:mx-4 w-[5em] h-[5em] rounded-full overflow-hidden bg-emerald-50";
   // const imgClass = "object-cover min-h-[4rem]  min-w-[5.5rem] w-full h-full";\
   const wrapperClass =
-  "max-w-[10em] my-auto pb-2 max-h-[10em] my-auto";
+  "max-w-[10em] my-auto pb-2  sm:max-h-[10em] my-auto";
 
-const imgClass = "w-full h-full  object-cover min-h-[6rem]  min-w-[6rem]";
+const imgClass = "w-full h-full  object-cover sm:min-h-[6rem]  sm:min-w-[6rem]";
 
   if (previewData && previewData.title === "Spotify") {
     return <SpotifyEmbed url={url} />;
