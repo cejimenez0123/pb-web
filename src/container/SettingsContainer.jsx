@@ -8,20 +8,14 @@ import "../styles/Setting.css"
 import checkResult from "../core/checkResult";
 import Context from "../context";
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { Filesystem } from '@capacitor/filesystem'
 import { IonContent, IonImg, IonText } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
 import ErrorBoundary from "../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
 import isValidUrl from "../core/isValidUrl";
-import { p } from "framer-motion/client";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import uuidv4 from "../core/uuidv4";
-import { storage } from "../core/di";
-// import NodeCache from "node-cache";
-// import axios from "axios";
-// import { ref, uploadBytes } from "firebase/storage";
-// import { storage } from "../core/di";
+import { FirebaseStorage } from '@capacitor-firebase/storage';
+import uploadFile from "../core/uploadFile";
+
 
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
@@ -46,9 +40,9 @@ export default function SettingsContainer(props) {
     useEffect( ()=>{
         if(currentProfile){
             setProfile(currentProfile)
-        }else{
-            dispatch(getCurrentProfile())
-        } 
+        }},[currentProfile])
+    useEffect(()=>{
+      dispatch(getCurrentProfile())
     },[])
 
 
@@ -94,60 +88,52 @@ export default function SettingsContainer(props) {
     const handleOnSubmit =async (e)=>{
         e.preventDefault();
 
-    //    if(!Capacitor.isNativePlatform()){
-// try{
-//        currentProfile && !isValidUrl(currentProfile.profilePic)&&dispatch(deletePicture({fileName:currentProfile.profilePic}))
-// }catch(err){
-//     setError(err.message)
-//     console.log(err)
-// }
-window.alert("Updating Profile...")
 try{
-// if(params.file){
-//     // window.alert(`Updating Profile...x${params.profilePicture}`)
-//     const fileName = `images/${currentProfile.id}/${uuidv4()}.jpg`;
-// const imageRef = ref(storage, fileName);
-// const response = await fetch(params.file.webPath);
+  if(params.file){
+      dispatch(deletePicture({fileName:currentProfile.profilePic}))
+      dispatch(uploadProfilePicture({...params})).then(result=>{
+        checkResult(result,payload=>{
+const {url,fileName}=payload
+ handleChange("profilePicture",fileName)
+updateCurrentProfile({...params,profilePicture:fileName})
+ isValidUrl(url)?setPictureUrl(url):setPictureUrl(Enviroment.imageProxy(fileName))
 
-// const blob = await response.blob();
-// await uploadBytes(imageRef, blob, { contentType: "image/jpeg" });
-//  window.alert(`Updating Profile...x${fileName}`)
-// handleChange("profilePicture",fileName)
-         dispatch(updateProfile({...params})).then((result) =>checkResult(result,
+
+window.alert("Updating Profile")
+                        //  setProfile(profile)
+        },err=>{
+
+        })
+      })
+  }else{
+
+  
+    updateCurrentProfile(params)
+
+ 
+      }
+}catch(err){
+    console.log("Update profile error:"+err.message)
+}}
+    
+   const updateCurrentProfile=(parameters)=>{
+            dispatch(updateProfile({...parameters})).then((result) =>checkResult(result,
                     (payload)=>{
-                         window.alert("Updated profile")
+                        //  window.alert("Updated profile")
                         const {profile}=payload
                         isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
                          setProfile(profile)
                         setSuccess("Updated")
-                        window.alert("Updated profile successfully")
+                        // window.alert("Updated profile successfully")
                     
                     },err=>{
                            window.alert(err.message)
                         setError(err.message)
+                        console.log("Update profile dispatch error:"+err.message)
                     
                     
         }))
-}catch(err){}}
-    
-//     }else{
-// window.alert("Updating Profile...up")
-//         dispatch(updateProfile({...params})).then((result) =>checkResult(result,payload=>{
-//                      const {profile}=payload
-//                       setProfile(profile)
-//             setSuccess("Updated")
-//         },err=>{
-//                        window.alert(err.message)
-//                         setError(err.message)
-//         }))
-//     }
-// }catch(err){
-//     setError(err.message)
-//     console.log(err)
-// window.alert("Error updating profile:"+err.message)}
-// }
-
-            
+   }         
 
       
 
@@ -198,31 +184,30 @@ try{
     }
 }
 
-
-// const imageCache = new NodeCache({ stdTTL: 60 * 60 }); 
 async function handleProfilePictureNative() {
   try {
-
-const image = await Camera.getPhoto({
+    const image = await Camera.getPhoto({
       quality: 80,
       allowEditing: true,
-      resultType: CameraResultType.Uri,
+      resultType: CameraResultType.Uri, // This works best with Uploader's 'filePath'
       source: CameraSource.Prompt,
     });
-  
-
-
-setPictureUrl(image.webPath); // works on web and native
-handleChange("file", image);
-setLocalError("Profile Picture ___"+image.webPath)
-
-
-  } catch (err) {
-    // console.error("Camera error:", err);
-    setLocalError("Camera error:"+err.message)
-    // setError("up"+err.message);
+    try {
+    const fileName = await uploadFile(image);
+    handleChange("profilePicture",fileName)
+    setPictureUrl(image.webPath)
+ 
+  } catch (e) {
+    console.error('Upload failed:', e);
   }
+ 
+
+    }catch(er){
+
+    }
+
 }
+
 
 
 const handleProfilePicture = async (e) => {
@@ -231,7 +216,7 @@ const handleProfilePicture = async (e) => {
     let file, previewUrl;
 
  
-      file = e.target.files?.[0];
+      file = e.target.files[0];
       if (!file) return;
 
       if (!file.type.startsWith('image/')) {
@@ -239,18 +224,14 @@ const handleProfilePicture = async (e) => {
         setError('Please upload a valid image file.');
         return;
       }
-
-      // Clean up old blob URL
       if (pictureUrl?.startsWith('blob:')) {
         URL.revokeObjectURL(pictureUrl);
       }
 
-      // Create a new blob preview
-      previewUrl = URL.createObjectURL(file) + `#${Date.now()}`;
-    // }
-
-    // ✅ Update state & dispatch handlers
+    previewUrl = URL.createObjectURL(file) + `#${Date.now()}`;
+  
     handleChange("file", file);
+    window.alert("file")
     setPictureUrl(previewUrl);
     setError('');
     
@@ -281,7 +262,7 @@ const handleProfilePicture = async (e) => {
                    {Capacitor.isNativePlatform() ? (
   <button onClick={handleProfilePictureNative}>Choose Photo</button>
 ) : (
-  <input type="file" className="file" accept="image/*" onChange={handleProfilePicture} />
+  <input type="file" className="file-input" accept="image/*" onChange={handleProfilePicture} />
 )} 
 
                      
@@ -354,34 +335,3 @@ const handleProfilePicture = async (e) => {
 }
 
 
-
-
-
-
-// async function getBlobFromImage(image) {
-//   // Web platform
-//   if (!Capacitor.isNativePlatform()) {
-//     const response = await fetch(image.webPath);
-//     return await response.blob();
-//   }
-
-//   // Native platform (iOS/Android)
-//   const fileData = await Filesystem.readFile({ path: image.webPath });
-//   const byteString = atob(fileData.data);
-//   const byteArray = new Uint8Array(byteString.length);
-
-//   for (let i = 0; i < byteString.length; i++) {
-//     byteArray[i] = byteString.charCodeAt(i);
-//   }
-
-//   return new Blob([byteArray], { type: `image/${image.format}` });
-// }
-async function getBlobFromImage(image) {
-  // Always use fetch to retrieve the Blob, both web and native
-  const response = await fetch(image.webPath);
-  // Optionally, set type based on image.format or default to 'image/jpeg'
-  const type = image.format ? `image/${image.format}` : 'image/jpeg';
-  const blob = await response.blob();
-  // Optionally fix MIME type (sometimes needed for Camera plugin)
-  return blob.type ? blob : blob.slice(0, blob.size, type);
-}

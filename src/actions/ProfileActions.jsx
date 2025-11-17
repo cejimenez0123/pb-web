@@ -7,6 +7,8 @@ import {  ref, uploadBytes,getDownloadURL   } from "firebase/storage";
 import { Preferences } from "@capacitor/preferences";
 import Enviroment from "../core/Enviroment";
 import axios from "axios";
+import { Capacitor } from "@capacitor/core";
+import { FirebaseStorage } from "@capacitor-firebase/storage";
 const createProfile= createAsyncThunk("users/createProfile",async (params,thunkApi)=>{
 
     const data = await profileRepo.create(params)
@@ -93,68 +95,6 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
   
  })
 
-// const uploadProfilePicture = createAsyncThunk(
-//   "users/uploadProfilePicture",
-//   async (params, thunkApi) => {
-//     // try {
-//       const { file } = params;
-   
-//       if (!file) throw new Error("No file provided");
-
-     
-//       // const extension = file.name?.split(".").pop() || "jpg";
-//       const fileName = `profile/${uuidv4()}-${uuidv4()}.${"jpg"}`;
-
-//       const storageRef = ref(storage, fileName);
-//       await uploadBytes(storageRef, file);
-
-//       const url = await getDownloadURL(storageRef);
-
-//       return {
-//         url,
-//         fileName,
-//       };
-
-//   }
-// );
-// const 
-// uploadProfilePicture = createAsyncThunk(
-//   "users/uploadProfilePicture",
-//   async (params, thunkApi) => {
-//     try{
-
-//   const metadata = {
-//       contentType: "image/jpeg",
-//     };
-// const response = await axios.get(params.file, { responseType: 'arraybuffer' })
-//     const fileName = `profile/${uuidv4()}.jpg`;
-// // const storageRef = ref(storage, fileName);
-// // await uploadBytes(storageRef, file, metadata);
-// // const url = await getDownloadURL(storageRef);
-// // return { url, fileName }; 
-    
- 
-// // window.alert(JSON.stringify(response.data))
-//     // 🧠 Convert to Buffer
-//     // const bufferData = Buffer.from(response.data);
-//     //  const fileName = `profile/${uuidv4()}.jpg`;
-//     //  handleChange("fileName",fileName)
-//         const storageRef = ref(storage, fileName);
-//     await uploadBytes(storageRef, response.data, metadata);
-// //   const response = await fetch(image.webPath);
-//   const url = await getDownloadURL(storageRef);
-// //   setSuccess("Uploading Profile Picture X")
-// // const blob = await response.blob();
-// //   setSuccess("Uploading Profile Picture...")
-// // window.alert(JSON.stringify(blob.size))
-//       {
-//         url,fileName
-//       }
-//   }catch(e){
-//     window.alert("Error uploading profile picture:"+e.message)
-//     console.log(e)
-//   }}
-// );
 const uploadProfilePicture = createAsyncThunk(
   "users/uploadProfilePicture",
   async (params, thunkApi) => {
@@ -189,6 +129,8 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
   // const {file,profile}= params
       try {
       const { file } = params;
+if(!Capacitor.isNativePlatform()){
+
 
       if (!file) throw new Error("No file provided");
 
@@ -205,6 +147,32 @@ const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunk
         url,
         fileName,
       };
+    }else{
+        const fileName = `image/${Date.now()}-${uuidv4()}.jpg`
+ new Promise((resolve, reject) => {
+    FirebaseStorage.uploadFile(
+      {
+        path:fileName, // Unique path in Firebase Storage
+        uri: file.path // Use native file URI here for iOS compatibility
+      },
+      (event, error) => {
+        if (error) {
+          reject(error);
+        } else if (event?.completed) {
+          resolve(event);
+        }
+      }
+    );
+
+  });
+
+  const storageRef = ref(storage, fileName);
+     const url = await getDownloadURL(storageRef);
+ return {
+        url,
+        fileName,
+      };
+    }
     } catch (err) {
       console.error("Error uploading profile picture:", err);
       return thunkApi.rejectWithValue({

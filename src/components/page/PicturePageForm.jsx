@@ -24,6 +24,7 @@ import Enviroment from "../../core/Enviroment.js";
 import { Capacitor } from "@capacitor/core";
 import { createStory } from "../../actions/StoryActions.jsx";
 import Paths from "../../core/paths.js";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 function PicturePageForm({handleChange}) {
   const dispatch = useDispatch();
   const { currentProfile,setError } = useContext(Context);
@@ -104,12 +105,12 @@ const {id,type}=useParams()
     }
   };
 
-const handleFileInput = (e) => {
+const handleFileInput = async(e) => {
+  if(!Capacitor.isNativePlatform()){
   e.preventDefault();
   const file = e.target.files?.[0];
   if (!file) return;
 
-  console.log("File selected:", file);
 
   // Validate type
   if (!file.type.startsWith('image/')) {
@@ -141,13 +142,23 @@ const handleFileInput = (e) => {
       console.log('Preview (native, base64):', reader.result?.slice(0, 50));
     };
     reader.readAsDataURL(file);
-  }
-};
-const create=()=>{
+  }}else{
+// try {
+    
+  const image = await Camera.getPhoto({
+      quality: 80,
+      allowEditing: true,
+      resultType: CameraResultType.Uri, // This works best with Uploader's 'filePath'
+      source: CameraSource.Prompt,
+    });
+    try {
+      handleChange("file",image)
+    setPictureUrl(image.webPath)
+    }catch(err){
 
-  handleChange("profile",currentProfile)
-handleChange("profileId",currentProfile.id)
-  if(parameters.file){
+    }}}
+  
+const create=()=>{
  dispatch(uploadPicture(parameters)).then((result) =>
         checkResult(
           result,
@@ -166,7 +177,10 @@ handleChange("profileId",currentProfile.id)
         
         },err=>{
 
-        }))}}))}
+        }))}}))
+      // }else{
+
+      //   }
     }
       
   const uploadBtn = () => {
