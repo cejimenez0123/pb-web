@@ -75,7 +75,7 @@ function LogInCard({setLogInError}){
        
     const handleFirstTimeClick=()=>{
   
-       isPhone?navigate("/onboard"):navigate("/apply")
+   navigate("/onboard")
     
     }
 

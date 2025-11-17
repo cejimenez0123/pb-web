@@ -8,7 +8,7 @@ import {
 } from "@ionic/react";
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadPicture } from "../../actions/UserActions";
+import { uploadPicture } from "../../actions/ProfileActions.jsx";
 import checkResult from "../../core/checkResult";
 import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";

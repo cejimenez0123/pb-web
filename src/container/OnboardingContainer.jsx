@@ -141,7 +141,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
     };
 
     return (
-      <IonGrid className='max-h-[100vh]' >
+      <IonGrid className='h-[60em]' >
       
         <IonRow>
          
@@ -208,26 +208,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
 
             </IonItem>
             <IonItem className='text-center' >
-            {/* {formData.email.includes("@")?<><GoogleLogin onUserSignIn={({
-            email,
-            name,
-            googleId,
-            driveAccessToken,
-            idToken,
-             })=>{
-updateFormData({email:email})
-              updateFormData({idToken: idToken })
-              updateFormData({fullName:name})
-              updateFormData({googleId: googleId})
-              // handleNext()
-            }}/>
-            <AppleSignInButton onUserSignIn={({idToken,email})=>{
-              updateFormData({email:email})
-              updateFormData({idToken: idToken })
-              handleNext()
-            
-            }}/></>:null}
-          */}
+
             </IonItem>
             </IonList>
             {/* <div className='h-[18rem]'/> */}
@@ -557,7 +538,7 @@ const Why = ({ handleTab, nav }) => {
 
   const MyTabs = () => (
     <>
-      <div className=" text-center mx-auto sm:w-[40em]">
+      <div className=" text-center my-12 mx-auto sm:w-[40em]">
         {[1, 2, 3, 4].map((tabNum) => (
           <IonText
             key={tabNum}

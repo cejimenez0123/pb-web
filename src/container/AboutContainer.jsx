@@ -62,7 +62,7 @@ export default function AboutContainer() {
 
   function apply() {
     sendGAEvent("Apply to be user", "Click Apply", "Apply to Join Today", 0, false);
-    navigate(Paths.apply());
+    navigate("/onboard");
   }
 
   const whyMembership = () => (
