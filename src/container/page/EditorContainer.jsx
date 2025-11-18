@@ -209,7 +209,8 @@ useEffect(() => {
  
         dispatch(createStory(parameters)).then(res=>checkResult(res,payload=>{
           const {story}=payload
-          navigate(Paths.page.createRoute(story.id))
+           navigate(Paths.page.createRoute(story.id));
+       
        
      },err=>{
 

@@ -80,10 +80,9 @@ function App(props) {
 
 
   useEffect(()=>{
-    // Preferences.get({key:"token"}).then(res=>{
   
       dispatch(getCurrentProfile())
-    // })
+
    
   },[])
   useEffect(()=>{
