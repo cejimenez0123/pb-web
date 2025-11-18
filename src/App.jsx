@@ -194,7 +194,7 @@ if(!navigator.onLine){
  
      <Route path={'/'} element={isFirstLaunch&&Capacitor.isNativePlatform()?<Navigate to="/onboard"/>:<AboutContainer/>} />
       <Route path={"/login"} element={<LogInContainer/>}/> 
-      <Route path={"/onboard"} element={<LoggedRoute><OnboardingContainer/></LoggedRoute>}/>
+      <Route path={"/onboard"} element={<OnboardingContainer/>}/>
 
           <Route path={Paths.home()} 
                         element={
