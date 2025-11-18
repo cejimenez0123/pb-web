@@ -75,7 +75,7 @@ function LogInCard({setLogInError}){
        
     const handleFirstTimeClick=()=>{
   
-   navigate("/onboard")
+   navigate(Paths.onboard)
     
     }
 
