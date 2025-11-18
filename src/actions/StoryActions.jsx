@@ -28,7 +28,7 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 const deleteStory = createAsyncThunk("pages/deleteStory",async (params,thunkApi)=>{
 try{
   const {page}=params
-
+try{
        if(page && page.type==PageType.picture){
   
   await FirebaseStorage.deleteFile({
@@ -36,6 +36,9 @@ try{
   });
 
   }
+}catch(err){
+  
+}
   let data = await storyRepo.deleteStory({id:page.id})
   
     algoliaRepo.deleteObject("story",page.id)
@@ -89,7 +92,7 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
       if(story && !story.isPrivate && story.id) {
        await algoliaRepo.partialUpdateObject("story",story.id,{title:story.title})
       }
-    console.log(data)
+   
       return {
         story:data.story
       }

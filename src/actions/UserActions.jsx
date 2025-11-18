@@ -175,14 +175,14 @@ async (params,thunkApi) => {
 const updateProfile = createAsyncThunk("users/updateProfile",
                     async (params,thunkApi)=>{
 try{
-          const data = await  profileRepo.updateProfile(params)
+          let data = await  profileRepo.updateProfile(params)
           if(data.profile){
             const {profile}=data
            
         try{
         await algoliaRepo.partialUpdateObject("profile",profile.id,{username:profile.username})
         }catch(err){
-          // console.log(err)
+          console.log(err)
         }
           }
           console.log(data)

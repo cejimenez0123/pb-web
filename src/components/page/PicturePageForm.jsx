@@ -9,7 +9,6 @@ import {
 import { setEditingPage } from "../../actions/PageActions.jsx"
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadPicture } from "../../actions/ProfileActions.jsx";
 import checkResult from "../../core/checkResult";
 import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
@@ -22,9 +21,10 @@ import loadingGif from "../../images/loading.gif"
 import { imageOutline } from "ionicons/icons";
 import Enviroment from "../../core/Enviroment.js";
 import { Capacitor } from "@capacitor/core";
-import { createStory } from "../../actions/StoryActions.jsx";
+import { createStory, getStory } from "../../actions/StoryActions.jsx";
 import Paths from "../../core/paths.js";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import uploadFile from "../../core/uploadFile.jsx";
 function PicturePageForm({handleChange}) {
   const dispatch = useDispatch();
   const { currentProfile,setError } = useContext(Context);
@@ -36,8 +36,7 @@ const {id,type}=useParams()
 
   const [pending,setPending]=useState(false)
   const [localContent, setLocalContent] = useState(htmlContent.html || "");
-  // const [file, setFile] = useState(null);
-  // const [errorMessage, setErrorMessage] = useState(null);
+ 
   const [image, setImage] = useState(null);
   const handleLocalContent = (e) => {
 
@@ -53,28 +52,40 @@ const {id,type}=useParams()
    
   };
 
-  useEffect(() => {
-    if (ePage && ePage.data.length>4) {
-      switch (ePage.type) {
+
+  const setPage =(page)=>{
+    setPending(true)
+     switch (page.type) {
         case PageType.link:
-          dispatch(setHtmlContent({html:ePage.data}));
-          setLocalContent(ePage.data);
+          dispatch(setHtmlContent({html:page.data}));
+          setLocalContent(page.data);
           setImage(null);
+          setPending(false)
           break;
         case PageType.picture:
-          if (isValidUrl(ePage.data)) {
-            setImage(ePage.data);
-            setLocalContent(ePage.data);
+          if (isValidUrl(page.data)) {
+            setImage(page.data);
+            setLocalContent(page.data);
           } else {
-              setImage(Enviroment.imageProxy(ePage.data))
+            setImage(Enviroment.imageProxy(page.data))
           }
+              setPending(false)
           break;
         default:
           break;
       }
-    }
-  }, [ePage]);
+  }
+  useEffect(()=>{
+    dispatch(getStory()).then(res=>{
+      checkResult(res,payload=>{
+          const {story}=payload
+         setPage(story)
+         setEditingPage({page:story})
+      },err=>{
 
+      })
+    })
+  },[navigate])
   const checkContentTypeDiv = (type) => {
     switch (type) {
       case PageType.link:
@@ -107,10 +118,10 @@ const {id,type}=useParams()
   };
 
 const handleFileInput = async(e) => {
+    e.preventDefault();
   if(!Capacitor.isNativePlatform()){
-  e.preventDefault();
+
   const file = e.target.files?.[0];
-  console.log(file)
   if (!file) return;
     if(file.type == "image/heic"){
       setError("image type HEIC not supported")
@@ -129,27 +140,16 @@ const handleFileInput = async(e) => {
   }
 
   // Web preview logic
-  if (!Capacitor.isNativePlatform()) {
+
+
     const newUrl = URL.createObjectURL(file);
     setImage(newUrl);
     handleChange("file",file)
-
     setError('');
-    console.log('Preview URL (web):', newUrl);
-  } else {
-    // Native logic — FileReader may not work; fallback to base64
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result);
-      
-      handleChange("file",file)
-      setError('');
-      console.log('Preview (native, base64):', reader.result?.slice(0, 50));
-    };
-    reader.readAsDataURL(file);
-  }}else{
-// try {
-    
+  
+
+  }else{
+
   const image = await Camera.getPhoto({
       quality: 80,
       allowEditing: true,
@@ -158,62 +158,48 @@ const handleFileInput = async(e) => {
     });
     try {
       handleChange("file",image)
-    setPictureUrl(image.webPath)
+      setImage(image.webPath)
     }catch(err){
 
     }}}
-  
+const createBrowser=()=>{
+  window.alert(JSON.stringify(parameters))
+dispatch(createStory({...parameters,type:type})).then(res=>checkResult(res,payload=>{
+          const {story}=payload
+          dispatch(setEditingPage({page:story}))
+          setPage(story)
+          navigate(Paths.editPage.createRoute(story.id),{replace:true})
+        
+        },err=>{
+window.alert(err.message)
+        }))
+}
+const createNative= async ()=>{
+  setPending(true)
+        const fileName =  await uploadFile(parameters.file)
+        dispatch(createStory({...parameters,data:fileName,type:PageType.picture})).then(res=>checkResult(res,payload=>{
+          const {story}=payload
+           navigate(Paths.editPage.createRoute(story.id),{replace:true})
+          // dispatch(setEditingPage({page:story}))
+
+        
+        },err=>{
+            setError(err.message)
+        }))}
+
 const create=()=>{
- !Capacitor.isNativePlatform()?dispatch(createStory({...parameters})).then(res=>checkResult(res,payload=>{
-          const {story}=payload
-          dispatch(setEditingPage({page:story}))
-          navigate(Paths.editPage.createRoute(story.id))
-        
-        },err=>{
-
-        })):dispatch(uploadPicture(parameters)).then((result) =>
-        checkResult(
-          result,
-          (payload) => {
-            // console.log("paff",payload)
-            const fileName = payload.fileName;
-          handleChange("type",PageType.picture)
-          handleChange("data",fileName)
-            dispatch(setHtmlContent({html:fileName}));
-       
-        dispatch(createStory({...parameters,data:fileName})).then(res=>checkResult(res,payload=>{
-          const {story}=payload
-          dispatch(setEditingPage({page:story}))
-          navigate(Paths.editPage.createRoute(story.id))
-        
-        },err=>{
-
-        }))}))}
+//  type==PageType.picture&&
+ if(type==PageType.picture){
+    !Capacitor.isNativePlatform()?createBrowser():createNative()
+ }else{
  
-    async function handlePictureNative() {
-  try {
-    const image = await Camera.getPhoto({
-      quality: 80,
-      allowEditing: true,
-      resultType: CameraResultType.Uri, // This works best with Uploader's 'filePath'
-      source: CameraSource.Prompt,
-    });
-    try {
-    const fileName = await uploadFile(image);
-    handleChange("data",fileName)
-    setImage(image.webPath)
- 
-  } catch (e) {
-    console.error('Upload failed:', e);
-  }
- 
+createBrowser()
+ }
 
-    }catch(er){
-
-    }  }  
+}
   const uploadBtn = () => {
     if (type==PageType.picture) {
-      return Capacitor.isNativePlatform()?<IonButton onClick={handlePictureNative}>Upload</IonButton>:(
+      return Capacitor.isNativePlatform()?<IonButton onClick={handleFileInput}>Upload</IonButton>:(
         <div className="flex flex-col items-center mb-6">
           <IonButton
             fill="outline"
@@ -240,7 +226,7 @@ const create=()=>{
   return (
     <div className="flex flex-col h-full ">
       {uploadBtn()}
-      <div className="max-w-xl mx-auto w-full mb-4">
+      {!ePage? <div className="max-w-xl mx-auto w-full mb-4">
         <IonLabel
           position="stacked"
           className="text-emerald-700 text-lg font-medium mb-1 block"
@@ -257,7 +243,7 @@ const create=()=>{
           clearInput={false}
         />
          <div className="flex flex-row space-x-4 mt-2 justify-between w-full">
-        <IonText>Press Enter</IonText>
+        {<IonText>Press Enter</IonText>}
         <IonText onClick={()=>{
           setLocalContent("");
           setImage(null);
@@ -266,16 +252,11 @@ const create=()=>{
           dispatch(setHtmlContent({html:""}));
         }}>Clear</IonText>
         </div>
-      </div>
-{type==PageType.picture && <IonButton onClick={create}>Save</IonButton>}
-      {/* Preview Area */}
-      <div className=" mx-auto w-full">{pending?<IonImg src={loadingGif}/>:checkContentTypeDiv(ePage?ePage.type:type)}</div>
+      </div>:null}
+{!ePage? <IonButton onClick={create}>Save</IonButton>:null}
+      
+      <div className=" mx-auto w-full">{pending?<IonImg src={loadingGif}/>:!ePage&&image?<IonImg src={image} />:checkContentTypeDiv(ePage?ePage.type:type)}</div>
 
-      {/* {errorMessage && (
-        <IonText color="danger" className="text-center mt-3 block">
-          {errorMessage}
-        </IonText>
-      )} */}
     </div>
   );
 }
