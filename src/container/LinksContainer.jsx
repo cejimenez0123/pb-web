@@ -11,6 +11,7 @@ import pen from "../images/icons/pen.svg"
 import { IonContent } from "@ionic/react";
 import etsy from "../images/logo/ETSY.png"
 import ErrorBoundary from "../ErrorBoundary";
+import cafe from "../images/icons/coffee.png"
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -36,9 +37,9 @@ export default function LinksContainer(props){
        
                 <li>  
                       <LinkNode image={pen}
-       url={"https://partiful.com/e/rkVamwUP7jw3IfOHuWcg"}
-                    title={"Nov 15th Writers Workshop"}
-                    description={`Join us for Ngũgĩ wa Thiong’o’s The Upright Revolution, a story of unity and transformation. Read, reflect, and connect with writers and thinkers.`}/>
+       url={"https://partiful.com/e/qo5cLum123X7apnBJijV"}
+                    title={"Dec 20th Writers Workshop"}
+                    description={`Join us for writers workshop`}/>
                     </li>
                      <li>  
                       <LinkNode image={flare}
@@ -46,6 +47,19 @@ export default function LinksContainer(props){
                     title={"Dec. 3rd Open Mic"}
                     description={`Spark Open Mic @ CCNY
 Step up, express yourself, and share your creativity in a space where you can truly be you.`}/>
+                    </li>
+                    <li>
+                         <LinkNode image={cafe}
+                         url={"https://partiful.com/e/W2Y9L0eVcJyzhlmKYLaL?source=share"}
+                    title={"Dec. 6th CAFETATO: THE UPTOWN COFFEE RAVE"}
+                         description={"NO SACCARINE, SUGAR"}/>
+                    </li>
+                    <li>
+                   
+               <LinkNode image={events}
+       url={"https://plumbum.app"+Paths.calendar()}
+                    title={"NYC Writing Calendar"}
+                    description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
                     </li>
                     <li>
                    
@@ -67,7 +81,7 @@ Step up, express yourself, and share your creativity in a space where you can tr
                     description={"Check some recent shared work"}/>
                     </li>
                     <li>
-                    <LinkNode url={"https://plumbum.app"+Paths.apply()}
+                    <LinkNode url={"https://plumbum.app/onboard"}
                     image={logo}
                     title={"Apply to be a user today"}
                     description={"Become a user and support us from the ground."}/>
