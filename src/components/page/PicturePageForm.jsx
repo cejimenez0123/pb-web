@@ -15,7 +15,7 @@ import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
 import { setHtmlContent } from "../../actions/PageActions.jsx";
 import { PageType } from "../../core/constants";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import EditorContext from "../../container/page/EditorContext";
 import Context from "../../context.jsx";
 import loadingGif from "../../images/loading.gif"
@@ -29,6 +29,7 @@ function PicturePageForm({handleChange}) {
   const dispatch = useDispatch();
   const { currentProfile,setError } = useContext(Context);
 const {parameters}=useContext(EditorContext)
+const navigate = useNavigate()
   const ePage = useSelector((state) => state.pages.editingPage);
     const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
 const {id,type}=useParams()
@@ -36,7 +37,7 @@ const {id,type}=useParams()
   const [pending,setPending]=useState(false)
   const [localContent, setLocalContent] = useState(htmlContent.html || "");
   // const [file, setFile] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  // const [errorMessage, setErrorMessage] = useState(null);
   const [image, setImage] = useState(null);
   const handleLocalContent = (e) => {
 
@@ -109,8 +110,12 @@ const handleFileInput = async(e) => {
   if(!Capacitor.isNativePlatform()){
   e.preventDefault();
   const file = e.target.files?.[0];
+  console.log(file)
   if (!file) return;
-
+    if(file.type == "image/heic"){
+      setError("image type HEIC not supported")
+      return
+    }
 
   // Validate type
   if (!file.type.startsWith('image/')) {
@@ -159,31 +164,56 @@ const handleFileInput = async(e) => {
     }}}
   
 const create=()=>{
- dispatch(uploadPicture(parameters)).then((result) =>
-        checkResult(
-          result,
-          (payload) => {
-            console.log("paff",payload)
-            const fileName = payload.fileName;
-          handleChange("type",PageType.picture)
-          handleChange("data",fileName)
-            dispatch(setHtmlContent({html:fileName}));
-        if(!id&&type&&currentProfile&&currentProfile.id&&parameters.data.length>0){
-       
-        dispatch(createStory(parameters)).then(res=>checkResult(res,payload=>{
+ !Capacitor.isNativePlatform()?dispatch(createStory({...parameters})).then(res=>checkResult(res,payload=>{
           const {story}=payload
           dispatch(setEditingPage({page:story}))
           navigate(Paths.editPage.createRoute(story.id))
         
         },err=>{
 
-        }))}}))
-      
-    }
-      
+        })):dispatch(uploadPicture(parameters)).then((result) =>
+        checkResult(
+          result,
+          (payload) => {
+            // console.log("paff",payload)
+            const fileName = payload.fileName;
+          handleChange("type",PageType.picture)
+          handleChange("data",fileName)
+            dispatch(setHtmlContent({html:fileName}));
+       
+        dispatch(createStory({...parameters,data:fileName})).then(res=>checkResult(res,payload=>{
+          const {story}=payload
+          dispatch(setEditingPage({page:story}))
+          navigate(Paths.editPage.createRoute(story.id))
+        
+        },err=>{
+
+        }))}))}
+ 
+    async function handlePictureNative() {
+  try {
+    const image = await Camera.getPhoto({
+      quality: 80,
+      allowEditing: true,
+      resultType: CameraResultType.Uri, // This works best with Uploader's 'filePath'
+      source: CameraSource.Prompt,
+    });
+    try {
+    const fileName = await uploadFile(image);
+    handleChange("data",fileName)
+    setImage(image.webPath)
+ 
+  } catch (e) {
+    console.error('Upload failed:', e);
+  }
+ 
+
+    }catch(er){
+
+    }  }  
   const uploadBtn = () => {
     if (type==PageType.picture) {
-      return (
+      return Capacitor.isNativePlatform()?<IonButton onClick={handlePictureNative}>Upload</IonButton>:(
         <div className="flex flex-col items-center mb-6">
           <IonButton
             fill="outline"
@@ -205,7 +235,7 @@ const create=()=>{
         </div>
       );
     }
-  };
+  }
 
   return (
     <div className="flex flex-col h-full ">
@@ -241,11 +271,11 @@ const create=()=>{
       {/* Preview Area */}
       <div className=" mx-auto w-full">{pending?<IonImg src={loadingGif}/>:checkContentTypeDiv(ePage?ePage.type:type)}</div>
 
-      {errorMessage && (
+      {/* {errorMessage && (
         <IonText color="danger" className="text-center mt-3 block">
           {errorMessage}
         </IonText>
-      )}
+      )} */}
     </div>
   );
 }
