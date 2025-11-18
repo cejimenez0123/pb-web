@@ -178,7 +178,7 @@ const libraryForums = () => {
               text="Join the community"
               onClick={() => {
                 sendGAEvent('Navigate to Apply', 'Navigate to Apply', 'Join the community', 0, false);
-                navigate(Paths.apply());
+                navigate(Paths.onboard);
               }}
             />
           ) : null}

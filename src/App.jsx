@@ -98,9 +98,9 @@ function App(props) {
         Preferences.set({key:"hasSeenOnboarding",value:true})
         
         setIsFirstLaunch(true);
-        navigate("/onboard")
+        navigate(Paths.onboard)
       } else {
-        navigate("/login")
+        navigate(Paths.login())
         setIsFirstLaunch(false);
       }}
     };
@@ -279,7 +279,7 @@ if(!navigator.onLine){
         <Route path={Paths.links()}
                  element={<LinksContainer/>}
           />
-        <Route path={Paths.apply()}
+        <Route path={Paths.onboard}
                   element={<LoggedRoute
                     
            currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
