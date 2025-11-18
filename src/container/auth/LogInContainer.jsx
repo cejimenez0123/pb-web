@@ -56,7 +56,7 @@ export default function LogInContainer() {
 }
 
 function LogInCard({setLogInError}){
-    const {isPhone}=useContext(Context)
+    // const {isPhone}=useContext(Context)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const {setError}=useContext(Context)
@@ -65,7 +65,7 @@ function LogInCard({setLogInError}){
     const [password, setPassword] = useState('');
     const [pending,setPending]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
-    const [forgotEmail, setForgotEmail] = useState("")
+    // const [forgotEmail, setForgotEmail] = useState("")
     const [open,setOpen] = useState(false);
     
   
