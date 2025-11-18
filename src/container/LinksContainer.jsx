@@ -54,13 +54,7 @@ Step up, express yourself, and share your creativity in a space where you can tr
                     title={"Dec. 6th CAFETATO: THE UPTOWN COFFEE RAVE"}
                          description={"NO SACCARINE, SUGAR"}/>
                     </li>
-                    <li>
-                   
-               <LinkNode image={events}
-       url={"https://plumbum.app"+Paths.calendar()}
-                    title={"NYC Writing Calendar"}
-                    description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
-                    </li>
+             
                     <li>
                    
                <LinkNode image={events}
