@@ -5,6 +5,7 @@ const Paths ={
     feedback:()=>`/feedback`,
     links:()=>`/links`,
     calendar:()=>"/events",
+    onboard:"/onboard",
     library: {
         route: ()=>`/library/:id`,
         createRoute:(id)=>{return `/library/${id}`;}},

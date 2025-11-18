@@ -80,9 +80,10 @@ function App(props) {
 
 
   useEffect(()=>{
+   
   
       dispatch(getCurrentProfile())
- 
+   
    
   },[navigate])
   useEffect(()=>{
@@ -97,9 +98,9 @@ function App(props) {
         Preferences.set({key:"hasSeenOnboarding",value:true})
         
         setIsFirstLaunch(true);
-        navigate("/onboard")
+        navigate(Paths.onboard)
       } else {
-        navigate("/login")
+        navigate(Paths.login())
         setIsFirstLaunch(false);
       }}
     };
@@ -194,7 +195,7 @@ if(!navigator.onLine){
  
      <Route path={'/'} element={isFirstLaunch&&Capacitor.isNativePlatform()?<Navigate to="/onboard"/>:<AboutContainer/>} />
       <Route path={"/login"} element={<LogInContainer/>}/> 
-      <Route path={"/onboard"} element={<LoggedRoute><OnboardingContainer/></LoggedRoute>}/>
+      <Route path={"/onboard"} element={<OnboardingContainer/>}/>
 
           <Route path={Paths.home()} 
                         element={
@@ -278,7 +279,7 @@ if(!navigator.onLine){
         <Route path={Paths.links()}
                  element={<LinksContainer/>}
           />
-        <Route path={Paths.apply()}
+        <Route path={Paths.onboard}
                   element={<LoggedRoute
                     
            currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>

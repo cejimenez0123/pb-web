@@ -138,7 +138,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
     };
 
     return (
-      <IonGrid className='max-h-[100vh]' >
+      <IonGrid className='h-[60em]' >
       
         <IonRow>
          
@@ -205,26 +205,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
 
             </IonItem>
             <IonItem className='text-center' >
-            {/* {formData.email.includes("@")?<><GoogleLogin onUserSignIn={({
-            email,
-            name,
-            googleId,
-            driveAccessToken,
-            idToken,
-             })=>{
-updateFormData({email:email})
-              updateFormData({idToken: idToken })
-              updateFormData({fullName:name})
-              updateFormData({googleId: googleId})
-              // handleNext()
-            }}/>
-            <AppleSignInButton onUserSignIn={({idToken,email})=>{
-              updateFormData({email:email})
-              updateFormData({idToken: idToken })
-              handleNext()
-            
-            }}/></>:null}
-          */}
+
             </IonItem>
             </IonList>
             {/* <div className='h-[18rem]'/> */}
@@ -255,7 +236,7 @@ updateFormData({email:email})
     }
 
     return (
-      <IonGrid className='max-h-[100vh]'>
+      <IonGrid className=''>
         <IonRow>
           <IonCol>
             <div className='mb-4'>
@@ -289,7 +270,7 @@ updateFormData({email:email})
               className="open-sans-medium"
             />
 </div>
-<div className='h-[19.5rem]'/>
+{/* <div className='h-[19.5rem]'/> */}
 <IonRow>
 <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
               <IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
@@ -533,7 +514,7 @@ const Why = ({ handleTab, nav }) => {
             </ul>
           </IonText>
          <IonRow className='flex mx-auto w-[100%] mx-auto justify-between'> 
-            <div className='btn my-auto bg-transparent mt-4 border-none '><IonText onClick={()=>navigate(Paths.login())} className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
+            <div onClick={()=>navigate(Paths.login())} className='btn my-auto bg-transparent mt-4 border-none '><IonText  className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
                  Log In
              </IonText></div>
       
@@ -554,7 +535,7 @@ const Why = ({ handleTab, nav }) => {
 
   const MyTabs = () => (
     <>
-      <div className=" text-center mx-auto sm:w-[40em]">
+      <div className=" text-center my-12 mx-auto sm:w-[40em]">
         {[1, 2, 3, 4].map((tabNum) => (
           <IonText
             key={tabNum}
@@ -589,8 +570,8 @@ const Why = ({ handleTab, nav }) => {
 
   return (
 <IonPage>
-      <IonContent fullscreen={true}  className="ion-padding ion-padding-top ">
-  <div className='pt-8'>
+      <IonContent fullscreen={true}  className="ion-padding  ion-padding-top ">
+  <div className='pt-8 pb-12'>
           {user ? <ThankYou user={user} /> : <MyTabs />}
     </div>
       </IonContent>
@@ -699,7 +680,7 @@ const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference 
   ];
 
   return (
-    <IonContent className='ion-padding min-h-40'>
+    <IonContent className='ion-padding min-h-40 overflow-auto'>
     <>
       <IonLabel
         // className="mont-medium"

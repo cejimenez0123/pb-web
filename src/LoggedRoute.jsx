@@ -25,14 +25,18 @@ const LoggedRoute = ({ currentProfile,children }) => {
       } catch (err) {
         console.error("Error reading token:", err);
         setError?.("Error checking login state");
-        navigate(Paths.login(), { replace: true });
+        // navigate(Paths.login(), { replace: true });
         setToken(null);
       }}else{
         setToken(tok)
       }
     };
-
-    checkAuth();
+Preferences.get({ key: "token" }).then(store=>{
+    if(store.value){
+   checkAuth();
+    }
+  })
+      
   }, [navigate]);
 
   // 🌀 Show loading indicator while verifying token

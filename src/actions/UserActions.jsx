@@ -175,7 +175,7 @@ async (params,thunkApi) => {
 const updateProfile = createAsyncThunk("users/updateProfile",
                     async (params,thunkApi)=>{
 try{
-          let data = await  profileRepo.updateProfile(params)
+          const data = await  profileRepo.updateProfile(params)
           if(data.profile){
             const {profile}=data
            

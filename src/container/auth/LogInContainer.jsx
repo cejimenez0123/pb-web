@@ -54,7 +54,7 @@ export default function LogInContainer() {
 }
 
 function LogInCard({setLogInError}){
-    const {isPhone}=useContext(Context)
+    // const {isPhone}=useContext(Context)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const {setError}=useContext(Context)
@@ -63,6 +63,7 @@ function LogInCard({setLogInError}){
     const [password, setPassword] = useState('');
     const [pending,setPending]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
+    const [open,setOpen] = useState(false);
     
   
     const dialog = useSelector(state=>state.users.dialog)
@@ -71,7 +72,7 @@ function LogInCard({setLogInError}){
        
     const handleFirstTimeClick=()=>{
   
-       isPhone?navigate("/onboard"):navigate("/apply")
+   navigate(Paths.onboard)
     
     }
 

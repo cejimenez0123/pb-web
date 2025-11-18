@@ -62,7 +62,7 @@ export default function AboutContainer() {
 
   function apply() {
     sendGAEvent("Apply to be user", "Click Apply", "Apply to Join Today", 0, false);
-    navigate(Paths.apply());
+    navigate(Paths.onboard);
   }
 
   const whyMembership = () => (
@@ -296,7 +296,7 @@ export default function AboutContainer() {
                   display: 'inline-block',
                   userSelect: 'none'
                 }}
-                onClick={() => navigate(Paths.apply())}
+                onClick={() => navigate("/onboard")}
               >
                 Become Part of our Writers' Circle
               </IonText>

@@ -146,6 +146,7 @@ const hasInitialized = useRef(false);
           const {story}=payload
           dispatch(setEditingPage({page:story}))
           navigate(Paths.editPage.createRoute(story.id))
+          
        
      },err=>{
 

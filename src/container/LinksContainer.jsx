@@ -11,7 +11,7 @@ import pen from "../images/icons/pen.svg"
 import { IonContent } from "@ionic/react";
 import etsy from "../images/logo/ETSY.png"
 import ErrorBoundary from "../ErrorBoundary";
-import cafe from "../images/icons/coffee.png"
+import cafe from "../images/icons/coffee.png" 
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -39,7 +39,7 @@ export default function LinksContainer(props){
                       <LinkNode image={pen}
        url={"https://partiful.com/e/qo5cLum123X7apnBJijV"}
                     title={"Dec 20th Writers Workshop"}
-                    description={`Join us for writers workshop`}/>
+                    description={`Join us for Writers Workshop`}/>
                     </li>
                      <li>  
                       <LinkNode image={flare}
