@@ -5,6 +5,7 @@ import {storage} from "../core/di"
 import {  ref,deleteObject   } from "firebase/storage";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
+import { FirebaseStorage } from "@capacitor-firebase/storage";
 
 const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
   try{
@@ -27,9 +28,13 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 const deleteStory = createAsyncThunk("pages/deleteStory",async (params,thunkApi)=>{
 try{
   const {page}=params
-  if(page.type==PageType.picture){
-    let refer = ref(storage,page.data)
-    deleteObject(refer)
+
+       if(page && page.type==PageType.picture){
+  
+  await FirebaseStorage.deleteFile({
+    path: page.data,
+  });
+
   }
   let data = await storyRepo.deleteStory({id:page.id})
   

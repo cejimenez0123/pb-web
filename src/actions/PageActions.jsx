@@ -7,6 +7,7 @@ import profileRepo from "../data/profileRepo"
 import { PageType } from "../core/constants"
 import { deleteObject } from "firebase/storage"
 import algoliaRepo from "../data/algoliaRepo"
+import { FirebaseStorage } from "@capacitor-firebase/storage"
 
 const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
   
@@ -209,23 +210,26 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
             loading: true
     }}
   })
-const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>{
-    try{
-      const {page}=params
-    let data = await storyRepo.deleteStory({id:page.id})
-    if(page && page.type==PageType.picture){
-      let refer = ref(storage,page.data)
-      deleteObject(refer)
-    }
-await algoliaRepo.deleteObject("page",page.id)
+// const deletePage= createAsyncThunk("pages/deletePage", async (params,thunkApi)=>{
+//     try{
+//       const {page}=params
+//     let data = await storyRepo.deleteStory({id:page.id})
+//     if(page && page.type==PageType.picture){
+//     //  const deleteFile = async () => {
+//   await FirebaseStorage.deleteFile({
+//     path: page.data,
+//   });
+// // };
+//     }
+// await algoliaRepo.deleteObject("page",page.id)
 
-    return {
-      page:data
-    }
-    }catch(e){
-      return {error: new Error("Error: Delete Page"+e.message)};
-    }
-  })
+//     return {
+//       page:data
+//     }
+//     }catch(e){
+//       return {error: new Error("Error: Delete Page"+e.message)};
+//     }
+//   })
   const updateComment = createAsyncThunk(`pages/updateComment`, async (params,thunkApi)=>{
     const {comment,newText}=params
 
