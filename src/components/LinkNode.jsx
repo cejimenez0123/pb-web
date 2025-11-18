@@ -5,11 +5,12 @@ import ErrorBoundary from '../ErrorBoundary';
 import { initGA,sendGAEvent } from '../core/ga4';
 import SpotifyEmbed from './SpotifyEmbed';
 import { IonImg } from '@ionic/react';
+import Context from '../context';
 function LinkNode({ url,image,description,title,isGrid}) {
 
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const {isTablet}=useContext(Context)
   useLayoutEffect(() => {
 
     if(!url.includes("plumbum")&&!url.includes('https://open.spotify.com/')){  
@@ -119,17 +120,21 @@ const fetchData = async (url) => {
 const imageView = () => {
   // const wrapperClass = "flex items-center mx-auto bg-transparent justify-center mb-2 sm:mx-4 w-[5em] h-[5em] rounded-full overflow-hidden bg-emerald-50";
   // const imgClass = "object-cover min-h-[4rem]  min-w-[5.5rem] w-full h-full";\
-  const wrapperClass =
-  "max-w-[10em] my-auto pb-2  sm:max-h-[10em] my-auto";
+//   const wrapperClass =
+//   "max-w-[10em] my-auto sm:pb-2  max-h-[8em] sm:max-h-[8em] my-auto";
 
-const imgClass = "w-full h-full  object-cover sm:min-h-[6rem]  sm:min-w-[6rem]";
+// const imgClass = "  object-cover max-h-[6em] sm:h-[6rem]  sm:min-w-[6rem]";
+const wrapperClass = "flex-shrink-0 sm:w-[10em] rounded-xl overflow-hidden bg-transparent";
 
+const imgClass = "object-contain p-1 ";
+
+let css= {"height":"6em","margin":"auto"}
   if (previewData && previewData.title === "Spotify") {
     return <SpotifyEmbed url={url} />;
   } else if (image) {
     return (
       <div className={wrapperClass}>
-        <IonImg className={imgClass} src={image} />
+        <IonImg className={imgClass} style={css} src={image} />
       </div>
     );
   } else if (previewData && previewData.image) {
@@ -144,19 +149,51 @@ const imgClass = "w-full h-full  object-cover sm:min-h-[6rem]  sm:min-w-[6rem]";
 };
 
 
-  return (
-    <ErrorBoundary>
-    <div className={`rounded-[2em] overflow-hidden my-4  h-[20em] md:h-[10em] ove sm:max-h-30 w-[100%] shadow-md flex flex-col sm:flex-row p-4 bg-emerald-100 `} 
-    onClick={handleClick} style={{ cursor: 'pointer' }}>
+  // return (
+  //   <ErrorBoundary>
+  //   <div className={`rounded-[2em] overflow-hidden my-4  h-[20em] md:h-[10em] ove sm:max-h-30 w-[100%] shadow-md flex flex-col sm:flex-row p-4 bg-emerald-100 `} 
+  //   onClick={handleClick} style={{ cursor: 'pointer' }}>
      
-     {imageView()}
-      <div className=' px-2 text-emerald-800 overflow-scroll text-left  open-sans-medium'>
-      <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
-   <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>
+  //    {imageView()}
+  //     <div className=' px-2 text-emerald-800 overflow-scroll text-left  open-sans-medium'>
+  //     <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
+  //  <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>
+  //     </div>
+  //   </div>
+  //   </ErrorBoundary>
+  // );
+  return (
+  <ErrorBoundary>
+    <div
+      className={`
+        rounded-[2em] overflow-hidden my-4
+        w-full shadow-md 
+        bg-emerald-100 p-4
+        h-[21em]  sm:h-[12em]
+        flex flex-col sm:flex-row 
+        gap-4
+      `}
+      onClick={handleClick}
+      style={{ cursor: "pointer" }}
+    >
+
+
+      <div className="flex-shrink-0 w-full sm:w-auto flex justify-center">
+        {imageView()}
+      </div>
+<div>
+      {/* TEXT */}
+      <div className="flex flex-col justify-center text-left px-1 text-emerald-800 open-sans-medium">
+        <h4 className="text-[0.9rem] font-semibold">{title}</h4>
+        <h6 className="text-[0.8rem] md:text-md leading-snug mt-1">
+          {description}
+        </h6>
+      </div>
       </div>
     </div>
-    </ErrorBoundary>
-  );
+  </ErrorBoundary>
+);
+
 }
 
 export default LinkNode;
