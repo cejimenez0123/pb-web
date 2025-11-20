@@ -327,8 +327,10 @@ const [solEvents,setSolEvents]=useState([])
                            <span className="flex flex-row justify-between min-w-20 w-20 ml-3">
                          
                             <IonText className="my-auto text-[0.8rem] w-[2.6rem] text-blueSea "><div dangerouslySetInnerHTML={{__html:event.startTime}}/></IonText>
-              <IonImg onClick={()=>{
-                        sendGAEvent("Click",`Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,event.summary,"",false)
+              <IonImg 
+              onClick={()=>{
+                        sendGAEvent("Click",`Navigate by event name ${event.summary},
+                          ${JSON.stringify(event.hashtags)}`,event.summary,"",false)
                         window.open(event.googleLink)
             
                             }} className="w-12 h-12  my-auto" src={calendar} /></span>
