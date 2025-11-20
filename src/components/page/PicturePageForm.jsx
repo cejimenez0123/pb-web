@@ -51,41 +51,46 @@ const {id,type}=useParams()
 
    
   };
-
+  useEffect(()=>{
+ePage&&ePage.id && ePage.type && setPage(ePage)
+  },[[ePage]])
 
   const setPage =(page)=>{
     setPending(true)
-     switch (page.type) {
-        case PageType.link:
+    if(page.type==PageType.link){
           dispatch(setHtmlContent({html:page.data}));
           setLocalContent(page.data);
           setImage(null);
           setPending(false)
-          break;
-        case PageType.picture:
+    }else if(page.type== PageType.picture){
+          window.alert("PLUS")
           if (isValidUrl(page.data)) {
             setImage(page.data);
             setLocalContent(page.data);
+            dispatch(setHtmlContent({html:page.data}))
           } else {
             setImage(Enviroment.imageProxy(page.data))
+            setLocalContent(Enviroment.imageProxy(page.data))
+            dispatch(setHtmlContent({html:Enviroment.imageProxy(page.data)}))
           }
-              setPending(false)
-          break;
-        default:
-          break;
+            
+       
       }
+        setPending(false)
   }
-  useEffect(()=>{
-    dispatch(getStory()).then(res=>{
+  const fetchStory=(iden)=>{
+     dispatch(getStory({id:iden})).then(res=>{
       checkResult(res,payload=>{
           const {story}=payload
-         setPage(story)
          setEditingPage({page:story})
       },err=>{
 
       })
     })
-  },[navigate])
+  }  
+  useEffect(()=>{
+   fetchStory(id)
+  },[id])
   const checkContentTypeDiv = (type) => {
     switch (type) {
       case PageType.link:
@@ -100,8 +105,14 @@ const {id,type}=useParams()
 
       case PageType.picture:
     
-        return (
-          image && (
+   return  isValidUrl(localContent)?    <div className="flex justify-center mt-6">
+              <IonImg
+                className="rounded-xl shadow-sm border border-emerald-200 max-h-[320px] object-cover"
+                src={image}
+                alt={ePage ? ePage.title : ""}
+              />
+            </div>:
+           
             <div className="flex justify-center mt-6">
               <IonImg
                 className="rounded-xl shadow-sm border border-emerald-200 max-h-[320px] object-cover"
@@ -109,14 +120,14 @@ const {id,type}=useParams()
                 alt={ePage ? ePage.title : ""}
               />
             </div>
-          )
-        );
+          
+    //     );
 
-      default:
-        return null;
-    }
+    //   default:
+    //     return null;
+    // }
   };
-
+  }
 const handleFileInput = async(e) => {
     e.preventDefault();
   if(!Capacitor.isNativePlatform()){
@@ -148,9 +159,10 @@ const handleFileInput = async(e) => {
     setError('');
   
 
-  }else{
-
-  const image = await Camera.getPhoto({
+  }}
+  const handleNativeFile= async ()=>{
+    
+    const image = await Camera.getPhoto({
       quality: 80,
       allowEditing: true,
       resultType: CameraResultType.Uri, // This works best with Uploader's 'filePath'
@@ -161,45 +173,47 @@ const handleFileInput = async(e) => {
       setImage(image.webPath)
     }catch(err){
 
-    }}}
+    }}
+  
 const createBrowser=()=>{
-  window.alert(JSON.stringify(parameters))
+
+  setPending(true)
 dispatch(createStory({...parameters,type:type})).then(res=>checkResult(res,payload=>{
           const {story}=payload
-          dispatch(setEditingPage({page:story}))
-          setPage(story)
+          
+        fetchStory(story.id)
           navigate(Paths.editPage.createRoute(story.id),{replace:true})
-        
+              setPending(false)
         },err=>{
 window.alert(err.message)
         }))
 }
 const createNative= async ()=>{
-  setPending(true)
+       setPending(true)
         const fileName =  await uploadFile(parameters.file)
         dispatch(createStory({...parameters,data:fileName,type:PageType.picture})).then(res=>checkResult(res,payload=>{
           const {story}=payload
-           navigate(Paths.editPage.createRoute(story.id),{replace:true})
-          // dispatch(setEditingPage({page:story}))
-
+          navigate(Paths.editPage.createRoute(story.id),{replace:true})
+           fetchStory(story.id)
+          setPending(false)
         
         },err=>{
             setError(err.message)
         }))}
 
 const create=()=>{
-//  type==PageType.picture&&
+
  if(type==PageType.picture){
+
     !Capacitor.isNativePlatform()?createBrowser():createNative()
  }else{
- 
-createBrowser()
+    createBrowser()
  }
 
 }
   const uploadBtn = () => {
     if (type==PageType.picture) {
-      return Capacitor.isNativePlatform()?<IonButton onClick={handleFileInput}>Upload</IonButton>:(
+      return Capacitor.isNativePlatform()?<IonButton onClick={handleNativeFile}>Upload</IonButton>:(
         <div className="flex flex-col items-center mb-6">
           <IonButton
             fill="outline"
@@ -255,7 +269,7 @@ createBrowser()
       </div>:null}
 {!ePage? <IonButton onClick={create}>Save</IonButton>:null}
       
-      <div className=" mx-auto w-full">{pending?<IonImg src={loadingGif}/>:!ePage&&image?<IonImg src={image} />:checkContentTypeDiv(ePage?ePage.type:type)}</div>
+      <div className=" mx-auto w-full">{pending?<IonImg src={loadingGif}/>:checkContentTypeDiv(ePage && ePage.type?ePage.type:type)}</div>
 
     </div>
   );

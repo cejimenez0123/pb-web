@@ -1,13 +1,18 @@
 import UIKit
 import Capacitor
-
+import FirebaseCore
+import GoogleSignIn
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    override init() {
+        
+        
+    }
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        FirebaseApp.configure()
         return true
     }
 
@@ -36,6 +41,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         // Called when the app was launched with a url. Feel free to add additional processing here,
         // but if you want the App API to support tracking app url opens, make sure to keep this call
+
+        var handled: Bool
+
+        handled = GIDSignIn.sharedInstance.handle(url)
+        if handled {
+          return true
+        }
+
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
 

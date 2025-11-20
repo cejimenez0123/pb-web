@@ -4,9 +4,6 @@ import storyRepo from "../data/storyRepo"
 import commentRepo from "../data/commentRepo"
 import likeRepo from "../data/likeRepo"
 import profileRepo from "../data/profileRepo"
-import { PageType } from "../core/constants"
-import { deleteObject } from "firebase/storage"
-import algoliaRepo from "../data/algoliaRepo"
 import { FirebaseStorage } from "@capacitor-firebase/storage"
 
 const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{

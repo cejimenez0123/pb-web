@@ -2,10 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraReactionEffectGesturesEnabledDefault</key>
+	<false/>
+	<key>NSFileProviderDomainUsageDescription</key>
+	<string>We need your location to connect you with workshops in your area.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Please give permission if you want to upload photos</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Please give permission if you want to upload photos</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Plumbum Writers</string>
+	<string>ios</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,10 +53,6 @@
 			</array>
 		</array>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>This app needs camera access to take and upload photos.</string>
-	<key>NSDocumentsFolderUsageDescription</key>
-	<string>This app needs access to files for uploads.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need your location to connect you with workshops in your area.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -59,12 +63,10 @@
 	<string>We need your location to connect you with workshops in your area.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to connect you with workshops in your area.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Would you like to add photos? Yes or no</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to upload images.</string>
+	<string>Please give permission if you want to upload photos</string>
 	<key>UILaunchStoryboardName</key>
-	<string>Main.storyboard</string>
+	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -74,6 +76,8 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

@@ -140,6 +140,7 @@ const hasInitialized = useRef(false);
           handleClose()
       },10)
       const createPageAction = ()=>{
+        setPending()
       if(currentProfile && currentProfile.id && type){
        
         dispatch(createStory({...parameters,type,profile:currentProfile,profileId:currentProfile.id})).then(res=>checkResult(res,payload=>{
@@ -154,22 +155,15 @@ setError(err.message)
      }))
     }
       }
-        const handleClickAddToCollection=()=>{
-        
+    const handleClickAddToCollection=()=>{
           navigate(Paths.addStoryToCollection.story(id))
         }
   const handleisPrviate=debounce((truthy)=>{
- 
           setOpenDescription(false)
           handleChange("needsFeedback",false)
           handleChange("isPrivate",truthy)
-
           setFeedbackDialog(false)
           setOpenDescription(false)
-      
-       
-          
-       
         },10)
 
 
@@ -202,7 +196,7 @@ setError(err.message)
           setFeedbackDialog(true)
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
         {editPage?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(editPage.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
-{parameters.isPrivate?<li onClick={()=>{
+{!(editPage&&editPage.id)?null:parameters.isPrivate?<li onClick={()=>{
     setFeedbackDialog(false) 
     setOpenDescription(true)} }
 className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
@@ -285,25 +279,25 @@ const openConfirmDeleteDialog = () => {
 
   dispatch(setDialog(dia));
 };
-const dispatchUpdate =debounce((params)=>{
-  setIsSaved(false) 
+// const dispatchUpdate =debounce((params)=>{
+//   setIsSaved(false) 
  
- dispatch(updateStory({...params,data:htmlContent.html,description})).then(res=>{
-    checkResult(res,payload=>{
+//  dispatch(updateStory({...params,data:htmlContent.html,description})).then(res=>{
+//     checkResult(res,payload=>{
     
-      if(payload.story){
+//       if(payload.story){
 
-setIsSaved(true)
-return true 
-      }
+// setIsSaved(true)
+// return true 
+//       }
   
-    },err=>{
-      setError(err.message)
-      return false
-    })}
-,300)
+//     },err=>{
+//       setError(err.message)
+//       return false
+//     })}
+// ,300)
 
-})
+// })
 const openRoleFormDialog = () => {
   const dia = {...dialog};
   dia.isOpen = true;
