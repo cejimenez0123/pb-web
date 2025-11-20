@@ -25,6 +25,7 @@ import { createStory, getStory } from "../../actions/StoryActions.jsx";
 import Paths from "../../core/paths.js";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import uploadFile from "../../core/uploadFile.jsx";
+import { replace } from "lodash";
 function PicturePageForm({handleChange}) {
   const dispatch = useDispatch();
   const { currentProfile,setError } = useContext(Context);
@@ -51,9 +52,9 @@ const {id,type}=useParams()
 
    
   };
-  useEffect(()=>{
-ePage&&ePage.id && ePage.type && setPage(ePage)
-  },[[ePage]])
+//   useEffect(()=>{
+// ePage&&ePage.id && ePage.type && setPage(ePage)
+//   },[[ePage]])
 
   const setPage =(page)=>{
     setPending(true)
@@ -63,7 +64,7 @@ ePage&&ePage.id && ePage.type && setPage(ePage)
           setImage(null);
           setPending(false)
     }else if(page.type== PageType.picture){
-          window.alert("PLUS")
+        
           if (isValidUrl(page.data)) {
             setImage(page.data);
             setLocalContent(page.data);
@@ -82,6 +83,7 @@ ePage&&ePage.id && ePage.type && setPage(ePage)
      dispatch(getStory({id:iden})).then(res=>{
       checkResult(res,payload=>{
           const {story}=payload
+          setPage(story)
          setEditingPage({page:story})
       },err=>{
 
@@ -181,8 +183,9 @@ const createBrowser=()=>{
 dispatch(createStory({...parameters,type:type})).then(res=>checkResult(res,payload=>{
           const {story}=payload
           
-        fetchStory(story.id)
+      
           navigate(Paths.editPage.createRoute(story.id),{replace:true})
+            fetchStory(story.id)
               setPending(false)
         },err=>{
 window.alert(err.message)
@@ -193,10 +196,10 @@ const createNative= async ()=>{
         const fileName =  await uploadFile(parameters.file)
         dispatch(createStory({...parameters,data:fileName,type:PageType.picture})).then(res=>checkResult(res,payload=>{
           const {story}=payload
+            fetchStory(story.id)
           navigate(Paths.editPage.createRoute(story.id),{replace:true})
-           fetchStory(story.id)
-          setPending(false)
-        
+          
+      
         },err=>{
             setError(err.message)
         }))}
