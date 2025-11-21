@@ -99,14 +99,14 @@ export default function SettingsContainer(props) {
                 }
                 dispatch(updateProfile(params)).then((result) =>checkResult(result,
                     payload=>{
-                        window.alert("Updated")
+                        setSuccess("Updated")
                     },err=>{
-                        window.alert(err.message)
+                        setError(err.message)
                     }
         
                 ))
             },(err)=>{
-                window.alert(err.message)
+                setError(err.message)
                 setSignUpError(true)
             })
     
@@ -121,9 +121,9 @@ export default function SettingsContainer(props) {
             }
             dispatch(updateProfile(params)).then((result) =>checkResult(result,
                 payload=>{
-                    window.alert("Updated")
+                    setSuccess("Updated")
                 },err=>{
-                    window.alert(err.message)
+                    setError(err.message)
                 }
     
             ))
@@ -271,13 +271,19 @@ export default function SettingsContainer(props) {
                                 <h6 className="mont-medium text-xl">Self Statement:</h6>
                                
                                     <textarea
-                                    onChange={(e)=>{setSelfStatement(e.target.value)}}
-                                  
+                                    onChange={(e)=>{
+                                        if(e.target.value.length<120){
+  setSelfStatement(e.target.value)
+                                        }else{
+                                            setError("Max Character Count 120")
+                                        }
+                                      }}
+                                    
                                     value={selfStatement}
                                     className="textarea min-w-72 w-full  text-emerald-800 border-2 bg-transparent border-emerald-800 p-4 min-h-36 my-2"
                                     placeholder="Self Statement"/>
                             </label>
-                            <div className="text-left">
+                            <div className="text-left mt-4">
                             {isPrivate?<button onClick={(e)=>{
                                 e.preventDefault()
                                 setPrivacy(false)}}className=" text-emerald-800 bg-emerald-50 hover:bg-green-100 mont-medium rounded-full border-emerald-700 border-2 text-xl text-emerald-800 text-bold">You are Private</button>:
@@ -290,11 +296,11 @@ export default function SettingsContainer(props) {
   <div className="mt-8">
 
                             <div
-                               className="bg-emerald-800 bg-opacity-[60%] flex btn text-white px-4 py-3 w-full   rounded-full "
+                               className="bg-blueSea flex btn text-white w-[10rem] w-full   rounded-full "
                                 variant="outlined" 
                                 onClick={(e)=>handleOnSubmit(e)}
                             >
-                                <IonText className="my-auto mx-auto text-2xl">Update</IonText>
+                                <IonText className="my-auto mx-auto  text-2xl">Update</IonText>
                             </div>
                             </div>
                         <button 

@@ -54,11 +54,10 @@ const [canUserEdit,setCanUserEdit]=useState(false)
   const [loading, setLoading] = useState(true);
    const [isPrivate, setIsPrivate] = useState(true)
 const dialog = useSelector(state=>state.users.dialog)
-  // Load collection data
+
   useEffect(() => {
     async function loadData() {
       const col = await dispatch(fetchCollectionProtected(id));
-      console.log("BO",col)
       if (col) setCollection(col);
       setLoading(false);
     }
@@ -72,10 +71,10 @@ const dialog = useSelector(state=>state.users.dialog)
         setCanUserEdit(null);
         return;
       }
-         console.log("CDCD",colInView)
+
       if (colInView.roles) {
         let found = colInView.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-        console.log("CDCD",found)
+      
         if (found && (found.role === RoleType.editor)||colInView.profileId==currentProfile.id) {
           setCanUserEdit(found);
           return;
@@ -291,7 +290,8 @@ if (col.childCollections) {
                   Description
                 </IonLabel>
                 </div>
-                <IonTextarea
+                <textarea
+                className="border border-blueSea p-3 w-full rounded-lg min-w-[90vw]"
                   autoGrow={true}
                   placeholder="Describe your collection"
                   value={purpose}
@@ -303,7 +303,7 @@ if (col.childCollections) {
                     })
                     setPurpose(e.detail.value)
                   }}
-                  className="p-2 "
+                  // className="p-2 "
                 />
 </div>
             </IonList>

@@ -1,4 +1,4 @@
-import { IonList, IonItem, IonText } from "@ionic/react";
+import { IonList, IonItem, IonText, IonInput } from "@ionic/react";
 import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProfiles } from "../../actions/ProfileActions";
@@ -15,6 +15,7 @@ export default function RoleForm({ item, onClose }) {
   const profiles = useSelector((state) => state.users.profilesInView);
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const pending = useSelector((state) => state.roles.loading);
+  const [search, setSearch] = useState("");
 
   const { error, success, setError, setSuccess } = useContext(Context);
   const [roles, setRoles] = useState([]);
@@ -70,8 +71,9 @@ export default function RoleForm({ item, onClose }) {
     const dropdownPosition = i > profiles.length / 2 ? "dropdown-top" : "dropdown-bottom";
 
     return (
-      <IonItem key={profile.id || i} className="border-none bg-transparent px-0   mb-3">
-        <div className="flex justify-between items-center w-full border-2 border-emerald-200  my-3 rounded-full p-3 shadow-sm">
+      
+      <IonItem key={profile.id || i} className="border-none bg-transparent ">
+        <div className="flex justify-between items-center w-full border-2 border-emerald-200  w-full py-2 my-2 px-2 rounded-full shadow-sm">
           <ProfileCircle profile={profile} color="text-emerald-700" />
 
           <div className={`dropdown ${dropdownPosition} dropdown-end`}>
@@ -96,11 +98,14 @@ export default function RoleForm({ item, onClose }) {
           </div>
         </div>
       </IonItem>
+  
     );
   };
-
+  const filteredProfiles = profiles.filter((p) =>
+    p.username?.toLowerCase().includes(search.toLowerCase())
+  );
   return (
-    <div className="w-full p-4">
+    <div className="w-full w-[100vw] flex p-4">
       {/* Alerts */}
       {(error || success) && (
         <div
@@ -123,24 +128,33 @@ export default function RoleForm({ item, onClose }) {
         {/* Save Button */}
         <button
           onClick={handlePatchRoles}
-          className="mx-auto mb-6 flex items-center justify-center px-4 py-2 text-xl rounded-full text-white bg-emerald-700 hover:bg-emerald-600 transition-colors font-medium shadow-md"
+          className="mx-auto mb-6 flex items-center justify-center py-2 text-xl rounded-full text-white bg-emerald-700 hover:bg-emerald-600 transition-colors font-medium shadow-md"
         >
           Save
         </button>
-
+        <div className="mx-4">
+ <input
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  placeholder="Search by username..."
+  className="ion- bg-emerald-50 border mx-2 px-3 py-2 rounded-full text-emerald-700"
+></input>
+</div>
         {/* Profile List */}
-        <IonList lines="none" className="max-h-[50vh] overflow-auto rounded-lg">
+        <div className="">
+        <IonList lines="none" className="max-h-[50vh]  flex overflow-auto rounded-lg">
           {pending && (
             <IonText className="text-emerald-800 text-center py-2 block">Loading...</IonText>
           )}
-          {!pending && profiles.length > 0 ? (
-            profiles.map(renderProfileItem)
-          ) : (
+          {!pending && profiles.length > 0 ? <div className="mx-auto  sm:max-w-[50em]"> 
+            {filteredProfiles.map(renderProfileItem)}
+          </div> : (
             <IonText className="text-emerald-800 text-center p-4 block">
               No profiles available
             </IonText>
           )}
         </IonList>
+        </div>
       </div>
     </div>
   );

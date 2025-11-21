@@ -123,7 +123,7 @@ setCanUserAdd(true)
     }
     if (collection.roles) {
       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-      console.log("CDCD",found)
+     
       if (found && (found.role === RoleType.editor)||collection.profileId==currentProfile.id) {
         setCanUserEdit(true);
         return;
@@ -147,6 +147,7 @@ setCanUserAdd(true)
   }, [currentProfile]);
   useEffect(()=>{
   getCol()
+  
   },[navigate])
   useEffect(()=>{
     soUserCanEdit()
@@ -335,6 +336,7 @@ const getCol = async () => {
             checkResult(res, payload => {
               checkFound();
               setSuccess("Saved to Home");
+              setBookmarkLoading(false)
             }, err => {
               setBookmarkLoading(false);
             });
@@ -347,10 +349,12 @@ const getCol = async () => {
             if (payload.message?.includes("Already") || payload.message?.includes("Deleted")) {
               setIsBookmarked(null);
               setSuccess("Removed from Home");
+                     setBookmarkLoading(false)
             }
             setBookmarkLoading(false);
           }, err => {
             setBookmarkLoading(false);
+                   setBookmarkLoading(false)
           });
         });
       }
@@ -581,7 +585,7 @@ console.log("STORYLIST",collection.storyIdList)
         {collections && collections.length > 0 && (
           <IonCard className="ion-padding pt-12">
             <IonCardHeader>
-              <IonCardTitle>Anthologies</IonCardTitle>
+              <IonCardTitle><h5 className="text-xl  px-4 pb-2">Anthologies</h5></IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
               <IonList className="flex flex-row min-h-[14rem] overflow-x-scroll">
@@ -597,7 +601,7 @@ console.log("STORYLIST",collection.storyIdList)
 <div className="sm:w-[50rem] mx-auto">
         <IonCard className="ion-margin">
           <IonCardHeader>
-            <IonCardTitle>Pages</IonCardTitle>
+            <IonCardTitle><h3 className="text-xl px-4 pb-2">Pages</h3></IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
             <PageList
