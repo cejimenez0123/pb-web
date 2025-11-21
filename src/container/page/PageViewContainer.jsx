@@ -136,7 +136,7 @@ export default function PageViewContainer() {
       defaultHref={Paths.discovery()}
       onClick={handleBack}
     />:null} </div> </IonHeader>
-        <div className=" text-center  mx-auto" style={{margin:"auto auto",paddingBottom: "5rem" }}>
+        <div className=" text-center  px-2   mx-auto" style={{margin:"auto auto",paddingBottom: "5rem" }}>
           {pending ? (
             <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
           ) : errorStatus === 403 ? (
@@ -146,7 +146,7 @@ export default function PageViewContainer() {
               </h1>
             </div>
           ) : canUserSee ? (
-            <div className="w-fit mx-auto sm:max-w-[50em]">
+            <div className="w-fit mx-autosm:max-w-[50em]">
               <PageDiv page={page} />
               <CommentThread page={page} comments={rootComments} />
            </div>

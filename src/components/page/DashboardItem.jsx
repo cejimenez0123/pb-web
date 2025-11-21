@@ -333,7 +333,6 @@ useEffect(() => {
       );
   };
 
-  // --- FINAL RENDER WITH IONIC CARD CONTAINMENT ---
   if (!page) {
     return (
       <span className={ " skeleton"} />
