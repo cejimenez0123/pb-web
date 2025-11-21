@@ -80,10 +80,7 @@ function App(props) {
 
 
   useEffect(()=>{
-  
       dispatch(getCurrentProfile())
-
-   
   },[])
   useEffect(()=>{
       setOlderPath(location.pathname) 

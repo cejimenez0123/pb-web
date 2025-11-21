@@ -158,7 +158,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
 
       const { accessToken, idToken, profile } = user.result;
       const expiry = Date.now() + 3600 * 1000;
-
+window.alert(accessToken)
       await Promise.all([
         Preferences.set({ key: "userEmail", value: profile.email }),
         Preferences.set({ key: "userName", value: profile.name }),

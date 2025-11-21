@@ -119,9 +119,7 @@ setError("User Not Found. Apply Below")
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
                
-                 
-                //    await Preferences.set({key:"cachedMyProfile",value:JSON.stringify(payload.profile)})
-                   
+           
                     setPending(false)
                 },err=>{
 
@@ -140,9 +138,7 @@ setError("User Not Found. Apply Below")
         
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
-              
-                // Preferences.set({key:"cachedMyProfile",value:payload.profile}).then(()=>{})
-            
+          
                 setPending(false)
             },err=>{
                

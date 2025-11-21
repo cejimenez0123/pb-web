@@ -7,6 +7,7 @@ import Context from "../context";
 import DeviceCheck from './DeviceCheck';
 import { Preferences } from '@capacitor/preferences';
 import { setDialog } from '../actions/UserActions';
+import { Capacitor } from '@capacitor/core';
 
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
 
@@ -17,20 +18,19 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
   const [pending, setPending] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
-
+const navigate = useNavigate()
   const [gapiLoaded, setGapiLoaded] = useState(false);
   const [driveClientLoaded, setDriveClientLoaded] = useState(false);
   const [gisLoadedForPicker, setGisLoadedForPicker] = useState(false);
-  const [driveTokenAvailable, setDriveTokenAvailable] = useState(false);
   const [files, setFiles] = useState([]);
   const [accessToken, setAccessToken] = useState(null);
-
- const TOKEN_KEY = "googledrivetoken"; // Consistent key for localStorage
+  const [idToken, setIdToken] = useState(null);
+  const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // Key for expiry time
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
-  const DRIVE_SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
-  const isNative = DeviceCheck();
+  // const DRIVE_SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
+  const isNative = Capacitor.isNativePlatform()
 
   // Initialize Social Login
   useLayoutEffect(() => {
@@ -45,68 +45,65 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
   }, [isNative, CLIENT_ID, IOS_CLIENT_ID]);
 
   // --- Native Google Sign-In Flow ---
-  const nativeGoogleSignIn = async () => {
-     await SocialLogin.logout({ provider: 'google' });
-    setPending(true);
+const nativeGoogleSignIn = async () => {
     try {
+   
       const user = await SocialLogin.login({
-        provider: 'google',
+        provider: "google",
         options: {
-          scopes: ['email', 'profile', DRIVE_SCOPES],
+          scopes: ["email", "profile", "https://www.googleapis.com/auth/drive.readonly"],
         },
       });
 
-      if (!user) throw new Error('No user data returned.');
-      const { accessToken, idToken, profile } = user.result;
-      if(!accessToken){
-        throw new Error("No access token returned from Google.");
-      }
-      // Verify scopes on token
-      try{
-      fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`)
-        .then(r => r.json())
-        .then(info => {
-          // console.log("Token info:", info);
-          if (!info.scope?.includes('drive.readonly')) {
-            console.warn("⚠️ Token missing Drive scope — Drive access may fail.");
-          }
-        });
-      }catch(err){
-        console.error("Error verifying token scopes:", err);
-      }
-      // Save token
-      const expiry = Date.now() + 3600 * 1000;
-      await Preferences.set({ key: TOKEN_KEY, value: accessToken.token });
-      await Preferences.set({ key: TOKEN_EXPIRY_KEY, value: expiry.toString() });
+      if (!user?.result) throw new Error("No user data returned.");
 
+      const { accessToken, idToken, profile } = user.result;
+      const expiry = Date.now() + 3600 * 1000;
+
+      await Promise.all([
+        Preferences.set({ key: "userEmail", value: profile.email }),
+        Preferences.set({ key: "userName", value: profile.name }),
+        Preferences.set({ key: "googleId", value: profile.id }),
+        Preferences.set({ key: "googleIdToken", value: idToken || "" }),
+        Preferences.set({ key: driveTokenKey, value: accessToken?.token || "" }),
+        Preferences.set({
+          key: "googledrivetoken_expiry",
+          value: expiry.toString(),
+        }),
+      ]);
+
+      const info = {
+        email: profile.email,
+        name: profile.name,
+        googleId: profile.id,
+      };
+
+      setUserInfo(info);
       setAccessToken(accessToken);
+      setIdToken(idToken);
       setSignedIn(true);
     } catch (err) {
-      console.error('Native sign-in error', err);
+      console.error("Native sign-in error", err);
+      setLoginError(`Google Sign-In failed. ${err.message || JSON.stringify(err)}`);
     } finally {
       setPending(false);
     }
   };
 
-  // --- Check stored access token ---
   async function checkAccessToken() {
-    const token = (await Preferences.get({ key: TOKEN_KEY })).value;
+    const token = (await Preferences.get({ key: driveTokenKey })).value;
     const tokenExpiry = (await Preferences.get({ key: TOKEN_EXPIRY_KEY })).value;
     const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
 
     if (tokenValid && !accessToken) {
       setAccessToken(token);
       setSignedIn(true);
+    }else{
+      setSignedIn(false)
     }
     setLoading(false);
   }
 
-  useLayoutEffect(() => {
-    checkAccessToken();
-  }, [currentProfile]);
-
-  // --- Load GAPI and GIS Scripts ---
-// --- Load GAPI and GIS Scripts ---
 useEffect(() => {
   const initGapi = async () => {
     if (!window.gapi) {
@@ -174,7 +171,7 @@ useEffect(() => {
 
   // --- Fetch Files from Google Drive ---
   const fetchFiles = async () => {
-    const token =await Preferences.get({ key: TOKEN_KEY})
+    const token =await Preferences.get({ key: driveTokenKey})
  
     try{
     if (!token) return;
@@ -206,7 +203,7 @@ useEffect(() => {
 
   useLayoutEffect(() => {
     if (accessToken) fetchFiles();else checkAccessToken()
-  }, [accessToken]);
+  }, [currentProfile,navigate]);
 
   // --- File Dialog ---
   const openDialog = () => {
@@ -236,8 +233,8 @@ useEffect(() => {
 
   return (
     <div>
-      {gapiLoaded && driveClientLoaded && gisLoadedForPicker ||isNative ?(
-        !accessToken ? (
+    
+        {!accessToken ? (
           <div
             onClick={() => nativeGoogleSignIn()}
             className="btn bg-emerald-700 text-white rounded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]"
@@ -253,10 +250,60 @@ useEffect(() => {
               Open Google Drive
             </IonText>
           </div>
-        )
-      ) : (
-        <p>Loading Google Drive services...</p>
-      )}
+        )}
+      
+   
     </div>
   );
 }
+
+  // const nativeGoogleSignIn = async () => {
+  //   //  await SocialLogin.logout({ provider: 'google' });
+  //   setPending(true);
+  //   try {
+  //     const user = await SocialLogin.login({
+  //       provider: 'google',
+  //       options: {
+  //         scopes: ['email', 'profile', DRIVE_SCOPES],
+  //       },
+  //     });
+
+  //     if (!user) throw new Error('No user data returned.');
+  //     const { accessToken, idToken, profile } = user.result;
+  //     if(!accessToken){
+  //       window.alert("NOT ")
+  //       throw new Error("No access token returned from Google.");
+  //     }else{
+  //           window.alert("YES")
+  //       setAccessToken(accessToken)
+  //      await Preferences.set({key:TOKEN_KEY,value:accessToken})
+  //     }
+  //     // Verify scopes on token
+  //     try{
+  //     fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`)
+  //       .then(r => r.json())
+  //       .then(info => {
+  //         // console.log("Token info:", info);
+  //         if (!info.scope?.includes('drive.readonly')) {
+  //           console.warn("⚠️ Token missing Drive scope — Drive access may fail.");
+  //         }
+  //       });
+  //     }catch(err){
+  //       console.error("Error verifying token scopes:", err);
+  //     }
+  //     // Save token
+  //     const expiry = Date.now() + 3600 * 1000;
+  //     await Preferences.set({ key: TOKEN_KEY, value: accessToken.token });
+  //     await Preferences.set({ key: TOKEN_EXPIRY_KEY, value: expiry.toString() });
+
+  //     setAccessToken(accessToken);
+  //     setSignedIn(true);
+  //   } catch (err) {
+      
+  //     console.error('Native sign-in error', err);
+  //   } finally {
+  //     setPending(false);
+  //   }
+  // };
+
+  // --- Check stored access token ---
