@@ -78,6 +78,7 @@ export default function CollectionContainer({currentProfile}) {
   function findRole() {
     if (collection && currentProfile && collection.profileId === currentProfile.id) {
       setRole(new Role("owner", currentProfile, collection, RoleType.editor, new Date()));
+      setCanUserAdd(true)
       return;
     }
     if (collection && currentProfile && collection.roles) {
@@ -85,7 +86,10 @@ export default function CollectionContainer({currentProfile}) {
       if (foundRole) {
         setRole(new Role(foundRole.id, currentProfile, collection, foundRole.role, foundRole.created));
         setCanUserSee(true);
-      } else {
+        foundRole.role
+      if(writeArr.includes(foundRole.role)){
+setCanUserAdd(true)
+      }} else {
         setRole(null);
       }
     } else {
@@ -553,7 +557,7 @@ console.log("STORYLIST",collection.storyIdList)
                 </div>
               )}
               {canUserAdd && (
-                // <IonButton color="primary" >
+             
                 <div onClick={() => navigate(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full p-1">
                 <IonImg src={add}/>
                 </div>
