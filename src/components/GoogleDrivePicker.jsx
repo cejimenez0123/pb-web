@@ -1,93 +1,81 @@
 import { useState, useEffect, useLayoutEffect, useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { SocialLogin } from '@capgo/capacitor-social-login';
+import { SocialLogin } from "@capgo/capacitor-social-login";
 import { IonItem, IonText, IonList } from '@ionic/react';
 import Context from "../context";
 import DeviceCheck from './DeviceCheck';
 import { Preferences } from '@capacitor/preferences';
 import { setDialog } from '../actions/UserActions';
 import { Capacitor } from '@capacitor/core';
+import GoogleLogin from './GoogleLogin';
+import Enviroment from '../core/Enviroment';
 
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
 
 
   const { dialog, isPhone, currentProfile } = useContext(Context);
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [pending, setPending] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
-  const [showFiles, setShowFiles] = useState(false);
-const navigate = useNavigate()
-  const [gapiLoaded, setGapiLoaded] = useState(false);
-  const [driveClientLoaded, setDriveClientLoaded] = useState(false);
-  const [gisLoadedForPicker, setGisLoadedForPicker] = useState(false);
+  // const [loading, setLoading] = useState(false);
+
+//   const [signedIn, setSignedIn] = useState(false);
+//   const [showFiles, setShowFiles] = useState(false);
+// const navigate = useNavigate()
+//   const [gapiLoaded, setGapiLoaded] = useState(false);
+//   const [driveClientLoaded, setDriveClientLoaded] = useState(false);
+//   const [gisLoadedForPicker, setGisLoadedForPicker] = useState(false);
   const [files, setFiles] = useState([]);
   const [accessToken, setAccessToken] = useState(null);
   const [idToken, setIdToken] = useState(null);
-  const driveTokenKey = "googledrivetoken";
+   const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // Key for expiry time
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
-  // const DRIVE_SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
-  const isNative = Capacitor.isNativePlatform()
+     
 
   // Initialize Social Login
   useLayoutEffect(() => {
     SocialLogin.initialize({
       google: {
         webClientId: CLIENT_ID,
-        iOSClientId: IOS_CLIENT_ID,
-        iOSServerClientId: CLIENT_ID,
+          iOSClientId: IOS_CLIENT_ID,
+          iOSServerClientId: CLIENT_ID,
         mode: 'online',
       },
     }).catch(err => console.error('SocialLogin init error:', err));
-  }, [isNative, CLIENT_ID, IOS_CLIENT_ID]);
+  }, [CLIENT_ID, IOS_CLIENT_ID]);
 
   // --- Native Google Sign-In Flow ---
 const nativeGoogleSignIn = async () => {
     try {
-   
+      SocialLogin.logout({provider:"google"})
+      SocialLogin.refresh()
       const user = await SocialLogin.login({
-        provider: "google",
-        options: {
-          scopes: ["email", "profile", "https://www.googleapis.com/auth/drive.readonly"],
-        },
-      });
-
-      if (!user?.result) throw new Error("No user data returned.");
-
-      const { accessToken, idToken, profile } = user.result;
+        provider:"google",
+        options:{
+          scopes:["email","profile", "https://www.googleapis.com/auth/drive.readonly"]
+        }
+        // options: {
+        //   scopes: ["email", "profile", "https://www.googleapis.com/auth/drive.readonly"],
+        // },
+        
+        
+      }).catch((err) => console.error("SocialLogin error:", err));
+      console.log("USDSD",user)
+      if (!user.result) throw new Error("No user data returned.")
+      const { accessToken } = user.result;
       const expiry = Date.now() + 3600 * 1000;
-
-      await Promise.all([
-        Preferences.set({ key: "userEmail", value: profile.email }),
-        Preferences.set({ key: "userName", value: profile.name }),
-        Preferences.set({ key: "googleId", value: profile.id }),
-        Preferences.set({ key: "googleIdToken", value: idToken || "" }),
-        Preferences.set({ key: driveTokenKey, value: accessToken?.token || "" }),
-        Preferences.set({
-          key: "googledrivetoken_expiry",
-          value: expiry.toString(),
-        }),
-      ]);
-
-      const info = {
-        email: profile.email,
-        name: profile.name,
-        googleId: profile.id,
-      };
-
-      setUserInfo(info);
-      setAccessToken(accessToken);
-      setIdToken(idToken);
-      setSignedIn(true);
+console.log("Acccess",accessToken)
+  
+      setAccessToken(accessToken.token);
+     await Preferences.set({key:driveTokenKey,value:accessToken.token})
+  await Preferences.set({key:TOKEN_EXPIRY_KEY,value:expiry})
     } catch (err) {
+      console.log(err)
+      // window.alert("!",err.message)
       console.error("Native sign-in error", err);
-      setLoginError(`Google Sign-In failed. ${err.message || JSON.stringify(err)}`);
-    } finally {
-      setPending(false);
-    }
+   
+    } 
   };
 
   async function checkAccessToken() {
@@ -95,13 +83,10 @@ const nativeGoogleSignIn = async () => {
     const tokenExpiry = (await Preferences.get({ key: TOKEN_EXPIRY_KEY })).value;
     const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
 
-    if (tokenValid && !accessToken) {
+  
       setAccessToken(token);
-      setSignedIn(true);
-    }else{
-      setSignedIn(false)
-    }
-    setLoading(false);
+ 
+    
   }
 
 useEffect(() => {
@@ -122,7 +107,7 @@ useEffect(() => {
       });
 
       await window.gapi.client.load('drive', 'v3');
-      // console.log("✅ GAPI Drive client loaded");
+      
       setGapiLoaded(true);
       setDriveClientLoaded(true);
     } catch (err) {
@@ -146,6 +131,7 @@ useEffect(() => {
   };
 
   const loadGisScript = () => {
+
     if (window.google?.accounts?.oauth2) {
       setGisLoadedForPicker(true);
       console.log("✅ GIS (Google Identity Services) already loaded");
@@ -163,23 +149,25 @@ useEffect(() => {
     script.onerror = () => console.error("❌ Failed to load GIS script");
     document.body.appendChild(script);
   };
-
+if(!Capacitor.isNativePlatform()&&false){
   loadGapiScript();
   loadGisScript();
+}
+
 }, []);
 
 
   // --- Fetch Files from Google Drive ---
   const fetchFiles = async () => {
-    const token =await Preferences.get({ key: driveTokenKey})
- 
+    const token =(await Preferences.get({ key: driveTokenKey})).value
+    console.log("REERER",token)
     try{
     if (!token) return;
 
-    setLoading(true);
-    fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
+    // setLoading(true);
+   fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
       headers: {
-        Authorization: `Bearer ${token.value}`,
+        Authorization: `Bearer ${token}`,
         Accept: 'application/json',
       },
     })
@@ -188,30 +176,59 @@ useEffect(() => {
         return res.json();
       })
       .then(data => {
-        // console.log("Drive files:", data);
+        console.log("Drive files:", data);
         setFiles(data.files || []);
-        setLoading(false);
+       
       })
       .catch(err => {
         console.error('Google Drive API error:', err);
-        setLoading(false);
+        // setLoading(false);
       });
     }catch(err){
         console.error("Error in fetchFiles:", err);
         }
   };
+// const fetchFiles = async () => {
+//     const token =(await Preferences.get({ key: driveTokenKey}))v
+ 
+//     try{
+//     if (!token) return;
 
+//     setLoading(true);
+//     fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
+//       headers: {
+//         Authorization: `Bearer ${token.value}`,
+//         Accept: 'application/json',
+//       },
+//     })
+//       .then(res => {
+//         if (res.status === 401) throw new Error('Unauthorized — invalid or expired token');
+//         return res.json();
+//       })
+//       .then(data => {
+//         // console.log("Drive files:", data);
+//         setFiles(data.files || []);
+//         setLoading(false);
+//       })
+//       .catch(err => {
+//         console.error('Google Drive API error:', err);
+//         setLoading(false);
+//       });
+//     }catch(err){
+//         console.error("Error in fetchFiles:", err);
+//         }
+//   };
   useLayoutEffect(() => {
     if (accessToken) fetchFiles();else checkAccessToken()
-  }, [currentProfile,navigate]);
+  }, [accessToken]);
 
   // --- File Dialog ---
   const openDialog = () => {
     let dia = { ...dialog };
-    setShowFiles(true);
+    // setShowFiles(true);
     dia.isOpen = true;
-    dia.onClose = () => setShowFiles(false);
-    dia.title = "Google Drive";
+    dia.onClose = () => dispatch(setDialog({isOpen:false}))
+    dia.title = "google Drive";
 
     dia.text = (
       <IonList className={isPhone ? "grid grid-cols-2 gap-2" : ""}>
@@ -235,8 +252,9 @@ useEffect(() => {
     <div>
     
         {!accessToken ? (
+          // <GoogleLogin  drive={true}/>
           <div
-            onClick={() => nativeGoogleSignIn()}
+            onClick={nativeGoogleSignIn}
             className="btn bg-emerald-700 text-white rounded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]"
           >
             Log in to Google Drive
@@ -256,54 +274,3 @@ useEffect(() => {
     </div>
   );
 }
-
-  // const nativeGoogleSignIn = async () => {
-  //   //  await SocialLogin.logout({ provider: 'google' });
-  //   setPending(true);
-  //   try {
-  //     const user = await SocialLogin.login({
-  //       provider: 'google',
-  //       options: {
-  //         scopes: ['email', 'profile', DRIVE_SCOPES],
-  //       },
-  //     });
-
-  //     if (!user) throw new Error('No user data returned.');
-  //     const { accessToken, idToken, profile } = user.result;
-  //     if(!accessToken){
-  //       window.alert("NOT ")
-  //       throw new Error("No access token returned from Google.");
-  //     }else{
-  //           window.alert("YES")
-  //       setAccessToken(accessToken)
-  //      await Preferences.set({key:TOKEN_KEY,value:accessToken})
-  //     }
-  //     // Verify scopes on token
-  //     try{
-  //     fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`)
-  //       .then(r => r.json())
-  //       .then(info => {
-  //         // console.log("Token info:", info);
-  //         if (!info.scope?.includes('drive.readonly')) {
-  //           console.warn("⚠️ Token missing Drive scope — Drive access may fail.");
-  //         }
-  //       });
-  //     }catch(err){
-  //       console.error("Error verifying token scopes:", err);
-  //     }
-  //     // Save token
-  //     const expiry = Date.now() + 3600 * 1000;
-  //     await Preferences.set({ key: TOKEN_KEY, value: accessToken.token });
-  //     await Preferences.set({ key: TOKEN_EXPIRY_KEY, value: expiry.toString() });
-
-  //     setAccessToken(accessToken);
-  //     setSignedIn(true);
-  //   } catch (err) {
-      
-  //     console.error('Native sign-in error', err);
-  //   } finally {
-  //     setPending(false);
-  //   }
-  // };
-
-  // --- Check stored access token ---

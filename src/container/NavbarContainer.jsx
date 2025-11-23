@@ -229,7 +229,7 @@ const openDialog=()=>{
       }
 
     const ClickWriteAStory = debounce(()=>{
-      console.log("VCXBOT")
+     
       sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
      
         dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
