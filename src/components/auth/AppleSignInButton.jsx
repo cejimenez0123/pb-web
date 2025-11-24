@@ -7,15 +7,20 @@ import { SocialLogin } from '@capgo/capacitor-social-login';
 function AppleSignInButton({onUserSignIn}) {
 const CLIENT_ID = import.meta.env.VITE_APPLE_CLIENT_ID
 const REDIRECT_URI=import.meta.env.VITE_REDIRECT_URI
-  useLayoutEffect(() => {
-    SocialLogin.initialize({
+  // useLayoutEffect(() => {
+  //   SocialLogin.initialize({
+  //     apple:{
+  //       clientId:CLIENT_ID
+  //     }
+  //   }).catch(err => console.error('SocialLogin init error:', err));
+  // }, [CLIENT_ID,REDIRECT_URI]);
+
+  const handleAppleSignIn = async () => {
+   SocialLogin.initialize({
       apple:{
         clientId:CLIENT_ID
       }
     }).catch(err => console.error('SocialLogin init error:', err));
-  }, [CLIENT_ID,REDIRECT_URI]);
-
-  const handleAppleSignIn = async () => {
     const result = await SocialLogin.login({
   provider: 'apple',
   options: {
