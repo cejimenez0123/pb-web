@@ -127,11 +127,19 @@ const hasInitialized = useRef(false);
     }
   
     useEffect(()=>{
-      id && currentProfile && currentProfile.id && dispatch(updateStory({...parameters,profile:currentProfile,profileId:currentProfile.id}))
+      setIsSaved(false)
+    id && currentProfile && currentProfile.id && dispatch(updateStory({...parameters,profile:currentProfile,profileId:currentProfile.id})).then(res=>{
+        checkResult(res,payload=>{
+         
+setIsSaved(true)
+        },err=>{
+
+        })})
+      
   if(type==PageType.text){
     createPageAction()
   }
-    },[parameters.data,parameters.title,parameters.commentable,parameters.needsFeedback,parameters.isPrivate])
+    },[id,htmlContent,parameters.data,parameters.title,parameters.commentable,parameters.needsFeedback,parameters.isPrivate])
 
       const handleDelete =debounce(()=>{
           dispatch(deleteStory(parameters)).then(()=>{
@@ -279,25 +287,7 @@ const openConfirmDeleteDialog = () => {
 
   dispatch(setDialog(dia));
 };
-// const dispatchUpdate =debounce((params)=>{
-//   setIsSaved(false) 
- 
-//  dispatch(updateStory({...params,data:htmlContent.html,description})).then(res=>{
-//     checkResult(res,payload=>{
-    
-//       if(payload.story){
 
-// setIsSaved(true)
-// return true 
-//       }
-  
-//     },err=>{
-//       setError(err.message)
-//       return false
-//     })}
-// ,300)
-
-// })
 const openRoleFormDialog = () => {
   const dia = {...dialog};
   dia.isOpen = true;

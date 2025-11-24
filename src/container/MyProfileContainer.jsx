@@ -1,9 +1,9 @@
-import { useEffect, useState, useContext, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState, useContext, useMemo, useLayoutEffect } from 'react';
+import {  useNavigate } from 'react-router-dom';
 import "../styles/MyProfile.css";
 import { useDispatch, useSelector } from "react-redux";
-import { createStory, updateStory, getMyStories } from '../actions/StoryActions';
-import { getMyCollections, setCollections} from '../actions/CollectionActions';
+import { createStory, updateStory,  } from '../actions/StoryActions';
+import { setCollections} from '../actions/CollectionActions';
 import IndexList from '../components/page/IndexList';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
@@ -18,10 +18,11 @@ import FeedbackDialog from '../components/page/FeedbackDialog';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import { IonText, IonInput, IonContent, IonSpinner, IonPage, useIonViewDidEnter, useIonViewWillEnter, IonImg } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
-import { setDialog } from '../actions/UserActions.jsx';
+import { getCurrentProfile, setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
 import axios from "axios";
 import StoryCollectionTabs from '../components/page/StoryCollectionTabs.jsx';
+import { current } from '@reduxjs/toolkit';
 
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
@@ -49,6 +50,7 @@ function MyProfileContainer({ presentingElement }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentProfile = useSelector(state=>state.users.currentProfile)
+  const ePage = useSelector(state => state.pages.editPage);
   const stories = useSelector(state => state.pages.pagesInView);
   const dialog = useSelector(state => state.users.dialog);
   const { seo, setSeo } = useContext(Context);
@@ -68,7 +70,7 @@ function MyProfileContainer({ presentingElement }) {
     AZ: "A-Z",
     ZA: "Z-A"
   };
-
+ 
   const filteredSortedStories = useMemo(() => {
     let result = stories || [];
 
@@ -229,11 +231,16 @@ function MyProfileContainer({ presentingElement }) {
     };
     return seSeo()
   }, [])
+  useLayoutEffect(()=>{
+     dispatch(getCurrentProfile())
+  })
   useEffect(()=>{
-    
-      currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: currentProfile.stories }))
+     
+currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: currentProfile.stories }))
       currentProfile && currentProfile.collections &&  dispatch(setCollections({collections:currentProfile.collections}))
-  },[])
+ 
+      }
+       ,[currentProfile])
   if (!currentProfile) {
     return (
       <IonContent>
@@ -242,7 +249,7 @@ function MyProfileContainer({ presentingElement }) {
     );
   }
 return<IonPage><IonContent fullscreen={true} className='ion-padding'><div className=" sm:pt-16 pt-12 pb-20">
-  {/* Top Section */}
+
   <div className="relative flex flex-col md:flex-row justify-around mx-auto sm:border-4 sm:border-emerald-300 p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 
     <div className="md:w-1/3 max-w-[60em] h-[16em] mb-6 flex justify-center md:justify-start">
