@@ -16,12 +16,12 @@ const REDIRECT_URI=import.meta.env.VITE_REDIRECT_URI
   // }, [CLIENT_ID,REDIRECT_URI]);
 
   const handleAppleSignIn = async () => {
-   SocialLogin.initialize({
+  await SocialLogin.initialize({
       apple:{
         clientId:CLIENT_ID
       }
-    }).catch(err => console.error('SocialLogin init error:', err));
-    const result = await SocialLogin.login({
+    })
+    const {result }= await SocialLogin.login({
   provider: 'apple',
   options: {
     scopes: ['email', 'name'],
