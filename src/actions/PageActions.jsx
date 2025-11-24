@@ -1,10 +1,8 @@
 import { createAction,createAsyncThunk } from "@reduxjs/toolkit"
-import {storage} from "../core/di"
 import storyRepo from "../data/storyRepo"
 import commentRepo from "../data/commentRepo"
 import likeRepo from "../data/likeRepo"
 import profileRepo from "../data/profileRepo"
-import { FirebaseStorage } from "@capacitor-firebase/storage"
 
 const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
   

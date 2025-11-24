@@ -83,9 +83,11 @@ console.log("Acccess",accessToken)
     const tokenExpiry = (await Preferences.get({ key: TOKEN_EXPIRY_KEY })).value;
     const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
 
-  
+    if(tokenValid){
       setAccessToken(token);
- 
+    }else{
+      setAccessToken(null)
+    }
     
   }
 
