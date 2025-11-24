@@ -147,7 +147,7 @@ export default function PageViewContainer() {
               </h1>
             </div>
           ) : canUserSee ? (
-            <div className="w-fit mx-autosm:max-w-[50em]">
+            <div className="w-fit mx-auto sm:max-w-[50em]">
               <PageDiv page={page} />
               <CommentThread page={page} comments={rootComments} />
            </div>
