@@ -326,7 +326,7 @@ openDialog()
     
                          switch(page){
                           case SettingName.profile:
-                            console.log("NAVIGATE TO PROFILE")
+                           
                               navigate(Paths.editProfile.route())
                               break;
                           case SettingName.logout:
