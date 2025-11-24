@@ -406,7 +406,6 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                   border-blueSea border rounded-[30px] shadow-md
                   min-w-[16rem] max-w-[18rem]
                   flex-shrink-0 flex-col p-4
-                  bg-white
                 "
               >
                 <div className="flex flex-col justify-between h-full">
