@@ -76,9 +76,14 @@ export default function CollectionContainer() {
   const writeArr = [RoleType.editor, RoleType.writer];
 
   function findRole() {
+if(!collection.isPrivate){
+setCanUserSee(true)
+return
+}
     if (collection && currentProfile && collection.profileId === currentProfile.id) {
       setRole(new Role("owner", currentProfile, collection, RoleType.editor, new Date()));
       setCanUserAdd(true)
+      setCanUserSee(true)
       return;
     }
     if (col && profile && col.roles) {
@@ -86,16 +91,12 @@ export default function CollectionContainer() {
       if (foundRole) {
         setRole(new Role(foundRole.id, profile, col, foundRole.role, foundRole.created));
         setCanUserSee(true);
-        foundRole.role
+       
       if(writeArr.includes(foundRole.role)){
 setCanUserAdd(true)
-      }} else {
-        setRole(null);
-      }
-    } else {
-      setRole(null);
-    }
-  }
+       setCanUserSee(true)
+       return
+  }}}}
   
   function soUserCanAdd() {
     if (!currentProfile || !collection) {
@@ -184,7 +185,7 @@ setCanUserAdd(true)
           
             setRole({role:"commenter"})
           setSuccess("You are now following this collection");
-          findRole(currentProfile,collection)
+          findRole()
         }, err => {
           setError(err.message);
         });
@@ -195,7 +196,7 @@ setCanUserAdd(true)
   };
 useEffect(()=>{
  getContent()
-   currentProfile && collection && findRole(currentProfile,collection);
+   collection.isPrivate && currentProfile && collection && findRole(currentProfile,collection);
 },[navigate,location.pathname])
 const getCol = async () => {
   setLoading(true);
@@ -238,7 +239,7 @@ const getCol = async () => {
             res,
             (payload) => {
               if (payload.collection) {
-                
+                setCanUserSee(true)
                 setLoading(false);
                   soUserCanEdit()
               } else {
