@@ -131,9 +131,9 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   };
     const getArchive = () => {
     if (currentProfile && currentProfile.profileToCollections) {
-        console.log("XC",currentProfile)
+      
       let ptc = currentProfile.profileToCollections.find((ptc) => ptc.type === "archive");
-      console.log("XCL",ptc)
+
       setArchive(ptc.collection);
     }
   };

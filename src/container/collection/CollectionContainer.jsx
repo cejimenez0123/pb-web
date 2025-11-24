@@ -75,9 +75,10 @@ export default function CollectionContainer() {
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const writeArr = [RoleType.editor, RoleType.writer];
 
-  function findRole(profile,col) {
-    if (col && profile && col.profileId === profile.id) {
-      setRole(new Role("owner", profile, col, RoleType.editor, new Date()));
+  function findRole() {
+    if (collection && currentProfile && collection.profileId === currentProfile.id) {
+      setRole(new Role("owner", currentProfile, collection, RoleType.editor, new Date()));
+      setCanUserAdd(true)
       return;
     }
     if (col && profile && col.roles) {
@@ -85,7 +86,10 @@ export default function CollectionContainer() {
       if (foundRole) {
         setRole(new Role(foundRole.id, profile, col, foundRole.role, foundRole.created));
         setCanUserSee(true);
-      } else {
+        foundRole.role
+      if(writeArr.includes(foundRole.role)){
+setCanUserAdd(true)
+      }} else {
         setRole(null);
       }
     } else {
@@ -119,7 +123,7 @@ export default function CollectionContainer() {
     }
     if (collection.roles) {
       let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-      console.log("CDCD",found)
+     
       if (found && (found.role === RoleType.editor)||collection.profileId==currentProfile.id) {
         setCanUserEdit(true);
         return;
@@ -143,6 +147,7 @@ export default function CollectionContainer() {
   }, [currentProfile]);
   useEffect(()=>{
   getCol()
+  
   },[navigate])
   useEffect(()=>{
     soUserCanEdit()
@@ -332,6 +337,7 @@ const getCol = async () => {
             checkResult(res, payload => {
               checkFound();
               setSuccess("Saved to Home");
+              setBookmarkLoading(false)
             }, err => {
               setBookmarkLoading(false);
             });
@@ -344,10 +350,12 @@ const getCol = async () => {
             if (payload.message?.includes("Already") || payload.message?.includes("Deleted")) {
               setIsBookmarked(null);
               setSuccess("Removed from Home");
+                     setBookmarkLoading(false)
             }
             setBookmarkLoading(false);
           }, err => {
             setBookmarkLoading(false);
+                   setBookmarkLoading(false)
           });
         });
       }
@@ -552,7 +560,7 @@ const getCol = async () => {
                 </div>
               )}
               {canUserAdd && (
-                // <IonButton color="primary" >
+             
                 <div onClick={() => navigate(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full p-1">
                 <IonImg src={add}/>
                 </div>
@@ -576,7 +584,7 @@ const getCol = async () => {
         {collections && collections.length > 0 && (
           <IonCard className="ion-padding pt-12">
             <IonCardHeader>
-              <IonCardTitle>Anthologies</IonCardTitle>
+              <IonCardTitle><h5 className="text-xl  px-4 pb-2">Anthologies</h5></IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
               <IonList className="flex flex-row min-h-[14rem] overflow-x-scroll">
@@ -592,7 +600,7 @@ const getCol = async () => {
 <div className="sm:w-[50rem] mx-auto">
         <IonCard className="ion-margin">
           <IonCardHeader>
-            <IonCardTitle>Pages</IonCardTitle>
+            <IonCardTitle><h3 className="text-xl px-4 pb-2">Pages</h3></IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
             <PageList

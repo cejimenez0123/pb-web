@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux"
-import { useState,useLayoutEffect, useEffect } from "react"
+import { useState,useLayoutEffect, useEffect, useContext } from "react"
 import CommentInput from "./CommentInput"
 import CommentThread from "./CommentThread"
 import { useNavigate } from "react-router-dom"
@@ -10,9 +10,11 @@ import { deleteHashtagComment, createHashtagComment } from "../../actions/Hashta
 import checkResult from "../../core/checkResult"
 import horiz from "../../images/icons/more_horiz.svg"
 import { deleteComment } from "../../actions/PageActions.jsx"
+import Context from "../../context.jsx"
 export default function Comment({page,comment,level}){
     const comments = useSelector(state=>state.comments.comments)
     const dispatch = useDispatch()
+    const {setErrorr} = useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [branches,setBranches]=useState([])
     const [replyInput,setReplyInput]=useState(false)
@@ -38,7 +40,7 @@ export default function Comment({page,comment,level}){
         setIsHelpful(hashtag)
      
      },err=>{
-        window.alert(err.message)
+       setError(err.message)
      }))}
     }
     const handleDeleteComment =()=>{

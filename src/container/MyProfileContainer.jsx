@@ -225,17 +225,15 @@ function MyProfileContainer({ presentingElement }) {
       if (currentProfile) {
         setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
      
-      }else{
-        navigate(Paths.login())
       }
     };
     return seSeo()
   }, [])
   useEffect(()=>{
-    console.log(currentProfile)
+    
       currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: currentProfile.stories }))
       currentProfile && currentProfile.collections &&  dispatch(setCollections({collections:currentProfile.collections}))
-  },[currentProfile])
+  },[])
   if (!currentProfile) {
     return (
       <IonContent>

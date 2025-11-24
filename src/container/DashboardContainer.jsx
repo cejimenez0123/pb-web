@@ -25,7 +25,7 @@ const navigate = useNavigate()
   const recommendedCols= useSelector(state => state.books.recommendedCols);
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
-// console.log("recommendedStories",stories)
+
   const [hasMore, setHasMore] = useState(false);
   useEffect(()=>{
     if(currentProfile){
@@ -88,7 +88,7 @@ const libraryForums = () => {
   };
 
   const getHomeCollectionContent = () => {
-    // dispatch(setPagesInView({ pages: [] }));
+
     if (currentProfile && currentProfile?.profileToCollections) {
       let ptc = currentProfile.profileToCollections.find(ptc => ptc.type === 'home');
       if (ptc) {

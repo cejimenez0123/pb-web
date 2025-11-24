@@ -50,11 +50,10 @@ export default function CommentInput({parentComment,page,defaultComment,handleCl
                 setComment("")
                 setShow(false)
                 handleClose()
-                const comment = payload
-                const params = {comment}
+              
               
             },(err)=>{
-                window.alert(err)
+            setError(err)
             })
     
         })

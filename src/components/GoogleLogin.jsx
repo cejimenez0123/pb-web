@@ -16,6 +16,7 @@ import Context from "../context";
 import { Preferences } from "@capacitor/preferences";
 import Googlelogo from "../images/logo/googlelogo.png";
 import ErrorBoundary from "../ErrorBoundary"; // make sure this path matches your project
+import Enviroment from "../core/Enviroment";
 
 function GoogleLoginInner({ drive, onUserSignIn }) {
   const { isError } = useContext(Context);
@@ -35,6 +36,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
 
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
+     
   const driveTokenKey = "googledrivetoken";
 
   // ---------------------------
@@ -50,6 +52,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
           iOSClientId: IOS_CLIENT_ID,
           iOSServerClientId: CLIENT_ID,
           mode: "online",
+          // redirectUrl:Enviroment.redirectUrl
         },
       }).catch((err) => console.error("SocialLogin init error:", err));
     } catch (err) {
@@ -152,9 +155,10 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
         options: {
           scopes: ["email", "profile", "https://www.googleapis.com/auth/drive.readonly"],
         },
+      
       });
-
-      if (!user?.result) throw new Error("No user data returned.");
+console.log("TOOTOTC")
+      if (!user.result) throw new Error("No user data returned.");
 
       const { accessToken, idToken, profile } = user.result;
       const expiry = Date.now() + 3600 * 1000;
@@ -164,7 +168,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
         Preferences.set({ key: "userName", value: profile.name }),
         Preferences.set({ key: "googleId", value: profile.id }),
         Preferences.set({ key: "googleIdToken", value: idToken || "" }),
-        Preferences.set({ key: driveTokenKey, value: accessToken?.token || "" }),
+        Preferences.set({ key: driveTokenKey, value: accessToken.token || "" }),
         Preferences.set({
           key: "googledrivetoken_expiry",
           value: expiry.toString(),
@@ -294,13 +298,13 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   // ---------------------------
   // 7️⃣ UI
   // ---------------------------
-  // if (pending) {
-  //   return (
-  //     <div className="flex flex-col justify-center items-center w-full min-h-full">
-  //       <IonSpinner name="crescent" />
-  //     </div>
-  //   );
-  // }
+  if (pending) {
+    return (
+      <div className="flex flex-col justify-center items-center w-full min-h-full">
+        <IonSpinner name="crescent" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col  justify-center items-center w-full min-h-full">

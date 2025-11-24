@@ -13,10 +13,8 @@ const LoggedRoute = ({ currentProfile,children }) => {
   useEffect(() => {
     const checkAuth = async () => {
  
-        const stored = await Preferences.get({ key: "token" });
-        const tok = stored.value;
-
-        if (tok) {
+    
+        if (currentProfile) {
             try {   
           navigate(Paths.myProfile, { replace: true });
           setToken(null);
@@ -25,7 +23,7 @@ const LoggedRoute = ({ currentProfile,children }) => {
       } catch (err) {
         console.error("Error reading token:", err);
         setError?.("Error checking login state");
-        // navigate(Paths.login(), { replace: true });
+      
         setToken(null);
       }}else{
         setToken(tok)

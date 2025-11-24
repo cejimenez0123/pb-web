@@ -31,7 +31,7 @@ export default function StoryCollectionTabs({ tab, setTab, storyList, colList })
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex h-full flex-col w-full">
       {/* Tabs */}
       <div className="flex justify-center mb-2">
         <div className="flex rounded-full border border-emerald-600 overflow-hidden">

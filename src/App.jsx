@@ -61,7 +61,7 @@ function App(props) {
     const isTablet =  useMediaQuery({
     query: '(max-width: 1100px)'
   })
-  const isNative = DeviceCheck()
+  const isNative = Capacitor.isNativePlatform()
 
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
@@ -80,12 +80,8 @@ function App(props) {
 
 
   useEffect(()=>{
-   
-  
       dispatch(getCurrentProfile())
-   
-   
-  },[navigate])
+  },[])
   useEffect(()=>{
       setOlderPath(location.pathname) 
   },[location.pathname])
@@ -194,8 +190,8 @@ if(!navigator.onLine){
       <Routes >
  
      <Route path={'/'} element={isFirstLaunch&&Capacitor.isNativePlatform()?<Navigate to="/onboard"/>:<AboutContainer/>} />
-      <Route path={"/login"} element={<LogInContainer/>}/> 
-      <Route path={"/onboard"} element={<OnboardingContainer/>}/>
+      <Route path={Paths.login()} element={<LogInContainer/>}/> 
+      <Route path={Paths.onboard} element={<OnboardingContainer/>}/>
 
           <Route path={Paths.home()} 
                         element={

@@ -66,7 +66,7 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
   }
 
   return (
-    <div className="py-4 mx-auto">
+    <div className="py-4 mx-auto min-h-[50em]">
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="sortableList">
           {(provided) => (
@@ -78,7 +78,7 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="w-[96%] mx-auto items-center text-emerald-800 py-4 bg-transparent border-emerald-600 border-2 rounded-full shadow-md hover:bg-gray-100"
+                      className="w-[96%] mx-auto items-center text-emerald-800 py-4 bg-transparent border-blueSea border-opacity-60 border-2 rounded-full shadow-md hover:bg-gray-100"
                     >
                       <div className="flex justify-between mr-3">
                         <IonImg src={dragHandle} className="my-auto ml-4" />
