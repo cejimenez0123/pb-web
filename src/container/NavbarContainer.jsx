@@ -323,11 +323,11 @@ openDialog()
       </div>
       }
       const handleSettingNav=(page)=>{  
-        console.log("SETTING NAV",page)    
+    
                          switch(page){
                           case SettingName.profile:
                             console.log("NAVIGATE TO PROFILE")
-                              navigate(Paths.myProfile)
+                              navigate(Paths.editProfile.route())
                               break;
                           case SettingName.logout:
                             handleSignOut()
