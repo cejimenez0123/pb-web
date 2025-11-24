@@ -327,7 +327,7 @@ openDialog()
                          switch(page){
                           case SettingName.profile:
                            
-                              navigate(Paths.editProfile.route())
+                              navigate(Paths.myProfile)
                               break;
                           case SettingName.logout:
                             handleSignOut()
