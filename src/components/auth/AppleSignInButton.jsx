@@ -28,7 +28,7 @@ const REDIRECT_URI=import.meta.env.VITE_REDIRECT_URI
   },
 });
 console.log(result)
-onUserSignIn({idToken:result.response.identityToken,email:result.response.email})
+onUserSignIn({idToken:result.identityToken,email:result.profile.email})
     // SignInWithApple.authorize(options)
     //   .then(result => {
     //     )
