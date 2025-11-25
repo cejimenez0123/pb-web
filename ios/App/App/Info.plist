@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraReactionEffectGesturesEnabledDefault</key>
-	<false/>
-	<key>NSFileProviderDomainUsageDescription</key>
-	<string>We need your location to connect you with workshops in your area.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Please give permission if you want to upload photos</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Please give permission if you want to upload photos</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -53,6 +45,12 @@
 			</array>
 		</array>
 	</dict>
+	<key>NSCameraReactionEffectGesturesEnabledDefault</key>
+	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Please give permission if you want to upload photos</string>
+	<key>NSFileProviderDomainUsageDescription</key>
+	<string>We need your location to connect you with workshops in your area.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need your location to connect you with workshops in your area.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -63,6 +61,8 @@
 	<string>We need your location to connect you with workshops in your area.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to connect you with workshops in your area.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Please give permission if you want to upload photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Please give permission if you want to upload photos</string>
 	<key>UILaunchStoryboardName</key>
@@ -73,18 +73,18 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIStatusBarStyle</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>

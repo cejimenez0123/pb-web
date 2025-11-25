@@ -50,7 +50,6 @@ const nativeGoogleSignIn = async () => {
       if (!user.result) throw new Error("No user data returned.")
       const { accessToken } = user.result;
       const expiry = Date.now() + 3600 * 1000;
-// console.log("Acccess",accessToken)
 
       setAccessToken(accessToken.token);
      await Preferences.set({key:driveTokenKey,value:accessToken.token})
@@ -77,105 +76,6 @@ const nativeGoogleSignIn = async () => {
     
   }
 
-useEffect(() => {
-  const initGapi = async () => {
-    if (!window.gapi) {
-      console.warn("⏳ GAPI script not found yet, retrying...");
-      return;
-    }
-
-    try {
-      await new Promise((resolve, reject) => {
-        window.gapi.load('client:picker', {
-          callback: resolve,
-          onerror: () => reject(new Error("Failed to load gapi client modules")),
-          timeout: 5000,
-          ontimeout: () => reject(new Error("Timed out loading gapi")),
-        });
-      });
-
-      await window.gapi.client.load('drive', 'v3');
-      
-      setGapiLoaded(true);
-      setDriveClientLoaded(true);
-    } catch (err) {
-      console.error("❌ Error initializing GAPI:", err);
-    }
-  };
-
-  const loadGapiScript = () => {
-    if (window.gapi) {
-      initGapi();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://apis.google.com/js/api.js';
-    script.async = true;
-    script.defer = true;
-    script.onload = initGapi;
-    script.onerror = () => console.error("❌ Failed to load gapi script");
-    document.body.appendChild(script);
-  };
-
-  const loadGisScript = () => {
-
-    if (window.google?.accounts?.oauth2) {
-      setGisLoadedForPicker(true);
-      console.log("✅ GIS (Google Identity Services) already loaded");
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      setGisLoadedForPicker(true);
-      console.log("✅ GIS OAuth2 client loaded");
-    };
-    script.onerror = () => console.error("❌ Failed to load GIS script");
-    document.body.appendChild(script);
-  };
-if(!Capacitor.isNativePlatform()&&false){
-  loadGapiScript();
-  loadGisScript();
-}
-
-}, []);
-
-
-  // --- Fetch Files from Google Drive ---
-  // const fetchFiles = async () => {
-  //   const token =(await Preferences.get({ key: driveTokenKey})).value
-  //   console.log("REERER",token)
-  //   try{
-  //   if (!token) return;
-
-  //   // setLoading(true);
-  //  fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //       Accept: 'application/json',
-  //     },
-  //   })
-  //     .then(res => {
-  //       if (res.status === 401) throw new Error('Unauthorized — invalid or expired token');
-  //       return res.json();
-  //     })
-  //     .then(data => {
-  //       console.log("Drive files:", data);
-  //       setFiles(data.files || []);
-       
-  //     })
-  //     .catch(err => {
-  //       console.error('Google Drive API error:', err);
-       
-  //     });
-  //   }catch(err){
-  //       console.error("Error in fetchFiles:", err);
-  //       }
-  // };
 
 const fetchFiles = async () => {
     const token =(await Preferences.get({ key: driveTokenKey})).value
@@ -212,11 +112,11 @@ const fetchFiles = async () => {
   }, [accessToken]);
   useLayoutEffect(()=>{
     checkAccessToken()
-  })
+  },[])
   // --- File Dialog ---
   const openDialog = () => {
     let dia = { ...dialog };
-    // setShowFiles(true);
+  
     dia.isOpen = true;
     dia.onClose = () => dispatch(setDialog({isOpen:false}))
     dia.title = "google Drive";
@@ -227,7 +127,7 @@ const fetchFiles = async () => {
           <IonItem
             key={file.id}
             className="rounded-box px-2 py-3 shadow-md hover:border hover:border-purple-200"
-            onClick={() => {  setShowFiles(true); 
+            onClick={() => {  
             onFilePicked(file)}}
           >
             <h5 className="text-center text-sm">{file.name}</h5>

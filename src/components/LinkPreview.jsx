@@ -12,15 +12,7 @@ function LinkPreview({ url, isGrid }) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const size = adjustScreenSize(
-    isGrid,
-    true,
-    " bg-emerald-200 rounded-t-lg overflow-hidden",
-    " rounded-t-lg pt-4 overflow-hidden mx-auto ",
-    " rounded-t-lg ",
-    " rounded-t-lg ",
-    " h-[100%] "
-  );
+  const size = "w-[100%] sm:w-[48em]"
 
   useEffect(() => {
     initGA();
@@ -76,9 +68,9 @@ const fetchPreview = async (url) => {
     return match ? match[1] : '';
   };
 
-  // Spotify special case
+
   if (url?.includes('https://open.spotify.com/')) {
-    return <SpotifyEmbed url={url} />;
+    return <SpotifyEmbed url={url} width={"large"} />;
   }
 
   if (loading) return <div className={"skeleton " + size} />;
@@ -92,14 +84,14 @@ const fetchPreview = async (url) => {
   }
 
   const imageView = () => {
-    if (previewData.title !== "Spotify") {
+    // if (previewData.title !== "Spotify") {
       return previewData.image && (
-        <a href={url} className={size}>
+        <a href={url}>
           <IonImg className='rounded-t-lg' src={previewData.image} alt={previewData.title} />
         </a>
       );
-    }
-    return <SpotifyEmbed url={url} />;
+    // }
+    // return <SpotifyEmbed url={url} />
   };
 
   const previewTitle = () => {

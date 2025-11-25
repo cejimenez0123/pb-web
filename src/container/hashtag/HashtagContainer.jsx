@@ -136,7 +136,9 @@ export default function HashtagContainer() {
 
   /** Library (Community) section */
   const renderLibraries = () => {
-   
+  if(libraries.length==0){
+    return
+  }
     return (
   <div className="w-full  h-[14rem]">
         <h3 className="text-emerald-900 font-extrabold lora-bold text-2xl ml-14 md:ml-16 mb-4">
