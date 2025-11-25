@@ -19,6 +19,8 @@ import check from "../../images/icons/check.svg"
 import { Geolocation } from '@capacitor/geolocation';
 import DeviceCheck from '../../components/DeviceCheck';
 import { IonContent } from '@ionic/react';
+import { setPagesInView } from '../../actions/PageActions';
+import { setCollections } from '../../actions/CollectionActions';
 
 const WorkshopContainer = (props) => {
   const pathParams = useParams()
@@ -183,8 +185,11 @@ setTimeout(()=>{
     setSuccess(null)
     if(currentProfile){
     if( page){
-        dispatch(createWorkshopGroup({profile:currentProfile,story:page,isGlobal,location})).then(res=>{
+      dispatch(setPagesInView({pages:[]}))
+      dispatch(setCollections({collections:[]}))
+      dispatch(createWorkshopGroup({profile:currentProfile,story:page,isGlobal,location})).then(res=>{
       checkResult(res,payload=>{
+        console.log("FODFOFD",payload)
         if(payload && payload.collection){
           setLoading(false)
           navigate(Paths.collection.createRoute(payload.collection.id))
@@ -204,6 +209,7 @@ setTimeout(()=>{
   }else{
     dispatch(createWorkshopGroup({profile:currentProfile,story:null,isGlobal,location})).then(res=>{
       checkResult(res,payload=>{
+          console.log("FXFOFD",payload)
         if(payload && payload.collection){
           setLoading(false)
           navigate(Paths.collection.createRoute(payload.collection.id))

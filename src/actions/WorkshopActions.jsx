@@ -47,10 +47,13 @@ async ({profile,story,location,isGlobal},thunkApi)=>{
 
   
         let data =await workshopRepo.joinWorkshop({profile,story,location})
-        return({collection:data.collection})
+        if(!data.collection) throw new Error(data.error)
+        console.log("X",data)
+        return data
       } else{
         let data =await workshopRepo.joinGlobalWorkshop({profile,story,location})
-        return({collection:data.collection})
+       if(!data.collection) throw new Error(data.error)
+        return data
       }
     }catch(error){
           

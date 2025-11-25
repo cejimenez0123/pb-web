@@ -203,7 +203,7 @@ return
 useEffect(()=>{
 canUserSee&& getContent()
 
-},[canUserSee])
+},[canUserSee,collection])
 const getCol = async () => {
   setLoading(true);
   try {
@@ -297,34 +297,7 @@ const getCol = async () => {
     }
   };
 
-  const getSubColContent=()=>{
-            let contentArr = []
-        
-            if(collection.childCollections){
-                let cols = collection.childCollections
-                for(let i=0;i<cols.length;i+=1){
-                    if(cols[i]){
-                   let col =cols[i].childCollection
-                   if(col && col.storyIdList){
-             
-                       contentArr= [...contentArr,...col.storyIdList]
-                    
-                   }
-                    
-                   }
-                }
-            }
-     
-        const sorted = [...contentArr].sort((a,b)=>
-                
-                a.updated && b.updated && b.updated>a.updated
-           
-                   ).map(stc=>stc.story)
-                
-         dispatch(appendToPagesInView({pages:sorted}))
-      
-        setHasMore(false)
-        }
+  
        
   const onBookmark = (type) => {
     if (!currentProfile) {
@@ -409,7 +382,7 @@ const getCol = async () => {
                     a.index && b.index && b.index<a.index
                
                       ).map(stc=>stc.story)
-                      console.log("SORTED",sorted)
+                      
                       if(sorted.length===collection.storyIdList.length){
              dispatch(setPagesInView({pages:sorted}))
                       }       

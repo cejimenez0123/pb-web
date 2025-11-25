@@ -253,8 +253,8 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
    },[editPage])
    const handleFeedback=()=>{
 
-       if(parameters.page.id){
-        navigate(Paths.workshop.createRoute(params.page.id))
+       if(id){
+        navigate(Paths.workshop.createRoute(id))
        }
 
       

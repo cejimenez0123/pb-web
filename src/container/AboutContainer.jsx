@@ -296,7 +296,7 @@ export default function AboutContainer() {
                   display: 'inline-block',
                   userSelect: 'none'
                 }}
-                onClick={() => navigate("/onboard")}
+                onClick={() => navigate(Paths.onboard)}
               >
                 Become Part of our Writers' Circle
               </IonText>

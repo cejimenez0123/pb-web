@@ -16,6 +16,7 @@ import Enviroment from "../../core/Enviroment"
 import { Capacitor } from "@capacitor/core";
 import settings from "../../images/icons/settings.svg"
 import { useNavigate } from "react-router-dom";
+import Paths from "../../core/paths";
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
         const dialog = useSelector(state=>state.users.dialog)
@@ -102,7 +103,7 @@ const ProfileInfo = ({profile})=>{
     <ProfilePic url={pictureUrl}/>
      <IonText className='text-xl mb-3   text-emerald-900 font-bold'>{profile.username}</IonText>
 </div>    
-<IonImg  onClick={()=> navigate("/profile/edit")} className="bg-soft rounded-full  p-1  max-h-7 mb-4 w-8 mx-2" src={settings}/> 
+<IonImg  onClick={()=> navigate(Paths.editProfile)} className="bg-soft rounded-full  p-1  max-h-7 mb-4 w-8 mx-2" src={settings}/> 
      </div>
      <div>
        <div className='w-[100%] w-[15em]  md:max-w-[20em] text-left '>
