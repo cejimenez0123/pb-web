@@ -57,7 +57,7 @@ export default function PageViewContainer() {
     fetchStory();
   }, [id]);
   useEffect(()=>{
-    if(!page.isPrivate){
+    if(page && !page.isPrivate){
       setCanUserSee(true)
     }
   },[page])
