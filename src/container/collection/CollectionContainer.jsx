@@ -74,18 +74,18 @@ export default function CollectionContainer() {
   const [hasMore, setHasMore] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const writeArr = [RoleType.editor, RoleType.writer];
+   
+  function findRole(col,profile) {
 
-  function findRole() {
-if(!collection.isPrivate){
-setCanUserSee(true)
-return
-}
-    if (collection && currentProfile && collection.profileId === currentProfile.id) {
-      setRole(new Role("owner", currentProfile, collection, RoleType.editor, new Date()));
+
+    if (col&& profile && col.profileId == profile.id) {
+      setRole(new Role("owner", profile, col, RoleType.editor, new Date()));
       setCanUserAdd(true)
       setCanUserSee(true)
       return;
     }
+
+
     if (col && profile && col.roles) {
       let foundRole = col.roles.find(role => role.profileId === profile.id);
       if (foundRole) {
@@ -96,7 +96,12 @@ return
 setCanUserAdd(true)
        setCanUserSee(true)
        return
-  }}}}
+  }}}
+   if(!col.isPrivate){
+setCanUserSee(true)
+return
+}
+}
   
   function soUserCanAdd() {
     if (!currentProfile || !collection) {
@@ -151,8 +156,9 @@ setCanUserAdd(true)
   
   },[navigate])
   useEffect(()=>{
+    collection && currentProfile && findRole(collection,currentProfile)
     soUserCanEdit()
-    // checkPermissions()
+ 
   },[currentProfile,collection])
   
   function checkFound() {
@@ -185,7 +191,7 @@ setCanUserAdd(true)
           
             setRole({role:"commenter"})
           setSuccess("You are now following this collection");
-          findRole()
+          findRole(collection,currentProfile)
         }, err => {
           setError(err.message);
         });
@@ -195,9 +201,9 @@ setCanUserAdd(true)
     }
   };
 useEffect(()=>{
- getContent()
-   collection.isPrivate && currentProfile && collection && findRole(currentProfile,collection);
-},[navigate,location.pathname])
+canUserSee&& getContent()
+
+},[canUserSee])
 const getCol = async () => {
   setLoading(true);
   try {
