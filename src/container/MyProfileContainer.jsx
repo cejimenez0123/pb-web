@@ -166,7 +166,7 @@ function MyProfileContainer({ presentingElement }) {
         profileId: currentProfile.id,
         privacy: true,
         type: PageType.text,
-        title: "",
+        title: "Unititled",
         commentable: true
       })).then(res => checkResult(res, payload => {
         if (payload.story) {
