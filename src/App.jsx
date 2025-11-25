@@ -51,6 +51,7 @@ import OnboardingContainer from './container/OnboardingContainer.jsx';
 import Dialog from './components/Dialog.jsx';
 import DeviceCheck from './components/DeviceCheck.jsx';
 import { Capacitor } from '@capacitor/core';
+import { fetchNotifcations } from './actions/ProfileActions.jsx';
 function App(props) {
   const {currentProfile} = props
   const navigate = useNavigate()
@@ -80,8 +81,11 @@ function App(props) {
 
 
   useEffect(()=>{
-      dispatch(getCurrentProfile())
+      dispatch(getCurrentProfile()).then(res=>{
+         currentProfile&&currentProfile.id &&     dispatch(fetchNotifcations({profile:currentProfile}))
+      })
   },[])
+
   useEffect(()=>{
       setOlderPath(location.pathname) 
   },[location.pathname])

@@ -56,7 +56,11 @@ export default function PageViewContainer() {
   useEffect(() => {
     fetchStory();
   }, [id]);
-
+  useEffect(()=>{
+    if(!page.isPrivate){
+      setCanUserSee(true)
+    }
+  },[page])
   const fetchStory = async () => {
     setPending(true);
     setErrorStatus(null);
@@ -101,8 +105,7 @@ export default function PageViewContainer() {
       setPending(false);
     }
   };
-  const handleBack = (e) => {
-    e.preventDefault();
+  const handleBack = () => {
     if (window.history.length > 1) {
       navigate(-1);
     } else {
@@ -133,7 +136,7 @@ export default function PageViewContainer() {
           <div className=" pt-4 sm:pt-8">
              {Capacitor.isNativePlatform()?<IonBackButton
              className="ion-padding-start"
-      defaultHref={Paths.discovery()}
+      // defaultHref={Paths.discovery()}
       onClick={handleBack}
     />:null} </div> </IonHeader>
        
