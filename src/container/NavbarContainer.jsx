@@ -236,7 +236,7 @@ const openDialog=()=>{
       sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
      
         dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
-        title:"",commentable:true
+        title:"Unititled",commentable:true
       })).then(res=>checkResult(res,data=>{
       
           dispatch(setPageInView({page:data.story}))

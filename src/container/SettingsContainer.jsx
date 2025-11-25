@@ -19,7 +19,7 @@ import uploadFile from "../core/uploadFile";
 
 export default function SettingsContainer(props) {  
     const navigate = useNavigate()
-    const [localError,setLocalError]=useState("")
+    // const [localError,setLocalError]=useState("")
     const{setError,setSuccess}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dialog = useSelector(state=>state.users.dialog)
@@ -313,7 +313,7 @@ const handleProfilePicture = async (e) => {
                             </div>
                              
                             </div>
-                             {<p className="max-w-[90vw] mx-auto">{JSON.stringify(localError)}</p>}
+                             {/* {<p className="max-w-[90vw] mx-auto">{JSON.stringify(localError)}</p>} */}
                         <button 
                         className="rounded-full py-2 w-[10rem] mt-24 text-2xl  bg-golden text-white"
                                 onClick={handleDeleteDialog}

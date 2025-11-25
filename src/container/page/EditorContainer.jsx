@@ -176,7 +176,7 @@ setError(err.message)
 
 
    const topBar=()=>{
-    return(<div className=" rounded-lg  w-[100%] sm:max-w-[50em] mx-auto ">
+    return(<div className=" rounded-lg  w-[100%] h-fit sm:max-w-[50em] mx-auto ">
     <div className=" text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400   flex flex-row sm:rounded-t-lg border border-white   ">
         <div 
       className=" flex-1 text-left border-white border-r-2  "
@@ -185,17 +185,17 @@ setError(err.message)
         {isSaved?<h6 className=" text-left p-1 mx-1 text-sm  ">Saved</h6>:
       <h6 className="text-left mx-1 p-1 text-sm">Draft</h6>}
       <input type="text " 
-      className="p-2  w-[90%]  text-emerald-8  text-xl  bg-transparent font-bold"
+      className="p-2  w-[90%]  text-emerald-8  text-[1rem]  bg-transparent font-bold"
        value={parameters.title} onChange={(e)=>handleChange("title",e.target.value)}
       
       placeholder="Untitled"/>
 
       </div>
 
-      <div className="  h-[100%] ">  
+      <div className=" ">  
       
       <div className="dropdown dropdown-bottom   dropdown-end">
-      <div tabIndex={0} role="button" ><img className="min-w-16 min-h-[4rem]   bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
+      <div tabIndex={0} role="button" ><img className="min-w-16 min-h-[5rem]   bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
       <ul tabIndex={0} className="dropdown-content text-center menu bg-white rounded-box z-[1] shadow">
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
