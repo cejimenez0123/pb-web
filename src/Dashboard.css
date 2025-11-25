@@ -159,8 +159,8 @@
 
 
 #dashboard-item .ql-editor{
-  overflow-y: hidden!important;
-  max-height: 10em !important;
+
+  max-height: 14em !important;
   padding: 1em !important;
 }
 
@@ -225,9 +225,3 @@
 
 }
 
-.grid #dashboard-item .ql-editor {
-  /* max-height: 20rem !important; */
-  border-radius:  0.5rem !important;
-  overflow:  hidden!important;
-  padding:0.2em !important;
-}

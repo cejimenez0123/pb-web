@@ -137,7 +137,7 @@ function DashboardItem({ page, book, isGrid }) {
   const header = () => {
     return (
       <span
-        className={`flex-row flex justify-between w-[95vw] sm:w-[50em]  px-1 rounded-t-lg pt-2 pb-1`}>
+        className={`flex-row flex justify-between w-[95vw] sm:w-[48em]  px-1 rounded-t-lg pt-2 pb-1`}>
         <div onClick={()=>navigate(Paths.profile.createRoute(page.author.id))}><ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author} /></div>
         {!isGrid ?
           <h6
@@ -230,9 +230,7 @@ useEffect(() => {
     }
   };
 
-  const ClickAddStoryToCollection = () => {
-    navigate(Paths.addStoryToCollection.story(page.id));
-  };
+  
 
   let bookTitleDiv = null;
   if (book) {
@@ -345,10 +343,11 @@ useEffect(() => {
     <IonCard
       id="dashboard-item"
       className={
-        'mt-3 rounded-lg rounded-b-lg w-[95vw] sm:w-[50em] mx-auto min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col '
+        'mt-3 rounded-lg rounded-b-lg w-[95vw] sm:w-[48em] mx-auto min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col '
       }
       style={{
-        maxWidth: '100vw',
+        width:"48em",
+        maxWidth: '96vw',
         overflow: 'hidden', // critical for native
       }}
     >

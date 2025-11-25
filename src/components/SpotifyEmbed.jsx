@@ -26,7 +26,7 @@ const SpotifyEmbed = ({ url, width = '100%', height = 352 }) => {
   return (
     <iframe
       title="Spotify Embed"
-      style={{ borderRadius: '12px' }}
+      style={{ borderRadius: '12px',width:"48em",maxWidth:"100%" }}
       src={embedUrl}
       width={width}
       height={height}

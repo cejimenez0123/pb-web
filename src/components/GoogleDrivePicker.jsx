@@ -50,7 +50,6 @@ const nativeGoogleSignIn = async () => {
       if (!user.result) throw new Error("No user data returned.")
       const { accessToken } = user.result;
       const expiry = Date.now() + 3600 * 1000;
-// console.log("Acccess",accessToken)
 
       setAccessToken(accessToken.token);
      await Preferences.set({key:driveTokenKey,value:accessToken.token})
@@ -113,11 +112,11 @@ const fetchFiles = async () => {
   }, [accessToken]);
   useLayoutEffect(()=>{
     checkAccessToken()
-  })
+  },[])
   // --- File Dialog ---
   const openDialog = () => {
     let dia = { ...dialog };
-    // setShowFiles(true);
+  
     dia.isOpen = true;
     dia.onClose = () => dispatch(setDialog({isOpen:false}))
     dia.title = "google Drive";
@@ -128,7 +127,11 @@ const fetchFiles = async () => {
           <IonItem
             key={file.id}
             className="rounded-box px-2 py-3 shadow-md hover:border hover:border-purple-200"
+<<<<<<< HEAD
             onClick={() => {  ; 
+=======
+            onClick={() => {  
+>>>>>>> ionic
             onFilePicked(file)}}
           >
             <h5 className="text-center text-sm">{file.name}</h5>

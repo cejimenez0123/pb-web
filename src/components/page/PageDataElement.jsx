@@ -11,7 +11,7 @@ import { IonImg } from '@ionic/react';
 import Enviroment from "../../core/Enviroment"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
-    const {isPhone,isHorizPhone}=useContext(Context)
+    const {isHorizPhone}=useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
    
@@ -21,7 +21,7 @@ export default function PageDataElement({page,isGrid,book=null}){
             if(isValidUrl(page.data)){
                 setImage(page.data)
             }else{
-                console.log("IMAGEPROXY",page)
+             
                 setImage(Enviroment.imageProxy(page.data))
             
             }
@@ -36,7 +36,7 @@ switch(page.type){
     return( 
 
         <div 
-        className="ql-editor w-[92vw] sm:w-[50em] overflow-hidden"
+        className="w-[92vw] sm:w-[50em] no-scroll overscroll-none"
     
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
@@ -44,11 +44,9 @@ switch(page.type){
         
         ><div 
         
-        className={` ql-editor
-              sm:w-[50em] overflow-hidden" `}
-           
-           dangerouslySetInnerHTML={{__html:page.data}}/></div>
-
+        className={`ql-editor max-w-[98%] w-[92vw] no-scroll sm:w-[48em]`} dangerouslySetInnerHTML={{__html:page.data}}/>
+        </div>
+        // </div>
   ) }
   case PageType.picture:{
   
@@ -100,5 +98,5 @@ if(!page){
 ) 
 }
 
-return (<Element page={page}/>)
+return (<div className="overflow-hidden"><Element page={page}/></div>)
 }
