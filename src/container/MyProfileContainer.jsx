@@ -15,14 +15,14 @@ import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import Context from '../context';
 import FeedbackDialog from '../components/page/FeedbackDialog';
-import ErrorBoundary from '../ErrorBoundary.jsx';
 import { IonText, IonInput, IonContent, IonSpinner, IonPage, useIonViewDidEnter, useIonViewWillEnter, IonImg } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 import { getCurrentProfile, setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
 import axios from "axios";
 import StoryCollectionTabs from '../components/page/StoryCollectionTabs.jsx';
-import { current } from '@reduxjs/toolkit';
+import ErrorBoundary from '../ErrorBoundary.jsx';
+
 
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
@@ -233,7 +233,7 @@ function MyProfileContainer({ presentingElement }) {
   }, [])
   useLayoutEffect(()=>{
      dispatch(getCurrentProfile())
-  })
+  },[])
   useEffect(()=>{
      
 currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: currentProfile.stories }))
@@ -248,7 +248,7 @@ currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: cur
       </IonContent>
     );
   }
-return<IonPage><IonContent fullscreen={true} className='ion-padding'><div className=" sm:pt-16 pt-12 pb-20">
+return<ErrorBoundary><IonPage><IonContent fullscreen={true} className='ion-padding'><div className=" sm:pt-16 pt-12 pb-20">
 
   <div className="relative flex flex-col md:flex-row justify-around mx-auto sm:border-4 sm:border-emerald-300 p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 
@@ -361,7 +361,7 @@ return<IonPage><IonContent fullscreen={true} className='ion-padding'><div classN
   </div>
 </div>
 </IonContent></IonPage>
-
+</ErrorBoundary>
 }
 
 export default MyProfileContainer;

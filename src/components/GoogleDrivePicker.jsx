@@ -1,32 +1,20 @@
-import { useState, useEffect, useLayoutEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useLayoutEffect,  useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { SocialLogin } from "@capgo/capacitor-social-login";
 import { IonItem, IonText, IonList } from '@ionic/react';
 import Context from "../context";
-import DeviceCheck from './DeviceCheck';
+
 import { Preferences } from '@capacitor/preferences';
 import { setDialog } from '../actions/UserActions';
 import { Capacitor } from '@capacitor/core';
-import GoogleLogin from './GoogleLogin';
-import Enviroment from '../core/Enviroment';
 
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
 
 
-  const { dialog, isPhone, currentProfile } = useContext(Context);
+  const { dialog, isPhone, } = useContext(Context);
   const dispatch = useDispatch();
-  // const [loading, setLoading] = useState(false);
-
-//   const [signedIn, setSignedIn] = useState(false);
-//   const [showFiles, setShowFiles] = useState(false);
-// const navigate = useNavigate()
-//   const [gapiLoaded, setGapiLoaded] = useState(false);
-//   const [driveClientLoaded, setDriveClientLoaded] = useState(false);
-//   const [gisLoadedForPicker, setGisLoadedForPicker] = useState(false);
   const [files, setFiles] = useState([]);
   const [accessToken, setAccessToken] = useState(null);
-  const [idToken, setIdToken] = useState(null);
    const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // Key for expiry time
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
@@ -55,21 +43,20 @@ const nativeGoogleSignIn = async () => {
         options:{
           scopes:["email","profile", "https://www.googleapis.com/auth/drive.readonly"]
         }
-        // options: {
-        //   scopes: ["email", "profile", "https://www.googleapis.com/auth/drive.readonly"],
-        // },
+    
         
         
       }).catch((err) => console.error("SocialLogin error:", err));
-      console.log("USDSD",user)
+     
       if (!user.result) throw new Error("No user data returned.")
       const { accessToken } = user.result;
       const expiry = Date.now() + 3600 * 1000;
-console.log("Acccess",accessToken)
-  
+// console.log("Acccess",accessToken)
+
       setAccessToken(accessToken.token);
      await Preferences.set({key:driveTokenKey,value:accessToken.token})
   await Preferences.set({key:TOKEN_EXPIRY_KEY,value:expiry})
+  fetchFiles()
     } catch (err) {
       console.log(err)
       // window.alert("!",err.message)
@@ -160,14 +147,45 @@ if(!Capacitor.isNativePlatform()&&false){
 
 
   // --- Fetch Files from Google Drive ---
-  const fetchFiles = async () => {
+  // const fetchFiles = async () => {
+  //   const token =(await Preferences.get({ key: driveTokenKey})).value
+  //   console.log("REERER",token)
+  //   try{
+  //   if (!token) return;
+
+  //   // setLoading(true);
+  //  fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //       Accept: 'application/json',
+  //     },
+  //   })
+  //     .then(res => {
+  //       if (res.status === 401) throw new Error('Unauthorized — invalid or expired token');
+  //       return res.json();
+  //     })
+  //     .then(data => {
+  //       console.log("Drive files:", data);
+  //       setFiles(data.files || []);
+       
+  //     })
+  //     .catch(err => {
+  //       console.error('Google Drive API error:', err);
+       
+  //     });
+  //   }catch(err){
+  //       console.error("Error in fetchFiles:", err);
+  //       }
+  // };
+
+const fetchFiles = async () => {
     const token =(await Preferences.get({ key: driveTokenKey})).value
-    console.log("REERER",token)
+
     try{
     if (!token) return;
 
     // setLoading(true);
-   fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
+    fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
@@ -178,9 +196,9 @@ if(!Capacitor.isNativePlatform()&&false){
         return res.json();
       })
       .then(data => {
-        console.log("Drive files:", data);
+        // console.log("Drive files:", data);
         setFiles(data.files || []);
-       
+        // setLoading(false);
       })
       .catch(err => {
         console.error('Google Drive API error:', err);
@@ -190,40 +208,12 @@ if(!Capacitor.isNativePlatform()&&false){
         console.error("Error in fetchFiles:", err);
         }
   };
-// const fetchFiles = async () => {
-//     const token =(await Preferences.get({ key: driveTokenKey}))v
- 
-//     try{
-//     if (!token) return;
-
-//     setLoading(true);
-//     fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
-//       headers: {
-//         Authorization: `Bearer ${token.value}`,
-//         Accept: 'application/json',
-//       },
-//     })
-//       .then(res => {
-//         if (res.status === 401) throw new Error('Unauthorized — invalid or expired token');
-//         return res.json();
-//       })
-//       .then(data => {
-//         // console.log("Drive files:", data);
-//         setFiles(data.files || []);
-//         setLoading(false);
-//       })
-//       .catch(err => {
-//         console.error('Google Drive API error:', err);
-//         setLoading(false);
-//       });
-//     }catch(err){
-//         console.error("Error in fetchFiles:", err);
-//         }
-//   };
   useLayoutEffect(() => {
-    if (accessToken) fetchFiles();else checkAccessToken()
+    fetchFiles()
   }, [accessToken]);
-
+  useLayoutEffect(()=>{
+    checkAccessToken()
+  })
   // --- File Dialog ---
   const openDialog = () => {
     let dia = { ...dialog };

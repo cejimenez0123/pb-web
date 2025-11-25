@@ -145,7 +145,7 @@ setIsSaved(true)
           dispatch(deleteStory(parameters)).then(()=>{
             navigate(Paths.myProfile)
           })
-          handleClose()
+      
       },10)
       const createPageAction = ()=>{
         setPending()
@@ -311,9 +311,7 @@ const openRoleFormDialog = () => {
 
   dispatch(setDialog(dia));
 };
-      const handleClose = () => {
-        setOpen(false);
-      };
+   
 
         return(
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>

@@ -7,7 +7,7 @@ import usePersistentNotifications from "../../domain/usecases/usePersistentNotif
 import { IonList,IonItem, IonContent } from "@ionic/react"
 export default function NotificationContainer({currentProfile}){
     const dispatch = useDispatch()
-     const payload = usePersistentNotifications(()=>dispatch(fetchNotifcations({profile:currentProfile})))
+    //  const payload = usePersistentNotifications(()=>dispatch(fetchNotifcations({profile:currentProfile})))
     const items = useSelector(state=>state.users.notifications??[])
      var today= new Date();
  

@@ -8,12 +8,12 @@
 	<string>We need your location to connect you with workshops in your area.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Please give permission if you want to upload photos</string>
-    <key>NSCameraUsageDescription</key>
-    <string>Please give permission if you want to upload photos</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Please give permission if you want to upload photos</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>ios</string>
+	<string>Plumbum</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
