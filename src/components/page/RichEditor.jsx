@@ -5,17 +5,17 @@ import { useSelector } from "react-redux";
 import { ErrorBoundary } from "@sentry/react";
 
 const fonts = ["Arial","Courier New","Georgia"]
-export default function RichEditor({ initContent,handleChange}){
+export default function RichEditor({ handleChange}){
 
     
       const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
       const [html,setHtml] = useState(htmlContent.html??"")
-
+      
     useEffect(()=>{
        
-          setHtml(htmlContent.html??"")
-      
-    },[])
+          // setHtml(htmlContent.html??"")
+      setHtml(htmlContent.html)
+    },[htmlContent])
     const modules = {
       toolbar: [
         [{ 'font': []}],

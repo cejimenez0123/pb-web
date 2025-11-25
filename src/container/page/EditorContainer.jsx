@@ -13,11 +13,10 @@ import ErrorBoundary from "../../ErrorBoundary"
 
 import HashtagForm from "../../components/hashtag/HashtagForm"
 import RoleForm from "../../components/role/RoleForm"
-import isValidUrl from "../../core/isValidUrl"
 import Context from "../../context"
 import EditorDiv from "../../components/page/EditorDiv"
 import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions/PageActions.jsx"
-import { debounce, set } from "lodash"
+import { debounce, } from "lodash"
 import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
 import { IonBackButton, IonButtons, IonContent, IonHeader } from "@ionic/react"
@@ -32,14 +31,14 @@ function EditorContainer({presentingElement}){
         const editPage = useSelector(state=>state.pages.editingPage)
         const pageInView = useSelector(state=>state.pages.pageInView)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
+        // const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
         const [openDescription,setOpenDescription]=useState(false)
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:800px)'})
         const navigate = useNavigate()
         const {id,type}= useParams()
         const [openHashtag,setOpenHashtag]=useState(false)
-        console.log("EditorContainer type",type==PageType.picture)
-      // const [description,setDescription]=useState("")
+        // console.log("EditorContainer type",type==PageType.picture)
         const {isSaved,setIsSaved}=useContext(Context)
    
   
@@ -64,82 +63,70 @@ const hasInitialized = useRef(false);
       navigate(Paths.discovery());
     }
   };
+  useEffect(()=>{
+    if(currentProfile && currentProfile.id){
 
-   useEffect(()=>{
-    id && fetchStory()
+  setIsSaved(false)
+ return debounce(()=>dispatch(updateStory({...parameters,id,profile:currentProfile,profileId:currentProfile.id})).then(res=>{
+  setIsSaved(true)
+ }),10)
+    }
+  },[parameters.data,
+    parameters.commentable,
+    parameters.description,
+    parameters.isPrivate,
+    parameters.title,
+    parameters.needsFeedback
+])
+  const setStory=(story)=>{
     
-   },[navigate,id])
-
-   const handleChange = (key, value) => {
-    setParameters((prev) => ({ ...prev, [key]: value }));
-  };
-    const fetchStory = ()=>{
-
-  
-  try{
-  if(id){
-      dispatch(getStory({id:id})).then(res=>{
-        checkResult(res,payload=>{
-     
-          const {story}=payload
 
           dispatch(setHtmlContent({html:story.data}))
           dispatch(setEditingPage({page:story}))
           dispatch(setPageInView({page:story}))
           handleChange("commentable",story.commentable)
-
           handleChange("page",story)
           handleChange("isPrivate",story.isPrivate)
           handleChange("data",story.data)
           handleChange("title",story.title)
           handleChange("type",story.type)
-          
-      },err=>{
+     
+  }
+   useEffect(()=>{
+   fetchStory()
+    
+   },[navigate,id,currentProfile])
 
-       setSuccess(null)
-      })})
-    }else{
+   const handleChange = (key, value) => {
+    setParameters((prev) => ({ ...prev, [key]: value }));
+   
+  };
+  
+    const fetchStory = ()=>{
+
+  
+  try{
+if(id){
        dispatch(getStory({id:id})).then(res=>{
         checkResult(res,payload=>{
      
           const {story}=payload
+        setStory(story)
+})})}else{
+  throw new Error("NO ID")
+}
+}catch(er){
+  window.alert(er.message)
+}}
 
-          dispatch(setHtmlContent({html:story.data}))
-                 dispatch(setEditingPage({page:story}))
-                        dispatch(setPageInView({page:story}))
-   
-          handleChange("data",story.data)
-          handleChange("page",story)
-          handleChange("isPrivate",story.isPrivate)
-          handleChange("title",story.title)
-          handleChange("title",story.title)
-          handleChange("type",story.type)
-   
-      },err=>{
-
-       setSuccess(null)
-      })})
-    }
-    }catch(err){
-      setError(err.message)
-    }
     
-    }
   
     useEffect(()=>{
-      setIsSaved(false)
-    id && currentProfile && currentProfile.id && dispatch(updateStory({...parameters,profile:currentProfile,profileId:currentProfile.id})).then(res=>{
-        checkResult(res,payload=>{
-         
-setIsSaved(true)
-        },err=>{
-
-        })})
       
   if(type==PageType.text){
     createPageAction()
   }
-    },[id,htmlContent,parameters.data,parameters.title,parameters.commentable,parameters.needsFeedback,parameters.isPrivate])
+    },[])
 
       const handleDelete =debounce(()=>{
           dispatch(deleteStory(parameters)).then(()=>{
@@ -154,6 +141,7 @@ setIsSaved(true)
         dispatch(createStory({...parameters,type,profile:currentProfile,profileId:currentProfile.id})).then(res=>checkResult(res,payload=>{
           const {story}=payload
           dispatch(setEditingPage({page:story}))
+          setStory(story)
           navigate(Paths.editPage.createRoute(story.id))
           
        
@@ -195,7 +183,7 @@ setError(err.message)
       <div className="  h-[100%] ">  
       
       <div className="dropdown dropdown-bottom   dropdown-end">
-      <div tabIndex={0} role="button" ><img className="min-w-16 min-h-[4rem]   bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
+      <div tabIndex={0} role="button" ><img className="min-w-16 min-h-[5rem]   bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
       <ul tabIndex={0} className="dropdown-content text-center menu bg-white rounded-box z-[1] shadow">
         <li className="text-emerald-600 pt-3 pb-2 "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
@@ -236,21 +224,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
     </div>)
    }
 
-   useEffect(()=>{
-    if(editPage&&currentProfile){
- 
-      currentProfile &&  handleChange("profileId",currentProfile.id)
-      handleChange("profile",currentProfile)
-      handleChange("data",editPage.data)
-      handleChange("title",editPage.title)
-      handleChange("type",editPage.type??type)
-      handleChange("isPrivate",editPage.isPrivate)
-      handleChange("needsFeedback",editPage.needsFeedback)
-    id && handleChange("id",id)
-    type && handleChange("type",editPage.type)
- 
-    }
-   },[editPage])
+
    const handleFeedback=()=>{
 
        if(parameters.page.id){
@@ -330,7 +304,7 @@ const openRoleFormDialog = () => {
                   <ErrorBoundary>
            
           <EditorDiv  
-    
+    html={htmlContent.html}
     page={editPage}
             
               handleChange={(key,value)=>{
