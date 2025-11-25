@@ -127,11 +127,7 @@ const fetchFiles = async () => {
           <IonItem
             key={file.id}
             className="rounded-box px-2 py-3 shadow-md hover:border hover:border-purple-200"
-<<<<<<< HEAD
-            onClick={() => {  ; 
-=======
             onClick={() => {  
->>>>>>> ionic
             onFilePicked(file)}}
           >
             <h5 className="text-center text-sm">{file.name}</h5>
