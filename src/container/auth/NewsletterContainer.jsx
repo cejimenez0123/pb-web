@@ -9,10 +9,10 @@ import Paths from "../../core/paths"
 import Context from "../../context"
 import clear from "../../images/icons/clear.svg"
 import { initGA,sendGAEvent } from "../../core/ga4"
+import { IonContent } from "@ionic/react"
+import ErrorBoundary from "../../ErrorBoundary"
 function NewsletterContainer(props){
-  const isNotPhone = useMediaQuery({
-    query: '(min-width: 600px)'
-  })
+
   const {setError}=useContext(Context)
   useLayoutEffect(()=>{
     initGA()
@@ -80,7 +80,7 @@ function NewsletterContainer(props){
   
     const [user,setUser]=useState(null)
       const selectRef = useRef()
-    const {setErrorm,seo,setSeo}=useContext(Context)
+    const {seo,setSeo}=useContext(Context)
 
   
 
@@ -234,9 +234,7 @@ const thirdPlacesInput=()=>{
 </div>
 </>
 )}
-const openDialog=()=>{
-    let dia = {...dialog}
-}
+
 const handleCheckboxChange = (event, stateUpdater, field) => {
   const value = event.target.value;
   
@@ -251,12 +249,14 @@ const handleCheckboxChange = (event, stateUpdater, field) => {
 
   let otherClassname ="input bg-transparent text-white border-white border-1 rounded-full mt-2 mb-4"
 return (
-  <>
-      <div className="sm:pb-8 ">
+
+  <IonContent fullscreen={true}> 
+    <ErrorBoundary>
+      <div className=" bg-cream h-[100vh] pb-20">
         
         <form
           onSubmit={(e) => onClickApply(e)}
-          className="form-data shadow-sm sm:my-8 md:rounded-lg pb-30 bg-emerald-50 bg-opacity-70 flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] text-left mx-auto lg:mt-24"
+          className="form-data shadow-sm sm:my-8 md:rounded-lg pb-40 bg-cream bg-opacity-70 flex sm:mb-12 flex-col shadow-md px-6 md:max-w-[48rem] text-left mx-auto "
         >
           <h6 className="text-emerald-700 lora-bold text-sm">* Required</h6>
           <div className="w-full text-center text-emerald-700 mb-8">
@@ -417,7 +417,7 @@ return (
 
           <button
             type="submit"
-            className={`mont-medium my-8 py-4 text-2xl  text-white shadow-md mont-medium px-20 mx-auto rounded-full ${validateEmail(formData.email)?"bg-gradient-to-r from-emerald-500 to-emerald-700":"bg-gradient-to-r from-purple-500 to-gray-400"} hover:bg-emerald-400 font-bold border-none shadow-sm`}
+            className={`mont-medium mt-8 mb-16 py-4 text-2xl  text-white shadow-md mont-medium px-20 mx-auto rounded-full ${validateEmail(formData.email)?"bg-gradient-to-r from-emerald-500 to-emerald-700":"bg-gradient-to-r from-purple-500 to-gray-400"} hover:bg-emerald-400 font-bold border-none shadow-sm`}
           >
             Subscribe
           </button>
@@ -476,7 +476,8 @@ return (
 />
 
 </div>
-  </>
+</ErrorBoundary>
+  </IonContent>
 )
 
 }

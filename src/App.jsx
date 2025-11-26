@@ -82,7 +82,7 @@ function App(props) {
 
   useEffect(()=>{
       dispatch(getCurrentProfile()).then(res=>{
-         currentProfile&&currentProfile.id &&     dispatch(fetchNotifcations({profile:currentProfile}))
+         currentProfile&&currentProfile.id && dispatch(fetchNotifcations({profile:currentProfile}))
       })
   },[])
 
@@ -179,12 +179,12 @@ if(!navigator.onLine){
    
       
        
-     
+     <div className='bg-cream'>
         {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
-                <div className="pt-12"> 
+                {/* <div className="pt-12">  */}
  
        <SearchDialog presentingElement={page} />
        <Dialog dialog={dialog} presentingElement={page} />
@@ -236,8 +236,8 @@ if(!navigator.onLine){
      element={<CalendarContainer/>}/>
           <Route exact path={Paths.newsletter() }
      element={<LoggedRoute 
- 
-     currentProfile={currentProfile}><NewsletterContainer/></LoggedRoute>}/>
+ currentProfile={currentProfile}
+     ><NewsletterContainer/></LoggedRoute>}/>
      <Route exact path={'/reset-password' }
      element={<ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
@@ -353,7 +353,7 @@ presentingElement={page}
           <TermsContainer />}
     /> 
     </Routes>
-    </div>
+    {/* </div> */}
    
       {navbarBot&&showNav?
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
@@ -361,7 +361,8 @@ presentingElement={page}
 </div>
 
      :null}  
-       {/* </div> */}
+
+       </div>
 
     </IonPage>
     
