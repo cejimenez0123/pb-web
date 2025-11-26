@@ -90,7 +90,7 @@ function NewsletterContainer(props){
         if(validateEmail(formData.email)){
 formData["frequency"]=parseInt(formData["frequency"])
         authRepo.newsletter(formData).then(data=>{
-      
+      console.log(data)
 if(data.user){
   setUser(data.user)
 }

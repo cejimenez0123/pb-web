@@ -47,9 +47,7 @@ export default function CalendarContainer(){
      {!currentProfile &&<div className="mb-8"><p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
         Get weekly writing events in your inbox, or go deeper:<br/> apply to become a user and share your own writing and feedback on our site.
       </p>
-      <div>
-     <a onClick={()=>navigate(Paths.newsletter())}><IonText className="text-xl">Join the Newsletter</IonText> </a> 
-     </div>
+    
      <IonText>or</IonText>
      <div>
      <a onClick={()=>navigate(Paths.onboard())}><IonText className="text-xl">Apply to be a user</IonText> </a> 

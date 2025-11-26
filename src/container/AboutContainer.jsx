@@ -201,9 +201,9 @@ export default function AboutContainer() {
           <a href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> | <a href="https://www.instagram.com/bxwriters" target="_blank" rel="noreferrer">@bxwriters</a>
         </p>
       </div>
-      <a className="text-lg cursor-pointer" onClick={() => navigate(Paths.newsletter())}>
+      {/* <a className="text-lg cursor-pointer" onClick={() => navigate(Paths.newsletter())}>
         <p>[→ Not ready yet? Get exclusive writing tips & events in our newsletter!]</p>
-      </a>
+      </a> */}
     </div>
   );
 
