@@ -7,7 +7,7 @@ import Context from "../context";
 import { useContext } from "react";
 import Paths from "../core/paths";
 import { useLayoutEffect } from "react"
-import { IonContent, IonText } from "@ionic/react";
+import { IonContent, IonNavLink, IonText } from "@ionic/react";
 
 import "../App.css"
 import { useLocation, useNavigate } from "react-router-dom";
@@ -47,10 +47,10 @@ export default function CalendarContainer(){
      {!currentProfile &&<div className="mb-8"><p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
         Get weekly writing events in your inbox, or go deeper:<br/> apply to become a user and share your own writing and feedback on our site.
       </p>
-    
+    <div><IonText className="text-xl text-emerald-700" onClick={()=>navigate(Paths.newsletter())}>Join the Newsletter</IonText></div>
      <IonText>or</IonText>
      <div>
-     <a onClick={()=>navigate(Paths.onboard())}><IonText className="text-xl">Apply to be a user</IonText> </a> 
+    <IonText onClick={()=>{navigate("/onboard")}} className="text-xl text-emerald-700">Apply to be a user</IonText> 
      </div>
       </div>}
 

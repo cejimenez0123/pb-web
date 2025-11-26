@@ -51,7 +51,7 @@ const [solEvents,setSolEvents]=useState([])
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchRef = useRef(null)
-  console.log(solEvents)
+ 
   useEffect(() => {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
