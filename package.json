@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "fireTest": "npm run build && firebase hosting:channel:deploy michael-que",
     "build": "npx vite build",
-    "run-ios": "npx vite build && npx cap copy ios && npx cap run ios"
+    "run-ios": "npx vite build && npx cap sync ios && npx cap run ios"
   },
   "dependencies": {
     "@capacitor-firebase/storage": "^7.4.0",

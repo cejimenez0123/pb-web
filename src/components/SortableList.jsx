@@ -78,19 +78,19 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="w-[96%] mx-auto items-center text-emerald-800 py-4 bg-transparent border-blueSea border-opacity-60 border-2 rounded-full shadow-md hover:bg-gray-100"
+                      className="w-[92vw] mx-auto items-center text-emerald-800 py-4 bg-transparent border-blueSea border-opacity-60 border-2 rounded-full shadow-md hover:bg-gray-100"
                     >
                       <div className="flex justify-between mr-3">
                         <IonImg src={dragHandle} className="my-auto ml-4" />
                         <div className="justify-between flex-grow flex flex-row mr-4">
                           <h6
                             onClick={() => handleNavigate(item)}
-                            className="text-emerald-800 text-nowrap text-left my-auto max-w-[13em] min-w-[10em] min-h-[1.5rem] overflow-hidden text-ellipsis sm:text-[1.2rem]"
+                            className="text-emerald-800 text-nowrap text-left my-auto max-w-[13em] min-w-[10em] min-h-[1.5rem] overflow-hidden text-ellipsis  sm:text-[1rem]"
                           >
                             {item.story
-                              ? item.story.title
+                              ? item.story.title.slice(0,20)
                               : item.childCollection
-                              ? item.childCollection.title
+                              ? item.childCollection.title.slice(0,20)
                               : "Not found"}
                           </h6>
                           <button

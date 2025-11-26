@@ -69,7 +69,6 @@ export default function CreateCollectionForm({ onClose, create }) {
 
     const res = await dispatch(createCollection(params));
     setSubmitting(false);
-
     if (res?.payload?.collection) {
       const collection = res.payload.collection;
       dispatch(clearPagesInView());
