@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   IonPage,
   IonHeader,
@@ -36,26 +36,96 @@ import checked from "../../images/icons/check.svg";
 import emptyBox from "../../images/icons/empty_circle.svg";
 import StoryCollectionTabs from "../../components/page/StoryCollectionTabs.jsx";
 import { Capacitor } from "@capacitor/core";
-
+  const filterTypes = {
+    filter: "Filter",
+    recent: "Recent",
+    oldest: "Oldest",
+    feedback: "Feedback",
+    AZ: "A-Z",
+    ZA: "Z-A"
+  };
 export default function AddToCollectionContainer() {
   const pathParams = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { seo, setSeo } = useContext(Context);
-
+  const [filterType, setFilterType] = useState(filterTypes.filter);
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const pending = useSelector((state) => state.books.loading);
   const profile = useSelector((state) => state.users.currentProfile);
+  const [search, setSearch] = useState("");
   const colInView = useSelector((state) => state.books.collectionInView);
   const collections = useSelector((state) => state.books.collections);
   const cTcList = useSelector((state) => state.books.collectionToCollectionsList);
-
-  const pagesInView = useSelector((state) =>
+    const stories = useSelector((state) =>
     state.pages.pagesInView.filter((page) => page)
   );
+const filteredSortedStories = useMemo(() => {
+    let result = stories || [];
 
-  const [search, setSearch] = useState("");
+    if (filterType === filterTypes.feedback) {
+      result = result.filter(s => s.needsFeedback);
+    } else {
+      switch (filterType) {
+        case filterTypes.recent:
+          result = [...result].sort((a, b) => new Date(b.updated) - new Date(a.updated));
+          break;
+        case filterTypes.oldest:
+          result = [...result].sort((a, b) => new Date(a.updated) - new Date(b.updated));
+          break;
+        case filterTypes.AZ:
+          result = [...result].sort((a, b) => a.title.localeCompare(b.title));
+          break;
+        case filterTypes.ZA:
+          result = [...result].sort((a, b) => b.title.localeCompare(a.title));
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (search.trim().length > 0) {
+      const lowerSearch = search.toLowerCase();
+      result = result.filter(s => s.title && s.title.toLowerCase().includes(lowerSearch));
+    }
+
+    return result;
+  }, [stories, filterType, search]);
+
+  const filteredSortedCollections = useMemo(() => {
+    let result = collections || [];
+    if(filterType==filterTypes.feedback){
+      result = collections.filter(col=>col.type=="feedback"||col.purpose.toLowerCase().includes("feedback"))
+    }
+    switch (filterType) {
+      case filterTypes.AZ:
+        result = [...result].sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case filterTypes.ZA:
+        result = [...result].sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case filterTypes.recent:
+        result = [...result].sort((a, b) => new Date(b.updated) - new Date(a.updated));
+        break;
+      case filterTypes.oldest:
+        result = [...result].sort((a, b) => new Date(a.updated) - new Date(b.updated));
+        break;
+      default:
+        break;
+    }
+
+    if (search.trim().length > 0) {
+      const lowerSearch = search.toLowerCase();
+      result = result.filter(c => c && c.title && c.title.toLowerCase().includes(lowerSearch));
+    }
+
+    return result;
+  }, [collections, filterType, search]);
+
+
+
+
   const [token, setToken] = useState(null);
   const [tab, setTab] = useState("page");
   const [newStories, setNewStories] = useState([]);
@@ -128,7 +198,7 @@ export default function AddToCollectionContainer() {
   const storyList = () => {
     return (
       <IonList>
-        {pagesInView
+        {filteredSortedStories
           .filter((story) => story)
           .filter(
             (story) =>
@@ -190,7 +260,7 @@ text-[1rem]">
 
     return (
       <IonList>
-        {list
+        {filteredSortedCollections
           .filter((col) => col.title.toLowerCase().includes(search.toLowerCase()))
           .map((col) => {
             if (col.id === colInView?.id) return null;
@@ -319,7 +389,17 @@ text-[1rem]">
               View
             </div>
           </div>
-
+          <div className="pb-4">
+      <select
+        onChange={e => setFilterType(e.target.value)}
+        value={filterType}
+        className="select w-24 text-emerald-800 rounded-full bg-transparent"
+      >
+        {Object.entries(filterTypes).map(([, val]) => (
+          <option key={val} value={val}>{val}</option>
+        ))}
+      </select>
+      </div>
           {/* Search */}
           <div className="rounded-full border border-emerald-700 flex items-center px-4 py-2 mb-4">
             <IonText className="text-emerald-700 font-medium mr-2">Search:</IonText>
