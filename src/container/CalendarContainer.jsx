@@ -7,13 +7,11 @@ import Context from "../context";
 import { useContext } from "react";
 import Paths from "../core/paths";
 import { useLayoutEffect } from "react"
-import { IonContent } from "@ionic/react";
-import NewsletterContainer from "./auth/NewsletterContainer";
-import ApplyContainer from "./auth/ApplyContainer";
+import { IonContent, IonNavLink, IonText } from "@ionic/react";
+
 import "../App.css"
-import ScrollDownButton from "../components/ScrollDownButton";
 import { useLocation, useNavigate } from "react-router-dom";
-import Collapsible from "../components/Collapsible";
+
 import CalendarEmbed from "../components/CalendarEmbed";
 import { Capacitor } from "@capacitor/core";
 import { useSelector } from "react-redux";
@@ -46,33 +44,23 @@ export default function CalendarContainer(){
 <div className=" w-[90%] sm:max-w-[30rem] mx-auto">
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
-     {!currentProfile &&<p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
+     {!currentProfile &&<div className="mb-8"><p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
         Get weekly writing events in your inbox, or go deeper:<br/> apply to become a user and share your own writing and feedback on our site.
-      </p> }
+      </p>
+    <div><IonText className="text-xl text-emerald-700" onClick={()=>navigate(Paths.newsletter())}>Join the Newsletter</IonText></div>
+     <IonText>or</IonText>
+     <div>
+    <IonText onClick={()=>{navigate("/onboard")}} className="text-xl text-emerald-700">Apply to be a user</IonText> 
+     </div>
+      </div>}
+
       </div>
 <div className="w-fit mx-auto">
       <CalendarEmbed  />
       </div>
-  {isNative?null:
-  <div>
-      <div className="mt-6 space-y-4 mx-auto">
-        <Collapsible buttonText="📰 Join the weekly newsletter">
-          <NewsletterContainer />
-          <p className="text-xs mt-2 text-emerald-500">
-            We’ll send you a weekly list of events and updates.
-          </p>
-        </Collapsible>
-  
-        <Collapsible buttonText="✍️ Apply to post & get feedback">
-          <h6 className="text-sm mont-medium text-emerald-700 mb-2">
-          Join a rhythm of shared writing — post your work, receive feedback, and connect in small, supportive groups.
-          </h6>
-     <ApplyContainer/>
-        
-        </Collapsible>
-      </div>
-      <h1 className="btn mont-medium border  border-emerald-600 bg-emerald-600 hover:bg-green-500 hover:border-blue-600 text-2xl py-2 px-8 text-white rounded-full" onClick={()=>navigate(Paths.feedback())}>Submit an Event</h1>
-      <ScrollDownButton/></div>}
+
+   
+     
     </div>
     </IonContent>
   );

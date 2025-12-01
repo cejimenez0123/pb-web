@@ -117,13 +117,12 @@ if(data && data.story && data.story.isPrivate&&data.story.id){
 algoliaRepo.partialUpdateObject("story",data.story.id,{title:data.story.title})
 }
   }
-
- console.log(data)
+console.log("FOX",data.story)
   return {
     story: data.story
   }
 }catch(e){
-console.log("UPDATE STORY",e)
+
   return{
     error: e
   }

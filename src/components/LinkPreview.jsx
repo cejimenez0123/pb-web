@@ -70,7 +70,7 @@ const fetchPreview = async (url) => {
 
 
   if (url?.includes('https://open.spotify.com/')) {
-    return <SpotifyEmbed url={url} width={"large"} />;
+    return <SpotifyEmbed url={url} />;
   }
 
   if (loading) return <div className={"skeleton " + size} />;

@@ -53,7 +53,7 @@ function MyProfileContainer({ presentingElement }) {
   const ePage = useSelector(state => state.pages.editPage);
   const stories = useSelector(state => state.pages.pagesInView);
   const dialog = useSelector(state => state.users.dialog);
-  const { seo, setSeo } = useContext(Context);
+  const { seo, setSeo ,setError} = useContext(Context);
   const collections = useSelector(state => state.books.collections);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
@@ -173,7 +173,11 @@ function MyProfileContainer({ presentingElement }) {
           dispatch(setEditingPage({ page: payload.story }));
           dispatch(setPageInView({ page: payload.story }));
           navigate(Paths.editPage.createRoute(payload.story.id));
+        }else{
+          windowl.alert("COULD NOT CREATE STORY")
         }
+      },err=>{
+        setErrorLocal(err.message)
       }));
     }
   }, 5);

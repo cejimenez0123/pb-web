@@ -1,12 +1,9 @@
 
- import { useContext, useEffect, useState } from "react"
 import RichEditor from "./RichEditor"
 import { PageType } from "../../core/constants"
 import PicturePageForm from "./PicturePageForm"
-import EditorContext from "../../container/page/EditorContext"
-import { useLocation, useParams } from "react-router-dom"
-import { setHtmlContent } from "../../actions/PageActions.jsx"
-import { useDispatch } from "react-redux"
+
+import { useParams } from "react-router-dom"
 import { IonImg } from "@ionic/react"
 import { useSelector } from "react-redux"
 import Enviroment from "../../core/Enviroment.js"
@@ -15,7 +12,7 @@ import isValidUrl from "../../core/isValidUrl.js"
 
         const {id,type}=useParams()
       
-        const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
+        
         const page = useSelector(state=>state.pages.editingPage)
       
      
@@ -37,7 +34,7 @@ case PageType.link:{
 }
 case PageType.text:{
         <RichEditor
-              initContent={htmlContent.html}
+              // initContent={html}
               handleChange={content => handleChange(content)}
             />
 }
@@ -72,7 +69,7 @@ case PageType.text:{
         } else if (page.type === PageType.text) {
           return (
             <RichEditor
-              initContent={htmlContent.html}
+              // initContent={html}
               handleChange={content => {
              
                 handleChange(content);
