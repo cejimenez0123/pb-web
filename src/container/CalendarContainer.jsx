@@ -47,10 +47,22 @@ export default function CalendarContainer(){
      {!currentProfile &&<div className="mb-8"><p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
         Get weekly writing events in your inbox, or go deeper:<br/> apply to become a user and share your own writing and feedback on our site.
       </p>
-    <div><IonText className="text-xl text-emerald-700" onClick={()=>navigate(Paths.newsletter())}>Join the Newsletter</IonText></div>
-     <IonText>or</IonText>
-     <div>
-    <IonText onClick={()=>{navigate("/onboard")}} className="text-xl text-emerald-700">Apply to be a user</IonText> 
+    <div className="btn rounded-full 
+  bg-gradient-to-r 
+    from-emerald-300 
+    to-blueSea
+    hover:from-emerald-100 hover:to-emerald-200
+    transition-all duration-300
+    "><IonText className="text-xl  text-white" onClick={()=>navigate(Paths.newsletter())}>Join the Newsletter</IonText></div>
+     <div><IonText>or</IonText>
+     </div>
+     <div className="btn rounded-full
+      bg-gradient-to-r 
+    from-emerald-300 
+    to-blueSea
+    hover:from-emerald-100 hover:to-emerald-200
+    transition-all duration-300">
+    <IonText onClick={()=>{navigate("/onboard")}} className="text-xl text-white">Apply to be a user</IonText> 
      </div>
       </div>}
 
