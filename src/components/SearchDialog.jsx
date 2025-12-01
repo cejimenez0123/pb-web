@@ -39,7 +39,8 @@ const SearchDialog = ({ presentingElement }) => {
   // const [includeType, setIncludeType] = useState(includeTypes.all); 
   const sourceFilters = {personal:"personal"}
   // const [sourceFilter, setSourceFilter] = useState(sourceFilters.all);
-  const filters = [sourceFilters.personal,includeTypes.profiles,includeTypes.hashtags,includeTypes.cols,includeTypes.stories]
+  const filters =currentProfile?[sourceFilters.personal,includeTypes.profiles,includeTypes.hashtags,includeTypes.cols,includeTypes.stories]
+ : [includeTypes.profiles,includeTypes.hashtags,includeTypes.cols,includeTypes.stories]
   const [selectedFilters,setSelectedFilters]=useState([])
   useEffect(() => {
     if (searchText.trim().length === 0) {
