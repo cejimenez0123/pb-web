@@ -113,16 +113,30 @@ const signUp = createAsyncThunk(
 
 
 
- const searchMultipleIndexes = createAsyncThunk(
+//  const searchMultipleIndexes = createAsyncThunk(
+//   "users/searchMultipleIndexes",
+//   async (params, thunkApi) => {
+//     const { query,filters} = params;
+   
+//     try {
+//       // Call server-side search via the repo
+//       const data = await algoliaRepo.search(query,[],filters);
+
+//       return { results: data.results };
+//     } catch (error) {
+//       console.error("Search failed:", error);
+//       return thunkApi.rejectWithValue({ error: "Search failed" });
+//     }
+//   }
+// );
+const searchMultipleIndexes = createAsyncThunk(
   "users/searchMultipleIndexes",
   async (params, thunkApi) => {
-    const { query } = params;
+    const { query, filters = [],profileId} = params;
 
     try {
-      // Call server-side search via the repo
-      const data = await algoliaRepo.search(query);
-console.log(data)
-      // data should be { results: [...] } as returned by the server
+      const data = await algoliaRepo.search(query, profileId,filters);
+
       return { results: data.results };
     } catch (error) {
       console.error("Search failed:", error);

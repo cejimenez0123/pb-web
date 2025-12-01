@@ -106,7 +106,7 @@ const [solEvents,setSolEvents]=useState([])
       storyRepo.fetchEvents({days:28}).then(res=>{
         
         let events = res.events.flatMap(event=>event.events)
-  console.log(events[0])console.log(events[0])
+  console.log(events[0])
       const eventList = events.filter(event => {
         const today = new Date();
         const threeMonthsLater = new Date();
@@ -152,26 +152,6 @@ const queryString = Object.keys(params)
     .join('&');
 
 const googleAddLink = baseUrl + queryString;
-  const baseUrl = 'https://calendar.google.com/calendar/render?';
-const startField = event.start?.dateTime || event.start?.date;
-const endField = event.end?.dateTime || event.end?.date;
-
-// Construct the dates string: START/END
-const eventDates = `${formatGoogleCalendarDate(startField)}/${formatGoogleCalendarDate(endField)}`;
-const params = {
-    action: 'TEMPLATE',
-    text: event.summary,
-    dates: eventDates,
-    details: cleanDescriptionAndExtractHashtags(event.description),
-    location: event.location
-};
-
-// Map the parameters to the URL format and encode them
-const queryString = Object.keys(params)
-    .map(key => key + '=' + encodeURIComponent(params[key]))
-    .join('&');
-
-const googleAddLink = baseUrl + queryString;
 
             setSuggestions((prevState)=>[...new Set([...prevState,...obj.suggestions])])
 
@@ -182,7 +162,6 @@ const googleAddLink = baseUrl + queryString;
               hashtags: obj.hashtags,
               startTime: startTimeFormatted,
               location: location||'',
-              rawLocation: event.location,
               rawLocation: event.location,
               notes: event.description || '',
               googleLink:event.htmlLink||"",
@@ -220,7 +199,6 @@ const googleAddLink = baseUrl + queryString;
       },[selectedArea])
       const dispatch = useDispatch()
       const handleDialogOpen=(chosenEvent)=>{
-        sendGAEvent("Looked at Event", `Saw:${chosenEvent.summary} `+searchTerm, searchTerm);
         sendGAEvent("Looked at Event", `Saw:${chosenEvent.summary} `+searchTerm, searchTerm);
    
         let dia = {...dialog}
@@ -336,30 +314,20 @@ const googleAddLink = baseUrl + queryString;
                       <IonItem key={i} 
                     
                       onClick={()=>handleDialogOpen(event)}
-                      onClick={()=>handleDialogOpen(event)}
                          className=" 
                           border-blueSea border  rounded-[50px]  shadow-md min-h-42 my-1  py-4  "
                      >
                       <div  className={`flex
-                      <div  className={`flex
                       flex-row justify-between  px-6    `}>
                        {/* // */}
-                     <span  className=" flex-col text-left flex"
                      <span  className=" flex-col text-left flex"
                      >
                    
                      <span    className="mr-2 max-w-[15rem] text-overflow-ellipsis overflow-clip">{isPhone?event.shortSummary:event.summary}</span>     
                      {event.organizerLink&&isValidUrl(event.googleLink)? 
                        <span  className="flex flex-col"> 
-                       <span  className="flex flex-col"> 
           
                              <a className="text-blueSea overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
-                              <IonText onClick={()=>{
-                                 console.log("BOB",event.location)
-                             const encoded = encodeURIComponent(event.rawLocation);
-window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
-                             
-                              }}>{event.location}</IonText></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
                               <IonText onClick={()=>{
                                  console.log("BOB",event.location)
                              const encoded = encodeURIComponent(event.rawLocation);
@@ -454,22 +422,17 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                 key={i}
                 
                     
-                
-                    
                 className="
                   border-blueSea border rounded-[30px] shadow-md
                   min-w-[16rem] max-w-[18rem]
                   flex-shrink-0 flex-col p-4
                 "
-                onClickCapture={()=>handleDialogOpen(event)}
-                onClickCapture={()=>handleDialogOpen(event)}
+               
               >
-                <div  >
                 <div  >
                 <div className="flex flex-col justify-between h-full">
                   <span
-               
-               
+                onClickCapture={()=>handleDialogOpen(event)}
                     className="flex flex-col text-left cursor-pointer"
                   >
                     <span className="mr-2 max-w-[15rem] text-ellipsis overflow-hidden whitespace-nowrap">
@@ -486,8 +449,6 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                             "",
                             false
                           );
-
-                          // window.open(event.googleLink);
 
                           // window.open(event.googleLink);
                         }}
@@ -531,7 +492,6 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                         sendGAEvent(
                           "Click",
                           `Navigate to ${event.summary}}`,
-                          `Navigate to ${event.summary}}`,
                           event.summary,
                           "",
                           false
@@ -542,7 +502,6 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                       src={calendar}
                     />
                   </span>
-                </div>
                 </div>
                 </div>
               </IonItem>
@@ -568,34 +527,4 @@ const formatGoogleCalendarDate = (isoDateString) => {
     // For timed events, return YYYYMMDDTHHMMSSZ
     return new Date(isoDateString).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 };
-function googleMapsLinkFromLocation(locationString) {
-  const encoded = encodeURIComponent(locationString);
-  return `https://www.google.com/maps/search/?api=1&query=${encoded}`;
-}
 
-
-
-// Get the relevant start and end fields (using 'date' for all-day, 'dateTime' for timed)
-function generateGoogleMapsUrl(location) {
-   
-    const encodedLocation = encodeURIComponent(location)
-
-    // 3. Construct the Google Maps Directions URL
-    // The format for directions is: /dir/search/<destination>
-    // This calculates directions from the user's current location to the destination.
-    const baseUrl = 'https://www.google.com/maps/dir//\\';
-    const mapsUrl = `${baseUrl}dir/search/${encodedLocation}`;
-
-    return mapsUrl;
-}
-function generateGoogleMapsSearchUrl(locationArray) {
-    if (!Array.isArray(locationArray) || locationArray.length === 0) {
-        return "";
-    }
-    const rawLocation = locationArray[0];
-    const encodedLocation = encodeURIComponent(rawLocation.trim());
-    
-    // The format for simple search is: /search/<query>
-    const baseUrl = 'https://www.google.com/maps/dir//\\';
-    return `${baseUrl}search/${encodedLocation}`;
-}

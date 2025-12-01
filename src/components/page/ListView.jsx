@@ -74,7 +74,8 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
       </IonList>
 
       {hasMore && (
-        <IonInfiniteScroll onIonInfinite={loadMore} className="flex flex-col" threshold="100px">
+
+        <IonInfiniteScroll onIonInfinite={loadMore} className="flex flex-col items-center ion-padding" threshold="50px">
           <IonInfiniteScrollContent loadingSpinner="bubbles" loadingText="Loading more..." />
         </IonInfiniteScroll>
       )}

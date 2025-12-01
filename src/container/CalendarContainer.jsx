@@ -40,7 +40,7 @@ export default function CalendarContainer(){
   },[])
   return (
     <IonContent fullscreen={true} className="ion-padding">
-    <div className="mx-auto  m-4   text-center">
+    <div className="mx-auto  m-4 pt-14   text-center">
 <div className=" w-[90%] sm:max-w-[30rem] mx-auto">
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   

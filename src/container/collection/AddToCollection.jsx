@@ -218,7 +218,7 @@ const filteredSortedStories = useMemo(() => {
               
                 className="rounded-xl my-2  pb-2 "
               >
-                <div className="flex flex-row py-2 border-b border-emerald-600 justify-between w-full">
+                <div onClick={()=>{navigate(Paths.page.createRoute(story.id))}} className="flex flex-row py-2 border-b border-emerald-600 justify-between w-full">
   
                 <IonLabel slot="start" className="text-emerald-800  truncate max-w-[70%]  font-medium
 text-[1rem]">
@@ -279,7 +279,7 @@ text-[1rem]">
               >
                 <div className="flex flex-row py-2  justify-between w-full">
   
-                <IonLabel slot="start" className="text-emerald-800  truncate max-w-[70%]  font-medium
+                <IonLabel slot="start" onClick={()=>{navigate(Paths.collection.createRoute(col.id))}}className="text-emerald-800  truncate max-w-[70%]  font-medium
 text-[1rem]">
     {col.title?.trim() || "Untitled"}
   </IonLabel>
