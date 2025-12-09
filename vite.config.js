@@ -1,12 +1,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],assetsInclude:["**/privacy.html"],
-  base: '/' ,
+export default defineConfig(({ mode }) => ({
+  plugins: [react()],
+  build: {
+    outDir: mode === 'clip' ? 'dist-clip' : 'dist',
+    rollupOptions: {
+      input: mode === 'clip'
+        ? 'index-clip.html'  // your clip HTML
+        : 'index.html',      // full app HTML
+    },
+  },
   optimizeDeps: {
-    include: ['@reduxjs/toolkit']
-  }
+    entries: mode === 'clip' ? ['index-clip.html'] : ['index.html'],
+  },
+}))
 
-})
+

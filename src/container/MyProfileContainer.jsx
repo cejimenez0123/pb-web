@@ -304,14 +304,14 @@ return<ErrorBoundary><IonPage><IonContent fullscreen={true} className='ion-paddi
   {/* Search + Tabs stay unchanged */}
   <div className='mx-auto md:mt-8 flex flex-col md:w-page'>
     <div className="flex items-center mb-8 mx-auto h-9 max-w-[85vw] pr-4 rounded-full bg-transparent">
-      <IonInput
+      {/* <IonInput
         value={search}
         label="Search"
         labelPlacement="floating"
         placeholder="Search..."
         onIonChange={e => setSearch(e.detail.value ?? '')}
         className="text-emerald-800 flex-grow"
-      />
+      /> */}
       <select
         onChange={e => setFilterType(e.target.value)}
         value={filterType}

@@ -1,5 +1,86 @@
+// const isClip = import.meta.env.MODE === "clip";
+// const basename = isClip ? "/clip" : "/";
 
+// // ✅ Helper to add basename prefix when needed
+// const prefixPath = (path) => basename === "/clip" ? `/clip${path}` : path;
 
+// const Paths ={
+//     newsletter:()=>prefixPath(`/newsletter`),
+//     feedback:()=>prefixPath(`/feedback`),
+//     links:()=>prefixPath(`/links`),
+//     calendar:()=>prefixPath("/events"),
+//     onboard:prefixPath("/onboard"),
+//     library: {
+//         route: ()=>prefixPath(`/library/:id`),
+//         createRoute:(id)=>prefixPath(`/library/${id}`)},
+//     page:{ 
+//         route: ()=>prefixPath(`/story/:id`), 
+//         createRoute:(id)=>prefixPath(`/story/${id}`)
+//     },
+//     workshop:{
+//         route:()=>prefixPath("/workshop/page/:pageId"),
+//         reader:()=>prefixPath("/workshop"),
+//         createRoute:(pageId)=>prefixPath("/workshop/page/"+pageId)
+//     },
+//     hashtag:{
+//         route:()=>prefixPath("/hashtag/:id"),
+//         createRoute:(id)=>prefixPath(`/hashtag/${id}`)
+//     },
+//     editCollection:{
+//         route: ()=>prefixPath(`/collection/:id/edit`),
+//         createRoute:(id)=>prefixPath(`/collection/${id}/edit`)},
+    
+//     apply:()=>prefixPath("/apply"),
+//     book: {
+//         route: ()=>prefixPath(`/book/:id`),
+//         createRoute:(id)=>prefixPath(`/book/${id}`)
+//     },
+//     collection:{
+//         route: ()=>prefixPath('/collection/:id'),
+//         createRoute:(id)=>prefixPath("/collection/"+id)
+//     },
+//     editor:
+//     {
+//         text:()=>prefixPath(`/story/text/edit`),
+//         link:()=> prefixPath(`/story/link/edit`),
+//         image:()=>prefixPath(`/story/image/edit`)   
+//     },
+//     login:()=>prefixPath(`/login`),
+//     editPage:{
+//         route:()=>prefixPath(`/story/:id/editor`),
+//         createRoute:(id)=>prefixPath(`/story/${id}/editor`)},
+
+//     addToCollection:{
+//         route:prefixPath('/collection/:id/add'),
+//         createRoute:(id)=>prefixPath(`/collection/${id}/add`)},
+//     createCollection:{
+//         route:()=>prefixPath("/collection")
+//     },
+//     addStoryToCollection:{
+//         collection:(id)=>prefixPath(`/item/${id}/collection`),
+//         story:(id)=>prefixPath(`/item/${id}/story`),
+//         route:prefixPath("/item/:id/:type"),
+//         createRoute:(id)=>{
+//             return prefixPath(`/item/${id}/collection`)
+//         }
+//     },
+//     discovery:()=>prefixPath("/discovery"),
+//     home:()=>prefixPath(`/home`),
+//     about:()=>prefixPath(`/`),
+//     editProfile:prefixPath(`/profile/edit`),
+//     profile:{
+//         route:()=>prefixPath(`/profile/:id`),
+//         createRoute:(id)=>prefixPath(`/profile/${id}`)
+//     },
+//     myProfile:prefixPath(`/profile/home`),
+//     notifications:()=>prefixPath("/profile/alert")
+// }
+
+// export default Paths
+
+const isClip = import.meta.env.MODE === "clip";  // or use a VITE flag
+
+const basename = isClip ? "/clip" : "/";
 const Paths ={
     newsletter:()=>`/newsletter`,
     feedback:()=>`/feedback`,

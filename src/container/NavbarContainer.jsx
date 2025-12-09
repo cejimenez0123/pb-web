@@ -50,7 +50,15 @@ const currentProfile=useSelector(state=>state.users.currentProfile)
     const isTablet =  useMediaQuery({
     query: '(max-width: 1100px)'
   }) 
-  const pages = [...[ 
+  const isClip = import.meta.env.MODE=="clip"
+  const pages = isClip?[...[ 
+                PageName.about,
+                PageName.discovery,
+                PageName.workshop,
+                PageName.search,
+                PageName.create, 
+    
+                ]]:[...[ 
                 Capacitor.isNativePlatform()||currentProfile? PageName.home:PageName.about,
                 
                 PageName.discovery,

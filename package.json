@@ -8,8 +8,10 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "fireTest": "npm run build && firebase hosting:channel:deploy michael-que",
-    "build": "npx vite build",
-    "run-ios": "npx vite build && npx cap sync ios && npx cap run ios"
+     "build": "npx vite build",
+    "build:clip": "npx vite build --mode clip",
+    "build:main": "npx vite build --mode main",
+    "run-ios": "npx vite build --mode main && npx cap sync ios && npx cap run ios"
   },
   "dependencies": {
     "@capacitor-firebase/storage": "^7.4.0",
@@ -35,6 +37,7 @@
     "link-preview-js": "^3.0.14",
     "lodash": "^4.17.21",
     "npm": "^11.6.2",
+    "path": "^0.12.7",
     "random-words": "^2.0.1",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.1.1",

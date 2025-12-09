@@ -150,7 +150,7 @@ const libraryForums = () => {
       <ErrorBoundary>
 
         <IonContent fullscreen={true} scrollY>
-        
+        <div className='pt-12'></div>
           <div className="text-left  mt-12">
             {libraryForums()}
           </div>

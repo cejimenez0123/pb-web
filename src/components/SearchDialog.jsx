@@ -39,15 +39,17 @@ const SearchDialog = ({ presentingElement }) => {
   // const [includeType, setIncludeType] = useState(includeTypes.all); 
   const sourceFilters = {personal:"personal"}
   // const [sourceFilter, setSourceFilter] = useState(sourceFilters.all);
-  const filters = [sourceFilters.personal,includeTypes.profiles,includeTypes.hashtags,includeTypes.cols,includeTypes.stories]
+  const filters =currentProfile?[sourceFilters.personal,includeTypes.profiles,includeTypes.hashtags,includeTypes.cols,includeTypes.stories]
+ : [ includeTypes.profiles,includeTypes.hashtags,includeTypes.cols,includeTypes.stories]
   const [selectedFilters,setSelectedFilters]=useState([])
   useEffect(() => {
-    if (searchText.trim().length === 0) {
-      setSearchContent([]);
-      return;
-    }
+ 
+searchAction()
 
-    const payload = {
+  }, [searchText, selectedFilters, dispatch]);
+
+  const searchAction=()=>{
+      const payload = {
       query: searchText,
       filters: selectedFilters,
       profileId:currentProfile?currentProfile.id:null
@@ -55,23 +57,6 @@ const SearchDialog = ({ presentingElement }) => {
 
     };
 
-    // ➜ PLACEHOLDER LAYER FOR SPECIAL PRIVATE ENDPOINTS
-    // ---------------------------------------------------
-    // if (sourceFilter === "mine") {
-    //   if (includeType === "stories") {
-    //     dispatch(fetchUserStories(payload));
-    //     return;
-    //   }
-    //   if (includeType === "collections") {
-    //     dispatch(fetchUserCollections(payload));
-    //     return;
-    //   }
-    //   if (includeType === "both") {
-    //     dispatch(fetchUserStoriesAndCollections(payload));
-    //     return;
-    //   }
-    // }
-    // ---------------------------------------------------
 
     dispatch(searchMultipleIndexes(payload)).then(result => {
       checkResult(
@@ -81,10 +66,12 @@ const SearchDialog = ({ presentingElement }) => {
           const { results } = returned;
           setSearchContent(results);
         },
-        err => setError(err.message)
+        err =>{
+          console.log(err.message)
+        }
       );
     });
-  }, [searchText, selectedFilters, dispatch]);
+  }
     const toggleFilters = (genre) => {
       // let newSelectedGenres;
       if (selectedFilters.includes(genre)) {

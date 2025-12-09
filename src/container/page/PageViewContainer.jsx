@@ -132,6 +132,7 @@ export default function PageViewContainer() {
   return (
     <ErrorBoundary>
       <IonContent fullscreen={true} className="ion-padding-top  ">
+         <div className='pt-12'></div>
         <IonHeader className="pt-16 ion-padding-top ion-padding">
           <div className=" pt-4 sm:pt-8">
              {Capacitor.isNativePlatform()?<IonBackButton

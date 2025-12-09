@@ -58,9 +58,6 @@ export default function CalendarContainer(){
 <div className="w-fit mx-auto">
       <CalendarEmbed  />
       </div>
-
-   
-     
     </div>
     </IonContent>
   );

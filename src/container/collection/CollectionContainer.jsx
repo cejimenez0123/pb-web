@@ -487,7 +487,7 @@ const getCol = async () => {
          <ErrorBoundary>
     <IonContent 
     fullscreen={true}  scrollY>
-  
+   <div className='pt-12'></div>
   <IonHeader>
   <IonToolbar>
 

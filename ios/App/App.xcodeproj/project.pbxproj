@@ -4,14 +4,12 @@
 	classes = {
 	};
 	objectVersion = 70;
-	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
-		3EE0E3EE2ECE2036007B298E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3EE0E3ED2ECE2036007B298E /* GoogleService-Info.plist */; };
-		3EE0E4002ED62FA7007B298E /* PlumbumClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 3EE0E3F42ED62FA5007B298E /* PlumbumClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		3EE0E4002ED62FA7007B298E /* PlumbumClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 3EE0E3F42ED62FA5007B298E /* PlumbumClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3E7311352EE3549700A04090 /* AppClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 3E7311292EE3549600A04090 /* AppClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3E7311512EE3552000A04090 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3E7311502EE3552000A04090 /* GoogleService-Info.plist */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
 		504EC30D1FED79650016851F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
@@ -22,47 +20,23 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3EE0E3FE2ED62FA7007B298E /* PBXContainerItemProxy */ = {
+		3E7311332EE3549700A04090 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 3EE0E3F32ED62FA5007B298E;
-			remoteInfo = PlumbumClip;
+			remoteGlobalIDString = 3E7311282EE3549600A04090;
+			remoteInfo = AppClip;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		3EE0E4012ED62FA7007B298E /* Embed App Clips */ = {
+		3E7311362EE3549700A04090 /* Embed App Clips */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
 			dstSubfolderSpec = 16;
 			files = (
-				3EE0E4002ED62FA7007B298E /* PlumbumClip.app in Embed App Clips */,
-			);
-			name = "Embed App Clips";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
-/* Begin PBXContainerItemProxy section */
-		3EE0E3FE2ED62FA7007B298E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3EE0E3F32ED62FA5007B298E;
-			remoteInfo = PlumbumClip;
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		3EE0E4012ED62FA7007B298E /* Embed App Clips */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
-			dstSubfolderSpec = 16;
-			files = (
-				3EE0E4002ED62FA7007B298E /* PlumbumClip.app in Embed App Clips */,
+				3E7311352EE3549700A04090 /* AppClip.app in Embed App Clips */,
 			);
 			name = "Embed App Clips";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,10 +45,8 @@
 
 /* Begin PBXFileReference section */
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
-		3EE0E3ED2ECE2036007B298E /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		3EE0E3EF2ECE20A3007B298E /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
-		3EE0E3F42ED62FA5007B298E /* PlumbumClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlumbumClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3EE0E3F42ED62FA5007B298E /* PlumbumClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlumbumClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E7311292EE3549600A04090 /* AppClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E7311502EE3552000A04090 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -89,28 +61,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3EE0E4042ED62FA7007B298E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3E7311392EE3549700A04090 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 3EE0E3F32ED62FA5007B298E /* PlumbumClip */;
+			target = 3E7311282EE3549600A04090 /* AppClip */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		3EE0E3F52ED62FA5007B298E /* PlumbumClip */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3EE0E4042ED62FA7007B298E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PlumbumClip; sourceTree = "<group>"; };
+		3E73112A2EE3549600A04090 /* AppClip */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3E7311392EE3549700A04090 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = ("dist-clip", ); path = AppClip; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3EE0E3F12ED62FA5007B298E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3EE0E3F12ED62FA5007B298E /* Frameworks */ = {
+		3E7311262EE3549600A04090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -140,12 +105,10 @@
 			isa = PBXGroup;
 			children = (
 				504EC3061FED79650016851F /* App */,
-				3EE0E3F52ED62FA5007B298E /* PlumbumClip */,
-				3EE0E3F52ED62FA5007B298E /* PlumbumClip */,
+				3E73112A2EE3549600A04090 /* AppClip */,
 				504EC3051FED79650016851F /* Products */,
 				7F8756D8B27F46E3366F6CEA /* Pods */,
 				27E2DDA53C4D2A4D1A88CE4A /* Frameworks */,
-				3EE0E3ED2ECE2036007B298E /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -153,8 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				504EC3041FED79650016851F /* App.app */,
-				3EE0E3F42ED62FA5007B298E /* PlumbumClip.app */,
-				3EE0E3F42ED62FA5007B298E /* PlumbumClip.app */,
+				3E7311292EE3549600A04090 /* AppClip.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -162,7 +124,7 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
-				3EE0E3EF2ECE20A3007B298E /* App.entitlements */,
+				3E7311502EE3552000A04090 /* GoogleService-Info.plist */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
@@ -187,48 +149,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3EE0E3F32ED62FA5007B298E /* PlumbumClip */ = {
+		3E7311282EE3549600A04090 /* AppClip */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3EE0E4052ED62FA7007B298E /* Build configuration list for PBXNativeTarget "PlumbumClip" */;
+			buildConfigurationList = 3E73113A2EE3549700A04090 /* Build configuration list for PBXNativeTarget "AppClip" */;
 			buildPhases = (
-				3EE0E3F02ED62FA5007B298E /* Sources */,
-				3EE0E3F12ED62FA5007B298E /* Frameworks */,
-				3EE0E3F22ED62FA5007B298E /* Resources */,
+				3E7311252EE3549600A04090 /* Sources */,
+				3E7311262EE3549600A04090 /* Frameworks */,
+				3E7311272EE3549600A04090 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				3EE0E3F52ED62FA5007B298E /* PlumbumClip */,
+				3E73112A2EE3549600A04090 /* AppClip */,
 			);
-			name = PlumbumClip;
+			name = AppClip;
 			packageProductDependencies = (
 			);
-			productName = PlumbumClip;
-			productReference = 3EE0E3F42ED62FA5007B298E /* PlumbumClip.app */;
-			productType = "com.apple.product-type.application.on-demand-install-capable";
-		};
-		3EE0E3F32ED62FA5007B298E /* PlumbumClip */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 3EE0E4052ED62FA7007B298E /* Build configuration list for PBXNativeTarget "PlumbumClip" */;
-			buildPhases = (
-				3EE0E3F02ED62FA5007B298E /* Sources */,
-				3EE0E3F12ED62FA5007B298E /* Frameworks */,
-				3EE0E3F22ED62FA5007B298E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				3EE0E3F52ED62FA5007B298E /* PlumbumClip */,
-			);
-			name = PlumbumClip;
-			packageProductDependencies = (
-			);
-			productName = PlumbumClip;
-			productReference = 3EE0E3F42ED62FA5007B298E /* PlumbumClip.app */;
+			productName = AppClip;
+			productReference = 3E7311292EE3549600A04090 /* AppClip.app */;
 			productType = "com.apple.product-type.application.on-demand-install-capable";
 		};
 		504EC3031FED79650016851F /* App */ = {
@@ -240,14 +180,12 @@
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
 				9592DBEFFC6D2A0C8D5DEB22 /* [CP] Embed Pods Frameworks */,
-				3EE0E4012ED62FA7007B298E /* Embed App Clips */,
-				3EE0E4012ED62FA7007B298E /* Embed App Clips */,
+				3E7311362EE3549700A04090 /* Embed App Clips */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				3EE0E3FF2ED62FA7007B298E /* PBXTargetDependency */,
-				3EE0E3FF2ED62FA7007B298E /* PBXTargetDependency */,
+				3E7311342EE3549700A04090 /* PBXTargetDependency */,
 			);
 			name = App;
 			productName = App;
@@ -261,13 +199,9 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 2610;
-				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 0920;
 				TargetAttributes = {
-					3EE0E3F32ED62FA5007B298E = {
-						CreatedOnToolsVersion = 26.1.1;
-					};
-					3EE0E3F32ED62FA5007B298E = {
+					3E7311282EE3549600A04090 = {
 						CreatedOnToolsVersion = 26.1.1;
 					};
 					504EC3031FED79650016851F = {
@@ -293,21 +227,13 @@
 			projectRoot = "";
 			targets = (
 				504EC3031FED79650016851F /* App */,
-				3EE0E3F32ED62FA5007B298E /* PlumbumClip */,
-				3EE0E3F32ED62FA5007B298E /* PlumbumClip */,
+				3E7311282EE3549600A04090 /* AppClip */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		3EE0E3F22ED62FA5007B298E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3EE0E3F22ED62FA5007B298E /* Resources */ = {
+		3E7311272EE3549600A04090 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -324,7 +250,7 @@
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
-				3EE0E3EE2ECE2036007B298E /* GoogleService-Info.plist in Resources */,
+				3E7311512EE3552000A04090 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,14 +293,7 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3EE0E3F02ED62FA5007B298E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3EE0E3F02ED62FA5007B298E /* Sources */ = {
+		3E7311252EE3549600A04090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -392,18 +311,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3EE0E3FF2ED62FA7007B298E /* PBXTargetDependency */ = {
+		3E7311342EE3549700A04090 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3EE0E3F32ED62FA5007B298E /* PlumbumClip */;
-			targetProxy = 3EE0E3FE2ED62FA7007B298E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
-/* Begin PBXTargetDependency section */
-		3EE0E3FF2ED62FA7007B298E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3EE0E3F32ED62FA5007B298E /* PlumbumClip */;
-			targetProxy = 3EE0E3FE2ED62FA7007B298E /* PBXContainerItemProxy */;
+			target = 3E7311282EE3549600A04090 /* AppClip */;
+			targetProxy = 3E7311332EE3549700A04090 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -427,7 +338,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		3EE0E4022ED62FA7007B298E /* Debug */ = {
+		3E7311372EE3549700A04090 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -438,7 +349,7 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_ENTITLEMENTS = PlumbumClip/PlumbumClip.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AppClip/AppClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = AF7PH7C9M6;
@@ -446,7 +357,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PlumbumClip/Info.plist;
+				INFOPLIST_FILE = AppClip/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = App;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -475,7 +386,7 @@
 			};
 			name = Debug;
 		};
-		3EE0E4032ED62FA7007B298E /* Release */ = {
+		3E7311382EE3549700A04090 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -486,7 +397,7 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_ENTITLEMENTS = PlumbumClip/PlumbumClip.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AppClip/AppClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = AF7PH7C9M6;
@@ -494,101 +405,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PlumbumClip/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = App;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.plumbum.app.Clip;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		3EE0E4022ED62FA7007B298E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_ENTITLEMENTS = PlumbumClip/PlumbumClip.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AF7PH7C9M6;
-				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PlumbumClip/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = App;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.plumbum.app.Clip;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		3EE0E4032ED62FA7007B298E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_ENTITLEMENTS = PlumbumClip/PlumbumClip.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AF7PH7C9M6;
-				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PlumbumClip/Info.plist;
+				INFOPLIST_FILE = AppClip/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = App;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -719,8 +536,6 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -730,17 +545,11 @@
 			baseConfigurationReference = FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = AF7PH7C9M6;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -760,17 +569,11 @@
 			baseConfigurationReference = AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = AF7PH7C9M6;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -787,20 +590,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3EE0E4052ED62FA7007B298E /* Build configuration list for PBXNativeTarget "PlumbumClip" */ = {
+		3E73113A2EE3549700A04090 /* Build configuration list for PBXNativeTarget "AppClip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3EE0E4022ED62FA7007B298E /* Debug */,
-				3EE0E4032ED62FA7007B298E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		3EE0E4052ED62FA7007B298E /* Build configuration list for PBXNativeTarget "PlumbumClip" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3EE0E4022ED62FA7007B298E /* Debug */,
-				3EE0E4032ED62FA7007B298E /* Release */,
+				3E7311372EE3549700A04090 /* Debug */,
+				3E7311382EE3549700A04090 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
