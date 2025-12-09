@@ -41,19 +41,19 @@ export default function LinksContainer(props){
                     title={"Dec 20th Writers Workshop"}
                     description={`Join us for Writers Workshop`}/>
                     </li>
-                     <li>  
-                      <LinkNode image={flare}
+                     {/* <li>   */}
+                      {/* <LinkNode image={flare}
        url={"https://groups.ccny.cuny.edu/UMAAN/rsvp_boot?id=1934546"}
                     title={"Dec. 3rd Open Mic"}
                     description={`Spark Open Mic @ CCNY
 Step up, express yourself, and share your creativity in a space where you can truly be you.`}/>
-                    </li>
-                    <li>
+                    </li> */}
+                    {/* <li>
                          <LinkNode image={cafe}
                          url={"https://partiful.com/e/W2Y9L0eVcJyzhlmKYLaL?source=share"}
                     title={"Dec. 6th CAFETATO: THE UPTOWN COFFEE RAVE"}
                          description={"NO SACCARINE, SUGAR"}/>
-                    </li>
+                    </li> */}
              
                     <li>
                    

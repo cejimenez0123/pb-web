@@ -129,6 +129,7 @@ const googleId= (await Preferences.get({key:"googleId"})).value
       if(fileFind){
 dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, payload => {
           params.profilePicture = payload.fileName
+          
            dispatch(signUp(params)).then(res => checkResult(res, payload => {
 
         if (payload.profile) {
@@ -327,33 +328,8 @@ type='checkbox'
             />
             <ProfilePicture key={pictureUrl} image={pictureUrl} />
           </div>
-  {/* <IonLabel className="text-xl text-left pb-2">
-    Add a Profile Picture
-  </IonLabel>
-  
-             <input
-    className="file-input max-w-72 my-8 mx-auto "
-        type="file"   <div>
-            <IonLabel className="text-xl text-emerald-800 font-medium mb-2 block">
-              Email Frequency
-            </IonLabel>
-            <select
-              className="w-full rounded-full bg-emerald-50 text-emerald-700 px-4 py-2 border border-emerald-200"
-              value={frequency}
-              ref={selectRef}
-              onChange={(e) => setFrequency(e.target.value)}
-            >
-              <option value={1}>Daily</option>
-              <option value={2}>Every 3 days</option>
-              <option value={3}>Weekly</option>
-              <option value={14}>Every 2 Weeks</option>
-              <option value={30}>Monthly</option>
-            </select>
-          </div>
-        accept="image/*"
-        onChange={(e)=>handleProfilePicture(e)}/>
+
  
-<ProfilePicture key={pictureUrl} image={pictureUrl}/> */}
 
 
             <IonItem className="mb-4 flex flex-row justify-between">
@@ -366,7 +342,8 @@ type='checkbox'
               className="w-full rounded-full bg-emerald-50 text-emerald-700 px-4 py-2 border border-emerald-200"
               value={frequency}
               ref={selectRef}
-              onChange={(e) => setFrequency(e.target.value)}
+              
+              onChange={(e) => setFrequency(e.currentTarget.value)}
             >
               <option value={1}>Daily</option>
               <option value={2}>Every 3 days</option>
