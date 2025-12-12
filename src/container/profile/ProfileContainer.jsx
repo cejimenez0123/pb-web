@@ -28,7 +28,7 @@ import PageList from '../../components/page/PageList.jsx';
 import sortItems from '../../core/sortItems.js';
 import { Preferences } from '@capacitor/preferences';
 import StoryCollectionTabs from '../../components/page/StoryCollectionTabs.jsx';
-
+import calendar from '../../images/icons/calendar.svg'
 function ProfileContainer() {
   const { seo, setSeo, setError, setSuccess, currentProfile } = useContext(Context);
   const { id } = useParams();
@@ -52,23 +52,8 @@ const [canUserSee, setCanUserSee] = useState(false);
     }
   }, [profile]);
 
-  // const collections = sortItems(
-  //   [],
-  //   useSelector((state) =>
-  //     state.books.collections
-  //       .filter((col) => col)
-  //       .filter((col) => (search.length > 0 ? col.title.toLowerCase().includes(search.toLowerCase()) : true))
-  //   )
-  // );
 
-  // const pages = useMesortItems(
-  //   useSelector((state) =>
-  //     state.pages.pagesInView
-  //       .filter((page) => page)
-  //       .filter((page) => (search.length > 0 ? page.title.toLowerCase().includes(search.toLowerCase()) : true))
-  //   ),
-  //   []
-  // );
+
 const collectionsRaw = useSelector((state) => state.books.collections
 );
 const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
@@ -245,6 +230,11 @@ const pages = useMemo(() => {
           </IonToolbar>
         </IonHeader>
         <IonContent fullscreen={true} className='pt-8'scrollY>
+            <div className='flex bg-emerald-600  flex-row justify-end'>
+
+          <img src={calendar} onClick={()=>{navigate(Paths.calendar())}}
+          className='max-w-16  p-4 absolute top-0 right-0  max-h-16'/>
+          </div>
           <div className="pt-2 md:pt-8 mb-8 mx-2 ">
             <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
           </div>

@@ -6,6 +6,7 @@ import { createStory, updateStory,  } from '../actions/StoryActions';
 import { setCollections} from '../actions/CollectionActions';
 import IndexList from '../components/page/IndexList';
 import Paths from '../core/paths';
+import calendar from '../images/icons/calendar.svg'
 import { debounce } from 'lodash';
 import { setPageInView, setPagesInView, setEditingPage } from '../actions/PageActions.jsx';
 import { sendGAEvent } from '../core/ga4.js';
@@ -253,7 +254,11 @@ currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: cur
     );
   }
 return<ErrorBoundary><IonPage><IonContent fullscreen={true} className='ion-padding'><div className=" sm:pt-16 pt-12 pb-20">
+  <div className='flex bg-emerald-600  flex-row justify-end'>
 
+          <img src={calendar} onClick={()=>{navigate(Paths.calendar())}}
+          className='max-w-16  p-4 absolute top-0 right-0  max-h-16'/>
+          </div>
   <div className="relative flex flex-col md:flex-row justify-around mx-auto sm:border-4 sm:border-emerald-300 p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 
     <div className="md:w-1/3 max-w-[60em] h-[16em] mb-6 flex justify-center md:justify-start">

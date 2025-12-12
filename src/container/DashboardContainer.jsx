@@ -137,7 +137,10 @@ const libraryForums = () => {
   return (
         <ErrorBoundary>
       <IonContent fullscreen={true} scrollY scrollX={false}>
-
+<div className='flex bg-emerald-600  flex-row justify-end'>
+  {/* <div className='bg-emerald-300'> */}
+          <img src={calendar} className='max-w-12   absolute top-0 right-0  max-h-12'/>
+          </div>
           <div id="dashboard">
             <div className="py-8">
               {libraryForums()}

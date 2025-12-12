@@ -19,7 +19,9 @@ import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
-      import { IonApp, IonContent, IonPage, IonText } from '@ionic/react';
+import { IonApp, IonContent, IonPage, IonText } from '@ionic/react';
+import calendar from "./images/icons/calendar.svg"
+  
 import PrivateRoute from './PrivateRoute';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
@@ -44,12 +46,10 @@ import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
 import Enviroment from './core/Enviroment.js';
-import { Helmet } from 'react-helmet';
 import { useMediaQuery } from 'react-responsive';
 import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
 import Dialog from './components/Dialog.jsx';
-import DeviceCheck from './components/DeviceCheck.jsx';
 import { Capacitor } from '@capacitor/core';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
 function App(props) {
@@ -136,18 +136,7 @@ if(!navigator.onLine){
     <IonApp >
 
       <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
-     {/* <div> */}
-     {/* <head>
-  <meta charset="UTF-8" />
-  <Helmet>
-  <title>{seo.title}</title>
-  <meta name="description" content={seo.description}/>
-  <meta property="og:title" content={seo.heading}/>
-  <meta property="og:description" content={seo.description}/>
-  <meta property="og:image" content={seo.logoChem} />
-  <meta property="og:url" content={seo.url} />
-  </Helmet>
-</head>  */}
+
       <IonPage  ref={page} className=' App pb-8b h-[100vh] background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
 
 
@@ -179,18 +168,19 @@ if(!navigator.onLine){
    
       
        
-     <div className='bg-cream'>
+     <div className='bg-cream max-h-[100vh]'>
         {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
-                {/* <div className="pt-12">  */}
- 
+               
+
        <SearchDialog presentingElement={page} />
        <Dialog dialog={dialog} presentingElement={page} />
 <Alert />
        
-
+ 
+ {/* </div> */}
       <Routes >
  
      <Route path={'/'} element={isFirstLaunch&&Capacitor.isNativePlatform()?<Navigate to="/onboard"/>:<AboutContainer/>} />

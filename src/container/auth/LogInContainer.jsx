@@ -8,6 +8,7 @@ import Paths from '../../core/paths';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
+import calendar from '../../images/icons/calendar.svg'
 import DeviceCheck from '../../components/DeviceCheck';
 import { IonContent,  IonInput, IonText } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
@@ -161,11 +162,18 @@ setError("User Not Found. Apply Below")
     dia.isOpen = true
 dia.title=("Forgot Password")
 dia.disagreeText=("Close")
+dia.agreeText = null
+dia.agree= null
 dia.text=(<ForgotPasswordForm/>)
 dispatch(setDialog(dia))
     }
     return(
         <ErrorBoundary>
+              <div className='flex bg-emerald-600  flex-row justify-end'>
+
+          <img src={calendar} onClick={()=>{navigate(Paths.calendar())}}
+          className='max-w-16  p-4 absolute top-0 right-0  max-h-16'/>
+          </div>
     <div  className=' py-0 scroll-auto flex md:mt-8  mx-auto sm:max-w-[50em]  lg:mt-36 mb-16 rounded-lg   text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
         
         <div  className='mx-auto'>
