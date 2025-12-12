@@ -18,7 +18,8 @@ import { useSelector } from "react-redux";
 export default function CalendarContainer(){
   const location = useLocation()
   const {seo,setSeo}=useContext(Context)
-  const currentProfile = useSelector(state=>state.users.currentProfile)
+  const isClip = import.meta.env.MODE == "clip"
+  const currentProfile = isClip?null:useSelector(state=>state.users.currentProfile)
   const navigate = useNavigate()
   const isNative = Capacitor.isNativePlatform()
   useLayoutEffect(()=>{
