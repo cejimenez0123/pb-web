@@ -9,8 +9,7 @@ import { getPublicLibraries } from '../actions/LibraryActions.jsx';
 import checkResult from '../core/checkResult';
 import { useMediaQuery } from 'react-responsive';
 import BookListItem from '../components/BookListItem';
-import grid from '../images/grid.svg';
-import stream from '../images/stream.svg';
+import calendar from '../images/icons/calendar.svg'
 import { initGA, sendGAEvent } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import ScrollDownButton from '../components/ScrollDownButton.jsx';
@@ -150,8 +149,15 @@ const libraryForums = () => {
       <ErrorBoundary>
 
         <IonContent fullscreen={true} scrollY>
-        <div className='pt-12'></div>
-          <div className="text-left  mt-12">
+   
+           
+                  <div className='flex  sm:mt-36 flex-row justify-end'>
+
+          <img src={calendar} onClick={()=>{navigate(Paths.calendar())}}
+          className='max-w-20  p-4 absolute  top-12 sm:top-32  sm:right-12  max-h-20 '/>
+          </div>
+          <div className="text-left mt-20 sm:mt-4 ">
+            
             {libraryForums()}
           </div>
 

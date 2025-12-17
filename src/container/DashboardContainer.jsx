@@ -9,11 +9,13 @@ import { appendToPagesInView, setPagesInView } from '../actions/PageActions';
 import Context from '../context.jsx';
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
+import calendar from '../images/icons/calendar.svg'
 import { initGA } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import Enviroment from '../core/Enviroment.js';
 import {  IonContent,IonText, IonItem} from '@ionic/react';
 import BookListItem from '../components/BookListItem.jsx';
+import Paths from '../core/paths.js';
 function DashboardContainer() {
   const location = useLocation();
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -137,11 +139,18 @@ const libraryForums = () => {
   return (
         <ErrorBoundary>
       <IonContent fullscreen={true} scrollY scrollX={false}>
-
+    
           <div id="dashboard">
-            <div className="py-8">
+        
+                
+                <div className='flex  sm:mt-36 flex-row justify-end'>
+
+          <img src={calendar} onClick={()=>{navigate(Paths.calendar())}}
+          className='max-w-20  p-4 absolute  top-12 sm:top-32  sm:right-12  max-h-20 '/>
+          </div>
+            <div className="sm:py-8 mt-20 sm:mt-4">
               {libraryForums()}
-              <div className="w-[98vw] md:mt-8 mx-auto flex flex-col md:w-page">
+              <div className="max-w-[98vw] md:mt-8 mx-auto flex flex-col md:w-page">
                 <div role="tablist" className="tabs grid">
                   {/* Recommendations Tab */}
                   <input
