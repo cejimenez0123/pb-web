@@ -3,14 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		3E7311352EE3549700A04090 /* AppClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 3E7311292EE3549600A04090 /* AppClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3E7311512EE3552000A04090 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3E7311502EE3552000A04090 /* GoogleService-Info.plist */; };
-		3EC0ECDC2EEC65BD00A2280D /* dist-clip in Resources */ = {isa = PBXBuildFile; fileRef = 3EC0ECDB2EEC65BD00A2280D /* dist-clip */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
 		504EC30D1FED79650016851F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
@@ -48,7 +47,6 @@
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		3E7311292EE3549600A04090 /* AppClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E7311502EE3552000A04090 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		3EC0ECDB2EEC65BD00A2280D /* dist-clip */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "dist-clip"; path = "../../dist-clip"; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -106,7 +104,6 @@
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
-				3EC0ECDB2EEC65BD00A2280D /* dist-clip */,
 				504EC3061FED79650016851F /* App */,
 				3E73112A2EE3549600A04090 /* AppClip */,
 				504EC3051FED79650016851F /* Products */,
@@ -240,7 +237,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3EC0ECDC2EEC65BD00A2280D /* dist-clip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

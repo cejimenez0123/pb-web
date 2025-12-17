@@ -12,7 +12,7 @@ PODS:
     - PromisesObjC (~> 2.4)
   - Capacitor (7.4.4):
     - CapacitorCordova
-  - CapacitorCamera (7.0.2):
+  - CapacitorCamera (7.0.3):
     - Capacitor
   - CapacitorCordova (7.4.4)
   - CapacitorFilesystem (7.1.5):
@@ -24,9 +24,9 @@ PODS:
   - CapacitorGeolocation (7.1.6):
     - Capacitor
     - IONGeolocationLib (= 1.0.1)
-  - CapacitorPreferences (7.0.2):
+  - CapacitorPreferences (7.0.3):
     - Capacitor
-  - CapacitorSplashScreen (7.0.3):
+  - CapacitorSplashScreen (7.0.4):
     - Capacitor
   - CapgoCapacitorSocialLogin (7.20.0):
     - Alamofire (~> 5.10.2)
@@ -142,13 +142,13 @@ SPEC CHECKSUMS:
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   Capacitor: 358dd1c3fdd71d969547b17e159fd8a7736cb45f
-  CapacitorCamera: f9e54db0a18bb218a8dc360907d63aaefe9209ff
+  CapacitorCamera: 6746827d82376f31cea9224945c0458c9fd0b0b2
   CapacitorCordova: bf648a636f3c153f652d312ae145fb508b6ffced
   CapacitorFilesystem: 609d5cceca1ed93d7f25839dbfdfd224bfe78209
   CapacitorFirebaseStorage: bef938c2d83c6346db0d104a286a1fee9eb1570b
   CapacitorGeolocation: a65213fef581c7b8c5d486abbd5a6d00192a179e
-  CapacitorPreferences: 65107ed7437d96ee72583df5763985e3c0ff2bc2
-  CapacitorSplashScreen: e388b8e0ed0e982a9d3a40417f478e7a018a8763
+  CapacitorPreferences: 913eef88272c13eb6445b21e51fe8ef6635412cc
+  CapacitorSplashScreen: 000f7591d546907dda5cbb514bd6b6d9e6048cf8
   CapgoCapacitorSocialLogin: a6084e910ce61d78173fa215460c00523a6c4536
   FBAEMKit: e34530df538b8eb8aeb53c35867715ba6c63ef0c
   FBSDKCoreKit: d3f479a69127acebb1c6aad91c1a33907bcf6c2f
