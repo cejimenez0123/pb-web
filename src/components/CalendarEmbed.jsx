@@ -104,7 +104,7 @@ const [solEvents,setSolEvents]=useState([])
       const addEvents= ()=>{
         try{ 
       storyRepo.fetchEvents({days:28}).then(res=>{
-        
+        console.log("RES",res)
         let events = res.events.flatMap(event=>event.events)
   console.log(events[0])
       const eventList = events.filter(event => {
@@ -127,6 +127,7 @@ const [solEvents,setSolEvents]=useState([])
          location = isPhone?event.location.split(",")[0]:event.location.length > 24 ? event.location.slice(0, 25) + '...' : event.location
          }
          let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 31) + '...' : event.summary:""
+         console.log(event.description)
             let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
                 hashtags:[]}
           
@@ -142,7 +143,7 @@ const params = {
     action: 'TEMPLATE',
     text: event.summary,
     dates: eventDates,
-    details: cleanDescriptionAndExtractHashtags(event.description),
+    details: obj.cleanedDescription,
     location: event.location
 };
 
@@ -175,7 +176,7 @@ const googleAddLink = baseUrl + queryString;
           setSolEvents(eventList.filter(eve=>{
            return sunRegex.test(eve.description)}))
          
-                   
+               console.log("EVENTLIST",eventList)    
         
          
       setList(eventList)
