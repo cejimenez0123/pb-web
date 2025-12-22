@@ -3,10 +3,10 @@ import { useDispatch,connect,useSelector} from "react-redux"
 import { useEffect, useState ,useRef,useLayoutEffect} from 'react';
 import { BrowserRouter as Router, Routes, Route,Navigate, useNavigate, useLocation } from 'react-router-dom';
 import {  getPublicStories } from './actions/PageActions.jsx';
-import DashboardContainer from './container/DashboardContainer';
+import DashboardContainer from './container/DashboardEmbed.jsx';
 import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
-import DiscoveryContainer from './container/DiscoveryContainer';
+import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import EditorContainer from './container/page/EditorContainer'
 import PageViewContainer from './container/page/PageViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
@@ -197,13 +197,13 @@ if(!navigator.onLine){
       <Route path={Paths.login()} element={<LogInContainer/>}/> 
       <Route path={Paths.onboard} element={<OnboardingContainer/>}/>
 
-          <Route path={Paths.home()} 
+          {/* <Route path={Paths.home()} 
                         element={
                           <PrivateRoute currentProfile={currentProfile}>
                           <DashboardContainer 
                           /></PrivateRoute>
-                        }
-            />
+                        } */}
+            {/* /> */}
             <Route exact path={Paths.notifications()}
             element={<PrivateRoute currentProfile={currentProfile}>
               <NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>

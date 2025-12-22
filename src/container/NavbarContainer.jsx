@@ -4,11 +4,15 @@ import { useContext, useEffect, useLayoutEffect,useState } from 'react'
 import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
+import addCircle from "../images/icons/add_circle.svg"
 import {signOutAction,setDialog} from "../actions/UserActions"
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Preferences } from "@capacitor/preferences";
 import menu from "../images/icons/menu.svg"
+import library from "../images/icons/library.svg"
+import search from "../images/icons/search.svg"
 import { debounce } from 'lodash'
+import hammer from "../images/icons/hammer.svg"
 import LinkIcon from '../images/icons/link.svg';
 import CreateIcon from '../images/icons/ink_pen.svg'
 import ImageIcon from '../images/icons/image.svg'
@@ -22,7 +26,7 @@ import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
-import {IonImg, IonList,} from '@ionic/react';
+import {IonImg, IonList, IonText,} from '@ionic/react';
 import { useSelector } from 'react-redux'
 import { Capacitor } from '@capacitor/core'
 import { PageType } from '../core/constants.js'
@@ -278,6 +282,7 @@ const openDialog=()=>{
         
          <a      role="button" className=' text-white text-center no-underline' tabindex="0">Create</a>
            <ul     className="p-2 dropdown-content text-center bg-cream menu menu-sm rounded-box  ">
+            
              <li tabIndex={1}  onClick={ClickWriteAStory}><a className='mx-auto '  > 
               
                <IonImg src={CreateIcon}/></a></li>
@@ -356,7 +361,60 @@ openDialog()
   
    
 };
-  return(<div className="navbar flex items-start  max-w-[100vw] h-54 bg-emerald-800">
+ return isPhone||Capacitor.isNativePlatform()?(<div className="navbar flex items-start  justify-between px-4 max-w-[100vw] h-54 bg-emerald-800">
+   <IonImg src={library} style={{width:"3em",height:"3em"}}
+    onClick={()=>{navigate(Paths.discovery())}}/>
+   
+    <IonImg src={search} style={{width:"3em",height:"3em"}}
+    onClick={openDialogAction}/>
+     <div className="dropdown dropdown-top ">
+  <div tabIndex={0} role="button"><IonImg src={addCircle}  style={{width:"3em",height:"3em"} } /></div>
+
+  <ul tabIndex="-1" className="dropdown-content menu text-center bg-base-100 rounded-box z-1 w-52 p-2 -translate-x-1/2 left-1/2  shadow-sm">
+                 <li     onClick={(e)=>{
+            
+    dispatch(setHtmlContent({html:""}))
+           dispatch(setEditingPage({page:null}))
+          navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
+   <li><a className='mx-auto'>   <IonImg src={CreateIcon}/></a></li>
+    <li><a className='mx-auto' onClick={()=>{
+              dispatch(setHtmlContent({html:""}))
+                dispatch(setEditingPage({page:null}))
+    navigate(Paths.editor.link())}}
+    >
+    <IonImg src={LinkIcon}/></a></li>
+    <li><a>Collection</a></li>
+  </ul>
+</div>
+    {/* <div className={`dropdown dropdown-top lg:hidden`}>
+    <IonImg src={addCircle} onClick={ClickWriteAStory} style={{width:"3em",height:"3em"}}/>
+            <ul
+        tabIndex={0}
+        className="menu menu-sm dropdown-content bg-cream rounded-box z-[1] mt-3 w-52 p-2 shadow">
+      {settings.map((setting) => (
+                    
+                    <li  key={setting} 
+                              onClick={()=>{
+                          handleSettingNav(setting)
+                              
+                    }}><a className='text-emerald-800'>{setting}</a></li>
+                  ))}
+                       </ul>
+  </div> */}
+  <IonImg src={hammer} style={{width:"3em",height:"3em"}} onClick={()=>{
+         dispatch(setPageInView({page:null}))
+        navigate(Paths.workshop.reader())
+  }}/>
+  <div onClick={()=>navigate(Paths.myProfile)} className={`dropdown ${isTablet?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
+      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+        <div className="w-5 rounded-full">
+        <div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
+    <IonImg className="object-fit  " src={profilePic}/></div>
+    
+        </div> 
+      </div>
+      </div>
+ </div>):(<div className="navbar flex items-start  max-w-[100vw] h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isPhone?menuDropdown():
     <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}

@@ -7,7 +7,6 @@ import { getPublicStories, setPagesInView } from '../actions/PageActions.jsx';
 import { getPublicCollections, setCollections } from '../actions/CollectionActions.js';
 import { getPublicLibraries } from '../actions/LibraryActions.jsx';
 import checkResult from '../core/checkResult.js';
-import DiscoveryEmbed from '../container/DiscoveryEmbed.jsx';
 import { useMediaQuery } from 'react-responsive';
 import BookListItem from '../components/BookListItem.jsx';
 import calendar from '../images/icons/calendar.svg'
@@ -21,7 +20,7 @@ import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
 import {  IonContent,IonButton,IonImg, IonList, IonItem, IonInfiniteScroll, IonText } from '@ionic/react';
 
-function DiscoveryContainer() {
+function DiscoveryEmbed() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
   const navigate = useNavigate();
@@ -146,22 +145,46 @@ const libraryForums = () => {
 
 
   return (
-  
-      <ErrorBoundary>
-
-        <IonContent fullscreen={true} scrollY>
-                 <div className='flex  sm:mt-36 flex-row justify-end'>
-
-          <img src={calendar} onClick={()=>{navigate(Paths.calendar())}}
-          className='max-w-20  p-4 absolute  top-12 sm:top-32  sm:right-12  max-h-20 '/>
+<div>
+   
+           
+             
+          <div className="text-left mt-20 sm:mt-4 ">
+            
+            {libraryForums()}
           </div>
-    <DiscoveryEmbed/>
-          
-        </IonContent>
-     
-      </ErrorBoundary>
+
+          <div className="mb-12">{bookList()}</div>
+
+          <div className="flex max-w-[96vw] md:w-[50em] mx-auto flex-col">
+            <div className="flex flex-row items-center justify-between">
+              <h3 className="text-emerald-900 font-extrabold text-2xl text-left mx-4 lora-bold my-4 lg:mb-4">
+                Pages
+              </h3>
+
+         
+            </div>
+          </div>
+
+          <span className="flex justify-center mx-auto sm:max-w-[50rem]">
+            <ListView items={viewItems} />
+          </span>
+
+          <div className="lg:flex-1 lg:mx-4" />
+
+          {!currentProfile ? (
+            <ScrollDownButton
+              text="Join the community"
+              onClick={() => {
+                sendGAEvent('Navigate to Apply', 'Navigate to Apply', 'Join the community', 0, false);
+                navigate(Paths.onboard);
+              }}
+            />
+          ) : null}
+         {/* </div> */}
+     </div>
 
   );
 }
 
-export default DiscoveryContainer;
+export default DiscoveryEmbed;

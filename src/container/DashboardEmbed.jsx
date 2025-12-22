@@ -1,11 +1,11 @@
 import React, { useState, useLayoutEffect, useContext,useEffect } from 'react';
 import '../App.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchRecommendedStories } from '../actions/StoryActions';
+import { fetchRecommendedStories } from '../actions/StoryActions.jsx';
 import ExploreList from '../components/collection/ExploreList.jsx';
-import { fetchCollectionProtected, getPublicCollections, getRecommendedCollectionsProfile, setCollections } from '../actions/CollectionActions';
+import { fetchCollectionProtected, getPublicCollections, getRecommendedCollectionsProfile, setCollections } from '../actions/CollectionActions.js';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { appendToPagesInView, setPagesInView } from '../actions/PageActions';
+import { appendToPagesInView, setPagesInView } from '../actions/PageActions.jsx';
 import Context from '../context.jsx';
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
@@ -16,7 +16,7 @@ import Enviroment from '../core/Enviroment.js';
 import {  IonContent,IonText, IonItem} from '@ionic/react';
 import BookListItem from '../components/BookListItem.jsx';
 import Paths from '../core/paths.js';
-function DashboardContainer() {
+function DashboardEmbed() {
   const location = useLocation();
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const { setSeo, seo ,isNotPhone} = useContext(Context);
@@ -137,8 +137,8 @@ const libraryForums = () => {
   }, []);
 
   return (
-        <ErrorBoundary>
-      <IonContent fullscreen={true} scrollY scrollX={false}>
+      //   <ErrorBoundary>
+      // <IonContent fullscreen={true} scrollY scrollX={false}>
     
           <div id="dashboard">
         
@@ -187,9 +187,8 @@ const libraryForums = () => {
             <ExploreList items={collections} />
           </div>
    
-      </IonContent>
-      </ErrorBoundary>
+     
   );
 }
 
-export default DashboardContainer;
+export default DashboardEmbed;

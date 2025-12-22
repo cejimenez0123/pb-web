@@ -68,7 +68,7 @@ ion-textarea textarea {
   filter: brightness(1.1);
 }
 
-.lora-medium{
+/* .lora-medium{
   font-family: "Lora", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -96,7 +96,7 @@ ion-textarea textarea {
   font-style: normal;
   font-variation-settings:
     "wdth" 100;
-}
+} */
 .icon{
   min-width: 2.2rem!important;
   min-height: 2.2rem!important;
@@ -114,6 +114,15 @@ ion-textarea textarea {
 .isGrid p,div,span{
   font-size: 0.8rem !important;
 }
+p,div,span *  {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif!important;
+}
+/* .mont-medium {
+  font-family: "Montserrat", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
 .mont-medium {
   font-family: "Montserrat", serif;
   font-optical-sizing: auto;
@@ -125,7 +134,7 @@ ion-textarea textarea {
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
-}
+} */
 
 @media (min-width:768px) {
   
