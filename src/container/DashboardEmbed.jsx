@@ -8,7 +8,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { appendToPagesInView, setPagesInView } from '../actions/PageActions.jsx';
 import Context from '../context.jsx';
 import checkResult from '../core/checkResult.js';
-import ErrorBoundary from '../ErrorBoundary.jsx';
 import calendar from '../images/icons/calendar.svg'
 import { initGA } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
@@ -141,13 +140,6 @@ const libraryForums = () => {
       // <IonContent fullscreen={true} scrollY scrollX={false}>
     
           <div id="dashboard">
-        
-                
-                <div className='flex  sm:mt-36 flex-row justify-end'>
-
-          <img src={calendar} onClick={()=>{navigate(Paths.calendar())}}
-          className='max-w-20  p-4 absolute  top-12 sm:top-32  sm:right-12  max-h-20 '/>
-          </div>
             <div className="sm:py-8 mt-20 sm:mt-4">
               {libraryForums()}
               <div className="max-w-[98vw] md:mt-8 mx-auto flex flex-col md:w-page">
