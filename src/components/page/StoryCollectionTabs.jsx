@@ -31,22 +31,22 @@ export default function StoryCollectionTabs({ tab, setTab, storyList, colList })
   };
 
   return (
-    <div className="flex h-full flex-col w-full">
+    <div className="flex h-full flex-col  sm:w-full">
       {/* Tabs */}
       <div className="flex justify-center mb-2">
-        <div className="flex rounded-full border border-emerald-600 overflow-hidden">
+        <div className="flex rounded-full border border-emerald-600 w-[90vw] justify-center overflow-hidden">
           <button
-            className={`px-4 py-2 transition-colors ${
+            className={`px-4 py-2 w-[45vw] transition-colors ${
               tab === "page"
                 ? "bg-emerald-700 text-white"
                 : "text-emerald-700 bg-transparent"
             }`}
             onClick={() => setTab("page")}
           >
-            Stories
+            Stories 
           </button>
           <button
-            className={`px-4 py-2 transition-colors ${
+            className={`px-4 py-2 w-[45vw] transition-colors ${
               tab === "collection"
                 ? "bg-emerald-700 text-white"
                 : "text-emerald-700 bg-transparent"

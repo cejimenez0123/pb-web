@@ -254,7 +254,7 @@ currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: cur
   }
 return<ErrorBoundary><IonPage><IonContent fullscreen={true} className='ion-padding'>
      
-                    <div className='flex  sm:mt-36 pt-24 flex-row justify-end'>
+                    <div className='flex  sm:mt-36 pt-[4em] flex-row justify-end'>
 
           <img src={calendar}    style={{
     filter:
@@ -264,7 +264,7 @@ onClick={()=>{navigate(Paths.calendar())}}
           className={`  p-4 absolute  top-8 sm:top-32  min-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
           `md::min-w-20 md:max-h-20 md:max-w-20 md:min-h-20 `}/>
                     </div>
-  <div className=" sm:pt-16 pt-12 pb-20">
+  <div >
 
   <div className="relative flex flex-col md:flex-row justify-around mx-auto sm:border-4 sm:border-emerald-300 p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 
@@ -279,15 +279,15 @@ onClick={()=>{navigate(Paths.calendar())}}
       <div className="flex flex-row mx-auto flex-wrap sm:justify-center md:justify-start gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-full h-[3rem] w-[8rem]"
+          className="bg-soft hover:bg-emerald-500 text-white rounded-xl h-[3rem] w-[8.5rem]"
         >
-          <IonText>Write a Story</IonText>
+          <IonText className='text-[1.2em]'>Write a Story</IonText>
         </ButtonWrapper>
         <ButtonWrapper
           onClick={ClickCreateACollection}
-          className="bg-emerald-800 hover:bg-emerald-500 text-white rounded-full h-[3rem] w-[8rem]"
+          className="bg-emerald-800 hover:bg-emerald-500 text-white rounded-xl h-[3rem] w-[8.5rem]"
         >
-          <IonText>Create Collection</IonText>
+          <IonText className="text-white text-[1.2em]">Create Collection</IonText>
         </ButtonWrapper>
       </div>
 
@@ -295,20 +295,20 @@ onClick={()=>{navigate(Paths.calendar())}}
       <div className="flex justify-center md:justify-start w-full">
         <ButtonWrapper
           onClick={() => navigate(Paths.workshop.reader())}
-          className="font-bold mx-auto bg-sky-600 hover:bg-sky-400  mx-4 rounded-full h-[3rem] w-[90vw] sm:w-[21rem]"
+          className="font-bold mx-auto bg-sky-600 hover:bg-sky-400  mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
         >
-          <IonText className="text-white">Join a Workshop</IonText>
+          <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
         </ButtonWrapper>
       </div>
 
       {/* Row 3: Google Drive Picker */}
-      <div className="flex justify-center mx-auto md:justify-start w-full">
+      {/* <div className="flex justify-center mx-auto md:justify-start w-full"> */}
         <GoogleDrivePicker
           getToken={getDriveToken}
           accessToken={driveToken}
           onFilePicked={getFile}
         />
-      </div>
+      {/* </div> */}
 
     </div>
   </div>

@@ -140,20 +140,20 @@ const fetchFiles = async () => {
   };
 
   return (
-    <span className='btn bg-emerald-700 hover:bg-emerald-500 rounded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]'>
+    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()} className={`btn ${accessToken?"bg-soft":"border-3 border-fullbg-white text-emerald-800"} hover:bg-emerald-500 rounded-xl border-emerald-600 mont-medium flex text-center w-[100%] sm:w-[90%] h-[3rem]`}>
          
     
         {!accessToken ? (
-          // <GoogleLogin  drive={true}/>
-          <div
-            onClick={nativeGoogleSignIn}
-            className="btn bg-emerald-700 text-white rounded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]"
-          >
+  
+          <IonText
+          className={`mx-auto ${!accessToken?"text-emerald-800 ":"text-white"}  my-auto text-[1.2em]`}
+            >
+          
             Log in to Google Drive
-          </div>
+          </IonText>
         ) : (
 
-            <IonText     onClick={openDialog} class="mx-auto text-white my-auto text-[0.8rem]">
+            <IonText      class={`mx-auto text-white my-auto text-[1.2em]`}>
               Open Google Drive
             </IonText>
         )}
