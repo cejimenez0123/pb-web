@@ -46,7 +46,7 @@ const PageName = {
 
 function NavbarContainer(){
 const currentProfile=useSelector(state=>state.users.currentProfile)
-  const {isPhone}=useContext(Context)
+  const {isPhone,isNotPhone}=useContext(Context)
   const dialog =useSelector(state=>state.users.dialog)
   useLayoutEffect(()=>{
     initGA()
@@ -361,7 +361,8 @@ openDialog()
   
    
 };
- return isPhone||Capacitor.isNativePlatform()?(<div className="navbar flex items-start  justify-between px-4 max-w-[100vw] h-54 bg-emerald-800">
+let isNative = Capacitor.isNativePlatform()
+ return !isNotPhone||isNative?(<div className="navbar flex items-start  justify-between px-4 max-w-[100vw] h-54 bg-emerald-800">
    <IonImg src={library} style={{width:"3em",height:"3em"}}
     onClick={()=>{navigate(Paths.discovery())}}/>
    
@@ -386,21 +387,7 @@ openDialog()
     <li><a>Collection</a></li>
   </ul>
 </div>
-    {/* <div className={`dropdown dropdown-top lg:hidden`}>
-    <IonImg src={addCircle} onClick={ClickWriteAStory} style={{width:"3em",height:"3em"}}/>
-            <ul
-        tabIndex={0}
-        className="menu menu-sm dropdown-content bg-cream rounded-box z-[1] mt-3 w-52 p-2 shadow">
-      {settings.map((setting) => (
-                    
-                    <li  key={setting} 
-                              onClick={()=>{
-                          handleSettingNav(setting)
-                              
-                    }}><a className='text-emerald-800'>{setting}</a></li>
-                  ))}
-                       </ul>
-  </div> */}
+
   <IonImg src={hammer} style={{width:"3em",height:"3em"}} onClick={()=>{
          dispatch(setPageInView({page:null}))
         navigate(Paths.workshop.reader())
@@ -416,11 +403,11 @@ openDialog()
       </div>
  </div>):(<div className="navbar flex items-start  max-w-[100vw] h-54 bg-emerald-800">
      <div className='navbar-start '>
-    {isPhone?menuDropdown():
+    {isNative?menuDropdown():
     <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
   </div>
   <div className='navbar-center'>
-      {!isPhone?menuHoriz():  <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
+      {!isNative?menuHoriz():  <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
   </div>
 
  
