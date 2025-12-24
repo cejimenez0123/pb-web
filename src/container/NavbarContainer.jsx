@@ -4,14 +4,14 @@ import { useContext, useEffect, useLayoutEffect,useState } from 'react'
 import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
-import addCircle from "../images/icons/add_circle.svg"
+import addCircle from "../images/icons/plus.app.svg"
 import {signOutAction,setDialog} from "../actions/UserActions"
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Preferences } from "@capacitor/preferences";
 import menu from "../images/icons/menu.svg"
-import library from "../images/icons/library.svg"
-import search from "../images/icons/search.svg"
-import { debounce } from 'lodash'
+import library from "../images/icons/book.svg"
+import search from "../images/icons/magnifyingglass.svg"
+import { debounce, filter } from 'lodash'
 import hammer from "../images/icons/hammer.svg"
 import LinkIcon from '../images/icons/link.svg';
 import CreateIcon from '../images/icons/ink_pen.svg'
@@ -363,14 +363,20 @@ openDialog()
 };
 let isNative = Capacitor.isNativePlatform()
  return !isNotPhone||isNative?(<div className="navbar flex items-start  justify-between px-4 max-w-[100vw] h-54 bg-emerald-800">
-   <IonImg src={library} style={{width:"3em",height:"3em"}}
+   <div className='flex flex-col'>
+   <IonImg src={library} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
     onClick={()=>{navigate(Paths.discovery())}}/>
-   
-    <IonImg src={search} style={{width:"3em",height:"3em"}}
+      <h6 className='text-white text-xs'>Discovery</h6>
+    </div>
+   <div className='flex flex-col'>
+    <IonImg src={search} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
+    
     onClick={openDialogAction}/>
+      <h6 className='text-white text-xs'>Search</h6>
+    </div>
      <div className="dropdown dropdown-top ">
-  <div tabIndex={0} role="button"><IonImg src={addCircle}  style={{width:"3em",height:"3em"} } /></div>
-
+  <div tabIndex={0} role="button"><div><IonImg src={addCircle}  style={{width:"3em",height:"3em",filter:"invert(100%)"} } /> <h6 className='text-white text-xs'>Create</h6></div>
+</div>
   <ul tabIndex="-1" className="dropdown-content menu text-center bg-base-100 rounded-box z-1 w-52 p-2 -translate-x-1/2 left-1/2  shadow-sm">
                  <li     onClick={(e)=>{
             
@@ -387,11 +393,13 @@ let isNative = Capacitor.isNativePlatform()
     <li><a>Collection</a></li>
   </ul>
 </div>
-
-  <IonImg src={hammer} style={{width:"3em",height:"3em"}} onClick={()=>{
+<div className='flex flex-col'>
+  <IonImg src={hammer} style={{width:"3em",height:"3em",filter:"invert(100%)"}} onClick={()=>{
          dispatch(setPageInView({page:null}))
         navigate(Paths.workshop.reader())
   }}/>
+  <h6 className='text-white text-xs'>Workshop</h6>
+  </div>
   <div onClick={()=>navigate(Paths.myProfile)} className={`dropdown ${isTablet?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">

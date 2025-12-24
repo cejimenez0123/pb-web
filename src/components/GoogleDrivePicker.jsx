@@ -140,7 +140,8 @@ const fetchFiles = async () => {
   };
 
   return (
-    <div>
+    <span className='btn bg-emerald-700 hover:bg-emerald-500 rounded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]'>
+         
     
         {!accessToken ? (
           // <GoogleLogin  drive={true}/>
@@ -151,17 +152,13 @@ const fetchFiles = async () => {
             Log in to Google Drive
           </div>
         ) : (
-          <div
-            onClick={openDialog}
-            className="btn bg-emerald-700 rounded-full border-emerald-600 mont-medium flex text-center w-[90%] h-[3rem]"
-          >
-            <IonText class="mx-auto text-white my-auto text-[0.8rem]">
+
+            <IonText     onClick={openDialog} class="mx-auto text-white my-auto text-[0.8rem]">
               Open Google Drive
             </IonText>
-          </div>
         )}
       
    
-    </div>
+    </span>
   );
 }

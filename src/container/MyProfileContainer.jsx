@@ -28,7 +28,7 @@ import ErrorBoundary from '../ErrorBoundary.jsx';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
-    <div
+    <span
       role={role}
       tabIndex={tabIndex}
       onClick={onClick}
@@ -42,7 +42,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
       style={style}
     >
       {children}
-    </div>
+    </span>
   );
 }
 
@@ -254,10 +254,15 @@ currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: cur
   }
 return<ErrorBoundary><IonPage><IonContent fullscreen={true} className='ion-padding'>
      
-               <div className='flex  sm:mt-36 pt-24 flex-row justify-end'>
+                    <div className='flex  sm:mt-36 pt-24 flex-row justify-end'>
 
-          <img src={calendar}   onClick={()=>{navigate(Paths.calendar())}}
-          className='  p-4 absolute  top-8 sm:top-32  min-w-20 max-h-24 mas-w-24 min-h-20 sm:right-12   '/>
+          <img src={calendar}    style={{
+    filter:
+      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
+  }}
+onClick={()=>{navigate(Paths.calendar())}}
+          className={`  p-4 absolute  top-8 sm:top-32  min-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
+          `md::min-w-20 md:max-h-20 md:max-w-20 md:min-h-20 `}/>
                     </div>
   <div className=" sm:pt-16 pt-12 pb-20">
 
@@ -274,13 +279,13 @@ return<ErrorBoundary><IonPage><IonContent fullscreen={true} className='ion-paddi
       <div className="flex flex-row mx-auto flex-wrap sm:justify-center md:justify-start gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
-          className="bg-emerald-600 text-white rounded-full h-[3rem] w-[8rem]"
+          className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-full h-[3rem] w-[8rem]"
         >
           <IonText>Write a Story</IonText>
         </ButtonWrapper>
         <ButtonWrapper
           onClick={ClickCreateACollection}
-          className="bg-emerald-700 text-white rounded-full h-[3rem] w-[8rem]"
+          className="bg-emerald-800 hover:bg-emerald-500 text-white rounded-full h-[3rem] w-[8rem]"
         >
           <IonText>Create Collection</IonText>
         </ButtonWrapper>
@@ -290,7 +295,7 @@ return<ErrorBoundary><IonPage><IonContent fullscreen={true} className='ion-paddi
       <div className="flex justify-center md:justify-start w-full">
         <ButtonWrapper
           onClick={() => navigate(Paths.workshop.reader())}
-          className="border-2 font-bold mx-auto bg-blueSea hover:bg-soft mx-4 rounded-full h-[3rem] w-[90vw] sm:w-[21rem]"
+          className="font-bold mx-auto bg-sky-600 hover:bg-sky-400  mx-4 rounded-full h-[3rem] w-[90vw] sm:w-[21rem]"
         >
           <IonText className="text-white">Join a Workshop</IonText>
         </ButtonWrapper>
