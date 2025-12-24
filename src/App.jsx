@@ -197,13 +197,7 @@ if(!navigator.onLine){
       <Route path={Paths.login()} element={<LogInContainer/>}/> 
       <Route path={Paths.onboard} element={<OnboardingContainer/>}/>
 
-          {/* <Route path={Paths.home()} 
-                        element={
-                          <PrivateRoute currentProfile={currentProfile}>
-                          <DashboardContainer 
-                          /></PrivateRoute>
-                        } */}
-            {/* /> */}
+
             <Route exact path={Paths.notifications()}
             element={<PrivateRoute currentProfile={currentProfile}>
               <NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>

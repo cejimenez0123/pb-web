@@ -127,13 +127,14 @@ const openDialog=()=>{
       }else if(page==PageName.workshop){
         dispatch(setPageInView({page:null}))
         navigate(Paths.workshop.reader())
-      }else if(page==PageName.home){
-        navigate(Paths.home())
       }else if(page==PageName.apply){
         navigate(Paths.apply())
       }else if(page==PageName.feedback){
         navigate(Paths.feedback())
+      }else{
+          navigate(Paths.discovery())
       }
+      
 
     }  
   

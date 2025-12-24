@@ -26,17 +26,18 @@ const navigate = useNavigate()
   const recommendedCols= useSelector(state => state.books.recommendedCols);
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
-
+  const [feedbackCols,setFeedbackCols]=useState([])
   const [hasMore, setHasMore] = useState(false);
   useEffect(()=>{
     if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
       dispatch(getPublicCollections({type:"feedback"})).then(res=>{
         checkResult(res,payload=>{
+          
           if(currentProfile && currentProfile.rolesToCollection && currentProfile.rolesToCollection.length){
-          let feedbackCols = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
-
-      dispatch(setCollections({collections:feedbackCols}))
+          let feedbackCol = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
+setFeedbackCols(feedbackCol)
+      // dispatch(setCollections({collections:feedbackCols}))
           }
         },err=>{
 
@@ -61,7 +62,7 @@ const libraryForums = () => {
       {/* Horizontal scroll area */}
       <div className="mb-4">
         <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
-          {collections.map((library) => (
+          {feedbackCols.map((library) => (
             <IonItem
               key={library.id}
               className=" flex-shrink-0 border-none bg-transparent"
