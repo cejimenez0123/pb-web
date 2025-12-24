@@ -56,23 +56,6 @@ const SearchDialog = ({ presentingElement }) => {
 
     };
 
-    // ➜ PLACEHOLDER LAYER FOR SPECIAL PRIVATE ENDPOINTS
-    // ---------------------------------------------------
-    // if (sourceFilter === "mine") {
-    //   if (includeType === "stories") {
-    //     dispatch(fetchUserStories(payload));
-    //     return;
-    //   }
-    //   if (includeType === "collections") {
-    //     dispatch(fetchUserCollections(payload));
-    //     return;
-    //   }
-    //   if (includeType === "both") {
-    //     dispatch(fetchUserStoriesAndCollections(payload));
-    //     return;
-    //   }
-    // }
-    // ---------------------------------------------------
 
     dispatch(searchMultipleIndexes(payload)).then(result => {
       checkResult(
@@ -96,8 +79,10 @@ const SearchDialog = ({ presentingElement }) => {
       // updateFormData({ selectedGenres: newSelectedGenres });
     };
   const handleOnClick = (searchItem) => {
-    dispatch(searchDialogToggle({ open: false }));
+    console.log("CLICKED ITEM",searchItem)
     navigate(`/${searchItem.type}/${searchItem.objectID}`);
+    dispatch(searchDialogToggle({ open: false }));
+
   };
 
   return (

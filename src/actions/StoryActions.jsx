@@ -40,8 +40,7 @@ try{
   
 }
   let data = await storyRepo.deleteStory({id:page.id})
-  
-    algoliaRepo.deleteObject("story",page.id)
+    await algoliaRepo.deleteObject("story",page.id)
     return data
 
 
