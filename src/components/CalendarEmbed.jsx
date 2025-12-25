@@ -127,7 +127,8 @@ const [solEvents,setSolEvents]=useState([])
          location = isPhone?event.location.split(",")[0]:event.location.length > 24 ? event.location.slice(0, 25) + '...' : event.location
          }
          let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 31) + '...' : event.summary:""
-            let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
+         console.log(event.description)   
+         let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[],
                 hashtags:[]}
           
           
@@ -142,7 +143,7 @@ const params = {
     action: 'TEMPLATE',
     text: event.summary,
     dates: eventDates,
-    details: cleanDescriptionAndExtractHashtags(event.description),
+    details: obj,
     location: event.location
 };
 
