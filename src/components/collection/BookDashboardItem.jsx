@@ -1,9 +1,6 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
+import { useContext,useLayoutEffect, useState } from 'react'
 import "../../Dashboard.css"
-import { deletePageApproval } from '../../actions/PageActions'
-import { createPageApproval } from '../../actions/PageActions'
 import {useDispatch} from 'react-redux'
-// import { Button } from '@mui/material'
 import bookmarkfill from "../../images/bookmarkfill.svg"
 import checkResult from '../../core/checkResult'
 import Paths from '../../core/paths'
@@ -14,7 +11,6 @@ import Context from '../../context'
 import { debounce } from 'lodash'
 import Carousel from './Carousel'
 import { useNavigate } from 'react-router-dom'
-import adjustScreenSize from '../../core/adjustScreenSize'
 import { IonImg } from '@ionic/react'
 import ErrorBoundary from '../../ErrorBoundary'
 function BookDashboardItem({book,isGrid}) {

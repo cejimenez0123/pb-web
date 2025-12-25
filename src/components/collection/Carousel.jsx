@@ -1,12 +1,10 @@
 
 
-import React, { useContext } from 'react'
+import  { useContext } from 'react'
 import "../../Dashboard.css"
 import PageDataElement from '../page/PageDataElement'
 import { sendGAEvent } from '../../core/ga4'
 import Context from '../../context'
-import { useNavigate } from 'react-router-dom'
-import Paths from '../../core/paths'
 export default function Carousel({book,isGrid}){
       const {isPhone,isHorizPhone}=useContext(Context)
      
@@ -62,7 +60,7 @@ export default function Carousel({book,isGrid}){
 
 <h5  
 
-className={ `book-dashboard-item min-h-10 pt-3   px-4 text-emerald-700 top-0  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+className={ ` min-h-10 pt-3  max-w-[15em] px-4 text-emerald-800 top-0  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
  
         {isGrid?isPhone?null:isHorizPhone?null:description(stc.story):isPhone?null:description(stc.story)}
