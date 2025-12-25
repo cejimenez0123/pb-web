@@ -136,12 +136,12 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
 
 
 if(!book){
-    return<span className={`skeleton mt-2shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100`}/>
+    return<span className={`skeleton mt-2 shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100`}/>
 }
     
         return(
          <ErrorBoundary >
-        <div id="book-dashboard-item" className={`mt-2 mx-3  hadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100  `}>
+        <div id="book-dashboard-item" className={`mt-2  shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100  `}>
                
 
         {isGrid?isPhone?null:description(book):null}

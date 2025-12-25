@@ -166,7 +166,7 @@ const libraryForums = () => {
             </div>
           </div>
 
-          <span className="flex justify-center mx-auto w-[100vw] sm:max-w-[50rem]">
+          <span className="flex justify-center mx-auto ">
             <ListView items={viewItems} />
           </span>
 

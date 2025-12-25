@@ -3,17 +3,13 @@
 import React, { useContext } from 'react'
 import "../../Dashboard.css"
 import PageDataElement from '../page/PageDataElement'
-
 import { sendGAEvent } from '../../core/ga4'
-import adjustScreenSize from '../../core/adjustScreenSize'
 import Context from '../../context'
-import ProfileCircle from '../profile/ProfileCircle'
 import { useNavigate } from 'react-router-dom'
 import Paths from '../../core/paths'
 export default function Carousel({book,isGrid}){
       const {isPhone,isHorizPhone}=useContext(Context)
-      const navigate = useNavigate()
-   
+     
     const description = (story) => {
       if (!story.description || story.description.length === 0) return null;
     
@@ -41,13 +37,11 @@ export default function Carousel({book,isGrid}){
       );}
     
     
-    let descSize = adjustScreenSize(isGrid,false," max-h-[4em] "," max-h-[4em] ","","","","  ")
-  let size = adjustScreenSize(isGrid,true," ","   "," "," py-2  mx-1 rounded-lg max-h-[30em]"," ")
-    
+
      if(book&&book.storyIdList){
       
         return(
-        <div id="Carousel" className={`   carousel px-1 mx-auto    ${size} rounded-lg carousel-start  pb-2 `}
+        <div  className={`   carousel  rounded-lg carousel-center  pb-2 `}
    
     
         >
@@ -60,28 +54,20 @@ export default function Carousel({book,isGrid}){
        
         <div  onTouchStartCapture={()=>{
           sendGAEvent("Opened Page from Book",`Saw  ${JSON.stringify({id:stc.story.id,title:stc.story.title})} in book ${JSON.stringify({id:book.id,title:book.title})}`,"",0,false)
-        }} className={` carousel-item max-w-[50em] flex-col flex
-           rounded-lg overflow-hidden 
-           ${size}
-           ${book?" ":""}
+        }} className={` carousel-item flex-col flex overflow-clip max-h-[20em]
         `}
          id={stc.id} key={stc.id}
 
 >
 
-<h5  id="desc"
-onClick={()=>{
-  navigate(Paths.page.createRoute(stc.story.id))
-  sendGAEvent("Opened Page from Book",`Navigated to ${JSON.stringify({id:stc.story.id,title:stc.story.title})} from book ${JSON.stringify({id:book.id,title:book.title})}`,"",0,false)
-       
-}}
-className={ `book-dashboard-item min-h-10  ${descSize} pt-3 px-2   text-emerald-700 top-0 mont-medium  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
+<h5  
+
+className={ `book-dashboard-item min-h-10 pt-3   px-4 text-emerald-700 top-0  no-underline  text-ellipsis  whitespace-nowrap overflow-hidden  text-left`}>
  {stc.story.title}</h5>
  
         {isGrid?isPhone?null:isHorizPhone?null:description(stc.story):isPhone?null:description(stc.story)}
-  <div className=''>
+
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
-  </div>
         </div>)}else{
             return <span className='skeleton'/>
         }})}
