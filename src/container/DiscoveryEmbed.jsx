@@ -75,7 +75,7 @@ function DiscoveryEmbed() {
   };
 
   const fetchLibraries = () => {
-    setHasMoreLibraries(true);
+    // setHasMoreLibraries(true);
     dispatch(getPublicLibraries())
       .then(result =>
         checkResult(
@@ -149,7 +149,7 @@ const libraryForums = () => {
    
            
              
-          <div className="text-left mt-20 sm:mt-4 ">
+          <div className="text-left w-[100vw] mt-20 sm:mt-4 ">
             
             {libraryForums()}
           </div>
@@ -166,7 +166,7 @@ const libraryForums = () => {
             </div>
           </div>
 
-          <span className="flex justify-center mx-auto sm:max-w-[50rem]">
+          <span className="flex justify-center mx-auto w-[100vw] sm:max-w-[50rem]">
             <ListView items={viewItems} />
           </span>
 

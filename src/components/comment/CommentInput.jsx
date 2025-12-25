@@ -91,12 +91,12 @@ const clickUpdateComment = ()=>{
        onClick={clickUpdateComment}>Update</button>
        :
        
-       <a
+       <p
        onClick={(e)=>saveComment(e)} 
-       href="#" 
-     
+   
+     className="bg-sky-600 border-sky-500 text-[1rem] text-white w-[10em] btn hover:bg-emerald-500"
          > 
-       {parentComment?"Reply":"Save"}</a>:
+       {parentComment?"Reply":"Save"}</p>:
        <button className="text-emerald-800" 
        disabled={!currentProfile} onClick={saveComment}>
             Disabled

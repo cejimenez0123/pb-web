@@ -36,7 +36,7 @@ switch(page.type){
     return( 
 
         <div 
-        className="w-[94vw] sm:w-[50em] no-scroll overscroll-none"
+        className="w-[100vw] sm:w-[50em] no-scroll overscroll-none"
     
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
@@ -44,7 +44,7 @@ switch(page.type){
         
         ><div 
         
-        className={`ql-editor w-[96vw] no-scroll sm:w-[48em]`} dangerouslySetInnerHTML={{__html:page.data}}/>
+        className={`ql-editor w-[100vw] no-scroll sm:w-[48em]`} dangerouslySetInnerHTML={{__html:page.data}}/>
         </div>
         // </div>
   ) }
@@ -98,5 +98,5 @@ if(!page){
 ) 
 }
 
-return (<div className="overflow-hidden"><Element page={page}/></div>)
+return (<Element page={page}/>)
 }

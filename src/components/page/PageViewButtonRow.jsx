@@ -1,24 +1,15 @@
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import bookmarkFill from "../../images/bookmark_fill_green.svg";
-import bookmarkAdd from "../../images/bookmark_add.svg";
 import { deletePageApproval } from "../../actions/PageActions.jsx";
-import { addStoryListToCollection, deleteStoryFromCollection } from "../../actions/CollectionActions";
-import { setEditingPage, setHtmlContent } from "../../actions/PageActions.jsx";
-import Paths from "../../core/paths";
 import checkResult from "../../core/checkResult";
-import loadingGif from "../../images/loading.gif";
 import Context from "../../context";
-import { debounce } from "lodash";
 import ShareList from "./ShareList.jsx";
 import { RoleType } from "../../core/constants";
-import Enviroment from "../../core/Enviroment.js";
-import { initGA, sendGAEvent } from "../../core/ga4.js";
+import { initGA } from "../../core/ga4.js";
 import ErrorBoundary from "../../ErrorBoundary.jsx";
 import { createPageApproval } from "../../actions/PageActions";
-import { Preferences } from "@capacitor/preferences";
-import { IonImg,  IonList, IonItem, IonText } from "@ionic/react";
+import { IonText } from "@ionic/react";
 import { useSelector } from "react-redux";
 import { setDialog } from "../../actions/UserActions.jsx";
 
@@ -29,7 +20,6 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
   const dialog = useSelector(state=>state.users.dialog)
   const [likeFound, setLikeFound] = useState(null);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [canUserEdit, setCanUserEdit] = useState(false);
   const [canUserComment, setCanUserComment] = useState(false);
   const [archiveCol, setArchive] = useState(null);
@@ -165,19 +155,19 @@ checkLike(currentProfile)
 
   return (
     <ErrorBoundary>
-      <div className="flex-row w-[95vw] rounded-b-lg overflow-clip sm:w-page mx-auto bg-emerald-200 flex text-white">
+      <div className="flex-row overflow-clip sm:w-page mx-auto  flex text-white">
         {/* Approve / Yea */}
         <div
           onClick={handleApprovalClick}
-          className={`${likeFound ? "bg-emerald-400" : "bg-emerald-200"} text-center grow flex-1/3`}
+          className={`${likeFound ? "bg-emerald-600" : "bg-emerald-200"} text-center grow mx-2 rounded-lg flex-1/3`}
         >
-          <div className="text-xl text-emerald-700 text-center mx-auto py-2 bg-transparent border-none">
+          <div className={`text-xl  ${likeFound ? "text-white" : "text-emerald-700"}  text-center mx-auto py-2 bg-transparent border-none`}>
             <h6 className="text-xl">Yea{likeFound ? "" : ""}</h6>
           </div>
         </div>
 
         {/* Discuss */}
-        <div className="flex-1/3 grow bg-emerald-200 border-white border-l-2 border-r-2 text-center">
+        <div className="flex-1/3 grow bg-emerald-200 rounded-lg mx-2 text-center">
           <div
             className="text-emerald-700 py-2 border-none bg-transparent rounded-none"
             disabled={!canUserComment}
@@ -190,10 +180,9 @@ checkLike(currentProfile)
         </div>
 
         {/* Share using Ionic Popover */}
-        <div onClick={onClickShare} className="flex-1/3 grow bg-emerald-200 text-center flex justify-center items-center">
-          {/* <IonButton  fill="clear" color="success"> */}
+        <div onClick={onClickShare} className="flex-1/3 mx-2  rounded-lg grow bg-emerald-200 text-center flex justify-center items-center">
             <IonText className="text-xl text-emerald-700 m-0 p-0">Share</IonText>
-          {/* </IonButton> */}
+   
 
         
         </div>

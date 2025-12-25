@@ -13,15 +13,13 @@ import DashboardEmbed from './DashboardEmbed.jsx';
 import { AnimatePresence, motion } from "framer-motion";
 import BookListItem from '../components/BookListItem.jsx';
 import calendar from '../images/icons/calendar.svg'
-import { initGA, sendGAEvent } from '../core/ga4.js';
-import ListView from '../components/page/ListView.jsx';
-import ScrollDownButton from '../components/ScrollDownButton.jsx';
+import { initGA} from '../core/ga4.js';
 import Context from '../context.jsx';
 import {  useNavigate } from 'react-router-dom';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import {  IonContent,IonButton,IonImg, IonList, IonItem, IonInfiniteScroll, IonText } from '@ionic/react';
+import {  IonContent,IonItem, IonText } from '@ionic/react';
 
 function DiscoveryContainer() {
   const { seo,setSeo } = useContext(Context);

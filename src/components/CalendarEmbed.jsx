@@ -248,7 +248,7 @@ const googleAddLink = baseUrl + queryString;
       }
       
       return (
-        <div id="cal-embed" className=" sm:max-w-[100vw]">
+        <div  className="">
         <div className={`flex  sm:w-[40em] mx-auto  text-left ${isPhone?"flex-col":"flex-row"}`}>
         <span className="flex flex-row my-auto max-h-12 w-16"> 
             <IonText className="my-auto mont-medium mx-2 text-emerald-700">Filter by Area:</IonText>
@@ -305,7 +305,7 @@ const googleAddLink = baseUrl + queryString;
 <HorizontalEventList events={solEvents} handleDialogOpen={handleDialogOpen} sendGAEvent={sendGAEvent} isPhone={isPhone} areas={areas} calendar={calendar}  />
    </div> }
   
-       <IonList className='flex sm:max-w-[50em] mx-auto flex-col'>
+       <IonList className='flex sm:max-w-[50em] px-2 mx-auto flex-col'>
              <IonText className="font-bold text-[1.2rem] text-soft" >NYC CALENDAR</IonText>
                 
                 {events&&events.length?events.map((event,i)=>{
@@ -412,7 +412,7 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
   return (
     <IonList
       className="
-        flex flex-row overflow-x-auto space-x-4 py-2 px-1 scrollbar-hide
+        flex flex-row overflow-x-auto px-2 space-x-4 py-2 scrollbar-hide
       "
     >
       {events && events.length

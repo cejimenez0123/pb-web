@@ -31,14 +31,14 @@ function EditorContainer({presentingElement}){
         const editPage = useSelector(state=>state.pages.editingPage)
         const pageInView = useSelector(state=>state.pages.pageInView)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-        // const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
+      
         const [openDescription,setOpenDescription]=useState(false)
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:800px)'})
         const navigate = useNavigate()
         const {id,type}= useParams()
         const [openHashtag,setOpenHashtag]=useState(false)
-        // console.log("EditorContainer type",type==PageType.picture)
+        
         const {isSaved,setIsSaved}=useContext(Context)
    
   

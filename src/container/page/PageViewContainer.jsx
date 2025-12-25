@@ -131,17 +131,17 @@ export default function PageViewContainer() {
 
   return (
     <ErrorBoundary>
-      <IonContent fullscreen={true} className="ion-padding-top  ">
-         <div className='pt-12'></div>
-        <IonHeader className="pt-16 ion-padding-top ion-padding">
-          <div className=" pt-4 sm:pt-8">
+      <div className="bg-emerald-100 min-h-[100%]">
+      <IonContent fullscreen={true}  scrollY={true}>
+
+      
+        <IonHeader className=" ">
              {Capacitor.isNativePlatform()?<IonBackButton
              className="ion-padding-start"
-      // defaultHref={Paths.discovery()}
       onClick={handleBack}
-    />:null} </div> </IonHeader>
+    />:null}  </IonHeader>
        
-        <div className=" text-center  px-2 mx-auto" style={{margin:"auto auto",paddingBottom: "5rem" }}>
+        <div className=" text-center py-[4em]  bg-emerald-100 mx-auto" style={{height:"100%",margin:"auto auto",paddingBottom: "5rem" ,}}>
           {pending ? (
             <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
           ) : errorStatus === 403 ? (
@@ -151,9 +151,10 @@ export default function PageViewContainer() {
               </h1>
             </div>
           ) : canUserSee ? (
-            <div className="w-fit mx-auto sm:max-w-[50em]">
+            <div className="w-fit  bg-emerald-100 mx-auto sm:max-w-[50em]">
               <PageDiv page={page} />
               <CommentThread page={page} comments={rootComments} />
+        
            </div>
           ) : (
             <div className="flex max-w-[96vw] mx-auto sm:w-page h-page">
@@ -161,7 +162,10 @@ export default function PageViewContainer() {
             </div>
           )}
         </div>
+       
+        
       </IonContent>
+      </div>
     </ErrorBoundary>
   );
 }
