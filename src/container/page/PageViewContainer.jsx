@@ -56,13 +56,9 @@ export default function PageViewContainer() {
   useEffect(() => {
     fetchStory();
   }, [id]);
-  useEffect(()=>{
-    if(page && !page.isPrivate){
-      setCanUserSee(true)
-    }
-  },[page])
+
   const fetchStory = async () => {
-    setPending(true);
+
     setErrorStatus(null);
 
     try {
@@ -75,8 +71,7 @@ export default function PageViewContainer() {
             if (payload.story.comments?.length) {
               dispatch(setComments({ comments: payload.story.comments }));
             }
-            setCanUserSee(true);
-           
+       
           } else {
             throw new Error("Story not found");
           }
@@ -84,27 +79,53 @@ export default function PageViewContainer() {
         (err) => {
           // Handle forbidden specifically
           if (err?.response?.status === 403) {
-            setCanUserSee(false);
+            // setCanUserSee(false);
             setErrorStatus(403);
           } else {
             setError(err.message || "Failed to load story");
             setErrorStatus(err?.response?.status || 500);
           }
-          setPending(false);
+
         }
            )});
-         setPending(false);
+
     } catch (error) {
       if (error?.response?.status === 403) {
         setErrorStatus(403);
-        setCanUserSee(false);
+
       } else {
         setError(error.message);
+      
         setErrorStatus(500);
       }
-      setPending(false);
     }
   };
+  const soCanUserSee=()=>{
+    if ( page?.isPrivate) {
+      if (!currentProfile) {
+        return false;
+      }
+      if (currentProfile.id === page.authorId) {
+        return true;
+      }
+    }else{
+      console.log("CD",page)
+      let canSee = page.betaReaders.find((br) => {
+        if (currentProfile && br.profileId === currentProfile.id) {
+          return true;
+        }
+      });
+      if(canSee){
+      return true;
+      }
+    }
+
+  }
+  useEffect(() => {
+    setPending(true);
+    page && setCanUserSee(soCanUserSee())
+    setPending(false);
+  },[page])
   const handleBack = () => {
     if (window.history.length > 1) {
       navigate(-1);
@@ -136,10 +157,10 @@ export default function PageViewContainer() {
 
       
         <IonHeader className=" ">
-             {Capacitor.isNativePlatform()?<IonBackButton
-             className="ion-padding-start"
+             <div className="bg-emerald-100 pt-12">{Capacitor.isNativePlatform()||true?<IonBackButton
+             className="ion-padding-start "
       onClick={handleBack}
-    />:null}  </IonHeader>
+    />:null}</div>  </IonHeader>
        
         <div className=" text-center py-[4em]  bg-emerald-100 mx-auto" style={{height:"100%",margin:"auto auto",paddingBottom: "5rem" ,}}>
           {pending ? (
@@ -151,7 +172,7 @@ export default function PageViewContainer() {
               </h1>
             </div>
           ) : canUserSee ? (
-            <div className="w-fit  bg-emerald-100 mx-auto sm:max-w-[50em]">
+            <div className="w-fit  bg-emerald-100  mx-auto sm:max-w-[50em]">
               <PageDiv page={page} />
              <div className="text-left px-4  py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
               <CommentThread page={page} comments={rootComments} />

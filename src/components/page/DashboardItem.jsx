@@ -298,7 +298,7 @@ useEffect(() => {
     return isGrid
       ? null
       : (
-         <div className="flex-row w-[96vw] sm:w-[50em] h-16 rounded-b-lg overflow-clip mx-auto bg-emerald-200 flex text-white">
+         <div className="flex-row w-[100%] sm:w-[50em] h-16 overflow-clip mx-auto bg-emerald-200 flex text-white">
        <div className={`${likeFound ? "bg-emerald-400" : "bg-emerald-200"} text-center grow w-1/3`}>
             <div
               onClick={handleApprovalClick}
@@ -364,7 +364,7 @@ useEffect(() => {
         <div id="bottom-dash" className={`flex flex-row  sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
           {bookmarkBtn()}
         </div>
-      ) : <div className={ `flex flex-row w-[96vw] sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
+      ) : <div className={ `flex w-[100%] flex-row sm:w-[50em] justify-between  bottom-0 w-full`}>
         {buttonRow()}</div>}
     </IonCard>
     </ErrorBoundary>

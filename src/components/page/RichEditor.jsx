@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import "../../styles/Editor.css"
 import { useSelector } from "react-redux";
 import { ErrorBoundary } from "@sentry/react";
-
+import { setHtmlContent } from "../../actions/PageActions";
 const fonts = ["Arial","Courier New","Georgia"]
 export default function RichEditor({ handleChange}){
 
@@ -56,7 +56,7 @@ export default function RichEditor({ handleChange}){
     return( 
       <ErrorBoundary>
       <ReactQuill 
-      className=" rounded-lg text-white stroke-white"
+      className=" text-sky-800 bg-emerald-50   stroke-white"
       modules={modules}
       formats={formats} value={html} onChange={(content)=>handleTextChange(content)}
         

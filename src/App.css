@@ -3,7 +3,9 @@
 .App{
 background-color: #f4f4e0!important;
   width: 100vw;
+
 }
+
 ion-checkbox .checkbox-icon {
   display: none !important;
 }

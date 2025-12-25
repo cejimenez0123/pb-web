@@ -34,8 +34,8 @@ case PageType.link:{
 }
 case PageType.text:{
         <RichEditor
-              // initContent={html}
-              handleChange={content => handleChange(content)}
+          
+              handleChange={content => handleChange("data",content)}
             />
 }
 
@@ -69,10 +69,10 @@ case PageType.text:{
         } else if (page.type === PageType.text) {
           return (
             <RichEditor
-              // initContent={html}
+          
               handleChange={content => {
              
-                handleChange(content);
+                handleChange("data",content);
               }}
             />
           );

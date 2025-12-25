@@ -52,23 +52,7 @@ const [canUserSee, setCanUserSee] = useState(false);
     }
   }, [profile]);
 
-  // const collections = sortItems(
-  //   [],
-  //   useSelector((state) =>
-  //     state.books.collections
-  //       .filter((col) => col)
-  //       .filter((col) => (search.length > 0 ? col.title.toLowerCase().includes(search.toLowerCase()) : true))
-  //   )
-  // );
 
-  // const pages = useMesortItems(
-  //   useSelector((state) =>
-  //     state.pages.pagesInView
-  //       .filter((page) => page)
-  //       .filter((page) => (search.length > 0 ? page.title.toLowerCase().includes(search.toLowerCase()) : true))
-  //   ),
-  //   []
-  // );
 const collectionsRaw = useSelector((state) => state.books.collections
 );
 const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
@@ -238,7 +222,6 @@ const pages = useMemo(() => {
       <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              {/* defaultHref is the fallback if no navigation history */}
               <IonBackButton defaultHref="/" />
             </IonButtons>
             <IonTitle>{profile ? `${profile.username}'s Profile` : 'Profile'}</IonTitle>

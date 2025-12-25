@@ -61,9 +61,9 @@ if(page){
         
                 {header()}
               
-       
+       <div className="py-1 ">
                 <PageDataElement page={page} isGrid={false}/>
-            
+            </div>
             
             <PageViewButtonRow page={page} profile={currentProfile} setCommenting={truthy=>setCommenting(truthy)}/>
             

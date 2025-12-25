@@ -183,13 +183,13 @@
 
 
  #editor .ql-editor{
-/* text-overflow: ellipsis !important; */
+
     top:0;
-   /* overflow-y:hidden !important; */
-    /* padding: 1em !important; */
+
     min-height: 20em !important;
     color: #052e16 !important;
     background: linear-gradient(#a7f3d0, #d1fae5)!important;
+    color: #052e16 !important;
     border-bottom: 0.5em !important;
 
 }
@@ -204,7 +204,7 @@
   }
   #editor .ql-editor{
     top:0;
-    /* text-overflow: ellipsis !important; */
+    text-overflow: ellipsis !important;
     color: #052e16 !important;
     background: linear-gradient(#a7f3d0, #d1fae5)!important;
     border-bottom: 0.5em !important;

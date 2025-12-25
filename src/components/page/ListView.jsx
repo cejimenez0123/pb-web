@@ -56,7 +56,7 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   return (
     <div className="flex flex-col max-w-[98vw] w-[50em]">
       <IonList>
-       <div className="flex flex-col">
+       <div className="flex flex-col max-w-[98vw] overflow-clip">
         {displayedItems.map((item, i) => {
           if (!item) return null;
 

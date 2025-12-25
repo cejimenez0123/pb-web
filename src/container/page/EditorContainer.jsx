@@ -16,7 +16,7 @@ import RoleForm from "../../components/role/RoleForm"
 import Context from "../../context"
 import EditorDiv from "../../components/page/EditorDiv"
 import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions/PageActions.jsx"
-import { debounce, } from "lodash"
+import debounce from "../../core/debounce.js"
 import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
 import { IonBackButton, IonButtons, IonContent, IonHeader } from "@ionic/react"
@@ -24,12 +24,12 @@ import { setDialog } from "../../actions/UserActions.jsx"
 
 
 function EditorContainer({presentingElement}){
-        const {currentProfile}=useContext(Context)
+        const currentProfile=useSelector(state=>state.users.currentProfile)
         const [feedbackDialog,setFeedbackDialog]=useState(false)
         const {setError,setSuccess}=useContext(Context)
         const dialog = useSelector(state=>state.users.dialog)
         const editPage = useSelector(state=>state.pages.editingPage)
-        const pageInView = useSelector(state=>state.pages.pageInView)
+      const [pending,setPending]=useState(false)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
       
         const [openDescription,setOpenDescription]=useState(false)
@@ -63,48 +63,52 @@ const hasInitialized = useRef(false);
       navigate(Paths.discovery());
     }
   };
-  useEffect(()=>{
-    if(currentProfile && currentProfile.id){
-
-  setIsSaved(false)
- return debounce(()=>dispatch(updateStory({...parameters,id,profile:currentProfile,profileId:currentProfile.id})).then(res=>{
-  setIsSaved(true)
- }),10)
-    }
-  },[parameters.data,
-    parameters.commentable,
-    parameters.description,
-    parameters.isPrivate,
-    parameters.title,
-    parameters.needsFeedback
-])
+  
   const setStory=(story)=>{
     
 
           dispatch(setHtmlContent({html:story.data}))
           dispatch(setEditingPage({page:story}))
           dispatch(setPageInView({page:story}))
-          handleChange("commentable",story.commentable)
-          handleChange("page",story)
-          handleChange("isPrivate",story.isPrivate)
-          handleChange("data",story.data)
-          handleChange("title",story.title)
-          handleChange("type",story.type)
+
+          handleSet("commentable",story.commentable)
+          handleSet("page",story)
+          handleSet("isPrivate",story.isPrivate)
+          handleSet("data",story.data)
+          handleSet("title",story.title)
+          handleSet("type",story.type)
+           setPending(false)
      
   }
    useEffect(()=>{
    fetchStory()
     
-   },[navigate,id,currentProfile])
+   },[currentProfile,navigate])
 
    const handleChange = (key, value) => {
     setParameters((prev) => ({ ...prev, [key]: value }));
-   
   };
-  
-    const fetchStory = ()=>{
+    const handleSet = (key, value) => {
+    setParameters((prev) => ({ ...prev, [key]: value }));
+  };
+  useEffect(()=>{
 
-  console.log
+  if(currentProfile && currentProfile.id){
+    setIsSaved(false)
+   return debounce(()=>{
+      dispatch(updateStory({...parameters,profileId:currentProfile.id,id:editPage.id})).then(res=>checkResult(res,payload=>{
+ 
+        setIsSaved(true)
+  
+      },err=>{
+        setError(err.message)
+      }))
+  },100)
+  }
+
+  },[parameters.title,parameters.data,parameters.isPrivate,parameters.needsFeedback,parameters.description,parameters.commentable])
+    const fetchStory = ()=>{
+      setPending(true)
   try{
 if(id){
        dispatch(getStory({id:id})).then(res=>{
@@ -112,6 +116,10 @@ if(id){
      
           const {story}=payload
         setStory(story)
+       
+},err=>{
+  setError(err.message)
+  setPending(false)
 })})}
 }catch(er){
   window.alert(er.message)
@@ -133,7 +141,7 @@ if(id){
       
       },10)
       const createPageAction = ()=>{
-        setPending()
+        
       if(currentProfile && currentProfile.id && type){
        
         dispatch(createStory({...parameters,type,profile:currentProfile,profileId:currentProfile.id})).then(res=>checkResult(res,payload=>{
@@ -293,23 +301,23 @@ const openRoleFormDialog = () => {
                 <div className="pt-4 pl-4">
                 <IonBackButton  defaultHref={Paths.myProfile} onClick={handleBack}/></div></IonButtons>
 
-            <IonButtons>{topBar()}</IonButtons>
+            <IonButtons>{pending? <div className="skeleton rounded-lg  w-[100%] h-fit sm:max-w-[50em] mx-auto "/>: topBar()}</IonButtons>
             </IonHeader>
           <div  className=" mx-auto md:p-8  "> 
      
                 <div className= "mx-2 md:w-page pt-8 mb-12 mx-auto">
             
                   <ErrorBoundary>
-           
-          <EditorDiv  
+
+         {pending?<div className="skeleton mx-auto bg-slate-100 max-w-[96vw] mx-auto md:w-page h-page"/>: <EditorDiv
     html={htmlContent.html}
     page={editPage}
             
               handleChange={(key,value)=>{
             
           
-                handleChange(key,value)
-              }}/>
+                handleChange("data",value)
+              }}/>}
                 </ErrorBoundary>
                 </div>
                     <div>

@@ -19,7 +19,7 @@ import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
-      import { IonApp, IonContent, IonPage, IonText } from '@ionic/react';
+      import { IonApp, setupIonicReact,IonContent, IonPage, IonText } from '@ionic/react';
 import PrivateRoute from './PrivateRoute';
 import LoggedRoute from './LoggedRoute';
 import Paths from './core/paths';
@@ -52,6 +52,7 @@ import Dialog from './components/Dialog.jsx';
 import DeviceCheck from './components/DeviceCheck.jsx';
 import { Capacitor } from '@capacitor/core';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
+
 function App(props) {
   const {currentProfile} = props
   const navigate = useNavigate()

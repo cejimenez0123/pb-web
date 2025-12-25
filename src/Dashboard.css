@@ -150,19 +150,10 @@
 }
  
 
-#book-dashboard-item .ql-editor{
-  overflow-y: hidden!important;
-
-}
 @media (max-width: 800px) {
 
 
-/* 
-#dashboard-item .ql-editor{
 
-  max-height: 14em !important;
-  padding: 1em !important;
-} */
 
 
 }
@@ -187,30 +178,14 @@
   
 
 
-  .grid #book-dashboard-item iframe[title="Spotify Web Player"] {
-    /* width: 44vw !important; */
-    /* height: 100%!important; */
-  }
+
 }
 @media (min-width: 768px) {
   .grid-item iframe{
     max-width: 31vw !important;
   }
-  #book-dashboard-item .ql-editor{
-    /* max-height: 40rem !important;
-    text-overflow: ellipsis !important;; */
-  }
-    /* #dashboard-item iframe[title="Spotify Web Player"]{
-    width: 44.8em !important;
-  } */
- 
 
-  /* #dashboard-item .ql-editor{
-   
-    max-height: 34.5rem !important;
-    text-overflow: ellipsis !important;
-    
-  } */
+ 
 
  
 

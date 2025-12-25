@@ -149,8 +149,8 @@ const libraryForums = () => {
   
       <ErrorBoundary>
 
-        <IonContent fullscreen={true} scrollY>
-            <div className=' '>
+        <IonContent className='page' fullscreen={true} scrollX={false} scrollY>
+            <div className='  max-w-[100vw]'>
                  <div className='flex  sm:mt-36 pt-24 flex-row justify-end'>
 
           <img src={calendar}    style={{

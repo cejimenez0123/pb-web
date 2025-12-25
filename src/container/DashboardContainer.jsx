@@ -137,21 +137,12 @@ const libraryForums = () => {
 
   return (
         <ErrorBoundary>
-      <IonContent fullscreen={true} scrollY scrollX={false}>
-      {/* <div className='flex  sm:mt-36 pt-24 flex-row justify-end'>
-
-          <img src={calendar}    style={{
-    filter:
-      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
-  }}
-onClick={()=>{navigate(Paths.calendar())}}
-          className={`  p-4 absolute  top-8 sm:top-32  min-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
-          `md::min-w-20 md:max-h-20 md:max-w-20 md:min-h-20 `}/> */}
-                    {/* </div> */}
+      {/* <IonContent fullscreen={true} scrollY scrollX={false}> */}
+  
           <div id="dashboard">
             <div className="py-8">
               {libraryForums()}
-              <div className="w-[98vw] md:mt-8 mx-auto flex flex-col md:w-page">
+              <div className="w-[98vw]  md:mt-8 mx-auto flex flex-col md:w-page">
                 <div role="tablist" className="tabs grid">
                   {/* Recommendations Tab */}
                   <input
@@ -162,7 +153,7 @@ onClick={()=>{navigate(Paths.calendar())}}
                     className="tab hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 text-md md:text-xl"
                     aria-label="Recommendations"
                   />
-                  <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto md:w-page">
+                  <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg  overflow-clip">
                     <ListView items={[...recommendedStories,...recommendedCols]} hasMore={hasMore} getMore={getContent} />
                   </div>
 
@@ -188,7 +179,7 @@ onClick={()=>{navigate(Paths.calendar())}}
             <ExploreList items={collections} />
           </div>
    
-      </IonContent>
+      {/* </IonContent> */}
       </ErrorBoundary>
   );
 }

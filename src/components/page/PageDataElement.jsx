@@ -36,7 +36,7 @@ switch(page.type){
     return( 
 
         <div 
-        className="w-[100vw] sm:w-[50em] no-scroll overscroll-none"
+        className="w-[100vw] sm:w-[50em] "
     
         onClick={()=>{
                     navigate(Paths.page.createRoute(page.id))
@@ -44,7 +44,7 @@ switch(page.type){
         
         ><div 
         
-        className={`ql-editor no-scroll sm:w-[48em]`} dangerouslySetInnerHTML={{__html:page.data}}/>
+        className={`ql-editor  sm:w-[48em]`} dangerouslySetInnerHTML={{__html:page.data}}/>
         </div>
         // </div>
   ) }
@@ -52,7 +52,7 @@ switch(page.type){
   
     return(image?!isHorizPhone?<img  id="page-data-pic"  
 
-        className="w-page-mobile sm:w-[50em]"
+        className=""
         onClick={()=>{
    
         if(location.pathname!=Paths.page.createRoute(page.id)){

@@ -12,7 +12,7 @@ import calendar from '../images/icons/calendar.svg'
 import { initGA } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import Enviroment from '../core/Enviroment.js';
-import {  IonContent,IonText, IonItem} from '@ionic/react';
+import {  IonText, IonItem} from '@ionic/react';
 import BookListItem from '../components/BookListItem.jsx';
 import Paths from '../core/paths.js';
 function DashboardEmbed() {
@@ -137,9 +137,7 @@ const libraryForums = () => {
   }, []);
 
   return (
-      //   <ErrorBoundary>
-      // <IonContent fullscreen={true} scrollY scrollX={false}>
-    
+   
           <div id="dashboard">
             <div className="sm:py-8 mt-20 sm:mt-4">
               {libraryForums()}
