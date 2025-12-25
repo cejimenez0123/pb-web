@@ -3,14 +3,14 @@ import { useState,useLayoutEffect, useEffect, useContext } from "react"
 import CommentInput from "./CommentInput"
 import CommentThread from "./CommentThread"
 import { useNavigate } from "react-router-dom"
-import Paths from "../../core/paths"
 import { useDispatch } from "react-redux"
 import { IonImg } from "@ionic/react"
 import { deleteHashtagComment, createHashtagComment } from "../../actions/HashtagActions"
 import checkResult from "../../core/checkResult"
-import horiz from "../../images/icons/more_horiz.svg"
+import horiz from "../../images/icons/more_vert.svg"
 import { deleteComment } from "../../actions/PageActions.jsx"
 import Context from "../../context.jsx"
+import ProfileCircle from "../profile/ProfileCircle.jsx"
 export default function Comment({page,comment,level}){
     const comments = useSelector(state=>state.comments.comments)
     const dispatch = useDispatch()
@@ -69,25 +69,31 @@ export default function Comment({page,comment,level}){
        setBranches(branches)
     },[comments])
     if(!comment)return null
-    return(<div className="max-w-[50em] ml-1">
+    return(<div className="max-w-[50em] shadow-sm ml-1">
 
 
         <div class=" text-left   sm:min-w-[30em] max-w-[100%] py-1 sm:my-4 " id={`comment-${comment.id}`}>
         <div className={replyInput||updateComment?" rounded-t-lg rounded-b-lg":""}>
 
-           <div className="  shadow-sm border-opacity-60 border-blueSea  border-2 rounded-xl text-emerald-800  sm:px-8  ">
+           <div className="  shadow-sm bg-slate-50  rounded-xl text-emerald-800  sm:px-8  ">
           <div className="flex flex-row py-2 sm:pl-4 pr-4 sm:pr-12 justify-between"> 
-          <a onClick={()=>comment.profile?navigate(Paths.profile.createRoute(comment.profile.id)):null}
-           className=" text-[0.8rem] mx-4 open-sans-medium text-emerald-800 my-auto mr-4">{comment&&comment.profile?comment.profile.username:""}</a>
-          
-          {currentProfile && currentProfile.id == comment.profileId?     <div className="dropdown dropdown-left">
-<div tabIndex={0} role="button" className="my-auto bg-emerald-800 h-fit w-10 rounded-full"><IonImg src={horiz}/></div>
-  <ul tabIndex={0} className="dropdown-content mont-medium menu bg-slate-100  text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
-    <li onClick={()=>setUpdateComment(comment)}><a>Update</a></li>
-    <li className="my-2" onClick={handleDeleteComment}><a>Delete</a></li>
+          {/* <a onClick={()=>comment.profile?navigate(Paths.profile.createRoute(comment.profile.id)):null}
+           className=" text-[0.8rem] mx-4 text-emerald-800 my-auto mr-4">{comment&&comment.profile?comment.profile.username:""}</a>
+           */}
+          <span className="ml-2"><ProfileCircle profile={comment.profile} color={"emerald-700"}/></span>
+          {currentProfile && currentProfile.id == comment.profileId?     <div className="dropdown  dropdown-left">
+<div tabIndex={0} role="button" className="my-auto h-fit">
+          {/* <span  className=" material-symbols-outlined">
+more_vert
+</span> */}
+    <IonImg src={horiz}/>
+    </div>
+  <ul tabIndex={0} className="dropdown-content  bg-cream  menu  text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
+    <li className="p-3 " onClick={()=>setUpdateComment(comment)}>Update</li>
+    <li className="p-3 " onClick={handleDeleteComment}>Delete</li>
   </ul>
 </div>:null}
-          </div> <h6 className="text-[0.8rem] md:text-[0.9rem] open-sans-medium mx-3 py-3 pl-[1.7em] my-1">{comment.content}</h6>
+          </div> <h6 className="text-[1rem] md:text-[1.2rem]   py-3 px-2 my-1">{comment.content}</h6>
            <div class=" flex flex-row py-2 sm:pl-2 pr-6 items-end justify-between">
                     
                     {isHelpful?<a onClick={handleDeleteHelpful} className="text-[0.8rem] mont-medium text-emerald-300 sm:text-sm mont-bold  mt-2 mb-2 ml-6">Glad it helped!</a>:<a onClick={handleIfHelpful}className="text-[0.8rem] sm:text-sm mont-medium text-emerald-800 mt-4 ml-8"> Was comment helpful?</a>}

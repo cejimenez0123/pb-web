@@ -153,6 +153,7 @@ export default function PageViewContainer() {
           ) : canUserSee ? (
             <div className="w-fit  bg-emerald-100 mx-auto sm:max-w-[50em]">
               <PageDiv page={page} />
+             <div className="text-left px-4  py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
               <CommentThread page={page} comments={rootComments} />
         
            </div>

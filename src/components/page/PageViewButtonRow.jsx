@@ -159,7 +159,7 @@ checkLike(currentProfile)
         {/* Approve / Yea */}
         <div
           onClick={handleApprovalClick}
-          className={`${likeFound ? "bg-emerald-600" : "bg-emerald-200"} text-center grow mx-2 rounded-lg flex-1/3`}
+          className={`${likeFound ? "bg-emerald-600" : "bg-sky-200"} text-center grow mx-2 rounded-lg flex-1/3`}
         >
           <div className={`text-xl  ${likeFound ? "text-white" : "text-emerald-700"}  text-center mx-auto py-2 bg-transparent border-none`}>
             <h6 className="text-xl">Yea{likeFound ? "" : ""}</h6>
@@ -167,7 +167,7 @@ checkLike(currentProfile)
         </div>
 
         {/* Discuss */}
-        <div className="flex-1/3 grow bg-emerald-200 rounded-lg mx-2 text-center">
+        <div className="flex-1/3 grow bg-sky-200 rounded-lg mx-2 text-center">
           <div
             className="text-emerald-700 py-2 border-none bg-transparent rounded-none"
             disabled={!canUserComment}
@@ -180,7 +180,7 @@ checkLike(currentProfile)
         </div>
 
         {/* Share using Ionic Popover */}
-        <div onClick={onClickShare} className="flex-1/3 mx-2  rounded-lg grow bg-emerald-200 text-center flex justify-center items-center">
+        <div onClick={onClickShare} className="flex-1/3 mx-2  rounded-lg grow bg-sky-200 text-center flex justify-center items-center">
             <IonText className="text-xl text-emerald-700 m-0 p-0">Share</IonText>
    
 

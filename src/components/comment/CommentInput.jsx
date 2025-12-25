@@ -72,9 +72,10 @@ const clickUpdateComment = ()=>{
     const input = ()=>{
         
     return(<div style={{display: show?"":"none"}}className="p-2">
+        <div className="text-left">Your Note:</div>
 <textarea
   placeholder="Write your comment here..."
-  className="textarea  mb-2 mx-auto min-h-30 open-sans-medium p-2 bg-transparent border-emerald-700 border-opacity-60 border-2  text-emerald-800 w-[100%] mx-auto textarea-bordered "
+  className="textarea  bg-slate-50 mb-2 mx-auto min-h-36  p-2  text-emerald-800 w-[100%] mx-auto  "
   
 
   value={commentInput}
@@ -83,7 +84,7 @@ const clickUpdateComment = ()=>{
   onChange={(e)=>{
      setComment(e.target.value)
 }}></textarea>
-    <div className="flex rounded-full  flex-row-reverse ">
+    <div className="flex rounded-full   flex-row-reverse ">
        {currentProfile? 
         defaultComment?
             <button 
