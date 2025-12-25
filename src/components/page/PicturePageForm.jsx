@@ -28,7 +28,8 @@ import uploadFile from "../../core/uploadFile.jsx";
 import { replace } from "lodash";
 function PicturePageForm({handleChange}) {
   const dispatch = useDispatch();
-  const { currentProfile,setError } = useContext(Context);
+  const currentProfile = useSelector((state) => state.users.currentProfile);
+  const { setError } = useContext(Context);
 const {parameters}=useContext(EditorContext)
 const navigate = useNavigate()
   const ePage = useSelector((state) => state.pages.editingPage);
@@ -52,9 +53,7 @@ const {id,type}=useParams()
 
    
   };
-//   useEffect(()=>{
-// ePage&&ePage.id && ePage.type && setPage(ePage)
-//   },[[ePage]])
+
 
   const setPage =(page)=>{
     setPending(true)
@@ -188,7 +187,7 @@ dispatch(createStory({...parameters,type:type})).then(res=>checkResult(res,paylo
             fetchStory(story.id)
               setPending(false)
         },err=>{
-window.alert(err.message)
+
         }))
 }
 const createNative= async ()=>{
@@ -205,28 +204,34 @@ const createNative= async ()=>{
         }))}
 
 const create=()=>{
-
+try{
  if(type==PageType.picture){
-
     !Capacitor.isNativePlatform()?createBrowser():createNative()
  }else{
     createBrowser()
  }
+}catch(err){
+  setError(err.message)
+}
 
 }
   const uploadBtn = () => {
     if (type==PageType.picture) {
       return Capacitor.isNativePlatform()?<IonButton onClick={handleNativeFile}>Upload</IonButton>:(
-        <div className="flex flex-col items-center mb-6">
-          <IonButton
+        <div className="flex flex-col ">
+          {/* <IonButton
             fill="outline"
             color="success"
-            className="rounded-full"
+            className="rounded-full bg-emerald-600 h-[4em] items-center mb-6"
             onClick={() => document.getElementById("fileInput").click()}
           >
             <IonIcon icon={imageOutline} slot="start" />
             Upload Image
-          </IonButton>
+          </IonButton> */}
+          <div  
+           className="rounded-full btn hover:bg-emerald-400 flex bg-sky-600 h-[4em] items-center mb-6"
+          onClick={() => document.getElementById("fileInput").click()}>
+            <h6 className="my-auto text-[1.2rem] mx-auto text-white">Upload Image</h6>
           <input
             id="fileInput"
             className="hidden"
@@ -235,6 +240,7 @@ const create=()=>{
             onInput={handleFileInput}
             aria-label="Upload image file"
           />
+          </div>
         </div>
       );
     }
@@ -243,7 +249,7 @@ const create=()=>{
   return (
     <div className="flex flex-col h-full ">
       {uploadBtn()}
-      {!ePage? <div className="max-w-xl mx-auto w-full mb-4">
+      {!ePage&&type==PageType.link? <div className="max-w-xl mx-auto w-full mb-4">
         <IonLabel
           position="stacked"
           className="text-emerald-700 text-lg font-medium mb-1 block"
@@ -270,7 +276,8 @@ const create=()=>{
         }}>Clear</IonText>
         </div>
       </div>:null}
-{!ePage? <IonButton onClick={create}>Save</IonButton>:null}
+{!ePage? <div className="rounded-full btn h-[4em] mx-auto w-[100%] bg-emerald-600 flex text-center " 
+onClick={create}><h6 className="text-[1.2rem] text-white mx-auto my-auto">Save</h6></div>:null}
       
       <div className=" mx-auto w-full">{pending?<IonImg src={loadingGif}/>:checkContentTypeDiv(ePage && ePage.type?ePage.type:type)}</div>
 

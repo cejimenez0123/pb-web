@@ -46,7 +46,7 @@ const PageName = {
 
 function NavbarContainer(){
 const currentProfile=useSelector(state=>state.users.currentProfile)
-  const {isPhone,isNotPhone}=useContext(Context)
+  const {isPhone,isNotPhone,setError,setSuccess}=useContext(Context)
   const dialog =useSelector(state=>state.users.dialog)
   useLayoutEffect(()=>{
     initGA()
@@ -256,7 +256,7 @@ const openDialog=()=>{
           dispatch(setEditingPage({page:data.story}))
           navigate(Paths.editPage.createRoute(data.story.id))
       },e=>{
-
+        setError(e.message)
       }))},10)
           
     
@@ -381,10 +381,10 @@ let isNative = Capacitor.isNativePlatform()
   <ul tabIndex="-1" className="dropdown-content menu text-center bg-base-100 rounded-box z-1 w-52 p-2 -translate-x-1/2 left-1/2  shadow-sm">
                  <li     onClick={(e)=>{
             
-    dispatch(setHtmlContent({html:""}))
-           dispatch(setEditingPage({page:null}))
+          dispatch(setHtmlContent({html:""}))
+          dispatch(setEditingPage({page:null}))
           navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
-   <li><a className='mx-auto'>   <IonImg src={CreateIcon}/></a></li>
+   <li onClick={ClickWriteAStory}><a className='mx-auto'>   <IonImg src={CreateIcon}/></a></li>
     <li><a className='mx-auto' onClick={()=>{
               dispatch(setHtmlContent({html:""}))
                 dispatch(setEditingPage({page:null}))

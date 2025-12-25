@@ -104,7 +104,7 @@ const hasInitialized = useRef(false);
   
     const fetchStory = ()=>{
 
-  
+  console.log
   try{
 if(id){
        dispatch(getStory({id:id})).then(res=>{
@@ -112,9 +112,7 @@ if(id){
      
           const {story}=payload
         setStory(story)
-})})}else{
-  throw new Error("NO ID")
-}
+})})}
 }catch(er){
   window.alert(er.message)
 }}

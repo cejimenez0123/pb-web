@@ -77,15 +77,7 @@ case PageType.text:{
             />
           );
         } 
-        // if (last === PageType.picture) {
-      
-        // } else if (last === PageType.link) {
-    
-        // } else if (last === PageType.text) {
-        //   return (
-      
-        //   );
-  
+
           return <div className="skeleton w-24 h-24" />;
         
        
