@@ -101,6 +101,7 @@ export default function PageViewContainer() {
     }
   };
   const soCanUserSee=()=>{
+    
     if ( page?.isPrivate) {
       if (!currentProfile) {
         return false;
@@ -108,8 +109,10 @@ export default function PageViewContainer() {
       if (currentProfile.id === page.authorId) {
         return true;
       }
+    }else if(!page.isPrivate){
+return true;
     }else{
-      console.log("CD",page)
+     
       let canSee = page.betaReaders.find((br) => {
         if (currentProfile && br.profileId === currentProfile.id) {
           return true;
