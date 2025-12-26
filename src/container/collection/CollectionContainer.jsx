@@ -531,7 +531,7 @@ const getCol = async () => {
               ) : (
                 <div
                 onClick={deleteFollow}
-                className="btn rounded-full bg-transparent  border-3 border-sky-600">
+                className="btn rounded-full bg-transparent  border-3 border-blueSea">
                 <IonText fill="solid" >
                   {role.role}
                 </IonText>
@@ -539,7 +539,7 @@ const getCol = async () => {
               )}
               {canUserAdd && (
              
-                <div onClick={() => navigate(Paths.addToCollection.createRoute(collection.id))} className="bg-blueSea rounded-full p-1">
+                <div onClick={() => navigate(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full p-1">
                 <IonImg src={add}/>
                 </div>
             
@@ -550,7 +550,7 @@ const getCol = async () => {
                 color={isArchived ? "warning" : "medium"}
                 disabled={bookmarkLoading}
               >
-                <IonImg  src={isArchived ? bookmarkFill : bookmarkOutline} />
+                <img className="w-[3em] h-[3em]" src={isArchived ? bookmarkFill : bookmarkOutline} />
                 {bookmarkLoading && <IonSpinner name="dots" />}
               </div>
               
