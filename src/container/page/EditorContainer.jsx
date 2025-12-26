@@ -29,20 +29,16 @@ function EditorContainer({presentingElement}){
         const {setError,setSuccess}=useContext(Context)
         const dialog = useSelector(state=>state.users.dialog)
         const editPage = useSelector(state=>state.pages.editingPage)
-      const [pending,setPending]=useState(false)
+        const [pending,setPending]=useState(false)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-      
         const [openDescription,setOpenDescription]=useState(false)
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:800px)'})
         const navigate = useNavigate()
         const {id,type}= useParams()
+        const notText= type!=PageType.link&&type!=PageType.picture
         const [openHashtag,setOpenHashtag]=useState(false)
-        
         const {isSaved,setIsSaved}=useContext(Context)
-   
-  
-      
         const [parameters,setParameters] = useState({isPrivate:true,data:"",title:"",needsFeedback:false,description:"",commentable:true,profile:currentProfile,profileId:currentProfile?currentProfile.id:""})
     
 const hasInitialized = useRef(false);
@@ -81,7 +77,7 @@ const hasInitialized = useRef(false);
      
   }
    useEffect(()=>{
-   fetchStory()
+  notText && fetchStory()
     
    },[currentProfile,navigate])
 
@@ -93,7 +89,7 @@ const hasInitialized = useRef(false);
   };
   useEffect(()=>{
 
-  if(currentProfile && currentProfile.id){
+  if(currentProfile && currentProfile.id &&notText){
     setIsSaved(false)
    return debounce(()=>{
       dispatch(updateStory({...parameters,profileId:currentProfile.id,id:editPage.id})).then(res=>checkResult(res,payload=>{
@@ -116,7 +112,7 @@ if(id){
      
           const {story}=payload
         setStory(story)
-       
+       setPending(false)
 },err=>{
   setError(err.message)
   setPending(false)

@@ -54,9 +54,9 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   // Memoized size class
 
   return (
-    <div className="flex flex-col max-w-[98vw] w-[50em]">
+    <div className="flex flex-col max-w-[98vw] overflow-clip w-[50em]">
       <IonList>
-       <div className="flex flex-col max-w-[98vw] overflow-clip">
+       <div className="flex flex-col max-w-[98vw] ">
         {displayedItems.map((item, i) => {
           if (!item) return null;
 

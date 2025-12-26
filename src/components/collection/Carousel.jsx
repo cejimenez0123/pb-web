@@ -52,7 +52,7 @@ export default function Carousel({book,isGrid}){
        
         <div  onTouchStartCapture={()=>{
           sendGAEvent("Opened Page from Book",`Saw  ${JSON.stringify({id:stc.story.id,title:stc.story.title})} in book ${JSON.stringify({id:book.id,title:book.title})}`,"",0,false)
-        }} className={` carousel-item flex-col flex overflow-clip max-h-[20em]
+        }} className={` carousel-item flex-col flex overflow-clip max-w-[100vw] max-h-[20em]
         `}
          id={stc.id} key={stc.id}
 

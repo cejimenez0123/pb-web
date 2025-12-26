@@ -45,10 +45,8 @@ import {
 import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions";
 import Role from "../../domain/models/role";
 import { RoleType } from "../../core/constants";
-import checkResult from "../../core/checkResult";
-
+import checkResult from "../../core/checkResult"
 import Paths from "../../core/paths.js";
-import DeviceCheck from "../../components/DeviceCheck.jsx";
 import { Preferences } from "@capacitor/preferences";
 import { Capacitor } from "@capacitor/core";
 
@@ -513,7 +511,7 @@ const getCol = async () => {
               <IonCardTitle className="ion-text-wrap">{collection.title}</IonCardTitle></div>
                  {canUserEdit &&<div><IonImg
                  onClick={() => navigate(Paths.editCollection.createRoute(id))}
-                  src={edit} className="bg-emerald-400 max-w-12 max-h-12 rounded-full p-2 btn"/>
+                  src={edit} className="bg-blueSea max-w-12 max-h-12 rounded-full p-2 btn"/>
             </div>}
            </div>
           </IonCardHeader>
@@ -533,7 +531,7 @@ const getCol = async () => {
               ) : (
                 <div
                 onClick={deleteFollow}
-                className="btn rounded-full bg-transparent  border-3 border-emerald-600">
+                className="btn rounded-full bg-transparent  border-3 border-sky-600">
                 <IonText fill="solid" >
                   {role.role}
                 </IonText>
@@ -541,7 +539,7 @@ const getCol = async () => {
               )}
               {canUserAdd && (
              
-                <div onClick={() => navigate(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full p-1">
+                <div onClick={() => navigate(Paths.addToCollection.createRoute(collection.id))} className="bg-blueSea rounded-full p-1">
                 <IonImg src={add}/>
                 </div>
             

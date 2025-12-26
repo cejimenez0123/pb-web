@@ -19,33 +19,31 @@ function DashboardEmbed() {
   const location = useLocation();
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const { setSeo, seo ,isNotPhone} = useContext(Context);
-const navigate = useNavigate()
   const dispatch = useDispatch();
    const collections = [...(useSelector(state => state.books.collections) ?? [])]
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
   const recommendedCols= useSelector(state => state.books.recommendedCols);
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
-  const [feedbackCols,setFeedbackCols]=useState([])
+   let feedbackCol = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
+  const [feedbackCols,setFeedbackCols]=useState(feedbackCol)
   const [hasMore, setHasMore] = useState(false);
   useEffect(()=>{
-    if(currentProfile){
+    // if(currentProfile){
       dispatch(getRecommendedCollectionsProfile())
       dispatch(getPublicCollections({type:"feedback"})).then(res=>{
         checkResult(res,payload=>{
           
-          if(currentProfile && currentProfile.rolesToCollection && currentProfile.rolesToCollection.length){
-          let feedbackCol = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
-setFeedbackCols(feedbackCol)
-      // dispatch(setCollections({collections:feedbackCols}))
-          }
+  
+payload && payload.collections && setFeedbackCols(prevState=>[...prevState,...payload.collections])
+      
         },err=>{
 
         })
       })
       
-    }
-},[currentProfile,navigate])
+    // }
+},[])
 const libraryForums = () => {
   if (!collections) return null;
 

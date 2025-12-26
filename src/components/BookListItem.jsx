@@ -53,7 +53,7 @@ if(book){
         <IonCardTitle
           className="font-bold truncate"
           
-    >{book.title}</IonCardTitle>
+    >{book.title.slice(0, 30)}{book.title.length > 30 && "..."}</IonCardTitle>
     </IonCardHeader>
     </div>
      

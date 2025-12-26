@@ -155,17 +155,16 @@ return true;
 
   return (
     <ErrorBoundary>
-      <div className="bg-emerald-100 min-h-[100%]">
-      <IonContent fullscreen={true}  scrollY={true}>
-
-      
+      <div className="bg-emerald-100  min-h-[100%]">
+      <IonContent fullscreen={true} color={"transparent"}scrollY={true}>
+<div className="min-w-[100vw] min-h-[100vh] bg-emerald-100">
         <IonHeader className=" ">
              <div className="bg-emerald-100 pt-12">{Capacitor.isNativePlatform()||true?<IonBackButton
              className="ion-padding-start "
       onClick={handleBack}
     />:null}</div>  </IonHeader>
        
-        <div className=" text-center py-[4em]  bg-emerald-100 mx-auto" style={{height:"100%",margin:"auto auto",paddingBottom: "5rem" ,}}>
+        <div className=" text-center py-[4em]  bg-emerald-100 mx-auto" style={{height:"100%",width:"100vw",margin:"auto auto",paddingBottom: "5rem" ,}}>
           {pending ? (
             <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
           ) : errorStatus === 403 ? (
@@ -187,10 +186,12 @@ return true;
             </div>
           )}
         </div>
-       
+       </div>
+      
         
       </IonContent>
       </div>
+      
     </ErrorBoundary>
   );
 }
