@@ -187,9 +187,9 @@ setTimeout(()=>{
     if( page){
       dispatch(setPagesInView({pages:[]}))
       dispatch(setCollections({collections:[]}))
-      dispatch(createWorkshopGroup({profile:currentProfile,story:page,isGlobal,location})).then(res=>{
+      dispatch(createWorkshopGroup({profile:currentProfile,story:page,isGlobal,location,radius})).then(res=>{
       checkResult(res,payload=>{
-        console.log("FODFOFD",payload)
+       
         if(payload && payload.collection){
           setLoading(false)
           navigate(Paths.collection.createRoute(payload.collection.id))
@@ -209,7 +209,7 @@ setTimeout(()=>{
   }else{
     dispatch(createWorkshopGroup({profile:currentProfile,story:null,isGlobal,location})).then(res=>{
       checkResult(res,payload=>{
-          console.log("FXFOFD",payload)
+         
         if(payload && payload.collection){
           setLoading(false)
           navigate(Paths.collection.createRoute(payload.collection.id))
@@ -243,7 +243,7 @@ const localCheck=()=>{
         onChange={(e)=>{
           setRadius(e.target.value)
         }}
-        className="input my-auto max-w-36 text-xl text-emerald-800 bg-transparent "/>km</label>)
+        className="input my-auto max-w-36 text-xl text-emerald-800 bg-transparent "/>mi</label>)
 }
 
   return (
@@ -273,8 +273,8 @@ const localCheck=()=>{
   {page?<PageWorkshopItem page={page}/>:null}
   
    
-      <div  className="bg-emerald-700 flex text-white mt-8 rounded-full"
-      onClick={handleGroupClick} ><h6 className='mx-auto lg:text-xl  mont-medium p-6 my-auto'>Join a Workshop</h6>
+      <div  className="bg-soft flex text-white mt-8 rounded-full"
+      onClick={handleGroupClick} ><h6 className='mx-auto text-xl   p-6 my-auto'>Join a Workshop</h6>
     </div>       <div className='w-fit flex justify-center p-8'>     
   {loading?<img src={loadingAnimation} className='max-w-24 mx-auto p-6 max-h-24 '/>:null}
   </div>

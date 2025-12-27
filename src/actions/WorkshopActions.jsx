@@ -41,14 +41,14 @@ const {story,profile}=params
     }}
   )
 const createWorkshopGroup = createAsyncThunk("books/createWorkshopGroup",
-async ({profile,story,location,isGlobal},thunkApi)=>{
+async ({profile,story,location,isGlobal,radius},thunkApi)=>{
     try{   
       if(!isGlobal){
 
   
-        let data =await workshopRepo.joinWorkshop({profile,story,location})
+        let data =await workshopRepo.joinWorkshop({profile,story,location,radius})
         if(!data.collection) throw new Error(data.error)
-        console.log("X",data)
+  
         return data
       } else{
         let data =await workshopRepo.joinGlobalWorkshop({profile,story,location})

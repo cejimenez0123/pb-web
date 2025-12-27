@@ -13,9 +13,11 @@ class WorkshopRepo{
       Authorization: `Bearer ${value}`,
     };
   }
-    async joinWorkshop({profile,story,location}){
+    async joinWorkshop({profile,story,location,radius=50}){
       const headers = await this.getAuthHeaders()
-        let res = await axios.post(Enviroment.url+'/workshop/groups',{profile,story,location},{headers:headers})
+      let query = new URLSearchParams({radius})
+   
+        let res = await axios.post(Enviroment.url+'/workshop/groups?='+query.toString(),{profile,story,location},{headers:headers})
        return res.data
     }
     async joinGlobalWorkshop({profile,story}){
