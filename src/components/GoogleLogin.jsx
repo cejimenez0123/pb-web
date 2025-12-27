@@ -157,7 +157,6 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
         },
       
       });
-console.log("TOOTOTC")
       if (!user.result) throw new Error("No user data returned.");
 
       const { accessToken, idToken, profile } = user.result;

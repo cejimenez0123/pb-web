@@ -46,7 +46,7 @@ function IndexItem({item,handleFeedback,type}) {
   }}
     const handleEditClick = (comp)=>{
  
-      if(comp && comp.purpose){
+      if(comp && comp.type){
         navigate(Paths.editCollection.createRoute(comp.id))
       }else{
          dispatch(setHtmlContent({html:comp.data}))
