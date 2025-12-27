@@ -185,19 +185,19 @@ export default DiscoveryContainer;
       x: direction > 0 ? 20 : -20, // smaller distance for tighter slide
       opacity: 0,
       position: "absolute",
-      width: "100%",
+      width: "100vw",
     }),
     center: {
       x: 0,
       opacity: 1,
       position: "relative",
-      width: "100%",
+      width: "100vw",
     },
     exit: (direction) => ({
       x: direction > 0 ? -20 : 20,
       opacity: 0,
       position: "absolute",
-      width: "100%",
+      width: "100vw",
     }),
   };
 
@@ -207,10 +207,10 @@ export default DiscoveryContainer;
     if (swipe > 50 && tab === "dash") setTab("dash");
   };
 
-   return <div className="flex h-full flex-col w-full">
+   return <div className="=w-[100vw] overflow-hidden">
       {/* Tabs */}
       <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
-        <div className="flex rounded-full border w-[90vw] sm:w-[40em] lg:w-[30em] border-emerald-600 overflow-hidden">
+        <div className="flex rounded-full border  sm:w-[40em] lg:w-[30em] border-emerald-600 overflow-hidden">
           <button
             className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em]  ${
               tab === "disc"
@@ -242,9 +242,6 @@ export default DiscoveryContainer;
           </button>}
         </div>
       </div>
-
-      {/* Animated, Swipeable Content */}
-      <div className="relative overflow-hidden w-full">
         <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
           <motion.div
             key={tab}
@@ -266,7 +263,7 @@ export default DiscoveryContainer;
           </motion.div>
         </AnimatePresence>
       </div>
-    </div>
+
   
 }
 

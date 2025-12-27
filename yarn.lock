@@ -2078,21 +2078,21 @@
     debug "^4.0.0"
     tslib "^2.0.1"
 
-"@ionic/core@8.7.12":
-  version "8.7.12"
-  resolved "https://registry.npmjs.org/@ionic/core/-/core-8.7.12.tgz"
-  integrity sha512-+QnytOHsMMDEz45hi/t9AN8ATaWMNZ7jNdx621BGSHi0JkEl1c4NylL3cfYIPJ/78y40ZG5NzprwNiR9sXdswg==
+"@ionic/core@8.7.15":
+  version "8.7.15"
+  resolved "https://registry.npmjs.org/@ionic/core/-/core-8.7.15.tgz"
+  integrity sha512-u1w9c6dx2iuatXIW5X1JY0ighDhQPjBwOHZsrOcnpm891pktuEjJDdyhDulWFa6kKVkXw1q7khwxXBEurvKc2g==
   dependencies:
     "@stencil/core" "4.38.0"
     ionicons "^8.0.13"
     tslib "^2.1.0"
 
-"@ionic/react@^8.5.7":
-  version "8.7.12"
-  resolved "https://registry.npmjs.org/@ionic/react/-/react-8.7.12.tgz"
-  integrity sha512-gNm5L++aiwkwJrUFKhcHUUgjqnj9n03gK7UcoL7Oz+271arzmwF/FNd47G85b6PovwiYQXY2CUBvNJ7Nh4qE/A==
+"@ionic/react@^8.7.15":
+  version "8.7.15"
+  resolved "https://registry.npmjs.org/@ionic/react/-/react-8.7.15.tgz"
+  integrity sha512-3W5DAN3OMe2w32AGlW8zvKZHNY/dLCWhVLL9485VKtsYvgUc9nkG8dYDvQGc6c17PEDVrMy+IAl4H9hLgJhYnQ==
   dependencies:
-    "@ionic/core" "8.7.12"
+    "@ionic/core" "8.7.15"
     ionicons "^8.0.13"
     tslib "*"
 
@@ -15204,10 +15204,10 @@ svgo@^2.7.0:
     picocolors "^1.0.0"
     stable "^0.1.8"
 
-swiper@^11.2.10:
-  version "11.2.10"
-  resolved "https://registry.npmjs.org/swiper/-/swiper-11.2.10.tgz"
-  integrity sha512-RMeVUUjTQH+6N3ckimK93oxz6Sn5la4aDlgPzB+rBrG/smPdCTicXyhxa+woIpopz+jewEloiEE3lKo1h9w2YQ==
+swiper@^12.0.3:
+  version "12.0.3"
+  resolved "https://registry.npmjs.org/swiper/-/swiper-12.0.3.tgz"
+  integrity sha512-BHd6U1VPEIksrXlyXjMmRWO0onmdNPaTAFduzqR3pgjvi7KfmUCAm/0cj49u2D7B0zNjMw02TSeXfinC1hDCXg==
 
 symbol-tree@^3.2.4:
   version "3.2.4"

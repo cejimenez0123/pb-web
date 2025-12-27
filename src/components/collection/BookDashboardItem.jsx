@@ -1,4 +1,4 @@
-import { useContext,useLayoutEffect, useState } from 'react'
+import { useContext,useEffect,useLayoutEffect, useRef, useState } from 'react'
 import "../../Dashboard.css"
 import {useDispatch} from 'react-redux'
 import bookmarkfill from "../../images/bookmarkfill.svg"
@@ -13,6 +13,7 @@ import Carousel from './Carousel'
 import { useNavigate } from 'react-router-dom'
 import { IonImg } from '@ionic/react'
 import ErrorBoundary from '../../ErrorBoundary'
+
 function BookDashboardItem({book,isGrid}) {
  
     const dispatch = useDispatch()
@@ -39,8 +40,6 @@ const deleteBtc=()=>{
 )
 }
 }
-
-
 
 const checkFound=()=>{
     
