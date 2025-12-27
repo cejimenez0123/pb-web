@@ -74,7 +74,7 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
     if (res?.payload?.collection) {
       const collection = res.payload.collection;
       dispatch(clearPagesInView());
-      initPages.length>0?  dispatch(addStoryListToCollection({id:collection.id,list:initPages,profile:currentProfile})).then(res=>{
+      initPages && initPages.length>0?  dispatch(addStoryListToCollection({id:collection.id,list:initPages,profile:currentProfile})).then(res=>{
         checkResult(res,payload=>{
           const {collection} = payload
           setCollectionInView({collection})
