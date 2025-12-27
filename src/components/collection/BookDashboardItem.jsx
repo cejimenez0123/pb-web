@@ -136,7 +136,7 @@ if(!book){
     
         return(
          <ErrorBoundary >
-        <div id="book-dashboard-item" className={`mt-2  shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100  `}>
+        <div id="book-dashboard-item" className={`mt-2  shadow-md overflow-clip  rounded-box max-w-[50em] mx-auto flex flex-col bg-emerald-100  `}>
                
 
         {isGrid?isPhone?null:description(book):null}

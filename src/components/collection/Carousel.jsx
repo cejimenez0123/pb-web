@@ -55,16 +55,18 @@ export default function Carousel({ book, isGrid }) {
       </div>
     );
   };
-
+  if(!book || book &&(!book.storyIdList ||book.storyIdList.length==0)){
+    return
+  }
   return (
     <swiper-container
       ref={swiperElRef}
       slides-per-view="1"
       pagination="true"
       // navigation="true"
-      style={{ width: "100vw" }}
+      style={{ width: "100vw",maxWidth:"50em" }}
     >
-      {book.storyIdList.map((stc) => {
+      {book.storyIdList?.map((stc) => {
         if (!stc?.story) return null;
 
         return (

@@ -79,7 +79,7 @@ export default function PageViewContainer() {
         (err) => {
           // Handle forbidden specifically
           if (err?.response?.status === 403) {
-            // setCanUserSee(false);
+   
             setErrorStatus(403);
           } else {
             setError(err.message || "Failed to load story");
@@ -109,8 +109,13 @@ export default function PageViewContainer() {
       if (currentProfile.id === page.authorId) {
         return true;
       }
+     if(page.collections){
+
+     let found = page.collections.find(col=>!col.collection.isPrivate)
+    if(found) return true
     }else if(!page.isPrivate){
 return true;
+    }
     }else{
      
       let canSee = page.betaReaders.find((br) => {

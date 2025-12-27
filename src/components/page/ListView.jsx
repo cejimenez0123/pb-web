@@ -54,12 +54,12 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   // Memoized size class
 
   return (
-    <div className="flex flex-col w-[100vw]">
+    <div className="">
 
       <IonList
-      style={{width:"100vw",maxWidth:"50em",margin:"auto",overflow:"clip"}}
+      style={{width:"100vw",maxWidth:"50em",margin:"auto"}}
       >
-       <div className="flex flex-col max-w-[100vw] ">
+       {/* <div className="flex flex-col max-w-[100vw] "> */}
         {displayedItems.filter(item=>item).map((item, i) => {
           if (!item) return null;
 
@@ -73,7 +73,7 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
             </IonItem>
           );
         })}
-        </div>
+        {/* </div> */}
       </IonList>
 
       {hasMore && (

@@ -201,11 +201,11 @@ export default DiscoveryContainer;
     }),
   };
 
-  const handleSwipe = (event, info) => {
-    const swipe = info.offset.x;
-    if (swipe < -50 && tab === "disc") setTab("disc");
-    if (swipe > 50 && tab === "dash") setTab("dash");
-  };
+  // const handleSwipe = (event, info) => {
+  //   const swipe = info.offset.x;
+  //   if (swipe < -50 && tab === "disc") setTab("disc");
+  //   if (swipe > 50 && tab === "dash") setTab("dash");
+  // };
 
    return <div className="=w-[100vw] overflow-hidden">
       {/* Tabs */}
@@ -254,9 +254,7 @@ export default DiscoveryContainer;
               duration: 0.26, // faster
               ease: "easeOut", // more responsive
             }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            onDragEnd={handleSwipe}
+           
             className="w-full"
           >
             {tab === "disc" ? disc() :dash()}

@@ -93,7 +93,7 @@ more_vert
     <li className="p-3 " onClick={handleDeleteComment}>Delete</li>
   </ul>
 </div>:null}
-          </div> <h6 className="text-[1rem] md:text-[1.2rem]   py-3 px-2 my-1">{comment.content}</h6>
+          </div> <h6 className="text-[0.8rem] md:text-[rem]   py-3 px-2 my-1">{comment.content}</h6>
            <div class=" flex flex-row py-2 sm:pl-2 pr-6 items-end justify-between">
                     
                     {isHelpful?<a onClick={handleDeleteHelpful} className="text-[0.8rem] mont-medium text-emerald-300 sm:text-sm mont-bold  mt-2 mb-2 ml-6">Glad it helped!</a>:<a onClick={handleIfHelpful}className="text-[0.8rem] sm:text-sm mont-medium text-emerald-800 mt-4 ml-8"> Was comment helpful?</a>}
