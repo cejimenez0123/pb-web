@@ -44,7 +44,7 @@ switch(page.type){
         
         ><div 
         
-        className={`ql-editor  sm:w-[48em]`} dangerouslySetInnerHTML={{__html:page.data}}/>
+        className={`ql-editor w-[100vw]  sm:w-[50em]`} dangerouslySetInnerHTML={{__html:page.data}}/>
         </div>
         // </div>
   ) }

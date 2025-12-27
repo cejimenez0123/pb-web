@@ -149,14 +149,14 @@ const libraryForums = () => {
    
            
              
-          <div className="text-left w-[100vw] mt-20 sm:mt-4 ">
+          <div className="text-left mt-20 sm:mt-4 ">
             
             {libraryForums()}
           </div>
 
           <div className="mb-12">{bookList()}</div>
 
-          <div className="flex max-w-[96vw] md:w-[50em] mx-auto flex-col">
+          <div className="flex max-w-[100vw] md:w-[50em] mx-auto flex-col">
             <div className="flex flex-row items-center justify-between">
               <h3 className="text-emerald-900 font-extrabold text-2xl text-left mx-4 lora-bold my-4 lg:mb-4">
                 Pages
@@ -166,9 +166,9 @@ const libraryForums = () => {
             </div>
           </div>
 
-          <span className="flex justify-center mx-auto ">
+        
             <ListView items={viewItems} />
-          </span>
+         
 
           <div className="lg:flex-1 lg:mx-4" />
 

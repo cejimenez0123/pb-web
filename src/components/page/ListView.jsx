@@ -54,10 +54,12 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   // Memoized size class
 
   return (
-    <div className="flex flex-col max-w-[98vw] overflow-clip w-[50em]">
+    <div className="flex flex-col w-[100vw]">
+
       <IonList
+      style={{width:"100vw",maxWidth:"50em",margin:"auto",overflow:"clip"}}
       >
-       <div className="flex flex-col max-w-[98vw] ">
+       <div className="flex flex-col max-w-[100vw] ">
         {displayedItems.filter(item=>item).map((item, i) => {
           if (!item) return null;
 
@@ -81,6 +83,7 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
         </IonInfiniteScroll>
       )}
     </div>
+ 
   );
 };
 

@@ -52,7 +52,7 @@ export default function Carousel({book,isGrid}){
        
         <div  onTouchStartCapture={()=>{
           sendGAEvent("Opened Page from Book",`Saw  ${JSON.stringify({id:stc.story.id,title:stc.story.title})} in book ${JSON.stringify({id:book.id,title:book.title})}`,"",0,false)
-        }} className={` carousel-item flex-col flex overflow-clip max-w-[100vw]  sm:max-w-[100%] max-h-[30em] sm:max-h-[40em] 
+        }} className={` carousel-item flex-col flex overflow-clip max-w-[100vw]  sm:max-w-[100%] max-h-[3oi0em] sm:max-h-[40em] 
         `}
          id={stc.id} key={stc.id}
 
@@ -64,8 +64,9 @@ className={ ` min-h-10 pt-3  max-w-[15em] px-4 text-emerald-800 top-0  no-underl
  {stc.story.title}</h5>
  
         {isGrid?isPhone?null:isHorizPhone?null:description(stc.story):isPhone?null:description(stc.story)}
-
+<div className='max-h-[30em] sm:max-h-[40em]'>
        <PageDataElement isGrid={isGrid} page={stc.story} /> 
+</div>
         </div>)}else{
             return <span className='skeleton'/>
         }})}

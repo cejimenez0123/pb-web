@@ -10,7 +10,6 @@ import Context from '../context.jsx';
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import { initGA } from '../core/ga4.js';
-import calendar from '../images/icons/calendar.svg'
 import ListView from '../components/page/ListView.jsx';
 import Enviroment from '../core/Enviroment.js';
 import {  IonContent,IonText, IonItem} from '@ionic/react';
