@@ -264,7 +264,7 @@ if (col.childCollections) {
           </div>
         ) : (
         
-          <div className="ion-padding">
+          <div className="ion-padding sm:max-w-[50em] mx-auto">
         
 
             <IonList lines="none">
@@ -293,11 +293,11 @@ if (col.childCollections) {
                 </IonLabel>
                 </div>
                 <textarea
-                className="border border-blueSea p-3 w-full rounded-lg min-w-[90vw]"
+                className="border border-blueSea p-3 min-h-[12em] w-full rounded-lg shadow-sm w-[90vw] sm:max-w-[50em]"
                   autoGrow={true}
                   placeholder="Describe your collection"
                   value={purpose}
-                  rows={5}
+              
                   onIonChange={(e) =>{
                     setCollection({
                       ...collection,
@@ -353,13 +353,13 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
   </div>           
   <IonText
                 onClick={handleSave}
-                className="text-white btn bg-emerald-700 w-[90vw] my-auto  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
+                className="text-white btn bg-emerald-700 w-[90vw] sm:max-w-[50em] my-auto  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
               >
                 Save
               </IonText>
   </div>
             
-       <div className="w-[90vw] md:mt-8 mx-auto flex flex-col md:w-page">       <div role="tablist" className="tabs grid">
+       <div className="w-[90vw] md:mt-8 mx-auto flex flex-col sm:max-w-[50em]">       <div role="tablist" className="tabs grid">
         
           <input type="radio" name="my_tabs_2" role="tab" defaultChecked className="tab" aria-label="Pages" />
           <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto">
