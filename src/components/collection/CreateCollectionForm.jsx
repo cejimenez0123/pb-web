@@ -13,6 +13,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
+  addStoryListToCollection,
   createCollection,
   setCollectionInView,
 } from "../../actions/CollectionActions";
@@ -21,8 +22,9 @@ import Paths from "../../core/paths";
 import InfoTooltip from "../InfoTooltip";
 import "../../App.css";
 import { setDialog } from "../../actions/UserActions";
+import checkResult from "../../core/checkResult";
 
-export default function CreateCollectionForm({ onClose, create }) {
+export default function CreateCollectionForm({ initPages,onClose, create }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentProfile = useSelector((state) => state.users.currentProfile);
@@ -72,7 +74,15 @@ export default function CreateCollectionForm({ onClose, create }) {
     if (res?.payload?.collection) {
       const collection = res.payload.collection;
       dispatch(clearPagesInView());
-      dispatch(setCollectionInView({ collection }));
+      initPages.length>0?  dispatch(addStoryListToCollection({id:collection.id,list:initPages,profile:currentProfile})).then(res=>{
+        checkResult(res,payload=>{
+          const {collection} = payload
+          setCollectionInView({collection})
+          // successfully added stories to collection
+        },err=>{
+          // failed to add stories to collection
+        })
+      }): dispatch(setCollectionInView({ collection }));
       navigate(Paths.collection.createRoute(collection.id));
       if (onClose) onClose();
 

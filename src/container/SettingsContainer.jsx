@@ -1,6 +1,6 @@
 import { useContext, useEffect, useLayoutEffect,useRef,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { updateProfile,deleteUserAccounts, deletePicture, setDialog, getCurrentProfile} from "../actions/UserActions";
+import { updateProfile,deleteUserAccounts, deletePicture, setDialog, getCurrentProfile, signOutAction} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
 import "../App.css"
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,8 @@ import { Capacitor } from "@capacitor/core";
 import isValidUrl from "../core/isValidUrl";
 import { FirebaseStorage } from '@capacitor-firebase/storage';
 import uploadFile from "../core/uploadFile";
+import { Preferences } from "@capacitor/preferences";
+import Paths from "../core/paths";
 
 
 export default function SettingsContainer(props) {  
@@ -68,7 +70,14 @@ export default function SettingsContainer(props) {
         dispatch(setDialog({isOpen:false}))
     };
 
-    
+      const handleSignOut =async () => {
+ 
+    await Preferences.clear()
+    navigate(Paths.login())
+    dispatch(signOutAction())
+  
+   
+};
     
     const setProfile = (profile)=>{
         setPending(true)
@@ -246,19 +255,21 @@ const handleProfilePicture = async (e) => {
             return(
                 <ErrorBoundary>
                 <IonContent fullscreen={true}>
-            <div >
+             
+            <div  className="bg-slate-100 pt-20">
+                   <div className="text-right px-4" ><button onClick={handleSignOut} className="bg-golden text-white px-4 py-2 rounded">Log Out</button></div>
                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
-                      <label className="text-left flex flex-col "><h4 className="text-xl">Username:</h4>
+                      <label className="text-left flex flex-col "><h4 className="text-[1.2em]  mx-4">Username:</h4>
                    
             
                             <input type="text"   
-                                        className={" text-xl px-4 py-2 rounded-full  open-sans-medium text-emerald-800 bg-transparent border-2 border-emerald-800 border-2  "}
+                                        className={"text-[1.2em]  px-4 py-2 bg-white w-[100vw] border-slate-50 mb-8  border-2 border-emerald-800 border-2  "}
                                         value={params.username}
-                                        onChange={(e)=>handleChange("username",e.target.value)
+                                        onChange={(e)=>handleChange("username",e.target.value.toLocaleLowerCase())
                                         }
                                          label="Username"/>
                                          </label>
-                                          <div className='file'>
+                                          <div className='file mt-4 mb-4'>
                    {Capacitor.isNativePlatform() ? (
   <button onClick={handleProfilePictureNative}>Choose Photo</button>
 ) : (
@@ -270,7 +281,7 @@ const handleProfilePicture = async (e) => {
      
           
           <IonImg
-          className="mx-auto"
+          className="mx-auto my-4"
             src={pictureUrl}
             alt="Selected"
             style={{ maxWidth: '10em', maxHeight: '300px', borderRadius: '10px' }}
@@ -282,43 +293,64 @@ const handleProfilePicture = async (e) => {
                     </div>
                     
                             <label className="text-left mt-4 " id="" >
-                                <h6 className="mont-medium text-xl">Self Statement:</h6>
+                                <h6 className="text-[1.2em] mx-4">Self Statement:</h6>
                                
                                     <textarea
                                     onChange={(e)=>{handleChange("selfStatement",e.target.value)}}
                                   
                                     value={params.selfStatement}
-                                    className="textarea min-w-72 w-full  text-emerald-800 border-2 bg-transparent border-emerald-800 p-4 min-h-36 my-2"
+                                    className="textarea w-[100vw] w-full  text-emerald-800 border-2 bg-white border-slate-50 px-6 py-4 min-h-36 my-2"
                                     placeholder="Self Statement"/>
                             </label>
-                            <div className="text-left">
-                            {params.isPrivate?<button onClick={(e)=>{
-                                e.preventDefault()
-                                handleChange("isPrivate",false)}}className=" text-emerald-800 bg-emerald-50 hover:bg-green-100 mont-medium rounded-full border-emerald-700 border-2 text-xl text-emerald-800 text-bold">You are Private</button>:
-                            <button 
-                            onClick={(e)=>{
-                                e.preventDefault()
-                                handleChange("isPrivate",true)}}
-                            className=" text-bold border-emerald-500  px-3 py-2 border-2 rounded-full text-emerald-800 bg-emerald-50 hover:bg-green-10 text-xl "><IonText>You are Public</IonText></button>}
-   </div>
-  <div className="mt-8">
+                            <section className="flex flex-col w-[100vw]">
+                           <label className="text-left  "> <h4 className="text-[1.2em] mx-4 mb-4 mt-8">Privacy Settings:</h4>
+                           </label>
+                           <div className="bg-white rounded-2xl mt-6">
+  <div className="px-4 py-3 flex items-center justify-between">
+    <div className="flex items-center gap-3">
+     
+      <div>
+        <div className="text-gray-900 font-medium">
+          {params.isPrivate ? 'Private Profile' : 'Public Profile'}
+        </div>
+        <div className="text-xs text-gray-500 mt-0.5">
+          {params.isPrivate 
+            ? 'Only you can see your profile' 
+            : 'Your profile is visible to everyone'}
+        </div>
+      </div>
+    </div>
+    <div
+      onClick={(e) => {
+        e.preventDefault();
+        handleChange("isPrivate", !params.isPrivate);
+      }}
+      className={`  min-h-6 min-w-6  ${params.isPrivate ? 'bg-blueSea' : 'bg-soft'} rounded-full `}
+    >  </div> 
+   
+  </div>
+</div>
+
+   
+   </section>
+  <div className="mt-8 w-[100vw]">
 
                             <div
-                               className="bg-emerald-800 bg-opacity-[60%] flex btn text-white w-[9em] h-[5em] flex  rounded-full "
+                               className="bg-sky-700 mx-auto bg-opacity-[60%] flex btn text-white w-[90%] h-[5em] flex  rounded-xl "
                                 variant="outlined" 
                                 onClick={(e)=>handleOnSubmit(e)}
                             >
-                                <IonText className="my-auto mx-auto text-2xl">Update</IonText>
+                                <IonText className="my-auto mx-auto text-2xl">Update Profile</IonText>
                               
                             </div>
                              
                             </div>
-                             {/* {<p className="max-w-[90vw] mx-auto">{JSON.stringify(localError)}</p>} */}
+                           
                         <button 
-                        className="rounded-full py-2 w-[10rem] mt-24 text-2xl  bg-golden text-white"
+                        className="rounded-xl py-2 w-[100%] mt-24 text-2xl  bg-golden text-white"
                                 onClick={handleDeleteDialog}
                                 id="open-modal" expand="block"
-                        ><IonText>Delete</IonText> </button>
+                        ><IonText>Delete Account</IonText> </button>
         
                         </div>
             </div>
