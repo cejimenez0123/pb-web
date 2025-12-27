@@ -44,7 +44,7 @@ if(book){
     <IonCard
     
       onClick={navigateToBook}
-      className="min-h-[10em] group-hover:h-[13rem] overflow-hidden relative btn hover:h-[13rem] transition-all duration-300 w-[16rem]  bg-emerald-700 text-white rounded-lg shadow-md text-ellipsis "
+      className="min-h-[10em] group-hover:h-[13rem] overflow-hidden relative btn hover:h-[13rem] transition-all duration-300 w-[16rem]  bg-soft text-white rounded-lg shadow-md text-ellipsis "
     >
       <div className="h-16"> 
     <div className="absolute top-0 pt-2 left-3 right-3 z-10">

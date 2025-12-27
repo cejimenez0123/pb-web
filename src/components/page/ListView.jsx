@@ -55,9 +55,10 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
 
   return (
     <div className="flex flex-col max-w-[98vw] overflow-clip w-[50em]">
-      <IonList>
+      <IonList
+      >
        <div className="flex flex-col max-w-[98vw] ">
-        {displayedItems.map((item, i) => {
+        {displayedItems.filter(item=>item).map((item, i) => {
           if (!item) return null;
 
           return (
@@ -75,7 +76,7 @@ const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
 
       {hasMore && (
 
-        <IonInfiniteScroll onIonInfinite={loadMore} className="flex flex-col items-center ion-padding" threshold="50px">
+        <IonInfiniteScroll onIonInfinite={loadMore} className="flex flex-col items-center ion-padding" threshold="400px">
           <IonInfiniteScrollContent loadingSpinner="bubbles" loadingText="Loading more..." />
         </IonInfiniteScroll>
       )}

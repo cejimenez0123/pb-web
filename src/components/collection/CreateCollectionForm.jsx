@@ -2,10 +2,9 @@
 import { useState } from "react";
 import {
   IonInput,
-  IonTextarea,
-  IonItem,
+
   IonLabel,
-  IonToggle,
+
   IonText,
 
   IonNote,
@@ -17,7 +16,7 @@ import {
   createCollection,
   setCollectionInView,
 } from "../../actions/CollectionActions";
-import { clearPagesInView } from "../../actions/PageActions";
+import { clearPagesInView, setPagesInView } from "../../actions/PageActions";
 import Paths from "../../core/paths";
 import InfoTooltip from "../InfoTooltip";
 import "../../App.css";
@@ -62,8 +61,8 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
     setError(null);
 
     const params = {
-      title: name.trim(),
-      purpose: purpose.trim(),
+      title: name.trim()??"Untitled Collection",
+      purpose: purpose.trim()??"",
       isPrivate,
       profileId: currentProfile?.id,
       isOpenCollaboration,
@@ -76,8 +75,10 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
       dispatch(clearPagesInView());
       initPages && initPages.length>0?  dispatch(addStoryListToCollection({id:collection.id,list:initPages,profile:currentProfile})).then(res=>{
         checkResult(res,payload=>{
-          const {collection} = payload
-          setCollectionInView({collection})
+          const {collection,stories} = payload
+          dispatch(setCollectionInView({collection}))
+          dispatch(setPagesInView({pages:stories}))
+          
           // successfully added stories to collection
         },err=>{
           // failed to add stories to collection
@@ -102,65 +103,63 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
-      <IonItem lines="none" className="ion-padding-vertical">
-        <IonLabel position="stacked">Collection Name</IonLabel>
-        <IonInput
+    <form onSubmit={handleSubmit} className="flex  flex-col space-y-6">
+      {/* <IonItem lines="none" className="ion-padding-vertical"> */}
+        <IonLabel position="stacked text-blueSea">Collection Name</IonLabel>
+        <input type="text"
           value={formData.name}
           placeholder="Enter collection name"
-          onIonInput={(e) => handleChange("name", e.detail.value ?? "")}
-          clearInput
+          onChange={(e) => handleChange("name", e.currentTarget.value ?? "")}
+          
           required
-          className="ion-text-wrap"
-          style={{
-            width: "100%",
-            fontSize: "1rem",
-            border: "1px solid var(--ion-color-light)",
-            borderRadius: "8px",
-            padding: "0.5rem",
-          }}
+          className="rounded-lg border-blueSea border-2 shadow-sm border-opacity-30 sm:w-full w-[100%] p-3 text-blueSea"
+          // className="ion-text-wrap"
+          // style={{
+          //   width: "100%",
+          //   fontSize: "1rem",
+          //   border: "1px solid var(--ion-color-light)",
+          //   borderRadius: "8px",
+          //   padding: "0.5rem",
+          // }}
         />
-      </IonItem>
+      {/* </IonItem> */}
 
       <IonLabel
         position="stacked"
-        className="text-emerald-700 font-medium text-lg mb-1"
+        className="text-blueSea font-medium  mb-1"
       >
         Purpose
       </IonLabel>
-      <IonTextarea
+      <textarea
         value={formData.purpose}
         autoGrow
         placeholder="What is this collection for?"
-        onIonInput={(e) => handleChange("purpose", e.detail.value ?? "")}
-        className="ion-textarea-custom"
+        onChange={(e) => handleChange("purpose", e.currentTarget.value ?? "")}
+        className="rounded-lg border-blueSea border-2 shadow-sm border-opacity-30 sm:w-full w-[100%] min-h-[6em] text-blueSea p-3"
       />
 
-      <IonItem lines="none" className="ion-align-items-center">
-        <IonLabel className="flex items-center gap-1 text-emerald-700 font-medium">
-          <span>Private</span>
-          <InfoTooltip text="Collection will only be visible to you and those with roles" />
-        </IonLabel>
-        <IonToggle
-          checked={formData.isPrivate}
-          onIonChange={(e) => handleChange("isPrivate", e.detail.checked)}
-          color="success"
-        />
-      </IonItem>
+  
 
-      <IonItem lines="none" className="ion-align-items-center">
-        <IonLabel className="flex items-center gap-1 text-emerald-700 font-medium">
+          <div className="flex flex-row  text-left items-left ">
+          <InfoTooltip text="Collection will only be visible to you and those with roles" />
+          <span>Private</span>
+          <p className="mx-4">{formData.isPrivate ? "Yes" : "No"}</p>
+          </div>
+          <div 
+            onClick={() => handleChange("isPrivate", !formData.isPrivate)} 
+            className={`min-h-6  mx-8 shadow-md rounded-full max-w-6 ${formData.isPrivate ? "bg-blueSea bg-opacity-30":"bg-emerald-500"}`}/>
+      
+
+    
+ 
+        <div className="flex flex-row  items-left ">
+                   <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
           <span>Open Collaboration</span>
-          <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
-        </IonLabel>
-        <IonToggle
-          checked={formData.isOpenCollaboration}
-          onIonChange={(e) =>
-            handleChange("isOpenCollaboration", e.detail.checked)
-          }
-          color="success"
-        />
-      </IonItem>
+          <p className="mx-4">{formData.isOpenCollaboration ? "Yes" : "No"}</p>
+          </div>
+  <div onClick={() => handleChange("isOpenCollaboration", !formData.isOpenCollaboration)} className={`min-h-6 shadow-md mx-8 rounded-full max-w-6 ${!formData.isOpenCollaboration ?   "bg-blueSea bg-opacity-30":"bg-emerald-500"}`}></div>
+
+    
 
       {error && (
         <IonNote color="danger" className="text-sm font-medium">
@@ -168,24 +167,18 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
         </IonNote>
       )}
 
-      {/* <IonButton
-        expand="block"
-        color="success"
-        shape="round"
-        onClick={handleSubmit}
-        disabled={submitting} */}
-      {/* > */}
+      
                 <div type="submit"
                 
               expand="block"
 onClick={handleSubmit}
             //   className="bg-emerald-800 text-white rounded-full" 
-              className='rounded-full flex btn  btn px-4   text-center w-fit h-[3rem] text-[1rem] border-emerald-600 border-2'
+              className='rounded-full flex btn  btn shadow-sm px-4  bg-blueSea bg-opacity-90  text-center w-fit h-[3rem] text-[1rem] border-2'
             >
           <IonText
             fill="outline"
-            color="success"
-            className=" my-auto mx-autotext-emerrald-800 text-[1rem]"
+            color="white"
+            className=" my-auto mx-auto text-white text-[1rem]"
             
           >
            {submitting ? "Creating..." : "Create"}

@@ -354,7 +354,7 @@ useEffect(() => {
 
       <IonCardContent className="pb-4 mx-auto bg-transparent">
         {description(page)}
-        <div className='max-h-[20em] overflow-clip'>
+        <div className='max-h-[20em] sm:max-h-[40em] overflow-clip'>
         <PageDataElement isGrid={isGrid} page={page} />
         </div>
       </IonCardContent>

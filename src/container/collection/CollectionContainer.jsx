@@ -201,7 +201,7 @@ return
 useEffect(()=>{
 canUserSee&& getContent()
 
-},[canUserSee,collection])
+},[collection,navigate])
 const getCol = async () => {
   setLoading(true);
   try {
@@ -371,9 +371,7 @@ const getCol = async () => {
   };
   const getContent=()=>{
           
-                setHasMore(true)
-                
-        
+        setHasMore(true)
          if(collection.storyIdList&&collection.storyIdList.length){
             const sorted = [...collection.storyIdList].filter(s=>s.story).sort((a,b)=>
                 
