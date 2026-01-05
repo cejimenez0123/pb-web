@@ -89,5 +89,5 @@ if(!page){
 ) 
 }
 
-return (<div className="max-h-[30rem] overflow-clip sm:max-h-[50rem]"><Element page={page}/></div>)
+return (<Element page={page}/>)
 }

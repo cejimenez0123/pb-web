@@ -63,14 +63,13 @@ export default function Carousel({ book, isGrid }) {
       ref={swiperElRef}
       slides-per-view="1"
       pagination="true"
-      // navigation="true"
-      style={{ width: "100vw",maxWidth:"50em" }}
+    
     >
       {book.storyIdList?.map((stc) => {
         if (!stc?.story) return null;
 
         return (
-          <swiper-slide className="w-[100%]  sm:max-h-[40em]" key={stc.id}>
+          <swiper-slide className="" key={stc.id}>
             <div
               onTouchStartCapture={() => {
                 sendGAEvent(
@@ -95,10 +94,10 @@ export default function Carousel({ book, isGrid }) {
               </h5>
 
               {!isPhone && description(stc.story)}
-
+              <div className="max-h-[29.9rem]">
              
                 <PageDataElement isGrid={isGrid} page={stc.story} />
-        
+       </div>
             </div>
           </swiper-slide>
         );
