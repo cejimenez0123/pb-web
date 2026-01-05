@@ -2,14 +2,13 @@ import {useContext,useEffect,useState} from 'react'
 import "../../App.css"
 import { logIn, setDialog} from '../../actions/UserActions';
 import {useDispatch} from 'react-redux';
-import {useNavigate} from 'react-router-dom'
 import loadingGif from "../../images/loading.gif"
 import Paths from '../../core/paths';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
 import DeviceCheck from '../../components/DeviceCheck';
-import { IonContent,  IonInput, IonText } from '@ionic/react';
+import { IonContent,  IonInput, IonText, useIonRouter } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import { useSelector } from 'react-redux';
@@ -19,8 +18,8 @@ import { Capacitor } from '@capacitor/core';
 export default function LogInContainer() {
     const {setError,seo,setSeo}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-  
- const navigate = useNavigate()
+    const router = useIonRouter()
+
     useEffect(()=>{
         let soo = seo
         soo.title = "Plumbum (Log In) - Share Your Weirdness"
@@ -31,7 +30,7 @@ export default function LogInContainer() {
  
     const checkAuth= async()=>{
        const token = (await Preferences.get({key:"token"})).value
-       token&& currentProfile &&currentProfile.id&& navigate(Paths.myProfile)
+       token&& currentProfile &&currentProfile.id&&router.push(Paths.myProfile)
 
     }
     checkAuth()
@@ -39,7 +38,7 @@ export default function LogInContainer() {
    },[currentProfile])
 
     return (
-        <IonContent fullscreen={true}>
+        // <IonContent fullscreen={true}>
             <div className='py-10'>
      
             <LogInCard  
@@ -49,21 +48,19 @@ export default function LogInContainer() {
             setPassword={(str)=>setLiPassword(str)}/>
             </div>
   
-        </IonContent>
+        // </IonContent>
     )
 }
 
 function LogInCard({setLogInError}){
-    // const {isPhone}=useContext(Context)
     const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const router = useIonRouter()
     const {setError}=useContext(Context)
     const [email, setEmail] = useState('');
     const isNative = DeviceCheck()
     const [password, setPassword] = useState('');
     const [pending,setPending]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
-    const [open,setOpen] = useState(false);
     
   
     const dialog = useSelector(state=>state.users.dialog)
@@ -72,7 +69,7 @@ function LogInCard({setLogInError}){
        
     const handleFirstTimeClick=()=>{
   
-   navigate(Paths.onboard)
+ router.push(Paths.onboard)
     
     }
 

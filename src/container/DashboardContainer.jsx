@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchRecommendedStories } from '../actions/StoryActions';
 import ExploreList from '../components/collection/ExploreList.jsx';
 import { fetchCollectionProtected, getPublicCollections, getRecommendedCollectionsProfile, setCollections } from '../actions/CollectionActions';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { appendToPagesInView, setPagesInView } from '../actions/PageActions';
 import Context from '../context.jsx';
 import checkResult from '../core/checkResult.js';
@@ -12,13 +11,13 @@ import ErrorBoundary from '../ErrorBoundary.jsx';
 import { initGA } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import Enviroment from '../core/Enviroment.js';
-import {  IonContent,IonText, IonItem} from '@ionic/react';
+import {IonText, IonItem, useIonRouter} from '@ionic/react';
 import BookListItem from '../components/BookListItem.jsx';
 function DashboardContainer() {
-  const location = useLocation();
+
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const { setSeo, seo ,isNotPhone} = useContext(Context);
-const navigate = useNavigate()
+  const router = useIonRouter()
   const dispatch = useDispatch();
    const collections = [...(useSelector(state => state.books.collections) ?? [])]
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
@@ -43,7 +42,7 @@ const navigate = useNavigate()
       })
       
     }
-},[currentProfile,navigate])
+},[currentProfile,router])
 const libraryForums = () => {
   if (!collections) return null;
 
@@ -75,11 +74,11 @@ const libraryForums = () => {
 };
   useLayoutEffect(() => {
     initGA();
-    let soo = { ...seo };
-    soo.title = 'Plumbum (Dashboard) - Your Writing, Your Community';
-    soo.description = 'Explore events, workshops, and writer meetups on Plumbum.';
-    soo.url = Enviroment.domain + location.pathname;
-    setSeo(soo);
+    // let soo = { ...seo };
+    // soo.title = 'Plumbum (Dashboard) - Your Writing, Your Community';
+    // soo.description = 'Explore events, workshops, and writer meetups on Plumbum.';
+    // soo.url = Enviroment.domain + router.routeInfo.pathname
+    // setSeo(soo);
   }, []);
 
   const getContent = () => {

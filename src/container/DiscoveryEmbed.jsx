@@ -2,28 +2,25 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect, useLayoutEffect, useContext } from 'react';
 import '../styles/Discovery.css';
 import '../Dashboard.css';
-import ErrorBoundary from '../ErrorBoundary.jsx';
 import { getPublicStories, setPagesInView } from '../actions/PageActions.jsx';
 import { getPublicCollections, setCollections } from '../actions/CollectionActions.js';
 import { getPublicLibraries } from '../actions/LibraryActions.jsx';
 import checkResult from '../core/checkResult.js';
 import { useMediaQuery } from 'react-responsive';
 import BookListItem from '../components/BookListItem.jsx';
-import calendar from '../images/icons/calendar.svg'
 import { initGA, sendGAEvent } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import ScrollDownButton from '../components/ScrollDownButton.jsx';
 import Context from '../context.jsx';
-import {  useNavigate } from 'react-router-dom';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import {  IonContent,IonButton,IonImg, IonList, IonItem, IonInfiniteScroll, IonText } from '@ionic/react';
+import {   IonItem, IonText, useIonRouter } from '@ionic/react';
 
 function DiscoveryEmbed() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
-  const navigate = useNavigate();
+  const router = useIonRouter()
   const dispatch = useDispatch();
 
   const cols = useSelector(state => state.books.collections);
@@ -177,7 +174,7 @@ const libraryForums = () => {
               text="Join the community"
               onClick={() => {
                 sendGAEvent('Navigate to Apply', 'Navigate to Apply', 'Join the community', 0, false);
-                navigate(Paths.onboard);
+                router.push(Paths.onboard);
               }}
             />
           ) : null}

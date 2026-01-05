@@ -10,15 +10,15 @@ import {  addCollectionListToCollection, deleteCollectionFromCollection,  } from
 import Context from '../../context'
 import { debounce } from 'lodash'
 import Carousel from './Carousel'
-import { useNavigate } from 'react-router-dom'
-import { IonImg } from '@ionic/react'
+import { IonImg, useIonRouter } from '@ionic/react'
 import ErrorBoundary from '../../ErrorBoundary'
 
 function BookDashboardItem({book,isGrid}) {
  
     const dispatch = useDispatch()
     const {setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
-    const navigate = useNavigate()
+    const router = useIonRouter()
+    
     const [bookmarked,setBookmarked]=useState()
      const soCanUserEdit=()=>{
 
@@ -89,7 +89,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
             className='my-auto text-ellipsis   
             whitespace-nowrap no-underline text-[0.7rem]'
             onClick={()=>{
-                navigate(Paths.collection.createRoute(book.id))
+               router.push(Paths.collection.createRoute(book.id))
             }}
             
 >{` `+title}</h6>
@@ -136,7 +136,7 @@ if(!book){
     
         return(
          <ErrorBoundary >
-        <div id="book-dashboard-item" className={`mt-2  shadow-md overflow-clip  rounded-box max-w-[50em] mx-auto flex flex-col bg-emerald-100  `}>
+        <div  className={`mt-2  shadow-md overflow-clip  rounded-box max-w-[50em] mx-auto flex flex-col bg-emerald-100  `}>
                
 
         {isGrid?isPhone?null:description(book):null}

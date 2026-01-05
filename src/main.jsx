@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { combineReducers, configureStore} from '@reduxjs/toolkit';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import { Provider } from 'react-redux'
 import {pageSlice} from './reducers/PageReducer';
 import userSlice from './reducers/UserReducer';
@@ -59,14 +59,35 @@ const app =   (
   
   <HelmetProvider context={helmetContext}>
   
+  <link
+  rel="stylesheet"
+  href="https://unpkg.com/react-quill@1.3.3/dist/quill.snow.css"
+/>
+<script src="/socket.io/socket.io.js"></script>
+
+
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+
+<script
+  src="https://unpkg.com/react@16/umd/react.development.js"
+  crossOrigin
+></script>
+<script
+  src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+  crossOrigin
+></script>
+<script src="https://unpkg.com/react-quill@1.3.3/dist/react-quill.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="https://kit.fontawesome.com/08dbe310f1.js" crossOrigin="anonymous"></script>
+         <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
 <Provider store={store} >
 
-<Router>
+
 
 
   <App />
 
-  </Router>
+
 
 
 </Provider>

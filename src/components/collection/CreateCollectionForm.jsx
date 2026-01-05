@@ -8,9 +8,9 @@ import {
   IonText,
 
   IonNote,
+  useIonRouter,
 } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import {
   addStoryListToCollection,
   createCollection,
@@ -25,7 +25,7 @@ import checkResult from "../../core/checkResult";
 
 export default function CreateCollectionForm({ initPages,onClose, create }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const router = useIonRouter()
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const dialog = useSelector((state) => state.users.dialog);
 
@@ -84,7 +84,7 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
           // failed to add stories to collection
         })
       }): dispatch(setCollectionInView({ collection }));
-      navigate(Paths.collection.createRoute(collection.id));
+      router.push(Paths.collection.createRoute(collection.id));
       if (onClose) onClose();
 
       const updatedDialog = { ...dialog, isOpen: false };

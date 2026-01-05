@@ -3,17 +3,15 @@ import { PageType } from "../../core/constants"
 import LinkPreview from "../LinkPreview"
 import isValidUrl from "../../core/isValidUrl"
 import loadingGif from "../../images/loading.gif"
-import { useNavigate } from "react-router-dom"
 import Paths from "../../core/paths"
-import { useLocation } from "react-router-dom"
 import Context from "../../context"
-import { IonImg } from '@ionic/react';
+import { IonImg, useIonRouter } from '@ionic/react';
 import Enviroment from "../../core/Enviroment"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const {isHorizPhone}=useContext(Context)
-    const navigate = useNavigate()
-    const location = useLocation()
+   const router = useIonRouter()
+    const location = router.routeInfo.pathname
    
     useEffect(()=>{
         
@@ -35,18 +33,11 @@ switch(page.type){
 
     return( 
 
-        <div 
-        className="w-[100vw] sm:w-[50em] "
-    
-        onClick={()=>{
-                    navigate(Paths.page.createRoute(page.id))
-                }}
+   <div 
         
-        ><div 
-        
-        className={`ql-editor w-[100vw]  sm:w-[50em]`} dangerouslySetInnerHTML={{__html:page.data}}/>
-        </div>
-        // </div>
+        className={`ql-editor page-data `} dangerouslySetInnerHTML={{__html:page.data}}/>
+     
+  
   ) }
   case PageType.picture:{
   
@@ -55,8 +46,8 @@ switch(page.type){
         className=""
         onClick={()=>{
    
-        if(location.pathname!=Paths.page.createRoute(page.id)){
-        navigate(Paths.page.createRoute(page.id))}
+        if(location!=Paths.page.createRoute(page.id)){
+       router.push(Paths.page.createRoute(page.id))}
      
      }} 
      alt={page.title} src={image}
@@ -66,8 +57,8 @@ switch(page.type){
 
     onClick={()=>{
    
-   if(location.pathname!=Paths.page.createRoute(page.id)){
-   navigate(Paths.page.createRoute(page.id))}
+   if(location!=Paths.page.createRoute(page.id)){
+  router.push(Paths.page.createRoute(page.id))}
 
 }} 
 alt={page.title}
@@ -98,5 +89,5 @@ if(!page){
 ) 
 }
 
-return (<Element page={page}/>)
+return (<div className="max-h-[30rem] overflow-clip sm:max-h-[50rem]"><Element page={page}/></div>)
 }

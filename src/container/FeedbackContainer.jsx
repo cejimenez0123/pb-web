@@ -83,7 +83,9 @@ export default function FeedbackContainer(props){
     
     },10)
     let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
-    return(<IonContent fullscreen={true} className="ion-padding">
+    return(
+      <div>
+    {/* // <IonContent fullscreen={true} className="ion-padding"> */}
         <form className="my-8 px-4">
         <div className="card sm:max-w-[40rem] mx-auto lg:p-8">
 
@@ -126,5 +128,7 @@ rounded-full border-none py-2 text-white my-12`}>
         </div>
         </form>
   
-    </IonContent>)
+  
+    
+  </div>)
 }

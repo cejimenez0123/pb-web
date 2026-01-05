@@ -149,19 +149,7 @@ let css= {"height":"6em","margin":"auto"}
 };
 
 
-  // return (
-  //   <ErrorBoundary>
-  //   <div className={`rounded-[2em] overflow-hidden my-4  h-[20em] md:h-[10em] ove sm:max-h-30 w-[100%] shadow-md flex flex-col sm:flex-row p-4 bg-emerald-100 `} 
-  //   onClick={handleClick} style={{ cursor: 'pointer' }}>
-     
-  //    {imageView()}
-  //     <div className=' px-2 text-emerald-800 overflow-scroll text-left  open-sans-medium'>
-  //     <h4 className='text-[0.8rem]'><strong>{title}</strong></h4>
-  //  <h6 className='  text-[0.7rem] md:text-md  '> {description}</h6>
-  //     </div>
-  //   </div>
-  //   </ErrorBoundary>
-  // );
+
   return (
   <ErrorBoundary>
     <div

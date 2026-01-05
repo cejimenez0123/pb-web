@@ -1,6 +1,3 @@
-
-
-import { useNavigate } from "react-router-dom";
 import Paths from "../core/paths";
 import { clearPagesInView } from "../actions/PageActions.jsx";
 import { useDispatch } from "react-redux";
@@ -14,10 +11,10 @@ import {
   IonCardContent,
   IonText
 } from "@ionic/react";
-
+import { useIonRouter } from '@ionic/react';
 export default function BookListItem({ book }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const router = useIonRouter()
 
   useLayoutEffect(() => {
     initGA();
@@ -28,7 +25,7 @@ export default function BookListItem({ book }) {
     dispatch(clearPagesInView());
     dispatch(setCollections({ collections: [] }));
     dispatch(setCollectionInView({ collection: book }));
-    navigate(Paths.collection.createRoute(book.id));
+    router.push(Paths.collection.createRoute(book.id));
     sendGAEvent(
       "Navigate",
       `Navigate to Collection ${JSON.stringify({ id: book.id, title: book.title })}`

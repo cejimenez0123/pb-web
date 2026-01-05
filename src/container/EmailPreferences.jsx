@@ -1,22 +1,19 @@
 import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useLocation, useNavigate, useParams ,useSearchParams} from "react-router-dom";
 import { updateSubscription } from "../actions/UserActions";
 import checkResult from "../core/checkResult";
 import Context from "../context";
-import axios from "axios";
-import Enviroment from "../core/Enviroment";
+import { useIonRouter } from "@ionic/react";
 
 export default function EmailPreferences() {
   const {setSuccess,setError,setSeo,seo}=useContext(Context)
   const selectRef = useRef()
-  const navigate = useNavigate()
+  const router = useIonRouter()
   const dispatch = useDispatch()
-  const domain = window.location.hostname;
-  const [searchParams] = useSearchParams()
+
+  const [searchParams] = router.routeInfo.search
   let tokenstr = searchParams.get("token")
-  const location = useLocation()
   const [token,setToken]=useState(tokenstr)
   const [unsubscribed,setUnsubscribed]=useState(false)
   const [frequency, setFrequency] = useState(1);
@@ -57,7 +54,7 @@ setError(err.message)
     dispatch(updateSubscription({token,frequency:0})).then(res=>{
       checkResult(res,payload=>{
         let pars = new URLSearchParams({unsubscribe:"true",token})
-        navigate("/subscribe?"+pars.toString())
+        router.push("/subscribe?"+pars.toString())
       },err=>{
          if(!err.message.includes("Network")){
 setError(err.message)
@@ -68,7 +65,7 @@ setError(err.message)
   const resubscribe=()=>{
     let pars = new URLSearchParams({token})
     setUnsubscribed(false)
-    navigate("/subscribe?"+pars.toString())
+    router.push("/subscribe?"+pars.toString())
   }
   return (
     <div className="flex min-h-screen bg-gray-100">

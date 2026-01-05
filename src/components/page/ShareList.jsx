@@ -2,7 +2,7 @@ import { debounce } from "lodash";
 import { useEffect ,useState,useLayoutEffect, useContext} from "react";
 import { setDialog } from "../../actions/UserActions";
 import { useDispatch } from "react-redux";
-import { IonList,IonItem,IonText,IonImg } from "@ionic/react";
+import { IonList,IonItem,IonText,IonImg, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
 import loadingGif from "../../images/loading.gif"
 import bookmarkFill from "../../images/bookmarkfill.svg";
@@ -13,7 +13,6 @@ import { sendGAEvent } from "../../core/ga4";
 import { deleteStoryFromCollection,addStoryListToCollection } from "../../actions/CollectionActions";
 import checkResult from "../../core/checkResult";
 import Enviroment from "../../core/Enviroment";
-import { useNavigate } from "react-router-dom";
 import Paths from "../../core/paths";
 import { Preferences } from "@capacitor/preferences";
 export default function ShareList({ page, profile, archive,setArchive, bookmark, setBookmarked }) {
@@ -23,7 +22,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const [canUserEdit,setCanUserEdit ]=useState(false)
   const [loading,setLoading]=useState(false)
-    const navigate = useNavigate()
+  const router = useIonRouter()
   function soCanUserEdit() {
     const roles = [RoleType.editor];
     if (currentProfile && page) {
@@ -156,7 +155,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
         <IonItem
           onClick={async () => {
             if (profile && (await Preferences.get({ key: "token" })).value) {
-              navigate(Paths.addStoryToCollection.story(page.id));
+            router.push  (Paths.addStoryToCollection.story(page.id));
             } else {
               setError("Please Sign Up");
             }
@@ -172,7 +171,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
           <IonItem
             onClick={() => {
               dispatch(setDialog({ ...dialog, isOpen: false }));
-                navigate(Paths.editPage.createRoute(page.id));
+              router.push(Paths.editPage.createRoute(page.id));
         
      
             }}

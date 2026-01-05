@@ -1,5 +1,5 @@
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useState, useEffect, useContext, useRef } from "react";
+
+import { useState, useEffect, useContext,} from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture } from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
@@ -11,13 +11,13 @@ import Context from "../../context";
 import authRepo from "../../data/authRepo";
 import { debounce } from "lodash";
 import { Preferences } from "@capacitor/preferences";
-import { IonContent, IonInput, IonTextarea, IonSelect, IonSelectOption, IonLabel, IonText, useIonViewWillEnter } from "@ionic/react";
+import { IonContent, IonInput, IonTextarea, IonLabel, IonText,  useIonRouter } from "@ionic/react";
 import { ErrorBoundary } from "@sentry/react";
 import { Capacitor } from "@capacitor/core";
 
 export default function UseReferralContainer() {
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
+ 
+  const query = setIonRouter().routeInfo.search;
   // const selectRef = useRef();
   const [token, setToken] = useState(query.get("token"));
   const [email, setEmail] = useState("");
@@ -32,10 +32,10 @@ export default function UseReferralContainer() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [usernameUnique, setUsernameUnique] = useState(true);
   const [canUser, setCanUser] = useState(false);
-  const [searchParams] = useSearchParams();
+  const [searchParams] = router.routeInfo.search
 console.log(searchParams)
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const router = useIonRouter()
   const { error, setError, setSuccess } = useContext(Context);
   useEffect(() => {
     let toke = searchParams.get("token")
@@ -150,7 +150,7 @@ const handleUseRefferal=(params)=>{
             if (payload.token) Preferences.set({ key: "token", value: payload.token });
             if (payload.profile) {
               Preferences.set({ key: "firstTime", value: "true" });
-              navigate(Paths.myProfile);
+              router.push(Paths.myProfile);
             }
           },
           (err) => setError(err.message)

@@ -2,14 +2,13 @@
 import { useState } from "react"
 import { createBook } from "../actions/BookActions"
 import { useDispatch , useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
-//import { FormGroup,List,ListItem, TextField,FormControlLabel,Checkbox, Button,TextareaAutosize} from "@mui/material"
 import theme from "../theme"
 import "../styles/CreateBook.css"
 import "../styles/CreateLibrary.css"
 import { textareaStyle } from "../styles/styles"
 import Paths from "../core/paths"
 import { setHtmlContent, setPageInView } from "../actions/PageActions.jsx"
+import { useIonRouter } from "@ionic/react"
 const inputStyle = {
     width: "100%",
 }
@@ -17,7 +16,7 @@ function CreateForm (props){
     const [bookTitle,setBookTitle]=useState("")
     const [purpose,setPurpose] = useState("")
     const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const router = useIonRouter()
     const [bookIsPrivate,setBookIsPrivate]= useState(false)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const [bookIsOpen,setBookIsOpen]= useState(false)
@@ -49,7 +48,7 @@ function CreateForm (props){
                 
                 const {payload} = result
                 if(result !=null && result.error==null){
-                    navigate(`/book/${payload.book.id}`)
+                    router.push(`/book/${payload.book.id}`)
                     
                 }
             })
@@ -96,7 +95,7 @@ Save
     {pagesToBeAdded.map(page =><ListItem key={page.id} onClick={()=>{
         dispatch(setHtmlContent({html:page.data}))
         dispatch(setPageInView({page}))
-        navigate(Paths.page.createRoute(page.id))
+       router.push(Paths.page.createRoute(page.id))
     }}>{page.title.length>0?page.title:"Untitled"}</ListItem>)}
 </List>
 </FormGroup>)

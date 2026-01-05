@@ -1,13 +1,10 @@
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import authRepo from "../../data/authRepo";
 import validateEmail from "../../core/validateEmail";
-import Dialog from "../../components/Dialog";
-import { useNavigate } from "react-router-dom";
-import Paths from "../../core/paths";
 import Context from "../../context";
 import clear from "../../images/icons/clear.svg";
 import { initGA, sendGAEvent } from "../../core/ga4";
-import { IonContent } from "@ionic/react";
+import { IonContent} from "@ionic/react";
 import ErrorBoundary from "../../ErrorBoundary";
 import { setDialog } from "../../actions/UserActions";
 import { useDispatch } from "react-redux";
@@ -16,7 +13,7 @@ function NewsletterContainer() {
   const { setError } = useContext(Context);
   const { seo, setSeo } = useContext(Context);
   const dispatch =useDispatch()
-  const navigate = useNavigate();
+
   const selectRef = useRef(null);
 
   // ---------- GA INITIALIZATION ----------
@@ -258,7 +255,7 @@ console.log(data)
   );
 
   return (
-    <IonContent fullscreen>
+    // <IonContent fullscreen>
       <ErrorBoundary>
         <div className="bg-cream min-h-screen pb-20">
           <form
@@ -477,7 +474,7 @@ console.log(data)
           /> */}
         </div>
       </ErrorBoundary>
-    </IonContent>
+    // </IonContent>
   );
 }
 

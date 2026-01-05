@@ -1,8 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import storyRepo from "../data/storyRepo";
 import { PageType } from "../core/constants";
-import {storage} from "../core/di"
-import {  ref,deleteObject   } from "firebase/storage";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
 import { FirebaseStorage } from "@capacitor-firebase/storage";

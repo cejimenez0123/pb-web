@@ -18,12 +18,13 @@ import {
   IonImg,
   IonBackButton,
   IonItem,
+  useIonRouter,
  
 } from "@ionic/react";
 import add from "../../images/icons/add_circle.svg"
 import edit from "../../images/icons/edit.svg"
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+
 import Context from "../../context";
 import PageList from "../../components/page/PageList";
 import ErrorBoundary from "../../ErrorBoundary";
@@ -54,8 +55,8 @@ export default function CollectionContainer() {
   const {  setError, setSuccess } = useContext(Context);
   const currentProfile = useSelector(state => state.users.currentProfile);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const router = useIonRouter()
+  const { id } = router.routeInfo.params
   const isNative = Capacitor.isNativePlatform()
   const collection = useSelector(state => state.books.collectionInView);
   const collections = useSelector(state => state.books.collections);
@@ -393,9 +394,9 @@ const getCol = async () => {
           const handleBack = (e) => {
     e.preventDefault();
     if (window.history.length > 1) {
-      navigate(-1);
+      router.push(-1);
     } else {
-      navigate(Paths.discovery());
+      router.push(Paths.discovery());
     }
   };
   // Example getMore for infinite scrolling (to be filled with your pagination logic)
@@ -408,7 +409,7 @@ const getCol = async () => {
  
     if (loading||!collection) {
       return (
-        <IonContent fullscreen={true} >
+  <div>
               <IonHeader> 
       <IonToolbar>
         <IonButtons>
@@ -424,13 +425,13 @@ const getCol = async () => {
             </IonToolbar>
           </IonHeader>
           <IonSpinner />
-        </IonContent>
+   </div>
       );
     }
 
   if (!collection) {
     return (
-      <IonContent fullscreen scrollY>
+<div>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Loading collection...</IonTitle>
@@ -440,7 +441,7 @@ const getCol = async () => {
           <IonSkeletonText animated style={{ width: '96vw', height: 150, margin: "2rem auto", borderRadius: 18 }} />
           <IonSkeletonText animated style={{ width: '96vw', height: 400, margin: "2rem auto", borderRadius: 18 }} />
         </div>
-      </IonContent>
+      </div>
     );
   }
 
@@ -448,7 +449,7 @@ const getCol = async () => {
 
     return (
       <ErrorBoundary>
-      <IonContent fullscreen={true}>
+
             <IonHeader> 
       <IonToolbar>
         <IonButtons>
@@ -473,7 +474,7 @@ const getCol = async () => {
   <p>If you believe this is a mistake, please contact the collection owner.</p>
 </IonText>
 
-      </IonContent>
+      {/* </IonContent> */}
       </ErrorBoundary>
     );
   }
@@ -481,8 +482,7 @@ const getCol = async () => {
   // Main content UI
   return (
          <ErrorBoundary>
-    <IonContent 
-    fullscreen={true}  scrollY>
+
    <div className='pt-12'></div>
   <IonHeader>
   <IonToolbar>
@@ -508,7 +508,7 @@ const getCol = async () => {
               <div>{collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
               <IonCardTitle className="ion-text-wrap">{collection.title}</IonCardTitle></div>
                  {canUserEdit &&<div><IonImg
-                 onClick={() => navigate(Paths.editCollection.createRoute(id))}
+                 onClick={() => router.push(Paths.editCollection.createRoute(id))}
                   src={edit} className="bg-blueSea max-w-12 max-h-12 rounded-full p-2 btn"/>
             </div>}
            </div>
@@ -537,7 +537,7 @@ const getCol = async () => {
               )}
               {canUserAdd && (
              
-                <div onClick={() => navigate(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full p-1">
+                <div onClick={() => router.push(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full p-1">
                 <IonImg src={add}/>
                 </div>
             
@@ -591,7 +591,7 @@ const getCol = async () => {
 </div>
         <ExploreList />
   
-    </IonContent>
+
         </ErrorBoundary>
   );
 }

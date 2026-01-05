@@ -18,7 +18,9 @@ export default function NotificationContainer({currentProfile}){
     },[currentProfile])
     
 
-    return(<IonContent fullscreen={true} className="flex flex-col justify-center md:py-8">
+    return(
+        <div>
+
         <div  className=" w-[96vw] border-b-2 border-emerald-600 mx-auto md:w-page">
 <h1 className="lora-bold text-xl text-emerald-800  mb-4 mt-8 text-opacity-70">Today</h1>
 <IonList>
@@ -29,6 +31,7 @@ export default function NotificationContainer({currentProfile}){
 })}
 </IonList>
 </div>
-    </IonContent>)
+</div>
+   )
 
 }

@@ -1,10 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import ProfileCircle from "./ProfileCircle";
 import Paths from "../../core/paths";
 import getTimePast from "../../core/getTimePassed";
 import Enviroment from "../../core/Enviroment";
+import { useIonRouter } from "@ionic/react";
 export default function NotificationItem({ item, lastNotified }) {
-  const navigate = useNavigate();
+  const router = useIonRouter()
 
   // Render a separator for older notifications
   if (item === Enviroment.blankPage) {
@@ -27,7 +27,7 @@ export default function NotificationItem({ item, lastNotified }) {
       const profile = follow.follower;
       return (
         <div
-          onClick={() => navigate(Paths.profile.createRoute(profile.id))}
+          onClick={() => router.push(Paths.profile.createRoute(profile.id))}
           className={containerClasses}
         >
           <div className="flex flex-row items-center justify-between gap-4">
@@ -63,7 +63,7 @@ export default function NotificationItem({ item, lastNotified }) {
 
       return (
         <div
-          onClick={() => navigate(Paths.collection.createRoute(collection.id))}
+          onClick={() => router.push(Paths.collection.createRoute(collection.id))}
           className={containerClasses}
         >
           <div className="flex flex-row items-center justify-between gap-4">
@@ -85,7 +85,7 @@ export default function NotificationItem({ item, lastNotified }) {
       const story = item.item;
       return (
         <div
-          onClick={() => navigate(Paths.page.createRoute(story.id))}
+          onClick={() => router.push(Paths.page.createRoute(story.id))}
           className={containerClasses}
         >
           <div className="flex flex-row items-center justify-between gap-4">
@@ -114,14 +114,14 @@ export default function NotificationItem({ item, lastNotified }) {
             <div className="flex items-center ">
               <ProfileCircle profile={comment.profile} color="emerald-700" />
               <span className="text-emerald-700 ml-4 text-[0.75rem] open-sans-medium">
-            <span onClick={()=>navigate(comment.story.id)}className="font-semibold text-sm">{comment.story.title}</span>
+            <span onClick={()=>router.push(comment.story.id)}className="font-semibold text-sm">{comment.story.title}</span>
               </span>
             </div>
             <span className="text-right text-sm text-emerald-700">
               {getTimePast(comment.created)}
             </span>
           </div>
-          <div           onClick={() => navigate(Paths.page.createRoute(comment.story.id))} className="open-sans-medium mt-2 text-[0.93rem] h-[4rem] text-emerald-800 break-words overflow-hidden">
+          <div           onClick={() => router.push(Paths.page.createRoute(comment.story.id))} className="open-sans-medium mt-2 text-[0.93rem] h-[4rem] text-emerald-800 break-words overflow-hidden">
             {comment.content}
           </div>
         </div>

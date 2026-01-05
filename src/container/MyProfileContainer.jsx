@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext, useMemo, useLayoutEffect } from 'react';
-import {  useNavigate } from 'react-router-dom';
 import "../styles/MyProfile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createStory, updateStory,  } from '../actions/StoryActions';
@@ -8,6 +7,7 @@ import IndexList from '../components/page/IndexList';
 import Paths from '../core/paths';
 import { debounce } from 'lodash';
 import calendar from '../images/icons/calendar.svg'
+import settings from "../images/icons/settings.svg"
 import { setPageInView, setPagesInView, setEditingPage } from '../actions/PageActions.jsx';
 import { sendGAEvent } from '../core/ga4.js';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
@@ -16,7 +16,7 @@ import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import Context from '../context';
 import FeedbackDialog from '../components/page/FeedbackDialog';
-import { IonText, IonInput, IonContent, IonSpinner, IonPage, useIonViewDidEnter, useIonViewWillEnter, IonImg } from '@ionic/react';
+import { IonText, IonInput, IonContent, IonSpinner, IonPage,  useIonViewWillEnter, IonImg, useIonRouter } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 import { getCurrentProfile, setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
@@ -48,7 +48,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 
 function MyProfileContainer({ presentingElement }) {
   const [tab, setTab] = useState("page");
-  const navigate = useNavigate();
+  const router = useIonRouter()
   const dispatch = useDispatch();
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const stories = useSelector(state => state.pages.pagesInView);
@@ -144,7 +144,7 @@ function MyProfileContainer({ presentingElement }) {
       setErrorLocal(error.message);
     }
   };
-  // useIonViewDidEnter(()=>{
+  
     useIonViewWillEnter(() => {
   const init = async () => {
     try {
@@ -157,7 +157,7 @@ function MyProfileContainer({ presentingElement }) {
   };
   init();
 
-  },[navigate])
+  },[router])
 
   const ClickWriteAStory = debounce(() => {
     if (currentProfile?.id) {
@@ -172,7 +172,7 @@ function MyProfileContainer({ presentingElement }) {
         if (payload.story) {
           dispatch(setEditingPage({ page: payload.story }));
           dispatch(setPageInView({ page: payload.story }));
-          navigate(Paths.editPage.createRoute(payload.story.id));
+        router.push  (Paths.editPage.createRoute(payload.story.id));
         }else{
           windowl.alert("COULD NOT CREATE STORY")
         }
@@ -216,7 +216,7 @@ function MyProfileContainer({ presentingElement }) {
         title: file.name,
         commentable: false
       })).then(res => checkResult(res, ({ story }) => {
-        if (story) navigate(Paths.editPage.createRoute(story.id));
+        if (story) router.push(Paths.editPage.createRoute(story.id));
         dispatch(setEditingPage({ page: story }));
         dispatch(setDialog({ isOpen: false }));
       }, err => setErrorLocal(err.message)));
@@ -247,22 +247,28 @@ currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: cur
        ,[currentProfile])
   if (!currentProfile) {
     return (
-      <IonContent>
+        <div>
         <IonSpinner />
-      </IonContent>
+        </div>
+        
     );
   }
-return<ErrorBoundary><IonPage><IonContent fullscreen={true} className='ion-padding'>
-     
-                    <div className='flex  sm:mt-36 pt-[4em] flex-row justify-end'>
+return<ErrorBoundary>
 
-          <img src={calendar}    style={{
+                    <div className='flex  sm:mt-36 pt-[4em] flex-row justify-between'>
+                         <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
+     
+                           <div>
+      <img src={calendar}    style={{
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
   }}
-onClick={()=>{navigate(Paths.calendar())}}
-          className={`  p-4 absolute  top-8 sm:top-32  min-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
+onClick={()=>{router.push(Paths.calendar())}}
+          className={`   in-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
           `md::min-w-20 md:max-h-20 md:max-w-20 md:min-h-20 `}/>
+          
+                    </div>
+                  
                     </div>
   <div >
 
@@ -271,6 +277,7 @@ onClick={()=>{navigate(Paths.calendar())}}
     <div className="md:w-1/3 max-w-[60em] h-[16em] mb-6 flex justify-center md:justify-start">
       <ProfileInfo profile={currentProfile} />
     </div>
+    
 
     {/* Right: Buttons */}
     <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  ">
@@ -294,7 +301,7 @@ onClick={()=>{navigate(Paths.calendar())}}
       {/* Row 2: Join a Workshop */}
       <div className="flex justify-center md:justify-start w-full">
         <ButtonWrapper
-          onClick={() => navigate(Paths.workshop.reader())}
+          onClick={() => router.push(Paths.workshop.reader())}
           className="font-bold mx-auto bg-sky-600 hover:bg-sky-400  mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
         >
           <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
@@ -369,7 +376,6 @@ onClick={()=>{navigate(Paths.calendar())}}
     />
   </div>
 </div>
-</IonContent></IonPage>
 </ErrorBoundary>
 }
 

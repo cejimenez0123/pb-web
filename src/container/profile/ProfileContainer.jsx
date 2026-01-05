@@ -1,5 +1,4 @@
-import { IonPage,IonBackButton,IonButtons, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { IonPage,IonBackButton,IonButtons, IonHeader, IonToolbar, IonTitle, IonContent, useIonRouter } from '@ionic/react';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfile } from '../../actions/UserActions';
@@ -31,17 +30,19 @@ import StoryCollectionTabs from '../../components/page/StoryCollectionTabs.jsx';
 
 function ProfileContainer() {
   const { seo, setSeo, setError, setSuccess, currentProfile } = useContext(Context);
-  const { id } = useParams();
+
 const profile = useSelector((state) => state.users.profileInView);
   const dispatch = useDispatch();
   const[tab,setTab]=useState("page")
   const isPhone = useMediaQuery({ query: '(max-width: 600px)' });
-  const navigate = useNavigate();
-  const location = useLocation()
+  const router = useIonRouter()
+
   const [search, setSearch] = useState('');
 
   const [following, setFollowing] = useState(null);
 const [canUserSee, setCanUserSee] = useState(false);
+  const { id } = router.routeInfo.params
+
   useLayoutEffect(() => {
     initGA();
     if (profile) {
@@ -153,7 +154,7 @@ const pages = useMemo(() => {
         }
       );
     });
-  },[navigate,location.pathname]);
+  },[router]);
 
   useEffect(() => {
    getContent();
@@ -227,7 +228,7 @@ const pages = useMemo(() => {
             <IonTitle>{profile ? `${profile.username}'s Profile` : 'Profile'}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent fullscreen={true} className='pt-8'scrollY>
+        {/* <IonContent fullscreen={true} className='pt-8'scrollY> */}
           <div className="pt-2 md:pt-8 mb-8 mx-2 ">
             <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
           </div>
@@ -256,7 +257,7 @@ const pages = useMemo(() => {
     
         
           
-        </IonContent>
+        {/* <x/IonContent> */}
     </ErrorBoundary>
   );
 }

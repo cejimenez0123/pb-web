@@ -1,13 +1,12 @@
-import { useNavigate, } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { IonImg } from "@ionic/react";
 import { Preferences } from "@capacitor/preferences";
 import loading from "./images/loading.gif";
 import Paths from "./core/paths";
 import Context from "./context";
-
+import { useIonRouter } from '@ionic/react';
 const PrivateRoute = ({ children }) => {
-  const navigate = useNavigate();
+const router = useIonRouter()
   const { setError } = useContext(Context) || {};
   const [token, setToken] = useState(undefined); 
   useEffect(() => {
@@ -18,7 +17,7 @@ const PrivateRoute = ({ children }) => {
 
         if (!tok) {
             try {   
-          navigate(Paths.login(), { replace: true });
+        router.push(Paths.login(), { replace: true });
           setToken(null);
           return;
 

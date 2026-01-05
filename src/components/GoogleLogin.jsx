@@ -5,9 +5,8 @@ import React, {
   useContext,
   useRef,
 } from "react";
-import { IonText, IonSpinner, IonImg, IonRow } from "@ionic/react";
+import { IonText, IonSpinner, IonImg, IonRow, useIonRouter } from "@ionic/react";
 import { useDispatch } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
 import { SocialLogin } from "@capgo/capacitor-social-login";
 import { logIn } from "../actions/UserActions";
 import Paths from "../core/paths";
@@ -29,8 +28,8 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   const [idToken, setIdToken] = useState(null);
 
   const isNative = DeviceCheck();
-  const navigate = useNavigate();
-  const location = useLocation();
+const router =useIonRouter()
+
   const dispatch = useDispatch();
   const googleButtonRef = useRef(null);
 
@@ -137,7 +136,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
       }
     };
     loadStoredUser();
-  }, [location, navigate, onUserSignIn]);
+  }, [ router, onUserSignIn]);
 
   // ---------------------------
   // 4️⃣ Native (mobile) login

@@ -1,5 +1,4 @@
 import { Preferences } from '@capacitor/preferences';
-import { useNavigate } from 'react-router-dom';
 import {
   IonPage,
   IonContent,
@@ -9,11 +8,10 @@ import {
   IonInput,
   IonTextarea,
   IonLabel,
-  IonCheckbox,
   IonList,
   IonText,
   IonItem,
-  IonButton
+  useIonRouter
 } from '@ionic/react';
 import "../App.css"
 import { useState, useContext, useEffect } from 'react';
@@ -23,8 +21,6 @@ import Paths from '../core/paths';
 import authRepo from '../data/authRepo';
 import ThankYou from './auth/ThankYou';
 import logo from "../images/logo/icon.png";
-import GoogleLogin from '../components/GoogleLogin';
-import AppleSignInButton from '../components/auth/AppleSignInButton';
 import { useDispatch } from 'react-redux';
 import { signUp } from '../actions/UserActions';
 import { useSelector } from 'react-redux';
@@ -45,7 +41,7 @@ const inputStyle = {
 };
 
 export default function OnboardingContainer(props) {
-  const navigate = useNavigate();
+  const router = useIonRouter()
   const { seo, setSeo, error, setError } = useContext(Context);
   const dispatch = useDispatch()
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -57,7 +53,7 @@ export default function OnboardingContainer(props) {
   ];
   useEffect(()=>{
     if(currentProfile && currentProfile.id){
-      navigate(Paths.myProfile)
+      router.push(Paths.myProfile)
     }
   },[currentProfile])
   const [activeTab, setActiveTab] = useState('tab0');
@@ -514,7 +510,7 @@ const Why = ({ handleTab, nav }) => {
             </ul>
           </IonText>
          <IonRow className='flex mx-auto w-[100%] mx-auto justify-between'> 
-            <div onClick={()=>navigate(Paths.login())} className='btn my-auto bg-transparent mt-4 border-none '><IonText  className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
+            <div onClick={()=>router.push(Paths.login())} className='btn my-auto bg-transparent mt-4 border-none '><IonText  className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
                  Log In
              </IonText></div>
       
@@ -569,13 +565,11 @@ const Why = ({ handleTab, nav }) => {
   );
 
   return (
-<IonPage>
-      <IonContent fullscreen={true}  className="ion-padding  ion-padding-top ">
+
   <div className='pt-8 pb-12'>
           {user ? <ThankYou user={user} /> : <MyTabs />}
     </div>
-      </IonContent>
-  </IonPage>
+  
   );
 }
 
@@ -680,7 +674,7 @@ const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference 
   ];
 
   return (
-    <IonContent className='ion-padding min-h-40 overflow-auto'>
+    // <IonContent className='ion-padding min-h-40 overflow-auto'>
     <>
       <IonLabel
         // className="mont-medium"
@@ -715,6 +709,6 @@ const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference 
         })}
       </div>
     </>
-    </IonContent>
+    // </IonContent>
   );
 };

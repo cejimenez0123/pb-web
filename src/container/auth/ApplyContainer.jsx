@@ -3,13 +3,13 @@ import { useContext, useEffect, useState } from "react"
 import authRepo from "../../data/authRepo"
 import validateEmail from "../../core/validateEmail"
 import Dialog from "../../components/Dialog"
-import { useLocation } from "react-router-dom"
-import { IonContent } from "@ionic/react"
+import { IonContent, useIonRouter } from "@ionic/react"
 import ThankYou from "./ThankYou"
 import Context from "../../context"
 
 function ApplyContainer(props) {
-  const location = useLocation()
+  const router = useIonRouter()
+const location = router.routeInfo.pathname
   const { seo, setSeo, setError } = useContext(Context)
 
   const genres = [
@@ -63,7 +63,7 @@ function ApplyContainer(props) {
 
   // Update SEO on load
   useEffect(() => {
-    if (location.pathname.includes("apply")) {
+    if(location.includes("apply")) {
       let soo = { ...seo }
       soo.title = "Plumbum (Apply)"
       setSeo(soo)
@@ -124,7 +124,7 @@ function ApplyContainer(props) {
 
   return (
     <>
-      <IonContent fullscreen={true} className="ion-padding">
+      {/* <IonContent fullscreen={true} className="ion-padding"> */}
         <form
           onSubmit={onClickApply}
           className="form-data shadow-sm sm:my-8 md:rounded-lg pb-30 bg-transparent text-emerald-700 flex sm:mb-12 flex-col shadow-md py-4 px-6 md:max-w-[48rem] mx-auto lg:mt-24"
@@ -335,7 +335,7 @@ function ApplyContainer(props) {
             </div>
           }
         />
-      </IonContent>
+      {/* </IonContent> */}
     </>
   )
 }

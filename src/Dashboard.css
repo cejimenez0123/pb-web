@@ -108,15 +108,16 @@
   background-color: black;
  
 }
+.page-data *{
+  font-size:1.1rem!important;
+  line-height: 1.6rem !important;
+     font-family: -apple-system, BlinkMacSystemFont, sans-serif!important;
+}
 .page-data-pic img{
   max-width: 30em !important;
  
 }
-/* .content-item img{ 
-    width: 100%;    
-    height:auto;
-    margin: 0 auto; */
-  /* }  */
+
 .content-item .text{
  
   background-color: var(--slightly-yellow);

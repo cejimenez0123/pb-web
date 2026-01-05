@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import {useLayoutEffect, useRef, useState} from "react"
+
+import {useContext, useEffect, useLayoutEffect, useRef, useState} from "react"
 import PageViewButtonRow  from "./PageViewButtonRow"
 import CommentInput from "../comment/CommentInput"
 import "../../styles/PageView.css"
@@ -10,6 +10,10 @@ import ProfileCircle from "../profile/ProfileCircle"
 import PageDataElement from "./PageDataElement"
 import { initGA, sendGAEvent } from "../../core/ga4"
 import useScrollTracking from "../../core/useScrollTracking"
+import isValidUrl from "../../core/isValidUrl"
+import Context from "../../context"
+import { PageType } from "../../core/constants"
+import { useIonRouter } from "@ionic/react"
 
 export default function PageViewItem({page}) {
     const ref = useRef()
@@ -22,9 +26,9 @@ export default function PageViewItem({page}) {
         sendGAEvent("View Story",JSON.stringify(page))
     },[])
 
-    
+    const router = useIonRouter()
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const navigate = useNavigate()
+    
   
     const [commenting,setCommenting]=useState(false)
     const handleClose=()=>{
@@ -40,7 +44,7 @@ export default function PageViewItem({page}) {
                   
          <h6 className="text-emerald-700 mx-2  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]  " onClick={()=>{
              dispatch(setPageInView({page}))
-             navigate(Paths.page.createRoute(page.id))
+           router.push  (Paths.page.createRoute(page.id))
      
          }} >{` `+page.title.length>0?page.title:""}</h6>
         
@@ -62,7 +66,7 @@ if(page){
                 {header()}
               
        <div className="py-1 ">
-                <PageDataElement page={page} isGrid={false}/>
+                <DataElement page={page} isGrid={false}/>
             </div>
             
             <PageViewButtonRow page={page} profile={currentProfile} setCommenting={truthy=>setCommenting(truthy)}/>
@@ -77,4 +81,90 @@ if(page){
                  
                 </div>
             } 
+}
+
+
+function DataElement({page,isGrid,book=null}){
+    const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
+    const {isHorizPhone}=useContext(Context)
+ const router = useIonRouter()
+  
+   
+    useEffect(()=>{
+        
+        if(page && page.type==PageType.picture){
+            if(isValidUrl(page.data)){
+                setImage(page.data)
+            }else{
+             
+                setImage(Enviroment.imageProxy(page.data))
+            
+            }
+    
+        }
+    },[page])
+
+ function Element({page}){   
+switch(page.type){
+    case PageType.text:{
+
+    return( 
+
+   <div 
+        
+        className={`ql-editor `} dangerouslySetInnerHTML={{__html:page.data}}/>
+     
+  
+  ) }
+  case PageType.picture:{
+  
+    return(image?!isHorizPhone?<img  id="page-data-pic"  
+
+        className=""
+        onClick={()=>{
+   
+        if(router.routeInfo.pathname!=Paths.page.createRoute(page.id)){
+    router.push(Paths.page.createRoute(page.id))}
+     
+     }} 
+     alt={page.title} src={image}
+    />:
+    <IonImg        id="page-data-pic"
+    className="w-full h-full object-contain sm:w-[50em]"
+
+    onClick={()=>{
+   
+   if(router.routeInfo.pathname!=Paths.page.createRoute(page.id)){
+   router.push(Paths.page.createRoute(page.id))}
+
+}} 
+alt={page.title}
+    src={image}/>
+    
+    :
+    <div className={`skeleton w-page-mobile`}/>)
+}
+case PageType.link:{
+    return(
+    
+        <LinkPreview
+      
+            isGrid={isGrid}
+            url={page.data}
+        />
+       )
+}
+default:
+    return(<div        id="page-data-skeleton "className={`skeleton w-page-mobile`}>
+   <IonImg src={loadingGif}/>
+</div>)
+}
+}
+if(!page){
+    return(
+    <IonImg src={loadingGif}/>
+) 
+}
+
+return (<div className=" "><Element page={page}/></div>)
 }

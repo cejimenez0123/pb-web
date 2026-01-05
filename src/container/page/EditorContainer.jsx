@@ -1,7 +1,6 @@
 import "../../styles/Editor.css"
 import "../../App.css"
 import {useDispatch, useSelector} from "react-redux"
-import { useNavigate, useLocation, useParams} from "react-router-dom"
 import menu from "../../images/icons/menu.svg"
 import { useContext, useEffect, useState,useRef } from "react"
 import checkResult from "../../core/checkResult"
@@ -19,7 +18,7 @@ import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions
 import debounce from "../../core/debounce.js"
 import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
-import { IonBackButton, IonButtons, IonContent, IonHeader } from "@ionic/react"
+import { IonBackButton, IonButtons, IonContent, IonHeader, useIonRouter } from "@ionic/react"
 import { setDialog } from "../../actions/UserActions.jsx"
 
 
@@ -34,8 +33,8 @@ function EditorContainer({presentingElement}){
         const [openDescription,setOpenDescription]=useState(false)
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:800px)'})
-        const navigate = useNavigate()
-        const {id,type}= useParams()
+        const router = useIonRouter()
+        const {id,type}= router.routeInfo.params
         const notText= type!=PageType.link&&type!=PageType.picture
         const [openHashtag,setOpenHashtag]=useState(false)
         const {isSaved,setIsSaved}=useContext(Context)
@@ -54,9 +53,9 @@ const hasInitialized = useRef(false);
                const handleBack = (e) => {
     e.preventDefault();
     if (window.history.length > 1) {
-      navigate(-1);
+      router.push(-1);
     } else {
-      navigate(Paths.discovery());
+      router.push(Paths.discovery());
     }
   };
   
@@ -132,7 +131,7 @@ if(id){
 
       const handleDelete =debounce(()=>{
           dispatch(deleteStory(parameters)).then(()=>{
-            navigate(Paths.myProfile)
+            router.push(Paths.myProfile)
           })
       
       },10)
@@ -144,7 +143,7 @@ if(id){
           const {story}=payload
           dispatch(setEditingPage({page:story}))
           setStory(story)
-          navigate(Paths.editPage.createRoute(story.id))
+          router.push(Paths.editPage.createRoute(story.id))
           
        
      },err=>{
@@ -154,7 +153,7 @@ setError(err.message)
     }
       }
     const handleClickAddToCollection=()=>{
-          navigate(Paths.addStoryToCollection.story(id))
+          router.push(Paths.addStoryToCollection.story(id))
         }
   const handleisPrviate=debounce((truthy)=>{
           setOpenDescription(false)
@@ -193,7 +192,7 @@ setError(err.message)
         setOpenDescription(false)
           setFeedbackDialog(true)
         }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
-        {editPage?<li className=" pt-3 pb-2" onClick={()=>{navigate(Paths.page.createRoute(editPage.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
+        {editPage?<li className=" pt-3 pb-2" onClick={()=>{router.push(Paths.page.createRoute(editPage.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {!(editPage&&editPage.id)?null:parameters.isPrivate?<li onClick={()=>{
     setFeedbackDialog(false) 
     setOpenDescription(true)} }
@@ -230,7 +229,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
    const handleFeedback=()=>{
 
        if(id){
-        navigate(Paths.workshop.createRoute(id))
+        router.push(Paths.workshop.createRoute(id))
        }
 
       
@@ -291,7 +290,7 @@ const openRoleFormDialog = () => {
 
         return(
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
-          <IonContent fullscreen={true} className="ion-padding"  >
+          {/* <IonContent fullscreen={true} className="ion-padding"  > */}
             <IonHeader className=" ion-padding py-8 ">
               <IonButtons className="ion-padding" >
                 <div className="pt-4 pl-4">
@@ -339,7 +338,7 @@ handleClose={()=>{
       
     </div>
       </div>
-      </IonContent>
+      {/* </IonContent> */}
       </EditorContext.Provider>
   )    
 

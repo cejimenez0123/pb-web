@@ -28,7 +28,8 @@ export default function LinksContainer(props){
     
 
 
-    return(<ErrorBoundary><IonContent fullscreen={true}>
+    return(<ErrorBoundary>
+     {/* <IonContent fullscreen={true}> */}
      
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Click links below to discover more!</p></h2>
             <ul className={`md:mx-auto  w-page-mobile-content grid gap-2 grid-cols-2 md:flex md:flex-col lg:w-page-content mx-auto md:mx-4`}>
@@ -91,5 +92,6 @@ Step up, express yourself, and share your creativity in a space where you can tr
                </li> 
             </ul>
     
-    </IonContent></ErrorBoundary>)
+    {/* </IonContent */}
+</ErrorBoundary>)
 }

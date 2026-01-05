@@ -1,6 +1,5 @@
 import {
-  IonPage,
-  IonContent,
+
   IonHeader,
   IonTitle,
   IonItem,
@@ -11,8 +10,8 @@ import {
   IonImg,
   IonCard,
   IonCardContent,
+  useIonRouter,
 } from '@ionic/react';
-import {  useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useContext, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture } from "../../actions/ProfileActions";
@@ -40,8 +39,8 @@ export default function SignUpContainer(props) {
   const [isPrivate, setIsPrivate] = useState(false);
   const [identityToken,setIdentityToken]=useState(null)
   const [email, setEmail] = useState("");
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [searchParams] =router.routeInfo.search
+  const router = useIonRouter()
   const dispatch = useDispatch();
   Preferences.get({key:"idToken"}).then(token=>{
     setIdentityToken(token.value)
@@ -132,7 +131,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
            dispatch(signUp(params)).then(res => checkResult(res, payload => {
 
         if (payload.profile) {
-          navigate(Paths.login());
+          router.push(Paths.login());
         } else {
           setSuccess(null);
           setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
@@ -148,7 +147,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
        dispatch(signUp(params)).then(res => checkResult(res, payload => {
 
         if (payload.profile) {
-          navigate(Paths.login());
+          router.push(Paths.login());
         } else {
           setSuccess(null);
           setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
@@ -190,9 +189,8 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
   },100)
   return (
     
-      <IonPage>
-      <IonContent fullscreen={true}
-     >
+<div>
+
         <IonHeader className=" bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
         <IonTitle className="text-green-800 text-center text-[2rem] ">
           Complete Sign Up
@@ -269,31 +267,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
 
     
 
-  
-    {/* <div className='flex flex-row'  >
-    <IonText className="my-auto">Is Private?</IonText>
-     */}
-    {/* Yes/No status */}
-    {/* <div >
-    <IonText 
-    onClick={handlePrivate}
-    className="my-auto min-w-10 ml-4">
-      {isPrivate ? "Yes" : "No"}
-    </IonText>
-    </div>
-     <input
 
-    id="ion-cb-1"
-      // slot="start"
-type='checkbox'
-     
-      className='my-auto   mx-6'
-      checked={isPrivate}
-      onClick={handlePrivate}
-   
-    /> 
-   
-    </div> */}
   <IonItem lines="none" className="flex flex-col items-start mt-4 space-y-2">
             <div className="flex flex-row items-center gap-3">
               <InfoTooltip text="Will your account be private?" />
@@ -326,34 +300,7 @@ type='checkbox'
               onChange={(e)=>handleProfilePicture(e)}
             />
             <ProfilePicture key={pictureUrl} image={pictureUrl} />
-          </div>
-  {/* <IonLabel className="text-xl text-left pb-2">
-    Add a Profile Picture
-  </IonLabel>
-  
-             <input
-    className="file-input max-w-72 my-8 mx-auto "
-        type="file"   <div>
-            <IonLabel className="text-xl text-emerald-800 font-medium mb-2 block">
-              Email Frequency
-            </IonLabel>
-            <select
-              className="w-full rounded-full bg-emerald-50 text-emerald-700 px-4 py-2 border border-emerald-200"
-              value={frequency}
-              ref={selectRef}
-              onChange={(e) => setFrequency(e.target.value)}
-            >
-              <option value={1}>Daily</option>
-              <option value={2}>Every 3 days</option>
-              <option value={3}>Weekly</option>
-              <option value={14}>Every 2 Weeks</option>
-              <option value={30}>Monthly</option>
-            </select>
-          </div>
-        accept="image/*"
-        onChange={(e)=>handleProfilePicture(e)}/>
- 
-<ProfilePicture key={pictureUrl} image={pictureUrl}/> */}
+
 
 
             <IonItem className="mb-4 flex flex-row justify-between">
@@ -395,10 +342,10 @@ type='checkbox'
           
             </div>
             </div>
+            </div>
           </IonCardContent>
         </IonCard>
-      </IonContent>
- </IonPage>
+      </div>
   );
 }
 

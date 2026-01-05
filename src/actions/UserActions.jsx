@@ -1,9 +1,8 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
-import { auth ,storage} from  "../core/di"
-import {  ref, uploadBytes,getDownloadURL,deleteObject } from "firebase/storage";
+import { storage} from  "../core/di"
+import {  ref,deleteObject } from "firebase/storage";
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
-import uuidv4 from "../core/uuidv4";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
 const logIn = createAsyncThunk(
@@ -113,22 +112,7 @@ const signUp = createAsyncThunk(
 
 
 
-//  const searchMultipleIndexes = createAsyncThunk(
-//   "users/searchMultipleIndexes",
-//   async (params, thunkApi) => {
-//     const { query,filters} = params;
-   
-//     try {
-//       // Call server-side search via the repo
-//       const data = await algoliaRepo.search(query,[],filters);
 
-//       return { results: data.results };
-//     } catch (error) {
-//       console.error("Search failed:", error);
-//       return thunkApi.rejectWithValue({ error: "Search failed" });
-//     }
-//   }
-// );
 const searchMultipleIndexes = createAsyncThunk(
   "users/searchMultipleIndexes",
   async (params, thunkApi) => {
@@ -137,7 +121,7 @@ const searchMultipleIndexes = createAsyncThunk(
     try {
       const data = await algoliaRepo.search(query, profileId,filters);
 
-      return { results: data.results };
+      return { results: data.results??[] };
     } catch (error) {
       console.error("Search failed:", error);
       return thunkApi.rejectWithValue({ error: "Search failed" });

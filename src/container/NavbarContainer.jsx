@@ -6,7 +6,7 @@ import '../App.css'
 import "../styles/Navbar.css"
 import addCircle from "../images/icons/plus.app.svg"
 import {signOutAction,setDialog} from "../actions/UserActions"
-import { useLocation, useNavigate } from 'react-router-dom'
+
 import { Preferences } from "@capacitor/preferences";
 import menu from "../images/icons/menu.svg"
 import library from "../images/icons/book.svg"
@@ -26,7 +26,7 @@ import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
 import { initGA, sendGAEvent } from '../core/ga4.js'
-import {IonImg, IonList, IonText,} from '@ionic/react';
+import {IonImg, IonList, IonText, useIonRouter,} from '@ionic/react';
 import { useSelector } from 'react-redux'
 import { Capacitor } from '@capacitor/core'
 import { PageType } from '../core/constants.js'
@@ -63,7 +63,7 @@ const currentProfile=useSelector(state=>state.users.currentProfile)
                 PageName.create, 
     
                 ]]:[...[ 
-                Capacitor.isNativePlatform()||currentProfile? PageName.home:PageName.about,
+                PageName.about,
                 
                 PageName.discovery,
                 PageName.workshop,
@@ -74,10 +74,10 @@ const currentProfile=useSelector(state=>state.users.currentProfile)
                 PageName.feedback
                 ]]
     const dispatch = useDispatch()
-    const navigate = useNavigate()
+const router = useIonRouter()
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
 
-   const pathName = useLocation().pathname
+  
 
 
 
@@ -119,20 +119,20 @@ const openDialog=()=>{
       sendGAEvent("Click Nav Menu",`Click Horiz Nav ${page}`)
    
       if(page==PageName.login){
-          navigate(Paths.login())                    
+          router.push(Paths.login())                    
       }else if(page===PageName.discovery){
-          navigate(Paths.discovery())
+          router.push(Paths.discovery())
       }else if(page===PageName.about){
-        navigate(Paths.about())
+        router.push(Paths.about())
       }else if(page==PageName.workshop){
         dispatch(setPageInView({page:null}))
-        navigate(Paths.workshop.reader())
+      router.push(Paths.workshop.reader())
       }else if(page==PageName.apply){
-        navigate(Paths.apply())
+       router.push(Paths.apply())
       }else if(page==PageName.feedback){
-        navigate(Paths.feedback())
+       router.push(Paths.feedback())
       }else{
-          navigate(Paths.discovery())
+          router.push(Paths.discovery())
       }
       
 
@@ -188,18 +188,18 @@ const openDialog=()=>{
         
          <a       onClick={ClickWriteAStory}   tabIndex={1} role="button" className=' text-emerald-800 text-center no-underline'  tabndex="0">Create</a>
            <ul      tabIndex={1} className="p-2 menu menu-sm rounded-box  ">
-             <li tabIndex={page}  onClick={ClickWriteAStory}><a  >  <IonImg src={CreateIcon}/></a></li>
+             <li tabIndex={page}  onClick={ClickWriteAStory}><a  >Story</a></li>
              <li  tabIndex={page}    onClick={(e)=>{
           dispatch(setHtmlContent({html:""}))
             dispatch(setEditingPage({page:null}))
-          navigate(Paths.editor.image())}}><a>     
-            <IonImg src={ImageIcon}/></a></li>
+          router.push(Paths.editor.image())}}><a>     
+            Pictures</a></li>
              <li tabIndex={page} ><a    onClick={()=>{
               dispatch(setHtmlContent({html:""}))
                 dispatch(setEditingPage({page:null}))
-    navigate(Paths.editor.link())}}
+    router.push(Paths.editor.link())}}
     >
-    <IonImg src={LinkIcon}/></a></li>
+    Link</a></li>
            <li  tabIndex={page}  onClick={()=>{ 
              
                  openDialog()
@@ -254,7 +254,7 @@ const openDialog=()=>{
       
           dispatch(setPageInView({page:data.story}))
           dispatch(setEditingPage({page:data.story}))
-          navigate(Paths.editPage.createRoute(data.story.id))
+          router.push(Paths.editPage.createRoute(data.story.id))
       },e=>{
         setError(e.message)
       }))},10)
@@ -286,17 +286,17 @@ const openDialog=()=>{
             
              <li tabIndex={1}  onClick={ClickWriteAStory}><a className='mx-auto '  > 
               
-               <IonImg src={CreateIcon}/></a></li>
+               <IonImg src={CreateIcon}/>Story</a></li>
              <li   tabIndex={2}   onClick={(e)=>{
             
     dispatch(setHtmlContent({html:""}))
            dispatch(setEditingPage({page:null}))
-          navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
+          router.push(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} />Pictures</a></li>
              <li tabIndex={3} ><a    onClick={()=>{
                 dispatch(setHtmlContent({html:""}))
                 dispatch(setEditingPage({page:null}))
-    navigate(Paths.editor.link())}} className='mx-auto'>
-   <IonImg src={LinkIcon}/></a></li>
+    router.push(Paths.editor.link())}} className='mx-auto'>
+   <IonImg src={LinkIcon}/>Link</a></li>
            <li tabIndex={4}  onClick={()=>{ 
 
 openDialog()
@@ -341,14 +341,14 @@ openDialog()
                          switch(page){
                           case SettingName.profile:
                            
-                              navigate(Paths.myProfile)
+                             router.push(Paths.myProfile)
                               break;
                           case SettingName.logout:
                             handleSignOut()
                               break;
               
                           case SettingName.notifications:
-                            navigate(Paths.notifications())
+                            router.push(Paths.notifications())
                             break;
                           default:
                               break;
@@ -357,7 +357,7 @@ openDialog()
   const handleSignOut =async () => {
  
     await Preferences.clear()
-    navigate(Paths.login())
+   router.push(Paths.login())
     dispatch(signOutAction())
   
    
@@ -366,7 +366,7 @@ let isNative = Capacitor.isNativePlatform()
  return !isNotPhone||isNative?(<div className="navbar flex items-start  justify-between px-4 max-w-[100vw] h-54 bg-soft">
    <div className='flex flex-col'>
    <IonImg src={library} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-    onClick={()=>{navigate(Paths.discovery())}}/>
+    onClick={()=>{router.push(Paths.discovery())}}/>
       <h6 className='text-white text-xs'>Discovery</h6>
     </div>
    <div className='flex flex-col'>
@@ -378,30 +378,30 @@ let isNative = Capacitor.isNativePlatform()
      <div className="dropdown dropdown-top ">
   <div tabIndex={0} role="button"><div><IonImg src={addCircle}  style={{width:"3em",height:"3em",filter:"invert(100%)"} } /> <h6 className='text-white text-xs'>Create</h6></div>
 </div>
-  <ul tabIndex="-1" className="dropdown-content menu text-center bg-base-100 rounded-box z-1 w-52 p-2 -translate-x-1/2 left-1/2  shadow-sm">
+  <ul tabIndex="-1" className="dropdown-content  menu text-center bg-cream rounded-box z-1 w-52 p-2 -translate-x-1/2 left-1/2  shadow-sm">
                  <li     onClick={(e)=>{
             
           dispatch(setHtmlContent({html:""}))
           dispatch(setEditingPage({page:null}))
-          navigate(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} /></a></li>
-   <li onClick={ClickWriteAStory}><a className='mx-auto'>   <IonImg src={CreateIcon}/></a></li>
-    <li><a className='mx-auto' onClick={()=>{
+          router.push(Paths.editor.image())}}><a className='mx-auto text-soft'> Picture</a></li>
+   <li onClick={ClickWriteAStory}><a className='mx-auto text-soft' > Story </a></li>
+    <li><a className='mx-auto text-soft' onClick={()=>{
               dispatch(setHtmlContent({html:""}))
                 dispatch(setEditingPage({page:null}))
-    navigate(Paths.editor.link())}}
+ router.push(Paths.editor.link())}}
     >
-    <IonImg src={LinkIcon}/></a></li>
-    <li><a>Collection</a></li>
+  Link</a></li>
+    <li className='text-soft'><a className='text-soft'>Collection</a></li>
   </ul>
 </div>
 <div className='flex flex-col'>
   <IonImg src={hammer} style={{width:"3em",height:"3em",filter:"invert(100%)"}} onClick={()=>{
          dispatch(setPageInView({page:null}))
-        navigate(Paths.workshop.reader())
+       router.push(Paths.workshop.reader())
   }}/>
   <h6 className='text-white text-xs'>Workshop</h6>
   </div>
-  <div onClick={()=>navigate(Paths.myProfile)} className={`dropdown ${isTablet?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
+  <div onClick={()=>router.push(Paths.myProfile)} className={`dropdown ${isTablet?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
         <div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
@@ -413,10 +413,10 @@ let isNative = Capacitor.isNativePlatform()
  </div>):(<div className="navbar flex items-start  max-w-[100vw] h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isNative?menuDropdown():
-    <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
+    <a  onClick={()=>currentProfile?router.push(Paths.calendar()):router.push("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
   </div>
   <div className='navbar-center'>
-      {!isNative?menuHoriz():  <a  onClick={()=>currentProfile?navigate(Paths.calendar()):navigate("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
+      {!isNative?menuHoriz():  <a  onClick={()=>currentProfile?router.push(Paths.calendar()):router.push("/")}className="btn btn-ghost text-white lora-bold text-xl">Pb</a>}
   </div>
 
  

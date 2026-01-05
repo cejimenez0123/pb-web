@@ -1,10 +1,9 @@
-import { useNavigate } from 'react-router-dom';
-import { IonText } from '@ionic/react';
+import { IonText, useIonRouter } from '@ionic/react';
 import Paths from '../../core/paths';
 import { Capacitor } from '@capacitor/core';
 
 export default function ThankYou({ user }) {
-  const navigate = useNavigate();
+  const router = useIonRouter()
 
   const buttonClassNames = "bg-emerald-600 rounded-full px-6 py-2 cursor-pointer select-none";
 
@@ -70,14 +69,14 @@ export default function ThankYou({ user }) {
 </div>
       <div className="flex flex-row justify-between mt-6 gap-4">
         {!Capacitor.isNativePlatform()? <IonText
-          onClick={() => navigate(Paths.about())}
+          onClick={() => router.push(Paths.about())}
           className={buttonClassNames}
           style={{ width: '8em', margin:"auto",textAlign:"center", color: 'white', userSelect: 'none' }}
         >
           Go to About
         </IonText>:null}
         <IonText
-          onClick={() => navigate(Paths.discovery())}
+          onClick={() => router.push(Paths.discovery())}
           className={buttonClassNames}
           style={{ width: '8em', textAlign: 'center', color: 'white', userSelect: 'none' }}
         >

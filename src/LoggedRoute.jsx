@@ -1,11 +1,12 @@
-import { Navigate, useNavigate, } from "react-router-dom";
+
+import { useIonRouter } from '@ionic/react';
 import { useEffect, useState, useContext } from "react";
 import { Preferences } from "@capacitor/preferences";
 import Paths from "./core/paths";
 import Context from "./context";
 
 const LoggedRoute = ({ currentProfile,children }) => {
-  const navigate = useNavigate();
+ const router = useIonRouter()
   const { setError } = useContext(Context) || {};
   const [token, setToken] = useState(undefined); 
   useEffect(() => {
@@ -17,7 +18,7 @@ Preferences.get({ key: "token" }).then(store=>{
     }
   })
       
-  }, [navigate]);
+  }, [router]);
 
   // 🌀 Show loading indicator while verifying token
 

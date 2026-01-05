@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   IonPage,
   IonHeader,
@@ -13,9 +13,9 @@ import {
   IonImg,
   IonSkeletonText,
   IonLabel,
+  useIonRouter,
 } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Preferences } from "@capacitor/preferences";
 import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context.jsx";
@@ -45,10 +45,9 @@ import { Capacitor } from "@capacitor/core";
     ZA: "Z-A"
   };
 export default function AddToCollectionContainer() {
-  const pathParams = useParams();
+  const router = useIonRouter()
+  const pathParams = router.routeInfo.params
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
   const { seo, setSeo } = useContext(Context);
   const [filterType, setFilterType] = useState(filterTypes.filter);
   const currentProfile = useSelector((state) => state.users.currentProfile);
@@ -152,9 +151,9 @@ const filteredSortedStories = useMemo(() => {
 
   const handleBack = () => {
     if (window.history.length > 1) {
-      navigate(-1);
+      router.push(-1);
     } else {
-      navigate(Paths.discovery());
+      router.push(Paths.discovery());
     }
   };
 
@@ -175,7 +174,7 @@ const filteredSortedStories = useMemo(() => {
         dispatch(clearPagesInView());
         setNewCollections([]);
         setNewStories([]);
-        navigate(Paths.collection.createRoute(colInView.id));
+        router.push(Paths.collection.createRoute(colInView.id));
       });
     }
 
@@ -190,7 +189,7 @@ const filteredSortedStories = useMemo(() => {
         dispatch(clearPagesInView());
         setNewCollections([]);
         setNewStories([]);
-        navigate(Paths.collection.createRoute(colInView.id));
+        router.push(Paths.collection.createRoute(colInView.id));
       });
     }
   };
@@ -218,7 +217,7 @@ const filteredSortedStories = useMemo(() => {
               
                 className="rounded-xl my-2  pb-2 "
               >
-                <div onClick={()=>{navigate(Paths.page.createRoute(story.id))}} className="flex flex-row py-2 border-b border-emerald-600 justify-between w-full">
+                <div onClick={()=>{router.push(Paths.page.createRoute(story.id))}} className="flex flex-row py-2 border-b border-emerald-600 justify-between w-full">
   
                 <IonLabel slot="start" className="text-emerald-800  truncate max-w-[70%]  font-medium
 text-[1rem]">
@@ -279,7 +278,7 @@ text-[1rem]">
               >
                 <div className="flex flex-row py-2  justify-between w-full">
   
-                <IonLabel slot="start" onClick={()=>{navigate(Paths.collection.createRoute(col.id))}}className="text-emerald-800  truncate max-w-[70%]  font-medium
+                <IonLabel slot="start" onClick={()=>{router.push(Paths.collection.createRoute(col.id))}}className="text-emerald-800  truncate max-w-[70%]  font-medium
 text-[1rem]">
     {col.title?.trim() || "Untitled"}
   </IonLabel>
@@ -314,9 +313,7 @@ text-[1rem]">
 
   if (!colInView) {
     return (
-      <IonPage>
-        <IonContent fullscreen={true}>
-
+<div>
           {pending ? (
             <>
               <IonSkeletonText
@@ -345,14 +342,13 @@ text-[1rem]">
               </IonText>
             </div>
           )}
-        </IonContent>
-      </IonPage>
+      </div>
     );
   }
 
   return (
     <ErrorBoundary>
-        <IonContent fullscreen={true} className="ion-padding">
+        {/* <IonContent fullscreen={true} className="ion-padding"> */}
               <IonHeader translucent>
           <IonToolbar>
         <IonButtons slot="start">
@@ -383,7 +379,7 @@ text-[1rem]">
               <div className="text-sm text-gray-600">New items</div>
             </div>
             <div
-              onClick={()=>navigate(Paths.collection.createRoute(colInView.id))}
+              onClick={()=>router.push(Paths.collection.createRoute(colInView.id))}
               className="bg-soft text-white px-5 py-2 rounded-full text-center text-[1.4rem]  font-bold cursor-pointer shadow-md"
             >
               View
@@ -416,7 +412,7 @@ text-[1rem]">
           <StoryCollectionTabs tab={tab} setTab={setTab}  storyList={storyList} colList={colList}/>
           </div>
        </div> 
-        </IonContent>
+       
     
     </ErrorBoundary>
   );

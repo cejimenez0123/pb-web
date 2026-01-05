@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams,useLocation, useNavigate } from "react-router-dom";
+
 import authRepo from "../../data/authRepo";
 import Paths from "../../core/paths";
-import { IonContent } from "@ionic/react";
+import { IonContent, useIonRouter } from "@ionic/react";
 
 
 
 
 function ResetPasswordContainer(props){
-   const location = useLocation()
+   const router = useIonRouter()
     const [password,setPassword]=useState("")
     const [confirmPassword,setConfirmPassword]=useState("")
-    const query = new URLSearchParams(location.search);
+    const query = new URLSearchParams(router.routeInfo.search);
     const [error,setError]=useState(null)
-    const params = useParams()
-  const navigate=useNavigate()
+
+
+
     useEffect(()=>{
        
     },[]) 
@@ -25,7 +26,7 @@ function ResetPasswordContainer(props){
         authRepo.resetPassword({password,token}).then(data=>{
 
             if(data.profile){
-                navigate(Paths.login())
+                router.push(Paths.login())
             }else if(data.error){
                 setError(data.error.message)
             }else{

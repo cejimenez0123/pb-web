@@ -1,6 +1,5 @@
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { deletePageApproval } from "../../actions/PageActions.jsx";
 import checkResult from "../../core/checkResult";
 import Context from "../../context";

@@ -138,8 +138,7 @@ try{
     };
   
     return (
-      // <ErrorBoundary>
-      <form className="  w-full flex flex-col mt-2 ">
+       <form className="  w-full flex flex-col mt-2 ">
      
         <textarea
           value={inputValue}

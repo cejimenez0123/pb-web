@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import {useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
 import "../../styles/PageView.css";
@@ -16,12 +16,13 @@ import { IonBackButton, IonContent, IonHeader } from "@ionic/react";
 import { setComments } from "../../actions/PageActions.jsx";
 import Paths from "../../core/paths.js";
 import { Capacitor } from "@capacitor/core";
-
+import { useIonRouter } from '@ionic/react';
 export default function PageViewContainer() {
   const { setSeo, seo, setError, currentProfile } = useContext(Context);
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+ 
+  const router = useIonRouter()
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
 
@@ -101,21 +102,23 @@ export default function PageViewContainer() {
     }
   };
   const soCanUserSee=()=>{
+    if(!page.isPrivate){
+      return true
+    }
+    if (page?.isPrivate) {
     
-    if ( page?.isPrivate) {
-      if (!currentProfile) {
-        return false;
-      }
       if (currentProfile.id === page.authorId) {
         return true;
       }
+   
      if(page.collections){
 
      let found = page.collections.find(col=>!col.collection.isPrivate)
     if(found) return true
-    }else if(!page.isPrivate){
-return true;
+        }else if(!page.isPrivate){
+          return true;
     }
+     
     }else{
      
       let canSee = page.betaReaders.find((br) => {
@@ -127,7 +130,7 @@ return true;
       return true;
       }
     }
-
+    return false
   }
   useEffect(() => {
     setPending(true);
@@ -136,9 +139,9 @@ return true;
   },[page])
   const handleBack = () => {
     if (window.history.length > 1) {
-      navigate(-1);
+      router.push(-1);
     } else {
-      navigate(Paths.discovery());
+      router.push(Paths.discovery());
     }
   };
   useLayoutEffect(() => {
@@ -160,8 +163,8 @@ return true;
 
   return (
     <ErrorBoundary>
-      <div className="bg-emerald-100  min-h-[100%]">
-      <IonContent fullscreen={true} color={"transparent"}scrollY={true}>
+      <div className="bg-emerald-100  ">
+      {/* <IonContent fullscreen={true} color={"transparent"}scrollY={true}> */}
 <div className="min-w-[100vw] min-h-[100vh] bg-emerald-100">
         <IonHeader className=" ">
              <div className="bg-emerald-100 pt-12">{Capacitor.isNativePlatform()||true?<IonBackButton
@@ -194,7 +197,7 @@ return true;
        </div>
       
         
-      </IonContent>
+      {/* </IonContent> */}
       </div>
       
     </ErrorBoundary>

@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import dragHandle from "../images/icons/drag_handle.svg";
-import { useNavigate } from "react-router-dom";
 import Paths from "../core/paths";
-import { IonImg, IonText } from "@ionic/react";
+import { IonImg, IonText, useIonRouter } from "@ionic/react";
 
 export default function SortableList({ items, type, onOrderChange, onDelete }) {
-  const navigate = useNavigate();
+  const router = useIonRouter()
 
   // Memoize items to prevent unnecessary resets
   const memoizedItems = useMemo(() => items ?? [], [items]);
@@ -49,9 +48,9 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
   // Navigate to story or collection
   const handleNavigate = (item) => {
     if (item.childCollection) {
-      navigate(Paths.collection.createRoute(item.childCollection.id));
+      router.push(Paths.collection.createRoute(item.childCollection.id));
     } else {
-      navigate(Paths.page.createRoute(item.story.id));
+      router.push(Paths.page.createRoute(item.story.id));
     }
   };
 

@@ -1,31 +1,30 @@
 
 
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {registerUser,postActiveUser,createWorkshopGroup} from "../../actions/WorkshopActions"
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import checkResult from '../../core/checkResult';
-import { useNavigate, useParams } from 'react-router-dom';
 import Paths from '../../core/paths';
 import { getStory } from '../../actions/StoryActions';
 import PageWorkshopItem from '../page/PageWorkshopItem';
 import loadingAnimation from "../../images/loading.gif"
 import InfoTooltip from '../../components/InfoTooltip';
-import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete"
 import Context from '../../context';
 import GoogleMapSearch from './GoogleMapSearch';
 import { LoadScript } from '@react-google-maps/api';
 import check from "../../images/icons/check.svg"
 import { Geolocation } from '@capacitor/geolocation';
 import DeviceCheck from '../../components/DeviceCheck';
-import { IonContent } from '@ionic/react';
+import { IonContent, useIonRouter } from '@ionic/react';
 import { setPagesInView } from '../../actions/PageActions';
 import { setCollections } from '../../actions/CollectionActions';
 
 const WorkshopContainer = (props) => {
-  const pathParams = useParams()
+
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const router = useIonRouter()
+    const pathParams = use
   const page = useSelector(state=>state.pages.pageInView)
   const [loading,setLoading]=useState(false)
   const {error,setError,setSuccess,setSeo}=useContext(Context)
@@ -192,7 +191,7 @@ setTimeout(()=>{
        
         if(payload && payload.collection){
           setLoading(false)
-          navigate(Paths.collection.createRoute(payload.collection.id))
+          router.push(Paths.collection.createRoute(payload.collection.id))
         }
         if(payload.error){
           setError(payload.error.message)
@@ -212,7 +211,7 @@ setTimeout(()=>{
          
         if(payload && payload.collection){
           setLoading(false)
-          navigate(Paths.collection.createRoute(payload.collection.id))
+          router.push(Paths.collection.createRoute(payload.collection.id))
         }
         if(payload.error){
           setError(payload.error.message)
@@ -247,7 +246,7 @@ const localCheck=()=>{
 }
 
   return (
-    <IonContent fullscreen={true} className='ion-padding  max-h-screen '>
+    <div>
     <LoadScript
     googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
     libraries={['places']}
@@ -286,7 +285,7 @@ const localCheck=()=>{
    
     </div>
     </LoadScript>
-    </IonContent>
+</div>
   );
 };
 export default WorkshopContainer

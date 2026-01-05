@@ -1,9 +1,7 @@
 import './App.css';
 import { useDispatch,connect,useSelector} from "react-redux"
-import { useEffect, useState ,useRef,useLayoutEffect} from 'react';
-import { BrowserRouter as Router, Routes, Route,Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState ,useRef} from 'react';
 import {  getPublicStories } from './actions/PageActions.jsx';
-import DashboardContainer from './container/DashboardEmbed.jsx';
 import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
 import DiscoveryContainer from './container/DiscoveryContainer.jsx';
@@ -19,9 +17,11 @@ import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
-      import { IonApp, setupIonicReact,IonContent, IonPage, IonText } from '@ionic/react';
+      import { IonApp, setupIonicReact, IonRouterOutlet} from '@ionic/react';
+      import { IonContent,IonPage } from '@ionic/react';
+ import LoggedRoute from './LoggedRoute';
 import PrivateRoute from './PrivateRoute';
-import LoggedRoute from './LoggedRoute';
+
 import Paths from './core/paths';
 import AboutContainer from './container/AboutContainer';
 import  Context from "./context"
@@ -35,6 +35,7 @@ import WorkshopContainer from './container/collection/WorkshopContainer.jsx';
 import ResetPasswordContainer from './container/auth/ResetPassword.jsx';
 import Alert from './components/Alert.jsx';
 import NotificationContainer from './container/profile/NotificationContainer.jsx';
+
 import HashtagContainer from './container/hashtag/HashtagContainer.jsx';
 import NotFound from './container/NotFound.jsx';
 import EmailPreferences from './container/EmailPreferences.jsx';
@@ -44,22 +45,22 @@ import UserReferralContainer from './container/auth/UseReferralContainer.jsx';
 import LinksContainer from './container/LinksContainer.jsx';
 import CalendarContainer from './container/CalendarContainer.jsx';
 import Enviroment from './core/Enviroment.js';
-import { Helmet } from 'react-helmet';
 import { useMediaQuery } from 'react-responsive';
 import { Preferences } from '@capacitor/preferences';
 import OnboardingContainer from './container/OnboardingContainer.jsx';
 import Dialog from './components/Dialog.jsx';
-import DeviceCheck from './components/DeviceCheck.jsx';
 import { Capacitor } from '@capacitor/core';
-import { fetchNotifcations } from './actions/ProfileActions.jsx';
-
+import { IonReactRouter } from '@ionic/react-router';
+import ErrorBoundary from './ErrorBoundary.jsx';
+import { Redirect, Route } from 'react-router-dom'
+setupIonicReact()
 function App(props) {
   const {currentProfile} = props
-  const navigate = useNavigate()
+
+  // const router = useIonRouter()
   const isPhone = useMediaQuery({ query: '(max-width: 800px)' });
-  const isHorizPhone =  useMediaQuery({
-    query: '(min-width: 8000px)'
-  })
+const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
+
     const isTablet =  useMediaQuery({
     query: '(max-width: 1100px)'
   })
@@ -72,153 +73,123 @@ function App(props) {
   const profileInView = useSelector(state=>state.users.profileInView)
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-  
+
   const [olderPath,setOlderPath]=useState(null)
-  const location = useLocation()
+
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
   const page = useRef(null);
   const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"Close"})
 
 
-  useEffect(()=>{
-      dispatch(getCurrentProfile()).then(res=>{
-         currentProfile&&currentProfile.id && dispatch(fetchNotifcations({profile:currentProfile}))
-      })
-  },[])
+//   useEffect(()=>{
+//       dispatch(getCurrentProfile()).then(res=>{
+//          currentProfile&&currentProfile.id && dispatch(fetchNotifcations({profile:currentProfile}))
+//       })
+//   },[])
+// useEffect(() => {
+//     dispatch(getCurrentProfile()).then(() => {
+//       if (currentProfile?.id) {
+//         dispatch(fetchNotifcations({ profile: currentProfile }));
+//       }
+//     });
+//   }, [dispatch]);
 
-  useEffect(()=>{
-      setOlderPath(location.pathname) 
-  },[location.pathname])
- 
-  useEffect(() => {
-    const checkFirstLaunch = async () => {
-    if(isNative){
-      let value = (await Preferences.get('hasSeenOnboarding')).value
+const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
+
+useEffect(() => {
+  const checkFirstLaunch = async () => {
+    if (isNative) {
+      const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
       if (value === null) {
-        Preferences.set({key:"hasSeenOnboarding",value:true})
-        
+        await Preferences.set({ key: "hasSeenOnboarding", value: 'true' });
         setIsFirstLaunch(true);
-        navigate(Paths.onboard)
-      } else {
-        navigate(Paths.login())
-        setIsFirstLaunch(false);
-      }}
-    };
-    
-   return ()=>{checkFirstLaunch()}
-  }, []);
-  const showNav = !(Capacitor.isNativePlatform()&&(location.pathname.includes("/signup")||location.pathname.includes("/login"))||(Capacitor.isNativePlatform()&&location.pathname.includes("/onboard")))
+      }
+    }
+    setFirstLaunchChecked(true);
+  };
+  checkFirstLaunch();
+}, [isNative]);
+
+
+
+  const showNav = !(Capacitor.isNativePlatform()&&(location.includes("/signup")||location.includes("/login"))||(Capacitor.isNativePlatform()&&location.includes("/onboard")))
 const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
-if(!navigator.onLine){
-  return (
-      <IonApp >
-        <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+// if(!status.connected){f
+//   return (
+//       <IonApp >
+//         <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
     
-    <IonPage>
-      <IonContent fullscreen={true}>
-        {!navbarBot?  <NavbarContainer/>:null}
-    <div className='flex flex-col text-emerald-800 justify-between text-opacity-70 lora-bold w-[100%] h-[100%] flex'>
-        <div className='mx-auto my-24 text-center'>
-      <IonText className='text-xl'>No Internet</IonText>
-      {/* <p>The page you are looking for does not exist.</p> */}
-      </div>
-        {navbarBot&&showNav? <NavbarContainer/>:null}
-    </div>
+//     <IonPage>
+//       <IonContent fullscreen={true}>
+//         {!navbarBot?  <NavbarContainer/>:null}
+//     <div className='flex flex-col text-emerald-800 justify-between text-opacity-70 lora-bold w-[100%] h-[100%] flex'>
+//         <div className='mx-auto my-24 text-center'>
+//       <IonText className='text-xl'>No Internet</IonText>
+//       {/* <p>The page you are looking for does not exist.</p> */}
+//       </div>
+//         {navbarBot&&showNav? <NavbarContainer/>:null}
+//     </div>
   
-    </IonContent>
-    </IonPage>
-    </Context.Provider>
-    </IonApp>
-  );
+//     </IonContent>
+//     </IonPage>
+//     </Context.Provider>
+//     </IonApp>
+//   );
 
-}
+// }
  return (
-    <IonApp >
 
-      <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
-     {/* <div> */}
-     {/* <head>
-  <meta charset="UTF-8" />
-  <Helmet>
-  <title>{seo.title}</title>
-  <meta name="description" content={seo.description}/>
-  <meta property="og:title" content={seo.heading}/>
-  <meta property="og:description" content={seo.description}/>
-  <meta property="og:image" content={seo.logoChem} />
-  <meta property="og:url" content={seo.url} />
-  </Helmet>
-</head>  */}
-      <IonPage  ref={page} className=' App pb-8b h-[100vh] background-blur bg-gradient-to-br from-slate-100 to-emerald-100'>
+    <ErrorBoundary>
+        <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,currentProfile:currentProfile,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
-
-    
-    
-
-  <link
-  rel="stylesheet"
-  href="https://unpkg.com/react-quill@1.3.3/dist/quill.snow.css"
-/>
-<script src="/socket.io/socket.io.js"></script>
-
-
-<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-
-<script
-  src="https://unpkg.com/react@16/umd/react.development.js"
-  crossorigin
-></script>
-<script
-  src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
-  crossorigin
-></script>
-<script src="https://unpkg.com/react-quill@1.3.3/dist/react-quill.js"></script>
-<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-        <script src="https://kit.fontawesome.com/08dbe310f1.js" crossorigin="anonymous"></script>
-         <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>  
+  <IonApp>
+  <IonReactRouter>
       
-   
-      
-       
-     <div className='bg-cream'>
-        {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
+      <IonPage ref={page}>
+        <IonContent fullscreen={true}>   
+           {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
-                {/* <div className="pt-12">  */}
+              
  
-       <SearchDialog presentingElement={page} />
+       <SearchDialog  presentingElement={page} />
        <Dialog dialog={dialog} presentingElement={page} />
 <Alert />
+    <IonRouterOutlet>   
+
        
 
-      <Routes >
+      {/* <IonRouterOutlet > */}
  
-     <Route path={'/'} element={isFirstLaunch&&Capacitor.isNativePlatform()?<Navigate to="/onboard"/>:<AboutContainer/>} />
-      <Route path={Paths.login()} element={<LogInContainer/>}/> 
-      <Route path={Paths.onboard} element={<OnboardingContainer/>}/>
+     <Route exact path="/" render={() => 
+ isFirstLaunch && isNative
+    ? <Redirect to={Paths.onboard} />
+    : <AboutContainer />
+} />
+
+      <Route path={Paths.login()} render={()=><LogInContainer/>}/> 
+      <Route path={Paths.onboard} render={()=><OnboardingContainer/>}/>
 
 
             <Route exact path={Paths.notifications()}
-            element={<PrivateRoute currentProfile={currentProfile}>
+            render={()=><PrivateRoute currentProfile={currentProfile}>
               <NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>
     
           <Route exact path="/discovery" 
-                  element={
+                render={()=>
                     <DiscoveryContainer 
-                      getPublicLibraries={props.getPublicLibraries}
-                      getPublicStories={props.getPublicStories} 
-                      
-                      pagesInView={props.pagesInView}
+                     
                       
                     />
                   }
             />
           <Route exact path={"/privacy"}
-                  element={<PrivacyNoticeContrainer/>}
+                  render={()=><PrivacyNoticeContrainer/>}
                   />
           <Route exact path="/login"  
-                  element={ 
+                  render={()=> 
         <LoggedRoute 
         currentProfile={currentProfile}
         >
@@ -228,39 +199,39 @@ if(!navigator.onLine){
        }
      />
       <Route exact path={Paths.calendar()}
-     element={<CalendarContainer/>}/>
+     render={()=><CalendarContainer/>}/>
           <Route exact path={Paths.newsletter() }
-     element={<LoggedRoute 
+     render={()=><LoggedRoute 
  currentProfile={currentProfile}
      ><NewsletterContainer/></LoggedRoute>}/>
      <Route exact path={'/reset-password' }
-     element={<ResetPasswordContainer/>}/>
+     render={()=><ResetPasswordContainer/>}/>
      <Route path={Paths.collection.route()}
-     element={<CollectionContainer currentProfile={currentProfile}/>}/>
+     render={()=><CollectionContainer currentProfile={currentProfile}/>}/>
      <Route path={'/signup'}
-                element={<LoggedRoute 
+                render={()=><LoggedRoute 
                             currentProfile={currentProfile}>
                               <SignUpContainer/>
                           </LoggedRoute>}/>
       <Route path={'/register'}
-                element={<LoggedRoute 
+                render={()=><LoggedRoute 
                     currentProfile={currentProfile}>
                         <UserReferralContainer/></LoggedRoute>}/>
        <Route path={Paths.feedback()}
-            element={<FeedbackContainer/>}/>
+            render={()=><FeedbackContainer/>}/>
      <Route path={Paths.addToCollection.route}
-               element={ <PrivateRoute
+               render={()=> <PrivateRoute
       currentProfile={currentProfile}
       ><AddToCollectionContainer/>
             </PrivateRoute>}/>
      <Route 
             path={Paths.addStoryToCollection.route}
-              element={<PrivateRoute 
+              render={()=><PrivateRoute 
                  currentProfile={currentProfile}
                     ><AddStoryToCollectionContainer/>
                       </PrivateRoute>}/>
      <Route path={Paths.editCollection.route()}
-      element={
+      render={()=>
       <PrivateRoute 
         currentProfile={currentProfile}
       >       <EditCollectionContainer/>
@@ -268,24 +239,24 @@ if(!navigator.onLine){
      
 
        <Route path={Paths.hashtag.route()}
-            element={
+            render={()=>
             <HashtagContainer/>
           }/>
         <Route path={Paths.links()}
-                 element={<LinksContainer/>}
+                 render={()=><LinksContainer/>}
           />
         <Route path={Paths.onboard}
-                  element={<LoggedRoute
+                  render={()=><LoggedRoute
                     
            currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
          <Route path={Paths.apply()+"/newsletter"}
-        element={<LoggedRoute 
+        render={()=><LoggedRoute 
           
         currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
 
       <Route
       path={Paths.myProfile}
-      element={
+      render={()=>
         <PrivateRoute       currentProfile={props.currentProfile} >
           <MyProfileContainer
           currentProfile={currentProfile}
@@ -298,22 +269,22 @@ if(!navigator.onLine){
       }
     />
       <Route path={Paths.workshop.reader()}
-    element={<PrivateRoute      
+    render={()=><PrivateRoute      
      currentProfile={props.currentProfile}><WorkshopContainer/></PrivateRoute>}/>
     <Route 
     path={Paths.workshop.route()}
-    element={<PrivateRoute
+    render={()=><PrivateRoute
       currentProfile={props.currentProfile}
     ><WorkshopContainer/></PrivateRoute>}/>
-    <Route path="/profile/:id" element={
+    <Route path="/profile/:id" render={()=>
       <ProfileContainer/>
       }/>
     <Route path="/subscribe" 
-    element={<EmailPreferences/>}/>
-    <Route path="*" element={<NotFound/>}/>
+    render={()=><EmailPreferences/>}/>
+    {/* <Route path="*" render={()=><NotFound/>}/> */}
     <Route  
         path={"/story/:type/edit"}
-        element={ 
+        render={()=> 
           <PrivateRoute currentProfile={currentProfile}>
             
           <EditorContainer 
@@ -324,12 +295,12 @@ presentingElement={page}
         }/>
 
      
-      <Route path={Paths.page.route()} element={
+      <Route path={Paths.page.route()} render={()=>
           <PageViewContainer page={props.pageInView}/>}
     /> 
        <Route
       path={Paths.editPage.route()}
-      element={
+      render={()=>
         <PrivateRoute currentProfile={currentProfile} >
             <EditorContainer 
               htmlContent={props.htmlContent} 
@@ -338,34 +309,29 @@ presentingElement={page}
         </PrivateRoute>
       }/>
 
-      <Route path="/profile/edit" element={
+      <Route path="/profile/edit" render={()=>
  
         <PrivateRoute  >
         <SettingsContainer />
         </PrivateRoute>
       }/>
-       <Route path={"/terms"} element={
+       <Route path={"/terms"} render={()=>
           <TermsContainer />}
     /> 
-    </Routes>
-    {/* </div> */}
-   
-      {navbarBot&&showNav?
+  
+   </IonRouterOutlet>
+       {navbarBot&&showNav?
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>
 
      :null}  
-
-       </div>
-
-    </IonPage>
-    
-  
-   
-    </Context.Provider>
-    {/* </div> */}
+</IonContent></IonPage> 
+      </IonReactRouter>
+      
     </IonApp>
+  </Context.Provider>
+  </ErrorBoundary>
   );
 }
 

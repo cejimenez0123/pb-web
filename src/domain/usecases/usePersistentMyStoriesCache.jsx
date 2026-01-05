@@ -1,9 +1,10 @@
 import { useState,useEffect} from "react";
 import checkResult from "../../core/checkResult";
-import { useLocation } from "react-router-dom";
 import { Preferences} from "@capacitor/preferences"
+import { useIonRouter } from "@ionic/react";
 export default function usePersistentMyStoriesCache(fetchData) {
-    const pathname = useLocation().pathname
+  const router = useIonRouter()
+    const pathname = router.routeInfo.pathname
     const key = "cachedMyStories"
     const [stories, setStories] = useState(async() => {
      

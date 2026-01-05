@@ -13,10 +13,11 @@ import {
   IonImg,
   IonSpinner,
   IonText,
+  useIonRouter,
 } from "@ionic/react";
 import CollectionToCollection from "../../domain/models/CollectionToCollection";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollectionProtected, patchCollectionContent } from "../../actions/CollectionActions";
 import Paths from "../../core/paths";
@@ -35,11 +36,13 @@ import ErrorBoundary from "../../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
 
 const EditCollectionContainer = () => {
-   const params = useParams();
-  const { id } = params;
+
+
   const {setError,setSuccess}=useContext(Context)
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const router = useIonRouter()
+     const params = router.routeInfo.params
+       const { id } = params;
   const [pending,setPending]=useState(true)
   const isNative = Capacitor.isNativePlatform()
   const [isOpen, setIsOpen] = useState(false);
@@ -133,9 +136,9 @@ if (col.childCollections) {
          const handleBack = (e) => {
     e.preventDefault();
     if (window.history.length > 1) {
-      navigate(-1);
+      router.push(-1);
     } else {
-      navigate(Paths.discovery());
+      router.push(Paths.discovery());
     }
   };
      const setInfo = (col) => {
@@ -200,14 +203,14 @@ if (col.childCollections) {
   useEffect(()=>{
      getCol(id).then()
   },[id])
-  const handleAddStory = () => navigate(Paths.addToCollection.createRoute(id));
+  const handleAddStory = () => router.push(Paths.addToCollection.createRoute(id));
   const handleDelete = () => {
     let dia = { ...dialog };
     dia.title = "Deleting?";
     dia.isOpen = true;
     dia.agree = () => {
       dispatch(deleteCollection(params));
-      navigate(Paths.myProfile);
+      router.push(Paths.myProfile);
       dispatch(setDialog({ isOpen: false }));
     };
     dia.agreeText = "Delete";
@@ -236,7 +239,7 @@ if (col.childCollections) {
   return (
 
     <ErrorBoundary>
-      <IonContent fullscreen className="bg-gray-50">
+      {/* <IonContent fullscreen className="bg-gray-50"> */}
             {isNative?<IonHeader translucent>
         <IonToolbar className="bg-white border-b border-emerald-100">
           <IonButtons slot="start">
@@ -345,7 +348,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
 
   <div
   className={`w-full sm:w-60 flex items-center btn  justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border`}
-  onClick={() => navigate(Paths.collection.createRoute(colInView.id))}
+  onClick={() => router.push(Paths.collection.createRoute(colInView.id))}
 >
 <IonText>View Collection</IonText>
 </div>
@@ -395,7 +398,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
           </div>
         )}
       {/* </IonContent> */}
- </IonContent>
+ {/* </IonContent> */}
  </ErrorBoundary>
   );
 };

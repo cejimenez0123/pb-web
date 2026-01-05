@@ -15,11 +15,11 @@ const config = { apiKey:import.meta.env.VITE_FIREBASE_API_KEY,
   measurementId: import.meta.env.VITE_MEASUREMENT_ID}
 const firebaseConfig = config
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// const auth = getAuth(app);
 // setPersistence(auth, browserLocalPersistence);
-setPersistence(auth,indexedDBLocalPersistence);
+// setPersistence(auth,indexedDBLocalPersistence);
 
 const storage = getStorage(app)
-const db =getFirestore(app)
+// const db =getFirestore(app)
 
-export {db,app,auth,storage}
+export {storage}

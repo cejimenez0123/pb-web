@@ -1,6 +1,6 @@
 
 import React,{ useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { IonCard, IonCardHeader, IonCardContent, IonText,IonImg } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardContent, IonText,IonImg, useIonRouter } from '@ionic/react';
 import "../../Dashboard.css";
 import {
   deletePageApproval,
@@ -11,7 +11,7 @@ import {
 } from '../../actions/PageActions';
 import { addStoryListToCollection, deleteStoryFromCollection } from '../../actions/CollectionActions'
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+
 import addCircle from "../../images/icons/add_circle.svg";
 import bookmarkfill from "../../images/bookmarkfill.svg";
 import checkResult from '../../core/checkResult';
@@ -33,9 +33,9 @@ function DashboardItem({ page, book, isGrid }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const dialog = useSelector(state=>state.users.dialog)
-  const pathParams = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
+    const router = useIonRouter()
+  const pathParams = router.routeInfo.params
+
   const [canUserEdit, setCanUserEdit] = useState(false);
   const pagesInView = useSelector((state) => state.pages.pagesInView);
   const colInView = useSelector((state) => state.books.collectionInView);
@@ -50,7 +50,7 @@ function DashboardItem({ page, book, isGrid }) {
     if (page) {
       const list = [page];
       if (
-        location.pathname.includes("collection") &&
+      router.routeInfo.pathname.includes("collection") &&
         pathParams.id &&
         colInView.id === pathParams.id
       )
@@ -130,7 +130,7 @@ function DashboardItem({ page, book, isGrid }) {
         0,
         false
       );
-      navigate(Paths.page.createRoute(page.id));
+      router.push(Paths.page.createRoute(page.id));
     }
   };
 
@@ -138,7 +138,7 @@ function DashboardItem({ page, book, isGrid }) {
     return (
       <span
         className={`flex-row flex justify-between  px-1 rounded-t-lg pt-2 pb-1`}>
-        <div onClick={()=>navigate(Paths.profile.createRoute(page.author.id))}><ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author} /></div>
+        <div onClick={()=>router.push(Paths.profile.createRoute(page.author.id))}><ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author} /></div>
         {!isGrid ?
           <h6
             className={
@@ -146,7 +146,7 @@ function DashboardItem({ page, book, isGrid }) {
             }
             onClick={() => {
               dispatch(setPageInView({ page }));
-              navigate(Paths.page.createRoute(page.id));
+              router.push(Paths.page.createRoute(page.id));
             }}>
             {` ` + (page.title?.length > 0 ? page.title : "")}
           </h6>
@@ -236,7 +236,7 @@ useEffect(() => {
   if (book) {
     let title = book.title.length > 30 ? book.title.slice(0, 30) + "..." : book.title;
     bookTitleDiv = (
-      <a onClick={() => { navigate(Paths.collection.createRoute(book.id)); }}>
+      <a onClick={() => { router.push(Paths.collection.createRoute(book.id)); }}>
         <p>{title} {">"}</p>
       </a>
     );
@@ -254,7 +254,7 @@ useEffect(() => {
           <h6 className={`text-emerald-700 ${isGrid ? isPhone ? "" : " text-right " : isHorizPhone ? "" : ""}${isPhone ? " text-[0.6rem] " : "text-[0.9rem]  w-[10rem] ml-1 pr-2"}   whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
             onClick={() => {
               sendGAEvent("Navigate", `Navigate to ${JSON.stringify({ id: page.id, title: page.title })}`);
-              navigate(Paths.page.createRoute(page.id));
+              router.push(Paths.page.createRoute(page.id));
             }}>
             {` ` + (page.title?.length > 0 ? page.title : "")}
           </h6>
@@ -343,7 +343,7 @@ useEffect(() => {
     <IonCard
       id="dashboard-item"
       className={
-        'mt-3 rounded-lg rounded-b-lg  w-[100vw] sm:max-w-[50em] mx-auto min-h-60 justify-between bg-emerald-100 shadow-md flex flex-col '
+        'mt-3 rounded-lg rounded-b-lg  w-[100vw] sm:max-w-[50em] mx-auto justify-between bg-emerald-100 shadow-md flex flex-col '
       }
  
     >
@@ -354,7 +354,7 @@ useEffect(() => {
 
       <IonCardContent className="pb-4 mx-auto bg-transparent">
         {description(page)}
-        <div className='max-h-[30em] sm:max-h-[40em] overflow-clip'>
+        <div className='  overflow-clip p-2 max-h-[30rem] sm:max-h-[50rem]'>
         <PageDataElement isGrid={isGrid} page={page} />
         </div>
       </IonCardContent>

@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+
+import { useIonRouter } from '@ionic/react';
 const BookBanner = ({ books, speed = 40000 }) => {
 
     return (
@@ -31,12 +32,13 @@ const BookBanner = ({ books, speed = 40000 }) => {
   };
 
   function BookBannerItem({book}){
-    const navigate = useNavigate()
+ 
+    const router = useIonRouter()
     const handleOnClick = ()=>{
         const params = {
             book: book
         }
-        navigate(`/book/${book.id}`)
+      router.push(`/book/${book.id}`)
         
     }
     return(<div onClick={handleOnClick} className="book-banner-item">

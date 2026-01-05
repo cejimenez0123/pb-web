@@ -5,6 +5,7 @@ import {
   IonText,
   IonButton,
   IonIcon,
+  useIonRouter,
 } from "@ionic/react";
 import { setEditingPage } from "../../actions/PageActions.jsx"
 import { useContext, useEffect, useState } from "react";
@@ -14,27 +15,26 @@ import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
 import { setHtmlContent } from "../../actions/PageActions.jsx";
 import { PageType } from "../../core/constants";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 import EditorContext from "../../container/page/EditorContext";
 import Context from "../../context.jsx";
 import loadingGif from "../../images/loading.gif"
-import { imageOutline } from "ionicons/icons";
 import Enviroment from "../../core/Enviroment.js";
 import { Capacitor } from "@capacitor/core";
 import { createStory, getStory } from "../../actions/StoryActions.jsx";
 import Paths from "../../core/paths.js";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import uploadFile from "../../core/uploadFile.jsx";
-import { replace } from "lodash";
+
 function PicturePageForm({handleChange}) {
   const dispatch = useDispatch();
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const { setError } = useContext(Context);
 const {parameters}=useContext(EditorContext)
-const navigate = useNavigate()
+
+const router = useIonRouter()
   const ePage = useSelector((state) => state.pages.editingPage);
     const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
-const {id,type}=useParams()
+const {id,type}=router.routeInfo.params
 
   const [pending,setPending]=useState(false)
   const [localContent, setLocalContent] = useState(htmlContent.html || "");
@@ -183,7 +183,7 @@ dispatch(createStory({...parameters,type:type})).then(res=>checkResult(res,paylo
           const {story}=payload
           
       
-          navigate(Paths.editPage.createRoute(story.id),{replace:true})
+         router.push(Paths.editPage.createRoute(story.id),{replace:true})
             fetchStory(story.id)
               setPending(false)
         },err=>{
@@ -196,7 +196,7 @@ const createNative= async ()=>{
         dispatch(createStory({...parameters,data:fileName,type:PageType.picture})).then(res=>checkResult(res,payload=>{
           const {story}=payload
             fetchStory(story.id)
-          navigate(Paths.editPage.createRoute(story.id),{replace:true})
+        router.push(Paths.editPage.createRoute(story.id),{replace:true})
           
       
         },err=>{

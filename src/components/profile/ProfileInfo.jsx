@@ -1,8 +1,7 @@
-import { useState,useEffect, useRef, useContext } from "react"
+import { useState,useEffect, } from "react"
 import "../../App.css"
 import clear from "../../images/icons/clear.svg"
 import {
-    IonButton,
     IonImg,
     IonText,
   } from '@ionic/react';
@@ -14,13 +13,10 @@ import { useDispatch } from "react-redux"
 import { setDialog } from "../../actions/UserActions"
 import Enviroment from "../../core/Enviroment"
 import { Capacitor } from "@capacitor/core";
-import settings from "../../images/icons/settings.svg"
-import { useNavigate } from "react-router-dom";
-import Paths from "../../core/paths";
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
         const dialog = useSelector(state=>state.users.dialog)
-        const navigate = useNavigate()
+        
     const isNative = Capacitor.isNativePlatform()
     const dispatch = useDispatch()
     const handleDialogOpen=()=>{
@@ -91,39 +87,43 @@ const ProfileInfo = ({profile})=>{
     if(!profile){
         return <div className="skeleton h-[100%] w-24"/>
     }
-    const ProfilePic = ({url})=>    <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mr-6 rounded-full overflow-hidden">
+    const ProfilePic = ({url})=>    <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mx-auto rounded-full overflow-hidden">
     <IonImg className={"object-fit "}
     src={url}/>
    
     </div>
     return (  
-        <div className="flex  h-[15em]  max-w-[20em] flex-col  ">                       
-    <div className='flex-row  mb-4  mx-auto justify-between w-[90%]  flex  '>
-          <div className="flex flex-row ">
+      
+        <div className="flex  h-[15em]   w-[100vw] flex-col  ">                       
+    <div className='flex-row   mx-auto justify-between  flex  '>
+          <div className="flex ml-1 flex-col  ">
     <ProfilePic url={pictureUrl}/>
-     <IonText className='text-xl mb-3   text-emerald-900 font-bold'>{profile.username}</IonText>
-</div>    
-<IonImg  onClick={()=> navigate(Paths.editProfile)} className="bg-soft rounded-full  p-1  max-h-7 mb-4 w-8 mx-2" src={settings}/> 
-     </div>
+ <IonText className='text-xl pt-4 mx-auto text-emerald-900 font-bold'>{profile.username.toLowerCase()}</IonText> 
+
+</div>   
+   </div>
+   
      <div>
-       <div className='w-[100%] w-[15em]  md:max-w-[20em] text-left '>
-        <h6 className='sm:max-h-48  mb-4 sm:w-60 text-[0.8rem] sm:text-[0.8rem]  text-emerald-900 '>
+       <div className='w-[100%] text-left '>
+        <h6 className='sm:max-h-48  my-4 sm:w-60 text-[1em] text-center   '>
             {profile.selfStatement}</h6></div> 
           
         </div>
    
-        <div className="text-emerald-800 flex flex-row justify-start px-4">
-            {profile.followers && profile.followers.length>0?<div  
+       <div className="w-[100%]  flex flex-row justify-between">
+        {/* <div className="text-emerald-800 flex flex-row  "> */}
+            <div  
             onClick={()=>openFollowersDialog()}
             className="text-center flex-col flex ">
-                <IonText className="text-[1rem]">Followers</IonText>
-                <IonText className="text-[1.2rem]">{profile.followers.length}</IonText>
-            </div>:null}
-        {/* </div> */}
+                <IonText className="text-[1rem]  ">Followers</IonText>
+                <IonText className="text-[1rem] ">{profile.followers.length}</IonText>
+            </div>
 
-{/* <div className='w-[10em] h-[3em] mx-auto flex'> */}
-<h6 onClick={()=>handleDialogOpen()}className='my-auto mx-auto text-sm mb-4  text-emerald-800'>Refer Someone?</h6></div>
-                            
+<h6 onClick={()=>handleDialogOpen()}className=' text-sm text-[1rem] '>Refer Someone?</h6>
+    
+
+</div>
+           {/* </div>                  */}
                             </div>  )
                             
       

@@ -9,9 +9,9 @@ import {
   IonList,
   IonButtons,
   IonBackButton,
+  useIonRouter,
 } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
 import CreateCollectionForm from "../../components/collection/CreateCollectionForm";
 import AddToItem from "../../components/collection/AddToItem";
 import checkResult from "../../core/checkResult";
@@ -36,10 +36,10 @@ function toTitleCase(str) {
 export default function AddStoryToCollectionContainer(props) {
   const { setError, currentProfile, seo, setSeo } = useContext(Context);
   const dialog = useSelector(state=>state.users.dialog)
-  const pathParams = useParams();
+  const pathParams = useIonRouter().routeInfo.params
   const { id, type } = pathParams;
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const router = useIonRouter()
   const [token,setToken]=useState(null)
   const collectionInView = useSelector((state) => state.books.collectionInView);
   const pageInView = useSelector((state) => state.pages.pageInView);
@@ -155,9 +155,9 @@ let dia = {...dialog}
           const handleBack = (e) => {
     e.preventDefault();
     if (window.history.length > 1) {
-      navigate(-1);
+      router.push(-1);
     } else {
-      navigate(Paths.discovery());
+      router.push(Paths.discovery());
     }
   };
 
@@ -179,7 +179,7 @@ let dia = {...dialog}
           </IonToolbar>
         </IonHeader>
       <div className="flex flex-col sm:max-w-[50em] mx-auto ">
-            <div>{collectionInView.purpose}</div>
+            <div>{collectionInView.purpose??""}</div>
             <div className="flex flex-row">
            <div
             className="btn cursor-pointer rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
@@ -193,7 +193,7 @@ let dia = {...dialog}
           </div>
           <div
             className="btn mx-4 cursor-pointer max-w-[50em] rounded-full bg-emerald-900 px-6 py-3 text-white text-center  select-none transition hover:bg-emerald-800"
-            onClick={() => item.storyIdList?navigate(Paths.collection.createRoute(id)):navigate(Paths.page.createRoute(id))}
+            onClick={() => item.storyIdList?router.push(Paths.collection.createRoute(id)):router.push(Paths.page.createRoute(id))}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpenDialog(true); }}

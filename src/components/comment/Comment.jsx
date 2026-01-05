@@ -2,7 +2,7 @@ import { useSelector } from "react-redux"
 import { useState,useLayoutEffect, useEffect, useContext } from "react"
 import CommentInput from "./CommentInput"
 import CommentThread from "./CommentThread"
-import { useNavigate } from "react-router-dom"
+
 import { useDispatch } from "react-redux"
 import { IonImg } from "@ionic/react"
 import { deleteHashtagComment, createHashtagComment } from "../../actions/HashtagActions"
@@ -32,7 +32,7 @@ export default function Comment({page,comment,level}){
        setIsHelpful(hs)
     },[hashtags])
 
-    const navigate = useNavigate()
+
     const handleIfHelpful = ()=>{
         if(currentProfile){
      dispatch(createHashtagComment({name:"helpful",profileId:currentProfile,commentId:comment.id})).then(res=>checkResult(res,payload=>{
@@ -77,15 +77,11 @@ export default function Comment({page,comment,level}){
 
            <div className="  shadow-sm bg-slate-50  rounded-xl text-emerald-800  sm:px-8  ">
           <div className="flex flex-row py-2 sm:pl-4 pr-4 sm:pr-12 justify-between"> 
-          {/* <a onClick={()=>comment.profile?navigate(Paths.profile.createRoute(comment.profile.id)):null}
-           className=" text-[0.8rem] mx-4 text-emerald-800 my-auto mr-4">{comment&&comment.profile?comment.profile.username:""}</a>
-           */}
+      
           <span className="ml-2"><ProfileCircle profile={comment.profile} color={"emerald-700"}/></span>
           {currentProfile && currentProfile.id == comment.profileId?     <div className="dropdown  dropdown-left">
 <div tabIndex={0} role="button" className="my-auto h-fit">
-          {/* <span  className=" material-symbols-outlined">
-more_vert
-</span> */}
+      
     <IonImg src={horiz}/>
     </div>
   <ul tabIndex={0} className="dropdown-content  bg-cream  menu  text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">

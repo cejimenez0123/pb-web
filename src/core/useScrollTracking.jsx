@@ -1,9 +1,9 @@
 import { useState,useEffect } from "react";
 import { initGA,sendGAEvent } from "./ga4";
-import { useLocation } from "react-router-dom";
+import { useIonRouter } from "@ionic/react";
 const useScrollTracking = ({name=""}) => {
     const [scrollDepth, setScrollDepth] = useState(0);
-    const location = useLocation()
+    const location = useIonRouter().routeInfo
     
     useEffect(() => {
       initGA()

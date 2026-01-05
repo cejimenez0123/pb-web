@@ -3,25 +3,24 @@ import { useDispatch,useSelector } from "react-redux";
 import { updateProfile,deleteUserAccounts, deletePicture, setDialog, getCurrentProfile, signOutAction} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
 import "../App.css"
-import { useNavigate } from "react-router-dom";
 import "../styles/Setting.css"
 import checkResult from "../core/checkResult";
 import Context from "../context";
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { IonContent, IonImg, IonText } from "@ionic/react";
+import { IonContent, IonImg, IonText, useIonRouter } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
 import ErrorBoundary from "../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
 import isValidUrl from "../core/isValidUrl";
-import { FirebaseStorage } from '@capacitor-firebase/storage';
 import uploadFile from "../core/uploadFile";
 import { Preferences } from "@capacitor/preferences";
 import Paths from "../core/paths";
 
 
 export default function SettingsContainer(props) {  
-    const navigate = useNavigate()
-    // const [localError,setLocalError]=useState("")
+
+    const router = useIonRouter()
+  
     const{setError,setSuccess}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const dialog = useSelector(state=>state.users.dialog)
@@ -56,7 +55,7 @@ export default function SettingsContainer(props) {
                 
               if(payload.message){
                 setSuccess(payload.message)
-                navigate("/")
+                router.push("/")
               }
            
             },err=>{
@@ -73,7 +72,7 @@ export default function SettingsContainer(props) {
       const handleSignOut =async () => {
  
     await Preferences.clear()
-    navigate(Paths.login())
+   router.push (Paths.login())
     dispatch(signOutAction())
   
    
@@ -254,7 +253,7 @@ const handleProfilePicture = async (e) => {
      if(!pending){
             return(
                 <ErrorBoundary>
-                <IonContent fullscreen={true}>
+                {/* <IonContent fullscreen={true}> */}
              
             <div  className="bg-slate-100 pt-20">
                    <div className="text-right px-4" ><button onClick={handleSignOut} className="bg-golden text-white px-4 py-2 rounded">Log Out</button></div>
@@ -354,7 +353,7 @@ const handleProfilePicture = async (e) => {
         
                         </div>
             </div>
-          </IonContent>
+          {/* </IonContent> */}
           </ErrorBoundary>
         )
     }else{

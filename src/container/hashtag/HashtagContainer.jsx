@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect, useLayoutEffect, useContext, useMemo } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { IonContent, IonInfiniteScroll,IonHeader,IonToolbar,IonButtons,IonBackButton,IonItem, IonTitle } from "@ionic/react";
+
+import { IonContent, IonInfiniteScroll,IonHeader,IonToolbar,IonButtons,IonBackButton,IonItem, IonTitle, useIonRouter } from "@ionic/react";
 import ErrorBoundary from "../../ErrorBoundary";
 import checkResult from "../../core/checkResult";
 import { useMediaQuery } from "react-responsive";
@@ -19,16 +19,16 @@ import stream from "../../images/stream.svg";
 import loadingGif from "../../images/loading.gif";
 
 export default function HashtagContainer() {
-  const location = useLocation();
+
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const router = useIonRouter()
   const { setError, seo, setSeo } = useContext(Context);
   const handleBack = () => {
     if (window.history.length > 1) {
-      navigate(-1);
+      router.push(-1);
     } else {
-      navigate(Paths.discovery());
+      router.push(Paths.discovery());
     }
   };
   const collections = useSelector((state) => state.books.collections);
@@ -211,7 +211,7 @@ export default function HashtagContainer() {
 
   return (
     <ErrorBoundary>
-        <IonContent fullscreen={true}>
+   
              <IonHeader translucent>
           <IonToolbar className="flex flex-row">
             <IonButtons>
@@ -256,7 +256,7 @@ export default function HashtagContainer() {
               <div className="max-w-screen">{renderPages()}</div>
             </div>
           {/* </div> */}
-        </IonContent>
+        {/* </IonContent> */}
       {/* </IonPage> */}
     </ErrorBoundary>
   );

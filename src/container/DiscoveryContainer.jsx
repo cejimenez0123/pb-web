@@ -15,16 +15,15 @@ import BookListItem from '../components/BookListItem.jsx';
 import calendar from '../images/icons/calendar.svg'
 import { initGA} from '../core/ga4.js';
 import Context from '../context.jsx';
-import {  useNavigate } from 'react-router-dom';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import {  IonContent,IonItem, IonText } from '@ionic/react';
+import {  IonContent,IonItem, IonText, useIonRouter } from '@ionic/react';
 
 function DiscoveryContainer() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
-  const navigate = useNavigate();
+const router = useIonRouter()
   const dispatch = useDispatch();
     const [tab, setTab] = useState("disc");
   const cols = useSelector(state => state.books.collections);
@@ -149,7 +148,7 @@ const libraryForums = () => {
   
       <ErrorBoundary>
 
-        <IonContent className='page' fullscreen={true} scrollX={false} scrollY>
+        {/* <IonContent className='page' fullscreen={true} scrollX={false} scrollY> */}
             <div className='  max-w-[100vw]'>
                  <div className='flex  sm:mt-36 pt-24 flex-row justify-end'>
 
@@ -157,7 +156,7 @@ const libraryForums = () => {
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
   }}
-onClick={()=>{navigate(Paths.calendar())}}
+onClick={()=>{router.push(Paths.calendar())}}
           className={`  p-4 absolute  top-8 sm:top-32  min-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
           `md::min-w-20 md:max-h-20 md:max-w-20 md:min-h-20 `}/>
                     </div>
@@ -165,7 +164,7 @@ onClick={()=>{navigate(Paths.calendar())}}
         </div>
  
           
-        </IonContent>
+        {/* </IonContent> */}
      
       </ErrorBoundary>
 
@@ -179,7 +178,7 @@ export default DiscoveryContainer;
 
  function DiscDashTabs({ tab, setTab, disc, dash}) {
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const navigate = useNavigate();
+    const router = useIonRouter()
   const variants = {
     enter: (direction) => ({
       x: direction > 0 ? 20 : -20, // smaller distance for tighter slide
@@ -207,7 +206,7 @@ export default DiscoveryContainer;
   //   if (swipe > 50 && tab === "dash") setTab("dash");
   // };
 
-   return <div className="=w-[100vw] overflow-hidden">
+   return <IonContent fullscreen={true}><div className="=w-[100vw] overflow-hidden">
       {/* Tabs */}
       <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
         <div className="flex rounded-full border  sm:w-[40em] lg:w-[30em] border-emerald-600 overflow-hidden">
@@ -236,7 +235,7 @@ export default DiscoveryContainer;
                 ? "bg-emerald-700 text-white"
                 : "text-emerald-700 bg-transparent"
             }`}
-            onClick={() => navigate(Paths.login())}
+            onClick={() => router.push(Paths.login())}
           >
            Log In
           </button>}
@@ -261,7 +260,7 @@ export default DiscoveryContainer;
           </motion.div>
         </AnimatePresence>
       </div>
-
+</IonContent>
   
 }
 

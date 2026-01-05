@@ -15,19 +15,12 @@ class AlgoliaRepo {
       Authorization: `Bearer ${value}`,
     };
   }
-  // async search(query) {
-  //   const headers = await this.getAuthHeaders();
-  //   const res = await axios.get(`${Enviroment.url}/api/algolia/search`, {
-  //     headers,
-  //     params: { q: query },
-  //   });
-  //   return res.data; 
-  // }
-  async search(query,profileId, filters = []) {
+
+  async search(query="",profileId, filters = []) {
   const headers = await this.getAuthHeaders();
 
-  const params = { q: query ,profileId};
-  // if(profileId)params["userId"]=profileId
+  const params = { q: query??"" ,profileId};
+
   filters.forEach((f, idx) => {
     params[idx] = f;
   });
@@ -39,37 +32,6 @@ class AlgoliaRepo {
 
   return res.data;
 }
-
-//   async search(query, scope = "all", filters = {}) {
-//   const headers = await this.getAuthHeaders();
-
-//   const params = {
-//     q: query,
-//     scope,
-//     ...filters   // add all filter toggles
-//   };
-
-//   const res = await axios.get(`${Enviroment.url}/api/algolia/search`, {
-//     headers,
-//     params,
-//   });
-
-//   return res.data;
-// }
-//   async search(query, scope = "all", filters = null) {
-//   const headers = await this.getAuthHeaders();
-
-//   const params = { q: query };
-
-  
-// URLSearchParams("scope",scope,"filters")
-//   const res = await axios.get(`${Enviroment.url}/api/algolia/search`, {
-//     headers,
-//     params,
-//   });
-
-//   return res.data;
-// }
 
   async saveObject(indexName, object) {
     const headers = await this.getAuthHeaders();

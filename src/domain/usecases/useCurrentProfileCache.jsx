@@ -1,7 +1,6 @@
 import { useState,useEffect} from "react";
 import checkResult from "../../core/checkResult";
-import { useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+
 import { Preferences } from "@capacitor/preferences";
 import DeviceCheck from "../../components/DeviceCheck";
 export default function usePersistentCurrentProfile(fetchData) {

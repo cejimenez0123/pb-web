@@ -1,9 +1,6 @@
 import "../styles/About.css"
 import { useMediaQuery } from "react-responsive"
-import { useNavigate } from "react-router-dom"
 import Paths from "../core/paths"
-import { useDispatch } from 'react-redux'
-import slack from "../images/icons/slack.svg"
 import BookCarousel from "../components/collection/BookCarousel"
 import al from "../images/workshop/al-1.jpg"
 import duo from "../images/workshop/Duo-1.jpg"
@@ -35,6 +32,7 @@ import {
   IonCol,
   IonText,
   IonTitle,
+  useIonRouter,
 } from '@ionic/react';
 import ig from "../images/icons/instagram icon.png"
 let firstImages = [out, al, crowd, duo,balcony, vemilo,  table7];
@@ -44,7 +42,7 @@ export default function AboutContainer() {
 
   const { setSeo, currentProfile } = useContext(Context);
   const md = useMediaQuery({ query: '(min-width: 750px)' });
-  const navigate = useNavigate();
+  const router = useIonRouter()
   useScrollTracking({ name: "About" });
   useLayoutEffect(() => {
     initGA();
@@ -62,7 +60,7 @@ export default function AboutContainer() {
 
   function apply() {
     sendGAEvent("Apply to be user", "Click Apply", "Apply to Join Today", 0, false);
-    navigate(Paths.onboard);
+    router.push(Paths.onboard);
   }
 
   const whyMembership = () => (
@@ -146,7 +144,7 @@ export default function AboutContainer() {
         </li>
       </ul>
       <div className="text-left">
-        <a onClick={() => navigate(Paths.discovery())} className="text-[1rem] cursor-pointer inline-block">[→ Explore More]</a>
+        <a onClick={() => router.push(Paths.discovery())} className="text-[1rem] cursor-pointer inline-block">[→ Explore More]</a>
       </div>
     </div>
   );
@@ -186,12 +184,12 @@ export default function AboutContainer() {
       </a>
       <p
         className="flex open-sans-medium my-4 mx-auto text-center cursor-pointer"
-        onClick={() => navigate(Paths.calendar())}
+        onClick={() => router.push(Paths.calendar())}
       >
         Check out the Calendar for NYC Writing Scene
       </p>
       <img
-        onClick={() => navigate(Paths.calendar())}
+        onClick={() => router.push(Paths.calendar())}
         className="h-[8em] mx-auto w-[8em] cursor-pointer"
         src={events}
         alt="Calendar icon"
@@ -201,9 +199,7 @@ export default function AboutContainer() {
           <a href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> | <a href="https://www.instagram.com/bxwriters" target="_blank" rel="noreferrer">@bxwriters</a>
         </p>
       </div>
-      {/* <a className="text-lg cursor-pointer" onClick={() => navigate(Paths.newsletter())}>
-        <p>[→ Not ready yet? Get exclusive writing tips & events in our newsletter!]</p>
-      </a> */}
+      
     </div>
   );
 
@@ -223,7 +219,7 @@ export default function AboutContainer() {
   );
 
   return (
-      <IonContent color="light" fullscreen={true} className="ion-padding">
+      // <IonContent color="light" fullscreen={true} className="ion-padding">
         <div className="pt-8 w-[94vw] mx-auto">
         {/* <IonGrid> */}
           <IonRow className="my-10">
@@ -296,7 +292,7 @@ export default function AboutContainer() {
                   display: 'inline-block',
                   userSelect: 'none'
                 }}
-                onClick={() => navigate(Paths.onboard)}
+                onClick={() => router.push(Paths.onboard)}
               >
                 Become Part of our Writers' Circle
               </IonText>
@@ -319,7 +315,7 @@ export default function AboutContainer() {
                     padding: 0,
                     cursor: 'pointer'
                   }}
-                  onClick={() => navigate(Paths.feedback())}
+                  onClick={() => router.push(Paths.feedback())}
                 >
                   click here
                 </IonText>
@@ -334,7 +330,7 @@ export default function AboutContainer() {
         {/* </IonGrid> */}
         {!currentProfile && <ScrollDown text="↓Apply Below" visible={true} />}
              </div>
-      </IonContent>
+      // </IonContent>
 
   )
 }

@@ -3,20 +3,19 @@ import '../App.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchRecommendedStories } from '../actions/StoryActions.jsx';
 import ExploreList from '../components/collection/ExploreList.jsx';
-import { fetchCollectionProtected, getPublicCollections, getRecommendedCollectionsProfile, setCollections } from '../actions/CollectionActions.js';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { appendToPagesInView, setPagesInView } from '../actions/PageActions.jsx';
+import { fetchCollectionProtected, getPublicCollections, getRecommendedCollectionsProfile } from '../actions/CollectionActions.js';
+import { appendToPagesInView, } from '../actions/PageActions.jsx';
 import Context from '../context.jsx';
 import checkResult from '../core/checkResult.js';
-import calendar from '../images/icons/calendar.svg'
 import { initGA } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import Enviroment from '../core/Enviroment.js';
-import {  IonText, IonItem} from '@ionic/react';
+import {  IonText, IonItem, useIonRouter} from '@ionic/react';
 import BookListItem from '../components/BookListItem.jsx';
-import Paths from '../core/paths.js';
+
 function DashboardEmbed() {
-  const location = useLocation();
+  const router = useIonRouter()
+  const pathName = router.routeInfo.pathname;
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const { setSeo, seo ,isNotPhone} = useContext(Context);
   const dispatch = useDispatch();
@@ -78,7 +77,7 @@ const libraryForums = () => {
     let soo = { ...seo };
     soo.title = 'Plumbum (Dashboard) - Your Writing, Your Community';
     soo.description = 'Explore events, workshops, and writer meetups on Plumbum.';
-    soo.url = Enviroment.domain + location.pathname;
+    soo.url = Enviroment.domain + pathName
     setSeo(soo);
   }, []);
 

@@ -2,7 +2,6 @@ import { useContext, useLayoutEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {  setHtmlContent, setPageInView,setEditingPage } from "../../actions/PageActions.jsx";
 import {  RoleType } from "../../core/constants";
-import {useNavigate} from 'react-router-dom'
 import addBox from "../../images/icons/add_circle.svg"
 import edit from "../../images/icons/edit.svg"
 import Paths from "../../core/paths";
@@ -10,7 +9,7 @@ import { initGA,sendGAEvent } from "../../core/ga4.js";
 import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
 import Context from "../../context.jsx";
-import { IonImg, IonText } from "@ionic/react";
+import { IonImg, IonText, useIonRouter } from "@ionic/react";
 function IndexItem({item,handleFeedback,type}) {
   let collectionStr ="collection"
     const [canUserAdd,setCanUserAdd]=useState(false)
@@ -19,7 +18,7 @@ function IndexItem({item,handleFeedback,type}) {
     },[])
     const {currentProfile} = useContext(Context)
      const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const router = useIonRouter()
     const [canUserEdit,setCanUserEdit]=useState(false)
     useLayoutEffect(()=>{
       soCanUserEdit()
@@ -47,12 +46,12 @@ function IndexItem({item,handleFeedback,type}) {
     const handleEditClick = (comp)=>{
  
       if(comp && comp.type){
-        navigate(Paths.editCollection.createRoute(comp.id))
+        router.push(Paths.editCollection.createRoute(comp.id))
       }else{
          dispatch(setHtmlContent({html:comp.data}))
         dispatch(setEditingPage({page:comp}))
         dispatch(setPageInView({page:comp}))
-        navigate(Paths.editPage.createRoute(comp.id))
+        router.push(Paths.editPage.createRoute(comp.id))
       }  
     }
 
@@ -60,11 +59,11 @@ function IndexItem({item,handleFeedback,type}) {
       // console.log(item)
     if(type!="story"){
               dispatch(setCollectionInView({collection:item}))
-              navigate(Paths.collection.createRoute(item.id))
+              router.push(Paths.collection.createRoute(item.id))
         }else{
            
               dispatch(setPageInView({page:item}))
-              navigate(Paths.page.createRoute(item.id))
+              router.push(Paths.page.createRoute(item.id))
         }
 
     }
@@ -110,16 +109,16 @@ function IndexItem({item,handleFeedback,type}) {
 
     const handleAddToClick = ()=>{
        if(type!="story"){
-        navigate(Paths.addToCollection.createRoute(item.id))
+      router.push(Paths.addToCollection.createRoute(item.id))
       }else{
-       navigate(Paths.addStoryToCollection.story(item.id))
+      router.push(Paths.addStoryToCollection.story(item.id))
       }
     }
 
    let updated= formatDate(item.updated)
    
 const handleAddToLibrary=()=>{
-  navigate(Paths.addStoryToCollection.collection(item.id))
+  router.push(Paths.addStoryToCollection.collection(item.id))
 }
 
     return(

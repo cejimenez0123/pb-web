@@ -1,17 +1,17 @@
 import { useEffect, useState, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+
 import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
 import sortItems from "../../core/sortItems";
-import { IonItem, IonList, IonInfiniteScroll, IonInfiniteScrollContent } from "@ionic/react";
+import { IonItem, IonList, IonInfiniteScroll, IonInfiniteScrollContent, useIonRouter } from "@ionic/react";
 
 const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   const [page, setPage] = useState(1);
   const [displayedItems, setDisplayedItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const itemsPerPage = 5;
-
-  const { pathname } = useLocation();
+const router = useIonRouter()
+  const pathname =router.routeInfo.pathname
 
   // Memoized sorted items
   const sortedItems =location.pathname.includes("home")?items: useMemo(() => {

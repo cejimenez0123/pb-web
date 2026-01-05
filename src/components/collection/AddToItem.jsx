@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Paths from "../../core/paths";
 import loadingGif from "../../images/loading.gif";
 import addBox from "../../images/icons/add_circle.svg";
@@ -6,7 +6,7 @@ import clear from "../../images/icons/close.svg";
 import { useContext, useLayoutEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Context from "../../context";
-import { IonImg } from "@ionic/react";
+import { IonImg, useIonRouter } from "@ionic/react";
 import {
   deleteStoryFromCollection,
   deleteCollectionFromCollection,
@@ -23,7 +23,7 @@ export default function AddToItem({ col }) {
   const collectionInView = useSelector(state => state.books.collectionInView);
   const pageInView = useSelector(state => state.pages.pageInView);
   const [item, setItem] = useState(type === "collection" ? collectionInView : pageInView);
-  const navigate = useNavigate();
+  const router = useIonRouter()
   const dispatch = useDispatch();
   const [pending, setPending] = useState(false);
 
@@ -128,11 +128,11 @@ export default function AddToItem({ col }) {
   return (
     <div className="border-emerald-600 border-2 mx-auto w-[96%] flex flex-row justify-between rounded-full px-6 py-4 my-3 items-center">
       <h6
-        onClick={() => navigate(Paths.collection.createRoute(col.id))}
+        onClick={() => router.push(Paths.collection.createRoute(col.id))}
         className="text-md lg:text-xl my-auto overflow-hidden text-ellipsis max-w-[12rem] md:max-w-[25rem] whitespace-nowrap cursor-pointer"
         role="link"
         tabIndex={0}
-        onKeyDown={e => { if (e.key === 'Enter') navigate(Paths.collection.createRoute(col.id)); }}
+        onKeyDown={e => { if (e.key === 'Enter') router.push(Paths.collection.createRoute(col.id)); }}
       >
         {col.title.length>0?col.title:"Untitled"}
       </h6>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, } from 'react';
 import {
   IonModal,
   IonText,
@@ -11,67 +11,95 @@ import {
   IonItem,
   IonLabel,
   IonBackButton,
+  useIonRouter,
+  IonTitle,
+  IonSearchbar,
+  IonButton,
 
 } from '@ionic/react';
+import { useMemo } from 'react';
 import { searchMultipleIndexes } from '../actions/UserActions';
 import { searchDialogToggle } from '../actions/UserActions';
 import { useSelector, useDispatch } from 'react-redux';
 import checkResult from '../core/checkResult';
-import { useNavigate } from 'react-router-dom';
-import Context from '../context';
+import { useCallback } from 'react';
+
 
 const SearchDialog = ({ presentingElement }) => {
-  const modal = useRef(null);
-  const { setError } = useContext(Context);
 
-  const searchDialogOpen = useSelector(state => state.users.searchDialogOpen);
+
+  const searchDialogOpen = useSelector(state => state.users.searchDialogOpen??false);
 
   const currentProfile = useSelector(state => state.users.currentProfile); // needed for "mine"
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+const router = useIonRouter()
 
   const [searchText, setSearchText] = useState('');
   const personalStories = useSelector(state=>state.pages.pagesInView??[])
   const personalCols = useSelector(state=>state.books.colelctions??[])
   const [searchContent, setSearchContent] = useState([...personalCols,...personalStories]);
-  const includeTypes={cols:"collections",stories:"stories",profiles:"profiles",hashtags:"hashtags"}
-  // const [includeType, setIncludeType] = useState(includeTypes.all); 
-  const sourceFilters = {personal:"personal"}
-  // const [sourceFilter, setSourceFilter] = useState(sourceFilters.all);
-  const filters =currentProfile?[sourceFilters.personal,includeTypes.profiles,includeTypes.hashtags,includeTypes.cols,includeTypes.stories]
- : [ includeTypes.profiles,includeTypes.hashtags,includeTypes.cols,includeTypes.stories]
+  
+ 
   const [selectedFilters,setSelectedFilters]=useState([])
+
+  const filters = useMemo(() => {
+    const includeTypes = { cols: "collections", stories: "stories", profiles: "profiles", hashtags: "hashtags" };
+    const base = [includeTypes.profiles, includeTypes.hashtags, includeTypes.cols, includeTypes.stories];
+    return currentProfile ? ["personal", ...base] : base;
+  }, [currentProfile]);
+const searchAction = useCallback(() => {
+    // PREVENT 400 ERROR: Don't search if text is empty
+    if (!searchText.trim()) {
+      setSearchContent([...personalCols, ...personalStories]);
+      return;
+    }
+
+    const payload = {
+      query: searchText,
+      filters: selectedFilters,
+      profileId: currentProfile ? currentProfile.id : null
+    };
+
+    dispatch(searchMultipleIndexes(payload)).then(result => {
+      checkResult(
+        result,
+        returned => {
+          const { results } = returned;
+          setSearchContent(results);
+        },
+        err => console.error("Search Error:", err.message)
+      );
+    });
+  }, [searchText, selectedFilters, currentProfile, dispatch, personalCols, personalStories]);
   useEffect(() => {
  
 searchAction()
 
   }, [searchText, selectedFilters, dispatch]);
 
-  const searchAction=()=>{
-      const payload = {
-      query: searchText,
-      filters: selectedFilters,
-      profileId:currentProfile?currentProfile.id:null
-    
-
-    };
+  // const searchAction=()=>{
+  //     const payload = {
+  //     query: searchText,
+  //     filters: selectedFilters,
+  //     profileId:currentProfile?currentProfile.id:null
+  //   };
 
 
-    dispatch(searchMultipleIndexes(payload)).then(result => {
-      checkResult(
-        result,
-        returned => {
+  //   dispatch(searchMultipleIndexes(payload)).then(result => {
+  //     checkResult(
+  //       result,
+  //       returned => {
         
-          const { results } = returned;
-          setSearchContent(results);
-        },
-        err =>{
-          console.log(err.message)
-        }
-      );
-    });
-  }
+  //         const { results } = returned;
+  //         setSearchContent(results);
+  //       },
+  //       err =>{
+  //         console.log(err.message)
+  //       }
+  //     );
+  //   });
+  // }
     const toggleFilters = (genre) => {
       // let newSelectedGenres;
       if (selectedFilters.includes(genre)) {
@@ -83,13 +111,16 @@ searchAction()
     };
   const handleOnClick = (searchItem) => {
     dispatch(searchDialogToggle({ open: false }));
-    navigate(`/${searchItem.type}/${searchItem.objectID}`);
+router.push(`/${searchItem.type}/${searchItem.objectID}`);
   };
 
   return (
     <IonModal
+    mode='ios'
+    ref={presentingElement}
       isOpen={searchDialogOpen}
       title="Search"
+      handle={true}
       onDidDismiss={() => dispatch(searchDialogToggle({ open: false }))}
       cssClass="modal-fullscreen ion-padding"
       presentingElement={presentingElement}
@@ -99,20 +130,26 @@ searchAction()
 
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton onClick={() => dispatch(searchDialogToggle({ open:false }))}/>
+          {/* <IonButtons slot="end">
+            <IonButton onClick={() => dispatch(searchDialogToggle({ open:false }))}>Close</IonButton>
           </IonButtons>
-        </IonToolbar>
-</IonHeader>
-        {/* INPUT */}
-        {/* <IonToolbar> */}
+       </IonToolbar>
+       <IonToolbar> */}
+          <IonTitle>Search</IonTitle>
+ </IonToolbar>
+    
+ </IonHeader>
+         <IonSearchbar
+         
+         onIonInput={(e) =>setSearchText(e.target.value ?? '')}/>
+
         
-          <input
+          {/* <input
             className="bg-transparent w-[100%] my-3 px-2 h-[2rem] border-emerald-400 rounded-full border-1"
             value={searchText}
             onChange={e => setSearchText(e.target.value ?? '')}
             debounce={300}
-            placeholder="Search..."/>
+            placeholder="Search..."/> */}
                         <IonGrid>
                           <IonRow className="ion-justify-content-start ion-align-items-center ion-padding-vertical" style={{ gap: '0.5rem' }}>
                         
