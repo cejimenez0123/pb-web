@@ -75,30 +75,59 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
 
     },[book])
   
- 
+ const BookmarkBtn = ({ book }) => {
+  let title = book.title.length > 23 ? book.title.slice(0, 20) + "..." : book.title;
+
+  return (
+    <div
+      className={`flex justify-between items-center rounded-b-lg bg-emerald-50 px-3  px-2 w-full`}
+    >
+      {/* Profile Circle on left, hide if small phone in grid */}
+      {!(isPhone && isGrid) && (
+        <ProfileCircle isGrid={isGrid} color="emerald-700" profile={book.profile} />
+      )}
+
+      {/* Title + Bookmark */}
+      <div className="flex-1 flex justify-end items-center  px-2 gap-2 overflow-hidden">
+        <h6
+          className="text-emerald-700 open-sans-medium text-[0.7rem] truncate cursor-pointer"
+          onClick={() => router.push(Paths.collection.createRoute(book.id))}
+        >
+          {title}
+        </h6>
+        <IonImg
+          onClick={handleBookmark}
+          src={bookmarked ? bookmarkfill : bookmarkoutline}
+          className="w-4 h-4 cursor-pointer"
+        />
+      </div>
+    </div>
+  );
+};
+
   
-    const BookmarkBtn =({book})=>{
-        let title =  book.title.length > 23 ? book.title.slice(0, 20) + '...' : book.title
-        return(
+//     const BookmarkBtn =({book})=>{
+//         let title =  book.title.length > 23 ? book.title.slice(0, 20) + '...' : book.title
+//         return(
        
-       <div id="bookmark-btn-item"   className={`flex flex-row justify-between rounded-b-lg text-emerald-700 pt-2 px-2 mx-auto pb-1  w-[100%] `}>{isPhone&&isGrid?null:
-       <ProfileCircle isGrid={isGrid} color={"emerald-700"}
-       profile={book.profile}/>}
+//        <div    className={`flex flex-row justify-between rounded-b-lg text-emerald-700 pt-2  mx-auto pb-1   `}>{isPhone&&isGrid?null:
+//        <ProfileCircle isGrid={isGrid} color={"emerald-700"}
+//        profile={book.profile}/>}
   
-  <span className={`${isGrid?isPhone?"w-grid-mobile justify-between":" px-2 ":isPhone?"":""} flex flex-row text-right open-sans-medium text-emerald-700`}>       <h6 
-            className='my-auto text-ellipsis   
-            whitespace-nowrap no-underline text-[0.7rem]'
-            onClick={()=>{
-               router.push(Paths.collection.createRoute(book.id))
-            }}
+//   <span className={` flex flex-row text-right open-sans-medium text-emerald-700`}>       <h6 
+//             className='my-auto text-ellipsis   
+//             whitespace-nowrap no-underline text-[0.7rem]'
+//             onClick={()=>{
+//                router.push(Paths.collection.createRoute(book.id))
+//             }}
             
->{` `+title}</h6>
-<IonImg  onClick={handleBookmark} src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
-</div>
+// >{` `+title}</h6>
+// <IonImg  onClick={handleBookmark} src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
+// </div>
   
 
-)
-    }
+// )
+//     }
    
     const handleBookmark =debounce((e)=>{
         if(currentProfile){
@@ -131,21 +160,22 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
 
 
 if(!book){
-    return<span className={`skeleton mt-2 shadow-md overflow-clip  rounded-box flex flex-col bg-emerald-100`}/>
+    return<span className={`skeleton mt-2 shadow-md overflow-clip sm:max-w-[50em]  rounded-box flex flex-col bg-emerald-100`}/>
 }
     
         return(
-         <ErrorBoundary >
-        <div  className={`mt-2  shadow-md overflow-clip  rounded-box max-w-[50em] mx-auto flex flex-col bg-emerald-100  `}>
-               
+            <div className='bg-emerald-50 max-w-[50em] rounded-lg '>
+    
+
 
         {isGrid?isPhone?null:description(book):null}
        
             <Carousel book={book} isGrid={isGrid}/>
 
-                <BookmarkBtn book={book}/> </div>   
+                <BookmarkBtn book={book}/> 
+                {/* </div>    */}
+</div>
 
- </ErrorBoundary>
      )
 
 }

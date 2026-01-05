@@ -146,7 +146,7 @@ const libraryForums = () => {
    
            
              
-          <div className="text-left mt-20 sm:mt-4 ">
+          <div className="text-left  ">
             
             {libraryForums()}
           </div>

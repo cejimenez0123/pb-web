@@ -11,6 +11,9 @@ export default {
 
 
   theme: {
+    // maxWidth:{
+    //     'page':"50em"
+    // },
     width: {
       '128': '48rem',
       'page':"50em",
@@ -34,7 +37,7 @@ export default {
     height:{
       "info":"18rem",
       "item":"20rem",
-      "page":"47rem",
+      "page":"50rem",
       'page-content':"30rem",
       "page-mobile":"27em",
       'grid-mobile':"15rem",

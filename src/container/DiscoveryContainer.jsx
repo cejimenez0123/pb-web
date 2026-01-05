@@ -118,29 +118,6 @@ const libraryForums = () => {
   );
 };
 
-  const bookList = () => {
-    // if (!books) return null;
-    return (
-      <div className='h-[14rem]'>
-        <h3 className="text-emerald-900 text-left font-extrabold ml-16 lora-bold mb-4 text-2xl">
-          Collections
-        </h3>
-<div className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
-         
-          {books.map((book, i) => {
-            const id = `${book.id}_${i}`;
-            return (
-              <IonItem key={id} className="mx-3 h-[10rem]">
-                <BookListItem book={book} />
-              </IonItem>
-            );
-          })}
-    </div>
-    </div>
-      </div>
-    );
-  };
 
 
 
@@ -148,23 +125,20 @@ const libraryForums = () => {
   
       <ErrorBoundary>
 
-        {/* <IonContent className='page' fullscreen={true} scrollX={false} scrollY> */}
+      
             <div className='  max-w-[100vw]'>
-                 <div className='flex  sm:mt-36 pt-24 flex-row justify-end'>
+           
 
           <img src={calendar}    style={{
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
   }}
 onClick={()=>{router.push(Paths.calendar())}}
-          className={`  p-4 absolute  top-8 sm:top-32  min-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
-          `md::min-w-20 md:max-h-20 md:max-w-20 md:min-h-20 `}/>
+
+          />
                     </div>
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><DiscoveryEmbed/>} dash={()=><DashboardEmbed />} />
-        </div>
- 
-          
-        {/* </IonContent> */}
+
      
       </ErrorBoundary>
 
@@ -200,11 +174,6 @@ export default DiscoveryContainer;
     }),
   };
 
-  // const handleSwipe = (event, info) => {
-  //   const swipe = info.offset.x;
-  //   if (swipe < -50 && tab === "disc") setTab("disc");
-  //   if (swipe > 50 && tab === "dash") setTab("dash");
-  // };
 
    return <IonContent fullscreen={true}><div className="=w-[100vw] overflow-hidden">
       {/* Tabs */}

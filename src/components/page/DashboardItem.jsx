@@ -44,7 +44,7 @@ function DashboardItem({ page, book, isGrid }) {
   const [archiveCol,setArchiveCol]=useState(null)
 
 
-  const widthSize = adjustScreenSize(isGrid, true, "", " pt-1 pb-2 ", "", "", "", "");
+  // const widthSize = adjustScreenSize(isGrid, true, "", " pt-1 pb-2 ", "", "", "", "");
  
   const addStoryToCollection = () => {
     if (page) {
@@ -244,7 +244,7 @@ useEffect(() => {
 
   const bookmarkBtn = () => {
     return isGrid ? (
-      <div className={`bg-emerald-100 ${widthSize} flex flex-row justify-between text-emerald-700`}>
+      <div className={`bg-emerald-100  flex flex-row justify-between text-emerald-700`}>
         {isPhone ? null : <ProfileCircle isGrid={isGrid} profile={page.author} color='emerald-700' />}
         <span className={
           `${isGrid ? isPhone ? " w-grid-mobile-content flex flex-row justify-between"
@@ -341,9 +341,9 @@ useEffect(() => {
     
     <ErrorBoundary >
     <IonCard
-      id="dashboard-item"
+      // id="dashboard-item"
       className={
-        'mt-3 rounded-lg rounded-b-lg  w-[100vw] sm:max-w-[50em] mx-auto justify-between bg-emerald-100 shadow-md flex flex-col '
+        'mt-3 rounded-lg rounded-b-lg  mx-auto justify-between bg-emerald-50 flex flex-col '
       }
  
     >
@@ -352,7 +352,7 @@ useEffect(() => {
         {bookTitleDiv}
       </IonCardHeader>
 
-      <IonCardContent className="pb-4 mx-auto bg-transparent">
+      <IonCardContent className=" mx-auto bg-transparent">
         {description(page)}
         <div className='  overflow-clip p-2 max-h-[30rem] sm:max-h-[50rem]'>
         <PageDataElement isGrid={isGrid} page={page} />

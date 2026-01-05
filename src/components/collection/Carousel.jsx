@@ -70,7 +70,7 @@ export default function Carousel({ book, isGrid }) {
         if (!stc?.story) return null;
 
         return (
-          <swiper-slide className=" w-[100vw] sm:max-w-[100%] sm:max-h-[40em]" key={stc.id}>
+          <swiper-slide className="w-[100%]  sm:max-h-[40em]" key={stc.id}>
             <div
               onTouchStartCapture={() => {
                 sendGAEvent(

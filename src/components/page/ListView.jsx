@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
 import sortItems from "../../core/sortItems";
-import { IonItem, IonList, IonInfiniteScroll, IonInfiniteScrollContent, useIonRouter } from "@ionic/react";
+import { IonItem, IonList, IonInfiniteScroll, IonInfiniteScrollContent, useIonRouter, IonRow, IonGrid, IonCol } from "@ionic/react";
 
 const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   const [page, setPage] = useState(1);
@@ -54,29 +54,39 @@ const router = useIonRouter()
   // Memoized size class
 
   return (
-    <div className="">
+    <div className="sm:max-w-[50em] mx-auto">
 
       <IonList
-      style={{width:"100vw",maxWidth:"50em",margin:"auto"}}
+    
+     
       >
-       {/* <div className="flex flex-col max-w-[100vw] "> */}
+       <IonGrid>
+    <IonRow>
         {displayedItems.filter(item=>item).map((item, i) => {
           if (!item) return null;
 
           return (
-            <IonItem key={item.id || i}>
+            <IonCol>
+           {/* <IonItem */}
+           <div
+  key={item.id || i}
+  className="max-w-[50em] mx-auto w-full" // constrain width and center
+>
+
               {item?.purpose ? (
                 <BookDashboardItem isGrid={isGrid} book={item} />
               ) : (
                 <DashboardItem isGrid={isGrid} page={item} forFeedback={forFeedback} />
               )}
-            </IonItem>
+              </div>
+            {/* </IonItem> */}
+    </IonCol>
           );
         })}
-        {/* </div> */}
+      </IonRow>
+</IonGrid >  
       </IonList>
-
-      {hasMore && (
+   {hasMore && (
 
         <IonInfiniteScroll onIonInfinite={loadMore} className="flex flex-col items-center ion-padding" threshold="400px">
           <IonInfiniteScrollContent loadingSpinner="bubbles" loadingText="Loading more..." />
