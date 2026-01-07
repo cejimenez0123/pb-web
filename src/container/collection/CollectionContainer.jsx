@@ -56,7 +56,9 @@ export default function CollectionContainer() {
   const currentProfile = useSelector(state => state.users.currentProfile);
   const dispatch = useDispatch();
   const router = useIonRouter()
-  const { id } = router.routeInfo.params
+
+   const id = router.routeInfo?.pathname.split("/")[2]
+   console.log(id)
   const isNative = Capacitor.isNativePlatform()
   const collection = useSelector(state => state.books.collectionInView);
   const collections = useSelector(state => state.books.collections);
@@ -151,9 +153,9 @@ return
 
   }, [currentProfile]);
   useEffect(()=>{
-  getCol()
+  getCol(id)
   
-  },[navigate])
+  },[id])
   useEffect(()=>{
     collection && currentProfile && findRole(collection,currentProfile)
     soUserCanEdit()
@@ -202,12 +204,12 @@ return
 useEffect(()=>{
 canUserSee&& getContent()
 
-},[collection,navigate])
-const getCol = async () => {
+},[collection])
+const getCol = async (id) => {
   setLoading(true);
   try {
     const token = (await Preferences.get({ key: "token" })).value;
-
+console.log("DID",router.routeInfo)
     if (token && token !== "undefined") {
       dispatch(fetchCollectionProtected({ id }))
         .then((res) => {
@@ -234,10 +236,12 @@ const getCol = async () => {
           );
         })
         .catch((e) => {
+             
           setError("An unexpected error occurred.");
           setLoading(false);
         });
     } else {
+
       dispatch(fetchCollection({ id }))
         .then((res) => {
           checkResult(
@@ -412,14 +416,14 @@ const getCol = async () => {
   <div>
               <IonHeader> 
       <IonToolbar>
-        <IonButtons>
+        {/* <IonButtons>
                       {isNative?<IonBackButton
                        
       defaultHref={Paths.discovery()}
       onClick={handleBack}
-    />:null }
-
-        </IonButtons>
+    />:null } */}
+<IonButton>Back</IonButton>
+        {/* </IonButtons> */}
       
               <IonTitle>Loading collection...</IonTitle>
             </IonToolbar>
@@ -452,15 +456,16 @@ const getCol = async () => {
 
             <IonHeader> 
       <IonToolbar>
-        <IonButtons>
+        {/* <IonButtons>
    
               {isNative?<IonBackButton
                        
       defaultHref={Paths.discovery()}
       onClick={handleBack}
-    />:null }
+    />:null } */}
+    <IonButton>Back</IonButton>
 
-        </IonButtons>
+        {/* </IonButtons> */}
         </IonToolbar>      
 
 
@@ -468,6 +473,7 @@ const getCol = async () => {
 
 
       </IonHeader>
+      
        <IonText color="danger" className="ion-padding">
   <h3>403 — Access Denied</h3>
   <p>You don’t have permission to view this collection.</p>
@@ -483,8 +489,8 @@ const getCol = async () => {
   return (
          <ErrorBoundary>
 
-   <div className='pt-12'></div>
-  <IonHeader>
+
+  <IonHeader >
   <IonToolbar>
 
     {/* Left-aligned back button */}
@@ -500,10 +506,9 @@ const getCol = async () => {
 
   </IonToolbar>
 </IonHeader>
-
- <div className="sm:border sm:border-2 sm:rounded-xl mx-auto mb-8 sm:border-emerald-300 px-4  px-3 00 sm:max-w-[80%]">
-        <IonCard className="ion-margin-bottom   ion-padding">
-          <IonCardHeader className="mx-auto bg-red-100">
+  <IonContent>
+ <IonCard className="">
+          <IonCardHeader className="mx-auto ">
             <div className="flex items-center justify-between px-4 gap-2">
               <div>{collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
               <IonCardTitle className="ion-text-wrap">{collection.title}</IonCardTitle></div>
@@ -556,7 +561,7 @@ const getCol = async () => {
           </IonCardContent>
           </div>
         </IonCard>
-</div>
+
         {collections && collections.length > 0 && (
           <IonCard className="ion-padding pt-12">
             <IonCardHeader>
@@ -574,24 +579,17 @@ const getCol = async () => {
           </IonCard>
         )}
 <div className="sm:w-[50rem] mx-auto">
-        <IonCard className="ion-margin">
-          <IonCardHeader>
-            <IonCardTitle><h3 className="text-xl px-4 pb-2">Pages</h3></IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
+
             <PageList
               items={pagesInView}
               isGrid={false}
               hasMore={hasMore}
               getMore={getMore}
               forFeedback={collection?.type === "feedback"}
-            />
-          </IonCardContent>
-        </IonCard>
+        />
 </div>
         <ExploreList />
-  
-
+</IonContent>
         </ErrorBoundary>
   );
 }

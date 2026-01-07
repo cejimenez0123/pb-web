@@ -88,35 +88,6 @@ const router = useIonRouter()
   };
 
 
-const libraryForums = () => {
-  if (!libraries) return null;
-
-  return (
-    <div className="">
-      <IonText
-        className={`text-emerald-900 ${
-          isNotPhone ? 'ml-16 pl-6' : 'ml-16'
-        } mb-4 lora-bold font-extrabold text-2xl`}
-      >
-        Communities
-      </IonText>
-
-      {/* Horizontal scroll area */}
-      <div className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
-          {libraries.map((library) => (
-            <IonItem
-              key={library.id}
-              className=" flex-shrink-0 border-none bg-transparent"
-            >
-              <BookListItem book={library} />
-            </IonItem>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 
 

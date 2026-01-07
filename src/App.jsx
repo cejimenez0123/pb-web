@@ -56,7 +56,12 @@ import { Redirect, Route } from 'react-router-dom'
 setupIonicReact()
 function App(props) {
   const {currentProfile} = props
-
+  
+  useEffect(()=>{
+    if(!currentProfile){
+      Preferences.clear().then()
+    }
+  },[currentProfile])
   // const router = useIonRouter()
   const isPhone = useMediaQuery({ query: '(max-width: 800px)' });
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
@@ -115,6 +120,7 @@ useEffect(() => {
 
   const showNav = !(Capacitor.isNativePlatform()&&(location.includes("/signup")||location.includes("/login"))||(Capacitor.isNativePlatform()&&location.includes("/onboard")))
 const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
+
 // if(!status.connected){f
 //   return (
 //       <IonApp >
@@ -138,6 +144,7 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
 //   );
 
 // }
+console.log(currentProfile)
  return (
 
     <ErrorBoundary>
@@ -164,10 +171,8 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
       {/* <IonRouterOutlet > */}
  
      <Route exact path="/" render={() => 
- isFirstLaunch && isNative
-    ? <Redirect to={Paths.onboard} />
-    : <AboutContainer />
-} />
+     isFirstLaunch?<Redirect to={Paths.onboard} />:<Redirect to={Paths.login()}/>}
+/>
 
       <Route path={Paths.login()} render={()=><LogInContainer/>}/> 
       <Route path={Paths.onboard} render={()=><OnboardingContainer/>}/>

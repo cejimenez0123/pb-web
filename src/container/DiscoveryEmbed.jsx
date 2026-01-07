@@ -15,19 +15,25 @@ import Context from '../context.jsx';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import {   IonItem, IonText, useIonRouter } from '@ionic/react';
+import {   IonItem, IonList, IonText, useIonRouter } from '@ionic/react';
 
 function DiscoveryEmbed() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
   const router = useIonRouter()
   const dispatch = useDispatch();
-
-  const cols = useSelector(state => state.books.collections);
-  const books = useSelector(state => state.books.books);
-  const libraries = useSelector(state => state.books.libraries);
-  const pagesInView = useSelector(state => state.pages.pagesInView);
-
+const {
+  collections: cols,
+  books,
+  libraries,
+  pagesInView,
+} = useSelector(state => ({
+  collections: state.books.collections,
+  books: state.books.books,
+  libraries: state.books.libraries,
+  pagesInView: state.pages.pagesInView,
+}));
+console.log("Book",books)
   const [hasMoreLibraries, setHasMoreLibraries] = useState(false);
   const [viewItems, setViewItems] = useState([]);
 
@@ -85,7 +91,7 @@ function DiscoveryEmbed() {
   };
 
 
-const libraryForums = () => {
+const LibraryForums = () => {
   if (!libraries) return null;
 
   return (
@@ -105,6 +111,7 @@ const libraryForums = () => {
             <IonItem
               key={library.id}
               className=" flex-shrink-0 border-none bg-transparent"
+              slot='start'
             >
               <BookListItem book={library} />
             </IonItem>
@@ -115,26 +122,35 @@ const libraryForums = () => {
   );
 };
 
-  const bookList = () => {
-    // if (!books) return null;
+  const BookList = () => {
+
+    if (!books) return null;
     return (
       <div className='h-[14rem]'>
         <h3 className="text-emerald-900 text-left font-extrabold ml-16 lora-bold mb-4 text-2xl">
           Collections
         </h3>
 <div className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
-         
+
+         <IonList>
+        
+          <div className="flex flex-row  overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
           {books.map((book, i) => {
             const id = `${book.id}_${i}`;
             return (
-              <IonItem key={id} className="mx-3 h-[10rem]">
+              <IonItem 
+              key={id}
+              id={id}
+                className=" flex-shrink-0 border-none bg-transparent"
+              slot='start' >
                 <BookListItem book={book} />
               </IonItem>
             );
           })}
+          </div>
+          </IonList>
     </div>
-    </div>
+
       </div>
     );
   };
@@ -148,10 +164,10 @@ const libraryForums = () => {
              
           <div className="text-left  ">
             
-            {libraryForums()}
+            <LibraryForums books={books}/>
           </div>
 
-          <div className="mb-12">{bookList()}</div>
+          <div className="mb-12"><BookList books={books}/></div>
 
           <div className="flex max-w-[100vw] md:w-[50em] mx-auto flex-col">
             <div className="flex flex-row items-center justify-between">
