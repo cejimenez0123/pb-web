@@ -146,7 +146,7 @@ export default DiscoveryContainer;
   };
 
 
-   return <IonContent fullscreen={true}><div className="=w-[100vw] overflow-hidden">
+   return <IonContent fullscreen={true} className='ion-padding'><div className="=w-[100vw]  sm:pt-12 overflow-hidden">
       {/* Tabs */}
       <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
         <div className="flex rounded-full border  sm:w-[40em] lg:w-[30em] border-emerald-600 overflow-hidden">

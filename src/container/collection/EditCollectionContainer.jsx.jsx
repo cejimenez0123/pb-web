@@ -34,6 +34,7 @@ import Context from "../../context";
 import RoleForm from "../../components/role/RoleForm";
 import ErrorBoundary from "../../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
+import { useParams } from "react-router";
 
 const EditCollectionContainer = () => {
 
@@ -41,7 +42,7 @@ const EditCollectionContainer = () => {
   const {setError,setSuccess}=useContext(Context)
   const dispatch = useDispatch();
   const router = useIonRouter()
-     const params = router.routeInfo.params
+     const params = useParams()
        const { id } = params;
   const [pending,setPending]=useState(true)
   const isNative = Capacitor.isNativePlatform()

@@ -1,28 +1,36 @@
-
 import { useIonRouter } from '@ionic/react';
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Preferences } from "@capacitor/preferences";
 import Paths from "./core/paths";
-import Context from "./context";
+import { useSelector } from 'react-redux';
 
-const LoggedRoute = ({ currentProfile,children }) => {
- const router = useIonRouter()
-  const { setError } = useContext(Context) || {};
-  const [token, setToken] = useState(undefined); 
-  useEffect(() => {
-
-Preferences.get({ key: "token" }).then(store=>{
-    if(store.value){
-      setToken(store.value)
-  // navigate(Paths.myProfile())
-    }
-  })
+const LoggedRoute = ({ children }) => {
+  // const router = useIonRouter();
+  const {currentProfile}=useSelector(state=>state.users)
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useIonRouter()
+useEffect(() => {
+    const verifyAuth = async () => {
+      const { value } = await Preferences.get({ key: "token" });
       
-  }, [router]);
+      // If we have a profile in Redux OR a token in storage
+      if (currentProfile?.id || value) {
+        // Use 'replace' to prevent "Insecure Operation" and back-button loops
+        router.push(Paths.myProfile, "forward", "replace");
+      } else {
+        setChecking(false);
+      }
+    };
 
-  // 🌀 Show loading indicator while verifying token
+    verifyAuth();
+  }, [currentProfile, router]);
+
+
+  if (isLoading) {
+    return null; // Or a loading spinner
+  }
 
   return children;
 };
 
-export default LoggedRoute
+export default LoggedRoute;

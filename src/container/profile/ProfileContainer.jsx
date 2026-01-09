@@ -27,6 +27,7 @@ import PageList from '../../components/page/PageList.jsx';
 import sortItems from '../../core/sortItems.js';
 import { Preferences } from '@capacitor/preferences';
 import StoryCollectionTabs from '../../components/page/StoryCollectionTabs.jsx';
+import { useParams } from 'react-router';
 
 function ProfileContainer() {
   const { seo, setSeo, setError, setSuccess, currentProfile } = useContext(Context);
@@ -41,8 +42,8 @@ const profile = useSelector((state) => state.users.profileInView);
 
   const [following, setFollowing] = useState(null);
 const [canUserSee, setCanUserSee] = useState(false);
-  const { id } = router.routeInfo.params
-
+  const { id } = useParams()
+console.log(id)
   useLayoutEffect(() => {
     initGA();
     if (profile) {

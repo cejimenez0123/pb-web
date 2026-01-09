@@ -20,6 +20,7 @@ import EditorContext from "./EditorContext"
 import FeedbackDialog from "../../components/page/FeedbackDialog"
 import { IonBackButton, IonButtons, IonContent, IonHeader, useIonRouter } from "@ionic/react"
 import { setDialog } from "../../actions/UserActions.jsx"
+import { useParams } from "react-router"
 
 
 function EditorContainer({presentingElement}){
@@ -34,7 +35,7 @@ function EditorContainer({presentingElement}){
         const dispatch = useDispatch()
         const md = useMediaQuery({ query: '(min-width:800px)'})
         const router = useIonRouter()
-        const {id,type}= router.routeInfo.params
+        const {id,type}= useParams()
         const notText= type!=PageType.link&&type!=PageType.picture
         const [openHashtag,setOpenHashtag]=useState(false)
         const {isSaved,setIsSaved}=useContext(Context)

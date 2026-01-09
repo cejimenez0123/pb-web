@@ -13,6 +13,7 @@ class ProfileRepo {
     }
     async getAuthHeaders() {
     const { value } = await Preferences.get({ key: "token" });
+
     if (!value) throw new Error("No token found");
   
     return {

@@ -10,20 +10,21 @@ import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
 import Context from "../../context.jsx";
 import { IonImg, IonText, useIonRouter } from "@ionic/react";
+import { useSelector } from "react-redux";
 function IndexItem({item,handleFeedback,type}) {
   let collectionStr ="collection"
     const [canUserAdd,setCanUserAdd]=useState(false)
     useLayoutEffect(()=>{
       initGA()
     },[])
-    const {currentProfile} = useContext(Context)
+    const {currentProfile} =useSelector(state=>state.users)
      const dispatch = useDispatch()
     const router = useIonRouter()
     const [canUserEdit,setCanUserEdit]=useState(false)
     useLayoutEffect(()=>{
       soCanUserEdit()
       soCanUserAdd()
-    },[item,currentProfile])
+    },[currentProfile])
     const copyShareLink=()=>{
       if(item && item.storyIdList){
         sendGAEvent("Copy Share Link",`Share Link Collection:${item.title}`)
@@ -88,24 +89,24 @@ function IndexItem({item,handleFeedback,type}) {
     }
     setCanUserAdd(false)
    }
-   const soCanUserEdit=()=>{
-      let found = item && item.roles?item.roles.find(role=>currentProfile && role.profileId==currentProfile.id):null
-      if(currentProfile && item){
-        if(currentProfile.id==item.authorId){
-          setCanUserEdit(true)
-          return
-        }
-        if(currentProfile.id==item.profileId){
-          setCanUserEdit(true)
-          return
-        }
-        if(found && found.role == RoleType.editor){
-          setCanUserEdit(true)
-          return
-        }
-      }
-      setCanUserEdit(false)
-   }
+const soCanUserEdit = () => {
+  // 1. Guard clause: if we don't have the data, they can't edit.
+  if (!currentProfile || !item) {
+    setCanUserEdit(false);
+    return;
+  }
+
+  
+  const isOwner = currentProfile.id === item.authorId || currentProfile.id === item.profileId;
+
+
+  const hasEditorRole = item.roles?.some(
+    (role) => role.profileId === currentProfile.id && role.role === RoleType.editor
+  );
+
+  setCanUserEdit(isOwner || hasEditorRole);
+
+};
 
     const handleAddToClick = ()=>{
        if(type!="story"){

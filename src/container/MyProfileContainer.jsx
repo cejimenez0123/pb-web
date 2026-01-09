@@ -18,7 +18,7 @@ import Context from '../context';
 import FeedbackDialog from '../components/page/FeedbackDialog';
 import { IonText, IonInput, IonContent, IonSpinner, IonPage,  useIonViewWillEnter, IonImg, useIonRouter } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
-import { getCurrentProfile, setDialog } from '../actions/UserActions.jsx';
+import { setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
 import axios from "axios";
 import StoryCollectionTabs from '../components/page/StoryCollectionTabs.jsx';
@@ -133,7 +133,22 @@ function MyProfileContainer({ presentingElement }) {
     return result;
   }, [collections, filterType, search]);
 
-
+// Add this effect to MyProfileContainer
+useEffect(() => {
+  const syncProfile = async () => {
+    if (!currentProfile) {
+      const { value } = await Preferences.get({ key: "token" });
+      if (value) {
+        // This will fill the 'currentProfile' in Redux
+        dispatch(getCurrentProfile());
+      } else {
+        // No token and no profile? Send them home/login
+        router.push("/");
+      }
+    }
+  };
+  syncProfile();
+}, [currentProfile, dispatch, router]);
 
   const getDriveToken = async () => {
     try {
@@ -235,16 +250,20 @@ function MyProfileContainer({ presentingElement }) {
     };
     return seSeo()
   }, [])
-  useLayoutEffect(()=>{
-     dispatch(getCurrentProfile())
-  },[])
+  
   useEffect(()=>{
-     
-currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: currentProfile.stories }))
-      currentProfile && currentProfile.collections &&  dispatch(setCollections({collections:currentProfile.collections}))
- 
+  
+  
+    if(currentProfile){
+      console.log("FDDF",currentProfile.stories)
+        currentProfile.stories&& dispatch(setPagesInView({ pages: currentProfile.stories }))
+      currentProfile.collections  &&  dispatch(setCollections({collections:currentProfile.collections}))
+    }else{
+      dispatch(setPagesInView({ pages: []}))
+      dispatch(setCollections({collections:[]}))
+    }
       }
-       ,[currentProfile])
+       ,[currentProfile,router])
   if (!currentProfile) {
     return (
         <div>
@@ -253,18 +272,19 @@ currentProfile && currentProfile.stories && dispatch(setPagesInView({ pages: cur
         
     );
   }
-return<ErrorBoundary>
+return<IonContent fullscreen={true} className='pt-12'><ErrorBoundary>
 
-                    <div className='flex  sm:mt-36 pt-[4em] flex-row justify-between'>
+                    <div className='flex  md:pt-12 mt-12   px-12 flex-row justify-between'>
                          <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
      
                            <div>
       <img src={calendar}    style={{
+        
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
   }}
 onClick={()=>{router.push(Paths.calendar())}}
-          className={`   in-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
+          className={` in-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
           `md::min-w-20 md:max-h-20 md:max-w-20 md:min-h-20 `}/>
           
                     </div>
@@ -376,7 +396,7 @@ onClick={()=>{router.push(Paths.calendar())}}
     />
   </div>
 </div>
-</ErrorBoundary>
+</ErrorBoundary></IonContent>
 }
 
 export default MyProfileContainer;

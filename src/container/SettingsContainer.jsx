@@ -127,12 +127,10 @@ window.alert("Updating Profile")
    const updateCurrentProfile=(parameters)=>{
             dispatch(updateProfile({...parameters})).then((result) =>checkResult(result,
                     (payload)=>{
-                        //  window.alert("Updated profile")
                         const {profile}=payload
                         isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
                          setProfile(profile)
                         setSuccess("Updated")
-                        // window.alert("Updated profile successfully")
                     
                     },err=>{
                            window.alert(err.message)

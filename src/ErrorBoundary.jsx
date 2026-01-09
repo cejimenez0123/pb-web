@@ -30,7 +30,7 @@ export default class ErrorBoundary extends React.Component {
             color: "#b00020",
             padding: "1rem",
             borderRadius: "12px",
-            margin: "1rem",
+            margin: "6em",
             fontFamily: "monospace",
             whiteSpace: "pre-wrap",
             overflowY: "auto",

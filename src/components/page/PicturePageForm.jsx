@@ -24,6 +24,7 @@ import { createStory, getStory } from "../../actions/StoryActions.jsx";
 import Paths from "../../core/paths.js";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import uploadFile from "../../core/uploadFile.jsx";
+import { useParams } from "react-router";
 
 function PicturePageForm({handleChange}) {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const {parameters}=useContext(EditorContext)
 const router = useIonRouter()
   const ePage = useSelector((state) => state.pages.editingPage);
     const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
-const {id,type}=router.routeInfo.params
+const {id,type}=useParams()
 
   const [pending,setPending]=useState(false)
   const [localContent, setLocalContent] = useState(htmlContent.html || "");

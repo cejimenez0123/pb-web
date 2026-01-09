@@ -27,6 +27,7 @@ import { sendGAEvent } from '../../core/ga4';
 import adjustScreenSize from '../../core/adjustScreenSize';
 import ShareList from './ShareList';
 import { setDialog } from '../../actions/UserActions';
+import { useParams } from 'react-router';
 function DashboardItem({ page, book, isGrid }) {
   const { isPhone, isHorizPhone, setSuccess, setError} = useContext(Context);
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -34,7 +35,7 @@ function DashboardItem({ page, book, isGrid }) {
   const [loading, setLoading] = useState(false);
   const dialog = useSelector(state=>state.users.dialog)
     const router = useIonRouter()
-  const pathParams = router.routeInfo.params
+  const pathParams = useParams()
 
   const [canUserEdit, setCanUserEdit] = useState(false);
   const pagesInView = useSelector((state) => state.pages.pagesInView);

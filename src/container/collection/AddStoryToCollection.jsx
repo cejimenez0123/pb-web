@@ -25,6 +25,7 @@ import {
 import Paths from "../../core/paths";
 import { Preferences } from "@capacitor/preferences";
 import { setDialog } from "../../actions/UserActions";
+import { useParams } from "react-router";
 
 
 function toTitleCase(str) {
@@ -36,7 +37,7 @@ function toTitleCase(str) {
 export default function AddStoryToCollectionContainer(props) {
   const { setError, currentProfile, seo, setSeo } = useContext(Context);
   const dialog = useSelector(state=>state.users.dialog)
-  const pathParams = useIonRouter().routeInfo.params
+  const pathParams = useParams()
   const { id, type } = pathParams;
   const dispatch = useDispatch();
   const router = useIonRouter()

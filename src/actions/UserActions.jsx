@@ -212,7 +212,7 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
       }
     }catch(e){
       return {
-        error: new Error("ERROR:FETCH PROFILEE:"+e.message)
+        error: new Error("ERROR:FETCH PROFILE:"+e.message)
       }
   
     }

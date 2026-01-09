@@ -10,13 +10,13 @@ import isValidUrl from "../../core/isValidUrl"
 import ReferralForm from "../auth/ReferralForm"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { setDialog } from "../../actions/UserActions"
+import { getCurrentProfile, setDialog } from "../../actions/UserActions"
 import Enviroment from "../../core/Enviroment"
 import { Capacitor } from "@capacitor/core";
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
         const dialog = useSelector(state=>state.users.dialog)
-        
+   
     const isNative = Capacitor.isNativePlatform()
     const dispatch = useDispatch()
     const handleDialogOpen=()=>{
@@ -84,6 +84,7 @@ const ProfileInfo = ({profile})=>{
     dia.isOpen=false
     dispatch(setDialog(dia))
  }
+ console.log("Follwoers",profile.followers)
     if(!profile){
         return <div className="skeleton h-[100%] w-24"/>
     }
@@ -94,9 +95,9 @@ const ProfileInfo = ({profile})=>{
     </div>
     return (  
       
-        <div className="flex  h-[15em]   w-[100vw] flex-col  ">                       
-    <div className='flex-row   mx-auto justify-between  flex  '>
-          <div className="flex ml-1 flex-col  ">
+        <div className="flex  h-[15em]   w-[100vw] sm:w-[100%] flex-col   ">                       
+    <div className='flex-row   mx-auto sm:mx-0 justify-between  sm:justify-start flex   '>
+          <div className="flex ml-1 flex-col ">
     <ProfilePic url={pictureUrl}/>
  <IonText className='text-xl pt-4 mx-auto text-emerald-900 font-bold'>{profile.username.toLowerCase()}</IonText> 
 
@@ -105,7 +106,7 @@ const ProfileInfo = ({profile})=>{
    
      <div>
        <div className='w-[100%] text-left '>
-        <h6 className='sm:max-h-48  my-4 sm:w-60 text-[1em] text-center   '>
+        <h6 className='sm:max-h-48 md:max-w-60  my-4 sm:w-60  text-[1em] text-center sm:text-left '>
             {profile.selfStatement}</h6></div> 
           
         </div>
@@ -116,7 +117,7 @@ const ProfileInfo = ({profile})=>{
             onClick={()=>openFollowersDialog()}
             className="text-center flex-col flex ">
                 <IonText className="text-[1rem]  ">Followers</IonText>
-                <IonText className="text-[1rem] ">{profile.followers.length}</IonText>
+                <IonText className="text-[1rem] ">{profile.followers?.length}</IonText>
             </div>
 
 <h6 onClick={()=>handleDialogOpen()}className=' text-sm text-[1rem] '>Refer Someone?</h6>

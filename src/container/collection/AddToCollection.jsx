@@ -36,6 +36,7 @@ import checked from "../../images/icons/check.svg";
 import emptyBox from "../../images/icons/empty_circle.svg";
 import StoryCollectionTabs from "../../components/page/StoryCollectionTabs.jsx";
 import { Capacitor } from "@capacitor/core";
+import { useParams } from "react-router";
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -46,7 +47,7 @@ import { Capacitor } from "@capacitor/core";
   };
 export default function AddToCollectionContainer() {
   const router = useIonRouter()
-  const pathParams = router.routeInfo.params
+  const pathParams = useParams()
   const dispatch = useDispatch();
   const { seo, setSeo } = useContext(Context);
   const [filterType, setFilterType] = useState(filterTypes.filter);

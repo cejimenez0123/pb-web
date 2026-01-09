@@ -57,7 +57,6 @@ const nativeGoogleSignIn = async () => {
   fetchFiles()
     } catch (err) {
       console.log(err)
-      // window.alert("!",err.message)
       console.error("Native sign-in error", err);
    
     } 
@@ -140,7 +139,7 @@ const fetchFiles = async () => {
   };
 
   return (
-    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()} className={`btn ${accessToken?"bg-soft":"border-3 border-full bg-white text-emerald-800"} hover:bg-emerald-500 rounded-xl border-emerald-600 mont-medium flex text-center w-[100%]  h-[3rem]`}>
+    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()} className={`btn ${accessToken?"bg-soft":"border-3 border-full bg-white text-emerald-800"} hover:bg-emerald-500 rounded-xl border-emerald-600 mont-medium flex text-center w-[88%]  h-[3rem]`}>
          
     
         {!accessToken ? (
