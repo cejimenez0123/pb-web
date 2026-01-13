@@ -219,7 +219,7 @@ export default function AboutContainer() {
   );
 
   return (
-      // <IonContent color="light" fullscreen={true} className="ion-padding">
+    
         <div className="pt-8 w-[94vw] mx-auto">
         {/* <IonGrid> */}
           <IonRow className="my-10">
@@ -330,7 +330,7 @@ export default function AboutContainer() {
         {/* </IonGrid> */}
         {!currentProfile && <ScrollDown text="↓Apply Below" visible={true} />}
              </div>
-      // </IonContent>
+
 
   )
 }

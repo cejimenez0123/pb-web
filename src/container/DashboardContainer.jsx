@@ -135,7 +135,7 @@ const libraryForums = () => {
 
   return (
         <ErrorBoundary>
-      {/* <IonContent fullscreen={true} scrollY scrollX={false}> */}
+
   
           <div id="dashboard">
             <div className="py-8">
@@ -177,7 +177,7 @@ const libraryForums = () => {
             <ExploreList items={collections} />
           </div>
    
-      {/* </IonContent> */}
+   
       </ErrorBoundary>
   );
 }

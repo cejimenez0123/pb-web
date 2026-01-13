@@ -10,7 +10,7 @@ import checkResult from '../core/checkResult.js';
 import { initGA } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import Enviroment from '../core/Enviroment.js';
-import {  IonText, IonItem, useIonRouter} from '@ionic/react';
+import {  IonText, IonItem, useIonRouter, IonList, IonContent} from '@ionic/react';
 import BookListItem from '../components/BookListItem.jsx';
 
 function DashboardEmbed() {
@@ -58,7 +58,8 @@ const libraryForums = () => {
 
       {/* Horizontal scroll area */}
       <div className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
+        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] w-[100vw] space-x-4 px-4 no-scrollbar">
+          <IonList className="flex flex-row overflow-x-scroll">
           {feedbackCols.map((library) => (
             <IonItem
               key={library.id}
@@ -67,6 +68,7 @@ const libraryForums = () => {
               <BookListItem book={library} />
             </IonItem>
           ))}
+          </IonList>
         </div>
       </div>
     </div>
@@ -134,12 +136,11 @@ const libraryForums = () => {
   }, []);
 
   return (
+    <IonContent className="bg-cream min-h-screen">
    
-          <div id="dashboard">
-            <div className="sm:py-8 mt-20 sm:mt-4">
               {libraryForums()}
-              <div className="max-w-[98vw] md:mt-8 mx-auto flex flex-col md:w-page">
-                <div role="tablist" className="tabs grid">
+              <div className="">
+                <div role="tablist" className="tabs max-w-[100vw]">
                   {/* Recommendations Tab */}
                   <input
                     type="radio"
@@ -149,7 +150,7 @@ const libraryForums = () => {
                     className="tab hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 text-md md:text-xl"
                     aria-label="Recommendations"
                   />
-                  <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto md:w-page">
+                  <div role="tabpanel" className="tab-content">
                     <ListView items={[...recommendedStories,...recommendedCols]} hasMore={hasMore} getMore={getContent} />
                   </div>
 
@@ -163,19 +164,19 @@ const libraryForums = () => {
                   />
                   <div
                     role="tabpanel"
-                    className="tab-content pt-1 lg:py-4 rounded-lg md:w-page md:mx-auto border-l-4 rounded-full"
+                    className="tab-content"
                   >
                     <ListView items={stories} hasMore={hasMore} getMore={getContent} />
                   </div>
                 </div>
-              </div>
-            </div>
+         
 
             {/* Explore List */}
             <ExploreList items={collections} />
           </div>
    
-     
+  
+     </IonContent>
   );
 }
 

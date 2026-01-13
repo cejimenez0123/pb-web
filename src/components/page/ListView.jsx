@@ -54,23 +54,23 @@ const router = useIonRouter()
   // Memoized size class
 
   return (
-    <div className="sm:max-w-[50em] mx-auto">
-
-      <IonList
+  <>
+<div>
     
-     
-      >
-       <IonGrid>
-    <IonRow>
+      <IonList >
+<div className={"flex flex-col space-y-4"}>
         {displayedItems.filter(item=>item).map((item, i) => {
           if (!item) return null;
 
           return (
-            <IonCol>
-           {/* <IonItem */}
+            <IonItem
+            
+            key={item.id || i} className="">
+      
            <div
+           className="max-w-[94vw] mx-auto "
   key={item.id || i}
-  className="max-w-[50em] mx-auto w-full" // constrain width and center
+  
 >
 
               {item?.purpose ? (
@@ -79,13 +79,11 @@ const router = useIonRouter()
                 <DashboardItem isGrid={isGrid} page={item} forFeedback={forFeedback} />
               )}
               </div>
-            {/* </IonItem> */}
-    </IonCol>
+            </IonItem>
+
           );
-        })}
-      </IonRow>
-</IonGrid >  
-      </IonList>
+        })}</div></IonList>
+
    {hasMore && (
 
         <IonInfiniteScroll onIonInfinite={loadMore} className="flex flex-col items-center ion-padding" threshold="400px">
@@ -93,8 +91,9 @@ const router = useIonRouter()
         </IonInfiniteScroll>
       )}
     </div>
- 
+ </>
   );
+  
 };
 
 export default ListView;
