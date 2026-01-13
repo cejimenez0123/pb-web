@@ -6,7 +6,7 @@ import logo from "../images/icon.ico"
 import events from "../images/icons/event.svg"
 import { initGA} from "../core/ga4";
 import Context from "../context";
-import flare from "../images/icons/flare.svg"
+// import flare from "../images/icons/flare.svg"
 import pen from "../images/icons/pen.svg"
 import { IonContent } from "@ionic/react";
 import etsy from "../images/logo/ETSY.png"
@@ -38,10 +38,15 @@ export default function LinksContainer(props){
                 <li>  
                       <LinkNode image={pen}
        url={"https://partiful.com/e/0iHG22hdjgEitmjDATaX"}
-                    title={"Sat. Jan 24th. Writers Workshop"}
+                    title={"Sat. 1 pm to 4 pm Jan 24th. Writers Workshop"}
                     description={`Join us for Writers Workshop. Get Feedback! Read the freshest writing!`}/>
                     </li>
-     
+       <li>  
+                      <LinkNode image={cafe}
+       url={"https://partiful.com/e/SSuT4eOZNoGJt6IG2LbZ?c=AINrIcIC"}
+                    title={"Sat. 4 pm to 8 pm Jan 24th. CaFeTaTo"}
+                    description={`The Uptown Coffee Rave. Open Deck. Grab a coffee and dance!`}/>
+                    </li>
              
                     <li>
                    
