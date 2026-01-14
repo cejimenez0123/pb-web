@@ -14,6 +14,7 @@ import isValidUrl from "../../core/isValidUrl"
 import Context from "../../context"
 import { PageType } from "../../core/constants"
 import { useIonRouter } from "@ionic/react"
+import LinkPreview from "../LinkPreview"
 
 export default function PageViewItem({page}) {
     const ref = useRef()

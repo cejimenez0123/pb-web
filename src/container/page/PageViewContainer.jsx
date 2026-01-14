@@ -18,10 +18,10 @@ import Paths from "../../core/paths.js";
 import { Capacitor } from "@capacitor/core";
 import { useIonRouter } from '@ionic/react';
 export default function PageViewContainer() {
-  const { setSeo, seo, setError, currentProfile } = useContext(Context);
+  const { setSeo, seo, setError, } = useContext(Context);
   const { id } = useParams();
   const dispatch = useDispatch();
- 
+ const { currentProfile } = useSelector((state) => state.users);
   const router = useIonRouter()
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
@@ -107,7 +107,7 @@ export default function PageViewContainer() {
     }
     if (page?.isPrivate) {
     
-      if (currentProfile.id === page.authorId) {
+      if (currentProfile && currentProfile.id === page.authorId) {
         return true;
       }
    
@@ -115,23 +115,19 @@ export default function PageViewContainer() {
 
      let found = page.collections.find(col=>!col.collection.isPrivate)
     if(found) return true
-        }else if(!page.isPrivate){
-          return true;
-    }
-     
-    }else{
-     
+        }
       let canSee = page.betaReaders.find((br) => {
         if (currentProfile && br.profileId === currentProfile.id) {
           return true;
         }
       });
+
       if(canSee){
       return true;
       }
-    }
+    }else{
     return false
-  }
+    }}
   useEffect(() => {
     setPending(true);
     page && setCanUserSee(soCanUserSee())

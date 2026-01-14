@@ -1,7 +1,7 @@
 import { useState, useEffect, useLayoutEffect,  useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { SocialLogin } from "@capgo/capacitor-social-login";
-import { IonItem, IonText, IonList } from '@ionic/react';
+import { IonItem, IonText, IonList, IonContent } from '@ionic/react';
 import Context from "../context";
 
 import { Preferences } from '@capacitor/preferences';
@@ -118,14 +118,15 @@ const fetchFiles = async () => {
   
     dia.isOpen = true;
     dia.onClose = () => dispatch(setDialog({isOpen:false}))
-    dia.title = "google Drive";
+    dia.title = null
 
     dia.text = (
+      <IonContent fullscreen={true} className=''>
       <IonList className={isPhone ? "grid grid-cols-2 gap-2" : ""}>
         {files.map(file => (
           <IonItem
             key={file.id}
-            className="rounded-box px-2 py-3 shadow-md hover:border hover:border-purple-200"
+            className="rounded-box px-2 py-3  hover:border hover:border-purple-200"
             onClick={() => {  
             onFilePicked(file)}}
           >
@@ -133,19 +134,20 @@ const fetchFiles = async () => {
           </IonItem>
         ))}
       </IonList>
+      </IonContent>
     );
 
     dispatch(setDialog(dia));
   };
 
   return (
-    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()} className={`btn ${accessToken?"bg-soft":"border-3 border-full bg-white text-emerald-800"} hover:bg-emerald-500 rounded-xl border-emerald-600 mont-medium flex text-center w-[88%]  h-[3rem]`}>
+    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()}  className={`btn ${accessToken?"bg-soft":"border-2 border-full bg-cream text-emerald-800"} hover:bg-emerald-500 rounded-xl border-emerald-600 mont-medium flex text-center w-[88%] md:w-[100%] h-[3rem]`}>
          
     
         {!accessToken ? (
   
           <IonText
-          className={`mx-auto ${!accessToken?"text-emerald-800 ":"text-white"}  my-auto text-[1.2em]`}
+          className={`mx-auto ${!accessToken?"text-emerald-800 ":"text-white bg-soft"} my-auto text-[1.2em]`}
             >
           
             Log in to Google Drive

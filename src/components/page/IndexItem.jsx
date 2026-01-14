@@ -11,7 +11,7 @@ import Enviroment from "../../core/Enviroment.js";
 import Context from "../../context.jsx";
 import { IonImg, IonText, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
-function IndexItem({item,handleFeedback,type}) {
+export default function IndexItem({item,handleFeedback,type}) {
   let collectionStr ="collection"
     const [canUserAdd,setCanUserAdd]=useState(false)
     useLayoutEffect(()=>{
@@ -123,20 +123,20 @@ const handleAddToLibrary=()=>{
 }
 
     return(
-  <div className="w-[90vw] sm:w-[40rem]">
+  <div className="w-[100%]  overflow-visible ">
                 <div   className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full  min-h-[6rem] w-full  py-[1.4em] border-blueSea border-opacity-[40%]">
                 
          <div onClick={handleNavigate} className=" h-fit my-auto md:w-[30em]  max-w-[100vw] text-nowrap text-ellipsis  ">
               
               
                    {item.title && item.title.length>0? 
-                     <span className={`   text-emerald-700 my-auto`}>
+                     <span className={`    my-auto`}>
                    <h6  
-         className={`text-[0.9rem] md:text-[1.3rem ] md:w-[20em]  max-w-[50vw] overflow-hidden text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
+         className={`text-[0.9rem] md:text-[1.3rem ] md:w-[20em]  max-w-[50vw] text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
        {item.title}</h6>         {updated}</span>:
- <span className={`  whitespace-nowrap max-w-[45vw]  text-emerald-700 no-underline text-ellipsis my-auto`}>
+ <span className={`  whitespace-nowrap max-w-[45vw]  no-underline text-ellipsis my-auto`}>
                    <h6   className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
-                   whitespace-nowrap text-emerald-700 no-underline  my-auto`}
+                   whitespace-nowrap no-underline  my-auto`}
                    >Untitled</h6>         {updated}</span>}
                    
 
@@ -145,35 +145,36 @@ const handleAddToLibrary=()=>{
            
               { canUserEdit?(
        
-       <div className="dropdown  my-auto w-fit dropdown-left">
-  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 btn hover:bg-emerald-400 "> <IonImg className="  my-auto mx-auto  " style={{width:"2em", height:"2em"}} src={edit}/></div>
+       <div className="dropdown  absolute my-auto relative w-fit z-40 dropdown-left">
+  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full w-[4rem]  border-2 hover:bg-emerald-600 border border-soft h-[4rem]  "> <IonImg className="  my-auto mx-auto  " style={{width:"3rem", height:"3rem"}} src={edit}/></div>
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
-        ()=>handleEditClick(item)}><a className="text-green-600 ">Edit</a></li>
-       {type!="collection"?<li className="text-green-600 " onClick={handleFeedback}><a className="text-green-600 "><IonText>Get Feedback</IonText></a></li>:null}
-       {canUserAdd?<li className="text-green-600 no-underline" onClick={handleAddToClick}><a className="no-underline text-green-600"><IonText>{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</IonText></a></li>:null}
+        ()=>handleEditClick(item)}><a className=" ">Edit</a></li>
+       {type!="collection"?<li className=" " onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
+       {canUserAdd?<li className=" no-underline" onClick={handleAddToClick}><a className="no-underline "><IonText>{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</IonText></a></li>:null}
          </ul>
   </div>
        
   )
   : !canUserEdit?(
   
-   <div className="dropdown my-auto w-fit dropdown-left">
+   <div className="dropdown my-auto relative w-fit dropdown-left">
    <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg classname="my-auto mx-auto  " src={addBox}/></div>
-   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10  w-52 p-2 shadow">
+   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box  w-52 p-2 shadow">
   {!item.isPrivate && type==collectionStr&&
-        <li className="no-underline text-emerald-600"  onClick={handleAddToLibrary}><a className="no-underline text-green-600"> Add Collection to Library</a></li>}
+        <li className="no-underline "  onClick={handleAddToLibrary}><a className="no-underline"> Add Collection to Library</a></li>}
        
         {canUserAdd&&
-        <li className="no-underline text-emerald-600"  onClick={handleAddToClick}><a className="no-underline text-green-600">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>}
+        <li className="no-underline"  onClick={handleAddToClick}><a className="no-underline ">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>}
          {/* {updated} */}
-         <li  onClick={copyShareLink}><a className="text-emerald-600 no-underline" >Share</a></li>
+         <li  onClick={copyShareLink}><a className=" no-underline" >Share</a></li>
          </ul>
   
        
   
       </div>
-  ) :null}  
+  )
+   :null} 
         
 
 </div>
@@ -196,4 +197,4 @@ const year = date.getFullYear();
 const formattedDate = `${month}/${day}/${year}`;
 return formattedDate
   }
-    export default IndexItem
+  

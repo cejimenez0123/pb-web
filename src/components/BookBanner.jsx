@@ -38,7 +38,7 @@ const BookBanner = ({ books, speed = 40000 }) => {
         const params = {
             book: book
         }
-      router.push(`/book/${book.id}`)
+      router.push(`/book/${book.id}`,{},{},{})
         
     }
     return(<div onClick={handleOnClick} className="book-banner-item">

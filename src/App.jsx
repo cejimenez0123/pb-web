@@ -56,7 +56,8 @@ import { Network } from '@capacitor/network';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
 import checkResult from './core/checkResult.js';
 setupIonicReact()
-function App({currentProfile}) {
+function App(props) {
+  const {currentProfile} =props
   const isPhone = useMediaQuery({ query: '(max-width: 800px)' });
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 
@@ -72,7 +73,7 @@ const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
   const profileInView = useSelector(state=>state.users.profileInView)
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-
+  const location = window.location.pathname
   const [olderPath,setOlderPath]=useState(null)
   const [internetConect,setInternetConect]=useState(false)
   const [success,setSuccess]=useState(null)
@@ -86,7 +87,7 @@ const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
 useEffect(() => {
   const initAuth = async () => {
     const { value } = await Preferences.get({ key: "token" });
-    if (value && !currentProfile?.id) {
+    if (value && currentProfile && !currentProfile?.id) {
       // This triggers the Redux action to fill currentProfile
       dispatch(getCurrentProfile()); 
     }

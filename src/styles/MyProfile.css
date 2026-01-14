@@ -167,7 +167,8 @@
   .visible {
     max-height: 1000px; /* Adjust as needed */
   }
-  
+
+
   .hidden {
     max-height: 0;
   }

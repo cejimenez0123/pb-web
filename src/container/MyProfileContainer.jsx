@@ -355,7 +355,7 @@ onClick={()=>{router.push(Paths.calendar())}}
       </select>
     </div>
 
-    <div className='h-fit min-h-[55rem] mx-auto overflow-auto'>
+    <div className='h-fit min-h-[55rem] mx-auto'>
       <StoryCollectionTabs
         tab={tab}
         setTab={setTab}
