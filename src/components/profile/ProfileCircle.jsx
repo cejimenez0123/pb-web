@@ -4,7 +4,7 @@ import Paths from "../../core/paths";
 import Enviroment from "../../core/Enviroment";
 import { initGA, sendGAEvent } from "../../core/ga4";
 import { IonImg, IonText, useIonRouter } from "@ionic/react";
-function ProfileCircle({profile,color="white",isGrid=false}){
+function ProfileCircle({profile,color="white",fontSize="",isGrid=false}){
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const router = useIonRouter()
 
@@ -35,7 +35,7 @@ setProfilePic(src)
     }
   
   return(<span className="flex flex-row">{profile?<span className="flex flex-row"><div  onClick={handleNavigate}className="overflow-hidden bg-emerald-700 rounded-full max-w-8 min-w-8  min-h-8 max-h-8  border-2 border-white ">
-  <ProfilePic url={profilePic}/></div> <IonText className={`my-auto  px-2 text-soft `}>{profile.username.length>9?profile.username.slice(0,9)+"...":profile.username}</IonText><span/></span>:<div className=" max-w-8 min-w-8  bg-slate-100 skeleton"/>}</span>)
+  <ProfilePic url={profilePic}/></div> <IonText className={`my-auto  px-2 text-soft ${fontSize} `}>{profile.username.length>9?profile.username.slice(0,9)+"...":profile.username}</IonText><span/></span>:<div className=" max-w-8 min-w-8  bg-slate-100 skeleton"/>}</span>)
 
 
 }

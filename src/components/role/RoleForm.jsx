@@ -1,5 +1,5 @@
-import { IonList, IonItem, IonText, IonInput } from "@ionic/react";
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { IonList, IonItem, IonText, IonInput, IonSearchbar, IonContent } from "@ionic/react";
+import { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProfiles } from "../../actions/ProfileActions";
 import { patchRoles } from "../../actions/RoleActions";
@@ -72,19 +72,18 @@ export default function RoleForm({ item, onClose }) {
 
     return (
       
-      <IonItem key={profile.id || i} className="border-none bg-transparent ">
-        <div className="flex justify-between items-center w-full border-2 border-emerald-200  w-full py-2 my-2 px-2 rounded-full shadow-sm">
-          <ProfileCircle profile={profile} color="text-emerald-700" />
+      <IonItem key={profile.id || i} className=" ">
+        <div className="flex justify-between items-center w-[100%] border-2 border-blueSea  py-2 my-2 px-2 rounded-full shadow-sm">
+          <ProfileCircle profile={profile} color="text-emerald-700" fontSize="text-[1rem]"/>
 
           <div className={`dropdown ${dropdownPosition} dropdown-end`}>
-            <div
+            <IonText
               tabIndex={0}
               role="button"
-              className="py-2 px-4 rounded-full bg-emerald-50 text-emerald-700 mont-medium underline cursor-pointer"
+              className="py-2 px-4 rounded-full text-[1.2rem] text-emerald-700  underline cursor-pointer"
             >
               {role ? role.role : "Select Role"}
-            </div>
-
+            </IonText>
             <ul
               tabIndex={0}
               className="dropdown-content menu bg-emerald-50 rounded-box z-[1] w-48 p-2 shadow"
@@ -101,11 +100,17 @@ export default function RoleForm({ item, onClose }) {
   
     );
   };
-  const filteredProfiles = profiles.filter((p) =>
-    p.username?.toLowerCase().includes(search.toLowerCase())
-  );
+   const filteredProfiles = useMemo(() => {
+    if (!profiles?.length) return [];
+    if (!search) return profiles;
+    const lower = search.toLowerCase();
+    return profiles.filter((p) =>
+      p.username?.toLowerCase().includes(lower)
+    );
+  }, [profiles, search]);
   return (
-    <div className="w-full w-[100vw] flex p-4">
+    <IonContent scrollY fullscreen className="ion-padding pt-4">
+    <div className="flex flex-col  w-[100%]">
       {/* Alerts */}
       {(error || success) && (
         <div
@@ -118,7 +123,7 @@ export default function RoleForm({ item, onClose }) {
         </div>
       )}
 
-      <div className="mt-12">
+      {/* <div className="mt-12"> */}
         <div className="flex justify-between items-center mb-4">
           <IonText className="text-emerald-900 text-lg font-medium">
             {item?.title?.length ? item.title : "Untitled"}
@@ -132,21 +137,20 @@ export default function RoleForm({ item, onClose }) {
         >
           Save
         </button>
-        <div className="mx-4">
- <input
-  value={search}
+        <div className="mx-4 w-[100%]">
+          <IonSearchbar 
+value={search}
   onChange={(e) => setSearch(e.target.value)}
   placeholder="Search by username..."
-  className="ion- bg-emerald-50 border mx-2 px-3 py-2 rounded-full text-emerald-700"
-></input>
+        />
 </div>
         {/* Profile List */}
-        <div className="">
-        <IonList lines="none" className="max-h-[50vh]  flex overflow-auto rounded-lg">
+        <div className="sm:max-w-[50em] w-[100%] md:w-[80%] mx-auto sm:overflow-y-auto">
+        <IonList lines="none" className=" flex overflow-auto rounded-lg">
           {pending && (
             <IonText className="text-emerald-800 text-center py-2 block">Loading...</IonText>
           )}
-          {!pending && profiles.length > 0 ? <div className="mx-auto  sm:max-w-[50em]"> 
+          {!pending && profiles.length > 0 ? <div className="mx-auto  w-[100%] sm:max-w-[50em]"> 
             {filteredProfiles.map(renderProfileItem)}
           </div> : (
             <IonText className="text-emerald-800 text-center p-4 block">
@@ -155,7 +159,8 @@ export default function RoleForm({ item, onClose }) {
           )}
         </IonList>
         </div>
-      </div>
+      {/* </div> */}
     </div>
+    </IonContent>
   );
 }

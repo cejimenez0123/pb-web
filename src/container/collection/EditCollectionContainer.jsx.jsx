@@ -68,7 +68,7 @@ const dialog = useSelector(state=>state.users.dialog)
       setLoading(false);
     }
     loadData();
-  }, [id,navigate]);
+  }, [id]);
  const handleStoryOrderChange = (newOrder) => {
     setNewPages(newOrder.map((stc, i) => new StoryToCollection(stc.id, i, stc.collection, stc.story, currentProfile)));
   };
@@ -226,7 +226,8 @@ if (col.childCollections) {
   const openRoleForm=()=>{
 
     let dia = { ...dialog };
-    dia.title = "Change Roles";
+    dia.title = null;
+    // dia.title = "Change Roles";
     dia.isOpen = true;
     dia.agree =null
   
@@ -262,6 +263,7 @@ if (col.childCollections) {
           {/* )} */}
         </IonToolbar>
       </IonHeader>:<div className="pt-8"/>}
+<IonContent>
         {loading ? (
           <div className="flex justify-center items-center h-[60vh]">
             <IonSpinner name="crescent" color="success" />
@@ -284,7 +286,7 @@ if (col.childCollections) {
                     setCollection({ ...collection, title: e.detail.value })
                     setTitle(e.detail.value)
                   }}
-                  className="p-2"
+                  className="p-2 text-[1.8rem]"
                 />
               
                {canUserEdit? currentProfile.id == colInView.profileId?"You're the owner":<IonText >You are {canUserEdit.role=="editor"?"an":"a"} {canUserEdit.role}</IonText>:null}
@@ -297,7 +299,7 @@ if (col.childCollections) {
                 </IonLabel>
                 </div>
                 <textarea
-                className="border border-blueSea p-3 min-h-[12em] w-full rounded-lg shadow-sm w-[90vw] sm:max-w-[50em]"
+                className="border border-blueSea p-3 min-h-[12em] w-full rounded-lg shadow-sm w-[100%] sm:max-w-[50em]"
                   autoGrow={true}
                   placeholder="Describe your collection"
                   value={purpose}
@@ -348,22 +350,22 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
   <div className="flex flex-row space-between">
 
   <div
-  className={`w-full sm:w-60 flex items-center btn  justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border`}
+  className={`w-full sm:w-60 flex items-center btn  border border-blueSea border-1 justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border`}
   onClick={() => router.push(Paths.collection.createRoute(colInView.id))}
 >
 <IonText>View Collection</IonText>
 </div>
- <IonImg    onClick={handleAddStory} src={addIcon} alt="Add" className="max-w-14 ml-8 btn rounded-full p-2 max-h-14 bg-emerald-400" />
+ <IonImg    onClick={handleAddStory} src={addIcon} alt="Add" className="max-w-14 ml-8 btn rounded-full p-2 max-h-14 bg-soft" />
   </div>           
   <IonText
                 onClick={handleSave}
-                className="text-white btn bg-emerald-700 w-[90vw] sm:max-w-[50em] my-auto  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
+                className="text-white btn bg-blueSea w-[100%] sm:max-w-[50em] my-auto  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
               >
                 Save
               </IonText>
   </div>
             
-       <div className="w-[90vw] md:mt-8 mx-auto flex flex-col sm:max-w-[50em]">       <div role="tablist" className="tabs grid">
+       <div className="w-[100%] md:mt-8 mx-auto flex flex-col sm:max-w-[50em]">       <div role="tablist" className="tabs grid">
         
           <input type="radio" name="my_tabs_2" role="tab" defaultChecked className="tab" aria-label="Pages" />
           <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto">
@@ -399,7 +401,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
           </div>
         )}
       {/* </IonContent> */}
- {/* </IonContent> */}
+ </IonContent>
  </ErrorBoundary>
   );
 };
@@ -422,6 +424,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
 
   return (
     <ErrorBoundary>
+      <IonContent>
     <div className="w-full sm:w-60 text-center relative">
       {/* Button */}
       <div
@@ -457,8 +460,9 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
         ))}
       </ul>
     </div>
+       </IonContent>
     </ErrorBoundary>
-    
+
   );
 }
 

@@ -463,8 +463,9 @@ console.log("DID",router.routeInfo)
       defaultHref={Paths.discovery()}
       onClick={handleBack}
     />:null } */}
-    <IonButton>Back</IonButton>
 
+    <IonButton>Back</IonButton>
+<IonTitle>Access Denied</IonTitle>
         {/* </IonButtons> */}
         </IonToolbar>      
 
@@ -490,22 +491,21 @@ console.log("DID",router.routeInfo)
          <ErrorBoundary>
 
 
-  <IonHeader >
-  <IonToolbar>
+      <IonHeader>
+      <IonToolbar>
+        <IonButtons slot="start">
+          {isNative ? (
+            <IonBackButton
+              defaultHref={Paths.discovery()}
+              onClick={handleBack}
+            />
+          ) : null}
+        </IonButtons>
+        <IonTitle>{collection.title}</IonTitle>
+      </IonToolbar>
+    </IonHeader>
 
-    {/* Left-aligned back button */}
-    <IonButtons slot="start">
-              {isNative?<IonBackButton
-                       
-      defaultHref={Paths.discovery()}
-      onClick={handleBack}
-    />:null }
-    </IonButtons>
 
-  
-
-  </IonToolbar>
-</IonHeader>
   <IonContent>
  <IonCard className="">
           <IonCardHeader className="mx-auto ">
@@ -542,7 +542,7 @@ console.log("DID",router.routeInfo)
               )}
               {canUserAdd && (
              
-                <div onClick={() => router.push(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full p-1">
+                <div onClick={() => router.push(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full w-[2.9rem] p-1">
                 <IonImg src={add}/>
                 </div>
             
@@ -562,22 +562,20 @@ console.log("DID",router.routeInfo)
           </div>
         </IonCard>
 
-        {collections && collections.length > 0 && (
-          <IonCard className="ion-padding pt-12">
-            <IonCardHeader>
-              <IonCardTitle><h5 className="text-xl  px-4 pb-2">Anthologies</h5></IonCardTitle>
-            </IonCardHeader>
-            <IonCardContent>
-              <IonList className="flex flex-row min-h-[14rem] overflow-x-scroll">
-                  {collections.filter(col=>col).map((col, i) => (
-                    <IonItem key={i} className="mx-3">
-                    <BookListItem key={i} book={col} />
-                    </IonItem>
-                  ))}
-              </IonList>
-            </IonCardContent>
-          </IonCard>
-        )}
+  {collections && collections.length > 0 && (
+        <div className="mx-auto my-4 rounded-xl bg-white pt-12 px-4 pb-4">
+          <h5 className="text-xl px-1 pb-2">Anthologies</h5>
+          <div className="flex flex-row min-h-[14rem] overflow-x-scroll">
+            {collections
+              .filter((col) => col)
+              .map((col, i) => (
+                <div key={i} className="mx-3">
+                  <BookListItem book={col} />
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
 <div className="sm:w-[50rem] mx-auto">
 
             <PageList

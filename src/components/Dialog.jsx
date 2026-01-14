@@ -32,7 +32,7 @@ const Dialog = ({
   presentingElement={presentingElement}
   style={{backgroundColor:"white",height:"100vh",overflowY:"scroll"}}
   swipeToClose={true}
-><IonHeader>
+>{dialog.title!==null &&<IonHeader>
   <IonToolbar color="success">
     <IonButtons slot="start">
      <IonBackButton  onClick={onClose} />
@@ -41,7 +41,7 @@ const Dialog = ({
       {dialog.title}
     </IonTitle>
   </IonToolbar>
-</IonHeader>
+</IonHeader>}
 
 <div className='ion-padding'>
 {dialog.text}
@@ -59,8 +59,8 @@ const Dialog = ({
           </IonText>
           </div>
         ):null}
-          <div className='rounded-full w-[6rem] h-[3rem] flex  border-emerald-600 border-2'>
-        <IonText   className='text-[1rem] my-auto mx-auto' onClick={dialog.onClose} >
+          <div className='rounded-full w-[6rem] h-[3rem] bg-soft flex  border-emerald-600 border-2'>
+        <IonText   className='text-[1rem] text-white my-auto mx-auto' onClick={dialog.onClose} >
           {dialog.disagreeText}
           </IonText>
           </div>

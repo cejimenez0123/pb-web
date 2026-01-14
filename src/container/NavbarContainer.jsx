@@ -363,7 +363,7 @@ openDialog()
    
 };
 let isNative = Capacitor.isNativePlatform()
- return !isNotPhone||isNative?(<div className="navbar flex items-start  justify-between px-4 max-w-[100vw] h-54 bg-soft">
+ return !isNotPhone||isNative||isTablet?(<div className="navbar flex items-start  justify-between px-4 max-w-[100vw] h-54 bg-soft">
    <div className='flex flex-col'>
    <IonImg src={library} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
     onClick={()=>{router.push(Paths.discovery())}}/>

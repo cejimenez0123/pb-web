@@ -23,7 +23,6 @@ import {  getCurrentProfile,
 import PrivateRoute from './PrivateRoute';
 
 import Paths from './core/paths';
-import AboutContainer from './container/AboutContainer';
 import  Context from "./context"
 import TermsContainer from './container/TermsContainer.jsx';
 import AddStoryToCollectionContainer from './container/collection/AddStoryToCollection';

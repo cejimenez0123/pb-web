@@ -4,17 +4,14 @@ import {
   IonText,
   IonHeader,
   IonToolbar,
-  IonButtons,
   IonList,
   IonGrid,
   IonRow,
   IonItem,
   IonLabel,
-  IonBackButton,
   useIonRouter,
   IonTitle,
   IonSearchbar,
-  IonButton,
 
 } from '@ionic/react';
 import { useMemo } from 'react';
@@ -23,6 +20,8 @@ import { searchDialogToggle } from '../actions/UserActions';
 import { useSelector, useDispatch } from 'react-redux';
 import checkResult from '../core/checkResult';
 import { useCallback } from 'react';
+import { getMyCollections } from '../actions/CollectionActions';
+import { getMyStories } from '../actions/StoryActions';
 
 
 const SearchDialog = ({ presentingElement }) => {
@@ -42,7 +41,10 @@ const router = useIonRouter()
   
  
   const [selectedFilters,setSelectedFilters]=useState([])
-
+  useEffect(()=>{
+    dispatch(getMyCollections())
+    dispatch(getMyStories())
+  },[])
   const filters = useMemo(() => {
     const includeTypes = { cols: "collections", stories: "stories", profiles: "profiles", hashtags: "hashtags" };
     const base = [includeTypes.profiles, includeTypes.hashtags, includeTypes.cols, includeTypes.stories];
@@ -127,29 +129,19 @@ router.push(`/${searchItem.type}/${searchItem.objectID}`);
       style={{ backgroundColor: "white", height: "100vh", overflowY: "scroll" }}
       swipeToClose={true}
     >
-
+{/* 
       <IonHeader>
         <IonToolbar>
-          {/* <IonButtons slot="end">
-            <IonButton onClick={() => dispatch(searchDialogToggle({ open:false }))}>Close</IonButton>
-          </IonButtons>
-       </IonToolbar>
-       <IonToolbar> */}
+       
           <IonTitle>Search</IonTitle>
  </IonToolbar>
     
- </IonHeader>
+ </IonHeader> */}
          <IonSearchbar
          
          onIonInput={(e) =>setSearchText(e.target.value ?? '')}/>
 
         
-          {/* <input
-            className="bg-transparent w-[100%] my-3 px-2 h-[2rem] border-emerald-400 rounded-full border-1"
-            value={searchText}
-            onChange={e => setSearchText(e.target.value ?? '')}
-            debounce={300}
-            placeholder="Search..."/> */}
                         <IonGrid>
                           <IonRow className="ion-justify-content-start ion-align-items-center ion-padding-vertical" style={{ gap: '0.5rem' }}>
                         
@@ -186,7 +178,7 @@ router.push(`/${searchItem.type}/${searchItem.objectID}`);
           searchContent.map((content, i) => (
             <IonItem
               key={i}
-              className="bg-transparent my-2 pb-2 border-emerald-300 border-b border-1"
+              className="bg-transparent my-2 pb-2 "
               onClick={() => handleOnClick(content)}
             >
               <IonText className="text-emerald-800">

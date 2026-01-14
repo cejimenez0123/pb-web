@@ -218,15 +218,15 @@ const filteredSortedStories = useMemo(() => {
               
                 className="rounded-xl my-2  pb-2 "
               >
-                <div onClick={()=>{router.push(Paths.page.createRoute(story.id))}} className="flex flex-row py-2 border-b border-emerald-600 justify-between w-full">
+                <div onClick={()=>{router.push(Paths.page.createRoute(story.id))}} className="flex flex-row py-2 border-b border-emerald-600 justify-between w-[100%]">
   
-                <IonLabel slot="start" className="text-emerald-800  truncate max-w-[70%]  font-medium
+                <IonLabel slot="start" className="text-emerald-800 my-auto truncate max-w-[70%]  font-medium
 text-[1rem]">
                   {story.title?.trim() || "Untitled"}
                 </IonLabel>
                 <div
                 slot="end"
-                     className="w-10 h-10 flex items-center justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
+                     className="w-10 h-10 flex items-center my-auto justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
     onClick={() =>
                     addedToCollection
                       ? setNewStories(newStories.filter((s) => s.id !== story.id))
@@ -236,7 +236,7 @@ text-[1rem]">
                   <IonImg
                     src={addedToCollection ? checked : emptyBox}
                     alt="toggle"
-                  className="w-10 p-2 h-10"
+                  className="w-[2rem] p-2 h-[2rem]"
                   />
                 </div>
                 </div>
@@ -277,16 +277,16 @@ text-[1rem]">
  
                 className="rounded-xl my-2 border-b border-emerald-600 pb-2 "
               >
-                <div className="flex flex-row py-2  justify-between w-full">
+                <div className="flex flex-row py-2 my-auto justify-between w-[100%]">
   
-                <IonLabel slot="start" onClick={()=>{router.push(Paths.collection.createRoute(col.id))}}className="text-emerald-800  truncate max-w-[70%]  font-medium
+                <IonLabel slot="start" onClick={()=>{router.push(Paths.collection.createRoute(col.id))}}className="text-emerald-800  truncate w-[100%]  font-medium
 text-[1rem]">
     {col.title?.trim() || "Untitled"}
   </IonLabel>
 
   <div
   slot="end"
-    className="max-w-10 max-h-10 flex items-center justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
+    className="max-w-10 max-h-10 flex items-center my-auto justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
    onClick={() =>
       addedToCollection
         ? setNewCollections(newCollection.filter((c) => c.id !== col.id))
@@ -296,7 +296,7 @@ text-[1rem]">
     <IonImg
       src={addedToCollection ? checked : emptyBox}
       alt="toggle"
-      className="w-10 p-2 h-10"
+      className="w-[2rem] p-2  h-[2rem]"
     />
     </div>
   {/*  */}
@@ -360,18 +360,14 @@ text-[1rem]">
             </IonTitle>
           </IonToolbar>
         </IonHeader>
-        <div className="sm:max-w-[50rem] mx-auto">
+        <IonContent fullscreen={true} className="ion-padding pt-12 ion-text-emerald-800" scrollY >
+        <div className="sm:max-w-[50rem] mx-auto ion-padding">
           <h2 className="text-xl font-semibold text-emerald-800 mb-1">
             {colInView.title?.trim() || "Untitled"}
           </h2>
           <p className="text-emerald-700 mb-4">{colInView.purpose || ""}</p>
           <div className="flex justify-between items-center mb-4">
-            <div
-              onClick={save}
-              className="bg-soft text-white px-5 py-2 rounded-full text-center text-[1.4rem]  font-boldcursor-pointer shadow-md"
-            >
-              Save
-            </div>
+         
             
             <div className="text-center text-emerald-800">
               <div className="text-lg font-medium">
@@ -379,12 +375,20 @@ text-[1rem]">
               </div>
               <div className="text-sm text-gray-600">New items</div>
             </div>
+            <div className="flex space-x-4 flex-row">
+                 <div
+              onClick={save}
+              className="bg-soft text-white px-5 py-2 rounded-full  btn hover:bg-emerald-400 flex w-[6rem] h-[3rem] text-center  cursor-pointer shadow-md"
+            >
+             <h6 className="mx-auto my-auto text-[1.4em] ">Save</h6> 
+           
+            </div>
             <div
               onClick={()=>router.push(Paths.collection.createRoute(colInView.id))}
-              className="bg-soft text-white px-5 py-2 rounded-full text-center text-[1.4rem]  font-bold cursor-pointer shadow-md"
+              className="bg-soft flex text-white px-5 py-2 w-[6rem] btn h-[3rem] hover:bg-emerald-400  rounded-full text-center  cursor-pointer shadow-md"
             >
-              View
-            </div>
+              <h6 className="my-auto mx-auto text-[1.4rem]">View</h6>
+            </div> </div>
           </div>
           <div className="pb-4">
       <select
@@ -414,7 +418,7 @@ text-[1rem]">
           </div>
        </div> 
        
-    
+    </IonContent>
     </ErrorBoundary>
   );
 }
