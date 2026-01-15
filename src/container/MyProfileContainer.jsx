@@ -292,7 +292,7 @@ onClick={()=>{router.push(Paths.calendar())}}
                     </div>
   <div >
 
-  <div className="relative flex flex-col md:flex-row justify-around mx-auto sm:border-4 sm:border-emerald-300 p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
+  <div className="relative flex flex-col md:flex-row justify-around mx-auto p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 
     <div className="md:w-1/3 max-w-[60em] h-[16em] mb-6 flex justify-center md:justify-start">
       <ProfileInfo profile={currentProfile} />

@@ -312,11 +312,11 @@ const googleAddLink = baseUrl + queryString;
                         
                   let eId= event.googleLink.split("?eid=")[0]
                       return(
-                      <IonItem key={i} 
+                      <div key={i} 
                     
                       onClick={()=>handleDialogOpen(event)}
                          className=" 
-                          border-blueSea border  rounded-[50px]  shadow-md min-h-42 my-1  py-4  "
+                          border-blueSea border  rounded-[50px]   min-h-42 my-1  py-4  "
                      >
                       <div  className={`flex
                       flex-row justify-between  px-6    `}>
@@ -354,7 +354,7 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
             
                             }} className="w-12 h-12  my-auto" src={calendar} /></span>
                             </div>
-                            </IonItem>)
+                            </div>)
                       
                       }):null
                     }
@@ -419,18 +419,24 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
         ? events.map((event, i) => {
             const eId = event.googleLink.split("?eid=")[0];
             return (
-              <IonItem
-                key={i}
+              // <IonItem
+              //   key={i}
                 
                     
-                className="
-                  border-blueSea border rounded-[30px] shadow-md
-                  min-w-[16rem] max-w-[18rem]
-                  flex-shrink-0 flex-col p-4
-                "
+              //   className="
+              //     border-blueSea border-opacity-50 border rounded-[30px]
+              //     min-w-[16rem] max-w-[18rem]
+              //     flex-shrink-0 flex-col p-4
+              //   "
                
-              >
-                <div  >
+              // >
+                <div  
+                className="
+               border-blueSea border-opacity-50 border rounded-[30px]
+                 min-w-[16rem] max-w-[18rem]
+                flex-shrink-0 flex-col p-4
+               "
+                >
                 <div className="flex flex-col justify-between h-full">
                   <span
                 onClickCapture={()=>handleDialogOpen(event)}
@@ -505,7 +511,7 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                   </span>
                 </div>
                 </div>
-              </IonItem>
+              // </IonItem>
             );
           })
         : null}
