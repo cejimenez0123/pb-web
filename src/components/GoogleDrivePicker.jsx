@@ -141,7 +141,7 @@ const fetchFiles = async () => {
   };
 
   return (
-    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()}  className={`btn ${accessToken?"bg-soft":"border-2 border-full bg-cream text-emerald-800"} hover:bg-emerald-500 rounded-xl border-emerald-600 mont-medium flex text-center w-[88%] md:w-[100%] h-[3rem]`}>
+    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()}  className={`btn ${accessToken?"bg-soft":"border-2 border-full bg-cream text-emerald-800"} hover:bg-emerald-500 rounded-xl border-emerald-600 flex text-center w-[88%] md:w-[90%] md:mx-auto h-[3rem]`}>
          
     
         {!accessToken ? (

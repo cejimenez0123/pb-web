@@ -301,7 +301,7 @@ const googleAddLink = baseUrl + queryString;
 </div>
   {solEvents.length==0?null:<div className=" text-left">
 <div className="flex flex-row">
-<IonText className="font-bold text-[1.2rem] text-soft ">Events with Sol, Founder</IonText><InfoTooltip text="Want to meet the founder. Want to meet someone there so you're not alone. Join Sol at an Event. IG:@decibao"/></div>
+<IonText className="font-bold text-[1.2rem] px-4 text-soft ">Events with Sol, Founder</IonText><InfoTooltip text="Want to meet the founder. Want to meet someone there so you're not alone. Join Sol at an Event. IG:@decibao"/></div>
 <HorizontalEventList events={solEvents} handleDialogOpen={handleDialogOpen} sendGAEvent={sendGAEvent} isPhone={isPhone} areas={areas} calendar={calendar}  />
    </div> }
   
@@ -316,7 +316,7 @@ const googleAddLink = baseUrl + queryString;
                     
                       onClick={()=>handleDialogOpen(event)}
                          className=" 
-                          border-blueSea border  rounded-[50px]   min-h-42 my-1  py-4  "
+                          border-blueSea border  rounded-[3.5em]   min-h-42 my-1  py-4  "
                      >
                       <div  className={`flex
                       flex-row justify-between  px-6    `}>
@@ -330,11 +330,11 @@ const googleAddLink = baseUrl + queryString;
           
                              <a className="text-blueSea overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
                               <IonText onClick={()=>{
-                                 console.log("BOB",event.location)
+                            
                              const encoded = encodeURIComponent(event.rawLocation);
 window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                              
-                              }}>{event.location}</IonText></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
+                              }}>{event.location.length<25?event.location:event.location.slice(0,20)+"..."}</IonText></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
                           
                           
               
