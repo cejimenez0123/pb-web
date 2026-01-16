@@ -296,7 +296,7 @@ useEffect(() => {
       ? null
       : (
          <div className="flex-row w-[100%] sm:w-[50em] h-16 overflow-clip mx-auto bg-blueSea bg-opacity-10 flex text-white">
-       <div className={`${likeFound ? "bg-emerald-400" : "bg-blueSea bg-opacity-20"} text-center grow w-1/3`}>
+       <div className={`${likeFound ? "bg-emerald-400 text-cream" : "bg-blueSea bg-opacity-20"} text-center grow w-1/3`}>
             <div
               onClick={handleApprovalClick}
               className={`py-2 flex  mx-auto text-white border-none h-[100%] border-none`}

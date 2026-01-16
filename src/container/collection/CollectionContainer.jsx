@@ -441,7 +441,7 @@ console.log("DID",router.routeInfo)
             <IonTitle>Loading collection...</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <div className="ion-padding">
+        <div className="ion-padding mx-auto">
           <IonSkeletonText animated style={{ width: '96vw', height: 150, margin: "2rem auto", borderRadius: 18 }} />
           <IonSkeletonText animated style={{ width: '96vw', height: 400, margin: "2rem auto", borderRadius: 18 }} />
         </div>
