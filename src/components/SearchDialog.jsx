@@ -12,6 +12,7 @@ import {
   useIonRouter,
   IonTitle,
   IonSearchbar,
+  IonContent,
 
 } from '@ionic/react';
 import { useMemo } from 'react';
@@ -45,6 +46,12 @@ const router = useIonRouter()
     dispatch(getMyCollections())
     dispatch(getMyStories())
   },[])
+  
+useEffect(() => {
+  if (searchText && searchText.length==0) {
+    setSearchContent([...personalCols, ...personalStories]);
+  }
+}, [personalCols, personalStories, dispatch, searchText]);
   const filters = useMemo(() => {
     const includeTypes = { cols: "collections", stories: "stories", profiles: "profiles", hashtags: "hashtags" };
     const base = [includeTypes.profiles, includeTypes.hashtags, includeTypes.cols, includeTypes.stories];
@@ -78,30 +85,10 @@ const searchAction = useCallback(() => {
  
 searchAction()
 
-  }, [searchText, selectedFilters, dispatch]);
-
-  // const searchAction=()=>{
-  //     const payload = {
-  //     query: searchText,
-  //     filters: selectedFilters,
-  //     profileId:currentProfile?currentProfile.id:null
-  //   };
+  }, [searchText, selectedFilters]);
 
 
-  //   dispatch(searchMultipleIndexes(payload)).then(result => {
-  //     checkResult(
-  //       result,
-  //       returned => {
-        
-  //         const { results } = returned;
-  //         setSearchContent(results);
-  //       },
-  //       err =>{
-  //         console.log(err.message)
-  //       }
-  //     );
-  //   });
-  // }
+
     const toggleFilters = (genre) => {
       // let newSelectedGenres;
       if (selectedFilters.includes(genre)) {
@@ -118,6 +105,13 @@ router.push(`/${searchItem.type}/${searchItem.objectID}`);
 
   return (
     <IonModal
+     
+
+
+  canDismiss={true} 
+  breakpoints={[0, 1]} // This enables the drag-to-close behavior effectively
+  initialBreakpoint={1}
+ 
     mode='ios'
     ref={presentingElement}
       isOpen={searchDialogOpen}
@@ -126,24 +120,17 @@ router.push(`/${searchItem.type}/${searchItem.objectID}`);
       onDidDismiss={() => dispatch(searchDialogToggle({ open: false }))}
       cssClass="modal-fullscreen ion-padding"
       presentingElement={presentingElement}
-      style={{ backgroundColor: "white", height: "100vh", overflowY: "scroll" }}
+      // style={{ backgroundColor: "white", height: "100vh", overflowY: "scroll" }}
       swipeToClose={true}
     >
-{/* 
-      <IonHeader>
-        <IonToolbar>
-       
-          <IonTitle>Search</IonTitle>
- </IonToolbar>
-    
- </IonHeader> */}
+<IonContent fullscreen scrollY={true}className='ion-padding' style={{"--background":"#f4f4e0"}}>
          <IonSearchbar
          
          onIonInput={(e) =>setSearchText(e.target.value ?? '')}/>
 
         
                         <IonGrid>
-                          <IonRow className="ion-justify-content-start ion-align-items-center ion-padding-vertical" style={{ gap: '0.5rem' }}>
+                          <IonRow className="ion-justify-content-start gap-x-2 gap-y-2 ion-align-items-center ion-padding-vertical" style={{ "--background":"#f4f4e0" }}>
                         
       {filters.filter(filter=>filter).map((genre, i) => {
                   // const selected = selectedGenres.includes(genre);
@@ -155,12 +142,15 @@ router.push(`/${searchItem.type}/${searchItem.objectID}`);
                         cursor-pointer 
                         rounded-full 
                         border 
+                        bg-cream
                         border-emerald-500 
                         py-1 px-4 
+
                         text-center 
                         transition-colors duration-300 
                         ${selected ? 'bg-emerald-500 text-white' : 'bg-transparent text-emerald-600 hover:bg-emerald-200'}
                       `}
+                      
                       onClick={() => toggleFilters(genre)}
                     >
                       <IonText className="open-sans-medium select-none">{genre}</IonText>
@@ -173,12 +163,13 @@ router.push(`/${searchItem.type}/${searchItem.objectID}`);
     {/* </IonToolbar> */}
     
 
-      <IonList style={{ overflowY: "scroll" }}>
+      <IonList style={{ overflowY: "scroll","--background":"#f4f4e0",}}>
         {searchContent.length > 0 ? (
           searchContent.map((content, i) => (
             <IonItem
               key={i}
-              className="bg-transparent my-2 pb-2 "
+              style={{"--background":"#f4f4e0" }}
+               
               onClick={() => handleOnClick(content)}
             >
               <IonText className="text-emerald-800">
@@ -187,12 +178,12 @@ router.push(`/${searchItem.type}/${searchItem.objectID}`);
             </IonItem>
           ))
         ) : (
-          <IonItem>
+          <IonItem style={{"--background":"#f4f4e0" }}>
             <IonLabel className="text-emerald-600">No results found</IonLabel>
           </IonItem>
         )}
       </IonList>
-
+</IonContent>
     </IonModal>
   );
 };

@@ -12,7 +12,7 @@ const Paths ={
     library: {
         route: ()=>`/library/:id`,
         createRoute:(id)=>{return `/library/${id}`;}},
-    page:{ route: ()=>`/story/:id`,createRoute:(id)=>{return `/story/${id}`
+    page:{ route: ()=>`/story/:id/view`,createRoute:(id)=>{return `/story/${id}/view`
     }},
     workshop:{
         route:()=>"/workshop/page/:pageId",
@@ -38,9 +38,9 @@ const Paths ={
     },
     editor:
     {
-        text:()=>{return `/story/text/edit`},
-        link:()=>{ return `/story/link/edit`},
-        image:()=>{return `/story/image/edit`}   
+        text:`/story/text/edit`,
+        link:`/story/link/edit`,
+        image:`/story/image/edit`  
     },
     login:()=>{return `/login`},
     editPage:{route:()=>{return `/story/:id/editor`},

@@ -260,7 +260,7 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
     <Route  
         path={"/story/:type/edit"}
         render={()=> 
-          <PrivateRoute currentProfile={currentProfile}>
+          <PrivateRoute>
             
           <EditorContainer 
           
@@ -269,11 +269,7 @@ presentingElement={page}
       </PrivateRoute>
         }/>
 
-     
-      <Route path={Paths.page.route()} render={()=>
-          <PageViewContainer page={props.pageInView}/>}
-    /> 
-       <Route
+            <Route
       path={Paths.editPage.route()}
       render={()=>
         <PrivateRoute currentProfile={currentProfile} >
@@ -283,6 +279,10 @@ presentingElement={page}
               />
         </PrivateRoute>
       }/>
+      <Route path={Paths.page.route()} render={()=>
+          <PageViewContainer page={props.pageInView}/>}
+    /> 
+
 
       <Route path="/profile/edit" render={()=>
  

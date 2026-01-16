@@ -41,14 +41,14 @@ if(book){
     <IonCard
     
       onClick={navigateToBook}
-     className="min-h-[10em] group-hover:h-[13rem] overflow-hidden relative btn hover:h-[13rem] transition-all duration-300 w-[16rem]  bg-soft text-white rounded-lg text-ellipsis "
+     className="min-h-[10em] group-hover:h-[13rem] overflow-hidden relative btn hover:h-[13rem] transition-all duration-300 w-[16rem]  boreder-blueSea boder-opacity-10 bg-blueSea bg-opacity-10 text-emerald-800 rounded-lg text-ellipsis "
     >
       <div className="h-16"> 
     <div className="absolute top-0 pt-2 left-3 right-3 z-10">
         <IonCardHeader className="p-0">
 
         <IonCardTitle
-          className="font-bold text-white truncate"
+          className="font-bold text-emerald-800 text-[1.125rem] truncate"
           
     >{book.title.slice(0, 30)}{book.title.length > 30 && "..."}</IonCardTitle>
     </IonCardHeader>
@@ -60,7 +60,7 @@ if(book){
     <div
       className="transition-all duration-300 overflow-hidden max-h-[5rem] group-hover:max-h-[10rem]"
     >
-      <IonText className="open-sans-medium text-sm block text-left text-white">
+      <IonText className="text-sm block text-left text-emerald-800">
        
 
 {book.purpose.length<=65? book.purpose.slice(0,65):book.purpose.slice(0,65)+"..."}         

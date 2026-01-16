@@ -79,7 +79,7 @@ const hasInitialized = useRef(false);
    useEffect(()=>{
   notText && fetchStory()
     
-   },[currentProfile,navigate])
+   },[currentProfile])
 
    const handleChange = (key, value) => {
     setParameters((prev) => ({ ...prev, [key]: value }));
@@ -291,11 +291,11 @@ const openRoleFormDialog = () => {
 
         return(
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
-          {/* <IonContent fullscreen={true} className="ion-padding"  > */}
+          <IonContent fullscreen={true} className="ion-padding"  >
             <IonHeader className=" ion-padding py-8 ">
               <IonButtons className="ion-padding" >
-                <div className="pt-4 pl-4">
-                <IonBackButton  defaultHref={Paths.myProfile} onClick={handleBack}/></div></IonButtons>
+                <div className="pt-4"  onClick={handleBack}>
+                <IonBackButton  defaultHref={Paths.myProfile} /></div></IonButtons>
 
             <IonButtons>{pending? <div className="skeleton rounded-lg  w-[100%] h-fit sm:max-w-[50em] mx-auto "/>: topBar()}</IonButtons>
             </IonHeader>
@@ -339,7 +339,7 @@ handleClose={()=>{
       
     </div>
       </div>
-      {/* </IonContent> */}
+      </IonContent>
       </EditorContext.Provider>
   )    
 

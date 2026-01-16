@@ -47,17 +47,7 @@ ion-textarea textarea {
 
 }
 /* Custom emerald gradient button */
-.emerald-gradient-btn {
-  background: linear-gradient(to right, #34d399, #059669); /* emerald-400 to emerald-600 */
-  color: white !important;
-  border-radius: 9999px !important; /* fully rounded */
-  font-weight: 700 !important; /* bold */
-  font-family: 'Montserrat', sans-serif; /* or your original font */
-  padding: 1rem 2rem !important;
-  font-size: 1.25rem !important;
-  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.5);
-  text-transform: none !important;
-}
+
 
 /* Disabled state styling */
 .emerald-gradient-btn.ion-disabled {
@@ -70,35 +60,7 @@ ion-textarea textarea {
   filter: brightness(1.1);
 }
 
-/* .lora-medium{
-  font-family: "Lora", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-}
-.lora-bold{
-  font-family: "Lora", serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
-}
 
-.open-sans-medium {
-  font-family: "Open Sans", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
-}
-.open-sans-bold {
-  font-family: "Open Sans", serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
-} */
 .icon{
   min-width: 2.2rem!important;
   min-height: 2.2rem!important;

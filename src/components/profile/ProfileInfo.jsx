@@ -22,11 +22,13 @@ const ProfileInfo = ({profile})=>{
     const handleDialogOpen=()=>{
         let dia = {...dialog}
         dia.isOpen = true
-        dia.title = "Referral"
+        dia.title = null
         dia.text = <ReferralForm onClose={()=>dispatch(setDialog({open:false}))}/>
         dia.onClose=()=>{
             dispatch(setDialog({open:false}))
         }
+        dia.agreeText=null
+        dia.agree=null
         dispatch(setDialog(dia))
 
     }
@@ -111,7 +113,7 @@ const ProfileInfo = ({profile})=>{
           
         </div>
    
-       <div className="w-[100%]  flex flex-row justify-between">
+       <div className="w-[100%] mt-2  min-w-[20em] px-2 items-baseline flex justify-between flex-row ">
         {/* <div className="text-emerald-800 flex flex-row  "> */}
             <div  
             onClick={()=>openFollowersDialog()}
@@ -119,10 +121,10 @@ const ProfileInfo = ({profile})=>{
                 <IonText className="text-[1rem]  ">Followers</IonText>
                 <IonText className="text-[1rem] ">{profile.followers?.length}</IonText>
             </div>
-
-<h6 onClick={()=>handleDialogOpen()}className=' text-sm text-[1rem] '>Refer Someone?</h6>
+<div className="flex "> 
+<h6 onClick={()=>handleDialogOpen()}className='  text-[1rem] '>Refer Someone?</h6>
     
-
+</div>
 </div>
            {/* </div>                  */}
                             </div>  )

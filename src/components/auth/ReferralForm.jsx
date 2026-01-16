@@ -53,29 +53,29 @@ export default function ReferralForm({onClose}){
 
     <div className="flex flex-col md:min-w-[30em] md:min-h-[40em] m-1 px-3 py-4">
         
-<h1 className="mx-auto mont-bold text-emerald-800 mb-8 text-xl">Refer Someone Today</h1>
+<h1 className="mx-auto  text-emerald-800 mb-8 text-xl">Refer Someone Today</h1>
 
             {referral&&   referral.usageCount?<h2 className="text-emerald-800">{referral.usageCount}</h2>:null}
         {pending?<IonImg src={loadingGif} className="icon"/>:referralLink.trim().length>0?
         <span className="flex mt-6"><input type="text" 
          value={referralLink} disabled className="bg-transparent w-[100%] border-2 border-emerald-800 py-2 px-4 rounded-full text-[0.8rem] md:text-l "/><IonImg src={copyContent} onClick={copyToClipboard} className="icon"/></span>:<div className="icon"/>}
-         <div className="text-center"><h6 className="mont-medium  mb-6 mx-8">{message}</h6></div>
-          <h3 className="text-emerald-800 mont-medium text-xl  py-4 mt-3 mx-auto text-opacity-70">OR</h3>
-          <label className="text-emerald-800 mx-4 text-lg mont-medium mt-3">
+         <div className="text-center"><h6 className=" mb-6 mx-8">{message}</h6></div>
+          <h3 className="text-emerald-800 text-xl  py-4 mt-3 mx-auto text-opacity-70">OR</h3>
+          <label className="text-emerald-800 mx-4 text-lg  mt-3">
             Name
         </label>
         <input
           value={name} 
           onChange={(e)=>setName(e.target.value)}
         className='text-xl my-4 px-4 py-3 open-sans-medium text-[0.8rem] bg-transparent border-emerald-800 border-2 rounded-full rounded-full text-emerald-800  w-[100%]' type='text'/>
-        <label className="text-emerald-800 text-lg mont-medium">
+        <label className="text-emerald-800 text-lg ">
             Email of person
         </label>
         <input 
         value={email}
         onChange={(e)=>setEmail(e.target.value.toLocaleLowerCase().trim())}
         className='text-[0.8rem] my-4 rounded-full px-2 py-4 open-sans-medium bg-transparent border-2 border-emerald-800 text-emerald-800 w-[100%]' type='text'/>
-        <div className=" rounded-full mont-medium  h-12 mx-auto  py-2 flex bg-gradient-to-r w-[20em] from-emerald-600 to-emerald-500 text-emerald-800 " onClick={handleClick}><h6 className="text-emerald-800 mx-auto text-lg mx-auto  py-3 text-white my-auto">Submit</h6></div>
+        <div className=" rounded-full   h-12 mx-auto  py-2 flex bg-gradient-to-r w-[20em] from-emerald-600 to-emerald-500 text-emerald-800 " onClick={handleClick}><h6 className="text-emerald-800 mx-auto text-lg mx-auto  py-3 text-white my-auto">Submit</h6></div>
 
 
      </div>

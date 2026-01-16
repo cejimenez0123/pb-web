@@ -245,13 +245,9 @@ useEffect(() => {
 
   const bookmarkBtn = () => {
     return isGrid ? (
-      <div className={`bg-emerald-100  flex flex-row justify-between text-emerald-700`}>
+      <div className={`bg-emerald-100 flex flex-row justify-between  text-emerald-700`}>
         {isPhone ? null : <ProfileCircle isGrid={isGrid} profile={page.author} color='emerald-700' />}
-        <span className={
-          `${isGrid ? isPhone ? " w-grid-mobile-content flex flex-row justify-between"
-            : " flex justify-end "
-            : isHorizPhone ? "" : ""}`
-        }>
+        <span >
           <h6 className={`text-emerald-700 ${isGrid ? isPhone ? "" : " text-right " : isHorizPhone ? "" : ""}${isPhone ? " text-[0.6rem] " : "text-[0.9rem]  w-[10rem] ml-1 pr-2"}   whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
             onClick={() => {
               sendGAEvent("Navigate", `Navigate to ${JSON.stringify({ id: page.id, title: page.title })}`);
@@ -299,25 +295,25 @@ useEffect(() => {
     return isGrid
       ? null
       : (
-         <div className="flex-row w-[100%] sm:w-[50em] h-16 overflow-clip mx-auto bg-emerald-200 flex text-white">
-       <div className={`${likeFound ? "bg-emerald-400" : "bg-emerald-200"} text-center grow w-1/3`}>
+         <div className="flex-row w-[100%] sm:w-[50em] h-16 overflow-clip mx-auto bg-blueSea bg-opacity-10 flex text-white">
+       <div className={`${likeFound ? "bg-emerald-400" : "bg-blueSea bg-opacity-20"} text-center grow w-1/3`}>
             <div
               onClick={handleApprovalClick}
-              className={`py-2 flex mont-medium mx-auto text-white border-none h-[100%] border-none`}
+              className={`py-2 flex  mx-auto text-white border-none h-[100%] border-none`}
             >
               <IonText className="text-xl text-emerald-700 m-auto p-0">Yea{likeFound ? "" : ""}</IonText>
             </div>
           </div>
-          <div className={" bg-emerald-200  border-white border-x-2 border-y-0 text-center border-white grow w-1/3"}>
+          <div className={" bg-blueSea bg-opacity-10 border-blueSea border-opacity-30 border-x-2 border-y-0 text-center  grow w-1/3"}>
             <div
-              className='text-emerald-700 text-center mx-auto bg-emerald-200 py-2 border-none'
+              className='text-emerald-700 text-center mx-auto bg-blueSea bg-opacity-10 py-2 border-none'
               onClick={() => handleClickComment()}>
               <IonText className="text-xl text-emerald-700 m-auto p-0">Review</IonText> 
             </div>
           </div>
          
           {!page.recommended ? (
-               <div onClick={onClickShare} className="flex-1/3 grow bg-emerald-200 text-center flex justify-center items-center">
+               <div onClick={onClickShare} className="flex-1/3 grow bg-blueSea bg-opacity-20 text-center flex justify-center items-center">
                     {/* <IonButton  fill="clear" color="success"> */}
                       <IonText className="text-xl text-emerald-700 m-auto p-0">Share</IonText>
                       </div>
@@ -342,9 +338,9 @@ useEffect(() => {
     
     <ErrorBoundary >
     <IonCard
-      // id="dashboard-item"
+     
       className={
-        'mt-3 rounded-lg rounded-b-lg  mx-auto justify-between bg-emerald-50 flex flex-col '
+        'mt-3 rounded-lg rounded-b-lg max-w-[94vw] sm:max-w-[45em] w-[100%] mx-auto mx-auto justify-between bg-blueSea bg-opacity-10 flex flex-col '
       }
  
     >
@@ -362,7 +358,7 @@ useEffect(() => {
 
   
       {isGrid ? (
-        <div id="bottom-dash" className={`flex flex-row  sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
+        <div id="bottom-dash" className={`flex flex-row sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
           {bookmarkBtn()}
         </div>
       ) : <div className={ `flex w-[100%] flex-row sm:w-[50em] justify-between  bottom-0 w-full`}>

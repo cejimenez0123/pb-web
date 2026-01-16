@@ -9,6 +9,7 @@ import {
   IonText,
 
   IonBackButton,
+  IonContent,
 } from '@ionic/react';
 import { useDispatch } from 'react-redux';
 import { setDialog } from '../actions/UserActions';
@@ -22,17 +23,22 @@ const Dialog = ({
   const onClose=()=>{
     dispatch(setDialog({isOpen:false}))
   }
-  if(dialog){
+
   return (
     <IonModal
   isOpen={((dialog && dialog.isOpen)??false)} 
   title={dialog.title}
   onDidDismiss={()=>onClose()}
+  canDismiss={true} 
+  breakpoints={[0, 1]} // This enables the drag-to-close behavior effectively
+  initialBreakpoint={1}
   cssClass="modal-fullscreen pt-4 ion-padding"
   presentingElement={presentingElement}
-  style={{backgroundColor:"white",height:"100vh",overflowY:"scroll"}}
+
   swipeToClose={true}
->{dialog.title!==null &&<IonHeader>
+>
+<IonContent fullscreen scrollY={true}className='ion-padding' style={{"--background":"#f4f4e0"}}>
+  {dialog.title!==null &&<IonHeader>
   <IonToolbar color="success">
     <IonButtons slot="start">
      <IonBackButton  onClick={onClose} />
@@ -42,11 +48,12 @@ const Dialog = ({
     </IonTitle>
   </IonToolbar>
 </IonHeader>}
-
 <div className='ion-padding'>
 {dialog.text}
 </div>
-      <IonFooter className="ion-padding-horizontal ion-padding-vertical" style={{ display: 'flex', justifyContent: dialog.agree ? 'space-between' : 'flex-end' }}>
+   </IonContent>
+=
+      <IonFooter className="ion-padding-horizontal ion-padding-vertical" style={{ display: 'flex', "--background":"#f4f4e0",justifyContent: dialog.agree ? 'space-between' : 'flex-end' }}>
         {dialog.agree?(
           <div className='rounded-full flex  px-4   w-fit h-[3rem] text-[1rem] border-emerald-400 border-2'>
           <IonText
@@ -65,10 +72,10 @@ const Dialog = ({
           </IonText>
           </div>
       </IonFooter>
+   
     </IonModal>
   )
-};
-return null
+
 };
 
 export default Dialog;

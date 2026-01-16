@@ -3,7 +3,7 @@ import RichEditor from "./RichEditor"
 import { PageType } from "../../core/constants"
 import PicturePageForm from "./PicturePageForm"
 
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router"
 import { IonImg } from "@ionic/react"
 import { useSelector } from "react-redux"
 import Enviroment from "../../core/Enviroment.js"

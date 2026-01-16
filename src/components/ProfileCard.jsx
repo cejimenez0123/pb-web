@@ -9,17 +9,37 @@ export default function ProfileCard({profile,onClickFollow,following}){
     const dialog = useSelector(state=>state.users.dialog)
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const [pending,setPending]=useState(false)
-    const FollowDiv=({following,onClickFollow})=>{
+  //   const FollowDiv=({following,onClickFollow})=>{
 
-      return following?
-      (<div 
-       className=" bg-emerald-600  w-[9rem] btn rounded-full text-white text-center"
-               onClick={onClickFollow}>
-            <h5 className="text-white py-3 font-bold"> Following</h5>   </div>):(
-        <div className="border-2 border-emerald-600 btn bg-transparent w-[9rem] rounded-full text-center"
-                   onClick={onClickFollow}
-       ><h5 className="text-emerald-800 py-3 font-bold">Follow</h5></div>)
-   }
+  //     return following?
+  //     (<div 
+  //      className=" bg-emerald-600  w-[9rem] btn rounded-full text-white text-center"
+  //              onClick={onClickFollow}>
+  //           <h5 className="text-white py-3 font-bold"> Following</h5>   </div>):(
+  //       <div className="border-2 border-emerald-600 btn bg-transparent w-[9rem] rounded-full text-center"
+  //                  onClick={onClickFollow}
+  //      ><h5 className="text-emerald-800 py-3 font-bold">Follow</h5></div>)
+  //  }
+  const FollowDiv = ({ following, onClickFollow }) => {
+  // Common classes for both states
+  const baseClasses = "flex items-center justify-center w-[9rem] h-[3rem] rounded-full transition-all duration-200 cursor-pointer";
+  
+  return following ? (
+    <div 
+      className={`${baseClasses} bg-emerald-600 text-white`}
+      onClick={onClickFollow}
+    >
+      <span className="font-bold text-[1rem]">Following</span>
+    </div>
+  ) : (
+    <div 
+      className={`${baseClasses} border-2 border-emerald-600 bg-transparent text-emerald-800`}
+      onClick={onClickFollow}
+    >
+      <span className="font-bold text-[1rem]">Follow</span>
+    </div>
+  );
+};
     useEffect(()=>{
   
       if(profile){

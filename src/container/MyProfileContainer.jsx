@@ -205,7 +205,7 @@ useEffect(() => {
       isOpen: true,
       onClose: () => dispatch(setDialog({...dialog,isOpen:false})),
       text: <CreateCollectionForm onClose={() => dispatch(setDialog({...dialog,isOpen:false}))} />,
-      title: "Create Collection"
+      title: null
     };
     dispatch(setDialog(newDialog));
   };
@@ -294,7 +294,7 @@ onClick={()=>{router.push(Paths.calendar())}}
 
   <div className="relative flex flex-col md:flex-row justify-around mx-auto p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 
-    <div className="md:w-1/3 max-w-[60em] h-[16em] mb-6 flex justify-center md:justify-start">
+    <div className="md:w-1/3 max-w-[60em] h-[16em] mb-[4em] flex justify-center md:justify-start">
       <ProfileInfo profile={currentProfile} />
     </div>
     
@@ -306,13 +306,13 @@ onClick={()=>{router.push(Paths.calendar())}}
       <div className="flex flex-row mx-auto flex-wrap sm:justify-center md:justify-start gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
-          className="bg-soft hover:bg-emerald-500 text-white rounded-xl h-[3rem] w-[8.5rem]"
+          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
         >
           <IonText className='text-[1.2em]'>Write a Story</IonText>
         </ButtonWrapper>
         <ButtonWrapper
           onClick={ClickCreateACollection}
-          className="bg-emerald-800 hover:bg-emerald-500 text-white rounded-xl h-[3rem] w-[8.5rem]"
+          className="bg-emerald-700 hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
         >
           <IonText className="text-white text-[1.2em]">Create Collection</IonText>
         </ButtonWrapper>
@@ -322,7 +322,7 @@ onClick={()=>{router.push(Paths.calendar())}}
       <div className="flex justify-center md:justify-start w-full">
         <ButtonWrapper
           onClick={() => router.push(Paths.workshop.reader())}
-          className="font-bold mx-auto bg-sky-600 hover:bg-sky-400  mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
+          className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
         >
           <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
         </ButtonWrapper>

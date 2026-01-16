@@ -62,7 +62,7 @@ setLoading(false)
                             className="my-8 bg-emerald-600 text-white flex rounded-full py-3"
                             variant='outlined'
                          >
-                         <h6 className="mx-auto mont-medium my-auto">Sent</h6>
+                         <h6 className="mx-auto my-auto">Sent</h6>
                         
                    </a>
                    {loading?<h6>Loading...</h6>:null}

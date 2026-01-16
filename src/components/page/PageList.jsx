@@ -20,17 +20,16 @@ const PageList = ({items,forFeedback,getMore=()=>{},hasMore,isGrid,fetchContentI
   
         return(
                  
-<IonInfiniteScroll  threshold="100px">
+<IonInfiniteScroll  threshold="200px">
      {pagesInView.map((page,i)=>{
           
             
     
                 const id = `${page.id}_${i}`
-                return(<IonItem key={id}
-  className={`${isGrid && !isPhone && index % 2 === 0 ? 'gap-0 shrink-0' : ""}`}
->
+                return(
+<div key={id}>
                     <DashboardItem  key={page.id} item={page} index={i} forFeedback={forFeedback} isGrid={isGrid} page={page}/>
-                </IonItem>)
+            </div> )
           
 })}
 </IonInfiniteScroll>

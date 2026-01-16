@@ -192,12 +192,12 @@ const openDialog=()=>{
              <li  tabIndex={page}    onClick={(e)=>{
           dispatch(setHtmlContent({html:""}))
             dispatch(setEditingPage({page:null}))
-          router.push(Paths.editor.image())}}><a>     
+          router.push(Paths.editor.image)}}><a>     
             Pictures</a></li>
              <li tabIndex={page} ><a    onClick={()=>{
               dispatch(setHtmlContent({html:""}))
                 dispatch(setEditingPage({page:null}))
-    router.push(Paths.editor.link())}}
+    router.push(Paths.editor.link)}}
     >
     Link</a></li>
            <li  tabIndex={page}  onClick={()=>{ 
@@ -291,18 +291,22 @@ const openDialog=()=>{
             
     dispatch(setHtmlContent({html:""}))
            dispatch(setEditingPage({page:null}))
-          router.push(Paths.editor.image())}}><a className='mx-auto'>     <IonImg src={ImageIcon} />Pictures</a></li>
+          router.push(Paths.editor.image)}}><a className='mx-auto'>     <IonImg src={ImageIcon} />Pictures</a></li>
              <li tabIndex={3} ><a    onClick={()=>{
                 dispatch(setHtmlContent({html:""}))
                 dispatch(setEditingPage({page:null}))
-    router.push(Paths.editor.link())}} className='mx-auto'>
+    router.push(Paths.editor.link)}} className='mx-auto'>
    <IonImg src={LinkIcon}/>Link</a></li>
            <li tabIndex={4}  onClick={()=>{ 
 
 openDialog()
+
+         } }><a onClick={()=>{ 
+
+openDialog()
                  
-         } }><a className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
-    
+         } } className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
+
     }else if(page == PageName.login){
     return !currentProfile?
     (<li onClick={()=>handleCloseNavMenu(page) } 
@@ -383,12 +387,12 @@ let isNative = Capacitor.isNativePlatform()
             
           dispatch(setHtmlContent({html:""}))
           dispatch(setEditingPage({page:null}))
-          router.push(Paths.editor.image())}}><a className='mx-auto text-soft'> Picture</a></li>
+          router.push(Paths.editor.image)}}><a className='mx-auto text-soft'> Picture</a></li>
    <li onClick={ClickWriteAStory}><a className='mx-auto text-soft' > Story </a></li>
     <li><a className='mx-auto text-soft' onClick={()=>{
               dispatch(setHtmlContent({html:""}))
                 dispatch(setEditingPage({page:null}))
- router.push(Paths.editor.link())}}
+ router.push(Paths.editor.link)}}
     >
   Link</a></li>
     <li className='text-soft'><a className='text-soft'>Collection</a></li>

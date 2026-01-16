@@ -133,7 +133,7 @@ const handleAddToLibrary=()=>{
                      <span className={`    my-auto`}>
                    <h6  
          className={`text-[0.9rem] md:text-[1.3rem ] md:w-[20em]  max-w-[50vw] text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
-       {item.title}</h6>         {updated}</span>:
+       {item.title.length>20?item.title.substring(0,20)+"...":item.title}</h6>         {updated}</span>:
  <span className={`  whitespace-nowrap max-w-[45vw]  no-underline text-ellipsis my-auto`}>
                    <h6   className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
                    whitespace-nowrap no-underline  my-auto`}

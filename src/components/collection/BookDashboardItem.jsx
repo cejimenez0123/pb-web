@@ -80,7 +80,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
 
   return (
     <div
-      className={`flex justify-between items-center rounded-b-lg bg-emerald-50 px-3  px-2 w-full`}
+      className={`flex justify-between items-center py-2 rounded-b-lg bg-bleuSea bg-opacity-10 w-[94vw] px-3  px-2 w-[100%]`}
     >
       {/* Profile Circle on left, hide if small phone in grid */}
       {!(isPhone && isGrid) && (
@@ -105,29 +105,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
   );
 };
 
-  
-//     const BookmarkBtn =({book})=>{
-//         let title =  book.title.length > 23 ? book.title.slice(0, 20) + '...' : book.title
-//         return(
-       
-//        <div    className={`flex flex-row justify-between rounded-b-lg text-emerald-700 pt-2  mx-auto pb-1   `}>{isPhone&&isGrid?null:
-//        <ProfileCircle isGrid={isGrid} color={"emerald-700"}
-//        profile={book.profile}/>}
-  
-//   <span className={` flex flex-row text-right open-sans-medium text-emerald-700`}>       <h6 
-//             className='my-auto text-ellipsis   
-//             whitespace-nowrap no-underline text-[0.7rem]'
-//             onClick={()=>{
-//                router.push(Paths.collection.createRoute(book.id))
-//             }}
-            
-// >{` `+title}</h6>
-// <IonImg  onClick={handleBookmark} src={bookmarked?bookmarkfill:bookmarkoutline}/></span>
-// </div>
-  
-
-// )
-//     }
+ 
    
     const handleBookmark =debounce((e)=>{
         if(currentProfile){
@@ -160,11 +138,11 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
 
 
 if(!book){
-    return<span className={`skeleton mt-2 shadow-md overflow-clip sm:max-w-[50em]  rounded-box flex flex-col bg-emerald-100`}/>
+    return<span className={`skeleton mt-2 shadow-md overflow-clip sm:max-w-[50em] w-[100%] w-[94vw]  rounded-box flex flex-col bg-emerald-100`}/>
 }
     
         return(
-            <div className='bg-emerald-50 max-w-[50em] rounded-lg '>
+            <div className='bg-blueSea bg-opacity-10 w-[100%] rounded-lg '>
     
 
 

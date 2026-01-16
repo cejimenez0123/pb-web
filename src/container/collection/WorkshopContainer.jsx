@@ -19,19 +19,20 @@ import DeviceCheck from '../../components/DeviceCheck';
 import { IonContent, useIonRouter } from '@ionic/react';
 import { setPagesInView } from '../../actions/PageActions';
 import { setCollections } from '../../actions/CollectionActions';
+import { useParams } from 'react-router';
 
 const WorkshopContainer = (props) => {
 
   const dispatch = useDispatch()
   const router = useIonRouter()
-    const pathParams = use
+    const pathParams = useParams()
   const page = useSelector(state=>state.pages.pageInView)
   const [loading,setLoading]=useState(false)
   const {error,setError,setSuccess,setSeo}=useContext(Context)
   const isNative = DeviceCheck()
   const [radius,setRadius]=useState(50)
   const [location,setLocation]=useState(null)
-  const {currentProfile} = useContext(Context)
+  const {currentProfile} = useSelector(state=>state.users)
   const [isGlobal,setIsGlobal]=useState(true)
  
   

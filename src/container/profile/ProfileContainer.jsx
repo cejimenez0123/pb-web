@@ -226,10 +226,11 @@ const pages = useMemo(() => {
             <IonButtons slot="start">
               <IonBackButton defaultHref="/" />
             </IonButtons>
-            <IonTitle>{profile ? `${profile.username}'s Profile` : 'Profile'}</IonTitle>
+            <IonTitle>{profile && `${profile.username}`}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        {/* <IonContent fullscreen={true} className='pt-8'scrollY> */}
+        
+        <IonContent fullscreen={true} className='pt-8' scrollY>
           <div className="pt-2 md:pt-8 mb-8 mx-2 ">
             <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
           </div>
@@ -247,7 +248,7 @@ const pages = useMemo(() => {
               </label>
             </span>
           )}
-          <div className=" rounded-lg w-[100vw] justify-center flex mx-auto md:w-page bg-transparent">
+          <div className=" rounded-lg w-[100%] max-w-[100vw] justify-center flex mx-auto sm:w-[50em] bg-transparent">
         <StoryCollectionTabs 
         tab={tab}
         setTab={setTab} 
@@ -258,7 +259,7 @@ const pages = useMemo(() => {
     
         
           
-        {/* <x/IonContent> */}
+        </IonContent>
     </ErrorBoundary>
   );
 }

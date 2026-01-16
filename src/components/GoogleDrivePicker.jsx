@@ -36,7 +36,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
   // --- Native Google Sign-In Flow ---
 const nativeGoogleSignIn = async () => {
     try {
-      // SocialLogin.logout({provider:"google"})
+     
       const user = await SocialLogin.login({
         provider:"google",
         options:{
@@ -94,16 +94,18 @@ const fetchFiles = async () => {
         return res.json();
       })
       .then(data => {
-        // console.log("Drive files:", data);
+        
         setFiles(data.files || []);
-        // setLoading(false);
+     
       })
       .catch(err => {
         console.error('Google Drive API error:', err);
+        setAccessToken(null)
         // setLoading(false);
       });
     }catch(err){
         console.error("Error in fetchFiles:", err);
+            setAccessToken(null)
         }
   };
   useLayoutEffect(() => {
@@ -119,19 +121,23 @@ const fetchFiles = async () => {
     dia.isOpen = true;
     dia.onClose = () => dispatch(setDialog({isOpen:false}))
     dia.title = null
-
+dia.disagreeText="Close"
+dia.disagree=()=>dispatch(setDialog({isOpen:false}))
     dia.text = (
-      <IonContent fullscreen={true} className=''>
-      <IonList className={isPhone ? "grid grid-cols-2 gap-2" : ""}>
+      <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}} className=''>
+      <IonList style={{"--background":"#f4f4e0"}} className={"bg-cream"+isPhone ? "grid grid-cols-2" : ""}>
         {files.map(file => (
-          <IonItem
+          <div
+          style={{"--background":"#f4f4e0" }}
             key={file.id}
-            className="rounded-box px-2 py-3  hover:border hover:border-purple-200"
+            className="px-2 py-2   flex bg-cream "
             onClick={() => {  
             onFilePicked(file)}}
           >
-            <h5 className="text-center text-sm">{file.name}</h5>
-          </IonItem>
+            <div className=' flex shadow-sm  text-center rounded-box border w-[100%] border-blueSea p-2 border-opacity-20 h-[100%] min-h-[8rem] hover:border-blueSea '>
+            <h5 className="mx-auto my-auto text-center bg-cream text-sm">{file.name}</h5>
+            </div>
+            </div>
         ))}
       </IonList>
       </IonContent>
@@ -141,7 +147,7 @@ const fetchFiles = async () => {
   };
 
   return (
-    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()}  className={`btn ${accessToken?"bg-soft":"border-2 border-full bg-cream text-emerald-800"} hover:bg-emerald-500 rounded-xl border-emerald-600 flex text-center w-[88%] md:w-[90%] md:mx-auto h-[3rem]`}>
+    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()}  className={`btn ${accessToken?"bg-soft border-emerald-600 ":"border-2 border-full bg-cream border-opacity-80 border-cream text-emerald-800"} hover:bg-emerald-500 rounded-xl flex text-center w-[88%] md:w-[90%] md:mx-auto h-[3rem]`}>
          
     
         {!accessToken ? (

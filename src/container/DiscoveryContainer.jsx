@@ -97,7 +97,7 @@ const router = useIonRouter()
       <ErrorBoundary>
 
       
-            <div className='  max-w-[100vw]'>
+            <div className='  p-4 max-w-[100vw]'>
            
 
           <img src={calendar}    style={{

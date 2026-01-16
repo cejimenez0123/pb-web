@@ -112,17 +112,10 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
           onChange={(e) => handleChange("name", e.currentTarget.value ?? "")}
           
           required
-          className="rounded-lg border-blueSea border-2 shadow-sm border-opacity-30 sm:w-full w-[100%] p-3 text-blueSea"
-          // className="ion-text-wrap"
-          // style={{
-          //   width: "100%",
-          //   fontSize: "1rem",
-          //   border: "1px solid var(--ion-color-light)",
-          //   borderRadius: "8px",
-          //   padding: "0.5rem",
-          // }}
+          className="rounded-lg border-blueSea bg-cream border-2 shadow-sm border-opacity-30 sm:w-full w-[100%] p-3 text-blueSea"
+   
         />
-      {/* </IonItem> */}
+  
 
       <IonLabel
         position="stacked"
@@ -135,12 +128,12 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
         autoGrow
         placeholder="What is this collection for?"
         onChange={(e) => handleChange("purpose", e.currentTarget.value ?? "")}
-        className="rounded-lg border-blueSea border-2 shadow-sm border-opacity-30 sm:w-full w-[100%] min-h-[6em] text-blueSea p-3"
+        className="rounded-lg border-blueSea border-2 bg-cream shadow-sm border-opacity-30 sm:w-full w-[100%] min-h-[6em] text-blueSea p-3"
       />
 
   
 
-          <div className="flex flex-row  text-left items-left ">
+          {/* <div className="flex flex-row  text-left items-left ">
           <InfoTooltip text="Collection will only be visible to you and those with roles" />
           <span>Private</span>
           <p className="mx-4">{formData.isPrivate ? "Yes" : "No"}</p>
@@ -156,7 +149,37 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
                    <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
           <span>Open Collaboration</span>
           <p className="mx-4">{formData.isOpenCollaboration ? "Yes" : "No"}</p>
-          </div>
+          </div> */}
+          <div className="flex min-h-[10em] flex-col gap-4"> {/* Container to separate the two rows */}
+  
+
+<div className="flex flex-row items-center py-2">
+  <div className="flex items-center">
+    <InfoTooltip text="Collection will only be visible to you and those with roles" />
+    <span className="ml-1">Private</span>
+  </div>
+  
+  <p className="mx-4 font-medium">{formData.isPrivate ? "Yes" : "No"}</p>
+  
+  {/* The Switch - added flex-shrink-0 and fixed dimensions */}
+  <div 
+    onClick={() => handleChange("isPrivate", !formData.isPrivate)} 
+    className={`h-6 w-6 flex-shrink-0 cursor-pointer shadow-md rounded-full transition-all ${
+      formData.isPrivate ? "bg-blue-400 bg-opacity-50" : "bg-emerald-500"
+    }`}
+  />
+</div>
+
+{/* Open Collaboration Row */}
+<div className="flex flex-row items-center py-2">
+  <div className="flex items-center">
+    <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
+    <span className="ml-1">Open Collaboration</span>
+  </div>
+  <p className="mx-4 font-medium">{formData.isOpenCollaboration ? "Yes" : "No"}</p>
+</div>
+
+</div>
   <div onClick={() => handleChange("isOpenCollaboration", !formData.isOpenCollaboration)} className={`min-h-6 shadow-md mx-8 rounded-full max-w-6 ${!formData.isOpenCollaboration ?   "bg-blueSea bg-opacity-30":"bg-emerald-500"}`}></div>
 
     
@@ -173,12 +196,12 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
               expand="block"
 onClick={handleSubmit}
             //   className="bg-emerald-800 text-white rounded-full" 
-              className='rounded-full flex btn  btn shadow-sm px-4  bg-blueSea bg-opacity-90  text-center w-fit h-[3rem] text-[1rem] border-2'
+              className='rounded-full flex btn  btn shadow-sm px-4  border-blueSea border-1 bg-blueSea bg-opacity-90  text-center w-fit h-[3rem] text-[1rem] border-2'
             >
           <IonText
             fill="outline"
             color="white"
-            className=" my-auto mx-auto text-white text-[1rem]"
+            className=" my-auto mx-autotext-white text-[1rem]"
             
           >
            {submitting ? "Creating..." : "Create"}

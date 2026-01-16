@@ -206,7 +206,7 @@ const googleAddLink = baseUrl + queryString;
         dia.isOpen = true
         dia.disagreeText= "Close"
        
-        dia.title =chosenEvent.summary
+        dia.title =null
       dia.text=<div className="text-left text-blueSea">
         <span>{chosenEvent.location}</span>
     <span dangerouslySetInnerHTML={{__html:"<div>"+chosenEvent.description+"</div>"}} /></div>
@@ -251,7 +251,7 @@ const googleAddLink = baseUrl + queryString;
         <div  className="">
         <div className={`flex  sm:w-[40em] mx-auto  text-left ${isPhone?"flex-col":"flex-row"}`}>
         <span className="flex flex-row my-auto max-h-12 w-16"> 
-            <IonText className="my-auto mont-medium mx-2 text-emerald-700">Filter by Area:</IonText>
+            <IonText className="my-auto mx-2 text-emerald-700">Filter by Area:</IonText>
 
         <select
           className="border w-fit  my-auto text-emerald-700 h-[2em] rounded-lg bg-transparent px-2 text-l"
@@ -316,7 +316,7 @@ const googleAddLink = baseUrl + queryString;
                     
                       onClick={()=>handleDialogOpen(event)}
                          className=" 
-                          border-blueSea border  rounded-[3.5em]   min-h-42 my-1  py-4  "
+                          border-blueSea border  border-opacity-50 rounded-[3.5em]   min-h-42 my-1  py-4  "
                      >
                       <div  className={`flex
                       flex-row justify-between  px-6    `}>

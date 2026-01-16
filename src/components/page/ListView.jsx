@@ -63,12 +63,12 @@ const router = useIonRouter()
           if (!item) return null;
 
           return (
-            <IonItem
+            // <IonItem
             
-            key={item.id || i} className="">
+            // key={item.id || i} className="">
       
            <div
-           className="max-w-[94vw] mx-auto "
+           className="max-w-[94vw] sm:max-w-[45em] w-[100%] mx-auto "
   key={item.id || i}
   
 >
@@ -79,7 +79,7 @@ const router = useIonRouter()
                 <DashboardItem isGrid={isGrid} page={item} forFeedback={forFeedback} />
               )}
               </div>
-            </IonItem>
+            // </IonItem>
 
           );
         })}</div></IonList>

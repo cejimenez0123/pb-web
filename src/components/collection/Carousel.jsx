@@ -69,7 +69,7 @@ export default function Carousel({ book, isGrid }) {
         if (!stc?.story) return null;
 
         return (
-          <swiper-slide className="" key={stc.id}>
+          <swiper-slide className="w-[100%]" key={stc.id}>
             <div
               onTouchStartCapture={() => {
                 sendGAEvent(
@@ -86,10 +86,10 @@ export default function Carousel({ book, isGrid }) {
                   false
                 );
               }}
-              className="flex-col flex "
+              className="flex-col w-[100%] flex "
               id={stc.id}
             >
-              <h5 className="min-h-10 pt-3 max-w-[15em] px-4 text-emerald-800 top-0 no-underline text-ellipsis whitespace-nowrap overflow-hidden text-left">
+              <h5 className="min-h-10 pt-3 w-[100%] px-4 text-emerald-800 top-0 no-underline text-ellipsis whitespace-nowrap overflow-hidden text-left">
                 {stc.story.title}
               </h5>
 
