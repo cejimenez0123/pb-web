@@ -150,7 +150,7 @@ const libraryForums = () => {
       <ErrorBoundary>
 
         <IonContent fullscreen={true} scrollY>
-        <div className='flex bg-emerald-600  flex-row justify-end'>
+        <div className='flex bg-emerald-600 pt-8 flex-row justify-end'>
 
           <img src={calendar} onClick={()=>{navigate(Paths.calendar())}}
           className='max-w-16  p-4 absolute top-0 right-0  max-h-16'/>
