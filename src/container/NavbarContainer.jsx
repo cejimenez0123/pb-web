@@ -118,7 +118,7 @@ const openDialog=()=>{
       }else if(page==PageName.home){
         navigate(Paths.home())
       }else if(page==PageName.apply){
-        navigate(Paths.apply())
+        navigate(Paths.onboard())
       }else if(page==PageName.feedback){
         navigate(Paths.feedback())
       }
