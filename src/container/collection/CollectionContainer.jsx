@@ -398,7 +398,7 @@ console.log("DID",router.routeInfo)
           const handleBack = (e) => {
     e.preventDefault();
     if (window.history.length > 1) {
-      router.push(-1);
+       router.goBack()
     } else {
       router.push(Paths.discovery());
     }
@@ -506,8 +506,9 @@ console.log("DID",router.routeInfo)
     </IonHeader>
 
 
-  <IonContent>
- <IonCard className="">
+  <IonContent style={{"--background":"#f4f4e0"}} scrollY={true} fullscreen className="pb-24">
+    {/* <div className="sm:max-w-[60em] bg-cream mx-auto "> */}
+ <IonCard style={{"--background":"transparent",maxWidth:"60em",margin:"auto"}}className="">
           <IonCardHeader className="mx-auto ">
             <div className="flex items-center justify-between px-4 gap-2">
               <div>{collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
@@ -518,7 +519,7 @@ console.log("DID",router.routeInfo)
             </div>}
            </div>
           </IonCardHeader>
-          <div className="mx-auto px-6">
+          <div className="mx-auto px-6 ">
           <IonCardContent  class="  ion-padding">
             <IonText color="medium w-full bg-emerald-100 min-h-6 bg-red-200">
               <h6>{collection.purpose}</h6>
@@ -561,11 +562,12 @@ console.log("DID",router.routeInfo)
           </IonCardContent>
           </div>
         </IonCard>
-
+{/* </div> */}
   {collections && collections.length > 0 && (
-        <div className="mx-auto my-4 rounded-xl bg-white pt-12 px-4 pb-4">
-          <h5 className="text-xl px-1 pb-2">Anthologies</h5>
-          <div className="flex flex-row min-h-[14rem] overflow-x-scroll">
+        <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4">
+          <h5 className="text-xl text-emerald-800 px-1 pb-2">Anthologies</h5>
+          <IonList>
+          <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
             {collections
               .filter((col) => col)
               .map((col, i) => (
@@ -574,6 +576,7 @@ console.log("DID",router.routeInfo)
                 </div>
               ))}
           </div>
+          </IonList>
         </div>
       )}
 <div className="sm:w-[50rem] mx-auto">

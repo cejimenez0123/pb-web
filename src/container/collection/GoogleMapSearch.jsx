@@ -70,7 +70,7 @@ export default function PlacesSearchMap({ onLocationSelected }) {
     onChange={handleInput}
     disabled={!ready}
     placeholder="Search a place"
-    className="w-full bg-transparent p-2 text-lg rounded-full border border-gray-300"
+    className="w-[100%] bg-transparent p-2 text-lg rounded-full border border-gray-300"
   />
 
   {status === 'OK' && (

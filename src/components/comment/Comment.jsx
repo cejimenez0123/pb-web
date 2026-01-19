@@ -75,7 +75,7 @@ export default function Comment({page,comment,level}){
         <div class=" text-left   sm:min-w-[30em] max-w-[100%] py-1 sm:my-4 " id={`comment-${comment.id}`}>
         <div className={replyInput||updateComment?" rounded-t-lg rounded-b-lg":""}>
 
-           <div className="  shadow-sm bg-slate-50  rounded-xl text-emerald-800  sm:px-8  ">
+           <div className="  shadow-sm bg-softBlue rounded-xl text-emerald-800  sm:px-8  ">
           <div className="flex flex-row py-2 sm:pl-4 pr-4 sm:pr-12 justify-between"> 
       
           <span className="ml-2"><ProfileCircle profile={comment.profile} color={"emerald-700"}/></span>

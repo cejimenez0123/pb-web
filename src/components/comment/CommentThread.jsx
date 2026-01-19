@@ -6,13 +6,13 @@ export default function CommentThread({page,comments,level=0}){
    
 
     return(
-        <div className="bg-emerald-100 h-[100vh]">
+        <div className="">
     
-                     <IonList>
+                     <IonList >
                         {comments.map(com=>{
                             return(<div 
                                 key={com.id}
-                                className={`ml-1 sm:rounded-[15%]   `}>
+                                className={`pl-1 sm:rounded-[15%]  bg-cream `}>
                                     <Comment page={page} comment={com} level={level+1}/></div>)
                         })}
              </IonList>

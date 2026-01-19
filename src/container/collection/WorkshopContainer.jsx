@@ -233,7 +233,7 @@ setTimeout(()=>{
 
   
 const localCheck=()=>{
-  return(<label className=' mb-4 mt-8 border-2 border-emerald-800 flex flex-row p-2 number border-emerald-600 rounded-full   '>
+  return(<label className=' mb-4 mt-8 border-2 border-emerald-800 flex flex-row p-2 number border-opacity-50 rounded-full   '>
         
           <h6 className='text-xl my-auto ml-4'>Radius:</h6>
      
@@ -254,15 +254,28 @@ const localCheck=()=>{
   >
    <div className='h-[100vh] overflow-hidden'>
       {currentProfile?(
-        <div className="text-emerald-800 mx-auto w-[92vw] shadow-sm sm:min-h-[30em] mt-12 flex flex-col  md:border-2 text-left sm:w-[20rem] md:border-emerald-600 p-4    rounded-lg ">
+        <div className="text-emerald-800 mx-auto w-[100%] shadow-sm sm:min-h-[30em] mt-12 flex flex-col  text-left sm:w-[20rem]  p-4    rounded-lg ">
        <div>
-        <span className='flex my-8 flex-row'>
-     <h2 className='text-xl  font-bold ml-2 mr-10'> {currentProfile.username}</h2>{<span className={`${location&& location.longitude && location.latitude||isGlobal?"bg-emerald-600":"bg-yellow-500" } rounded-full w-8 max-h-6 flex`}><img  className="mx-auto my-auto" src={check}/></span>}</span></div>
+        <span className='flex my-8 flex-row justify-between'>
+     <h2 className='text-xl  font-bold ml-2'> {currentProfile.username}</h2>{<span className={`${location&& location.longitude && location.latitude||isGlobal?"bg-emerald-600":"bg-yellow-500" } rounded-full w-8 max-h-6 flex`}><img  className="mx-auto my-auto" src={check}/></span>}</span></div>
      <div className='flex flex-row mb-8  justify-start'>
      <InfoTooltip text="Do you want to find users local to your area or around the world?" />
      <label className='flex w-[100%] flex-row justify-between'>
-      <h6 className='mont-medium text-xl'> Go {!isGlobal?"Global":"Local"}</h6>
-      <input checked={isGlobal} type="checkbox"  onChange={handleGlobal}  className='toggle bg-white bg-slate-400'/></label>
+      <h6 className='text-xl'> Go {!isGlobal?"Global":"Local"}</h6>
+
+<input 
+  type="checkbox" 
+  checked={isGlobal} 
+  onChange={handleGlobal} 
+  className={`
+    toggle 
+    border-2 border-emerald-800 border-opacity-50 my-auto
+    ${!isGlobal ? 'toggle-success bg-emerald-600' : 'toggle-success bg-slate-400'} 
+    
+  `} 
+/>
+   
+      </label>
 
 </div>
 
@@ -273,14 +286,14 @@ const localCheck=()=>{
   {page?<PageWorkshopItem page={page}/>:null}
   
    
-      <div  className="bg-soft flex text-white mt-8 rounded-full"
+      <div  className="bg-soft flex bg-blueSea text-white mt-8 rounded-full"
       onClick={handleGroupClick} ><h6 className='mx-auto text-xl   p-6 my-auto'>Join a Workshop</h6>
     </div>       <div className='w-fit flex justify-center p-8'>     
   {loading?<img src={loadingAnimation} className='max-w-24 mx-auto p-6 max-h-24 '/>:null}
   </div>
   </div>
 
-):<div className='text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col  border-2 text-left sm:w-[20rem] border-emerald-600 p-4  skeleton bg-slate-100  rounded-lg '/>}
+):<div className='text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col  text-left sm:w-[20rem] 0 p-4  skeleton bg-slate-100  rounded-lg '/>}
 
     
    

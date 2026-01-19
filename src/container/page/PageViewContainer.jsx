@@ -135,7 +135,7 @@ export default function PageViewContainer() {
   },[page])
   const handleBack = () => {
     if (window.history.length > 1) {
-      router.push(-1);
+          router.goBack()
     } else {
       router.push(Paths.discovery());
     }
@@ -159,17 +159,17 @@ export default function PageViewContainer() {
 
   return (
     <ErrorBoundary>
-      <div className="bg-emerald-100  ">
-      {/* <IonContent fullscreen={true} color={"transparent"}scrollY={true}> */}
-<div className="min-w-[100vw] min-h-[100vh] bg-emerald-100">
+         <IonContent fullscreen={true} className="ion-padding-bottom"style={{background: "#f0f0f0"}} scrollY={true}>
+ 
+
         <IonHeader className=" ">
-             <div className="bg-emerald-100 pt-12">{Capacitor.isNativePlatform()||true?<IonBackButton
+             <div className=" pt-12">{Capacitor.isNativePlatform()||true?<IonBackButton
              className="ion-padding-start "
       onClick={handleBack}
     />:null}</div>  </IonHeader>
-       
-        <div className=" text-center py-[4em]  bg-emerald-100 mx-auto" style={{height:"100%",width:"100vw",margin:"auto auto",paddingBottom: "5rem" ,}}>
-          {pending ? (
+       <div className=" min-h-[40em] ion-padding-bottom  ">
+        <div className=" text-center bg-cream py-[4em] mx-auto h-[100%]" >
+          {pending ? ( 
             <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
           ) : errorStatus === 403 ? (
             <div className="flex  mx-auto md:w-50 px-8 h-page">
@@ -178,9 +178,9 @@ export default function PageViewContainer() {
               </h1>
             </div>
           ) : canUserSee ? (
-            <div className="w-fit  bg-emerald-100  mx-auto sm:max-w-[50em]">
+            <div className="w-fit  bg-cream  mx-auto sm:max-w-[50em]">
               <PageDiv page={page} />
-             <div className="text-left px-4  py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
+             <div className="text-left px-4 bg-cream py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
               <CommentThread page={page} comments={rootComments} />
         
            </div>
@@ -190,12 +190,11 @@ export default function PageViewContainer() {
             </div>
           )}
         </div>
-       </div>
+       
       
-        
-      {/* </IonContent> */}
-      </div>
-      
+
+         </div>
+      </IonContent>
     </ErrorBoundary>
   );
 }

@@ -29,6 +29,7 @@ export default {
     },
     colors:{
       ...colors,
+      "softBlue":"#bae6fe",
       "blueSea":"#0097b2",
       "soft":"#40906f",
       "golden":"#f85e30",

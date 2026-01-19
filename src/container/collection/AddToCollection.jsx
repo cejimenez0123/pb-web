@@ -152,7 +152,7 @@ const filteredSortedStories = useMemo(() => {
 
   const handleBack = () => {
     if (window.history.length > 1) {
-      router.push(-1);
+       router.goBack()
     } else {
       router.push(Paths.discovery());
     }

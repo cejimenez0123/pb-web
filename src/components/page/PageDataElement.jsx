@@ -53,7 +53,7 @@ switch(page.type){
      alt={page.title} src={image}
     />:
     <IonImg        id="page-data-pic"
-    className="w-full h-full object-contain sm:w-[50em]"
+    className="w-full h-full object-contain "
 
     onClick={()=>{
    

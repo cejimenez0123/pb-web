@@ -1,13 +1,13 @@
 import { useState, useEffect, useLayoutEffect,  useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { SocialLogin } from "@capgo/capacitor-social-login";
-import { IonItem, IonText, IonList, IonContent } from '@ionic/react';
+import { IonItem, IonText, IonList, IonContent, IonImg, IonIcon } from '@ionic/react';
 import Context from "../context";
 
 import { Preferences } from '@capacitor/preferences';
 import { setDialog } from '../actions/UserActions';
 import { Capacitor } from '@capacitor/core';
-
+import Googlelogo from "../images/logo/googlelogo.png";
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
 
 
@@ -147,25 +147,61 @@ dia.disagree=()=>dispatch(setDialog({isOpen:false}))
   };
 
   return (
-    <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()}  className={`btn ${accessToken?"bg-soft border-emerald-600 ":"border-2 border-full bg-cream border-opacity-80 border-cream text-emerald-800"} hover:bg-emerald-500 rounded-xl flex text-center w-[88%] md:w-[90%] md:mx-auto h-[3rem]`}>
+    <button 
+  onClick={!accessToken ? () => nativeGoogleSignIn() : () => openDialog()}  
+  className={`
+    flex items-center justify-start text-center 
+     btn
+    w-[88%] md:w-[90%] md:mx-auto h-[3.5rem] max-w-[24em]
+    rounded-xl border-2 overflow-hidden
+    ${accessToken 
+      ? "bg-emerald-600 border-emerald-600 text-white" 
+      : "bg-cream border-cream text-emerald-800"
+    } 
+    hover:bg-emerald-500 transition-all
+  `}
+>
+  
+    {!accessToken? (
+      <div className="flex jutify-around w-[84%] flex-nowrap flex-row max-w-[24em]  ">
+     <IonImg src={Googlelogo} style={{ height: '1em', width: 'fit-content' }} 
+          className={`flex-shrink-auto`} />
+
+       <IonText
+          className={`${!accessToken?"text-emerald-800 ":"text-white bg-soft"} whitespace-nowrap my-auto text-[1.2em]`}
+            >
+       
+            Log in to Google Drive
+          </IonText> 
+      </div>
+    ) : (
+      <IonText className="text-[1.1rem] mx-auto font-medium whitespace-nowrap">
+        Open Google Drive
+      </IonText>
+    )}
+ 
+</button>
+  //   <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()}  className={`btn max-w-[24em] ${accessToken?"bg-soft border-emerald-600 ":"border-2 border-full bg-cream border-opacity-80 border-cream text-emerald-800"} hover:bg-emerald-500 rounded-xl flex text-center w-[88%] md:w-[90%] md:mx-auto h-[3rem]`}>
          
     
-        {!accessToken ? (
-  
-          <IonText
-          className={`mx-auto ${!accessToken?"text-emerald-800 ":"text-white bg-soft"} my-auto text-[1.2em]`}
-            >
-          
-            Log in to Google Drive
-          </IonText>
-        ) : (
+  //       {!false ? (
+  // <div className='flex flex-row w-full'>
+  //   <IonImg src={Googlelogo} alt="Google Logo" style={{height: '2em'}} className='px-4 my-auto' />
 
-            <IonText      class={`mx-auto text-white my-auto text-[1.2em]`}>
-              Open Google Drive
-            </IonText>
-        )}
+  //         <IonText
+  //         className={`mx-2 ${!accessToken?"text-emerald-800 ":"text-white bg-soft"} my-auto text-[1.2em]`}
+  //           >
+          
+  //           Log in to Google Drive
+  //         </IonText>  </div>
+  //       ) : (
+
+  //           <IonText      class={`mx-auto text-white my-auto text-[1.2em]`}>
+  //             Open Google Drive
+  //           </IonText>
+  //       )}
       
    
-    </span>
+  //   </span>
   );
 }

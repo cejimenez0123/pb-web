@@ -33,8 +33,8 @@ const Paths ={
         createRoute:(id)=>{return `/book/${id}`
     } },
     collection:{
-        route: ()=>{return '/collection/:id'},
-        createRoute:(id)=>{return "/collection/"+id}
+        route: ()=>{return '/collection/:id/view'},
+        createRoute:(id)=>{return "/collection/"+id+"/view"}
     },
     editor:
     {

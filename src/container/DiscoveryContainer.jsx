@@ -18,7 +18,7 @@ import Context from '../context.jsx';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import {  IonContent,IonItem, IonText, useIonRouter } from '@ionic/react';
+import {  IonContent,IonHeader,IonItem, IonText, IonToolbar, useIonRouter } from '@ionic/react';
 
 function DiscoveryContainer() {
   const { seo,setSeo } = useContext(Context);
@@ -97,17 +97,7 @@ const router = useIonRouter()
       <ErrorBoundary>
 
       
-            <div className='  p-4 max-w-[100vw]'>
-           
-
-          <img src={calendar}    style={{
-    filter:
-      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
-  }}
-onClick={()=>{router.push(Paths.calendar())}}
-
-          />
-                    </div>
+        
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><DiscoveryEmbed/>} dash={()=><DashboardEmbed />} />
 
      
@@ -146,7 +136,21 @@ export default DiscoveryContainer;
   };
 
 
-   return <IonContent fullscreen={true} className=''><div className=" sm:pt-12 ">
+   return <IonContent fullscreen={true} className=''>
+   
+           <div className=' flex flex-row flex-end p-4 max-w-[100vw]'>
+<div className='w-[100%]'/>
+          <img src={calendar}  className=''  style={{
+            left:"0",
+    filter:
+      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
+  }}
+onClick={()=>{router.push(Paths.calendar())}}
+
+          />
+                    </div>
+    
+    <div className=" sm:pt-12 ">
       {/* Tabs */}
       <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
         <div className="flex rounded-full border  sm:w-[40em] lg:w-[30em] border-emerald-600">
@@ -181,6 +185,7 @@ export default DiscoveryContainer;
           </button>}
         </div>
       </div>
+      <div className='pt-12'>
         <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
           <motion.div
             key={tab}
@@ -199,6 +204,7 @@ export default DiscoveryContainer;
             {tab === "disc" ? disc() :dash()}
           </motion.div>
         </AnimatePresence>
+      </div>
       </div>
 </IonContent>
   

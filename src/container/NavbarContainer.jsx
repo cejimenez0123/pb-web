@@ -95,9 +95,15 @@ const router = useIonRouter()
 
 const openDialog=()=>{
   let dia = {...dialog}
-  dia.title = "Create Collection"
+  dia.title = null
   dia.isOpen = true
   dia.onClose= ()=>{
+    let dia = {...dialog}
+    dia.isOpen = false
+    dispatch(setDialog(dia))
+  }
+  dia.disagreeText="Close"
+  dia.disagree=()=>{
     let dia = {...dialog}
     dia.isOpen = false
     dispatch(setDialog(dia))
@@ -109,6 +115,7 @@ const openDialog=()=>{
     let dia = {...dialog}
     dia.isOpen = false
     dispatch(setDialog(dia))
+  
   }}/>
   dispatch(setDialog(dia))
 }
@@ -128,7 +135,7 @@ const openDialog=()=>{
         dispatch(setPageInView({page:null}))
       router.push(Paths.workshop.reader())
       }else if(page==PageName.apply){
-       router.push(Paths.apply())
+       router.push(Paths.onboard)
       }else if(page==PageName.feedback){
        router.push(Paths.feedback())
       }else{
@@ -367,7 +374,8 @@ openDialog()
    
 };
 let isNative = Capacitor.isNativePlatform()
- return !isNotPhone||isNative||isTablet?(<div className="navbar flex items-start  justify-between px-4 max-w-[100vw] h-54 bg-soft">
+ return !isNotPhone||isNative||isTablet?(<div className="navbar flex items-start  justify-between px-4 sm:px-20 max-w-[100%] h-54 bg-soft">
+
    <div className='flex flex-col'>
    <IonImg src={library} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
     onClick={()=>{router.push(Paths.discovery())}}/>
@@ -395,7 +403,7 @@ let isNative = Capacitor.isNativePlatform()
  router.push(Paths.editor.link)}}
     >
   Link</a></li>
-    <li className='text-soft'><a className='text-soft'>Collection</a></li>
+    <li onClick={()=>{openDialog()}}className='text-soft'><a className='text-soft'>Collection</a></li>
   </ul>
 </div>
 <div className='flex flex-col'>
@@ -405,16 +413,18 @@ let isNative = Capacitor.isNativePlatform()
   }}/>
   <h6 className='text-white text-xs'>Workshop</h6>
   </div>
-  <div onClick={()=>router.push(Paths.myProfile)} className={`dropdown ${isTablet?"dropdown-top":"dropdown-bottom"} dropdown-end`}>
+  <div onClick={()=>currentProfile?router.push(Paths.myProfile):router.push(Paths.login())} className={`flex rounded-full max-h-8 flex-col`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-        <div className="w-5 rounded-full">
-        <div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
-    <IonImg className="object-fit  " src={profilePic}/></div>
-    
+        {/* <div className="w-4"> */}
+        <div  className="overflow-hidden max-h-10 rounded-full ">
+    <IonImg className="object-fit max-h-10 "  src={profilePic}/></div>
+   
         </div> 
+       
+      {/* </div> */}
+      {/* <h6 className='text-white text-xs'> Profile</h6> */}
       </div>
-      </div>
- </div>):(<div className="navbar flex items-start  max-w-[100vw] h-54 bg-emerald-800">
+ </div>):(<div className="navbar flex items-start  max-w-[100vw] px-4 h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isNative?menuDropdown():
     <a  onClick={()=>currentProfile?router.push(Paths.calendar()):router.push("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
@@ -430,7 +440,7 @@ let isNative = Capacitor.isNativePlatform()
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-5 rounded-full">
         <div  className="overflow-hidden rounded-full max-w-8  max-h-8 ">
-    <IonImg className="object-fit  " src={profilePic}/></div>
+    <IonImg  onClick={()=>currentProfile?router.push(Paths.myProfile):router.push(Paths.login())} className="object-fit sm:w-12 sm:h-12 " src={profilePic}/></div>
     
         </div> 
       </div>

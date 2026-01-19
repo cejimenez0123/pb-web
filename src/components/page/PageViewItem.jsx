@@ -13,8 +13,9 @@ import useScrollTracking from "../../core/useScrollTracking"
 import isValidUrl from "../../core/isValidUrl"
 import Context from "../../context"
 import { PageType } from "../../core/constants"
-import { useIonRouter } from "@ionic/react"
+import { IonImg, useIonRouter } from "@ionic/react"
 import LinkPreview from "../LinkPreview"
+import Enviroment from "../../core/Enviroment"
 
 export default function PageViewItem({page}) {
     const ref = useRef()
@@ -130,7 +131,7 @@ switch(page.type){
      }} 
      alt={page.title} src={image}
     />:
-    <IonImg        id="page-data-pic"
+    <IonImg       id="page-data-pic"
     className="w-full h-full object-contain sm:w-[50em]"
 
     onClick={()=>{

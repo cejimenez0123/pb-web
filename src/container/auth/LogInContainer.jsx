@@ -38,7 +38,7 @@ export default function LogInContainer() {
    },[currentProfile])
 
     return (
-        // <IonContent fullscreen={true}>
+        <IonContent fullscreen={true}>
             <div className='py-10'>
      
             <LogInCard  
@@ -48,7 +48,7 @@ export default function LogInContainer() {
             setPassword={(str)=>setLiPassword(str)}/>
             </div>
   
-        // </IonContent>
+         </IonContent>
     )
 }
 
@@ -162,8 +162,8 @@ dia.text=(<ForgotPasswordForm/>)
 dispatch(setDialog(dia))
     }
     return(
-        <ErrorBoundary>
-    <div  className=' py-0 scroll-auto flex md:mt-8  mx-auto sm:max-w-[50em]  lg:mt-36 mb-16 rounded-lg   text-emerald-800 p-4 '><div className='   flex items-center gap-2'>
+    //    
+    <div  className=' flex md:mt-8  mx-auto sm:max-w-[50em]  lg:mt-36 mb-16 rounded-lg   text-emerald-800 p-4 '><div className='   '>
         
         <div  className='mx-auto'>
             <form className=' sm:max-w-[40em] overflow-auto pt-4'>
@@ -238,5 +238,8 @@ dispatch(setDialog(dia))
         </form>
 
                 </div></div>
-    </div></ErrorBoundary>)
+                
+    </div>
+    )
+
 }

@@ -274,20 +274,17 @@ useEffect(() => {
   }
 return<IonContent fullscreen={true} className='pt-12'><ErrorBoundary>
 
-                    <div className='flex  md:pt-12 mt-12   px-12 flex-row justify-between'>
+                    <div className='flex  mt-4  p-4 flex-row justify-between'>
                          <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
      
-                           <div>
-      <img src={calendar}    style={{
-        
+                            <img src={calendar}  className=''  style={{
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
   }}
 onClick={()=>{router.push(Paths.calendar())}}
-          className={` in-w-18 max-h-20 max-w-20 min-h-18  sm:right-12   `+
-          `md::min-w-20 md:max-h-20 md:max-w-20 md:min-h-20 `}/>
+
+          />
           
-                    </div>
                   
                     </div>
   <div >

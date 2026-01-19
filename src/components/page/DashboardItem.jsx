@@ -295,27 +295,27 @@ useEffect(() => {
     return isGrid
       ? null
       : (
-         <div className="flex-row w-[100%] sm:w-[50em] h-16 overflow-clip mx-auto bg-blueSea bg-opacity-10 flex text-white">
+         <div className="flex-row w-[100%] sm:w-[50em] h-16 overflow-clip mx-auto bg-blueSea bg-opacity-30 flex text-white">
        <div className={`${likeFound ? "bg-emerald-400 text-cream" : "bg-blueSea bg-opacity-20"} text-center grow w-1/3`}>
             <div
               onClick={handleApprovalClick}
               className={`py-2 flex  mx-auto text-white border-none h-[100%] border-none`}
             >
-              <IonText className="text-xl text-emerald-700 m-auto p-0">Yea{likeFound ? "" : ""}</IonText>
+              <IonText className="text-xl text-cream font-bold  m-auto p-0">Yea{likeFound ? "" : ""}</IonText>
             </div>
           </div>
           <div className={" bg-blueSea bg-opacity-10 border-blueSea border-opacity-30 border-x-2 border-y-0 text-center  grow w-1/3"}>
             <div
               className='text-emerald-700 text-center mx-auto bg-blueSea bg-opacity-10 py-2 border-none'
               onClick={() => handleClickComment()}>
-              <IonText className="text-xl text-emerald-700 m-auto p-0">Review</IonText> 
+              <IonText className="text-xl text-cream font-bold m-auto p-0">Review</IonText> 
             </div>
           </div>
          
           {!page.recommended ? (
                <div onClick={onClickShare} className="flex-1/3 grow bg-blueSea bg-opacity-20 text-center flex justify-center items-center">
                     {/* <IonButton  fill="clear" color="success"> */}
-                      <IonText className="text-xl text-emerald-700 m-auto p-0">Share</IonText>
+                      <IonText className="text-xl text-cream font-bold  m-auto p-0">Share</IonText>
                       </div>
              
           ) : (
@@ -351,7 +351,7 @@ useEffect(() => {
 
       <IonCardContent className=" mx-auto bg-transparent">
         {description(page)}
-        <div className='  overflow-clip p-2 max-h-[30rem] sm:max-h-[50rem]'>
+        <div className=' w-[100%]'>
         <PageDataElement isGrid={isGrid} page={page} />
         </div>
       </IonCardContent>

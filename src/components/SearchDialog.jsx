@@ -21,8 +21,9 @@ import { searchDialogToggle } from '../actions/UserActions';
 import { useSelector, useDispatch } from 'react-redux';
 import checkResult from '../core/checkResult';
 import { useCallback } from 'react';
-import { getMyCollections } from '../actions/CollectionActions';
+import { getMyCollections, getPublicCollections } from '../actions/CollectionActions';
 import { getMyStories } from '../actions/StoryActions';
+import { getPublicStories } from '../actions/PageActions';
 
 
 const SearchDialog = ({ presentingElement }) => {
@@ -43,15 +44,24 @@ const router = useIonRouter()
  
   const [selectedFilters,setSelectedFilters]=useState([])
   useEffect(()=>{
+    if(currentProfile){
     dispatch(getMyCollections())
     dispatch(getMyStories())
-  },[])
+    }else{
+      dispatch(getPublicStories())
+      dispatch(getPublicCollections())
+      
+    }
+
+  },[currentProfile])
+  useEffect(()=>{
+  let list = [...personalCols,...personalStories].map(item=>{return{title:item.title,objectID:item.id,type:item.colList?"collection":"story"}})
+    setSearchContent([...list]);
+
+
+},[])
   
-useEffect(() => {
-  if (searchText && searchText.length==0) {
-    setSearchContent([...personalCols, ...personalStories]);
-  }
-}, [personalCols, personalStories, dispatch, searchText]);
+
   const filters = useMemo(() => {
     const includeTypes = { cols: "collections", stories: "stories", profiles: "profiles", hashtags: "hashtags" };
     const base = [includeTypes.profiles, includeTypes.hashtags, includeTypes.cols, includeTypes.stories];
@@ -74,7 +84,9 @@ const searchAction = useCallback(() => {
       checkResult(
         result,
         returned => {
+
           const { results } = returned;
+          console.log("Search Results:", results);
           setSearchContent(results);
         },
         err => console.error("Search Error:", err.message)
@@ -100,7 +112,7 @@ searchAction()
     };
   const handleOnClick = (searchItem) => {
     dispatch(searchDialogToggle({ open: false }));
-router.push(`/${searchItem.type}/${searchItem.objectID}`);
+router.push(`/${searchItem.type}/${searchItem.objectID}/view`);
   };
 
   return (
