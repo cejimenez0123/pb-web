@@ -156,33 +156,34 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
 <div className="flex flex-row items-center py-2">
   <div className="flex items-center">
     <InfoTooltip text="Collection will only be visible to you and those with roles" />
-    <span className="ml-1">Private</span>
+    <span className="ml-1 text-emerald-800">Private</span>
   </div>
   
-  <p className="mx-4 font-medium">{formData.isPrivate ? "Yes" : "No"}</p>
+  <p  onClick={() => handleChange("isPrivate", !formData.isPrivate)}  className="mx-4 bg-blueSea bg-opacity-50 px-3 min-w-14 text-center rounded-full font-medium text-white">{formData.isPrivate ? "Yes" : "No"}</p>
   
   {/* The Switch - added flex-shrink-0 and fixed dimensions */}
-  <div 
-    onClick={() => handleChange("isPrivate", !formData.isPrivate)} 
+  {/* <div 
+   
     className={`h-6 w-6 flex-shrink-0 cursor-pointer shadow-md rounded-full transition-all ${
       formData.isPrivate ? "bg-blue-400 bg-opacity-50" : "bg-emerald-500"
     }`}
-  />
+  /> */}
 </div>
 
 {/* Open Collaboration Row */}
 <div className="flex flex-row items-center py-2">
-  <div className="flex items-center">
+  <div className="flex flex-row items-center">
     <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
-    <span className="ml-1">Open Collaboration</span>
+    <span className="ml-1 text-emerald-800">Open Collaboration</span>
   </div>
-  <p className="mx-4 font-medium">{formData.isOpenCollaboration ? "Yes" : "No"}</p>
-</div>
-
-</div>
-  <div onClick={() => handleChange("isOpenCollaboration", !formData.isOpenCollaboration)} className={`min-h-6 shadow-md mx-8 rounded-full max-w-6 ${!formData.isOpenCollaboration ?   "bg-blueSea bg-opacity-30":"bg-emerald-500"}`}></div>
+  <p onClick={() => handleChange("isOpenCollaboration", !formData.isOpenCollaboration)} className="mx-4 bg-blueSea bg-opacity-50 px-3 min-w-14 rounded-full text-center  text-white font-medium ">{formData.isOpenCollaboration ? "Yes" : "No"}</p>
+  {/* <div  className={`min-h-6 shadow-md mx-8 rounded-full max-w-6 ${!formData.isOpenCollaboration ?   "bg-blueSea bg-opacity-30":"bg-emerald-500"}`}></div> */}
 
     
+</div>
+  
+</div>
+
 
       {error && (
         <IonNote color="danger" className="text-sm font-medium">
@@ -201,7 +202,7 @@ onClick={handleSubmit}
           <IonText
             fill="outline"
             color="white"
-            className=" my-auto mx-autotext-white text-[1rem]"
+            className=" my-auto mx-auto font-bold text-white text-[1rem]"
             
           >
            {submitting ? "Creating..." : "Create"}
