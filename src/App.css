@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Montserrat:wght@500&family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&display=swap');
-@import  url('@ionic/react/css/palettes/dark.always.css');
+
 .App{
 background-color: #f4f4e0!important;
   width: 100vw;

@@ -156,24 +156,26 @@ dia.disagree=()=>dispatch(setDialog({isOpen:false}))
     rounded-xl border-2 overflow-hidden
     ${accessToken 
       ? "bg-emerald-600 border-emerald-600 text-white" 
-      : "bg-cream border-cream text-emerald-800"
+      : " bg-white border-cream text-emerald-800"
     } 
     hover:bg-emerald-500 transition-all
   `}
 >
   
     {!accessToken? (
-      <div className="flex jutify-around w-[84%] flex-nowrap flex-row max-w-[24em]  ">
-     <IonImg src={Googlelogo} style={{ height: '1em', width: 'fit-content' }} 
-          className={`flex-shrink-auto`} />
+      <div className="flex jutify-around w-[84%] flex-nowrap  text-center flex-row max-w-[24em]  ">
+        <div className='flex flex-row w-[80%] mx-auto'>
+     <img src={Googlelogo} 
+          className={`flex-shrink-auto my-auto max-h-6 `} />
 
        <IonText
-          className={`${!accessToken?"text-emerald-800 ":"text-white bg-soft"} whitespace-nowrap my-auto text-[1.2em]`}
+          className={`${!accessToken?"text-emerald-800 ":"text-white bg-soft"} mx-4 margin-y-auto  whitespace-nowrap my-auto text-[1.2em]`}
             >
        
             Log in to Google Drive
           </IonText> 
       </div>
+      </div> 
     ) : (
       <IonText className="text-[1.1rem] mx-auto font-medium whitespace-nowrap">
         Open Google Drive

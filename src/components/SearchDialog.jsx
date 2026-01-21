@@ -116,25 +116,27 @@ router.push(`/${searchItem.type}/${searchItem.objectID}/view`);
   };
 
   return (
-    <IonModal
+//     <IonModal
      
+//  isOpen={searchDialogOpen}
+//   onDidDismiss={() => dispatch(searchDialogToggle({ open: false }))} presentingElement={presentingElement} canDismiss={true} swipeToClose={true} mode="ios"
 
 
-  canDismiss={true} 
-  breakpoints={[0, 1]} // This enables the drag-to-close behavior effectively
-  initialBreakpoint={1}
+//   breakpoints={[0, 1]} // This enables the drag-to-close behavior effectively
+//   initialBreakpoint={1}
  
-    mode='ios'
-    ref={presentingElement}
-      isOpen={searchDialogOpen}
-      title="Search"
-      handle={true}
-      onDidDismiss={() => dispatch(searchDialogToggle({ open: false }))}
-      cssClass="modal-fullscreen ion-padding"
-      presentingElement={presentingElement}
+//     // mode='ios'
+
+//     // ref={presentingElement}
+//       // isOpen={searchDialogOpen}
+//       title="Search"
+//       handle={true}
+      // onDidDismiss={() => dispatch(searchDialogToggle({ open: false }))}
+      // cssClass="modal-fullscreen ion-padding"
+      // presentingElement={presentingElement}
       // style={{ backgroundColor: "white", height: "100vh", overflowY: "scroll" }}
-      swipeToClose={true}
-    >
+      // swipeToClose={true}
+    // >
 <IonContent fullscreen scrollY={true}className='ion-padding' style={{"--background":"#f4f4e0"}}>
          <IonSearchbar
          
@@ -196,7 +198,7 @@ router.push(`/${searchItem.type}/${searchItem.objectID}/view`);
         )}
       </IonList>
 </IonContent>
-    </IonModal>
+    // </IonModal>
   );
 };
 

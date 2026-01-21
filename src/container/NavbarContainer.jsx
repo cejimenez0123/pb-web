@@ -384,7 +384,7 @@ let isNative = Capacitor.isNativePlatform()
    <div className='flex flex-col'>
     <IonImg src={search} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
     
-    onClick={openDialogAction}/>
+    onClick={()=>router.push("/search")}/>
       <h6 className='text-white text-xs'>Search</h6>
     </div>
      <div className="dropdown dropdown-top ">

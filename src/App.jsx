@@ -136,7 +136,7 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
         currentProfile={currentProfile}/></div>:null}
               <div className='pt-12'>
  
-       <SearchDialog  presentingElement={page} />
+       {/* <SearchDialog  presentingElement={page} /> */}
        
        <Dialog dialog={dialog} presentingElement={page} />
 <Alert />
@@ -154,6 +154,10 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
      <Route exact path="/" render={() => 
      isFirstLaunch?<Redirect to={Paths.onboard} />:<Redirect to={Paths.login()}/>}
 />
+<Route exact path="/search" render={() => 
+     <SearchDialog presentingElement={page}/>}
+/>
+
 
    
       <Route path={Paths.onboard} render={()=><OnboardingContainer/>}/>
