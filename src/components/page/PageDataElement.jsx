@@ -7,6 +7,7 @@ import Paths from "../../core/paths"
 import Context from "../../context"
 import { IonImg, useIonRouter } from '@ionic/react';
 import Enviroment from "../../core/Enviroment"
+import truncate from "html-truncate"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const {isHorizPhone}=useContext(Context)
@@ -30,14 +31,14 @@ export default function PageDataElement({page,isGrid,book=null}){
  function Element({page}){   
 switch(page.type){
     case PageType.text:{
-
+let t=page.data
     return( 
 
-   <div 
-        
-        className={`ql-editor page-data `} dangerouslySetInnerHTML={{__html:page.data}}/>
-     
-  
+   <div
+
+        className={`ql-editor page-data `} dangerouslySetInnerHTML={{__html:truncate(t, 300,{})}}/>
+
+
   ) }
   case PageType.picture:{
   

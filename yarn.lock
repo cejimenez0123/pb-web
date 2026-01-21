@@ -8696,6 +8696,11 @@ html-minifier-terser@^6.0.2:
     relateurl "^0.2.7"
     terser "^5.10.0"
 
+html-truncate@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npmjs.org/html-truncate/-/html-truncate-1.2.2.tgz"
+  integrity sha512-oiXb65RDxSYY8eXJKJiKHHpI7LyQbMG8LbSuvvWLLxAKNywJ7aaq0M1ynj2QJs0odQNggEEg/dTFVtH3lG0ClQ==
+
 html-webpack-plugin@^5.5.0:
   version "5.6.5"
   resolved "https://registry.npmjs.org/html-webpack-plugin/-/html-webpack-plugin-5.6.5.tgz"
