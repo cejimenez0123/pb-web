@@ -95,12 +95,12 @@ const router = useIonRouter()
   return (
   
       <ErrorBoundary>
-<div className='bg-cream'>
+
       
         
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><DiscoveryEmbed/>} dash={()=><DashboardEmbed />} />
 
-     </div>
+ 
       </ErrorBoundary>
 
   );
@@ -136,7 +136,7 @@ export default DiscoveryContainer;
   };
 
 
-   return <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} className=''>
+   return <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} scrollY={true}>
    
            <div className=' flex flex-row flex-end p-4 max-w-[100vw]'>
 <div className='w-[100%]'/>
@@ -150,10 +150,10 @@ onClick={()=>{router.push(Paths.calendar())}}
           />
                     </div>
     
-    <div className=" sm:pt-12 ">
+    <div className=" sm:pt-12 bg-cream">
       {/* Tabs */}
       <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
-        <div className="flex rounded-full border  sm:w-[40em] lg:w-[30em] border-emerald-600">
+        <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-emerald-600">
           <button
             className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em]  ${
               tab === "disc"
@@ -185,7 +185,7 @@ onClick={()=>{router.push(Paths.calendar())}}
           </button>}
         </div>
       </div>
-      <div className='pt-12'>
+      <div className='pt-12 bg-cream'>
         <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
           <motion.div
             key={tab}

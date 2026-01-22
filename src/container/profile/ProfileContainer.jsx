@@ -230,7 +230,7 @@ const pages = useMemo(() => {
           </IonToolbar>
         </IonHeader>
         
-        <IonContent fullscreen={true} className='pt-8' scrollY>
+        <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}}className='pt-8' scrollY>
           <div className="pt-2 md:pt-8 mb-8 mx-2 ">
             <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
           </div>

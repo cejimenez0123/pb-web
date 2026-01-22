@@ -46,7 +46,7 @@ export default function IndexItem({item,handleFeedback,type}) {
   }}
     const handleEditClick = (comp)=>{
  
-      if(comp && comp.type){
+      if(type=="collection"){
         router.push(Paths.editCollection.createRoute(comp.id))
       }else{
          dispatch(setHtmlContent({html:comp.data}))

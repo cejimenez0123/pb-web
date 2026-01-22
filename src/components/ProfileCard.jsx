@@ -75,34 +75,36 @@ setProfilePic(src)
     }
     if(profile){
         
-      return(<div className="pb-8 sm:border-3 rounded-lg  w-[96vw] sm:max-w-[60em] sm:min-h-40 mx-auto  sm:border-blueSea">
+      return(<div className="pb-8 rounded-lg  w-[96vw] sm:max-w-[60em] sm:min-h-40 mx-auto  ">
         <div className="text-left p-4">
-            <div className="flex flex-row">
+            {/* <div className="flex flex-row"> */}
               <div>  
-            {profilePic.length>0?<span className="max-h-28  "><IonImg src={profilePic} className="max-w-36 object-fit mb-2 rounded-lg" alt=""/></span>:<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
-              <div className="h-fit px-2 pb-2"><h5 className="text-emerald-800 text-[1.2rem] open-sans-medium font-bold">{profile.username}</h5></div>
+            {profilePic.length>0?<span className="max-h-28  "><div className="overflow-hidden rounded-lg"><IonImg src={profilePic} className="max-w-36 mx-auto object-fit mb-2 rounded-lg" alt=""/></div>
+              <div className="h-fit px-2 pb-2"><h5 className="text-emerald-800 text-[1.2rem] text-center open-sans-medium font-bold">{profile.username}</h5></div>
+              </span>:<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
+              
         
               </div> <div>
             <div className="px-3 pt-3 flex flex-col justify-between  h-48">
-           <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem] max-h-40 overflow-y-scroll flex-wrap flex text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
-           </div> 
+          
             
         </div>
         </div>
-        
-        </div>
-            <div className="mt-3 flex flex-row">
+         <div className="mt-3 mx-auto w-[20em] justify-between flex flex-row">
                 <FollowDiv following={following} onClickFollow={onClickFollow}/>
                 <div onClick={openDialog} className="text-emerald-800 text-center mx-4">
-                    <h5 className="open-sans-bold text-[1rem] ">Followers</h5>
+                    <h5 className="text-[1rem] my-auto">Followers</h5>
                 <h6>{profile.followers.length}</h6>
                 </div>
-            </div>
         </div>
+           
+            </div>
+        {/* </div> */}
   
         </div>)
     }
     
-    
+    //  <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem] max-h-40 overflow-y-scroll flex-wrap flex text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
+    //        </div> 
     
     }

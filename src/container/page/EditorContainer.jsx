@@ -291,7 +291,7 @@ const openRoleFormDialog = () => {
 
         return(
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
-          <IonContent fullscreen={true} className="ion-padding"  >
+          <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}}className="ion-padding"  >
             <IonHeader className=" ion-padding py-8 ">
               <IonButtons className="ion-padding" >
                 <div className="pt-4"  onClick={handleBack}>

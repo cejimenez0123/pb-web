@@ -57,7 +57,7 @@ const router = useIonRouter()
   <>
 <div>
     
-      <IonList  style={{"--background":"transparent"}} className="bg-transparent">
+      <IonInfiniteScroll style={{"--background":"#f4f4e0"}} >
 <div className={"flex flex-col space-y-4"}>
         {displayedItems.filter(item=>item).map((item, i) => {
           if (!item) return null;
@@ -82,7 +82,7 @@ const router = useIonRouter()
             // </IonItem>
 
           );
-        })}</div></IonList>
+        })}</div></IonInfiniteScroll>
 
    {hasMore && (
 
