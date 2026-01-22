@@ -69,14 +69,14 @@ export default function Comment({page,comment,level}){
        setBranches(branches)
     },[comments])
     if(!comment)return null
-    return(<div className="max-w-[50em] shadow-sm ml-1">
+    return(<div className="max-w-[45em] ">
 
 
-        <div class=" text-left   sm:min-w-[30em] max-w-[100%] py-1 sm:my-4 " id={`comment-${comment.id}`}>
-        <div className={replyInput||updateComment?" rounded-t-lg rounded-b-lg":""}>
+        <div class=" text-left    sm:min-w-[30em] max-w-[100%] py-1 sm:my-4 " id={`comment-${comment.id}`}>
+        <div className={"shadow-sm"+replyInput||updateComment?" rounded-t-lg rounded-b-lg":""}>
 
-           <div className="  shadow-sm bg-softBlue rounded-xl text-emerald-800  sm:px-8  ">
-          <div className="flex flex-row py-2 sm:pl-4 pr-4 sm:pr-12 justify-between"> 
+           <div className="  shadow-sm bg-softBlue rounded-xl text-emerald-800   ">
+          <div className="flex w-[100%] flex-row py-2 pr-4 justify-between"> 
       
           <span className="ml-2"><ProfileCircle profile={comment.profile} color={"emerald-700"}/></span>
           {currentProfile && currentProfile.id == comment.profileId?     <div className="dropdown  dropdown-left">
@@ -89,10 +89,10 @@ export default function Comment({page,comment,level}){
     <li className="p-3 " onClick={handleDeleteComment}>Delete</li>
   </ul>
 </div>:null}
-          </div> <h6 className="text-[0.8rem] md:text-[rem]   py-3 px-2 my-1">{comment.content}</h6>
+          </div> <h6 className="text-[0.8rem] md:text-[rem]   py-3 px-2 sm:px-8  my-1">{comment.content}</h6>
            <div class=" flex flex-row py-2 sm:pl-2 pr-6 items-end justify-between">
                     
-                    {isHelpful?<a onClick={handleDeleteHelpful} className="text-[0.8rem] mont-medium text-emerald-300 sm:text-sm mont-bold  mt-2 mb-2 ml-6">Glad it helped!</a>:<a onClick={handleIfHelpful}className="text-[0.8rem] sm:text-sm mont-medium text-emerald-800 mt-4 ml-8"> Was comment helpful?</a>}
+                    {isHelpful?<a onClick={handleDeleteHelpful} className="text-[0.8rem]  text-emerald-600 sm:text-sm   mt-2 mb-2 ml-6">Glad it helped!</a>:<a onClick={handleIfHelpful}className="text-[0.8rem] sm:text-sm mont-medium text-emerald-800 mt-4 ml-8"> Was comment helpful?</a>}
                   
                     <h6 
                    onClick={()=>setReplyInput(!replyInput) }

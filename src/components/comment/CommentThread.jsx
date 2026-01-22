@@ -8,14 +8,16 @@ export default function CommentThread({page,comments,level=0}){
     return(
         <div className="bg-cream">
     
-                     <IonList >
+                     <div className="pl-1  "style={{"--backgorund":"#f4f4e0"}} >
                         {comments.map(com=>{
                             return(<div 
                                 key={com.id}
-                                className={`pl-1 sm:rounded-[15%]  bg-cream `}>
-                                    <Comment page={page} comment={com} level={level+1}/></div>)
+                                className={`  `}>
+                                    <Comment page={page} comment={com} level={level+1}/>
+                                    </div>
+                                    )
                         })}
-             </IonList>
+             </div>
       
                     </div>)
                             
