@@ -11,10 +11,10 @@ import Context from '../../context'
 import { debounce } from 'lodash'
 import Carousel from './Carousel'
 import { IonImg, useIonRouter } from '@ionic/react'
-import ErrorBoundary from '../../ErrorBoundary'
+
 
 function BookDashboardItem({book,isGrid}) {
- 
+ console.log(book)
     const dispatch = useDispatch()
     const {setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
     const router = useIonRouter()
@@ -80,7 +80,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
 
   return (
     <div
-      className={`flex justify-between items-center py-2 rounded-b-lg bg-bleuSea bg-opacity-10 w-[94vw] px-3  px-2 w-[100%]`}
+      className={`flex justify-between items-center py-2 rounded-b-lg bg-bleuSea bg-opacity-10  px-3  px-2 w-[100%]`}
     >
       {/* Profile Circle on left, hide if small phone in grid */}
       {!(isPhone && isGrid) && (
@@ -146,12 +146,12 @@ if(!book){
     
 
 
-        {isGrid?isPhone?null:description(book):null}
-       
-            <Carousel book={book} isGrid={isGrid}/>
+        {description(book)}
+    
+            <Carousel book={book}/>
 
                 <BookmarkBtn book={book}/> 
-                {/* </div>    */}
+              
 </div>
 
      )

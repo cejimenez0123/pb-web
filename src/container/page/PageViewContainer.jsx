@@ -159,14 +159,15 @@ export default function PageViewContainer() {
 
   return (
     <ErrorBoundary>
-         <IonContent fullscreen={true} className="ion-padding-bottom"style={{background: "#f0f0f0"}} scrollY={true}>
+         <IonContent fullscreen={true}  style={{"--background":"#f4f4e0"}}className="ion-padding-bottom" >
  
 
         <IonHeader className=" ">
-             <div className=" pt-12">{Capacitor.isNativePlatform()||true?<IonBackButton
+          {Capacitor.isNativePlatform()||true?<IonBackButton
              className="ion-padding-start "
       onClick={handleBack}
-    />:null}</div>  </IonHeader>
+    />:null}</IonHeader>
+    <div className="py-12 bg-cream">
        <div className=" min-h-[40em] ion-padding-bottom  ">
         <div className=" text-center bg-cream py-[4em] mx-auto h-[100%]" >
           {pending ? ( 
@@ -192,7 +193,7 @@ export default function PageViewContainer() {
         </div>
        
       
-
+</div>
          </div>
       </IonContent>
     </ErrorBoundary>

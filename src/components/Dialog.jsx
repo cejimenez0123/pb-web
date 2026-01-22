@@ -26,6 +26,7 @@ const Dialog = ({
 
   return (
     <IonModal
+    presentingElement={presentingElement} swipeToClose={true} mode="ios"
   isOpen={((dialog && dialog.isOpen)??false)} 
   title={dialog.title}
   onDidDismiss={()=>onClose()}
@@ -33,9 +34,9 @@ const Dialog = ({
   breakpoints={[0, 1]} // This enables the drag-to-close behavior effectively
   initialBreakpoint={1}
   cssClass="modal-fullscreen pt-4 ion-padding"
-  presentingElement={presentingElement}
+  // presentingElement={presentingElement}
 
-  swipeToClose={true}
+  // swipeToClose={true}
 >
 <IonContent fullscreen scrollY={true}className='ion-padding' style={{"--background":"#f4f4e0"}}>
   {dialog.title!==null &&<IonHeader>

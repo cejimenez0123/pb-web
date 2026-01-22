@@ -94,10 +94,10 @@ export default function Carousel({ book, isGrid }) {
               </h5>
 
               {!isPhone && description(stc.story)}
-              <div className="max-h-[29.9rem]">
+              {/* <div className="max-h-[29.9rem]"> */}
              
                 <PageDataElement isGrid={isGrid} page={stc.story} />
-       </div>
+       {/* </div> */}
             </div>
           </swiper-slide>
         );

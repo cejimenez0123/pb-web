@@ -23,7 +23,7 @@ const router = useIonRouter()
       return validItems;
     }
 
-    const books = validItems.filter((item) => Array.isArray(item?.storyIdList) && item.storyIdList.length > 0);
+    const books = validItems.filter((item) => Array.isArray(item?.storyIdList) && item.storyIdList && item.storyIdList.length > 0);
     const others = validItems.filter((item) => Array.isArray(item?.data) && item.data.length > 0);
 
     return sortItems(others, books) || [];
@@ -57,7 +57,7 @@ const router = useIonRouter()
   <>
 <div>
     
-      <IonList >
+      <IonList  style={{"--background":"transparent"}} className="bg-transparent">
 <div className={"flex flex-col space-y-4"}>
         {displayedItems.filter(item=>item).map((item, i) => {
           if (!item) return null;
@@ -73,7 +73,7 @@ const router = useIonRouter()
   
 >
 
-              {item?.purpose ? (
+              {item?.purpose  && item && item.storyIdList && item.storyIdList.length>0? (
                 <BookDashboardItem isGrid={isGrid} book={item} />
               ) : (
                 <DashboardItem isGrid={isGrid} page={item} forFeedback={forFeedback} />

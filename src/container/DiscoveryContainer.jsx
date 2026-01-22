@@ -95,12 +95,12 @@ const router = useIonRouter()
   return (
   
       <ErrorBoundary>
-
+<div className='bg-cream'>
       
         
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><DiscoveryEmbed/>} dash={()=><DashboardEmbed />} />
 
-     
+     </div>
       </ErrorBoundary>
 
   );
@@ -136,7 +136,7 @@ export default DiscoveryContainer;
   };
 
 
-   return <IonContent fullscreen={true} className=''>
+   return <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} className=''>
    
            <div className=' flex flex-row flex-end p-4 max-w-[100vw]'>
 <div className='w-[100%]'/>

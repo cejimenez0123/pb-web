@@ -6,7 +6,7 @@ export default function CommentThread({page,comments,level=0}){
    
 
     return(
-        <div className="">
+        <div className="bg-cream">
     
                      <IonList >
                         {comments.map(com=>{

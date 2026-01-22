@@ -59,7 +59,7 @@ checkLike(currentProfile)
     dia.text = <ShareList page={page} setArchive={setArchive}profile={currentProfile} archive={archiveCol}
       bookmark={bookmarked}
     setBookmarked={setBookmarked}/>
-    dia.title="Share"
+    dia.title=null
     dia.isOpen=true
     dia.onClose=()=>{
         dispatch(setDialog({...dialog,isOpen:false}))

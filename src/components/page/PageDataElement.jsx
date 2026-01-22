@@ -8,6 +8,7 @@ import Context from "../../context"
 import { IonImg, useIonRouter } from '@ionic/react';
 import Enviroment from "../../core/Enviroment"
 import truncate from "html-truncate"
+import { Capacitor } from "@capacitor/core"
 export default function PageDataElement({page,isGrid,book=null}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const {isHorizPhone}=useContext(Context)
@@ -36,26 +37,17 @@ let t=page.data
 
    <div
 
-        className={`ql-editor page-data `} dangerouslySetInnerHTML={{__html:truncate(t, 300,{})}}/>
+        className={`ql-editor page-data  p-4`} dangerouslySetInnerHTML={{__html:truncate(t, 400,{})}}/>
 
 
   ) }
   case PageType.picture:{
   
-    return(image?!isHorizPhone?<img  id="page-data-pic"  
-
-        className=""
-        onClick={()=>{
+    return(image?
+    <IonImg
+      style={{maxWidth:"94vw",width:"100%"}}
+    className="object-contain max-w-[94vw] sm:max-w-[45em] "
    
-        if(location!=Paths.page.createRoute(page.id)){
-       router.push(Paths.page.createRoute(page.id))}
-     
-     }} 
-     alt={page.title} src={image}
-    />:
-    <IonImg        id="page-data-pic"
-    className="w-full h-full object-contain "
-
     onClick={()=>{
    
    if(location!=Paths.page.createRoute(page.id)){
@@ -79,8 +71,8 @@ case PageType.link:{
        )
 }
 default:
-    return(<div        id="page-data-skeleton "className={`skeleton w-page-mobile`}>
-   <IonImg src={loadingGif}/>
+    return(<div        id="page-data-skeleton "className={`skeleton w-[100%] h-[100%] min-h-[20em] max-w-[45em]`}>
+  
 </div>)
 }
 }

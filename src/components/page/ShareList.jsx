@@ -151,8 +151,9 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
 
   return (
     <IonList className="flex flex-col">
-      <li className="py-3 border-b">
-        <IonItem
+      <li className=" border-b">
+        <div
+        className="bg-cream py-3"
           onClick={async () => {
             if (profile && (await Preferences.get({ key: "token" })).value) {
             router.push  (Paths.addStoryToCollection.story(page.id));
@@ -162,49 +163,50 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
             dispatch(setDialog({ ...dialog, isOpen: false }));
           }}
         >
-          <IonText className="text-[1rem]">Add to Collection</IonText>
-        </IonItem>
+          <IonText className="text-[1rem] px-4">Add to Collection</IonText>
+        </div>
       </li>
 
       {canUserEdit && (
-        <li className="py-3 border-b">
-          <IonItem
+        <li className="py-3 border-b bg-cream">
+          <div
             onClick={() => {
               dispatch(setDialog({ ...dialog, isOpen: false }));
               router.push(Paths.editPage.createRoute(page.id));
         
      
             }}
+       
           >
-            <IonText className="text-[1rem]">Edit</IonText>
-          </IonItem>
+            <IonText className="text-[1rem] px-4 ">Edit</IonText>
+          </div>
         </li>
       )}
 
-      <li className="py-3 border-b">
-        <IonItem onClick={copyShareLink}>
-          <IonText className="text-[1rem]">Copy Share Link</IonText>
-        </IonItem>
+      <li className="py-3 border-b bg-cream">
+        <div onClick={copyShareLink}>
+          <IonText className="text-[1rem] px-4">Copy Share Link</IonText>
+        </div>
       </li>
 
-      <li className="py-3 border-b">
-        <IonItem
+      <li className="py-3 border-b bg-cream">
+        <div
           onClick={(e) => {
             profile ? handleLocalBookmark(e) : setError("Please Sign In");
           }}
         >
-          <div className="text-left w-full">
+          <div className="text-left w-full px-4">
             {!loading ? (
               localBookmark ? (
-                <IonImg src={bookmarkFill} className="mx-auto max-h-10 max-w-10" />
+                <IonImg src={bookmarkFill} className=" max-h-10 max-w-10" />
               ) : (
-                <IonImg src={bookmarkadd} className="mx-auto max-h-10 max-w-10" />
+                <IonImg src={bookmarkadd} className=" max-h-10 max-w-10" />
               )
             ) : (
               <IonImg src={loadingGif} className="mx-auto max-h-10 max-w-10" />
             )}
           </div>
-        </IonItem>
+        </div>
       </li>
     </IonList>
   );

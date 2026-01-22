@@ -247,6 +247,7 @@ const localCheck=()=>{
 }
 
   return (
+    <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} className=''>
     <div>
     <LoadScript
     googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
@@ -300,6 +301,7 @@ const localCheck=()=>{
     </div>
     </LoadScript>
 </div>
+</IonContent>
   );
 };
 export default WorkshopContainer

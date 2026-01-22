@@ -21,9 +21,11 @@ function DashboardEmbed() {
   const dispatch = useDispatch();
    const collections = [...(useSelector(state => state.books.collections) ?? [])]
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
-  const recommendedCols= useSelector(state => state.books.recommendedCols);
+  const recommendedCols= useSelector(state => state.books.recommendedCols).filter(str=>currentProfile?str.profileId!=currentProfile.id:true)
   const stories = useSelector(state => state.pages.pagesInView ?? []);
-  const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
+  const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []).filter(str=>currentProfile?str.authorId!=currentProfile.id:true)
+  console.log("1x",recommendedStories[0])
+  console.log("2x",stories[0])
    let feedbackCol = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
   const [feedbackCols,setFeedbackCols]=useState(feedbackCol)
   const [hasMore, setHasMore] = useState(false);
@@ -47,7 +49,7 @@ const libraryForums = () => {
   if (!collections) return null;
 
   return (
-    <div className="">
+    <div className="bg-cream w-[100vw]">
       <IonText
         className={`text-emerald-900 ${
           isNotPhone ? 'ml-16 pl-6' : 'ml-16'
@@ -57,18 +59,14 @@ const libraryForums = () => {
       </IonText>
 
       {/* Horizontal scroll area */}
-      <div className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] w-[100vw] space-x-4 px-4 no-scrollbar">
-          <IonList className="flex flex-row overflow-x-scroll">
+      <div className="mb-4 ">
+        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem]  space-x-4 no-scrollbar">
+          <div className="flex flex-row overflow-x-scroll">
           {feedbackCols.map((library) => (
-            <IonItem
-              key={library.id}
-              className=" flex-shrink-0 border-none bg-transparent"
-            >
+         
               <BookListItem book={library} />
-            </IonItem>
-          ))}
-          </IonList>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -136,7 +134,7 @@ const libraryForums = () => {
   }, []);
 
   return (
-    <IonContent className="bg-cream min-h-screen">
+    <IonContent style={{"--background":"#f4f4e0"}} className="bg-cream min-h-screen">
    
               {libraryForums()}
               <div className="">

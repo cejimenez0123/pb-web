@@ -108,13 +108,9 @@ const LibraryForums = () => {
       <div className="mb-4">
         <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
           {libraries.map((library) => (
-            <IonItem
-              key={library.id}
-              className=" flex-shrink-0 border-none bg-transparent"
-              slot='start'
-            >
+         
               <BookListItem book={library} />
-            </IonItem>
+       
           ))}
         </div>
       </div>
@@ -126,25 +122,21 @@ const LibraryForums = () => {
 
     if (!books) return null;
     return (
-      <div className='h-[14rem]'>
-        <h3 className="text-emerald-900 text-left font-extrabold ml-16 lora-bold mb-4 text-2xl">
+      <div className=''>
+        <h3 className="text-emerald-900 text-left bg-transparent font-extrabold ml-16  mb-4 text-2xl">
           Collections
         </h3>
-<div className="mb-4">
+<div className="mb-4 bg-transparent ">
 
-         <IonList>
+         <IonList style={{background:"transparent"}} className="bg-transparent">
         
           <div className="flex flex-row  overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
           {books.map((book, i) => {
             const id = `${book.id}_${i}`;
             return (
-              <IonItem 
-              key={id}
-              id={id}
-                className=" flex-shrink-0 border-none bg-transparent"
-              slot='start' >
+         
                 <BookListItem book={book} />
-              </IonItem>
+        
             );
           })}
           </div>

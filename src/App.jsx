@@ -70,12 +70,11 @@ const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
-  const profileInView = useSelector(state=>state.users.profileInView)
+
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
   const location = window.location.pathname
-  const [olderPath,setOlderPath]=useState(null)
-  const [internetConect,setInternetConect]=useState(false)
+
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
   const page = useRef(null);
@@ -84,16 +83,20 @@ const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 
 
 const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
-useEffect(() => {
   const initAuth = async () => {
     const { value } = await Preferences.get({ key: "token" });
-    if (value && currentProfile && !currentProfile?.id) {
+    if (value ) {
       // This triggers the Redux action to fill currentProfile
       dispatch(getCurrentProfile()); 
     }
   };
-  initAuth();
-}, [dispatch, currentProfile]);
+useEffect(() => {
+
+  return ()=>initAuth();
+}, [dispatch]);
+useLayoutEffect(()=>{
+  initAuth()
+},[])
 useEffect(() => {
   const checkFirstLaunch = async () => {
     if (isNative) {

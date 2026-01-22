@@ -436,7 +436,7 @@ console.log("DID",router.routeInfo)
   if (!collection) {
     return (
 <div>
-        <IonHeader>
+        <IonHeader >
           <IonToolbar>
             <IonTitle>Loading collection...</IonTitle>
           </IonToolbar>
@@ -454,8 +454,8 @@ console.log("DID",router.routeInfo)
     return (
       <ErrorBoundary>
 
-            <IonHeader> 
-      <IonToolbar>
+            <IonHeader mode="ios"> 
+      <IonToolbar mode="ios">
         {/* <IonButtons>
    
               {isNative?<IonBackButton
@@ -464,7 +464,7 @@ console.log("DID",router.routeInfo)
       onClick={handleBack}
     />:null } */}
 
-    <IonButton>Back</IonButton>
+    <IonButton mode="ios">Back</IonButton>
 <IonTitle>Access Denied</IonTitle>
         {/* </IonButtons> */}
         </IonToolbar>      
@@ -492,10 +492,11 @@ console.log("DID",router.routeInfo)
 
 
       <IonHeader>
-      <IonToolbar>
+      <IonToolbar mode="ios">
         <IonButtons slot="start">
           {isNative ? (
             <IonBackButton
+            mode="ios"
               defaultHref={Paths.discovery()}
               onClick={handleBack}
             />
@@ -515,7 +516,7 @@ console.log("DID",router.routeInfo)
               <IonCardTitle className="ion-text-wrap">{collection.title}</IonCardTitle></div>
                  {canUserEdit &&<div><IonImg
                  onClick={() => router.push(Paths.editCollection.createRoute(id))}
-                  src={edit} className="bg-blueSea max-w-12 max-h-12 rounded-full p-2 btn"/>
+                  src={edit} className="bg-blueSea min-w-12 max-h-12 rounded-full p-2 btn"/>
             </div>}
            </div>
           </IonCardHeader>

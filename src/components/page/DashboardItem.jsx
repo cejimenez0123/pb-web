@@ -104,7 +104,7 @@ function DashboardItem({ page, book, isGrid }) {
 
   const deleteStc = () => {
     if (bookmarked && bookmarked.id) {
-      setLoading(true);
+
       dispatch(deleteStoryFromCollection({ stId: bookmarked.id })).then(res => {
         checkResult(
           res,
@@ -156,11 +156,9 @@ function DashboardItem({ page, book, isGrid }) {
     );
   };
   const handleApprovalClick = () => {
-  if (!page || !currentProfile) {
-    setError("Please Sign Up");
-    return;
-  }
-
+    if(!currentProfile){
+      return alert("Please Sign Up to Like")
+    }
   if (likeFound) {
     setLikeFound(false); // update immediately
     dispatch(deletePageApproval({ id: likeFound.id }))
@@ -189,7 +187,7 @@ useEffect(() => {
     dia.text = <ShareList page={page} setArchive={setArchiveCol}profile={currentProfile} archive={archiveCol}
       bookmark={bookmarked}
     setBookmarked={setBookmarked}/>
-    dia.title="Share"
+    dia.title=null
     dia.isOpen=true
     dia.onClose=()=>{
         dispatch(setDialog({...dialog,isOpen:false}))
@@ -295,10 +293,10 @@ useEffect(() => {
     return isGrid
       ? null
       : (
-         <div className="flex-row w-[100%] sm:w-[50em] h-16 overflow-clip mx-auto bg-blueSea bg-opacity-30 flex text-white">
-       <div className={`${likeFound ? "bg-emerald-400 text-cream" : "bg-blueSea bg-opacity-20"} text-center grow w-1/3`}>
+         <div className="flex-row w-[100%]  h-16 overflow-clip mx-auto bg-blueSea bg-opacity-30 flex text-white">
+       <div     onClick={handleApprovalClick} className={`${likeFound ? "bg-emerald-400 text-cream" : "bg-blueSea text-cream bg-opacity-20"} text-center grow w-1/3`}>
             <div
-              onClick={handleApprovalClick}
+          
               className={`py-2 flex  mx-auto text-white border-none h-[100%] border-none`}
             >
               <IonText className="text-xl text-cream font-bold  m-auto p-0">Yea{likeFound ? "" : ""}</IonText>
@@ -340,7 +338,7 @@ useEffect(() => {
     <IonCard
      
       className={
-        'mt-3 rounded-lg rounded-b-lg max-w-[94vw] sm:max-w-[45em] w-[100%] mx-auto mx-auto justify-between bg-blueSea bg-opacity-10 flex flex-col '
+        'mt-3 rounded-lg rounded-b-lg max-w-[94vw] sm:max-w-[45em] mx-auto mx-auto justify-between bg-blueSea bg-opacity-10 flex flex-col '
       }
  
     >
@@ -349,19 +347,19 @@ useEffect(() => {
         {bookTitleDiv}
       </IonCardHeader>
 
-      <IonCardContent className=" mx-auto bg-transparent">
+      {/* <IonCardContent className=" w-[100%] max-w-[94vw] sm:max-w-[45em]"> */}
         {description(page)}
-        <div className=' w-[100%]'>
+
         <PageDataElement isGrid={isGrid} page={page} />
-        </div>
-      </IonCardContent>
+ 
+      {/* </IonCardContent> */}
 
   
       {isGrid ? (
         <div id="bottom-dash" className={`flex flex-row sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
           {bookmarkBtn()}
         </div>
-      ) : <div className={ `flex w-[100%] flex-row sm:w-[50em] justify-between  bottom-0 w-full`}>
+      ) : <div className={ `flex w-[100%] flex-row justify-between  bottom-0`}>
         {buttonRow()}</div>}
     </IonCard>
     </ErrorBoundary>
