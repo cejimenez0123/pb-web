@@ -111,11 +111,7 @@ useEffect(() => {
   checkFirstLaunch();
 }, [isNative]);
 
-  useLayoutEffect(()=>{
-    Network.getStatus().then(res=>{
-      setInternetConect(res.connected)
-    })
-  })
+  
 
 
   const showNav = !(Capacitor.isNativePlatform()&&(location.includes("/signup")||location.includes("/login"))||(Capacitor.isNativePlatform()&&location.includes("/onboard")))
@@ -239,14 +235,14 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
         <Route path={Paths.links()}
                  render={()=><LinksContainer/>}
           />
-        <Route path={Paths.onboard}
+        {/* <Route path={Paths.onboard}
                   render={()=><LoggedRoute
                     
-           currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
-         <Route path={Paths.apply()+"/newsletter"}
+           currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/> */}
+         {/* <Route path={Paths.apply()+"/newsletter"}
         render={()=><LoggedRoute 
           
-        currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/>
+        currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/> */}
 
       <Route path={Paths.workshop.reader()}
     render={()=><PrivateRoute      

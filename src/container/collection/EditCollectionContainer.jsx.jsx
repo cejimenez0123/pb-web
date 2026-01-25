@@ -241,7 +241,7 @@ if (col.childCollections) {
   return (
 
     <ErrorBoundary>
-      {/* <IonContent fullscreen className="bg-gray-50"> */}
+      {/* <IonContent fullscreen={true} className="bg-gray-50"> */}
             {isNative?<IonHeader translucent>
         <IonToolbar className="bg-white border-b border-emerald-100">
           <IonButtons slot="start">
@@ -400,8 +400,8 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
             </div>}
           </div>
         )}
-      {/* </IonContent> */}
- </IonContent>
+      </IonContent>
+
  </ErrorBoundary>
   );
 };

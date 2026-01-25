@@ -76,7 +76,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
     },[book])
   
  const BookmarkBtn = ({ book }) => {
-  let title = book.title.length > 23 ? book.title.slice(0, 20) + "..." : book.title;
+  let title = book?.title.length > 23 ? book?.title.slice(0, 20) + "..." : book?.title;
 
   return (
     <div
@@ -113,7 +113,7 @@ const description = (book)=>{return !isPhone&&!isGrid?book.description && book.d
         if(bookmarked){
                 deleteBtc()
         }else{
-         let archive =   currentProfile.profileToCollections.find(col=>col.collection.title.toLowerCase()=="archive").collection
+         let archive =   currentProfile.profileToCollections.find(col=>col && col.collection && col?.collection?.title.toLowerCase()=="archive").collection
        
          if(archive.id&&book.id){
            

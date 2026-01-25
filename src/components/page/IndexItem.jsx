@@ -27,7 +27,7 @@ export default function IndexItem({item,handleFeedback,type}) {
     },[currentProfile])
     const copyShareLink=()=>{
       if(item && item.storyIdList){
-        sendGAEvent("Copy Share Link",`Share Link Collection:${item.title}`)
+        sendGAEvent("Copy Share Link",`Share Link Collection:${item?.title}`)
    
       navigator.clipboard.writeText(Enviroment.domain+Paths.collection.createRoute(item.id))
                               .then(() => {
@@ -36,7 +36,7 @@ export default function IndexItem({item,handleFeedback,type}) {
                                 })
 
       }else{
-        sendGAEvent("Copy Share Link",`Share Link Story:${item.title}`)
+        sendGAEvent("Copy Share Link",`Share Link Story:${item?.title}`)
 
       navigator.clipboard.writeText(Enviroment.domain+Paths.page.createRoute(item.id))
                               .then(() => {
@@ -129,11 +129,11 @@ const handleAddToLibrary=()=>{
          <div onClick={handleNavigate} className=" h-fit my-auto md:w-[30em]  max-w-[100vw] text-nowrap text-ellipsis  ">
               
               
-                   {item.title && item.title.length>0? 
+                   {item?.title && item?.title?.length>0? 
                      <span className={`    my-auto`}>
                    <h6  
          className={`text-[0.9rem] md:text-[1.3rem ] md:w-[20em]  max-w-[50vw] text-left  no-underline text-ellipsis     whitespace-nowrap    `}>
-       {item.title.length>20?item.title.substring(0,20)+"...":item.title}</h6>         {updated}</span>:
+       {item?.title.length>20?item?.title.substring(0,20)+"...":item?.title}</h6>         {updated}</span>:
  <span className={`  whitespace-nowrap max-w-[45vw]  no-underline text-ellipsis my-auto`}>
                    <h6   className={`text-[0.9rem] text-left lg:text-[1rem] text-ellipsis   
                    whitespace-nowrap no-underline  my-auto`}
@@ -151,7 +151,7 @@ const handleAddToLibrary=()=>{
   <li className="" onClick={
         ()=>handleEditClick(item)}><a className=" ">Edit</a></li>
        {type!="collection"?<li className=" " onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
-       {canUserAdd?<li className=" no-underline" onClick={handleAddToClick}><a className="no-underline "><IonText>{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</IonText></a></li>:null}
+       {canUserAdd?<li className=" no-underline" onClick={handleAddToClick}><a className="no-underline "><IonText>{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</IonText></a></li>:null}
          </ul>
   </div>
        
@@ -165,7 +165,7 @@ const handleAddToLibrary=()=>{
         <li className="no-underline "  onClick={handleAddToLibrary}><a className="no-underline"> Add Collection to Library</a></li>}
        
         {canUserAdd&&
-        <li className="no-underline"  onClick={handleAddToClick}><a className="no-underline ">{item && item.storyIdList!=null?`Add items to ${item.title}`:"Add to Collection" }</a></li>}
+        <li className="no-underline"  onClick={handleAddToClick}><a className="no-underline ">{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</a></li>}
          {/* {updated} */}
          <li  onClick={copyShareLink}><a className=" no-underline" >Share</a></li>
          </ul>

@@ -96,7 +96,7 @@ Save
         dispatch(setHtmlContent({html:page.data}))
         dispatch(setPageInView({page}))
        router.push(Paths.page.createRoute(page.id))
-    }}>{page.title.length>0?page.title:"Untitled"}</ListItem>)}
+    }}>{page && page.title.length>0?page.title:"Untitled"}</ListItem>)}
 </List>
 </FormGroup>)
 }

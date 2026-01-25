@@ -233,7 +233,7 @@ useEffect(() => {
 
   let bookTitleDiv = null;
   if (book) {
-    let title = book.title.length > 30 ? book.title.slice(0, 30) + "..." : book.title;
+    let title = book?.title.length > 30 ? book?.title.slice(0, 30) + "..." : book?.title;
     bookTitleDiv = (
       <a onClick={() => { router.push(Paths.collection.createRoute(book.id)); }}>
         <p>{title} {">"}</p>

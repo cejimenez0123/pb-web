@@ -76,10 +76,10 @@ export default function Carousel({ book, isGrid }) {
                   "Opened Page from Book",
                   `Saw ${JSON.stringify({
                     id: stc.story.id,
-                    title: stc.story.title,
+                    title: stc.story?.title,
                   })} in book ${JSON.stringify({
                     id: book.id,
-                    title: book.title,
+                    title: book?.title,
                   })}`,
                   "",
                   0,
@@ -90,7 +90,7 @@ export default function Carousel({ book, isGrid }) {
               id={stc.id}
             >
               <h5 className="min-h-10 pt-3 w-[100%] px-4 text-emerald-800 top-0 no-underline text-ellipsis whitespace-nowrap overflow-hidden text-left">
-                {stc.story.title}
+                {stc.story?.title}
               </h5>
 
               {!isPhone && description(stc.story)}

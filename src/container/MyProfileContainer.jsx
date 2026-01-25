@@ -309,7 +309,7 @@ onClick={()=>{router.push(Paths.calendar())}}
         </ButtonWrapper>
         <ButtonWrapper
           onClick={ClickCreateACollection}
-          className="bg-emerald-700 hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
+          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
         >
           <IonText className="text-white text-[1.2em]">Create Collection</IonText>
         </ButtonWrapper>

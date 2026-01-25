@@ -134,7 +134,7 @@ export default function AddToItem({ col }) {
         tabIndex={0}
         onKeyDown={e => { if (e.key === 'Enter') router.push(Paths.collection.createRoute(col.id)); }}
       >
-        {col.title.length>0?col.title:"Untitled"}
+        {col?.title.length>0?col?.title:"Untitled"}
       </h6>
       {pending ? (
         <div className="bg-emerald-600 p-2 max-w-10 max-h-10 rounded-full flex items-center justify-center">

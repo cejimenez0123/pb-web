@@ -71,7 +71,7 @@ const hasInitialized = useRef(false);
           handleSet("page",story)
           handleSet("isPrivate",story.isPrivate)
           handleSet("data",story.data)
-          handleSet("title",story.title)
+          handleSet("title",story?.title)
           handleSet("type",story.type)
            setPending(false)
      

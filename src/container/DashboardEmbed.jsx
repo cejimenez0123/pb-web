@@ -134,7 +134,7 @@ const libraryForums = () => {
   }, []);
 
   return (
-    <IonContent style={{"--background":"#f4f4e0"}} className="bg-cream min-h-screen">
+    <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}} className="bg-cream min-h-screen">
    
               {libraryForums()}
               <div className="">

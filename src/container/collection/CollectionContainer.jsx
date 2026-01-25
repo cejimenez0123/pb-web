@@ -502,7 +502,7 @@ console.log("DID",router.routeInfo)
             />
           ) : null}
         </IonButtons>
-        <IonTitle>{collection.title}</IonTitle>
+        <IonTitle>{collection?.title}</IonTitle>
       </IonToolbar>
     </IonHeader>
 
@@ -513,7 +513,7 @@ console.log("DID",router.routeInfo)
           <IonCardHeader className="mx-auto ">
             <div className="flex items-center justify-between px-4 gap-2">
               <div>{collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
-              <IonCardTitle className="ion-text-wrap">{collection.title}</IonCardTitle></div>
+              <IonCardTitle className="ion-text-wrap">{collection?.title}</IonCardTitle></div>
                  {canUserEdit &&<div><IonImg
                  onClick={() => router.push(Paths.editCollection.createRoute(id))}
                   src={edit} className="bg-blueSea min-w-12 max-h-12 rounded-full p-2 btn"/>

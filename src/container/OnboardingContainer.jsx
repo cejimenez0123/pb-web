@@ -562,14 +562,15 @@ const Why = ({ handleTab, nav }) => {
         {activeTab === 'tab5' && user && <ThankYou user={user} />}
       </div>
     </>
+  
   );
 
   return (
-
+<IonContent fullscreen={true}>
   <div className='pt-8 pb-12'>
           {user ? <ThankYou user={user} /> : <MyTabs />}
     </div>
-  
+  </IonContent>
   );
 }
 
@@ -674,7 +675,7 @@ const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference 
   ];
 
   return (
-    // <IonContent className='ion-padding min-h-40 overflow-auto'>
+
     <>
       <IonLabel
         // className="mont-medium"

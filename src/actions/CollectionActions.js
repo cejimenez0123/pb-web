@@ -183,7 +183,7 @@ const createCollection = createAsyncThunk("collection/createCollection",async (p
       
         await algoliaRepo.saveObject("collection", {
             objectID:collection.id,
-            title:collection.title
+            title:collection?.title
         }
         )}
         return {collection: data.collection}

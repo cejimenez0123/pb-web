@@ -175,7 +175,7 @@ let dia = {...dialog}
       />
             </IonButtons>
             <IonTitle slot="end" className="ml-8 ion-text-center">
-              Add <strong>{item.title}</strong> to Collection
+              Add <strong>{item?.title}</strong> to Collection
             </IonTitle>
           </IonToolbar>
         </IonHeader>
@@ -200,7 +200,7 @@ let dia = {...dialog}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpenDialog(true); }}
             style={{ userSelect: "none" }}
           >
-            <IonText>View {item.storyIdList?item.title.slice(0,10):"Story"}</IonText>
+            <IonText>View {item.storyIdList?item?.title.slice(0,10):"Story"}</IonText>
             
           </div>
           </div>

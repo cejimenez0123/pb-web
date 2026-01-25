@@ -26,9 +26,9 @@ console.log(book)
     dispatch(setCollections({ collections: [] }));
     dispatch(setCollectionInView({ collection: book }));
     router.push(Paths.collection.createRoute(book.id),);
-    sendGAEvent(
+   book && sendGAEvent(
       "Navigate",
-      `Navigate to Collection ${JSON.stringify({ id: book.id, title: book.title })}`
+      `Navigate to Collection ${JSON.stringify({ id: book.id, title: book?.title })}`
     );
   }
   };
@@ -50,7 +50,7 @@ if(book){
         <IonCardTitle
           className="font-bold text-emerald-800 text-[1.125rem] truncate"
           
-    >{book.title.slice(0, 30)}{book.title.length > 30 && "..."}</IonCardTitle>
+    >{book?.title.slice(0, 30)}{book?.title.length > 30 && "..."}</IonCardTitle>
     </IonCardHeader>
     </div>
      

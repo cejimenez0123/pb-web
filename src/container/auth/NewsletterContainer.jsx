@@ -255,7 +255,7 @@ console.log(data)
   );
 
   return (
-    // <IonContent fullscreen>
+    <IonContent fullscreen={true}>
       <ErrorBoundary>
         <div className="bg-cream min-h-screen pb-20">
           <form
@@ -474,7 +474,7 @@ console.log(data)
           /> */}
         </div>
       </ErrorBoundary>
-    // </IonContent>
+ </IonContent>
   );
 }
 

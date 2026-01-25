@@ -607,22 +607,9 @@ p,div,span *  {
   margin-right: 1em;
 }
 
+}
 
 
-
-.list-item a {
-  display: flex;
-  flex-direction: row;
-  margin-top: 1em;
-  text-decoration: none;
-  color:black
-}
-.list-item .title {
-  max-width: 20em;
-  word-break: break-all;
-  height: auto;
-}
-}
 
 
 
@@ -637,13 +624,7 @@ p,div,span *  {
     background-color: var(--slightly-yellow);
     border-bottom: 2px solid gainsboro;
   }
-  .list-item .title {
-    max-width: 18em;
-    margin-bottom: 1em;
-    transform: translateY(-0.5em);
-    word-break: break-all;
-    height: auto;
-  }
+ 
   .list-item a {
     display: flex;
     flex-direction: row;
@@ -691,13 +672,7 @@ p,div,span *  {
     background-color: var(--slightly-yellow);
     border-bottom: 2px solid gainsboro;
   }
-  .list-item .title {
-    max-width: 12em;
-    margin-bottom: 1em;
-    transform: translateY(-0.5em);
-    word-break: break-all;
-    height: auto;
-  }
+ 
 
   .list-item a {
     display: flex;
@@ -798,22 +773,7 @@ p,div,span *  {
     background-position: left; it's the default value, no need to define it
   }*/
 }
-.link-preview p{
-  font-family: "Open Sans", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
-  text-align: left ;
-  background-color: rgb(74 222 128);
-}
-.link-preview .title{
 
-  text-align: left;
-  color: black
-  ;
-}
 
 .is-tooltip{
   visibility:collapse ;

@@ -54,11 +54,11 @@ export default function NotificationItem({ item, lastNotified }) {
 
       let latest = "New Collection";
       if (latestCol && latestStory && latestCol.created > latestStory.created) {
-        latest = "New Addition: " + latestCol.childCollection.title;
+        latest = "New Addition: " + latestCol.childCollection?.title;
       } else if (latestStory && !latestCol) {
-        latest = "New Story: " + latestStory.story.title;
+        latest = "New Story: " + latestStory.story?.title;
       } else if (!latestStory && latestCol) {
-        latest = "New Collection: " + latestCol.childCollection.title;
+        latest = "New Collection: " + latestCol.childCollection?.title;
       }
 
       return (
@@ -69,7 +69,7 @@ export default function NotificationItem({ item, lastNotified }) {
           <div className="flex flex-row items-center justify-between gap-4">
             <ProfileCircle profile={collection.profile} color="emerald-700" />
             <span className="text-emerald-700 text-[0.78rem]">
-              Published to <span className="font-semibold">{collection.title}</span>
+              Published to <span className="font-semibold">{collection?.title}</span>
             </span>
             <span className="text-right text-sm text-emerald-700">
               {getTimePast(collection.created)}
@@ -98,7 +98,7 @@ export default function NotificationItem({ item, lastNotified }) {
             </span>
           </div>
           <h5 className="open-sans-medium mt-2 text-[0.93rem] text-emerald-800 break-words">
-            {story.title}
+            {story?.title}
           </h5>
         </div>
       );

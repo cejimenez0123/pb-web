@@ -103,11 +103,11 @@ const SearchDialog = ({ presentingElement }) => {
     return list.filter(content => {
       const item = content.item || {};
       const titleMatch =
-        item.title && item.title.toLowerCase().includes(q);
+        item?.title && item?.title.toLowerCase().includes(q);
       const usernameMatch =
-        item.username && item.username.toLowerCase().includes(q);
+        item?.username && item?.username.toLowerCase().includes(q);
       const nameMatch =
-        item.name && item.name.toLowerCase().includes(q);
+        item?.name && item?.name.toLowerCase().includes(q);
       return !!(titleMatch || usernameMatch || nameMatch);
     });
   }, []);

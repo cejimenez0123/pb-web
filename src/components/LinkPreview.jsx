@@ -84,26 +84,25 @@ const fetchPreview = async (url) => {
   }
 
   const imageView = () => {
-    // if (previewData.title !== "Spotify") {
+
       return previewData.image && (
         <a href={url}>
           <IonImg className='rounded-t-lg' src={previewData.image} alt={previewData.title} />
         </a>
       );
-    // }
-    // return <SpotifyEmbed url={url} />
+  
   };
 
   const previewTitle = () => {
-    if (previewData.title !== "Spotify") {
-      return <h4 className={isGrid ? "" : 'text-slate-800 bg-emerald-200 text-[1rem] p-4'}>{previewData.title}</h4>;
+    if (previewData?.title !== "Spotify") {
+      return <h4 className={isGrid ? "" : 'text-slate-800 bg-emerald-200 text-[1rem] p-4'}>{previewData?.title}</h4>;
     }
     return null;
   };
 
   const previewDescription = () => {
-    if (!isPhone && !isGrid && previewData.title !== "Spotify") {
-      return <h6 className={isGrid ? "overflow-scroll pt-2 px-1 mx-auto" : 'text-slate-800 p-3 bg-emerald-200 text-[0.8rem]'}>{previewData.description}</h6>;
+    if (!isPhone && !isGrid &&previewData && previewData.title !== "Spotify") {
+      return <h6 className={isGrid ? "overflow-scroll pt-2 px-1 mx-auto" : 'text-slate-800 p-3 bg-emerald-200 text-[0.8rem]'}>{previewData?.description}</h6>;
     }
     return null;
   };

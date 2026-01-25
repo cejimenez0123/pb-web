@@ -204,7 +204,7 @@ const filteredSortedStories = useMemo(() => {
             (story) =>
               !colInView?.storyIdList?.some(
                 (sj) => sj?.story?.id === story.id
-              ) && story.title.toLowerCase().includes(search.toLowerCase())
+              ) && story?.title.toLowerCase().includes(search.toLowerCase())
           )
           .map((story, i) => {
             const addedToCollection =
@@ -222,7 +222,7 @@ const filteredSortedStories = useMemo(() => {
   
                 <IonLabel slot="start" className="text-emerald-800 my-auto truncate max-w-[70%]  font-medium
 text-[1rem]">
-                  {story.title?.trim() || "Untitled"}
+                  {story?.title?.trim() || "Untitled"}
                 </IonLabel>
                 <div
                 slot="end"
@@ -349,7 +349,7 @@ text-[1rem]">
 
   return (
     <ErrorBoundary>
-        {/* <IonContent fullscreen={true} className="ion-padding"> */}
+        <IonContent fullscreen={true} className="ion-padding">
               <IonHeader translucent>
           <IonToolbar>
         <IonButtons slot="start">
@@ -360,7 +360,7 @@ text-[1rem]">
             </IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent fullscreen={true} className="ion-padding pt-12 ion-text-emerald-800" scrollY >
+        {/* <IonContent fullscreen={true} className="ion-padding pt-12 ion-text-emerald-800" scrollY > */}
         <div className="sm:max-w-[50rem] mx-auto ion-padding">
           <h2 className="text-xl font-semibold text-emerald-800 mb-1">
             {colInView.title?.trim() || "Untitled"}

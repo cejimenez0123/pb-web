@@ -121,29 +121,7 @@
   padding: 2em;
 
 }
-.content-item .titles p{
-  white-space: nowrap;
-  text-align: left;
-}
-.content-item .dashboard-header{
-  background-color: var(--slightly-yellow);
-  border-bottom: 1px solid grey;
-  padding: .5em;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-between;
-  
-}
-.dashboard-header .titles {
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  padding-left: .5em;
-  padding-right: .5em;
-  max-width: 80%;
 
-}
 
 }
  

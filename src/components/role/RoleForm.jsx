@@ -109,7 +109,7 @@ export default function RoleForm({ item, onClose }) {
     );
   }, [profiles, search]);
   return (
-    <IonContent scrollY fullscreen className="ion-padding pt-4">
+    <IonContent scrollY fullscreen={true} className="ion-padding pt-4">
     <div className="flex flex-col  w-[100%]">
       {/* Alerts */}
       {(error || success) && (
@@ -126,7 +126,7 @@ export default function RoleForm({ item, onClose }) {
       {/* <div className="mt-12"> */}
         <div className="flex justify-between items-center mb-4">
           <IonText className="text-emerald-900 text-lg font-medium">
-            {item?.title?.length ? item.title : "Untitled"}
+            {item?.title?.length ? item?.title : "Untitled"}
           </IonText>
         </div>
 
