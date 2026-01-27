@@ -35,6 +35,7 @@ import RoleForm from "../../components/role/RoleForm";
 import ErrorBoundary from "../../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
 import { useParams } from "react-router";
+import HashtagForm from "../../components/hashtag/HashtagForm";
 
 const EditCollectionContainer = () => {
 
@@ -52,6 +53,7 @@ const EditCollectionContainer = () => {
  const [followersAre,setFollowersAre]=useState(RoleType.commenter)
 const [canUserEdit,setCanUserEdit]=useState(false)
  const [title,setTitle]=useState("")
+ const [openHashtag,setOpenHashtag]=useState(false)
  const [purpose,setPurpose]=useState("")
   const [newCollections, setNewCollections] = useState([]);
   const currentProfile = useSelector((state) => state.users.currentProfile);
@@ -63,7 +65,9 @@ const dialog = useSelector(state=>state.users.dialog)
 
   useEffect(() => {
     async function loadData() {
+      console.log("ROXY",id)
       const col = await dispatch(fetchCollectionProtected(id));
+
       if (col) setCollection(col);
       setLoading(false);
     }
@@ -327,15 +331,25 @@ if (col.childCollections) {
   >
     {isOpen ? "Open Collaboration Enabled" : "Close Collaboration"}
   </button>
+  {/* <div className="flex flex-row space-x-4"> */}
   <button
     onClick={() =>openRoleForm()}
     className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 
 bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
-      }`}
+      `}
   >
     Roles
   </button>
+  {collection && <button
+  onClick={()=>setOpenHashtag(!openHashtag)}
+  className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 
+bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
+      `}
+  > {!openHashtag?"+":"-"} Hashtags</button>}
+
+  {/* </div> */}
   {/* Privacy Toggle */}
+  {openHashtag && collection && <HashtagForm item={colInView} type="collection"/>}
   <button
     onClick={() => setIsPrivate(!isPrivate)}
     className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 

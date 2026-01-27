@@ -85,9 +85,12 @@ async ({name,storyId,profile},thunkApi) => {
 })
 const createHashtagCollection = createAsyncThunk("hashtag/createHashtagCollection", 
 async ({name,colId,profile},thunkApi) => {
+    console.log(colId)
+    try{
         let data = await hashtagRepo.collection({name,colId,profile})
+        console.log("rox,f",data)
       if(data.hashtag){
-        const {hashtag}=data
+       
         
         return {
         hashtag:data.hashtag
@@ -96,10 +99,14 @@ async ({name,colId,profile},thunkApi) => {
 
         throw new Error(data.error)
     }
+}catch(err){
+    console.error("CREATE HASHTAC Col",err)
+}
 })
 const deleteHashtagCollection = createAsyncThunk("hashtag/deleteHashtagCollection", 
-async ({hashId},thunkApi) => {
-        let data = await hashtagRepo.deleteCollection({hashId})
+async ({colId,hashId},thunkApi) => {
+    console.log(hashId)
+        let data = await hashtagRepo.deleteCollection({colId,hashId})
       return data
   
 })

@@ -221,7 +221,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
   
     </div>
     {openHashtag?<div className="bg-emerald-50 w-full">
-    <HashtagForm item={parameters.page}/>
+    <HashtagForm item={parameters.page} type="story"/>
   </div>:null}
     </div>)
    }

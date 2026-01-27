@@ -9,34 +9,43 @@ import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
 import { useParams } from "react-router-dom";
 import { IonImg, IonLabel, IonTextarea } from "@ionic/react";
-export function HashtagForm({item}){
+export function HashtagForm({item,type="story"}){
     const storyHashtags = useSelector(state=>state.hashtags.storyHashtags)
     const {setError}=useContext(Context)
-    const {id}=useParams()
+    const isStory = type == "story"
     const [inputValue, setInputValue] = useState('');
     const dispatch = useDispatch()
     const [hashtags, setHashtags] = useState([]);
-     useLayoutEffect(()=>{
-        resetHashtags()
-    },[storyHashtags])
+    //  useLayoutEffect(()=>{
+    //     resetHashtags()
+    // },[storyHashtags])
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const resetHashtags= ()=>{
-      if(storyHashtags.length>0){
-        setHashtags(storyHashtags)
-      }
+    // const resetHashtags= ()=>{
+    //   if(storyHashtags.length>0){
+    //     setHashtags(storyHashtags)
+    //   }
       
-    }
+    // }
   
     const handleInputChange = (e) => {
       setInputValue(e.target.value);
     };
-    useLayoutEffect(()=>{
-      if(item){
-        if(item.storyIdList){
-          dispatch(fetchCollectionHashtags({profile:currentProfile,colId:id}))
+
+const fetchHashtags=(item)=>{
+  // if(item){
+        if(!isStory){
+          dispatch(fetchCollectionHashtags({profile:currentProfile,colId:item.id})).then(res=>{
+                checkResult(res,payload=>{
+console.log("ollectionHashtags",payload)
+                    setHashtags(payload.hashtags)
+                  
+            
+                },err=>{
+                  
+                })})
 
         }else{
-          dispatch(fetchStoryHashtags({profile:currentProfile,storyId:id})).then(res=>{
+          dispatch(fetchStoryHashtags({profile:currentProfile,storyId:item.id})).then(res=>{
             checkResult(res,payload=>{
               setHashtags(payload.hashtags)
             },err=>{
@@ -44,24 +53,16 @@ export function HashtagForm({item}){
             })
           })
         }
-      }
-    },[id])
-
+      // }
+}
     const deleteHashtag =  (hash) =>{
-      if(item.storyIdList){
-        dispatch(deleteHashtagCollection({hashId:hash.id})).then(res=>{
+      console.log(hash)
+   const {hashtag}=hash
+      if(!isStory){
+        dispatch(deleteHashtagCollection({colId:item.id,hashId:hash.id})).then(res=>{
           checkResult(res,payload=>{
-              dispatch(fetchCollectionHashtags({profile:currentProfile,colId:item.id})).then(res=>{
-                checkResult(res,payload=>{
-                  if(payload.hashtags&&payload.hashags.length){
-                    setHashtags(payload.hashtags)
-                  }
-            
-                },err=>{
-                  
-                })
-              })
-       
+            fetchHashtags(item)
+
           },err=>{
 
           })
@@ -70,73 +71,55 @@ export function HashtagForm({item}){
 
         dispatch(deleteHashtagStory({hashtagStoryId:hash.id})).then(res=>{
           checkResult(res,payload=>{
-          
-              dispatch(fetchStoryHashtags({profile:currentProfile,storyId:item.id})).then(res=>{
-               checkResult(res,payload=>{
-                setHashtags(payload.hashtags)
+          fetchHashtags(item)
 
-               },err=>{
 
-               })
-              })
-     
-          },err=>{
+},err=>{
 
-          })
-      })
+})})
      
       }
       
     }
+    useLayoutEffect(()=>{
+      fetchHashtags(item)
+    },[])
     const handleKeyDown = (e) => {
-      console.log("HASG",e)
+   
 try{
         // if(item && currentProfile){
       if (e.key === 'Enter' && inputValue.trim()) {
-        if(item.storyIdList){
+        if(!isStory){
+   
           dispatch(createHashtagCollection({name:inputValue.trim().toLocaleLowerCase(),colId:item.id,profile:currentProfile})
-        ).then(res=>checkResult(res,(payload)=>{
-      
-          dispatch(fetchCollectionHashtags({profile:currentProfile,colId:item.id}))
+        ).then(res=>{
+          console.log("ASSA",res)
+         if(res && res.payload){ 
+          setHashtags(prev=>[...prev,res.payload.hashtag])
+              setInputValue('');
+        e.preventDefault(); 
+
+         }else{
+          setError("Reached the max on hashtags")
+         }    
+       
+        
           
-        },err=>{
-    
-        }))
+        })
     }else{
    
-
-
     dispatch(createHashtagPage({name:inputValue.trim().toLocaleLowerCase(),storyId:item.id,profile:currentProfile})
   ).then(res=>checkResult(res,(payload)=>{
-    if(payload.error){
-
-      setError("Hashtag already attached")
-    }
-    dispatch(fetchStoryHashtags({profile:currentProfile,storyId:item.id})).then(res=>{
-      checkResult(res,payload=>{
-        if(payload.hashtags){
-          setHashtags(payload.hashtags)
-        }
- 
-      },err=>{
-
-      })
-    })
-    
-  },err=>{
-
-    setError("Hashtag already attached")
-  }))
-    }
+   
         setInputValue('');
         e.preventDefault(); 
-      }
-    }catch(err){
-      setError(err)
-    }
+      }))
+    }}}catch(err){}finally{
+      fetchHashtags(item)
+    }}
+      useEffect(()=>{
    
-    };
-  
+    },[])
     return (
        <form className="  w-full flex flex-col mt-2 ">
      

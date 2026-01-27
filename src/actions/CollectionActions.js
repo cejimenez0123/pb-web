@@ -219,7 +219,7 @@ const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCo
     return{error,collection:null}
 }
  })
-const fetchCollectionProtected = createAsyncThunk("collection/getCollectionProtected",async(params,thunkApi)=>{
+const fetchCollectionProtected = createAsyncThunk("collection/fetchCollectionProtected",async(params,thunkApi)=>{
     
     let data = await collectionRepo.fetchCollectionProtected(params)  
  
