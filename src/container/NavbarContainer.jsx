@@ -8,6 +8,7 @@ import addCircle from "../images/icons/plus.app.svg"
 import {signOutAction,setDialog} from "../actions/UserActions"
 
 import { Preferences } from "@capacitor/preferences";
+import home from "../images/icons/home.svg"
 import menu from "../images/icons/menu.svg"
 import library from "../images/icons/book.svg"
 import search from "../images/icons/magnifyingglass.svg"
@@ -423,7 +424,8 @@ let isNative = Capacitor.isNativePlatform()
        
       {/* </div> */}
       {/* <h6 className='text-white text-xs'> Profile</h6> */}
-      </div>   :<p onClick={()=>handleCloseNavMenu((PageName.about))} className='text-cream h-full my-auto'>About</p>}
+
+      </div>   :<div className='flex flex-col'><IonImg src={hammer} style={{width:"3em",height:"3em"}}  className="object-fit max-h-10 "src={home} /><p onClick={()=>handleCloseNavMenu((PageName.about))} className='text-cream h-full my-auto'>About</p></div>}
  </div>):(<div className="navbar flex items-start  max-w-[100vw] px-4 h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isNative?menuDropdown():

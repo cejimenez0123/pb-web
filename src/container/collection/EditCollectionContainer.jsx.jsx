@@ -105,7 +105,7 @@ const dialog = useSelector(state=>state.users.dialog)
     
     if (!col) return;
  if (col.storyIdList) {
-  console.log(col.storyIdList)
+
     const stcList = col.storyIdList.map((stc, i) => {
       const index = stc.index ?? i; // fallback if index is null
       return new StoryToCollection(
@@ -143,7 +143,7 @@ if (col.childCollections) {
     }
   };
      const setInfo = (col) => {
-      console.log(col)
+    
     if (!col) return;
     setTitle(col.title);
     setPurpose(col.purpose);

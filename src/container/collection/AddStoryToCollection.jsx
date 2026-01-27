@@ -85,7 +85,7 @@ let dia = {...dialog}
   onClose={()=>{
                       setOpenDialog(false)
                     }}/>  
-                    dia.title="Create Collecition"
+                    dia.title="Create Collection"
    dia.isOpen = true
   
    dia.agree=null

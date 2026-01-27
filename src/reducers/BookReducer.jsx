@@ -182,14 +182,22 @@ state.collectionInView = payload.collection
     state.loading=true
 }).addCase(fetchCollection.fulfilled,(state,{payload})=>{
     state.collectionInView=payload.collection
+
+    if(payload.collection && payload.collection.childCollections && payload.collection.childCollections.length){
+  
     state.collections = payload.collection.childCollections.map(cTc=>cTc.childCollection)
     state.collectionToCollectionsList = payload.collection.childCollections
+}
+
+
     state.loading = false
 }).addCase(fetchCollectionProtected.pending,(state)=>{
     state.loading=false
 }).addCase(fetchCollectionProtected.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
-    state.collections = payload.collection.childCollections.map(cTc=>cTc.childCollection)
+
+    if(payload.collection && payload.collection.childCollections && payload.collection.childCollections.length){
+    state.collections = payload.collection.childCollections.map(cTc=>cTc.childCollection)}
 })
 }
 

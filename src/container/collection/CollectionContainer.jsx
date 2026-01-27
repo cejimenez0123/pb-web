@@ -51,6 +51,7 @@ import Paths from "../../core/paths.js";
 import { Preferences } from "@capacitor/preferences";
 import { Capacitor } from "@capacitor/core";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
+import { useParams } from "react-router";
 
 export default function CollectionContainer() {
 const { setError, setSuccess, setSeo, seo } = useContext(Context);
@@ -59,8 +60,7 @@ const { setError, setSuccess, setSeo, seo } = useContext(Context);
   const dispatch = useDispatch();
   const router = useIonRouter()
 
-   const id = router.routeInfo?.pathname.split("/")[2]
-   console.log(id)
+   const {id}=useParams()
   const isNative = Capacitor.isNativePlatform()
   const collection = useSelector(state => state.books.collectionInView);
   const collections = useSelector(state => state.books.collections);
@@ -213,6 +213,7 @@ return
           setSuccess("You are now following this collection");
           findRole(collection,currentProfile)
         }, err => {
+          console.log(err)
           setError(err.message);
         });
       });
@@ -243,11 +244,13 @@ console.log("DID",router.routeInfo)
             (err) => {
             
               if (err.status === 403) {
+           console.log(err)
                 setError("Access Denied: You do not have permission to view this collection.");
                 setCanUserSee(false);
                 soUserCanAdd()
                 soUserCanEdit()
               } else {
+                         console.log(err)
                 setError(err.message || "Failed to load collection.");
               }
               setLoading(false);
@@ -255,7 +258,7 @@ console.log("DID",router.routeInfo)
           );
         })
         .catch((e) => {
-             
+                   console.log("POPP",e)
           setError("An unexpected error occurred.");
           setLoading(false);
         });
@@ -270,17 +273,16 @@ console.log("DID",router.routeInfo)
                 setCanUserSee(true)
                 setLoading(false);
                   soUserCanEdit()
-              } else {
-                setError("Collection not found.");
-                setLoading(false);
-              }
+              } 
             },
             (err) => {
               if (err.status === 403) {
+                 console.log(err)
                 setError("Access Denied: You do not have permission to view this collection.");
                 setCanUserSee(false);
                 
               } else {
+                 console.log(err)
                 setError(err.message || "Failed to load collection.");
               }
               setLoading(false);
@@ -288,6 +290,7 @@ console.log("DID",router.routeInfo)
           );
         })
         .catch((e) => {
+                  console.log("POPPX",e)
           setError("An unexpected error occurred.");
           setLoading(false);
         });
@@ -311,6 +314,7 @@ console.log("DID",router.routeInfo)
       
         
         }, err => {
+           console.log(err)
           setError(err.message);
         });
       });
