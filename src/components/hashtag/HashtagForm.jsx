@@ -110,7 +110,9 @@ try{
    
     dispatch(createHashtagPage({name:inputValue.trim().toLocaleLowerCase(),storyId:item.id,profile:currentProfile})
   ).then(res=>checkResult(res,(payload)=>{
-   
+   if(res && payload){ 
+          setHashtags(prev=>[...prev,payload.hashtag])
+   }
         setInputValue('');
         e.preventDefault(); 
       }))
