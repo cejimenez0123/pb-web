@@ -16,27 +16,21 @@ const IndexList = ({ items, handleFeedback ,type}) => {
   }
 
 return (
-  <IonList className="!overflow-visible !bg-transparent">
-    {items && items.length
-      ? items
-          .filter((item) => item)
-          .map((item, i) => (
-            // <IonItem
-            //   key={i + item.id}
-            //   lines="none"
-            //   className="!bg-transparent !overflow-visible"
-            // >
-              <IndexItem
-              key={i + item.id}
-                page={item}
-                item={item}
-                type={type}
-                handleFeedback={() => handleFeedback(item)}
-              />
-            // </IonItem>
-          ))
-      : null}
-  </IonList>
+<IonList className="bg-transparent">
+  {items && items.length
+    ? items.map((item, i) => (
+        <IndexItem
+          key={i + item.id}
+          page={item}
+          item={item}
+          type={type}
+          handleFeedback={() => handleFeedback(item)}
+        />
+      ))
+    : <h2 className="mx-auto my-8 text-emerald-800">Room for possibility</h2>
+  }
+</IonList>
+
 );
 
  

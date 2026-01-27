@@ -28,6 +28,7 @@ import sortItems from '../../core/sortItems.js';
 import { Preferences } from '@capacitor/preferences';
 import StoryCollectionTabs from '../../components/page/StoryCollectionTabs.jsx';
 import { useParams } from 'react-router';
+import ExploreList from '../../components/collection/ExploreList.jsx';
 
 function ProfileContainer() {
   const { seo, setSeo, setError, setSuccess, currentProfile } = useContext(Context);
@@ -221,16 +222,18 @@ const pages = useMemo(() => {
   return (
     <ErrorBoundary>
     
-      <IonHeader>
+      
+        
+        <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}}className='ion-padding-top' >
+          <div className='pt-12 '>
+          {/* <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
               <IonBackButton defaultHref="/" />
             </IonButtons>
             <IonTitle>{profile && `${profile.username}`}</IonTitle>
           </IonToolbar>
-        </IonHeader>
-        
-        <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}}className='pt-8' scrollY>
+        </IonHeader> */}
           <div className="pt-2 md:pt-8 mb-8 mx-2 ">
             <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
           </div>
@@ -258,7 +261,8 @@ const pages = useMemo(() => {
         </div>
     
         
-          
+          </div>
+          <ExploreList/>
         </IonContent>
     </ErrorBoundary>
   );

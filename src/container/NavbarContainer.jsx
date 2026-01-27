@@ -121,7 +121,7 @@ const openDialog=()=>{
   dispatch(setDialog(dia))
 }
     const openDialogAction = ()=>{
-      dispatch(searchDialogToggle({open:true}))
+      router.push("/search")
     }
     const handleCloseNavMenu = (page) => {
  sendGAEvent({

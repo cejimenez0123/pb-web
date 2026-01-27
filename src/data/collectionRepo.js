@@ -185,7 +185,7 @@ import { Preferences } from "@capacitor/preferences";
     }
     async recommendedColCollections({colId}){
         const res = await axios.get(this.url+"/"+colId+"/recommendations",)
-
+console.log("CDD",res)
         return res.data
     }
     async recommendations(){

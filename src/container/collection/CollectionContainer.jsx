@@ -616,7 +616,7 @@ console.log("DID",router.routeInfo)
               forFeedback={collection?.type === "feedback"}
         />
 </div>
-        <ExploreList />
+        <ExploreList collection={collection} />
         </div>
         </div>
 </IonContent>

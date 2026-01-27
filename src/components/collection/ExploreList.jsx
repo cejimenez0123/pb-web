@@ -1,21 +1,22 @@
 import BookListItem from "../BookListItem"
 import { useSelector } from "react-redux"
-import { IonItem, IonList } from "@ionic/react"
+import { IonItem, IonList, useIonRouter } from "@ionic/react"
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { getRecommendedCollections, getRecommendedCollectionsProfile } from "../../actions/CollectionActions"
-export default function ExploreList(){
+export default function ExploreList({collection}){
     const items = useSelector(state=>state.books.recommendedCols)
     const {currentProfile}=useSelector(state=>state.users)
-console.log("explore items",items)
+    const router = useIonRouter()
+
     const dispatch = useDispatch()
     useEffect(()=>{
         if(currentProfile){
                 dispatch(getRecommendedCollectionsProfile())
         }else{
-                dispatch(getRecommendedCollections())
+               collection && dispatch(getRecommendedCollections({colId:collection.id}))
         }
-    },[currentProfile,dispatch])
+    },[router.routeInfo,dispatch])
      return<div className='min-h-[14rem] mt-4 pb-[10em] bg-cream'>
         <h3 className="text-emerald-900 text-left bg-cream font-extrabold ml-16 lora-bold mb-4 text-2xl">
         Explore

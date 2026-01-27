@@ -64,8 +64,8 @@ const Paths ={
     home:()=>{return `/home`},
     about:()=>{return `/about`},
     editProfile:`/profile/edit`,
-    profile:{route:()=>{return `/profile/:id`},
-            createRoute:(id)=>{return `/profile/${id}`}},
+    profile:{route:()=>{return `/profile/:id/view`},
+            createRoute:(id)=>{return `/profile/${id}/view`}},
     myProfile:`/profile`,
     notifications:()=>{return"/profile/alert"}
 }
