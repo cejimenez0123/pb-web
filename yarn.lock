@@ -2092,7 +2092,7 @@
     ionicons "^8.0.13"
     tslib "^2.1.0"
 
-"@ionic/react-router@^8.7.16":
+"@ionic/react-router@^8.7.17":
   version "8.7.17"
   resolved "https://registry.npmjs.org/@ionic/react-router/-/react-router-8.7.17.tgz"
   integrity sha512-kSkFNNA5m0vgnzpvWU9PDwJNHdEYqD9THpEGFh5aSM/pENvs59qlo5ziQQ5MMWy21EgKCGa045VmaO2D/5tF6g==
@@ -2100,7 +2100,7 @@
     "@ionic/react" "8.7.17"
     tslib "*"
 
-"@ionic/react@^8.7.16", "@ionic/react@8.7.17":
+"@ionic/react@^8.7.17", "@ionic/react@8.7.17":
   version "8.7.17"
   resolved "https://registry.npmjs.org/@ionic/react/-/react-8.7.17.tgz"
   integrity sha512-t/ApHBEigSTvovM/hKtNAMrddoOQ5l2GlyjOzASUq7sJLvDS4ewDMk5pRahjGqmFSYSN8TIBlF9QAHswp6XTRg==

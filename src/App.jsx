@@ -52,9 +52,6 @@ import { Capacitor } from '@capacitor/core';
 import { IonReactRouter } from '@ionic/react-router';
 import ErrorBoundary from './ErrorBoundary.jsx';
 import { Redirect, Route } from 'react-router-dom'
-import { Network } from '@capacitor/network';
-import { fetchNotifcations } from './actions/ProfileActions.jsx';
-import checkResult from './core/checkResult.js';
 import AboutContainer from './container/AboutContainer.jsx';
 setupIonicReact()
 function App(props) {
