@@ -33,8 +33,8 @@ useScrollTracking({
   enableCompletion: canUserSee === true,
   completionEvent: "story_read_complete",
 });
+
   const [pending, setPending] = useState(true);
-;
   const [rootComments, setRootComments] = useState([]);
   const [errorStatus, setErrorStatus] = useState(null);
 
