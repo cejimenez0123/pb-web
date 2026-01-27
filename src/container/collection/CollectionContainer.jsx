@@ -50,9 +50,11 @@ import checkResult from "../../core/checkResult"
 import Paths from "../../core/paths.js";
 import { Preferences } from "@capacitor/preferences";
 import { Capacitor } from "@capacitor/core";
+import useScrollTracking from "../../core/useScrollTracking.jsx";
 
 export default function CollectionContainer() {
-  const {  setError, setSuccess } = useContext(Context);
+const { setError, setSuccess, setSeo, seo } = useContext(Context);
+
   const currentProfile = useSelector(state => state.users.currentProfile);
   const dispatch = useDispatch();
   const router = useIonRouter()
@@ -75,7 +77,24 @@ export default function CollectionContainer() {
   const [hasMore, setHasMore] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const writeArr = [RoleType.editor, RoleType.writer];
-   
+ collection && useScrollTracking({
+  contentType: "collection",
+  contentId: collection.id,
+  authorId: collection.profileId,
+  enableCompletion: false,
+});
+
+  useLayoutEffect(() => {
+  if (!collection || !canUserSee) return;
+
+  setSeo({
+    ...seo,
+    title: `${collection.title} — Collection`,
+    description:
+      collection.purpose ||
+      `A curated collection by ${collection.profile?.displayName || "a creator"}`,
+  });
+}, [collection, canUserSee]);
   function findRole(col,profile) {
 
 
@@ -491,24 +510,26 @@ console.log("DID",router.routeInfo)
          <ErrorBoundary>
 
 
-      <IonHeader>
-      <IonToolbar mode="ios">
+
+
+
+  <IonContent style={{"--background":"#f4f4e0"}} scrollY={true} fullscreen className="pb-24 pt-12">
+          {/* <IonHeader mode="ios"> */}
+      {/* <IonToolbar mode="ios"> */}
         <IonButtons slot="start">
-          {isNative ? (
+          {/* {isNative ? ( */}
             <IonBackButton
             mode="ios"
               defaultHref={Paths.discovery()}
               onClick={handleBack}
             />
-          ) : null}
+          {/* ) : null} */}
         </IonButtons>
-        <IonTitle>{collection?.title}</IonTitle>
-      </IonToolbar>
-    </IonHeader>
-
-
-  <IonContent style={{"--background":"#f4f4e0"}} scrollY={true} fullscreen className="pb-24">
+        {/* <IonTitle>{collection?.title}</IonTitle> */}
+      {/* </IonToolbar> */}
+    {/* </IonHeader> */}
     {/* <div className="sm:max-w-[60em] bg-cream mx-auto "> */}
+    <div className="pt-8">
  <IonCard style={{"--background":"transparent",maxWidth:"60em",margin:"auto"}}className="">
           <IonCardHeader className="mx-auto ">
             <div className="flex items-center justify-between px-4 gap-2">
@@ -591,6 +612,7 @@ console.log("DID",router.routeInfo)
         />
 </div>
         <ExploreList />
+        </div>
 </IonContent>
         </ErrorBoundary>
   );

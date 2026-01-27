@@ -19,7 +19,7 @@ import Enviroment from "../../core/Enviroment"
 
 export default function PageViewItem({page}) {
     const ref = useRef()
-    page?useScrollTracking({name:JSON.stringify(page.title)}):null
+  
     PageViewItem.propTypes={
         page: PropTypes.object.isRequired
     }

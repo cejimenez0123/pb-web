@@ -281,7 +281,20 @@ return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
   }}
-onClick={()=>{router.push(Paths.calendar())}}
+onClick={()=>{
+      sendGAEvent("navigation_click", {
+      destination: "calendar",
+      source: "discovery_header",
+    });
+
+    setSeo({
+      title: "Plumbum — Events & Writing Calendar",
+      description:
+        "Browse writing events, workshops, and meetups on the Plumbum calendar.",
+      name: "Plumbum",
+      type: "website",
+    });
+  router.push(Paths.calendar())}}
 
           />
           

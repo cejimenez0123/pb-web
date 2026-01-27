@@ -24,17 +24,16 @@ export default function CalendarContainer(){
   const isNative = Capacitor.isNativePlatform()
   useLayoutEffect(()=>{
 
-      let soo = seo
-      soo.title= "Plumbum (NYC CALENDAR) - Your Writing, Your Community"
-      soo.description="Explore events, workshops, and writer meetups on Plumbum."
-      soo.url =Enviroment.domain+"/events"
-      setSeo(soo)
-    
-   
 
+    setSeo({
+      title: "Plumbum — Events & Writing Calendar",
+      description:
+        "Browse writing events, workshops, and meetups on the Plumbum calendar.",
+      name: "Plumbum",
+      type: "website",
+    });
   
-  
-  },[router.routeInfo.pathname])
+  },[])
   useEffect(()=>{
     initGA()
   

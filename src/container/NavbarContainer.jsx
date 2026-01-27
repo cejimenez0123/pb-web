@@ -413,17 +413,17 @@ let isNative = Capacitor.isNativePlatform()
   }}/>
   <h6 className='text-white text-xs'>Workshop</h6>
   </div>
-  <div onClick={()=>currentProfile?router.push(Paths.myProfile):router.push(Paths.login())} className={`flex rounded-full max-h-8 flex-col`}>
+     {currentProfile? <div onClick={()=>currentProfile?router.push(Paths.myProfile):router.push(Paths.login())} className={`flex rounded-full max-h-8 flex-col`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         {/* <div className="w-4"> */}
-        <div  className="overflow-hidden max-h-10 rounded-full ">
+    <div  className="overflow-hidden max-h-10 rounded-full ">
     <IonImg className="object-fit max-h-10 "  src={profilePic}/></div>
-   
+
         </div> 
        
       {/* </div> */}
       {/* <h6 className='text-white text-xs'> Profile</h6> */}
-      </div>
+      </div>   :<p onClick={()=>handleCloseNavMenu((PageName.about))} className='text-cream h-full my-auto'>About</p>}
  </div>):(<div className="navbar flex items-start  max-w-[100vw] px-4 h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isNative?menuDropdown():

@@ -43,11 +43,26 @@ export default function AboutContainer() {
   const { setSeo, currentProfile } = useContext(Context);
   const md = useMediaQuery({ query: '(min-width: 750px)' });
   const router = useIonRouter()
-  useScrollTracking({ name: "About" });
-  useLayoutEffect(() => {
-    initGA();
-    sendGAEvent("Page View", "View About Page");
-  }, []);
+useScrollTracking({
+  contentType: "about",
+  contentId: "about_page",
+  enableCompletion: true,
+  completionEvent: "about_read_complete",
+});
+
+useLayoutEffect(() => {
+  initGA();
+}, []);
+useLayoutEffect(() => {
+  setSeo({
+    title: "About Plumbum — A Writing Community Built with Care",
+    description:
+      "Plumbum is a writer-led community for sharing work, getting thoughtful feedback, and growing through workshops and real connection.",
+    name: "Plumbum",
+    type: "website",
+  });
+}, [setSeo]);
+
   
   useLayoutEffect(() => {
     setSeo({
@@ -58,8 +73,14 @@ export default function AboutContainer() {
     });
   }, [setSeo]);
 
-  function apply() {
-    sendGAEvent("Apply to be user", "Click Apply", "Apply to Join Today", 0, false);
+  // function apply() {
+    function apply(source = "about_page") {
+  sendGAEvent("apply_click", {
+    source,
+    location: "about",
+  });
+
+
     router.push(Paths.onboard);
   }
 
@@ -116,7 +137,7 @@ export default function AboutContainer() {
           <h2 className="text-[1rem] leading-loose open-sans-medium mb-4">
             Plumbum is a space for writers to share work, get feedback, and connect with like-minded creatives. Whether you're refining your next piece or just starting out, you'll find support, inspiration, and the right audience here.
           </h2>
-          <a onClick={apply} className="text-[1rem] cursor-pointer inline-block">[→ Join the Beta]</a>
+          <a onClick={()=>apply("find_creatives")} className="text-[1rem] cursor-pointer inline-block">[→ Join the Beta]</a>
         </div>
       </div>
     </div>
@@ -144,7 +165,15 @@ export default function AboutContainer() {
         </li>
       </ul>
       <div className="text-left">
-        <a onClick={() => router.push(Paths.discovery())} className="text-[1rem] cursor-pointer inline-block">[→ Explore More]</a>
+        <a onClick={() =>{
+
+    sendGAEvent("navigation_click", {
+      destination: "discovery",
+      source: "about_why_plumbum",
+    });
+    router.push(Paths.discovery());
+  }}
+ className="text-[1rem] cursor-pointer inline-block">[→ Explore More]</a>
       </div>
     </div>
   );
@@ -175,21 +204,27 @@ export default function AboutContainer() {
       <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
       <h2 className="mx-4 my-2 open-sans-medium text-l">Follow the Journey</h2>
       <a
+        onClick={() =>
+    sendGAEvent("outbound_click", {
+      destination: "instagram_channel",
+      source: "about_stay_in_loop",
+    })
+  }
         className="flex flex-col text-center my-4 mx-auto cursor-pointer"
         href="https://www.instagram.com/channel/AbaI9yaoN4KfPze_/"
         target="_blank" rel="noreferrer"
       >
         <p className="open-sans-medium mx-4 my-4 text-emerald-600">Join the Instagram Channel. Today!</p>
-        <img className="mx-auto w-[8em]" src={ig} alt="Slack invite" />
+        <img  className="mx-auto w-[8em]" src={ig} alt="Slack invite" />
       </a>
       <p
         className="flex open-sans-medium my-4 mx-auto text-center cursor-pointer"
-        onClick={() => router.push(Paths.calendar())}
+        onClick={() => goToCalendar("about_text_link")}
       >
         Check out the Calendar for NYC Writing Scene
       </p>
       <img
-        onClick={() => router.push(Paths.calendar())}
+        onClick={() => goToCalendar("about_icon")}
         className="h-[8em] mx-auto w-[8em] cursor-pointer"
         src={events}
         alt="Calendar icon"
@@ -217,9 +252,16 @@ export default function AboutContainer() {
       </div>
     </div>
   );
+const goToCalendar = (source="about_page") => {
+  sendGAEvent("navigation_click", {
+    destination: "calendar",
+    source,
+  });
 
+  router.push(Paths.calendar());
+};
   return (
-    
+    <IonContent>
         <div className="pt-8 w-[94vw] mx-auto">
         {/* <IonGrid> */}
           <IonRow className="my-10">
@@ -292,7 +334,9 @@ export default function AboutContainer() {
                   display: 'inline-block',
                   userSelect: 'none'
                 }}
-                onClick={() => router.push(Paths.onboard)}
+                onClick={() => {
+                  apply("footer_cta")
+                  router.push(Paths.onboard)}}
               >
                 Become Part of our Writers' Circle
               </IonText>
@@ -331,6 +375,6 @@ export default function AboutContainer() {
         {!currentProfile && <ScrollDown text="↓Apply Below" visible={true} />}
              </div>
 
-
+</IonContent>
   )
 }

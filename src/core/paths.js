@@ -62,7 +62,7 @@ const Paths ={
     },
     discovery:()=>"/discovery",
     home:()=>{return `/home`},
-    about:()=>{return `/`},
+    about:()=>{return `/about`},
     editProfile:`/profile/edit`,
     profile:{route:()=>{return `/profile/:id`},
             createRoute:(id)=>{return `/profile/${id}`}},

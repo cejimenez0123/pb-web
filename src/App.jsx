@@ -55,6 +55,7 @@ import { Redirect, Route } from 'react-router-dom'
 import { Network } from '@capacitor/network';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
 import checkResult from './core/checkResult.js';
+import AboutContainer from './container/AboutContainer.jsx';
 setupIonicReact()
 function App(props) {
   const {currentProfile} =props
@@ -151,7 +152,10 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
        }
      />
      <Route exact path="/" render={() => 
-     isFirstLaunch?<Redirect to={Paths.onboard} />:<Redirect to={Paths.login()}/>}
+     isFirstLaunch?Capacitor.isNativePlatform()?<Redirect to={Paths.onboard} />:<Redirect to={Paths.about()}/>:<Redirect to={Paths.login()}/>}
+/>
+<Route exact path="/about" render={() => 
+     <AboutContainer/>}
 />
 <Route exact path="/search" render={() => 
      <SearchDialog presentingElement={page}/>}

@@ -9,7 +9,7 @@ import { postStoryHistory } from "../../actions/HistoryActions";
 import { getProfileHashtagCommentUse } from "../../actions/HashtagActions";
 import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
-import { initGA } from "../../core/ga4.js";
+import { initGA, sendGAEvent } from "../../core/ga4.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 import { IonBackButton, IonContent, IonHeader } from "@ionic/react";
@@ -25,7 +25,13 @@ export default function PageViewContainer() {
   const router = useIonRouter()
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
-
+page && useScrollTracking({
+  contentType: "story",
+  contentId: page?.id,
+  authorId: page?.authorId,
+  enableCompletion: canUserSee === true,
+  completionEvent: "story_read_complete",
+});
   const [pending, setPending] = useState(true);
   const [canUserSee, setCanUserSee] = useState(false);
   const [rootComments, setRootComments] = useState([]);
@@ -55,15 +61,17 @@ export default function PageViewContainer() {
   }, [comments]);
 
   useEffect(() => {
+
     fetchStory();
   }, [id,dispatch]);
 
   const fetchStory = async () => {
-
+    setPending(true)
     setErrorStatus(null);
 
     try {
        dispatch(getStory({ id })).then((res) => {
+
 
       checkResult(
         res,
@@ -72,13 +80,14 @@ export default function PageViewContainer() {
             if (payload.story.comments?.length) {
               dispatch(setComments({ comments: payload.story.comments }));
             }
-       
+            setPending(false)
           } else {
             throw new Error("Story not found");
           }
         },
         (err) => {
           // Handle forbidden specifically
+              setPending(false)
           if (err?.response?.status === 403) {
    
             setErrorStatus(403);
@@ -91,6 +100,7 @@ export default function PageViewContainer() {
            )});
 
     } catch (error) {
+          setPending(false)
       if (error?.response?.status === 403) {
         setErrorStatus(403);
 
@@ -133,10 +143,41 @@ export default function PageViewContainer() {
     }}
   useEffect(() => {
     setPending(true);
-    page && setCanUserSee(soCanUserSee())
+    page && setCanUserSee(soCanUserSee()) && sendGAEvent({
+  story_id: page.id,
+  author_id: page.authorId,
+  is_private: page.isPrivate,
+  viewer_logged_in: Boolean(currentProfile),
+  platform: Capacitor.isNativePlatform() ? "native" : "web"
+})
+
+
     setPending(false);
   },[page])
+  useEffect(() => {
+  if (errorStatus === 403) {
+    sendGAEvent("story_access_denied", {
+      story_id: id,
+      viewer_logged_in: Boolean(currentProfile),
+    });
+  }
+}, [errorStatus]);
+useEffect(() => {
+  if (page && rootComments.length > 0) {
+    sendGAEvent("view_comments", {
+      story_id: page.id,
+      comment_count: rootComments.length,
+    });
+  }
+}, [rootComments]);
+
   const handleBack = () => {
+     sendGAEvent("story_exit_back", {
+    story_id: page?.id,
+    exit_type: window.history.length > 1
+      ? "history_back"
+      : "fallback_discovery",
+  });
     if (window.history.length > 1) {
           router.goBack()
     } else {

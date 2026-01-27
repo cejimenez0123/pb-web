@@ -13,7 +13,7 @@ import DashboardEmbed from './DashboardEmbed.jsx';
 import { AnimatePresence, motion } from "framer-motion";
 import BookListItem from '../components/BookListItem.jsx';
 import calendar from '../images/icons/calendar.svg'
-import { initGA} from '../core/ga4.js';
+import { initGA, sendGAEvent} from '../core/ga4.js';
 import Context from '../context.jsx';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
@@ -23,32 +23,40 @@ import {  IonContent,IonHeader,IonItem, IonText, IonToolbar, useIonRouter } from
 function DiscoveryContainer() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
-const router = useIonRouter()
+
   const dispatch = useDispatch();
     const [tab, setTab] = useState("disc");
   const cols = useSelector(state => state.books.collections);
-  const books = useSelector(state => state.books.books);
-  const libraries = useSelector(state => state.books.libraries);
+
   const pagesInView = useSelector(state => state.pages.pagesInView);
 
   const [hasMoreLibraries, setHasMoreLibraries] = useState(false);
   const [viewItems, setViewItems] = useState([]);
 
-  const isNotPhone = useMediaQuery({ query: '(min-width: 999px)' });
+  tab && useScrollTracking({ name: tab });
+  
 
-  useScrollTracking({ name: 'discovery' });
-  useLayoutEffect(() => {
-    initGA();
-  }, []);
-
-  useLayoutEffect(() => {
+ useLayoutEffect(() => {
+  if (tab === "disc") {
     setSeo({
-      title: 'Plumbum (Discovery) - Read Fresh Writing',
-      description: 'Explore events, workshops, and writer meetups on Plumbum.',
-      name: 'Plumbum',
-      type: '',
+      title: "Plumbum — Discover Writing, Events & Workshops",
+      description:
+        "Explore fresh writing, collections, events, and workshops on Plumbum.",
+      name: "Plumbum",
+      type: "website",
     });
-  }, [setSeo]);
+  }
+
+  if (tab === "dash") {
+    setSeo({
+      title: "Plumbum — Your Writing Dashboard",
+      description:
+        "Manage your writing, collections, and reading activity on Plumbum.",
+      name: "Plumbum",
+      type: "profile",
+    });
+  }
+}, [tab, setSeo]);
 
   useLayoutEffect(() => {
     dispatch(setPagesInView({ pages: [] }));
@@ -145,7 +153,20 @@ export default DiscoveryContainer;
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
   }}
-onClick={()=>{router.push(Paths.calendar())}}
+onClick={()=>{
+      sendGAEvent("navigation_click", {
+      destination: "calendar",
+      source: "discovery_header",
+    });
+
+    setSeo({
+      title: "Plumbum — Events & Writing Calendar",
+      description:
+        "Browse writing events, workshops, and meetups on the Plumbum calendar.",
+      name: "Plumbum",
+      type: "website",
+    });
+  router.push(Paths.calendar())}}
 
           />
                     </div>
@@ -160,7 +181,12 @@ onClick={()=>{router.push(Paths.calendar())}}
                 ? "bg-emerald-700 text-white"
                 : "text-emerald-700 bg-transparent"
             }`}
-            onClick={() => setTab("disc")}
+            onClick={() => { 
+               sendGAEvent("tab_select", {
+      tab: "disc",
+      location: "discovery_page",
+    });
+              setTab("disc")}}
           >
             Discovery
           </button>
@@ -170,7 +196,14 @@ onClick={()=>{router.push(Paths.calendar())}}
                 ? "bg-emerald-700 text-white"
                 : "text-emerald-700 bg-transparent"
             }`}
-            onClick={() => setTab("dash")}
+            onClick={() => {
+              sendGAEvent("tab_select", {
+      tab: "dash",
+      location: "dashboard_page",
+    });
+              setTab("dash")}
+            
+            }
           >
             Dashboard
           </button>:<button
