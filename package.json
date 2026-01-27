@@ -3,6 +3,11 @@
   "private": false,
   "version": "0.1.0",
   "type": "module",
+  "overrides": {
+  "react-router": "5.3.4",
+  "react-router-dom": "5.3.4"
+}
+,
   "scripts": {
     "dev": "vite",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
@@ -25,8 +30,8 @@
     "@capacitor/preferences": "^7.0.2",
     "@capacitor/splash-screen": "^7.0.1",
     "@capgo/capacitor-social-login": "^7.11.8",
-    "@ionic/react": "^6.2.5",
-    "@ionic/react-router": "^6.1.1",
+    "@ionic/react": "6.2.5",
+    "@ionic/react-router": "6.1.1",
     "@react-google-maps/api": "^2.20.6",
     "@sentry/react": "^10.22.0",
     "@vercel/speed-insights": "^1.2.0",
