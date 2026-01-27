@@ -64,14 +64,7 @@ useLayoutEffect(() => {
 }, [setSeo]);
 
   
-  useLayoutEffect(() => {
-    setSeo({
-      title: "Plumbum (About) - Your Writing, Your Community",
-      description: "Explore events, workshops, and writer meetups on Plumbum.",
-      name: "Plumbum",
-      type: "",
-    });
-  }, [setSeo]);
+
 
   // function apply() {
     function apply(source = "about_page") {
@@ -266,9 +259,10 @@ const goToCalendar = (source="about_page") => {
         {/* <IonGrid> */}
           <IonRow className="my-10">
             <IonCol  className="ion-text-center">
-              <IonTitle color="primary" className="lora-bold text-emerald-800" style={{ fontSize: '3rem', margin: "auto", paddingTop: '2rem' }}>
+              <div className="flex-col flex">
+              <IonText color="primary" className="lora-bold text-emerald-800" style={{ fontSize: '3rem', margin: "auto", paddingTop: '2rem' }}>
                 Plumbum
-              </IonTitle>
+              </IonText>
               <IonText className="mx-auto text-emerald-600" color="primary" style={{ fontSize: '1.3rem', margin: "auto" }}>
                 Share your Weirdness
               </IonText>
@@ -276,6 +270,7 @@ const goToCalendar = (source="about_page") => {
               <IonText className=" mx-auto text-emerald-600" color="primary">
                 Get thoughtful feedback • Grow through workshops
               </IonText>
+              </div>
             </IonCol>
           </IonRow>
 
