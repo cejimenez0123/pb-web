@@ -425,7 +425,8 @@ let isNative = Capacitor.isNativePlatform()
       {/* </div> */}
       {/* <h6 className='text-white text-xs'> Profile</h6> */}
 
-      </div>   :<div className='flex flex-col'><IonImg src={hammer} style={{width:"3em",height:"3em"}}  className="object-fit max-h-10 "src={home} /><p onClick={()=>handleCloseNavMenu((PageName.about))} className='text-cream h-full my-auto'>About</p></div>}
+      </div>   :<div className='flex flex-col'><IonImg style={{width:"3em",height:"3em"}}  className="object-fit max-h-10 " 
+      src={home} /><p onClick={()=>handleCloseNavMenu((PageName.about))} className='text-cream h-full my-auto'>About</p></div>}
  </div>):(<div className="navbar flex items-start  max-w-[100vw] px-4 h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isNative?menuDropdown():
