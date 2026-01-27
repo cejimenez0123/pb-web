@@ -57,7 +57,7 @@ export default function IndexItem({item,handleFeedback,type}) {
     }
 
     const handleNavigate=()=>{
-      // console.log(item)
+   
     if(type!="story"){
               dispatch(setCollectionInView({collection:item}))
               router.push(Paths.collection.createRoute(item.id))

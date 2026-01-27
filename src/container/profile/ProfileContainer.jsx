@@ -44,7 +44,6 @@ const profile = useSelector((state) => state.users.profileInView);
   const [following, setFollowing] = useState(null);
 const [canUserSee, setCanUserSee] = useState(false);
   const { id } = useParams()
-console.log(id)
   useLayoutEffect(() => {
     initGA();
     if (profile) {
