@@ -124,7 +124,11 @@ const openDialog=()=>{
       dispatch(searchDialogToggle({open:true}))
     }
     const handleCloseNavMenu = (page) => {
-      sendGAEvent("Click Nav Menu",`Click Horiz Nav ${page}`)
+ sendGAEvent({
+    category: "navigation",
+    action: "click_nav_menu",
+    label: page, 
+  });
    
       if(page==PageName.login){
           router.push(Paths.login())                    
