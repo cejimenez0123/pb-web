@@ -236,14 +236,7 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
         <Route path={Paths.links()}
                  render={()=><LinksContainer/>}
           />
-        {/* <Route path={Paths.onboard}
-                  render={()=><LoggedRoute
-                    
-           currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/> */}
-         {/* <Route path={Paths.apply()+"/newsletter"}
-        render={()=><LoggedRoute 
-          
-        currentProfile={currentProfile}><ApplyContainer/></LoggedRoute>}/> */}
+      
 
       <Route path={Paths.workshop.reader()}
     render={()=><PrivateRoute      
