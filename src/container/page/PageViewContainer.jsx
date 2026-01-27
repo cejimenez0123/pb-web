@@ -116,6 +116,8 @@ export default function PageViewContainer() {
      let found = page.collections.find(col=>!col.collection.isPrivate)
     if(found) return true
         }
+
+    if(page.betaReaders.length){
       let canSee = page.betaReaders.find((br) => {
         if (currentProfile && br.profileId === currentProfile.id) {
           return true;
@@ -125,6 +127,7 @@ export default function PageViewContainer() {
       if(canSee){
       return true;
       }
+    }
     }else{
     return false
     }}

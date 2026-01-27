@@ -114,7 +114,7 @@ checkLike(currentProfile)
         setCanUserEdit(true);
         return;
       }
-      if (page?.betaReaders) {
+      if (page?.betaReaders && page.betaReaders.length) {
         let found = page?.betaReaders.find((rTc) => rTc.profileId === currentProfile.id && roles.includes(rTc.role));
         setCanUserEdit(found);
       }
