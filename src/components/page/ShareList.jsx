@@ -30,8 +30,8 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
         setCanUserEdit(true);
         return;
       }
-      if (page.betaReaders) {
-        let found = page.betaReaders.find((rTc) => rTc.profileId === currentProfile.id && roles.includes(rTc.role));
+      if (page?.betaReaders) {
+        let found = page?.betaReaders?.find((rTc) => rTc.profileId === currentProfile.id && roles.includes(rTc.role));
         setCanUserEdit(found);
       }
     }

@@ -98,7 +98,7 @@ checkLike(currentProfile)
         return;
       }
       if (page.betaReaders) {
-        const found = page.betaReaders.find((rTc) => rTc.profileId === currentProfile.id && roles.includes(rTc.role));
+        const found = page?.betaReaders?.find((rTc) => rTc.profileId === currentProfile.id && roles.includes(rTc.role));
         setCanUserComment(found);
       }
     }
@@ -114,8 +114,8 @@ checkLike(currentProfile)
         setCanUserEdit(true);
         return;
       }
-      if (page.betaReaders) {
-        let found = page.betaReaders.find((rTc) => rTc.profileId === currentProfile.id && roles.includes(rTc.role));
+      if (page?.betaReaders) {
+        let found = page?.betaReaders.find((rTc) => rTc.profileId === currentProfile.id && roles.includes(rTc.role));
         setCanUserEdit(found);
       }
     }
