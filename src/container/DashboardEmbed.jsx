@@ -24,8 +24,7 @@ function DashboardEmbed() {
   const recommendedCols= useSelector(state => state.books.recommendedCols).filter(str=>currentProfile?str.profileId!=currentProfile.id:true)
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []).filter(str=>currentProfile?str.authorId!=currentProfile.id:true)
-  console.log("1x",recommendedStories[0])
-  console.log("2x",stories[0])
+
    let feedbackCol = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
   const [feedbackCols,setFeedbackCols]=useState(feedbackCol)
   const [hasMore, setHasMore] = useState(false);

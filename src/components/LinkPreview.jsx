@@ -19,7 +19,7 @@ function LinkPreview({ url, isGrid }) {
   }, []);
 
   useEffect(() => {
-    console.log(url)
+
     if (!url) return;
 
     const isSpotify = url.includes('https://open.spotify.com/');

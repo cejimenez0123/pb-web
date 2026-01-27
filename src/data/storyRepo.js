@@ -85,7 +85,7 @@ class StoryRepo{
             title,data,isPrivate,authorId:profileId,commentable:commentable,
             type
     },{headers})
-    console.log("VCKS",res)
+
         return res.data
     }
     async updateStory(params){

@@ -102,7 +102,7 @@ async fetchStoryHashtagsPublic({id}){
     }
     async deleteCollection({colId,hashId}){
           const headers = await this.getAuthHeaders()
-          console.log("XC<",hashId)
+        
         let res = await axios.delete(this.url+"/collection/"+colId+"/hash/"+hashId,{headers:headers})
         return res.data
     }

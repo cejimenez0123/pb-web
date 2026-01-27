@@ -255,7 +255,7 @@ useEffect(() => {
   
   
     if(currentProfile){
-      console.log("FDDF",currentProfile.stories)
+
         currentProfile.stories&& dispatch(setPagesInView({ pages: currentProfile.stories }))
       currentProfile.collections  &&  dispatch(setCollections({collections:currentProfile.collections}))
     }else{

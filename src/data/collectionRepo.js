@@ -94,7 +94,7 @@ import { Preferences } from "@capacitor/preferences";
             let res = await axios.patch(this.url+"/"+id,
             {id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},
             {headers:headers})
-            console.log("SCC",res)
+           
             return res.data
         }
 
@@ -185,7 +185,7 @@ import { Preferences } from "@capacitor/preferences";
     }
     async recommendedColCollections({colId}){
         const res = await axios.get(this.url+"/"+colId+"/recommendations",)
-console.log("CDD",res)
+
         return res.data
     }
     async recommendations(){

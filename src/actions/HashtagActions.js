@@ -85,10 +85,10 @@ async ({name,storyId,profile},thunkApi) => {
 })
 const createHashtagCollection = createAsyncThunk("hashtag/createHashtagCollection", 
 async ({name,colId,profile},thunkApi) => {
-    console.log(colId)
+  
     try{
         let data = await hashtagRepo.collection({name,colId,profile})
-        console.log("rox,f",data)
+  
       if(data.hashtag){
        
         

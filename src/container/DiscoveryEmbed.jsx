@@ -33,7 +33,7 @@ const {
   libraries: state.books.libraries,
   pagesInView: state.pages.pagesInView,
 }));
-console.log("Book",books)
+
   const [hasMoreLibraries, setHasMoreLibraries] = useState(false);
   const [viewItems, setViewItems] = useState([]);
 

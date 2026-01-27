@@ -17,10 +17,10 @@ export default function usePersistentMyCollectionCache(fetchData) {
     const dispatch = useDispatch()
   
     useEffect(() => {
-    console.log(fetchData)
+
       fetchData().then((res) => {
         checkResult(res,payload=>{
-          console.log(payload)
+       
             dispatch(setCollections({collections:payload.collections}))
             setCols(payload.collections);
             setLocalStore(key, JSON.stringify(payload.collections),Capacitor.isNativePlatform())
