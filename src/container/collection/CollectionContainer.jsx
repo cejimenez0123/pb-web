@@ -59,7 +59,9 @@ const { setError, setSuccess, setSeo, seo } = useContext(Context);
   const currentProfile = useSelector(state => state.users.currentProfile);
   const dispatch = useDispatch();
   const router = useIonRouter()
-
+ const [canUserAdd, setCanUserAdd] = useState(false);
+  const [canUserEdit, setCanUserEdit] = useState(false);
+  const [canUserSee, setCanUserSee] = useState(false);
    const {id}=useParams()
   const isNative = Capacitor.isNativePlatform()
   const collection = useSelector(state => state.books.collectionInView);
@@ -68,9 +70,7 @@ const { setError, setSuccess, setSeo, seo } = useContext(Context);
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isArchived, setIsArchived] = useState(false);
-  const [canUserAdd, setCanUserAdd] = useState(false);
-  const [canUserEdit, setCanUserEdit] = useState(false);
-  const [canUserSee, setCanUserSee] = useState(false);
+ 
   const [homeCol, setHomeCol] = useState(null);
   const [archiveCol, setArchiveCol] = useState(null);
   const [role, setRole] = useState(null);
@@ -84,7 +84,7 @@ const { setError, setSuccess, setSeo, seo } = useContext(Context);
   enableCompletion: false,
 });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
   if (!collection || !canUserSee) return;
 
   setSeo({
@@ -94,7 +94,7 @@ const { setError, setSuccess, setSeo, seo } = useContext(Context);
       collection.purpose ||
       `A curated collection by ${collection.profile?.displayName || "a creator"}`,
   });
-}, [collection, canUserSee]);
+}, [collection]);
   function findRole(col,profile) {
 
 
@@ -518,16 +518,17 @@ console.log("DID",router.routeInfo)
 
 
   <IonContent style={{"--background":"#f4f4e0"}} scrollY={true} fullscreen className="pb-24 pt-12">
+    <div className="pt-24">
           {/* <IonHeader mode="ios"> */}
       {/* <IonToolbar mode="ios"> */}
         <IonButtons slot="start">
-          {/* {isNative ? ( */}
+          {isNative ? (
             <IonBackButton
             mode="ios"
               defaultHref={Paths.discovery()}
               onClick={handleBack}
             />
-          {/* ) : null} */}
+           ) : null} 
         </IonButtons>
         {/* <IonTitle>{collection?.title}</IonTitle> */}
       {/* </IonToolbar> */}
@@ -616,6 +617,7 @@ console.log("DID",router.routeInfo)
         />
 </div>
         <ExploreList />
+        </div>
         </div>
 </IonContent>
         </ErrorBoundary>

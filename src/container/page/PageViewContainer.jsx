@@ -25,6 +25,7 @@ export default function PageViewContainer() {
   const router = useIonRouter()
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
+    const [canUserSee, setCanUserSee] = useState(false)
 page && useScrollTracking({
   contentType: "story",
   contentId: page?.id,
@@ -33,7 +34,7 @@ page && useScrollTracking({
   completionEvent: "story_read_complete",
 });
   const [pending, setPending] = useState(true);
-  const [canUserSee, setCanUserSee] = useState(false);
+;
   const [rootComments, setRootComments] = useState([]);
   const [errorStatus, setErrorStatus] = useState(null);
 
@@ -163,10 +164,10 @@ page && useScrollTracking({
   }
 }, [errorStatus]);
 useEffect(() => {
-  if (page && rootComments.length > 0) {
+  if (page && rootComments && rootComments.length ) {
     sendGAEvent("view_comments", {
       story_id: page.id,
-      comment_count: rootComments.length,
+      comment_count: rootComments?.length,
     });
   }
 }, [rootComments]);
