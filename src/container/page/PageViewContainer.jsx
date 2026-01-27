@@ -26,7 +26,7 @@ export default function PageViewContainer() {
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
     const [canUserSee, setCanUserSee] = useState(false)
-page && useScrollTracking({
+useScrollTracking({
   contentType: "story",
   contentId: page?.id,
   authorId: page?.authorId,
