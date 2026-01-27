@@ -56,7 +56,7 @@ export default function PageViewContainer() {
 
   useEffect(() => {
     fetchStory();
-  }, [id]);
+  }, [id,dispatch]);
 
   const fetchStory = async () => {
 
