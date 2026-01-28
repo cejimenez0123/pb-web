@@ -220,7 +220,14 @@ const googleAddLink = baseUrl + queryString;
         <span>{chosenEvent.location}</span>
     <span dangerouslySetInnerHTML={{__html:"<div>"+chosenEvent.description+"</div>"}} /></div>
         dia.onClose = ()=>{
-          dispatch(setDialog({isOpen:false}))
+           dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }));
         }
         dia.agreeText = "Organizer"
         dia.agree =chosenEvent&&chosenEvent.organizerLink?()=>{

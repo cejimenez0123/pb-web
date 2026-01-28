@@ -55,7 +55,14 @@ checkLike(currentProfile)
     }
   }
   const onClickShare=()=>{
-     dispatch(setDialog({isOpen:false}))
+      dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }));
     let dia = {...dialog}
     dia.text = <ShareList page={page} setArchive={setArchive}profile={currentProfile} archive={archiveCol}
       bookmark={bookmarked}
@@ -63,7 +70,14 @@ checkLike(currentProfile)
     dia.title=null
     dia.isOpen=true
     dia.onClose=()=>{
-        dispatch(setDialog({...dialog,isOpen:false}))
+         dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }));
     }
     dia.agreeText=null
     dia.agree=null

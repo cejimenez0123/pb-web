@@ -202,7 +202,14 @@ useEffect(() => {
   
  const onClickShare = () => {
   // 1️⃣ Fully close any existing dialog
-  dispatch(setDialog({ isOpen: false }));
+  dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }));
 
   // 2️⃣ Open a fresh dialog on next tick
   setTimeout(() => {

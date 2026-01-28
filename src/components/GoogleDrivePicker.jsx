@@ -119,7 +119,14 @@ const fetchFiles = async () => {
     let dia = { ...dialog };
   
     dia.isOpen = true;
-    dia.onClose = () => dispatch(setDialog({isOpen:false}))
+    dia.onClose = () =>   dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }))
     dia.title = null
 dia.disagreeText="Close"
 dia.disagree=()=>dispatch(setDialog({isOpen:false}))
