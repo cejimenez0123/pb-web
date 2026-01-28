@@ -386,12 +386,15 @@ let isNative = Capacitor.isNativePlatform()
     onClick={()=>{router.push(Paths.discovery())}}/>
       <h6 className='text-white text-xs'>Discovery</h6>
     </div>
+   {!currentProfile ?<div  onClick={()=>handleCloseNavMenu(PageName.about)} className='flex flex-col'><IonImg style={{width:"3em",height:"3em"}}  className="object-fit max-h-10 " 
+      src={home} /><p  className='text-cream h-full my-auto'>About</p></div>:
    <div className='flex flex-col'>
     <IonImg src={search} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
     
     onClick={()=>router.push("/search")}/>
       <h6 className='text-white text-xs'>Search</h6>
-    </div>
+    </div>}
+    {currentProfile &&
      <div className="dropdown dropdown-top ">
   <div tabIndex={0} role="button"><div><IonImg src={addCircle}  style={{width:"3em",height:"3em",filter:"invert(100%)"} } /> <h6 className='text-white text-xs'>Create</h6></div>
 </div>
@@ -410,14 +413,14 @@ let isNative = Capacitor.isNativePlatform()
   Link</a></li>
     <li onClick={()=>{openDialog()}}className='text-soft'><a className='text-soft'>Collection</a></li>
   </ul>
-</div>
-<div className='flex flex-col'>
+</div>}
+{currentProfile && <div className='flex flex-col'>
   <IonImg src={hammer} style={{width:"3em",height:"3em",filter:"invert(100%)"}} onClick={()=>{
          dispatch(setPageInView({page:null}))
        router.push(Paths.workshop.reader())
   }}/>
   <h6 className='text-white text-xs'>Workshop</h6>
-  </div>
+  </div>}
      {currentProfile? <div onClick={()=>currentProfile?router.push(Paths.myProfile):router.push(Paths.login())} className={`flex rounded-full max-h-8 flex-col`}>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         {/* <div className="w-4"> */}
@@ -429,8 +432,12 @@ let isNative = Capacitor.isNativePlatform()
       {/* </div> */}
       {/* <h6 className='text-white text-xs'> Profile</h6> */}
 
-      </div>   :<div  onClick={()=>handleCloseNavMenu(PageName.about)} className='flex flex-col'><IonImg style={{width:"3em",height:"3em"}}  className="object-fit max-h-10 " 
-      src={home} /><p  className='text-cream h-full my-auto'>About</p></div>}
+      </div>   : <div className='flex flex-col'>
+    <IonImg src={search} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
+    
+    onClick={()=>router.push("/search")}/>
+      <h6 className='text-white text-xs'>Search</h6>
+    </div>}
  </div>):(<div className="navbar flex items-start  max-w-[100vw] px-4 h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isNative?menuDropdown():
