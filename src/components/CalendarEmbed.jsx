@@ -234,25 +234,53 @@ const googleAddLink = baseUrl + queryString;
       
     //     dispatch(setDialog(dia))
     // }
-const handleDialogOpen = (chosenEvent) => {
-    openDialog({
-      title: null,
-      text: (
-        <div className="text-left text-blueSea">
-          <span>{chosenEvent.location}</span>
-          <span
-            dangerouslySetInnerHTML={{ __html: "<div>" + chosenEvent.description + "</div>" }}
-          />
-        </div>
-      ),
-      disagreeText: "Close",
-      agreeText: chosenEvent.organizerLink ? "Organizer" : null,
-      onClose: () => closeDialog(),
-      agree: chosenEvent.organizerLink
-        ? () => (window.location.href = chosenEvent.organizerLink)
-        : null,
-    });
-  };
+    const handleDialogOpen = (chosenEvent) => {
+  openDialog({
+    title: null,
+    text: (
+      <div className="text-left text-blueSea">
+        <span>{chosenEvent.location}</span>
+        <span dangerouslySetInnerHTML={{ __html: "<div>" + chosenEvent.description + "</div>" }} />
+        {/* Add a Close button inside the dialog */}
+        {/* <button
+          onClick={() => closeDialog()}
+          className="mt-4 px-4 py-2 bg-emerald-500 text-white rounded"
+        >
+          Close
+        </button> */}
+      </div>
+    ),
+    breakpoint:1,
+    // fallback in case user clicks outside the modal
+    disagreeText: "Close",
+    // onClose: () => closeDialog(),
+    agreeText: chosenEvent.organizerLink ? "Organizer" : null,
+    agree: chosenEvent.organizerLink
+      ? () => (window.location.href = chosenEvent.organizerLink)
+      : null,
+  });
+};
+
+// const handleDialogOpen = (chosenEvent) => {
+//     openDialog({
+//       title: null,
+//       text: (
+//         <div className="text-left text-blueSea">
+//           <span>{chosenEvent.location}</span>
+//           <span
+//             dangerouslySetInnerHTML={{ __html: "<div>" + chosenEvent.description + "</div>" }}
+//           />
+//         </div>
+//       ),
+//       breakpoint:1,
+//       disagreeText: "Close",
+//       agreeText: chosenEvent.organizerLink ? "Organizer" : null,
+//       onClose: closeDialog,
+//       agree: chosenEvent.organizerLink
+//         ? () => (window.location.href = chosenEvent.organizerLink)
+//         : null,
+//     });
+//   };
 
       useEffect(() => {
         let filtered = list;
