@@ -27,6 +27,7 @@ import { sendGAEvent } from '../../core/ga4';
 import ShareList from './ShareList';
 import { setDialog } from '../../actions/UserActions';
 import { useParams } from 'react-router';
+import { useDialog } from '../../domain/usecases/useDialog';
 function DashboardItem({ page, book, isGrid }) {
   const { isPhone, isHorizPhone, setSuccess, setError} = useContext(Context);
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -42,7 +43,7 @@ function DashboardItem({ page, book, isGrid }) {
   const [likeFound, setLikeFound] = useState(false);
   const [bookmarked, setBookmarked] = useState();
   const [archiveCol,setArchiveCol]=useState(null)
-
+const {openDialog,closeDialog}=useDialog()
 
   // const widthSize = adjustScreenSize(isGrid, true, "", " pt-1 pb-2 ", "", "", "", "");
  const getStorySource = () => {
@@ -199,7 +200,7 @@ useEffect(() => {
 
 
   const onClickShare = () => {
-  dispatch(setDialog({
+openDialog({
     isOpen: true,
     title: null,
     text: (
@@ -216,7 +217,7 @@ useEffect(() => {
     agreeText: null,
     disagreeText: "Close",
     breakpoint: 1
-  }));
+  })
 };
 
 

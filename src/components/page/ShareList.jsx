@@ -212,7 +212,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
           }}
         >
           <div className="text-left w-full px-4">
-            {!loading ? (
+            {currentProfile?!loading ? (
               localBookmark ? (
                 <IonImg src={bookmarkFill} className=" max-h-10 max-w-10" />
               ) : (
@@ -220,7 +220,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
               )
             ) : (
               <IonImg src={loadingGif} className="mx-auto max-h-10 max-w-10" />
-            )}
+            ):null}
           </div>
         </div>
       </li>

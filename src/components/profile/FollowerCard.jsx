@@ -1,6 +1,5 @@
-import IndexItem from "../page/IndexItem"
+
 import ProfileCircle from "./ProfileCircle"
-import { IonList } from "@ionic/react"
 export default function FollowerCard({followers=[]}){
     if(!followers && !followers.length){
         return

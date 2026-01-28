@@ -10,8 +10,7 @@ import ErrorBoundary from "../../ErrorBoundary.jsx";
 import { createPageApproval } from "../../actions/PageActions";
 import { IonText } from "@ionic/react";
 import { useSelector } from "react-redux";
-import { setDialog } from "../../actions/UserActions.jsx";
-
+import {useDialog} from "../../domain/usecases/useDialog.jsx"
 export default function PageViewButtonRow({profile,archive, page, setCommenting }) {
   const { setSuccess, setError } = useContext(Context);
   const currentProfile = profile
@@ -25,7 +24,7 @@ export default function PageViewButtonRow({profile,archive, page, setCommenting 
   const [loading, setLoading] = useState(false);
   const [bookmarked, setBookmarked] = useState(null);
   const [comment, setComment] = useState(false);
-
+  const {openDialog,closeDialog} = useDialog()
   useLayoutEffect(() => {
     initGA();
   }, []);
@@ -55,22 +54,20 @@ checkLike(currentProfile)
     }
   }
   const onClickShare=()=>{
-      openDialog({
+    openDialog({
     title: null,
     text: (
-   <ShareList page={page} setArchive={setArchive}profile={currentProfile} archive={archiveCol}
+      <ShareList page={page} setArchive={setArchive}profile={currentProfile} archive={archiveCol}
       bookmark={bookmarked}
     setBookmarked={setBookmarked}/>
     ),
     breakpoint:1,
     // fallback in case user clicks outside the modal
-    disagreeText: "Close",
+
     // onClose: () => closeDialog(),
-    // agreeText: chosenEvent.organizerLink ? "Organizer" : null,
-    // agree: chosenEvent.organizerLink
-    //   ? () => (window.location.href = chosenEvent.organizerLink)
-    //   : null,
+   
   });
+
   
   }
 
