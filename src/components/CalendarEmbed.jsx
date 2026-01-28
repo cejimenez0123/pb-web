@@ -72,7 +72,11 @@ const [solEvents,setSolEvents]=useState([])
     );
     setFilteredSuggestions(filtered);
     setShowSuggestions(true);
-  sendGAEvent("Search", "User Searched for Hashtags "+searchTerm, searchTerm);
+sendGAEvent("calendar_search", {
+  query: value,
+  source: "calendar_embed",
+});
+
 
   }
 
@@ -200,7 +204,12 @@ const googleAddLink = baseUrl + queryString;
       },[selectedArea])
       const dispatch = useDispatch()
       const handleDialogOpen=(chosenEvent)=>{
-        sendGAEvent("Looked at Event", `Saw:${chosenEvent.summary} `+searchTerm, searchTerm);
+          dispatch(setDialog({ isOpen: false }));
+        sendGAEvent("calendar_event_open", {
+  event_title: chosenEvent.summary,
+  area: chosenEvent.area,
+  search_term: searchTerm || null,
+});
    
         let dia = {...dialog}
         dia.isOpen = true
@@ -218,6 +227,7 @@ const googleAddLink = baseUrl + queryString;
        
           chosenEvent?window.location.href=chosenEvent.organizerLink:null
       }:null
+      
         dispatch(setDialog(dia))
     }
 
@@ -243,8 +253,11 @@ const googleAddLink = baseUrl + queryString;
       function handleSuggestionClick(suggestion) {
         setSearchTerm(suggestion);
         setShowSuggestions(false);
-      
-        sendGAEvent("Search", "User Clicked Suggested Hashtag", suggestion);
+      sendGAEvent("calendar_hashtag_click", {
+  hashtag: suggestion,
+  source: "calendar_embed",
+});
+
       }
       
       return (
@@ -256,7 +269,11 @@ const googleAddLink = baseUrl + queryString;
         <select
           className="border w-fit  my-auto text-emerald-700 h-[2em] rounded-lg bg-transparent px-2 text-l"
           value={selectedArea}
-          onChange={(e) => setSelectedArea(e.target.value)}
+          onChange={(e) =>{
+            sendGAEvent("calendar_area_filter", {
+      area: e.target.value || "all",
+    });
+            setSelectedArea(e.target.value)}}
         >
           <option defaultValue={true} value="">All Areas</option>
           {areas.map(area => (
@@ -271,13 +288,13 @@ const googleAddLink = baseUrl + queryString;
 
 <IonInput
   type="text"
-  className="rounded-lg bg-emerald1-100  text-[0.8rem] text-emerald-800"
+  className="rounded-lg bg-emerald1-100  text-[1rem] text-emerald-800"
   value={searchTerm}
 
          
   onIonInput={handleSearchInputChange}
   onIonFocus={() => setShowSuggestions(true)}
-  placeholder="#writing, #workshop...)"
+  placeholder="(#writing, #workshop...)"
 />
 
 
@@ -348,8 +365,12 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                             <IonText className="my-auto text-[0.8rem] w-[2.6rem] text-blueSea "><div dangerouslySetInnerHTML={{__html:event.startTime}}/></IonText>
               <IonImg 
               onClick={()=>{
-                        sendGAEvent("Click",`Navigate by event name ${event.summary},
-                          ${JSON.stringify(event.hashtags)}`,event.summary,"",false)
+                        sendGAEvent("calendar_add_click", {
+  event_title: event.summary,
+  hashtags: event.hashtags,
+  area: event.area,
+});
+
                         window.open(event.googleLink)
             
                             }} className="w-12 h-12  my-auto" src={calendar} /></span>
