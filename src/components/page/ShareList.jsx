@@ -23,6 +23,17 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   const [canUserEdit,setCanUserEdit ]=useState(false)
   const [loading,setLoading]=useState(false)
   const router = useIonRouter()
+  const getShareSource = () => {
+  const pathname = router.routeInfo?.pathname || "";
+
+  if (pathname.startsWith("/profile")) return "profile_page";
+  if (pathname.startsWith("/dashboard")) return "dashboard";
+  if (pathname.startsWith("/collection")) return "collection";
+  if (pathname.startsWith("/discovery")) return "discovery";
+
+  return "unknown";
+};
+
   function soCanUserEdit() {
     const roles = [RoleType.editor];
     if (currentProfile && page) {
@@ -72,20 +83,15 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   const dispatch = useDispatch()
     const copyShareLink = () => {
     dispatch(setDialog({...dialog,isOpen:false}))
-    sendGAEvent("Copy Share Link", `Share ${JSON.stringify({ id: page.id, title: page.title })}`, 0, false);
+      sendGAEvent("story_share_copy_link", {
+    story_id: page.id,
+    source: getShareSource(),
+  });
     navigator.clipboard.writeText(Enviroment.domain + Paths.page.createRoute(page.id)).then(() => {
       setSuccess("Ready to share");
     });
   };
-//         const handleBookmark = debounce((e) => {
-    
-//     e.preventDefault();
-//     if (bookmark) {
-//       deleteStc();
-//     } else {
-//       onBookmarkPage();
-//     }
-//   }, 10);
+
 
 
      const deleteStc = () => {
@@ -155,7 +161,13 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
         <div
         className="bg-cream py-3"
           onClick={async () => {
+            
             if (profile && (await Preferences.get({ key: "token" })).value) {
+              sendGAEvent("story_add_to_collection_click", {
+  story_id: page.id,
+  source: getShareSource(),
+});
+
             router.push  (Paths.addStoryToCollection.story(page.id));
             } else {
               setError("Please Sign Up");
@@ -171,6 +183,10 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
         <li className="py-3 border-b bg-cream">
           <div
             onClick={() => {
+              sendGAEvent("story_edit_open", {
+  story_id: page.id,
+  source: getShareSource(),
+});
               dispatch(setDialog({ ...dialog, isOpen: false }));
               router.push(Paths.editPage.createRoute(page.id));
         

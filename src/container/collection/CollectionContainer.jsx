@@ -176,6 +176,9 @@ return
   
   },[id])
   useEffect(()=>{
+    getCol(id)
+  },[])
+  useEffect(()=>{
     collection && currentProfile && findRole(collection,currentProfile)
     soUserCanEdit()
  
@@ -229,7 +232,7 @@ const getCol = async (id) => {
   setLoading(true);
   try {
     const token = (await Preferences.get({ key: "token" })).value;
-console.log("DID",router.routeInfo)
+
     if (token && token !== "undefined") {
       dispatch(fetchCollectionProtected({ id }))
         .then((res) => {
@@ -238,7 +241,7 @@ console.log("DID",router.routeInfo)
             (payload) => {
               setLoading(false);
             soUserCanEdit()
-              
+                  dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
               setCanUserSee(true)
             },
             (err) => {
@@ -270,6 +273,8 @@ console.log("DID",router.routeInfo)
             res,
             (payload) => {
               if (payload.collection) {
+                console.log("SPFFD",payload.collection)
+                dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
                 setCanUserSee(true)
                 setLoading(false);
                   soUserCanEdit()
@@ -535,7 +540,7 @@ console.log("DID",router.routeInfo)
     {/* </IonHeader> */}
     {/* <div className="sm:max-w-[60em] bg-cream mx-auto "> */}
     <div className="pt-8">
- <IonCard style={{"--background":"transparent",maxWidth:"60em",margin:"auto"}}className="">
+ {/* <IonCard style={{"--background":"transparent",maxWidth:"60em",margin:"auto"}}className=""> */}
           <IonCardHeader className="mx-auto ">
             <div className="flex items-center justify-between px-4 gap-2">
               <div>{collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
@@ -588,7 +593,7 @@ console.log("DID",router.routeInfo)
             </div>
           </IonCardContent>
           </div>
-        </IonCard>
+        {/* </IonCard> */}
 {/* </div> */}
   {collections && collections.length > 0 && (
         <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4">

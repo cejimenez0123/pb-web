@@ -20,9 +20,17 @@ const Dialog = ({
   presentingElement,
 }) => {
   const dispatch = useDispatch()
-  const onClose=()=>{
-    dispatch(setDialog({isOpen:false}))
-  }
+const onClose = () => {
+  dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }));
+};
+
 
   return (
     <IonModal

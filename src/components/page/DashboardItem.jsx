@@ -46,7 +46,18 @@ function DashboardItem({ page, book, isGrid }) {
 
 
   // const widthSize = adjustScreenSize(isGrid, true, "", " pt-1 pb-2 ", "", "", "", "");
- 
+ const getStorySource = () => {
+  const pathname = router.routeInfo?.pathname || "";
+
+  if (pathname.startsWith("/profile")) return "profile_page";
+  if (pathname.startsWith("/dashboard")) return "dashboard";
+  if (pathname.startsWith("/discovery")) return "discovery";
+  if (pathname.startsWith("/collection")) return "collection";
+  if (pathname.startsWith("/library")) return "library";
+
+  return "unknown";
+};
+
   const addStoryToCollection = () => {
     if (page) {
       const list = [page];
@@ -124,13 +135,11 @@ function DashboardItem({ page, book, isGrid }) {
 
   const handleClickComment = () => {
     if (page) {
-      sendGAEvent(
-        `Click to Review`,
-        `Click Review ${JSON.stringify({ id: page.id, title: page.title })}`,
-        "Review",
-        0,
-        false
-      );
+sendGAEvent("story_review_open", {
+  story_id: page.id,
+  source: getStorySource(),
+});
+
       router.push(Paths.page.createRoute(page.id));
     }
   };
@@ -164,12 +173,21 @@ function DashboardItem({ page, book, isGrid }) {
     dispatch(deletePageApproval({ id: likeFound.id }))
       .then(res => checkResult(res, () => {
         setLikeFound(null);
+        sendGAEvent("story_unlike" ,{
+  story_id: page.id,
+  source: getStorySource(),
+});
+
       }, err => console.error(err)));
   } else {
     setLikeFound(true); // update immediately
     const params = { story: page, profile: currentProfile };
     dispatch(createPageApproval(params))
       .then(res => checkResult(res, (payload) => {
+sendGAEvent( "story_like", {
+  story_id: page.id,
+  source: getStorySource(),
+});
 
         const {profile} = payload;
         checkLike(profile);
@@ -182,21 +200,32 @@ useEffect(() => {
 
 
   
-  const onClickShare=()=>{
-    let dia = {...dialog}
-    dia.text = <ShareList page={page} setArchive={setArchiveCol}profile={currentProfile} archive={archiveCol}
-      bookmark={bookmarked}
-    setBookmarked={setBookmarked}/>
-    dia.title=null
-    dia.isOpen=true
-    dia.onClose=()=>{
-        dispatch(setDialog({...dialog,isOpen:false}))
-    }
-    dia.agreeText=null
-    dia.agree=null
-    dia.disagreeText="Close"
-    dispatch(setDialog(dia))
-  }
+ const onClickShare = () => {
+  // 1️⃣ Fully close any existing dialog
+  dispatch(setDialog({ isOpen: false }));
+
+  // 2️⃣ Open a fresh dialog on next tick
+  setTimeout(() => {
+    dispatch(setDialog({
+      isOpen: true,
+      title: null,
+      text: (
+        <ShareList
+          page={page}
+          profile={currentProfile}
+          archive={archiveCol}
+          bookmark={bookmarked}
+          setArchive={setArchiveCol}
+          setBookmarked={setBookmarked}
+        />
+      ),
+      agree: null,
+      agreeText: null,
+      disagreeText: "Close",
+      onClose: () => dispatch(setDialog({ isOpen: false })),
+    }));
+  }, 0);
+};
 
   useLayoutEffect(() => {
     soCanUserEdit();
@@ -219,10 +248,16 @@ useEffect(() => {
             setBookmarked(stc);
             setSuccess("Added Successfully");
             setLoading(false);
+            sendGAEvent("story_bookmark", {
+  story_id: page.id,
+  source: getStorySource(),
+});
+
           }, err => {
             setBookmarked(null);
             setError("Error Bookmarking");
             setLoading(false);
+            
           });
         });
       }
@@ -248,7 +283,12 @@ useEffect(() => {
         <span >
           <h6 className={`text-emerald-700 ${isGrid ? isPhone ? "" : " text-right " : isHorizPhone ? "" : ""}${isPhone ? " text-[0.6rem] " : "text-[0.9rem]  w-[10rem] ml-1 pr-2"}   whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
             onClick={() => {
-              sendGAEvent("Navigate", `Navigate to ${JSON.stringify({ id: page.id, title: page.title })}`);
+              sendGAEvent("story_open", {
+  story_id: page.id,
+  source: getStorySource(),
+  author_id: page.authorId,
+});
+              
               router.push(Paths.page.createRoute(page.id));
             }}>
             {` ` + (page.title?.length > 0 ? page.title : "")}
@@ -263,6 +303,7 @@ useEffect(() => {
     if (currentProfile) {
       e.preventDefault();
       if (bookmarked) {
+        
         deleteStc();
       } else {
         onBookmarkPage();

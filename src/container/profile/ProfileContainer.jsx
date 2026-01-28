@@ -38,25 +38,36 @@ const profile = useSelector((state) => state.users.profileInView);
   const[tab,setTab]=useState("page")
   const isPhone = useMediaQuery({ query: '(max-width: 600px)' });
   const router = useIonRouter()
+  const handleTabChange=(tab)=>{
+      setTab(tab)
 
+  sendGAEvent("profile_tab_change", {
+    tab: tab,
+    profile_id: profile.id,
+  });
+  }
   const [search, setSearch] = useState('');
 
   const [following, setFollowing] = useState(null);
 const [canUserSee, setCanUserSee] = useState(false);
   const { id } = useParams()
-  useLayoutEffect(() => {
-    initGA();
-    if (profile) {
-      sendGAEvent(
-        'View Profile',
-        `View Profile ${JSON.stringify({ id: profile.id, username: profile.username })}`
-      );
-    }
-  }, [profile]);
+
+useEffect(() => {
+  if (!profile) return;
+
+  sendGAEvent("profile_view", {
+    profile_id: profile.id,
+    username: profile.username,
+    is_owner: currentProfile?.id === profile.id,
+    privacy: profile.isPrivate ? "private" : "public",
+  });
+}, [profile?.id]);
+
 
 
 const collectionsRaw = useSelector((state) => state.books.collections
 );
+
 const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
 const collections = useMemo(() => {
   const filtered = collectionsRaw 
@@ -166,6 +177,10 @@ const pages = useMemo(() => {
   }, [currentProfile, profile]);
 
   const handleSearch = (value) => {
+   profile && sendGAEvent("profile_search", {
+  profile_id: profile.id,
+  query_length: value.length,
+});
     setSearch(value);
   };
 
@@ -196,28 +211,48 @@ const pages = useMemo(() => {
     }
     if (profile && currentProfile.id !== profile.id) {
       if (following) {
+
         dispatch(deleteFollow({ follow: following })).then(() => {
           // follow deleted
+          sendGAEvent( "profile_unfollow", {
+  profile_id: profile.id,
+  username: profile.username,
+  source: "profile_page",
+});
+
+          
         });
       } else {
         const params = { follower: currentProfile, following: profile };
         dispatch(createFollow(params));
+        sendGAEvent("profile_follow", {
+  profile_id: profile.id,
+  username: profile.username,
+  source: "profile_page",
+});
+
       }
     } else {
       setSuccess(null);
       setError('This is you silly');
     }
+    
   }, debounceDelay);
 
-  useLayoutEffect(() => {
-    if (!profile) return;
-    const newSeo = { ...seo };
-    newSeo.title = `Plumbum Writer Check Out(${profile.username})`;
-    newSeo.description = profile.selfStatement;
-    newSeo.url = Enviroment.domain + `/profile/${profile.id}`;
-    setSeo(newSeo);
-  }, [profile]);
+useLayoutEffect(() => {
+  if (!profile) return;
 
+  setSeo({
+    title: `${profile.username} on Plumbum`,
+    description:
+      profile.selfStatement ||
+      `Read stories and collections by ${profile.username} on Plumbum.`,
+    url: `${Enviroment.domain}/profile/${profile.id}`,
+    type: "profile",
+  });
+}, [profile?.id]);
+
+let books = useSelector(state => state.books.collections)
   return (
     <ErrorBoundary>
     
@@ -225,14 +260,7 @@ const pages = useMemo(() => {
         
         <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}}className='ion-padding-top' >
           <div className='pt-12 '>
-          {/* <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <IonBackButton defaultHref="/" />
-            </IonButtons>
-            <IonTitle>{profile && `${profile.username}`}</IonTitle>
-          </IonToolbar>
-        </IonHeader> */}
+       
           <div className="pt-2 md:pt-8 mb-8 mx-2 ">
             <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
           </div>
@@ -251,12 +279,12 @@ const pages = useMemo(() => {
             </span>
           )}
           <div className=" rounded-lg w-[100%] max-w-[100vw] justify-center flex mx-auto sm:w-[50em] bg-transparent">
-        <StoryCollectionTabs 
+       <StoryCollectionTabs 
         tab={tab}
-        setTab={setTab} 
-        colList={()=> <IndexList type="collection" items={useSelector(state => state.books.collections)} />
+        setTab={handleTabChange} 
+        colList={()=> books.length>0?<IndexList type="collection" items={books} />:<p>There will be something soon</p>
            }
-        storyList={()=><PageList items={pages} />}/>
+        storyList={()=>pages.length>0?<PageList items={pages} />:<p>Nothing for now</p>}/>
         </div>
     
         
