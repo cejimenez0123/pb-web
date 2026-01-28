@@ -19,11 +19,25 @@ const ProfileInfo = ({profile})=>{
 
     const dispatch = useDispatch()
     const handleDialogOpen=()=>{
-        dispatch(setDialog({isOpen:false}))
+         dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }));
         let dia = {...dialog}
         dia.isOpen = true
         dia.title = null
-        dia.text = <ReferralForm onClose={()=>dispatch(setDialog({open:false}))}/>
+        dia.text = <ReferralForm onClose={()=>  dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }))}/>
         dia.onClose=()=>{
             dispatch(setDialog({open:false}))
         }

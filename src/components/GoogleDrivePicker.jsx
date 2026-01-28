@@ -116,6 +116,14 @@ const fetchFiles = async () => {
   },[])
   // --- File Dialog ---
   const openDialog = () => {
+      dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }));
     let dia = { ...dialog };
   
     dia.isOpen = true;
@@ -129,7 +137,14 @@ const fetchFiles = async () => {
   }))
     dia.title = null
 dia.disagreeText="Close"
-dia.disagree=()=>dispatch(setDialog({isOpen:false}))
+dia.disagree=()=>  dispatch(setDialog({
+    isOpen: false,
+    text: null,
+    title: null,
+    agree: null,
+    agreeText: null,
+    disagreeText: null,
+  }));
     dia.text = (
       <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}} className=''>
       <IonList style={{"--background":"#f4f4e0"}} className={"bg-cream"+isPhone ? "grid grid-cols-2" : ""}>
