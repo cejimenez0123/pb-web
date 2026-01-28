@@ -57,6 +57,7 @@ setProfilePic(src)
           
   },[profile])
   const openDialog=()=>{
+     dispatch(setDialog({isOpen:false}))
     let dia = dialog
     dia.isOpen = true
     dia.disagreeText="Close"

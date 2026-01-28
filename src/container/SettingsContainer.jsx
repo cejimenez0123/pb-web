@@ -146,6 +146,7 @@ window.alert("Updating Profile")
      
    
     const handleDeleteDialog=()=>{
+       dispatch(setDialog({isOpen:false}))
         let dia = {...dialog}
         dia.agree={handleAgree} 
         dia.onClose={handleClose}

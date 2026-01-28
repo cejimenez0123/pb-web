@@ -79,6 +79,7 @@ export default function AddStoryToCollectionContainer(props) {
     
   }, []);
   const openNewCollectionForm=()=>{
+     dispatch(setDialog({isOpen:false}))
 let dia = {...dialog}
   dia.text = <CreateCollectionForm 
   initPages={[pageInView]}

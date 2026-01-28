@@ -55,6 +55,7 @@ checkLike(currentProfile)
     }
   }
   const onClickShare=()=>{
+     dispatch(setDialog({isOpen:false}))
     let dia = {...dialog}
     dia.text = <ShareList page={page} setArchive={setArchive}profile={currentProfile} archive={archiveCol}
       bookmark={bookmarked}

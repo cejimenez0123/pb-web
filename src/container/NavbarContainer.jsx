@@ -95,6 +95,7 @@ const router = useIonRouter()
   },[currentProfile])
 
 const openDialog=()=>{
+   dispatch(setDialog({isOpen:false}))
   let dia = {...dialog}
   dia.title = null
   dia.isOpen = true

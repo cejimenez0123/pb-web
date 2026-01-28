@@ -151,7 +151,7 @@ setError("User Not Found. Apply Below")
     const handleForgotPasswordDialog=()=>{
         let dia = {...dialog}
         
-    
+     dispatch(setDialog({isOpen:false}))
     dia.onClose=()=>{
         dispatch(setDialog({isOpen:false}))
     }

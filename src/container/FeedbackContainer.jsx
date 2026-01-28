@@ -22,6 +22,7 @@ export default function FeedbackContainer(props){
       
     },[])
     const openMessageSentDialog = (purpose) => {
+       dispatch(setDialog({isOpen:false}))
         let dia = {};
         dia.isOpen = true;
         dia.title = "Message Sent Successfully";

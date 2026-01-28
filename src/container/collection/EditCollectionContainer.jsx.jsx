@@ -210,6 +210,7 @@ if (col.childCollections) {
   },[id])
   const handleAddStory = () => router.push(Paths.addToCollection.createRoute(id));
   const handleDelete = () => {
+     dispatch(setDialog({isOpen:false}))
     let dia = { ...dialog };
     dia.title = "Deleting?";
     dia.isOpen = true;

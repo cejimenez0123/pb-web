@@ -10,16 +10,16 @@ import isValidUrl from "../../core/isValidUrl"
 import ReferralForm from "../auth/ReferralForm"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { getCurrentProfile, setDialog } from "../../actions/UserActions"
+import {  setDialog } from "../../actions/UserActions"
 import Enviroment from "../../core/Enviroment"
-import { Capacitor } from "@capacitor/core";
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
         const dialog = useSelector(state=>state.users.dialog)
    
-    const isNative = Capacitor.isNativePlatform()
+
     const dispatch = useDispatch()
     const handleDialogOpen=()=>{
+        dispatch(setDialog({isOpen:false}))
         let dia = {...dialog}
         dia.isOpen = true
         dia.title = null
@@ -53,6 +53,7 @@ const ProfileInfo = ({profile})=>{
   }, [profile]);
     const openFollowersDialog = () => {
         let dia = {};
+         dispatch(setDialog({isOpen:false}))
         dia.isOpen = true;
         dia.disagreeText = "Close";
         dia.title = "Followers";
