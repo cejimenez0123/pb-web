@@ -8,6 +8,7 @@ import { Preferences } from '@capacitor/preferences';
 import { setDialog } from '../actions/UserActions';
 import { Capacitor } from '@capacitor/core';
 import Googlelogo from "../images/logo/googlelogo.png";
+import { useDialog } from '../domain/usecases/useDialog';
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
 
 
@@ -19,7 +20,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // Key for expiry time
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
-     
+   const {openDialog,closeDialog}=  useDialog()
 
   // Initialize Social Login
   useLayoutEffect(() => {
@@ -115,38 +116,11 @@ const fetchFiles = async () => {
     checkAccessToken()
   },[])
   // --- File Dialog ---
-  const openDialog = () => {
-      dispatch(setDialog({
-    isOpen: false,
-    text: null,
+  const open = () => {
+      openDialog({
     title: null,
-    agree: null,
-    agreeText: null,
-    disagreeText: null,
-  }));
-    let dia = { ...dialog };
-  
-    dia.isOpen = true;
-    dia.onClose = () =>   dispatch(setDialog({
-    isOpen: false,
-    text: null,
-    title: null,
-    agree: null,
-    agreeText: null,
-    disagreeText: null,
-  }))
-    dia.title = null
-dia.disagreeText="Close"
-dia.disagree=()=>  dispatch(setDialog({
-    isOpen: false,
-    text: null,
-    title: null,
-    agree: null,
-    agreeText: null,
-    disagreeText: null,
-  }));
-    dia.text = (
-      <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}} className=''>
+    text: (
+   <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}} className=''>
       <IonList style={{"--background":"#f4f4e0"}} className={"bg-cream"+isPhone ? "grid grid-cols-2" : ""}>
         {files.map(file => (
           <div
@@ -163,14 +137,20 @@ dia.disagree=()=>  dispatch(setDialog({
         ))}
       </IonList>
       </IonContent>
-    );
+    ),
+    breakpoint:1,
+    // fallback in case user clicks outside the modal
+    disagreeText: "Close",
 
-    dispatch(setDialog(dia));
+  });
+
+
+
   };
 
   return (
     <button 
-  onClick={!accessToken ? () => nativeGoogleSignIn() : () => openDialog()}  
+  onClick={!accessToken ? () => nativeGoogleSignIn() : () => open()}  
   className={`
     flex items-center justify-start text-center 
      btn

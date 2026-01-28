@@ -5,11 +5,12 @@ import { useSelector } from "react-redux"
 import FollowerCard from "./profile/FollowerCard"
 import { IonImg } from "@ionic/react"
 import Enviroment from "../core/Enviroment"
+import { useDialog } from "../domain/usecases/useDialog"
 export default function ProfileCard({profile,onClickFollow,following}){
     const dialog = useSelector(state=>state.users.dialog)
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
     const [pending,setPending]=useState(false)
-  //   const FollowDiv=({following,onClickFollow})=>{
+    const {openDialog,closeDialog}=useDialog()  //   const FollowDiv=({following,onClickFollow})=>{
 
   //     return following?
   //     (<div 
@@ -56,17 +57,61 @@ setProfilePic(src)
         }
           
   },[profile])
-  const openDialog=()=>{
-     dispatch(setDialog({isOpen:false}))
-    let dia = dialog
-    dia.isOpen = true
-    dia.disagreeText="Close"
-    dia.title = "Followers"
-    dia.text =(<div className="card   min-w-[30em] p-6 rounded-lg">
+  const open=()=>{
+          openDialog({
+        title: null,
+        text: (<div className="card   min-w-[30em] p-6 rounded-lg">
 
-    {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
-      </div>)
-      dispatch(setDialog(dia))
+     {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
+     </div>),breakpoint:1})
+     
+        } 
+    
+    if(!profile||!profile.id){
+    
+            return <div className=" skeleton  w-[96vw] sm:w-[50em]  min-h-40"/>
+         
+    }
+    if(profile){
+        
+      return(<div className="pb-8 rounded-lg  w-[96vw] sm:max-w-[60em] sm:min-h-40 mx-auto  ">
+        <div className="text-left p-4">
+            {/* <div className="flex flex-row"> */}
+              <div>  
+            {profilePic.length>0?<span className="max-h-28  "><div className="overflow-hidden rounded-lg"><IonImg src={profilePic} className="max-w-36 mx-auto object-fit mb-2 rounded-lg" alt=""/></div>
+              <div className="h-fit px-2 pb-2"><h5 className="text-emerald-800 text-[1.2rem] text-center open-sans-medium font-bold">{profile.username}</h5></div>
+              </span>:<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
+              
+        
+              </div> <div>
+            <div className="px-3 pt-3 flex flex-col justify-between  h-48">
+          
+            
+        </div>
+        </div>
+         <div className="mt-3 mx-auto w-[20em] justify-between flex flex-row">
+                <FollowDiv following={following} onClickFollow={onClickFollow}/>
+                <div onClick={open} className="text-emerald-800 text-center mx-4">
+                    <h5 className="text-[1rem] my-auto">Followers</h5>
+                <h6>{profile.followers.length}</h6>
+                </div>
+        </div>
+           
+            </div>
+        {/* </div> */}
+  
+        </div>)
+  
+    //  dispatch(setDialog({isOpen:false}))
+    // let dia = dialog
+    // dia.isOpen = true
+    // dia.disagreeText="Close"
+    // dia.title = "Followers"
+    // dia.text =(<div className="card   min-w-[30em] p-6 rounded-lg">
+
+    // {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
+    //   </div>)
+    //   dispatch(setDialog(dia))
   }
     
     if(!profile||!profile.id){

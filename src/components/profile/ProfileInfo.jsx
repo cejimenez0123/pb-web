@@ -12,38 +12,40 @@ import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import {  setDialog } from "../../actions/UserActions"
 import Enviroment from "../../core/Enviroment"
+import { useDialog } from "../../domain/usecases/useDialog";
 const ProfileInfo = ({profile})=>{
     const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
         const dialog = useSelector(state=>state.users.dialog)
-   
+   const {openDialog,closeDialog}=useDialog()
 
     const dispatch = useDispatch()
     const handleDialogOpen=()=>{
-         dispatch(setDialog({
-    isOpen: false,
-    text: null,
-    title: null,
-    agree: null,
-    agreeText: null,
-    disagreeText: null,
-  }));
-        let dia = {...dialog}
-        dia.isOpen = true
-        dia.title = null
-        dia.text = <ReferralForm onClose={()=>  dispatch(setDialog({
-    isOpen: false,
-    text: null,
-    title: null,
-    agree: null,
-    agreeText: null,
-    disagreeText: null,
-  }))}/>
-        dia.onClose=()=>{
-            dispatch(setDialog({open:false}))
-        }
-        dia.agreeText=null
-        dia.agree=null
-        dispatch(setDialog(dia))
+  //        dispatch(setDialog({
+  //   isOpen: false,
+  //   text: null,
+  //   title: null,
+  //   agree: null,
+  //   agreeText: null,
+  //   disagreeText: null,
+  // }));
+  //       let dia = {...dialog}
+  //       dia.isOpen = true
+  //       dia.title = null
+  openDialog({text: <ReferralForm onClose={()=>  closeDialog()}/>,breakpoint:1})
+        // dia.text = <ReferralForm onClose={()=>  dispatch(setDialog({
+  //   isOpen: false,
+  //   text: null,
+  //   title: null,
+  //   agree: null,
+  //   agreeText: null,
+  //   disagreeText: null,
+  // }))}/>
+  //       dia.onClose=()=>{
+  //           dispatch(setDialog({open:false}))
+  //       }
+  //       dia.agreeText=null
+  //       dia.agree=null
+  //       dispatch(setDialog(dia))
 
     }
      useEffect(() => {
@@ -76,15 +78,10 @@ const ProfileInfo = ({profile})=>{
             <div className="mx-4">
               <IonImg
                 onClick={() => {
-                  // also close dialog from X icon in top right
-                  dispatch(setDialog({ isOpen: false }));
-                }}
-                src={clear}
-                alt="close"
-                className="cursor-pointer"
+              closeDialog()}}
               />
             </div>
-            {profile?.followers ? <FollowerCard followers={profile.followers} /> : null}
+             <FollowerCard followers={profile.followers} />
           </div>
         );
         dia.onClose = () => {

@@ -55,34 +55,23 @@ checkLike(currentProfile)
     }
   }
   const onClickShare=()=>{
-      dispatch(setDialog({
-    isOpen: false,
-    text: null,
+      openDialog({
     title: null,
-    agree: null,
-    agreeText: null,
-    disagreeText: null,
-  }));
-    let dia = {...dialog}
-    dia.text = <ShareList page={page} setArchive={setArchive}profile={currentProfile} archive={archiveCol}
+    text: (
+   <ShareList page={page} setArchive={setArchive}profile={currentProfile} archive={archiveCol}
       bookmark={bookmarked}
     setBookmarked={setBookmarked}/>
-    dia.title=null
-    dia.isOpen=true
-    dia.onClose=()=>{
-         dispatch(setDialog({
-    isOpen: false,
-    text: null,
-    title: null,
-    agree: null,
-    agreeText: null,
-    disagreeText: null,
-  }));
-    }
-    dia.agreeText=null
-    dia.agree=null
-    dia.disagreeText="Close"
-    dispatch(setDialog(dia))
+    ),
+    breakpoint:1,
+    // fallback in case user clicks outside the modal
+    disagreeText: "Close",
+    // onClose: () => closeDialog(),
+    // agreeText: chosenEvent.organizerLink ? "Organizer" : null,
+    // agree: chosenEvent.organizerLink
+    //   ? () => (window.location.href = chosenEvent.organizerLink)
+    //   : null,
+  });
+  
   }
 
 

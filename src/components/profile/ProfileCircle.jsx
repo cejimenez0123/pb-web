@@ -34,7 +34,7 @@ setProfilePic(src)
      router.push(Paths.profile.createRoute(profile.id))
     }
   
-  return(<span className="flex flex-row">{profile?<span className="flex flex-row"><div  onClick={handleNavigate}className="overflow-hidden bg-emerald-700 rounded-full max-w-8 min-w-8  min-h-8 max-h-8  border-2 border-white ">
+  return(<span className="flex flex-row bg-transparent">{profile?<span className="flex flex-row bg-transparent"><div  onClick={handleNavigate}className="overflow-hidden bg-emerald-700 rounded-full max-w-8 min-w-8  min-h-8 max-h-8  border-2 border-white ">
   <ProfilePic url={profilePic}/></div> <IonText className={`my-auto  px-2 text-soft ${fontSize} `}>{profile.username.length>9?profile.username.slice(0,9)+"...":profile.username}</IonText><span/></span>:<div className=" max-w-8 min-w-8  bg-slate-100 skeleton"/>}</span>)
 
 

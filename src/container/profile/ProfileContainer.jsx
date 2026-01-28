@@ -166,7 +166,7 @@ const pages = useMemo(() => {
         }
       );
     });
-  },[router]);
+  },[id]);
 
   useEffect(() => {
    getContent();

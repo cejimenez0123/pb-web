@@ -7,7 +7,7 @@ import {
 } from '@ionic/react';
 import "../../App.css"
 const IndexList = ({ items, handleFeedback ,type}) => {
-  if (!items) {
+  if (!items && items.length) {
     return (
       <div className="flex min-h-36">
         <h2 className="mx-auto my-auto text-emerald-800">Room for possibility</h2>
