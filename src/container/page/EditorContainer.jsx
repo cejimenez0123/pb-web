@@ -244,6 +244,7 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
  
 },4001)
 const openConfirmDeleteDialog = () => {
+   dispatch(setDialog({isOpen:false}))
   let dia = {};
   dia.isOpen = true;
   dia.title = "Are you sure you want to delete this page?";

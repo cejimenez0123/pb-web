@@ -183,27 +183,6 @@ dia.disagree=()=>dispatch(setDialog({isOpen:false}))
     )}
  
 </button>
-  //   <span onClick={!accessToken?()=>nativeGoogleSignIn():()=>openDialog()}  className={`btn max-w-[24em] ${accessToken?"bg-soft border-emerald-600 ":"border-2 border-full bg-cream border-opacity-80 border-cream text-emerald-800"} hover:bg-emerald-500 rounded-xl flex text-center w-[88%] md:w-[90%] md:mx-auto h-[3rem]`}>
-         
-    
-  //       {!false ? (
-  // <div className='flex flex-row w-full'>
-  //   <IonImg src={Googlelogo} alt="Google Logo" style={{height: '2em'}} className='px-4 my-auto' />
 
-  //         <IonText
-  //         className={`mx-2 ${!accessToken?"text-emerald-800 ":"text-white bg-soft"} my-auto text-[1.2em]`}
-  //           >
-          
-  //           Log in to Google Drive
-  //         </IonText>  </div>
-  //       ) : (
-
-  //           <IonText      class={`mx-auto text-white my-auto text-[1.2em]`}>
-  //             Open Google Drive
-  //           </IonText>
-  //       )}
-      
-   
-  //   </span>
   );
 }
