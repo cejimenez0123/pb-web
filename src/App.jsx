@@ -246,7 +246,7 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
     render={()=><PrivateRoute
       currentProfile={props.currentProfile}
     ><WorkshopContainer/></PrivateRoute>}/>
-    <Route path="/profile/:id" render={()=>
+    <Route path="/profile/:id/view" render={()=>
       <ProfileContainer/>
       }/>
 
