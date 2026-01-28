@@ -12,11 +12,13 @@ import calendar from "../images/icons/calendar_add.svg"
 import { IonImg, IonInput, IonItem, IonList, IonText,  } from "@ionic/react";
 import { setDialog } from "../actions/UserActions";
 import InfoTooltip from "./InfoTooltip";
+import { useDialog } from "../domain/usecases/useDialog";
 
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
   const dialog = useSelector(state=>state.users.dialog)
 const [solEvents,setSolEvents]=useState([])
+  const { openDialog, closeDialog } = useDialog()
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const options = { weekday: 'short', month: '2-digit', day: '2-digit' };
@@ -203,35 +205,54 @@ const googleAddLink = baseUrl + queryString;
         setEvents(filteredEvents)
       },[selectedArea])
       const dispatch = useDispatch()
-      const handleDialogOpen=(chosenEvent)=>{
-          // dispatch(setDialog({ isOpen: false }));
+  //     const handleDialogOpen=(chosenEvent)=>{
+  //         // dispatch(setDialog({ isOpen: false }));
  
-        let dia = {...dialog}
-        dia.isOpen = true
-        dia.disagreeText= "Close"
+  //       let dia = {...dialog}
+  //       dia.isOpen = true
+  //       dia.disagreeText= "Close"
        
-        dia.title =null
-      dia.text=<div className="text-left text-blueSea">
-        <span>{chosenEvent.location}</span>
-    <span dangerouslySetInnerHTML={{__html:"<div>"+chosenEvent.description+"</div>"}} /></div>
-        dia.onClose = ()=>{
-           dispatch(setDialog({
-    isOpen: false,
-    text: null,
-    title: null,
-    agree: null,
-    agreeText: null,
-    disagreeText: null,
-  }));
-        }
-        dia.agreeText = "Organizer"
-        dia.agree =chosenEvent&&chosenEvent.organizerLink?()=>{
+  //       dia.title =null
+  //     dia.text=<div className="text-left text-blueSea">
+  //       <span>{chosenEvent.location}</span>
+  //   <span dangerouslySetInnerHTML={{__html:"<div>"+chosenEvent.description+"</div>"}} /></div>
+  //       dia.onClose = ()=>{
+  //          dispatch(setDialog({
+  //   isOpen: false,
+  //   text: null,
+  //   title: null,
+  //   agree: null,
+  //   agreeText: null,
+  //   disagreeText: null,
+  // }));
+  //       }
+  //       dia.agreeText = "Organizer"
+  //       dia.agree =chosenEvent&&chosenEvent.organizerLink?()=>{
        
-          chosenEvent?window.location.href=chosenEvent.organizerLink:null
-      }:null
+  //         chosenEvent?window.location.href=chosenEvent.organizerLink:null
+  //     }:null
       
-        dispatch(setDialog(dia))
-    }
+    //     dispatch(setDialog(dia))
+    // }
+const handleDialogOpen = (chosenEvent) => {
+    openDialog({
+      title: null,
+      text: (
+        <div className="text-left text-blueSea">
+          <span>{chosenEvent.location}</span>
+          <span
+            dangerouslySetInnerHTML={{ __html: "<div>" + chosenEvent.description + "</div>" }}
+          />
+        </div>
+      ),
+      disagreeText: "Close",
+      agreeText: chosenEvent.organizerLink ? "Organizer" : null,
+      onClose: () => closeDialog(),
+      agree: chosenEvent.organizerLink
+        ? () => (window.location.href = chosenEvent.organizerLink)
+        : null,
+    });
+  };
 
       useEffect(() => {
         let filtered = list;
