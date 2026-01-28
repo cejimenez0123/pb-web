@@ -24,7 +24,6 @@ import Enviroment from '../../core/Enviroment';
 import ErrorBoundary from '../../ErrorBoundary';
 import { debounce, set } from 'lodash';
 import { sendGAEvent } from '../../core/ga4';
-import adjustScreenSize from '../../core/adjustScreenSize';
 import ShareList from './ShareList';
 import { setDialog } from '../../actions/UserActions';
 import { useParams } from 'react-router';
@@ -199,40 +198,27 @@ useEffect(() => {
 }, []); 
 
 
-  
- const onClickShare = () => {
-  // 1️⃣ Fully close any existing dialog
+  const onClickShare = () => {
   dispatch(setDialog({
-    isOpen: false,
-    text: null,
+    isOpen: true,
     title: null,
+    text: (
+      <ShareList
+        page={page}
+        profile={currentProfile}
+        archive={archiveCol}
+        bookmark={bookmarked}
+        setArchive={setArchiveCol}
+        setBookmarked={setBookmarked}
+      />
+    ),
     agree: null,
     agreeText: null,
-    disagreeText: null,
+    disagreeText: "Close",
+    breakpoint: 0.25
   }));
-
-  // 2️⃣ Open a fresh dialog on next tick
-  setTimeout(() => {
-    dispatch(setDialog({
-      isOpen: true,
-      title: null,
-      text: (
-        <ShareList
-          page={page}
-          profile={currentProfile}
-          archive={archiveCol}
-          bookmark={bookmarked}
-          setArchive={setArchiveCol}
-          setBookmarked={setBookmarked}
-        />
-      ),
-      agree: null,
-      agreeText: null,
-      disagreeText: "Close",
-      onClose: () => dispatch(setDialog({ isOpen: false })),
-    }));
-  }, 0);
 };
+
 
   useLayoutEffect(() => {
     soCanUserEdit();

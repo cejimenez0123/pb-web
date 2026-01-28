@@ -24,7 +24,8 @@ import axios from "axios";
 import StoryCollectionTabs from '../components/page/StoryCollectionTabs.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 
-
+import { getCurrentProfile } from '../actions/UserActions.jsx';
+import { useDialog } from '../domain/usecases/useDialog.jsx';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -52,7 +53,7 @@ function MyProfileContainer({ presentingElement }) {
   const dispatch = useDispatch();
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const stories = useSelector(state => state.pages.pagesInView);
-  const dialog = useSelector(state => state.users.dialog);
+  // const dialog = useSelector(state => state.users.dialog);
   const { seo, setSeo ,setError} = useContext(Context);
   const collections = useSelector(state => state.books.collections);
   const [search, setSearch] = useState("");
@@ -61,7 +62,7 @@ function MyProfileContainer({ presentingElement }) {
   const [description, setFeedback] = useState("");
   const [errorLocal, setErrorLocal] = useState(null);
   const [feedbackPage, setFeedbackPage] = useState(null);
-
+ const { openDialog, closeDialog } = useDialog();
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -148,7 +149,7 @@ useEffect(() => {
     }
   };
   syncProfile();
-}, [currentProfile, dispatch, router]);
+}, []);
 
   const getDriveToken = async () => {
     try {
@@ -197,17 +198,24 @@ useEffect(() => {
     }
   }, 5);
 
+
   const ClickCreateACollection = () => {
-    sendGAEvent("Create", "Create Collection", "Create A Collection");
-    // setOpenDialog(true);
-    const newDialog = {
-      ...dialog,
-      isOpen: true,
-      onClose: () => dispatch(setDialog({...dialog,isOpen:false})),
-      text: <CreateCollectionForm onClose={() => dispatch(setDialog({...dialog,isOpen:false}))} />,
-      title: null
-    };
-    dispatch(setDialog(newDialog));
+     try {
+    sendGAEvent("create_collection_open", {
+      area: "collections",
+      modal_type: "create_collection",
+      user_id: currentProfile?.id || null, // optional, if you want to track
+    });
+  } catch (e) {
+    console.warn("GA event failed", e);
+  }
+
+openDialog({
+  title: null,
+  text: <CreateCollectionForm onClose={closeDialog} />,
+  
+breakpoint:1
+});
   };
 
   const getFile = async (file) => {

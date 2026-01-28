@@ -72,11 +72,11 @@ const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
   const location = window.location.pathname
-
+const [presentingEl, setPresentingEl] = useState(null);
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
   const page = useRef(null);
-  const dialog = useSelector(state=>state.users.dialog??{text:"",title:"",agree:()=>{},onClose:()=>{},isOpen:false,agreeText:"agree",disagreeText:"Close"})
+  const dialog = useSelector(state=>state.users.dialog)
 
 
 
@@ -116,6 +116,11 @@ useEffect(() => {
 const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
 
 
+
+useEffect(() => {
+  setPresentingEl(page.current);
+}, [page]);
+
  return (
 
     <ErrorBoundary>
@@ -135,7 +140,7 @@ const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
  
        {/* <SearchDialog  presentingElement={page} /> */}
        
-       <Dialog dialog={dialog} presentingElement={page} />
+       <Dialog dialog={dialog} presentingElement={presentingEl} />
 <Alert />
     <IonRouterOutlet>   
        <Route exact path={Paths.login()}

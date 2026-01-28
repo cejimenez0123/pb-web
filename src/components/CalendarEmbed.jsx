@@ -204,13 +204,8 @@ const googleAddLink = baseUrl + queryString;
       },[selectedArea])
       const dispatch = useDispatch()
       const handleDialogOpen=(chosenEvent)=>{
-          dispatch(setDialog({ isOpen: false }));
-        sendGAEvent("calendar_event_open", {
-  event_title: chosenEvent.summary,
-  area: chosenEvent.area,
-  search_term: searchTerm || null,
-});
-   
+          // dispatch(setDialog({ isOpen: false }));
+ 
         let dia = {...dialog}
         dia.isOpen = true
         dia.disagreeText= "Close"

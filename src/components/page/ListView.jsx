@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
 import sortItems from "../../core/sortItems";
-import { IonItem, IonList, IonInfiniteScroll, IonInfiniteScrollContent, useIonRouter, IonRow, IonGrid, IonCol } from "@ionic/react";
+import {  IonInfiniteScroll, IonInfiniteScrollContent, useIonRouter, IonRow, IonGrid, IonCol } from "@ionic/react";
 
 const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   const [page, setPage] = useState(1);
