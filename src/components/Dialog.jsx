@@ -43,14 +43,13 @@ const Dialog = ({ presentingElement }) => {
         )}
 
         <div className="ion-padding">{dialog.text}</div>
-      </IonContent>
-
-      <IonFooter
+              <IonFooter
         className="ion-padding-horizontal ion-padding-vertical"
         style={{
           display: "flex",
+         "--background": "#f4f4e0",
           justifyContent: dialog.agree ? "space-between" : "flex-end",
-          "--background": "#f4f4e0",
+          // "--background": "#f4f4e0",
         }}
       >
         {dialog.agree && (
@@ -66,7 +65,7 @@ const Dialog = ({ presentingElement }) => {
           </div>
         )}
 
-        <div className="rounded-full w-[6rem] h-[3rem] bg-soft flex border-emerald-600 border-2">
+        <div className="rounded-full w-[6rem]  h-[3rem] bg-soft flex border-emerald-600 border-2">
           <IonText
             className="text-[1rem] text-white my-auto mx-auto"
             onClick={dialog.onClose ?? closeDialog}
@@ -75,6 +74,9 @@ const Dialog = ({ presentingElement }) => {
           </IonText>
         </div>
       </IonFooter>
+      </IonContent>
+
+
     </IonModal>
   );
 };

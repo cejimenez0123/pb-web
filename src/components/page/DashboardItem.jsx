@@ -215,7 +215,7 @@ useEffect(() => {
     agree: null,
     agreeText: null,
     disagreeText: "Close",
-    breakpoint: 0.25
+    breakpoint: 1
   }));
 };
 

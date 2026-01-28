@@ -71,7 +71,17 @@ function MyProfileContainer({ presentingElement }) {
     AZ: "A-Z",
     ZA: "Z-A"
   };
- 
+ useEffect(() => {
+  if (currentProfile) {
+    setSeo(prev => ({
+      ...prev,
+      title: `Plumbum (${currentProfile.username}) Home`,
+      description: `Welcome to ${currentProfile.username}'s home on Plumbum.`,
+      url: `https://plumbum.app/${currentProfile.username}`,
+    }));
+  }
+}, [currentProfile, setSeo]);
+
   const filteredSortedStories = useMemo(() => {
     let result = stories || [];
 
@@ -140,16 +150,15 @@ useEffect(() => {
     if (!currentProfile) {
       const { value } = await Preferences.get({ key: "token" });
       if (value) {
-        // This will fill the 'currentProfile' in Redux
         dispatch(getCurrentProfile());
       } else {
-        // No token and no profile? Send them home/login
         router.push("/");
       }
     }
   };
-  syncProfile();
-}, []);
+  syncProfile(); // call it directly
+}, [currentProfile, dispatch, router]);
+
 
   const getDriveToken = async () => {
     try {
@@ -211,11 +220,13 @@ useEffect(() => {
   }
 
 openDialog({
-  title: null,
+  // title: "Create Collection",
   text: <CreateCollectionForm onClose={closeDialog} />,
-  
-breakpoint:1
+  disagreeText: "Close", // optional button
+  // onClose: closeDialog,
+  breakpoint: 1, // if you want a half-sheet style
 });
+
   };
 
   const getFile = async (file) => {
@@ -249,29 +260,19 @@ breakpoint:1
     }
   };
 
-  useEffect(() => {
-    let seSeo = () => {
-      if (currentProfile) {
-        setSeo(prev => ({ ...prev, title: `Plumbum (${currentProfile.username}) Home` }));
-     
-      }
-    };
-    return seSeo()
-  }, [])
-  
-  useEffect(()=>{
-  
-  
-    if(currentProfile){
 
-        currentProfile.stories&& dispatch(setPagesInView({ pages: currentProfile.stories }))
-      currentProfile.collections  &&  dispatch(setCollections({collections:currentProfile.collections}))
-    }else{
-      dispatch(setPagesInView({ pages: []}))
-      dispatch(setCollections({collections:[]}))
-    }
-      }
-       ,[currentProfile,router])
+  
+useEffect(() => {
+  if (!currentProfile) return;
+  if (currentProfile.stories && currentProfile.stories.length > 0) {
+    dispatch(setPagesInView({ pages: currentProfile.stories }));
+  }
+  if (currentProfile.collections && currentProfile.collections.length > 0) {
+    dispatch(setCollections({ collections: currentProfile.collections }));
+  }
+}, [currentProfile, dispatch]);
+
+
   if (!currentProfile) {
     return (
         <div>
@@ -295,13 +296,6 @@ onClick={()=>{
       source: "discovery_header",
     });
 
-    setSeo({
-      title: "Plumbum — Events & Writing Calendar",
-      description:
-        "Browse writing events, workshops, and meetups on the Plumbum calendar.",
-      name: "Plumbum",
-      type: "website",
-    });
   router.push(Paths.calendar())}}
 
           />
