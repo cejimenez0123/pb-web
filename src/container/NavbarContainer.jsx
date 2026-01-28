@@ -386,8 +386,9 @@ let isNative = Capacitor.isNativePlatform()
     onClick={()=>{router.push(Paths.discovery())}}/>
       <h6 className='text-white text-xs'>Discovery</h6>
     </div>
-   {!currentProfile ?<div  onClick={()=>handleCloseNavMenu(PageName.about)} className='flex flex-col'><IonImg style={{width:"3em",height:"3em"}}  className="object-fit max-h-10 " 
-      src={home} /><p  className='text-cream h-full my-auto'>About</p></div>:
+   {!currentProfile ?<div  onClick={()=>handleCloseNavMenu(PageName.about)} className='flex flex-col'>
+    <IonImg style={{width:"3em",height:"3em"}}  className="object-fit " 
+      src={home} /><p  className='text-white text-xs'>About</p></div>:
    <div className='flex flex-col'>
     <IonImg src={search} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
     
