@@ -254,8 +254,9 @@ const goToCalendar = (source="about_page") => {
   router.push(Paths.calendar());
 };
   return (
-    <IonContent>
-        <div className="pt-8 w-[94vw] mx-auto">
+    <IonContent fullscreen={true}   scrollY={true} className="">
+     <div className="pt-8 w-[94vw] mx-auto">
+
         {/* <IonGrid> */}
           <IonRow className="my-10">
             <IonCol  className="ion-text-center">
@@ -337,8 +338,8 @@ const goToCalendar = (source="about_page") => {
               </IonText>
             </IonCol>
           </IonRow>
-
-          <IonRow>
+          <div className="mb-24">
+          <IonRow className="ion-padding-bottom">
             <IonCol size="12" className="ion-text-center pb-12">
               <IonText>
                 Any requests for features, feedback, or encouragement&nbsp;
@@ -366,6 +367,8 @@ const goToCalendar = (source="about_page") => {
               </div>
             </IonCol>
           </IonRow>
+          </div>
+        
         {/* </IonGrid> */}
         {!currentProfile && <ScrollDown text="↓Apply Below" visible={true} />}
              </div>

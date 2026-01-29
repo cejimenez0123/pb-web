@@ -129,8 +129,8 @@ useEffect(() => {
   <IonApp>
   <IonReactRouter>
       
-      <IonPage ref={page}>
-        <IonContent fullscreen={true}>
+      <IonPage ref={page} style={{ "--padding-bottom": "20rem" }}  >
+        {/* <IonContent fullscreen={true}> */}
              
            {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
@@ -305,7 +305,7 @@ presentingElement={page}
 
      :null}  
      </div>
-</IonContent></IonPage> 
+</IonPage> 
       </IonReactRouter>
       
     </IonApp>

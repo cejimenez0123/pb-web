@@ -16,7 +16,7 @@ export default function ExploreList({collection}){
         }else{
                collection && dispatch(getRecommendedCollections({colId:collection.id}))
         }
-    },[router.routeInfo,dispatch])
+    },[router,currentProfile,dispatch])
      return<div className='min-h-[14rem] mt-4 pb-[10em] bg-cream'>
         <h3 className="text-emerald-900 text-left bg-cream font-extrabold ml-16 lora-bold mb-4 text-2xl">
         Explore

@@ -120,6 +120,7 @@ export default DiscoveryContainer;
 
 
  function DiscDashTabs({ tab, setTab, disc, dash}) {
+    const { seo,setSeo } = useContext(Context);
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const router = useIonRouter()
   const variants = {
@@ -148,12 +149,7 @@ export default DiscoveryContainer;
    
            <div className=' flex flex-row flex-end p-4 max-w-[100vw]'>
 <div className='w-[100%]'/>
-          <img src={calendar}  className=''  style={{
-            left:"0",
-    filter:
-      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
-  }}
-onClick={()=>{
+          <img onClick={()=>{
       sendGAEvent("navigation_click", {
       destination: "calendar",
       source: "discovery_header",
@@ -166,7 +162,14 @@ onClick={()=>{
       name: "Plumbum",
       type: "website",
     });
-  router.push(Paths.calendar())}}
+  router.push(Paths.calendar())
+
+}} src={calendar}  className=''  style={{
+            left:"0",
+    filter:
+      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
+  }}
+
 
           />
                     </div>
