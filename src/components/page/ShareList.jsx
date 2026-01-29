@@ -156,7 +156,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   };
 
   return (
-    <IonList className="flex flex-col">
+    <div className="flex flex-col">
       <li className=" border-b">
         <div
         className="bg-cream py-3"
@@ -211,8 +211,8 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
             profile ? handleLocalBookmark(e) : setError("Please Sign In");
           }}
         >
-          <div className="text-left w-full px-4">
-            {currentProfile?!loading ? (
+         {currentProfile? <div className="text-left w-full px-4">
+            !loading ? (
               localBookmark ? (
                 <IonImg src={bookmarkFill} className=" max-h-10 max-w-10" />
               ) : (
@@ -220,10 +220,10 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
               )
             ) : (
               <IonImg src={loadingGif} className="mx-auto max-h-10 max-w-10" />
-            ):null}
-          </div>
+            )
+          </div>:null}
         </div>
       </li>
-    </IonList>
+    </div>
   );
 }

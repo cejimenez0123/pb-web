@@ -29,7 +29,7 @@ export default function LinksContainer(props){
 
 
     return(<ErrorBoundary>
-     {/* <IonContent fullscreen={true}> */}
+     <IonContent fullscreen={true} scrollY={true} style={{"--padding-bottom":"6rem"}}>
      
             <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Click links below to discover more!</p></h2>
             <ul className={`md:mx-auto  w-page-mobile-content grid gap-2 grid-cols-2 md:flex md:flex-col lg:w-page-content mx-auto md:mx-4`}>
@@ -38,23 +38,12 @@ export default function LinksContainer(props){
        
                 <li>  
                       <LinkNode image={pen}
-       url={"https://partiful.com/e/qo5cLum123X7apnBJijV"}
-                    title={"Dec 20th Writers Workshop"}
+       url={"https://partiful.com/e/uj6kSckORSweohDsmBr9?c=mCUwl7I5"}
+                    title={"Feb 21st. Writers Workshop"}
                     description={`Join us for Writers Workshop`}/>
                     </li>
-                     <li>  
-                      <LinkNode image={flare}
-       url={"https://groups.ccny.cuny.edu/UMAAN/rsvp_boot?id=1934546"}
-                    title={"Dec. 3rd Open Mic"}
-                    description={`Spark Open Mic @ CCNY
-Step up, express yourself, and share your creativity in a space where you can truly be you.`}/>
-                    </li>
-                    <li>
-                         <LinkNode image={cafe}
-                         url={"https://partiful.com/e/W2Y9L0eVcJyzhlmKYLaL?source=share"}
-                    title={"Dec. 6th CAFETATO: THE UPTOWN COFFEE RAVE"}
-                         description={"NO SACCARINE, SUGAR"}/>
-                    </li>
+               
+                
              
                     <li>
                    
@@ -92,6 +81,6 @@ Step up, express yourself, and share your creativity in a space where you can tr
                </li> 
             </ul>
     
-    {/* </IonContent */}
+    </IonContent>
 </ErrorBoundary>)
 }

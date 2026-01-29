@@ -25,7 +25,7 @@ const Dialog = ({ presentingElement }) => {
       onDidDismiss={resetDialog}        // clears modal state after dismiss
       keepContentsMounted={false}       // allows proper re-render
       breakpoints={[0, 0.25, 0.5, 1]}
-      initialBreakpoint={dialog.breakpoint??1}
+      initialBreakpoint={dialog.breakpoint??0.9}
       backdropBreakpoint={0}            // allow click-away dismissal
       cssClass="dialog-half"
       mode="ios"

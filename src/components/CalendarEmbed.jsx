@@ -74,10 +74,12 @@ const [solEvents,setSolEvents]=useState([])
     );
     setFilteredSuggestions(filtered);
     setShowSuggestions(true);
-sendGAEvent("calendar_search", {
-  query: value,
+sendGAEvent("search", {
+  search_term: value,
+  search_type: "calendar",
   source: "calendar_embed",
 });
+
 
 
   }
@@ -207,28 +209,36 @@ const googleAddLink = baseUrl + queryString;
       const dispatch = useDispatch()
 
     const handleDialogOpen = (chosenEvent) => {
+      sendGAEvent("select_item", {
+  item_type: "calendar_event",
+  item_name: chosenEvent.summary,
+  area: chosenEvent.area,
+  hashtags: chosenEvent.hashtags,
+});
+
   openDialog({
     title: null,
     text: (
       <div className="text-left text-blueSea">
         <span>{chosenEvent.location}</span>
         <span dangerouslySetInnerHTML={{ __html: "<div>" + chosenEvent.description + "</div>" }} />
-        {/* Add a Close button inside the dialog */}
-        {/* <button
-          onClick={() => closeDialog()}
-          className="mt-4 px-4 py-2 bg-emerald-500 text-white rounded"
-        >
-          Close
-        </button> */}
+       
       </div>
     ),
-    breakpoint:1,
+    breakpoint:.9,
     // fallback in case user clicks outside the modal
     disagreeText: "Close",
     // onClose: () => closeDialog(),
     agreeText: chosenEvent.organizerLink ? "Organizer" : null,
     agree: chosenEvent.organizerLink
-      ? () => (window.location.href = chosenEvent.organizerLink)
+      ? () => {
+   sendGAEvent("outbound_click", {
+  destination: "organizer",
+  event_name: chosenEvent.summary,
+});
+
+
+        window.location.href = chosenEvent.organizerLink}
       : null,
   });
 };
@@ -276,10 +286,12 @@ const googleAddLink = baseUrl + queryString;
       function handleSuggestionClick(suggestion) {
         setSearchTerm(suggestion);
         setShowSuggestions(false);
-      sendGAEvent("calendar_hashtag_click", {
-  hashtag: suggestion,
+     sendGAEvent("search", {
+  search_term: suggestion,
+  search_type: "hashtag",
   source: "calendar_embed",
 });
+
 
       }
       
@@ -293,9 +305,12 @@ const googleAddLink = baseUrl + queryString;
           className="border w-fit  my-auto text-emerald-700 h-[2em] rounded-lg bg-transparent px-2 text-l"
           value={selectedArea}
           onChange={(e) =>{
-            sendGAEvent("calendar_area_filter", {
-      area: e.target.value || "all",
-    });
+        sendGAEvent("filter", {
+  filter_type: "area",
+  filter_value: e.target.value || "all",
+  source: "calendar_embed",
+});
+
             setSelectedArea(e.target.value)}}
         >
           <option defaultValue={true} value="">All Areas</option>
@@ -388,11 +403,12 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                             <IonText className="my-auto text-[0.8rem] w-[2.6rem] text-blueSea "><div dangerouslySetInnerHTML={{__html:event.startTime}}/></IonText>
               <IonImg 
               onClick={()=>{
-                        sendGAEvent("calendar_add_click", {
-  event_title: event.summary,
-  hashtags: event.hashtags,
+        sendGAEvent("add_to_calendar", {
+  event_name: event.summary,
   area: event.area,
+  source: "calendar_embed",
 });
+
 
                         window.open(event.googleLink)
             
@@ -506,7 +522,7 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                         className="flex flex-col"
                       >
                         <a className="text-blueSea overflow-hidden text-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto">
-                          <IonText>{event.location}</IonText>
+                          <h6>{event.location}</h6>
                         </a>
                       </span>
                     ) : (

@@ -85,7 +85,17 @@ const fetchData = async (url) => {
   }
 };
   const handleClick = () => {
-    sendGAEvent("Click",`Click Link ${title}`,title,0,true)
+    sendGAEvent("outbound_click", {
+    destination: url,
+    link_title: title,
+    link_type: isYouTubeURL(url)
+      ? "youtube"
+      : url.includes("spotify")
+      ? "spotify"
+      : "external",
+    source: "link_node",
+    layout: isGrid ? "grid" : "list",
+  });
     window.open(url, '_blank');
   };
   const isYouTubeURL = (url) => {
