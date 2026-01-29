@@ -33,19 +33,7 @@ const ProfileInfo = ({profile})=>{
   //       dia.title = null
   openDialog({text: <ReferralForm onClose={()=>  closeDialog()}/>,breakpoint:1})
         // dia.text = <ReferralForm onClose={()=>  dispatch(setDialog({
-  //   isOpen: false,
-  //   text: null,
-  //   title: null,
-  //   agree: null,
-  //   agreeText: null,
-  //   disagreeText: null,
-  // }))}/>
-  //       dia.onClose=()=>{
-  //           dispatch(setDialog({open:false}))
-  //       }
-  //       dia.agreeText=null
-  //       dia.agree=null
-  //       dispatch(setDialog(dia))
+  
 
     }
      useEffect(() => {
@@ -69,7 +57,9 @@ const ProfileInfo = ({profile})=>{
   }, [profile]);
     const openFollowersDialog = () => {
         let dia = {};
-         dispatch(setDialog({isOpen:false}))
+        //  dispatch(setDialog({isOpen:false}))
+
+
         dia.isOpen = true;
         dia.disagreeText = "Close";
         dia.title = "Followers";
@@ -90,8 +80,8 @@ const ProfileInfo = ({profile})=>{
         // No agree button for this one, so we leave dia.agree null
         dia.agreeText = null;
         dia.agree = null;
-      
-        dispatch(setDialog(dia));
+      openDialog(dia)
+        // dispatch(setDialog(dia));
       };
  const closeFollowersDialog=()=>{
     let dia = {...dialog}

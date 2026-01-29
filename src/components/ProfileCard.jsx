@@ -102,16 +102,7 @@ setProfilePic(src)
   
         </div>)
   
-    //  dispatch(setDialog({isOpen:false}))
-    // let dia = dialog
-    // dia.isOpen = true
-    // dia.disagreeText="Close"
-    // dia.title = "Followers"
-    // dia.text =(<div className="card   min-w-[30em] p-6 rounded-lg">
-
-    // {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
-    //   </div>)
-    //   dispatch(setDialog(dia))
+   
   }
     
     if(!profile||!profile.id){

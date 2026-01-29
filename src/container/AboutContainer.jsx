@@ -37,7 +37,7 @@ import {
 import ig from "../images/icons/instagram icon.png"
 let firstImages = [out, al, crowd, duo,balcony, vemilo,  table7];
 let secImages = [table3,out2,evolution,  vemilo2, table2, table5];
-
+import { useState,useRef,useEffect } from "react"
 export default function AboutContainer() {
 
   const { setSeo, currentProfile } = useContext(Context);
@@ -105,7 +105,7 @@ useLayoutEffect(() => {
   );
 
   const applicationProcess = () => (
-    <div className="my-8">
+    <div className="">
       <h1 className="lora-bold mb-4">How the Application Works</h1>
       <p>We’re building a space with intention. Here’s how to join.</p>
       <ol className="list-decimal list-inside open-sans-regular space-y-3 text-[1rem]">
@@ -230,21 +230,156 @@ useLayoutEffect(() => {
       
     </div>
   );
+  
 
-  const userTestimonial = () => (
-    <div>
-      <h6 className="text-[1.8rem] lg:text-[2rem] lora-bold">Real Writers, <br />Real Growth</h6>
-      <div className="px-4 my-4">
-        <h6 className="lora-medium text-[1rem] lg:text-[1.2rem]">
-          <em>
-            "Plumbum.app Workshops have been impactful in helping me to build community and network with poets from across the New York City and the Tri-State area. I walk away from these workshops with quality feedback and so many new ways
-            to think about my work. Plumbum’s goal of supporting writers with their craft is clear and quite effective with the supportive environment to match."
-          </em>
-        </h6>
-        — [Rob P.]
+const TESTIMONIALS = [
+  {
+    quote:
+      "Plumbum.app Workshops have been impactful in helping me build community and connect with poets across NYC and the Tri-State area. I leave with quality feedback and new ways of thinking about my work.",
+    author: "Rob P.",
+  },
+  {
+    quote:
+      "Sol Emilio brought together poets who understand that craft means sitting in a room and doing the work together.",
+    author: "Faust S.",
+  },
+  {
+    quote:
+      "Such a fulfilling workshop ... in the Bronx.",
+    author: "Kay P.",
+  },
+];
+
+function userTestimonials() {
+  const [index, setIndex] = useState(0);
+  const [fade, setFade] = useState(true); // controls fade in/out
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    const nextSlide = () => {
+      setFade(false); // start fade out
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % TESTIMONIALS.length); // update index
+        setFade(true); // fade in new quote
+      }, 500); // match fade duration
+    };
+
+    intervalRef.current = setInterval(nextSlide, 5000);
+
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  const stop = () => clearInterval(intervalRef.current);
+  const start = () => {
+    intervalRef.current = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+        setFade(true);
+      }, 500);
+    }, 5000);
+  };
+
+  return (
+    <div className="max-w-xl mx-auto px-4">
+      <h1 className="lora-bold mb-6 text-center">
+        Real Writers,
+        <br />
+        Real Growth
+      </h1>
+
+      <div
+        className="relative overflow-hidden"
+        onMouseEnter={stop}
+        onMouseLeave={start}
+      >
+        <div
+          className={`transition-opacity duration-500 ease-in-out ${
+            fade ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <h6 className="lora-medium text-[1rem] lg:text-[1.2rem] text-center leading-relaxed">
+            <em>“{TESTIMONIALS[index].quote}”</em>
+          </h6>
+          <div className="mt-3 text-sm opacity-80 text-center">
+            — {TESTIMONIALS[index].author}
+          </div>
+        </div>
+      </div>
+
+      {/* Dots */}
+      <div className="flex justify-center gap-2 mt-4">
+        {TESTIMONIALS.map((_, i) => (
+          <span
+            key={i}
+            className={`h-2 w-2 rounded-full transition-all ${
+              i === index ? "bg-black scale-110" : "bg-gray-300"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );
+}
+
+// function userTestimonials() {
+//   const [index, setIndex] = useState(0);
+//   const intervalRef = useRef(null);
+
+//   useEffect(() => {
+//     intervalRef.current = setInterval(() => {
+//       setIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+//     }, 5000); // change slide every 5s
+
+//     return () => clearInterval(intervalRef.current);
+//   }, []);
+
+//   return (
+//     <div className="max-w-xl">
+//       <h6 className="text-[1.8rem] lg:text-[2rem] lora-bold mb-4">
+//         Real Writers,
+//         <br />
+//         Real Growth
+//       </h6>
+
+//       <div
+//         className="relative overflow-hidden px-4"
+//         onMouseEnter={() => clearInterval(intervalRef.current)}
+//         onMouseLeave={() => {
+//           intervalRef.current = setInterval(() => {
+//             setIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+//           }, 5000);
+//         }}
+//       >
+//         <div
+//           className="transition-all duration-700 ease-in-out"
+//           key={index}
+//         >
+//           <h6 className="lora-medium text-[1rem] lg:text-[1.2rem]">
+//             <em>“{TESTIMONIALS[index].quote}”</em>
+//           </h6>
+//           <div className="mt-2 text-sm opacity-80">
+//             — {TESTIMONIALS[index].author}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Dots */}
+//       <div className="flex gap-2 mt-4 px-4">
+//         {TESTIMONIALS.map((_, i) => (
+//           <span
+//             key={i}
+//             className={`h-2 w-2 rounded-full transition-all ${
+//               i === index ? "bg-black" : "bg-gray-300"
+//             }`}
+//           />
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+
 const goToCalendar = (source="about_page") => {
   sendGAEvent("navigation_click", {
     destination: "calendar",
@@ -298,7 +433,7 @@ const goToCalendar = (source="about_page") => {
             </IonCol>
 
             <IonCol size={md ? "4" : "12"}>
-              {userTestimonial()}
+              {userTestimonials()}
             </IonCol>
             <IonCol size={md ? "4" : "12"}>
               {whyMembership()}
@@ -376,3 +511,22 @@ const goToCalendar = (source="about_page") => {
 </IonContent>
   )
 }
+
+
+
+
+const TESTIMONIALS = [
+  {
+    quote: `Plumbum.app Workshops have been impactful in helping me to build community and network with poets from across New York City and the Tri-State area. I walk away with quality feedback and new ways to think about my work.`,
+    author: "Rob P.",
+  },
+  {
+    quote: `The feedback I received was thoughtful, generous, and sharp. I left feeling more confident and more curious about my own writing.`,
+    author: "Workshop Participant",
+  },
+  {
+    quote: `Plumbum creates a rare space where writers feel taken seriously while still being supported. That balance is everything.`,
+    author: "NYC Writer",
+  },
+];
+

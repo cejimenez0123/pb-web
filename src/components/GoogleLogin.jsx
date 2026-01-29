@@ -9,17 +9,17 @@ import { IonText, IonSpinner, IonImg, IonRow, useIonRouter } from "@ionic/react"
 import { useDispatch } from "react-redux";
 import { SocialLogin } from "@capgo/capacitor-social-login";
 import { logIn } from "../actions/UserActions";
-import Paths from "../core/paths";
 import DeviceCheck from "./DeviceCheck";
 import Context from "../context";
 import { Preferences } from "@capacitor/preferences";
 import Googlelogo from "../images/logo/googlelogo.png";
 import ErrorBoundary from "../ErrorBoundary"; // make sure this path matches your project
-import Enviroment from "../core/Enviroment";
-
+import { sendGAEvent } from "../core/ga4";
 function GoogleLoginInner({ drive, onUserSignIn }) {
   const { isError } = useContext(Context);
-  const [pending, setPending] = useState(false);
+  const [bootstrapping, setBootstrapping] = useState(true);
+const [pending, setPending] = useState(false);
+
   const [loginError, setLoginError] = useState(null);
   const [signedIn, setSignedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
@@ -87,61 +87,105 @@ const router =useIonRouter()
   // 3️⃣ Restore previous session
   // ---------------------------
   useEffect(() => {
-    const loadStoredUser = async () => {
-      setPending(true);
-      try {
-        const [email, name, googleId, driveToken, expiry, idToken] =
-          await Promise.all([
-            Preferences.get({ key: "userEmail" }),
-            Preferences.get({ key: "userName" }),
-            Preferences.get({ key: "googleId" }),
-            Preferences.get({ key: driveTokenKey }),
-            Preferences.get({ key: "googledrivetoken_expiry" }),
-            Preferences.get({ key: "googleIdToken" }),
-          ]);
+  const loadStoredUser = async () => {
+    try {
+      const [email, name, googleId, driveToken, expiry, idToken] =
+        await Promise.all([
+          Preferences.get({ key: "userEmail" }),
+          Preferences.get({ key: "userName" }),
+          Preferences.get({ key: "googleId" }),
+          Preferences.get({ key: driveTokenKey }),
+          Preferences.get({ key: "googledrivetoken_expiry" }),
+          Preferences.get({ key: "googleIdToken" }),
+        ]);
 
-        const valid =
-          driveToken.value &&
-          expiry.value &&
-          Date.now() < parseInt(expiry.value, 10);
+      const valid =
+        driveToken.value &&
+        expiry.value &&
+        Date.now() < parseInt(expiry.value, 10);
 
-        if (
-          email.value &&
-          googleId.value &&
-          valid &&
-          email.value !== "undefined"
-        ) {
-          setAccessToken(driveToken.value);
-          setIdToken(idToken.value);
-          const info = {
-            email: email.value,
-            name: name.value,
-            googleId: googleId.value,
-            uId: googleId.value,
-          };
-          setUserInfo(info);
-          setSignedIn(true);
-          onUserSignIn?.({
-            email: email.value,
-            name: name.value,
-            googleId: googleId.value,
-            driveAccessToken: driveToken.value,
-            idToken: idToken.value,
-          });
-        }
-      } catch (e) {
-        console.error("Error loading stored user:", e);
-      } finally {
-        setPending(false);
+      if (email.value && googleId.value && valid) {
+        setAccessToken(driveToken.value);
+        setIdToken(idToken.value);
+        setUserInfo({
+          email: email.value,
+          name: name.value,
+          googleId: googleId.value,
+          uId: googleId.value,
+        });
+        setSignedIn(true);
       }
-    };
-    loadStoredUser();
-  }, [ router, onUserSignIn]);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setBootstrapping(false);
+    }
+  };
+
+  loadStoredUser();
+}, []);
+
+  // useEffect(() => {
+  //   const loadStoredUser = async () => {
+  //     setPending(true);
+  //     try {
+  //       const [email, name, googleId, driveToken, expiry, idToken] =
+  //         await Promise.all([
+  //           Preferences.get({ key: "userEmail" }),
+  //           Preferences.get({ key: "userName" }),
+  //           Preferences.get({ key: "googleId" }),
+  //           Preferences.get({ key: driveTokenKey }),
+  //           Preferences.get({ key: "googledrivetoken_expiry" }),
+  //           Preferences.get({ key: "googleIdToken" }),
+  //         ]);
+
+  //       const valid =
+  //         driveToken.value &&
+  //         expiry.value &&
+  //         Date.now() < parseInt(expiry.value, 10);
+
+  //       if (
+  //         email.value &&
+  //         googleId.value &&
+  //         valid &&
+  //         email.value !== "undefined"
+  //       ) {
+  //         setAccessToken(driveToken.value);
+  //         setIdToken(idToken.value);
+  //         const info = {
+  //           email: email.value,
+  //           name: name.value,
+  //           googleId: googleId.value,
+  //           uId: googleId.value,
+  //         };
+  //         setUserInfo(info);
+  //         setSignedIn(true);
+  //         onUserSignIn?.({
+  //           email: email.value,
+  //           name: name.value,
+  //           googleId: googleId.value,
+  //           driveAccessToken: driveToken.value,
+  //           idToken: idToken.value,
+  //         });
+  //       }
+  //     } catch (e) {
+  //       console.error("Error loading stored user:", e);
+  //     } finally {
+  //       setPending(false);
+  //     }
+  //   };
+  //   loadStoredUser();
+  // }, [ router, onUserSignIn]);
 
   // ---------------------------
   // 4️⃣ Native (mobile) login
   // ---------------------------
   const nativeGoogleSignIn = async () => {
+       sendGAEvent("login_start", {
+      method: "google",
+      platform: "native",
+      drive: !!drive,
+    });
     try {
       localStorage.clear()
       await Preferences.clear()
@@ -194,6 +238,13 @@ const router =useIonRouter()
 
       dispatch(logIn({ email: profile.email, uId: profile.id, isNative }));
     } catch (err) {
+     
+  sendGAEvent("login_error", {
+    method: "google",
+    platform: "native",
+    message: err?.message,
+  });
+
       console.error("Native sign-in error", err);
       setLoginError(`Google Sign-In failed. ${err.message || JSON.stringify(err)}`);
     } finally {
@@ -296,7 +347,7 @@ const router =useIonRouter()
   // ---------------------------
   // 7️⃣ UI
   // ---------------------------
-  if (pending) {
+  if (bootstrapping || pending) {
     return (
       <div className="flex flex-col justify-center items-center w-full min-h-full">
         <IonSpinner name="crescent" />
@@ -307,7 +358,7 @@ const router =useIonRouter()
   return (
     <div className="flex flex-col  justify-center items-center w-full min-h-full">
       <div
-        onClick={nativeGoogleSignIn}
+        onClick={!pending ? nativeGoogleSignIn : undefined}
         color="dark"
         className="bg-gray-200 btn rounded-full flex h-[4rem] text-white w-[10rem] mt-8"
       >
