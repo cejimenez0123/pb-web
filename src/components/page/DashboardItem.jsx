@@ -216,7 +216,7 @@ openDialog({
     agree: null,
     agreeText: null,
     disagreeText: "Close",
-    breakpoint: .9
+    breakpoint: .95
   })
 };
 

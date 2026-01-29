@@ -61,7 +61,7 @@ checkLike(currentProfile)
       bookmark={bookmarked}
     setBookmarked={setBookmarked}/>
     ),
-    breakpoint:.9,
+    breakpoint:.95,
     // fallback in case user clicks outside the modal
 
     // onClose: () => closeDialog(),
