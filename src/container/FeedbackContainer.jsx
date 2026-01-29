@@ -5,6 +5,7 @@ import validateEmail from "../core/validateEmail"
 //import { Dialog, DialogActions, DialogContent, Button,DialogTitle } from "@mui/material"
 import Context from "../context"
 import { IonContent, IonText } from "@ionic/react"
+import { useDialog } from "../domain/usecases/useDialog"
 
 export default function FeedbackContainer(props){
     const {seo,setSeo}=useContext(Context)
@@ -14,6 +15,7 @@ export default function FeedbackContainer(props){
     const [purpose,setPurpose]=useState("feedback")
     const [message,setMessage]=useState("")
     const [open,setOpen]=useState(false)
+    const {dialog,openDialog} =useDialog()
     useLayoutEffect(()=>{
         let soo = seo
         soo.title= "Plumbum (Feedback) - Your Writing, Your Community"
@@ -23,7 +25,7 @@ export default function FeedbackContainer(props){
     },[])
     const openMessageSentDialog = (purpose) => {
        dispatch(setDialog({isOpen:false}))
-        let dia = {};
+        let dia = {...dialog}
         dia.isOpen = true;
         dia.title = "Message Sent Successfully";
         dia.text = (
@@ -69,7 +71,7 @@ export default function FeedbackContainer(props){
         dia.agreeText = null;
         dia.agree = null;
     
-        dispatch(setDialog(dia));
+        openDialog(dia)
       }
     const handleFeedback=debounce((e)=>{
         e.preventDefault()

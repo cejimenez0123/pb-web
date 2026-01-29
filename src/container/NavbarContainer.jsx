@@ -32,6 +32,7 @@ import { useSelector } from 'react-redux'
 import { Capacitor } from '@capacitor/core'
 import { PageType } from '../core/constants.js'
 import { useMediaQuery } from 'react-responsive'
+import { useDialog } from '../domain/usecases/useDialog.jsx'
 const PageName = {
   home: "Home",
   about:"About",
@@ -48,7 +49,8 @@ const PageName = {
 function NavbarContainer(){
 const currentProfile=useSelector(state=>state.users.currentProfile)
   const {isPhone,isNotPhone,setError,setSuccess}=useContext(Context)
-  const dialog =useSelector(state=>state.users.dialog)
+  // const dialog =useSelector(state=>state.users.dialog)
+const {dialog,openDialog,closeDialog}=useDialog()
   useLayoutEffect(()=>{
     initGA()
   },[])
@@ -94,8 +96,8 @@ const router = useIonRouter()
         }
   },[currentProfile])
 
-const openDialog=()=>{
-   dispatch(setDialog({isOpen:false}))
+const open=()=>{
+  //  dispatch(setDialog({isOpen:false}))
   let dia = {...dialog}
   dia.title = null
   dia.isOpen = true
@@ -113,13 +115,9 @@ const openDialog=()=>{
   dia.agree = null
   dia.agreeText=null
   dia.text=<CreateCollectionForm onClose={()=>{
-
-    let dia = {...dialog}
-    dia.isOpen = false
-    dispatch(setDialog(dia))
-  
+closeDialog()
   }}/>
-  dispatch(setDialog(dia))
+ openDialog(dia)
 }
     const openDialogAction = ()=>{
       router.push("/search")
@@ -215,7 +213,7 @@ const openDialog=()=>{
     Link</a></li>
            <li  tabIndex={page}  onClick={()=>{ 
              
-                 openDialog()
+                 open()
                  
          } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
     

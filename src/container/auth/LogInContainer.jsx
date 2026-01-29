@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import GoogleLogin from '../../components/GoogleLogin';
 import ErrorBoundary from "../../ErrorBoundary.jsx"
 import { Capacitor } from '@capacitor/core';
+import { useDialog } from '../../domain/usecases/useDialog.jsx';
 export default function LogInContainer() {
     const {setError,seo,setSeo}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -61,7 +62,7 @@ function LogInCard({setLogInError}){
     const [password, setPassword] = useState('');
     const [pending,setPending]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
-    
+    const {openDialog,closeDialog}=useDialog()
   
     const dialog = useSelector(state=>state.users.dialog)
      
@@ -151,15 +152,18 @@ setError("User Not Found. Apply Below")
     const handleForgotPasswordDialog=()=>{
         let dia = {...dialog}
         
-     dispatch(setDialog({isOpen:false}))
+    //  dispatch(setDialog({isOpen:false}))
     dia.onClose=()=>{
         dispatch(setDialog({isOpen:false}))
     }
     dia.isOpen = true
-dia.title=("Forgot Password")
+dia.title=null
+dia.agree=null
+dia.agreeText=null
 dia.disagreeText=("Close")
+dia.breakpoint=1
 dia.text=(<ForgotPasswordForm/>)
-dispatch(setDialog(dia))
+openDialog(dia)
     }
     return(
     //    
