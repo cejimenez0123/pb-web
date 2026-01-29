@@ -243,27 +243,6 @@ const googleAddLink = baseUrl + queryString;
   });
 };
 
-// const handleDialogOpen = (chosenEvent) => {
-//     openDialog({
-//       title: null,
-//       text: (
-//         <div className="text-left text-blueSea">
-//           <span>{chosenEvent.location}</span>
-//           <span
-//             dangerouslySetInnerHTML={{ __html: "<div>" + chosenEvent.description + "</div>" }}
-//           />
-//         </div>
-//       ),
-//       breakpoint:1,
-//       disagreeText: "Close",
-//       agreeText: chosenEvent.organizerLink ? "Organizer" : null,
-//       onClose: closeDialog,
-//       agree: chosenEvent.organizerLink
-//         ? () => (window.location.href = chosenEvent.organizerLink)
-//         : null,
-//     });
-//   };
-
       useEffect(() => {
         let filtered = list;
       
@@ -389,7 +368,7 @@ const googleAddLink = baseUrl + queryString;
                              const encoded = encodeURIComponent(event.rawLocation);
 window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                              
-                              }}>{event.location.length<25?event.location:event.location.slice(0,20)+"..."}</IonText></a></span>:<h6 className=" whitespace-nowrap no-underline max-w-[20em]">{event.location}</h6>}
+                              }}>{event.location.length<25?event.location:event.location.slice(0,20)+"..."}</IonText></a></span>:<h6 className=" whitespace-nowrap location no-underline max-w-[20em]">{event.location}</h6>}
                           
                           
               
@@ -522,11 +501,11 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                         className="flex flex-col"
                       >
                         <a className="text-blueSea overflow-hidden text-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto">
-                          <h6>{event.location}</h6>
+                          <h6 className="location">{event.location}</h6>
                         </a>
                       </span>
                     ) : (
-                      <h6 className="whitespace-nowrap no-underline max-w-[20em]">
+                      <h6  className="whitespace-nowrap location no-underline max-w-[20em]">
                         {event.location}
                       </h6>
                     )}

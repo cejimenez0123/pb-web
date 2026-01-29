@@ -598,6 +598,9 @@ p,div,span *  {
   border-bottom: 2px solid gainsboro;
   box-shadow: var(--some-box-shadow);
 }
+.location{
+  font-size: 0.8em !important;
+}
 .list-item.round{
   border-radius: 8px;
 }
