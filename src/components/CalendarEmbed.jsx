@@ -225,7 +225,7 @@ const googleAddLink = baseUrl + queryString;
        
       </div>
     ),
-    breakpoint:.9,
+    breakpoint:1,
     // fallback in case user clicks outside the modal
     disagreeText: "Close",
     // onClose: () => closeDialog(),
@@ -363,12 +363,13 @@ const googleAddLink = baseUrl + queryString;
                        <span  className="flex flex-col"> 
           
                              <a className="text-blueSea overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
-                              <IonText onClick={()=>{
+                              <h6  className="location"
+                              onClick={()=>{
                             
                              const encoded = encodeURIComponent(event.rawLocation);
 window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                              
-                              }}>{event.location.length<25?event.location:event.location.slice(0,20)+"..."}</IonText></a></span>:<h6 className=" whitespace-nowrap location no-underline max-w-[20em]">{event.location}</h6>}
+                              }}>{event.location.length<25?event.location:event.location.slice(0,20)+"..."}</h6></a></span>:<h6 className=" whitespace-nowrap location no-underline max-w-[20em]">{event.location}</h6>}
                           
                           
               
