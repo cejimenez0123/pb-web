@@ -18,7 +18,6 @@ import Context from '../context';
 import FeedbackDialog from '../components/page/FeedbackDialog';
 import { IonText, IonInput, IonContent, IonSpinner, IonPage,  useIonViewWillEnter, IonImg, useIonRouter } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
-import { setDialog } from '../actions/UserActions.jsx';
 import { Preferences } from '@capacitor/preferences';
 import axios from "axios";
 import StoryCollectionTabs from '../components/page/StoryCollectionTabs.jsx';
@@ -252,7 +251,7 @@ openDialog({
       })).then(res => checkResult(res, ({ story }) => {
         if (story) router.push(Paths.editPage.createRoute(story.id));
         dispatch(setEditingPage({ page: story }));
-        dispatch(setDialog({ isOpen: false }));
+    closeDialog()
       }, err => setErrorLocal(err.message)));
     } catch (error) {
       console.error("Error fetching Google Doc:", error);

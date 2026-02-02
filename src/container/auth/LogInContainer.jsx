@@ -1,6 +1,6 @@
 import {useContext,useEffect,useState} from 'react'
 import "../../App.css"
-import { logIn, setDialog} from '../../actions/UserActions';
+import { logIn, } from '../../actions/UserActions';
 import {useDispatch} from 'react-redux';
 import loadingGif from "../../images/loading.gif"
 import Paths from '../../core/paths';
@@ -152,9 +152,9 @@ setError("User Not Found. Apply Below")
     const handleForgotPasswordDialog=()=>{
         let dia = {...dialog}
         
-    //  dispatch(setDialog({isOpen:false}))
+    
     dia.onClose=()=>{
-        dispatch(setDialog({isOpen:false}))
+       closeDialog()
     }
     dia.isOpen = true
 dia.title=null

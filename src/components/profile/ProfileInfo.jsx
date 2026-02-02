@@ -10,7 +10,6 @@ import isValidUrl from "../../core/isValidUrl"
 import ReferralForm from "../auth/ReferralForm"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import {  setDialog } from "../../actions/UserActions"
 import Enviroment from "../../core/Enviroment"
 import { useDialog } from "../../domain/usecases/useDialog";
 const ProfileInfo = ({profile})=>{
@@ -20,19 +19,9 @@ const ProfileInfo = ({profile})=>{
 
     const dispatch = useDispatch()
     const handleDialogOpen=()=>{
-  //        dispatch(setDialog({
-  //   isOpen: false,
-  //   text: null,
-  //   title: null,
-  //   agree: null,
-  //   agreeText: null,
-  //   disagreeText: null,
-  // }));
-  //       let dia = {...dialog}
-  //       dia.isOpen = true
-  //       dia.title = null
+ 
   openDialog({text: <ReferralForm onClose={()=>  closeDialog()}/>,breakpoint:1})
-        // dia.text = <ReferralForm onClose={()=>  dispatch(setDialog({
+      
   
 
     }
@@ -57,12 +46,10 @@ const ProfileInfo = ({profile})=>{
   }, [profile]);
     const openFollowersDialog = () => {
         let dia = {};
-        //  dispatch(setDialog({isOpen:false}))
-
-
+  
         dia.isOpen = true;
         dia.disagreeText = "Close";
-        dia.title = "Followers";
+        dia.title = null
         dia.text = (
           <div className="card min-h-[20em] min-w-[30em] p-6 rounded-lg">
             <div className="mx-4">
@@ -74,19 +61,17 @@ const ProfileInfo = ({profile})=>{
              <FollowerCard followers={profile.followers} />
           </div>
         );
-        dia.onClose = () => {
-          dispatch(setDialog({ isOpen: false }));
-        };
+        dia.onClose = () =>   closeDialog()
+     
         // No agree button for this one, so we leave dia.agree null
         dia.agreeText = null;
         dia.agree = null;
       openDialog(dia)
-        // dispatch(setDialog(dia));
+     
       };
  const closeFollowersDialog=()=>{
-    let dia = {...dialog}
-    dia.isOpen=false
-    dispatch(setDialog(dia))
+   
+   closeDialog()
  }
  console.log("Follwoers",profile.followers)
     if(!profile){

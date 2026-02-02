@@ -15,7 +15,7 @@ export default function FeedbackContainer(props){
     const [purpose,setPurpose]=useState("feedback")
     const [message,setMessage]=useState("")
     const [open,setOpen]=useState(false)
-    const {dialog,openDialog} =useDialog()
+    const {dialog,openDialog,closeDialog} =useDialog()
     useLayoutEffect(()=>{
         let soo = seo
         soo.title= "Plumbum (Feedback) - Your Writing, Your Community"
@@ -24,7 +24,7 @@ export default function FeedbackContainer(props){
       
     },[])
     const openMessageSentDialog = (purpose) => {
-       dispatch(setDialog({isOpen:false}))
+   
         let dia = {...dialog}
         dia.isOpen = true;
         dia.title = "Message Sent Successfully";
@@ -51,11 +51,11 @@ export default function FeedbackContainer(props){
             <IonFooter className="ion-padding">
               <div
                 className="bg-emerald-600 cursor-pointer rounded-full text-white text-center w-full py-2 mont-medium"
-                onClick={() => dispatch(setDialog({ isOpen: false }))}
+                onClick={() => closeDialog()}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") dispatch(setDialog({ isOpen: false }));
+                  if (e.key === "Enter" || e.key === " ") closeDialog();
                 }}
               >
                 <IonText>Close</IonText>
@@ -64,9 +64,8 @@ export default function FeedbackContainer(props){
           </div>
         );
     
-        dia.onClose = () => {
-          dispatch(setDialog({ isOpen: false }));
-        };
+        dia.onClose = () => closeDialog()
+     
         dia.disagreeText = null;
         dia.agreeText = null;
         dia.agree = null;

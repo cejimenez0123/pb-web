@@ -232,13 +232,17 @@ useEffect(()=>{
       fullscreen
       scrollY={true}
       className="ion-padding"
-      style={{ '--background': '#f4f4e0' }}
+
+      style={{'--padding-top':"12rem", '--background': '#f4f4e0' }}
     >
+      <div className='flex flex-row'>
+     
       <IonSearchbar
         value={searchText}
         onIonInput={e => setSearchText(e.detail.value ?? '')}
       />
-
+       <h6 className='my-auto text-emerald-700 text-[2rem]'>Pb</h6>
+</div>
       <IonGrid>
         <IonRow
           className="ion-justify-content-start gap-x-2 gap-y-2 ion-align-items-center ion-padding-vertical"

@@ -18,13 +18,17 @@ if(import.meta.env.VITE_NODE_ENV=="dev"){
 }
 export default function LinksContainer(props){
      const {seo,setSeo}=useContext(Context)
-     useLayoutEffect(()=>{
-          initGA()
-          let soo = seo
-          soo.title= "Plumbum (Links) - Your Writing, Your Community"
-          soo.description="Explore events, workshops, and writer meetups on Plumbum."
-          setSeo(soo)
-     },[])
+     useLayoutEffect(() => {
+
+
+  setSeo(prev => ({
+    ...prev,
+    title: "Plumbum Writing Events & Workshops | NYC & Online",
+    description:
+      "Discover upcoming writing workshops, readings, and community events on Plumbum. Find writer meetups in NYC and online."
+  }))
+}, [])
+
     
 
 
@@ -38,6 +42,7 @@ export default function LinksContainer(props){
        
                 <li>  
                       <LinkNode image={pen}
+                      name={"Writers Workshop"}
        url={"https://partiful.com/e/uj6kSckORSweohDsmBr9?c=mCUwl7I5"}
                     title={"Feb 21st. Writers Workshop"}
                     description={`Join us for Writers Workshop`}/>
@@ -48,12 +53,14 @@ export default function LinksContainer(props){
                     <li>
                    
                <LinkNode image={events}
+               name={"Calendar"}
        url={"https://plumbum.app"+Paths.calendar()}
                     title={"NYC Writing Calendar"}
                     description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
                     </li>
                     <li>
                      <LinkNode image={etsy}
+                     name={"etsy"}
        url={"https://www.etsy.com/shop/PlumbumWriters?ref=dashboard-header"}
                     title={"Plumbum Merch on Etsy"}
                     description={"Support development, events, and cups of coffee by purchasing merch inspired by the founder, Sol Emilio."}/>
@@ -73,6 +80,7 @@ export default function LinksContainer(props){
                 </li>
                <li>
                <LinkNode url={"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}
+                    name="lulu"
                     image={"https://assets.lulu.com/cover_thumbs/4/5/45q8j8v-front-shortedge-384.jpg"}
                     title={"Purchase literature written by the founder."}
                     description={"Paperback of Good Hell: An Young Aritst's Survival and Coming of Age in New York. "}

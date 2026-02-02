@@ -1,6 +1,5 @@
 import { useState ,useEffect} from "react"
 import isValidUrl from "../core/isValidUrl"
-import { setDialog } from "../actions/UserActions"
 import { useSelector } from "react-redux"
 import FollowerCard from "./profile/FollowerCard"
 import { IonImg } from "@ionic/react"
@@ -60,12 +59,10 @@ setProfilePic(src)
   const open=()=>{
           openDialog({
         title: null,
-        text: (<div className="card   min-w-[30em] p-6 rounded-lg">
-
-     {profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null}
-     </div>),breakpoint:1})
+        text: (profile&&profile.followers? <FollowerCard followers={profile.followers}/>:null),
+        breakpoint:1})
      
-        } 
+        }
     
     if(!profile||!profile.id){
     

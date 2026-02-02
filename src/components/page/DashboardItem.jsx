@@ -25,7 +25,6 @@ import ErrorBoundary from '../../ErrorBoundary';
 import { debounce, set } from 'lodash';
 import { sendGAEvent } from '../../core/ga4';
 import ShareList from './ShareList';
-import { setDialog } from '../../actions/UserActions';
 import { useParams } from 'react-router';
 import { useDialog } from '../../domain/usecases/useDialog';
 function DashboardItem({ page, book, isGrid }) {
@@ -203,6 +202,7 @@ useEffect(() => {
 openDialog({
     isOpen: true,
     title: null,
+    scrollY:false,
     text: (
       <ShareList
         page={page}

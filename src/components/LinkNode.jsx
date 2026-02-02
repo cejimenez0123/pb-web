@@ -6,7 +6,7 @@ import { initGA,sendGAEvent } from '../core/ga4';
 import SpotifyEmbed from './SpotifyEmbed';
 import { IonImg } from '@ionic/react';
 import Context from '../context';
-function LinkNode({ url,image,description,title,isGrid}) {
+function LinkNode({ url,name,image,description,title,isGrid}) {
 
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -86,7 +86,7 @@ const fetchData = async (url) => {
 };
   const handleClick = () => {
     sendGAEvent("outbound_click", {
-    destination: url,
+    destination: name?? url,
     link_title: title,
     link_type: isYouTubeURL(url)
       ? "youtube"

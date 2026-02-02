@@ -20,15 +20,15 @@ import { clearPagesInView, setPagesInView } from "../../actions/PageActions";
 import Paths from "../../core/paths";
 import InfoTooltip from "../InfoTooltip";
 import "../../App.css";
-import { setDialog } from "../../actions/UserActions";
 import checkResult from "../../core/checkResult";
+import { useDialog } from "../../domain/usecases/useDialog";
 
 export default function CreateCollectionForm({ initPages,onClose, create }) {
   const dispatch = useDispatch();
   const router = useIonRouter()
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const dialog = useSelector((state) => state.users.dialog);
-
+  // const dialog = useSelector((state) => state.users.dialog);
+const {openDialog,closeDialog,dialog}=useDialog()
   // --- form state
   const [formData, setFormData] = useState({
     name: "",
@@ -88,7 +88,7 @@ export default function CreateCollectionForm({ initPages,onClose, create }) {
       if (onClose) onClose();
 
       const updatedDialog = { ...dialog, isOpen: false };
-      dispatch(setDialog(updatedDialog));
+      openDialog(updatedDialog)
 
       // reset form
       setFormData({

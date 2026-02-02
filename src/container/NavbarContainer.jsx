@@ -5,7 +5,7 @@ import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
 import addCircle from "../images/icons/plus.app.svg"
-import {signOutAction,setDialog} from "../actions/UserActions"
+import {signOutAction} from "../actions/UserActions"
 
 import { Preferences } from "@capacitor/preferences";
 import home from "../images/icons/home.svg"
@@ -97,20 +97,16 @@ const router = useIonRouter()
   },[currentProfile])
 
 const open=()=>{
-  //  dispatch(setDialog({isOpen:false}))
+ 
   let dia = {...dialog}
   dia.title = null
   dia.isOpen = true
   dia.onClose= ()=>{
-    let dia = {...dialog}
-    dia.isOpen = false
-    dispatch(setDialog(dia))
+    closeDialog()
   }
   dia.disagreeText="Close"
   dia.disagree=()=>{
-    let dia = {...dialog}
-    dia.isOpen = false
-    dispatch(setDialog(dia))
+    closeDialog()
   }
   dia.agree = null
   dia.agreeText=null

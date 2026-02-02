@@ -24,8 +24,8 @@ import {
 } from "../../actions/CollectionActions";
 import Paths from "../../core/paths";
 import { Preferences } from "@capacitor/preferences";
-import { setDialog } from "../../actions/UserActions";
 import { useParams } from "react-router";
+import { useDialog } from "../../domain/usecases/useDialog";
 
 
 function toTitleCase(str) {
@@ -36,7 +36,8 @@ function toTitleCase(str) {
 
 export default function AddStoryToCollectionContainer(props) {
   const { setError, currentProfile, seo, setSeo } = useContext(Context);
-  const dialog = useSelector(state=>state.users.dialog)
+  // const dialog = useSelector(state=>state.users.dialog)
+  const {dialog,openDialog,closeDialog}=useDialog()
   const pathParams = useParams()
   const { id, type } = pathParams;
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ export default function AddStoryToCollectionContainer(props) {
   const [token,setToken]=useState(null)
   const collectionInView = useSelector((state) => state.books.collectionInView);
   const pageInView = useSelector((state) => state.pages.pageInView);
-  const [openDialog, setOpenDialog] = useState(false);
+  // const [openDialog, setOpenDialog] = useState(false);
   const [search, setSearch] = useState("");
   const [item, setItem] = useState(type === "collection" ? collectionInView : pageInView);
 
@@ -79,12 +80,12 @@ export default function AddStoryToCollectionContainer(props) {
     
   }, []);
   const openNewCollectionForm=()=>{
-     dispatch(setDialog({isOpen:false}))
+    closeDialog()
 let dia = {...dialog}
   dia.text = <CreateCollectionForm 
   initPages={[pageInView]}
   onClose={()=>{
-                      setOpenDialog(false)
+                      closeDialog()
                     }}/>  
                     dia.title="Create Collection"
    dia.isOpen = true
@@ -92,7 +93,7 @@ let dia = {...dialog}
    dia.agree=null
    dia.agreeText=null
    dia.disagreeText = "Close"             
-  dispatch(setDialog(dia))
+ openDialog(dia)
     //               
   }
   useLayoutEffect(() => {

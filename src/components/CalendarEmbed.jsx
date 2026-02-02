@@ -10,7 +10,6 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
 import { IonImg, IonInput, IonItem, IonList, IonText,  } from "@ionic/react";
-import { setDialog } from "../actions/UserActions";
 import InfoTooltip from "./InfoTooltip";
 import { useDialog } from "../domain/usecases/useDialog";
 

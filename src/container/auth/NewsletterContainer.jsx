@@ -6,14 +6,12 @@ import clear from "../../images/icons/clear.svg";
 import { initGA, sendGAEvent } from "../../core/ga4";
 import { IonContent} from "@ionic/react";
 import ErrorBoundary from "../../ErrorBoundary";
-import { setDialog } from "../../actions/UserActions";
-import { useDispatch } from "react-redux";
+import { useDialog } from "../../domain/usecases/useDialog";
 
 function NewsletterContainer() {
   const { setError } = useContext(Context);
   const { seo, setSeo } = useContext(Context);
-  const dispatch =useDispatch()
-
+const{openDialog,closeDialog,dialog}=useDialog()
   const selectRef = useRef(null);
 
   // ---------- GA INITIALIZATION ----------
@@ -105,7 +103,7 @@ console.log(data)
 
       if (data.user)
         { setUser(data.user)
-          dispatch(setDialog({
+          openDialog({
   isOpen: true,
   title: "Welcome!",
   text: (
@@ -118,8 +116,8 @@ console.log(data)
     </div>
   ),
   disagreeText: "Close",
-  onClose: () => dispatch(setDialog({ isOpen: false }))
-}));
+  onClose: () => closeDialog()
+});
         }
 
       // Reset form

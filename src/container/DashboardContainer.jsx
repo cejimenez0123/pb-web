@@ -73,12 +73,8 @@ const libraryForums = () => {
   );
 };
   useLayoutEffect(() => {
-    initGA();
-    let soo = { ...seo };
-    soo.title = 'Plumbum (Dashboard) - Your Writing, Your Community';
-    soo.description = 'Explore events, workshops, and writer meetups on Plumbum.';
-    soo.url = Enviroment.domain + router.routeInfo.pathname
-    setSeo(soo);
+  
+ 
   }, []);
 
   const getContent = () => {

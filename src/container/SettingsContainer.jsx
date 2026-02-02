@@ -1,4 +1,4 @@
-import { useContext, useEffect, useLayoutEffect,useRef,useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import { updateProfile,deleteUserAccounts, deletePicture, setDialog, getCurrentProfile, signOutAction} from "../actions/UserActions";
 import {uploadProfilePicture} from "../actions/ProfileActions"
@@ -15,6 +15,7 @@ import isValidUrl from "../core/isValidUrl";
 import uploadFile from "../core/uploadFile";
 import { Preferences } from "@capacitor/preferences";
 import Paths from "../core/paths";
+import { useDialog } from "../domain/usecases/useDialog";
 
 
 export default function SettingsContainer(props) {  
@@ -23,12 +24,12 @@ export default function SettingsContainer(props) {
   
     const{setError,setSuccess}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    const dialog = useSelector(state=>state.users.dialog)
+    // const dialog = useSelector(state=>state.users.dialog)
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
     const [params,setParams]=useState({profile:currentProfile,file:null,profilePicture:currentProfile?currentProfile.profilePic:pictureUrl,profileId:currentProfile?currentProfile.id:"",isPrivate:false,selfStatement:"",username:""})
     const [homeItems,setHomeItems] = useState([])
     const dispatch = useDispatch()
-
+  const {dialog,openDialog,closeDialog}=useDialog()
 
     const [pending,setPending] = useState(false)
      const handleChange = (key, value) => {
@@ -66,7 +67,7 @@ export default function SettingsContainer(props) {
     }
     const handleClose = () => {
    
-        dispatch(setDialog({isOpen:false}))
+        closeDialog()
     };
 
       const handleSignOut =async () => {
@@ -146,14 +147,14 @@ window.alert("Updating Profile")
      
    
     const handleDeleteDialog=()=>{
-       dispatch(setDialog({isOpen:false}))
+      closeDialog()
         let dia = {...dialog}
         dia.agree={handleAgree} 
         dia.onClose={handleClose}
         dia.title=("Are you sure you want to delete your account?")
                         dia.text=("Deleting your account can't be reversed")
                         dia.agreeText ="Delete"
-        dispatch(setDialog(dia))
+        openDialog(dia)
 
     }
     const deleteHomeItem  = (item)=>{

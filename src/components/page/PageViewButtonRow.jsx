@@ -56,6 +56,7 @@ checkLike(currentProfile)
   const onClickShare=()=>{
     openDialog({
     title: null,
+    scrollY:false,
     text: (
       <ShareList page={page} setArchive={setArchive}profile={currentProfile} archive={archiveCol}
       bookmark={bookmarked}

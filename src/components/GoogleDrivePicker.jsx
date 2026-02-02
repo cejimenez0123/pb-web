@@ -1,12 +1,10 @@
-import { useState, useEffect, useLayoutEffect,  useContext } from 'react';
+import { useState, useLayoutEffect,  useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { SocialLogin } from "@capgo/capacitor-social-login";
-import { IonItem, IonText, IonList, IonContent, IonImg, IonIcon } from '@ionic/react';
+import { IonText, IonList, IonContent, } from '@ionic/react';
 import Context from "../context";
 
 import { Preferences } from '@capacitor/preferences';
-import { setDialog } from '../actions/UserActions';
-import { Capacitor } from '@capacitor/core';
 import Googlelogo from "../images/logo/googlelogo.png";
 import { useDialog } from '../domain/usecases/useDialog';
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {

@@ -36,6 +36,7 @@ import ErrorBoundary from "../../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
 import { useParams } from "react-router";
 import HashtagForm from "../../components/hashtag/HashtagForm";
+import { useDialog } from "../../domain/usecases/useDialog";
 
 const EditCollectionContainer = () => {
 
@@ -60,12 +61,12 @@ const [canUserEdit,setCanUserEdit]=useState(false)
   const [collection, setCollection] = useState(null);
   const [loading, setLoading] = useState(true);
    const [isPrivate, setIsPrivate] = useState(true)
-const dialog = useSelector(state=>state.users.dialog)
-
+// const dialog = useSelector(state=>state.users.dialog)
+const {dialog,openDialog,closeDialog}=useDialog()
 
   useEffect(() => {
     async function loadData() {
-      console.log("ROXY",id)
+
       const col = await dispatch(fetchCollectionProtected(id));
 
       if (col) setCollection(col);
@@ -210,23 +211,24 @@ if (col.childCollections) {
   },[id])
   const handleAddStory = () => router.push(Paths.addToCollection.createRoute(id));
   const handleDelete = () => {
-     dispatch(setDialog({isOpen:false}))
+   
+    closeDialog()
     let dia = { ...dialog };
     dia.title = "Deleting?";
     dia.isOpen = true;
     dia.agree = () => {
       dispatch(deleteCollection(params));
       router.push(Paths.myProfile);
-      dispatch(setDialog({ isOpen: false }));
+     closeDialog()
     };
     dia.agreeText = "Delete";
-    dia.onClose = () => dispatch(setDialog({ isOpen: false }));
+    dia.onClose = () => closeDialog()
     dia.text = (
       <p>
         Are you sure you want to delete this <strong>{colInView.title}</strong>?
       </p>
     );
-    dispatch(setDialog(dia));
+  openDialog(dia)
   };
   const openRoleForm=()=>{
 
@@ -237,9 +239,9 @@ if (col.childCollections) {
     dia.agree =null
   
     dia.agreeText = null
-    dia.onClose = () => dispatch(setDialog({ isOpen: false }));
-    dia.text = <RoleForm item={colInView} onClose={()=>dispatch(setDialog({ isOpen: false }))}/>
-    dispatch(setDialog(dia));
+    dia.onClose = () => closeDialog()
+    dia.text = <RoleForm item={colInView} onClose={()=>closeDialog()}/>
+    openDialog(dia)
   
   }
 
@@ -247,7 +249,9 @@ if (col.childCollections) {
 
     <ErrorBoundary>
       {/* <IonContent fullscreen={true} className="bg-gray-50"> */}
-            {isNative?<IonHeader translucent>
+            
+<IonContent fullscreen={true} className="ion-padding-top"> 
+  {isNative?<IonHeader translucent>
         <IonToolbar className="bg-white border-b border-emerald-100">
           <IonButtons slot="start">
             <IonBackButton
@@ -268,7 +272,6 @@ if (col.childCollections) {
           {/* )} */}
         </IonToolbar>
       </IonHeader>:<div className="pt-8"/>}
-<IonContent>
         {loading ? (
           <div className="flex justify-center items-center h-[60vh]">
             <IonSpinner name="crescent" color="success" />

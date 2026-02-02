@@ -1,8 +1,6 @@
-import { debounce } from "lodash";
 import { useEffect ,useState,useLayoutEffect, useContext} from "react";
-import { setDialog } from "../../actions/UserActions";
 import { useDispatch } from "react-redux";
-import { IonList,IonItem,IonText,IonImg, useIonRouter } from "@ionic/react";
+import { IonText,IonImg, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
 import loadingGif from "../../images/loading.gif"
 import bookmarkFill from "../../images/bookmarkfill.svg";
@@ -15,14 +13,17 @@ import checkResult from "../../core/checkResult";
 import Enviroment from "../../core/Enviroment";
 import Paths from "../../core/paths";
 import { Preferences } from "@capacitor/preferences";
+import { useDialog } from "../../domain/usecases/useDialog";
 export default function ShareList({ page, profile, archive,setArchive, bookmark, setBookmarked }) {
   const [localBookmark, setLocalBookmark] = useState(bookmark);
   const {setSuccess,setError}=useContext(Context)
-  const dialog = useSelector(state=>state.users.dialog)
+const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
+
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const [canUserEdit,setCanUserEdit ]=useState(false)
   const [loading,setLoading]=useState(false)
   const router = useIonRouter()
+  const {openDialog,closeDialog,dialog}=useDialog()
   const getShareSource = () => {
   const pathname = router.routeInfo?.pathname || "";
 
@@ -82,7 +83,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   }, [page, currentProfile]);
   const dispatch = useDispatch()
     const copyShareLink = () => {
-    dispatch(setDialog({...dialog,isOpen:false}))
+    openDialog({...dialog,isOpen:false})
       sendGAEvent("story_share_copy_link", {
     story_id: page.id,
     source: getShareSource(),
@@ -146,17 +147,30 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   useEffect(() => {
     getArchive();
   }, [currentProfile]);
-  const handleLocalBookmark = async (e) => {
-    e.preventDefault();
+const handleBookmarkClick = async () => {
+  if (loadingBookmarkId) return;
+
+  setLoadingBookmarkId(true);
+
+  try {
     if (localBookmark) {
-        deleteStc(); // uses closure from parent
+      deleteStc(); // parent dispatch
     } else {
-      onBookmarkPage();
+      onBookmarkPage(); // parent dispatch
     }
-  };
+  } finally {
+    setLoadingBookmarkId(false);
+  }
+};
+
+
+  // const handleLocalBookmark = async (e) => {
+  //   e.preventDefault();
+  //  
+  // };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-hidden">
       <li className=" border-b">
         <div
         className="bg-cream py-3"
@@ -172,7 +186,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
             } else {
               setError("Please Sign Up");
             }
-            dispatch(setDialog({ ...dialog, isOpen: false }));
+            openDialog({ ...dialog, isOpen: false })
           }}
         >
           <IonText className="text-[1rem] px-4">Add to Collection</IonText>
@@ -187,7 +201,7 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
   story_id: page.id,
   source: getShareSource(),
 });
-              dispatch(setDialog({ ...dialog, isOpen: false }));
+              openDialog({ ...dialog, isOpen: false })
               router.push(Paths.editPage.createRoute(page.id));
         
      
@@ -205,23 +219,35 @@ export default function ShareList({ page, profile, archive,setArchive, bookmark,
         </div>
       </li>
 
-      <li className="py-3 border-b bg-cream">
+      <li  onClick={(e) => {
+            currentProfile ? handleBookmarkClick(e) : setError("Please Sign In");
+          }} className="py-3 border-b bg-cream">
         <div
-          onClick={(e) => {
-            profile ? handleLocalBookmark(e) : setError("Please Sign In");
-          }}
+         
         >
-         {currentProfile? <div className="text-left w-full px-4">
-            !loading ? (
-              localBookmark ? (
-                <IonImg src={bookmarkFill} className=" max-h-10 max-w-10" />
-              ) : (
-                <IonImg src={bookmarkadd} className=" max-h-10 max-w-10" />
-              )
-            ) : (
-              <IonImg src={loadingGif} className="mx-auto max-h-10 max-w-10" />
-            )
-          </div>:null}
+        {currentProfile && (
+  <div className="text-left w-full px-4">
+{currentProfile && (
+  <div className="text-left w-full px-4">
+    {loadingBookmarkId === page.id ? (
+      <IonImg
+        src={loadingGif}
+        className="mx-auto max-h-10 max-w-10"
+        alt="Saving bookmark"
+      />
+    ) : (
+      <IonImg
+        src={localBookmark ? bookmarkFill : bookmarkadd}
+        className="max-h-10 max-w-10"
+        alt={localBookmark ? "Remove bookmark" : "Add bookmark"}
+      />
+    )}
+  </div>
+)}
+
+  </div>
+)}
+
         </div>
       </li>
     </div>

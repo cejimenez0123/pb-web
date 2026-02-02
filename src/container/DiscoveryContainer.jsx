@@ -34,7 +34,29 @@ function DiscoveryContainer() {
   const [viewItems, setViewItems] = useState([]);
 
   tab && useScrollTracking({ name: tab });
-  
+  useLayoutEffect(() => {
+  if (tab === "disc") {
+    setSeo(prev => ({
+      ...prev,
+      title: "Discover Writing, Events & Workshops | Plumbum",
+      description:
+        "Discover new writing, collections, events, and workshops on Plumbum. Explore fresh work from writers and literary communities.",
+      type: "website",
+    }));
+  }
+
+  if (tab === "dash") {
+    setSeo(prev => ({
+      ...prev,
+      title: "Your Writing Dashboard | Plumbum",
+      description:
+        "Manage your writing, collections, reading activity, and community participation on Plumbum.",
+      type: "profile",
+      robots: "noindex, nofollow", // important
+    }));
+  }
+}, [tab, setSeo]);
+
 
  useLayoutEffect(() => {
   if (tab === "disc") {
@@ -184,12 +206,16 @@ export default DiscoveryContainer;
                 ? "bg-emerald-700 text-white"
                 : "text-emerald-700 bg-transparent"
             }`}
-            onClick={() => { 
-               sendGAEvent("tab_select", {
-      tab: "disc",
-      location: "discovery_page",
-    });
-              setTab("disc")}}
+          onClick={() => {
+  sendGAEvent("tab_select", {
+    tab: "discovery",
+    intent: "explore_new_content",
+    surface: "discovery_dashboard",
+    logged_in: Boolean(currentProfile),
+  });
+  setTab("disc");
+}}
+
           >
             Discovery
           </button>
@@ -200,13 +226,16 @@ export default DiscoveryContainer;
                 : "text-emerald-700 bg-transparent"
             }`}
             onClick={() => {
-              sendGAEvent("tab_select", {
-      tab: "dash",
-      location: "dashboard_page",
-    });
-              setTab("dash")}
-            
-            }
+  sendGAEvent("tab_select", {
+    tab: "dashboard",
+    intent: "manage_own_content",
+    surface: "discovery_dashboard",
+    logged_in: true,
+  });
+  setTab("dash");
+}}
+
+        
           >
             Dashboard
           </button>:<button
