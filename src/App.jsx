@@ -190,7 +190,7 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
         <PageWrapper> 
           <MyProfileContainer
 
-                             presentingElement={page}
+                       
                       
                            />
                            </PageWrapper>
