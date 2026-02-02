@@ -1,6 +1,7 @@
 import { IonPage } from '@ionic/react';
 import { useEffect, useRef, useContext } from 'react';
-import Context from './context';
+import Context from '../context';
+
 
 const PageWrapper = ({ children }) => {
   const pageRef = useRef(null);
