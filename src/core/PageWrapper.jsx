@@ -1,18 +1,20 @@
 import { IonPage } from '@ionic/react';
 import { useEffect, useRef, useContext } from 'react';
-import Context from '../context';
+import Context from './context';
 
 const PageWrapper = ({ children }) => {
   const pageRef = useRef(null);
-  const { setPresentingEl } = useContext(Context); // use your Context or pass setter
+  const { setPresentingEl } = useContext(Context);
 
   useEffect(() => {
+    // When this page mounts, it becomes the presentingEl
     if (pageRef.current) {
       setPresentingEl(pageRef.current);
     }
-  }, [pageRef, setPresentingEl]);
+  }, [setPresentingEl]);
 
   return <IonPage ref={pageRef}>{children}</IonPage>;
 };
 
 export default PageWrapper;
+ 
