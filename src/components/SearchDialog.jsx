@@ -113,65 +113,92 @@ const SearchDialog = ({ presentingElement }) => {
       return !!(titleMatch || usernameMatch || nameMatch);
     });
   }, []);
-useEffect(()=>{
-    const payload = {
-      query: "",
-      filters: selectedFilters,
-      profileId: currentProfile ? currentProfile.id : null,
-    };
- dispatch(searchMultipleIndexes(payload)).then(result => {
-      checkResult(
-        result,
-        returned => {
-          const { results } = returned;
-          const list =
-            (results ?? []).map(item => ({
-              item,
-              objectID: item.objectID,
-              type: item.type,
-            })) || [];
-          setSearchContent(list);
-        },
-        err => console.error('Search Error:', err?.message)
-      );
-    });
-},[])
+// useEffect(()=>{
+//     const payload = {
+//       query: "",
+//       filters: selectedFilters,
+//       profileId: currentProfile ? currentProfile.id : null,
+//     };
+//  dispatch(searchMultipleIndexes(payload)).then(result => {
+//       checkResult(
+//         result,
+//         returned => {
+//           const { results } = returned;
+//           const list =
+//             (results ?? []).map(item => ({
+//               item,
+//               objectID: item.objectID,
+//               type: item.type,
+//             })) || [];
+//           setSearchContent(list);
+//         },
+//         err => console.error('Search Error:', err?.message)
+//       );
+//     });
+// },[])
   // Remote search action (Algolia or similar)
-  const searchAction = useCallback(() => {
-    const trimmed = searchText.trim();
-    // Do not hit remote search if empty or personal-only filter is active.
-    if (!trimmed || selectedFilters.includes('personal')) {
-      return;
-    }
+  // const searchAction = useCallback(() => {
+  //    const trimmed = searchText.trim();
 
-    const payload = {
-      query: trimmed,
-      filters: selectedFilters,
-      profileId: currentProfile ? currentProfile.id : null,
-    };
+  // // personal search is LOCAL — don't return early
+  // if (selectedFilters.includes('personal')) return;
 
-    dispatch(searchMultipleIndexes(payload)).then(result => {
-      checkResult(
-        result,
-        returned => {
-          const { results } = returned;
-          const list =
-            (results ?? []).map(item => ({
-              item,
-              objectID: item.id,
-              type: item.type,
-            })) || [];
-          setSearchContent(list);
-        },
-        err => console.error('Search Error:', err?.message)
+  // if (!trimmed) {
+  //   setSearchContent([]); // ← reset so memo recomputes
+  //   return;
+  // }
+
+  //   const payload = {
+  //     query: trimmed,
+  //     filters: selectedFilters,
+  //     profileId: currentProfile ? currentProfile.id : null,
+  //   };
+
+  //   dispatch(searchMultipleIndexes(payload)).then(result => {
+  //     checkResult(
+  //       result,
+  //       returned => {
+  //         const { results } = returned;
+  //         const list =
+  //           (results ?? []).map(item => ({
+  //             item,
+  //             objectID: item.id,
+  //             type: item.type,
+  //           })) || [];
+  //         setSearchContent(list);
+  //       },
+  //       err => console.error('Search Error:', err?.message)
+  //     );
+  //   });
+  // }, [searchText, selectedFilters, currentProfile]);
+const searchAction = useCallback(() => {
+  const trimmed = searchText.trim();
+
+  // personal search is LOCAL — don't return early
+  if (selectedFilters.includes('personal')) return;
+
+  
+  dispatch(searchMultipleIndexes({
+    query: trimmed,
+    filters: selectedFilters,
+    profileId: currentProfile?.id ?? null,
+  })).then(result => {
+    checkResult(result, returned => {
+      setSearchContent(
+        (returned.results ?? []).map(item => ({
+          item,
+          objectID: item.objectID ?? item.id,
+          type: item.type,
+        }))
       );
     });
-  }, [searchText, selectedFilters, currentProfile]);
+  });
+}, [searchText, selectedFilters, currentProfile]);
 
   // Trigger remote search when search text or filters change
   useEffect(() => {
     searchAction();
-  }, [searchAction]);
+  }, []);
 
   // Derived filtered content (memoized)
   const filteredContent = useMemo(() => {
@@ -228,6 +255,13 @@ useEffect(()=>{
     console.log("Searchccs",searchItem)
     router.push(`/${searchItem.type}/${searchItem.objectID}/view`);
   };
+  useEffect(() => {
+  if (!searchText.trim()) return;
+
+  console.log("⌨️ typing triggered search:", searchText);
+  searchAction();
+}, [searchText, searchAction]);
+
 
   return (
     <IonContent
@@ -238,11 +272,24 @@ useEffect(()=>{
       style={{'--padding-top':isPhone?"4em":"10em", '--background': '#f4f4e0' }}
     >
       <div className='flex flex-row'>
-     
+       <IonSearchbar     value={searchText}
+       debounce={1000} onIonInput={(event) => {
+let query = '';
+      const target = event.target
+    if (target){
+       query = target.value.toLowerCase();
+         setSearchText(query)}}}/>
+
+ 
+
+       {/* }}></IonSearchbar>
       <IonSearchbar
         value={searchText}
-        onIonInput={e => setSearchText(e.detail.value ?? '')}
-      />
+        onIonInput={(e) => {
+  console.log("🧠 IonInput value:", e.detail.data);
+  setSearchText(e.detail.data?? "");
+}} */}
+      {/* /> */}
        <h6 className='my-auto text-emerald-700 text-[2rem]'>Pb</h6>
 </div>
       <IonGrid>

@@ -23,7 +23,7 @@ const Dialog = ({ presentingElement }) => {
   // Adjust breakpoints for native vs web
 const breakpoints = isNative ? [0, 1] : [0, 1];
   const initialBreakpoint = isNative ? 0.80 : 1;
-  const backdropBreakpoint = 0.5;
+  const backdropBreakpoint = 0;
 
   return (
     <IonModal
