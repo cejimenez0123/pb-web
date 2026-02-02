@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch,connect,useSelector} from "react-redux"
-import { useEffect, useState ,useRef, useLayoutEffect} from 'react';
+import { useEffect, useState ,useRef, useLayoutEffect, useContext} from 'react';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
@@ -17,7 +17,7 @@ import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
-      import { IonApp, setupIonicReact, IonRouterOutlet, IonText, useIonRouter} from '@ionic/react';
+      import { IonApp, setupIonicReact, IonRouterOutlet, IonText, useIonRouter, IonFooter} from '@ionic/react';
       import { IonContent,IonPage } from '@ionic/react';
  import LoggedRoute from './LoggedRoute';
 import PrivateRoute from './PrivateRoute';
@@ -53,7 +53,11 @@ import { IonReactRouter} from "@ionic/react-router"
 import ErrorBoundary from './ErrorBoundary.jsx';
 import { Redirect, Route } from 'react-router-dom'
 import AboutContainer from './container/AboutContainer.jsx';
+import PageWrapper from './core/PageWrapper.jsx';
+
 setupIonicReact()
+
+
 function App(props) {
   const {currentProfile} =props
   const isPhone = useMediaQuery({ query: '(max-width: 800px)' });
@@ -70,12 +74,16 @@ const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
   const [isSaved,setIsSaved]=useState(true)
 
 
+
+const ionRouter = useIonRouter();
+const location = ionRouter.routeInfo?.pathname ?? "";
+
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-  const location = window.location.pathname
+
 const [presentingEl, setPresentingEl] = useState(null);
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
-  const page = useRef(null);
+
   const dialog = useSelector(state=>state.users.dialog)
 
 
@@ -112,31 +120,31 @@ useEffect(() => {
   
 
 
-  const showNav = !(Capacitor.isNativePlatform()&&(location.includes("/signup")||location.includes("/login"))||(Capacitor.isNativePlatform()&&location.includes("/onboard")))
-const navbarBot = ((Capacitor.isNativePlatform()||isTablet))
+  const showNav = !(
+  Capacitor.isNativePlatform() &&
+  (location.includes("/signup") ||
+   location.includes("/login") ||
+   location.includes("/onboard"))
+);
+const navbarBot = Capacitor.isNativePlatform() || isTablet;
 
-
-
-useEffect(() => {
-  setPresentingEl(page.current);
-}, [page]);
 
  return (
 
     <ErrorBoundary>
-        <Context.Provider value={{isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+        <Context.Provider value={{ setPresentingEl,isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
   <IonApp>
   <IonReactRouter>
       
-      <IonPage ref={page} style={{ "--padding-bottom": "20rem" }}  >
+      {/* <IonPage ref={page} style={{ "--padding-bottom": "20rem" }}  > */}
         {/* <IonContent fullscreen={true}> */}
              
            {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
-              <div className='pt-12'>
+              <div >
  
        {/* <SearchDialog  presentingElement={page} /> */}
        
@@ -145,129 +153,142 @@ useEffect(() => {
     <IonRouterOutlet>   
        <Route exact path={Paths.login()}
                   render={()=> 
+             
         <LoggedRoute 
         currentProfile={currentProfile}
-        >
+        >  <PageWrapper>
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
+                      </PageWrapper>
             </LoggedRoute>
-          
+
        }
      />
      <Route exact path="/" render={() => 
-     isFirstLaunch?Capacitor.isNativePlatform()?<Redirect to={Paths.onboard} />:<Redirect to={Paths.about()}/>:<Redirect to={Paths.login()}/>}
+         <PageWrapper>{
+     isFirstLaunch?Capacitor.isNativePlatform()?<Redirect to={Paths.onboard} />:<Redirect to={Paths.about()}/>:<Redirect to={Paths.login()}/>}   
+     </PageWrapper>}
 />
 <Route exact path="/about" render={() => 
-     <AboutContainer/>}
+    <PageWrapper>
+     <AboutContainer/></PageWrapper>}
 />
 <Route exact path="/search" render={() => 
-     <SearchDialog presentingElement={page}/>}
+     <SearchDialog />}
 />
 
 
    
-      <Route path={Paths.onboard} render={()=><OnboardingContainer/>}/>
+      <Route path={Paths.onboard} render={()=><PageWrapper><OnboardingContainer/></PageWrapper>}/>
 
 
             <Route exact path={Paths.notifications()}
-            render={()=><PrivateRoute currentProfile={currentProfile}>
-              <NotificationContainer currentProfile={currentProfile}/></PrivateRoute>}/>
+            render={()=><PrivateRoute currentProfile={currentProfile}><PageWrapper>
+              <NotificationContainer currentProfile={currentProfile}/></PageWrapper></PrivateRoute>}/>
          <Route
     exact path={Paths.myProfile}
-      render={()=>    <PrivateRoute>
+      render={()=>  <PrivateRoute>
+        <PageWrapper> 
           <MyProfileContainer
 
                              presentingElement={page}
                       
                            />
-                           
-                           </PrivateRoute>}
+                           </PageWrapper>
+                           </PrivateRoute> }
     />
           <Route exact path="/discovery" 
                 render={()=>
-                    <DiscoveryContainer 
-                     
+                   <PageWrapper> 
+                    <DiscoveryContainer/>
+                     </PageWrapper>
                       
-                    />
+                  
                   }
             />
           <Route exact path={"/privacy"}
-                  render={()=><PrivacyNoticeContrainer/>}
+                  render={()=><PageWrapper><PrivacyNoticeContrainer/></PageWrapper>}
                   />
     
       <Route exact path={Paths.calendar()}
-     render={()=><CalendarContainer/>}/>
+     render={()=><PageWrapper><CalendarContainer/></PageWrapper>}/>
           <Route exact path={Paths.newsletter() }
      render={()=><LoggedRoute 
  currentProfile={currentProfile}
-     ><NewsletterContainer/></LoggedRoute>}/>
+     ><PageWrapper><NewsletterContainer/></PageWrapper></LoggedRoute>}/>
      <Route exact path={'/reset-password' }
-     render={()=><ResetPasswordContainer/>}/>
+     render={()=><PageWrapper><ResetPasswordContainer/></PageWrapper>}/>
      <Route path={Paths.collection.route()}
-     render={()=><CollectionContainer currentProfile={currentProfile}/>}/>
+     render={()=><PageWrapper><CollectionContainer currentProfile={currentProfile}/></PageWrapper>}/>
      <Route path={'/signup'}
                 render={()=><LoggedRoute 
-                            currentProfile={currentProfile}>
-                              <SignUpContainer/>
+                            currentProfile={currentProfile}><PageWrapper>
+                              <SignUpContainer/></PageWrapper>
                           </LoggedRoute>}/>
       <Route path={'/register'}
                 render={()=><LoggedRoute 
-                    currentProfile={currentProfile}>
-                        <UserReferralContainer/></LoggedRoute>}/>
+                    currentProfile={currentProfile}><PageWrapper>
+                        <UserReferralContainer/></PageWrapper></LoggedRoute>}/>
        <Route path={Paths.feedback()}
-            render={()=><FeedbackContainer/>}/>
+            render={()=><PageWrapper><FeedbackContainer/></PageWrapper>}/>
      <Route path={Paths.addToCollection.route}
                render={()=> <PrivateRoute
       currentProfile={currentProfile}
-      ><AddToCollectionContainer/>
+  
+      >
+            <PageWrapper><AddToCollectionContainer/>
+      </PageWrapper>
             </PrivateRoute>}/>
      <Route 
             path={Paths.addStoryToCollection.route}
               render={()=><PrivateRoute 
                  currentProfile={currentProfile}
-                    ><AddStoryToCollectionContainer/>
+                    >
+                           <PageWrapper> 
+                            <AddStoryToCollectionContainer/>  </PageWrapper> 
                       </PrivateRoute>}/>
      <Route path={Paths.editCollection.route()}
       render={()=>
       <PrivateRoute 
         currentProfile={currentProfile}
-      >       <EditCollectionContainer/>
+      >     <PageWrapper>     <EditCollectionContainer/>  </PageWrapper> 
       </PrivateRoute>}/>
      
 
        <Route path={Paths.hashtag.route()}
             render={()=>
-            <HashtagContainer/>
+                <PageWrapper> 
+            <HashtagContainer/>  </PageWrapper> 
           }/>
         <Route path={Paths.links()}
-                 render={()=><LinksContainer/>}
+                 render={()=>  <PageWrapper> <LinksContainer/>  </PageWrapper> }
           />
       
 
       <Route path={Paths.workshop.reader()}
     render={()=><PrivateRoute      
-     currentProfile={props.currentProfile}><WorkshopContainer/></PrivateRoute>}/>
+     currentProfile={props.currentProfile}>  <PageWrapper> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
     <Route 
     path={Paths.workshop.route()}
     render={()=><PrivateRoute
       currentProfile={props.currentProfile}
-    ><WorkshopContainer/></PrivateRoute>}/>
+    >  <PageWrapper> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
     <Route path="/profile/:id/view" render={()=>
-      <ProfileContainer/>
+      <PageWrapper>   <ProfileContainer/>  </PageWrapper> 
       }/>
 
  
     <Route path="/subscribe" 
-    render={()=><EmailPreferences/>}/>
+    render={()=>  <PageWrapper> <EmailPreferences/>  </PageWrapper> }/>
     {/* <Route path="*" render={()=><NotFound/>}/> */}
     <Route  
         path={"/story/:type/edit"}
         render={()=> 
           <PrivateRoute>
-            
+              <PageWrapper> 
           <EditorContainer 
           
 presentingElement={page}
-            />
+            />  </PageWrapper> 
       </PrivateRoute>
         }/>
 
@@ -275,37 +296,49 @@ presentingElement={page}
       path={Paths.editPage.route()}
       render={()=>
         <PrivateRoute currentProfile={currentProfile} >
+            <PageWrapper> 
             <EditorContainer 
               htmlContent={props.htmlContent} 
               currentProfile={currentProfile} 
               />
+                </PageWrapper> 
         </PrivateRoute>
       }/>
       <Route path={Paths.page.route()} render={()=>
-          <PageViewContainer page={props.pageInView}/>}
+        <PageWrapper> 
+          <PageViewContainer page={props.pageInView}/>  </PageWrapper> }
     /> 
 
 
       <Route path="/profile/edit" render={()=>
  
         <PrivateRoute  >
+            <PageWrapper> 
         <SettingsContainer />
+          </PageWrapper> 
         </PrivateRoute>
       }/>
        <Route path={"/terms"} render={()=>
-          <TermsContainer />}
+         <PageWrapper> 
+          <TermsContainer />  </PageWrapper> }
     /> 
   
    </IonRouterOutlet>
-   
+    {/* {navbarBot && showNav && (
+    <IonFooter className="ion-no-border">
+      <NavbarContainer currentProfile={currentProfile} />
+    </IonFooter>
+  )} */}
+
        {navbarBot&&showNav?
+          <IonFooter>
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>
-
-     :null}  
+</IonFooter>
+     :null}   
      </div>
-</IonPage> 
+{/* </IonPage>  */}
       </IonReactRouter>
       
     </IonApp>
@@ -336,3 +369,5 @@ function mapStateToProps(state){
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)
+
+
