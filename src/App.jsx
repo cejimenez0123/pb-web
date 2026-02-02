@@ -146,7 +146,7 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
         currentProfile={currentProfile}/></div>:null}
               <div >
  
-       {/* <SearchDialog  presentingElement={page} /> */}
+    
        
        <Dialog dialog={dialog} presentingElement={presentingEl} />
 <Alert />
@@ -173,7 +173,8 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
      <AboutContainer/></PageWrapper>}
 />
 <Route exact path="/search" render={() => 
-     <SearchDialog />}
+<PageWrapper>
+     <SearchDialog /></PageWrapper>}
 />
 
 
@@ -286,8 +287,7 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
           <PrivateRoute>
               <PageWrapper> 
           <EditorContainer 
-          
-presentingElement={page}
+   
             />  </PageWrapper> 
       </PrivateRoute>
         }/>

@@ -4,6 +4,7 @@ import React, {
   useLayoutEffect,
   useMemo,
   useCallback,
+  useContext,
 } from 'react';
 import {
   IonModal,
@@ -29,6 +30,7 @@ import { getMyCollections, getPublicCollections } from '../actions/CollectionAct
 import { getMyStories } from '../actions/StoryActions';
 import { getPublicStories } from '../actions/PageActions';
 import checkResult from '../core/checkResult';
+import Context from '../context';
 
 const SearchDialog = ({ presentingElement }) => {
   const dispatch = useDispatch();
@@ -41,7 +43,7 @@ const SearchDialog = ({ presentingElement }) => {
   const storiesFromStore = useSelector(
     state => state.pages.pagesInView ?? []
   );
-
+  const {isPhone}=useContext(Context)
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [searchContent, setSearchContent] = useState([]);
@@ -233,7 +235,7 @@ useEffect(()=>{
       scrollY={true}
       className="ion-padding"
 
-      style={{'--padding-top':"12rem", '--background': '#f4f4e0' }}
+      style={{'--padding-top':isPhone?"4em":"10em", '--background': '#f4f4e0' }}
     >
       <div className='flex flex-row'>
      

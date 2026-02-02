@@ -61,7 +61,7 @@ function MyProfileContainer({ presentingElement }) {
   const [description, setFeedback] = useState("");
   const [errorLocal, setErrorLocal] = useState(null);
   const [feedbackPage, setFeedbackPage] = useState(null);
- const { openDialog, closeDialog } = useDialog();
+ const { openDialog, closeDialog,resetDialog} = useDialog();
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -220,7 +220,7 @@ useEffect(() => {
 
 openDialog({
   // title: "Create Collection",
-  text: <CreateCollectionForm onClose={closeDialog} />,
+  text: <CreateCollectionForm onClose={resetDialog} />,
   disagreeText: "Close", // optional button
   // onClose: closeDialog,
   breakpoint: 1, // if you want a half-sheet style

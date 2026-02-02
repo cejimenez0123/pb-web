@@ -37,7 +37,7 @@ function toTitleCase(str) {
 export default function AddStoryToCollectionContainer(props) {
   const { setError, currentProfile, seo, setSeo } = useContext(Context);
   // const dialog = useSelector(state=>state.users.dialog)
-  const {dialog,openDialog,closeDialog}=useDialog()
+  const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
   const pathParams = useParams()
   const { id, type } = pathParams;
   const dispatch = useDispatch();
@@ -80,12 +80,12 @@ export default function AddStoryToCollectionContainer(props) {
     
   }, []);
   const openNewCollectionForm=()=>{
-    closeDialog()
+
 let dia = {...dialog}
   dia.text = <CreateCollectionForm 
   initPages={[pageInView]}
   onClose={()=>{
-                      closeDialog()
+                   resetDialog()
                     }}/>  
                     dia.title="Create Collection"
    dia.isOpen = true

@@ -50,7 +50,7 @@ function NavbarContainer(){
 const currentProfile=useSelector(state=>state.users.currentProfile)
   const {isPhone,isNotPhone,setError,setSuccess}=useContext(Context)
   // const dialog =useSelector(state=>state.users.dialog)
-const {dialog,openDialog,closeDialog}=useDialog()
+const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
   useLayoutEffect(()=>{
     initGA()
   },[])
@@ -108,10 +108,11 @@ const open=()=>{
   dia.disagree=()=>{
     closeDialog()
   }
+  dia.scrollY=false
   dia.agree = null
   dia.agreeText=null
   dia.text=<CreateCollectionForm onClose={()=>{
-closeDialog()
+resetDialog()
   }}/>
  openDialog(dia)
 }
@@ -209,7 +210,13 @@ closeDialog()
     Link</a></li>
            <li  tabIndex={page}  onClick={()=>{ 
              
-                 open()
+               openDialog({
+                 // title: "Create Collection",
+                 text: <CreateCollectionForm onClose={resetDialog} />,
+                 disagreeText: "Close", // optional button
+                 // onClose: closeDialog,
+                 breakpoint: 1, // if you want a half-sheet style
+               });
                  
          } }><a className='text-emerald-800'>Collection</a></li></ul></li>:null)
     
@@ -310,7 +317,13 @@ openDialog()
 
          } }><a onClick={()=>{ 
 
-openDialog()
+openDialog({
+  // title: "Create Collection",
+  text: <CreateCollectionForm onClose={resetDialog} />,
+  disagreeText: "Close", // optional button
+  // onClose: closeDialog,
+  breakpoint: 1, // if you want a half-sheet style
+});
                  
          } } className='text-emerald-800 mx-auto'>Collection</a></li></ul></li>:null)
 
@@ -407,7 +420,13 @@ let isNative = Capacitor.isNativePlatform()
  router.push(Paths.editor.link)}}
     >
   Link</a></li>
-    <li onClick={()=>{openDialog()}}className='text-soft'><a className='text-soft'>Collection</a></li>
+    <li onClick={()=>{openDialog({
+      // title: "Create Collection",
+      text: <CreateCollectionForm onClose={resetDialog} />,
+      disagreeText: "Close", // optional button
+      // onClose: closeDialog,
+      breakpoint: 1, // if you want a half-sheet style
+    });}}className='text-soft'><a className='text-soft'>Collection</a></li>
   </ul>
 </div>}
 {currentProfile && <div className='flex flex-col'>
