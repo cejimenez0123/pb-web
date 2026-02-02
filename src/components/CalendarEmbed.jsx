@@ -15,9 +15,9 @@ import { useDialog } from "../domain/usecases/useDialog";
 
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
-  const dialog = useSelector(state=>state.users.dialog)
+  
 const [solEvents,setSolEvents]=useState([])
-  const { openDialog, closeDialog } = useDialog()
+  const { openDialog, closeDialog,dialog } = useDialog()
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const options = { weekday: 'short', month: '2-digit', day: '2-digit' };
@@ -206,6 +206,19 @@ const googleAddLink = baseUrl + queryString;
         setEvents(filteredEvents)
       },[selectedArea])
       const dispatch = useDispatch()
+const trackEventView = (event) => {
+  if (!event?.hashtags?.length) return;
+
+  event.hashtags.forEach(tag => {
+    sendGAEvent("view_item", {
+      item_type: "calendar_event",
+      item_name: event.summary,
+      hashtag: tag.replace("#", ""),
+      area: event.area,
+      source: "calendar_embed",
+    });
+  });
+};
 
     const handleDialogOpen = (chosenEvent) => {
       sendGAEvent("select_item", {
@@ -214,7 +227,7 @@ const googleAddLink = baseUrl + queryString;
   area: chosenEvent.area,
   hashtags: chosenEvent.hashtags,
 });
-
+trackEventView(chosenEvent)
   openDialog({
     title: null,
     text: (
@@ -224,7 +237,7 @@ const googleAddLink = baseUrl + queryString;
        
       </div>
     ),
-    breakpoint:1,
+    scrollY:false,
     // fallback in case user clicks outside the modal
     disagreeText: "Close",
     // onClose: () => closeDialog(),
