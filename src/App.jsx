@@ -280,30 +280,41 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
  
     <Route path="/subscribe" 
     render={()=>  <PageWrapper> <EmailPreferences/>  </PageWrapper> }/>
-    {/* <Route path="*" render={()=><NotFound/>}/> */}
+   
     <Route  
-        path={"/story/:type/edit"}
+       exact path={"/story/:type/edit"}
         render={()=> 
           <PrivateRoute>
               <PageWrapper> 
           <EditorContainer 
-   
+    htmlContent={props.htmlContent} 
+        currentProfile={currentProfile} 
             />  </PageWrapper> 
       </PrivateRoute>
         }/>
-
-            <Route
-      path={Paths.editPage.route()}
+<Route
+ exact path={Paths.editPage.route}
+  render={() =>
+    <PrivateRoute>
+      <PageWrapper>
+        <EditorContainer 
+        htmlContent={props.htmlContent} 
+        currentProfile={currentProfile} 
+              />
+      </PageWrapper>
+    </PrivateRoute>
+  }
+/>
+            {/* <Route
+      path={Paths.editPage.route}
       render={()=>
-        <PrivateRoute currentProfile={currentProfile} >
+        <PrivateRoute  >
             <PageWrapper> 
             <EditorContainer 
-              htmlContent={props.htmlContent} 
-              currentProfile={currentProfile} 
-              />
+              
                 </PageWrapper> 
         </PrivateRoute>
-      }/>
+      }/> */}
       <Route path={Paths.page.route()} render={()=>
         <PageWrapper> 
           <PageViewContainer page={props.pageInView}/>  </PageWrapper> }

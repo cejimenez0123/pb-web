@@ -18,7 +18,6 @@ import LinkIcon from '../images/icons/link.svg';
 import CreateIcon from '../images/icons/ink_pen.svg'
 import ImageIcon from '../images/icons/image.svg'
 import Paths from '../core/paths'
-import { searchDialogToggle } from '../actions/UserActions'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
@@ -305,7 +304,7 @@ resetDialog()
             
     dispatch(setHtmlContent({html:""}))
            dispatch(setEditingPage({page:null}))
-          router.push(Paths.editor.image)}}><a className='mx-auto'>     <IonImg src={ImageIcon} />Pictures</a></li>
+          router.push(Paths.editor.image)}}><a className='mx-auto'>     <IonImg src={ImageIcon} style={{width:"1.5rem",height:"1.5rem"}}/>Pictures</a></li>
              <li tabIndex={3} ><a    onClick={()=>{
                 dispatch(setHtmlContent({html:""}))
                 dispatch(setEditingPage({page:null}))

@@ -9,7 +9,7 @@ import { PageType } from "../../core/constants"
 import Paths from "../../core/paths"
 import {createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions"
 import ErrorBoundary from "../../ErrorBoundary"
-
+import { useDialog } from "../../domain/usecases/useDialog.jsx"
 import HashtagForm from "../../components/hashtag/HashtagForm"
 import RoleForm from "../../components/role/RoleForm"
 import Context from "../../context"
@@ -21,12 +21,13 @@ import FeedbackDialog from "../../components/page/FeedbackDialog"
 import { IonBackButton, IonButtons, IonContent, IonHeader, useIonRouter } from "@ionic/react"
 import { setDialog } from "../../actions/UserActions.jsx"
 import { useParams } from "react-router"
+import { Capacitor } from "@capacitor/core"
 
 
 function EditorContainer({presentingElement}){
         const currentProfile=useSelector(state=>state.users.currentProfile)
         const [feedbackDialog,setFeedbackDialog]=useState(false)
-        const {setError,setSuccess}=useContext(Context)
+        const {setError,setSuccess,isPhone}=useContext(Context)
         const dialog = useSelector(state=>state.users.dialog)
         const editPage = useSelector(state=>state.pages.editingPage)
         const [pending,setPending]=useState(false)
@@ -40,7 +41,7 @@ function EditorContainer({presentingElement}){
         const [openHashtag,setOpenHashtag]=useState(false)
         const {isSaved,setIsSaved}=useContext(Context)
         const [parameters,setParameters] = useState({isPrivate:true,data:"",title:"",needsFeedback:false,description:"",commentable:true,profile:currentProfile,profileId:currentProfile?currentProfile.id:""})
-    
+            const {openDialog,closeDialog,resetDialog }= useDialog()
 const hasInitialized = useRef(false);
 
 
@@ -51,7 +52,7 @@ const hasInitialized = useRef(false);
   }
 
       },[])
-               const handleBack = (e) => {
+  const handleBack = (e) => {
     e.preventDefault();
     if (window.history.length > 1) {
        router.goBack()
@@ -102,7 +103,7 @@ const hasInitialized = useRef(false);
   },100)
   }
 
-  },[parameters.title,parameters.data,parameters.isPrivate,parameters.needsFeedback,parameters.description,parameters.commentable])
+  },[parameters])
     const fetchStory = ()=>{
       setPending(true)
   try{
@@ -262,7 +263,7 @@ const openConfirmDeleteDialog = () => {
     dispatch(setDialog({ isOpen: false }));
   };
 
-  dispatch(setDialog(dia));
+  openDialog(dia)
 };
 
 const openRoleFormDialog = () => {
@@ -286,27 +287,29 @@ const openRoleFormDialog = () => {
   dia.agreeText = null;
   dia.agree = null;
 
-  dispatch(setDialog(dia));
+  openDialog(dia)
 };
    
 
         return(
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
-          <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}}className="ion-padding"  >
-            <IonHeader className=" ion-padding py-8 ">
+          <IonContent fullscreen={true} style={{"--background":"#f4f4e0","--padding-bottom":"24em","--padding-top":Capacitor.isNativePlatform()||isPhone?"1em":"6em"}}className="ion-padding"  >
+           {Capacitor.isNativePlatform()? <IonHeader className=" ion-padding py-8 ">
               <IonButtons className="ion-padding" >
                 <div className="pt-4"  onClick={handleBack}>
                 <IonBackButton  defaultHref={Paths.myProfile} /></div></IonButtons>
 
-            <IonButtons>{pending? <div className="skeleton rounded-lg  w-[100%] h-fit sm:max-w-[50em] mx-auto "/>: topBar()}</IonButtons>
-            </IonHeader>
+            <IonButtons></IonButtons>
+            </IonHeader>:null}
           <div  className=" mx-auto md:p-8  "> 
-     
-                <div className= "mx-2 md:w-page pt-8 mb-12 mx-auto">
+     {pending? <div className="skeleton rounded-lg  w-[100%] h-fit sm:max-w-[50em] mx-auto "/>:
+            topBar()}
+                <div className= "mx-2 md:w-page  mb-12 mx-auto">
             
                   <ErrorBoundary>
 
-         {pending?<div className="skeleton mx-auto bg-slate-100 max-w-[96vw] mx-auto md:w-page h-page"/>: <EditorDiv
+         {pending?<div className="skeleton mx-auto bg-slate-100 max-w-[96vw] mx-auto md:w-page h-page"/>:
+          <EditorDiv
     html={htmlContent.html}
     page={editPage}
             

@@ -8,7 +8,7 @@ import Paths from '../core/paths';
 import { debounce } from 'lodash';
 import calendar from '../images/icons/calendar.svg'
 import settings from "../images/icons/settings.svg"
-import { setPageInView, setPagesInView, setEditingPage } from '../actions/PageActions.jsx';
+import { setPageInView, setPagesInView, setEditingPage, setHtmlContent } from '../actions/PageActions.jsx';
 import { sendGAEvent } from '../core/ga4.js';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
@@ -196,7 +196,7 @@ useEffect(() => {
         if (payload.story) {
           dispatch(setEditingPage({ page: payload.story }));
           dispatch(setPageInView({ page: payload.story }));
-        router.push  (Paths.editPage.createRoute(payload.story.id));
+        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'push');
         }else{
           windowl.alert("COULD NOT CREATE STORY")
         }
@@ -249,9 +249,16 @@ openDialog({
         title: file.name,
         commentable: false
       })).then(res => checkResult(res, ({ story }) => {
-        if (story) router.push(Paths.editPage.createRoute(story.id));
-        dispatch(setEditingPage({ page: story }));
-    closeDialog()
+    
+        if (story) {
+          dispatch(setEditingPage({ page:story }));
+          dispatch(setPageInView({ page:story }));
+           dispatch(setHtmlContent({ page:story.data }));
+          router.push(Paths.editPage.createRoute(story.id));
+          resetDialog()
+        }
+        // dispatch(setEditingPage({ page: story }));
+    // closeDialog()
       }, err => setErrorLocal(err.message)));
     } catch (error) {
       console.error("Error fetching Google Doc:", error);

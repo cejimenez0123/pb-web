@@ -43,7 +43,7 @@ const Paths ={
         image:`/story/image/edit`  
     },
     login:()=>{return `/login`},
-    editPage:{route:()=>{return `/story/:id/editor`},
+    editPage:{route:`/story/:id/editor`,
         createRoute:(id)=>{return `/story/${id}/editor`}},
 
     addToCollection:{
