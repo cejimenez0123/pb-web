@@ -76,7 +76,7 @@ export default function ThankYou({ user }) {
           Go to About
         </IonText>:null}
         <IonText
-          onClick={() => router.push(Paths.discovery())}
+          onClick={() => router.push(Paths.discovery)}
           className={buttonClassNames}
           style={{ width: '8em', textAlign: 'center', color: 'white', userSelect: 'none' }}
         >

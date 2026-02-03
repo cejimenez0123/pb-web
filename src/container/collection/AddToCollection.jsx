@@ -154,7 +154,7 @@ const filteredSortedStories = useMemo(() => {
     if (window.history.length > 1) {
        router.goBack()
     } else {
-      router.push(Paths.discovery());
+      router.push(Paths.discovery);
     }
   };
 
@@ -353,7 +353,7 @@ text-[1rem]">
               <IonHeader translucent>
           <IonToolbar>
         <IonButtons slot="start">
-                  {Capacitor.isNativePlatform()?<IonBackButton defaultHref={Paths.discovery()} onClick={handleBack} />:null}
+                  {Capacitor.isNativePlatform()?<IonBackButton defaultHref={Paths.discovery} onClick={handleBack} />:null}
             </IonButtons>
             <IonTitle className="text-emerald-800 font-semibold">
               Add to Collection

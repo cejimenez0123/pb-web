@@ -58,10 +58,10 @@ function MyProfileContainer({ presentingElement }) {
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
   const [driveToken, setDriveToken] = useState(null);
-  const [description, setFeedback] = useState("");
-  const [errorLocal, setErrorLocal] = useState(null);
-  const [feedbackPage, setFeedbackPage] = useState(null);
- const { openDialog, closeDialog,resetDialog} = useDialog();
+  // const [description, setFeedback] = useState("");
+  // const [errorLocal, setErrorLocal] = useState(null);
+  const [feedback, setFeedback] = useState("");
+ 
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -143,20 +143,32 @@ function MyProfileContainer({ presentingElement }) {
     return result;
   }, [collections, filterType, search]);
 
-// Add this effect to MyProfileContainer
+
+const [checkingAuth, setCheckingAuth] = useState(true);
+ const {openDialog,closeDialog,dialog}=useDialog()
 useEffect(() => {
   const syncProfile = async () => {
-    if (!currentProfile) {
-      const { value } = await Preferences.get({ key: "token" });
-      if (value) {
-        dispatch(getCurrentProfile());
-      } else {
-        router.push("/");
-      }
+    if (currentProfile) {
+      setCheckingAuth(false);
+      return;
+    }
+
+    const { value } = await Preferences.get({ key: "token" });
+
+    if (value) {
+    dispatch(getCurrentProfile()).then(()=>{
+  setCheckingAuth(false);
+    })
+    
+    } else {
+      setCheckingAuth(false);
+      router.push("/");  // only once we *know* there is no token
     }
   };
-  syncProfile(); // call it directly
-}, [currentProfile, dispatch, router]);
+
+ return ()=> syncProfile();
+}, [currentProfile, dispatch]);
+
 
 
   const getDriveToken = async () => {
@@ -181,7 +193,7 @@ useEffect(() => {
   };
   init();
 
-  },[router])
+  },[])
 
   const ClickWriteAStory = debounce(() => {
     if (currentProfile?.id) {
@@ -251,15 +263,14 @@ openDialog({
       })).then(res => checkResult(res, ({ story }) => {
     
         if (story) {
+          
           dispatch(setEditingPage({ page:story }));
           dispatch(setPageInView({ page:story }));
-           dispatch(setHtmlContent({ html:story.data }));
-                 closeDialog();
-          router.push(Paths.editPage.createRoute(story.id));
+          dispatch(setHtmlContent({ html:story.data })); 
+          router.push(Paths.editPage.createRoute(story.id),'forward', 'push');
   
         }
-        // dispatch(setEditingPage({ page: story }));
-    // closeDialog()
+  
       }, err => setErrorLocal(err.message)));
     } catch (error) {
       console.error("Error fetching Google Doc:", error);
@@ -267,6 +278,30 @@ openDialog({
     }
   };
 
+const openFeedback=(item,isFeedback)=>{
+   openDialog({...dialog,disagree:null,agree:null,disagreeText:null,scrollY:false,text:
+    <FeedbackDialog
+      // presentingElement={presentingElement}
+      page={item}
+      // open={!!feedbackPage}
+      isFeedback={isFeedback}
+      handleChange={setFeedback}
+      handleFeedback={(item) => {
+        // if (!feedbackPage) return;
+           closeDialog()
+        const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
+        dispatch(updateStory(params)).then(res => {
+          checkResult(res, payload => {
+         
+      if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"foward"));
+          });
+        });
+      }}
+      handlePostPublic={() => {}}
+      handleClose={() => setFeedbackPage(null)}
+    />})
+              dispatch(setPageInView({ page: item }));
+            }
 
   
 useEffect(() => {
@@ -387,32 +422,13 @@ onClick={()=>{
             type="story"
             items={filteredSortedStories}
             handleFeedback={item => {
-              setFeedbackPage(item);
-              dispatch(setPageInView({ page: item }));
+              openFeedback(item,true)
             }}
           />
         )}
       />
     </div>
 
-    <FeedbackDialog
-      presentingElement={presentingElement}
-      page={feedbackPage}
-      open={!!feedbackPage}
-      isFeedback
-      handleChange={setFeedback}
-      handleFeedback={() => {
-        if (!feedbackPage) return;
-        const params = { ...feedbackPage, description, page: feedbackPage, id: feedbackPage.id, needsFeedback: true };
-        dispatch(updateStory(params)).then(res => {
-          checkResult(res, payload => {
-            if (payload.story) navigate(Paths.workshop.createRoute(payload.story.id));
-          });
-        });
-      }}
-      handlePostPublic={() => {}}
-      handleClose={() => setFeedbackPage(null)}
-    />
   </div>
 </div>
 </ErrorBoundary></IonContent>

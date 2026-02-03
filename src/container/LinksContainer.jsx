@@ -66,7 +66,7 @@ export default function LinksContainer(props){
                     description={"Support development, events, and cups of coffee by purchasing merch inspired by the founder, Sol Emilio."}/>
                     </li>
                    <li>
-               <LinkNode url={"https://plumbum.app"+Paths.discovery()}
+               <LinkNode url={"https://plumbum.app"+Paths.discovery}
                image={logo}
                     title={"Discover Plumbum"}
                     description={"Check some recent shared work"}/>

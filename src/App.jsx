@@ -17,8 +17,7 @@ import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
       } from './actions/UserActions'
-      import { IonApp, setupIonicReact, IonRouterOutlet, IonText, useIonRouter, IonFooter} from '@ionic/react';
-      import { IonContent,IonPage } from '@ionic/react';
+      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter} from '@ionic/react';
  import LoggedRoute from './LoggedRoute';
 import PrivateRoute from './PrivateRoute';
 
@@ -305,16 +304,6 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
     </PrivateRoute>
   }
 />
-            {/* <Route
-      path={Paths.editPage.route}
-      render={()=>
-        <PrivateRoute  >
-            <PageWrapper> 
-            <EditorContainer 
-              
-                </PageWrapper> 
-        </PrivateRoute>
-      }/> */}
       <Route path={Paths.page.route()} render={()=>
         <PageWrapper> 
           <PageViewContainer page={props.pageInView}/>  </PageWrapper> }

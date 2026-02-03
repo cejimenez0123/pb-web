@@ -164,7 +164,7 @@ useLayoutEffect(() => {
       destination: "discovery",
       source: "about_why_plumbum",
     });
-    router.push(Paths.discovery());
+    router.push(Paths.discovery);
   }}
  className="text-[1rem] cursor-pointer inline-block">[→ Explore More]</a>
       </div>

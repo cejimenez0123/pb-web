@@ -128,7 +128,7 @@ resetDialog()
       if(page==PageName.login){
           router.push(Paths.login())                    
       }else if(page===PageName.discovery){
-          router.push(Paths.discovery())
+          router.push(Paths.discovery)
       }else if(page===PageName.about){
         router.push(Paths.about())
       }else if(page==PageName.workshop){
@@ -139,7 +139,7 @@ resetDialog()
       }else if(page==PageName.feedback){
        router.push(Paths.feedback())
       }else{
-          router.push(Paths.discovery())
+          router.push(Paths.discovery)
       }
       
 
@@ -390,7 +390,7 @@ let isNative = Capacitor.isNativePlatform()
 
    <div className='flex flex-col'>
    <IonImg src={library} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-    onClick={()=>{router.push(Paths.discovery())}}/>
+    onClick={()=>{router.push(Paths.discovery)}}/>
       <h6 className='text-white text-xs'>Discovery</h6>
     </div>
    {!currentProfile ?<div  onClick={()=>handleCloseNavMenu(PageName.about)} className='flex flex-col'>

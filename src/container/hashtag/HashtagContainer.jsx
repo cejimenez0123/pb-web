@@ -28,7 +28,7 @@ export default function HashtagContainer() {
     if (window.history.length > 1) {
         router.goBack()
     } else {
-      router.push(Paths.discovery());
+      router.push(Paths.discovery);
     }
   };
   const collections = useSelector((state) => state.books.collections);

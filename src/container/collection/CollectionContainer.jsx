@@ -428,7 +428,7 @@ const getCol = async (id) => {
     if (window.history.length > 1) {
        router.goBack()
     } else {
-      router.push(Paths.discovery());
+      router.push(Paths.discovery);
     }
   };
   // Example getMore for infinite scrolling (to be filled with your pagination logic)
@@ -444,14 +444,9 @@ const getCol = async (id) => {
   <div>
               <IonHeader> 
       <IonToolbar>
-        {/* <IonButtons>
-                      {isNative?<IonBackButton
-                       
-      defaultHref={Paths.discovery()}
-      onClick={handleBack}
-    />:null } */}
+   
 <IonButton>Back</IonButton>
-        {/* </IonButtons> */}
+     
       
               <IonTitle>Loading collection...</IonTitle>
             </IonToolbar>
@@ -484,13 +479,7 @@ const getCol = async (id) => {
 
             <IonHeader mode="ios"> 
       <IonToolbar mode="ios">
-        {/* <IonButtons>
    
-              {isNative?<IonBackButton
-                       
-      defaultHref={Paths.discovery()}
-      onClick={handleBack}
-    />:null } */}
 
     <IonButton mode="ios">Back</IonButton>
 <IonTitle>Access Denied</IonTitle>
@@ -530,7 +519,7 @@ const getCol = async (id) => {
           {isNative ? (
             <IonBackButton
             mode="ios"
-              defaultHref={Paths.discovery()}
+              defaultHref={Paths.discovery}
               onClick={handleBack}
             />
            ) : null} 

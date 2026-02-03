@@ -27,13 +27,13 @@ import { Capacitor } from "@capacitor/core"
 function EditorContainer({presentingElement}){
         const currentProfile=useSelector(state=>state.users.currentProfile)
         const [feedbackDialog,setFeedbackDialog]=useState(false)
-        const {setError,setSuccess,isPhone}=useContext(Context)
-        const dialog = useSelector(state=>state.users.dialog)
+        const {setError,setSuccess,isPhone,isTablet}=useContext(Context)
         const editPage = useSelector(state=>state.pages.editingPage)
         const [pending,setPending]=useState(false)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
         const [openDescription,setOpenDescription]=useState(false)
         const dispatch = useDispatch()
+        const isNative = Capacitor.isNativePlatform()
         const md = useMediaQuery({ query: '(min-width:800px)'})
         const router = useIonRouter()
         const {id,type}= useParams()
@@ -41,25 +41,30 @@ function EditorContainer({presentingElement}){
         const [openHashtag,setOpenHashtag]=useState(false)
         const {isSaved,setIsSaved}=useContext(Context)
         const [parameters,setParameters] = useState({isPrivate:true,data:"",title:"",needsFeedback:false,description:"",commentable:true,profile:currentProfile,profileId:currentProfile?currentProfile.id:""})
-            const {openDialog,closeDialog,resetDialog }= useDialog()
+            const {openDialog,closeDialog,resetDialog ,dialog}= useDialog()
 const hasInitialized = useRef(false);
 
 
       useEffect(()=>{
+        closeDialog()
           if (!hasInitialized.current) {
+
     hasInitialized.current = true;
     return;
   }
 
       },[])
-  const handleBack = (e) => {
-    e.preventDefault();
-    if (window.history.length > 1) {
-       router.goBack()
-    } else {
-      router.push(Paths.discovery());
-    }
-  };
+
+
+const handleBack = (e) => {
+  e.preventDefault();
+  if (router.canGoBack()) {
+    router.goBack();
+  } else {
+    router.push(Paths.discovery, 'back', 'pop');
+  }
+};
+
   
   const setStory=(story)=>{
     
@@ -133,7 +138,7 @@ if(id){
 
       const handleDelete =debounce(()=>{
           dispatch(deleteStory(parameters)).then(()=>{
-            router.push(Paths.myProfile)
+          router.push(Paths.myProfile, "root");
           })
       
       },10)
@@ -161,7 +166,7 @@ setError(err.message)
           setOpenDescription(false)
           handleChange("needsFeedback",false)
           handleChange("isPrivate",truthy)
-          setFeedbackDialog(false)
+          closeDialog()
           setOpenDescription(false)
         },10)
 
@@ -192,8 +197,9 @@ setError(err.message)
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
         <li onClick={()=>{
         setOpenDescription(false)
-          setFeedbackDialog(true)
-        }} className="text-emerald-600 pt-3 pb-2 "><a className="text-emerald-600 text-center">Get Feedback</a></li>
+         openFeedback(true)
+        }} className="text-emerald-600 pt-3 pb-2 ">
+          <a className="text-emerald-600 text-center">Get Feedback</a></li>
         {editPage?<li className=" pt-3 pb-2" onClick={()=>{router.push(Paths.page.createRoute(editPage.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {!(editPage&&editPage.id)?null:parameters.isPrivate?<li onClick={()=>{
     setFeedbackDialog(false) 
@@ -228,15 +234,37 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
    }
 
 
-   const handleFeedback=()=>{
+   const openFeedback=(isFeedback)=>{
 
-       if(id){
-        router.push(Paths.workshop.createRoute(id))
-       }
+openDialog({...dialog,disagree:null,agree:null,disagreeText:null,scrollY:false,text:
+    <FeedbackDialog 
 
+page={editPage}
+// open={feedbackDialog||openDescription} 
+isFeedback={isFeedback}
+// presentingElement={presentingElement}
+handleChange={e=>handleChange("description",e)} 
+handleFeedback={(item)=>{
+  closeDialog()
+    const params = { ...item, description:parameters.description, page: item, id: item.id, needsFeedback: true };
+        dispatch(updateStory(params)).then(res => {
+          checkResult(res, payload => {
+    
+            if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"foward"));
+          });
+        });
+}}
+handlePostPublic={()=>{
+  handleisPrviate(false)}}
+handleClose={()=>{
+
+  
+    setOpenDescription(false)
+    setFeedbackDialog(false)
+}} />})}
       
 
-   }
+   
    setTimeout(()=>{
 
     setError(null)
@@ -293,11 +321,12 @@ const openRoleFormDialog = () => {
 
         return(
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
-          <IonContent fullscreen={true} style={{"--background":"#f4f4e0","--padding-bottom":"24em","--padding-top":Capacitor.isNativePlatform()||isPhone?"1em":"6em"}}className="ion-padding"  >
-           {Capacitor.isNativePlatform()? <IonHeader className=" ion-padding py-8 ">
-              <IonButtons className="ion-padding" >
-                <div className="pt-4"  onClick={handleBack}>
-                <IonBackButton  defaultHref={Paths.myProfile} /></div></IonButtons>
+          <IonContent fullscreen={true} style={{"--background":"#f4f4e0","--padding-bottom":"24em","--padding-top":isNative||isPhone?"0.3rem":"6em"}}className="ion-padding"  >
+           {isNative? <IonHeader className="   ">
+             <IonButtons onClick={handleBack} className="ion-padding">
+  <IonBackButton defaultHref={Paths.discovery} />
+</IonButtons>
+
 
             <IonButtons></IonButtons>
             </IonHeader>:null}
@@ -322,7 +351,7 @@ const openRoleFormDialog = () => {
                 </div>
                     <div>
        
-<FeedbackDialog 
+{/* <FeedbackDialog 
 
 page={editPage}
 open={feedbackDialog||openDescription} 
@@ -337,7 +366,7 @@ handleClose={()=>{
   
     setOpenDescription(false)
     setFeedbackDialog(false)
-}} />
+}} /> */}
 
 
       

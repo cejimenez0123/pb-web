@@ -60,7 +60,7 @@ const Paths ={
             return `/item/${id}/collection`
         }
     },
-    discovery:()=>"/discovery",
+    discovery:"/discovery",
     home:()=>{return `/home`},
     about:()=>{return `/about`},
     editProfile:`/profile/edit`,
