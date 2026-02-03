@@ -281,13 +281,13 @@ openDialog({
 const openFeedback=(item,isFeedback)=>{
    openDialog({...dialog,disagree:null,agree:null,disagreeText:null,scrollY:false,text:
     <FeedbackDialog
-      // presentingElement={presentingElement}
+  
       page={item}
       // open={!!feedbackPage}
       isFeedback={isFeedback}
       handleChange={setFeedback}
       handleFeedback={(item) => {
-        // if (!feedbackPage) return;
+      
            closeDialog()
         const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
         dispatch(updateStory(params)).then(res => {
@@ -298,7 +298,7 @@ const openFeedback=(item,isFeedback)=>{
         });
       }}
       handlePostPublic={() => {}}
-      handleClose={() => setFeedbackPage(null)}
+      handleClose={() => setFeedback(null)}
     />})
               dispatch(setPageInView({ page: item }));
             }
