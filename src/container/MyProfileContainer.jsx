@@ -253,9 +253,10 @@ openDialog({
         if (story) {
           dispatch(setEditingPage({ page:story }));
           dispatch(setPageInView({ page:story }));
-           dispatch(setHtmlContent({ page:story.data }));
+           dispatch(setHtmlContent({ html:story.data }));
+                 closeDialog();
           router.push(Paths.editPage.createRoute(story.id));
-          resetDialog()
+  
         }
         // dispatch(setEditingPage({ page: story }));
     // closeDialog()
