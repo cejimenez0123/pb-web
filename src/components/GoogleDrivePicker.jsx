@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect,  useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { SocialLogin } from "@capgo/capacitor-social-login";
-import { IonText, IonList, IonContent, } from '@ionic/react';
+import { IonText, IonList, IonContent, IonInfiniteScroll, } from '@ionic/react';
 import Context from "../context";
 
 import { Preferences } from '@capacitor/preferences';
@@ -115,36 +115,41 @@ const fetchFiles = async () => {
   },[])
   // --- File Dialog ---
   const open = () => {
-      openDialog({
+  openDialog({
     title: null,
     text: (
-   <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}} className=''>
-      <IonList style={{"--background":"#f4f4e0"}} className={"bg-cream"+isPhone ? "grid grid-cols-2" : ""}>
-        {files.map(file => (
-          <div
-          style={{"--background":"#f4f4e0" }}
-            key={file.id}
-            className="px-2 py-2   flex bg-cream "
-            onClick={() => {  
-            onFilePicked(file)}}
-          >
-            <div className=' flex shadow-sm  text-center rounded-box border w-[100%] border-blueSea p-2 border-opacity-20 h-[100%] min-h-[8rem] hover:border-blueSea '>
-            <h5 className="mx-auto my-auto text-center bg-cream text-sm">{file.name}</h5>
+      <div
+        style={{ "--background": "#f4f4e0" }}
+        className="bg-cream"
+      >
+        {/* Scrollable grid container */}
+        <div
+          className={`overflow-y-auto ${isPhone ? "grid grid-cols-2 gap-2" : "grid gap-2"}`}
+          style={{ maxHeight: "70vh" }} // limits height so content scrolls
+        >
+          {files.map(file => (
+            <div
+              key={file.id}
+              className="px-2 py-2 flex border w-[100%] rounded-box shadow-sm border-blueSea border-opacity-20 hover:border-blueSea "
+              onClick={() => onFilePicked(file)}
+            >
+              {/* <div className="te  p-2 "> */}
+                <h5 className="mx-auto p-2 my-auto text-center bg-cream text-sm">
+                  {file.name}
+                </h5>
+              {/* </div> */}
             </div>
-            </div>
-        ))}
-      </IonList>
-      </IonContent>
+          ))}
+        </div>
+      </div>
     ),
-    breakpoint:1,
-    // fallback in case user clicks outside the modal
+    breakpoint: 1,
     disagreeText: "Close",
-
   });
+};
 
 
 
-  };
 
   return (
     <button 
