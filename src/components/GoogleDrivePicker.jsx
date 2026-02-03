@@ -178,7 +178,7 @@ const fetchFiles = async () => {
       </div> 
     ) : (
       <IonText className="text-[1.1rem] mx-auto font-medium whitespace-nowrap">
-        Open Google Drive
+       Upload from Google Drive
       </IonText>
     )}
  
