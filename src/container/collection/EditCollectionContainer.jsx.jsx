@@ -234,7 +234,6 @@ if (col.childCollections) {
 
     let dia = { ...dialog };
     dia.title = null;
-    // dia.title = "Change Roles";
     dia.isOpen = true;
     dia.agree =null
   

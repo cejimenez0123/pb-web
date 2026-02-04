@@ -35,7 +35,7 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
              // ensures tap-away dismissal
        onDidDismiss={() => {
     resetDialog();
-    // Force Ionic to recalc layout
+  
 
   }}       // clears modal state after dismiss
       keepContentsMounted={false}       // allows proper re-render
@@ -84,14 +84,16 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
             </div>
           )}
 
-         {dialog.disagree?<div className="rounded-full w-[6rem] h-[3rem] bg-soft flex border-emerald-600 border-2">
-            <IonText
-              className="text-[1rem] text-white my-auto mx-auto"
-              onClick={dialog.onClose ?? closeDialog}
-            >
-              {dialog.disagreeText}
-            </IonText>
-          </div>:null}
+         {dialog.disagree && (
+  <div className="rounded-full w-[6rem] h-[3rem] bg-soft flex border-emerald-600 border-2">
+    <IonText
+      className="text-[1rem] text-white my-auto mx-auto"
+      onClick={dialog.disagree} // <-- use disagree here
+    >
+      {dialog.disagreeText}
+    </IonText>
+  </div>
+)}
         </IonFooter>
       </IonContent>
     </IonModal>
@@ -99,3 +101,4 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
 };
 
 export default Dialog;
+

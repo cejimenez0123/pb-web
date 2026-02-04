@@ -11,6 +11,7 @@ import Enviroment from "../../core/Enviroment.js";
 import Context from "../../context.jsx";
 import { IonImg, IonText, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
+import { useDialog } from "../../domain/usecases/useDialog.jsx";
 export default function IndexItem({item,handleFeedback,type}) {
   let collectionStr ="collection"
     const [canUserAdd,setCanUserAdd]=useState(false)
@@ -20,6 +21,7 @@ export default function IndexItem({item,handleFeedback,type}) {
     const {currentProfile} =useSelector(state=>state.users)
      const dispatch = useDispatch()
     const router = useIonRouter()
+   
     const [canUserEdit,setCanUserEdit]=useState(false)
     useLayoutEffect(()=>{
       soCanUserEdit()

@@ -298,18 +298,18 @@ const openRoleFormDialog = () => {
   const dia = {...dialog};
   dia.isOpen = true;
   dia.fullScreen = !md; // replicate your fullscreen condition from the prop
-  dia.title = "Manage Roles"; // optionally add a title
+  dia.title = null; // optionally add a title
   dia.text = <div>
       <RoleForm
         item={editPage}
         onClose={() => {
-          dispatch(setDialog({ isOpen: false }));
+          closeDialog()
         }}
       />
     </div>
   
   dia.onClose = () => {
-    dispatch(setDialog({ isOpen: false }));
+   closeDialog()
   };
 
   dia.agreeText = null;
@@ -321,7 +321,7 @@ const openRoleFormDialog = () => {
 
         return(
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
-          <IonContent fullscreen={true} style={{"--background":"#f4f4e0","--padding-bottom":"24em","--padding-top":isNative||isPhone?"0.3rem":"6em"}}className="ion-padding"  >
+          <IonContent fullscreen={true} scrollY={true} style={{"--background":"#f4f4e0","--padding-bottom":"30em","--padding-top":isNative||isPhone?"0.3rem":"6em"}}className="ion-padding"  >
            {isNative? <IonHeader className="   ">
              <IonButtons onClick={handleBack} className="ion-padding">
   <IonBackButton defaultHref={Paths.discovery} />

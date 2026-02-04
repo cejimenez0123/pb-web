@@ -16,8 +16,8 @@ import { useDialog } from "../domain/usecases/useDialog";
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
   
-const [solEvents,setSolEvents]=useState([])
-  const { openDialog, closeDialog,dialog } = useDialog()
+  const [solEvents,setSolEvents]=useState([])
+  const { openDialog, dialog ,resetDialog,closeDialog} = useDialog()
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const options = { weekday: 'short', month: '2-digit', day: '2-digit' };
@@ -37,7 +37,7 @@ const [solEvents,setSolEvents]=useState([])
   
     return `<span>${weekday}<br/> ${mmdd} <br/>${formattedHours}:${minutes} ${ampm}</span>`;
   }
-    const {setError,currentProfile}=useContext(Context)
+    const {setError}=useContext(Context)
     
     const [selectedArea, setSelectedArea] = useState("")
   
@@ -227,9 +227,13 @@ const trackEventView = (event) => {
   area: chosenEvent.area,
   hashtags: chosenEvent.hashtags,
 });
+
 trackEventView(chosenEvent)
   openDialog({
-    title: null,
+    ...dialog,
+    disagreeText:"Close",
+disagree:()=>closeDialog(),
+        title: null,
     text: (
       <div className="text-left text-blueSea">
         <span>{chosenEvent.location}</span>
@@ -238,9 +242,8 @@ trackEventView(chosenEvent)
       </div>
     ),
     scrollY:false,
-    // fallback in case user clicks outside the modal
-    disagreeText: "Close",
-    // onClose: () => closeDialog(),
+    
+  
     agreeText: chosenEvent.organizerLink ? "Organizer" : null,
     agree: chosenEvent.organizerLink
       ? () => {
@@ -254,6 +257,14 @@ trackEventView(chosenEvent)
       : null,
   });
 };
+const openGooglemaps=(event)=>{
+
+                            
+                             const encoded = encodeURIComponent(event.rawLocation);
+window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
+                             
+                              
+}
 
       useEffect(() => {
         let filtered = list;
@@ -375,13 +386,9 @@ trackEventView(chosenEvent)
                        <span  className="flex flex-col"> 
           
                              <a className="text-blueSea overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
-                              <h6  className="location"
-                              onClick={()=>{
-                            
-                             const encoded = encodeURIComponent(event.rawLocation);
-window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
-                             
-                              }}>{event.location.length<25?event.location:event.location.slice(0,20)+"..."}</h6></a></span>:<h6 className=" whitespace-nowrap location no-underline max-w-[20em]">{event.location}</h6>}
+                              <h6  className="text-[0.8rem]"
+                              onClick={()=>{   
+               openGooglemaps(event)}}>{event.location.length<25?isPhone?event.location:event.location.slice(0,20)+"...":event.location.slice(0,37)}</h6></a></span>:<h6 className=" whitespace-nowrap text-[0.8rem] no-underline ">{event.location}</h6>}
                           
                           
               
@@ -461,6 +468,15 @@ let suggestions = []
     };
   }
 function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, areas, calendar }) {
+  const openGooglemaps=(event)=>{
+
+                            
+                             const encoded = encodeURIComponent(event.rawLocation);
+window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
+                             
+                              
+}
+
   return (
     <IonList
       className="
@@ -471,17 +487,7 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
         ? events.map((event, i) => {
             const eId = event.googleLink.split("?eid=")[0];
             return (
-              // <IonItem
-              //   key={i}
-                
-                    
-              //   className="
-              //     border-blueSea border-opacity-50 border rounded-[30px]
-              //     min-w-[16rem] max-w-[18rem]
-              //     flex-shrink-0 flex-col p-4
-              //   "
-               
-              // >
+          
                 <div  
                 className="
                border-blueSea border-opacity-50 border rounded-[30px]
@@ -501,24 +507,24 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                     {event.organizerLink && event.googleLink ? (
                       <span
                         onClick={() => {
-                          sendGAEvent(
-                            "Click",
-                            `Navigate by event name ${event.summary},${JSON.stringify(event.hashtags)}`,
-                            event.summary,
-                            "",
-                            false
-                          );
+                          sendGAEvent("navigate_event", {
+  event_summary: event.summary,
+  hashtags: event.hashtags,
+  hashtags_count: event.hashtags?.length ?? 0,
+  source: "event_click",
+});
+
 
                           // window.open(event.googleLink);
                         }}
                         className="flex flex-col"
                       >
                         <a className="text-blueSea overflow-hidden text-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto">
-                          <h6 className="location">{event.location}</h6>
+                          <h6 onClick={()=>openGooglemaps(event)} className="text-[0.8rem]">{event.location}</h6>
                         </a>
                       </span>
                     ) : (
-                      <h6  className="whitespace-nowrap location no-underline max-w-[20em]">
+                      <h6 onClick={()=>openGooglemaps(event)} className="whitespace-nowrap  no-underline text-[0.8rem]">
                         {event.location}
                       </h6>
                     )}
@@ -548,13 +554,13 @@ function HorizontalEventList({ events, handleDialogOpen, sendGAEvent, isPhone, a
                     </IonText>
                     <IonImg
                       onClick={() => {
-                        sendGAEvent(
-                          "Click",
-                          `Navigate to ${event.summary}}`,
-                          event.summary,
-                          "",
-                          false
-                        );
+                        sendGAEvent("navigate_event", {
+  event_summary: event.summary,
+  hashtags: event.hashtags,
+  hashtags_count: event.hashtags?.length ?? 0,
+  source: "event_click",
+});
+
                         window.open(event.googleLink);
                       }}
                       className="w-10 h-10 my-auto"

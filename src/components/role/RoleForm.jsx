@@ -69,14 +69,14 @@ export default function RoleForm({ item, onClose }) {
   const renderProfileItem = (profile, i) => {
     const role = roles.find((r) => r.profile.id === profile.id);
     const dropdownPosition = i > profiles.length / 2 ? "dropdown-top" : "dropdown-bottom";
-
+ // <IonItem key={profile.id || i} style={{"--background-color":"#f4f4e0"}}className=" ">
     return (
       
-      <IonItem key={profile.id || i} className=" ">
-        <div className="flex justify-between items-center w-[100%] border-2 border-blueSea  py-2 my-2 px-2 rounded-full shadow-sm">
+     
+        <div style={{"--background-color":"#f4f4e0"}} className="flex bg-cream justify-between items-center w-[100%] border-2 border-blueSea  py-2 my-2 px-2 rounded-full shadow-sm">
           <ProfileCircle profile={profile} color="text-emerald-700" fontSize="text-[1rem]"/>
 
-          <div className={`dropdown ${dropdownPosition} dropdown-end`}>
+          <div className={`dropdown bg-cream ${dropdownPosition} dropdown-end`}>
             <IonText
               tabIndex={0}
               role="button"
@@ -96,21 +96,22 @@ export default function RoleForm({ item, onClose }) {
             </ul>
           </div>
         </div>
-      </IonItem>
+
   
     );
   };
+   
    const filteredProfiles = useMemo(() => {
     if (!profiles?.length) return [];
-    if (!search) return profiles;
+    if (!search||search.length==0) return profiles;
     const lower = search.toLowerCase();
     return profiles.filter((p) =>
       p.username?.toLowerCase().includes(lower)
     );
   }, [profiles, search]);
   return (
-    <IonContent scrollY fullscreen={true} className="ion-padding pt-4">
-    <div className="flex flex-col  w-[100%]">
+    // <IonContent scrollY fullscreen={true} className="ion-padding pt-4">
+    <div className="flex flex-col bg-cream  w-[100%]">
       {/* Alerts */}
       {(error || success) && (
         <div
@@ -140,17 +141,22 @@ export default function RoleForm({ item, onClose }) {
         <div className="mx-4 w-[100%]">
           <IonSearchbar 
 value={search}
-  onChange={(e) => setSearch(e.target.value)}
+ onIonInput={(event) => {
+let query = '';
+      const target = event.target
+    if (target){
+       query = target.value.toLowerCase();
+         setSearch(query)}}}
   placeholder="Search by username..."
         />
 </div>
         {/* Profile List */}
-        <div className="sm:max-w-[50em] w-[100%] md:w-[80%] mx-auto sm:overflow-y-auto">
-        <IonList lines="none" className=" flex overflow-auto rounded-lg">
+        <div className="sm:max-w-[50em] w-[100%] md:w-[80%] bg-cream mx-auto sm:overflow-y-auto">
+        <IonList lines="none" style={{"--background-color":"#f4f4e0"}}  className=" bg-cream flex overflow-auto rounded-lg">
           {pending && (
             <IonText className="text-emerald-800 text-center py-2 block">Loading...</IonText>
           )}
-          {!pending && profiles.length > 0 ? <div className="mx-auto  w-[100%] sm:max-w-[50em]"> 
+          {!pending && profiles.length > 0 ? <div className="mx-auto bg-cream  w-[100%] sm:max-w-[50em]"> 
             {filteredProfiles.map(renderProfileItem)}
           </div> : (
             <IonText className="text-emerald-800 text-center p-4 block">
@@ -160,7 +166,8 @@ value={search}
         </IonList>
         </div>
       {/* </div> */}
+       {/* </IonContent> */}
     </div>
-    </IonContent>
+   
   );
 }
