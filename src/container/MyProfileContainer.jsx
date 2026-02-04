@@ -145,7 +145,7 @@ function MyProfileContainer({ presentingElement }) {
 
 
 const [checkingAuth, setCheckingAuth] = useState(true);
- const {openDialog,closeDialog,dialog}=useDialog()
+ const {openDialog,closeDialog,dialog,resetDialog}=useDialog()
 useEffect(() => {
   const syncProfile = async () => {
     if (currentProfile) {
@@ -231,10 +231,12 @@ useEffect(() => {
   }
 
 openDialog({
-  // title: "Create Collection",
+...dialog,
+disagree:null,
+scrollY: false,
   text: <CreateCollectionForm onClose={resetDialog} />,
   disagreeText: "Close", // optional button
-  // onClose: closeDialog,
+  onClose: closeDialog,
   breakpoint: 1, // if you want a half-sheet style
 });
 

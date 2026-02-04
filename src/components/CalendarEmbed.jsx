@@ -219,44 +219,50 @@ const trackEventView = (event) => {
     });
   });
 };
+const handleDialogOpen = (chosenEvent) => {
+  // Analytics
+  sendGAEvent("select_item", {
+    item_type: "calendar_event",
+    item_name: chosenEvent.summary,
+    area: chosenEvent.area,
+    hashtags: chosenEvent.hashtags,
+  });
 
-    const handleDialogOpen = (chosenEvent) => {
-      sendGAEvent("select_item", {
-  item_type: "calendar_event",
-  item_name: chosenEvent.summary,
-  area: chosenEvent.area,
-  hashtags: chosenEvent.hashtags,
-});
+  trackEventView(chosenEvent);
 
-trackEventView(chosenEvent)
+  // Dialog config
   openDialog({
-    ...dialog,
-    disagreeText:"Close",
-disagree:()=>closeDialog(),
-        title: null,
+    title: null,
+    scrollY: false,
+
     text: (
       <div className="text-left text-blueSea">
         <span>{chosenEvent.location}</span>
-        <span dangerouslySetInnerHTML={{ __html: "<div>" + chosenEvent.description + "</div>" }} />
-       
+        <span
+          dangerouslySetInnerHTML={{
+            __html: `<div>${chosenEvent.description}</div>`,
+          }}
+        />
       </div>
     ),
-    scrollY:false,
-    
-  
+
+    disagreeText: "Close",
+    disagree: closeDialog,
+
     agreeText: chosenEvent.organizerLink ? "Organizer" : null,
     agree: chosenEvent.organizerLink
       ? () => {
-   sendGAEvent("outbound_click", {
-  destination: "organizer",
-  event_name: chosenEvent.summary,
-});
-
-
-        window.location.href = chosenEvent.organizerLink}
+          sendGAEvent("outbound_click", {
+            destination: "organizer",
+            event_name: chosenEvent.summary,
+          });
+          window.location.href = chosenEvent.organizerLink;
+        }
       : null,
   });
 };
+
+
 const openGooglemaps=(event)=>{
 
                             
@@ -388,7 +394,10 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                              <a className="text-blueSea overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
                               <h6  className="text-[0.8rem]"
                               onClick={()=>{   
-               openGooglemaps(event)}}>{event.location.length<25?isPhone?event.location:event.location.slice(0,20)+"...":event.location.slice(0,37)}</h6></a></span>:<h6 className=" whitespace-nowrap text-[0.8rem] no-underline ">{event.location}</h6>}
+               openGooglemaps(event)}}>{event.location.length<25?isPhone?event.location:event.location.slice(0,20)+"...":event.location.slice(0,37)}</h6></a></span>:
+               <a><h6  onClick={()=>{   
+               openGooglemaps(event)}}
+               className=" whitespace-nowrap text-[0.8rem] no-underline ">{event.location}</h6></a>}
                           
                           
               
@@ -497,10 +506,10 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                 >
                 <div className="flex flex-col justify-between h-full">
                   <span
-                onClickCapture={()=>handleDialogOpen(event)}
+            
                     className="flex flex-col text-left cursor-pointer"
                   >
-                    <span className="mr-2 max-w-[15rem] text-ellipsis overflow-hidden whitespace-nowrap">
+                    <span     onClick={()=>handleDialogOpen(event)} className="mr-2 max-w-[15rem] text-ellipsis overflow-hidden whitespace-nowrap">
                       {isPhone ? event.shortSummary : event.summary}
                     </span>
 

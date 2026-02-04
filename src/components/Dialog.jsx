@@ -63,14 +63,18 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
 
         <div className="ion-padding">{dialog.text}</div>
 
-        <IonFooter
+     
+      </IonContent>
+                <div className='bg-cream'>
+         <IonFooter
           className="ion-padding-horizontal ion-padding-vertical"
           style={{
             display: "flex",
-            "--background": "#f4f4e0",
+            "--background-color": "#f4f4e0",
             justifyContent: dialog.agree ? "space-between" : "flex-end",
           }}
         >
+
           {dialog.agree && (
             <div className="rounded-full flex px-4 w-fit h-[3rem] text-[1rem] border-emerald-400 border-2">
               <IonText
@@ -85,9 +89,9 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
           )}
 
          {dialog.disagree && (
-  <div className="rounded-full w-[6rem] h-[3rem] bg-soft flex border-emerald-600 border-2">
+<div className="rounded-full flex px-4 w-fit h-[3rem] text-[1rem] border-emerald-400 border-2">
     <IonText
-      className="text-[1rem] text-white my-auto mx-auto"
+      className="text-[1rem] text-emerald-600 my-auto mx-auto"
       onClick={dialog.disagree} // <-- use disagree here
     >
       {dialog.disagreeText}
@@ -95,7 +99,7 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
   </div>
 )}
         </IonFooter>
-      </IonContent>
+        </div>
     </IonModal>
   );
 };

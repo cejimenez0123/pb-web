@@ -9,10 +9,12 @@ export const useDialog = () => {
   const openDialog = (data) => {
     dispatch(setDialog({
       isOpen: true,
+      scrollY:false,
       title: data.title ?? null,
       text: data.text ?? null,
       agree: data.agree ?? null,
       agreeText: data.agreeText ?? null,
+      disagree:data.disagree??closeDialog,
       disagreeText: data.disagreeText ?? "Close",
       onClose: data.onClose ?? null,
       breakpoint: data.breakpoint ?? 0.25,
@@ -34,6 +36,7 @@ export const useDialog = () => {
       text: null,
       agree: null,
       agreeText: null,
+      disagree:null,
       disagreeText: null,
       onClose: null,
       breakpoint: 0.25,
