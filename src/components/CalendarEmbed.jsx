@@ -9,7 +9,7 @@ import {sendGAEvent } from "../core/ga4";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
-import { IonImg, IonInput, IonItem, IonList, IonText,  } from "@ionic/react";
+import { IonImg, IonInput,  IonList, IonText,  } from "@ionic/react";
 import InfoTooltip from "./InfoTooltip";
 import { useDialog } from "../domain/usecases/useDialog";
 
@@ -17,7 +17,7 @@ function CalendarEmbed(){
   const {isPhone}=useContext(Context)
   
   const [solEvents,setSolEvents]=useState([])
-  const { openDialog, dialog ,resetDialog,closeDialog} = useDialog()
+  const { openDialog, closeDialog} = useDialog()
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const options = { weekday: 'short', month: '2-digit', day: '2-digit' };
@@ -131,7 +131,7 @@ sendGAEvent("search", {
             let organizerLink = linkifyFirstUrl(event.description) 
           let location = ""
             if(event.location && event.location.length>0){
-         location = isPhone?event.location.split(",")[0]:event.location.length > 24 ? event.location.slice(0, 25) + '...' : event.location
+         location = event.location
          }
          let summary = event.summary? event.summary.length > 22 ? event.summary.slice(0, 31) + '...' : event.summary:""
          console.log(event.description)   
@@ -205,7 +205,7 @@ const googleAddLink = baseUrl + queryString;
    
         setEvents(filteredEvents)
       },[selectedArea])
-      const dispatch = useDispatch()
+
 const trackEventView = (event) => {
   if (!event?.hashtags?.length) return;
 
@@ -234,15 +234,16 @@ const handleDialogOpen = (chosenEvent) => {
   openDialog({
     title: null,
     scrollY: false,
-
+    breakpoint:1,
     text: (
       <div className="text-left text-blueSea">
         <span>{chosenEvent.location}</span>
-        <span
+        <h6 className="text-[1.5em] pt-2">{chosenEvent.description}</h6>
+        {/* <span
           dangerouslySetInnerHTML={{
             __html: `<div>${chosenEvent.description}</div>`,
           }}
-        />
+        /> */}
       </div>
     ),
 
@@ -372,17 +373,15 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
              <IonText className="font-bold text-[1.2rem] text-soft" >NYC CALENDAR</IonText>
                 
                 {events&&events.length?events.map((event,i)=>{
-                        
+                       console.log(event.description)
                   let eId= event.googleLink.split("?eid=")[0]
                       return(
                       <div key={i} 
                     
                       onClick={()=>handleDialogOpen(event)}
-                         className=" 
-                          border-blueSea border  border-opacity-50 rounded-[3.5em]   min-h-42 my-1  py-4  "
+                         className="  border-blueSea border  border-opacity-50 rounded-[3.5em]   min-h-42 my-1  py-4  "
                      >
-                      <div  className={`flex
-                      flex-row justify-between  px-6    `}>
+                      <div  className={`flex flex-row justify-between  px-6    `}>
                        {/* // */}
                      <span  className=" flex-col text-left flex"
                      >
@@ -392,7 +391,7 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                        <span  className="flex flex-col"> 
           
                              <a className="text-blueSea overflow-clip text-overflow-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto" >
-                              <h6  className="text-[0.8rem]"
+                              <h6  className="py-2 text-[0.8rem]"
                               onClick={()=>{   
                openGooglemaps(event)}}>{event.location.length<25?isPhone?event.location:event.location.slice(0,20)+"...":event.location.slice(0,37)}</h6></a></span>:
                <a><h6  onClick={()=>{   
@@ -528,13 +527,13 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                         }}
                         className="flex flex-col"
                       >
-                        <a className="text-blueSea overflow-hidden text-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto">
-                          <h6 onClick={()=>openGooglemaps(event)} className="text-[0.8rem]">{event.location}</h6>
+                        <a className="text-blueSea overflow-hidden py-4 text-ellipsis whitespace-nowrap no-underline max-w-[15rem] my-auto">
+                          <h6 onClick={()=>openGooglemaps(event)} className="text-[0.8rem]">{event.location.length<25?isPhone?event.location:event.location.slice(0,20)+"...":event.location.slice(0,37)}</h6>
                         </a>
                       </span>
                     ) : (
-                      <h6 onClick={()=>openGooglemaps(event)} className="whitespace-nowrap  no-underline text-[0.8rem]">
-                        {event.location}
+                      <h6  className="whitespace-nowrap  no-underline py-4 text-[0.8rem]">
+                       <a onClick={()=>openGooglemaps(event)}>{event.location.length<25?isPhone?event.location:event.location:event.location.slice(0,25)+"..."}</a>
                       </h6>
                     )}
 
