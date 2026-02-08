@@ -1,6 +1,7 @@
 import { PushNotifications } from '@capacitor/push-notifications'
 import { useDispatch } from 'react-redux'
-import { addNotification } from '../actions/ProfileActions'
+import { addNotification } from '../../actions/ProfileActions'
+
 
 export function usePushNotificationListener() {
   const dispatch = useDispatch()

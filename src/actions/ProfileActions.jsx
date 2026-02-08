@@ -9,7 +9,7 @@ import Enviroment from "../core/Enviroment";
 import axios from "axios";
 import { Capacitor } from "@capacitor/core";
 import { FirebaseStorage } from "@capacitor-firebase/storage";
-export const addNotification = createAction("profile/ADD_NOTIFICATION",(notification)=>{
+const addNotification = createAction("profile/ADD_NOTIFICATION",(notification)=>{
 
 return notification
 })
