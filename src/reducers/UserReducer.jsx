@@ -21,7 +21,8 @@ import {    logIn ,
             setEvents,
         
         } from "../actions/UserActions"
-import { createProfile, fetchNotifcations, fetchProfiles } from "../actions/ProfileActions"
+
+import { addNotification, createProfile, fetchNotifcations, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions.jsx" 
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
@@ -92,6 +93,8 @@ const userSlice = createSlice({
         state.loading = true
     }).addCase(fetchNotifcations.fulfilled,(state,{payload})=>{
 state.notifications = payload
+    }).addCase(addNotification.type,(state,payload)=>{
+        state.notifications = payload
     }).addCase(createProfile.rejected, (state, { payload })=>{
        state.loading=false
     

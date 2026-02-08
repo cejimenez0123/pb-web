@@ -4,10 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "overrides": {
-  "react-router": "5.3.4",
-  "react-router-dom": "5.3.4"
-}
-,
+    "react-router": "5.3.4",
+    "react-router-dom": "5.3.4"
+  },
   "scripts": {
     "dev": "vite",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
@@ -28,6 +27,7 @@
     "@capacitor/ios": "^7.2.0",
     "@capacitor/network": "^7.0.3",
     "@capacitor/preferences": "^7.0.2",
+    "@capacitor/push-notifications": "^7.0.4",
     "@capacitor/splash-screen": "^7.0.1",
     "@capgo/capacitor-social-login": "^7.11.8",
     "@ionic/react": "6.2.5",

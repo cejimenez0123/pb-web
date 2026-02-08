@@ -9,6 +9,10 @@ import Enviroment from "../core/Enviroment";
 import axios from "axios";
 import { Capacitor } from "@capacitor/core";
 import { FirebaseStorage } from "@capacitor-firebase/storage";
+export const addNotification = createAction("profile/ADD_NOTIFICATION",(notification)=>{
+
+return notification
+})
 const createProfile= createAsyncThunk("users/createProfile",async (params,thunkApi)=>{
 
     const data = await profileRepo.create(params)
@@ -198,5 +202,6 @@ const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunk
     uploadPicture,
     uploadProfilePicture,
     fetchProfiles,
-    fetchNotifcations
+    fetchNotifcations,
+    addNotification
 }
