@@ -27,11 +27,8 @@ import useScrollTracking from "../core/useScrollTracking"
 
 import {
   IonContent,
-  IonGrid,
   IonRow,
   IonCol,
-  IonText,
-  IonTitle,
   useIonRouter,
 } from '@ionic/react';
 import ig from "../images/icons/instagram icon.png"
@@ -39,7 +36,7 @@ import ig from "../images/icons/instagram icon.png"
 import { useState,useRef,useEffect } from "react"
 export default function AboutContainer() {
 
-  const { setSeo, currentProfile } = useContext(Context);
+  const { setShowNav,setSeo, currentProfile } = useContext(Context);
   const md = useMediaQuery({ query: '(min-width: 750px)' });
   const router = useIonRouter()
 useScrollTracking({
@@ -50,6 +47,7 @@ useScrollTracking({
 });
 
 useLayoutEffect(() => {
+ 
   initGA();
 }, []);
 useLayoutEffect(() => {
@@ -203,8 +201,8 @@ useLayoutEffect(() => {
     <div className="p-3 flex flex-col text-cream text-center ">
       <div className="py-12">
       <h1 className="text-[3rem] mx-auto lora-bold">Stay in the Loop</h1>
-      <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
-      <h2 className="mx-4 my-2 open-sans-medium text-l">Follow the Journey</h2>
+      <h2 className="mx-4 my-2 open-sans-medium text-[1.2em] pt-4">Be the first to know about new features, workshops, and events.</h2>
+      <h2 className="mx-4 my-2 open-sans-medium text-[1.4em] pt-4">Follow the Journey</h2>
       <a
         onClick={() =>
     sendGAEvent("outbound_click", {
@@ -227,7 +225,7 @@ useLayoutEffect(() => {
   alt="Calendar icon"
 />
         <p
-        className=" mx-auto my-4 mx-auto text-center cursor-pointer"
+        className=" mx-auto px-4 my-4 mx-auto text-center cursor-pointer"
         onClick={() => goToCalendar("about_text_link")}
       >
         Check out the Calendar of NYC events for writer and creatives
@@ -407,10 +405,10 @@ const goToCalendar = (source="about_page") => {
           {/* <IonRow className="my-10"> */}
             <IonCol  className="ion-text-center ion-padding-top">
               <div className="flex-col flex pt-12 ">
-              <h1 className="lora-medium text-white py-24 text-[4rem]" >
+              <h1 className="lora-medium text-white py-36 text-[4rem]" >
                 Plumbum
               </h1>
-              <h2 className="mx-auto text-white pb-12 text-[3em]" color="primary" >
+              <h2 className="mx-auto text-white px-4 pb-12 text-[3em]" color="primary" >
                 Share your Weirdness
               </h2 >  
               <br />
@@ -427,8 +425,8 @@ const goToCalendar = (source="about_page") => {
 
            
              <div ><BookCarousel images={[...firstImages,...secImages]} /></div> 
-             <div className="flex flex-row items-center text-center mt-12">
-             <btn  onClick={logIn}className="text-[1.2rem] shadow-md px-8 py-4 rounded-full  bg-gradient-to-r from-[#fff469] to-[#ffd14d] 
+             <div className="flex flex-col sm:flex-row items-center text-center mt-12">
+             <btn  onClick={logIn}className="text-[1.2rem] shadow-md md:px-8  py-4 px-4 md:py-4 rounded-full  bg-gradient-to-r from-[#fff469] to-[#ffd14d] 
              hover:from-[#fff97a] hover:to-[#ffc53f]  mt-12 mb-4 mx-auto cursor-pointer inline-block " >
               <h3 className=" text-[#333333] font-bold ">Join the Beta or Login</h3>
 
@@ -451,7 +449,7 @@ const goToCalendar = (source="about_page") => {
                <IonRow className="ion-padding items-center flex-col">
                 <div className="pt-8 flex flex-col items-center">
               {/* <IonText className=""> */}
-               <h2 className="text-cream text-[1.2rem] leading-loose">
+               <h2 className="text-cream text-center px-4 text-[1.2rem] leading-loose">
                 Any requests for features, feedback, or encouragement&nbsp;
                 </h2>
                 <h2
@@ -467,7 +465,7 @@ const goToCalendar = (source="about_page") => {
               <div>
            
                 <h6 className="text-cream text-[1rem] lg:text-[1.2rem]">© Plumbum 2025</h6>
-        z
+        
               </div>
               </div>
               </IonRow>

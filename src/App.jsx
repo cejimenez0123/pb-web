@@ -71,11 +71,11 @@ const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
-
+// const [showNav,setShowNav]=useState(true)
 
 
 const ionRouter = useIonRouter();
-const location = ionRouter.routeInfo?.pathname ?? "";
+const location = ionRouter.routeInfo?.pathname??window.location
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
 
@@ -116,30 +116,17 @@ useEffect(() => {
   checkFirstLaunch();
 }, [isNative]);
 
-  
 
-
-  const showNav = !(
-  Capacitor.isNativePlatform() &&
-  (location.includes("/signup") ||
-   location.includes("/login") ||   
-   location.includes("/onboard"))
-);
 const navbarBot = Capacitor.isNativePlatform() || isTablet;
-
 
  return (
 
     <ErrorBoundary>
-        <Context.Provider value={{ setPresentingEl,isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+        <Context.Provider value={{setPresentingEl,isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 
   <IonApp>
   <IonReactRouter>
-      
-      {/* <IonPage ref={page} style={{ "--padding-bottom": "20rem" }}  > */}
-        {/* <IonContent fullscreen={true}> */}
-             
-           {!navbarBot&&!location.includes("/about")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
+           {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
@@ -330,7 +317,7 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
     </IonFooter>
   )} */}
 
-       {navbarBot&&showNav&&!location.includes("/about")?
+       {navbarBot?
           <IonFooter>
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
