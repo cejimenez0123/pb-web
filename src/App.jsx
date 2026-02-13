@@ -126,10 +126,10 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
 
   <IonApp>
   <IonReactRouter>
-           {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
+           {!navbarBot?
            <NavbarContainer 
     
-        currentProfile={currentProfile}/></div>:null}
+        currentProfile={currentProfile}/>:null}
               <div >
  
     
@@ -311,11 +311,7 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
     /> 
   
    </IonRouterOutlet>
-    {/* {navbarBot && showNav && (
-    <IonFooter className="ion-no-border">
-      <NavbarContainer currentProfile={currentProfile} />
-    </IonFooter>
-  )} */}
+
 
        {navbarBot?
           <IonFooter>

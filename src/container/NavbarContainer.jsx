@@ -392,7 +392,7 @@ openDialog({
 let isNative = Capacitor.isNativePlatform()
 
 if(!showNav) return null
-return !isNotPhone||isNative||isTablet&&home?(<div className="navbar flex items-start  justify-between px-4 sm:px-20 max-w-[100%] h-54 bg-soft">
+return !isNotPhone||isNative||isTablet&&home?(<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'><div className="navbar flex items-start  justify-between px-4 sm:px-20 max-w-[100%] h-54 bg-soft">
 
    <div className='flex flex-col'>
    <IonImg src={library} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
@@ -449,8 +449,7 @@ return !isNotPhone||isNative||isTablet&&home?(<div className="navbar flex items-
 
         </div> 
        
-      {/* </div> */}
-      {/* <h6 className='text-white text-xs'> Profile</h6> */}
+
 
       </div>   : <div className='flex flex-col'>
     <IonImg src={search} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
@@ -458,7 +457,7 @@ return !isNotPhone||isNative||isTablet&&home?(<div className="navbar flex items-
     onClick={()=>router.push("/search")}/>
       <h6 className='text-white text-xs'>Search</h6>
     </div>}
- </div>):(<div className="navbar flex items-start  max-w-[100vw] px-4 h-54 bg-emerald-800">
+ </div></div>):(<div className="navbar flex items-start  max-w-[100vw] px-4 h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isNative?menuDropdown():
     <a  onClick={()=>currentProfile?router.push(Paths.calendar()):router.push("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}
