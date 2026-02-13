@@ -35,8 +35,7 @@ import {
   useIonRouter,
 } from '@ionic/react';
 import ig from "../images/icons/instagram icon.png"
-let firstImages = [out, al, crowd, duo,balcony, vemilo,  table7];
-let secImages = [table3,out2,evolution,  vemilo2, table2, table5];
+
 import { useState,useRef,useEffect } from "react"
 export default function AboutContainer() {
 
@@ -64,6 +63,15 @@ useLayoutEffect(() => {
 }, [setSeo]);
 
   
+    function logIn(source = "about_page") {
+  sendGAEvent("login_onboard", {
+    source,
+    location: "about",
+  });
+
+
+    router.push(Paths.login());
+  }
 
 
   // function apply() {
@@ -192,7 +200,8 @@ useLayoutEffect(() => {
   );
 
   const stayInLoop = () => (
-    <div className="p-3 flex flex-col">
+    <div className="p-3 flex flex-col text-cream text-center ">
+      <div className="py-12">
       <h1 className="text-[3rem] mx-auto lora-bold">Stay in the Loop</h1>
       <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
       <h2 className="mx-4 my-2 open-sans-medium text-l">Follow the Journey</h2>
@@ -210,24 +219,25 @@ useLayoutEffect(() => {
         <p className="open-sans-medium mx-4 my-4 text-emerald-600">Join the Instagram Channel. Today!</p>
         <img  className="mx-auto w-[8em]" src={ig} alt="Slack invite" />
       </a>
-      <p
-        className="flex open-sans-medium my-4 mx-auto text-center cursor-pointer"
+    
+     <img
+  onClick={() => goToCalendar("about_icon")}
+  className="h-[8em] mx-auto w-[8em] cursor-pointer filter invert brightness-125 sepia saturate-50 hue-rotate-30"
+  src={events}
+  alt="Calendar icon"
+/>
+        <p
+        className=" mx-auto my-4 mx-auto text-center cursor-pointer"
         onClick={() => goToCalendar("about_text_link")}
       >
-        Check out the Calendar for NYC Writing Scene
+        Check out the Calendar of NYC events for writer and creatives
       </p>
-      <img
-        onClick={() => goToCalendar("about_icon")}
-        className="h-[8em] mx-auto w-[8em] cursor-pointer"
-        src={events}
-        alt="Calendar icon"
-      />
       <div className="flex my-4 open-sans-medium mx-auto text-lg text-left leading-loose tracking-loose">
-        <p>
-          <a href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> | <a href="https://www.instagram.com/bxwriters" target="_blank" rel="noreferrer">@bxwriters</a>
+        <p className="mx-auto">
+          <a className="text-cream "href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> | <a className="text-cream " href="https://www.instagram.com/bxwriters" target="_blank" rel="noreferrer">@bxwriters</a>
         </p>
       </div>
-      
+      </div>
     </div>
   );
   
@@ -249,7 +259,8 @@ const TESTIMONIALS = [
     author: "Kay P.",
   },
 ];
-
+let firstImages = [out, al, crowd, duo,balcony, vemilo,  table7,TESTIMONIALS[2]];
+let secImages = [table3,out2,evolution, TESTIMONIALS[0], vemilo2, table2, table5,TESTIMONIALS[1]];
 function userTestimonials() {
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true); // controls fade in/out
@@ -322,62 +333,62 @@ function userTestimonials() {
   );
 }
 
-// function userTestimonials() {
-//   const [index, setIndex] = useState(0);
-//   const intervalRef = useRef(null);
+function userTestimonials() {
+  const [index, setIndex] = useState(0);
+  const intervalRef = useRef(null);
 
-//   useEffect(() => {
-//     intervalRef.current = setInterval(() => {
-//       setIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-//     }, 5000); // change slide every 5s
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+    }, 5000); // change slide every 5s
 
-//     return () => clearInterval(intervalRef.current);
-//   }, []);
+    return () => clearInterval(intervalRef.current);
+  }, []);
 
-//   return (
-//     <div className="max-w-xl">
-//       <h6 className="text-[1.8rem] lg:text-[2rem] lora-bold mb-4">
-//         Real Writers,
-//         <br />
-//         Real Growth
-//       </h6>
+  return (
+    <div className="max-w-xl">
+      <h6 className="text-[1.8rem] lg:text-[2rem] lora-bold mb-4">
+        Real Writers,
+        <br />
+        Real Growth
+      </h6>
 
-//       <div
-//         className="relative overflow-hidden px-4"
-//         onMouseEnter={() => clearInterval(intervalRef.current)}
-//         onMouseLeave={() => {
-//           intervalRef.current = setInterval(() => {
-//             setIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-//           }, 5000);
-//         }}
-//       >
-//         <div
-//           className="transition-all duration-700 ease-in-out"
-//           key={index}
-//         >
-//           <h6 className="lora-medium text-[1rem] lg:text-[1.2rem]">
-//             <em>“{TESTIMONIALS[index].quote}”</em>
-//           </h6>
-//           <div className="mt-2 text-sm opacity-80">
-//             — {TESTIMONIALS[index].author}
-//           </div>
-//         </div>
-//       </div>
+      <div
+        className="relative overflow-hidden px-4"
+        onMouseEnter={() => clearInterval(intervalRef.current)}
+        onMouseLeave={() => {
+          intervalRef.current = setInterval(() => {
+            setIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+          }, 5000);
+        }}
+      >
+        <div
+          className="transition-all duration-700 ease-in-out"
+          key={index}
+        >
+          <h6 className="lora-medium text-[1rem] lg:text-[1.2rem]">
+            <em>“{TESTIMONIALS[index].quote}”</em>
+          </h6>
+          <div className="mt-2 text-sm opacity-80">
+            — {TESTIMONIALS[index].author}
+          </div>
+        </div>
+      </div>
 
-//       {/* Dots */}
-//       <div className="flex gap-2 mt-4 px-4">
-//         {TESTIMONIALS.map((_, i) => (
-//           <span
-//             key={i}
-//             className={`h-2 w-2 rounded-full transition-all ${
-//               i === index ? "bg-black" : "bg-gray-300"
-//             }`}
-//           />
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
+      {/* Dots */}
+      <div className="flex gap-2 mt-4 px-4">
+        {TESTIMONIALS.map((_, i) => (
+          <span
+            key={i}
+            className={`h-2 w-2 rounded-full transition-all ${
+              i === index ? "bg-black" : "bg-gray-300"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 
 const goToCalendar = (source="about_page") => {
@@ -390,122 +401,83 @@ const goToCalendar = (source="about_page") => {
 };
   return (
     <IonContent fullscreen={true}   scrollY={true} className="">
-     <div className="pt-8 w-[94vw] mx-auto">
+     <div className="pt-8 h-[100%] overflow-scroll  bg-soft pb-36">
 
         {/* <IonGrid> */}
-          <IonRow className="my-10">
-            <IonCol  className="ion-text-center">
-              <div className="flex-col flex">
-              <IonText color="primary" className="lora-bold text-emerald-800" style={{ fontSize: '3rem', margin: "auto", paddingTop: '2rem' }}>
+          {/* <IonRow className="my-10"> */}
+            <IonCol  className="ion-text-center ion-padding-top">
+              <div className="flex-col flex pt-12 ">
+              <h1 className="lora-medium text-white py-24 text-[4rem]" >
                 Plumbum
-              </IonText>
-              <IonText className="mx-auto text-emerald-600" color="primary" style={{ fontSize: '1.3rem', margin: "auto" }}>
+              </h1>
+              <h2 className="mx-auto text-white pb-12 text-[3em]" color="primary" >
                 Share your Weirdness
-              </IonText>
+              </h2 >  
               <br />
-              <IonText className=" mx-auto text-emerald-600" color="primary">
+              {/* <h2 className=" mx-auto text-cream  text-[1rem] pb-24" color="primary">
                 Get thoughtful feedback • Grow through workshops
-              </IonText>
+            </h2 >  */}
               </div>
             </IonCol>
-          </IonRow>
+          {/* </IonRow> */}
 
-          <IonRow className="items-center"> 
-            {md && (
-              <>
-               <IonCol>
-                <div ><BookCarousel images={secImages} /></div>
-                {findCreatives()}
-               </IonCol>
-              </>
-            )}
-            <IonCol >
-             <div ><BookCarousel images={firstImages} /></div> 
-            </IonCol>
-          </IonRow>
+          {/* <IonRow className="items-center">  */}
+      
+            {/* <IonCol > */}
 
-          <IonRow>
-            <IonCol size={md ? "6" : "12"}>
-              {howItWorks()}
-            </IonCol>
-            <IonCol size={md ? "6" : "12"}>
-              {writingJourney()}
-            </IonCol>
+           
+             <div ><BookCarousel images={[...firstImages,...secImages]} /></div> 
+             <div className="flex flex-row items-center text-center mt-12">
+             <btn  onClick={logIn}className="text-[1.2rem] shadow-md px-8 py-4 rounded-full  bg-gradient-to-r from-[#fff469] to-[#ffd14d] 
+             hover:from-[#fff97a] hover:to-[#ffc53f]  mt-12 mb-4 mx-auto cursor-pointer inline-block " >
+              <h3 className=" text-[#333333] font-bold ">Join the Beta or Login</h3>
 
-            <IonCol size={md ? "4" : "12"}>
-              {userTestimonials()}
-            </IonCol>
-            <IonCol size={md ? "4" : "12"}>
-              {whyMembership()}
-            </IonCol>
-            <IonCol size={md ? "4" : "12"}>
-              {applicationProcess()}
-            </IonCol>
-          </IonRow>
+             </btn>
+                <btn   onClick={() =>{
 
-          <IonRow>
-            <IonCol size="12" className="ion-text-center">
-              {stayInLoop()}
-            </IonCol>
-          </IonRow>
-
-          <IonRow className="my-8 mx-auto items-center">
-            <IonCol size="12" className="ion-text-center">
-              <IonText
-                style={{
-                  color: 'white',
-                  fontWeight: 500,
-                  fontSize: '1.25rem',
-                  background: 'linear-gradient(to right, #34d399, #059669)', // emerald gradient
-                  borderRadius: '9999px',
-                  padding: '1rem',
-                  textTransform: 'none',
-                  boxShadow: '0 2px 6px rgba(5, 150, 105, 0.5)',
-                  cursor: 'pointer',
-                  display: 'inline-block',
-                  userSelect: 'none'
-                }}
-                onClick={() => {
-                  apply("footer_cta")
-                  router.push(Paths.onboard)}}
-              >
-                Become Part of our Writers' Circle
-              </IonText>
-            </IonCol>
-          </IonRow>
-          <div className="mb-24">
-          <IonRow className="ion-padding-bottom">
-            <IonCol size="12" className="ion-text-center pb-12">
-              <IonText>
+    sendGAEvent("navigation_click", {
+      destination: "discovery",
+      source: "about_why_plumbum",
+    });
+    router.push(Paths.discovery);
+  }}className="text-[1.2rem]  shadow-md  px-8 py-4 text-emerald-800 rounded-full bg-gradient-to-r from-[#a8e6cf] to-[#56c596] 
+                   hover:from-[#93e0b9] hover:to-[#3fb77f] mt-12 mb-4 mx-auto cursor-pointer inline-block " >
+              <h3 className="text-emerald-soft font-bold">Discover</h3>
+              
+             </btn>
+             </div>
+             {stayInLoop()}
+            {/* <IonCol size="12" className="ion-text-center pb-12"> */}
+               <IonRow className="ion-padding items-center flex-col">
+                <div className="pt-8 flex flex-col items-center">
+              {/* <IonText className=""> */}
+               <h2 className="text-cream text-[1.2rem] leading-loose">
                 Any requests for features, feedback, or encouragement&nbsp;
-                <IonText
+                </h2>
+                <h2
                   fill="clear"
                   size="small"
-                  style={{
-                    color: '#047857', // emerald-700
-                    fontSize: '1rem',
-                    fontWeight: 500,
-                    textAlign: 'left',
-                    textDecoration: 'underline',
-                    padding: 0,
-                    cursor: 'pointer'
-                  }}
+                  className="text-cream text-[1.2rem] leading-loose cursor-pointer mx-auto"
+              z
                   onClick={() => router.push(Paths.feedback())}
                 >
                   click here
-                </IonText>
-              </IonText>
+                </h2>
+              {/* </IonText> */}
               <div>
-              <IonText className="ion-padding-top" color="medium">
-                © Plumbum 2025
-              </IonText>
+           
+                <h6 className="text-cream text-[1rem] lg:text-[1.2rem]">© Plumbum 2025</h6>
+        z
               </div>
-            </IonCol>
-          </IonRow>
-          </div>
+              </div>
+              </IonRow>
+            
+
+    
+
+         
         
-        {/* </IonGrid> */}
-        {!currentProfile && <ScrollDown text="↓Apply Below" visible={true} />}
+       
              </div>
 
 </IonContent>

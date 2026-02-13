@@ -26,7 +26,7 @@ export default function ScrollDownButton({text="↓ Scroll for more",onClick,onB
   return isVisible ? (
     <button
       onClick={onClick?onClick:scrollToBottom}
-      className="fixed bottom-6 right-6 z-50 bg-emerald-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition-all duration-300 "
+      className="fixed bottom-6  right-6 z-50 bg-cream hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition-all duration-300 "
     >
       {/* ↓ Scroll for more */}
       {text}

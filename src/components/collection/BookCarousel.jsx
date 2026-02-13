@@ -35,14 +35,29 @@ export default function BookCarousel({ images = [] }) {
     >
       {imagesToUse.map((imgSrc, idx) => (
         <SwiperSlide key={idx}>
-         
+         {imgSrc.quote?<div>        <div
+          className="transition-all flex-col jsutify-center flex duration-700 ease-in-out"
+          key={idx}
+        >
+          {/* <div className='my-auto'> */}
+          <span className=" my-auto h-fit mt-20 px-16 py-2 mx-auto">
+          <h6 className="lora-medium text-cream text-[1rem] lg:text-[1.2rem]">
+            <em>“{imgSrc.quote}”</em>
+          </h6>
+          <h6 className="mt-2  text-cream text-[1em]text-sm opacity-80">
+            — {imgSrc.author}
+          </h6>
+          </span>
+          {/* </div> */}
+        </div>
+      </div>:
             <IonImg
               src={imgSrc}
               style={{height:"30em"}}
               alt={`Book Carousel item ${idx + 1}`}
               className="w-full   mx-auto  object-fit object-[30%_10%] rounded-2xl"
             />
-     
+}
         </SwiperSlide>
       ))}
     </Swiper>

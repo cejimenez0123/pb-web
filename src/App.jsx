@@ -122,7 +122,7 @@ useEffect(() => {
   const showNav = !(
   Capacitor.isNativePlatform() &&
   (location.includes("/signup") ||
-   location.includes("/login") ||
+   location.includes("/login") ||   
    location.includes("/onboard"))
 );
 const navbarBot = Capacitor.isNativePlatform() || isTablet;
@@ -139,7 +139,7 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
       {/* <IonPage ref={page} style={{ "--padding-bottom": "20rem" }}  > */}
         {/* <IonContent fullscreen={true}> */}
              
-           {!navbarBot?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
+           {!navbarBot&&!location.includes("/about")?<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'>
            <NavbarContainer 
     
         currentProfile={currentProfile}/></div>:null}
@@ -330,7 +330,7 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
     </IonFooter>
   )} */}
 
-       {navbarBot&&showNav?
+       {navbarBot&&showNav&&!location.includes("/about")?
           <IonFooter>
    <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
   <NavbarContainer currentProfile={currentProfile} />
