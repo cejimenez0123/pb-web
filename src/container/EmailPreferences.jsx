@@ -5,26 +5,32 @@ import { updateSubscription } from "../actions/UserActions";
 import checkResult from "../core/checkResult";
 import Context from "../context";
 import { useIonRouter } from "@ionic/react";
+import { useLocation } from "react-router";
 
 export default function EmailPreferences() {
   const {setSuccess,setError,setSeo,seo}=useContext(Context)
   const selectRef = useRef()
   const router = useIonRouter()
   const dispatch = useDispatch()
+const location = useLocation();
 
-  const [searchParams] = router.routeInfo.search
-  let tokenstr = searchParams.get("token")
-  const [token,setToken]=useState(tokenstr)
+  const searchParams  = new URLSearchParams(location.search);
+
+  const [token,setToken]=useState("")
   const [unsubscribed,setUnsubscribed]=useState(false)
   const [frequency, setFrequency] = useState(1);
 
-  useLayoutEffect(()=>{
-    let soo = seo
-    soo.title="Plumbum (Email Preferences)"
-    setSeo(soo)
-  },[])
+ useLayoutEffect(() => {
+  setSeo(prev => ({
+    ...prev,
+    title: "Plumbum | Email Preferences",
+    description: "Manage your Plumbum email preferences and choose the updates you want to receive.",
+  }));
+}, []);
+
   useEffect(() => {
-    if (searchParams.get("unsubscribe") === "true") {
+  
+    if (searchParams && searchParams.get("unsubscribe") === "true") {
 
       setUnsubscribed(true);
       let token = searchParams.get("token")
