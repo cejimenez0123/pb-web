@@ -56,10 +56,7 @@ const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
     const isTablet =  useMediaQuery({
     query: '(max-width: 1100px)'
   }) 
-  const hidePaths = [Paths.signup,Paths.onboard,Paths.about() ];
-  
-  const showNav= !hidePaths.some(path => location.pathname ? location.pathname.includes(path) : location.includes(path))
-  
+
   const isClip = import.meta.env.MODE=="clip"
   const pages = isClip?[...[ 
                 PageName.about,
@@ -389,10 +386,15 @@ openDialog({
   
    
 };
-let isNative = Capacitor.isNativePlatform()
 
-if(!showNav) return null
-return !isNotPhone||isNative||isTablet&&home?(<div className='fixed h-[4rem] top-0 w-[100vw] shadow-lg z-50'><div className="navbar flex items-start  justify-between px-4 sm:px-20 max-w-[100%] h-54 bg-soft">
+let isNative = Capacitor.isNativePlatform()
+  const hidePaths = [Paths.signup,Paths.onboard,Paths.about() ];
+
+  const showNav= location&&!hidePaths.find(path => location.pathname ? location.pathname.includes(path) : location.includes(path))
+
+if(!showNav) {return null}
+
+return !isNotPhone||isNative||isTablet&&home?(<div className={`navbar flex items-start ${!(isNative||isTablet)?"fixed top-0":"fixed w-[100vw] bottom-0 shadow-lg z-50"} h-[4rem]  w-[100vw] shadow-lg z-50 justify-between px-4 sm:px-20 max-w-[100%] h-54 bg-soft`}>
 
    <div className='flex flex-col'>
    <IonImg src={library} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
@@ -449,7 +451,8 @@ return !isNotPhone||isNative||isTablet&&home?(<div className='fixed h-[4rem] top
 
         </div> 
        
-
+      {/* </div> */}
+      {/* <h6 className='text-white text-xs'> Profile</h6> */}
 
       </div>   : <div className='flex flex-col'>
     <IonImg src={search} style={{width:"3em",height:"3em",filter:"invert(100%)"}}
@@ -457,7 +460,7 @@ return !isNotPhone||isNative||isTablet&&home?(<div className='fixed h-[4rem] top
     onClick={()=>router.push("/search")}/>
       <h6 className='text-white text-xs'>Search</h6>
     </div>}
- </div></div>):(<div className="navbar flex items-start  max-w-[100vw] px-4 h-54 bg-emerald-800">
+ </div>):(<div className="navbar flex items-start  max-w-[100vw] px-4 h-54 bg-emerald-800">
      <div className='navbar-start '>
     {isNative?menuDropdown():
     <a  onClick={()=>currentProfile?router.push(Paths.calendar()):router.push("/")}className="btn btn-ghost text-white lora-bold text-xl">{"Plumbum"}</a>}

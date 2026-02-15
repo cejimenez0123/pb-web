@@ -315,7 +315,7 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
 
        {navbarBot?
           <IonFooter>
-   <div className="fixed w-[100vw] bottom-0 shadow-lg z-50 bg-white">
+   <div className=" bg-white">
   <NavbarContainer currentProfile={currentProfile} />
 </div>
 </IonFooter>
