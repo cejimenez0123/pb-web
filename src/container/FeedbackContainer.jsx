@@ -35,42 +35,6 @@ export default function FeedbackContainer() {
     }));
   };
 
-//   const openMessageSentDialog = useCallback(() => {
-//     openDialog({
-//       isOpen: true,
-//       // title: "Message Sent Successfully",
-//       text:(
-//   <div className="bg-white rounded-2xl shadow-xl px-8 py-10 text-center max-w-md mx-auto">
-
-//     {/* Title */}
-//     <h2 className="lora-bold text-2xl text-emerald-700 mb-4">
-//       Message Sent
-//     </h2>
-
-//     {/* Body */}
-//     <p className="open-sans-medium text-emerald-800 text-lg leading-relaxed">
-//       Thank you for your{" "}
-//       <span className="capitalize font-semibold">
-//         {form.purpose}
-//       </span>.
-//       <br />
-//       We’ll respond if it’s relevant.
-//     </p>
-
-//     {/* Divider */}
-//     <div className="w-12 h-[2px] bg-emerald-200 mx-auto my-6 rounded-full" />
-
-//     {/* Signature */}
-//     <p className="text-emerald-600 mont-medium">
-//       — Plumbum
-//     </p>
-
-//   </div>
-// )
-// ,
-//       onClose: closeDialog,
-//     });
-//   }, [form.purpose, openDialog, closeDialog]);
 const openMessageSentDialog = ({ success = true, message = "" }) => {
   const title = success ? "Message Sent" : "Submission Failed";
   const mainColor = success ? "emerald" : "red";
@@ -111,58 +75,7 @@ const openMessageSentDialog = ({ success = true, message = "" }) => {
   openDialog(dia);
 };
 
-// const openMessageSentDialog = ({ success = true, message = "" }) => {
-//   const color = success ? "emerald" : "red";
 
-//   let dia = { ...dialog };
-//   dia.isOpen = true;
-//   dia.text = (
-//     <div
-//       className={`bg-${color}-50 rounded-lg p-6 text-center`}
-//       style={{ fontFamily: "Arial, sans-serif" }}
-//     >
-//       {success ? "Message Sent Successfully" : "Submission Failed";}
-//       <p
-//         className={`text-xl lora-medium block text-${color}-800`}
-//         style={{ marginBottom: "20px" }}
-//       >
-//         {message}
-//       </p>
-//       <div className="mt-6">
-//         <p>Best regards,</p>
-//         <p>Plumbum</p>
-//       </div>
-//     </div>
-//   );
-
-//   dia.onClose = () => closeDialog();
-//   dia.disagreeText = null;
-//   dia.agreeText = null;
-//   dia.agree = null;
-
-//   openDialog(dia);
-// };
-
-  // ✅ Proper async submit
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!validateEmail(form.email)) return;
-
-  //   try {
-  //     await authRepo.feedback(form);
-  //     openMessageSentDialog();
-  //     setForm({
-  //       preferredName: "",
-  //       email: "",
-  //       subject: "",
-  //       purpose: "feedback",
-  //       message: "",
-  //     });
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 const handleSubmit = async (e) => {
   e.preventDefault();
 
