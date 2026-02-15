@@ -1,137 +1,299 @@
-import { useContext, useLayoutEffect, useState } from "react"
-import authRepo from "../data/authRepo"
-import { debounce } from "lodash"
-import validateEmail from "../core/validateEmail"
-//import { Dialog, DialogActions, DialogContent, Button,DialogTitle } from "@mui/material"
-import Context from "../context"
-import { IonContent, IonText } from "@ionic/react"
-import { useDialog } from "../domain/usecases/useDialog"
+import { useContext, useLayoutEffect, useState, useCallback } from "react";
+import authRepo from "../data/authRepo";
+import validateEmail from "../core/validateEmail";
+import Context from "../context";
+import { IonContent, IonText } from "@ionic/react";
+import { useDialog } from "../domain/usecases/useDialog";
 
-export default function FeedbackContainer(props){
-    const {seo,setSeo}=useContext(Context)
-    const [email,setEmail]=useState("")
-    const [preferredName,setPreferredName]=useState("")
-    const [subject,setSubject]=useState("")
-    const [purpose,setPurpose]=useState("feedback")
-    const [message,setMessage]=useState("")
-    const [open,setOpen]=useState(false)
-    const {dialog,openDialog,closeDialog} =useDialog()
-    useLayoutEffect(()=>{
-        let soo = seo
-        soo.title= "Plumbum (Feedback) - Your Writing, Your Community"
-        soo.description="Explore events, workshops, and writer meetups on Plumbum."
-        setSeo(soo)
-      
-    },[])
-    const openMessageSentDialog = (purpose) => {
-   
-        let dia = {...dialog}
-        dia.isOpen = true;
-        dia.title = "Message Sent Successfully";
-        dia.text = (
-          <div className="card bg-emerald-50 rounded-lg overflow-hidden">
-            <IonHeader translucent={true}>
-              <IonToolbar color="light">
-                <IonTitle className="ion-text-center">
-                  Message Sent Successfully
-                </IonTitle>
-              </IonToolbar>
-            </IonHeader>
-              <IonText className="text-xl lora-medium block text-center text-emerald-800">
-                Thank you for sending us your {purpose.toLowerCase()}.<br />
-                We will respond if it is relevant.
-              </IonText>
-              <div className="ion-text-center ion-margin-top">
-                <IonText>Best regards,</IonText>
-                <br />
-                <IonText>Plumbum</IonText>
-              </div>
-            {/* </IonContent> */}
-    
-            <IonFooter className="ion-padding">
-              <div
-                className="bg-emerald-600 cursor-pointer rounded-full text-white text-center w-full py-2 mont-medium"
-                onClick={() => closeDialog()}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") closeDialog();
-                }}
-              >
-                <IonText>Close</IonText>
-              </div>
-            </IonFooter>
-          </div>
-        );
-    
-        dia.onClose = () => closeDialog()
-     
-        dia.disagreeText = null;
-        dia.agreeText = null;
-        dia.agree = null;
-    
-        openDialog(dia)
-      }
-    const handleFeedback=debounce((e)=>{
-        e.preventDefault()
-          try{
-        authRepo.feedback({preferredName,email,subject,purpose,message}).then(data=>{
-                
-            openMessageSentDialog()
-            })
-        }catch(err){
-            console.log(err)
-        }
-    
-    },10)
-    let input="input w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3"
-    return(
-      <IonContent fullscreen={true} className="ion-padding">
-      <div>
-    
-        <form className="my-8 px-4">
+export default function FeedbackContainer() {
+  const { seo, setSeo } = useContext(Context);
+  const { openDialog, closeDialog ,dialog} = useDialog();
+
+  // ✅ Single Source of Truth
+  const [form, setForm] = useState({
+    preferredName: "",
+    email: "",
+    subject: "",
+    purpose: "feedback",
+    message: "",
+  });
+
+  // ✅ Proper SEO update
+  useLayoutEffect(() => {
+    setSeo(prev => ({
+      ...prev,
+      title: "Plumbum | Feedback - Your Writing, Your Community",
+      description:
+        "Send feedback, report issues, or collaborate with Plumbum.",
+    }));
+  }, [setSeo]);
+
+  const updateField = (field,value) => {
+    setForm(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+//   const openMessageSentDialog = useCallback(() => {
+//     openDialog({
+//       isOpen: true,
+//       // title: "Message Sent Successfully",
+//       text:(
+//   <div className="bg-white rounded-2xl shadow-xl px-8 py-10 text-center max-w-md mx-auto">
+
+//     {/* Title */}
+//     <h2 className="lora-bold text-2xl text-emerald-700 mb-4">
+//       Message Sent
+//     </h2>
+
+//     {/* Body */}
+//     <p className="open-sans-medium text-emerald-800 text-lg leading-relaxed">
+//       Thank you for your{" "}
+//       <span className="capitalize font-semibold">
+//         {form.purpose}
+//       </span>.
+//       <br />
+//       We’ll respond if it’s relevant.
+//     </p>
+
+//     {/* Divider */}
+//     <div className="w-12 h-[2px] bg-emerald-200 mx-auto my-6 rounded-full" />
+
+//     {/* Signature */}
+//     <p className="text-emerald-600 mont-medium">
+//       — Plumbum
+//     </p>
+
+//   </div>
+// )
+// ,
+//       onClose: closeDialog,
+//     });
+//   }, [form.purpose, openDialog, closeDialog]);
+const openMessageSentDialog = ({ success = true, message = "" }) => {
+  const title = success ? "Message Sent" : "Submission Failed";
+  const mainColor = success ? "emerald" : "red";
+  const defaultMessage = success
+    ? `Thank you for your ${form.purpose.toLowerCase()}. We’ll respond if it’s relevant.`
+    : message || "Oops! Something went wrong. Please try again later.";
+
+  let dia = { ...dialog };
+  dia.isOpen = true;
+  dia.title = null
+  dia.text = (
+    <div
+      className={`bg-white rounded-2xl shadow-xl px-8 py-10 text-center max-w-md mx-auto`}
+    >
+      {/* Title */}
+      <h2 className={`lora-bold text-2xl text-${mainColor}-700 mb-4`}>
+        {title}
+      </h2>
+
+      {/* Body */}
+      <p className={`open-sans-medium text-${mainColor}-800 text-lg leading-relaxed`}>
+        {defaultMessage}
+      </p>
+
+      {/* Divider */}
+      <div className={`w-12 h-[2px] bg-${mainColor}-200 mx-auto my-6 rounded-full`} />
+
+      {/* Signature */}
+      <p className={`text-${mainColor}-600 mont-medium`}>— Plumbum</p>
+    </div>
+  );
+
+  dia.onClose = () => closeDialog();
+  dia.disagreeText = null;
+  dia.agreeText = null;
+  dia.agree = null;
+
+  openDialog(dia);
+};
+
+// const openMessageSentDialog = ({ success = true, message = "" }) => {
+//   const color = success ? "emerald" : "red";
+
+//   let dia = { ...dialog };
+//   dia.isOpen = true;
+//   dia.text = (
+//     <div
+//       className={`bg-${color}-50 rounded-lg p-6 text-center`}
+//       style={{ fontFamily: "Arial, sans-serif" }}
+//     >
+//       {success ? "Message Sent Successfully" : "Submission Failed";}
+//       <p
+//         className={`text-xl lora-medium block text-${color}-800`}
+//         style={{ marginBottom: "20px" }}
+//       >
+//         {message}
+//       </p>
+//       <div className="mt-6">
+//         <p>Best regards,</p>
+//         <p>Plumbum</p>
+//       </div>
+//     </div>
+//   );
+
+//   dia.onClose = () => closeDialog();
+//   dia.disagreeText = null;
+//   dia.agreeText = null;
+//   dia.agree = null;
+
+//   openDialog(dia);
+// };
+
+  // ✅ Proper async submit
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!validateEmail(form.email)) return;
+
+  //   try {
+  //     await authRepo.feedback(form);
+  //     openMessageSentDialog();
+  //     setForm({
+  //       preferredName: "",
+  //       email: "",
+  //       subject: "",
+  //       purpose: "feedback",
+  //       message: "",
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Validate email first
+  if (!validateEmail(form.email)) {
+    openMessageSentDialog({
+      success: false,
+      message: "Please enter a valid email address.",
+    });
+    return;
+  }
+
+  try {
+    await authRepo.feedback(form);
+
+    // Success dialog
+    openMessageSentDialog({
+      success: true,
+      message: `Thank you for sending your ${form.purpose.toLowerCase()}. We will respond if relevant.`,
+    });
+
+    // Reset form
+    setForm({
+      preferredName: "",
+      email: "",
+      subject: "",
+      purpose: "feedback",
+      message: "",
+    });
+  } catch (err) {
+    console.error(err);
+
+    // Error dialog
+    openMessageSentDialog({
+      success: false,
+      message:
+        "Oops! Something went wrong while sending your feedback. Please try again later.",
+    });
+  }
+};
+
+  const input =
+    "w-[80%] rounded-full open-sans-medium bg-transparent text-emerald-800 mx-3";
+
+  const isValid = validateEmail(form.email);
+
+  return (
+    <IonContent fullscreen className="ion-padding">
+      <form onSubmit={handleSubmit} className="my-8 px-4">
         <div className="card sm:max-w-[40rem] mx-auto lg:p-8">
 
-<h2 className="mx-auto lora-bold text-[2rem] mb-8 text-emerald-800">Feedback</h2>
-<label className="border border-2 flex  rounded-full text-xl mont-medium text-emerald-800 border-emerald-800 mb-4 px-4"> 
- <span className="my-auto">Name:</span>
-<input value={preferredName}onChange={(e) => setPreferredName(e.target.value)} type="text" className={input}/></label>
-<label className="border border-2 rounded-full text-xl mont-medium text-emerald-800 border-emerald-800 mb-4 px-4"> 
- <span className="my-auto">Email:</span>
-<input value={email}onChange={(e) => setEmail(e.target.value)} type="text" className={input}/></label>
-<label className="border border-2 rounded-full mont-medium text-xl text-emerald-800 border-emerald-800 mb-4 px-4"> 
-<span className="my-auto">Purpose:</span>
-<select
-value={purpose}
+          <h2 className="mx-auto lora-bold text-[2em] mb-8 text-emerald-800">
+            Feedback
+          </h2>
 
-onChange={(e) => setPurpose(e.target.value)}
-className="w-[80%] bg-transparent rounded-full text-l select text-emerald-800 mont-medium ">
-    <option value={"feedback"}>Feedback</option>
-    <option value={"bug"}>Issue/Bug</option>
-    <option value={"request"}>Feature Request</option>
-    <option value={"encouragement"}>Encouragement</option>
-    <option value={"event"}>Collaboration/Media</option>
-    <option value={"collab/media"}>Collaboration/Media</option>
-</select></label>
-<label 
-value={subject}
+          {/* Name */}
+          <label className="border-2 flex rounded-full text-xl h-[3rem] text-emerald-800 border-emerald-800 mb-4 px-4">
+            <span className="my-auto">Name:</span>
+            <input
+              type="text"
+              value={form.preferredName}
+              onChange={(e) => updateField("preferredName", e.target.value)}
+              className={input}
+            />
+          </label>
 
-onChange={(e) => setSubject(e.target.value)}className="border flex border-2 mont-medium rounded-full border-emerald-800 text-xl mb-4 text-emerald-800 px-4">
-   <span className="my-auto">Subject:</span> 
-<input type="text" value={subject} className={input}/></label>
-<label className="text-l open-sans-medium text-emerald-800 mont-medium">Message:</label>
-<textarea value={message} onChange={(e) => setMessage(e.target.value)}className="textarea bg-transparent mt-4 text-emerald-800 border-emerald-800 border-2" />
-<span
-onClick={validateEmail(email)?handleFeedback:()=>{}}
-className={`btn mont-medium 
+          {/* Email */}
+          <label className="border-2 flex rounded-full text-xl h-[3rem] text-emerald-800 border-emerald-800 mb-4 px-4">
+            <span className="my-auto">Email:</span>
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => updateField("email", e.target.value)}
+              className={input}
+            />
+          </label>
 
-${validateEmail(email)?"bg-gradient-to-r from-emerald-400 to-emerald-600  ":"bg-gradient-to-r from-slate-400 to-emerald-600 "}
-rounded-full border-none py-2 text-white my-12`}>
-    <h2 className="text-2xl text-white">Send</h2></span>
+          {/* Purpose */}
+          <label className="border-2 flex rounded-full text-xl  text-emerald-800 border-emerald-800 mb-4 px-4">
+            <span className="my-auto">Purpose:</span>
+            <select
+              value={form.purpose}
+              onChange={(e) => updateField("purpose", e.target.value)}
+              className="w-[80%] bg-transparent h-[3rem] text-emerald-800 "
+            >
+              <option value="feedback">Feedback</option>
+              <option value="bug">Issue/Bug</option>
+              <option value="request">Feature Request</option>
+              <option value="encouragement">Encouragement</option>
+              <option value="collab">Collaboration/Media</option>
+            </select>
+          </label>
+
+          {/* Subject */}
+          <label className="border-2 flex rounded-full text-xl h-[3rem] text-emerald-800 border-emerald-800 mb-4 px-4">
+            <span className="my-auto">Subject:</span>
+            <input
+              type="text"
+              value={form.subject}
+              onChange={(e) => updateField("subject", e.target.value)}
+              className={input}
+            />
+          </label>
+
+          {/* Message */}
+          <label className="open-sans-medium text-emerald-800">
+            Message:
+          </label>
+          <textarea
+            value={form.message}
+            onChange={(e) => updateField("message", e.target.value)}
+            className="textarea bg-transparent mt-4 text-emerald-800 border-2 border-emerald-800 w-full"
+          />
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={!isValid}
+            className={`w-full rounded-full py-3 text-white mt-12 text-xl transition-all
+              ${
+                isValid
+                  ? "bg-gradient-to-r from-emerald-400 to-emerald-600"
+                  : "bg-slate-400 cursor-not-allowed"
+              }`}
+          >
+            Send
+          </button>
+
         </div>
-        </form>
-  
-  
+      </form>
+    </IonContent>
     
-  </div></IonContent>)
+  );
 }
