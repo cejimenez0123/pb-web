@@ -83,7 +83,7 @@ export default function OnboardingContainer(props) {
 
 
 
-  const onClickApply = debounce(async () => {
+  const onClickApply = async () => {
     
     const idToken =formData.idToken
     if(idToken){
@@ -115,175 +115,352 @@ export default function OnboardingContainer(props) {
         setUser(err);
       }
     }
-  }, 200);
+  }
 
   const updateFormData = (newData) => {
     setFormData(prev => ({ ...prev, ...newData }));
   };
-const dispatchSignUp=(email, name,googleId,idToken)=>{
-  return dispatch(signUp({email,name,googleId,idToken}))
-}
+
   // Components
 
-  const Step1 = ({ formData, updateFormData, handleTab }) => {
-    const handleNext = () => {
-      handleTab('tab2');
-    };
-    const handleBack = () => {
-      handleTab('tab0');
-    };
+  // const Step1 = ({ formData, updateFormData, handleTab }) => {
+  //   const handleNext = () => {
+  //     handleTab('tab2');
+  //   };
+  //   const handleBack = () => {
+  //     handleTab('tab0');
+  //   };
 
-    return (
-      <IonGrid className='h-[60em]' >
+  //   return (
+  //     <IonGrid className='h-[60em]' >
       
-        <IonRow>
+  //       <IonRow>
          
-          <IonList className='text-left '>
-            <div className=''>
-            <IonText color="success" className="lora-bold">* Required</IonText>
-            </div>
-            <div>
-            <IonText className="ion-text-left"  style={{ textAlign:"left" ,fontSize: '1.5rem', fontWeight: 'bold' }}>
-              Interest Form
-            </IonText>
-            </div>
-            <div>
-            <IonText className="ion-text-left" >
-              We’re building a space that’s nurturing, focused, and kind. This short application helps us make sure it’s the right fit — for you, and for the group.
-            </IonText>
-            </div>
-            <IonList className='mt-4'>
-            <IonItem fill="outline" color="success" className="my-8">
-              {/* <IonLabel position="floating" className="mont-medium">Preferred Name</IonLabel> */}
-              <IonInput
-              label='Preferred Name'
-              // style={inputStyle}
-              type='text'
-                value={formData.fullName}
-                onIonChange={e => updateFormData({ fullName: e.detail.value })}
-                placeholder="Jon Doe"
+  //         <IonList className='text-left '>
+  //           <div className=''>
+  //           <IonText color="success" className="lora-bold">* Required</IonText>
+  //           </div>
+  //           <div>
+  //           <IonText className="ion-text-left"  style={{ textAlign:"left" ,fontSize: '1.5rem', fontWeight: 'bold' }}>
+  //             Interest Form
+  //           </IonText>
+  //           </div>
+  //           <div>
+  //           <IonText className="ion-text-left" >
+  //             We’re building a space that’s nurturing, focused, and kind. This short application helps us make sure it’s the right fit — for you, and for the group.
+  //           </IonText>
+  //           </div>
+  //           <IonList className='mt-4'>
+  //           <IonItem fill="outline" color="success" className="my-8">
+  //             {/* <IonLabel position="floating" className="mont-medium">Preferred Name</IonLabel> */}
+  //             <input
+  //             label='Preferred Name'
+  //             // style={inputStyle}
+  //             type='text'
+  //               value={formData.fullName}
+  //               onChange={e => updateFormData({ fullName: e.target.value  })}
+  //               placeholder="Jon Doe"
                 
-              />
-            </IonItem>
+  //             />
+  //           </IonItem>
            
-     <IonItem>  
-  <IonInput
-  label='*Email'
-    type="email"
-    value={formData.email}
-    onIonChange={e => updateFormData({ email: e.detail.value })}
-    placeholder="email@example.com"
-    // style={inputStyle}
-    class='ion-plumbum-input'
-    // className="w-[100%] bg-transparent outline-none text-lg mont-medium"
-    style={inputStyle}
-  />
-  </IonItem>
+  //    <IonItem>  
+  // <input
+  // label='*Email'
+  //   type="email"
+  //   value={formData.email}
+  //   onChange={e => updateFormData({ email: e.target.value  })}
+  //   placeholder="email@example.com"
+  //   // style={inputStyle}
+  //   class='ion-plumbum-input'
+  //   // className="w-[100%] bg-transparent outline-none text-lg mont-medium"
+  //   style={inputStyle}
+  // />
+  // </IonItem>
 
-          <IonItem>
-            {formData.email && !validateEmail(formData.email) && (
-              <IonText color="danger" style={{ fontSize: '0.8rem' }}>
-                Please use a valid email
-              </IonText>
-            )}  </IonItem>
+  //         <IonItem>
+  //           {formData.email && !validateEmail(formData.email) && (
+  //             <IonText color="danger" style={{ fontSize: '0.8rem' }}>
+  //               Please use a valid email
+  //             </IonText>
+  //           )}  </IonItem>
 
-            <IonItem fill="outline" color="success" className="my-4">
+  //           <IonItem fill="outline" color="success" className="my-4">
             
-             <IonInput
-             label='IG Handle'
-                value={formData.igHandle}
-                onIonChange={e => updateFormData({ igHandle: e.detail.value })}
-                placeholder="*****"
+  //            <input
+  //            label='IG Handle'
+  //               value={formData.igHandle}
+  //               onChange={e => updateFormData({ igHandle: e.target.value  })}
+  //               placeholder="*****"
               
-              />
-            </IonItem>
-            <IonItem className='ion-text-center flex'>
+  //             />
+  //           </IonItem>
+  //           <IonItem className='ion-text-center flex'>
 
-            </IonItem>
-            <IonItem className='text-center' >
+  //           </IonItem>
+  //           <IonItem className='text-center' >
 
-            </IonItem>
-            </IonList>
-            {/* <div className='h-[18rem]'/> */}
-            <IonRow className='flex justify-between'>
-            <div className="btn-container btn  bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
-              <IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
-                 Back
-              </IonText>
-            </div>
-            <div className="btn-container btn  bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
-              <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
-                Next Step
-              </IonText>
-            </div>
-            </IonRow>
-          </IonList>
-        </IonRow>
-      </IonGrid>
-    );
+  //           </IonItem>
+  //           </IonList>
+  //           {/* <div className='h-[18rem]'/> */}
+  //           <IonRow className='flex justify-between'>
+  //           <div className="btn-container btn  bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+  //             <IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+  //                Back
+  //             </IonText>
+  //           </div>
+  //           <div className="btn-container btn  bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+  //             <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+  //               Next Step
+  //             </IonText>
+  //           </div>
+  //           </IonRow>
+  //         </IonList>
+  //       </IonRow>
+  //     </IonGrid>
+  //   );
+  // };
+const Step1 = ({ formData, updateFormData, handleTab }) => {
+
+  const [localData, setLocalData] = useState({
+    fullName: formData.fullName || "",
+    email: formData.email || "",
+    igHandle: formData.igHandle || ""
+  });
+
+  const validateEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleNext = () => {
+    updateFormData(localData);
+    handleTab('tab2');
   };
 
-  const Step2 = ({ formData, updateFormData, handleTab }) => {
-    const handleNext = () => {
-      handleTab('tab3');
-    };
-    const handleBack=()=>{
-      handleTab("tab1")
-    }
+  const handleBack = () => {
+    handleTab('tab0');
+  };
 
-    return (
-      <IonGrid className=''>
-        <IonRow>
-          <IonCol>
-            <div className='mb-4'>
-            <IonLabel className="mont-medium" color="success" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
-              Artist Statement
-            </IonLabel>
+  return (
+    <IonGrid className='h-[60em]'>
+      <IonRow>
+        <IonList className='text-left w-[45em] mx-auto'>
+
+          <IonText color="success" className="lora-bold">
+            * Required
+          </IonText>
+
+          <IonText className="text-[1.5rem] font-bold">
+            Interest Form
+          </IonText>
+
+          {/* Preferred Name */}
+          <IonItem fill="outline" color="success" className="my-6">
+            <div className="w-full">
+              <IonLabel className="mont-medium">
+                Preferred Name
+              </IonLabel>
+              <input
+                type="text"
+                value={localData.fullName}
+                onChange={e =>
+                  setLocalData(prev => ({ ...prev, fullName: e.target.value }))
+                }
+                placeholder="Jon Doe"
+                className="w-full bg-transparent outline-none text-lg mt-2"
+              />
             </div>
-            <div>
-            <IonLabel className="mont-medium" color="success" style={{ marginTop: '1rem' }}>
-              What would make a writing space meaningful for you?
-            </IonLabel>
-            <IonTextarea
-              value={formData.whyApply}
-              onIonChange={e => updateFormData({ whyApply: e.detail.value })}
-              placeholder="Tell us what you'd love to see or experience in a space for writers like you."
-              rows={4}
-              cols={48}
-              color="success"
-              className="open-sans-medium w-[90%]"
-            />
-</div><div>
-            <IonLabel className="mont-medium" color="success" style={{ marginTop: '1rem' }}>
-              What do you look for in a writing community?
-            </IonLabel>
-            <IonTextarea
-              value={formData.communityNeeds}
-              onIonChange={e => updateFormData({ communityNeeds: e.detail.value })}
-              rows={4}
-              cols={48}
-              color="success"
-              className="open-sans-medium"
-            />
-</div>
-{/* <div className='h-[19.5rem]'/> */}
-<IonRow>
-<div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
-              <IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+          </IonItem>
+
+          {/* Email */}
+          <IonItem fill="outline" color="success" className="my-6">
+            <div className="w-full">
+              <IonLabel className="mont-medium">
+                * Email
+              </IonLabel>
+              <input
+                type="email"
+                value={localData.email}
+                onChange={e =>
+                  setLocalData(prev => ({ ...prev, email: e.target.value }))
+                }
+                placeholder="email@example.com"
+                className="w-full bg-transparent outline-none text-lg mt-2"
+              />
+            </div>
+          </IonItem>
+
+          {localData.email && !validateEmail(localData.email) && (
+            <IonText color="danger" className="text-sm">
+              Please use a valid email
+            </IonText>
+          )}
+
+          {/* IG Handle */}
+          <IonItem fill="outline" color="success" className="my-6">
+            <div className="w-full">
+              <IonLabel className="mont-medium">
+                IG Handle
+              </IonLabel>
+              <input
+                type="text"
+                value={localData.igHandle}
+                onChange={e =>
+                  setLocalData(prev => ({ ...prev, igHandle: e.target.value }))
+                }
+                placeholder="@yourhandle"
+                className="w-full bg-transparent outline-none text-lg mt-2"
+              />
+            </div>
+          </IonItem>
+
+          {/* Navigation */}
+          <IonRow className='flex justify-between mt-8'>
+            <div className="btn bg-emerald-700 rounded-full px-6 py-2">
+              <IonText onClick={handleBack} className="text-white text-lg">
                 Back
               </IonText>
             </div>
-            <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
-              <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+            <div className="btn bg-emerald-700 rounded-full px-6 py-2">
+              <IonText onClick={handleNext} className="text-white text-lg">
                 Next Step
               </IonText>
             </div>
-            </IonRow>
-          </IonCol>
-        </IonRow>
-      </IonGrid>
-    );
+          </IonRow>
+
+        </IonList>
+      </IonRow>
+    </IonGrid>
+  );
+};
+const Step2 = ({ formData, updateFormData, handleTab }) => {
+
+  const [localData, setLocalData] = useState({
+    whyApply: formData.whyApply || "",
+    communityNeeds: formData.communityNeeds || ""
+  });
+
+  const handleNext = () => {
+    updateFormData(localData);
+    handleTab('tab3');
   };
+
+  const handleBack = () => {
+    handleTab('tab1');
+  };
+
+  return (
+    <IonGrid>
+      <IonRow>
+        <IonCol class='text-left w-[45em] mx-auto'>
+<div className='h-[60em] text-left w-[45em] mx-auto'>
+          <IonLabel className="mont-medium text-lg font-bold">
+            Artist Statement
+          </IonLabel>
+
+          <IonLabel className="mont-medium mt-6 block">
+            What would make a writing space meaningful for you?
+          </IonLabel>
+          <textarea
+            value={localData.whyApply}
+            onChange={e =>
+              setLocalData(prev => ({ ...prev, whyApply: e.target.value }))
+            }
+            rows={4}
+            className="w-[100%] border border-emerald-400 rounded-xl p-3 mt-2"
+          />
+
+          <IonLabel className="mont-medium mt-6 block">
+            What do you look for in a writing community?
+          </IonLabel>
+          <textarea
+            value={localData.communityNeeds}
+            onChange={e =>
+              setLocalData(prev => ({ ...prev, communityNeeds: e.target.value }))
+            }
+            rows={4}
+            className="w-[100%] border border-emerald-400 rounded-xl p-3 mt-2"
+          />
+
+          <IonRow className="flex justify-between mt-8">
+         <div onClick={handleBack} className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" >
+            <IonText  className="emerald-gradient-text-btn text-white text-[0.8rem] text-[1rem]" style={{ width: '100%' }}>
+              Back
+             </IonText>
+          </div>
+           <div onClick={handleNext} className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" >
+            <IonText  className="emerald-gradient-text-btn text-white text-[0.8rem] text-[1rem]" style={{ width: '100%' }}>
+              Next Step
+             </IonText>
+          </div>
+          </IonRow>
+</div>
+        </IonCol>
+      </IonRow>
+    </IonGrid>
+  );
+};
+
+//   const Step2 = ({ formData, updateFormData, handleTab }) => {
+//     const handleNext = () => {
+//       handleTab('tab3');
+//     };
+//     const handleBack=()=>{
+//       handleTab("tab1")
+//     }
+
+//     return (
+//       <IonGrid className=''>
+//         <IonRow>
+//           <IonCol>
+//             <div className='mb-4'>
+//             <IonLabel className="mont-medium" color="success" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+//               Artist Statement
+//             </IonLabel>
+//             </div>
+//             <div>
+//             <IonLabel className="mont-medium" color="success" style={{ marginTop: '1rem' }}>
+//               What would make a writing space meaningful for you?
+//             </IonLabel>
+//             <textarea
+//               value={formData.whyApply}
+//               onChange={e => updateFormData({ whyApply: e.target.value  })}
+//               placeholder="Tell us what you'd love to see or experience in a space for writers like you."
+//               rows={4}
+//               cols={48}
+//               color="success"
+//               className="open-sans-medium w-[90%]"
+//             />
+// </div><div>
+//             <IonLabel className="mont-medium" color="success" style={{ marginTop: '1rem' }}>
+//               What do you look for in a writing community?
+//             </IonLabel>
+//             <textarea
+//               value={formData.communityNeeds}
+//               onChange={e => updateFormData({ communityNeeds: e.target.value  })}
+//               rows={4}
+//               cols={48}
+//               color="success"
+//               className="open-sans-medium"
+//             />
+// </div>
+// {/* <div className='h-[19.5rem]'/> */}
+// <IonRow>
+// <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+//               <IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+//                 Back
+//               </IonText>
+//             </div>
+//             <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0' }}>
+//               <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+//                 Next Step
+//               </IonText>
+//             </div>
+//             </IonRow>
+//           </IonCol>
+//         </IonRow>
+//       </IonGrid>
+//     );
+//   };
 
   const Step3 = ({ formData, updateFormData, handleTab }) => {
     const toggleGenre = (genre) => {
@@ -345,7 +522,7 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
               <IonInput
                 placeholder="Please specify"
                 value={otherGenre}
-                onIonChange={e => updateFormData({ otherGenre: e.detail.value })}
+                onIonInput={e => updateFormData({ otherGenre: e.target.value  })}
                 color="success"
                 className="ion-margin-top"
               />
@@ -380,79 +557,153 @@ const dispatchSignUp=(email, name,googleId,idToken)=>{
     );
   };
 
-  const Step4 = ({ formData, updateFormData, onSave }) => {
-    const handleSubmit = () => {
-      onSave({
-        workshopPreference: formData.workshopPreference,
-        howFindOut: formData.howFindOut,
-        platformFeatures: formData.platformFeatures,
-      });
+//   const Step4 = ({ formData, updateFormData, onSave }) => {
+//     const handleSubmit = () => {
+//       onSave({
+//         workshopPreference: formData.workshopPreference,
+//         howFindOut: formData.howFindOut,
+//         platformFeatures: formData.platformFeatures,
+//       });
    
-    };
+//     };
 
-    return (
-      <IonGrid>
-        <IonCol className='text-left ion-padding'>
-          {/* <IonItem> */}
-          <IonRow>
-          <WorkshopPreferenceSelector
-            workshopPreference={formData.workshopPreference}
-            setWorkshopPreference={val => updateFormData({ workshopPreference: val })}
-          />
-          </IonRow>
-          {/* </IonItem> */}
-          {/* <IonItem> */}
-          <IonRow>
+//     return (
+//       <IonGrid>
+//         <IonCol className='text-left ion-padding'>
+//           {/* <IonItem> */}
+//           <IonRow>
+//           <WorkshopPreferenceSelector
+//             workshopPreference={formData.workshopPreference}
+//             setWorkshopPreference={val => updateFormData({ workshopPreference: val })}
+//           />
+//           </IonRow>
+//           {/* </IonItem> */}
+//           {/* <IonItem> */}
+//           <IonRow>
             
-            <IonLabel  className='pb-8'>
-              How did you find out about Plumbum?
-            </IonLabel>
-            <IonTextarea
-              rows={4}
-              cols={48}
-              value={formData.howFindOut}
-              onIonChange={e => updateFormData({ howFindOut: e.detail.value })}
-              color="success"
-              fill="outline"
-              className="ion-margin-bottom border-1 border-emerald-400 rounded-full h-16 text-lg"
-              style={{ lineHeight: '4rem' }}
-            />
-          </IonRow>
-          {/* </IonItem> */}
-<IonItem>
-          <IonLabel  color="success" className='ion-padding pb-8'>
-            What features would make a writing platform most valuable to you?
-          </IonLabel>
-          <div className='mt-4'> 
-          <IonTextarea
-            value={formData.platformFeatures}
-            onIonChange={e => updateFormData({ platformFeatures: e.detail.value })}
-            color="success"
-            fill="outline"
-            className="border-1 border-emerald-600"
-            style={{ '--border-color': 'var(--ion-color-emerald-600)' }}
-            rows={4}
-            cols={48}
-          />
-          </div>
-</IonItem>
-          <div className="btn-container text-right">
-            <IonText
-              onClick={handleSubmit}
-              className="emerald-gradient-text-btn text-lg btn bg-emerald-600 rounded-full text-white"
-              style={{
-                opacity: validateEmail(formData.email) ? 1 : 0.6,
-                pointerEvents: validateEmail(formData.email) ? 'auto' : 'none',
-              }}
-            >
-              Apply
-            </IonText>
-          </div>
-        </IonCol>
-      </IonGrid>
-    );
+//             <IonLabel  className='pb-8'>
+//               How did you find out about Plumbum?
+//             </IonLabel>
+//             <IonTextarea
+//               rows={4}
+//               cols={48}
+//               value={formData.howFindOut}
+//               onIonInput={e => updateFormData({ howFindOut: e.target.value  })}
+//               color="success"
+//               fill="outline"
+//               className="ion-margin-bottom border-1 border-emerald-400 rounded-full h-16 text-lg"
+//               style={{ lineHeight: '4rem' }}
+//             />
+//           </IonRow>
+//           {/* </IonItem> */}
+// <IonItem>
+//           <IonLabel  color="success" className='ion-padding pb-8'>
+//             What features would make a writing platform most valuable to you?
+//           </IonLabel>
+//           <div className='mt-4'> 
+//           <IonTextarea
+//             value={formData.platformFeatures}
+//             onIonInput={e => updateFormData({ platformFeatures: e.target.value  })}
+//             color="success"
+//             fill="outline"
+//             className="border-1 border-emerald-600"
+//             style={{ '--border-color': 'var(--ion-color-emerald-600)' }}
+//             rows={4}
+//             cols={48}
+//           />
+//           </div>
+// </IonItem>
+//           <div className="btn-container text-right">
+//             <IonText
+//               onClick={handleSubmit}
+//               className="emerald-gradient-text-btn text-lg btn bg-emerald-600 rounded-full text-white"
+//               style={{
+//                 opacity: validateEmail(formData.email) ? 1 : 0.6,
+//                 pointerEvents: validateEmail(formData.email) ? 'auto' : 'none',
+//               }}
+//             >
+//               Apply
+//             </IonText>
+//           </div>
+//         </IonCol>
+//       </IonGrid>
+//     );
+//   };
+const Step4 = ({ formData, updateFormData, onSave }) => {
+  // Local state for this step
+  const [localData, setLocalData] = useState({
+    workshopPreference: formData.workshopPreference || "both",
+    howFindOut: formData.howFindOut || "",
+    platformFeatures: formData.platformFeatures || "",
+  });
+
+  const handleSubmit = () => {
+    // Push local state to parent before submitting
+    updateFormData(localData);
+    onSave();
   };
 
+  return (
+    <IonGrid>
+      <IonCol className="text-left ion-padding">
+
+        {/* Workshop Preference */}
+        <IonLabel className="mont-medium font-bold block mb-2">
+          Would you prefer in-person workshops, online, or both?
+        </IonLabel>
+        <WorkshopPreferenceSelector
+          workshopPreference={localData.workshopPreference}
+          setWorkshopPreference={val =>
+            setLocalData(prev => ({ ...prev, workshopPreference: val }))
+          }
+        />
+
+        {/* How did you find out? */}
+        <IonLabel className="mont-medium font-bold block mt-6 mb-2">
+          How did you find out about Plumbum?
+        </IonLabel>
+        <textarea
+          rows={4}
+          value={localData.howFindOut}
+          onChange={e =>
+            setLocalData(prev => ({ ...prev, howFindOut: e.target.value }))
+          }
+          placeholder="e.g., social media, friend, workshop"
+          className="w-[100%] border border-emerald-400 rounded-xl p-3"
+        />
+
+        {/* Platform Features */}
+        <IonLabel className="mont-medium font-bold block mt-6 mb-2">
+          What features would make a writing platform most valuable to you?
+        </IonLabel>
+        <textarea
+          rows={4}
+          value={localData.platformFeatures}
+          onChange={e =>
+            setLocalData(prev => ({ ...prev, platformFeatures: e.target.value }))
+          }
+          placeholder="e.g., peer reviews, prompts, community groups"
+          className="w-[100%] border border-emerald-400 rounded-xl p-3"
+        />
+
+        {/* Apply Button */}
+        <div className="btn-container text-right mt-6">
+          <IonText
+            onClick={handleSubmit}
+            className="emerald-gradient-text-btn text-lg btn bg-emerald-600 rounded-full text-white px-6 py-2"
+            style={{
+              opacity: validateEmail(formData.email) ? 1 : 0.6,
+              pointerEvents: validateEmail(formData.email) ? "auto" : "none",
+            }}
+          >
+            Apply
+          </IonText>
+        </div>
+
+      </IonCol>
+    </IonGrid>
+  );
+};
 const Why = ({ handleTab, nav }) => {
   return (
     <div className='text-center py-8'>
