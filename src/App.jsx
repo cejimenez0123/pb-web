@@ -130,7 +130,7 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
            <NavbarContainer 
     
         currentProfile={currentProfile}/>:null}
-              <div >
+              <div>
  
     
        

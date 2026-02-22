@@ -28,6 +28,8 @@ PODS:
     - Capacitor
   - CapacitorPreferences (7.0.3):
     - Capacitor
+  - CapacitorPushNotifications (7.0.4):
+    - Capacitor
   - CapacitorSplashScreen (7.0.4):
     - Capacitor
   - CapgoCapacitorSocialLogin (7.20.0):
@@ -94,6 +96,7 @@ DEPENDENCIES:
   - "CapacitorGeolocation (from `../../node_modules/@capacitor/geolocation`)"
   - "CapacitorNetwork (from `../../node_modules/@capacitor/network`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
+  - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapgoCapacitorSocialLogin (from `../../node_modules/@capgo/capacitor-social-login`)"
 
@@ -137,6 +140,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/network"
   CapacitorPreferences:
     :path: "../../node_modules/@capacitor/preferences"
+  CapacitorPushNotifications:
+    :path: "../../node_modules/@capacitor/push-notifications"
   CapacitorSplashScreen:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapgoCapacitorSocialLogin:
@@ -154,6 +159,7 @@ SPEC CHECKSUMS:
   CapacitorGeolocation: bb6f441b53393984f1c4e8b7e4a826fe3e133309
   CapacitorNetwork: 1a22460c6f900686f12ffa52f3074ee313821b08
   CapacitorPreferences: 913eef88272c13eb6445b21e51fe8ef6635412cc
+  CapacitorPushNotifications: 7604512af53bbfdf1dd8fb2256b9ef1e8a69cdc2
   CapacitorSplashScreen: 000f7591d546907dda5cbb514bd6b6d9e6048cf8
   CapgoCapacitorSocialLogin: a6084e910ce61d78173fa215460c00523a6c4536
   FBAEMKit: e34530df538b8eb8aeb53c35867715ba6c63ef0c
@@ -174,6 +180,6 @@ SPEC CHECKSUMS:
   IONGeolocationLib: 20f9d0248a0b5264511fb57a37e25dd2badf797a
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: ab08f3d9b5131d61bca68acb8b55ea8916953ef0
+PODFILE CHECKSUM: 572da908b4e3f8173faac0bb9b9e30cc5e2b3ac3
 
 COCOAPODS: 1.16.2

@@ -168,9 +168,10 @@ export default DiscoveryContainer;
 
 
    return <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} scrollY={true}>
-   
+{/*    
            <div className=' flex flex-row flex-end p-4 max-w-[100vw]'>
-<div className='w-[100%]'/>
+<div className='w-[100%] pt-4'/> */}
+         <div className='flex mt-4  pt-16 px-4 flex-row justify-between'>
           <img onClick={()=>{
       sendGAEvent("navigation_click", {
       destination: "calendar",
