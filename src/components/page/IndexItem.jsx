@@ -54,7 +54,7 @@ export default function IndexItem({item,handleFeedback,type}) {
          dispatch(setHtmlContent({html:comp.data}))
         dispatch(setEditingPage({page:comp}))
         dispatch(setPageInView({page:comp}))
-        router.push(Paths.editPage.createRoute(comp.id))
+        router.push(Paths.editPage.createRoute(comp.id), "forward", "replace");
       }  
     }
 

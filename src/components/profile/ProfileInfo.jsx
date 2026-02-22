@@ -77,11 +77,20 @@ const ProfileInfo = ({profile})=>{
     if(!profile){
         return <div className="skeleton h-[100%] w-24"/>
     }
-    const ProfilePic = ({url})=>    <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mx-auto rounded-full overflow-hidden">
-    <IonImg className={"object-fit "}
-    src={url}/>
+    // const ProfilePic = ({url})=> (<div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mx-auto rounded-full overflow-hidden">
+    // <IonImg className={"object-fit "}
+    // src={url}/>
    
-    </div>
+    // </div>)
+    const ProfilePic = ({ url }) => (
+  <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mx-auto rounded-full overflow-hidden">
+    <img
+      className="w-full h-full object-cover"
+      src={url}
+      alt="profile"
+    />
+  </div>
+);
     return (  
       
         <div className="flex  h-[15em]   w-[100vw] sm:w-[100%] flex-col   ">                       

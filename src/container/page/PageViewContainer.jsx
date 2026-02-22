@@ -150,7 +150,7 @@ useScrollTracking({
   is_private: page.isPrivate,
   viewer_logged_in: Boolean(currentProfile),
   platform: Capacitor.isNativePlatform() ? "native" : "web"
-})
+},[page])
 
 
     setPending(false);

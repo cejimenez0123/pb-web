@@ -52,14 +52,11 @@ function MyProfileContainer({ presentingElement }) {
   const dispatch = useDispatch();
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const stories = useSelector(state => state.pages.pagesInView);
-  // const dialog = useSelector(state => state.users.dialog);
   const { seo, setSeo ,setError} = useContext(Context);
   const collections = useSelector(state => state.books.collections);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("Filter");
   const [driveToken, setDriveToken] = useState(null);
-  // const [description, setFeedback] = useState("");
-  // const [errorLocal, setErrorLocal] = useState(null);
   const [feedback, setFeedback] = useState("");
  
   const filterTypes = {

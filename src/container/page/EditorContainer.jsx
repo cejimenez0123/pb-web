@@ -31,7 +31,7 @@ function EditorContainer({presentingElement}){
         const editPage = useSelector(state=>state.pages.editingPage)
         const [pending,setPending]=useState(false)
         const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-        const [openDescription,setOpenDescription]=useState(false)
+        // const [openDescription,setOpenDescription]=useState(false)
         const dispatch = useDispatch()
         const isNative = Capacitor.isNativePlatform()
         const md = useMediaQuery({ query: '(min-width:800px)'})
@@ -163,11 +163,9 @@ setError(err.message)
           router.push(Paths.addStoryToCollection.story(id))
         }
   const handleisPrviate=debounce((truthy)=>{
-          setOpenDescription(false)
+          closeDialog()
           handleChange("needsFeedback",false)
           handleChange("isPrivate",truthy)
-          closeDialog()
-          setOpenDescription(false)
         },10)
 
 
@@ -193,28 +191,29 @@ setError(err.message)
       <div className="dropdown dropdown-bottom   dropdown-end">
       <div tabIndex={0} role="button" ><img className="min-w-16 min-h-[5rem]   bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
       <ul tabIndex={0} className="dropdown-content text-center menu bg-white rounded-box z-[1] shadow">
-        <li className="text-emerald-600 pt-3 pb-2 "
+        <li className="text-emerald-600 pt-3 pb-2 btn shadoow-none bg-transparent "
         onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
         <li onClick={()=>{
-        setOpenDescription(false)
+        // setOpenDescription(false)
          openFeedback(true)
-        }} className="text-emerald-600 pt-3 pb-2 ">
+        }} className="text-emerald-600 pt-3 pb-2 btn shadoow-none bg-transparent  ">
           <a className="text-emerald-600 text-center">Get Feedback</a></li>
-        {editPage?<li className=" pt-3 pb-2" onClick={()=>{router.push(Paths.page.createRoute(editPage.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
+        {editPage?<li className=" pt-3 pb-2 btn shadoow-none bg-transparent " onClick={()=>{router.push(Paths.page.createRoute(editPage.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
 {!(editPage&&editPage.id)?null:parameters.isPrivate?<li onClick={()=>{
-    setFeedbackDialog(false) 
-    setOpenDescription(true)} }
-className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
+ openFeedback(false)} 
+  
+  }
+className="text-emerald-600 btn shadow-none bg-transparent pt-3 pb-2 ">Publish Publicly</li>:
 <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
 
   handleChange("isPrivate",true)
   }}>Make Private</li>}
   {!parameters.isPrivate?<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
        setFeedbackDialog(false) 
- setOpenDescription(true)
+ openFeedback(false)
   }}>Edit Description</li>:null}
-        <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
-        {editPage?<li className="text-emerald-600 pt-3 pb-2" onClick={()=>{
+        <li className="text-emerald-600 pt-3 pb-2 btn shadoow-none bg-transparent " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
+        {editPage?<li className="text-emerald-600 pt-3 pb-2 btn shadoow-none bg-transparent " onClick={()=>{
           openRoleFormDialog(parameters.page);setOpenRoles(!openRoles)}}>Manage Access</li>:null}
         <li className="text-emerald-600 pt-3 pb-2" onClick={openConfirmDeleteDialog}>Delete</li>
       </ul>
@@ -237,12 +236,10 @@ className="text-emerald-600 pt-3 pb-2 ">Publish Publicly</li>:
    const openFeedback=(isFeedback)=>{
 
 openDialog({...dialog,disagree:null,agree:null,disagreeText:null,scrollY:false,text:
-    <FeedbackDialog 
-
+    <FeedbackDialog  
 page={editPage}
-// open={feedbackDialog||openDescription} 
+
 isFeedback={isFeedback}
-// presentingElement={presentingElement}
 handleChange={e=>handleChange("description",e)} 
 handleFeedback={(item)=>{
   closeDialog()
@@ -255,12 +252,13 @@ handleFeedback={(item)=>{
         });
 }}
 handlePostPublic={()=>{
-  handleisPrviate(false)}}
+  console.log("Publishing...")
+  handleisPrviate(false)
+  closeDialog()
+  router.push(Paths.page.createRoute(editPage.id),"forward","replace")
+}}
 handleClose={()=>{
-
-  
-    setOpenDescription(false)
-    setFeedbackDialog(false)
+closeDialog()
 }} />})}
       
 
@@ -351,22 +349,7 @@ const openRoleFormDialog = () => {
                 </div>
                     <div>
        
-{/* <FeedbackDialog 
-
-page={editPage}
-open={feedbackDialog||openDescription} 
-isFeedback={feedbackDialog}
-presentingElement={presentingElement}
-handleChange={e=>handleChange("description",e)} 
-handleFeedback={handleFeedback}
-handlePostPublic={()=>{
-  handleisPrviate(false)}}
-handleClose={()=>{
-
-  
-    setOpenDescription(false)
-    setFeedbackDialog(false)
-}} /> */}
+=
 
 
       

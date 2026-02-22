@@ -25,10 +25,10 @@ export default function FeedbackDialog({page,isFeedback,handleChange,handlePostP
             className={`textarea mx-2 w-[96%]  min-h-[7rem] border-opacity-50 rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600`}/>
                    <div className="mt-8">
                     <IonRow className="justify-between flex">
-          <h2 className="mont-medium text-[1rem] text-emerald-700" onClick={()=>closeDialog()}>Continue Working</h2>
-             {isFeedback? <h2 className="mont-medium mx-1 text-[1rem] text-emerald-700" onClick={()=>handleFeedback(page)}>
+          <h2 className="text-[1rem] text-emerald-700 hover:text-sky-500 " onClick={()=>closeDialog()}>Continue Working</h2>
+             {isFeedback? <h2 className=" mx-1  hover:text-sky-500 text-[1rem] text-emerald-700" onClick={()=>handleFeedback(page)}>
      Get feedback
-          </h2>:<h2 className="mont-medium text-[1rem]  text-emerald-700" onClick={()=>handlePostPublic()}>
+          </h2>:<h2 className="hover:text-sky-500 text-[1rem]  text-emerald-700" onClick={()=>handlePostPublic()}>
   Publish
           </h2>}
           </IonRow>

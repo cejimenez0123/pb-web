@@ -108,24 +108,31 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
  if(data && data.story && data.story.id){
 
 
-
+try{
 if(data && data.story && data.story.isPrivate&&data.story.id){
   algoliaRepo.deleteObject("story",data.story.id)
 }else{
 data && data.story && algoliaRepo.partialUpdateObject("story",data.story.id,{title:data?.story?.title})
 }
-  }
-console.log("UPDATE STORY DATA",data)
-  return {
-    story: data.story
-  }
+ 
 }catch(e){
 
   return{
     error: e
   }
 }
-})
+
+  }
+
+return {
+    story: data.story
+  }
+}catch(e){
+    return {
+      error: e
+    }
+  }}
+)
 const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesPublic",async (params,thunkApi)=>{
   try{
      let data = await storyRepo.getCollectionStoriesPublic(params)
