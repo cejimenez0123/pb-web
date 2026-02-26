@@ -37,14 +37,3 @@ return (
                   }
  export default IndexList
 
-
- //   return<IonList 
-//   className="overflow-visible "
-//   >
-//     <div className="min-h-[50rem]">
-//   {items && items.length? items.filter(item=>item).map((item, i) => (
-//     <IonItem key={i + item.id}>
-//       <IndexItem page={item} item={item} type={type} handleFeedback={() => handleFeedback(item)} />
-//     </IonItem>
-//   )):[]}</div>
-// </IonList>

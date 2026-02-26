@@ -43,17 +43,17 @@ export default function LinksContainer(props){
                 <li>  
                       <LinkNode image={pen}
                       name={"Writers Workshop"}
-       url={"https://partiful.com/e/uj6kSckORSweohDsmBr9?c=mCUwl7I5"}
-                    title={"Feb 21st. Writers Workshop"}
+       url={"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}
+                    title={"March 21st. Writers Workshop"}
                     description={`Join us for Writers Workshop`}/>
                     </li>
-                    <li>
+                    {/* <li>
                 <LinkNode image={cafe}
                       name={"Coffee Rave"}
        url={"https://partiful.com/e/5nPDt7vRSokpl7HqIege?c=ySPK0QZm"}
                     title={"Feb 21st. CaFeTato"}
                     description={`Cafe, dance, vibe out in the BX`}/>
-                    </li>
+                    </li> */}
                 
              
                     <li>

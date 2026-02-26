@@ -44,7 +44,7 @@ let t=page.data
   case PageType.picture:{
   
     return(image?
-    <IonImg
+    <img
       style={{maxWidth:"94vw",width:"100%"}}
     className="object-contain max-w-[94vw] sm:max-w-[45em] "
    
