@@ -4,6 +4,7 @@ import LinkNode from "../components/LinkNode";
 import Paths from "../core/paths";
 import logo from "../images/icon.ico"
 import events from "../images/icons/event.svg"
+import clinic from "../images/icons/clinic.png"
 import { initGA} from "../core/ga4";
 import Context from "../context";
 import flare from "../images/icons/flare.svg"
@@ -47,13 +48,11 @@ export default function LinksContainer(props){
                     title={"March 21st. Writers Workshop"}
                     description={`Join us for our Writers Workshop`}/>
                     </li>
-                    {/* <li>
-                <LinkNode image={cafe}
-                      name={"Coffee Rave"}
-       url={"https://partiful.com/e/5nPDt7vRSokpl7HqIege?c=ySPK0QZm"}
-                    title={"Feb 21st. CaFeTato"}
-                    description={`Cafe, dance, vibe out in the BX`}/>
-                    </li> */}
+                  <LinkNode image={clinic}
+                  url={"https://calendly.com/solemilio-decibao/45"}
+                  title={"Creative Writing Clinic"}
+                  description={"Book a 45 min one-on-one session with our founder, Sol Emilio, to discuss your writing and get personalized feedback."}
+                  />
                 
              
                     <li>
@@ -64,13 +63,13 @@ export default function LinksContainer(props){
                     title={"NYC Writing Calendar"}
                     description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
                     </li>
-                    <li>
+                    {/* <li>
                      <LinkNode image={etsy}
                      name={"etsy"}
        url={"https://www.etsy.com/shop/PlumbumWriters?ref=dashboard-header"}
                     title={"Plumbum Merch on Etsy"}
                     description={"Support development, events, and cups of coffee by purchasing merch inspired by the founder, Sol Emilio."}/>
-                    </li>
+                    </li> */}
                    <li>
                <LinkNode url={"https://plumbum.app"+Paths.discovery}
                image={logo}
