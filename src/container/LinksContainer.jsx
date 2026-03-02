@@ -49,9 +49,10 @@ export default function LinksContainer(props){
                     description={`Join us for our Writers Workshop`}/>
                     </li>
                   <LinkNode image={clinic}
+                  name={""}
                   url={"https://calendly.com/solemilio-decibao/45"}
-                  title={"Creative Writing Clinic"}
-                  description={"Book a 45 min one-on-one session with our founder, Sol Emilio, to discuss your writing and get personalized feedback."}
+                  title={"Creative Writing Clinic: Book a 45 min one-on-one session "}
+                  description={"Meet with our founder, Sol Emilio, to discuss your writing and get personalized feedback."}
                   />
                 
              
