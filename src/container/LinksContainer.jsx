@@ -63,13 +63,7 @@ export default function LinksContainer(props){
                     title={"NYC Writing Calendar"}
                     description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
                     </li>
-                    {/* <li>
-                     <LinkNode image={etsy}
-                     name={"etsy"}
-       url={"https://www.etsy.com/shop/PlumbumWriters?ref=dashboard-header"}
-                    title={"Plumbum Merch on Etsy"}
-                    description={"Support development, events, and cups of coffee by purchasing merch inspired by the founder, Sol Emilio."}/>
-                    </li> */}
+                 
                    <li>
                <LinkNode url={"https://plumbum.app"+Paths.discovery}
                image={logo}
