@@ -167,7 +167,7 @@ let css= {"height":"6em","margin":"auto"}
         rounded-[2em] overflow-hidden my-4
         w-full shadow-md 
         bg-emerald-100 p-4
-        h-[23em]  sm:h-[12em]
+        h-[25em]  sm:h-[12em]
         flex flex-col sm:flex-row 
         gap-4
       `}
