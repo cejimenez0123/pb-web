@@ -461,6 +461,10 @@ const goToCalendar = (source="about_page") => {
                 >
                   click here
                 </h2>
+                <div className="flex gap-4 mt-4 flex-row ">
+                <h2><a className="text-white" onClick={() => router.push("/privacy")}>Privacy Policy</a></h2>
+                <h2><a className="text-white"  onClick={() => router.push("/terms")}>Terms of Service</a></h2>
+                </div>
               {/* </IonText> */}
               <div>
            
