@@ -73,7 +73,7 @@ export default function SettingsContainer(props) {
       const handleSignOut =async () => {
  
     await Preferences.clear()
-   router.push (Paths.login())
+   router.push(Paths.login(),"forward","replace")
     dispatch(signOutAction())
   
    

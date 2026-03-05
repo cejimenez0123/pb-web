@@ -346,13 +346,22 @@ onClick={()=>{
   <div >
 
   <div className="relative flex flex-col md:flex-row justify-around mx-auto p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
-
+{/* 
     <div className="md:w-1/3 max-w-[60em] h-[16em] mb-[4em] flex justify-center md:justify-start">
       <ProfileInfo profile={currentProfile} />
-    </div>
+    </div> */}
     
 
     {/* Right: Buttons */}
+    <h4 className='text-xl'>
+      What's happening in your communiteis?
+    </h4>
+    <h4 className='text-xl'>
+     Workshops near you
+    </h4>
+     <h4 className='text-xl'>
+     Writing Prompts for you
+    </h4>
     <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  ">
 
       {/* Row 1: Write a Story + Create Collection */}
@@ -383,11 +392,11 @@ onClick={()=>{
 
       {/* Row 3: Google Drive Picker */}
       {/* <div className="flex justify-center mx-auto md:justify-start w-full"> */}
-        <GoogleDrivePicker
+        {/* <GoogleDrivePicker
           getToken={getDriveToken}
           accessToken={driveToken}
           onFilePicked={getFile}
-        />
+        /> */}
       {/* </div> */}
 
     </div>
@@ -395,9 +404,9 @@ onClick={()=>{
 
   {/* Search + Tabs stay unchanged */}
   <div className='mx-auto md:mt-8 flex flex-col md:w-page'>
-    <div className="flex items-center mb-8 mx-auto h-9 max-w-[85vw] pr-4 rounded-full bg-transparent">
+    {/* <div className="flex items-center mb-8 mx-auto h-9 max-w-[85vw] pr-4 rounded-full bg-transparent"> */}
 
-      <select
+      {/* <select
         onChange={e => setFilterType(e.target.value)}
         value={filterType}
         className="select w-24 text-emerald-800 rounded-full bg-transparent"
@@ -405,11 +414,11 @@ onClick={()=>{
         {Object.entries(filterTypes).map(([, val]) => (
           <option key={val} value={val}>{val}</option>
         ))}
-      </select>
-    </div>
+      </select> */}
+    {/* </div> */}
 
-    <div className='h-fit min-h-[55rem] mx-auto'>
-      <StoryCollectionTabs
+    {/* <div className='h-fit min-h-[55rem] mx-auto'> */}
+      {/* <StoryCollectionTabs
         tab={tab}
         setTab={setTab}
         colList={() => <IndexList type="collection" 
@@ -425,8 +434,8 @@ onClick={()=>{
             }}
           />
         )}
-      />
-    </div>
+      /> */}
+    {/* </div> */}
 
   </div>
 </div>
