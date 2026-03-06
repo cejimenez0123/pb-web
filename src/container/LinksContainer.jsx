@@ -51,7 +51,7 @@ export default function LinksContainer(props){
                      <li>  
                       <LinkNode image={bxFuture}
                       name={"Writers Workshop"}
-       url={"https://www.eventbrite.com/e/plumbum-x-bronx-frame-creative-tech-mixer-tickets-1984611238639?aff=ebdssbdestsearch"}
+       url={"https://posh.vip/e/plumbum-x-bronx-frame-create-tech-mixer"}
                     title={"May 1st. Mixer"}
                     description={`Creative and Tech mixer, bring the heart to tech, and the impact to art. Connect with the next generation of creators.`}/>
                     </li>
