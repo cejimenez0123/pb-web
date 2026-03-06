@@ -64,6 +64,16 @@ async ({profile,story,location,isGlobal,radius},thunkApi)=>{
     }
 }
 )
+const findWorkshopGroups = createAsyncThunk("books/findWorkshopGroups",async ({radius=50,global=false,location},thunkApi)=>{
+    try {
+      let data = await workshopRepo.findWorkshops({radius,global,location})
+      console.log("Fetched workshop groups:", data);
+      return data
+    } catch (error) {
+      console.error('Error fetching workshop groups:', error);
+      return {groups:[]}
+    }
+  })
 function mergeSmallArrays(input) {
   // Flatten the input array to separate items and small arrays
   let result = [];
@@ -124,4 +134,4 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
 
 })
 
-export {registerUser,disconnectUser, postActiveUser,createWorkshopGroup, fetchWorkshopGroups }
+export {registerUser,disconnectUser,findWorkshopGroups, postActiveUser,createWorkshopGroup, fetchWorkshopGroups }

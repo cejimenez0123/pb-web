@@ -17,10 +17,11 @@ import Paths from "../../core/paths.js";
 import grid from "../../images/grid.svg";
 import stream from "../../images/stream.svg";
 import loadingGif from "../../images/loading.gif";
+import { useParams } from "react-router";
 
 export default function HashtagContainer() {
 
-  const { id } = useParams();
+  const { id } = useParams()
   const dispatch = useDispatch();
   const router = useIonRouter()
   const { setError, seo, setSeo } = useContext(Context);
@@ -211,7 +212,7 @@ export default function HashtagContainer() {
 
   return (
     <ErrorBoundary>
-   
+   <IonContent fullscreen>
              <IonHeader translucent>
           <IonToolbar className="flex flex-row">
             <IonButtons>
@@ -258,6 +259,7 @@ export default function HashtagContainer() {
           {/* </div> */}
         {/* </IonContent> */}
       {/* </IonPage> */}
+      </IonContent>
     </ErrorBoundary>
   );
 }

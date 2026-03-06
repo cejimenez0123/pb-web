@@ -9,7 +9,7 @@ import { IonImg, useIonRouter } from '@ionic/react';
 import Enviroment from "../../core/Enviroment"
 import truncate from "html-truncate"
 import { Capacitor } from "@capacitor/core"
-export default function PageDataElement({page,isGrid,book=null}){
+export default function PageDataElement({page,isGrid,size="lg",book=null,truncateNumber=400}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
     const {isHorizPhone}=useContext(Context)
    const router = useIonRouter()
@@ -37,7 +37,7 @@ let t=page.data
 
    <div
 
-        className={`ql-editor page-data  p-4`} dangerouslySetInnerHTML={{__html:truncate(t, 400,{})}}/>
+        className={`ql-editor-${size} `}dangerouslySetInnerHTML={{__html:truncate(t, truncateNumber,{})}}/>
 
 
   ) }

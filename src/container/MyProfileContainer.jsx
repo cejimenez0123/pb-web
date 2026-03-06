@@ -1,11 +1,11 @@
 import { useEffect, useState, useContext, useMemo, useLayoutEffect } from 'react';
 import "../styles/MyProfile.css";
 import { useDispatch, useSelector } from "react-redux";
-import { createStory, updateStory,  } from '../actions/StoryActions';
+import { createStory, fetchRecommendedStories, updateStory,  } from '../actions/StoryActions';
 import { setCollections} from '../actions/CollectionActions';
 import IndexList from '../components/page/IndexList';
 import Paths from '../core/paths';
-import { debounce } from 'lodash';
+import { debounce, set } from 'lodash';
 import calendar from '../images/icons/calendar.svg'
 import settings from "../images/icons/settings.svg"
 import { setPageInView, setPagesInView, setEditingPage, setHtmlContent } from '../actions/PageActions.jsx';
@@ -16,7 +16,7 @@ import { PageType } from '../core/constants';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import Context from '../context';
 import FeedbackDialog from '../components/page/FeedbackDialog';
-import { IonText, IonInput, IonContent, IonSpinner, IonPage,  useIonViewWillEnter, IonImg, useIonRouter } from '@ionic/react';
+import { IonText, IonInput, IonContent, IonSpinner, IonPage,  useIonViewWillEnter, IonImg, useIonRouter, IonList } from '@ionic/react';
 import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
 import { Preferences } from '@capacitor/preferences';
 import axios from "axios";
@@ -25,6 +25,11 @@ import ErrorBoundary from '../ErrorBoundary.jsx';
 
 import { getCurrentProfile } from '../actions/UserActions.jsx';
 import { useDialog } from '../domain/usecases/useDialog.jsx';
+import PageViewItem from '../components/page/PageViewItem.jsx';
+import PageDataElement from '../components/page/PageDataElement.jsx';
+import ProfileCircle from '../components/profile/ProfileCircle.jsx';
+// import requestLocation from '../core/requestLocation.jsx';
+import { fetchWorkshopGroups, findWorkshopGroups, registerUser } from '../actions/WorkshopActions.jsx';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -46,7 +51,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
   );
 }
 
-function MyProfileContainer({ presentingElement }) {
+function MyProfileContainer() {
   const [tab, setTab] = useState("page");
   const router = useIonRouter()
   const dispatch = useDispatch();
@@ -55,10 +60,16 @@ function MyProfileContainer({ presentingElement }) {
   const { seo, setSeo ,setError} = useContext(Context);
   const collections = useSelector(state => state.books.collections);
   const [search, setSearch] = useState("");
+  const [isGlobal,setIsGlobal]=useState(true)
+    const isNative = Capacitor.isNativePlatform();
   const [filterType, setFilterType] = useState("Filter");
   const [driveToken, setDriveToken] = useState(null);
   const [feedback, setFeedback] = useState("");
- 
+  const [loading,setLoading]=useState(false)
+  const [location, setLocation] = useState(null);
+  const [whatsHappeningList,setWhatsHappeningList]=useState([])
+    const [workshops,setWorkshops]=useState([])
+
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -67,6 +78,112 @@ function MyProfileContainer({ presentingElement }) {
     AZ: "A-Z",
     ZA: "Z-A"
   };
+  
+  const webRequestLocation=()=>{
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        if(currentProfile&&currentProfile.id){
+         location&& registerUser(currentProfile.id,location)
+        }
+    
+        setError(null);
+        setLoading(false);
+      },
+      (err) => {
+        console.log("location error")
+        setError("We use location to conect with you fellow writers. Reload for access.");
+        setLoading(false);
+  
+      }
+    );
+  }
+  const getPostion = async () => {
+    if(isNative){
+ const position = await Geolocation.getCurrentPosition();
+      setLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+      if (currentProfile && currentProfile.id) {
+      location&&  registerUser(currentProfile.id, {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      
+  }}else{
+      navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        if(currentProfile&&currentProfile.id){
+         location&& registerUser(currentProfile.id,location)
+        }
+    
+        setError(null);
+        setLoading(false);
+      })}}
+useEffect(()=>{
+
+
+   isGlobal && (currentProfile && (isNative ? requestLocation() : webRequestLocation()))
+  },[])
+ const requestLocation = async () => {
+  setLoading(true);
+  try {
+    // Check current geolocation permission state
+    const permStatus = await Geolocation.checkPermissions();
+
+    if (permStatus.location === 'granted') {
+      // Permission already granted, get location
+     getPostion()
+      
+      setError(null);
+    }else if (permStatus.location === 'prompt' || permStatus.location === 'denied') {
+      // Request permission explicitly, triggers iOS popup if needed
+      const requestResult = await Geolocation.requestPermissions();
+      if (requestResult.location === 'granted') {
+        const position = await Geolocation.getCurrentPosition();
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        if (currentProfile && currentProfile.id) {
+            location&&  registerUser(currentProfile.id, {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        }
+        setError(null);
+      } else {
+        setError("Location permission denied. Please enable location permissions in your device settings.");
+      }
+    } else {
+      setError("Unable to determine location permission state.");
+    }
+  } catch (err) {
+    console.error("Error requesting location or getting position:", err);
+    setError("Could not get location. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+useEffect(()=>{
+  async function handleLocation() {
+    
+  
+  isGlobal && currentProfile && (isNative ? requestLocation() : webRequestLocation())
+  }
+
+handleLocation()
+
+},[location])
+
  useEffect(() => {
   if (currentProfile) {
     setSeo(prev => ({
@@ -141,30 +258,22 @@ function MyProfileContainer({ presentingElement }) {
   }, [collections, filterType, search]);
 
 
-const [checkingAuth, setCheckingAuth] = useState(true);
+// const [checkingAuth, setCheckingAuth] = useState(true);
  const {openDialog,closeDialog,dialog,resetDialog}=useDialog()
-useEffect(() => {
-  const syncProfile = async () => {
-    if (currentProfile) {
-      setCheckingAuth(false);
-      return;
-    }
+// useEffect(() => {
+//   const syncProfile = async () => {
+//     if (currentProfile) {
+//       // setCheckingAuth(false);
+//       return;
+//     }
 
-    const { value } = await Preferences.get({ key: "token" });
-
-    if (value) {
-    dispatch(getCurrentProfile()).then(()=>{
-  setCheckingAuth(false);
-    })
+//     dispatch(getCurrentProfile())
     
-    } else {
-      setCheckingAuth(false);
-      router.push("/");  // only once we *know* there is no token
-    }
-  };
+    
+//   };
 
- return ()=> syncProfile();
-}, [currentProfile, dispatch]);
+//  return ()=> syncProfile();
+// }, []);
 
 
 
@@ -301,25 +410,76 @@ const openFeedback=(item,isFeedback)=>{
     />})
               dispatch(setPageInView({ page: item }));
             }
+const fetchStories = () => {
+    dispatch(fetchRecommendedStories()).then(res=>{
+      checkResult(res,payload=>{
+        if(payload.stories){
 
+          setWhatsHappeningList(payload.stories);
+          dispatch(setPagesInView({ pages: payload.stories }));
+        }else{
+          dispatch(setPagesInView({ pages: currentProfile.stories }));
+        }
+    })})
+}
+ const fetchWorkshops = async () => {
+  let locale = null
+  if(!location){
+   if(isNative){
+    const position = await Geolocation.getCurrentPosition();
+
+
+   locale = {latitude: position.coords.latitude,
+        longitude: position.coords.longitude,}
+      
+      dispatch(findWorkshopGroups({location:location,radius:50,global:isGlobal})).then(res=>{
+      checkResult(res,payload=>{
+              
+        if(payload.groups){
+    
+         setWorkshops(payload.groups)
+        }},err=>console.log(err))
+    })
+      }else{
+        navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // setLocation({
+       locale = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        }
+        dispatch(findWorkshopGroups({location:location,radius:50,global:isGlobal})).then(res=>{
+      checkResult(res,payload=>{
+              
+        if(payload.groups){
+    
+         setWorkshops(payload.groups)
+        }},err=>console.log(err))
+    })
+      })
+    
+    }
+  }
+   
   
-useEffect(() => {
-  if (!currentProfile) return;
-  if (currentProfile.stories && currentProfile.stories.length > 0) {
-    dispatch(setPagesInView({ pages: currentProfile.stories }));
   }
-  if (currentProfile.collections && currentProfile.collections.length > 0) {
-    dispatch(setCollections({ collections: currentProfile.collections }));
-  }
-}, [currentProfile, dispatch]);
+  useEffect(()=>{
+      !currentProfile && dispatch(getCurrentProfile())
+        fetchWorkshops()
+  },[currentProfile])
+  // useEffect(()=>{
+  //   fetchStories()
 
+  // },[isGlobal,location])
+const handleGlobal=()=>{ setIsGlobal(!isGlobal)}
 
   if (!currentProfile) {
     return (
+      <IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}>
         <div>
         <IonSpinner />
         </div>
-        
+        </IonContent>
     );
   }
 return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}><ErrorBoundary>
@@ -353,12 +513,39 @@ onClick={()=>{
     
 
     {/* Right: Buttons */}
-    <h4 className='text-xl'>
-      What's happening in your communiteis?
+    <div>
+    <h4 className='text-[1rem] text-emerald-800 font-bold mb-4'>
+      What's happening in your communities?
     </h4>
-    <h4 className='text-xl'>
-     Workshops near you
+  <IonList><div className='flex flex-row gap-4 bg-cream overflow-x-auto overflow-y-hidden py-4 px-2 w-full'>
+    {whatsHappeningList.map((item, index) =><div className='mx-4 px-2 rounded-lg bg-blue-100 min-w-40 max-h-[18em] overflow-hidden flex flex-col'> <div className='my-2'><ProfileCircle profile={item.author}/></div><span onClick={()=>router.push(Paths.page.createRoute(item.id),"forward")}><PageDataElement truncateNumber={48} page={item}/></span></div>)}
+    </div></IonList>
+    </div>
+   <span className=''><div className='flex flex-row'><h4 className='text-xl'>
+     Workshops near you 
     </h4>
+   <input 
+  type="checkbox" 
+  checked={isGlobal} 
+  onChange={handleGlobal} 
+  className={`
+    toggle 
+    mx-4
+    border-2 border-emerald-800 border-opacity-50 my-auto
+    ${!isGlobal ? 'toggle-success bg-emerald-600' : 'toggle-success bg-slate-400'} 
+    
+  `} 
+/><h4> {isGlobal?"Global":"Local"}</h4></div>
+<IonList>
+  <div className='flex flex-row'>
+    {workshops.map((item, index) =><div onClick={() => router.push(Paths.collection.createRoute(item.id), "forward")} className='px-4 bg-cream'> 
+      <h2 >{item.title}</h2>
+      </div>)}
+
+  </div>
+</IonList>
+
+</span> 
      <h4 className='text-xl'>
      Writing Prompts for you
     </h4>
@@ -439,7 +626,8 @@ onClick={()=>{
 
   </div>
 </div>
-</ErrorBoundary></IonContent>
+</ErrorBoundary>
+</IonContent>
 }
 
 export default MyProfileContainer;

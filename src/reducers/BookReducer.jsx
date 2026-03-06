@@ -42,9 +42,12 @@ builder.addCase(patchCollectionRoles.fulfilled,(state,{payload})=>{
         state.roles = payload.collection
     }
 }).addCase(getProtectedProfileCollections.fulfilled,(state,{payload})=>{
-   state.collections= payload.collections
+  if(payload.collections && payload.collections.length){
+     state.collections= payload.collections
+  }
+   
 }).addCase(getPublicProfileCollections.fulfilled,(state,{payload})=>{
-    state.collections = payload.collections
+  payload.collections && (state.collections = payload.collections)
 }).addCase(createWorkshopGroup.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
     state.loading = false
@@ -80,12 +83,11 @@ state.loading = true
     }}})
   
 .addCase(getPublicCollections.fulfilled,(state,{payload})=>{
-    // if(payload.collections && payload.collections.length){
-        
+   if(payload.collections && payload.collections.length){
         state.collections=payload.collections
         state.books = payload.collections.filter(col=>col.storyIdList&&(!col.childCollections||col.childCollections.length>0))
         state.libraries = payload.collections.filter(col=>col.storyIdList.length>0||col.childCollections.length>0)
-    // }
+   }
 })
 .addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
