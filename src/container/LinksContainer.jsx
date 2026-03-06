@@ -10,7 +10,7 @@ import Context from "../context";
 import flare from "../images/icons/flare.svg"
 import pen from "../images/icons/pen.svg"
 import { IonContent } from "@ionic/react";
-import etsy from "../images/logo/ETSY.png"
+import bxFuture from "../images/events/bxfutures.png"
 import ErrorBoundary from "../ErrorBoundary";
 import cafe from "../images/icons/coffee.png" 
 let domain = import.meta.env.VITE_DOMAIN
@@ -46,7 +46,14 @@ export default function LinksContainer(props){
                       name={"Writers Workshop"}
        url={"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}
                     title={"March 21st. Writers Workshop"}
-                    description={`Join us for our Writers Workshop`}/>
+                    description={`Join us for our Writers Workshop. We will read Sonia Sanchez and give feedback.`}/>
+                    </li>
+                     <li>  
+                      <LinkNode image={bxFuture}
+                      name={"Writers Workshop"}
+       url={"https://www.eventbrite.com/e/plumbum-x-bronx-frame-creative-tech-mixer-tickets-1984611238639?aff=ebdssbdestsearch"}
+                    title={"May 1st. Mixer"}
+                    description={`Creative and Tech mixer, bring the heart to tech, and the impact to art. Connect with the next generation of creators.`}/>
                     </li>
                   <LinkNode image={clinic}
                   name={""}
