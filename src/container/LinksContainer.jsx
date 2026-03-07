@@ -63,9 +63,7 @@ export default function LinksContainer(props){
              
                   ]}
                   title={"Creative Writing Clinics "}
-                  description={"Meet with our founder, Sol Emilio, to discuss your writing and get personalized feedback."}
-                  />
-                
+                  description={"Connect with our founder, Sol Emilio, to discuss your writing and explore the support that fits your project."}/>
              
                     <li>
                    
