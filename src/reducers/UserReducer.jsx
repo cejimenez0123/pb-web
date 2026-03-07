@@ -151,7 +151,7 @@ state.notifications = payload
         state.loading = true
     }).addCase(getCurrentProfile.fulfilled,(state, data) => {
 
-if(data && data.payload && data.payload.profile){
+if(data && data.payload && data.payload.profile && data.payload.profile.id){
        state.currentProfile = data.payload.profile
        state.loading = false
 }

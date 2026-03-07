@@ -23,13 +23,13 @@ import axios from "axios";
 import StoryCollectionTabs from '../components/page/StoryCollectionTabs.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 
-import { getCurrentProfile } from '../actions/UserActions.jsx';
 import { useDialog } from '../domain/usecases/useDialog.jsx';
 import PageViewItem from '../components/page/PageViewItem.jsx';
 import PageDataElement from '../components/page/PageDataElement.jsx';
 import ProfileCircle from '../components/profile/ProfileCircle.jsx';
 // import requestLocation from '../core/requestLocation.jsx';
 import { fetchWorkshopGroups, findWorkshopGroups, registerUser } from '../actions/WorkshopActions.jsx';
+import { getCurrentProfile } from '../actions/UserActions.jsx';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -324,7 +324,7 @@ handleLocation()
     }
   }, 5);
 
-
+console.log("CX",currentProfile)
   const ClickCreateACollection = () => {
      try {
     sendGAEvent("create_collection_open", {
@@ -463,14 +463,13 @@ const fetchStories = () => {
    
   
   }
-  useEffect(()=>{
-      !currentProfile && dispatch(getCurrentProfile())
-        fetchWorkshops()
-  },[currentProfile])
-  // useEffect(()=>{
-  //   fetchStories()
 
-  // },[isGlobal,location])
+
+
+  useEffect(()=>{
+    fetchStories()
+    fetchWorkshops()
+  },[])
 const handleGlobal=()=>{ setIsGlobal(!isGlobal)}
 
   if (!currentProfile) {
