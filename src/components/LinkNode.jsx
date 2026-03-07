@@ -44,7 +44,7 @@ function LinkNode({ title, description, image, links = [], isGrid }) {
         my-4
         "
       >
-        <div className="flex gap-4 flex-col items-center">
+        <div className="flex gap-4 flex-col sm:flex-row items-center">
           {image && (
             <div className="w-[70px] h-[70px] rounded-xl overflow-hidden flex-shrink-0 bg-emerald-50">
               <IonImg
