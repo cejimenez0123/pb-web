@@ -59,11 +59,10 @@ export default function LinksContainer(props){
                     </li>
                   <LinkNode image={clinic}
                   name={""}
-                  links={[{name:"Book a Intro Call",url:"https://calendly.com/solemilio-decibao/initial-consult-free"},
-                    {name:"Join a Group Clinic",url:"https://calendly.com/solemilio-decibao/group-writing"},
-                    {name:"Book a One-on-One Clinic",url:"https://calendly.com/solemilio-decibao/45"}
+                  links={[{name:"Book a Session",url:"https://calendly.com/solemilio-decibao"},
+             
                   ]}
-                  title={"Creative Writing Clinic: Book a 45 min one-on-one session "}
+                  title={"Creative Writing Clinics "}
                   description={"Meet with our founder, Sol Emilio, to discuss your writing and get personalized feedback."}
                   />
                 
