@@ -44,20 +44,25 @@ export default function LinksContainer(props){
                 <li>  
                       <LinkNode image={pen}
                       name={"Writers Workshop"}
-       url={"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}
+                      links={[{name:"RSVP Here",url:"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}]}
+  
                     title={"March 21st. Writers Workshop"}
                     description={`Join us for our Writers Workshop. We will read Sonia Sanchez and give feedback.`}/>
                     </li>
                      <li>  
                       <LinkNode image={bxFuture}
-                      name={"Writers Workshop"}
-       url={"https://posh.vip/e/plumbum-x-bronx-frame-create-tech-mixer"}
+                      name={"Plumbum x Bronx Frame Creative Tech Mixer"}
+                      links={[{name:"RSVP Here",url:"https://posh.vip/e/plumbum-x-bronx-frame-create-tech-mixer"}]}
+  
                     title={"May 1st. Mixer"}
                     description={`Creative and Tech mixer, bring the heart to tech, and the impact to art. Connect with the next generation of creators.`}/>
                     </li>
                   <LinkNode image={clinic}
                   name={""}
-                  url={"https://calendly.com/solemilio-decibao/45"}
+                  links={[{name:"Book a Intro Call",url:"https://calendly.com/solemilio-decibao/initial-consult-free"},
+                    {name:"Join a Group Clinic",url:"https://calendly.com/solemilio-decibao/group-writing"},
+                    {name:"Book a One-on-One Clinic",url:"https://calendly.com/solemilio-decibao/45"}
+                  ]}
                   title={"Creative Writing Clinic: Book a 45 min one-on-one session "}
                   description={"Meet with our founder, Sol Emilio, to discuss your writing and get personalized feedback."}
                   />
@@ -67,27 +72,27 @@ export default function LinksContainer(props){
                    
                <LinkNode image={events}
                name={"Calendar"}
-       url={"https://plumbum.app"+Paths.calendar()}
+       links={[{name:"View Calendar",url:"https://plumbum.app"+Paths.calendar()}]}
                     title={"NYC Writing Calendar"}
                     description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
                     </li>
                  
                    <li>
-               <LinkNode url={"https://plumbum.app"+Paths.discovery}
+               <LinkNode links={[{name:"Discover Plumbum",url:"https://plumbum.app"+Paths.discovery}]}
                image={logo}
                     title={"Discover Plumbum"}
                     description={"Check some recent shared work"}/>
                     </li>
                     <li>
-                    <LinkNode url={"https://plumbum.app/onboard"}
+                    <LinkNode links={[{name:"Apply to be a user today",url:"https://plumbum.app/onboard"}]}
                     image={logo}
                     title={"Apply to be a user today"}
                     description={"Become a user and support us from the ground."}/>
                     
                 </li>
                <li>
-               <LinkNode url={"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}
-                    name="lulu"
+               <LinkNode links={[{name:"Purchase literature written by the founder.",url:"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}]}
+                  
                     image={"https://assets.lulu.com/cover_thumbs/4/5/45q8j8v-front-shortedge-384.jpg"}
                     title={"Purchase literature written by the founder."}
                     description={"Paperback of Good Hell: An Young Aritst's Survival and Coming of Age in New York. "}
