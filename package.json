@@ -32,7 +32,7 @@
     "@capgo/capacitor-social-login": "^7.11.8",
     "@ionic/react": "6.2.5",
     "@ionic/react-router": "6.1.1",
-    "@react-google-maps/api": "^2.20.6",
+    "@react-google-maps/api": "^2.20.8",
     "@sentry/react": "^10.22.0",
     "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.7.9",

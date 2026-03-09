@@ -10,7 +10,6 @@ import PageViewContainer from './container/page/PageViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/profile/ProfileContainer.jsx';
-import ApplyContainer from './container/auth/ApplyContainer';
 import SearchDialog from './components/SearchDialog';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import {  getCurrentProfile,
@@ -97,8 +96,9 @@ const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
   };
 useEffect(() => {
 
-  return ()=>initAuth();
-}, [dispatch]);
+ if(currentProfile)return
+    return ()=>initAuth();
+}, [dispatch,currentProfile]);
 useLayoutEffect(()=>{
   initAuth()
 },[])
@@ -123,7 +123,10 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
 
     <ErrorBoundary>
         <Context.Provider value={{setPresentingEl,isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
-
+<script
+  defer
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=YOUR_CALLBACK_NAME"
+></script>
   <IonApp>
   <IonReactRouter>
            {!navbarBot?

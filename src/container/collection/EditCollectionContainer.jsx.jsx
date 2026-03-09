@@ -24,7 +24,6 @@ import Paths from "../../core/paths";
 import addIcon from "../../images/icons/add_circle.svg";
 import deleteIcon from "../../images/icons/delete.svg";
 import "../../styles/EditBook.css";
-import { setDialog } from "../../actions/UserActions";
 import SortableList from "../../components/SortableList";
 import StoryToCollection from "../../domain/models/storyToColleciton";
 import { Preferences } from "@capacitor/preferences";
@@ -214,12 +213,13 @@ if (col.childCollections) {
    
     closeDialog()
     let dia = { ...dialog };
-    dia.title = "Deleting?";
+    // dia.title = "Deleting?";
     dia.isOpen = true;
     dia.agree = () => {
       dispatch(deleteCollection(params));
+          closeDialog()
       router.push(Paths.myProfile);
-     closeDialog()
+ 
     };
     dia.agreeText = "Delete";
     dia.onClose = () => closeDialog()
@@ -246,10 +246,9 @@ if (col.childCollections) {
 
   return (
 
-    <ErrorBoundary>
-      {/* <IonContent fullscreen={true} className="bg-gray-50"> */}
-            
+    <ErrorBoundary>         
 <IonContent fullscreen={true} className="ion-padding-top"> 
+  <div className="pb-[10em]">
   {isNative?<IonHeader translucent>
         <IonToolbar className="bg-white border-b border-emerald-100">
           <IonButtons slot="start">
@@ -406,7 +405,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
             </div>
 
             {/* ===== DANGER ZONE ===== */}
-           {colInView && currentProfile && colInView.profileId==currentProfile.id && <div className="mt-10 border-t border-gray-200 pt-4">
+           {colInView && currentProfile && <div className="mt-10 border-t border-gray-200 pt-4">
               <h4 className="text-sm font-semibold text-red-600 mb-2">
                 Danger Zone
               </h4>
@@ -417,6 +416,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
             </div>}
           </div>
         )}
+        </div>
       </IonContent>
 
  </ErrorBoundary>
@@ -477,6 +477,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
         ))}
       </ul>
     </div>
+   
        </IonContent>
     </ErrorBoundary>
 

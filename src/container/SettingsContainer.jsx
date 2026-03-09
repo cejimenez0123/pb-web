@@ -16,8 +16,28 @@ import uploadFile from "../core/uploadFile";
 import { Preferences } from "@capacitor/preferences";
 import Paths from "../core/paths";
 import { useDialog } from "../domain/usecases/useDialog";
+import { Geolocation } from "@capacitor/geolocation";
 
+import GoogleMapSearch from "./collection/GoogleMapSearch"
+import { io } from "socket.io-client";
+const socket = io(Enviroment.url);
+import { getGeocode } from "use-places-autocomplete";
 
+async function getPlaceFromLatLng(lat, lng) {
+  if(lat && lng){
+  const results = await getGeocode({
+    location: { lat, lng }
+  });
+
+  return results[0];
+}else{
+  return null
+}
+}
+const registerUser = (profileId, location) => {
+  console.log("Registering user with profileId:", profileId, "and location:", location);
+    socket.emit('register', { profileId, location });
+  };
 export default function SettingsContainer(props) {  
 
     const router = useIonRouter()
@@ -26,11 +46,26 @@ export default function SettingsContainer(props) {
     const currentProfile = useSelector(state=>state.users.currentProfile)
     // const dialog = useSelector(state=>state.users.dialog)
     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    const [params,setParams]=useState({profile:currentProfile,file:null,profilePicture:currentProfile?currentProfile.profilePic:pictureUrl,profileId:currentProfile?currentProfile.id:"",isPrivate:false,selfStatement:"",username:""})
-    const [homeItems,setHomeItems] = useState([])
+    const [params, setParams] = useState({
+  profile: null,
+  file: null,
+  profilePicture: pictureUrl,
+  profileId: "",
+  isPrivate: false,
+  selfStatement: "",
+  location: {
+    latitude: 40.82341365353257,
+    longitude: -73.87828682676974,
+    address: ""
+  },
+  username: ""
+});
+const [homeItems,setHomeItems] = useState([])
+    const [loading,setLoading] = useState(false)
+    const isNative = Capacitor.isNativePlatform()
     const dispatch = useDispatch()
   const {dialog,openDialog,closeDialog}=useDialog()
-
+const [location,setLocation]=useState(null)
     const [pending,setPending] = useState(false)
      const handleChange = (key, value) => {
 
@@ -38,15 +73,81 @@ export default function SettingsContainer(props) {
 
      
   };
+  const getPostion = async () => {
+    if(isNative){
+ const position = await Geolocation.getCurrentPosition();
+  getPlaceFromLatLng(position.coords.latitude, position.coords.longitude).then(place=>{
+     
+             setLocation({
 
-    useEffect( ()=>{
-        if(currentProfile){
-            setProfile(currentProfile)
-        }},[currentProfile])
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+                 name: place.name,
+            address: place.formatted_address
+      });
+        
+    if (currentProfile && currentProfile.id) {
+   
+        getPlaceFromLatLng(position.coords.latitude, position.coords.longitude).then(place=>{
+             registerUser(currentProfile.id, params.location);
+      
+          handleChange("location",{
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+    
+            address: place.formatted_address
+          })
+          
+  
+        }).catch(err=>console.log("Error getting place details:", err))
+      }
+      
+          })
+   
+     
+}else{
+      navigator.geolocation.getCurrentPosition(
+      (position) => {
+          getPlaceFromLatLng(position.coords.latitude, position.coords.longitude).then(place=>{
+     
+             setLocation({
+
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+                 name: place.name,
+            address: place.formatted_address
+      });
+        
+   
+          })
+      
+    
+   
+         getPlaceFromLatLng(position.coords.latitude, position.coords.longitude).then(place=>{
+          console.log("Place details:", place);
+          handleChange("location",{
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            name:place.formatted_addres,
+            address: place.formatted_address
+          })
+            if(currentProfile&&currentProfile.id){
+         location&& registerUser(currentProfile.id,params.location)
+        }
+        
+        }).catch(err=>console.log("Error getting place details:", err))
+        setError(null);
+        setLoading(false);
+      })}}
+   useEffect(() => {
+  if (currentProfile?.id) {
+    setProfile(currentProfile);
+  }
+}, [currentProfile]);
     useEffect(()=>{
       dispatch(getCurrentProfile())
     },[])
-
+ 
 
   
  
@@ -79,21 +180,52 @@ export default function SettingsContainer(props) {
    
 };
     
-    const setProfile = (profile)=>{
-        setPending(true)
-        isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
+    // const setProfile = (profile)=>{
+    //     setPending(true)
+    //     isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
         
-        handleChange("selectedImage",profile.profilePic)
-        handleChange("profilePicture",profile.profilePic)
-        handleChange("profile",profile)
-        handleChange("username",profile.username)
-        handleChange("profileId",profile.id)
-        handleChange("privacy",profile.isPrivate)
-        handleChange("selfStatement",profile.selfStatement)
+    //     handleChange("selectedImage",profile.profilePic)
+    //     handleChange("profilePicture",profile.profilePic)
+    //     handleChange("profile",profile)
+    //     handleChange("location",{...profile.location,address:""})
+    //     handleChange("username",profile.username)
+    //     handleChange("profileId",profile.id)
+    //     handleChange("privacy",profile.isPrivate)
+    //     handleChange("selfStatement",profile.selfStatement)
    
-        setPending(false)
+    //     setPending(false)
   
-    }
+    // }
+    const setProfile = async (profile) => {
+  if (!profile) return;
+
+  setPending(true);
+
+  const profilePic =
+    profile.profilePic ||
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s";
+
+  const picture = isValidUrl(profilePic)
+    ? profilePic
+    : Enviroment.imageProxy(profilePic);
+
+  setPictureUrl(picture);
+let placeData = await getPlaceFromLatLng(profile.location.latitude,profile.location.longitude)
+console.log("CDD",placeData)
+  setParams((prev) => ({
+    ...prev,
+    profile,
+    profilePicture: profilePic,
+    selectedImage: profilePic,
+    username: profile.username || "",
+    profileId: profile.id || "",
+    location: { ...(profile.location || {}), address: placeData.formatted_address },
+    isPrivate: profile.isPrivate ?? false,
+    selfStatement: profile.selfStatement || ""
+  }));
+
+  setPending(false);
+};
     const handleOnSubmit =async (e)=>{
         e.preventDefault();
 
@@ -129,7 +261,8 @@ window.alert("Updating Profile")
             dispatch(updateProfile({...parameters})).then((result) =>checkResult(result,
                     (payload)=>{
                         const {profile}=payload
-                        isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
+                        console.log("FSDF",profile.profilePic)
+                       profile && profile.profilePic && isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
                          setProfile(profile)
                         setSuccess("Updated")
                     
@@ -253,9 +386,9 @@ const handleProfilePicture = async (e) => {
      if(!pending){
             return(
                 <ErrorBoundary>
-                {/* <IonContent fullscreen={true}> */}
-             
-            <div  className="bg-slate-100 pt-20">
+                <IonContent fullscreen={true}>
+             <div className="bg-slate-100 pb-[10em]">
+            <div  className="bg-slate-100 pt-20 pb-30">
                    <div className="text-right px-4" ><button onClick={handleSignOut} className="bg-golden text-white px-4 py-2 rounded">Log Out</button></div>
                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
                       <label className="text-left flex flex-col "><h4 className="text-[1.2em]  mx-4">Username:</h4>
@@ -264,6 +397,21 @@ const handleProfilePicture = async (e) => {
                             <input type="text"   
                                         className={"text-[1.2em]  px-4 py-2 bg-white w-[100vw] border-slate-50 mb-8  border-2 border-emerald-800 border-2  "}
                                         value={params.username}
+                                        onChange={(e)=>handleChange("username",e.target.value.toLocaleLowerCase())
+                                        }
+                                         label="Username"/>
+                                         </label>
+                                         <GoogleMapSearch initLocationName={params.location.address??""} onLocationSelected={(coordinates)=>{
+                                                    handleChange("location",coordinates)
+                                                   setLocation({...coordinates})
+                                                 }}/><button onClick={getPostion} className="bg-blueSea text-white px-4 py-2 rounded">Use Current Location</button>
+                                             <label className="text-left flex flex-col "><h4 className="text-[1.2em]  mx-4">
+                                              Location:</h4>
+                   
+        
+                            <input type="text"   
+                                        className={"text-[1.2em]  px-4 py-2 bg-white w-[100vw] border-slate-50 mb-8  border-2 border-emerald-800 border-2  "}
+                                        value={params.location.address??""}
                                         onChange={(e)=>handleChange("username",e.target.value.toLocaleLowerCase())
                                         }
                                          label="Username"/>
@@ -279,12 +427,11 @@ const handleProfilePicture = async (e) => {
              
      
           
-          <IonImg
-          className="mx-auto my-4"
-            src={pictureUrl}
-            alt="Selected"
-            style={{ maxWidth: '10em', maxHeight: '300px', borderRadius: '10px' }}
-          />
+        <IonImg
+  src={pictureUrl || "https://placehold.co/200"}
+  className="mx-auto my-4"
+  style={{ maxWidth: "10em", borderRadius: "10px" }}
+/>
         
         
       
@@ -353,7 +500,8 @@ const handleProfilePicture = async (e) => {
         
                         </div>
             </div>
-          {/* </IonContent> */}
+            </div>
+          </IonContent>
           </ErrorBoundary>
         )
     }else{

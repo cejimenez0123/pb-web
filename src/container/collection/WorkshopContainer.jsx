@@ -11,8 +11,8 @@ import PageWorkshopItem from '../page/PageWorkshopItem';
 import loadingAnimation from "../../images/loading.gif"
 import InfoTooltip from '../../components/InfoTooltip';
 import Context from '../../context';
-import GoogleMapSearch from './GoogleMapSearch';
-import { LoadScript } from '@react-google-maps/api';
+// import GoogleMapSearch from './GoogleMapSearch';
+// import { LoadScript } from '@react-google-maps/api';
 import check from "../../images/icons/check.svg"
 import { Geolocation } from '@capacitor/geolocation';
 import DeviceCheck from '../../components/DeviceCheck';
@@ -20,7 +20,7 @@ import { IonContent, useIonRouter } from '@ionic/react';
 import { setPagesInView } from '../../actions/PageActions';
 import { setCollections } from '../../actions/CollectionActions';
 import { useParams } from 'react-router';
-
+import GoogleMapSearch from "../collection/GoogleMapSearch"
 const WorkshopContainer = (props) => {
 
   const dispatch = useDispatch()
@@ -249,10 +249,10 @@ const localCheck=()=>{
   return (
     <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} className=''>
     <div>
-    <LoadScript
+    {/* <LoadScript
     googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
     libraries={['places']}
-  >
+  > */}
    <div className='h-[100vh] overflow-hidden'>
       {currentProfile?(
         <div className="text-emerald-800 mx-auto w-[100%] shadow-sm sm:min-h-[30em] mt-12 flex flex-col  text-left sm:w-[20rem]  p-4    rounded-lg ">
@@ -299,7 +299,7 @@ const localCheck=()=>{
     
    
     </div>
-    </LoadScript>
+    {/* </LoadScript> */}
 </div>
 </IonContent>
   );

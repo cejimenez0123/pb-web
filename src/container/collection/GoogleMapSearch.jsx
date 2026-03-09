@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import usePlacesAutocomplete, {
   getGeocode,
-  getLatLng
+  getLatLng,
+  getDetails
 } from 'use-places-autocomplete';
 import check from "../../images/icons/check.svg"
+
+import { LoadScript } from "@react-google-maps/api";
+import { get } from 'lodash';
+
+
 const libraries = ['places'];
 
 const containerStyle = {
@@ -15,9 +21,8 @@ const center = {
   lat: 40.73061,
   lng: -73.935242
 };
-
-export default function PlacesSearchMap({ onLocationSelected }) {
-  const [desc,setDesc]=useState("")
+ function PlacesSearchMap({initLocationName,onLocationSelected }) {
+  const [desc,setDesc]=useState(initLocationName??"")
   const {
     ready,
     value,
@@ -31,7 +36,9 @@ export default function PlacesSearchMap({ onLocationSelected }) {
   const handleInput = (e) => {
     setValue(e.target.value);
   };
-
+  useEffect(()=>{
+    setDesc(initLocationName);
+  },[initLocationName])
   const handleSelect = async (data) => {
 
      const description = data[0].description
@@ -40,15 +47,15 @@ export default function PlacesSearchMap({ onLocationSelected }) {
     clearSuggestions();
 
     try {
-      getGeocode({ address: description }).then((results) => {
+      getGeocode({ address: description }).then(async(results) => {
+        
         const { lat, lng } = getLatLng(results[0]);
       
-    
-           onLocationSelected({ latitude:lat,longitude:lng})
+        const details = await getDetails({ placeId: results[0].place_id })
+       
+        
+           onLocationSelected({ latitude:lat,longitude:lng,name:details["name"],address:details["formatted_address"]})
 
-    
-        setMapCenter({ lat, lng });
-        setMarker({ lat, lng });
       }).catch(err=>console.log(err))
   
 
@@ -89,5 +96,17 @@ export default function PlacesSearchMap({ onLocationSelected }) {
 </div>
 </div>
     
+  );
+}
+
+
+export default function GoogleMapSearch({ initLocationName,onLocationSelected }) {
+  return (
+    <LoadScript
+      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+      libraries={libraries}
+    >
+      <PlacesSearchMap initLocationName={initLocationName} onLocationSelected={onLocationSelected} />
+    </LoadScript>
   );
 }

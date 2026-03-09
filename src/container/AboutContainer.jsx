@@ -426,11 +426,11 @@ const goToCalendar = (source="about_page") => {
            
              <div ><BookCarousel images={[...firstImages,...secImages]} /></div> 
              <div className="flex flex-col sm:flex-row items-center text-center mt-12">
-             <btn  onClick={logIn}className="text-[1.2rem] shadow-md md:px-8  py-4 px-4 md:py-4 rounded-full  bg-gradient-to-r from-[#fff469] to-[#ffd14d] 
+             <button onClick={logIn}className="text-[1.2rem] shadow-md md:px-8  py-4 px-4 md:py-4 rounded-full  bg-gradient-to-r from-[#fff469] to-[#ffd14d] 
              hover:from-[#fff97a] hover:to-[#ffc53f]  mt-12 mb-4 mx-auto cursor-pointer inline-block " >
               <h3 className=" text-[#333333] font-bold ">Join the Beta or Login</h3>
 
-             </btn>
+             </button>
                 <btn   onClick={() =>{
 
     sendGAEvent("navigation_click", {

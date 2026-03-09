@@ -2869,7 +2869,7 @@
   resolved "https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.0.tgz"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@react-google-maps/api@^2.20.6":
+"@react-google-maps/api@^2.20.8":
   version "2.20.8"
   resolved "https://registry.npmjs.org/@react-google-maps/api/-/api-2.20.8.tgz"
   integrity sha512-wtLYFtCGXK3qbIz1H5to3JxbosPnKsvjDKhqGylXUb859EskhzR7OpuNt0LqdLarXUtZCJTKzPn3BNaekNIahg==

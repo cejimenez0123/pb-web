@@ -30,6 +30,7 @@ import ProfileCircle from '../components/profile/ProfileCircle.jsx';
 // import requestLocation from '../core/requestLocation.jsx';
 import { fetchWorkshopGroups, findWorkshopGroups, registerUser } from '../actions/WorkshopActions.jsx';
 import { getCurrentProfile } from '../actions/UserActions.jsx';
+import requestLocation from '../core/requestLocation.js';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -78,7 +79,9 @@ function MyProfileContainer() {
     AZ: "A-Z",
     ZA: "Z-A"
   };
-  
+  useEffect(()=>{
+    currentProfile &&  requestLocation()
+  },[currentProfile])
   const webRequestLocation=()=>{
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -101,78 +104,13 @@ function MyProfileContainer() {
       }
     );
   }
-  const getPostion = async () => {
-    if(isNative){
- const position = await Geolocation.getCurrentPosition();
-      setLocation({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      });
-      if (currentProfile && currentProfile.id) {
-      location&&  registerUser(currentProfile.id, {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      
-  }}else{
-      navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        if(currentProfile&&currentProfile.id){
-         location&& registerUser(currentProfile.id,location)
-        }
-    
-        setError(null);
-        setLoading(false);
-      })}}
+
 useEffect(()=>{
 
 
    isGlobal && (currentProfile && (isNative ? requestLocation() : webRequestLocation()))
   },[])
- const requestLocation = async () => {
-  setLoading(true);
-  try {
-    // Check current geolocation permission state
-    const permStatus = await Geolocation.checkPermissions();
-
-    if (permStatus.location === 'granted') {
-      // Permission already granted, get location
-     getPostion()
-      
-      setError(null);
-    }else if (permStatus.location === 'prompt' || permStatus.location === 'denied') {
-      // Request permission explicitly, triggers iOS popup if needed
-      const requestResult = await Geolocation.requestPermissions();
-      if (requestResult.location === 'granted') {
-        const position = await Geolocation.getCurrentPosition();
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        if (currentProfile && currentProfile.id) {
-            location&&  registerUser(currentProfile.id, {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        }
-        setError(null);
-      } else {
-        setError("Location permission denied. Please enable location permissions in your device settings.");
-      }
-    } else {
-      setError("Unable to determine location permission state.");
-    }
-  } catch (err) {
-    console.error("Error requesting location or getting position:", err);
-    setError("Could not get location. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+  
 useEffect(()=>{
   async function handleLocation() {
     
@@ -260,21 +198,6 @@ handleLocation()
 
 // const [checkingAuth, setCheckingAuth] = useState(true);
  const {openDialog,closeDialog,dialog,resetDialog}=useDialog()
-// useEffect(() => {
-//   const syncProfile = async () => {
-//     if (currentProfile) {
-//       // setCheckingAuth(false);
-//       return;
-//     }
-
-//     dispatch(getCurrentProfile())
-    
-    
-//   };
-
-//  return ()=> syncProfile();
-// }, []);
-
 
 
   const getDriveToken = async () => {
@@ -324,7 +247,7 @@ handleLocation()
     }
   }, 5);
 
-console.log("CX",currentProfile)
+
   const ClickCreateACollection = () => {
      try {
     sendGAEvent("create_collection_open", {
@@ -423,16 +346,7 @@ const fetchStories = () => {
     })})
 }
  const fetchWorkshops = async () => {
-  let locale = null
-  if(!location){
-   if(isNative){
-    const position = await Geolocation.getCurrentPosition();
-
-
-   locale = {latitude: position.coords.latitude,
-        longitude: position.coords.longitude,}
-      
-      dispatch(findWorkshopGroups({location:location,radius:50,global:isGlobal})).then(res=>{
+    dispatch(findWorkshopGroups({location:currentProfile.location,radius:50,global:isGlobal})).then(res=>{
       checkResult(res,payload=>{
               
         if(payload.groups){
@@ -440,35 +354,21 @@ const fetchStories = () => {
          setWorkshops(payload.groups)
         }},err=>console.log(err))
     })
-      }else{
-        navigator.geolocation.getCurrentPosition(
-      (position) => {
-        // setLocation({
-       locale = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        }
-        dispatch(findWorkshopGroups({location:location,radius:50,global:isGlobal})).then(res=>{
-      checkResult(res,payload=>{
-              
-        if(payload.groups){
     
-         setWorkshops(payload.groups)
-        }},err=>console.log(err))
-    })
-      })
     
-    }
-  }
+    
+  
    
   
   }
 
 
-
+useEffect(()=>{
+currentProfile && fetchWorkshops()
+},[isGlobal,currentProfile])
   useEffect(()=>{
     fetchStories()
-    fetchWorkshops()
+   currentProfile && fetchWorkshops()
   },[])
 const handleGlobal=()=>{ setIsGlobal(!isGlobal)}
 
@@ -504,7 +404,7 @@ onClick={()=>{
                     </div>
   <div >
 
-  <div className="relative flex flex-col md:flex-row justify-around mx-auto p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
+  <div className="relative flex flex-col justify-around mx-auto p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
 {/* 
     <div className="md:w-1/3 max-w-[60em] h-[16em] mb-[4em] flex justify-center md:justify-start">
       <ProfileInfo profile={currentProfile} />
