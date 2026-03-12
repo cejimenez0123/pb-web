@@ -16,6 +16,7 @@
     "build:clip": "npx vite build --mode clip",
     "build:main": "npx vite build --mode main",
     "run-ios": "npx vite build --mode main && npx cap sync ios && npx cap run ios"
+
   },
   "dependencies": {
     "@capacitor-firebase/storage": "^7.4.0",

@@ -15,27 +15,33 @@ class WorkshopRepo{
   }
   async findWorkshops({radius=50,location,global=false}){
     const headers = await this.getAuthHeaders()
-    let res = await axios.post(this.url+`/look`,{location,radius,global},{headers:headers})
+      const query = new URLSearchParams({ radius, global: global });
+    let res = await axios.post(this.url+`/look?${query.toString()}`,{location},{headers:headers})
    return res.data
   }
-    async joinWorkshop({profile,story,location,radius=50}){
-      const headers = await this.getAuthHeaders()
-      let query = new URLSearchParams({radius})
-   
-        let res = await axios.post(Enviroment.url+'/workshop/group?='+query.toString(),{profile,story,location},{headers:headers})
-       return res.data
-    }
-    async joinGlobalWorkshop({profile,story}){
-      const headers = await this.getAuthHeaders()
-      let res = await axios.post(Enviroment.url+'/workshop/groups/global',{profile,story},{headers:headers})
-     return res.data
-  }
-    async postActiveUser({story,profile}){
+async joinWorkshop({ profile, story, location, radius = 50, isGlobal = false }) {
+  console.log("DDV",isGlobal)
+  const headers = await this.getAuthHeaders();
+  const query = new URLSearchParams({ radius, global: isGlobal });
+  const res = await axios.post(
+    `${this.url}/group/join?${query.toString()}`,
+    { profile, story, locale:location },
+    { headers }
+  );
+  return res.data;
+}
+// } joinGlobalWorkshop({profile,story,isGlobal=true}){
+  //     const headers = await this.getAuthHeaders()
+  //     let res = await axios.post(Enviroment.url+`/workshop/groups/?global=${isGlobal}`,{profile,story},{headers:headers})
+  //    return res.data
+  // }
+    async postActiveUser({story,profile,location}){
 
  const headers = await this.getAuthHeaders()
     const response = await axios.post(Enviroment.url+`/workshop/active-users`,{
         story:story,
-        profile:profile
+        profile:profile,
+        location
       },{headers:headers}); 
       return response.data
     }

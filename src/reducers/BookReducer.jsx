@@ -12,7 +12,7 @@ import { createSlice} from "@reduxjs/toolkit"
       
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
-import { createWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActions"
+import { findWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActions"
 import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
 
 import { getPublicLibraries } from "../actions/LibraryActions.jsx"
@@ -48,12 +48,12 @@ builder.addCase(patchCollectionRoles.fulfilled,(state,{payload})=>{
    
 }).addCase(getPublicProfileCollections.fulfilled,(state,{payload})=>{
   payload.collections && (state.collections = payload.collections)
-}).addCase(createWorkshopGroup.fulfilled,(state,{payload})=>{
+}).addCase(findWorkshopGroup.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
     state.loading = false
-}).addCase(createWorkshopGroup.pending,(state)=>{
+}).addCase(findWorkshopGroup.pending,(state)=>{
 state.loading = true
-}).addCase(createWorkshopGroup.rejected,(state,{payload})=>{
+}).addCase(findWorkshopGroup.rejected,(state,{payload})=>{
     state.loading =false
 }).addCase(fetchWorkshopGroups.fulfilled,(state,{payload})=>{
     state.groups = payload.groups

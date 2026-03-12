@@ -26,8 +26,8 @@ const disconnectUser = () => {
 };
 const postActiveUser = createAsyncThunk("books/postActiveUser",async(params,thunkApi)=>{
     try {
-const {story,profile}=params
-     let data= await workshopRepo.postActiveUser({story,profile})
+const {story,profile,location}=params
+     let data= await workshopRepo.postActiveUser({story,profile,location})
       return {
         profiles:data.profiles,
         profile:data.profile,
@@ -40,30 +40,20 @@ const {story,profile}=params
       story:null}
     }}
   )
-const createWorkshopGroup = createAsyncThunk("books/createWorkshopGroup",
-async ({profile,story,location,isGlobal,radius},thunkApi)=>{
-    try{   
-      if(!isGlobal){
 
-  
-        let data =await workshopRepo.joinWorkshop({profile,story,location,radius})
-        if(!data.collection) throw new Error(data.error)
-  
-        return data
-      } else{
-        let data =await workshopRepo.joinGlobalWorkshop({profile,story,location})
-       if(!data.collection) throw new Error(data.error)
-        return data
-      }
-    }catch(error){
-          
-        
-        return {
-            error
-          }
+  const findWorkshopGroup = createAsyncThunk(
+  "books/findWorkshopGroup",
+  async ({ profile, story, location, isGlobal, radius }, thunkApi) => {
+    try {
+      const data = await workshopRepo.joinWorkshop({ profile, story, location, isGlobal, radius });
+      if (!data.collection) throw new Error(data.error);
+      return data;
+    } catch (error) {
+      return { error };
     }
-}
-)
+  }
+);
+
 const findWorkshopGroups = createAsyncThunk("books/findWorkshopGroups",async ({radius=50,global=false,location},thunkApi)=>{
     try {
       let data = await workshopRepo.findWorkshops({radius,global,location})
@@ -134,4 +124,4 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
 
 })
 
-export {registerUser,disconnectUser,findWorkshopGroups, postActiveUser,createWorkshopGroup, fetchWorkshopGroups }
+export {registerUser,disconnectUser,findWorkshopGroups, postActiveUser,findWorkshopGroup, fetchWorkshopGroups }
