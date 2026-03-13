@@ -9,9 +9,10 @@ import { IonImg, useIonRouter } from '@ionic/react';
 import Enviroment from "../../core/Enviroment"
 import truncate from "html-truncate"
 import { Capacitor } from "@capacitor/core"
+
 export default function PageDataElement({page,isGrid,size="lg",book=null,truncateNumber=400}){
     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
-    const {isHorizPhone}=useContext(Context)
+ 
    const router = useIonRouter()
     const location = router.routeInfo.pathname
    

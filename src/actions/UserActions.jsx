@@ -155,6 +155,7 @@ const setSignedInFalse = createAction("users/setSignedInFalse", async(params)=>{
  }
  )
 const updateSubscription= createAsyncThunk("users/updateSubscription", async (params,thunkApi)=>{
+ 
   const data = await authRepo.updateSubscription(params)
 
   return data
@@ -166,7 +167,8 @@ async (params,thunkApi) => {
     
    return data
  
-    }catch(error){     
+    }catch(error){    
+      console.log(error) 
       return {error}
     }});
 

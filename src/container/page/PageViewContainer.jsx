@@ -197,7 +197,8 @@ useEffect(() => {
 
   const PageDiv = ({ page }) =>
     page ? (
-      <PageViewItem page={page} currentProfile={currentProfile} />
+      <div  id="page-data-skeleton "className={`skeleton w-page-mobile`}>
+      <PageViewItem page={page} currentProfile={currentProfile} /></div>
     ) : (
       <div className="skeleton w-[95vw] mx-auto sm:w-[50em] mx-auto bg-emerald-50 h-page" />
     );

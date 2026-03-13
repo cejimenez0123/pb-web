@@ -20,7 +20,7 @@ class WorkshopRepo{
    return res.data
   }
 async joinWorkshop({ profile, story, location, radius = 50, isGlobal = false }) {
-  console.log("DDV",isGlobal)
+ 
   const headers = await this.getAuthHeaders();
   const query = new URLSearchParams({ radius, global: isGlobal });
   const res = await axios.post(

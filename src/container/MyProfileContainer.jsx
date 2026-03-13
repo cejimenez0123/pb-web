@@ -1,11 +1,9 @@
-import { useEffect, useState, useContext, useMemo, useLayoutEffect } from 'react';
+import { useEffect, useState, useContext, useMemo,  } from 'react';
 import "../styles/MyProfile.css";
 import { useDispatch, useSelector } from "react-redux";
-import { createStory, fetchRecommendedStories, updateStory,  } from '../actions/StoryActions';
-import { setCollections} from '../actions/CollectionActions';
-import IndexList from '../components/page/IndexList';
+import { createStory, fetchRecommendedStories, updateStory,getPrompts  } from '../actions/StoryActions';
 import Paths from '../core/paths';
-import { debounce, set } from 'lodash';
+import { debounce, set, truncate } from 'lodash';
 import calendar from '../images/icons/calendar.svg'
 import settings from "../images/icons/settings.svg"
 import { setPageInView, setPagesInView, setEditingPage, setHtmlContent } from '../actions/PageActions.jsx';
@@ -13,24 +11,21 @@ import { sendGAEvent } from '../core/ga4.js';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm';
 import checkResult from '../core/checkResult';
 import { PageType } from '../core/constants';
-import ProfileInfo from '../components/profile/ProfileInfo';
 import Context from '../context';
 import FeedbackDialog from '../components/page/FeedbackDialog';
-import { IonText, IonInput, IonContent, IonSpinner, IonPage,  useIonViewWillEnter, IonImg, useIonRouter, IonList } from '@ionic/react';
-import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
+import { IonText,  IonContent, IonSpinner,   useIonViewWillEnter, IonImg, useIonRouter, IonList } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
 import axios from "axios";
-import StoryCollectionTabs from '../components/page/StoryCollectionTabs.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 
 import { useDialog } from '../domain/usecases/useDialog.jsx';
 import PageViewItem from '../components/page/PageViewItem.jsx';
-import PageDataElement from '../components/page/PageDataElement.jsx';
 import ProfileCircle from '../components/profile/ProfileCircle.jsx';
 // import requestLocation from '../core/requestLocation.jsx';
 import { fetchWorkshopGroups, findWorkshopGroups, registerUser } from '../actions/WorkshopActions.jsx';
 import { getCurrentProfile } from '../actions/UserActions.jsx';
 import requestLocation from '../core/requestLocation.js';
+import DataElement from '../components/page/DataElement.jsx';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -53,7 +48,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 }
 
 function MyProfileContainer() {
-  const [tab, setTab] = useState("page");
+  // const [tab, setTab] = useState("page");
   const router = useIonRouter()
   const dispatch = useDispatch();
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -69,8 +64,21 @@ function MyProfileContainer() {
   const [loading,setLoading]=useState(false)
   const [location, setLocation] = useState(null);
   const [whatsHappeningList,setWhatsHappeningList]=useState([])
+  const [prompts,setPrompts]=useState([])
     const [workshops,setWorkshops]=useState([])
-
+    const sortedWorkshops = useMemo(() => {
+  return [...workshops].sort((a,b) => a.title.localeCompare(b.title));
+}, [workshops]);
+    const filteredPrompts = useMemo(() => {
+      if(!prompts){
+        return []
+      }
+  return prompts.filter(p => p.story && p.story.data); // or any filter you need
+}, [prompts]);
+useEffect(()=>{
+  dispatch(getCurrentProfile())
+  return 
+},[])
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -90,27 +98,34 @@ function MyProfileContainer() {
           longitude: position.coords.longitude,
         });
         if(currentProfile&&currentProfile.id){
-         location&& registerUser(currentProfile.id,location)
+         location&& debounce(()=>registerUser(currentProfile.id,location),100)
         }
     
         setError(null);
-        setLoading(false);
+        // setLoading(false);
       },
       (err) => {
         console.log("location error")
         setError("We use location to conect with you fellow writers. Reload for access.");
-        setLoading(false);
+        // setLoading(false);
   
       }
     );
   }
 
-useEffect(()=>{
+// useEffect(()=>{
 
 
-   isGlobal && (currentProfile && (isNative ? requestLocation() : webRequestLocation()))
-  },[])
-  
+//    isGlobal && (currentProfile && (isNative ? requestLocation() : webRequestLocation()))
+//   },[])
+const fetchPrompts = ()=>{
+  dispatch(getPrompts()).then(res=>checkResult(res,({prompts})=>{
+    setPrompts(prompts)
+
+  },(err)=>{
+    console.log(err)
+  }))
+}
 useEffect(()=>{
   async function handleLocation() {
     
@@ -365,9 +380,10 @@ const fetchStories = () => {
 
 useEffect(()=>{
 currentProfile && fetchWorkshops()
-},[isGlobal,currentProfile])
+},[isGlobal])
   useEffect(()=>{
     fetchStories()
+    fetchPrompts()
    currentProfile && fetchWorkshops()
   },[])
 const handleGlobal=()=>{ setIsGlobal(!isGlobal)}
@@ -416,9 +432,10 @@ onClick={()=>{
     <h4 className='text-[1rem] text-emerald-800 font-bold mb-4'>
       What's happening in your communities?
     </h4>
-  <IonList><div className='flex flex-row gap-4 bg-cream overflow-x-auto overflow-y-hidden py-4 px-2 w-full'>
-    {whatsHappeningList.map((item, index) =><div className='mx-4 px-2 rounded-lg bg-blue-100 min-w-40 max-h-[18em] overflow-hidden flex flex-col'> <div className='my-2'><ProfileCircle profile={item.author}/></div><span onClick={()=>router.push(Paths.page.createRoute(item.id),"forward")}><PageDataElement truncateNumber={48} page={item}/></span></div>)}
-    </div></IonList>
+  <IonList><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden py-4 px-2 w-full'>
+     {whatsHappeningList.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):whatsHappeningList.map(item=>
+     <div className='mx-4 min-w-[20em] h-[20em] '><div className='mx-4 px-2 py-3 rounded-lg h-[100%]  bg-blue-100 w-[100%]  flex flex-col overflow-hidden '> <span onClick={()=>router.push(Paths.page.createRoute(item),"forward")}><DataElement page={item} isGrid={true}/></span></div></div>)}
+     </div></IonList>
     </div>
    <span className=''><div className='flex flex-row'><h4 className='text-xl'>
      Workshops near you 
@@ -435,19 +452,26 @@ onClick={()=>{
     
   `} 
 /><h4> {isGlobal?"Global":"Local"}</h4></div>
-<IonList>
-  <div className='flex flex-row'>
-    {workshops.map((item, index) =><div onClick={() => router.push(Paths.collection.createRoute(item.id), "forward")} className='px-4 bg-cream'> 
+{/* <IonList> */}
+  <div className='flex flex-row  overflow-scroll'>
+    {sortedWorkshops.map((item, index) =><div onClick={() => router.push(Paths.collection.createRoute(item.id), "forward")} className='px-4 bg-cream'> 
       <h2 >{item.title}</h2>
       </div>)}
 
   </div>
-</IonList>
+{/* </IonList> */}
 
 </span> 
      <h4 className='text-xl'>
      Writing Prompts for you
     </h4>
+ 
+      {/* <IonList> */}
+           <div className='flex-row bg-cream  overflow-scroll flex min-h-[20em]'>
+        {filteredPrompts.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):filteredPrompts.map(({story})=><div className='mx-4 min-w-[20em]  h-[22em] pb-2 '><div className='mx-4 px-2 py-3 rounded-lg h-[100%] min-h-[21em] bg-blue-100 w-[100%]  flex flex-col overflow-hidden '> <span onClick={()=>router.push(Paths.page.createRoute(story.id),"forward")}><DataElement page={story} isGrid={true}/></span></div></div>)}
+      </div>
+   {/* </IonList> */}
+
     <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  ">
 
       {/* Row 1: Write a Story + Create Collection */}
@@ -476,52 +500,14 @@ onClick={()=>{
         </ButtonWrapper>
       </div>
 
-      {/* Row 3: Google Drive Picker */}
-      {/* <div className="flex justify-center mx-auto md:justify-start w-full"> */}
-        {/* <GoogleDrivePicker
-          getToken={getDriveToken}
-          accessToken={driveToken}
-          onFilePicked={getFile}
-        /> */}
-      {/* </div> */}
+
 
     </div>
   </div>
 
   {/* Search + Tabs stay unchanged */}
   <div className='mx-auto md:mt-8 flex flex-col md:w-page'>
-    {/* <div className="flex items-center mb-8 mx-auto h-9 max-w-[85vw] pr-4 rounded-full bg-transparent"> */}
-
-      {/* <select
-        onChange={e => setFilterType(e.target.value)}
-        value={filterType}
-        className="select w-24 text-emerald-800 rounded-full bg-transparent"
-      >
-        {Object.entries(filterTypes).map(([, val]) => (
-          <option key={val} value={val}>{val}</option>
-        ))}
-      </select> */}
-    {/* </div> */}
-
-    {/* <div className='h-fit min-h-[55rem] mx-auto'> */}
-      {/* <StoryCollectionTabs
-        tab={tab}
-        setTab={setTab}
-        colList={() => <IndexList type="collection" 
-        items={filteredSortedCollections} 
-        
-        />}
-        storyList={() => (
-          <IndexList
-            type="story"
-            items={filteredSortedStories}
-            handleFeedback={item => {
-              openFeedback(item,true)
-            }}
-          />
-        )}
-      /> */}
-    {/* </div> */}
+  
 
   </div>
 </div>

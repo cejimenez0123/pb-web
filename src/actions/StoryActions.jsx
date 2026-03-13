@@ -143,6 +143,16 @@ const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesP
     return {error:e}
   }
 })
+const getPrompts = createAsyncThunk("pages/getPrompts",async (params,thunkApi)=>{
+  try{
+     let data = await storyRepo.getPrompts()
+     return {
+      prompts:data.prompts
+     }
+  }catch(e){
+    return {error:e}
+  }
+})
 const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStoriesProtected",async (params,thunkApi)=>{
   try{
 
@@ -157,6 +167,6 @@ const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStori
     }
   }
 })
-export {deleteStory,getStory,getMyStories,createStory,updateStory,
+export {deleteStory,getStory,getMyStories,createStory,updateStory,getPrompts,
   getCollectionStoriesProtected,getCollectionStoriesPublic,fetchRecommendedStories
 }

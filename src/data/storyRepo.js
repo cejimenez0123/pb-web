@@ -30,6 +30,17 @@ class StoryRepo{
         
         return res.data
     }
+        async getPrompts(){
+   try{
+        let res = await axios.get(this.url+"/prompts")
+        
+        return res.data
+   }catch(err){
+ console.log(err) 
+ return {error:err}
+   }
+             
+    }
     async getProtectedProfileStories({profileId}){
         let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{

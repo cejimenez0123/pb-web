@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 
-import {useContext, useEffect, useLayoutEffect, useRef, useState} from "react"
+import {useLayoutEffect, useRef, useState} from "react"
 import PageViewButtonRow  from "./PageViewButtonRow"
 import CommentInput from "../comment/CommentInput"
 import "../../styles/PageView.css"
@@ -8,13 +8,9 @@ import PropTypes from 'prop-types'
 import Paths from "../../core/paths"
 import ProfileCircle from "../profile/ProfileCircle"
 import { initGA, sendGAEvent } from "../../core/ga4"
-import isValidUrl from "../../core/isValidUrl"
-import Context from "../../context"
-import { PageType } from "../../core/constants"
-import { IonImg, useIonRouter } from "@ionic/react"
-import LinkPreview from "../LinkPreview"
-import Enviroment from "../../core/Enviroment"
+import {  useIonRouter } from "@ionic/react"
 
+import DataElement from "./DataElement"
 export default function PageViewItem({page}) {
     const ref = useRef()
   
@@ -81,90 +77,4 @@ if(page){
                  
                 </div>
             } 
-}
-
-
-function DataElement({page,isGrid,book=null}){
-    const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
-    const {isHorizPhone}=useContext(Context)
- const router = useIonRouter()
-  
-   
-    useEffect(()=>{
-        
-        if(page && page.type==PageType.picture){
-            if(isValidUrl(page.data)){
-                setImage(page.data)
-            }else{
-             
-                setImage(Enviroment.imageProxy(page.data))
-            
-            }
-    
-        }
-    },[page])
-
- function Element({page}){   
-switch(page.type){
-    case PageType.text:{
-
-    return( 
-
-   <div 
-        
-        className={`ql-editor `} dangerouslySetInnerHTML={{__html:page.data}}/>
-     
-  
-  ) }
-  case PageType.picture:{
-  
-    return(image?!isHorizPhone?<img  id="page-data-pic"  
-
-        className=""
-        onClick={()=>{
-   
-        if(router.routeInfo.pathname!=Paths.page.createRoute(page.id)){
-    router.push(Paths.page.createRoute(page.id))}
-     
-     }} 
-     alt={page.title} src={image}
-    />:
-    <IonImg       id="page-data-pic"
-    className="w-full h-full object-contain sm:w-[50em]"
-
-    onClick={()=>{
-   
-   if(router.routeInfo.pathname!=Paths.page.createRoute(page.id)){
-   router.push(Paths.page.createRoute(page.id))}
-
-}} 
-alt={page.title}
-    src={image}/>
-    
-    :
-    <div className={`skeleton w-page-mobile`}/>)
-}
-case PageType.link:{
-    return(
-    
-        <LinkPreview
-      
-            isGrid={isGrid}
-            url={page.data}
-        />
-       )
-}
-default:
-    return(<div        id="page-data-skeleton "className={`skeleton w-page-mobile`}>
-   <IonImg src={loadingGif}/>
-</div>)
-}
-}
-if(!page){
-    return(
-    <IonImg src={loadingGif}/>
-) 
-}
-
-return (<div className=" "><Element page={page}/></div>)
 }
