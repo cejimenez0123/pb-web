@@ -127,7 +127,7 @@ const fetchPrompts = ()=>{
   }))
 }
 useEffect(()=>{
-  async function handleLocation() {
+  const handleLocation= async ()=>{
     
   
   isGlobal && currentProfile && (isNative ? requestLocation() : webRequestLocation())
