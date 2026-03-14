@@ -1,516 +1,709 @@
 import { useContext, useEffect, useState } from "react";
-import { useDispatch,useSelector } from "react-redux";
-import { updateProfile,deleteUserAccounts, deletePicture, setDialog, getCurrentProfile, signOutAction} from "../actions/UserActions";
-import {uploadProfilePicture} from "../actions/ProfileActions"
-import "../App.css"
-import "../styles/Setting.css"
+import { useDispatch } from "react-redux";
+import {
+  updateProfile,
+  deleteUserAccounts,
+  deletePicture,
+  setDialog
+} from "../actions/UserActions";
+import { uploadProfilePicture } from "../actions/ProfileActions";
+import { Geolocation } from "@capacitor/geolocation";
+import { IonContent, useIonRouter } from "@ionic/react";
+
 import checkResult from "../core/checkResult";
 import Context from "../context";
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { IonContent, IonImg, IonText, useIonRouter } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
-import ErrorBoundary from "../ErrorBoundary";
+import { useSelector } from "react-redux";
+import GoogleMapSearch from "./collection/GoogleMapSearch";
 import { Capacitor } from "@capacitor/core";
-import isValidUrl from "../core/isValidUrl";
-import uploadFile from "../core/uploadFile";
-import { Preferences } from "@capacitor/preferences";
-import Paths from "../core/paths";
-import { useDialog } from "../domain/usecases/useDialog";
-import { Geolocation } from "@capacitor/geolocation";
+async function reverseGeocode(lat, lng) {
 
-import GoogleMapSearch from "./collection/GoogleMapSearch"
-import { io } from "socket.io-client";
-const socket = io(Enviroment.url);
-import { getGeocode } from "use-places-autocomplete";
-
-async function getPlaceFromLatLng(lat, lng) {
-  if(lat && lng){
-  const results = await getGeocode({
-    location: { lat, lng }
-  });
-
-  return results[0];
-}else{
-  return null
-}
-}
-const registerUser = (profileId, location) => {
-  console.log("Registering user with profileId:", profileId, "and location:", location);
-    socket.emit('register', { profileId, location });
-  };
-export default function SettingsContainer(props) {  
-
-    const router = useIonRouter()
-  
-    const{setError,setSuccess}=useContext(Context)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    // const dialog = useSelector(state=>state.users.dialog)
-    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    const [params, setParams] = useState({
-  profile: null,
-  file: null,
-  profilePicture: pictureUrl,
-  profileId: "",
-  isPrivate: false,
-  selfStatement: "",
-  location: {
-    latitude: 40.82341365353257,
-    longitude: -73.87828682676974,
-    address: ""
-  },
-  username: ""
-});
-const [homeItems,setHomeItems] = useState([])
-    const [loading,setLoading] = useState(false)
-    const isNative = Capacitor.isNativePlatform()
-    const dispatch = useDispatch()
-  const {dialog,openDialog,closeDialog}=useDialog()
-const [location,setLocation]=useState(null)
-    const [pending,setPending] = useState(false)
-     const handleChange = (key, value) => {
-
-    setParams((prev) => ({ ...prev, [key]: value }));
-
-     
-  };
-  const getPostion = async () => {
-    if(isNative){
- const position = await Geolocation.getCurrentPosition();
-  getPlaceFromLatLng(position.coords.latitude, position.coords.longitude).then(place=>{
-     
-             setLocation({
-
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-                 name: place.name,
-            address: place.formatted_address
-      });
-        
-    if (currentProfile && currentProfile.id) {
-   
-        getPlaceFromLatLng(position.coords.latitude, position.coords.longitude).then(place=>{
-             registerUser(currentProfile.id, params.location);
-      
-          handleChange("location",{
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-    
-            address: place.formatted_address
-          })
-          
-  
-        }).catch(err=>console.log("Error getting place details:", err))
-      }
-      
-          })
-   
-     
-}else{
-      navigator.geolocation.getCurrentPosition(
-      (position) => {
-          getPlaceFromLatLng(position.coords.latitude, position.coords.longitude).then(place=>{
-     
-             setLocation({
-
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-                 name: place.name,
-            address: place.formatted_address
-      });
-        
-   
-          })
-      
-    
-   
-         getPlaceFromLatLng(position.coords.latitude, position.coords.longitude).then(place=>{
-          console.log("Place details:", place);
-          handleChange("location",{
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            name:place.formatted_addres,
-            address: place.formatted_address
-          })
-            if(currentProfile&&currentProfile.id){
-         location&& registerUser(currentProfile.id,params.location)
-        }
-        
-        }).catch(err=>console.log("Error getting place details:", err))
-        setError(null);
-        setLoading(false);
-      })}}
-   useEffect(() => {
-  if (currentProfile?.id) {
-    setProfile(currentProfile);
-  }
-}, [currentProfile]);
-    useEffect(()=>{
-      dispatch(getCurrentProfile())
-    },[])
- 
-
-  
- 
-    const handleAgree = () => {
-        dispatch(deleteUserAccounts()).then((res)=>{
-            checkResult(res,payload=>{
-                
-              if(payload.message){
-                setSuccess(payload.message)
-                router.push("/")
-              }
-           
-            },err=>{
-                setError(err.message)
-            })
-       
-        })
-    }
-    const handleClose = () => {
-   
-        closeDialog()
-    };
-
-      const handleSignOut =async () => {
- 
-    await Preferences.clear()
-   router.push(Paths.login(),"forward","replace")
-    dispatch(signOutAction())
-  
-   
-};
-    
-    // const setProfile = (profile)=>{
-    //     setPending(true)
-    //     isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
-        
-    //     handleChange("selectedImage",profile.profilePic)
-    //     handleChange("profilePicture",profile.profilePic)
-    //     handleChange("profile",profile)
-    //     handleChange("location",{...profile.location,address:""})
-    //     handleChange("username",profile.username)
-    //     handleChange("profileId",profile.id)
-    //     handleChange("privacy",profile.isPrivate)
-    //     handleChange("selfStatement",profile.selfStatement)
-   
-    //     setPending(false)
-  
-    // }
-    const setProfile = async (profile) => {
-  if (!profile) return;
-
-  setPending(true);
-
-  const profilePic =
-    profile.profilePic ||
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s";
-
-  const picture = isValidUrl(profilePic)
-    ? profilePic
-    : Enviroment.imageProxy(profilePic);
-
-  setPictureUrl(picture);
-let placeData = await getPlaceFromLatLng(profile.location.latitude,profile.location.longitude)
-console.log("CDD",placeData)
-  setParams((prev) => ({
-    ...prev,
-    profile,
-    profilePicture: profilePic,
-    selectedImage: profilePic,
-    username: profile.username || "",
-    profileId: profile.id || "",
-    location: { ...(profile.location || {}), address: placeData.formatted_address },
-    isPrivate: profile.isPrivate ?? false,
-    selfStatement: profile.selfStatement || ""
-  }));
-
-  setPending(false);
-};
-    const handleOnSubmit =async (e)=>{
-        e.preventDefault();
-
-try{
-  if(params.file){
-      dispatch(deletePicture({fileName:currentProfile.profilePic}))
-      dispatch(uploadProfilePicture({...params})).then(result=>{
-        checkResult(result,payload=>{
-const {url,fileName}=payload
- handleChange("profilePicture",fileName)
-updateCurrentProfile({...params,profilePicture:fileName})
- isValidUrl(url)?setPictureUrl(url):setPictureUrl(Enviroment.imageProxy(fileName))
-
-
-window.alert("Updating Profile")
-                        //  setProfile(profile)
-        },err=>{
-
-        })
-      })
-  }else{
-
-  
-    updateCurrentProfile(params)
-
- 
-      }
-}catch(err){
-    console.log("Update profile error:"+err.message)
-}}
-    
-   const updateCurrentProfile=(parameters)=>{
-            dispatch(updateProfile({...parameters})).then((result) =>checkResult(result,
-                    (payload)=>{
-                        const {profile}=payload
-                        console.log("FSDF",profile.profilePic)
-                       profile && profile.profilePic && isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
-                         setProfile(profile)
-                        setSuccess("Updated")
-                    
-                    },err=>{
-                           window.alert(err.message)
-                        setError(err.message)
-                        console.log("Update profile dispatch error:"+err.message)
-                    
-                    
-        }))
-   }         
-
-      
-
-     
-   
-    const handleDeleteDialog=()=>{
-      closeDialog()
-        let dia = {...dialog}
-        dia.agree={handleAgree} 
-        dia.onClose={handleClose}
-        dia.title=("Are you sure you want to delete your account?")
-                        dia.text=("Deleting your account can't be reversed")
-                        dia.agreeText ="Delete"
-        openDialog(dia)
-
-    }
-    const deleteHomeItem  = (item)=>{
-        switch(item.type){
-            case "page":{
-                let newItems =  homeItems.filter(hash=>{return hash!==item})
-                setHomeItems(newItems)
-                let newPages= homePages.filter(id=>id!==item.id)
-                setHomePages(newPages) 
-                break;
-            }
-        
-            case "book":{
-            let newItems  = homeItems.filter(hash=>{return hash!==item})
-                setHomeItems(newItems)  
-            let newBooks = homeBooks.filter(id=>{return (id !== item.id)})
-                setHomeBooks(newBooks)
-                break;
-            }
-            case "library":{
-                let newItems = homeItems.filter(hash=>{return hash!==item})    
-                setHomeItems(newItems)  
-                let newLibraries =  homeLibraries.filter(id=>{return (id !== item.id)}) 
-                setHomeLibraries(newLibraries)
-                break;
-            }
-            case "profile":{
-                let newItems= homeItems.filter(hash=>{return  hash!==item})
-                setHomeItems(newItems) 
-                let newProfiles = homeProfiles.filter(id=>{return id !== item.id})
-                // setHomeProfiles(newProfiles)  
-                break;  
-            }  
-            default: break
-    }
-}
-
-async function handleProfilePictureNative() {
   try {
-    const image = await Camera.getPhoto({
-      quality: 80,
-      allowEditing: true,
-      resultType: CameraResultType.Uri, // This works best with Uploader's 'filePath'
-      source: CameraSource.Prompt,
-    });
-    try {
-    const fileName = await uploadFile(image);
-    handleChange("profilePicture",fileName)
-    setPictureUrl(image.webPath)
- 
-  } catch (e) {
-    console.error('Upload failed:', e);
-  }
- 
 
-    }catch(er){
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+    );
 
-    }
+    const data = await res.json();
 
-}
+    return data?.display_name || "";
 
-
-
-const handleProfilePicture = async (e) => {
-    
-  try {
-    let file, previewUrl;
-
- 
-      file = e.target.files[0];
-      if (!file) return;
-
-      if (!file.type.startsWith('image/')) {
-
-        setError('Please upload a valid image file.');
-        return;
-      }
-      if (pictureUrl?.startsWith('blob:')) {
-        URL.revokeObjectURL(pictureUrl);
-      }
-
-    previewUrl = URL.createObjectURL(file) + `#${Date.now()}`;
-  
-    handleChange("file", file);
-    window.alert("file")
-    setPictureUrl(previewUrl);
-    setError('');
-    
   } catch (err) {
-    console.error('Error capturing or loading image:', err);
-    setError(err.message || 'Image upload failed');
+    console.log("Reverse geocode error:", err);
+    return "";
   }
-};
 
+}
+export default function SettingsContainer() {
+
+  const dispatch = useDispatch();
+  const router = useIonRouter();
+
+  const {  setError, setSuccess } = useContext(Context);
+  const {currentProfile}=useSelector(state=>state.users)
+  const [file, setFile] = useState(null);
+
+const [form, setForm] = useState({
+  username: "",
+  selfStatement: "",
+  isPrivate: false,
+  profilePicture: "",
+  location: {
+    latitude: null,
+    longitude: null,
+    address: ""
+  }
+});
+
+  const [pictureUrl, setPictureUrl] = useState(
+    "https://placehold.co/200"
+  );
+
+  const [loading, setLoading] = useState(true);
+
+  /* --------------------------
+     Load profile into form
+  ---------------------------*/
+  useEffect(() => {
+
+    if (!currentProfile) return;
+
+    const pic = currentProfile.profilePic;
+// if (currentProfile.location) {
+//   setForm(prev => ({
+//     ...prev,
    
-     if(!pending){
-            return(
-                <ErrorBoundary>
-                <IonContent fullscreen={true}>
-             <div className="bg-slate-100 pb-[10em]">
-            <div  className="bg-slate-100 pt-20 pb-30">
-                   <div className="text-right px-4" ><button onClick={handleSignOut} className="bg-golden text-white px-4 py-2 rounded">Log Out</button></div>
-                    <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
-                      <label className="text-left flex flex-col "><h4 className="text-[1.2em]  mx-4">Username:</h4>
-                   
-            
-                            <input type="text"   
-                                        className={"text-[1.2em]  px-4 py-2 bg-white w-[100vw] border-slate-50 mb-8  border-2 border-emerald-800 border-2  "}
-                                        value={params.username}
-                                        onChange={(e)=>handleChange("username",e.target.value.toLocaleLowerCase())
-                                        }
-                                         label="Username"/>
-                                         </label>
-                                         <GoogleMapSearch initLocationName={params.location.address??""} onLocationSelected={(coordinates)=>{
-                                                    handleChange("location",coordinates)
-                                                   setLocation({...coordinates})
-                                                 }}/><button onClick={getPostion} className="bg-blueSea text-white px-4 py-2 rounded">Use Current Location</button>
-                                             <label className="text-left flex flex-col "><h4 className="text-[1.2em]  mx-4">
-                                              Location:</h4>
-                   
-        
-                            <input type="text"   
-                                        className={"text-[1.2em]  px-4 py-2 bg-white w-[100vw] border-slate-50 mb-8  border-2 border-emerald-800 border-2  "}
-                                        value={params.location.address??""}
-                                        onChange={(e)=>handleChange("username",e.target.value.toLocaleLowerCase())
-                                        }
-                                         label="Username"/>
-                                         </label>
-                                          <div className='file mt-4 mb-4'>
-                   {Capacitor.isNativePlatform() ? (
-  <button onClick={handleProfilePictureNative}>Choose Photo</button>
-) : (
-  <input type="file" className="file-input" accept="image/*" onChange={handleProfilePicture} />
-)} 
+//   }));
+// }
+    setForm({
+      username: currentProfile.username ?? "",
+      selfStatement: currentProfile.selfStatement ?? "",
+      isPrivate: currentProfile.isPrivate ?? false,
+      profilePicture: pic ?? "",
+       location: {
+      latitude: currentProfile?.location?.latitude??40,
+      longitude: currentProfile?.location?.longitude??73,
+      address: currentProfile?.location?.address || ""
+    }
+    });
 
-                     
+    if (pic) {
+      if (pic.includes("http")) {
+        setPictureUrl(pic);
+      } else {
+        setPictureUrl(Enviroment.imageProxy(pic));
+      }
+    }
+
+    setLoading(false);
+
+  }, [currentProfile]);
+
+
+
+
+const getPosition = async ()=> {
+  if (Capacitor.isNativePlatform()) {
+    const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+    return position.coords;
+  } else {
+    // Browser fallback using Google Geolocation API
+    const res = await fetch("https://www.googleapis.com/geolocation/v1/geolocate?key=" + import.meta.env.VITE_GOOGLE_MAPS_API_KEY, {
+      method: "POST"
+    });
+    const data = await res.json();
+    return {
+      latitude: data.location.lat,
+      longitude: data.location.lng
+    };
+  }
+}
+    // Reverse geocode to get human-readable address
+   
+  
+
+
+  /* --------------------------
+     Form update
+  ---------------------------*/
+  const handleChange = (key, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  /* --------------------------
+     Image upload preview
+  ---------------------------*/
+  const handleImage = (e) => {
+
+    const selected = e.target.files?.[0];
+
+    if (!selected) return;
+
+    if (!selected.type.startsWith("image/")) {
+      setError("Upload a valid image");
+      return;
+    }
+
+    setFile(selected);
+    setPictureUrl(URL.createObjectURL(selected));
+  };
+
+  /* --------------------------
+     Submit update
+  ---------------------------*/
+  const handleSubmit = async () => {
+
+    if (!currentProfile) return;
+
+    try {
+
+      let profilePicture = form.profilePicture;
+
+      if (file) {
+
+        await dispatch(deletePicture({
+          fileName: currentProfile.profilePic
+        }));
+
+        const upload = await dispatch(
+          uploadProfilePicture({ file })
+        );
+
+        checkResult(upload, payload => {
+          profilePicture = payload.fileName;
+        });
+      }
+
+dispatch(updateProfile({
+  profile: currentProfile,
+  username: form.username,
+  profilePicture,
+  selfStatement: form.selfStatement,
+  privacy: form.isPrivate,
+  location: form.location
+})).then(result=>{
+
+      checkResult(
+        result,
+        () => setSuccess("Profile updated"),
+        err => setError(err.message)
+      );
+    })
+    } catch (err) {
+      setError("Update failed");
+    }
+  };
+
+  /* --------------------------
+     Delete account
+  ---------------------------*/
+  const handleDelete = () => {
+
+    dispatch(setDialog({
+      title: "Delete account?",
+      text: "This cannot be undone.",
+      agreeText: "Delete",
+      agree: () => dispatch(deleteUserAccounts())
+    }));
+
+  };
+
+  if (loading) {
+    return (
+      <IonContent>
+        <div className="flex justify-center mt-20">
+          <span className="loading loading-spinner loading-lg text-emerald-600"></span>
+        </div>
+      </IonContent>
+    );
+  }
+
+  return (
+
+    <IonContent fullscreen>
+
+      <div className="min-h-screen bg-base-200 flex justify-center pt-20 pb-32">
+
+        <div className="card w-96  p-6 space-y-6">
+
+          <h2 className="text-2xl font-bold text-center text-emerald-700">
+            Profile Settings
+          </h2>
+
+          {/* Username */}
+
+          <div className="form-control">
+
+            <label className="label">
+              <span className="label-text">Username</span>
+            </label>
+
+            <input
+              type="text"
+              className="input input-bordered"
+              value={form.username}
+              onChange={(e)=>handleChange("username",e.target.value)}
+            />
+
+          </div>
+
+          {/* Profile Image */}
+
+          <div className="flex flex-col items-center gap-4">
+
+            <div className="avatar">
+
+              <div className="w-24 rounded-xl">
+
+                <img src={pictureUrl} />
+
+              </div>
+
+            </div>
+
+            <input
+              type="file"
+              accept="image/*"
+              className="file-input file-input-bordered w-full"
+              onChange={handleImage}
+            />
+
+          </div>
+          <span className="w-fit mx-auto">
+<GoogleMapSearch
+  initLocationName={form.location?.address}
+  onLocationSelected={(coordinates)=>{
+    setForm(prev => ({
+      ...prev,
+      location: coordinates
+    }));
+  }}
+/>
+</span>
+<button
+  className="btn btn-outline btn-sm mt-2"
+  onClick={getPosition}
+>
+  Use Current Location
+</button>
+          {/* Self Statement */}
+
+          <div className="form-control">
+
+            <label className="label">
+              <span className="label-text">
+                Self Statement
+              </span>
+            </label>
+
+            <textarea
+              className="textarea textarea-bordered h-32"
+              value={form.selfStatement}
+              onChange={(e)=>{
+                if(e.target.value.length <= 120){
+                  handleChange("selfStatement",e.target.value)
+                }
+              }}
+            />
+
+          </div>
+
+          {/* Privacy */}
+
+          <div className="form-control">
+
+            <label className="cursor-pointer label">
+
+              <span className="label-text">
+                Private Profile
+              </span>
+
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={form.isPrivate}
+                onChange={()=>handleChange("isPrivate",!form.isPrivate)}
+              />
+
+            </label>
+
+          </div>
+
+          {/* Buttons */}
+
+          <button
+            className="btn btn-primary w-full"
+            onClick={handleSubmit}
+          >
+            Update Profile
+          </button>
+
+          <button
+            className="btn btn-error btn-outline w-full"
+            onClick={handleDelete}
+          >
+            Delete Account
+          </button>
+
+        </div>
+
+      </div>
+
+    </IonContent>
+  );
+}
+// import { useContext, useLayoutEffect,useRef,useState } from "react";
+// import { useDispatch,useSelector } from "react-redux";
+// import { updateProfile,deleteUserAccounts, deletePicture, setDialog} from "../actions/UserActions";
+// import {uploadProfilePicture} from "../actions/ProfileActions"
+// import "../App.css"
+// // const
+// // import { useNavigate } from "react-router-dom";
+// import "../styles/Setting.css"
+// import checkResult from "../core/checkResult";
+// import Context from "../context";
+// import { IonContent, IonText, useIonRouter } from "@ionic/react";
+// import Enviroment from "../core/Enviroment";
+// export default function SettingsContainer(props) {  
+//     // const navigate = useNavigate()
+//     const router =useIonRouter()
+//     const{setError,currentProfile,setSuccess}=useContext(Context)
+//     const dialog = useSelector(state=>state.users.dialog)
+//     const [newUsername,setNewUsername] = useState("")
+//     const [selfStatement,setSelfStatement] = useState(currentProfile&&currentProfile.selfStatement?currentProfile.selfStatement:"")
+//     const [isPrivate,setPrivacy] = useState(false)
+//     const [homeItems,setHomeItems] = useState([])
+//     const dispatch = useDispatch()
+//     const [file,setFile]=useState(null)
+//     const [selectedImage,setSelectedImage]=useState()
+//     const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
+//     let [pending,setPending] = useState(false)
+//   useLayoutEffect(() => {
+//   if (currentProfile) {
+//     setProfile(currentProfile);
+//   }
+// }, [currentProfile]);
+//     // useLayoutEffect( ()=>{
+//     //     if(currentProfile){
+//     //         setProfile(currentProfile)
+//     //         return
+//     //     }
+//     //     if(currentProfile&& currentProfile.profilePic){
+            
+//     //         if(!currentProfile.profilePic.includes("http")){
+//     //             setPictureUrl(Enviroment.imageProxy(currentProfile.profilePic))
+     
+//     //     }else{
+//     //         setSelectedImage(currentProfile.profilePic)
+//     //         setPictureUrl(currentProfile.profilePic)
+//     //     }
+//     // }
+        
+//     // },[currentProfile])
+
+
+  
+ 
+//     const handleAgree = () => {
+//         dispatch(deleteUserAccounts()).then((res)=>{
+//             checkResult(res,payload=>{
+                
+//               if(payload.message){
+//                 setSuccess(payload.message)
+//                 router.push("/","foward")
+//               }
+           
+//             },err=>{
+//                 setError(err.message)
+//             })
+       
+//         })
+//     }
+//     const handleClose = () => {
+   
+//         dispatch(setDialog({isOpen:false}))
+//     };
+// const setProfile = (profile) => {
+//   if (!profile) return;
+
+//   setPending(true);
+
+//   setNewUsername(profile.username || "");
+//   setSelfStatement(profile.selfStatement || "");
+//   setPrivacy(profile.isPrivate ?? false);
+
+//   if (profile.profilePic) {
+//     if (profile.profilePic.includes("http")) {
+//       setPictureUrl(profile.profilePic);
+//     } else {
+//       setPictureUrl(Enviroment.imageProxy(profile.profilePic));
+//     }
+//   }
+
+//   setPending(false);
+// };
+//     // const setProfile = (profile)=>{
+//     //    setPending(true) 
+//     //    // // 
+//     //    isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic)) 
+//     //    handleChange("selectedImage",profile.profilePic) 
+//     //    handleChange("profilePicture",profile.profilePic) 
+//     //    handleChange("profile",profile) 
+//     //    handleChange("location",{...profile.location,address:""}) 
+//     //    handleChange("username",profile.username) 
+//     //    handleChange("profileId",profile.id) 
+//     //    handleChange("privacy",profile.isPrivate) 
+//     //     handleChange("selfStatement",profile.selfStatement) 
+//     //      setPending(false) 
+//     //      }
+    
+// const handleChange = (key, value) => { setParams((prev) => ({ ...prev, [key]: value })); };
+//     const handleOnSubmit =(e)=>{
+//         e.preventDefault();
+//         if(currentProfile!=null){
+//                    const fileParams = { file: file
+//         }
+
+//        if(file){
+
+//         dispatch(deletePicture({fileName:currentProfile.profilePic}))
+//         dispatch(uploadProfilePicture(fileParams)).then((result) => {
+//             checkResult(result,(payload)=>{
+
+//                 const params = {
+//                     profile: currentProfile,
+//                     username: newUsername,
+//                     profilePicture: payload.fileName,
+//                     selfStatement: selfStatement,
+//                     privacy: isPrivate
+                    
+//                 }
+//                 dispatch(updateProfile(params)).then((result) =>checkResult(result,
+//                     payload=>{
+//                         setSuccess("Updated")
+//                     },err=>{
+//                         setError(err.message)
+//                     }
+        
+//                 ))
+//             },(err)=>{
+//                 setError(err.message)
+//                 setSignUpError(true)
+//             })
+    
+//         })}else{
+//             const params = {
+//                 profile: currentProfile,
+//                 username: newUsername,
+//                 profilePicture: currentProfile.profilePic,
+//                 selfStatement: selfStatement,
+//                 privacy: isPrivate
+                
+//             }
+//             dispatch(updateProfile(params)).then((result) =>checkResult(result,
+//                 payload=>{
+//                     setSuccess("Updated")
+//                 },err=>{
+//                     setError(err.message)
+//                 }
+    
+//             ))
+//         }
+       
+            
+    
+//     }   
+
+//     } 
+   
+//     const handleDeleteDialog=()=>{
+//         let dia = {...dialog}
+//         dia.agree={handleAgree} 
+//         dia.onClose={handleClose}
+//         dia.title=("Are you sure you want to delete your account?")
+//                         dia.text=("Deleting your account can't be reversed")
+//                         dia.agreeText ="Delete"
+//         dispatch(setDialog(dia))
+
+//     }
+//     const deleteHomeItem  = (item)=>{
+//         switch(item.type){
+//             case "page":{
+//                 let newItems =  homeItems.filter(hash=>{return hash!==item})
+//                 setHomeItems(newItems)
+//                 let newPages= homePages.filter(id=>id!==item.id)
+//                 setHomePages(newPages) 
+//                 break;
+//             }
+        
+//             case "book":{
+//             let newItems  = homeItems.filter(hash=>{return hash!==item})
+//                 setHomeItems(newItems)  
+//             let newBooks = homeBooks.filter(id=>{return (id !== item.id)})
+//                 setHomeBooks(newBooks)
+//                 break;
+//             }
+//             case "library":{
+//                 let newItems = homeItems.filter(hash=>{return hash!==item})    
+//                 setHomeItems(newItems)  
+//                 let newLibraries =  homeLibraries.filter(id=>{return (id !== item.id)}) 
+//                 setHomeLibraries(newLibraries)
+//                 break;
+//             }
+//             case "profile":{
+//                 let newItems= homeItems.filter(hash=>{return  hash!==item})
+//                 setHomeItems(newItems) 
+//                 let newProfiles = homeProfiles.filter(id=>{return id !== item.id})
+//                 setHomeProfiles(newProfiles)  
+//                 break;  
+//             }  
+//             default: break
+//     }
+// }
+//     const homeItem=(item)=>{
+//         switch(item.type){
+//             case "page":{
+//                 return (<div className="home-item">{item.page.title}
+//                 <IconButton onClick={()=>deleteHomeItem(item)}>
+//                     <Clear/></IconButton></div>)
+//             }
+//             case "book":{
+//                 return (<div className="home-item">{item.book.title}
+//                 <IconButton onClick={()=>deleteHomeItem(item)}>
+//                     <Clear/></IconButton></div>)
+//             }
+//             case "library":{
+//                 return (<div className="home-item">{item.library.name}
+//                 <IconButton onClick={()=>deleteHomeItem(item)}>
+//                     <Clear/>
+//                 </IconButton></div>)
+//             }
+//             case "profile":{
+//                 return (<div className="home-item">{item.profile.username}
+//                 <IconButton onClick={()=>deleteHomeItem(item)}
+//             ><Clear/></IconButton></div>)
+//             }
+//         }
+//     }
+//     const handleProfilePicture =(e)=>{
+        
+//         const file = e.target.files[0];
+
+//         if (file) {
+//           // Check file type
+//           if (!file.type.startsWith('image/')) {
+//             setError('Please upload a valid image file.');
+           
+//             return;
+//           }
+//           setFile(file)
+//           setError('');
+//           setPictureUrl(URL.createObjectURL(file))
+
+          
+//         }
+ 
+//     }
+   
+//      if(!pending){
+//             return(
+//                 <IonContent fullscreen={true}>
+//             <div >
+//                     <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
+//                       <label className="text-left flex flex-col "><h4 className="text-xl">Username:</h4>
+                   
+//                       {/* <IonInput   
+                    
+//                                         value={newUsername}
+                                     
+//                                         onChange={(e)=>setNewUsername(e.target.value)}
+//                                              label="Username"/>
+//                                              </IonItem> */}
+//                             <input type="text"   
+//                                         className={" text-xl px-4 py-2 rounded-full  open-sans-medium text-emerald-800 bg-transparent border-2 border-emerald-800 border-2  "}
+//                                         value={newUsername}
+//                                         onChange={(e)=>setNewUsername(e.target.value)
+//                                         }
+//                                          label="Username"/>
+//                                          </label>
+//                                           <div className='file'>
+                   
+//                         <input
+//     className="file-input max-w-72 my-8 mx-auto "
+//         type="file"
+//         accept="image/*"
+//         onInput={(e)=>handleProfilePicture(e)}/>
              
      
           
-        <IonImg
-  src={pictureUrl || "https://placehold.co/200"}
-  className="mx-auto my-4"
-  style={{ maxWidth: "10em", borderRadius: "10px" }}
-/>
+//           <img
+//           className="mx-auto"
+//             src={pictureUrl}
+//             alt="Selected"
+//             style={{ maxWidth: '10em', maxHeight: '300px', borderRadius: '10px' }}
+//           />
         
         
       
     
-                    </div>
+//                     </div>
                     
-                            <label className="text-left mt-4 " id="" >
-                                <h6 className="text-[1.2em] mx-4">Self Statement:</h6>
+//                             <label className="text-left mt-4 " id="" >
+//                                 <h6 className="mont-medium text-xl">Self Statement:</h6>
                                
-                                    <textarea
-                                    onChange={(e)=>{handleChange("selfStatement",e.target.value)}}
-                                  
-                                    value={params.selfStatement}
-                                    className="textarea w-[100vw] w-full  text-emerald-800 border-2 bg-white border-slate-50 px-6 py-4 min-h-36 my-2"
-                                    placeholder="Self Statement"/>
-                            </label>
-                            <section className="flex flex-col w-[100vw]">
-                           <label className="text-left  "> <h4 className="text-[1.2em] mx-4 mb-4 mt-8">Privacy Settings:</h4>
-                           </label>
-                           <div className="bg-white rounded-2xl mt-6">
-  <div className="px-4 py-3 flex items-center justify-between">
-    <div className="flex items-center gap-3">
-     
-      <div>
-        <div className="text-gray-900 font-medium">
-          {params.isPrivate ? 'Private Profile' : 'Public Profile'}
-        </div>
-        <div className="text-xs text-gray-500 mt-0.5">
-          {params.isPrivate 
-            ? 'Only you can see your profile' 
-            : 'Your profile is visible to everyone'}
-        </div>
-      </div>
-    </div>
-    <div
-      onClick={(e) => {
-        e.preventDefault();
-        handleChange("isPrivate", !params.isPrivate);
-      }}
-      className={`  min-h-6 min-w-6  ${params.isPrivate ? 'bg-blueSea' : 'bg-soft'} rounded-full `}
-    >  </div> 
-   
-  </div>
-</div>
+//                                     <textarea
+//                                     onChange={(e)=>{
+//                                         if(e.target.value.length<120){
+//   setSelfStatement(e.target.value)
+//                                         }else{
+//                                             setError("Max Character Count 120")
+//                                         }
+//                                       }}
+                                    
+//                                     value={selfStatement}
+//                                     className="textarea min-w-72 w-full  text-emerald-800 border-2 bg-transparent border-emerald-800 p-4 min-h-36 my-2"
+//                                     placeholder="Self Statement"/>
+//                             </label>
+//                             <div className="text-left mt-4">
+//                             {isPrivate?<button onClick={(e)=>{
+//                                 e.preventDefault()
+//                                 setPrivacy(false)}}className=" text-emerald-800 bg-emerald-50 hover:bg-green-100 mont-medium rounded-full border-emerald-700 border-2 text-xl text-emerald-800 text-bold">You are Private</button>:
+//                             <button 
+//                             onClick={(e)=>{
+//                                 e.preventDefault()
+//                                 setPrivacy(true)}}
+//                             className=" text-bold border-emerald-500  h-18 w-24 border-2 rounded-full text-emerald-800 bg-emerald-50 hover:bg-green-10 text-xl ">You are Public</button>}
+//    </div>
+//   <div className="mt-8">
 
-   
-   </section>
-  <div className="mt-8 w-[100vw]">
-
-                            <div
-                               className="bg-sky-700 mx-auto bg-opacity-[60%] flex btn text-white w-[90%] h-[5em] flex  rounded-xl "
-                                variant="outlined" 
-                                onClick={(e)=>handleOnSubmit(e)}
-                            >
-                                <IonText className="my-auto mx-auto text-2xl">Update Profile</IonText>
-                              
-                            </div>
-                             
-                            </div>
-                           
-                        <button 
-                        className="rounded-xl py-2 w-[100%] mt-24 text-2xl  bg-golden text-white"
-                                onClick={handleDeleteDialog}
-                                id="open-modal" expand="block"
-                        ><IonText>Delete Account</IonText> </button>
+//                             <div
+//                                className="bg-blueSea flex btn text-white w-[10rem] w-full   rounded-full "
+//                                 variant="outlined" 
+//                                 onClick={(e)=>handleOnSubmit(e)}
+//                             >
+//                                 <IonText className="my-auto mx-auto  text-2xl">Update</IonText>
+//                             </div>
+//                             </div>
+//                         <button 
+//                         className="rounded-full py-2 w-[10rem] mt-24 text-2xl  bg-golden text-white"
+//                                 onClick={handleDeleteDialog}
+//                                 id="open-modal" expand="block"
+//                         ><IonText>Delete</IonText> </button>
         
-                        </div>
-            </div>
-            </div>
-          </IonContent>
-          </ErrorBoundary>
-        )
-    }else{
-        return(<div>
-            Something's wrong
-        </div>)
-    }
+//                         </div>
+//             </div>
+//           </IonContent>
+//         )
+//     }else{
+//         return(<div>
+//             Something's wrong
+//         </div>)
+//     }
 
 
-}
+// }
 
 

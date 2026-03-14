@@ -52,7 +52,7 @@ export default function PageViewItem({page}) {
             </h6>
         </div>:null}   </div>
      }
-if(page){
+
     
 
         return(
@@ -61,10 +61,9 @@ if(page){
         
                 {header()}
               
-       <div className="py-1 ">
+  
                 <DataElement page={page} isGrid={false}/>
-            </div>
-            
+        
             <PageViewButtonRow page={page} profile={currentProfile} setCommenting={truthy=>setCommenting(truthy)}/>
             
                 {commentBox()}   
@@ -72,9 +71,5 @@ if(page){
      
   
         )
-            }else{
-                <div className="skeleton" ref={ref}>
-                 
-                </div>
-            } 
+            
 }

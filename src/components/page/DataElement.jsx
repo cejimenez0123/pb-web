@@ -12,8 +12,13 @@ function DataElement({page,isGrid,book=null,html=null}){
 const initialImage = page?.type === PageType.picture
   ? (isValidUrl(page.data) ? page.data : Enviroment.imageProxy(page.data))
   : null;
+  const [image, setImage] = useState(initialImage);
+useEffect(() => {
+  if(page?.type === PageType.picture && page.data){
+    setImage(isValidUrl(page.data) ? page.data : Enviroment.imageProxy(page.data))
+  }
+}, [page?.data])
 
-const [image, setImage] = useState(initialImage);
     const {isHorizPhone}=useContext(Context)
  const router = useIonRouter()
   
@@ -31,7 +36,7 @@ const [image, setImage] = useState(initialImage);
     
         }
     },[page])
-console.log(html)
+
  function Element({page}){   
 switch(page.type){
     case PageType.text:{
@@ -84,18 +89,14 @@ case PageType.link:{
        )
 }
 default:
-    return(<div        id="page-data-skeleton "className={`skeleton `}>
+    return(<div        className={`skeleton `}>
    <IonImg src={loadingGif}/>
 </div>)
 }
 }
-if(!page){
-    return(
-    <IonImg src={loadingGif}/>
-) 
-}
 
-return (<div className=" "><Element page={page}/></div>)
+
+return (<Element page={page}/>)
 }
 
 export default DataElement

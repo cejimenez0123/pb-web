@@ -19,13 +19,14 @@ import axios from "axios";
 import ErrorBoundary from '../ErrorBoundary.jsx';
 
 import { useDialog } from '../domain/usecases/useDialog.jsx';
-import PageViewItem from '../components/page/PageViewItem.jsx';
-import ProfileCircle from '../components/profile/ProfileCircle.jsx';
 // import requestLocation from '../core/requestLocation.jsx';
 import { fetchWorkshopGroups, findWorkshopGroups, registerUser } from '../actions/WorkshopActions.jsx';
 import { getCurrentProfile } from '../actions/UserActions.jsx';
 import requestLocation from '../core/requestLocation.js';
 import DataElement from '../components/page/DataElement.jsx';
+import isValidUrl from '../core/isValidUrl.js';
+import Enviroment from '../core/Enviroment.js';
+import StoryItem from '../components/page/StoryItem.jsx';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -46,26 +47,121 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
     </span>
   );
 }
+// function useProfileDependentEffects(currentProfile, isGlobal) {
+//   const fetchPrompts = ()=>{
+//   dispatch(getPrompts()).then(res=>checkResult(res,({prompts})=>{
+//     // setPrompts(prompts)
+
+//   },(err)=>{
+//     console.log(err)
+//   }))
+// }
+//   useEffect(() => {
+//     if (!currentProfile) return;
+
+//     fetchWorkshops();
+//     fetchStories();
+//     fetchPrompts();
+//     isGlobal && (isNative ? requestLocation() : webRequestLocation());
+//   }, [currentProfile, isGlobal]);
+// }
+
+
+function useProfileDependentEffects(currentProfile, isGlobal) {
+  const dispatch = useDispatch();
+  const isNative = Capacitor.isNativePlatform();
+
+  const [results, setResults] = useState({
+    workshops: [],
+    stories: [],
+    prompts: [],
+    location: null,
+  });
+
+  const fetchPrompts = async () => {
+    try {
+      const res = await dispatch(getPrompts());
+      checkResult(res, ({ prompts }) => {
+        setResults(prev => ({ ...prev, prompts }));
+      });
+    } catch (err) {
+      console.error("Failed fetching prompts:", err);
+    }
+  };
+
+  const fetchStories = async () => {
+    try {
+      const res = await dispatch(fetchRecommendedStories());
+      checkResult(res, ({ stories }) => {
+        setResults(prev => ({ ...prev, stories }));
+      });
+    } catch (err) {
+      console.error("Failed fetching stories:", err);
+    }
+  };
+
+  const fetchWorkshops = async () => {
+    if (!currentProfile) return;
+    try {
+      const res = await dispatch(findWorkshopGroups({
+        location: currentProfile.location,
+        radius: 50,
+        global: isGlobal
+      }));
+      checkResult(res, ({ groups }) => {
+        setResults(prev => ({ ...prev, workshops: groups || [] }));
+      });
+    } catch (err) {
+      console.error("Failed fetching workshops:", err);
+    }
+  };
+
+  const fetchLocation = () => {
+    if (isGlobal) {
+      isNative ? requestLocation() : navigator.geolocation.getCurrentPosition(
+        (pos) => setResults(prev => ({
+          ...prev,
+          location: { latitude: pos.coords.latitude, longitude: pos.coords.longitude }
+        })),
+        (err) => console.error("Location error:", err)
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (!currentProfile) return;
+
+    fetchWorkshops();
+    fetchStories();
+    fetchPrompts();
+    fetchLocation();
+  }, [currentProfile, isGlobal]);
+
+  return results;
+}
+
 
 function MyProfileContainer() {
   // const [tab, setTab] = useState("page");
+    const [isGlobal,setIsGlobal]=useState(true)
+    const currentProfile = useSelector(state=>state.users.currentProfile)
+  useProfileDependentEffects(currentProfile, isGlobal);
   const router = useIonRouter()
   const dispatch = useDispatch();
-  const currentProfile = useSelector(state=>state.users.currentProfile)
-  const stories = useSelector(state => state.pages.pagesInView);
+
+  // const stories = useSelector(state => state.pages.pagesInView);
   const { seo, setSeo ,setError} = useContext(Context);
   const collections = useSelector(state => state.books.collections);
   const [search, setSearch] = useState("");
-  const [isGlobal,setIsGlobal]=useState(true)
+
     const isNative = Capacitor.isNativePlatform();
   const [filterType, setFilterType] = useState("Filter");
-  const [driveToken, setDriveToken] = useState(null);
+  const {openDialog,closeDialog,dialog,resetDialog}=useDialog()
+  const { workshops, stories, prompts, location } = useProfileDependentEffects(currentProfile, isGlobal);
   const [feedback, setFeedback] = useState("");
-  const [loading,setLoading]=useState(false)
-  const [location, setLocation] = useState(null);
-  const [whatsHappeningList,setWhatsHappeningList]=useState([])
-  const [prompts,setPrompts]=useState([])
-    const [workshops,setWorkshops]=useState([])
+  const [loading,setLoading]=useState(false);
+  const [whatsHappeningList,setWhatsHappeningList]=useState(stories)
+ 
     const sortedWorkshops = useMemo(() => {
   return [...workshops].sort((a,b) => a.title.localeCompare(b.title));
 }, [workshops]);
@@ -73,12 +169,9 @@ function MyProfileContainer() {
       if(!prompts){
         return []
       }
-  return prompts.filter(p => p.story && p.story.data); // or any filter you need
+  return prompts.filter(p => p?.story && p?.story?.data); // or any filter you need
 }, [prompts]);
-useEffect(()=>{
-  dispatch(getCurrentProfile())
-  return 
-},[])
+
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -87,55 +180,9 @@ useEffect(()=>{
     AZ: "A-Z",
     ZA: "Z-A"
   };
-  useEffect(()=>{
-    currentProfile &&  requestLocation()
-  },[currentProfile])
-  const webRequestLocation=()=>{
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        if(currentProfile&&currentProfile.id){
-         location&& debounce(()=>registerUser(currentProfile.id,location),100)
-        }
-    
-        setError(null);
-        // setLoading(false);
-      },
-      (err) => {
-        console.log("location error")
-        setError("We use location to conect with you fellow writers. Reload for access.");
-        // setLoading(false);
-  
-      }
-    );
-  }
-
-// useEffect(()=>{
 
 
-//    isGlobal && (currentProfile && (isNative ? requestLocation() : webRequestLocation()))
-//   },[])
-const fetchPrompts = ()=>{
-  dispatch(getPrompts()).then(res=>checkResult(res,({prompts})=>{
-    setPrompts(prompts)
 
-  },(err)=>{
-    console.log(err)
-  }))
-}
-useEffect(()=>{
-  const handleLocation= async ()=>{
-    
-  
-  isGlobal && currentProfile && (isNative ? requestLocation() : webRequestLocation())
-  }
-
-handleLocation()
-
-},[location])
 
  useEffect(() => {
   if (currentProfile) {
@@ -210,21 +257,6 @@ handleLocation()
     return result;
   }, [collections, filterType, search]);
 
-
-// const [checkingAuth, setCheckingAuth] = useState(true);
- const {openDialog,closeDialog,dialog,resetDialog}=useDialog()
-
-
-  const getDriveToken = async () => {
-    try {
-      const accessToken = (await Preferences.get({ key: "googledrivetoken" })).value;
-      setDriveToken(accessToken);
-    } catch (error) {
-      console.error("Error fetching drive token:", error);
-      setErrorLocal(error.message);
-    }
-  };
-  
     useIonViewWillEnter(() => {
   const init = async () => {
     try {
@@ -329,7 +361,7 @@ const openFeedback=(item,isFeedback)=>{
     <FeedbackDialog
   
       page={item}
-      // open={!!feedbackPage}
+ 
       isFeedback={isFeedback}
       handleChange={setFeedback}
       handleFeedback={(item) => {
@@ -339,7 +371,7 @@ const openFeedback=(item,isFeedback)=>{
         dispatch(updateStory(params)).then(res => {
           checkResult(res, payload => {
          
-      if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"foward"));
+      if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"forward"));
           });
         });
       }}
@@ -348,44 +380,33 @@ const openFeedback=(item,isFeedback)=>{
     />})
               dispatch(setPageInView({ page: item }));
             }
-const fetchStories = () => {
-    dispatch(fetchRecommendedStories()).then(res=>{
-      checkResult(res,payload=>{
-        if(payload.stories){
 
-          setWhatsHappeningList(payload.stories);
-          dispatch(setPagesInView({ pages: payload.stories }));
-        }else{
-          dispatch(setPagesInView({ pages: currentProfile.stories }));
-        }
-    })})
-}
- const fetchWorkshops = async () => {
-    dispatch(findWorkshopGroups({location:currentProfile.location,radius:50,global:isGlobal})).then(res=>{
-      checkResult(res,payload=>{
-              
-        if(payload.groups){
-    
-         setWorkshops(payload.groups)
-        }},err=>console.log(err))
-    })
-    
-    
-    
-  
-   
-  
+
+useEffect(() => {
+  if (stories && stories.length > 0) {
+    setWhatsHappeningList(stories);
   }
+}, [stories]);
 
+    useIonViewWillEnter(() => {
+  const initProfile = async () => {
+    if (!currentProfile) {
+      await dispatch(getCurrentProfile());
+    }
 
-useEffect(()=>{
-currentProfile && fetchWorkshops()
-},[isGlobal])
-  useEffect(()=>{
-    fetchStories()
-    fetchPrompts()
-   currentProfile && fetchWorkshops()
-  },[])
+    // Only run after profile exists
+    if (currentProfile) {
+      fetchStories();
+      fetchPrompts();
+      fetchWorkshops();
+      isGlobal && (isNative ? requestLocation() : webRequestLocation());
+    }
+
+    await getDriveToken();
+  };
+
+  initProfile();
+}, [currentProfile]);
 const handleGlobal=()=>{ setIsGlobal(!isGlobal)}
 
   if (!currentProfile) {
@@ -397,12 +418,24 @@ const handleGlobal=()=>{ setIsGlobal(!isGlobal)}
         </IonContent>
     );
   }
+
+
 return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}><ErrorBoundary>
 
-                    <div className='flex mt-4  pt-16 px-4 flex-row justify-between'>
-                         <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
-     
-                            <img src={calendar}  className=''  style={{
+                    <div className='flex mt-4  pt-16  flex-row justify-between'>
+                        
+      <div className='px-4 flex w-[100%] flex-row justify-between'>
+      <IonImg
+  onClick={() => {
+    // Prevent double push
+    if (router.routeInfo?.pathname !== Paths.editProfile) {
+      router.push(Paths.editProfile, "forward");
+    }
+  }}
+  className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2"
+  src={settings}
+/>
+                            {/* <img src={calendar}  className=''  style={{
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
   }}
@@ -410,17 +443,31 @@ onClick={()=>{
       sendGAEvent("navigation_click", {
       destination: "calendar",
       source: "discovery_header",
+    }); */}
+<img
+  src={calendar}
+  className=''
+  style={{ filter: "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)" }}
+  onClick={() => {
+    sendGAEvent("navigation_click", {
+      destination: "calendar",
+      source: "discovery_header",
     });
+    if (router.routeInfo?.pathname !== Paths.calendar()) {
+      router.push(Paths.calendar(), "forward");
+    }
+  }}
+/>
+</div>
+  {/* router.push(Paths.calendar())}}
 
-  router.push(Paths.calendar())}}
-
-          />
+          /> */}
           
                   
                     </div>
   <div >
-
-  <div className="relative flex flex-col justify-around mx-auto p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
+<div className="relative flex flex-col justify-around mx-auto mt-2 max-w-[60rem] rounded-lg gap-6">
+  {/* <div className="relative flex flex-col justify-around mx-auto p-6 mt-2 max-w-[60rem] rounded-lg gap-6"> */}
 {/* 
     <div className="md:w-1/3 max-w-[60em] h-[16em] mb-[4em] flex justify-center md:justify-start">
       <ProfileInfo profile={currentProfile} />
@@ -429,15 +476,20 @@ onClick={()=>{
 
     {/* Right: Buttons */}
     <div>
-    <h4 className='text-[1rem] text-emerald-800 font-bold mb-4'>
+    <h4 className='text-[1rem] px-4 text-emerald-800 font-bold mb-4'>
       What's happening in your communities?
     </h4>
-  <IonList><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden py-4 px-2 w-full'>
-     {whatsHappeningList.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):whatsHappeningList.map(item=>
-     <div className='mx-4 min-w-[20em] h-[20em] '><div className='mx-4 px-2 py-3 rounded-lg h-[100%]  bg-blue-100 w-[100%]  flex flex-col overflow-hidden '> <span onClick={()=>router.push(Paths.page.createRoute(item),"forward")}><DataElement page={item} isGrid={true}/></span></div></div>)}
+  <IonList><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden py-4  gap-4 w-full'>
+     {whatsHappeningList.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):whatsHappeningList.map(story=>
+// 
+
+  <StoryItem page={story} isGrid={true}/>
+  
+)}
      </div></IonList>
     </div>
-   <span className=''><div className='flex flex-row'><h4 className='text-xl'>
+   <span className=''><div className='flex flex-row'>     <h4 className='text-[1rem] px-4 text-emerald-800 font-bold mb-4'>
+
      Workshops near you 
     </h4>
    <input 
@@ -453,26 +505,29 @@ onClick={()=>{
   `} 
 /><h4> {isGlobal?"Global":"Local"}</h4></div>
 {/* <IonList> */}
-  <div className='flex flex-row  overflow-scroll'>
-    {sortedWorkshops.map((item, index) =><div onClick={() => router.push(Paths.collection.createRoute(item.id), "forward")} className='px-4 bg-cream'> 
-      <h2 >{item.title}</h2>
-      </div>)}
 
-  </div>
+  {/* <div className='flex flex-row  overflow-scroll'> */}
+<div className="flex flex-row overflow-scroll gap-4 px-4 py-4">
+  {sortedWorkshops.map((workshop) => (
+    <WorkshopItem key={workshop.id} item={workshop} router={router} />
+  ))}
+</div>
+
+  {/* </div> */}
 {/* </IonList> */}
 
 </span> 
-     <h4 className='text-xl'>
+      <h4 className='text-[1rem] px-4 text-emerald-800 font-bold mb-4'>
      Writing Prompts for you
     </h4>
  
       {/* <IonList> */}
-           <div className='flex-row bg-cream  overflow-scroll flex min-h-[20em]'>
-        {filteredPrompts.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):filteredPrompts.map(({story})=><div className='mx-4 min-w-[20em]  h-[22em] pb-2 '><div className='mx-4 px-2 py-3 rounded-lg h-[100%] min-h-[21em] bg-blue-100 w-[100%]  flex flex-col overflow-hidden '> <span onClick={()=>router.push(Paths.page.createRoute(story.id),"forward")}><DataElement page={story} isGrid={true}/></span></div></div>)}
+           <div className='flex-row bg-cream  overflow-scroll flex min-h-[20em] gap-4'>
+        {filteredPrompts.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):filteredPrompts.map(({story})=><StoryItem page={story} isGrid={true} />)}
       </div>
    {/* </IonList> */}
 
-    <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  ">
+    <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4  md:items-start gap-4 w-full md:w-2/3  ">
 
       {/* Row 1: Write a Story + Create Collection */}
       <div className="flex flex-row mx-auto flex-wrap sm:justify-center md:justify-start gap-4">
@@ -516,3 +571,34 @@ onClick={()=>{
 }
 
 export default MyProfileContainer;
+
+const WorkshopItem = ({ item, router }) => {
+  return (
+    <div
+      className="bg-white shadow-md rounded-xl p-4 min-w-[15rem] cursor-pointer hover:shadow-xl transition-shadow duration-200"
+      onClick={() => {
+        const targetPath = Paths.collection.createRoute(item.id);
+        if (router.routeInfo?.pathname !== targetPath) {
+          router.push(targetPath, "forward");
+        }
+      }}
+    >
+      <div className="flex flex-col justify-between h-full">
+        <h2 className="text-lg font-semibold text-emerald-800 mb-2 truncate">
+          {item.title}
+        </h2>
+        <p className="text-sm text-gray-600 line-clamp-3">
+          {item.description || "No description available."}
+        </p>
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-xs text-gray-500">
+            {item.location || "Online / TBD"}
+          </span>
+          <span className="text-xs font-bold text-emerald-600">
+            {item.participants ? `${item.participants} participants` : ""}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};

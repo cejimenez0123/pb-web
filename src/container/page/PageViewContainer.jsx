@@ -197,7 +197,7 @@ useEffect(() => {
 
   const PageDiv = ({ page }) =>
     page ? (
-      <div  id="page-data-skeleton "className={`skeleton w-page-mobile`}>
+      <div  id=" "className={` mx-auto `}>
       <PageViewItem page={page} currentProfile={currentProfile} /></div>
     ) : (
       <div className="skeleton w-[95vw] mx-auto sm:w-[50em] mx-auto bg-emerald-50 h-page" />
@@ -225,7 +225,7 @@ useEffect(() => {
               </h1>
             </div>
           ) : canUserSee ? (
-            <div className="w-fit  bg-cream  mx-auto sm:max-w-[50em]">
+            <div className="w-fit  bg-cream  mx-auto px-4 sm:max-w-[50em]">
               <PageDiv page={page} />
              <div className="text-left px-4 bg-cream bg-cream py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
               <CommentThread page={page} comments={rootComments} />
