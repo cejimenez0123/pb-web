@@ -12,7 +12,7 @@ import Context from "../../context";
 import { initGA, sendGAEvent } from "../../core/ga4.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
-import { IonBackButton, IonContent, IonHeader } from "@ionic/react";
+import { IonBackButton, IonContent, IonHeader, IonToolbar } from "@ionic/react";
 import { setComments } from "../../actions/PageActions.jsx";
 import Paths from "../../core/paths.js";
 import { Capacitor } from "@capacitor/core";
@@ -26,6 +26,7 @@ export default function PageViewContainer() {
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
     const [canUserSee, setCanUserSee] = useState(false)
+   const isNative= Capacitor.isNativePlatform()
 useScrollTracking({
   contentType: "story",
   contentId: page?.id,
@@ -180,9 +181,9 @@ useEffect(() => {
       : "fallback_discovery",
   });
     if (window.history.length > 1) {
-          router.goBack()
+       router.goBack()
     } else {
-      router.push(Paths.discovery);
+      router.push(Paths.discovery,"back");
     }
   };
   useLayoutEffect(() => {
@@ -208,12 +209,12 @@ useEffect(() => {
          <IonContent fullscreen={true}  style={{"--background":"#f4f4e0"}}className="ion-padding-bottom" >
  
 
-        <IonHeader className=" ">
-          {Capacitor.isNativePlatform()||true?<IonBackButton
-             className="ion-padding-start "
-      onClick={handleBack}
-    />:null}</IonHeader>
-    <div className="py-12 bg-cream">
+       <IonHeader>
+  <IonToolbar  >
+    <IonBackButton  slot="start"  defaultHref={Paths.discovery} onClick={handleBack} />
+  </IonToolbar>
+</IonHeader>
+    {/* <div className="py-12 bg-cream"> */}
        <div className=" min-h-[40em] ion-padding-bottom  ">
         <div className=" text-center bg-cream py-[4em] mx-auto h-[100%]" >
           {pending ? ( 
@@ -239,7 +240,7 @@ useEffect(() => {
         </div>
        
       
-</div>
+{/* </div> */}
          </div>
       </IonContent>
     </ErrorBoundary>

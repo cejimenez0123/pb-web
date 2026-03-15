@@ -428,7 +428,7 @@ const getCol = async (id) => {
     if (window.history.length > 1) {
        router.goBack()
     } else {
-      router.push(Paths.discovery);
+      router.push(Paths.discovery,"back");
     }
   };
   // Example getMore for infinite scrolling (to be filled with your pagination logic)

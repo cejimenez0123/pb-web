@@ -61,9 +61,9 @@ function App(props) {
   const isPhone = useMediaQuery({ query: '(max-width: 800px)' });
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 
-    const isTablet =  useMediaQuery({
-    query: '(max-width: 1100px)'
-  })
+  //   const isTablet =  useMediaQuery({
+  //   query: '(max-width: 1100px)'
+  // })
   const isNative = Capacitor.isNativePlatform()
 
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
@@ -115,30 +115,35 @@ useEffect(() => {
   };
   checkFirstLaunch();
 }, [isNative]);
+const isDesktop = useMediaQuery({ query: '(min-width: 769px)' })
+const isMobileOrTablet = useMediaQuery({ query: '(max-width: 768px)' })
 
-
-const navbarBot = Capacitor.isNativePlatform() || isTablet;
+const showTopNavbar = isDesktop && !isNative
+const showBottomNavbar = isMobileOrTablet || isNative
 
  return (
 
     <ErrorBoundary>
-        <Context.Provider value={{setPresentingEl,isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+        <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
 <script
   defer
   src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=YOUR_CALLBACK_NAME"
 ></script>
   <IonApp>
   <IonReactRouter>
-           {!navbarBot?
-           <NavbarContainer 
-    
-        currentProfile={currentProfile}/>:null}
-              <div>
+       {showTopNavbar &&
+  <div className="fixed top-0 left-0 w-full z-50 w-[100%]">
+    <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
+  </div>
+}
+
+              <div >
  
     
        
        <Dialog dialog={dialog} presentingElement={presentingEl} />
 <Alert />
+<div  >
     <IonRouterOutlet>   
        <Route exact path={Paths.login()}
                   render={()=> 
@@ -314,15 +319,15 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
     /> 
   
    </IonRouterOutlet>
+</div>
 
-
-       {navbarBot?
+       {showBottomNavbar&&
           <IonFooter>
    <div className=" bg-white">
-  <NavbarContainer currentProfile={currentProfile} />
+  <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
 </div>
 </IonFooter>
-     :null}   
+     }   
      </div>
 {/* </IonPage>  */}
       </IonReactRouter>
