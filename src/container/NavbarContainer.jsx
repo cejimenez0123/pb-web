@@ -1,12 +1,13 @@
 
 
-import { useContext, useEffect, useLayoutEffect,useState } from 'react'
+import { useContext, useEffect,useRef, useLayoutEffect,useState } from 'react'
 import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
+import person from "../images/icons/person.png"
 import addCircle from "../images/icons/plus.app.svg"
 import {signOutAction} from "../actions/UserActions"
-
+import calendar from "../images/icons/calendar.svg"
 import { Preferences } from "@capacitor/preferences";
 import home from "../images/icons/home.svg"
 import menu from "../images/icons/menu.svg"
@@ -104,15 +105,14 @@ return(
 
 <div className="navbar fixed bottom-0 w-full flex-row flex justify-around bg-soft">
   {currentProfile && <HomeButton/>}
-  <DiscoveryButton/>
-
-  {currentProfile
-    ? <SearchButton/>
-    : <AboutButton/>
-  }
-
+  {/* <DiscoveryButton/> */}
   {currentProfile && <CreateButton/>}
+  {currentProfile && <SearchButton/>}
 
+  
+
+
+  <EventButton/>
   {currentProfile && <WorkshopButton/>}
 
   {currentProfile?<ProfileButton currentProfile={currentProfile}/>:<SearchButton/>}
@@ -238,6 +238,25 @@ return (
 
 }
 
+
+function EventButton(){
+
+const router = useIonRouter()
+
+return (
+  <div
+    onClick={()=>router.push(Paths.about())}
+    className="flex flex-col"
+  >
+    <IonImg
+      src={calendar}
+      style={{width:"3em",height:"3em",filter:"invert(100%)"}}
+    />
+    <h6 className="text-white text-xs">Events</h6>
+  </div>
+)
+
+}
 function HomeButton(){
 
 const router = useIonRouter()
@@ -283,40 +302,37 @@ function ProfileButton({currentProfile}){
 
 const router = useIonRouter()
 
-   const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
+  //  const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
 
   
 
 
 
-    useEffect(()=>{
-      if(currentProfile){
-          if(isValidUrl(currentProfile.profilePic)){
-              setProfilePic(currentProfile.profilePic)
+  //   useEffect(()=>{
+  //     if(currentProfile){
+  //         if(isValidUrl(currentProfile.profilePic)){
+  //             setProfilePic(currentProfile.profilePic)
         
-          }else{
-           setProfilePic(Enviroment.imageProxy(currentProfile.profilePic))
+  //         }else{
+  //          setProfilePic(Enviroment.imageProxy(currentProfile.profilePic))
          
-          }
-        }
-  },[currentProfile])
+  //         }
+  //       }
+  // },[currentProfile])
 
 return (
-  <div
-    onClick={()=>currentProfile
-      ? router.push(Paths.myProfile)
-      : router.push(Paths.login())
-    }
-    className="flex rounded-full max-h-8 flex-col"
-  >
-    <div className="btn btn-ghost btn-circle avatar">
-      <div className="overflow-hidden max-h-10 rounded-full">
+  <div className="flex flex-col">
+
+    {/* <div className="btn btn-ghost btn-circle avatar"> */}
+      {/* <div className="overflow-hidden max-h-10 rounded-full"> */}
         <IonImg
-          className="object-fit max-h-10"
-          src={profilePic}
+          // className="object-fit max-h-10"
+                style={{width:"3em",height:"3em",filter:"invert(100%)"}}
+          src={person}
         />
-      </div>
-    </div>
+       <h6 className="text-white text-xs">Profile</h6>
+      {/* </div> */}
+    {/* </div> */}
   </div>
 )
 
@@ -461,27 +477,103 @@ function MenuHorizontal({ pages, currentProfile }) {
   )
 }
 
+function CreateButton() {
+  const router = useIonRouter();
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const {openDialog,closeDialog,resetDialog}=useDialog()
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
+  const handleNavigate = (type) => {
+    setOpen(false);
 
-function CreateButton(){
+    // You can customize routing per type
+    dispatch(setHtmlContent({ html: "" }));
+    dispatch(setEditingPage({ page: null }));
 
-const router = useIonRouter()
-const dispatch = useDispatch()
+    switch (type) {
+      case "write":
+        router.push(Paths.editor.story);
+        break;
+      case "image":
+        router.push(Paths.editor.image);
+        break;
+      case "link":
+        router.push(Paths.editor.link);
+        break;
+      case "collection":{
+     openDialog({
+        text:<CreateCollectionForm onClose={resetDialog}/>,
+        disagreeText:"Close",
+        breakpoint:1
+      })
+   }
+        break;
+      default:
+        break;
+    }
+  };
 
-return (
-  <div className="flex flex-col">
-    <IonImg
-      src={addCircle}
-      style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-      onClick={()=>{
-        dispatch(setHtmlContent({html:""}))
-        dispatch(setEditingPage({page:null}))
-        router.push(Paths.editor.story)
-      }}
-    />
-    <h6 className="text-white text-xs">Create</h6>
-  </div>
-)
+  return (
+    <div className="relative flex flex-col items-center" ref={dropdownRef}>
+      
+      {/* Dropdown ABOVE */}
+      {open && (
+        <div className="absolute bottom-full mb-2 w-36 bg-white rounded-xl shadow-lg py-2 z-50">
+          {["write", "image", "link", "collection"].map((item) => (
+            <button
+              key={item}
+              onClick={() => handleNavigate(item)}
+              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 capitalize"
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      )}
 
+      {/* Button */}
+      <IonImg
+        src={addCircle}
+        style={{ width: "3em", height: "3em", filter: "invert(100%)" }}
+        onClick={() => setOpen((prev) => !prev)}
+      />
+
+      <h6 className="text-white text-xs">Create</h6>
+    </div>
+  );
 }
+
+// export default CreateButton;
+// function CreateButton(){
+
+// const router = useIonRouter()
+// const dispatch = useDispatch()
+
+// return (
+//   <div className="flex flex-col">
+//     <IonImg
+//       src={addCircle}
+//       style={{width:"3em",height:"3em",filter:"invert(100%)"}}
+//       onClick={()=>{
+//         dispatch(setHtmlContent({html:""}))
+//         dispatch(setEditingPage({page:null}))
+//         router.push(Paths.editor.story)
+//       }}
+//     />
+//     <h6 className="text-white text-xs">Create</h6>
+//   </div>
+// )
+
+// }
 
