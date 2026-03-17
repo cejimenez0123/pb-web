@@ -302,37 +302,25 @@ function ProfileButton({currentProfile}){
 
 const router = useIonRouter()
 
-  //  const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
-
-  
-
-
-
-  //   useEffect(()=>{
-  //     if(currentProfile){
-  //         if(isValidUrl(currentProfile.profilePic)){
-  //             setProfilePic(currentProfile.profilePic)
-        
-  //         }else{
-  //          setProfilePic(Enviroment.imageProxy(currentProfile.profilePic))
-         
-  //         }
-  //       }
-  // },[currentProfile])
 
 return (
   <div className="flex flex-col">
 
-    {/* <div className="btn btn-ghost btn-circle avatar"> */}
-      {/* <div className="overflow-hidden max-h-10 rounded-full"> */}
+  
         <IonImg
+        onClick={()=>{
+          if(currentProfile){
+            router.push(Paths.myProfile)
+          }else{
+            router.push(Paths.login())
+          }
+        }}
           // className="object-fit max-h-10"
                 style={{width:"3em",height:"3em",filter:"invert(100%)"}}
           src={person}
         />
        <h6 className="text-white text-xs">Profile</h6>
-      {/* </div> */}
-    {/* </div> */}
+   
   </div>
 )
 

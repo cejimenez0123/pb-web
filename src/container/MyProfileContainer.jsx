@@ -290,7 +290,7 @@ useEffect(() => {
 return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}><ErrorBoundary>
 
                     <div className='flex mt-4  sm:pt-20 p-4 flex-row justify-between'>
-                         <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
+                         {/* <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
      
                             <img src={calendar}  className=''  style={{
     filter:
@@ -304,7 +304,7 @@ onClick={()=>{
 
   router.push(Paths.calendar())}}
 
-          />
+          /> */}
           
                   
                     </div>
