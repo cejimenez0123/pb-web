@@ -69,19 +69,11 @@ const ProfileInfo = ({profile})=>{
       openDialog(dia)
      
       };
- const closeFollowersDialog=()=>{
-   
-   closeDialog()
- }
- console.log("Follwoers",profile.followers)
+
     if(!profile){
         return <div className="skeleton h-[100%] w-24"/>
     }
-    // const ProfilePic = ({url})=> (<div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mx-auto rounded-full overflow-hidden">
-    // <IonImg className={"object-fit "}
-    // src={url}/>
-   
-    // </div>)
+
     const ProfilePic = ({ url }) => (
   <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mx-auto rounded-full overflow-hidden">
     <img

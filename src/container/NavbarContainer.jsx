@@ -103,7 +103,7 @@ function MobileNavbar({currentProfile}){
 return(
 
 <div className="navbar fixed bottom-0 w-full flex-row flex justify-around bg-soft">
-
+  {currentProfile && <HomeButton/>}
   <DiscoveryButton/>
 
   {currentProfile
@@ -115,7 +115,7 @@ return(
 
   {currentProfile && <WorkshopButton/>}
 
-  <ProfileButton currentProfile={currentProfile}/>
+  {currentProfile?<ProfileButton currentProfile={currentProfile}/>:<SearchButton/>}
 
 </div>
 
@@ -138,6 +138,8 @@ function NavProfileDropdown({currentProfile}){
            setProfilePic(Enviroment.imageProxy(currentProfile.profilePic))
          
           }
+        }else{
+          setProfilePic(null)
         }
   },[currentProfile])
 
@@ -236,7 +238,24 @@ return (
 
 }
 
+function HomeButton(){
 
+const router = useIonRouter()
+
+return (
+  <div
+    onClick={()=>router.push(Paths.home)}
+    className="flex flex-col"
+  >
+    <IonImg
+      src={home}
+      style={{width:"3em",height:"3em"}}
+    />
+    <h6 className="text-white text-xs">Home</h6>
+  </div>
+)
+
+}
 function WorkshopButton(){
 
 const router = useIonRouter()

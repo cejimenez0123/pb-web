@@ -4,7 +4,8 @@ import {
   updateProfile,
   deleteUserAccounts,
   deletePicture,
-  setDialog
+  setDialog,
+  signOutAction
 } from "../actions/UserActions";
 import { uploadProfilePicture } from "../actions/ProfileActions";
 import { Geolocation } from "@capacitor/geolocation";
@@ -16,6 +17,7 @@ import Enviroment from "../core/Enviroment";
 import { useSelector } from "react-redux";
 import GoogleMapSearch from "./collection/GoogleMapSearch";
 import { Capacitor } from "@capacitor/core";
+import Paths from "../core/paths";
 async function reverseGeocode(lat, lng) {
 
   try {
@@ -224,7 +226,7 @@ dispatch(updateProfile({
   return (
 
     <IonContent fullscreen>
-
+      
       <div className="min-h-screen bg-base-200 flex justify-center pt-20 pb-32">
 
         <div className="card w-96  p-6 space-y-6">
@@ -232,7 +234,11 @@ dispatch(updateProfile({
           <h2 className="text-2xl font-bold text-center text-emerald-700">
             Profile Settings
           </h2>
+          <div  onClick={()=>{dispatch(signOutAction()).then(res=>{router.push(Paths.discovery)})
 
+          }}className="btn btn-error btn-outline w-full">
+            <h4>Sign Out</h4>
+          </div>
           {/* Username */}
 
           <div className="form-control">

@@ -15,6 +15,7 @@ import { Preferences } from "@capacitor/preferences";
 import Googlelogo from "../images/logo/googlelogo.png";
 import ErrorBoundary from "../ErrorBoundary"; // make sure this path matches your project
 import { sendGAEvent } from "../core/ga4";
+import Paths from "../core/paths";
 function GoogleLoginInner({ drive, onUserSignIn }) {
   const { isError } = useContext(Context);
   const [bootstrapping, setBootstrapping] = useState(true);
@@ -236,7 +237,9 @@ const router =useIonRouter()
         idToken,
       });
 
-      dispatch(logIn({ email: profile.email, uId: profile.id, isNative }));
+      dispatch(logIn({ email: profile.email, uId: profile.id, isNative })).then(res=>{
+        router.push(Paths.myProfile)
+      })
     } catch (err) {
      
   sendGAEvent("login_error", {

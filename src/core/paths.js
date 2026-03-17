@@ -8,6 +8,7 @@ const Paths ={
     feedback:()=>`/feedback`,
     links:()=>`/links`,
     calendar:()=>"/events",
+
     onboard:"/onboard",
     library: {
         route: ()=>`/library/:id`,
@@ -61,7 +62,7 @@ const Paths ={
         }
     },
     discovery:"/discovery",
-    home:()=>{return `/home`},
+    home:`/home`,
     about:()=>{return `/about`},
     editProfile:`/profile/edit`,
     profile:{route:()=>{return `/profile/:id/view`},

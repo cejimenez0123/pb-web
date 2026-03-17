@@ -52,6 +52,7 @@ import ErrorBoundary from './ErrorBoundary.jsx';
 import { Redirect, Route } from 'react-router-dom'
 import AboutContainer from './container/AboutContainer.jsx';
 import PageWrapper from './core/PageWrapper.jsx';
+import HomeContainer from './container/HomeContainer.jsx';
 
 setupIonicReact()
 
@@ -157,6 +158,7 @@ const showBottomNavbar = isMobileOrTablet || isNative
 
        }
      />
+ 
      <Route exact path="/" render={() => 
          <PageWrapper>{
      isFirstLaunch?Capacitor.isNativePlatform()?<Redirect to={Paths.onboard} />:<Redirect to={Paths.about()}/>:<Redirect to={Paths.login()}/>}   
@@ -179,6 +181,15 @@ const showBottomNavbar = isMobileOrTablet || isNative
             <Route exact path={Paths.notifications()}
             render={()=><PrivateRoute currentProfile={currentProfile}><PageWrapper>
               <NotificationContainer currentProfile={currentProfile}/></PageWrapper></PrivateRoute>}/>
+                   <Route path={Paths.home}
+                  render={()=> 
+       <PrivateRoute> <PageWrapper>
+            <HomeContainer  currentProfile={currentProfile}/>
+                      </PageWrapper>
+        </PrivateRoute>
+
+       }
+     />
          <Route
     exact path={Paths.myProfile}
       render={()=>  <PrivateRoute>
