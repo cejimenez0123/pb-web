@@ -144,19 +144,19 @@ function MyProfileContainer({ presentingElement }) {
   }, [collections, filterType, search]);
 
 // Add this effect to MyProfileContainer
-useEffect(() => {
-  const syncProfile = async () => {
-    if (!currentProfile) {
-      const { value } = await Preferences.get({ key: "token" });
-      if (value) {
-        dispatch(getCurrentProfile());
-      } else {
-        router.push("/");
-      }
-    }
-  };
-  syncProfile(); // call it directly
-}, [currentProfile, dispatch, router]);
+// useEffect(() => {
+//   const syncProfile = async () => {
+//     if (!currentProfile) {
+//       const { value } = await Preferences.get({ key: "token" });
+//       if (value) {
+//         dispatch(getCurrentProfile());
+//       } else {
+//         router.push("/");
+//       }
+//     }
+//   };
+//   syncProfile(); // call it directly
+// }, [currentProfile, dispatch, router]);
 
 
   const getDriveToken = async () => {
@@ -318,10 +318,10 @@ onClick={()=>{
     
 
     {/* Right: Buttons */}
-    <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  ">
+    {/* <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  "> */}
 
       {/* Row 1: Write a Story + Create Collection */}
-      <div className="flex flex-row mx-auto flex-wrap sm:justify-center md:justify-start gap-4">
+      {/* <div className="flex flex-row mx-auto flex-wrap sm:justify-center md:justify-start gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
           className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
@@ -334,28 +334,28 @@ onClick={()=>{
         >
           <IonText className="text-white text-[1.2em]">Create Collection</IonText>
         </ButtonWrapper>
-      </div>
+      </div> */}
 
       {/* Row 2: Join a Workshop */}
-      <div className="flex justify-center md:justify-start w-full">
+      {/* <div className="flex justify-center md:justify-start w-full">
         <ButtonWrapper
           onClick={() => router.push(Paths.workshop.reader())}
           className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
         >
           <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
         </ButtonWrapper>
-      </div>
+      </div> */}
 
       {/* Row 3: Google Drive Picker */}
       {/* <div className="flex justify-center mx-auto md:justify-start w-full"> */}
-        <GoogleDrivePicker
+        {/* <GoogleDrivePicker
           getToken={getDriveToken}
           accessToken={driveToken}
           onFilePicked={getFile}
-        />
+        /> */}
       {/* </div> */}
 
-    </div>
+    {/* </div> */}
   </div>
 
   {/* Search + Tabs stay unchanged */}

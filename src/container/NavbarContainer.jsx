@@ -104,18 +104,18 @@ function MobileNavbar({currentProfile}){
 return(
 
 <div className="navbar fixed bottom-0 w-full flex-row flex justify-around bg-soft">
-  {currentProfile && <HomeButton/>}
+ <HomeButton/>
   {/* <DiscoveryButton/> */}
   {currentProfile && <CreateButton/>}
-  {currentProfile && <SearchButton/>}
+
 
   
 
 
   <EventButton/>
   {currentProfile && <WorkshopButton/>}
-
-  {currentProfile?<ProfileButton currentProfile={currentProfile}/>:<SearchButton/>}
+  <SearchButton/>
+  <ProfileButton currentProfile={currentProfile}/>
 
 </div>
 
@@ -245,7 +245,7 @@ const router = useIonRouter()
 
 return (
   <div
-    onClick={()=>router.push(Paths.about())}
+    onClick={()=>router.push(Paths.calendar())}
     className="flex flex-col"
   >
     <IonImg
@@ -260,10 +260,10 @@ return (
 function HomeButton(){
 
 const router = useIonRouter()
-
+const currentProfile = useSelector(state=>state.users.currentProfile)
 return (
   <div
-    onClick={()=>router.push(Paths.home)}
+    onClick={()=>currentProfile?router.push(Paths.home):router.push(Paths.about())}
     className="flex flex-col"
   >
     <IonImg
@@ -298,23 +298,19 @@ return (
 
 
 
-function ProfileButton({currentProfile}){
-
+function ProfileButton(){
+const currentProfile = useSelector(state=>state.users.currentProfile)
 const router = useIonRouter()
 
-
+const handle =()=>currentProfile?router.push(Paths.myProfile,"forward"):router.push(Paths.login(),"forward")
 return (
   <div className="flex flex-col">
 
   
         <IonImg
-        onClick={()=>{
-          if(currentProfile){
-            router.push(Paths.myProfile)
-          }else{
-            router.push(Paths.login())
+        onClick={handle
           }
-        }}
+        
           // className="object-fit max-h-10"
                 style={{width:"3em",height:"3em",filter:"invert(100%)"}}
           src={person}

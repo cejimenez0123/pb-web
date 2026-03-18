@@ -40,7 +40,11 @@ const {story,profile,location}=params
       story:null}
     }}
   )
-
+const fetchYourWorkshops = createAsyncThunk("books/findYourWorkshops",async (params,thunkApi)=>{
+   let data =await workshopRepo.findYourWorkshops()
+   console.log
+   return data
+})
   const findWorkshopGroup = createAsyncThunk(
   "books/findWorkshopGroup",
   async ({ profile, story, location, isGlobal, radius }, thunkApi) => {
@@ -124,4 +128,4 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
 
 })
 
-export {registerUser,disconnectUser,findWorkshopGroups, postActiveUser,findWorkshopGroup, fetchWorkshopGroups }
+export {registerUser,disconnectUser,fetchYourWorkshops ,findWorkshopGroups, postActiveUser,findWorkshopGroup, fetchWorkshopGroups }

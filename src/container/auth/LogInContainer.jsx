@@ -27,16 +27,16 @@ export default function LogInContainer() {
         setSeo(soo)
        
    },[])
-   useEffect(()=>{
+//    useEffect(()=>{
  
-    const checkAuth= async()=>{
-       const token = (await Preferences.get({key:"token"})).value
-       token&& currentProfile &&currentProfile.id&&router.push(Paths.myProfile)
+//     const checkAuth= async()=>{
+//        const token = (await Preferences.get({key:"token"})).value
+//        token&& currentProfile &&currentProfile.id&&router.push(Paths.myProfile)
 
-    }
-    checkAuth()
+//     }
+//     checkAuth()
  
-   },[currentProfile])
+//    },[currentProfile])
 
     return (
         <IonContent fullscreen={true}>
@@ -62,9 +62,8 @@ function LogInCard({setLogInError}){
     const [password, setPassword] = useState('');
     const [pending,setPending]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
-    const {openDialog,closeDialog}=useDialog()
-  
-    const dialog = useSelector(state=>state.users.dialog)
+    const {openDialog,closeDialog,dialog}=useDialog()
+
      
     
        
@@ -87,7 +86,7 @@ function LogInCard({setLogInError}){
                     if(payload && payload.profile && payload.profile.id){
 
                    
-                    navigate(Paths.myProfile)
+                    router.push(Paths.myProfile,"root")
                      }else{
                         setError("Error with Profile")
                      }

@@ -19,13 +19,15 @@ import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
 import {  IonContent,IonHeader,IonItem, IonText, IonToolbar, useIonRouter } from '@ionic/react';
+import DashboardContainer from './DashboardContainer.jsx';
+import HomeContainer from './HomeContainer.jsx';
 
 function DiscoveryContainer() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
 
   const dispatch = useDispatch();
-    const [tab, setTab] = useState("disc");
+    const [tab, setTab] = useState("home");
   const cols = useSelector(state => state.books.collections);
 
   const pagesInView = useSelector(state => state.pages.pagesInView);
@@ -35,7 +37,7 @@ function DiscoveryContainer() {
 
   tab && useScrollTracking({ name: tab });
   useLayoutEffect(() => {
-  if (tab === "disc") {
+  if (tab === "home") {
     setSeo(prev => ({
       ...prev,
       title: "Discover Writing, Events & Workshops | Plumbum",
@@ -59,7 +61,7 @@ function DiscoveryContainer() {
 
 
  useLayoutEffect(() => {
-  if (tab === "disc") {
+  if (tab === "home") {
     setSeo({
       title: "Plumbum — Discover Writing, Events & Workshops",
       description:
@@ -125,11 +127,11 @@ function DiscoveryContainer() {
   return (
   
       <ErrorBoundary>
-
+<IonContent fullscreen>
       
         
-  <DiscDashTabs tab={tab} setTab={setTab} disc={() =><DiscoveryEmbed/>} dash={()=><DashboardEmbed />} />
-
+  <DiscDashTabs tab={tab} setTab={setTab} disc={() =><HomeContainer/>} dash={()=><DashboardContainer />} />
+</IonContent>
  
       </ErrorBoundary>
 
@@ -203,7 +205,7 @@ export default DiscoveryContainer;
         <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-emerald-600">
           <button
             className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em]  ${
-              tab === "disc"
+              tab === "home"
                 ? "bg-emerald-700 text-white"
                 : "text-emerald-700 bg-transparent"
             }`}
@@ -214,13 +216,13 @@ export default DiscoveryContainer;
     surface: "discovery_dashboard",
     logged_in: Boolean(currentProfile),
   });
-  setTab("disc");
+  setTab("home");
 }}
 
           >
             Discovery
           </button>
-           {currentProfile?<button
+           {currentProfile&&currentProfile.id?<button
             className={`px-4 py-2 transition-colors w-[45vw]   sm:w-[20em] lg:w-[15em] ${
               tab === "dash"
                 ? "bg-emerald-700 text-white"
@@ -267,7 +269,7 @@ export default DiscoveryContainer;
            
             className="w-full"
           >
-            {tab === "disc" ? disc() :dash()}
+            {tab === "home" ? disc() :dash()}
           </motion.div>
         </AnimatePresence>
       </div>

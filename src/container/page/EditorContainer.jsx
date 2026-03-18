@@ -83,7 +83,8 @@ const handleBack = (e) => {
      
   }
    useEffect(()=>{
-  notText && fetchStory()
+   
+ id && fetchStory()
     
    },[currentProfile])
 

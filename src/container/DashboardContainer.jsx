@@ -1,179 +1,165 @@
 import React, { useState, useLayoutEffect, useContext,useEffect } from 'react';
 import '../App.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchRecommendedStories } from '../actions/StoryActions';
+import { createStory, fetchRecommendedStories } from '../actions/StoryActions';
 import ExploreList from '../components/collection/ExploreList.jsx';
-import { fetchCollectionProtected, getPublicCollections, getRecommendedCollectionsProfile, setCollections } from '../actions/CollectionActions';
-import { appendToPagesInView, setPagesInView } from '../actions/PageActions';
-import Context from '../context.jsx';
+
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-import { initGA } from '../core/ga4.js';
-import ListView from '../components/page/ListView.jsx';
-import Enviroment from '../core/Enviroment.js';
-import {IonText, IonItem, useIonRouter} from '@ionic/react';
-import BookListItem from '../components/BookListItem.jsx';
+import {IonText, IonItem, useIonRouter, IonContent} from '@ionic/react';
+
+import { fetchYourWorkshops } from '../actions/WorkshopActions.jsx';
+import ProfileCircle from '../components/profile/ProfileCircle.jsx';
+import truncate from 'html-truncate';
+import { PageType } from '../core/constants.js';
+import Paths from '../core/paths.js';
+import debounce from '../core/debounce.js';
+import { sendGAEvent } from '../core/ga4.js';
+import { setEditingPage, setPageInView } from '../actions/PageActions.jsx';
+import { useDialog } from '../domain/usecases/useDialog.jsx';
 function DashboardContainer() {
 
   const currentProfile = useSelector(state=>state.users.currentProfile)
-  const { setSeo, seo ,isNotPhone} = useContext(Context);
+  // const { setSeo, seo ,isNotPhone} = useContext(Context);
   const router = useIonRouter()
   const dispatch = useDispatch();
-   const collections = [...(useSelector(state => state.books.collections) ?? [])]
+   const collectionsRaw = useSelector(state => state.books.collections) ?? [];
+
+const collections = collectionsRaw
+  .slice() // safer than spread in this context
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
+  const [results,setResults]=useState([])
+  const [workshop,setWorkshop]=useState(null)
+  const {openDialog,closeDialog,dialog}=useDialog()
   const recommendedCols= useSelector(state => state.books.recommendedCols);
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
 
-  const [hasMore, setHasMore] = useState(false);
   useEffect(()=>{
-    if(currentProfile){
-      dispatch(getRecommendedCollectionsProfile())
-      dispatch(getPublicCollections({type:"feedback"})).then(res=>{
-        checkResult(res,payload=>{
-          if(currentProfile && currentProfile.rolesToCollection && currentProfile.rolesToCollection.length){
-          let feedbackCols = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
-
-      dispatch(setCollections({collections:feedbackCols}))
-          }
-        },err=>{
-
-        })
-      })
-      
+    fetchWorkshops()
+  },[currentProfile])
+useEffect(() => {
+  try {
+    if (results.length > 1) {
+      const group = results[1]; // same as skipping first
+console.log("EFC",group.storyIdList)
+      const story = [...group.storyIdList]
+        .filter(a => a.story.type === PageType.text)
+        .sort((a, b) => a.story.updated - b.story.updated)
+console.log("EFE",story)
+      setWorkshop({ group, story });
     }
-},[currentProfile,router])
-const libraryForums = () => {
-  if (!collections) return null;
+  } catch (err) {
+    console.log(err);
+  }
+}, [results]);
+const openYourWorkshops=()=>{
 
-  return (
-    <div className="">
-      <IonText
-        className={`text-emerald-900 ${
-          isNotPhone ? 'ml-16 pl-6' : 'ml-16'
-        } mb-4 lora-bold font-extrabold text-2xl`}
-      >
-        Offer Your Insight
-      </IonText>
-
-      {/* Horizontal scroll area */}
-      <div className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
-          {collections.map((library) => (
-            <IonItem
-              key={library.id}
-              className=" flex-shrink-0 border-none bg-transparent"
-            >
-              <BookListItem book={library} />
-            </IonItem>
-          ))}
-        </div>
+    openDialog({
+    title: null,
+    scrollY: false,
+    breakpoint:1,
+    text: (<div>
+      <h4>Workshops</h4>
+      <div>
+        {results.map(workshop=>{
+          return <h4>{workshop.title}</h4>
+        })}
       </div>
     </div>
-  );
-};
-  useLayoutEffect(() => {
+    )})
   
- 
-  }, []);
-
-  const getContent = () => {
-    dispatch(fetchRecommendedStories());
-    dispatch(getRecommendedCollectionsProfile());
-  };
-
-  const getHomeCollectionContent = () => {
-
-    if (currentProfile && currentProfile?.profileToCollections) {
-      let ptc = currentProfile.profileToCollections.find(ptc => ptc.type === 'home');
-      if (ptc) {
-        dispatch(fetchCollectionProtected({ id: ptc.collectionId })).then(res => {
-          checkResult(
-            res,
-            payload => {
-              if (payload.collection) {
-                const { collection } = payload;
-                let pages = [];
-                if (collection.storyIdList) {
-                  pages = collection.storyIdList.map(stc => stc.story);
-                }
-                if (collection.childCollections) {
-                  let contentArr = [];
-                  for (let i = 0; i < collection.childCollections.length; i++) {
-                    if (collection.childCollections[i]) {
-                      let col = collection.childCollections[i].childCollection;
-                      if (col?.storyIdList) {
-                        contentArr = [...contentArr, ...col.storyIdList];
-                      }
-                    }
-                  }
-                  const sorted = [...pages, ...contentArr]
-                    .sort((a, b) => a.updated && b.updated && b.updated > a.updated)
-                    .map(stc => stc.story);
-                  dispatch(appendToPagesInView({ pages: sorted }));
-                }
-              }
-            },
-            err => {
-              // handle error if needed
-            }
-          );
-        });
-      }
+}
+  const fetchWorkshops = async () => {
+    if (!currentProfile) return;
+    try {
+      dispatch(fetchYourWorkshops()).then(res=>{
+      checkResult(res, ({ groups }) => {
+      
+        console.log("GRGRR",groups)
+        setResults(groups)
+      })})
+    } catch (err) {
+      console.error("Failed fetching workshops:", err);
+    }}
+    const ClickWriteAStory = debounce(() => {
+    if (currentProfile?.id) {
+      sendGAEvent("Create", "Write a Story", "Click Write Story");
+      dispatch(createStory({
+        profileId: currentProfile.id,
+        privacy: true,
+        type: PageType.text,
+        title: "Unititled",
+        commentable: true
+      })).then(res => checkResult(res, payload => {
+        if (payload.story) {
+          dispatch(setEditingPage({ page: payload.story }));
+          dispatch(setPageInView({ page: payload.story }));
+        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'push');
+        }else{
+          windowl.alert("COULD NOT CREATE STORY")
+        }
+      },err=>{
+        setErrorLocal(err.message)
+      }));
     }
-  };
-
-  useLayoutEffect(() => {
-    setHasMore(true);
-    getContent();
-    getHomeCollectionContent();
-  }, []);
-
+  }, 5);
+    console.log("XCS",currentProfile.stories)
+    function StoryItem({story}){
+      return<div className='border border-1 border-soft p-4 rounded-xl'>
+    <div className='flex flex-col gap-2'>
+       <h4 className='text-[1.2em]'>{story.title}</h4>
+  <h6 className='text-[1em]'>{story.status}</h6>
+  </div></div>
+    }
   return (
         <ErrorBoundary>
+{/* <IonContent fullscreen> */}
 
-  
-          <div id="dashboard">
-            <div className="py-8">
-              {libraryForums()}
-              <div className="w-[98vw]  md:mt-8 mx-auto flex flex-col md:w-page">
-                <div role="tablist" className="tabs grid">
-                  {/* Recommendations Tab */}
-                  <input
-                    type="radio"
-                    name="my_tabs_2"
-                    role="tab"
-                    defaultChecked
-                    className="tab hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 text-md md:text-xl"
-                    aria-label="Recommendations"
-                  />
-                  <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg  overflow-clip">
-                    <ListView items={[...recommendedStories,...recommendedCols]} hasMore={hasMore} getMore={getContent} />
-                  </div>
-
-                  {/* Home Tab */}
-                  <input
-                    type="radio"
-                    name="my_tabs_2"
-                    role="tab"
-                    className="tab text-emerald-800 mont-medium rounded-full mx-auto bg-transparent border-3 text-md md:text-xl"
-                    aria-label="Home"
-                  />
-                  <div
-                    role="tabpanel"
-                    className="tab-content pt-1 lg:py-4 rounded-lg md:w-page md:mx-auto border-l-4 rounded-full"
-                  >
-                    <ListView items={stories} hasMore={hasMore} getMore={getContent} />
-                  </div>
-                </div>
+          <div className='bg-cream h-[100%] p-4'>
+<div className='text-left'>
+            <div className=' '>
+              <h4 className='text-xl lora-medium'>Saves</h4>
+            </div>
+            <div>
+              <h4 className='text-xl lora-medium py-4'>Your Spaces</h4>
+              <div className='flex flex-row gap-4 overflow-scroll'>
+              <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute top-2 left-2 '>Pages</div></div>
+                 <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Collections</div></div>
+              <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Archive</div></div>
+              <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute top-2 left-2 '>Communites</div></div>
               </div>
             </div>
-
+            <div className='flex flex-col justify-between px-4 mt-8'>
+              <div className='flex flex-row justify-between px-4 pb-4 mt-8'><h4 className='text-xl lora-medium'>Workshop</h4><h5 onClick={()=>{openYourWorkshops()}}>Your workshops {"->"} </h5></div>
+              {workshop&& <div className='border rounded-xl border-1 p-4 border-soft'>
+                  <h1 className='text-[1.4em] py-2 lora-medium'>{workshop.group.title}</h1>
+                  <h6 className='text-soft py-2'>Most Recent</h6>
+                  {workshop.story && <div className='py-2'>{workshop?.story?.title}</div>}
+                  {workshop.story && workshop.story.type==PageType.text && <div  className="bg-softBlue bg-opacity-30 p-2 rounded-xl"dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,100,{})}}/>
+                    }
+                    {/* {<div dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,20,{})/>}</div> */}
+                  <div className='flex flex-row py-4 '>{
+                    workshop.group.roles.map(role=><ProfileCircle profile={role.profile} includeUsername={false}/>)
+}</div>
+                </div>}
+              <div className='border border-solf border p-4 '></div>
+            </div>
+            <div>
+              <div className='flex flex-row justify-between'><h4 className='text-xl lora-medium '>Recent Pages</h4><h4 className='my-auto' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
+              <div className='flex flex-col gap-4 py-4'>
+                {[...(currentProfile.stories ?? [])]
+  .sort((a, b) => a.updated - b.updated)
+  .slice(0, 3)
+  .map(story => <StoryItem story={story}/>)}
+              </div>
+            </div>
+            </div>
             {/* Explore List */}
             <ExploreList items={collections} />
           </div>
    
-   
+   {/* </IonContent> */}
       </ErrorBoundary>
   );
 }

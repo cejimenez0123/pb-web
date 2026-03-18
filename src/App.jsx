@@ -53,6 +53,7 @@ import { Redirect, Route } from 'react-router-dom'
 import AboutContainer from './container/AboutContainer.jsx';
 import PageWrapper from './core/PageWrapper.jsx';
 import HomeContainer from './container/HomeContainer.jsx';
+import DashboardContainer from './container/DashboardContainer.jsx';
 
 setupIonicReact()
 
@@ -149,12 +150,13 @@ const showBottomNavbar = isMobileOrTablet || isNative
        <Route exact path={Paths.login()}
                   render={()=> 
              
-        <LoggedRoute 
-        currentProfile={currentProfile}
-        >  <PageWrapper>
+        // <LoggedRoute 
+        // currentProfile={currentProfile}
+        // >  
+        <PageWrapper>
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
                       </PageWrapper>
-            </LoggedRoute>
+            // </LoggedRoute>
 
        }
      />
@@ -184,14 +186,22 @@ const showBottomNavbar = isMobileOrTablet || isNative
                    <Route path={Paths.home}
                   render={()=> 
        <PrivateRoute> <PageWrapper>
-            <HomeContainer  currentProfile={currentProfile}/>
+        <DiscoveryContainer/>
+            {/* <HomeContainer  currentProfile={currentProfile}/> */}
                       </PageWrapper>
         </PrivateRoute>
 
        }
      />
-         <Route
-    exact path={Paths.myProfile}
+     <Route 
+    exact path={Paths.dashboard}>
+      <PrivateRoute>
+        <PageWrapper>
+          <DashboardContainer/>
+        </PageWrapper>
+      </PrivateRoute>
+    </Route>
+    <Route exact path={Paths.myProfile}
       render={()=>  <PrivateRoute>
         <PageWrapper> 
           <MyProfileContainer

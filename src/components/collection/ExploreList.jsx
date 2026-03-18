@@ -7,7 +7,7 @@ import { getRecommendedCollections, getRecommendedCollectionsProfile } from "../
 export default function ExploreList({collection}){
     const items = useSelector(state=>state.books.recommendedCols)
     const {currentProfile}=useSelector(state=>state.users)
-    const router = useIonRouter()
+
 
     const dispatch = useDispatch()
     useEffect(()=>{

@@ -8,7 +8,7 @@ const Paths ={
     feedback:()=>`/feedback`,
     links:()=>`/links`,
     calendar:()=>"/events",
-
+    dashboard:"/dashboard",
     onboard:"/onboard",
     library: {
         route: ()=>`/library/:id`,

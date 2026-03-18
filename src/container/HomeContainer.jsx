@@ -257,19 +257,19 @@ function HomeContainer() {
     return result;
   }, [collections, filterType, search]);
 
-    useIonViewWillEnter(() => {
-  const init = async () => {
-    try {
+  //   useIonViewWillEnter(() => {
+  // const init = async () => {
+  //   try {
      
-      await getDriveToken();
-    } catch (err) {
-      console.error("Initialization error:", err);
-      setErrorLocal(err.message);
-    }
-  };
-  init();
+  //     await getDriveToken();
+  //   } catch (err) {
+  //     console.error("Initialization error:", err);
+  //     // setErrorLocal(err.message);
+  //   }
+  // };
+  // init();
 
-  },[])
+  // },[])
 
   const ClickWriteAStory = debounce(() => {
     if (currentProfile?.id) {
@@ -289,7 +289,7 @@ function HomeContainer() {
           windowl.alert("COULD NOT CREATE STORY")
         }
       },err=>{
-        setErrorLocal(err.message)
+        // setErrorLocal(err.message)
       }));
     }
   }, 5);
@@ -349,10 +349,13 @@ scrollY: false,
   
         }
   
-      }, err => setErrorLocal(err.message)));
+      }, err =>{}))
+        //  setErrorLocal(err.message)
+        // )
+      
     } catch (error) {
       console.error("Error fetching Google Doc:", error);
-      setErrorLocal(error.message);
+      // setErrorLocal(error.message);
     }
   };
 
@@ -405,26 +408,25 @@ useEffect(() => {
     await getDriveToken();
   };
 
-  initProfile();
 }, [currentProfile]);
 const handleGlobal=()=>{ setIsGlobal(!isGlobal)}
 
   if (!currentProfile) {
     return (
-      <IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}>
+      // <IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}>
         <div>
         <IonSpinner />
         </div>
-        </IonContent>
+        // </IonContent>
     );
   }
 
 
-return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}><ErrorBoundary>
+return<ErrorBoundary>
 
-                    <div className='flex mt-4  pt-16  flex-row justify-between'>
+                    <div className='flex mt-4  bg-cream h-[100%] pt-16  flex-row justify-between'>
                         
-      <div className='px-4 flex w-[100%] flex-row justify-between'>
+      {/* <div className='px-4 flex w-[100%] flex-row justify-between'>
       <IonImg
   onClick={() => {
     // Prevent double push
@@ -434,7 +436,7 @@ return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#
   }}
   className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2"
   src={settings}
-/>
+/> */}
                             {/* <img src={calendar}  className=''  style={{
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
@@ -444,7 +446,7 @@ onClick={()=>{
       destination: "calendar",
       source: "discovery_header",
     }); */}
-<img
+{/* <img
   src={calendar}
   className=''
   style={{ filter: "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)" }}
@@ -458,7 +460,7 @@ onClick={()=>{
     }
   }}
 />
-</div>
+</div> */}
   {/* router.push(Paths.calendar())}}
 
           /> */}
@@ -466,15 +468,8 @@ onClick={()=>{
                   
                     </div>
   <div >
-<div className="relative flex flex-col justify-around mx-auto mt-2 max-w-[60rem] rounded-lg gap-6">
-  {/* <div className="relative flex flex-col justify-around mx-auto p-6 mt-2 max-w-[60rem] rounded-lg gap-6"> */}
-{/* 
-    <div className="md:w-1/3 max-w-[60em] h-[16em] mb-[4em] flex justify-center md:justify-start">
-      <ProfileInfo profile={currentProfile} />
-    </div> */}
-    
+<div className="relative flex flex-col justify-around mx-auto mt-2 max-w-[60rem] rounded-lg gap-4">
 
-    {/* Right: Buttons */}
     <div>
     <h4 className='text-[1rem] px-4 text-emerald-800 font-bold mb-4'>
       What's happening in your communities?
@@ -567,7 +562,7 @@ onClick={()=>{
   </div>
 </div>
 </ErrorBoundary>
-</IonContent>
+// </IonContent>
 }
 
 export default HomeContainer

@@ -6,7 +6,6 @@ import Context from "../context";
 import isValidUrl from "../core/isValidUrl";
 import debounce from "../core/debounce"
 import {sendGAEvent } from "../core/ga4";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add.svg"
 import { IonImg, IonInput,  IonList, IonText,  } from "@ionic/react";
