@@ -532,7 +532,8 @@ const getCol = async (id) => {
  {/* <IonCard style={{"--background":"transparent",maxWidth:"60em",margin:"auto"}}className=""> */}
           <IonCardHeader className="mx-auto ">
             <div className="flex items-center justify-between px-4 gap-2">
-              <div>{collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />}
+              <div>
+                {/* {collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />} */}
               <IonCardTitle className="ion-text-wrap">{collection?.title}</IonCardTitle></div>
                  {canUserEdit &&<div><IonImg
                  onClick={() => router.push(Paths.editCollection.createRoute(id))}
@@ -587,7 +588,7 @@ const getCol = async (id) => {
   {collections && collections.length > 0 && (
         <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4">
           <h5 className="text-xl text-emerald-800 px-1 pb-2">Anthologies</h5>
-          <IonList>
+               <IonList style={{backgroundColor:"#f4f4e0"}}>
           <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
             {collections
               .filter((col) => col)

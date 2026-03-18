@@ -474,7 +474,7 @@ onClick={()=>{
     <h4 className='text-[1rem] px-4 text-emerald-800 font-bold mb-4'>
       What's happening in your communities?
     </h4>
-  <IonList><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden py-4  gap-4 w-full'>
+   <IonList style={{backgroundColor:"#f4f4e0"}} ><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden py-4  gap-4 w-full'>
      {whatsHappeningList.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):whatsHappeningList.map(story=>
 // 
 

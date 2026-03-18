@@ -6,7 +6,7 @@ import ExploreList from '../components/collection/ExploreList.jsx';
 
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-import {IonText, IonItem, useIonRouter, IonContent} from '@ionic/react';
+import {IonText, IonItem, useIonRouter, IonContent, IonList} from '@ionic/react';
 
 import { fetchYourWorkshops } from '../actions/WorkshopActions.jsx';
 import ProfileCircle from '../components/profile/ProfileCircle.jsx';
@@ -30,7 +30,7 @@ const collections = collectionsRaw
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
   const [results,setResults]=useState([])
   const [workshop,setWorkshop]=useState(null)
-  const {openDialog,closeDialog,dialog}=useDialog()
+  const {openDialog,closeDialog,resetDialog}=useDialog()
   const recommendedCols= useSelector(state => state.books.recommendedCols);
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
@@ -57,19 +57,54 @@ const openYourWorkshops=()=>{
 
     openDialog({
     title: null,
-    scrollY: false,
-    breakpoint:1,
-    text: (<div>
-      <h4>Workshops</h4>
-      <div>
+  scrollY: true,
+  breakpoint: 1,
+
+
+    disagree:()=>resetDialog(),
+    text: (<div className=''>
+      <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Workshops</h4>
+        <IonList style={{backgroundColor:"#f4f4e0"}}>
+          <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
         {results.map(workshop=>{
-          return <h4>{workshop.title}</h4>
+          return<li className=' my-2 bg-cream' onClick={()=>{
+            router.push(Paths.collection.createRoute(workshop.id))
+            resetDialog()
+          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{workshop.title}</h4></div></li>
         })}
-      </div>
+        </div>
+        </IonList>
+
+      
     </div>
     )})
   
 }
+const openPages=()=>{
+   openDialog({
+    title: null,
+  scrollY: true,
+  breakpoint: 1,
+
+
+    disagree:()=>resetDialog(),
+    text: (<div className=''>
+      <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Pages</h4>
+        <IonList style={{backgroundColor:"#f4f4e0"}}>
+          <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
+        {currentProfile.stories.map(story=>{
+          return<li className=' my-2 bg-cream' onClick={()=>{
+            router.push(Paths.page.createRoute(story.id))
+            resetDialog()
+          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title}</h4></div></li>
+        })}
+        </div>
+        </IonList>
+
+      
+    </div>
+    )})}
+            
   const fetchWorkshops = async () => {
     if (!currentProfile) return;
     try {
@@ -104,9 +139,21 @@ const openYourWorkshops=()=>{
       }));
     }
   }, 5);
-    console.log("XCS",currentProfile.stories)
+function WorkshopItem({workshop}){
+  return( <div onClick={()=>{router.push(Paths.collection.createRoute(workshop.group.id),"forward")}}className='border rounded-xl border-1 p-4 border-soft'>
+                  <h1 className='text-[1.4em] py-2 lora-medium'>{workshop.group.title}</h1>
+                  <h6 className='text-soft py-2'>Most Recent</h6>
+                  {workshop.story && <div className='py-2'>{workshop?.story?.title}</div>}
+                  {workshop.story && workshop.story.type==PageType.text && <div  className="bg-softBlue bg-opacity-30 p-2 rounded-xl"dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,100,{})}}/>
+                    }
+                    {/* {<div dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,20,{})/>}</div> */}
+                  <div className='flex flex-row py-4 '>{
+                    workshop.group.roles.map(role=><ProfileCircle profile={role.profile} includeUsername={false}/>)
+}</div>
+                </div>)
+}
     function StoryItem({story}){
-      return<div className='border border-1 border-soft p-4 rounded-xl'>
+      return<div onClick={()=>router.push(Paths.page.createRoute(story.id))} className='border border-1 border-soft p-4 rounded-xl'>
     <div className='flex flex-col gap-2'>
        <h4 className='text-[1.2em]'>{story.title}</h4>
   <h6 className='text-[1em]'>{story.status}</h6>
@@ -124,25 +171,15 @@ const openYourWorkshops=()=>{
             <div>
               <h4 className='text-xl lora-medium py-4'>Your Spaces</h4>
               <div className='flex flex-row gap-4 overflow-scroll'>
-              <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute top-2 left-2 '>Pages</div></div>
+              <div  onClick={()=>openPages()}className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute top-2 left-2 '>Pages</div></div>
                  <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Collections</div></div>
-              <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Archive</div></div>
+              <div onClick={()=>router.push(Paths.collection.createRoute(currentProfile.profileToCollections[0].collectionId))}className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Archive</div></div>
               <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute top-2 left-2 '>Communites</div></div>
               </div>
             </div>
             <div className='flex flex-col justify-between px-4 mt-8'>
               <div className='flex flex-row justify-between px-4 pb-4 mt-8'><h4 className='text-xl lora-medium'>Workshop</h4><h5 onClick={()=>{openYourWorkshops()}}>Your workshops {"->"} </h5></div>
-              {workshop&& <div className='border rounded-xl border-1 p-4 border-soft'>
-                  <h1 className='text-[1.4em] py-2 lora-medium'>{workshop.group.title}</h1>
-                  <h6 className='text-soft py-2'>Most Recent</h6>
-                  {workshop.story && <div className='py-2'>{workshop?.story?.title}</div>}
-                  {workshop.story && workshop.story.type==PageType.text && <div  className="bg-softBlue bg-opacity-30 p-2 rounded-xl"dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,100,{})}}/>
-                    }
-                    {/* {<div dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,20,{})/>}</div> */}
-                  <div className='flex flex-row py-4 '>{
-                    workshop.group.roles.map(role=><ProfileCircle profile={role.profile} includeUsername={false}/>)
-}</div>
-                </div>}
+              {workshop&&<WorkshopItem workshop={workshop}/>}
               <div className='border border-solf border p-4 '></div>
             </div>
             <div>
