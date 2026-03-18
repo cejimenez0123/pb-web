@@ -54,6 +54,7 @@ import AboutContainer from './container/AboutContainer.jsx';
 import PageWrapper from './core/PageWrapper.jsx';
 import HomeContainer from './container/HomeContainer.jsx';
 import DashboardContainer from './container/DashboardContainer.jsx';
+import { LoadScript } from '@react-google-maps/api';
 
 setupIonicReact()
 
@@ -122,11 +123,16 @@ const isMobileOrTablet = useMediaQuery({ query: '(max-width: 768px)' })
 
 const showTopNavbar = isDesktop && !isNative
 const showBottomNavbar = isMobileOrTablet || isNative
-
+const libraries = ["places"];
  return (
 
     <ErrorBoundary>
         <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+
+    <LoadScript
+      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+      libraries={libraries}
+    >
 <script
   defer
   src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=YOUR_CALLBACK_NAME"
@@ -354,6 +360,7 @@ const showBottomNavbar = isMobileOrTablet || isNative
       </IonReactRouter>
       
     </IonApp>
+</LoadScript>
   </Context.Provider>
   </ErrorBoundary>
   );

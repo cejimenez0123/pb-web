@@ -45,11 +45,13 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
     </span>
   );
 }
+import { getGeocode } from "use-places-autocomplete";
 
 function MyProfileContainer({ presentingElement }) {
   const [tab, setTab] = useState("page");
   const router = useIonRouter()
   const dispatch = useDispatch();
+  const [locationName, setLocationName] = useState(null);
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const stories = useSelector(state => state.pages.pagesInView);
   // const dialog = useSelector(state => state.users.dialog);
@@ -80,6 +82,7 @@ function MyProfileContainer({ presentingElement }) {
     }));
   }
 }, [currentProfile, setSeo]);
+
 
   const filteredSortedStories = useMemo(() => {
     let result = stories || [];
@@ -290,21 +293,8 @@ useEffect(() => {
 return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}><ErrorBoundary>
 
                     <div className='flex mt-4  sm:pt-20 p-4 flex-row justify-between'>
-                         {/* <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
-     
-                            <img src={calendar}  className=''  style={{
-    filter:
-      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
-  }}
-onClick={()=>{
-      sendGAEvent("navigation_click", {
-      destination: "calendar",
-      source: "discovery_header",
-    });
+                         <IonImg  onClick={()=> router.push(Paths.editProfile,"forward")} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
 
-  router.push(Paths.calendar())}}
-
-          /> */}
           
                   
                     </div>

@@ -38,6 +38,8 @@ const profile = useSelector((state) => state.users.profileInView);
   const[tab,setTab]=useState("page")
   const isPhone = useMediaQuery({ query: '(max-width: 600px)' });
   const router = useIonRouter()
+  const [locationName, setLocationName]=useState("")
+      
   const handleTabChange=(tab)=>{
       setTab(tab)
 
@@ -46,6 +48,7 @@ const profile = useSelector((state) => state.users.profileInView);
     profile_id: profile.id,
   });
   }
+
   const [search, setSearch] = useState('');
 
   const [following, setFollowing] = useState(null);
@@ -262,7 +265,7 @@ let books = useSelector(state => state.books.collections)
           <div className='pt-12 '>
        
           <div className="pt-2 md:pt-8 mb-8 mx-2 ">
-            <ProfileCard profile={profile} following={following} onClickFollow={onClickFollow} />
+            <ProfileCard profile= {profile}following={following} onClickFollow={onClickFollow} />
           </div>
 
           {isPhone && (

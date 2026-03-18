@@ -5,12 +5,15 @@ import FollowerCard from "./profile/FollowerCard"
 import { IonImg } from "@ionic/react"
 import Enviroment from "../core/Enviroment"
 import { useDialog } from "../domain/usecases/useDialog"
+import { getGeocode } from "use-places-autocomplete"
+import { LoadScript } from "@react-google-maps/api"
 export default function ProfileCard({profile,onClickFollow,following}){
     const dialog = useSelector(state=>state.users.dialog)
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
+    const {currentProfile}=useSelector(state=>state.users)
     const [pending,setPending]=useState(false)
     const {openDialog,closeDialog}=useDialog()  //   const FollowDiv=({following,onClickFollow})=>{
-
+  const [locationName, setLocationName] = useState(null);
   //     return following?
   //     (<div 
   //      className=" bg-emerald-600  w-[9rem] btn rounded-full text-white text-center"
@@ -20,6 +23,41 @@ export default function ProfileCard({profile,onClickFollow,following}){
   //                  onClick={onClickFollow}
   //      ><h5 className="text-emerald-800 py-3 font-bold">Follow</h5></div>)
   //  }
+    useEffect(() => {
+    const fetchCity = async () => {
+      console.l
+      if (!profile?.location?.latitude || !profile?.location?.longitude) return;
+  
+      try {
+        const { latitude: lat, longitude: lng } = profile.location;
+  
+        const results = await getGeocode({
+          location: { lat, lng }
+        });
+  
+        const comps = results[0].address_components;
+  
+        const get = (type) =>
+          comps.find(c => c.types.includes(type))?.long_name;
+  
+        const city =
+          get("locality") ||
+          get("sublocality") ||
+          get("administrative_area_level_2");
+  
+        const state = get("administrative_area_level_1");
+  
+        setLocationName(
+          city && state ? `${city}, ${state}` : city || state || "Unknown"
+        );
+  
+      } catch (err) {
+        console.error("Reverse geocode failed:", err);
+      }
+    };
+  
+    fetchCity();
+  }, [profile])
   const FollowDiv = ({ following, onClickFollow }) => {
   // Common classes for both states
   const baseClasses = "flex items-center justify-center w-[9rem] h-[3rem] rounded-full transition-all duration-200 cursor-pointer";
@@ -75,9 +113,20 @@ setProfilePic(src)
         <div className="text-left p-4">
             {/* <div className="flex flex-row"> */}
               <div>  
-            {profilePic.length>0?<span className="max-h-28  "><div className="overflow-hidden rounded-lg"><IonImg src={profilePic} className="max-w-36 mx-auto object-fit mb-2 rounded-lg" alt=""/></div>
-              <div className="h-fit px-2 pb-2"><h5 className="text-emerald-800 text-[1.2rem] text-center open-sans-medium font-bold">{profile.username}</h5></div>
-              </span>:<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
+           <div>  
+  {profilePic.length>0?
+    <span className="max-h-[10em] flex flex-row">
+      <img src={profilePic} className="max-h-[14em]" />
+      <div className="p-4 ">
+        <h5 className="text-[1.2em]">{profile.username}</h5>
+        {locationName && (
+  <div className="text-sm text-soft mt-2">
+    {locationName}
+  </div>
+)}
+      </div>
+    </span>
+  :<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}</div>
               
         
               </div> <div>
@@ -109,27 +158,31 @@ setProfilePic(src)
     }
     if(profile){
         
-      return(<div className="pb-8 rounded-lg  w-[96vw] sm:max-w-[60em] sm:min-h-40 mx-auto  ">
+      return(<div className="pb-8 rounded-lg  w-[96vw] sm:max-w-[60em] sm:min-h-40   ">
         <div className="text-left p-4">
             {/* <div className="flex flex-row"> */}
-              <div>  
-            {profilePic.length>0?<span className="max-h-28  "><div className="overflow-hidden rounded-lg"><IonImg src={profilePic} className="max-w-36 mx-auto object-fit mb-2 rounded-lg" alt=""/></div>
-              <div className="h-fit px-2 pb-2"><h5 className="text-emerald-800 text-[1.2rem] text-center open-sans-medium font-bold">{profile.username}</h5></div>
-              </span>:<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
-              
-        
-              </div> <div>
-            <div className="px-3 pt-3 flex flex-col justify-between  h-48">
+              <div className="flex flex-row">  
+            {profilePic.length>0?
+            <span className="max-h-[12em] overflow-hidden flex flex-row">
+              <IonImg src={profilePic} className="max-w-36 object-fit mb-2 rounded-lg" alt=""/>
+             </span>
+          
+                :<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
+{/*           
+        <h5 className="text-[0.8em]
+            ">{profile.username}</h5> */}
+            </div>     <div>
+            <div className="px-3 pt-3 flex flex-col justify-between  ">
           
             
         </div>
         </div>
          <div className="mt-3 mx-auto w-[20em] justify-between flex flex-row">
-                <FollowDiv following={following} onClickFollow={onClickFollow}/>
+                {/* <FollowDiv following={following} onClickFollow={onClickFollow}/>
                 <div onClick={openDialog} className="text-emerald-800 text-center mx-4">
                     <h5 className="text-[1rem] my-auto">Followers</h5>
                 <h6>{profile.followers.length}</h6>
-                </div>
+                </div> */}
         </div>
            
             </div>
@@ -138,7 +191,5 @@ setProfilePic(src)
         </div>)
     }
     
-    //  <div className="h-fit"><h5 className="sm:text-[1rem] text-[0.8rem] max-h-40 overflow-y-scroll flex-wrap flex text-emerald-800 overflow-scroll">{profile.selfStatement}</h5>
-    //        </div> 
-    
+
     }
