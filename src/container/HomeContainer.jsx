@@ -47,24 +47,15 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
     </span>
   );
 }
-// function useProfileDependentEffects(currentProfile, isGlobal) {
-//   const fetchPrompts = ()=>{
-//   dispatch(getPrompts()).then(res=>checkResult(res,({prompts})=>{
-//     // setPrompts(prompts)
 
-//   },(err)=>{
-//     console.log(err)
-//   }))
-// }
-//   useEffect(() => {
-//     if (!currentProfile) return;
+  const fetchPrompts = ()=>{
+  dispatch(getPrompts()).then(res=>checkResult(res,({prompts})=>{
+    // setPrompts(prompts)
 
-//     fetchWorkshops();
-//     fetchStories();
-//     fetchPrompts();
-//     isGlobal && (isNative ? requestLocation() : webRequestLocation());
-//   }, [currentProfile, isGlobal]);
-// }
+  },(err)=>{
+    console.log(err)
+  }))
+  }
 
 
 function useProfileDependentEffects(currentProfile, isGlobal) {
@@ -538,9 +529,9 @@ const WorkshopItem = ({ item, router }) => {
       className="bg-white shadow-md rounded-xl p-4 min-w-[15rem] cursor-pointer hover:shadow-xl transition-shadow duration-200"
       onClick={() => {
         const targetPath = Paths.collection.createRoute(item.id);
-        if (router.routeInfo?.pathname !== targetPath) {
+  
           router.push(targetPath, "forward");
-        }
+  
       }}
     >
       <div className="flex flex-col justify-between h-full">

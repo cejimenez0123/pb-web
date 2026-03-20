@@ -7,18 +7,13 @@ import { getPublicStories, setPagesInView } from '../actions/PageActions.jsx';
 import { getPublicCollections, setCollections } from '../actions/CollectionActions.js';
 import { getPublicLibraries } from '../actions/LibraryActions.jsx';
 import checkResult from '../core/checkResult.js';
-import DiscoveryEmbed from '../container/DiscoveryEmbed.jsx';
-import { useMediaQuery } from 'react-responsive';
-import DashboardEmbed from './DashboardEmbed.jsx';
 import { AnimatePresence, motion } from "framer-motion";
-import BookListItem from '../components/BookListItem.jsx';
-import calendar from '../images/icons/calendar.svg'
-import { initGA, sendGAEvent} from '../core/ga4.js';
+import {  sendGAEvent} from '../core/ga4.js';
 import Context from '../context.jsx';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import {  IonContent,IonHeader,IonItem, IonText, IonToolbar, useIonRouter } from '@ionic/react';
+import {  IonContent, useIonRouter } from '@ionic/react';
 import DashboardContainer from './DashboardContainer.jsx';
 import HomeContainer from './HomeContainer.jsx';
 
@@ -167,36 +162,11 @@ export default DiscoveryContainer;
       width: "100vw",
     }),
   };
-console.log(currentProfile.profileToCollections)
 
    return <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} scrollY={true}>
-{/*    
-           <div className=' flex flex-row flex-end p-4 max-w-[100vw]'>
-<div className='w-[100%] pt-4'/> */}
+ 
          <div className='flex mt-4  pt-16 px-4 flex-row justify-between'>
-          {/* <img onClick={()=>{
-      sendGAEvent("navigation_click", {
-      destination: "calendar",
-      source: "discovery_header",
-    });
-
-    setSeo({
-      title: "Plumbum — Events & Writing Calendar",
-      description:
-        "Browse writing events, workshops, and meetups on the Plumbum calendar.",
-      name: "Plumbum",
-      type: "website",
-    });
-  router.push(Paths.calendar())
-
-}} src={calendar}  className=''  style={{
-            left:"0",
-    filter:
-      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
-  }}
-
-
-          /> */}
+  
                     </div>
     
     <div className=" sm:pt-12 bg-cream">

@@ -6,9 +6,8 @@ import {
   IonButtons,
   IonButton,
   IonContent,
-  IonIcon,
+
   IonSpinner,
-  IonCard,
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
@@ -21,23 +20,19 @@ import {
   useIonRouter,
  
 } from "@ionic/react";
+
+import { AnimatePresence, motion } from "framer-motion";
 import add from "../../images/icons/add_circle.svg"
 import archive from "../../images/icons/archive.svg"
 import edit from "../../images/icons/edit.svg"
 import { useDispatch, useSelector } from "react-redux";
 
-import Context from "../../context";
 import PageList from "../../components/page/PageList";
 import ErrorBoundary from "../../ErrorBoundary";
 import BookListItem from "../../components/BookListItem";
 import ExploreList from "../../components/collection/ExploreList.jsx";
-import ProfileCircle from "../../components/profile/ProfileCircle";
 import bookmarkOutline from "../../images/bookmark_add.svg"
 import bookmarkFill from "../../images/bookmark_fill_green.svg"
-import {
-  appendToPagesInView,
-  setPagesInView,
-} from "../../actions/PageActions.jsx";
 import {
   addCollectionListToCollection,
   deleteCollectionFromCollection,
@@ -47,16 +42,17 @@ import {
 import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions";
 import Role from "../../domain/models/role";
 import { RoleType } from "../../core/constants";
-import checkResult from "../../core/checkResult"
-import Paths from "../../core/paths.js";
 import { Preferences } from "@capacitor/preferences";
 import { Capacitor } from "@capacitor/core";
-import useScrollTracking from "../../core/useScrollTracking.jsx";
 import { useParams } from "react-router";
+import Context from "../../context.jsx";
+import useScrollTracking from "../../core/useScrollTracking.jsx";
+import Paths from "../../core/paths.js";
 
 export default function CollectionContainer() {
-const { setError, setSuccess, setSeo, seo } = useContext(Context);
 
+  const { setError, setSuccess, setSeo, seo } = useContext(Context);
+  
   const currentProfile = useSelector(state => state.users.currentProfile);
   const dispatch = useDispatch();
   const router = useIonRouter()
@@ -64,10 +60,10 @@ const { setError, setSuccess, setSeo, seo } = useContext(Context);
   const [canUserEdit, setCanUserEdit] = useState(false);
   const [canUserSee, setCanUserSee] = useState(false);
    const {id}=useParams()
-  const isNative = Capacitor.isNativePlatform()
+
   const collection = useSelector(state => state.books.collectionInView);
   const collections = useSelector(state => state.books.collections);
-  const pagesInView = useSelector(state => state.pages.pagesInView);
+
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isArchived, setIsArchived] = useState(false);
@@ -78,13 +74,13 @@ const { setError, setSuccess, setSeo, seo } = useContext(Context);
   const [hasMore, setHasMore] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const writeArr = [RoleType.editor, RoleType.writer];
- collection && useScrollTracking({
+ useScrollTracking({
   contentType: "collection",
-  contentId: collection.id,
-  authorId: collection.profileId,
+  contentId: collection?.id,
+  authorId: collection?.profileId,
   enableCompletion: false,
 });
-
+  const [tab,setTab]=useState("pages")
   useEffect(() => {
   if (!collection || !canUserSee) return;
 
@@ -176,9 +172,7 @@ return
   getCol(id)
   
   },[id])
-  useEffect(()=>{
-    getCol(id)
-  },[])
+
   useEffect(()=>{
     collection && currentProfile && findRole(collection,currentProfile)
     soUserCanEdit()
@@ -274,7 +268,7 @@ const getCol = async (id) => {
             res,
             (payload) => {
               if (payload.collection) {
-                console.log("SPFFD",payload.collection)
+       
                 dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
                 setCanUserSee(true)
                 setLoading(false);
@@ -440,69 +434,6 @@ const getCol = async (id) => {
 
   // Metadata
  
-    if (loading||!collection) {
-      return (
-  <div>
-              <IonHeader> 
-      <IonToolbar>
-   
-<IonButton>Back</IonButton>
-     
-      
-              <IonTitle>Loading collection...</IonTitle>
-            </IonToolbar>
-          </IonHeader>
-          <IonSpinner />
-   </div>
-      );
-    }
-
-  if (!collection) {
-    return (
-<div>
-        <IonHeader >
-          <IonToolbar>
-            <IonTitle>Loading collection...</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <div className="ion-padding mx-auto">
-          <IonSkeletonText animated style={{ width: '96vw', height: 150, margin: "2rem auto", borderRadius: 18 }} />
-          <IonSkeletonText animated style={{ width: '96vw', height: 400, margin: "2rem auto", borderRadius: 18 }} />
-        </div>
-      </div>
-    );
-  }
-
-  if (!canUserSee) {
-
-    return (
-      <ErrorBoundary>
-
-            <IonHeader mode="ios"> 
-      <IonToolbar mode="ios">
-   
-
-    <IonButton mode="ios">Back</IonButton>
-<IonTitle>Access Denied</IonTitle>
-        {/* </IonButtons> */}
-        </IonToolbar>      
-
-
-
-
-
-      </IonHeader>
-      
-       <IonText color="danger" className="ion-padding">
-  <h3>403 — Access Denied</h3>
-  <p>You don’t have permission to view this collection.</p>
-  <p>If you believe this is a mistake, please contact the collection owner.</p>
-</IonText>
-
-      {/* </IonContent> */}
-      </ErrorBoundary>
-    );
-  }
 const FollowBtn=()=>     {return!role ? (
                 <div onClick={handleFollow} className="btn flex-1 bg-transparent rounded-full border-2 px-4 px-2 border-emerald-300">
                 <IonText  fill="outline" >
@@ -536,6 +467,42 @@ const FollowBtn=()=>     {return!role ? (
                 <img className="w-[2em] h-[2em] pt-1 mx-auto" src={archive} />
                 {bookmarkLoading && <IonSpinner name="dots" />}
               </div>}
+
+
+  if (loading) {
+    return (
+      <IonContent>
+<div>
+        <IonHeader >
+          <IonToolbar>
+            <IonTitle>Loading collection...</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <div className="ion-padding mx-auto">
+          <IonSkeletonText animated style={{ width: '96vw', height: 150, margin: "2rem auto", borderRadius: 18 }} />
+          <IonSkeletonText animated style={{ width: '96vw', height: 400, margin: "2rem auto", borderRadius: 18 }} />
+        </div>
+      </div>
+      </IonContent>
+    );
+  }
+
+  if (!canUserSee) {
+  return (
+    <IonContent fullscreen>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Access Denied</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+
+      <IonText color="danger" className="ion-padding">
+        <h3>403 — Access Denied</h3>
+        <p>You don’t have permission to view this collection.</p>
+      </IonText>
+    </IonContent>
+  );
+}
   // Main content UI
   return (
          <ErrorBoundary>
@@ -562,12 +529,11 @@ const FollowBtn=()=>     {return!role ? (
     <div className="">
         
     <div className="pt-8">
- {/* <IonCard style={{"--background":"transparent",maxWidth:"60em",margin:"auto"}}className=""> */}
+ 
           <IonCardHeader className="mx-auto ">
             <div className="flex items-center justify-between px-4 gap-2">
               <div>
-                {/* {collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />} */}
-              <IonCardTitle className="ion-text-wrap lora-medium">{collection?.title}</IonCardTitle></div>
+                <IonCardTitle className="ion-text-wrap lora-medium">{collection?.title}</IonCardTitle></div>
                  {canUserEdit &&<div><IonImg
                  onClick={() => router.push(Paths.editCollection.createRoute(id))}
                   src={edit} className="bg-blueSea min-w-12 max-h-12 rounded-full p-2 btn"/>
@@ -575,13 +541,18 @@ const FollowBtn=()=>     {return!role ? (
            </div>
           </IonCardHeader>
           <div className="mx-auto px-6 ">
-          <IonCardContent  class="  ion-padding">
+        <IonCardContent className="ion-padding">
             <IonText color="medium w-full bg-emerald-100 min-h-6 bg-red-200">
               <h6>{collection.purpose}</h6>
             </IonText>
             <div className="my-4 p-4 flex flex-row gap-4">
       <FollowBtn/>       <SaveBtn/><ArchiveBtn/>
       </div>
+      
+      <CollectionTabs tab={tab} setTab={setTab} pages={<PageTab collections={collections}/>}
+                      members={<div/>}
+                      about={<div/>}
+                      />
    
             <div className="ion-margin-top w-[100%] mx-auto py-4 flex items-center justify-around flex gap-2">
    
@@ -597,34 +568,8 @@ const FollowBtn=()=>     {return!role ? (
             </div>
           </IonCardContent>
           </div>
-        {/* </IonCard> */}
-{/* </div> */}
-  {collections && collections.length > 0 && (
-        <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4">
-          <h5 className="text-xl text-emerald-800 px-1 pb-2">Anthologies</h5>
-               <IonList style={{backgroundColor:"#f4f4e0"}}>
-          <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
-            {collections
-              .filter((col) => col)
-              .map((col, i) => (
-                <div key={i} className="mx-3">
-                  <BookListItem book={col} />
-                </div>
-              ))}
-          </div>
-          </IonList>
-        </div>
-      )}
-<div className="sm:w-[50rem] mx-auto">
 
-            <PageList
-              items={pagesInView}
-              isGrid={false}
-              hasMore={hasMore}
-              getMore={getMore}
-              forFeedback={collection?.type === "feedback"}
-        />
-</div>
+
         <ExploreList collection={collection} />
         </div>
         </div>
@@ -632,3 +577,137 @@ const FollowBtn=()=>     {return!role ? (
         </ErrorBoundary>
   );
 }
+
+function CollectionTabs({ tab, setTab, pages, members, about }) {
+  const variants = {
+    enter: (direction) => ({
+      x: direction === "pages" ? 20 : -20,
+      opacity: 0,
+      position: "absolute",
+      width: "100%", // ✅ FIXED (was 100vw)
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      position: "relative",
+      width: "100%", // ✅ FIXED
+    },
+    exit: (direction) => ({
+      x: direction === "pages" ? -20 : 20,
+      opacity: 0,
+      position: "absolute",
+      width: "100%", // ✅ FIXED
+    }),
+  };
+
+//   return (<div className="bg-cream">
+//   {tab === "pages" && pages}
+//   {tab === "members" && members}
+//   {tab === "about" && about}
+// </div>)
+  return (
+    <div className="sm:pt-12 bg-cream">
+      
+      {/* Tabs */}
+      <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
+        <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] w-[100%]  lg:w-[30em] border-emerald-600">
+          
+          <button
+            className={`px-4 py-2 transition-colors w-[33%] ${
+              tab === "pages"
+                ? "bg-emerald-700 text-white"
+                : "text-emerald-700 bg-transparent"
+            }`}
+            onClick={() => setTab("pages")}
+          >
+            Pages
+          </button>
+
+          <button
+            className={`px-4 py-2 transition-colors w-[33%] ${
+              tab === "members"
+                ? "bg-emerald-700 text-white"
+                : "text-emerald-700 bg-transparent"
+            }`}
+            onClick={() => setTab("members")}
+          >
+            Members
+          </button>
+
+          <button
+            className={`px-4 py-2 transition-colors w-[33%] ${
+              tab === "about"
+                ? "bg-emerald-700 text-white"
+                : "text-emerald-700 bg-transparent"
+            }`}
+            onClick={() => setTab("about")}
+          >
+            About
+          </button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="bg-cream relative overflow-hidden" style={{ contain: "layout" }}>
+    {/* <AnimatePresence mode="wait" initial={false}> */}
+       <motion.div
+  // key={tab}
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.2 }}
+
+            key={tab || "pages"} // ✅ SAFER KEY
+            // custom={tab}
+            variants={variants}
+   
+            exit="exit"
+  
+            className="w-full"
+          >
+            {tab === "pages" && pages}
+            {tab === "members" && members}
+            {tab === "about" && about}
+          </motion.div>
+        {/* </AnimatePresence> */}
+      </div>
+    </div>
+  );
+}
+
+const PageTab = ({ collections }) => {
+  const pagesInView = useSelector(state => state.pages.pagesInView);
+
+  return (
+    <>
+      <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4">
+        <h5 className="text-xl text-emerald-800 px-1 pb-2">
+          Anthologies
+        </h5>
+
+        {collections && collections.length > 0 && (
+          <IonList style={{ backgroundColor: "#f4f4e0" }}>
+            <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
+              {collections
+                .filter((col) => col)
+                .map((col, i) => (
+                  <div key={i} className="mx-3">
+                    <BookListItem book={col} />
+                  </div>
+                ))}
+            </div>
+          </IonList>
+        )}
+
+        <div className="sm:w-[50rem] mx-auto">
+          <PageList
+            items={pagesInView || []}
+            isGrid={false}
+            hasMore={false} // ✅ FIXED (no undefined)
+            getMore={() => {}} // ✅ FIXED
+            forFeedback={false} // ✅ FIXED
+          />
+        </div>
+      </div>
+    </>
+  );
+};
