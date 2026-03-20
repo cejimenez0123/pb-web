@@ -8,10 +8,9 @@ import Paths from "../../core/paths";
 import { initGA,sendGAEvent } from "../../core/ga4.js";
 import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
-import Context from "../../context.jsx";
 import { IonImg, IonText, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
-import { useDialog } from "../../domain/usecases/useDialog.jsx";
+
 export default function IndexItem({item,handleFeedback,type}) {
   let collectionStr ="collection"
     const [canUserAdd,setCanUserAdd]=useState(false)

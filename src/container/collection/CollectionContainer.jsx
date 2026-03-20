@@ -48,6 +48,8 @@ import { useParams } from "react-router";
 import Context from "../../context.jsx";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import Paths from "../../core/paths.js";
+import checkResult from "../../core/checkResult.js";
+import { setPagesInView } from "../../actions/PageActions.jsx";
 
 export default function CollectionContainer() {
 
@@ -171,7 +173,7 @@ return
   useEffect(()=>{
   getCol(id)
   
-  },[id])
+  },[currentProfile])
 
   useEffect(()=>{
     collection && currentProfile && findRole(collection,currentProfile)
@@ -226,9 +228,8 @@ canUserSee&& getContent()
 const getCol = async (id) => {
   setLoading(true);
   try {
-    const token = (await Preferences.get({ key: "token" })).value;
 
-    if (token && token !== "undefined") {
+    if (currentProfile) {
       dispatch(fetchCollectionProtected({ id }))
         .then((res) => {
           checkResult(
@@ -524,6 +525,10 @@ const FollowBtn=()=>     {return!role ? (
             />
            
         </IonButtons>
+        {canUserEdit &&<div slot="end"><IonImg
+                 onClick={() => router.push(Paths.editCollection.createRoute(id))}
+                  src={edit} className=" rounded-full p-2 btn"/>
+            </div>}
       </IonToolbar>
     </IonHeader>
     <div className="">
@@ -534,10 +539,10 @@ const FollowBtn=()=>     {return!role ? (
             <div className="flex items-center justify-between px-4 gap-2">
               <div>
                 <IonCardTitle className="ion-text-wrap lora-medium">{collection?.title}</IonCardTitle></div>
-                 {canUserEdit &&<div><IonImg
+                 {/* {canUserEdit &&<div><IonImg
                  onClick={() => router.push(Paths.editCollection.createRoute(id))}
                   src={edit} className="bg-blueSea min-w-12 max-h-12 rounded-full p-2 btn"/>
-            </div>}
+            </div>} */}
            </div>
           </IonCardHeader>
           <div className="mx-auto px-6 ">
@@ -548,7 +553,11 @@ const FollowBtn=()=>     {return!role ? (
             <div className="my-4 p-4 flex flex-row gap-4">
       <FollowBtn/>       <SaveBtn/><ArchiveBtn/>
       </div>
-      
+      <div onClick={()=>{
+        router.push(Paths.addToCollection.createRoute(collection.id))
+      }}className="p-4 w-[100%] text-center shadow-sm border border-1 border-soft my-4 rounded-full">
+                  <h5 className="mx-auto">Add to Collection</h5>
+      </div>
       <CollectionTabs tab={tab} setTab={setTab} pages={<PageTab collections={collections}/>}
                       members={<div/>}
                       about={<div/>}
@@ -556,13 +565,13 @@ const FollowBtn=()=>     {return!role ? (
    
             <div className="ion-margin-top w-[100%] mx-auto py-4 flex items-center justify-around flex gap-2">
    
-              {canUserAdd && (
+              {/* {canUserAdd && (
              
                 <div onClick={() => router.push(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full w-[2.9rem] p-1">
                 <IonImg src={add}/>
                 </div>
             
-              )}
+              )} */}
          
               
             </div>
@@ -600,11 +609,7 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
     }),
   };
 
-//   return (<div className="bg-cream">
-//   {tab === "pages" && pages}
-//   {tab === "members" && members}
-//   {tab === "about" && about}
-// </div>)
+
   return (
     <div className="sm:pt-12 bg-cream">
       
@@ -676,7 +681,7 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
 
 const PageTab = ({ collections }) => {
   const pagesInView = useSelector(state => state.pages.pagesInView);
-
+console.log("FREdef",pagesInView)
   return (
     <>
       <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4">
