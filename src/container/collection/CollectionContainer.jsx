@@ -22,6 +22,7 @@ import {
  
 } from "@ionic/react";
 import add from "../../images/icons/add_circle.svg"
+import archive from "../../images/icons/archive.svg"
 import edit from "../../images/icons/edit.svg"
 import { useDispatch, useSelector } from "react-redux";
 
@@ -330,7 +331,7 @@ const getCol = async (id) => {
 
   
        
-  const onBookmark = (type) => {
+  const handleBookmark = (type) => {
     if (!currentProfile) {
       setError("Please sign in");
       return;
@@ -338,9 +339,9 @@ const getCol = async (id) => {
 
     setBookmarkLoading(true);
 
-    if (type === "home") {
-      if (!isBookmarked) {
 
+      if (!isBookmarked) {
+        // console.log()
         setIsBookmarked(true)
         if (collection && homeCol) {
           let params = { id: homeCol.id, list: [collection.id], profile: currentProfile };
@@ -370,8 +371,10 @@ const getCol = async (id) => {
           });
         });
       }
-    } else if (type === "archive") {
-      if (!isArchived) {
+    }
+  
+  const handleArchive=()=>{
+     if (!isArchived) {
         if (collection && archiveCol) {
   
           setIsArchived(true)
@@ -399,9 +402,7 @@ const getCol = async (id) => {
             setBookmarkLoading(false);
           });
         });
-      }
-    }
-  };
+  }}
   const getContent=()=>{
           
         setHasMore(true)
@@ -502,7 +503,39 @@ const getCol = async (id) => {
       </ErrorBoundary>
     );
   }
-
+const FollowBtn=()=>     {return!role ? (
+                <div onClick={handleFollow} className="btn flex-1 bg-transparent rounded-full border-2 px-4 px-2 border-emerald-300">
+                <IonText  fill="outline" >
+                  Join Community
+                </IonText>
+                </div>
+              ) : (
+                <div
+                onClick={deleteFollow}
+                className="btn rounded-full flex-1 bg-transparent  border-3 border-blueSea">
+                <IonText fill="solid" >
+               Following
+                </IonText>
+                </div>
+              )}
+    const SaveBtn=()=> {return<div
+              className="p-2"
+                onClick={() => handleBookmark()}
+                color={isBookmarked? "warning" : "medium"}
+                disabled={bookmarkLoading}
+              >
+                <img className="w-[2.8em] h-[2.8em]" src={isBookmarked ? bookmarkFill : bookmarkOutline} />
+                {bookmarkLoading && <IonSpinner name="dots" />}
+              </div>}
+      const ArchiveBtn=()=> {return<div
+              className={`${isArchived?"border border-soft border-2 bg-soft rounded-full w-[3rem] h-[3rem] p-2":"bg-blueSea w-[3rem] rounded-full h-[3rem] p-2 my-auto"}`}
+                onClick={() => handleArchive()}
+                color={isArchived ? "warning" : "medium"}
+                disabled={bookmarkLoading}
+              >
+                <img className="w-[2em] h-[2em] pt-1 mx-auto" src={archive} />
+                {bookmarkLoading && <IonSpinner name="dots" />}
+              </div>}
   // Main content UI
   return (
          <ErrorBoundary>
@@ -512,29 +545,29 @@ const getCol = async (id) => {
 
 
   <IonContent style={{"--background":"#f4f4e0"}} scrollY={true} fullscreen className="pb-24 pt-12">
-    <div className="pt-24">
-          {/* <IonHeader mode="ios"> */}
-      {/* <IonToolbar mode="ios"> */}
+    <IonHeader>
+      <IonToolbar>
+
         <IonButtons slot="start">
-          {isNative ? (
+          
             <IonBackButton
             mode="ios"
               defaultHref={Paths.discovery}
               onClick={handleBack}
             />
-           ) : null} 
+           
         </IonButtons>
-        {/* <IonTitle>{collection?.title}</IonTitle> */}
-      {/* </IonToolbar> */}
-    {/* </IonHeader> */}
-    {/* <div className="sm:max-w-[60em] bg-cream mx-auto "> */}
+      </IonToolbar>
+    </IonHeader>
+    <div className="">
+        
     <div className="pt-8">
  {/* <IonCard style={{"--background":"transparent",maxWidth:"60em",margin:"auto"}}className=""> */}
           <IonCardHeader className="mx-auto ">
             <div className="flex items-center justify-between px-4 gap-2">
               <div>
                 {/* {collection.profile && <ProfileCircle profile={collection.profile} color="emerald-700" />} */}
-              <IonCardTitle className="ion-text-wrap">{collection?.title}</IonCardTitle></div>
+              <IonCardTitle className="ion-text-wrap lora-medium">{collection?.title}</IonCardTitle></div>
                  {canUserEdit &&<div><IonImg
                  onClick={() => router.push(Paths.editCollection.createRoute(id))}
                   src={edit} className="bg-blueSea min-w-12 max-h-12 rounded-full p-2 btn"/>
@@ -546,23 +579,12 @@ const getCol = async (id) => {
             <IonText color="medium w-full bg-emerald-100 min-h-6 bg-red-200">
               <h6>{collection.purpose}</h6>
             </IonText>
-
-            <div className="ion-margin-top w-[90%] mx-auto py-4 flex items-center justify-around flex gap-2">
-              {!role ? (
-                <div onClick={handleFollow} className="btn bg-transparent rounded-full border-2 px-4 px-2 border-emerald-300">
-                <IonText  fill="outline" >
-                  Follow
-                </IonText>
-                </div>
-              ) : (
-                <div
-                onClick={deleteFollow}
-                className="btn rounded-full bg-transparent  border-3 border-blueSea">
-                <IonText fill="solid" >
-                  {role.role}
-                </IonText>
-                </div>
-              )}
+            <div className="my-4 p-4 flex flex-row gap-4">
+      <FollowBtn/>       <SaveBtn/><ArchiveBtn/>
+      </div>
+   
+            <div className="ion-margin-top w-[100%] mx-auto py-4 flex items-center justify-around flex gap-2">
+   
               {canUserAdd && (
              
                 <div onClick={() => router.push(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full w-[2.9rem] p-1">
@@ -570,15 +592,7 @@ const getCol = async (id) => {
                 </div>
             
               )}
-              <div
-              className=""
-                onClick={() => onBookmark("archive")}
-                color={isArchived ? "warning" : "medium"}
-                disabled={bookmarkLoading}
-              >
-                <img className="w-[3em] h-[3em]" src={isArchived ? bookmarkFill : bookmarkOutline} />
-                {bookmarkLoading && <IonSpinner name="dots" />}
-              </div>
+         
               
             </div>
           </IonCardContent>
