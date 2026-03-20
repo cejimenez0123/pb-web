@@ -424,50 +424,39 @@ const handleGlobal=()=>{ setIsGlobal(!isGlobal)}
 
 return<ErrorBoundary>
 
-                    <div className='flex mt-4  bg-cream h-[100%] pt-16  flex-row justify-between'>
+                    <div className='flex mt-4  bg-cream h-[100%] pt-8 flex-row justify-between'>
                         
-      {/* <div className='px-4 flex w-[100%] flex-row justify-between'>
-      <IonImg
-  onClick={() => {
-    // Prevent double push
-    if (router.routeInfo?.pathname !== Paths.editProfile) {
-      router.push(Paths.editProfile, "forward");
-    }
-  }}
-  className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2"
-  src={settings}
-/> */}
-                            {/* <img src={calendar}  className=''  style={{
-    filter:
-      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
-  }}
-onClick={()=>{
-      sendGAEvent("navigation_click", {
-      destination: "calendar",
-      source: "discovery_header",
-    }); */}
-{/* <img
-  src={calendar}
-  className=''
-  style={{ filter: "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)" }}
-  onClick={() => {
-    sendGAEvent("navigation_click", {
-      destination: "calendar",
-      source: "discovery_header",
-    });
-    if (router.routeInfo?.pathname !== Paths.calendar()) {
-      router.push(Paths.calendar(), "forward");
-    }
-  }}
-/>
-</div> */}
-  {/* router.push(Paths.calendar())}}
 
-          /> */}
           
                   
                     </div>
-  <div >
+                    <div className='mx-auto'>
+                      <div className="flex flex-row mx-auto flex-wrap justify-center my-4 md:justify-start gap-4">
+        <ButtonWrapper
+          onClick={ClickWriteAStory}
+          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
+        >
+          <IonText className='text-[1.2em]'>Write Something</IonText>
+        </ButtonWrapper>
+        <ButtonWrapper
+          onClick={ClickCreateACollection}
+          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
+        >
+          <IonText className="text-white text-[1.2em]">Create Collection</IonText>
+        </ButtonWrapper>
+      </div>
+</div>
+      {/* Row 2: Join a Workshop */}
+      <div className="flex justify-center md:justify-start w-full">
+        <ButtonWrapper
+          onClick={() => router.push(Paths.workshop.reader())}
+          className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
+        >
+          <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
+        </ButtonWrapper>
+      </div>
+
+  <div  className='mt-12 mb-4'>
 <div className="relative flex flex-col justify-around mx-auto mt-2 max-w-[60rem] rounded-lg gap-4">
 
     <div>
@@ -525,31 +514,7 @@ onClick={()=>{
     <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4  md:items-start gap-4 w-full md:w-2/3  ">
 
       {/* Row 1: Write a Story + Create Collection */}
-      <div className="flex flex-row mx-auto flex-wrap sm:justify-center md:justify-start gap-4">
-        <ButtonWrapper
-          onClick={ClickWriteAStory}
-          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
-        >
-          <IonText className='text-[1.2em]'>Write a Story</IonText>
-        </ButtonWrapper>
-        <ButtonWrapper
-          onClick={ClickCreateACollection}
-          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
-        >
-          <IonText className="text-white text-[1.2em]">Create Collection</IonText>
-        </ButtonWrapper>
-      </div>
-
-      {/* Row 2: Join a Workshop */}
-      <div className="flex justify-center md:justify-start w-full">
-        <ButtonWrapper
-          onClick={() => router.push(Paths.workshop.reader())}
-          className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
-        >
-          <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
-        </ButtonWrapper>
-      </div>
-
+    
 
 
     </div>

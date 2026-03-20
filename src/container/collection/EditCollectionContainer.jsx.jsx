@@ -61,7 +61,7 @@ const [canUserEdit,setCanUserEdit]=useState(false)
   const [loading, setLoading] = useState(true);
    const [isPrivate, setIsPrivate] = useState(true)
 // const dialog = useSelector(state=>state.users.dialog)
-const {dialog,openDialog,closeDialog}=useDialog()
+const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
 
   useEffect(() => {
     async function loadData() {
@@ -217,9 +217,9 @@ if (col.childCollections) {
     dia.isOpen = true;
     dia.agree = () => {
       dispatch(deleteCollection(params));
-          closeDialog()
+        
       router.push(Paths.myProfile);
- 
+      resetDialog()
     };
     dia.agreeText = "Delete";
     dia.onClose = () => closeDialog()

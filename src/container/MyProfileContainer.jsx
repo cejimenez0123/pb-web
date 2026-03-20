@@ -51,7 +51,7 @@ function MyProfileContainer({ presentingElement }) {
   const [tab, setTab] = useState("page");
   const router = useIonRouter()
   const dispatch = useDispatch();
-  const [locationName, setLocationName] = useState(null);
+
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const stories = useSelector(state => state.pages.pagesInView);
   // const dialog = useSelector(state => state.users.dialog);

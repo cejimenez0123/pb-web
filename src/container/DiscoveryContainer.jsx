@@ -167,14 +167,14 @@ export default DiscoveryContainer;
       width: "100vw",
     }),
   };
-
+console.log(currentProfile.profileToCollections)
 
    return <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} scrollY={true}>
 {/*    
            <div className=' flex flex-row flex-end p-4 max-w-[100vw]'>
 <div className='w-[100%] pt-4'/> */}
          <div className='flex mt-4  pt-16 px-4 flex-row justify-between'>
-          <img onClick={()=>{
+          {/* <img onClick={()=>{
       sendGAEvent("navigation_click", {
       destination: "calendar",
       source: "discovery_header",
@@ -196,7 +196,7 @@ export default DiscoveryContainer;
   }}
 
 
-          />
+          /> */}
                     </div>
     
     <div className=" sm:pt-12 bg-cream">
@@ -253,7 +253,7 @@ export default DiscoveryContainer;
           </button>}
         </div>
       </div>
-      <div className='pt-12 bg-cream'>
+      <div className='bg-cream'>
         <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
           <motion.div
             key={tab}

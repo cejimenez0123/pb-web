@@ -187,11 +187,12 @@ function DiscoveryButton(){
 const router = useIonRouter()
 
 return (
-  <div className="flex flex-col">
+  <div className="flex flex-col"
+     onClick={()=>router.push(Paths.discovery)}>
     <IonImg
       src={library}
       style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-      onClick={()=>router.push(Paths.discovery)}
+   
     />
     <h6 className="text-white text-xs">Discovery</h6>
   </div>
@@ -205,11 +206,11 @@ function SearchButton(){
 const router = useIonRouter()
 
 return (
-  <div className="flex flex-col">
+  <div     onClick={()=>router.push("/search")} className="flex flex-col">
     <IonImg
       src={search}
       style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-      onClick={()=>router.push("/search")}
+  
     />
     <h6 className="text-white text-xs">Search</h6>
   </div>
@@ -281,14 +282,14 @@ const router = useIonRouter()
 const dispatch = useDispatch()
 
 return (
-  <div className="flex flex-col">
+  <div className="flex flex-col"       onClick={()=>{
+        dispatch(setPageInView({page:null}))
+        router.push(Paths.workshop.reader())
+      }}>
     <IonImg
       src={hammer}
       style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-      onClick={()=>{
-        dispatch(setPageInView({page:null}))
-        router.push(Paths.workshop.reader())
-      }}
+
     />
     <h6 className="text-white text-xs">Workshop</h6>
   </div>
@@ -304,13 +305,13 @@ const router = useIonRouter()
 
 const handle =()=>currentProfile?router.push(Paths.myProfile,"forward"):router.push(Paths.login(),"forward")
 return (
-  <div className="flex flex-col">
+  <div className="flex flex-col "   onClick={handle
+          }
+        >
 
   
         <IonImg
-        onClick={handle
-          }
-        
+     
           // className="object-fit max-h-10"
                 style={{width:"3em",height:"3em",filter:"invert(100%)"}}
           src={person}
@@ -477,23 +478,22 @@ function CreateButton() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
+const {currentProfile }= useSelector(state=>state.users)
   const handleNavigate = (type) => {
     setOpen(false);
 
     // You can customize routing per type
-    dispatch(setHtmlContent({ html: "" }));
-    dispatch(setEditingPage({ page: null }));
+    
 
     switch (type) {
       case "write":
-        router.push(Paths.editor.story);
+       ClickWriteAStory()
         break;
       case "image":
-        router.push(Paths.editor.image);
+        router.push(Paths.editor.image,"forward");
         break;
       case "link":
-        router.push(Paths.editor.link);
+        router.push(Paths.editor.link,"forward");
         break;
       case "collection":{
      openDialog({
@@ -507,7 +507,28 @@ function CreateButton() {
         break;
     }
   };
-
+const ClickWriteAStory = debounce(() => {
+    if (currentProfile?.id) {
+      sendGAEvent("Create", "Write a Story", "Click Write Story");
+      dispatch(createStory({
+        profileId: currentProfile.id,
+        privacy: true,
+        type: PageType.text,
+        title: "Unititled",
+        commentable: true
+      })).then(res => checkResult(res, payload => {
+        if (payload.story) {
+          dispatch(setEditingPage({ page: payload.story }));
+          dispatch(setPageInView({ page: payload.story }));
+        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'push');
+        }else{
+          windowl.alert("COULD NOT CREATE STORY")
+        }
+      },err=>{
+        setErrorLocal(err.message)
+      }));
+    }
+  }, 5);
   return (
     <div className="relative flex flex-col items-center" ref={dropdownRef}>
       
@@ -525,39 +546,15 @@ function CreateButton() {
           ))}
         </div>
       )}
-
+<div     onClick={() => setOpen((prev) => !prev)}>
       {/* Button */}
       <IonImg
         src={addCircle}
         style={{ width: "3em", height: "3em", filter: "invert(100%)" }}
-        onClick={() => setOpen((prev) => !prev)}
+    
       />
 
       <h6 className="text-white text-xs">Create</h6>
-    </div>
+    </div></div>
   );
 }
-
-// export default CreateButton;
-// function CreateButton(){
-
-// const router = useIonRouter()
-// const dispatch = useDispatch()
-
-// return (
-//   <div className="flex flex-col">
-//     <IonImg
-//       src={addCircle}
-//       style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-//       onClick={()=>{
-//         dispatch(setHtmlContent({html:""}))
-//         dispatch(setEditingPage({page:null}))
-//         router.push(Paths.editor.story)
-//       }}
-//     />
-//     <h6 className="text-white text-xs">Create</h6>
-//   </div>
-// )
-
-// }
-

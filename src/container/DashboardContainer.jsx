@@ -80,6 +80,55 @@ const openYourWorkshops=()=>{
     )})
   
 }
+const openCollections=()=>{
+ openDialog({
+    title: null,
+  scrollY: true,
+  breakpoint: 1,
+
+
+    disagree:()=>resetDialog(),
+    text: (<div className=''>
+      <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Collections</h4>
+        <IonList style={{backgroundColor:"#f4f4e0"}}>
+          <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
+        {currentProfile.collections.map(story=>{
+          return<li className=' my-2 bg-cream' onClick={()=>{
+            router.push(Paths.collection.createRoute(story.id))
+            resetDialog()
+          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title}</h4></div></li>
+        })}
+        </div>
+        </IonList>
+
+      
+    </div>
+    )})}
+    const openCommunities=()=>{
+      const communities = currentProfile.collections.filter(col=>col.type=="library")
+ openDialog({
+    title: null,
+  scrollY: true,
+  breakpoint: 1,
+
+
+    disagree:()=>resetDialog(),
+    text: (<div className=''>
+      <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Collections</h4>
+        <IonList style={{backgroundColor:"#f4f4e0"}}>
+          <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
+        {communities.map(story=>{
+          return<li className=' my-2 bg-cream' onClick={()=>{
+            router.push(Paths.collection.createRoute(story.id))
+            resetDialog()
+          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title}</h4></div></li>
+        })}
+        </div>
+        </IonList>
+
+      
+    </div>
+    )})}
 const openPages=()=>{
    openDialog({
     title: null,
@@ -159,22 +208,32 @@ function WorkshopItem({workshop}){
   <h6 className='text-[1em]'>{story.status}</h6>
   </div></div>
     }
+    let saves = [...currentProfile.profileToCollections[1].collection.childCollections.map(col=>col.childCollection),...currentProfile.profileToCollections[1].collection.storyIdList.map(str=>str.story)].slice(0,3)
   return (
         <ErrorBoundary>
-{/* <IonContent fullscreen> */}
 
           <div className='bg-cream h-[100%] p-4'>
 <div className='text-left'>
             <div className=' '>
-              <h4 className='text-xl lora-medium'>Saves</h4>
+              <h4 className='text-xl lora-medium pb-4'>Saves</h4>
+              <div className='flex flex-col gap-4'>
+                {saves.map(item=>{
+                  
+                  return<div onClick={()=>item.data?router.push(Paths.page.createRoute(item.id),"forward"):router.push(Paths.collection.createRoute(item.id),"forward")}className='border-1 border border-soft rounded-xl p-4'><div className='flex flex-row gap-4 '><h6>{item.type} ·</h6>
+                  <h5 className='text-[1.2em]'>{item.title}</h5></div></div>
+                })}
+              </div>
             </div>
             <div>
               <h4 className='text-xl lora-medium py-4'>Your Spaces</h4>
               <div className='flex flex-row gap-4 overflow-scroll'>
               <div  onClick={()=>openPages()}className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute top-2 left-2 '>Pages</div></div>
-                 <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Collections</div></div>
+                 <div
+                 onClick={()=>openCollections()}
+                 className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Collections</div></div>
               <div onClick={()=>router.push(Paths.collection.createRoute(currentProfile.profileToCollections[0].collectionId))}className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Archive</div></div>
-              <div className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute top-2 left-2 '>Communites</div></div>
+              <div  onClick={()=>openCommunities()}className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'>
+                <div className='absolute top-2 left-2 '>Communites</div></div>
               </div>
             </div>
             <div className='flex flex-col justify-between px-4 mt-8'>
