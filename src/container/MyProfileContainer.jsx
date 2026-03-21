@@ -284,10 +284,11 @@ useEffect(() => {
 
   if (!currentProfile) {
     return (
+      <IonContent>
         <div>
         <IonSpinner />
         </div>
-        
+        </IonContent>
     );
   }
 return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}><ErrorBoundary>
