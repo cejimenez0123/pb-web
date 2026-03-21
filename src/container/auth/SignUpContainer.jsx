@@ -11,8 +11,9 @@ import {
   IonCard,
   IonCardContent,
   useIonRouter,
+  IonContent,
 } from '@ionic/react';
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture } from "../../actions/ProfileActions";
 import { signUp } from "../../actions/UserActions";
@@ -39,12 +40,15 @@ export default function SignUpContainer(props) {
   const [isPrivate, setIsPrivate] = useState(false);
   const [identityToken,setIdentityToken]=useState(null)
   const [email, setEmail] = useState("");
-  const [searchParams] =router.routeInfo.search
   const router = useIonRouter()
+const [searchParams] = router.routeInfo.search
+
   const dispatch = useDispatch();
-  Preferences.get({key:"idToken"}).then(token=>{
-    setIdentityToken(token.value)
-   })
+useEffect(() => {
+  Preferences.get({ key: "idToken" }).then(token => {
+    setIdentityToken(token.value);
+  });
+}, []);
   const { setError, setSuccess, setSeo, seo } = useContext(Context);
 
   useEffect(() => {
@@ -97,11 +101,12 @@ reader.readAsDataURL(file);
 
 
 useEffect(() => {
-  if (selectedImage?.startsWith('blob:')) {
-  URL.revokeObjectURL(selectedImage);
-}
-  
-}, []);
+  return () => {
+    if (pictureUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(pictureUrl);
+    }
+  };
+}, [pictureUrl]);
 
 
 
@@ -162,33 +167,24 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
   
   };
   
-  const ProfilePicture=({image})=>{
-    return image? (
-
+const ProfilePicture = ({ image }) => (
   <IonImg
-    src={pictureUrl}
+    src={image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"}
     alt="Profile preview"
     style={{ width: '150px', height: '150px', borderRadius: '50%' }}
   />
-
-
-):(<img src={"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"}
-
-    alt="Profile preview"
-    style={{
-      width: '150px',
-      height: '150px',
-      objectFit: 'cover',
-      borderRadius: '50%',
-    }}/>)}
+);
 
 
   
-  const handlePrivate=debounce(()=>{
-  setIsPrivate(!isPrivate)
-  },100)
+const handlePrivate = useCallback(
+  debounce(() => {
+    setIsPrivate(prev => !prev);
+  }, 100),
+  []
+);
   return (
-    
+    <IonContent>
 <div>
 
         <IonHeader className=" bg-opacity-80 rounded-lg max-w-[96%] md:max-w-[42em] md:px-12 mx-auto">
@@ -218,10 +214,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
        
       </div>
          
-             {/* <> */}
-               {/* <IonItem className="input rounded-full bg-transparent border-emerald-200 border-2  mt-4 flex items-center"> */}
-               
-                   <IonInput
+          <IonInput
                 label='Password'
                 labelPlacement='stacked'
                 type='password'
@@ -257,7 +250,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
                 )}
               {/* </>} */}
             {/* )} */}
-            <IonItem
+            <div
   lines="none"
   className="w-full mt-8 ion-align-items-center"
 >
@@ -288,7 +281,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
             </div>
           </IonItem>
   </div>
-</IonItem>
+</div>
       <div className="mt-6">
             <IonLabel className="text-xl text-emerald-800 font-medium mb-2 block">
               Add a Profile Picture
@@ -299,7 +292,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
               className="block file-input mx-auto my-4 text-emerald-700"
               onChange={(e)=>handleProfilePicture(e)}
             />
-            <ProfilePicture key={pictureUrl} image={pictureUrl} />
+       <ProfilePicture image={pictureUrl} />
 
 
 
@@ -346,6 +339,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
           </IonCardContent>
         </IonCard>
       </div>
+      </IonContent>
   );
 }
 
