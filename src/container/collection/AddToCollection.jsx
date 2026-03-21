@@ -136,11 +136,11 @@ const filteredSortedStories = useMemo(() => {
   }, []);
 
   useEffect(() => {
-    if (token) {
-      dispatch(getMyCollections({ profile, token }));
-      dispatch(getMyStories({ profile, token }));
-    }
-  }, [token]);
+  
+      dispatch(getMyCollections());
+      dispatch(getMyStories());
+    
+  }, [currentProfile]);
 
   useLayoutEffect(() => {
     if (profile) {
@@ -197,7 +197,8 @@ const filteredSortedStories = useMemo(() => {
 
   const storyList = () => {
     return (
-      <IonList>
+      <IonList    style={{ "--background": "#f4f4e0" }}>
+        <div className="flex gap-4 flex-col bg-cream">
         {filteredSortedStories
           .filter((story) => story)
           .filter(
@@ -212,13 +213,9 @@ const filteredSortedStories = useMemo(() => {
               colInView?.storyIdList?.some((sj) => sj?.story?.id === story.id);
 
             return (
-              <IonItem
-                key={i}
-               lines="none"
-              
-                className="rounded-xl my-2  pb-2 "
-              >
-                <div onClick={()=>{router.push(Paths.page.createRoute(story.id))}} className="flex flex-row py-2 border-b border-emerald-600 justify-between w-[100%]">
+     
+                <div     clonClick={()=>{router.push(Paths.page.createRoute(story.id))}} 
+                className="flex flex-row py-2 bg-cream border border-1 rounded-full px-4 border-emerald-600 justify-between w-[100%]">
   
                 <IonLabel slot="start" className="text-emerald-800 my-auto truncate max-w-[70%]  font-medium
 text-[1rem]">
@@ -240,9 +237,10 @@ text-[1rem]">
                   />
                 </div>
                 </div>
-              </IonItem>
+            
             );
           })}
+          </div>
       </IonList>
     );
   };
@@ -260,10 +258,11 @@ text-[1rem]">
 
     return (
       <IonList>
+           <div className="flex gap-4 flex-col bg-cream">
         {filteredSortedCollections
           .filter((col) => col.title.toLowerCase().includes(search.toLowerCase()))
           .map((col) => {
-            if (col.id === colInView?.id) return null;
+            if (col.id === colInView?.id) return null; 
             const addedToCollection =
               newCollection.includes(col) ||
               colInView?.childCollections?.some(
@@ -271,17 +270,13 @@ text-[1rem]">
               );
 
             return (
-              <IonItem
-  key={col.id}
-  lines="none"
- 
-                className="rounded-xl my-2 border-b border-emerald-600 pb-2 "
-              >
-                <div className="flex flex-row py-2 my-auto justify-between w-[100%]">
   
-                <IonLabel slot="start" onClick={()=>{router.push(Paths.collection.createRoute(col.id))}}className="text-emerald-800  truncate w-[100%]  font-medium
+
+                <div className="flex flex-row border-1 border-soft border px-4 rounded-full  py-2 justify-between w-[100%]">
+  
+                <IonLabel slot="start" onClick={()=>{router.push(Paths.collection.createRoute(col.id))}}className="text-emerald-800  my-auto truncate w-[100%]  font-medium
 text-[1rem]">
-    {col.title?.trim() || "Untitled"}
+    {col?.title?.trim() || "Untitled"}
   </IonLabel>
 
   <div
@@ -299,21 +294,18 @@ text-[1rem]">
       className="w-[2rem] p-2  h-[2rem]"
     />
     </div>
-  {/*  */}
-  {/* </div>
-  </div> */}
+
   </div>
-</IonItem>)
-// <IonItem
-             
-          
-          })}
+
+)})}
+</div>
       </IonList>
     );
   };
 
   if (!colInView) {
     return (
+      <IonContent    style={{ "--background": "#f4f4e0" }}>
 <div>
           {pending ? (
             <>
@@ -344,12 +336,13 @@ text-[1rem]">
             </div>
           )}
       </div>
+      </IonContent>
     );
   }
 
   return (
     <ErrorBoundary>
-        <IonContent fullscreen={true} className="ion-padding">
+        <IonContent fullscreen={true}    style={{ "--background": "#f4f4e0" }} className="ion-padding">
               <IonHeader translucent>
           <IonToolbar>
         <IonButtons slot="start">
