@@ -114,7 +114,7 @@ setError("User Not Found. Apply Below")
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
                
-           
+                    router.push(Paths.home(),"forward")
                     setPending(false)
                 },err=>{
 
