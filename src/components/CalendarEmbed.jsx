@@ -112,7 +112,7 @@ sendGAEvent("search", {
       storyRepo.fetchEvents({days:28}).then(res=>{
         
         let events = res.events.flatMap(event=>event.events)
-  console.log(events[0])
+
       const eventList = events.filter(event => {
         const today = new Date();
         const threeMonthsLater = new Date();
@@ -368,7 +368,7 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
 <HorizontalEventList events={solEvents} handleDialogOpen={handleDialogOpen} sendGAEvent={sendGAEvent} isPhone={isPhone} areas={areas} calendar={calendar}  />
    </div> }
   
-       <IonList className='flex sm:max-w-[50em] px-2 mx-auto flex-col'>
+       <IonList         style={{ "--background": "#f4f4e0" }} className='flex bg-cream sm:max-w-[50em] px-2 mx-auto flex-col'>
              <IonText className="font-bold text-[1.2rem] text-soft" >NYC CALENDAR</IonText>
                 
                 {events&&events.length?events.map((event,i)=>{
@@ -486,8 +486,9 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
 
   return (
     <IonList
+            style={{ "--background": "#f4f4e0" }}
       className="
-        flex flex-row overflow-x-auto px-2 space-x-4 py-2 scrollbar-hide
+        flex flex-row overflow-x-auto bg-cream px-2 space-x-4 py-2 scrollbar-hide
       "
     >
       {events && events.length
@@ -496,7 +497,9 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
             return (
           
                 <div  
+
                 className="
+                bg-cream
                border-blueSea border-opacity-50 border rounded-[30px]
                  min-w-[16rem] max-w-[18rem]
                 flex-shrink-0 flex-col p-4

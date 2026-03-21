@@ -45,7 +45,7 @@ switch(page.type){
 
    <div 
         
-        className={`ql-editor `} dangerouslySetInnerHTML={{__html:html??page.data}}/>
+        className={`ql-editor `} dangerouslySetInnerHTML={{__html:html??`<div>${page.data}</div>`}}/>
      
   
   ) }

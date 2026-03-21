@@ -39,7 +39,7 @@ export default function CalendarContainer(){
   
   },[])
   return (
-    <IonContent fullscreen={true} scrollY={true} className="">
+    <IonContent f        style={{ "--background": "#f4f4e0" }} ullscreen={true} scrollY={true} className="">
     <div className="mx-auto  m-4 pt-14   text-center">
 <div className=" w-[90%] sm:max-w-[30rem] mx-auto">
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>

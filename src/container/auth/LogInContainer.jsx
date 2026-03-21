@@ -27,16 +27,7 @@ export default function LogInContainer() {
         setSeo(soo)
        
    },[])
-//    useEffect(()=>{
- 
-//     const checkAuth= async()=>{
-//        const token = (await Preferences.get({key:"token"})).value
-//        token&& currentProfile &&currentProfile.id&&router.push(Paths.myProfile)
 
-//     }
-//     checkAuth()
- 
-//    },[currentProfile])
 
     return (
         <IonContent fullscreen={true}>
@@ -86,7 +77,7 @@ function LogInCard({setLogInError}){
                     if(payload && payload.profile && payload.profile.id){
 
                    
-                    router.push(Paths.myProfile,"root")
+                    router.push(Paths.home,"root")
                      }else{
                         setError("Error with Profile")
                      }

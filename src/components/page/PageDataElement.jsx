@@ -38,7 +38,7 @@ let t=page.data
 
    <div
 
-        className={`ql-editor-${size} `}dangerouslySetInnerHTML={{__html:truncate(t, truncateNumber,{})}}/>
+        className={`ql-editor-${size} px-4 `}dangerouslySetInnerHTML={{__html:truncate(t, truncateNumber,{})}}/>
 
 
   ) }
@@ -46,7 +46,7 @@ let t=page.data
   
     return(image?
     <img
-      style={{maxWidth:"94vw",width:"100%"}}
+    //   style={{maxWidth:"94vw",width:"100%"}}
     className="object-contain max-w-[94vw] sm:max-w-[45em] "
    
     onClick={()=>{
@@ -72,7 +72,8 @@ case PageType.link:{
        )
 }
 default:
-    return(<div        id="page-data-skeleton "className={`skeleton w-[100%] h-[100%] min-h-[20em] max-w-[45em]`}>
+    return(<div        id="page-data-skeleton "
+    className={`skeleton w-[100%] h-[100%] min-h-[20em] max-w-[45em]`}>
   
 </div>)
 }

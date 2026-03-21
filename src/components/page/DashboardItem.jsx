@@ -146,7 +146,7 @@ sendGAEvent("story_review_open", {
   const header = () => {
     return (
       <span
-        className={`flex-row flex justify-between  px-1 rounded-t-lg pt-2 pb-1`}>
+        className={`flex-row flex justify-between  px-2  rounded-t-lg pt-2 pb-2`}>
         <div onClick={()=>router.push(Paths.profile.createRoute(page.author.id))}><ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author} /></div>
         {!isGrid ?
           <h6
@@ -328,7 +328,7 @@ openDialog({
     return isGrid
       ? null
       : (
-         <div className="flex-row w-[100%]  h-16 overflow-clip mx-auto bg-blueSea bg-opacity-30 flex text-white">
+         <div className="flex-row w-[100%] mt-4  h-16 overflow-clip mx-auto bg-blueSea bg-opacity-30 flex text-white">
        <div     onClick={handleApprovalClick} className={`${likeFound ? "bg-emerald-400 text-cream" : "bg-blueSea text-cream bg-opacity-20"} text-center grow w-1/3`}>
             <div
           
@@ -363,7 +363,7 @@ openDialog({
 
   if (!page) {
     return (
-      <span className={ " skeleton"} />
+      <span className={ " skeleton w-[100%] h-[20em]"} />
     );
   }
 
@@ -373,7 +373,7 @@ openDialog({
     <IonCard
      
       className={
-        'mt-3 rounded-lg rounded-b-lg max-w-[94vw] sm:max-w-[45em] mx-auto mx-auto justify-between bg-blueSea bg-opacity-10 flex flex-col '
+        'mt-3 rounded-lg rounded-b-lg w-[100%] sm:max-w-[45em] mx-auto mx-auto justify-between bg-blueSea bg-opacity-10 flex flex-col '
       }
  
     >
@@ -382,12 +382,12 @@ openDialog({
         {bookTitleDiv}
       </IonCardHeader>
 
-      {/* <IonCardContent className=" w-[100%] max-w-[94vw] sm:max-w-[45em]"> */}
+    
         {description(page)}
 
         <PageDataElement isGrid={isGrid} page={page} />
  
-      {/* </IonCardContent> */}
+      
 
   
       {isGrid ? (

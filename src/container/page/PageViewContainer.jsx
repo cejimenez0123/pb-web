@@ -227,8 +227,8 @@ useEffect(() => {
             </div>
           ) : canUserSee ? (
             <div className="w-fit  bg-cream  mx-auto px-4 sm:max-w-[50em]">
-            <div className="my-4">  <PageDiv page={page} /></div>
-             <div className="text-left px-4 bg-cream bg-cream py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
+            <div className="my-4 py-4">  <PageDiv page={page} /></div>
+             <div className="text-left px-4 bg-cream bg-cream mt-8 py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
               <CommentThread page={page} comments={rootComments} />
         
            </div>

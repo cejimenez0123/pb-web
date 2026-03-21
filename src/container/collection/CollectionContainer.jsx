@@ -50,6 +50,7 @@ import useScrollTracking from "../../core/useScrollTracking.jsx";
 import Paths from "../../core/paths.js";
 import checkResult from "../../core/checkResult.js";
 import { setPagesInView } from "../../actions/PageActions.jsx";
+import ProfileCircle from "../../components/profile/ProfileCircle.jsx";
 
 export default function CollectionContainer() {
 
@@ -235,10 +236,12 @@ const getCol = async (id) => {
           checkResult(
             res,
             (payload) => {
-              setLoading(false);
-            soUserCanEdit()
-                  dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
+         
+              soUserCanEdit()
+              dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
               setCanUserSee(true)
+              setLoading(false);
+       
             },
             (err) => {
             
@@ -269,16 +272,16 @@ const getCol = async (id) => {
             res,
             (payload) => {
               if (payload.collection) {
-       
+                soUserCanEdit()
                 dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
                 setCanUserSee(true)
                 setLoading(false);
-                  soUserCanEdit()
+              
               } 
             },
             (err) => {
               if (err.status === 403) {
-                 console.log(err)
+         
                 setError("Access Denied: You do not have permission to view this collection.");
                 setCanUserSee(false);
                 
@@ -291,7 +294,7 @@ const getCol = async (id) => {
           );
         })
         .catch((e) => {
-                  console.log("POPPX",e)
+          
           setError("An unexpected error occurred.");
           setLoading(false);
         });
@@ -470,7 +473,7 @@ const FollowBtn=()=>     {return!role ? (
               </div>}
 
 
-  if (loading) {
+  if (loading||collection.id!=id) {
     return (
       <IonContent>
 <div>
@@ -545,7 +548,7 @@ const FollowBtn=()=>     {return!role ? (
             </div>} */}
            </div>
           </IonCardHeader>
-          <div className="mx-auto px-6 ">
+          {/* <div className="mx-auto px-6 "> */}
         <IonCardContent className="ion-padding">
             <IonText color="medium w-full bg-emerald-100 min-h-6 bg-red-200">
               <h6>{collection.purpose}</h6>
@@ -559,20 +562,13 @@ const FollowBtn=()=>     {return!role ? (
                   <h5 className="mx-auto">Add to Collection</h5>
       </div>
       <CollectionTabs tab={tab} setTab={setTab} pages={<PageTab collections={collections}/>}
-                      members={<div/>}
-                      about={<div/>}
+                      members={<MemberTab collection={collection}/>}
+                      about={<AboutTab collection={collection}/>}
                       />
    
             <div className="ion-margin-top w-[100%] mx-auto py-4 flex items-center justify-around flex gap-2">
    
-              {/* {canUserAdd && (
-             
-                <div onClick={() => router.push(Paths.addToCollection.createRoute(collection.id))} className="bg-emerald-600 rounded-full w-[2.9rem] p-1">
-                <IonImg src={add}/>
-                </div>
-            
-              )} */}
-         
+
               
             </div>
           </IonCardContent>
@@ -581,7 +577,7 @@ const FollowBtn=()=>     {return!role ? (
 
         <ExploreList collection={collection} />
         </div>
-        </div>
+        {/* </div> */}
 </IonContent>
         </ErrorBoundary>
   );
@@ -683,12 +679,12 @@ const PageTab = ({ collections }) => {
   const pagesInView = useSelector(state => state.pages.pagesInView);
 console.log("FREdef",pagesInView)
   return (
-    <>
-      <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4">
-        <h5 className="text-xl text-emerald-800 px-1 pb-2">
+    <div className="py-4">
+      {/* <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4"> */}
+        <h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
           Anthologies
-        </h5>
-
+        </h2>
+      
         {collections && collections.length > 0 && (
           <IonList style={{ backgroundColor: "#f4f4e0" }}>
             <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
@@ -703,7 +699,10 @@ console.log("FREdef",pagesInView)
           </IonList>
         )}
 
-        <div className="sm:w-[50rem] mx-auto">
+        <div className="sm:w-[50rem] w-[100%] mx-auto">
+          <h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
+      Pages
+        </h2>
           <PageList
             items={pagesInView || []}
             isGrid={false}
@@ -712,7 +711,56 @@ console.log("FREdef",pagesInView)
             forFeedback={false} // ✅ FIXED
           />
         </div>
-      </div>
+      {/* </div> */}
+   </div>
+  );
+};
+
+
+const MemberTab = ({ collection }) => {
+
+  return (
+    <>
+     
+        <h5 className="text-[1.2em]  pt-4 lora-bold text-emerald-800 px-1 pb-2">
+         Contributors
+        </h5>
+
+        {collection.roles.length > 0 && (
+          <IonList style={{ backgroundColor: "#f4f4e0" }}>
+            <div className="flex flex-col bg-cream pt-4 min-h-[14rem] overflow-x-scroll">
+              {collection.roles
+          
+                .map((role, i) => (
+               <div className=" max-h-10    w-[100%] border-b border-1 border-soft  border-soft">
+                  <div className="flex flex-row max-h-8  justify-between  w-[100%]">
+                  <div ><ProfileCircle profile={role.profile}/></div><div className="my-auto">{role.role}</div>
+                  </div>
+                </div>
+                ))}
+            </div>
+          </IonList>
+        )}
+
+ 
+     
+    </>
+  );
+};
+
+const AboutTab = ({ collection }) => {
+
+  return (
+    <>
+     
+        <h5 className="text-[1.2em]  pt-4 lora-bold text-emerald-800 px-1 pb-2">
+        Structure
+        </h5>
+
+  
+
+ 
+     
     </>
   );
 };
