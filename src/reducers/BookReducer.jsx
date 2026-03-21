@@ -80,12 +80,12 @@ state.loading = true
     }}})
   
 .addCase(getPublicCollections.fulfilled,(state,{payload})=>{
-    // if(payload.collections && payload.collections.length){
+    if(payload.collections){
         
         state.collections=payload.collections
         state.books = payload.collections.filter(col=>col.storyIdList&&(!col.childCollections||col.childCollections.length>0))
         state.libraries = payload.collections.filter(col=>col.storyIdList.length>0||col.childCollections.length>0)
-    // }
+    }
 })
 .addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
@@ -107,14 +107,14 @@ state.loading = true
    
     state.loading = false
 }).addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
-   
+       if(payload.collections){
    let list = state.collections.filter(col=>col)
   
     const index = list.findIndex(col=>col.id==payload.collection.id)
     if(index>0){
         list[index]=payload.collection
         state.collections = list
-    }
+    }}
 }).addCase(postCollectionRole.fulfilled,(state,{payload})=>{
     if(payload.collection){
 state.collectionInView = payload.collection
@@ -154,8 +154,9 @@ state.collectionInView = payload.collection
     state.loading = false
     state.error = "Error Saving Role"
 }).addCase(getMyCollections.fulfilled,(state,{payload})=>{
+        if(payload.collections){
     let cols = state.collections
-    console.log(payload)
+   
     if( payload.collections){
       let collections =  payload.collections
     
@@ -171,7 +172,7 @@ state.collectionInView = payload.collection
     state.collections =[...list,...filtered]
     state.loading =false
 }
-
+        }
 }).addCase(getMyCollections.pending,)
 .addCase(getMyCollections.rejected,(state,{payload})=>{
 
