@@ -17,6 +17,13 @@ let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
 }
+function isThirdSaturday(date = new Date()) {
+  const day = date.getDay(); // 6 = Saturday
+  const dateOfMonth = date.getDate();
+
+  // Must be Saturday AND between 15–21
+  return day === 6 && dateOfMonth >= 15 && dateOfMonth <= 21;
+}
 export default function LinksContainer(props){
      const {seo,setSeo}=useContext(Context)
      useLayoutEffect(() => {
@@ -30,7 +37,7 @@ export default function LinksContainer(props){
   }))
 }, [])
 
-    
+ const showThirdSaturdayNode = isThirdSaturday();
 
 
     return(<ErrorBoundary>
@@ -44,7 +51,12 @@ export default function LinksContainer(props){
                 <li>  
                       <LinkNode image={pen}
                       name={"Writers Workshop"}
-                      links={[{name:"RSVP Here",url:"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}]}
+                      links={
+                         showThirdSaturdayNode?[{name:"To Be Read Spreadsheet",url:"https://docs.google.com/spreadsheets/d/1bPnD3ufcoBYkttmdZJLEnc2K_662yktJ_tzK2w9ueVM/edit?usp=sharing"},{name:"RSVP Here",url:"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}]:
+                        
+                        [{name:"RSVP Here",url:"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}
+                      
+                      ]}
   
                     title={"March 21st. Writers Workshop"}
                     description={`Join us for our Writers Workshop. We will read Sonia Sanchez and give feedback.`}/>
