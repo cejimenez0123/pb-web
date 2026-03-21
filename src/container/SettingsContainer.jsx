@@ -234,7 +234,7 @@ dispatch(updateProfile({
           <h2 className="text-2xl font-bold text-center text-emerald-700">
             Profile Settings
           </h2>
-          <div  onClick={()=>{dispatch(signOutAction()).then(res=>{router.push(Paths.discovery)})
+          <div  onClick={()=>{dispatch(signOutAction()).then(res=>{router.push(Paths.login())})
 
           }}className="btn btn-error btn-outline w-full">
             <h4>Sign Out</h4>
