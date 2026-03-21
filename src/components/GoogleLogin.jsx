@@ -238,7 +238,7 @@ const router =useIonRouter()
       });
 
       dispatch(logIn({ email: profile.email, uId: profile.id, isNative })).then(res=>{
-        router.push(Paths.myProfile)
+        router.push(Paths.home)
       })
     } catch (err) {
      
