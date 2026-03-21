@@ -140,12 +140,10 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
        <Route exact path={Paths.login()}
                   render={()=> 
              
-        <LoggedRoute 
-        currentProfile={currentProfile}
-        >  <PageWrapper>
+        <PageWrapper>
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
                       </PageWrapper>
-            </LoggedRoute>
+       
 
        }
      />
