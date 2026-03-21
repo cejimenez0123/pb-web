@@ -70,7 +70,7 @@ function StoryItem({ page, isGrid = true, html = null }) {
 
   return (
     <div
-      className="bg-softBlue shadow-md  rounded-xl p-4 flex flex-col cursor-pointer hover:shadow-xl transition-shadow duration-200 min-w-[18rem] max-w-[22rem]"
+      className="bg-softBlue shadow-md mx-4 rounded-xl p-4 flex flex-col cursor-pointer hover:shadow-xl transition-shadow duration-200 min-w-[18rem] max-w-[22rem]"
       onClick={handleClick}
     >
       <h2 className="text-lg font-semibold text-emerald-800 mb-2 truncate">

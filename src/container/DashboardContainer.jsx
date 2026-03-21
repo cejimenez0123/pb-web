@@ -17,6 +17,25 @@ import debounce from '../core/debounce.js';
 import { sendGAEvent } from '../core/ga4.js';
 import { setEditingPage, setPageInView } from '../actions/PageActions.jsx';
 import { useDialog } from '../domain/usecases/useDialog.jsx';
+function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
+  return (
+    <span
+      role={role}
+      tabIndex={tabIndex}
+      onClick={onClick}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className={`rounded-full flex btn items-center justify-center ${className}`}
+      style={style}
+    >
+      {children}
+    </span>
+  );
+}
 function DashboardContainer() {
 
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -208,15 +227,69 @@ function WorkshopItem({workshop}){
   <h6 className='text-[1em]'>{story.status}</h6>
   </div></div>
     }
+
+  const ClickCreateACollection = () => {
+     try {
+    sendGAEvent("create_collection_open", {
+      area: "collections",
+      modal_type: "create_collection",
+      user_id: currentProfile?.id || null, // optional, if you want to track
+    });
+  } catch (e) {
+    console.warn("GA event failed", e);
+  }
+
+openDialog({
+...dialog,
+disagree:null,
+scrollY: false,
+  text: <CreateCollectionForm onClose={resetDialog} />,
+  disagreeText: "Close", // optional button
+  onClose: closeDialog,
+  breakpoint: 1, // if you want a half-sheet style
+});
+
+  };
     let saves = [...currentProfile.profileToCollections[1].collection.childCollections.map(col=>col.childCollection),...currentProfile.profileToCollections[1].collection.storyIdList.map(str=>str.story)].slice(0,3)
   return (
         <ErrorBoundary>
 
-          <div className='bg-cream h-[100%] p-4'>
+          <div className='bg-cream h-[100%]'>
 <div className='text-left'>
             <div className=' '>
-              <h4 className='text-xl lora-medium pb-4'>Saves</h4>
-              <div className='flex flex-col gap-4'>
+                               <div className='flex  bg-cream h-[100%] pt-8 flex-row justify-between'>
+                        
+
+          
+                  
+                    </div>
+                    <div className='mx-auto'>
+                      <div className="flex flex-row mx-auto flex-wrap justify-center my-4 md:justify-start gap-4">
+        <ButtonWrapper
+          onClick={ClickWriteAStory}
+          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
+        >
+          <IonText className='text-[1.2em]'>Write Something</IonText>
+        </ButtonWrapper>
+        <ButtonWrapper
+          onClick={ClickCreateACollection}
+          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
+        >
+          <IonText className="text-white text-[1.2em]">Create Collection</IonText>
+        </ButtonWrapper>
+      </div>
+</div>
+      {/* Row 2: Join a Workshop */}
+      <div className="flex justify-center md:justify-start w-full">
+        <ButtonWrapper
+          onClick={() => router.push(Paths.workshop.reader())}
+          className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
+        >
+          <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
+        </ButtonWrapper>
+      </div>
+              <h4 className='text-xl pt-8 mx-4 lora-medium pb-4'>Saves</h4>
+              <div className='flex mx-4 flex-col gap-4'>
                 {saves.map(item=>{
                   
                   return<div onClick={()=>item.data?router.push(Paths.page.createRoute(item.id),"forward"):router.push(Paths.collection.createRoute(item.id),"forward")}className='border-1 border border-soft rounded-xl p-4'><div className='flex flex-row gap-4 '><h6>{item.type} ·</h6>
@@ -225,8 +298,8 @@ function WorkshopItem({workshop}){
               </div>
             </div>
             <div>
-              <h4 className='text-xl lora-medium py-4'>Your Spaces</h4>
-              <div className='flex flex-row gap-4 overflow-scroll'>
+              <h4 className='text-xl lora-medium mx-4 py-4'>Your Spaces</h4>
+              <div className='flex flex-row px-4 gap-4 overflow-scroll'>
               <div  onClick={()=>openPages()}className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute top-2 left-2 '>Pages</div></div>
                  <div
                  onClick={()=>openCollections()}
@@ -236,14 +309,15 @@ function WorkshopItem({workshop}){
                 <div className='absolute top-2 left-2 '>Communites</div></div>
               </div>
             </div>
-            <div className='flex flex-col justify-between px-4 mt-8'>
-              <div className='flex flex-row justify-between px-4 pb-4 mt-8'><h4 className='text-xl lora-medium'>Workshop</h4><h5 onClick={()=>{openYourWorkshops()}}>Your workshops {"->"} </h5></div>
-              {workshop&&<WorkshopItem workshop={workshop}/>}
+            <div className='flex flex-col justify-between mt-8'>
+              <div className='flex flex-row justify-between px-4 pb-4 mt-8'
+              ><h4 className='text-xl lora-medium'>Workshop</h4><h5 onClick={()=>{openYourWorkshops()}}>Your workshops {"->"} </h5></div>
+              {workshop&&<div className='px-4'><WorkshopItem workshop={workshop}/></div>}
               <div className='border border-solf border p-4 '></div>
             </div>
             <div>
-              <div className='flex flex-row justify-between'><h4 className='text-xl lora-medium '>Recent Pages</h4><h4 className='my-auto' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
-              <div className='flex flex-col gap-4 py-4'>
+              <div className='flex flex-row justify-between'><h4 className='text-xl mx-4 lora-medium  '>Recent Pages</h4><h4 className='my-auto mx-4' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
+              <div className='flex flex-col gap-4 px-4 py-4'>
                 {[...(currentProfile.stories ?? [])]
   .sort((a, b) => a.updated - b.updated)
   .slice(0, 3)

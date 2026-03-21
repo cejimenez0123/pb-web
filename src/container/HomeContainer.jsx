@@ -28,25 +28,7 @@ import isValidUrl from '../core/isValidUrl.js';
 import Enviroment from '../core/Enviroment.js';
 import StoryItem from '../components/page/StoryItem.jsx';
 
-function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
-  return (
-    <span
-      role={role}
-      tabIndex={tabIndex}
-      onClick={onClick}
-      onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      }}
-      className={`rounded-full flex btn items-center justify-center ${className}`}
-      style={style}
-    >
-      {children}
-    </span>
-  );
-}
+
 
   const fetchPrompts = ()=>{
   dispatch(getPrompts()).then(res=>checkResult(res,({prompts})=>{
@@ -286,28 +268,6 @@ function HomeContainer() {
   }, 5);
 
 
-  const ClickCreateACollection = () => {
-     try {
-    sendGAEvent("create_collection_open", {
-      area: "collections",
-      modal_type: "create_collection",
-      user_id: currentProfile?.id || null, // optional, if you want to track
-    });
-  } catch (e) {
-    console.warn("GA event failed", e);
-  }
-
-openDialog({
-...dialog,
-disagree:null,
-scrollY: false,
-  text: <CreateCollectionForm onClose={resetDialog} />,
-  disagreeText: "Close", // optional button
-  onClose: closeDialog,
-  breakpoint: 1, // if you want a half-sheet style
-});
-
-  };
 
   const getFile = async (file) => {
     try {
@@ -415,53 +375,23 @@ const handleGlobal=()=>{ setIsGlobal(!isGlobal)}
 
 return<ErrorBoundary>
 
-                    <div className='flex mt-4  bg-cream h-[100%] pt-8 flex-row justify-between'>
-                        
-
-          
-                  
-                    </div>
-                    <div className='mx-auto'>
-                      <div className="flex flex-row mx-auto flex-wrap justify-center my-4 md:justify-start gap-4">
-        <ButtonWrapper
-          onClick={ClickWriteAStory}
-          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
-        >
-          <IonText className='text-[1.2em]'>Write Something</IonText>
-        </ButtonWrapper>
-        <ButtonWrapper
-          onClick={ClickCreateACollection}
-          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
-        >
-          <IonText className="text-white text-[1.2em]">Create Collection</IonText>
-        </ButtonWrapper>
-      </div>
-</div>
-      {/* Row 2: Join a Workshop */}
-      <div className="flex justify-center md:justify-start w-full">
-        <ButtonWrapper
-          onClick={() => router.push(Paths.workshop.reader())}
-          className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
-        >
-          <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
-        </ButtonWrapper>
-      </div>
+   
 
   <div  className='mt-12 mb-4'>
 <div className="relative flex flex-col justify-around mx-auto mt-2 max-w-[60rem] rounded-lg gap-4">
 
     <div>
-    <h4 className='text-[1rem] px-4 text-emerald-800 font-bold mb-4'>
+    <h4 className='text-[1rem] text-emerald-800 font-bold mb-4'>
       What's happening in your communities?
-    </h4>
-   <IonList style={{backgroundColor:"#f4f4e0"}} ><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden py-4  gap-4 w-full'>
+    </h4><div >
+   <IonList style={{backgroundColor:"#f4f4e0"}} ><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden  w-full'>
      {whatsHappeningList.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):whatsHappeningList.map(story=>
 // 
 
   <StoryItem page={story} isGrid={true}/>
   
 )}
-     </div></IonList>
+     </div></IonList></div>
     </div>
    <span className=''><div className='flex flex-row'>     <h4 className='text-[1rem] px-4 text-emerald-800 font-bold mb-4'>
 
@@ -497,7 +427,7 @@ return<ErrorBoundary>
     </h4>
  
       {/* <IonList> */}
-           <div className='flex-row bg-cream  overflow-scroll flex min-h-[20em] gap-4'>
+           <div className='flex-row bg-cream  px-4 overflow-scroll flex min-h-[20em] gap-4'>
         {filteredPrompts.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):filteredPrompts.map(({story})=><StoryItem page={story} isGrid={true} />)}
       </div>
    {/* </IonList> */}
