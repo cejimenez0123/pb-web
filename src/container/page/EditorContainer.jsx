@@ -41,7 +41,7 @@ function EditorContainer({presentingElement}){
         const [openHashtag,setOpenHashtag]=useState(false)
         const {isSaved,setIsSaved}=useContext(Context)
         const [parameters,setParameters] = useState({isPrivate:true,data:"",title:"",needsFeedback:false,description:"",commentable:true,profile:currentProfile,profileId:currentProfile?currentProfile.id:""})
-            const {openDialog,closeDialog,resetDialog ,dialog}= useDialog()
+        const {openDialog,closeDialog,dialog,resetDialog}=useDialog()
 const hasInitialized = useRef(false);
 
 
@@ -204,7 +204,7 @@ setError(err.message)
  openFeedback(false)} 
   
   }
-className="text-emerald-600 btn shadow-none bg-transparent pt-3 pb-2 ">Publish Publicly</li>:
+className="text-emerald-600 btn shadow-none bg-transparent pt-3 pb-2 ">Share Now</li>:
 <li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
 
   handleChange("isPrivate",true)
@@ -236,14 +236,13 @@ className="text-emerald-600 btn shadow-none bg-transparent pt-3 pb-2 ">Publish P
 
    const openFeedback=(isFeedback)=>{
 
-openDialog({...dialog,disagree:null,agree:null,disagreeText:null,scrollY:false,text:
+openDialog({...dialog,disagree:null,agree:()=>resetDialog(),disagreeText:null,scrollY:false,text:
     <FeedbackDialog  
 page={editPage}
-
 isFeedback={isFeedback}
 handleChange={e=>handleChange("description",e)} 
 handleFeedback={(item)=>{
-  closeDialog()
+  resetDialog()
     const params = { ...item, description:parameters.description, page: item, id: item.id, needsFeedback: true };
         dispatch(updateStory(params)).then(res => {
           checkResult(res, payload => {
@@ -255,8 +254,8 @@ handleFeedback={(item)=>{
 handlePostPublic={()=>{
   console.log("Publishing...")
   handleisPrviate(false)
-  closeDialog()
-  router.push(Paths.page.createRoute(editPage.id),"forward","replace")
+  resetDialog()
+  router.push(Paths.page.createRoute(editPage.id),"forward")
 }}
 handleClose={()=>{
 closeDialog()

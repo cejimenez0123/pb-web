@@ -64,9 +64,7 @@ function App(props) {
   const isPhone = useMediaQuery({ query: '(max-width: 800px)' });
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 
-  //   const isTablet =  useMediaQuery({
-  //   query: '(max-width: 1100px)'
-  // })
+
   const isNative = Capacitor.isNativePlatform()
 
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
@@ -118,8 +116,8 @@ useEffect(() => {
   };
   checkFirstLaunch();
 }, [isNative]);
-const isDesktop = useMediaQuery({ query: '(min-width: 769px)' })
-const isMobileOrTablet = useMediaQuery({ query: '(max-width: 768px)' })
+const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
+const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 
 const showTopNavbar = isDesktop && !isNative
 const showBottomNavbar = isMobileOrTablet || isNative
@@ -193,7 +191,7 @@ const libraries = ["places"];
                   render={()=> 
        <PrivateRoute> <PageWrapper>
         <DiscoveryContainer/>
-            {/* <HomeContainer  currentProfile={currentProfile}/> */}
+         
                       </PageWrapper>
         </PrivateRoute>
 

@@ -17,6 +17,7 @@ import debounce from '../core/debounce.js';
 import { sendGAEvent } from '../core/ga4.js';
 import { setEditingPage, setPageInView } from '../actions/PageActions.jsx';
 import { useDialog } from '../domain/usecases/useDialog.jsx';
+import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -49,7 +50,7 @@ const collections = collectionsRaw
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
   const [results,setResults]=useState([])
   const [workshop,setWorkshop]=useState(null)
-  const {openDialog,closeDialog,resetDialog}=useDialog()
+  const {openDialog,dialog,closeDialog,resetDialog}=useDialog()
   const recommendedCols= useSelector(state => state.books.recommendedCols);
   const stories = useSelector(state => state.pages.pagesInView ?? []);
   const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
@@ -250,7 +251,7 @@ scrollY: false,
 });
 
   };
-    let saves = [...currentProfile.profileToCollections[1].collection.childCollections.map(col=>col.childCollection),...currentProfile.profileToCollections[1].collection.storyIdList.map(str=>str.story)].slice(0,3)
+    let saves = [...currentProfile?.profileToCollections[1]?.collection.childCollections.map(col=>col.childCollection),...currentProfile.profileToCollections[1].collection.storyIdList.map(str=>str.story)].slice(0,3)
   return (
         <ErrorBoundary>
 
@@ -264,7 +265,7 @@ scrollY: false,
                   
                     </div>
                     <div className='mx-auto'>
-                      <div className="flex flex-row mx-auto flex-wrap justify-center my-4 md:justify-start gap-4">
+                      <div className="flex flex-row mx-auto max-w-[40em] flex-wrap my-4 justify-center gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
           className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
@@ -315,7 +316,7 @@ scrollY: false,
               {workshop&&<div className='px-4'><WorkshopItem workshop={workshop}/></div>}
               <div className='border border-solf border p-4 '></div>
             </div>
-            <div>
+            <div  className='w-fit mx-auto '>
               <div className='flex flex-row justify-between'><h4 className='text-xl mx-4 lora-medium  '>Recent Pages</h4><h4 className='my-auto mx-4' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
               <div className='flex flex-col gap-4 px-4 py-4'>
                 {[...(currentProfile.stories ?? [])]

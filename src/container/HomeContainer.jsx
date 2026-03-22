@@ -55,7 +55,8 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
     try {
       const res = await dispatch(getPrompts());
       checkResult(res, ({ prompts }) => {
-        setResults(prev => ({ ...prev, prompts }));
+         let sort = [...prompts].sort((a,b)=>new Date(b.updated)-new Date(a.updated))
+        setResults(prev => ({ prompts:sort,...prev}));
       });
     } catch (err) {
       console.error("Failed fetching prompts:", err);
@@ -82,7 +83,8 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
         global: isGlobal
       }));
       checkResult(res, ({ groups }) => {
-        setResults(prev => ({ ...prev, workshops: groups || [] }));
+         let sort = [...groups].sort((a,b)=>new Date(b.updated)-new Date(a.updated))
+        setResults(prev => ({ ...prev, workshops: sort|| [] }));
       });
     } catch (err) {
       console.error("Failed fetching workshops:", err);
@@ -122,7 +124,6 @@ function HomeContainer() {
   const router = useIonRouter()
   const dispatch = useDispatch();
 
-  // const stories = useSelector(state => state.pages.pagesInView);
   const { seo, setSeo ,setError} = useContext(Context);
   const collections = useSelector(state => state.books.collections);
   const [search, setSearch] = useState("");
@@ -230,19 +231,7 @@ function HomeContainer() {
     return result;
   }, [collections, filterType, search]);
 
-  //   useIonViewWillEnter(() => {
-  // const init = async () => {
-  //   try {
-     
-  //     await getDriveToken();
-  //   } catch (err) {
-  //     console.error("Initialization error:", err);
-  //     // setErrorLocal(err.message);
-  //   }
-  // };
-  // init();
 
-  // },[])
 
   const ClickWriteAStory = debounce(() => {
     if (currentProfile?.id) {
@@ -329,7 +318,7 @@ const openFeedback=(item,isFeedback)=>{
           });
         });
       }}
-      handlePostPublic={() => {}}
+      handlePostPublic={() => {resetDialog()}}
       handleClose={() => setFeedback(null)}
     />})
               dispatch(setPageInView({ page: item }));
@@ -338,7 +327,8 @@ const openFeedback=(item,isFeedback)=>{
 
 useEffect(() => {
   if (stories && stories.length > 0) {
-    setWhatsHappeningList(stories);
+    let sort = [...stories].sort((a,b)=>new Date(b.updated)-new Date(a.updated))
+    setWhatsHappeningList(sort);
   }
 }, [stories]);
 
@@ -385,7 +375,7 @@ return<ErrorBoundary>
       What's happening in your communities?
     </h4><div >
    <IonList style={{backgroundColor:"#f4f4e0"}} ><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden  w-full'>
-     {whatsHappeningList.length==0?[1,2,3].map(t=><div className='skeleton min-w-[20em] min-h-[20em]'/>):whatsHappeningList.map(story=>
+     {whatsHappeningList.length==0?[1,2,3].map(t=><div className='skeleton mx-4 min-w-[20em] min-h-[20em]'/>):whatsHappeningList.map(story=>
 // 
 
   <StoryItem page={story} isGrid={true}/>

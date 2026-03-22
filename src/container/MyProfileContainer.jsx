@@ -63,7 +63,7 @@ function MyProfileContainer({ presentingElement }) {
   const [description, setFeedback] = useState("");
   const [errorLocal, setErrorLocal] = useState(null);
   const [feedbackPage, setFeedbackPage] = useState(null);
- const { openDialog, closeDialog,resetDialog} = useDialog();
+  const {openDialog,closeDialog,dialog,resetDialog}=useDialog()
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -361,7 +361,7 @@ return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#
           });
         });
       }}
-      handlePostPublic={() => {}}
+      handlePostPublic={() => {resetDialog()}}
       handleClose={() => setFeedbackPage(null)}
     />
   </div>
