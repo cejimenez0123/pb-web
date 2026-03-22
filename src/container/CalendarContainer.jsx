@@ -50,7 +50,7 @@ export default function CalendarContainer(){
     <div><IonText className="text-xl text-emerald-700" onClick={()=>router.push(Paths.newsletter())}>Join the Newsletter</IonText></div>
      <IonText>or</IonText>
      <div>
-    <IonText onClick={()=>{router.push("/onboard")}} className="text-xl text-emerald-700">Apply to be a user</IonText> 
+    <IonText onClick={()=>{router.push(Paths.onboard)}} className="text-xl text-emerald-700">Apply to be a user</IonText> 
      </div>
       </div>}
 

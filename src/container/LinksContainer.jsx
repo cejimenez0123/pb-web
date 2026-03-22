@@ -93,7 +93,7 @@ export default function LinksContainer(props){
                     description={"Check some recent shared work"}/>
                     </li>
                     <li>
-                    <LinkNode links={[{name:"Apply to be a user today",url:"https://plumbum.app/onboard"}]}
+                    <LinkNode links={[{name:"Apply to be a user today",url:`https://plumbum.app/${Paths.onboard}`}]}
                     image={logo}
                     title={"Apply to be a user today"}
                     description={"Become a user and support us from the ground."}/>
