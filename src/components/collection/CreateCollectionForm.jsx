@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import {
-  IonInput,
 
   IonLabel,
 
@@ -130,26 +129,6 @@ const {openDialog,closeDialog,dialog}=useDialog()
         onChange={(e) => handleChange("purpose", e.currentTarget.value ?? "")}
         className="rounded-lg border-blueSea border-2 bg-cream shadow-sm border-opacity-30 sm:w-full w-[100%] min-h-[6em] text-blueSea p-3"
       />
-
-  
-
-          {/* <div className="flex flex-row  text-left items-left ">
-          <InfoTooltip text="Collection will only be visible to you and those with roles" />
-          <span>Private</span>
-          <p className="mx-4">{formData.isPrivate ? "Yes" : "No"}</p>
-          </div>
-          <div 
-            onClick={() => handleChange("isPrivate", !formData.isPrivate)} 
-            className={`min-h-6  mx-8 shadow-md rounded-full max-w-6 ${formData.isPrivate ? "bg-blueSea bg-opacity-30":"bg-emerald-500"}`}/>
-      
-
-    
- 
-        <div className="flex flex-row  items-left ">
-                   <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
-          <span>Open Collaboration</span>
-          <p className="mx-4">{formData.isOpenCollaboration ? "Yes" : "No"}</p>
-          </div> */}
           <div className="flex min-h-[10em] flex-col gap-4"> {/* Container to separate the two rows */}
   
 
@@ -161,13 +140,7 @@ const {openDialog,closeDialog,dialog}=useDialog()
   
   <p  onClick={() => handleChange("isPrivate", !formData.isPrivate)}  className="mx-4 bg-blueSea bg-opacity-50 px-3 min-w-14 text-center rounded-full font-medium text-white">{formData.isPrivate ? "Yes" : "No"}</p>
   
-  {/* The Switch - added flex-shrink-0 and fixed dimensions */}
-  {/* <div 
-   
-    className={`h-6 w-6 flex-shrink-0 cursor-pointer shadow-md rounded-full transition-all ${
-      formData.isPrivate ? "bg-blue-400 bg-opacity-50" : "bg-emerald-500"
-    }`}
-  /> */}
+
 </div>
 
 {/* Open Collaboration Row */}
@@ -197,12 +170,12 @@ const {openDialog,closeDialog,dialog}=useDialog()
               expand="block"
 onClick={handleSubmit}
             //   className="bg-emerald-800 text-white rounded-full" 
-              className='rounded-full flex btn  btn shadow-sm px-4  border-blueSea border-1 bg-blueSea bg-opacity-90  text-center w-fit h-[3rem] text-[1rem] border-2'
+              className='rounded-full flex btn  btn shadow-sm px-4  border-blueSea border-1 bg-blueSea bg-opacity-90  text-center w-fit h-[3rem] text-[1em] border-2'
             >
           <IonText
             fill="outline"
             color="white"
-            className=" my-auto mx-auto font-bold text-white text-[1rem]"
+            className=" my-auto mx-auto font-bold text-white text-[1em]"
             
           >
            {submitting ? "Creating..." : "Create"}
