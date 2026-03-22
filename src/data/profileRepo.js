@@ -25,12 +25,11 @@ class ProfileRepo {
         const headers = await this.getAuthHeaders()
 
   try{
-       const res = await axios.get(this.url+"/protected",{ headers:headers}
-        )
+       const res = await axios.get(this.url+"/protected",{ headers:headers}  )
 
         return res.data
     }catch(e){
-        console.log(e)
+      
         return e
     }
     }

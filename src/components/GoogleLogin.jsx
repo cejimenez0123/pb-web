@@ -15,6 +15,7 @@ import { Preferences } from "@capacitor/preferences";
 import Googlelogo from "../images/logo/googlelogo.png";
 import ErrorBoundary from "../ErrorBoundary"; // make sure this path matches your project
 import { sendGAEvent } from "../core/ga4";
+import checkResult from "../core/checkResult";
 function GoogleLoginInner({ drive, onUserSignIn }) {
   const { isError } = useContext(Context);
   const [bootstrapping, setBootstrapping] = useState(true);
@@ -178,6 +179,7 @@ const router =useIonRouter()
       setSignedIn(true);
 
       onUserSignIn?.({
+      
         email: profile.email,
         name: profile.name,
         googleId: profile.id,
@@ -185,7 +187,7 @@ const router =useIonRouter()
         idToken,
       });
 
-      dispatch(logIn({ email: profile.email, uId: profile.id, isNative }));
+
     } catch (err) {
      
   sendGAEvent("login_error", {
@@ -279,7 +281,7 @@ const router =useIonRouter()
                 idToken: response.credential,
               });
 
-              dispatch(logIn({ email: info.email, uId: info.googleId, isNative }));
+
             } else {
               setLoginError("Failed to get Google Drive token.");
             }

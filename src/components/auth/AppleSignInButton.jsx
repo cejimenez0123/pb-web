@@ -18,7 +18,7 @@ const REDIRECT_URI=import.meta.env.VITE_REDIRECT_URI
     scopes: ['email', 'name'],
   },
 });
-console.log(result)
+
 onUserSignIn({idToken:result.idToken,email:result.profile.email})
     
   };

@@ -73,7 +73,7 @@ const ProfileInfo = ({profile})=>{
    
    closeDialog()
  }
- console.log("Follwoers",profile.followers)
+
     if(!profile){
         return <div className="skeleton h-[100%] w-24"/>
     }

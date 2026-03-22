@@ -20,8 +20,12 @@ try{        const {uId,email,password,idToken,isNative}=params
 
   
          await Preferences.set({key:"token",value:token})
-  
-        return {token:token,profile:authData.user.profiles[0]}
+        const profile = authData.user.profiles[0]
+      if(profile){
+        return {token:token,profile}
+      }else{
+        return {token, message:"Please look for email to make a profile"}
+      }
 }catch(error){
   console.log(error)
 }
@@ -163,8 +167,12 @@ const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
   try{
     const data = await profileRepo.getMyProfiles()
-    
+    if(data.profile){
    return data
+    }else{
+      throw data
+    }
+
  
     }catch(error){     
       return {error}

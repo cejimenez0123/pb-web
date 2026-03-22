@@ -44,7 +44,12 @@ export default function SettingsContainer(props) {
             setProfile(currentProfile)
         }},[currentProfile])
     useEffect(()=>{
-      dispatch(getCurrentProfile())
+      dispatch(getCurrentProfile()).then((res)=>{
+      checkResult(res,payload=>{
+console.log("SSXB",payload)
+      },err=>{
+console.log("SSBL")
+      })})
     },[])
 
 
@@ -73,8 +78,10 @@ export default function SettingsContainer(props) {
       const handleSignOut =async () => {
  
     await Preferences.clear()
-   router.push (Paths.login())
-    dispatch(signOutAction())
+
+    dispatch(signOutAction()).then(res=>{
+      router.push(Paths.about())
+    })
   
    
 };

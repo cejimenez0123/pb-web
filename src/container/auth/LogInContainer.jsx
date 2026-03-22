@@ -83,14 +83,16 @@ function LogInCard({setLogInError}){
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                  console.log(payload)
+                if(payload.message){
+                    setError(payload.message)
+                }else{
                     if(payload && payload.profile && payload.profile.id){
 
                    
                     navigate(Paths.myProfile)
                      }else{
                         setError("Error with Profile")
-                     }
+                     }}
                 },err=>{
                     if(err.message=="Request failed with status code 401"){
 setError("User Not Found. Apply Below")
@@ -112,12 +114,12 @@ setError("User Not Found. Apply Below")
    
         if(idToken){
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
-                checkResult(res,async payload=>{
-               
+                checkResult(res, payload=>{
+                 console.log("B",payload)
                     router.push(Paths.home(),"forward")
                     setPending(false)
                 },err=>{
-
+console.log("BE",err)
                     if(err.message=="Request failed with status code 401"){
     setError("User Not Found. Apply Below")
                     }else{
@@ -133,10 +135,13 @@ setError("User Not Found. Apply Below")
         
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
-          
+            
+                if(payload.message){
+                    setError(payload.message)
+                }
                 setPending(false)
             },err=>{
-               
+               console.log("XE",err)
                 if(err.message=="Request failed with status code 401"){
 setError("User Not Found. Apply Below")
                 }else{
@@ -220,7 +225,13 @@ openDialog(dia)
         </div>
          <GoogleLogin
      
-     
+        onUserSignIn={({ email,
+        name,
+        googleId,
+        driveAccessToken,
+        idToken})=>{
+dispatchLogin({email,idToken:null,googleId,isNative})
+        }}
             
 
     

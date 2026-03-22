@@ -172,7 +172,7 @@ export default DiscoveryContainer;
            <div className=' flex flex-row flex-end p-4 max-w-[100vw]'>
 <div className='w-[100%] pt-4'/> */}
          <div className='flex mt-4  pt-16 px-4 flex-row justify-between'>
-          <img onClick={()=>{
+          {/* <img onClick={()=>{
       sendGAEvent("navigation_click", {
       destination: "calendar",
       source: "discovery_header",
@@ -191,10 +191,10 @@ export default DiscoveryContainer;
             left:"0",
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
-  }}
+  }} */}
 
 
-          />
+          {/* /> */}
                     </div>
     
     <div className=" sm:pt-12 bg-cream">

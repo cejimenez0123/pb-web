@@ -68,7 +68,7 @@ function MyProfileContainer({ presentingElement }) {
     ZA: "Z-A"
   };
  useEffect(() => {
-  if (currentProfile) {
+  if (currentProfile && currentProfile.username) {
     setSeo(prev => ({
       ...prev,
       title: `Plumbum (${currentProfile.username}) Home`,
@@ -113,7 +113,7 @@ function MyProfileContainer({ presentingElement }) {
   const filteredSortedCollections = useMemo(() => {
     let result = collections || [];
     if(filterType==filterTypes.feedback){
-      result = collections.filter(col=>col.type=="feedback"||col.purpose.toLowerCase().includes("feedback"))
+      result = collections?.filter(col=>col.type=="feedback"||col.purpose.toLowerCase().includes("feedback"))
     }
     switch (filterType) {
       case filterTypes.AZ:
@@ -153,7 +153,12 @@ useEffect(() => {
     const { value } = await Preferences.get({ key: "token" });
 
     if (value) {
-    dispatch(getCurrentProfile()).then(()=>{
+    dispatch(getCurrentProfile()).then((res)=>{
+      checkResult(res,payload=>{
+console.log("SSX",payload)
+      },err=>{
+console.log("SSB")
+      })
   setCheckingAuth(false);
     })
     
@@ -163,7 +168,7 @@ useEffect(() => {
     }
   };
 
- return ()=> syncProfile();
+ return ()=> !currentProfile && syncProfile();
 }, [currentProfile, dispatch]);
 
 
@@ -304,29 +309,32 @@ const openFeedback=(item,isFeedback)=>{
 
   
 useEffect(() => {
-  if (!currentProfile) return;
-  if (currentProfile.stories && currentProfile.stories.length > 0) {
+  
+  if (currentProfile?.stories && currentProfile?.stories.length > 0) {
     dispatch(setPagesInView({ pages: currentProfile.stories }));
   }
-  if (currentProfile.collections && currentProfile.collections.length > 0) {
+  if (currentProfile?.collections && currentProfile?.collections.length > 0) {
     dispatch(setCollections({ collections: currentProfile.collections }));
   }
+
 }, [currentProfile, dispatch]);
 
 
   if (!currentProfile) {
     return (
+      <IonContent>
         <div>
         <IonSpinner />
         </div>
-        
+        </IonContent>
     );
   }
-return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}><ErrorBoundary>
+return<ErrorBoundary><IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}>
 
                     <div className='flex mt-4  pt-16 px-4 flex-row justify-between'>
-                         <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
+                      <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
      
+                         {/* 
                             <img src={calendar}  className=''  style={{
     filter:
       "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
@@ -339,7 +347,7 @@ onClick={()=>{
 
   router.push(Paths.calendar())}}
 
-          />
+          /> */}
           
                   
                     </div>
@@ -430,7 +438,7 @@ onClick={()=>{
 
   </div>
 </div>
-</ErrorBoundary></IonContent>
+</IonContent></ErrorBoundary>
 }
 
 export default MyProfileContainer;

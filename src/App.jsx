@@ -53,6 +53,7 @@ import ErrorBoundary from './ErrorBoundary.jsx';
 import { Redirect, Route } from 'react-router-dom'
 import AboutContainer from './container/AboutContainer.jsx';
 import PageWrapper from './core/PageWrapper.jsx';
+import checkResult from './core/checkResult.js';
 
 setupIonicReact()
 
@@ -85,14 +86,17 @@ const [presentingEl, setPresentingEl] = useState(null);
 
   const dialog = useSelector(state=>state.users.dialog)
 
-
-
-const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
   const initAuth = async () => {
     const { value } = await Preferences.get({ key: "token" });
     if (value ) {
-      // This triggers the Redux action to fill currentProfile
-      dispatch(getCurrentProfile()); 
+      
+      dispatch(getCurrentProfile()).then(res=>{
+        checkResult(res,payload=>{
+console.log("SSL")
+        },err=>{
+console.log("SSL"+err)
+        })
+      })
     }
   };
 useEffect(() => {
@@ -108,10 +112,10 @@ useEffect(() => {
       const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
       if (value === null) {
         await Preferences.set({ key: "hasSeenOnboarding", value: 'true' });
-        setIsFirstLaunch(true);
+   
       }
     }
-    setFirstLaunchChecked(true);
+   
   };
   checkFirstLaunch();
 }, [isNative]);
@@ -205,10 +209,9 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
      <Route path={Paths.collection.route()}
      render={()=><PageWrapper><CollectionContainer currentProfile={currentProfile}/></PageWrapper>}/>
      <Route path={'/signup'}
-                render={()=><LoggedRoute 
-                            currentProfile={currentProfile}><PageWrapper>
+                render={()=><PageWrapper>
                               <SignUpContainer/></PageWrapper>
-                          </LoggedRoute>}/>
+                }/>
       <Route path={'/register'}
                 render={()=><LoggedRoute 
                     currentProfile={currentProfile}><PageWrapper>

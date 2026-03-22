@@ -6,13 +6,15 @@ import Paths from "./core/paths";
 import Context from "./context";
 import { useDispatch } from "react-redux";
 import { getCurrentProfile } from "./actions/UserActions";
+import { useSelector } from "react-redux";
+import checkResult from "./core/checkResult";
 
 const PrivateRoute = ({ children }) => {
   const router = useIonRouter();
   const dispatch = useDispatch();
   const { setError } = useContext(Context) || {};
   const [token, setToken] = useState(undefined);
-
+  const {currentProfile}=useSelector(state=>state.users)
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -23,7 +25,32 @@ const PrivateRoute = ({ children }) => {
           router.push(Paths.login(), "forward", "replace");
         } else {
           setToken(tok);
-          dispatch(getCurrentProfile());
+          console.log(router.routeInfo.pathname)
+         !router.routeInfo.pathname.includes("/signup") && dispatch(getCurrentProfile()).then(res=>{
+            console.log("L",router.routeInfo.pathname)
+            checkResult(res,payload=>{
+                console.log(router.routeInfo.pathname)
+console.log("DSDS")
+            },err=>{
+            if(router.routeInfo.pathname.includes("/signup")){
+console.log("DSDS")
+            }else{
+              // if(router.routeInfo.pathname.includes("/signup")||router.routeInfo.pathname.includes("/profile")){
+
+                if(router.routeInfo.pathname.includes("/profile")&&!currentProfile){
+                  Preferences.get("token").then(token=>{
+                   if(!token.value){
+                    router.goBack()
+                   }
+                  })
+                
+                }
+              }
+           
+
+            
+            })
+          })
         }
       } catch (err) {
         console.error("Error reading token:", err);
