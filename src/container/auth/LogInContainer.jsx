@@ -77,7 +77,7 @@ function LogInCard({setLogInError}){
                     if(payload && payload.profile && payload.profile.id){
 
                    
-                    router.push(Paths.home,"root")
+                    router.push(Paths.discovery,"root")
                      }else{
                         setError("Error with Profile")
                      }

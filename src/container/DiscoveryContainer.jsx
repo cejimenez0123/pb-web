@@ -22,7 +22,7 @@ function DiscoveryContainer() {
   const  currentProfile = useSelector(state=>state.users.currentProfile)
 
   const dispatch = useDispatch();
-    const [tab, setTab] = useState("home");
+    const [tab, setTab] = useState("dash");
   const cols = useSelector(state => state.books.collections);
 
   const pagesInView = useSelector(state => state.pages.pagesInView);
