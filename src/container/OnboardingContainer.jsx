@@ -144,9 +144,8 @@ const Step1 = ({ formData, updateFormData, handleTab }) => {
   };
 
   return (
-    <IonGrid  style={{ "--background": "#f4f4e0" }} className='h-[60em] bg-cream'>
-      {/* <IonRow  style={{ "--background": "#f4f4e0" }}>
-        <IonList   style={{ "--background": "#f4f4e0" }} className='text-left w-[45em] mx-auto'> */}
+    <div style={{ "--background": "#f4f4e0" }}className="w-full max-w-xl mx-auto px-4">
+      
 <div className='bg-cream flex flex-col'>
           <IonText color="success" className="lora-bold">
             * Required
@@ -232,7 +231,7 @@ const Step1 = ({ formData, updateFormData, handleTab }) => {
 </div>
         {/* </IonList>
       </IonRow> */}
-    </IonGrid>
+    </div>
   );
 };
 const Step2 = ({ formData, updateFormData, handleTab }) => {
@@ -252,10 +251,10 @@ const Step2 = ({ formData, updateFormData, handleTab }) => {
   };
 
   return (
-    <IonGrid>
+    <IonGrid> 
       <IonRow>
-        <IonCol class='text-left w-[45em] mx-auto'>
-<div className='h-[60em] text-left w-[45em] mx-auto'>
+        <IonCol class='text-left  mx-auto'>
+<div className='h-[60em] text-left  mx-auto'>
           <IonLabel className="mont-medium text-lg font-bold">
             Artist Statement
           </IonLabel>
@@ -328,7 +327,7 @@ const Step2 = ({ formData, updateFormData, handleTab }) => {
     const feedbackFrequency = formData.feedbackFrequency;
 
     return (
-      <IonGrid>
+      <IonGrid style={{paddingBottom:"4em"}}>
         <IonRow>
           <IonCol >
             <IonLabel className="mont-medium" color="success" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
@@ -583,7 +582,7 @@ const Why = ({ handleTab, nav }) => {
         ))}
       </div>
 
-      <div className="text-center mx-auto sm:w-[50rem]">
+      <div className="text-center mx-auto max-w-[100vw] sm:w-[50rem]">
         {activeTab === 'tab0' && <Why handleTab={(tab) => setActiveTab('tab1')} />}
         {activeTab === 'tab1' && <Step1 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
         {activeTab === 'tab2' && <Step2 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
