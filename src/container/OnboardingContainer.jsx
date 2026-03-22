@@ -145,9 +145,9 @@ const Step1 = ({ formData, updateFormData, handleTab }) => {
 
   return (
     <IonGrid  style={{ "--background": "#f4f4e0" }} className='h-[60em] bg-cream'>
-      <IonRow>
-        <IonList   style={{ "--background": "#f4f4e0" }} className='text-left w-[45em] mx-auto'>
-<div className='bg-cream'>
+      {/* <IonRow  style={{ "--background": "#f4f4e0" }}>
+        <IonList   style={{ "--background": "#f4f4e0" }} className='text-left w-[45em] mx-auto'> */}
+<div className='bg-cream flex flex-col'>
           <IonText color="success" className="lora-bold">
             * Required
           </IonText>
@@ -230,8 +230,8 @@ const Step1 = ({ formData, updateFormData, handleTab }) => {
             </div>
           </IonRow>
 </div>
-        </IonList>
-      </IonRow>
+        {/* </IonList>
+      </IonRow> */}
     </IonGrid>
   );
 };
@@ -379,20 +379,18 @@ const Step2 = ({ formData, updateFormData, handleTab }) => {
               feedbackFrequency={feedbackFrequency}
               setFeedbackFrequency={val => updateFormData({ feedbackFrequency: val })}
             />
-<IonRow>
-<div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0', textAlign: 'right' }}>
-            
-<IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
-               Back
+          <IonRow className='flex justify-between mt-8'>
+            <div className="btn bg-emerald-700 rounded-full px-6 py-2">
+              <IonText onClick={handleBack} className="text-white text-lg">
+                Back
               </IonText>
             </div>
-            <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0', textAlign: 'right' }}>
-  
-              <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
+            <div className="btn bg-emerald-700 rounded-full px-6 py-2">
+              <IonText onClick={handleNext} className="text-white text-lg">
                 Next Step
               </IonText>
-              </div>
-              </IonRow>
+            </div>
+          </IonRow>
       
           </IonCol>
         </IonRow>
@@ -400,7 +398,7 @@ const Step2 = ({ formData, updateFormData, handleTab }) => {
     );
   };
 
-const Step4 = ({ formData, updateFormData, onSave }) => {
+const Step4 = ({ formData, updateFormData, onSave,handleTab }) => {
   // Local state for this step
   const [localData, setLocalData] = useState({
     workshopPreference: formData.workshopPreference || "both",
@@ -460,13 +458,13 @@ const Step4 = ({ formData, updateFormData, onSave }) => {
           placeholder="e.g., peer reviews, prompts, community groups"
           className="w-[100%] border  bg-cream text-emerald-800 border-emerald-400 rounded-xl p-3"
         />
-
+<div className='flex flex-row justify-between my-8'>
         {/* Apply Button */}
-           <div className='mt-6 flex justify-between flex-row'> <div className="btn bg-emerald-700 rounded-full px-6 py-2">
-              <IonText onClick={handleBack} className="text-white text-lg">
-                Back
-              </IonText>
-            </div>
+         <div onClick={handleBack} className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" >
+            <IonText  className="emerald-gradient-text-btn text-white text-[0.8rem] text-[1rem]" style={{ width: '100%' }}>
+              Back
+             </IonText>
+          </div>
         {/* <div className="btn-container text-right "> */}
           <IonText
             onClick={handleSubmit}
@@ -590,7 +588,7 @@ const Why = ({ handleTab, nav }) => {
         {activeTab === 'tab1' && <Step1 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
         {activeTab === 'tab2' && <Step2 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
         {activeTab === 'tab3' && <Step3 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
-        {activeTab === 'tab4' && <Step4 formData={formData} updateFormData={updateFormData} onSave={onClickApply} handleTab={() => setActiveTab('tab5')} />}
+        {activeTab === 'tab4' && <Step4 formData={formData} updateFormData={updateFormData} onSave={onClickApply}  handleTab={(tab) => setActiveTab(tab)} />}
         {activeTab === 'tab5' && user && <ThankYou user={user} />}
       </div>
     </>
