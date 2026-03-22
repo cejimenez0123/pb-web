@@ -144,7 +144,7 @@ const Step1 = ({ formData, updateFormData, handleTab }) => {
   };
 
   return (
-    <div style={{ "--background": "#f4f4e0" }}className="w-full max-w-xl mx-auto px-4">
+    <div style={{ "--background": "#f4f4e0",paddingBottom:"4em"}}className="w-full max-w-xl mx-auto px-4">
       
 <div className='bg-cream flex flex-col'>
           <IonText color="success" className="lora-bold">
@@ -251,7 +251,7 @@ const Step2 = ({ formData, updateFormData, handleTab }) => {
   };
 
   return (
-    <IonGrid> 
+    <IonGrid style={{paddingBottom:"4em"}}> 
       <IonRow>
         <IonCol class='text-left  mx-auto'>
 <div className='h-[60em] text-left  mx-auto'>
@@ -414,7 +414,7 @@ const Step4 = ({ formData, updateFormData, onSave,handleTab }) => {
       handleTab("tab3");
     };
   return (
-    <IonGrid>
+<IonGrid style={{paddingBottom:"4em"}}>
       <IonCol className="text-left ion-padding">
 
         {/* Workshop Preference */}
