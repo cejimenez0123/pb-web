@@ -343,16 +343,7 @@ text-[1rem]">
   return (
     <ErrorBoundary>
         <IonContent fullscreen={true}    style={{ "--background": "#f4f4e0" }} className="ion-padding">
-              <IonHeader translucent>
-          <IonToolbar>
-        <IonButtons slot="start">
-                  {Capacitor.isNativePlatform()?<IonBackButton defaultHref={Paths.discovery} onClick={handleBack} />:null}
-            </IonButtons>
-            <IonTitle className="text-emerald-800 font-semibold">
-              Add to Collection
-            </IonTitle>
-          </IonToolbar>
-        </IonHeader>
+         
         {/* <IonContent fullscreen={true} className="ion-padding pt-12 ion-text-emerald-800" scrollY > */}
         <div className="sm:max-w-[50rem] mx-auto ion-padding">
           <h2 className="text-xl font-semibold text-emerald-800 mb-1">

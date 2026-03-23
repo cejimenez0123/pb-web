@@ -52,7 +52,7 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
         scrollY={dialog.scrollY ?? true}
         style={{ "--background": "#f4f4e0" }}
       >
-        {dialog.title && (
+        {/* {dialog.title && (
           <IonHeader>
             <IonToolbar color="success">
               <IonButtons slot="start">
@@ -61,7 +61,7 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
               <IonTitle className="ion-text-emerald-900">{dialog.title}</IonTitle>
             </IonToolbar>
           </IonHeader>
-        )}
+        )} */}
 <div className='min-h-[10em]'>
         <h1 className="px-8 text-[2rem]">{dialog.text}</h1>
 

@@ -157,7 +157,7 @@ const libraries = ["places"];
         // <LoggedRoute 
         // currentProfile={currentProfile}
         // >  
-        <PageWrapper>
+        <PageWrapper showHeader={false}>
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
                       </PageWrapper>
             // </LoggedRoute>
@@ -171,11 +171,11 @@ const libraries = ["places"];
      </PageWrapper>}
 />
 <Route exact path="/about" render={() => 
-    <PageWrapper>
+    <PageWrapper showHeader={false}>
      <AboutContainer/></PageWrapper>}
 />
 <Route exact path="/search" render={() => 
-<PageWrapper>
+<PageWrapper showSearchButton={false}>
      <SearchDialog /></PageWrapper>}
 />
 
@@ -189,7 +189,7 @@ const libraries = ["places"];
               <NotificationContainer currentProfile={currentProfile}/></PageWrapper></PrivateRoute>}/>
                    <Route path={Paths.home}
                   render={()=> 
-       <PrivateRoute> <PageWrapper>
+       <PrivateRoute> <PageWrapper  showBackbutton={false} showSearchButton={true}>
         <DiscoveryContainer/>
          
                       </PageWrapper>
@@ -207,7 +207,7 @@ const libraries = ["places"];
     </Route>
     <Route exact path={Paths.myProfile}
       render={()=>  <PrivateRoute>
-        <PageWrapper> 
+        <PageWrapper showBackbutton={false}> 
           <MyProfileContainer
 
                        
@@ -218,7 +218,7 @@ const libraries = ["places"];
     />
           <Route exact path="/discovery" 
                 render={()=>
-                   <PageWrapper> 
+                   <PageWrapper showBackbutton={false} showSearchButton={true}> 
                     <DiscoveryContainer/>
                      </PageWrapper>
                       
@@ -230,7 +230,7 @@ const libraries = ["places"];
                   />
     
       <Route exact path={Paths.calendar()}
-     render={()=><PageWrapper><CalendarContainer/></PageWrapper>}/>
+     render={()=><PageWrapper showBackbutton={false} ><CalendarContainer/></PageWrapper>}/>
           <Route exact path={Paths.newsletter() }
      render={()=><LoggedRoute 
  currentProfile={currentProfile}
@@ -286,12 +286,12 @@ const libraries = ["places"];
 
       <Route path={Paths.workshop.reader()}
     render={()=><PrivateRoute      
-     currentProfile={props.currentProfile}>  <PageWrapper> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
+     currentProfile={props.currentProfile}>  <PageWrapper  showHeader={false}><WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
     <Route 
     path={Paths.workshop.route()}
     render={()=><PrivateRoute
       currentProfile={props.currentProfile}
-    >  <PageWrapper> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
+    >  <PageWrapper  showHeader={false} showBackbutton={false}> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
     <Route path="/profile/:id/view" render={()=>
       <PageWrapper>   <ProfileContainer/>  </PageWrapper> 
       }/>

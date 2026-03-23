@@ -114,7 +114,7 @@ return(
 
   <EventButton/>
   {currentProfile && <WorkshopButton/>}
-  <SearchButton/>
+  {/* <SearchButton/> */}
   <ProfileButton currentProfile={currentProfile}/>
 
 </div>
@@ -195,24 +195,6 @@ return (
    
     />
     <h6 className="text-white text-xs">Discovery</h6>
-  </div>
-)
-
-}
-
-
-function SearchButton(){
-
-const router = useIonRouter()
-
-return (
-  <div     onClick={()=>router.push("/search")} className="flex flex-col">
-    <IonImg
-      src={search}
-      style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-  
-    />
-    <h6 className="text-white text-xs">Search</h6>
   </div>
 )
 

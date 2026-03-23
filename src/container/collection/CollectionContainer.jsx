@@ -171,10 +171,10 @@ return
     }
 
   }, [currentProfile]);
-  useEffect(()=>{
-  getCol(id)
+useEffect(() => {
+  getCol(id);
   
-  },[currentProfile])
+}, [id]); 
 
   useEffect(()=>{
     collection && currentProfile && findRole(collection,currentProfile)
@@ -516,7 +516,7 @@ const FollowBtn=()=>     {return!role ? (
 
 
   <IonContent style={{"--background":"#f4f4e0"}} scrollY={true} fullscreen className="pb-24 pt-12">
-    <IonHeader>
+    {/* <IonHeader>
       <IonToolbar>
 
         <IonButtons slot="start">
@@ -533,7 +533,7 @@ const FollowBtn=()=>     {return!role ? (
                   src={edit} className=" rounded-full p-2 btn"/>
             </div>}
       </IonToolbar>
-    </IonHeader>
+    </IonHeader> */}
     <div className="">
         
     <div className="pt-8">
