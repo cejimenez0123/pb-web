@@ -299,30 +299,30 @@ function HomeContainer() {
     }
   };
 
-const openFeedback=(item,isFeedback)=>{
-   openDialog({...dialog,disagree:null,agree:null,disagreeText:null,scrollY:false,text:
-    <FeedbackDialog
+// const openFeedback=(item,isFeedback)=>{
+//    openDialog({...dialog,disagree:null,agree:null,disagreeText:null,scrollY:false,text:
+//     <FeedbackDialog
   
-      page={item}
+//       page={item}
  
-      isFeedback={isFeedback}
-      handleChange={setFeedback}
-      handleFeedback={(item) => {
+//       isFeedback={isFeedback}
+//       handleChange={setFeedback}
+//       handleFeedback={(item) => {
       
-           closeDialog()
-        const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
-        dispatch(updateStory(params)).then(res => {
-          checkResult(res, payload => {
+//            closeDialog()
+//         const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
+//         dispatch(updateStory(params)).then(res => {
+//           checkResult(res, payload => {
          
-      if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"forward"));
-          });
-        });
-      }}
-      handlePostPublic={() => {resetDialog()}}
-      handleClose={() => setFeedback(null)}
-    />})
-              dispatch(setPageInView({ page: item }));
-            }
+//       if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"forward"));
+//           });
+//         });
+//       }}
+//       handlePostPublic={() => {resetDialog()}}
+//       handleClose={() => setFeedback(null)}
+//     />})
+//               dispatch(setPageInView({ page: item }));
+//             }
 
 
 useEffect(() => {

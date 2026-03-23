@@ -345,7 +345,7 @@ return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#
         )}
       />
     </div>
-
+{/* 
     <FeedbackDialog
       presentingElement={presentingElement}
       page={feedbackPage}
@@ -363,7 +363,7 @@ return<IonContent fullscreen={true} className='pt-12' style={{'--background': '#
       }}
       handlePostPublic={() => {resetDialog()}}
       handleClose={() => setFeedbackPage(null)}
-    />
+    /> */}
   </div>
 </div>
 </ErrorBoundary></IonContent>

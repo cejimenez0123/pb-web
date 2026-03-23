@@ -26,7 +26,7 @@ import { Capacitor } from "@capacitor/core"
 
 function EditorContainer({presentingElement}){
         const currentProfile=useSelector(state=>state.users.currentProfile)
-        const [feedbackDialog,setFeedbackDialog]=useState(false)
+        // const [feedbackDialog,setFeedbackDialog]=useState(false)
         const {setError,setSuccess,isPhone,isTablet}=useContext(Context)
         const editPage = useSelector(state=>state.pages.editingPage)
         const [pending,setPending]=useState(false)
@@ -320,15 +320,7 @@ const openRoleFormDialog = () => {
         return(
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
           <IonContent fullscreen={true} scrollY={true} style={{"--background":"#f4f4e0","--padding-bottom":"30em","--padding-top":isNative||isPhone?"0.3rem":"6em"}}className="ion-padding"  >
-           {/* {isNative? <IonHeader className="   ">
-             <IonButtons onClick={handleBack} className="ion-padding">
-  <IonBackButton defaultHref={Paths.discovery} />
-</IonButtons>
-
-
-            <IonButtons></IonButtons>
-            </IonHeader>
-            :null} */}
+         
              {isNative&&<IonToolbar className="flex flex-row">
             <IonButtons>
               <IonBackButton 

@@ -213,19 +213,7 @@ export default function HashtagContainer() {
   return (
     <ErrorBoundary>
    <IonContent fullscreen>
-             <IonHeader translucent>
-          <IonToolbar className="flex flex-row">
-            <IonButtons>
-              <IonBackButton 
-              onClick={handleBack}
-              defaultHref={Paths.collection.createRoute(id)}
-      />
-            </IonButtons>
-            <IonTitle slot="end" className="ml-8 ion-text-center">
-              {hash?"#"+hash.name:"hashtag"}
-            </IonTitle>
-          </IonToolbar>
-        </IonHeader>
+            
        
 
             <div className="text-left">

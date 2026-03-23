@@ -23,8 +23,8 @@ return (
           key={i + item.id}
           page={item}
           item={item}
-          type={type}
-          handleFeedback={() => handleFeedback(item)}
+          // type={type}
+          // handleFeedback={() => handleFeedback(item)}
         />
       ))
     : <h2 className="mx-auto my-8 text-emerald-800">Room for possibility</h2>

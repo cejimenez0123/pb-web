@@ -15,6 +15,7 @@ import { useMediaQuery } from 'react-responsive';
 import Paths from './paths';
 import SearchButton from '../components/SearchButton'; // import memoized component
 import menu from "../images/icons/menu.svg"
+import { Capacitor } from '@capacitor/core';
 const PageWrapper = ({
   children,
   showHeader = true,
@@ -47,7 +48,7 @@ const PageWrapper = ({
       ref={pageRef}
       style={{ height: '100%', paddingTop: isDesktop ? '5em' : '0' }}
     >
-      {showHeader && (
+      {showHeader && Capacitor.isNativePlatform() && (
         <IonHeader translucent>
           <IonToolbar>
             {showBackbutton ? (

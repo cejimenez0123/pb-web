@@ -181,7 +181,7 @@ const libraries = ["places"];
 
 
    
-      <Route path={Paths.onboard} render={()=><PageWrapper><OnboardingContainer/></PageWrapper>}/>
+      <Route path={Paths.onboard} render={()=><PageWrapper showHeader={false}><OnboardingContainer/></PageWrapper>}/>
 
 
             <Route exact path={Paths.notifications()}

@@ -209,11 +209,7 @@ useEffect(() => {
          <IonContent fullscreen={true}  style={{"--background":"#f4f4e0"}}className="ion-padding-bottom" >
  
 
-       <IonHeader>
-  <IonToolbar  >
-    <IonBackButton  slot="start"  defaultHref={Paths.discovery} onClick={handleBack} />
-  </IonToolbar>
-</IonHeader>
+      
     {/* <div className="py-12 bg-cream"> */}
        <div className=" min-h-[40em] ion-padding-bottom  ">
         <div className=" text-center bg-cream py-[4em] mx-auto h-[100%]" >

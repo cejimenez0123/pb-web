@@ -106,13 +106,14 @@ return(
 <div className="navbar fixed bottom-0 w-full flex-row flex justify-around bg-soft">
  <HomeButton/>
   {/* <DiscoveryButton/> */}
-  {currentProfile && <CreateButton/>}
+  
 
 
   
 
 
   <EventButton/>
+  {currentProfile && <CreateButton/>}
   {currentProfile && <WorkshopButton/>}
   {/* <SearchButton/> */}
   <ProfileButton currentProfile={currentProfile}/>

@@ -13,9 +13,9 @@ export default function FeedbackDialog({page,isFeedback,handleChange,handlePostP
     },[feedback])
     const {closeDialog}=useDialog()
 
-    return<div className={`${isHeightPhone?"":""}`}>
+    return<div className={`h-[100%]`}>
 
-    <div className={`${isHeightPhone?" mx-auto w-[80%]  ":""}`}> 
+    {/* <div className={`${isHeightPhone?" mx-auto w-[80%]  ":""}`}>  */}
             <textarea 
             value={feedback}
             onChange={e=>{
@@ -24,16 +24,16 @@ export default function FeedbackDialog({page,isFeedback,handleChange,handlePostP
               }}
             className={`textarea mx-2 w-[96%]  min-h-[7rem] border-opacity-50 rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600`}/>
                    <div className="mt-8">
-                    <IonRow className="justify-between flex">
+                    {/* <IonRow className="justify-between flex">
           <h2 className="text-[1rem] text-emerald-700 hover:text-sky-500 " onClick={()=>closeDialog()}>Continue Working</h2>
              {isFeedback? <h2 className=" mx-1  hover:text-sky-500 text-[1rem] text-emerald-700" onClick={()=>handleFeedback(page)}>
      Get feedback
           </h2>:<h2 className="hover:text-sky-500 text-[1rem]  text-emerald-700" onClick={()=>handlePostPublic()}>
   Publish
-          </h2>}
-          </IonRow>
+          </h2>} */}
+          {/* </IonRow> */}
         </div>
  
-    </div>
+    {/* </div> */}
     </div> 
   }

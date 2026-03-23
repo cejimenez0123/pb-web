@@ -10,9 +10,13 @@ import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
 import { IonImg, IonText, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
-
-export default function IndexItem({item,handleFeedback,type}) {
+import { useDialog } from "../../domain/usecases/useDialog.jsx";
+import FeedbackDialog from "./FeedbackDialog.jsx";
+import { updateStory } from "../../actions/StoryActions.jsx";
+import checkResult from "../../core/checkResult.js";
+export default function IndexItem({item,type}) {
   let collectionStr ="collection"
+  const {openDialog,resetDialog,dialog,closeDialog}=useDialog()
     const [canUserAdd,setCanUserAdd]=useState(false)
     useLayoutEffect(()=>{
       initGA()
@@ -110,7 +114,7 @@ const soCanUserEdit = () => {
 };
 
     const handleAddToClick = ()=>{
-       if(type!="story"){
+       if(item.storyIdList){
       router.push(Paths.addToCollection.createRoute(item.id))
       }else{
       router.push(Paths.addStoryToCollection.story(item.id))
@@ -122,7 +126,43 @@ const soCanUserEdit = () => {
 const handleAddToLibrary=()=>{
   router.push(Paths.addStoryToCollection.collection(item.id))
 }
-
+const [feedback,setFeedback]=useState()
+   const handleFeedback=()=>{
+console.log("TOCG")
+openDialog({disagree:()=>resetDialog(),agreeText:"Get Feedback",agree:()=>{
+  resetDialog()
+    const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
+        dispatch(updateStory(params)).then(res => {
+          checkResult(res, payload => {
+    
+            if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"foward"));
+          });
+        });
+      },disagreeText:null,scrollY:false,text:
+    <FeedbackDialog  
+page={item}
+isFeedback={true}
+handleChange={e=>setFeedback(e)} 
+handleFeedback={(item)=>{
+  resetDialog()
+    const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
+        dispatch(updateStory(params)).then(res => {
+          checkResult(res, payload => {
+    
+            if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"foward"));
+          });
+        });
+}}
+handlePostPublic={()=>{
+  console.log("Publishing...")
+  handleisPrviate(false)
+  resetDialog()
+  router.push(Paths.page.createRoute(item.id),"forward")
+}}
+handleClose={()=>{
+closeDialog()
+}} />})}
+      
     return(
   <div className="w-[100%]  overflow-visible ">
                 <div   className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full  min-h-[6rem] w-full  py-[1.4em] border-blueSea border-opacity-[40%]">
@@ -147,7 +187,7 @@ const handleAddToLibrary=()=>{
               { canUserEdit?(
        
        <div className="dropdown  absolute my-auto relative w-fit z-40 dropdown-left">
-  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full w-[4rem]  border-2 hover:bg-emerald-600 border border-soft h-[4rem]  "> <IonImg className="  my-auto mx-auto  " style={{width:"3rem", height:"3rem"}} src={edit}/></div>
+  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full w-[4rem]  border-2 hover:bg-emerald-600 border border-soft h-[4rem]  "> <IonImg className="  my-auto mx-auto  " style={{width:"3rem", height:"3rem",padding:"0.5em"}} src={edit}/></div>
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
         ()=>handleEditClick(item)}><a className=" ">Edit</a></li>

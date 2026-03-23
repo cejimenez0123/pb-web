@@ -477,11 +477,7 @@ const FollowBtn=()=>     {return!role ? (
     return (
       <IonContent>
 <div>
-        <IonHeader >
-          <IonToolbar>
-            <IonTitle>Loading collection...</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+       
         <div className="ion-padding mx-auto">
           <IonSkeletonText animated style={{ width: '96vw', height: 150, margin: "2rem auto", borderRadius: 18 }} />
           <IonSkeletonText animated style={{ width: '96vw', height: 400, margin: "2rem auto", borderRadius: 18 }} />
@@ -516,24 +512,7 @@ const FollowBtn=()=>     {return!role ? (
 
 
   <IonContent style={{"--background":"#f4f4e0"}} scrollY={true} fullscreen className="pb-24 pt-12">
-    {/* <IonHeader>
-      <IonToolbar>
 
-        <IonButtons slot="start">
-          
-            <IonBackButton
-            mode="ios"
-              defaultHref={Paths.discovery}
-              onClick={handleBack}
-            />
-           
-        </IonButtons>
-        {canUserEdit &&<div slot="end"><IonImg
-                 onClick={() => router.push(Paths.editCollection.createRoute(id))}
-                  src={edit} className=" rounded-full p-2 btn"/>
-            </div>}
-      </IonToolbar>
-    </IonHeader> */}
     <div className="">
         
     <div className="pt-8">

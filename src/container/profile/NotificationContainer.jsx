@@ -32,13 +32,7 @@ const {isDesktop}=useContext(Context)
   };
   return (
     <IonContent className="bg-cream p-4">
-             {!isDesktop &&<IonHeader>
-                    <IonToolbar >
-               
-                         <IonBackButton  slot="start"  defaultHref={Paths.myProfile} onClick={handleBack} />
-                  
-                    </IonToolbar>
-                  </IonHeader>}
+     
       <div className="mx-auto w-[96vw] md:w-page">
 
         {/* Today Section */}

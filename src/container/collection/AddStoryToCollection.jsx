@@ -168,19 +168,7 @@ let dia = {...dialog}
   return (
     <ErrorBoundary>
       <IonContent fullscreen={true}className="ion-padding pt-12 ion-text-emerald-800" scrollY >
-        <IonHeader translucent>
-          <IonToolbar className="flex flex-row">
-            <IonButtons>
-              <IonBackButton 
-              onClick={handleBack}
-              defaultHref={Paths.collection.createRoute(id)}
-      />
-            </IonButtons>
-            <IonTitle slot="end" className="ml-8 ion-text-center">
-              Add <strong>{item?.title}</strong> to Collection
-            </IonTitle>
-          </IonToolbar>
-        </IonHeader>
+
       <div className="flex flex-col sm:max-w-[50em] mx-auto ">
             <div>{collectionInView.purpose??""}</div>
             <div className="flex flex-row">

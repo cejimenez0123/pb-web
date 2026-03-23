@@ -31,6 +31,10 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
       presentingElement={presentingElement}
       swipeToClose
       canDismiss
+         style={{
+            "--background-color": "#f4f4e0",
+          
+          }}
       backdropDismiss={true}    
              // ensures tap-away dismissal
        onDidDismiss={() => {
@@ -45,28 +49,20 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
       cssClass="dialog-half"
       mode="ios"
     >
+
       {/* <div className='flex flex-col'> */}
-      <IonContent
+      {/* <IonContent
         className="ion-padding"
     
         scrollY={dialog.scrollY ?? true}
-        style={{ "--background": "#f4f4e0" }}
-      >
-        {/* {dialog.title && (
-          <IonHeader>
-            <IonToolbar color="success">
-              <IonButtons slot="start">
-                <IonBackButton onClick={closeDialog} />
-              </IonButtons>
-              <IonTitle className="ion-text-emerald-900">{dialog.title}</IonTitle>
-            </IonToolbar>
-          </IonHeader>
-        )} */}
-<div className='min-h-[10em]'>
-        <h1 className="px-8 text-[2rem]">{dialog.text}</h1>
+        style={{ "--background": "#f4f4e0",height:"100%"}} */}
+      {/* > */}
+
+<div className='h-[100%] bg-cream p-8'>
+        <h1 className="px-8 text-[2rem] bg-cream mt-4">{dialog.text}</h1>
 
      </div>
-      </IonContent>
+      {/* </IonContent> */}
                 <div className='bg-cream'>
          <IonFooter
          slot='fixed'
@@ -76,14 +72,14 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
           
           }}
         >
-<div className={`pb-14 px-4 flex flex-row ${dialog.agree ? "justify-between" : "flex-end"}`}>
+<div className={`pb-14 px-4 bottom-0 flex flex-row ${dialog.agree ? "justify-between" : "flex-end"}`}>
           {dialog.agree && (
-            <div className="rounded-full flex px-4 w-fit h-[3rem] text-[1rem] border-emerald-400 border-2">
+            <div      onClick={dialog.agree} className="rounded-full flex px-4 w-fit h-[3rem] text-[1rem] border-emerald-400 border-2">
               <IonText
                 fill="outline"
                 color="success"
                 className="my-auto mx-auto text-emerald-800 text-[1rem]"
-                onClick={dialog.agree}
+           
               >
                 {dialog.agreeText}
               </IonText>
