@@ -230,7 +230,7 @@ const libraries = ["places"];
                   />
     
       <Route exact path={Paths.calendar()}
-     render={()=><PageWrapper showBackbutton={false} ><CalendarContainer/></PageWrapper>}/>
+     render={()=><PageWrapper showBackbutton={false}  showHeader={false}><CalendarContainer/></PageWrapper>}/>
           <Route exact path={Paths.newsletter() }
      render={()=><LoggedRoute 
  currentProfile={currentProfile}
