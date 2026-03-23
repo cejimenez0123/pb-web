@@ -165,9 +165,9 @@ const WorkshopContainer = () => {
 
   return (
     <IonContent style={{ "--background": "#f4f4e0" }} fullscreen className=''>
-      <div className='h-[100vh] overflow-hidden'>
+      <div className=' overflow-hidden'>
         {currentProfile ? (
-          <div className="text-emerald-800 mx-auto w-full shadow-sm sm:min-h-[30em] mt-12 flex flex-col text-left sm:w-80 p-4 rounded-lg">
+          <div className="text-emerald-800 max-w-[40em] mx-auto w-full shadow-sm sm:min-h-[30em] mt-12 flex flex-col text-left sm:w-80 p-4 rounded-lg">
 
             {/* Header */}
             <span className='flex my-8 flex-row justify-between'>

@@ -26,6 +26,7 @@ import Paths from "../../core/paths";
 import { Preferences } from "@capacitor/preferences";
 import { useParams } from "react-router";
 import { useDialog } from "../../domain/usecases/useDialog";
+import { getCurrentProfile } from "../../actions/UserActions";
 
 
 function toTitleCase(str) {
@@ -35,17 +36,18 @@ function toTitleCase(str) {
 }
 
 export default function AddStoryToCollectionContainer(props) {
-  const { setError, currentProfile, seo, setSeo } = useContext(Context);
+  const { setError,  seo, setSeo } = useContext(Context);
+  const {currentProfile} = useSelector(state=>state.users)
   // const dialog = useSelector(state=>state.users.dialog)
   const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
   const pathParams = useParams()
   const { id, type } = pathParams;
+
   const dispatch = useDispatch();
   const router = useIonRouter()
   const [token,setToken]=useState(null)
   const collectionInView = useSelector((state) => state.books.collectionInView);
   const pageInView = useSelector((state) => state.pages.pageInView);
-  // const [openDialog, setOpenDialog] = useState(false);
   const [search, setSearch] = useState("");
   const [item, setItem] = useState(type === "collection" ? collectionInView : pageInView);
 
@@ -96,19 +98,21 @@ let dia = {...dialog}
  openDialog(dia)
     //               
   }
-  useLayoutEffect(() => {
-    if (currentProfile) {
-      dispatch(setCollections({ collections: currentProfile.collections }));
-    }
-
-  }, [currentProfile, id]);
-
-   useLayoutEffect(() => {
-    getContent();
+  useEffect(() => {
+    // if (currentProfile) {
    
-  }, [navigate]);
+    currentProfile &&  dispatch(setCollections({ collections: currentProfile.collections }));
+    // }
+
+  }, [currentProfile,collectionInView,pageInView]);
+  useEffect(()=>{
+    dispatch(getCurrentProfile())
+    getContent()
+  },[])
+ 
 
   const getContent = () => {
+    console.log("FDFD")
     switch (type) {
       case "story":
         dispatch(getStory({ id })).then((res) => {
@@ -150,8 +154,8 @@ let dia = {...dialog}
   if (!item) {
     return (
       <IonContent fullscreen={true} className="ion-padding" scrollY>
-        <IonSkeletonText animated style={{ width: "96vw", height: 150, margin: "2rem auto", borderRadius: 18 }} />
-        <IonSkeletonText animated style={{ width: "96vw", height: 400, margin: "2rem auto", borderRadius: 18 }} />
+        <IonSkeletonText animated style={{ width: "50em", height: 150, margin: "2rem auto", borderRadius: 18 }} />
+        <IonSkeletonText animated style={{ width: "50em", height: 400, margin: "2rem auto", borderRadius: 18 }} />
       </IonContent>
     );
   }
@@ -169,7 +173,7 @@ let dia = {...dialog}
     <ErrorBoundary>
       <IonContent fullscreen={true}className="ion-padding pt-12 ion-text-emerald-800" scrollY >
 
-      <div className="flex flex-col sm:max-w-[50em] mx-auto ">
+      <div className="flex flex-col max-w-[50em] mx-auto ">
             <div>{collectionInView.purpose??""}</div>
             <div className="flex flex-row">
            <div
@@ -196,7 +200,7 @@ let dia = {...dialog}
           </div>
           </div>
         <div
-          className="border-b-2 border-emerald-600 rounded-lg mx-auto  mt-8 mb-4 px-2"
+          className="rounded-lg max-w-[50em] mx-auto  mt-8 mb-4 px-2"
         
         >
           <div className="flex flex-col w-full pb-6 mx-auto sm:w-[50em] pt-4">

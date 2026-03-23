@@ -51,7 +51,7 @@ export default function IndexItem({item,type}) {
   }}
     const handleEditClick = (comp)=>{
  
-      if(type=="collection"){
+      if(item.storyIdList){
         router.push(Paths.editCollection.createRoute(comp.id))
       }else{
          dispatch(setHtmlContent({html:comp.data}))
@@ -191,7 +191,7 @@ closeDialog()
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
         ()=>handleEditClick(item)}><a className=" ">Edit</a></li>
-       {type!="collection"?<li className=" " onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
+       {!item.storyIdList?<li className=" " onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
        {canUserAdd?<li className=" no-underline" onClick={handleAddToClick}><a className="no-underline "><IonText>{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</IonText></a></li>:null}
          </ul>
   </div>
@@ -200,7 +200,7 @@ closeDialog()
   : !canUserEdit?(
   
    <div className="dropdown my-auto relative w-fit dropdown-left">
-   <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg classname="my-auto mx-auto  " src={addBox}/></div>
+   <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg classname="my-auto mx-auto  " style={{height:"3em",width:"3em"}} src={addBox}/></div>
    <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box  w-52 p-2 shadow">
   {!item.isPrivate && type==collectionStr&&
         <li className="no-underline "  onClick={handleAddToLibrary}><a className="no-underline"> Add Collection to Library</a></li>}
