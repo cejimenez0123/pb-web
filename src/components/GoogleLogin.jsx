@@ -126,61 +126,6 @@ const router =useIonRouter()
   loadStoredUser();
 }, []);
 
-  // useEffect(() => {
-  //   const loadStoredUser = async () => {
-  //     setPending(true);
-  //     try {
-  //       const [email, name, googleId, driveToken, expiry, idToken] =
-  //         await Promise.all([
-  //           Preferences.get({ key: "userEmail" }),
-  //           Preferences.get({ key: "userName" }),
-  //           Preferences.get({ key: "googleId" }),
-  //           Preferences.get({ key: driveTokenKey }),
-  //           Preferences.get({ key: "googledrivetoken_expiry" }),
-  //           Preferences.get({ key: "googleIdToken" }),
-  //         ]);
-
-  //       const valid =
-  //         driveToken.value &&
-  //         expiry.value &&
-  //         Date.now() < parseInt(expiry.value, 10);
-
-  //       if (
-  //         email.value &&
-  //         googleId.value &&
-  //         valid &&
-  //         email.value !== "undefined"
-  //       ) {
-  //         setAccessToken(driveToken.value);
-  //         setIdToken(idToken.value);
-  //         const info = {
-  //           email: email.value,
-  //           name: name.value,
-  //           googleId: googleId.value,
-  //           uId: googleId.value,
-  //         };
-  //         setUserInfo(info);
-  //         setSignedIn(true);
-  //         onUserSignIn?.({
-  //           email: email.value,
-  //           name: name.value,
-  //           googleId: googleId.value,
-  //           driveAccessToken: driveToken.value,
-  //           idToken: idToken.value,
-  //         });
-  //       }
-  //     } catch (e) {
-  //       console.error("Error loading stored user:", e);
-  //     } finally {
-  //       setPending(false);
-  //     }
-  //   };
-  //   loadStoredUser();
-  // }, [ router, onUserSignIn]);
-
-  // ---------------------------
-  // 4️⃣ Native (mobile) login
-  // ---------------------------
   const nativeGoogleSignIn = async () => {
        sendGAEvent("login_start", {
       method: "google",
@@ -237,9 +182,9 @@ const router =useIonRouter()
         idToken,
       });
 
-      dispatch(logIn({ email: profile.email, uId: profile.id, isNative })).then(res=>{
-        router.push(Paths.home)
-      })
+      // dispatch(logIn({ email: profile.email, uId: profile.id, isNative })).then(res=>{
+      //   router.push(Paths.home)
+      // })
     } catch (err) {
      
   sendGAEvent("login_error", {
@@ -333,7 +278,9 @@ const router =useIonRouter()
                 idToken: response.credential,
               });
 
-              dispatch(logIn({ email: info.email, uId: info.googleId, isNative }));
+              dispatch(logIn({ email: info.email, uId: info.googleId, isNative })).then(res=>{
+                   router.push(Paths.home)
+              })
             } else {
               setLoginError("Failed to get Google Drive token.");
             }

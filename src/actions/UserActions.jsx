@@ -17,7 +17,7 @@ try{        const {uId,email,password,idToken,isNative}=params
    
         
         const {token}=authData  
-
+console.log(authData)
   
          await Preferences.set({key:"token",value:token})
   

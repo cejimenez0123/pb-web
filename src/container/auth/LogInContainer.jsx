@@ -211,7 +211,16 @@ openDialog(dia)
         </div>
          <GoogleLogin
      
-     
+     onUserSignIn={({
+        email,
+        name,
+        googleId,
+       
+        idToken,
+     })=>{
+        
+        dispatchLogin({email,googleId,isNative})
+        }}
             
 
     

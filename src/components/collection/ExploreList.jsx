@@ -25,7 +25,7 @@ export default function ExploreList({collection}){
         <div className="flex min-h-[14rem] flex-row overflow-x-auto bg-cream overflow-y-clip h-[14rem] space-x-4 no-scrollbar">
         
     <IonList className="flex flex-row overflow-x-scroll bg-cream">
-            {items.map((item,i)=><BookListItem key={item.id+i} book={item}/>)}
+            {items?.map((item,i)=><BookListItem key={item.id+i} book={item}/>)}
             </IonList>
 </div>
 </div>
