@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { registerUser, postActiveUser, findWorkshopGroup } from "../../actions/WorkshopActions";
+import { registerUser, postActiveUser, findWorkshopGroup, fetchWorkshopGroups, findWorkshopGroups } from "../../actions/WorkshopActions";
 import { useSelector, useDispatch } from 'react-redux';
 import checkResult from '../../core/checkResult';
 import Paths from '../../core/paths';
@@ -16,6 +16,7 @@ import { setPagesInView } from '../../actions/PageActions';
 import { setCollections } from '../../actions/CollectionActions';
 import { useParams } from 'react-router';
 import GoogleMapSearch from "../collection/GoogleMapSearch";
+import ExploreList from '../../components/collection/ExploreList';
 
 const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.8890363605602 };
 
@@ -28,7 +29,7 @@ const WorkshopContainer = () => {
   const { currentProfile } = useSelector(state => state.users);
   const page                = useSelector(state => state.pages.pageInView);
   const { error, setError, setSuccess, setSeo } = useContext(Context);
-
+  const [workshops,setWorkshops]=useState([])
   const [loading,  setLoading]  = useState(false);
   const [radius,   setRadius]   = useState(50);
   const [isGlobal, setIsGlobal] = useState(true);
@@ -82,11 +83,31 @@ const WorkshopContainer = () => {
   useEffect(() => {
     setLocation(isGlobal ? null : DEFAULT_LOCATION);
   }, [isGlobal]);
-
+  useEffect(()=>{
+fetchWorkshops()
+  },[isGlobal,currentProfile])
+    const fetchWorkshops = async () => {
+    if (!currentProfile) return;
+    try {
+      const res = await dispatch(findWorkshopGroups({
+        location: currentProfile.location,
+        radius: 50,
+        global: isGlobal
+      }));
+      checkResult(res, ({ groups }) => {
+         let sort = [...groups].sort((a,b)=>new Date(b.updated)-new Date(a.updated))
+        setWorkshops(prev => ({ ...prev, workshops: sort|| [] }));
+      });
+    } catch (err) {
+      console.error("Failed fetching workshops:", err);
+    }
+  };
   useEffect(() => {
     if (!isGlobal) {
       isNative ? requestLocation() : webRequestLocation();
+      
     }
+ 
   }, [isGlobal]);
 
   useEffect(() => {
@@ -186,7 +207,7 @@ const WorkshopContainer = () => {
                   type="checkbox"
                   checked={isGlobal}
                   onChange={handleGlobal}
-                  className={`toggle border-2 border-emerald-800 border-opacity-50 my-auto
+                  className={`toggle border-2 mx-4 border-emerald-800 border-opacity-50 my-auto
                     ${isGlobal ? 'toggle-success bg-emerald-600' : 'toggle-success bg-slate-400'}`}
                 />
               </label>
@@ -226,6 +247,9 @@ const WorkshopContainer = () => {
           <div className='text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col text-left sm:w-80 p-4 skeleton bg-slate-100 rounded-lg' />
         )}
       </div>
+      <div className='mt-8'>
+         <ExploreList items={workshops} />
+         </div>
     </IonContent>
   );
 };

@@ -113,6 +113,7 @@ useScrollTracking({
       }
     }
   };
+  useEffect(fetchStory,[])
   const soCanUserSee=()=>{
     if(!page.isPrivate){
       return true

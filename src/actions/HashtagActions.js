@@ -105,7 +105,7 @@ async ({name,colId,profile},thunkApi) => {
 })
 const deleteHashtagCollection = createAsyncThunk("hashtag/deleteHashtagCollection", 
 async ({colId,hashId},thunkApi) => {
-    console.log(hashId)
+ 
         let data = await hashtagRepo.deleteCollection({colId,hashId})
       return data
   

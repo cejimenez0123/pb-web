@@ -53,7 +53,7 @@ export default function OnboardingContainer(props) {
   ];
   useEffect(()=>{
     if(currentProfile && currentProfile.id){
-      router.push(Paths.myProfile)
+      router.push(Paths.home)
     }
   },[currentProfile])
   const [activeTab, setActiveTab] = useState('tab0');
@@ -399,77 +399,7 @@ const Step2 = ({ formData, updateFormData, handleTab }) => {
     );
   };
 
-//   const Step4 = ({ formData, updateFormData, onSave }) => {
-//     const handleSubmit = () => {
-//       onSave({
-//         workshopPreference: formData.workshopPreference,
-//         howFindOut: formData.howFindOut,
-//         platformFeatures: formData.platformFeatures,
-//       });
-   
-//     };
 
-//     return (
-//       <IonGrid>
-//         <IonCol className='text-left ion-padding'>
-//           {/* <IonItem> */}
-//           <IonRow>
-//           <WorkshopPreferenceSelector
-//             workshopPreference={formData.workshopPreference}
-//             setWorkshopPreference={val => updateFormData({ workshopPreference: val })}
-//           />
-//           </IonRow>
-//           {/* </IonItem> */}
-//           {/* <IonItem> */}
-//           <IonRow>
-            
-//             <IonLabel  className='pb-8'>
-//               How did you find out about Plumbum?
-//             </IonLabel>
-//             <IonTextarea
-//               rows={4}
-//               cols={48}
-//               value={formData.howFindOut}
-//               onIonInput={e => updateFormData({ howFindOut: e.target.value  })}
-//               color="success"
-//               fill="outline"
-//               className="ion-margin-bottom border-1 border-emerald-400 rounded-full h-16 text-lg"
-//               style={{ lineHeight: '4rem' }}
-//             />
-//           </IonRow>
-//           {/* </IonItem> */}
-// <IonItem>
-//           <IonLabel  color="success" className='ion-padding pb-8'>
-//             What features would make a writing platform most valuable to you?
-//           </IonLabel>
-//           <div className='mt-4'> 
-//           <IonTextarea
-//             value={formData.platformFeatures}
-//             onIonInput={e => updateFormData({ platformFeatures: e.target.value  })}
-//             color="success"
-//             fill="outline"
-//             className="border-1 border-emerald-600"
-//             style={{ '--border-color': 'var(--ion-color-emerald-600)' }}
-//             rows={4}
-//             cols={48}
-//           />
-//           </div>
-// </IonItem>
-//           <div className="btn-container text-right">
-//             <IonText
-//               onClick={handleSubmit}
-//               className="emerald-gradient-text-btn text-lg btn bg-emerald-600 rounded-full text-white"
-//               style={{
-//                 opacity: validateEmail(formData.email) ? 1 : 0.6,
-//                 pointerEvents: validateEmail(formData.email) ? 'auto' : 'none',
-//               }}
-//             >
-//               Apply
-//             </IonText>
-//           </div>
-//         </IonCol>
-//       </IonGrid>
-//     );
 //   };
 const Step4 = ({ formData, updateFormData, onSave }) => {
   // Local state for this step

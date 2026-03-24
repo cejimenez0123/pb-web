@@ -28,8 +28,7 @@ const router = useIonRouter()
 
     return sortItems(others, books) || [];
   }, [items, pathname]);
-// console.log("items",items)
-  // Initialize displayed items when sortedItems changes
+
   useEffect(() => {
     setDisplayedItems(sortedItems.slice(0, itemsPerPage));
     setHasMore(sortedItems.length > itemsPerPage);

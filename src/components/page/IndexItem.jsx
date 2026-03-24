@@ -51,25 +51,24 @@ export default function IndexItem({item,type}) {
   }}
     const handleEditClick = (comp)=>{
  
-      if(item.storyIdList){
-        router.push(Paths.editCollection.createRoute(comp.id))
-      }else{
-         dispatch(setHtmlContent({html:comp.data}))
+      if(comp.author){
+        dispatch(setHtmlContent({html:comp.data}))
         dispatch(setEditingPage({page:comp}))
         dispatch(setPageInView({page:comp}))
-        router.push(Paths.editPage.createRoute(comp.id), "forward", "replace");
-      }  
+        router.push(Paths.editPage.createRoute(comp.id));
+      }else{
+        router.push(Paths.editCollection.createRoute(comp.id))
+      } 
     }
 
     const handleNavigate=()=>{
    
-    if(type!="story"){
+    if(item.author){
+      dispatch(setPageInView({page:item}))
+              router.push(Paths.page.createRoute(item.id))
+    }else{
               dispatch(setCollectionInView({collection:item}))
               router.push(Paths.collection.createRoute(item.id))
-        }else{
-           
-              dispatch(setPageInView({page:item}))
-              router.push(Paths.page.createRoute(item.id))
         }
 
     }
@@ -114,10 +113,10 @@ const soCanUserEdit = () => {
 };
 
     const handleAddToClick = ()=>{
-       if(item.storyIdList){
+       if(item.author){
+        router.push(Paths.addStoryToCollection.story(item.id))
+       }else{
       router.push(Paths.addToCollection.createRoute(item.id))
-      }else{
-      router.push(Paths.addStoryToCollection.story(item.id))
       }
     }
 
@@ -128,7 +127,7 @@ const handleAddToLibrary=()=>{
 }
 const [feedback,setFeedback]=useState()
    const handleFeedback=()=>{
-console.log("TOCG")
+
 openDialog({disagree:()=>resetDialog(),agreeText:"Get Feedback",agree:()=>{
   resetDialog()
     const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
@@ -162,7 +161,7 @@ handlePostPublic={()=>{
 handleClose={()=>{
 closeDialog()
 }} />})}
-      
+
     return(
   <div className="w-[100%]  overflow-visible ">
                 <div   className="border-3  my-2   px-8 flex flex-row justify-between  mx-auto shadow-sm  rounded-full  min-h-[6rem] w-full  py-[1.4em] border-blueSea border-opacity-[40%]">
@@ -191,7 +190,7 @@ closeDialog()
   <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
   <li className="" onClick={
         ()=>handleEditClick(item)}><a className=" ">Edit</a></li>
-       {!item.storyIdList?<li className=" " onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
+       {item.author?<li className=" " onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
        {canUserAdd?<li className=" no-underline" onClick={handleAddToClick}><a className="no-underline "><IonText>{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</IonText></a></li>:null}
          </ul>
   </div>

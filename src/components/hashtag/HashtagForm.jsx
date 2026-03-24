@@ -36,7 +36,7 @@ const fetchHashtags=(item)=>{
         if(!isStory){
           dispatch(fetchCollectionHashtags({profile:currentProfile,colId:item.id})).then(res=>{
                 checkResult(res,payload=>{
-console.log("ollectionHashtags",payload)
+
                     setHashtags(payload.hashtags)
                   
             
@@ -56,7 +56,7 @@ console.log("ollectionHashtags",payload)
       // }
 }
     const deleteHashtag =  (hash) =>{
-      console.log(hash)
+    
    const {hashtag}=hash
       if(!isStory){
         dispatch(deleteHashtagCollection({colId:item.id,hashId:hash.id})).then(res=>{
@@ -93,7 +93,7 @@ try{
    
           dispatch(createHashtagCollection({name:inputValue.trim().toLocaleLowerCase(),colId:item.id,profile:currentProfile})
         ).then(res=>{
-          console.log("ASSA",res)
+         
          if(res && res.payload){ 
           setHashtags(prev=>[...prev,res.payload.hashtag])
               setInputValue('');

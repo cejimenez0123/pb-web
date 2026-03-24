@@ -20,11 +20,12 @@ import {
   useIonRouter,
  
 } from "@ionic/react";
+import edit from "../../images/icons/edit.svg"
 
 import { AnimatePresence, motion } from "framer-motion";
 import add from "../../images/icons/add_circle.svg"
 import archive from "../../images/icons/archive.svg"
-import edit from "../../images/icons/edit.svg"
+
 import { useDispatch, useSelector } from "react-redux";
 
 import PageList from "../../components/page/PageList";
@@ -67,7 +68,7 @@ export default function CollectionContainer() {
   const collection = useSelector(state => state.books.collectionInView);
   const collections = useSelector(state => state.books.collections);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isArchived, setIsArchived] = useState(false);
  
@@ -98,7 +99,7 @@ export default function CollectionContainer() {
   function findRole(col,profile) {
 
 
-    if (col&& profile && col.profileId == profile.id) {
+    if ((col&& profile) && col.profileId == profile.id) {
       setRole(new Role("owner", profile, col, RoleType.editor, new Date()));
       setCanUserAdd(true)
       setCanUserSee(true)
@@ -174,7 +175,7 @@ return
 useEffect(() => {
   getCol(id);
   
-}, [id]); 
+}, [id,currentProfile]); 
 
   useEffect(()=>{
     collection && currentProfile && findRole(collection,currentProfile)
@@ -227,7 +228,7 @@ canUserSee&& getContent()
 
 },[collection])
 const getCol = async (id) => {
-  setLoading(true);
+ 
   try {
 
     if (currentProfile) {
@@ -236,15 +237,15 @@ const getCol = async (id) => {
           checkResult(
             res,
             (payload) => {
-         
+              setLoading(false);
               soUserCanEdit()
               dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
               setCanUserSee(true)
-              setLoading(false);
+             
        
             },
             (err) => {
-            
+             setLoading(false);
               if (err.status === 403) {
            console.log(err)
                 setError("Access Denied: You do not have permission to view this collection.");
@@ -271,15 +272,17 @@ const getCol = async (id) => {
           checkResult(
             res,
             (payload) => {
+               setLoading(false);
               if (payload.collection) {
                 soUserCanEdit()
                 dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
                 setCanUserSee(true)
-                setLoading(false);
+                // setLoading(false);
               
               } 
             },
             (err) => {
+               setLoading(false);
               if (err.status === 403) {
          
                 setError("Access Denied: You do not have permission to view this collection.");
@@ -289,7 +292,7 @@ const getCol = async (id) => {
                  console.log(err)
                 setError(err.message || "Failed to load collection.");
               }
-              setLoading(false);
+              // setLoading(false);
             }
           );
         })
@@ -463,24 +466,31 @@ const FollowBtn=()=>     {return!role ? (
                 {bookmarkLoading && <IonSpinner name="dots" />}
               </div>}
       const ArchiveBtn=()=> {return<div
-              className={`${isArchived?"border border-soft border-2 bg-soft rounded-full w-[3rem] h-[3rem] p-2":"bg-blueSea w-[3rem] rounded-full h-[3rem] p-2 my-auto"}`}
+              className={` flex  w-[3rem] my-auto h-[3rem] ${isArchived?"border border-soft border-2 bg-soft rounded-full p-2":"bg-blueSea w-[3rem] h-[3rem] p-2 rounded-full  "}`}
                 onClick={() => handleArchive()}
                 color={isArchived ? "warning" : "medium"}
                 disabled={bookmarkLoading}
               >
-                <img className="w-[2em] h-[2em] pt-1 mx-auto" src={archive} />
+                <IonImg  style={{height:"2.5em",width:"2.5em",filter:"invert(100%)"}}  className=" my-auto mx-auto" src={archive} />
                 {bookmarkLoading && <IonSpinner name="dots" />}
               </div>}
-
+const EditBtn=()=>{
+   
+  return canUserEdit?<div 
+      className={` border border-soft border-2 bg-soft rounded-full w-[3rem] my-auto h-[3rem]  p-2  rounded-full  `}
+             onClick={()=>router.push(Paths.editCollection.createRoute(id))}>
+        <IonImg   style={{height:"2.5em",width:"2.5em",filter:"invert(100%)"}} className="pb-1" src={edit}/></div>
+:null
+}
 
   if (loading||collection.id!=id) {
     return (
       <IonContent>
 <div>
        
-        <div className="ion-padding mx-auto">
-          <IonSkeletonText animated style={{ width: '96vw', height: 150, margin: "2rem auto", borderRadius: 18 }} />
-          <IonSkeletonText animated style={{ width: '96vw', height: 400, margin: "2rem auto", borderRadius: 18 }} />
+        <div className="ion-padding max-w-[50em] mx-auto">
+          <IonSkeletonText animated style={{ width: '100%', height: 150, margin: "2rem auto", borderRadius: 18 }} />
+          <IonSkeletonText animated style={{ width: '100%', height: 400, margin: "2rem auto", borderRadius: 18 }} />
         </div>
       </div>
       </IonContent>
@@ -513,27 +523,23 @@ const FollowBtn=()=>     {return!role ? (
 
   <IonContent style={{"--background":"#f4f4e0"}} scrollY={true} fullscreen className="pb-24 pt-12">
 
-    <div className="">
+    {/* <div className=""> */}
         
-    <div className="pt-8">
+    <div className="pt-8  mx-auto" >
  
-          <IonCardHeader className="mx-auto ">
-            <div className="flex items-center justify-between px-4 gap-2">
-              <div>
-                <IonCardTitle className="ion-text-wrap lora-medium">{collection?.title}</IonCardTitle></div>
-                 {/* {canUserEdit &&<div><IonImg
-                 onClick={() => router.push(Paths.editCollection.createRoute(id))}
-                  src={edit} className="bg-blueSea min-w-12 max-h-12 rounded-full p-2 btn"/>
-            </div>} */}
-           </div>
-          </IonCardHeader>
-          {/* <div className="mx-auto px-6 "> */}
-        <IonCardContent className="ion-padding">
+      
+          
+          
+        <IonCardContent style={{maxWidth:"50em",margin:"auto"}}className="ion-padding">
+         <div> <IonText className="lora-bold"><h1>{collection?.title}</h1></IonText>
+        
+</div>
             <IonText color="medium w-full bg-emerald-100 min-h-6 bg-red-200">
               <h6>{collection.purpose}</h6>
             </IonText>
             <div className="my-4 p-4 flex flex-row gap-4">
-      <FollowBtn/>       <SaveBtn/><ArchiveBtn/>
+      <FollowBtn/>       <SaveBtn/><ArchiveBtn/> 
+<EditBtn/>
       </div>
       <div onClick={()=>{
         router.push(Paths.addToCollection.createRoute(collection.id))
@@ -555,8 +561,7 @@ const FollowBtn=()=>     {return!role ? (
 
 
         <ExploreList collection={collection} />
-        </div>
-        {/* </div> */}
+       
 </IonContent>
         </ErrorBoundary>
   );
@@ -656,7 +661,7 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
 
 const PageTab = ({ collections }) => {
   const pagesInView = useSelector(state => state.pages.pagesInView);
-console.log("FREdef",pagesInView)
+
   return (
     <div className="py-4">
       {/* <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4"> */}

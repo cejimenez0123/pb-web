@@ -40,7 +40,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 function DashboardContainer() {
 
   const currentProfile = useSelector(state=>state.users.currentProfile)
-  // const { setSeo, seo ,isNotPhone} = useContext(Context);
+
   const router = useIonRouter()
   const dispatch = useDispatch();
    const collectionsRaw = useSelector(state => state.books.collections) ?? [];
@@ -251,8 +251,16 @@ scrollY: false,
 });
 
   };
-    let saves = [...currentProfile?.profileToCollections[1]?.collection.childCollections.map(col=>col.childCollection),...currentProfile.profileToCollections[1].collection.storyIdList.map(str=>str.story)].slice(0,3)
-  return (
+   let saves = [
+  ...(
+    currentProfile?.profileToCollections?.[1]?.collection?.childCollections?.map(col => col.childCollection)
+    || []
+  ),
+  ...(
+    currentProfile?.profileToCollections?.[1]?.collection?.storyIdList?.map(str => str.story)
+    || []
+  )
+].slice(0, 3);  return (
         <ErrorBoundary>
 
           <div className='bg-cream h-[100%]'>
@@ -319,7 +327,7 @@ scrollY: false,
             <div  className='w-fit mx-auto '>
               <div className='flex flex-row justify-between'><h4 className='text-xl mx-4 lora-medium  '>Recent Pages</h4><h4 className='my-auto mx-4' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
               <div className='flex flex-col gap-4 px-4 py-4'>
-                {[...(currentProfile.stories ?? [])]
+                {[...(currentProfile?.stories || [])]
   .sort((a, b) => a.updated - b.updated)
   .slice(0, 3)
   .map(story => <StoryItem story={story}/>)}

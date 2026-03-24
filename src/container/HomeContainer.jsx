@@ -20,7 +20,7 @@ import ErrorBoundary from '../ErrorBoundary.jsx';
 
 import { useDialog } from '../domain/usecases/useDialog.jsx';
 // import requestLocation from '../core/requestLocation.jsx';
-import { fetchWorkshopGroups, findWorkshopGroups, registerUser } from '../actions/WorkshopActions.jsx';
+import { findWorkshopGroups} from '../actions/WorkshopActions.jsx';
 import { getCurrentProfile } from '../actions/UserActions.jsx';
 import requestLocation from '../core/requestLocation.js';
 import DataElement from '../components/page/DataElement.jsx';
@@ -371,7 +371,7 @@ return<ErrorBoundary>
 <div className="relative flex flex-col justify-around mx-auto mt-2 max-w-[60rem] rounded-lg gap-4">
 
     <div>
-    <h4 className='text-[1rem] text-emerald-800 font-bold mb-4'>
+    <h4 className='text-[1rem] px-4 text-emerald-800 font-bold mb-4'>
       What's happening in your communities?
     </h4><div >
    <IonList style={{backgroundColor:"#f4f4e0"}} ><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden  w-full'>

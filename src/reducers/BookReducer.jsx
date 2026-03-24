@@ -157,7 +157,7 @@ state.collectionInView = payload.collection
     state.error = "Error Saving Role"
 }).addCase(getMyCollections.fulfilled,(state,{payload})=>{
     let cols = state.collections
-    console.log(payload)
+ 
     if( payload.collections){
       let collections =  payload.collections
     

@@ -22,7 +22,7 @@ function DiscoveryContainer() {
   const  currentProfile = useSelector(state=>state.users.currentProfile)
 
   const dispatch = useDispatch();
-    const [tab, setTab] = useState("home");
+    const [tab, setTab] = useState("dash");
   const cols = useSelector(state => state.books.collections);
 
   const pagesInView = useSelector(state => state.pages.pagesInView);
@@ -190,7 +190,7 @@ export default DiscoveryContainer;
 }}
 
           >
-            Discovery
+           Home
           </button>
            {currentProfile&&currentProfile.id?<button
             className={`px-4 py-2 transition-colors w-[45vw]   sm:w-[20em] lg:w-[15em] ${

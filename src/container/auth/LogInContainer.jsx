@@ -73,11 +73,11 @@ function LogInCard({setLogInError}){
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
-                  console.log(payload)
+                  
                     if(payload && payload.profile && payload.profile.id){
 
                    
-                    router.push(Paths.home,"root")
+                    router.push(Paths.home,"root","replace")
                      }else{
                         setError("Error with Profile")
                      }
@@ -103,7 +103,7 @@ setError("User Not Found. Apply Below")
         if(idToken){
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
-               
+                router.push(Paths.home,"root","replace")
            
 
                     setPending(false)
@@ -124,7 +124,7 @@ setError("User Not Found. Apply Below")
         
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
-          
+           router.push(Paths.home,"root","replace")
                 setPending(false)
             },err=>{
                

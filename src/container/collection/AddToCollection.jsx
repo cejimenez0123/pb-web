@@ -49,7 +49,7 @@ export default function AddToCollectionContainer() {
   const router = useIonRouter()
   const pathParams = useParams()
   const dispatch = useDispatch();
-  const { seo, setSeo } = useContext(Context);
+
   const [filterType, setFilterType] = useState(filterTypes.filter);
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const pending = useSelector((state) => state.books.loading);
@@ -233,7 +233,7 @@ text-[1rem]">
                   <IonImg
                     src={addedToCollection ? checked : emptyBox}
                     alt="toggle"
-                  className="w-[2rem] p-2 h-[2rem]"
+              className="w-[2rem] p-2  h-[2rem]"
                   />
                 </div>
                 </div>
@@ -257,7 +257,8 @@ text-[1rem]">
     }
 
     return (
-      <IonList>
+      <IonList 
+     style={{ "--background": "#f4f4e0" }}>
            <div className="flex gap-4 flex-col bg-cream">
         {filteredSortedCollections
           .filter((col) => col.title.toLowerCase().includes(search.toLowerCase()))
@@ -397,7 +398,7 @@ text-[1rem]">
             />
           </div>
 
-        <div className="sm:max-w-[50em] mx-auto">
+        <div className="sm:max-w-[50em] mx-auto bg-cream">
           <StoryCollectionTabs tab={tab} setTab={setTab}  storyList={storyList} colList={colList}/>
           </div>
        </div> 
