@@ -18,6 +18,7 @@ socket.on("connect_error", (error) => {
     console.error("connect error",JSON.stringify(error));
 });
 const registerUser = (profileId, location) => {
+
     socket.emit('register', { profileId, location });
   };
 

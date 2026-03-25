@@ -285,7 +285,9 @@ dispatch(updateProfile({
     setForm(prev => ({
       ...prev,
       location: coordinates
-    })); 
+    })
+  ); 
+    
   }}
 />
 </span>

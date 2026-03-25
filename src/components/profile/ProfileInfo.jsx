@@ -12,25 +12,122 @@ import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import Enviroment from "../../core/Enviroment"
 import { useDialog } from "../../domain/usecases/useDialog";
-const ProfileInfo = ({profile})=>{
-    const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
-        const dialog = useSelector(state=>state.users.dialog)
-   const {openDialog,closeDialog}=useDialog()
+// const ProfileInfo = ({profile})=>{
+//     const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
+//         const dialog = useSelector(state=>state.users.dialog)
+//    const {openDialog,closeDialog}=useDialog()
 
-    const dispatch = useDispatch()
-    const handleDialogOpen=()=>{
+//     const dispatch = useDispatch()
+//     const handleDialogOpen=()=>{
  
-  openDialog({text: <ReferralForm onClose={()=>  closeDialog()}/>,breakpoint:1})
+//   openDialog({text: <ReferralForm onClose={()=>  closeDialog()}/>,breakpoint:1})
       
   
 
-    }
-     useEffect(() => {
-    let isMounted = true;
-    async function fetchImage() {
+//     }
+//      useEffect(() => {
+//     let isMounted = true;
+//     async function fetchImage() {
 
-            if(isValidUrl(profile.profilePic)){
-                setPictureUrl(profile.profilePic)
+//             if(isValidUrl(profile.profilePic)){
+//                 setPictureUrl(profile.profilePic)
+         
+//             }else{
+//              const src = Enviroment.imageProxy(profile.profilePic)
+
+//                     setPictureUrl(src)
+//             }
+              
+//             }
+
+
+//     fetchImage();
+//     return () => (isMounted = false);
+//   }, [profile]);
+//     const openFollowersDialog = () => {
+//         let dia = {};
+  
+//         dia.isOpen = true;
+//         dia.disagreeText = "Close";
+//         dia.title = null
+//         dia.text = (
+//           <div className="card min-h-[20em] min-w-[30em] p-6 rounded-lg">
+//             <div className="mx-4">
+//               <IonImg
+//                 onClick={() => {
+//               closeDialog()}}
+//               />
+//             </div>
+//              <FollowerCard followers={profile.followers} />
+//           </div>
+//         );
+//         dia.onClose = () =>   closeDialog()
+     
+//         // No agree button for this one, so we leave dia.agree null
+//         dia.agreeText = null;
+//         dia.agree = null;
+//       openDialog(dia)
+     
+//       };
+
+//     if(!profile){
+//         return <div className="skeleton h-[100%] w-24"/>
+//     }
+
+//     const ProfilePic = ({ url }) => (
+//   <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mx-auto rounded-full overflow-hidden">
+//     <img
+//       className="w-full h-full object-cover"
+//       src={url}
+//       alt="profile"
+//     />
+//   </div>
+// );
+//     return (  
+      
+//         <div className="flex  h-[15em]   w-[100vw] sm:w-[100%] flex-col   ">                       
+//     <div className='flex-row   mx-auto sm:mx-0 justify-between  sm:justify-start flex   '>
+//           <div className="flex ml-1 flex-col ">
+//     <ProfilePic url={pictureUrl}/>
+//  <IonText className='text-xl pt-4 mx-auto text-emerald-900 font-bold'>{profile.username.toLowerCase()}</IonText> 
+
+// </div>   
+//    </div>
+   
+//      <div>
+//        <div className='w-[100%] text-left '>
+//         <h6 className='sm:max-h-48 md:max-w-60  my-4 sm:w-60  text-[1em] text-center sm:text-left '>
+//             {profile.selfStatement}</h6></div> 
+          
+//         </div>
+   
+//        {/* <div className="w-[100%] mt-2  min-w-[20em] px-2 items-baseline flex justify-between flex-row ">
+        
+//             <div  
+//             onClick={()=>openFollowersDialog()}
+//             className="text-center flex-col flex ">
+//                 <IonText className="text-[1rem]  ">Followers</IonText>
+//                 <IonText className="text-[1rem] ">{profile.followers?.length}</IonText>
+//             </div>
+// <div className="flex "> 
+// <h6 onClick={()=>handleDialogOpen()}className='  text-[1rem] '>Refer Someone?</h6>
+    
+// </div>
+// </div> */}
+//            {/* </div>                  */}
+//                             </div>  )
+                            
+      
+// }
+
+// export default ProfileInfo
+const ProfileInfo = ({ profile }) => {
+     
+    const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
+  async function fetchImage() {
+            if(!profile?.profilePic)return null
+            if(isValidUrl(profile?.profilePic)){
+                setPictureUrl(profile?.profilePic)
          
             }else{
              const src = Enviroment.imageProxy(profile.profilePic)
@@ -39,85 +136,29 @@ const ProfileInfo = ({profile})=>{
             }
               
             }
+        useEffect(() => {
+    let isMounted = true;
+ 
+    
 
 
     fetchImage();
     return () => (isMounted = false);
   }, [profile]);
-    const openFollowersDialog = () => {
-        let dia = {};
-  
-        dia.isOpen = true;
-        dia.disagreeText = "Close";
-        dia.title = null
-        dia.text = (
-          <div className="card min-h-[20em] min-w-[30em] p-6 rounded-lg">
-            <div className="mx-4">
-              <IonImg
-                onClick={() => {
-              closeDialog()}}
-              />
-            </div>
-             <FollowerCard followers={profile.followers} />
-          </div>
-        );
-        dia.onClose = () =>   closeDialog()
-     
-        // No agree button for this one, so we leave dia.agree null
-        dia.agreeText = null;
-        dia.agree = null;
-      openDialog(dia)
-     
-      };
 
-    if(!profile){
-        return <div className="skeleton h-[100%] w-24"/>
-    }
+  if (!profile) {
+    return <div className="h-20 w-20 rounded-full bg-gray-200" />;
+  }
 
-    const ProfilePic = ({ url }) => (
-  <div className="max-w-[8em] max-h-[8em] sm:max-w-24 sm:max-h-24 mx-auto rounded-full overflow-hidden">
-    <img
-      className="w-full h-full object-cover"
-      src={url}
-      alt="profile"
-    />
-  </div>
-);
-    return (  
-      
-        <div className="flex  h-[15em]   w-[100vw] sm:w-[100%] flex-col   ">                       
-    <div className='flex-row   mx-auto sm:mx-0 justify-between  sm:justify-start flex   '>
-          <div className="flex ml-1 flex-col ">
-    <ProfilePic url={pictureUrl}/>
- <IonText className='text-xl pt-4 mx-auto text-emerald-900 font-bold'>{profile.username.toLowerCase()}</IonText> 
-
-</div>   
-   </div>
-   
-     <div>
-       <div className='w-[100%] text-left '>
-        <h6 className='sm:max-h-48 md:max-w-60  my-4 sm:w-60  text-[1em] text-center sm:text-left '>
-            {profile.selfStatement}</h6></div> 
-          
-        </div>
-   
-       <div className="w-[100%] mt-2  min-w-[20em] px-2 items-baseline flex justify-between flex-row ">
-        {/* <div className="text-emerald-800 flex flex-row  "> */}
-            <div  
-            onClick={()=>openFollowersDialog()}
-            className="text-center flex-col flex ">
-                <IonText className="text-[1rem]  ">Followers</IonText>
-                <IonText className="text-[1rem] ">{profile.followers?.length}</IonText>
-            </div>
-<div className="flex "> 
-<h6 onClick={()=>handleDialogOpen()}className='  text-[1rem] '>Refer Someone?</h6>
-    
-</div>
-</div>
-           {/* </div>                  */}
-                            </div>  )
-                            
-      
-}
-
+  console.log("SDS",pictureUrl)
+  return (
+    <div className="max-h-20 max-w-20 rounded-full overflow-hidden">
+      <img
+        src={pictureUrl}
+        alt="profile"
+        className="w-full h-full object-cover"
+      />
+    </div>
+  );
+}; 
 export default ProfileInfo

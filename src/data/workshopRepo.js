@@ -25,7 +25,7 @@ async joinWorkshop({ profile, story, location, radius = 50, isGlobal = false }) 
   const query = new URLSearchParams({ radius, global: isGlobal });
   const res = await axios.post(
     `${this.url}/group/join?${query.toString()}`,
-    { profile, story, locale:location },
+    { profile, story, location },
     { headers }
   );
   return res.data;
@@ -49,7 +49,7 @@ async findYourWorkshops() {
   //    return res.data
   // }
     async postActiveUser({story,profile,location}){
-
+console.log("PST",location)
  const headers = await this.getAuthHeaders()
     const response = await axios.post(Enviroment.url+`/workshop/active-users`,{
         story:story,

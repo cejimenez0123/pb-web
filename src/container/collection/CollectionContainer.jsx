@@ -203,7 +203,7 @@ useEffect(() => {
       if (currentProfile.id === collection.profileId) {
         type = RoleType.editor;
       }
-    
+    if(!collection && !collection.id){return }
       dispatch(postCollectionRole({
         type: type,
         profileId: currentProfile.id,
@@ -237,15 +237,17 @@ const getCol = async (id) => {
           checkResult(
             res,
             (payload) => {
+                console.log("RESXL",payload)
               setLoading(false);
               soUserCanEdit()
-              dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
+              dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
               setCanUserSee(true)
              
        
             },
             (err) => {
              setLoading(false);
+              //  console.log("RESXL",payload)
               if (err.status === 403) {
            console.log(err)
                 setError("Access Denied: You do not have permission to view this collection.");
@@ -272,10 +274,11 @@ const getCol = async (id) => {
           checkResult(
             res,
             (payload) => {
+              console.log("RESX",payload)
                setLoading(false);
               if (payload.collection) {
                 soUserCanEdit()
-                dispatch(setPagesInView({pages:payload.collection.storyIdList.map(str=>str.story)}))
+                dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
                 setCanUserSee(true)
                 // setLoading(false);
               
@@ -376,7 +379,7 @@ const getCol = async (id) => {
   
   const handleArchive=()=>{
      if (!isArchived) {
-        if (collection && archiveCol) {
+        if (collection && collection.id && archiveCol) {
   
           setIsArchived(true)
           let params = { id: archiveCol.id, list: [collection.id], profile: currentProfile };
@@ -407,7 +410,7 @@ const getCol = async (id) => {
   const getContent=()=>{
           
         setHasMore(true)
-         if(collection.storyIdList&&collection.storyIdList.length){
+         if(collection && collection.storyIdList&&collection.storyIdList.length){
             const sorted = [...collection.storyIdList].filter(s=>s.story).sort((a,b)=>
                 
                     a.index && b.index && b.index<a.index
@@ -483,7 +486,7 @@ const EditBtn=()=>{
 :null
 }
 
-  if (loading||collection.id!=id) {
+  if (loading||collection?.id!=id) {
     return (
       <IonContent>
 <div>
@@ -542,6 +545,7 @@ const EditBtn=()=>{
 <EditBtn/>
       </div>
       <div onClick={()=>{
+         if(!collection && !collection.id){return }
         router.push(Paths.addToCollection.createRoute(collection.id))
       }}className="p-4 w-[100%] text-center shadow-sm border border-1 border-soft my-4 rounded-full">
                   <h5 className="mx-auto">Add to Collection</h5>
@@ -702,7 +706,7 @@ const PageTab = ({ collections }) => {
 
 
 const MemberTab = ({ collection }) => {
-
+  const router = useIonRouter()
   return (
     <>
      
@@ -715,13 +719,14 @@ const MemberTab = ({ collection }) => {
             <div className="flex flex-col bg-cream pt-4 min-h-[14rem] overflow-x-scroll">
               {collection.roles
           
-                .map((role, i) => (
-               <div className=" max-h-10    w-[100%] border-b border-1 border-soft  border-soft">
-                  <div className="flex flex-row max-h-8  justify-between  w-[100%]">
-                  <div ><ProfileCircle profile={role.profile}/></div><div className="my-auto">{role.role}</div>
+                .map((role, i) => {
+           
+               return<div onClick={()=>router.push(Paths.profile.createRoute(role.profileId))} className="  w-[100%] rounded-full border px-4 border-1 border-soft">
+                  <div className="flex flex-row justify-between  w-[100%]">
+                  <div className="py-4 "><ProfileCircle profile={role.profile}/></div><div className="my-auto">{role.role}</div>
                   </div>
                 </div>
-                ))}
+})}
             </div>
           </IonList>
         )}
@@ -732,19 +737,65 @@ const MemberTab = ({ collection }) => {
   );
 };
 
-const AboutTab = ({ collection }) => {
+const AboutTab = ({ collection}) => {
+  const [locationName,setLocationName]=useState("")
+  useEffect(()=>{
+    
+  async function city(){
+     let address 
+    
+   if( collection?.location && collection?.location?.city?.length==0){
+    address = await fetchCity(prof.location)
+      setLocationName(address)
+   }
+  
+  
+  }
+  city()
+  },[collection])
+
+  // const hashTags = prof?.hashtags ?? [];
+  if (!collection) return null;
+
 
   return (
-    <>
+    <div className="space-y-6">
+    <div>
+        <p className="text-sm text-gray-700 leading-relaxed">
+          <p className="text-xs text-gray-400 uppercase">Purpose</p>
+          {  collection.purpose}
+        </p>
+        </div>
+
+  
+        <div>
+         {collection?.location &&<> <p className="text-xs text-gray-400 uppercase">Location</p>
+          <p className="text-sm text-gray-700 mt-1">{collection.location.city}</p></>}
+        </div>
+   
+
+      </div>)
+    }
+
+
+// const AboutTab = ({ collection }) => {
+// // console.log("DSDS",collection)
+// if(collection && collection.id){
+//   return (
+//     <>
      
-        <h5 className="text-[1.2em]  pt-4 lora-bold text-emerald-800 px-1 pb-2">
-        Structure
-        </h5>
+//         <h5 className="text-[1.2em]  pt-4 lora-bold text-emerald-800 px-1 pb-2">
+//         Structure
+//         </h5>
+//         <h4></h4>
 
   
 
  
      
-    </>
-  );
-};
+//     </>
+//   );
+// }else{
+//   return null
+// }
+// };

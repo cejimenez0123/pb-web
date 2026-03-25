@@ -200,11 +200,14 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
     try {
       const token =(await Preferences.get({key:"token"})).value
       if(token){
+   
         let data = await profileRepo.getProfileProtected(params)
+        // console.log("fetch dfd",JSON.stringify(data))
         return{
           profile:data.profile
         }
       }else{
+            console.log("fetch BB")
         let data = await profileRepo.getProfile(params)
 
 
@@ -213,6 +216,7 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
         }
       }
     }catch(e){
+      console.log(e)
       return {
         error: new Error("ERROR:FETCH PROFILE:"+e.message)
       }

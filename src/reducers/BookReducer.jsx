@@ -148,7 +148,7 @@ state.collectionInView = payload.collection
     state.books= payload.books
 
 }).addCase(setCollections.type,(state,{payload})=>{
- 
+ console.log("PAYLOAD",payload)
     state.collections = payload
  
     })

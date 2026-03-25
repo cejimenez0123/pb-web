@@ -11,12 +11,13 @@ import Context from '../../context';
 import check from "../../images/icons/check.svg";
 import { Geolocation } from '@capacitor/geolocation';
 import DeviceCheck from '../../components/DeviceCheck';
-import { IonContent, useIonRouter } from '@ionic/react';
+import { IonContent, IonInput, useIonRouter } from '@ionic/react';
 import { setPagesInView } from '../../actions/PageActions';
 import { setCollections } from '../../actions/CollectionActions';
 import { useParams } from 'react-router';
 import GoogleMapSearch from "../collection/GoogleMapSearch";
 import ExploreList from '../../components/collection/ExploreList';
+import fetchCity from '../../core/fetchCity';
 
 const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.8890363605602 };
 
@@ -38,14 +39,17 @@ const WorkshopContainer = () => {
   // ─── Location ────────────────────────────────────────────────────────────────
 
   const applyLocation = (coords) => {
+
     setLocation(coords);
-    if (currentProfile?.id) registerUser(currentProfile.id, coords);
+    if (currentProfile?.id) registerUser(currentProfile.id, coords)
+ 
   };
 
   const webRequestLocation = () => {
     navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        applyLocation({ latitude: coords.latitude, longitude: coords.longitude });
+     async ({ coords }) => {
+        const name =await fetchCity({ latitude: coords.latitude, longitude: coords.longitude })
+        applyLocation({ latitude: coords.latitude, longitude: coords.longitude,city:name });
         setError(null);
         setLoading(false);
       },
@@ -65,7 +69,10 @@ const WorkshopContainer = () => {
       }
       if (permStatus.location === 'granted') {
         const { coords } = await Geolocation.getCurrentPosition();
-        applyLocation({ latitude: coords.latitude, longitude: coords.longitude });
+         const name =await fetchCity({ latitude: coords.latitude, longitude: coords.longitude })
+          
+         applyLocation({ latitude: coords.latitude, longitude: coords.longitude,city:name });
+        // applyLocation({ latitude: coords.latitude, longitude: coords.longitude,city:name });
         setError(null);
       } else {
         setError("Location permission denied. Please enable it in your device settings.");
@@ -81,7 +88,7 @@ const WorkshopContainer = () => {
   // ─── Effects ─────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    setLocation(isGlobal ? null : DEFAULT_LOCATION);
+    setLocation(DEFAULT_LOCATION);
   }, [isGlobal]);
   useEffect(()=>{
 fetchWorkshops()
@@ -114,12 +121,18 @@ fetchWorkshops()
     const timer = setTimeout(() => { setError(null); setSuccess(null); }, 4001);
     return () => clearTimeout(timer);
   }, [error]);
-
+console.log(isGlobal)
   useEffect(() => {
-    if (currentProfile) {
-      dispatch(postActiveUser({ story: page, profile: currentProfile, location })).then(res => {
+    // if (currentProfile) {
+      
+async function activeUser(params) {
+  
+console.log("DSDSXC",location)
+
+   currentProfile &&   dispatch(postActiveUser({ story: page, profile: currentProfile, location:location })).then(res => {
         checkResult(res,
           payload => {
+
             if (payload.profiles) {
               setError(null);
               setSuccess(`${payload.profiles.length} Users Active`);
@@ -130,7 +143,10 @@ fetchWorkshops()
         setLoading(false);
       });
     }
-  }, [page, currentProfile]);
+  
+  activeUser()
+    // }
+  }, [currentProfile]);
 
   useEffect(() => {
     const { pageId } = pathParams;
@@ -144,13 +160,80 @@ fetchWorkshops()
   }, [pathParams.pageId]);
 
   useEffect(() => {
-    if (currentProfile) registerUser(currentProfile.id, location);
-  }, [currentProfile, location]);
+    // console.log("DSSDXXCWQ",location)
+    async function fetch (){
+    const city = await fetchCity(location)
+   
+      if (currentProfile) registerUser(currentProfile.id, {longitude:location.longitude,latitude:location.latitude,city});
+ 
+
+    }
+    fetch()
+   }, [currentProfile, location]);
 
   // ─── Handlers ────────────────────────────────────────────────────────────────
+// const GlobalRadio=({handleGlobal})=>(
 
-  const handleGlobal = () => setIsGlobal(prev => !prev);
+//   <div className="flex w-full justify-between items-center">
+//   <h6 className="text-xl">
+//     {isGlobal ? "Global" : "Local"}
+//   </h6>
+//   <div
+//   onClick={() => {
+//     setIsGlobal(prev => !prev);
+//     console.log("TOGGLED");
+//   }}
+//   style={{
+//     width: "60px",
+//     height: "30px",
+//     borderRadius: "999px",
+//     background: isGlobal ? "#059669" : "#94a3b8", // emerald / slate
+//     display: "flex",
+//     alignItems: "center",
+//     padding: "4px",
+//     cursor: "pointer",
+//     transition: "background 0.2s ease"
+//   }}
+// >
+//   <div
+//     style={{
+//       width: "22px",
+//       height: "22px",
+//       borderRadius: "50%",
+//       background: "white",
+//       transform: isGlobal ? "translateX(30px)" : "translateX(0px)",
+//       transition: "transform 0.2s ease"
+//     }}
+//   />
+// </div>
+//   <div
+//     onClick={() => setIsGlobal(prev => !prev)}
+//     className="w-14 h-7 rounded-full p-1 cursor-pointer transition"
+//     style={{
+//       background: isGlobal ? "#059669" : "#94a3b8"
+//     }}
+//   >
+//     <div
+//       className="w-5 h-5 bg-white rounded-full transition"
+//       style={{
+//         transform: isGlobal ? "translateX(28px)" : "translateX(0px)"
+//       }}
+//     />
+//   </div>
+// </div>
+// )
 
+
+  {/* Toggle */}
+
+const clickGlobal = () => {
+  
+  setIsGlobal(prev=>!prev);
+
+};
+useEffect(()=>{
+  console.log("FUSDH",isGlobal)
+},[isGlobal])
   const handleGroupClick = () => {
     setLoading(true);
     setError(null);
@@ -186,7 +269,7 @@ fetchWorkshops()
 
   return (
     <IonContent style={{ "--background": "#f4f4e0" }} fullscreen className=''>
-      <div className=' overflow-hidden'>
+      {/* <div className=' overflow-hidden'> */}
         {currentProfile ? (
           <div className="text-emerald-800 max-w-[40em] mx-auto w-full shadow-sm sm:min-h-[30em] mt-12 flex flex-col text-left sm:w-80 p-4 rounded-lg">
 
@@ -200,21 +283,104 @@ fetchWorkshops()
 
             {/* Global / Local toggle */}
             <div className='flex flex-row mb-8 justify-start'>
-              <InfoTooltip text="Do you want to find users local to your area or around the world?" />
-              <label className='flex w-full flex-row justify-between'>
-                <h6 className='text-xl'>{isGlobal ? "Global" : "Local"}</h6>
-                <input
-                  type="checkbox"
-                  checked={isGlobal}
-                  onChange={handleGlobal}
-                  className={`toggle border-2 mx-4 border-emerald-800 border-opacity-50 my-auto
-                    ${isGlobal ? 'toggle-success bg-emerald-600' : 'toggle-success bg-slate-400'}`}
-                />
-              </label>
-            </div>
+              {/* <InfoTooltip text="Do you want to find users local to your area or around the world?" /> */}
+              {/* <label className='flex w-full flex-row justify-between'>
+                <h6 className='text-xl'>{isGlobal ? "Global" : "Local"}</h6> */}
+                {/* <input
+  type="checkbox"
+  // checked={isGlobal}
+  onClick={(e)=>{
+    console.log("DSDX")
+}}
 
+                  // className={`toggle border-2 mx-4 border-emerald-800 border-opacity-50 my-auto
+                  //   ${isGlobal ? 'toggle-success bg-emerald-600' : 'toggle-success bg-slate-400'}`}
+                /> */}
+              {/* </label> */}
+           <label className='flex w-full flex-row justify-between'>
+  <h6 className='text-xl'>{isGlobal ? "Global" : "Local"}</h6></label>
+                <div/>
+ <input
+    type="checkbox"
+    checked={isGlobal}
+    onChange={(e=>{
+      clickGlobal()
+      // console.log("DSDx",e.target.value)
+      
+    })}
+    // onChange={(e) => {console.log(e.target.checked)
+    //   setIsGlobal(e.target.checked)}}
+    className="toggle toggle-success mx-4"
+  /> 
+    {/* <div className='py-8 max-w-40'> */}
+    {/* <label>Global</label> */}
+   {/* <button
+onClick={clickGlobal}
+className={` w-20 h-20  rounded-full ${isGlobal?"bg-soft":"bg-blue-200"}  `}
+  
+  >Global</button>
+  </div> */}
+  {/* <GlobalRadio handleGlobal={clickGlobal} />
+   */}
+{/* // </label> */}
+            </div>
+            {/* {!isGlobal && ( */}
+  <div className="space-y-4">
+
+    {/* Collapse container */}
+    <div className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-box">
+      
+      <input type="checkbox" defaultChecked /> 
+
+      <div className="collapse-title text-lg font-medium">
+        Choose Location
+      </div>
+
+      <div className={`${isGlobal?"collapse-content":""} space-y-4`}>
+        
+        {/* Search */}
+        <GoogleMapSearch onLocationSelected={setLocation} />
+
+        {/* Radius */}
+        <div className="flex items-center border-2 border-emerald-800 border-opacity-50 rounded-full p-2">
+          <h6 className="text-xl ml-4">Radius:</h6>
+          <input
+            type="number"
+            value={radius}
+            onChange={(e) => setRadius(e.target.value)}
+            className="input max-w-24 text-xl bg-transparent ml-4"
+          />
+          <span className="ml-2">mi</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+{/* )} */}
+{/* <div
+  style={{
+    maxHeight: isGlobal ? "0px" : "500px",
+    opacity: isGlobal ? 0 : 1,
+    overflow: "hidden",
+    transition: "all 0.3s ease"
+  }}
+>
+  <GoogleMapSearch onLocationSelected={setLocation} />
+
+  <label className='mb-4 mt-8 border-2 border-emerald-800 flex flex-row p-2 border-opacity-50 rounded-full'>
+    <h6 className='text-xl my-auto ml-4'>Radius:</h6>
+    <input
+      type="number"
+      value={radius}
+      onChange={e => setRadius(e.target.value)}
+      className="input my-auto max-w-36 text-xl text-emerald-800 bg-transparent"
+    />
+    mi
+  </label>
+</div> */}
             {/* Local-only controls */}
-            {!isGlobal && (
+            {/* {!isGlobal && (
               <>
                 <GoogleMapSearch onLocationSelected={setLocation} />
                 <label className='mb-4 mt-8 border-2 border-emerald-800 flex flex-row p-2 border-opacity-50 rounded-full'>
@@ -228,7 +394,7 @@ fetchWorkshops()
                   mi
                 </label>
               </>
-            )}
+            )} */}
 
             {page && <PageWorkshopItem page={page} />}
 
@@ -246,7 +412,7 @@ fetchWorkshops()
         ) : (
           <div className='text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col text-left sm:w-80 p-4 skeleton bg-slate-100 rounded-lg' />
         )}
-      </div>
+      {/* </div> */}
       <div className='mt-8'>
          <ExploreList items={workshops} />
          </div>

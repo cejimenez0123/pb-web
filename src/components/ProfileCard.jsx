@@ -14,6 +14,17 @@ export default function ProfileCard({profile,onClickFollow,following}){
     const [pending,setPending]=useState(false)
     const {openDialog,closeDialog}=useDialog()  //   const FollowDiv=({following,onClickFollow})=>{
   const [locationName, setLocationName] = useState(null);
+  const [city,setCity]=useState("")
+    // const [location,setLocation]=useState("")
+  useEffect(()=>{
+    
+  async function city(){
+    let address =await fetchCity(profile.location)
+
+    setLocationName(address)
+  }
+  city()
+  },[profile])
   //     return following?
   //     (<div 
   //      className=" bg-emerald-600  w-[9rem] btn rounded-full text-white text-center"
@@ -23,43 +34,18 @@ export default function ProfileCard({profile,onClickFollow,following}){
   //                  onClick={onClickFollow}
   //      ><h5 className="text-emerald-800 py-3 font-bold">Follow</h5></div>)
   //  }
-    useEffect(() => {
-    const fetchCity = async () => {
-      console.l
-      if (!profile?.location?.latitude || !profile?.location?.longitude) return;
   
-      try {
-        const { latitude: lat, longitude: lng } = profile.location;
-  
-        const results = await getGeocode({
-          location: { lat, lng }
-        });
-  
-        const comps = results[0].address_components;
-  
-        const get = (type) =>
-          comps.find(c => c.types.includes(type))?.long_name;
-  
-        const city =
-          get("locality") ||
-          get("sublocality") ||
-          get("administrative_area_level_2");
-  
-        const state = get("administrative_area_level_1");
-  
-        setLocationName(
-          city && state ? `${city}, ${state}` : city || state || "Unknown"
-        );
-  
-      } catch (err) {
-        console.error("Reverse geocode failed:", err);
-      }
-    };
-  
-    fetchCity();
-  }, [profile])
   const FollowDiv = ({ following, onClickFollow }) => {
   // Common classes for both states
+    const [location,setLocation]=useState("")
+  useEffect(()=>{
+    
+  async function city(){let address =await fetchCity(profile.location)
+    console.log("DDSS<",address)
+    setLocation(address)
+  }
+  city()
+  },[profile])
   const baseClasses = "flex items-center justify-center w-[9rem] h-[3rem] rounded-full transition-all duration-200 cursor-pointer";
   
   return following ? (

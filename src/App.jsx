@@ -131,10 +131,7 @@ const libraries = ["places"];
       googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
       libraries={libraries}
     >
-<script
-  defer
-  src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=YOUR_CALLBACK_NAME"
-></script>
+
   <IonApp>
   <IonReactRouter>
        {showTopNavbar &&
@@ -213,6 +210,7 @@ const libraries = ["places"];
                        
                       
                            />
+                           
                            </PageWrapper>
                            </PrivateRoute> }
     />

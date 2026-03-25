@@ -372,10 +372,11 @@ return<ErrorBoundary>
 
     <div>
     <h4 className='text-[1rem] px-4 text-emerald-800 font-bold mb-4'>
-      What's happening in your communities?
+      What's happening in your communities
     </h4><div >
    <IonList style={{backgroundColor:"#f4f4e0"}} ><div className='flex flex-row  bg-cream overflow-x-auto overflow-y-hidden  w-full'>
-     {whatsHappeningList.length==0?[1,2,3].map(t=><div className='skeleton mx-4 min-w-[20em] min-h-[20em]'/>):whatsHappeningList.map(story=>
+     {whatsHappeningList.length==0?[1,2,3].map(t=><div
+     style={{backgroundColor:"#f4f4e0"}} className='skeleton mx-4 min-w-[20em] min-h-[20em]'/>):whatsHappeningList.map(story=>
 // 
 
   <StoryItem page={story} isGrid={true}/>

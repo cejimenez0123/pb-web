@@ -136,15 +136,16 @@ import { Preferences } from "@capacitor/preferences";
     }
     
     async fetchCollection({id}){
+           
         const res = await axios.get(this.url+"/"+id)
-
+console.log(res.data)
         return res.data
     }
     async fetchCollectionProtected({id}){
         let headers = await this.getAuthHeaders()
         const res = await axios.get(this.url+"/col/"+id+"/protected",{headers:headers
         })
-        console.log(res)
+       
         return res.data
     }
     async getProfileBooks({profile}){

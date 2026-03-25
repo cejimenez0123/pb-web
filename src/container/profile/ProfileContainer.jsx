@@ -1,302 +1,496 @@
-import { IonPage,IonBackButton,IonButtons, IonHeader, IonToolbar, IonTitle, IonContent, useIonRouter } from '@ionic/react';
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfile } from '../../actions/UserActions';
-import ProfileCard from '../../components/ProfileCard';
-import checkResult from '../../core/checkResult';
-import IndexList from '../../components/page/IndexList';
-import { useMemo } from 'react';
+ import { IonPage,IonBackButton,IonButtons, IonHeader, IonToolbar, IonTitle, IonContent,  } from '@ionic/react';
+import { useContext, useEffect, useMemo, useState } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { fetchProfile } from '../../../actions/UserActions';
+// import ProfileCard from '../../../components/ProfileCard';
+// import checkResult from '../../core/checkResult';
+// import IndexList from '../../components/page/IndexList';
+// import { useMemo } from 'react';
+// import {
+//   getProtectedProfilePages,
+//   getPublicProfilePages,
+//   setPagesInView,
+// } from '../../actions/PageActions.jsx';
+import { createFollow, deleteFollow } from '../../actions/FollowAction';
+// import {
+//   getProtectedProfileCollections,
+//   getPublicProfileCollections,
+// } from '../../actions/CollectionActions';
+// import { debounce } from 'lodash';
+// import { setCollections } from '../../actions/CollectionActions';
+// import { useMediaQuery } from 'react-responsive';
+import Context from '../../context';
+// import { initGA, sendGAEvent } from '../../core/ga4.js';
+// import Enviroment from '../../core/Enviroment.js';
+// import ErrorBoundary from '../../ErrorBoundary.jsx';
+// import PageList from '../../components/page/PageList.jsx';
+// import sortItems from '../../core/sortItems.js';
+// import { Preferences } from '@capacitor/preferences';
+// import StoryCollectionTabs from '../../components/page/StoryCollectionTabs.jsx';
+// import { useParams } from 'react-router';
+// import ExploreList from '../../components/collection/ExploreList.jsx';
+// import React, { useContext, useEffect, useMemo, useState } from "react";
+// import { IonContent, useIonRouter } from "@ionic/react";
+// import { useSelector, useDispatch } from "react-redux";
+// import { useParams } from "react-router";
+// import { Preferences } from "@capacitor/preferences";
+// import { debounce } from "lodash";
+// // import fetchCity from "../../core/fetchCity";
+// import Context from "../../context";
+// import Enviroment from "../../core/Enviroment";
+
+import {
+  fetchProfile,
+  getCurrentProfile,
+  
+ 
+} from "../../actions/UserActions"
+
 import {
   getProtectedProfilePages,
   getPublicProfilePages,
   setPagesInView,
-} from '../../actions/PageActions.jsx';
-import { createFollow, deleteFollow } from '../../actions/FollowAction';
+} from "../../actions/PageActions";
+
 import {
   getProtectedProfileCollections,
   getPublicProfileCollections,
-} from '../../actions/CollectionActions';
-import { debounce } from 'lodash';
-import { setCollections } from '../../actions/CollectionActions';
-import { useMediaQuery } from 'react-responsive';
-import Context from '../../context';
-import { initGA, sendGAEvent } from '../../core/ga4.js';
-import Enviroment from '../../core/Enviroment.js';
-import ErrorBoundary from '../../ErrorBoundary.jsx';
-import PageList from '../../components/page/PageList.jsx';
-import sortItems from '../../core/sortItems.js';
-import { Preferences } from '@capacitor/preferences';
-import StoryCollectionTabs from '../../components/page/StoryCollectionTabs.jsx';
+  setCollections,
+} from "../../actions/CollectionActions";
+import Enviroment from '../../core/Enviroment';
+import ErrorBoundary from "../../ErrorBoundary";
+import ProfileInfo from "../../components/profile/ProfileInfo";
+import fetchCity from "../../core/fetchCity";
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useIonRouter } from '@ionic/react';
 import { useParams } from 'react-router';
-import ExploreList from '../../components/collection/ExploreList.jsx';
-
+import debounce from '../../core/debounce';
+import { Preferences } from '@capacitor/preferences';
+import Paths from '../../core/paths';
+import checkResult from '../../core/checkResult';
+const TABS = {
+  POSTS: "posts",
+  COLLECTIONS: "collections",
+  COMMUNITIES: "communities",
+  ABOUT: "about",
+};
 function ProfileContainer() {
-  const { seo, setSeo, setError, setSuccess, currentProfile } = useContext(Context);
+    const { setSeo, setError,  } = useContext(Context);
 
-const profile = useSelector((state) => state.users.profileInView);
+  const{ profileInView:profile, currentProfile }= useSelector((state) => state.users);
+
+  const collectionsRaw = useSelector((state) => state.books.collections?? []);
+
+  const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
+
   const dispatch = useDispatch();
-  const[tab,setTab]=useState("page")
-  const isPhone = useMediaQuery({ query: '(max-width: 600px)' });
-  const router = useIonRouter()
-  const [locationName, setLocationName]=useState("")
-      
-  const handleTabChange=(tab)=>{
-      setTab(tab)
+  const router = useIonRouter();
+  const { id } = useParams();
 
-  sendGAEvent("profile_tab_change", {
-    tab: tab,
-    profile_id: profile.id,
-  });
+  const [tab, setTab] = useState(TABS.POSTS);
+  const [search, setSearch] = useState("");
+
+
+  // ── Derived
+  const collections = useMemo(
+    () => collectionsRaw.filter(Boolean).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
+    [collectionsRaw, search]
+  );
+  const pages = useMemo(
+    () => pagesRaw.filter(Boolean).filter((page) => (search ? page.title?.toLowerCase().includes(search.toLowerCase()) : true)),
+    [pagesRaw, search]
+  );
+  const recentPosts = useMemo(
+    () => [...pagesRaw].filter(Boolean).sort((a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)).slice(0, 5),
+    [pagesRaw]
+  );
+// ── Tabs constants ─────────────────────────────────────
+
+
+// ── Pill Component ─────────────────────────────────────
+const Pill = ({ label,onClick }) => (
+  <span onClick={onClick} className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+    {label}
+  </span>
+);
+
+// ── Section Label ─────────────────────────────────────
+const SectionLabel = ({ children }) => (
+  <p className="text-xs text-gray-400 uppercase tracking-wide">{children}</p>
+);
+
+// ── Search Bar ────────────────────────────────────────
+// const SearchBar = ({ value, onChange }) => (
+
+// );
+
+// ── Follow Button ─────────────────────────────────────
+    
+    const [following, setFollowing] = useState(null);
+     const [followingCount, setFollowingCount] = useState(0);
+    const [followersCount, setFollowersCount] = useState(0);
+useEffect(() => {
+  if (profile?.following) {
+    setFollowingCount(profile.following.length);
+      setFollowersCount(profile.followers.length);
   }
+}, [profile]);
+     const onClickFollow = debounce(() => {
+    // if (!currentProfile) return setError("Please login first!");
+    if (profile.id  === currentProfile.id) return;
 
-  const [search, setSearch] = useState('');
+    if (following) dispatch(deleteFollow({ follow: following })).then(res=>{
+        setFollowingCount(prev=>prev>0?prev-1:0)
+    })
+    else dispatch(createFollow({ follower:currentProfile, following: profile })).then((res)=>{
+      checkResult(res,payload=>{
+        setFollowingCount(prev=>prev+1)
+     
+          setFollowing(payload.follow)
+      },err=>{
 
-  const [following, setFollowing] = useState(null);
-const [canUserSee, setCanUserSee] = useState(false);
-  const { id } = useParams()
+      })
+    });
+  }, 200);
+    useEffect(() => {
+    if (!profile|!currentProfile) return;
+ 
+ 
+   let found =  currentProfile.following?.find((f) => f.followingId === profile.id) 
+
+    setFollowing(found)
+
+  }, [ profile,currentProfile]);
+const FollowButton = ({ prof,current,follow,onClick}) => {
+
+  
+      const [isSelf,setIsSelf]=useState(false)
+
+
+     
+
+
+useEffect(()=>{
+  try{
+  setIsSelf(prof.id==current.id)
+
+  }catch(err){
+    console.log(isSelf)
+  }
+},[prof,current])
+
+  // if (isSelf) return null;
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        px-4 py-1.5 text-sm  rounded-full mx-4 transition
+        ${follow ? "bg-gray-200 text-gray-800" : "bg-blueSea text-white"}
+      `}
+    >
+      {follow? "Following" : "Follow"}
+    </button>
+  );
+};
+
+// ── TabBar ────────────────────────────────────────────
+const tabs = [
+  { key: TABS.POSTS, label: "Posts" },
+  { key: TABS.COLLECTIONS, label: "Collections" },
+  { key: TABS.COMMUNITIES, label: "Communities" },
+  { key: TABS.ABOUT, label: "About" },
+];
+
+
+const TabBar = ({ active, onChange }) => (
+<div className="flex justify-center gap-2 bg-gray-100 rounded-xl p-1">
+  {/* <div className="flex w-full max-w-md sm:max-w-xl justify-between"> */}
+    {tabs.map((tab) => (
+      <button
+        key={tab.key}
+        onClick={() => onChange(tab.key)}
+        className={`
+          flex-1 text-center py-1.5 text-sm rounded-lg transition
+          ${active === tab.key 
+            ? "text-white bg-soft shadow-sm" 
+            : "bg-softBlue text-soft"}
+        `}
+      >
+        {tab.label}
+      </button>
+    ))}</div>)
+
+// ── Communities Panel ─────────────────────────────────
+const CommunitiesPanel = ({prof}) => {
+    // const prof = useSelector(state=>state.users.profileInView)
+    if(!prof)return null
+const communities  = prof.collections.filter(col=>col.type=="library")
+  
+  if (!communities.length)
+    return <div className="text-center py-12 text-sm text-gray-400">No communities yet.</div>;
+
+  return (
+    <div className="space-y-4">
+      {communities.map((c) => (
+        <div key={c.id} className="p-4 rounded-xl bg-gray-50">
+          <p className="text-sm font-medium text-gray-900">{c.title}</p>
+          {c.purpose&& <p className="text-sm text-gray-500 mt-1">{c.purpose}</p>}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+
+const AboutPanel = ({ profile:prof }) => {
+  const [locationName,setLocationName]=useState("")
+  useEffect(()=>{
+    
+  async function city(){let address =await fetchCity(prof.location)
+  
+    setLocationName(address)
+  }
+  city()
+  },[prof])
+
+  const hashTags = prof?.hashtags ?? [];
+  if (!prof) return null;
+
+
+  return (
+    <div className="space-y-6">
+    <div>
+        <p className="text-sm text-gray-700 leading-relaxed">
+          {  prof.selfStatement}
+        </p>
+        </div>
+
+     {locationName && (
+        <div>
+          <p className="text-xs text-gray-400 uppercase">Location</p>
+          <p className="text-sm text-gray-700 mt-1">{locationName}</p>
+        </div>
+      )} 
+
+      {hashTags.length > 0 && (
+        <div>
+          <p className="text-xs text-gray-400 uppercase mb-2">Interests</p>
+          <div className="flex flex-wrap gap-2">
+            {hashTags.slice(0, 5).map((tag, i) => (
+              <Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}label={`#${tag.name }`} />
+            ))}
+          </div>
+        </div>
+         
+      )}</div>)
+    }
+
+
+{/* // ── Minimal Empty State ────────────────────────────── */}
+const EmptyState = ({ text }) => (
+  <div className="text-center py-12">
+    <p className="text-sm text-gray-400">{text}</p>
+  </div>
+)
+// ── Stub Components for Missing Ones ────────────────
+const PageList = ({ items }) => (
+  
+  <div className="space-y-2">
+    {items.map((p) => {
+      console.log(items.title)
+      return<div key={p.id} className="p-2 border border-seaBlue rounded">{p?.title?.length>0 ? p.title:"Untitled"}</div>
+ } )}
+  </div>
+);
+const IndexList = ({ items }) => (
+  <div className="space-y-2">
+    {items.map((i) => (
+      <div key={i.id} className="p-2 border rounded">{i.title ??i.name}</div>
+    ))}
+  </div>
+);
+const ExploreList = () => <div className="text-center text-gray-400 py-4">Explore placeholder</div>;
+const StatChip = ({ value, label }) => (
+  <div className="flex flex-col text-center">
+    <span className="font-bold">{value}</span>
+    <span className="text-xs text-gray-400">{label}</span>
+  </div>
+);
+
+// ── Main Container ──────────────────────────────────
+
 
 useEffect(() => {
   if (!profile) return;
+  if (profile.stories) {
+    dispatch(setPagesInView({ pages: profile.stories }));
+  }
 
-  sendGAEvent("profile_view", {
-    profile_id: profile.id,
-    username: profile.username,
-    is_owner: currentProfile?.id === profile.id,
-    privacy: profile.isPrivate ? "private" : "public",
-  });
-}, [profile?.id]);
+  if (profile.collections) {
+    dispatch(setCollections
+   
+      ({ collections: profile.collections }));
+  }
+
+}, [profile, dispatch]);
 
 
+useEffect(()=>{
+  dispatch(getCurrentProfile())
+},[])
+  // ── Auth Sync
+  // useEffect(() => {
+  //   const syncProfile = async () => {
+  //     if (!profile) {
+  //       const { value } = await Preferences.get({ key: "token" });
+  //       if (value) dispatch(getCurrentProfile());
+  //       else router.push("/");
+  //     }
+  //   };
+  //   syncProfile();
+  // }, [profile, dispatch, router]);
 
-const collectionsRaw = useSelector((state) => state.books.collections
-);
-
-const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
-const collections = useMemo(() => {
-  const filtered = collectionsRaw 
-    .filter((col) => col)
-    .filter((col) =>
-      search.length > 0
-        ? col.title.toLowerCase().includes(search.toLowerCase())
-        : true
-    );
-  return sortItems([], filtered);
-}, [collectionsRaw, search]);
-
-const pages = useMemo(() => {
-  const filtered = pagesRaw
-    .filter((page) => page)
-    .filter((page) =>
-      search.length > 0
-        ? page.title.toLowerCase().includes(search.toLowerCase())
-        : true
-    );
-  return sortItems(filtered, []);
-}, [pagesRaw, search]);
-
-  const debounceDelay = 10;
-
-  const handleSortTime = debounce(() => {
-    setSortTime((prev) => {
-      const newSortTime = !prev;
-      let sortedCollections = [...collections].sort((a, b) =>
-        newSortTime
-          ? new Date(a.created) - new Date(b.created)
-          : new Date(b.created) - new Date(a.created)
-      );
-      dispatch(setCollections({ collections: sortedCollections }));
-
-      let sortedPages = [...pages].sort((a, b) =>
-        newSortTime
-          ? new Date(a.created) - new Date(b.created)
-          : new Date(b.created) - new Date(a.created)
-      );
-      dispatch(setPagesInView({ pages: sortedPages }));
-
-      return newSortTime;
-    });
-  }, debounceDelay);
-
-  const handleSortAlpha = debounce(() => {
-    setSortAlpha((prev) => {
-      const newSortAlpha = !prev;
-      let sortedCollections = [...collections].sort((a, b) => {
-        const aTitle = a.title.toLowerCase();
-        const bTitle = b.title.toLowerCase();
-        if (aTitle < bTitle) return newSortAlpha ? -1 : 1;
-        if (aTitle > bTitle) return newSortAlpha ? 1 : -1;
-        return 0;
-      });
-      dispatch(setCollections({ collections: sortedCollections }));
-
-      let sortedPages = [...pages].sort((a, b) => {
-        const aTitle = a.title.toLowerCase();
-        const bTitle = b.title.toLowerCase();
-        if (aTitle < bTitle) return newSortAlpha ? -1 : 1;
-        if (aTitle > bTitle) return newSortAlpha ? 1 : -1;
-        return 0;
-      });
-      dispatch(setPagesInView({ pages: sortedPages }));
-
-      return newSortAlpha;
-    });
-  }, debounceDelay);
-
-  const getContent = async () => {
-    dispatch(setPagesInView({ pages: [] }));
-    dispatch(setCollections({ collections: [] }));
-
-    const token = (await Preferences.get({key:'token'})).value
-    if (token && currentProfile?.id === id) {
-      dispatch(getProtectedProfilePages({ profile: { id } }));
-      dispatch(getProtectedProfileCollections({ profile: { id } }));
-    } else {
-      dispatch(getPublicProfilePages({ profile: { id } }));
-      dispatch(getPublicProfileCollections({ profile: { id } }));
-    }
-  };
-
-  useLayoutEffect(() => {
-    dispatch(fetchProfile({ id })).then((result) => {
-      checkResult(
-        result,
-        () => {
-          checkIfFollowing();
-          // getContent();
-        },
-        (err) => {
-          setError(err.message);
-        }
-      );
-    });
-  },[id]);
-
+  // ── Fetch
   useEffect(() => {
-   getContent();
-  }, []);
+    dispatch(fetchProfile({ id }));
 
-  useLayoutEffect(() => {
-    checkIfFollowing();
-  }, [currentProfile, profile]);
+    const fetchContent = async () => {
+      const token = (await Preferences.get({ key: "token" })).value;
 
-  const handleSearch = (value) => {
-   profile && sendGAEvent("profile_search", {
-  profile_id: profile.id,
-  query_length: value.length,
-});
-    setSearch(value);
-  };
+      // if (token && profile?.id === id) {
+      //   dispatch(getProtectedProfilePages({ profile: { id } }));
+      //   dispatch(getProtectedProfileCollections({ profile: { id } }));
+      // } else {
+        dispatch(getPublicProfilePages({ profile: { id } }));
+        dispatch(getPublicProfileCollections({ profile: { id } }));
+      // }
+    };
 
-  const checkIfFollowing = () => {
-    if (!currentProfile || !profile) return;
-    if (!profile.isPrivate) {
-      setCanUserSee(true);
-    }
-    if (currentProfile.id === profile.id) {
-      setCanUserSee(true);
-      setFollowing(true);
-      return;
-    }
-    if (profile.followers) {
-      const found = profile.followers.find((f) => f.followerId === currentProfile.id);
-      setCanUserSee(true);
-      setFollowing(found);
-    } else {
-      setFollowing(null);
-    }
-  };
+    fetchContent();
+  }, [id, dispatch]);
 
-  const onClickFollow = debounce(() => {
-    if (!currentProfile) {
-      setSuccess(null);
-      setError('Please login first!');
-      return;
-    }
-    if (profile && currentProfile.id !== profile.id) {
-      if (following) {
+  // ── Follow logic
 
-        dispatch(deleteFollow({ follow: following })).then(() => {
-          // follow deleted
-          sendGAEvent( "profile_unfollow", {
-  profile_id: profile.id,
-  username: profile.username,
-  source: "profile_page",
-});
 
-          
-        });
-      } else {
-        const params = { follower: currentProfile, following: profile };
-        dispatch(createFollow(params));
-        sendGAEvent("profile_follow", {
-  profile_id: profile.id,
-  username: profile.username,
-  source: "profile_page",
-});
 
-      }
-    } else {
-      setSuccess(null);
-      setError('This is you silly');
-    }
-    
-  }, debounceDelay);
 
-useLayoutEffect(() => {
-  if (!profile) return;
+  
+  useEffect(() => {
+    if (!profile) return;
+    setSeo({
+      title: `${profile.username} on Plumbum`,
+      description: profile.bio || profile.selfStatement || `Read stories by ${profile.username}.`,
+      url: `${Enviroment.domain}/profile/${profile.id}`,
+      type: "profile",
+    });
+  }, [profile, setSeo]);
 
-  setSeo({
-    title: `${profile.username} on Plumbum`,
-    description:
-      profile.selfStatement ||
-      `Read stories and collections by ${profile.username} on Plumbum.`,
-    url: `${Enviroment.domain}/profile/${profile.id}`,
-    type: "profile",
-  });
-}, [profile?.id]);
-
-let books = useSelector(state => state.books.collections)
+  // ── Render
   return (
     <ErrorBoundary>
-    
-      
-        
-        <IonContent fullscreen={true} style={{"--background":"#f4f4e0"}}className='ion-padding-top' >
-          <div className='pt-12 '>
-       
-          <div className="pt-2 md:pt-8 mb-8 mx-2 ">
-            <ProfileCard profile= {profile}following={following} onClickFollow={onClickFollow} />
+      <IonContent             style={{ "--background": "#f4f4e0" }} fullscreen className="bg-cream">
+        <div className="max-w-2xl mx-auto px-4 pb-24 pt-safe space-y-8">
+
+          {/* Header */}
+          <div className="space-y-6 p-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <ProfileInfo profile={profile} compact />
+              </div>
+              </div>
+
+            <div className="flex justify-between text-center">
+              {/* <StatChip value={pagesRaw.length} label="Posts" />
+              <StatChip value={collectionsRaw.length} label="Collections" /> */}
+              <StatChip value={followersCount} label="Followers" />
+              <StatChip value={followingCount} label="Following" />
+            </div>
+
+            {(profile?.bio || profile?.selfStatement) && (
+              <p className="text-sm text-gray-700 leading-relaxed">
+                {profile.bio ?? profile.selfStatement}
+              </p>
+            )}
+
+            {(profile?.hashtags ?? profile?.tags)?.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {(profile.hashtags ?? profile.tags).slice(0, 5).map((tag, i) => (
+                  <Pill key={i} onClick={()=>router.push(Paths.collection.createRoute(tag.id))} label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`} />
+                ))}
+              </div>
+            )}
+
+            {(profile?.communities?.length ?? 0) > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs text-gray-400 uppercase">Communities</p>
+                <div className="flex flex-wrap gap-2">
+                  {profile.communities.slice(0, 3).map((c) => <Pill onClick={()=>router.push(Paths.collection.createRoute(c.id))} key={c.id} label={c.name} />)}
+                </div>
+              </div>
+            )}
           </div>
 
-          {isPhone && (
-            <span className="flex flex-row">
-              <label className="flex my-1  w-[100%] rounded-full mt-8 flex-row mx-2">
-                <span className="my-auto text-emerald-800 ml-3 mr-1 w-full mont-medium"> Search:</span>
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  className="px-2 w-[100%] py-1 text-sm bg-transparent my-1 rounded-full text-emerald-800"
-                />
-              </label>
-            </span>
-          )}
-          <div className=" rounded-lg w-[100%] max-w-[100vw] justify-center flex mx-auto sm:w-[50em] bg-transparent">
-       <StoryCollectionTabs 
-        tab={tab}
-        setTab={handleTabChange} 
-        colList={()=> books.length>0?<IndexList type="collection" items={books} />:<p>There will be something soon</p>
-           }
-        storyList={()=>pages.length>0?<PageList items={pages} />:<p>Nothing for now</p>}/>
-        </div>
-    
+          {/* Search + Tabs */}
+          <div className="space-y-4">
+              <div className="w-full">
+    <input
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      placeholder="Search"
+      className="
+      border-soft border rounded-full
+        w-full px-4 py-2
+  bg-cream
+        text-sm text-soft
+        placeholder-gray-400
+        focus:outline-none focus:ring-1 focus:ring-gray-300
+      "
+    />
+    <FollowButton prof={profile} onClick={onClickFollow}follow={following} current={currentProfile}  />
         
+  </div>
+            <TabBar active={tab} onChange={setTab} />
           </div>
-          <ExploreList/>
-        </IonContent>
+
+          {/* Content */}
+          <div className="space-y-10 min-h-[40rem]">
+            {tab === TABS.POSTS && (
+              <>
+                {search.length==0 && recentPosts.length > 0 && (
+                  <section className="space-y-4">
+                    <SectionLabel>Recent</SectionLabel>
+                    <PageList items={recentPosts} />
+                  </section>
+                )}
+
+                {pages.length > 0 && (
+                  <section className="space-y-4">
+                    <SectionLabel>All Posts</SectionLabel>
+                    <PageList items={pages} />
+                  </section>
+                )}
+
+                {pages.length === 0 && <EmptyState text="No posts yet." />}
+              </>
+            )}
+
+            {tab === TABS.COLLECTIONS && (
+              collections.length > 0 ? <IndexList items={collections} /> : <EmptyState text="No collections yet." />
+            )}
+
+            {tab === TABS.COMMUNITIES && <CommunitiesPanel prof={profile} />}
+            {tab === TABS.ABOUT && <AboutPanel profile={profile} />}
+          </div>
+
+          {/* Explore */}
+          <div className="pt-6 border-t border-gray-100">
+            <ExploreList />
+          </div>
+        </div>
+      </IonContent>
     </ErrorBoundary>
   );
 }
 
 export default ProfileContainer;
-

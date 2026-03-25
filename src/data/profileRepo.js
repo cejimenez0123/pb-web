@@ -65,10 +65,12 @@ class ProfileRepo {
     
     }
     async getProfileProtected(params){
-let headers = await this.getAuthHeaders()
+        let headers = await this.getAuthHeaders()
 
         const {id}=params
+        
         let res = await axios.get(this.url+"/"+id+"/protected",{headers:headers})
+        console.log("fetch dfdf",res.data)
         return res.data
     }
     async getProfile(params){
