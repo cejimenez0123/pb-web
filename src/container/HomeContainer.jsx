@@ -671,10 +671,12 @@ function HomeContainer() {
 
           {/* Prompts */}
           <SectionHeader title="Writing Prompts for you" />
-          <div className="flex flex-row gap-3">
+          {/* <div className="flex flex-row gap-3"> */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
             {filteredPrompts.length
               ? filteredPrompts.map(({ story }) => <StoryItem key={story.id} page={story} />)
-              : [1,2,3].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)
+              : [1,2,3,4].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)
             }
           </div>
         </div>

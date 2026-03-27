@@ -278,13 +278,13 @@ scrollY: false,
           onClick={ClickWriteAStory}
           className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
         >
-          <IonText className='text-[1.2em]'>Write Something</IonText>
+          <IonText className='text-[1.2em]'><span className='pb-2'>Write</span><span> Something</span></IonText>
         </ButtonWrapper>
         <ButtonWrapper
           onClick={ClickCreateACollection}
           className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
         >
-          <IonText className="text-white text-[1.2em]">Create Collection</IonText>
+          <IonText className="text-white text-[1.2em]"><span className='pb-2'>Create</span><span> Collection</span></IonText>
         </ButtonWrapper>
       </div>
 </div>
@@ -326,7 +326,9 @@ scrollY: false,
             </div>
             <div  className='w-fit mx-auto '>
               <div className='flex flex-row justify-between'><h4 className='text-xl mx-4 lora-medium  '>Recent Pages</h4><h4 className='my-auto mx-4' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
-              <div className='flex flex-col gap-4 px-4 py-4'>
+              {/* <div className='flex flex-col gap-4 px-4 py-4'> */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
                 {[...(currentProfile?.stories || [])]
   .sort((a, b) => a.updated - b.updated)
   .slice(0, 3)
