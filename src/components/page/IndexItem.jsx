@@ -113,17 +113,21 @@ const soCanUserEdit = () => {
 };
 
     const handleAddToClick = ()=>{
+ 
        if(item.author){
         router.push(Paths.addStoryToCollection.story(item.id))
        }else{
       router.push(Paths.addToCollection.createRoute(item.id))
       }
+      resetDialog()
     }
 
    let updated= formatDate(item.updated)
    
 const handleAddToLibrary=()=>{
+
   router.push(Paths.addStoryToCollection.collection(item.id))
+  resetDialog()
 }
 const [feedback,setFeedback]=useState()
    const handleFeedback=()=>{

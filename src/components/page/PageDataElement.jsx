@@ -1,88 +1,189 @@
-import { useContext, useEffect,useState } from "react"
-import { PageType } from "../../core/constants"
-import LinkPreview from "../LinkPreview"
-import isValidUrl from "../../core/isValidUrl"
-import loadingGif from "../../images/loading.gif"
-import Paths from "../../core/paths"
-import Context from "../../context"
-import { IonImg, useIonRouter } from '@ionic/react';
-import Enviroment from "../../core/Enviroment"
-import truncate from "html-truncate"
-import { Capacitor } from "@capacitor/core"
+// import { useContext, useEffect,useState } from "react"
+// import { PageType } from "../../core/constants"
+// import LinkPreview from "../LinkPreview"
+// import isValidUrl from "../../core/isValidUrl"
+// import loadingGif from "../../images/loading.gif"
+// import Paths from "../../core/paths"
+// import Context from "../../context"
+// import { IonImg, useIonRouter } from '@ionic/react';
+// import Enviroment from "../../core/Enviroment"
+// import truncate from "html-truncate"
+// import { Capacitor } from "@capacitor/core"
 
-export default function PageDataElement({page,isGrid,size="lg",book=null,truncateNumber=400}){
-    const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
+// export default function PageDataElement({page,isGrid,size="lg",book=null,truncateNumber=400}){
+//     const [image,setImage]=useState(isValidUrl(page.data)?page.data:null)
  
-   const router = useIonRouter()
-    const location = router.routeInfo.pathname
+//    const router = useIonRouter()
+//     const location = router.routeInfo.pathname
    
-    useEffect(()=>{
+//     useEffect(()=>{
         
-        if(page && page.type==PageType.picture){
-            if(isValidUrl(page.data)){
-                setImage(page.data)
-            }else{
+//         if(page && page.type==PageType.picture){
+//             if(isValidUrl(page.data)){
+//                 setImage(page.data)
+//             }else{
              
-                setImage(Enviroment.imageProxy(page.data))
+//                 setImage(Enviroment.imageProxy(page.data))
             
-            }
+//             }
     
-        }
-    },[page])
+//         }
+//     },[page])
 
- function Element({page}){   
-switch(page.type){
-    case PageType.text:{
-let t=page.data
-    return( 
+//  function Element({page}){   
+// switch(page.type){
+//     case PageType.text:{
+// let t=page.data
+//     return( 
 
-   <div
+//    <div
 
-        className={`ql-editor-${size} px-4 `}dangerouslySetInnerHTML={{__html:truncate(t, truncateNumber,{})}}/>
+//         className={`ql-editor-${size} px-4 `}dangerouslySetInnerHTML={{__html:truncate(t, truncateNumber,{})}}/>
 
 
-  ) }
-  case PageType.picture:{
+//   ) }
+//   case PageType.picture:{
   
-    return(image?
-    <img
-    //   style={{maxWidth:"94vw",width:"100%"}}
-    className="object-contain max-w-[94vw] sm:max-w-[45em] "
+//     return(image?
+//     <img
+//     //   style={{maxWidth:"94vw",width:"100%"}}
+//     className="object-contain max-w-[94vw] sm:max-w-[45em] "
    
-    onClick={()=>{
+//     onClick={()=>{
    
-   if(location!=Paths.page.createRoute(page.id)){
-  router.push(Paths.page.createRoute(page.id))}
+//    if(location!=Paths.page.createRoute(page.id)){
+//   router.push(Paths.page.createRoute(page.id))}
 
-}} 
-alt={page.title}
-    src={image}/>
+// }} 
+// alt={page.title}
+//     src={image}/>
     
-    :
-    <div className={`skeleton w-page-mobile`}/>)
-}
-case PageType.link:{
-    return(
+//     :
+//     <div className={`skeleton w-page-mobile`}/>)
+// }
+// case PageType.link:{
+//     return(
     
-        <LinkPreview
+//         <LinkPreview
       
-            isGrid={isGrid}
-            url={page.data}
-        />
-       )
-}
-default:
-    return(<div        id="page-data-skeleton "
-    className={`skeleton w-[100%] h-[100%] min-h-[20em] max-w-[45em]`}>
+//             isGrid={isGrid}
+//             url={page.data}
+//         />
+//        )
+// }
+// default:
+//     return(<div        id="page-data-skeleton "
+//     className={`skeleton w-[100%] h-[100%] min-h-[20em] max-w-[45em]`}>
   
-</div>)
-}
-}
-if(!page){
-    return(
-    <IonImg src={loadingGif}/>
-) 
-}
+// </div>)
+// }
+// }
+// if(!page){
+//     return(
+//     <IonImg src={loadingGif}/>
+// ) 
+// }
 
-return (<Element page={page}/>)
+// return (<Element page={page}/>)
+// }
+import { useEffect, useState } from "react";
+import { PageType } from "../../core/constants";
+import LinkPreview from "../LinkPreview";
+import isValidUrl from "../../core/isValidUrl";
+import loadingGif from "../../images/loading.gif";
+import Paths from "../../core/paths";
+import { IonImg, useIonRouter } from '@ionic/react';
+import Enviroment from "../../core/Enviroment";
+import truncate from "html-truncate";
+
+export default function PageDataElement({
+  page,
+  isGrid,
+  size = "lg",
+  truncateNumber = 400
+}) {
+  const [image, setImage] = useState(isValidUrl(page?.data) ? page.data : null);
+  const router = useIonRouter();
+  const location = router.routeInfo.pathname;
+
+  useEffect(() => {
+    if (page && page.type === PageType.picture) {
+      if (isValidUrl(page.data)) {
+        setImage(page.data);
+      } else {
+        setImage(Enviroment.imageProxy(page.data));
+      }
+    }
+  }, [page]);
+
+  function Element({ page }) {
+    switch (page.type) {
+
+      // ✍️ TEXT
+      case PageType.text: {
+        const t = page.data;
+        return (
+          <div className="w-[100%]">
+            <div
+              className="text-[15px] w-[100%] leading-7 text-[#003b44] space-y-3"
+              dangerouslySetInnerHTML={{
+                __html: truncate(t, truncateNumber, {})
+              }}
+            />
+          </div>
+        );
+      }
+
+      // 🖼 IMAGE
+      case PageType.picture: {
+        return image ? (
+          <div className=" w-[100%]">
+            <img
+              className="rounded-xl w-[100%] object-cover  sm:max-w-[47em] border border-[#bae6fe]/40 transition active:scale-[0.98]"
+              alt={page.title}
+              src={image}
+              onClick={() => {
+                if (location !== Paths.page.createRoute(page.id)) {
+                  router.push(Paths.page.createRoute(page.id));
+                }
+              }}
+            />
+          </div>
+        ) : (
+          <div className="px-4">
+            <div className="animate-pulse rounded-xl bg-[#bae6fe]/40 h-[200px] w-full" />
+          </div>
+        );
+      }
+
+      // 🔗 LINK
+      case PageType.link: {
+        return (
+          <div className="">
+            <div className="rounded-xl w-[100%] border border-[#bae6fe]/40 overflow-hidden">
+              <LinkPreview isGrid={isGrid} url={page.data} />
+            </div>
+          </div>
+        );
+      }
+
+      // ⛔ DEFAULT
+      default:
+        return (
+          <div className="px-4">
+            <div className="animate-pulse rounded-xl bg-[#bae6fe]/40 h-[200px] w-full" />
+          </div>
+        );
+    }
+  }
+
+  if (!page) {
+    return (
+      <div className="flex justify-center py-6">
+        <IonImg src={loadingGif} className="w-8 h-8 opacity-60" />
+      </div>
+    );
+  }
+
+  return <Element page={page} />;
 }

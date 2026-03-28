@@ -249,27 +249,8 @@ if (col.childCollections) {
     <ErrorBoundary>         
 <IonContent fullscreen={true} className="ion-padding-top"> 
   <div className="pb-[10em]">
-  {isNative?<IonHeader translucent>
-        <IonToolbar className="bg-white border-b border-emerald-100">
-          <IonButtons slot="start">
-            <IonBackButton
-              
-              onClick={handleBack}
-              className="text-emerald-700"
-            />
-          </IonButtons>
-
-          <IonTitle className="text-emerald-800 font-semibold text-center">
-            Edit Collection
-          </IonTitle>
-
-          {/* {canUserEdit && ( */}
-            <IonButtons slot="end">
-            
-            </IonButtons>
-          {/* )} */}
-        </IonToolbar>
-      </IonHeader>:<div className="pt-8"/>}
+  
+    
         {loading ? (
           <div className="flex justify-center items-center h-[60vh]">
             <IonSpinner name="crescent" color="success" />

@@ -321,15 +321,7 @@ const openRoleFormDialog = () => {
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
           <IonContent fullscreen={true} scrollY={true} style={{"--background":"#f4f4e0","--padding-bottom":"30em","--padding-top":isNative||isPhone?"0.3rem":"6em"}}className="ion-padding"  >
          
-             {isNative&&<IonToolbar className="flex flex-row">
-            <IonButtons>
-              <IonBackButton 
-              onClick={handleBack}
-              defaultHref={Paths.discovery}
-      />
-            </IonButtons>
-          
-          </IonToolbar>}
+        
           <div  className=" mx-auto md:p-8  "> 
      {pending? <div className="skeleton rounded-lg  w-[100%] h-fit sm:max-w-[50em] mx-auto "/>:
             topBar()}

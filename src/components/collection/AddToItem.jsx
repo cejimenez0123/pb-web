@@ -17,9 +17,10 @@ import checkResult from "../../core/checkResult";
 
 export default function AddToItem({ col }) {
   const pathParams = useParams();
-  const { setError, setSuccess, currentProfile } = useContext(Context);
+  const { setError, setSuccess, } = useContext(Context);
+  const {currentProfile}=useSelector(state=>state.users)
   const { id, type } = pathParams;
-
+console.log(id)
   const collectionInView = useSelector(state => state.books.collectionInView);
   const pageInView = useSelector(state => state.pages.pageInView);
   const [item, setItem] = useState(type === "collection" ? collectionInView : pageInView);
@@ -46,6 +47,7 @@ export default function AddToItem({ col }) {
     setPending(true);
 
     if (item?.storyIdList && type === "collection") {
+            console.log("VBVLSVX")
       dispatch(addCollectionListToCollection({ id: col.id, list: [item.id], profile: currentProfile })).then(res =>
         checkResult(res, payload => {
           setItem(payload.collection);
@@ -60,6 +62,7 @@ export default function AddToItem({ col }) {
     }
 
     if (item && type === "story") {
+      console.log("VXVXVX",col.id)
       let story = item || { id };
       dispatch(addStoryListToCollection({ id: col.id, list: [story], profile: currentProfile })).then(res => {
         checkResult(res, payload => {
@@ -126,7 +129,7 @@ export default function AddToItem({ col }) {
   }
 
   return (
-    <div className="border-emerald-600 border-2 mx-auto w-[96%] flex flex-row justify-between rounded-full px-6 py-4 my-3 items-center">
+    <div className="border-emerald-600 border-2 mx-auto w-[96%] bg-cream flex flex-row justify-between rounded-full px-6 py-4 my-3 items-center">
       <h6
         onClick={() => router.push(Paths.collection.createRoute(col.id))}
         className="text-md lg:text-xl my-auto overflow-hidden text-ellipsis max-w-[12rem] md:max-w-[25rem] whitespace-nowrap cursor-pointer"

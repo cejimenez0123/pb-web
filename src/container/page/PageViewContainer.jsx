@@ -1,244 +1,450 @@
-import {useParams } from "react-router-dom";
+// import {useParams } from "react-router-dom";
+// import { useDispatch, useSelector } from "react-redux";
+// import { useState, useLayoutEffect, useEffect, useContext } from "react";
+// import "../../styles/PageView.css";
+// import PageViewItem from "../../components/page/PageViewItem";
+// import { getStory } from "../../actions/StoryActions";
+// import CommentThread from "../../components/comment/CommentThread";
+// import { postStoryHistory } from "../../actions/HistoryActions";
+// import { getProfileHashtagCommentUse } from "../../actions/HashtagActions";
+// import ErrorBoundary from "../../ErrorBoundary";
+// import Context from "../../context";
+// import { initGA, sendGAEvent } from "../../core/ga4.js";
+// import useScrollTracking from "../../core/useScrollTracking.jsx";
+// import checkResult from "../../core/checkResult.js";
+// import { IonBackButton, IonContent, IonHeader, IonToolbar } from "@ionic/react";
+// import { setComments } from "../../actions/PageActions.jsx";
+// import Paths from "../../core/paths.js";
+// import { Capacitor } from "@capacitor/core";
+// import { useIonRouter } from '@ionic/react';
+// export default function PageViewContainer() {
+//   const { setSeo, seo, setError, } = useContext(Context);
+//   const { id } = useParams();
+//   const dispatch = useDispatch();
+//  const { currentProfile } = useSelector((state) => state.users);
+//   const router = useIonRouter()
+//   const page = useSelector((state) => state.pages.pageInView);
+//   const comments = useSelector((state) => state.comments.comments);
+//     const [canUserSee, setCanUserSee] = useState(false)
+//    const isNative= Capacitor.isNativePlatform()
+// useScrollTracking({
+//   contentType: "story",
+//   contentId: page?.id,
+//   authorId: page?.authorId,
+//   enableCompletion: canUserSee === true,
+//   completionEvent: "story_read_complete",
+// });
+
+//   const [pending, setPending] = useState(true);
+//   const [rootComments, setRootComments] = useState([]);
+//   const [errorStatus, setErrorStatus] = useState(null);
+
+//   useScrollTracking({ name: page ? JSON.stringify(page) : id });
+
+//   useLayoutEffect(() => {
+//     initGA();
+//   }, []);
+
+//   useLayoutEffect(() => {
+//     if (currentProfile) {
+//       dispatch(getProfileHashtagCommentUse({ profileId: currentProfile.id }));
+//     }
+//     return () => {
+//       if (currentProfile && page && import.meta.env.VITE_NODE_ENV !== "dev") {
+//         dispatch(postStoryHistory({ profile: currentProfile, story: page }));
+//       }
+//     };
+//   }, []);
+
+//   useEffect(() => {
+//     if (comments?.length) {
+//       setRootComments(comments.filter((c) => c && c.parentId == null));
+//     }
+//   }, [comments]);
+
+//   useEffect(() => {
+
+//     fetchStory();
+//   }, [id,dispatch]);
+
+//   const fetchStory = async () => {
+//     setPending(true)
+//     setErrorStatus(null);
+
+//     try {
+//        dispatch(getStory({ id })).then((res) => {
+
+
+//       checkResult(
+//         res,
+//         (payload) => {
+//           if (payload?.story) {
+//             if (payload.story.comments?.length) {
+//               dispatch(setComments({ comments: payload.story.comments }));
+//             }
+//             setPending(false)
+//           } else {
+//             throw new Error("Story not found");
+//           }
+//         },
+//         (err) => {
+//           // Handle forbidden specifically
+//               setPending(false)
+//           if (err?.response?.status === 403) {
+   
+//             setErrorStatus(403);
+//           } else {
+//             setError(err.message || "Failed to load story");
+//             setErrorStatus(err?.response?.status || 500);
+//           }
+
+//         }
+//            )});
+
+//     } catch (error) {
+//           setPending(false)
+//       if (error?.response?.status === 403) {
+//         setErrorStatus(403);
+
+//       } else {
+//         setError(error.message);
+      
+//         setErrorStatus(500);
+//       }
+//     }
+//   };
+//   // useEffect(fetchStory,[])
+//   const soCanUserSee=()=>{
+//     if(!page.isPrivate){
+//       return true
+//     }
+//     if (page?.isPrivate) {
+    
+//       if (currentProfile && currentProfile.id === page.authorId) {
+//         return true;
+//       }
+   
+//      if(page.collections){
+
+//      let found = page.collections.find(col=>!col.collection.isPrivate)
+//     if(found) return true
+//         }
+
+//     if(page.betaReaders.length){
+//       let canSee = page.betaReaders.find((br) => {
+//         if (currentProfile && br.profileId === currentProfile.id) {
+//           return true;
+//         }
+//       });
+
+//       if(canSee){
+//       return true;
+//       }
+//     }
+//     }else{
+//     return false
+//     }}
+//   useEffect(() => {
+//     setPending(true);
+//     page && setCanUserSee(soCanUserSee()) && sendGAEvent({
+//   story_id: page.id,
+//   author_id: page.authorId,
+//   is_private: page.isPrivate,
+//   viewer_logged_in: Boolean(currentProfile),
+//   platform: Capacitor.isNativePlatform() ? "native" : "web"
+// },[page])
+
+
+//     setPending(false);
+//   },[page])
+//   useEffect(() => {
+//   if (errorStatus === 403) {
+//     sendGAEvent("story_access_denied", {
+//       story_id: id,
+//       viewer_logged_in: Boolean(currentProfile),
+//     });
+//   }
+// }, [errorStatus]);
+// useEffect(() => {
+//   if (page && rootComments && rootComments.length ) {
+//     sendGAEvent("view_comments", {
+//       story_id: page.id,
+//       comment_count: rootComments?.length,
+//     });
+//   }
+// }, [rootComments]);
+
+//   const handleBack = () => {
+//      sendGAEvent("story_exit_back", {
+//     story_id: page?.id,
+//     exit_type: window.history.length > 1
+//       ? "history_back"
+//       : "fallback_discovery",
+//   });
+//     if (window.history.length > 1) {
+//        router.goBack()
+//     } else {
+//       router.push(Paths.discovery,"back");
+//     }
+//   };
+//   useLayoutEffect(() => {
+//     if (page) {
+//       setSeo({
+//         ...seo,
+//         title: page.title,
+//         description: page.description,
+//       });
+//     }
+//   }, [page]);
+
+//   const PageDiv = ({ page }) =>
+//     page ? (
+//       <div  id=" "className={` mx-auto `}>
+//       <PageViewItem page={page} currentProfile={currentProfile} /></div>
+//     ) : (
+//       <div className="skeleton w-[95vw] mx-auto sm:w-[50em] mx-auto bg-emerald-50 h-page" />
+//     );
+//     const header = () => (
+//   <div className="bg-cream rounded-xl shadow-sm p-4 mb-4">
+//     <div className="flex items-center gap-3">
+//       <ProfileCircle profile={page.author} color="emerald-700" />
+//       <h6
+//         className="text-emerald-800 text-lg font-semibold truncate cursor-pointer"
+//         onClick={() => {
+//           dispatch(setPageInView({ page }));
+//           router.push(Paths.page.createRoute(page.id));
+//         }}
+//       >
+//         {page.title || ""}
+//       </h6>
+//     </div>
+
+//     {page.description && (
+//       <div className="mt-2 text-left">
+//         {page.needsFeedback && <label className="text-emerald-700 font-medium">Feedback Request:</label>}
+//         <p className="text-emerald-800 mt-1">{page.description}</p>
+//       </div>
+//     )}
+//   </div>
+// );
+// return(<IonContent
+//   fullscreen
+//   style={{ "--background": "#f4f4e0" }} // cream background
+//   className="ion-padding-bottom"
+// >
+//   <div className="min-h-[40em]">
+//     <div className="text-center bg-cream py-[4em] mx-auto h-full">
+
+//       {pending ? (
+//         <div className="animate-pulse mx-auto bg-emerald-50 max-w-[96vw] md:w-page h-page rounded-xl shadow-sm" />
+//       ) : errorStatus === 403 ? (
+//         <div className="flex mx-auto md:w-50 px-8 h-page items-center justify-center">
+//           <h1 className="mont-medium text-center text-emerald-800 text-lg">
+//             🚫 You don’t have permission to view this story.
+//           </h1>
+//         </div>
+//       ) : canUserSee ? (
+//         <div className="w-fit bg-cream mx-auto px-4 sm:max-w-[50em] rounded-xl shadow-sm">
+          
+//           {/* Page Content */}
+//           <div className="my-4 py-4">
+//             <PageDiv page={page} />
+//           </div>
+
+//           {/* Responses Header */}
+//           <div className="text-left px-4 mt-8 py-2 border-b border-emerald-100">
+//             <h6 className="text-[1em] font-bold text-emerald-800">Responses</h6>
+//           </div>
+
+//           {/* Comments */}
+//           <CommentThread page={page} comments={rootComments} />
+
+//         </div>
+//       ) : (
+//         <div className="flex max-w-[96vw] mx-auto sm:w-page h-page items-center justify-center">
+//           <h1 className="mont-medium text-center text-emerald-800 text-lg">
+//             Took a wrong turn
+//           </h1>
+//         </div>
+//       )}
+//     </div>
+//   </div>
+// </IonContent>)
+// //   return (
+// //     <ErrorBoundary>
+// //          <IonContent fullscreen={true}  style={{"--background":"#f4f4e0"}}className="ion-padding-bottom" >
+ 
+
+      
+// //     {/* <div className="py-12 bg-cream"> */}
+// //        <div className=" min-h-[40em] ion-padding-bottom  ">
+// //         <div className=" text-center bg-cream py-[4em] mx-auto h-[100%]" >
+// //           {pending ? ( 
+// //             <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
+// //           ) : errorStatus === 403 ? (
+// //             <div className="flex  mx-auto md:w-50 px-8 h-page">
+// //               <h1 className="mont-medium my-12 mx-auto text-center text-emerald-800">
+// //                 🚫 You don’t have permission to view this story.
+// //               </h1>
+// //             </div>
+// //           ) : canUserSee ? (
+// //             <div className="w-fit  bg-cream  mx-auto px-4 sm:max-w-[50em]">
+// //             <div className="my-4 py-4">  <PageDiv page={page} /></div>
+// //              <div className="text-left px-4 bg-cream bg-cream mt-8 py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
+// //               <CommentThread page={page} comments={rootComments} />
+        
+// //            </div>
+// //           ) : (
+// //             <div className="flex max-w-[96vw] mx-auto sm:w-page h-page">
+// //               <h1 className="mont-medium my-12 mx-auto">Took a wrong turn</h1>
+// //             </div>
+// //           )}
+// //         </div>
+       
+      
+// // {/* </div> */}
+// //          </div>
+// //       </IonContent>
+// //     </ErrorBoundary>
+// //   );
+// }
+
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useLayoutEffect, useEffect, useContext } from "react";
-import "../../styles/PageView.css";
+import { IonContent, useIonRouter } from "@ionic/react";
 import PageViewItem from "../../components/page/PageViewItem";
-import { getStory } from "../../actions/StoryActions";
 import CommentThread from "../../components/comment/CommentThread";
+import { getStory } from "../../actions/StoryActions";
 import { postStoryHistory } from "../../actions/HistoryActions";
-import { getProfileHashtagCommentUse } from "../../actions/HashtagActions";
+import { setComments } from "../../actions/PageActions.jsx";
 import ErrorBoundary from "../../ErrorBoundary";
 import Context from "../../context";
-import { initGA, sendGAEvent } from "../../core/ga4.js";
+import Paths from "../../core/paths.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
-import { IonBackButton, IonContent, IonHeader, IonToolbar } from "@ionic/react";
-import { setComments } from "../../actions/PageActions.jsx";
-import Paths from "../../core/paths.js";
-import { Capacitor } from "@capacitor/core";
-import { useIonRouter } from '@ionic/react';
+import { initGA, sendGAEvent } from "../../core/ga4.js";
+
 export default function PageViewContainer() {
-  const { setSeo, seo, setError, } = useContext(Context);
+  const { setSeo, seo, setError } = useContext(Context);
   const { id } = useParams();
   const dispatch = useDispatch();
- const { currentProfile } = useSelector((state) => state.users);
-  const router = useIonRouter()
+  const router = useIonRouter();
+  const currentProfile = useSelector((state) => state.users.currentProfile);
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
-    const [canUserSee, setCanUserSee] = useState(false)
-   const isNative= Capacitor.isNativePlatform()
-useScrollTracking({
-  contentType: "story",
-  contentId: page?.id,
-  authorId: page?.authorId,
-  enableCompletion: canUserSee === true,
-  completionEvent: "story_read_complete",
-});
 
+  const [canUserSee, setCanUserSee] = useState(false);
   const [pending, setPending] = useState(true);
   const [rootComments, setRootComments] = useState([]);
   const [errorStatus, setErrorStatus] = useState(null);
 
-  useScrollTracking({ name: page ? JSON.stringify(page) : id });
+  const isNative = useIonRouter(); // placeholder for Capacitor.isNativePlatform()
+
+  useScrollTracking({
+    contentType: "story",
+    contentId: page?.id,
+    authorId: page?.authorId,
+    enableCompletion: canUserSee,
+    completionEvent: "story_read_complete",
+  });
 
   useLayoutEffect(() => {
     initGA();
   }, []);
 
-  useLayoutEffect(() => {
-    if (currentProfile) {
-      dispatch(getProfileHashtagCommentUse({ profileId: currentProfile.id }));
-    }
-    return () => {
-      if (currentProfile && page && import.meta.env.VITE_NODE_ENV !== "dev") {
-        dispatch(postStoryHistory({ profile: currentProfile, story: page }));
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (comments?.length) {
-      setRootComments(comments.filter((c) => c && c.parentId == null));
-    }
-  }, [comments]);
-
-  useEffect(() => {
-
-    fetchStory();
-  }, [id,dispatch]);
-
   const fetchStory = async () => {
-    setPending(true)
+    setPending(true);
     setErrorStatus(null);
-
     try {
-       dispatch(getStory({ id })).then((res) => {
-
-
-      checkResult(
-        res,
-        (payload) => {
-          if (payload?.story) {
-            if (payload.story.comments?.length) {
-              dispatch(setComments({ comments: payload.story.comments }));
+      dispatch(getStory({ id })).then((res) => {
+        checkResult(
+          res,
+          (payload) => {
+            if (payload?.story) {
+              if (payload.story.comments?.length) {
+                dispatch(setComments({ comments: payload.story.comments }));
+              }
+              setPending(false);
+            } else throw new Error("Story not found");
+          },
+          (err) => {
+            setPending(false);
+            if (err?.response?.status === 403) setErrorStatus(403);
+            else {
+              setError(err.message || "Failed to load story");
+              setErrorStatus(err?.response?.status || 500);
             }
-            setPending(false)
-          } else {
-            throw new Error("Story not found");
           }
-        },
-        (err) => {
-          // Handle forbidden specifically
-              setPending(false)
-          if (err?.response?.status === 403) {
-   
-            setErrorStatus(403);
-          } else {
-            setError(err.message || "Failed to load story");
-            setErrorStatus(err?.response?.status || 500);
-          }
-
-        }
-           )});
-
+        );
+      });
     } catch (error) {
-          setPending(false)
-      if (error?.response?.status === 403) {
-        setErrorStatus(403);
-
-      } else {
+      setPending(false);
+      if (error?.response?.status === 403) setErrorStatus(403);
+      else {
         setError(error.message);
-      
         setErrorStatus(500);
       }
     }
   };
-  useEffect(fetchStory,[])
-  const soCanUserSee=()=>{
-    if(!page.isPrivate){
-      return true
-    }
-    if (page?.isPrivate) {
-    
-      if (currentProfile && currentProfile.id === page.authorId) {
-        return true;
-      }
-   
-     if(page.collections){
 
-     let found = page.collections.find(col=>!col.collection.isPrivate)
-    if(found) return true
-        }
-
-    if(page.betaReaders.length){
-      let canSee = page.betaReaders.find((br) => {
-        if (currentProfile && br.profileId === currentProfile.id) {
-          return true;
-        }
-      });
-
-      if(canSee){
-      return true;
-      }
-    }
-    }else{
-    return false
-    }}
   useEffect(() => {
-    setPending(true);
-    page && setCanUserSee(soCanUserSee()) && sendGAEvent({
-  story_id: page.id,
-  author_id: page.authorId,
-  is_private: page.isPrivate,
-  viewer_logged_in: Boolean(currentProfile),
-  platform: Capacitor.isNativePlatform() ? "native" : "web"
-},[page])
+    fetchStory();
+  }, [id, dispatch]);
 
-
-    setPending(false);
-  },[page])
   useEffect(() => {
-  if (errorStatus === 403) {
-    sendGAEvent("story_access_denied", {
-      story_id: id,
-      viewer_logged_in: Boolean(currentProfile),
-    });
-  }
-}, [errorStatus]);
-useEffect(() => {
-  if (page && rootComments && rootComments.length ) {
-    sendGAEvent("view_comments", {
-      story_id: page.id,
-      comment_count: rootComments?.length,
-    });
-  }
-}, [rootComments]);
-
-  const handleBack = () => {
-     sendGAEvent("story_exit_back", {
-    story_id: page?.id,
-    exit_type: window.history.length > 1
-      ? "history_back"
-      : "fallback_discovery",
-  });
-    if (window.history.length > 1) {
-       router.goBack()
-    } else {
-      router.push(Paths.discovery,"back");
+    if (comments?.length) {
+      setRootComments(comments.filter((c) => c && !c.parentId));
     }
-  };
-  useLayoutEffect(() => {
+  }, [comments]);
+
+  useEffect(() => {
     if (page) {
-      setSeo({
-        ...seo,
-        title: page.title,
-        description: page.description,
+      setSeo({ ...seo, title: page.title, description: page.description });
+      const canSee = !page.isPrivate || page.authorId === currentProfile?.id;
+      setCanUserSee(canSee);
+      sendGAEvent({
+        story_id: page.id,
+        author_id: page.authorId,
+        is_private: page.isPrivate,
+        viewer_logged_in: Boolean(currentProfile),
+        platform: isNative ? "native" : "web",
       });
     }
   }, [page]);
 
-  const PageDiv = ({ page }) =>
-    page ? (
-      <div  id=" "className={` mx-auto `}>
-      <PageViewItem page={page} currentProfile={currentProfile} /></div>
-    ) : (
-      <div className="skeleton w-[95vw] mx-auto sm:w-[50em] mx-auto bg-emerald-50 h-page" />
-    );
+  const handleBack = () => {
+    sendGAEvent("story_exit_back", {
+      story_id: page?.id,
+      exit_type: window.history.length > 1 ? "history_back" : "fallback_discovery",
+    });
+    window.history.length > 1 ? router.goBack() : router.push(Paths.discovery, "back");
+  };
 
   return (
     <ErrorBoundary>
-         <IonContent fullscreen={true}  style={{"--background":"#f4f4e0"}}className="ion-padding-bottom" >
- 
-
-      
-    {/* <div className="py-12 bg-cream"> */}
-       <div className=" min-h-[40em] ion-padding-bottom  ">
-        <div className=" text-center bg-cream py-[4em] mx-auto h-[100%]" >
-          {pending ? ( 
-            <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
+      <IonContent
+        fullscreen
+        className="ion-padding-bottom"
+        style={{ "--background": "#f4f4e0" }}
+      >
+        <div className="min-h-[40em] pt-4 pb-[8em] text-center">
+          {pending ? (
+            <div className="skeleton mx-auto bg-slate-50 w-[95vw] md:w-[50em] h-page" />
           ) : errorStatus === 403 ? (
-            <div className="flex  mx-auto md:w-50 px-8 h-page">
-              <h1 className="mont-medium my-12 mx-auto text-center text-emerald-800">
-                🚫 You don’t have permission to view this story.
-              </h1>
-            </div>
+            <h1 className="mont-medium text-emerald-800 my-12">🚫 You don’t have permission to view this story.</h1>
           ) : canUserSee ? (
-            <div className="w-fit  bg-cream  mx-auto px-4 sm:max-w-[50em]">
-            <div className="my-4 py-4">  <PageDiv page={page} /></div>
-             <div className="text-left px-4 bg-cream bg-cream mt-8 py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
+            <div className="w-fit mx-auto sm:max-w-[50em] bg-cream p-4 rounded-xl shadow-sm">
+              <PageViewItem page={page} currentProfile={currentProfile} />
+              <div className="mt-8 mb-4 text-left">
+                <h6 className="text-[1em] font-bold text-emerald-800">Responses</h6>
+              </div>
               <CommentThread page={page} comments={rootComments} />
-        
-           </div>
-          ) : (
-            <div className="flex max-w-[96vw] mx-auto sm:w-page h-page">
-              <h1 className="mont-medium my-12 mx-auto">Took a wrong turn</h1>
             </div>
+          ) : (
+            <h1 className="mont-medium my-12 mx-auto">Took a wrong turn</h1>
           )}
         </div>
-       
-      
-{/* </div> */}
-         </div>
       </IonContent>
     </ErrorBoundary>
   );

@@ -23,7 +23,7 @@ const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
   const [canUserEdit,setCanUserEdit ]=useState(false)
   const [loading,setLoading]=useState(false)
   const router = useIonRouter()
-  const {openDialog,closeDialog,dialog}=useDialog()
+  const {openDialog,closeDialog,resetDialog,dialog}=useDialog()
   const getShareSource = () => {
   const pathname = router.routeInfo?.pathname || "";
 
@@ -175,7 +175,7 @@ const handleBookmarkClick = async () => {
         <div
         className="bg-cream py-3"
           onClick={async () => {
-            
+            resetDialog()
             if (profile && (await Preferences.get({ key: "token" })).value) {
               sendGAEvent("story_add_to_collection_click", {
   story_id: page.id,
@@ -186,7 +186,7 @@ const handleBookmarkClick = async () => {
             } else {
               setError("Please Sign Up");
             }
-            openDialog({ ...dialog, isOpen: false })
+      
           }}
         >
           <IonText className="text-[1rem] px-4">Add to Collection</IonText>

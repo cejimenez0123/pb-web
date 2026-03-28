@@ -367,38 +367,136 @@ openDialog({
     );
   }
 
-  return (
+  // return (
     
-    <ErrorBoundary >
-    <IonCard
+  //   <ErrorBoundary >
+  //   <IonCard
      
-      className={
-        'mt-3 rounded-lg rounded-b-lg w-[100%] sm:max-w-[45em] mx-auto mx-auto justify-between bg-blueSea bg-opacity-10 flex flex-col '
-      }
+  //     className={
+  //       'mt-3 rounded-lg rounded-b-lg  mx-auto mx-auto justify-between bg-blueSea bg-opacity-10 flex flex-col '
+  //     }
  
-    >
-      <IonCardHeader className="p-0 m-0 bg-transparent">
-        {header()}
-        {bookTitleDiv}
-      </IonCardHeader>
+  //   >
+  //     <IonCardHeader className="p-0 m-0 bg-transparent">
+  //       {header()}
+  //       {bookTitleDiv}
+  //     </IonCardHeader>
 
     
-        {description(page)}
+  //       {description(page)}
 
-        <PageDataElement isGrid={isGrid} page={page} />
+  //       <PageDataElement isGrid={isGrid} page={page} />
  
       
 
   
-      {isGrid ? (
-        <div id="bottom-dash" className={`flex flex-row sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
-          {bookmarkBtn()}
+  //     {isGrid ? (
+  //       <div id="bottom-dash" className={`flex flex-row sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
+  //         {bookmarkBtn()}
+  //       </div>
+  //     ) : <div className={ `flex w-[100%] flex-row justify-between  bottom-0`}>
+  //       {buttonRow()}</div>}
+  //   </IonCard>
+  //   </ErrorBoundary>
+  // );
+return (
+  <IonCard className="mt-3 mx-auto bg-white rounded-2xl border border-[#bae6fe]/40 shadow-sm">
+
+    {/* Header */}
+    <IonCardHeader className="pb-2">
+      <div className="flex items-center gap-3">
+        <div onClick={() => router.push(Paths.profile.createRoute(page.author.id))}>
+          <ProfileCircle profile={page.author} />
         </div>
-      ) : <div className={ `flex w-[100%] flex-row justify-between  bottom-0`}>
-        {buttonRow()}</div>}
-    </IonCard>
-    </ErrorBoundary>
-  );
+
+        <div className="flex flex-col">
+          <IonText className="text-sm font-semibold text-[#003b44]">
+            {page.author?.username}
+          </IonText>
+          <IonText className="text-xs text-[#0097b2]/70">
+            {page.title}
+          </IonText>
+        </div>
+      </div>
+    </IonCardHeader>
+
+    {/* Content */}
+    <IonCardContent className="pt-0">
+      {page.description && (
+        <IonText className="text-sm text-[#003b44]/80 leading-relaxed line-clamp-3">
+          {page.description}
+        </IonText>
+      )}
+
+      <div className="mt-3 rounded-xl overflow-hidden border border-[#bae6fe]/30">
+        <PageDataElement isGrid={isGrid} page={page} />
+      </div>
+    </IonCardContent>
+<div className="flex items-center justify-between px-4 pb-3">
+
+  {/* Left actions */}
+  <div className="flex items-center gap-3">
+
+    {/* Like */}
+    <button
+      onClick={handleApprovalClick}
+      className={`
+        px-3 py-1.5 rounded-full text-sm font-medium
+        transition active:scale-95
+        ${likeFound 
+          ? "bg-[#0097b2] text-white" 
+          : "bg-[#bae6fe]/40 text-[#003b44]"
+        }
+      `}
+    >
+      Yea
+    </button>
+
+    {/* Comment */}
+    <button
+      onClick={handleClickComment}
+      className="
+        px-3 py-1.5 rounded-full text-sm
+        bg-[#bae6fe]/30 text-[#003b44]
+        transition active:scale-95
+      "
+    >
+      💬
+    </button>
+
+    {/* Share */}
+    <button
+      onClick={onClickShare}
+      className="
+        px-3 py-1.5 rounded-full text-sm
+        bg-[#bae6fe]/30 text-[#003b44]
+        transition active:scale-95
+      "
+    >
+      ⤴
+    </button>
+  </div>
+
+  {/* Bookmark */}
+  <button
+    onClick={handleBookmark}
+    className="
+      p-2 rounded-full 
+      bg-[#bae6fe]/30 
+      active:bg-[#bae6fe]/60 
+      transition
+    "
+  >
+    <IonImg
+      className="w-5 h-5"
+      src={bookmarked ? bookmarkfill : bookmarkoutline}
+    />
+  </button>
+
+</div>
+    
+  </IonCard>
+);
 }
 
 
@@ -407,3 +505,56 @@ openDialog({
 
 
 export default React.memo(DashboardItem);
+
+// {/* Actions */}
+//     <div className="flex items-center justify-between px-4 pb-3">
+
+//       {/* Left actions */}
+//       <div className="flex items-center gap-6">
+
+//         {/* Like */}
+//         <button
+//           onClick={handleApprovalClick}
+//           className={`transition active:scale-95`}
+//         >
+//           <IonText
+//             className={`text-base ${
+//               likeFound ? "text-[#0097b2]" : "text-white"
+//             }`}
+//           >
+//             Yea
+//           </IonText>
+//         </button>
+
+//         {/* Comment */}
+//         <button
+//           onClick={handleClickComment}
+//           className="transition  active:scale-95"
+//         >
+//           <IonText className="text-base text-[#40906f]/70">
+//             💬
+//           </IonText>
+//         </button>
+
+//         {/* Share */}
+//         <button
+//           onClick={onClickShare}
+//           className="transition active:scale-95"
+//         >
+//           <IonText className="text-base text-[#40906f]/70">
+//             ⤴
+//           </IonText>
+//         </button>
+//       </div>
+
+//       {/* Bookmark */}
+//       <button
+//         onClick={handleBookmark}
+//         className="p-1 rounded-full active:bg-[#bae6fe]/60 transition"
+//       >
+//         <IonImg
+//           className="w-5 h-5"
+//           src={bookmarked ? bookmarkfill : bookmarkoutline}
+//         />
+//       </button>
+//     </div>

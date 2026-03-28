@@ -16,7 +16,7 @@ const PageList = ({ items = [], forFeedback, getMore = () => {}, hasMore = true,
     <div>
       {pagesInView.map((page, i) => (
         <DashboardItem
-          key={page.id}
+          key={i}
           item={page}
           index={i}
           forFeedback={forFeedback}

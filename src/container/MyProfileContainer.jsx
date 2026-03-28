@@ -7,7 +7,7 @@
 // import Paths from '../core/paths';
 // import { debounce } from 'lodash';
 // import calendar from '../images/icons/calendar.svg'
-// import settings from "../images/icons/settings.svg"
+import settings from "../images/icons/settings.svg"
 // import { setPageInView, setPagesInView, setEditingPage, setHtmlContent } from '../actions/PageActions.jsx';
 // import { sendGAEvent } from '../core/ga4.js';
 // import CreateCollectionForm from '../components/collection/CreateCollectionForm';
@@ -371,7 +371,7 @@
 
 // export default MyProfileContainer;
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { IonContent, useIonRouter } from "@ionic/react";
+import { IonContent, IonImg, useIonRouter } from "@ionic/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router";
 import { Preferences } from "@capacitor/preferences";
@@ -706,7 +706,12 @@ useEffect(() => {
     <ErrorBoundary>
       <IonContent             style={{ "--background": "#f4f4e0" }} fullscreen className="bg-cream">
         <div className="max-w-2xl mx-auto px-4 pb-24 pt-safe space-y-8">
+<div className='flex mt-4  sm:pt-20 p-4 flex-row justify-between'>
+                          <IonImg onClick={()=> router.push(Paths.editProfile,"forward")} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
 
+          
+                  
+            </div>
           {/* Header */}
           <div className="space-y-6 p-8">
             <div className="flex items-center justify-between">

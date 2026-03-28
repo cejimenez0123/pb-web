@@ -12,7 +12,7 @@ function LinkPreview({ url, isGrid }) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const size = "w-[100%] sm:w-[48em]"
+  const size = "w-[100%] sm:max-w-[47em]"
 
   useEffect(() => {
     initGA();

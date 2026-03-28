@@ -1,24 +1,35 @@
-import ErrorBoundary from "../../ErrorBoundary.jsx"
-import Comment from "./Comment"
-import { IonList } from "@ionic/react"
+// import ErrorBoundary from "../../ErrorBoundary.jsx"
+// import Comment from "./Comment"
+// import { IonList } from "@ionic/react"
 
-export default function CommentThread({page,comments,level=0}){
+// export default function CommentThread({page,comments,level=0}){
    
 
-    return(
-        <div className="bg-cream">
+//     return(
+//         <div className="bg-cream">
     
-                     <div className="pl-1  "style={{"--backgorund":"#f4f4e0"}} >
-                        {comments.map(com=>{
-                            return(<div 
-                                key={com.id}
-                                className={`  `}>
-                                    <Comment page={page} comment={com} level={level+1}/>
-                                    </div>
-                                    )
-                        })}
-             </div>
+//                      <div className="pl-1  "style={{"--backgorund":"#f4f4e0"}} >
+//                         {comments.map(com=>{
+//                             return(<div 
+//                                 key={com.id}
+//                                 className={`  `}>
+//                                     <Comment page={page} comment={com} level={level+1}/>
+//                                     </div>
+//                                     )
+//                         })}
+//              </div>
       
-                    </div>)
+//                     </div>)
                             
-                        }
+//                         }
+import Comment from "./Comment";
+
+export default function CommentThread({ page, comments, level = 0 }) {
+  return (
+    <div className="bg-cream pl-1">
+      {comments.map((com) => (
+        <Comment key={com.id} page={page} comment={com} level={level + 1} />
+      ))}
+    </div>
+  );
+}
