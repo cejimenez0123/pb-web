@@ -224,7 +224,7 @@ const TabBar = ({ active, onChange }) => (
 // ── Communities Panel ─────────────────────────────────
 const CommunitiesPanel = ({prof}) => {
     // const prof = useSelector(state=>state.users.profileInView)
-    if(!prof)return null
+    if(!prof && !prof.collections)return null
 const communities  = prof.collections.filter(col=>col.type=="library")
   
   if (!communities.length)
