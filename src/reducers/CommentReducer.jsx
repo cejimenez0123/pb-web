@@ -82,8 +82,10 @@ builder.addCase(createComment.fulfilled,(state,{payload})=>{
     state.error = payload.error
   }).addCase(deleteComment.fulfilled,(state,{payload})=>{
     let list = [...state.comments]
-    console.log(payload)
-     let comments= list.filter(com=>com.id != payload.comment.id)
-    state.comments = comments
+    if(state.comments.length==1){
+      state.comments=[]}
+      else{
+       state.comments = list.filter(com=>com.id != payload.comment.id)
+      }
     })}})
 export default commentSlice

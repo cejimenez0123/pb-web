@@ -7,6 +7,7 @@ import Context from "../../context"
 import { PageType } from "../../core/constants"
 import loadingGif from "../../images/loading.gif"
 import Enviroment from "../../core/Enviroment"
+import Paths from "../../core/paths"
 function DataElement({page,isGrid,book=null,html=null}){
 
 const initialImage = page?.type === PageType.picture

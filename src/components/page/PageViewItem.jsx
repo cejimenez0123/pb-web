@@ -1,78 +1,4 @@
-// import { useSelector } from "react-redux"
 
-// import {useLayoutEffect, useRef, useState} from "react"
-// import PageViewButtonRow  from "./PageViewButtonRow"
-// import CommentInput from "../comment/CommentInput"
-// import "../../styles/PageView.css"
-// import PropTypes from 'prop-types'
-// import Paths from "../../core/paths"
-// import ProfileCircle from "../profile/ProfileCircle"
-// import { initGA, sendGAEvent } from "../../core/ga4"
-// import {  useIonRouter } from "@ionic/react"
-
-// import DataElement from "./DataElement"
-// export default function PageViewItem({page}) {
-//     const ref = useRef()
-  
-//     PageViewItem.propTypes={
-//         page: PropTypes.object.isRequired
-//     }
-//     useLayoutEffect(()=>{
-//         initGA()
-//         sendGAEvent("View Story",JSON.stringify(page))
-//     },[])
-
-//     const router = useIonRouter()
-//     const currentProfile = useSelector(state=>state.users.currentProfile)
-    
-  
-//     const [commenting,setCommenting]=useState(false)
-//     const handleClose=()=>{
-//         setCommenting(false)
-//     }
-//       const commentBox = ()=>{
-//         if (commenting){
-//             return(<CommentInput page={page}  handleClose={handleClose}/>)
-//         }
-//     }
-//     const header=()=>{
-//         return <div ><span className={"flex-row flex justify-between px-1 pt-18  pb-1"}>   <ProfileCircle profile={page.author} color={"emerald-700"}/> 
-                  
-//          <h6 className="text-emerald-700 mx-2  no-underline text-ellipsis  whitespace-nowrap overflow-hidden max-w-[100%] my-auto text-[0.9rem]  " onClick={()=>{
-//              dispatch(setPageInView({page}))
-//            router.push  (Paths.page.createRoute(page.id))
-     
-//          }} >{` `+page.title.length>0?page.title:""}</h6>
-        
-    
-//          </span>   {page.description && page.description.length>0?<div className='min-h-24 pt-4 p-2'>
-//             {page.needsFeedback||page.description.length>0?<label className='text-emerald-800'>Feedback Request:</label>:null}
-//             <h6 className='p-2 open-sans-medium text-left lg:w-[36em]   text-emerald-800'>
-//                 {page.description}
-//             </h6>
-//         </div>:null}   </div>
-//      }
-
-    
-
-//         return(
-  
-//         <div className="">
-        
-//                 {header()}
-              
-  
-//                 <DataElement page={page} isGrid={false}/>
-        
-//             <PageViewButtonRow page={page} profile={currentProfile} setCommenting={truthy=>setCommenting(truthy)}/>
-            
-//                 {commentBox()}   
-//    </div>
-     
-  
-//         )
-            
-// }
 import { useSelector } from "react-redux";
 import { useLayoutEffect, useState } from "react";
 import PropTypes from "prop-types";
@@ -93,7 +19,9 @@ export default function PageViewItem({ page }) {
     initGA();
     sendGAEvent("View Story", JSON.stringify(page));
   }, []);
-
+  const closeInput = () => {
+    setCommenting(false)
+  };
   const handleClose = () => setCommenting(false);
 
   const header = () => (
@@ -117,14 +45,49 @@ export default function PageViewItem({ page }) {
       )}
     </div>
   );
-
+console.log("WAF",commenting)
   return (
     <div>
       {header()}
       <DataElement page={page} isGrid={false} />
       <PageViewButtonRow page={page} profile={currentProfile} setCommenting={setCommenting} />
-      {commenting && <CommentInput page={page} handleClose={handleClose} />}
-    </div>
+
+ 
+    { commenting && <div>
+           {/* <div
+      className="fixed inset-0 z-40 bg-black bg-opacity-30"
+      onClick={closeInput}  // clicking overlay closes input
+    />
+  <div
+    className={`fixed left-0 right-0 z-50 transition-transform duration-300 bg-white shadow-lg border-t border-gray-200`}
+    style={{
+      bottom: "64px",        // adjust to your navbar height
+      maxHeight: "50%",      // prevent covering too much
+      overflowY: "auto",
+    }}
+  > */}
+    <div
+    className={`fixed inset-0 z-40 bg-black bg-opacity-30 transition-opacity duration-300 ${
+      commenting ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+    }`}
+    onClick={closeInput}
+  />
+
+  {/* Sliding input panel */}
+  <div
+    className={`fixed left-0 right-0 z-50 bg-white shadow-lg border-t border-gray-200 transition-transform duration-300 ${
+      commenting ? "translate-y-0" : "translate-y-full"
+    }`}
+      style={{
+      bottom: "64px", // leave space for navbar
+      maxHeight: "50%",
+      overflowY: "auto",
+    }}>
+      <CommentInput page={page} handleClose={handleClose} />
+    </div></div>
+  }
+      </div>
+   
   );
 }
 
