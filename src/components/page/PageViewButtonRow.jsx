@@ -228,6 +228,14 @@ export default function PageViewButtonRow({ page, profile, setCommenting }) {
           ⤴
         </button>
       </div>
+      {page.authorId === profile?.id && (
+  <button
+    onClick={() => router.push(Paths.editor.createRoute(page.id))}
+    className="rounded-full px-3 py-2 bg-emerald-200 text-emerald-800 hover:bg-emerald-300 transition"
+  >
+    ✏️ Edit
+  </button>
+)}
       <button
         onClick={handleBookmark}
         className="p-2 rounded-full bg-emerald-100 hover:bg-emerald-200 transition"

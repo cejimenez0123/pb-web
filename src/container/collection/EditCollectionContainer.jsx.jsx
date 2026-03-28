@@ -92,7 +92,34 @@ const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
       }
   
     }
+const tabs = [
+  { key: "pages", label: "Pages" },
+  { key: "collections", label: "Collections" },
+];
 
+const [activeTab, setActiveTab] = useState("pages");
+
+const TabBar = ({ active, onChange }) => (
+  <div className="flex justify-center gap-2 bg-gray-100 rounded-xl p-1 mb-4">
+    {tabs.map((tab) => (
+      <button
+        key={tab.key}
+        onClick={() => onChange(tab.key)}
+        className={`
+          flex-1 text-center py-2 text-sm rounded-lg transition
+          ${active === tab.key
+            ? "text-white bg-soft shadow-sm"
+            : "bg-softBlue text-soft"
+          }
+        `}
+        role="tab"
+        aria-selected={active === tab.key}
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+);
   const handleColOrderChange = (newOrder) => {
     setNewCollections(
       newOrder.map((c, i) => new CollectionToCollection(c.id, i, c.childCollection, colInView, currentProfile))
@@ -243,7 +270,8 @@ if (col.childCollections) {
     openDialog(dia)
   
   }
-
+console.log("SRORY",colInView.storyIdList.length)
+console.log("SRORY",colInView.childCollections.length)
   return (
 
     <ErrorBoundary>         
@@ -361,8 +389,24 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
                 Save
               </IonText>
   </div>
-            
-       <div className="w-[100%] md:mt-8 mx-auto flex flex-col sm:max-w-[50em]">       <div role="tablist" className="tabs grid">
+            <TabBar active={activeTab} onChange={setActiveTab} />
+
+{activeTab === "pages" && (
+  <SortableList
+    items={newPages}
+    onOrderChange={handleStoryOrderChange}
+    onDelete={deleteStory}
+  />
+)}
+
+{activeTab === "collections" && (
+  <SortableList
+    items={newCollections}
+    onOrderChange={handleColOrderChange}
+    onDelete={deleteChildFromCollection}
+  />
+)}
+       {/* <div className="w-[100%] md:mt-8 mx-auto flex flex-col sm:max-w-[50em]">       <div role="tablist" className="tabs grid">
         
           <input type="radio" name="my_tabs_2" role="tab" defaultChecked className="tab" aria-label="Pages" />
           <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto">
@@ -374,16 +418,8 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
            </div>
         </div>
     
-              {/* <IonButton
-                expand="block"
-                fill="solid"
-                color="success"
-                className="mt-4 rounded-full flex b items-center justify-center gap-2"
-             
-              > */}
-                  {/* <span>Add New Story</span> */}
-              {/* </IonButton> */}
-            </div>
+              
+            </div> */}
 
             {/* ===== DANGER ZONE ===== */}
            {colInView && currentProfile && <div className="mt-10 border-t border-gray-200 pt-4">

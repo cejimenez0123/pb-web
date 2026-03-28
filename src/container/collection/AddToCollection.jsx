@@ -340,70 +340,72 @@ text-[1rem]">
       </IonContent>
     );
   }
+return(<IonContent fullscreen style={{ "--background": "#f4f4e0" }} className="ion-padding">
+  <div className="sm:max-w-[50rem] mx-auto py-4">
+    {/* Header */}
+    <div className="mb-4">
+      <h2 className="text-2xl font-semibold text-emerald-800 mb-1">
+        {colInView.title?.trim() || "Untitled"}
+      </h2>
+      {colInView.purpose && (
+        <p className="text-emerald-700 text-sm mb-2">{colInView.purpose}</p>
+      )}
+    </div>
 
-  return (
-    <ErrorBoundary>
-        <IonContent fullscreen={true}    style={{ "--background": "#f4f4e0" }} className="ion-padding">
-         
-        {/* <IonContent fullscreen={true} className="ion-padding pt-12 ion-text-emerald-800" scrollY > */}
-        <div className="sm:max-w-[50rem] mx-auto ion-padding">
-          <h2 className="text-xl font-semibold text-emerald-800 mb-1">
-            {colInView.title?.trim() || "Untitled"}
-          </h2>
-          <p className="text-emerald-700 mb-4">{colInView.purpose || ""}</p>
-          <div className="flex justify-between items-center mb-4">
-         
-            
-            <div className="text-center text-emerald-800">
-              <div className="text-lg font-medium">
-                {newCollection.length + newStories.length}
-              </div>
-              <div className="text-sm text-gray-600">New items</div>
-            </div>
-            <div className="flex space-x-4 flex-row">
-                 <div
-              onClick={save}
-              className="bg-soft text-white px-5 py-2 rounded-full  btn hover:bg-emerald-400 flex w-[6rem] h-[3rem] text-center  cursor-pointer shadow-md"
-            >
-             <h6 className="mx-auto my-auto text-[1.4em] ">Save</h6> 
-           
-            </div>
-            <div
-              onClick={()=>router.push(Paths.collection.createRoute(colInView.id))}
-              className="bg-soft flex text-white px-5 py-2 w-[6rem] btn h-[3rem] hover:bg-emerald-400  rounded-full text-center  cursor-pointer shadow-md"
-            >
-              <h6 className="my-auto mx-auto text-[1.4rem]">View</h6>
-            </div> </div>
-          </div>
-          <div className="pb-4">
+    {/* Stats + Actions */}
+    <div className="flex justify-between items-center mb-4">
+      <div className="text-center">
+        <div className="text-lg font-medium text-emerald-800">
+          {newCollection.length + newStories.length}
+        </div>
+        <div className="text-xs text-gray-500">New items</div>
+      </div>
+
+      <div className="flex space-x-3">
+        <button
+          onClick={save}
+          className="bg-emerald-700 text-white rounded-full px-5 py-2 shadow-md active:scale-95 transition transform"
+        >
+          Save
+        </button>
+        <button
+          onClick={() => router.push(Paths.collection.createRoute(colInView.id))}
+          className="bg-emerald-700 text-white rounded-full px-5 py-2 shadow-md active:scale-95 transition transform"
+        >
+          View
+        </button>
+      </div>
+    </div>
+
+    {/* Filter + Search */}
+    <div className="flex justify-between items-center mb-4 space-x-3">
       <select
-        onChange={e => setFilterType(e.target.value)}
+        onChange={(e) => setFilterType(e.target.value)}
         value={filterType}
-        className="select w-24 text-emerald-800 rounded-full bg-transparent"
+        className="select w-full sm:w-32 rounded-full border border-emerald-300 bg-white px-3 py-1 text-emerald-800 shadow-sm focus:outline-none"
       >
         {Object.entries(filterTypes).map(([, val]) => (
           <option key={val} value={val}>{val}</option>
         ))}
       </select>
-      </div>
-          {/* Search */}
-          <div className="rounded-full border border-emerald-700 flex items-center px-4 py-2 mb-4">
-            <IonText className="text-emerald-700 font-medium mr-2">Search:</IonText>
-            <input
-              type="text"
-              value={search}
-              onChange={handleSearch}
-              className="flex-1 bg-transparent focus:outline-none text-emerald-800"
-              placeholder="Search collections or stories"
-            />
-          </div>
 
-        <div className="sm:max-w-[50em] mx-auto bg-cream">
-          <StoryCollectionTabs tab={tab} setTab={setTab}  storyList={storyList} colList={colList}/>
-          </div>
-       </div> 
-       
-    </IonContent>
-    </ErrorBoundary>
-  );
+      <div className="flex-1 rounded-full border border-emerald-300 flex items-center px-4 py-2 bg-white shadow-sm">
+        <IonText className="text-emerald-700 font-medium mr-2 text-sm">Search:</IonText>
+        <input
+          type="text"
+          value={search}
+          onChange={handleSearch}
+          placeholder="Search collections or stories"
+          className="flex-1 bg-transparent focus:outline-none text-emerald-800 text-sm"
+        />
+      </div>
+    </div>
+
+    {/* List container */}
+    <div className="bg-cream rounded-2xl p-3 shadow-sm">
+      <StoryCollectionTabs tab={tab} setTab={setTab} storyList={storyList} colList={colList} />
+    </div>
+  </div>
+</IonContent>)
+
 }

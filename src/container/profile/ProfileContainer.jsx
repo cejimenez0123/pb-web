@@ -298,15 +298,15 @@ const PageList = ({ items }) => (
   
   <div className="space-y-2">
     {items.map((p) => {
-      console.log(items.title)
-      return<div key={p.id} className="p-2 border border-seaBlue rounded">{p?.title?.length>0 ? p.title:"Untitled"}</div>
+     
+      return<div key={p.id} onClick={()=>router.push(Paths.page.createRoute(p.id))}className="p-2 border border-seaBlue rounded">{p?.title?.length>0 ? p.title:"Untitled"}</div>
  } )}
   </div>
 );
 const IndexList = ({ items }) => (
   <div className="space-y-2">
     {items.map((i) => (
-      <div key={i.id} className="p-2 border rounded">{i.title ??i.name}</div>
+      <div onClick={()=>router.push(Paths.collection.createRoute(i.id))}key={i.id} className="p-2 border rounded">{i.title ??i.name}</div>
     ))}
   </div>
 );
@@ -339,17 +339,7 @@ useEffect(() => {
 useEffect(()=>{
   dispatch(getCurrentProfile())
 },[])
-  // ── Auth Sync
-  // useEffect(() => {
-  //   const syncProfile = async () => {
-  //     if (!profile) {
-  //       const { value } = await Preferences.get({ key: "token" });
-  //       if (value) dispatch(getCurrentProfile());
-  //       else router.push("/");
-  //     }
-  //   };
-  //   syncProfile();
-  // }, [profile, dispatch, router]);
+
 
   // ── Fetch
   useEffect(() => {

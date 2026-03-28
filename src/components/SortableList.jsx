@@ -86,11 +86,14 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
                             onClick={() => handleNavigate(item)}
                             className="text-emerald-800 text-nowrap text-left my-auto max-w-[13em] min-w-[10em] min-h-[1.5rem] overflow-hidden text-ellipsis  sm:text-[1rem]"
                           >
-                            {item.story
+                            {/* {item.story
                               ? item && item.story && item.story?.title.slice(0,20)
                               : item.childCollection
                               ? item?.childCollection?.title.slice(0,20)
-                              : "Not found"}
+                              : "Not found"} */}
+                              {item?.story?.title?.slice(0, 20) 
+  || item?.childCollection?.title?.slice(0, 20) 
+  || "Untitled"}
                           </h6>
                           <button
                             onClick={(e) => handleDelete(e, index)}
