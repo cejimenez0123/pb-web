@@ -33,7 +33,9 @@ export default {
       "blueSea":"#0097b2",
       "soft":"#40906f",
       "golden":"#f85e30",
-      "cream":"#f4f4e0"
+    
+      "cream":"#f8f6f1"
+      // "#f4f4e0"
     },
     height:{
       "info":"18rem",

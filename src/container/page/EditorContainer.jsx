@@ -1,361 +1,341 @@
-import "../../styles/Editor.css"
-import "../../App.css"
-import {useDispatch, useSelector} from "react-redux"
-import menu from "../../images/icons/menu.svg"
-import { useContext, useEffect, useState,useRef } from "react"
-import checkResult from "../../core/checkResult"
-import { useMediaQuery } from "react-responsive"
-import { PageType } from "../../core/constants"
-import Paths from "../../core/paths"
-import {createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions"
-import ErrorBoundary from "../../ErrorBoundary"
-import { useDialog } from "../../domain/usecases/useDialog.jsx"
-import HashtagForm from "../../components/hashtag/HashtagForm"
-import RoleForm from "../../components/role/RoleForm"
-import Context from "../../context"
-import EditorDiv from "../../components/page/EditorDiv"
-import {  setEditingPage, setHtmlContent, setPageInView,   } from "../../actions/PageActions.jsx"
-import debounce from "../../core/debounce.js"
-import EditorContext from "./EditorContext"
-import FeedbackDialog from "../../components/page/FeedbackDialog"
-import { IonBackButton, IonButtons, IonContent, IonHeader, useIonRouter } from "@ionic/react"
-import { setDialog } from "../../actions/UserActions.jsx"
-import { useParams } from "react-router"
-import { Capacitor } from "@capacitor/core"
 
 
-function EditorContainer({presentingElement}){
-        const currentProfile=useSelector(state=>state.users.currentProfile)
-        // const [feedbackDialog,setFeedbackDialog]=useState(false)
-        const {setError,setSuccess,isPhone,isTablet}=useContext(Context)
-        const editPage = useSelector(state=>state.pages.editingPage)
-        const [pending,setPending]=useState(false)
-        const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-        // const [openDescription,setOpenDescription]=useState(false)
-        const dispatch = useDispatch()
-        const isNative = Capacitor.isNativePlatform()
-        const md = useMediaQuery({ query: '(min-width:800px)'})
-        const router = useIonRouter()
-        const {id,type}= useParams()
-        const notText= type!=PageType.link&&type!=PageType.picture
-        const [openHashtag,setOpenHashtag]=useState(false)
-        const {isSaved,setIsSaved}=useContext(Context)
-        const [parameters,setParameters] = useState({isPrivate:true,data:"",title:"",needsFeedback:false,description:"",commentable:true,profile:currentProfile,profileId:currentProfile?currentProfile.id:""})
-        const {openDialog,closeDialog,dialog,resetDialog}=useDialog()
-const hasInitialized = useRef(false);
+
+import "../../styles/Editor.css";
+import "../../App.css";
+import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect, useContext, useRef } from "react";
+import { useParams } from "react-router";
+import { IonContent, useIonRouter, IonImg } from "@ionic/react";
+import { Capacitor } from "@capacitor/core";
+// import EditorDiv from "../../components/page/EditorDiv.jsx"
+import Paths from "../../core/paths";
+import { PageType } from "../../core/constants";
+import { createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions";
+import { setEditingPage, setHtmlContent, setPageInView } from "../../actions/PageActions.jsx";
+import checkResult from "../../core/checkResult";
+import debounce from "../../core/debounce.js";
+import RichEditor from "../../components/page/RichEditor.jsx"
+import Context from "../../context";
+import EditorContext from "./EditorContext";
+import ErrorBoundary from "../../ErrorBoundary";
 
 
-      useEffect(()=>{
-        closeDialog()
-          if (!hasInitialized.current) {
+import HashtagForm from "../../components/hashtag/HashtagForm";
+import RoleForm from "../../components/role/RoleForm";
+import FeedbackDialog from "../../components/page/FeedbackDialog";
+import { useDialog } from "../../domain/usecases/useDialog.jsx";
+import menu from "../../images/icons/menu.svg";
+import PicturePageForm from "../../components/page/PicturePageForm.jsx";
+import EditorDiv from "../../components/page/EditorDiv.jsx";
+export default function EditorContainer({ presentingElement }) {
+  const { id, type } = useParams();
+  const dispatch = useDispatch();
+  const router = useIonRouter();
+  const currentProfile = useSelector((state) => state.users.currentProfile);
+  const editPage = useSelector((state) => state.pages.editingPage);
+  const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
+  const { setError, setSuccess, setIsSaved } = useContext(Context);
 
-    hasInitialized.current = true;
-    return;
-  }
+  const isNative = Capacitor.isNativePlatform();
+  const hasInitialized = useRef(false);
+  const [pending, setPending] = useState(false);
+  const [openHashtag, setOpenHashtag] = useState(false);
+  const { openDialog, closeDialog, dialog, resetDialog } = useDialog();
+  const [parameters, setParameters] = useState({
+    isPrivate: true,
+    data: "",
+    title: "",
+    isSaved:false,
+    needsFeedback: false,
+    description: "",
+    commentable: true,
+    profile: currentProfile,
+    profileId: currentProfile ? currentProfile.id : "",
+    type: type || PageType.text,
+  });
 
-      },[])
+  const notText = type !== PageType.link && type !== PageType.picture;
 
-
-const handleBack = (e) => {
-  e.preventDefault();
-  if (router.canGoBack()) {
-    router.goBack();
-  } else {
-    router.push(Paths.discovery, 'back', 'pop');
-  }
-};
-
-  
-  const setStory=(story)=>{
-    
-
-          dispatch(setHtmlContent({html:story.data}))
-          dispatch(setEditingPage({page:story}))
-          dispatch(setPageInView({page:story}))
-
-          handleSet("commentable",story.commentable)
-          handleSet("page",story)
-          handleSet("isPrivate",story.isPrivate)
-          handleSet("data",story.data)
-          handleSet("title",story?.title)
-          handleSet("type",story.type)
-           setPending(false)
-     
-  }
-   useEffect(()=>{
-   
- id && fetchStory()
-    
-   },[currentProfile])
-
-   const handleChange = (key, value) => {
-    setParameters((prev) => ({ ...prev, [key]: value }));
-  };
-    const handleSet = (key, value) => {
-    setParameters((prev) => ({ ...prev, [key]: value }));
-  };
-  useEffect(()=>{
-
-  if(currentProfile && currentProfile.id &&notText){
-    setIsSaved(false)
-   return debounce(()=>{
-      dispatch(updateStory({...parameters,profileId:currentProfile.id,id:editPage.id})).then(res=>checkResult(res,payload=>{
- 
-        setIsSaved(true)
-  
-      },err=>{
-        setError(err.message)
-      }))
-  },100)
-  }
-
-  },[parameters])
-    const fetchStory = ()=>{
-      setPending(true)
-  try{
-if(id){
-       dispatch(getStory({id:id})).then(res=>{
-        checkResult(res,payload=>{
-     
-          const {story}=payload
-        setStory(story)
-       setPending(false)
-},err=>{
-  setError(err.message)
-  setPending(false)
-})})}
-}catch(er){
-  window.alert(er.message)
-}}
-
-    
-  
-    useEffect(()=>{
-      
-  if(type==PageType.text){
-    createPageAction()
-  }
-    },[])
-
-      const handleDelete =debounce(()=>{
-          dispatch(deleteStory(parameters)).then(()=>{
-          router.push(Paths.myProfile, "root");
-          })
-      
-      },10)
-      const createPageAction = ()=>{
-        
-      if(currentProfile && currentProfile.id && type){
-       
-        dispatch(createStory({...parameters,type,profile:currentProfile,profileId:currentProfile.id})).then(res=>checkResult(res,payload=>{
-          const {story}=payload
-          dispatch(setEditingPage({page:story}))
-          setStory(story)
-          router.push(Paths.editPage.createRoute(story.id))
-          
-       
-     },err=>{
-
-setError(err.message)
-     }))
+  // ------------------ Lifecycle ------------------
+  useEffect(() => {
+    closeDialog();
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      return;
     }
-      }
-    const handleClickAddToCollection=()=>{
-          router.push(Paths.addStoryToCollection.story(id))
-        }
-  const handleisPrviate=debounce((truthy)=>{
-          closeDialog()
-          handleChange("needsFeedback",false)
-          handleChange("isPrivate",truthy)
-        },10)
+  }, []);
+
+  useEffect(() => {
+    if (id) fetchStory();
+  }, [currentProfile, id]);
 
 
-   const topBar=()=>{
-    return(<div className=" rounded-lg  w-[100%] h-fit sm:max-w-[50em] mx-auto ">
-    <div className=" text-emerald-800  bg-gradient-to-br from-emerald-100 to-emerald-400   flex flex-row sm:rounded-t-lg border border-white   ">
-        <div 
-      className=" flex-1 text-left border-white border-r-2  "
-      >
-       
-        {isSaved?<h6 className=" text-left p-1 mx-1 text-sm  ">Saved</h6>:
-      <h6 className="text-left mx-1 p-1 text-sm">Draft</h6>}
-      <input type="text " 
-      className="p-2  w-[90%]  text-emerald-8  text-[1rem]  bg-transparent font-bold"
-       value={parameters.title} onChange={(e)=>handleChange("title",e.target.value)}
-      
-      placeholder="Untitled"/>
-
-      </div>
-
-      <div className=" ">  
-      
-      <div className="dropdown dropdown-bottom   dropdown-end">
-      <div tabIndex={0} role="button" ><img className="min-w-16 min-h-[5rem]   bg-emerald-600 rounded-lg mt-1 mx-auto" src={menu}/></div>
-      <ul tabIndex={0} className="dropdown-content text-center menu bg-white rounded-box z-[1] shadow">
-        <li className="text-emerald-600 pt-3 pb-2 btn shadoow-none bg-transparent "
-        onClick={handleClickAddToCollection}><a className="text-emerald-600 text-center">Add to Collection</a></li>
-        <li onClick={()=>{
-        // setOpenDescription(false)
-         openFeedback(true)
-        }} className="text-emerald-600 pt-3 pb-2 btn shadoow-none bg-transparent  ">
-          <a className="text-emerald-600 text-center">Get Feedback</a></li>
-        {editPage?<li className=" pt-3 pb-2 btn shadoow-none bg-transparent " onClick={()=>{router.push(Paths.page.createRoute(editPage.id))}}><a className="mx-auto text-emerald-600 my-auto">View</a></li>:null}
-{!(editPage&&editPage.id)?null:parameters.isPrivate?<li onClick={()=>{
- openFeedback(false)} 
-  
+  useEffect(() => {
+  if (!editPage?.id) return;
+  if (currentProfile?.id && notText) {
+    setIsSaved(false);
+     handleChange("isSaved",false)
+    debounce(() => {
+      dispatch(updateStory({ ...parameters,type:editPage.type, profileId: currentProfile.id, id: editPage.id }))
+        .then((res) =>
+          checkResult(res, () => {setIsSaved(true)
+            handleChange("isSaved",true)
+          }, (err) => setError(err.message))
+        );
+    }, 100)();
   }
-className="text-emerald-600 btn shadow-none bg-transparent pt-3 pb-2 ">Share Now</li>:
-<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
+}, [parameters.data, parameters.title, parameters.isPrivate, parameters.commentable, parameters.description, parameters.needsFeedback]);
 
-  handleChange("isPrivate",true)
-  }}>Make Private</li>}
-  {!parameters.isPrivate?<li className="text-emerald-600 pt-3 pb-2 " onClick={()=>{
-       setFeedbackDialog(false) 
- openFeedback(false)
-  }}>Edit Description</li>:null}
-        <li className="text-emerald-600 pt-3 pb-2 btn shadoow-none bg-transparent " onClick={()=>setOpenHashtag(!openHashtag)}> {openHashtag?"Close":"Add"} Hashtag</li>
-        {editPage?<li className="text-emerald-600 pt-3 pb-2 btn shadoow-none bg-transparent " onClick={()=>{
-          openRoleFormDialog(parameters.page);setOpenRoles(!openRoles)}}>Manage Access</li>:null}
-        <li className="text-emerald-600 pt-3 pb-2" onClick={openConfirmDeleteDialog}>Delete</li>
-      </ul>
-    </div>
-      
-  </div>
-  <div>
-    
-  </div>
-
-  
-    </div>
-    {openHashtag?<div className="bg-emerald-50 w-full">
-    <HashtagForm item={parameters.page} type="story"/>
-  </div>:null}
-    </div>)
-   }
-
-
-   const openFeedback=(isFeedback)=>{
-
-openDialog({...dialog,disagree:null,agree:()=>resetDialog(),disagreeText:null,scrollY:false,text:
-    <FeedbackDialog  
-page={editPage}
-isFeedback={isFeedback}
-handleChange={e=>handleChange("description",e)} 
-handleFeedback={(item)=>{
-  resetDialog()
-    const params = { ...item, description:parameters.description, page: item, id: item.id, needsFeedback: true };
-        dispatch(updateStory(params)).then(res => {
-          checkResult(res, payload => {
-    
-            if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"foward"));
-          });
-        });
-}}
-handlePostPublic={()=>{
-  console.log("Publishing...")
-  handleisPrviate(false)
-  resetDialog()
-  router.push(Paths.page.createRoute(editPage.id),"forward")
-}}
-handleClose={()=>{
-closeDialog()
-}} />})}
-      
-
-   
-   setTimeout(()=>{
-
-    setError(null)
-  setSuccess(null)
-  
- 
-},4001)
-const openConfirmDeleteDialog = () => {
-   dispatch(setDialog({isOpen:false}))
-  let dia = {};
-  dia.isOpen = true;
-  dia.title = "Are you sure you want to delete this page?";
-  dia.text = ""; // No additional text
-  dia.onClose = () => {
-    dispatch(setDialog({ isOpen: false }));
-  };
-  dia.agreeText = "Delete";
-  dia.agree = () => {
-    handleDelete();
-    dispatch(setDialog({ isOpen: false }));
-  };
-  dia.disagreeText = "Close";
-  dia.disagree = () => {
-    dispatch(setDialog({ isOpen: false }));
+  const setStory = (story) => {
+    dispatch(setHtmlContent({ html: story.data }));
+    dispatch(setEditingPage({ page: story }));
+    dispatch(setPageInView({ page: story }));
+    setParameters((prev) => ({
+      ...prev,
+      commentable: story.commentable,
+      page: story,
+      isPrivate: story.isPrivate,
+      data: story.data,
+      title: story.title,
+      type: story.type,
+    }));
+    setPending(false);
   };
 
-  openDialog(dia)
+  const fetchStory = () => {
+    setPending(true);
+    if (!id) return;
+    handleChange("isSaved",false)
+    dispatch(getStory({ id })).then((res) =>
+      checkResult(
+        res,
+        (payload) => {
+          handleChange("isSaved",true)
+          setStory(payload.story);
+          setPending(false);
+        },
+        (err) => {
+          setError(err.message);
+          setPending(false);
+        }
+      )
+    );
+  };
+const createPageAction = () => {
+  if (!currentProfile?.id) return;
+const payload = {
+  title: parameters.title,
+  data: parameters.data,
+  description: parameters.description,
+  needsFeedback: parameters.needsFeedback,
+  isPrivate: parameters.isPrivate,
+  commentable: parameters.commentable,
+  type: type || parameters.type, // ✅ explicitly keep original type
+  profileId: currentProfile.id,
 };
 
-const openRoleFormDialog = () => {
-  const dia = {...dialog};
-  dia.isOpen = true;
-  dia.fullScreen = !md; // replicate your fullscreen condition from the prop
-  dia.title = null; // optionally add a title
-  dia.text = <div>
-      <RoleForm
-        item={editPage}
-        onClose={() => {
-          closeDialog()
-        }}
-      />
-    </div>
-  
-  dia.onClose = () => {
-   closeDialog()
-  };
-
-  dia.agreeText = null;
-  dia.agree = null;
-
-  openDialog(dia)
+  dispatch(createStory(payload)).then((res) =>
+    checkResult(res, ({ story }) => {
+      dispatch(setEditingPage({ page: story }));
+      setStory(story);
+      handleChange("isSaved",true)
+      router.push(Paths.editPage.createRoute(story.id));
+    }, (err) => setError(err.message))
+  );
 };
-   
 
-        return(
-          <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
-          <IonContent fullscreen={true} scrollY={true} style={{"--background":"#f4f4e0","--padding-bottom":"30em","--padding-top":isNative||isPhone?"0.3rem":"6em"}}className="ion-padding"  >
-         
+
+  const handleChange = (key, value) => setParameters((prev) => ({ ...prev, [key]: value }));
+
+  // ------------------ Top Bar ------------------
+  const topBar = () => (
+    <div className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200">
+      <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+        {/* Title Input */}
+        <input
+          type="text"
+          className="p-2 w-full sm:w-[100%] text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+          value={parameters.title}
+          onChange={(e) => handleChange("title", e.target.value)}
+          placeholder="Untitled"
+        />
+
+        {/* Link Input */}
+        {/* {type === PageType.link && (
+          <input
+            type="url"
+            className="p-2 w-full sm:w-[70%] mt-2 sm:mt-0 text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            value={parameters.data}
+            onChange={(e) => handleChange("data", e.target.value)}
+            placeholder="https://example.com"
+          />
+        )} */}
+
+        {/* Menu Dropdown */}
+        <div className="dropdown dropdown-bottom dropdown-end">
+  <div tabIndex={0} role="button">
+    <img
+      className="min-w-16 min-h-[5rem] bg-emerald-600 rounded-lg mt-1 mx-auto"
+      src={menu}
+      style={{filter:"invert(100%)"}}
+    />
+  </div>
+  <ul
+    tabIndex={0}
+    className="dropdown-content menu bg-white rounded-box shadow-lg z-[10] p-2"
+    style={{ minWidth: "12rem" }} // optional: make dropdown wider like old
+  >
+    <li
+      className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+      onClick={() => router.push(Paths.addStoryToCollection.story(id))}
+    >
+      Add to Collection
+    </li>
+
+    <li
+      className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+      onClick={() => openFeedback(true)}
+    >
+      Get Feedback
+    </li>
+
+    {editPage && (
+      <li
+        className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+        onClick={() => router.push(Paths.page.createRoute(editPage.id))}
+      >
+        View
+      </li>
+    )}
+
+    {editPage && editPage.id ? (
+      parameters.isPrivate ? (
+        <li
+          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+          onClick={() => openFeedback(false)}
+        >
+          Share Now
+        </li>
+      ) : (
+        <li
+          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+          onClick={() => handleChange("isPrivate", true)}
+        >
+          Make Private
+        </li>
+      )
+    ) : null}
+
+    <li
+      className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+      onClick={() => setOpenHashtag(!openHashtag)}
+    >
+      {openHashtag ? "Close Hashtag" : "Add Hashtag"}
+    </li>
+
+    {editPage && (
+      <li
+        className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+        onClick={() => openRoleFormDialog(parameters.page)}
+      >
+        Manage Access
+      </li>
+    )}
+
+    <li
+      className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+      onClick={openConfirmDeleteDialog}
+    >
+      Delete
+    </li>
+  </ul>
+</div>
         
-          <div  className=" mx-auto md:p-8  "> 
-     {pending? <div className="skeleton rounded-lg  w-[100%] h-fit sm:max-w-[50em] mx-auto "/>:
-            topBar()}
-                <div className= "mx-2 md:w-page  mb-12 mx-auto">
-            
-                  <ErrorBoundary>
-
-         {pending?<div className="skeleton mx-auto bg-slate-100 max-w-[96vw] mx-auto md:w-page h-page"/>:
-          <EditorDiv
-    html={htmlContent.html}
-    page={editPage}
-            
-              handleChange={(key,value)=>{
-            
-          
-                handleChange("data",value)
-              }}/>}
-                </ErrorBoundary>
-                </div>
-                    <div>
-       
-
-
-      
-    </div>
       </div>
+
+      {openHashtag && <HashtagForm item={parameters.page} type="story" />}
+    </div>
+  );
+
+
+  const openFeedback = (isFeedback) => {
+    openDialog({
+      ...dialog,
+      disagree: null,
+      agree: () => resetDialog(),
+      disagreeText: null,
+      scrollY: false,
+      text: (
+        <FeedbackDialog
+          page={editPage}
+          isFeedback={isFeedback}
+          handleChange={(e) => handleChange("description", e)}
+          handleFeedback={(feedbackDesc) => {
+            resetDialog();
+            console.log("Feedback item:", item);
+            // const params = { ...item, description: parameters.description, type:item.type, page: item, id: item.id, needsFeedback: true };
+           dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", id: editPage.id,needsFeedback:true, type: editPage.type || parameters.type })).then((res) =>
+              checkResult(res, (payload) => {
+                      handleChange("isSaved",true)
+                if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id, "foward"));
+              })
+            );
+          }}
+          handlePostPublic={() => {
+            handleChange("isPrivate", false);
+       
+            router.push(Paths.page.createRoute(editPage.id), "forward");
+                 resetDialog();
+          }}
+          handleClose={() => closeDialog()}
+        />
+      ),
+    });
+  };
+  const handleDelete = debounce(() => {
+    dispatch(deleteStory(parameters)).then(() => {
+      router.push(Paths.myProfile, "root");
+      resetDialog()
+    });
+  }, 10);
+  const openConfirmDeleteDialog = () => {
+    let dia = {
+      isOpen: true,
+      title: "Are you sure you want to delete this page?",
+      text: "",
+      onClose: () => dispatch({ type: "SET_DIALOG", payload: { isOpen: false } }),
+      agreeText: "Delete",
+      agree: () => handleDelete(),
+      disagreeText: "Close",
+      disagree: () => dispatch({ type: "SET_DIALOG", payload: { isOpen: false } }),
+    };
+    openDialog(dia);
+  };
+
+  // ------------------ Render ------------------
+  return (
+    <EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
+      <IonContent
+        fullscreen
+        scrollY
+        style={{ "--background": "#f4f4e0", "--padding-bottom": "30em", "--padding-top": isNative ? "0.3rem" : "6em" }}
+        className="ion-padding"
+      >
+        <div className="mx-auto md:p-8">
+          {pending ? (
+            <div className="skeleton rounded-lg w-full h-fit sm:max-w-[50em] mx-auto" />
+          ) : (
+            topBar()
+          )}
+
+          <div className="mx-2 md:w-page mb-12 mx-auto bg-white rounded-lg p-4 shadow-sm">
+            <ErrorBoundary>
+              {pending ? <div className="skeleton mx-auto bg-slate-100 max-w-[96vw] h-page" /> : <EditorDiv handleChange={handleChange} createPageAction={createPageAction}/>}
+            </ErrorBoundary>
+          </div>
+        </div>
       </IonContent>
-      </EditorContext.Provider>
-  )    
-
-
+    </EditorContext.Provider>
+  );
 }
-
-export default EditorContainer
-
-
-

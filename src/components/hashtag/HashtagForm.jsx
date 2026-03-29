@@ -16,9 +16,7 @@ export function HashtagForm({item,type="story"}){
     const [inputValue, setInputValue] = useState('');
     const dispatch = useDispatch()
     const [hashtags, setHashtags] = useState([]);
-    //  useLayoutEffect(()=>{
-    //     resetHashtags()
-    // },[storyHashtags])
+  
     const currentProfile = useSelector(state=>state.users.currentProfile)
     // const resetHashtags= ()=>{
     //   if(storyHashtags.length>0){
@@ -132,7 +130,7 @@ try{
           placeholder="Type a hashtag and press Enter"
           rows={4}
           cols={12}
-          className=" my-1 w-[96vw] md:w-[48em] mx-auto border-1 border-emerald-600 bg-transparent text-emerald-800"
+          className=" my-1 w-[90%] md:w-[48em] mx-auto border-1 border-emerald-600 bg-transparent text-emerald-800"
         />
       <button type="submit"  className="hidden">Submit</button>
       <div className="text-left my-1">

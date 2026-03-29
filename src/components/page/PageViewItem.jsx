@@ -27,17 +27,17 @@ export default function PageViewItem({ page }) {
   const header = () => (
     <div className="bg-cream rounded-xl shadow-sm p-4 mb-4">
       <div className="flex items-center gap-3">
-        <ProfileCircle profile={page.author} color="emerald-700" />
+        <ProfileCircle profile={page?.author} color="emerald-700" />
         <h6
           className="text-emerald-800 text-lg font-semibold truncate cursor-pointer"
           onClick={() => {
             router.push(Paths.page.createRoute(page.id));
           }}
         >
-          {page.title || ""}
+          {page?.title || ""}
         </h6>
       </div>
-      {page.description && (
+      {page?.description && (
         <div className="mt-2 text-left">
           {page.needsFeedback && <label className="text-emerald-700 font-medium">Feedback Request:</label>}
           <p className="text-emerald-800 mt-1">{page.description}</p>
@@ -45,7 +45,7 @@ export default function PageViewItem({ page }) {
       )}
     </div>
   );
-console.log("WAF",commenting)
+
   return (
     <div>
       {header()}

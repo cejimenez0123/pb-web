@@ -259,23 +259,20 @@ if (col.childCollections) {
   };
   const openRoleForm=()=>{
 
-    let dia = { ...dialog };
+    let dia = { ...dialog,scrollY:true };
     dia.title = null;
     dia.isOpen = true;
-    dia.agree =null
-  
-    dia.agreeText = null
-    dia.onClose = () => closeDialog()
+  dia.disagree = ()=>resetDialog()
+  dia.disagreeText = "Close"
     dia.text = <RoleForm item={colInView} onClose={()=>closeDialog()}/>
     openDialog(dia)
   
   }
-console.log("SRORY",colInView.storyIdList.length)
-console.log("SRORY",colInView.childCollections.length)
+  if(loading||!colInView) return editCollectionSkeleton()
   return (
 
     <ErrorBoundary>         
-<IonContent fullscreen={true} className="ion-padding-top"> 
+<IonContent fullscreen={true} style={{"--background":"#f4f4e0"}} className="ion-padding-top"> 
   <div className="pb-[10em]">
   
     
@@ -288,7 +285,7 @@ console.log("SRORY",colInView.childCollections.length)
           <div className="ion-padding sm:max-w-[50em] mx-auto">
         
 
-            <IonList lines="none">
+            {/* <IonList  lines="none"> */}
               {/* Title */}
               <IonItem className="rounded-xl mb-3 border border-emerald-100">
                 <IonLabel position="stacked" className="text-emerald-700">
@@ -329,7 +326,7 @@ console.log("SRORY",colInView.childCollections.length)
                   // className="p-2 "
                 />
 </div>
-            </IonList>
+            {/* </IonList> */}
               <div className="mt-6 flex flex-col items-center gap-4 w-full max-w-lg mx-auto">
   {/* Open Collaboration Toggle */}
   <button
@@ -342,7 +339,7 @@ console.log("SRORY",colInView.childCollections.length)
   >
     {isOpen ? "Open Collaboration Enabled" : "Close Collaboration"}
   </button>
-  {/* <div className="flex flex-row space-x-4"> */}
+  <div className="flex flex-row space-x-4">
   <button
     onClick={() =>openRoleForm()}
     className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 
@@ -358,9 +355,39 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
       `}
   > {!openHashtag?"+":"-"} Hashtags</button>}
 
-  {/* </div> */}
+  </div>
   {/* Privacy Toggle */}
-  {openHashtag && collection && <HashtagForm item={colInView} type="collection"/>}
+  {collection && (
+  <div
+    className={`fixed inset-0 pb-20 z-50 transition-all duration-300 ${
+      openHashtag ? "pointer-events-auto" : "pointer-events-none"
+    }`}
+  >
+    {/* Overlay (click-away) */}
+    <div
+      onClick={() => setOpenHashtag(false)}
+      className={`absolute inset-0 bg-black/30 transition-opacity duration-300 ${
+        openHashtag ? "opacity-100" : "opacity-0"
+      }`}
+    />
+
+    {/* Bottom Sheet */}
+    <div
+  className={`absolute left-0 w-full bg-white rounded-t-2xl shadow-xl p-4 pb-6 transform transition-transform duration-300 ${
+    openHashtag ? "translate-y-0" : "translate-y-full"
+  }`}
+  style={{
+    bottom: "calc(env(safe-area-inset-bottom) + 60px)"
+  }}
+>
+    
+      <div className="w-12 h-1.5 bg-gray-300 rounded-full max-w-[100vw] mx-auto mb-4 shadow" />
+
+      <HashtagForm item={colInView} type="collection" />
+    </div>
+  </div>
+)}
+  {/* {openHashtag && collection && <HashtagForm item={colInView} type="collection"/>} */}
   <button
     onClick={() => setIsPrivate(!isPrivate)}
     className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 
@@ -374,20 +401,23 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
       <FollowersDropdown followersAre={followersAre}setFollowersAre={setFollowersAre}/>
   <div className="flex flex-row space-between">
 
+  
+ <IonImg    onClick={handleAddStory} src={addIcon} alt="Add" className="max-w-14 mx-4 my-4 btn rounded-full p-2 max-h-14 bg-soft" />
   <div
-  className={`w-full sm:w-60 flex items-center btn  border border-blueSea border-1 justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border`}
+  className={`w-full my-auto mx-4 sm:w-60 flex items-center btn  border border-blueSea border-1 justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border`}
   onClick={() => router.push(Paths.collection.createRoute(colInView.id))}
 >
 <IonText>View Collection</IonText>
 </div>
- <IonImg    onClick={handleAddStory} src={addIcon} alt="Add" className="max-w-14 ml-8 btn rounded-full p-2 max-h-14 bg-soft" />
-  </div>           
+  </div>  
+  <div className="my-4  w-[100%]">         
   <IonText
                 onClick={handleSave}
                 className="text-white btn bg-blueSea w-[100%] sm:max-w-[50em] my-auto  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
               >
                 Save
               </IonText>
+              </div>
   </div>
             <TabBar active={activeTab} onChange={setActiveTab} />
 
@@ -501,3 +531,51 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
   );
 }
 
+
+
+const editCollectionSkeleton = () => (
+  <div className="ion-padding sm:max-w-[50em] mx-auto animate-pulse">
+    
+    {/* Title Input Skeleton */}
+    <div className="rounded-xl mb-3 border border-emerald-100 p-4 shadow-sm bg-white">
+      <div className="h-3 w-20 bg-emerald-200 rounded mb-3 shadow" />
+      <div className="h-8 w-full bg-gray-200 rounded shadow" />
+    </div>
+
+    {/* Description Skeleton */}
+    <div className="mt-4 shadow-sm">
+      <div className="h-3 w-28 bg-emerald-200 rounded mb-2 shadow" />
+      <div className="h-[10em] w-full bg-gray-200 rounded-lg shadow" />
+    </div>
+
+    {/* Buttons Skeleton */}
+    <div className="mt-6 flex flex-col items-center gap-4 w-full max-w-lg mx-auto">
+      {[...Array(4)].map((_, i) => (
+        <div
+          key={i}
+          className="w-full sm:w-60 h-10 bg-gray-200 rounded-full shadow"
+        />
+      ))}
+    </div>
+
+    {/* Tab Bar Skeleton */}
+    <div className="mt-8 flex gap-4 justify-center">
+      <div className="w-24 h-8 bg-gray-200 rounded-full shadow" />
+      <div className="w-24 h-8 bg-gray-200 rounded-full shadow" />
+    </div>
+
+    {/* List Skeleton */}
+    <div className="mt-6 space-y-3">
+      {[...Array(3)].map((_, i) => (
+        <div
+          key={i}
+          className="flex justify-between items-center p-4 rounded-full bg-white border border-gray-200 shadow-sm"
+        >
+          <div className="h-4 w-32 bg-gray-200 rounded shadow" />
+          <div className="w-8 h-8 bg-gray-300 rounded-full shadow" />
+        </div>
+      ))}
+    </div>
+
+  </div>
+) 

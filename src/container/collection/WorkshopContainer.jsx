@@ -249,6 +249,7 @@ useEffect(()=>{
     })).then(res => {
       checkResult(res,
         payload => {
+          console.log("WORKSHOP PAYLOAD", payload);
           if (payload?.collection) {
             router.push(Paths.collection.createRoute(payload.collection.id));
           }
@@ -275,7 +276,7 @@ useEffect(()=>{
 
             {/* Header */}
             <span className='flex my-8 flex-row justify-between'>
-              <h2 className='text-xl font-bold ml-2'>{currentProfile.username}</h2>
+              <h2 className='text-xl font-bold ml-2'>{currentProfile?.username?.toLowerCase()}</h2>
               <span className={`${isLocationReady ? "bg-emerald-600" : "bg-yellow-500"} rounded-full w-8 max-h-6 flex`}>
                 <img className="mx-auto my-auto" src={check} alt="status" />
               </span>

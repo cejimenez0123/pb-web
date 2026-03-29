@@ -261,7 +261,7 @@ text-[1rem]">
      style={{ "--background": "#f4f4e0" }}>
            <div className="flex gap-4 flex-col bg-cream">
         {filteredSortedCollections
-          .filter((col) => col.title.toLowerCase().includes(search.toLowerCase()))
+          .filter((col) => col?.title?.toLowerCase().includes(search.toLowerCase()))
           .map((col) => {
             if (col.id === colInView?.id) return null; 
             const addedToCollection =

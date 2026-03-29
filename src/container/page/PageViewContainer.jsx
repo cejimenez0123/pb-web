@@ -80,7 +80,7 @@ export default function PageViewContainer() {
 
   useEffect(() => {
     fetchStory();
-  }, [id, dispatch]);
+  }, [id, currentProfile]);
 
   useEffect(() => {
     if (comments?.length) {
@@ -91,7 +91,7 @@ export default function PageViewContainer() {
   useEffect(() => {
     if (page) {
       setSeo({ ...seo, title: page.title, description: page.description });
-      const canSee = !page.isPrivate || page.authorId === currentProfile?.id;
+      const canSee = !page.isPrivate || page?.authorId === currentProfile?.id;
       setCanUserSee(canSee);
       sendGAEvent({
         story_id: page.id,

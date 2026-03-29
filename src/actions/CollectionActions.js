@@ -231,7 +231,7 @@ const fetchCollectionProtected = createAsyncThunk("collection/fetchCollectionPro
  const setCollections = createAction("cols/setCollections", (params)=> {
 
     const {collections} = params
-    console.log(collections)
+ 
     return  {payload:
       collections}
       

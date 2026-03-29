@@ -1,289 +1,135 @@
+
 import {
   IonLabel,
-  IonImg,
   IonInput,
   IonText,
-  IonButton,
-  IonIcon,
-  useIonRouter,
+  IonImg,
+
 } from "@ionic/react";
-import { setEditingPage } from "../../actions/PageActions.jsx"
-import { useContext, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import checkResult from "../../core/checkResult";
+
+import { useState, useContext, useEffect } from "react";
+import { useParams } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+
+import { PageType } from "../../core/constants";
+import { setHtmlContent } from "../../actions/PageActions.jsx";
 import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
-import { setHtmlContent } from "../../actions/PageActions.jsx";
-import { PageType } from "../../core/constants";
-import EditorContext from "../../container/page/EditorContext";
-import Context from "../../context.jsx";
-import loadingGif from "../../images/loading.gif"
-import Enviroment from "../../core/Enviroment.js";
-import { Capacitor } from "@capacitor/core";
-import { createStory, getStory } from "../../actions/StoryActions.jsx";
-import Paths from "../../core/paths.js";
-import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
-import uploadFile from "../../core/uploadFile.jsx";
-import { useParams } from "react-router";
+import Context from "../../context";
+import EditorContext from "../../container/page/EditorContext.jsx";
 
-function PicturePageForm({handleChange}) {
+export default function PicturePageForm({ handleChange ,createPageAction}) {
+  const { type } = useParams();
   const dispatch = useDispatch();
-  const currentProfile = useSelector((state) => state.users.currentProfile);
   const { setError } = useContext(Context);
-const {parameters}=useContext(EditorContext)
+   const currentProfile = useSelector((state) => state.users.currentProfile);
 
-const router = useIonRouter()
-  const ePage = useSelector((state) => state.pages.editingPage);
-    const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
-const {id,type}=useParams()
+  const page = useSelector((state) => state.pages.editingPage);
+  const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
+const { parameters } = useContext(EditorContext);
+   const ePage = useSelector((state) => state.pages.editingPage);
 
-  const [pending,setPending]=useState(false)
-  const [localContent, setLocalContent] = useState(htmlContent.html || "");
+  // ✅ sync with redux ONCE
+  useEffect(() => {
+    if (page?.data) {
+      dispatch(setHtmlContent({ html: page.data }));
+      handleChange("data", page.data);
+    }
  
-  const [image, setImage] = useState(null);
-  const handleLocalContent = (e) => {
+  }, [page]);
 
-      const value = e.detail?.value ?? e.target.value;
-      setLocalContent(value);
-      handleChange("data",value)
-      handleChange("profile",currentProfile)
-      dispatch(setHtmlContent({html:value}));
-    if (type === PageType.picture&&isValidUrl(value)) {
-      setImage(value);
-    }
-
-   
+  const normalizeUrl = (url) => {
+    if (!url) return "";
+    return url.startsWith("http") ? url : `https://${url}`;
   };
 
+  const handleInput = (e) => {
+    const value = e.detail?.value ?? e.target.value;
 
-  const setPage =(page)=>{
-    setPending(true)
-    if(page.type==PageType.link){
-          dispatch(setHtmlContent({html:page.data}));
-          setLocalContent(page.data);
-          setImage(null);
-          setPending(false)
-    }else if(page.type== PageType.picture){
-        
-          if (isValidUrl(page.data)) {
-            setImage(page.data);
-            setLocalContent(page.data);
-            dispatch(setHtmlContent({html:page.data}))
-          } else {
-            setImage(Enviroment.imageProxy(page.data))
-            setLocalContent(Enviroment.imageProxy(page.data))
-            dispatch(setHtmlContent({html:Enviroment.imageProxy(page.data)}))
-          }
-            
-       
-      }
-        setPending(false)
-  }
-  const fetchStory=(iden)=>{
-     dispatch(getStory({id:iden})).then(res=>{
-      checkResult(res,payload=>{
-          const {story}=payload
-          setPage(story)
-         setEditingPage({page:story})
-      },err=>{
+    const finalValue =
+      type === PageType.link ? normalizeUrl(value) : value;
 
-      })
-    })
-  }  
-  useEffect(()=>{
-   fetchStory(id)
-  },[id])
-  const checkContentTypeDiv = (type) => {
-    switch (type) {
-      case PageType.link:
-        if (isValidUrl(localContent)) return <LinkPreview url={localContent} />;
-        if (localContent.length > 0)
-          return (
-            <IonText className="text-emerald-800 text-center block mt-4">
-              Invalid URL — please check and try again.
-            </IonText>
-          );
-        return null;
-
-      case PageType.picture:
-    
-   return  isValidUrl(localContent)?    <div className="flex justify-center mt-6">
-              <IonImg
-                className="rounded-xl shadow-sm border border-emerald-200 max-h-[320px] object-cover"
-                src={image}
-                alt={ePage ? ePage.title : ""}
-              />
-            </div>:
-           
-            <div className="flex justify-center mt-6">
-              <IonImg
-                className="rounded-xl shadow-sm border border-emerald-200 max-h-[320px] object-cover"
-                src={image}
-                alt={ePage ? ePage.title : ""}
-              />
-            </div>
-          
-    //     );
-
-    //   default:
-    //     return null;
-    // }
+    handleChange("data", finalValue);
+    dispatch(setHtmlContent({ html: finalValue }));
   };
-  }
-const handleFileInput = async(e) => {
-    e.preventDefault();
-  if(!Capacitor.isNativePlatform()){
 
-  const file = e.target.files?.[0];
-  if (!file) return;
-    if(file.type == "image/heic"){
-      setError("image type HEIC not supported")
-      return
+  // =====================
+  // PREVIEW
+  // =====================
+  const renderPreview = () => {
+    console.log("Rendering preview with htmlContent:", htmlContent);
+    if (!htmlContent?.html) return null;
+
+    let eType = ePage.type ?? type
+    if ( eType=== PageType.link) {
+
+      return <LinkPreview url={htmlContent?.html} />;
     }
 
-  // Validate type
-  if (!file.type.startsWith('image/')) {
-    setError('Please upload a valid image file.');
-    return;
-  }
+    if (eType === PageType.picture) {
+      if (!isValidUrl(htmlContent?.html)) return null;
 
-  // Clean up any old preview URL
-  if (image && (image.startsWith('blob:') || image.startsWith('data:'))) {
-    URL.revokeObjectURL(image);
-  }
-
-  // Web preview logic
-
-
-    const newUrl = URL.createObjectURL(file);
-    setImage(newUrl);
-    handleChange("file",file)
-    setError('');
-  
-
-  }}
-  const handleNativeFile= async ()=>{
-    
-    const image = await Camera.getPhoto({
-      quality: 80,
-      allowEditing: true,
-      resultType: CameraResultType.Uri, // This works best with Uploader's 'filePath'
-      source: CameraSource.Prompt,
-    });
-    try {
-      handleChange("file",image)
-      setImage(image.webPath)
-    }catch(err){
-
-    }}
-  
-const createBrowser=()=>{
-
-  setPending(true)
-dispatch(createStory({...parameters,type:type})).then(res=>checkResult(res,payload=>{
-          const {story}=payload
-          
-      
-         router.push(Paths.editPage.createRoute(story.id),{replace:true})
-            fetchStory(story.id)
-              setPending(false)
-        },err=>{
-
-        }))
-}
-const createNative= async ()=>{
-       setPending(true)
-        const fileName =  await uploadFile(parameters.file)
-        dispatch(createStory({...parameters,data:fileName,type:PageType.picture})).then(res=>checkResult(res,payload=>{
-          const {story}=payload
-            fetchStory(story.id)
-        router.push(Paths.editPage.createRoute(story.id),{replace:true})
-          
-      
-        },err=>{
-            setError(err.message)
-        }))}
-
-const create=()=>{
-try{
- if(type==PageType.picture){
-    !Capacitor.isNativePlatform()?createBrowser():createNative()
- }else{
-    createBrowser()
- }
-}catch(err){
-  setError(err.message)
-}
-
-}
-  const uploadBtn = () => {
-    if (type==PageType.picture) {
-      return Capacitor.isNativePlatform()?<IonButton onClick={handleNativeFile}>Upload</IonButton>:(
-        <div className="flex flex-col ">
-          {/* <IonButton
-            fill="outline"
-            color="success"
-            className="rounded-full bg-emerald-600 h-[4em] items-center mb-6"
-            onClick={() => document.getElementById("fileInput").click()}
-          >
-            <IonIcon icon={imageOutline} slot="start" />
-            Upload Image
-          </IonButton> */}
-          <div  
-           className="rounded-full btn hover:bg-emerald-400 flex bg-sky-600 h-[4em] items-center mb-6"
-          onClick={() => document.getElementById("fileInput").click()}>
-            <h6 className="my-auto text-[1.2rem] mx-auto text-white">Upload Image</h6>
-          <input
-            id="fileInput"
-            className="hidden"
-            type="file"
-            accept="image/*"
-            onInput={handleFileInput}
-            aria-label="Upload image file"
+      return (
+        <div className="mt-4 flex justify-center">
+          <IonImg
+            src={htmlContent?.html}
+            className="rounded-xl max-h-[300px]"
           />
-          </div>
         </div>
       );
     }
-  }
+
+    return null;
+  };
+
 
   return (
-    <div className="flex flex-col h-full ">
-      {uploadBtn()}
-      {!ePage&&type==PageType.link? <div className="max-w-xl mx-auto w-full mb-4">
-        <IonLabel
-          position="stacked"
-          className="text-emerald-700 text-lg font-medium mb-1 block"
-        >
-          URL
-        </IonLabel>
-       
-    <IonInput
-          type="text"
-          value={localContent}
-          className="text-emerald-800 text-base flex-1 bg-transparent"
-          onIonChange={handleLocalContent}
-          placeholder="Paste or enter URL"
-          clearInput={false}
-        />
-         <div className="flex flex-row space-x-4 mt-2 justify-between w-full">
-        {<IonText>Press Enter</IonText>}
-        <IonText onClick={()=>{
-          setLocalContent("");
-          setImage(null);
-          handleChange("profile",currentProfile)
-          handleChange("data","")
-          dispatch(setHtmlContent({html:""}));
-        }}>Clear</IonText>
-        </div>
-      </div>:null}
-{!ePage? <div className="rounded-full btn h-[4em] mx-auto w-[100%] bg-emerald-600 flex text-center " 
-onClick={create}><h6 className="text-[1.2rem] text-white mx-auto my-auto">Save</h6></div>:null}
-      
-      <div className=" mx-auto w-full">{pending?<IonImg src={loadingGif}/>:checkContentTypeDiv(ePage && ePage.type?ePage.type:type)}</div>
+    <div className="flex flex-col w-full max-w-xl mx-auto">
 
+      {/* INPUT */}
+      {(type === PageType.link || type === PageType.picture) && (
+        <>
+          <IonLabel className="text-emerald-700 mb-1">
+            {type === PageType.link ? "URL" : "Image URL"}
+          </IonLabel>
+
+          <IonInput
+            value={htmlContent?.html}
+            onIonChange={handleInput}
+            placeholder={
+              type === PageType.link
+                ? "https://example.com"
+                : "Paste image URL"
+            }
+            className="border border-emerald-300 rounded-md px-2"
+          />
+
+          {htmlContent?.html && type === PageType.link && !isValidUrl(htmlContent?.html) && (
+            <IonText className="text-red-500 text-sm mt-1">
+              Invalid URL
+            </IonText>
+          )}
+        </>
+      )}
+<div className="w-full mt-4">
+
+  <div className="w-full mt-4">
+        {!page ? (
+          <button
+            onClick={createPageAction} // ✅ use the parent createPageAction
+            className="w-full h-[3.5em] rounded-xl bg-emerald-600 text-white font-semibold active:scale-[0.98]"
+          >
+            Create
+          </button>
+        ) : (
+          <div className="w-full h-[3.5em] rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center text-sm">
+            {parameters.isSaved ? "Saved ✓" : "Saving..."}
+          </div>
+        )}
+      </div>
+</div>
+      {/* PREVIEW */}
+      <div className="mt-4">{renderPreview()}</div>
     </div>
   );
 }
-
-export default PicturePageForm;

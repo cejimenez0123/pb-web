@@ -274,7 +274,7 @@ return (
       style={{width:"3em",height:"3em",filter:"invert(100%)"}}
 
     />
-    <h6 className="text-white text-xs">Workshop</h6>
+    <h6 className="text-white text-xs">Studio</h6>
   </div>
 )
 
@@ -461,6 +461,28 @@ function CreateButton() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  const ClickWriteAStory = debounce(() => {
+    if (currentProfile?.id) {
+      sendGAEvent("Create", "Write a Story", "Click Write Story");
+      dispatch(createStory({
+        profileId: currentProfile.id,
+        privacy: true,
+        type: PageType.text,
+        title: "Unititled",
+        commentable: true
+      })).then(res => checkResult(res, payload => {
+        if (payload.story) {
+          dispatch(setEditingPage({ page: payload.story }));
+          dispatch(setPageInView({ page: payload.story }));
+        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'push');
+        }else{
+          windowl.alert("COULD NOT CREATE STORY")
+        }
+      },err=>{
+        setErrorLocal(err.message)
+      }));
+    }
+  }, 5);
 const {currentProfile }= useSelector(state=>state.users)
   const handleNavigate = (type) => {
     setOpen(false);
@@ -490,28 +512,7 @@ const {currentProfile }= useSelector(state=>state.users)
         break;
     }
   };
-const ClickWriteAStory = debounce(() => {
-    if (currentProfile?.id) {
-      sendGAEvent("Create", "Write a Story", "Click Write Story");
-      dispatch(createStory({
-        profileId: currentProfile.id,
-        privacy: true,
-        type: PageType.text,
-        title: "Unititled",
-        commentable: true
-      })).then(res => checkResult(res, payload => {
-        if (payload.story) {
-          dispatch(setEditingPage({ page: payload.story }));
-          dispatch(setPageInView({ page: payload.story }));
-        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'push');
-        }else{
-          windowl.alert("COULD NOT CREATE STORY")
-        }
-      },err=>{
-        setErrorLocal(err.message)
-      }));
-    }
-  }, 5);
+
   return (
     <div className="relative flex flex-col items-center" ref={dropdownRef}>
       
