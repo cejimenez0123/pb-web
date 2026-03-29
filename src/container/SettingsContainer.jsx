@@ -18,6 +18,21 @@ import { useSelector } from "react-redux";
 import GoogleMapSearch from "./collection/GoogleMapSearch";
 import { Capacitor } from "@capacitor/core";
 import Paths from "../core/paths";
+import fetchCity from "../core/fetchCity";
+// List of countries (can be expanded)
+const COUNTRIES = [
+  "United States",
+  "Canada",
+  "Mexico",
+  "United Kingdom",
+  "France",
+  "Germany",
+  "Spain",
+  "Italy",
+  // ...add more countries as needed
+];
+
+
 async function reverseGeocode(lat, lng) {
 
   try {
@@ -44,6 +59,19 @@ export default function SettingsContainer() {
   const {  setError, setSuccess } = useContext(Context);
   const {currentProfile}=useSelector(state=>state.users)
   const [file, setFile] = useState(null);
+// Helper: extract city from full address
+// List of countries (expand as needed)
+const COUNTRIES = [
+  "United States",
+  "Canada",
+  "Mexico",
+  "United Kingdom",
+  "France",
+  "Germany",
+  "Spain",
+  "Italy",
+  // add more
+];
 
 const [form, setForm] = useState({
   username: "",
@@ -53,7 +81,8 @@ const [form, setForm] = useState({
   location: {
     latitude: null,
     longitude: null,
-    address: ""
+     city: currentProfile?.location?.city ?? ""
+
   }
 });
 
@@ -71,12 +100,8 @@ const [form, setForm] = useState({
     if (!currentProfile) return;
 
     const pic = currentProfile.profilePic;
-// if (currentProfile.location) {
-//   setForm(prev => ({
-//     ...prev,
-   
-//   }));
-// }
+
+// console.log("Current profile location in settings useEffect:", currentProfile.location)
     setForm({
       username: currentProfile.username ?? "",
       selfStatement: currentProfile.selfStatement ?? "",
@@ -85,7 +110,7 @@ const [form, setForm] = useState({
        location: {
       latitude: currentProfile?.location?.latitude??40,
       longitude: currentProfile?.location?.longitude??73,
-      address: currentProfile?.location?.address || ""
+      city: currentProfile?.location?.city || ""
     }
     });
 
@@ -104,22 +129,71 @@ const [form, setForm] = useState({
 
 
 
-const getPosition = async ()=> {
-  if (Capacitor.isNativePlatform()) {
-    const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
-    return position.coords;
-  } else {
-    // Browser fallback using Google Geolocation API
-    const res = await fetch("https://www.googleapis.com/geolocation/v1/geolocate?key=" + import.meta.env.VITE_GOOGLE_MAPS_API_KEY, {
-      method: "POST"
-    });
-    const data = await res.json();
-    return {
-      latitude: data.location.lat,
-      longitude: data.location.lng
-    };
+const handleUseCurrentLocation = async () => {
+    try {
+      const coords = await getPosition(); // your helper to get lat/lng
+      if (!coords) throw new Error("Could not get location");
+
+      // Use fetchCity helper to get city + state
+      const cityCountry = await fetchCity(coords);
+
+      console.log("Fetched city for current location:", cityCountry);
+      handleChange("location", {
+        ...coords,
+        city: cityCountry || "",
+      });
+
+      setSuccess("Location updated!");
+    } catch (err) {
+      console.error(err);
+      setError("Unable to fetch current location.");
+    } finally {
+      setLoading(false);
+    }
+};
+// Returns { latitude, longitude } for both native and browser
+const getPosition = async () => {
+  try {
+    if (Capacitor.isNativePlatform()) {
+      // Native mobile (iOS/Android)
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+      });
+      return {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+    } else {
+      // Browser fallback: try navigator first
+      if (navigator.geolocation) {
+        return await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => resolve({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
+            (err) => {
+              console.warn("Navigator geolocation failed, falling back to Google API:", err);
+              reject(err);
+            },
+            { enableHighAccuracy: true, timeout: 5000 }
+          );
+        });
+      }
+
+      // If navigator fails, fallback to Google Geolocation API
+      const res = await fetch(
+        `https://www.googleapis.com/geolocation/v1/geolocate?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`,
+        { method: "POST" }
+      );
+      const data = await res.json();
+      return {
+        latitude: data.location.lat,
+        longitude: data.location.lng,
+      };
+    }
+  } catch (err) {
+    console.error("Unable to get location:", err);
+    return null;
   }
-}
+};
     // Reverse geocode to get human-readable address
    
   
@@ -222,7 +296,7 @@ dispatch(updateProfile({
       </IonContent>
     );
   }
-
+// console.log("Current profile in settings:", form.location)
   return (
 
     <IonContent fullscreen>
@@ -280,22 +354,20 @@ dispatch(updateProfile({
           </div>
           <span className="w-fit mx-auto">
 <GoogleMapSearch
-  initLocationName={form.location?.address}
+  initLocationName={form.location?.city}
   onLocationSelected={(coordinates)=>{
-    setForm(prev => ({
-      ...prev,
-      location: coordinates
-    })
-  ); 
-    
+    console.log("Selected location from GoogleMapSearch:", coordinates);
+     handleChange("location", coordinates);
   }}
+
 />
 </span>
 <button
   className="btn btn-outline btn-sm mt-2"
-  onClick={getPosition}
+  onClick={handleUseCurrentLocation}
+  disabled={loading}
 >
-  Use Current Location
+  {loading ? "Fetching..." : "Use Current Location"}
 </button>
           {/* Self Statement */}
 

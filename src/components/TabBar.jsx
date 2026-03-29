@@ -1,0 +1,23 @@
+const TabBar = ({ tabs,active, onChange }) => (
+  <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
+    {tabs.map((tab) => (
+      <button
+        key={tab.key}
+        onClick={() => onChange(tab.key)}
+        className={`
+          text-center 
+          px-3 py-1 
+          text-xs sm:text-sm 
+          rounded-lg transition 
+          whitespace-nowrap
+          ${active === tab.key
+            ? "text-white bg-soft shadow-sm"
+            : "bg-softBlue text-soft"}
+        `}
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+);
+export default TabBar;

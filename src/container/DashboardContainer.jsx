@@ -111,7 +111,7 @@ const openCollections=()=>{
     disagree:()=>resetDialog(),
     text: (<div className=''>
       <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Collections</h4>
-        <IonList style={{backgroundColor:"#f4f4e0"}}>
+        <IonList style={{backgroundColor:Enviroment.palette.cream}}>
           <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
         {currentProfile.collections.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
@@ -136,7 +136,7 @@ const openCollections=()=>{
     disagree:()=>resetDialog(),
     text: (<div className=''>
       <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Collections</h4>
-        <IonList style={{backgroundColor:"#f4f4e0"}}>
+        <IonList style={{backgroundColor:Enviroment.palette.cream}}>
           <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
         {communities.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
@@ -160,7 +160,7 @@ const openPages=()=>{
     disagree:()=>resetDialog(),
     text: (<div className=''>
       <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Pages</h4>
-        <IonList style={{backgroundColor:"#f4f4e0"}}>
+        <IonList style={{backgroundColor:Enviroment.palette.cream}}>
           <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
         {currentProfile.stories.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{

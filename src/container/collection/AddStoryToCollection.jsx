@@ -27,6 +27,7 @@ import { useDialog } from "../../domain/usecases/useDialog";
 import { getCurrentProfile } from "../../actions/UserActions";
 import { PageType } from "../../core/constants";
 import truncate from "html-truncate";
+import Enviroment from "../../core/Enviroment";
 
 export default function AddStoryToCollectionContainer() {
   const { setError, seo, setSeo } = useContext(Context);
@@ -131,7 +132,7 @@ export default function AddStoryToCollectionContainer() {
 
   if (!item) {
     return (
-      <IonContent             style={{ "--background": "#f4f4e0" }} fullscreen className="ion-padding">
+      <IonContent             style={{ "--background":Enviroment.palette.cream}} fullscreen className="ion-padding">
         <IonSkeletonText animated style={{ height: 120, marginBottom: 16 }} />
         <IonSkeletonText animated style={{ height: 300 }} />
       </IonContent>
@@ -144,7 +145,7 @@ export default function AddStoryToCollectionContainer() {
       {/* Native iOS Header */}
   
 
-      <IonContent             style={{ "--background": "#f4f4e0" }} fullscreen>
+      <IonContent             style={{ "--background": Enviroment.palette.cream}} fullscreen>
 
         <div className="max-w-[50em] mx-auto px-4 py-4">
 
@@ -176,7 +177,7 @@ export default function AddStoryToCollectionContainer() {
           <div   className=" bg-cream">
   <IonList style={{ background:"transaprent",paddingTop:0,marginTop:0}} inset={false}>
 <div className="bg-cream">
-    <IonItem lines="none" style={{ "--background": "#f4f4e0" }} >
+    <IonItem lines="none" style={{ "--background": Enviroment.palette.cream }} >
       <IonSearchbar
         value={search}
         onIonInput={(e) => setSearch(e.detail.value)}

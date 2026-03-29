@@ -1,9 +1,8 @@
-import { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
  
   IonContent,
   IonList,
-  IonItem,
   IonText,
   IonImg,
   IonSkeletonText,
@@ -13,7 +12,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Preferences } from "@capacitor/preferences";
 import ErrorBoundary from "../../ErrorBoundary";
-import Context from "../../context.jsx";
 import Paths from "../../core/paths";
 import {
   clearPagesInView,

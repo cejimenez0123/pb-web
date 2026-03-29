@@ -31,7 +31,7 @@ const SectionHeader = ({ title, right }) => (
 
 // Workshop Card Component
 const WorkshopItem = ({ item, router }) => (
-  <IonItem  style={{"--background":"#f4f4e0"}} onClick={() => router.push(Paths.collection.createRoute(item.id))} className="bg-cream ">
+  <IonItem  style={{"--background":Enviroment.palette.cream}} onClick={() => router.push(Paths.collection.createRoute(item.id))} className="bg-cream ">
     <IonLabel>
       <h2 className="text-md font-semibold text-emerald-800 truncate">{item.title}</h2>
       <p className="text-sm text-gray-600 line-clamp-3">{item.description || "No description available."}</p>

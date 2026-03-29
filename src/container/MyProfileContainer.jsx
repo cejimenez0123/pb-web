@@ -34,6 +34,7 @@ import ProfileInfo from "../components/profile/ProfileInfo";
 import fetchCity from "../core/fetchCity";
 import Paths from "../core/paths";
 import { createFollow, deleteFollow } from "../actions/FollowAction";
+import TabBar from "../components/TabBar";
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -102,46 +103,75 @@ const tabs = [
   { key: TABS.COMMUNITIES, label: "Communities" },
   { key: TABS.ABOUT, label: "About" },
 ];
+// const TabBar = ({ active, onChange }) => (
+//   <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
+//     {tabs.map((tab) => (
+//       <button
+//         key={tab.key}
+//         onClick={() => onChange(tab.key)}
+//         className={`
+//           text-center 
+//           px-3 py-1 
+//           text-xs sm:text-sm 
+//           rounded-lg transition 
+//           whitespace-nowrap
+//           ${active === tab.key
+//             ? "text-white bg-soft shadow-sm"
+//             : "bg-softBlue text-soft"}
+//         `}
+//       >
+//         {tab.label}
+//       </button>
+//     ))}
+//   </div>
+// );
+// const TabBar = ({ active, onChange }) => (
+//   <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
+//    {tabs.map((tab) => (
+//       <button
+//         key={tab.key}
+//         onClick={() => onChange(tab.key)}
+//         className={`
+//           flex-1 text-center 
+//           px-2 py-1 
+//           text-[10px] sm:text-xs md:text-sm 
+//           rounded-lg transition 
+//           ${active === tab.key
+//             ? "text-white bg-soft shadow-sm"
+//             : "bg-softBlue text-soft"}
+//         `}
+//       >
+//         {tab.label}
+//       </button>
+//     ))}
+//   </div>
+// );
+// const TabBar = ({ active, onChange }) => (
+//   <>
+//    <div className="flex w-full max-w-md sm:max-w-xl justify-between">
+// {/* <div className="flex flex-wrap justify-center gap-1 bg-gray-100 rounded-xl p-1"> */}
+//   {/* // <div className="flex justify-between gap-1 bg-gray-100 rounded-xl p-1 overflow-x-auto"> */}
+// {/* <div className="flex justify-center  gap-2 bg-gray-100 rounded-xl p-1"> */}
+ 
+//     {tabs.map((tab) => (
+//       <button
+//         key={tab.key}
+//         onClick={() => onChange(tab.key)}
+//           // flex-1 text-center py-1.5 text-sm rounded-lg transition
+// // 
+//         className={`
+//           flex-shrink-0 text-center px-3 py-1 text-xs sm:text-sm rounded-lg transition whitespace-nowrap
+//           ${active === tab.key 
+//             ? "text-white bg-soft shadow-sm" 
+//             : "bg-softBlue text-soft"}
+//         `}
+//       >
+//         {tab.label}
+//       </button>
+//     ))}
+//   {/* </div> */}
+// </div></>)
 
-
-const TabBar = ({ active, onChange }) => (
-<div className="flex justify-center gap-2 bg-gray-100 rounded-xl p-1">
-  {/* <div className="flex w-full max-w-md sm:max-w-xl justify-between"> */}
-    {tabs.map((tab) => (
-      <button
-        key={tab.key}
-        onClick={() => onChange(tab.key)}
-        className={`
-          flex-1 text-center py-1.5 text-sm rounded-lg transition
-          ${active === tab.key 
-            ? "text-white bg-soft shadow-sm" 
-            : "bg-softBlue text-soft"}
-        `}
-      >
-        {tab.label}
-      </button>
-    ))}
-  {/* </div> */}
-</div>)
-{/* <div className="flex justify-center bg-gray-100 rounded-xl p-1">
-  <div className="flex gap-2 w-full sm:w-auto sm:max-w-[80%] justify-between sm:justify-center">
-   
-    {tabs.map((tab) => (
-      <button
-        key={tab.key}
-        style={{fontSize:"1em"}}
-        onClick={() => onChange(tab.key)}
-        className={`
-   mx-2 text-sm py-1.5 rounded-lg transition
-          ${active === tab.key ? "text-white bg-soft  shadow-sm" : "bg-softBlue text-soft"}
-        `}
-      >
-        {tab.label}
-        
-      </button>
-    ))}
-    </div>
-  </div> */}
 
 const FollowButton = ({ following, onClick, isSelf }) => {
 
@@ -335,7 +365,7 @@ useEffect(() => {
   // ── Render
   return (
     <ErrorBoundary>
-      <IonContent             style={{ "--background": "#f4f4e0" }} fullscreen className="bg-cream">
+      <IonContent             style={{ "--background": Enviroment.palette.cream}} fullscreen className="bg-cream">
         <div className="max-w-2xl mx-auto px-4 pb-24 pt-safe space-y-8">
 <div className='flex mt-4  sm:pt-20 p-4 flex-row justify-between'>
                           <IonImg onClick={()=> router.push(Paths.editProfile,"forward")} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
@@ -408,7 +438,7 @@ useEffect(() => {
   </div>
       <FollowButton following={following} onClick={()=>{onClickFollow()}}isSelf={true}
       />
-            <TabBar active={tab} onChange={setTab} />
+           <div className="px-2"><TabBar tabs={tabs} active={tab} onChange={setTab} /></div> 
           </div>
 
           {/* Content */}

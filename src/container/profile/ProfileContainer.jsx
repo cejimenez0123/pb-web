@@ -69,6 +69,7 @@ import debounce from '../../core/debounce';
 import { Preferences } from '@capacitor/preferences';
 import Paths from '../../core/paths';
 import checkResult from '../../core/checkResult';
+import TabBar from '../../components/TabBar';
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -195,36 +196,37 @@ useEffect(()=>{
 };
 
 // ── TabBar ────────────────────────────────────────────
-const tabs = [
-  { key: TABS.POSTS, label: "Posts" },
-  { key: TABS.COLLECTIONS, label: "Collections" },
-  { key: TABS.COMMUNITIES, label: "Communities" },
-  { key: TABS.ABOUT, label: "About" },
-];
 
 
-const TabBar = ({ active, onChange }) => (
-<div className="flex justify-center gap-2 bg-gray-100 rounded-xl p-1">
-  {/* <div className="flex w-full max-w-md sm:max-w-xl justify-between"> */}
-    {tabs.map((tab) => (
-      <button
-        key={tab.key}
-        onClick={() => onChange(tab.key)}
-        className={`
-          flex-1 text-center py-1.5 text-sm rounded-lg transition
-          ${active === tab.key 
-            ? "text-white bg-soft shadow-sm" 
-            : "bg-softBlue text-soft"}
-        `}
-      >
-        {tab.label}
-      </button>
-    ))}</div>)
+
+// const TabBar = ({ active, onChange }) => (
+//   <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
+//     {tabs.map((tab) => (
+//       <button
+//         key={tab.key}
+//         onClick={() => onChange(tab.key)}
+//         className={`
+//           text-center 
+//           px-3 py-1 
+//           text-xs sm:text-sm 
+//           rounded-lg transition 
+//           whitespace-nowrap
+//           ${active === tab.key
+//             ? "text-white bg-soft shadow-sm"
+//             : "bg-softBlue text-soft"}
+//         `}
+//       >
+//         {tab.label}
+//       </button>
+//     ))}
+//   </div>
+// );
 
 // ── Communities Panel ─────────────────────────────────
 const CommunitiesPanel = ({prof}) => {
     // const prof = useSelector(state=>state.users.profileInView)
     if(!prof && !prof.collections)return null
+
 const communities  = prof.collections.filter(col=>col.type=="library")
   
   if (!communities.length)
@@ -245,14 +247,17 @@ const communities  = prof.collections.filter(col=>col.type=="library")
 
 const AboutPanel = ({ profile:prof }) => {
   const [locationName,setLocationName]=useState("")
+  const [isPendingLocation,setIsPendingLocation]=useState(false)
   useEffect(()=>{
-    
+    setIsPendingLocation(true)
+    console.log("Fetching city for location:", prof.location)
   async function city(){let address =await fetchCity(prof.location)
   
     setLocationName(address)
+    setIsPendingLocation(false)
   }
-  city()
-  },[prof])
+  prof?.location?.city?setLocationName(prof.location.city):city()
+  },[])
 
   const hashTags = prof?.hashtags ?? [];
   if (!prof) return null;
@@ -266,13 +271,20 @@ const AboutPanel = ({ profile:prof }) => {
         </p>
         </div>
 
-     {locationName && (
-        <div>
-          <p className="text-xs text-gray-400 uppercase">Location</p>
+  
+  <p className="text-xs text-gray-400 uppercase">Location</p>
+  {prof.location?.city ? (
+        <p className="text-sm text-gray-700 mt-1">{prof.location.city}</p>
+      ) : isPendingLocation ? (
+        <div className="mt-1 h-4 w-32 bg-gray-200 rounded animate-pulse shadow-sm" />
+      ) : (
+        <p className="text-sm text-gray-700 mt-1">Location not specified</p>
+      )}
+        {/* {!isPendingLocation &&locationName.length>0 ? (
           <p className="text-sm text-gray-700 mt-1">{locationName}</p>
-        </div>
-      )} 
-
+        ) : (
+          <div className="mt-1 h-4 w-32 bg-gray-200 rounded animate-pulse shadow-sm" />
+        )} */}
       {hashTags.length > 0 && (
         <div>
           <p className="text-xs text-gray-400 uppercase mb-2">Interests</p>
@@ -375,11 +387,16 @@ useEffect(()=>{
       type: "profile",
     });
   }, [profile, setSeo]);
-
+const tabs = [
+  { key: TABS.POSTS, label: "Posts" },
+  { key: TABS.COLLECTIONS, label: "Collections" },
+  { key: TABS.COMMUNITIES, label: "Communities" },
+  { key: TABS.ABOUT, label: "About" },
+];
   // ── Render
   return (
     <ErrorBoundary>
-      <IonContent             style={{ "--background": "#f4f4e0" }} fullscreen className="bg-cream">
+      <IonContent             style={{ "--background": Enviroment.palette.cream }} fullscreen className="bg-cream">
         <div className="max-w-2xl mx-auto px-4 pb-24 pt-safe space-y-8">
 
           {/* Header */}
@@ -440,7 +457,7 @@ useEffect(()=>{
     <FollowButton prof={profile} onClick={onClickFollow}follow={following} current={currentProfile}  />
         
   </div>
-            <TabBar active={tab} onChange={setTab} />
+            <TabBar tabs={tabs} active={tab} onChange={setTab} />
           </div>
 
           {/* Content */}

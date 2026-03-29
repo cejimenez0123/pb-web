@@ -21,11 +21,11 @@ function PlacesSearchMap({ initLocationName, onLocationSelected }) {
   } = usePlacesAutocomplete({
     debounce: 300
   });
-
-  useEffect(() => {
+// console.log("INIT LOCATION NAME:", initLocationName)
+ useEffect(() => {
     if (initLocationName) {
       setDesc(initLocationName);
-      setValue(initLocationName, false);
+      setValue(initLocationName, false); // false prevents triggering suggestions
     }
   }, [initLocationName, setValue]);
 

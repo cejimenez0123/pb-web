@@ -769,7 +769,7 @@ const MemberTab = ({ collection }) => {
           
                 .map((role, i) => {
            
-               return<div onClick={()=>router.push(Paths.profile.createRoute(role.profileId))} className="  w-[100%] rounded-full border px-4 border-1 border-soft">
+               return<div onClick={()=>router.push(Paths.profile.createRoute(role.profileId))} className="  w-[100%] my-1 rounded-full border px-4 border-1 border-soft">
                   <div className="flex flex-row justify-between  w-[100%]">
                   <div className="py-4 "><ProfileCircle profile={role.profile}/></div><div className="my-auto">{role.role}</div>
                   </div>
