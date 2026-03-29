@@ -52,7 +52,6 @@ async function reverseGeocode(lat, lng) {
 
 }
 export default function SettingsContainer() {
-
   const dispatch = useDispatch();
   const router = useIonRouter();
 
