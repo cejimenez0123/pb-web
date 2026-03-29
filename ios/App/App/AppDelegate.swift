@@ -2,6 +2,11 @@ import UIKit
 import Capacitor
 import FirebaseCore
 import GoogleSignIn
+import UIKit
+import Capacitor
+import FirebaseCore
+import GoogleSignIn
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

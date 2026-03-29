@@ -169,7 +169,7 @@ console.log("Dropdown check", {
     className={`fixed left-0 right-0 z-50 transition-transform duration-300 bg-white shadow-lg border-t border-gray-200`}
     style={{
       bottom: "64px",        // adjust to your navbar height
-      maxHeight: "50%",      // prevent covering too much
+      maxHeight: "60%",      // prevent covering too much
       overflowY: "auto",
     }}
   >
@@ -182,18 +182,7 @@ console.log("Dropdown check", {
   </div>
   </div>
 )}
-      {/* Reply/Edit input */}
-      {/* {(replyInput || updateCommentState) && (
-        <CommentInput
-          page={page}
-          parentComment={comment}
-          defaultComment={updateCommentState}
-          handleClose={closeInput}
-        />
-      )} */}
-
-      {/* Child comments */}
-      {/* {branches.length > 0 && ( */}
+   
         <CommentThread page={page} comments={branches} level={level + 1} />
       {/* )} */}
     </div>

@@ -18,6 +18,7 @@ import { useParams } from 'react-router';
 import GoogleMapSearch from "../collection/GoogleMapSearch";
 import ExploreList from '../../components/collection/ExploreList';
 import fetchCity from '../../core/fetchCity';
+import Enviroment from '../../core/Enviroment';
 
 const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.8890363605602 };
 
@@ -269,7 +270,7 @@ useEffect(()=>{
   const isLocationReady = isGlobal || (location?.latitude && location?.longitude);
 
   return (
-    <IonContent style={{ "--background": "#f4f4e0" }} fullscreen className=''>
+    <IonContent style={{ "--background": Enviroment.palette.cream }} fullscreen className=''>
       {/* <div className=' overflow-hidden'> */}
         {currentProfile ? (
           <div className="text-emerald-800 max-w-[40em] mx-auto w-full shadow-sm sm:min-h-[30em] mt-12 flex flex-col text-left sm:w-80 p-4 rounded-lg">

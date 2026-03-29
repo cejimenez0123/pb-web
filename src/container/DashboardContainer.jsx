@@ -78,7 +78,7 @@ const openYourWorkshops=()=>{
 
     openDialog({
     title: null,
-  scrollY: true,
+  scrollY: false,
   breakpoint: 1,
 
 
@@ -86,7 +86,7 @@ const openYourWorkshops=()=>{
     text: (<div className=''>
       <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Workshops</h4>
         <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-          <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
+          <div className='bg-cream overflow-y-scroll max-h-[30em]'> 
         {results.map(workshop=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(workshop.id))
@@ -104,7 +104,7 @@ const openYourWorkshops=()=>{
 const openCollections=()=>{
  openDialog({
     title: null,
-  scrollY: true,
+  scrollY: false,
   breakpoint: 1,
 
 
@@ -112,7 +112,7 @@ const openCollections=()=>{
     text: (<div className=''>
       <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Collections</h4>
         <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-          <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
+          <div className='bg-cream overflow-y-scroll max-h-[30em]'> 
         {currentProfile.collections.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(story.id))
@@ -129,7 +129,7 @@ const openCollections=()=>{
       const communities = currentProfile.collections.filter(col=>col.type=="library")
  openDialog({
     title: null,
-  scrollY: true,
+  scrollY: false,
   breakpoint: 1,
 
 
@@ -137,7 +137,7 @@ const openCollections=()=>{
     text: (<div className=''>
       <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Collections</h4>
         <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-          <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
+          <div className='bg-cream overflow-y-scroll max-h-[30em]'> 
         {communities.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(story.id))
@@ -153,20 +153,21 @@ const openCollections=()=>{
 const openPages=()=>{
    openDialog({
     title: null,
-  scrollY: true,
+  scrollY: false,
   breakpoint: 1,
 
 
     disagree:()=>resetDialog(),
     text: (<div className=''>
+      {/* <h5>Pages</h5> */}
       <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Pages</h4>
         <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-          <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
+          <div className='bg-cream overflow-y-scroll max-h-[30em]'> 
         {currentProfile.stories.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.page.createRoute(story.id))
             resetDialog()
-          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title}</h4></div></li>
+          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story?.title?.length>0?story.title:"Untitled"}</h4></div></li>
         })}
         </div>
         </IonList>
@@ -225,7 +226,7 @@ function WorkshopItem({workshop}){
     function StoryItem({story}){
       return<div onClick={()=>router.push(Paths.page.createRoute(story.id))} className='border border-1 border-soft p-4 rounded-xl'>
     <div className='flex flex-col gap-2'>
-       <h4 className='text-[1.2em]'>{story.title}</h4>
+       <h4 className='text-[1.2em]'>{story.title.length>0?story.title:"Untitled"}</h4>
   <h6 className='text-[1em]'>{story.status}</h6>
   </div></div>
     }

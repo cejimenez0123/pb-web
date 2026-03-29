@@ -79,8 +79,8 @@ export default function PageViewItem({ page }) {
       commenting ? "translate-y-0" : "translate-y-full"
     }`}
       style={{
-      bottom: "64px", // leave space for navbar
-      maxHeight: "50%",
+      bottom: "4.48rem", // leave space for navbar
+      maxHeight: "60%",
       overflowY: "auto",
     }}>
       <CommentInput page={page} handleClose={handleClose} />

@@ -151,7 +151,7 @@ const payload = {
   // ------------------ Top Bar ------------------
   const topBar = () => (
     <div className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200">
-      <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+      <div className="flex flex-row  gap-2 items-start sm:items-center">
         {/* Title Input */}
         <input
           type="text"
@@ -161,24 +161,14 @@ const payload = {
           placeholder="Untitled"
         />
 
-        {/* Link Input */}
-        {/* {type === PageType.link && (
-          <input
-            type="url"
-            className="p-2 w-full sm:w-[70%] mt-2 sm:mt-0 text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            value={parameters.data}
-            onChange={(e) => handleChange("data", e.target.value)}
-            placeholder="https://example.com"
-          />
-        )} */}
 
         {/* Menu Dropdown */}
         <div className="dropdown dropdown-bottom dropdown-end">
-  <div tabIndex={0} role="button">
+  <div tabIndex={0} role="button" className=" rounded-md ">
     <img
-      className="min-w-16 min-h-[5rem] bg-emerald-600 rounded-lg mt-1 mx-auto"
+      className="w-[100%] h-[2.8rem] rounded-lg  mx-auto"
       src={menu}
-      style={{filter:"invert(100%)"}}
+   style={{backgroundColor:"#40906f",}}
     />
   </div>
   <ul
