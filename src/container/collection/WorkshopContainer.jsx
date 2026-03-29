@@ -172,58 +172,6 @@ console.log("DSDSXC",location)
     fetch()
    }, [currentProfile, location]);
 
-  // ─── Handlers ────────────────────────────────────────────────────────────────
-// const GlobalRadio=({handleGlobal})=>(
-
-//   <div className="flex w-full justify-between items-center">
-//   <h6 className="text-xl">
-//     {isGlobal ? "Global" : "Local"}
-//   </h6>
-//   <div
-//   onClick={() => {
-//     setIsGlobal(prev => !prev);
-//     console.log("TOGGLED");
-//   }}
-//   style={{
-//     width: "60px",
-//     height: "30px",
-//     borderRadius: "999px",
-//     background: isGlobal ? "#059669" : "#94a3b8", // emerald / slate
-//     display: "flex",
-//     alignItems: "center",
-//     padding: "4px",
-//     cursor: "pointer",
-//     transition: "background 0.2s ease"
-//   }}
-// >
-//   <div
-//     style={{
-//       width: "22px",
-//       height: "22px",
-//       borderRadius: "50%",
-//       background: "white",
-//       transform: isGlobal ? "translateX(30px)" : "translateX(0px)",
-//       transition: "transform 0.2s ease"
-//     }}
-//   />
-// </div>
-//   <div
-//     onClick={() => setIsGlobal(prev => !prev)}
-//     className="w-14 h-7 rounded-full p-1 cursor-pointer transition"
-//     style={{
-//       background: isGlobal ? "#059669" : "#94a3b8"
-//     }}
-//   >
-//     <div
-//       className="w-5 h-5 bg-white rounded-full transition"
-//       style={{
-//         transform: isGlobal ? "translateX(28px)" : "translateX(0px)"
-//       }}
-//     />
-//   </div>
-// </div>
-// )
-
 
   {/* Toggle */}
 

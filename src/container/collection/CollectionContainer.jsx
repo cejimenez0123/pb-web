@@ -236,7 +236,7 @@ const getCol = async (id) => {
           checkResult(
             res,
             (payload) => {
-                console.log("RESXL",payload)
+               
               setLoading(false);
               soUserCanEdit()
               dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
@@ -246,7 +246,7 @@ const getCol = async (id) => {
             },
             (err) => {
              setLoading(false);
-              //  console.log("RESXL",payload)
+              
               if (err.status === 403) {
            console.log(err)
                 setError("Access Denied: You do not have permission to view this collection.");
@@ -262,7 +262,7 @@ const getCol = async (id) => {
           );
         })
         .catch((e) => {
-                   console.log("POPP",e)
+                 
           setError("An unexpected error occurred.");
           setLoading(false);
         });
@@ -273,7 +273,7 @@ const getCol = async (id) => {
           checkResult(
             res,
             (payload) => {
-              console.log("RESX",payload)
+             
                setLoading(false);
               if (payload.collection) {
                 soUserCanEdit()

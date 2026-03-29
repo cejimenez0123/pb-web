@@ -202,12 +202,12 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
       if(token){
    
         let data = await profileRepo.getProfileProtected(params)
-        // console.log("fetch dfd",JSON.stringify(data))
+     
         return{
           profile:data.profile
         }
       }else{
-            console.log("fetch BB")
+        
         let data = await profileRepo.getProfile(params)
 
 

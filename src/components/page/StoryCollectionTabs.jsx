@@ -80,17 +80,9 @@ export default function StoryCollectionTabs({ tab, setTab, storyList, colList })
           >
          {tab === "page"
   ? storyList()
-  // .map((item, i) => (
-  //     <div key={i}>
-  //       {item?.story?.title?.slice(0, 20) || "Untitled Story"}
-  //     </div>
-  //   ))
+
   : colList()
-  // .map((col, i) => (
-  //     <div key={i}>
-  //       {col?.childCollection?.title?.slice(0, 20) || "Untitled Collection"}
-  //     </div>
-    // ))
+
     }
           </motion.div>
         </AnimatePresence>

@@ -25,9 +25,7 @@ export default function ReferralForm({onClose}){
             if(data.message){
                 setMessage(data.message)
             }
-            // if(data.referral){
-            //     setReferral(data.referral)
-            // }
+         
             setPending(false)
         })},[])
     const handleClick = ()=>{

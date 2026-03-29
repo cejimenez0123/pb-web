@@ -46,7 +46,7 @@ function PlacesSearchMap({ initLocationName, onLocationSelected }) {
       const results = await getGeocode({ address: description });
 
       const { lat, lng } = getLatLng(results[0]);
-console.log("CITY<",description)
+
       if (onLocationSelected) {
         onLocationSelected({
           latitude: lat,
@@ -103,38 +103,6 @@ console.log("CITY<",description)
     ))}
   </div>
 
-    // <ul
-    //   tabIndex={0}
-    //   className="dropdown-content  menu p-2 shadow bg-white rounded-box w-full max-h-60 overflow-auto"
-    // >
-    //   {data.map((suggestion) => (
-    //     <li key={suggestion.place_id}>
-    //       <button
-    //         onClick={() => handleSelect(suggestion)}
-    //         className="text-left"
-    //       >
-    //         {suggestion.description}
-    //       </button>
-    //     </li>
-    //   ))}
-    // </ul>
-  // 
-// </div>
-          // <ul className="absolute z-20 bg-white w-full border border-gray-200 mt-1 rounded-box shadow max-h-60 overflow-auto">
-
-          //   {data.map((suggestion) => (
-
-          //     <li
-          //       key={suggestion.place_id}
-          //       className="p-3 cursor-pointer hover:bg-base-200"
-          //       onClick={() => handleSelect(suggestion)}
-          //     >
-          //       {suggestion.description}
-          //     </li>
-
-          //   ))}
-
-          // </ul>
 
         )}
 

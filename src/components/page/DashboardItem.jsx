@@ -367,38 +367,7 @@ openDialog({
     );
   }
 
-  // return (
-    
-  //   <ErrorBoundary >
-  //   <IonCard
-     
-  //     className={
-  //       'mt-3 rounded-lg rounded-b-lg  mx-auto mx-auto justify-between bg-blueSea bg-opacity-10 flex flex-col '
-  //     }
- 
-  //   >
-  //     <IonCardHeader className="p-0 m-0 bg-transparent">
-  //       {header()}
-  //       {bookTitleDiv}
-  //     </IonCardHeader>
 
-    
-  //       {description(page)}
-
-  //       <PageDataElement isGrid={isGrid} page={page} />
- 
-      
-
-  
-  //     {isGrid ? (
-  //       <div id="bottom-dash" className={`flex flex-row sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
-  //         {bookmarkBtn()}
-  //       </div>
-  //     ) : <div className={ `flex w-[100%] flex-row justify-between  bottom-0`}>
-  //       {buttonRow()}</div>}
-  //   </IonCard>
-  //   </ErrorBoundary>
-  // );
 return (
   <IonCard className="mt-3 mx-auto bg-white rounded-2xl border border-[#bae6fe]/40 shadow-sm">
 
@@ -505,56 +474,3 @@ return (
 
 
 export default React.memo(DashboardItem);
-
-// {/* Actions */}
-//     <div className="flex items-center justify-between px-4 pb-3">
-
-//       {/* Left actions */}
-//       <div className="flex items-center gap-6">
-
-//         {/* Like */}
-//         <button
-//           onClick={handleApprovalClick}
-//           className={`transition active:scale-95`}
-//         >
-//           <IonText
-//             className={`text-base ${
-//               likeFound ? "text-[#0097b2]" : "text-white"
-//             }`}
-//           >
-//             Yea
-//           </IonText>
-//         </button>
-
-//         {/* Comment */}
-//         <button
-//           onClick={handleClickComment}
-//           className="transition  active:scale-95"
-//         >
-//           <IonText className="text-base text-[#40906f]/70">
-//             💬
-//           </IonText>
-//         </button>
-
-//         {/* Share */}
-//         <button
-//           onClick={onClickShare}
-//           className="transition active:scale-95"
-//         >
-//           <IonText className="text-base text-[#40906f]/70">
-//             ⤴
-//           </IonText>
-//         </button>
-//       </div>
-
-//       {/* Bookmark */}
-//       <button
-//         onClick={handleBookmark}
-//         className="p-1 rounded-full active:bg-[#bae6fe]/60 transition"
-//       >
-//         <IonImg
-//           className="w-5 h-5"
-//           src={bookmarked ? bookmarkfill : bookmarkoutline}
-//         />
-//       </button>
-//     </div>

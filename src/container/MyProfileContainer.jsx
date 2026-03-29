@@ -45,7 +45,7 @@ function MyProfileContainer() {
     const { setSeo, setError,  } = useContext(Context);
 
   const profile = useSelector((state) => state.users.currentProfile);
-  // console.log("POP>DS",profile)
+
   const collectionsRaw = useSelector((state) => state.books.collections?? []);
 
   const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
@@ -103,74 +103,6 @@ const tabs = [
   { key: TABS.COMMUNITIES, label: "Communities" },
   { key: TABS.ABOUT, label: "About" },
 ];
-// const TabBar = ({ active, onChange }) => (
-//   <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
-//     {tabs.map((tab) => (
-//       <button
-//         key={tab.key}
-//         onClick={() => onChange(tab.key)}
-//         className={`
-//           text-center 
-//           px-3 py-1 
-//           text-xs sm:text-sm 
-//           rounded-lg transition 
-//           whitespace-nowrap
-//           ${active === tab.key
-//             ? "text-white bg-soft shadow-sm"
-//             : "bg-softBlue text-soft"}
-//         `}
-//       >
-//         {tab.label}
-//       </button>
-//     ))}
-//   </div>
-// );
-// const TabBar = ({ active, onChange }) => (
-//   <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
-//    {tabs.map((tab) => (
-//       <button
-//         key={tab.key}
-//         onClick={() => onChange(tab.key)}
-//         className={`
-//           flex-1 text-center 
-//           px-2 py-1 
-//           text-[10px] sm:text-xs md:text-sm 
-//           rounded-lg transition 
-//           ${active === tab.key
-//             ? "text-white bg-soft shadow-sm"
-//             : "bg-softBlue text-soft"}
-//         `}
-//       >
-//         {tab.label}
-//       </button>
-//     ))}
-//   </div>
-// );
-// const TabBar = ({ active, onChange }) => (
-//   <>
-//    <div className="flex w-full max-w-md sm:max-w-xl justify-between">
-// {/* <div className="flex flex-wrap justify-center gap-1 bg-gray-100 rounded-xl p-1"> */}
-//   {/* // <div className="flex justify-between gap-1 bg-gray-100 rounded-xl p-1 overflow-x-auto"> */}
-// {/* <div className="flex justify-center  gap-2 bg-gray-100 rounded-xl p-1"> */}
- 
-//     {tabs.map((tab) => (
-//       <button
-//         key={tab.key}
-//         onClick={() => onChange(tab.key)}
-//           // flex-1 text-center py-1.5 text-sm rounded-lg transition
-// // 
-//         className={`
-//           flex-shrink-0 text-center px-3 py-1 text-xs sm:text-sm rounded-lg transition whitespace-nowrap
-//           ${active === tab.key 
-//             ? "text-white bg-soft shadow-sm" 
-//             : "bg-softBlue text-soft"}
-//         `}
-//       >
-//         {tab.label}
-//       </button>
-//     ))}
-//   {/* </div> */}
-// </div></>)
 
 
 const FollowButton = ({ following, onClick, isSelf }) => {
@@ -291,7 +223,7 @@ const StatChip = ({ value, label }) => (
 useEffect(() => {
   if (!profile) return;
   if (profile.stories) {
-    console.log("DSSDX",profile.stories)
+    
     dispatch(setPagesInView({ pages: profile.stories }));
   }
 

@@ -160,8 +160,7 @@ export default function AddStoryToCollectionContainer() {
           <div className="mt-4 rounded-full">
             <button
               expand="block"
-              // style={{background:"transparent"}}
-              // style={{cornerRadius:"100%"}}
+    
               className="rounded-full bg-blueSea text-white text-[1.6em] w-[100%] btn"
               onClick={() =>
                 item.storyIdList

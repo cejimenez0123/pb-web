@@ -52,7 +52,6 @@ import ErrorBoundary from './ErrorBoundary.jsx';
 import { Redirect, Route } from 'react-router-dom'
 import AboutContainer from './container/AboutContainer.jsx';
 import PageWrapper from './core/PageWrapper.jsx';
-import HomeContainer from './container/HomeContainer.jsx';
 import DashboardContainer from './container/DashboardContainer.jsx';
 import { LoadScript } from '@react-google-maps/api';
 

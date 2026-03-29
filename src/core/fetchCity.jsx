@@ -22,7 +22,7 @@ const fetchCity = async (location) => {
           get("administrative_area_level_2");
   
         const state = get("administrative_area_level_1");
-  console.log("CFSSD",city)
+
         // setLocationName(
         return  city && state ? `${city}, ${state}` : city || state || "Unknown"
         // );

@@ -18,7 +18,7 @@ export default function Carousel({ book, isGrid }) {
 
     const onProgress = (e) => {
       const [swiper, progress] = e.detail;
-      // console.log("progress", progress);
+      
     };
 
     swiperEl.addEventListener("swiperprogress", onProgress);

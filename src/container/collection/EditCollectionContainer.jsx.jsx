@@ -195,7 +195,7 @@ if (col.childCollections) {
         col: colInView,
         profile: currentProfile,
       }
-    console.log("FS",log)
+
     dispatch(
       patchCollectionContent({
         id: params.id,
@@ -223,8 +223,7 @@ if (col.childCollections) {
     const getCol = async () => {
     const token = (await Preferences.get({ key: "token" })).value;
 
-    console.log("VD",token)
-    // if (token && (!colInView || colInView.id !== id)) {
+
       token &&id&& dispatch(fetchCollectionProtected(params)).then((res) => {
         console.log(res)
        

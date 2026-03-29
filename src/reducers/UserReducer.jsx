@@ -114,7 +114,7 @@ state.notifications = payload
              state.loading = false
         state.signedIn = true
             }
-        // state.token = payload.token
+
        
        
     }).addCase(logIn.rejected, (state,{payload}) => {

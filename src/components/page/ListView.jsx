@@ -62,9 +62,7 @@ const router = useIonRouter()
           if (!item) return null;
 
           return (
-            // <IonItem
-            
-            // key={item.id || i} className="">
+          
       
            <div
            className="max-w-[94vw] sm:max-w-[45em] w-[100%] mx-auto "

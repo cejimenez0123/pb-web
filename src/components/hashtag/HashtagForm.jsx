@@ -18,12 +18,7 @@ export function HashtagForm({item,type="story"}){
     const [hashtags, setHashtags] = useState([]);
   
     const currentProfile = useSelector(state=>state.users.currentProfile)
-    // const resetHashtags= ()=>{
-    //   if(storyHashtags.length>0){
-    //     setHashtags(storyHashtags)
-    //   }
-      
-    // }
+
   
     const handleInputChange = (e) => {
       setInputValue(e.target.value);

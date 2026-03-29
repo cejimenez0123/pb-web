@@ -47,7 +47,7 @@ console.log(id)
     setPending(true);
 
     if (item?.storyIdList && type === "collection") {
-            console.log("VBVLSVX")
+            
       dispatch(addCollectionListToCollection({ id: col.id, list: [item.id], profile: currentProfile })).then(res =>
         checkResult(res, payload => {
           setItem(payload.collection);
@@ -62,7 +62,7 @@ console.log(id)
     }
 
     if (item && type === "story") {
-      console.log("VXVXVX",col.id)
+
       let story = item || { id };
       dispatch(addStoryListToCollection({ id: col.id, list: [story], profile: currentProfile })).then(res => {
         checkResult(res, payload => {

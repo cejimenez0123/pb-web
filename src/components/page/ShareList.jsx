@@ -164,10 +164,7 @@ const handleBookmarkClick = async () => {
 };
 
 
-  // const handleLocalBookmark = async (e) => {
-  //   e.preventDefault();
-  //  
-  // };
+  
 
   return (
     <div className="flex flex-col overflow-hidden">

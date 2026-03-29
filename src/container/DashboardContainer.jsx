@@ -63,11 +63,9 @@ useEffect(() => {
   try {
     if (results.length > 1) {
       const group = results[1]; // same as skipping first
-console.log("EFC",group.storyIdList)
       const story = [...group.storyIdList]
         .filter(a => a.story.type === PageType.text)
         .sort((a, b) => a.story.updated - b.story.updated)
-console.log("EFE",story)
       setWorkshop({ group, story });
     }
   } catch (err) {
@@ -175,14 +173,25 @@ const openPages=()=>{
       
     </div>
     )})}
+    const [homeCol,setHomeCol]=useState(null)
+    const [archiveCol,setArchiveCol]=useState(null)
+              useLayoutEffect(() => {
+                if (currentProfile?.profileToCollections) {
+                  let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
+                  setHomeCol(home);
             
+                  let archive = currentProfile.profileToCollections.find(pTc => pTc.type === "archive")?.collection || null;
+                  setArchiveCol(archive);
+                }
+            
+              }, [currentProfile]);
   const fetchWorkshops = async () => {
     if (!currentProfile) return;
     try {
       dispatch(fetchYourWorkshops()).then(res=>{
       checkResult(res, ({ groups }) => {
       
-        console.log("GRGRR",groups)
+    
         setResults(groups)
       })})
     } catch (err) {
@@ -301,7 +310,7 @@ scrollY: false,
       </div>
       <div className='flex flex-row justify-between max-h-24'>
               <h4 className='text-xl pt-8 mx-4 lora-medium pb-4'>Saves</h4>
-              <img src={arrowToRight} onClick={()=>router.push(Paths.collection.createRoute(currentProfile.profileToCollections[1].collectionId))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
+              <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
               </div>
               <div className='flex mx-4 flex-col gap-4'>
                 {saves.map(item=>{
@@ -312,16 +321,53 @@ scrollY: false,
               </div>
             </div>
             <div>
-              <h4 className='text-xl lora-medium mx-4 py-4'>Your Spaces</h4>
-              <div className='flex flex-row px-4 gap-4 overflow-scroll'>
-              <div  onClick={()=>openPages()}className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute top-2 left-2 '>Pages</div></div>
-                 <div
-                 onClick={()=>openCollections()}
-                 className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Collections</div></div>
-              <div onClick={()=>router.push(Paths.collection.createRoute(currentProfile.profileToCollections[0].collectionId))}className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'><div className='absolute  top-2 left-2 '>Archive</div></div>
-              <div  onClick={()=>openCommunities()}className='border-1 border border-soft rounded-lg p-4 min-h-24 min-w-24 relative'>
-                <div className='absolute top-2 left-2 '>Communites</div></div>
-              </div>
+              
+              {/* <h4 className='text-xl lora-medium mx-4 py-4'>Your Spaces</h4> */}
+              <div>
+  <h4 className='text-xl lora-medium mx-4 py-4'>Your Spaces</h4>
+
+  <div className='flex flex-row px-4 gap-4 overflow-x-auto'>
+    
+    {[
+      { label: "Pages", onClick: openPages },
+      { label: "Collections", onClick: openCollections },
+      { label: "Archive", onClick: () => archiveCol && router.push(Paths.collection.createRoute(archiveCol.id) )},
+      { label: "Communities", onClick: openCommunities }
+    ].map((item) => (
+      
+      <div
+        key={item.label}
+        onClick={item.onClick}
+        className="
+          flex-shrink-0
+          hover:bg-softBlue
+          min-w-36 sm:w-36 md:w-44 lg:w-44 
+          aspect-square                
+          rounded-2xl
+          border border-soft
+          bg-white/60
+          backdrop-blur-sm
+          shadow-sm
+          active:scale-95
+          transition-all
+          flex items-end
+          p-3 relative
+        "
+      >
+           <span className="
+          absolute top-3 left-3
+          lora-medium
+          text-sm md:text-base
+        ">
+          {item.label}
+        </span>
+      </div>
+
+    ))}
+
+  </div>
+</div>
+             
             </div>
             <div className='flex flex-col justify-between mt-8'>
               <div className='flex flex-row justify-between px-4 pb-4 mt-8'
@@ -336,7 +382,7 @@ scrollY: false,
 
                 {[...(currentProfile?.stories || [])]
   .sort((a, b) => a.updated - b.updated)
-  .slice(0, 3)
+  .slice(0, 4)
   .map(story => <StoryItem story={story}/>)}
               </div>
             </div>

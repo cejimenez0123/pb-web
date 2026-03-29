@@ -43,13 +43,9 @@ async findYourWorkshops() {
   console.log("find your workshops",err)
 }
 }
-// } joinGlobalWorkshop({profile,story,isGlobal=true}){
-  //     const headers = await this.getAuthHeaders()
-  //     let res = await axios.post(Enviroment.url+`/workshop/groups/?global=${isGlobal}`,{profile,story},{headers:headers})
-  //    return res.data
-  // }
+
     async postActiveUser({story,profile,location}){
-console.log("PST",location)
+
  const headers = await this.getAuthHeaders()
     const response = await axios.post(Enviroment.url+`/workshop/active-users`,{
         story:story,

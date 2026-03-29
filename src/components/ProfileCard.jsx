@@ -5,8 +5,7 @@ import FollowerCard from "./profile/FollowerCard"
 import { IonImg } from "@ionic/react"
 import Enviroment from "../core/Enviroment"
 import { useDialog } from "../domain/usecases/useDialog"
-import { getGeocode } from "use-places-autocomplete"
-import { LoadScript } from "@react-google-maps/api"
+import fetchCity from "../core/fetchCity"
 export default function ProfileCard({profile,onClickFollow,following}){
     const dialog = useSelector(state=>state.users.dialog)
     const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
@@ -25,15 +24,8 @@ export default function ProfileCard({profile,onClickFollow,following}){
   }
   city()
   },[profile])
-  //     return following?
-  //     (<div 
-  //      className=" bg-emerald-600  w-[9rem] btn rounded-full text-white text-center"
-  //              onClick={onClickFollow}>
-  //           <h5 className="text-white py-3 font-bold"> Following</h5>   </div>):(
-  //       <div className="border-2 border-emerald-600 btn bg-transparent w-[9rem] rounded-full text-center"
-  //                  onClick={onClickFollow}
-  //      ><h5 className="text-emerald-800 py-3 font-bold">Follow</h5></div>)
-  //  }
+
+  
   
   const FollowDiv = ({ following, onClickFollow }) => {
   // Common classes for both states
@@ -41,7 +33,6 @@ export default function ProfileCard({profile,onClickFollow,following}){
   useEffect(()=>{
     
   async function city(){let address =await fetchCity(profile.location)
-    console.log("DDSS<",address)
     setLocation(address)
   }
   city()

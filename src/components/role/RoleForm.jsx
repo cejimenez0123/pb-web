@@ -87,7 +87,6 @@ useEffect(() => {
     const newRoles = roles.filter((r) => r.profile.id !== profile.id);
     setRoles([...newRoles, updatedRole]);
   };
-console.log("Current roles:", roles);
   const cycleRole = (profile) => {
     const roleTypes = Object.values(RoleType);
     const current = roles.find((r) => r.profile.id === profile.id)?.role;

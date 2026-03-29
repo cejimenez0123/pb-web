@@ -1,43 +1,9 @@
- import { IonPage,IonBackButton,IonButtons, IonHeader, IonToolbar, IonTitle, IonContent,  } from '@ionic/react';
+ import {  IonContent,  } from '@ionic/react';
 import { useContext, useEffect, useMemo, useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { fetchProfile } from '../../../actions/UserActions';
-// import ProfileCard from '../../../components/ProfileCard';
-// import checkResult from '../../core/checkResult';
-// import IndexList from '../../components/page/IndexList';
-// import { useMemo } from 'react';
-// import {
-//   getProtectedProfilePages,
-//   getPublicProfilePages,
-//   setPagesInView,
-// } from '../../actions/PageActions.jsx';
 import { createFollow, deleteFollow } from '../../actions/FollowAction';
-// import {
-//   getProtectedProfileCollections,
-//   getPublicProfileCollections,
-// } from '../../actions/CollectionActions';
-// import { debounce } from 'lodash';
-// import { setCollections } from '../../actions/CollectionActions';
-// import { useMediaQuery } from 'react-responsive';
+
 import Context from '../../context';
-// import { initGA, sendGAEvent } from '../../core/ga4.js';
-// import Enviroment from '../../core/Enviroment.js';
-// import ErrorBoundary from '../../ErrorBoundary.jsx';
-// import PageList from '../../components/page/PageList.jsx';
-// import sortItems from '../../core/sortItems.js';
-// import { Preferences } from '@capacitor/preferences';
-// import StoryCollectionTabs from '../../components/page/StoryCollectionTabs.jsx';
-// import { useParams } from 'react-router';
-// import ExploreList from '../../components/collection/ExploreList.jsx';
-// import React, { useContext, useEffect, useMemo, useState } from "react";
-// import { IonContent, useIonRouter } from "@ionic/react";
-// import { useSelector, useDispatch } from "react-redux";
-// import { useParams } from "react-router";
-// import { Preferences } from "@capacitor/preferences";
-// import { debounce } from "lodash";
-// // import fetchCity from "../../core/fetchCity";
-// import Context from "../../context";
-// import Enviroment from "../../core/Enviroment";
+
 
 import {
   fetchProfile,
@@ -195,32 +161,6 @@ useEffect(()=>{
   );
 };
 
-// ── TabBar ────────────────────────────────────────────
-
-
-
-// const TabBar = ({ active, onChange }) => (
-//   <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
-//     {tabs.map((tab) => (
-//       <button
-//         key={tab.key}
-//         onClick={() => onChange(tab.key)}
-//         className={`
-//           text-center 
-//           px-3 py-1 
-//           text-xs sm:text-sm 
-//           rounded-lg transition 
-//           whitespace-nowrap
-//           ${active === tab.key
-//             ? "text-white bg-soft shadow-sm"
-//             : "bg-softBlue text-soft"}
-//         `}
-//       >
-//         {tab.label}
-//       </button>
-//     ))}
-//   </div>
-// );
 
 // ── Communities Panel ─────────────────────────────────
 const CommunitiesPanel = ({prof}) => {
