@@ -16,6 +16,7 @@ import sortItems from '../core/sortItems.js';
 import {  IonContent, useIonRouter } from '@ionic/react';
 import DashboardContainer from './DashboardContainer.jsx';
 import HomeContainer from './HomeContainer.jsx';
+import Enviroment from '../core/Enviroment.js';
 
 function DiscoveryContainer() {
   const { seo,setSeo } = useContext(Context);
@@ -122,7 +123,7 @@ function DiscoveryContainer() {
   return (
   
       <ErrorBoundary>
-<IonContent fullscreen>
+<IonContent fullscreen style={{"--background":Enviroment.palette.cream}} scrollY={true}>
       
         
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><HomeContainer/>} dash={()=><DashboardContainer />} />
@@ -163,9 +164,9 @@ export default DiscoveryContainer;
     }),
   };
 
-   return <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} scrollY={true}>
+   return <IonContent style={{"--background":Enviroment.palette.cream}} fullscreen={true} scrollY={true}>
  
-         <div className='flex mt-4  pt-16 px-4 flex-row justify-between'>
+         <div className='flex mt-4  pt-8 sm:pt-16 px-4 flex-row justify-between'>
   
                     </div>
     

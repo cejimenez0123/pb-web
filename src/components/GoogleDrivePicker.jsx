@@ -7,6 +7,7 @@ import Context from "../context";
 import { Preferences } from '@capacitor/preferences';
 import Googlelogo from "../images/logo/googlelogo.png";
 import { useDialog } from '../domain/usecases/useDialog';
+import Enviroment from '../core/Enviroment';
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
 
 
@@ -119,7 +120,7 @@ const fetchFiles = async () => {
     title: null,
     text: (
       <div
-        style={{ "--background": "#f4f4e0" }}
+        style={{ "--background": Enviroment.palette.cream }}
         className="bg-cream"
       >
         {/* Scrollable grid container */}

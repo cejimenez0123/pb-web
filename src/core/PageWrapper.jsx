@@ -49,7 +49,7 @@ const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
       ref={pageRef}
       style={{ height: '100%', paddingTop: isDesktop ? '5em' : '0' }}
     >
-      {showHeader && Capacitor.isNativePlatform() && (
+      {showHeader && Capacitor.isNativePlatform()? (
         <IonHeader translucent>
           <IonToolbar>
             {showBackbutton ? (
@@ -76,7 +76,9 @@ const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
   )}
           </IonToolbar>
         </IonHeader>
-      )}
+      ):<div className='bg-cream'>        <IonHeader translucent><IonToolbar><IonButtons slot="start">
+                <IonText ><h3 className='text-[1rem]'>Pb</h3></IonText>
+              </IonButtons><SearchButton onClick={() => router.push("/search")} /></IonToolbar></IonHeader></div>}
       {children}
     </IonPage>
   );

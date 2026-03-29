@@ -3,20 +3,17 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonButtons,
-  IonButton,
+  
   IonContent,
 
   IonSpinner,
-  IonCardHeader,
-  IonCardTitle,
+  
   IonCardContent,
   IonList,
   IonText,
   IonSkeletonText,
   IonImg,
-  IonBackButton,
-  IonItem,
+
   useIonRouter,
  
 } from "@ionic/react";
@@ -30,7 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import PageList from "../../components/page/PageList";
 import ErrorBoundary from "../../ErrorBoundary";
-import BookListItem from "../../components/BookListItem";
+import {BookListItem,BookListItemShadow} from "../../components/BookListItem";
 import ExploreList from "../../components/collection/ExploreList.jsx";
 import bookmarkOutline from "../../images/bookmark_add.svg"
 import bookmarkFill from "../../images/bookmark_fill_green.svg"
@@ -52,12 +49,14 @@ import Paths from "../../core/paths.js";
 import checkResult from "../../core/checkResult.js";
 import { setPagesInView } from "../../actions/PageActions.jsx";
 import ProfileCircle from "../../components/profile/ProfileCircle.jsx";
+import Enviroment from "../../core/Enviroment.js";
 
 export default function CollectionContainer() {
 
   const { setError, setSuccess, setSeo, seo } = useContext(Context);
   
   const currentProfile = useSelector(state => state.users.currentProfile);
+    const collection = useSelector(state => state.books.collectionInView);
   const dispatch = useDispatch();
   const router = useIonRouter()
  const [canUserAdd, setCanUserAdd] = useState(false);
@@ -65,7 +64,7 @@ export default function CollectionContainer() {
   const [canUserSee, setCanUserSee] = useState(false);
    const {id}=useParams()
 
-  const collection = useSelector(state => state.books.collectionInView);
+
   const collections = useSelector(state => state.books.collections);
 
   const [loading, setLoading] = useState(false);
@@ -524,7 +523,7 @@ const EditBtn=()=>{
 
 
 
-  <IonContent style={{"--background":"#f4f4e0"}} scrollY={true} fullscreen className="pb-24 pt-12">
+  <IonContent style={{"--background":"#f8f6f1"}} scrollY={true} fullscreen className="pb-24 pt-12">
 
     {/* <div className=""> */}
         
@@ -664,42 +663,91 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
 }
 
 const PageTab = ({ collections }) => {
+    const currentProfile = useSelector(state => state.users.currentProfile);
+    const collection = useSelector(state => state.books.collectionInView);
   const pagesInView = useSelector(state => state.pages.pagesInView);
-
+  const [isOwner,setIsOwner]=useState(collection?.profileId==currentProfile?.id)
+  const router = useIonRouter()
   return (
     <div className="py-4">
       {/* <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4"> */}
-        <h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
+       { collections && collections.length > 0  ? <><h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
           Anthologies
         </h2>
       
-        {collections && collections.length > 0 && (
-          <IonList style={{ backgroundColor: "#f4f4e0" }}>
-            <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
-              {collections
-                .filter((col) => col)
-                .map((col, i) => (
-                  <div key={i} className="mx-3">
-                    <BookListItem book={col} />
-                  </div>
-                ))}
-            </div>
-          </IonList>
-        )}
+     
+   
 
-        <div className="sm:w-[50rem] w-[100%] mx-auto">
-          <h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
-      Pages
-        </h2>
-          <PageList
-            items={pagesInView || []}
-            isGrid={false}
-            hasMore={false} // ✅ FIXED (no undefined)
-            getMore={() => {}} // ✅ FIXED
-            forFeedback={false} // ✅ FIXED
-          />
+{collections && collections.length > 0 ? (
+  <IonList style={{ backgroundColor: "#f4f4e0" }}>
+    <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
+      {collections
+        .filter((col) => col)
+        .map((col, i) => (
+          <div key={i} className="mx-3">
+            <BookListItem book={col} />
+          </div>
+        ))}
+    </div>
+  </IonList>
+) : (
+  <div className="flex flex-row gap-3 overflow-x-scroll min-h-[14rem] px-3">
+    {/* Skeleton placeholders
+    {[1, 2, 3, 4].map((i) => (
+      <BookListItemShadow key={i} />
+    ))} */}
+
+    {/* CTA if owner */}
+    {/* {isOwner && ( */}
+      <div className="min-w-[16rem] flex flex-col items-center justify-center bg-cream rounded-lg p-4 shadow text-center">
+        <p className="mb-2 text-gray-700">No anthologies yet.</p>
+        <button
+          onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
+          className="px-4 py-2  text-emerald-800   "
+        >
+          Add Your First Anthology
+        </button>
+      </div>
+    {/* // )} */}
+  </div>
+)}</>: isOwner && <button
+          onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
+          className="px-4 py-2 btn bg-softBlue rounded-full text-emerald-800   "
+        >
+          Add Your First Anthology
+        </button>}
+  <h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
+          Pages
+        </h2> 
+        
+ {pagesInView.length>0 ? (
+  
+        <PageList
+          items={pagesInView}
+          isGrid={false}
+          hasMore={false}
+          getMore={() => {}}
+          forFeedback={false}
+        />
+      ) : (
+        <div className="py-8 text-center text-gray-500">
+          {isOwner ? (
+            <div>
+              <p>No pages yet.</p>
+              <button
+                onClick={()=>router.push(Paths.addToCollection.createRoute(collection.id))}
+                className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
+              >
+                Add Your First Page
+              </button>
+            </div>
+          ) : (
+            <p>This collection has no pages yet.</p>
+          )}
         </div>
-      {/* </div> */}
+      )}
+       
+ 
    </div>
   );
 };
@@ -778,24 +826,46 @@ const AboutTab = ({ collection}) => {
     }
 
 
-// const AboutTab = ({ collection }) => {
-// // console.log("DSDS",collection)
-// if(collection && collection.id){
-//   return (
-//     <>
      
-//         <h5 className="text-[1.2em]  pt-4 lora-bold text-emerald-800 px-1 pb-2">
-//         Structure
-//         </h5>
-//         <h4></h4>
 
-  
+ function AnthologiesPlaceholder({ collections, isOwner, collection }) {
+  const router = useIonRouter();
 
- 
-     
-//     </>
-//   );
-// }else{
-//   return null
-// }
-// };
+  return (
+    <div className="py-4">
+      
+
+      {collections && collections.length > 0 ? (
+        <IonList style={{ backgroundColor: Enviroment.palette.cream}}>
+          <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
+            {collections
+              .filter((col) => col)
+              .map((col, i) => (
+                <div key={i} className="mx-3">
+                  <BookListItem book={col} />
+                </div>
+              ))}
+          </div>
+        </IonList>
+      ) : (
+        <div className="flex flex-row gap-3 overflow-x-scroll min-h-[14rem] px-3">
+          {[1, 2, 3, 4].map((i) => (
+            <BookListItemShadow key={i} />
+          ))}
+
+          {isOwner && (
+            <div className="min-w-[16rem] flex flex-col items-center justify-center bg-cream rounded-lg p-4 shadow text-center">
+              <p className="mb-2 text-gray-700">No anthologies yet.</p>
+              <button
+                onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
+                className="px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
+              >
+                Add Your First Anthology
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

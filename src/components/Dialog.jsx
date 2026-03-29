@@ -11,6 +11,7 @@ import {
 } from '@ionic/react';
 import { useDialog } from "../domain/usecases/useDialog";
 import { Capacitor } from '@capacitor/core';
+import Enviroment from '../core/Enviroment';
 
 const Dialog = ({ presentingElement }) => {
   const { dialog, closeDialog, resetDialog } = useDialog();
@@ -32,7 +33,7 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
       swipeToClose
       canDismiss
          style={{
-            "--background-color": "#f4f4e0",
+            "--background-color": Enviroment.palette.cream,
           
           }}
       backdropDismiss={true}    
@@ -50,13 +51,7 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
       mode="ios"
     >
 
-      {/* <div className='flex flex-col'> */}
-      {/* <IonContent
-        className="ion-padding"
-    
-        scrollY={dialog.scrollY ?? true}
-        style={{ "--background": "#f4f4e0",height:"100%"}} */}
-      {/* > */}
+   
 
 <div className='h-[100%] bg-cream p-8'>
         <h1 className="px-8 text-[2rem] bg-cream mt-4">{dialog.text}</h1>
@@ -68,7 +63,7 @@ const breakpoints = isNative ? [0, 1] : [0, 1];
          slot='fixed'
           className=" ion-padding-bottom ion-padding-tio"
           style={{
-            "--background-color": "#f4f4e0",
+            "--background-color": Enviroment.palette.cream,
           
           }}
         >

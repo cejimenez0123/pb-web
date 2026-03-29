@@ -402,7 +402,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
   <div className="flex flex-row space-between">
 
   
- <IonImg    onClick={handleAddStory} src={addIcon} alt="Add" className="max-w-14 mx-4 my-4 btn rounded-full p-2 max-h-14 bg-soft" />
+ <IonImg    onClick={handleAddStory} src={addIcon} alt="Add" className="max-w-14 mx-4  btn rounded-full p-2 max-h-14 bg-soft" />
   <div
   className={`w-full my-auto mx-4 sm:w-60 flex items-center btn  border border-blueSea border-1 justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border`}
   onClick={() => router.push(Paths.collection.createRoute(colInView.id))}
@@ -410,10 +410,10 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
 <IonText>View Collection</IonText>
 </div>
   </div>  
-  <div className="my-4  w-[100%]">         
+  <div className="mb-4 w-[100%]">         
   <IonText
                 onClick={handleSave}
-                className="text-white btn bg-blueSea w-[100%] sm:max-w-[50em] my-auto  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
+                className="text-white btn bg-blueSea w-[100%] sm:max-w-[50em]  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
               >
                 Save
               </IonText>
@@ -436,20 +436,7 @@ bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
     onDelete={deleteChildFromCollection}
   />
 )}
-       {/* <div className="w-[100%] md:mt-8 mx-auto flex flex-col sm:max-w-[50em]">       <div role="tablist" className="tabs grid">
-        
-          <input type="radio" name="my_tabs_2" role="tab" defaultChecked className="tab" aria-label="Pages" />
-          <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto">
-              <SortableList items={newPages} onOrderChange={handleStoryOrderChange} onDelete={deleteStory} />
-         </div>
-         <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Collections" />
-          <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto">
-           <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteChildFromCollection} />
-           </div>
-        </div>
-    
-              
-            </div> */}
+       
 
             {/* ===== DANGER ZONE ===== */}
            {colInView && currentProfile && <div className="mt-10 border-t border-gray-200 pt-4">

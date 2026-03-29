@@ -14,6 +14,7 @@ import Paths from "../../core/paths.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 import { initGA, sendGAEvent } from "../../core/ga4.js";
+import Enviroment from "../../core/Enviroment.js";
 
 export default function PageViewContainer() {
   const { setSeo, seo, setError } = useContext(Context);
@@ -116,7 +117,7 @@ export default function PageViewContainer() {
       <IonContent
         fullscreen
         className="ion-padding-bottom"
-        style={{ "--background": "#f4f4e0" }}
+        style={{ "--background":Enviroment.palette.cream }}
       >
         <div className="min-h-[40em] pt-4 pb-[8em] text-center">
           {pending ? (

@@ -3,7 +3,7 @@ import '../App.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStory, fetchRecommendedStories } from '../actions/StoryActions';
 import ExploreList from '../components/collection/ExploreList.jsx';
-
+import arrowToRight from '../images/icons/arrowToRight.svg'
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import {IonText, IonItem, useIonRouter, IonContent, IonList} from '@ionic/react';
@@ -18,6 +18,7 @@ import { sendGAEvent } from '../core/ga4.js';
 import { setEditingPage, setPageInView } from '../actions/PageActions.jsx';
 import { useDialog } from '../domain/usecases/useDialog.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
+import Enviroment from '../core/Enviroment.js';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -84,7 +85,7 @@ const openYourWorkshops=()=>{
     disagree:()=>resetDialog(),
     text: (<div className=''>
       <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Workshops</h4>
-        <IonList style={{backgroundColor:"#f4f4e0"}}>
+        <IonList style={{backgroundColor:Enviroment.palette.cream}}>
           <div className='bg-cream overflow-y-scroll max-h-[80em]'> 
         {results.map(workshop=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
@@ -297,7 +298,10 @@ scrollY: false,
           <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
         </ButtonWrapper>
       </div>
+      <div className='flex flex-row justify-between max-h-24'>
               <h4 className='text-xl pt-8 mx-4 lora-medium pb-4'>Saves</h4>
+              <img src={arrowToRight} onClick={()=>router.push(Paths.collection.createRoute(currentProfile.profileToCollections[1].collectionId))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
+              </div>
               <div className='flex mx-4 flex-col gap-4'>
                 {saves.map(item=>{
                   
@@ -322,12 +326,12 @@ scrollY: false,
               <div className='flex flex-row justify-between px-4 pb-4 mt-8'
               ><h4 className='text-xl lora-medium'>Workshop</h4><h5 onClick={()=>{openYourWorkshops()}}>Your workshops {"->"} </h5></div>
               {workshop&&<div className='px-4'><WorkshopItem workshop={workshop}/></div>}
-              <div className='border border-solf border p-4 '></div>
+              <div className=' p-4 '></div>
             </div>
             <div  className='w-fit mx-auto '>
-              <div className='flex flex-row justify-between'><h4 className='text-xl mx-4 lora-medium  '>Recent Pages</h4><h4 className='my-auto mx-4' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
+              <div className='flex flex-row justify-between'><h4 className='text-xl mx-4 lora-medium pb-4  '>Recent Pages</h4><h4 className='my-auto mx-4' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
               {/* <div className='flex flex-col gap-4 px-4 py-4'> */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
                 {[...(currentProfile?.stories || [])]
   .sort((a, b) => a.updated - b.updated)

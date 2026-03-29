@@ -1,11 +1,6 @@
 import { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonBackButton,
-  IonTitle,
+ 
   IonContent,
   IonList,
   IonItem,
@@ -37,6 +32,7 @@ import emptyBox from "../../images/icons/empty_circle.svg";
 import StoryCollectionTabs from "../../components/page/StoryCollectionTabs.jsx";
 import { Capacitor } from "@capacitor/core";
 import { useParams } from "react-router";
+import Enviroment from "../../core/Enviroment.js";
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -56,6 +52,7 @@ export default function AddToCollectionContainer() {
   const profile = useSelector((state) => state.users.currentProfile);
   const [search, setSearch] = useState("");
   const colInView = useSelector((state) => state.books.collectionInView);
+  const isOwner = currentProfile && colInView && currentProfile.id === colInView.authorId;
   const collections = useSelector((state) => state.books.collections);
   const cTcList = useSelector((state) => state.books.collectionToCollectionsList);
     const stories = useSelector((state) =>
@@ -196,6 +193,45 @@ const filteredSortedStories = useMemo(() => {
   };
 
   const storyList = () => {
+    if (pending) {
+    return (
+      <div className="flex flex-col gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <IonSkeletonText
+            key={i}
+            animated
+            style={{
+              width: "90%",
+              height: 50,
+              margin: "0.5rem auto",
+              borderRadius: 12,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (filteredSortedStories.length === 0) {
+    return (
+      <div className="py-8 text-center text-gray-500">
+        {isOwner ? (
+          <div>
+            <p>No stories available.</p>
+            <button
+              onClick={() => router.push(Paths.addToCollection.createRoute(colInView.id))}
+              className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
+            >
+              Add Your First Story
+            </button>
+          </div>
+        ) : (
+          <p>No stories available.</p>
+        )}
+      </div>
+    );
+  }
+
     return (
       <IonList    style={{ "--background": "#f4f4e0" }}>
         <div className="flex gap-4 flex-col bg-cream">
@@ -214,7 +250,7 @@ const filteredSortedStories = useMemo(() => {
 
             return (
      
-                <div     clonClick={()=>{router.push(Paths.page.createRoute(story.id))}} 
+                <div     onClick={()=>{router.push(Paths.page.createRoute(story.id))}} 
                 className="flex flex-row py-2 bg-cream border border-1 rounded-full px-4 border-emerald-600 justify-between w-[100%]">
   
                 <IonLabel slot="start" className="text-emerald-800 my-auto truncate max-w-[70%]  font-medium
@@ -246,6 +282,44 @@ text-[1rem]">
   };
 
   const colList = () => {
+    if (pending) {
+    return (
+      <div className="flex flex-col gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <IonSkeletonText
+            key={i}
+            animated
+            style={{
+              width: "90%",
+              height: 50,
+              margin: "0.5rem auto",
+              borderRadius: 12,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (filteredSortedCollections.length === 0) {
+    return (
+      <div className="py-8 text-center text-gray-500">
+        {isOwner ? (
+          <div>
+            <p>No collections available.</p>
+            <button
+              onClick={() => router.push(Paths.addToCollection.createRoute(colInView.id))}
+              className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
+            >
+              Add Your First Collection
+            </button>
+          </div>
+        ) : (
+          <p>No collections available.</p>
+        )}
+      </div>
+    );
+  }
     let list = collections || [];
     if (cTcList.length > 0) {
       list = cTcList.filter(
@@ -306,7 +380,7 @@ text-[1rem]">
 
   if (!colInView) {
     return (
-      <IonContent    style={{ "--background": "#f4f4e0" }}>
+      <IonContent    style={{ "--background": Enviroment.palette.cream }}  className="ion-padding">
 <div>
           {pending ? (
             <>
@@ -340,7 +414,8 @@ text-[1rem]">
       </IonContent>
     );
   }
-return(<IonContent fullscreen style={{ "--background": "#f4f4e0" }} className="ion-padding">
+return(<IonContent fullscreen style={{ "--background": Enviroment.palette.cream }} className="ion-padding">
+  <ErrorBoundary>
   <div className="sm:max-w-[50rem] mx-auto py-4">
     {/* Header */}
     <div className="mb-4">
@@ -378,7 +453,7 @@ return(<IonContent fullscreen style={{ "--background": "#f4f4e0" }} className="i
     </div>
 
     {/* Filter + Search */}
-    <div className="flex justify-between items-center mb-4 space-x-3">
+    <div className="flex justify-between max-w-[100vw] items-center mb-4 space-x-3">
       <select
         onChange={(e) => setFilterType(e.target.value)}
         value={filterType}
@@ -395,8 +470,8 @@ return(<IonContent fullscreen style={{ "--background": "#f4f4e0" }} className="i
           type="text"
           value={search}
           onChange={handleSearch}
-          placeholder="Search collections or stories"
-          className="flex-1 bg-transparent focus:outline-none text-emerald-800 text-sm"
+          placeholder="...title"
+          className=" bg-transparent w-[100%] py-1 focus:outline-none text-emerald-800 text-sm"
         />
       </div>
     </div>
@@ -406,6 +481,7 @@ return(<IonContent fullscreen style={{ "--background": "#f4f4e0" }} className="i
       <StoryCollectionTabs tab={tab} setTab={setTab} storyList={storyList} colList={colList} />
     </div>
   </div>
+  </ErrorBoundary>
 </IonContent>)
 
 }

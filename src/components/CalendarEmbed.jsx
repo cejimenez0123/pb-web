@@ -11,6 +11,7 @@ import calendar from "../images/icons/calendar_add.svg"
 import { IonImg, IonInput,  IonList, IonText,  } from "@ionic/react";
 import InfoTooltip from "./InfoTooltip";
 import { useDialog } from "../domain/usecases/useDialog";
+import Enviroment from "../core/Enviroment";
 
 function CalendarEmbed(){
   const {isPhone}=useContext(Context)
@@ -368,7 +369,7 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
 <HorizontalEventList events={solEvents} handleDialogOpen={handleDialogOpen} sendGAEvent={sendGAEvent} isPhone={isPhone} areas={areas} calendar={calendar}  />
    </div> }
   
-       <IonList         style={{ "--background": "#f4f4e0" }} className='flex bg-cream sm:max-w-[50em] px-2 mx-auto flex-col'>
+       <IonList         style={{ "--background":Enviroment.palette.cream}} className='flex bg-cream sm:max-w-[50em] px-2 mx-auto flex-col'>
              <IonText className="font-bold text-[1.2rem] text-soft" >NYC CALENDAR</IonText>
                 
                 {events&&events.length?events.map((event,i)=>{
@@ -486,7 +487,7 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
 
   return (
     <IonList
-            style={{ "--background": "#f4f4e0" }}
+            style={{ "--background": Enviroment.palette.cream }}
       className="
         flex flex-row overflow-x-auto bg-cream px-2 space-x-4 py-2 scrollbar-hide
       "

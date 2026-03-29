@@ -11,7 +11,7 @@ import { initGA } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import Enviroment from '../core/Enviroment.js';
 import {  IonText, IonItem, useIonRouter, IonList, IonContent} from '@ionic/react';
-import BookListItem from '../components/BookListItem.jsx';
+import {BookListItem} from '../components/BookListItem.jsx';
 
 function DashboardEmbed() {
   const router = useIonRouter()

@@ -31,6 +31,7 @@ import { getMyStories } from '../actions/StoryActions';
 import { getPublicStories } from '../actions/PageActions';
 import checkResult from '../core/checkResult';
 import Context from '../context';
+import Enviroment from '../core/Enviroment';
 
 const SearchDialog = ({ presentingElement }) => {
   const dispatch = useDispatch();
@@ -269,7 +270,7 @@ const searchAction = useCallback(() => {
       scrollY={true}
       className="ion-padding"
 
-      style={{'--padding-top':isPhone?"4em":"10em", '--background': '#f4f4e0' }}
+      style={{'--padding-top':isPhone?"4em":"10em", '--background': Enviroment.palette.cream  }}
     >
       <div className='flex flex-row'>
        <IonSearchbar     value={searchText}

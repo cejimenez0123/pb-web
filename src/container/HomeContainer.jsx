@@ -18,6 +18,7 @@ import { getCurrentProfile } from '../actions/UserActions.jsx';
 import { findWorkshopGroups } from '../actions/WorkshopActions.jsx';
 import requestLocation from '../core/requestLocation.js';
 import StoryItem from '../components/page/StoryItem.jsx';
+import Enviroment from '../core/Enviroment.js';
 
 
 // Section Header Component
@@ -164,7 +165,7 @@ function HomeContainer() {
 
   return (
     <ErrorBoundary>
- <IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}>
+ <IonContent className='pt-12' style={{'--background': Enviroment.palette.cream }}>
         <div className="max-w-[60rem] mx-auto px-4 mt-4">
           
           {/* Stories */}

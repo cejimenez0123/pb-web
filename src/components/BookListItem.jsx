@@ -9,10 +9,11 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-  IonText
+  IonText,
+  IonSkeletonText
 } from "@ionic/react";
 import { useIonRouter } from '@ionic/react';
-export default function BookListItem({ book }) {
+ function BookListItem({ book }) {
   const dispatch = useDispatch();
   const router = useIonRouter()
 console.log(book)
@@ -34,7 +35,7 @@ console.log(book)
   };
   if(!book){
 
-    return <div>Loading...</div>
+    return <BookListItemShadow/>
   }
 if(book){
   return (
@@ -72,3 +73,29 @@ if(book){
   );
 }}
 
+function BookListItemShadow() {
+  return (
+    <IonCard
+      className="min-h-[10em] min-w-[16rem] overflow-hidden relative rounded-lg bg-blueSea bg-opacity-10 text-emerald-800 animate-pulse"
+    >
+      {/* Title placeholder */}
+      <div className="absolute top-2 left-3 right-3 z-10">
+        <IonCardHeader className="p-0">
+          <IonCardTitle className="truncate">
+            <IonSkeletonText animated style={{minWidth:"10em", width: '60%', height: '1.25rem' }} />
+          </IonCardTitle>
+        </IonCardHeader>
+      </div>
+
+      {/* Content placeholder */}
+      <IonCardContent className="mt-1 bottom-2">
+        <div className="max-h-[5rem] overflow-hidden">
+          <IonSkeletonText animated style={{ width: '100%', height: '0.75rem', marginBottom: 4 }} />
+          <IonSkeletonText animated style={{ width: '90%', height: '0.75rem', marginBottom: 4 }} />
+          <IonSkeletonText animated style={{ width: '80%', height: '0.75rem' }} />
+        </div>
+      </IonCardContent>
+    </IonCard>
+  );
+}
+export {BookListItem,BookListItemShadow}

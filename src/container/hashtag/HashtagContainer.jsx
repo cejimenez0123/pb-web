@@ -5,7 +5,7 @@ import { IonContent, IonInfiniteScroll,IonHeader,IonToolbar,IonButtons,IonBackBu
 import ErrorBoundary from "../../ErrorBoundary";
 import checkResult from "../../core/checkResult";
 import { useMediaQuery } from "react-responsive";
-import BookListItem from "../../components/BookListItem";
+import {BookListItem} from "../../components/BookListItem";
 import DashboardItem from "../../components/page/DashboardItem";
 import { initGA, sendGAEvent } from "../../core/ga4.js";
 import { fetchHashtag } from "../../actions/HashtagActions";
