@@ -123,7 +123,7 @@ function DiscoveryContainer() {
   return (
   
       <ErrorBoundary>
-<IonContent fullscreen style={{"--background":Enviroment.palette.cream}} scrollY={true}>
+<IonContent fullscreen style={{"--background":Enviroment.palette.cream,paddingBottom:"10em"}} scrollY={true}>
       
         
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><HomeContainer/>} dash={()=><DashboardContainer />} />

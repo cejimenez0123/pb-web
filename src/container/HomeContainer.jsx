@@ -165,7 +165,7 @@ console.log("Prompts:")
 
   return (
     <ErrorBoundary>
- {/* <IonContent className='pt-12' style={{'--background': Enviroment.palette.cream }}> */}
+
         <div className="max-w-[60rem] mx-auto px-4 mt-4">
           
           {/* Stories */}
@@ -193,12 +193,12 @@ console.log("Prompts:")
               <WorkshopItem key={workshop.id} item={workshop} router={router} />
             ))}
             </div>
-          {/* </IonList> */}
+        
 
           {/* Prompts */}
           <SectionHeader title="Writing Prompts for you" />
-          {/* <div className="flex flex-row gap-3"> */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+       
+          <div className="grid pb-[10em] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
             {filteredPrompts.length
               ? filteredPrompts.map(({ story }) => <StoryItem key={story.id} page={story} />)
@@ -206,7 +206,7 @@ console.log("Prompts:")
             }
           </div>
         </div>
-      {/* </IonContent> */}
+    
     </ErrorBoundary>
   );
 }
