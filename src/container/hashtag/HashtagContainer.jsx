@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect, useLayoutEffect, useContext, useMemo } from "react";
 
-import { IonContent, IonInfiniteScroll,IonHeader,IonToolbar,IonButtons,IonBackButton,IonItem, IonTitle, useIonRouter } from "@ionic/react";
+import { IonContent, IonInfiniteScroll,IonItem,  useIonRouter } from "@ionic/react";
 import ErrorBoundary from "../../ErrorBoundary";
 import checkResult from "../../core/checkResult";
 import { useMediaQuery } from "react-responsive";

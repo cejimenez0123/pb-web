@@ -52,14 +52,6 @@ const PageWrapper = ({
     };
   }, []);
 
-  const handleBack = (e) => {
-    e.preventDefault();
-    if (window.history.length > 1) {
-      router.goBack();
-    } else {
-      router.push(Paths.discovery);
-    }
-  };
 
   const handleRetry = () => {
     if (navigator.onLine) {
@@ -90,16 +82,31 @@ const PageWrapper = ({
       </IonPage>
     );
   }
-
+const handleBack = () => {
+  // Only redirect if there is no history
+  if (!router.canGoBack()) {
+    router.push(Paths.discovery);
+  } else {
+    router.goBack();
+  }
+};
   return (
     <IonPage ref={pageRef} style={{ height: '100%', paddingTop: isDesktop ? '5em' : '0' }}>
-      {showHeader && Capacitor.isNativePlatform() ? (
+      {isMobileOrTablet && (showHeader && Capacitor.isNativePlatform() ? (
         <IonHeader translucent>
           <IonToolbar>
-            {showBackbutton ? (
-              <IonButtons slot="start">
-                <IonBackButton defaultHref={Paths.discovery} onClick={handleBack} />
-              </IonButtons>
+         { showBackbutton ? (
+          <IonButtons slot="start">
+              <IonBackButton
+  defaultHref={Paths.discovery}
+  onClick={(e) => {
+    e.stopPropagation();
+   
+
+    
+    handleBack()
+  }}
+/></IonButtons>
             ) : (
               <IonButtons slot="start">
                 <IonText>Pb</IonText>
@@ -133,7 +140,7 @@ const PageWrapper = ({
             </IonToolbar>
           </IonHeader>
         </div>
-      )}
+      ))}
       {children}
     </IonPage>
   );

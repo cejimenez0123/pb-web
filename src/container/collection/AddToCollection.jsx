@@ -1,29 +1,26 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect,  useMemo, useState } from "react";
 import {
  
   IonContent,
   IonList,
   IonText,
   IonImg,
+  IonItem,
   IonSkeletonText,
   IonLabel,
   useIonRouter,
+  IonButton,
 } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
-import { Preferences } from "@capacitor/preferences";
 import ErrorBoundary from "../../ErrorBoundary";
 import Paths from "../../core/paths";
 import {
-  clearPagesInView,
-} from "../../actions/PageActions.jsx";
-import {
   addCollectionListToCollection,
   addStoryListToCollection,
-  fetchCollectionProtected,
-  fetchCollection,
-  getMyCollections,
+ 
+  setCollections,
 } from "../../actions/CollectionActions";
-import { getMyStories } from "../../actions/StoryActions";
+
 
 import checked from "../../images/icons/check.svg";
 import emptyBox from "../../images/icons/empty_circle.svg";
@@ -31,6 +28,9 @@ import StoryCollectionTabs from "../../components/page/StoryCollectionTabs.jsx";
 import { Capacitor } from "@capacitor/core";
 import { useParams } from "react-router";
 import Enviroment from "../../core/Enviroment.js";
+import { setPagesInView } from "../../actions/PageActions.jsx";
+import { getCurrentProfile } from "../../actions/UserActions.jsx";
+
   const filterTypes = {
     filter: "Filter",
     recent: "Recent",
@@ -41,52 +41,72 @@ import Enviroment from "../../core/Enviroment.js";
   };
 export default function AddToCollectionContainer() {
   const router = useIonRouter()
-  const pathParams = useParams()
   const dispatch = useDispatch();
 
   const [filterType, setFilterType] = useState(filterTypes.filter);
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const pending = useSelector((state) => state.books.loading);
-  const profile = useSelector((state) => state.users.currentProfile);
+  // const pending = useSelector((state) => state.books.loading);
+
+  // const profile = useSelector((state) => state.users.currentProfile);
   const [search, setSearch] = useState("");
   const colInView = useSelector((state) => state.books.collectionInView);
   const isOwner = currentProfile && colInView && currentProfile.id === colInView.authorId;
   const collections = useSelector((state) => state.books.collections);
   const cTcList = useSelector((state) => state.books.collectionToCollectionsList);
-    const stories = useSelector((state) =>
-    state.pages.pagesInView.filter((page) => page)
+ const stories =  useSelector((state) => state.pages.pagesInView);
+    const storyIdList = colInView?.storyIdList || [];
+    const {id}= useParams()
+    const storiesLoaded = !!stories 
+const collectionLoaded = colInView && colInView.storyIdList;
+const pending = storiesLoaded || collectionLoaded ? false : true; 
+  const filteredSortedStories = useMemo(() => {
+  let result = currentProfile?.stories || [];
+
+  // remove nulls early
+  result = result.filter(Boolean);
+
+
+  if (storiesLoaded && collectionLoaded) {
+  result = result.filter(
+    (story) =>
+      !colInView.storyIdList.some(
+        (sj) => sj?.story?.id === story.id
+      )
   );
-const filteredSortedStories = useMemo(() => {
-    let result = stories || [];
+// }
+  }
 
-    if (filterType === filterTypes.feedback) {
-      result = result.filter(s => s.needsFeedback);
-    } else {
-      switch (filterType) {
-        case filterTypes.recent:
-          result = [...result].sort((a, b) => new Date(b.updated) - new Date(a.updated));
-          break;
-        case filterTypes.oldest:
-          result = [...result].sort((a, b) => new Date(a.updated) - new Date(b.updated));
-          break;
-        case filterTypes.AZ:
-          result = [...result].sort((a, b) => a.title.localeCompare(b.title));
-          break;
-        case filterTypes.ZA:
-          result = [...result].sort((a, b) => b.title.localeCompare(a.title));
-          break;
-        default:
-          break;
-      }
+  // filter type
+  if (filterType === filterTypes.feedback) {
+    result = result.filter(s => s.status && s.status.toLowerCase().includes("draft")||s.title.toLowerCase().includes("workshop"));
+  } else {
+    switch (filterType) {
+      case filterTypes.recent:
+        result = [...result].sort((a, b) => new Date(b.updated) - new Date(a.updated));
+        break;
+      case filterTypes.oldest:
+        result = [...result].sort((a, b) => new Date(a.updated) - new Date(b.updated));
+        break;
+      case filterTypes.AZ:
+        result = [...result].sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case filterTypes.ZA:
+        result = [...result].sort((a, b) => b.title.localeCompare(a.title));
+        break;
     }
+  }
 
-    if (search.trim().length > 0) {
-      const lowerSearch = search.toLowerCase();
-      result = result.filter(s => s.title && s.title.toLowerCase().includes(lowerSearch));
-    }
+  // search (ONLY HERE)
 
-    return result;
-  }, [stories, filterType, search]);
+  if (search.trim()) {
+    const lower = search.toLowerCase();
+    result = result.filter(
+      (s) => s.title && s.title.toLowerCase().includes(lower)
+    );
+  }
+
+  return result;
+}, [stories, filterType, search,storyIdList]);
 
   const filteredSortedCollections = useMemo(() => {
     let result = collections || [];
@@ -110,7 +130,7 @@ const filteredSortedStories = useMemo(() => {
         break;
     }
 
-    if (search.trim().length > 0) {
+    if (search.trim()?.length > 0) {
       const lowerSearch = search.toLowerCase();
       result = result.filter(c => c && c.title && c.title.toLowerCase().includes(lowerSearch));
     }
@@ -121,73 +141,56 @@ const filteredSortedStories = useMemo(() => {
 
 
 
-  const [token, setToken] = useState(null);
   const [tab, setTab] = useState("page");
   const [newStories, setNewStories] = useState([]);
-  const [newCollection, setNewCollections] = useState([]);
+  const [newCollections, setNewCollections] = useState([]);
 
-  useEffect(() => {
-    Preferences.get({ key: "token" }).then((tok) => setToken(tok.value));
-  }, []);
+ 
 
-  useEffect(() => {
-  
-      dispatch(getMyCollections());
-      dispatch(getMyStories());
-    
-  }, [currentProfile]);
 
-  useLayoutEffect(() => {
-    if (profile) {
-      dispatch(fetchCollectionProtected(pathParams));
-    } else {
-      dispatch(fetchCollection(pathParams));
-    }
-  }, [location.pathname]);
 
-  const handleBack = () => {
-    if (window.history.length > 1) {
-       router.goBack()
-    } else {
-      router.push(Paths.discovery);
-    }
-  };
+useEffect(() => {
+
+  if (currentProfile){
+    dispatch(setCollections({collections:currentProfile.collections}))
+    dispatch(setPagesInView({pages:currentProfile.stories}))
+
+  }else{
+    dispatch(getCurrentProfile())
+  }
+}, [ currentProfile?.id,colInView?.id,id]);
+
+
 
   const handleSearch = (e) => setSearch(e.target.value);
 
   const save = () => {
     const storyIdList = newStories.filter((s) => s);
-    const collectionIdList = newCollection.filter((c) => c).map((c) => c.id);
+    const collectionIdList = newCollections.filter((c) => c).map((c) => c.id);
 
-    if (collectionIdList.length > 0 && currentProfile) {
-      dispatch(
+Promise.all([
+  collectionIdList?.length > 0 &&
+    dispatch(
         addCollectionListToCollection({
           id: colInView.id,
           list: collectionIdList,
           profile: currentProfile,
         })
-      ).then(() => {
-        dispatch(clearPagesInView());
-        setNewCollections([]);
-        setNewStories([]);
-        router.push(Paths.collection.createRoute(colInView.id));
-      });
-    }
-
-    if (storyIdList.length > 0) {
-      dispatch(
+      ),
+  storyIdList?.length > 0 &&
+    dispatch(
         addStoryListToCollection({
           id: colInView.id,
           list: storyIdList,
           profile: currentProfile,
         })
-      ).then(() => {
-        dispatch(clearPagesInView());
-        setNewCollections([]);
-        setNewStories([]);
-        router.push(Paths.collection.createRoute(colInView.id));
-      });
-    }
+      )
+]).then(() => {router.push(Paths.collection.createRoute(colInView.id));});
+
+
+    
+   
+     
   };
 
   const storyList = () => {
@@ -210,18 +213,13 @@ const filteredSortedStories = useMemo(() => {
     );
   }
 
-  if (filteredSortedStories.length === 0) {
+  if (filteredSortedStories?.length < 1) {
     return (
       <div className="py-8 text-center text-gray-500">
         {isOwner ? (
           <div>
             <p>No stories available.</p>
-            <button
-              onClick={() => router.push(Paths.addToCollection.createRoute(colInView.id))}
-              className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
-            >
-              Add Your First Story
-            </button>
+         
           </div>
         ) : (
           <p>No stories available.</p>
@@ -234,51 +232,47 @@ const filteredSortedStories = useMemo(() => {
       <IonList    style={{ "--background": "#f4f4e0" }}>
         <div className="flex gap-4 flex-col bg-cream">
         {filteredSortedStories
-          .filter((story) => story)
-          .filter(
-            (story) =>
-              !colInView?.storyIdList?.some(
-                (sj) => sj?.story?.id === story.id
-              ) && story?.title.toLowerCase().includes(search.toLowerCase())
-          )
+       
           .map((story, i) => {
-            const addedToCollection =
-              newStories.includes(story) ||
-              colInView?.storyIdList?.some((sj) => sj?.story?.id === story.id);
+           const addedToCollection = newStories.some((s) => s.id === story.id);
+           
+return(<IonItem
+  button
+  onClick={() => router.push(Paths.page.createRoute(story.id))}
+  className="rounded-full border border-emerald-600"
+>
+  <IonLabel slot="start">
+    {story?.title?.trim() || "Untitled"}
+  </IonLabel>
+ 
+                 
+<div
+  slot="end"
+  className="w-10 h-10 flex items-center my-auto justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
+  onClick={(e) => {
+    e.stopPropagation(); // prevent navigation
+    setNewStories((prev) =>
+      prev.some((s) => s.id === story.id)
+        ? prev.filter((s) => s.id !== story.id)
+        : [...prev, story]
+    );
+  }}
+>
+  <IonImg
+    src={addedToCollection ? checked : emptyBox}
+    alt="toggle"
+    className="w-[2rem] p-2 h-[2rem]"
+  />
+</div>
 
-            return (
-     
-                <div     onClick={()=>{router.push(Paths.page.createRoute(story.id))}} 
-                className="flex flex-row py-2 bg-cream border border-1 rounded-full px-4 border-emerald-600 justify-between w-[100%]">
-  
-                <IonLabel slot="start" className="text-emerald-800 my-auto truncate max-w-[70%]  font-medium
-text-[1rem]">
-                  {story?.title?.trim() || "Untitled"}
-                </IonLabel>
-                <div
-                slot="end"
-                     className="w-10 h-10 flex items-center my-auto justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
-    onClick={() =>
-                    addedToCollection
-                      ? setNewStories(newStories.filter((s) => s.id !== story.id))
-                      : setNewStories([...newStories, story])
-                  }
-                >
-                  <IonImg
-                    src={addedToCollection ? checked : emptyBox}
-                    alt="toggle"
-              className="w-[2rem] p-2  h-[2rem]"
-                  />
-                </div>
-                </div>
-            
-            );
+
+</IonItem>)
           })}
           </div>
       </IonList>
     );
   };
-
+  
   const colList = () => {
     if (pending) {
     return (
@@ -299,7 +293,7 @@ text-[1rem]">
     );
   }
 
-  if (filteredSortedCollections.length === 0) {
+  if (filteredSortedCollections?.length === 0) {
     return (
       <div className="py-8 text-center text-gray-500">
         {isOwner ? (
@@ -318,12 +312,12 @@ text-[1rem]">
       </div>
     );
   }
-    let list = collections || [];
-    if (cTcList.length > 0) {
-      list = cTcList.filter(
+
+    if (cTcList?.length > 0) {
+      let list = cTcList.filter(
         (col) =>
           !colInView?.childCollections?.some(
-            (joint) => joint.childCollectionId === col.id
+            (joint) => joint.childCollectionId === col?.id
           )
       );
     }
@@ -333,44 +327,49 @@ text-[1rem]">
      style={{ "--background": "#f4f4e0" }}>
            <div className="flex gap-4 flex-col bg-cream">
         {filteredSortedCollections
-          .filter((col) => col?.title?.toLowerCase().includes(search.toLowerCase()))
+        
           .map((col) => {
-            if (col.id === colInView?.id) return null; 
+            if (col?.id === colInView?.id) return null; 
             const addedToCollection =
-              newCollection.includes(col) ||
+              newCollections.some(c => c.id === col.id) ||
               colInView?.childCollections?.some(
-                (joint) => joint.childCollectionId === col.id
+
+                (joint) => joint.childCollectionId === col?.id
               );
-
-            return (
-  
-
-                <div className="flex flex-row border-1 border-soft border px-4 rounded-full  py-2 justify-between w-[100%]">
-  
-                <IonLabel slot="start" onClick={()=>{router.push(Paths.collection.createRoute(col.id))}}className="text-emerald-800  my-auto truncate w-[100%]  font-medium
-text-[1rem]">
+return(<IonItem
+  button
+  onClick={() => router.push(Paths.collection.createRoute(col.id))}
+  className="rounded-full border border-emerald-600"
+>
+  <IonLabel slot="start">
     {col?.title?.trim() || "Untitled"}
   </IonLabel>
 
-  <div
+<div
   slot="end"
-    className="max-w-10 max-h-10 flex items-center my-auto justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
-   onClick={() =>
-      addedToCollection
-        ? setNewCollections(newCollection.filter((c) => c.id !== col.id))
-        : setNewCollections([...newCollection, col])
-    }
-  >
-    <IonImg
-      src={addedToCollection ? checked : emptyBox}
-      alt="toggle"
-      className="w-[2rem] p-2  h-[2rem]"
-    />
-    </div>
+  className="w-10 h-10 flex items-center my-auto justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
+  onClick={(e) => {
+    e.stopPropagation(); // prevent navigation
+    setNewCollections((prev) =>
+      prev.some((c) => c.id === col.id)
+        ? prev.filter((c) => c.id !==col.id)
+        : [...prev,col]
+    );
+  }}
+>
+  <IonImg
+    src={addedToCollection ? checked : emptyBox}
+    alt="toggle"
+    className="w-[2rem] p-2 h-[2rem]"
+  />
+</div>
 
-  </div>
+</IonItem>)
 
-)})}
+          })}
+  
+
+
 </div>
       </IonList>
     );
@@ -429,7 +428,7 @@ return(<IonContent fullscreen style={{ "--background": Enviroment.palette.cream 
     <div className="flex justify-between items-center mb-4">
       <div className="text-center">
         <div className="text-lg font-medium text-emerald-800">
-          {newCollection.length + newStories.length}
+          {newCollections?.length + newStories?.length}
         </div>
         <div className="text-xs text-gray-500">New items</div>
       </div>
@@ -475,7 +474,7 @@ return(<IonContent fullscreen style={{ "--background": Enviroment.palette.cream 
     </div>
 
     {/* List container */}
-    <div className="bg-cream rounded-2xl p-3 shadow-sm">
+    <div className="bg-cream rounded-2xl p-3 pb-24 shadow-sm">
       <StoryCollectionTabs tab={tab} setTab={setTab} storyList={storyList} colList={colList} />
     </div>
   </div>

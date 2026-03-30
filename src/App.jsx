@@ -249,7 +249,7 @@ const libraries = ["places"];
             render={()=><PageWrapper><FeedbackContainer/></PageWrapper>}/>
      <Route path={Paths.addToCollection.route}
                render={()=> <PrivateRoute
-      currentProfile={currentProfile}
+      
   
       >
             <PageWrapper><AddToCollectionContainer/>
@@ -258,7 +258,7 @@ const libraries = ["places"];
      <Route 
             path={Paths.addStoryToCollection.route}
               render={()=><PrivateRoute 
-                 currentProfile={currentProfile}
+                
                     >
                            <PageWrapper> 
                             <AddStoryToCollectionContainer/>  </PageWrapper> 

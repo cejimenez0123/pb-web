@@ -123,7 +123,7 @@ function HomeContainer() {
 
   const sortedWorkshops = useMemo(() => [...workshops].sort((a,b) => a.title.localeCompare(b.title)), [workshops]);
   const filteredPrompts = useMemo(() => prompts?.filter(p => p?.story?.data) || [], [prompts]);
-
+console.log("Prompts:")
   // Update “What’s Happening” section
   useEffect(() => {
     if (stories?.length) {
@@ -165,7 +165,7 @@ function HomeContainer() {
 
   return (
     <ErrorBoundary>
- <IonContent className='pt-12' style={{'--background': Enviroment.palette.cream }}>
+ {/* <IonContent className='pt-12' style={{'--background': Enviroment.palette.cream }}> */}
         <div className="max-w-[60rem] mx-auto px-4 mt-4">
           
           {/* Stories */}
@@ -206,7 +206,7 @@ function HomeContainer() {
             }
           </div>
         </div>
-      </IonContent>
+      {/* </IonContent> */}
     </ErrorBoundary>
   );
 }

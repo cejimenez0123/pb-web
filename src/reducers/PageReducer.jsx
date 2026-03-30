@@ -8,7 +8,7 @@ import {
         
           setPagesToBeAdded,
           clearPagesInView,
-          // fetchEditingPage,
+  
           clearEditingPage,
       
           setEditingPage,
@@ -167,7 +167,7 @@ const pageSlice = createSlice({
         state.editingPage = payload
       })
 .addCase(setPagesInView,(state,{payload})=>{
-    
+    console.log("Setting Pages in View",payload)
           state.pagesInView = payload
       
     

@@ -19,6 +19,7 @@ import { setEditingPage, setPageInView } from '../actions/PageActions.jsx';
 import { useDialog } from '../domain/usecases/useDialog.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
 import Enviroment from '../core/Enviroment.js';
+import { Capacitor } from '@capacitor/core';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -52,9 +53,10 @@ const collections = collectionsRaw
   const [results,setResults]=useState([])
   const [workshop,setWorkshop]=useState(null)
   const {openDialog,dialog,closeDialog,resetDialog}=useDialog()
-  const recommendedCols= useSelector(state => state.books.recommendedCols);
-  const stories = useSelector(state => state.pages.pagesInView ?? []);
-  const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
+  const isNative = Capacitor.isNativePlatform()
+  // const recommendedCols= useSelector(state => state.books.recommendedCols);
+  // const stories = useSelector(state => state.pages.pagesInView ?? []);
+  // const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
 
   useEffect(()=>{
     fetchWorkshops()
@@ -75,25 +77,32 @@ useEffect(() => {
 const openYourWorkshops=()=>{
 
     openDialog({
-    title: null,
+    title: "Your Workshops",
   scrollY: false,
   breakpoint: 1,
 
 
     disagree:()=>resetDialog(),
     text: (<div className=''>
-      <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Workshops</h4>
-        <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-          <div className='bg-cream overflow-y-scroll max-h-[30em]'> 
+     
+       {/* <div className="h-[30rem]  overflow-y-scroll"> */}
+      <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}> 
+        <IonList 
+         style={{
+          backgroundColor: Enviroment.palette.cream,
+         
+        }}>
+           
+          
         {results.map(workshop=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(workshop.id))
             resetDialog()
           }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{workshop.title}</h4></div></li>
         })}
-        </div>
+      
         </IonList>
-
+</div>
       
     </div>
     )})
@@ -101,75 +110,83 @@ const openYourWorkshops=()=>{
 }
 const openCollections=()=>{
  openDialog({
-    title: null,
+    title: "Collections",
   scrollY: false,
   breakpoint: 1,
 
 
     disagree:()=>resetDialog(),
     text: (<div className=''>
-      <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Collections</h4>
-        <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-          <div className='bg-cream overflow-y-scroll max-h-[30em]'> 
+            <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}> 
+        <IonList 
+         style={{
+          backgroundColor: Enviroment.palette.cream,
+         
+        }}>
+         
         {currentProfile.collections.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(story.id))
             resetDialog()
           }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title}</h4></div></li>
         })}
-        </div>
+   
         </IonList>
 
-      
+           </div>
     </div>
     )})}
     const openCommunities=()=>{
       const communities = currentProfile.collections.filter(col=>col.type=="library")
  openDialog({
-    title: null,
+    title: "Communities",
   scrollY: false,
   breakpoint: 1,
 
 
     disagree:()=>resetDialog(),
     text: (<div className=''>
-      <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Collections</h4>
+        <div className={`bg-cream overflow-y-scroll ${isNative? "h-[35rem]":"h-[30rem]"}`}> 
+  
         <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-          <div className='bg-cream overflow-y-scroll max-h-[30em]'> 
+        
         {communities.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(story.id))
             resetDialog()
-          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title}</h4></div></li>
+          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title.length?story.title:
+        "Untitled"}</h4></div></li>
         })}
-        </div>
+    
         </IonList>
-
+    </div>
       
     </div>
     )})}
 const openPages=()=>{
    openDialog({
-    title: null,
+    title: "Pages",
   scrollY: false,
-  breakpoint: 1,
+  // breakpoint: 1,
 
-
-    disagree:()=>resetDialog(),
+    // disagreeText:"Close",
+    // disagree:resetDialog,
     text: (<div className=''>
-      {/* <h5>Pages</h5> */}
-      <h4 className='text-[1rem] mt-8 mb-4 lora-bold text-soft'>Pages</h4>
-        <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-          <div className='bg-cream overflow-y-scroll max-h-[30em]'> 
+               <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}> 
+        <IonList 
+         style={{
+          backgroundColor: Enviroment.palette.cream,
+         
+        }}>
         {currentProfile.stories.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.page.createRoute(story.id))
             resetDialog()
           }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story?.title?.length>0?story.title:"Untitled"}</h4></div></li>
         })}
-        </div>
+        
         </IonList>
-
+</div>
       
     </div>
     )})}

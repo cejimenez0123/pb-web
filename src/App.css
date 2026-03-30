@@ -12,6 +12,28 @@ background-color: #f4f4e0!important;
   font-weight: 400;
   font-style: normal;
 }
+.responsive-dialog {
+  --width: 100%;
+  --max-width: 100%;
+  --height: 100%;
+  --border-radius: 16px;
+}
+
+@media (min-width: 640px) {
+  .responsive-dialog {
+    --width: 90%;
+    --max-width: 600px;
+    --height: 85%;
+    --border-radius: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-dialog {
+    --width: 600px;
+    --height: 80%;
+  }
+}
 .lora-bold{
   font-family: "Lora", serif;
   font-optical-sizing: auto;

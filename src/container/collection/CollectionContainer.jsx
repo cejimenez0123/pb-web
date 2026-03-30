@@ -543,10 +543,15 @@ const EditBtn=()=>{
       <FollowBtn/>       <SaveBtn/><ArchiveBtn/> 
 <EditBtn/>
       </div>
-      <div onClick={()=>{
-         if(!collection && !collection.id){return }
-        router.push(Paths.addToCollection.createRoute(collection.id))
-      }}className="p-4 w-[100%] text-center shadow-sm border border-1 border-soft my-4 rounded-full">
+      <div 
+        onClick={(e) => {
+    e.stopPropagation();
+
+    if (!collection || !collection.id) return;
+
+    router.push(Paths.addToCollection.createRoute(collection.id));
+  }}
+      className="p-4 w-[100%] text-center shadow-sm border border-1 border-soft my-4 rounded-full">
                   <h5 className="mx-auto">Add to Collection</h5>
       </div>
       <CollectionTabs tab={tab} setTab={setTab} pages={<PageTab collections={collections}/>}
