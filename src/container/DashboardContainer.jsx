@@ -84,16 +84,15 @@ const openYourWorkshops=()=>{
 
     disagree:()=>resetDialog(),
     text: (<div className=''>
-     
-       {/* <div className="h-[30rem]  overflow-y-scroll"> */}
-      <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}> 
+
+      <div className={`bg-cream overflow-y-auto border border-1 rounded-xl border-soft px-4 ${isNative? "h-[36rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
         <IonList 
          style={{
           backgroundColor: Enviroment.palette.cream,
-         
+          paddingTop: "0.5em"
         }}>
            
-          
+       
         {results.map(workshop=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(workshop.id))

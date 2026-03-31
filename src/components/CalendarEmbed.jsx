@@ -365,7 +365,7 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
 </div>
   {solEvents.length==0?null:<div className=" text-left">
 <div className="flex flex-row">
-<IonText className="font-bold text-[1.2rem] px-4 text-soft ">Events with Sol, Founder</IonText><InfoTooltip text="Want to meet the founder. Want to meet someone there so you're not alone. Join Sol at an Event. IG:@decibao"/></div>
+<IonText className="font-bold text-[1.2rem] px-4 text-soft ">Events from Pb</IonText><InfoTooltip text="Want to meet the founder. Want to meet someone there so you're not alone. Join Sol at an Event. IG:@decibao"/></div>
 <HorizontalEventList events={solEvents} handleDialogOpen={handleDialogOpen} sendGAEvent={sendGAEvent} isPhone={isPhone} areas={areas} calendar={calendar}  />
    </div> }
   
