@@ -91,7 +91,7 @@ export default function EditorContainer({ presentingElement }) {
 }, [parameters.data, parameters.title, parameters.isPrivate, parameters.commentable, parameters.description, parameters.needsFeedback]);
 
   const setStory = (story) => {
-    dispatch(setHtmlContent({ html: story.data }));
+    dispatch(setHtmlContent({ html: story?.data }));
     dispatch(setEditingPage({ page: story }));
     dispatch(setPageInView({ page: story }));
     setParameters((prev) => ({
@@ -125,29 +125,54 @@ export default function EditorContainer({ presentingElement }) {
       )
     );
   };
-const createPageAction = () => {
+  const createPageAction = (dataOverride) => {
+  const dataToUse = dataOverride || parameters.data; // <- always take the latest local value
   if (!currentProfile?.id) return;
- 
-const payload = {
-  title: parameters.title,
-  data: parameters.data,
-  description: parameters.description,
-  needsFeedback: parameters.needsFeedback,
-  isPrivate: parameters.isPrivate,
-  commentable: parameters.commentable,
-  type: type || parameters.type, // ✅ explicitly keep original type
-  profileId: currentProfile.id,
-};
+
+  const payload = {
+    title: parameters.title,
+    data: dataToUse, // use local state
+    description: parameters.description,
+    needsFeedback: parameters.needsFeedback,
+    isPrivate: parameters.isPrivate,
+    commentable: parameters.commentable,
+    type: type || parameters.type,
+    profileId: currentProfile.id,
+  };
 
   dispatch(createStory(payload)).then((res) =>
     checkResult(res, ({ story }) => {
       dispatch(setEditingPage({ page: story }));
-      setStory(story);
-      handleChange("isSaved",true)
+      handleChange("isSaved", true);
       router.push(Paths.editPage.createRoute(story.id));
     }, (err) => setError(err.message))
   );
 };
+// const createPageAction = () => {
+//   if (!currentProfile?.id) return;
+// //  console.log("Creating page with parameters:", parameters.data,htmlContent);
+// // const payload = {
+// //   title: parameters.title,
+// //   data:  htmlContent,
+// //   description: parameters.description,
+// //   needsFeedback: parameters.needsFeedback,
+// //   isPrivate: parameters.isPrivate,
+// //   commentable: parameters.commentable,
+// //   type: type || parameters.type, // ✅ explicitly keep original type
+// //   profileId: currentProfile.id,
+// // };
+  
+// //   dispatch(createStory(payload)).then((res) =>
+// //     checkResult(res, ({ story }) => {
+// //       dispatch(setEditingPage({ page: story }));
+  
+// //       handleChange("isSaved",true)
+// //       router.push(Paths.editPage.createRoute(story.id));
+      
+// //     }, (err) => setError(err.message))
+// //   );
+
+// };
 
 
   const handleChange = (key, value) => setParameters((prev) => ({ ...prev, [key]: value }));
@@ -357,6 +382,7 @@ useEffect(() => {
     dispatch(setEditingPage({ page: null })); // clear old editPage
     dispatch(setHtmlContent({ html: "" })); // clear editor content
     handleChange("data", "");
+    handleChange("isSaved", false);
   }
 }, [type]);
   // ------------------ Render ------------------

@@ -17,9 +17,7 @@ useEffect(() => {
     dispatch(setHtmlContent({ html: page.data }));
     handleChange("data", page.data);
   } else {
-    // reset editor for new page
-    dispatch(setHtmlContent({ html: "" }));
-    handleChange("data", "");
+   
   }
 }, [page, type]);
   if (!resolvedType) {
@@ -49,19 +47,7 @@ case PageType.link:
         createPageAction={createPageAction}
       />
     );
-    // case PageType.link:return (
-    //     <PicturePageForm
-    //       handleChange={handleChange}
-    //       createPageAction={createPageAction}
-    //     />
-    //   );
-    // case PageType.picture:
-    //   return (
-    //     <PicturePageForm
-    //       handleChange={handleChange}
-    //       createPageAction={createPageAction}
-    //     />
-    //   );
+   
 
     default:
       return <div className="skeleton w-full h-[20em]" />;

@@ -123,7 +123,7 @@ const pageSlice = createSlice({
         state.error = payload.error
       })
    
-      .addCase(setHtmlContent,(state,{payload})=>{
+      .addCase(setHtmlContent.type,(state,{payload})=>{
         state.editorHtmlContent = payload.html
       }).addCase(getPublicProfilePages.fulfilled,(state,{payload})=>{
         state.loading = false
