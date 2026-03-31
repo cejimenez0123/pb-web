@@ -1,6 +1,6 @@
 
 
-// export default MyProfileContainer;
+
 import settings from "../images/icons/settings.svg"
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { IonContent, IonImg, useIonRouter } from "@ionic/react";
@@ -238,35 +238,43 @@ useEffect(() => {
 
 
   // ── Auth Sync
-  useEffect(() => {
-    const syncProfile = async () => {
-      if (!profile) {
-        const { value } = await Preferences.get({ key: "token" });
-        if (value) dispatch(getCurrentProfile());
-        else router.push("/");
-      }
-    };
-    syncProfile();
-  }, [profile, dispatch, router]);
+
+useEffect(() => {
+  const syncProfile = async () => {
+    const { value } = await Preferences.get({ key: "token" });
+    if (!value) {
+      router.push("/");
+    } else if (!profile) {
+      dispatch(getCurrentProfile());
+    }
+  };
+  syncProfile();
+}, [profile, dispatch, router]);
+  
 
   // ── Fetch
+  // useEffect(() => {
+  //   dispatch(fetchProfile({ id }));
+
+  //   const fetchContent = async () => {
+  //     const token = (await Preferences.get({ key: "token" })).value;
+
+  //     if (token && profile?.id === id) {
+  //       dispatch(getProtectedProfilePages({ profile: { id } }));
+  //       dispatch(getProtectedProfileCollections({ profile: { id } }));
+  //     } else {
+  //       dispatch(getPublicProfilePages({ profile: { id } }));
+  //       dispatch(getPublicProfileCollections({ profile: { id } }));
+  //     }
+  //   };
+
+  //   fetchContent();
+  // }, [id, dispatch]);
   useEffect(() => {
-    dispatch(fetchProfile({ id }));
-
-    const fetchContent = async () => {
-      const token = (await Preferences.get({ key: "token" })).value;
-
-      if (token && profile?.id === id) {
-        dispatch(getProtectedProfilePages({ profile: { id } }));
-        dispatch(getProtectedProfileCollections({ profile: { id } }));
-      } else {
-        dispatch(getPublicProfilePages({ profile: { id } }));
-        dispatch(getPublicProfileCollections({ profile: { id } }));
-      }
-    };
-
-    fetchContent();
-  }, [id, dispatch]);
+  if (!profile) return;
+  dispatch(setPagesInView({ pages: profile.stories || [] }));
+  dispatch(setCollections({ collections: profile.collections || [] }));
+}, [profile, dispatch]);
 
   // ── Follow logic
   useEffect(() => {
@@ -275,13 +283,13 @@ useEffect(() => {
     else setFollowing(profile.followers?.find((f) => f.followerId === profile.id) ?? null);
   }, [ profile]);
 
-  const onClickFollow = debounce(() => {
-    // if (!currentProfile) return setError("Please login first!");
-    if (!profile  === profile.id) return;
+  // const onClickFollow = debounce(() => {
+  //   // if (!currentProfile) return setError("Please login first!");
+  //   if (!profile) return;
 
-    if (following) dispatch(deleteFollow({ follow: following }));
-    else dispatch(createFollow({ follower: profile, following: profile }));
-  }, 200);
+  //   if (following) dispatch(deleteFollow({ follow: following }));
+  //   else dispatch(createFollow({ follower: profile, following: profile }));
+  // }, 200);
 
   // const isSelf = currentProfile?.id === profile?.id;
 
@@ -297,14 +305,28 @@ useEffect(() => {
   }, [profile, setSeo]);
 
   // ── Render
+  if (!profile) return <IonContent
+  fullscreen
+  scroll-y="true"
+  style={{ "--background": Enviroment.palette.cream, paddingTop: "env(safe-area-inset-top)" }}
+>Loading...</IonContent>;
   return (
     <ErrorBoundary>
-      <IonContent             style={{ "--background": Enviroment.palette.cream}} fullscreen className="bg-cream">
+      <IonContent
+  fullscreen
+  scroll-y="true"
+  style={{ "--background": Enviroment.palette.cream, paddingTop: "env(safe-area-inset-top)" }}
+>
         <div className="max-w-2xl mx-auto px-4 pb-24 pt-safe space-y-8">
 <div className='flex mt-4  sm:pt-20 p-4 flex-row justify-between'>
-                          <IonImg onClick={()=> router.push(Paths.editProfile,"forward")} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
-
-          
+                         <div  className="w-10 h-10"onClick={() => router.push(Paths.editProfile, "forward")}>
+          <img
+  style={{ width: 40, height: 40 }}
+ 
+  className="bg-soft rounded-full p-2"
+  src={settings}
+/>
+</div>
                   
             </div>
           {/* Header */}
@@ -371,8 +393,8 @@ useEffect(() => {
     />
 
   </div>
-      <FollowButton following={following} onClick={()=>{onClickFollow()}}isSelf={true}
-      />
+      {/* <FollowButton following={following} onClick={()=>{onClickFollow()}}isSelf={true}
+      /> */}
            <div className="px-2"><TabBar tabs={tabs} active={tab} onChange={setTab} /></div> 
           </div>
 

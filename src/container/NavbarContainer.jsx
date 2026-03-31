@@ -1,6 +1,6 @@
 
 
-import { useContext, useEffect,useRef, useLayoutEffect,useState } from 'react'
+import { useContext, useEffect,useRef,useCallback, useLayoutEffect,useState } from 'react'
 import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
@@ -157,7 +157,7 @@ return(
     <li>
       <button 
         className="w-full text-left" 
-        onClick={() => router.push(Paths.myProfile, "forward")}
+        onClick={() => router.push(Paths.myProfile, "forward","replace")}
       >
         Profile
       </button>
@@ -165,7 +165,7 @@ return(
     <li>
       <button 
         className="w-full text-left" 
-        onClick={() => router.push(Paths.notifications(), "forward")}
+        onClick={() => router.push(Paths.notifications(), "forward","replace")}
       >
         Notifications
       </button>
@@ -189,7 +189,7 @@ const router = useIonRouter()
 
 return (
   <div className="flex flex-col"
-     onClick={()=>router.push(Paths.discovery)}>
+     onClick={()=>router.push(Paths.discovery,"forward","replace")}>
     <IonImg
       src={library}
       style={{width:"3em",height:"3em",filter:"invert(100%)"}}
@@ -209,7 +209,7 @@ const router = useIonRouter()
 
 return (
   <div
-    onClick={()=>router.push(Paths.about())}
+    onClick={()=>router.push(Paths.about(),"forward","replace")}
     className="flex flex-col"
   >
     <IonImg
@@ -229,7 +229,7 @@ const router = useIonRouter()
 
 return (
   <div
-    onClick={()=>router.push(Paths.calendar())}
+    onClick={()=>router.push(Paths.calendar(),"forward","replace")}
     className="flex flex-col"
   >
     <IonImg
@@ -241,24 +241,50 @@ return (
 )
 
 }
-function HomeButton(){
+// function HomeButton(){
 
-const router = useIonRouter()
-const currentProfile = useSelector(state=>state.users.currentProfile)
-return (
-  <div
-    onClick={()=>currentProfile?router.push(Paths.home):router.push(Paths.about())}
-    className="flex flex-col"
-  >
+// const router = useIonRouter()
+// const currentProfile = useSelector(state=>state.users.currentProfile)
+// return (
+//   <div
+//     onClick={()=>currentProfile?router.push(Paths.home(),"forward","replace"):router.push(Paths.about(),"forward","replace")}
+//     className="flex flex-col"
+//   >
+//     <IonImg
+//       src={home}
+//       style={{width:"3em",height:"3em"}}
+//     />
+//     <h6 className="text-white text-xs">Home</h6>
+//   </div>
+// )
+
+// }
+
+
+function HomeButton() {
+  const router = useIonRouter();
+  const currentProfile = useSelector((state) => state.users.currentProfile);
+
+  // Memoized handler prevents re-creation every render
+  const handleClick = useCallback(() => {
+    if (currentProfile) {
+      router.push(Paths.home, "forward"); // no replace
+    } else {
+      router.push(Paths.about(), "forward");
+    }
+  }, [currentProfile, router]);
+
+  return (
+    <button onClick={handleClick}  className="flex flex-col bg-soft"  >
     <IonImg
       src={home}
-      style={{width:"3em",height:"3em"}}
+      style={{width:"3em",height:"3em",backgroundColor:Enviroment.palette.soft}}
     />
     <h6 className="text-white text-xs">Home</h6>
-  </div>
-)
-
+    </button>
+  );
 }
+
 function WorkshopButton(){
 
 const router = useIonRouter()
@@ -267,7 +293,7 @@ const dispatch = useDispatch()
 return (
   <div className="flex flex-col"       onClick={()=>{
         dispatch(setPageInView({page:null}))
-        router.push(Paths.workshop.reader())
+        router.push(Paths.workshop.reader(),"forward","replace")
       }}>
     <IonImg
       src={hammer}
@@ -282,28 +308,27 @@ return (
 
 
 
-function ProfileButton(){
-const currentProfile = useSelector(state=>state.users.currentProfile)
-const router = useIonRouter()
 
-const handle =()=>currentProfile?router.push(Paths.myProfile,"forward"):router.push(Paths.login(),"forward")
-return (
-  <div className="flex flex-col "   onClick={handle
-          }
-        >
+function ProfileButton({currentProfile}) {
+  const router = useIonRouter();
 
-  
-        <IonImg
-     
-          // className="object-fit max-h-10"
-                style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-          src={person}
-        />
-       <h6 className="text-white text-xs">Profile</h6>
-   
-  </div>
-)
+  const handle = useCallback(() => {
+    if (currentProfile) {
+      router.push(Paths.myProfile, "forward", );
+    } else {
+      router.push(Paths.login(), "forward");
+    }
+  }, [currentProfile, router]);
 
+  return (
+    <div className="flex flex-col" onClick={handle}>
+      <IonImg
+        style={{ width: "3em", height: "3em", filter: "invert(100%)" }}
+        src={person}
+      />
+      <h6 className="text-white text-xs">Profile</h6>
+    </div>
+  );
 }
 
 function NavCreateDropdown({
@@ -323,7 +348,7 @@ const router = useIonRouter()
       
           dispatch(setPageInView({page:data.story}))
           dispatch(setEditingPage({page:data.story}))
-          router.push(Paths.editPage.createRoute(data.story.id))
+          router.push(Paths.editPage.createRoute(data.story.id),'forward', 'replace');
       },e=>{
         setError(e.message)
       }))},10) 
@@ -339,7 +364,7 @@ const menuItems = [
     action:()=>{
       dispatch(setHtmlContent({html:""}))
       dispatch(setEditingPage({page:null}))
-      router.push(Paths.editor.image)
+      router.push(Paths.editor.image,"forward","replace")
     }
   },
   {
@@ -348,7 +373,7 @@ const menuItems = [
     action:()=>{
       dispatch(setHtmlContent({html:""}))
       dispatch(setEditingPage({page:null}))
-      router.push(Paths.editor.link)
+      router.push(Paths.editor.link,"forward","replace")
     }
   },
   {
@@ -407,15 +432,15 @@ function MenuHorizontal({ pages, currentProfile }) {
 
   const handleCloseNavMenu = (page) => {
     switch (page) {
-      case "About": router.push(Paths.about()); break
-      case "Discovery": router.push(Paths.discovery); break
-      case "Search": router.push("/search"); break
+      case "About": router.push(Paths.about(),"forward","replace"); break
+      case "Discovery": router.push(Paths.discovery,"forward","replace"); break
+      case "Search": router.push("/search","forward","replace"); break
       case "Workshop": 
         dispatch(setPageInView({ page: null }))
-        router.push(Paths.workshop.reader()); break
-      case "Log In": router.push(Paths.login()); break
-      case "Join Now": router.push(Paths.apply()); break
-      case "Feedback": router.push(Paths.feedback()); break
+        router.push(Paths.workshop.reader(),"forward","replace"); break
+      case "Log In": router.push(Paths.login(),"forward","replace"); break
+      case "Join Now": router.push(Paths.apply(),"forward","replace"); break
+      case "Feedback": router.push(Paths.feedback(),"forward","replace"); break
     }
   }
 
@@ -474,7 +499,7 @@ function CreateButton() {
         if (payload.story) {
           dispatch(setEditingPage({ page: payload.story }));
           dispatch(setPageInView({ page: payload.story }));
-        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'push');
+        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'replace');
         }else{
           windowl.alert("COULD NOT CREATE STORY")
         }
@@ -495,10 +520,10 @@ const {currentProfile }= useSelector(state=>state.users)
        ClickWriteAStory()
         break;
       case "image":
-        router.push(Paths.editor.image,"forward");
+        router.push(Paths.editor.image,"forward","replace");
         break;
       case "link":
-        router.push(Paths.editor.link,"forward");
+        router.push(Paths.editor.link,"forward","replace");
         break;
       case "collection":{
      openDialog({

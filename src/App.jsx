@@ -181,7 +181,7 @@ const libraries = ["places"];
 
 
             <Route exact path={Paths.notifications()}
-            render={()=><PrivateRoute currentProfile={currentProfile}><PageWrapper>
+            render={()=><PrivateRoute ><PageWrapper>
               <NotificationContainer currentProfile={currentProfile}/></PageWrapper></PrivateRoute>}/>
                    <Route path={Paths.home}
                   render={()=> 

@@ -19,7 +19,8 @@ const Enviroment = {
     blankPage:{title:"",author:"",authorId:""},
     blankProfile:"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
     palette:{
-        cream:"#f8f6f1"
+        cream:"#f8f6f1",
+        soft:"#40906f"
     }
 }
 

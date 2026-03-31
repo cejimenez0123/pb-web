@@ -317,8 +317,9 @@ scrollY: false,
 </div>
       {/* Row 2: Join a Workshop */}
       <div className="flex justify-center md:justify-start w-full">
+      
         <ButtonWrapper
-          onClick={() => router.push(Paths.workshop.reader())}
+       onClick={() => router.push(Paths.workshop.reader(), "forward","replace")}
           className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
         >
           <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
