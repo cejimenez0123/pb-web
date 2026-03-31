@@ -543,7 +543,7 @@ const EditBtn=()=>{
       <FollowBtn/>       <SaveBtn/><ArchiveBtn/> 
 <EditBtn/>
       </div>
-      <div 
+      {canUserAdd && <div 
         onClick={(e) => {
     e.stopPropagation();
 
@@ -553,7 +553,7 @@ const EditBtn=()=>{
   }}
       className="p-4 w-[100%] text-center shadow-sm border border-1 border-soft my-4 rounded-full">
                   <h5 className="mx-auto">Add to Collection</h5>
-      </div>
+      </div>}
       <CollectionTabs tab={tab} setTab={setTab} pages={<PageTab collections={collections}/>}
                       members={<MemberTab collection={collection}/>}
                       about={<AboutTab collection={collection}/>}
@@ -760,6 +760,8 @@ const PageTab = ({ collections }) => {
 
 const MemberTab = ({ collection }) => {
   const router = useIonRouter()
+  console.log("FETCH",collection.profile)
+  const roles = [...collection.roles, collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
   return (
     <>
      
@@ -767,14 +769,14 @@ const MemberTab = ({ collection }) => {
          Contributors
         </h5>
 
-        {collection.roles.length > 0 && (
+        {
           <IonList style={{ backgroundColor: "#f4f4e0" }}>
             <div className="flex flex-col bg-cream pt-4 min-h-[14rem] overflow-x-scroll">
-              {collection.roles
+              {
           
-                .map((role, i) => {
+                roles.map((role, i) => {
            
-               return<div onClick={()=>router.push(Paths.profile.createRoute(role.profileId))} className="  w-[100%] my-1 rounded-full border px-4 border-1 border-soft">
+               return<div onClick={()=>router.push(Paths.profile.createRoute(role.profile.id))} className="  w-[100%] my-1 rounded-full border px-4 border-1 border-soft">
                   <div className="flex flex-row justify-between  w-[100%]">
                   <div className="py-4 "><ProfileCircle profile={role.profile}/></div><div className="my-auto">{role.role}</div>
                   </div>
@@ -782,7 +784,7 @@ const MemberTab = ({ collection }) => {
 })}
             </div>
           </IonList>
-        )}
+        }
 
  
      

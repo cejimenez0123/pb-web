@@ -1,6 +1,6 @@
 
 import { IonImg, useIonRouter } from "@ionic/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import bookmarkfill from "../../images/bookmarkfill.svg"
 import bookmarkoutline from "../../images/bookmarkadd.svg"
 import Paths from "../../core/paths";
@@ -12,7 +12,25 @@ export default function PageViewButtonRow({ page, profile, setCommenting }) {
   const handleClickComment = () => setCommenting(true);
   const onClickShare = () => alert("Shared!");
   const handleBookmark = () => setBookmarked(!bookmarked);
+  const [canUserEdit, setCanUserEdit] = useState(false);
 
+  useEffect(()=>{
+
+      const roles = ["editor"];
+      console.log("Checking edit permissions for profile:", profile, "on page:", page);
+      if (profile && page) {
+        if (profile.id === page.authorId) {
+          setCanUserEdit(true);
+          return;
+        }
+        if (page?.betaReaders) {
+          let found = page?.betaReaders?.find((rTc) => rTc.profileId === profile.id && roles.includes(rTc.role));
+          setCanUserEdit(!!found);
+        }
+      }
+    
+  },[page,profile])
+if(!page || !profile) return null;
   return (
     <div className="flex items-center justify-between px-4 py-3">
       <div className="flex gap-4">
@@ -37,7 +55,7 @@ export default function PageViewButtonRow({ page, profile, setCommenting }) {
           ⤴
         </button>
       </div>
-      {page.authorId === profile?.id && (
+      {page.author.id === profile?.id  && (
   <button
     onClick={() => router.push(Paths.editPage.createRoute(page.id), "forward")}
     className="rounded-full px-3 py-2 bg-emerald-200 text-emerald-800 hover:bg-emerald-300 transition"

@@ -46,9 +46,11 @@ function MyProfileContainer() {
 
   const profile = useSelector((state) => state.users.currentProfile);
 
-  const collectionsRaw = useSelector((state) => state.books.collections?? []);
+  const collectionsRaw = profile?.collections||[]
+  // useSelector((state) => state.books.collections?? []);
 
-  const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
+  const pagesRaw = profile?.stories||[]
+  // useSelector((state) => state.pages.pagesInView ?? []);
 
   const dispatch = useDispatch();
   const router = useIonRouter();
@@ -310,8 +312,9 @@ useEffect(() => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
+                    <h5 className="text-xl text-emerald-800">{profile?.username.toLowerCase()}</h5>
               </div>
-             
+         
             </div>
 
             <div className="flex justify-between text-center">

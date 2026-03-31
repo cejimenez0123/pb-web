@@ -15,6 +15,7 @@ import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 import { initGA, sendGAEvent } from "../../core/ga4.js";
 import Enviroment from "../../core/Enviroment.js";
+import { set } from "lodash";
 
 export default function PageViewContainer() {
   const { setSeo, seo, setError } = useContext(Context);
@@ -52,6 +53,7 @@ export default function PageViewContainer() {
         checkResult(
           res,
           (payload) => {
+          
             if (payload?.story) {
               if (payload.story.comments?.length) {
                 dispatch(setComments({ comments: payload.story.comments }));
@@ -60,8 +62,11 @@ export default function PageViewContainer() {
             } else throw new Error("Story not found");
           },
           (err) => {
+            console.log("STORY ERROR", err);
             setPending(false);
-            if (err?.response?.status === 403) setErrorStatus(403);
+            if (err?.response?.status === 404){ setErrorStatus(404);
+              setError("Story not found");
+            }
             else {
               setError(err.message || "Failed to load story");
               setErrorStatus(err?.response?.status || 500);

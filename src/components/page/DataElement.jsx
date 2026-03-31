@@ -11,12 +11,12 @@ import Paths from "../../core/paths"
 function DataElement({page,isGrid,book=null,html=null}){
 
 const initialImage = page?.type === PageType.picture
-  ? (isValidUrl(page.data) ? page.data : Enviroment.imageProxy(page.data))
+  ? (isValidUrl(page?.data) ? page?.data : Enviroment.imageProxy(page?.data))
   : null;
   const [image, setImage] = useState(initialImage);
 useEffect(() => {
-  if(page?.type === PageType.picture && page.data){
-    setImage(isValidUrl(page.data) ? page.data : Enviroment.imageProxy(page.data))
+  if(page?.type === PageType.picture && page?.data){
+    setImage(isValidUrl(page?.data) ? page?.data : Enviroment.imageProxy(page?.data))
   }
 }, [page?.data])
 
@@ -95,7 +95,7 @@ default:
 </div>)
 }
 }
-
+if(!page) return null;
 
 return (<Element page={page}/>)
 }

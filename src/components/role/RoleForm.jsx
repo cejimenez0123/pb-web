@@ -9,6 +9,7 @@ import Role from "../../domain/models/role";
 import checkResult from "../../core/checkResult";
 import Context from "../../context";
 import ProfileCircle from "../profile/ProfileCircle";
+import { getStory } from "../../actions/StoryActions";
 
 export default function RoleForm({ item }) {
   const dispatch = useDispatch();
@@ -25,14 +26,41 @@ const handleResetAllRoles = () => {
   const updatedRoles = profiles.map((r) => new Role(null, r, item, "none"));
   setRoles(updatedRoles);
 };
+// useEffect(() => {
+//   if (!item || !profiles) return;
+
+//   const sourceRoles = item.roles || item.betaReaders || [];
+//   console.log("Source roles:", sourceRoles);
+//   const roleMap = new Map(sourceRoles.map((r) => [r.profile.id, r]));
+
+//   const list = profiles.map((profile) => {
+//     const existing = roleMap.get(profile.id);
+//     return new Role(
+//       existing?.id || null,
+//       profile,
+//       item,
+//       existing?.role || "none",
+//       existing?.created || null
+//     );
+//   });
+
+//   setRoles(list);
+// }, [item, profiles]);
+  useLayoutEffect(() => {
+    dispatch(fetchProfiles());
+  }, [dispatch,currentProfile]);
 useEffect(() => {
   if (!item || !profiles) return;
 
   const sourceRoles = item.roles || item.betaReaders || [];
-  const roleMap = new Map(sourceRoles.map((r) => [r.profile.id, r]));
+
+  const roleMap = new Map(
+    sourceRoles.map((r) => [r.profile.id, r])
+  );
 
   const list = profiles.map((profile) => {
     const existing = roleMap.get(profile.id);
+
     return new Role(
       existing?.id || null,
       profile,
@@ -44,39 +72,38 @@ useEffect(() => {
 
   setRoles(list);
 }, [item, profiles]);
-  useLayoutEffect(() => {
-    dispatch(fetchProfiles());
-  }, [dispatch,currentProfile]);
+  // useEffect(() => {
+  //   if (!item) return;
 
-  useEffect(() => {
-    if (!item) return;
+  //   const source = item.roles || item.betaReaders || [];
+  //   const list = source.map(
+  //     (role) =>
+  //       new Role(
+  //         role.id,
+  //         role.profile,
+  //         role.collection || role.story,
+  //         role.role,
+  //         role.created
+  //       )
+  //   );
 
-    const source = item.roles || item.betaReaders || [];
-    const list = source.map(
-      (role) =>
-        new Role(
-          role.id,
-          role.profile,
-          role.collection || role.story,
-          role.role,
-          role.created
-        )
-    );
-
-    setRoles(list);
-  }, [item]);
+  //   setRoles(list);
+  // }, [item]);
 
   const handlePatchRoles = () => {
     if (!currentProfile) return;
 
-    const action = item.storyIdList
+    const action = item?.storyIdList
       ? patchCollectionRoles({ roles, profile: currentProfile, collection: item })
       : patchRoles({ roles, profileId: currentProfile.id, storyId: item.id });
 
     dispatch(action).then((res) =>
       checkResult(
         res,
-        () => setSuccess("Saved"),
+        () => {
+          
+          dispatch(getStory({ id: item.id }))
+          setSuccess("Saved")},
         () => setError("Error saving")
       )
     );
@@ -100,15 +127,54 @@ useEffect(() => {
     });
   };
 
-  const filteredProfiles = useMemo(() => {
-    if (!profiles?.length) return [];
-    if (!search) return profiles;
+ const filteredProfiles = useMemo(() => {
+  if (!profiles?.length) return [];
 
-    return profiles.filter((p) =>
+  let result = profiles;
+
+  // 🔍 search filter
+  if (search) {
+    result = result.filter((p) =>
       p.username?.toLowerCase().includes(search.toLowerCase())
     );
-  }, [profiles, search]);
+  }
 
+  // ⚡ build role map once (O(n))
+  const roleMap = new Map(
+    roles.map((r) => [r.profile.id, r.role])
+  );
+
+
+const sortedResult = [...result].sort((a, b) => {
+  const roleA = roleMap.get(a.id) || "none";
+  const roleB = roleMap.get(b.id) || "none";
+
+  const isNoneA = roleA === "none";
+  const isNoneB = roleB === "none";
+
+  // ✅ ALWAYS push "none" to bottom
+  if (isNoneA !== isNoneB) {
+    return isNoneA ? 1 : -1;
+  }
+
+  // 🎯 then sort by priority
+  const rolePriority = {
+    editor: 1,
+    writer: 2,
+    commenter: 3,
+    reader: 4,
+    none: 5,
+  };
+
+  return (
+    (rolePriority[roleA] || 99) -
+    (rolePriority[roleB] || 99)
+  );
+});
+ console.log(`sortedResult after filtering with search="${search}":`, sortedResult.slice(0,5));
+  return sortedResult;
+}, [profiles, search]);
+console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search, "Roles:", roles);
   return (
     <div className="bg-[#f8f6f1] ">
 

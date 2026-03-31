@@ -248,7 +248,16 @@ const payload = {
     </div>
   );
 
-
+const openRoleFormDialog = (page) => {
+  openDialog({
+    ...dialog,
+    disagree: null,
+    agree: () => resetDialog(),
+    disagreeText: null,
+    scrollY: false,
+    text: <RoleForm item={page} handleClose={() => resetDialog()} />,
+  });
+}
   const openFeedback = (isFeedback) => {
     openDialog({
       ...dialog,

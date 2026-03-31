@@ -54,18 +54,7 @@ export default function PageViewItem({ page }) {
 
  
     { commenting && <div>
-           {/* <div
-      className="fixed inset-0 z-40 bg-black bg-opacity-30"
-      onClick={closeInput}  // clicking overlay closes input
-    />
-  <div
-    className={`fixed left-0 right-0 z-50 transition-transform duration-300 bg-white shadow-lg border-t border-gray-200`}
-    style={{
-      bottom: "64px",        // adjust to your navbar height
-      maxHeight: "50%",      // prevent covering too much
-      overflowY: "auto",
-    }}
-  > */}
+
     <div
     className={`fixed inset-0 z-40 bg-black bg-opacity-30 transition-opacity duration-300 ${
       commenting ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
