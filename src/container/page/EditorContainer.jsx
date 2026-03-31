@@ -292,19 +292,20 @@ const topBar = () => (
 );
 const openRoleFormDialog = (page) => {
   openDialog({
-    ...dialog,
+
     disagree: null,
-    agree: () => resetDialog(),
+
     disagreeText: null,
+    height: 90,
     scrollY: false,
     text: <RoleForm item={page} handleClose={() => resetDialog()} />,
   });
 }
   const openFeedback = (isFeedback) => {
     openDialog({
-      ...dialog,
+      // ...dialog, 
       disagree: null,
-      agree: () => resetDialog(),
+      // agree: () => resetDialog(),
       disagreeText: null,
       scrollY: false,
       text: (
@@ -314,7 +315,7 @@ const openRoleFormDialog = (page) => {
           handleChange={(e) => handleChange("description", e)}
           handleFeedback={(feedbackDesc) => {
             resetDialog();
-            console.log("Feedback item:", item);
+            // console.log("Feedback item:", item);
             // const params = { ...item, description: parameters.description, type:item.type, page: item, id: item.id, needsFeedback: true };
            dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", id: editPage.id,needsFeedback:true, type: editPage.type || parameters.type })).then((res) =>
               checkResult(res, (payload) => {
