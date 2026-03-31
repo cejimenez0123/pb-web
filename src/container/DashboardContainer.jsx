@@ -85,7 +85,7 @@ const openYourWorkshops=()=>{
     disagree:()=>resetDialog(),
     text: (<div className=''>
 
-      <div className={`bg-cream overflow-y-auto border border-1 rounded-xl border-soft px-4 ${isNative? "h-[36rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
+      <div className={`bg-cream overflow-y-auto border  ounded-xl border-soft px-4 ${isNative? "h-[36rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
         <IonList 
          style={{
           backgroundColor: Enviroment.palette.cream,
@@ -97,7 +97,7 @@ const openYourWorkshops=()=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(workshop.id))
             resetDialog()
-          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{workshop.title}</h4></div></li>
+          }}><div className='p-4 w-[100%] border-1 border border-soft  rounded-xl'><h4 className='text-[.9rem]'>{workshop.title.length ? workshop.title : "Untitled"}</h4></div></li>
         })}
       
         </IonList>
@@ -127,7 +127,7 @@ const openCollections=()=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(story.id))
             resetDialog()
-          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title}</h4></div></li>
+          }}><div className='p-4 w-[100%] border-1 border  border-soft rounded-xl'><h4 className='text-[.9rem]'>{story.title}</h4></div></li>
         })}
    
         </IonList>
@@ -153,7 +153,7 @@ const openCollections=()=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(story.id))
             resetDialog()
-          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title.length?story.title:
+          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4 className='text-[.9rem]'>{story.title.length?story.title:
         "Untitled"}</h4></div></li>
         })}
     
@@ -179,7 +179,7 @@ const openPages=()=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.page.createRoute(story.id))
             resetDialog()
-          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story?.title?.length>0?story.title:"Untitled"}</h4></div></li>
+          }}><div className='p-4 w-[100%] border-11 border border-soft rounded-xl'><h4 className='text-[.9rem]'>{story?.title?.length>0?story.title:"Untitled"}</h4></div></li>
         })}
         
         </IonList>
@@ -262,7 +262,7 @@ function WorkshopItem({workshop}){
       user_id: currentProfile?.id || null, // optional, if you want to track
     });
   } catch (e) {
-    console.warn("GA event failed", e);
+    // console.warn("GA event failed", e);
   }
 
 openDialog({

@@ -26,7 +26,7 @@ import RoleForm from "../../components/role/RoleForm";
 import FeedbackDialog from "../../components/page/FeedbackDialog";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
 import menu from "../../images/icons/menu.svg";
-import PicturePageForm from "../../components/page/PicturePageForm.jsx";
+
 import EditorDiv from "../../components/page/EditorDiv.jsx";
 import { motion, AnimatePresence } from "framer-motion";
 export default function EditorContainer({ presentingElement }) {
@@ -315,9 +315,7 @@ const openRoleFormDialog = (page) => {
           handleChange={(e) => handleChange("description", e)}
           handleFeedback={(feedbackDesc) => {
             resetDialog();
-            // console.log("Feedback item:", item);
-            // const params = { ...item, description: parameters.description, type:item.type, page: item, id: item.id, needsFeedback: true };
-           dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", id: editPage.id,needsFeedback:true, type: editPage.type || parameters.type })).then((res) =>
+            dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", id: editPage.id,needsFeedback:true, type: editPage.type || parameters.type })).then((res) =>
               checkResult(res, (payload) => {
                       handleChange("isSaved",true)
                 if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id, "foward"));
@@ -354,7 +352,13 @@ const openRoleFormDialog = (page) => {
     };
     openDialog(dia);
   };
-
+useEffect(() => {
+  if (!id) { // only for new page creation
+    dispatch(setEditingPage({ page: null })); // clear old editPage
+    dispatch(setHtmlContent({ html: "" })); // clear editor content
+    handleChange("data", "");
+  }
+}, [type]);
   // ------------------ Render ------------------
   return (
     <EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
