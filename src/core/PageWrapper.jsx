@@ -385,25 +385,7 @@ const handleBack = () => {
   </button>
 </IonButtons>
             )}
-               {showMenubutton && (
-             <IonButtons slot="end">
-  <button
-    onClick={() => setMenuOpen(true)}
-    className="p-2"
-  >
-    <IonImg
-      src={menu}
-      style={{
-        width: "2.2em",
-        height: "2.2em",
-        filter:
-          "invert(33%) sepia(86%) saturate(749%) hue-rotate(111deg) brightness(92%) contrast(91%)",
-        pointerEvents: "none", // 🔥 important
-      }}
-    />
-  </button>
-</IonButtons>
-            )}
+
           </IonToolbar>
         </IonHeader>
       ) : (
