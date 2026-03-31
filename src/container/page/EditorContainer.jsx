@@ -28,6 +28,7 @@ import { useDialog } from "../../domain/usecases/useDialog.jsx";
 import menu from "../../images/icons/menu.svg";
 import PicturePageForm from "../../components/page/PicturePageForm.jsx";
 import EditorDiv from "../../components/page/EditorDiv.jsx";
+import { motion, AnimatePresence } from "framer-motion";
 export default function EditorContainer({ presentingElement }) {
   const { id, type } = useParams();
   const dispatch = useDispatch();
@@ -73,7 +74,9 @@ export default function EditorContainer({ presentingElement }) {
 
   useEffect(() => {
   if (!editPage?.id) return;
+  
   if (currentProfile?.id && notText) {
+
     setIsSaved(false);
      handleChange("isSaved",false)
     debounce(() => {
@@ -124,6 +127,7 @@ export default function EditorContainer({ presentingElement }) {
   };
 const createPageAction = () => {
   if (!currentProfile?.id) return;
+ 
 const payload = {
   title: parameters.title,
   data: parameters.data,
@@ -149,105 +153,243 @@ const payload = {
   const handleChange = (key, value) => setParameters((prev) => ({ ...prev, [key]: value }));
 
   // ------------------ Top Bar ------------------
-  const topBar = () => (
-    <div className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200">
-      <div className="flex flex-row  gap-2 items-start sm:items-center">
-        {/* Title Input */}
-        <input
-          type="text"
-          className="p-2 w-full sm:w-[100%] text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
-          value={parameters.title}
-          onChange={(e) => handleChange("title", e.target.value)}
-          placeholder="Untitled"
-        />
+//   const topBar = () => (
+//     <div className="rounded-lg w-full flex sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200">
+//       <div className="flex flex-row  gap-2 items-start sm:items-center">
+//         {/* Title Input */}
+//         <input
+//           type="text"
+//           className="p-2 w-[100%] flex-1 sm:w-[100%] text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+//           value={parameters.title}
+//           onChange={(e) => handleChange("title", e.target.value)}
+//           placeholder="Untitled"
+//         />
 
 
-        {/* Menu Dropdown */}
-        <div className="dropdown dropdown-bottom dropdown-end">
-  <div tabIndex={0} role="button" className=" rounded-md ">
-    <img
-      className="w-[100%] h-[2.8rem] rounded-lg  mx-auto"
-      src={menu}
-   style={{backgroundColor:"#40906f",}}
-    />
-  </div>
-  <ul
-    tabIndex={0}
-    className="dropdown-content menu bg-white rounded-box shadow-lg z-[10] p-2"
-    style={{ minWidth: "12rem" }} // optional: make dropdown wider like old
-  >
-    <li
-      className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-      onClick={() => router.push(Paths.addStoryToCollection.story(id))}
-    >
-      Add to Collection
-    </li>
+//         {/* Menu Dropdown */}
+//         <div className="dropdown dropdown-bottom dropdown-end">
+//   <div tabIndex={0} role="button" className=" rounded-md ">
+//     <img
+//       className="w-[100%] h-[2.8rem] rounded-lg  mx-auto"
+//       src={menu}
+//    style={{backgroundColor:"#40906f",}}
+//     />
+//   </div>
+//   <ul
+//     tabIndex={0}
+//     className="dropdown-content menu bg-white rounded-box shadow-lg z-[10] p-2"
+//     style={{ minWidth: "12rem" }} // optional: make dropdown wider like old
+//   >
+//     <li
+//       className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+//       onClick={() => router.push(Paths.addStoryToCollection.story(id))}
+//     >
+//       Add to Collection
+//     </li>
 
-    <li
-      className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-      onClick={() => openFeedback(true)}
-    >
-      Get Feedback
-    </li>
+//     <li
+//       className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+//       onClick={() => openFeedback(true)}
+//     >
+//       Get Feedback
+//     </li>
 
-    {editPage && (
-      <li
-        className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-        onClick={() => router.push(Paths.page.createRoute(editPage.id))}
-      >
-        View
-      </li>
-    )}
+//     {editPage && (
+//       <li
+//         className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+//         onClick={() => router.push(Paths.page.createRoute(editPage.id))}
+//       >
+//         View
+//       </li>
+//     )}
 
-    {editPage && editPage.id ? (
-      parameters.isPrivate ? (
-        <li
-          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-          onClick={() => openFeedback(false)}
-        >
-          Share Now
-        </li>
-      ) : (
-        <li
-          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-          onClick={() => handleChange("isPrivate", true)}
-        >
-          Make Private
-        </li>
-      )
-    ) : null}
+//     {editPage && editPage.id ? (
+//       parameters.isPrivate ? (
+//         <li
+//           className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+//           onClick={() => openFeedback(false)}
+//         >
+//           Share Now
+//         </li>
+//       ) : (
+//         <li
+//           className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+//           onClick={() => handleChange("isPrivate", true)}
+//         >
+//           Make Private
+//         </li>
+//       )
+//     ) : null}
 
-    <li
-      className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-      onClick={() => setOpenHashtag(!openHashtag)}
-    >
-      {openHashtag ? "Close Hashtag" : "Add Hashtag"}
-    </li>
+//     <li
+//       className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+//       onClick={() => setOpenHashtag(!openHashtag)}
+//     >
+//       {openHashtag ? "Close Hashtag" : "Add Hashtag"}
+//     </li>
 
-    {editPage && (
-      <li
-        className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-        onClick={() => openRoleFormDialog(parameters.page)}
-      >
-        Manage Access
-      </li>
-    )}
+//     {editPage && (
+//       <li
+//         className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+//         onClick={() => openRoleFormDialog(parameters.page)}
+//       >
+//         Manage Access
+//       </li>
+//     )}
 
-    <li
-      className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-      onClick={openConfirmDeleteDialog}
-    >
-      Delete
-    </li>
-  </ul>
-</div>
+//     <li
+//       className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+//       onClick={openConfirmDeleteDialog}
+//     >
+//       Delete
+//     </li>
+//   </ul>
+// </div>
         
-      </div>
+//       </div>
 
-      {openHashtag && <HashtagForm item={parameters.page} type="story" />}
+//       {openHashtag && <HashtagForm item={parameters.page} type="story" />}
+//     </div>
+//   );
+ 
+function TopBarDropdown({
+  id,
+  editPage,
+  openFeedback,
+  parameters,
+  setOpenHashtag,
+  openHashtag,
+  openRoleFormDialog,
+  openConfirmDeleteDialog,
+}) {
+  const router = useIonRouter();
+
+  return (
+    <div className="dropdown dropdown-bottom dropdown-end flex-shrink-0">
+      <div tabIndex={0} role="button" className="rounded-md">
+        <img
+          className="w-[2.8rem] h-[2.8rem] rounded-lg"
+          src={menu}
+          style={{ backgroundColor: "#40906f" }}
+        />
+      </div>
+      <ul
+        tabIndex={0}
+        className="dropdown-content menu bg-white rounded-box shadow-lg z-[10] p-2"
+        style={{ minWidth: "12rem" }}
+      >
+        <li
+          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+          onClick={() => router.push(Paths.addStoryToCollection.story(id))}
+        >
+          Add to Collection
+        </li>
+
+        <li
+          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+          onClick={() => openFeedback(true)}
+        >
+          Get Feedback
+        </li>
+
+        {editPage && (
+          <li
+            className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+            onClick={() => router.push(Paths.page.createRoute(editPage.id))}
+          >
+            View
+          </li>
+        )}
+
+        {editPage && editPage.id ? (
+          parameters.isPrivate ? (
+            <li
+              className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+              onClick={() => openFeedback(false)}
+            >
+              Share Now
+            </li>
+          ) : (
+            <li
+              className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+              onClick={() => handleChange("isPrivate", true)}
+            >
+              Make Private
+            </li>
+          )
+        ) : null}
+
+        <li
+          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+          onClick={() => setOpenHashtag(!openHashtag)}
+        >
+          {openHashtag ? "Close Hashtag" : "Add Hashtag"}
+        </li>
+
+        {editPage && (
+          <li
+            className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+            onClick={() => openRoleFormDialog(parameters.page)}
+          >
+            Manage Access
+          </li>
+        )}
+
+        <li
+          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+          onClick={openConfirmDeleteDialog}
+        >
+          Delete
+        </li>
+      </ul>
     </div>
   );
+}
 
+
+
+const topBar = () => (
+  <div className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
+    {/* Top row: input + dropdown */}
+    <div className="flex flex-row gap-2 items-center w-full">
+      {/* Title Input */}
+      <input
+        type="text"
+        className="p-2 flex-grow text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+        value={parameters.title}
+        onChange={(e) => handleChange("title", e.target.value)}
+        placeholder="Untitled"
+      />
+
+      {/* Dropdown */}
+      <TopBarDropdown
+        id={id}
+        editPage={editPage}
+        openFeedback={openFeedback}
+        parameters={parameters}
+        setOpenHashtag={setOpenHashtag}
+        openHashtag={openHashtag}
+        openRoleFormDialog={openRoleFormDialog}
+        openConfirmDeleteDialog={openConfirmDeleteDialog}
+      />
+    </div>
+
+    {/* Hashtag Form (slide down) */}
+    <AnimatePresence>
+      {openHashtag && (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="overflow-hidden w-full"
+        >
+          <HashtagForm item={parameters.page} type="story" />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </div>
+);
 const openRoleFormDialog = (page) => {
   openDialog({
     ...dialog,

@@ -151,6 +151,46 @@ const [menuOpen, setMenuOpen] = useState(false);
     ),
   });
 };
+  const openDrafts = () => {
+  openDialog({
+    title: "Drafts",
+    scrollY: false,
+    breakpoint: 1,
+
+    disagree: () => resetDialog(),
+
+    text: (
+      <div className="h-[80vh] flex flex-col bg-cream">
+
+      
+        <div className="flex-1 overflow-y-auto px-4 pb-6">
+
+          <IonList
+            style={{
+              backgroundColor: Enviroment.palette.cream,
+            }}
+          >
+            {currentProfile.stories.filter(s=>s.status=="draft"||s.status=="fragment").map((story) => (
+              <li
+                key={story.id}
+                className="my-2"
+                onClick={() => {
+                  router.push(Paths.page.createRoute(story.id));
+                  resetDialog();
+                }}
+              >
+                <div className="p-4 w-full border border-soft rounded-xl bg-cream">
+                  <h4>{story.title.length>0?story.title:"Untitled"}</h4>
+                </div>
+              </li>
+            ))}
+          </IonList>
+
+        </div>
+      </div>
+    ),
+  });
+};
       const openCommunities=()=>{
         const communities = currentProfile.collections.filter(col=>col.type=="library")
    openDialog({
@@ -182,29 +222,62 @@ const [menuOpen, setMenuOpen] = useState(false);
      openDialog({
       title: "Pages",
     scrollY: false,
-    // breakpoint: 1,
-  
-      // disagreeText:"Close",
-      // disagree:resetDialog,
-      text: (<div className=''>
-                 <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}> 
-          <IonList 
-           style={{
-            backgroundColor: Enviroment.palette.cream,
-           
-          }}>
-          {currentProfile.stories.map(story=>{
-            return<li className=' my-2 bg-cream' onClick={()=>{
-              router.push(Paths.page.createRoute(story.id))
-              resetDialog()
-            }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story?.title?.length>0?story.title:"Untitled"}</h4></div></li>
-          })}
-          
-          </IonList>
+     height: 80, 
+     text: (
+  <div className="flex flex-col h-full">
+    
+    <div className="bg-cream overflow-y-auto flex-1">
+      <IonList
+        style={{
+          backgroundColor: Enviroment.palette.cream,
+        }}
+      >
+        {currentProfile.stories.map((story) => {
+          return (
+            <li
+              key={story.id}
+              className="my-2 bg-cream"
+              onClick={() => {
+                router.push(Paths.page.createRoute(story.id));
+                resetDialog();
+              }}
+            >
+              <div className="p-4 w-full border border-soft rounded-xl active:scale-[0.98] transition">
+                <h4>
+                  {story?.title?.length > 0 ? story.title : "Untitled"}
+                </h4>
+              </div>
+            </li>
+          );
+        })}
+      </IonList>
+    </div>
+
   </div>
+)})
+  //     text: ( <div className="flex flex-col h-full">
+    
+  //   <div className="bg-cream overflow-y-auto flex-1">
+   
+  //                {/* <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}>  */}
+  //         <IonList 
+  //          style={{
+  //           backgroundColor: Enviroment.palette.cream,
+           
+  //         }}>
+  //         {currentProfile.stories.map(story=>{
+  //           return<li className=' my-2 bg-cream' onClick={()=>{
+  //             router.push(Paths.page.createRoute(story.id))
+  //             resetDialog()
+  //           }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story?.title?.length>0?story.title:"Untitled"}</h4></div></li>
+  //         })}
+          
+  //         </IonList>
+  // </div>
         
-      </div>
-      )})}
+  //     </div>
+      // )
+  }
   useEffect(() => {
     if (currentProfile?.profileToCollections) {
       let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
@@ -407,9 +480,9 @@ const handleBack = () => {
       {/* NAV */}
       <div className="flex flex-col gap-5 text-[1.05rem] text-emerald-700">
         {[
-  { label: "Events", action: () => {router.push("/events")} },
+  { label: "Events", action: () => {router.push(Paths.calendar())} },
   { label: "Pages", action: () => {openPages()} },
-  { label: "Your drafts", action: () => {router.push("/drafts")} },
+  { label: "Your drafts", action: () => {openDrafts() }},
   { label: "Collections", action: () => {openCollections()} },
   { label: "Libraries", action: () => {openCommunities()} },
   { label: "Archives", action: () => {router.push(Paths.collection.createRoute(archiveCol.id))} },

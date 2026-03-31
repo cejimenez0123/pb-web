@@ -80,7 +80,7 @@ const openYourWorkshops=()=>{
     title: "Your Workshops",
   scrollY: false,
   breakpoint: 1,
-
+  height:90,
 
     disagree:()=>resetDialog(),
     text: (<div className=''>
@@ -112,11 +112,11 @@ const openCollections=()=>{
     title: "Collections",
   scrollY: false,
   breakpoint: 1,
-
+  height:90,
 
     disagree:()=>resetDialog(),
     text: (<div className=''>
-            <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}> 
+            {/* <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}>  */}
         <IonList 
          style={{
           backgroundColor: Enviroment.palette.cream,
@@ -132,7 +132,7 @@ const openCollections=()=>{
    
         </IonList>
 
-           </div>
+           {/* </div> */}
     </div>
     )})}
     const openCommunities=()=>{
@@ -141,11 +141,11 @@ const openCollections=()=>{
     title: "Communities",
   scrollY: false,
   breakpoint: 1,
-
+  height:90,
 
     disagree:()=>resetDialog(),
     text: (<div className=''>
-        <div className={`bg-cream overflow-y-scroll ${isNative? "h-[35rem]":"h-[30rem]"}`}> 
+        {/* <div className={`bg-cream overflow-y-scroll ${isNative? "h-[35rem]":"h-[30rem]"}`}>  */}
   
         <IonList style={{backgroundColor:Enviroment.palette.cream}}>
         
@@ -160,18 +160,16 @@ const openCollections=()=>{
         </IonList>
     </div>
       
-    </div>
+    // </div>
     )})}
 const openPages=()=>{
    openDialog({
     title: "Pages",
   scrollY: false,
-  // breakpoint: 1,
-
-    // disagreeText:"Close",
-    // disagree:resetDialog,
+  height:90,
+ 
     text: (<div className=''>
-               <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}> 
+               
         <IonList 
          style={{
           backgroundColor: Enviroment.palette.cream,
@@ -185,7 +183,7 @@ const openPages=()=>{
         })}
         
         </IonList>
-</div>
+
       
     </div>
     )})}

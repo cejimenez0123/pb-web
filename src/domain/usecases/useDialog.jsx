@@ -12,6 +12,7 @@ export const useDialog = () => {
       scrollY:false,
       title: data.title ?? null,
       text: data.text ?? null,
+      height: data.height ?? "80",
       agree: data.agree ?? null,
       agreeText: data.agreeText ?? null,
       disagree:data.disagree??closeDialog,
