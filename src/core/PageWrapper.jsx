@@ -23,7 +23,7 @@ import menu from "../images/icons/menu.svg";
 import { Capacitor } from '@capacitor/core';
 import { useSelector } from 'react-redux';
 import { useDialog } from '../domain/usecases/useDialog';
-
+import ReferralForm from '../components/auth/ReferralForm'
 const PageWrapper = ({
   children,
   showHeader = true,
@@ -68,7 +68,7 @@ const [menuOpen, setMenuOpen] = useState(false);
             return<li className=' my-2 bg-cream' onClick={()=>{
               router.push(Paths.collection.createRoute(workshop.id))
               resetDialog()
-            }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{workshop.title}</h4></div></li>
+            }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h6>{workshop.title}</h6></div></li>
           })}
         
           </IonList>
@@ -78,34 +78,7 @@ const [menuOpen, setMenuOpen] = useState(false);
       )})
     
   }
-  // const openCollections=()=>{
-  //  openDialog({
-  //     title: "Collections",
-  //   scrollY: false,
-  //   breakpoint: 1,
-  
-  
-  //     disagree:()=>resetDialog(),
-  //     text: (<div className=''>
-  //             <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}> 
-  //         <IonList 
-  //          style={{
-  //           backgroundColor: Enviroment.palette.cream,
-           
-  //         }}>
-           
-  //         {currentProfile.collections.map(story=>{
-  //           return<li className=' my-2 bg-cream' onClick={()=>{
-  //             router.push(Paths.collection.createRoute(story.id))
-  //             resetDialog()
-  //           }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title}</h4></div></li>
-  //         })}
-     
-  //         </IonList>
-  
-  //            </div>
-  //     </div>
-  //     )})}
+
   const openCollections = () => {
   openDialog({
     title: "Collections",
@@ -140,7 +113,7 @@ const [menuOpen, setMenuOpen] = useState(false);
                 }}
               >
                 <div className="p-4 w-full border border-soft rounded-xl bg-cream">
-                  <h4>{story.title}</h4>
+                  <h6>{story.title}</h6>
                 </div>
               </li>
             ))}
@@ -180,7 +153,7 @@ const [menuOpen, setMenuOpen] = useState(false);
                 }}
               >
                 <div className="p-4 w-full border border-soft rounded-xl bg-cream">
-                  <h4>{story.title.length>0?story.title:"Untitled"}</h4>
+                  <h6>{story.title.length>0?story.title:"Untitled"}</h6>
                 </div>
               </li>
             ))}
@@ -209,8 +182,8 @@ const [menuOpen, setMenuOpen] = useState(false);
             return<li className=' my-2 bg-cream' onClick={()=>{
               router.push(Paths.collection.createRoute(story.id))
               resetDialog()
-            }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story.title.length?story.title:
-          "Untitled"}</h4></div></li>
+            }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h6>{story.title.length?story.title:
+          "Untitled"}</h6></div></li>
           })}
       
           </IonList>
@@ -243,9 +216,9 @@ const [menuOpen, setMenuOpen] = useState(false);
               }}
             >
               <div className="p-4 w-full border border-soft rounded-xl active:scale-[0.98] transition">
-                <h4>
+                <h6>
                   {story?.title?.length > 0 ? story.title : "Untitled"}
-                </h4>
+                </h6>
               </div>
             </li>
           );
@@ -255,28 +228,23 @@ const [menuOpen, setMenuOpen] = useState(false);
 
   </div>
 )})
-  //     text: ( <div className="flex flex-col h-full">
+
+  }
+   const openReferral=()=>{
+     openDialog({
+      title: "Referral",
+    scrollY: false,
+     height: 80, 
+     text: (
+  <div className="flex flex-col h-full">
     
-  //   <div className="bg-cream overflow-y-auto flex-1">
-   
-  //                {/* <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}>  */}
-  //         <IonList 
-  //          style={{
-  //           backgroundColor: Enviroment.palette.cream,
-           
-  //         }}>
-  //         {currentProfile.stories.map(story=>{
-  //           return<li className=' my-2 bg-cream' onClick={()=>{
-  //             router.push(Paths.page.createRoute(story.id))
-  //             resetDialog()
-  //           }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4>{story?.title?.length>0?story.title:"Untitled"}</h4></div></li>
-  //         })}
-          
-  //         </IonList>
-  // </div>
-        
-  //     </div>
-      // )
+    <div className="bg-cream overflow-y-auto flex-1">
+     <ReferralForm />
+    </div>
+
+  </div>
+)})
+
   }
   useEffect(() => {
     if (currentProfile?.profileToCollections) {
@@ -439,7 +407,8 @@ const handleBack = () => {
   {/* DRAWER */}
   <div
     className={`
-      absolute left-0 top-0 h-full w-[85%] max-w-[22em]
+      overflow-y-scroll pb-24
+      absolute left-0 top-0 h-[100dvh] w-[85%] max-w-[22em]
       bg-[#f8f6f1] shadow-xl rounded-r-3xl
       transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
       ${menuOpen ? "translate-x-0" : "-translate-x-full"}
@@ -449,13 +418,13 @@ const handleBack = () => {
 
       {/* PROFILE */}
       <div className="flex items-center gap-3 mb-8">
-        <IonImg
+        {/* <IonImg
           src="/profile.jpg"
           className="w-14 h-14 rounded-md object-cover"
-        />
-        <div>
+        /> */}
+        <div className='pt-12'>
           <p className="text-sm text-gray-500">Welcome back</p>
-          <p className="text-lg font-semibold">Plumbum</p>
+          <p className="text-lg font-semibold">{currentProfile?.username}</p>
         </div>
       </div>
 
@@ -491,9 +460,11 @@ const handleBack = () => {
 
       {/* FOOTER */}
       <div className="flex flex-col gap-4 text-emerald-700">
-        <button onClick={() => setMenuOpen(false)}>Refer a friend 🥰</button>
-        <button onClick={() => setMenuOpen(false)}>Report a bug</button>
-        <button onClick={() => setMenuOpen(false)}>Settings ⚙️</button>
+        <button onClick={() =>{ 
+          openReferral()
+           setMenuOpen(false)}}>Refer a friend 🥰</button>
+        <button onClick={() => router.push(Paths.feedback())}>Report a bug</button>
+        <button onClick={() => router.push(Paths.editProfile)}>Settings ⚙️</button>
       </div>
 
     </div>

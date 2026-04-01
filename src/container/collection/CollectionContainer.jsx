@@ -37,6 +37,7 @@ import {
   fetchCollection,
   fetchCollectionProtected,
 } from "../../actions/CollectionActions";
+
 import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions";
 import Role from "../../domain/models/role";
 import { RoleType } from "../../core/constants";
@@ -66,7 +67,7 @@ export default function CollectionContainer() {
 
 
   const collections = useSelector(state => state.books.collections);
-
+const [permissionsLoading, setPermissionsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isArchived, setIsArchived] = useState(false);
@@ -95,71 +96,100 @@ export default function CollectionContainer() {
       `A curated collection by ${collection.profile?.displayName || "a creator"}`,
   });
 }, [collection]);
-  function findRole(col,profile) {
+useEffect(() => {
+  if (!collection || !homeCol || !archiveCol) return;
 
+  // Bookmark
+  const foundInHome = collection.parentCollections?.find(
+    (ptc) => ptc.parentCollectionId === homeCol.id
+  );
+  setIsBookmarked(foundInHome || null);
 
-    if ((col&& profile) && col.profileId == profile.id) {
-      setRole(new Role("owner", profile, col, RoleType.editor, new Date()));
-      setCanUserAdd(true)
-      setCanUserSee(true)
-      return;
-    }
+  // Archive
+  const foundInArchive = collection.parentCollections?.find(
+    (ptc) => ptc.parentCollectionId === archiveCol.id
+  );
+  setIsArchived(foundInArchive || null);
 
+  setBookmarkLoading(false);
+}, [collection, homeCol, archiveCol]);
+function computePermissions(collection, profile) {
+  // Default state
+  let canSee = false;
+  let canAdd = false;
+  let canEdit = false;
+  let role = null;
 
-    if (col && profile && col.roles) {
-      let foundRole = col.roles.find(role => role.profileId === profile.id);
-      if (foundRole) {
-        setRole(new Role(foundRole.id, profile, col, foundRole.role, foundRole.created));
-        setCanUserSee(true);
-       
-      if(writeArr.includes(foundRole.role)){
-setCanUserAdd(true)
-       setCanUserSee(true)
-       return
-  }}}
-   if(!col.isPrivate){
-setCanUserSee(true)
-return
-}
-}
-  
-  function soUserCanAdd() {
-    if (!currentProfile || !collection) {
-      setCanUserAdd(false);
-      return;
-    }
-    if (collection.isOpenCollaboration) {
-      setCanUserAdd(true);
-      return;
-    }
-    if (collection.roles) {
-      let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-      if (found && writeArr.includes(found.role)) {
-        setCanUserAdd(true);
-        return;
-      }
-    }
-    setCanUserAdd(false);
+  if (!collection) {
+    return { canSee, canAdd, canEdit, role };
   }
-  
-  function soUserCanEdit() {
-    if (!currentProfile || !collection) {
-      setCanUserEdit(false);
-      return;
-    }
-    if (collection.roles) {
-      let found = collection.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-     
-      if (found && (found.role === RoleType.editor)||collection.profileId==currentProfile.id) {
-        setCanUserEdit(true);
-        return;
-      }
-    }
-
+  if(collection && !profile&& collection.isPrivate==true){
+    canSee=false
   }
-  
- 
-  
+  // ------------------ OWNER ------------------
+  if (profile && collection.profileId === profile.id) {
+    role = new Role("owner", profile, collection, RoleType.editor, new Date());
+
+    return {
+      canSee: true,
+      canAdd: true,
+      canEdit: true,
+      role,
+    };
+  }
+
+  // ------------------ ROLE-BASED ------------------
+  let foundRole = null;
+
+  if (profile && collection.roles?.length) {
+    foundRole = collection.roles.find(
+      (r) => r?.profileId === profile.id
+    );
+
+    if (foundRole) {
+      role = new Role(
+        foundRole.id,
+        profile,
+        collection,
+        foundRole.role,
+        foundRole.created
+      );
+
+      // Can always see if they have a role
+      canSee = true;
+
+      // Write permissions
+      if (writeArr.includes(foundRole.role)||collection.isOpenCollaboration) {
+        canAdd = true;
+      }
+
+      // Edit permissions
+      if (foundRole.role === RoleType.editor) {
+        canEdit = true;
+      }
+
+      return { canSee, canAdd, canEdit, role };
+    }
+  }
+
+  // ------------------ OPEN COLLAB ------------------
+  if (collection.isOpenCollaboration) {
+    canAdd = true;
+  }
+
+  // ------------------ PUBLIC ACCESS ------------------
+  if (!collection.isPrivate) {
+    canSee = true;
+  }
+
+  // ------------------ FINAL RETURN ------------------
+  return {
+    canSee,
+    canAdd,
+    canEdit,
+    role,
+  };
+}
 
   useLayoutEffect(() => {
     if (currentProfile?.profileToCollections) {
@@ -176,11 +206,20 @@ useEffect(() => {
   
 }, [id,currentProfile]); 
 
-  useEffect(()=>{
-    collection && currentProfile && findRole(collection,currentProfile)
-    soUserCanEdit()
- 
-  },[currentProfile,collection])
+ useEffect(() => {
+  if (!collection) return;
+
+  setPermissionsLoading(true);
+
+  const perms = computePermissions(collection, currentProfile);
+
+  setCanUserAdd(perms.canAdd);
+  setCanUserEdit(perms.canEdit);
+  setCanUserSee(perms.canSee);
+  setRole(perms.role);
+
+  setPermissionsLoading(false);
+}, [collection, currentProfile]);
   
   function checkFound() {
     if (collection && homeCol && collection.parentCollections) {
@@ -212,7 +251,7 @@ useEffect(() => {
           
             setRole({role:"commenter"})
           setSuccess("You are now following this collection");
-          findRole(collection,currentProfile)
+          computePermissions(collection,currentProfile)
         }, err => {
           console.log(err)
           setError(err.message);
@@ -238,9 +277,10 @@ const getCol = async (id) => {
             (payload) => {
                
               setLoading(false);
-              soUserCanEdit()
+     
+              computePermissions(payload.collection,currentProfile)
               dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
-              setCanUserSee(true)
+            
              
        
             },
@@ -248,13 +288,11 @@ const getCol = async (id) => {
              setLoading(false);
               
               if (err.status === 403) {
-           console.log(err)
+       
                 setError("Access Denied: You do not have permission to view this collection.");
-                setCanUserSee(false);
-                soUserCanAdd()
-                soUserCanEdit()
+               
               } else {
-                         console.log(err)
+                     
                 setError(err.message || "Failed to load collection.");
               }
               setLoading(false);
@@ -276,10 +314,10 @@ const getCol = async (id) => {
              
                setLoading(false);
               if (payload.collection) {
-                soUserCanEdit()
+        
                 dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
                 setCanUserSee(true)
-                // setLoading(false);
+                //
               
               } 
             },
@@ -442,22 +480,41 @@ const getCol = async (id) => {
   };
 
   // Metadata
- 
-const FollowBtn=()=>     {return!role ? (
-                <div onClick={handleFollow} className="btn flex-1 bg-transparent rounded-full border-2 px-4 px-2 border-emerald-300">
-                <IonText  fill="outline" >
-                  Join Community
-                </IonText>
-                </div>
-              ) : (
-                <div
-                onClick={deleteFollow}
-                className="btn rounded-full flex-1 bg-transparent  border-3 border-blueSea">
-                <IonText fill="solid" >
-               Following
-                </IonText>
-                </div>
-              )}
+ const FollowBtn = () => {
+  const baseClasses =
+    "flex-1 h-12 rounded-full px-4 flex items-center justify-center transition-all duration-150";
+
+  return !role ? (
+    <button
+      onClick={handleFollow}
+      className={`${baseClasses} bg-transparent border-2 border-emerald-300 hover:bg-emerald-50`}
+    >
+      <IonText>Join Community</IonText>
+    </button>
+  ) : (
+    <button
+      onClick={deleteFollow}
+      className={`${baseClasses} bg-transparent border-2 border-blueSea hover:bg-blue-50`}
+    >
+      <IonText>Following</IonText>
+    </button>
+  );
+};
+// const FollowBtn=()=>     {return!role ? (
+//                 <div onClick={handleFollow} className="btn flex-1 bg-transparent rounded-full border-2 px-4 px-2 border-emerald-300">
+//                 <IonText  fill="outline" >
+//                   Join Community
+//                 </IonText>
+//                 </div>
+//               ) : (
+//                 <div
+//                 onClick={deleteFollow}
+//                 className="btn rounded-full flex-1 bg-transparent  border-3 border-blueSea">
+//                 <IonText fill="solid" >
+//                Following
+//                 </IonText>
+//                 </div>
+//               )}
     const SaveBtn=()=> {return<div
               className="p-2"
                 onClick={() => handleBookmark()}
@@ -476,29 +533,57 @@ const FollowBtn=()=>     {return!role ? (
                 <IonImg  style={{height:"2.5em",width:"2.5em",filter:"invert(100%)"}}  className=" my-auto mx-auto" src={archive} />
                 {bookmarkLoading && <IonSpinner name="dots" />}
               </div>}
-const EditBtn=()=>{
+// const EditBtn=()=>{
    
-  return canUserEdit?<div 
-      className={` border border-soft border-2 bg-soft rounded-full w-[3rem] my-auto h-[3rem]  p-2  rounded-full  `}
-             onClick={()=>router.push(Paths.editCollection.createRoute(id))}>
-        <IonImg   style={{height:"2.5em",width:"2.5em",filter:"invert(100%)"}} className="pb-1" src={edit}/></div>
-:null
-}
+//   return canUserEdit?<div 
+//       className={` border border-soft border-2 bg-soft rounded-full w-[3rem] my-auto h-[3rem]  p-2  rounded-full  `}
+//              onClick={()=>router.push(Paths.editCollection.createRoute(id))}>
+//         <IonImg   style={{height:"2.5em",width:"2.5em",filter:"invert(100%)"}} className="pb-1" src={edit}/></div>
+// :null
+// }
 
-  if (loading||collection?.id!=id) {
-    return (
-      <IonContent>
-<div>
+//   if (loading||collection?.id!=id) {
+//     return (
+//       <IonContent>
+// <div>
        
-        <div className="ion-padding max-w-[50em] mx-auto">
-          <IonSkeletonText animated style={{ width: '100%', height: 150, margin: "2rem auto", borderRadius: 18 }} />
-          <IonSkeletonText animated style={{ width: '100%', height: 400, margin: "2rem auto", borderRadius: 18 }} />
-        </div>
-      </div>
-      </IonContent>
-    );
-  }
+//         <div className="ion-padding max-w-[50em] mx-auto">
+//           <IonSkeletonText animated style={{ width: '100%', height: 150, margin: "2rem auto", borderRadius: 18 }} />
+//           <IonSkeletonText animated style={{ width: '100%', height: 400, margin: "2rem auto", borderRadius: 18 }} />
+//         </div>
+//       </div>
+//       </IonContent>
+//     );
+//   }
+const EditButton = ({ canUserEdit, loading, id, router }) => {
+  const isDisabled = loading || !canUserEdit;
 
+  return (
+    <div
+      onClick={() => {
+        if (isDisabled) return;
+        router.push(Paths.editCollection.createRoute(id));
+      }}
+      className={`
+        w-[3rem] h-[3rem] my-auto p-2 rounded-full border-2 transition-all duration-200 flex items-center justify-center
+        
+        ${isDisabled
+          ? "bg-gray-100 border-gray-200 opacity-40 pointer-events-none"
+          : "bg-soft border-soft cursor-pointer active:scale-95"}
+      `}
+    >
+      <IonImg
+        src={edit}
+        style={{
+          height: "2.2em",
+          width: "2.2em",
+          filter: "invert(100%)",
+          opacity: isDisabled ? 0.6 : 1,
+        }}
+      />
+    </div>
+  );
+};
   if (!canUserSee) {
   return (
     <IonContent fullscreen>
@@ -515,157 +600,274 @@ const EditBtn=()=>{
     </IonContent>
   );
 }
-  // Main content UI
-  return (
-         <ErrorBoundary>
+
+const AddButton=({disabled, loading})=>{
+  // return     canUserAdd && <div 
+
+  return <div className={`mt-4 rounded-full w-[100%] transition-all duration-200 ${canUserAdd 
+      ? `bg-white shadow-sm border border-soft cursor-pointer opacity-100` 
+      : `bg-gray-100 border border-gray-200 opacity-50 cursor-not-allowed`}`}>
+  <button onClick={(e) => {
+    if (!canUserAdd) return;
+    e.stopPropagation();
+    router.push(Paths.addToCollection.createRoute(collection.id));
+  }} className="w-[100%] rounded-full bg-soft text-white py-3">
+    Add to Collection
+  </button>
+</div>
+ 
+ 
+}
+
+return (
+  <ErrorBoundary>
+    <IonContent
+      style={{ "--background": "#f8f6f1" }}
+      scrollY={true}
+      fullscreen
+      className="pb-24 pt-12"
+    >
+      <div className="pt-8 mx-auto w-full max-w-[50em] px-4 sm:px-6">
+
+        {/* Collection Container */}
+        {/* <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6"> */}
+
+          {/* Collection Title */}
+          <div>
+            <IonText className="lora-bold">
+              <h1 className="text-[1.6rem]  sm:text-2xl ">{collection?.title}</h1>
+            </IonText>
+          </div>
+
+          {/* Collection Purpose */}
+          {collection?.purpose && (
+            <p className="text-gray-600 text-sm sm:text-base">
+              {collection.purpose}
+            </p>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+
+            {/* Follow / Join Button */}
+            <div className="my-4 flex-1  min-w-[10rem] h-12 rounded-full  flex items-center justify-center transition">
+            <FollowBtn />
+</div>
+            {/* Dropdown for Other Actions */}
+            <div className="dropdown dropdown-end ">
+              <label tabIndex={0} className="btn h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2">
+                <div className="flex flex-row ">
+                <p>Actions</p>
+                <svg className="max=w-4 max-h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path>
+                </svg>
+                </div>
+              </label>
+              
+              <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-cream rounded-box w-40">
+                <li>
+                  <button onClick={() => handleBookmark()} className="flex items-center gap-2">
+                    {isBookmarked ? "Remove Bookmark" : "Bookmark"}
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleArchive()} className="flex items-center gap-2">
+                    {isArchived ? "Remove Archive" : "Archive"}
+                  </button>
+                </li>
+                {canUserEdit && collection?.id && (
+                  <li>
+                    <button onClick={() => router.push(Paths.editCollection.createRoute(collection.id))} className="flex items-center gap-2">
+                      Edit
+                    </button>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+
+          {/* Add to Collection */}
+          <AddButton
+            disabled={!canUserAdd}
+            loading={permissionsLoading}
+            className=" h-12 rounded-ful w-[100%]  bg-soft text-white hover:bg-gray-800 transition"
+          />
+
+          {/* Tabs */}
+          <div className="mt-4">
+            <CollectionTabs
+              tab={tab}
+              setTab={setTab}
+              pages={<PageTab collections={collections} />}
+              members={<MemberTab collection={collection} />}
+              about={<AboutTab collection={collection} />}
+            />
+          </div>
+        </div>
+
+        {/* Explore List */}
+        <div className="mt-6">
+          <ExploreList collection={collection} />
+        </div>
+      {/* </div> */}
+    </IonContent>
+  </ErrorBoundary>
+);
+//   return (
+//          <ErrorBoundary>
 
 
 
 
 
-  <IonContent style={{"--background":"#f8f6f1"}} scrollY={true} fullscreen className="pb-24 pt-12">
+//   <IonContent style={{"--background":"#f8f6f1"}} scrollY={true} fullscreen className="pb-24 pt-12">
 
-    {/* <div className=""> */}
+//     {/* <div className=""> */}
         
-    <div className="pt-8  mx-auto" >
+//     <div className="pt-8  mx-auto" >
  
       
           
           
-        <IonCardContent style={{maxWidth:"50em",margin:"auto"}}className="ion-padding">
-         <div> <IonText className="lora-bold"><h1>{collection?.title}</h1></IonText>
+//         <IonCardContent style={{maxWidth:"50em",margin:"auto"}}className="ion-padding">
+//          <div> <IonText className="lora-bold"><h1>{collection?.title}</h1></IonText>
         
-</div>
-            <IonText color="medium w-full bg-emerald-100 min-h-6 bg-red-200">
-              <h6>{collection.purpose}</h6>
-            </IonText>
-            <div className="my-4 p-4 flex flex-row gap-4">
-      <FollowBtn/>       <SaveBtn/><ArchiveBtn/> 
-<EditBtn/>
-      </div>
-      {canUserAdd && <div 
-        onClick={(e) => {
-    e.stopPropagation();
+// </div>
+//             <IonText color="medium w-full bg-emerald-100 min-h-6 bg-red-200">
+//               <h6>{collection.purpose}</h6>
+//             </IonText>
+//             <div className="flex items-center justify-between px-2">
+//   <FollowBtn />   
 
-    if (!collection || !collection.id) return;
-
-    router.push(Paths.addToCollection.createRoute(collection.id));
-  }}
-      className="p-4 w-[100%] text-center shadow-sm border border-1 border-soft my-4 rounded-full">
-                  <h5 className="mx-auto">Add to Collection</h5>
-      </div>}
-      <CollectionTabs tab={tab} setTab={setTab} pages={<PageTab collections={collections}/>}
-                      members={<MemberTab collection={collection}/>}
-                      about={<AboutTab collection={collection}/>}
-                      />
+//   <div className="flex gap-2">
+//     <SaveBtn/>
+//     {/* <IconBtn icon={bookmark} /> */}
+//     <ArchiveBtn/>
+//     <EditButton/>
+//   </div>
+// </div>
+//             {/* <div className="my-4 p-4 flex flex-row gap-4">
+//       <FollowBtn/>       <SaveBtn/><ArchiveBtn/> 
+// <EditButton canUserEdit={canUserEdit} loading={permissionsLoading} router={router} id={collection.id}/>
+//       </div> */}
+// <div className={`
+//   transition-opacity duration-200
+//   ${permissionsLoading ? "opacity-50 animate-pulse" : ""}
+// `}>
+//   <AddButton disabled={!canUserAdd} />
+// </div>
+//       <CollectionTabs tab={tab} setTab={setTab} pages={<PageTab collections={collections}/>}
+//                       members={<MemberTab collection={collection}/>}
+//                       about={<AboutTab collection={collection}/>}
+//                       />
    
-            <div className="ion-margin-top w-[100%] mx-auto py-4 flex items-center justify-around flex gap-2">
+//             <div className="ion-margin-top w-[100%] mx-auto py-4 flex items-center justify-around flex gap-2">
    
 
               
-            </div>
-          </IonCardContent>
-          </div>
+//             </div>
+//           </IonCardContent>
+//           </div>
 
 
-        <ExploreList collection={collection} />
+//         <ExploreList collection={collection} />
        
-</IonContent>
-        </ErrorBoundary>
-  );
+// </IonContent>
+//         </ErrorBoundary>
+//   );
 }
 
-function CollectionTabs({ tab, setTab, pages, members, about }) {
-  const variants = {
-    enter: (direction) => ({
-      x: direction === "pages" ? 20 : -20,
-      opacity: 0,
-      position: "absolute",
-      width: "100%", // ✅ FIXED (was 100vw)
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      position: "relative",
-      width: "100%", // ✅ FIXED
-    },
-    exit: (direction) => ({
-      x: direction === "pages" ? -20 : 20,
-      opacity: 0,
-      position: "absolute",
-      width: "100%", // ✅ FIXED
-    }),
-  };
+// function CollectionTabs({ tab, setTab, pages, members, about }) {
+//   const variants = {
+//     enter: (direction) => ({
+//       x: direction === "pages" ? 20 : -20,
+//       opacity: 0,
+//       position: "absolute",
+//       width: "100%", // ✅ FIXED (was 100vw)
+//     }),
+//     center: {
+//       x: 0,
+//       opacity: 1,
+//       position: "relative",
+//       width: "100%", // ✅ FIXED
+//     },
+//     exit: (direction) => ({
+//       x: direction === "pages" ? -20 : 20,
+//       opacity: 0,
+//       position: "absolute",
+//       width: "100%", // ✅ FIXED
+//     }),
+//   };
 
 
-  return (
-    <div className="sm:pt-12 bg-cream">
+//   return (
+//     <div className="sm:pt-12 bg-cream">
       
-      {/* Tabs */}
-      <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
-        <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] w-[100%]  lg:w-[30em] border-emerald-600">
+//       {/* Tabs */}
+//       <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
+//         <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] w-[100%]  lg:w-[30em] border-emerald-600">
           
-          <button
-            className={`px-4 py-2 transition-colors w-[33%] ${
-              tab === "pages"
-                ? "bg-emerald-700 text-white"
-                : "text-emerald-700 bg-transparent"
-            }`}
-            onClick={() => setTab("pages")}
-          >
-            Pages
-          </button>
+//           <button
+//             className={`px-4 py-2 transition-colors w-[33%] ${
+//               tab === "pages"
+//                 ? "bg-emerald-700 text-white"
+//                 : "text-emerald-700 bg-transparent"
+//             }`}
+//             onClick={() => setTab("pages")}
+//           >
+//             Pages
+//           </button>
 
-          <button
-            className={`px-4 py-2 transition-colors w-[33%] ${
-              tab === "members"
-                ? "bg-emerald-700 text-white"
-                : "text-emerald-700 bg-transparent"
-            }`}
-            onClick={() => setTab("members")}
-          >
-            Members
-          </button>
+//           <button
+//             className={`px-4 py-2 transition-colors w-[33%] ${
+//               tab === "members"
+//                 ? "bg-emerald-700 text-white"
+//                 : "text-emerald-700 bg-transparent"
+//             }`}
+//             onClick={() => setTab("members")}
+//           >
+//             Members
+//           </button>
 
-          <button
-            className={`px-4 py-2 transition-colors w-[33%] ${
-              tab === "about"
-                ? "bg-emerald-700 text-white"
-                : "text-emerald-700 bg-transparent"
-            }`}
-            onClick={() => setTab("about")}
-          >
-            About
-          </button>
-        </div>
-      </div>
+//           <button
+//             className={`px-4 py-2 transition-colors w-[33%] ${
+//               tab === "about"
+//                 ? "bg-emerald-700 text-white"
+//                 : "text-emerald-700 bg-transparent"
+//             }`}
+//             onClick={() => setTab("about")}
+//           >
+//             About
+//           </button>
+//         </div>
+//       </div>
 
-      {/* Content */}
-      <div className="bg-cream relative overflow-hidden" style={{ contain: "layout" }}>
-    {/* <AnimatePresence mode="wait" initial={false}> */}
-       <motion.div
-  // key={tab}
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ duration: 0.2 }}
+//       {/* Content */}
+//       <div className="bg-cream relative overflow-hidden" style={{ contain: "layout" }}>
+//     {/* <AnimatePresence mode="wait" initial={false}> */}
+//        <motion.div
+//   // key={tab}
+//   initial={{ opacity: 0 }}
+//   animate={{ opacity: 1 }}
+//   transition={{ duration: 0.2 }}
 
-            key={tab || "pages"} // ✅ SAFER KEY
-            // custom={tab}
-            variants={variants}
+//             key={tab || "pages"} // ✅ SAFER KEY
+//             // custom={tab}
+//             variants={variants}
    
-            exit="exit"
+//             exit="exit"
   
-            className="w-full"
-          >
-            {tab === "pages" && pages}
-            {tab === "members" && members}
-            {tab === "about" && about}
-          </motion.div>
-        {/* </AnimatePresence> */}
-      </div>
-    </div>
-  );
-}
+//             className="w-full"
+//           >
+//             {tab === "pages" && pages}
+//             {tab === "members" && members}
+//             {tab === "about" && about}
+//           </motion.div>
+//         {/* </AnimatePresence> */}
+//       </div>
+//     </div>
+//   );
+// }
 
 const PageTab = ({ collections }) => {
     const currentProfile = useSelector(state => state.users.currentProfile);
@@ -814,13 +1016,11 @@ const AboutTab = ({ collection}) => {
 
 
   return (
-    <div className="space-y-6">
-    <div>
-        <p className="text-sm text-gray-700 leading-relaxed">
-          <p className="text-xs text-gray-400 uppercase">Purpose</p>
-          {  collection.purpose}
-        </p>
-        </div>
+    <div className="mt-4">
+    <p className="text-xs text-gray-400 uppercase font-medium lora-medium">Purpose</p>
+<p className="text-sm text-gray-700 mt-1 leading-relaxed font-sans">
+  {collection.purpose}
+</p>
 
   
         <div>
@@ -873,6 +1073,44 @@ const AboutTab = ({ collection}) => {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+
+// // Tabs
+function CollectionTabs({ tab, setTab, pages, members, about }) {
+  return (
+    <div className="bg-cream pt-6 sm:pt-12">
+      <div className="flex justify-center lg:justify-start lg:mx-12 mb-4">
+        <div className="flex rounded-full border overflow-hidden w-full sm:w-[40em] lg:w-[30em] border-emerald-600">
+          {["pages", "members", "about"].map((t) => (
+            <button
+              key={t}
+              className={`flex-1 py-2 px-4 font-semibold text-sm transition-colors ${
+                tab === t ? "bg-emerald-700 text-white" : "bg-transparent text-emerald-700 hover:bg-emerald-50"
+              }`}
+              onClick={() => setTab(t)}
+            >
+              {t.charAt(0).toUpperCase() + t.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="relative overflow-hidden bg-cream">
+        <motion.div
+          key={tab}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="w-full"
+        >
+          {tab === "pages" && pages}
+          {tab === "members" && members}
+          {tab === "about" && about}
+        </motion.div>
+      </div>
     </div>
   );
 }

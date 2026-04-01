@@ -49,7 +49,7 @@ function ProfileCircle({profile, color="white", fontSize="", includeUsername=tru
             ? null
             : profile.username.length > 9
               ? profile.username.toLowerCase().slice(0, 9) + "..."
-              : profile.username}
+              : profile.username.toLowerCase()}
         </IonText>
       </span>
     </span>

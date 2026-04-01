@@ -1,12 +1,8 @@
 
+
 import { useState } from "react";
 import {
-  IonInput,
-
   IonLabel,
-
-  IonText,
-
   IonNote,
   useIonRouter,
 } from "@ionic/react";
@@ -23,32 +19,42 @@ import "../../App.css";
 import checkResult from "../../core/checkResult";
 import { useDialog } from "../../domain/usecases/useDialog";
 
-export default function CreateCollectionForm({ initPages,onClose, create }) {
+export default function CreateCollectionForm({ initPages, onClose }) {
   const dispatch = useDispatch();
-  const router = useIonRouter()
+  const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  // const dialog = useSelector((state) => state.users.dialog);
-const {openDialog,closeDialog,dialog}=useDialog()
-  // --- form state
+  const { openDialog, dialog } = useDialog();
+
   const [formData, setFormData] = useState({
     name: "",
     purpose: "",
     isPrivate: true,
     isOpenCollaboration: false,
   });
-
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // --- handle change
-  const handleChange = (key, value) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+  // --- handle input change
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // --- toggle boolean fields
+  const toggleField = (key) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
   };
 
   // --- handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (submitting) return; // prevent double clicks
+    if (submitting) return;
 
     const { name, purpose, isPrivate, isOpenCollaboration } = formData;
 
@@ -60,158 +66,142 @@ const {openDialog,closeDialog,dialog}=useDialog()
     setSubmitting(true);
     setError(null);
 
-    const params = {
-      title: name.trim()??"Untitled Collection",
-      purpose: purpose.trim()??"",
-      isPrivate,
-      profileId: currentProfile?.id,
-      isOpenCollaboration,
-    };
+    try {
+      const params = {
+        title: name.trim() || "Untitled Collection",
+        purpose: purpose.trim() || "",
+        isPrivate,
+        profileId: currentProfile?.id,
+        isOpenCollaboration,
+      };
 
-    const res = await dispatch(createCollection(params));
-    setSubmitting(false);
-    if (res?.payload?.collection) {
-      const collection = res.payload.collection;
-      dispatch(clearPagesInView());
-      initPages && initPages.length>0?  dispatch(addStoryListToCollection({id:collection.id,list:initPages,profile:currentProfile})).then(res=>{
-        checkResult(res,payload=>{
-          const {collection,stories} = payload
-          dispatch(setCollectionInView({collection}))
-          dispatch(setPagesInView({pages:stories}))
-          
-          // successfully added stories to collection
-        },err=>{
-          // failed to add stories to collection
-        })
-      }): dispatch(setCollectionInView({ collection }));
-      router.push(Paths.collection.createRoute(collection.id));
-      if (onClose) onClose();
+      console.log("FORM DATA", formData);
 
-      const updatedDialog = { ...dialog, isOpen: false };
-      openDialog(updatedDialog)
+      const res = await dispatch(createCollection(params));
 
-      // reset form
-      setFormData({
-        name: "",
-        purpose: "",
-        isPrivate: true,
-        isOpenCollaboration: false,
-      });
-    } else if (res?.payload?.error) {
-      setError(res.payload.error.message || "Failed to create collection.");
+      if (res?.payload?.collection) {
+        const collection = res.payload.collection;
+        dispatch(clearPagesInView());
+
+        if (initPages && initPages.length > 0) {
+          await dispatch(
+            addStoryListToCollection({
+              id: collection.id,
+              list: initPages,
+              profile: currentProfile,
+            })
+          ).then((res) =>
+            checkResult(
+              res,
+              ({ collection, stories }) => {
+                dispatch(setCollectionInView({ collection }));
+                dispatch(setPagesInView({ pages: stories }));
+              },
+              (err) => console.error("Error adding stories:", err)
+            )
+          );
+        } else {
+          dispatch(setCollectionInView({ collection }));
+        }
+
+        router.push(Paths.collection.createRoute(collection.id));
+        if (onClose) onClose();
+
+        // close dialog
+        openDialog({ ...dialog, isOpen: false });
+
+        // reset form
+        setFormData({
+          name: "",
+          purpose: "",
+          isPrivate: true,
+          isOpenCollaboration: false,
+        });
+      } else if (res?.payload?.error) {
+        setError(res.payload.error.message || "Failed to create collection.");
+      }
+    } catch (err) {
+      console.error("Error creating collection:", err);
+      setError(err.message || "Failed to create collection.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex  flex-col space-y-6">
-      {/* <IonItem lines="none" className="ion-padding-vertical"> */}
-        <IonLabel position="stacked text-blueSea">Collection Name</IonLabel>
-        <input type="text"
+    <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+      {/* Collection Name */}
+      <div className="flex flex-col space-y-1">
+        <IonLabel className="text-blueSea font-medium">Collection Name</IonLabel>
+        <input
+          type="text"
+          name="name"
           value={formData.name}
           placeholder="Enter collection name"
-          onChange={(e) => handleChange("name", e.currentTarget.value ?? "")}
-          
+          onChange={handleChange}
           required
-          className="rounded-lg border-blueSea bg-cream border-2 shadow-sm border-opacity-30 sm:w-full w-[100%] p-3 text-blueSea"
-   
+          className="rounded-lg border-blueSea bg-cream border-2 shadow-sm border-opacity-30 sm:w-full w-full p-3 text-blueSea"
         />
-  
+      </div>
 
-      <IonLabel
-        position="stacked"
-        className="text-blueSea font-medium  mb-1"
-      >
-        Purpose
-      </IonLabel>
-      <textarea
-        value={formData.purpose}
-        autoGrow
-        placeholder="What is this collection for?"
-        onChange={(e) => handleChange("purpose", e.currentTarget.value ?? "")}
-        className="rounded-lg border-blueSea border-2 bg-cream shadow-sm border-opacity-30 sm:w-full w-[100%] min-h-[6em] text-blueSea p-3"
-      />
+      {/* Purpose */}
+      <div className="flex flex-col space-y-1">
+        <IonLabel className="text-blueSea font-medium">Purpose</IonLabel>
+        <textarea
+          name="purpose"
+          value={formData.purpose}
+          placeholder="What is this collection for?"
+          onChange={handleChange}
+          className="rounded-lg border-blueSea border-2 bg-cream shadow-sm border-opacity-30 sm:w-full w-full min-h-[6em] text-blueSea p-3"
+        />
+      </div>
 
-  
-
-          {/* <div className="flex flex-row  text-left items-left ">
-          <InfoTooltip text="Collection will only be visible to you and those with roles" />
-          <span>Private</span>
-          <p className="mx-4">{formData.isPrivate ? "Yes" : "No"}</p>
+      {/* Private / Open Collaboration */}
+      <div className="flex flex-col space-y-3">
+        {/* Private */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <InfoTooltip text="Collection will only be visible to you and those with roles" />
+            <span className="text-emerald-800 font-medium">Private</span>
           </div>
-          <div 
-            onClick={() => handleChange("isPrivate", !formData.isPrivate)} 
-            className={`min-h-6  mx-8 shadow-md rounded-full max-w-6 ${formData.isPrivate ? "bg-blueSea bg-opacity-30":"bg-emerald-500"}`}/>
-      
+          <p
+            onClick={() => toggleField("isPrivate")}
+            className="bg-blueSea bg-opacity-50 px-4 py-1 rounded-full text-white font-medium cursor-pointer text-center min-w-[3rem]"
+          >
+            {formData.isPrivate ? "Yes" : "No"}
+          </p>
+        </div>
 
-    
- 
-        <div className="flex flex-row  items-left ">
-                   <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
-          <span>Open Collaboration</span>
-          <p className="mx-4">{formData.isOpenCollaboration ? "Yes" : "No"}</p>
-          </div> */}
-          <div className="flex min-h-[10em] flex-col gap-4"> {/* Container to separate the two rows */}
-  
+        {/* Open Collaboration */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
+            <span className="text-emerald-800 font-medium">Open Collaboration</span>
+          </div>
+          <p
+            onClick={() => toggleField("isOpenCollaboration")}
+            className="bg-blueSea bg-opacity-50 px-4 py-1 rounded-full text-white font-medium cursor-pointer text-center min-w-[3rem]"
+          >
+            {formData.isOpenCollaboration ? "Yes" : "No"}
+          </p>
+        </div>
+      </div>
 
-<div className="flex flex-row items-center py-2">
-  <div className="flex items-center">
-    <InfoTooltip text="Collection will only be visible to you and those with roles" />
-    <span className="ml-1 text-emerald-800">Private</span>
-  </div>
-  
-  <p  onClick={() => handleChange("isPrivate", !formData.isPrivate)}  className="mx-4 bg-blueSea bg-opacity-50 px-3 min-w-14 text-center rounded-full font-medium text-white">{formData.isPrivate ? "Yes" : "No"}</p>
-  
-  {/* The Switch - added flex-shrink-0 and fixed dimensions */}
-  {/* <div 
-   
-    className={`h-6 w-6 flex-shrink-0 cursor-pointer shadow-md rounded-full transition-all ${
-      formData.isPrivate ? "bg-blue-400 bg-opacity-50" : "bg-emerald-500"
-    }`}
-  /> */}
-</div>
-
-{/* Open Collaboration Row */}
-<div className="flex flex-row items-center py-2">
-  <div className="flex flex-row items-center">
-    <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
-    <span className="ml-1 text-emerald-800">Open Collaboration</span>
-  </div>
-  <p onClick={() => handleChange("isOpenCollaboration", !formData.isOpenCollaboration)} className="mx-4 bg-blueSea bg-opacity-50 px-3 min-w-14 rounded-full text-center  text-white font-medium ">{formData.isOpenCollaboration ? "Yes" : "No"}</p>
-  {/* <div  className={`min-h-6 shadow-md mx-8 rounded-full max-w-6 ${!formData.isOpenCollaboration ?   "bg-blueSea bg-opacity-30":"bg-emerald-500"}`}></div> */}
-
-    
-</div>
-  
-</div>
-
-
+      {/* Error */}
       {error && (
         <IonNote color="danger" className="text-sm font-medium">
           {error}
         </IonNote>
       )}
 
-      
-                <div type="submit"
-                
-              expand="block"
-onClick={handleSubmit}
-            //   className="bg-emerald-800 text-white rounded-full" 
-              className='rounded-full flex btn  btn shadow-sm px-4  border-blueSea border-1 bg-blueSea bg-opacity-90  text-center w-fit h-[3rem] text-[1rem] border-2'
-            >
-          <IonText
-            fill="outline"
-            color="white"
-            className=" my-auto mx-auto font-bold text-white text-[1rem]"
-            
-          >
-           {submitting ? "Creating..." : "Create"}
-          </IonText>
-         
-    
-        </div>
-  
-      {/* </IonButton> */}
+      {/* Submit */}
+      {/* <div
+        type="submit"
+        onClick={handleSubmit}
+        className="rounded-full flex justify-center items-center shadow-sm px-6 py-2 border-2 border-blueSea bg-blueSea bg-opacity-90 text-white font-bold text-[1rem] w-fit mx-auto"
+      >
+        {submitting ? "Creating..." : "Create"}
+      </div> */}
     </form>
   );
 }

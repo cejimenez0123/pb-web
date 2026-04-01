@@ -22,7 +22,7 @@ import Paths from '../core/paths'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
-import { setEditingPage, setHtmlContent, setPageInView } from '../actions/PageActions.jsx'
+import { setEditingPage, setHtmlContent, setPageInView, setPagesInView } from '../actions/PageActions.jsx'
 import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import Context from '../context.jsx'
@@ -33,6 +33,8 @@ import { Capacitor } from '@capacitor/core'
 import { PageType } from '../core/constants.js'
 import { useMediaQuery } from 'react-responsive'
 import { useDialog } from '../domain/usecases/useDialog.jsx'
+import { createCollection } from '../actions/CollectionActions.js'
+import submitCollection from '../core/submitCollection'
 const PageName = {
   home: "Home",
   about:"About",
@@ -98,29 +100,23 @@ return(
 
 }
 
+const navItem =
+  "flex-1 flex flex-col items-center justify-center bg-soft text-white active:scale-95 transition-transform";
 function MobileNavbar({currentProfile}){
 
-       
-return(
+   
+  return (
+    <div className="fixed bottom-0 w-[100%] bg-soft border-t border-white/10">
+      <div className="flex flex-row justify-between items-center px-2 py-2 max-w-md mx-auto">
+        <HomeButton />
+        <EventButton />
+        {currentProfile && <CreateButton />}
+        {currentProfile && <WorkshopButton />}
+        <ProfileButton currentProfile={currentProfile} />
+      </div>
+    </div>
+  );
 
-<div className="navbar fixed bottom-0 w-full flex-row flex justify-around bg-soft">
- <HomeButton/>
-  {/* <DiscoveryButton/> */}
-  
-
-
-  
-
-
-  <EventButton/>
-  {currentProfile && <CreateButton/>}
-  {currentProfile && <WorkshopButton/>}
-  {/* <SearchButton/> */}
-  <ProfileButton currentProfile={currentProfile}/>
-
-</div>
-
-)
 
 }
 function NavProfileDropdown({currentProfile}){
@@ -210,7 +206,7 @@ const router = useIonRouter()
 return (
   <div
     onClick={()=>router.push(Paths.about(),"forward","replace")}
-    className="flex flex-col"
+        className={navItem}
   >
     <IonImg
       src={home}
@@ -226,82 +222,78 @@ return (
 function EventButton(){
 
 const router = useIonRouter()
-
+const handleClick=()=>{
+()=>router.push(Paths.calendar(),"forward")
+}
 return (
-  <div
-    onClick={()=>router.push(Paths.calendar(),"forward","replace")}
-    className="flex flex-col"
-  >
-    <IonImg
-      src={calendar}
-      style={{width:"3em",height:"3em",filter:"invert(100%)"}}
-    />
-    <h6 className="text-white text-xs">Events</h6>
-  </div>
+  <button onClick={handleClick} className={navItem}>
+      <IonImg src={calendar} className="max-w-6 max-h-6 mb-1 invert " />
+      <span className="text-[11px]">Studio</span>
+    </button>
+ 
 )
 
 }
-// function HomeButton(){
 
-// const router = useIonRouter()
-// const currentProfile = useSelector(state=>state.users.currentProfile)
-// return (
-//   <div
-//     onClick={()=>currentProfile?router.push(Paths.home(),"forward","replace"):router.push(Paths.about(),"forward","replace")}
-//     className="flex flex-col"
-//   >
+
+
+// function HomeButton() {
+//   const router = useIonRouter();
+//   const currentProfile = useSelector((state) => state.users.currentProfile);
+
+//   // Memoized handler prevents re-creation every render
+//   const handleClick = useCallback(() => {
+//     if (currentProfile) {
+//       router.push(Paths.home, "forward"); // no replace
+//     } else {
+//       router.push(Paths.about(), "forward");
+//     }
+//   }, [currentProfile, router]);
+
+//   return (
+//     <button onClick={handleClick}  className={navItem}>
 //     <IonImg
 //       src={home}
-//       style={{width:"3em",height:"3em"}}
+//       style={{width:"3em",height:"3em",backgroundColor:Enviroment.palette.soft}}
 //     />
 //     <h6 className="text-white text-xs">Home</h6>
-//   </div>
-// )
-
+//     </button>
+//   );
 // }
-
-
 function HomeButton() {
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
 
-  // Memoized handler prevents re-creation every render
   const handleClick = useCallback(() => {
     if (currentProfile) {
-      router.push(Paths.home, "forward"); // no replace
+      router.push(Paths.home, "forward");
     } else {
       router.push(Paths.about(), "forward");
     }
   }, [currentProfile, router]);
 
   return (
-    <button onClick={handleClick}  className="flex flex-col bg-soft"  >
-    <IonImg
-      src={home}
-      style={{width:"3em",height:"3em",backgroundColor:Enviroment.palette.soft}}
-    />
-    <h6 className="text-white text-xs">Home</h6>
+    <button onClick={handleClick} className={navItem}>
+      <IonImg src={home} className="w-6 h-6 mb-1 " />
+      <span className="text-[11px]">Home</span>
     </button>
   );
 }
-
 function WorkshopButton(){
 
 const router = useIonRouter()
 const dispatch = useDispatch()
-
+const handleClick=()=>{
+  dispatch(setPageInView({page:null}))
+        router.push(Paths.workshop.reader(),"forward")
+}
 return (
-  <div className="flex flex-col"       onClick={()=>{
-        dispatch(setPageInView({page:null}))
-        router.push(Paths.workshop.reader(),"forward","replace")
-      }}>
-    <IonImg
-      src={hammer}
-      style={{width:"3em",height:"3em",filter:"invert(100%)"}}
 
-    />
-    <h6 className="text-white text-xs">Studio</h6>
-  </div>
+  <button onClick={handleClick} className={navItem}>
+      <IonImg src={hammer} className="max-w-6 max-h-6 mb-1 invert " />
+      <span className="text-[11px]">Studio</span>
+    </button>
+  
 )
 
 }
@@ -321,23 +313,43 @@ function ProfileButton({currentProfile}) {
   }, [currentProfile, router]);
 
   return (
-    <div className="flex flex-col" onClick={handle}>
-      <IonImg
-        style={{ width: "3em", height: "3em", filter: "invert(100%)" }}
-        src={person}
-      />
-      <h6 className="text-white text-xs">Profile</h6>
-    </div>
+    <button onClick={handle} className={navItem}>
+      <IonImg src={person} className="max-w-6 max-h-6 mb-1 invert " />
+      <span className="text-[11px]">Profile</span>
+    </button>
+ 
   );
 }
+
 
 function NavCreateDropdown({
 
   
 }) {
-const {resetDialog,openDialog,dialog}=useDialog()
-const dispatch = useDispatch()
-const router = useIonRouter()
+
+  const dispatch = useDispatch();
+  const router = useIonRouter();
+  const currentProfile = useSelector((state) => state.users.currentProfile);
+  const { openDialog } = useDialog();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    purpose: "",
+    isPrivate: true,
+    isOpenCollaboration: false,
+  });
+  const [submitting, setSubmitting] = useState(false);
+  // const [error, setError] = useState(null);
+    useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   const ClickWriteAStory = debounce(()=>{
      
       sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
@@ -364,7 +376,7 @@ const menuItems = [
     action:()=>{
       dispatch(setHtmlContent({html:""}))
       dispatch(setEditingPage({page:null}))
-      router.push(Paths.editor.image,"forward","replace")
+      router.push(Paths.editor.image,"forward")
     }
   },
   {
@@ -373,51 +385,51 @@ const menuItems = [
     action:()=>{
       dispatch(setHtmlContent({html:""}))
       dispatch(setEditingPage({page:null}))
-      router.push(Paths.editor.link,"forward","replace")
+      router.push(Paths.editor.link,"forward")
     }
   },
   {
     label:"Collection",
     action:()=>{
-      openDialog({
-        text:<CreateCollectionForm onClose={resetDialog}/>,
-        disagreeText:"Close",
-        breakpoint:1
-      })
+      
+      handleOpenCreateCollection({dispatch,router,currentProfile,submitCollection,formData,openDialog,setFormData:setFormData,setSubmitting,submitting,setError})
+  
     }
   }
 ]
 
 return(
 
-<li className="dropdown dropdown-bottom">
-
-<a role="button" className="text-white no-underline">
+ <li ref={dropdownRef} className="dropdown dropdown-bottom relative">
+      <a
+        role="button"
+        className="text-white no-underline"
+        onClick={() => setIsOpen((prev) => !prev)}
+      >
 Create
 </a>
 
-<ul className="dropdown-content bg-cream menu rounded-box w-52 p-2 shadow">
-
-{menuItems.map(item=>(
-<li key={item.label} onClick={item.action}>
-
-<a className="flex gap-2 items-center justify-center text-soft">
-
-{item.icon && (
-<IonImg
-src={item.icon}
-style={{width:"1.4rem",height:"1.4rem"}}
-/>
+{isOpen && (
+  <ul className="dropdown-content bg-cream menu rounded-box w-52 p-2 shadow">
+    {menuItems.map((item) => (
+      <li
+        key={item.label}
+    onClick={() => {
+    setIsOpen(false); // close dropdown immediately
+    // run action in next tick to ensure dropdown closes visually first
+    setTimeout(() => {
+      item.action();
+    }, 0);
+  }}
+      >
+        <a className="flex gap-2 items-center justify-center text-soft">
+          {item.icon && <IonImg src={item.icon} style={{ width: "1.4rem", height: "1.4rem" }} />}
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
 )}
-
-{item.label}
-
-</a>
-
-</li>
-))}
-
-</ul>
 
 </li>
 
@@ -471,21 +483,21 @@ function MenuHorizontal({ pages, currentProfile }) {
 }
 
 function CreateButton() {
-  const router = useIonRouter();
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const {openDialog,closeDialog,resetDialog}=useDialog()
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const router = useIonRouter();
+  const { openDialog } = useDialog();
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    purpose: "",
+    isPrivate: true,
+    isOpenCollaboration: false,
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [isOpen,setIsOpen]=useState(false)
+const {currentProfile }= useSelector(state=>state.users)
+
   const ClickWriteAStory = debounce(() => {
     if (currentProfile?.id) {
       sendGAEvent("Create", "Write a Story", "Click Write Story");
@@ -508,29 +520,26 @@ function CreateButton() {
       }));
     }
   }, 5);
-const {currentProfile }= useSelector(state=>state.users)
-  const handleNavigate = (type) => {
-    setOpen(false);
 
-    // You can customize routing per type
-    
+
+  const handleNavigate = (type) => {
+   
 
     switch (type) {
       case "write":
        ClickWriteAStory()
         break;
       case "image":
-        router.push(Paths.editor.image,"forward","replace");
+        router.push(Paths.editor.image,"forward");
         break;
       case "link":
-        router.push(Paths.editor.link,"forward","replace");
+        router.push(Paths.editor.link,"forward");
         break;
       case "collection":{
-     openDialog({
-        text:<CreateCollectionForm onClose={resetDialog}/>,
-        disagreeText:"Close",
-        breakpoint:1
-      })
+      
+             handleOpenCreateCollection({dispatch,submitCollection,initPages:[],router,currentProfile,formData,setFormData,openDialog,setSubmitting,submitting,setError})
+    
+
    }
         break;
       default:
@@ -539,31 +548,86 @@ const {currentProfile }= useSelector(state=>state.users)
   };
 
   return (
-    <div className="relative flex flex-col items-center" ref={dropdownRef}>
-      
-      {/* Dropdown ABOVE */}
-      {open && (
-        <div className="absolute bottom-full mb-2 w-36 bg-white rounded-xl shadow-lg py-2 z-50">
-          {["write", "image", "link", "collection"].map((item) => (
-            <button
-              key={item}
-              onClick={() => handleNavigate(item)}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 capitalize"
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-      )}
-<div     onClick={() => setOpen((prev) => !prev)}>
-      {/* Button */}
-      <IonImg
-        src={addCircle}
-        style={{ width: "3em", height: "3em", filter: "invert(100%)" }}
-    
-      />
+    // <>   
+    //     {isOpen && <div className="absolute bottom-full mb-2 w-36 bg-white rounded-xl shadow-lg py-2 z-50">
+    //       {["write", "image", "link", "collection"].map((item) => (
+    //         <button
+    //           key={item}
+    //           onClick={() => handleNavigate(item)}
+    //           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 capitalize"
+    //         >
+    //           {item}
+    //         </button>
+    //       ))}
+    //     </div>}
+    //   {/* )} */}
+    //  <button    onClick={() => setIsOpen((prev) => !prev)} className={navItem}>
+   
+    //   <IonImg src={addCircle} className="w-6 h-6 mb-1 invert" />
+    //   <span className="text-[11px]">Home</span>
+    // </button>
+    // </>
+<div
+  tabIndex={0} // make div focusable
+  onBlur={(e) => {
+    // Check if focus went outside this div
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setIsOpen(false);
+    }
+  }}
+  className="relative inline-block"
+>
+  <button
+    onClick={() => setIsOpen(prev => !prev)}
+    className={navItem}
+  >
+    <IonImg src={addCircle} className="w-6 h-6 mb-1 invert" />
+    <span className="text-[11px]">Home</span>
+  </button>
 
-      <h6 className="text-white text-xs">Create</h6>
-    </div></div>
+  {isOpen && (
+    <div className="absolute bottom-full mb-2 w-36 bg-white rounded-xl shadow-lg py-2 z-50">
+      {["write", "image", "link", "collection"].map((item) => (
+        <button
+          key={item}
+          onClick={() => handleNavigate(item)}
+          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 capitalize"
+        >
+          {item}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
   );
 }
+
+const handleOpenCreateCollection = ({initPages=[],submitCollection,dispatch,currentProfile,router,formData,setFormData,setSubmitting,openDialog,submitting,error,setError}) => {
+
+  openDialog({
+    text: (
+   <CreateCollectionForm
+  initPages={initPages}
+  formData={formData}      // <-- live state
+  setFormData={setFormData} // <-- updater
+  error={error}
+/>
+    ),
+    title: "Create Collection",
+    agreeText: "Create",
+    agree: () =>{
+      submitCollection({
+        formData,
+        dispatch,
+        router,
+        currentProfile,
+        initPages,
+        openDialog,
+        setFormData,
+        setSubmitting,
+        setError,
+      })},
+    disagreeText: "Cancel",
+    breakpoint: 0.9,
+  });
+};
