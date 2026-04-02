@@ -56,6 +56,8 @@ import DashboardContainer from './container/DashboardContainer.jsx';
 import { LoadScript } from '@react-google-maps/api';
 import ContentHubContainer from './container/ContentHubContainer.jsx';
 import DiscoveryContainer from './container/DiscoveryContainer.jsx';
+import debounce from './core/debounce.js';
+import checkResult from './core/checkResult.js';
 
 setupIonicReact()
 
@@ -84,7 +86,7 @@ const [presentingEl, setPresentingEl] = useState(null);
   const [error,setError]=useState(null)
 const [token,setToken]=useState(null)
 const [chuecking,setChecking]=useState(null)
-  const dialog = useSelector(state=>state.users.dialog)
+  const {dialog,loading:userLoading} = useSelector(state=>state.users)
 
 const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
 
@@ -102,34 +104,23 @@ useEffect(() => {
   };
   checkFirstLaunch();
 }, [isNative]);
-function shouldRefreshProfile(route) {
-  // example: only refresh on pages where profile matters
-  const pagesRequiringProfile = [Paths.home, Paths.myProfile];
-  return pagesRequiringProfile.includes(route);
-}
-// useEffect(() => {
-//   const checkUser = async () => {
-//     const { value: token } = await Preferences.get({ key: "token" });
-//     if (token && (!currentProfile || !currentProfile?.id)) {
-//       dispatch(getCurrentProfile());
-//     } else {
-//       dispatch(setUserLoading(false));
-//     }
-//   };
-//   checkUser();
-// }, [currentProfile,shouldRefreshProfile(ionRouter?.routeInfo?.pathname),dispatch]); 
 useEffect(() => {
   const checkUser = async () => {
-    const { value: token } = await Preferences.get({ key: "token" });
-    if (!token) return dispatch(setUserLoading(false));
+  
+try{
 
-    const refreshRoutes = [Paths.home, Paths.myProfile, Paths.discover];
-    if (!currentProfile?.id || refreshRoutes.includes(ionRouter?.routeInfo?.pathname)) {
-      dispatch(getCurrentProfile());
-    }
+  dispatch(getCurrentProfile());
+
+
+
+}catch(err){
+console.log("APP GET CURRENT PROFILE",err)
+}
+  
   };
-  checkUser();
-}, [ionRouter?.routeInfo?.pathname]);
+
+return ()=>  checkUser();
+}, []); 
 
 const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })

@@ -1,28 +1,42 @@
 
-import { useEffect, useState, useContext } from "react";
-import { IonContent, IonImg, useIonRouter } from "@ionic/react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useIonRouter, IonContent, IonImg } from "@ionic/react";
 import loadingGif from "./images/loading.gif";
 import Paths from "./core/paths";
-import { useSelector } from "react-redux";
 
 const PrivateRoute = ({ children }) => {
- 
-  const {currentProfile,loading}=useSelector(state=>state.users)
-  let router = useIonRouter()
-  const pathName = router.routeInfo.pathname
-  let loggedInPathNames = [Paths.login()]
-  let loggedOutPathnames = [Paths.home,Paths.myProfile]
-  useEffect(()=>{
-    if(currentProfile&&loggedInPathNames.includes(pathName)){
-      router.push(Paths.myProfile,"root")
-    }
-    if(!currentProfile&&loggedOutPathnames.includes(pathName)){
-      router.push(Paths.login(),"root")
-    }
-  },[pathName,currentProfile])
+  const { currentProfile, loading } = useSelector((state) => state.users);
+  const router = useIonRouter();
+  const pathName = router.routeInfo.pathname;
 
-  
+  const loggedInPaths = [Paths.login()];
+  const loggedOutPaths = [Paths.home, Paths.myProfile];
 
+  useEffect(() => {
+    if (loading) return; // <-- wait until we know the auth state
+
+    // Redirect logged-in users away from login
+    if (currentProfile && loggedInPaths.includes(pathName)) {
+      router.push(Paths.myProfile, "root");
+      return;
+    }
+
+    // Redirect logged-out users to login
+    if (!currentProfile && loggedOutPaths.includes(pathName)) {
+      router.push(Paths.login(), "root");
+      return;
+    }
+  }, [pathName, currentProfile, loading]);
+
+  // Optionally show a loading overlay while fetching profile
+  if (loading) {
+    return (
+      <IonContent fullscreen className="flex justify-center pt-24 items-center">
+        <IonImg src={loadingGif} className="max-w-24 max-h-24" />
+      </IonContent>
+    );
+  }
 
   return <>{children}</>;
 };

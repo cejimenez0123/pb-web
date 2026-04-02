@@ -285,14 +285,7 @@ useEffect(() => {
 >
         <div className="max-w-2xl mx-auto px-4 pb-24 pt-safe space-y-8">
 <div className='flex mt-4  sm:pt-20 p-4 flex-row justify-between'>
-                         <div  className="w-10 h-10"onClick={() => router.push(Paths.editProfile, "forward")}>
-          <img
-  style={{ width: 40, height: 40 }}
- 
-  className="bg-soft rounded-full p-2"
-  src={settings}
-/>
-</div>
+
                   
             </div>
           {/* Header */}

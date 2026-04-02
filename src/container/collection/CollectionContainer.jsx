@@ -494,7 +494,7 @@ const getCol = async (id) => {
   ) : (
     <button
       onClick={deleteFollow}
-      className={`${baseClasses} bg-transparent border-2 border-blueSea hover:bg-blue-50`}
+      className={`${baseClasses} bg-sky-100 border-2 border-blueSea hover:bg-blue-50`}
     >
       <IonText>Following</IonText>
     </button>

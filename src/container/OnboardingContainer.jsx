@@ -22,7 +22,7 @@ import authRepo from '../data/authRepo';
 import ThankYou from './auth/ThankYou';
 import logo from "../images/logo/icon.png";
 import { useDispatch } from 'react-redux';
-import { signUp } from '../actions/UserActions';
+import { getCurrentProfile, signUp } from '../actions/UserActions';
 import { useSelector } from 'react-redux';
 const inputStyle = {
   "--width": '100%',
@@ -42,8 +42,8 @@ const inputStyle = {
 
 export default function OnboardingContainer(props) {
   const router = useIonRouter()
-  const { seo, setSeo, error, setError } = useContext(Context);
-  const dispatch = useDispatch()
+  const { seo, setSeo,  } = useContext(Context);
+
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const genres = [
     "Fiction", "Non-fiction", "Poetry", "Drama/Playwriting", "Screenwriting",
@@ -51,11 +51,8 @@ export default function OnboardingContainer(props) {
     "Horror", "Mystery/Thriller", "Romance", "Young Adult", "Children's Literature",
     "Historical Fiction", "Satire/Humor", "Experimental/Hybrid Forms", "Other"
   ];
-  useEffect(()=>{
-    if(currentProfile && currentProfile.id){
-      router.push(Paths.home)
-    }
-  },[currentProfile])
+  const dispatch = useDispatch()
+
   const [activeTab, setActiveTab] = useState('tab0');
   const [formData, setFormData] = useState({
     idToken:"",

@@ -20,6 +20,7 @@ import {    logIn ,
             deleteUserAccounts,
             setEvents,
             setUserLoading,
+            setCurrentProfile,
         
         } from "../actions/UserActions"
 
@@ -34,7 +35,7 @@ const initialState = {
     signedIn: false,
     currentProfile: null,
     homeCollection: null,
-    loading:true,
+    loading:false,
     notifications:[],
     events:[],
     userApprovals:[],
@@ -140,26 +141,31 @@ state.notifications = payload
       }
  
     }).addCase(getCurrentProfile.rejected,(state,data)=>{ 
+
         if(data){
-            let {payload}=data
         
-        if(payload && payload.error){
-            state.loading = false
-            state.signedIn = false
-            state.currentProfile = null
-           
-        }  }
+        }
     }).addCase(postStoryHistory.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
     }).addCase(postCollectionHistory.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
-    }).addCase(getCurrentProfile.pending,(state)=>{
-        state.loading = true
+    }).addCase(setCurrentProfile.type,(state,{payload})=>{
+        state.currentProfile = payload
+    }).addCase(getCurrentProfile.pending,(state,data)=>{
+
+        console.log("get FOOT",state)
+        console.log("get FOOT",data)
     }).addCase(getCurrentProfile.fulfilled,(state, data) => {
 
-data && data.payload && data.payload.profile && data.payload.profile.id && (state.currentProfile = data.payload.profile)
+    try{
+    state.currentProfile = data.payload.profile
        state.loading = false
-
+    }catch(err){
+        console.log(
+        
+            "getCurrentProfile",err
+        )
+    }
     })
  
     .addCase(fetchProfile.pending,(state)=>{

@@ -38,11 +38,7 @@ class AuthRepo{
         purpose,
         message}){
            
-            //   const res = await axios.post(Enviroment.url+"/api/email-webhook",{ preferredName,
-            //     email,
-            //     subject,
-            //     purpose,
-            //     message})
+         
 
         const res = await axios.post(Enviroment.url+"/auth/feedback",{ preferredName,
                 email,
@@ -72,7 +68,7 @@ class AuthRepo{
       return res.data
     }
     async startSession({uId,email,password,identityToken}){
-let headers = await this.getAuthHeaders()
+l
         const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password,identityToken},
             {headers:headers})
 

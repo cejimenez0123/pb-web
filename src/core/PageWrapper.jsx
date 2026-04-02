@@ -472,6 +472,7 @@ import SearchButton from '../components/SearchButton'; // import memoized compon
 import menu from "../images/icons/menu.svg"
 import { Capacitor } from '@capacitor/core';
 import { useSelector } from 'react-redux';
+import { getCurrentProfile } from '../actions/UserActions';
 const PageWrapper = ({
   children,
   showHeader = true,
@@ -490,13 +491,29 @@ const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 const [homeCol, setHomeCol] = useState(null);
     const [archiveCol, setArchiveCol] = useState(null);
     const { openDialog, dialog,resetDialog } = useDialog()
-  const {currentProfile} = useSelector(state=>state.users)
+ useEffect(() => {
+  const checkUser = async () => {
+  
+try{
+
+  dispatch(getCurrentProfile());
+
+
+
+}catch(err){
+console.log("APP GET CURRENT PROFILE",err)
+}
+  
+  };
+
+return ()=>  checkUser();
+}, []);
   
  const isDev = import.meta.env.VITE_NODE_ENV=="dev"
 const isNativePlatform = Capacitor.isNativePlatform();
 
 const isNative = (isDev || isNativePlatform)
-console.log("ISNATIVE",isNative)
+const {currentProfile}=useSelector(state=>state.users)
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const openYourWorkshops=()=>{
   
@@ -715,9 +732,9 @@ console.log("ISNATIVE",isNative)
     // Offline UI
     return (
       <IonPage >
-       <IonContent >
+       {/* <IonContent >
         <div className='h-[100%] w-[100%] flex'> 
-        <div className="my-auto mx-auto text-center">
+        <div className="my-auto mx-auto text-center"> */}
           <IonText color="medium">
             <h2>No Internet Connection</h2>
             <p>Please check your connection and try again.</p>
@@ -725,10 +742,7 @@ console.log("ISNATIVE",isNative)
           <IonButton onClick={handleRetry} style={{ marginTop: '1em' }}>
             Retry
           </IonButton>
-          </div>
-        </div>
-        {/* </div> */}
-        </IonContent>
+      
       </IonPage>
     );
   }
@@ -737,7 +751,7 @@ console.log("ISNATIVE",isNative)
       ref={pageRef}
       style={{ height: '100%', paddingTop: isDesktop ? '5em' : '0' }}
     >
-      {(showHeader || (!isNative && isMobileOrTablet)) && (
+      {(showHeader ) && (
         <IonHeader >
           <IonToolbar>
             {showBackbutton ? (

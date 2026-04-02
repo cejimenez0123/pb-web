@@ -17,18 +17,17 @@ try{        const {uId,email,password,idToken,isNative}=params
    
         
         const {token}=authData  
-
+console.log("FOR",authData)
   
          await Preferences.set({key:"token",value:token})
-
-        return {token:token,profile:authData?.profile}
+  
+        return {token:token,profile:authData.user.profiles[0]}
 }catch(error){
   console.log(error)
 }
       
     }
 )
-
 
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
@@ -128,7 +127,14 @@ const searchMultipleIndexes = createAsyncThunk(
     }
   }
 );
+const setCurrentProfile = createAction("user/setCurrentProfile", (params)=> {
 
+
+  return  {payload:
+     params}
+    
+  
+})
 const setDialog = createAction("user/setDialog", (params)=> {
 
 
@@ -172,7 +178,7 @@ const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
   try{
     const data = await profileRepo.getMyProfiles()
-    
+    console.log("GET",data)
    return data
  
     }catch(error){    
@@ -311,5 +317,5 @@ export {logIn,
         deletePicture,
         updateSubscription,
         getIosInfo,
-        setUserLoading
+        setUserLoading,setCurrentProfile
     }
