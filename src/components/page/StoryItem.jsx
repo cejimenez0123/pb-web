@@ -27,7 +27,7 @@ function StoryItem({ page, isGrid = true, html = null }) {
     }
   }, [page]);
 
-  if (!page) return <IonImg src={loadingGif} className="w-full h-48 rounded-lg" />;
+  if (!page) return <IonImg src={loadingGif} className="w-full h-24 rounded-lg" />;
 
   const handleClick = () => {
     const target = Paths.page.createRoute(page.id);
@@ -53,7 +53,7 @@ function StoryItem({ page, isGrid = true, html = null }) {
             onClick={handleClick}
           />
         ) : (
-          <div className="skeleton w-full h-48 rounded-lg" />
+          <div className="skeleton w-full h-24 rounded-lg" />
         );
 
       case PageType.link:
@@ -61,7 +61,7 @@ function StoryItem({ page, isGrid = true, html = null }) {
 
       default:
         return (
-          <div className="skeleton w-full h-48 rounded-lg flex items-center justify-center">
+          <div className="skeleton w-full h-24 rounded-lg flex items-center justify-center">
             <IonImg src={loadingGif} />
           </div>
         );

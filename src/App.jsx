@@ -102,20 +102,34 @@ useEffect(() => {
   };
   checkFirstLaunch();
 }, [isNative]);
-const userQuestion =()=>{
-    Preferences.get({key:"token"}).then(({value})=>{
-   console.log("TOOKEN THIS",value)
-    if(value&&!currentProfile ){
-       dispatch(getCurrentProfile())
-    }else{
-       dispatch(setUserLoading(false)) 
-    }     
-  })
+function shouldRefreshProfile(route) {
+  // example: only refresh on pages where profile matters
+  const pagesRequiringProfile = [Paths.home, Paths.myProfile];
+  return pagesRequiringProfile.includes(route);
 }
-useLayoutEffect(()=>{
-  userQuestion()
-},[])
-// useIonViewWillEnter(userQuestion)
+// useEffect(() => {
+//   const checkUser = async () => {
+//     const { value: token } = await Preferences.get({ key: "token" });
+//     if (token && (!currentProfile || !currentProfile?.id)) {
+//       dispatch(getCurrentProfile());
+//     } else {
+//       dispatch(setUserLoading(false));
+//     }
+//   };
+//   checkUser();
+// }, [currentProfile,shouldRefreshProfile(ionRouter?.routeInfo?.pathname),dispatch]); 
+useEffect(() => {
+  const checkUser = async () => {
+    const { value: token } = await Preferences.get({ key: "token" });
+    if (!token) return dispatch(setUserLoading(false));
+
+    const refreshRoutes = [Paths.home, Paths.myProfile, Paths.discover];
+    if (!currentProfile?.id || refreshRoutes.includes(ionRouter?.routeInfo?.pathname)) {
+      dispatch(getCurrentProfile());
+    }
+  };
+  checkUser();
+}, [ionRouter?.routeInfo?.pathname]);
 
 const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })

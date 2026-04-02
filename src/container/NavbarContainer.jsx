@@ -77,12 +77,8 @@ function NavbarContainer({ isDesktop}) {
 export default NavbarContainer
 
 function DesktopNavbar({currentProfile}){
-  const dispatch = useDispatch()
-  useEffect(()=>{
-    Preferences.get({key:"token"}).then(({value})=>{
-      !currentProfile && dispatch(getCurrentProfile())
-    })
-  },[currentProfile])
+  
+
 return(
 
 <div className="navbar bg-emerald-800">

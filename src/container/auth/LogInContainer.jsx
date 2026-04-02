@@ -1,6 +1,6 @@
 import {useContext,useEffect,useState} from 'react'
 import "../../App.css"
-import { logIn, } from '../../actions/UserActions';
+import { getCurrentProfile, logIn, } from '../../actions/UserActions';
 import {useDispatch} from 'react-redux';
 import loadingGif from "../../images/loading.gif"
 import Paths from '../../core/paths';
@@ -18,16 +18,14 @@ import { Capacitor } from '@capacitor/core';
 import { useDialog } from '../../domain/usecases/useDialog.jsx';
 export default function LogInContainer() {
     const {setError,seo,setSeo}=useContext(Context)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    const router = useIonRouter()
-
+   
     useEffect(()=>{
         let soo = seo
         soo.title = "Plumbum (Log In) - Share Your Weirdness"
         setSeo(soo)
        
    },[])
-
+   
 
     return (
         <IonContent fullscreen={true}>
@@ -55,7 +53,6 @@ function LogInCard({setLogInError}){
     const [showPassword, setShowPassword] = useState(false);
     const {openDialog,closeDialog,dialog}=useDialog()
 
-     
     
        
     const handleFirstTimeClick=()=>{

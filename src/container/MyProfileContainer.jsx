@@ -18,14 +18,12 @@ import {
 } from "../actions/UserActions";
 
 import {
-  getProtectedProfilePages,
-  getPublicProfilePages,
+
   setPagesInView,
 } from "../actions/PageActions";
 
 import {
-  getProtectedProfileCollections,
-  getPublicProfileCollections,
+
   setCollections,
 } from "../actions/CollectionActions";
 
