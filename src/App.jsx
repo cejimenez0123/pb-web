@@ -104,7 +104,7 @@ useEffect(() => {
 }, [isNative]);
 const userQuestion =()=>{
     Preferences.get({key:"token"}).then(({value})=>{
-   
+   console.log("TOOKEN THIS",value)
     if(value&&!currentProfile ){
        dispatch(getCurrentProfile())
     }else{
@@ -112,18 +112,11 @@ const userQuestion =()=>{
     }     
   })
 }
-useIonViewWillEnter(userQuestion)
-// useEffect(()=>{
-//   Preferences.get({key:"token"}).then(({value})=>{
-   
-//     if(value&&!currentProfile ){
-//        dispatch(getCurrentProfile())
-//     }else{
-//        dispatch(setUserLoading(false)) 
-//     }     
-//   })
-  
-// },[currentProfile,dispatch,ionRouter])
+useLayoutEffect(()=>{
+  userQuestion()
+},[])
+// useIonViewWillEnter(userQuestion)
+
 const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 

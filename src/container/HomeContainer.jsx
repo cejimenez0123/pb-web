@@ -10,17 +10,13 @@ import checkResult from '../core/checkResult';
 import { PageType } from '../core/constants';
 import Context from '../context';
 import { IonText, IonContent, IonSpinner, IonItem, IonLabel, IonToggle, useIonRouter, useIonViewWillEnter } from '@ionic/react';
-import { Preferences } from '@capacitor/preferences';
-import axios from "axios";
+
 import { debounce } from 'lodash';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-import { getCurrentProfile } from '../actions/UserActions.jsx';
-import { findWorkshopGroups } from '../actions/WorkshopActions.jsx';
-import requestLocation from '../core/requestLocation.js';
 import StoryItem from '../components/page/StoryItem.jsx';
 import Enviroment from '../core/Enviroment.js';
 import PageList from '../components/page/PageList.jsx';
-import useProfileDependentEffects from '../core/useProfileDependentEffects.jsx';
+
 
 
 // Section Header Component
@@ -49,7 +45,7 @@ const WorkshopItem = ({ item, router }) => {
         </p>
 
         <div className="flex justify-between text-xs text-gray-500 mt-1">
-          <span>{item.location || "Online / TBD"}</span>
+          <span>{item?.location?.city || "Online / TBD"}</span>
 
           {item.participants ? (
             <span className="font-bold text-emerald-600">

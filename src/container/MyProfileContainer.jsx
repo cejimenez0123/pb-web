@@ -237,29 +237,7 @@ useEffect(() => {
 }, [profile, dispatch]);
 
 
-  // ── Auth Sync
-
-
-  
-
-  // ── Fetch
-  // useEffect(() => {
-  //   dispatch(fetchProfile({ id }));
-
-  //   const fetchContent = async () => {
-  //     const token = (await Preferences.get({ key: "token" })).value;
-
-  //     if (token && profile?.id === id) {
-  //       dispatch(getProtectedProfilePages({ profile: { id } }));
-  //       dispatch(getProtectedProfileCollections({ profile: { id } }));
-  //     } else {
-  //       dispatch(getPublicProfilePages({ profile: { id } }));
-  //       dispatch(getPublicProfileCollections({ profile: { id } }));
-  //     }
-  //   };
-
-  //   fetchContent();
-  // }, [id, dispatch]);
+ 
   useEffect(() => {
   if (!profile) return;
   dispatch(setPagesInView({ pages: profile.stories || [] }));

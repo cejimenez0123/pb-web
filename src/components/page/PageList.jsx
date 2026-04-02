@@ -10,14 +10,13 @@ import Context from "../../context";
 import BookDashboardItem from "../collection/BookDashboardItem";
 
 const PageList = ({ items = [], forFeedback, getMore = () => {}, hasMore = true, isGrid }) => {
-  const { isPhone } = useContext(Context);
+  // const { isPhone } = useContext(Context);
   // const pagesInView = items.filter(Boolean);
 
   return (
     <div>
       {items.map((item, i) => (
-        item.type?<BookDashboardItem  book={item}/>:
-        <DashboardItem
+        item.authorId?   <DashboardItem
           key={i}
           item={item}
           index={i}
@@ -25,7 +24,8 @@ const PageList = ({ items = [], forFeedback, getMore = () => {}, hasMore = true,
           isGrid={isGrid}
           page={item}
         />
-      ))}
+      :<BookDashboardItem  book={item}/>))}
+     
 
       <IonInfiniteScroll
         threshold="200px"

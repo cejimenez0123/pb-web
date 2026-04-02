@@ -20,7 +20,7 @@ try{        const {uId,email,password,idToken,isNative}=params
 
   
          await Preferences.set({key:"token",value:token})
-  console.log("AuthData",authData)
+
         return {token:token,profile:authData?.profile}
 }catch(error){
   console.log(error)

@@ -196,7 +196,7 @@ const searchAction = useCallback(() => {
   };
 
   const handleOnClick = (searchItem) => {
-    console.log("Searchccs",searchItem)
+   
     router.push(`/${searchItem.type}/${searchItem.objectID}/view`);
   };
   useEffect(() => {

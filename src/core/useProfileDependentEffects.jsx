@@ -5,8 +5,6 @@ import { fetchRecommendedStories, getPrompts } from "../actions/StoryActions";
 import checkResult from "./checkResult";
 import { findWorkshopGroups } from "../actions/WorkshopActions";
 import requestLocation from "./requestLocation";
-import { Preferences } from "@capacitor/preferences";
-
 function useProfileDependentEffects(currentProfile, isGlobal) {
   const dispatch = useDispatch();
   const isNative = Capacitor.isNativePlatform();
@@ -44,7 +42,9 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
         radius: 50,
         global: isGlobal
       }));
-      checkResult(res, ({ groups }) => {
+      checkResult(res, (payload) => {
+        console.log("WORKSTUDIO",payload)
+        const {groups}=payload
         const sorted = [...groups].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
         setResults(prev => ({ ...prev, workshops: sorted || [] }));
       });
@@ -59,17 +59,15 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
       err => console.error("Location error:", err)
     );
   };
-
-  useEffect(() => {
-    // Preferences.get({key:"token"}).then(({value})=>{
-    // if (!value) return;
-    fetchPrompts();
+  const fetches=()=>{
+     fetchPrompts();
     fetchStories();
     fetchWorkshops();
     fetchLocation();
-    // })
+  }
+  useEffect(() => {
+        fetches()
 
- 
   }, [currentProfile, isGlobal]);
 
   return results;

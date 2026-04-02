@@ -25,11 +25,10 @@ function ContentHubContainer() {
   const dispatch = useDispatch();
     const [tab, setTab] = useState("dash");
   const cols = useSelector(state => state.books.collections);
-  const [isGlobal,setIsGlobal]=useState(false)
+  const [isGlobal,setIsGlobal]=useState(true)
   const pagesInView = useSelector(state => state.pages.pagesInView);
+  const { workshops, stories, prompts } = useProfileDependentEffects(currentProfile,isGlobal);
 
-  // const [hasMoreLibraries, setHasMoreLibraries] = useState(false);
-  // const [viewItems, setViewItems] = useState([]);
 
   tab && useScrollTracking({ name: tab });
   useLayoutEffect(() => {
@@ -96,7 +95,7 @@ function ContentHubContainer() {
 
 
 
-  const { workshops, stories, prompts } = useProfileDependentEffects(currentProfile,isGlobal);
+
 
 console.log("FDDF",{ workshops, stories, prompts })
 

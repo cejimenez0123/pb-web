@@ -20,7 +20,7 @@ export default function AddToItem({ col }) {
   const { setError, setSuccess, } = useContext(Context);
   const {currentProfile}=useSelector(state=>state.users)
   const { id, type } = pathParams;
-console.log(id)
+
   const collectionInView = useSelector(state => state.books.collectionInView);
   const pageInView = useSelector(state => state.pages.pageInView);
   const [item, setItem] = useState(type === "collection" ? collectionInView : pageInView);

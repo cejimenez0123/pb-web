@@ -16,7 +16,7 @@ import { useIonRouter } from '@ionic/react';
  function BookListItem({ book }) {
   const dispatch = useDispatch();
   const router = useIonRouter()
-console.log(book)
+
   useLayoutEffect(() => {
     initGA();
   }, []);

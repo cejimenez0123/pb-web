@@ -15,7 +15,7 @@ import { IonImg, useIonRouter } from '@ionic/react'
 
 
 function BookDashboardItem({book,isGrid}) {
- console.log(book)
+
     const dispatch = useDispatch()
     const {setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
     const router = useIonRouter()

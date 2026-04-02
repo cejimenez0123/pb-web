@@ -20,7 +20,7 @@ export default function LogInContainer() {
     const {setError,seo,setSeo}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const router = useIonRouter()
-console.log("CURENT",currentProfile)
+
     useEffect(()=>{
         let soo = seo
         soo.title = "Plumbum (Log In) - Share Your Weirdness"
@@ -65,8 +65,9 @@ function LogInCard({setLogInError}){
     }
 
     const handleLogIn = (event)=>{
+        setPending(true)
         event.preventDefault()
-   
+
         if(email.length>3 && password.length){
             setPending(true)
             const params ={email:email.toLowerCase(),password:password,isNative:Capacitor.isNativePlatform()}
@@ -82,6 +83,7 @@ function LogInCard({setLogInError}){
                         setError("Error with Profile")
                      }
                 },err=>{
+                       setPending(false)
                     if(err.message=="Request failed with status code 401"){
 setError("User Not Found. Apply Below")
                     }else{
@@ -99,7 +101,7 @@ setError("User Not Found. Apply Below")
     }
   
     const dispatchLogin=  ({email,googleId,idToken})=>{
-   
+      setPending(true)
         if(idToken){
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
@@ -108,7 +110,7 @@ setError("User Not Found. Apply Below")
 
                     setPending(false)
                 },err=>{
-
+   setPending(false)
                     if(err.message=="Request failed with status code 401"){
     setError("User Not Found. Apply Below")
                     }else{
@@ -121,13 +123,14 @@ setError("User Not Found. Apply Below")
             })   
         }else if(googleId){
 
-        
+        setPending(true)
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
+                   setPending(false)
            router.push(Paths.home,"root")
-                setPending(false)
-            },err=>{
                
+            },err=>{
+                  setPending(false)
                 if(err.message=="Request failed with status code 401"){
 setError("User Not Found. Apply Below")
                 }else{
@@ -135,7 +138,7 @@ setError("User Not Found. Apply Below")
                 }
          
                 
-                setPending(false)
+             
             })
         })   
     }
@@ -240,7 +243,12 @@ openDialog(dia)
                  }} className='text-[1rem] pt-8 w-fit hover:text-green-400 mx-auto text-emerald-800'>Forgot Password?</h5>
               </div>
         </form>
-
+  {/* Loader Overlay */}
+    {pending && (
+      <div className="absolute inset-0 bg-white bg-opacity-70 flex justify-center items-center z-50">
+        <img src={loadingGif} className="w-24 h-24" />
+      </div>
+    )}
                 </div></div>
                 
     </div>

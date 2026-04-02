@@ -1,12 +1,9 @@
 import { useContext, useRef,useEffect, useState } from 'react';
-import { registerUser, postActiveUser, findWorkshopGroup, fetchWorkshopGroups, findWorkshopGroups } from "../../actions/WorkshopActions";
+import { registerUser, postActiveUser, findWorkshopGroup,  findWorkshopGroups } from "../../actions/WorkshopActions";
 import { useSelector, useDispatch } from 'react-redux';
 import checkResult from '../../core/checkResult';
 import Paths from '../../core/paths';
-import { getStory } from '../../actions/StoryActions';
-import PageWorkshopItem from '../page/PageWorkshopItem';
 import loadingAnimation from "../../images/loading.gif";
-import InfoTooltip from '../../components/InfoTooltip';
 import Context from '../../context';
 import check from "../../images/icons/check.svg";
 import { Geolocation } from '@capacitor/geolocation';
