@@ -360,7 +360,7 @@ const openRoleFormDialog = (page) => {
   };
   const handleDelete = debounce(() => {
     dispatch(deleteStory(parameters)).then(() => {
-      router.push(Paths.myProfile, "root");
+     router.push(Paths.myProfile, "root", "replace");
       resetDialog()
     });
   }, 10);

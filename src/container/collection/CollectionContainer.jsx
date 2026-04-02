@@ -878,14 +878,14 @@ const PageTab = ({ collections }) => {
   return (
     <div className="py-4">
       {/* <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4"> */}
-       { collections && collections.length > 0  ? <><h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
+       { collections && collections?.length > 0  ? <><h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
           Anthologies
         </h2>
       
      
    
 
-{collections && collections.length > 0 ? (
+{collections && collections?.length > 0 ? (
   <IonList style={{ backgroundColor: "#f4f4e0" }}>
     <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
       {collections
@@ -899,12 +899,7 @@ const PageTab = ({ collections }) => {
   </IonList>
 ) : (
   <div className="flex flex-row gap-3 overflow-x-scroll min-h-[14rem] px-3">
-    {/* Skeleton placeholders
-    {[1, 2, 3, 4].map((i) => (
-      <BookListItemShadow key={i} />
-    ))} */}
-
-    {/* CTA if owner */}
+   
     {/* {isOwner && ( */}
       <div className="min-w-[16rem] flex flex-col items-center justify-center bg-cream rounded-lg p-4 shadow text-center">
         <p className="mb-2 text-gray-700">No anthologies yet.</p>
@@ -927,7 +922,7 @@ const PageTab = ({ collections }) => {
           Pages
         </h2> 
         
- {pagesInView.length>0 ? (
+ {pagesInView?.length>0 ? (
   
         <PageList
           items={pagesInView}

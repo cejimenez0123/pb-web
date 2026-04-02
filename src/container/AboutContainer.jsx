@@ -36,8 +36,8 @@ import ig from "../images/icons/instagram icon.png"
 import { useState,useRef,useEffect } from "react"
 export default function AboutContainer() {
 
-  const { setShowNav,setSeo, currentProfile } = useContext(Context);
-  const md = useMediaQuery({ query: '(min-width: 750px)' });
+  const {setSeo } = useContext(Context);
+  // const md = useMediaQuery({ query: '(min-width: 750px)' });
   const router = useIonRouter()
 useScrollTracking({
   contentType: "about",

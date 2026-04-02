@@ -182,9 +182,7 @@ const router =useIonRouter()
         idToken,
       });
 
-      // dispatch(logIn({ email: profile.email, uId: profile.id, isNative })).then(res=>{
-      //   router.push(Paths.home)
-      // })
+   
     } catch (err) {
      
   sendGAEvent("login_error", {

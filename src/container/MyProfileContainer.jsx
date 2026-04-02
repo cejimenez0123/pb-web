@@ -239,17 +239,7 @@ useEffect(() => {
 
   // ── Auth Sync
 
-useEffect(() => {
-  const syncProfile = async () => {
-    const { value } = await Preferences.get({ key: "token" });
-    if (!value) {
-      router.push("/");
-    } else if (!profile) {
-      dispatch(getCurrentProfile());
-    }
-  };
-  syncProfile();
-}, [profile, dispatch, router]);
+
   
 
   // ── Fetch
@@ -355,7 +345,8 @@ useEffect(() => {
             {(profile?.hashtags ?? profile?.tags)?.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {(profile.hashtags ?? profile.tags).slice(0, 5).map((tag, i) => (
-                  <Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`} />
+                  <Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}
+                  label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`} />
                 ))}
               </div>
             )}

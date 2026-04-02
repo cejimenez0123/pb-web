@@ -4,7 +4,6 @@ import { useEffect, useState ,useRef, useLayoutEffect, useContext} from 'react';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
-import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import EditorContainer from './container/page/EditorContainer'
 import PageViewContainer from './container/page/PageViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
@@ -15,8 +14,9 @@ import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import {  getCurrentProfile,
           setSignedInTrue,
           setSignedInFalse,
+          setUserLoading,
       } from './actions/UserActions'
-      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter} from '@ionic/react';
+      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter} from '@ionic/react';
  import LoggedRoute from './LoggedRoute';
 import PrivateRoute from './PrivateRoute';
 
@@ -54,13 +54,14 @@ import AboutContainer from './container/AboutContainer.jsx';
 import PageWrapper from './core/PageWrapper.jsx';
 import DashboardContainer from './container/DashboardContainer.jsx';
 import { LoadScript } from '@react-google-maps/api';
+import ContentHubContainer from './container/ContentHubContainer.jsx';
+import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 
 setupIonicReact()
 
 
 function App(props) {
   const {currentProfile} =props
-  const isPhone = useMediaQuery({ query: '(max-width: 800px)' });
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 
 
@@ -81,27 +82,13 @@ const location = ionRouter.routeInfo?.pathname??window.location
 const [presentingEl, setPresentingEl] = useState(null);
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
-
+const [token,setToken]=useState(null)
+const [chuecking,setChecking]=useState(null)
   const dialog = useSelector(state=>state.users.dialog)
 
-
-
 const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
-  const initAuth = async () => {
-    const { value } = await Preferences.get({ key: "token" });
-    if (value ) {
-      // This triggers the Redux action to fill currentProfile
-      dispatch(getCurrentProfile()); 
-    }
-  };
-useEffect(() => {
 
- if(currentProfile)return
-    return ()=>initAuth();
-}, [dispatch,currentProfile]);
-useLayoutEffect(()=>{
-  initAuth()
-},[])
+
 useEffect(() => {
   const checkFirstLaunch = async () => {
     if (isNative) {
@@ -115,6 +102,28 @@ useEffect(() => {
   };
   checkFirstLaunch();
 }, [isNative]);
+const userQuestion =()=>{
+    Preferences.get({key:"token"}).then(({value})=>{
+   
+    if(value&&!currentProfile ){
+       dispatch(getCurrentProfile())
+    }else{
+       dispatch(setUserLoading(false)) 
+    }     
+  })
+}
+useIonViewWillEnter(userQuestion)
+// useEffect(()=>{
+//   Preferences.get({key:"token"}).then(({value})=>{
+   
+//     if(value&&!currentProfile ){
+//        dispatch(getCurrentProfile())
+//     }else{
+//        dispatch(setUserLoading(false)) 
+//     }     
+//   })
+  
+// },[currentProfile,dispatch,ionRouter])
 const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 
@@ -149,14 +158,13 @@ const libraries = ["places"];
     <IonRouterOutlet>   
        <Route exact path={Paths.login()}
                   render={()=> 
-             
-        // <LoggedRoute 
-        // currentProfile={currentProfile}
-        // >  
+      
         <PageWrapper showHeader={false}>
+      <PrivateRoute>
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
+             </PrivateRoute>
                       </PageWrapper>
-            // </LoggedRoute>
+         
 
        }
      />
@@ -186,7 +194,7 @@ const libraries = ["places"];
                    <Route path={Paths.home}
                   render={()=> 
        <PrivateRoute> <PageWrapper  showBackbutton={false} showSearchButton={true}>
-        <DiscoveryContainer/>
+        <ContentHubContainer/>
          
                       </PageWrapper>
         </PrivateRoute>
@@ -283,12 +291,12 @@ const libraries = ["places"];
 
       <Route path={Paths.workshop.reader()}
     render={()=><PrivateRoute      
-     currentProfile={props.currentProfile}>  <PageWrapper  showHeader={false}><WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
+     currentProfile={props.currentProfile}>  <PageWrapper   showBackbutton={false}><WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
     <Route 
     path={Paths.workshop.route()}
     render={()=><PrivateRoute
       currentProfile={props.currentProfile}
-    >  <PageWrapper  showHeader={false} showBackbutton={false}> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
+    >  <PageWrapper  showBackbutton={false}> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
     <Route path="/profile/:id/view" render={()=>
       <PageWrapper>   <ProfileContainer/>  </PageWrapper> 
       }/>
@@ -330,7 +338,7 @@ const libraries = ["places"];
       <Route path="/profile/edit" render={()=>
  
         <PrivateRoute  >
-            <PageWrapper> 
+            <PageWrapper showBackbutton={false}> 
         <SettingsContainer />
           </PageWrapper> 
         </PrivateRoute>
@@ -383,5 +391,7 @@ function mapStateToProps(state){
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)
+
+
 
 

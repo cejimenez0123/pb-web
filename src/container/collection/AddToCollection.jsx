@@ -151,13 +151,11 @@ const pending = storiesLoaded || collectionLoaded ? false : true;
 
 useEffect(() => {
 
-  if (currentProfile){
-    dispatch(setCollections({collections:currentProfile.collections}))
-    dispatch(setPagesInView({pages:currentProfile.stories}))
+  // if (currentProfile){
+  currentProfile &&  dispatch(setCollections({collections:currentProfile.collections}))
+  currentProfile &&   dispatch(setPagesInView({pages:currentProfile.stories}))
 
-  }else{
-    dispatch(getCurrentProfile())
-  }
+  // }
 }, [ currentProfile?.id,colInView?.id,id]);
 
 

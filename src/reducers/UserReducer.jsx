@@ -19,6 +19,7 @@ import {    logIn ,
             useReferral,
             deleteUserAccounts,
             setEvents,
+            setUserLoading,
         
         } from "../actions/UserActions"
 
@@ -63,6 +64,11 @@ const userSlice = createSlice({
             if(payload.events&&payload.events.length){
                 state.events = payload.events
             }
+        }).addCase(setUserLoading.type,(state,{payload})=>{
+            // if(payload){
+
+            state.loading = payload
+            // }
         })
         .addCase(useReferral.fulfilled,(state,{payload})=>{
             if(payload.profile){

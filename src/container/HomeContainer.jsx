@@ -2,14 +2,14 @@
 
 import { useEffect, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { createStory, fetchRecommendedStories, updateStory, getPrompts } from '../actions/StoryActions';
-import { setPageInView, setEditingPage, setHtmlContent } from '../actions/PageActions.jsx';
+import { createStory, } from '../actions/StoryActions';
+import { setPageInView, setEditingPage } from '../actions/PageActions.jsx';
 import { sendGAEvent } from '../core/ga4.js';
 import Paths from '../core/paths';
 import checkResult from '../core/checkResult';
 import { PageType } from '../core/constants';
 import Context from '../context';
-import { IonText, IonContent, IonSpinner, IonList, IonItem, IonLabel, IonToggle, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { IonText, IonContent, IonSpinner, IonItem, IonLabel, IonToggle, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
 import axios from "axios";
 import { debounce } from 'lodash';
@@ -19,6 +19,8 @@ import { findWorkshopGroups } from '../actions/WorkshopActions.jsx';
 import requestLocation from '../core/requestLocation.js';
 import StoryItem from '../components/page/StoryItem.jsx';
 import Enviroment from '../core/Enviroment.js';
+import PageList from '../components/page/PageList.jsx';
+import useProfileDependentEffects from '../core/useProfileDependentEffects.jsx';
 
 
 // Section Header Component
@@ -28,103 +30,101 @@ const SectionHeader = ({ title, right }) => (
     {right}
   </div>
 );
+const WorkshopItem = ({ item, router }) => {
+  if (!item) return <WorkshopItemSkeleton />;
 
+  return (
+    <IonItem
+      style={{ "--background": Enviroment.palette.cream }}
+      onClick={() => router.push(Paths.collection.createRoute(item.id))}
+      className="bg-cream"
+    >
+      <IonLabel>
+        <h2 className="text-md font-semibold text-emerald-800 truncate">
+          {item.title}
+        </h2>
+
+        <p className="text-sm text-gray-600 line-clamp-3">
+          {item.description || "No description available."}
+        </p>
+
+        <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <span>{item.location || "Online / TBD"}</span>
+
+          {item.participants ? (
+            <span className="font-bold text-emerald-600">
+              {item.participants} participants
+            </span>
+          ) : null}
+        </div>
+      </IonLabel>
+    </IonItem>
+  );
+};
 // Workshop Card Component
-const WorkshopItem = ({ item, router }) => (
-  <IonItem  style={{"--background":Enviroment.palette.cream}} onClick={() => router.push(Paths.collection.createRoute(item.id))} className="bg-cream ">
-    <IonLabel>
-      <h2 className="text-md font-semibold text-emerald-800 truncate">{item.title}</h2>
-      <p className="text-sm text-gray-600 line-clamp-3">{item.description || "No description available."}</p>
-      <div className="flex justify-between text-xs text-gray-500 mt-1">
-        <span>{item.location || "Online / TBD"}</span>
-        {item.participants ? <span className="font-bold text-emerald-600">{item.participants} participants</span> : null}
-      </div>
-    </IonLabel>
-  </IonItem>
-);
+// const WorkshopItem = ({ item, router }) => (
+//   const WorkshopItem = ({ item, router }) => (
+//   <div className="px-3 py-2">
+//     <IonItem
+//       onClick={() => router.push(Paths.collection.createRoute(item.id))}
+//       className="!bg-transparent !p-0 !inner-padding-end-0"
+//       lines="none"
+//     >
+//       <div className="w-full bg-base-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-200 p-4 border border-base-200">
+        
+//         <h2 className="text-md font-semibold text-emerald-800 truncate">
+//           {item.title}
+//         </h2>
+
+//         <p className="text-sm text-gray-600 line-clamp-3 mt-1">
+//           {item.description || "No description available."}
+//         </p>
+
+//         <div className="flex justify-between text-xs text-gray-500 mt-3">
+//           <span>{item.location || "Online / TBD"}</span>
+
+//           {item.participants ? (
+//             <span className="font-bold text-emerald-600">
+//               {item.participants} participants
+//             </span>
+//           ) : null}
+//         </div>
+
+//       </div>
+//     </IonItem>
+//   </div>
+// );
+  // <IonItem  style={{"--background":Enviroment.palette.cream}} onClick={() => router.push(Paths.collection.createRoute(item.id))} className="bg-cream ">
+  //   <IonLabel>
+  //     <h2 className="text-md font-semibold text-emerald-800 truncate">{item.title}</h2>
+  //     <p className="text-sm text-gray-600 line-clamp-3">{item.description || "No description available."}</p>
+  //     <div className="flex justify-between text-xs text-gray-500 mt-1">
+  //       <span>{item.location || "Online / TBD"}</span>
+  //       {item.participants ? <span className="font-bold text-emerald-600">{item.participants} participants</span> : null}
+  //     </div>
+  //   </IonLabel>
+  // </IonItem>
+// );
 
 // Hook for fetching profile-dependent data
-function useProfileDependentEffects(currentProfile, isGlobal) {
-  const dispatch = useDispatch();
-  const isNative = Capacitor.isNativePlatform();
 
-  const [results, setResults] = useState({
-    workshops: [],
-    stories: [],
-    prompts: [],
-    location: null,
-  });
+function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 
-  const fetchPrompts = async () => {
-    try {
-      const res = await dispatch(getPrompts());
-      checkResult(res, ({ prompts }) => {
-        const sorted = [...prompts].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
-        setResults(prev => ({ ...prev, prompts: sorted }));
-      });
-    } catch (err) { console.error("Failed fetching prompts:", err); }
-  };
 
-  const fetchStories = async () => {
-    try {
-      const res = await dispatch(fetchRecommendedStories());
-      checkResult(res, ({ stories }) => setResults(prev => ({ ...prev, stories })));
-    } catch (err) { console.error("Failed fetching stories:", err); }
-  };
-
-  const fetchWorkshops = async () => {
-    if (!currentProfile) return;
-    try {
-      const res = await dispatch(findWorkshopGroups({
-        location: currentProfile.location,
-        radius: 50,
-        global: isGlobal
-      }));
-      checkResult(res, ({ groups }) => {
-        const sorted = [...groups].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
-        setResults(prev => ({ ...prev, workshops: sorted || [] }));
-      });
-    } catch (err) { console.error("Failed fetching workshops:", err); }
-  };
-
-  const fetchLocation = () => {
-    if (!isGlobal) return;
-    if (isNative) requestLocation();
-    else navigator.geolocation.getCurrentPosition(
-      pos => setResults(prev => ({ ...prev, location: { latitude: pos.coords.latitude, longitude: pos.coords.longitude } })),
-      err => console.error("Location error:", err)
-    );
-  };
-
-  useEffect(() => {
-    if (!currentProfile) return;
-    fetchPrompts();
-    fetchStories();
-    fetchWorkshops();
-    fetchLocation();
-  }, [currentProfile, isGlobal]);
-
-  return results;
-}
-
-// Main HomeContainer Component
-function HomeContainer() {
-  const [isGlobal, setIsGlobal] = useState(true);
-  const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const router = useIonRouter();
   const { seo, setSeo } = useContext(Context);
 
   const currentProfile = useSelector(state => state.users.currentProfile);
-  const collections = useSelector(state => state.books.collections);
+  const {recommendedStories} = useSelector(state=>state.pages)
 
-  const { workshops, stories, prompts } = useProfileDependentEffects(currentProfile, isGlobal);
+
   const [whatsHappeningList, setWhatsHappeningList] = useState([]);
 
   const sortedWorkshops = useMemo(() => [...workshops].sort((a,b) => a.title.localeCompare(b.title)), [workshops]);
   const filteredPrompts = useMemo(() => prompts?.filter(p => p?.story?.data) || [], [prompts]);
-console.log("Prompts:")
-  // Update “What’s Happening” section
+
+
   useEffect(() => {
     if (stories?.length) {
       const sorted = [...stories].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
@@ -189,9 +189,11 @@ console.log("Prompts:")
           />
           {/* <IonList inset> */}
           <div className='flex-row col'>
-            {sortedWorkshops.map(workshop => (
+            {sortedWorkshops? sortedWorkshops.map(workshop => (
               <WorkshopItem key={workshop.id} item={workshop} router={router} />
-            ))}
+            )):[1,2,3].map(i=>{
+                <WorkshopItem key={i} item={null} router={router}/>
+            })}
             </div>
         
 
@@ -205,10 +207,30 @@ console.log("Prompts:")
               : [1,2,3,4].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)
             }
           </div>
+          <PageList  items={recommendedStories}/>
         </div>
     
     </ErrorBoundary>
   );
 }
 
-export default HomeContainer;
+export default HomeEmbed
+const WorkshopItemSkeleton = () => {
+  return (
+    <div className="px-3 py-2">
+      <div className="bg-base-100 rounded-2xl shadow-md p-4 animate-pulse border border-base-200">
+        
+        <div className="h-4 w-2/3 bg-gray-300 rounded mb-2"></div>
+
+        <div className="h-3 w-full bg-gray-200 rounded mb-1"></div>
+        <div className="h-3 w-5/6 bg-gray-200 rounded mb-3"></div>
+
+        <div className="flex justify-between">
+          <div className="h-3 w-1/4 bg-gray-200 rounded"></div>
+          <div className="h-3 w-1/4 bg-gray-300 rounded"></div>
+        </div>
+
+      </div>
+    </div>
+  );
+};

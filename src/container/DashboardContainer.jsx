@@ -39,7 +39,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
     </span>
   );
 }
-function DashboardContainer() {
+function DashboardEmbed() {
 
   const currentProfile = useSelector(state=>state.users.currentProfile)
 
@@ -54,25 +54,26 @@ const collections = collectionsRaw
   const [workshop,setWorkshop]=useState(null)
   const {openDialog,dialog,closeDialog,resetDialog}=useDialog()
   const isNative = Capacitor.isNativePlatform()
-  // const recommendedCols= useSelector(state => state.books.recommendedCols);
-  // const stories = useSelector(state => state.pages.pagesInView ?? []);
-  // const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
 
-  useEffect(()=>{
-    fetchWorkshops()
-  },[currentProfile])
+useEffect(()=>{
+ fetchWorkshops()
+},[])
+
 useEffect(() => {
   try {
-    if (results.length > 1) {
+    if (results?.length > 1) {
       const group = results[1]; // same as skipping first
       const story = [...group.storyIdList]
-        .filter(a => a.story.type === PageType.text)
-        .sort((a, b) => a.story.updated - b.story.updated)
+        .filter(a => a?.story?.type === PageType.text)
+        .sort((a, b) => a?.story?.updated - b?.story?.updated)
       setWorkshop({ group, story });
     }
   } catch (err) {
     console.log(err);
   }
+ 
+   
+  
 }, [results]);
 const openYourWorkshops=()=>{
 
@@ -206,7 +207,7 @@ const openPages=()=>{
       checkResult(res, ({ groups }) => {
       
     
-        setResults(groups)
+        setResults(groups||[])
       })})
     } catch (err) {
       console.error("Failed fetching workshops:", err);
@@ -278,11 +279,11 @@ scrollY: false,
   };
    let saves = [
   ...(
-    currentProfile?.profileToCollections?.[1]?.collection?.childCollections?.map(col => col.childCollection)
+    currentProfile?.profileToCollections?.[1]?.collection?.childCollections?.map(col => col.childCollection)||[]
     || []
   ),
   ...(
-    currentProfile?.profileToCollections?.[1]?.collection?.storyIdList?.map(str => str.story)
+    currentProfile?.profileToCollections?.[1]?.collection?.storyIdList?.map(str => str.story)||[]
     || []
   )
 ].slice(0, 3);  return (
@@ -317,7 +318,7 @@ scrollY: false,
       <div className="flex justify-center md:justify-start w-full">
       
         <ButtonWrapper
-       onClick={() => router.push(Paths.workshop.reader(), "forward","replace")}
+       onClick={() => router.push(Paths.workshop.reader(), "forward")}
           className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
         >
           <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
@@ -328,11 +329,37 @@ scrollY: false,
               <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
               </div>
               <div className='flex mx-4 flex-col gap-4'>
-                {saves.map(item=>{
-                  
-                  return<div onClick={()=>item.data?router.push(Paths.page.createRoute(item.id),"forward"):router.push(Paths.collection.createRoute(item.id),"forward")}className='border-1 border border-soft rounded-xl p-4'><div className='flex flex-row gap-4 '><h6>{item.type} ·</h6>
-                  <h5 className='text-[1.2em]'>{item.title}</h5></div></div>
+               {saves.map(item=>{ 
+                return (
+  <div
+    onClick={() => {
+      if (!item) return;
+      item?.data
+        ? router.push(Paths.page.createRoute(item.id), "forward")
+        : router.push(Paths.collection.createRoute(item.id), "forward");
+    }}
+    className="border border-soft rounded-xl p-4"
+  >
+    {item ? (
+      // ✅ REAL CONTENT
+      <div className="flex flex-row gap-4 items-center">
+        <h6>{item.type} ·</h6>
+        <h5 className="text-[1.2em]">{item.title}</h5>
+      </div>
+    ) : (
+      // ✅ SKELETON STATE
+      <div className="flex flex-row gap-4 items-center animate-pulse">
+        <div className="h-4 w-16 bg-gray-300 rounded-md" />
+        <div className="h-5 w-40 bg-gray-300 rounded-md" />
+      </div>
+    )}
+  </div>
+);
+                  // console.log("SAVES",item)
+                  // return<div onClick={()=>item?.data?router.push(Paths.page.createRoute(item.id),"forward"):router.push(Paths.collection.createRoute(item.id),"forward")}className='border-1 border border-soft rounded-xl p-4'><div className='flex flex-row gap-4 '><h6>{item?.type} ·</h6>
+                  // <h5 className='text-[1.2em]'>{item?.title}</h5></div></div>
                 })}
+                
               </div>
             </div>
             <div>
@@ -411,4 +438,4 @@ scrollY: false,
   );
 }
 
-export default DashboardContainer;
+export default DashboardEmbed

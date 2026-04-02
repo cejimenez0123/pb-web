@@ -20,7 +20,7 @@ export default function LogInContainer() {
     const {setError,seo,setSeo}=useContext(Context)
     const currentProfile = useSelector(state=>state.users.currentProfile)
     const router = useIonRouter()
-
+console.log("CURENT",currentProfile)
     useEffect(()=>{
         let soo = seo
         soo.title = "Plumbum (Log In) - Share Your Weirdness"
@@ -77,7 +77,7 @@ function LogInCard({setLogInError}){
                     if(payload && payload.profile && payload.profile.id){
 
                    
-                    router.push(Paths.home,"root","replace")
+                    router.push(Paths.home,"root")
                      }else{
                         setError("Error with Profile")
                      }
@@ -103,7 +103,7 @@ setError("User Not Found. Apply Below")
         if(idToken){
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
-                router.push(Paths.home,"root","replace")
+                router.push(Paths.home,"root")
            
 
                     setPending(false)
@@ -124,7 +124,7 @@ setError("User Not Found. Apply Below")
         
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
-           router.push(Paths.home,"root","replace")
+           router.push(Paths.home,"root")
                 setPending(false)
             },err=>{
                

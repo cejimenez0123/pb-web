@@ -150,7 +150,7 @@ const handleUseRefferal=(params)=>{
             if (payload.token) Preferences.set({ key: "token", value: payload.token });
             if (payload.profile) {
               Preferences.set({ key: "firstTime", value: "true" });
-              router.push(Paths.myProfile);
+           router.push(Paths.myProfile, "root", "replace");
             }
           },
           (err) => setError(err.message)

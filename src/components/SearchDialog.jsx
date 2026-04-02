@@ -114,64 +114,7 @@ const SearchDialog = ({ presentingElement }) => {
       return !!(titleMatch || usernameMatch || nameMatch);
     });
   }, []);
-// useEffect(()=>{
-//     const payload = {
-//       query: "",
-//       filters: selectedFilters,
-//       profileId: currentProfile ? currentProfile.id : null,
-//     };
-//  dispatch(searchMultipleIndexes(payload)).then(result => {
-//       checkResult(
-//         result,
-//         returned => {
-//           const { results } = returned;
-//           const list =
-//             (results ?? []).map(item => ({
-//               item,
-//               objectID: item.objectID,
-//               type: item.type,
-//             })) || [];
-//           setSearchContent(list);
-//         },
-//         err => console.error('Search Error:', err?.message)
-//       );
-//     });
-// },[])
-  // Remote search action (Algolia or similar)
-  // const searchAction = useCallback(() => {
-  //    const trimmed = searchText.trim();
 
-  // // personal search is LOCAL — don't return early
-  // if (selectedFilters.includes('personal')) return;
-
-  // if (!trimmed) {
-  //   setSearchContent([]); // ← reset so memo recomputes
-  //   return;
-  // }
-
-  //   const payload = {
-  //     query: trimmed,
-  //     filters: selectedFilters,
-  //     profileId: currentProfile ? currentProfile.id : null,
-  //   };
-
-  //   dispatch(searchMultipleIndexes(payload)).then(result => {
-  //     checkResult(
-  //       result,
-  //       returned => {
-  //         const { results } = returned;
-  //         const list =
-  //           (results ?? []).map(item => ({
-  //             item,
-  //             objectID: item.id,
-  //             type: item.type,
-  //           })) || [];
-  //         setSearchContent(list);
-  //       },
-  //       err => console.error('Search Error:', err?.message)
-  //     );
-  //   });
-  // }, [searchText, selectedFilters, currentProfile]);
 const searchAction = useCallback(() => {
   const trimmed = searchText.trim();
 

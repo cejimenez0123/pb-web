@@ -1,19 +1,17 @@
 
 
-import { useContext, useEffect,useRef,useCallback, useLayoutEffect,useState } from 'react'
+import { useEffect,useRef,useCallback,useState } from 'react'
 import { useDispatch} from 'react-redux'
 import '../App.css'
 import "../styles/Navbar.css"
 import person from "../images/icons/person.png"
 import addCircle from "../images/icons/plus.app.svg"
-import {signOutAction} from "../actions/UserActions"
+import {getCurrentProfile, signOutAction} from "../actions/UserActions"
 import calendar from "../images/icons/calendar.svg"
-import { Preferences } from "@capacitor/preferences";
 import home from "../images/icons/home.svg"
 import menu from "../images/icons/menu.svg"
 import library from "../images/icons/book.svg"
 import search from "../images/icons/magnifyingglass.svg"
-import { debounce, filter } from 'lodash'
 import hammer from "../images/icons/hammer.svg"
 import LinkIcon from '../images/icons/link.svg';
 import CreateIcon from '../images/icons/ink_pen.svg'
@@ -25,16 +23,18 @@ import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setEditingPage, setHtmlContent, setPageInView, setPagesInView } from '../actions/PageActions.jsx'
 import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
-import Context from '../context.jsx'
+import debounce from '../core/debounce.js'
 import { initGA, sendGAEvent } from '../core/ga4.js'
-import {IonImg, IonList, IonText, useIonRouter,} from '@ionic/react';
+import {IonImg, useIonRouter,} from '@ionic/react';
 import { useSelector } from 'react-redux'
-import { Capacitor } from '@capacitor/core'
 import { PageType } from '../core/constants.js'
-import { useMediaQuery } from 'react-responsive'
+
 import { useDialog } from '../domain/usecases/useDialog.jsx'
 import { createCollection } from '../actions/CollectionActions.js'
 import submitCollection from '../core/submitCollection'
+import DeviceCheck from '../components/DeviceCheck.jsx'
+import { Capacitor } from '@capacitor/core'
+import { Preferences } from '@capacitor/preferences'
 const PageName = {
   home: "Home",
   about:"About",
@@ -77,7 +77,12 @@ function NavbarContainer({ isDesktop}) {
 export default NavbarContainer
 
 function DesktopNavbar({currentProfile}){
-
+  const dispatch = useDispatch()
+  useEffect(()=>{
+    Preferences.get({key:"token"}).then(({value})=>{
+      !currentProfile && dispatch(getCurrentProfile())
+    })
+  },[currentProfile])
 return(
 
 <div className="navbar bg-emerald-800">
@@ -103,16 +108,16 @@ return(
 const navItem =
   "flex-1 flex flex-col items-center justify-center bg-soft text-white active:scale-95 transition-transform";
 function MobileNavbar({currentProfile}){
-
+const router = useIonRouter()
    
   return (
     <div className="fixed bottom-0 w-[100%] bg-soft border-t border-white/10">
       <div className="flex flex-row justify-between items-center px-2 py-2 max-w-md mx-auto">
-        <HomeButton />
-        <EventButton />
-        {currentProfile && <CreateButton />}
-        {currentProfile && <WorkshopButton />}
-        <ProfileButton currentProfile={currentProfile} />
+        <HomeButton  router={router}/>
+        <EventButton  router={router}/>
+        {currentProfile && <CreateButton router={router}/>}
+        {currentProfile && <WorkshopButton router={router}/>}
+        <ProfileButton  router={router}currentProfile={currentProfile} />
       </div>
     </div>
   );
@@ -153,7 +158,7 @@ return(
     <li>
       <button 
         className="w-full text-left" 
-        onClick={() => router.push(Paths.myProfile, "forward","replace")}
+        onClick={() => router.push(Paths.myProfile, "root", "replace")}
       >
         Profile
       </button>
@@ -161,7 +166,7 @@ return(
     <li>
       <button 
         className="w-full text-left" 
-        onClick={() => router.push(Paths.notifications(), "forward","replace")}
+        onClick={() => router.push(Paths.notifications(), "forward")}
       >
         Notifications
       </button>
@@ -185,7 +190,7 @@ const router = useIonRouter()
 
 return (
   <div className="flex flex-col"
-     onClick={()=>router.push(Paths.discovery,"forward","replace")}>
+     onClick={()=>router.push(Paths.discovery,"forward")}>
     <IonImg
       src={library}
       style={{width:"3em",height:"3em",filter:"invert(100%)"}}
@@ -205,7 +210,7 @@ const router = useIonRouter()
 
 return (
   <div
-    onClick={()=>router.push(Paths.about(),"forward","replace")}
+    onClick={()=>router.push(Paths.about(),"forward")}
         className={navItem}
   >
     <IonImg
@@ -219,16 +224,16 @@ return (
 }
 
 
-function EventButton(){
+function EventButton({router}){
 
-const router = useIonRouter()
+// const router = useIonRouter()
 const handleClick=()=>{
-()=>router.push(Paths.calendar(),"forward")
+router.push(Paths.calendar(),"forward")
 }
 return (
   <button onClick={handleClick} className={navItem}>
       <IonImg src={calendar} className="max-w-6 max-h-6 mb-1 invert " />
-      <span className="text-[11px]">Studio</span>
+      <span className="text-[11px]">Events</span>
     </button>
  
 )
@@ -236,41 +241,17 @@ return (
 }
 
 
-
-// function HomeButton() {
-//   const router = useIonRouter();
-//   const currentProfile = useSelector((state) => state.users.currentProfile);
-
-//   // Memoized handler prevents re-creation every render
-//   const handleClick = useCallback(() => {
-//     if (currentProfile) {
-//       router.push(Paths.home, "forward"); // no replace
-//     } else {
-//       router.push(Paths.about(), "forward");
-//     }
-//   }, [currentProfile, router]);
-
-//   return (
-//     <button onClick={handleClick}  className={navItem}>
-//     <IonImg
-//       src={home}
-//       style={{width:"3em",height:"3em",backgroundColor:Enviroment.palette.soft}}
-//     />
-//     <h6 className="text-white text-xs">Home</h6>
-//     </button>
-//   );
-// }
-function HomeButton() {
-  const router = useIonRouter();
+function HomeButton({router}) {
+  // const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
 
-  const handleClick = useCallback(() => {
+   const handleClick = () => {
     if (currentProfile) {
-      router.push(Paths.home, "forward");
+      router.push(Paths.home, "root","replace");
     } else {
       router.push(Paths.about(), "forward");
     }
-  }, [currentProfile, router]);
+  };
 
   return (
     <button onClick={handleClick} className={navItem}>
@@ -279,38 +260,38 @@ function HomeButton() {
     </button>
   );
 }
-function WorkshopButton(){
+function WorkshopButton({router}){
+  // const router = useIonRouter();
+  // const isNative = Capacitor.isNativePlatform()
 
-const router = useIonRouter()
-const dispatch = useDispatch()
-const handleClick=()=>{
-  dispatch(setPageInView({page:null}))
-        router.push(Paths.workshop.reader(),"forward")
-}
-return (
+  const handleWorkshopClick = () => {
+    router.push(`${Paths.workshop.reader()}?t=${Date.now()}`, 'forward');
 
-  <button onClick={handleClick} className={navItem}>
+    
+
+  
+  };
+
+  return (
+    <button onClick={handleWorkshopClick} className={navItem}>
       <IonImg src={hammer} className="max-w-6 max-h-6 mb-1 invert " />
       <span className="text-[11px]">Studio</span>
     </button>
-  
-)
-
+  );
 }
 
 
 
+function ProfileButton({currentProfile,router}) {
+  // const router = useIonRouter();
 
-function ProfileButton({currentProfile}) {
-  const router = useIonRouter();
-
-  const handle = useCallback(() => {
+  const handle = ()=>{
     if (currentProfile) {
-      router.push(Paths.myProfile, "forward", );
+      router.push(Paths.myProfile, "root", "replace");
     } else {
       router.push(Paths.login(), "forward");
     }
-  }, [currentProfile, router]);
+  }
 
   return (
     <button onClick={handle} className={navItem}>
@@ -341,15 +322,20 @@ function NavCreateDropdown({
   });
   const [submitting, setSubmitting] = useState(false);
   // const [error, setError] = useState(null);
-    useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  document.addEventListener("touchstart", handleClickOutside); // mobile
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+    document.removeEventListener("touchstart", handleClickOutside);
+  };
+}, []);
   const ClickWriteAStory = debounce(()=>{
      
       sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
@@ -444,15 +430,15 @@ function MenuHorizontal({ pages, currentProfile }) {
 
   const handleCloseNavMenu = (page) => {
     switch (page) {
-      case "About": router.push(Paths.about(),"forward","replace"); break
-      case "Discovery": router.push(Paths.discovery,"forward","replace"); break
-      case "Search": router.push("/search","forward","replace"); break
+      case "About": router.push(Paths.about(),"forward"); break
+      case "Discovery": router.push(Paths.discovery,"forward"); break
+      case "Search": router.push("/search","forward"); break
       case "Workshop": 
         dispatch(setPageInView({ page: null }))
-        router.push(Paths.workshop.reader(),"forward","replace"); break
-      case "Log In": router.push(Paths.login(),"forward","replace"); break
-      case "Join Now": router.push(Paths.apply(),"forward","replace"); break
-      case "Feedback": router.push(Paths.feedback(),"forward","replace"); break
+        router.push(Paths.workshop.reader(),"forward"); break
+      case "Log In": router.push(Paths.login(),"forward"); break
+      case "Join Now": router.push(Paths.apply(),"forward"); break
+      case "Feedback": router.push(Paths.feedback(),"forward"); break
     }
   }
 
@@ -482,9 +468,9 @@ function MenuHorizontal({ pages, currentProfile }) {
   )
 }
 
-function CreateButton() {
+function CreateButton({router}) {
   const dispatch = useDispatch();
-  const router = useIonRouter();
+  // const router = useIonRouter();
   const { openDialog } = useDialog();
   
   const [formData, setFormData] = useState({
@@ -548,25 +534,7 @@ const {currentProfile }= useSelector(state=>state.users)
   };
 
   return (
-    // <>   
-    //     {isOpen && <div className="absolute bottom-full mb-2 w-36 bg-white rounded-xl shadow-lg py-2 z-50">
-    //       {["write", "image", "link", "collection"].map((item) => (
-    //         <button
-    //           key={item}
-    //           onClick={() => handleNavigate(item)}
-    //           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 capitalize"
-    //         >
-    //           {item}
-    //         </button>
-    //       ))}
-    //     </div>}
-    //   {/* )} */}
-    //  <button    onClick={() => setIsOpen((prev) => !prev)} className={navItem}>
-   
-    //   <IonImg src={addCircle} className="w-6 h-6 mb-1 invert" />
-    //   <span className="text-[11px]">Home</span>
-    // </button>
-    // </>
+
 <div
   tabIndex={0} // make div focusable
   onBlur={(e) => {

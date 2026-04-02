@@ -288,9 +288,6 @@ useEffect(() => {
 }, [profile, dispatch]);
 
 
-useEffect(()=>{
-  dispatch(getCurrentProfile())
-},[])
 
 
   // ── Fetch

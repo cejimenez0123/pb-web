@@ -21,18 +21,17 @@ console.log(book)
     initGA();
   }, []);
 
-  const navigateToBook = () => {
-    if(book){
-    dispatch(clearPagesInView());
-    dispatch(setCollections({ collections: [] }));
-    dispatch(setCollectionInView({ collection: book }));
-    router.push(Paths.collection.createRoute(book.id),);
-   book && sendGAEvent(
-      "Navigate",
-      `Navigate to Collection ${JSON.stringify({ id: book.id, title: book?.title })}`
-    );
-  }
-  };
+const navigateToBook = async () => {
+  if (!book) return;
+  await dispatch(clearPagesInView());
+  await dispatch(setCollections({ collections: [] }));
+  await dispatch(setCollectionInView({ collection: book }));
+  router.push(Paths.collection.createRoute(book.id), 'forward', 'replace');
+  sendGAEvent(
+    "Navigate",
+    `Navigate to Collection ${JSON.stringify({ id: book.id, title: book?.title })}`
+  );
+};
   if(!book){
 
     return <BookListItemShadow/>
@@ -41,10 +40,10 @@ if(book){
   return (
     <IonCard
     
-      onClick={navigateToBook}
+
      className="min-h-[10em] group-hover:h-[13rem] overflow-hidden relative btn hover:h-[13rem] transition-all duration-300 w-[16rem]  boreder-blueSea boder-opacity-10 bg-blueSea bg-opacity-10 text-emerald-800 rounded-lg text-ellipsis "
     >
-      <div className="h-16"> 
+      <div        onClick={navigateToBook} className="h-16"> 
     <div className="absolute top-0 pt-2 left-3 right-3 z-10">
         <IonCardHeader className="p-0">
 

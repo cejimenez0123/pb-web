@@ -27,7 +27,7 @@ const {isDesktop}=useContext(Context)
     if (window.history.length > 1) {
        router.goBack()
     } else {
-      router.push(Paths.myProfile);
+     router.push(Paths.myProfile, "root", "replace");
     }
   };
   return (

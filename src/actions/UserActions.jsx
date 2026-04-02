@@ -17,11 +17,11 @@ try{        const {uId,email,password,idToken,isNative}=params
    
         
         const {token}=authData  
-console.log(authData)
+
   
          await Preferences.set({key:"token",value:token})
-  
-        return {token:token,profile:authData.user.profiles[0]}
+  console.log("AuthData",authData)
+        return {token:token,profile:authData?.profile}
 }catch(error){
   console.log(error)
 }
@@ -130,6 +130,14 @@ const searchMultipleIndexes = createAsyncThunk(
 );
 
 const setDialog = createAction("user/setDialog", (params)=> {
+
+
+  return  {payload:
+     params}
+    
+  
+})
+const setUserLoading = createAction("user/setUserLoading", (params)=> {
 
 
   return  {payload:
@@ -303,4 +311,5 @@ export {logIn,
         deletePicture,
         updateSubscription,
         getIosInfo,
+        setUserLoading
     }

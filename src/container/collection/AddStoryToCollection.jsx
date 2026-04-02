@@ -86,9 +86,9 @@ export default function AddStoryToCollectionContainer() {
   }, [currentProfile, collectionInView, pageInView]);
 
   useEffect(() => {
-    dispatch(getCurrentProfile());
+
     getContent();
-  }, []);
+  }, [currentProfile]);
 
   const getContent = () => {
     switch (type) {
