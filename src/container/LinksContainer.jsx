@@ -9,6 +9,7 @@ import { initGA} from "../core/ga4";
 import Context from "../context";
 import flare from "../images/icons/flare.svg"
 import pen from "../images/icons/pen.svg"
+import form from "../images/icons/form.png"
 import { IonContent } from "@ionic/react";
 import bxFuture from "../images/events/bxfutures.png"
 import ErrorBoundary from "../ErrorBoundary";
@@ -49,18 +50,23 @@ export default function LinksContainer(props){
                 
        
                 <li>  
-                      <LinkNode image={pen}
+                      {/* <LinkNode image={pen}
                       name={"Writers Workshop"}
                       links={
                          showThirdSaturdayNode?[{name:"To Be Read Spreadsheet",url:"https://docs.google.com/spreadsheets/d/1bPnD3ufcoBYkttmdZJLEnc2K_662yktJ_tzK2w9ueVM/edit?usp=sharing"},{name:"RSVP Here",url:"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}]:
                         
-                        [{name:"RSVP Here",url:"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}
+                        [
                       
-                      ]}
-  
-                    title={"March 21st. Writers Workshop"}
-                    description={`Join us for our Writers Workshop. We will read Sonia Sanchez and give feedback.`}/>
-                    </li>
+                      ]} */}
+  <LinkNode image={form}
+  title={"Las Lineas Film Festival Open Mic"}
+                      links={[{name:"Apply too",url:"https://forms.gle/USFXSyZSJ8t9QEsk7"}]}
+                      description={"Limited Slots to perform!"}/>
+ 
+                 
+                    {/* title={"March 21st. Writers Workshop"}
+                    description={`Join us for our Writers Workshop. We will read Sonia Sanchez and give feedback.`}/> */}
+                     </li>
                      <li>  
                       <LinkNode image={bxFuture}
                       name={"Plumbum x Bronx Frame Creative Tech Mixer"}
