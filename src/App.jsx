@@ -171,37 +171,42 @@ const libraries = ["places"];
 
 
             <Route exact path={Paths.notifications()}
-            render={()=><PrivateRoute ><PageWrapper>
-              <NotificationContainer currentProfile={currentProfile}/></PageWrapper></PrivateRoute>}/>
-                   <Route path={Paths.home}
-                  render={()=> 
-       <PrivateRoute> <PageWrapper  showBackbutton={false} showSearchButton={true}>
-        <ContentHubContainer/>
-         
-                      </PageWrapper>
-        </PrivateRoute>
+            render={()=><PageWrapper><PrivateRoute >
+              <NotificationContainer currentProfile={currentProfile}/></PrivateRoute></PageWrapper>}/>
+    <Route
+  path={Paths.home}
+  render={() =>
 
-       }
-     />
+      <PageWrapper>
+            <PrivateRoute>
+        <ContentHubContainer />
+        </PrivateRoute>
+      </PageWrapper>
+
+  }
+/>
      <Route 
     exact path={Paths.dashboard}>
-      <PrivateRoute>
+
         <PageWrapper>
+                <PrivateRoute>
           <DashboardContainer/>
+          </PrivateRoute>
         </PageWrapper>
-      </PrivateRoute>
+     
     </Route>
     <Route exact path={Paths.myProfile}
-      render={()=>  <PrivateRoute>
-        <PageWrapper showBackbutton={false}> 
+      render={()=>  
+        <PageWrapper showBackbutton={false}>
+          <PrivateRoute>
           <MyProfileContainer
 
                        
                       
                            />
-                           
+                           </PrivateRoute> 
                            </PageWrapper>
-                           </PrivateRoute> }
+                          }
     />
           <Route exact path="/discovery" 
                 render={()=>
@@ -238,27 +243,25 @@ const libraries = ["places"];
        <Route path={Paths.feedback()}
             render={()=><PageWrapper><FeedbackContainer/></PageWrapper>}/>
      <Route path={Paths.addToCollection.route}
-               render={()=> <PrivateRoute
-      
-  
-      >
-            <PageWrapper><AddToCollectionContainer/>
-      </PageWrapper>
-            </PrivateRoute>}/>
+               render={()=>   <PageWrapper><PrivateRoute>
+          <AddToCollectionContainer/>
+   
+            </PrivateRoute>   </PageWrapper>}/>
      <Route 
             path={Paths.addStoryToCollection.route}
-              render={()=><PrivateRoute 
+              render={()=> <PageWrapper> <PrivateRoute 
                 
                     >
-                           <PageWrapper> 
-                            <AddStoryToCollectionContainer/>  </PageWrapper> 
-                      </PrivateRoute>}/>
+                          
+                            <AddStoryToCollectionContainer/> 
+                      </PrivateRoute> </PageWrapper> }/>
      <Route path={Paths.editCollection.route()}
       render={()=>
+          <PageWrapper>  
       <PrivateRoute 
         currentProfile={currentProfile}
-      >     <PageWrapper>     <EditCollectionContainer/>  </PageWrapper> 
-      </PrivateRoute>}/>
+      >      <EditCollectionContainer/>
+      </PrivateRoute>  </PageWrapper> }/>
      
 
        <Route path={Paths.hashtag.route()}
@@ -272,15 +275,19 @@ const libraries = ["places"];
       
 
       <Route path={Paths.workshop.reader()}
-    render={()=><PrivateRoute      
-     currentProfile={props.currentProfile}>  <PageWrapper   showBackbutton={false}><WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
+    render={()=><PageWrapper   showBackbutton={false}><PrivateRoute      
+     currentProfile={props.currentProfile}>  <WorkshopContainer/>  </PrivateRoute> </PageWrapper>}/>
     <Route 
     path={Paths.workshop.route()}
-    render={()=><PrivateRoute
+    render={()=><PageWrapper key={Paths.workshop.route()} showBackbutton={false}><PrivateRoute
+     key={Paths.workshop.route()}
       currentProfile={props.currentProfile}
-    >  <PageWrapper  showBackbutton={false}> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
+    >   <WorkshopContainer
+    
+     key={Paths.workshop.route()}
+     /> </PrivateRoute> </PageWrapper> }/>
     <Route path="/profile/:id/view" render={()=>
-      <PageWrapper>   <ProfileContainer/>  </PageWrapper> 
+      <PageWrapper key={"/profile/:id/view"} >   <ProfileContainer  key={"/profile/:id/view"} />  </PageWrapper> 
       }/>
 
  
@@ -289,26 +296,29 @@ const libraries = ["places"];
    
     <Route  
        exact path={"/story/:type/edit"}
-        render={()=> 
+        render={()=>       <PageWrapper>  
           <PrivateRoute>
-              <PageWrapper> 
+       
           <EditorContainer 
     htmlContent={props.htmlContent} 
         currentProfile={currentProfile} 
-            />  </PageWrapper> 
+            />  
       </PrivateRoute>
+      </PageWrapper> 
         }/>
 <Route
  exact path={Paths.editPage.route}
   render={() =>
+    <PageWrapper>
     <PrivateRoute>
-      <PageWrapper>
+      
         <EditorContainer 
         htmlContent={props.htmlContent} 
         currentProfile={currentProfile} 
               />
-      </PageWrapper>
+ 
     </PrivateRoute>
+         </PageWrapper>
   }
 />
       <Route path={Paths.page.route()} render={()=>
@@ -318,12 +328,13 @@ const libraries = ["places"];
 
 
       <Route path="/profile/edit" render={()=>
- 
+  <PageWrapper showBackbutton={false}> 
         <PrivateRoute  >
-            <PageWrapper showBackbutton={false}> 
+           
         <SettingsContainer />
-          </PageWrapper> 
+      
         </PrivateRoute>
+            </PageWrapper> 
       }/>
        <Route path={"/terms"} render={()=>
          <PageWrapper> 

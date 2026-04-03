@@ -1,4 +1,4 @@
- import {  IonContent,  } from '@ionic/react';
+ import {  IonContent, useIonViewDidLeave, useIonViewWillEnter,  } from '@ionic/react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { createFollow, deleteFollow } from '../../actions/FollowAction';
 
@@ -87,16 +87,13 @@ const SectionLabel = ({ children }) => (
   <p className="text-xs text-gray-400 uppercase tracking-wide">{children}</p>
 );
 
-// ── Search Bar ────────────────────────────────────────
-// const SearchBar = ({ value, onChange }) => (
-
-// );
-
-// ── Follow Button ─────────────────────────────────────
+useIonViewDidLeave(() => {
+  dispatch(setPagesInView({ pages: [] }));
+  dispatch(setCollections({ collections: [] }));
+});
     
     const [following, setFollowing] = useState(null);
-     const [followingCount, setFollowingCount] = useState(0);
-    const [followersCount, setFollowersCount] = useState(0);
+   
 
      const onClickFollow = debounce(() => {
     // if (!currentProfile) return setError("Please login first!");
@@ -115,15 +112,7 @@ const SectionLabel = ({ children }) => (
       })
     });
   }, 200);
-    useEffect(() => {
-    if (!profile|!currentProfile) return;
- 
- 
-   let found =  currentProfile.following?.find((f) => f.followingId === profile.id) 
-
-    setFollowing(found)
-
-  }, [ profile,currentProfile]);
+   
 const FollowButton = ({ prof,current,follow,onClick}) => {
 
   
@@ -286,22 +275,18 @@ useEffect(() => {
 
 
   // ── Fetch
-  useEffect(() => {
+  useIonViewWillEnter(() => {
     dispatch(fetchProfile({ id }));
 
-    const fetchContent = async () => {
-      const token = (await Preferences.get({ key: "token" })).value;
+    // const fetchContent = async () => {
+    
+      
+    //     dispatch(getPublicProfilePages({ profile: { id } }));
+    //     dispatch(getPublicProfileCollections({ profile: { id } }));
+    
+    // };
 
-      // if (token && profile?.id === id) {
-      //   dispatch(getProtectedProfilePages({ profile: { id } }));
-      //   dispatch(getProtectedProfileCollections({ profile: { id } }));
-      // } else {
-        dispatch(getPublicProfilePages({ profile: { id } }));
-        dispatch(getPublicProfileCollections({ profile: { id } }));
-      // }
-    };
-
-    fetchContent();
+    // fetchContent();
   }, [id, dispatch]);
 
   // ── Follow logic
@@ -326,6 +311,11 @@ const tabs = [
   { key: TABS.ABOUT, label: "About" },
 ];
   // ── Render
+    if (!profile) return <IonContent
+  fullscreen
+  scroll-y="true"
+  style={{ "--background": Enviroment.palette.cream, paddingTop: "env(safe-area-inset-top)" }}
+>Loading...</IonContent>;
   return (
     <ErrorBoundary>
       <IonContent             style={{ "--background": Enviroment.palette.cream }} fullscreen className="bg-cream">
@@ -340,10 +330,9 @@ const tabs = [
               </div>
 
             <div className="flex justify-between text-center">
-              {/* <StatChip value={pagesRaw.length} label="Posts" />
-              <StatChip value={collectionsRaw.length} label="Collections" /> */}
-              <StatChip value={profile["_count"].followers} label="Followers" />
-              <StatChip value={profile["_count"].following} label="Following" />
+             
+              <StatChip value={profile["_count"]?.followers} label="Followers" />
+              <StatChip value={profile["_count"]?.following} label="Following" />
             </div>
 
             {(profile?.bio || profile?.selfStatement) && (

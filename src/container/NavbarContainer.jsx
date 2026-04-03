@@ -238,14 +238,14 @@ return (
 
 
 function HomeButton({router}) {
-  // const router = useIonRouter();
+  const ionrouter = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
 
    const handleClick = () => {
     if (currentProfile) {
-      router.push(Paths.home, "root","replace");
+      ionrouter.push(Paths.home+`?t=${Date.now()}`, "root","replace");
     } else {
-      router.push(Paths.about(), "forward");
+      ionrouter.push(Paths.about(), "forward");
     }
   };
 
