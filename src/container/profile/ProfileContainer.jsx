@@ -331,8 +331,8 @@ const tabs = [
 
             <div className="flex justify-between text-center">
              
-              <StatChip value={profile["_count"]?.followers} label="Followers" />
-              <StatChip value={profile["_count"]?.following} label="Following" />
+              <StatChip value={profile["_count"]?.followers??""} label="Followers" />
+              <StatChip value={profile["_count"]?.following??""} label="Following" />
             </div>
 
             {(profile?.bio || profile?.selfStatement) && (

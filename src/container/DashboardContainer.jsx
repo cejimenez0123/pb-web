@@ -52,6 +52,7 @@ const collections = collectionsRaw
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
   const [results,setResults]=useState([])
   const [workshop,setWorkshop]=useState(null)
+  const [saves,setSaved]=useState([])
   const {openDialog,dialog,closeDialog,resetDialog}=useDialog()
   const isNative = Capacitor.isNativePlatform()
 
@@ -161,7 +162,7 @@ const openCollections=()=>{
         </IonList>
     </div>
       
-    // </div>
+  
     )})}
 const openPages=()=>{
    openDialog({
@@ -191,6 +192,7 @@ const openPages=()=>{
     const [homeCol,setHomeCol]=useState(null)
     const [archiveCol,setArchiveCol]=useState(null)
               useLayoutEffect(() => {
+                
                 if (currentProfile?.profileToCollections) {
                   let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
                   setHomeCol(home);
@@ -254,7 +256,12 @@ function WorkshopItem({workshop}){
   <h6 className='text-[1em]'>{story.status}</h6>
   </div></div>
     }
-
+useEffect(()=>{
+  if(homeCol){
+ let save = [...homeCol?.childCollections.map(c=>c.childCollection),...homeCol?.storyIdList.map(s=>s.story)].slice(0,4)
+ setSaved(save)
+  }
+},[homeCol])
   const ClickCreateACollection = () => {
      try {
     sendGAEvent("create_collection_open", {
@@ -277,16 +284,9 @@ scrollY: false,
 });
 
   };
-   let saves = [
-  ...(
-    currentProfile?.profileToCollections?.[1]?.collection?.childCollections?.map(col => col.childCollection)||[]
-    || []
-  ),
-  ...(
-    currentProfile?.profileToCollections?.[1]?.collection?.storyIdList?.map(str => str.story)||[]
-    || []
-  )
-].slice(0, 3);  return (
+  
+
+ return (
         <ErrorBoundary>
 
           <div className='bg-cream h-[100%]'>

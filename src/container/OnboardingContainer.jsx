@@ -51,8 +51,10 @@ export default function OnboardingContainer(props) {
     "Horror", "Mystery/Thriller", "Romance", "Young Adult", "Children's Literature",
     "Historical Fiction", "Satire/Humor", "Experimental/Hybrid Forms", "Other"
   ];
-  const dispatch = useDispatch()
-
+  
+  useEffect(()=>{
+      currentProfile &&currentProfile.id && router.push(Paths.home,"root")
+  },[currentProfile])
   const [activeTab, setActiveTab] = useState('tab0');
   const [formData, setFormData] = useState({
     idToken:"",

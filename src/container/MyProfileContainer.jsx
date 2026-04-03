@@ -270,13 +270,15 @@ useEffect(() => {
     });
   }, [profile, setSeo]);
 
-  // ── Render
-  console.log(profile)
+
+ 
   if (!profile) return <IonContent
   fullscreen
   scroll-y="true"
   style={{ "--background": Enviroment.palette.cream, paddingTop: "env(safe-area-inset-top)" }}
 >Loading...</IonContent>;
+
+
   return (
     <ErrorBoundary>
       <IonContent
@@ -300,9 +302,9 @@ useEffect(() => {
             </div>
 
             <div className="flex justify-between text-center">
-            <StatChip value={profile["_count"].followers}
+            <StatChip value={profile["_count"]?.followers??""}
                label="Followers" />
-              <StatChip value={profile["_count"].following} label="Following" />
+              <StatChip value={profile["_count"]?.following??""} label="Following" />
             </div>
 
             {(profile?.bio || profile?.selfStatement) && (

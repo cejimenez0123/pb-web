@@ -501,8 +501,6 @@ try{
 
   dispatch(getCurrentProfile());
 
-
-
 }catch(err){
 console.log("APP GET CURRENT PROFILE",err)
 }
