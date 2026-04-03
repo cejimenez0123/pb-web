@@ -12,16 +12,16 @@ const logIn = createAsyncThunk(
      
 try{        const {uId,email,password,idToken,isNative}=params
 
-
+console.log("Toch")
         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
    
         
         const {token}=authData  
-console.log("FOR",authData)
+console.log("toch FOR",authData)
   
          await Preferences.set({key:"token",value:token})
   
-        return {token:token,profile:authData.user.profiles[0]}
+        return {token:token,profile:authData.profile}
 }catch(error){
   console.log(error)
 }
@@ -177,9 +177,9 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
 const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
 async (params,thunkApi) => {
   try{
-    const data = await profileRepo.getMyProfiles()
-    console.log("GET",data)
-   return data
+    const {profile}= await profileRepo.getMyProfiles()
+    
+   return {profile}
  
     }catch(error){    
       console.log(error) 

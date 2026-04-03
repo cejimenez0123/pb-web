@@ -68,7 +68,7 @@ class AuthRepo{
       return res.data
     }
     async startSession({uId,email,password,identityToken}){
-l
+const headers = await this.getAuthHeaders()
         const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password,identityToken},
             {headers:headers})
 

@@ -104,23 +104,7 @@ useEffect(() => {
   };
   checkFirstLaunch();
 }, [isNative]);
-useEffect(() => {
-  const checkUser = async () => {
-  
-try{
-
-  dispatch(getCurrentProfile());
-
-
-
-}catch(err){
-console.log("APP GET CURRENT PROFILE",err)
-}
-  
-  };
-
-return ()=>  checkUser();
-}, []); 
+ 
 
 const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })

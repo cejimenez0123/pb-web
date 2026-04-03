@@ -153,8 +153,7 @@ state.notifications = payload
         state.currentProfile = payload
     }).addCase(getCurrentProfile.pending,(state,data)=>{
 
-        console.log("get FOOT",state)
-        console.log("get FOOT",data)
+        
     }).addCase(getCurrentProfile.fulfilled,(state, data) => {
 
     try{

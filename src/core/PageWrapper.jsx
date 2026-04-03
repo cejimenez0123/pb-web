@@ -473,6 +473,8 @@ import menu from "../images/icons/menu.svg"
 import { Capacitor } from '@capacitor/core';
 import { useSelector } from 'react-redux';
 import { getCurrentProfile } from '../actions/UserActions';
+import { useDispatch } from 'react-redux';
+import { debounce } from 'lodash';
 const PageWrapper = ({
   children,
   showHeader = true,
@@ -489,6 +491,7 @@ const PageWrapper = ({
 const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 const [homeCol, setHomeCol] = useState(null);
+const dispatch = useDispatch()
     const [archiveCol, setArchiveCol] = useState(null);
     const { openDialog, dialog,resetDialog } = useDialog()
  useEffect(() => {
@@ -506,7 +509,7 @@ console.log("APP GET CURRENT PROFILE",err)
   
   };
 
-return ()=>  checkUser();
+checkUser() 
 }, []);
   
  const isDev = import.meta.env.VITE_NODE_ENV=="dev"
