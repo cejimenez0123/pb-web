@@ -97,12 +97,7 @@ const SectionLabel = ({ children }) => (
     const [following, setFollowing] = useState(null);
      const [followingCount, setFollowingCount] = useState(0);
     const [followersCount, setFollowersCount] = useState(0);
-useEffect(() => {
-  if (profile?.following) {
-    setFollowingCount(profile.following.length);
-      setFollowersCount(profile.followers.length);
-  }
-}, [profile]);
+
      const onClickFollow = debounce(() => {
     // if (!currentProfile) return setError("Please login first!");
     if (profile.id  === currentProfile.id) return;
@@ -347,8 +342,8 @@ const tabs = [
             <div className="flex justify-between text-center">
               {/* <StatChip value={pagesRaw.length} label="Posts" />
               <StatChip value={collectionsRaw.length} label="Collections" /> */}
-              <StatChip value={followersCount} label="Followers" />
-              <StatChip value={followingCount} label="Following" />
+              <StatChip value={profile["_count"].followers} label="Followers" />
+              <StatChip value={profile["_count"].following} label="Following" />
             </div>
 
             {(profile?.bio || profile?.selfStatement) && (

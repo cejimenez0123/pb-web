@@ -26,7 +26,7 @@ class ProfileRepo {
 
   try{
        const res = await axios.get(this.url+"/protected",{headers})
-       console.log("Get foot",res)
+      
       return res.data
     }catch(e){
         console.log("GET PROP",e)
@@ -69,7 +69,7 @@ class ProfileRepo {
         const {id}=params
         
         let res = await axios.get(this.url+"/"+id+"/protected",{headers:headers})
-        console.log("fetch dfdf",res.data)
+      
         return res.data
     }
     async getProfile(params){

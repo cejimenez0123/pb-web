@@ -271,6 +271,7 @@ useEffect(() => {
   }, [profile, setSeo]);
 
   // ── Render
+  console.log(profile)
   if (!profile) return <IonContent
   fullscreen
   scroll-y="true"
@@ -299,10 +300,9 @@ useEffect(() => {
             </div>
 
             <div className="flex justify-between text-center">
-              {/* <StatChip value={pagesRaw.length} label="Posts" />
-              <StatChip value={collectionsRaw.length} label="Collections" /> */}
-              <StatChip value={profile?.followers?.length} label="Followers" />
-              <StatChip value={profile?.following?.length} label="Following" />
+            <StatChip value={profile["_count"].followers}
+               label="Followers" />
+              <StatChip value={profile["_count"].following} label="Following" />
             </div>
 
             {(profile?.bio || profile?.selfStatement) && (
