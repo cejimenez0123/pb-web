@@ -955,7 +955,7 @@ const PageTab = ({ collections }) => {
 const MemberTab = ({ collection }) => {
   const router = useIonRouter()
 
-  const roles = [...collection.roles, collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
+  const roles = [...collection.roles.filter(role=>role.profile.id!=collection.profile.id), collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
   return (
     <>
      <div>

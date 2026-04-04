@@ -94,7 +94,7 @@ useEffect(() => {
 const Pill = ({ label,onClick }) => (
   <span onClick={()=>onClick()}
   
-  className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+  className="text-xs px-3 py-1 shadow-sm rounded-full bg-gray-100 text-soft">
     {label}
   </span>
 );
@@ -137,25 +137,82 @@ const FollowButton = ({ following, onClick, isSelf }) => {
   );
 };
 // ── Communities Panel ─────────────────────────────────
-const CommunitiesPanel = ({ profile }) => {
+// const CommunitiesPanel = ({ profile }) => {
 
 
-  // c= profile?.communities ?? [];
-  if (!communities.length)
-    return <div className="text-center py-12 text-sm text-gray-400">No communities yet.</div>;
+//   // c= profile?.communities ?? [];
+//   if (!communities.length)
+//     return <div className="text-center py-12 text-sm text-gray-400">No communities yet.</div>;
+
+//   return (
+//     <div className="space-y-4">
+//       {communities.map((c) => (
+//         <div key={c.id} onClick={()=>router.push(Paths.collection.createRoute(c.id))}className="p-4 rounded-xl bg-gray-50">
+//           <p className="text-sm font-medium text-gray-900">{c.title}</p>
+//           {c.purpose&& <p className="text-sm text-gray-500 mt-1">{c.purpose}</p>}
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+
+const CommunitiesPanel = ({communities }) => {
+  const router = useIonRouter();
+
+  // const communities = profile?.communities ?? [];
+
+  const [page, setPage] = useState(1);
+  const limit = 6; // adjust based on feel
+
+  const totalPages = Math.ceil(communities.length / limit);
+
+  const paginatedCommunities = useMemo(() => {
+    const start = (page - 1) * limit;
+    return communities.slice(start, start + limit);
+  }, [communities, page]);
+
+  if (!communities.length) {
+    return (
+      <div className="text-center py-12 text-sm text-gray-400">
+        No communities yet.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      {communities.map((c) => (
-        <div key={c.id} onClick={()=>router.push(Paths.collection.createRoute(c.id))}className="p-4 rounded-xl bg-gray-50">
-          <p className="text-sm font-medium text-gray-900">{c.title}</p>
-          {c.purpose&& <p className="text-sm text-gray-500 mt-1">{c.purpose}</p>}
+      
+      {/* List */}
+      {paginatedCommunities.map((c) => (
+        <div
+          key={c.id}
+          onClick={() => router.push(Paths.collection.createRoute(c.id))}
+          className="p-4 rounded-xl bg-gray-50 active:scale-[0.98] transition"
+        >
+          <p className="text-sm font-medium text-gray-900">
+            {c.title.length>0?c.title:"Untitled"}
+          </p>
+
+          {c.purpose && (
+            <p className="text-sm text-gray-500 mt-1">
+              {c.purpose}
+            </p>
+          )}
         </div>
       ))}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <PaginationControls
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}
+        />
+      )}
     </div>
   );
 };
-
 // ── About Panel ──────────────────────────────────────
 const AboutPanel = ({ profile }) => {
   const [locationName,setLocationName]=useState("")
@@ -339,80 +396,73 @@ const IndexList = ({ items, router }) => (
 );
 
 
-const CollectionPaginationControls = ({ page, totalPages, setPage }) => {
-  const [input, setInput] = useState(page);
+// const CollectionPaginationControls = ({ page, totalPages, setPage }) => {
+//   const [input, setInput] = useState(page);
 
-  useEffect(() => {
-    setInput(page);
-  }, [page]);
+//   useEffect(() => {
+//     setInput(page);
+//   }, [page]);
 
-  const goToPage = () => {
-    const p = Number(input);
-    if (p >= 1 && p <= totalPages) {
-      setPage(p);
-    } else {
-      setInput(page);
-    }
-  };
+//   const goToPage = () => {
+//     const p = Number(input);
+//     if (p >= 1 && p <= totalPages) {
+//       setPage(p);
+//     } else {
+//       setInput(page);
+//     }
+//   };
 
-  // show only nearby pages (like iOS)
-  const visiblePages = Array.from({ length: totalPages }, (_, i) => i + 1)
-    .filter((p) => Math.abs(p - page) <= 2);
+//   // show only nearby pages (like iOS)
+//   const visiblePages = Array.from({ length: totalPages }, (_, i) => i + 1)
+//     .filter((p) => Math.abs(p - page) <= 2);
 
-  return (
-    <div className="flex items-center justify-between px-3 py-2 rounded-2xl bg-white/60 backdrop-blur-md border border-gray-200 shadow-sm">
+//   return (
+//     <div className="flex items-center justify-between px-3 py-2 rounded-2xl bg-white/60 backdrop-blur-md border border-gray-200 shadow-sm">
+      
+//       {/* Prev */}
+//       <button
+//         disabled={page === 1}
+//         onClick={() => setPage(page - 1)}
+//         className={`px-3 py-1.5 rounded-full text-sm font-medium transition
+//           ${page === 1 
+//             ? "text-gray-300" 
+//             : "text-seaBlue active:scale-95"}
+//         `}
+//       >
+//         ‹
+//       </button>
 
-      {/* Prev */}
-      <button
-        disabled={page === 1}
-        onClick={() => setPage(page - 1)}
-        className={`px-3 py-1.5 rounded-full text-sm transition
-          ${page === 1 ? "text-gray-300" : "text-seaBlue active:scale-95"}
-        `}
-      >
-        ‹
-      </button>
+//       {/* Center (page indicator + input) */}
+//       <div className="flex items-center gap-2 text-sm">
+//         <span className="text-gray-500">Page</span>
 
-      {/* Middle (dots + input fallback) */}
-      <div className="flex items-center gap-2">
+//         <input
+//           type="number"
+//           value={input}
+//           onChange={(e) => setInput(e.target.value)}
+//           onBlur={goToPage}
+//           onKeyDown={(e) => e.key === "Enter" && goToPage()}
+//           className="w-12 text-center bg-transparent border-b border-gray-300 focus:border-seaBlue outline-none"
+//         />
 
-        {/* Dots */}
-        {visiblePages.map((p) => (
-          <button
-            key={p}
-            onClick={() => setPage(p)}
-            className={`w-2.5 h-2.5 rounded-full transition
-              ${p === page ? "bg-seaBlue scale-110" : "bg-gray-300"}
-            `}
-          />
-        ))}
+//         <span className="text-gray-400">of {totalPages}</span>
+//       </div>
 
-        {/* Optional jump input */}
-        {totalPages > 5 && (
-          <input
-            type="number"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onBlur={goToPage}
-            onKeyDown={(e) => e.key === "Enter" && goToPage()}
-            className="ml-2 w-10 text-center text-xs bg-transparent border-b border-gray-300 focus:border-seaBlue outline-none"
-          />
-        )}
-      </div>
-
-      {/* Next */}
-      <button
-        disabled={page === totalPages}
-        onClick={() => setPage(page + 1)}
-        className={`px-3 py-1.5 rounded-full text-sm transition
-          ${page === totalPages ? "text-gray-300" : "text-seaBlue active:scale-95"}
-        `}
-      >
-        ›
-      </button>
-    </div>
-  );
-};
+//       {/* Next */}
+//       <button
+//         disabled={page === totalPages}
+//         onClick={() => setPage(page + 1)}
+//         className={`px-3 py-1.5 rounded-full text-sm font-medium transition
+//           ${page === totalPages 
+//             ? "text-gray-300" 
+//             : "text-seaBlue active:scale-95"}
+//         `}
+//       >
+//         ›
+//       </button>
+//     </div>
+//   );
+// };
 
 const PaginatedIndexList = ({ items }) => {
   const router = useIonRouter();
@@ -431,7 +481,7 @@ const PaginatedIndexList = ({ items }) => {
     <div className="space-y-4">
       <IndexList items={paginatedItems} router={router} />
 
-      <CollectionPaginationControls
+      <PaginationControls
         page={page}
         totalPages={totalPages}
         setPage={setPage}
@@ -466,17 +516,7 @@ const StatChip = ({ value, label }) => (
     else setFollowing(profile.followers?.find((f) => f.followerId === profile.id) ?? null);
   }, [ profile]);
 
-  // const onClickFollow = debounce(() => {
-  //   // if (!currentProfile) return setError("Please login first!");
-  //   if (!profile) return;
-
-  //   if (following) dispatch(deleteFollow({ follow: following }));
-  //   else dispatch(createFollow({ follower: profile, following: profile }));
-  // }, 200);
-
-  // const isSelf = currentProfile?.id === profile?.id;
-
-  // ── SEO
+  
   useEffect(() => {
     if (!profile) return;
     setSeo({
@@ -492,17 +532,17 @@ const StatChip = ({ value, label }) => (
   if (!profile) return <IonContent
   fullscreen
   scroll-y="true"
-  style={{ "--background": Enviroment.palette.cream, paddingTop: "env(safe-area-inset-top)" }}
+  style={{ "--background": Enviroment.palette.cream}}
 >Loading...</IonContent>;
   return (
     <ErrorBoundary>
       <IonContent
   fullscreen
   scroll-y="true"
-  style={{ "--background": Enviroment.palette.cream, paddingTop: "env(safe-area-inset-top)" }}
+  style={{ "--background": Enviroment.palette.cream }}
 >
-        <div className="max-w-2xl mx-auto px-4 pb-24 pt-safe space-y-8">
-<div className='flex mt-4  sm:pt-20 p-4 flex-row justify-between'>
+        <div className="max-w-2xl mx-auto px-4 pb-24  space-y-8">
+<div className='flex sm:pt-16 p-4 flex-row justify-between'>
 
                   
             </div>
@@ -537,11 +577,11 @@ const StatChip = ({ value, label }) => (
               </div>
             )}
 
-            {(profile?.communities?.length ?? 0) > 0 && (
+            {(communities?.length ?? 0) > 0 && (
               <div className="space-y-2">
                 <p className="text-xs text-gray-400 uppercase">Communities</p>
-                <div className="flex flex-wrap gap-2">
-                  {profile.communities.slice(0, 3).map((c) => <Pill 
+                <div className="flex flex-wrap gap-2 ">
+                  {communities.slice(0, 3).map((c) => <Pill 
                    key={c.id} 
                    onClick={()=>router.push(Paths.collection.createRoute(c.id)
                   )}
@@ -614,7 +654,7 @@ const StatChip = ({ value, label }) => (
             )
           }
 
-            {tab === TABS.COMMUNITIES && <CommunitiesPanel profile={profile} />}
+            {tab === TABS.COMMUNITIES && <CommunitiesPanel communities={communities} />}
             {tab === TABS.ABOUT && <AboutPanel profile={profile} />}
           </div>
 
