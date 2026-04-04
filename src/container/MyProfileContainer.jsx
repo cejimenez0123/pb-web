@@ -24,6 +24,7 @@ import {
 
 import {
 
+  getMyCollections,
   setCollections,
 } from "../actions/CollectionActions";
 
@@ -33,6 +34,8 @@ import fetchCity from "../core/fetchCity";
 import Paths from "../core/paths";
 import { createFollow, deleteFollow } from "../actions/FollowAction";
 import TabBar from "../components/TabBar";
+import { getMyStories } from "../actions/StoryActions";
+import ExploreList from "../components/collection/ExploreList";
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -43,13 +46,11 @@ function MyProfileContainer() {
     const { setSeo, setError,  } = useContext(Context);
 
   const profile = useSelector((state) => state.users.currentProfile);
-
-  const collectionsRaw = profile?.collections||[]
-  // useSelector((state) => state.books.collections?? []);
-
-  const pagesRaw = profile?.stories||[]
+  const {myCollections}=useSelector(state=>state.books)
+  const {myPages:myStories}=useSelector(state=>state.pages)
+  const communities  = myCollections.filter(col=>col.type=="library")
+ 
   // useSelector((state) => state.pages.pagesInView ?? []);
-
   const dispatch = useDispatch();
   const router = useIonRouter();
   const { id } = useParams();
@@ -57,11 +58,26 @@ function MyProfileContainer() {
   const [tab, setTab] = useState(TABS.POSTS);
   const [search, setSearch] = useState("");
   const [following, setFollowing] = useState(null);
+  //  
+   const collectionsRaw = myCollections|| profile?.collections||[]
+    const pagesRaw = myStories || profile.stories || []
+useEffect(() => {
+    if (profile) {
+      dispatch(getMyCollections());
+      dispatch(getMyStories());
+    }
+  }, [profile, dispatch]);
+
+
 
   // ── Derived
   const collections = useMemo(
     () => collectionsRaw.filter(Boolean).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
     [collectionsRaw, search]
+  );
+    const recentCollections = useMemo(
+    () => [...collectionsRaw].filter(Boolean).sort((a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)).slice(0, 5),
+    [collectionsRaw]
   );
   const pages = useMemo(
     () => pagesRaw.filter(Boolean).filter((page) => (search ? page.title?.toLowerCase().includes(search.toLowerCase()) : true)),
@@ -122,7 +138,7 @@ const FollowButton = ({ following, onClick, isSelf }) => {
 };
 // ── Communities Panel ─────────────────────────────────
 const CommunitiesPanel = ({ profile }) => {
-const communities  = profile.collections.filter(col=>col.type=="library")
+
 
   // c= profile?.communities ?? [];
   if (!communities.length)
@@ -192,24 +208,238 @@ const EmptyState = ({ text }) => (
 );
 
 // ── Stub Components for Missing Ones ────────────────
-const PageList = ({ items }) => (
+// const PageList = ({ items }) => (
 
-  <div className="space-y-2">
-    {items.map((p) => {
+//   <div className="space-y-2">
+//     {items.map((p) => {
 
-      return<div key={p.id} onClick={()=>{router.push(Paths.page.createRoute(p.id))}} className="p-2 border border-seaBlue rounded">{p?.title?.length>0 ? p.title:"Untitled"}</div>
- } )}
-  </div>
-);
-const IndexList = ({ items }) => (
-  <div className="space-y-2">
-    {items.map((i) => (
-      
-      <div key={i.id} onClick={()=>router.push(Paths.collection.createRoute(i.id))} className="p-2 border rounded">{i.title ??i.name}</div>
+//       return<div key={p.id} onClick={()=>{router.push(Paths.page.createRoute(p.id))}} className="p-2 border border-seaBlue rounded">{p?.title?.length>0 ? p.title:"Untitled"}</div>
+//  } )}
+//   </div>
+// );
+const PageList = ({ items, router }) => (
+    <div className="space-y-2">
+    {items.map((p) => (
+      <div
+        key={p.id}
+        onClick={() => router.push(Paths.page.createRoute(p.id))}
+        className="p-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+      >
+        <span className="text-[0.95rem] font-medium text-gray-800">
+        {p?.title?.length > 0 ? p.title : "Untitled"}
+        </span>
+      </div>
     ))}
   </div>
 );
-const ExploreList = () => <div className="text-center text-gray-400 py-4">Explore placeholder</div>;
+
+const PaginationControls = ({ page, totalPages, setPage }) => {
+  const [input, setInput] = useState(page);
+
+  useEffect(() => {
+    setInput(page);
+  }, [page]);
+
+  const goToPage = () => {
+    const p = Number(input);
+    if (p >= 1 && p <= totalPages) {
+      setPage(p);
+    } else {
+      setInput(page); // reset if invalid
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-between px-3 py-2 rounded-2xl bg-white/60 backdrop-blur-md border border-gray-200 shadow-sm">
+      
+      {/* Prev */}
+      <button
+        disabled={page === 1}
+        onClick={() => setPage(page - 1)}
+        className={`px-3 py-1.5 rounded-full text-sm font-medium transition
+          ${page === 1 
+            ? "text-gray-300" 
+            : "text-seaBlue active:scale-95"}
+        `}
+      >
+        ‹
+      </button>
+
+      {/* Center (page indicator + input) */}
+      <div className="flex items-center gap-2 text-sm">
+        <span className="text-gray-500">Page</span>
+
+        <input
+          type="number"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onBlur={goToPage}
+          onKeyDown={(e) => e.key === "Enter" && goToPage()}
+          className="w-12 text-center bg-transparent border-b border-gray-300 focus:border-seaBlue outline-none"
+        />
+
+        <span className="text-gray-400">of {totalPages}</span>
+      </div>
+
+      {/* Next */}
+      <button
+        disabled={page === totalPages}
+        onClick={() => setPage(page + 1)}
+        className={`px-3 py-1.5 rounded-full text-sm font-medium transition
+          ${page === totalPages 
+            ? "text-gray-300" 
+            : "text-seaBlue active:scale-95"}
+        `}
+      >
+        ›
+      </button>
+    </div>
+  );
+};
+const PaginatedPageList = ({ items }) => {
+  const router = useIonRouter();
+
+  const [page, setPage] = useState(1);
+  const limit = 10; // items per page
+
+  const totalPages = Math.ceil(items.length / limit);
+
+  const paginatedItems = useMemo(() => {
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    return items.slice(start, end);
+  }, [items, page]);
+
+  return (
+    <div className="space-y-4">
+      <PageList items={paginatedItems} router={router} />
+
+      <PaginationControls
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
+      />
+    </div>
+  );
+};
+const IndexList = ({ items, router }) => (
+  <div className="space-y-2">
+    {items.map((i) => (
+      <div
+        key={i.id}
+        onClick={() => router.push(Paths.collection.createRoute(i.id))}
+        className="p-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+      >
+        <span className="text-[0.95rem] font-medium text-gray-800">
+          {i.title ?? i.name ?? "Untitled"}
+        </span>
+      </div>
+    ))}
+  </div>
+);
+
+
+const CollectionPaginationControls = ({ page, totalPages, setPage }) => {
+  const [input, setInput] = useState(page);
+
+  useEffect(() => {
+    setInput(page);
+  }, [page]);
+
+  const goToPage = () => {
+    const p = Number(input);
+    if (p >= 1 && p <= totalPages) {
+      setPage(p);
+    } else {
+      setInput(page);
+    }
+  };
+
+  // show only nearby pages (like iOS)
+  const visiblePages = Array.from({ length: totalPages }, (_, i) => i + 1)
+    .filter((p) => Math.abs(p - page) <= 2);
+
+  return (
+    <div className="flex items-center justify-between px-3 py-2 rounded-2xl bg-white/60 backdrop-blur-md border border-gray-200 shadow-sm">
+
+      {/* Prev */}
+      <button
+        disabled={page === 1}
+        onClick={() => setPage(page - 1)}
+        className={`px-3 py-1.5 rounded-full text-sm transition
+          ${page === 1 ? "text-gray-300" : "text-seaBlue active:scale-95"}
+        `}
+      >
+        ‹
+      </button>
+
+      {/* Middle (dots + input fallback) */}
+      <div className="flex items-center gap-2">
+
+        {/* Dots */}
+        {visiblePages.map((p) => (
+          <button
+            key={p}
+            onClick={() => setPage(p)}
+            className={`w-2.5 h-2.5 rounded-full transition
+              ${p === page ? "bg-seaBlue scale-110" : "bg-gray-300"}
+            `}
+          />
+        ))}
+
+        {/* Optional jump input */}
+        {totalPages > 5 && (
+          <input
+            type="number"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onBlur={goToPage}
+            onKeyDown={(e) => e.key === "Enter" && goToPage()}
+            className="ml-2 w-10 text-center text-xs bg-transparent border-b border-gray-300 focus:border-seaBlue outline-none"
+          />
+        )}
+      </div>
+
+      {/* Next */}
+      <button
+        disabled={page === totalPages}
+        onClick={() => setPage(page + 1)}
+        className={`px-3 py-1.5 rounded-full text-sm transition
+          ${page === totalPages ? "text-gray-300" : "text-seaBlue active:scale-95"}
+        `}
+      >
+        ›
+      </button>
+    </div>
+  );
+};
+
+const PaginatedIndexList = ({ items }) => {
+  const router = useIonRouter();
+
+  const [page, setPage] = useState(1);
+  const limit = 8;
+
+  const totalPages = Math.ceil(items.length / limit);
+
+  const paginatedItems = useMemo(() => {
+    const start = (page - 1) * limit;
+    return items.slice(start, start + limit);
+  }, [items, page]);
+
+  return (
+    <div className="space-y-4">
+      <IndexList items={paginatedItems} router={router} />
+
+      <CollectionPaginationControls
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
+      />
+    </div>
+  );
+};
+// const ExploreList = () => <div className="text-center text-gray-400 py-4">Explore placeholder</div>;
 const StatChip = ({ value, label }) => (
   <div className="flex flex-col text-center">
     <span className="font-bold">{value}</span>
@@ -220,19 +450,6 @@ const StatChip = ({ value, label }) => (
 // ── Main Container ──────────────────────────────────
 
 
-useEffect(() => {
-  if (!profile) return;
-  if (profile.stories) {
-    
-    dispatch(setPagesInView({ pages: profile.stories }));
-  }
-
-  if (profile.collections) {
-    dispatch(setCollections
-   
-      ({ collections: profile.collections }));
-  }
-}, [profile, dispatch]);
 
 
  
@@ -277,8 +494,6 @@ useEffect(() => {
   scroll-y="true"
   style={{ "--background": Enviroment.palette.cream, paddingTop: "env(safe-area-inset-top)" }}
 >Loading...</IonContent>;
-
-
   return (
     <ErrorBoundary>
       <IonContent
@@ -367,14 +582,15 @@ useEffect(() => {
                 {search.length==0 && recentPosts.length > 0 && (
                   <section className="space-y-4">
                     <SectionLabel>Recent</SectionLabel>
-                    <PageList items={recentPosts} />
+                    <PageList items={recentPosts}  router={router}/>
                   </section>
                 )}
 
                 {pages.length > 0 && (
                   <section className="space-y-4">
                     <SectionLabel>All Posts</SectionLabel>
-                    <PageList items={pages} />
+                    {/* <PageList items={pages} /> */}
+                    <PaginatedPageList items={pages} />
                   </section>
                 )}
 
@@ -383,8 +599,20 @@ useEffect(() => {
             )}
 
             {tab === TABS.COLLECTIONS && (
-              collections.length > 0 ? <IndexList items={collections} /> : <EmptyState text="No collections yet." />
-            )}
+              collections.length > 0 ?<>
+                 {search.length==0 && recentPosts.length > 0 && (
+                  <section className="space-y-4">
+                    <SectionLabel>Recent</SectionLabel>
+                    <IndexList items={recentCollections}/>
+                   
+                  </section>
+                )}
+                    <SectionLabel>All Collections</SectionLabel>
+                <PaginatedIndexList items={collections}/></> 
+              
+              : <EmptyState text="No collections yet." />
+            )
+          }
 
             {tab === TABS.COMMUNITIES && <CommunitiesPanel profile={profile} />}
             {tab === TABS.ABOUT && <AboutPanel profile={profile} />}
@@ -392,7 +620,7 @@ useEffect(() => {
 
           {/* Explore */}
           <div className="pt-6 border-t border-gray-100">
-            <ExploreList />
+            <ExploreList/>
           </div>
         </div>
       </IonContent>

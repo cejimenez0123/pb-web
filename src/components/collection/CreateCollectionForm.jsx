@@ -23,7 +23,7 @@ export default function CreateCollectionForm({ initPages, onClose }) {
   const dispatch = useDispatch();
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const { openDialog, dialog } = useDialog();
+  const { openDialog, dialog,closeDialog,resetDialog} = useDialog();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -54,6 +54,7 @@ export default function CreateCollectionForm({ initPages, onClose }) {
   // --- handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+   
     if (submitting) return;
 
     const { name, purpose, isPrivate, isOpenCollaboration } = formData;
@@ -126,6 +127,7 @@ export default function CreateCollectionForm({ initPages, onClose }) {
     } finally {
       setSubmitting(false);
     }
+    resetDialog()
   };
 
   return (
@@ -195,13 +197,13 @@ export default function CreateCollectionForm({ initPages, onClose }) {
       )}
 
       {/* Submit */}
-      {/* <div
+      <div
         type="submit"
         onClick={handleSubmit}
         className="rounded-full flex justify-center items-center shadow-sm px-6 py-2 border-2 border-blueSea bg-blueSea bg-opacity-90 text-white font-bold text-[1rem] w-fit mx-auto"
       >
         {submitting ? "Creating..." : "Create"}
-      </div> */}
+      </div>
     </form>
   );
 }

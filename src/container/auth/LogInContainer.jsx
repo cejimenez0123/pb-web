@@ -249,9 +249,9 @@ import GoogleLogin from '../../components/GoogleLogin';
 import ErrorBoundary from "../../ErrorBoundary.jsx"
 import { Capacitor } from '@capacitor/core';
 import { useDialog } from '../../domain/usecases/useDialog.jsx';
-export default function LogInContainer() {
+export default function LogInContainer({currentProfile}) {
     const {setError,seo,setSeo}=useContext(Context)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
+
     const router = useIonRouter()
 
     useEffect(()=>{

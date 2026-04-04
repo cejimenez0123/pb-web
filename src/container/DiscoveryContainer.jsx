@@ -238,11 +238,11 @@ const {
   }, [setSeo]);
 
   useLayoutEffect(() => {
-    dispatch(setPagesInView({ pages: [] }));
+    // dispatch(setPagesInView({ pages: [] }));
     fetchContentItems();
     fetchLibraries();
   }, [currentProfile, dispatch]);
-
+  
 
 
   useEffect(() => {

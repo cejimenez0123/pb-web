@@ -876,17 +876,14 @@ const PageTab = ({ collections }) => {
   const [isOwner,setIsOwner]=useState(collection?.profileId==currentProfile?.id)
   const router = useIonRouter()
   return (
-    <div className="py-4">
+    <div className="">
       {/* <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4"> */}
-       { collections && collections?.length > 0  ? <><h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
+        <><h2 className="text-[1.4rem] my-8 lora-bold text-soft ">
           Anthologies
         </h2>
       
-     
-   
-
 {collections && collections?.length > 0 ? (
-  <IonList style={{ backgroundColor: "#f4f4e0" }}>
+  // <IonList style={{ backgroundColor: "#f4f4e0" }}>
     <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
       {collections
         .filter((col) => col)
@@ -896,23 +893,23 @@ const PageTab = ({ collections }) => {
           </div>
         ))}
     </div>
-  </IonList>
+  // </IonList>
 ) : (
   <div className="flex flex-row gap-3 overflow-x-scroll min-h-[14rem] px-3">
    
-    {/* {isOwner && ( */}
+
       <div className="min-w-[16rem] flex flex-col items-center justify-center bg-cream rounded-lg p-4 shadow text-center">
         <p className="mb-2 text-gray-700">No anthologies yet.</p>
-        <button
+         {isOwner && (   <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
           className="px-4 py-2  text-emerald-800   "
         >
           Add Your First Anthology
-        </button>
+        </button>   )} 
       </div>
-    {/* // )} */}
+
   </div>
-)}</>: isOwner && <button
+)}</>: {isOwner && <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
           className="px-4 py-2 btn bg-softBlue rounded-full text-emerald-800   "
         >
@@ -957,23 +954,24 @@ const PageTab = ({ collections }) => {
 
 const MemberTab = ({ collection }) => {
   const router = useIonRouter()
-  console.log("FETCH",collection.profile)
+
   const roles = [...collection.roles, collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
   return (
     <>
-     
-        <h5 className="text-[1.2em]  pt-4 lora-bold text-emerald-800 px-1 pb-2">
+     <div>
+       <h2 className="text-[1.4rem] my-8 lora-bold text-soft ">
+      
          Contributors
-        </h5>
+        </h2>
 
         {
-          <IonList style={{ backgroundColor: "#f4f4e0" }}>
+          <IonList style={{ backgroundColor: Enviroment.palette.cream}}>
             <div className="flex flex-col bg-cream pt-4 min-h-[14rem] overflow-x-scroll">
               {
           
                 roles.map((role, i) => {
            
-               return<div onClick={()=>router.push(Paths.profile.createRoute(role.profile.id))} className="  w-[100%] my-1 rounded-full border px-4 border-1 border-soft">
+               return<div key={i} onClick={()=>router.push(Paths.profile.createRoute(role.profile.id))} className="  w-[100%] my-1 rounded-full border px-4 border-1 border-soft">
                   <div className="flex flex-row justify-between  w-[100%]">
                   <div className="py-4 "><ProfileCircle profile={role.profile}/></div><div className="my-auto">{role.role}</div>
                   </div>
@@ -983,7 +981,7 @@ const MemberTab = ({ collection }) => {
           </IonList>
         }
 
- 
+ </div>
      
     </>
   );
@@ -1011,9 +1009,9 @@ const AboutTab = ({ collection}) => {
 
 
   return (
-    <div className="mt-4">
-    <p className="text-xs text-gray-400 uppercase font-medium lora-medium">Purpose</p>
-<p className="text-sm text-gray-700 mt-1 leading-relaxed font-sans">
+    <div className=" my-8 ">
+    <h5 className="text-gray-400 uppercase font-medium text-[1.4rem]">Purpose</h5>
+<p className="text-sm text-gray-700leading-relaxed mt-4 font-sans">
   {collection.purpose}
 </p>
 

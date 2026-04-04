@@ -30,7 +30,7 @@ import { useSelector } from 'react-redux'
 import { PageType } from '../core/constants.js'
 
 import { useDialog } from '../domain/usecases/useDialog.jsx'
-import { createCollection } from '../actions/CollectionActions.js'
+
 import submitCollection from '../core/submitCollection'
 import DeviceCheck from '../components/DeviceCheck.jsx'
 import { Capacitor } from '@capacitor/core'
@@ -578,19 +578,21 @@ const handleOpenCreateCollection = ({initPages=[],submitCollection,dispatch,curr
 />
     ),
     title: "Create Collection",
-    agreeText: "Create",
-    agree: () =>{
-      submitCollection({
-        formData,
-        dispatch,
-        router,
-        currentProfile,
-        initPages,
-        openDialog,
-        setFormData,
-        setSubmitting,
-        setError,
-      })},
+    // agreeText: "Create",
+    agree: null,
+    // () =>{
+    //   console.log("fcik FRRF",formData)
+    //   submitCollection({
+    //     formData,
+    //     dispatch,
+    //     router,
+    //     currentProfile,
+    //     initPages,
+    //     openDialog,
+    //     setFormData,
+    //     setSubmitting,
+    //     setError,
+    //   })},
     disagreeText: "Cancel",
     breakpoint: 0.9,
   });

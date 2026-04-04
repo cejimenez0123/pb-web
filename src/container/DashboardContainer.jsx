@@ -191,7 +191,7 @@ const openPages=()=>{
     )})}
     const [homeCol,setHomeCol]=useState(null)
     const [archiveCol,setArchiveCol]=useState(null)
-              useLayoutEffect(() => {
+              useEffect(() => {
                 
                 if (currentProfile?.profileToCollections) {
                   let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;

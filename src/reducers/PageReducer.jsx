@@ -23,6 +23,7 @@ import { getMyStories, getStory,createStory, fetchRecommendedStories,
 
 
 const initialState = {pagesInView:[],
+  myPages:[],
                       storyToCollectionList:[],
                       recommendedStories:[],
                       editingPage:null,
@@ -98,7 +99,7 @@ const pageSlice = createSlice({
         
         }).addCase(getMyStories.fulfilled,(state,{payload})=>{
           if(payload.pageList){
-            state.pagesInView =    payload.pageList
+            state.myPages =    payload.pageList
           }
      
           state.loading=false

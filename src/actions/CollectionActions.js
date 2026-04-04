@@ -168,13 +168,7 @@ try{
 }
 })
 const createCollection = createAsyncThunk("collection/createCollection",async (params,thunkApi)=>{
-    let {
-        title,
-        purpose,
-        isPrivate,
-        profileId,
-        isOpenCollaboration
-    }=params
+  
     try{
         let data = await collectionRepo.createCollection(params)
      

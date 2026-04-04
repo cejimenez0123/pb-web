@@ -90,15 +90,7 @@ const SearchDialog = ({ presentingElement }) => {
   }, [currentProfile]);
 
   // Load initial collections/stories depending on auth
-  useLayoutEffect(() => {
-    if (currentProfile) {
-      dispatch(getMyCollections());
-      dispatch(getMyStories());
-    } else {
-      dispatch(getPublicStories());
-      dispatch(getPublicCollections());
-    }
-  }, [currentProfile, dispatch]);
+  
 
   // Helper: local text filter
   const searchList = useCallback((searchQ, list) => {
@@ -226,20 +218,13 @@ let query = '';
 
  
 
-       {/* }}></IonSearchbar>
-      <IonSearchbar
-        value={searchText}
-        onIonInput={(e) => {
-  console.log("🧠 IonInput value:", e.detail.data);
-  setSearchText(e.detail.data?? "");
-}} */}
-      {/* /> */}
+   
        <h6 className='my-auto text-emerald-700 text-[2rem]'>Pb</h6>
 </div>
       <IonGrid>
         <IonRow
           className="ion-justify-content-start gap-x-2 gap-y-2 ion-align-items-center ion-padding-vertical"
-          style={{ '--background': '#f4f4e0' }}
+          style={{ '--background': Enviroment.palette.cream }}
         >
           {filters
             .filter(filter => !!filter)
@@ -277,14 +262,14 @@ let query = '';
       <IonList
         style={{
           overflowY: 'scroll',
-          '--background': '#f4f4e0',
+          '--background': Enviroment.palette.cream,
         }}
       >
         {filteredContent?.length
           ? filteredContent.map((content, i) => (
               <IonItem
                 key={content.objectID ?? i}
-                style={{ '--background': '#f4f4e0' }}
+                style={{ '--background': Enviroment.palette.cream }}
                 onClick={() => handleOnClick(content)}
               >
                 <IonText className="text-emerald-800">

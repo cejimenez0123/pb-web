@@ -18,7 +18,9 @@ import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCo
 import { getPublicLibraries } from "../actions/LibraryActions.jsx"
 const initialState = {
     groups:[],
+    myCollections:[],
     collections:[],
+    // collectionsInView:[],
     books:[],
     libraries:[],
     collectionToCollectionsList:[],
@@ -170,14 +172,16 @@ state.collectionInView = payload.collection
     const filtered = collections.filter(col=>{
        return !state.collections.filter(colx=>colx&&colx.id).find(colx=>col.id==colx.id)
     })
-    state.collections =[...list,...filtered]
+    state.myCollections =[...list,...filtered]
     state.loading =false
 }
 
-}).addCase(getMyCollections.pending,)
+}).addCase(getMyCollections.pending,(state,payload)=>{
+    state.loading = true
+})
 .addCase(getMyCollections.rejected,(state,{payload})=>{
 
-    state.loading = true
+    state.loading = false
 }).addCase(saveRoleToCollection.fulfilled,(state,{payload})=>{
     state.role = payload.role
 }).addCase(fetchCollection.pending,(state)=>{

@@ -58,10 +58,12 @@ import ContentHubContainer from './container/ContentHubContainer.jsx';
 import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import debounce from './core/debounce.js';
 import checkResult from './core/checkResult.js';
+import { getMyCollections } from './actions/CollectionActions.js';
+import { getMyStories } from './actions/StoryActions.jsx';
 
 setupIonicReact()
 
-
+const libraries = ["places"];
 function App(props) {
   const {currentProfile} =props
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
@@ -111,7 +113,7 @@ const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 
 const showTopNavbar = isDesktop && !isNative
 const showBottomNavbar = isMobileOrTablet || isNative
-const libraries = ["places"];
+
  return (
 
     <ErrorBoundary>
@@ -177,7 +179,7 @@ const libraries = ["places"];
   path={Paths.home}
   render={() =>
 
-      <PageWrapper>
+      <PageWrapper showBackbutton={false}>
             <PrivateRoute>
         <ContentHubContainer />
         </PrivateRoute>
