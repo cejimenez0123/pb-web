@@ -601,10 +601,10 @@ const EditButton = ({ canUserEdit, loading, id, router }) => {
   );
 }
 
-const AddButton=({disabled, loading})=>{
+const AddButton=({disabled, loading,className})=>{
   // return     canUserAdd && <div 
 
-  return <div className={`mt-4 rounded-full w-[100%] transition-all duration-200 ${canUserAdd 
+  return <div className={`mt-4 rounded-full  transition-all duration-200 ${className} ${canUserAdd 
       ? `bg-white shadow-sm border border-soft cursor-pointer opacity-100` 
       : `bg-gray-100 border border-gray-200 opacity-50 cursor-not-allowed`}`}>
   <button onClick={(e) => {
@@ -627,32 +627,37 @@ return (
       fullscreen
       className="pb-24 pt-12"
     >
-      <div className="pt-8 mx-auto w-full max-w-[50em] px-4 sm:px-6">
+      <div className="pt-8 mx-auto w-full max-w-[50em]  sm:px-6">
 
         {/* Collection Container */}
         {/* <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6"> */}
 
           {/* Collection Title */}
-          <div>
+          <div className="px-4">
             <IonText className="lora-bold">
-              <h1 className="text-[1.6rem]  sm:text-2xl ">{collection?.title}</h1>
+              <h1 className="text-[1.6rem]  sm:text-2xl ">{collection?.title.length>0?collection.title:"Untitled"}</h1>
             </IonText>
           </div>
 
           {/* Collection Purpose */}
-          {collection?.purpose && (
-            <p className="text-gray-600 text-sm sm:text-base">
+             <div className="px-4">
+          {collection?.purpose? (
+            <p className="text-gray-600 text-sm min-h-8 sm:text-base">
               {collection.purpose}
             </p>
-          )}
-
+          ): <p className="text-gray-600 min-h-8 text-sm ">
+              {""}
+            </p>}
+</div>
           {/* Action Buttons */}
-          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+          <div className="flex flex-wrap px-4 sm:flex-nowrap items-center justify-between gap-3">
 
             {/* Follow / Join Button */}
+               {/* <div className="> */}
             <div className="my-4 flex-1  min-w-[10rem] h-12 rounded-full  flex items-center justify-center transition">
             <FollowBtn />
 </div>
+
             {/* Dropdown for Other Actions */}
             <div className="dropdown dropdown-end ">
               <label tabIndex={0} className="btn h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2">
@@ -687,11 +692,12 @@ return (
           </div>
 
           {/* Add to Collection */}
+          <div className="px-4 ">
           <AddButton
             disabled={!canUserAdd}
             loading={permissionsLoading}
-            className=" h-12 rounded-ful w-[100%]  bg-soft text-white hover:bg-gray-800 transition"
-          />
+            className=" h-12 rounded-ful w-[100%] bg-soft text-white hover:bg-gray-800 transition"
+          /></div>
 
           {/* Tabs */}
           <div className="mt-4">
@@ -713,161 +719,8 @@ return (
     </IonContent>
   </ErrorBoundary>
 );
-//   return (
-//          <ErrorBoundary>
-
-
-
-
-
-//   <IonContent style={{"--background":"#f8f6f1"}} scrollY={true} fullscreen className="pb-24 pt-12">
-
-//     {/* <div className=""> */}
-        
-//     <div className="pt-8  mx-auto" >
- 
-      
-          
-          
-//         <IonCardContent style={{maxWidth:"50em",margin:"auto"}}className="ion-padding">
-//          <div> <IonText className="lora-bold"><h1>{collection?.title}</h1></IonText>
-        
-// </div>
-//             <IonText color="medium w-full bg-emerald-100 min-h-6 bg-red-200">
-//               <h6>{collection.purpose}</h6>
-//             </IonText>
-//             <div className="flex items-center justify-between px-2">
-//   <FollowBtn />   
-
-//   <div className="flex gap-2">
-//     <SaveBtn/>
-//     {/* <IconBtn icon={bookmark} /> */}
-//     <ArchiveBtn/>
-//     <EditButton/>
-//   </div>
-// </div>
-//             {/* <div className="my-4 p-4 flex flex-row gap-4">
-//       <FollowBtn/>       <SaveBtn/><ArchiveBtn/> 
-// <EditButton canUserEdit={canUserEdit} loading={permissionsLoading} router={router} id={collection.id}/>
-//       </div> */}
-// <div className={`
-//   transition-opacity duration-200
-//   ${permissionsLoading ? "opacity-50 animate-pulse" : ""}
-// `}>
-//   <AddButton disabled={!canUserAdd} />
-// </div>
-//       <CollectionTabs tab={tab} setTab={setTab} pages={<PageTab collections={collections}/>}
-//                       members={<MemberTab collection={collection}/>}
-//                       about={<AboutTab collection={collection}/>}
-//                       />
-   
-//             <div className="ion-margin-top w-[100%] mx-auto py-4 flex items-center justify-around flex gap-2">
-   
-
-              
-//             </div>
-//           </IonCardContent>
-//           </div>
-
-
-//         <ExploreList collection={collection} />
-       
-// </IonContent>
-//         </ErrorBoundary>
-//   );
 }
 
-// function CollectionTabs({ tab, setTab, pages, members, about }) {
-//   const variants = {
-//     enter: (direction) => ({
-//       x: direction === "pages" ? 20 : -20,
-//       opacity: 0,
-//       position: "absolute",
-//       width: "100%", // ✅ FIXED (was 100vw)
-//     }),
-//     center: {
-//       x: 0,
-//       opacity: 1,
-//       position: "relative",
-//       width: "100%", // ✅ FIXED
-//     },
-//     exit: (direction) => ({
-//       x: direction === "pages" ? -20 : 20,
-//       opacity: 0,
-//       position: "absolute",
-//       width: "100%", // ✅ FIXED
-//     }),
-//   };
-
-
-//   return (
-//     <div className="sm:pt-12 bg-cream">
-      
-//       {/* Tabs */}
-//       <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
-//         <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] w-[100%]  lg:w-[30em] border-emerald-600">
-          
-//           <button
-//             className={`px-4 py-2 transition-colors w-[33%] ${
-//               tab === "pages"
-//                 ? "bg-emerald-700 text-white"
-//                 : "text-emerald-700 bg-transparent"
-//             }`}
-//             onClick={() => setTab("pages")}
-//           >
-//             Pages
-//           </button>
-
-//           <button
-//             className={`px-4 py-2 transition-colors w-[33%] ${
-//               tab === "members"
-//                 ? "bg-emerald-700 text-white"
-//                 : "text-emerald-700 bg-transparent"
-//             }`}
-//             onClick={() => setTab("members")}
-//           >
-//             Members
-//           </button>
-
-//           <button
-//             className={`px-4 py-2 transition-colors w-[33%] ${
-//               tab === "about"
-//                 ? "bg-emerald-700 text-white"
-//                 : "text-emerald-700 bg-transparent"
-//             }`}
-//             onClick={() => setTab("about")}
-//           >
-//             About
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* Content */}
-//       <div className="bg-cream relative overflow-hidden" style={{ contain: "layout" }}>
-//     {/* <AnimatePresence mode="wait" initial={false}> */}
-//        <motion.div
-//   // key={tab}
-//   initial={{ opacity: 0 }}
-//   animate={{ opacity: 1 }}
-//   transition={{ duration: 0.2 }}
-
-//             key={tab || "pages"} // ✅ SAFER KEY
-//             // custom={tab}
-//             variants={variants}
-   
-//             exit="exit"
-  
-//             className="w-full"
-//           >
-//             {tab === "pages" && pages}
-//             {tab === "members" && members}
-//             {tab === "about" && about}
-//           </motion.div>
-//         {/* </AnimatePresence> */}
-//       </div>
-//     </div>
-//   );
-// }
 
 const PageTab = ({ collections }) => {
     const currentProfile = useSelector(state => state.users.currentProfile);
@@ -878,7 +731,7 @@ const PageTab = ({ collections }) => {
   return (
     <div className="">
       {/* <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4"> */}
-        <><h2 className="text-[1.4rem] my-8 lora-bold text-soft ">
+        <><h2 className="text-[1.4rem] my-8 px-4 lora-bold text-soft ">
           Anthologies
         </h2>
       
@@ -895,10 +748,10 @@ const PageTab = ({ collections }) => {
     </div>
   // </IonList>
 ) : (
-  <div className="flex flex-row gap-3 overflow-x-scroll min-h-[14rem] px-3">
+  <div className="flex flex-row gap-3 overflow-x-scroll py-8 px-3">
    
 
-      <div className="min-w-[16rem] flex flex-col items-center justify-center bg-cream rounded-lg p-4 shadow text-center">
+      <div className=" flex flex-col items-center mx-auto justify-center bg-cream rounded-lg p-4  text-center">
         <p className="mb-2 text-gray-700">No anthologies yet.</p>
          {isOwner && (   <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
@@ -915,12 +768,12 @@ const PageTab = ({ collections }) => {
         >
           Add Your First Anthology
         </button>}
-  <h2 className="text-[2em] lora-bold text-soft  px-1 pb-2">
+  <h2 className="text-[2em] lora-bold text-soft  px-4 pb-2">
           Pages
         </h2> 
         
  {pagesInView?.length>0 ? (
-  
+  <div className="px-4">
         <PageList
           items={pagesInView}
           isGrid={false}
@@ -928,6 +781,7 @@ const PageTab = ({ collections }) => {
           getMore={() => {}}
           forFeedback={false}
         />
+        </div>
       ) : (
         <div className="py-8 text-center text-gray-500">
           {isOwner ? (
@@ -1053,17 +907,7 @@ const AboutTab = ({ collection}) => {
             <BookListItemShadow key={i} />
           ))}
 
-          {isOwner && (
-            <div className="min-w-[16rem] flex flex-col items-center justify-center bg-cream rounded-lg p-4 shadow text-center">
-              <p className="mb-2 text-gray-700">No anthologies yet.</p>
-              <button
-                onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
-                className="px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
-              >
-                Add Your First Anthology
-              </button>
-            </div>
-          )}
+
         </div>
       )}
     </div>

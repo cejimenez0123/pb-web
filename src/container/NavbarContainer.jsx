@@ -569,6 +569,7 @@ const {currentProfile }= useSelector(state=>state.users)
 const handleOpenCreateCollection = ({initPages=[],submitCollection,dispatch,currentProfile,router,formData,setFormData,setSubmitting,openDialog,submitting,error,setError}) => {
 
   openDialog({
+    height:90,
     text: (
    <CreateCollectionForm
   initPages={initPages}
@@ -580,19 +581,7 @@ const handleOpenCreateCollection = ({initPages=[],submitCollection,dispatch,curr
     title: "Create Collection",
     // agreeText: "Create",
     agree: null,
-    // () =>{
-    //   console.log("fcik FRRF",formData)
-    //   submitCollection({
-    //     formData,
-    //     dispatch,
-    //     router,
-    //     currentProfile,
-    //     initPages,
-    //     openDialog,
-    //     setFormData,
-    //     setSubmitting,
-    //     setError,
-    //   })},
+
     disagreeText: "Cancel",
     breakpoint: 0.9,
   });
