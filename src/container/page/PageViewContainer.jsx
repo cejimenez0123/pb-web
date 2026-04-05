@@ -86,6 +86,7 @@ export default function PageViewContainer() {
 
   useEffect(() => {
     fetchStory();
+    dispatch(setComments({comments:[]}))
   }, [id, currentProfile]);
 
   useEffect(() => {

@@ -635,14 +635,14 @@ return (
         {/* <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6"> */}
 
           {/* Collection Title */}
-          <div className="px-4">
+          <div className="px-4 py-4">
             <IonText className="lora-bold">
               <h1 className="text-[1.6rem]  sm:text-2xl ">{collection?.title?.length>0?collection?.title:"Untitled"}</h1>
             </IonText>
           </div>
 
           {/* Collection Purpose */}
-             <div className="px-4">
+             <div className="px-4 py-4">
           {collection?.purpose? (
             <p className="text-gray-600 text-sm min-h-8 sm:text-base">
               {collection.purpose}
@@ -738,7 +738,7 @@ const PageTab = ({ collections }) => {
         </h2>
       
 {collections && collections?.length > 0 ? (
-  // <IonList style={{ backgroundColor: "#f4f4e0" }}>
+
     <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
       {collections
         .filter((col) => col)
@@ -755,7 +755,7 @@ const PageTab = ({ collections }) => {
 
       <div className=" flex flex-col items-center mx-auto justify-center bg-cream rounded-lg p-4  text-center">
         <p className="mb-2 text-gray-700">No anthologies yet.</p>
-         {isOwner  && collection.childCollections.length<1 && (   <button
+         {isOwner  && collection?.childCollections?.length<1 && (   <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
           className="px-4 py-2  text-emerald-800   "
         >
@@ -764,7 +764,7 @@ const PageTab = ({ collections }) => {
       </div>
 
   </div>
-)}</>: {isOwner && collection.childCollections.length<1&& <button
+)}</>: {isOwner && collection?.childCollections?.length<1&& <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
           className="px-4 py-2 btn bg-softBlue rounded-full text-emerald-800   "
         >
@@ -814,7 +814,7 @@ const MemberTab = ({ collection }) => {
   const roles = [...collection.roles.filter(role=>role.profile.id!=collection.profile.id), collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
   return (
     <>
-     <div>
+     <div className="px-4"> 
        <h2 className="text-[1.4rem] my-8 lora-bold text-soft ">
       
          Contributors

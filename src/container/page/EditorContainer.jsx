@@ -29,6 +29,7 @@ import menu from "../../images/icons/menu.svg";
 
 import EditorDiv from "../../components/page/EditorDiv.jsx";
 import { motion, AnimatePresence } from "framer-motion";
+import Enviroment from "../../core/Enviroment.js";
 export default function EditorContainer({ presentingElement }) {
   const { id, type } = useParams();
   const dispatch = useDispatch();
@@ -391,7 +392,7 @@ useEffect(() => {
       <IonContent
         fullscreen
         scrollY
-        style={{ "--background": "#f4f4e0", "--padding-bottom": "30em", "--padding-top": isNative ? "0.3rem" : "6em" }}
+        style={{ "--background": Enviroment.palette.cream, "--padding-bottom": "30em", "--padding-top": isNative ? "0.3rem" : "6em" }}
         className="ion-padding"
       >
         <div className="mx-auto md:p-8">

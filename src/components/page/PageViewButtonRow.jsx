@@ -34,8 +34,10 @@ export default function PageViewButtonRow({ page, profile, setCommenting }) {
   },[page,profile])
   const [archiveCol,setArchiveCol]=useState(null)
   useEffect(()=>{
-      let ptc =profile.profileToCollections.find(ptc => ptc.type === "archive");
+    if(profile?.profileToCollections){
+      let ptc =profile?.profileToCollections.find(ptc => ptc.type === "archive");
       ptc && ptc.collection && setArchiveCol(ptc.collection)
+    }
   },[profile])
   const onClickShare = () => {
   openDialog({

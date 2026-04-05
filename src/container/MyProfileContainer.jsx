@@ -48,12 +48,12 @@ function MyProfileContainer() {
   const profile = useSelector((state) => state.users.currentProfile);
   const {myCollections}=useSelector(state=>state.books)
   const {myPages:myStories}=useSelector(state=>state.pages)
-  const communities  = myCollections.filter(col=>col.type=="library")
+  const communities  = myCollections.filter(col=>col?.type=="library")
  
   // useSelector((state) => state.pages.pagesInView ?? []);
   const dispatch = useDispatch();
   const router = useIonRouter();
-  const { id } = useParams();
+  // const { id } = useParams();
 
   const [tab, setTab] = useState(TABS.POSTS);
   const [search, setSearch] = useState("");

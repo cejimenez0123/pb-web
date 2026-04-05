@@ -15,7 +15,7 @@ import Paths from "../../core/paths";
 import { Preferences } from "@capacitor/preferences";
 import { useDialog } from "../../domain/usecases/useDialog";
 export default function ShareList({ page, profile, archive,setArchive, bookmark, setBookmarked }) {
-  const [localBookmark, setLocalBookmark] = useState(bookmark);
+  // const [localBookmark, setLocalBookmark] = useState(bookmark);
   const {setSuccess,setError}=useContext(Context)
 const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
 
@@ -224,7 +224,7 @@ const handleBookmarkClick = async () => {
         >
         {currentProfile && (
   <div className="text-left w-full px-4">
-{currentProfile && (
+{/* {currentProfile && (
   <div className="text-left w-full px-4">
     {loadingBookmarkId === page.id ? (
       <IonImg
@@ -240,7 +240,7 @@ const handleBookmarkClick = async () => {
       />
     )}
   </div>
-)}
+)} */}
 
   </div>
 )}

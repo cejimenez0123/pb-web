@@ -4,6 +4,7 @@ import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
 import sortItems from "../../core/sortItems";
 import {  IonInfiniteScroll, IonInfiniteScrollContent, useIonRouter, IonRow, IonGrid, IonCol } from "@ionic/react";
+import Enviroment from "../../core/Enviroment";
 
 const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   const [page, setPage] = useState(1);
@@ -56,7 +57,7 @@ const router = useIonRouter()
   <>
 <div>
     
-      <IonInfiniteScroll style={{"--background":"#f4f4e0"}} >
+      <IonInfiniteScroll style={{"--background":Enviroment.palette.cream}} >
 <div className={"flex flex-col space-y-4"}>
         {displayedItems.filter(item=>item).map((item, i) => {
           if (!item) return null;

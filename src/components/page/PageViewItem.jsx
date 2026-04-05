@@ -64,12 +64,12 @@ export default function PageViewItem({ page }) {
 
   {/* Sliding input panel */}
   <div
-    className={`fixed left-0 right-0 z-50 bg-white shadow-lg border-t border-gray-200 transition-transform duration-300 ${
+    className={`fixed left-0 right-0 z-50 h-[100%] bg-white shadow-lg border-t border-gray-200 transition-transform duration-300 ${
       commenting ? "translate-y-0" : "translate-y-full"
     }`}
       style={{
-      bottom: "4.48rem", // leave space for navbar
-      maxHeight: "60%",
+      bottom: "6rem", // leave space for navbar
+      maxHeight: "35%",
       overflowY: "auto",
     }}>
       <CommentInput page={page} handleClose={handleClose} />
