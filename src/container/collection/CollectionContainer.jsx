@@ -677,9 +677,15 @@ return (
                     {isBookmarked ? "Remove Bookmark" : "Bookmark"}
                   </button>
                 </li>
+                
                 <li>
                   <button onClick={() => handleArchive()} className="flex items-center gap-2">
                     {isArchived ? "Remove Archive" : "Archive"}
+                  </button>
+                </li>
+                 <li>
+                  <button onClick={() => router.push(Paths.addStoryToCollection.collection(collection.id))} className="flex items-center gap-2">
+                    Add to Communities
                   </button>
                 </li>
                 {canUserEdit && collection?.id && (

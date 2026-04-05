@@ -199,7 +199,6 @@
 //   );
 // }
 
-
 import { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { IonContent } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -214,8 +213,6 @@ import {
   getMyCollections,
   setCollections,
 } from "../../actions/CollectionActions";
-import Paths from "../../core/paths";
-import { Preferences } from "@capacitor/preferences";
 import { useParams } from "react-router";
 import { useDialog } from "../../domain/usecases/useDialog";
 import { PageType } from "../../core/constants";
@@ -223,123 +220,100 @@ import truncate from "html-truncate";
 import Enviroment from "../../core/Enviroment";
 import Pill from "../../components/Pill";
 
-export default function AddStoryToCollectionContainer() {
+export default function AddToCollectionsContainer() {
   const { setError, seo, setSeo } = useContext(Context);
   const { currentProfile } = useSelector((state) => state.users);
   const { dialog, openDialog, closeDialog, resetDialog } = useDialog();
 
-  const { id, type } = useParams();
+  const { id, type } = useParams(); // id = item to add, type = "story" | "collection"
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
-
   const collectionInView = useSelector((state) => state.books.collectionInView);
   const pageInView = useSelector((state) => state.pages.pageInView);
+  const rawCollections = useSelector((state) => state.books.myCollections) || [];
 
   const [item, setItem] = useState(
     type === "collection" ? collectionInView : pageInView
   );
 
-  const rawCollections =
-    useSelector((state) => state.books.myCollections) || [];
+  // Close dialogs on load
+  useEffect(() => closeDialog(), []);
 
-  // ===== CLOSE MODALS ON LOAD =====
-  useEffect(() => {
-    closeDialog();
-  }, []);
-
-  // ===== FILTER COLLECTIONS =====
+  // Filter collections for adding
   const collections = useMemo(() => {
     return rawCollections
       .filter((c) => c && c.type && c.type !== "feedback")
       .filter((c) => {
         if (!c) return false;
-        if (item && item.id === c.id) return false;
-        if (search)
-          return c.title.toLowerCase().includes(search.toLowerCase());
+        if (item && item.id === c.id) return false; // cannot add to itself
+        if (search) return c.title.toLowerCase().includes(search.toLowerCase());
         return true;
       });
   }, [rawCollections, item, search]);
-useEffect(() => {
+
+  // Load collections & stories
+  useEffect(() => {
     if (currentProfile) {
       dispatch(getMyCollections());
       dispatch(getMyStories());
     }
   }, [currentProfile, dispatch]);
-  // ===== LOAD TOKEN (optional future use) =====
+
+  // Optional: load token
   useLayoutEffect(() => {
-    Preferences.get({ key: "token" });
+    import("@capacitor/preferences").then(({ Preferences }) => Preferences.get({ key: "token" }));
   }, []);
 
-  // ===== SEO =====
+  // SEO
   useEffect(() => {
-    if (pageInView) {
+    if (item) {
       setSeo({
         ...seo,
-        title: `Add ${pageInView.title}`,
-        description: "Organize your stories into collections.",
+        title: `Add ${item.title} to Collections`,
+        description: "Organize your stories and collections.",
       });
     }
-  }, []);
+  }, [item]);
 
-  // ===== SET COLLECTIONS =====
+  // Sync collections to store
   useEffect(() => {
     if (currentProfile) {
-      dispatch(
-        setCollections({ collections: currentProfile.collections })
-      );
+      dispatch(setCollections({ collections: currentProfile.collections }));
     }
   }, [currentProfile]);
 
-  // ===== LOAD ITEM =====
+  // Load the item to add
   useEffect(() => {
-    getContent();
-  }, [currentProfile]);
-
-  const getContent = () => {
+    if (!currentProfile) return;
     if (type === "story") {
       dispatch(getStory({ id })).then((res) =>
-        checkResult(
-          res,
-          (payload) => setItem(payload.story),
-          (err) => setError(err.message)
-        )
+        checkResult(res, (payload) => setItem(payload.story), (err) => setError(err.message))
       );
     }
-
     if (type === "collection") {
       dispatch(fetchCollectionProtected({ id })).then((res) =>
-        checkResult(
-          res,
-          (payload) => setItem(payload.collection),
-          (err) => setError(err.message)
-        )
+        checkResult(res, (payload) => setItem(payload.collection), (err) => setError(err.message))
       );
     }
-  };
+  }, [currentProfile]);
 
-  // ===== NEW COLLECTION =====
+  // Open new collection form
   const openNewCollectionForm = () => {
-    let dia = { ...dialog };
-    dia.text = (
-      <CreateCollectionForm
-        initPages={[pageInView]}
-        onClose={() => resetDialog()}
-      />
-    );
-    dia.title = "New Collection";
-    dia.isOpen = true;
-    dia.disagreeText = "Close";
+    const dia = {
+      ...dialog,
+      text: <CreateCollectionForm initPages={type === "story" ? [pageInView] : []} onClose={() => resetDialog()} />,
+      title: "New Collection",
+      isOpen: true,
+      disagreeText: "Close",
+    };
     openDialog(dia);
   };
 
-  // ===== LOADING =====
+  // Loading state
   if (!item) {
     return (
-      <IonContent
-        fullscreen
-        style={{ "--background": Enviroment.palette.cream }}
-      >
+      <IonContent fullscreen style={{ "--background": Enviroment.palette.cream }}>
         <div className="p-4 space-y-4 animate-pulse">
           <div className="h-6 w-40 bg-gray-200 rounded" />
           <div className="h-24 bg-gray-200 rounded-2xl" />
@@ -352,49 +326,33 @@ useEffect(() => {
 
   return (
     <ErrorBoundary>
-      <IonContent
-        fullscreen
-        style={{ "--background": Enviroment.palette.cream }}
-      >
+      <IonContent fullscreen style={{ "--background": Enviroment.palette.cream }}>
         <div className="max-w-[42em] mx-auto px-4 py-6 space-y-6">
 
-          {/* ===== HEADER ===== */}
+          {/* Header */}
           <div>
-            <h1 className="text-xl font-semibold text-soft">
-              Add to Collection
-            </h1>
-            <p className="text-sm text-gray-500">
-              Choose where this belongs
-            </p>
+            <h1 className="text-xl font-semibold text-soft">Add to Collection</h1>
+            <p className="text-sm text-gray-500">Choose where this belongs</p>
           </div>
 
-          {/* ===== ITEM CARD ===== */}
+          {/* Item Card */}
           <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
             <p className="text-xs text-soft opacity-70">Adding</p>
-
             <h2 className="text-lg font-semibold">{item.title}</h2>
-
             {item.type === PageType.text && item.data && (
               <div
                 className="text-sm text-gray-600 line-clamp-3"
-                dangerouslySetInnerHTML={{
-                  __html: truncate(item.data, 120, []),
-                }}
+                dangerouslySetInnerHTML={{ __html: truncate(item.data, 120, []) }}
               />
             )}
           </div>
 
-          {/* ===== PRIMARY ACTIONS ===== */}
+          {/* Primary Actions */}
           <div className="flex flex-wrap gap-3">
-            <Pill
-              label="New Collection"
-              onClick={openNewCollectionForm}
-              variant="primary"
-              color="soft"
-            />
+            <Pill label="New Collection" onClick={openNewCollectionForm} variant="primary" color="soft" />
           </div>
 
-          {/* ===== SEARCH ===== */}
+          {/* Search */}
           <div className="bg-white rounded-2xl px-3 py-2 shadow-sm">
             <input
               value={search}
@@ -404,15 +362,13 @@ useEffect(() => {
             />
           </div>
 
-          {/* ===== LIST LABEL ===== */}
-          <p className="text-xs text-gray-500 px-1">
-            Your collections
-          </p>
+          {/* List Label */}
+          <p className="text-xs text-gray-500 px-1">Your collections</p>
 
-          {/* ===== LIST ===== */}
+          {/* List */}
           <div className="space-y-2">
             {collections.map((col, i) => (
-              <AddToItem key={col.id || i} col={col} />
+              <AddToItem key={col.id || i} col={col} item={item} /> // Pass `item` for both story or collection
             ))}
           </div>
         </div>
@@ -420,3 +376,223 @@ useEffect(() => {
     </ErrorBoundary>
   );
 }
+// import { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
+// import { IonContent } from "@ionic/react";
+// import { useDispatch, useSelector } from "react-redux";
+// import CreateCollectionForm from "../../components/collection/CreateCollectionForm";
+// import AddToItem from "../../components/collection/AddToItem";
+// import checkResult from "../../core/checkResult";
+// import Context from "../../context";
+// import ErrorBoundary from "../../ErrorBoundary";
+// import { getMyStories, getStory } from "../../actions/StoryActions";
+// import {
+//   fetchCollectionProtected,
+//   getMyCollections,
+//   setCollections,
+// } from "../../actions/CollectionActions";
+// import Paths from "../../core/paths";
+// import { Preferences } from "@capacitor/preferences";
+// import { useParams } from "react-router";
+// import { useDialog } from "../../domain/usecases/useDialog";
+// import { PageType } from "../../core/constants";
+// import truncate from "html-truncate";
+// import Enviroment from "../../core/Enviroment";
+// import Pill from "../../components/Pill";
+
+// export default function AddStoryToCollectionContainer() {
+//   const { setError, seo, setSeo } = useContext(Context);
+//   const { currentProfile } = useSelector((state) => state.users);
+//   const { dialog, openDialog, closeDialog, resetDialog } = useDialog();
+
+//   const { id, type } = useParams();
+//   const dispatch = useDispatch();
+
+//   const [search, setSearch] = useState("");
+
+//   const collectionInView = useSelector((state) => state.books.collectionInView);
+//   const pageInView = useSelector((state) => state.pages.pageInView);
+
+//   const [item, setItem] = useState(
+//     type === "collection" ? collectionInView : pageInView
+//   );
+
+//   const rawCollections =
+//     useSelector((state) => state.books.myCollections) || [];
+
+//   // ===== CLOSE MODALS ON LOAD =====
+//   useEffect(() => {
+//     closeDialog();
+//   }, []);
+
+//   // ===== FILTER COLLECTIONS =====
+//   const collections = useMemo(() => {
+//     return rawCollections
+//       .filter((c) => c && c.type && c.type !== "feedback")
+//       .filter((c) => {
+//         if (!c) return false;
+//         if (item && item.id === c.id) return false;
+//         if (search)
+//           return c.title.toLowerCase().includes(search.toLowerCase());
+//         return true;
+//       });
+//   }, [rawCollections, item, search]);
+// useEffect(() => {
+//     if (currentProfile) {
+//       dispatch(getMyCollections());
+//       dispatch(getMyStories());
+//     }
+//   }, [currentProfile, dispatch]);
+//   // ===== LOAD TOKEN (optional future use) =====
+//   useLayoutEffect(() => {
+//     Preferences.get({ key: "token" });
+//   }, []);
+
+//   // ===== SEO =====
+//   useEffect(() => {
+//     if (pageInView) {
+//       setSeo({
+//         ...seo,
+//         title: `Add ${pageInView.title}`,
+//         description: "Organize your stories into collections.",
+//       });
+//     }
+//   }, []);
+
+//   // ===== SET COLLECTIONS =====
+//   useEffect(() => {
+//     if (currentProfile) {
+//       dispatch(
+//         setCollections({ collections: currentProfile.collections })
+//       );
+//     }
+//   }, [currentProfile]);
+
+//   // ===== LOAD ITEM =====
+//   useEffect(() => {
+//     getContent();
+//   }, [currentProfile]);
+
+//   const getContent = () => {
+//     if (type === "story") {
+//       dispatch(getStory({ id })).then((res) =>
+//         checkResult(
+//           res,
+//           (payload) => setItem(payload.story),
+//           (err) => setError(err.message)
+//         )
+//       );
+//     }
+
+//     if (type === "collection") {
+//       dispatch(fetchCollectionProtected({ id })).then((res) =>
+//         checkResult(
+//           res,
+//           (payload) => setItem(payload.collection),
+//           (err) => setError(err.message)
+//         )
+//       );
+//     }
+//   };
+
+//   // ===== NEW COLLECTION =====
+//   const openNewCollectionForm = () => {
+//     let dia = { ...dialog };
+//     dia.text = (
+//       <CreateCollectionForm
+//         initPages={[pageInView]}
+//         onClose={() => resetDialog()}
+//       />
+//     );
+//     dia.title = "New Collection";
+//     dia.isOpen = true;
+//     dia.disagreeText = "Close";
+//     openDialog(dia);
+//   };
+
+//   // ===== LOADING =====
+//   if (!item) {
+//     return (
+//       <IonContent
+//         fullscreen
+//         style={{ "--background": Enviroment.palette.cream }}
+//       >
+//         <div className="p-4 space-y-4 animate-pulse">
+//           <div className="h-6 w-40 bg-gray-200 rounded" />
+//           <div className="h-24 bg-gray-200 rounded-2xl" />
+//           <div className="h-10 bg-gray-200 rounded-full w-32" />
+//           <div className="h-10 bg-gray-200 rounded-2xl" />
+//         </div>
+//       </IonContent>
+//     );
+//   }
+
+//   return (
+//     <ErrorBoundary>
+//       <IonContent
+//         fullscreen
+//         style={{ "--background": Enviroment.palette.cream }}
+//       >
+//         <div className="max-w-[42em] mx-auto px-4 py-6 space-y-6">
+
+//           {/* ===== HEADER ===== */}
+//           <div>
+//             <h1 className="text-xl font-semibold text-soft">
+//               Add to Collection
+//             </h1>
+//             <p className="text-sm text-gray-500">
+//               Choose where this belongs
+//             </p>
+//           </div>
+
+//           {/* ===== ITEM CARD ===== */}
+//           <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
+//             <p className="text-xs text-soft opacity-70">Adding</p>
+
+//             <h2 className="text-lg font-semibold">{item.title}</h2>
+
+//             {item.type === PageType.text && item.data && (
+//               <div
+//                 className="text-sm text-gray-600 line-clamp-3"
+//                 dangerouslySetInnerHTML={{
+//                   __html: truncate(item.data, 120, []),
+//                 }}
+//               />
+//             )}
+//           </div>
+
+//           {/* ===== PRIMARY ACTIONS ===== */}
+//           <div className="flex flex-wrap gap-3">
+//             <Pill
+//               label="New Collection"
+//               onClick={openNewCollectionForm}
+//               variant="primary"
+//               color="soft"
+//             />
+//           </div>
+
+//           {/* ===== SEARCH ===== */}
+//           <div className="bg-white rounded-2xl px-3 py-2 shadow-sm">
+//             <input
+//               value={search}
+//               onChange={(e) => setSearch(e.target.value)}
+//               placeholder="Search collections"
+//               className="w-full bg-transparent outline-none text-sm"
+//             />
+//           </div>
+
+//           {/* ===== LIST LABEL ===== */}
+//           <p className="text-xs text-gray-500 px-1">
+//             Your collections
+//           </p>
+
+//           {/* ===== LIST ===== */}
+//           <div className="space-y-2">
+//             {collections.map((col, i) => (
+//               <AddToItem key={col.id || i} col={col} />
+//             ))}
+//           </div>
+//         </div>
+//       </IonContent>
+//     </ErrorBoundary>
+//   );
+// }

@@ -60,7 +60,7 @@ const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
               ({ collection }) => {
                 let bookmark = collection.storyIdList.find((stc) => stc.storyId == page.id);
                 setArchive(collection);
-                setLocalBookmark(bookmark)
+                // setLocalBookmark(bookmark)
                 setLoading(false);
 
                 setSuccess("Added Successfully");
@@ -103,7 +103,7 @@ const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
           ({ collection }) => {
             setArchive(collection[0]);
             setBookmarked(null);
-            setLocalBookmark(null)
+            // setLocalBookmark(null)
             setLoading(false)
             isBookmarked();
      
@@ -111,7 +111,7 @@ const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
           () => {
             // setBookmarked(null);
             setBookmarked(null);
-            setLocalBookmark(null)
+            // setLocalBookmark(null)
             setLoading(false)
             isBookmarked();
           }
@@ -128,11 +128,11 @@ const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
     if (currentProfile&&archive) {
         let bookmark = archive.storyIdList.find((stc) => stc.storyId == page.id);
         setBookmarked(bookmark);
-        setLocalBookmark(bookmark)
+        // setLocalBookmark(bookmark)
         setLoading(false)
     }else{
        setLoading(false)
-       setLocalBookmark(false)
+      //  setLocalBookmark(false)
     }
   };
     const getArchive = () => {
