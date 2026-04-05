@@ -16,7 +16,6 @@
     "build:clip": "npx vite build --mode clip",
     "build:main": "npx vite build --mode main",
     "run-ios": "npx vite build --mode main && npx cap sync ios && npx cap run ios"
-
   },
   "dependencies": {
     "@capacitor-firebase/storage": "^7.4.0",
@@ -29,7 +28,7 @@
     "@capacitor/network": "^7.0.3",
     "@capacitor/preferences": "^7.0.2",
     "@capacitor/push-notifications": "^7.0.4",
-    "@capacitor/splash-screen": "^7.0.1",
+    "@capacitor/splash-screen": "^7.0.5",
     "@capgo/capacitor-social-login": "^7.11.8",
     "@ionic/react": "6.2.5",
     "@ionic/react-router": "6.1.1",

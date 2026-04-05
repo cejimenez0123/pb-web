@@ -56,7 +56,7 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
 
   if (!listItems.length) {
     return (
-      <div className="my-4 h-[20em]  px-2 sm:h-page w-[90vw] max:max-w-[50em] flex bg-emerald-100 rounded-lg bg-opacity-80 sm:w-page mx-auto text-emerald-800">
+      <div className="my-4 h-[20em]  px-2 sm:h-page flex bg-emerald-100 rounded-lg bg-opacity-80  mx-auto text-emerald-800">
         <IonText className="text-emerald-800 text-center mx-auto mt-16 text-2xl">
           Add something
         </IonText>
@@ -65,7 +65,7 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
   }
 
   return (
-    <div className="py-4 mx-auto min-h-[50em]">
+    <div className="py-4 mx-auto">
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="sortableList">
           {(provided) => (
@@ -77,7 +77,7 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="w-[92vw] sm:max-w-[50em] mx-auto items-center text-emerald-800 py-4 bg-transparent border-blueSea border-opacity-60 border-2 rounded-full shadow-md hover:bg-gray-100"
+                      className="] mx-auto items-center text-emerald-800 py-4 bg-transparent border-blueSea border-opacity-60 border-2 rounded-full shadow-md hover:bg-gray-100"
                     >
                       <div className="flex justify-between mr-3">
                         <IonImg src={dragHandle} className="my-auto ml-4" />

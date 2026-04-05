@@ -203,6 +203,7 @@ openDialog({
     isOpen: true,
     title: null,
     scrollY:false,
+    height:50,
     text: (
       <ShareList
         page={page}
@@ -273,7 +274,7 @@ openDialog({
   const bookmarkBtn = () => {
     return isGrid ? (
       <div className={`bg-emerald-100 flex flex-row justify-between  text-emerald-700`}>
-        {isPhone ? null : <ProfileCircle isGrid={isGrid} profile={page.author} color='emerald-700' />}
+        {isPhone ? null : <ProfileCircle isGrid={isGrid} includeUsername={false} profile={page.author} color='emerald-700' />}
         <span >
           <h6 className={`text-emerald-700 ${isGrid ? isPhone ? "" : " text-right " : isHorizPhone ? "" : ""}${isPhone ? " text-[0.6rem] " : "text-[0.9rem]  w-[10rem] ml-1 pr-2"}   whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
             onClick={() => {
@@ -375,7 +376,7 @@ return (
     <IonCardHeader className="pb-2">
       <div className="flex items-center gap-3">
         <div onClick={() => router.push(Paths.profile.createRoute(page.author.id))}>
-          <ProfileCircle profile={page.author} />
+          <ProfileCircle includeUsername={false} profile={page.author} />
         </div>
 
         <div className="flex flex-col">

@@ -1241,10 +1241,10 @@
   resolved "https://registry.npmjs.org/@capacitor/push-notifications/-/push-notifications-7.0.4.tgz"
   integrity sha512-ygTRlA9OiTNfwMZwk7/AUhtVb0/AoCDedsg5RLZUFs5g9abW0ePPzhLl4rSIYwp+4njNjXyIUsQvhnh344/HZA==
 
-"@capacitor/splash-screen@^7.0.1":
-  version "7.0.4"
-  resolved "https://registry.npmjs.org/@capacitor/splash-screen/-/splash-screen-7.0.4.tgz"
-  integrity sha512-Tv2nepaHJBew2opuF5cHI7nhTAKdWuHxQFhUT6pIS9zfbUGNBEOOQLF4459DfabwRorLN16/DPo3Xk4qNnCRtw==
+"@capacitor/splash-screen@^7.0.5":
+  version "7.0.5"
+  resolved "https://registry.npmjs.org/@capacitor/splash-screen/-/splash-screen-7.0.5.tgz"
+  integrity sha512-bPG2SamFL7VT5I3XsgsGgJhkiyxq3OXCOVKEDupSieVdtEiG7j2vLbSD0xL+91zteF/qLuxsjbugGy5LD8mS2A==
 
 "@capacitor/synapse@^1.0.3":
   version "1.0.4"

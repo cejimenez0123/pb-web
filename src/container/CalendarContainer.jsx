@@ -55,8 +55,8 @@ export default function CalendarContainer(){
       </div>}
 
       </div>
-<div className="w-fit mx-auto">
-      <CalendarEmbed  />
+<div className="w-fit pb-36 mx-auto">
+      <CalendarEmbed  variant={isNative?"ios":""} />
       </div>
     </div>
     </IonContent>

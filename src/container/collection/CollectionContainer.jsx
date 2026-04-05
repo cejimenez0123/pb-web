@@ -125,6 +125,8 @@ function computePermissions(collection, profile) {
   }
   if(collection && !profile&& collection.isPrivate==true){
     canSee=false
+    router.goBack()
+    return
   }
   // ------------------ OWNER ------------------
   if (profile && collection.profileId === profile.id) {
@@ -482,7 +484,7 @@ const getCol = async (id) => {
   // Metadata
  const FollowBtn = () => {
   const baseClasses =
-    "flex-1 h-12 rounded-full px-4 flex items-center justify-center transition-all duration-150";
+    "flex-1 py-3 rounded-full px-4 flex items-center justify-center transition-all duration-150";
 
   return !role ? (
     <button
@@ -593,7 +595,7 @@ const EditButton = ({ canUserEdit, loading, id, router }) => {
         </IonToolbar>
       </IonHeader>
 
-      <IonText color="danger" className="ion-padding">
+      <IonText color="danger" className="ion-padding text-center px-4">
         <h3>403 — Access Denied</h3>
         <p>You don’t have permission to view this collection.</p>
       </IonText>
@@ -635,7 +637,7 @@ return (
           {/* Collection Title */}
           <div className="px-4">
             <IonText className="lora-bold">
-              <h1 className="text-[1.6rem]  sm:text-2xl ">{collection?.title.length>0?collection.title:"Untitled"}</h1>
+              <h1 className="text-[1.6rem]  sm:text-2xl ">{collection?.title?.length>0?collection?.title:"Untitled"}</h1>
             </IonText>
           </div>
 
@@ -660,9 +662,9 @@ return (
 
             {/* Dropdown for Other Actions */}
             <div className="dropdown dropdown-end ">
-              <label tabIndex={0} className="btn h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2">
+              <label tabIndex={0} className="btn h-12 rounded-full bg-blueSea text-white hover:bg-cyan-200 flex items-center justify-center gap-2">
                 <div className="flex flex-row ">
-                <p>Actions</p>
+               <h6>Actions</h6>
                 <svg className="max=w-4 max-h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path>
                 </svg>
@@ -753,7 +755,7 @@ const PageTab = ({ collections }) => {
 
       <div className=" flex flex-col items-center mx-auto justify-center bg-cream rounded-lg p-4  text-center">
         <p className="mb-2 text-gray-700">No anthologies yet.</p>
-         {isOwner && (   <button
+         {isOwner  && collection.childCollections.length<1 && (   <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
           className="px-4 py-2  text-emerald-800   "
         >
@@ -762,7 +764,7 @@ const PageTab = ({ collections }) => {
       </div>
 
   </div>
-)}</>: {isOwner && <button
+)}</>: {isOwner && collection.childCollections.length<1&& <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
           className="px-4 py-2 btn bg-softBlue rounded-full text-emerald-800   "
         >

@@ -10,7 +10,8 @@ import {
   useIonRouter,
   IonTitle,
   IonImg,
-  IonText
+  IonText,
+  IonButton
 } from '@ionic/react';
 import { useEffect, useRef, useContext, useState } from 'react';
 import Context from '../context';
@@ -293,9 +294,7 @@ checkUser()
     // Offline UI
     return (
       <IonPage >
-       {/* <IonContent >
-        <div className='h-[100%] w-[100%] flex'> 
-        <div className="my-auto mx-auto text-center"> */}
+     
           <IonText color="medium">
             <h2>No Internet Connection</h2>
             <p>Please check your connection and try again.</p>
